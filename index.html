@@ -1,502 +1,794 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cargas ⚡ — Interações, Indução e Atrito</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Café Lab v8 — Concentração, Diluição e Titulação (Canvas)</title>
 <style>
-:root{
-  --bg:#0b1020; --panel:#0f172a; --text:#e2e8f0; --muted:#94a3b8;
-  --pos:#ef4444; --neg:#3b82f6; --target:#f59e0b; --force:#22c55e; --neutral:#e5e7eb;
-}
-*{box-sizing:border-box} html,body{margin:0;padding:0;background:linear-gradient(135deg,#0b1020,#0e1328,#111534);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial}
-.container{max-width:1200px;margin:0 auto;padding:20px}
-.header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:6px 10px;border-radius:999px;font-size:12px}
-.tabs{display:flex;gap:8px;margin:12px 0}
-.tabbtn{padding:10px 14px;border-radius:16px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#e2e8f0;cursor:pointer}
-.tabbtn.active{background:rgba(255,255,255,0.12)}
-.grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
-.panel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:16px}
-.controls .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.controls label{font-size:14px;color:#cbd5e1;display:block;margin:6px 0}
-.controls input[type="range"], .controls select{width:100%}
-.btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:8px 10px;color:#e2e8f0;cursor:pointer}
-.btn:hover{background:rgba(255,255,255,0.14)}
-.btn[disabled]{opacity:.5;cursor:not-allowed}
-.small{font-size:12px;color:#9ca3af}
-.center{text-align:center}
-canvas{display:block;width:100%;height:auto;border-radius:18px;background:linear-gradient(#0f172a,#0b1324);border:1px solid rgba(255,255,255,0.12)}
-.hidden{display:none}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);font-size:12px}
-.answer-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
-.answer-btn{padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.08);color:#e2e8f0;cursor:pointer}
-.answer-btn:hover{background:rgba(255,255,255,0.14)}
-.hint{font-size:12px;color:#cbd5e1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:8px 10px}
+  html, body { height: 100%; margin: 0; background:#1b1210; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; }
+  #c { display:block; margin:0 auto; background: #2b1f1c; box-shadow: 0 10px 40px rgba(0,0,0,.6), inset 0 0 180px rgba(20,10,8,.6); touch-action: none; }
+  .nosel { -webkit-user-select:none; user-select:none; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div>
-      <div style="font-weight:900;font-size:24px">Cargas ⚡ — Interações, Indução e Atrito</div>
-      <div class="small">Arraste cargas (+/−) e neutros; veja indução, dipolos, eletrização por atrito e desafios.</div>
-    </div>
-    <div class="pills">
-      <div class="pill">Canvas</div>
-      <div class="pill">Didático</div>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tabbtn active" id="tab-aprender">Aprender</button>
-    <button class="tabbtn" id="tab-desafios">Desafios</button>
-    <button class="tabbtn" id="tab-quiz">Quiz</button>
-  </div>
-
-  <!-- APRENDER -->
-  <section id="view-aprender">
-    <div class="grid">
-      <div class="panel" style="padding:0">
-        <canvas id="canvas-aprender" width="900" height="540"></canvas>
-      </div>
-      <div class="panel controls">
-        <div class="row">
-          <button class="btn" id="btn-add-plus">Adicionar +</button>
-          <button class="btn" id="btn-add-minus">Adicionar −</button>
-          <button class="btn" id="btn-rem-charge">Remover carga</button>
-        </div>
-        <div class="row">
-          <select id="matSel">
-            <option>Vidro</option><option>Pele</option><option>Seda</option><option>Madeira</option>
-            <option>Lã</option><option>Âmbar</option><option>Poliestireno</option><option>Teflon</option>
-          </select>
-          <button class="btn" id="btn-add-neutral">Adicionar polarizável</button>
-          <button class="btn" id="btn-rem-neutral">Remover polarizável</button>
-        </div>
-        <div class="row">
-          <label><input type="checkbox" id="chk-force" checked> Mostrar seta da força (q)</label>
-          <label><input type="checkbox" id="chk-ind" checked> Polarização por indução</label>
-        </div>
-        <div class="row">
-          <label><input type="checkbox" id="chk-dync" checked> Cargas dinâmicas</label>
-          <label><input type="checkbox" id="chk-dipdip" checked> Dipolos interagem entre si</label>
-          <label><input type="checkbox" id="chk-fric" checked> Modo atrito</label>
-        </div>
-        <label>Velocidade
-          <input type="range" id="rng-speed" min="0.2" max="2.5" step="0.1" value="1.0">
-        </label>
-        <label>Limiar de indução (E)
-          <input type="range" id="rng-eth" min="0.0" max="0.08" step="0.002" value="0.02">
-        </label>
-        <div class="row">
-          <button class="btn" id="btn-play">Iniciar</button>
-          <button class="btn" id="btn-reset-q">Reposicionar q</button>
-          <button class="btn" id="btn-swap-q">Trocar sinal q</button>
-          <button class="btn" id="btn-reset">Resetar</button>
-        </div>
-        <div class="small">Neutro só polariza quando o campo próximo passa do limiar. No modo atrito, dois neutros em contato trocam carga segundo a série triboelétrica.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DESAFIOS (5 níveis mais difíceis) -->
-  <section id="view-desafios" class="hidden">
-    <div class="grid">
-      <div class="panel" style="padding:0">
-        <canvas id="canvas-desafios" width="900" height="540"></canvas>
-      </div>
-      <div class="panel controls">
-        <div class="row">
-          <div class="pill" id="pill-nivel">Nível: 1</div>
-          <button class="btn" data-lvl="1">1</button>
-          <button class="btn" data-lvl="2">2</button>
-          <button class="btn" data-lvl="3">3</button>
-          <button class="btn" data-lvl="4">4</button>
-          <button class="btn" data-lvl="5">5</button>
-        </div>
-        <div class="row">
-          <div class="pill">Máx cargas: <span id="d-max">1</span></div>
-          <div class="pill">Sinais permitidos: <span id="d-sign">±</span></div>
-        </div>
-        <div class="row">
-          <button class="btn" id="btn-d-add-plus">Adicionar +</button>
-          <button class="btn" id="btn-d-add-minus">Adicionar −</button>
-          <button class="btn" id="btn-d-rem">Remover carga</button>
-        </div>
-        <div class="hint" id="d-hint">Use 1 carga para empurrar/atrair q até a estrela.</div>
-        <div class="row" style="margin-top:8px">
-          <label><input type="checkbox" id="chk-d-force" checked> Mostrar seta da força</label>
-        </div>
-        <div class="row">
-          <button class="btn" id="btn-d-play">Iniciar</button>
-          <button class="btn" id="btn-d-resetq">Reposicionar q</button>
-          <button class="btn" id="btn-d-reset">Resetar nível</button>
-        </div>
-        <div class="small">Neste modo você NÃO pode arrastar a partícula q — apenas as cargas. Alguns níveis têm obstáculos **polarizáveis** (indução ligada).</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- QUIZ (3 níveis) -->
-  <section id="view-quiz" class="hidden">
-    <div class="panel center">
-      <div class="badge" style="margin-bottom:10px">
-        <span style="font-weight:700">Quiz</span>
-        <span>•</span>
-        <span id="quiz-level-label">Nível 1</span>
-        <span>•</span>
-        <span>Questão <span id="qNum">1</span>/<span id="qTotal">8</span></span>
-        <span>•</span>
-        <span>Pontos: <span id="qScore">0</span></span>
-      </div>
-      <div style="margin-bottom:10px">
-        <button class="btn" data-qlevel="1">Nível 1</button>
-        <button class="btn" data-qlevel="2">Nível 2</button>
-        <button class="btn" data-qlevel="3">Nível 3</button>
-      </div>
-      <div id="quiz-L1">
-        <div style="font-weight:700;margin-bottom:8px">Sinais: Atrai ou Repele?</div>
-        <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin:12px 0">
-          <div class="pill" id="q1A"></div>
-          <span style="color:#9ca3af">×</span>
-          <div class="pill" id="q1B"></div>
-        </div>
-        <div class="answer-row">
-          <button class="answer-btn" data-choice="Atrai">Atrai</button>
-          <button class="answer-btn" data-choice="Repele">Repele</button>
-        </div>
-      </div>
-      <div id="quiz-L2" class="hidden">
-        <div style="font-weight:700;margin-bottom:8px">Sinais + Distância: tipo e intensidade</div>
-        <div class="small" id="q2Prompt" style="margin-bottom:8px"></div>
-        <div class="answer-row">
-          <button class="answer-btn" data-choice="Atrai forte">Atrai forte</button>
-          <button class="answer-btn" data-choice="Atrai fraca">Atrai fraca</button>
-          <button class="answer-btn" data-choice="Repele forte">Repele forte</button>
-          <button class="answer-btn" data-choice="Repele fraca">Repele fraca</button>
-        </div>
-      </div>
-      <div id="quiz-L3" class="hidden">
-        <div style="font-weight:700;margin-bottom:8px">Superposição: direção da força resultante em q</div>
-        <canvas id="quiz-canvas" width="240" height="240" style="border-radius:12px;background:linear-gradient(#0f172a,#0b1324);border:1px solid rgba(255,255,255,0.12)"></canvas>
-        <div class="answer-row" style="max-width:420px;margin:10px auto 0">
-          <button class="answer-btn" data-choice="↑">↑</button>
-          <button class="answer-btn" data-choice="↗">↗</button>
-          <button class="answer-btn" data-choice="→">→</button>
-          <button class="answer-btn" data-choice="↘">↘</button>
-          <button class="answer-btn" data-choice="↓">↓</button>
-          <button class="answer-btn" data-choice="↙">↙</button>
-          <button class="answer-btn" data-choice="←">←</button>
-          <button class="answer-btn" data-choice="↖">↖</button>
-        </div>
-      </div>
-      <div style="margin-top:12px">
-        <button class="btn" id="btn-q-reset">Reiniciar quiz</button>
-      </div>
-    </div>
-  </section>
-
-  <div class="small center" style="margin-top:16px">Modelo didático com física simplificada. Ideal para visualizar atração/repulsão, indução, dipolo-dipolo e eletrização por atrito.</div>
-</div>
-
+<canvas id="c" class="nosel" width="1280" height="760" aria-label="Café Lab: jogo didático de concentração, diluição e titulação totalmente em Canvas"></canvas>
 <script>
-// ======= Utilitários =======
-const ARENA_W = 900, ARENA_H = 540, K = 1200;
-const DIP_FACTOR = 1.35; // reforço na interação com dipolos induzidos
-const COLORS = { pos:"#ef4444", neg:"#3b82f6", target:"#f59e0b", force:"#22c55e", neutral:"#e5e7eb" };
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const dist2=(a,b)=>(a.x-b.x)**2+(a.y-b.y)**2;
-const distance=(a,b)=>Math.sqrt(dist2(a,b));
-let uid=0; const newid=()=>++uid;
-const TRIBO_SERIES=["Vidro","Pele","Seda","Madeira","Lã","Âmbar","Poliestireno","Teflon"];
-const TRIBO_INDEX=Object.fromEntries(TRIBO_SERIES.map((m,i)=>[m,i]));
-function forceBetween(q1,x1,y1,q2,x2,y2){ const dx=x1-x2, dy=y1-y2; const r2=Math.max(100,dx*dx+dy*dy), r=Math.sqrt(r2); const f=(K*q1*q2)/r2; return {fx:f*(dx/r), fy:f*(dy/r)}; }
-function eFieldAt(x,y,sources){ let Ex=0,Ey=0; for(const s of sources){ const dx=x-s.x, dy=y-s.y; const r2=Math.max(100,dx*dx+dy*dy), r=Math.sqrt(r2); const e=(K*s.q)/r2; Ex+=e*(dx/r); Ey+=e*(dy/r);} return {Ex,Ey}; }
+// =========================================================
+// Café Lab v8 FINAL
+//  • Titulação: botão "Abrir torneira (segurar)" — fluxo contínuo enquanto pressionado (até esvaziar).
+//    Resultados à direita do béquer, com quebra de linha automática.
+//  • Concentração: rótulos de água quente/fria posicionados à direita; vapor ancorado na xícara.
+//  • Diluição: controle flex (C2=0 ou V2=0); animações polidas.
+// =========================================================
+(() => {
+  const W = 1280, H = 760;
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
 
-// ======= Aprender (com dinâmica, atrito e dipolo-dipolo) =======
-const A = {
-  canvas:null, ctx:null, playing:false, last:0, speed:1, showForce:true, showInduction:true,
-  dynamicCharges:true, dipoleInteract:true, frictionMode:true, Ethreshold:0.02,
-  test:{x:140,y:ARENA_H/2,vx:0,vy:0,q:+1},
-  charges:[], neutrals:[], target:{x:ARENA_W-80,y:ARENA_H/2}, drag:null
-};
-function A_addCharge(q){ A.charges.push({id:newid(),x:140+Math.random()*(ARENA_W-280),y:100+Math.random()*(ARENA_H-200),q, vx:0,vy:0}); }
-function A_addNeutral(material="Vidro"){ A.neutrals.push({id:newid(),x:ARENA_W/2,y:ARENA_H/2-60,vx:0,vy:0,r:18,d:36,alpha:0.02,qmax:2.2,q_static:0,q_static_max:3.0,material,qind:0,dipUx:1,dipUy:0}); }
-function A_reset(){ A.test={x:140,y:ARENA_H/2,vx:0,vy:0,q:+1}; A.charges=[{id:newid(),x:ARENA_W/2-110,y:ARENA_H/2,q:+1,vx:0,vy:0},{id:newid(),x:ARENA_W/2+110,y:ARENA_H/2,q:-1,vx:0,vy:0}]; A.neutrals=[{id:newid(),x:ARENA_W/2,y:ARENA_H/2-80,vx:0,vy:0,r:18,d:36,alpha:0.02,qmax:2.2,q_static:0,q_static_max:3.0,material:"Vidro",qind:0,dipUx:1,dipUy:0},{id:newid(),x:ARENA_W/2-160,y:ARENA_H/2+40,vx:0,vy:0,r:18,d:36,alpha:0.02,qmax:2.2,q_static:0,q_static_max:3.0,material:"Teflon",qind:0,dipUx:1,dipUy:0}]; }
-function A_sourcesReal(){ return [...A.charges.map(c=>({x:c.x,y:c.y,q:c.q})), ...A.neutrals.filter(n=>Math.abs(n.q_static)>1e-4).map(n=>({x:n.x,y:n.y,q:n.q_static}))]; }
-function A_update(dt){
-  const real=A_sourcesReal();
-  for(const n of A.neutrals){ const {Ex,Ey}=eFieldAt(n.x,n.y, real); const Emag=Math.hypot(Ex,Ey); if(Emag>=A.Ethreshold){ n.qind=Math.min(n.alpha*Emag,n.qmax); n.dipUx=Emag>0?Ex/Emag:1; n.dipUy=Emag>0?Ey/Emag:0; } else { n.qind=0; } }
-  if(A.playing){
-    // mover q
-    let fx=0,fy=0; for(const s of real){ const F=forceBetween(A.test.q,A.test.x,A.test.y,s.q,s.x,s.y); fx+=F.fx; fy+=F.fy; }
-    if(A.showInduction){ for(const n of A.neutrals){ if(n.qind>1e-5){ const dx=(n.d/2)*n.dipUx, dy=(n.d/2)*n.dipUy; const plus={x:n.x+dx,y:n.y+dy,q:+n.qind}, minus={x:n.x-dx,y:n.y-dy,q:-n.qind}; const Fp=forceBetween(A.test.q,A.test.x,A.test.y,plus.q,plus.x,plus.y); const Fm=forceBetween(A.test.q,A.test.x,A.test.y,minus.q,minus.x,minus.y); fx+=DIP_FACTOR*(Fp.fx+Fm.fx); fy+=DIP_FACTOR*(Fp.fy+Fm.fy); } } }
-    const damping=0.985; A.test.vx=(A.test.vx+fx*dt)*damping; A.test.vy=(A.test.vy+fy*dt)*damping;
-    A.test.x=clamp(A.test.x+A.test.vx,12,ARENA_W-12); A.test.y=clamp(A.test.y+A.test.vy,12,ARENA_H-12);
-    if(A.test.x<=12||A.test.x>=ARENA_W-12) A.test.vx*=-0.5; if(A.test.y<=12||A.test.y>=ARENA_H-12) A.test.vy*=-0.5;
+  // ---------- Utils
+  const TAU = Math.PI*2;
+  const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+  const lerp = (a,b,t)=>a+(b-a)*t;
+  const map = (v, inMin, inMax, outMin, outMax)=> outMin + (outMax-outMin) * ((v-inMin)/(inMax-inMin));
+  const rnd = (a,b)=> a + Math.random()*(b-a);
+  function roundSmart(x, p=3){ const pow = Math.pow(10,p); return Math.round(x*pow)/pow; }
 
-    // cargas dinâmicas
-    if(A.dynamicCharges){
-      for(const c of A.charges){
-        let cfx=0, cfy=0;
-        for(const o of A.charges){ if(o!==c){ const F=forceBetween(c.q,c.x,c.y,o.q,o.x,o.y); cfx+=F.fx; cfy+=F.fy; } }
-        const Ft=forceBetween(c.q,c.x,c.y,A.test.q,A.test.x,A.test.y); cfx+=Ft.fx; cfy+=Ft.fy;
-        const mass=2.0,damping=0.985;
-        c.vx=((c.vx||0)+(cfx/mass)*dt)*damping; c.vy=((c.vy||0)+(cfy/mass)*dt)*damping;
-        c.x=clamp(c.x+c.vx,16,ARENA_W-16); c.y=clamp(c.y+c.vy,16,ARENA_H-16);
-        if(c.x<=16||c.x>=ARENA_W-16) c.vx*=-0.5; if(c.y<=16||c.y>=ARENA_H-16) c.vy*=-0.5;
+  function drawRoundedRect(x,y,w,h,r){
+    r = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r);
+    ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r);
+    ctx.closePath();
+  }
+  function shadow(fn, {blur=20, color='rgba(0,0,0,.4)', x=0, y=6}={}){ ctx.save(); ctx.shadowBlur=blur; ctx.shadowColor=color; ctx.shadowOffsetX=x; ctx.shadowOffsetY=y; fn(); ctx.restore(); }
+  function pill(x,y,w,h,fill,stroke){ ctx.save(); drawRoundedRect(x,y,w,h,h/2); ctx.fillStyle=fill; ctx.fill(); if(stroke){ ctx.lineWidth=2; ctx.strokeStyle=stroke; ctx.stroke(); } ctx.restore(); }
+  function text(t, x, y, size=18, color='#f6e7da', align='left', baseline='alphabetic', fontW='600'){ ctx.save(); ctx.fillStyle=color; ctx.font=`${fontW} ${size}px ui-rounded, system-ui, Segoe UI, Roboto, Arial`; ctx.textAlign=align; ctx.textBaseline=baseline; ctx.fillText(t, x, y); ctx.restore(); }
+
+  // text wrap
+  function wrapText(str, x, y, maxW, lineH, size=15, color='#f3e8df'){
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.font = `600 ${size}px ui-rounded, system-ui, Segoe UI, Roboto, Arial`;
+    let words = String(str).split(/\s+/);
+    let line = '', yy=y;
+    for(let i=0;i<words.length;i++){
+      const test = line ? line + ' ' + words[i] : words[i];
+      if(ctx.measureText(test).width > maxW && line){
+        ctx.fillText(line, x, yy);
+        line = words[i];
+        yy += lineH;
+      } else {
+        line = test;
       }
     }
+    if(line) ctx.fillText(line, x, yy);
+    ctx.restore();
+    return yy + lineH - y;
+  }
 
-    // neutros dinâmicos + dipolo-dipolo + atrito
-    const dips=A.neutrals.map(n=>{
-      const active=n.qind>1e-5; const dx=(n.d/2)*n.dipUx, dy=(n.d/2)*n.dipUy;
-      return {n,active, q:n.qind||0, plus:{x:n.x+dx,y:n.y+dy}, minus:{x:n.x-dx,y:n.y-dy}};
-    });
-    for(const n of A.neutrals){
-      let nfx=0, nfy=0;
-      for(const s of real){ const F=forceBetween(+1,n.x,n.y,s.q,s.x,s.y); nfx+=F.fx; nfy+=F.fy; }
-      if(Math.abs(n.q_static)>1e-5){ for(const s of real){ const F=forceBetween(n.q_static,n.x,n.y,s.q,s.x,s.y); nfx+=F.fx; nfy+=F.fy; } }
-      if(A.dipoleInteract){
-        const di=dips.find(d=>d.n===n); if(di && di.active){
-          for(const dj of dips){ if(dj===di||!dj.active) continue;
-            const qi=di.q,qj=dj.q;
-            const Fpp=forceBetween(+qi,di.plus.x,di.plus.y,+qj,dj.plus.x,dj.plus.y);
-            const Fpm=forceBetween(+qi,di.plus.x,di.plus.y,-qj,dj.minus.x,dj.minus.y);
-            const Fmp=forceBetween(-qi,di.minus.x,di.minus.y,+qj,dj.plus.x,dj.plus.y);
-            const Fmm=forceBetween(-qi,di.minus.x,di.minus.y,-qj,dj.minus.x,dj.minus.y);
-            nfx+=DIP_FACTOR*(Fpp.fx+Fpm.fx+Fmp.fx+Fmm.fx);
-            nfy+=DIP_FACTOR*(Fpp.fy+Fpm.fy+Fmp.fy+Fmm.fy);
-          }
-        }
+  const COLORS = { bg1:'#2b1f1c', bg2:'#3a2a26', accent:'#c08a64', accent2:'#f1b77d', cream:'#f6e7da', sugar:'#f8f6f4', bean:'#5a3a2f', dark:'#1b1210', green:'#7de39e', red:'#ff7a7a', blue:'#7db5ff', pink:'#ffb2d0' };
+
+  // ---------- Input
+  const mouse = {x:0, y:0, down:false, justUp:false, justDown:false, pointerId:null};
+  function updateXY(e){
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width, scaleY = canvas.height / r.height;
+    mouse.x = (e.clientX - r.left) * scaleX;
+    mouse.y = (e.clientY - r.top) * scaleY;
+  }
+  canvas.addEventListener('pointerdown', e=>{ e.preventDefault(); updateXY(e); mouse.down=true; mouse.justDown=true; mouse.pointerId=e.pointerId; canvas.setPointerCapture?.(e.pointerId); });
+  canvas.addEventListener('pointermove', e=>{ updateXY(e); });
+  canvas.addEventListener('pointerup', e=>{ updateXY(e); mouse.down=false; mouse.justUp=true; if(mouse.pointerId===e.pointerId){ mouse.pointerId=null; } dragOwner=null; });
+  canvas.addEventListener('pointercancel', ()=>{ mouse.down=false; mouse.pointerId=null; dragOwner=null; });
+  canvas.addEventListener('mousedown', e=>{ updateXY(e); mouse.down=true; mouse.justDown=true; });
+  canvas.addEventListener('mousemove', e=>{ updateXY(e); });
+  canvas.addEventListener('mouseup', e=>{ updateXY(e); mouse.down=false; mouse.justUp=true; dragOwner=null; });
+  canvas.addEventListener('mouseleave', ()=>{ mouse.down=false; dragOwner=null; });
+
+  function hit(x,y,w,h){ return mouse.x>=x && mouse.x<=x+w && mouse.y>=y && mouse.y<=y+h; }
+  let dragOwner = null;
+
+  // ---------- UI components
+  class Button{
+    constructor(x,y,w,h,label,onClick, opts={}){ Object.assign(this,{x,y,w,h,label,onClick}); this.opts = Object.assign({ fill: '#3d2b27', fillHover:'#49332e', stroke:'#00000033', text: COLORS.cream }, opts); this._pressed=false; }
+    draw(){
+      const hover = hit(this.x,this.y,this.w,this.h);
+      const fill = hover?this.opts.fillHover:this.opts.fill;
+      shadow(()=>{ pill(this.x, this.y, this.w, this.h, fill, this.opts.stroke); },{blur:18, y:8, color:'rgba(0,0,0,.35)'});
+      text(this.label, this.x+this.w/2, this.y+this.h/2+1, 16, this.opts.text, 'center', 'middle', '700');
+      if(hover && mouse.justDown) this._pressed=true;
+      if(this._pressed && !mouse.down && hover && mouse.justUp){ this._pressed=false; this.onClick?.(); }
+      if(!mouse.down && !hover) this._pressed=false;
+    }
+  }
+  class HoldButton{
+    constructor(x,y,w,h,label,onHold){ Object.assign(this,{x,y,w,h,label,onHold}); this.holding=false;}
+    draw(){
+      const hovered = hit(this.x,this.y,this.w,this.h);
+      const active = hovered && mouse.down;
+      if(active) this.holding=true; else if(!mouse.down) this.holding=false;
+      const fill = this.holding? '#d7a174' : (hovered? '#49332e' : '#3d2b27');
+      shadow(()=>{ pill(this.x, this.y, this.w, this.h, fill, '#00000033'); },{blur:18,y:8,color:'rgba(0,0,0,.35)'});
+      text(this.label, this.x+this.w/2, this.y+this.h/2+1, 16, this.holding? '#1b1210':'#f6e7da', 'center', 'middle', '700');
+      if(this.holding){ try{ this.onHold && this.onHold(); }catch(e){} }
+    }
+  }
+  class Slider{
+    constructor(x,y,w,min,max,val,label,units,onChange){ Object.assign(this,{x,y,w,min,max,val,label,units,onChange}); this.h=36; this.drag=false; this.step=null; this.disabled=false; }
+    setStep(s){ this.step=s; return this; }
+    valueToX(v){ return this.x + ( (v-this.min)/(this.max-this.min) )*this.w; }
+    xToValue(px){ const t = clamp((px-this.x)/this.w,0,1); let v = this.min + t*(this.max-this.min); if(this.step){ v = Math.round(v/this.step)*this.step; } return clamp(v,this.min,this.max); }
+    draw(){
+      ctx.save();
+      drawRoundedRect(this.x, this.y+this.h/2-6, this.w, 12, 6); ctx.fillStyle = '#00000044'; ctx.fill();
+      const fx = this.valueToX(this.val); drawRoundedRect(this.x, this.y+this.h/2-6, fx-this.x, 12, 6); ctx.fillStyle = COLORS.accent; ctx.fill();
+      const kx = fx, ky = this.y+this.h/2;
+      shadow(()=>{ ctx.beginPath(); ctx.arc(kx, ky, 12, 0, TAU); ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle = COLORS.accent; ctx.stroke(); },{blur:10,y:4,color:'rgba(0,0,0,.35)'});
+      text(this.label, this.x, this.y-8, 15, COLORS.cream, 'left');
+      const vStr = this.units? `${roundSmart(this.val)} ${this.units}` : `${roundSmart(this.val)}`;
+      text(vStr, this.x+this.w, this.y-8, 15, COLORS.accent2, 'right', 'alphabetic', '700');
+      const overTrack = hit(this.x, this.y, this.w, this.h);
+      if(this.disabled){ ctx.globalAlpha=0.9; /* render only */ }
+      if(!this.disabled && mouse.justDown && overTrack && (dragOwner===null || dragOwner===this)){ dragOwner=this; this.drag=true; this.val = this.xToValue(mouse.x); this.onChange?.(this.val); }
+      if(this.drag && dragOwner===this){ if(mouse.down){ this.val = this.xToValue(mouse.x); this.onChange?.(this.val); } }
+      if(mouse.justUp && this.drag){ this.drag=false; if(dragOwner===this) dragOwner=null; }
+      ctx.restore();
+    }
+  }
+  class Toggle{
+    constructor(x,y, labels, index, onChange){ Object.assign(this,{x,y,labels,index,onChange}); this.h=36; this.w = labels.length*170; }
+    draw(){ const {x,y,h,w,labels} = this; drawRoundedRect(x,y,w,h,h/2); ctx.fillStyle='#00000033'; ctx.fill(); labels.forEach((lab,i)=>{ const segW = w/labels.length; const sx=x+i*segW; if(i===this.index){ drawRoundedRect(sx+2,y+2,segW-4,h-4,(h-4)/2); ctx.fillStyle = COLORS.accent; ctx.fill(); } text(lab, sx+segW/2, y+h/2+1, 14, i===this.index? '#1b1210':'#f6e7da', 'center', 'middle', '700'); if(hit(sx,y,segW,h) && mouse.justUp){ this.index=i; this.onChange?.(i);} }); }
+  }
+
+  // ---------- Estado
+  const State = {
+    tab: 0,
+    conc: { 
+      sub: 0,
+      agua_quente_mL: 250, agua_fria_mL: 0, kettleHot_mL: 250, kettleCold_mL: 0,
+      acucar_g: 12,
+      cafe_colheres: 2,
+      MM_gmol: 342.30,
+      mexendo: false,
+      pouring: null,
+      pourRate_mLps: 80,
+      pouredHot_mL: 0, pouredCold_mL: 0, cup_mL: 0,
+      wavePhase: 0,
+      kettleX: 1060, cupI: 0, brewLocked:false, brew_spoons:0, brew_totalAvail_mg:0, cup_caffeine_mg:0, sugarLocked:false, sugar_g_locked:0, cup_sugar_g:0
+    },
+    dili: { modo:0, C1:80, V1_mL:200, C2:20, V2_mL:800, animT:0, swirl:0, lastMixT:0, solved:'V2' },
+    titu: { Va_mL:25, Mb:0.100, Vb_mL:0, Ca_true:+((Math.random()*0.10)+0.05).toFixed(3), eqReached:false, lastVb_mL:0, drops:[], ripples:[], beakerCapacity_L:0.6, flowRate_mLps:2.4, holding:false, tipX:800, tipY:416, ind:0, pKa:3.6 },
+    quiz: { q:null, score:0, shownFeedback:0 }
+  };
+
+  // ---------- Visual helpers
+  function drawCoffeeBackground(){ ctx.fillStyle = '#231714'; ctx.fillRect(0, H-180, W, 180); for(let i=0;i<8;i++){ ctx.fillStyle = i%2? '#2c1e1a':'#311f1b'; ctx.fillRect(i*(W/8), H-160, W/8-2, 140); } const g = ctx.createRadialGradient(W/2, 120, 60, W/2, 120, 600); g.addColorStop(0,'rgba(255,214,170,.14)'); g.addColorStop(1,'rgba(255,214,170,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
+  function coffeeColor(intensity){ const base={r:24,g:16,b:12}, milk={r:210,g:160,b:120}; const r=Math.round(lerp(milk.r, base.r, intensity)); const g=Math.round(lerp(milk.g, base.g, intensity)); const b=Math.round(lerp(milk.b, base.b, intensity)); return `rgb(${r},${g},${b})`; }
+  function drawSteam(x, y, t, anchorW=24){
+    ctx.save();
+    ctx.globalAlpha = 0.22 + 0.08*Math.sin(t*0.2);
+    for(let i=0;i<6;i++){
+      const ox = -anchorW/2 + (i/5)*anchorW + Math.sin(t*0.3 + i)*6;
+      const h = 28 + 10*Math.sin(t*0.4 + i*0.7);
+      ctx.beginPath();
+      ctx.moveTo(x+ox, y);
+      ctx.bezierCurveTo(x+ox-6, y-h*0.4, x+ox+6, y-h*0.7, x+ox, y-h);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#f5efe9';
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawKettle(x,y,label){ ctx.save(); drawRoundedRect(x,y,120,80,24); ctx.fillStyle='#8b7a70'; ctx.fill(); ctx.fillStyle='#6a5b52'; ctx.fillRect(x+90,y-20,18,20); ctx.beginPath(); ctx.arc(x+12,y+20,18,Math.PI*0.5,-Math.PI*0.3,true); ctx.lineWidth=12; ctx.strokeStyle='#6a5b52'; ctx.stroke(); text(label, x+60,y+44,14,'#1b1210','center','middle','800'); ctx.restore(); }
+  function drawDripperWithCup(cx, cy, fillFrac, col, wavePhase, scale=1.0){
+    const sDrip = scale*0.90, sCup = scale*1.40;
+    const w=200*sDrip,h=170*sDrip; const x=cx-w/2, y=cy-h;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+w, y); ctx.lineTo(x+w*0.5, y+h); ctx.closePath(); ctx.fillStyle = '#d9c3ae'; ctx.fill(); ctx.strokeStyle='#b99f86'; ctx.lineWidth=3; ctx.stroke();
+    const groundsH = h*0.10 + h*0.35*clamp(State.conc.cafe_colheres/10,0,1);
+    ctx.beginPath(); ctx.moveTo(x+w*0.12, y+h*0.28); ctx.lineTo(x+w*0.88, y+h*0.28); ctx.lineTo(x+w*0.5, y+h*0.28+groundsH); ctx.closePath(); ctx.fillStyle = '#5a3a2f'; ctx.globalAlpha=0.95; ctx.fill(); ctx.globalAlpha=1;
+
+    const cupW=200*sCup, cupH=120*sCup, cupX=cx-cupW/2, cupY=cy+18*sDrip;
+    shadow(()=>{ drawRoundedRect(cupX, cupY, cupW, cupH, 28*sCup); ctx.fillStyle='#e6ded8'; ctx.fill(); },{blur:16,y:6,color:'rgba(0,0,0,.45)'});
+    ctx.beginPath(); ctx.arc(cupX+cupW-8*sCup, cupY+cupH/2, 26*sCup, 0, TAU); ctx.lineWidth=8*sCup; ctx.strokeStyle='#e6ded8'; ctx.stroke();
+
+    const f = clamp(fillFrac,0,1); const ly = cupY + cupH - f*cupH + 6*sCup;
+    ctx.save(); ctx.beginPath(); drawRoundedRect(cupX+6*sCup, cupY+6*sCup, cupW-12*sCup, cupH-12*sCup, 22*sCup); ctx.clip();
+      const A = 4*sCup, k = 0.045, wp = wavePhase;
+      ctx.beginPath(); ctx.moveTo(cupX+6*scale, ly);
+      for(let xx=cupX+6*sCup; xx<=cupX+cupW-6*sCup; xx+=4){ const yy = ly + Math.sin((xx* k) + wp)*A; ctx.lineTo(xx, yy); }
+      ctx.lineTo(cupX+cupW-6*sCup, cupY+cupH-6*sCup); ctx.lineTo(cupX+6*sCup, cupY+cupH-6*sCup); ctx.closePath();
+      let gAlpha = 0.95;
+      const grad = ctx.createLinearGradient(0, ly-10, 0, cupY+cupH-6*sCup);
+      if(State.conc.cupI <= 0.001){
+        // água levemente azulada
+        grad.addColorStop(0.00, 'rgba(160,210,255,0.90)');
+        grad.addColorStop(1.00, 'rgba(120,180,240,0.72)');
+      } else if(State.conc.sub===1) {
+        // Café: apenas tons de marrom (sem caramelo), multi-stop
+        const s = clamp(State.conc.cupI, 0, 0.98);
+        const c1 = _lerpColor('#9b6b4a', '#8b5a3c', s*0.5);
+        const c2 = _lerpColor('#8b5a3c', '#6b3f27', s*0.7);
+        const c3 = _lerpColor('#6b3f27', '#4a2a1a', s*0.9);
+        const c4 = _lerpColor('#4a2a1a', '#2f1a12', s);
+        grad.addColorStop(0.00, `rgba(${c1.r},${c1.g},${c1.b},0.96)`);
+        grad.addColorStop(0.35, `rgba(${c2.r},${c2.g},${c2.b},0.94)`);
+        grad.addColorStop(0.65, `rgba(${c3.r},${c3.g},${c3.b},0.92)`);
+        grad.addColorStop(1.00, `rgba(${c4.r},${c4.g},${c4.b},0.90)`);
+      } else {
+        // açúcar/sem café: âmbar claro
+        grad.addColorStop(0.00, col);
+        grad.addColorStop(1.00, 'rgba(150,110,70,0.70)');
       }
-      const mass=3.5,damping=0.985;
-      n.vx=((n.vx||0)+(nfx/mass)*dt)*damping; n.vy=((n.vy||0)+(nfy/mass)*dt)*damping;
-      n.x=clamp(n.x+n.vx,n.r,ARENA_W-n.r); n.y=clamp(n.y+n.vy,n.r,ARENA_H-n.r);
-      if(n.x<=n.r||n.x>=ARENA_W-n.r) n.vx*=-0.4; if(n.y<=n.r||n.y>=ARENA_H-n.r) n.vy*=-0.4;
+      ctx.fillStyle = grad; ctx.globalAlpha=gAlpha; ctx.fill();
+    ctx.restore();
+    ctx.globalAlpha = 0.18; ctx.fillStyle='#fff'; drawRoundedRect(cupX+10*scale, cupY+10*scale, 18*scale, cupH-20*scale, 16*scale); ctx.fill(); ctx.globalAlpha=1;
+    return {cupX, cupY, cupW, cupH};
+  }
+  function drawBeaker(x,y,w,h, fillFrac, color, wave=0){
+    ctx.save();
+    drawRoundedRect(x,y,w,h,18); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=3; ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
+    for(let i=1;i<10;i++){ const yy = y + h - i*(h/10); ctx.beginPath(); ctx.moveTo(x+6, yy); ctx.lineTo(x+18, yy); ctx.stroke(); }
+    const f = clamp(fillFrac,0,1); const ly = y + h - f*h;
+    ctx.save(); ctx.beginPath(); drawRoundedRect(x+4, y+4, w-8, h-8, 14); ctx.clip();
+      ctx.beginPath(); ctx.moveTo(x+4, ly);
+      const A = 3 + 2*Math.sin(wave*2.0), k=0.055, wp=wave;
+      for(let xx=x+4; xx<=x+w-4; xx+=4){ const yy = ly + Math.sin((xx* k) + wp)*A; ctx.lineTo(xx, yy); }
+      ctx.lineTo(x+w-4, y+h-4); ctx.lineTo(x+4, y+h-4); ctx.closePath();
+      const grad = ctx.createLinearGradient(0, ly-10, 0, y+h-4);
+      grad.addColorStop(0, color);
+      grad.addColorStop(1, '#0b0705');
+      ctx.globalAlpha=0.92; ctx.fillStyle=grad; ctx.fill();
+    ctx.restore();
+    ctx.restore();
+  }
+
+  // --- Transparent beaker for indicators (no coffee brown)
+  function drawBeakerTransparent(x,y,w,h, fillFrac, rgba, wave=0){
+    ctx.save();
+    drawRoundedRect(x,y,w,h,18);
+    ctx.strokeStyle='rgba(255,255,255,.35)';
+    ctx.lineWidth=3;
+    ctx.stroke();
+    // ticks
+    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
+    for(let i=1;i<10;i++){ const yy = y + h - i*(h/10); ctx.beginPath(); ctx.moveTo(x+6, yy); ctx.lineTo(x+18, yy); ctx.stroke(); }
+
+    const f = clamp(fillFrac,0,1); const ly = y + h - f*h;
+    ctx.save(); ctx.beginPath(); drawRoundedRect(x+4, y+4, w-8, h-8, 14); ctx.clip();
+      // liquid surface wave
+      ctx.beginPath(); ctx.moveTo(x+4, ly);
+      const A = 3 + 2*Math.sin(wave*2.0), k=0.055, wp=wave;
+      for(let xx=x+4; xx<=x+w-4; xx+=4){ const yy = ly + Math.sin((xx*k)+wp)*A; ctx.lineTo(xx, yy); }
+      ctx.lineTo(x+w-4, y+h-4); ctx.lineTo(x+4, y+h-4); ctx.closePath();
+
+      // Transparent water-like base with indicator tint
+      const grad = ctx.createLinearGradient(0, ly-10, 0, y+h-4);
+      grad.addColorStop(0, rgba);                 // indicator tint near surface
+      grad.addColorStop(1, 'rgba(180,200,210,0.25)'); // slightly darker near bottom
+      ctx.globalAlpha=1.0;
+      ctx.fillStyle = grad;
+      ctx.fill();
+    ctx.restore();
+
+    // subtle glass highlight
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle='#fff';
+    drawRoundedRect(x+10, y+10, 18, h-20, 16);
+    ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.restore();
+  }
+
+  // --- Color helpers
+  function _hexToRgb(hex){ hex=hex.replace('#',''); if(hex.length===3){ hex=hex.split('').map(c=>c+c).join(''); } const n=parseInt(hex,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+  function _lerp(a,b,t){ return a+(b-a)*t; }
+  function _lerpColor(c1,c2,t){ const a=_hexToRgb(c1), b=_hexToRgb(c2); const r=Math.round(_lerp(a.r,b.r,t)), g=Math.round(_lerp(a.g,b.g,t)), b2=Math.round(_lerp(a.b,b.b,t)); return {r,g,b:b2}; }
+
+  // --- pH estimate for weak acid (HA) titrated with strong base (NaOH), monoprotic
+  function calcPH_Titration(Va_mL, Vb_mL, Mb, Ca, pKa){
+    const log10 = (x)=> Math.log(x)/Math.LN10;
+    const Va = Va_mL/1000, Vb = Vb_mL/1000;
+    const nA = Ca*Va, nB = Mb*Vb;
+    const Vt = Math.max(1e-9, Va+Vb);
+    const Ka = Math.pow(10, -pKa), Kw = 1e-14;
+
+    if(nB <= 0){
+      // weak acid in water: [H+] ~ sqrt(Ka * C)
+      const C = Math.max(1e-12, nA/Vt);
+      const H = Math.sqrt(Ka*C);
+      return -log10(H);
     }
-    if(A.frictionMode){
-      for(let i=0;i<A.neutrals.length;i++){
-        for(let j=i+1;j<A.neutrals.length;j++){
-          const ni=A.neutrals[i], nj=A.neutrals[j];
-          const touching = distance(ni,nj) < (ni.r+nj.r+1);
-          if(touching){
-            const ri=TRIBO_INDEX[ni.material]??0, rj=TRIBO_INDEX[nj.material]??0;
-            if(ri!==rj){
-              const donor = ri<rj ? ni : nj; const receiver = ri<rj ? nj : ni;
-              const dq=0.05;
-              donor.q_static = Math.max(-donor.q_static_max, Math.min(donor.q_static_max,(donor.q_static||0)+dq));
-              receiver.q_static = Math.max(-receiver.q_static_max, Math.min(receiver.q_static_max,(receiver.q_static||0)-dq));
-            }
-          }
-        }
+    if(nB < nA){
+      // buffer region
+      const ratio = Math.max(1e-12, nB/Math.max(1e-12, nA-nB));
+      return pKa + Math.log(ratio)/Math.LN10;
+    }
+    if(Math.abs(nB - nA) < 1e-12){
+      // equivalence: solution of A- (weak base)
+      const Csalt = Math.max(1e-12, nA/Vt);
+      const Kb = Kw/Ka;
+      const OH = Math.sqrt(Kb*Csalt);
+      const pOH = -Math.log(OH)/Math.LN10;
+      return 14 - pOH;
+    }
+    // after equivalence: excess strong base
+    const OH = Math.max(1e-12, (nB - nA)/Vt);
+    const pOH = -Math.log(OH)/Math.LN10;
+    return 14 - pOH;
+  }
+
+  // --- Indicator color (RGBA) by pH
+  function indicatorRGBA(pH, idx, alpha=0.75){
+    function rgba(r,g,b,a){ return `rgba(${r},${g},${b},${a})`; }
+    if(idx===0){ // Phenolphthalein: colorless <8.2, magenta >10
+      if(pH <= 8.2) return rgba(230,245,255,0.15);
+      if(pH >= 10.0){ const c=_hexToRgb('#ff5fa0'); return rgba(c.r,c.g,c.b,alpha); }
+      const t = (pH-8.2)/(10.0-8.2);
+      const c = _lerpColor('#e6f5ff', '#ff5fa0', t);
+      return rgba(c.r,c.g,c.b, alpha);
+    }
+    if(idx===1){ // Bromothymol blue: yellow <6.0, green ~7.0, blue >7.6
+      if(pH <= 6.0){ const c=_hexToRgb('#ffd84a'); return rgba(c.r,c.g,c.b,alpha); }
+      if(pH >= 7.6){ const c=_hexToRgb('#2f6bff'); return rgba(c.r,c.g,c.b,alpha); }
+      // 6.0 to 7.6: yellow -> green -> blue
+      const t=(pH-6.0)/(7.6-6.0);
+      // first half to green, second to blue
+      if(t<0.5){
+        const c=_lerpColor('#ffd84a','#3ccf5a', t/0.5);
+        return rgba(c.r,c.g,c.b, alpha);
+      }else{
+        const c=_lerpColor('#3ccf5a','#2f6bff', (t-0.5)/0.5);
+        return rgba(c.r,c.g,c.b, alpha);
       }
     }
+    // Methyl orange: red <3.1, orange ~3.7, yellow >4.4
+    if(pH <= 3.1){ const c=_hexToRgb('#e84b3a'); return rgba(c.r,c.g,c.b,alpha); }
+    if(pH >= 4.4){ const c=_hexToRgb('#f2d14e'); return rgba(c.r,c.g,c.b,alpha); }
+    const t=(pH-3.1)/(4.4-3.1);
+    const c=_lerpColor('#e84b3a','#f2d14e', t);
+    return rgba(c.r,c.g,c.b, alpha);
   }
-}
-function A_draw(){
-  const ctx=A.ctx; ctx.clearRect(0,0,ARENA_W,ARENA_H);
-  ctx.save(); ctx.globalAlpha=0.2; ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1;
-  for(let x=0;x<=ARENA_W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,ARENA_H); ctx.stroke(); }
-  for(let y=0;y<=ARENA_H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(ARENA_W,y); ctx.stroke(); }
-  ctx.restore();
-  ctx.fillStyle=COLORS.target; ctx.beginPath(); ctx.arc(A.target.x,A.target.y,14,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#111"; ctx.font="700 12px system-ui"; ctx.textAlign="center"; ctx.fillText("★",A.target.x,A.target.y+4);
-  if(A.showForce){
-    let fx=0,fy=0; const real=A_sourcesReal();
-    for(const s of real){ const F=forceBetween(A.test.q,A.test.x,A.test.y,s.q,s.x,s.y); fx+=F.fx; fy+=F.fy; }
-    if(A.showInduction){ for(const n of A.neutrals){ if(n.qind>1e-5){ const dx=(n.d/2)*n.dipUx, dy=(n.d/2)*n.dipUy; const plus={x:n.x+dx,y:n.y+dy,q:+n.qind}, minus={x:n.x-dx,y:n.y-dy,q:-n.qind}; const Fp=forceBetween(A.test.q,A.test.x,A.test.y,plus.q,plus.x,plus.y); const Fm=forceBetween(A.test.q,A.test.x,A.test.y,minus.q,minus.x,minus.y); fx+=DIP_FACTOR*(Fp.fx+Fm.fx); fy+=DIP_FACTOR*(Fp.fy+Fm.fy); } } }
-    ctx.strokeStyle=COLORS.force; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(A.test.x,A.test.y); ctx.lineTo(A.test.x+clamp(fx*6,-100,100), A.test.y+clamp(fy*6,-100,100)); ctx.stroke();
-  }
-  for(const c of A.charges){ ctx.fillStyle = c.q>0?COLORS.pos:COLORS.neg; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(c.x,c.y,16,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle="#fff"; ctx.font="800 16px system-ui"; ctx.textAlign="center"; ctx.fillText(c.q>0?"+":"−", c.x, c.y+5); }
-  for(const n of A.neutrals){ ctx.fillStyle=COLORS.neutral; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    if(A.showInduction && n.qind>1e-5){ const ux=n.dipUx, uy=n.dipUy; const dx=(n.d/2)*ux, dy=(n.d/2)*uy; const plus={x:n.x+dx,y:n.y+dy}, minus={x:n.x-dx,y:n.y-dy};
-      ctx.strokeStyle="#111827"; ctx.globalAlpha=0.6; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(minus.x,minus.y); ctx.lineTo(plus.x,plus.y); ctx.stroke(); ctx.globalAlpha=1;
-      ctx.fillStyle=COLORS.pos; ctx.strokeStyle="#fff"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(plus.x,plus.y,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle="#fff"; ctx.font="800 10px system-ui"; ctx.textAlign="center"; ctx.fillText("+", plus.x, plus.y+3);
-      ctx.fillStyle=COLORS.neg; ctx.strokeStyle="#fff"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(minus.x,minus.y,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle="#fff"; ctx.font="800 10px system-ui"; ctx.textAlign="center"; ctx.fillText("−", minus.x, minus.y+3);
-    }
-  }
-  ctx.fillStyle="#10b981"; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(A.test.x,A.test.y,12,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle="#083344"; ctx.font="800 12px system-ui"; ctx.textAlign="center"; ctx.fillText(A.test.q>0?"q+":"q−", A.test.x, A.test.y+4);
-  ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1; ctx.strokeRect(4,4,ARENA_W-8,ARENA_H-8);
-}
-function A_tick(now){ if(!A.last) A.last=now; const dt=clamp(((now-A.last)/1000)*A.speed,0,0.05); A.last=now; if(A.playing) A_update(dt); A_draw(); requestAnimationFrame(A_tick); }
-function A_hitTest(x,y){ for(let i=A.charges.length-1;i>=0;i--){ const c=A.charges[i]; if(distance({x,y},c)<18) return {type:'charge',id:c.id}; } for(let i=A.neutrals.length-1;i>=0;i--){ const n=A.neutrals[i]; if(distance({x,y},n)<n.r+2) return {type:'neutral',id:n.id}; } if(distance({x,y},A.test)<14) return {type:'test'}; return null; }
-function A_pointerDown(e){ const rect=A.canvas.getBoundingClientRect(); const x=(e.clientX-rect.left)/rect.width*ARENA_W; const y=(e.clientY-rect.top)/rect.height*ARENA_H; const pick=A_hitTest(x,y); if(!pick) return; A.drag=pick; }
-function A_pointerMove(e){ if(!A.drag) return; const rect=A.canvas.getBoundingClientRect(); const x=clamp((e.clientX-rect.left)/rect.width*ARENA_W,0,ARENA_W); const y=clamp((e.clientY-rect.top)/rect.height*ARENA_H,0,ARENA_H); if(A.drag.type==='test'){ A.test.x=clamp(x,12,ARENA_W-12); A.test.y=clamp(y,12,ARENA_H-12); A.test.vx=0; A.test.vy=0; } else if(A.drag.type==='charge'){ const c=A.charges.find(c=>c.id===A.drag.id); if(c){ c.x=clamp(x,16,ARENA_W-16); c.y=clamp(y,16,ARENA_H-16); c.vx=0; c.vy=0; } } else if(A.drag.type==='neutral'){ const n=A.neutrals.find(n=>n.id===A.drag.id); if(n){ n.x=clamp(x,n.r,ARENA_W-n.r); n.y=clamp(y,n.r,ARENA_H-n.r); n.vx=0; n.vy=0; } } }
-function A_pointerUp(){ A.drag=null; }
 
-// ======= Desafios (5 níveis, mais difíceis + dipolos mais fortes) =======
-const D = {
-  canvas:null, ctx:null, playing:false, last:0, level:1, showForce:true,
-  charges:[], neutrals:[], test:{x:140,y:ARENA_H/2,vx:0,vy:0,q:+1}, target:{x:ARENA_W-100,y:ARENA_H/2}, drag:null,
-  cfg:null, Ethreshold:0.02
-};
-// eth: limiar menor => obstáculos polarizam mais fácil; harder coloca alvos em cantos e mais obstáculos
-const D_LEVELS=[
-  {maxCharges:1, allowed:'both', induction:false, eth:0.02, neutrals:[], target:{x:ARENA_W-120,y:ARENA_H/2}, testStart:{x:140,y:ARENA_H/2}, hint:'Use 1 carga para empurrar/atrair q até a estrela.'},
-  {maxCharges:2, allowed:'both', induction:false, eth:0.02, neutrals:[], target:{x:ARENA_W-140,y:100}, testStart:{x:ARENA_W/2,y:ARENA_H-80}, hint:'Agora 2 cargas. Combine forças e aproveite as paredes.'},
-  {maxCharges:2, allowed:'both', induction:true,  eth:0.018, neutrals:[{x:ARENA_W/2-40,y:ARENA_H/2-20,r:20,d:40,alpha:0.02,qmax:2.0},{x:ARENA_W/2+70,y:ARENA_H/2+10,r:20,d:40,alpha:0.02,qmax:2.0}], target:{x:ARENA_W-150,y:ARENA_H-110}, testStart:{x:120,y:120}, hint:'Dois obstáculos polarizáveis deslocados: evite ficar “preso” entre os dipolos.'},
-  {maxCharges:2, allowed:'pos',  induction:true,  eth:0.016, neutrals:[{x:ARENA_W/2-140,y:ARENA_H/2,r:20,d:40,alpha:0.02,qmax:2.2},{x:ARENA_W/2+40,y:ARENA_H/2-80,r:20,d:40,alpha:0.02,qmax:2.2},{x:ARENA_W/2+120,y:ARENA_H/2+60,r:20,d:40,alpha:0.02,qmax:2.2}], target:{x:ARENA_W-160,y:ARENA_H/2-40}, testStart:{x:140,y:ARENA_H-100}, hint:'Somente positivas (+). Três dipolos exigem rota em zigue-zague.'},
-  {maxCharges:2, allowed:'neg',  induction:true,  eth:0.014, neutrals:[{x:ARENA_W/2-100,y:ARENA_H/2-120,r:20,d:40,alpha:0.02,qmax:2.4},{x:ARENA_W/2-160,y:ARENA_H/2+40,r:20,d:40,alpha:0.02,qmax:2.4},{x:ARENA_W/2+120,y:ARENA_H/2-10,r:20,d:40,alpha:0.02,qmax:2.4},{x:ARENA_W/2+10,y:ARENA_H/2+110,r:20,d:40,alpha:0.02,qmax:2.4}], target:{x:ARENA_W-120,y:80}, testStart:{x:110,y:ARENA_H-100}, hint:'Somente negativas (−) e quatro dipolos — os “puxões” ficaram mais intensos.'}
-];
-function D_resetToConfig(){
-  D.charges=[];
-  D.neutrals = (D.cfg.neutrals||[]).map(n=>({id:newid(),vx:0,vy:0,q_static:0,qind:0,dipUx:1,dipUy:0,...n}));
-  D.target={...D.cfg.target};
-  D.test={x:D.cfg.testStart.x,y:D.cfg.testStart.y,vx:0,vy:0,q:+1};
-  updateConstraintsUI();
-  document.getElementById('d-hint').textContent = D.cfg.hint || '';
+  function drawBurette(x,y,h, levelRemaining){
+    ctx.save();
+    ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(x-8,y,16,h);
+    const ly = y + h*(1-clamp(levelRemaining,0,1));
+    ctx.fillStyle = '#9fd3ff'; ctx.fillRect(x-6, ly, 12, y+h-ly);
+    ctx.beginPath(); ctx.ellipse(x, ly, 10, 4, 0, 0, TAU); ctx.fillStyle='#8ec7ff'; ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.5)'; for(let i=0;i<=10;i++){ ctx.fillRect(x+6, y+i*(h/10)-1, 12, 2); }
+    text('Bureta (NaOH)', x+24, y+12, 14, COLORS.cream, 'left');
+    ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(x-2, y+h, 4, 16);
+    ctx.restore();
+  }
+
+  // ---------- NAV
+  const tabs = ['Concentração','Diluição','Titulação','Quiz'];
+  const navButtons = tabs.map((t,i)=> new Button(28 + i*(W/4), 18, (W/4)-40, 44, t, ()=>{ State.tab=i; if(i===3) ensureQuiz(); },{ fill:'#3d2b27', fillHover:'#49332e'}));
+  function drawNav(){ shadow(()=>{ drawRoundedRect(16,10,W-32,56,18); ctx.fillStyle='#312421'; ctx.fill(); },{blur:24,y:10,color:'rgba(0,0,0,.45)'}); for(let i=0;i<navButtons.length;i++){ const b=navButtons[i]; if(State.tab===i){ b.opts.fill = COLORS.accent; b.opts.fillHover = COLORS.accent; b.opts.text = '#1b1210'; } else { b.opts.fill = '#3d2b27'; b.opts.fillHover = '#49332e'; b.opts.text = COLORS.cream; } b.draw(); } }
+
+  // ---------- Concentração
+  const togConcSub = new Toggle(32, 140, ['Açúcar','Café'], 0, i=>State.conc.sub=i);
+  const sHot = new Slider(70, 210, 380, 0, 1000, State.conc.agua_quente_mL, 'Água quente (mL)', 'mL', v=>{ State.conc.agua_quente_mL=v; if(State.conc.pouring===null){ State.conc.kettleHot_mL=v; } }).setStep(10);
+  const sCold = new Slider(70, 270, 380, 0, 1000, State.conc.agua_fria_mL, 'Água fria (mL)', 'mL', v=>{ State.conc.agua_fria_mL=v; if(State.conc.pouring===null){ State.conc.kettleCold_mL=v; } }).setStep(10);
+  const sAcucar = new Slider(70, 330, 380, 0, 500, State.conc.acucar_g, 'Açúcar (g)', 'g', v=>{ State.conc.acucar_g=v; }).setStep(1);
+  const sCafe = new Slider(70, 390, 380, 0, 20, State.conc.cafe_colheres, 'Café moído (colheres)', 'col', v=>{ State.conc.cafe_colheres=v; }).setStep(1);
+  const btnPourHot = new Button(70, 450, 180, 42, 'Despejar quente', ()=>{ State.conc.pouring = 'hot'; });
+  const btnPourCold = new Button(270, 450, 180, 42, 'Despejar fria', ()=>{ State.conc.pouring = 'cold'; });
+    const btnReset = new Button(70, 554, 380, 42, 'Resetar preparo', ()=>{ Object.assign(State.conc, { kettleHot_mL: State.conc.agua_quente_mL, kettleCold_mL: State.conc.agua_fria_mL, pouredHot_mL:0, pouredCold_mL:0, cup_mL:0, wavePhase:0, pouring:null, cupI:0, brewLocked:false, brew_spoons:0, brew_totalAvail_mg:0, cup_caffeine_mg:0, sugarLocked:false, sugar_g_locked:0, cup_sugar_g:0 }); });
+
+  function effectiveTempC(){ const H = State.conc.pouredHot_mL, C = State.conc.pouredCold_mL; const tot = H+C || 1; return (H*100 + C*20)/tot; }
+  function sugarSolubility_g_per_100mL(T){ const t = clamp((T-20)/(100-20), 0, 1); return lerp(33, 490, t); }
+  function caffeineSolubility_g_per_L(T){ const t = clamp((T-20)/(100-20), 0, 1); return lerp(20, 670, t); }
+  // --- New: map concentration to visual intensity & compute mg/L in cup
+  function intensityFromConc(mgL){
+    // 0 mg/L = água; ~1800 mg/L ≈ quase preto
+    return clamp(mgL / 1800, 0, 0.98);
+  }
+  function cupConcMgL(){
+    const V_L = State.conc.cup_mL/1000;
+    return V_L>0 ? (State.conc.cup_caffeine_mg / V_L) : 0;
+  }
+
+  function extractionProgress(){
+    const Ht = State.conc.pouredHot_mL;
+    const Ct = State.conc.pouredCold_mL;
+    // progress only from what was poured (hot counts more than cold)
+    const eff = Ht + 0.25*Ct;
+    const target = 300; // mL reference for full extraction color
+    return clamp(eff / target, 0, 1);
+  }
+  
+function cupColorSugar(){
+  // Color of sugar solution depends only on dissolved sugar and poured volumes, not coffee spoons.
+  const ext = extractionProgress(); // 0..1 from poured water only
+  // Base tint from sugar (light amber), scaled by extraction
+  const I = clamp(0.10 + 0.50*ext, 0.0, 0.85);
+  // Blend between light amber and clear water
+  const top = `rgba(${Math.round(255*(1-I) + 210*I)}, ${Math.round(255*(1-I) + 190*I)}, ${Math.round(255*(1-I) + 120*I)}, 0.95)`;
+  return top;
 }
-function D_setLevel(n){
-  D.level=n; D.cfg = D_LEVELS[n-1]; document.getElementById('pill-nivel').textContent='Nível: '+n;
-  D.playing=false; D.last=0; D_resetToConfig();
+function cupColorCoffee(){ return coffeeColor(State.conc.cupI); }
+  
+  function updatePouring(dt){
+  const rate = State.conc.pourRate_mLps;
+  let poured = 0;
+
+  if(State.conc.pouring==='hot' && State.conc.kettleHot_mL>0){
+    const d = Math.min(State.conc.kettleHot_mL, rate*dt);
+    State.conc.kettleHot_mL -= d;
+    State.conc.pouredHot_mL += d;
+    State.conc.cup_mL += d;
+    State.conc.wavePhase += d*0.04;
+    poured = d;
+  } else if(State.conc.pouring==='cold' && State.conc.kettleCold_mL>0){
+    const d = Math.min(State.conc.kettleCold_mL, rate*dt);
+    State.conc.kettleCold_mL -= d;
+    State.conc.pouredCold_mL += d;
+    State.conc.cup_mL += d;
+    State.conc.wavePhase += d*0.03;
+    poured = d;
+  } else {
+    State.conc.pouring = null;
+  }
+
+  if(poured > 0){
+    // trava colheres no primeiro gotejamento
+    if(!State.conc.brewLocked){
+      State.conc.brewLocked = true;
+      State.conc.brew_spoons = State.conc.cafe_colheres;
+      const gramsPerSpoon_g = 6.5, caffeinePerGram_mg = 7.925;
+      State.conc.brew_totalAvail_mg = State.conc.brew_spoons * gramsPerSpoon_g * caffeinePerGram_mg;
+    }
+    // concentração real na xícara
+    const ext = extractionProgress(); // 0..1
+    const V_L = State.conc.cup_mL/1000;
+    const T = effectiveTempC();
+    const sol_mg = caffeineSolubility_g_per_L(T) * V_L * 1000;
+    const possible_mg = (State.conc.brew_totalAvail_mg||0) * ext;
+    State.conc.cup_caffeine_mg = Math.min(possible_mg, sol_mg);
+
+    // cor por mg/L
+    const mgL = cupConcMgL();
+    State.conc.cupI = intensityFromConc(mgL);
+    // --- açúcar: mesma lógica de bloqueio e cálculo pela xícara ---
+    if(!State.conc.sugarLocked){
+      State.conc.sugarLocked = true;
+      State.conc.sugar_g_locked = State.conc.acucar_g || 0;
+    }
+    // limite por solubilidade no volume atual
+    const sol_g = sugarSolubility_g_per_100mL(T) * (State.conc.cup_mL/100);
+    // progresso de dissolução (rápido em quente, mais lento em frio) – reaproveita extractionProgress()
+    const extSugar = extractionProgress(); // 0..1
+    const targetSugar_g = Math.min(State.conc.sugar_g_locked * extSugar, sol_g);
+    State.conc.cup_sugar_g = targetSugar_g;
+  }
 }
-function updateConstraintsUI(){
-  document.getElementById('d-max').textContent = D.cfg.maxCharges;
-  document.getElementById('d-sign').textContent = D.cfg.allowed==='pos'?'+':(D.cfg.allowed==='neg'?'−':'±');
-  document.getElementById('btn-d-add-plus').disabled = (D.cfg.allowed==='neg');
-  document.getElementById('btn-d-add-minus').disabled = (D.cfg.allowed==='pos');
+
+
+function calcSugar(){
+  const V_L = State.conc.cup_mL/1000;
+  const T = effectiveTempC();
+  const sol_g_per_100mL = sugarSolubility_g_per_100mL(T);
+  const maxDiss_g = sol_g_per_100mL * (State.conc.cup_mL/100);
+
+  // usar açúcar travado após início do preparo; antes disso, refletir slider
+  const sugarTotal_g = State.conc.sugarLocked ? (State.conc.sugar_g_locked||0) : (State.conc.acucar_g||0);
+
+  // o que de fato está dissolvido na xícara (atualizado em updatePouring)
+  const dissolved_g = Math.min(State.conc.cup_sugar_g || 0, maxDiss_g, sugarTotal_g);
+  const excess_g = Math.max(0, sugarTotal_g - dissolved_g);
+  const n_mol = (State.conc.MM_gmol>0) ? (dissolved_g / State.conc.MM_gmol) : 0;
+  const C_gL = V_L>0 ? dissolved_g / V_L : 0;
+  const M = V_L>0 ? n_mol / V_L : 0;
+  return {V_L, T, sol_g_per_100mL, maxDiss_g, dissolved_g, excess_g, n_mol, C_gL, M, sugarTotal_g};
 }
-function D_addCharge(q){
-  if(D.charges.length>=D.cfg.maxCharges) return;
-  if(D.cfg.allowed==='pos' && q<0) return;
-  if(D.cfg.allowed==='neg' && q>0) return;
-  D.charges.push({id:newid(),x:ARENA_W/2,y:ARENA_H/2,q, vx:0,vy:0});
-}
-function D_sourcesReal(){ return [...D.charges.map(c=>({x:c.x,y:c.y,q:c.q})), {x:D.test.x,y:D.test.y,q:D.test.q}]; }
-function D_update(dt){
-  if(!D.playing) return;
-  if(D.cfg.induction){
-    const real = D_sourcesReal();
-    for(const n of D.neutrals){
-      const {Ex,Ey}=eFieldAt(n.x,n.y, real);
-      const Emag=Math.hypot(Ex,Ey);
-      const Eth = D.cfg.eth ?? D.Ethreshold;
-      if(Emag>=Eth){
-        n.qind=Math.min(n.alpha*Emag,n.qmax);
-        n.dipUx=Emag>0?Ex/Emag:1; n.dipUy=Emag>0?Ey/Emag:0;
-      } else { n.qind=0; }
+;
+  }
+  
+  function calcCoffee(){
+    const V_L = State.conc.cup_mL/1000;
+    const gramsPerSpoon_g = 6.5;
+    const caffeinePerGram_mg = 7.925;
+    const caffeinePerSpoon_mg = gramsPerSpoon_g * caffeinePerGram_mg;
+
+    // Use locked spoons after brewing starts; otherwise reflect slider
+    const spoons = State.conc.brewLocked ? State.conc.brew_spoons : State.conc.cafe_colheres;
+    const totalAvail_mg = spoons * caffeinePerSpoon_mg;
+
+    const ext = extractionProgress();
+    const T = effectiveTempC();
+    const sol_mg = caffeineSolubility_g_per_L(T) * V_L * 1000;
+
+    // What is actually in the cup right now
+    const extracted_mg = State.conc.cup_caffeine_mg || Math.min(totalAvail_mg * ext, sol_mg);
+    const C_mgL = V_L>0 ? extracted_mg / V_L : 0;
+    return {V_L, T, spoons, totalAvail_mg, ext, sol_mg, extracted_mg, C_mgL, caffeinePerSpoon_mg};
+  }
+  function drawConcentracao(dt){
+    const kx = State.conc.kettleX;
+    if(State.conc.pouredHot_mL===0 && State.conc.pouredCold_mL===0 && State.conc.cup_mL===0){ State.conc.cupI = 0; }
+    drawKettle(kx, 150, 'Quente'); drawKettle(kx, 260, 'Fria');
+    text(`${Math.round(State.conc.kettleHot_mL)} mL`, kx+60, 138, 14, COLORS.accent2, 'center');
+    text(`${Math.round(State.conc.kettleCold_mL)} mL`, kx+60, 248, 14, COLORS.accent2, 'center');
+
+    const centerX = 700, centerY = 260; const fillFrac = clamp(State.conc.cup_mL/420, 0, 1);
+    const cupCol = (State.conc.sub===0) ? cupColorSugar() : coffeeColor(State.conc.cupI);
+    const cupGeom = drawDripperWithCup(centerX, centerY, fillFrac, cupCol, State.conc.wavePhase*0.15, 1.2);
+
+    const T = effectiveTempC();
+    if(State.conc.pouring==='hot' || T>85){
+      const x1 = cupGeom.cupX + cupGeom.cupW*0.35;
+      const x2 = cupGeom.cupX + cupGeom.cupW*0.65;
+      const yTop = cupGeom.cupY + 8;
+      const tnow = performance.now()/60;
+      drawSteam(x1, yTop, tnow);
+      drawSteam(x2, yTop, tnow+1.2);
+    }
+
+    if(State.conc.pouring){
+      updatePouring(dt);
+      const bx=centerX, by=centerY-10;
+      const ty = cupGeom.cupY + 14 + (1-fillFrac)*(cupGeom.cupH-28);
+      const grad = ctx.createLinearGradient(bx, by, bx, ty);
+      grad.addColorStop(0, State.conc.pouring==='hot' ? 'rgba(255,230,200,0.9)' : 'rgba(180,220,255,0.8)');
+      grad.addColorStop(1, cupCol);
+      ctx.beginPath(); ctx.moveTo(bx-4, by); ctx.lineTo(bx+4, by); ctx.lineTo(bx+2, ty); ctx.lineTo(bx-2, ty); ctx.closePath();
+      ctx.fillStyle = grad; ctx.globalAlpha=0.85; ctx.fill(); ctx.globalAlpha=1;
+    }
+
+    togConcSub.draw();
+    sHot.draw(); sCold.draw(); sAcucar.draw(); sCafe.draw(); btnPourHot.draw(); btnPourCold.draw(); btnReset.draw();
+
+    
+    const px=470, py=520, pw=700, ph=206; shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
+    if(State.conc.sub===0){
+      const {V_L, T, sol_g_per_100mL, maxDiss_g, dissolved_g, excess_g, n_mol, C_gL, M} = calcSugar();
+      text('Concentração — Açúcar na xícara (solubilidade)', px+20, py+28, 18, COLORS.accent2);
+      let yy = py+58;
+      yy += wrapText(`T ≈ ${roundSmart(T,1)} °C  •  Solubilidade açúcar ≈ ${roundSmart(sol_g_per_100mL)} g/100 mL  •  Máx. dissolvido: ${roundSmart(maxDiss_g)} g`, px+20, yy, pw-40, 22, 15, COLORS.cream);
+      yy += wrapText(`Dissolvido efetivo m = ${roundSmart(dissolved_g)} g ${excess_g>0? `(excesso precipita: ${roundSmart(excess_g)} g)`:''}`, px+20, yy, pw-40, 22);
+      yy += wrapText(`C (g/L) = m/V = ${roundSmart(dissolved_g)} / ${roundSmart(V_L,3)} = ${roundSmart(C_gL)} g/L`, px+20, yy, pw-40, 22);
+      yy += wrapText(`n (mol) = m/MM = ${roundSmart(dissolved_g)} / 342,30 = ${roundSmart(n_mol)} mol`, px+20, yy, pw-40, 22);
+      yy += wrapText(`M (mol/L) = n/V = ${roundSmart(n_mol)} / ${roundSmart(V_L,3)} = ${roundSmart(M)} mol/L`, px+20, yy, pw-40, 22);
+      text('Ref.: ~33 g/100 mL (20 °C) → ~490 g/100 mL (100 °C).', px+20, py+ph-16, 13, '#caa38b');
+    } else {
+      const {V_L, T, spoons, totalAvail_mg, ext, sol_mg, extracted_mg, C_mgL, caffeinePerSpoon_mg} = calcCoffee();
+      text('Concentração — Café / Cafeína (extração)', px+20, py+28, 18, COLORS.accent2);
+      let yy = py+58;
+      yy += wrapText(`T ≈ ${roundSmart(T,1)} °C`, px+20, yy, pw-40, 22, 15, COLORS.cream);
+      yy += wrapText(`Colheres = ${spoons} (≈ ${roundSmart(caffeinePerSpoon_mg,3)} mg de cafeína por colher → total disponível ≈ ${roundSmart(totalAvail_mg,3)} mg)`, px+20, yy, pw-40, 22);
+      yy += wrapText(`Cafeína extraída ≈ min(${roundSmart(totalAvail_mg,3)}·${roundSmart(ext,2)}, limite) = ${roundSmart(extracted_mg,3)} mg`, px+20, yy, pw-40, 22);
+      yy += wrapText(`C (mg/L) = ${roundSmart(extracted_mg,3)} / ${roundSmart(V_L,3)} = ${roundSmart(C_mgL,3)} mg/L`, px+20, yy, pw-40, 22);
+      text('Nota: 1 colher de sopa ≈ 5–8 g (assumimos 6,5 g). Cada grama ≈ 7,925 mg de cafeína → ≈ 51,5 mg/colher.', px+20, py+ph-16, 13, '#caa38b');
     }
   }
-  let fx=0, fy=0;
-  for(const c of D.charges){ const F=forceBetween(D.test.q,D.test.x,D.test.y,c.q,c.x,c.y); fx+=F.fx; fy+=F.fy; }
-  if(D.cfg.induction){
-    for(const n of D.neutrals){
-      if(n.qind>1e-5){
-        const dx=(n.d/2)*n.dipUx, dy=(n.d/2)*n.dipUy;
-        const plus={x:n.x+dx,y:n.y+dy,q:+n.qind}, minus={x:n.x-dx,y:n.y-dy,q:-n.qind};
-        const Fp=forceBetween(D.test.q,D.test.x,D.test.y,plus.q,plus.x,plus.y);
-        const Fm=forceBetween(D.test.q,D.test.x,D.test.y,minus.q,minus.x,minus.y);
-        fx+=DIP_FACTOR*(Fp.fx+Fm.fx); fy+=DIP_FACTOR*(Fp.fy+Fm.fy);
+
+  // ---------- Diluição
+  function concToIntensity(C, Cref){ if(Cref<=0) return 0.25; const ratio = clamp(C/Cref, 0, 1); return lerp(0.25, 0.95, ratio); }
+  const togDili = new Toggle(70, 220, ['g/L','mol/L'], 0, i=>State.dili.modo=i);
+  const sC1 = new Slider(70, 275, 380, 0, 300, State.dili.C1, 'C1 (concentração inicial)', '', v=>State.dili.C1=v).setStep(1);
+  const sV1 = new Slider(70, 325, 380, 0, 2000, State.dili.V1_mL, 'V1 (volume inicial, mL)', 'mL', v=>State.dili.V1_mL=v).setStep(10);
+  const sC2 = new Slider(70, 375, 380, 0, 300, State.dili.C2, 'C2 (concentração alvo)', '', v=>{ State.dili.C2=v; State.dili.solved = (v===0)?'C2':(State.dili.V2_mL===0?'V2':State.dili.solved); }).setStep(1);
+  const sV2 = new Slider(70, 425, 380, 0, 4000, State.dili.V2_mL, 'V2 (volume final, mL)', 'mL', v=>{ State.dili.V2_mL=v; State.dili.solved = (v===0)?'V2':(State.dili.C2===0?'C2':State.dili.solved); }).setStep(10);
+      
+  function computeDilutionFlex(){
+    let {C1, V1_mL, C2, V2_mL} = State.dili;
+    const V1 = V1_mL/1000; let V2 = V2_mL/1000;
+    let solved='';
+    if(V2<=0 && C2>0){ V2 = (C1*V1)/(C2||1); solved='V2'; }
+    else if(C2<=0 && V2>0){ C2 = (C1*V1)/(V2||1); solved='C2'; }
+    else if(C2<=0 && V2<=0){ V2 = (C1*V1)/Math.max(1,1); solved='V2'; } else { solved=''; }
+    const add_mL = Math.max(0, (V2 - V1)*1000);
+    const C_final = (C1*V1)/(V2||1e-9);
+    return {C1, V1, C2, V2, add_mL, solved, C_final};
+  }
+  function drawPourStream(x1,y1,x2,y2,phase,color){
+    const midx = (x1+x2)/2 + Math.sin(phase*2)*30;
+    const midy = (y1+y2)/2 - 40;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.quadraticCurveTo(midx, midy, x2, y2);
+    const grad = ctx.createLinearGradient(x1,y1,x2,y2); grad.addColorStop(0,'rgba(180,220,255,0.85)'); grad.addColorStop(1,color);
+    ctx.lineWidth=6; ctx.strokeStyle=grad; ctx.globalAlpha=0.9; ctx.stroke(); ctx.globalAlpha=1;
+  }
+  function drawDilution(dt){
+    const {C1,V1,C2,V2,add_mL,solved,C_final} = computeDilutionFlex();
+    const I_init = concToIntensity(C1, Math.max(C1, C_final, 1));
+    const I_final = concToIntensity(C_final, Math.max(C1, C_final, 1));
+    const colInit = coffeeColor(I_init), colFinal = coffeeColor(I_final);
+
+    const bx1=540, by1=190, bw1=200, bh1=260;
+    const bx2=880, by2=160, bw2=240, bh2=320;
+    const f1=clamp(V1/1.0,0,1), f2=clamp(V2/1.0,0,1);
+
+    text('Diluição — C1·V1 = C2·V2 (duas variáveis)', 32, 128, 18, COLORS.accent2);
+    togDili.draw(); sC1.draw(); sV1.draw(); sC2.draw(); sV2.draw();
+
+    if(State.dili.animT>0){ State.dili.animT = Math.max(0, State.dili.animT - dt*0.6); State.dili.swirl += dt*4; }
+    drawBeaker(bx1, by1, bw1, bh1, f1, colInit, perf*0.04);
+    drawBeaker(bx2, by2, bw2, bh2, f2, colFinal, perf*0.05 + State.dili.swirl*0.3);
+    text('Solução inicial', bx1+bw1/2, by1-16, 16, COLORS.cream, 'center');
+    text('Solução final', bx2+bw2/2, by2-16, 16, COLORS.cream, 'center');
+
+    if(State.dili.animT>0){
+      const px1 = bx1 + bw1 - 20, py1 = by1 + (1-f1)*bh1 + 10;
+      const px2 = bx2 + 20, py2 = by2 + (1-f2)*bh2 + 20;
+      drawPourStream(px1, py1, px2, py2, perf*0.1, colFinal);
+      for(let i=0;i<14;i++){
+        const t = Math.random();
+        const x = lerp(px1, px2, t) + Math.sin((perf+t*60)*0.05)*20;
+        const y = lerp(py1, py2, t) + Math.cos((perf+t*60)*0.05)*8;
+        ctx.beginPath(); ctx.arc(x, y, rnd(1,2), 0, TAU); ctx.fillStyle='rgba(180,220,255,0.9)'; ctx.fill();
+      }
+      ctx.save(); ctx.globalAlpha = 0.10 + 0.08*Math.sin(perf*0.2); ctx.beginPath(); drawRoundedRect(bx2+6, by2+6, bw2-12, bh2-12, 16); ctx.fillStyle=COLORS.accent2; ctx.fill(); ctx.restore();
+    }
+
+    const px=540, py=530, pw=580, ph=200; shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
+    const u = State.dili.modo===0? 'g/L':'mol/L';
+    text('Resultados de Diluição', px+20, py+28, 18, COLORS.accent2);
+    let yy = py+58;
+    yy += wrapText(`C1=${roundSmart(C1)} ${u}, V1=${roundSmart(V1)} L, C2=${roundSmart(C2)} ${u}, V2=${roundSmart(V2)} L`, px+20, yy, pw-40, 22, 15, COLORS.cream);
+    if(solved==='V2'){ yy += wrapText(`Resolvendo V2: V2 = (C1·V1)/C2 = (${roundSmart(C1)}·${roundSmart(V1)})/${roundSmart(C2)} = ${roundSmart(V2)} L`, px+20, yy, pw-40, 22); }
+    else if(solved==='C2'){ yy += wrapText(`Resolvendo C2: C2 = (C1·V1)/V2 = (${roundSmart(C1)}·${roundSmart(V1)})/${roundSmart(V2)} = ${roundSmart(C2)} ${u}`, px+20, yy, pw-40, 22); }
+    else { yy += wrapText(`Checagem: C_final = (C1·V1)/V2 = ${roundSmart(C_final)} ${u}`, px+20, yy, pw-40, 22); }
+    yy += wrapText(`Água a adicionar = max(V2−V1, 0) = ${roundSmart(Math.max(0,V2-V1))} L (${Math.round(Math.max(0,(V2-V1)*1000))} mL)`, px+20, yy, pw-40, 22);
+  }
+
+  // ---------- Titulação
+  const togInd = new Toggle(70, 452, ['Fenolftaleína','Azul de bromotimol','Alaranjado de metila'], 0, i=>{ State.titu.ind = i; });
+  const sVa = new Slider(70, 200, 380, 10, 200, State.titu.Va_mL, 'Amostra (café) Va (mL)', 'mL', v=>State.titu.Va_mL=v).setStep(1);
+  const sMb = new Slider(70, 260, 380, 0.05, 0.20, State.titu.Mb, 'Base (NaOH) Mb (mol/L)', 'mol/L', v=>State.titu.Mb=roundSmart(v,3)).setStep(0.005);
+  const sVb = new Slider(70, 320, 380, 0, 100, State.titu.Vb_mL, 'Volume de base adicionado Vb (mL)', 'mL', v=>State.titu.Vb_mL=v).setStep(0.05); sVb.disabled = true;
+  const btnZerar = new Button(70, 380, 140, 40, 'Zerar', ()=>{ State.titu.Vb_mL=0; State.titu.eqReached=false; State.titu.drops=[]; State.titu.ripples=[]; });
+    const btnSegurar = new HoldButton(390, 380, 240, 40, 'Abrir torneira (segurar)', ()=>{ State.titu.holding = true; });
+
+  function spawnDrops(n){
+    const tipX = (State.titu && State.titu.tipX) ? State.titu.tipX : 800;
+    const tipY = (State.titu && State.titu.tipY) ? State.titu.tipY : 416;
+    for(let i=0;i<n;i++){
+      State.titu.drops.push({x:tipX + rnd(-2,2), y:tipY, vy: rnd(140,170), r:rnd(2,3), t:0});
+    }
+  }
+  function drawRipples(){ ctx.save(); for(let i=State.titu.ripples.length-1;i>=0;i--){ const rp = State.titu.ripples[i]; rp.t += 0.02; const alpha = 0.35*(1-rp.t); const rad = lerp(2, 18, rp.t); ctx.beginPath(); ctx.arc(rp.x, rp.y, rad, 0, TAU); ctx.strokeStyle = `rgba(255,255,255,${alpha}
+  function drawStream(x, y1, y2){
+    // pequeno filete de líquido entre a ponta da bureta e o nível do béquer
+    const startY = y1;
+    const endY = Math.max(y1+20, y2-6);
+    ctx.save();
+    const grad = ctx.createLinearGradient(x, startY, x, endY);
+    grad.addColorStop(0, 'rgba(160,210,255,0.85)');
+    grad.addColorStop(1, 'rgba(120,180,240,0.35)');
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(x, startY);
+    ctx.lineTo(x, endY);
+    ctx.stroke();
+    ctx.restore();
+  }
+)`; ctx.lineWidth=1.5; ctx.stroke(); if(rp.t>=1) State.titu.ripples.splice(i,1);} ctx.restore(); }
+  function updateTitrationFlow(dt){
+    if(State.titu.holding){
+      if(State.titu.Vb_mL < 100){
+        const add = Math.min(State.titu.flowRate_mLps*dt, 100 - State.titu.Vb_mL);
+        State.titu.Vb_mL += add;
+        if(Math.random()<0.8) spawnDrops(1);
+      } else {
+        State.titu.holding = false;
       }
     }
+    if(!mouse.down) State.titu.holding = false;
   }
-  const damping=0.985;
-  D.test.vx=(D.test.vx+fx*dt)*damping; D.test.vy=(D.test.vy+fy*dt)*damping;
-  D.test.x=clamp(D.test.x+D.test.vx,12,ARENA_W-12); D.test.y=clamp(D.test.y+D.test.vy,12,ARENA_H-12);
-  if(D.test.x<=12||D.test.x>=ARENA_W-12) D.test.vx*=-0.5;
-  if(D.test.y<=12||D.test.y>=ARENA_H-12) D.test.vy*=-0.5;
-}
-function D_draw(){
-  const ctx=D.ctx; ctx.clearRect(0,0,ARENA_W,ARENA_H);
-  ctx.save(); ctx.globalAlpha=0.2; ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1;
-  for(let x=0;x<=ARENA_W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,ARENA_H); ctx.stroke(); }
-  for(let y=0;y<=ARENA_H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(ARENA_W,y); ctx.stroke(); }
-  ctx.restore();
-  ctx.fillStyle=COLORS.target; ctx.beginPath(); ctx.arc(D.target.x,D.target.y,14,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#111"; ctx.font="700 12px system-ui"; ctx.textAlign="center"; ctx.fillText("★",D.target.x,D.target.y+4);
-  if(D.showForce){
-    let fx=0,fy=0; for(const c of D.charges){ const F=forceBetween(D.test.q,D.test.x,D.test.y,c.q,c.x,c.y); fx+=F.fx; fy+=F.fy; }
-    if(D.cfg.induction){ for(const n of D.neutrals){ if(n.qind>1e-5){ const dx=(n.d/2)*n.dipUx, dy=(n.d/2)*n.dipUy; const plus={x:n.x+dx,y:n.y+dy,q:+n.qind}, minus={x:n.x-dx,y:n.y-dy,q:-n.qind}; const Fp=forceBetween(D.test.q,D.test.x,D.test.y,plus.q,plus.x,plus.y); const Fm=forceBetween(D.test.q,D.test.x,D.test.y,minus.q,minus.x,minus.y); fx+=DIP_FACTOR*(Fp.fx+Fm.fx); fy+=DIP_FACTOR*(Fp.fy+Fm.fy); } } }
-    ctx.strokeStyle=COLORS.force; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(D.test.x,D.test.y); ctx.lineTo(D.test.x+clamp(fx*6,-100,100), D.test.y+clamp(fy*6,-100,100)); ctx.stroke();
-  }
-  // obstáculos polarizáveis
-  for(const n of D.neutrals){
-    ctx.fillStyle=COLORS.neutral; ctx.strokeStyle="#fff"; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    if(D.cfg.induction && n.qind>1e-5){
-      const ux=n.dipUx, uy=n.dipUy; const dx=(n.d/2)*ux, dy=(n.d/2)*uy; const plus={x:n.x+dx,y:n.y+dy}, minus={x:n.x-dx,y:n.y-dy};
-      ctx.strokeStyle="#111827"; ctx.globalAlpha=0.6; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(minus.x,minus.y); ctx.lineTo(plus.x,plus.y); ctx.stroke(); ctx.globalAlpha=1;
-      ctx.fillStyle=COLORS.pos; ctx.strokeStyle="#fff"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(plus.x,plus.y,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle="#fff"; ctx.font="800 10px system-ui"; ctx.textAlign="center"; ctx.fillText("+", plus.x, plus.y+3);
-      ctx.fillStyle=COLORS.neg; ctx.strokeStyle="#fff"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(minus.x,minus.y,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle="#fff"; ctx.font="800 10px system-ui"; ctx.textAlign="center"; ctx.fillText("−", minus.x, minus.y+3);
+  function updateTitrationAnim(dt, beakerRect, Vtot_L){
+    if(State.titu.Vb_mL > State.titu.lastVb_mL + 0.02){ const inc = State.titu.Vb_mL - State.titu.lastVb_mL; const n = Math.min(8, Math.max(1, Math.floor(inc/0.05))); spawnDrops(n); }
+    State.titu.lastVb_mL = State.titu.Vb_mL;
+    for(let i=State.titu.drops.length-1;i>=0;i--){
+      const d = State.titu.drops[i]; d.t += dt; d.y += d.vy*dt;
+      const surfaceY = beakerRect.y + beakerRect.h - clamp(Vtot_L/State.titu.beakerCapacity_L,0,1)*beakerRect.h;
+      if(d.y >= surfaceY-4 && d.y <= surfaceY+12){ State.titu.ripples.push({x: beakerRect.x + beakerRect.w/2, y: surfaceY-2, t:0}); State.titu.drops.splice(i,1); }
+      if(d.y > beakerRect.y+beakerRect.h+40){ State.titu.drops.splice(i,1); }
     }
   }
-  for(const c of D.charges){ ctx.fillStyle = c.q>0?COLORS.pos:COLORS.neg; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(c.x,c.y,16,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle="#fff"; ctx.font="800 16px system-ui"; ctx.textAlign="center"; ctx.fillText(c.q>0?"+":"−", c.x, c.y+5); }
-  ctx.fillStyle="#10b981"; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(D.test.x,D.test.y,12,0,Math.PI*2); ctx.fill(); ctx.stroke();
-  ctx.fillStyle="#083344"; ctx.font="800 12px system-ui"; ctx.textAlign="center"; ctx.fillText("q", D.test.x, D.test.y+4);
-  ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1; ctx.strokeRect(4,4,ARENA_W-8,ARENA_H-8);
-}
-function D_tick(now){ if(!D.last) D.last=now; const dt=clamp((now-D.last)/1000,0,0.05); D.last=now; D_update(dt); D_draw(); requestAnimationFrame(D_tick); }
-function D_hitTest(x,y){ for(let i=D.charges.length-1;i>=0;i--){ const c=D.charges[i]; if(distance({x,y},c)<18) return {type:'charge',id:c.id}; } if(distance({x,y},D.test)<14) return {type:'test'}; return null; }
-function D_pointerDown(e){ const rect=D.canvas.getBoundingClientRect(); const x=(e.clientX-rect.left)/rect.width*ARENA_W; const y=(e.clientY-rect.top)/rect.height*ARENA_H; const pick=D_hitTest(x,y); if(pick && pick.type==='charge'){ D.drag=pick; } } // q não arrasta
-function D_pointerMove(e){ if(!D.drag) return; const rect=D.canvas.getBoundingClientRect(); const x=clamp((e.clientX-rect.left)/rect.width*ARENA_W,0,ARENA_W); const y=clamp((e.clientY-rect.top)/rect.height*ARENA_H,0,ARENA_H); if(D.drag.type==='charge'){ const c=D.charges.find(c=>c.id===D.drag.id); if(c){ c.x=clamp(x,16,ARENA_W-16); c.y=clamp(y,16,ARENA_H-16); } } }
-function D_pointerUp(){ D.drag=null; }
+  function drawTitulacao(dt){
+    text('Titulação do ácido clorogênico (café) com NaOH — modelo 1:1', 32, 128, 18, COLORS.accent2);
+    sVb.val = State.titu.Vb_mL; sVa.draw(); sMb.draw(); sVb.draw(); btnZerar.draw(); btnSegurar.draw();
+    text('Indicador', 70, 440, 14, COLORS.cream, 'left');
+    togInd.index = State.titu.ind; togInd.draw();
+    const b = {x:680, y:260, w:220, h:280};
+    // Update drop tip based on current beaker/burette layout
+        updateTitrationFlow(dt);
+    const {Va_mL, Mb, Vb_mL, Ca_true, beakerCapacity_L} = State.titu; const Va=Va_mL/1000; const Vb=Vb_mL/1000;
+    const Ca_calc = Va>0? (Mb*Vb)/Va : 0; const Veq_mL = (Ca_true*Va)/Mb * 1000; const near = Math.abs(Vb_mL - Veq_mL) < 0.4;
+    if(near) State.titu.eqReached = true; else if(Vb_mL < Veq_mL) State.titu.eqReached = false;
 
-// ======= Quiz (3 níveis) =======
-const Q = { level:1, round:0, score:0, total:8, data:{} };
-const qLevelLabel = document.getElementById('quiz-level-label');
-const qNum = document.getElementById('qNum');
-const qTotal = document.getElementById('qTotal');
-const qScore = document.getElementById('qScore');
-qTotal.textContent = Q.total;
-function Q_setLevel(n){ Q.level = n; Q.round = 0; Q.score = 0; qLevelLabel.textContent = 'Nível ' + n; qNum.textContent = 1; qScore.textContent = 0; document.getElementById('quiz-L1').classList.toggle('hidden', n!==1); document.getElementById('quiz-L2').classList.toggle('hidden', n!==2); document.getElementById('quiz-L3').classList.toggle('hidden', n!==3); if(n===3){ Q_initCanvas(); } Q_next(); }
-function Q_next(){ if(Q.round>=Q.total){ alert(`Fim do quiz! Você acertou ${Q.score} de ${Q.total}.`); Q.round=0; Q.score=0; } qNum.textContent = Q.round+1; qScore.textContent = Q.score;
-  if(Q.level===1){ const a=Math.random()<0.5?+1:-1; const b=Math.random()<0.5?+1:-1; Q.data = {a,b,correct: (a===b?"Repele":"Atrai")}; document.getElementById('q1A').textContent = a>0?"+":"−"; document.getElementById('q1B').textContent = b>0?"+":"−"; }
-  else if(Q.level===2){ const t=Math.random()<0.5?+1:-1; const c=Math.random()<0.5?+1:-1; const near = Math.random()<0.5; const type = (t===c) ? "Repele" : "Atrai"; const mag = near ? "forte" : "fraca"; Q.data = {t,c,near,correct:`${type} ${mag}`}; const sym = (x)=> x>0?"+":"−"; document.getElementById('q2Prompt').textContent = `Uma partícula q${sym(t)} está ${near?"PERTO":"LONGE"} de uma carga ${sym(c)}. O que acontece?`; }
-  else if(Q.level===3){ const positions = ["left","right","up","down"]; function posCoord(p){ const cx=120, cy=120, off=70; if(p==="left") return {x:cx-off,y:cy}; if(p==="right") return {x:cx+off,y:cy}; if(p==="up") return {x:cx,y:cy-off}; return {x:cx,y:cy+off}; }
-    const p1 = positions[Math.floor(Math.random()*positions.length)]; let p2 = positions[Math.floor(Math.random()*positions.length)]; if(p2===p1){ p2 = positions[(positions.indexOf(p1)+2)%positions.length]; }
-    const s1 = Math.random()<0.5?+1:-1; const s2 = Math.random()<0.5?+1:-1; const tQ = +1; const c1 = {...posCoord(p1), q:s1}; const c2 = {...posCoord(p2), q:s2}; const cx=120, cy=120; function Ffrom(c){ const F=forceBetween(tQ,cx,cy,c.q,c.x,c.y); return F; } const F1=Ffrom(c1), F2=Ffrom(c2); const Fx=F1.fx+F2.fx, Fy=F1.fy+F2.fy; const ang=Math.atan2(Fy,Fx);
-    function quantize(a){ const dirs=[{d:"→",a:0},{d:"↗",a:Math.PI/4},{d:"↑",a:Math.PI/2},{d:"↖",a:3*Math.PI/4},{d:"←",a:Math.PI},{d:"↙",a:-3*Math.PI/4},{d:"↓",a:-Math.PI/2},{d:"↘",a:-Math.PI/4}]; let best="→", besterr=1e9; for(const it of dirs){ const err=Math.abs(Math.atan2(Math.sin(a-it.a), Math.cos(a-it.a))); if(err<besterr){ besterr=err; best=it.d; } } return best; }
-    const correct = quantize(ang); Q.data = {c1,c2,correct}; Q_drawCanvas(); } }
-document.querySelectorAll('#quiz-L1 .answer-btn').forEach(btn=>btn.onclick=()=>Q_answer(btn.dataset.choice));
-document.querySelectorAll('#quiz-L2 .answer-btn').forEach(btn=>btn.onclick=()=>Q_answer(btn.dataset.choice));
-document.querySelectorAll('#quiz-L3 .answer-btn').forEach(btn=>btn.onclick=()=>Q_answer(btn.dataset.choice));
-document.querySelectorAll('[data-qlevel]').forEach(btn=>btn.onclick=()=>Q_setLevel(parseInt(btn.dataset.qlevel)));
-document.getElementById('btn-q-reset').onclick=()=>Q_setLevel(Q.level);
-function Q_answer(choice){ if(choice===Q.data.correct) Q.score++; Q.round++; Q_next(); }
-let QCV=null, QCTX=null; function Q_initCanvas(){ QCV=document.getElementById('quiz-canvas'); QCTX=QCV.getContext('2d'); }
-function Q_drawCanvas(){ const ctx=QCTX; const w=QCV.width, h=QCV.height; ctx.clearRect(0,0,w,h); ctx.save(); ctx.globalAlpha=0.2; ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1; for(let x=0;x<=w;x+=30){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); } for(let y=0;y<=h;y+=30){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); } ctx.restore(); const cx=w/2, cy=h/2; ctx.fillStyle="#10b981"; ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle="#083344"; ctx.font="800 11px system-ui"; ctx.textAlign="center"; ctx.fillText("q+", cx, cy+4);
-  function drawC(c){ ctx.fillStyle = c.q>0?COLORS.pos:COLORS.neg; ctx.strokeStyle="#fff"; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(c.x,c.y,12,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle="#fff"; ctx.font="800 14px system-ui"; ctx.textAlign="center"; ctx.fillText(c.q>0?"+":"−", c.x, c.y+4); }
-  drawC(Q.data.c1); drawC(Q.data.c2); }
+    const levelRemaining = 1 - clamp(Vb_mL/100, 0, 1);
+    const buretteX = b.x + b.w/2;
+    const buretteY = 80;
+    const buretteH = 280; // bureta mais curta e mais alta na página
+    drawBurette(buretteX, buretteY, buretteH, levelRemaining);
+    // interação direta na bureta: segurar o clique mantém a torneira aberta
+    const bxHit = buretteX - 18, byHit = buretteY, bwHit = 36, bhHit = buretteH + 18;
+    if(mouse.down && hit(bxHit, byHit, bwHit, bhHit)){ State.titu.holding = true; }
 
-// ======= UI wiring =======
-function showTab(name){ for(const id of ["aprender","desafios","quiz"]){ document.getElementById("view-"+id).classList.toggle("hidden", id!==name); document.getElementById("tab-"+id).classList.toggle("active", id===name); } }
-function initAprender(){
-  A.canvas=document.getElementById('canvas-aprender'); A.ctx=A.canvas.getContext('2d'); A_reset(); A_draw(); requestAnimationFrame(A_tick);
-  A.canvas.addEventListener('pointerdown',A_pointerDown); window.addEventListener('pointermove',A_pointerMove); window.addEventListener('pointerup',A_pointerUp);
-  document.getElementById('btn-add-plus').onclick=()=>A_addCharge(+1); document.getElementById('btn-add-minus').onclick=()=>A_addCharge(-1); document.getElementById('btn-rem-charge').onclick=()=>A.charges.pop();
-  document.getElementById('btn-add-neutral').onclick=()=>{ const m=document.getElementById('matSel').value; A_addNeutral(m); }; document.getElementById('btn-rem-neutral').onclick=()=>A.neutrals.pop();
-  document.getElementById('chk-force').onchange=(e)=>A.showForce=e.target.checked; document.getElementById('chk-ind').onchange=(e)=>A.showInduction=e.target.checked;
-  document.getElementById('chk-dync').onchange=(e)=>A.dynamicCharges=e.target.checked; document.getElementById('chk-dipdip').onchange=(e)=>A.dipoleInteract=e.target.checked; document.getElementById('chk-fric').onchange=(e)=>A.frictionMode=e.target.checked;
-  document.getElementById('rng-speed').oninput=(e)=>A.speed=parseFloat(e.target.value); document.getElementById('rng-eth').oninput=(e)=>A.Ethreshold=parseFloat(e.target.value);
-  document.getElementById('btn-play').onclick=()=>{ A.playing=!A.playing; document.getElementById('btn-play').textContent=A.playing?'Pausar':'Iniciar'; };
-  document.getElementById('btn-reset-q').onclick=()=>{ A.test.x=140; A.test.y=ARENA_H/2; A.test.vx=0; A.test.vy=0; };
-  document.getElementById('btn-swap-q').onclick=()=>{ A.test.q*=-1; };
-  document.getElementById('btn-reset').onclick=()=>A_reset();
+    // atualizar ponta da bureta para animação das gotas
+    State.titu.tipX = buretteX; State.titu.tipY = buretteY + buretteH + 16;
+
+    // Béquer (levemente menor)
+    // 'b' já definido acima com tamanho reduzido
+    const Vtot_L = (Va_mL + Vb_mL)/1000;
+    const prog = clamp(Vb_mL/(Veq_mL||1e-6), 0, 1.4);
+    const pHmix = calcPH_Titration(Va_mL, Vb_mL, Mb, Ca_true, State.titu.pKa);
+    const indCol = indicatorRGBA(pHmix, State.titu.ind, 0.75);
+    drawBeakerTransparent(b.x, b.y, b.w, b.h, clamp(Vtot_L/beakerCapacity_L,0,1), indCol, perf*0.05);
+    
+    // Desenhar filete contínuo enquanto a torneira estiver aberta
+    const surfaceY = b.y + b.h - clamp(Vtot_L/beakerCapacity_L,0,1)*b.h;
+    if(State.titu.holding && typeof drawStream==='function'){ drawStream(State.titu.tipX, State.titu.tipY-4, surfaceY); }
+if(prog>0.95 && prog<1.05 && !State.titu.eqReached){
+      ctx.save(); ctx.globalAlpha = 0.10 + 0.10*Math.sin(perf*0.4); drawRoundedRect(b.x+6, b.y+6, b.w-12, b.h-12, 16); ctx.fillStyle=COLORS.pink; ctx.fill(); ctx.restore();
+    }
+    ctx.save(); for(const d of State.titu.drops){ ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, TAU); ctx.fillStyle='#9fd3ff'; ctx.fill(); } ctx.restore();
+    drawRipples();
+    updateTitrationAnim(dt, b, Vtot_L);
+
+    const px= b.x + b.w + 20, py= b.y, pw= W - px - 20, ph= 320;
+    shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
+    text('Resultados da Titulação', px+14, py+24, 18, COLORS.accent2);
+    let yy = py+54;
+    yy += wrapText(`Dados: Va=${roundSmart(Va)} L (${Va_mL} mL), Mb=${roundSmart(Mb,3)} mol/L, Vb=${roundSmart(Vb)} L (${roundSmart(Vb_mL)} mL)`, px+14, yy, pw-28, 20, 15, COLORS.cream);
+    yy += wrapText('Equivalência: Ca·Va = Cb·Vb  →  Ca = (Mb·Vb)/Va', px+14, yy, pw-28, 20);
+    yy += wrapText(`Cálculo: Ca = (${roundSmart(Mb,3)} · ${roundSmart(Vb)}) / ${roundSmart(Va)} = ${roundSmart(Ca_calc,4)} mol/L`, px+14, yy, pw-28, 20);
+    yy += wrapText(`Ponto de viragem esperado em ≈ ${roundSmart(Veq_mL,2)} mL`, px+14, yy, pw-28, 20);
+    yy += wrapText(`pH estimado da mistura ≈ ${roundSmart(pHmix,2)}  •  Indicador: ${['Fenolftaleína','Azul de bromotimol','Alaranjado de metila'][State.titu.ind]}`, px+14, yy, pw-28, 20);
+    yy += wrapText('Nota didática: a amostra do café está transparente para facilitar a visualização da mudança de cor do indicador.', px+14, yy+6, pw-28, 18, 13, '#caa38b');
+    }
+
+  // ---------- Quiz
+  const btnNewQuiz = new Button(70, 170, 200, 44, 'Novo desafio', ()=>{ State.quiz.q = genQuiz(); State.quiz.shownFeedback=0; });
+  
+
+class NumInput{
+  constructor(x,y,w,label){ Object.assign(this,{x,y,w,label}); this.val=''; }
+  draw(){
+    text(this.label, this.x, this.y-8, 15, COLORS.cream, 'left');
+    shadow(()=>{ pill(this.x, this.y, this.w, 40, '#3d2b27'); }, {blur:16,y:6,color:'rgba(0,0,0,.35)'});
+    const shown = (this.val!=='' ? this.val : 'digite aqui...');
+    text(shown, this.x+12, this.y+25, 16, COLORS.accent2, 'left', 'middle');
+    if(mouse.justDown && hit(this.x, this.y, this.w, 40)){
+      const v = prompt('Sua resposta (número, use ponto para decimais):', this.val);
+      if(v!==null) this.val = v;
+    }
+  }
 }
-function initDesafios(){
-  D.canvas=document.getElementById('canvas-desafios'); D.ctx=D.canvas.getContext('2d'); D_setLevel(1); D_draw(); requestAnimationFrame(D_tick);
-  D.canvas.addEventListener('pointerdown',D_pointerDown); window.addEventListener('pointermove',D_pointerMove); window.addEventListener('pointerup',D_pointerUp);
-  document.querySelectorAll('#view-desafios [data-lvl]').forEach(btn=>btn.onclick=()=>D_setLevel(parseInt(btn.dataset.lvl)));
-  document.getElementById('btn-d-add-plus').onclick=()=>D_addCharge(+1);
-  document.getElementById('btn-d-add-minus').onclick=()=>D_addCharge(-1);
-  document.getElementById('btn-d-rem').onclick=()=>D.charges.pop();
-  document.getElementById('chk-d-force').onchange=(e)=>D.showForce=e.target.checked;
-  document.getElementById('btn-d-play').onclick=()=>{ D.playing=!D.playing; document.getElementById('btn-d-play').textContent=D.playing?'Pausar':'Iniciar'; };
-  document.getElementById('btn-d-resetq').onclick=()=>{ D.test.x=D.cfg.testStart.x; D.test.y=D.cfg.testStart.y; D.test.vx=0; D.test.vy=0; };
-  document.getElementById('btn-d-reset').onclick=()=>D_resetToConfig();
-}
-function initQuiz(){ Q_setLevel(1); }
-document.getElementById('tab-aprender').onclick=()=>showTab('aprender');
-document.getElementById('tab-desafios').onclick=()=>showTab('desafios');
-document.getElementById('tab-quiz').onclick=()=>showTab('quiz');
-initAprender(); initDesafios(); initQuiz();
+const quizInput = new NumInput(70, 260, 220, 'Sua resposta (número)');
+  const btnCheck = new Button(70, 320, 160, 44, 'Conferir', ()=>{ checkQuiz(); });
+  function rand(a,b){ return a + Math.random()*(b-a); }
+  function genQuiz(){ const type=Math.floor(Math.random()*3); if(type===0){ const V=Math.round(rand(150,600)); const m=Math.round(rand(5,40)); return {type, V, m, MM:342.3, input:'', text:`Você adicionou ${m} g de açúcar em ${V} mL de café. Calcule C (g/L) e/ou M (mol/L).`}; } if(type===1){ const C1=Math.round(rand(40,160)); const C2=Math.round(rand(10, C1-5)); const V1=Math.round(rand(100,400)); return {type, C1, C2, V1, input:'', text:`Diluição: C1=${C1} g/L, V1=${V1} mL → C2=${C2} g/L. Quanto fica V2 (L)?`}; } const Va=[20,25,30,40,50][Math.floor(Math.random()*5)]; const Mb=[0.05,0.1,0.15,0.2][Math.floor(Math.random()*4)]; const Ca=+(rand(0.05,0.15).toFixed(3)); const Vb_mL=(Ca*(Va/1000))/Mb*1000; return {type:2, Va, Mb, Vb_mL, Ca, input:'', text:`Titulação: Va=${Va} mL, Mb=${Mb} mol/L. Na equivalência, Vb≈${roundSmart(Vb_mL,2)} mL. Calcule Ca (mol/L).`}; }
+  function ensureQuiz(){ if(!State.quiz.q) State.quiz.q = genQuiz(); }
+  function checkQuiz(){ const q=State.quiz.q; if(!q) return; const val=parseFloat((quizInput.val||'').replace(',','.')); let ok=false, correct=0; if(q.type===0){ const V=q.V/1000; const C=q.m/V; const M=(q.m/342.3)/V; correct=C; ok = (isFinite(val) && (Math.abs(val-C)/C < 0.03 || Math.abs(val-M)/M < 0.03)); } else if(q.type===1){ const V2=(q.C1*(q.V1/1000))/q.C2; correct=V2; ok = isFinite(val) && Math.abs(val-V2)/V2 < 0.03; } else { const Ca=(q.Mb*(q.Vb_mL/1000))/(q.Va/1000); correct=Ca; ok = isFinite(val) && Math.abs(val-Ca)/Ca < 0.03; } State.quiz.shownFeedback = ok?1:2; if(ok) State.quiz.score++; State.quiz.correct=correct; }
+  function drawQuiz(){ btnNewQuiz.draw(); ensureQuiz(); const q=State.quiz.q; const px=70, py=230, pw=820, ph=240; shadow(()=>{ drawRoundedRect(px,py-120,pw,100,16); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:20,y:8,color:'rgba(0,0,0,.45)'}); text('Desafio', px+20, py-90, 18, COLORS.accent2); text(q.text, px+20, py-52, 16, COLORS.cream); quizInput.draw(); btnCheck.draw(); if(State.quiz.shownFeedback===1){ text('✔ Correto! +1 ponto ☕', px+20, py+60, 18, COLORS.green);} else if(State.quiz.shownFeedback===2){ text(`✖ Referência ≈ ${roundSmart(State.quiz.correct,4)}`, px+20, py+60, 18, COLORS.red);} shadow(()=>{ drawRoundedRect(W-300, 150, 220, 90, 18); ctx.fillStyle='#2f231f'; ctx.fill(); },{blur:18,y:8,color:'rgba(0,0,0,.4)'}); text('Pontuação', W-190, 180, 16, COLORS.cream, 'center'); text(`${State.quiz.score} ☕`, W-190, 214, 28, COLORS.accent2, 'center'); }
+
+  function drawFooter(){ }
+
+  let perf=0, last=performance.now();
+  function frame(now){
+    const dt = Math.min(0.05, (now-last)/1000); last=now; perf += dt*60;
+    ctx.clearRect(0,0,W,H);
+    drawCoffeeBackground(); drawNav();
+    const titles=['Concentração','Diluição (C1·V1=C2·V2)','Titulação (ácido clorogênico)','Quiz (Desafios)'];
+    text(titles[State.tab], 32, 98, 26, COLORS.accent2, 'left','alphabetic','800');
+    if(State.tab===0) drawConcentracao(dt);
+    if(State.tab===1) drawDilution(dt);
+    if(State.tab===2) drawTitulacao(dt);
+    if(State.tab===3) drawQuiz();
+    drawFooter();
+    mouse.justUp=false; mouse.justDown=false;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
 </script>
 </body>
 </html>
