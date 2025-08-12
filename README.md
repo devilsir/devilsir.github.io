@@ -63,4 +63,4 @@ Coleção de simulações interativas de **Química** , **Física** e **Biologia
 **Lucas Xavier Nardelli** — 2025
 
 ## 📜 Licença
-Este projeto está sob a **MIT License**. Veja o arquivo `LICENSE` (opcional).
+Este projeto está sob a **MIT License**. Veja o arquivo  [LICENSE](https://github.com/devilsir/devilsir.github.io/blob/main/LICENSE).
