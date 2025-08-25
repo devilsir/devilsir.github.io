@@ -1,5 +1,6 @@
 # Hub de Simulações 
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/c200086f-9025-4645-bf0e-0b084fa122b8" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/02c69a75-8ff2-48c3-809c-c76364e8a17e" />
+
 
 
 Coleção de simulações interativas de **Química** , **Física** e **Biologia** reunidas em **um único arquivo HTML**, com miniaturas clicáveis. 
