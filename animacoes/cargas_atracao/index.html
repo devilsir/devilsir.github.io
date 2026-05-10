@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Cargas ⚡ — Interações, Indução e Atrito</title>
+
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<div class="container">
+<div class="header">
+<div>
+<div style="font-weight:900;font-size:24px">Cargas ⚡ — Interações, Indução e Atrito</div>
+<div class="small">Arraste cargas (+/−) e neutros; veja indução, dipolos, eletrização por atrito e desafios.</div>
+</div>
+<div class="pills">
+<div class="pill">Atividade interativa</div>
+<div class="pill">Didático</div>
+</div>
+</div>
+<div class="tabs">
+<button class="tabbtn active" id="tab-aprender">Aprender</button>
+<button class="tabbtn" id="tab-desafios">Desafios</button>
+<button class="tabbtn" id="tab-quiz">Quiz</button>
+</div>
+
+<section id="view-aprender">
+<div class="grid">
+<div class="panel" style="padding:0">
+<canvas height="540" id="canvas-aprender" width="900"></canvas>
+</div>
+<div class="panel controls">
+<div class="row">
+<button class="btn" id="btn-add-plus">Adicionar +</button>
+<button class="btn" id="btn-add-minus">Adicionar −</button>
+<button class="btn" id="btn-rem-charge">Remover carga</button>
+</div>
+<div class="row">
+<select id="matSel">
+<option>Vidro</option><option>Pele</option><option>Seda</option><option>Madeira</option>
+<option>Lã</option><option>Âmbar</option><option>Poliestireno</option><option>Teflon</option>
+</select>
+<button class="btn" id="btn-add-neutral">Adicionar polarizável</button>
+<button class="btn" id="btn-rem-neutral">Remover polarizável</button>
+</div>
+<div class="row">
+<label><input checked="" id="chk-force" type="checkbox"/> Mostrar seta da força (q)</label>
+<label><input checked="" id="chk-ind" type="checkbox"/> Polarização por indução</label>
+</div>
+<div class="row">
+<label><input checked="" id="chk-dync" type="checkbox"/> Cargas dinâmicas</label>
+<label><input checked="" id="chk-dipdip" type="checkbox"/> Dipolos interagem entre si</label>
+<label><input checked="" id="chk-fric" type="checkbox"/> Modo atrito</label>
+</div>
+<label>Velocidade
+          <input id="rng-speed" max="2.5" min="0.2" step="0.1" type="range" value="1.0"/>
+</label>
+<label>Limiar de indução (E)
+          <input id="rng-eth" max="0.08" min="0.0" step="0.002" type="range" value="0.02"/>
+</label>
+<div class="row">
+<button class="btn" id="btn-play">Iniciar</button>
+<button class="btn" id="btn-reset-q">Reposicionar q</button>
+<button class="btn" id="btn-swap-q">Trocar sinal q</button>
+<button class="btn" id="btn-reset">Resetar</button>
+</div>
+<div class="small">Neutro só polariza quando o campo próximo passa do limiar. No modo atrito, dois neutros em contato trocam carga segundo a série triboelétrica.</div>
+</div>
+</div>
+</section>
+
+<section class="hidden" id="view-desafios">
+<div class="grid">
+<div class="panel" style="padding:0">
+<canvas height="540" id="canvas-desafios" width="900"></canvas>
+</div>
+<div class="panel controls">
+<div class="row">
+<div class="pill" id="pill-nivel">Nível: 1</div>
+<button class="btn" data-lvl="1">1</button>
+<button class="btn" data-lvl="2">2</button>
+<button class="btn" data-lvl="3">3</button>
+<button class="btn" data-lvl="4">4</button>
+<button class="btn" data-lvl="5">5</button>
+</div>
+<div class="row">
+<div class="pill">Máx cargas: <span id="d-max">1</span></div>
+<div class="pill">Sinais permitidos: <span id="d-sign">±</span></div>
+</div>
+<div class="row">
+<button class="btn" id="btn-d-add-plus">Adicionar +</button>
+<button class="btn" id="btn-d-add-minus">Adicionar −</button>
+<button class="btn" id="btn-d-rem">Remover carga</button>
+</div>
+<div class="hint" id="d-hint">Use 1 carga para empurrar/atrair q até a estrela.</div>
+<div class="row" style="margin-top:8px">
+<label><input checked="" id="chk-d-force" type="checkbox"/> Mostrar seta da força</label>
+</div>
+<div class="row">
+<button class="btn" id="btn-d-play">Iniciar</button>
+<button class="btn" id="btn-d-resetq">Reposicionar q</button>
+<button class="btn" id="btn-d-reset">Resetar nível</button>
+</div>
+<div class="small">Neste modo você NÃO pode arrastar a partícula q — apenas as cargas. Alguns níveis têm obstáculos **polarizáveis** (indução ligada).</div>
+</div>
+</div>
+</section>
+
+<section class="hidden" id="view-quiz">
+<div class="panel center">
+<div class="badge" style="margin-bottom:10px">
+<span style="font-weight:700">Quiz</span>
+<span>•</span>
+<span id="quiz-level-label">Nível 1</span>
+<span>•</span>
+<span>Questão <span id="qNum">1</span>/<span id="qTotal">8</span></span>
+<span>•</span>
+<span>Pontos: <span id="qScore">0</span></span>
+</div>
+<div style="margin-bottom:10px">
+<button class="btn" data-qlevel="1">Nível 1</button>
+<button class="btn" data-qlevel="2">Nível 2</button>
+<button class="btn" data-qlevel="3">Nível 3</button>
+</div>
+<div id="quiz-L1">
+<div style="font-weight:700;margin-bottom:8px">Sinais: Atrai ou Repele?</div>
+<div style="display:flex;gap:12px;justify-content:center;align-items:center;margin:12px 0">
+<div class="pill" id="q1A"></div>
+<span style="color:#9ca3af">×</span>
+<div class="pill" id="q1B"></div>
+</div>
+<div class="answer-row">
+<button class="answer-btn" data-choice="Atrai">Atrai</button>
+<button class="answer-btn" data-choice="Repele">Repele</button>
+</div>
+</div>
+<div class="hidden" id="quiz-L2">
+<div style="font-weight:700;margin-bottom:8px">Sinais + Distância: tipo e intensidade</div>
+<div class="small" id="q2Prompt" style="margin-bottom:8px"></div>
+<div class="answer-row">
+<button class="answer-btn" data-choice="Atrai forte">Atrai forte</button>
+<button class="answer-btn" data-choice="Atrai fraca">Atrai fraca</button>
+<button class="answer-btn" data-choice="Repele forte">Repele forte</button>
+<button class="answer-btn" data-choice="Repele fraca">Repele fraca</button>
+</div>
+</div>
+<div class="hidden" id="quiz-L3">
+<div style="font-weight:700;margin-bottom:8px">Superposição: direção da força resultante em q</div>
+<canvas height="240" id="quiz-canvas" style="border-radius:12px;background:linear-gradient(#0f172a,#0b1324);border:1px solid rgba(255,255,255,0.12)" width="240"></canvas>
+<div class="answer-row" style="max-width:420px;margin:10px auto 0">
+<button class="answer-btn" data-choice="↑">↑</button>
+<button class="answer-btn" data-choice="↗">↗</button>
+<button class="answer-btn" data-choice="→">→</button>
+<button class="answer-btn" data-choice="↘">↘</button>
+<button class="answer-btn" data-choice="↓">↓</button>
+<button class="answer-btn" data-choice="↙">↙</button>
+<button class="answer-btn" data-choice="←">←</button>
+<button class="answer-btn" data-choice="↖">↖</button>
+</div>
+</div>
+<div style="margin-top:12px">
+<button class="btn" id="btn-q-reset">Reiniciar quiz</button>
+</div>
+</div>
+</section>
+<div class="small center" style="margin-top:16px">Modelo didático com física simplificada. Ideal para visualizar atração/repulsão, indução, dipolo-dipolo e eletrização por atrito.</div>
+</div>
+
+<script src="script.js"></script></body>
+</html>

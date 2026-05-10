@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>RPG Química - Raio Atômico</title>
+
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<div class="hud" id="hud">
+<span class="badge">Missões: <span id="done">0</span>/<span id="total">0</span></span>
+<span class="badge">Pressione <span class="kbd">H</span> teoria</span>
+<span class="badge">Interaja <span class="kbd">E</span></span>
+<span class="badge btn" id="muteBtn">🔊 FX</span>
+<span class="badge btn" id="fsBtn">⤢ Tela Cheia</span>
+<span class="badge btn" id="testBtn">🧪 Testes</span>
+</div>
+<div id="wrap"><canvas height="540" id="game" width="960"></canvas></div>
+
+<div class="panel" id="ui">
+<div class="card" id="uicard">
+<div id="uicontent"></div>
+<div class="foot">
+<div class="btn" id="closeBtn">Fechar (Esc)</div>
+</div>
+</div>
+</div>
+
+
+<script src="script.js"></script></body>
+</html>

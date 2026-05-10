@@ -1,0 +1,46 @@
+:root{
+    --bg:#0e0f1a; --panel:#1a1d2b; --panel2:#101321; --ink:#e7eaf6;
+    --accent:#6cf; --good:#76e39f; --bad:#ff6b6b; --warn:#ffd66b;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family: monospace;}
+  #wrap{display:flex;justify-content:center;align-items:center;height:100%;}
+  canvas{image-rendering: pixelated; image-rendering: crisp-edges; outline:1px solid #334; background:#0a0b12;}
+  .hud{
+    position:fixed; left:50%; transform:translateX(-50%); top:10px;
+    display:flex; gap:8px; align-items:center; font-size:14px;
+    background:rgba(16,19,33,.7); padding:6px 10px; border:1px solid #2a2f49; border-radius:6px;
+    backdrop-filter: blur(3px);
+  }
+  .badge{padding:2px 6px; border:1px solid #2a2f49; background:#0f1222; border-radius:4px}
+  .star{color:var(--warn)}
+  .btn{
+    display:inline-block; padding:6px 10px; border:1px solid #2a2f49; border-radius:6px;
+    background: linear-gradient(#191d31,#101321); color:var(--ink); cursor:pointer; user-select:none
+  }
+  .panel{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5);
+  }
+  .panel.show{display:flex;}
+  .card{
+    width:min(1000px,92vw); max-height:86vh; overflow:auto;
+    background:var(--panel); border:2px solid #2a2f49; border-radius:10px; padding:14px 16px; box-shadow:0 8px 40px rgba(0,0,0,.6)
+  }
+  h1,h2,h3{margin:6px 0 8px 0}
+  .sep{height:1px;background:#2a2f49;margin:10px 0}
+  .choices{display:grid; gap:8px; margin-top:8px}
+  .choice{
+    padding:10px; border:1px dashed #3a3f59; border-radius:8px; background:var(--panel2); cursor:pointer
+  }
+  .choice:hover{border-style:solid}
+  .ok{border-color:#2b5; background:#0f2;}
+  .no{border-color:#b44; background:#200;}
+  .foot{display:flex; gap:8px; justify-content:flex-end; margin-top:10px}
+  .pill{display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #2a2f49; background:#0f1222}
+  .theory li{margin-bottom:6px}
+  .cert{ text-align:center; padding:12px; border:2px dashed var(--good); border-radius:10px; background:#04170c }
+  .kbd{padding:1px 6px;border:1px solid #3a3f59;border-bottom-width:3px;border-radius:4px;background:#0d1020}
+  .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .col{display:flex; flex-direction:column; gap:8px}
+  input[type=range]{width:220px}
+  .small{font-size:12px;color:#9fb}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px}
