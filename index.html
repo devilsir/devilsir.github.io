@@ -6,6 +6,61 @@
 <title>Simulações Interativas</title>
 <meta name="description" content="Atividades interativas de Química e Física para estudo e prática.">
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+.toolbar .search {
+  gap: 0;
+}
+
+#gallery img,
+#gallery svg,
+#gallery picture,
+#gallery figure,
+#gallery [class*="icon"],
+#gallery [class*="icone"],
+#gallery [class*="thumb"],
+#gallery [class*="image"],
+#gallery [class*="imagem"],
+#gallery [class*="avatar"],
+#gallery [class*="media"],
+#gallery [class*="visual"],
+#gallery [aria-hidden="true"] {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  flex: 0 0 0 !important;
+  overflow: hidden !important;
+}
+
+#gallery,
+#gallery * {
+  background-image: none;
+}
+
+#gallery article,
+#gallery a,
+#gallery button,
+#gallery .card,
+#gallery [class*="card"],
+#gallery [class*="item"] {
+  gap: .45rem !important;
+}
+
+#gallery article > *,
+#gallery a > *,
+#gallery button > *,
+#gallery .card > *,
+#gallery [class*="card"] > *,
+#gallery [class*="item"] > * {
+  margin-left: 0 !important;
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -19,7 +74,6 @@
 </header>
 <section class="toolbar" aria-label="Busca de atividades">
 <label class="search">
-<span>🔎</span>
 <input id="q" type="search" placeholder="Buscar atividade">
 </label>
 </section>
