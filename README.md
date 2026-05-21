@@ -3,11 +3,6 @@ https://github.com/quimicavisualufv/Quimica-Visual
 # Hub de Simulações 
 <img width="1439" height="899" alt="image" src="https://github.com/user-attachments/assets/4f040755-2f4a-4b16-9aef-8f4c4541e577" />
 
-
-
-
-Coleção de simulações interativas de **Química** , **Física** e **Biologia** reunidas em **um único arquivo HTML**, com miniaturas clicáveis. 
-
 ## ✨ Objetivos
 - Facilitar o acesso a simulações para **aulas, apresentações e estudos**.
 - Reunir diferentes experiências em um **hub simples, leve e responsivo**.
