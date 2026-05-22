@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="color-scheme" content="dark light">
+<title>Toin HD Widget</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent!important}
+body{touch-action:none}
+#app{position:fixed;inset:0;background:transparent!important}
+canvas{display:block;width:100%!important;height:100%!important;background:transparent!important}
+#loader,#error{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;font:14px/1.35 Arial,sans-serif;color:white;background:transparent;pointer-events:none}
+#error{display:none;color:white}
+#badge{position:fixed;left:12px;top:10px;z-index:5;padding:7px 11px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);font:12px/1.2 Arial,sans-serif;color:white;letter-spacing:.02em;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="loader">Carregando modelo HD…</div>
+<div id="error">Não consegui carregar o modelo 3D.</div>
+<div id="badge">HD 30MB · V20260522_GITHUB_TRANSPARENTE_01</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+var MODEL_URL='./toinHD_github_pages_HD_30MB_v20260522.glb?v=V20260522_GITHUB_TRANSPARENTE_01';
+var app=document.getElementById('app');
+var loaderEl=document.getElementById('loader');
+var errorEl=document.getElementById('error');
+var scene,camera,renderer,controls,root,modelReady=false,boxSize=new THREE.Vector3(1,1,1),clock=new THREE.Clock();
+function showError(){loaderEl.style.display='none';errorEl.style.display='flex'}
+function start(){
+if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){showError();return}
+scene=new THREE.Scene();
+camera=new THREE.PerspectiveCamera(28,1,.01,1000);
+renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,premultipliedAlpha:false,powerPreference:'high-performance'});
+renderer.setClearColor(0x000000,0);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,3));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.12;
+app.appendChild(renderer.domElement);
+controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.08;
+controls.enablePan=false;
+controls.enableZoom=false;
+controls.rotateSpeed=.55;
+controls.autoRotate=false;
+root=new THREE.Group();
+scene.add(root);
+var hemi=new THREE.HemisphereLight(0xffffff,0x1d1d1d,1.45);
+scene.add(hemi);
+var key=new THREE.DirectionalLight(0xffffff,2.1);
+key.position.set(4,5,6);
+scene.add(key);
+var fill=new THREE.DirectionalLight(0xffffff,.85);
+fill.position.set(-4,2,3);
+scene.add(fill);
+var rim=new THREE.DirectionalLight(0xffffff,1.25);
+rim.position.set(0,4,-5);
+scene.add(rim);
+new THREE.GLTFLoader().load(MODEL_URL,function(gltf){
+var obj=gltf.scene;
+obj.traverse(function(n){
+if(n.isMesh){
+n.frustumCulled=false;
+if(n.material){
+var mats=Array.isArray(n.material)?n.material:[n.material];
+mats.forEach(function(m){
+if(m.map){m.map.encoding=THREE.sRGBEncoding;m.map.anisotropy=renderer.capabilities.getMaxAnisotropy()}
+if(m.emissiveMap){m.emissiveMap.encoding=THREE.sRGBEncoding}
+m.needsUpdate=true;
+});
+}
+}
+});
+var box=new THREE.Box3().setFromObject(obj);
+var center=box.getCenter(new THREE.Vector3());
+boxSize=box.getSize(new THREE.Vector3());
+obj.position.sub(center);
+var maxDim=Math.max(boxSize.x,boxSize.y,boxSize.z);
+var scale=3.15/maxDim;
+obj.scale.setScalar(scale);
+root.add(obj);
+var newBox=new THREE.Box3().setFromObject(root);
+boxSize=newBox.getSize(new THREE.Vector3());
+var newCenter=newBox.getCenter(new THREE.Vector3());
+root.position.sub(newCenter);
+controls.target.set(0,0,0);
+modelReady=true;
+loaderEl.style.display='none';
+resize();
+},undefined,function(){showError()});
+window.addEventListener('resize',resize,{passive:true});
+resize();
+render();
+}
+function resize(){
+var w=Math.max(1,app.clientWidth||window.innerWidth||1);
+var h=Math.max(1,app.clientHeight||window.innerHeight||1);
+renderer.setSize(w,h,false);
+camera.aspect=w/h;
+camera.updateProjectionMatrix();
+if(modelReady){frameModel(w,h)}
+}
+function frameModel(w,h){
+var aspect=w/h;
+var fovV=camera.fov*Math.PI/180;
+var fovH=2*Math.atan(Math.tan(fovV/2)*aspect);
+var safeHeight=boxSize.y*1.04;
+var safeWidth=Math.max(boxSize.x,boxSize.z)*1.02;
+var dH=safeHeight/(2*Math.tan(fovV/2));
+var dW=safeWidth/(2*Math.tan(fovH/2));
+var d=Math.max(dH,dW);
+camera.position.set(0,boxSize.y*.02,d*1.03);
+camera.near=Math.max(.01,d/100);
+camera.far=d*100;
+camera.updateProjectionMatrix();
+}
+function render(){
+requestAnimationFrame(render);
+var delta=clock.getDelta();
+if(modelReady&&root&&!controls.dragging){root.rotation.y+=delta*.62}
+if(controls){controls.update()}
+if(renderer&&scene&&camera){renderer.render(scene,camera)}
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start)}else{start()}
+})();
+</script>
+</body>
+</html>
