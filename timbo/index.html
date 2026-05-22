@@ -24,11 +24,11 @@ canvas{display:block;width:100%!important;height:100%!important;background:trans
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 (function(){
-var MODEL_URL='./toinHD_github_pages_HD_30MB_v20260522.glb?v=V20260522_NO_CLICK_01';
+var MODEL_URL='./toinHD_github_pages_HD_30MB_v20260522.glb?v=V20260522_STATIC_NO_ROTATION_01';
 var app=document.getElementById('app');
 var loaderEl=document.getElementById('loader');
 var errorEl=document.getElementById('error');
-var scene,camera,renderer,root,modelReady=false,boxSize=new THREE.Vector3(1,1,1),clock=new THREE.Clock();
+var scene,camera,renderer,root,modelReady=false,boxSize=new THREE.Vector3(1,1,1);
 function showError(){loaderEl.style.display='none';errorEl.style.display='flex'}
 function start(){
 if(!window.THREE||!THREE.GLTFLoader){showError();return}
@@ -113,8 +113,6 @@ camera.updateProjectionMatrix();
 }
 function render(){
 requestAnimationFrame(render);
-var delta=clock.getDelta();
-if(modelReady&&root){root.rotation.y+=delta*.62}
 if(renderer&&scene&&camera){renderer.render(scene,camera)}
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start)}else{start()}
