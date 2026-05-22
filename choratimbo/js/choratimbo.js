@@ -4,13 +4,15 @@ import {FBXLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 import {clone as cloneSkeleton} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js";
 
-const textureData={"baseColor":"assets/textures/main_basecolor.png","normal":"assets/textures/main_normal.png","emissive":"assets/textures/main_emissive.png","roughness":"assets/textures/main_roughness.png","metallic":"assets/textures/main_metallic.png"};
-const fbxDataUrl="assets/models/timbo_principal.fbx";
+const assetUrl=path=>new URL(`../${path}`,import.meta.url).href;
+
+const textureData={"baseColor":assetUrl("assets/textures/main_basecolor.png"),"normal":assetUrl("assets/textures/main_normal.png"),"emissive":assetUrl("assets/textures/main_emissive.png"),"roughness":assetUrl("assets/textures/main_roughness.png"),"metallic":assetUrl("assets/textures/main_metallic.png")};
+const fbxDataUrl=assetUrl("assets/models/timbo_principal.fbx");
 ;
 const fallingGlbData={
-  sombrero:"assets/models/sombreroLUCASANIMATED.glb",
-  timboGuarana:"assets/models/TIMBOGUARANA.glb",
-  timboGordin:"assets/models/TIMBOGUARANAGORDIN.glb"
+  sombrero:assetUrl("assets/models/sombreroLUCASANIMATED.glb"),
+  timboGuarana:assetUrl("assets/models/TIMBOGUARANA.glb"),
+  timboGordin:assetUrl("assets/models/TIMBOGUARANAGORDIN.glb")
 };
 const container=document.getElementById("app");
 const status=document.getElementById("status");
@@ -86,15 +88,17 @@ function dataUrlToArrayBuffer(url){
 }
 function pickDataUrl(url){
   const raw=String(url||"");
-  if(raw.startsWith("data:"))return raw;
-  if(raw.startsWith("blob:"))return raw;
+  if(raw.startsWith("data:")||raw.startsWith("blob:"))return raw;
   const clean=raw.replace(/\\/g,"/").toLowerCase();
   if(clean.includes("image_0")||clean.includes("base_color")||clean.includes("basecolor")||clean.endsWith("texture.png"))return textureData.baseColor;
   if(clean.includes("image_2")||clean.includes("normal")||clean.includes("bump"))return textureData.normal;
   if(clean.includes("image_3")||clean.includes("emissive")||clean.includes("emission"))return textureData.emissive;
   if(clean.includes("roughness"))return textureData.roughness;
   if(clean.includes("metallic"))return textureData.metallic;
-  return textureData.baseColor;
+  if(clean.endsWith(".fbx")||clean.endsWith(".glb")||clean.endsWith(".mp3")||clean.endsWith(".js")||clean.endsWith(".html"))return raw;
+  if(clean.includes("/assets/models/")||clean.includes("/assets/audio/")||clean.includes("/js/"))return raw;
+  if(/\.(png|jpg|jpeg|webp)$/i.test(clean))return raw;
+  return raw;
 }
 const manager=new THREE.LoadingManager();
 manager.setURLModifier(url=>pickDataUrl(url));
@@ -138,10 +142,14 @@ function applyFlipMode(){
     tex.needsUpdate=true;
   }
 }
-function parseGlbDataUrl(loader,url){
-  return new Promise((resolve,reject)=>{
-    loader.parse(dataUrlToArrayBuffer(url),"",resolve,reject);
-  });
+function loadGlbAsset(loader,url){
+  const raw=String(url||"");
+  if(raw.startsWith("data:")){
+    return new Promise((resolve,reject)=>{
+      loader.parse(dataUrlToArrayBuffer(raw),"",resolve,reject);
+    });
+  }
+  return loader.loadAsync(raw);
 }
 function fixFallingUvOrientation(geometry){
   if(!geometry||geometry.userData.fallingUvOrientationFixed)return;
@@ -187,7 +195,7 @@ function ensureFallingAsset(key){
   if(!window.__fallingAssetPromises[key]){
     const gltfLoader=new GLTFLoader(manager);
     const labelMap={sombrero:"sombrero",timboGuarana:"timboGuarana",timboGordin:"timboGordin"};
-    window.__fallingAssetPromises[key]=parseGlbDataUrl(gltfLoader,fallingGlbData[key]).then(gltf=>{
+    window.__fallingAssetPromises[key]=loadGlbAsset(gltfLoader,fallingGlbData[key]).then(gltf=>{
       const proto=prepareFallingPrototype(gltf.scene,gltf.animations,labelMap[key]||key);
       fallingAssets[key]=proto;
       return proto;
@@ -646,8 +654,8 @@ function stopClubLights(){
   clubOverlay.classList.remove("show");
 }
 const antonioTracks=[
-  {src:"assets/audio/muahaha_pesado.mp3",toast:"MUAHAHAHAHA 😈"},
-  {src:"assets/audio/guarana_timbozinho.mp3",toast:"Guaraná Timbózinho ✨"}
+  {src:assetUrl("assets/audio/muahaha_pesado.mp3"),toast:"MUAHAHAHAHA 😈"},
+  {src:assetUrl("assets/audio/guarana_timbozinho.mp3"),toast:"Guaraná Timbózinho ✨"}
 ];
 let antonioTrackIndex=0;
 let antonioCurrentAudio=null;
@@ -981,7 +989,7 @@ applyUsagePreset();
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fallingCamera.aspect=innerWidth/innerHeight;fallingCamera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);fallingRenderer.setSize(innerWidth,innerHeight);});
 
 function animateBrowserFavicon(){
-  const frames=["assets/images/favicon.png","assets/images/asset_015_a17301b9.png","assets/images/asset_016_3496cf85.png","assets/images/asset_017_060851aa.png","assets/images/asset_018_a139c47d.png","assets/images/asset_019_ea3401e7.png","assets/images/asset_020_79984085.png","assets/images/asset_021_cb1814e4.png","assets/images/asset_022_585b7aeb.png","assets/images/asset_023_bf5a6d12.png","assets/images/asset_024_22a61ce5.png","assets/images/asset_025_29984d62.png","assets/images/asset_026_b8496a20.png","assets/images/asset_027_fc0c97d9.png","assets/images/asset_028_125b5ceb.png","assets/images/asset_029_ef98040a.png","assets/images/asset_030_cd75b0dd.png","assets/images/asset_031_9002bd34.png","assets/images/asset_032_58048fea.png","assets/images/asset_033_c410109b.png","assets/images/asset_034_ccf55cea.png","assets/images/asset_035_22dc23c8.png","assets/images/asset_036_6d97304c.png","assets/images/asset_037_045179e8.png","assets/images/asset_038_6ab98099.png","assets/images/asset_039_70ec8196.png","assets/images/asset_040_5b745118.png","assets/images/asset_041_1382efdc.png","assets/images/asset_042_0838f5a4.png","assets/images/asset_043_00c95985.png","assets/images/asset_044_c3fd10d8.png","assets/images/asset_045_dd366cb2.png","assets/images/asset_046_3830f197.png","assets/images/asset_047_1ff5d20a.png","assets/images/asset_048_e404be8a.png","assets/images/asset_049_bce77cf3.png","assets/images/asset_050_33a86818.png","assets/images/asset_051_5c69014a.png","assets/images/asset_052_2b379267.png","assets/images/asset_053_9d24fda8.png","assets/images/asset_054_539c0eb5.png","assets/images/asset_055_1fa90de2.png","assets/images/asset_056_1232db54.png","assets/images/asset_057_e8f74da4.png","assets/images/asset_058_d7f509c0.png","assets/images/asset_059_e4a8e618.png","assets/images/asset_060_c5092bcb.png","assets/images/asset_061_a98a9b8e.png","assets/images/asset_062_7cc13214.png","assets/images/asset_063_00a21ec5.png","assets/images/asset_064_a25d6f7d.png","assets/images/asset_065_4f8386aa.png","assets/images/asset_066_44be67ae.png","assets/images/asset_067_441927f1.png","assets/images/asset_068_b7b2a0cb.png","assets/images/asset_069_160a4cc2.png","assets/images/asset_070_71d9add4.png","assets/images/asset_071_bae980c5.png","assets/images/asset_072_1344036c.png","assets/images/asset_073_940b1b6d.png","assets/images/asset_074_cb59d00b.png","assets/images/asset_075_d32ff114.png","assets/images/asset_076_513262e2.png","assets/images/asset_077_5a2450fd.png","assets/images/asset_078_29200a7e.png","assets/images/asset_079_f117d0cb.png","assets/images/asset_080_4507f456.png","assets/images/asset_081_3606a7c0.png","assets/images/asset_082_94e05f0b.png","assets/images/asset_083_1644c9b0.png","assets/images/asset_084_245889ea.png","assets/images/asset_085_d0ad84d4.png","assets/images/asset_086_8a0d3494.png","assets/images/asset_087_aa54e15d.png","assets/images/asset_088_fc9b7150.png","assets/images/asset_089_17c3ae21.png","assets/images/asset_090_77e4391e.png","assets/images/asset_091_6d8c34a6.png","assets/images/asset_092_f29bd6c2.png","assets/images/asset_093_aae1fffe.png"];
+  const frames=[assetUrl("assets/images/favicon.png"),assetUrl("assets/images/asset_015_a17301b9.png"),assetUrl("assets/images/asset_016_3496cf85.png"),assetUrl("assets/images/asset_017_060851aa.png"),assetUrl("assets/images/asset_018_a139c47d.png"),assetUrl("assets/images/asset_019_ea3401e7.png"),assetUrl("assets/images/asset_020_79984085.png"),assetUrl("assets/images/asset_021_cb1814e4.png"),assetUrl("assets/images/asset_022_585b7aeb.png"),assetUrl("assets/images/asset_023_bf5a6d12.png"),assetUrl("assets/images/asset_024_22a61ce5.png"),assetUrl("assets/images/asset_025_29984d62.png"),assetUrl("assets/images/asset_026_b8496a20.png"),assetUrl("assets/images/asset_027_fc0c97d9.png"),assetUrl("assets/images/asset_028_125b5ceb.png"),assetUrl("assets/images/asset_029_ef98040a.png"),assetUrl("assets/images/asset_030_cd75b0dd.png"),assetUrl("assets/images/asset_031_9002bd34.png"),assetUrl("assets/images/asset_032_58048fea.png"),assetUrl("assets/images/asset_033_c410109b.png"),assetUrl("assets/images/asset_034_ccf55cea.png"),assetUrl("assets/images/asset_035_22dc23c8.png"),assetUrl("assets/images/asset_036_6d97304c.png"),assetUrl("assets/images/asset_037_045179e8.png"),assetUrl("assets/images/asset_038_6ab98099.png"),assetUrl("assets/images/asset_039_70ec8196.png"),assetUrl("assets/images/asset_040_5b745118.png"),assetUrl("assets/images/asset_041_1382efdc.png"),assetUrl("assets/images/asset_042_0838f5a4.png"),assetUrl("assets/images/asset_043_00c95985.png"),assetUrl("assets/images/asset_044_c3fd10d8.png"),assetUrl("assets/images/asset_045_dd366cb2.png"),assetUrl("assets/images/asset_046_3830f197.png"),assetUrl("assets/images/asset_047_1ff5d20a.png"),assetUrl("assets/images/asset_048_e404be8a.png"),assetUrl("assets/images/asset_049_bce77cf3.png"),assetUrl("assets/images/asset_050_33a86818.png"),assetUrl("assets/images/asset_051_5c69014a.png"),assetUrl("assets/images/asset_052_2b379267.png"),assetUrl("assets/images/asset_053_9d24fda8.png"),assetUrl("assets/images/asset_054_539c0eb5.png"),assetUrl("assets/images/asset_055_1fa90de2.png"),assetUrl("assets/images/asset_056_1232db54.png"),assetUrl("assets/images/asset_057_e8f74da4.png"),assetUrl("assets/images/asset_058_d7f509c0.png"),assetUrl("assets/images/asset_059_e4a8e618.png"),assetUrl("assets/images/asset_060_c5092bcb.png"),assetUrl("assets/images/asset_061_a98a9b8e.png"),assetUrl("assets/images/asset_062_7cc13214.png"),assetUrl("assets/images/asset_063_00a21ec5.png"),assetUrl("assets/images/asset_064_a25d6f7d.png"),assetUrl("assets/images/asset_065_4f8386aa.png"),assetUrl("assets/images/asset_066_44be67ae.png"),assetUrl("assets/images/asset_067_441927f1.png"),assetUrl("assets/images/asset_068_b7b2a0cb.png"),assetUrl("assets/images/asset_069_160a4cc2.png"),assetUrl("assets/images/asset_070_71d9add4.png"),assetUrl("assets/images/asset_071_bae980c5.png"),assetUrl("assets/images/asset_072_1344036c.png"),assetUrl("assets/images/asset_073_940b1b6d.png"),assetUrl("assets/images/asset_074_cb59d00b.png"),assetUrl("assets/images/asset_075_d32ff114.png"),assetUrl("assets/images/asset_076_513262e2.png"),assetUrl("assets/images/asset_077_5a2450fd.png"),assetUrl("assets/images/asset_078_29200a7e.png"),assetUrl("assets/images/asset_079_f117d0cb.png"),assetUrl("assets/images/asset_080_4507f456.png"),assetUrl("assets/images/asset_081_3606a7c0.png"),assetUrl("assets/images/asset_082_94e05f0b.png"),assetUrl("assets/images/asset_083_1644c9b0.png"),assetUrl("assets/images/asset_084_245889ea.png"),assetUrl("assets/images/asset_085_d0ad84d4.png"),assetUrl("assets/images/asset_086_8a0d3494.png"),assetUrl("assets/images/asset_087_aa54e15d.png"),assetUrl("assets/images/asset_088_fc9b7150.png"),assetUrl("assets/images/asset_089_17c3ae21.png"),assetUrl("assets/images/asset_090_77e4391e.png"),assetUrl("assets/images/asset_091_6d8c34a6.png"),assetUrl("assets/images/asset_092_f29bd6c2.png"),assetUrl("assets/images/asset_093_aae1fffe.png")];
   let link=document.getElementById("animatedFavicon");
   if(!link){
     link=document.createElement("link");
