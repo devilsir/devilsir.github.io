@@ -7,9 +7,9 @@
 <title>Toin HD Widget</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent!important}
-body{touch-action:none}
+body{touch-action:auto;user-select:none;-webkit-user-select:none}
 #app{position:fixed;inset:0;background:transparent!important}
-canvas{display:block;width:100%!important;height:100%!important;background:transparent!important}
+canvas{display:block;width:100%!important;height:100%!important;background:transparent!important;pointer-events:none!important}
 #loader,#error{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;font:14px/1.35 Arial,sans-serif;color:white;background:transparent;pointer-events:none}
 #error{display:none;color:white}
 
@@ -22,17 +22,16 @@ canvas{display:block;width:100%!important;height:100%!important;background:trans
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function(){
-var MODEL_URL='./toinHD_github_pages_HD_30MB_v20260522.glb?v=V20260522_GITHUB_TRANSPARENTE_01';
+var MODEL_URL='./toinHD_github_pages_HD_30MB_v20260522.glb?v=V20260522_NO_CLICK_01';
 var app=document.getElementById('app');
 var loaderEl=document.getElementById('loader');
 var errorEl=document.getElementById('error');
-var scene,camera,renderer,controls,root,modelReady=false,boxSize=new THREE.Vector3(1,1,1),clock=new THREE.Clock();
+var scene,camera,renderer,root,modelReady=false,boxSize=new THREE.Vector3(1,1,1),clock=new THREE.Clock();
 function showError(){loaderEl.style.display='none';errorEl.style.display='flex'}
 function start(){
-if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){showError();return}
+if(!window.THREE||!THREE.GLTFLoader){showError();return}
 scene=new THREE.Scene();
 camera=new THREE.PerspectiveCamera(28,1,.01,1000);
 renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,premultipliedAlpha:false,powerPreference:'high-performance'});
@@ -42,13 +41,6 @@ renderer.outputEncoding=THREE.sRGBEncoding;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.12;
 app.appendChild(renderer.domElement);
-controls=new THREE.OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;
-controls.dampingFactor=.08;
-controls.enablePan=false;
-controls.enableZoom=false;
-controls.rotateSpeed=.55;
-controls.autoRotate=false;
 root=new THREE.Group();
 scene.add(root);
 var hemi=new THREE.HemisphereLight(0xffffff,0x1d1d1d,1.45);
@@ -89,7 +81,6 @@ var newBox=new THREE.Box3().setFromObject(root);
 boxSize=newBox.getSize(new THREE.Vector3());
 var newCenter=newBox.getCenter(new THREE.Vector3());
 root.position.sub(newCenter);
-controls.target.set(0,0,0);
 modelReady=true;
 loaderEl.style.display='none';
 resize();
@@ -123,8 +114,7 @@ camera.updateProjectionMatrix();
 function render(){
 requestAnimationFrame(render);
 var delta=clock.getDelta();
-if(modelReady&&root&&!controls.dragging){root.rotation.y+=delta*.62}
-if(controls){controls.update()}
+if(modelReady&&root){root.rotation.y+=delta*.62}
 if(renderer&&scene&&camera){renderer.render(scene,camera)}
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start)}else{start()}
