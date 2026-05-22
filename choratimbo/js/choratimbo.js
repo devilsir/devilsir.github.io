@@ -411,7 +411,7 @@ function fitCameraToObject(object){
 async function init(){
   try{
     const loader=new FBXLoader(manager);
-    const model=loader.parse(dataUrlToArrayBuffer(fbxDataUrl),"");
+    const model=fbxDataUrl.startsWith("data:")?loader.parse(dataUrlToArrayBuffer(fbxDataUrl),""):await loader.loadAsync(fbxDataUrl);
     polishMaterials(model);
     mainModelForRain=cloneSkeleton(model);
     pivot.add(model);
@@ -423,7 +423,7 @@ async function init(){
     animate();
   }catch(error){
     console.error(error);
-    status.innerHTML='<div class="error">Não consegui carregar o FBX. Abra com internet ativa para carregar as bibliotecas 3D do Three.js.</div>';
+    status.innerHTML='<div class="error">Não consegui carregar o modelo principal. Confira se a pasta assets foi enviada junto com o HTML e se o site está online.</div>';
   }
 }
 const startTime=performance.now();
