@@ -14,14 +14,14 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.outputEncoding = THREE.sRGBEncoding;
 }
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 0.72;
 document.body.appendChild(renderer.domElement);
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x786250, 1.8));
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.1);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x5b4636, 0.95));
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.25);
 keyLight.position.set(4, 5, 6);
 scene.add(keyLight);
-const fillLight = new THREE.DirectionalLight(0xffffff, .85);
+const fillLight = new THREE.DirectionalLight(0xffffff, .38);
 fillLight.position.set(-3, 2, -4);
 scene.add(fillLight);
 
@@ -110,6 +110,15 @@ material.side = THREE.DoubleSide;
 if (material.map) {
 if ("colorSpace" in material.map && THREE.SRGBColorSpace) material.map.colorSpace = THREE.SRGBColorSpace;
 else if ("encoding" in material.map && THREE.sRGBEncoding) material.map.encoding = THREE.sRGBEncoding;
+}
+if (material.emissive && !material.userData.keepOriginalEmissive) {
+material.emissive.multiplyScalar(.35);
+}
+if (typeof material.emissiveIntensity === "number") {
+material.emissiveIntensity *= .45;
+}
+if (typeof material.envMapIntensity === "number") {
+material.envMapIntensity *= .55;
 }
 material.needsUpdate = true;
 });
