@@ -7,7 +7,7 @@ import {clone as cloneSkeleton} from "https://cdn.jsdelivr.net/npm/three@0.160.0
 const assetUrl=path=>new URL(`../${path}`,import.meta.url).href;
 
 const textureData={"baseColor":assetUrl("assets/textures/main_basecolor.png"),"normal":assetUrl("assets/textures/main_normal.png"),"emissive":assetUrl("assets/textures/main_emissive.png"),"roughness":assetUrl("assets/textures/main_roughness.png"),"metallic":assetUrl("assets/textures/main_metallic.png")};
-const fbxDataUrl=assetUrl("assets/models/timbo_principal.fbx");
+const mainModelUrl=assetUrl("assets/models/timbo_principal_lowpoly_v2.glb");
 ;
 const fallingGlbData={
   sombrero:assetUrl("assets/models/sombreroLUCASANIMATED.glb"),
@@ -416,10 +416,19 @@ function fitCameraToObject(object){
   controls.update();
   ground.position.y=-size.y*.56;
 }
+async function loadMainModel(){
+  const clean=String(mainModelUrl||"").split("?")[0].toLowerCase();
+  if(clean.endsWith(".glb")||clean.endsWith(".gltf")||String(mainModelUrl||"").startsWith("data:model/gltf")){
+    const loader=new GLTFLoader(manager);
+    const gltf=await loadGlbAsset(loader,mainModelUrl);
+    return gltf.scene;
+  }
+  const loader=new FBXLoader(manager);
+  return mainModelUrl.startsWith("data:")?loader.parse(dataUrlToArrayBuffer(mainModelUrl),""):await loader.loadAsync(mainModelUrl);
+}
 async function init(){
   try{
-    const loader=new FBXLoader(manager);
-    const model=fbxDataUrl.startsWith("data:")?loader.parse(dataUrlToArrayBuffer(fbxDataUrl),""):await loader.loadAsync(fbxDataUrl);
+    const model=await loadMainModel();
     polishMaterials(model);
     mainModelForRain=cloneSkeleton(model);
     pivot.add(model);
