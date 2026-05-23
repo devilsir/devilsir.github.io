@@ -422,7 +422,7 @@ camera.updateProjectionMatrix();
 function blinkValue(elapsed) {
 if (elapsed < 1.2) return 0;
 const cycle = (elapsed - 1.2) % 2.5;
-const duration = .32;
+const duration = .16;
 if (cycle > duration) return 0;
 const raw = Math.sin((cycle / duration) * Math.PI);
 return Math.pow(raw, .34);
