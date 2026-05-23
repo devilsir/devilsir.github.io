@@ -7,8 +7,160 @@
 <meta name="description" content="Atividades interativas de Química e Física para estudo e prática.">
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-.toolbar .search {
-  gap: 0;
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #777777;
+  --line: #e8e8e8;
+  --line-dark: #cfcfcf;
+  --hover: #fafafa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0 !important;
+  min-height: 100% !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+body {
+  overflow-x: hidden !important;
+}
+
+.wrap {
+  width: min(920px, calc(100% - 40px)) !important;
+  margin: 0 auto !important;
+  padding: 48px 0 64px !important;
+}
+
+header {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  margin: 0 0 28px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.eyebrow {
+  display: none !important;
+}
+
+h1 {
+  margin: 0 !important;
+  color: var(--text) !important;
+  font-size: clamp(28px, 4vw, 38px) !important;
+  line-height: 1 !important;
+  letter-spacing: -.04em !important;
+  font-weight: 600 !important;
+}
+
+.subtitle {
+  max-width: 520px !important;
+  margin: 10px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  font-weight: 400 !important;
+}
+
+.counter {
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+
+.counter span {
+  color: var(--text) !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 600 !important;
+}
+
+.counter small {
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+}
+
+.toolbar {
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.toolbar .search,
+.search {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  gap: 0 !important;
+}
+
+#q {
+  display: block !important;
+  width: 100% !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 0 !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--line-dark) !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  font: 400 14px/44px Arial, Helvetica, sans-serif !important;
+}
+
+#q::placeholder {
+  color: #9a9a9a !important;
+}
+
+#q:focus {
+  border-bottom-color: var(--text) !important;
+}
+
+#gallery,
+.gallery {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-top: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+
+#gallery,
+#gallery * {
+  background-image: none !important;
 }
 
 #gallery img,
@@ -34,31 +186,309 @@
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
-  flex: 0 0 0 !important;
   overflow: hidden !important;
 }
 
-#gallery,
-#gallery * {
-  background-image: none;
+#gallery > * {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 18px 0 !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  overflow: visible !important;
+  transform: none !important;
+  transition: background-color .15s ease, border-color .15s ease !important;
 }
 
-#gallery article,
+#gallery > *:hover {
+  background: var(--hover) !important;
+  border-bottom-color: var(--line-dark) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#gallery > * > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#gallery > * > :only-child,
+#gallery > * > [class*="body"],
+#gallery > * > [class*="content"],
+#gallery > * > [class*="info"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+}
+
+#gallery h2,
+#gallery h3,
+#gallery h4,
+#gallery strong,
+#gallery b,
+#gallery .title,
+#gallery [class*="title"],
+#gallery [class*="titulo"] {
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+  letter-spacing: -.015em !important;
+  font-weight: 600 !important;
+}
+
+#gallery p,
+#gallery small,
+#gallery .desc,
+#gallery [class*="desc"],
+#gallery [class*="texto"],
+#gallery [class*="tag"],
+#gallery [class*="pill"],
+#gallery [class*="badge"],
+#gallery [class*="chip"],
+#gallery [class*="category"],
+#gallery [class*="categoria"],
+#gallery [class*="meta"] {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+#gallery span:not(#count) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#gallery [class*="action"],
+#gallery [class*="actions"],
+#gallery [class*="btns"],
+#gallery [class*="buttons"],
+#gallery *:has(> button),
+#gallery *:has(> a) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
 #gallery a,
 #gallery button,
-#gallery .card,
-#gallery [class*="card"],
-#gallery [class*="item"] {
-  gap: .45rem !important;
+#gallery [role="button"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  font: 600 13px/1.2 Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transform: none !important;
+  overflow: visible !important;
 }
 
-#gallery article > *,
-#gallery a > *,
-#gallery button > *,
-#gallery .card > *,
-#gallery [class*="card"] > *,
-#gallery [class*="item"] > * {
-  margin-left: 0 !important;
+#gallery a:hover,
+#gallery button:hover,
+#gallery [role="button"]:hover {
+  color: var(--muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: underline !important;
+  transform: none !important;
+}
+
+#gallery a::before,
+#gallery a::after,
+#gallery button::before,
+#gallery button::after,
+#gallery > *::before,
+#gallery > *::after {
+  display: none !important;
+  content: none !important;
+}
+
+.overlay[hidden] {
+  display: none !important;
+}
+
+.overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  display: grid !important;
+  grid-template-rows: 56px 1fr !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  color: var(--text) !important;
+  background: #ffffff !important;
+}
+
+.overlay-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  min-height: 56px !important;
+  margin: 0 !important;
+  padding: 0 20px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+
+#overlayTitle {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--text) !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+.overlay-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.btn,
+.overlay-actions a,
+.overlay-actions button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  font: 600 13px/1.2 Arial, Helvetica, sans-serif !important;
+  cursor: pointer !important;
+}
+
+.btn:hover,
+.overlay-actions a:hover,
+.overlay-actions button:hover {
+  color: var(--muted) !important;
+  text-decoration: underline !important;
+}
+
+#stage {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  background: #ffffff !important;
+}
+
+@media (max-width: 720px) {
+  .wrap {
+    width: min(100% - 28px, 920px) !important;
+    padding: 32px 0 48px !important;
+  }
+
+  header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    margin-bottom: 22px !important;
+  }
+
+  h1 {
+    font-size: 30px !important;
+  }
+
+  #gallery > *,
+  #gallery > * > :only-child,
+  #gallery > * > [class*="body"],
+  #gallery > * > [class*="content"],
+  #gallery > * > [class*="info"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  #gallery [class*="action"],
+  #gallery [class*="actions"],
+  #gallery [class*="btns"],
+  #gallery [class*="buttons"],
+  #gallery *:has(> button),
+  #gallery *:has(> a) {
+    justify-content: flex-start !important;
+  }
+
+  .overlay {
+    grid-template-rows: auto 1fr !important;
+  }
+
+  .overlay-head {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    padding: 14px !important;
+  }
 }
 </style>
 </head>
@@ -66,15 +496,15 @@
 <div class="wrap">
 <header>
 <div>
-<p class="eyebrow">Hub de Animações</p>
-<h1>Simulações Interativas</h1>
-<p class="subtitle">Escolha uma atividade para explorar conceitos de Química e Física de forma visual e interativa.</p>
+<p class="eyebrow">Animações</p>
+<h1>Animações</h1>
+<p class="subtitle">Busque uma simulação e abra para visualizar.</p>
 </div>
-<div class="counter"><span id="count">0</span><small>simulações</small></div>
+<div class="counter"><span id="count">0</span><small>itens</small></div>
 </header>
 <section class="toolbar" aria-label="Busca de atividades">
 <label class="search">
-<input id="q" type="search" placeholder="Buscar atividade">
+<input id="q" type="search" placeholder="Buscar animação">
 </label>
 </section>
 <main id="gallery" class="gallery" aria-live="polite"></main>
@@ -83,7 +513,7 @@
 <div class="overlay-head">
 <strong id="overlayTitle">Atividade</strong>
 <div class="overlay-actions">
-<a id="openDirect" class="btn" target="_blank" rel="noopener">Abrir em nova aba</a>
+<a id="openDirect" class="btn" target="_blank" rel="noopener">Nova aba</a>
 <button id="closeOverlay" class="btn" type="button">Fechar</button>
 </div>
 </div>
