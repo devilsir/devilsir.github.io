@@ -1,5 +1,6 @@
 
-const modelBase64 = window.modelBase64;
+const APP_CONFIG = window.APP_CONFIG || {};
+const modelUrl = APP_CONFIG.modelPath || "assets/models/personagem.glb";
 const GLTFLoader = THREE.GLTFLoader;
 const loading = document.getElementById("loading");
 const scene = new THREE.Scene();
@@ -15,6 +16,7 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 }
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.72;
+renderer.domElement.style.touchAction = "none";
 document.body.appendChild(renderer.domElement);
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0x5b4636, 0.95));
@@ -50,8 +52,23 @@ const clickHint = document.getElementById("clickHint");
 const raycaster = new THREE.Raycaster();
 const clickPointer = new THREE.Vector2();
 const downPointer = { x: 0, y: 0 };
+const dragPointer = { x: 0, y: 0 };
 let pointerDownOnModel = false;
 let pointerDownTime = 0;
+let isDraggingModel = false;
+let hasDraggedModel = false;
+let dragRotationYaw = 0;
+let dragRotationPitch = 0;
+let returnHomeActive = false;
+let returnHomeStartTime = 0;
+let returnHomeStartYaw = 0;
+let returnHomeStartPitch = 0;
+let returnHomeStartMouseX = 0;
+let returnHomeStartMouseY = 0;
+let returnHomeDuration = 720;
+const dragQuaternion = new THREE.Quaternion();
+const followQuaternion = new THREE.Quaternion();
+const headTargetQuaternion = new THREE.Quaternion();
 let chatIsOpen = false;
 let animationFrameId = 0;
 let pageIsVisible = !document.hidden;
@@ -62,12 +79,6 @@ let lastCursorHit = false;
 let lastMouthUpdateTime = -1;
 const mouthUpdateIntervalMs = 1000 / 30;
 
-function base64ToBlobUrl(base64) {
-const binary = atob(base64);
-const bytes = new Uint8Array(binary.length);
-for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
-return URL.createObjectURL(new Blob([bytes], { type: "model/gltf-binary" }));
-}
 
 function normalizeName(value) {
 return String(value || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -220,15 +231,68 @@ headTurnTarget = root;
 headTurnPivot = createHeadTurnPivot(root);
 }
 
+function normalizeDragYaw() {
+const fullTurn = Math.PI * 2;
+dragRotationYaw = THREE.MathUtils.euclideanModulo(dragRotationYaw + Math.PI, fullTurn) - Math.PI;
+}
+
+function returnHomeEase(t) {
+const c1 = 1.18;
+const c3 = c1 + 1;
+return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
+function startReturnHome() {
+normalizeDragYaw();
+const distance = Math.hypot(dragRotationYaw, dragRotationPitch);
+if (distance < .002) {
+dragRotationYaw = 0;
+dragRotationPitch = 0;
+returnHomeActive = false;
+return;
+}
+returnHomeActive = true;
+returnHomeStartTime = performance.now();
+returnHomeStartYaw = dragRotationYaw;
+returnHomeStartPitch = dragRotationPitch;
+returnHomeStartMouseX = smoothMouse.x;
+returnHomeStartMouseY = smoothMouse.y;
+returnHomeDuration = THREE.MathUtils.clamp(420 + distance * 210, 520, 980);
+mouse.x = 0;
+mouse.y = 0;
+}
+
+function updateReturnHome() {
+if (!returnHomeActive || isDraggingModel) return;
+const t = THREE.MathUtils.clamp((performance.now() - returnHomeStartTime) / returnHomeDuration, 0, 1);
+const eased = returnHomeEase(t);
+const remaining = 1 - eased;
+dragRotationYaw = returnHomeStartYaw * remaining;
+dragRotationPitch = returnHomeStartPitch * remaining;
+const mouseRemaining = Math.max(0, remaining);
+smoothMouse.x = returnHomeStartMouseX * mouseRemaining;
+smoothMouse.y = returnHomeStartMouseY * mouseRemaining;
+if (t >= 1) {
+dragRotationYaw = 0;
+dragRotationPitch = 0;
+smoothMouse.x = 0;
+smoothMouse.y = 0;
+returnHomeActive = false;
+}
+}
+
 function updateHeadTurn() {
 if (!headTurnPivot) return;
+updateReturnHome();
 const yaw = THREE.MathUtils.clamp(smoothMouse.x, -1, 1) * .26;
 const pitch = THREE.MathUtils.clamp(smoothMouse.y, -1, 1) * .16;
 const roll = THREE.MathUtils.clamp(smoothMouse.x, -1, 1) * -.035;
 const targetEuler = new THREE.Euler(pitch, yaw, roll, "YXZ");
-const targetQuaternion = new THREE.Quaternion().setFromEuler(targetEuler);
-targetQuaternion.premultiply(headTurnPivot.userData.neutralQuaternion);
-headTurnPivot.quaternion.slerp(targetQuaternion, .075);
+const dragEuler = new THREE.Euler(dragRotationPitch, dragRotationYaw, 0, "YXZ");
+followQuaternion.setFromEuler(targetEuler);
+dragQuaternion.setFromEuler(dragEuler);
+headTargetQuaternion.copy(headTurnPivot.userData.neutralQuaternion).multiply(dragQuaternion).multiply(followQuaternion);
+headTurnPivot.quaternion.slerp(headTargetQuaternion, isDraggingModel ? .32 : .075);
 }
 
 function registerEyes(root) {
@@ -586,27 +650,60 @@ mouse.y = -((clientY / Math.max(1, window.innerHeight)) * 2 - 1);
 renderer.domElement.addEventListener("pointerdown", (event) => {
 downPointer.x = event.clientX;
 downPointer.y = event.clientY;
+dragPointer.x = event.clientX;
+dragPointer.y = event.clientY;
 pointerDownTime = performance.now();
 pointerDownOnModel = isPointerOnHead(event);
-}, { passive: true });
+isDraggingModel = pointerDownOnModel;
+hasDraggedModel = false;
+if (pointerDownOnModel) returnHomeActive = false;
+if (pointerDownOnModel) {
+if (renderer.domElement.setPointerCapture) renderer.domElement.setPointerCapture(event.pointerId);
+renderer.domElement.style.cursor = "grabbing";
+event.preventDefault();
+}
+}, { passive: false });
 
-renderer.domElement.addEventListener("pointerup", (event) => {
+function finishPointerInteraction(event) {
 const dx = event.clientX - downPointer.x;
 const dy = event.clientY - downPointer.y;
-const moved = Math.hypot(dx, dy) > 8;
+const moved = hasDraggedModel || Math.hypot(dx, dy) > 8;
 const quick = performance.now() - pointerDownTime < 650;
+if (pointerDownOnModel && moved) startReturnHome();
 if (pointerDownOnModel && !moved && quick && isPointerOnHead(event)) showChatBubble();
+if (renderer.domElement.releasePointerCapture) {
+try { renderer.domElement.releasePointerCapture(event.pointerId); } catch (error) {}
+}
 pointerDownOnModel = false;
-}, { passive: true });
+isDraggingModel = false;
+hasDraggedModel = false;
+renderer.domElement.style.cursor = lastCursorHit ? "pointer" : "default";
+}
+
+renderer.domElement.addEventListener("pointerup", finishPointerInteraction, { passive: true });
+renderer.domElement.addEventListener("pointercancel", finishPointerInteraction, { passive: true });
 
 renderer.domElement.addEventListener("pointermove", (event) => {
+if (isDraggingModel) {
+const dx = event.clientX - dragPointer.x;
+const dy = event.clientY - dragPointer.y;
+if (Math.hypot(event.clientX - downPointer.x, event.clientY - downPointer.y) > 5) hasDraggedModel = true;
+dragPointer.x = event.clientX;
+dragPointer.y = event.clientY;
+dragRotationYaw += dx * .008;
+normalizeDragYaw();
+dragRotationPitch = THREE.MathUtils.clamp(dragRotationPitch + dy * .006, -.82, .82);
+renderer.domElement.style.cursor = "grabbing";
+event.preventDefault();
+return;
+}
 const now = performance.now();
 if (now - lastCursorRaycastTime > 90) {
 lastCursorRaycastTime = now;
 lastCursorHit = isPointerOnHead(event);
 renderer.domElement.style.cursor = lastCursorHit ? "pointer" : "default";
 }
-}, { passive: true });
+}, { passive: false });
 
 if (chatClose) chatClose.addEventListener("click", hideChatBubble);
 
@@ -641,8 +738,7 @@ if (pageIsVisible) startRenderLoop();
 });
 
 const loader = new GLTFLoader();
-const url = base64ToBlobUrl(modelBase64);
-loader.load(url, (gltf) => {
+loader.load(modelUrl, (gltf) => {
 modelRoot = gltf.scene;
 scene.add(modelRoot);
 prepareMaterials(modelRoot);
