@@ -3,45 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Models and effects</title>
-<style>
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at top,#141924 0%,#090c13 56%,#05070b 100%);font-family:Inter,Arial,sans-serif;color:#eef2f8}
-#app{position:fixed;inset:0}
-#ui{position:fixed;top:20px;left:20px;z-index:20;width:320px;max-width:calc(100vw - 40px);background:rgba(8,11,18,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.34)}
-#ui h1{margin:0 0 6px 0;font-size:17px;font-weight:700;letter-spacing:.01em}
-#ui p{margin:0 0 16px 0;font-size:12px;line-height:1.5;color:#a9b4c8}
-.row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-.row.stack{display:block}
-.row.stack>*+*{margin-top:10px}
-label{display:block;font-size:10px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:#7f8ba2;margin-bottom:7px}
-input[type="text"],select,input[type="range"]{width:100%}
-input[type="text"],select{box-sizing:border-box;color:#eef2f8;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 12px;font-size:13px;outline:none;transition:border-color .2s ease,background .2s ease}
-input[type="text"]{background:rgba(255,255,255,.04)}
-select{background:#000;color:#eef2f8}
-input[type="text"]::placeholder{color:#66758f}
-input[type="text"]:focus{border-color:rgba(130,160,255,.42);background:rgba(255,255,255,.055)}
-select:focus{border-color:rgba(130,160,255,.42);background:#000}
-select option{background:#000;color:#eef2f8}
-input[type="range"]{accent-color:#9ab5ff}
-button{flex:1;appearance:none;border:none;border-radius:14px;padding:11px 12px;background:rgba(255,255,255,.055);color:#eef2f8;font-weight:600;cursor:pointer;transition:.18s transform,.18s background,.18s opacity,.18s border-color;border:1px solid rgba(255,255,255,.05)}
-button:hover{transform:translateY(-1px);background:rgba(255,255,255,.09)}
-button.secondary{background:rgba(255,255,255,.045)}
-button.ghost{background:rgba(255,255,255,.03)}
-button.active{background:linear-gradient(180deg,#4b6fff 0%,#3555d7 100%);border-color:rgba(132,160,255,.35)}
-.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:999px;padding:8px 10px;font-size:11px;color:#d8e1ef}
-#status{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-#hint{font-size:11px;color:#8492aa;margin-top:8px;line-height:1.45}
-#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:40;background:linear-gradient(180deg,rgba(7,9,14,.94),rgba(4,6,10,.94));font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-#loading.hidden{display:none}
-@media (max-width:720px){#ui{top:12px;left:12px;width:calc(100vw - 24px);padding:16px}}
-</style>
+<title>Lucas & Devilsir FX Viewer</title>
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 <div id="app"></div>
 <div id="loading">Carregando modelo e animações…</div>
 <div id="ui">
-<h1>Models and effects</h1>
-<p>Modelos e efeitos, por Lucas Xavier Nardelli. Em construção...</p>
+<h1>Lucas & Devilsir FX Viewer</h1>
+<p>Dois personagens, animações próprias, FX mágicos e controle de espada no mesmo menu.</p>
 <div class="row stack">
 <div>
 <label>Personagem</label>
@@ -112,7 +82,7 @@ button.active{background:linear-gradient(180deg,#4b6fff 0%,#3555d7 100%);border-
 </div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="./js/model-data.js"></script>
+<script src="./js/asset-paths.js"></script>
 <script src="./js/app.js"></script>
 </body>
 </html>

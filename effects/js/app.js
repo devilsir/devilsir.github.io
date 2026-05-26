@@ -236,14 +236,6 @@ const swordReferenceLocal = {
   scale: new THREE.Vector3(0.45, 0.45, 0.45)
 }
 
-function decodeBase64ToArrayBuffer(base64) {
-  const binary = atob(base64)
-  const len = binary.length
-  const bytes = new Uint8Array(len)
-  for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i)
-  return bytes.buffer
-}
-
 function normalizeName(name) {
   return (name || '').toLowerCase()
 }
@@ -270,8 +262,9 @@ function countActiveLavaPuddles() {
   return count
 }
 
-function getModelBase64(modelKey) {
-  return modelKey === 'devilsir' ? window.EMBEDDED_DEVILSIR_GLB_BASE64 : window.EMBEDDED_GLB_BASE64
+function getModelPath(modelKey) {
+  const paths = window.ASSET_PATHS && window.ASSET_PATHS.models ? window.ASSET_PATHS.models : {}
+  return modelKey === 'devilsir' ? paths.devilsir : paths.lucas
 }
 
 function updateModelSpecificControls() {
@@ -442,6 +435,10 @@ function attachRigidMeshToBone(sourceMesh, bone) {
   return rigid
 }
 
+function disposeLucasNeckFillers() {}
+
+function addLucasNeckFillers() {}
+
 function lockDevilsirShouldersToRig() {
   devilsirShoulderReplacements = []
 }
@@ -487,9 +484,9 @@ function loadSelectedModel(modelKey) {
     throw new Error('THREE.GLTFLoader indisponível')
   }
   const loader = new THREE.GLTFLoader()
-  const buffer = decodeBase64ToArrayBuffer(getModelBase64(modelKey))
-  loader.parse(buffer, '', gltf => setupModel(gltf, modelKey), err => {
-    loading.textContent = 'Falha ao carregar o modelo'
+  const modelPath = getModelPath(modelKey)
+  loader.load(modelPath, gltf => setupModel(gltf, modelKey), undefined, err => {
+    loading.textContent = 'Falha ao carregar o modelo. Abra pelo servidor local do ZIP.'
     console.error(err)
   })
 }
@@ -527,8 +524,8 @@ function loadSwordAccessory(callback) {
   if (handAccessoryState.swordLoading) return
   handAccessoryState.swordLoading = true
   const loader = new THREE.GLTFLoader()
-  const buffer = decodeBase64ToArrayBuffer(window.EMBEDDED_SWORD_GLB_BASE64)
-  loader.parse(buffer, '', gltf => {
+  const swordPath = window.ASSET_PATHS && window.ASSET_PATHS.models ? window.ASSET_PATHS.models.sword : './assets/models/sword.glb'
+  loader.load(swordPath, gltf => {
     const wrapper = new THREE.Group()
     wrapper.name = 'SwordAccessoryWrapper'
     wrapper.add(gltf.scene)
