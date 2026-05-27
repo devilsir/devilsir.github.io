@@ -1,5 +1,6 @@
 const app = document.getElementById('app')
 const loading = document.getElementById('loading')
+const modelSelect = document.getElementById('modelSelect')
 const animationSelect = document.getElementById('animationSelect')
 const searchInput = document.getElementById('search')
 const playBtn = document.getElementById('playBtn')
@@ -262,9 +263,49 @@ function countActiveLavaPuddles() {
   return count
 }
 
+function getModelCatalog() {
+  const catalog = window.ASSET_PATHS && Array.isArray(window.ASSET_PATHS.modelCatalog) ? window.ASSET_PATHS.modelCatalog : []
+  if (catalog.length) return catalog
+  const paths = window.ASSET_PATHS && window.ASSET_PATHS.models ? window.ASSET_PATHS.models : {}
+  return Object.keys(paths)
+    .filter(key => key !== 'sword')
+    .map(key => ({ key, label: key, path: paths[key], character: key.startsWith('devilsir') ? 'devilsir' : key }))
+}
+
+function getModelEntry(modelKey) {
+  const catalog = getModelCatalog()
+  const entry = catalog.find(item => item.key === modelKey)
+  if (entry) return entry
+  return catalog.find(item => item.key === 'lucas') || catalog[0] || null
+}
+
 function getModelPath(modelKey) {
   const paths = window.ASSET_PATHS && window.ASSET_PATHS.models ? window.ASSET_PATHS.models : {}
-  return modelKey === 'devilsir' ? paths.devilsir : paths.lucas
+  const entry = getModelEntry(modelKey)
+  return (entry && entry.path) || paths[modelKey] || paths.lucas
+}
+
+function isDevilsirModel(modelKey) {
+  const entry = getModelEntry(modelKey)
+  return !!entry && entry.character === 'devilsir'
+}
+
+function populateModelSelect() {
+  if (!modelSelect) return
+  const catalog = getModelCatalog()
+  const previousValue = modelSelect.value || 'lucas'
+  modelSelect.innerHTML = ''
+  for (const entry of catalog) {
+    const option = document.createElement('option')
+    option.value = entry.key
+    option.textContent = entry.label || entry.key
+    modelSelect.appendChild(option)
+  }
+  if ([...modelSelect.options].some(option => option.value === previousValue)) {
+    modelSelect.value = previousValue
+  } else if ([...modelSelect.options].some(option => option.value === 'lucas')) {
+    modelSelect.value = 'lucas'
+  }
 }
 
 function updateModelSpecificControls() {
@@ -389,7 +430,7 @@ function resolveSpecialBonesForModel() {
     if (!hands.right) hands.right = findBoneByFragments(['r_hand', 'right_hand'])
     if (!hands.rightForearm) hands.rightForearm = findBoneByFragments(['r_forearm', 'right_forearm'])
     if (leftEyeNode && rightEyeNode && lucasEyeMaterials.length === 0) prepareLucasEyeMaterials()
-  } else if (currentModelKey === 'devilsir') {
+  } else if (isDevilsirModel(currentModelKey)) {
     if (!headBone) headBone = findBoneByFragments(['bone_16', 'head/helm'])
     if (!hands.left) hands.left = findBoneByFragments(['bone_36', 'bone_43'])
     if (!hands.right) hands.right = findBoneByFragments(['bone_48', 'bone_114', 'weapon'])
@@ -561,7 +602,7 @@ function loadSwordAccessory(callback) {
 function applyHandAccessory(mode) {
   handAccessoryState.current = mode
   clearHandAccessory()
-  if (currentModelKey === 'devilsir') {
+  if (isDevilsirModel(currentModelKey)) {
     applyDevilsirSwordVisibility()
     return
   }
@@ -2008,7 +2049,7 @@ function setupModel(gltf, modelKey = currentModelKey) {
     }
   })
   resolveSpecialBonesForModel()
-  if (modelKey === 'devilsir') {
+  if (isDevilsirModel(modelKey)) {
     lockDevilsirShouldersToRig()
     collectDevilsirSwordMeshes()
     applyDevilsirSwordVisibility()
@@ -2027,9 +2068,12 @@ function setupModel(gltf, modelKey = currentModelKey) {
   loading.classList.add('hidden')
 }
 
-modelSelect.addEventListener('change', () => {
-  loadSelectedModel(modelSelect.value)
-})
+populateModelSelect()
+if (modelSelect) {
+  modelSelect.addEventListener('change', () => {
+    loadSelectedModel(modelSelect.value)
+  })
+}
 if (searchInput) searchInput.addEventListener('input', rebuildSelect)
 animationSelect.addEventListener('change', () => { if (animationSelect.value) playAnimationByName(animationSelect.value) })
 playBtn.addEventListener('click', () => setPlayState(!playState))
@@ -2083,5 +2127,5 @@ function animate() {
 resetCameraView()
 applyQualityMode(qualityModeSelect ? qualityModeSelect.value : 'normal')
 updateModelSpecificControls()
-loadSelectedModel(modelSelect ? modelSelect.value : 'lucas')
+loadSelectedModel(modelSelect && modelSelect.value ? modelSelect.value : 'lucas')
 animate()
