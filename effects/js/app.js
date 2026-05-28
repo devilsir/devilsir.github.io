@@ -10,6 +10,7 @@ const fxOnlyBtn = document.getElementById('fxOnlyBtn')
 const resetCamBtn = document.getElementById('resetCamBtn')
 const fxModeSelect = document.getElementById('fxMode')
 const handItemModeSelect = document.getElementById('handItemMode')
+const petModeSelect = document.getElementById('petMode')
 const qualityModeSelect = document.getElementById('qualityMode')
 const speedRange = document.getElementById('speedRange')
 const currentAnimBadge = document.getElementById('currentAnimBadge')
@@ -187,10 +188,15 @@ let lucasActiveEyeColor = 0xffffff
 let swordOffsetQuat = new THREE.Quaternion()
 let currentFxType = 'none'
 let handAccessoryState = { current: 'none', swordWrapper: null, swordLoaded: false, swordLoading: false }
+let petState = { current: 'none', group: null, token: 0 }
 let performanceMode = false
 let currentModelKey = 'lucas'
 let devilsirSwordMeshes = []
 let devilsirShoulderReplacements = []
+let runescapeStaffMeshes = []
+let runescapeStaffReplacements = []
+let runescapeStaffOffsetState = null
+let runescapeStaffAnchorState = null
 let autoFxMap = {}
 let playState = true
 let fxOnlyMode = false
@@ -279,15 +285,432 @@ function getModelEntry(modelKey) {
   return catalog.find(item => item.key === 'lucas') || catalog[0] || null
 }
 
+function getModelFitEntry(modelKey) {
+  return getModelEntry(modelKey) || {}
+}
+
+function getModelFitBox(root, fitEntry) {
+  root.updateWorldMatrix(true, true)
+  if (fitEntry && fitEntry.fitBounds === 'skeleton') {
+    const skeletonBox = new THREE.Box3()
+    let hasBone = false
+    root.traverse(obj => {
+      if (!obj.isBone) return
+      obj.getWorldPosition(tmpVecA)
+      skeletonBox.expandByPoint(tmpVecA)
+      hasBone = true
+    })
+    if (hasBone && !skeletonBox.isEmpty()) return skeletonBox
+  }
+  return new THREE.Box3().setFromObject(root)
+}
+
+function getFitTargetHeight(fitEntry) {
+  const value = fitEntry && Number(fitEntry.fitTargetHeight)
+  return Number.isFinite(value) && value > 0 ? value : 1.0
+}
+
 function getModelPath(modelKey) {
   const paths = window.ASSET_PATHS && window.ASSET_PATHS.models ? window.ASSET_PATHS.models : {}
   const entry = getModelEntry(modelKey)
   return (entry && entry.path) || paths[modelKey] || paths.lucas
 }
 
+function getModelAnimationSources(modelKey) {
+  const entry = getModelEntry(modelKey)
+  return entry && Array.isArray(entry.animationSources) ? entry.animationSources : []
+}
+
+function getPetCatalog() {
+  const catalog = window.ASSET_PATHS && Array.isArray(window.ASSET_PATHS.petCatalog) ? window.ASSET_PATHS.petCatalog : []
+  if (catalog.length) return catalog
+  return [{ key: 'none', label: 'Sem pet', pets: [] }]
+}
+
+function getPetModeEntry(mode) {
+  const catalog = getPetCatalog()
+  return catalog.find(item => item.key === mode) || catalog[0] || { key: 'none', label: 'Sem pet', pets: [] }
+}
+
+function getPetEntry(key) {
+  const pets = window.ASSET_PATHS && window.ASSET_PATHS.pets ? window.ASSET_PATHS.pets : {}
+  return pets[key] || null
+}
+
+function populatePetSelect() {
+  if (!petModeSelect) return
+  const catalog = getPetCatalog()
+  const previousValue = petModeSelect.value || 'none'
+  petModeSelect.innerHTML = ''
+  for (const entry of catalog) {
+    const option = document.createElement('option')
+    option.value = entry.key
+    option.textContent = entry.label || entry.key
+    petModeSelect.appendChild(option)
+  }
+  if ([...petModeSelect.options].some(option => option.value === previousValue)) {
+    petModeSelect.value = previousValue
+  } else if ([...petModeSelect.options].some(option => option.value === 'none')) {
+    petModeSelect.value = 'none'
+  }
+}
+
+function clearPets() {
+  petState.token++
+  if (petState.group && petState.group.parent) petState.group.parent.remove(petState.group)
+  petState.group = null
+}
+
+function stylePetRoot(petRoot, entry) {
+  if (!petRoot) return
+  const targetHeightValue = entry && Number(entry.targetHeight)
+  const targetHeight = Number.isFinite(targetHeightValue) && targetHeightValue > 0 ? targetHeightValue : 0.32
+  petRoot.updateWorldMatrix(true, true)
+  let box = new THREE.Box3().setFromObject(petRoot)
+  let size = box.getSize(new THREE.Vector3())
+  if (size.y > 0) {
+    const scale = targetHeight / size.y
+    petRoot.scale.multiplyScalar(scale)
+    petRoot.updateWorldMatrix(true, true)
+    box = new THREE.Box3().setFromObject(petRoot)
+    size = box.getSize(new THREE.Vector3())
+  }
+  const center = box.getCenter(new THREE.Vector3())
+  petRoot.position.x -= center.x
+  petRoot.position.z -= center.z
+  petRoot.position.y += 0.18 - box.min.y
+  petRoot.rotation.y += entry && Number.isFinite(Number(entry.rotationY)) ? Number(entry.rotationY) : 0
+  petRoot.traverse(obj => {
+    if (!obj.isMesh) return
+    obj.castShadow = true
+    obj.receiveShadow = true
+    obj.frustumCulled = false
+    if (!obj.material) return
+    const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
+    for (const mat of materials) {
+      if (!mat) continue
+      if ('envMapIntensity' in mat) mat.envMapIntensity = 0.9
+      mat.side = THREE.DoubleSide
+      mat.needsUpdate = true
+    }
+  })
+}
+
+function getPetCharacterBox() {
+  if (!modelRoot) return null
+  try {
+    const box = getModelFitBox(modelRoot, getModelFitEntry(currentModelKey))
+    if (!box || box.isEmpty()) return null
+    return box
+  } catch (err) {
+    return null
+  }
+}
+
+function getPetCharacterCenterWorld(characterBox) {
+  if (centerBone) {
+    const center = new THREE.Vector3()
+    centerBone.getWorldPosition(center)
+    return center
+  }
+  if (characterBox && !characterBox.isEmpty()) return characterBox.getCenter(new THREE.Vector3())
+  return new THREE.Vector3(0, 0, 0)
+}
+
+function getNearModelPetPlacement(petRoot, entry, fallbackPosition) {
+  const fallback = fallbackPosition || new THREE.Vector3(0, 0, 0)
+  if (!petRoot || !entry || entry.placement !== 'nearModel') return fallback
+  const sideSign = entry.side === 'right' ? 1 : -1
+  const characterBox = getPetCharacterBox()
+  if (!characterBox || !modelPivot || !camera) return fallback
+  petRoot.updateWorldMatrix(true, true)
+  modelPivot.updateWorldMatrix(true, true)
+  camera.updateMatrixWorld(true)
+  const petBox = new THREE.Box3().setFromObject(petRoot)
+  if (!petBox || petBox.isEmpty()) return fallback
+  const characterSize = characterBox.getSize(new THREE.Vector3())
+  const characterCenterWorld = getPetCharacterCenterWorld(characterBox)
+  const petSize = petBox.getSize(new THREE.Vector3())
+  const gapValue = Number(entry.gap)
+  const gap = Number.isFinite(gapValue) && gapValue >= 0 ? gapValue : 0.035
+  const characterHalfWidth = Math.max(characterSize.x * 0.5, 0.08)
+  const petHalfWidth = Math.max(petSize.x * 0.5, 0.04)
+  const distance = characterHalfWidth + petHalfWidth + gap
+  const cameraRight = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
+  cameraRight.y = 0
+  if (cameraRight.lengthSq() < 0.0001) cameraRight.set(1, 0, 0)
+  cameraRight.normalize()
+  const desiredWorld = characterCenterWorld.clone().add(cameraRight.multiplyScalar(sideSign * distance))
+  const desiredLocal = modelPivot.worldToLocal(desiredWorld)
+  desiredLocal.y = Number.isFinite(Number(fallback.y)) ? Number(fallback.y) : 0
+  return desiredLocal
+}
+
+function addPetToGroup(petRoot, entry, group) {
+  if (!petRoot || !entry || !group) return
+  const wrapper = new THREE.Group()
+  wrapper.name = 'Pet_' + (entry.label || 'Modelo')
+  wrapper.add(petRoot)
+  stylePetRoot(petRoot, entry)
+  const pos = entry.position || {}
+  const fallbackPosition = new THREE.Vector3(
+    Number.isFinite(Number(pos.x)) ? Number(pos.x) : (entry.side === 'right' ? 0.58 : -0.58),
+    Number.isFinite(Number(pos.y)) ? Number(pos.y) : 0,
+    Number.isFinite(Number(pos.z)) ? Number(pos.z) : 0
+  )
+  wrapper.userData.petRoot = petRoot
+  wrapper.userData.petEntry = entry
+  wrapper.userData.fallbackPosition = fallbackPosition
+  const placement = getNearModelPetPlacement(petRoot, entry, fallbackPosition)
+  wrapper.position.copy(placement)
+  group.add(wrapper)
+}
+
+function updatePetPlacements() {
+  if (!petState.group || !modelPivot || !camera) return
+  for (const wrapper of petState.group.children) {
+    const petRoot = wrapper && wrapper.userData ? wrapper.userData.petRoot : null
+    const entry = wrapper && wrapper.userData ? wrapper.userData.petEntry : null
+    const fallbackPosition = wrapper && wrapper.userData ? wrapper.userData.fallbackPosition : null
+    if (!petRoot || !entry) continue
+    wrapper.position.copy(getNearModelPetPlacement(petRoot, entry, fallbackPosition))
+  }
+}
+
+function applyPetMode(mode) {
+  petState.current = mode || 'none'
+  clearPets()
+  if (!modelPivot) return
+  const modeEntry = getPetModeEntry(petState.current)
+  const petKeys = modeEntry && Array.isArray(modeEntry.pets) ? modeEntry.pets : []
+  if (!petKeys.length) return
+  const token = petState.token
+  const group = new THREE.Group()
+  group.name = 'PetGroup'
+  petState.group = group
+  modelPivot.add(group)
+  const loader = new THREE.GLTFLoader()
+  petKeys.forEach(key => {
+    const entry = getPetEntry(key)
+    if (!entry || !entry.path) return
+    loader.load(entry.path, gltf => {
+      if (token !== petState.token || group !== petState.group) return
+      addPetToGroup(gltf.scene, entry, group)
+    }, undefined, err => {
+      console.warn('Falha ao carregar pet', entry.path, err)
+    })
+  })
+}
+
+
+function getRunescapeStaffOffset(modelKey) {
+  const entry = getModelEntry(modelKey)
+  const offset = entry && entry.runescapeStaffOffset ? entry.runescapeStaffOffset : null
+  return {
+    x: offset && Number.isFinite(Number(offset.x)) ? Number(offset.x) : 0,
+    y: offset && Number.isFinite(Number(offset.y)) ? Number(offset.y) : 0,
+    z: offset && Number.isFinite(Number(offset.z)) ? Number(offset.z) : 0
+  }
+}
+
+
+function findRunescapeNodeByName(name) {
+  if (!modelRoot || !name) return null
+  let found = null
+  const target = normalizeName(name)
+  modelRoot.traverse(obj => {
+    if (!found && normalizeName(obj.name) === target) found = obj
+  })
+  return found
+}
+
+function getRunescapeStaffAnchorConfig(modelKey) {
+  const entry = getModelEntry(modelKey) || {}
+  return {
+    handAnchor: entry.runescapeStaffHandAnchor || 'root_151',
+    staffRoot: entry.runescapeStaffRoot || 'root_51'
+  }
+}
+
+function prepareRunescapeStaffAnchor(modelKey) {
+  runescapeStaffAnchorState = null
+  if (!modelRoot || !isRunescapeModel(modelKey)) return
+  const config = getRunescapeStaffAnchorConfig(modelKey)
+  const handAnchor = findRunescapeNodeByName(config.handAnchor)
+  const staffRoot = findRunescapeNodeByName(config.staffRoot)
+  if (!handAnchor || !staffRoot) return
+  modelRoot.updateWorldMatrix(true, true)
+  handAnchor.updateWorldMatrix(true, false)
+  staffRoot.updateWorldMatrix(true, false)
+  const offsetMatrix = new THREE.Matrix4().copy(handAnchor.matrixWorld).invert().multiply(staffRoot.matrixWorld)
+  runescapeStaffAnchorState = {
+    handAnchor,
+    staffRoot,
+    offsetMatrix,
+    targetWorld: new THREE.Matrix4(),
+    localMatrix: new THREE.Matrix4(),
+    inverseParentWorld: new THREE.Matrix4(),
+    position: new THREE.Vector3(),
+    quaternion: new THREE.Quaternion(),
+    scale: new THREE.Vector3()
+  }
+}
+
+function isRunescapeExternalMoveClip() {
+  if (!activeClip || !isRunescapeModel(currentModelKey)) return false
+  const name = normalizeName(activeClip.name)
+  return name.includes('runescape - walk') || name.includes('runescape - run')
+}
+
+function enforceRunescapeStaffAnchor() {
+  if (!runescapeStaffAnchorState || !isRunescapeExternalMoveClip()) return
+  const state = runescapeStaffAnchorState
+  if (!state.handAnchor || !state.staffRoot || !state.staffRoot.parent) return
+  state.handAnchor.updateWorldMatrix(true, false)
+  state.staffRoot.parent.updateWorldMatrix(true, false)
+  state.targetWorld.copy(state.handAnchor.matrixWorld).multiply(state.offsetMatrix)
+  state.inverseParentWorld.copy(state.staffRoot.parent.matrixWorld).invert()
+  state.localMatrix.copy(state.inverseParentWorld).multiply(state.targetWorld)
+  state.localMatrix.decompose(state.position, state.quaternion, state.scale)
+  state.staffRoot.position.copy(state.position)
+  state.staffRoot.quaternion.copy(state.quaternion)
+  state.staffRoot.scale.copy(state.scale)
+  state.staffRoot.updateMatrixWorld(true)
+}
+
+function prepareRunescapeStaffOffset(modelKey) {
+  runescapeStaffOffsetState = null
+  if (!modelRoot || !isRunescapeModel(modelKey)) return
+  const offset = getRunescapeStaffOffset(modelKey)
+  if (!offset.x && !offset.y && !offset.z) return
+  let staffRoot = null
+  modelRoot.traverse(obj => {
+    if (!staffRoot && normalizeName(obj.name) === 'root_51') staffRoot = obj
+  })
+  if (!staffRoot) return
+  runescapeStaffOffsetState = {
+    root: staffRoot,
+    base: staffRoot.position.clone(),
+    offset: new THREE.Vector3(offset.x, offset.y, offset.z)
+  }
+  enforceRunescapeStaffOffset()
+}
+
+function enforceRunescapeStaffOffset() {
+  if (!runescapeStaffOffsetState || !runescapeStaffOffsetState.root) return
+  runescapeStaffOffsetState.root.position.copy(runescapeStaffOffsetState.base).add(runescapeStaffOffsetState.offset)
+  runescapeStaffOffsetState.root.updateMatrixWorld(true)
+}
+
+function getAnimationSourceClipName(source, clip, index, total) {
+  if (source && Array.isArray(source.clipLabels) && source.clipLabels[index]) return source.clipLabels[index]
+  const label = source && source.label ? source.label : 'Animação externa'
+  return total > 1 ? label + ' ' + (index + 1) : label
+}
+
+function cloneAnimationClip(clip) {
+  return clip && typeof clip.clone === 'function' ? clip.clone() : clip
+}
+
+function shouldSkipAnimationSourceClip(source, clip, index) {
+  const skipIndexes = source && Array.isArray(source.skipClipIndexes) ? source.skipClipIndexes : []
+  if (skipIndexes.includes(index)) return true
+  const name = normalizeName(getAnimationSourceClipName(source, clip, index, 1))
+  return name.includes('loop')
+}
+
+function stripPositionScaleTracksFromClip(clip) {
+  if (!clip || !Array.isArray(clip.tracks)) return clip
+  clip.tracks = clip.tracks.filter(track => {
+    const name = normalizeName(track && track.name)
+    return !name.endsWith('.position') && !name.endsWith('.scale') && !name.endsWith('.translation')
+  })
+  if (typeof clip.resetDuration === 'function') clip.resetDuration()
+  return clip
+}
+
+function stripRunescapeStaffRootTracksFromClip(clip) {
+  if (!clip || !Array.isArray(clip.tracks)) return clip
+  clip.tracks = clip.tracks.filter(track => {
+    const name = normalizeName(track && track.name)
+    if (!name.startsWith('root_51.')) return true
+    return !name.endsWith('.position') && !name.endsWith('.scale') && !name.endsWith('.translation')
+  })
+  if (typeof clip.resetDuration === 'function') clip.resetDuration()
+  return clip
+}
+
+function prepareExtraAnimationClip(source, clip, index, total) {
+  const cloned = cloneAnimationClip(clip)
+  cloned.name = getAnimationSourceClipName(source, clip, index, total)
+  if (source && source.stripPositionScaleTracks) stripPositionScaleTracksFromClip(cloned)
+  if (source && source.protectRunescapeStaff) stripRunescapeStaffRootTracksFromClip(cloned)
+  return cloned
+}
+
+function loadExtraAnimationClips(loader, sources) {
+  if (!sources.length) return Promise.resolve([])
+  return Promise.all(sources.map(source => new Promise(resolve => {
+    loader.load(source.path, extraGltf => {
+      const sourceClips = extraGltf.animations || []
+      const clips = []
+      sourceClips.forEach((clip, index) => {
+        if (shouldSkipAnimationSourceClip(source, clip, index)) return
+        clips.push(prepareExtraAnimationClip(source, clip, index, sourceClips.length))
+      })
+      resolve(clips)
+    }, undefined, err => {
+      console.warn('Falha ao carregar animação extra do modelo', source.path, err)
+      resolve([])
+    })
+  }))).then(groups => {
+    const clips = []
+    groups.forEach(group => group.forEach(clip => clips.push(clip)))
+    return clips
+  })
+}
+
 function isDevilsirModel(modelKey) {
   const entry = getModelEntry(modelKey)
   return !!entry && entry.character === 'devilsir'
+}
+
+function isRunescapeModel(modelKey) {
+  const entry = getModelEntry(modelKey)
+  return !!entry && entry.variant === 'runescape'
+}
+
+function getModelAnimationLabel(modelKey, clipName) {
+  const entry = getModelEntry(modelKey)
+  if (!entry || !entry.animationLabels) return clipName
+  return entry.animationLabels[clipName] || clipName
+}
+
+function normalizeRunescapeAnimationName(index, clipName) {
+  const cleanName = (clipName || '').trim()
+  if (cleanName.toLowerCase().startsWith('runescape - ')) return cleanName
+  if (!cleanName || cleanName.toLowerCase() === 'anim' || cleanName.toLowerCase() === 'animation') return index === 0 ? 'Runescape - Animação original' : 'Runescape - Animação ' + (index + 1)
+  return cleanName
+}
+
+function prepareAnimationsForModel(sourceAnimations, modelKey) {
+  const clips = sourceAnimations.slice()
+  if (isRunescapeModel(modelKey)) {
+    clips.forEach((clip, index) => {
+      clip.name = normalizeRunescapeAnimationName(index, clip.name)
+    })
+  }
+  return clips.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+}
+
+function getAnimationDisplayName(name) {
+  return getModelAnimationLabel(currentModelKey, name)
+}
+
+function animationMatchesSearch(name, query) {
+  if (!query) return true
+  const label = getAnimationDisplayName(name)
+  return normalizeName(name).includes(query) || normalizeName(label).includes(query)
 }
 
 function populateModelSelect() {
@@ -441,6 +864,8 @@ function resolveSpecialBonesForModel() {
 function collectDevilsirSwordMeshes() {
   devilsirSwordMeshes = []
   devilsirShoulderReplacements = []
+  runescapeStaffMeshes = []
+  runescapeStaffReplacements = []
   if (!modelRoot) return
   modelRoot.traverse(obj => {
     if (!obj.isMesh) return
@@ -480,6 +905,20 @@ function disposeLucasNeckFillers() {}
 
 function addLucasNeckFillers() {}
 
+function collectRunescapeStaffMeshes() {
+  runescapeStaffMeshes = []
+  if (!modelRoot || !isRunescapeModel(currentModelKey)) return
+  const staffNames = new Set(['mesh_6', 'mesh_7', 'mesh_8', 'mesh_9'])
+  modelRoot.traverse(obj => {
+    if (!obj.isMesh) return
+    if (staffNames.has(normalizeName(obj.name))) runescapeStaffMeshes.push(obj)
+  })
+}
+
+function lockRunescapeStaffToHand() {
+  runescapeStaffReplacements = []
+}
+
 function lockDevilsirShouldersToRig() {
   devilsirShoulderReplacements = []
 }
@@ -487,6 +926,7 @@ function lockDevilsirShouldersToRig() {
 function cleanupCurrentModel() {
   clearEffects()
   clearHandAccessory()
+  clearPets()
   handAccessoryState.current = 'none'
   if (mixer) {
     mixer.stopAllAction()
@@ -509,6 +949,10 @@ function cleanupCurrentModel() {
   centerBone = null
   devilsirSwordMeshes = []
   devilsirShoulderReplacements = []
+  runescapeStaffMeshes = []
+  runescapeStaffReplacements = []
+  runescapeStaffOffsetState = null
+  runescapeStaffAnchorState = null
   if (modelPivot && modelPivot.parent) modelPivot.parent.remove(modelPivot)
   modelPivot = null
   modelRoot = null
@@ -526,7 +970,13 @@ function loadSelectedModel(modelKey) {
   }
   const loader = new THREE.GLTFLoader()
   const modelPath = getModelPath(modelKey)
-  loader.load(modelPath, gltf => setupModel(gltf, modelKey), undefined, err => {
+  loader.load(modelPath, gltf => {
+    const extraAnimationSources = getModelAnimationSources(modelKey)
+    loadExtraAnimationClips(loader, extraAnimationSources).then(extraClips => {
+      if (extraClips.length) gltf.animations = (gltf.animations || []).concat(extraClips)
+      setupModel(gltf, modelKey)
+    })
+  }, undefined, err => {
     loading.textContent = 'Falha ao carregar o modelo. Abra pelo servidor local do ZIP.'
     console.error(err)
   })
@@ -1935,7 +2385,7 @@ function prettyFxName(fx) {
 }
 
 function updateBadges() {
-  currentAnimBadge.textContent = 'Animação: ' + (activeClip ? activeClip.name : '-')
+  currentAnimBadge.textContent = 'Animação: ' + (activeClip ? getAnimationDisplayName(activeClip.name) : '-')
   currentFxBadge.textContent = 'FX: ' + prettyFxName(currentFxType)
 }
 
@@ -1972,8 +2422,8 @@ function playAnimationByName(name) {
 function rebuildSelect() {
   const query = searchInput ? normalizeName(searchInput.value.trim()) : ''
   filteredAnimationNames = allAnimationNames.filter(name => {
-    const matchSearch = !query || normalizeName(name).includes(query)
-    const matchFx = !fxOnlyMode || getFxForAnimation(name) !== 'none'
+    const matchSearch = animationMatchesSearch(name, query)
+    const matchFx = !fxOnlyMode || getFxForAnimation(name) !== 'none' || isRunescapeModel(currentModelKey)
     return matchSearch && matchFx
   })
   animationSelect.innerHTML = ''
@@ -1981,7 +2431,8 @@ function rebuildSelect() {
     const option = document.createElement('option')
     const fx = autoFxMap[name] || 'none'
     option.value = name
-    option.textContent = fx !== 'none' ? name + '  •  ' + prettyFxName(fx) : name
+    const label = getAnimationDisplayName(name)
+    option.textContent = fx !== 'none' ? label + '  •  ' + prettyFxName(fx) : label
     animationSelect.appendChild(option)
   }
   if (!filteredAnimationNames.length) {
@@ -2011,19 +2462,21 @@ function setupModel(gltf, modelKey = currentModelKey) {
   modelRoot = gltf.scene
   modelPivot.add(modelRoot)
   const platformHeight = 0.18
-  let box = new THREE.Box3().setFromObject(modelRoot)
+  const fitEntry = getModelFitEntry(modelKey)
+  let box = getModelFitBox(modelRoot, fitEntry)
   const rawSize = box.getSize(new THREE.Vector3())
-  const targetHeight = 1.0
+  const targetHeight = getFitTargetHeight(fitEntry)
   if (rawSize.y > 0) {
     const normalizeScale = targetHeight / rawSize.y
     modelRoot.scale.setScalar(normalizeScale)
-    box = new THREE.Box3().setFromObject(modelRoot)
+    box = getModelFitBox(modelRoot, fitEntry)
   }
   const center = box.getCenter(new THREE.Vector3())
   modelRoot.position.x = -center.x
   modelRoot.position.z = -center.z
   modelRoot.position.y = platformHeight - box.min.y
-  box = new THREE.Box3().setFromObject(modelPivot)
+  modelRoot.updateWorldMatrix(true, true)
+  box = getModelFitBox(modelRoot, fitEntry)
   const size = box.getSize(new THREE.Vector3())
   centerBone = pickCenterBone(modelRoot)
   stabilizeCharacterOnPlatform()
@@ -2033,11 +2486,16 @@ function setupModel(gltf, modelKey = currentModelKey) {
     if (obj.isMesh) {
       obj.castShadow = true
       obj.receiveShadow = true
+      if (isRunescapeModel(modelKey)) obj.frustumCulled = false
       if (obj.material) {
         const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
         for (const mat of materials) {
           if ('envMapIntensity' in mat) mat.envMapIntensity = 1.0
           mat.transparent = !!mat.transparent
+          if (isRunescapeModel(modelKey)) {
+            mat.side = THREE.DoubleSide
+            mat.needsUpdate = true
+          }
         }
       }
     }
@@ -2053,12 +2511,15 @@ function setupModel(gltf, modelKey = currentModelKey) {
     lockDevilsirShouldersToRig()
     collectDevilsirSwordMeshes()
     applyDevilsirSwordVisibility()
+    lockRunescapeStaffToHand()
+    prepareRunescapeStaffAnchor(modelKey)
   } else {
     applyHandAccessory(handItemModeSelect ? handItemModeSelect.value : 'none')
   }
+  applyPetMode(petModeSelect ? petModeSelect.value : 'none')
   key.target = modelPivot || modelRoot
   scene.add(key.target)
-  animations = gltf.animations.slice().sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+  animations = prepareAnimationsForModel(gltf.animations, modelKey)
   allAnimationNames = animations.map(a => a.name)
   autoFxMap = assignAutoEffects(allAnimationNames)
   mixer = new THREE.AnimationMixer(modelRoot)
@@ -2069,6 +2530,7 @@ function setupModel(gltf, modelKey = currentModelKey) {
 }
 
 populateModelSelect()
+populatePetSelect()
 if (modelSelect) {
   modelSelect.addEventListener('change', () => {
     loadSelectedModel(modelSelect.value)
@@ -2097,6 +2559,11 @@ fxModeSelect.addEventListener('change', () => {
 handItemModeSelect.addEventListener('change', () => {
   applyHandAccessory(handItemModeSelect.value)
 })
+if (petModeSelect) {
+  petModeSelect.addEventListener('change', () => {
+    applyPetMode(petModeSelect.value)
+  })
+}
 qualityModeSelect.addEventListener('change', () => {
   applyQualityMode(qualityModeSelect.value)
 })
@@ -2115,12 +2582,14 @@ function animate() {
   requestAnimationFrame(animate)
   const dt = Math.min(clock.getDelta(), 0.05)
   if (mixer && playState) mixer.update(dt)
+  enforceRunescapeStaffAnchor()
   if (modelPivot && centerBone) stabilizeCharacterOnPlatform()
+  updateCameraController()
+  updatePetPlacements()
   updateHandAccessoryWorld()
   platformGlow.material.opacity = 0.44 + Math.sin(clock.elapsedTime * 2.0) * 0.08
   maybeEmitFx(dt)
   updateEffects(dt)
-  updateCameraController()
   renderer.render(scene, camera)
 }
 
