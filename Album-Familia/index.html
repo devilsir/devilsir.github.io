@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#667456" />
+    <meta name="description" content="Álbum digital Recordações em Família com 64 figurinhas e desafios." />
+    <title>Recordações em Família — Álbum Digital</title>
+    <link rel="icon" type="image/webp" href="assets/app-icon.webp" />
+    <link rel="stylesheet" href="app.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <header class="topbar">
+        <button class="brand" id="brandButton" type="button" aria-label="Voltar para a capa">
+          <img src="assets/app-icon.webp" alt="" />
+          <span><strong>Recordações</strong><small>Álbum de família · 2026</small></span>
+        </button>
+
+        <nav class="desktop-nav" aria-label="Navegação principal">
+          <button class="nav-pill is-active" data-view="album" type="button">
+            <span aria-hidden="true">▤</span> Álbum
+          </button>
+          <button class="nav-pill" data-view="challenges" type="button">
+            <span aria-hidden="true">◇</span> Desafios
+          </button>
+          <button class="nav-pill free-nav-pill" data-view="free" type="button">
+            <span aria-hidden="true">✦</span> Desafio Livre
+          </button>
+          <button class="nav-pill" data-view="inventory" type="button">
+            <span aria-hidden="true">▦</span> Inventário
+          </button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="progress-chip" id="progressChip" type="button" aria-label="Abrir inventário">
+            <span class="mini-progress" id="miniProgress"><i>0</i></span>
+            <span><strong id="headerProgress">0/64</strong><small>liberadas</small></span>
+          </button>
+          <div class="music-control" id="musicControl">
+            <button class="icon-button" id="musicButton" type="button" aria-label="Abrir controle de volume" title="Controle de volume">♫</button>
+            <div class="volume-popover" id="volumePopover" hidden>
+              <label for="musicVolume"><span>Volume</span><strong id="musicVolumeLabel">35%</strong></label>
+              <input id="musicVolume" type="range" min="0" max="100" value="35" step="1" />
+            </div>
+          </div>
+          <button class="icon-button" id="resetButton" type="button" aria-label="Recomeçar álbum" title="Recomeçar">↻</button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="view album-view is-active" id="albumView" aria-labelledby="albumTitle">
+          <div class="album-column">
+            <div class="section-heading compact-heading">
+              <div><span class="eyebrow" id="pageEyebrow">Capa</span><h1 id="albumTitle">Meu álbum</h1></div>
+              <div class="page-heading-actions">
+                <button class="soft-button" id="fullscreenPage" type="button" aria-label="Abrir página em tela cheia">⛶ <span>Tela cheia</span></button>
+                <span class="page-counter" id="pageCounter">1 / 12</span>
+              </div>
+            </div>
+
+            <div class="album-navigator">
+              <button class="page-arrow previous" id="previousPage" type="button" aria-label="Página anterior">‹</button>
+              <div class="page-wrap" id="pageWrap">
+                <div class="page-loading" id="pageLoading"><span></span><span></span><span></span></div>
+                <img id="albumPage" alt="" draggable="false" />
+                <div class="interactive-layer" id="interactiveLayer" aria-live="polite"></div>
+                <button class="fullscreen-exit" id="exitFullscreen" type="button">Fechar tela cheia</button>
+              </div>
+              <button class="page-arrow next" id="nextPage" type="button" aria-label="Próxima página">›</button>
+            </div>
+            <div class="page-strip" id="pageStrip" aria-label="Escolher página"></div>
+          </div>
+
+          <aside class="collection-panel">
+            <article class="panel-card progress-card">
+              <div class="progress-ring" id="progressRing"><span><strong id="progressPercent">0%</strong><small>completo</small></span></div>
+              <div><span class="eyebrow light">Nossa coleção</span><h2><span id="unlockedCount">0</span> de 64</h2><p><span id="placedCount">0</span> coladas no álbum</p></div>
+            </article>
+
+            <article class="panel-card challenge-card-main">
+              <span class="spark" aria-hidden="true">✦</span>
+              <span class="eyebrow">Escolha sua lembrança</span>
+              <h2>Resolva, libere e cole</h2>
+              <p>Todos os 64 desafios estão disponíveis. Escolha qualquer um para jogar.</p>
+              <button class="primary-button full" id="nextChallenge" type="button">Escolher um desafio</button>
+              <div class="offline-note">● Progresso salvo neste aparelho</div>
+            </article>
+
+            <article class="panel-card mini-inventory">
+              <div class="card-title-row"><div><span class="eyebrow">Prontas para colar</span><h2>Inventário</h2></div><button class="text-button" data-view="inventory" type="button">Ver todas</button></div>
+              <div class="mini-grid" id="miniInventory"></div>
+            </article>
+          </aside>
+        </section>
+
+        <section class="view challenges-view" id="challengesView" aria-labelledby="challengesTitle">
+          <div class="section-heading inventory-heading">
+            <div><span class="eyebrow">64 figurinhas · 64 jogos</span><h1 id="challengesTitle">Desafios da família</h1><p>Há quebra-cabeças, memória, cobrinha, blocos, trilhas de bolinhas e outras surpresas.</p></div>
+            <button class="primary-button" id="continueChallenge" type="button">Escolher qualquer desafio</button>
+          </div>
+
+          <div class="inventory-stats">
+            <article><span class="stat-icon terracotta">◇</span><div><strong id="statSolved">0</strong><small>desafios vencidos</small></div></article>
+            <article><span class="stat-icon green">✓</span><div><strong id="statPlaced">0</strong><small>figurinhas coladas</small></div></article>
+            <article><span class="stat-icon gold">♡</span><div><strong id="statMissing">64</strong><small>lembranças faltando</small></div></article>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filtrar desafios">
+              <button class="is-active" data-challenge-filter="all" type="button">Todos</button>
+              <button data-challenge-filter="locked" type="button">Para jogar</button>
+              <button data-challenge-filter="available" type="button">Vencidos</button>
+              <button data-challenge-filter="placed" type="button">Colados</button>
+            </div>
+            <span id="filterCount">64 desafios</span>
+          </div>
+          <div class="challenge-grid" id="challengeGrid"></div>
+        </section>
+
+        <section class="view free-view" id="freeView" aria-labelledby="freeTitle">
+          <div class="free-hero">
+            <div class="free-hero-copy">
+              <span class="free-kicker">✦ Modo sem limites</span>
+              <h1 id="freeTitle">Desafio Livre</h1>
+              <p>Jogue qualquer modalidade quantas vezes quiser. Escolha a dificuldade, supere seu melhor tempo e domine todos os puzzles.</p>
+              <div class="free-hero-badges">
+                <span><strong>8</strong> modalidades</span>
+                <span><strong>5</strong> dificuldades</span>
+                <span><strong id="freeWins">0</strong> vitórias</span>
+              </div>
+            </div>
+            <div class="free-hero-orbit" aria-hidden="true">
+              <span>15</span><span>●</span><span>✦</span><span>▦</span><i>◇</i>
+            </div>
+          </div>
+
+          <div class="free-difficulty-panel">
+            <div>
+              <span class="eyebrow">Intensidade escolhida</span>
+              <h2 id="freeDifficultyName">Normal</h2>
+              <p id="freeDifficultyDescription">O equilíbrio ideal entre raciocínio, velocidade e precisão.</p>
+            </div>
+            <div class="free-difficulty-tabs" role="group" aria-label="Escolher dificuldade do Desafio Livre">
+              <button data-free-difficulty="facil" type="button"><i></i>Fácil</button>
+              <button class="is-active" data-free-difficulty="normal" type="button"><i></i>Normal</button>
+              <button data-free-difficulty="dificil" type="button"><i></i>Difícil</button>
+              <button data-free-difficulty="extremo" type="button"><i></i>Extremo</button>
+              <button data-free-difficulty="inferno" type="button"><i></i>Inferno</button>
+            </div>
+          </div>
+
+          <div class="free-game-grid" id="freeGameGrid"></div>
+        </section>
+
+        <section class="view inventory-view" id="inventoryView" aria-labelledby="inventoryTitle">
+          <div class="section-heading inventory-heading">
+            <div><span class="eyebrow">Minha coleção</span><h1 id="inventoryTitle">Inventário de figurinhas</h1><p>Veja o que falta liberar, o que já pode ser colado e o que está guardado no álbum.</p></div>
+            <button class="primary-button" id="inventoryChooseChallenge" type="button">Abrir desafios</button>
+          </div>
+
+          <div class="inventory-stats">
+            <article><span class="stat-icon terracotta">◇</span><div><strong id="inventoryUnlocked">0</strong><small>figurinhas liberadas</small></div></article>
+            <article><span class="stat-icon gold">✦</span><div><strong id="inventoryAvailable">0</strong><small>prontas para colar</small></div></article>
+            <article><span class="stat-icon green">✓</span><div><strong id="inventoryPlaced">0</strong><small>coladas no álbum</small></div></article>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filtrar inventário">
+              <button class="is-active" data-inventory-filter="all" type="button">Todas</button>
+              <button data-inventory-filter="locked" type="button">Bloqueadas</button>
+              <button data-inventory-filter="available" type="button">Para colar</button>
+              <button data-inventory-filter="placed" type="button">Coladas</button>
+            </div>
+            <span id="inventoryFilterCount">64 figurinhas</span>
+          </div>
+          <div class="inventory-grid" id="inventoryGrid"></div>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Navegação principal">
+        <button class="is-active" data-view="album" type="button"><span aria-hidden="true">▤</span><small>Álbum</small></button>
+        <button data-view="challenges" type="button"><span>◇</span><small>Álbum+</small></button>
+        <button class="play-main" data-view="free" type="button"><span>✦</span><small>Livre</small></button>
+        <button data-view="inventory" type="button"><span aria-hidden="true">▦</span><small>Inventário</small></button>
+      </nav>
+    </div>
+
+    <div class="paste-banner" id="pasteBanner" role="status" aria-live="polite">
+      <img id="pasteThumb" alt="" />
+      <div><strong id="pasteTitle">Figurinha pronta</strong><span>Toque no espaço iluminado para colar.</span></div>
+      <button id="cancelPaste" type="button">Cancelar</button>
+    </div>
+
+    <div class="modal-backdrop" id="puzzleModal" hidden>
+      <section class="puzzle-modal" role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow" id="puzzleEyebrow">Desafio 01 de 64</span><h2 id="puzzleTitle">Quebra-cabeça</h2></div>
+          <button class="icon-button close-modal" id="closePuzzle" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="puzzle-intro">
+          <img id="puzzleSticker" alt="Figurinha que será liberada" />
+          <div><p id="puzzleDescription"></p><strong id="puzzleObjective"></strong></div>
+        </div>
+        <div class="puzzle-stage" id="puzzleStage"></div>
+        <footer class="puzzle-footer"><span id="puzzleStatus" role="status">Boa sorte!</span><span class="free-live-timer" id="freeLiveTimer" hidden aria-label="Tempo da partida">00:00,0</span><button class="secondary-button" id="restartPuzzle" type="button">Recomeçar</button></footer>
+      </section>
+    </div>
+
+    <div class="modal-backdrop profile-backdrop" id="profileModal" hidden>
+      <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileName">
+        <button class="profile-close" id="closeProfile" type="button" aria-label="Fechar perfil">×</button>
+        <div class="profile-visual">
+          <span class="profile-star star-one" aria-hidden="true">★</span>
+          <span class="profile-star star-two" aria-hidden="true">✦</span>
+          <div class="profile-sticker-frame"><img id="profileSticker" alt="" /></div>
+        </div>
+        <div class="profile-content">
+          <span class="profile-unlocked"><i>✓</i> Perfil da lembrança</span>
+          <span class="eyebrow" id="profileNumber">Figurinha 01</span>
+
+          <div class="profile-editable profile-name-field">
+            <label for="profileName">Nome <button class="profile-edit-button" data-profile-field="name" type="button" aria-label="Editar nome">✎</button></label>
+            <input id="profileName" type="text" value="Não informado" readonly />
+          </div>
+
+          <div class="profile-facts">
+            <article class="profile-editable">
+              <label for="profileInfo">Informações <button class="profile-edit-button" data-profile-field="info" type="button" aria-label="Editar informações">✎</button></label>
+              <textarea id="profileInfo" rows="2" readonly>Não informado</textarea>
+            </article>
+            <article>
+              <span>No álbum</span>
+              <strong id="profileLocation">Página 2 · espaço 1</strong>
+            </article>
+          </div>
+
+          <div class="profile-description profile-editable">
+            <label for="profileText">Sobre esta lembrança <button class="profile-edit-button" data-profile-field="text" type="button" aria-label="Editar texto sobre a lembrança">✎</button></label>
+            <textarea id="profileText" rows="5" readonly>Não informado</textarea>
+          </div>
+          <button class="primary-button full profile-continue" id="profileContinue" type="button">Continuar o álbum</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="textStyleModal" hidden>
+      <section class="small-modal" role="dialog" aria-modal="true" aria-labelledby="textStyleTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Personalizar caixa</span><h2 id="textStyleTitle">Cor e fonte do texto</h2></div>
+          <button class="icon-button close-modal" id="closeTextStyle" type="button" aria-label="Fechar personalização">×</button>
+        </header>
+        <div class="text-style-content">
+          <label for="textFont">Fonte</label>
+          <select id="textFont">
+            <option value="Segoe UI, Arial, sans-serif">Limpa</option>
+            <option value="Georgia, Times New Roman, serif">Clássica</option>
+            <option value="Trebuchet MS, Arial, sans-serif">Suave</option>
+            <option value="Comic Sans MS, cursive">Manual</option>
+            <option value="Courier New, monospace">Máquina de escrever</option>
+          </select>
+          <label>Cor</label>
+          <div class="color-options" id="textColorOptions">
+            <button type="button" data-color="#655c4c" style="--swatch:#655c4c" aria-label="Marrom"></button>
+            <button type="button" data-color="#a64f3d" style="--swatch:#a64f3d" aria-label="Terracota"></button>
+            <button type="button" data-color="#4f6547" style="--swatch:#4f6547" aria-label="Verde"></button>
+            <button type="button" data-color="#456d73" style="--swatch:#456d73" aria-label="Azul"></button>
+            <button type="button" data-color="#2f2a25" style="--swatch:#2f2a25" aria-label="Preto"></button>
+            <label class="custom-color" for="textColor"><span>+</span><input id="textColor" type="color" value="#655c4c" aria-label="Escolher outra cor" /></label>
+          </div>
+          <div class="text-preview" id="textStylePreview">Uma lembrança especial...</div>
+          <button class="secondary-button" id="resetTextStyle" type="button">Voltar ao padrão desta caixa</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="secretModal" hidden>
+      <section class="small-modal secret-modal" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Acesso reservado</span><h2 id="secretTitle">Digite a frase</h2></div>
+          <button class="icon-button close-modal" id="closeSecret" type="button" aria-label="Fechar acesso reservado">×</button>
+        </header>
+        <form id="secretForm" class="secret-content">
+          <input id="secretInput" type="text" autocomplete="off" aria-label="Frase secreta" />
+          <button class="primary-button" type="submit">Confirmar</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <audio id="backgroundMusic" src="assets/audio/lembrancas-de-familia.mp3" preload="auto" loop></audio>
+  </body>
+</html>
