@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090909">
-  <title>Central de Projetos</title>
-  <meta name="description" content="Acesso aos projetos, experiências e páginas do portfólio.">
+  <title>Animações Interativas</title>
+  <meta name="description" content="Menu de acesso às animações e experiências interativas.">
   <style>
     :root {
       --black: #090909;
@@ -299,14 +299,58 @@
       transition: transform 260ms cubic-bezier(.2, .8, .2, 1), border-color 260ms ease, background 260ms ease;
     }
 
-    .project:nth-child(1),
-    .project:nth-child(6) {
+    .project--wide {
       grid-column: span 6;
     }
 
-    .project:nth-child(4),
-    .project:nth-child(9) {
+    .project--red {
       --accent: var(--red-bright);
+    }
+
+    .section-heading {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 34px 0 2px;
+      padding: 0 2px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading:first-child {
+      margin-top: 8px;
+    }
+
+    .section-heading[hidden] {
+      display: none;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold-light);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+
+    .section-total {
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .project::before {
@@ -473,8 +517,7 @@
       }
 
       .project,
-      .project:nth-child(1),
-      .project:nth-child(6) {
+      .project--wide {
         grid-column: span 6;
       }
     }
@@ -512,10 +555,16 @@
       }
 
       .project,
-      .project:nth-child(1),
-      .project:nth-child(6) {
+      .project--wide {
         grid-column: 1 / -1;
         min-height: 228px;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 26px;
       }
 
       footer {
@@ -542,177 +591,191 @@
 <body>
   <main class="page">
     <div class="topbar">
-      <div class="brand">
+      <a class="brand" href="../index.html" style="text-decoration:none" aria-label="Voltar para a Central de Projetos">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span>devilsir.github.io</span>
-      </div>
-      <span class="top-label">Arquivo digital · Projetos interativos</span>
+        <span>← Central de Projetos</span>
+      </a>
+      <span class="top-label">devilsir.github.io · Animações</span>
     </div>
 
     <section class="hero" aria-labelledby="page-title">
       <div>
-        <p class="eyebrow">Seleção de experiências</p>
-        <h1 id="page-title">Central de <em>Projetos</em></h1>
+        <p class="eyebrow">Experiências interativas</p>
+        <h1 id="page-title">Menu de <em>Animações</em></h1>
       </div>
       <p class="hero-copy">
-        Um acesso único para navegar pelos <strong>álbuns, animações, experimentos e projetos interativos</strong> publicados neste repositório.
+        Selecione uma das <strong>10 animações</strong> para abrir sua página. Todas estão organizadas dentro desta área.
       </p>
     </section>
 
-    <section class="toolbar" aria-label="Pesquisa de projetos">
+    <section class="toolbar" aria-label="Pesquisa de animações">
       <label class="search-wrap" for="search">
         <span class="search-icon" aria-hidden="true"></span>
-        <input id="search" type="search" autocomplete="off" placeholder="Buscar projeto, coleção ou experiência...">
+        <input id="search" type="search" autocomplete="off" placeholder="Buscar animação, tema ou experiência...">
       </label>
       <div class="counter" aria-live="polite">
-        <span>Projetos disponíveis</span>
-        <strong id="count">9</strong>
+        <span>Animações disponíveis</span>
+        <strong id="count">10</strong>
       </div>
     </section>
 
-    <section class="projects" id="projects" aria-label="Lista de projetos">
-      <a class="project" href="./Album-Familia/index.html" data-search="álbum album família familia memórias fotos">
-        <div class="project-top">
-          <span class="project-number">01</span>
-          <span class="project-tag">Álbum</span>
+    <section class="projects" id="projects" aria-label="Lista de animações">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">Galeria exclusiva</span>
+          <h2>Páginas de animação</h2>
         </div>
-        <div class="project-content">
-          <h2>Álbum Família</h2>
-          <p>Experiência digital dedicada às memórias e histórias de família.</p>
-        </div>
-        <div class="project-bottom">
-          <span class="project-path">/Album-Familia/</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
+        <span class="section-total">10 experiências</span>
+      </div>
 
-      <a class="project" href="./Album-World-Stars/index.html" data-search="álbum album world stars copa futebol figurinhas">
+      <a class="project project--wide project--red" href="./cafe_lab/index.html" data-search="animação animacao café cafe lab laboratório laboratorio">
         <div class="project-top">
-          <span class="project-number">02</span>
-          <span class="project-tag">Coleção</span>
-        </div>
-        <div class="project-content">
-          <h2>World Stars</h2>
-          <p>Álbum interativo com clima de coleção, esporte e descoberta.</p>
-        </div>
-        <div class="project-bottom">
-          <span class="project-path">/Album-World-Stars/</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="project" href="./animacoes/index.html" data-search="animações animacoes motion movimento vídeos videos">
-        <div class="project-top">
-          <span class="project-number">03</span>
-          <span class="project-tag">Motion</span>
-        </div>
-        <div class="project-content">
-          <h2>Animações</h2>
-          <p>Galeria de cenas, movimentos e experimentos audiovisuais.</p>
-        </div>
-        <div class="project-bottom">
-          <span class="project-path">/animacoes/</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="project" href="./assets/index.html" data-search="assets recursos arquivos biblioteca materiais">
-        <div class="project-top">
-          <span class="project-number">04</span>
-          <span class="project-tag">Recursos</span>
-        </div>
-        <div class="project-content">
-          <h2>Assets</h2>
-          <p>Biblioteca central de recursos e elementos compartilhados.</p>
-        </div>
-        <div class="project-bottom">
-          <span class="project-path">/assets/</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="project" href="./chorartimbo/index.html" data-search="chorar timbó timbo experiência projeto">
-        <div class="project-top">
-          <span class="project-number">05</span>
-          <span class="project-tag">Especial</span>
-        </div>
-        <div class="project-content">
-          <h2>Chorar Timbó</h2>
-          <p>Projeto autoral com identidade própria e navegação dedicada.</p>
-        </div>
-        <div class="project-bottom">
-          <span class="project-path">/chorartimbo/</span>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="project" href="./effects/index.html" data-search="effects efeitos visual laboratório lab interativo">
-        <div class="project-top">
-          <span class="project-number">06</span>
+          <span class="project-number">A01</span>
           <span class="project-tag">Laboratório</span>
         </div>
         <div class="project-content">
-          <h2>Effects Lab</h2>
-          <p>Espaço para efeitos visuais, testes gráficos e interações.</p>
+          <h2>Café Lab</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
         </div>
         <div class="project-bottom">
-          <span class="project-path">/effects/</span>
+          <span class="project-path">/cafe_lab//</span>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
       </a>
-
-      <a class="project" href="./RoletaQuimica/index.html" data-search="roleta química quimica jogo educação ensino perguntas">
+      <a class="project" href="./cargas_atracao/index.html" data-search="animação animacao cargas atração atracao física fisica">
         <div class="project-top">
-          <span class="project-number">07</span>
-          <span class="project-tag">Game</span>
+          <span class="project-number">A02</span>
+          <span class="project-tag">Física</span>
         </div>
         <div class="project-content">
-          <h2>Roleta Química</h2>
-          <p>Experiência gamificada para aprender e praticar química.</p>
+          <h2>Cargas &amp; Atração</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
         </div>
         <div class="project-bottom">
-          <span class="project-path">/RoletaQuimica/</span>
+          <span class="project-path">/cargas_atracao//</span>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
       </a>
-
-      <a class="project" href="./Sobre/index.html" data-search="sobre informações informacoes perfil apresentação apresentacao">
+      <a class="project" href="./geometria-3d/index.html" data-search="animação animacao geometria 3d tridimensional">
         <div class="project-top">
-          <span class="project-number">08</span>
-          <span class="project-tag">Institucional</span>
+          <span class="project-number">A03</span>
+          <span class="project-tag">3D</span>
         </div>
         <div class="project-content">
-          <h2>Sobre</h2>
-          <p>Informações gerais, contexto e apresentação dos projetos.</p>
+          <h2>Geometria 3D</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
         </div>
         <div class="project-bottom">
-          <span class="project-path">/Sobre/</span>
+          <span class="project-path">/geometria-3d//</span>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
       </a>
-
-      <a class="project" href="./timbo/index.html" data-search="timbó timbo portfólio portfolio autor pessoal">
+      <a class="project" href="./hotel-alchy/index.html" data-search="animação animacao hotel alchy química quimica">
         <div class="project-top">
-          <span class="project-number">09</span>
-          <span class="project-tag">Portfólio</span>
+          <span class="project-number">A04</span>
+          <span class="project-tag">Química</span>
         </div>
         <div class="project-content">
-          <h2>Timbó</h2>
-          <p>Área autoral e seleção de trabalhos, ideias e experiências.</p>
+          <h2>Hotel Alchy</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
         </div>
         <div class="project-bottom">
-          <span class="project-path">/timbo/</span>
+          <span class="project-path">/hotel-alchy//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project project--red" href="./ions-3d-visualizador/index.html" data-search="animação animacao íons ions 3d visualizador química quimica">
+        <div class="project-top">
+          <span class="project-number">A05</span>
+          <span class="project-tag">Visualizador</span>
+        </div>
+        <div class="project-content">
+          <h2>Íons 3D</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/ions-3d-visualizador//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project project--wide" href="./lab-3d-de-neutralizacao/index.html" data-search="animação animacao laboratório laboratorio 3d neutralização neutralizacao química quimica">
+        <div class="project-top">
+          <span class="project-number">A06</span>
+          <span class="project-tag">Laboratório 3D</span>
+        </div>
+        <div class="project-content">
+          <h2>Lab 3D de Neutralização</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/lab-3d-de-neutralizacao//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project" href="./marcha-cations-poema/index.html" data-search="animação animacao marcha cátions cations poema química quimica">
+        <div class="project-top">
+          <span class="project-number">A07</span>
+          <span class="project-tag">Poema</span>
+        </div>
+        <div class="project-content">
+          <h2>Marcha Cátions</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/marcha-cations-poema//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project" href="./neutralizacao/index.html" data-search="animação animacao neutralização neutralizacao química quimica">
+        <div class="project-top">
+          <span class="project-number">A08</span>
+          <span class="project-tag">Química</span>
+        </div>
+        <div class="project-content">
+          <h2>Neutralização</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/neutralizacao//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project project--red" href="./rpg_raio_atomico/index.html" data-search="animação animacao rpg raio atômico atomico jogo química quimica">
+        <div class="project-top">
+          <span class="project-number">A09</span>
+          <span class="project-tag">RPG</span>
+        </div>
+        <div class="project-content">
+          <h2>RPG Raio Atômico</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/rpg_raio_atomico//</span>
+          <span class="project-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+      <a class="project project--wide" href="./visualizador_raio/index.html" data-search="animação animacao visualizador raio atômico atomico química quimica">
+        <div class="project-top">
+          <span class="project-number">A10</span>
+          <span class="project-tag">Visualizador</span>
+        </div>
+        <div class="project-content">
+          <h2>Visualizador de Raio</h2>
+          <p>Abra a experiência interativa em uma nova página.</p>
+        </div>
+        <div class="project-bottom">
+          <span class="project-path">/visualizador_raio//</span>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </div>
       </a>
 
-      <div class="empty" id="empty" role="status">Nenhum projeto encontrado para essa busca.</div>
+      <div class="empty" id="empty" role="status">Nenhuma animação encontrada para essa busca.</div>
     </section>
 
     <footer>
-      <span>Central de Projetos · <span id="year"></span></span>
+      <span><a href="../index.html" style="color:inherit; text-decoration:none">← Voltar para a Central de Projetos</a></span>
       <span class="footer-line" aria-hidden="true"></span>
-      <span>Red · Black · Ivory · Gold</span>
+      <span>Animações · <span id="year"></span></span>
     </footer>
   </main>
 
