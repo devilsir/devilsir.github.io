@@ -1347,6 +1347,8 @@
   let pasteTarget = null;
   let pendingQuizStickerId = null;
   let currentQuiz = null;
+  let quizSuccessHandler = null;
+  let quizCancelHandler = null;
   let currentProfileStickerId = null;
   let challengeSession = null;
   let brandTapCount = 0;
@@ -1469,7 +1471,7 @@
   };
 
   function defaultState() {
-    return { unlocked: [], placed: [], page: 1, quizAnswered: [], profileEdits: {} };
+    return { unlocked: [], placed: [], page: 1, quizAnswered: [], profileEdits: {}, unlockSources: {} };
   }
 
   function loadState() {
@@ -1499,12 +1501,24 @@
               ])
           )
         : {};
+      const validUnlockSources = new Set(["challenge", "image", "secret", "legacy"]);
+      const unlockSources = stored.unlockSources && typeof stored.unlockSources === "object" && !Array.isArray(stored.unlockSources)
+        ? Object.fromEntries(
+            Object.entries(stored.unlockSources)
+              .filter(([id, source]) => validIds.has(Number(id)) && unlocked.includes(Number(id)) && validUnlockSources.has(source))
+              .map(([id, source]) => [String(Number(id)), source])
+          )
+        : {};
+      for (const id of unlocked) {
+        if (!unlockSources[String(id)]) unlockSources[String(id)] = "legacy";
+      }
       return {
         unlocked,
         placed,
         page: 1,
         quizAnswered,
         profileEdits,
+        unlockSources,
       };
     } catch (_error) {
       return defaultState();
@@ -1517,6 +1531,28 @@
     } catch (_error) {
       // The album still works for the current session when browser storage is unavailable.
     }
+  }
+
+  function unlockSourceFor(id) {
+    return state.unlockSources?.[String(Number(id))] || "legacy";
+  }
+
+  function setUnlockSource(id, source) {
+    if (!state.unlockSources || typeof state.unlockSources !== "object") state.unlockSources = {};
+    const key = String(Number(id));
+    const current = state.unlockSources[key];
+    if (current === "challenge") return;
+    if (source === "challenge" || !current || current === "legacy") state.unlockSources[key] = source;
+  }
+
+  function unlockSticker(id, source = "legacy") {
+    const numericId = Number(id);
+    if (!state.unlocked.includes(numericId)) state.unlocked.push(numericId);
+    setUnlockSource(numericId, source);
+  }
+
+  function canPasteDirectly(id) {
+    return unlockSourceFor(id) === "challenge";
   }
 
   function referenceById(id) {
@@ -1840,6 +1876,8 @@
     elements.bulkPasteModal.hidden = true;
     isBulkPasting = true;
     pasteTarget = null;
+    let pastedCount = 0;
+    let wasCancelled = false;
     document.body.classList.add("bulk-paste-active");
     document.body.style.overflow = "";
     elements.pasteBanner.classList.add("is-visible", "is-bulk");
@@ -1855,7 +1893,9 @@
       elements.pasteThumb.src = reference.src;
       elements.pasteThumb.alt = reference.label;
       elements.pasteTitle.textContent = `Colando ${index + 1} de ${queue.length}`;
-      elements.pasteMessage.textContent = `${reference.label} · página ${placement.page}`;
+      elements.pasteMessage.textContent = canPasteDirectly(reference.id)
+        ? `${reference.label} · conquistada no desafio`
+        : `${reference.label} · responda para colar`;
 
       if (state.page !== placement.page) {
         setPage(placement.page);
@@ -1866,10 +1906,26 @@
       renderStickerLayer();
       await waitForBulkPaste(220);
 
+      if (!canPasteDirectly(reference.id)) {
+        const approved = await new Promise((resolve) => {
+          openPasteQuiz(reference.id, {
+            onSuccess: () => resolve(true),
+            onCancel: () => resolve(false),
+          });
+        });
+        if (!approved) {
+          wasCancelled = true;
+          pasteTarget = null;
+          renderStickerLayer();
+          break;
+        }
+      }
+
       state.placed.push(reference.id);
-      if (!state.unlocked.includes(reference.id)) state.unlocked.push(reference.id);
+      unlockSticker(reference.id, unlockSourceFor(reference.id));
       justPasted = reference.id;
       pasteTarget = null;
+      pastedCount += 1;
       saveState();
       updateProgress();
       renderStickerLayer();
@@ -1882,10 +1938,14 @@
     justPasted = null;
     document.body.classList.remove("bulk-paste-active");
     elements.pasteBanner.classList.remove("is-visible", "is-bulk");
-    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    elements.pasteMessage.textContent = "Toque no espaço iluminado para colar.";
     renderAll();
-    celebrate(Math.min(90, 34 + queue.length));
-    showToast(`${queue.length} ${queue.length === 1 ? "figurinha colada" : "figurinhas coladas"} no álbum!`, "★");
+    if (pastedCount > 0) celebrate(Math.min(90, 34 + pastedCount));
+    if (wasCancelled) {
+      showToast(pastedCount ? `Colagem pausada após ${pastedCount} ${pastedCount === 1 ? "figurinha" : "figurinhas"}.` : "Colagem pausada.", "✓");
+    } else {
+      showToast(`${pastedCount} ${pastedCount === 1 ? "figurinha colada" : "figurinhas coladas"} no álbum!`, "★");
+    }
   }
 
   function startPaste(id) {
@@ -1896,7 +1956,9 @@
     elements.pasteThumb.src = reference.src;
     elements.pasteThumb.alt = reference.label;
     elements.pasteTitle.textContent = `${reference.label} pronta`;
-    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    elements.pasteMessage.textContent = canPasteDirectly(id)
+      ? "Toque no espaço iluminado para colar direto."
+      : "Toque no espaço iluminado e acerte a pergunta para colar.";
     elements.pasteBanner.classList.remove("is-bulk");
     elements.pasteBanner.classList.add("is-visible");
     switchView("album");
@@ -1908,26 +1970,37 @@
   function cancelPaste() {
     pasteTarget = null;
     elements.pasteBanner.classList.remove("is-visible", "is-bulk");
-    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    elements.pasteMessage.textContent = "Toque no espaço iluminado para colar.";
     renderStickerLayer();
   }
 
   function pasteSticker(id) {
     if (pasteTarget !== id || state.placed.includes(id)) return;
-    openPasteQuiz(id);
+    if (canPasteDirectly(id)) {
+      finalizePasteSticker(id);
+      return;
+    }
+    openPasteQuiz(id, {
+      onSuccess: () => finalizePasteSticker(id),
+      onCancel: () => {
+        if (pasteTarget === id) cancelPaste();
+        showToast("Figurinha guardada no inventário. Tente colar depois.", "✓");
+      },
+    });
   }
 
-  function finalizePasteSticker(id) {
+  function finalizePasteSticker(id, options = {}) {
     if (pasteTarget !== id || state.placed.includes(id)) return;
+    const { showProfile = true, celebratePlacement = true } = options;
     state.placed.push(id);
-    if (!state.unlocked.includes(id)) state.unlocked.push(id);
+    unlockSticker(id, unlockSourceFor(id));
     justPasted = id;
     saveState();
     cancelPaste();
     renderAll();
-    celebrate(36);
+    if (celebratePlacement) celebrate(36);
     showToast(`${referenceById(id).label} colada no álbum!`, "★");
-    window.setTimeout(() => openProfile(id), 280);
+    if (showProfile) window.setTimeout(() => openProfile(id), 280);
   }
 
 
@@ -2092,7 +2165,7 @@
     if (!reference) return closeCollectionChallenge();
     const passed = challengeSession.correct >= CHALLENGE_PASS;
     if (passed && !state.unlocked.includes(reference.id)) {
-      state.unlocked.push(reference.id);
+      unlockSticker(reference.id, "challenge");
       saveState();
       updateProgress();
       renderMiniInventory();
@@ -2175,7 +2248,7 @@
     const normalized = elements.secretInput.value.trim().replace(/\s+/g, " ").toLocaleLowerCase("pt-BR");
     closeSecretModal();
     if (normalized !== SECRET_CODE) return;
-    state.unlocked = orderedReferences().map((reference) => reference.id);
+    orderedReferences().forEach((reference) => unlockSticker(reference.id, "secret"));
     saveState();
     renderAll();
     celebrate(110);
@@ -2204,19 +2277,21 @@
     window.setTimeout(() => $(".quiz-option", elements.quizOptions)?.focus(), 30);
   }
 
-  function openPasteQuiz(id) {
+  function openPasteQuiz(id, options = {}) {
     const reference = referenceById(id);
     if (!reference) return;
     pendingQuizStickerId = id;
+    quizSuccessHandler = typeof options.onSuccess === "function" ? options.onSuccess : null;
+    quizCancelHandler = typeof options.onCancel === "function" ? options.onCancel : null;
     elements.quizSticker.src = reference.src;
     elements.quizSticker.alt = reference.label;
-    elements.quizNumber.textContent = `Sticker ${reference.number}`;
+    elements.quizNumber.textContent = `Figurinha ${reference.number}`;
     renderQuizQuestion();
     elements.quizModal.hidden = false;
     document.body.style.overflow = "hidden";
   }
 
-  function closeQuiz() {
+  function closeQuizModal() {
     elements.quizModal.hidden = true;
     pendingQuizStickerId = null;
     currentQuiz = null;
@@ -2224,10 +2299,20 @@
     if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.challengeModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
   }
 
+  function completeQuizAttempt(success) {
+    const handler = success ? quizSuccessHandler : quizCancelHandler;
+    quizSuccessHandler = null;
+    quizCancelHandler = null;
+    closeQuizModal();
+    if (handler) handler();
+  }
+
+  function closeQuiz() {
+    completeQuizAttempt(false);
+  }
+
   function cancelQuizAttempt() {
     closeQuiz();
-    cancelPaste();
-    showToast("Figurinha guardada no inventário. Tente colar depois.", "✓");
   }
 
   function retryQuizQuestion() {
@@ -2258,12 +2343,8 @@
     elements.quizFeedback.className = "quiz-feedback is-correct";
     elements.quizFeedback.textContent = currentQuiz?.note ? `Acertou! ${currentQuiz.note}` : "Acertou!";
     markQuizQuestionAnswered(currentQuiz);
-    const stickerId = pendingQuizStickerId;
     window.setTimeout(() => {
-      elements.quizModal.hidden = true;
-      pendingQuizStickerId = null;
-      currentQuiz = null;
-      finalizePasteSticker(stickerId);
+      completeQuizAttempt(true);
     }, 650);
   }
 
@@ -2505,13 +2586,16 @@
     lastMatch = { ...chosen, accepted: chosen.score >= PASS_SCORE };
 
     await wait(260);
-    if (lastMatch.accepted && !state.unlocked.includes(lastMatch.reference.id)) {
-      state.unlocked.push(lastMatch.reference.id);
+    if (lastMatch.accepted) {
+      const wasUnlocked = state.unlocked.includes(lastMatch.reference.id);
+      unlockSticker(lastMatch.reference.id, "image");
       saveState();
-      updateProgress();
-      renderMiniInventory();
-      renderInventory();
-      celebrate(44);
+      if (!wasUnlocked) {
+        updateProgress();
+        renderMiniInventory();
+        renderInventory();
+        celebrate(44);
+      }
     }
     renderMatchResult();
     showScannerStep("result");
@@ -2770,7 +2854,7 @@
     saveState();
     document.body.classList.remove("bulk-paste-active");
     elements.pasteBanner.classList.remove("is-visible", "is-bulk");
-    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    elements.pasteMessage.textContent = "Toque no espaço iluminado para colar.";
     currentFilter = "all";
     $$("[data-filter]").forEach((button) => button.classList.toggle("is-active", button.dataset.filter === "all"));
     renderAll();
@@ -2815,7 +2899,7 @@
     });
     document.addEventListener("click", closeVolumePopover);
     $("#cancelPaste").addEventListener("click", cancelPaste);
-    elements.closeQuiz.addEventListener("click", closeQuiz);
+    elements.closeQuiz.addEventListener("click", cancelQuizAttempt);
     elements.quizCancel.addEventListener("click", cancelQuizAttempt);
     elements.quizRetry.addEventListener("click", retryQuizQuestion);
     elements.closeChallenge.addEventListener("click", closeCollectionChallenge);
@@ -2942,7 +3026,7 @@
       if (event.target === elements.profileModal) closeProfile();
     });
     elements.quizModal.addEventListener("click", (event) => {
-      if (event.target === elements.quizModal) closeQuiz();
+      if (event.target === elements.quizModal) cancelQuizAttempt();
     });
     elements.challengeModal.addEventListener("click", (event) => {
       if (event.target === elements.challengeModal) closeCollectionChallenge();
@@ -2960,7 +3044,7 @@
       if (event.key === "Escape" && !elements.bulkPasteModal.hidden) return closeBulkPasteConfirmation();
       if (event.key === "Escape" && !elements.secretModal.hidden) return closeSecretModal();
       if (event.key === "Escape" && !elements.challengeModal.hidden) return closeCollectionChallenge();
-      if (event.key === "Escape" && !elements.quizModal.hidden) return closeQuiz();
+      if (event.key === "Escape" && !elements.quizModal.hidden) return cancelQuizAttempt();
       if (event.key === "Escape" && !elements.profileModal.hidden) return closeProfile();
       if (event.key === "Escape" && !elements.scannerModal.hidden) return closeScanner();
       if (event.key === "Escape" && isPageFullscreen) return exitPageFullscreen();
@@ -2989,5 +3073,7 @@
     describeCanvas,
     passScore: PASS_SCORE,
     isBulkPasting: () => isBulkPasting,
+    unlockSourceFor,
+    canPasteDirectly,
   };
 })();
