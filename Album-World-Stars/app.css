@@ -639,6 +639,15 @@ body.page-fullscreen-active .fullscreen-exit {
   object-fit: fill;
 }
 
+.album-slot.is-variable-size {
+  clip-path: none;
+  border-radius: clamp(3px, 0.42vw, 7px);
+}
+
+.album-slot.is-variable-size img {
+  object-fit: contain;
+}
+
 .album-slot.is-special-placeholder {
   display: flex;
   align-items: center;
@@ -778,6 +787,11 @@ body.page-fullscreen-active .fullscreen-exit {
   display: block;
   object-fit: fill;
   clip-path: polygon(0 0, 100% 0, 100% 89%, 84% 100%, 0 100%);
+}
+
+.page-thumbnail-stickers img.is-variable-sticker {
+  object-fit: contain;
+  clip-path: none;
 }
 
 .page-thumbnail .page-thumbnail-number {
@@ -1041,6 +1055,10 @@ body.page-fullscreen-active .fullscreen-exit {
   object-fit: cover;
 }
 
+.mini-sticker.is-variable-sticker img {
+  object-fit: contain;
+}
+
 .mini-sticker.is-empty {
   display: grid;
   color: #abb4c1;
@@ -1210,6 +1228,10 @@ body.page-fullscreen-active .fullscreen-exit {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.sticker-card.is-variable-sticker figure img {
+  object-fit: contain;
 }
 
 .sticker-card.is-missing figure {
@@ -2165,6 +2187,15 @@ body.bulk-paste-active .page-wrap {
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
+}
+
+.profile-sticker-frame.is-variable-sticker {
+  width: min(275px, 82%);
+  aspect-ratio: 4 / 5;
+}
+
+.profile-sticker-frame.is-variable-sticker img {
+  object-fit: contain;
 }
 
 .profile-star {

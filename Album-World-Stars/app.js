@@ -1320,23 +1320,25 @@
     { left: 75.25, top: 52.45, width: 21.85, height: 22.1 },
   ];
 
+  // The extra stickers use different proportions, so each slot mirrors the
+  // corresponding PNG instead of forcing every card into one fixed rectangle.
   const specialPage10Slots = [
-    { left: 7.5, top: 9.5, width: 24, height: 22.8 },
-    { left: 38, top: 9.5, width: 24, height: 22.8 },
-    { left: 68.5, top: 9.5, width: 24, height: 22.8 },
-    { left: 7.5, top: 35.5, width: 24, height: 22.8 },
-    { left: 38, top: 35.5, width: 24, height: 22.8 },
-    { left: 68.5, top: 35.5, width: 24, height: 22.8 },
+    { left: 4, top: 18, width: 22.35, height: 20 },
+    { left: 27, top: 18, width: 20.74, height: 20 },
+    { left: 48.5, top: 18, width: 18.78, height: 20 },
+    { left: 68, top: 18, width: 15.9, height: 20 },
+    { left: 8, top: 45, width: 33.98, height: 18 },
+    { left: 58, top: 42, width: 24.92, height: 29 },
   ];
 
   const specialPage11Slots = [
-    { left: 6.5, top: 10, width: 20.5, height: 21.8 },
-    { left: 28.6, top: 10, width: 20.5, height: 21.8 },
-    { left: 50.7, top: 10, width: 20.5, height: 21.8 },
-    { left: 72.8, top: 10, width: 20.5, height: 21.8 },
-    { left: 12.5, top: 36.8, width: 24, height: 22.8 },
-    { left: 38, top: 36.8, width: 24, height: 22.8 },
-    { left: 63.5, top: 36.8, width: 24, height: 22.8 },
+    { left: 5, top: 18, width: 16.72, height: 20 },
+    { left: 24, top: 18, width: 22.06, height: 20 },
+    { left: 48.5, top: 18, width: 25.6, height: 20 },
+    { left: 76.5, top: 18, width: 18.76, height: 20 },
+    { left: 6, top: 44, width: 30.26, height: 27 },
+    { left: 39, top: 44, width: 23.14, height: 27 },
+    { left: 65, top: 44, width: 29.54, height: 27 },
   ];
 
   let state = loadState();
@@ -1613,6 +1615,7 @@
         image.style.top = `${position.top}%`;
         image.style.width = `${position.width}%`;
         image.style.height = `${position.height}%`;
+        if (page === 10 || page === 11) image.classList.add("is-variable-sticker");
         layer.append(image);
       });
     });
@@ -1678,6 +1681,7 @@
       slot.style.width = `${position.width}%`;
       slot.style.height = `${position.height}%`;
       slot.dataset.stickerId = String(id);
+      if (state.page === 10 || state.page === 11) slot.classList.add("is-variable-size");
       slot.setAttribute("aria-label", `Espaço da Figurinha ${reference.number}`);
 
       if (state.placed.includes(id)) {
@@ -1719,6 +1723,7 @@
       item.className = `mini-sticker${id ? "" : " is-empty"}`;
       if (id) {
         const reference = referenceById(id);
+        if (placementFor(id)?.page >= 10) item.classList.add("is-variable-sticker");
         item.innerHTML = `<img src="${reference.src}" alt="${reference.label}">`;
       } else {
         item.textContent = "+";
@@ -1748,6 +1753,7 @@
       const placement = placementFor(reference.id);
       const card = document.createElement("article");
       card.className = `sticker-card is-${itemState}`;
+      if (placement.page >= 10) card.classList.add("is-variable-sticker");
       const stateLabel = itemState === "placed" ? "Colada" : itemState === "available" ? "Nova" : "Faltando";
       const image = itemState === "missing" ? "" : `<img src="${reference.src}" alt="${reference.label}" loading="lazy">`;
       const buttonLabel = itemState === "placed" ? "Ver no álbum" : itemState === "available" ? "Colar no álbum" : "Ganhar no desafio";
@@ -2362,6 +2368,7 @@
     if (isPageFullscreen) exitPageFullscreen();
     elements.profileSticker.src = reference.src;
     elements.profileSticker.alt = reference.label;
+    elements.profileSticker.closest(".profile-sticker-frame")?.classList.toggle("is-variable-sticker", placement.page >= 10);
     elements.profileNumber.textContent = `Figurinha ${reference.number}`;
     elements.profileName.textContent = reference.name;
     currentProfileStickerId = id;
