@@ -6,11 +6,14 @@
   const STORAGE_KEY = "world-stars-album-2026-v1";
   const PASS_SCORE = 15;
   const DEFAULT_MUSIC_VOLUME = 30;
+  const CHALLENGE_TOTAL = 5;
+  const CHALLENGE_PASS = 3;
+  const SECRET_CODE = String.fromCharCode(115, 101, 109, 32, 116, 101, 109, 112, 111, 32, 105, 114, 109, 227, 111);
 
   const QUIZ_QUESTIONS = [
     {
         "id": "q001",
-        "question": "As seen in class: Which sentence correctly answers “Where are you from?”",
+        "question": "Which sentence correctly answers “Where are you from?”",
         "options": [
             "I am from Brazil.",
             "I have from Brazil.",
@@ -22,7 +25,7 @@
     },
     {
         "id": "q002",
-        "question": "As seen in class: Complete: She is from Japan. She is ____.",
+        "question": "Complete: She is from Japan. She is ____.",
         "options": [
             "Japanese",
             "Japanian",
@@ -34,7 +37,7 @@
     },
     {
         "id": "q003",
-        "question": "As seen in class: Complete: He is from France. He is ____.",
+        "question": "Complete: He is from France. He is ____.",
         "options": [
             "French",
             "France",
@@ -46,7 +49,7 @@
     },
     {
         "id": "q004",
-        "question": "As seen in class: Complete: They are from Portugal. They are ____.",
+        "question": "Complete: They are from Portugal. They are ____.",
         "options": [
             "Portuguese",
             "Portugal",
@@ -58,7 +61,7 @@
     },
     {
         "id": "q005",
-        "question": "As seen in class: Complete: We are from Italy. We are ____.",
+        "question": "Complete: We are from Italy. We are ____.",
         "options": [
             "Italian",
             "Italy",
@@ -70,7 +73,7 @@
     },
     {
         "id": "q006",
-        "question": "As seen in class: Complete: I am from Brazil. I am ____.",
+        "question": "Complete: I am from Brazil. I am ____.",
         "options": [
             "Brazilian",
             "Brazil",
@@ -82,7 +85,7 @@
     },
     {
         "id": "q007",
-        "question": "As seen in class: Which question asks about origin?",
+        "question": "Which question asks about origin?",
         "options": [
             "Where are you from?",
             "How old are you?",
@@ -94,7 +97,7 @@
     },
     {
         "id": "q008",
-        "question": "As seen in class: Complete the dialogue: “Where are you from?” “____.”",
+        "question": "Complete the dialogue: “Where are you from?” “____.”",
         "options": [
             "I am from Argentina.",
             "I am a doctor.",
@@ -106,7 +109,7 @@
     },
     {
         "id": "q009",
-        "question": "As seen in class: What is the nationality for The United States?",
+        "question": "What is the nationality for The United States?",
         "options": [
             "American",
             "English",
@@ -118,7 +121,7 @@
     },
     {
         "id": "q010",
-        "question": "As seen in class: What is the nationality for England?",
+        "question": "What is the nationality for England?",
         "options": [
             "English",
             "Englandian",
@@ -130,7 +133,7 @@
     },
     {
         "id": "q011",
-        "question": "As seen in class: What is the nationality for China?",
+        "question": "What is the nationality for China?",
         "options": [
             "Chinese",
             "China",
@@ -142,7 +145,7 @@
     },
     {
         "id": "q012",
-        "question": "As seen in class: Which word is a country?",
+        "question": "Which word is a country?",
         "options": [
             "Brazil",
             "Brazilian",
@@ -154,7 +157,7 @@
     },
     {
         "id": "q013",
-        "question": "As seen in class: Which word is a nationality?",
+        "question": "Which word is a nationality?",
         "options": [
             "Argentinian",
             "Argentina",
@@ -166,7 +169,7 @@
     },
     {
         "id": "q014",
-        "question": "As seen in class: Complete: I study at school. I am a ____.",
+        "question": "Complete: I study at school. I am a ____.",
         "options": [
             "student",
             "driver",
@@ -178,7 +181,7 @@
     },
     {
         "id": "q015",
-        "question": "As seen in class: Complete: She works in a hospital. She is a ____.",
+        "question": "Complete: She works in a hospital. She is a ____.",
         "options": [
             "doctor",
             "driver",
@@ -190,7 +193,7 @@
     },
     {
         "id": "q016",
-        "question": "As seen in class: Complete: He drives a bus. He is a ____.",
+        "question": "Complete: He drives a bus. He is a ____.",
         "options": [
             "driver",
             "teacher",
@@ -202,7 +205,7 @@
     },
     {
         "id": "q017",
-        "question": "As seen in class: Complete: My aunt works in a school. She is a ____.",
+        "question": "Complete: My aunt works in a school. She is a ____.",
         "options": [
             "teacher",
             "farmer",
@@ -214,7 +217,7 @@
     },
     {
         "id": "q018",
-        "question": "As seen in class: Complete: He prepares food in a restaurant. He is a ____.",
+        "question": "Complete: He prepares food in a restaurant. He is a ____.",
         "options": [
             "cook",
             "student",
@@ -226,7 +229,7 @@
     },
     {
         "id": "q019",
-        "question": "As seen in class: Complete: He plays soccer professionally. He is a ____.",
+        "question": "Complete: He plays soccer professionally. He is a ____.",
         "options": [
             "soccer player",
             "nurse",
@@ -238,7 +241,7 @@
     },
     {
         "id": "q020",
-        "question": "As seen in class: Choose the correct sentence.",
+        "question": "Choose the correct sentence.",
         "options": [
             "She is a nurse.",
             "She are a nurse.",
@@ -250,7 +253,7 @@
     },
     {
         "id": "q021",
-        "question": "As seen in class: Choose the correct sentence.",
+        "question": "Choose the correct sentence.",
         "options": [
             "They are students.",
             "They is students.",
@@ -262,7 +265,7 @@
     },
     {
         "id": "q022",
-        "question": "As seen in class: Which word is an occupation?",
+        "question": "Which word is an occupation?",
         "options": [
             "farmer",
             "February",
@@ -274,7 +277,7 @@
     },
     {
         "id": "q023",
-        "question": "As seen in class: Complete: My mother is a teacher. “teacher” is a/an ____.",
+        "question": "Complete: My mother is a teacher. “teacher” is a/an ____.",
         "options": [
             "occupation",
             "month",
@@ -286,7 +289,7 @@
     },
     {
         "id": "q024",
-        "question": "As seen in class: Which month comes after March?",
+        "question": "Which month comes after March?",
         "options": [
             "April",
             "January",
@@ -298,7 +301,7 @@
     },
     {
         "id": "q025",
-        "question": "As seen in class: Which month comes before February?",
+        "question": "Which month comes before February?",
         "options": [
             "January",
             "March",
@@ -310,7 +313,7 @@
     },
     {
         "id": "q026",
-        "question": "As seen in class: Which month comes after November?",
+        "question": "Which month comes after November?",
         "options": [
             "December",
             "October",
@@ -322,7 +325,7 @@
     },
     {
         "id": "q027",
-        "question": "As seen in class: Which month comes before May?",
+        "question": "Which month comes before May?",
         "options": [
             "April",
             "June",
@@ -334,7 +337,7 @@
     },
     {
         "id": "q028",
-        "question": "As seen in class: Complete: Christmas is in ____.",
+        "question": "Complete: Christmas is in ____.",
         "options": [
             "December",
             "July",
@@ -346,7 +349,7 @@
     },
     {
         "id": "q029",
-        "question": "As seen in class: Complete: My birthday is in ____.",
+        "question": "Complete: My birthday is in ____.",
         "options": [
             "May",
             "Brazil",
@@ -358,7 +361,7 @@
     },
     {
         "id": "q030",
-        "question": "As seen in class: Which option has months in the correct order?",
+        "question": "Which option has months in the correct order?",
         "options": [
             "January, February, March",
             "March, January, February",
@@ -370,7 +373,7 @@
     },
     {
         "id": "q031",
-        "question": "As seen in class: In English, months usually start with ____.",
+        "question": "In English, months usually start with ____.",
         "options": [
             "a capital letter",
             "a number",
@@ -382,7 +385,7 @@
     },
     {
         "id": "q032",
-        "question": "As seen in class: Which word is a month?",
+        "question": "Which word is a month?",
         "options": [
             "September",
             "student",
@@ -394,7 +397,7 @@
     },
     {
         "id": "q033",
-        "question": "As seen in class: Which month is between June and August?",
+        "question": "Which month is between June and August?",
         "options": [
             "July",
             "May",
@@ -406,7 +409,7 @@
     },
     {
         "id": "q034",
-        "question": "As seen in class: My mother’s mother is my ____.",
+        "question": "My mother’s mother is my ____.",
         "options": [
             "grandmother",
             "aunt",
@@ -418,7 +421,7 @@
     },
     {
         "id": "q035",
-        "question": "As seen in class: My father’s father is my ____.",
+        "question": "My father’s father is my ____.",
         "options": [
             "grandfather",
             "brother",
@@ -430,7 +433,7 @@
     },
     {
         "id": "q036",
-        "question": "As seen in class: My mom and dad are my ____.",
+        "question": "My mom and dad are my ____.",
         "options": [
             "parents",
             "children",
@@ -442,7 +445,7 @@
     },
     {
         "id": "q037",
-        "question": "As seen in class: My brother and sister are my ____.",
+        "question": "My brother and sister are my ____.",
         "options": [
             "siblings",
             "parents",
@@ -454,7 +457,7 @@
     },
     {
         "id": "q038",
-        "question": "As seen in class: My aunt’s child is my ____.",
+        "question": "My aunt’s child is my ____.",
         "options": [
             "cousin",
             "father",
@@ -466,7 +469,7 @@
     },
     {
         "id": "q039",
-        "question": "As seen in class: My mother’s brother is my ____.",
+        "question": "My mother’s brother is my ____.",
         "options": [
             "uncle",
             "grandfather",
@@ -478,7 +481,7 @@
     },
     {
         "id": "q040",
-        "question": "As seen in class: My father’s sister is my ____.",
+        "question": "My father’s sister is my ____.",
         "options": [
             "aunt",
             "daughter",
@@ -490,7 +493,7 @@
     },
     {
         "id": "q041",
-        "question": "As seen in class: A boy child in a family is a ____.",
+        "question": "A boy child in a family is a ____.",
         "options": [
             "son",
             "daughter",
@@ -502,7 +505,7 @@
     },
     {
         "id": "q042",
-        "question": "As seen in class: A girl child in a family is a ____.",
+        "question": "A girl child in a family is a ____.",
         "options": [
             "daughter",
             "son",
@@ -514,7 +517,7 @@
     },
     {
         "id": "q043",
-        "question": "As seen in class: Which word means “parente”?",
+        "question": "Which word means “parente”?",
         "options": [
             "relative",
             "parents",
@@ -526,7 +529,7 @@
     },
     {
         "id": "q044",
-        "question": "As seen in class: Which word means “filhos/crianças”?",
+        "question": "Which word means “filhos/crianças”?",
         "options": [
             "children",
             "childs",
@@ -538,7 +541,7 @@
     },
     {
         "id": "q045",
-        "question": "As seen in class: Which word means “mãe”?",
+        "question": "Which word means “mãe”?",
         "options": [
             "mother",
             "father",
@@ -550,7 +553,7 @@
     },
     {
         "id": "q046",
-        "question": "As seen in class: Which word means “pai”?",
+        "question": "Which word means “pai”?",
         "options": [
             "father",
             "mother",
@@ -562,7 +565,7 @@
     },
     {
         "id": "q047",
-        "question": "As seen in class: Choose the correct possessive form: the pencil of Maria.",
+        "question": "Choose the correct possessive form: the pencil of Maria.",
         "options": [
             "Maria’s pencil",
             "Marias pencil",
@@ -574,7 +577,7 @@
     },
     {
         "id": "q048",
-        "question": "As seen in class: Choose the correct possessive form: the car of João.",
+        "question": "Choose the correct possessive form: the car of João.",
         "options": [
             "João’s car",
             "Joãos car",
@@ -586,7 +589,7 @@
     },
     {
         "id": "q049",
-        "question": "As seen in class: Choose the correct meaning of “Lucas’s book”.",
+        "question": "Choose the correct meaning of “Lucas’s book”.",
         "options": [
             "the book of Lucas",
             "the Lucas of book",
@@ -598,7 +601,7 @@
     },
     {
         "id": "q050",
-        "question": "As seen in class: Complete: My ____ house = the house of my parents.",
+        "question": "Complete: My ____ house = the house of my parents.",
         "options": [
             "parents’",
             "parent’s",
@@ -610,7 +613,7 @@
     },
     {
         "id": "q051",
-        "question": "As seen in class: Complete: The ____ toys = the toys of the children.",
+        "question": "Complete: The ____ toys = the toys of the children.",
         "options": [
             "children’s",
             "childrens",
@@ -622,7 +625,7 @@
     },
     {
         "id": "q052",
-        "question": "As seen in class: What does the possessive case show?",
+        "question": "What does the possessive case show?",
         "options": [
             "possession",
             "month order",
@@ -634,7 +637,7 @@
     },
     {
         "id": "q053",
-        "question": "As seen in class: Choose the correct plural of cat.",
+        "question": "Choose the correct plural of cat.",
         "options": [
             "cats",
             "cates",
@@ -646,7 +649,7 @@
     },
     {
         "id": "q054",
-        "question": "As seen in class: Choose the correct plural of box.",
+        "question": "Choose the correct plural of box.",
         "options": [
             "boxes",
             "boxs",
@@ -658,7 +661,7 @@
     },
     {
         "id": "q055",
-        "question": "As seen in class: Choose the correct plural of church.",
+        "question": "Choose the correct plural of church.",
         "options": [
             "churches",
             "churchs",
@@ -670,7 +673,7 @@
     },
     {
         "id": "q056",
-        "question": "As seen in class: Choose the correct plural of baby.",
+        "question": "Choose the correct plural of baby.",
         "options": [
             "babies",
             "babys",
@@ -682,7 +685,7 @@
     },
     {
         "id": "q057",
-        "question": "As seen in class: Choose the correct plural of boy.",
+        "question": "Choose the correct plural of boy.",
         "options": [
             "boys",
             "boies",
@@ -694,7 +697,7 @@
     },
     {
         "id": "q058",
-        "question": "As seen in class: Choose the correct plural of knife.",
+        "question": "Choose the correct plural of knife.",
         "options": [
             "knives",
             "knifes",
@@ -706,7 +709,7 @@
     },
     {
         "id": "q059",
-        "question": "As seen in class: Choose the correct plural of leaf.",
+        "question": "Choose the correct plural of leaf.",
         "options": [
             "leaves",
             "leafs",
@@ -718,7 +721,7 @@
     },
     {
         "id": "q060",
-        "question": "As seen in class: Choose the correct plural of tomato.",
+        "question": "Choose the correct plural of tomato.",
         "options": [
             "tomatoes",
             "tomatos",
@@ -730,7 +733,7 @@
     },
     {
         "id": "q061",
-        "question": "As seen in class: Choose the correct plural of photo.",
+        "question": "Choose the correct plural of photo.",
         "options": [
             "photos",
             "photoes",
@@ -742,7 +745,7 @@
     },
     {
         "id": "q062",
-        "question": "As seen in class: Choose the correct plural of man.",
+        "question": "Choose the correct plural of man.",
         "options": [
             "men",
             "mans",
@@ -754,7 +757,7 @@
     },
     {
         "id": "q063",
-        "question": "As seen in class: Choose the correct plural of woman.",
+        "question": "Choose the correct plural of woman.",
         "options": [
             "women",
             "womans",
@@ -766,7 +769,7 @@
     },
     {
         "id": "q064",
-        "question": "As seen in class: Choose the correct plural of tooth.",
+        "question": "Choose the correct plural of tooth.",
         "options": [
             "teeth",
             "tooths",
@@ -778,7 +781,7 @@
     },
     {
         "id": "q065",
-        "question": "As seen in class: Choose the correct plural of fish.",
+        "question": "Choose the correct plural of fish.",
         "options": [
             "fish",
             "fishes only",
@@ -790,7 +793,7 @@
     },
     {
         "id": "q066",
-        "question": "As seen in class: Choose the correct plural of sheep.",
+        "question": "Choose the correct plural of sheep.",
         "options": [
             "sheep",
             "sheeps",
@@ -802,7 +805,7 @@
     },
     {
         "id": "q067",
-        "question": "As seen in class: Choose the correct plural of person for everyday use.",
+        "question": "Choose the correct plural of person for everyday use.",
         "options": [
             "people",
             "persons",
@@ -814,7 +817,7 @@
     },
     {
         "id": "q068",
-        "question": "As seen in class: The fridge is usually in the ____.",
+        "question": "The fridge is usually in the ____.",
         "options": [
             "kitchen",
             "bathroom",
@@ -826,7 +829,7 @@
     },
     {
         "id": "q069",
-        "question": "As seen in class: The bed is usually in the ____.",
+        "question": "The bed is usually in the ____.",
         "options": [
             "bedroom",
             "kitchen",
@@ -838,7 +841,7 @@
     },
     {
         "id": "q070",
-        "question": "As seen in class: The sofa is usually in the ____.",
+        "question": "The sofa is usually in the ____.",
         "options": [
             "living room",
             "bathroom",
@@ -850,7 +853,7 @@
     },
     {
         "id": "q071",
-        "question": "As seen in class: The mirror is usually in the ____.",
+        "question": "The mirror is usually in the ____.",
         "options": [
             "bathroom",
             "garden",
@@ -862,7 +865,7 @@
     },
     {
         "id": "q072",
-        "question": "As seen in class: A table is usually in the ____.",
+        "question": "A table is usually in the ____.",
         "options": [
             "dining room",
             "bathroom",
@@ -874,7 +877,7 @@
     },
     {
         "id": "q073",
-        "question": "As seen in class: Which word is furniture?",
+        "question": "Which word is furniture?",
         "options": [
             "chair",
             "bedroom",
@@ -886,7 +889,7 @@
     },
     {
         "id": "q074",
-        "question": "As seen in class: Which word is a part of the house?",
+        "question": "Which word is a part of the house?",
         "options": [
             "garage",
             "sofa",
@@ -898,7 +901,7 @@
     },
     {
         "id": "q075",
-        "question": "As seen in class: Which item keeps food cold?",
+        "question": "Which item keeps food cold?",
         "options": [
             "fridge",
             "stove",
@@ -910,7 +913,7 @@
     },
     {
         "id": "q076",
-        "question": "As seen in class: Which item is used to cook food?",
+        "question": "Which item is used to cook food?",
         "options": [
             "stove",
             "mirror",
@@ -922,7 +925,7 @@
     },
     {
         "id": "q077",
-        "question": "As seen in class: Which item is used to store clothes?",
+        "question": "Which item is used to store clothes?",
         "options": [
             "wardrobe",
             "fridge",
@@ -934,7 +937,7 @@
     },
     {
         "id": "q078",
-        "question": "As seen in class: Which place can have flowers?",
+        "question": "Which place can have flowers?",
         "options": [
             "garden",
             "bathroom",
@@ -946,7 +949,7 @@
     },
     {
         "id": "q079",
-        "question": "As seen in class: Complete: There ____ a bed in the bedroom.",
+        "question": "Complete: There ____ a bed in the bedroom.",
         "options": [
             "is",
             "are",
@@ -958,7 +961,7 @@
     },
     {
         "id": "q080",
-        "question": "As seen in class: Complete: There ____ two chairs in the kitchen.",
+        "question": "Complete: There ____ two chairs in the kitchen.",
         "options": [
             "are",
             "is",
@@ -970,7 +973,7 @@
     },
     {
         "id": "q081",
-        "question": "As seen in class: Complete: There ____ a fridge in the kitchen.",
+        "question": "Complete: There ____ a fridge in the kitchen.",
         "options": [
             "is",
             "are",
@@ -982,7 +985,7 @@
     },
     {
         "id": "q082",
-        "question": "As seen in class: Complete: There ____ three bedrooms in my house.",
+        "question": "Complete: There ____ three bedrooms in my house.",
         "options": [
             "are",
             "is",
@@ -994,7 +997,7 @@
     },
     {
         "id": "q083",
-        "question": "As seen in class: Choose the singular question.",
+        "question": "Choose the singular question.",
         "options": [
             "Is there a sofa?",
             "Are there chairs?",
@@ -1006,7 +1009,7 @@
     },
     {
         "id": "q084",
-        "question": "As seen in class: Choose the plural question.",
+        "question": "Choose the plural question.",
         "options": [
             "Are there chairs?",
             "Is there a sofa?",
@@ -1018,7 +1021,7 @@
     },
     {
         "id": "q085",
-        "question": "As seen in class: Complete: There ____ books on the table.",
+        "question": "Complete: There ____ books on the table.",
         "options": [
             "are",
             "is",
@@ -1030,7 +1033,7 @@
     },
     {
         "id": "q086",
-        "question": "As seen in class: Complete: There ____ a TV in the bathroom.",
+        "question": "Complete: There ____ a TV in the bathroom.",
         "options": [
             "isn’t",
             "aren’t",
@@ -1042,7 +1045,7 @@
     },
     {
         "id": "q087",
-        "question": "As seen in class: Complete: The pencil is ____ the table.",
+        "question": "Complete: The pencil is ____ the table.",
         "options": [
             "on",
             "January",
@@ -1054,7 +1057,7 @@
     },
     {
         "id": "q088",
-        "question": "As seen in class: Complete: The ball is ____ the chair.",
+        "question": "Complete: The ball is ____ the chair.",
         "options": [
             "under",
             "teacher",
@@ -1066,7 +1069,7 @@
     },
     {
         "id": "q089",
-        "question": "As seen in class: Complete: The book is ____ the bag.",
+        "question": "Complete: The book is ____ the bag.",
         "options": [
             "in",
             "on top only",
@@ -1078,7 +1081,7 @@
     },
     {
         "id": "q090",
-        "question": "As seen in class: Complete: The sofa is ____ the table.",
+        "question": "Complete: The sofa is ____ the table.",
         "options": [
             "next to",
             "February",
@@ -1090,7 +1093,7 @@
     },
     {
         "id": "q091",
-        "question": "As seen in class: Complete: The chair is ____ the bed and the wardrobe.",
+        "question": "Complete: The chair is ____ the bed and the wardrobe.",
         "options": [
             "between",
             "behind",
@@ -1102,7 +1105,7 @@
     },
     {
         "id": "q092",
-        "question": "As seen in class: Complete: The garden is ____ the house.",
+        "question": "Complete: The garden is ____ the house.",
         "options": [
             "behind",
             "January",
@@ -1114,7 +1117,7 @@
     },
     {
         "id": "q093",
-        "question": "As seen in class: Complete: The car is ____ the garage.",
+        "question": "Complete: The car is ____ the garage.",
         "options": [
             "in front of",
             "doctor",
@@ -1126,7 +1129,7 @@
     },
     {
         "id": "q094",
-        "question": "As seen in class: Which subject pronoun matches Maria?",
+        "question": "Which subject pronoun matches Maria?",
         "options": [
             "she",
             "he",
@@ -1138,7 +1141,7 @@
     },
     {
         "id": "q095",
-        "question": "As seen in class: Which subject pronoun matches João?",
+        "question": "Which subject pronoun matches João?",
         "options": [
             "he",
             "she",
@@ -1150,7 +1153,7 @@
     },
     {
         "id": "q096",
-        "question": "As seen in class: Which subject pronoun matches “my friends”?",
+        "question": "Which subject pronoun matches “my friends”?",
         "options": [
             "they",
             "he",
@@ -1162,7 +1165,7 @@
     },
     {
         "id": "q097",
-        "question": "As seen in class: Complete in the present: They ____ the champions.",
+        "question": "Complete in the present: They ____ the champions.",
         "options": [
             "are",
             "is",
@@ -1174,7 +1177,7 @@
     },
     {
         "id": "q098",
-        "question": "As seen in class: Complete in the past: She ____ beautiful.",
+        "question": "Complete in the past: She ____ beautiful.",
         "options": [
             "was",
             "were",
@@ -1186,7 +1189,7 @@
     },
     {
         "id": "q099",
-        "question": "As seen in class: Complete in the present: I ____ proud.",
+        "question": "Complete in the present: I ____ proud.",
         "options": [
             "am",
             "is",
@@ -1198,7 +1201,7 @@
     },
     {
         "id": "q100",
-        "question": "As seen in class: Complete in the past: You ____ strong.",
+        "question": "Complete in the past: You ____ strong.",
         "options": [
             "were",
             "was",
@@ -1210,7 +1213,7 @@
     },
     {
         "id": "q101",
-        "question": "As seen in class: Complete in the future: He ____ strong.",
+        "question": "Complete in the future: He ____ strong.",
         "options": [
             "will be",
             "was",
@@ -1222,7 +1225,7 @@
     },
     {
         "id": "q102",
-        "question": "As seen in class: Which object pronoun matches “she”?",
+        "question": "Which object pronoun matches “she”?",
         "options": [
             "her",
             "him",
@@ -1234,7 +1237,7 @@
     },
     {
         "id": "q103",
-        "question": "As seen in class: Which object pronoun matches “he”?",
+        "question": "Which object pronoun matches “he”?",
         "options": [
             "him",
             "her",
@@ -1246,7 +1249,7 @@
     },
     {
         "id": "q104",
-        "question": "As seen in class: Which object pronoun matches “they”?",
+        "question": "Which object pronoun matches “they”?",
         "options": [
             "them",
             "us",
@@ -1258,7 +1261,7 @@
     },
     {
         "id": "q105",
-        "question": "As seen in class: Which object pronoun matches “we”?",
+        "question": "Which object pronoun matches “we”?",
         "options": [
             "us",
             "them",
@@ -1343,6 +1346,9 @@
   let pendingQuizStickerId = null;
   let currentQuiz = null;
   let currentProfileStickerId = null;
+  let challengeSession = null;
+  let brandTapCount = 0;
+  let brandTapTimer = 0;
   let justPasted = null;
   let toastTimer = 0;
   let sourceObjectUrl = null;
@@ -1352,6 +1358,7 @@
   let pageSwipe = null;
   let suppressPageClick = false;
   let isPageFullscreen = false;
+  let isBulkPasting = false;
   let musicUnlocked = false;
   let crop = { zoom: 1, offsetX: 0, offsetY: 0 };
 
@@ -1372,6 +1379,13 @@
     pasteBanner: $("#pasteBanner"),
     pasteThumb: $("#pasteThumb"),
     pasteTitle: $("#pasteTitle"),
+    pasteMessage: $("#pasteMessage"),
+    pasteAllButton: $("#pasteAllButton"),
+    pasteAllLabel: $("#pasteAllLabel"),
+    bulkPasteModal: $("#bulkPasteModal"),
+    bulkPasteCount: $("#bulkPasteCount"),
+    confirmBulkPaste: $("#confirmBulkPaste"),
+    cancelBulkPaste: $("#cancelBulkPaste"),
     scannerModal: $("#scannerModal"),
     sourceStep: $("#sourceStep"),
     cropStep: $("#cropStep"),
@@ -1418,6 +1432,33 @@
     quizFeedback: $("#quizFeedback"),
     quizCancel: $("#quizCancel"),
     quizRetry: $("#quizRetry"),
+    challengeModal: $("#challengeModal"),
+    closeChallenge: $("#closeChallenge"),
+    challengePlay: $("#challengePlay"),
+    challengeSticker: $("#challengeSticker"),
+    challengeStickerShell: $("#challengeStickerShell"),
+    challengeStickerNumber: $("#challengeStickerNumber"),
+    challengeProgressText: $("#challengeProgressText"),
+    challengeDots: $("#challengeDots"),
+    challengeScore: $("#challengeScore"),
+    challengeQuestion: $("#challengeQuestion"),
+    challengeOptions: $("#challengeOptions"),
+    challengeFeedback: $("#challengeFeedback"),
+    challengeCancel: $("#challengeCancel"),
+    challengeNext: $("#challengeNext"),
+    challengeResult: $("#challengeResult"),
+    challengeResultBadge: $("#challengeResultBadge"),
+    challengeResultIcon: $("#challengeResultIcon"),
+    challengeResultEyebrow: $("#challengeResultEyebrow"),
+    challengeResultTitle: $("#challengeResultTitle"),
+    challengeResultMessage: $("#challengeResultMessage"),
+    challengeResultSticker: $("#challengeResultSticker"),
+    challengeResultLabel: $("#challengeResultLabel"),
+    challengeResultActions: $("#challengeResultActions"),
+    secretModal: $("#secretModal"),
+    secretForm: $("#secretForm"),
+    secretInput: $("#secretInput"),
+    closeSecret: $("#closeSecret"),
     musicButton: $("#musicButton"),
     musicVolume: $("#musicVolume"),
     musicVolumeLabel: $("#musicVolumeLabel"),
@@ -1527,6 +1568,10 @@
     $("#statUnlocked").textContent = unlocked;
     $("#statPlaced").textContent = placed;
     $("#statMissing").textContent = TOTAL - unlocked;
+
+    const readyToPaste = availableStickersToPaste().length;
+    elements.pasteAllButton.disabled = readyToPaste === 0 || isBulkPasting;
+    elements.pasteAllLabel.textContent = readyToPaste > 0 ? `Colar todas (${readyToPaste})` : "Nada para colar";
   }
 
   function buildPageStrip() {
@@ -1537,10 +1582,40 @@
       button.className = "page-thumbnail";
       button.dataset.page = String(page);
       button.setAttribute("aria-label", `Abrir ${pageLabels[page - 1]}`);
-      button.innerHTML = `<img src="assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy"><span>${page}</span>`;
+      button.innerHTML = `
+        <img class="page-thumbnail-page" src="assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy">
+        <span class="page-thumbnail-stickers" aria-hidden="true"></span>
+        <span class="page-thumbnail-number">${page}</span>`;
       button.addEventListener("click", () => setPage(page));
       elements.pageStrip.append(button);
     }
+  }
+
+  function renderPageThumbnailStickers() {
+    $$(".page-thumbnail", elements.pageStrip).forEach((thumbnail) => {
+      const page = Number(thumbnail.dataset.page);
+      const layer = $(".page-thumbnail-stickers", thumbnail);
+      if (!layer) return;
+      layer.replaceChildren();
+
+      idsForPage(page).forEach((id) => {
+        if (!state.placed.includes(id)) return;
+        const placement = placementFor(id);
+        const position = slotPosition(page, placement.slot);
+        const reference = referenceById(id);
+        if (!position || !reference) return;
+
+        const image = document.createElement("img");
+        image.src = reference.src;
+        image.alt = "";
+        image.draggable = false;
+        image.style.left = `${position.left}%`;
+        image.style.top = `${position.top}%`;
+        image.style.width = `${position.width}%`;
+        image.style.height = `${position.height}%`;
+        layer.append(image);
+      });
+    });
   }
 
   function renderPage(direction = "forward") {
@@ -1565,6 +1640,7 @@
         elements.pageStrip.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
       }
     });
+    renderPageThumbnailStickers();
     renderStickerLayer();
     preloadPage(page - 1);
     preloadPage(page + 1);
@@ -1612,6 +1688,7 @@
         slot.append(image);
         slot.classList.add("has-profile");
         slot.setAttribute("aria-label", `Abrir perfil de ${reference.name}`);
+        slot.addEventListener("pointerdown", (event) => event.stopPropagation());
         slot.addEventListener("click", () => openProfile(id));
         if (justPasted === id) {
           slot.classList.add("just-pasted");
@@ -1623,6 +1700,7 @@
       } else if (pasteTarget === id) {
         slot.classList.add("is-target");
         slot.setAttribute("aria-label", `Colar ${referenceById(id).label} neste espaço`);
+        slot.addEventListener("pointerdown", (event) => event.stopPropagation());
         slot.addEventListener("click", () => pasteSticker(id));
       } else if (state.page === 10 || state.page === 11) {
         slot.classList.add("is-special-placeholder");
@@ -1672,21 +1750,20 @@
       card.className = `sticker-card is-${itemState}`;
       const stateLabel = itemState === "placed" ? "Colada" : itemState === "available" ? "Nova" : "Faltando";
       const image = itemState === "missing" ? "" : `<img src="${reference.src}" alt="${reference.label}" loading="lazy">`;
-      const buttonLabel = itemState === "placed" ? "Ver no álbum" : itemState === "available" ? "Colar no álbum" : "Ainda não encontrada";
+      const buttonLabel = itemState === "placed" ? "Ver no álbum" : itemState === "available" ? "Colar no álbum" : "Ganhar no desafio";
       const buttonClass = itemState === "placed" ? "sticker-action secondary" : "sticker-action";
       card.innerHTML = `
         <figure>${image}<span class="sticker-state">${stateLabel}</span></figure>
         <div class="sticker-card-content">
           <strong>${reference.label}</strong>
           <small>Página ${placement.page} · espaço ${placement.slot + 1}</small>
-          <button class="${buttonClass}" type="button" ${itemState === "missing" ? "disabled" : ""}>${buttonLabel}</button>
+          <button class="${buttonClass}" type="button">${buttonLabel}</button>
         </div>`;
-      if (itemState !== "missing") {
-        $(".sticker-action", card).addEventListener("click", () => {
-          if (itemState === "available") startPaste(reference.id);
-          else viewPlacedSticker(reference.id);
-        });
-      }
+      $(".sticker-action", card).addEventListener("click", () => {
+        if (itemState === "available") startPaste(reference.id);
+        else if (itemState === "placed") viewPlacedSticker(reference.id);
+        else openCollectionChallenge(reference.id);
+      });
       elements.inventoryGrid.append(card);
     });
   }
@@ -1708,6 +1785,103 @@
     if (currentView === "inventory") renderInventory();
   }
 
+  function stickerNumberValue(reference) {
+    const numeric = Number(String(reference?.number || "").replace(/\D/g, ""));
+    return Number.isFinite(numeric) && numeric > 0 ? numeric : Number(reference?.id) || 0;
+  }
+
+  function availableStickersToPaste() {
+    return references
+      .filter((reference) => state.unlocked.includes(reference.id) && !state.placed.includes(reference.id))
+      .sort((left, right) => stickerNumberValue(left) - stickerNumberValue(right));
+  }
+
+  function waitForBulkPaste(milliseconds) {
+    return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  }
+
+  function openBulkPasteConfirmation() {
+    const stickers = availableStickersToPaste();
+    if (!stickers.length) {
+      showToast("Não há figurinhas prontas para colar.", "✓");
+      return;
+    }
+    elements.bulkPasteCount.textContent = String(stickers.length);
+    elements.bulkPasteModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => elements.cancelBulkPaste.focus(), 30);
+  }
+
+  function closeBulkPasteConfirmation() {
+    if (isBulkPasting) return;
+    elements.bulkPasteModal.hidden = true;
+    if (
+      elements.scannerModal.hidden &&
+      elements.profileModal.hidden &&
+      elements.quizModal.hidden &&
+      elements.challengeModal.hidden &&
+      elements.secretModal.hidden &&
+      !isPageFullscreen
+    ) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  async function pasteAllStickers() {
+    const queue = availableStickersToPaste();
+    if (!queue.length || isBulkPasting) return;
+
+    elements.bulkPasteModal.hidden = true;
+    isBulkPasting = true;
+    pasteTarget = null;
+    document.body.classList.add("bulk-paste-active");
+    document.body.style.overflow = "";
+    elements.pasteBanner.classList.add("is-visible", "is-bulk");
+    switchView("album");
+    elements.pageWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    updateProgress();
+
+    for (let index = 0; index < queue.length; index += 1) {
+      const reference = queue[index];
+      const placement = placementFor(reference.id);
+      if (!placement || state.placed.includes(reference.id)) continue;
+
+      elements.pasteThumb.src = reference.src;
+      elements.pasteThumb.alt = reference.label;
+      elements.pasteTitle.textContent = `Colando ${index + 1} de ${queue.length}`;
+      elements.pasteMessage.textContent = `${reference.label} · página ${placement.page}`;
+
+      if (state.page !== placement.page) {
+        setPage(placement.page);
+        await waitForBulkPaste(430);
+      }
+
+      pasteTarget = reference.id;
+      renderStickerLayer();
+      await waitForBulkPaste(220);
+
+      state.placed.push(reference.id);
+      if (!state.unlocked.includes(reference.id)) state.unlocked.push(reference.id);
+      justPasted = reference.id;
+      pasteTarget = null;
+      saveState();
+      updateProgress();
+      renderStickerLayer();
+      renderPageThumbnailStickers();
+      renderMiniInventory();
+      await waitForBulkPaste(300);
+    }
+
+    isBulkPasting = false;
+    justPasted = null;
+    document.body.classList.remove("bulk-paste-active");
+    elements.pasteBanner.classList.remove("is-visible", "is-bulk");
+    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    renderAll();
+    celebrate(Math.min(90, 34 + queue.length));
+    showToast(`${queue.length} ${queue.length === 1 ? "figurinha colada" : "figurinhas coladas"} no álbum!`, "★");
+  }
+
   function startPaste(id) {
     const reference = referenceById(id);
     const placement = placementFor(id);
@@ -1716,6 +1890,8 @@
     elements.pasteThumb.src = reference.src;
     elements.pasteThumb.alt = reference.label;
     elements.pasteTitle.textContent = `${reference.label} pronta`;
+    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
+    elements.pasteBanner.classList.remove("is-bulk");
     elements.pasteBanner.classList.add("is-visible");
     switchView("album");
     setPage(placement.page);
@@ -1725,7 +1901,8 @@
 
   function cancelPaste() {
     pasteTarget = null;
-    elements.pasteBanner.classList.remove("is-visible");
+    elements.pasteBanner.classList.remove("is-visible", "is-bulk");
+    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
     renderStickerLayer();
   }
 
@@ -1773,12 +1950,230 @@
   function randomQuizQuestion(previousQuestion = "") {
     const pool = unansweredQuizPool(previousQuestion);
     const question = pool[Math.floor(Math.random() * pool.length)];
+    return shuffleQuizQuestion(question);
+  }
+
+  function shuffleQuizQuestion(question) {
     const options = question.options.map((text, index) => ({ text, correct: index === question.answer }));
     for (let index = options.length - 1; index > 0; index -= 1) {
       const swapIndex = Math.floor(Math.random() * (index + 1));
       [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
     }
     return { ...question, options };
+  }
+
+  function questionSet(count) {
+    const answered = new Set(Array.isArray(state.quizAnswered) ? state.quizAnswered : []);
+    let pool = QUIZ_QUESTIONS.filter((question) => !answered.has(quizQuestionId(question)));
+    if (pool.length < count) pool = [...QUIZ_QUESTIONS];
+    for (let index = pool.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+    }
+    return pool.slice(0, Math.min(count, pool.length)).map(shuffleQuizQuestion);
+  }
+
+  function missingStickerIds() {
+    return orderedReferences().filter((reference) => !state.unlocked.includes(reference.id)).map((reference) => reference.id);
+  }
+
+  function randomMissingStickerId() {
+    const missing = missingStickerIds();
+    return missing.length ? missing[Math.floor(Math.random() * missing.length)] : null;
+  }
+
+  function openCollectionChallenge(stickerId = null) {
+    const targetId = stickerId && !state.unlocked.includes(Number(stickerId)) ? Number(stickerId) : randomMissingStickerId();
+    if (!targetId) {
+      showToast("Sua coleção já está completa!", "★");
+      return;
+    }
+    const reference = referenceById(targetId);
+    if (!reference) return;
+    challengeSession = {
+      stickerId: targetId,
+      questions: questionSet(CHALLENGE_TOTAL),
+      index: 0,
+      correct: 0,
+      answers: [],
+      answeredCurrent: false,
+    };
+    elements.challengeSticker.src = reference.src;
+    elements.challengeSticker.alt = reference.label;
+    elements.challengeStickerNumber.textContent = reference.label;
+    elements.challengePlay.hidden = false;
+    elements.challengeResult.hidden = true;
+    elements.challengeResult.classList.remove("is-failed");
+    elements.challengeModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderChallengeQuestion();
+  }
+
+  function renderChallengeDots() {
+    if (!challengeSession) return;
+    elements.challengeDots.replaceChildren();
+    for (let index = 0; index < CHALLENGE_TOTAL; index += 1) {
+      const dot = document.createElement("i");
+      const answer = challengeSession.answers[index];
+      if (answer === true) dot.classList.add("is-correct");
+      else if (answer === false) dot.classList.add("is-wrong");
+      else if (index === challengeSession.index) dot.classList.add("is-current");
+      elements.challengeDots.append(dot);
+    }
+  }
+
+  function renderChallengeQuestion() {
+    if (!challengeSession) return;
+    const question = challengeSession.questions[challengeSession.index];
+    challengeSession.answeredCurrent = false;
+    elements.challengeProgressText.textContent = `${challengeSession.index + 1} de ${CHALLENGE_TOTAL}`;
+    elements.challengeScore.textContent = String(challengeSession.correct);
+    elements.challengeQuestion.textContent = question.question;
+    elements.challengeFeedback.hidden = true;
+    elements.challengeFeedback.className = "quiz-feedback";
+    elements.challengeFeedback.textContent = "";
+    elements.challengeNext.hidden = true;
+    elements.challengeOptions.replaceChildren();
+    renderChallengeDots();
+
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "quiz-option";
+      button.dataset.correct = option.correct ? "true" : "false";
+      button.innerHTML = `<span>${String.fromCharCode(65 + index)}</span><strong>${option.text}</strong>`;
+      button.addEventListener("click", () => answerChallengeOption(button, option.correct));
+      elements.challengeOptions.append(button);
+    });
+    window.setTimeout(() => $(".quiz-option", elements.challengeOptions)?.focus(), 30);
+  }
+
+  function answerChallengeOption(button, isCorrect) {
+    if (!challengeSession || challengeSession.answeredCurrent) return;
+    challengeSession.answeredCurrent = true;
+    const question = challengeSession.questions[challengeSession.index];
+    const buttons = $$(".quiz-option", elements.challengeOptions);
+    buttons.forEach((item) => {
+      item.disabled = true;
+      if (item.dataset.correct === "true") item.classList.add("is-correct");
+    });
+    button.classList.add(isCorrect ? "is-correct" : "is-wrong");
+    challengeSession.answers[challengeSession.index] = Boolean(isCorrect);
+    if (isCorrect) challengeSession.correct += 1;
+    markQuizQuestionAnswered(question);
+    elements.challengeScore.textContent = String(challengeSession.correct);
+    elements.challengeFeedback.hidden = false;
+    elements.challengeFeedback.className = `quiz-feedback ${isCorrect ? "is-correct" : "is-wrong"}`;
+    elements.challengeFeedback.textContent = isCorrect
+      ? question.note ? `Acertou! ${question.note}` : "Acertou!"
+      : "Não foi dessa vez. A resposta correta ficou destacada.";
+    elements.challengeNext.textContent = challengeSession.index === CHALLENGE_TOTAL - 1 ? "Ver resultado" : "Próxima pergunta";
+    elements.challengeNext.hidden = false;
+    renderChallengeDots();
+    window.setTimeout(() => elements.challengeNext.focus(), 30);
+  }
+
+  function nextChallengeQuestion() {
+    if (!challengeSession || !challengeSession.answeredCurrent) return;
+    if (challengeSession.index >= CHALLENGE_TOTAL - 1) return finishCollectionChallenge();
+    challengeSession.index += 1;
+    renderChallengeQuestion();
+  }
+
+  function finishCollectionChallenge() {
+    if (!challengeSession) return;
+    const reference = referenceById(challengeSession.stickerId);
+    if (!reference) return closeCollectionChallenge();
+    const passed = challengeSession.correct >= CHALLENGE_PASS;
+    if (passed && !state.unlocked.includes(reference.id)) {
+      state.unlocked.push(reference.id);
+      saveState();
+      updateProgress();
+      renderMiniInventory();
+      renderInventory();
+      celebrate(56);
+    }
+    elements.challengePlay.hidden = true;
+    elements.challengeResult.hidden = false;
+    elements.challengeResult.classList.toggle("is-failed", !passed);
+    elements.challengeResultIcon.textContent = passed ? "★" : "×";
+    elements.challengeResultEyebrow.textContent = passed ? "Desafio vencido" : "Quase lá";
+    elements.challengeResultTitle.textContent = passed ? "Figurinha conquistada!" : "A figurinha continua em jogo";
+    elements.challengeResultMessage.textContent = passed
+      ? `Você acertou ${challengeSession.correct} de ${CHALLENGE_TOTAL} perguntas. A figurinha entrou no inventário.`
+      : `Você acertou ${challengeSession.correct} de ${CHALLENGE_TOTAL}. São necessários ${CHALLENGE_PASS} acertos para conquistar a figurinha.`;
+    elements.challengeResultSticker.src = reference.src;
+    elements.challengeResultSticker.alt = reference.label;
+    elements.challengeResultLabel.textContent = reference.label;
+    elements.challengeResultActions.replaceChildren();
+
+    if (passed) {
+      elements.challengeResultActions.append(
+        actionButton("Fechar", "secondary-button", closeCollectionChallenge),
+        actionButton("Colar agora", "primary-button", () => {
+          const id = reference.id;
+          closeCollectionChallenge();
+          startPaste(id);
+        }),
+      );
+      showToast(`${reference.label} conquistada!`, "★");
+    } else {
+      elements.challengeResultActions.append(
+        actionButton("Agora não", "secondary-button", closeCollectionChallenge),
+        actionButton("Tentar novamente", "primary-button", () => openCollectionChallenge(reference.id)),
+      );
+    }
+  }
+
+  function closeCollectionChallenge() {
+    elements.challengeModal.hidden = true;
+    challengeSession = null;
+    elements.challengeOptions.replaceChildren();
+    elements.challengeResultActions.replaceChildren();
+    if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.quizModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  function openSecretModal() {
+    elements.secretInput.value = "";
+    elements.secretModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => elements.secretInput.focus(), 40);
+  }
+
+  function closeSecretModal() {
+    elements.secretModal.hidden = true;
+    elements.secretInput.value = "";
+    if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.quizModal.hidden && elements.challengeModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  function registerBrandTap(event) {
+    event.stopPropagation();
+    window.clearTimeout(brandTapTimer);
+    brandTapCount += 1;
+    if (brandTapCount >= 4) {
+      brandTapCount = 0;
+      openSecretModal();
+      return;
+    }
+    brandTapTimer = window.setTimeout(() => {
+      brandTapCount = 0;
+    }, 4000);
+  }
+
+  function submitSecretCode(event) {
+    event.preventDefault();
+    const normalized = elements.secretInput.value.trim().replace(/\s+/g, " ").toLocaleLowerCase("pt-BR");
+    closeSecretModal();
+    if (normalized !== SECRET_CODE) return;
+    state.unlocked = orderedReferences().map((reference) => reference.id);
+    saveState();
+    renderAll();
+    celebrate(110);
+    showToast("Todas as figurinhas foram liberadas!", "★");
   }
 
   function renderQuizQuestion(previousQuestion = "") {
@@ -1820,7 +2215,7 @@
     pendingQuizStickerId = null;
     currentQuiz = null;
     elements.quizRetry.hidden = true;
-    if (elements.scannerModal.hidden && elements.profileModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
+    if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.challengeModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
   }
 
   function cancelQuizAttempt() {
@@ -1844,7 +2239,7 @@
       });
       button.classList.add("is-wrong");
       elements.quizFeedback.className = "quiz-feedback is-wrong";
-      elements.quizFeedback.textContent = "Not yet — click Retry for a new question, or Cancel to try later.";
+      elements.quizFeedback.textContent = "Ainda não. Escolha outra pergunta ou cancele para tentar depois.";
       elements.quizRetry.hidden = false;
       window.setTimeout(() => elements.quizRetry.focus(), 30);
       return;
@@ -1855,7 +2250,7 @@
       if (item.dataset.correct === "true") item.classList.add("is-correct");
     });
     elements.quizFeedback.className = "quiz-feedback is-correct";
-    elements.quizFeedback.textContent = currentQuiz?.note ? `Correct! ${currentQuiz.note}` : "Correct!";
+    elements.quizFeedback.textContent = currentQuiz?.note ? `Acertou! ${currentQuiz.note}` : "Acertou!";
     markQuizQuestionAnswered(currentQuiz);
     const stickerId = pendingQuizStickerId;
     window.setTimeout(() => {
@@ -1981,7 +2376,7 @@
   function closeProfile() {
     currentProfileStickerId = null;
     elements.profileModal.hidden = true;
-    if (elements.scannerModal.hidden && elements.quizModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
+    if (elements.scannerModal.hidden && elements.quizModal.hidden && elements.challengeModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
   }
 
   function enterPageFullscreen() {
@@ -1999,7 +2394,7 @@
     isPageFullscreen = false;
     document.body.classList.remove("page-fullscreen-active");
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
-    if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.quizModal.hidden) document.body.style.overflow = "";
+    if (elements.scannerModal.hidden && elements.profileModal.hidden && elements.quizModal.hidden && elements.challengeModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden) document.body.style.overflow = "";
   }
 
   function openScanner() {
@@ -2011,7 +2406,7 @@
 
   function closeScanner() {
     elements.scannerModal.hidden = true;
-    if (elements.profileModal.hidden && elements.quizModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
+    if (elements.profileModal.hidden && elements.quizModal.hidden && elements.challengeModal.hidden && elements.secretModal.hidden && elements.bulkPasteModal.hidden && !isPageFullscreen) document.body.style.overflow = "";
     elements.cameraInput.value = "";
     elements.galleryInput.value = "";
     if (sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl);
@@ -2363,8 +2758,12 @@
     if (!confirmed) return;
     state = defaultState();
     pasteTarget = null;
+    challengeSession = null;
+    isBulkPasting = false;
     saveState();
-    elements.pasteBanner.classList.remove("is-visible");
+    document.body.classList.remove("bulk-paste-active");
+    elements.pasteBanner.classList.remove("is-visible", "is-bulk");
+    elements.pasteMessage.textContent = "Toque no espaço iluminado e acerte o quiz para colar.";
     currentFilter = "all";
     $$("[data-filter]").forEach((button) => button.classList.toggle("is-active", button.dataset.filter === "all"));
     renderAll();
@@ -2379,8 +2778,12 @@
       switchView("album");
       setPage(1);
     });
+    $("#brandMark")?.addEventListener("click", registerBrandTap);
     $("#progressChip").addEventListener("click", () => switchView("inventory"));
     $("#resetButton").addEventListener("click", resetAlbum);
+    elements.pasteAllButton.addEventListener("click", openBulkPasteConfirmation);
+    elements.cancelBulkPaste.addEventListener("click", closeBulkPasteConfirmation);
+    elements.confirmBulkPaste.addEventListener("click", pasteAllStickers);
     elements.musicButton.addEventListener("click", (event) => {
       event.stopPropagation();
       toggleVolumePopover();
@@ -2408,6 +2811,11 @@
     elements.closeQuiz.addEventListener("click", closeQuiz);
     elements.quizCancel.addEventListener("click", cancelQuizAttempt);
     elements.quizRetry.addEventListener("click", retryQuizQuestion);
+    elements.closeChallenge.addEventListener("click", closeCollectionChallenge);
+    elements.challengeCancel.addEventListener("click", closeCollectionChallenge);
+    elements.challengeNext.addEventListener("click", nextChallengeQuestion);
+    elements.closeSecret.addEventListener("click", closeSecretModal);
+    elements.secretForm.addEventListener("submit", submitSecretCode);
     elements.fullscreenPage.addEventListener("click", enterPageFullscreen);
     elements.exitFullscreen.addEventListener("click", exitPageFullscreen);
     $("#closeProfile").addEventListener("click", closeProfile);
@@ -2417,6 +2825,7 @@
 
     $$('[data-view]').forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
     [$("#openScanner"), $("#openScannerInventory"), $("#mobileScanner")].forEach((button) => button.addEventListener("click", openScanner));
+    [$("#openQuestionChallenge"), $("#openQuestionChallengeInventory")].forEach((button) => button.addEventListener("click", () => openCollectionChallenge()));
 
     $$("[data-filter]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -2467,7 +2876,7 @@
     }, { passive: false });
 
     elements.pageWrap.addEventListener("pointerdown", (event) => {
-      if (pasteTarget || event.target.closest(".fullscreen-exit")) return;
+      if (pasteTarget || isBulkPasting || event.target.closest(".album-slot, .fullscreen-exit")) return;
       elements.pageWrap.setPointerCapture(event.pointerId);
       pageSwipe = {
         id: event.pointerId,
@@ -2480,7 +2889,7 @@
     });
 
     elements.pageWrap.addEventListener("pointermove", (event) => {
-      if (!pageSwipe || pageSwipe.id !== event.pointerId || pasteTarget) return;
+      if (!pageSwipe || pageSwipe.id !== event.pointerId || pasteTarget || isBulkPasting) return;
       const dx = event.clientX - pageSwipe.x;
       const dy = event.clientY - pageSwipe.y;
       if (Math.abs(dx) > 8 || Math.abs(dy) > 8) pageSwipe.moved = true;
@@ -2488,7 +2897,7 @@
     }, { passive: false });
 
     const finishPageSwipe = (event) => {
-      if (!pageSwipe || pageSwipe.id !== event.pointerId || pasteTarget) return;
+      if (!pageSwipe || pageSwipe.id !== event.pointerId || pasteTarget || isBulkPasting) return;
       const dx = event.clientX - pageSwipe.x;
       const dy = event.clientY - pageSwipe.y;
       const shouldTurn = Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) * 1.15;
@@ -2528,15 +2937,27 @@
     elements.quizModal.addEventListener("click", (event) => {
       if (event.target === elements.quizModal) closeQuiz();
     });
+    elements.challengeModal.addEventListener("click", (event) => {
+      if (event.target === elements.challengeModal) closeCollectionChallenge();
+    });
+    elements.bulkPasteModal.addEventListener("click", (event) => {
+      if (event.target === elements.bulkPasteModal) closeBulkPasteConfirmation();
+    });
+    elements.secretModal.addEventListener("click", (event) => {
+      if (event.target === elements.secretModal) closeSecretModal();
+    });
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement && isPageFullscreen) exitPageFullscreen();
     });
     document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !elements.bulkPasteModal.hidden) return closeBulkPasteConfirmation();
+      if (event.key === "Escape" && !elements.secretModal.hidden) return closeSecretModal();
+      if (event.key === "Escape" && !elements.challengeModal.hidden) return closeCollectionChallenge();
       if (event.key === "Escape" && !elements.quizModal.hidden) return closeQuiz();
       if (event.key === "Escape" && !elements.profileModal.hidden) return closeProfile();
       if (event.key === "Escape" && !elements.scannerModal.hidden) return closeScanner();
       if (event.key === "Escape" && isPageFullscreen) return exitPageFullscreen();
-      if (!elements.scannerModal.hidden || currentView !== "album") return;
+      if (isBulkPasting || !elements.scannerModal.hidden || currentView !== "album") return;
       if (event.key === "ArrowLeft") setPage(state.page - 1);
       if (event.key === "ArrowRight") setPage(state.page + 1);
     });
@@ -2560,5 +2981,6 @@
     compareFeatures,
     describeCanvas,
     passScore: PASS_SCORE,
+    isBulkPasting: () => isBulkPasting,
   };
 })();

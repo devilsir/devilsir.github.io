@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#071c3e" />
     <meta
       name="description"
-      content="Álbum digital offline World Stars 2026 da Escola Estadual Santa Rita de Cássia."
+      content="Álbum digital World Stars 2026 da Escola Estadual Santa Rita de Cássia."
     />
     <title>World Stars 2026 — Álbum Digital</title>
     <link rel="icon" type="image/png" href="assets/app-icon.png" />
@@ -19,7 +19,7 @@
     <div class="app-shell" id="appShell">
       <header class="topbar">
         <button class="brand" id="brandButton" type="button" aria-label="Ir para a capa do álbum">
-          <span class="brand-mark" aria-hidden="true">★</span>
+          <span class="brand-mark" id="brandMark" aria-hidden="true">★</span>
           <span class="brand-copy">
             <strong>World Stars</strong>
             <small>Álbum digital · 2026</small>
@@ -114,13 +114,19 @@
             <div class="panel-card scan-card">
               <span class="scan-spark" aria-hidden="true">✦</span>
               <span class="eyebrow">Nova figurinha</span>
-              <h2>Achou mais uma?</h2>
-              <p>Fotografe ou envie a imagem. Com 15% de semelhança, ela entra no inventário.</p>
-              <button class="primary-button full" id="openScanner" type="button">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
-                Adicionar figurinha
-              </button>
-              <div class="privacy-note"><span aria-hidden="true">●</span> Tudo acontece offline neste aparelho</div>
+              <h2>Quer mais uma?</h2>
+              <p>Envie a imagem da figurinha ou conquiste uma nova acertando pelo menos 3 de 5 perguntas.</p>
+              <div class="scan-card-actions">
+                <button class="primary-button full" id="openScanner" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+                  Adicionar por imagem
+                </button>
+                <button class="secondary-button full challenge-launch" id="openQuestionChallenge" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3a3 3 0 0 0 6 0V4M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4M12 10v7M8 20h8M9 17h6"/></svg>
+                  Desafio 3 de 5
+                </button>
+              </div>
+              <div class="collection-methods"><span>Imagem</span><i></i><span>Perguntas</span></div>
             </div>
 
             <div class="panel-card mini-inventory">
@@ -140,10 +146,20 @@
               <h1 id="inventoryTitle">Inventário de figurinhas</h1>
               <p>As desbloqueadas ficam aqui até você colar no álbum.</p>
             </div>
-            <button class="primary-button" id="openScannerInventory" type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
-              Nova figurinha
-            </button>
+            <div class="inventory-heading-actions">
+              <button class="secondary-button paste-all-button" id="pasteAllButton" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v14H7zM4 7h3v13h10v-2M10 8h4M10 11h4M10 14h3"/></svg>
+                <span id="pasteAllLabel">Nada para colar</span>
+              </button>
+              <button class="secondary-button" id="openQuestionChallengeInventory" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3a3 3 0 0 0 6 0V4M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4M12 10v7M8 20h8M9 17h6"/></svg>
+                Desafio 3 de 5
+              </button>
+              <button class="primary-button" id="openScannerInventory" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+                Nova figurinha
+              </button>
+            </div>
           </div>
 
           <div class="inventory-stats" aria-label="Resumo da coleção">
@@ -184,14 +200,27 @@
 
     <div class="paste-banner" id="pasteBanner" role="status" aria-live="polite">
       <img id="pasteThumb" alt="" />
-      <div><strong id="pasteTitle">Figurinha pronta</strong><span>Toque no espaço iluminado e acerte o quiz para colar.</span></div>
+      <div><strong id="pasteTitle">Figurinha pronta</strong><span id="pasteMessage">Toque no espaço iluminado e acerte o quiz para colar.</span></div>
       <button id="cancelPaste" type="button">Cancelar</button>
+    </div>
+
+    <div class="modal-backdrop" id="bulkPasteModal" hidden>
+      <section class="bulk-paste-modal" role="dialog" aria-modal="true" aria-labelledby="bulkPasteTitle" aria-describedby="bulkPasteDescription">
+        <div class="bulk-paste-icon" aria-hidden="true">★</div>
+        <span class="eyebrow">Preencher álbum</span>
+        <h2 id="bulkPasteTitle">Colar todas as figurinhas?</h2>
+        <p id="bulkPasteDescription"><strong id="bulkPasteCount">0</strong> figurinhas prontas serão coladas em ordem numérica. O álbum vai mudar de página automaticamente até terminar.</p>
+        <div class="modal-actions bulk-paste-actions">
+          <button class="secondary-button" id="cancelBulkPaste" type="button">Cancelar</button>
+          <button class="primary-button" id="confirmBulkPaste" type="button">Sim, colar todas</button>
+        </div>
+      </section>
     </div>
 
     <div class="modal-backdrop" id="scannerModal" hidden>
       <section class="scanner-modal" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
         <header class="modal-header">
-          <div><span class="eyebrow">Reconhecimento offline</span><h2 id="scannerTitle">Adicionar figurinha</h2></div>
+          <div><span class="eyebrow">Reconhecimento de imagem</span><h2 id="scannerTitle">Adicionar figurinha</h2></div>
           <button class="icon-button close-modal" id="closeScanner" type="button" aria-label="Fechar">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
           </button>
@@ -217,7 +246,7 @@
             </label>
             <input id="galleryInput" type="file" accept="image/*" hidden />
           </div>
-          <div class="offline-seal"><span>✓</span><div><strong>100% offline e privado</strong><small>A imagem não sai deste aparelho.</small></div></div>
+          <div class="offline-seal"><span>✓</span><div><strong>Imagem pronta para comparar</strong><small>Enquadre a figurinha inteira para melhorar o resultado.</small></div></div>
         </div>
 
         <div class="scanner-step crop-step" id="cropStep" hidden>
@@ -240,7 +269,7 @@
         <div class="scanner-step analyzing-step" id="analyzingStep" hidden>
           <div class="analysis-orbit" aria-hidden="true"><span></span><i></i></div>
           <h3>Comparando detalhes…</h3>
-          <p>Conferindo cores, formas, retrato e número da figurinha no próprio aparelho.</p>
+          <p>Conferindo cores, formas, retrato e número da figurinha.</p>
           <div class="analysis-bar"><span></span></div>
         </div>
 
@@ -267,8 +296,8 @@
     <div class="modal-backdrop quiz-backdrop" id="quizModal" hidden>
       <section class="scanner-modal quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
         <header class="modal-header">
-          <div><span class="eyebrow">As seen in class</span><h2 id="quizTitle">Quick quiz</h2></div>
-          <button class="icon-button close-modal" id="closeQuiz" type="button" aria-label="Close quiz">
+          <div><span class="eyebrow">Desafio rápido</span><h2 id="quizTitle">Pergunta para colar</h2></div>
+          <button class="icon-button close-modal" id="closeQuiz" type="button" aria-label="Fechar pergunta">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
           </button>
         </header>
@@ -277,19 +306,85 @@
             <img id="quizSticker" alt="Sticker ready to paste" />
             <div>
               <span id="quizNumber">Sticker 01</span>
-              <strong>Answer to paste</strong>
-              <small>This sticker will only go into the album after the correct answer.</small>
+              <strong>Acerte para colar</strong>
+              <small>A figurinha será colada no álbum depois da resposta correta.</small>
             </div>
           </div>
-          <p class="quiz-kicker">As seen in class, choose the correct answer:</p>
+          <p class="quiz-kicker">Escolha a resposta correta:</p>
           <h3 id="quizQuestion">Question</h3>
           <div class="quiz-options" id="quizOptions"></div>
           <p class="quiz-feedback" id="quizFeedback" hidden></p>
           <div class="modal-actions quiz-actions">
-            <button class="secondary-button" id="quizCancel" type="button">Cancel</button>
-            <button class="primary-button" id="quizRetry" type="button" hidden>Retry</button>
+            <button class="secondary-button" id="quizCancel" type="button">Cancelar</button>
+            <button class="primary-button" id="quizRetry" type="button" hidden>Outra pergunta</button>
           </div>
         </div>
+      </section>
+    </div>
+
+
+    <div class="modal-backdrop challenge-backdrop" id="challengeModal" hidden>
+      <section class="scanner-modal challenge-modal" role="dialog" aria-modal="true" aria-labelledby="challengeTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Conquiste uma figurinha</span><h2 id="challengeTitle">Desafio 3 de 5</h2></div>
+          <button class="icon-button close-modal" id="closeChallenge" type="button" aria-label="Fechar desafio">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+
+        <div class="challenge-play" id="challengePlay">
+          <div class="challenge-hero">
+            <div class="challenge-sticker-shell" id="challengeStickerShell">
+              <img id="challengeSticker" alt="Figurinha do desafio" />
+              <span aria-hidden="true">?</span>
+            </div>
+            <div>
+              <span id="challengeStickerNumber">Figurinha 01</span>
+              <strong>Valendo uma nova figurinha</strong>
+              <small>Responda às 5 perguntas. Com 3 acertos, ela entra no inventário.</small>
+            </div>
+          </div>
+
+          <div class="challenge-status" aria-label="Progresso do desafio">
+            <div><span>Pergunta</span><strong id="challengeProgressText">1 de 5</strong></div>
+            <div class="challenge-dots" id="challengeDots" aria-hidden="true"></div>
+            <div><span>Acertos</span><strong id="challengeScore">0</strong></div>
+          </div>
+
+          <p class="quiz-kicker">Escolha uma alternativa:</p>
+          <h3 id="challengeQuestion">Pergunta</h3>
+          <div class="quiz-options" id="challengeOptions"></div>
+          <p class="quiz-feedback" id="challengeFeedback" hidden></p>
+          <div class="modal-actions challenge-actions">
+            <button class="secondary-button" id="challengeCancel" type="button">Cancelar</button>
+            <button class="primary-button" id="challengeNext" type="button" hidden>Próxima pergunta</button>
+          </div>
+        </div>
+
+        <div class="challenge-result" id="challengeResult" hidden>
+          <div class="challenge-result-badge" id="challengeResultBadge"><span id="challengeResultIcon">★</span></div>
+          <span class="eyebrow" id="challengeResultEyebrow">Desafio concluído</span>
+          <h3 id="challengeResultTitle">Figurinha conquistada!</h3>
+          <p id="challengeResultMessage">Você acertou 3 de 5 perguntas.</p>
+          <div class="challenge-reveal"><img id="challengeResultSticker" alt="Figurinha conquistada" /><strong id="challengeResultLabel">Figurinha 01</strong></div>
+          <div class="modal-actions challenge-result-actions" id="challengeResultActions"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop secret-backdrop" id="secretModal" hidden>
+      <section class="secret-modal" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+        <button class="profile-close" id="closeSecret" type="button" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+        <span class="secret-star" aria-hidden="true">★</span>
+        <span class="eyebrow">World Stars</span>
+        <h2 id="secretTitle">Acesso especial</h2>
+        <form id="secretForm">
+          <label for="secretInput">Digite o código</label>
+          <input id="secretInput" type="text" autocomplete="off" spellcheck="false" />
+          <button class="primary-button full" type="submit">Confirmar</button>
+        </form>
       </section>
     </div>
 
