@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const games = new Set(["numbers", "image", "memory", "snake", "tetris", "luxor", "simon", "lights"]);
+const games = new Set(["numbers", "image", "memory", "snake", "tetris", "luxor", "simon", "lights"]); // todos os oito minijogos
 const difficultyRanks: Record<string, number> = { facil: 1, normal: 2, dificil: 3, extremo: 4, inferno: 5 };
 const baseTimes: Record<string, number> = { numbers: 90000, image: 110000, memory: 90000, snake: 75000, tetris: 150000, luxor: 180000, simon: 95000, lights: 85000 };
 const difficultyMultipliers = [1, 1.35, 1.8, 2.45, 3.25];

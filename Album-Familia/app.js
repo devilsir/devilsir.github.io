@@ -184,6 +184,25 @@
   };
   const stickerSrc = (id) => `assets/stickers/sticker-${String(id).padStart(3, "0")}.webp`;
   const stickerName = (id) => STICKER_NAMES[Number(id)] || `Figurinha ${String(id).padStart(2, "0")}`;
+  const safeScore = (value) => {
+    const score = Number(value);
+    return Number.isFinite(score) && score > 0 ? Math.round(score) : 0;
+  };
+  function sanitizeFreeGameTotals(source) {
+    const totals = {};
+    if (!source || typeof source !== "object") return totals;
+    RANKING_GAMES.forEach(({ key }) => {
+      const record = source[key];
+      const bestPoints = safeScore(record?.bestPoints);
+      if (!bestPoints) return;
+      totals[key] = {
+        bestPoints,
+        bestMs: Math.max(0, Math.round(Number(record?.bestMs) || 0)),
+        difficultyKey: FREE_DIFFICULTIES.some((difficulty) => difficulty.key === record?.difficultyKey) ? record.difficultyKey : "normal"
+      };
+    });
+    return totals;
+  }
 
   function buildPlacements() {
     const placements = {};
@@ -211,7 +230,7 @@
         noteStyles: saved.noteStyles && typeof saved.noteStyles === "object" ? saved.noteStyles : {},
         profiles: saved.profiles && typeof saved.profiles === "object" ? saved.profiles : {},
         freeRecords: saved.freeRecords && typeof saved.freeRecords === "object" ? saved.freeRecords : {},
-        freeGameTotals: saved.freeGameTotals && typeof saved.freeGameTotals === "object" ? saved.freeGameTotals : {},
+        freeGameTotals: sanitizeFreeGameTotals(saved.freeGameTotals),
         playerName: String(saved.playerName || saved.notes?.dono || "").trim().slice(0, 32),
         volume: clamp(Number(saved.volume ?? DEFAULT_VOLUME), 0, 100),
         guideMode: Boolean(saved.guideMode)
@@ -239,6 +258,7 @@
   let scoreUser = null;
   let rankingMode = "stickers";
   let rankingGame = "numbers";
+  let rankingGameSummary = {};
   let rankingRequestId = 0;
   let scoreSyncTimer = null;
   let supabaseLoadPromise = null;
@@ -259,7 +279,7 @@
     freeGameGrid: $("#freeGameGrid"), freeDifficultyName: $("#freeDifficultyName"), freeDifficultyDescription: $("#freeDifficultyDescription"), freeWins: $("#freeWins"),
     welcomeModal: $("#welcomeModal"), welcomeForm: $("#welcomeForm"), welcomeName: $("#welcomeName"),
     rankingPlayerAvatar: $("#rankingPlayerAvatar"), rankingPlayerName: $("#rankingPlayerName"), rankingPlayerStickers: $("#rankingPlayerStickers"), rankingPlayerPoints: $("#rankingPlayerPoints"),
-    rankingStatus: $("#rankingStatus"), rankingPodium: $("#rankingPodium"), rankingList: $("#rankingList"), rankingGamePicker: $("#rankingGamePicker"), rankingGameSelect: $("#rankingGameSelect"), refreshRanking: $("#refreshRanking")
+    rankingStatus: $("#rankingStatus"), rankingPodium: $("#rankingPodium"), rankingList: $("#rankingList"), rankingGameGrid: $("#rankingGameGrid"), rankingGamePicker: $("#rankingGamePicker"), rankingGameSelect: $("#rankingGameSelect"), refreshRanking: $("#refreshRanking")
   };
 
   function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -274,7 +294,7 @@
     return (parts.length ? `${parts[0][0]}${parts.length > 1 ? parts.at(-1)[0] : ""}` : "RF").toLocaleUpperCase("pt-BR");
   }
   function totalFreePoints() {
-    return Object.values(state.freeGameTotals || {}).reduce((total, record) => total + (Number(record?.bestPoints) || 0), 0);
+    return Object.values(state.freeGameTotals || {}).reduce((total, record) => total + safeScore(record?.bestPoints), 0);
   }
   function renderRankingProfile() {
     if (!elements.rankingPlayerName) return;
@@ -367,27 +387,90 @@
         phaseDurationsMs: run.phaseDurations, phasesCompleted: FREE_PHASES, unlockedCount: state.unlocked.length
       } });
       if (error) throw error;
-      if (currentView === "ranking" && rankingMode === "games" && rankingGame === run.gameKey) loadRanking();
+      if (currentView === "ranking" && rankingMode === "games") loadRanking();
       return true;
     } catch { return false; }
   }
   function rankingMetric(entry) {
-    return rankingMode === "stickers" ? Number(entry.unlocked_count || 0) : Number(entry.points || 0);
+    return rankingMode === "stickers" ? Math.max(0, Number(entry.unlocked_count || 0)) : safeScore(entry.points);
   }
   function rankingMetricLabel(entry) {
     if (rankingMode === "stickers") return `${rankingMetric(entry)} de ${TOTAL} figurinhas`;
     return `${rankingMetric(entry).toLocaleString("pt-BR")} pontos`;
   }
   function rankingSubLabel(entry) {
-    if (rankingMode === "stickers") return `${Number(entry.total_free_points || 0).toLocaleString("pt-BR")} pontos nos desafios livres`;
+    if (rankingMode === "stickers") return `${Math.max(0, Number(entry.total_free_points || 0)).toLocaleString("pt-BR")} pontos nos desafios livres`;
     const difficulty = freeDifficulty(entry.difficulty_key);
-    return `${difficulty.label} · ${formatDuration(Number(entry.duration_ms))}`;
+    return `${difficulty.label} · ${formatDuration(Math.max(0, Number(entry.duration_ms) || 0))}`;
+  }
+  function gameByKey(gameKey) {
+    return PUZZLE_TYPES.find((game) => game.key === gameKey) || PUZZLE_TYPES[0];
+  }
+  function blankRankingSummary() {
+    return Object.fromEntries(RANKING_GAMES.map(({ key }) => [key, { count: 0, topPoints: 0, topDuration: 0, difficultyKey: "normal" }]));
+  }
+  function localRankingSummary() {
+    const summary = blankRankingSummary();
+    RANKING_GAMES.forEach(({ key }) => {
+      const record = state.freeGameTotals[key] || {};
+      const topPoints = safeScore(record.bestPoints);
+      if (!topPoints) return;
+      summary[key] = {
+        count: 1,
+        topPoints,
+        topDuration: Math.max(0, Number(record.bestMs) || 0),
+        difficultyKey: record.difficultyKey || "normal"
+      };
+    });
+    return summary;
+  }
+  function createRankingSummary(entries = []) {
+    const summary = blankRankingSummary();
+    const playersByGame = Object.fromEntries(RANKING_GAMES.map(({ key }) => [key, new Set()]));
+    (Array.isArray(entries) ? entries : []).forEach((entry) => {
+      if (!summary[entry.game_key]) return;
+      const points = safeScore(entry.points);
+      if (!points) return;
+      const item = summary[entry.game_key];
+      playersByGame[entry.game_key].add(String(entry.user_id || `${entry.display_name}-${points}`));
+      if (points > item.topPoints || (points === item.topPoints && Number(entry.duration_ms || Infinity) < Number(item.topDuration || Infinity))) {
+        item.topPoints = points;
+        item.topDuration = Math.max(0, Number(entry.duration_ms) || 0);
+        item.difficultyKey = entry.difficulty_key || "normal";
+      }
+    });
+    RANKING_GAMES.forEach(({ key }) => {
+      summary[key].count = playersByGame[key].size;
+      const local = localRankingSummary()[key];
+      if (!summary[key].count && local.topPoints) summary[key] = local;
+    });
+    return summary;
+  }
+  function renderRankingGameGrid(summary = rankingGameSummary) {
+    if (!elements.rankingGameGrid) return;
+    rankingGameSummary = summary && typeof summary === "object" ? summary : blankRankingSummary();
+    elements.rankingGameGrid.replaceChildren();
+    RANKING_GAMES.forEach((game) => {
+      const details = FREE_GAME_DETAILS[game.key];
+      const record = rankingGameSummary[game.key] || { count: 0, topPoints: 0 };
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `ranking-game-card${rankingGame === game.key ? " is-active" : ""}`;
+      button.dataset.rankingGame = game.key;
+      button.style.setProperty("--ranking-game-accent", details.accent);
+      button.setAttribute("aria-pressed", String(rankingGame === game.key));
+      const countLabel = record.count ? `${record.count} ${record.count === 1 ? "recordista" : "recordistas"}` : "Sem recordes ainda";
+      button.innerHTML = `<span class="ranking-game-icon" aria-hidden="true">${details.icon}</span><span class="ranking-game-copy"><strong>${escapeHTML(game.title)}</strong><small>${countLabel}</small></span><span class="ranking-game-score"><b>${record.topPoints ? safeScore(record.topPoints).toLocaleString("pt-BR") : "—"}</b><small>melhor</small></span>`;
+      button.addEventListener("click", () => setRankingGame(game.key));
+      elements.rankingGameGrid.append(button);
+    });
   }
   function renderRankingEntries(entries) {
     elements.rankingPodium.replaceChildren();
     elements.rankingList.replaceChildren();
     if (!entries.length) {
-      elements.rankingList.innerHTML = '<div class="ranking-empty">Ainda não há recordistas nesta categoria.</div>';
+      const gameTitle = gameByKey(rankingGame).title;
+      elements.rankingList.innerHTML = `<div class="ranking-empty">Ainda não há recordistas em ${escapeHTML(gameTitle)}.</div>`;
       return;
     }
     entries.slice(0, 3).forEach((entry, index) => {
@@ -408,17 +491,18 @@
   function localRankingEntry() {
     if (rankingMode === "stickers") return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", unlocked_count: state.unlocked.length, total_free_points: totalFreePoints() };
     const record = state.freeGameTotals[rankingGame] || {};
-    return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", points: Number(record.bestPoints || 0), duration_ms: Number(record.bestMs || 0), difficulty_key: record.difficultyKey || "normal" };
+    return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", points: safeScore(record.bestPoints), duration_ms: Math.max(0, Number(record.bestMs || 0)), difficulty_key: record.difficultyKey || "normal" };
   }
   async function loadRanking() {
     renderRankingProfile();
+    if (rankingMode === "games") renderRankingGameGrid(localRankingSummary());
     const requestId = ++rankingRequestId;
     elements.rankingStatus.textContent = "Carregando recordistas...";
     elements.rankingPodium.replaceChildren();
     elements.rankingList.replaceChildren();
     if (!supabaseConfigured()) {
       const local = localRankingEntry();
-      elements.rankingStatus.textContent = "O ranking online está indisponível no momento.";
+      elements.rankingStatus.textContent = rankingMode === "stickers" ? "Seu progresso neste aparelho" : `Ranking de ${gameByKey(rankingGame).title}`;
       renderRankingEntries(rankingMode === "games" && !local.points ? [] : [local]);
       return;
     }
@@ -426,20 +510,37 @@
       const client = await ensureScoreClient();
       if (!client || requestId !== rankingRequestId) return;
       await syncPlayerProgress();
-      let query;
-      if (rankingMode === "stickers") query = client.from("player_profiles").select("user_id,display_name,unlocked_count,total_free_points,updated_at").order("unlocked_count", { ascending: false }).order("updated_at", { ascending: true }).limit(20);
-      else query = client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,updated_at").eq("game_key", rankingGame).order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(20);
-      const { data, error } = await query;
-      if (error) throw error;
+      if (rankingMode === "stickers") {
+        const { data, error } = await client.from("player_profiles").select("user_id,display_name,unlocked_count,total_free_points,updated_at").order("unlocked_count", { ascending: false }).order("updated_at", { ascending: true }).limit(20);
+        if (error) throw error;
+        if (requestId !== rankingRequestId) return;
+        elements.rankingStatus.textContent = "Mais figurinhas liberadas";
+        renderRankingEntries(Array.isArray(data) ? data : []);
+        return;
+      }
+
+      const [detailResult, summaryResult] = await Promise.all([
+        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,updated_at").eq("game_key", rankingGame).order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(20),
+        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms").order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(1000)
+      ]);
+      if (detailResult.error) throw detailResult.error;
       if (requestId !== rankingRequestId) return;
-      elements.rankingStatus.textContent = rankingMode === "stickers" ? "Mais figurinhas liberadas" : `Melhores pontuações em ${PUZZLE_TYPES.find((game) => game.key === rankingGame)?.title || "minijogo"}`;
-      renderRankingEntries(Array.isArray(data) ? data : []);
+      if (!summaryResult.error) renderRankingGameGrid(createRankingSummary(summaryResult.data));
+      elements.rankingStatus.textContent = `Melhores pontuações em ${gameByKey(rankingGame).title}`;
+      renderRankingEntries(Array.isArray(detailResult.data) ? detailResult.data : []);
     } catch {
       if (requestId !== rankingRequestId) return;
       elements.rankingStatus.textContent = "Não foi possível atualizar o ranking agora.";
       const local = localRankingEntry();
       renderRankingEntries(rankingMode === "games" && !local.points ? [] : [local]);
     }
+  }
+  function setRankingGame(gameKey) {
+    if (!RANKING_GAMES.some((game) => game.key === gameKey)) return;
+    rankingGame = gameKey;
+    elements.rankingGameSelect.value = rankingGame;
+    renderRankingGameGrid(rankingGameSummary);
+    loadRanking();
   }
   function setRankingMode(mode) {
     rankingMode = mode === "games" ? "games" : "stickers";
@@ -449,10 +550,13 @@
       button.setAttribute("aria-selected", String(selected));
     });
     elements.rankingGamePicker.hidden = rankingMode !== "games";
+    elements.rankingGameGrid.hidden = rankingMode !== "games";
+    if (rankingMode === "games") renderRankingGameGrid(localRankingSummary());
     loadRanking();
   }
   function initializePlayerAndRanking() {
     state.playerName = cleanPlayerName(state.playerName || state.notes.dono);
+    state.freeGameTotals = sanitizeFreeGameTotals(state.freeGameTotals);
     if (state.playerName) state.notes.dono = state.playerName;
     saveState();
     renderRankingProfile();
@@ -460,6 +564,8 @@
       const option = document.createElement("option"); option.value = game.key; option.textContent = game.title; return option;
     }));
     elements.rankingGameSelect.value = rankingGame;
+    renderRankingGameGrid(localRankingSummary());
+    elements.rankingGameGrid.hidden = true;
     if (!state.playerName) showWelcome();
     else { queuePlayerSync(120); if (currentView === "ranking") loadRanking(); }
   }
@@ -2400,7 +2506,7 @@
     showToast(`Bem-vindo, ${name}!`);
   });
   $$('[data-ranking-mode]').forEach((button) => button.addEventListener("click", () => setRankingMode(button.dataset.rankingMode)));
-  elements.rankingGameSelect.addEventListener("change", () => { rankingGame = elements.rankingGameSelect.value; loadRanking(); });
+  elements.rankingGameSelect.addEventListener("change", () => setRankingGame(elements.rankingGameSelect.value));
   elements.refreshRanking.addEventListener("click", loadRanking);
   $("#brandButton").addEventListener("click",handleBrandClick);
   elements.previousPage.addEventListener("click",()=>setPage(state.page-1));elements.nextPage.addEventListener("click",()=>setPage(state.page+1));
