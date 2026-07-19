@@ -600,7 +600,9 @@
     if (!state.playerName) showWelcome();
     else { queuePlayerSync(120); if (currentView === "ranking") loadRanking(); }
   }
-  function guideAvailableFor() { return false; }
+  function guideAvailableFor(challenge = currentPuzzleChallenge) {
+    return Boolean(challenge && challenge.key !== "luxor" && !challenge.freeMode && !freePlaySession);
+  }
   function clearPuzzleGuideTarget() {
     $$(".is-guide-target", elements.puzzleStage).forEach((target) => target.classList.remove("is-guide-target"));
     if (elements.puzzleGuideHint) elements.puzzleGuideHint.hidden = true;
