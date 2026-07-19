@@ -70,6 +70,11 @@
       { size: 3, scramble: 4 }, { size: 4, scramble: 7 }, { size: 4, scramble: 11 }, { size: 5, scramble: 17 }, { size: 6, scramble: 25 }
     ]
   };
+  const FREE_PHASES = 3;
+  const FREE_SCORE_BASE_TIMES = { numbers: 90000, image: 110000, memory: 90000, snake: 75000, tetris: 150000, luxor: 180000, simon: 95000, lights: 85000 };
+  const FREE_DIFFICULTY_MULTIPLIERS = [1, 1.35, 1.8, 2.45, 3.25];
+  const FREE_PHASE_MULTIPLIERS = [1, 1.18, 1.42];
+  const RANKING_GAMES = PUZZLE_TYPES.map(({ key, title }) => ({ key, title }));
 
   const STICKER_WIDTH = (273 / 1414) * 100;
   const STICKER_HEIGHT = (409 / 2000) * 100;
@@ -191,7 +196,7 @@
   const PLACEMENTS = buildPlacements();
 
   function defaultState() {
-    return { page: 1, unlocked: [], placed: [], notes: {}, noteStyles: {}, profiles: {}, freeRecords: {}, volume: DEFAULT_VOLUME };
+    return { page: 1, unlocked: [], placed: [], notes: {}, noteStyles: {}, profiles: {}, freeRecords: {}, freeGameTotals: {}, playerName: "", volume: DEFAULT_VOLUME, guideMode: false };
   }
   function loadState() {
     try {
@@ -206,7 +211,10 @@
         noteStyles: saved.noteStyles && typeof saved.noteStyles === "object" ? saved.noteStyles : {},
         profiles: saved.profiles && typeof saved.profiles === "object" ? saved.profiles : {},
         freeRecords: saved.freeRecords && typeof saved.freeRecords === "object" ? saved.freeRecords : {},
-        volume: clamp(Number(saved.volume ?? DEFAULT_VOLUME), 0, 100)
+        freeGameTotals: saved.freeGameTotals && typeof saved.freeGameTotals === "object" ? saved.freeGameTotals : {},
+        playerName: String(saved.playerName || saved.notes?.dono || "").trim().slice(0, 32),
+        volume: clamp(Number(saved.volume ?? DEFAULT_VOLUME), 0, 100),
+        guideMode: Boolean(saved.guideMode)
       };
     } catch { return defaultState(); }
   }
@@ -225,25 +233,276 @@
   let freePlaySession = null;
   let currentProfileId = null;
   let puzzleCleanup = null;
+  let puzzleGuide = null;
   let toastTimer = null;
+  let scoreClient = null;
+  let scoreUser = null;
+  let rankingMode = "stickers";
+  let rankingGame = "numbers";
+  let rankingRequestId = 0;
+  let scoreSyncTimer = null;
+  let supabaseLoadPromise = null;
 
   const elements = {
-    albumView: $("#albumView"), challengesView: $("#challengesView"), freeView: $("#freeView"), inventoryView: $("#inventoryView"), albumPage: $("#albumPage"), pageWrap: $("#pageWrap"),
+    albumView: $("#albumView"), challengesView: $("#challengesView"), freeView: $("#freeView"), rankingView: $("#rankingView"), inventoryView: $("#inventoryView"), albumPage: $("#albumPage"), pageWrap: $("#pageWrap"),
     interactiveLayer: $("#interactiveLayer"), pageStrip: $("#pageStrip"), pageCounter: $("#pageCounter"), pageEyebrow: $("#pageEyebrow"),
     previousPage: $("#previousPage"), nextPage: $("#nextPage"), pageLoading: $("#pageLoading"), challengeGrid: $("#challengeGrid"),
     miniInventory: $("#miniInventory"), inventoryGrid: $("#inventoryGrid"), filterCount: $("#filterCount"), inventoryFilterCount: $("#inventoryFilterCount"), pasteBanner: $("#pasteBanner"), pasteThumb: $("#pasteThumb"), pasteTitle: $("#pasteTitle"),
     puzzleModal: $("#puzzleModal"), puzzleEyebrow: $("#puzzleEyebrow"), puzzleTitle: $("#puzzleTitle"), puzzleSticker: $("#puzzleSticker"),
     puzzleDescription: $("#puzzleDescription"), puzzleObjective: $("#puzzleObjective"), puzzleStage: $("#puzzleStage"), puzzleStatus: $("#puzzleStatus"),
-    restartPuzzle: $("#restartPuzzle"), freeLiveTimer: $("#freeLiveTimer"), backgroundMusic: $("#backgroundMusic"), musicButton: $("#musicButton"), volumePopover: $("#volumePopover"),
+    restartPuzzle: $("#restartPuzzle"), freeLiveTimer: $("#freeLiveTimer"), puzzleGuideControl: $("#puzzleGuideControl"), puzzleGuideButton: $("#puzzleGuideButton"), puzzleGuideToggle: $("#puzzleGuideToggle"), puzzleGuideState: $("#puzzleGuideState"), puzzleGuideHint: $("#puzzleGuideHint"), backgroundMusic: $("#backgroundMusic"), musicButton: $("#musicButton"), volumePopover: $("#volumePopover"),
     musicVolume: $("#musicVolume"), musicVolumeLabel: $("#musicVolumeLabel"), progressRing: $("#progressRing"), miniProgress: $("#miniProgress"), toast: $("#toast"),
     textStyleModal: $("#textStyleModal"), textFont: $("#textFont"), textColor: $("#textColor"), textStylePreview: $("#textStylePreview"),
     secretModal: $("#secretModal"), secretForm: $("#secretForm"), secretInput: $("#secretInput"),
     profileModal: $("#profileModal"), profileSticker: $("#profileSticker"), profileNumber: $("#profileNumber"), profileName: $("#profileName"),
     profileInfo: $("#profileInfo"), profileText: $("#profileText"), profileLocation: $("#profileLocation"),
-    freeGameGrid: $("#freeGameGrid"), freeDifficultyName: $("#freeDifficultyName"), freeDifficultyDescription: $("#freeDifficultyDescription"), freeWins: $("#freeWins")
+    freeGameGrid: $("#freeGameGrid"), freeDifficultyName: $("#freeDifficultyName"), freeDifficultyDescription: $("#freeDifficultyDescription"), freeWins: $("#freeWins"),
+    welcomeModal: $("#welcomeModal"), welcomeForm: $("#welcomeForm"), welcomeName: $("#welcomeName"),
+    rankingPlayerAvatar: $("#rankingPlayerAvatar"), rankingPlayerName: $("#rankingPlayerName"), rankingPlayerStickers: $("#rankingPlayerStickers"), rankingPlayerPoints: $("#rankingPlayerPoints"),
+    rankingStatus: $("#rankingStatus"), rankingPodium: $("#rankingPodium"), rankingList: $("#rankingList"), rankingGamePicker: $("#rankingGamePicker"), rankingGameSelect: $("#rankingGameSelect"), refreshRanking: $("#refreshRanking")
   };
 
   function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  function cleanPlayerName(value) {
+    return String(value || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, 32);
+  }
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character]));
+  }
+  function playerInitials(name = state.playerName) {
+    const parts = cleanPlayerName(name).split(" ").filter(Boolean);
+    return (parts.length ? `${parts[0][0]}${parts.length > 1 ? parts.at(-1)[0] : ""}` : "RF").toLocaleUpperCase("pt-BR");
+  }
+  function totalFreePoints() {
+    return Object.values(state.freeGameTotals || {}).reduce((total, record) => total + (Number(record?.bestPoints) || 0), 0);
+  }
+  function renderRankingProfile() {
+    if (!elements.rankingPlayerName) return;
+    const name = cleanPlayerName(state.playerName) || "Jogador";
+    elements.rankingPlayerName.textContent = name;
+    elements.rankingPlayerAvatar.textContent = playerInitials(name);
+    elements.rankingPlayerStickers.textContent = String(state.unlocked.length);
+    elements.rankingPlayerPoints.textContent = totalFreePoints().toLocaleString("pt-BR");
+  }
+  function showWelcome() {
+    if (!elements.welcomeModal) return;
+    elements.welcomeName.value = cleanPlayerName(state.playerName || state.notes.dono);
+    elements.welcomeModal.hidden = false;
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => elements.welcomeName.focus(), 60);
+  }
+  function closeWelcome() {
+    elements.welcomeModal.hidden = true;
+    if (elements.puzzleModal.hidden && elements.profileModal.hidden && elements.textStyleModal.hidden && elements.secretModal.hidden) document.body.style.overflow = "";
+  }
+  function supabaseSettings() {
+    const config = window.ALBUM_SUPABASE || {};
+    const url = String(config.url || "").trim().replace(/\/$/, "");
+    const anonKey = String(config.anonKey || "").trim();
+    return { url, anonKey, scoreFunction: String(config.scoreFunction || "submit-score").trim() || "submit-score" };
+  }
+  function supabaseConfigured() {
+    const { url, anonKey } = supabaseSettings();
+    return /^https?:\/\//i.test(url) && anonKey.length > 30 && !anonKey.includes("COLE_");
+  }
+  function loadSupabaseLibrary() {
+    if (window.supabase?.createClient) return Promise.resolve(window.supabase);
+    if (supabaseLoadPromise) return supabaseLoadPromise;
+    supabaseLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      script.async = true;
+      script.onload = () => window.supabase?.createClient ? resolve(window.supabase) : reject(new Error("Biblioteca indisponível"));
+      script.onerror = () => reject(new Error("Não foi possível carregar o ranking"));
+      document.head.append(script);
+    });
+    return supabaseLoadPromise;
+  }
+  async function ensureScoreClient() {
+    if (scoreClient && scoreUser) return scoreClient;
+    if (!supabaseConfigured()) return null;
+    const library = await loadSupabaseLibrary();
+    const { url, anonKey } = supabaseSettings();
+    scoreClient ||= library.createClient(url, anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+    let { data: sessionData } = await scoreClient.auth.getSession();
+    if (!sessionData?.session) {
+      const { data, error } = await scoreClient.auth.signInAnonymously({ options: { data: { display_name: cleanPlayerName(state.playerName) } } });
+      if (error) throw error;
+      sessionData = { session: data.session };
+    }
+    scoreUser = sessionData.session?.user || null;
+    return scoreClient;
+  }
+  async function syncPlayerProgress() {
+    if (!cleanPlayerName(state.playerName) || !supabaseConfigured()) return false;
+    try {
+      const client = await ensureScoreClient();
+      if (!client || !scoreUser) return false;
+      const payload = {
+        user_id: scoreUser.id,
+        display_name: cleanPlayerName(state.playerName),
+        unlocked_count: clamp(state.unlocked.length, 0, TOTAL),
+        total_free_points: Math.max(0, totalFreePoints()),
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await client.from("player_profiles").upsert(payload, { onConflict: "user_id" });
+      if (error) throw error;
+      return true;
+    } catch { return false; }
+  }
+  function queuePlayerSync(delay = 850) {
+    clearTimeout(scoreSyncTimer);
+    if (!supabaseConfigured() || !cleanPlayerName(state.playerName)) return;
+    scoreSyncTimer = window.setTimeout(syncPlayerProgress, delay);
+  }
+  async function submitOnlineFreeScore(run) {
+    if (!supabaseConfigured() || !run || !cleanPlayerName(state.playerName)) return false;
+    try {
+      const client = await ensureScoreClient();
+      if (!client) return false;
+      await syncPlayerProgress();
+      const { scoreFunction } = supabaseSettings();
+      const { error } = await client.functions.invoke(scoreFunction, { body: {
+        displayName: cleanPlayerName(state.playerName), gameKey: run.gameKey, difficultyKey: run.difficultyKey,
+        phaseDurationsMs: run.phaseDurations, phasesCompleted: FREE_PHASES, unlockedCount: state.unlocked.length
+      } });
+      if (error) throw error;
+      if (currentView === "ranking" && rankingMode === "games" && rankingGame === run.gameKey) loadRanking();
+      return true;
+    } catch { return false; }
+  }
+  function rankingMetric(entry) {
+    return rankingMode === "stickers" ? Number(entry.unlocked_count || 0) : Number(entry.points || 0);
+  }
+  function rankingMetricLabel(entry) {
+    if (rankingMode === "stickers") return `${rankingMetric(entry)} de ${TOTAL} figurinhas`;
+    return `${rankingMetric(entry).toLocaleString("pt-BR")} pontos`;
+  }
+  function rankingSubLabel(entry) {
+    if (rankingMode === "stickers") return `${Number(entry.total_free_points || 0).toLocaleString("pt-BR")} pontos nos desafios livres`;
+    const difficulty = freeDifficulty(entry.difficulty_key);
+    return `${difficulty.label} · ${formatDuration(Number(entry.duration_ms))}`;
+  }
+  function renderRankingEntries(entries) {
+    elements.rankingPodium.replaceChildren();
+    elements.rankingList.replaceChildren();
+    if (!entries.length) {
+      elements.rankingList.innerHTML = '<div class="ranking-empty">Ainda não há recordistas nesta categoria.</div>';
+      return;
+    }
+    entries.slice(0, 3).forEach((entry, index) => {
+      const place = index + 1;
+      const card = document.createElement("article");
+      card.className = `ranking-podium-card is-${place === 1 ? "first" : place === 2 ? "second" : "third"}${entry.user_id === scoreUser?.id ? " is-you" : ""}`;
+      card.style.setProperty("--podium-accent", place === 1 ? "#d2a13e" : place === 2 ? "#81909a" : "#b87550");
+      card.innerHTML = `<span class="ranking-podium-place">${place}º</span><strong>${escapeHTML(entry.display_name || "Jogador")}</strong><small>${escapeHTML(rankingMetricLabel(entry))}</small>`;
+      elements.rankingPodium.append(card);
+    });
+    entries.slice(3).forEach((entry, index) => {
+      const row = document.createElement("article");
+      row.className = `ranking-row${entry.user_id === scoreUser?.id ? " is-you" : ""}`;
+      row.innerHTML = `<span class="ranking-row-position">${index + 4}</span><div class="ranking-row-person"><strong>${escapeHTML(entry.display_name || "Jogador")}</strong><small>${escapeHTML(rankingSubLabel(entry))}</small></div><div class="ranking-row-score"><strong>${rankingMetric(entry).toLocaleString("pt-BR")}</strong><small>${rankingMode === "stickers" ? "figurinhas" : "pontos"}</small></div>`;
+      elements.rankingList.append(row);
+    });
+  }
+  function localRankingEntry() {
+    if (rankingMode === "stickers") return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", unlocked_count: state.unlocked.length, total_free_points: totalFreePoints() };
+    const record = state.freeGameTotals[rankingGame] || {};
+    return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", points: Number(record.bestPoints || 0), duration_ms: Number(record.bestMs || 0), difficulty_key: record.difficultyKey || "normal" };
+  }
+  async function loadRanking() {
+    renderRankingProfile();
+    const requestId = ++rankingRequestId;
+    elements.rankingStatus.textContent = "Carregando recordistas...";
+    elements.rankingPodium.replaceChildren();
+    elements.rankingList.replaceChildren();
+    if (!supabaseConfigured()) {
+      const local = localRankingEntry();
+      elements.rankingStatus.textContent = "O ranking online está indisponível no momento.";
+      renderRankingEntries(rankingMode === "games" && !local.points ? [] : [local]);
+      return;
+    }
+    try {
+      const client = await ensureScoreClient();
+      if (!client || requestId !== rankingRequestId) return;
+      await syncPlayerProgress();
+      let query;
+      if (rankingMode === "stickers") query = client.from("player_profiles").select("user_id,display_name,unlocked_count,total_free_points,updated_at").order("unlocked_count", { ascending: false }).order("updated_at", { ascending: true }).limit(20);
+      else query = client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,updated_at").eq("game_key", rankingGame).order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(20);
+      const { data, error } = await query;
+      if (error) throw error;
+      if (requestId !== rankingRequestId) return;
+      elements.rankingStatus.textContent = rankingMode === "stickers" ? "Mais figurinhas liberadas" : `Melhores pontuações em ${PUZZLE_TYPES.find((game) => game.key === rankingGame)?.title || "minijogo"}`;
+      renderRankingEntries(Array.isArray(data) ? data : []);
+    } catch {
+      if (requestId !== rankingRequestId) return;
+      elements.rankingStatus.textContent = "Não foi possível atualizar o ranking agora.";
+      const local = localRankingEntry();
+      renderRankingEntries(rankingMode === "games" && !local.points ? [] : [local]);
+    }
+  }
+  function setRankingMode(mode) {
+    rankingMode = mode === "games" ? "games" : "stickers";
+    $$('[data-ranking-mode]').forEach((button) => {
+      const selected = button.dataset.rankingMode === rankingMode;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", String(selected));
+    });
+    elements.rankingGamePicker.hidden = rankingMode !== "games";
+    loadRanking();
+  }
+  function initializePlayerAndRanking() {
+    state.playerName = cleanPlayerName(state.playerName || state.notes.dono);
+    if (state.playerName) state.notes.dono = state.playerName;
+    saveState();
+    renderRankingProfile();
+    elements.rankingGameSelect.replaceChildren(...RANKING_GAMES.map((game) => {
+      const option = document.createElement("option"); option.value = game.key; option.textContent = game.title; return option;
+    }));
+    elements.rankingGameSelect.value = rankingGame;
+    if (!state.playerName) showWelcome();
+    else { queuePlayerSync(120); if (currentView === "ranking") loadRanking(); }
+  }
+  function guideAvailableFor(challenge = currentPuzzleChallenge) { return Boolean(challenge && challenge.key !== "luxor"); }
+  function clearPuzzleGuideTarget() {
+    $$(".is-guide-target", elements.puzzleStage).forEach((target) => target.classList.remove("is-guide-target"));
+    if (elements.puzzleGuideHint) elements.puzzleGuideHint.hidden = true;
+  }
+  function markPuzzleGuideTarget(target, message = "Toque no destaque") {
+    clearPuzzleGuideTarget();
+    if (!state.guideMode || !guideAvailableFor() || !target || !target.isConnected) return;
+    target.classList.add("is-guide-target");
+    if (elements.puzzleGuideHint) {
+      elements.puzzleGuideHint.textContent = message;
+      elements.puzzleGuideHint.hidden = false;
+    }
+  }
+  function refreshPuzzleGuide() {
+    clearPuzzleGuideTarget();
+    if (!state.guideMode || !guideAvailableFor() || !puzzleGuide || typeof puzzleGuide.refresh !== "function") return;
+    try { puzzleGuide.refresh(); } catch { clearPuzzleGuideTarget(); }
+  }
+  function setPuzzleGuide(controller) {
+    puzzleGuide = controller && typeof controller.refresh === "function" ? controller : null;
+    requestAnimationFrame(refreshPuzzleGuide);
+  }
+  function syncPuzzleGuideUI(challenge = currentPuzzleChallenge) {
+    const available = guideAvailableFor(challenge);
+    if (!elements.puzzleGuideControl) return;
+    elements.puzzleGuideControl.hidden = !available;
+    elements.puzzleGuideToggle.checked = available && state.guideMode;
+    elements.puzzleGuideState.textContent = available && state.guideMode ? "ON" : "OFF";
+    elements.puzzleGuideButton.setAttribute("aria-pressed", String(available && state.guideMode));
+    elements.puzzleGuideToggle.setAttribute("aria-label", available && state.guideMode ? "Desativar modo guia" : "Ativar modo guia");
+    if (!available || !state.guideMode) clearPuzzleGuideTarget();
+    else requestAnimationFrame(refreshPuzzleGuide);
+  }
+  function togglePuzzleGuide(force) {
+    if (!guideAvailableFor()) return;
+    state.guideMode = typeof force === "boolean" ? force : !state.guideMode;
+    saveState();
+    syncPuzzleGuideUI();
+  }
   function challengeFor(id) {
     const type = PUZZLE_TYPES[(id - 1) % PUZZLE_TYPES.length];
     const level = Math.floor((id - 1) / PUZZLE_TYPES.length) + 1;
@@ -257,7 +516,18 @@
   }
   function settingsFor(challenge) {
     const settings = FREE_SETTINGS[challenge.key];
-    return challenge.freeMode && settings ? settings[freeRank(challenge) - 1] : null;
+    if (!challenge.freeMode || !settings) return null;
+    const base = { ...settings[freeRank(challenge) - 1] };
+    const phase = clamp(Number(challenge.freePhase) || 1, 1, FREE_PHASES);
+    const step = phase - 1;
+    if (challenge.key === "numbers") base.shuffle = Math.round(base.shuffle * (1 + step * .24));
+    if (challenge.key === "image") { base.shuffle = Math.round(base.shuffle * (1 + step * .22)); base.hints = Math.max(0, Number(base.hints || 0) - step); }
+    if (challenge.key === "memory") { base.pairs = Math.min(12, base.pairs + step); base.preview = Math.max(0, Number(base.preview || 0) - step * 180); }
+    if (challenge.key === "snake") { base.target += step * Math.max(2, freeRank(challenge)); base.interval = Math.max(55, Math.round(base.interval * (1 - step * .07))); base.obstacles += step * Math.max(1, freeRank(challenge) - 1); }
+    if (challenge.key === "tetris") { base.target = Math.round(base.target * (1 + step * .2)); base.interval = Math.max(170, Math.round(base.interval * (1 - step * .07))); }
+    if (challenge.key === "simon") { base.rounds += step; if (phase === FREE_PHASES) base.length += 1; }
+    if (challenge.key === "lights") base.scramble += step * Math.max(2, freeRank(challenge));
+    return base;
   }
   function luxorRequirements(level) {
     const sets = [
@@ -381,17 +651,31 @@
       elements.interactiveLayer.append(button);
     });
     (WRITING_FIELDS[state.page] || []).forEach((field) => {
-      const textarea = document.createElement("textarea");
+      const isOwnerField = field.key === "dono";
+      const textarea = document.createElement(isOwnerField ? "input" : "textarea");
+      if (isOwnerField) { textarea.type = "text"; textarea.maxLength = 32; textarea.autocomplete = "name"; textarea.spellcheck = false; }
       textarea.className = `writing-field ${field.className || ""}`.trim();
       textarea.dataset.fieldKey = field.key;
       textarea.setAttribute("aria-label", field.label); textarea.placeholder = field.placeholder;
-      textarea.value = state.notes[field.key] || "";
+      textarea.value = isOwnerField ? (state.playerName || state.notes[field.key] || "") : (state.notes[field.key] || "");
       textarea.style.left = `${field.left}%`; textarea.style.top = `${field.top}%`;
       textarea.style.width = `${field.width}%`; textarea.style.height = `${field.height}%`;
       const textStyle = textStyleFor(field);
       textarea.style.fontFamily = textStyle.font;
       textarea.style.color = textStyle.color;
-      textarea.addEventListener("input", () => { state.notes[field.key] = textarea.value; saveState(); });
+      textarea.addEventListener("input", () => {
+        state.notes[field.key] = textarea.value;
+        if (isOwnerField) state.playerName = textarea.value.slice(0, 32);
+        saveState();
+        if (isOwnerField) { renderRankingProfile(); queuePlayerSync(); }
+      });
+      textarea.addEventListener("blur", () => {
+        if (!isOwnerField) return;
+        state.playerName = cleanPlayerName(textarea.value);
+        state.notes.dono = state.playerName;
+        textarea.value = state.playerName;
+        saveState(); renderRankingProfile(); queuePlayerSync(80);
+      });
       elements.interactiveLayer.append(textarea);
 
       const formatButton = document.createElement("button");
@@ -585,23 +869,23 @@
     const minutes = Math.floor(seconds / 60);
     return `${minutes} min ${String(Math.floor(seconds % 60)).padStart(2, "0")} s`;
   }
-  function buildFreeChallenge(gameKey, difficultyKey = currentFreeDifficulty) {
+  function buildFreeChallenge(gameKey, difficultyKey = currentFreeDifficulty, phase = 1) {
     const gameIndex = PUZZLE_TYPES.findIndex((type) => type.key === gameKey);
     const type = PUZZLE_TYPES[Math.max(0, gameIndex)];
     const difficulty = freeDifficulty(difficultyKey);
+    const safePhase = clamp(Number(phase) || 1, 1, FREE_PHASES);
     const id = difficulty.rank * 8 - 7 + Math.max(0, gameIndex);
     return {
-      ...type, id, level: difficulty.level, freeMode: true,
-      freeDifficultyKey: difficulty.key,
-      freeDifficultyRank: difficulty.rank,
-      freeDifficultyLabel: difficulty.label
+      ...type, id, level: clamp(difficulty.level + safePhase - 1, 1, 8), freeMode: true,
+      freeDifficultyKey: difficulty.key, freeDifficultyRank: difficulty.rank, freeDifficultyLabel: difficulty.label,
+      freePhase: safePhase, freeTotalPhases: FREE_PHASES
     };
   }
   function renderFreeMode() {
     if (!elements.freeGameGrid) return;
     const difficulty = freeDifficulty();
     elements.freeDifficultyName.textContent = difficulty.label;
-    elements.freeDifficultyDescription.textContent = difficulty.description;
+    elements.freeDifficultyDescription.textContent = `${difficulty.description} Cada modalidade possui 3 fases progressivas.`;
     elements.freeDifficultyName.style.color = difficulty.color;
     $$('[data-free-difficulty]').forEach((button) => {
       const selected = button.dataset.freeDifficulty === difficulty.key;
@@ -611,9 +895,9 @@
     const allRecords = Object.values(state.freeRecords || {});
     elements.freeWins.textContent = String(allRecords.reduce((total, record) => total + (Number(record?.wins) || 0), 0));
     elements.freeGameGrid.replaceChildren();
-    PUZZLE_TYPES.forEach((type, gameIndex) => {
+    PUZZLE_TYPES.forEach((type) => {
       const detail = FREE_GAME_DETAILS[type.key];
-      const challenge = buildFreeChallenge(type.key, difficulty.key);
+      const challenge = buildFreeChallenge(type.key, difficulty.key, 1);
       const record = state.freeRecords[freeRecordKey(type.key, difficulty.key)] || {};
       const card = document.createElement("article");
       card.className = `free-game-card free-game-${type.key}`;
@@ -628,82 +912,154 @@
         <div class="free-card-body">
           <span class="free-game-tag">${detail.tagline}</span>
           <h3>${type.title}</h3>
-          <p>${objectiveFor(challenge).replace("Objetivo: ", "")}</p>
-          <div class="free-record-row">
+          <p>Supere 3 fases progressivas. ${objectiveFor(challenge).replace("Objetivo: ", "A primeira começa com: ")}</p>
+          <div class="free-phase-track" aria-label="Três fases"><span></span><span></span><span></span></div>
+          <div class="free-phase-caption"><span>Fase 1</span><span>Fase 2</span><span>Fase 3</span></div>
+          <div class="free-record-row is-score">
+            <span><small>Melhor pontuação</small><strong>${Number(record.bestPoints || 0).toLocaleString("pt-BR") || "—"}</strong></span>
             <span><small>Melhor tempo</small><strong>${formatDuration(Number(record.bestMs))}</strong></span>
-            <span><small>Vitórias</small><strong>${Number(record.wins) || 0}</strong></span>
           </div>
-          <button class="free-play-button" type="button"><span>Jogar agora</span><i aria-hidden="true">→</i></button>
+          <button class="free-play-button" type="button"><span>Jogar 3 fases</span><i aria-hidden="true">→</i></button>
         </div>`;
+      if (!Number(record.bestPoints)) $(".free-record-row span:first-child strong", card).textContent = "—";
       $(".free-play-button", card).addEventListener("click", () => openFreePuzzle(type.key));
       elements.freeGameGrid.append(card);
     });
   }
-  function openFreePuzzle(gameKey) {
-    cleanupPuzzle();
-    const challenge = buildFreeChallenge(gameKey);
-    const difficulty = freeDifficulty(challenge.freeDifficultyKey);
-    currentPuzzleId = null;
-    currentPuzzleChallenge = challenge;
-    freePlaySession = { gameKey, difficultyKey: difficulty.key, stickerId: challenge.id, startedAt: Date.now() };
-    elements.puzzleEyebrow.textContent = `Desafio Livre · ${difficulty.label} · ${FREE_GAME_DETAILS[gameKey].tagline}`;
+  function calculateFreePhasePoints(gameKey, difficultyKey, phase, elapsed) {
+    const difficulty = freeDifficulty(difficultyKey);
+    const target = (FREE_SCORE_BASE_TIMES[gameKey] || 90000) * (1 + (difficulty.rank - 1) * .08) * (1 + (phase - 1) * .12);
+    const base = Math.round(900 * FREE_DIFFICULTY_MULTIPLIERS[difficulty.rank - 1] * FREE_PHASE_MULTIPLIERS[phase - 1]);
+    const speedRatio = clamp(1 - elapsed / target, 0, .65);
+    const speedBonus = Math.round(base * speedRatio);
+    const clearBonus = 250 * difficulty.rank * phase;
+    return Math.max(1, base + speedBonus + clearBonus);
+  }
+  function freeElapsed(session = freePlaySession) {
+    if (!session) return 0;
+    return Math.max(0, Number(session.completedMs) || 0) + Math.max(0, Date.now() - Number(session.phaseStartedAt || Date.now()));
+  }
+  function updateFreePuzzleCopy(challenge = currentPuzzleChallenge) {
+    if (!freePlaySession || !challenge) return;
+    const difficulty = freeDifficulty(freePlaySession.difficultyKey);
+    elements.puzzleEyebrow.textContent = `Desafio Livre · ${difficulty.label} · Fase ${freePlaySession.phase} de ${FREE_PHASES}`;
     elements.puzzleTitle.textContent = challenge.title;
     elements.puzzleSticker.src = stickerSrc(challenge.id);
     elements.puzzleSticker.alt = `${stickerName(challenge.id)}, figurinha de apoio do desafio`;
-    elements.puzzleDescription.textContent = `${challenge.description} Nesta partida, a lembrança é de ${stickerName(challenge.id)}.`;
+    elements.puzzleDescription.textContent = `${challenge.description} Complete as três fases para registrar sua pontuação em ${challenge.title}.`;
     elements.puzzleObjective.textContent = objectiveFor(challenge);
-    elements.puzzleStatus.textContent = "Prepare-se — o cronômetro começa agora!";
+  }
+  function openFreePuzzle(gameKey, difficultyKey = currentFreeDifficulty) {
+    cleanupPuzzle();
+    const difficulty = freeDifficulty(difficultyKey);
+    const challenge = buildFreeChallenge(gameKey, difficulty.key, 1);
+    currentPuzzleId = null;
+    currentPuzzleChallenge = challenge;
+    freePlaySession = {
+      gameKey, difficultyKey: difficulty.key, stickerId: challenge.id,
+      phase: 1, totalPhases: FREE_PHASES, phaseStartedAt: Date.now(), completedMs: 0,
+      points: 0, phaseDurations: [], phasePoints: []
+    };
+    updateFreePuzzleCopy(challenge);
+    elements.puzzleStatus.textContent = "Fase 1 valendo — o cronômetro começou!";
     elements.puzzleModal.dataset.difficulty = difficulty.key;
     elements.puzzleModal.hidden = false;
+    document.documentElement.classList.add("puzzle-open");
     document.body.style.overflow = "hidden";
+    initPuzzle(challenge);
+  }
+  function advanceFreePhase() {
+    const session = freePlaySession;
+    if (!session || session.phase >= FREE_PHASES) return;
+    session.phase += 1;
+    session.phaseStartedAt = Date.now();
+    const challenge = buildFreeChallenge(session.gameKey, session.difficultyKey, session.phase);
+    currentPuzzleChallenge = challenge;
+    updateFreePuzzleCopy(challenge);
+    elements.puzzleStatus.textContent = `Fase ${session.phase} valendo!`;
     initPuzzle(challenge);
   }
   function completeFreePuzzle() {
     const session = freePlaySession;
     if (!session) return;
-    const elapsed = Math.max(100, Date.now() - session.startedAt);
-    const key = freeRecordKey(session.gameKey, session.difficultyKey);
-    const previous = state.freeRecords[key] || {};
-    const isRecord = !Number(previous.bestMs) || elapsed < Number(previous.bestMs);
-    state.freeRecords[key] = {
-      wins: (Number(previous.wins) || 0) + 1,
-      bestMs: isRecord ? elapsed : Number(previous.bestMs),
-      lastMs: elapsed
-    };
-    saveState();
-    renderFreeMode();
-    const challenge = currentPuzzleChallenge;
+    const phaseElapsed = Math.max(100, Date.now() - session.phaseStartedAt);
+    const earned = calculateFreePhasePoints(session.gameKey, session.difficultyKey, session.phase, phaseElapsed);
+    session.completedMs += phaseElapsed;
+    session.phaseDurations.push(phaseElapsed);
+    session.phasePoints.push(earned);
+    session.points += earned;
     const difficulty = freeDifficulty(session.difficultyKey);
     elements.restartPuzzle.hidden = true;
-    elements.puzzleStatus.textContent = isRecord ? "Novo recorde pessoal!" : "Desafio Livre vencido!";
+    elements.puzzleGuideControl.hidden = true;
+    clearPuzzleGuideTarget();
+
+    if (session.phase < FREE_PHASES) {
+      elements.puzzleStatus.textContent = `Fase ${session.phase} concluída!`;
+      elements.puzzleStage.innerHTML = `<div class="free-phase-success-card" style="--phase-accent:${difficulty.color}">
+        <span class="free-phase-number">${session.phase}/3</span>
+        <span class="eyebrow">Fase concluída</span>
+        <h3>Boa! A próxima apertou.</h3>
+        <p>Você venceu esta etapa em <strong>${formatDuration(phaseElapsed)}</strong>. A dificuldade cresce, e os pontos também.</p>
+        <div class="free-phase-score"><span><small>Pontos da fase</small><b>+${earned.toLocaleString("pt-BR")}</b></span><span><small>Total até agora</small><b>${session.points.toLocaleString("pt-BR")}</b></span></div>
+        <div class="free-win-actions"><button class="primary-button" id="nextFreePhase" type="button">Jogar fase ${session.phase + 1}</button><button class="secondary-button" id="leaveFreePhase" type="button">Sair</button></div>
+      </div>`;
+      $("#nextFreePhase").addEventListener("click", advanceFreePhase);
+      $("#leaveFreePhase").addEventListener("click", closePuzzle);
+      return;
+    }
+
+    const totalElapsed = session.completedMs;
+    const key = freeRecordKey(session.gameKey, session.difficultyKey);
+    const previous = state.freeRecords[key] || {};
+    const previousPoints = Number(previous.bestPoints) || 0;
+    const previousTime = Number(previous.bestMs) || Infinity;
+    const isRecord = session.points > previousPoints || (session.points === previousPoints && totalElapsed < previousTime);
+    state.freeRecords[key] = {
+      wins: (Number(previous.wins) || 0) + 1,
+      bestPoints: isRecord ? session.points : previousPoints,
+      bestMs: isRecord ? totalElapsed : (Number(previous.bestMs) || totalElapsed),
+      lastPoints: session.points, lastMs: totalElapsed
+    };
+    const gamePrevious = state.freeGameTotals[session.gameKey] || {};
+    if (session.points > Number(gamePrevious.bestPoints || 0) || (session.points === Number(gamePrevious.bestPoints || 0) && totalElapsed < Number(gamePrevious.bestMs || Infinity))) {
+      state.freeGameTotals[session.gameKey] = { bestPoints: session.points, bestMs: totalElapsed, difficultyKey: session.difficultyKey };
+    }
+    saveState();
+    renderFreeMode();
+    renderRankingProfile();
+    queuePlayerSync(120);
+    submitOnlineFreeScore({
+      gameKey: session.gameKey, difficultyKey: session.difficultyKey,
+      phaseDurations: [...session.phaseDurations], points: session.points, durationMs: totalElapsed
+    });
+    elements.puzzleStatus.textContent = isRecord ? "Novo recorde pessoal!" : "Três fases concluídas!";
     elements.puzzleStage.innerHTML = `<div class="free-success-card" style="--win-accent:${difficulty.color}">
       <div class="free-confetti" aria-hidden="true">${Array.from({ length: 18 }, (_, index) => `<i style="--i:${index}"></i>`).join("")}</div>
       <span class="free-win-emblem">✦</span>
-      <span class="free-win-label">${difficulty.label} concluído</span>
+      <span class="free-win-label">${difficulty.label} · 3 fases concluídas</span>
       <h3>${isRecord ? "Novo recorde!" : "Mandou muito bem!"}</h3>
-      <p>Você venceu <strong>${challenge.title}</strong> em <strong>${formatDuration(elapsed)}</strong>.</p>
-      <div class="free-win-stats"><span><small>Melhor</small><b>${formatDuration(state.freeRecords[key].bestMs)}</b></span><span><small>Vitórias</small><b>${state.freeRecords[key].wins}</b></span></div>
+      <p>Você venceu <strong>${currentPuzzleChallenge.title}</strong> com <strong>${session.points.toLocaleString("pt-BR")} pontos</strong> em <strong>${formatDuration(totalElapsed)}</strong>.</p>
+      <div class="free-win-stats"><span><small>Melhor pontuação</small><b>${state.freeRecords[key].bestPoints.toLocaleString("pt-BR")}</b></span><span><small>Tempo da rodada</small><b>${formatDuration(totalElapsed)}</b></span></div>
       <div class="free-win-actions"><button class="primary-button" id="replayFreePuzzle" type="button">Jogar novamente</button><button class="secondary-button" id="leaveFreePuzzle" type="button">Escolher outro</button></div>
     </div>`;
-    $("#replayFreePuzzle").addEventListener("click", () => {
-      freePlaySession.startedAt = Date.now();
-      elements.puzzleStatus.textContent = "Valendo! Supere seu melhor tempo.";
-      initPuzzle(currentPuzzleChallenge);
-    });
+    $("#replayFreePuzzle").addEventListener("click", () => openFreePuzzle(session.gameKey, session.difficultyKey));
     $("#leaveFreePuzzle").addEventListener("click", closePuzzle);
   }
-  function renderAll() { updateProgress(); renderPage(); renderMiniInventory(); renderChallenges(); renderInventory(); renderFreeMode(); }
+
+  function renderAll() { updateProgress(); renderPage(); renderMiniInventory(); renderChallenges(); renderInventory(); renderFreeMode(); renderRankingProfile(); }
 
   function switchView(view) {
     currentView = view;
     elements.albumView.classList.toggle("is-active", view === "album");
     elements.challengesView.classList.toggle("is-active", view === "challenges");
     elements.freeView.classList.toggle("is-active", view === "free");
+    elements.rankingView.classList.toggle("is-active", view === "ranking");
     elements.inventoryView.classList.toggle("is-active", view === "inventory");
     $$('[data-view]').forEach((button) => button.classList.toggle("is-active", button.dataset.view === view));
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (view === "challenges") renderChallenges();
     if (view === "free") renderFreeMode();
+    if (view === "ranking") loadRanking();
     if (view === "inventory") renderInventory();
   }
   function continueCollection() {
@@ -728,7 +1084,13 @@
   }
   function viewSticker(id) { switchView("album"); setPage(PLACEMENTS[id].page); window.setTimeout(() => elements.pageWrap.scrollIntoView({ behavior: "smooth", block: "center" }), 70); }
 
-  function cleanupPuzzle() { if (typeof puzzleCleanup === "function") puzzleCleanup(); puzzleCleanup = null; }
+  function cleanupPuzzle() {
+    clearPuzzleGuideTarget();
+    if (puzzleGuide && typeof puzzleGuide.cleanup === "function") puzzleGuide.cleanup();
+    puzzleGuide = null;
+    if (typeof puzzleCleanup === "function") puzzleCleanup();
+    puzzleCleanup = null;
+  }
   function openPuzzle(id) {
     cleanupPuzzle(); currentPuzzleId = id; freePlaySession = null;
     const challenge = challengeFor(id);
@@ -742,15 +1104,16 @@
     elements.puzzleStatus.textContent = "Boa sorte!";
     elements.puzzleModal.hidden = false;
     delete elements.puzzleModal.dataset.difficulty;
+    document.documentElement.classList.add("puzzle-open");
     document.body.style.overflow = "hidden";
     initPuzzle(challenge);
   }
-  function closePuzzle() { cleanupPuzzle(); currentPuzzleId = null; currentPuzzleChallenge = null; freePlaySession = null; delete elements.puzzleModal.dataset.difficulty; elements.puzzleModal.hidden = true; document.body.style.overflow = ""; }
+  function closePuzzle() { cleanupPuzzle(); currentPuzzleId = null; currentPuzzleChallenge = null; freePlaySession = null; delete elements.puzzleModal.dataset.difficulty; delete elements.puzzleModal.dataset.game; elements.puzzleModal.hidden = true; syncPuzzleGuideUI(null); document.documentElement.classList.remove("puzzle-open"); document.body.style.overflow = ""; }
   function startFreeClock() {
     if (!freePlaySession || !elements.freeLiveTimer) { if (elements.freeLiveTimer) elements.freeLiveTimer.hidden = true; return; }
     const gameCleanup = puzzleCleanup;
     const update = () => {
-      const elapsed = Math.max(0, Date.now() - freePlaySession.startedAt);
+      const elapsed = freeElapsed();
       const minutes = Math.floor(elapsed / 60000);
       const seconds = Math.floor((elapsed % 60000) / 1000);
       const tenths = Math.floor((elapsed % 1000) / 100);
@@ -762,7 +1125,7 @@
     puzzleCleanup = () => { clearInterval(timer); elements.freeLiveTimer.hidden = true; if (typeof gameCleanup === "function") gameCleanup(); };
   }
   function initPuzzle(challenge) {
-    cleanupPuzzle(); currentPuzzleChallenge = challenge; elements.puzzleStage.replaceChildren(); elements.restartPuzzle.hidden = false;
+    cleanupPuzzle(); currentPuzzleChallenge = challenge; elements.puzzleModal.dataset.game = challenge.key; elements.puzzleStage.replaceChildren(); elements.restartPuzzle.hidden = false;
     if (challenge.key === "numbers") initSlider(challenge, false);
     else if (challenge.key === "image") initSlider(challenge, true);
     else if (challenge.key === "memory") initMemory(challenge);
@@ -772,14 +1135,17 @@
     else if (challenge.key === "simon") initSimon(challenge);
     else initLights(challenge);
     if (challenge.freeMode) startFreeClock(); else elements.freeLiveTimer.hidden = true;
+    syncPuzzleGuideUI(challenge);
   }
   function completePuzzle() {
     cleanupPuzzle();
     if (freePlaySession) return completeFreePuzzle();
     const id = currentPuzzleId;
     if (!state.unlocked.includes(id)) state.unlocked.push(id);
-    saveState(); updateProgress(); renderMiniInventory(); renderChallenges(); renderInventory();
+    saveState(); updateProgress(); renderMiniInventory(); renderChallenges(); renderInventory(); renderRankingProfile(); queuePlayerSync(120);
     elements.restartPuzzle.hidden = true;
+    elements.puzzleGuideControl.hidden = true;
+    clearPuzzleGuideTarget();
     elements.puzzleStatus.textContent = "Desafio vencido!";
     elements.puzzleStage.innerHTML = `<div class="success-card"><img src="${stickerSrc(id)}" alt="${stickerName(id)}, figurinha ${String(id).padStart(2, "0")}"><h3>${stickerName(id)} foi liberada!</h3><p>Você venceu o desafio ${String(id).padStart(2, "0")}. Agora esta lembrança pode ser colada no álbum.</p><button class="primary-button" id="placeWonSticker" type="button">Colar no álbum</button></div>`;
     $("#placeWonSticker").addEventListener("click", () => { closePuzzle(); beginPlacement(id); });
@@ -793,6 +1159,7 @@
     let hints = useImage ? (free?.hints ?? 2) : 0;
     const pendingTimers = new Set();
     let tiles = Array.from({ length: size * size }, (_, index) => index);
+    const blankTrail = [0];
     const neighbors = (blank) => {
       const row = Math.floor(blank / size), col = blank % size, result = [];
       if (row > 0) result.push(blank - size); if (row < size - 1) result.push(blank + size);
@@ -803,8 +1170,13 @@
       const blank = tiles.indexOf(0); const choices = neighbors(blank).filter((index) => index !== previous);
       const chosen = choices[Math.floor(Math.random() * choices.length)]; previous = blank;
       [tiles[blank], tiles[chosen]] = [tiles[chosen], tiles[blank]];
+      blankTrail.push(chosen);
     }
-    if (tiles.every((value, index) => value === index)) [tiles[0], tiles[1]] = [tiles[1], tiles[0]];
+    if (tiles.every((value, index) => value === index)) {
+      const blank = tiles.indexOf(0), chosen = neighbors(blank)[0];
+      [tiles[blank], tiles[chosen]] = [tiles[chosen], tiles[blank]];
+      blankTrail.push(chosen);
+    }
     const wrap = document.createElement("div"); wrap.className = "slider-wrap";
     wrap.innerHTML = `<div class="game-hud slider-hud"><span>Movimentos: <b id="sliderMoves">0</b></span><span>${size} × ${size}</span></div>`;
     const board = document.createElement("div"); board.className = "slide-grid"; board.style.setProperty("--size", String(size));
@@ -818,7 +1190,7 @@
         hints -= 1; hint.querySelector("span").textContent = `(${hints})`; hint.disabled = hints <= 0;
         const preview = document.createElement("img"); preview.className = "slider-preview"; preview.src = stickerSrc(challenge.id); preview.alt = `Imagem completa de ${stickerName(challenge.id)}`;
         board.classList.add("is-previewing"); board.append(preview);
-        const timer = window.setTimeout(() => { preview.remove(); board.classList.remove("is-previewing"); pendingTimers.delete(timer); }, 900);
+        const timer = window.setTimeout(() => { preview.remove(); board.classList.remove("is-previewing"); pendingTimers.delete(timer); refreshPuzzleGuide(); }, 900);
         pendingTimers.add(timer);
       });
       wrap.append(hint);
@@ -826,6 +1198,11 @@
     elements.puzzleStage.append(wrap);
     const movesEl = $("#sliderMoves", wrap);
     const solved = () => tiles.every((value, index) => value === index);
+    const refreshGuide = () => {
+      if (blankTrail.length < 2 || solved()) return;
+      const targetIndex = blankTrail[blankTrail.length - 2];
+      markPuzzleGuideTarget(board.children[targetIndex], "Clique na peça destacada");
+    };
     const render = () => {
       board.replaceChildren();
       tiles.forEach((value, index) => {
@@ -839,12 +1216,17 @@
         }
         button.addEventListener("click", () => {
           const blank = tiles.indexOf(0); if (!neighbors(blank).includes(index)) return;
-          [tiles[blank], tiles[index]] = [tiles[index], tiles[blank]]; moves += 1; movesEl.textContent = String(moves); render();
+          [tiles[blank], tiles[index]] = [tiles[index], tiles[blank]];
+          if (blankTrail.length > 1 && index === blankTrail[blankTrail.length - 2]) blankTrail.pop();
+          else blankTrail.push(index);
+          moves += 1; movesEl.textContent = String(moves); render();
           if (solved()) { const timer = window.setTimeout(completePuzzle, 350); pendingTimers.add(timer); }
         }); board.append(button);
       });
+      refreshPuzzleGuide();
     };
     render();
+    setPuzzleGuide({ refresh: refreshGuide });
     elements.puzzleStatus.textContent = useImage ? `Reconstrua ${stickerName(challenge.id)} deslizando as peças vizinhas.` : `Ordene de 1 a ${size * size - 1}; o espaço vazio termina no canto superior esquerdo.`;
     puzzleCleanup = () => pendingTimers.forEach(clearTimeout);
   }
@@ -862,21 +1244,45 @@
     wrap.append(board); elements.puzzleStage.append(wrap);
     const attemptsEl = $("#memoryAttempts", wrap), pairsEl = $("#memoryPairs", wrap), comboEl = $("#memoryCombo", wrap);
     const later = (fn, delay) => { const timer = window.setTimeout(() => { pendingTimers.delete(timer); fn(); }, delay); pendingTimers.add(timer); };
+    const refreshGuide = () => {
+      if (locked || matched === pairs) return;
+      const unmatched = deck.map((_, index) => index).filter((index) => !board.children[index]?.classList.contains("is-matched"));
+      let targetIndex = null;
+      if (open.length === 1) targetIndex = unmatched.find((index) => index !== open[0] && deck[index] === deck[open[0]]);
+      else if (!open.length) {
+        const first = unmatched.find((index, position) => unmatched.slice(position + 1).some((other) => deck[other] === deck[index]));
+        targetIndex = first;
+      }
+      markPuzzleGuideTarget(board.children[targetIndex], open.length ? "Ache o par destacado" : "Comece pela carta destacada");
+    };
     deck.forEach((icon, index) => {
       const button = document.createElement("button"); button.type = "button"; button.className = "memory-card"; button.dataset.icon = icon; button.setAttribute("aria-label", `Carta ${index + 1}`);
       if (free?.preview) button.classList.add("is-open", "is-preview");
       button.addEventListener("click", () => {
         if (locked || open.includes(index) || button.classList.contains("is-matched")) return;
-        button.classList.add("is-open"); open.push(index);
+        button.classList.add("is-open"); open.push(index); refreshPuzzleGuide();
         if (open.length < 2) return;
-        locked = true; attempts += 1; attemptsEl.textContent = String(attempts); const [a, b] = open;
+        locked = true; clearPuzzleGuideTarget(); attempts += 1; attemptsEl.textContent = String(attempts); const [a, b] = open;
         if (deck[a] === deck[b]) {
           combo += 1;
-          later(() => { [a,b].forEach((i) => { board.children[i].classList.remove("is-open"); board.children[i].classList.add("is-matched"); }); matched += 1; pairsEl.textContent = String(matched); open = []; locked = false; comboEl.textContent = combo >= 2 ? `Combo ×${combo}!` : "Combo: 1"; comboEl.classList.toggle("is-hot", combo >= 2); elements.puzzleStatus.textContent = `${matched} de ${pairs} pares — ${combo >= 2 ? `combo ×${combo}!` : "continue"}`; if (matched === pairs) completePuzzle(); }, 300);
-        } else later(() => { [a,b].forEach((i) => board.children[i].classList.remove("is-open")); open = []; locked = false; combo = 0; comboEl.textContent = "Combo: —"; comboEl.classList.remove("is-hot"); }, Math.max(360, 690 - freeRank(challenge) * 45));
+          later(() => {
+            [a,b].forEach((i) => { board.children[i].classList.remove("is-open"); board.children[i].classList.add("is-matched"); });
+            matched += 1; pairsEl.textContent = String(matched); open = []; locked = false;
+            comboEl.textContent = combo >= 2 ? `Combo ×${combo}!` : "Combo: 1"; comboEl.classList.toggle("is-hot", combo >= 2);
+            elements.puzzleStatus.textContent = `${matched} de ${pairs} pares — ${combo >= 2 ? `combo ×${combo}!` : "continue"}`;
+            if (matched === pairs) completePuzzle(); else refreshPuzzleGuide();
+          }, 300);
+        } else later(() => {
+          [a,b].forEach((i) => board.children[i].classList.remove("is-open")); open = []; locked = false; combo = 0;
+          comboEl.textContent = "Combo: —"; comboEl.classList.remove("is-hot"); refreshPuzzleGuide();
+        }, Math.max(360, 690 - freeRank(challenge) * 45));
       }); board.append(button);
     });
-    if (free?.preview) later(() => { $$(".memory-card", board).forEach((card) => card.classList.remove("is-open", "is-preview")); locked = false; elements.puzzleStatus.textContent = `Agora encontre os ${pairs} pares.`; }, free.preview);
+    if (free?.preview) later(() => {
+      $$(".memory-card", board).forEach((card) => card.classList.remove("is-open", "is-preview"));
+      locked = false; elements.puzzleStatus.textContent = `Agora encontre os ${pairs} pares.`; refreshPuzzleGuide();
+    }, free.preview);
+    setPuzzleGuide({ refresh: refreshGuide });
     elements.puzzleStatus.textContent = free?.preview ? "Memorize as cartas antes que elas virem!" : `Encontre ${pairs} pares e encadeie acertos para fazer combo.`;
     puzzleCleanup = () => pendingTimers.forEach(clearTimeout);
   }
@@ -891,6 +1297,10 @@
     wrap.innerHTML = `<div class="game-hud"><span>Pontos: <b id="snakeScore">0</b>/${target}</span><span id="snakeCombo">Ritmo: ×1</span><span>Obstáculos: ${obstacleCount}</span></div><canvas class="game-canvas snake-canvas" width="${grid * cell}" height="${grid * cell}" aria-label="Jogo da cobrinha"></canvas><div class="game-controls"><button type="button" data-dir="up" aria-label="Subir">↑</button><button type="button" data-dir="left" aria-label="Esquerda">←</button><button type="button" data-dir="down" aria-label="Descer">↓</button><button type="button" data-dir="right" aria-label="Direita">→</button></div>`;
     elements.puzzleStage.append(wrap);
     const canvas = $("canvas", wrap), ctx = canvas.getContext("2d"), scoreEl = $("#snakeScore", wrap), comboEl = $("#snakeCombo", wrap);
+    const controlButtons = Object.fromEntries($$("[data-dir]", wrap).map((button) => [button.dataset.dir, button]));
+    const DIRECTIONS = [
+      { name:"up", x:0, y:-1 }, { name:"right", x:1, y:0 }, { name:"down", x:0, y:1 }, { name:"left", x:-1, y:0 }
+    ];
     let snake, direction, nextDirection, food, obstacles = [], score, timer, running = true, foodPulse = 0;
     const occupied = (candidate) => snake.some((part) => part.x === candidate.x && part.y === candidate.y) || obstacles.some((part) => part.x === candidate.x && part.y === candidate.y);
     const randomFood = () => {
@@ -921,33 +1331,62 @@
       drawHeart(food.x, food.y);
       foodPulse = (foodPulse + 1) % 12;
     };
+    const guidedDirection = () => {
+      if (!running || !snake?.length || !food) return null;
+      const blocked = new Set([...snake.slice(0, -1), ...obstacles].map((part) => `${part.x},${part.y}`));
+      blocked.delete(`${snake[0].x},${snake[0].y}`);
+      const queue = [{ x:snake[0].x, y:snake[0].y, first:null }];
+      const seen = new Set([`${snake[0].x},${snake[0].y}`]);
+      while (queue.length) {
+        const current = queue.shift();
+        for (const step of DIRECTIONS) {
+          if (!current.first && step.x === -direction.x && step.y === -direction.y) continue;
+          const x = current.x + step.x, y = current.y + step.y, key = `${x},${y}`;
+          if (x < 0 || y < 0 || x >= grid || y >= grid || blocked.has(key) || seen.has(key)) continue;
+          const first = current.first || step.name;
+          if (x === food.x && y === food.y) return first;
+          seen.add(key); queue.push({ x, y, first });
+        }
+      }
+      const safe = DIRECTIONS.filter((step) => !(step.x === -direction.x && step.y === -direction.y)).filter((step) => {
+        const x = snake[0].x + step.x, y = snake[0].y + step.y;
+        return x >= 0 && y >= 0 && x < grid && y < grid && !blocked.has(`${x},${y}`);
+      }).sort((a,b) => (Math.abs(snake[0].x+a.x-food.x)+Math.abs(snake[0].y+a.y-food.y)) - (Math.abs(snake[0].x+b.x-food.x)+Math.abs(snake[0].y+b.y-food.y)));
+      return safe[0]?.name || null;
+    };
+    const refreshGuide = () => {
+      const name = guidedDirection();
+      markPuzzleGuideTarget(controlButtons[name], "Siga a seta destacada");
+    };
     const reset = () => {
-      snake = [{x:5,y:8},{x:4,y:8},{x:3,y:8}]; direction = {x:1,y:0}; nextDirection = direction; score = 0; scoreEl.textContent = "0"; comboEl.textContent = "Ritmo: ×1"; buildObstacles(); food = randomFood(); running = true; draw();
+      snake = [{x:5,y:8},{x:4,y:8},{x:3,y:8}]; direction = {x:1,y:0}; nextDirection = direction; score = 0; scoreEl.textContent = "0"; comboEl.textContent = "Ritmo: ×1"; buildObstacles(); food = randomFood(); running = true; draw(); refreshPuzzleGuide();
     };
     const setDirection = (name) => {
-      const dirs = { up:{x:0,y:-1}, down:{x:0,y:1}, left:{x:-1,y:0}, right:{x:1,y:0} }; const next = dirs[name];
-      if (!next || next.x === -direction.x && next.y === -direction.y) return; nextDirection = next;
+      const next = DIRECTIONS.find((item) => item.name === name);
+      if (!next || next.x === -direction.x && next.y === -direction.y) return;
+      nextDirection = { x:next.x, y:next.y }; refreshPuzzleGuide();
     };
     const tick = () => {
       if (!running) return; direction = nextDirection;
       const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
       if (head.x < 0 || head.y < 0 || head.x >= grid || head.y >= grid || snake.some((part) => part.x === head.x && part.y === head.y) || obstacles.some((part) => part.x === head.x && part.y === head.y)) {
-        running = false; canvas.classList.add("is-hit"); elements.puzzleStatus.textContent = "Ops! Houve uma colisão. A rodada vai recomeçar...";
+        running = false; clearPuzzleGuideTarget(); canvas.classList.add("is-hit"); elements.puzzleStatus.textContent = "Ops! Houve uma colisão. A rodada vai recomeçar...";
         const resetTimer = window.setTimeout(() => { pendingTimers.delete(resetTimer); if (currentPuzzleChallenge === challenge && !elements.puzzleModal.hidden) { canvas.classList.remove("is-hit"); reset(); elements.puzzleStatus.textContent = `Pegue ${target} corações.`; } }, 700); pendingTimers.add(resetTimer); return;
       }
       snake.unshift(head);
       if (head.x === food.x && head.y === food.y) {
         score += 1; scoreEl.textContent = String(score); comboEl.textContent = score >= 4 ? `Combo ×${score}!` : `Ritmo: ×${Math.min(3, score + 1)}`; comboEl.classList.toggle("is-hot", score >= 4); canvas.classList.remove("is-eating"); void canvas.offsetWidth; canvas.classList.add("is-eating"); elements.puzzleStatus.textContent = `${score} de ${target} corações${score >= 4 ? ` · COMBO ×${score}` : ""}`;
-        if (score >= target) { running = false; draw(); const winTimer = window.setTimeout(completePuzzle, 280); pendingTimers.add(winTimer); return; }
+        if (score >= target) { running = false; clearPuzzleGuideTarget(); draw(); const winTimer = window.setTimeout(completePuzzle, 280); pendingTimers.add(winTimer); return; }
         food = randomFood();
-      } else snake.pop(); draw();
+      } else snake.pop();
+      draw(); refreshPuzzleGuide();
     };
     const keyHandler = (event) => {
       const map = { ArrowUp:"up", ArrowDown:"down", ArrowLeft:"left", ArrowRight:"right" };
       if (map[event.key]) { event.preventDefault(); setDirection(map[event.key]); }
     };
     $$("[data-dir]", wrap).forEach((button) => button.addEventListener("click", () => setDirection(button.dataset.dir)));
-    window.addEventListener("keydown", keyHandler); reset(); timer = window.setInterval(tick, tickInterval);
+    window.addEventListener("keydown", keyHandler); reset(); setPuzzleGuide({ refresh: refreshGuide }); timer = window.setInterval(tick, tickInterval);
     elements.puzzleStatus.textContent = `Pegue ${target} corações${obstacleCount ? ` e desvie de ${obstacleCount} obstáculos` : ""}.`;
     puzzleCleanup = () => { running = false; clearInterval(timer); pendingTimers.forEach(clearTimeout); window.removeEventListener("keydown", keyHandler); };
   }
@@ -965,10 +1404,20 @@
     wrap.innerHTML = `<div class="game-hud"><span>Pontos: <b id="tetrisScore">0</b>/${target}</span><span>Linhas: <b id="tetrisLines">0</b></span><span id="tetrisCombo">Combo: —</span></div><canvas class="game-canvas tetris-canvas" width="${cols*cell}" height="${rows*cell}" aria-label="Jogo de blocos"></canvas><div class="game-controls tetris-controls"><button type="button" data-action="left" aria-label="Mover para esquerda">←</button><button type="button" data-action="rotate" aria-label="Girar">↻</button><button type="button" data-action="down" aria-label="Descer">↓</button><button type="button" data-action="right" aria-label="Mover para direita">→</button><button type="button" data-action="drop" aria-label="Queda rápida">⇣</button></div>`;
     elements.puzzleStage.append(wrap);
     const canvas = $("canvas",wrap), ctx = canvas.getContext("2d"), scoreEl = $("#tetrisScore",wrap), linesEl = $("#tetrisLines",wrap), comboEl = $("#tetrisCombo",wrap);
+    const actionButtons = Object.fromEntries($$("[data-action]",wrap).map((button)=>[button.dataset.action,button]));
     let board = Array.from({length:rows},()=>Array(cols).fill(null)), piece, score = 0, totalLines = 0, lineCombo = 0, timer, running = true;
     const rotate = (matrix) => matrix[0].map((_, index) => matrix.map((row) => row[index]).reverse());
+    const matrixKey = (matrix) => matrix.map((row)=>row.join("")).join("/");
     const collides = (candidate, dx = 0, dy = 0, matrix = candidate.m) => matrix.some((row,y) => row.some((value,x) => value && (candidate.y+y+dy >= rows || candidate.x+x+dx < 0 || candidate.x+x+dx >= cols || (candidate.y+y+dy >= 0 && board[candidate.y+y+dy][candidate.x+x+dx]))));
-    const spawn = () => { const shape = SHAPES[Math.floor(Math.random()*SHAPES.length)]; piece = {m:shape.m.map((r)=>[...r]),c:shape.c,x:Math.floor((cols-shape.m[0].length)/2),y:-1}; if (collides(piece)) { board = Array.from({length:rows},()=>Array(cols).fill(null)); score = Math.max(0,score-(freeRank(challenge)>=4?80:20)); scoreEl.textContent = String(score); canvas.classList.remove("is-danger"); void canvas.offsetWidth; canvas.classList.add("is-danger"); elements.puzzleStatus.textContent = "O tabuleiro transbordou: ele foi limpo e houve penalidade."; } };
+    const spawn = () => {
+      const shape = SHAPES[Math.floor(Math.random()*SHAPES.length)];
+      piece = {m:shape.m.map((r)=>[...r]),c:shape.c,x:Math.floor((cols-shape.m[0].length)/2),y:-1};
+      if (collides(piece)) {
+        board = Array.from({length:rows},()=>Array(cols).fill(null)); score = Math.max(0,score-(freeRank(challenge)>=4?80:20)); scoreEl.textContent = String(score);
+        canvas.classList.remove("is-danger"); void canvas.offsetWidth; canvas.classList.add("is-danger"); elements.puzzleStatus.textContent = "O tabuleiro transbordou: ele foi limpo e houve penalidade.";
+      }
+      refreshPuzzleGuide();
+    };
     const drawBlock = (x,y,color) => { ctx.fillStyle=color; ctx.beginPath(); ctx.roundRect(x*cell+1,y*cell+1,cell-2,cell-2,4); ctx.fill(); ctx.fillStyle="rgba(255,255,255,.16)"; ctx.fillRect(x*cell+4,y*cell+4,cell-9,3); };
     const draw = () => {
       ctx.fillStyle="#293328"; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -976,27 +1425,65 @@
       if(piece) piece.m.forEach((row,y)=>row.forEach((value,x)=>{ if(value && piece.y+y>=0) drawBlock(piece.x+x,piece.y+y,piece.c); }));
     };
     const clearLines = () => { let count=0; for(let y=rows-1;y>=0;y-=1){ if(board[y].every(Boolean)){ board.splice(y,1); board.unshift(Array(cols).fill(null)); count+=1; y+=1; } } return count; };
+    const evaluatePlacement = (matrix, x, y) => {
+      const simulated = board.map((row)=>[...row]);
+      let above = 0;
+      matrix.forEach((row,dy)=>row.forEach((value,dx)=>{ if (!value) return; const targetY=y+dy; if(targetY<0) above+=1; else simulated[targetY][x+dx]=piece.c; }));
+      let lines=0;
+      for(let row=simulated.length-1;row>=0;row-=1){if(simulated[row].every(Boolean)){simulated.splice(row,1);simulated.unshift(Array(cols).fill(null));lines+=1;row+=1;}}
+      const heights=[];let holes=0;
+      for(let col=0;col<cols;col+=1){let first=-1;for(let row=0;row<rows;row+=1){if(simulated[row][col]){first=row;break;}}const height=first<0?0:rows-first;heights.push(height);if(first>=0){for(let row=first+1;row<rows;row+=1)if(!simulated[row][col])holes+=1;}}
+      const aggregate=heights.reduce((sum,value)=>sum+value,0), maxHeight=Math.max(...heights), bumpiness=heights.slice(1).reduce((sum,value,index)=>sum+Math.abs(value-heights[index]),0);
+      return lines*1200-holes*110-aggregate*4.5-bumpiness*6-maxHeight*9-above*180-Math.abs((x+matrix[0].length/2)-cols/2)*.7;
+    };
+    const bestPlacement = () => {
+      if(!piece||!running)return null;
+      let matrix=piece.m, best=null;const seen=new Set();
+      for(let steps=0;steps<4;steps+=1){
+        const key=matrixKey(matrix);if(seen.has(key))break;seen.add(key);
+        const width=matrix[0].length;
+        for(let x=0;x<=cols-width;x+=1){
+          const candidate={...piece,m:matrix,x,y:piece.y};
+          if(collides(candidate,0,0,matrix))continue;
+          while(!collides(candidate,0,1,matrix))candidate.y+=1;
+          const value=evaluatePlacement(matrix,x,candidate.y);
+          if(!best||value>best.value)best={steps,x,value};
+        }
+        matrix=rotate(matrix);
+      }
+      return best;
+    };
+    const refreshGuide = () => {
+      const targetPlacement=bestPlacement();
+      if(!targetPlacement)return;
+      let actionName="drop";
+      if(targetPlacement.steps>0){const next=rotate(piece.m);if(!collides(piece,0,0,next))actionName="rotate";else if(piece.x>targetPlacement.x)actionName="left";else if(piece.x<targetPlacement.x)actionName="right";}
+      else if(piece.x>targetPlacement.x)actionName="left";
+      else if(piece.x<targetPlacement.x)actionName="right";
+      markPuzzleGuideTarget(actionButtons[actionName], actionName==="drop"?"Solte a peça destacada":"Use o controle destacado");
+    };
     const lock = () => {
       piece.m.forEach((row,y)=>row.forEach((value,x)=>{ if(value && piece.y+y>=0) board[piece.y+y][piece.x+x]=piece.c; }));
       const lines=clearLines();
       if(lines){ lineCombo+=1; totalLines+=lines; const multiBonus=[0,90,230,420,700][lines]||700; const comboBonus=(lineCombo-1)*45; score += 20+multiBonus+comboBonus; linesEl.textContent=String(totalLines); comboEl.textContent=lineCombo>=2?`Combo ×${lineCombo}!`:`${lines} ${lines===1?"linha":"linhas"}!`; comboEl.classList.toggle("is-hot",lineCombo>=2); canvas.classList.remove("is-clearing"); void canvas.offsetWidth; canvas.classList.add("is-clearing"); elements.puzzleStatus.textContent=`${lines===4?"TETRIS! ":""}${lines} ${lines===1?"linha":"linhas"} · ${lineCombo>=2?`combo ×${lineCombo} · `:""}${score}/${target}`; }
       else { lineCombo=0; comboEl.textContent="Combo: —"; comboEl.classList.remove("is-hot"); score+=20; elements.puzzleStatus.textContent=`${score} de ${target} pontos`; }
       scoreEl.textContent=String(score);
-      if(score>=target){ running=false; draw(); const timerId=window.setTimeout(completePuzzle,300);pendingTimers.add(timerId); return; } spawn();
+      if(score>=target){ running=false; clearPuzzleGuideTarget(); draw(); const timerId=window.setTimeout(completePuzzle,300);pendingTimers.add(timerId); return; }
+      spawn();
     };
-    const fall = () => { if(!running)return; if(!collides(piece,0,1))piece.y+=1; else lock(); draw(); };
+    const fall = () => { if(!running)return; if(!collides(piece,0,1))piece.y+=1; else lock(); draw(); refreshPuzzleGuide(); };
     const action = (name) => {
       if(!running)return;
       if(name==="left"&&!collides(piece,-1,0))piece.x-=1;
       if(name==="right"&&!collides(piece,1,0))piece.x+=1;
-      if(name==="down")fall();
+      if(name==="down"){fall();return;}
       if(name==="rotate"){ const next=rotate(piece.m); if(!collides(piece,0,0,next))piece.m=next; }
       if(name==="drop"){ while(!collides(piece,0,1)){ piece.y+=1; score+=1; } lock(); scoreEl.textContent=String(score); }
-      draw();
+      draw();refreshPuzzleGuide();
     };
     const keyHandler = (event) => { const map={ArrowLeft:"left",ArrowRight:"right",ArrowDown:"down",ArrowUp:"rotate",Space:"drop"," ":"drop"}; if(map[event.key]){event.preventDefault();action(map[event.key]);} };
     $$("[data-action]",wrap).forEach((button)=>button.addEventListener("click",()=>action(button.dataset.action)));
-    window.addEventListener("keydown",keyHandler); spawn(); draw(); timer=window.setInterval(fall,fallInterval);
+    window.addEventListener("keydown",keyHandler); spawn(); draw(); setPuzzleGuide({refresh:refreshGuide}); timer=window.setInterval(fall,fallInterval);
     elements.puzzleStatus.textContent=`Encaixe blocos até fazer ${target} pontos. Limpe linhas seguidas para criar combos.`;
     puzzleCleanup=()=>{running=false;clearInterval(timer);pendingTimers.forEach(clearTimeout);window.removeEventListener("keydown",keyHandler);};
   }
@@ -1009,28 +1496,39 @@
     const activeColors = LUXOR_COLORS.slice(0, config.palette);
     const activeKeys = activeColors.map((color) => color.key);
     const colorByKey = Object.fromEntries(LUXOR_COLORS.map((color) => [color.key, color]));
-    const PROJECTILE_SPEED = 620;
-    const PROJECTILE_COLLISION_RADIUS = 27;
+    const PROJECTILE_SPEED = 660;
     const MAX_PROJECTILE_DISTANCE = 940;
-    const CANNON_POINT = { x: 360, y: 378 };
+    const CANNON_POINT = { x: 360, y: 396 };
+    const MATCH_COLLAPSE_DELAY = 105;
+    const CHAIN_REACTION_DELAY = 34;
+    const REFLOW_DURATION = 155;
+    const POP_VISUAL_DURATION = 210;
     const minimumWaveSize = 11 + challenge.level;
     const pendingTimers = new Set();
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false;
     let active = true;
     let resolving = false;
     let balls = [];
     let ballNodes = [];
     let headProgress = 0.24;
     let spacing = 0.024;
+    let collisionRadius = 28;
     let currentColor = goals[0].color;
     let nextColor = goals[Math.min(1, goals.length - 1)].color;
     let score = 0;
     let comboStreak = 0;
     let shot = null;
     let animationFrame = 0;
+    let resizeFrame = 0;
     let lastTime = performance.now();
     let audioContext = null;
     let aimingPointerId = null;
     let lastAimPoint = { x: 360, y: 92 };
+    let resolutionSerial = 0;
+    let comboAnimation = null;
+    let cannonAnimation = null;
+    let resizeObserver = null;
+    let boardMetrics = { left: 0, top: 0, width: 720, height: 400 };
 
     const buildWave = () => {
       const result = [];
@@ -1075,31 +1573,38 @@
         <div><i></i></div>
         <b class="luxor-distance-value">100%</b>
       </div>
-      <div class="luxor-path" data-theme="${routeConfig.theme}" role="button" tabindex="0" aria-label="${routeConfig.name}: pressione em qualquer ponto, mire e solte para disparar uma bolinha">
-        <svg viewBox="0 0 720 400" preserveAspectRatio="none" aria-hidden="true">
-          <path class="luxor-route-shadow" d="${routeConfig.d}" />
-          <path class="luxor-route" id="luxorRoute" d="${routeConfig.d}" />
-          <path class="luxor-route-glow" d="${routeConfig.d}" />
-          <circle class="luxor-start" cx="${routeConfig.start[0]}" cy="${routeConfig.start[1]}" r="17" />
-          <circle class="luxor-end-pulse" cx="${routeConfig.end[0]}" cy="${routeConfig.end[1]}" r="27" />
-          <circle class="luxor-end" cx="${routeConfig.end[0]}" cy="${routeConfig.end[1]}" r="20" />
-        </svg>
-        <div class="luxor-start-label" style="left:${(routeConfig.start[0] / 720) * 100}%;top:${(routeConfig.start[1] / 400) * 100}%">INÍCIO</div>
-        <div class="luxor-end-label" style="left:${(routeConfig.end[0] / 720) * 100}%;top:${(routeConfig.end[1] / 400) * 100}%">PORTAL</div>
-        <i class="luxor-aim-line" aria-hidden="true"></i>
-        <i class="luxor-aim-marker" aria-hidden="true"></i>
-        <div class="luxor-ball-layer"></div>
-        <div class="luxor-effects-layer" aria-hidden="true"></div>
-        <div class="luxor-cannon" aria-hidden="true"><i class="luxor-loaded-marble"></i><span></span></div>
-        <div class="luxor-combo-flash" aria-live="polite"></div>
-      </div>
-      <div class="luxor-launcher luxor-launcher-deluxe">
-        <div class="luxor-ammo"><small>AGORA</small><i class="current-marble"></i></div>
-        <div class="luxor-ammo next"><small>DEPOIS</small><i class="next-marble"></i></div>
-        <button class="luxor-swap" type="button" aria-label="Trocar a bolinha atual pela próxima">Trocar ↔</button>
-        <span>Pressione no tabuleiro, aponte e solte. A bolinha viaja até colidir com a corrente.</span>
+      <div class="luxor-board-shell">
+        <div class="luxor-path" data-theme="${routeConfig.theme}" role="button" tabindex="0" aria-label="${routeConfig.name}: pressione em qualquer ponto, mire e solte para disparar uma bolinha">
+          <svg viewBox="0 0 720 400" preserveAspectRatio="none" aria-hidden="true">
+            <path class="luxor-route-shadow" d="${routeConfig.d}" />
+            <path class="luxor-route" id="luxorRoute" d="${routeConfig.d}" />
+            <path class="luxor-route-glow" d="${routeConfig.d}" />
+            <circle class="luxor-start" cx="${routeConfig.start[0]}" cy="${routeConfig.start[1]}" r="17" />
+            <circle class="luxor-end-pulse" cx="${routeConfig.end[0]}" cy="${routeConfig.end[1]}" r="27" />
+            <circle class="luxor-end" cx="${routeConfig.end[0]}" cy="${routeConfig.end[1]}" r="20" />
+          </svg>
+          <div class="luxor-start-label" style="left:${(routeConfig.start[0] / 720) * 100}%;top:${(routeConfig.start[1] / 400) * 100}%">INÍCIO</div>
+          <div class="luxor-end-label" style="left:${(routeConfig.end[0] / 720) * 100}%;top:${(routeConfig.end[1] / 400) * 100}%">PORTAL</div>
+          <i class="luxor-aim-line" aria-hidden="true"></i>
+          <i class="luxor-aim-marker" aria-hidden="true"></i>
+          <div class="luxor-ball-layer"></div>
+          <div class="luxor-effects-layer" aria-hidden="true"></div>
+          <div class="luxor-combo-flash" aria-live="polite"></div>
+        </div>
+        <div class="luxor-control-deck">
+          <div class="luxor-deck-ammo">
+            <div class="luxor-ammo"><small>AGORA</small><i class="current-marble"></i></div>
+            <div class="luxor-ammo next"><small>DEPOIS</small><i class="next-marble"></i></div>
+          </div>
+          <div class="luxor-cannon-dock" aria-hidden="true"><div class="luxor-cannon"><i class="luxor-loaded-marble"></i><span></span></div></div>
+          <div class="luxor-deck-actions">
+            <button class="luxor-swap" type="button" aria-label="Trocar a bolinha atual pela próxima">Trocar ↔</button>
+            <span>Pressione, aponte e solte.</span>
+          </div>
+        </div>
       </div>`;
     elements.puzzleStage.append(wrap);
+    elements.puzzleStage.scrollTop = 0;
 
     const path = $(".luxor-path", wrap);
     const route = $("#luxorRoute", wrap);
@@ -1119,14 +1624,6 @@
     const comboFlash = $(".luxor-combo-flash", wrap);
     const swapButton = $(".luxor-swap", wrap);
     const routeLength = route.getTotalLength();
-    const refreshSpacing = () => {
-      const boardWidth = Math.max(300, path.clientWidth || 700);
-      const marblePixels = clamp(boardWidth * 0.041, 20, 31);
-      const marbleRouteUnits = (marblePixels / boardWidth) * 720;
-      spacing = clamp((marbleRouteUnits + 4) / routeLength, 0.016, 0.045);
-    };
-    refreshSpacing();
-    headProgress = clamp(0.23 + challenge.level * 0.009, 0.23, 0.31);
 
     const later = (callback, delay) => {
       const timer = window.setTimeout(() => {
@@ -1136,32 +1633,59 @@
       pendingTimers.add(timer);
       return timer;
     };
+    const clearPendingTimers = () => {
+      pendingTimers.forEach((timer) => clearTimeout(timer));
+      pendingTimers.clear();
+    };
+    const refreshBoardMetrics = () => {
+      const bounds = path.getBoundingClientRect();
+      boardMetrics = {
+        left: bounds.left,
+        top: bounds.top,
+        width: Math.max(1, bounds.width || path.clientWidth || 720),
+        height: Math.max(1, bounds.height || path.clientHeight || 400)
+      };
+      const marblePixels = clamp(boardMetrics.width * (boardMetrics.width > 760 ? 0.036 : 0.058), 21, 38);
+      const marbleRouteUnits = (marblePixels / boardMetrics.width) * 720;
+      spacing = clamp((marbleRouteUnits + 3.5) / routeLength, 0.0155, 0.052);
+      collisionRadius = clamp(marbleRouteUnits * 0.78 + 9, 27, 49);
+    };
     const setMarbleColor = (element, colorKey) => {
       const color = colorByKey[colorKey];
+      if (!element || !color) return;
+      element.dataset.color = colorKey;
       element.style.setProperty("--marble-color", color.hex);
       element.setAttribute("title", color.name);
       element.setAttribute("aria-label", color.name);
     };
+    const createMarbleNode = (colorKey, entering = false) => {
+      const marble = document.createElement("i");
+      marble.className = `marble${entering && !reducedMotion ? " is-entering" : ""}`;
+      marble.setAttribute("aria-hidden", "true");
+      setMarbleColor(marble, colorKey);
+      if (entering && !reducedMotion) later(() => marble.classList.remove("is-entering"), 190);
+      return marble;
+    };
     const playTone = (kind, multiplier = 1) => {
-      if (!state.volume) return;
+      if (!state.volume || !active && kind !== "win" && kind !== "miss") return;
       const AudioEngine = window.AudioContext || window.webkitAudioContext;
       if (!AudioEngine) return;
       try {
-        if (!audioContext) audioContext = new AudioEngine();
+        if (!audioContext || audioContext.state === "closed") audioContext = new AudioEngine();
         const oscillator = audioContext.createOscillator();
         const gain = audioContext.createGain();
         const now = audioContext.currentTime;
         const base = kind === "shoot" ? 250 : kind === "miss" ? 130 : kind === "win" ? 620 : 360 + Math.min(multiplier, 7) * 55;
         oscillator.type = kind === "miss" ? "sawtooth" : kind === "shoot" ? "triangle" : "sine";
         oscillator.frequency.setValueAtTime(base, now);
-        if (kind === "pop" || kind === "win") oscillator.frequency.exponentialRampToValueAtTime(base * 1.45, now + 0.12);
+        if (kind === "pop" || kind === "win") oscillator.frequency.exponentialRampToValueAtTime(base * 1.45, now + 0.1);
         const peak = (state.volume / 100) * (kind === "shoot" ? 0.025 : 0.045);
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + 0.015);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === "win" ? 0.32 : 0.18));
+        gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === "win" ? 0.29 : 0.16));
         oscillator.connect(gain).connect(audioContext.destination);
         oscillator.start(now);
-        oscillator.stop(now + (kind === "win" ? 0.34 : 0.2));
+        oscillator.stop(now + (kind === "win" ? 0.31 : 0.18));
       } catch { /* efeitos sonoros são opcionais */ }
     };
     const renderGoals = () => {
@@ -1210,12 +1734,10 @@
       return pointAtProgress(progress);
     };
     const pointFromPointer = (event) => {
-      const bounds = path.getBoundingClientRect();
-      const width = Math.max(1, bounds.width || path.clientWidth || 720);
-      const height = Math.max(1, bounds.height || path.clientHeight || 400);
+      if (!boardMetrics.width || !boardMetrics.height) refreshBoardMetrics();
       return {
-        x: clamp(((event.clientX - bounds.left) / width) * 720, 0, 720),
-        y: clamp(((event.clientY - bounds.top) / height) * 400, 0, 400)
+        x: clamp(((event.clientX - boardMetrics.left) / boardMetrics.width) * 720, 0, 720),
+        y: clamp(((event.clientY - boardMetrics.top) / boardMetrics.height) * 400, 0, 400)
       };
     };
     const updateAimVisual = (point, visible = true) => {
@@ -1224,8 +1746,7 @@
       const dy = point.y - CANNON_POINT.y;
       const distance = Math.max(1, Math.hypot(dx, dy));
       const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      const cannonAngle = angle + 90;
-      cannon.style.setProperty("--aim-angle", `${cannonAngle}deg`);
+      cannon.style.setProperty("--aim-angle", `${angle + 90}deg`);
       aimLine.style.left = `${(CANNON_POINT.x / 720) * 100}%`;
       aimLine.style.top = `${(CANNON_POINT.y / 400) * 100}%`;
       aimLine.style.width = `${(distance / 720) * 100}%`;
@@ -1251,22 +1772,48 @@
         node.hidden = false;
         node.style.left = `${(point.x / 720) * 100}%`;
         node.style.top = `${(point.y / 400) * 100}%`;
-        node.style.zIndex = String(120 - index);
+        node.style.zIndex = String(160 - index);
       });
       updateDistance();
     };
-    const renderBalls = () => {
-      ballLayer.replaceChildren();
-      ballNodes = balls.map((colorKey, index) => {
-        const marble = document.createElement("i");
-        const color = colorByKey[colorKey];
-        marble.className = "marble";
-        marble.style.setProperty("--marble-color", color.hex);
-        marble.setAttribute("aria-hidden", "true");
+    const renderBalls = (enteringFrom = ballNodes.length) => {
+      while (ballNodes.length > balls.length) ballNodes.pop()?.remove();
+      while (ballNodes.length < balls.length) {
+        const index = ballNodes.length;
+        const marble = createMarbleNode(balls[index], index >= enteringFrom);
+        ballNodes.push(marble);
         ballLayer.append(marble);
-        return marble;
+      }
+      ballNodes.forEach((node, index) => {
+        if (node.dataset.color !== balls[index]) setMarbleColor(node, balls[index]);
       });
       moveBalls();
+    };
+    const captureBallPoints = () => {
+      const points = new Map();
+      ballNodes.forEach((node, index) => {
+        const point = pointForIndex(index);
+        if (point) points.set(node, point);
+      });
+      return points;
+    };
+    const animateReflow = (beforePoints, duration = REFLOW_DURATION) => {
+      if (reducedMotion || !active) return;
+      const scaleX = boardMetrics.width / 720;
+      const scaleY = boardMetrics.height / 400;
+      ballNodes.forEach((node, index) => {
+        const from = beforePoints.get(node);
+        const to = pointForIndex(index);
+        if (!from || !to || node.hidden || typeof node.animate !== "function") return;
+        const dx = (from.x - to.x) * scaleX;
+        const dy = (from.y - to.y) * scaleY;
+        if (Math.hypot(dx, dy) < 1.2) return;
+        node._luxorReflow?.cancel?.();
+        node._luxorReflow = node.animate([
+          { transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px)` },
+          { transform: "translate(-50%, -50%) translate(0, 0)" }
+        ], { duration, easing: "cubic-bezier(.22,.78,.28,1)", fill: "none" });
+      });
     };
     const groupAt = (index) => {
       if (index < 0 || index >= balls.length) return null;
@@ -1277,19 +1824,29 @@
       while (end < balls.length - 1 && balls[end + 1] === color) end += 1;
       return { color, start, end, size: end - start + 1 };
     };
+    const createImpactFlash = (point, colorKey) => {
+      const flash = document.createElement("i");
+      flash.className = "luxor-impact-flash";
+      flash.style.left = `${(point.x / 720) * 100}%`;
+      flash.style.top = `${(point.y / 400) * 100}%`;
+      flash.style.setProperty("--burst-color", colorByKey[colorKey].hex);
+      effectsLayer.append(flash);
+      later(() => flash.remove(), 240);
+    };
     const createBurst = (point, colorKey) => {
+      if (!active) return;
       const burst = document.createElement("span");
       burst.className = "luxor-burst";
       burst.style.left = `${(point.x / 720) * 100}%`;
       burst.style.top = `${(point.y / 400) * 100}%`;
       burst.style.setProperty("--burst-color", colorByKey[colorKey].hex);
-      burst.innerHTML = `<i class="luxor-burst-ring"></i>${Array.from({ length: 7 }, (_, index) => {
-        const angle = (Math.PI * 2 * index) / 7;
-        const distance = 20 + (index % 3) * 6;
-        return `<i class="luxor-particle" style="--tx:${Math.cos(angle) * distance}px;--ty:${Math.sin(angle) * distance}px;--delay:${index * 12}ms"></i>`;
+      burst.innerHTML = `<i class="luxor-burst-ring"></i>${Array.from({ length: 6 }, (_, index) => {
+        const angle = (Math.PI * 2 * index) / 6;
+        const distance = 21 + (index % 3) * 7;
+        return `<i class="luxor-particle" style="--tx:${Math.cos(angle) * distance}px;--ty:${Math.sin(angle) * distance}px;--delay:${index * 10}ms"></i>`;
       }).join("")}`;
       effectsLayer.append(burst);
-      later(() => burst.remove(), 720);
+      later(() => burst.remove(), 620);
     };
     const showCallout = (text, point, emphasis = false) => {
       if (!text) return;
@@ -1299,13 +1856,19 @@
       callout.style.left = `${(point.x / 720) * 100}%`;
       callout.style.top = `${(point.y / 400) * 100}%`;
       effectsLayer.append(callout);
+      later(() => callout.remove(), reducedMotion ? 40 : 760);
+      comboAnimation?.cancel?.();
       comboFlash.textContent = text;
-      comboFlash.classList.remove("is-visible", "is-super");
-      void comboFlash.offsetWidth;
-      comboFlash.classList.add("is-visible");
-      if (emphasis) comboFlash.classList.add("is-super");
-      later(() => callout.remove(), 900);
-      later(() => comboFlash.classList.remove("is-visible", "is-super"), 820);
+      comboFlash.classList.toggle("is-super", emphasis);
+      if (typeof comboFlash.animate === "function") {
+        comboAnimation = comboFlash.animate([
+          { transform: "translate(-50%, -50%) scale(.48) rotate(-5deg)", opacity: 0 },
+          { transform: "translate(-50%, -50%) scale(1.1) rotate(1deg)", opacity: 1, offset: .25 },
+          { transform: "translate(-50%, -55%) scale(1)", opacity: 1, offset: .7 },
+          { transform: "translate(-50%, -70%) scale(.94)", opacity: 0 }
+        ], { duration: reducedMotion ? 1 : 690, easing: "cubic-bezier(.15,.9,.25,1)" });
+        comboAnimation.onfinish = () => { comboFlash.textContent = ""; comboFlash.classList.remove("is-super"); };
+      }
     };
     const markGoal = (group) => {
       const matches = goals
@@ -1317,6 +1880,7 @@
     };
     const appendUsefulWave = () => {
       if (balls.length >= minimumWaveSize) return;
+      const previousLength = balls.length;
       const pending = goals.filter((goal) => !goal.done);
       const goal = pending[0];
       let color = goal ? goal.color : activeKeys[Math.floor(Math.random() * activeKeys.length)];
@@ -1331,27 +1895,44 @@
         if (color === balls[balls.length - 1]) color = activeKeys[(activeKeys.indexOf(color) + 1) % activeKeys.length];
         balls.push(color, color);
       }
+      renderBalls(previousLength);
+    };
+    const stopCurrentShot = () => {
+      shot?.element?.remove();
+      shot = null;
+      path.classList.remove("is-shooting");
     };
     const finishWin = () => {
       if (!active) return;
       active = false;
+      resolutionSerial += 1;
       resolving = false;
-      shot?.element.remove();
-      shot = null;
+      aimingPointerId = null;
+      stopCurrentShot();
+      hideAimVisual();
       cancelAnimationFrame(animationFrame);
+      clearPendingTimers();
+      effectsLayer.replaceChildren();
+      comboAnimation?.cancel?.();
       path.classList.add("is-won");
       showCallout(comboStreak >= 4 ? `COMBO FINAL ${comboStreak}x!` : "METAS CUMPRIDAS!", { x: 360, y: 190 }, true);
       playTone("win", comboStreak);
       elements.puzzleStatus.textContent = `Luxor vencido com ${score.toLocaleString("pt-BR")} pontos!`;
-      later(completePuzzle, 760);
+      later(completePuzzle, reducedMotion ? 80 : 650);
     };
     const lose = () => {
       if (!active) return;
       active = false;
+      resolutionSerial += 1;
       resolving = false;
-      shot?.element.remove();
-      shot = null;
+      aimingPointerId = null;
+      stopCurrentShot();
+      hideAimVisual();
       cancelAnimationFrame(animationFrame);
+      clearPendingTimers();
+      effectsLayer.replaceChildren();
+      comboAnimation?.cancel?.();
+      comboFlash.textContent = "";
       path.classList.add("is-lost");
       const panel = document.createElement("div");
       panel.className = "luxor-loss";
@@ -1361,12 +1942,19 @@
       playTone("miss");
       elements.puzzleStatus.textContent = "Fim do percurso. Tente novamente e use as reações em cadeia para ganhar tempo.";
     };
-    const explodeGroup = (group, chainDepth = 1) => {
-      if (!active || !group || group.size < 3) {
+    const explodeGroup = (group, chainDepth = 1, serial = resolutionSerial) => {
+      if (!active || serial !== resolutionSerial || !group || group.size < 3) {
         resolving = false;
         updateAmmo();
         return;
       }
+      const liveGroup = groupAt(clamp(group.start, 0, Math.max(0, balls.length - 1)));
+      if (!liveGroup || liveGroup.color !== group.color || liveGroup.size < 3) {
+        resolving = false;
+        updateAmmo();
+        return;
+      }
+      group = liveGroup;
       resolving = true;
       const points = [];
       for (let index = group.start; index <= group.end; index += 1) {
@@ -1375,7 +1963,8 @@
         ballNodes[index]?.classList.add("is-popping");
       }
       const center = points[Math.floor(points.length / 2)] || { x: 360, y: 200 };
-      points.forEach((point, index) => later(() => createBurst(point, group.color), index * 24));
+      const burstPoints = points.length <= 6 ? points : points.filter((_, index) => index % Math.ceil(points.length / 6) === 0).slice(0, 6);
+      burstPoints.forEach((point, index) => later(() => createBurst(point, group.color), index * 14));
       comboStreak += 1;
       const gained = Math.round(group.size * 110 * (1 + Math.max(0, comboStreak - 1) * 0.25) * chainDepth);
       score += gained;
@@ -1384,35 +1973,44 @@
         const stillNeeded = (colorKey) => goals.some((goal) => !goal.done && goal.color === colorKey);
         if (!stillNeeded(currentColor)) currentColor = chooseUsefulColor();
         if (!stillNeeded(nextColor)) nextColor = chooseUsefulColor();
-        updateAmmo();
       }
       const isCombo = comboStreak >= 4;
       const callout = isCombo ? `COMBO ${comboStreak}x!` : chainDepth > 1 ? `REAÇÃO ${chainDepth}x!` : group.size >= 4 ? `GRUPO DE ${group.size}!` : `+${gained}`;
-      showCallout(callout, center, isCombo);
+      showCallout(callout, center, isCombo || chainDepth > 2);
       playTone("pop", comboStreak + chainDepth);
       renderGoals();
       updateHud();
+      updateAmmo();
       elements.puzzleStatus.textContent = completedGoal
         ? `Meta cumprida: grupo de ${group.size} ${colorByKey[group.color].name}! +${gained} pontos.`
-        : `${group.size} bolinhas ${colorByKey[group.color].name} explodiram. +${gained} pontos.`;
+        : chainDepth > 1
+          ? `Reação em cadeia ${chainDepth}x: +${gained} pontos.`
+          : `${group.size} bolinhas ${colorByKey[group.color].name} explodiram. +${gained} pontos.`;
 
       later(() => {
-        if (!active) return;
+        if (!active || serial !== resolutionSerial) return;
+        const beforePoints = captureBallPoints();
+        const removedNodes = ballNodes.splice(group.start, group.size);
         balls.splice(group.start, group.size);
+        removedNodes.forEach((node) => {
+          node.hidden = false;
+          effectsLayer.append(node);
+          later(() => node.remove(), Math.max(70, POP_VISUAL_DURATION - MATCH_COLLAPSE_DELAY));
+        });
         headProgress = Math.max(0.12, headProgress - Math.min(0.075, spacing * group.size * 0.7));
-        renderBalls();
+        moveBalls();
+        animateReflow(beforePoints);
         if (goals.every((goal) => goal.done)) return finishWin();
         const boundary = clamp(group.start - 1, 0, balls.length - 1);
         const chained = balls.length ? groupAt(boundary) : null;
         if (chained && chained.size >= 3) {
-          later(() => explodeGroup(chained, chainDepth + 1), 130);
+          later(() => explodeGroup(chained, chainDepth + 1, serial), reducedMotion ? 0 : CHAIN_REACTION_DELAY);
           return;
         }
         appendUsefulWave();
-        renderBalls();
         resolving = false;
         updateAmmo();
-      }, 300);
+      }, reducedMotion ? 20 : MATCH_COLLAPSE_DELAY);
     };
     const insertionIndexForImpact = (targetIndex, impactPoint) => {
       const safeTarget = clamp(targetIndex, 0, Math.max(0, balls.length - 1));
@@ -1436,18 +2034,25 @@
       return side >= 0 ? safeTarget + 1 : safeTarget;
     };
     const resolveImpact = (targetIndex, colorKey, impactPoint) => {
-      if (!active) return;
+      if (!active || resolving) return;
+      resolving = true;
+      const serial = ++resolutionSerial;
       const safeTarget = clamp(targetIndex, 0, Math.max(0, balls.length - 1));
       const insertedIndex = insertionIndexForImpact(safeTarget, impactPoint);
-      shot?.element.remove();
-      shot = null;
-      path.classList.remove("is-shooting");
+      stopCurrentShot();
       hideAimVisual();
+      createImpactFlash(impactPoint, colorKey);
+      const beforePoints = captureBallPoints();
       balls.splice(insertedIndex, 0, colorKey);
-      renderBalls();
+      const insertedNode = createMarbleNode(colorKey);
+      ballNodes.splice(insertedIndex, 0, insertedNode);
+      ballLayer.append(insertedNode);
+      beforePoints.set(insertedNode, impactPoint);
+      moveBalls();
+      animateReflow(beforePoints, 115);
       const group = groupAt(insertedIndex);
       if (group && group.size >= 3) {
-        explodeGroup(group, 1);
+        explodeGroup(group, 1, serial);
       } else {
         resolving = false;
         comboStreak = 0;
@@ -1467,9 +2072,7 @@
       if (!shot || !active) return;
       const colorKey = shot.color;
       const missPoint = { x: clamp(shot.x, 10, 710), y: clamp(shot.y, 10, 390) };
-      shot.element.remove();
-      shot = null;
-      path.classList.remove("is-shooting");
+      stopCurrentShot();
       hideAimVisual();
       resolving = false;
       comboStreak = 0;
@@ -1496,7 +2099,7 @@
         const closestX = startX + segmentX * projection;
         const closestY = startY + segmentY * projection;
         const distance = Math.hypot(center.x - closestX, center.y - closestY);
-        if (distance > PROJECTILE_COLLISION_RADIUS || (nearest && projection >= nearest.projection)) return;
+        if (distance > collisionRadius || (nearest && projection >= nearest.projection)) return;
         nearest = { index, projection, point: { x: closestX, y: closestY } };
       });
       return nearest;
@@ -1512,7 +2115,8 @@
         shot.y = collision.point.y;
         shot.element.style.left = `${(shot.x / 720) * 100}%`;
         shot.element.style.top = `${(shot.y / 400) * 100}%`;
-        return resolveImpact(collision.index, shot.color, collision.point);
+        resolveImpact(collision.index, shot.color, collision.point);
+        return;
       }
       shot.x = nextX;
       shot.y = nextY;
@@ -1542,37 +2146,46 @@
       shot = { color: currentColor, x: CANNON_POINT.x, y: CANNON_POINT.y, velocityX, velocityY, traveled: 0, element: projectile };
       currentColor = nextColor;
       nextColor = chooseUsefulColor();
-      path.classList.add("is-shooting");
+      cannonAnimation?.cancel?.();
+      if (!reducedMotion && typeof cannon.animate === "function") {
+        cannonAnimation = cannon.animate([
+          { scale: 1, filter: "brightness(1)" },
+          { scale: .92, filter: "brightness(1.22)", offset: .38 },
+          { scale: 1, filter: "brightness(1)" }
+        ], { duration: 135, easing: "ease-out" });
+      }
       hideAimVisual();
       updateAmmo();
       playTone("shoot");
       elements.puzzleStatus.textContent = `Disparo ${colorByKey[shot.color].name} a caminho — a onda continua andando.`;
     }
     const beginAim = (event) => {
-      if (!active || resolving || shot || event.button !== 0) return;
+      if (!active || resolving || shot || event.pointerType === "mouse" && event.button !== 0) return;
       event.preventDefault();
+      refreshBoardMetrics();
       aimingPointerId = event.pointerId;
-      path.setPointerCapture?.(event.pointerId);
+      try { path.setPointerCapture(event.pointerId); } catch { /* captura pode não estar disponível */ }
       updateAimVisual(pointFromPointer(event), true);
       elements.puzzleStatus.textContent = "Mire na corrente e solte para disparar.";
     };
     const moveAim = (event) => {
       if (aimingPointerId === null || event.pointerId !== aimingPointerId) return;
       event.preventDefault();
-      updateAimVisual(pointFromPointer(event), true);
+      const samples = event.getCoalescedEvents?.();
+      const sample = samples?.length ? samples[samples.length - 1] : event;
+      updateAimVisual(pointFromPointer(sample), true);
     };
     const releaseAim = (event) => {
       if (aimingPointerId === null || event.pointerId !== aimingPointerId) return;
       event.preventDefault();
       const point = pointFromPointer(event);
-      path.releasePointerCapture?.(event.pointerId);
       aimingPointerId = null;
+      try { path.releasePointerCapture(event.pointerId); } catch { /* captura já pode ter sido liberada */ }
       updateAimVisual(point, false);
       shootAt(point);
     };
     const cancelAim = (event) => {
       if (aimingPointerId === null || event.pointerId !== aimingPointerId) return;
-      path.releasePointerCapture?.(event.pointerId);
       aimingPointerId = null;
       hideAimVisual();
     };
@@ -1593,48 +2206,75 @@
       }
     };
     const resizeHandler = () => {
-      refreshSpacing();
-      moveBalls();
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        if (!active) return;
+        refreshBoardMetrics();
+        moveBalls();
+        updateAimVisual(lastAimPoint, aimingPointerId !== null);
+      });
     };
+    const visibilityHandler = () => { lastTime = performance.now(); };
     const tick = (now) => {
       if (!active) return;
-      const delta = Math.min(50, now - lastTime) / 1000;
+      const elapsed = Math.max(0, now - lastTime);
+      const delta = Math.min(32, elapsed) / 1000;
       lastTime = now;
       headProgress += config.waveSpeed * delta;
       moveBalls();
       updateShot(delta);
-      if (headProgress >= 0.985) return lose();
+      if (headProgress >= 0.985) {
+        lose();
+        return;
+      }
       animationFrame = requestAnimationFrame(tick);
     };
 
     currentColor = chooseUsefulColor();
     nextColor = chooseUsefulColor();
+    refreshBoardMetrics();
+    headProgress = clamp(0.23 + challenge.level * 0.009, 0.23, 0.31);
     swapButton.addEventListener("click", swapAmmo);
     path.addEventListener("pointerdown", beginAim);
     path.addEventListener("pointermove", moveAim);
     path.addEventListener("pointerup", releaseAim);
     path.addEventListener("pointercancel", cancelAim);
+    path.addEventListener("lostpointercapture", cancelAim);
     window.addEventListener("keydown", keyHandler);
-    window.addEventListener("resize", resizeHandler);
+    window.addEventListener("resize", resizeHandler, { passive: true });
+    document.addEventListener("visibilitychange", visibilityHandler);
+    if (typeof ResizeObserver === "function") {
+      resizeObserver = new ResizeObserver(resizeHandler);
+      resizeObserver.observe(path);
+    }
     renderGoals();
     updateHud();
     updateAmmo();
-    renderBalls();
+    renderBalls(0);
     updateAimVisual(lastAimPoint, false);
     elements.puzzleStatus.textContent = `A onda ${config.speedLabel} já está andando. Pressione no tabuleiro, mire e solte para disparar.`;
     animationFrame = requestAnimationFrame(tick);
     puzzleCleanup = () => {
       active = false;
+      resolutionSerial += 1;
+      aimingPointerId = null;
       cancelAnimationFrame(animationFrame);
-      pendingTimers.forEach((timer) => clearTimeout(timer));
-      pendingTimers.clear();
+      cancelAnimationFrame(resizeFrame);
+      clearPendingTimers();
+      comboAnimation?.cancel?.();
+      cannonAnimation?.cancel?.();
+      resizeObserver?.disconnect();
       path.removeEventListener("pointerdown", beginAim);
       path.removeEventListener("pointermove", moveAim);
       path.removeEventListener("pointerup", releaseAim);
       path.removeEventListener("pointercancel", cancelAim);
+      path.removeEventListener("lostpointercapture", cancelAim);
       window.removeEventListener("keydown", keyHandler);
       window.removeEventListener("resize", resizeHandler);
-      shot?.element.remove();
+      document.removeEventListener("visibilitychange", visibilityHandler);
+      ballNodes.forEach((node) => node._luxorReflow?.cancel?.());
+      stopCurrentShot();
+      effectsLayer.replaceChildren();
       if (audioContext && audioContext.state !== "closed") audioContext.close().catch(() => {});
     };
   }
@@ -1647,17 +2287,26 @@
     const progressDots=Array.from({length:roundsTarget},()=>"<i></i>").join("");
     const wrap=document.createElement("div");wrap.className="simon-wrap";wrap.innerHTML=`<div class="game-hud"><span>Rodada: <b id="simonRound">0</b>/${roundsTarget}</span><span>Erros: <b id="simonErrors">0</b></span><span>Sinais: ${baseLength}+</span></div><div class="simon-progress">${progressDots}</div><div class="simon-board" data-keys="${colorCount}">${Array.from({length:colorCount},(_,i)=>`<button class="simon-key" type="button" data-color="${i}" aria-label="Cor ${i+1}"><span>${i+1}</span></button>`).join("")}</div><button class="primary-button" id="startSimon" type="button">Mostrar sequência</button>`;elements.puzzleStage.append(wrap);
     const keys=$$(".simon-key",wrap),roundEl=$("#simonRound",wrap),errorsEl=$("#simonErrors",wrap),start=$("#startSimon",wrap),dots=$$(".simon-progress i",wrap);
-    const later=(fn,ms)=>{const id=window.setTimeout(fn,ms);timeouts.push(id);};
+    const later=(fn,ms)=>{const id=window.setTimeout(()=>{timeouts=timeouts.filter((timer)=>timer!==id);fn();},ms);timeouts.push(id);};
+    const refreshGuide=()=>{
+      if(!active)return;
+      if(!sequence.length){markPuzzleGuideTarget(start,"Mostre a sequência");return;}
+      if(accepting){markPuzzleGuideTarget(keys[sequence[input.length]],"Toque na cor destacada");return;}
+      clearPuzzleGuideTarget();
+    };
     const flash=(color,delay)=>{later(()=>keys[color]?.classList.add("is-lit"),delay);later(()=>keys[color]?.classList.remove("is-lit"),delay+lightTime);};
-    const play=()=>{if(!active)return;accepting=false;input=[];start.disabled=true;elements.puzzleStatus.textContent=`Observe ${sequence.length} sinais...`;sequence.forEach((color,index)=>flash(color,index*step));later(()=>{accepting=true;start.disabled=false;start.textContent="Repetir sequência";elements.puzzleStatus.textContent="Agora repita a ordem.";},sequence.length*step+180);};
+    const play=()=>{if(!active)return;accepting=false;input=[];start.disabled=true;clearPuzzleGuideTarget();elements.puzzleStatus.textContent=`Observe ${sequence.length} sinais...`;sequence.forEach((color,index)=>flash(color,index*step));later(()=>{accepting=true;start.disabled=false;start.textContent="Repetir sequência";elements.puzzleStatus.textContent="Agora repita a ordem.";refreshPuzzleGuide();},sequence.length*step+180);};
     const nextRound=()=>{round+=1;roundEl.textContent=String(round);sequence=Array.from({length:baseLength+round-1},()=>Math.floor(Math.random()*colorCount));play();};
     keys.forEach((key)=>key.addEventListener("click",()=>{
       if(!accepting||!active)return;const color=Number(key.dataset.color);key.classList.add("is-lit","is-player");later(()=>key.classList.remove("is-lit","is-player"),150);input.push(color);const index=input.length-1;
-      if(sequence[index]!==color){accepting=false;errors+=1;errorsEl.textContent=String(errors);wrap.classList.remove("is-error");void wrap.offsetWidth;wrap.classList.add("is-error");elements.puzzleStatus.textContent="Sequência incorreta. Respire: ela será mostrada novamente.";later(play,700);return;}
+      if(sequence[index]!==color){accepting=false;clearPuzzleGuideTarget();errors+=1;errorsEl.textContent=String(errors);wrap.classList.remove("is-error");void wrap.offsetWidth;wrap.classList.add("is-error");elements.puzzleStatus.textContent="Sequência incorreta. Respire: ela será mostrada novamente.";later(play,700);return;}
       elements.puzzleStatus.textContent=`${input.length} de ${sequence.length} sinais corretos`;
-      if(input.length===sequence.length){accepting=false;dots[round-1]?.classList.add("is-done");if(round>=roundsTarget){active=false;later(completePuzzle,350);}else{wrap.classList.remove("is-round-win");void wrap.offsetWidth;wrap.classList.add("is-round-win");elements.puzzleStatus.textContent="Rodada perfeita! A próxima sequência será maior.";later(nextRound,650);}}
+      if(input.length===sequence.length){accepting=false;clearPuzzleGuideTarget();dots[round-1]?.classList.add("is-done");if(round>=roundsTarget){active=false;later(completePuzzle,350);}else{wrap.classList.remove("is-round-win");void wrap.offsetWidth;wrap.classList.add("is-round-win");elements.puzzleStatus.textContent="Rodada perfeita! A próxima sequência será maior.";later(nextRound,650);}}
+      else refreshPuzzleGuide();
     }));
-    start.addEventListener("click",()=>{if(!sequence.length)nextRound();else play();});elements.puzzleStatus.textContent="Toque em “Mostrar sequência” para começar.";
+    start.addEventListener("click",()=>{if(!sequence.length)nextRound();else play();});
+    setPuzzleGuide({refresh:refreshGuide});
+    elements.puzzleStatus.textContent="Toque em “Mostrar sequência” para começar.";
     puzzleCleanup=()=>{active=false;timeouts.forEach(clearTimeout);};
   }
 
@@ -1670,8 +2319,38 @@
     const wrap=document.createElement("div");wrap.className="lights-wrap";wrap.innerHTML=`<div class="game-hud"><span>Movimentos: <b id="lightsMoves">0</b></span><span>Acesas: <b id="lightsOn">0</b>/${total}</span><span>${size} × ${size}</span></div>`;
     const board=document.createElement("div");board.className="lights-board";board.style.setProperty("--lights-size",String(size));wrap.append(board);elements.puzzleStage.append(wrap);
     const movesEl=$("#lightsMoves",wrap),onEl=$("#lightsOn",wrap);
-    const render=()=>{board.replaceChildren();const onCount=lights.filter(Boolean).length;onEl.textContent=String(onCount);lights.forEach((on,index)=>{const button=document.createElement("button");button.type="button";button.className=`light-tile${on?" is-on":""}`;button.setAttribute("aria-label",`Luz ${index+1} ${on?"acesa":"apagada"}`);button.addEventListener("click",()=>{if(!active)return;moves+=1;movesEl.textContent=String(moves);toggle(index);render();const lit=lights.filter(Boolean).length;elements.puzzleStatus.textContent=`${lit} de ${total} corações acesos · ${moves} movimentos`;if(lit===total){active=false;board.classList.add("is-complete");pendingTimer=window.setTimeout(completePuzzle,350);}});board.append(button);});};
-    render();elements.puzzleStatus.textContent=`Acenda ${total} corações. Cada toque muda a luz e suas vizinhas.`;puzzleCleanup=()=>{active=false;clearTimeout(pendingTimer);};
+    const solve=()=>{
+      const matrix=Array.from({length:total},(_,lightIndex)=>{
+        const row=Array(total+1).fill(0);
+        for(let clickIndex=0;clickIndex<total;clickIndex+=1)if(affected(clickIndex).includes(lightIndex))row[clickIndex]=1;
+        row[total]=lights[lightIndex]?0:1;
+        return row;
+      });
+      const pivotColumns=[];let pivotRow=0;
+      for(let col=0;col<total&&pivotRow<total;col+=1){
+        let found=pivotRow;while(found<total&&!matrix[found][col])found+=1;if(found===total)continue;
+        [matrix[pivotRow],matrix[found]]=[matrix[found],matrix[pivotRow]];
+        for(let row=0;row<total;row+=1){if(row===pivotRow||!matrix[row][col])continue;for(let item=col;item<=total;item+=1)matrix[row][item]^=matrix[pivotRow][item];}
+        pivotColumns[pivotRow]=col;pivotRow+=1;
+      }
+      for(let row=pivotRow;row<total;row+=1){if(!matrix[row].slice(0,total).some(Boolean)&&matrix[row][total])return [];}
+      const solution=Array(total).fill(0);for(let row=0;row<pivotRow;row+=1)solution[pivotColumns[row]]=matrix[row][total];
+      return solution.map((value,index)=>value?index:-1).filter((index)=>index>=0);
+    };
+    const refreshGuide=()=>{if(!active)return;const next=solve()[0];markPuzzleGuideTarget(board.children[next],"Toque no coração destacado");};
+    const render=()=>{
+      board.replaceChildren();const onCount=lights.filter(Boolean).length;onEl.textContent=String(onCount);
+      lights.forEach((on,index)=>{
+        const button=document.createElement("button");button.type="button";button.className=`light-tile${on?" is-on":""}`;button.setAttribute("aria-label",`Luz ${index+1} ${on?"acesa":"apagada"}`);
+        button.addEventListener("click",()=>{
+          if(!active)return;moves+=1;movesEl.textContent=String(moves);toggle(index);const lit=lights.filter(Boolean).length;
+          if(lit===total)active=false;render();elements.puzzleStatus.textContent=`${lit} de ${total} corações acesos · ${moves} movimentos`;
+          if(lit===total){board.classList.add("is-complete");pendingTimer=window.setTimeout(completePuzzle,350);}
+        });board.append(button);
+      });
+      refreshPuzzleGuide();
+    };
+    render();setPuzzleGuide({refresh:refreshGuide});elements.puzzleStatus.textContent=`Acenda ${total} corações. Cada toque muda a luz e suas vizinhas.`;puzzleCleanup=()=>{active=false;clearTimeout(pendingTimer);};
   }
 
   function toggleFullscreen() {
@@ -1713,13 +2392,25 @@
   }
 
   $$('[data-view]').forEach((button)=>button.addEventListener("click",()=>switchView(button.dataset.view)));
+  elements.welcomeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = cleanPlayerName(elements.welcomeName.value);
+    if (!name) { elements.welcomeName.focus(); return; }
+    state.playerName = name; state.notes.dono = name; saveState(); closeWelcome(); renderInteractiveLayer(); renderRankingProfile(); queuePlayerSync(80);
+    showToast(`Bem-vindo, ${name}!`);
+  });
+  $$('[data-ranking-mode]').forEach((button) => button.addEventListener("click", () => setRankingMode(button.dataset.rankingMode)));
+  elements.rankingGameSelect.addEventListener("change", () => { rankingGame = elements.rankingGameSelect.value; loadRanking(); });
+  elements.refreshRanking.addEventListener("click", loadRanking);
   $("#brandButton").addEventListener("click",handleBrandClick);
   elements.previousPage.addEventListener("click",()=>setPage(state.page-1));elements.nextPage.addEventListener("click",()=>setPage(state.page+1));
   elements.albumPage.addEventListener("load",()=>{elements.pageLoading.hidden=true;elements.albumPage.classList.add("is-loaded");});
   $("#fullscreenPage").addEventListener("click",toggleFullscreen);$("#exitFullscreen").addEventListener("click",toggleFullscreen);
   $("#nextChallenge").addEventListener("click",continueCollection);$("#continueChallenge").addEventListener("click",continueCollection);$("#inventoryChooseChallenge").addEventListener("click",()=>switchView("challenges"));$("#progressChip").addEventListener("click",()=>switchView("inventory"));
   $("#cancelPaste").addEventListener("click",cancelPlacement);$("#closePuzzle").addEventListener("click",closePuzzle);
-  elements.restartPuzzle.addEventListener("click",()=>{if(!currentPuzzleChallenge)return;if(freePlaySession)freePlaySession.startedAt=Date.now();initPuzzle(currentPuzzleChallenge);elements.puzzleStatus.textContent=freePlaySession?"Partida reiniciada. O cronômetro voltou a zero!":"Desafio reiniciado. Boa sorte!";});
+  elements.puzzleGuideButton.addEventListener("click",()=>togglePuzzleGuide());
+  elements.puzzleGuideToggle.addEventListener("change",()=>togglePuzzleGuide(elements.puzzleGuideToggle.checked));
+  elements.restartPuzzle.addEventListener("click",()=>{if(!currentPuzzleChallenge)return;if(freePlaySession)freePlaySession.phaseStartedAt=Date.now();initPuzzle(currentPuzzleChallenge);elements.puzzleStatus.textContent=freePlaySession?`Fase ${freePlaySession.phase} reiniciada. Os pontos anteriores continuam valendo.`:"Desafio reiniciado. Boa sorte!";});
   elements.puzzleModal.addEventListener("click",(event)=>{if(event.target===elements.puzzleModal)closePuzzle();});
   $("#closeProfile").addEventListener("click", closeProfile);
   $("#profileContinue").addEventListener("click", closeProfile);
@@ -1759,8 +2450,8 @@
     switchView("inventory");
     showToast("Todas as 64 figurinhas foram liberadas para colar.");
   });
-  $("#resetButton").addEventListener("click",()=>{if(!window.confirm("Quer mesmo apagar o progresso, os textos e recomeçar o álbum?"))return;state=defaultState();saveState();cancelPlacement();setPage(1);switchView("album");renderAll();showToast("Álbum reiniciado.");});
-  window.addEventListener("keydown",(event)=>{if(event.key==="Escape"){if(!elements.profileModal.hidden)closeProfile();else if(!elements.secretModal.hidden)closeSecret();else if(!elements.textStyleModal.hidden)closeTextStyle();else if(!elements.puzzleModal.hidden)closePuzzle();else if(elements.pageWrap.classList.contains("is-fullscreen"))toggleFullscreen();}if(elements.profileModal.hidden&&elements.puzzleModal.hidden&&elements.secretModal.hidden&&elements.textStyleModal.hidden&&currentView==="album"&&!$("textarea:focus")&&!$("input:focus")){if(event.key==="ArrowLeft")setPage(state.page-1);if(event.key==="ArrowRight")setPage(state.page+1);}});
+  $("#resetButton").addEventListener("click",()=>{if(!window.confirm("Quer mesmo apagar o progresso, os textos e recomeçar o álbum?"))return;state=defaultState();saveState();cancelPlacement();setPage(1);switchView("album");renderAll();showWelcome();showToast("Álbum reiniciado.");});
+  window.addEventListener("keydown",(event)=>{if(event.key==="Escape"&&elements.welcomeModal.hidden){if(!elements.profileModal.hidden)closeProfile();else if(!elements.secretModal.hidden)closeSecret();else if(!elements.textStyleModal.hidden)closeTextStyle();else if(!elements.puzzleModal.hidden)closePuzzle();else if(elements.pageWrap.classList.contains("is-fullscreen"))toggleFullscreen();}if(elements.welcomeModal.hidden&&elements.profileModal.hidden&&elements.puzzleModal.hidden&&elements.secretModal.hidden&&elements.textStyleModal.hidden&&currentView==="album"&&!$("textarea:focus")&&!$("input:focus")){if(event.key==="ArrowLeft")setPage(state.page-1);if(event.key==="ArrowRight")setPage(state.page+1);}});
 
-  buildPageStrip();applyVolume(state.volume);renderAll();
+  buildPageStrip();applyVolume(state.volume);renderAll();initializePlayerAndRanking();
 })();
