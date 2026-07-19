@@ -40,9 +40,10 @@ Deno.serve(async (request) => {
     const gameKey = String(body.gameKey || "");
     const difficultyKey = String(body.difficultyKey || "");
     const durations = Array.isArray(body.phaseDurationsMs) ? body.phaseDurationsMs.map(Number) : [];
+    const phasesCompleted = clamp(Math.round(Number(body.phasesCompleted) || durations.length), 1, 3);
 
     if (!displayName || !games.has(gameKey) || !difficultyRanks[difficultyKey]) throw new Error("Dados inválidos");
-    if (Number(body.phasesCompleted) !== 3 || durations.length !== 3) throw new Error("As três fases são obrigatórias");
+    if (durations.length !== phasesCompleted) throw new Error("Quantidade de fases inválida");
     if (durations.some((duration) => !Number.isFinite(duration) || duration < 1500 || duration > 1800000)) throw new Error("Tempo de fase inválido");
 
     const points = durations.reduce((total, duration, index) => total + phasePoints(gameKey, difficultyKey, index + 1, duration), 0);
@@ -55,10 +56,11 @@ Deno.serve(async (request) => {
       p_difficulty_key: difficultyKey,
       p_points: points,
       p_duration_ms: durationMs,
+      p_phases_completed: phasesCompleted,
     });
     if (error) throw error;
 
-    return Response.json({ points, durationMs }, { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return Response.json({ points, durationMs, phasesCompleted }, { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Pontuação recusada" }, { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }

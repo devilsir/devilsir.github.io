@@ -198,10 +198,39 @@
       totals[key] = {
         bestPoints,
         bestMs: Math.max(0, Math.round(Number(record?.bestMs) || 0)),
-        difficultyKey: FREE_DIFFICULTIES.some((difficulty) => difficulty.key === record?.difficultyKey) ? record.difficultyKey : "normal"
+        difficultyKey: FREE_DIFFICULTIES.some((difficulty) => difficulty.key === record?.difficultyKey) ? record.difficultyKey : "normal",
+        phasesCompleted: clamp(Number(record?.phasesCompleted) || FREE_PHASES, 1, FREE_PHASES)
       };
     });
     return totals;
+  }
+  function sanitizeFreeProgress(source) {
+    const progress = {};
+    if (!source || typeof source !== "object") return progress;
+    FREE_DIFFICULTIES.forEach((difficulty) => {
+      PUZZLE_TYPES.forEach((game) => {
+        const key = `${difficulty.key}:${game.key}`;
+        const record = source[key];
+        if (!record || typeof record !== "object") return;
+        const completedPhases = clamp(Number(record.completedPhases) || 0, 0, FREE_PHASES);
+        if (!completedPhases) return;
+        const phaseDurations = (Array.isArray(record.phaseDurations) ? record.phaseDurations : [])
+          .slice(0, completedPhases)
+          .map((value) => Math.max(100, Math.round(Number(value) || 0)));
+        const phasePoints = (Array.isArray(record.phasePoints) ? record.phasePoints : [])
+          .slice(0, completedPhases)
+          .map((value) => safeScore(value));
+        if (phaseDurations.length !== completedPhases || phasePoints.length !== completedPhases) return;
+        progress[key] = {
+          completedPhases,
+          points: safeScore(record.points) || phasePoints.reduce((total, value) => total + value, 0),
+          completedMs: Math.max(0, Math.round(Number(record.completedMs) || phaseDurations.reduce((total, value) => total + value, 0))),
+          phaseDurations,
+          phasePoints
+        };
+      });
+    });
+    return progress;
   }
 
   function buildPlacements() {
@@ -215,7 +244,7 @@
   const PLACEMENTS = buildPlacements();
 
   function defaultState() {
-    return { page: 1, unlocked: [], placed: [], notes: {}, noteStyles: {}, profiles: {}, freeRecords: {}, freeGameTotals: {}, playerName: "", volume: DEFAULT_VOLUME, guideMode: false };
+    return { page: 1, unlocked: [], placed: [], notes: {}, noteStyles: {}, profiles: {}, freeRecords: {}, freeGameTotals: {}, freeProgress: {}, playerName: "", volume: DEFAULT_VOLUME, guideMode: false };
   }
   function loadState() {
     try {
@@ -231,9 +260,10 @@
         profiles: saved.profiles && typeof saved.profiles === "object" ? saved.profiles : {},
         freeRecords: saved.freeRecords && typeof saved.freeRecords === "object" ? saved.freeRecords : {},
         freeGameTotals: sanitizeFreeGameTotals(saved.freeGameTotals),
+        freeProgress: sanitizeFreeProgress(saved.freeProgress),
         playerName: String(saved.playerName || saved.notes?.dono || "").trim().slice(0, 32),
         volume: clamp(Number(saved.volume ?? DEFAULT_VOLUME), 0, 100),
-        guideMode: Boolean(saved.guideMode)
+        guideMode: false
       };
     } catch { return defaultState(); }
   }
@@ -384,7 +414,7 @@
       const { scoreFunction } = supabaseSettings();
       const { error } = await client.functions.invoke(scoreFunction, { body: {
         displayName: cleanPlayerName(state.playerName), gameKey: run.gameKey, difficultyKey: run.difficultyKey,
-        phaseDurationsMs: run.phaseDurations, phasesCompleted: FREE_PHASES, unlockedCount: state.unlocked.length
+        phaseDurationsMs: run.phaseDurations, phasesCompleted: clamp(Number(run.phasesCompleted) || run.phaseDurations?.length || 1, 1, FREE_PHASES), unlockedCount: state.unlocked.length
       } });
       if (error) throw error;
       if (currentView === "ranking" && rankingMode === "games") loadRanking();
@@ -401,7 +431,8 @@
   function rankingSubLabel(entry) {
     if (rankingMode === "stickers") return `${Math.max(0, Number(entry.total_free_points || 0)).toLocaleString("pt-BR")} pontos nos desafios livres`;
     const difficulty = freeDifficulty(entry.difficulty_key);
-    return `${difficulty.label} · ${formatDuration(Math.max(0, Number(entry.duration_ms) || 0))}`;
+    const phases = clamp(Number(entry.phases_completed) || FREE_PHASES, 1, FREE_PHASES);
+    return `${difficulty.label} · ${phases}/3 ${phases === 1 ? "fase" : "fases"} · ${formatDuration(Math.max(0, Number(entry.duration_ms) || 0))}`;
   }
   function gameByKey(gameKey) {
     return PUZZLE_TYPES.find((game) => game.key === gameKey) || PUZZLE_TYPES[0];
@@ -491,7 +522,7 @@
   function localRankingEntry() {
     if (rankingMode === "stickers") return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", unlocked_count: state.unlocked.length, total_free_points: totalFreePoints() };
     const record = state.freeGameTotals[rankingGame] || {};
-    return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", points: safeScore(record.bestPoints), duration_ms: Math.max(0, Number(record.bestMs || 0)), difficulty_key: record.difficultyKey || "normal" };
+    return { user_id: "local", display_name: cleanPlayerName(state.playerName) || "Jogador", points: safeScore(record.bestPoints), duration_ms: Math.max(0, Number(record.bestMs || 0)), difficulty_key: record.difficultyKey || "normal", phases_completed: clamp(Number(record.phasesCompleted) || FREE_PHASES, 1, FREE_PHASES) };
   }
   async function loadRanking() {
     renderRankingProfile();
@@ -520,8 +551,8 @@
       }
 
       const [detailResult, summaryResult] = await Promise.all([
-        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,updated_at").eq("game_key", rankingGame).order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(20),
-        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms").order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(1000)
+        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,phases_completed,updated_at").eq("game_key", rankingGame).order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(20),
+        client.from("free_game_scores").select("user_id,display_name,game_key,difficulty_key,points,duration_ms,phases_completed").order("points", { ascending: false }).order("duration_ms", { ascending: true }).limit(1000)
       ]);
       if (detailResult.error) throw detailResult.error;
       if (requestId !== rankingRequestId) return;
@@ -569,7 +600,7 @@
     if (!state.playerName) showWelcome();
     else { queuePlayerSync(120); if (currentView === "ranking") loadRanking(); }
   }
-  function guideAvailableFor(challenge = currentPuzzleChallenge) { return Boolean(challenge && challenge.key !== "luxor"); }
+  function guideAvailableFor() { return false; }
   function clearPuzzleGuideTarget() {
     $$(".is-guide-target", elements.puzzleStage).forEach((target) => target.classList.remove("is-guide-target"));
     if (elements.puzzleGuideHint) elements.puzzleGuideHint.hidden = true;
@@ -968,6 +999,10 @@
     });
   }
   function freeRecordKey(gameKey, difficultyKey) { return `${difficultyKey}:${gameKey}`; }
+  function freeProgressFor(gameKey, difficultyKey) {
+    const record = state.freeProgress?.[freeRecordKey(gameKey, difficultyKey)];
+    return record && typeof record === "object" ? record : null;
+  }
   function formatDuration(milliseconds) {
     if (!Number.isFinite(milliseconds) || milliseconds <= 0) return "—";
     const seconds = Math.max(0.1, milliseconds / 1000);
@@ -991,7 +1026,7 @@
     if (!elements.freeGameGrid) return;
     const difficulty = freeDifficulty();
     elements.freeDifficultyName.textContent = difficulty.label;
-    elements.freeDifficultyDescription.textContent = `${difficulty.description} Cada modalidade possui 3 fases progressivas.`;
+    elements.freeDifficultyDescription.textContent = `${difficulty.description} Cada modalidade possui 3 fases progressivas, e cada fase concluída já soma pontos.`;
     elements.freeDifficultyName.style.color = difficulty.color;
     $$('[data-free-difficulty]').forEach((button) => {
       const selected = button.dataset.freeDifficulty === difficulty.key;
@@ -1005,6 +1040,10 @@
       const detail = FREE_GAME_DETAILS[type.key];
       const challenge = buildFreeChallenge(type.key, difficulty.key, 1);
       const record = state.freeRecords[freeRecordKey(type.key, difficulty.key)] || {};
+      const progress = freeProgressFor(type.key, difficulty.key);
+      const completedPhases = clamp(Number(progress?.completedPhases) || 0, 0, FREE_PHASES);
+      const nextPhase = completedPhases >= FREE_PHASES ? 1 : completedPhases + 1;
+      const playLabel = completedPhases >= FREE_PHASES ? "Jogar novamente" : completedPhases ? `Continuar na fase ${nextPhase}` : "Jogar fase 1";
       const card = document.createElement("article");
       card.className = `free-game-card free-game-${type.key}`;
       card.style.setProperty("--game-accent", detail.accent);
@@ -1018,14 +1057,14 @@
         <div class="free-card-body">
           <span class="free-game-tag">${detail.tagline}</span>
           <h3>${type.title}</h3>
-          <p>Supere 3 fases progressivas. ${objectiveFor(challenge).replace("Objetivo: ", "A primeira começa com: ")}</p>
-          <div class="free-phase-track" aria-label="Três fases"><span></span><span></span><span></span></div>
+          <p>Cada fase concluída já vale pontos. ${objectiveFor(challenge).replace("Objetivo: ", "A primeira começa com: ")}</p>
+          <div class="free-phase-track" aria-label="${completedPhases} de 3 fases concluídas">${Array.from({ length: FREE_PHASES }, (_, index) => `<span class="${index < completedPhases ? "is-done" : ""}"></span>`).join("")}</div>
           <div class="free-phase-caption"><span>Fase 1</span><span>Fase 2</span><span>Fase 3</span></div>
           <div class="free-record-row is-score">
             <span><small>Melhor pontuação</small><strong>${Number(record.bestPoints || 0).toLocaleString("pt-BR") || "—"}</strong></span>
-            <span><small>Melhor tempo</small><strong>${formatDuration(Number(record.bestMs))}</strong></span>
+            <span><small>Progresso atual</small><strong>${completedPhases}/3</strong></span>
           </div>
-          <button class="free-play-button" type="button"><span>Jogar 3 fases</span><i aria-hidden="true">→</i></button>
+          <button class="free-play-button" type="button"><span>${playLabel}</span><i aria-hidden="true">→</i></button>
         </div>`;
       if (!Number(record.bestPoints)) $(".free-record-row span:first-child strong", card).textContent = "—";
       $(".free-play-button", card).addEventListener("click", () => openFreePuzzle(type.key));
@@ -1052,27 +1091,33 @@
     elements.puzzleTitle.textContent = challenge.title;
     elements.puzzleSticker.src = stickerSrc(challenge.id);
     elements.puzzleSticker.alt = `${stickerName(challenge.id)}, figurinha de apoio do desafio`;
-    elements.puzzleDescription.textContent = `${challenge.description} Complete as três fases para registrar sua pontuação em ${challenge.title}.`;
+    elements.puzzleDescription.textContent = `${challenge.description} Cada fase concluída registra seus pontos, então você pode continuar depois sem repetir as anteriores.`;
     elements.puzzleObjective.textContent = objectiveFor(challenge);
   }
-  function openFreePuzzle(gameKey, difficultyKey = currentFreeDifficulty) {
+  function openFreePuzzle(gameKey, difficultyKey = currentFreeDifficulty, forceRestart = false) {
     cleanupPuzzle();
     const difficulty = freeDifficulty(difficultyKey);
-    const challenge = buildFreeChallenge(gameKey, difficulty.key, 1);
+    const savedProgress = freeProgressFor(gameKey, difficulty.key);
+    const canResume = !forceRestart && savedProgress && savedProgress.completedPhases > 0 && savedProgress.completedPhases < FREE_PHASES;
+    const phase = canResume ? savedProgress.completedPhases + 1 : 1;
+    const challenge = buildFreeChallenge(gameKey, difficulty.key, phase);
     currentPuzzleId = null;
     currentPuzzleChallenge = challenge;
     freePlaySession = {
       gameKey, difficultyKey: difficulty.key, stickerId: challenge.id,
-      phase: 1, totalPhases: FREE_PHASES, phaseStartedAt: Date.now(), completedMs: 0,
-      points: 0, phaseDurations: [], phasePoints: []
+      phase, totalPhases: FREE_PHASES, phaseStartedAt: Date.now(),
+      completedMs: canResume ? Math.max(0, Number(savedProgress.completedMs) || 0) : 0,
+      points: canResume ? safeScore(savedProgress.points) : 0,
+      phaseDurations: canResume ? [...savedProgress.phaseDurations] : [],
+      phasePoints: canResume ? [...savedProgress.phasePoints] : []
     };
     updateFreePuzzleCopy(challenge);
-    elements.puzzleStatus.textContent = "Fase 1 valendo — o cronômetro começou!";
     elements.puzzleModal.dataset.difficulty = difficulty.key;
     elements.puzzleModal.hidden = false;
     document.documentElement.classList.add("puzzle-open");
     document.body.style.overflow = "hidden";
     initPuzzle(challenge);
+    if (canResume) elements.puzzleStatus.textContent = `Continuando da fase ${phase}. Seus ${freePlaySession.points.toLocaleString("pt-BR")} pontos anteriores estão salvos.`;
   }
   function advanceFreePhase() {
     const session = freePlaySession;
@@ -1082,8 +1127,56 @@
     const challenge = buildFreeChallenge(session.gameKey, session.difficultyKey, session.phase);
     currentPuzzleChallenge = challenge;
     updateFreePuzzleCopy(challenge);
-    elements.puzzleStatus.textContent = `Fase ${session.phase} valendo!`;
     initPuzzle(challenge);
+    elements.puzzleStatus.textContent = `Fase ${session.phase} valendo! Os pontos anteriores continuam salvos.`;
+  }
+  function persistFreePhaseProgress(session, finalPhase = false) {
+    const totalElapsed = Math.max(0, Number(session.completedMs) || 0);
+    const key = freeRecordKey(session.gameKey, session.difficultyKey);
+    const previous = state.freeRecords[key] || {};
+    const previousPoints = safeScore(previous.bestPoints);
+    const previousTime = Number(previous.bestMs) || Infinity;
+    const isRecord = session.points > previousPoints || (session.points === previousPoints && totalElapsed < previousTime);
+    state.freeRecords[key] = {
+      ...previous,
+      wins: (Number(previous.wins) || 0) + (finalPhase ? 1 : 0),
+      bestPoints: isRecord ? session.points : previousPoints,
+      bestMs: isRecord ? totalElapsed : (Number(previous.bestMs) || totalElapsed),
+      bestPhases: isRecord ? session.phase : clamp(Number(previous.bestPhases) || FREE_PHASES, 1, FREE_PHASES),
+      lastPoints: session.points,
+      lastMs: totalElapsed,
+      lastPhases: session.phase
+    };
+    if (!state.freeProgress || typeof state.freeProgress !== "object") state.freeProgress = {};
+    state.freeProgress[key] = {
+      completedPhases: session.phase,
+      points: session.points,
+      completedMs: totalElapsed,
+      phaseDurations: [...session.phaseDurations],
+      phasePoints: [...session.phasePoints]
+    };
+    const gamePrevious = state.freeGameTotals[session.gameKey] || {};
+    if (session.points > Number(gamePrevious.bestPoints || 0) || (session.points === Number(gamePrevious.bestPoints || 0) && totalElapsed < Number(gamePrevious.bestMs || Infinity))) {
+      state.freeGameTotals[session.gameKey] = {
+        bestPoints: session.points,
+        bestMs: totalElapsed,
+        difficultyKey: session.difficultyKey,
+        phasesCompleted: session.phase
+      };
+    }
+    saveState();
+    renderFreeMode();
+    renderRankingProfile();
+    queuePlayerSync(120);
+    submitOnlineFreeScore({
+      gameKey: session.gameKey,
+      difficultyKey: session.difficultyKey,
+      phaseDurations: [...session.phaseDurations],
+      phasesCompleted: session.phase,
+      points: session.points,
+      durationMs: totalElapsed
+    });
+    return { key, isRecord, totalElapsed };
   }
   function completeFreePuzzle() {
     const session = freePlaySession;
@@ -1095,60 +1188,38 @@
     session.phasePoints.push(earned);
     session.points += earned;
     const difficulty = freeDifficulty(session.difficultyKey);
+    const isFinalPhase = session.phase >= FREE_PHASES;
+    const saved = persistFreePhaseProgress(session, isFinalPhase);
     elements.restartPuzzle.hidden = true;
     elements.puzzleGuideControl.hidden = true;
     clearPuzzleGuideTarget();
 
-    if (session.phase < FREE_PHASES) {
-      elements.puzzleStatus.textContent = `Fase ${session.phase} concluída!`;
+    if (!isFinalPhase) {
+      elements.puzzleStatus.textContent = `Fase ${session.phase} concluída — ${earned.toLocaleString("pt-BR")} pontos salvos!`;
       elements.puzzleStage.innerHTML = `<div class="free-phase-success-card" style="--phase-accent:${difficulty.color}">
         <span class="free-phase-number">${session.phase}/3</span>
-        <span class="eyebrow">Fase concluída</span>
-        <h3>Boa! A próxima apertou.</h3>
-        <p>Você venceu esta etapa em <strong>${formatDuration(phaseElapsed)}</strong>. A dificuldade cresce, e os pontos também.</p>
-        <div class="free-phase-score"><span><small>Pontos da fase</small><b>+${earned.toLocaleString("pt-BR")}</b></span><span><small>Total até agora</small><b>${session.points.toLocaleString("pt-BR")}</b></span></div>
-        <div class="free-win-actions"><button class="primary-button" id="nextFreePhase" type="button">Jogar fase ${session.phase + 1}</button><button class="secondary-button" id="leaveFreePhase" type="button">Sair</button></div>
+        <span class="eyebrow">Pontos registrados</span>
+        <h3>Boa! Você continua daqui.</h3>
+        <p>Esta etapa foi concluída em <strong>${formatDuration(phaseElapsed)}</strong>. Mesmo saindo agora, a próxima partida começa na fase ${session.phase + 1}.</p>
+        <div class="free-phase-score"><span><small>Pontos da fase</small><b>+${earned.toLocaleString("pt-BR")}</b></span><span><small>Total salvo</small><b>${session.points.toLocaleString("pt-BR")}</b></span></div>
+        <div class="free-win-actions"><button class="primary-button" id="nextFreePhase" type="button">Jogar fase ${session.phase + 1}</button><button class="secondary-button" id="leaveFreePhase" type="button">Sair e continuar depois</button></div>
       </div>`;
       $("#nextFreePhase").addEventListener("click", advanceFreePhase);
       $("#leaveFreePhase").addEventListener("click", closePuzzle);
       return;
     }
 
-    const totalElapsed = session.completedMs;
-    const key = freeRecordKey(session.gameKey, session.difficultyKey);
-    const previous = state.freeRecords[key] || {};
-    const previousPoints = Number(previous.bestPoints) || 0;
-    const previousTime = Number(previous.bestMs) || Infinity;
-    const isRecord = session.points > previousPoints || (session.points === previousPoints && totalElapsed < previousTime);
-    state.freeRecords[key] = {
-      wins: (Number(previous.wins) || 0) + 1,
-      bestPoints: isRecord ? session.points : previousPoints,
-      bestMs: isRecord ? totalElapsed : (Number(previous.bestMs) || totalElapsed),
-      lastPoints: session.points, lastMs: totalElapsed
-    };
-    const gamePrevious = state.freeGameTotals[session.gameKey] || {};
-    if (session.points > Number(gamePrevious.bestPoints || 0) || (session.points === Number(gamePrevious.bestPoints || 0) && totalElapsed < Number(gamePrevious.bestMs || Infinity))) {
-      state.freeGameTotals[session.gameKey] = { bestPoints: session.points, bestMs: totalElapsed, difficultyKey: session.difficultyKey };
-    }
-    saveState();
-    renderFreeMode();
-    renderRankingProfile();
-    queuePlayerSync(120);
-    submitOnlineFreeScore({
-      gameKey: session.gameKey, difficultyKey: session.difficultyKey,
-      phaseDurations: [...session.phaseDurations], points: session.points, durationMs: totalElapsed
-    });
-    elements.puzzleStatus.textContent = isRecord ? "Novo recorde pessoal!" : "Três fases concluídas!";
+    elements.puzzleStatus.textContent = saved.isRecord ? "Novo recorde pessoal!" : "Três fases concluídas!";
     elements.puzzleStage.innerHTML = `<div class="free-success-card" style="--win-accent:${difficulty.color}">
       <div class="free-confetti" aria-hidden="true">${Array.from({ length: 18 }, (_, index) => `<i style="--i:${index}"></i>`).join("")}</div>
       <span class="free-win-emblem">✦</span>
       <span class="free-win-label">${difficulty.label} · 3 fases concluídas</span>
-      <h3>${isRecord ? "Novo recorde!" : "Mandou muito bem!"}</h3>
-      <p>Você venceu <strong>${currentPuzzleChallenge.title}</strong> com <strong>${session.points.toLocaleString("pt-BR")} pontos</strong> em <strong>${formatDuration(totalElapsed)}</strong>.</p>
-      <div class="free-win-stats"><span><small>Melhor pontuação</small><b>${state.freeRecords[key].bestPoints.toLocaleString("pt-BR")}</b></span><span><small>Tempo da rodada</small><b>${formatDuration(totalElapsed)}</b></span></div>
+      <h3>${saved.isRecord ? "Novo recorde!" : "Mandou muito bem!"}</h3>
+      <p>Você venceu <strong>${currentPuzzleChallenge.title}</strong> com <strong>${session.points.toLocaleString("pt-BR")} pontos</strong> em <strong>${formatDuration(saved.totalElapsed)}</strong>.</p>
+      <div class="free-win-stats"><span><small>Melhor pontuação</small><b>${state.freeRecords[saved.key].bestPoints.toLocaleString("pt-BR")}</b></span><span><small>Tempo da rodada</small><b>${formatDuration(saved.totalElapsed)}</b></span></div>
       <div class="free-win-actions"><button class="primary-button" id="replayFreePuzzle" type="button">Jogar novamente</button><button class="secondary-button" id="leaveFreePuzzle" type="button">Escolher outro</button></div>
     </div>`;
-    $("#replayFreePuzzle").addEventListener("click", () => openFreePuzzle(session.gameKey, session.difficultyKey));
+    $("#replayFreePuzzle").addEventListener("click", () => openFreePuzzle(session.gameKey, session.difficultyKey, true));
     $("#leaveFreePuzzle").addEventListener("click", closePuzzle);
   }
 
@@ -1594,6 +1665,13 @@
     puzzleCleanup=()=>{running=false;clearInterval(timer);pendingTimers.forEach(clearTimeout);window.removeEventListener("keydown",keyHandler);};
   }
 
+  function shouldUseLuxorCompatibilityMode() {
+    const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches || false;
+    const touchDevice = Number(navigator.maxTouchPoints || 0) > 0;
+    const compactViewport = Math.min(window.innerWidth || 9999, window.screen?.width || 9999) <= 840;
+    return coarsePointer || touchDevice || compactViewport;
+  }
+
   function initLuxor(challenge) {
     const goals = luxorRequirements(challenge.level);
     const levelIndex = clamp(challenge.level - 1, 0, LUXOR_LEVELS.length - 1);
@@ -1602,7 +1680,8 @@
     const activeColors = LUXOR_COLORS.slice(0, config.palette);
     const activeKeys = activeColors.map((color) => color.key);
     const colorByKey = Object.fromEntries(LUXOR_COLORS.map((color) => [color.key, color]));
-    const PROJECTILE_SPEED = 660;
+    const compatibilityMode = shouldUseLuxorCompatibilityMode();
+    const PROJECTILE_SPEED = compatibilityMode ? 590 : 660;
     const MAX_PROJECTILE_DISTANCE = 940;
     const CANNON_POINT = { x: 360, y: 396 };
     const MATCH_COLLAPSE_DELAY = 105;
@@ -1665,7 +1744,8 @@
     balls = buildWave();
 
     const wrap = document.createElement("div");
-    wrap.className = "luxor-wrap luxor-deluxe";
+    wrap.className = `luxor-wrap luxor-deluxe${compatibilityMode ? " is-mobile-compat" : ""}`;
+    wrap.dataset.compatibility = compatibilityMode ? "mobile" : "standard";
     wrap.innerHTML = `
       <div class="luxor-score luxor-score-deluxe">
         <span>Percurso <b>${routeConfig.name}</b></span>
@@ -1680,7 +1760,7 @@
         <b class="luxor-distance-value">100%</b>
       </div>
       <div class="luxor-board-shell">
-        <div class="luxor-path" data-theme="${routeConfig.theme}" role="button" tabindex="0" aria-label="${routeConfig.name}: pressione em qualquer ponto, mire e solte para disparar uma bolinha">
+        <div class="luxor-path" data-theme="${routeConfig.theme}" role="button" tabindex="0" aria-label="${routeConfig.name}: ${compatibilityMode ? "toque, arraste e solte" : "pressione, mire e solte"} para disparar uma bolinha">
           <svg viewBox="0 0 720 400" preserveAspectRatio="none" aria-hidden="true">
             <path class="luxor-route-shadow" d="${routeConfig.d}" />
             <path class="luxor-route" id="luxorRoute" d="${routeConfig.d}" />
@@ -1705,7 +1785,7 @@
           <div class="luxor-cannon-dock" aria-hidden="true"><div class="luxor-cannon"><i class="luxor-loaded-marble"></i><span></span></div></div>
           <div class="luxor-deck-actions">
             <button class="luxor-swap" type="button" aria-label="Trocar a bolinha atual pela próxima">Trocar ↔</button>
-            <span>Pressione, aponte e solte.</span>
+            <span>${compatibilityMode ? "Toque, arraste e solte." : "Pressione, aponte e solte."}</span>
           </div>
         </div>
       </div>`;
@@ -1754,7 +1834,7 @@
       const marblePixels = clamp(boardMetrics.width * (boardMetrics.width > 760 ? 0.036 : 0.058), 21, 38);
       const marbleRouteUnits = (marblePixels / boardMetrics.width) * 720;
       spacing = clamp((marbleRouteUnits + 3.5) / routeLength, 0.0155, 0.052);
-      collisionRadius = clamp(marbleRouteUnits * 0.78 + 9, 27, 49);
+      collisionRadius = clamp(marbleRouteUnits * 0.78 + (compatibilityMode ? 15 : 9), compatibilityMode ? 33 : 27, compatibilityMode ? 56 : 49);
     };
     const setMarbleColor = (element, colorKey) => {
       const color = colorByKey[colorKey];
@@ -1946,8 +2026,9 @@
       burst.style.left = `${(point.x / 720) * 100}%`;
       burst.style.top = `${(point.y / 400) * 100}%`;
       burst.style.setProperty("--burst-color", colorByKey[colorKey].hex);
-      burst.innerHTML = `<i class="luxor-burst-ring"></i>${Array.from({ length: 6 }, (_, index) => {
-        const angle = (Math.PI * 2 * index) / 6;
+      const particleCount = compatibilityMode ? 4 : 6;
+      burst.innerHTML = `<i class="luxor-burst-ring"></i>${Array.from({ length: particleCount }, (_, index) => {
+        const angle = (Math.PI * 2 * index) / particleCount;
         const distance = 21 + (index % 3) * 7;
         return `<i class="luxor-particle" style="--tx:${Math.cos(angle) * distance}px;--ty:${Math.sin(angle) * distance}px;--delay:${index * 10}ms"></i>`;
       }).join("")}`;
@@ -2324,7 +2405,7 @@
     const tick = (now) => {
       if (!active) return;
       const elapsed = Math.max(0, now - lastTime);
-      const delta = Math.min(32, elapsed) / 1000;
+      const delta = Math.min(compatibilityMode ? 26 : 32, elapsed) / 1000;
       lastTime = now;
       headProgress += config.waveSpeed * delta;
       moveBalls();
@@ -2346,6 +2427,10 @@
     path.addEventListener("pointerup", releaseAim);
     path.addEventListener("pointercancel", cancelAim);
     path.addEventListener("lostpointercapture", cancelAim);
+    if (compatibilityMode) {
+      window.addEventListener("pointerup", releaseAim, { passive: false });
+      window.addEventListener("pointercancel", cancelAim, { passive: false });
+    }
     window.addEventListener("keydown", keyHandler);
     window.addEventListener("resize", resizeHandler, { passive: true });
     document.addEventListener("visibilitychange", visibilityHandler);
@@ -2358,7 +2443,9 @@
     updateAmmo();
     renderBalls(0);
     updateAimVisual(lastAimPoint, false);
-    elements.puzzleStatus.textContent = `A onda ${config.speedLabel} já está andando. Pressione no tabuleiro, mire e solte para disparar.`;
+    elements.puzzleStatus.textContent = compatibilityMode
+      ? `A onda ${config.speedLabel} já está andando. Toque no tabuleiro, arraste a mira e solte para disparar.`
+      : `A onda ${config.speedLabel} já está andando. Pressione no tabuleiro, mire e solte para disparar.`;
     animationFrame = requestAnimationFrame(tick);
     puzzleCleanup = () => {
       active = false;
@@ -2375,6 +2462,10 @@
       path.removeEventListener("pointerup", releaseAim);
       path.removeEventListener("pointercancel", cancelAim);
       path.removeEventListener("lostpointercapture", cancelAim);
+      if (compatibilityMode) {
+        window.removeEventListener("pointerup", releaseAim);
+        window.removeEventListener("pointercancel", cancelAim);
+      }
       window.removeEventListener("keydown", keyHandler);
       window.removeEventListener("resize", resizeHandler);
       document.removeEventListener("visibilitychange", visibilityHandler);

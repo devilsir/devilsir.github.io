@@ -35,8 +35,8 @@ create table if not exists public.free_game_scores (
   game_key text not null references public.free_game_types(game_key),
   difficulty_key text not null check (difficulty_key in ('facil','normal','dificil','extremo','inferno')),
   points integer not null check (points between 1 and 100000),
-  duration_ms integer not null check (duration_ms between 4500 and 5400000),
-  phases_completed smallint not null default 3 check (phases_completed = 3),
+  duration_ms integer not null check (duration_ms between 1500 and 5400000),
+  phases_completed smallint not null default 1 check (phases_completed between 1 and 3),
   updated_at timestamptz not null default now(),
   unique (user_id, game_key)
 );
@@ -55,6 +55,18 @@ alter table public.free_game_scores
 alter table public.free_game_scores
   add constraint free_game_scores_difficulty_key_check
   check (difficulty_key in ('facil','normal','dificil','extremo','inferno'));
+
+alter table public.free_game_scores
+  drop constraint if exists free_game_scores_duration_ms_check;
+alter table public.free_game_scores
+  add constraint free_game_scores_duration_ms_check
+  check (duration_ms between 1500 and 5400000);
+
+alter table public.free_game_scores
+  drop constraint if exists free_game_scores_phases_completed_check;
+alter table public.free_game_scores
+  add constraint free_game_scores_phases_completed_check
+  check (phases_completed between 1 and 3);
 
 update public.player_profiles
 set total_free_points = 0
@@ -97,13 +109,17 @@ grant select, insert, update on public.player_profiles to authenticated;
 grant select on public.free_game_scores to authenticated;
 revoke insert, update, delete on public.free_game_scores from anon, authenticated;
 
-create or replace function public.record_free_score(
+drop function if exists public.record_free_score(uuid,text,text,text,integer,integer);
+drop function if exists public.record_free_score(uuid,text,text,text,integer,integer,smallint);
+
+create function public.record_free_score(
   p_user_id uuid,
   p_display_name text,
   p_game_key text,
   p_difficulty_key text,
   p_points integer,
-  p_duration_ms integer
+  p_duration_ms integer,
+  p_phases_completed smallint
 )
 returns void
 language plpgsql
@@ -115,24 +131,26 @@ begin
   if not exists (select 1 from public.free_game_types where game_key = p_game_key) then raise exception 'Jogo inválido'; end if;
   if p_difficulty_key not in ('facil','normal','dificil','extremo','inferno') then raise exception 'Dificuldade inválida'; end if;
   if p_points < 1 or p_points > 100000 then raise exception 'Pontuação inválida'; end if;
-  if p_duration_ms < 4500 or p_duration_ms > 5400000 then raise exception 'Tempo inválido'; end if;
+  if p_duration_ms < 1500 or p_duration_ms > 5400000 then raise exception 'Tempo inválido'; end if;
+  if p_phases_completed < 1 or p_phases_completed > 3 then raise exception 'Quantidade de fases inválida'; end if;
 
   insert into public.free_game_scores (
     user_id, display_name, game_key, difficulty_key, points, duration_ms, phases_completed, updated_at
   ) values (
-    p_user_id, left(trim(p_display_name), 32), p_game_key, p_difficulty_key, p_points, p_duration_ms, 3, now()
+    p_user_id, left(trim(p_display_name), 32), p_game_key, p_difficulty_key, p_points, p_duration_ms, p_phases_completed, now()
   )
   on conflict (user_id, game_key) do update
     set display_name = excluded.display_name,
         difficulty_key = excluded.difficulty_key,
         points = excluded.points,
         duration_ms = excluded.duration_ms,
-        phases_completed = 3,
+        phases_completed = excluded.phases_completed,
         updated_at = now()
     where excluded.points > free_game_scores.points
-       or (excluded.points = free_game_scores.points and excluded.duration_ms < free_game_scores.duration_ms);
+       or (excluded.points = free_game_scores.points and excluded.phases_completed > free_game_scores.phases_completed)
+       or (excluded.points = free_game_scores.points and excluded.phases_completed = free_game_scores.phases_completed and excluded.duration_ms < free_game_scores.duration_ms);
 end;
 $$;
 
-revoke all on function public.record_free_score(uuid,text,text,text,integer,integer) from public, anon, authenticated;
-grant execute on function public.record_free_score(uuid,text,text,text,integer,integer) to service_role;
+revoke all on function public.record_free_score(uuid,text,text,text,integer,integer,smallint) from public, anon, authenticated;
+grant execute on function public.record_free_score(uuid,text,text,text,integer,integer,smallint) to service_role;

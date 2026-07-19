@@ -776,3 +776,25 @@ input.writing-field.name-field:focus { background: rgba(255,252,244,.74); }
   .free-phase-score { grid-template-columns:1fr; }
   .free-phase-score span+span { border-left:0; border-top:1px solid var(--line); }
 }
+
+/* Luxor: compatibilidade automática para toque e telas compactas */
+.luxor-wrap.is-mobile-compat { width: 100%; max-width: 100%; contain: layout paint; }
+.luxor-wrap.is-mobile-compat .luxor-path { cursor: default; overscroll-behavior: contain; -webkit-tap-highlight-color: transparent; }
+.luxor-wrap.is-mobile-compat .luxor-route-glow { animation: none; opacity: .78; }
+.luxor-wrap.is-mobile-compat .luxor-aim-line { height: 3px; }
+.luxor-wrap.is-mobile-compat .luxor-aim-marker { width: clamp(38px, 10vw, 52px); height: clamp(38px, 10vw, 52px); }
+.luxor-wrap.is-mobile-compat .luxor-control-deck { min-height: 58px; }
+.luxor-wrap.is-mobile-compat .luxor-swap { min-height: 42px; min-width: 86px; }
+.luxor-wrap.is-mobile-compat .luxor-particle { filter: none; box-shadow: none; }
+.luxor-wrap.is-mobile-compat .luxor-pop-label { max-width: 82%; overflow: hidden; text-overflow: ellipsis; }
+
+@media (pointer: coarse), (max-width: 840px) {
+  .luxor-wrap.is-mobile-compat .luxor-path { min-height: 220px; }
+  .luxor-wrap.is-mobile-compat .luxor-deck-actions > span { display: block; max-width: 94px; font-size: 8px; }
+}
+
+@media (max-width: 560px) {
+  .luxor-wrap.is-mobile-compat .luxor-control-deck { grid-template-columns: minmax(0, 1fr) 92px minmax(0, 1fr); gap: 5px; }
+  .luxor-wrap.is-mobile-compat .luxor-deck-actions > span { display: none; }
+  .luxor-wrap.is-mobile-compat .luxor-swap { min-width: 72px; padding-inline: 8px; }
+}
