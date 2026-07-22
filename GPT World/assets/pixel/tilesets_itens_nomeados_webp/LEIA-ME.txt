@@ -1,0 +1,9 @@
+Pacote com itens de tileset separados individualmente em .webp e renomeados com nomes mais inteligentes.
+
+Organizacao:
+- 10 pastas, uma para cada regiao.
+- Arquivos nomeados por categoria visual + numeracao sequencial.
+- Manifesto CSV com o nome original e o novo nome.
+
+Observacao:
+Os nomes foram padronizados por categoria visual para facilitar busca e uso em jogo.
