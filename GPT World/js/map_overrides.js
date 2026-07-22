@@ -326,12 +326,12 @@ function rasterNavigationValue(override,x,y,cellSize){
 
 export function worldNavigationValue(regionId,x,y,cellSize=64){
   const override=worldMapOverride(regionId);if(!override)return null;
-  const rasterValue=rasterNavigationValue(override,x,y,cellSize);if(rasterValue)return rasterValue;
-  const size=Number(cellSize)||64,cellX=Math.floor(x/size),cellY=Math.floor(y/size),entry=(override.navigation||[]).find((value)=>value.x===cellX&&value.y===cellY);return entry?.value||null;
+  const size=Number(override.metadata?.gridSize)||Number(cellSize)||64,cellX=Math.floor(x/size),cellY=Math.floor(y/size),entry=(override.navigation||[]).find((value)=>Number(value.x)===cellX&&Number(value.y)===cellY);if(entry)return entry.value||null;
+  return rasterNavigationValue(override,x,y,cellSize);
 }
 
-export function applyWorldEntityOverride(regionId,entities){
-  const override=worldMapOverride(regionId);if(!override)return entities;const result=entities.map((entry)=>clone(entry)),changes=new Map((override.entities||[]).map((entry)=>[entry.id,entry]));for(const entity of result){const change=changes.get(entity.id);if(change)Object.assign(entity,clone(change));changes.delete(entity.id);}result.push(...[...changes.values()].map(clone));return result;
+export function applyWorldEntityOverride(regionId,entities,override=worldMapOverride(regionId)){
+  if(!override)return entities;const removed=new Set((override.removedEntityIds||[]).map(String)),source=(override.entities||[...(override.modifiedEntities||[]),...(override.addedEntities||[])]).filter((entry)=>!removed.has(String(entry.id))),result=(entities||[]).filter((entry)=>!removed.has(String(entry.id))).map((entry)=>clone(entry)),changes=new Map(source.map((entry)=>[entry.id,entry]));for(const entity of result){const change=changes.get(entity.id);if(change)Object.assign(entity,clone(change));changes.delete(entity.id);}result.push(...[...changes.values()].map(clone));return result;
 }
 
 export function applyTowerFloorOverride(floor,override=towerFloorOverride(floor)){

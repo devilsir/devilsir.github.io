@@ -1,5 +1,5 @@
 const clone=(value)=>typeof structuredClone==="function"?structuredClone(value):JSON.parse(JSON.stringify(value));
-const transient=new Set(["image","canvas","ctx","cache","spriteSpecs","promise","loadedImage","_editorOriginal"]);
+const transient=new Set(["image","canvas","ctx","cache","spriteSpecs","promise","loadedImage","_editorOriginal","runtimeEntitiesRef"]);
 
 export function stableClean(value){
   if(value===null||typeof value!=="object")return typeof value==="function"?undefined:value;
@@ -7,11 +7,34 @@ export function stableClean(value){
   const output={};for(const key of Object.keys(value).sort()){if(transient.has(key)||key.startsWith("__"))continue;const cleaned=stableClean(value[key]);if(cleaned!==undefined)output[key]=cleaned;}return output;
 }
 export const stableStringify=(value,space=2)=>JSON.stringify(stableClean(value),null,space);
-const sortById=(list)=>[...list].map(stableClean).sort((a,b)=>String(a.id||"").localeCompare(String(b.id||"")));
+const sortById=(list)=>[...(list||[])].map(stableClean).sort((a,b)=>String(a.id||"").localeCompare(String(b.id||"")));
 const mapById=(list)=>new Map((list||[]).map((entry)=>[entry.id,entry]));
+const sortNavigation=(navigation)=>[...(navigation||[])].map((entry)=>Array.isArray(entry)?{x:Number(entry[0].split(",")[0]),y:Number(entry[0].split(",")[1]),value:entry[1]}:{x:Number(entry.x),y:Number(entry.y),value:entry.value}).sort((a,b)=>a.y-b.y||a.x-b.x||String(a.value).localeCompare(String(b.value)));
+const mergeById=(...lists)=>{const merged=new Map();for(const list of lists)for(const entry of list||[])if(entry?.id!==undefined)merged.set(entry.id,stableClean(entry));return sortById([...merged.values()]);};
 
-export function buildWorldExport({regionId,world,layout,navigation,props,entities,metadata={}}){
-  return stableClean({kind:"voz-partida-world-override",version:1,regionId,coordinateSystem:"world-space",world:{w:world.w,h:world.h},spawn:layout?.spawn||null,navigation:[...(navigation||[])].map(([cell,value])=>{const[x,y]=cell.split(",").map(Number);return{x,y,value};}).sort((a,b)=>a.y-b.y||a.x-b.x),obstacles:layout?.obstacles||[],props:sortById(props||[]),entities:sortById(entities||[]),metadata:{...metadata,exportedAt:undefined}});
+export function buildWorldExport({regionId,world=null,layout={},navigation=[],navigationChanges=null,navigationRaster=null,props=[],addedProps=null,entities=null,modifiedEntities=[],addedEntities=[],removedEntityIds=[],spawnOverride=undefined,metadata={}}){
+  const modified=sortById(modifiedEntities),added=sortById(addedEntities),finalEntities=entities?sortById(entities):mergeById(modified,added),finalProps=sortById(props),addedPropList=sortById(addedProps??props),removed=[...new Set(removedEntityIds||[])].map(String).sort(),payload={kind:"voz-partida-world-override",version:2,regionId:Number(regionId),coordinateSystem:"world-space"};
+  if(world&&Number.isFinite(Number(world.w))&&Number.isFinite(Number(world.h)))payload.world={w:Number(world.w),h:Number(world.h)};
+  if(Object.prototype.hasOwnProperty.call(layout||{},"spawn"))payload.spawn=layout.spawn;
+  if(spawnOverride!==undefined)payload.spawnOverride=spawnOverride;
+  if(navigationRaster)payload.navigationRaster=navigationRaster;
+  payload.navigation=sortNavigation(navigation);
+  payload.navigationChanges=sortNavigation(navigationChanges??navigation);
+  if(Object.prototype.hasOwnProperty.call(layout||{},"obstacles"))payload.obstacles=layout.obstacles;
+  payload.props=finalProps;
+  payload.addedProps=addedPropList;
+  payload.entities=finalEntities;
+  payload.modifiedEntities=modified;
+  payload.addedEntities=added;
+  payload.removedEntityIds=removed;
+  payload.metadata={...metadata,exportedAt:undefined};
+  return stableClean(payload);
+}
+
+export function buildWorldExportCollection(overrides,metadata={}){
+  const entries=overrides instanceof Map?[...overrides.entries()]:Array.isArray(overrides)?overrides.map((entry)=>[entry.regionId,entry]):Object.entries(overrides||{}),regions={};
+  for(const [rawId,override] of entries.sort((a,b)=>Number(a[0])-Number(b[0])))regions[String(Number(rawId))]=stableClean(override);
+  return stableClean({kind:"voz-partida-world-overrides",version:2,coordinateSystem:"world-space",regionOrder:Object.keys(regions).map(Number),regions,metadata:{...metadata,regionCount:Object.keys(regions).length,exportedAt:undefined}});
 }
 
 export function buildTowerDelta(original,current){
@@ -23,6 +46,7 @@ export function buildTowerDelta(original,current){
 }
 
 export function asJavaScriptModule(payload,name="EDITOR_OVERRIDE"){
+  if(payload?.kind==="voz-partida-world-overrides")return`// Gerado pelo editor de GPT: A Voz Partida.\n// Cole este objeto diretamente em WORLD_MAP_OVERRIDES.\nexport const WORLD_MAP_OVERRIDES=Object.freeze(${stableStringify(payload.regions||{},2)});\n`;
   const safe=String(name).replace(/[^A-Za-z0-9_$]/g,"_").replace(/^([0-9])/,"_$1")||"EDITOR_OVERRIDE";
   return`// Gerado pelo editor de GPT: A Voz Partida.\nexport const ${safe}=Object.freeze(${stableStringify(payload,2)});\n`;
 }

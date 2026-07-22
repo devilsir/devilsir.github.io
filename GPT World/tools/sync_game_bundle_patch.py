@@ -203,7 +203,7 @@ def main() -> None:
     editor_export = module_wrapper(
         "EditorExportModule", "editor_export.js",
         [
-            "stableClean", "stableStringify", "buildWorldExport", "buildTowerDelta",
+            "stableClean", "stableStringify", "buildWorldExport", "buildWorldExportCollection", "buildTowerDelta",
             "asJavaScriptModule", "downloadText", "copyText", "cloneExportValue",
         ],
     )
@@ -214,6 +214,7 @@ def main() -> None:
             "cloneEditorValue": "EditorHistoryModule.cloneEditorValue",
             "buildTowerDelta": "EditorExportModule.buildTowerDelta",
             "buildWorldExport": "EditorExportModule.buildWorldExport",
+            "buildWorldExportCollection": "EditorExportModule.buildWorldExportCollection",
             "stableStringify": "EditorExportModule.stableStringify",
             "presentationFromAsset": "PropPresentationModule.presentationFromAsset",
             "normalizePropPresentation": "PropPresentationModule.normalizePropPresentation",
@@ -224,6 +225,8 @@ def main() -> None:
             "propVisualBounds": "PropPresentationModule.propVisualBounds",
             "rebuildTowerVisualPlan": "TowerGeneratorModule.rebuildTowerVisualPlan",
             "validateTowerFloor": "TowerGeneratorModule.validateTowerFloor",
+            "shippedWorldMapOverride": "MapOverridesModule.worldMapOverride",
+            "shippedWorldNavigationValue": "MapOverridesModule.worldNavigationValue",
         },
     )
     dev = module_wrapper(

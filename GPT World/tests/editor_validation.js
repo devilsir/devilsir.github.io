@@ -1,6 +1,6 @@
-import { buildTowerDelta, buildWorldExport, stableStringify } from "../js/editor_export.js";
+import { buildTowerDelta, buildWorldExport, buildWorldExportCollection, stableStringify } from "../js/editor_export.js";
 import { EditorHistory } from "../js/editor_history.js";
-import { applyTowerFloorOverride } from "../js/map_overrides.js";
+import { applyTowerFloorOverride, applyWorldEntityOverride } from "../js/map_overrides.js";
 import { normalizePropPresentation, propBlocksPoint, propCollisionBounds, propShadowSpec, propVisualBounds } from "../js/prop_presentation.js";
 
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -20,9 +20,13 @@ export function runEditorValidation(){
   const delta=buildTowerDelta(base,edited),reproduced=applyTowerFloorOverride(clone(base),delta);
   checks.towerDelta=assert(stableStringify(reproduced.grid)===stableStringify(edited.grid),"delta não reproduz a grid")&&assert(stableStringify(reproduced.pathCells)===stableStringify(edited.pathCells),"delta não reproduz paths")&&assert(stableStringify(reproduced.bridgeCells)===stableStringify(edited.bridgeCells),"delta não reproduz bridges")&&assert(stableStringify(reproduced.props)===stableStringify(edited.props),"delta não reproduz props")&&assert(reproduced.spawn.x===1,"delta não reproduz spawn");
 
-  const worldA=buildWorldExport({regionId:2,world:{w:2896,h:2172},layout:{spawn:{x:100,y:200},obstacles:[]},navigation:new Map([["2,3","blocked"],["1,1","walkable"]]),props:[{id:"b",x:2},{id:"a",x:1}],entities:[{id:"npc",x:4}]});
-  const worldB=buildWorldExport({regionId:2,world:{w:2896,h:2172},layout:{spawn:{x:100,y:200},obstacles:[]},navigation:new Map([["1,1","walkable"],["2,3","blocked"]]),props:[{id:"a",x:1},{id:"b",x:2}],entities:[{id:"npc",x:4}]});
+  const worldA=buildWorldExport({regionId:2,world:{w:2896,h:2172},layout:{spawn:{x:100,y:200},obstacles:[]},navigation:new Map([["2,3","blocked"],["1,1","walkable"]]),navigationChanges:new Map([["2,3","blocked"],["1,1","walkable"]]),props:[{id:"b",x:2},{id:"a",x:1}],addedProps:[{id:"b",x:2},{id:"a",x:1}],modifiedEntities:[{id:"npc",x:4}],addedEntities:[{id:"dev-wolf",x:8}],removedEntityIds:["boss1"]});
+  const worldB=buildWorldExport({regionId:2,world:{w:2896,h:2172},layout:{spawn:{x:100,y:200},obstacles:[]},navigation:new Map([["1,1","walkable"],["2,3","blocked"]]),navigationChanges:new Map([["1,1","walkable"],["2,3","blocked"]]),props:[{id:"a",x:1},{id:"b",x:2}],addedProps:[{id:"a",x:1},{id:"b",x:2}],modifiedEntities:[{id:"npc",x:4}],addedEntities:[{id:"dev-wolf",x:8}],removedEntityIds:["boss1"]});
   checks.deterministicExport=assert(stableStringify(worldA)===stableStringify(worldB),"exportação muda com a ordem de inserção");
+  const entityOverride=applyWorldEntityOverride(2,[{id:"npc",x:1},{id:"boss1",x:2},{id:"altar",x:3}],worldA),entityIds=entityOverride.map(entry=>entry.id);
+  checks.worldEntityRemoval=assert(!entityIds.includes("boss1"),"criatura original removida voltou após aplicar o export")&&assert(entityOverride.find(entry=>entry.id==="npc")?.x===4,"criatura modificada não foi atualizada")&&assert(entityIds.includes("dev-wolf"),"criatura adicionada não foi exportada");
+  const collectionA=buildWorldExportCollection(new Map([[2,worldA],[0,buildWorldExport({regionId:0,metadata:{unedited:true}})]])),collectionB=buildWorldExportCollection({0:buildWorldExport({regionId:0,metadata:{unedited:true}}),2:worldB});
+  checks.allRegionsExport=assert(collectionA.kind==="voz-partida-world-overrides"&&collectionA.regionOrder.join(",")==="0,2","pacote não reúne todas as regiões em ordem determinística")&&assert(stableStringify(collectionA)===stableStringify(collectionB),"pacote de regiões muda com a ordem de inserção");
 
   checks.saveIsolationContract=assert(!Object.keys(worldA).some(key=>key.startsWith("__")),"export contém dados temporários");
   return{valid:!failures.length,checks,failures,details:{visual,collision,shadow,delta,world:worldA}};
