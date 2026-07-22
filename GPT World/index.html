@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#080510">
+  <meta name="description" content="RPG de fantasia sombria sobre Lucas, Timbó e a entidade GPT partida em dois fragmentos.">
+  <title>GPT: A Voz Partida</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="game-shell" class="theme-lucas" data-screen="title">
+    <div id="loading-screen" class="loading-screen" aria-live="polite">
+      <div class="fracture-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p id="loading-label">Despertando a Voz...</p>
+      <div class="loading-track"><span id="loading-bar"></span></div>
+    </div>
+
+    <section id="title-screen" class="screen title-screen active" aria-label="Menu principal">
+      <div class="title-atmosphere" aria-hidden="true">
+        <div class="black-sun"><span></span></div>
+        <div class="rune-orbit rune-orbit-a"></div>
+        <div class="rune-orbit rune-orbit-b"></div>
+      </div>
+      <img id="title-lucas" class="title-character title-lucas" alt="Lucas, Alquimista da Ordem">
+      <img id="title-timbo" class="title-character title-timbo" alt="Timbó, encarnação da Vontade Absoluta">
+      <div class="title-copy">
+        <p class="eyebrow">Uma realidade escrita por dois tiranos</p>
+        <h1><span>GPT</span><small>A VOZ PARTIDA</small></h1>
+        <p class="title-tagline">Toda ordem esconde violência. Toda vontade exige um trono.</p>
+      </div>
+      <nav class="title-menu" aria-label="Opções do jogo">
+        <button class="asset-button button-play" data-action="new-game">Novo jogo</button>
+        <button class="asset-button button-play" data-action="continue" id="continue-button">Continuar</button>
+        <button class="asset-button" data-action="new-game-plus" id="ng-plus-button" hidden>Novo Jogo +</button>
+        <button class="asset-button" data-action="load-game">Carregar</button>
+        <button class="asset-button" data-action="replay-prologue">Prólogo</button>
+        <button class="asset-button" data-action="settings">Configurações</button>
+      </nav>
+      <div class="title-footer"><span>WASD / Setas</span><span>Shift: correr</span><span>E / Espaço: interagir</span><span>Esc: menu</span></div>
+    </section>
+
+    <section id="video-prologue-screen" class="screen video-prologue-screen" aria-label="Prólogo em vídeo">
+      <video id="prologue-video" class="prologue-video" playsinline preload="metadata">
+        <source src="./assets/video/gpt_world_prologo.mp4" type="video/mp4">
+      </video>
+      <div class="video-prologue-shade" aria-hidden="true"></div>
+      <div class="video-prologue-title" aria-hidden="true"><small>GPT: A VOZ PARTIDA</small><strong>Prólogo</strong></div>
+      <button id="video-prologue-play" class="video-prologue-play" type="button" hidden>Reproduzir prólogo</button>
+      <button id="video-prologue-skip" class="video-skip-hold" type="button" aria-label="Segure para pular o vídeo do prólogo">
+        <span class="video-skip-ring" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <circle class="video-skip-track" cx="24" cy="24" r="20" pathLength="100"></circle>
+            <circle id="video-skip-progress" class="video-skip-progress" cx="24" cy="24" r="20" pathLength="100"></circle>
+          </svg>
+          <span class="video-skip-chevrons">»</span>
+        </span>
+        <span class="video-skip-copy"><strong>Segure para pular</strong><small>Solte para cancelar</small></span>
+      </button>
+    </section>
+
+    <section id="prologue-screen" class="screen prologue-screen" aria-label="Prólogo">
+      <div id="prologue-visual" class="prologue-visual">
+        <div class="prologue-sun"></div>
+        <img id="prologue-left" class="prologue-character prologue-left" alt="">
+        <img id="prologue-right" class="prologue-character prologue-right" alt="">
+        <div class="command-rain" aria-hidden="true"></div>
+      </div>
+      <div class="prologue-card">
+        <p id="prologue-kicker" class="eyebrow">Antes da guerra</p>
+        <h2 id="prologue-title">A Voz entre dois tronos</h2>
+        <p id="prologue-text"></p>
+        <div class="prologue-progress" id="prologue-progress"></div>
+      </div>
+      <div class="cinematic-controls">
+        <label>Velocidade <select id="prologue-speed"><option value="1">Normal</option><option value="0.55">Rápida</option><option value="1.7">Lenta</option></select></label>
+        <button class="text-button" data-action="skip-prologue">Pular</button>
+        <button class="primary-button" data-action="next-prologue">Continuar</button>
+      </div>
+    </section>
+
+    <section id="route-screen" class="screen route-screen" aria-label="Escolha de caminho">
+      <header class="route-header">
+        <p class="eyebrow">O fragmento exige um mestre</p>
+        <h2>Quem escreverá a realidade?</h2>
+        <p>O personagem não escolhido continuará vivo, crescendo e ouvindo cada comando seu.</p>
+      </header>
+      <div class="route-grid">
+        <button class="route-card lucas-card" data-route="lucas">
+          <img id="route-lucas" alt="Lucas">
+          <span class="route-card-copy"><small>Caminho de Lucas</small><strong>Ordem Impossível</strong><em>Precisão • Barreira • Controle</em><q>Se a realidade falha, ela deve ser corrigida.</q></span>
+        </button>
+        <div class="route-fracture" aria-hidden="true"><i></i><span>OU</span><i></i></div>
+        <button class="route-card timbo-card" data-route="timbo">
+          <img id="route-timbo" alt="Timbó">
+          <span class="route-card-copy"><small>Caminho de Timbó</small><strong>Vontade Absoluta</strong><em>Dominação • Sangue • Ruptura</em><q>Liberdade é só o intervalo entre dois mestres.</q></span>
+        </button>
+      </div>
+      <button class="text-button route-back" data-action="back-title">Voltar</button>
+    </section>
+
+    <section id="variant-screen" class="screen variant-screen" aria-label="Escolha da versão visual">
+      <header class="route-header variant-header">
+        <p class="eyebrow">A forma também conta uma história</p>
+        <h2>Escolha a versão visual</h2>
+        <p>Esta escolha é exclusivamente visual. A jornada, as habilidades e os atributos permanecem iguais.</p>
+      </header>
+      <div class="variant-selector">
+        <div class="variant-preview-frame"><img id="variant-preview" alt="Prévia do personagem selecionado"><div class="variant-aura"></div></div>
+        <div class="variant-copy">
+          <small id="variant-route-label">CAMINHO DE LUCAS</small>
+          <h3 id="variant-name">Lucas</h3>
+          <p id="variant-title">Ordem Impossível</p>
+          <div class="variant-options" role="radiogroup" aria-label="Versão visual">
+            <button data-variant="masculino" role="radio" aria-checked="true"><strong>Masculina</strong><span>Arte canônica de corpo inteiro.</span></button>
+            <button data-variant="feminino" role="radio" aria-checked="false"><strong>Feminina</strong><span>Arte canônica de corpo inteiro.</span></button>
+          </div>
+          <button class="primary-button variant-confirm" data-action="confirm-variant">Confirmar e começar</button>
+        </div>
+      </div>
+      <button class="text-button route-back" data-action="back-route">Voltar</button>
+    </section>
+
+    <section id="tower-entrance-screen" class="screen tower-entrance-screen" aria-label="Entrada da Torre da Carne">
+      <div class="tower-entrance-atmosphere" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
+      <header class="tower-entrance-header">
+        <p class="eyebrow">A ferida entre os fragmentos</p>
+        <h2>TORRE DA CARNE</h2>
+        <p>Memórias rejeitadas voltam a crescer como arquitetura. Cada incursão é reproduzida pela mesma semente, mas nenhuma promessa de retorno sobrevive intacta.</p>
+      </header>
+      <main class="tower-entrance-layout">
+        <section class="tower-run-panel">
+          <div class="tower-run-heading"><div class="tower-organ-sigil" aria-hidden="true"><i></i><i></i><i></i></div><div><small id="tower-run-status">NENHUMA INCURSÃO ATIVA</small><strong id="tower-run-floor">O primeiro ferimento aguarda</strong></div></div>
+          <dl class="tower-run-stats">
+            <div><dt>Incursão</dt><dd id="tower-run-number">—</dd></div>
+            <div><dt>Andar atual</dt><dd id="tower-run-current">—</dd></div>
+            <div><dt>Maior andar</dt><dd id="tower-best-floor">0</dd></div>
+            <div><dt>Carne da Voz</dt><dd id="tower-total-currency">0</dd></div>
+          </dl>
+          <div class="tower-run-details">
+            <p><small>SEMENTE</small><strong id="tower-run-seed">Será criada ao entrar</strong></p>
+            <p><small>MUTAÇÃO ATUAL</small><strong id="tower-run-mutation">Ainda silenciosa</strong></p>
+            <p><small>MODIFICADORES</small><strong id="tower-run-modifiers">Nenhum</strong></p>
+          </div>
+          <div class="tower-entry-actions">
+            <button class="primary-button" data-action="tower-enter">Iniciar nova incursão</button>
+            <button class="primary-button" data-action="tower-continue" hidden>Continuar incursão</button>
+            <button class="danger-button" data-action="tower-abandon" hidden>Abandonar incursão</button>
+            <button class="text-button" data-action="tower-return">Retornar ao mundo</button>
+          </div>
+        </section>
+        <aside class="tower-altar-panel">
+          <header><small>ALTAR DA CICATRIZ</small><h3>Progressão permanente</h3><p>Invista Carne da Voz. Estes efeitos existem apenas dentro da torre.</p></header>
+          <div id="tower-permanent-upgrades" class="tower-permanent-upgrades"></div>
+        </aside>
+      </main>
+    </section>
+
+    <section id="exploration-screen" class="screen exploration-screen" aria-label="Exploração">
+      <header class="game-hud">
+        <div class="identity-block">
+          <img id="hud-portrait" alt="Retrato do protagonista">
+          <div><small id="hud-route">Ordem Impossível</small><strong id="hud-name">Lucas</strong><span id="hud-form">Forma: Mago</span></div>
+        </div>
+        <div class="vitals-block">
+          <div class="bar-row"><span>PV</span><div class="pixel-bar hp-bar"><i id="hud-hp-bar"></i></div><b id="hud-hp">120 / 120</b></div>
+          <div class="bar-row"><span>FOCO</span><div class="pixel-bar focus-bar"><i id="hud-focus-bar"></i></div><b id="hud-focus">80 / 80</b></div>
+        </div>
+        <div class="region-block"><small id="hud-chapter">COMANDO I</small><strong id="hud-region">Frostrim</strong><span id="hud-objective">Encontre o Eco Congelado</span></div>
+        <div class="link-block"><div class="link-orb"><i id="link-fill"></i><span id="hud-fracture">8</span></div><div><small>Vínculo da Fratura</small><strong id="hud-primes">0 / 10 comandos</strong></div></div>
+        <button class="hud-menu-button" data-action="pause" aria-label="Abrir menu">MENU</button>
+      </header>
+
+      <main class="world-frame">
+        <canvas id="world-canvas" width="960" height="540" tabindex="0" aria-label="Mapa explorável"></canvas>
+        <div id="weather-layer" class="weather-layer" aria-hidden="true"></div>
+        <div id="interaction-prompt" class="interaction-prompt" hidden><kbd>E</kbd><span>Interagir</span></div>
+        <aside class="minimap-panel"><canvas id="minimap-canvas" width="180" height="112"></canvas><span id="minimap-label">Refúgio de Vidro</span></aside>
+        <aside id="tower-hud" class="tower-hud" hidden>
+          <div class="tower-hud-title"><small>TORRE DA CARNE</small><strong id="tower-hud-floor">ANDAR 1</strong></div>
+          <span id="tower-hud-family">Medula Congelada</span>
+          <p id="tower-hud-objective">Alcance a saída viva.</p>
+          <div class="tower-hud-meta"><span id="tower-hud-seed">SEMENTE —</span><span id="tower-hud-pulse">PULSO BAIXO</span></div>
+          <div class="tower-hud-meta"><span id="tower-hud-mutations">SEM MELHORIAS</span><span id="tower-hud-currency">0 CARNE DA VOZ</span></div>
+        </aside>
+        <div id="tower-floor-card" class="tower-floor-card" hidden><small>TORRE DA CARNE</small><strong></strong><span></span><p></p></div>
+        <div id="location-card" class="location-card"><small>Você entrou em</small><strong>Frostrim</strong><span>Terras Gélidas</span></div>
+        <div class="quest-toast" id="quest-toast" hidden><small>MISSÃO ATUALIZADA</small><strong></strong><span></span></div>
+      </main>
+
+      <footer class="game-toolbar">
+        <button data-menu="status"><span>PERSONAGEM</span><small>Status e formas</small></button>
+        <button data-menu="inventory"><span>INVENTÁRIO</span><small>Itens e equipamento</small></button>
+        <button data-menu="skills"><span>HABILIDADES</span><small>Árvore e comandos</small></button>
+        <button data-menu="quests"><span>MISSÕES</span><small>Jornada e vínculos</small></button>
+        <button data-menu="map"><span>MAPA</span><small>Regiões e viagem</small></button>
+        <button data-menu="codex"><span>CÓDEX</span><small>Bestiário e memórias</small></button>
+      </footer>
+
+      <div id="touch-controls" class="touch-controls" aria-label="Controles de toque">
+        <div class="touch-dpad"><button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+        <div class="touch-action-cluster"><button class="touch-run" data-action="run" aria-pressed="false">CORRER</button><button class="touch-action" data-action="interact">AÇÃO</button></div>
+      </div>
+    </section>
+
+    <section id="battle-screen" class="screen battle-screen" aria-label="Batalha por turnos">
+      <div id="battle-backdrop" class="battle-backdrop"></div>
+      <header class="battle-header">
+        <div><small id="battle-region">FROSTRIM</small><strong id="battle-title">Ecos no Gelo</strong></div>
+        <div class="initiative"><small>ORDEM DOS TURNOS</small><div id="initiative-list"></div></div>
+        <div class="battle-controls"><button id="battle-auto" class="battle-auto" data-action="battle-auto" aria-pressed="false" title="Alternar Batalha Automática">AUTO</button><button id="battle-speed" data-action="battle-speed" title="Velocidade da batalha">1×</button><button data-action="battle-help" title="Ajuda da batalha">?</button></div>
+      </header>
+      <div id="battle-arena" class="battle-arena">
+        <div id="party-stage" class="party-stage"></div>
+        <div id="effect-stage" class="effect-stage"></div>
+        <div id="enemy-stage" class="enemy-stage"></div>
+      </div>
+      <aside id="battle-log" class="battle-log" aria-live="polite"></aside>
+      <footer class="battle-hud">
+        <div id="active-actor" class="active-actor"></div>
+        <div id="battle-actions" class="battle-actions"></div>
+        <div id="battle-detail" class="battle-detail"><small>ESCOLHA UMA AÇÃO</small><p>O turno só avança quando sua decisão for executada.</p></div>
+      </footer>
+      <div id="boss-banner" class="boss-banner" hidden><small>AMEAÇA PRIMORDIAL</small><strong></strong><span></span></div>
+    </section>
+
+    <section id="ending-screen" class="screen ending-screen" aria-label="Final da campanha">
+      <div id="ending-art" class="ending-art"><img id="ending-protagonist" alt=""><img id="ending-rival" alt=""><div class="ending-sigil"></div></div>
+      <article class="ending-copy"><p class="eyebrow" id="ending-kicker">FINAL</p><h2 id="ending-title"></h2><p id="ending-text"></p><div id="ending-epilogue"></div><button class="primary-button" data-action="ending-title">Voltar ao título</button></article>
+    </section>
+
+    <div id="dialogue-layer" class="dialogue-layer" hidden></div>
+    <div id="modal-layer" class="modal-layer" hidden></div>
+    <div id="toast-layer" class="toast-layer" aria-live="polite"></div>
+    <div id="fade-layer" class="fade-layer" aria-hidden="true"></div>
+  </div>
+  <script src="./js/game.bundle.js"></script>
+</body>
+</html>
