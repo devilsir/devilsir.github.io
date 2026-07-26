@@ -2,14 +2,14 @@
 
 # Central de Projetos Interativos
 
-**Plataforma web que reúne experiências educacionais, jogos, álbuns digitais, visualizações 3D e projetos autorais em um único ambiente.**
+**Experiências educacionais, jogos, álbuns digitais, mundos 3D e projetos autorais reunidos em um único ambiente.**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Publicado-222222?logo=github)](https://devilsir.github.io/)
-[![HTML5](https://img.shields.io/badge/HTML5-Frontend-E34F26?logo=html5\&logoColor=white)](#tecnologias)
-[![CSS3](https://img.shields.io/badge/CSS3-Interface-1572B6?logo=css3\&logoColor=white)](#tecnologias)
-[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript\&logoColor=111111)](#tecnologias)
+[![HTML5](https://img.shields.io/badge/HTML5-Frontend-E34F26?logo=html5&logoColor=white)](#tecnologias)
+[![CSS3](https://img.shields.io/badge/CSS3-Interface-1572B6?logo=css3&logoColor=white)](#tecnologias)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Interatividade-F7DF1E?logo=javascript&logoColor=111111)](#tecnologias)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Aplicações-3178C6?logo=typescript&logoColor=white)](#tecnologias)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000?logo=threedotjs)](#tecnologias)
-[![Supabase](https://img.shields.io/badge/Supabase-Backend-3FCF8E?logo=supabase\&logoColor=white)](#tecnologias)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
 [**Acessar a plataforma**](https://devilsir.github.io/)
@@ -18,22 +18,38 @@
 
 ## Sobre o projeto
 
-A **Central de Projetos Interativos** é um repositório público desenvolvido para organizar e disponibilizar experiências digitais voltadas à educação, à experimentação visual e ao entretenimento.
+A **Central de Projetos Interativos** é um repositório público criado e mantido por **Lucas Xavier Nardelli** para organizar e disponibilizar experiências digitais voltadas à educação, à experimentação visual, à narrativa e ao entretenimento.
 
-A plataforma funciona como um portal para diferentes aplicações independentes, incluindo álbuns digitais gamificados, atividades de Química, simulações educacionais, experiências tridimensionais, visualizadores de modelos e projetos autorais. A maior parte das aplicações é executada diretamente no navegador, sem necessidade de instalação ou processo de compilação.
+A plataforma funciona como um portal para aplicações independentes, incluindo álbuns digitais gamificados, atividades de Química, simulações educacionais, RPGs, experiências de terror, memoriais interativos, mundos voxel, visualizadores de modelos e projetos tridimensionais.
 
-O projeto foi estruturado para publicação por meio do **GitHub Pages**, com interfaces responsivas para computadores e dispositivos móveis.
+A maior parte das aplicações é executada diretamente no navegador e publicada por meio do **GitHub Pages**, com interfaces adaptadas para computadores e dispositivos móveis.
+
+## Inteligência artificial no processo de criação
+
+Os projetos deste repositório são **concebidos, dirigidos, integrados e validados por Lucas Xavier Nardelli**. Diferentes ferramentas de inteligência artificial podem ser utilizadas como assistência ao longo do processo de desenvolvimento.
+
+Essa assistência pode incluir:
+
+* geração, revisão, documentação e refatoração de código;
+* prototipagem de mecânicas, interfaces e sistemas;
+* criação ou adaptação de modelos 3D, texturas e outros recursos visuais;
+* exploração de conceitos narrativos, visuais e sonoros;
+* identificação de erros, testes e otimizações;
+* apoio na organização técnica e na documentação dos projetos.
+
+O uso de IA varia entre os projetos e **não representa um processo exclusivamente automatizado**. A autoria, a direção criativa, a arquitetura das experiências, a seleção dos resultados, a edição, a integração, os testes e as decisões finais permanecem sob responsabilidade humana.
 
 ## Principais recursos
 
 * Portal centralizado para acesso aos projetos publicados.
-* Aplicações web independentes construídas com HTML, CSS e JavaScript.
-* Experiências educacionais interativas relacionadas a Química e Língua Inglesa.
+* Aplicações independentes construídas com HTML, CSS, JavaScript e TypeScript.
+* Experiências educacionais relacionadas a Química e Língua Inglesa.
+* Jogos narrativos, RPGs, exploração, terror e ambientes voxel.
 * Álbuns digitais com inventário, desafios, progressão e persistência local.
-* Minijogos com diferentes níveis de dificuldade e sistema de pontuação.
-* Ranking online integrado ao Supabase.
-* Reconhecimento de imagens realizado no navegador.
-* Visualização de modelos e animações 3D com Three.js e WebGL.
+* Minijogos com diferentes níveis de dificuldade e sistemas de pontuação.
+* Rankings online e serviços integrados ao Supabase.
+* Reconhecimento e processamento de imagens realizado no navegador.
+* Visualização de modelos e animações 3D com Three.js, Babylon.js e WebGL.
 * Suporte a modelos nos formatos GLB, glTF e FBX.
 * Controles adaptados para mouse, teclado e telas sensíveis ao toque.
 * Recursos de acessibilidade, atributos ARIA e preferência por movimento reduzido.
@@ -41,17 +57,20 @@ O projeto foi estruturado para publicação por meio do **GitHub Pages**, com in
 
 ## Projetos disponíveis
 
-| Projeto                                                 | Descrição                                                                                                                                                |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [**Álbum Família**](./Album-Familia/)                   | Álbum digital de recordações com 64 figurinhas, 64 desafios, oito modalidades de minijogos, cinco dificuldades, progressão local e rankings online.      |
-| [**World Stars 2026**](./Album-World-Stars/)            | Álbum digital educativo com 77 figurinhas, reconhecimento de imagem, inventário, perfis, perguntas em inglês e acompanhamento de progresso.              |
-| [**World Stars Android**](./Album-World-Stars-Android/) | Empacotamento Android do álbum World Stars utilizando Capacitor, Gradle e Android Studio.                                                                |
-| [**Animações Interativas**](./animacoes/)               | Coleção de dez experiências educacionais, incluindo neutralização, cargas elétricas, geometria molecular, íons, raio atômico e concentração de soluções. |
-| [**Roleta Química**](./RoletaQuimica/)                  | Atividade gamificada e responsiva para revisão e prática de conteúdos de Química.                                                                        |
-| [**Models and Animations**](./effects/)                 | Laboratório WebGL para visualização de personagens, animações, armas, pets e efeitos visuais em tempo real.                                              |
-| [**Sobre**](./Sobre/)                                   | Apresentação profissional interativa com personagem 3D e acesso a projetos selecionados.                                                                 |
-| [**Chora Timbó**](./choratimbo/)                        | Experiência autoral com modelos tridimensionais, animações, áudio e identidade visual própria.                                                           |
-| [**Assets compartilhados**](./assets/)                  | Recursos globais de interface, estilos e scripts utilizados pela página principal.                                                                       |
+| Projeto | Descrição |
+| --- | --- |
+| [**Álbum Família**](./Album-Familia/) | Álbum digital de recordações com figurinhas, desafios, minijogos, progressão local e rankings online. |
+| [**World Stars 2026**](./Album-World-Stars/) | Álbum digital educativo com reconhecimento de imagem, inventário, perfis, perguntas em inglês e acompanhamento de progresso. |
+| [**World Stars Android**](./Album-World-Stars-Android/) | Versão Android do álbum World Stars, empacotada com Capacitor, Gradle e Android Studio. |
+| [**Animações Interativas**](./animacoes/) | Coleção de experiências educacionais sobre neutralização, cargas elétricas, geometria molecular, íons, raio atômico e soluções. |
+| [**Chora Timbó**](./choratimbo/) | Experiência autoral com modelos tridimensionais, animações, áudio e identidade visual própria. |
+| [**Models and Animations**](./effects/) | Laboratório WebGL para visualização de personagens, animações, armas, pets e efeitos visuais em tempo real. |
+| [**Roleta Química**](./RoletaQuimica/) | Atividade gamificada e responsiva para revisão e prática de conteúdos de Química. |
+| [**Sobre**](./Sobre/) | Apresentação profissional interativa de Lucas Xavier Nardelli, com personagem 3D e acesso a trabalhos selecionados. |
+| [**GPT World**](./GPT%20World/) | RPG interativo ambientado em um universo autoral inspirado em inteligência artificial, comandos, fragmentos e realidades procedurais. |
+| [**Wonder World**](./Wonder%20World/) | Experiência de terror e exploração ambientada em um complexo de entretenimento abandonado, com narrativa, combate e múltiplos sistemas interativos. |
+| [**O Pequeno Museu da Lilith**](./Pequeno%20Museu%20da%20Lilith/) | Memorial interativo dedicado às lembranças, histórias e momentos especiais da Lilith, apresentado como um espaço digital tridimensional. |
+| [**QuimiCraft**](./QuimiCraft/) | Mundo voxel interativo que combina exploração, criatividade, construção e aprendizado de Química. |
 
 ## Experiências educacionais
 
@@ -72,24 +91,28 @@ A área de animações reúne módulos independentes que apresentam conceitos ci
 
 ## Tecnologias
 
-### Frontend
+### Frontend e aplicações
 
 * HTML5
 * CSS3
-* JavaScript sem framework
+* JavaScript
+* TypeScript
 * Canvas API
 * Web Audio API
 * Local Storage
 * Design responsivo
 
-### Gráficos e conteúdo 3D
+### Gráficos, jogos e conteúdo 3D
 
 * Three.js
+* Babylon.js
 * WebGL
 * GLTFLoader
 * FBXLoader
 * OrbitControls
+* Vite
 * Modelos GLB, glTF e FBX
+* Renderização procedural e ambientes voxel
 
 ### Dados e serviços
 
@@ -118,8 +141,12 @@ A área de animações reúne módulos independentes que apresentam conceitos ci
 ├── Album-Familia/               # Álbum de recordações e ranking online
 ├── Album-World-Stars/            # Álbum educativo para navegador
 ├── Album-World-Stars-Android/    # Projeto Android com Capacitor
+├── GPT World/                    # RPG narrativo inspirado em inteligência artificial
+├── Pequeno Museu da Lilith/      # Memorial interativo tridimensional
+├── QuimiCraft/                   # Mundo voxel educacional de Química
 ├── RoletaQuimica/                # Jogo educacional de Química
 ├── Sobre/                        # Apresentação profissional interativa
+├── Wonder World/                 # Experiência narrativa de terror e exploração
 ├── animacoes/                    # Simulações e experiências educacionais
 ├── assets/                       # Arquivos compartilhados da página principal
 ├── choratimbo/                   # Projeto autoral com áudio e modelos 3D
@@ -156,13 +183,11 @@ python3 -m http.server 8000
 
 ### 3. Abrir no navegador
 
-Acesse:
-
 ```text
 http://localhost:8000
 ```
 
-Não há etapa de build para a versão web principal.
+Alguns projetos possuem ferramentas próprias de desenvolvimento ou build. Consulte os arquivos internos de cada diretório quando necessário.
 
 ## Configuração do Supabase
 
@@ -272,7 +297,8 @@ Este projeto é distribuído sob a licença MIT. Consulte o arquivo [`LICENSE`](
 ## Autor
 
 **Lucas Xavier Nardelli**
-Projetos educacionais, desenvolvimento web, modelagem 3D, programação e experimentação com inteligência artificial.
+
+Projetos educacionais, desenvolvimento web, jogos, modelagem 3D, programação e experimentação com inteligência artificial.
 
 ---
 
