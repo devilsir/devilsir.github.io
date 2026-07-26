@@ -167,7 +167,7 @@ export class GameUI {
         <h2>${this.escape(stats.ending)}</h2>
         <div class="credits-gap"></div>
         <h3>UMA PRODUÇÃO PROCEDURAL</h3>
-        <p>Direção criativa e conceito: Timbó</p>
+        <p>Direção criativa e conceito: Lucas Xavier Nardelli</p>
         <p>Desenvolvimento, sistemas e integração: OpenAI · GPT-5.6 Thinking</p>
         <p>Motor: Babylon.js · TypeScript · Vite</p>
         <p>Materiais, cenários, personagens e áudio: gerados em tempo de execução</p>
@@ -876,7 +876,7 @@ export class GameUI {
         <div class="panel">
           <div class="kicker">Créditos</div>
           <h2>ATRAÇÃO FINAL</h2>
-          <p>Direção criativa e conceito: Timbó.</p>
+          <p>Direção criativa e conceito: Lucas Xavier Nardelli.</p>
           <p>Campanha procedural criada dentro do projeto, sem arte ou áudio externo em tempo de execução.</p>
           <div class="kicker">Galeria de finais</div>
           <div id="credits-ending-gallery" class="ending-gallery"></div>
