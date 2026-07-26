@@ -8,6 +8,7 @@
     <title>Recordações em Família — Álbum Digital</title>
     <link rel="icon" type="image/webp" href="assets/app-icon.webp" />
     <link rel="stylesheet" href="app.css" />
+    <script defer src="recordacoes-core.js"></script>
     <script defer src="supabase-config.js"></script>
     <script defer src="app.js"></script>
   </head>
@@ -25,6 +26,9 @@
           </button>
           <button class="nav-pill" data-view="challenges" type="button">
             <span aria-hidden="true">◇</span> Desafios
+          </button>
+          <button class="nav-pill daily-nav-pill" data-view="daily" type="button">
+            <span aria-hidden="true">☀</span> Diários
           </button>
           <button class="nav-pill free-nav-pill" data-view="free" type="button">
             <span aria-hidden="true">✦</span> Desafio Livre
@@ -49,6 +53,7 @@
               <input id="musicVolume" type="range" min="0" max="100" value="35" step="1" />
             </div>
           </div>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="Abrir configurações e saves" title="Configurações">⚙</button>
           <button class="icon-button" id="resetButton" type="button" aria-label="Recomeçar álbum" title="Recomeçar">↻</button>
         </div>
       </header>
@@ -123,16 +128,59 @@
           <div class="challenge-grid" id="challengeGrid"></div>
         </section>
 
+        <section class="view daily-view" id="dailyView" aria-labelledby="dailyTitle">
+          <div class="daily-hero">
+            <div class="daily-hero-copy">
+              <span class="free-kicker">☀ Uma nova seleção por dia</span>
+              <h1 id="dailyTitle">Desafios Diários</h1>
+              <p>Três partidas determinísticas para toda a família. O jogo do dia fica congelado enquanto você estiver jogando.</p>
+              <div class="daily-countdown" aria-live="polite">
+                <span>Próxima rotação em</span>
+                <strong id="dailyCountdown">00:00:00</strong>
+                <small id="dailyDateLabel">Horário de São Paulo</small>
+              </div>
+            </div>
+            <div class="daily-streak-card">
+              <span class="daily-streak-flame" aria-hidden="true">✦</span>
+              <div><small>Sequência atual</small><strong><b id="dailyStreak">0</b> dias</strong><span id="dailyGrace">1 dia de proteção disponível</span></div>
+            </div>
+          </div>
+
+          <div class="daily-state-bar">
+            <div><span class="sync-dot"></span><strong id="dailyStatus">Preparando os desafios de hoje…</strong></div>
+            <button class="soft-button" id="dailyRefresh" type="button">↻ <span>Atualizar placar</span></button>
+          </div>
+
+          <div class="daily-grid" id="dailyGrid"></div>
+
+          <section class="daily-rewards" aria-labelledby="dailyRewardsTitle">
+            <div class="daily-section-heading">
+              <div><span class="eyebrow">Presenças da semana</span><h2 id="dailyRewardsTitle">Trilha de 7 dias</h2><p>Complete os três desafios para liberar o presente do dia. Nenhuma recompensa altera a dificuldade.</p></div>
+              <button class="primary-button" id="claimDailyReward" type="button" disabled>Recompensa indisponível</button>
+            </div>
+            <div class="daily-reward-track" id="dailyRewardTrack"></div>
+          </section>
+
+          <section class="daily-leaderboard" aria-labelledby="dailyLeaderboardTitle">
+            <div class="daily-section-heading">
+              <div><span class="eyebrow">Recordes de hoje</span><h2 id="dailyLeaderboardTitle">Placar diário</h2></div>
+              <label><span>Desafio</span><select id="dailyLeaderboardSelect" aria-label="Escolher desafio diário do placar"></select></label>
+            </div>
+            <div class="daily-ranking-status" id="dailyRankingStatus" role="status">Seu recorde local aparecerá aqui.</div>
+            <div class="daily-ranking-list" id="dailyRankingList"></div>
+          </section>
+        </section>
+
         <section class="view free-view" id="freeView" aria-labelledby="freeTitle">
           <div class="free-hero">
             <div class="free-hero-copy">
               <span class="free-kicker">✦ Modo sem limites</span>
               <h1 id="freeTitle">Desafio Livre</h1>
-              <p>Jogue qualquer modalidade quantas vezes quiser. Escolha a dificuldade, complete as 3 fases e faça a maior pontuação.</p>
+              <p>Jogue qualquer modalidade quantas vezes quiser. Escolha a dificuldade, avance por 10 fases diferentes e faça a maior pontuação.</p>
               <div class="free-hero-badges">
                 <span><strong>8</strong> modalidades</span>
                 <span><strong>5</strong> dificuldades</span>
-                <span><strong>3</strong> fases</span>
+                <span><strong>10</strong> fases</span>
                 <span><strong id="freeWins">0</strong> vitórias</span>
               </div>
             </div>
@@ -156,6 +204,25 @@
             </div>
           </div>
 
+          <section class="luxor-campaign-hub" aria-labelledby="luxorCampaignTitle">
+            <div class="luxor-campaign-heading">
+              <div>
+                <span class="free-kicker">● Jornada especial</span>
+                <h2 id="luxorCampaignTitle">Luxor das Recordações</h2>
+                <p>40 níveis originais, oito capítulos, guardiões, ondas, poderes e bolinhas especiais.</p>
+              </div>
+              <button class="soft-button luxor-loadout-open" id="openLuxorLoadout" type="button"><span aria-hidden="true">✦</span> Escolher poderes</button>
+            </div>
+            <div class="luxor-campaign-summary">
+              <span><small>Nível liberado</small><strong id="luxorUnlockedLevel">1/40</strong></span>
+              <span><small>Estrelas</small><strong id="luxorTotalStars">0/120</strong></span>
+              <span><small>Capítulos</small><strong id="luxorChaptersDone">0/8</strong></span>
+              <span><small>Poderes equipados</small><strong id="luxorEquippedSummary">3</strong></span>
+            </div>
+            <div class="luxor-chapter-grid" id="luxorChapterGrid" aria-label="Capítulos de Luxor"></div>
+            <div class="luxor-level-map" id="luxorLevelMap" aria-live="polite"></div>
+          </section>
+
           <div class="free-game-grid" id="freeGameGrid"></div>
         </section>
 
@@ -168,7 +235,12 @@
             </div>
             <article class="ranking-player-card">
               <span class="ranking-avatar" id="rankingPlayerAvatar">RF</span>
-              <div><small>Seu perfil</small><strong id="rankingPlayerName">Jogador</strong><span><b id="rankingPlayerStickers">0</b> figurinhas · <b id="rankingPlayerPoints">0</b> pontos</span></div>
+              <div>
+                <small>Seu perfil <b class="ranking-player-badge" id="rankingPlayerBadge" hidden></b></small>
+                <strong id="rankingPlayerName">Jogador</strong>
+                <em class="ranking-player-title" id="rankingPlayerTitle" hidden></em>
+                <span class="ranking-player-meta"><b id="rankingPlayerStickers">0</b> figurinhas · <b id="rankingPlayerPoints">0</b> pontos</span>
+              </div>
             </article>
           </div>
 
@@ -218,6 +290,7 @@
       <nav class="mobile-nav" aria-label="Navegação principal">
         <button class="is-active" data-view="album" type="button"><span aria-hidden="true">▤</span><small>Álbum</small></button>
         <button data-view="challenges" type="button"><span>◇</span><small>Álbum+</small></button>
+        <button data-view="daily" type="button"><span aria-hidden="true">☀</span><small>Diário</small></button>
         <button class="play-main" data-view="free" type="button"><span>✦</span><small>Livre</small></button>
         <button data-view="ranking" type="button"><span aria-hidden="true">♛</span><small>Ranking</small></button>
         <button data-view="inventory" type="button"><span aria-hidden="true">▦</span><small>Inventário</small></button>
@@ -351,6 +424,92 @@
           <input id="secretInput" type="text" autocomplete="off" aria-label="Frase secreta" />
           <button class="primary-button" type="submit">Confirmar</button>
         </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop settings-backdrop" id="settingsModal" hidden>
+      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Preferências e segurança</span><h2 id="settingsTitle">Configurações</h2></div>
+          <button class="icon-button close-modal" id="closeSettings" type="button" aria-label="Fechar configurações">×</button>
+        </header>
+        <div class="settings-content">
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Save e sincronização</h3><p>O álbum funciona offline e mantém um backup local automático.</p></div><span class="cloud-status is-local" id="cloudStatus"><i></i> Local</span></div>
+            <div class="settings-actions">
+              <button class="secondary-button" id="exportSave" type="button">↓ Exportar save JSON</button>
+              <button class="secondary-button" id="importSave" type="button">↑ Importar save JSON</button>
+              <button class="secondary-button" id="syncSaveNow" type="button">↻ Sincronizar agora</button>
+              <input id="importSaveFile" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="import-summary" id="importSummary" hidden>
+              <strong>Save pronto para importar</strong>
+              <p id="importSummaryText"></p>
+              <div><button class="primary-button" id="confirmImportSave" type="button">Substituir pelo save validado</button><button class="secondary-button" id="cancelImportSave" type="button">Cancelar</button></div>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Recompensas do perfil</h3><p>Equipe os presentes conquistados no ciclo de sete dias.</p></div><span class="cosmetic-token-count" id="cosmeticTokenCount">0 trocas</span></div>
+            <div class="cosmetic-shelf" id="cosmeticShelf" aria-label="Recompensas diárias conquistadas"></div>
+          </section>
+
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Acessibilidade</h3><p>As escolhas ficam salvas neste perfil.</p></div></div>
+            <label class="settings-toggle"><span><strong>Reduzir movimento</strong><small>Remove tremores, pulsos e animações intensas.</small></span><input id="reducedMotionSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Alto contraste</strong><small>Reforça bordas, textos e estados selecionados.</small></span><input id="highContrastSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Assistência de mira no Luxor</strong><small>Mantém a previsão ampliada também no Extremo e Inferno.</small></span><input id="aimAssistSetting" type="checkbox" /></label>
+          </section>
+
+          <section class="settings-section interrupted-settings" id="interruptedSettings" hidden>
+            <div class="settings-section-title"><div><h3>Partida interrompida</h3><p id="interruptedSettingsText">Há uma partida que pode ser retomada.</p></div></div>
+            <div class="settings-actions">
+              <button class="primary-button" id="continueInterruptedSettings" type="button">Continuar partida</button>
+              <button class="secondary-button" id="restartInterruptedSettings" type="button">Reiniciar fase</button>
+              <button class="secondary-button danger-button" id="discardInterruptedSettings" type="button">Descartar</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop recovery-backdrop" id="recoveryModal" hidden>
+      <section class="small-modal recovery-modal" role="dialog" aria-modal="true" aria-labelledby="recoveryTitle">
+        <span class="recovery-emblem" aria-hidden="true">↻</span>
+        <span class="eyebrow">Sessão recuperada</span>
+        <h2 id="recoveryTitle">Quer continuar de onde parou?</h2>
+        <p id="recoveryText">A partida foi pausada e nenhum tempo avançou enquanto o álbum esteve fechado.</p>
+        <div class="recovery-actions">
+          <button class="primary-button" id="continueInterrupted" type="button">Continuar partida</button>
+          <button class="secondary-button" id="restartInterrupted" type="button">Reiniciar fase</button>
+          <button class="text-button danger-text" id="discardInterrupted" type="button">Descartar partida</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop cloud-conflict-backdrop" id="cloudConflictModal" hidden>
+      <section class="small-modal cloud-conflict-modal" role="dialog" aria-modal="true" aria-labelledby="cloudConflictTitle">
+        <span class="eyebrow">Escolha necessária</span>
+        <h2 id="cloudConflictTitle">Há dois saves diferentes</h2>
+        <p id="cloudConflictText">Este aparelho e a nuvem possuem mudanças recentes. Nada será sobrescrito sem sua escolha.</p>
+        <div class="conflict-compare" id="cloudConflictCompare"></div>
+        <div class="conflict-actions">
+          <button class="primary-button" id="keepDeviceSave" type="button">Manter este aparelho</button>
+          <button class="secondary-button" id="useCloudSave" type="button">Usar save da nuvem</button>
+          <button class="secondary-button" id="mergeCloudSave" type="button">Mesclar campos seguros</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop luxor-loadout-backdrop" id="luxorLoadoutModal" hidden>
+      <section class="luxor-loadout-modal" role="dialog" aria-modal="true" aria-labelledby="luxorLoadoutTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Escolha três poderes</span><h2 id="luxorLoadoutTitle">Álbum de poderes</h2></div>
+          <button class="icon-button close-modal" id="closeLuxorLoadout" type="button" aria-label="Fechar seleção de poderes">×</button>
+        </header>
+        <p>Os poderes recarregam com grupos longos, combos, precisão e reações em cadeia. Eles não são consumíveis permanentes.</p>
+        <div class="luxor-power-grid" id="luxorPowerGrid"></div>
+        <div class="luxor-loadout-footer"><span id="luxorLoadoutCount">3 de 3 selecionados</span><button class="primary-button" id="saveLuxorLoadout" type="button">Salvar combinação</button></div>
       </section>
     </div>
 
