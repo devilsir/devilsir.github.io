@@ -319,6 +319,49 @@ export class Chapter3World {
             collectedDocuments: [...this.collectedDocuments]
         };
     }
+    guideTargetForObjective(objectiveId) {
+        const player = this.player.collider.position;
+        const meshPoint = (name, fallback) => {
+            const mesh = this.scene.getMeshByName(name);
+            if (!mesh || !mesh.isEnabled())
+                return fallback.clone();
+            mesh.computeWorldMatrix(true);
+            return mesh.getBoundingInfo().boundingBox.centerWorld.clone();
+        };
+        const nearest = (points, fallback) => {
+            const valid = points.filter(Boolean);
+            return (valid.length ? valid.sort((a, b) => Vector3.Distance(a, player) - Vector3.Distance(b, player))[0] : fallback).clone();
+        };
+        if (objectiveId === "watch-jack-box")
+            return meshPoint("jack-crank-handle", this.checkpoints.jackChamber);
+        if (["inspect-daniel-room", "collect-daniel-items"].includes(objectiveId)) {
+            const pending = [];
+            if (!this.clubOwned)
+                pending.push(meshPoint("daniel-metal-club", this.checkpoints.danielRoom));
+            if (!this.replacementTorchOwned)
+                pending.push(meshPoint("daniel-replacement-torch", this.checkpoints.danielRoom));
+            if (!this.danielRecording)
+                pending.push(meshPoint("daniel-recorder", this.checkpoints.danielRoom));
+            return nearest(pending, this.checkpoints.danielRoom);
+        }
+        if (objectiveId === "activate-five-generators") {
+            const pending = this.generatorStates.map((active, index) => active ? null : this.checkpoints[`generator${index + 1}`]);
+            return nearest(pending, this.checkpoints.generator5);
+        }
+        if (objectiveId === "ventilate-gas-room") {
+            const pending = this.gasVents.map((active, index) => active ? null : meshPoint(`gas-vent-wheel-${index}`, this.checkpoints.generator3));
+            if (!this.minibossDefeated)
+                pending.push(meshPoint("gas-miniboss-collider", this.checkpoints.generator3));
+            if (!this.gasGeneratorRepaired)
+                pending.push(meshPoint("gas-generator-repair-console", this.checkpoints.generator3));
+            return nearest(pending, this.checkpoints.generator3);
+        }
+        if (objectiveId === "synchronize-generator5")
+            return meshPoint("generator5-player-lever", this.checkpoints.generator5);
+        if (objectiveId === "reach-generator5")
+            return this.checkpoints.generator5.clone();
+        return null;
+    }
     destinationForCheckpoint(checkpoint) {
         const normalized = checkpoint.replace(/^chapter3-/, "");
         if (this.checkpoints[checkpoint])

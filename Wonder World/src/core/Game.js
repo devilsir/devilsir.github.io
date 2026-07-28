@@ -20,6 +20,8 @@ import { ObjectiveSystem } from "../systems/ObjectiveSystem.js";
 import { ProceduralMaterials } from "../world/ProceduralMaterials.js";
 import { FireSystem } from "../systems/FireSystem.js";
 import { GuidePathSystem } from "../systems/GuidePathSystem.js";
+import { HorrorLightingSystem } from "../systems/HorrorLightingSystem.js";
+import { ConstructionMode } from "../systems/ConstructionMode.js";
 import { ITEM_CATALOG, WorldBuilder } from "../world/WorldBuilder.js";
 import { BodyBoss } from "../entities/BodyBoss.js";
 export class Game {
@@ -38,6 +40,8 @@ export class Game {
     fire;
     world;
     guide;
+    horrorLighting;
+    construction;
     chapter2;
     chapter3;
     chapter4;
@@ -73,6 +77,10 @@ export class Game {
     maxLives = 3;
     lives = 3;
     runtimeCheckpointPositions = new Map();
+    constructionRestorePlayer = false;
+    constructionRestoreGuide = false;
+    respawning = false;
+    menuActionBusy = false;
     constructor(canvas, uiRoot) {
         this.canvas = canvas;
         this.safeMode = new URLSearchParams(location.search).get("safe") === "1";
@@ -136,7 +144,7 @@ export class Game {
             onBossRequested: () => this.startBoss(),
             onBodyCardObtained: () => this.checkpoint("body-card", "chapter1"),
             onChapterTransition: () => this.startChapterTransition(),
-            onPlayerDamaged: () => this.handleRespawn("Você recupera o fôlego no último ponto seguro."),
+            onPlayerDamaged: () => void this.handleRespawn("Você recupera o fôlego no último ponto seguro."),
             onCheckpointActivated: (id, position) => this.activateSurvivalCheckpoint(id, position)
         });
         this.guide = new GuidePathSystem(this.scene, this.materials, this.player, () => this.guideRouteForCurrentObjective());
@@ -153,6 +161,17 @@ export class Game {
         this.menuRoot = backdrop.root;
         this.menuProjector = backdrop.projector;
         this.setupSceneLighting();
+        this.horrorLighting = new HorrorLightingSystem(this.scene, this.player.camera, this.safeMode);
+        this.construction = new ConstructionMode(this.scene, this.canvas, this.player, this.materials, this.interaction, this.inventory, this.fire, () => this.itemCatalog, {
+            onActiveChanged: (active) => this.handleConstructionModeChanged(active),
+            onToast: (message, duration) => this.ui.toast(message, duration),
+            onLoadingStart: (message, detail) => this.ui.showLoading(message, detail),
+            onLoadingUpdate: (message, detail, progress) => this.ui.updateLoading(message, detail, progress),
+            onLoadingEnd: () => this.ui.hideLoading(),
+            getCurrentMap: () => this.constructionMapId(),
+            onCheckpoint: (id, position) => this.activateSurvivalCheckpoint(id, position),
+            onPlayerDeath: () => void this.handleRespawn("A criatura derruba você. O último checkpoint responde.")
+        });
         this.bindUI();
         this.bindGlobalEvents();
         this.applySettings(this.settingsStore.value);
@@ -192,7 +211,7 @@ export class Game {
         this.chapter2 = new Chapter2World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter2"),
             onChapterComplete: () => void this.finishChapter2(),
-            onPlayerDamaged: () => this.handleRespawn("Você retorna ao último setor estabilizado.")
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
         });
         return this.chapter2;
     }
@@ -204,7 +223,7 @@ export class Game {
         this.chapter3 = new Chapter3World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter3"),
             onChapterComplete: () => void this.finishChapter3(),
-            onPlayerDamaged: () => this.handleRespawn("Você retorna ao último setor estabilizado.")
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
         });
         return this.chapter3;
     }
@@ -216,7 +235,7 @@ export class Game {
         this.chapter4 = new Chapter4World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter4"),
             onChapterComplete: () => void this.finishChapter4(),
-            onPlayerDamaged: () => this.handleRespawn("Você retorna ao último ponto estável da prisão."),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto estável da prisão."),
             onReturnMenu: () => {
                 this.saveSystem.write(this.currentSavePayload());
                 this.enterMenuMode();
@@ -236,7 +255,7 @@ export class Game {
         this.chapter5 = new Chapter5World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter5"),
             onChapterComplete: () => this.finishChapter5(),
-            onPlayerDamaged: () => this.handleRespawn("Você retorna ao último ponto seguro com Noah."),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto seguro com Noah."),
             onEndingDiscovered: (endingId) => {
                 this.endings.add(endingId);
                 this.saveSystem.write(this.currentSavePayload());
@@ -270,51 +289,55 @@ export class Game {
         return this.chapter5;
     }
     async ensureBuiltThrough(chapter, message) {
-        this.ui.showLoading(message);
+        this.ui.showLoading(message, "Carregando módulos e geometria procedural.");
         try {
             await this.yieldToBrowser();
             if (!this.worldBuilt) {
-                this.ui.updateLoading("Construindo o estacionamento e o Wonder World…");
+                this.ui.updateLoading("Construindo o estacionamento e o Wonder World…", "Criando pisos, paredes, portas, carros e colisões.", 22);
                 this.world.build();
                 this.worldBuilt = true;
                 await this.yieldToBrowser();
             }
             if (chapter >= 2 && !this.chapter2Built) {
-                this.ui.updateLoading("Carregando o departamento de modelagem…");
+                this.ui.updateLoading("Carregando o departamento de modelagem…", "Importando os sistemas do Capítulo 2.", 34);
                 const chapter2 = await this.ensureChapter2Created();
                 await this.yieldToBrowser();
-                this.ui.updateLoading("Construindo o departamento de modelagem…");
+                this.ui.updateLoading("Construindo o departamento de modelagem…", "Montando salas, puzzles e inimigos.", 44);
                 chapter2.build();
                 this.chapter2Built = true;
                 await this.yieldToBrowser();
             }
             if (chapter >= 3 && !this.chapter3Built) {
-                this.ui.updateLoading("Carregando a caixa de sustos…");
+                this.ui.updateLoading("Carregando a caixa de sustos…", "Importando os sistemas do Capítulo 3.", 52);
                 const chapter3 = await this.ensureChapter3Created();
                 await this.yieldToBrowser();
-                this.ui.updateLoading("Construindo a caixa de sustos…");
+                this.ui.updateLoading("Construindo a caixa de sustos…", "Montando atrações, rotas e ameaças.", 60);
                 chapter3.build();
                 this.chapter3Built = true;
                 await this.yieldToBrowser();
             }
             if (chapter >= 4 && !this.chapter4Built) {
-                this.ui.updateLoading("Carregando a prisão subterrânea…");
+                this.ui.updateLoading("Carregando a prisão subterrânea…", "Importando os sistemas do Capítulo 4.", 67);
                 const chapter4 = await this.ensureChapter4Created();
                 await this.yieldToBrowser();
-                this.ui.updateLoading("Construindo a prisão subterrânea…");
+                this.ui.updateLoading("Construindo a prisão subterrânea…", "Criando celas, corredores e eventos.", 74);
                 chapter4.build();
                 this.chapter4Built = true;
                 await this.yieldToBrowser();
             }
             if (chapter >= 5 && !this.chapter5Built) {
-                this.ui.updateLoading("Carregando os arquivos centrais…");
+                this.ui.updateLoading("Carregando os arquivos centrais…", "Importando os sistemas do Capítulo 5.", 81);
                 const chapter5 = await this.ensureChapter5Created();
                 await this.yieldToBrowser();
-                this.ui.updateLoading("Construindo os arquivos centrais…");
+                this.ui.updateLoading("Construindo os arquivos centrais…", "Finalizando o último setor da campanha.", 88);
                 chapter5.build();
                 this.chapter5Built = true;
                 await this.yieldToBrowser();
             }
+            this.ui.updateLoading("Finalizando a cena…", "Atualizando iluminação, seleção de objetos e colisões.", 94);
+            this.construction.rescanAndApply();
+            this.horrorLighting.rescanLights();
+            await this.settleLoadingFrames(2);
         }
         catch (error) {
             this.ui.showFatalError(error);
@@ -326,6 +349,11 @@ export class Game {
     }
     yieldToBrowser() {
         return new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
+    }
+    async settleLoadingFrames(frameCount = 2) {
+        for (let frame = 0; frame < frameCount; frame += 1)
+            await this.yieldToBrowser();
+        await new Promise((resolve) => window.setTimeout(resolve, 35));
     }
     bindUI() {
         this.ui.bindMenu((action) => void this.handleMenuAction(action));
@@ -379,36 +407,51 @@ export class Game {
         this.debugEnabled = new URLSearchParams(location.search).get("debug") === "1";
     }
     async handleMenuAction(action) {
-        await this.audio.unlock();
-        this.audio.uiClick();
-        if (action === "new") {
-            this.endings = new Set(this.saveSystem.getEndingGallery());
-            this.saveSystem.clear();
-            if (this.hasRuntimeProgress()) {
-                sessionStorage.setItem("atracao-final-auto-new", "1");
-                location.reload();
-                return;
+        const startsLoading = action === "new" || action === "continue" || action === "load";
+        if (startsLoading && this.menuActionBusy)
+            return;
+        if (startsLoading)
+            this.menuActionBusy = true;
+        try {
+            await this.audio.unlock();
+            this.audio.uiClick();
+            if (action === "new") {
+                this.endings = new Set(this.saveSystem.getEndingGallery());
+                this.saveSystem.clear();
+                if (this.hasRuntimeProgress()) {
+                    this.ui.showLoading("Reiniciando a campanha…", "Limpando a sessão atual e reconstruindo o Wonder World.");
+                    this.player.setEnabled(false);
+                    this.player.releasePointerLock();
+                    sessionStorage.setItem("atracao-final-auto-new", "1");
+                    await this.yieldToBrowser();
+                    location.reload();
+                    return;
+                }
+                await this.startNewGame();
             }
-            await this.startNewGame();
+            else if (action === "continue" || action === "load") {
+                const save = this.saveSystem.load();
+                if (save)
+                    await this.loadGame(save);
+                else
+                    this.ui.toast("Nenhum jogo salvo foi encontrado.");
+            }
+            else if (action === "tips") {
+                this.openTips(true);
+            }
+            else if (action === "settings") {
+                this.openSettings(false, true);
+            }
+            else if (action === "accessibility") {
+                this.openSettings(true, true);
+            }
+            else if (action === "credits") {
+                this.ui.showCredits();
+            }
         }
-        else if (action === "continue" || action === "load") {
-            const save = this.saveSystem.load();
-            if (save)
-                await this.loadGame(save);
-            else
-                this.ui.toast("Nenhum jogo salvo foi encontrado.");
-        }
-        else if (action === "tips") {
-            this.openTips(true);
-        }
-        else if (action === "settings") {
-            this.openSettings(false, true);
-        }
-        else if (action === "accessibility") {
-            this.openSettings(true, true);
-        }
-        else if (action === "credits") {
-            this.ui.showCredits();
+        finally {
+            if (startsLoading)
+                this.menuActionBusy = false;
         }
     }
     hasRuntimeProgress() {
@@ -423,42 +466,68 @@ export class Game {
             || Boolean(this.chapter5?.active);
     }
     async startNewGame() {
-        await this.ensureBuiltThrough(1, "Preparando o prólogo…");
-        this.inventory.restore([], this.itemCatalog);
-        this.inventoryOpen = false;
-        this.ui.hideInventory();
-        this.stage = "prologue";
-        this.chapterTransitionStarted = false;
-        this.fireDamageCooldown = 0;
-        this.player.setEnabled(false);
-        this.menuProjector.intensity = 0;
-        this.audio.startProjector();
+        this.ui.showLoading("Iniciando nova campanha…", "Preparando o estacionamento, as colisões e o estado inicial.");
         this.ui.hideMenu();
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        try {
+            await this.yieldToBrowser();
+            await this.ensureBuiltThrough(1, "Preparando o prólogo…");
+            this.ui.updateLoading("Organizando o inventário…", "Removendo o progresso anterior e posicionando os objetos.", 68);
+            this.inventory.restore([], this.itemCatalog);
+            this.inventoryOpen = false;
+            this.ui.hideInventory();
+            this.stage = "prologue";
+            this.chapterTransitionStarted = false;
+            this.fireDamageCooldown = 0;
+            this.menuProjector.intensity = 0;
+            this.audio.startProjector();
+            this.ui.updateLoading("Preparando o filme de abertura…", "Sincronizando áudio, interface e câmera.", 88);
+            await this.settleLoadingFrames(2);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         await this.ui.playOpeningFilm(() => undefined);
-        this.ui.ensureGameplayVisible();
-        this.audio.stopLoop("projector");
-        this.audio.startRain();
-        this.audio.startHorrorDrone();
-        this.menuRoot.setEnabled(false);
-        this.player.teleport(this.world.checkpoints.prologue.clone(), 0);
-        this.player.health = 100;
-        this.player.armor = 0;
-        this.lives = this.maxLives;
-        this.guide.setEnabled(true);
-        this.fire.fuel = 0;
-        this.fire.torchLit = false;
-        this.ui.showHud();
-        this.objectives.set("wait-friends", "AGUARDE SEUS AMIGOS RETORNAREM.");
+        this.ui.showLoading("Entrando no estacionamento…", "Finalizando câmera, objetivos e iluminação.");
+        try {
+            this.ui.ensureGameplayVisible();
+            this.audio.stopLoop("projector");
+            this.audio.startRain();
+            this.audio.startHorrorDrone();
+            this.menuRoot.setEnabled(false);
+            this.player.teleport(this.world.checkpoints.prologue.clone(), 0);
+            this.player.health = 100;
+            this.player.armor = 0;
+            this.lives = this.maxLives;
+            this.guide.setEnabled(this.settingsStore.value.guideLightEnabled !== false);
+            this.fire.fuel = 0;
+            this.fire.torchLit = false;
+            this.ui.showHud();
+            this.objectives.set("wait-friends", "AGUARDE SEUS AMIGOS RETORNAREM.");
+            this.prologueElapsed = 0;
+            this.screamPlayed = false;
+            this.ambientTimer = 4;
+            this.lastCheckpoint = "prologue-start";
+            this.checkpoint("prologue-start", "prologue");
+            this.ui.updateLoading("Tudo pronto.", "Liberando os controles…", 96);
+            await this.settleLoadingFrames(3);
+            this.player.setEnabled(true);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         this.ui.showSubtitle("Protagonista", "Isso é uma péssima ideia. Eu vou esperar aqui fora.", 4300);
-        this.player.setEnabled(true);
-        this.prologueElapsed = 0;
-        this.screamPlayed = false;
-        this.ambientTimer = 4;
-        this.lastCheckpoint = "prologue-start";
-        this.checkpoint("prologue-start", "prologue");
-        this.ui.toast("WASD para andar · Mouse para olhar · E interage · F acende a tocha · H mostra o caminho · Tab abre o inventário", 6800);
+        this.ui.toast("WASD para andar · E interage · F acende a tocha · H mostra o caminho · Tab inventário · F2 construção", 6800);
     }
     async loadGame(save) {
+        this.ui.showLoading("Carregando jogo salvo…", "Reconstruindo o cenário e restaurando o último checkpoint.");
+        this.ui.hideMenu();
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        try {
+            await this.yieldToBrowser();
+
         const requiredChapter = save.stage === "chapter5" || save.stage === "campaign-complete" || save.stage === "chapter5-transition" ? 5
             : save.stage === "chapter4" || save.stage === "chapter4-transition" ? 4
                 : save.stage === "chapter3" || save.stage === "chapter3-transition" ? 3
@@ -474,7 +543,7 @@ export class Game {
         this.player.health = save.playerHealth;
         this.player.armor = save.playerArmor;
         this.lives = save.lives;
-        this.guide.setEnabled(save.guideEnabled);
+        this.guide.setEnabled(this.settingsStore.value.guideLightEnabled !== false);
         this.fire.fuel = save.torchFuel;
         this.world.restoreProgress(save.inventory, save.solvedPuzzles, save.powerRestored, save.checkpoint, save.openedContainers, save.lootedContainers, save.activatedCheckpoints);
         this.inventory.restore(save.inventory, this.itemCatalog);
@@ -502,7 +571,9 @@ export class Game {
             this.requireChapter4().restore(save.chapter4, save.checkpoint);
             if (save.stage === "chapter5-transition") {
                 this.player.setEnabled(false);
+                this.ui.hideLoading();
                 await this.finishChapter4();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
             }
         }
         else if (save.stage === "chapter3" || save.stage === "chapter4-transition") {
@@ -511,7 +582,9 @@ export class Game {
             this.requireChapter3().restore(save.chapter3, save.checkpoint);
             if (save.stage === "chapter4-transition") {
                 this.player.setEnabled(false);
+                this.ui.hideLoading();
                 await this.finishChapter3();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
             }
         }
         else if (save.stage === "chapter2" || save.stage === "chapter3-transition") {
@@ -520,7 +593,9 @@ export class Game {
             this.requireChapter2().restore(save.chapter2, save.checkpoint);
             if (save.stage === "chapter3-transition") {
                 this.player.setEnabled(false);
+                this.ui.hideLoading();
                 await this.finishChapter2();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
             }
         }
         else {
@@ -544,13 +619,22 @@ export class Game {
             this.boss.start(Math.max(1, save.bossPhase));
             this.objectives.set("defeat-body", "DERROTE BODY.");
         }
-        if (save.stage === "chapter2-transition")
+        if (save.stage === "chapter2-transition") {
+            this.ui.hideLoading();
             await this.startChapterTransition();
+            this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
+        }
         // Chapter restore routines may place the player before every collider has updated.
         // Validate the final position on the next frame so saves/checkpoints can never
         // leave the collision ellipsoid inside a station, wall or closed door.
         window.setTimeout(() => this.correctUnsafePlayerPosition(), 0);
         this.ui.toast("Jogo carregado.");
+                this.ui.updateLoading("Finalizando o carregamento…", "Validando posição, colisões, objetivos e iluminação.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
     }
     enterMenuMode() {
         this.stage = "menu";
@@ -624,8 +708,16 @@ export class Game {
         this.objectives.set("chapter2-descend", "AGUARDE O ELEVADOR CONCLUIR A DESCIDA.");
         this.audio.impact(0.8);
         this.checkpoint("chapter2-transition", "chapter2-transition");
-        await new Promise((resolve) => window.setTimeout(resolve, 950));
-        await this.ensureBuiltThrough(2, "Preparando o departamento de modelagem…");
+        this.ui.showLoading("Descendo para o próximo setor…", "Preparando o departamento de modelagem.");
+        try {
+            await new Promise((resolve) => window.setTimeout(resolve, 950));
+            await this.ensureBuiltThrough(2, "Preparando o departamento de modelagem…");
+            this.ui.updateLoading("Departamento carregado.", "Posicionando o elevador e ativando os objetivos.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         await this.ui.showChapterCard("CAPÍTULO 2 — NÃO VIRE AS COSTAS.", "", 4700);
         this.stage = "chapter2";
         this.chapterTransitionStarted = false;
@@ -639,7 +731,15 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter3-transition", "chapter3-transition");
-        await this.ensureBuiltThrough(3, "Preparando a caixa de sustos…");
+        this.ui.showLoading("Abrindo a próxima atração…", "Preparando a Caixa de Sustos.");
+        try {
+            await this.ensureBuiltThrough(3, "Preparando a caixa de sustos…");
+            this.ui.updateLoading("A atração está pronta.", "Sincronizando inimigos, portas e objetivos.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         await this.ui.showChapterCard("CAPÍTULO 3 — A CAIXA DE SUSTOS.", "", 5600);
         this.stage = "chapter3";
         this.chapterTransitionStarted = false;
@@ -653,7 +753,15 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter4-transition", "chapter4-transition");
-        await this.ensureBuiltThrough(4, "Preparando a prisão subterrânea…");
+        this.ui.showLoading("Descendo para a prisão…", "Preparando corredores, celas e rotas de fuga.");
+        try {
+            await this.ensureBuiltThrough(4, "Preparando a prisão subterrânea…");
+            this.ui.updateLoading("Prisão carregada.", "Finalizando colisões e pontos seguros.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         await this.ui.showChapterCard("CAPÍTULO 4 — O CAMINHO SEGURO.", "", 5800);
         this.stage = "chapter4";
         this.chapterTransitionStarted = false;
@@ -667,7 +775,15 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter5-transition", "chapter5-transition");
-        await this.ensureBuiltThrough(5, "Preparando os arquivos centrais…");
+        this.ui.showLoading("Acessando os arquivos centrais…", "Preparando o setor final da campanha.");
+        try {
+            await this.ensureBuiltThrough(5, "Preparando os arquivos centrais…");
+            this.ui.updateLoading("Arquivos centrais carregados.", "Sincronizando Noah, eventos e o objetivo final.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
         await this.ui.showChapterCard("CAPÍTULO 5 — PROVA DE VIDA.", "", 5800);
         this.stage = "chapter5";
         this.chapterTransitionStarted = false;
@@ -941,6 +1057,8 @@ export class Game {
         this.audio.applySettings(settings);
         this.player.applySettings(settings);
         this.interaction.setHighContrast(settings.highContrastInteractions);
+        if (this.guide && this.guide.enabled !== settings.guideLightEnabled)
+            this.guide.setEnabled(settings.guideLightEnabled);
         this.boss.setExtendedReactionWindows(settings.extendedBossWindows);
         this.chapter2?.applySettings(settings);
         this.chapter3?.applySettings(settings);
@@ -948,7 +1066,7 @@ export class Game {
         this.chapter5?.applySettings(settings);
         const scaling = settings.performancePreset === "performance" ? 1.5 : settings.performancePreset === "cinematic" ? 0.82 : 1;
         this.engine.setHardwareScalingLevel(scaling);
-        this.scene.fogDensity = settings.performancePreset === "performance" ? 0.012 : 0.009;
+        this.horrorLighting.applyPerformancePreset(settings.performancePreset);
     }
     toggleTorch() {
         if (!this.player.enabled || (!this.inventory.has("torch") && !this.inventory.has("replacementTorch")))
@@ -980,6 +1098,8 @@ export class Game {
     }
     usePrimaryAction(charged = false) {
         if (!this.player.enabled)
+            return;
+        if (this.construction.handlePrimaryAttack(charged))
             return;
         if (this.stage === "chapter5" && this.requireChapter5().handlePrimaryAttack(charged))
             return;
@@ -1055,6 +1175,10 @@ export class Game {
         // controller ran from Scene.onBeforeRender, after the game systems had already
         // updated, which allowed the collider/audio to advance while a stale camera was
         // rendered on some browsers.
+        this.construction.update(deltaSeconds);
+        this.horrorLighting.update(deltaSeconds);
+        if (this.construction.active)
+            return;
         this.player.update(deltaSeconds);
         this.updateMovementDiagnostics(deltaSeconds);
         const time = performance.now() * 0.001;
@@ -1094,6 +1218,7 @@ export class Game {
     }
     toggleGuide() {
         const enabled = this.guide.toggle();
+        this.settingsStore.save({ guideLightEnabled: enabled });
         this.ui.toast(enabled ? "GUIA LUMINOSO ATIVADO · siga as marcas no chão." : "Guia luminoso desativado.", 1800);
     }
     guideRouteForCurrentObjective() {
@@ -1101,6 +1226,7 @@ export class Game {
         if (this.stage === "prologue" || this.stage === "chapter1" || this.stage === "boss")
             return this.world.getGuideRoute(objectiveId);
         let roomTarget = null;
+        let hasAuthoredTarget = false;
         if (this.stage === "chapter2" || this.stage === "chapter3-transition") {
             const c = this.requireChapter2().checkpoints;
             const map = {
@@ -1108,7 +1234,9 @@ export class Game {
                 "blackout-control": c.controlRoom, "activate-machine": c.machine, "sphere-arena-1": c.arena1,
                 "sphere-arena-2": c.arena2, "sphere-arena-3": c.arena3, "escape-arena": c.maya, "sphere-return": c.maya, "follow-music": c.chapter3
             };
-            roomTarget = this.requireChapter2().guideTargetForObjective(objectiveId) ?? map[objectiveId]?.clone() ?? null;
+            const authoredTarget = this.requireChapter2().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
         }
         else if (this.stage === "chapter3" || this.stage === "chapter4-transition") {
             const c = this.requireChapter3().checkpoints;
@@ -1118,7 +1246,9 @@ export class Game {
                 "activate-five-generators": this.nearestInactiveGeneratorTarget(c), "ventilate-gas-room": c.generator3, "reach-generator5": c.generator5,
                 "synchronize-generator5": c.generator5, "talk-to-maya": c.mayaChamber, "watch-maya": c.mayaChamber
             };
-            roomTarget = map[objectiveId]?.clone() ?? null;
+            const authoredTarget = this.requireChapter3().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
         }
         else if (this.stage === "chapter4" || this.stage === "chapter5-transition") {
             const c = this.requireChapter4().checkpoints;
@@ -1129,7 +1259,9 @@ export class Game {
                 "identify-mimic": c.identityTesting, "defeat-mimic": c.mimicArena, "search-mimic-remains": c.mimicArena,
                 "reach-archives": c.archives, "after-mimic": c.archives, "find-maintenance-route": c.chapter5
             };
-            roomTarget = map[objectiveId]?.clone() ?? null;
+            const authoredTarget = this.requireChapter4().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
         }
         else if (this.stage === "chapter5" || this.stage === "campaign-complete") {
             const c = this.requireChapter5().checkpoints;
@@ -1139,11 +1271,13 @@ export class Game {
                 "mannequin-return": c.mannequinTransit, "escape-mannequin": c.mannequinTransit, "final-jesse": c.finalJesse,
                 "burning-archives": c.burningArchives, "maintenance-bridge": c.bridge, "synchronized-exit": c.finalExit
             };
-            roomTarget = map[objectiveId]?.clone() ?? null;
+            const authoredTarget = this.requireChapter5().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
         }
         if (!roomTarget)
             return null;
-        const preciseTarget = this.interaction.getGuideTarget(objectiveId, roomTarget, 28) ?? roomTarget;
+        const preciseTarget = hasAuthoredTarget ? roomTarget : (this.interaction.getGuideTarget(objectiveId, roomTarget, 28) ?? roomTarget);
         return this.buildCampaignGuideRoute(preciseTarget);
     }
     nearestInactiveGeneratorTarget(checkpoints) {
@@ -1216,26 +1350,52 @@ export class Game {
         this.ui.setContinueEnabled(true);
         this.ui.toast(`CHECKPOINT SALVO · ${this.lives}/${this.maxLives} vidas`, 2100);
     }
-    handleRespawn(message) {
-        this.lives = Math.max(0, this.lives - 1);
-        if (this.lives <= 0) {
-            this.lives = this.maxLives;
-            this.player.armor = 0;
-            this.fire.fuel = Math.max(0, this.fire.fuel - 15);
+    async handleRespawn(message) {
+        if (this.respawning || this.stage === "menu")
+            return;
+        this.respawning = true;
+        const wasEnabled = this.player.enabled;
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.ui.showLoading("Retornando ao checkpoint…", "Estabilizando o cenário e removendo ameaças do ponto de retorno.");
+        try {
+            await this.yieldToBrowser();
+            this.lives = Math.max(0, this.lives - 1);
+            if (this.lives <= 0) {
+                this.lives = this.maxLives;
+                this.player.armor = 0;
+                this.fire.fuel = Math.max(0, this.fire.fuel - 15);
+                this.ui.updateLoading("Reconstruindo o último ponto seguro…", "Todas as vidas foram consumidas. Aplicando as penalidades.", 42);
+            }
+            else {
+                this.ui.updateLoading("Restaurando o último ponto seguro…", `${this.lives} ${this.lives === 1 ? "vida restante" : "vidas restantes"}.`, 42);
+            }
+            this.player.health = Math.max(45, this.player.health);
+            this.world.resetEnemiesForPlayerRespawn();
+            this.construction.resetMobsForRespawn();
+            if (this.chapter2Built)
+                this.chapter2?.resetEnemiesForPlayerRespawn();
+            if (this.chapter3Built)
+                this.chapter3?.resetEnemiesForPlayerRespawn();
+            this.ui.updateLoading("Reposicionando o jogador…", "Procurando uma área livre perto do checkpoint.", 72);
+            await this.yieldToBrowser();
+            const destination = this.destinationForCheckpoint(this.lastCheckpoint, this.stage);
+            this.teleportToSafePosition(destination);
+            this.correctUnsafePlayerPosition();
+            this.saveSystem.write(this.currentSavePayload());
+            this.ui.updateLoading("Checkpoint restaurado.", "Liberando os controles…", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+            this.respawning = false;
+            if (wasEnabled && this.stage !== "menu" && !this.chapterTransitionStarted)
+                this.player.setEnabled(true);
+        }
+        if (this.lives === this.maxLives && this.player.armor === 0)
             this.ui.toast("SEM VIDAS · retorno ao último checkpoint. Combustível e proteção foram parcialmente perdidos.", 4300);
-        }
-        else {
+        else
             this.ui.toast(`${message} · ${this.lives} ${this.lives === 1 ? "vida restante" : "vidas restantes"}.`, 3200);
-        }
-        this.player.health = Math.max(45, this.player.health);
-        this.world.resetEnemiesForPlayerRespawn();
-        if (this.chapter2Built)
-            this.chapter2?.resetEnemiesForPlayerRespawn();
-        if (this.chapter3Built)
-            this.chapter3?.resetEnemiesForPlayerRespawn();
-        const destination = this.destinationForCheckpoint(this.lastCheckpoint, this.stage);
-        window.setTimeout(() => this.teleportToSafePosition(destination), 0);
-        this.saveSystem.write(this.currentSavePayload());
     }
     updatePrologue(deltaSeconds) {
         this.prologueElapsed += deltaSeconds;
@@ -1514,13 +1674,44 @@ export class Game {
     }
     setupSceneLighting() {
         const ambient = new HemisphericLight("ambient", new Vector3(0, 1, 0), this.scene);
-        ambient.diffuse = new Color3(0.24, 0.26, 0.3);
-        ambient.groundColor = new Color3(0.05, 0.045, 0.04);
-        ambient.intensity = 0.42;
+        ambient.diffuse = new Color3(0.075, 0.09, 0.125);
+        ambient.groundColor = new Color3(0.008, 0.007, 0.009);
+        ambient.intensity = 0.13;
         const storm = new DirectionalLight("storm-directional", new Vector3(-0.4, -1, 0.25), this.scene);
         storm.position = new Vector3(20, 35, -20);
-        storm.diffuse = new Color3(0.55, 0.66, 0.82);
-        storm.intensity = 0.55;
+        storm.diffuse = new Color3(0.22, 0.31, 0.48);
+        storm.intensity = 0.16;
+    }
+    constructionMapId() {
+        if (this.stage === "chapter5" || this.stage === "campaign-complete")
+            return "chapter5";
+        if (this.stage === "chapter4" || this.stage === "chapter5-transition")
+            return "chapter4";
+        if (this.stage === "chapter3" || this.stage === "chapter4-transition")
+            return "chapter3";
+        if (this.stage === "chapter2" || this.stage === "chapter3-transition")
+            return "chapter2";
+        if (this.stage === "menu")
+            return "global";
+        return "chapter1";
+    }
+    handleConstructionModeChanged(active) {
+        this.horrorLighting.setEditorMode(active);
+        if (active) {
+            this.constructionRestorePlayer = this.player.enabled;
+            this.constructionRestoreGuide = this.guide.enabled;
+            this.player.setEnabled(false);
+            this.player.releasePointerLock();
+            this.guide.setEnabled(false);
+            this.ui.dismissGameplayText();
+        }
+        else {
+            this.guide.setEnabled(this.constructionRestoreGuide);
+            if (this.stage !== "menu" && !this.paused && !this.inventoryOpen && this.constructionRestorePlayer) {
+                this.player.setEnabled(true);
+                this.canvas.focus();
+            }
+        }
     }
     installMovementDiagnostics() {
         const overlay = document.createElement("pre");

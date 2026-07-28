@@ -82,11 +82,13 @@ export class InteractionSystem {
             const point = mesh.getBoundingInfo().boundingBox.centerWorld.clone();
             const explicit = definition.guideObjectives?.includes(objectiveId) ?? false;
             const distanceToExpected = Vector3.Distance(point, expectedTarget);
-            if (!explicit && distanceToExpected > searchRadius)
-                continue;
             const name = mesh.name.toLowerCase();
             const prompt = (typeof definition.prompt === "function" ? definition.prompt() : definition.prompt).toLowerCase();
             const searchable = `${name} ${prompt}`;
+            const keywordMatches = keywords.reduce((count, keyword) => count + (searchable.includes(keyword) ? 1 : 0), 0);
+            const semanticRadius = Math.max(searchRadius, 110);
+            if (!explicit && distanceToExpected > searchRadius && (keywordMatches === 0 || distanceToExpected > semanticRadius))
+                continue;
             const isCheckpoint = name.includes("checkpoint") || prompt.includes("checkpoint");
             const isDoor = name.includes("door") || prompt.includes("porta");
             const isLoot = name.includes("chest") || name.includes("loot") || name.includes("locker") || name.includes("trunk") || prompt.includes("baú") || prompt.includes("armário") || prompt.includes("porta-malas");
@@ -96,10 +98,9 @@ export class InteractionSystem {
                 continue;
             if (!explicit && (isCheckpoint || (isDoor && !allowDoor) || (isLoot && !allowLoot) || (isDocument && !allowDocument)))
                 continue;
-            const keywordMatches = keywords.reduce((count, keyword) => count + (searchable.includes(keyword) ? 1 : 0), 0);
             const playerDistance = Vector3.Distance(point, this.getPlayerPosition());
-            const semanticPenalty = keywords.length > 0 && keywordMatches === 0 ? 9 : -keywordMatches * 4.5;
-            const score = (explicit ? -50 : 0) + distanceToExpected + playerDistance * 0.06 + semanticPenalty + (definition.guidePriority ?? 0);
+            const semanticPenalty = keywords.length > 0 && keywordMatches === 0 ? 18 : -keywordMatches * 16;
+            const score = (explicit ? -80 : 0) + distanceToExpected * (keywordMatches > 0 ? 0.3 : 1) + playerDistance * 0.04 + semanticPenalty + (definition.guidePriority ?? 0);
             if (score < bestScore) {
                 bestScore = score;
                 best = point;
@@ -111,7 +112,7 @@ export class InteractionSystem {
         const aliases = {
             "find-fuel": ["fuel", "combust", "galão", "porta-malas"],
             "reach-side-door": ["side-entrance", "entrada lateral", "porta"],
-            "restore-power": ["fuse", "cable", "crank", "painel", "quadro", "energia"],
+            "restore-power": ["panel-key", "chave", "fuse", "fusível", "cable", "cabo", "crank", "manivela", "painel", "quadro", "energia"],
             "solve-body-puzzles": ["hand", "eye", "heart", "foot", "mão", "olho", "coração", "pé", "válvula", "espelho", "placa"],
             "enter-auditorium": ["auditorium-door", "auditório", "porta"],
             "unlock-underground": ["body-card-reader", "cartão", "elevador"],
@@ -121,7 +122,7 @@ export class InteractionSystem {
             "sphere-return": ["winch", "guincho", "retorno"],
             "watch-jack-box": ["jack", "caixa", "melody", "melodia"],
             "inspect-daniel-room": ["daniel"],
-            "collect-daniel-items": ["daniel", "torch", "recorder", "club", "card"],
+            "collect-daniel-items": ["daniel-metal-club", "daniel-replacement-torch", "daniel-recorder", "porrete", "tocha", "gravador"],
             "activate-five-generators": ["generator", "gerador", "breaker", "cable", "console"],
             "ventilate-gas-room": ["gas", "vent", "válvula", "repair"],
             "synchronize-generator5": ["generator5", "lever", "alavanca"],

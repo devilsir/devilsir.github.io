@@ -185,6 +185,58 @@ export class WorldBuilder {
         }
         return true;
     }
+    guideTargetForObjective(objectiveId) {
+        const player = this.player.collider.position;
+        const meshPoint = (name, fallback) => {
+            const mesh = this.scene.getMeshByName(name);
+            if (!mesh || !mesh.isEnabled())
+                return fallback.clone();
+            mesh.computeWorldMatrix(true);
+            return mesh.getBoundingInfo().boundingBox.centerWorld.clone();
+        };
+        const nearest = (points, fallback) => {
+            const valid = points.filter(Boolean);
+            if (valid.length === 0)
+                return fallback.clone();
+            return valid.sort((a, b) => Vector3.Distance(a, player) - Vector3.Distance(b, player))[0].clone();
+        };
+        if (objectiveId === "find-entry") {
+            if (!this.torchTaken)
+                return meshPoint("improvised-torch-pickup", new Vector3(-27, 0.2, 25));
+            if (!this.fuelTaken)
+                return meshPoint(`car-trunk-interaction-${this.fuelCarIndex}`, new Vector3(12, 0.2, 11.5));
+            if (!this.fenceOpened)
+                return meshPoint("broken-fence-panel", new Vector3(20, 0.2, 31.5));
+            return meshPoint("side-entrance-door", new Vector3(20, 0.2, 37.2));
+        }
+        if (objectiveId === "find-fuel")
+            return meshPoint(`car-trunk-interaction-${this.fuelCarIndex}`, new Vector3(12, 0.2, 11.5));
+        if (objectiveId === "cross-fence")
+            return meshPoint("broken-fence-panel", new Vector3(20, 0.2, 31.5));
+        if (objectiveId === "reach-side-door")
+            return meshPoint("side-entrance-door", new Vector3(20, 0.2, 37.2));
+        if (["search-friends", "survive-plush", "restore-power"].includes(objectiveId)) {
+            const pending = [];
+            if (!this.panelKeyTaken)
+                pending.push(meshPoint("electrical-panel-key", new Vector3(-16, 1.2, 68.9)));
+            if (!this.crankTaken)
+                pending.push(meshPoint("soda-crank", new Vector3(19.7, 1.4, 71.3)));
+            if (!this.cableTaken)
+                pending.push(meshPoint("maintenance-heavy-crate", new Vector3(-20, 0.7, 83)));
+            if (!this.fuseTaken)
+                pending.push(meshPoint("fuse-locker", new Vector3(-12.7, 1.8, 87.4)));
+            return nearest(pending, this.checkpoints.power);
+        }
+        if (objectiveId === "solve-body-puzzles")
+            return this.nearestUnsolvedPuzzleCheckpoint();
+        if (objectiveId === "enter-auditorium")
+            return meshPoint("auditorium-door", new Vector3(0, 1.8, 137));
+        if (objectiveId === "inspect-nose")
+            return meshPoint("body-nose", new Vector3(0, 1, 165));
+        if (objectiveId === "unlock-underground")
+            return meshPoint("body-card-reader", this.checkpoints.elevator);
+        return null;
+    }
     getGuideRoute(objectiveId) {
         const targetByObjective = {
             "wait-friends": new Vector3(0, 0.12, 18),
@@ -202,10 +254,11 @@ export class WorldBuilder {
             "unlock-underground": this.checkpoints.elevator,
             "descend": new Vector3(0, 0.12, 186)
         };
-        const roomTarget = targetByObjective[objectiveId];
+        const authoredTarget = this.guideTargetForObjective(objectiveId);
+        const roomTarget = authoredTarget ?? targetByObjective[objectiveId];
         if (!roomTarget)
             return null;
-        const target = this.interaction.getGuideTarget(objectiveId, roomTarget, 28) ?? roomTarget;
+        const target = authoredTarget ?? this.interaction.getGuideTarget(objectiveId, roomTarget, 28) ?? roomTarget;
         const player = this.player.collider.position;
         if (!this.enteredWonderWorld) {
             if (target.z >= 37)
@@ -1216,7 +1269,7 @@ Pressione E novamente ou Esc para fechar.`);
         crate.material = this.materials.get("wood", 0);
         crate.checkCollisions = true;
         this.interaction.register(crate, {
-            prompt: () => this.crateMoved ? "[E] PEGAR O CABO REVELADO" : "[E] EMPURRAR O CAIXOTE",
+            prompt: () => this.cableTaken ? "CAIXOTE VAZIO" : this.crateMoved ? "[E] PEGAR O CABO REVELADO" : "[E] EMPURRAR O CAIXOTE",
             onInteract: () => {
                 if (!this.crateMoved) {
                     this.crateMoved = true;

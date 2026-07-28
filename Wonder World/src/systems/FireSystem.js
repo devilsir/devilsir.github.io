@@ -1,5 +1,6 @@
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
+import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -14,6 +15,7 @@ export class FireSystem {
     materials;
     torchRoot;
     torchLight;
+    torchBeam;
     torchFlames = [];
     burnables = new Map();
     fires = [];
@@ -33,8 +35,14 @@ export class FireSystem {
         this.torchLight.parent = this.torchRoot;
         this.torchLight.diffuse = new Color3(1, 0.44, 0.12);
         this.torchLight.specular = new Color3(1, 0.24, 0.05);
-        this.torchLight.range = 12;
+        this.torchLight.range = 10;
         this.torchLight.intensity = 0;
+        this.torchBeam = new SpotLight("torch-beam", new Vector3(0.08, -0.05, 0.1), new Vector3(0, -0.035, 1), Math.PI / 2.7, 3.4, scene);
+        this.torchBeam.parent = camera;
+        this.torchBeam.diffuse = new Color3(1, 0.49, 0.16);
+        this.torchBeam.specular = new Color3(1, 0.28, 0.06);
+        this.torchBeam.range = 26;
+        this.torchBeam.intensity = 0;
         this.createTorchVisuals();
         this.torchRoot.setEnabled(false);
         scene.onBeforeRenderObservable.add(() => this.update(scene.getEngine().getDeltaTime() / 1000));
@@ -178,8 +186,11 @@ export class FireSystem {
                 this.torchLit = false;
         }
         const flicker = this.torchAvailable && this.torchLit ? 0.78 + Math.random() * 0.32 : 0;
-        this.torchLight.intensity = flicker * (0.45 + fuelRatio * 1.3);
-        this.torchLight.range = 7 + fuelRatio * 8;
+        this.torchLight.intensity = flicker * (0.32 + fuelRatio * 0.82);
+        this.torchLight.range = 6 + fuelRatio * 7;
+        this.torchBeam.intensity = flicker * (1.55 + fuelRatio * 2.25);
+        this.torchBeam.range = 18 + fuelRatio * 12;
+        this.torchBeam.angle = Math.PI / (2.55 + fuelRatio * 0.35);
         this.torchFlames.forEach((flame, index) => {
             flame.setEnabled(this.torchAvailable && this.torchLit);
             flame.scaling.y = 0.75 + Math.random() * 0.55;

@@ -258,6 +258,37 @@ export class Chapter4World {
             collectedRecordings: [...this.collectedRecordings]
         };
     }
+    guideTargetForObjective(objectiveId) {
+        const player = this.player.collider.position;
+        const meshPoint = (name, fallback) => {
+            const mesh = this.scene.getMeshByName(name);
+            if (!mesh || !mesh.isEnabled())
+                return fallback.clone();
+            mesh.computeWorldMatrix(true);
+            return mesh.getBoundingInfo().boundingBox.centerWorld.clone();
+        };
+        const nearest = (points, fallback) => {
+            const valid = points.filter(Boolean);
+            return (valid.length ? valid.sort((a, b) => Vector3.Distance(a, player) - Vector3.Distance(b, player))[0] : fallback).clone();
+        };
+        const direct = {
+            "escape-cell": "loose-wall-panel",
+            "repair-intercom": "damaged-intercom",
+            "observe-guard": "observation-timing-lever",
+            "open-cell-lock": "cell-mechanical-lock",
+            "recover-equipment": "evidence-equipment-locker",
+            "search-mimic-remains": "mimic-body-inspection-zone",
+            "reach-archives": "archive-exit-console"
+        };
+        if (direct[objectiveId])
+            return meshPoint(direct[objectiveId], this.checkpoints.prisonCell);
+        if (objectiveId === "identify-mimic") {
+            const ids = ["mirrored-hand", "wrong-memory", "shared-breath", "missing-reflection", "mixed-clothing"];
+            const pending = ids.filter((id) => !this.mimicEvidence.has(id)).map((id) => meshPoint(`mimic-evidence-console-${id}`, this.checkpoints.identityTesting));
+            return nearest(pending, this.checkpoints.identityTesting);
+        }
+        return null;
+    }
     destinationForCheckpoint(checkpoint) {
         if (this.checkpoints[checkpoint])
             return this.checkpoints[checkpoint].clone();

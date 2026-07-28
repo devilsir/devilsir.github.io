@@ -270,6 +270,52 @@ export class Chapter5World {
         this.settings = settings;
         this.jesse.configure(this.jesseNodes(), settings.simplifiedChase);
     }
+    guideTargetForObjective(objectiveId) {
+        const player = this.player.collider.position;
+        const meshPoint = (name, fallback) => {
+            const mesh = this.scene.getMeshByName(name);
+            if (!mesh || !mesh.isEnabled())
+                return fallback.clone();
+            mesh.computeWorldMatrix(true);
+            return mesh.getBoundingInfo().boundingBox.centerWorld.clone();
+        };
+        const nearest = (points, fallback) => {
+            const valid = points.filter(Boolean);
+            return (valid.length ? valid.sort((a, b) => Vector3.Distance(a, player) - Vector3.Distance(b, player))[0] : fallback).clone();
+        };
+        if (objectiveId === "prove-life") {
+            const pending = this.proofStations.filter((station) => !station.used).map((station) => station.mesh.getAbsolutePosition().clone());
+            return nearest(pending, this.checkpoints.proof);
+        }
+        if (objectiveId === "search-archives") {
+            const unread = this.archiveRecords.filter((record) => !this.documents.has(record.id)).map((record) => record.mesh.getAbsolutePosition().clone());
+            return nearest(unread, this.checkpoints.employeeArchives);
+        }
+        if (objectiveId === "find-own-file") {
+            if (!this.documents.has("protagonist-file"))
+                return meshPoint("archive-record-protagonist-file", this.checkpoints.employeeArchives);
+            if (!this.flashbacksSeen.has("film-fragment") && !this.flashbacksSeen.has("token-memory")) {
+                return nearest([
+                    meshPoint("childhood-projector", this.checkpoints.memoryLab),
+                    this.inventory.has("childhoodToken") ? null : meshPoint("childhood-token", this.checkpoints.memoryLab)
+                ], this.checkpoints.memoryLab);
+            }
+            return meshPoint("archive-core-console", this.checkpoints.archiveCore);
+        }
+        if (objectiveId === "recover-memory") {
+            const pending = [];
+            if (!this.flashbacksSeen.has("film-fragment"))
+                pending.push(meshPoint("childhood-projector", this.checkpoints.memoryLab));
+            if (!this.flashbacksSeen.has("token-memory") && !this.inventory.has("childhoodToken"))
+                pending.push(meshPoint("childhood-token", this.checkpoints.memoryLab));
+            if (this.canAccessArchiveCore() && !this.archiveDataAccessed)
+                pending.push(meshPoint("archive-core-console", this.checkpoints.archiveCore));
+            return nearest(pending, this.checkpoints.memoryLab);
+        }
+        if (objectiveId === "synchronized-exit")
+            return this.playerReaderReady ? meshPoint("final-noah-reader", this.checkpoints.finalExit) : meshPoint("final-player-reader", this.checkpoints.finalExit);
+        return null;
+    }
     destinationForCheckpoint(checkpoint) {
         if (checkpoint.startsWith("chapter5-jesse"))
             return this.checkpoints.finalJesse.clone();

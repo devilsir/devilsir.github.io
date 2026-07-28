@@ -3,6 +3,10 @@ if (!B) { throw new Error("Babylon.js não foi carregado. Verifique a conexão c
 export const Color3 = B.Color3;
 export const Color4 = B.Color4;
 export const DirectionalLight = B.DirectionalLight;
+export const DefaultRenderingPipeline = B.DefaultRenderingPipeline;
+export const GizmoManager = B.GizmoManager;
+export const GlowLayer = B.GlowLayer;
+export const PointerEventTypes = B.PointerEventTypes;
 export const DynamicTexture = B.DynamicTexture;
 export const Engine = B.Engine;
 export const FreeCamera = B.FreeCamera;

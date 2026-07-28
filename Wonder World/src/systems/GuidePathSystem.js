@@ -67,8 +67,9 @@ export class GuidePathSystem {
                 return;
             marker.position.y = Number(marker.metadata?.baseY ?? marker.position.y)
                 + Math.sin(this.animationTime * 3.1 + index * 0.58) * 0.06;
-            const pulse = 0.82 + Math.sin(this.animationTime * 4.4 + index * 0.72) * 0.16;
-            marker.scaling.set(pulse, 1, pulse);
+            const isDestination = marker.metadata?.guideDestination === true;
+            const pulse = (isDestination ? 1.35 : 0.82) + Math.sin(this.animationTime * 4.4 + index * 0.72) * (isDestination ? 0.24 : 0.16);
+            marker.scaling.set(pulse, isDestination ? 1.7 : 1, pulse);
             marker.rotation.y += deltaSeconds * 0.7;
         });
     }
@@ -125,7 +126,7 @@ export class GuidePathSystem {
             }
             const terrainY = this.findFloorHeight(point);
             marker.position.set(point.x, terrainY + 0.19, point.z);
-            marker.metadata = { ...(marker.metadata ?? {}), baseY: marker.position.y };
+            marker.metadata = { ...(marker.metadata ?? {}), baseY: marker.position.y, guideDestination: index === sampled.length - 1 };
             marker.setEnabled(true);
         });
     }

@@ -8,25 +8,70 @@ export class GameUI {
     subtitleTimer = 0;
     captionTimer = 0;
     documentCloseHandler = null;
+    loadingDepth = 0;
+    loadingProgress = 0;
+    loadingTimer = 0;
     constructor(root, settings) {
         this.root = root;
         this.currentSettings = settings;
         this.root.innerHTML = this.template();
         this.applySettings(settings);
     }
-    showLoading(message) {
-        this.updateLoading(message);
+    showLoading(message, detail = "Aguarde enquanto o cenário é preparado.") {
+        this.loadingDepth += 1;
+        this.loadingProgress = this.loadingDepth === 1 ? 7 : Math.max(7, this.loadingProgress);
+        this.updateLoading(message, detail);
+        this.get("loading-progress-fill").style.width = `${this.loadingProgress}%`;
+        this.get("loading-progress-value").textContent = `${Math.round(this.loadingProgress)}%`;
         this.showElement("loading-screen");
+        this.startLoadingProgress();
     }
-    updateLoading(message) {
+    updateLoading(message, detail = null, progress = null) {
         this.get("loading-message").textContent = message;
+        if (detail !== null)
+            this.get("loading-detail").textContent = detail;
+        if (progress !== null) {
+            this.loadingProgress = Math.max(this.loadingProgress, Math.min(96, progress));
+            this.get("loading-progress-fill").style.width = `${this.loadingProgress}%`;
+            this.get("loading-progress-value").textContent = `${Math.round(this.loadingProgress)}%`;
+        }
     }
     hideLoading() {
+        this.loadingDepth = Math.max(0, this.loadingDepth - 1);
+        if (this.loadingDepth > 0)
+            return;
+        this.stopLoadingProgress();
+        this.loadingProgress = 100;
+        this.get("loading-progress-fill").style.width = "100%";
+        this.get("loading-progress-value").textContent = "100%";
+        window.setTimeout(() => {
+            if (this.loadingDepth === 0)
+                this.hideElement("loading-screen");
+        }, 120);
+    }
+    forceHideLoading() {
+        this.loadingDepth = 0;
+        this.stopLoadingProgress();
         this.hideElement("loading-screen");
+    }
+    startLoadingProgress() {
+        this.stopLoadingProgress();
+        this.loadingTimer = window.setInterval(() => {
+            if (this.loadingDepth <= 0 || this.loadingProgress >= 92)
+                return;
+            const remaining = 92 - this.loadingProgress;
+            this.loadingProgress += Math.max(0.35, remaining * 0.035);
+            this.get("loading-progress-fill").style.width = `${this.loadingProgress}%`;
+            this.get("loading-progress-value").textContent = `${Math.round(this.loadingProgress)}%`;
+        }, 110);
+    }
+    stopLoadingProgress() {
+        if (this.loadingTimer)
+            window.clearInterval(this.loadingTimer);
+        this.loadingTimer = 0;
     }
     ensureGameplayVisible() {
         this.hideElement("main-menu");
-        this.hideElement("loading-screen");
         this.hideElement("cinematic");
         this.hideElement("fatal-error-screen");
         this.hideElement("inventory-screen");
@@ -35,7 +80,7 @@ export class GameUI {
     showFatalError(error) {
         const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
         this.get("fatal-error-message").textContent = message;
-        this.hideElement("loading-screen");
+        this.forceHideLoading();
         this.showElement("fatal-error-screen");
         const details = this.get("fatal-error-details");
         details.textContent = error instanceof Error && error.stack ? error.stack : message;
@@ -167,7 +212,7 @@ export class GameUI {
         <h2>${this.escape(stats.ending)}</h2>
         <div class="credits-gap"></div>
         <h3>UMA PRODUÇÃO PROCEDURAL</h3>
-        <p>Direção criativa e conceito: Lucas Xavier Nardelli</p>
+        <p>Direção criativa e conceito: Timbó</p>
         <p>Desenvolvimento, sistemas e integração: OpenAI · GPT-5.6 Thinking</p>
         <p>Motor: Babylon.js · TypeScript · Vite</p>
         <p>Materiais, cenários, personagens e áudio: gerados em tempo de execução</p>
@@ -750,12 +795,22 @@ export class GameUI {
     }
     template() {
         return `
-      <div id="loading-screen" class="screen boot-screen hidden">
+      <div id="loading-screen" class="screen boot-screen hidden" role="status" aria-live="polite" aria-busy="true">
         <div class="boot-panel">
           <div class="boot-kicker">WONDER WORLD · SISTEMA 1964</div>
           <h2>ATRAÇÃO FINAL</h2>
-          <div class="boot-spinner" aria-hidden="true"></div>
+          <div class="loading-symbol" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
           <p id="loading-message">Inicializando…</p>
+          <p id="loading-detail" class="loading-detail">Aguarde enquanto o cenário é preparado.</p>
+          <div class="loading-progress" aria-hidden="true">
+            <div id="loading-progress-fill" class="loading-progress-fill"></div>
+          </div>
+          <div class="loading-progress-meta">
+            <span>CARREGANDO</span>
+            <span id="loading-progress-value">0%</span>
+          </div>
         </div>
       </div>
 
@@ -859,6 +914,7 @@ export class GameUI {
             ${this.selectRow("Corrida", "sprintMode", [["hold", "Segurar"], ["toggle", "Alternar"]], true)}
             ${this.selectRow("Agachamento", "crouchMode", [["hold", "Segurar"], ["toggle", "Alternar"]], true)}
             ${this.checkboxRow("Destaque de interações", "highContrastInteractions", true)}
+            ${this.checkboxRow("Luz-guia luminosa", "guideLightEnabled", true)}
             ${this.checkboxRow("Janelas maiores no chefe", "extendedBossWindows", true)}
             ${this.checkboxRow("Mais tempo em apagões e puzzles", "extendedPuzzleWindows", true)}
             ${this.checkboxRow("Perseguições simplificadas", "simplifiedChase", true)}
@@ -876,7 +932,7 @@ export class GameUI {
         <div class="panel">
           <div class="kicker">Créditos</div>
           <h2>ATRAÇÃO FINAL</h2>
-          <p>Direção criativa e conceito: Lucas Xavier Nardelli.</p>
+          <p>Direção criativa e conceito: Timbó.</p>
           <p>Campanha procedural criada dentro do projeto, sem arte ou áudio externo em tempo de execução.</p>
           <div class="kicker">Galeria de finais</div>
           <div id="credits-ending-gallery" class="ending-gallery"></div>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0a1821">
-<title>QuimiCraft Voxel — Mundos Vivos v4.4</title>
+<title>QuimiCraft Voxel — Laboratório Carbono v4.7</title>
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/character-customization.css">
 </head>
@@ -23,7 +23,7 @@
   <div class="title-panel">
     <p class="eyebrow">Uma aventura procedural</p>
     <h1 class="logo">QUIMI<br>CRAFT<span>Voxel survival</span></h1>
-    <p class="tagline">Atravesse tundras, selvas, cerejeiras, cânions, salinas e lagos. Visite a Vila dos Elementos, domine novas reações e transforme um mundo vivo.</p>
+    <p class="tagline">Explore biomas vivos, visite a Vila dos Elementos e conheça o novo Laboratório Carbono: um centro científico completo com equipamentos, reações avançadas e uma missão na Tabela Periódica.</p>
     <button id="playBtn" class="primary">Jogar</button>
     <div class="title-actions"><button id="customizeBtn" class="secondary">Personalizar personagem</button><button id="newWorldTitleBtn" class="secondary danger">Recomeçar mundo</button></div>
     <button id="settingsToggle" class="settings-toggle">Configurações <i>⌄</i></button>
@@ -41,7 +41,7 @@
       <div class="setting"><label for="sensitivity">Sensibilidade do mouse</label><output id="senseOut">50%</output><input id="sensitivity" type="range" min="15" max="100" value="50"></div>
       <div class="setting"><label for="volume">Volume</label><output id="volumeOut">70%</output><input id="volume" type="range" min="0" max="100" value="70"></div>
     </div></div>
-    <div class="save-note">VERSÃO 4.4 · MUNDOS VIVOS &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
+    <div class="save-note">VERSÃO 4.7 · LABORATÓRIO CARBONO EXPANDIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
   </div>
 </section>
 
@@ -49,20 +49,56 @@
   <div id="crosshair"></div>
   <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div></div>
   <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
-  <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 29</div>
+  <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div><div id="missionHud" class="mission-hud"></div>
   <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div></div>
   <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
   <div id="hotbar" class="hotbar"></div>
   <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
   <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>C</kbd> câmera <kbd>F</kbd> interagir <kbd>ENTER</kbd> chat <kbd>E</kbd> inventário</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>C</kbd> câmera <kbd>F</kbd> interagir <kbd>ENTER</kbd> chat <kbd>TAB</kbd> inventário</div>
 </div>
 <div id="waterOverlay" class="water-overlay"></div><div id="damage" class="damage"></div>
 
-<section id="inventory" class="modal" aria-hidden="true"><div class="modal-card">
-  <div class="modal-head"><div><h2 class="modal-title">Mochila</h2><p class="modal-sub">Arraste os itens, organize seus recursos e crie novas peças.</p></div><button class="close" data-close="inventory">×</button></div>
-  <div class="inventory-body"><div><p class="inv-label">Inventário</p><div id="inventoryGrid" class="grid"></div></div><div><p class="inv-label">Bancada rápida</p><div id="recipes" class="recipes"></div></div></div>
-</div></section>
+<section id="inventory" class="modal mc-inventory-modal" aria-hidden="true">
+  <div class="mc-inventory-shell">
+    <aside id="recipeBook" class="mc-recipe-book" aria-hidden="true">
+      <div class="mc-recipe-head"><div><b>Livro de receitas</b><span>Escolha uma receita para preencher a grade.</span></div><button id="recipeBookClose" type="button" aria-label="Fechar receitas">×</button></div>
+      <div id="recipes" class="mc-recipe-list"></div>
+    </aside>
+    <div class="mc-inventory-card" role="dialog" aria-modal="true" aria-labelledby="inventoryTitle">
+      <div class="mc-window-head"><h2 id="inventoryTitle">Inventário</h2><button class="mc-close" data-close="inventory" type="button" aria-label="Fechar inventário">×</button></div>
+      <div class="mc-inventory-top">
+        <div class="mc-equipment-area">
+          <div class="mc-armor-column" aria-label="Armadura">
+            <div class="mc-equipment-slot" data-icon="◯" title="Capacete"></div>
+            <div class="mc-equipment-slot" data-icon="◇" title="Peitoral"></div>
+            <div class="mc-equipment-slot" data-icon="Ⅱ" title="Calças"></div>
+            <div class="mc-equipment-slot" data-icon="⌒" title="Botas"></div>
+          </div>
+          <div class="mc-character-stage"><div id="inventoryAvatar" class="avatar-pixel mc-avatar" data-hair-style="0" aria-label="Prévia do personagem">
+              <span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span>
+            </div><span class="mc-stage-shadow"></span></div>
+          <div class="mc-offhand-wrap"><div class="mc-equipment-slot mc-offhand" data-icon="⬡" title="Mão secundária"></div></div>
+        </div>
+        <div class="mc-crafting-area">
+          <div class="mc-craft-title"><span>Criação</span><small>grade 2 × 2</small></div>
+          <div class="mc-craft-layout">
+            <div id="craftGrid" class="mc-craft-grid" aria-label="Ingredientes da receita"></div>
+            <span class="mc-craft-arrow" aria-hidden="true"></span>
+            <button id="craftOutput" class="mc-craft-output" type="button" aria-label="Criar item"></button>
+          </div>
+          <div id="craftRecipeName" class="mc-selected-recipe">Selecione uma receita</div>
+          <button id="recipeBookToggle" class="mc-book-button" type="button" aria-expanded="false"><span class="mc-book-icon" aria-hidden="true"></span>Receitas</button>
+        </div>
+      </div>
+      <div class="mc-section-title">Inventário</div>
+      <div id="inventoryGrid" class="mc-slot-grid mc-main-grid" aria-label="Itens da mochila"></div>
+      <div class="mc-section-title mc-hotbar-title">Barra rápida</div>
+      <div id="inventoryHotbar" class="mc-slot-grid mc-hotbar-grid" aria-label="Barra rápida"></div>
+      <div class="mc-inventory-hint"><kbd>TAB</kbd> fechar <span>•</span> arraste para organizar <span>•</span> clique na saída para criar</div>
+    </div>
+  </div>
+</section>
 
 <section id="character" class="modal" aria-hidden="true"><div class="modal-card character-card">
   <div class="modal-head"><div><p class="eyebrow">Identidade do explorador</p><h2 class="modal-title">Personalizar personagem</h2><p class="modal-sub">Escolha pele, cabelo, uniforme e estilo. As mãos e o corpo acompanham suas escolhas.</p></div><button class="close" data-close="character">×</button></div>
@@ -76,7 +112,15 @@
 
 <section id="chemistry" class="modal" aria-hidden="true"><div class="modal-card lab-card">
   <div class="modal-head"><div><p class="eyebrow">Estação de pesquisa</p><h2 class="modal-title">Bancada Química</h2><p class="modal-sub">Combine recursos do mundo, observe as equações e descubra materiais inéditos.</p></div><button class="close" data-close="chemistry">×</button></div>
-  <div class="lab-body"><aside><p class="inv-label">Elementos dominados</p><div id="elementBoard" class="element-board"></div><div id="labNote" class="lab-note">Prof. Carbono: “Toda reação começa com uma boa pergunta — e os reagentes certos.”</div></aside><main><p class="inv-label">Reações disponíveis</p><div id="chemRecipes" class="chem-recipes"></div></main></div>
+  <div class="lab-body"><aside><p class="inv-label">Elementos dominados</p><div id="elementBoard" class="element-board"></div><button id="periodicTableBtn" class="periodic-launch" type="button"><span>PT</span><div><b>Abrir Tabela Periódica</b><small>Missão Arquivo dos Elementos</small></div></button><div id="labNote" class="lab-note">Prof. Carbono: “Toda reação começa com uma boa pergunta — e os reagentes certos.”</div></aside><main><p class="inv-label">Reações disponíveis</p><div id="chemRecipes" class="chem-recipes"></div></main></div>
+</div></section>
+
+<section id="periodicTable" class="modal periodic-modal" aria-hidden="true"><div class="modal-card periodic-card">
+  <div class="modal-head periodic-head"><div><p class="eyebrow">Missão do Prof. Carbono</p><h2 class="modal-title">Arquivo dos Elementos</h2><p id="periodicIntro" class="modal-sub">Complete as lacunas da Tabela Periódica.</p></div><button class="close" data-close="periodicTable" aria-label="Fechar tabela periódica">×</button></div>
+  <div class="periodic-progress-wrap"><div><span>PROGRESSO DA PESQUISA</span><b id="periodicProgress">0 de 28 lacunas preenchidas</b></div><div class="periodic-progress"><i id="periodicBarFill"></i></div></div>
+  <div class="periodic-scroll"><div id="periodicGrid" class="periodic-grid" aria-label="Tabela periódica interativa"></div></div>
+  <div id="periodicQuiz" class="periodic-quiz"><div class="periodic-idle">Selecione uma lacuna destacada para iniciar a identificação.</div></div>
+  <div class="periodic-legend"><span class="family-alkali">Metais alcalinos</span><span class="family-transition">Metais de transição</span><span class="family-metalloid">Semimetais</span><span class="family-nonmetal">Não metais</span><span class="family-halogen">Halogênios</span><span class="family-noble">Gases nobres</span></div>
 </div></section>
 
 <section id="graphics" class="modal" aria-hidden="true"><div class="modal-card pause-card"><div class="modal-head"><div><h2 class="modal-title">Gráficos</h2><p class="modal-sub">Ajustes rápidos durante a partida.</p></div><button class="close" data-close="graphics">×</button></div><div id="graphicsControls" class="graphics-body"></div></div></section>
