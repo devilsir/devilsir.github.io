@@ -393,13 +393,19 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .marble { position: absolute; width: clamp(22px, 3.35vw, 38px); aspect-ratio: 1; padding: 0; pointer-events:none; transform: translate(-50%, -50%); will-change:left,top,transform; }
 .marble.is-entering { animation:luxorMarbleEnter .18s ease-out both; }
 .marble.is-popping { pointer-events: none; animation: luxorMarblePop .2s cubic-bezier(.18,.82,.25,1) forwards; }
-.luxor-control-deck { position:relative; min-height:clamp(48px,5.5vh,56px); padding:4px clamp(8px,1.2vw,13px); display:grid; grid-template-columns:minmax(0,1fr) clamp(116px,16vw,176px) minmax(0,1fr); align-items:center; gap:8px; border:1px solid rgba(91,72,50,.12); border-radius:15px; background:#fffaf3; box-shadow:0 6px 16px rgba(70,52,35,.06); }
+.luxor-launcher-controls { position:relative; min-height:clamp(48px,5.8vh,60px); padding:0 clamp(4px,.8vw,9px); display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:8px; border:1px solid rgba(91,72,50,.12); border-radius:15px; background:linear-gradient(180deg,#fffaf3,#f7eadb); box-shadow:0 6px 16px rgba(70,52,35,.06); overflow:hidden; }
+.luxor-move-button { position:relative; z-index:12; width:clamp(43px,5vw,52px); height:clamp(40px,4.9vw,50px); display:none; place-items:center; border:1px solid rgba(102,72,43,.22); border-radius:14px; background:linear-gradient(145deg,#f6dfb8,#c9975c); color:#513520; font-size:clamp(23px,3.4vw,34px); font-weight:950; line-height:1; box-shadow:inset 0 2px rgba(255,255,255,.52),0 5px 10px rgba(70,49,29,.16); touch-action:none; user-select:none; -webkit-user-select:none; }
+.luxor-move-button.is-left { grid-column:1; }
+.luxor-cannon-dock { grid-column:2; }
+.luxor-move-button.is-right { grid-column:3; }
+.luxor-move-button.is-pressed { transform:translateY(2px) scale(.97); filter:brightness(.92); box-shadow:inset 0 3px 7px rgba(80,49,24,.2); }
+.luxor-control-deck { position:relative; min-height:clamp(48px,5.5vh,56px); padding:4px clamp(8px,1.2vw,13px); display:grid; grid-template-columns:minmax(0,1fr) minmax(180px,.9fr) minmax(0,1fr); align-items:center; gap:8px; border:1px solid rgba(91,72,50,.12); border-radius:15px; background:#fffaf3; box-shadow:0 6px 16px rgba(70,52,35,.06); }
 .luxor-deck-ammo { min-width:0; display:flex; align-items:center; gap:clamp(7px,1vw,12px); }
+.luxor-control-copy { color:var(--green-dark); font-size:clamp(7px,.72vw,9px); font-weight:850; line-height:1.25; text-align:center; }
 .luxor-deck-actions { min-width:0; display:flex; justify-content:flex-end; align-items:center; gap:8px; color:var(--green-dark); font-size:clamp(7px,.72vw,9px); font-weight:800; }
-.luxor-deck-actions > span { max-width:150px; line-height:1.2; }
 .luxor-cannon-dock { position:relative; z-index:9; width:100%; height:clamp(43px,5.2vh,53px); pointer-events:none; }
-.luxor-cannon-dock::before { content:""; position:absolute; left:50%; bottom:1px; width:76%; height:36%; transform:translateX(-50%); border:3px solid rgba(255,244,215,.72); border-radius:50% 50% 13px 13px; background:linear-gradient(145deg,#b9854f,#67452d); box-shadow:inset 0 3px 5px rgba(255,255,255,.16),0 7px 13px rgba(49,33,23,.24); }
-.luxor-cannon { --aim-angle:0deg; --cannon-scale:1; position:absolute; z-index:2; left:50%; top:0; width:clamp(72px,8vw,94px); height:clamp(42px,4.8vw,56px); transform:translateX(-50%) scale(var(--cannon-scale)) rotate(var(--aim-angle)); transform-origin:50% 84%; pointer-events:none; transition:transform .035s linear; filter:drop-shadow(0 7px 8px rgba(49,33,23,.22)); }
+.luxor-cannon-dock::before { content:""; position:absolute; left:2%; right:2%; bottom:7px; height:8px; border:2px solid rgba(255,244,215,.72); border-radius:99px; background:linear-gradient(180deg,#8f6842,#593c27); box-shadow:inset 0 2px 3px rgba(38,24,15,.28),0 3px 8px rgba(49,33,23,.18); }
+.luxor-cannon { --aim-angle:0deg; --cannon-scale:1; position:absolute; z-index:2; left:50%; top:0; width:clamp(72px,8vw,94px); height:clamp(42px,4.8vw,56px); transform:translateX(-50%) scale(var(--cannon-scale)) rotate(var(--aim-angle)); transform-origin:50% 84%; pointer-events:none; transition:left .045s linear,transform .035s linear; filter:drop-shadow(0 7px 8px rgba(49,33,23,.22)); }
 .luxor-cannon::before { content: ""; position: absolute; inset: 27% 7% 0; border: 3px solid rgba(255,244,215,.78); border-radius: 50% 50% 16px 16px; background: linear-gradient(145deg, #ad7d47, #5b3c27 76%); box-shadow: inset 0 3px 5px rgba(255,255,255,.17),0 6px 10px rgba(49,33,23,.3); }
 .luxor-cannon::after { content: ""; position: absolute; left: 50%; top: 0; width: 24%; height: 70%; transform: translateX(-50%); border: 3px solid #e7c48a; border-radius: 14px 14px 6px 6px; background: linear-gradient(90deg,#664229,#8d633e,#68452d); box-shadow:inset 2px 0 rgba(255,255,255,.12); }
 .luxor-cannon > span { position: absolute; z-index: 2; left: 50%; bottom: -2px; width: 10px; height: 10px; transform: translateX(-50%); border-radius: 50%; background: #efd481; box-shadow:0 0 0 3px rgba(92,58,32,.28); }
@@ -536,7 +542,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 
 
 @media (min-width: 561px) {
-  #puzzleModal[data-game="luxor"] .luxor-wrap { width:min(1040px,100%,max(585px,calc(141dvh - 510px))); }
+  #puzzleModal[data-game="luxor"] .luxor-wrap { width:min(1040px,100%,max(530px,calc(141dvh - 740px))); }
 }
 
 @media (max-width: 1120px) {
@@ -639,15 +645,18 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .luxor-distance { grid-template-columns: auto 1fr 31px; gap:6px; font-size: 6.5px; }
   .luxor-path { border-width: 4px; border-radius:15px; }
   .marble { width: clamp(20px, 6.1vw, 26px); }
-  .luxor-control-deck { min-height:46px; padding:3px 6px; grid-template-columns:minmax(0,1fr) 86px minmax(0,1fr); gap:4px; border-radius:11px; }
+  .luxor-launcher-controls { min-height:48px; padding:0 4px; gap:4px; border-radius:11px; }
+  .luxor-move-button { width:44px; height:42px; border-radius:12px; font-size:26px; }
+  .luxor-control-deck { min-height:46px; padding:3px 6px; grid-template-columns:minmax(0,1fr) auto; gap:4px; border-radius:11px; }
   .luxor-deck-ammo { gap:4px; }
+  .luxor-control-copy { display:none; }
   .luxor-deck-actions { gap:4px; }
-  .luxor-deck-actions > span { display:none; }
   .luxor-ammo { grid-template-columns: auto 29px; }
   .current-marble { width: 29px; height: 29px; }
   .next-marble { width: 24px; height: 24px; }
   .luxor-swap { min-height:31px; }
   .luxor-cannon-dock { height:40px; }
+  .luxor-cannon-dock::before { bottom:5px; height:7px; }
   .luxor-cannon { --cannon-scale:.78; }
 }
 
@@ -1093,14 +1102,13 @@ html.high-contrast button,html.high-contrast input,html.high-contrast textarea,h
 
 @media (pointer: coarse), (max-width: 840px) {
   .luxor-wrap.is-mobile-compat .luxor-path { min-height: 220px; }
-  .luxor-wrap.is-mobile-compat .luxor-deck-actions > span { display: block; max-width: 94px; font-size: 8px; }
+  .luxor-move-button { display:grid; }
   .luxor-power-actions button { min-height:46px; grid-template-columns:32px minmax(0,1fr) auto; }
   .luxor-power-actions i { width:32px; height:32px; }
 }
 
 @media (max-width: 560px) {
-  .luxor-wrap.is-mobile-compat .luxor-control-deck { grid-template-columns: minmax(0, 1fr) 92px minmax(0, 1fr); gap: 5px; }
-  .luxor-wrap.is-mobile-compat .luxor-deck-actions > span { display: none; }
+  .luxor-wrap.is-mobile-compat .luxor-control-deck { grid-template-columns:minmax(0,1fr) auto; gap:5px; }
   .luxor-wrap.is-mobile-compat .luxor-swap { min-width: 72px; padding-inline: 8px; }
   .luxor-score-deluxe { grid-template-columns:1fr 1fr 1fr 1fr 38px; }
   .luxor-score-deluxe > span { padding-inline:4px; }

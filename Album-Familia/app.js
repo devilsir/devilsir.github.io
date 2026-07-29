@@ -4058,6 +4058,9 @@
     const PROJECTILE_SPEED = compatibilityMode ? 590 : 660;
     const MAX_PROJECTILE_DISTANCE = 940;
     const CANNON_POINT = { x: 360, y: 396 };
+    const CANNON_MIN_X = 54;
+    const CANNON_MAX_X = 666;
+    const CANNON_MOVE_SPEED = compatibilityMode ? 330 : 300;
     const MATCH_COLLAPSE_DELAY = 105;
     const CHAIN_REACTION_DELAY = 34;
     const REFLOW_DURATION = 155;
@@ -4073,8 +4076,10 @@
     }
     const powerByKey = Object.fromEntries(Core.POWER_DEFINITIONS.map((power) => [power.key, power]));
     const restored = restoredGameState("luxor");
+    CANNON_POINT.x = clamp(Number(restored?.cannonX || 360), CANNON_MIN_X, CANNON_MAX_X);
     const luxorRandom = Core.seededRandom(`${campaignConfig?.seed || phaseSettings?.seed || challenge.seed || challenge.id}:runtime:${restored?.shotsFired || 0}`);
     const pendingTimers = new Set();
+    const movementKeys = new Set();
     const reducedMotion = state.reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false;
     let active = true;
     let resolving = false;
@@ -4130,6 +4135,7 @@
     let lastTime = performance.now();
     let audioContext = null;
     let aimingPointerId = null;
+    let mobileMoveDirection = 0;
     let lastAimPoint = { x: 360, y: 92 };
     let resolutionSerial = 0;
     let comboAnimation = null;
@@ -4300,15 +4306,19 @@
           <div class="luxor-pause-panel" hidden><strong>Partida pausada</strong><span>Nenhum tempo ou corrente avança durante a pausa.</span><button type="button">Continuar</button></div>
           <div class="luxor-wave-transition" hidden aria-live="polite"></div>
         </div>
+        <div class="luxor-launcher-controls" role="group" aria-label="Controles de movimento do lançador">
+          <button class="luxor-move-button is-left" type="button" data-luxor-move="-1" aria-label="Mover lançador para a esquerda">←</button>
+          <div class="luxor-cannon-dock" aria-hidden="true"><div class="luxor-cannon"><i class="luxor-loaded-marble"></i><span></span></div></div>
+          <button class="luxor-move-button is-right" type="button" data-luxor-move="1" aria-label="Mover lançador para a direita">→</button>
+        </div>
         <div class="luxor-control-deck">
           <div class="luxor-deck-ammo">
             <div class="luxor-ammo"><small>AGORA</small><i class="current-marble"></i></div>
             <div class="luxor-ammo next"><small>DEPOIS</small><i class="next-marble"></i></div>
           </div>
-          <div class="luxor-cannon-dock" aria-hidden="true"><div class="luxor-cannon"><i class="luxor-loaded-marble"></i><span></span></div></div>
+          <span class="luxor-control-copy">${compatibilityMode ? "Segure as setas para mover · toque, arraste e solte para atirar." : "A/D ou ←/→: mover · clique esquerdo: atirar · botão direito: trocar."}</span>
           <div class="luxor-deck-actions">
             <button class="luxor-swap" type="button" aria-label="Trocar a bolinha atual pela próxima">Trocar ↔</button>
-            <span>${compatibilityMode ? "Toque, arraste e solte." : "Clique esquerdo: atirar · clique direito: trocar."}</span>
           </div>
         </div>
       </div>`;
@@ -4318,6 +4328,7 @@
     const path = $(".luxor-path", wrap);
     const route = $("#luxorRoute", wrap);
     const cannon = $(".luxor-cannon", wrap);
+    const moveButtons = $$('[data-luxor-move]', wrap);
     const aimLine = $(".luxor-aim-line", wrap);
     const aimMarker = $(".luxor-aim-marker", wrap);
     const ballLayer = $(".luxor-ball-layer", wrap);
@@ -4385,6 +4396,7 @@
         wildShot,
         currentColor,
         nextColor,
+        cannonX: CANNON_POINT.x,
         objectives: objectives.map(({ progress, done, used }) => ({ progress, done, used: Boolean(used) }))
       }, activeElapsedMs);
     };
@@ -4615,6 +4627,17 @@
       aimMarker.style.left = `${(point.x / 720) * 100}%`;
       aimMarker.style.top = `${(point.y / 400) * 100}%`;
       path.classList.toggle("is-aiming", visible);
+    };
+    const syncCannonPosition = () => {
+      cannon.style.left = `${(CANNON_POINT.x / 720) * 100}%`;
+      updateAimVisual(lastAimPoint, path.classList.contains("is-aiming"));
+    };
+    const moveCannon = (direction, deltaSeconds = 1 / 60) => {
+      if (!active || paused || resolving || waveChanging || !direction) return;
+      const nextX = clamp(CANNON_POINT.x + direction * CANNON_MOVE_SPEED * deltaSeconds, CANNON_MIN_X, CANNON_MAX_X);
+      if (Math.abs(nextX - CANNON_POINT.x) < 0.01) return;
+      CANNON_POINT.x = nextX;
+      syncCannonPosition();
     };
     const hideAimVisual = () => path.classList.remove("is-aiming");
     const updateDistance = () => {
@@ -5463,8 +5486,18 @@
       event.preventDefault();
       swapAmmo();
     };
+    const movementDirectionForKey = (key) => {
+      if (key === "a" || key === "A" || key === "ArrowLeft") return -1;
+      if (key === "d" || key === "D" || key === "ArrowRight") return 1;
+      return 0;
+    };
     const keyHandler = (event) => {
-      if ((event.key === "x" || event.key === "X") && active) {
+      const movementDirection = movementDirectionForKey(event.key);
+      if (movementDirection && active) {
+        event.preventDefault();
+        movementKeys.add(movementDirection < 0 ? "left" : "right");
+        if (!event.repeat) moveCannon(movementDirection, 1 / 30);
+      } else if ((event.key === "x" || event.key === "X") && active) {
         event.preventDefault();
         swapAmmo();
       } else if (/^[1-3]$/.test(event.key) && active) {
@@ -5478,6 +5511,31 @@
         shootAt(lastAimPoint);
       }
     };
+    const keyUpHandler = (event) => {
+      const movementDirection = movementDirectionForKey(event.key);
+      if (!movementDirection) return;
+      movementKeys.delete(movementDirection < 0 ? "left" : "right");
+    };
+    const clearCannonMovement = () => {
+      movementKeys.clear();
+      mobileMoveDirection = 0;
+      moveButtons.forEach((button) => button.classList.remove("is-pressed"));
+    };
+    const startMobileMove = (event) => {
+      if (!active || paused || resolving || waveChanging) return;
+      event.preventDefault();
+      const button = event.currentTarget;
+      mobileMoveDirection = Number(button.dataset.luxorMove) || 0;
+      moveButtons.forEach((item) => item.classList.toggle("is-pressed", item === button));
+      try { button.setPointerCapture(event.pointerId); } catch { /* captura pode não estar disponível */ }
+      moveCannon(mobileMoveDirection, 1 / 30);
+    };
+    const stopMobileMove = (event) => {
+      const button = event.currentTarget;
+      button.classList.remove("is-pressed");
+      if (Number(button.dataset.luxorMove) === mobileMoveDirection) mobileMoveDirection = 0;
+      try { button.releasePointerCapture(event.pointerId); } catch { /* captura já pode ter sido liberada */ }
+    };
     const resizeHandler = () => {
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(() => {
@@ -5488,7 +5546,10 @@
       });
     };
     const visibilityHandler = () => {
-      if (document.hidden) setPaused(true, true);
+      if (document.hidden) {
+        clearCannonMovement();
+        setPaused(true, true);
+      }
       lastTime = performance.now();
     };
     const tick = (now) => {
@@ -5500,6 +5561,9 @@
         animationFrame = requestAnimationFrame(tick);
         return;
       }
+      const keyboardDirection = (movementKeys.has("right") ? 1 : 0) - (movementKeys.has("left") ? 1 : 0);
+      const moveDirection = clamp(keyboardDirection + mobileMoveDirection, -1, 1);
+      if (moveDirection) moveCannon(moveDirection, delta);
       activeElapsedMs += Math.min(elapsed, 50);
       const hudSecond = Math.floor(activeElapsedMs / 1000);
       if (hudSecond !== lastHudSecond) {
@@ -5534,6 +5598,7 @@
       nextColor = chooseUsefulColor();
     }
     refreshBoardMetrics();
+    syncCannonPosition();
     if (routeVariant === "alternate") {
       const alternateStart = pointAtProgress(0);
       const alternateEnd = pointAtProgress(1);
@@ -5568,11 +5633,19 @@
     path.addEventListener("pointerup", releaseAim);
     path.addEventListener("pointercancel", cancelAim);
     path.addEventListener("lostpointercapture", cancelAim);
+    moveButtons.forEach((button) => {
+      button.addEventListener("pointerdown", startMobileMove);
+      button.addEventListener("pointerup", stopMobileMove);
+      button.addEventListener("pointercancel", stopMobileMove);
+      button.addEventListener("lostpointercapture", stopMobileMove);
+    });
     if (compatibilityMode) {
       window.addEventListener("pointerup", releaseAim, { passive: false });
       window.addEventListener("pointercancel", cancelAim, { passive: false });
     }
     window.addEventListener("keydown", keyHandler);
+    window.addEventListener("keyup", keyUpHandler);
+    window.addEventListener("blur", clearCannonMovement);
     window.addEventListener("resize", resizeHandler, { passive: true });
     document.addEventListener("visibilitychange", visibilityHandler);
     if (typeof ResizeObserver === "function") {
@@ -5585,8 +5658,8 @@
     renderBalls(0);
     updateAimVisual(lastAimPoint, false);
     elements.puzzleStatus.textContent = compatibilityMode
-      ? `A onda ${config.speedLabel} já está andando. Toque no tabuleiro, arraste a mira e solte para disparar.`
-      : `A onda ${config.speedLabel} já está andando. Clique e solte para disparar; use o botão direito para trocar a bolinha.`;
+      ? `A onda ${config.speedLabel} já está andando. Segure as setas laterais para mover o lançador; toque, arraste e solte para disparar.`
+      : `A onda ${config.speedLabel} já está andando. Use A/D ou ←/→ para mover; clique e solte para disparar e use o botão direito para trocar a bolinha.`;
     animationFrame = requestAnimationFrame(tick);
     puzzleCleanup = () => {
       if (active) captureSnapshot();
@@ -5605,11 +5678,19 @@
       path.removeEventListener("pointerup", releaseAim);
       path.removeEventListener("pointercancel", cancelAim);
       path.removeEventListener("lostpointercapture", cancelAim);
+      moveButtons.forEach((button) => {
+        button.removeEventListener("pointerdown", startMobileMove);
+        button.removeEventListener("pointerup", stopMobileMove);
+        button.removeEventListener("pointercancel", stopMobileMove);
+        button.removeEventListener("lostpointercapture", stopMobileMove);
+      });
       if (compatibilityMode) {
         window.removeEventListener("pointerup", releaseAim);
         window.removeEventListener("pointercancel", cancelAim);
       }
       window.removeEventListener("keydown", keyHandler);
+      window.removeEventListener("keyup", keyUpHandler);
+      window.removeEventListener("blur", clearCannonMovement);
       window.removeEventListener("resize", resizeHandler);
       document.removeEventListener("visibilitychange", visibilityHandler);
       ballNodes.forEach((node) => node._luxorReflow?.cancel?.());
