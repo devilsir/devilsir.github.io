@@ -2,7 +2,7 @@
 
 # Central de Projetos Interativos
 
-**Experiências educacionais, jogos, álbuns digitais, mundos 3D e projetos autorais reunidos em um único ambiente.**
+**Jogos, experiências educacionais, mundos 3D, simulações e projetos autorais reunidos em um único ambiente.**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Publicado-222222?logo=github)](https://devilsir.github.io/)
 [![HTML5](https://img.shields.io/badge/HTML5-Frontend-E34F26?logo=html5&logoColor=white)](#tecnologias)
@@ -20,7 +20,7 @@
 
 A **Central de Projetos Interativos** é um repositório público criado e mantido por **Lucas Xavier Nardelli** para organizar e disponibilizar experiências digitais voltadas à educação, à experimentação visual, à narrativa e ao entretenimento.
 
-A plataforma funciona como um portal para aplicações independentes, incluindo álbuns digitais gamificados, atividades de Química, simulações educacionais, RPGs, experiências de terror, memoriais interativos, mundos voxel, visualizadores de modelos e projetos tridimensionais.
+A plataforma funciona como um portal para aplicações independentes, incluindo atividades de Química e Língua Inglesa, simulações educacionais, RPGs, jogos de ação e terror, memoriais interativos, mundos voxel, visualizadores de modelos e experiências tridimensionais.
 
 A maior parte das aplicações é executada diretamente no navegador e publicada por meio do **GitHub Pages**, com interfaces adaptadas para computadores e dispositivos móveis.
 
@@ -32,7 +32,7 @@ Essa assistência pode incluir:
 
 * geração, revisão, documentação e refatoração de código;
 * prototipagem de mecânicas, interfaces e sistemas;
-* criação ou adaptação de modelos 3D, texturas e outros recursos visuais;
+* criação ou adaptação de modelos 3D, texturas e recursos visuais;
 * exploração de conceitos narrativos, visuais e sonoros;
 * identificação de erros, testes e otimizações;
 * apoio na organização técnica e na documentação dos projetos.
@@ -44,24 +44,20 @@ O uso de IA varia entre os projetos e **não representa um processo exclusivamen
 * Portal centralizado para acesso aos projetos publicados.
 * Aplicações independentes construídas com HTML, CSS, JavaScript e TypeScript.
 * Experiências educacionais relacionadas a Química e Língua Inglesa.
-* Jogos narrativos, RPGs, exploração, terror e ambientes voxel.
-* Álbuns digitais com inventário, desafios, progressão e persistência local.
+* Jogos narrativos, RPGs, ação, exploração, terror e ambientes voxel.
+* Missões, campanhas, progressão, conquistas e desafios curriculares.
 * Minijogos com diferentes níveis de dificuldade e sistemas de pontuação.
-* Rankings online e serviços integrados ao Supabase.
-* Reconhecimento e processamento de imagens realizado no navegador.
+* Modos para estudantes, professores e uso em sala de aula.
 * Visualização de modelos e animações 3D com Three.js, Babylon.js e WebGL.
 * Suporte a modelos nos formatos GLB, glTF e FBX.
 * Controles adaptados para mouse, teclado e telas sensíveis ao toque.
 * Recursos de acessibilidade, atributos ARIA e preferência por movimento reduzido.
-* Versão Android do álbum World Stars desenvolvida com Capacitor.
+* Persistência local de progresso e configurações em diferentes aplicações.
 
 ## Projetos disponíveis
 
 | Projeto | Descrição |
 | --- | --- |
-| [**Álbum Família**](./Album-Familia/) | Álbum digital de recordações com figurinhas, desafios, minijogos, progressão local e rankings online. |
-| [**World Stars 2026**](./Album-World-Stars/) | Álbum digital educativo com reconhecimento de imagem, inventário, perfis, perguntas em inglês e acompanhamento de progresso. |
-| [**World Stars Android**](./Album-World-Stars-Android/) | Versão Android do álbum World Stars, empacotada com Capacitor, Gradle e Android Studio. |
 | [**Animações Interativas**](./animacoes/) | Coleção de experiências educacionais sobre neutralização, cargas elétricas, geometria molecular, íons, raio atômico e soluções. |
 | [**Chora Timbó**](./choratimbo/) | Experiência autoral com modelos tridimensionais, animações, áudio e identidade visual própria. |
 | [**Models and Animations**](./effects/) | Laboratório WebGL para visualização de personagens, animações, armas, pets e efeitos visuais em tempo real. |
@@ -69,8 +65,12 @@ O uso de IA varia entre os projetos e **não representa um processo exclusivamen
 | [**Sobre**](./Sobre/) | Apresentação profissional interativa de Lucas Xavier Nardelli, com personagem 3D e acesso a trabalhos selecionados. |
 | [**GPT World**](./GPT%20World/) | RPG interativo ambientado em um universo autoral inspirado em inteligência artificial, comandos, fragmentos e realidades procedurais. |
 | [**Wonder World**](./Wonder%20World/) | Experiência de terror e exploração ambientada em um complexo de entretenimento abandonado, com narrativa, combate e múltiplos sistemas interativos. |
-| [**O Pequeno Museu da Lilith**](./Pequeno%20Museu%20da%20Lilith/) | Memorial interativo dedicado às lembranças, histórias e momentos especiais da Lilith, apresentado como um espaço digital tridimensional. |
+| [**O Pequeno Museu da Lilith**](./Pequeno%20Museu%20da%20Lilith/) | Memorial interativo apresentado como um espaço digital tridimensional, com ambientes, histórias e elementos de homenagem. |
 | [**QuimiCraft**](./QuimiCraft/) | Mundo voxel interativo que combina exploração, criatividade, construção e aprendizado de Química. |
+| [**Lexicon Aegis**](./LEXICON-AEGIS/) | Plataforma gamificada de Língua Inglesa para o 6º ao 9º ano, com missões, minijogos, progressão, acessibilidade e modo professor. |
+| [**CHEMCORE: Ruptura Elemental**](./CHEMCORE-Ruptura-Elemental/) | Jogo de ação e Química para o Ensino Médio, com campanhas, missões, desafios curriculares, caderno e recursos pedagógicos. |
+| [**ECHOBOUND: The Lost Language**](./Echobound%20the%20lost%20language/) | Aventura gamificada de inglês com narrativa, exploração e desafios relacionados à linguagem. |
+| [**English Quest: The Lost Signal**](./English-Quest-The-Lost-Signal/) | Aventura gamificada de inglês para o 6º ao 9º ano, com campanha, minijogos e ferramentas para uso em sala de aula. |
 
 ## Experiências educacionais
 
@@ -88,6 +88,24 @@ A área de animações reúne módulos independentes que apresentam conceitos ci
 * Visualizador comparativo de raios atômicos.
 
 > As simulações possuem finalidade didática e podem utilizar simplificações conceituais para facilitar a visualização e a aprendizagem.
+
+## Novos projetos educacionais
+
+### Lexicon Aegis
+
+Plataforma de Língua Inglesa para o 6º ao 9º ano, organizada por conteúdos curriculares e experiências gamificadas. Inclui perfis locais, missões, progressão, minijogos, recursos de acessibilidade, relatórios e modo professor.
+
+### CHEMCORE: Ruptura Elemental
+
+Jogo de ação e plataforma voltado ao Ensino Médio, com campanhas temáticas de Química, desafios conceituais, missões, tabela periódica, caderno de conteúdos, sandbox e ferramentas pedagógicas.
+
+### ECHOBOUND: The Lost Language
+
+Aventura gamificada de inglês com ambientação narrativa, exploração e desafios linguísticos integrados ao fluxo do jogo.
+
+### English Quest: The Lost Signal
+
+Experiência educacional de inglês para o 6º ao 9º ano com campanha, atividades por série, minijogos, recursos de áudio, acessibilidade, acompanhamento de desempenho e ferramentas para professores.
 
 ## Tecnologias
 
@@ -114,46 +132,39 @@ A área de animações reúne módulos independentes que apresentam conceitos ci
 * Modelos GLB, glTF e FBX
 * Renderização procedural e ambientes voxel
 
-### Dados e serviços
+### Dados e persistência
 
-* Supabase
-* PostgreSQL
-* Autenticação anônima
-* Row Level Security
-* Funções de banco de dados e Edge Functions
-
-### Aplicativo Android
-
-* Capacitor
-* Android Studio
-* Gradle
-* Java
+* Local Storage
+* Exportação e importação de dados em JSON
+* Relatórios locais
+* Configurações persistentes por aplicação
 
 ### Publicação
 
 * GitHub Pages
 * GitHub
 
-## Estrutura do repositório
+## Estrutura pública do repositório
 
 ```text
 .
-├── Album-Familia/               # Álbum de recordações e ranking online
-├── Album-World-Stars/            # Álbum educativo para navegador
-├── Album-World-Stars-Android/    # Projeto Android com Capacitor
-├── GPT World/                    # RPG narrativo inspirado em inteligência artificial
-├── Pequeno Museu da Lilith/      # Memorial interativo tridimensional
-├── QuimiCraft/                   # Mundo voxel educacional de Química
-├── RoletaQuimica/                # Jogo educacional de Química
-├── Sobre/                        # Apresentação profissional interativa
-├── Wonder World/                 # Experiência narrativa de terror e exploração
-├── animacoes/                    # Simulações e experiências educacionais
-├── assets/                       # Arquivos compartilhados da página principal
-├── choratimbo/                   # Projeto autoral com áudio e modelos 3D
-├── effects/                      # Visualizador de modelos, animações e efeitos
-├── index.html                    # Página inicial da Central de Projetos
-├── LICENSE                       # Licença MIT
-└── README.md                     # Documentação do repositório
+├── CHEMCORE-Ruptura-Elemental/       # Jogo de ação e Química para o Ensino Médio
+├── Echobound the lost language/      # Aventura gamificada de inglês
+├── English-Quest-The-Lost-Signal/    # Plataforma narrativa de inglês
+├── GPT World/                        # RPG narrativo inspirado em inteligência artificial
+├── LEXICON-AEGIS/                    # Plataforma gamificada de Língua Inglesa
+├── Pequeno Museu da Lilith/          # Memorial interativo tridimensional
+├── QuimiCraft/                       # Mundo voxel educacional de Química
+├── RoletaQuimica/                    # Jogo educacional de Química
+├── Sobre/                            # Apresentação profissional interativa
+├── Wonder World/                     # Experiência narrativa de terror e exploração
+├── animacoes/                        # Simulações e experiências educacionais
+├── assets/                           # Arquivos compartilhados da página principal
+├── choratimbo/                       # Projeto autoral com áudio e modelos 3D
+├── effects/                          # Visualizador de modelos, animações e efeitos
+├── index.html                        # Página inicial da Central de Projetos
+├── LICENSE                           # Licença MIT
+└── README.md                         # Documentação do repositório
 ```
 
 ## Execução local
@@ -189,61 +200,6 @@ http://localhost:8000
 
 Alguns projetos possuem ferramentas próprias de desenvolvimento ou build. Consulte os arquivos internos de cada diretório quando necessário.
 
-## Configuração do Supabase
-
-O ranking online do **Álbum Família** utiliza Supabase para autenticação anônima, armazenamento de perfis e registro das melhores pontuações.
-
-1. Crie um projeto no Supabase.
-2. Ative a autenticação anônima no painel de autenticação.
-3. Execute o arquivo [`Album-Familia/supabase-setup.sql`](./Album-Familia/supabase-setup.sql) no SQL Editor.
-4. Configure a URL do projeto e a chave pública em [`Album-Familia/supabase-config.js`](./Album-Familia/supabase-config.js).
-5. Publique e configure a função utilizada para o envio seguro das pontuações, caso a instalação utilize Edge Functions.
-
-Exemplo de configuração:
-
-```javascript
-window.ALBUM_SUPABASE = {
-  url: "https://SEU-PROJETO.supabase.co",
-  anonKey: "SUA_CHAVE_PUBLICA",
-  scoreFunction: "submit-score"
-};
-```
-
-A chave pública do Supabase pode ser utilizada no frontend quando as políticas de **Row Level Security** estiverem configuradas corretamente. Chaves administrativas ou de `service_role` nunca devem ser adicionadas ao repositório.
-
-## Aplicativo Android
-
-O diretório [`Album-World-Stars-Android`](./Album-World-Stars-Android/) contém a versão empacotada com Capacitor.
-
-### Requisitos
-
-* Node.js e npm
-* Android Studio
-* Android SDK
-* Java Development Kit compatível com a versão do Gradle
-
-### Instalação
-
-```bash
-cd Album-World-Stars-Android
-npm install
-npm run cap:sync
-npm run cap:open
-```
-
-Para gerar um APK de depuração no Windows:
-
-```bash
-npm run apk:debug
-```
-
-Em Linux ou macOS, o APK também pode ser gerado diretamente pelo Gradle Wrapper:
-
-```bash
-cd android
-./gradlew assembleDebug
-```
-
 ## Publicação no GitHub Pages
 
 O repositório foi preparado para publicação direta pelo GitHub Pages.
@@ -274,9 +230,7 @@ Recursos tridimensionais dependem de suporte a WebGL. O desempenho pode variar c
 
 ## Privacidade e armazenamento
 
-Algumas aplicações armazenam progresso, preferências e dados de inventário no `localStorage` do navegador. Esses dados permanecem associados ao dispositivo e ao navegador utilizados.
-
-No World Stars, o processamento de reconhecimento das figurinhas é realizado localmente no navegador. No Álbum Família, os dados enviados ao ranking online são tratados pela integração configurada com o Supabase.
+Algumas aplicações armazenam progresso, preferências, configurações e dados de jogo no `localStorage` do navegador. Esses dados permanecem associados ao dispositivo e ao navegador utilizados, salvo quando uma aplicação informa explicitamente outro método de armazenamento.
 
 ## Contribuição
 
