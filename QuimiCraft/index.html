@@ -4,19 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0a1821">
-<title>QuimiCraft Voxel — Laboratório Carbono v4.7</title>
+<title>QuimiCraft Voxel — Laboratório Carbono v6.0</title>
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/character-customization.css">
 </head>
 <body>
 <div id="game"></div>
 
-<div id="loading" class="screen">
+<div id="loading" class="screen hidden" aria-live="polite">
   <div class="loader-logo">QUIMICRAFT</div>
   <div class="loader-track"><div id="loaderFill" class="loader-fill"></div></div>
-  <div id="loaderCopy" class="loader-copy">Gerando um mundo novo</div>
-  <div id="loaderChunks" class="loader-meta">0 / 9 CHUNKS</div>
-  <div id="loaderTip" class="loader-tip">Preparando uma área jogável rápida; o restante do mundo chega suavemente em segundo plano.</div>
+  <div id="loaderCopy" class="loader-copy">Inicializando…</div>
+  <div id="loaderChunks" class="loader-meta">ETAPA 0 / 11</div>
+  <div id="loaderTip" class="loader-tip">O jogo começa somente depois que o laboratório, a vila, os arredores e todas as colisões forem validados.</div>
+  <div id="loaderReady" class="loader-ready" hidden>
+    <b>Mundo pronto para explorar.</b>
+    <span>O laboratório, a vila, os arredores e as colisões foram validados.</span>
+    <button id="loaderEnter" class="primary" type="button">Entrar no mundo</button>
+    <small>O navegador só pode capturar o mouse depois deste clique.</small>
+  </div>
+  <div id="loaderError" class="loader-error" hidden>
+    <b>Não foi possível preparar o mundo com segurança.</b>
+    <span id="loaderErrorCopy">A geração foi interrompida antes de liberar o jogador.</span>
+    <button id="loaderRetry" class="primary" type="button">Tentar novamente</button>
+  </div>
 </div>
 
 <section id="titleScreen" class="screen">
@@ -24,6 +35,7 @@
     <p class="eyebrow">Uma aventura procedural</p>
     <h1 class="logo">QUIMI<br>CRAFT<span>Voxel survival</span></h1>
     <p class="tagline">Explore biomas vivos, visite a Vila dos Elementos e conheça o novo Laboratório Carbono: um centro científico completo com equipamentos, reações avançadas e uma missão na Tabela Periódica.</p>
+    <div id="localFrameNotice" class="local-frame-notice" hidden>Este arquivo foi aberto dentro de uma prévia. Ao clicar em Jogar, o QuimiCraft será aberto diretamente em uma nova aba para permitir o controle do mouse.</div>
     <button id="playBtn" class="primary">Jogar</button>
     <div class="title-actions"><button id="customizeBtn" class="secondary">Personalizar personagem</button><button id="newWorldTitleBtn" class="secondary danger">Recomeçar mundo</button></div>
     <button id="settingsToggle" class="settings-toggle">Configurações <i>⌄</i></button>
@@ -41,7 +53,7 @@
       <div class="setting"><label for="sensitivity">Sensibilidade do mouse</label><output id="senseOut">50%</output><input id="sensitivity" type="range" min="15" max="100" value="50"></div>
       <div class="setting"><label for="volume">Volume</label><output id="volumeOut">70%</output><input id="volume" type="range" min="0" max="100" value="70"></div>
     </div></div>
-    <div class="save-note">VERSÃO 4.7 · LABORATÓRIO CARBONO EXPANDIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
+    <div class="save-note">VERSÃO 6.0 · LABORATÓRIO CARBONO PROTEGIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
   </div>
 </section>
 
@@ -50,12 +62,13 @@
   <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div></div>
   <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
   <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div><div id="missionHud" class="mission-hud"></div>
+  <button id="historyHudBtn" class="history-hud-button" type="button" aria-label="Abrir Histórico de mensagens">Histórico</button>
   <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div></div>
   <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
   <div id="hotbar" class="hotbar"></div>
   <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
   <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>C</kbd> câmera <kbd>F</kbd> interagir <kbd>ENTER</kbd> chat <kbd>TAB</kbd> inventário</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>C</kbd> câmera <kbd>E</kbd> interagir <kbd>ENTER</kbd> chat <kbd>TAB</kbd> inventário</div>
 </div>
 <div id="waterOverlay" class="water-overlay"></div><div id="damage" class="damage"></div>
 
@@ -117,7 +130,7 @@
 
 <section id="periodicTable" class="modal periodic-modal" aria-hidden="true"><div class="modal-card periodic-card">
   <div class="modal-head periodic-head"><div><p class="eyebrow">Missão do Prof. Carbono</p><h2 class="modal-title">Arquivo dos Elementos</h2><p id="periodicIntro" class="modal-sub">Complete as lacunas da Tabela Periódica.</p></div><button class="close" data-close="periodicTable" aria-label="Fechar tabela periódica">×</button></div>
-  <div class="periodic-progress-wrap"><div><span>PROGRESSO DA PESQUISA</span><b id="periodicProgress">0 de 28 lacunas preenchidas</b></div><div class="periodic-progress"><i id="periodicBarFill"></i></div></div>
+  <div class="periodic-progress-wrap"><div><span>PROGRESSO DA PESQUISA</span><b id="periodicProgress">0 de 118 elementos concluídos</b></div><div class="periodic-progress"><i id="periodicBarFill"></i></div></div>
   <div class="periodic-scroll"><div id="periodicGrid" class="periodic-grid" aria-label="Tabela periódica interativa"></div></div>
   <div id="periodicQuiz" class="periodic-quiz"><div class="periodic-idle">Selecione uma lacuna destacada para iniciar a identificação.</div></div>
   <div class="periodic-legend"><span class="family-alkali">Metais alcalinos</span><span class="family-transition">Metais de transição</span><span class="family-metalloid">Semimetais</span><span class="family-nonmetal">Não metais</span><span class="family-halogen">Halogênios</span><span class="family-noble">Gases nobres</span></div>
@@ -125,17 +138,48 @@
 
 <section id="graphics" class="modal" aria-hidden="true"><div class="modal-card pause-card"><div class="modal-head"><div><h2 class="modal-title">Gráficos</h2><p class="modal-sub">Ajustes rápidos durante a partida.</p></div><button class="close" data-close="graphics">×</button></div><div id="graphicsControls" class="graphics-body"></div></div></section>
 
+<section id="professor" class="modal" aria-hidden="true"><div class="modal-card professor-card" role="dialog" aria-modal="true" aria-labelledby="professorTitle">
+  <div class="modal-head"><div><p class="eyebrow">Projeto de restauração</p><h2 id="professorTitle" class="modal-title">Prof. Carbono</h2><p id="professorProgress" class="modal-sub">Elementos concluídos: 0 / 118</p></div><button class="close" data-close="professor" type="button" aria-label="Fechar conversa">×</button></div>
+  <div class="professor-layout">
+    <nav id="professorActions" class="professor-actions" aria-label="Opções do Prof. Carbono">
+      <button type="button" data-professor-view="talk">Conversar</button>
+      <button type="button" data-professor-view="available">Missões disponíveis</button>
+      <button type="button" data-professor-view="current">Missão atual</button>
+      <button type="button" data-professor-view="deliver">Entregar materiais</button>
+      <button type="button" data-professor-view="progress">Progresso da Tabela Periódica</button>
+      <button type="button" data-professor-view="hints">Dicas</button>
+      <button type="button" data-professor-view="exit">Sair</button>
+    </nav>
+    <main id="professorContent" class="professor-content" tabindex="0"></main>
+  </div>
+</div></section>
+
+<section id="messageHistory" class="modal history-modal" aria-hidden="true"><div class="modal-card history-card" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+  <div class="modal-head"><div><p class="eyebrow">Registro do explorador</p><h2 id="historyTitle" class="modal-title">Histórico de mensagens</h2><p class="modal-sub">Diálogos, missões, descobertas e avisos importantes permanecem registrados aqui.</p></div><button class="close" data-close="messageHistory" type="button" aria-label="Fechar histórico">×</button></div>
+  <div id="historyFilters" class="history-filters" role="tablist" aria-label="Filtros de mensagens">
+    <button type="button" class="active" data-history-filter="all">Todas</button>
+    <button type="button" data-history-filter="dialogue">Diálogos</button>
+    <button type="button" data-history-filter="mission">Missões</button>
+    <button type="button" data-history-filter="system">Sistema</button>
+    <button type="button" data-history-filter="discovery">Descobertas</button>
+    <button type="button" data-history-filter="chemistry">Química</button>
+  </div>
+  <div class="history-scroll"><div id="historyList" class="history-list"></div><p id="historyEmpty" class="history-empty">Nenhuma mensagem nesta categoria.</p></div>
+</div></section>
+
 <section id="devMenu" class="modal" aria-hidden="true"><div class="modal-card dev-card">
   <div class="modal-head"><div><p class="eyebrow">Console experimental</p><h2 class="modal-title">Modo DEV</h2><p class="modal-sub">Ferramentas locais deste mundo. Digite <b>-mododev</b> no chat para reabrir.</p></div><button class="close" data-close="devMenu">×</button></div>
   <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="command-row"><input id="devCommand" autocomplete="off" placeholder="Ex.: fly, heal, spawn golem, give crystal 64"><button id="runCommand" class="primary">Executar</button></div><div class="dev-help">fly · heal · speed 1–5 · infinite · recipes · time day|sunset|night · give item quantidade · tp x y z · spawn golem|wisp|magma|scorpion|deer|owl · clear mobs</div></div>
 </div></section>
 
-<section id="pause" class="modal" aria-hidden="true"><div class="modal-card pause-card"><h2>Mundo pausado</h2><p>O laboratório, a vila e as criaturas esperam por você.</p><div class="pause-actions"><button id="resumeBtn" class="primary">Continuar</button><button id="graphicsBtn" class="secondary">Opções gráficas</button><button id="restartBtn" class="secondary">Respawnar</button><button id="newWorldBtn" class="secondary danger">Recomeçar mundo</button><button id="titleBtn" class="secondary">Voltar ao início</button></div></div></section>
-<div id="chat" class="chat"><div id="chatLog" class="chat-log"></div><input id="chatInput" class="chat-box" maxlength="120" autocomplete="off" placeholder="Mensagem ou comando…  (-mododev)"></div>
+<section id="pause" class="modal" aria-hidden="true"><div class="modal-card pause-card"><h2>Mundo pausado</h2><p id="pauseCopy">O laboratório, a vila e as criaturas esperam por você.</p><div class="pause-actions"><button id="resumeBtn" class="primary">Continuar</button><button id="pauseHistoryBtn" class="secondary">Histórico de mensagens</button><button id="graphicsBtn" class="secondary">Opções gráficas</button><button id="restartBtn" class="secondary">Respawnar</button><button id="newWorldBtn" class="secondary danger">Recomeçar mundo</button><button id="titleBtn" class="secondary">Voltar ao início</button></div></div></section>
+<div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
+<div id="chat" class="chat"><input id="chatInput" class="chat-box" maxlength="120" autocomplete="off" placeholder="Mensagem ou comando…  (-mododev)"></div>
 <div id="toast"></div>
 
 <script src="assets/three.min.js"></script>
 <script src="js/character-customization.js"></script>
+<script src="js/quimicraft-systems.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

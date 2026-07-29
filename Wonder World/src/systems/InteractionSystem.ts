@@ -25,6 +25,8 @@ export interface InteractionDefinition {
   guideObjectives?: string[];
   /** Lower values make an eligible interaction more attractive to the guide. */
   guidePriority?: number;
+  /** Optional extra line shown under the standard interaction prompt. */
+  contextHint?: string | (() => string);
   /** Decorative/optional interactions that must never attract the guide. */
   excludeFromGuide?: boolean;
 }

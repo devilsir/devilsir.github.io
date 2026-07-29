@@ -871,7 +871,12 @@ export class Game {
       "restore-power": [
         "Você precisa de quatro peças: chave, fusível, cabo e manivela.",
         "A chave está na loja de presentes; as outras peças ficam em setores próximos do corredor principal.",
-        "Quando reunir tudo, volte ao painel elétrico."
+        "Empurre o caixote da manutenção para revelar o cabo escondido no chão."
+      ],
+      "repair-power-panel": [
+        "As quatro peças já foram coletadas.",
+        "Volte ao setor elétrico no corredor da esquerda.",
+        "Interaja com o quadro elétrico para instalar as peças e ligar a energia."
       ],
       "survive-plush": [
         "Use a tocha acesa contra os brinquedos quando eles se aproximarem.",
@@ -880,7 +885,7 @@ export class Game {
       ],
       "solve-body-puzzles": [
         "Há quatro salas temáticas: mãos, olhos, coração e pés.",
-        "Leia os letreiros e pistas de cada sala antes de mexer nos mecanismos.",
+        "Mãos: 2, 4, 3 e 1 giros finais. Olhos: 2, 3 e 4 giros. Coração: válvulas 2, 1 e 3, depois três pulsações regulares. Pés: 1, 3, 2, 4.",
         "Concluir as quatro partes abre o caminho para o auditório."
       ],
       "enter-auditorium": [
@@ -1513,6 +1518,7 @@ export class Game {
       "reach-side-door": "ALCANCE A ENTRADA LATERAL.",
       "search-friends": "PROCURE SINAIS DOS SEUS AMIGOS E RESTAURE A ELETRICIDADE.",
       "restore-power": "RESTAURE A ELETRICIDADE.",
+      "repair-power-panel": "VOLTE AO QUADRO ELÉTRICO E INSTALE AS PEÇAS.",
       "solve-body-puzzles": "ATIVE AS QUATRO PARTES DO CORPO PARA ABRIR O AUDITÓRIO.",
       "enter-auditorium": "ENTRE NO AUDITÓRIO.",
       "defeat-body": "DERROTE BODY.",

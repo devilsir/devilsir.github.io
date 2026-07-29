@@ -241,6 +241,7 @@ export class WorldBuilder {
       "search-friends": this.checkpoints.power,
       "survive-plush": this.checkpoints.power,
       "restore-power": this.checkpoints.power,
+      "repair-power-panel": this.checkpoints.power,
       "solve-body-puzzles": this.nearestUnsolvedPuzzleCheckpoint(),
       "enter-auditorium": new Vector3(0, 0.12, 137),
       "defeat-body": this.checkpoints.auditorium,
@@ -389,6 +390,7 @@ export class WorldBuilder {
     }
     this.scene.getMeshByName("improvised-torch-pickup")?.setEnabled(!this.torchTaken);
     this.scene.getMeshByName("electrical-panel-key")?.setEnabled(!this.panelKeyTaken);
+    this.scene.getMeshByName("visible-cable")?.setEnabled(this.crateMoved && !this.cableTaken);
     this.scene.getMeshByName("soda-crank")?.setEnabled(!this.crankTaken);
     this.scene.getMeshByName("maintenance-bandage")?.setEnabled(!this.bandageTaken);
     const postBoss = inventoryIds.includes("bodyCard") || checkpoint === "body-defeated" || checkpoint === "body-card" || checkpoint === "chapter2-transition";
@@ -1372,27 +1374,50 @@ Pressione E novamente ou Esc para fechar.`);
     crate.position = new Vector3(-20, 0.7, 83);
     crate.material = this.materials.get("wood", 0);
     crate.checkCollisions = true;
+    const cable = MeshBuilder.CreateTorus("visible-cable", { diameter: 1.2, thickness: 0.12, tessellation: 24 }, this.scene);
+    cable.position = new Vector3(-20, 0.17, 83);
+    cable.rotation.x = Math.PI / 2;
+    cable.scaling.y = 0.34;
+    cable.material = this.materials.get("metal", 1);
+    cable.setEnabled(false);
+
+    const cablePlugA = MeshBuilder.CreateBox("visible-cable-plug-a", { width: 0.22, height: 0.12, depth: 0.3 }, this.scene);
+    cablePlugA.parent = cable;
+    cablePlugA.position = new Vector3(0.52, 0, 0);
+    cablePlugA.material = this.materials.get("plastic", 0);
+
+    const cablePlugB = MeshBuilder.CreateBox("visible-cable-plug-b", { width: 0.22, height: 0.12, depth: 0.3 }, this.scene);
+    cablePlugB.parent = cable;
+    cablePlugB.position = new Vector3(-0.52, 0, 0);
+    cablePlugB.material = this.materials.get("plastic", 0);
+
     this.interaction.register(crate, {
-      prompt: () => this.crateMoved ? "[E] PEGAR O CABO REVELADO" : "[E] EMPURRAR O CAIXOTE",
+      prompt: () => this.crateMoved ? "CAIXOTE MOVIDO" : "[E] EMPURRAR O CAIXOTE",
+      contextHint: () => this.crateMoved ? "O cabo agora está visível no chão." : "Parece haver algo escondido atrás dele.",
       onInteract: () => {
-        if (!this.crateMoved) {
-          this.crateMoved = true;
-          crate.position.x += 3.2;
-          this.audio.impact(0.7);
-          return;
-        }
-        if (!this.cableTaken) {
-          this.cableTaken = true;
-          this.inventory.add(ITEM_CATALOG.cable!);
-          this.audio.pickup();
-          this.updatePowerObjective();
-        }
+        if (this.crateMoved) return;
+        this.crateMoved = true;
+        crate.position.x += 3.2;
+        cable.setEnabled(!this.cableTaken);
+        this.audio.impact(0.7);
+        this.ui.toast("O caixote revelou um cabo de cobre no chão.");
       }
     });
-    const cable = MeshBuilder.CreateTorus("visible-cable", { diameter: 1.2, thickness: 0.12, tessellation: 24 }, this.scene);
-    cable.position = new Vector3(-20, 0.2, 83);
-    cable.rotation.x = Math.PI / 2;
-    cable.material = this.materials.get("metal", 1);
+
+    this.interaction.register(cable, {
+      prompt: () => this.cableTaken ? "CABO JÁ COLETADO" : "[E] PEGAR CABO DE COBRE",
+      enabled: () => this.crateMoved && !this.cableTaken,
+      guidePriority: -8,
+      contextHint: "Peça necessária para o quadro elétrico.",
+      onInteract: () => {
+        if (this.cableTaken) return;
+        this.cableTaken = true;
+        this.inventory.add(ITEM_CATALOG.cable!);
+        cable.setEnabled(false);
+        this.audio.pickup();
+        this.updatePowerObjective();
+      }
+    });
 
     // Hollow fuse locker: back, sides, top and bottom remain fixed while only the
     // front door rotates. The old implementation rotated the entire solid box.
@@ -1483,7 +1508,10 @@ Pressione E novamente ou Esc para fechar.`);
     lever.position = new Vector3(0, 0, -0.45);
     lever.material = this.materials.get("plastic", 0);
     this.interaction.register(panel, {
-      prompt: () => this.powerRestored ? "QUADRO ELÉTRICO OPERACIONAL" : "[E] REPARAR O QUADRO ELÉTRICO",
+      prompt: () => this.powerRestored ? "QUADRO ELÉTRICO OPERACIONAL" : this.hasAllPowerParts() ? "[E] INSTALAR AS PEÇAS NO QUADRO ELÉTRICO" : "[E] REPARAR O QUADRO ELÉTRICO",
+      guideObjectives: ["repair-power-panel"],
+      guidePriority: -30,
+      contextHint: () => this.powerRestored ? "A energia do setor já foi restabelecida." : this.hasAllPowerParts() ? "Todas as quatro peças já foram coletadas." : "Faltam peças para completar o reparo.",
       onInteract: () => {
         if (this.powerRestored) return;
         const required = ["panelKey", "fuse", "cable", "crank"];
@@ -1524,6 +1552,7 @@ Pressione E novamente ou Esc para fechar.`);
       }
       this.interaction.register(palm, {
         prompt: () => this.solvedPuzzles.has("hands") ? "MECANISMO DAS MÃOS ATIVO" : `[E] AJUSTAR MÃO ${i + 1}`,
+        contextHint: "Pista: giros finais 2 · 4 · 3 · 1.",
         onInteract: () => {
           if (!this.powerRestored || this.solvedPuzzles.has("hands")) {
             if (!this.powerRestored) this.ui.toast("O mecanismo não tem energia.");
@@ -1536,7 +1565,7 @@ Pressione E novamente ou Esc para fechar.`);
         }
       });
     }
-    this.createTextSign("hands-clue", "ABRAÇAR · SEGURAR · SOLTAR · PROTEGER", new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
+    this.createTextSign("hands-clue", "GIROS FINAIS: 2 · 4 · 3 · 1", new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
   }
 
   private createEyesPuzzle(): void {
@@ -1549,6 +1578,7 @@ Pressione E novamente ou Esc para fechar.`);
       mirror.checkCollisions = true;
       this.interaction.register(mirror, {
         prompt: () => this.solvedPuzzles.has("eyes") ? "FEIXE ÓPTICO ESTÁVEL" : `[E] GIRAR ESPELHO ${i + 1}`,
+        contextHint: "Pista: espelhos 1, 2 e 3 terminam com 2, 3 e 4 giros.",
         onInteract: () => {
           if (!this.powerRestored || this.solvedPuzzles.has("eyes")) {
             if (!this.powerRestored) this.ui.toast("Os refletores estão sem energia.");
@@ -1577,6 +1607,7 @@ Pressione E novamente ou Esc para fechar.`);
       valve.material = this.materials.get("metal", i);
       this.interaction.register(valve, {
         prompt: () => this.solvedPuzzles.has("heart") ? "PRESSÃO ESTÁVEL" : `[E] GIRAR VÁLVULA ${i + 1}`,
+        contextHint: "Pista: pressão 2 · 1 · 3 e depois três pulsações regulares.",
         onInteract: () => {
           if (!this.powerRestored || this.solvedPuzzles.has("heart")) {
             if (!this.powerRestored) this.ui.toast("A bomba está sem energia.");
@@ -1595,6 +1626,7 @@ Pressione E novamente ou Esc para fechar.`);
     pump.checkCollisions = true;
     this.interaction.register(pump, {
       prompt: "[E] ACIONAR PULSO DA BOMBA",
+      contextHint: "Depois de ajustar as válvulas para 2 · 1 · 3, faça três pulsações no mesmo ritmo.",
       onInteract: () => {
         if (!this.powerRestored || this.solvedPuzzles.has("heart")) return;
         if (!this.heartValves.every((value, index) => value === targets[index])) {
@@ -1636,6 +1668,7 @@ Pressione E novamente ou Esc para fechar.`);
       panel.checkCollisions = true;
       this.interaction.register(panel, {
         prompt: () => this.solvedPuzzles.has("feet") ? "SEQUÊNCIA CONCLUÍDA" : `[E] PISAR NA PLACA ${index + 1}`,
+        contextHint: "Pista: 1 → 3 → 2 → 4.",
         maxDistance: 2.6,
         onInteract: () => {
           if (!this.powerRestored || this.solvedPuzzles.has("feet")) return;
@@ -1653,7 +1686,7 @@ Pressione E novamente ou Esc para fechar.`);
         }
       });
     });
-    this.createTextSign("feet-clue", "1 → 3 → 2 → 4", new Vector3(16, 2.3, 143.8), 4, 0.9, new Color3(0.58, 0.45, 0.14));
+    this.createTextSign("feet-clue", "PASSOS: 1 → 3 → 2 → 4", new Vector3(16, 2.3, 143.8), 4.8, 0.9, new Color3(0.58, 0.45, 0.14));
   }
 
   private createAuditorium(): void {
@@ -2237,9 +2270,17 @@ Pressione E novamente ou Esc para fechar.`);
     this.audio.impact(1.1);
   }
 
+  private hasAllPowerParts(): boolean {
+    return ["panelKey", "fuse", "cable", "crank"].every((id) => this.inventory.has(id));
+  }
+
   private updatePowerObjective(): void {
     const ids = ["panelKey", "fuse", "cable", "crank"];
     const found = ids.filter((id) => this.inventory.has(id)).length;
+    if (found >= ids.length) {
+      this.objective.set("repair-power-panel", "TODAS AS PEÇAS FORAM COLETADAS. VOLTE AO QUADRO ELÉTRICO.");
+      return;
+    }
     this.objective.set("restore-power", `RESTAURE A ELETRICIDADE. PEÇAS ENCONTRADAS: ${found}/4.`);
   }
 

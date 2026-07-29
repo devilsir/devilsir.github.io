@@ -1,171 +1,251 @@
-<!DOCTYPE html>
-
-<html lang="pt-br">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Cargas ⚡ — Interações, Indução e Atrito</title>
-
-<link href="style.css" rel="stylesheet"/></head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <title>Cargas ⚡ — Interações, Indução e Atrito</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<div class="container">
-<div class="header">
-<div>
-<div style="font-weight:900;font-size:24px">Cargas ⚡ — Interações, Indução e Atrito</div>
-<div class="small">Arraste cargas (+/−) e neutros; veja indução, dipolos, eletrização por atrito e desafios.</div>
-</div>
-<div class="pills">
-<div class="pill">Atividade interativa</div>
-<div class="pill">Didático</div>
-</div>
-</div>
-<div class="tabs">
-<button class="tabbtn active" id="tab-aprender">Aprender</button>
-<button class="tabbtn" id="tab-desafios">Desafios</button>
-<button class="tabbtn" id="tab-quiz">Quiz</button>
-</div>
+  <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+  <div class="app-shell" id="app-shell">
+    <header class="app-header">
+      <div class="brand" aria-label="Cargas, laboratório de eletrostática">
+        <span class="brand-mark" aria-hidden="true"><span>+</span><i></i><span>−</span></span>
+        <span class="brand-copy">
+          <strong>Cargas ⚡</strong>
+          <small>Interações, Indução e Atrito</small>
+        </span>
+      </div>
 
-<section id="view-aprender">
-<div class="grid">
-<div class="panel" style="padding:0">
-<canvas height="540" id="canvas-aprender" width="900"></canvas>
-</div>
-<div class="panel controls">
-<div class="row">
-<button class="btn" id="btn-add-plus">Adicionar +</button>
-<button class="btn" id="btn-add-minus">Adicionar −</button>
-<button class="btn" id="btn-rem-charge">Remover carga</button>
-</div>
-<div class="row">
-<select id="matSel">
-<option>Vidro</option><option>Pele</option><option>Seda</option><option>Madeira</option>
-<option>Lã</option><option>Âmbar</option><option>Poliestireno</option><option>Teflon</option>
-</select>
-<button class="btn" id="btn-add-neutral">Adicionar polarizável</button>
-<button class="btn" id="btn-rem-neutral">Remover polarizável</button>
-</div>
-<div class="row">
-<label><input checked="" id="chk-force" type="checkbox"/> Mostrar seta da força (q)</label>
-<label><input checked="" id="chk-ind" type="checkbox"/> Polarização por indução</label>
-</div>
-<div class="row">
-<label><input checked="" id="chk-dync" type="checkbox"/> Cargas dinâmicas</label>
-<label><input checked="" id="chk-dipdip" type="checkbox"/> Dipolos interagem entre si</label>
-<label><input checked="" id="chk-fric" type="checkbox"/> Modo atrito</label>
-</div>
-<label>Velocidade
-          <input id="rng-speed" max="2.5" min="0.2" step="0.1" type="range" value="1.0"/>
-</label>
-<label>Limiar de indução (E)
-          <input id="rng-eth" max="0.08" min="0.0" step="0.002" type="range" value="0.02"/>
-</label>
-<div class="row">
-<button class="btn" id="btn-play">Iniciar</button>
-<button class="btn" id="btn-reset-q">Reposicionar q</button>
-<button class="btn" id="btn-swap-q">Trocar sinal q</button>
-<button class="btn" id="btn-reset">Resetar</button>
-</div>
-<div class="small">Neutro só polariza quando o campo próximo passa do limiar. No modo atrito, dois neutros em contato trocam carga segundo a série triboelétrica.</div>
-</div>
-</div>
-</section>
+      <nav class="main-nav" aria-label="Modos do aplicativo">
+        <button class="nav-btn active" data-view="lab" aria-current="page"><span>◉</span> Aprender</button>
+        <button class="nav-btn" data-view="campaign"><span>◇</span> Desafios</button>
+        <button class="nav-btn" data-view="minigames"><span>✦</span> Minigames</button>
+        <button class="nav-btn" data-view="quiz"><span>?</span> Quiz</button>
+        <button class="nav-btn" data-view="daily"><span>☀</span> Diário</button>
+        <button class="nav-btn" data-view="progress"><span>▰</span> Progresso</button>
+      </nav>
 
-<section class="hidden" id="view-desafios">
-<div class="grid">
-<div class="panel" style="padding:0">
-<canvas height="540" id="canvas-desafios" width="900"></canvas>
-</div>
-<div class="panel controls">
-<div class="row">
-<div class="pill" id="pill-nivel">Nível: 1</div>
-<button class="btn" data-lvl="1">1</button>
-<button class="btn" data-lvl="2">2</button>
-<button class="btn" data-lvl="3">3</button>
-<button class="btn" data-lvl="4">4</button>
-<button class="btn" data-lvl="5">5</button>
-</div>
-<div class="row">
-<div class="pill">Máx cargas: <span id="d-max">1</span></div>
-<div class="pill">Sinais permitidos: <span id="d-sign">±</span></div>
-</div>
-<div class="row">
-<button class="btn" id="btn-d-add-plus">Adicionar +</button>
-<button class="btn" id="btn-d-add-minus">Adicionar −</button>
-<button class="btn" id="btn-d-rem">Remover carga</button>
-</div>
-<div class="hint" id="d-hint">Use 1 carga para empurrar/atrair q até a estrela.</div>
-<div class="row" style="margin-top:8px">
-<label><input checked="" id="chk-d-force" type="checkbox"/> Mostrar seta da força</label>
-</div>
-<div class="row">
-<button class="btn" id="btn-d-play">Iniciar</button>
-<button class="btn" id="btn-d-resetq">Reposicionar q</button>
-<button class="btn" id="btn-d-reset">Resetar nível</button>
-</div>
-<div class="small">Neste modo você NÃO pode arrastar a partícula q — apenas as cargas. Alguns níveis têm obstáculos **polarizáveis** (indução ligada).</div>
-</div>
-</div>
-</section>
+      <div class="header-actions">
+        <button class="icon-btn" id="help-btn" aria-label="Abrir ajuda e glossário" title="Ajuda e glossário">?</button>
+        <button class="icon-btn" id="settings-btn" aria-label="Abrir configurações" title="Configurações">⚙</button>
+        <button class="icon-btn" id="mute-btn" aria-label="Silenciar sons" title="Silenciar sons">♪</button>
+        <button class="icon-btn" id="fullscreen-btn" aria-label="Ativar tela cheia" title="Tela cheia">⛶</button>
+      </div>
+    </header>
 
-<section class="hidden" id="view-quiz">
-<div class="panel center">
-<div class="badge" style="margin-bottom:10px">
-<span style="font-weight:700">Quiz</span>
-<span>•</span>
-<span id="quiz-level-label">Nível 1</span>
-<span>•</span>
-<span>Questão <span id="qNum">1</span>/<span id="qTotal">8</span></span>
-<span>•</span>
-<span>Pontos: <span id="qScore">0</span></span>
-</div>
-<div style="margin-bottom:10px">
-<button class="btn" data-qlevel="1">Nível 1</button>
-<button class="btn" data-qlevel="2">Nível 2</button>
-<button class="btn" data-qlevel="3">Nível 3</button>
-</div>
-<div id="quiz-L1">
-<div style="font-weight:700;margin-bottom:8px">Sinais: Atrai ou Repele?</div>
-<div style="display:flex;gap:12px;justify-content:center;align-items:center;margin:12px 0">
-<div class="pill" id="q1A"></div>
-<span style="color:#9ca3af">×</span>
-<div class="pill" id="q1B"></div>
-</div>
-<div class="answer-row">
-<button class="answer-btn" data-choice="Atrai">Atrai</button>
-<button class="answer-btn" data-choice="Repele">Repele</button>
-</div>
-</div>
-<div class="hidden" id="quiz-L2">
-<div style="font-weight:700;margin-bottom:8px">Sinais + Distância: tipo e intensidade</div>
-<div class="small" id="q2Prompt" style="margin-bottom:8px"></div>
-<div class="answer-row">
-<button class="answer-btn" data-choice="Atrai forte">Atrai forte</button>
-<button class="answer-btn" data-choice="Atrai fraca">Atrai fraca</button>
-<button class="answer-btn" data-choice="Repele forte">Repele forte</button>
-<button class="answer-btn" data-choice="Repele fraca">Repele fraca</button>
-</div>
-</div>
-<div class="hidden" id="quiz-L3">
-<div style="font-weight:700;margin-bottom:8px">Superposição: direção da força resultante em q</div>
-<canvas height="240" id="quiz-canvas" style="border-radius:12px;background:linear-gradient(#0f172a,#0b1324);border:1px solid rgba(255,255,255,0.12)" width="240"></canvas>
-<div class="answer-row" style="max-width:420px;margin:10px auto 0">
-<button class="answer-btn" data-choice="↑">↑</button>
-<button class="answer-btn" data-choice="↗">↗</button>
-<button class="answer-btn" data-choice="→">→</button>
-<button class="answer-btn" data-choice="↘">↘</button>
-<button class="answer-btn" data-choice="↓">↓</button>
-<button class="answer-btn" data-choice="↙">↙</button>
-<button class="answer-btn" data-choice="←">←</button>
-<button class="answer-btn" data-choice="↖">↖</button>
-</div>
-</div>
-<div style="margin-top:12px">
-<button class="btn" id="btn-q-reset">Reiniciar quiz</button>
-</div>
-</div>
-</section>
-<div class="small center" style="margin-top:16px">Modelo didático com física simplificada. Ideal para visualizar atração/repulsão, indução, dipolo-dipolo e eletrização por atrito.</div>
-</div>
+    <div class="progress-strip" aria-label="Progresso geral">
+      <div><span id="progress-levels">0/30 desafios</span><span id="progress-stars">0 estrelas</span><span id="progress-streak">0 dias</span></div>
+      <div class="progress-track"><span id="progress-bar"></span></div>
+    </div>
 
-<script src="script.js"></script></body>
+    <main id="main-content" tabindex="-1">
+      <section class="view active" id="view-lab" data-view-name="lab" aria-labelledby="lab-title">
+        <div class="view-heading">
+          <div>
+            <span class="eyebrow">Laboratório livre</span>
+            <h1 id="lab-title">Experimente forças invisíveis</h1>
+            <p>Monte cenas, compare materiais e veja a força elétrica ganhar forma.</p>
+          </div>
+          <div class="heading-actions">
+            <label class="select-field compact"><span>Experimento</span>
+              <select id="preset-select" aria-label="Selecionar experimento guiado"></select>
+            </label>
+            <button class="primary-btn" id="load-preset-btn">Carregar preset</button>
+          </div>
+        </div>
+
+        <div class="workspace-layout">
+          <div class="simulation-column">
+            <div class="object-toolbar" role="toolbar" aria-label="Objetos do laboratório">
+              <button class="tool-btn" data-lab-tool="select" aria-pressed="true"><span class="tool-icon select-icon">↖</span><small>Selecionar</small></button>
+              <button class="tool-btn" data-lab-tool="positive"><span class="tool-icon charge positive">+</span><small>Positiva</small></button>
+              <button class="tool-btn" data-lab-tool="negative"><span class="tool-icon charge negative">−</span><small>Negativa</small></button>
+              <button class="tool-btn" data-lab-tool="test"><span class="tool-icon charge test">q</span><small>Carga-teste</small></button>
+              <button class="tool-btn" data-lab-tool="neutral"><span class="tool-icon neutral">◐</span><small>Polarizável</small></button>
+              <button class="tool-btn" data-lab-tool="conductor"><span class="tool-icon conductor">≋</span><small>Condutor</small></button>
+              <button class="tool-btn" data-lab-tool="insulator"><span class="tool-icon insulator">▦</span><small>Isolante</small></button>
+              <button class="tool-btn" data-lab-tool="measure"><span class="tool-icon measure">↔</span><small>Medir</small></button>
+              <button class="tool-btn danger" data-lab-tool="eraser"><span class="tool-icon">⌫</span><small>Apagar</small></button>
+            </div>
+
+            <div class="canvas-card" id="lab-canvas-card">
+              <canvas id="canvas-lab" width="900" height="540" aria-label="Simulação interativa de eletrostática"></canvas>
+              <div class="canvas-topbar">
+                <span class="status-chip paused" id="lab-status"><i></i> Pausada</span>
+                <span class="status-chip subtle" id="lab-tool-status">Ferramenta: selecionar</span>
+              </div>
+              <div class="canvas-bottombar">
+                <span id="lab-object-count">0 objetos</span>
+                <span>Modelo didático simplificado</span>
+              </div>
+            </div>
+
+            <div class="transport-bar" role="toolbar" aria-label="Controles da simulação">
+              <button class="transport-btn primary" id="lab-play-btn" title="Espaço"><span>▶</span><b>Iniciar</b></button>
+              <button class="transport-btn" id="lab-step-btn" title="Avançar um quadro">▮▶</button>
+              <button class="transport-btn" id="lab-reset-btn" title="R — reiniciar">↻</button>
+              <span class="toolbar-separator"></span>
+              <button class="transport-btn" id="lab-undo-btn" title="Ctrl/Cmd + Z">↶</button>
+              <button class="transport-btn" id="lab-redo-btn" title="Ctrl/Cmd + Shift + Z">↷</button>
+              <button class="transport-btn" id="lab-duplicate-btn" title="Duplicar objeto selecionado">⧉</button>
+              <button class="transport-btn danger" id="lab-delete-btn" title="Delete/Backspace">⌫</button>
+              <span class="toolbar-separator"></span>
+              <label class="speed-control"><span>Velocidade</span><select id="lab-speed"><option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label>
+              <button class="transport-btn" id="lab-center-btn" title="Centralizar visualização">⌾</button>
+            </div>
+          </div>
+
+          <aside class="control-sidebar" id="lab-sidebar">
+            <details class="control-section" open>
+              <summary><span>Visualizações</span><small>camadas independentes</small></summary>
+              <div class="toggle-grid">
+                <label class="toggle"><input id="layer-resultant" type="checkbox" checked><span></span>Força resultante</label>
+                <label class="toggle"><input id="layer-individual" type="checkbox"><span></span>Forças individuais</label>
+                <label class="toggle"><input id="layer-components" type="checkbox"><span></span>Componentes X/Y</label>
+                <label class="toggle"><input id="layer-field" type="checkbox"><span></span>Campo elétrico</label>
+                <label class="toggle"><input id="layer-lines" type="checkbox"><span></span>Linhas de campo</label>
+                <label class="toggle"><input id="layer-heatmap" type="checkbox"><span></span>Potencial</label>
+                <label class="toggle"><input id="layer-trajectories" type="checkbox" checked><span></span>Trajetórias</label>
+                <label class="toggle"><input id="layer-velocity" type="checkbox"><span></span>Velocidade</label>
+                <label class="toggle"><input id="layer-distance" type="checkbox"><span></span>Distâncias</label>
+                <label class="toggle"><input id="layer-grid" type="checkbox" checked><span></span>Grade</label>
+                <label class="toggle"><input id="layer-labels" type="checkbox" checked><span></span>Rótulos</label>
+                <label class="toggle"><input id="layer-values" type="checkbox"><span></span>Valores</label>
+              </div>
+            </details>
+
+            <details class="control-section" open>
+              <summary><span>Objeto selecionado</span><small id="inspector-kind">nenhum</small></summary>
+              <div id="inspector-empty" class="empty-state compact"><span>◎</span><p>Selecione um objeto para editar suas propriedades.</p></div>
+              <form id="inspector-form" class="inspector-form hidden" autocomplete="off">
+                <div class="segmented" aria-label="Complexidade do inspetor">
+                  <button type="button" class="active" data-inspector-mode="simple">Simples</button>
+                  <button type="button" data-inspector-mode="advanced">Avançado</button>
+                </div>
+                <label><span>Nome</span><input id="inspector-name" name="objectName" type="text" maxlength="32"></label>
+                <label><span>Intensidade da carga <output id="inspector-charge-out"></output></span><input id="inspector-charge" name="charge" type="range" min="-4" max="4" step="0.1"></label>
+                <label><span>Material</span><select id="inspector-material" name="material"></select></label>
+                <label class="toggle"><input id="inspector-fixed" name="fixed" type="checkbox"><span></span>Objeto fixo</label>
+                <div class="advanced-fields hidden" id="advanced-fields">
+                  <label><span>Massa <output id="inspector-mass-out"></output></span><input id="inspector-mass" name="mass" type="range" min="0.2" max="8" step="0.1"></label>
+                  <label><span>Polarizabilidade <output id="inspector-polar-out"></output></span><input id="inspector-polar" name="polarizability" type="range" min="0" max="1" step="0.02"></label>
+                  <div class="field-row"><label><span>Posição X</span><input id="inspector-x" name="x" type="number" min="0" max="900"></label><label><span>Posição Y</span><input id="inspector-y" name="y" type="number" min="0" max="540"></label></div>
+                  <div class="field-row"><label><span>Velocidade X</span><input id="inspector-vx" name="vx" type="number" step="1"></label><label><span>Velocidade Y</span><input id="inspector-vy" name="vy" type="number" step="1"></label></div>
+                </div>
+              </form>
+            </details>
+
+            <details class="control-section" open>
+              <summary><span>Leitura em tempo real</span><small>carga-teste</small></summary>
+              <div class="metric-grid" id="lab-metrics">
+                <div><small>Força</small><strong id="metric-force">0,00</strong><span>u.a.</span></div>
+                <div><small>Direção</small><strong id="metric-direction">—</strong><span>resultante</span></div>
+                <div><small>Velocidade</small><strong id="metric-speed">0,00</strong><span>u/s</span></div>
+                <div><small>Campo E</small><strong id="metric-field">0,00</strong><span>u.a.</span></div>
+                <div><small>Carga estática</small><strong id="metric-static">0,00</strong><span>selecionada</span></div>
+                <div><small>Indução</small><strong id="metric-induced">0,00</strong><span>selecionada</span></div>
+              </div>
+            </details>
+
+            <details class="control-section">
+              <summary><span>Experimentos salvos</span><small>neste dispositivo</small></summary>
+              <div class="stack-actions">
+                <input id="save-experiment-name" type="text" maxlength="40" placeholder="Nome do experimento" aria-label="Nome do experimento"><button class="secondary-btn" id="save-experiment-btn">Salvar experimento</button>
+                <select id="saved-experiments-select" aria-label="Experimentos salvos"><option value="">Nenhum experimento salvo</option></select>
+                <div class="field-row"><button class="secondary-btn" id="load-experiment-btn">Carregar</button><button class="danger-btn" id="delete-experiment-btn">Excluir</button></div>
+              </div>
+            </details>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-campaign" data-view-name="campaign" aria-labelledby="campaign-title">
+        <div class="view-heading">
+          <div><span class="eyebrow">Campanha científica</span><h1 id="campaign-title">30 desafios, 6 capítulos</h1><p>Aprenda um conceito de cada vez e domine a superposição de forças.</p></div>
+          <button class="secondary-btn" id="campaign-practice-btn">Abrir prática livre</button>
+        </div>
+        <div id="campaign-browser">
+          <div class="chapter-tabs" id="chapter-tabs" role="tablist" aria-label="Capítulos da campanha"></div>
+          <div class="campaign-summary-card" id="chapter-summary"></div>
+          <div class="level-grid" id="level-grid"></div>
+        </div>
+        <div class="campaign-player hidden" id="campaign-player">
+          <div class="simulation-column">
+            <div class="campaign-objective"><div><span id="campaign-chapter-label"></span><h2 id="campaign-level-title"></h2><p id="campaign-level-objective"></p></div><button class="icon-btn" id="campaign-close-btn" aria-label="Voltar à seleção de níveis">×</button></div>
+            <div class="canvas-card"><canvas id="canvas-campaign" width="900" height="540" aria-label="Desafio de eletrostática"></canvas><div class="canvas-topbar"><span class="status-chip paused" id="campaign-status"><i></i> Pausada</span><span class="status-chip subtle" id="campaign-condition">0/0 cargas</span></div><div class="canvas-bottombar"><span id="campaign-timer">00:00</span><span id="campaign-target-status">Mantenha q no alvo</span></div></div>
+            <div class="transport-bar"><button class="transport-btn primary" id="campaign-play-btn"><span>▶</span><b>Iniciar</b></button><button class="transport-btn" id="campaign-step-btn">▮▶</button><button class="transport-btn" id="campaign-reset-btn">↻</button><span class="toolbar-separator"></span><button class="tool-btn compact" data-campaign-add="1"><span class="tool-icon charge positive">+</span><small>Adicionar</small></button><button class="tool-btn compact" data-campaign-add="-1"><span class="tool-icon charge negative">−</span><small>Adicionar</small></button><button class="transport-btn danger" id="campaign-delete-btn">⌫</button></div>
+          </div>
+          <aside class="control-sidebar">
+            <div class="control-section static"><div class="section-title"><span>Regras do nível</span></div><div class="rules-list" id="campaign-rules"></div></div>
+            <div class="control-section static"><div class="section-title"><span>Dicas progressivas</span><small id="hint-cost">0 usadas</small></div><div class="hint-card" id="campaign-hint">Comece observando a posição inicial.</div><button class="secondary-btn full" id="campaign-hint-btn">Revelar próxima dica</button></div>
+            <div class="control-section static"><div class="section-title"><span>Visualizações</span></div><div class="toggle-grid"><label class="toggle"><input id="campaign-force-toggle" type="checkbox" checked><span></span>Força resultante</label><label class="toggle"><input id="campaign-field-toggle" type="checkbox"><span></span>Campo elétrico</label><label class="toggle"><input id="campaign-trail-toggle" type="checkbox" checked><span></span>Trajetória</label></div></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-minigames" data-view-name="minigames" aria-labelledby="minigames-title">
+        <div class="view-heading"><div><span class="eyebrow">Treino rápido</span><h1 id="minigames-title">Minigames eletrostáticos</h1><p>Cinco formatos diferentes, um mesmo laboratório de ideias.</p></div></div>
+        <div class="minigame-grid" id="minigame-grid"></div>
+        <div class="minigame-player hidden" id="minigame-player">
+          <div class="simulation-column">
+            <div class="campaign-objective"><div><span id="minigame-kicker"></span><h2 id="minigame-title"></h2><p id="minigame-instructions"></p></div><button class="icon-btn" id="minigame-close-btn" aria-label="Fechar minigame">×</button></div>
+            <div class="canvas-card minigame-canvas-card"><canvas id="canvas-minigame" width="900" height="540" aria-label="Minigame de eletrostática"></canvas><div class="canvas-topbar"><span class="status-chip" id="minigame-status">Tutorial</span><span class="status-chip subtle" id="minigame-score">0 pontos</span></div><div class="canvas-bottombar"><span id="minigame-progress">Rodada 1</span><span id="minigame-extra">—</span></div></div>
+          </div>
+          <aside class="control-sidebar"><div class="control-section static"><div class="section-title"><span>Controles</span></div><div id="minigame-controls" class="minigame-controls"></div></div><div class="control-section static"><div class="section-title"><span>Como funciona</span></div><div id="minigame-explanation" class="science-note"></div></div></aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-quiz" data-view-name="quiz" aria-labelledby="quiz-title">
+        <div class="view-heading"><div><span class="eyebrow">Diagnóstico e prática</span><h1 id="quiz-title">Quiz de eletrostática</h1><p>Feedback imediato, explicações e desempenho por tema.</p></div></div>
+        <div class="quiz-setup" id="quiz-setup"><div class="difficulty-grid" id="quiz-difficulties"></div><div class="panel-card"><h2>Modo</h2><div class="choice-list"><label><input type="radio" name="quizMode" value="practice" checked><span><b>Prática</b><small>Sem cronômetro, com explicações completas.</small></span></label><label><input type="radio" name="quizMode" value="challenge"><span><b>Desafio</b><small>Tempo limitado e bônus por sequência.</small></span></label></div><button class="primary-btn full" id="quiz-start-btn">Começar quiz</button></div></div>
+        <div class="quiz-stage hidden" id="quiz-stage"><div class="quiz-header"><div><span class="eyebrow" id="quiz-difficulty-label">Básico</span><h2 id="quiz-topic">Atração e repulsão</h2></div><div class="quiz-counters"><span><b id="quiz-question-number">1</b>/<span id="quiz-question-total">10</span></span><span>🔥 <b id="quiz-streak">0</b></span><span>★ <b id="quiz-score">0</b></span></div></div><div class="quiz-progress"><span id="quiz-progress-bar"></span></div><div class="quiz-question-card"><p id="quiz-prompt"></p><canvas id="canvas-quiz" width="620" height="250" class="hidden" aria-label="Ilustração da questão"></canvas><div id="quiz-answers" class="quiz-answers"></div><div id="quiz-feedback" class="quiz-feedback hidden" role="status" aria-live="polite"></div><div class="quiz-actions"><button class="secondary-btn hidden" id="quiz-why-btn">Por quê?</button><button class="primary-btn hidden" id="quiz-next-btn">Próxima</button></div></div></div>
+      </section>
+
+      <section class="view" id="view-daily" data-view-name="daily" aria-labelledby="daily-title">
+        <div class="view-heading"><div><span class="eyebrow">Um desafio por dia</span><h1 id="daily-title">Desafio diário</h1><p>A mesma data gera a mesma atividade, totalmente offline.</p></div></div>
+        <div class="daily-layout"><article class="daily-hero"><span class="daily-date" id="daily-date"></span><div class="daily-icon" id="daily-icon">✦</div><span class="eyebrow" id="daily-type"></span><h2 id="daily-name"></h2><p id="daily-description"></p><div class="daily-stats"><div><small>Sequência atual</small><strong id="daily-current-streak">0 dias</strong></div><div><small>Melhor sequência</small><strong id="daily-best-streak">0 dias</strong></div><div><small>Melhor pontuação</small><strong id="daily-best-score">—</strong></div></div><button class="primary-btn" id="daily-start-btn">Começar desafio de hoje</button></article><aside class="panel-card"><h2>Calendário recente</h2><div class="daily-calendar" id="daily-calendar"></div><div class="science-note">Perdeu um dia? Sem drama. A sequência celebra constância, mas o laboratório continua aberto para você voltar quando quiser.</div></aside></div>
+      </section>
+
+      <section class="view" id="view-progress" data-view-name="progress" aria-labelledby="progress-title">
+        <div class="view-heading"><div><span class="eyebrow">Perfil local</span><h1 id="progress-title">Seu progresso científico</h1><p>Todos os dados ficam salvos apenas neste dispositivo.</p></div><div class="heading-actions"><button class="secondary-btn" id="export-save-btn">Exportar dados</button><label class="secondary-btn file-label">Importar dados<input id="import-save-input" type="file" accept="application/json"></label><button class="danger-btn" id="reset-progress-btn">Resetar progresso</button></div></div>
+        <div class="stats-grid" id="profile-stats"></div>
+        <div class="progress-layout"><div class="panel-card"><div class="section-title"><span>Conceitos dominados</span></div><div id="concept-mastery" class="mastery-list"></div></div><div class="panel-card"><div class="section-title"><span>Conquistas</span><small id="achievement-count"></small></div><div id="achievement-grid" class="achievement-grid"></div></div></div>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Navegação móvel">
+      <button class="active" data-view="lab"><span>◉</span><small>Aprender</small></button><button data-view="campaign"><span>◇</span><small>Desafios</small></button><button data-view="minigames"><span>✦</span><small>Jogos</small></button><button data-view="quiz"><span>?</span><small>Quiz</small></button><button data-view="progress"><span>▰</span><small>Perfil</small></button>
+    </nav>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-status" id="sr-status" aria-live="polite"></div>
+
+  <dialog id="onboarding-dialog" class="app-dialog onboarding-dialog" aria-labelledby="onboarding-title">
+    <button class="dialog-close" data-close-dialog aria-label="Fechar tutorial">×</button>
+    <div class="onboarding-visual" id="onboarding-visual"></div>
+    <div class="dialog-content"><span class="eyebrow">Primeiros passos</span><h2 id="onboarding-title"></h2><p id="onboarding-text"></p><div class="onboarding-dots" id="onboarding-dots"></div><div class="dialog-actions"><button class="ghost-btn" id="onboarding-skip">Pular</button><button class="primary-btn" id="onboarding-next">Continuar</button></div></div>
+  </dialog>
+
+  <dialog id="help-dialog" class="app-dialog wide-dialog" aria-labelledby="help-title"><button class="dialog-close" data-close-dialog aria-label="Fechar ajuda">×</button><div class="dialog-content"><span class="eyebrow">Central de aprendizagem</span><h2 id="help-title">Ajuda e glossário</h2><div class="help-tabs"><button class="active" data-help-tab="controls">Controles</button><button data-help-tab="glossary">Glossário</button><button data-help-tab="science">Sobre o modelo</button></div><div id="help-content"></div></div></dialog>
+
+  <dialog id="settings-dialog" class="app-dialog" aria-labelledby="settings-title"><button class="dialog-close" data-close-dialog aria-label="Fechar configurações">×</button><div class="dialog-content"><span class="eyebrow">Preferências</span><h2 id="settings-title">Configurações</h2><div class="settings-list"><label class="toggle"><input id="setting-sfx" type="checkbox" checked><span></span>Efeitos sonoros</label><label><span>Volume geral <output id="volume-output">60%</output></span><input id="setting-volume" type="range" min="0" max="1" step="0.05" value="0.6"></label><label class="toggle"><input id="setting-reduced-motion" type="checkbox"><span></span>Reduzir movimento</label><label class="toggle"><input id="setting-high-contrast" type="checkbox"><span></span>Alto contraste</label><label><span>Tamanho do texto</span><select id="setting-text-scale"><option value="0.9">Compacto</option><option value="1" selected>Padrão</option><option value="1.12">Grande</option><option value="1.25">Extra grande</option></select></label></div><button class="secondary-btn full" id="reopen-tutorial-btn">Reabrir tutorial</button></div></dialog>
+
+  <dialog id="result-dialog" class="app-dialog result-dialog" aria-labelledby="result-title"><div class="result-burst" id="result-burst">★</div><div class="dialog-content center"><span class="eyebrow" id="result-kicker">Resultado</span><h2 id="result-title"></h2><p id="result-description"></p><div id="result-details" class="result-details"></div><div class="dialog-actions center"><button class="secondary-btn" id="result-secondary-btn">Voltar</button><button class="primary-btn" id="result-primary-btn">Continuar</button></div></div></dialog>
+
+  <dialog id="confirm-dialog" class="app-dialog compact-dialog" aria-labelledby="confirm-title"><div class="dialog-content"><h2 id="confirm-title">Confirmar ação</h2><p id="confirm-text"></p><div class="dialog-actions"><button class="secondary-btn" id="confirm-cancel">Cancelar</button><button class="danger-btn" id="confirm-ok">Confirmar</button></div></div></dialog>
+
+  <script src="js/core.js" defer></script>
+  <script src="js/data.js" defer></script>
+  <script src="js/physics.js" defer></script>
+  <script src="js/lab.js" defer></script>
+  <script src="js/campaign.js" defer></script>
+  <script src="js/minigames.js" defer></script>
+  <script src="js/quiz.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
 </html>

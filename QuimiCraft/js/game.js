@@ -1,12 +1,12 @@
 "use strict";
 /* ------------------------------------------------------------
-   QUIMICRAFT v4.7 — LABORATÓRIO CARBONO EXPANDIDO · single file voxel engine
+   QUIMICRAFT v6.0 — LABORATÓRIO CARBONO PROTEGIDO · direct-browser voxel engine
    Three.js r128 + procedural assets only
 ------------------------------------------------------------- */
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const smooth=t=>t*t*(3-2*t), fract=x=>x-Math.floor(x), TAU=Math.PI*2;
 const hash=(x,y=0,z=0)=>fract(Math.sin(x*127.1+y*311.7+z*74.7+19.19)*43758.5453);
-const CHUNK=16, MAX_Y=62, WATER_LEVEL=15, DAY_SECONDS=2400;
+const BLOCK_SIZE=1, CHUNK=16, MAX_Y=62, WATER_LEVEL=15, DAY_SECONDS=2400;
 
 const BLOCK={AIR:0,GRASS:1,DIRT:2,STONE:3,SAND:4,WOOD:5,LEAVES:6,SNOW:7,COAL:8,IRON:9,CACTUS:10,PLANK:11,TORCH:12,DOOR:13,BEDROCK:14,DOOR_OPEN:15,LAB:16,COPPER:17,SULFUR:18,GLASS:19,SPECTRAL:20,SALT:21,MUD:22,CLAY:23,BASALT:24,OBSIDIAN:25,GOLD:26,TIN:27,ZINC:28,CRYSTAL:29,ICE:30,MOSS:31,RED_SAND:32,LAVA:33,PINE_LOG:34,PINE_LEAVES:35,DRY_LEAVES:36,MARBLE:37,DEEPSTONE:38,ASH:39,GLOWSTONE:40,ALCHEMY_BRICK:41,CERAMIC:42,BRONZE_BLOCK:43,TALL_GRASS:44,POPPY:45,BLUE_FLOWER:46,WHITE_FLOWER:47,CHERRY_LOG:48,CHERRY_LEAVES:49,LIMESTONE:50,SLATE:51,AMETHYST:52,NITER:53,FROSTED_SOIL:54,PEAT:55,BAMBOO:56,PALM_LOG:57,PALM_LEAVES:58,VILLAGE_BRICK:59};
 const BDEF={
@@ -129,7 +129,7 @@ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-per
 const hemi=new THREE.HemisphereLight(0xbbe0ff,0x3a422c,.65);scene.add(hemi);
 const sunLight=new THREE.DirectionalLight(0xfff1cf,1.2);sunLight.castShadow=true;sunLight.shadow.mapSize.set(2048,2048);sunLight.shadow.camera.left=-55;sunLight.shadow.camera.right=55;sunLight.shadow.camera.top=55;sunLight.shadow.camera.bottom=-55;sunLight.shadow.camera.near=.1;sunLight.shadow.camera.far=150;sunLight.shadow.bias=-.00045;scene.add(sunLight,sunLight.target);
 
-const terrainMat=new THREE.MeshLambertMaterial({map:atlas.texture,vertexColors:true,alphaTest:.38});
+const terrainMat=new THREE.MeshLambertMaterial({map:atlas.texture,vertexColors:true,alphaTest:.38,transparent:false,opacity:1,depthWrite:true,depthTest:true,colorWrite:true,side:THREE.FrontSide});
 const mods=new Map(),doorMeta=new Map(),chunks=new Map(),pending=[],chunkMeshes=[],heightCache=new Map(),biomeCache=new Map();let wantedChunks=new Set();
 const key3=(x,y,z)=>`${x}|${y}|${z}`, ckey=(cx,cz)=>`${cx},${cz}`;
 
@@ -163,6 +163,25 @@ function terrainHeight(x,z){
   const edge=Math.max(Math.abs(x-VILLAGE.x)-27,Math.abs(z-VILLAGE.z)-27),villageBlend=clamp(1-edge/8,0,1);if(villageBlend>0)h=lerp(h,VILLAGE.base,smooth(villageBlend));
   h=clamp(Math.floor(h),3,MAX_Y-2);if(heightCache.size>220000)heightCache.clear();heightCache.set(k,h);return h;
 }
+function labBoundsContains(x,z,pad=0){
+  return x>=LAB_LAYOUT.cx-LAB_LAYOUT.halfW-pad&&x<=LAB_LAYOUT.cx+LAB_LAYOUT.halfW+pad&&z>=LAB_LAYOUT.cz-LAB_LAYOUT.halfD-pad&&z<=LAB_LAYOUT.cz+LAB_LAYOUT.halfD+pad
+}
+function villageBoundsContains(x,z,pad=0){
+  return x>=VILLAGE.x-16-pad&&x<=VILLAGE.x+16+pad&&z>=VILLAGE.z-18-pad&&z<=VILLAGE.z+10+pad
+}
+function findStandingY(x,z,guess=terrainHeight(x,z)+2){
+  const ix=Math.floor(x),iz=Math.floor(z),start=Math.min(MAX_Y-3,Math.max(4,Math.floor(guess)+10));
+  for(let y=start;y>=1;y--){
+    const floor=getBlock(ix,y,iz),feet=getBlock(ix,y+1,iz),head=getBlock(ix,y+2,iz);
+    if(BDEF[floor]?.solid&&!BDEF[feet]?.solid&&!BDEF[head]?.solid)return y+1
+  }
+  return terrainHeight(ix,iz)+1
+}
+function hasRoofAbove(x,z,baseY,range=6){
+  const ix=Math.floor(x),iz=Math.floor(z),start=Math.floor(baseY)+2,end=Math.min(MAX_Y-1,start+range);
+  for(let y=start;y<=end;y++)if(BDEF[getBlock(ix,y,iz)]?.solid)return true;
+  return false
+}
 function surfaceBlock(x,z,h=terrainHeight(x,z)){
   const road=villageGround(x,z);if(road)return road;const b=biomeAt(x,z);if(h<=WATER_LEVEL+1)return b==="pântano"?BLOCK.PEAT:b==="badlands"?BLOCK.RED_SAND:b==="salinas"?BLOCK.SALT:b==="tundra"||b==="taiga"?BLOCK.FROSTED_SOIL:BLOCK.SAND;if(b==="deserto")return BLOCK.SAND;if(b==="salinas")return hash(x,z,808)>.24?BLOCK.SALT:BLOCK.LIMESTONE;if(b==="badlands")return BLOCK.RED_SAND;if(b==="cânion calcário")return hash(x,z,124)>.35?BLOCK.LIMESTONE:BLOCK.RED_SAND;if(b==="pântano")return hash(x,z,121)>.45?BLOCK.MOSS:BLOCK.PEAT;if(b==="vulcânico")return hash(x,z,122)>.68?BLOCK.BASALT:BLOCK.ASH;if(b==="bosque de cristais"&&hash(x,z,123)>.82)return hash(x,z,125)>.6?BLOCK.AMETHYST:BLOCK.MARBLE;if(b==="tundra")return hash(x,z,126)>.22?BLOCK.SNOW:BLOCK.FROSTED_SOIL;if(h>35||b==="taiga"&&h>24||b==="prado alpino"&&h>30)return BLOCK.SNOW;if(h>29)return b==="cânion calcário"?BLOCK.LIMESTONE:b==="montanha"||b==="prado alpino"?BLOCK.SLATE:BLOCK.STONE;return BLOCK.GRASS;
 }
@@ -175,8 +194,8 @@ function naturalBlock(x,y,z){
   if(y<4&&hash(x,y,z)>.3)return BLOCK.BEDROCK;const ore=hash(Math.floor(x/2),Math.floor(y/2),Math.floor(z/2)),chemOre=hash(Math.floor(x/3)+41,Math.floor(y/2)-19,Math.floor(z/3)+8),rare=hash(Math.floor(x/3)-73,Math.floor(y/2)+57,Math.floor(z/3)+29);if(y<24&&ore>.966)return BLOCK.COAL;if(y<20&&ore<.026)return BLOCK.IRON;if(y<32&&chemOre>.944&&chemOre<.968)return BLOCK.COPPER;if(y<27&&chemOre>.902&&chemOre<.92)return BLOCK.SULFUR;if(y<30&&(b==="deserto"||b==="salinas"||b==="cânion calcário")&&chemOre>.875&&chemOre<.894)return BLOCK.NITER;if(y<13&&rare>.972)return BLOCK.GOLD;if(y<25&&rare<.024)return BLOCK.TIN;if(y<21&&rare>.936&&rare<.954)return BLOCK.ZINC;if((b==="bosque de cristais"||y<11)&&rare>.9&&rare<.916)return hash(x,y,z,306)>.45?BLOCK.AMETHYST:BLOCK.CRYSTAL;if(y<9&&b==="vulcânico"&&rare>.84&&rare<.87)return BLOCK.OBSIDIAN;if(y<11)return BLOCK.DEEPSTONE;if(b==="cânion calcário"&&y>h-14)return BLOCK.LIMESTONE;if((b==="montanha"||b==="prado alpino"||b==="tundra")&&y>h-11)return BLOCK.SLATE;return b==="vulcânico"&&y>h-8?BLOCK.BASALT:BLOCK.STONE;
 }
 function treeBlock(x,y,z){
-  const mod=(n,m)=>((n%m)+m)%m,veg=settings.vegetation??2;if(inVillage(x,z,3))return BLOCK.AIR;const bx=x-mod(x-1,5),bz=z-mod(z-2,5),xs=[bx,bx+5],zs=[bz,bz+5];
-  if(veg>0)for(const tx of xs)for(const tz of zs){if(Math.abs(tx-x)>4||Math.abs(tz-z)>4||inVillage(tx,tz,3))continue;const h=terrainHeight(tx,tz),b=biomeAt(tx,tz),seed=hash(tx>>1,tz>>1,41+WORLD_SEED%113),threshold=({floresta:.31,taiga:.37,tundra:.68,pântano:.5,savana:.57,"bosque de cerejeiras":.35,"selva tropical":.22,"prado alpino":.76,"planície florida":.82,planície:.89}[b]??2)+(veg===1?.17:0);if(seed<threshold||![BLOCK.GRASS,BLOCK.MOSS,BLOCK.FROSTED_SOIL].includes(surfaceBlock(tx,tz,h)))continue;
+  const mod=(n,m)=>((n%m)+m)%m,veg=settings.vegetation??2;if(inVillage(x,z,3)||labBoundsContains(x,z,LAB_PROTECTION_MARGIN)||inLabVillagePath(x,z))return BLOCK.AIR;const bx=x-mod(x-1,5),bz=z-mod(z-2,5),xs=[bx,bx+5],zs=[bz,bz+5];
+  if(veg>0)for(const tx of xs)for(const tz of zs){if(Math.abs(tx-x)>4||Math.abs(tz-z)>4||inVillage(tx,tz,3)||labBoundsContains(tx,tz,LAB_PROTECTION_MARGIN+2))continue;const h=terrainHeight(tx,tz),b=biomeAt(tx,tz),seed=hash(tx>>1,tz>>1,41+WORLD_SEED%113),threshold=({floresta:.31,taiga:.37,tundra:.68,pântano:.5,savana:.57,"bosque de cerejeiras":.35,"selva tropical":.22,"prado alpino":.76,"planície florida":.82,planície:.89}[b]??2)+(veg===1?.17:0);if(seed<threshold||![BLOCK.GRASS,BLOCK.MOSS,BLOCK.FROSTED_SOIL].includes(surfaceBlock(tx,tz,h)))continue;
     const pine=b==="taiga"||b==="tundra",dry=b==="savana",cherry=b==="bosque de cerejeiras",tropical=b==="selva tropical",palm=tropical&&hash(tx,tz,819)>.48,tall=(pine?7:palm?8:tropical?6:4)+Math.floor(hash(tx,tz,51)*(pine||palm?4:3)),trunk=cherry?BLOCK.CHERRY_LOG:palm?BLOCK.PALM_LOG:pine?BLOCK.PINE_LOG:BLOCK.WOOD,leaf=cherry?BLOCK.CHERRY_LEAVES:palm?BLOCK.PALM_LEAVES:pine?BLOCK.PINE_LEAVES:dry?BLOCK.DRY_LEAVES:BLOCK.LEAVES;if(x===tx&&z===tz&&y>h&&y<=h+tall)return trunk;
     const dy=y-(h+tall),dx=x-tx,dz=z-tz;if(pine){const radius=dy<=-4?2.6:dy<=-2?2.15:dy===-1?1.65:dy===0?1.1:.35;if(dy>=-5&&dy<=1&&Math.max(Math.abs(dx),Math.abs(dz))<=radius+hash(x,y,z)*.35&&!(dx===0&&dz===0&&dy<1))return leaf}else if(palm){if(dy>=-1&&dy<=1&&(Math.abs(dx)<=3&&Math.abs(dz)<=1||Math.abs(dz)<=3&&Math.abs(dx)<=1)&&Math.abs(dx)+Math.abs(dz)>0)return leaf}else{const radius=dry?(dy===0?3.15:2.45):tropical?(dy<=-2?2.8:dy===0?3.2:2.1):(dy<=-2?2.15:dy===0?2.65:1.75);if(dy>=-2&&dy<=1&&Math.hypot(dx,dz)<=radius+.2*hash(x,y,z)&&!(dx===0&&dz===0&&dy<1))return leaf}
   }
@@ -188,7 +207,7 @@ function treeBlock(x,y,z){
   if(veg>0&&y===h+1&&[BLOCK.GRASS,BLOCK.MOSS,BLOCK.PEAT,BLOCK.FROSTED_SOIL].includes(top)){const density=veg===1?.945:.86,q=hash(x,z,91+WORLD_SEED%67);if(q>density){if(b==="tundra"||b==="prado alpino")return q>.94?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS;if(b==="bosque de cerejeiras"||b==="planície florida")return q>.955?BLOCK.POPPY:q>.91?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="pântano")return q>.95?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="selva tropical")return q>.965?BLOCK.POPPY:BLOCK.TALL_GRASS;return q>.965?BLOCK.POPPY:q>.935?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS}}
   return BLOCK.AIR;
 }
-function getBlock(x,y,z){x=Math.floor(x);y=Math.floor(y);z=Math.floor(z);const k=key3(x,y,z);if(mods.has(k))return mods.get(k);if(y>=0&&y<MAX_Y){const cx=Math.floor(x/CHUNK),cz=Math.floor(z/CHUNK),ch=chunks.get(ckey(cx,cz));if(ch?.vox){const gx=x-cx*CHUNK+1,gz=z-cz*CHUNK+1;return ch.vox[voxelIndex(gx,y,gz)]}}const vb=villageBlock(x,y,z);if(vb!==BLOCK.AIR)return vb;const h=terrainHeight(x,z),n=naturalBlock(x,y,z);if(n!==BLOCK.AIR||y<=h)return n;return treeBlock(x,y,z)}
+function getBlock(x,y,z){x=Math.floor(x);y=Math.floor(y);z=Math.floor(z);const authored=laboratoryBlockAt(x,y,z);if(authored!==null)return authored;const k=key3(x,y,z);if(mods.has(k))return mods.get(k);if(y>=0&&y<MAX_Y){const cx=Math.floor(x/CHUNK),cz=Math.floor(z/CHUNK),ch=chunks.get(ckey(cx,cz));if(ch?.vox){const gx=x-cx*CHUNK+1,gz=z-cz*CHUNK+1;return ch.vox[voxelIndex(gx,y,gz)]}}const vb=villageBlock(x,y,z);if(vb!==BLOCK.AIR)return vb;const h=terrainHeight(x,z),n=naturalBlock(x,y,z);if(n!==BLOCK.AIR||y<=h)return n;return treeBlock(x,y,z)}
 function setBlock(x,y,z,id){x=Math.floor(x);y=Math.floor(y);z=Math.floor(z);mods.set(key3(x,y,z),id);saveMods();const cx=Math.floor(x/CHUNK),cz=Math.floor(z/CHUNK);rebuildChunk(cx,cz);if((x%CHUNK+CHUNK)%CHUNK===0)rebuildChunk(cx-1,cz);if((x%CHUNK+CHUNK)%CHUNK===CHUNK-1)rebuildChunk(cx+1,cz);if((z%CHUNK+CHUNK)%CHUNK===0)rebuildChunk(cx,cz-1);if((z%CHUNK+CHUNK)%CHUNK===CHUNK-1)rebuildChunk(cx,cz+1)}
 function saveMods(){try{localStorage.qc_mods=JSON.stringify([...mods].slice(-18000))}catch(e){}}
 try{if(localStorage.qc_mods)for(const [k,v] of JSON.parse(localStorage.qc_mods))mods.set(k,v)}catch(e){}
@@ -266,13 +285,13 @@ const lavaMat=new THREE.ShaderMaterial({uniforms:{uTime:{value:0}},vertexShader:
 const GRID=CHUNK+2,GRID_COLS=GRID*GRID;
 function newChunkBuild(cx,cz){return {cx,cz,k:ckey(cx,cz),phase:0,i:0,vox:new Uint8Array(GRID*GRID*MAX_Y),tops:new Uint8Array(GRID_COLS),a:arrays(),la:arrays(),wa:{p:[],n:[],uv:[],c:[],idx:[],refs:[],depth:[]}}}
 function voxelIndex(gx,y,gz){return (gz*GRID+gx)*MAX_Y+y}
-function fillVoxelColumn(b,i){const gx=i%GRID,gz=Math.floor(i/GRID),x=b.cx*CHUNK+gx-1,z=b.cz*CHUNK+gz-1,h=terrainHeight(x,z),top=Math.min(MAX_Y-1,h+13);b.tops[i]=h;for(let y=0;y<=top;y++)b.vox[voxelIndex(gx,y,gz)]=getBlock(x,y,z)}
+function fillVoxelColumn(b,i){const gx=i%GRID,gz=Math.floor(i/GRID),x=b.cx*CHUNK+gx-1,z=b.cz*CHUNK+gz-1,h=terrainHeight(x,z),top=columnGenerationTop(x,z,h);b.tops[i]=top;for(let y=0;y<=top;y++)b.vox[voxelIndex(gx,y,gz)]=getBlock(x,y,z)}
 function localBlock(b,x,y,z){if(y<0||y>=MAX_Y)return BLOCK.AIR;const gx=x-b.cx*CHUNK+1,gz=z-b.cz*CHUNK+1;if(gx>=0&&gx<GRID&&gz>=0&&gz<GRID)return b.vox[voxelIndex(gx,y,gz)];return getBlock(x,y,z)}
 function localSolid(b,x,y,z){return !!BDEF[localBlock(b,x,y,z)]?.solid}
 function localOccludes(b,x,y,z){return faceOccludes(localBlock(b,x,y,z))}
 function vertexAOLocal(b,x,y,z,f,corner){if(settings.ao===0)return 1;const uv=UV_CORNERS[corner],su=uv[0]?1:-1,sv=uv[1]?1:-1,n=f.n,u=f.u,w=f.w,p=[x+n[0],y+n[1],z+n[2]],s1=localOccludes(b,p[0]+u[0]*su,p[1]+u[1]*su,p[2]+u[2]*su),s2=localOccludes(b,p[0]+w[0]*sv,p[1]+w[1]*sv,p[2]+w[2]*sv),co=localOccludes(b,p[0]+u[0]*su+w[0]*sv,p[1]+u[1]*su+w[1]*sv,p[2]+u[2]*su+w[2]*sv),raw=s1&&s2?.53:1-(s1+s2+co)*.12;return lerp(1,raw,settings.ao===1?.55:1)}
 function meshChunkColumn(b,i){
-  const lx=Math.floor(i/CHUNK),lz=i%CHUNK,x=b.cx*CHUNK+lx,z=b.cz*CHUNK+lz,h=b.tops[(lz+1)*GRID+lx+1],scanTop=Math.min(MAX_Y-1,h+13),a=b.a,wa=b.wa;
+  const lx=Math.floor(i/CHUNK),lz=i%CHUNK,x=b.cx*CHUNK+lx,z=b.cz*CHUNK+lz,h=terrainHeight(x,z),scanTop=b.tops[(lz+1)*GRID+lx+1],a=b.a,wa=b.wa;
   for(let y=0;y<=scanTop;y++){const id=localBlock(b,x,y,z);if(id===BLOCK.AIR||id===BLOCK.TORCH||id===BLOCK.SPECTRAL)continue;if(BDEF[id]?.plant){addPlant(a,x+.5,y,z+.5,id,{x,y,z,id,n:[0,1,0]});continue}if(id===BLOCK.DOOR||id===BLOCK.DOOR_OPEN){addDoorGeometry(a,x,y,z,id);continue}const dest=id===BLOCK.LAVA?b.la:a;
     for(let fi=0;fi<6;fi++){const f=FACES[fi],nid=localBlock(b,x+f.n[0],y+f.n[1],z+f.n[2]);if(nid===id||faceOccludes(nid))continue;const ao=id===BLOCK.LAVA?[1,1,1,1]:f.v.map((_,q)=>vertexAOLocal(b,x,y,z,f,q)),shade=fi===2?1:fi===3?.61:(fi<2?.82:.72),leaf=[BLOCK.LEAVES,BLOCK.PINE_LEAVES,BLOCK.DRY_LEAVES,BLOCK.CHERRY_LEAVES,BLOCK.PALM_LEAVES].includes(id),tint=leaf?(id===BLOCK.PINE_LEAVES?[.67,.86,.72]:id===BLOCK.DRY_LEAVES?[.96,.9,.64]:id===BLOCK.CHERRY_LEAVES?[1,.8,.91]:id===BLOCK.PALM_LEAVES?[.68,.92,.7]:[.77+hash(x,y,z)*.11,.93,.74]):id===BLOCK.GLASS||id===BLOCK.ICE?[.78,.94,.98]:[shade,shade,shade];addQuad(dest,f.v.map(v=>[x+v[0],y+v[1],z+v[2]]),f.n,texFor(id,fi),tint,{x,y,z,id,n:f.n},ao)}
   }
@@ -287,17 +306,92 @@ function finalizeChunk(b){
 function buildChunk(cx,cz){const b=newChunkBuild(cx,cz);while(!stepChunkBuild(b)){}return finalizeChunk(b)}
 function rebuildChunk(cx,cz){const k=ckey(cx,cz);if(!chunks.has(k))return;if(activeBuild?.k===k)activeBuild=null;const prior=pending.find(p=>p.k===k);if(prior)prior.rebuild=true;else pending.unshift({cx,cz,k,d:-1,rebuild:true})}
 function rebuildChunkImmediate(cx,cz){const k=ckey(cx,cz);if(activeBuild?.k===k)activeBuild=null;for(let i=pending.length-1;i>=0;i--)if(pending[i].k===k)pending.splice(i,1);if(chunks.has(k))buildChunk(cx,cz);else rebuildChunk(cx,cz)}
-let loadTotal=1,loadDone=0,initialReady=false,activeBuild=null,centerChunk={x:999,z:999};const INITIAL_CHUNKS=9;
+let loadTotal=1,loadDone=0,initialReady=false,activeBuild=null,centerChunk={x:999,z:999};
+const PRELOAD_RADIUS=clamp(Math.round(Number(localStorage.qc_preload_radius)||4),3,6);
+const BOOT_STAGES=Object.freeze([
+  {id:"initializing",label:"Inicializando o mundo…",weight:.04},
+  {id:"loading-save",label:"Carregando dados do mundo…",weight:.06},
+  {id:"loading-assets",label:"Carregando texturas e materiais…",weight:.07},
+  {id:"generating-terrain",label:"Gerando terreno inicial…",weight:.12},
+  {id:"generating-laboratory",label:"Construindo o laboratório…",weight:.16},
+  {id:"validating-laboratory",label:"Validando paredes do laboratório…",weight:.1},
+  {id:"generating-village",label:"Preparando a vila…",weight:.1},
+  {id:"generating-surroundings",label:"Carregando terreno próximo…",weight:.13},
+  {id:"preparing-collisions",label:"Preparando colisões…",weight:.08},
+  {id:"preparing-gameplay",label:"Preparando sistemas de química…",weight:.09},
+  {id:"ready",label:"Quase pronto…",weight:.05}
+]);
+const worldBoot={running:false,attempt:0,stage:"idle",stageFraction:0,requiredChunks:new Map(),stageChunkKeys:new Set(),completedStages:new Set(),error:null,preferredSpawn:null,loadedState:null};
+function effectivePreloadRadius(){return clamp(Math.max(PRELOAD_RADIUS,Number(settings.render)||PRELOAD_RADIUS),3,6)}
+function setBootStage(id,fraction=0,detail=""){
+  const index=BOOT_STAGES.findIndex(stage=>stage.id===id);if(index<0)return;
+  const stage=BOOT_STAGES[index];worldBoot.stage=id;worldBoot.stageFraction=clamp(fraction,0,1);
+  const completedWeight=BOOT_STAGES.slice(0,index).reduce((sum,item)=>sum+item.weight,0),progress=clamp(completedWeight+stage.weight*worldBoot.stageFraction,0,1);
+  $("loaderFill").style.width=`${(progress*100).toFixed(1)}%`;
+  $("loaderCopy").textContent=stage.label;
+  $("loaderChunks").textContent=`ETAPA ${index+1} / ${BOOT_STAGES.length}${detail?` · ${detail}`:""}`;
+}
+function updateBootChunkProgress(){
+  if(!worldBoot.running||!["generating-terrain","generating-laboratory","generating-village","generating-surroundings"].includes(worldBoot.stage)||!worldBoot.stageChunkKeys.size)return;
+  let ready=0;for(const key of worldBoot.stageChunkKeys)if(chunks.has(key))ready++;
+  setBootStage(worldBoot.stage,ready/worldBoot.stageChunkKeys.size,`${ready} / ${worldBoot.stageChunkKeys.size} chunks`)
+}
+function ringChunkKeys(cx,cz,r){const out=[];for(let dz=-r;dz<=r;dz++)for(let dx=-r;dx<=r;dx++)out.push({cx:cx+dx,cz:cz+dz,k:ckey(cx+dx,cz+dz),d:dx*dx+dz*dz});return out}
+function labChunkDescriptors(){
+  const b=labStructureBounds(LAB_PROTECTION_MARGIN+1),corridorFront=LAB_LAYOUT.cz-LAB_LAYOUT.halfD-LAB_ENTRANCE_LENGTH-1,minCx=Math.floor(b.left/CHUNK),maxCx=Math.floor(b.right/CHUNK),minCz=Math.floor(Math.min(b.front,corridorFront)/CHUNK),maxCz=Math.floor(b.rear/CHUNK),out=[];
+  for(let cz=minCz;cz<=maxCz;cz++)for(let cx=minCx;cx<=maxCx;cx++)out.push({cx,cz,k:ckey(cx,cz),d:-4});
+  return out
+}
+function initialPreloadDescriptors(){
+  const radius=effectivePreloadRadius(),map=new Map(),push=q=>{const prev=map.get(q.k);if(!prev||q.d<prev.d)map.set(q.k,q)},spawnCx=Math.floor(spawn.x/CHUNK),spawnCz=Math.floor(spawn.z/CHUNK),villageCx=Math.floor(VILLAGE.x/CHUNK),villageCz=Math.floor(VILLAGE.z/CHUNK);
+  for(const q of ringChunkKeys(spawnCx,spawnCz,radius))push({...q,d:q.d});
+  if(worldBoot.preferredSpawn){const savedCx=Math.floor(worldBoot.preferredSpawn.x/CHUNK),savedCz=Math.floor(worldBoot.preferredSpawn.z/CHUNK);for(const q of ringChunkKeys(savedCx,savedCz,radius))push({...q,d:q.d})}
+  for(const q of labChunkDescriptors())push(q);
+  for(const q of ringChunkKeys(villageCx,villageCz,radius))push({...q,d:q.d+1});
+  return [...map.values()]
+}
+function introChunkDescriptors(){return initialPreloadDescriptors()}
+function introChunksReady(){return initialPreloadDescriptors().every(q=>chunks.has(q.k))}
+function safeSpawnCandidate(x,z){
+  const ix=Math.floor(x),iz=Math.floor(z),chunkReady=chunks.has(ckey(Math.floor(ix/CHUNK),Math.floor(iz/CHUNK)));if(!chunkReady)return null;
+  const naturalSurface=terrainHeight(ix,iz),y=findStandingY(x,z,Math.max(LAB_LAYOUT.y,naturalSurface+2)),floorId=getBlock(ix,Math.floor(y)-1,iz),feetId=getBlock(ix,Math.floor(y),iz),headId=getBlock(ix,Math.floor(y)+1,iz),authoredArea=labBoundsContains(ix,iz,LAB_PROTECTION_MARGIN)||inLabEntranceCorridor(ix,iz,1)||inLabVillagePath(ix,iz)||inVillage(ix,iz,2);
+  if(!BDEF[floorId]?.solid||[BLOCK.GLASS,BLOCK.ICE,BLOCK.LAVA].includes(floorId)||BDEF[feetId]?.solid||BDEF[headId]?.solid||BDEF[feetId]?.liquid||BDEF[headId]?.liquid||(naturalSurface<WATER_LEVEL&&y<=WATER_LEVEL+1.02)||(!authoredArea&&y<naturalSurface+.99))return null;
+  const r=.31;if(aabbHitsLabDecor(x-r,x+r,y+.02,y+1.74,z-r,z+r))return null;
+  return {x,z,y:y+.02,floorId}
+}
+function findSafeSpawnPosition(preferredX=spawn.x,preferredZ=spawn.z){
+  const direct=safeSpawnCandidate(preferredX,preferredZ);if(direct)return direct;
+  for(let radius=1;radius<=14;radius++)for(let dz=-radius;dz<=radius;dz++)for(let dx=-radius;dx<=radius;dx++){if(Math.max(Math.abs(dx),Math.abs(dz))!==radius)continue;const candidate=safeSpawnCandidate(Math.floor(preferredX)+dx+.5,Math.floor(preferredZ)+dz+.5);if(candidate)return candidate}
+  return null
+}
+function syncPlayerToSafeGround(x=spawn.x,z=spawn.z){const safe=findSafeSpawnPosition(x,z);if(!safe)return false;player.pos.set(safe.x,safe.y,safe.z);player.vel.set(0,0,0);player.onGround=false;player.lastGroundY=safe.y;player.fallStart=safe.y;return true}
+function finishInitialLoad(){initialReady=true;worldBoot.running=false;state.loading=false;state.startQueued=false;beginGame()}
+function beginGame(){
+  initAudio();state.started=true;state.playing=false;state.paused=true;state.awaitingEntry=true;$("titleScreen").classList.add("hidden");$("hud").classList.remove("visible");
+  $("loaderFill").style.width="100%";$("loaderCopy").textContent="Mundo pronto";$("loaderChunks").textContent=`ETAPA ${BOOT_STAGES.length} / ${BOOT_STAGES.length}`;$("loaderReady").hidden=false;
+  chatMessage("PROF. CARBONO","O mundo foi validado. O Laboratório Carbono, a vila e os arredores estão prontos para a exploração.",{category:"dialogue"});
+  chatMessage("GUARDIÃ ÍRIS","A Vila dos Elementos fica a leste, perto de X 48 · Z −22. Há vinte casas e cinco lojas.",{category:"dialogue"});
+}
+function enterLoadedWorld(){
+  if(!state.started||state.loading||!state.awaitingEntry)return;
+  state.awaitingEntry=false;state.paused=false;$("loaderReady").hidden=true;$("loading").classList.add("hidden");$("hud").classList.add("visible");setTimeout(()=>$("controls").classList.add("hide"),12000);requestPointer({notify:true})
+}
 function ensureChunks(force=false){
   const cx=Math.floor(player.pos.x/CHUNK),cz=Math.floor(player.pos.z/CHUNK),rd=settings.render;if(!force&&cx===centerChunk.x&&cz===centerChunk.z)return;centerChunk={x:cx,z:cz};
-  const wanted=new Set(),todo=[];for(let dz=-rd;dz<=rd;dz++)for(let dx=-rd;dx<=rd;dx++){const k=ckey(cx+dx,cz+dz);wanted.add(k);if(!chunks.has(k)&&!pending.some(p=>p.k===k))todo.push({cx:cx+dx,cz:cz+dz,k,d:dx*dx+dz*dz})}
-  wantedChunks=wanted;for(let i=pending.length-1;i>=0;i--)if(!wanted.has(pending[i].k))pending.splice(i,1);todo.sort((a,b)=>a.d-b.d);pending.push(...todo);loadTotal=Math.max(1,(rd*2+1)**2);loadDone=loadTotal-pending.length;
-  for(const [k,ch] of chunks)if(!wanted.has(k)){removeChunkMesh(ch);chunks.delete(k)}
+  const wanted=new Map(),push=q=>{if(!wanted.has(q.k)||q.d<wanted.get(q.k).d)wanted.set(q.k,q)};
+  if(worldBoot.running||!initialReady){for(const q of worldBoot.requiredChunks.values())push(q)}
+  else for(let dz=-rd;dz<=rd;dz++)for(let dx=-rd;dx<=rd;dx++)push({cx:cx+dx,cz:cz+dz,k:ckey(cx+dx,cz+dz),d:dx*dx+dz*dz});
+  for(const q of labChunkDescriptors())push(q);
+  const wantedKeys=new Set(wanted.keys()),todo=[];for(const q of wanted.values())if(!chunks.has(q.k)&&!pending.some(p=>p.k===q.k))todo.push(q);
+  wantedChunks=wantedKeys;for(let i=pending.length-1;i>=0;i--)if(!wantedKeys.has(pending[i].k))pending.splice(i,1);todo.sort((a,b)=>a.d-b.d);pending.push(...todo);loadTotal=Math.max(1,wantedKeys.size);loadDone=loadTotal-pending.length;
+  for(const [k,ch] of chunks)if(!wantedKeys.has(k)){removeChunkMesh(ch);chunks.delete(k)}
 }
 function processChunks(){
-  if(activeBuild&&!wantedChunks.has(activeBuild.k))activeBuild=null;const start=performance.now(),budget=!initialReady?8.5:state.fps>56?5.2:state.fps>47?3.4:1.6;while(performance.now()-start<budget){if(!activeBuild){let p;while(pending.length&&!p){const q=pending.shift();if(wantedChunks.has(q.k)&&(!chunks.has(q.k)||q.rebuild))p=q}if(!p)break;activeBuild=newChunkBuild(p.cx,p.cz)}if(stepChunkBuild(activeBuild)){finalizeChunk(activeBuild);loadDone++;activeBuild=null}}
-  const target=Math.min(INITIAL_CHUNKS,loadTotal),made=Math.min(chunks.size,target),pct=clamp(made/target*100,0,100);$("loaderFill").style.width=pct+"%";$("loaderChunks").textContent=`${made} / ${target} CHUNKS`;$("loaderCopy").textContent=pct<28?"Esculpindo montanhas":pct<65?"Plantando florestas":pct<92?"Preparando o laboratório":"Povoando o ecossistema";if(!initialReady&&made>=target){initialReady=true;$("loading").classList.add("hidden");initWorldLife()}}
+  if(activeBuild&&!wantedChunks.has(activeBuild.k))activeBuild=null;const start=performance.now(),budget=worldBoot.running?15:state.fps>56?5.2:state.fps>47?3.4:1.6;while(performance.now()-start<budget){if(!activeBuild){let p;while(pending.length&&!p){const q=pending.shift();if(wantedChunks.has(q.k)&&(!chunks.has(q.k)||q.rebuild))p=q}if(!p)break;activeBuild=newChunkBuild(p.cx,p.cz)}if(stepChunkBuild(activeBuild)){finalizeChunk(activeBuild);loadDone++;activeBuild=null}}
+  if(worldBoot.running)updateBootChunkProgress()
+}
 
+// Procedural sky, celestial bodies and clouds.
 // Procedural sky, celestial bodies and clouds.
 const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{uTime:{value:.25}},vertexShader:`varying vec3 vPos;void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`
   varying vec3 vPos;uniform float uTime;vec3 noonTop=vec3(.12,.48,.78),noonHor=vec3(.62,.82,.93),nightTop=vec3(.008,.018,.07),nightHor=vec3(.035,.08,.15);
@@ -308,21 +402,108 @@ const starGeo=new THREE.BufferGeometry(),starP=[];for(let i=0;i<900;i++){const t
 function cloudTexture(){const c=document.createElement("canvas");c.width=128;c.height=64;const x=c.getContext("2d"),g=x.createRadialGradient(64,32,2,64,32,62);g.addColorStop(0,"rgba(255,255,255,.86)");g.addColorStop(.45,"rgba(245,250,252,.66)");g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g;x.fillRect(0,0,128,64);for(let i=0;i<14;i++){const r=8+hash(i,8)*16;x.fillStyle=`rgba(255,255,255,${.05+hash(i,9)*.12})`;x.beginPath();x.arc(hash(i,10)*128,hash(i,11)*64,r,0,TAU);x.fill()}return new THREE.CanvasTexture(c)}
 const cloudGroup=new THREE.Group(),cloudTex=cloudTexture();for(let i=0;i<34;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:cloudTex,transparent:true,opacity:.20+hash(i,2)*.16,depthWrite:false,fog:true,color:0xffffff}));m.position.set((hash(i,3)-.5)*260,45+hash(i,4)*28,(hash(i,5)-.5)*260);m.scale.set(25+hash(i,6)*36,8+hash(i,7)*10,1);cloudGroup.add(m)}scene.add(cloudGroup);
 
-const spawn={x:-14,z:-18};spawn.y=terrainHeight(spawn.x,spawn.z)+1.02;
-const LAB_LAYOUT={cx:spawn.x+8,cz:spawn.z+12,halfW:13,halfD:10,height:8};
-LAB_LAYOUT.y=terrainHeight(spawn.x+8,spawn.z+8)+1;
-const PERIODIC_STATION={x:LAB_LAYOUT.cx,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-2.15};
+const LAB_PROTECTION_MARGIN=4,LAB_ENTRANCE_LENGTH=12,LAB_VALIDATION_VERSION=60;
+const LAB_LAYOUT={cx:-6,cz:-6,halfW:18,halfD:14,height:12};
+function determineLaboratoryElevation(layout){
+  const heights=[];
+  for(let x=layout.cx-layout.halfW-LAB_PROTECTION_MARGIN;x<=layout.cx+layout.halfW+LAB_PROTECTION_MARGIN;x++){
+    for(let z=layout.cz-layout.halfD-LAB_PROTECTION_MARGIN;z<=layout.cz+layout.halfD+LAB_PROTECTION_MARGIN;z++)heights.push(terrainHeight(x,z))
+  }
+  heights.sort((a,b)=>a-b);
+  const percentile=p=>heights[Math.min(heights.length-1,Math.max(0,Math.floor((heights.length-1)*p)))],minimum=heights[0],maximum=heights[heights.length-1],median=percentile(.5),upper=percentile(.75),maxBase=MAX_Y-layout.height-3;
+  return {minimum,maximum,median,upper,base:Math.round(clamp(upper+1,WATER_LEVEL+4,maxBase)),sampleCount:heights.length}
+}
+LAB_LAYOUT.terrain=determineLaboratoryElevation(LAB_LAYOUT);
+LAB_LAYOUT.y=LAB_LAYOUT.terrain.base;
+LAB_LAYOUT.entranceSurfaces=new Map();
+{
+  const front=LAB_LAYOUT.cz-LAB_LAYOUT.halfD,startSurface=LAB_LAYOUT.y-1,endZ=front-LAB_ENTRANCE_LENGTH,endSurface=clamp(terrainHeight(LAB_LAYOUT.cx,endZ),startSurface-8,startSurface+3);
+  let previous=startSurface;
+  for(let step=1;step<=LAB_ENTRANCE_LENGTH;step++){
+    const z=front-step,target=Math.round(lerp(startSurface,endSurface,step/LAB_ENTRANCE_LENGTH)),surface=clamp(target,previous-1,previous+1);
+    LAB_LAYOUT.entranceSurfaces.set(z,surface);previous=surface
+  }
+}
+LAB_LAYOUT.villagePathSurfaces=new Map();
+{
+  const front=LAB_LAYOUT.cz-LAB_LAYOUT.halfD,startZ=front-LAB_ENTRANCE_LENGTH,targetX=VILLAGE.x-27,targetZ=VILLAGE.z,centers=[];
+  for(let x=LAB_LAYOUT.cx+1;x<=targetX;x++)centers.push({x,z:startZ,axis:"x"});
+  const zDirection=Math.sign(targetZ-startZ)||1;for(let z=startZ+zDirection;z!==targetZ+zDirection;z+=zDirection)centers.push({x:targetX,z,axis:"z"});
+  let previous=LAB_LAYOUT.entranceSurfaces.get(startZ)??LAB_LAYOUT.y-1;centers.forEach((center,index)=>{
+    const target=Math.round(lerp(previous,VILLAGE.base,1/(centers.length-index))),surface=clamp(target,previous-1,previous+1),cross=center.axis==="x"?[[0,-1],[0,0],[0,1]]:[[-1,0],[0,0],[1,0]];
+    for(const [dx,dz] of cross)LAB_LAYOUT.villagePathSurfaces.set(`${center.x+dx},${center.z+dz}`,surface);
+    previous=surface
+  })
+}
+const spawn={x:LAB_LAYOUT.cx+.5,z:LAB_LAYOUT.cz-LAB_LAYOUT.halfD-LAB_ENTRANCE_LENGTH+.5};
+spawn.y=(LAB_LAYOUT.entranceSurfaces.get(Math.floor(spawn.z))??LAB_LAYOUT.y-1)+1.02;
+const PERIODIC_STATION={x:LAB_LAYOUT.cx,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-2.9};
 let labDecorRoot=null,periodicWallRoot=null,labAtomRoot=null,labCryoCore=null,labDoorVisualRoot=null;
+const labRepairOverrides=new Map(),labCollisionBoxes=[],periodicCollisionBoxes=[],labStationZones=[],labPropPlacements=[];const labColliderIds=new Set(),periodicColliderIds=new Set();let labProtectToastAt=0;
+function labStructureBounds(pad=0){return {left:LAB_LAYOUT.cx-LAB_LAYOUT.halfW-pad,right:LAB_LAYOUT.cx+LAB_LAYOUT.halfW+pad,front:LAB_LAYOUT.cz-LAB_LAYOUT.halfD-pad,rear:LAB_LAYOUT.cz+LAB_LAYOUT.halfD+pad,bottom:0,top:LAB_LAYOUT.y+LAB_LAYOUT.height+2}}
+function inLabEntranceCorridor(x,z,pad=0){const front=LAB_LAYOUT.cz-LAB_LAYOUT.halfD;return x>=LAB_LAYOUT.cx-4-pad&&x<=LAB_LAYOUT.cx+3+pad&&z<=front-1+pad&&z>=front-LAB_ENTRANCE_LENGTH-pad}
+function labVillagePathSurface(x,z){const value=LAB_LAYOUT.villagePathSurfaces.get(`${Math.floor(x)},${Math.floor(z)}`);return value===undefined?null:value}
+function inLabVillagePath(x,z){return labVillagePathSurface(x,z)!==null}
+function laboratoryBlockAt(x,y,z){
+  const repair=labRepairOverrides.get(key3(x,y,z));if(repair!==undefined)return repair;
+  if(y<0||y>=MAX_Y)return null;
+  const core=labBoundsContains(x,z,0),protectedArea=labBoundsContains(x,z,LAB_PROTECTION_MARGIN),corridor=inLabEntranceCorridor(x,z,0),villagePathSurface=labVillagePathSurface(x,z);
+  if(!core&&!protectedArea&&!corridor&&villagePathSurface===null)return null;
+  if(y===0)return BLOCK.BEDROCK;
+  if(villagePathSurface!==null&&!corridor&&!core){
+    if(y<villagePathSurface)return BLOCK.DEEPSTONE;if(y===villagePathSurface)return BLOCK.VILLAGE_BRICK;return BLOCK.AIR
+  }
+  if(corridor){
+    const surface=LAB_LAYOUT.entranceSurfaces.get(z);if(surface===undefined)return null;
+    if(y<surface)return BLOCK.DEEPSTONE;if(y===surface)return BLOCK.ALCHEMY_BRICK;return BLOCK.AIR
+  }
+  const {cx,cz,halfW,halfD,height}=LAB_LAYOUT,floorY=LAB_LAYOUT.y,roofY=floorY+height,left=cx-halfW,right=cx+halfW,front=cz-halfD,rear=cz+halfD;
+  if(y<floorY-1)return BLOCK.DEEPSTONE;
+  if(y===floorY-1){
+    if(!core)return BLOCK.SLATE;
+    const edge=x===left||x===right||z===front||z===rear,checker=((x-cx)+(z-cz))&1;return edge?BLOCK.SLATE:(checker?BLOCK.MARBLE:BLOCK.ALCHEMY_BRICK)
+  }
+  if(!core)return BLOCK.AIR;
+  if(y>roofY)return BLOCK.AIR;
+  if(y===roofY){const skylight=Math.abs(x-cx)<=12&&[0,1,2].includes(Math.abs((z-cz)%5))&&Math.abs(z-cz)<halfD-1;return skylight?BLOCK.GLASS:BLOCK.SLATE}
+  const level=y-floorY,onFront=z===front,onRear=z===rear,onSide=x===left||x===right;
+  if(onFront||onRear){
+    const doorCell=onFront&&x>=cx-2&&x<=cx+1&&level<=2;
+    if(doorCell){const stored=mods.get(key3(x,y,z));return stored===BLOCK.DOOR_OPEN?BLOCK.DOOR_OPEN:BLOCK.DOOR}
+    const transom=onFront&&x>=cx-2&&x<=cx+1&&level===3,frontWindow=onFront&&level>=3&&level<=8&&Math.abs(x-cx)>5&&Math.abs(x-cx)<halfW-1,backTable=onRear&&Math.abs(x-cx)<=11;
+    return transom||frontWindow?BLOCK.GLASS:(backTable?BLOCK.SLATE:(level===0?BLOCK.SLATE:BLOCK.MARBLE))
+  }
+  if(onSide){const window=level>=2&&level<=8&&z>front+2&&z<rear-2&&((z-front)%4!==0);return window?BLOCK.GLASS:(level===0?BLOCK.SLATE:BLOCK.MARBLE)}
+  return BLOCK.AIR
+}
+function columnGenerationTop(x,z,naturalHeight){
+  let top=Math.min(MAX_Y-1,naturalHeight+13);
+  if(labBoundsContains(x,z,LAB_PROTECTION_MARGIN)||inLabEntranceCorridor(x,z,1))top=Math.max(top,Math.min(MAX_Y-1,LAB_LAYOUT.y+LAB_LAYOUT.height+2));
+  const pathSurface=labVillagePathSurface(x,z);if(pathSurface!==null)top=Math.max(top,Math.min(MAX_Y-1,pathSurface+4));
+  return top
+}
+function isLabProtectedBlock(x,y,z){const b=labStructureBounds(LAB_PROTECTION_MARGIN),pathSurface=labVillagePathSurface(x,z);return (((x>=b.left&&x<=b.right&&z>=b.front&&z<=b.rear)||inLabEntranceCorridor(x,z,1))&&y>=b.bottom&&y<=b.top)||(pathSurface!==null&&y>=0&&y<=pathSurface+4)}
+function isLabPlacementRestricted(x,y,z){return isLabProtectedBlock(x,y,z)}
+function makeCollisionBox(x,y,z,sx,sy,sz,ry=0){const c=Math.abs(Math.cos(ry)),sn=Math.abs(Math.sin(ry)),ex=(c*sx+sn*sz)/2,ez=(sn*sx+c*sz)/2;return {minX:x-ex,maxX:x+ex,minY:y-sy/2,maxY:y+sy/2,minZ:z-ez,maxZ:z+ez}}
+function registerLabCollision(x,y,z,sx,sy,sz,ry=0,id=`lab:${x}:${y}:${z}:${sx}:${sy}:${sz}:${ry}`){if(labColliderIds.has(id))return false;labColliderIds.add(id);labCollisionBoxes.push({...makeCollisionBox(x,y,z,sx,sy,sz,ry),id});return true}
+function registerPeriodicCollision(x,y,z,id=`periodic:${x}:${y}:${z}`){if(periodicColliderIds.has(id))return false;periodicColliderIds.add(id);periodicCollisionBoxes.push({...makeCollisionBox(x,y,z,BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE),id});return true}
+function aabbHitsBoxes(boxes,minX,maxX,minY,maxY,minZ,maxZ){for(const b of boxes)if(maxX>b.minX&&minX<b.maxX&&maxY>b.minY&&minY<b.maxY&&maxZ>b.minZ&&minZ<b.maxZ)return true;return false}
+function aabbHitsLabDecor(minX,maxX,minY,maxY,minZ,maxZ){return aabbHitsBoxes(labCollisionBoxes,minX,maxX,minY,maxY,minZ,maxZ)||aabbHitsBoxes(periodicCollisionBoxes,minX,maxX,minY,maxY,minZ,maxZ)}
+function playerHitsLabDecor(pos,height=player.crouch?1.24:1.72){const r=.29;return aabbHitsLabDecor(pos.x-r,pos.x+r,pos.y+.02,pos.y+height-.02,pos.z-r,pos.z+r)}
+function labDecorSupports(pos){const r=.24,feet=pos.y-.08;for(const boxes of [labCollisionBoxes,periodicCollisionBoxes])for(const b of boxes)if(pos.x+r>b.minX&&pos.x-r<b.maxX&&pos.z+r>b.minZ&&pos.z-r<b.maxZ&&Math.abs(feet-b.maxY)<.16)return true;return false}
+function addLabStation(x,z,r=2.4){labStationZones.push({x,z,r})}
+function nearLabStation(){if(Math.abs(player.pos.y-LAB_LAYOUT.y)>3.5)return false;return labStationZones.some(q=>Math.hypot(player.pos.x-q.x,player.pos.z-q.z)<q.r)}
 const player={pos:new THREE.Vector3(spawn.x+.5,spawn.y,spawn.z+.5),vel:new THREE.Vector3(),yaw:-.65,pitch:-.12,onGround:false,crouch:false,sprint:false,inWater:false,inLava:false,step:0,lastGroundY:spawn.y,fallStart:spawn.y,health:100,mana:100,attackCooldown:0,lavaClock:0};
-const keys={},settings={preset:"high",render:5,sense:.5,volume:.7,shadows:2,ao:2,water:2,particles:2,vegetation:2,resolution:1,clouds:true,mobs:2},state={playing:false,started:false,inventory:false,chemistry:false,periodic:false,shop:false,character:false,chat:false,devOpen:false,graphics:false,paused:false,selected:0,left:false,right:false,target:null,breakKey:"",breakTime:0,cameraMode:0,day:.23,dayCount:1,lastFrame:performance.now(),fps:60,frames:0,fpsTime:0};
+const keys={},settings={preset:"high",render:5,sense:.5,volume:.7,shadows:2,ao:2,water:2,particles:2,vegetation:2,resolution:1,clouds:true,mobs:2},state={playing:false,started:false,startQueued:false,loading:false,awaitingEntry:false,inventory:false,chemistry:false,periodic:false,shop:false,character:false,chat:false,devOpen:false,graphics:false,history:false,professor:false,paused:false,selected:0,left:false,right:false,target:null,breakKey:"",breakTime:0,cameraMode:0,day:.23,dayCount:1,lastFrame:performance.now(),fps:60,frames:0,fpsTime:0};
 state.attackAnim=0;state.combatTarget=null;state.combatTargetTime=0;
 const dev={fly:false,speed:1,infinite:false,allRecipes:false};
+let messageCenter=null,elementMissions=null,lastMissionBiome="";
 try{Object.assign(settings,JSON.parse(localStorage.qc_settings||"{}"))}catch(e){}
 $("qualityPreset").value=settings.preset;$("renderDistance").value=settings.render;$("shadowQuality").value=settings.shadows;$("aoQuality").value=settings.ao;$("waterQuality").value=settings.water;$("particleQuality").value=settings.particles;$("vegetationQuality").value=settings.vegetation;$("resolutionScale").value=settings.resolution;$("cloudToggle").checked=settings.clouds;$("mobDensity").value=settings.mobs;$("sensitivity").value=Math.round(settings.sense*100);$("volume").value=Math.round(settings.volume*100);
 
 const skinMat=new THREE.MeshLambertMaterial({color:0xb87550}),skinLightMat=new THREE.MeshLambertMaterial({color:0xd79a73}),skinShadeMat=new THREE.MeshLambertMaterial({color:0x9e5d43}),sleeveMat=new THREE.MeshLambertMaterial({color:0x2f7c72}),coatMat=new THREE.MeshLambertMaterial({color:0xe7ece8}),coatShadeMat=new THREE.MeshLambertMaterial({color:0xbccbc5}),pantsMat=new THREE.MeshLambertMaterial({color:0x273e49}),hairMat=new THREE.MeshLambertMaterial({color:0x382921}),bootMat=new THREE.MeshLambertMaterial({color:0x20282b}),eyeMat=new THREE.MeshBasicMaterial({color:0x182024}),metalMat=new THREE.MeshStandardMaterial({color:0xc7d0d4,roughness:.28,metalness:.7,emissive:0x101416}),windMat=new THREE.MeshStandardMaterial({color:0x59ced9,roughness:.16,metalness:.22,emissive:0x19555c,emissiveIntensity:1.15}),leatherMat=new THREE.MeshLambertMaterial({color:0x8d5c36}),goldMat=new THREE.MeshStandardMaterial({color:0xd9b34f,roughness:.25,metalness:.72,emissive:0x302309}),woodLightMat=new THREE.MeshLambertMaterial({color:0xb77a42}),woodDarkMat=new THREE.MeshLambertMaterial({color:0x54341f}),brassMat=new THREE.MeshStandardMaterial({color:0xe1bd62,roughness:.22,metalness:.8}),stringMat=new THREE.MeshLambertMaterial({color:0xe8e1cf}),windGlassMat=new THREE.MeshStandardMaterial({color:0x90f7ff,roughness:.05,metalness:.08,emissive:0x1f7f8c,emissiveIntensity:1.65,transparent:true,opacity:.88});
 const pSkinMat=skinMat.clone(),pSkinLightMat=skinLightMat.clone(),pSkinShadeMat=skinShadeMat.clone(),pSleeveMat=sleeveMat.clone(),pCoatMat=coatMat.clone(),pCoatShadeMat=coatShadeMat.clone(),pPantsMat=pantsMat.clone(),pHairMat=hairMat.clone();
-const cubeGeo=new THREE.BoxGeometry(1,1,1),unitY=new THREE.Vector3(0,1,0);function part(parent,mat,pos,scale,rot=[0,0,0]){const m=new THREE.Mesh(cubeGeo,mat);m.position.set(...pos);m.scale.set(...scale);m.rotation.set(...rot);m.castShadow=settings.shadows>0;m.receiveShadow=settings.shadows>0;parent.add(m);return m}
+const cubeGeo=new THREE.BoxGeometry(BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE),unitY=new THREE.Vector3(0,1,0);function part(parent,mat,pos,scale,rot=[0,0,0]){const m=new THREE.Mesh(cubeGeo,mat);m.position.set(...pos);m.scale.set(...scale);m.rotation.set(...rot);m.castShadow=settings.shadows>0;m.receiveShadow=settings.shadows>0;parent.add(m);return m}
 function beam(parent,mat,a,b,width=.04,depth=width){const av=new THREE.Vector3(...a),bv=new THREE.Vector3(...b),dir=bv.clone().sub(av),m=new THREE.Mesh(cubeGeo,mat);m.position.copy(av).add(bv).multiplyScalar(.5);m.scale.set(width,dir.length(),depth);m.quaternion.setFromUnitVectors(unitY,dir.normalize());m.castShadow=settings.shadows>0;m.receiveShadow=settings.shadows>0;parent.add(m);return m}
 function weaponModel(id,first=false){
   const g=new THREE.Group(),s=first?1:.72;g.userData.kind=id;g.userData.rings=[];
@@ -374,9 +555,10 @@ function closeCharacter(){state.character=false;$("character").classList.remove(
 
 function collides(pos,height=player.crouch?1.24:1.72){
   const r=.29,minX=Math.floor(pos.x-r),maxX=Math.floor(pos.x+r),minY=Math.floor(pos.y+.02),maxY=Math.floor(pos.y+height-.02),minZ=Math.floor(pos.z-r),maxZ=Math.floor(pos.z+r);
-  for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++)for(let z=minZ;z<=maxZ;z++)if(BDEF[getBlock(x,y,z)]?.solid)return true;return false;
+  for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++)for(let z=minZ;z<=maxZ;z++)if(BDEF[getBlock(x,y,z)]?.solid)return true;
+  return playerHitsLabDecor(pos,height);
 }
-function supportedAt(pos){const y=Math.floor(pos.y-.08),r=.24;return solidAt(pos.x-r,y,pos.z-r)||solidAt(pos.x+r,y,pos.z-r)||solidAt(pos.x-r,y,pos.z+r)||solidAt(pos.x+r,y,pos.z+r)}
+function supportedAt(pos){const y=Math.floor(pos.y-.08),r=.24;return solidAt(pos.x-r,y,pos.z-r)||solidAt(pos.x+r,y,pos.z-r)||solidAt(pos.x-r,y,pos.z+r)||solidAt(pos.x+r,y,pos.z+r)||labDecorSupports(pos)}
 function moveAxis(axis,delta){if(!delta)return;const before=player.pos[axis],test=player.pos.clone();test[axis]+=delta;if(!collides(test)){if(player.crouch&&player.onGround&&(axis==="x"||axis==="z")&&!supportedAt(test))return;player.pos.copy(test);return}let lo=0,hi=1;for(let i=0;i<7;i++){const m=(lo+hi)/2,test2=player.pos.clone();test2[axis]=before+delta*m;if(collides(test2))hi=m;else lo=m}player.pos[axis]=before+delta*lo;if(axis==="y"){if(delta<0){player.onGround=true;const fall=player.fallStart-player.pos.y;if(fall>5.2){damagePlayer(Math.floor((fall-4.6)*4),"queda");dustBurst(player.pos.clone(),Math.min(18,Math.floor(fall*1.5)));sound("land",Math.min(1,fall/12))}player.fallStart=player.pos.y}else player.fallStart=player.pos.y;player.vel.y=0}}
 function isInWater(){return player.pos.y<WATER_LEVEL+.83&&terrainHeight(player.pos.x,player.pos.z)<WATER_LEVEL}
 function isInLava(){return getBlock(player.pos.x,player.pos.y+.15,player.pos.z)===BLOCK.LAVA||getBlock(player.pos.x,player.pos.y+.85,player.pos.z)===BLOCK.LAVA}
@@ -390,24 +572,35 @@ function updatePhysics(dt){
   updatePlayerCamera(dt,Math.abs(dx)+Math.abs(dz)>.001);
   $("waterOverlay").classList.toggle("on",player.inWater&&camera.position.y<WATER_LEVEL+.86);updateVitals();
 }
-function respawn(){player.pos.set(spawn.x+.5,spawn.y,spawn.z+.5);player.vel.set(0,0,0);player.fallStart=spawn.y;player.health=100;player.mana=100;closeModals();updateVitals();requestPointer()}
-function restartWorld(){if(!confirm("Recomeçar o mundo? Construções, inventário, descobertas e progresso serão apagados. Suas configurações gráficas e aparência serão preservadas."))return;for(const k of ["qc_mods","qc_doors","qc_inventory","qc_chem","qc_camp_v5","qc_lab_v46","qc_lab_v47","qc_periodic_mission_v46","qc_periodic_mission_v47","qc_village_v44","qc_rangerGift","qc_v44_wallet"])localStorage.removeItem(k);localStorage.qc_world_seed=String(Math.floor(100000+Math.random()*899999999));location.reload()}
+function respawn(){if(!syncPlayerToSafeGround(spawn.x,spawn.z)){player.pos.set(spawn.x,spawn.y,spawn.z);player.vel.set(0,0,0)}player.fallStart=player.pos.y;player.health=100;player.mana=100;closeModals();updateVitals();saveWorldState();requestPointer()}
+function isEmbeddedLocalFile(){try{return location.protocol==="file:"&&window.self!==window.top}catch(error){return location.protocol==="file:"}}
+function openStandaloneLocalFile(){
+  if(!isEmbeddedLocalFile())return false;
+  const opened=window.open(location.href,"_blank");
+  if(opened){try{opened.opener=null}catch(error){}return true}
+  const notice=$("localFrameNotice");if(notice){notice.hidden=false;notice.textContent="O navegador bloqueou a nova aba. Abra o arquivo index.html diretamente no Chrome ou Edge, fora da prévia."}
+  return false
+}
+function reloadPageSafely(){if(openStandaloneLocalFile())return;location.reload()}
+function restartWorld(){if(!confirm("Recomeçar o mundo? Construções, inventário, descobertas e progresso serão apagados. Suas configurações gráficas e aparência serão preservadas."))return;for(const k of ["qc_mods","qc_doors","qc_inventory","qc_chem","qc_camp_v5","qc_lab_v46","qc_lab_v47","qc_lab_v48","qc_lab_v49","qc_lab_v50","qc_lab_v51","qc_lab_validation_v60","qc_world_state_v60","qc_village_state_v60","qc_element_missions_v60","qc_message_history_v60","qc_carbon_intro_gift_v60","qc_periodic_mission_v46","qc_periodic_mission_v47","qc_village_v44","qc_rangerGift","qc_v44_wallet"])localStorage.removeItem(k);localStorage.qc_world_seed=String(Math.floor(100000+Math.random()*899999999));reloadPageSafely()}
 function flashDamage(){$("damage").classList.add("flash");setTimeout(()=>$("damage").classList.remove("flash"),80)}
 function damagePlayer(amount,source="criatura"){if(dev.fly)return;let reduction=1;if(countItem("armor_plate"))reduction*=.78;if(countItem("chainmail"))reduction*=.76;if(countItem("shield"))reduction*=.86;amount=Math.max(1,Math.ceil(amount*reduction));player.health=Math.max(0,player.health-amount);flashDamage();updateVitals();if(player.health<=0){chatMessage("SISTEMA",`Você foi derrotado por ${source}. Retornando ao laboratório…`);setTimeout(respawn,260)}else if(amount>=8)toast(`−${amount} vida · ${source}`)}
 function updateVitals(){$("healthFill").style.width=player.health+"%";$("healthNum").textContent=Math.ceil(player.health);$("manaFill").style.width=player.mana+"%";$("manaNum").textContent=Math.floor(player.mana)}
 
-const highlight=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.012,1.012,1.012)),new THREE.LineBasicMaterial({color:0xe4f8bd,transparent:true,opacity:.85,depthTest:false}));highlight.visible=false;highlight.renderOrder=8;scene.add(highlight);
+const highlight=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(BLOCK_SIZE*1.012,BLOCK_SIZE*1.012,BLOCK_SIZE*1.012)),new THREE.LineBasicMaterial({color:0xe4f8bd,transparent:true,opacity:.85,depthTest:false}));highlight.visible=false;highlight.renderOrder=8;scene.add(highlight);
 function crackTextures(){const out=[];for(let stage=0;stage<3;stage++){const c=document.createElement("canvas");c.width=c.height=64;const x=c.getContext("2d");x.strokeStyle=`rgba(20,25,21,${.45+stage*.18})`;x.lineWidth=1.3+stage*.4;for(let q=0;q<4+stage*4;q++){let px=32+(hash(q,stage)-.5)*20,py=32+(hash(q,stage,2)-.5)*20;x.beginPath();x.moveTo(px,py);for(let j=0;j<3+stage;j++){px+=(hash(q,j,stage)-.5)*21;py+=(hash(q+17,j,stage)-.5)*21;x.lineTo(px,py)}x.stroke()}out.push(new THREE.CanvasTexture(c))}return out}
-const cracks=crackTextures(),crackMat=new THREE.MeshBasicMaterial({map:cracks[0],transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});const crackMesh=new THREE.Mesh(new THREE.BoxGeometry(1.015,1.015,1.015),crackMat);crackMesh.visible=false;crackMesh.renderOrder=7;scene.add(crackMesh);
+const cracks=crackTextures(),crackMat=new THREE.MeshBasicMaterial({map:cracks[0],transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});const crackMesh=new THREE.Mesh(new THREE.BoxGeometry(BLOCK_SIZE*1.015,BLOCK_SIZE*1.015,BLOCK_SIZE*1.015),crackMat);crackMesh.visible=false;crackMesh.renderOrder=7;scene.add(crackMesh);
 const raycaster=new THREE.Raycaster();raycaster.far=6;
 function targetBlock(){raycaster.setFromCamera({x:0,y:0},camera);const hit=raycaster.intersectObjects(chunkMeshes,false)[0];if(!hit)return null;const ref=hit.object.userData.faceBlocks?.[hit.faceIndex];return ref?{...ref,point:hit.point}:null}
 function aimedEntity(){const eye=attackOrigin(),dir=aimDirection();return entities.filter(e=>!e.persistent&&!e.dead).map(e=>{const v=new THREE.Vector3(e.x,e.y+(e.flying?1.45:.7),e.z).sub(eye),d=v.length();return {e,d,dot:v.normalize().dot(dir)}}).filter(q=>q.d<22&&q.dot>1-clamp(.24/q.d,.012,.12)).sort((a,b)=>b.dot-a.dot||a.d-b.d)[0]?.e||null}
 function updateTarget(dt){
   const raw=targetBlock(),t=raw&&getBlock(raw.x,raw.y,raw.z)===raw.id?raw:null,ae=aimedEntity();state.target=t;state.aimEntity=ae;highlight.visible=!!t;$("crosshair").classList.toggle("target",!!t||!!ae);if(t)highlight.position.set(t.x+.5,t.y+.5,t.z+.5);
-  if(state.left&&t&&t.id!==BLOCK.BEDROCK){const k=key3(t.x,t.y,t.z);if(k!==state.breakKey){state.breakKey=k;state.breakTime=0}state.breakTime+=dt;const prog=state.breakTime/BDEF[t.id].hard;$("breakWrap").classList.add("visible");$("breakFill").style.width=clamp(prog*100,0,100)+"%";crackMesh.visible=true;crackMesh.position.copy(highlight.position);crackMat.map=cracks[Math.min(2,Math.floor(prog*3))];crackMat.needsUpdate=true;if(prog>=1){breakBlock(t);state.breakTime=0;state.breakKey=""}}
+  const protectedLab=t&&isLabProtectedBlock(t.x,t.y,t.z);
+  if(state.left&&protectedLab){state.breakTime=0;state.breakKey="";$("breakWrap").classList.remove("visible");crackMesh.visible=false;const now=performance.now();if(now-labProtectToastAt>950){labProtectToastAt=now;toast("Os blocos do Laboratório Carbono são indestrutíveis")}}
+  else if(state.left&&t&&t.id!==BLOCK.BEDROCK){const k=key3(t.x,t.y,t.z);if(k!==state.breakKey){state.breakKey=k;state.breakTime=0}state.breakTime+=dt;const prog=state.breakTime/BDEF[t.id].hard;$("breakWrap").classList.add("visible");$("breakFill").style.width=clamp(prog*100,0,100)+"%";crackMesh.visible=true;crackMesh.position.copy(highlight.position);crackMat.map=cracks[Math.min(2,Math.floor(prog*3))];crackMat.needsUpdate=true;if(prog>=1){breakBlock(t);state.breakTime=0;state.breakKey=""}}
   else{state.breakTime=0;state.breakKey="";$("breakWrap").classList.remove("visible");crackMesh.visible=false}
 }
-function breakBlock(t){if(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN){const m=doorMeta.get(key3(t.x,t.y,t.z))||{half:0},baseY=t.y-(m.half||0);for(const yy of [baseY,baseY+1]){mods.set(key3(t.x,yy,t.z),BLOCK.AIR);doorMeta.delete(key3(t.x,yy,t.z))}saveMods();saveDoorMeta();rebuildChunk(Math.floor(t.x/CHUNK),Math.floor(t.z/CHUNK));addItem(BLOCK.DOOR,1)}else{setBlock(t.x,t.y,t.z,BLOCK.AIR);addItem(t.id,1);discoverFromBlock(t.id)}burstBlock(t);sound("break",.65);highlight.visible=false;if(t.id===BLOCK.TORCH||t.id===BLOCK.SPECTRAL)updateTorches()}
+function breakBlock(t){if(isLabProtectedBlock(t.x,t.y,t.z))return toast("Os blocos do Laboratório Carbono são indestrutíveis");if(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN){const m=doorMeta.get(key3(t.x,t.y,t.z))||{half:0},baseY=t.y-(m.half||0),levels=m.group==="carbon-main-airlock"?[baseY,baseY+1,baseY+2]:[baseY,baseY+1];for(const yy of levels){mods.set(key3(t.x,yy,t.z),BLOCK.AIR);doorMeta.delete(key3(t.x,yy,t.z))}saveMods();saveDoorMeta();rebuildChunk(Math.floor(t.x/CHUNK),Math.floor(t.z/CHUNK));addItem(BLOCK.DOOR,1)}else{setBlock(t.x,t.y,t.z,BLOCK.AIR);addItem(t.id,1);discoverFromBlock(t.id);const resourceKey=missionResourceKeyForId(t.id);if(resourceKey)elementMissions?.recordEvent("mine",{key:resourceKey,quantity:1})}burstBlock(t);sound("break",.65);highlight.visible=false;if(t.id===BLOCK.TORCH||t.id===BLOCK.SPECTRAL)updateTorches()}
 function blockHitsPlayer(x,y,z){const r=.29,h=player.crouch?1.24:1.72;return x+1>player.pos.x-r&&x<player.pos.x+r&&z+1>player.pos.z-r&&z<player.pos.z+r&&y+1>player.pos.y&&y<player.pos.y+h}
 function toggleDoor(t){
   const m=doorMeta.get(key3(t.x,t.y,t.z))||{axis:0,half:0},open=getBlock(t.x,t.y,t.z)===BLOCK.DOOR_OPEN,next=open?BLOCK.DOOR:BLOCK.DOOR_OPEN,chunksToRebuild=new Set(),instant=m.group==="carbon-main-airlock";
@@ -418,10 +611,17 @@ function toggleDoor(t){
   }
   saveMods();state.target={...t,id:next};for(const k of chunksToRebuild){const [cx,cz]=k.split(",").map(Number);rebuildChunkImmediate(cx,cz)}sound("place",.42);toast(open?(instant?"Porta do laboratório fechada":"Porta fechada"):(instant?"Porta do laboratório aberta":"Porta aberta"));
 }
-function nearLabDoor(){const front=LAB_LAYOUT.cz-LAB_LAYOUT.halfD;return Math.abs(player.pos.x-(LAB_LAYOUT.cx-.5))<2.25&&Math.abs(player.pos.z-front)<2.65&&Math.abs(player.pos.y-LAB_LAYOUT.y)<3}
-function toggleLabMainDoor(){const x=LAB_LAYOUT.cx-1,y=LAB_LAYOUT.y,z=LAB_LAYOUT.cz-LAB_LAYOUT.halfD,id=getBlock(x,y,z);toggleDoor({x,y,z,id,n:[0,0,-1]})}
-function useOrPlace(){const id=selectedItem();if(WEAPONS.has(id))return attackSelected(true);const foods={bread:22,berries:10,honey:18,cheese:26};if(foods[id]){if(player.health>=100)return toast("Sua vida já está cheia");removeItem(id,1);player.health=Math.min(100,player.health+foods[id]);saveInventory();renderInventory();updateVitals();sound("pickup",.7);return toast(`${itemName(id)} consumido · +${foods[id]} vida`)}if(id==="antidote"){if(player.health>=100)return toast("Sua vida já está cheia");removeItem("antidote",1);player.health=Math.min(100,player.health+38);saveInventory();renderInventory();updateVitals();sound("pickup",.7);return toast("Antídoto utilizado · +38 vida")}const t=state.target;if(nearLabDoor())return toggleLabMainDoor();if(t&&(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN))return toggleDoor(t);if(t&&t.id===BLOCK.LAB)return openChemistry();placeSelected()}
-function placeSelected(){const t=state.target,slot=invSlots[state.selected];if(!t||!slot||typeof slot.id!=="number"||slot.count<1)return;const x=t.x+t.n[0],y=t.y+t.n[1],z=t.z+t.n[2],id=slot.id;if(y<1||getBlock(x,y,z)!==BLOCK.AIR||(BDEF[id].solid&&blockHitsPlayer(x,y,z)))return toast("Sem espaço para colocar aqui");if(id===BLOCK.DOOR){if(getBlock(x,y+1,z)!==BLOCK.AIR)return toast("A porta precisa de dois blocos livres");const axis=Math.abs(Math.sin(player.yaw))>.7?0:1;for(const [yy,half] of [[y,0],[y+1,1]]){mods.set(key3(x,yy,z),BLOCK.DOOR);doorMeta.set(key3(x,yy,z),{axis,half,hinge:-1,swing:1})}saveMods();saveDoorMeta();rebuildChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK))}else setBlock(x,y,z,id);if(!dev.infinite){slot.count--;if(slot.count<=0)invSlots[state.selected]=null}saveInventory();renderInventory();sound(id===BLOCK.TORCH||id===BLOCK.SPECTRAL?"torch":"place",.52);if(id===BLOCK.TORCH||id===BLOCK.SPECTRAL)updateTorches()}
+function nearLabDoor(){const front=LAB_LAYOUT.cz-LAB_LAYOUT.halfD;return Math.abs(player.pos.x-(LAB_LAYOUT.cx-.5))<3.8&&Math.abs(player.pos.z-front)<3.1&&Math.abs(player.pos.y-LAB_LAYOUT.y)<4}
+function toggleLabMainDoor(){const x=LAB_LAYOUT.cx-2,y=LAB_LAYOUT.y,z=LAB_LAYOUT.cz-LAB_LAYOUT.halfD,id=getBlock(x,y,z);toggleDoor({x,y,z,id,n:[0,0,-1]})}
+function useOrPlace(){
+  const t=state.target,n=nearestNPC();
+  if(nearPeriodicTable()||nearLabDoor()||n||nearLabStation()||(t&&(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN))||(t&&t.id===BLOCK.LAB))return interact();
+  const id=selectedItem();if(WEAPONS.has(id))return attackSelected(true);
+  const foods={bread:22,berries:10,honey:18,cheese:26};if(foods[id]){if(player.health>=100)return toast("Sua vida já está cheia");removeItem(id,1);player.health=Math.min(100,player.health+foods[id]);saveInventory();renderInventory();updateVitals();sound("pickup",.7);return toast(`${itemName(id)} consumido · +${foods[id]} vida`)}
+  if(id==="antidote"){if(player.health>=100)return toast("Sua vida já está cheia");removeItem("antidote",1);player.health=Math.min(100,player.health+38);saveInventory();renderInventory();updateVitals();sound("pickup",.7);return toast("Antídoto utilizado · +38 vida")}
+  placeSelected()
+}
+function placeSelected(){const t=state.target,slot=invSlots[state.selected];if(!t||!slot||typeof slot.id!=="number"||slot.count<1)return;const x=t.x+t.n[0],y=t.y+t.n[1],z=t.z+t.n[2],id=slot.id;if(isLabPlacementRestricted(x,y,z))return toast("Não é permitido colocar blocos dentro do Laboratório Carbono");if(y<1||getBlock(x,y,z)!==BLOCK.AIR||(BDEF[id].solid&&blockHitsPlayer(x,y,z)))return toast("Sem espaço para colocar aqui");if(id===BLOCK.DOOR){if(getBlock(x,y+1,z)!==BLOCK.AIR)return toast("A porta precisa de dois blocos livres");const axis=Math.abs(Math.sin(player.yaw))>.7?0:1;for(const [yy,half] of [[y,0],[y+1,1]]){mods.set(key3(x,yy,z),BLOCK.DOOR);doorMeta.set(key3(x,yy,z),{axis,half,hinge:-1,swing:1})}saveMods();saveDoorMeta();rebuildChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK))}else setBlock(x,y,z,id);if(!dev.infinite){slot.count--;if(slot.count<=0)invSlots[state.selected]=null}saveInventory();renderInventory();sound(id===BLOCK.TORCH||id===BLOCK.SPECTRAL?"torch":"place",.52);if(id===BLOCK.TORCH||id===BLOCK.SPECTRAL)updateTorches()}
 
 const particleGroup=new THREE.Group();scene.add(particleGroup);const particleGeo=new THREE.BoxGeometry(.1,.1,.1),particles=[];
 function burstBlock(t){if(settings.particles===0)return;const col=new THREE.Color(BDEF[t.id]?.icon||"#888"),count=settings.particles===1?6:12;for(let i=0;i<count;i++){const m=new THREE.Mesh(particleGeo,new THREE.MeshLambertMaterial({color:col.clone().multiplyScalar(.75+hash(i,t.x,t.z)*.4)}));m.position.set(t.x+.5+(hash(i,1)-.5)*.55,t.y+.5+(hash(i,2)-.5)*.55,t.z+.5+(hash(i,3)-.5)*.55);m.scale.setScalar(.6+hash(i,4)*1.2);m.userData.v=new THREE.Vector3((hash(i,5)-.5)*3,1+hash(i,6)*3,(hash(i,7)-.5)*3);m.userData.life=.65+hash(i,8)*.4;particleGroup.add(m);particles.push(m)}}
@@ -462,9 +662,9 @@ const ITEM_NAMES={stick:"Bastão",wind_staff:"Cajado do Vento",bow:"Arco comum",
 const itemName=id=>typeof id==="number"?(BDEF[id]?.name||"Bloco"):(ITEM_NAMES[id]||String(id));
 const itemColor=id=>ITEM_COLORS[id]||"#777";
 function saveInventory(){try{localStorage.qc_inventory=JSON.stringify(invSlots)}catch(e){}}
-function addItem(id,count=1){let s=invSlots.find(x=>x&&x.id===id);if(s)s.count+=count;else{const i=invSlots.findIndex(x=>!x);if(i>=0)invSlots[i]={id,count};else{toast("Mochila cheia");return false}}saveInventory();renderInventory();return true}
+function addItem(id,count=1){let s=invSlots.find(x=>x&&x.id===id);if(s)s.count+=count;else{const i=invSlots.findIndex(x=>!x);if(i>=0)invSlots[i]={id,count};else{toast("Mochila cheia");chatMessage("SISTEMA","Mochila cheia.",{category:"system"});return false}}saveInventory();renderInventory();elementMissions?.sync();return true}
 function countItem(id){return invSlots.reduce((n,s)=>n+(s&&s.id===id?s.count:0),0)}
-function removeItem(id,count){for(const s of invSlots){if(!s||s.id!==id)continue;const take=Math.min(count,s.count);s.count-=take;count-=take;if(!count)break}for(let i=0;i<invSlots.length;i++)if(invSlots[i]&&invSlots[i].count<=0)invSlots[i]=null;return count===0}
+function removeItem(id,count){for(const s of invSlots){if(!s||s.id!==id)continue;const take=Math.min(count,s.count);s.count-=take;count-=take;if(!count)break}for(let i=0;i<invSlots.length;i++)if(invSlots[i]&&invSlots[i].count<=0)invSlots[i]=null;const removed=count===0;if(removed)elementMissions?.sync();return removed}
 const WEAPONS=new Set(["wind_staff","bow","iron_sword"]);function iconHTML(item){return item?`<span class="voxel-icon ${WEAPONS.has(item.id)?"weapon-icon":""}" style="--icon:${itemColor(item.id)}"></span><span class="slot-count">${item.count}</span>`:""}
 function selectedItem(){return invSlots[state.selected]?.id}function renderHotbar(){$("hotbar").innerHTML=invSlots.slice(0,9).map((it,i)=>`<div class="slot ${i===state.selected?"active":""}"><span class="slot-key">${i+1}</span>${iconHTML(it)}</div>`).join("");refreshHeldItem();const id=selectedItem(),tips={wind_staff:"Cajado do Vento · clique: orbe · direito: ciclone",bow:`Arco comum · ${countItem("arrow")} flechas`,iron_sword:"Espada de ferro · golpe corpo a corpo"};$("combatChip").textContent=tips[id]||`${itemName(id??BLOCK.AIR)} · clique para quebrar`}
 let dragIndex=-1,selectedRecipeIndex=0,recipeBookOpen=innerWidth>=980;
@@ -580,7 +780,7 @@ const CHEM=[
 ];
 let unlockedChem=new Set(["glass","electrolysis","salt_solution","activated_carbon"]);try{const s=JSON.parse(localStorage.qc_chem||"null");if(Array.isArray(s))unlockedChem=new Set(s)}catch(e){}
 function saveChem(){localStorage.qc_chem=JSON.stringify([...unlockedChem]);updateChemHud()}
-function discover(id,msg){if(unlockedChem.has(id))return;unlockedChem.add(id);saveChem();toast(`Nova reação: ${CHEM.find(r=>r.id===id)?.name||msg}`);chatMessage("SISTEMA",`Descoberta registrada no caderno: ${msg||id}.`)}
+function discover(id,msg){if(unlockedChem.has(id))return;unlockedChem.add(id);saveChem();toast(`Nova reação: ${CHEM.find(r=>r.id===id)?.name||msg}`);chatMessage("SISTEMA",`Descoberta registrada no caderno: ${msg||id}.`,{category:"discovery"})}
 function discoverFromBlock(id){if(id===BLOCK.COPPER){discover("copper_sulfate","Reatividade do cobre");discover("copper_oxide","Óxidos metálicos")}if(id===BLOCK.SULFUR)discover("acid","Química do enxofre");if(id===BLOCK.SALT){discover("fertilizer","Sais minerais");discover("salt_solution","Soluções iônicas")}if(id===BLOCK.TIN)discover("bronze","Ligas de estanho");if(id===BLOCK.ZINC)discover("voltaic","Reações de oxirredução");if(id===BLOCK.CRYSTAL)discover("luminescence","Luminescência cristalina");if(id===BLOCK.CLAY)discover("ceramic","Transformações da argila");if(id===BLOCK.LIMESTONE)discover("calcination","Química dos carbonatos");if(id===BLOCK.NITER){discover("nitrate","Química dos nitratos");discover("silver_nitrate","Reações com nitratos")}if(id===BLOCK.AMETHYST)discover("spectroscopy","Espectroscopia de cristais");if(id===BLOCK.IRON)discover("iron_oxide","Oxidação dos metais");if(id===BLOCK.ASH){discover("alkali","Extração alcalina");discover("activated_carbon","Adsorção por carbono")}}
 function updateChemHud(){$("chemHud").textContent=`DESCOBERTAS ${Math.min(CHEM.length,dev.allRecipes?CHEM.length:unlockedChem.size)} / ${CHEM.length}`}
 function canChem(r){return r.need.every(([id,n])=>countItem(id)>=n)}
@@ -588,36 +788,95 @@ function renderChemistry(){
   const els=[{n:1,s:"H",name:"Hidrogênio"},{n:6,s:"C",name:"Carbono"},{n:7,s:"N",name:"Nitrogênio"},{n:8,s:"O",name:"Oxigênio"},{n:11,s:"Na",name:"Sódio"},{n:12,s:"Mg",name:"Magnésio"},{n:13,s:"Al",name:"Alumínio"},{n:14,s:"Si",name:"Silício"},{n:16,s:"S",name:"Enxofre"},{n:17,s:"Cl",name:"Cloro"},{n:19,s:"K",name:"Potássio"},{n:20,s:"Ca",name:"Cálcio"},{n:26,s:"Fe",name:"Ferro"},{n:29,s:"Cu",name:"Cobre"},{n:30,s:"Zn",name:"Zinco"},{n:47,s:"Ag",name:"Prata"},{n:50,s:"Sn",name:"Estanho"},{n:79,s:"Au",name:"Ouro"},{n:15,s:"P",name:"Fósforo"},{n:35,s:"Br",name:"Bromo"}];$("elementBoard").innerHTML=els.map(e=>`<div class="element"><span>${e.n}</span><b>${e.s}</b><small>${e.name}</small></div>`).join("");
   $("chemRecipes").innerHTML=CHEM.map((r,i)=>{const unlocked=dev.allRecipes||unlockedChem.has(r.id),possible=unlocked&&canChem(r);return `<button class="chem-recipe ${unlocked?"":"locked"}" data-chem="${i}" ${possible?"":"disabled"}><strong>${unlocked?r.name:"Reação não descoberta"}</strong><span class="chem-eq">${unlocked?r.eq:"??? + ??? → ???"}</span><span class="chem-result">${unlocked?r.result:"Explore minérios e converse com o Prof. Carbono."}</span></button>`}).join("");$("chemRecipes").querySelectorAll("[data-chem]").forEach(b=>b.onclick=()=>craftChem(+b.dataset.chem));updateChemHud()
 }
-function craftChem(i){const r=CHEM[i];if(!(dev.allRecipes||unlockedChem.has(r.id))||!canChem(r))return;for(const [id,n] of r.need)removeItem(id,n);for(const [id,n] of r.out)addItem(id,n);if(r.next)discover(r.next,r.name);saveInventory();renderChemistry();renderInventory();sound("torch",.7);reactionParticles(r.id);$("labNote").innerHTML=`<span class="discovery">REAÇÃO CONCLUÍDA</span><br>${r.eq}`}
-function openChemistry(){state.chemistry=true;state.playing=false;state.left=false;$("chemistry").classList.add("open");document.exitPointerLock();renderChemistry()}
+function craftChem(i){const r=CHEM[i];if(!(dev.allRecipes||unlockedChem.has(r.id))||!canChem(r))return;for(const [id,n] of r.need)removeItem(id,n);for(const [id,n] of r.out)addItem(id,n);if(r.next)discover(r.next,r.name);saveInventory();renderChemistry();renderInventory();sound("torch",.7);reactionParticles(r.id);$("labNote").innerHTML=`<span class="discovery">REAÇÃO CONCLUÍDA</span><br>${r.eq}`;elementMissions?.recordEvent("reaction",{id:r.id});chatMessage("QUÍMICA",`Reação concluída: ${r.name}.`,{category:"chemistry"});updateMissionHud()}
+function openChemistry(){state.chemistry=true;state.playing=false;state.left=false;$("chemistry").classList.add("open");document.exitPointerLock();elementMissions?.recordEvent("activate_station",{id:"chemistry"});renderChemistry();updateMissionHud()}
 function closeChemistry(){state.chemistry=false;$("chemistry").classList.remove("open");requestPointer()}
 
-const PERIODIC_ELEMENTS=[
-[1,"H","Hidrogênio",1,1],[2,"He","Hélio",1,18],[3,"Li","Lítio",2,1],[4,"Be","Berílio",2,2],[5,"B","Boro",2,13],[6,"C","Carbono",2,14],[7,"N","Nitrogênio",2,15],[8,"O","Oxigênio",2,16],[9,"F","Flúor",2,17],[10,"Ne","Neônio",2,18],
-[11,"Na","Sódio",3,1],[12,"Mg","Magnésio",3,2],[13,"Al","Alumínio",3,13],[14,"Si","Silício",3,14],[15,"P","Fósforo",3,15],[16,"S","Enxofre",3,16],[17,"Cl","Cloro",3,17],[18,"Ar","Argônio",3,18],
-[19,"K","Potássio",4,1],[20,"Ca","Cálcio",4,2],[21,"Sc","Escândio",4,3],[22,"Ti","Titânio",4,4],[23,"V","Vanádio",4,5],[24,"Cr","Cromo",4,6],[25,"Mn","Manganês",4,7],[26,"Fe","Ferro",4,8],[27,"Co","Cobalto",4,9],[28,"Ni","Níquel",4,10],[29,"Cu","Cobre",4,11],[30,"Zn","Zinco",4,12],[31,"Ga","Gálio",4,13],[32,"Ge","Germânio",4,14],[33,"As","Arsênio",4,15],[34,"Se","Selênio",4,16],[35,"Br","Bromo",4,17],[36,"Kr","Criptônio",4,18],
-[37,"Rb","Rubídio",5,1],[38,"Sr","Estrôncio",5,2],[39,"Y","Ítrio",5,3],[40,"Zr","Zircônio",5,4],[41,"Nb","Nióbio",5,5],[42,"Mo","Molibdênio",5,6],[43,"Tc","Tecnécio",5,7],[44,"Ru","Rutênio",5,8],[45,"Rh","Ródio",5,9],[46,"Pd","Paládio",5,10],[47,"Ag","Prata",5,11],[48,"Cd","Cádmio",5,12],[49,"In","Índio",5,13],[50,"Sn","Estanho",5,14],[51,"Sb","Antimônio",5,15],[52,"Te","Telúrio",5,16],[53,"I","Iodo",5,17],[54,"Xe","Xenônio",5,18],
-[55,"Cs","Césio",6,1],[56,"Ba","Bário",6,2],[72,"Hf","Háfnio",6,4],[73,"Ta","Tântalo",6,5],[74,"W","Tungstênio",6,6],[75,"Re","Rênio",6,7],[76,"Os","Ósmio",6,8],[77,"Ir","Irídio",6,9],[78,"Pt","Platina",6,10],[79,"Au","Ouro",6,11],[80,"Hg","Mercúrio",6,12],[81,"Tl","Tálio",6,13],[82,"Pb","Chumbo",6,14],[83,"Bi","Bismuto",6,15],[84,"Po","Polônio",6,16],[85,"At","Astato",6,17],[86,"Rn","Radônio",6,18],
-[87,"Fr","Frâncio",7,1],[88,"Ra","Rádio",7,2],[104,"Rf","Rutherfórdio",7,4],[105,"Db","Dúbnio",7,5],[106,"Sg","Seabórgio",7,6],[107,"Bh","Bóhrio",7,7],[108,"Hs","Hássio",7,8],[109,"Mt","Meitnério",7,9],[110,"Ds","Darmstádtio",7,10],[111,"Rg","Roentgênio",7,11],[112,"Cn","Copernício",7,12],[113,"Nh","Nihônio",7,13],[114,"Fl","Fleróvio",7,14],[115,"Mc","Moscóvio",7,15],[116,"Lv","Livermório",7,16],[117,"Ts","Tenessino",7,17],[118,"Og","Oganessônio",7,18],
-[57,"La","Lantânio",8,3],[58,"Ce","Cério",8,4],[59,"Pr","Praseodímio",8,5],[60,"Nd","Neodímio",8,6],[61,"Pm","Promécio",8,7],[62,"Sm","Samário",8,8],[63,"Eu","Európio",8,9],[64,"Gd","Gadolínio",8,10],[65,"Tb","Térbio",8,11],[66,"Dy","Disprósio",8,12],[67,"Ho","Hólmio",8,13],[68,"Er","Érbio",8,14],[69,"Tm","Túlio",8,15],[70,"Yb","Itérbio",8,16],[71,"Lu","Lutécio",8,17],
-[89,"Ac","Actínio",9,3],[90,"Th","Tório",9,4],[91,"Pa","Protactínio",9,5],[92,"U","Urânio",9,6],[93,"Np","Netúnio",9,7],[94,"Pu","Plutônio",9,8],[95,"Am","Amerício",9,9],[96,"Cm","Cúrio",9,10],[97,"Bk","Berquélio",9,11],[98,"Cf","Califórnio",9,12],[99,"Es","Einstênio",9,13],[100,"Fm","Férmio",9,14],[101,"Md","Mendelévio",9,15],[102,"No","Nobélio",9,16],[103,"Lr","Laurêncio",9,17]
-].map(([n,symbol,name,row,col])=>({n,symbol,name,row,col}));
-const PERIODIC_MISSING=[1,2,3,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,26,27,28,29,30,35,47,50,79,82];
-let periodicMission={started:false,completed:false,filled:[]};try{const q=JSON.parse(localStorage.qc_periodic_mission_v47||localStorage.qc_periodic_mission_v46||"null");if(q&&typeof q==="object")periodicMission={...periodicMission,...q,filled:Array.isArray(q.filled)?q.filled:[]}}catch(e){}
-let periodicQuestion=null;
-if(periodicMission.completed)for(const id of ["chlor_alkali","hydrochloric","peroxide","copper_oxide","silver_nitrate","chromatography","distillation","carbon_capture","crystal_growth","electroplating"])unlockedChem.add(id);
-function savePeriodicMission(){localStorage.qc_periodic_mission_v47=JSON.stringify(periodicMission);updateMissionHud()}
-function startPeriodicMission(){if(periodicMission.started)return;periodicMission.started=true;savePeriodicMission();refreshPeriodicWall();chatMessage("PROF. CARBONO","Missão iniciada: complete as lacunas da Tabela Periódica monumental, bloco por bloco.");toast("Nova missão: Arquivo dos Elementos")}
-function periodicProgress(){return PERIODIC_MISSING.filter(n=>periodicMission.filled.includes(n)).length}
-function updateMissionHud(){const el=$("missionHud");if(!el)return;if(!periodicMission.started){el.classList.remove("show");return}const done=periodicProgress(),total=PERIODIC_MISSING.length;el.innerHTML=`<span>MISSÃO · ARQUIVO DOS ELEMENTOS</span><b>${periodicMission.completed?"CONCLUÍDA":`${done} / ${total} lacunas`}</b>`;el.classList.add("show");el.classList.toggle("complete",periodicMission.completed)}
-function elementFamily(e){if(e.row>=8)return e.row===8?"lanthanide":"actinide";if(e.col===18)return "noble";if(e.col===17)return "halogen";if(e.col===1&&e.n!==1)return "alkali";if(e.col===2)return "alkaline";if(e.col>=3&&e.col<=12)return "transition";if([5,14,32,33,51,52,84].includes(e.n))return "metalloid";if([1,6,7,8,15,16,34].includes(e.n))return "nonmetal";return "post"}
-function renderPeriodicTable(){const board=$("periodicGrid"),done=periodicProgress(),total=PERIODIC_MISSING.length;$("periodicProgress").textContent=periodicMission.completed?"Tabela concluída":`${done} de ${total} lacunas preenchidas`;$("periodicBarFill").style.width=`${done/total*100}%`;$("periodicIntro").textContent=periodicMission.started?"Clique em uma lacuna para identificar o elemento pelo número atômico e pelo nome.":"Fale com o Prof. Carbono para iniciar a missão. A tabela completa já pode ser consultada.";const cells=[];for(const e of PERIODIC_ELEMENTS){const missing=PERIODIC_MISSING.includes(e.n)&&!periodicMission.filled.includes(e.n),active=periodicMission.started&&missing;cells.push(`<button class="periodic-cell family-${elementFamily(e)} ${missing?"missing":""}" style="grid-column:${e.col};grid-row:${e.row}" data-element="${e.n}" ${active?"":"disabled"}><span>${e.n}</span><b>${missing?"?":e.symbol}</b><small>${missing?"Lacuna":e.name}</small></button>`)}cells.push(`<div class="periodic-placeholder" style="grid-column:3;grid-row:6">57–71</div><div class="periodic-placeholder" style="grid-column:3;grid-row:7">89–103</div>`);board.innerHTML=cells.join("");board.querySelectorAll("[data-element]:not(:disabled)").forEach(b=>b.onclick=()=>askPeriodicElement(+b.dataset.element));if(periodicMission.completed)$("periodicQuiz").innerHTML='<div class="periodic-complete"><b>ARQUIVO COMPLETO</b><span>A Tabela Periódica foi restaurada. As pesquisas avançadas do laboratório estão liberadas.</span></div>';else if(!periodicQuestion)$("periodicQuiz").innerHTML='<div class="periodic-idle">Selecione uma lacuna destacada para iniciar a identificação.</div>'}
-function askPeriodicElement(n){const e=PERIODIC_ELEMENTS.find(x=>x.n===n);if(!e)return;periodicQuestion=e;const pool=PERIODIC_ELEMENTS.filter(x=>x.n!==n).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.symbol);const options=[...pool,e.symbol].sort(()=>Math.random()-.5);$("periodicQuiz").innerHTML=`<div class="periodic-question"><span>NÚMERO ATÔMICO ${e.n}</span><h3>${e.name}</h3><p>Qual símbolo completa esta posição?</p><div>${options.map(o=>`<button data-symbol="${o}">${o}</button>`).join("")}</div></div>`;$("periodicQuiz").querySelectorAll("[data-symbol]").forEach(b=>b.onclick=()=>answerPeriodic(b.dataset.symbol))}
-function answerPeriodic(symbol){if(!periodicQuestion)return;if(symbol!==periodicQuestion.symbol){sound("hit",.35);toast("Símbolo incorreto — tente novamente");$("periodicQuiz").classList.add("wrong");setTimeout(()=>$("periodicQuiz").classList.remove("wrong"),320);return}periodicMission.filled.push(periodicQuestion.n);periodicMission.filled=[...new Set(periodicMission.filled)];sound("pickup",.75);reactionParticles("spectral_analysis");periodicQuestion=null;if(periodicProgress()>=PERIODIC_MISSING.length)completePeriodicMission();savePeriodicMission();refreshPeriodicWall();renderPeriodicTable()}
-function completePeriodicMission(){if(periodicMission.completed)return;periodicMission.completed=true;for(const id of ["chlor_alkali","hydrochloric","peroxide","copper_oxide","silver_nitrate","chromatography","distillation","carbon_capture","crystal_growth","electroplating"])unlockedChem.add(id);saveChem();addItem("carbon_badge",1);addItem("periodic_key",1);addItem("spectrometer_lens",1);addItem("catalyst",2);addItem("gold_nugget",12);chatMessage("PROF. CARBONO","Excelente! O Arquivo dos Elementos está completo. Liberei as pesquisas avançadas e deixei uma recompensa no seu inventário.");toast("Missão concluída · pesquisas avançadas liberadas");refreshPeriodicWall()}
-function openPeriodicTable(){state.periodic=true;state.playing=false;state.left=false;$("periodicTable").classList.add("open");$("periodicTable").setAttribute("aria-hidden","false");document.exitPointerLock();renderPeriodicTable()}
+const PERIODIC_ELEMENTS=Object.freeze([
+[1,"H","Hidrogênio",1,1,1,1,"nonmetal"],[2,"He","Hélio",1,18,18,1,"noble"],
+[3,"Li","Lítio",2,1,1,2,"alkali"],[4,"Be","Berílio",2,2,2,2,"alkaline"],[5,"B","Boro",2,13,13,2,"metalloid"],[6,"C","Carbono",2,14,14,2,"nonmetal"],[7,"N","Nitrogênio",2,15,15,2,"nonmetal"],[8,"O","Oxigênio",2,16,16,2,"nonmetal"],[9,"F","Flúor",2,17,17,2,"halogen"],[10,"Ne","Neônio",2,18,18,2,"noble"],
+[11,"Na","Sódio",3,1,1,3,"alkali"],[12,"Mg","Magnésio",3,2,2,3,"alkaline"],[13,"Al","Alumínio",3,13,13,3,"post"],[14,"Si","Silício",3,14,14,3,"metalloid"],[15,"P","Fósforo",3,15,15,3,"nonmetal"],[16,"S","Enxofre",3,16,16,3,"nonmetal"],[17,"Cl","Cloro",3,17,17,3,"halogen"],[18,"Ar","Argônio",3,18,18,3,"noble"],
+[19,"K","Potássio",4,1,1,4,"alkali"],[20,"Ca","Cálcio",4,2,2,4,"alkaline"],[21,"Sc","Escândio",4,3,3,4,"transition"],[22,"Ti","Titânio",4,4,4,4,"transition"],[23,"V","Vanádio",4,5,5,4,"transition"],[24,"Cr","Cromo",4,6,6,4,"transition"],[25,"Mn","Manganês",4,7,7,4,"transition"],[26,"Fe","Ferro",4,8,8,4,"transition"],[27,"Co","Cobalto",4,9,9,4,"transition"],[28,"Ni","Níquel",4,10,10,4,"transition"],[29,"Cu","Cobre",4,11,11,4,"transition"],[30,"Zn","Zinco",4,12,12,4,"transition"],[31,"Ga","Gálio",4,13,13,4,"post"],[32,"Ge","Germânio",4,14,14,4,"metalloid"],[33,"As","Arsênio",4,15,15,4,"metalloid"],[34,"Se","Selênio",4,16,16,4,"nonmetal"],[35,"Br","Bromo",4,17,17,4,"halogen"],[36,"Kr","Criptônio",4,18,18,4,"noble"],
+[37,"Rb","Rubídio",5,1,1,5,"alkali"],[38,"Sr","Estrôncio",5,2,2,5,"alkaline"],[39,"Y","Ítrio",5,3,3,5,"transition"],[40,"Zr","Zircônio",5,4,4,5,"transition"],[41,"Nb","Nióbio",5,5,5,5,"transition"],[42,"Mo","Molibdênio",5,6,6,5,"transition"],[43,"Tc","Tecnécio",5,7,7,5,"transition"],[44,"Ru","Rutênio",5,8,8,5,"transition"],[45,"Rh","Ródio",5,9,9,5,"transition"],[46,"Pd","Paládio",5,10,10,5,"transition"],[47,"Ag","Prata",5,11,11,5,"transition"],[48,"Cd","Cádmio",5,12,12,5,"transition"],[49,"In","Índio",5,13,13,5,"post"],[50,"Sn","Estanho",5,14,14,5,"post"],[51,"Sb","Antimônio",5,15,15,5,"metalloid"],[52,"Te","Telúrio",5,16,16,5,"metalloid"],[53,"I","Iodo",5,17,17,5,"halogen"],[54,"Xe","Xenônio",5,18,18,5,"noble"],
+[55,"Cs","Césio",6,1,1,6,"alkali"],[56,"Ba","Bário",6,2,2,6,"alkaline"],
+[57,"La","Lantânio",6,null,3,8,"lanthanide"],[58,"Ce","Cério",6,null,4,8,"lanthanide"],[59,"Pr","Praseodímio",6,null,5,8,"lanthanide"],[60,"Nd","Neodímio",6,null,6,8,"lanthanide"],[61,"Pm","Promécio",6,null,7,8,"lanthanide"],[62,"Sm","Samário",6,null,8,8,"lanthanide"],[63,"Eu","Európio",6,null,9,8,"lanthanide"],[64,"Gd","Gadolínio",6,null,10,8,"lanthanide"],[65,"Tb","Térbio",6,null,11,8,"lanthanide"],[66,"Dy","Disprósio",6,null,12,8,"lanthanide"],[67,"Ho","Hólmio",6,null,13,8,"lanthanide"],[68,"Er","Érbio",6,null,14,8,"lanthanide"],[69,"Tm","Túlio",6,null,15,8,"lanthanide"],[70,"Yb","Itérbio",6,null,16,8,"lanthanide"],[71,"Lu","Lutécio",6,null,17,8,"lanthanide"],
+[72,"Hf","Háfnio",6,4,4,6,"transition"],[73,"Ta","Tântalo",6,5,5,6,"transition"],[74,"W","Tungstênio",6,6,6,6,"transition"],[75,"Re","Rênio",6,7,7,6,"transition"],[76,"Os","Ósmio",6,8,8,6,"transition"],[77,"Ir","Irídio",6,9,9,6,"transition"],[78,"Pt","Platina",6,10,10,6,"transition"],[79,"Au","Ouro",6,11,11,6,"transition"],[80,"Hg","Mercúrio",6,12,12,6,"transition"],[81,"Tl","Tálio",6,13,13,6,"post"],[82,"Pb","Chumbo",6,14,14,6,"post"],[83,"Bi","Bismuto",6,15,15,6,"post"],[84,"Po","Polônio",6,16,16,6,"metalloid"],[85,"At","Astato",6,17,17,6,"halogen"],[86,"Rn","Radônio",6,18,18,6,"noble"],
+[87,"Fr","Frâncio",7,1,1,7,"alkali"],[88,"Ra","Rádio",7,2,2,7,"alkaline"],
+[89,"Ac","Actínio",7,null,3,9,"actinide"],[90,"Th","Tório",7,null,4,9,"actinide"],[91,"Pa","Protactínio",7,null,5,9,"actinide"],[92,"U","Urânio",7,null,6,9,"actinide"],[93,"Np","Netúnio",7,null,7,9,"actinide"],[94,"Pu","Plutônio",7,null,8,9,"actinide"],[95,"Am","Amerício",7,null,9,9,"actinide"],[96,"Cm","Cúrio",7,null,10,9,"actinide"],[97,"Bk","Berquélio",7,null,11,9,"actinide"],[98,"Cf","Califórnio",7,null,12,9,"actinide"],[99,"Es","Einstênio",7,null,13,9,"actinide"],[100,"Fm","Férmio",7,null,14,9,"actinide"],[101,"Md","Mendelévio",7,null,15,9,"actinide"],[102,"No","Nobélio",7,null,16,9,"actinide"],[103,"Lr","Laurêncio",7,null,17,9,"actinide"],
+[104,"Rf","Rutherfórdio",7,4,4,7,"transition"],[105,"Db","Dúbnio",7,5,5,7,"transition"],[106,"Sg","Seabórgio",7,6,6,7,"transition"],[107,"Bh","Bóhrio",7,7,7,7,"transition"],[108,"Hs","Hássio",7,8,8,7,"transition"],[109,"Mt","Meitnério",7,9,9,7,"transition"],[110,"Ds","Darmstádtio",7,10,10,7,"transition"],[111,"Rg","Roentgênio",7,11,11,7,"transition"],[112,"Cn","Copernício",7,12,12,7,"transition"],[113,"Nh","Nihônio",7,13,13,7,"post"],[114,"Fl","Fleróvio",7,14,14,7,"post"],[115,"Mc","Moscóvio",7,15,15,7,"post"],[116,"Lv","Livermório",7,16,16,7,"post"],[117,"Ts","Tenessino",7,17,17,7,"halogen"],[118,"Og","Oganessônio",7,18,18,7,"noble"]
+].map(([atomicNumber,symbol,name,period,group,displayColumn,displayRow,category])=>Object.freeze({atomicNumber,symbol,name,period,group,displayColumn,displayRow,category})));
+const MISSION_ITEM_IDS=Object.freeze({stone:BLOCK.STONE,sand:BLOCK.SAND,coal:BLOCK.COAL,iron:BLOCK.IRON,copper:BLOCK.COPPER,sulfur:BLOCK.SULFUR,salt:BLOCK.SALT,clay:BLOCK.CLAY,basalt:BLOCK.BASALT,obsidian:BLOCK.OBSIDIAN,gold:BLOCK.GOLD,tin:BLOCK.TIN,zinc:BLOCK.ZINC,crystal:BLOCK.CRYSTAL,marble:BLOCK.MARBLE,deepstone:BLOCK.DEEPSTONE,amethyst:BLOCK.AMETHYST,niter:BLOCK.NITER,spectral:BLOCK.SPECTRAL,glass:BLOCK.GLASS,limestone:BLOCK.LIMESTONE,water:"water",indicator:"indicator",sodium_chloride:"sodium_chloride"});
+const MISSION_RESOURCE_KEYS=new Map(Object.entries(MISSION_ITEM_IDS).map(([key,id])=>[id,key]));
+function missionResourceKeyForId(id){return MISSION_RESOURCE_KEYS.get(id)||null}
+let legacyPeriodicMission=null;try{legacyPeriodicMission=JSON.parse(localStorage.qc_periodic_mission_v47||localStorage.qc_periodic_mission_v46||"null")}catch(e){}
+messageCenter=window.QuimiCraftSystems.createMessageCenter({visibleContainer:$("notificationStack"),historyList:$("historyList"),emptyState:$("historyEmpty"),getGameTime:()=>`Dia ${state.dayCount} · ${$("timeLabel")?.textContent||"00:00"}`});
+elementMissions=window.QuimiCraftSystems.createElementMissionSystem({
+  elements:PERIODIC_ELEMENTS,
+  inventoryCount:countItem,
+  removeInventoryItem:(id,quantity)=>{const ok=removeItem(id,quantity);if(ok){saveInventory();renderInventory()}return ok},
+  grantItem:addItem,
+  itemIds:MISSION_ITEM_IDS,
+  itemName,
+  reactionIds:CHEM.map(reaction=>reaction.id),
+  unlockReaction:id=>{if(!unlockedChem.has(id)){unlockedChem.add(id);saveChem()}},
+  notify:data=>messageCenter.add(data),
+  onChange:()=>updateMissionHud(),
+  legacyPeriodicMission,
+  worldSeed:WORLD_SEED
+});
+let periodicQuestion=null,professorView="talk",periodicVisualSignature="";
+function periodicProgress(){return elementMissions.getStats().completed}
+function startPeriodicMission(){elementMissions.introduce();elementMissions.setTrackerHidden(false);refreshPeriodicWall();updateMissionHud()}
+function missionVisualSignature(){const stats=elementMissions.getStats(),active=elementMissions.getActiveMission();return `${stats.introduced}|${stats.completed}|${stats.currentStage}|${active?.id||""}|${active?.state||""}`}
+function syncPeriodicMissionVisuals(){if(!periodicWallRoot)return;const signature=missionVisualSignature();if(signature!==periodicVisualSignature){periodicVisualSignature=signature;refreshPeriodicWall()}}
+function updateMissionHud(){
+  const el=$("missionHud");if(!el||!elementMissions)return;const stats=elementMissions.getStats(),mission=elementMissions.getActiveMission();
+  if(!stats.introduced||stats.trackerHidden){el.classList.remove("show");syncPeriodicMissionVisuals();return}
+  if(mission){const pct=mission.progress.total?mission.progress.current/mission.progress.total*100:0;el.innerHTML=`<button type="button" data-hide-mission aria-label="Ocultar missão">×</button><span>MISSÃO · ${mission.elementSymbol}</span><b>${mission.title}</b><small>${mission.objective.description}</small><progress max="100" value="${pct}"></progress><small>${mission.progress.current} / ${mission.progress.total}</small>`}
+  else el.innerHTML=`<button type="button" data-hide-mission aria-label="Ocultar missão">×</button><span>PROJETO DA TABELA PERIÓDICA</span><b>${stats.completed} / 118 elementos</b><small>${stats.tableCompleted?"Tabela restaurada":"Fale com o Prof. Carbono para escolher a próxima missão."}</small>`;
+  el.classList.add("show");el.classList.toggle("complete",stats.tableCompleted);el.querySelector("[data-hide-mission]").onclick=()=>elementMissions.setTrackerHidden(true);syncPeriodicMissionVisuals()
+}
+function elementFamily(e){return e.category}
+function renderPeriodicTable(){
+  const board=$("periodicGrid"),stats=elementMissions.getStats(),done=stats.completed,total=stats.total,activeMission=elementMissions.getActiveMission();
+  $("periodicProgress").textContent=stats.tableCompleted?"Tabela concluída":`${done} de ${total} elementos concluídos`;$("periodicBarFill").style.width=`${done/total*100}%`;$("periodicIntro").textContent=stats.introduced?"Os blocos mostram o estado de cada pesquisa. Missões de identificação e análise são respondidas aqui.":"Fale com o Prof. Carbono para iniciar o projeto dos 118 elementos.";
+  const cells=[];for(const e of PERIODIC_ELEMENTS){const mission=elementMissions.getMissionForElement(e.atomicNumber),missionState=mission.state,clickable=missionState==="active"||missionState==="ready-to-complete"||missionState==="available";cells.push(`<button class="periodic-cell family-${elementFamily(e)} state-${missionState}" style="grid-column:${e.displayColumn};grid-row:${e.displayRow}" data-element="${e.atomicNumber}" data-clickable="${clickable}" ${clickable?"":"disabled"}><span>${e.atomicNumber}</span><b>${e.symbol}</b><small>${e.name}</small></button>`)}
+  board.innerHTML=cells.join("");board.querySelectorAll("[data-element]:not(:disabled)").forEach(button=>button.onclick=()=>askPeriodicElement(+button.dataset.element));
+  if(stats.tableCompleted)$("periodicQuiz").innerHTML='<div class="periodic-complete"><b>ARQUIVO COMPLETO</b><span>Os 118 elementos foram restaurados e permanecem salvos neste mundo.</span></div>';
+  else if(!periodicQuestion)$("periodicQuiz").innerHTML=activeMission?`<div class="periodic-idle">${activeMission.objectiveType==="identify"||activeMission.objectiveType==="analyze"?"Selecione o bloco da missão ativa para analisar o elemento.":"A missão ativa usa outro tipo de objetivo. Consulte o rastreador ou o Prof. Carbono."}</div>`:'<div class="periodic-idle">Escolha uma missão com o Prof. Carbono para ativar um elemento.</div>'
+}
+function askPeriodicElement(n){
+  const mission=elementMissions.getMissionForElement(n),active=elementMissions.getActiveMission();if(!mission)return;
+  if(mission.state==="available")return toast("Inicie esta missão falando com o Prof. Carbono");
+  if(!active||active.elementAtomicNumber!==n)return toast("Este não é o elemento da missão ativa");
+  if(!["identify","analyze"].includes(active.objectiveType))return toast(active.hint);
+  const e=PERIODIC_ELEMENTS.find(element=>element.atomicNumber===n);periodicQuestion={element:e,objectiveType:active.objectiveType};const pool=PERIODIC_ELEMENTS.filter(element=>element.atomicNumber!==n).sort(()=>Math.random()-.5).slice(0,3).map(element=>element.symbol),options=[...pool,e.symbol].sort(()=>Math.random()-.5);
+  $("periodicQuiz").innerHTML=`<div class="periodic-question"><span>NÚMERO ATÔMICO ${e.atomicNumber}</span><h3>${e.name}</h3><p>Qual símbolo completa esta posição?</p><div>${options.map(symbol=>`<button data-symbol="${symbol}">${symbol}</button>`).join("")}</div></div>`;$("periodicQuiz").querySelectorAll("[data-symbol]").forEach(button=>button.onclick=()=>answerPeriodic(button.dataset.symbol))
+}
+function answerPeriodic(symbol){
+  if(!periodicQuestion)return;const {element,objectiveType}=periodicQuestion;if(symbol!==element.symbol){sound("hit",.35);toast("Símbolo incorreto — tente novamente");$("periodicQuiz").classList.add("wrong");setTimeout(()=>$("periodicQuiz").classList.remove("wrong"),320);return}
+  elementMissions.recordEvent(objectiveType==="analyze"?"analyze_element":"identify_element",{atomicNumber:element.atomicNumber});messageCenter.add({category:"mission",text:`Objetivo concluído: ${element.name} identificado. Volte ao Prof. Carbono para registrar a entrega.`});sound("pickup",.75);reactionParticles("spectral_analysis");periodicQuestion=null;refreshPeriodicWall();renderPeriodicTable();updateMissionHud()
+}
+function openPeriodicTable(){state.periodic=true;state.playing=false;state.left=false;$("periodicTable").classList.add("open");$("periodicTable").setAttribute("aria-hidden","false");document.exitPointerLock();elementMissions.recordEvent("activate_station",{id:"periodic"});renderPeriodicTable()}
 function closePeriodicTable(){state.periodic=false;$("periodicTable").classList.remove("open");$("periodicTable").setAttribute("aria-hidden","true");periodicQuestion=null;requestPointer()}
-function nearPeriodicTable(){return Math.abs(player.pos.x-PERIODIC_STATION.x)<7.2&&player.pos.z>PERIODIC_STATION.z-2.2&&player.pos.z<PERIODIC_STATION.z+1.15&&Math.abs(player.pos.y-LAB_LAYOUT.y)<4}
+function nearPeriodicTable(){return Math.abs(player.pos.x-PERIODIC_STATION.x)<10.6&&player.pos.z>PERIODIC_STATION.z-2.6&&player.pos.z<PERIODIC_STATION.z+1.45&&Math.abs(player.pos.y-LAB_LAYOUT.y)<5}
+function missionCardHTML(mission,actionLabel="Iniciar"){
+  const pct=mission.progress.total?mission.progress.current/mission.progress.total*100:0;return `<article class="mission-card"><span class="mission-card-symbol">${mission.elementSymbol}</span><div><b>${mission.title}</b><small>${mission.objective.description}</small><div class="mission-progress-track"><i style="width:${pct}%"></i></div><small>${mission.progress.current} / ${mission.progress.total} · ${mission.stageTitle}</small></div><button type="button" data-mission-action="${mission.id}">${actionLabel}</button></article>`
+}
+function renderProfessor(view=professorView){
+  professorView=view;const content=$("professorContent"),stats=elementMissions.getStats(),active=elementMissions.getActiveMission();$("professorProgress").textContent=`Elementos concluídos: ${stats.completed} / 118 · Etapa ${stats.currentStage}: ${stats.currentStageTitle}`;$("professorActions").querySelectorAll("[data-professor-view]").forEach(button=>button.classList.toggle("active",button.dataset.professorView===view));
+  if(view==="exit")return closeProfessor();
+  if(view==="talk")content.innerHTML=`<h3>Projeto da Tabela Periódica</h3><p>${stats.completed?"Continuamos avançando. Cada bloco restaurado registra uma pesquisa permanente neste mundo.":"A Tabela Periódica tem 118 blocos de pesquisa. Vamos restaurá-los em etapas, usando exploração, mineração, reações seguras e análise científica."}</p><div class="professor-summary"><div class="professor-stat"><span>Elementos</span><b>${stats.completed} / 118</b></div><div class="professor-stat"><span>Etapa atual</span><b>${stats.currentStage} / 9</b></div><div class="professor-stat"><span>Missão</span><b>${active?active.elementSymbol:"Nenhuma"}</b></div></div><button class="professor-cta" type="button" data-jump-view="available">Ver missões disponíveis</button>`;
+  else if(view==="available"){const available=elementMissions.getAvailableMissions();content.innerHTML=`<h3>Missões disponíveis</h3><p>Escolha uma pesquisa da etapa atual. Apenas uma missão fica ativa por vez.</p><div class="mission-list">${available.length?available.map(mission=>missionCardHTML(mission)).join(""):'<p>Nenhuma missão disponível enquanto a missão atual estiver ativa.</p>'}</div>`}
+  else if(view==="current")content.innerHTML=active?`<h3>${active.title}</h3><p>${active.description}</p><div class="mission-list">${missionCardHTML(active,active.state==="ready-to-complete"?"Pronta":"Em andamento")}</div>`:`<h3>Nenhuma missão ativa</h3><p>Abra “Missões disponíveis” para selecionar um elemento da etapa atual.</p>`;
+  else if(view==="deliver")content.innerHTML=active?`<h3>Entregar materiais e pesquisa</h3><p>${active.state==="ready-to-complete"?"O objetivo foi concluído. Registre o elemento e receba a recompensa.":`Ainda falta concluir o objetivo: ${active.objective.description}`}</p><div class="mission-list">${missionCardHTML(active,active.state==="ready-to-complete"?"Concluir missão":"Ainda incompleta")}</div>`:`<h3>Nada para entregar</h3><p>Inicie uma missão para acompanhar sua pesquisa.</p>`;
+  else if(view==="progress")content.innerHTML=`<h3>Progresso da Tabela Periódica</h3><p>Elementos concluídos: ${stats.completed} / 118</p><div class="stage-progress-list">${elementMissions.getStages().map(stage=>`<div class="stage-progress-row"><span>Etapa ${stage.id} — ${stage.title}</span><span>${stage.completed} / ${stage.total}</span></div>`).join("")}</div>`;
+  else if(view==="hints")content.innerHTML=active?`<h3>Dica — ${active.title}</h3><p>${active.hint}</p><p>Progresso atual: ${active.progress.current} / ${active.progress.total}. Itens já obtidos são reconhecidos sempre que o objetivo permitir.</p>`:`<h3>Dicas</h3><p>Escolha uma missão. O rastreador mostrará somente o objetivo ativo; você pode ocultá-lo com × e reexibi-lo com a tecla M.</p>`;
+  content.querySelectorAll("[data-jump-view]").forEach(button=>button.onclick=()=>renderProfessor(button.dataset.jumpView));
+  content.querySelectorAll("[data-mission-action]").forEach(button=>button.onclick=()=>{const mission=elementMissions.getMissionForElement(Number(button.dataset.missionAction.match(/\d+/)?.[0]));if(!mission)return;if(mission.state==="available"){elementMissions.startMission(mission.id);elementMissions.setTrackerHidden(false);messageCenter.add({category:"mission",speaker:"PROF. CARBONO",text:`${mission.title}: ${mission.objective.description}`});refreshPeriodicWall();renderProfessor("current")}else if(mission.state==="ready-to-complete"){const completed=elementMissions.completeActiveMission();if(completed){saveInventory();renderInventory();refreshPeriodicWall();renderProfessor("progress")}}else toast(mission.hint);updateMissionHud()})
+}
+function openProfessor(){state.professor=true;state.playing=false;state.left=false;$("professor").classList.add("open");$("professor").setAttribute("aria-hidden","false");document.exitPointerLock();const first=!elementMissions.getStats().introduced;elementMissions.introduce();elementMissions.recordEvent("talk_npc",{id:"carbon"});if(first)messageCenter.add({category:"dialogue",speaker:"PROF. CARBONO",text:"Quero transformar esta tabela em um arquivo vivo dos 118 elementos. Vamos começar pelos elementos essenciais."});renderProfessor(first?"talk":professorView)}
+function closeProfessor(){state.professor=false;$("professor").classList.remove("open");$("professor").setAttribute("aria-hidden","true");requestPointer()}
 function reactionParticles(kind){if(settings.particles===0)return;const col=kind==="copper_sulfate"?0x3478e5:kind==="acid"?0x9edb54:0x62e5c0;for(let i=0;i<(settings.particles===1?7:14);i++){const p={x:player.pos.x+.5,y:player.pos.y+1,z:player.pos.z+.5,id:BLOCK.GLASS};const m=new THREE.Mesh(new THREE.SphereGeometry(.035+hash(i,2)*.045,5,4),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.8}));m.position.set(p.x+(hash(i,3)-.5),p.y+hash(i,4),p.z+(hash(i,5)-.5));m.userData.v=new THREE.Vector3((hash(i,6)-.5)*.6,.5+hash(i,7),(hash(i,8)-.5)*.6);m.userData.life=.8+hash(i,9);particleGroup.add(m);particles.push(m)}}
 
 const SHOP_CATALOG={
@@ -630,7 +889,7 @@ const SHOP_CATALOG={
 let currentShop="";
 function openShop(kind){const s=SHOP_CATALOG[kind];if(!s)return;currentShop=kind;state.shop=true;state.playing=false;state.left=false;$('shopTitle').textContent=s.title;$('shopSubtitle').textContent=s.subtitle;$('shop').classList.add('open');document.exitPointerLock();renderShop()}
 function renderShop(){const s=SHOP_CATALOG[currentShop];if(!s)return;$('shopWallet').textContent=`${countItem('gold_nugget')} pepitas de ouro`;$('shopGrid').innerHTML=s.goods.map(([id,price,count],i)=>`<button class="shop-item" data-buy="${i}" ${countItem('gold_nugget')>=price?'':'disabled'}><span class="shop-icon"><span class="voxel-icon" style="--icon:${itemColor(id)}"></span></span><span><strong>${itemName(id)} ×${count}</strong><small>${price} pepitas</small></span></button>`).join('');$('shopGrid').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyShop(+b.dataset.buy))}
-function buyShop(i){const g=SHOP_CATALOG[currentShop]?.goods[i];if(!g)return;const [id,price,count]=g;if(countItem('gold_nugget')<price)return toast('Pepitas insuficientes');if(!invSlots.some(s=>s?.id===id)&&!invSlots.some(s=>!s))return toast('Mochila cheia');removeItem('gold_nugget',price);addItem(id,count);saveInventory();renderInventory();renderShop();sound('pickup',.7);toast(`${itemName(id)} adquirido`)}
+function buyShop(i){const g=SHOP_CATALOG[currentShop]?.goods[i];if(!g)return;const [id,price,count]=g;if(countItem('gold_nugget')<price)return toast('Pepitas insuficientes');if(!invSlots.some(s=>s?.id===id)&&!invSlots.some(s=>!s)){toast('Mochila cheia');chatMessage("SISTEMA","Mochila cheia.",{category:"system"});return}removeItem('gold_nugget',price);addItem(id,count);saveInventory();renderInventory();renderShop();sound('pickup',.7);toast(`${itemName(id)} adquirido`)}
 function closeShop(){state.shop=false;$('shop').classList.remove('open');requestPointer()}
 
 const entityRoot=new THREE.Group(),entities=[],npcs=[];scene.add(entityRoot);let mobClock=0,hitClock=0;
@@ -667,7 +926,7 @@ function jointArm(parent,rig,x,y,z,mat,handMat,total=.68,thick=.2){
 function brightEye(parent,x,y,z,size=.06,iris=mobMats.eyeBrown,slit=false){const eye=new THREE.Group();eye.position.set(x,y,z);eye.userData.entityEye=true;eye.userData.size=size;parent.add(eye);part(eye,mobMats.dark,[0,0,.012],[size*2.05,size*1.62,.018]);part(eye,mobMats.white,[0,0,0],[size*1.68,size*1.28,.016]);part(eye,iris,[0,0,-.012],[size*.82,size*.92,.012]);const pupil=part(eye,mobMats.eye,[0,0,-.022],[size*(slit?.2:.38),size*(slit?1.05:.62),.01]);part(eye,mobMats.white,[size*.23,size*.22,-.03],[size*.22,size*.22,.008]);const lid=part(eye,mobMats.dark,[0,size*.72,-.032],[size*1.86,size*.16,.008]);eye.userData.pupil=pupil;eye.userData.lid=lid;return eye}
 function glassesFrame(parent,x,y,z,w=.14,h=.11){part(parent,metalMat,[x,y+h*.5,z],[w,.018,.014]);part(parent,metalMat,[x,y-h*.5,z],[w,.018,.014]);part(parent,metalMat,[x-w*.5,y,z],[.018,h,.014]);part(parent,metalMat,[x+w*.5,y,z],[.018,h,.014])}
 function createEntity(type,x,z,persistent=false){
-  if(type==="npc")type="npc_carbon";const g=new THREE.Group(),h=terrainHeight(x,z),rig={legs:[],arms:[],wings:[],tails:[],rotors:[],eyes:[],head:null,body:null};g.position.set(x,h+1,z);let speed=.45,hp=20,hostile=false,damage=0,name="Criatura",flying=false,role="";
+  if(type==="npc")type="npc_carbon";const g=new THREE.Group(),h=findStandingY(x,z,terrainHeight(x,z)+2),rig={legs:[],arms:[],wings:[],tails:[],rotors:[],eyes:[],head:null,body:null};g.position.set(x,h,z);let speed=.45,hp=20,hostile=false,damage=0,name="Criatura",flying=false,role="";
   if(type==="npc_carbon"||type==="npc_ranger"){
     role=type==="npc_carbon"?"carbon":"ranger";name=role==="carbon"?"Prof. Carbono":"Guardiã Íris";hp=999;const cloth=role==="carbon"?coatMat:mobMats.green,hair=role==="carbon"?hairMat:mobMats.furDark;
     rig.body=part(g,cloth,[0,1.13,0],[.58,.72,.32]);part(g,role==="carbon"?coatShadeMat:mobMats.moss,[0,1.13,-.177],[.52,.62,.035]);part(g,leatherMat,[0,.83,-.19],[.61,.1,.07]);part(g,brassMat,[0,.83,-.226],[.1,.13,.045]);
@@ -718,8 +977,29 @@ function createEntity(type,x,z,persistent=false){
 }
 function removeEntity(e){entityRoot.remove(e.group);let i=entities.indexOf(e);if(i>=0)entities.splice(i,1);i=npcs.indexOf(e);if(i>=0)npcs.splice(i,1);if(state.combatTarget===e){state.combatTarget=null;state.combatTargetTime=0}}
 function mobPool(b,night=false){const pools={deserto:["scorpion","cobrete","capivara"],salinas:["scorpion","cobrete","wisp"],"cânion calcário":["golem","cobrete","scorpion"],badlands:["scorpion","cobrete","golem"],vulcânico:["magma","golem","wisp"],"bosque de cristais":["cristalume","wisp","cobrete"],taiga:["deer","owl","cristalume"],tundra:["deer","owl","golem"],"prado alpino":["deer","owl","cristalume"],"bosque de cerejeiras":["deer","owl","capivara"],"selva tropical":["capivara","slime","owl"],pântano:["slime","capivara","wisp"],floresta:["deer","owl","capivara"],montanha:["golem","cobrete","owl"],"planície florida":["capivara","deer","owl"],planície:["capivara","deer","cobrete"],savana:["capivara","scorpion","deer"]};const p=[...(pools[b]||pools.planície)];if(night)p.push("slime","wisp","golem");return p}
-function spawnMob(type){const a=Math.random()*TAU,r=9+Math.random()*20,x=Math.floor(player.pos.x+Math.cos(a)*r)+.5,z=Math.floor(player.pos.z+Math.sin(a)*r)+.5,h=terrainHeight(x,z);if(h<=WATER_LEVEL+1||getBlock(x,h,z)===BLOCK.LAVA)return null;const pool=mobPool(biomeAt(x,z),state.day>.53&&state.day<.93);return createEntity(type||pool[Math.floor(Math.random()*pool.length)],x,z)}
-function initWorldLife(){if(!npcs.some(n=>n.role==="carbon")){const prof=createEntity("npc_carbon",LAB_LAYOUT.cx-4.7,LAB_LAYOUT.cz-LAB_LAYOUT.halfD+2.2,true);prof.y=LAB_LAYOUT.y;prof.group.position.y=LAB_LAYOUT.y}if(!npcs.some(n=>n.role==="ranger"))createEntity("npc_ranger",spawn.x-3.5,spawn.z+4.5,true);const shopTypes=["npc_food","npc_armor","npc_solid","npc_liquid","npc_trinket"];shopTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role;if(!npcs.some(n=>n.role===role))createEntity(type,VILLAGE.x+(i-2)*VILLAGE.spacing+.5,VILLAGE.z-4.5,true)});const residentTypes=["npc_farmer","npc_miner","npc_botanist","npc_glazier","npc_ceramist","npc_teacher","npc_mayor","npc_baker","npc_fisher","npc_geologist"],homes=VILLAGE_BUILDINGS.filter(b=>b.kind==="house");residentTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role,b=homes[(i*3)%homes.length];if(!npcs.some(n=>n.role===role))createEntity(type,b.x+.5,b.z-4.35,true)});for(let i=0;i<[0,5,10,16][settings.mobs];i++)spawnMob()}
+function spawnMob(type){
+  const pool=mobPool(biomeAt(player.pos.x,player.pos.z),state.day>.53&&state.day<.93);
+  for(let tries=0;tries<24;tries++){
+    const a=Math.random()*TAU,r=10+Math.random()*22,x=Math.floor(player.pos.x+Math.cos(a)*r)+.5,z=Math.floor(player.pos.z+Math.sin(a)*r)+.5;
+    if(labBoundsContains(x,z,2)||villageBoundsContains(x,z,1))continue;
+    const h=findStandingY(x,z,terrainHeight(x,z)+2);
+    if(h<=WATER_LEVEL+1||getBlock(Math.floor(x),h-1,Math.floor(z))===BLOCK.LAVA)continue;
+    if(hasRoofAbove(x,z,h,6))continue;
+    if(BDEF[getBlock(Math.floor(x),h,Math.floor(z))]?.solid||BDEF[getBlock(Math.floor(x),h+1,Math.floor(z))]?.solid)continue;
+    return createEntity(type||pool[Math.floor(Math.random()*pool.length)],x,z)
+  }
+  return null
+}
+function ensureProfessorCarbono(){
+  const professorAnchor=LAB_ANCHORS["professor-position"];let professor=npcs.find(npc=>npc.role==="carbon");if(!professor)professor=createEntity("npc_carbon",professorAnchor.x,professorAnchor.z,true);professor.x=professorAnchor.x;professor.z=professorAnchor.z;professor.y=findStandingY(professor.x,professor.z,LAB_LAYOUT.y);professor.group.position.set(professor.x,professor.y,professor.z);return professor
+}
+function initWorldLife(){
+  ensureProfessorCarbono();
+  let ranger=npcs.find(n=>n.role==="ranger");if(!ranger)ranger=createEntity("npc_ranger",spawn.x-3.5,spawn.z+4.5,true);ranger.x=spawn.x-3.5;ranger.z=spawn.z+4.5;ranger.y=findStandingY(ranger.x,ranger.z,terrainHeight(ranger.x,ranger.z)+2);ranger.group.position.set(ranger.x,ranger.y,ranger.z);
+  const shopTypes=["npc_food","npc_armor","npc_solid","npc_liquid","npc_trinket"];shopTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role;if(!npcs.some(n=>n.role===role))createEntity(type,VILLAGE.x+(i-2)*VILLAGE.spacing+.5,VILLAGE.z-4.5,true)});
+  const residentTypes=["npc_farmer","npc_miner","npc_botanist","npc_glazier","npc_ceramist","npc_teacher","npc_mayor","npc_baker","npc_fisher","npc_geologist"],homes=VILLAGE_BUILDINGS.filter(b=>b.kind==="house");residentTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role,b=homes[(i*3)%homes.length];if(!npcs.some(n=>n.role===role))createEntity(type,b.x+.5,b.z-4.35,true)});
+  const desiredMobCount=[0,5,10,16][settings.mobs],currentMobCount=entities.filter(entity=>!entity.persistent).length;for(let i=currentMobCount;i<desiredMobCount;i++)spawnMob()
+}
 function turnToward(a,b,t){const d=Math.atan2(Math.sin(b-a),Math.cos(b-a));return a+d*clamp(t,0,1)}
 function animateEntityRig(e,dt,now,pace,dist){
   const r=e.rig;if(!r)return;e.walkPhase+=dt*(1.4+pace*7.5);const gait=e.walkPhase,engaged=e.hostile&&dist<2.1;
@@ -733,137 +1013,519 @@ function animateEntityRig(e,dt,now,pace,dist){
   if(e.type==="slime"&&r.body){const squash=1+Math.sin(now*.007+e.phase)*.09;r.body.scale.set(1+(1-squash)*.32,squash,1+(1-squash)*.32);r.body.position.y=(1-squash)*.19}
   else if((e.type==="wisp"||e.type==="cristalume")&&r.body){r.body.rotation.y+=dt*1.3;r.body.rotation.x=Math.sin(now*.0025+e.phase)*.18}
 }
+function entityRadius(e){return e.type==="golem"?.62:e.type==="capivara"?.56:e.type==="deer"?.5:e.type==="owl"?.34:e.flying?.4:e.persistent?.42:.4}
+function entityCollidesWorld(e,x,z){
+  const r=entityRadius(e),baseY=e.flying?e.y+.18:e.y-1,minX=Math.floor(x-r),maxX=Math.floor(x+r),minY=Math.floor(baseY),maxY=Math.floor(baseY+(e.flying?1.55:1.95)),minZ=Math.floor(z-r),maxZ=Math.floor(z+r);
+  for(let xx=minX;xx<=maxX;xx++)for(let yy=minY;yy<=maxY;yy++)for(let zz=minZ;zz<=maxZ;zz++)if(BDEF[getBlock(xx,yy,zz)]?.solid)return true;
+  if(aabbHitsLabDecor(x-r,x+r,baseY,baseY+(e.flying?1.55:1.95),z-r,z+r))return true;
+  return false
+}
+function moveEntityWithCollision(e,nx,nz,nh,dt){
+  const tryAxis=(ax,az)=>{if(entityCollidesWorld(e,ax,az))return false;e.x=ax;e.z=az;if(e.flying)e.y=lerp(e.y,Math.max(nh+1.15,e.y),1-Math.pow(.0006,dt));else e.y=lerp(e.y,nh+1,1-Math.pow(.0005,dt));return true};
+  if(tryAxis(nx,nz))return true;if(tryAxis(nx,e.z))return true;if(tryAxis(e.x,nz))return true;return false
+}
 function updateEntities(dt,now){
   mobClock+=dt;hitClock=Math.max(0,hitClock-dt);const cap=[0,7,13,20][settings.mobs];if(mobClock>2.2){mobClock=0;if(entities.filter(e=>!e.persistent).length<cap)spawnMob()}
   for(const e of [...entities]){
-    if(e.dead)continue;const dx=player.pos.x-e.x,dz=player.pos.z-e.z,dist=Math.hypot(dx,dz);if(!e.persistent&&dist>settings.render*CHUNK*1.5){removeEntity(e);continue}e.attackCd=Math.max(0,e.attackCd-dt);
-    if(e.persistent){e.group.position.set(e.x,e.y,e.z);e.group.rotation.y=turnToward(e.group.rotation.y,Math.atan2(dx,dz)+Math.PI,1-Math.pow(.0001,dt));animateEntityRig(e,dt,now,0,dist);continue}
+    if(e.dead)continue;const dx=player.pos.x-e.x,dz=player.pos.z-e.z,dist=Math.hypot(dx,dz);if(!e.persistent&&labBoundsContains(e.x,e.z,1)&&e.y<=LAB_LAYOUT.y+4){removeEntity(e);continue}if(!e.persistent&&dist>settings.render*CHUNK*1.5){removeEntity(e);continue}e.attackCd=Math.max(0,e.attackCd-dt);
+    if(e.persistent){const desiredY=e.role==="carbon"?LAB_LAYOUT.y:findStandingY(e.x,e.z,e.y);e.y=lerp(e.y,desiredY,1-Math.pow(.0001,dt));e.group.position.set(e.x,e.y,e.z);e.group.rotation.y=turnToward(e.group.rotation.y,Math.atan2(dx,dz)+Math.PI,1-Math.pow(.0001,dt));animateEntityRig(e,dt,now,0,dist);continue}
     e.timer-=dt;if(e.timer<=0){e.timer=1.4+Math.random()*3.7;e.angle+=(-1+Math.random()*2)*1.9}if(e.hostile&&dist<11)e.angle=Math.atan2(dx,dz);else if(!e.hostile&&state.combatTarget===e&&e.hp<e.maxHp)e.angle=Math.atan2(-dx,-dz);
     const pace=e.speed*(e.hostile&&dist<11?1.18:1),nx=e.x+Math.sin(e.angle)*pace*dt+e.vx*dt,nz=e.z+Math.cos(e.angle)*pace*dt+e.vz*dt,nh=terrainHeight(nx,nz);e.vx*=Math.pow(.08,dt);e.vz*=Math.pow(.08,dt);
-    if((e.flying||nh>WATER_LEVEL)&&Math.abs(nh-(e.y-1))<(e.type==="golem"?3:2.2)){e.x=nx;e.z=nz;e.y=lerp(e.y,nh+1,1-Math.pow(.0005,dt))}else e.angle+=Math.PI*(.55+Math.random()*.25);
+    if((e.flying||nh>WATER_LEVEL)&&Math.abs(nh-(e.y-1))<(e.type==="golem"?3:2.2)){if(!moveEntityWithCollision(e,nx,nz,nh,dt))e.angle+=Math.PI*(.55+Math.random()*.25)}else e.angle+=Math.PI*(.55+Math.random()*.25);
     const float=e.flying?.76+Math.sin(now*.003+e.phase)*.24:0;e.group.position.set(e.x,e.y+float,e.z);e.group.rotation.y=turnToward(e.group.rotation.y,e.angle+Math.PI,1-Math.pow(.00005,dt));animateEntityRig(e,dt,now,pace,dist);
     if(e.hostile&&dist<1.25&&e.attackCd<=0){e.attackCd=e.type==="golem"?1.8:1.05;damagePlayer(e.damage,e.name);sound("land",.3);player.vel.add(new THREE.Vector3(dx,0,dz).normalize().multiplyScalar(e.type==="golem"?5:2.5))}else if(e.type==="wisp"&&dist<8&&e.attackCd<=0){e.attackCd=2.2;const from=new THREE.Vector3(e.x,e.y+1.4,e.z),dir=player.pos.clone().add(new THREE.Vector3(0,.8,0)).sub(from).normalize();launchProjectile("enemy",from,dir,true)}
   }
 }
 function nearestNPC(){return npcs.map(n=>({n,d:Math.hypot(player.pos.x-n.x,player.pos.z-n.z)})).filter(q=>q.d<4).sort((a,b)=>a.d-b.d)[0]?.n||null}
-function updateInteraction(){const t=state.target,n=nearestNPC(),el=$("interaction");let text="";if(nearPeriodicTable())text="F · Consultar Tabela Periódica";else if(nearLabDoor())text="F ou botão direito · Abrir/fechar porta do laboratório";else if(n)text=n.role.startsWith("shop_")?`F · Abrir ${SHOP_CATALOG[n.role.slice(5)]?.title||"loja"}`:`F · Conversar com ${n.name}`;else if(t&&(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN))text="Botão direito · Abrir/fechar porta";else if(t&&t.id===BLOCK.LAB)text="Botão direito ou F · Usar Bancada Química";el.textContent=text;el.classList.toggle("show",!!text)}
-function interact(){if(nearPeriodicTable())return openPeriodicTable();if(nearLabDoor())return toggleLabMainDoor();const n=nearestNPC();if(n?.role==="carbon"){chatMessage("PROF. CARBONO","Bem-vindo ao novo laboratório. Temos espectrômetro, destilador, capela de exaustão, cromatografia e uma Tabela Periódica interativa.");if(countItem("water")===0){addItem("water",2);chatMessage("PROF. CARBONO","Pegue também duas amostras de água destilada.")}if(!periodicMission.started)startPeriodicMission();discover("indicator","Indicadores naturais");discover("salt_solution","Soluções iônicas");discover("copper_oxide","Óxidos metálicos");return openChemistry()}if(n?.role==="ranger"){chatMessage("GUARDIÃ ÍRIS","Criaturas hostis aparecem à noite e em regiões vulcânicas. O cajado empurra inimigos; o arco mantém distância.");if(!localStorage.qc_rangerGift){addItem("arrow",20);addItem("wind_essence",1);localStorage.qc_rangerGift="1";chatMessage("GUARDIÃ ÍRIS","Leve estas flechas e uma essência do vento.")}return}if(n?.role?.startsWith("shop_")){const kind=n.role.slice(5),profile=Object.values(NPC_PROFILES).find(p=>p.role===n.role);chatMessage(n.name.toUpperCase(),profile?.talk||"Veja o que chegou hoje.");if(kind==="solid"){discover("calcination","Química dos carbonatos");discover("nitrate","Química dos nitratos")}if(kind==="liquid"){discover("ammonia_complex","Complexos de coordenação");discover("cryogenics","Mudanças de estado")}if(kind==="food")discover("fermentation","Fermentação");return openShop(kind)}if(n){const profile=Object.values(NPC_PROFILES).find(p=>p.role===n.role);chatMessage(n.name.toUpperCase(),profile?.talk||"A Vila dos Elementos está sempre mudando.");if(n.role==="botanist")discover("ph_kit","Escala de pH");if(n.role==="geologist")discover("spectroscopy","Espectroscopia de cristais");return}if(state.target?.id===BLOCK.LAB)return openChemistry();if(state.target&&(state.target.id===BLOCK.DOOR||state.target.id===BLOCK.DOOR_OPEN))toggleDoor(state.target)}
-function labMaterial(color,metalness=.08,roughness=.45,emissive=0){return new THREE.MeshStandardMaterial({color,metalness,roughness,emissive,emissiveIntensity:emissive?1.15:0})}
-function makeBottle(parent,x,y,z,color,scale=1){const glass=new THREE.MeshStandardMaterial({color:0xbdeef2,transparent:true,opacity:.38,roughness:.08,metalness:.02,depthWrite:false}),liquid=new THREE.MeshStandardMaterial({color,transparent:true,opacity:.82,roughness:.2,emissive:color,emissiveIntensity:.18});const body=new THREE.Mesh(new THREE.CylinderGeometry(.11*scale,.14*scale,.36*scale,10),glass);body.position.set(x,y,z);parent.add(body);const fill=new THREE.Mesh(new THREE.CylinderGeometry(.095*scale,.12*scale,.2*scale,10),liquid);fill.position.set(x,y-.055*scale,z);parent.add(fill);const neck=new THREE.Mesh(new THREE.CylinderGeometry(.055*scale,.065*scale,.15*scale,9),glass);neck.position.set(x,y+.25*scale,z);parent.add(neck);const cap=new THREE.Mesh(new THREE.CylinderGeometry(.067*scale,.067*scale,.055*scale,8),labMaterial(0x26383e,.35,.28));cap.position.set(x,y+.35*scale,z);parent.add(cap)}
-function makeScreen(parent,x,y,z,w,h,rotY=0,color=0x55e8ce){const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.12,h+.12,.09),labMaterial(0x202a30,.72,.25));frame.position.set(x,y,z);frame.rotation.y=rotY;parent.add(frame);const screen=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9}));screen.position.set(x-Math.sin(rotY)*.051,y,z-Math.cos(rotY)*.051);screen.rotation.y=rotY;parent.add(screen);return screen}
+function updateInteraction(){const t=state.target,n=nearestNPC(),el=$("interaction");let text="";if(n?.role==="carbon")text="Aperte E para falar com o Prof. Carbono";else if(nearPeriodicTable())text="E · Consultar Tabela Periódica";else if(nearLabDoor())text="E ou botão direito · Abrir/fechar porta do laboratório";else if(n)text=n.role.startsWith("shop_")?`E · Abrir ${SHOP_CATALOG[n.role.slice(5)]?.title||"loja"}`:`E · Conversar com ${n.name}`;else if(t&&(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN))text="Botão direito · Abrir/fechar porta";else if(nearLabStation()||(t&&t.id===BLOCK.LAB))text="E ou botão direito · Usar estação química";el.textContent=text;el.classList.toggle("show",!!text)}
+function interact(){const n=nearestNPC();if(n?.role==="carbon"){if(!localStorage.qc_carbon_intro_gift_v60){addItem("water",2);localStorage.qc_carbon_intro_gift_v60="1";chatMessage("PROF. CARBONO","Separei duas amostras de água destilada para suas primeiras pesquisas.",{category:"dialogue"})}discover("indicator","Indicadores naturais");discover("salt_solution","Soluções iônicas");discover("copper_oxide","Óxidos metálicos");return openProfessor()}if(nearPeriodicTable())return openPeriodicTable();if(nearLabDoor())return toggleLabMainDoor();if(n?.role==="ranger"){chatMessage("GUARDIÃ ÍRIS","Criaturas hostis aparecem à noite e em regiões vulcânicas. O cajado empurra inimigos; o arco mantém distância.",{category:"dialogue"});if(!localStorage.qc_rangerGift){addItem("arrow",20);addItem("wind_essence",1);localStorage.qc_rangerGift="1";chatMessage("GUARDIÃ ÍRIS","Leve estas flechas e uma essência do vento.",{category:"dialogue"})}return}if(n?.role?.startsWith("shop_")){const kind=n.role.slice(5),profile=Object.values(NPC_PROFILES).find(p=>p.role===n.role);chatMessage(n.name.toUpperCase(),profile?.talk||"Veja o que chegou hoje.",{category:"dialogue"});if(kind==="solid"){discover("calcination","Química dos carbonatos");discover("nitrate","Química dos nitratos")}if(kind==="liquid"){discover("ammonia_complex","Complexos de coordenação");discover("cryogenics","Mudanças de estado")}if(kind==="food")discover("fermentation","Fermentação");return openShop(kind)}if(n){const profile=Object.values(NPC_PROFILES).find(p=>p.role===n.role);chatMessage(n.name.toUpperCase(),profile?.talk||"A Vila dos Elementos está sempre mudando.",{category:"dialogue"});if(n.role==="botanist")discover("ph_kit","Escala de pH");if(n.role==="geologist")discover("spectroscopy","Espectroscopia de cristais");return}if(nearLabStation()||state.target?.id===BLOCK.LAB)return openChemistry();if(state.target&&(state.target.id===BLOCK.DOOR||state.target.id===BLOCK.DOOR_OPEN))toggleDoor(state.target)}
+function labMaterial(color,metalness=.08,roughness=.45,emissive=0){return new THREE.MeshStandardMaterial({color,metalness,roughness,emissive,emissiveIntensity:emissive?1.15:0,transparent:false,opacity:1,depthWrite:true,depthTest:true,colorWrite:true,side:THREE.FrontSide})}
+function makeBottle(parent,x,y,z,color,scale=1){const glass=new THREE.MeshStandardMaterial({color:0xbdeef2,transparent:true,opacity:.38,roughness:.08,metalness:.02,depthWrite:false,depthTest:true,colorWrite:true}),liquid=new THREE.MeshStandardMaterial({color,transparent:true,opacity:.82,roughness:.2,emissive:color,emissiveIntensity:.18,depthWrite:false,depthTest:true,colorWrite:true});glass.userData.intentionalTransparency=true;liquid.userData.intentionalTransparency=true;const body=new THREE.Mesh(new THREE.CylinderGeometry(.11*scale,.14*scale,.36*scale,10),glass);body.position.set(x,y,z);parent.add(body);const fill=new THREE.Mesh(new THREE.CylinderGeometry(.095*scale,.12*scale,.2*scale,10),liquid);fill.position.set(x,y-.055*scale,z);parent.add(fill);const neck=new THREE.Mesh(new THREE.CylinderGeometry(.055*scale,.065*scale,.15*scale,9),glass);neck.position.set(x,y+.25*scale,z);parent.add(neck);const cap=new THREE.Mesh(new THREE.CylinderGeometry(.067*scale,.067*scale,.055*scale,8),labMaterial(0x26383e,.35,.28));cap.position.set(x,y+.35*scale,z);parent.add(cap)}
+function makeScreen(parent,x,y,z,w,h,rotY=0,color=0x55e8ce){const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.12,h+.12,.09),labMaterial(0x202a30,.72,.25));frame.position.set(x,y,z);frame.rotation.y=rotY;parent.add(frame);const screen=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color,transparent:false,opacity:1,depthWrite:true,depthTest:true,side:THREE.FrontSide}));screen.position.set(x-Math.sin(rotY)*.051,y,z-Math.cos(rotY)*.051);screen.rotation.y=rotY;parent.add(screen);return screen}
 function familyColor(f){return {alkali:0xd87563,alkaline:0xe2a85f,transition:0x63a6b8,post:0x8ca6a7,metalloid:0x6dbb8d,nonmetal:0x6f8fd2,halogen:0xb87bc1,noble:0x8d80d5,lanthanide:0xc7849d,actinide:0xb06f78}[f]||0x78979a}
-function periodicAtlasTexture(){
-  const cols=18,rows=9,tile=112,c=document.createElement("canvas");c.width=cols*tile;c.height=rows*tile;const x=c.getContext("2d");x.fillStyle="#0b181c";x.fillRect(0,0,c.width,c.height);
-  for(const e of PERIODIC_ELEMENTS){const ox=(e.col-1)*tile,oy=(e.row-1)*tile,missing=periodicMission.started&&PERIODIC_MISSING.includes(e.n)&&!periodicMission.filled.includes(e.n),base=new THREE.Color(familyColor(elementFamily(e))),g=x.createLinearGradient(ox,oy,ox+tile,oy+tile);g.addColorStop(0,`#${base.getHexString()}`);g.addColorStop(1,"#10272d");x.fillStyle=g;x.fillRect(ox+2,oy+2,tile-4,tile-4);x.strokeStyle=missing?"#ffe59a":"rgba(225,255,247,.82)";x.lineWidth=4;x.strokeRect(ox+4,oy+4,tile-8,tile-8);x.fillStyle="rgba(0,0,0,.22)";x.fillRect(ox+8,oy+8,tile-16,20);x.fillStyle="#eafff8";x.textAlign="left";x.font="700 14px system-ui";x.fillText(String(e.n),ox+12,oy+23);x.textAlign="center";x.fillStyle=missing?"#ffe59a":"#fff";x.font="900 42px system-ui";x.fillText(missing?"?":e.symbol,ox+tile/2,oy+68);x.fillStyle="rgba(236,255,250,.92)";x.font=`700 ${e.name.length>11?8:10}px system-ui`;x.fillText(missing?"LACUNA":e.name.toUpperCase(),ox+tile/2,oy+88);x.fillStyle="rgba(224,255,246,.58)";x.font="600 7px system-ui";x.fillText(`G${e.col} · P${Math.min(e.row,7)}`,ox+tile/2,oy+102)}
-  const t=new THREE.CanvasTexture(c);t.magFilter=THREE.NearestFilter;t.minFilter=THREE.LinearMipMapLinearFilter;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.encoding=THREE.sRGBEncoding;return {texture:t,cols,rows}
+const PERIODIC_COLUMNS=18,PERIODIC_ROWS=9,PERIODIC_FLOOR_MARGIN=BLOCK_SIZE;
+const PERIODIC_CATEGORY_LABELS={alkali:"METAL ALCALINO",alkaline:"ALCALINO-TERROSO",transition:"METAL DE TRANSIÇÃO",post:"PÓS-TRANSIÇÃO",metalloid:"SEMIMETAL",nonmetal:"NÃO METAL",halogen:"HALOGÊNIO",noble:"GÁS NOBRE",lanthanide:"LANTANÍDEO",actinide:"ACTINÍDEO"};
+function periodicGridMetrics(){
+  const rear=LAB_LAYOUT.cz+LAB_LAYOUT.halfD;
+  return {
+    originX:PERIODIC_STATION.x-(PERIODIC_COLUMNS-1)*BLOCK_SIZE/2,
+    originY:LAB_LAYOUT.y+PERIODIC_FLOOR_MARGIN+BLOCK_SIZE/2,
+    originZ:rear-BLOCK_SIZE/2,
+    floorSurface:LAB_LAYOUT.y,
+    ceilingSurface:LAB_LAYOUT.y+LAB_LAYOUT.height
+  }
+}
+function periodicBlockPosition(e,grid=periodicGridMetrics()){
+  const worldColumn=PERIODIC_COLUMNS-e.displayColumn,worldRow=PERIODIC_ROWS-e.displayRow;
+  return new THREE.Vector3(
+    grid.originX+worldColumn*BLOCK_SIZE,
+    grid.originY+worldRow*BLOCK_SIZE,
+    grid.originZ
+  )
+}
+function drawFittedPeriodicText(ctx,text,maxWidth,maxSize,minSize,weight,y){
+  let size=maxSize;
+  do{ctx.font=`${weight} ${size}px Arial, sans-serif`;if(ctx.measureText(text).width<=maxWidth)break;size--}while(size>minSize);
+  ctx.fillText(text,128,y,maxWidth)
+}
+function periodicElementTexture(e){
+  const missionState=elementMissions?.getElementState(e.atomicNumber)||"locked",sideColor=new THREE.Color(familyColor(e.category));if(missionState==="locked")sideColor.multiplyScalar(.36);else if(missionState==="available")sideColor.offsetHSL(0,.02,.04);else if(missionState==="ready-to-complete")sideColor.offsetHSL(0,.08,.13);const light=sideColor.clone().offsetHSL(0,.04,.12),dark=sideColor.clone().multiplyScalar(.28);
+  const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d"),g=x.createLinearGradient(0,0,256,256);
+  g.addColorStop(0,`#${light.getHexString()}`);g.addColorStop(.58,`#${sideColor.getHexString()}`);g.addColorStop(1,`#${dark.getHexString()}`);x.fillStyle=g;x.fillRect(0,0,256,256);
+  x.fillStyle="rgba(5,13,18,.28)";x.fillRect(14,14,228,46);x.fillRect(14,199,228,43);
+  x.strokeStyle=missionState==="active"?"#ffe28a":missionState==="ready-to-complete"?"#baff9d":missionState==="available"?"#9ce9d8":"rgba(235,255,250,.9)";x.lineWidth=9;x.strokeRect(7,7,242,242);
+  x.strokeStyle="rgba(255,255,255,.22)";x.lineWidth=2;x.strokeRect(17,17,222,222);
+  x.textAlign="center";x.textBaseline="middle";
+  x.fillStyle="#effffc";x.font="800 25px Arial, sans-serif";x.fillText(String(e.atomicNumber),128,37);
+  x.fillStyle="#ffffff";x.shadowColor="rgba(0,0,0,.35)";x.shadowBlur=5;x.font="900 82px Arial, sans-serif";x.fillText(e.symbol,128,116);
+  x.shadowBlur=0;x.fillStyle="#f5fffc";drawFittedPeriodicText(x,e.name.toUpperCase(),214,28,18,800,174);
+  x.fillStyle="rgba(239,255,250,.78)";drawFittedPeriodicText(x,PERIODIC_CATEGORY_LABELS[e.category]||e.category.toUpperCase(),208,17,11,700,220);
+  const texture=new THREE.CanvasTexture(c);texture.name=`Elemento ${e.atomicNumber} · ${e.symbol}`;texture.magFilter=THREE.LinearFilter;texture.minFilter=THREE.LinearMipMapLinearFilter;texture.generateMipmaps=true;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.encoding=THREE.sRGBEncoding;return texture
 }
 function periodicBlocksMesh(){
-  const {texture,cols,rows}=periodicAtlasTexture(),positions=[],normals=[],uvs=[],indices=[],cellW=.69,cellH=.48,depth=.22,stepX=.76,stepY=.59,baseX=PERIODIC_STATION.x-(17*stepX)/2,topY=LAB_LAYOUT.y+6.72,rear=LAB_LAYOUT.cz+LAB_LAYOUT.halfD;
-  for(const e of PERIODIC_ELEMENTS){const cx=baseX+(18-e.col)*stepX,cy=topY-(e.row-1)*stepY-(e.row>=8?.18:0),cz=rear-.38,minX=cx-cellW/2,minY=cy-cellH/2,minZ=cz-depth/2,u0=(e.col-1)/cols,u1=e.col/cols,v0=1-e.row/rows,v1=1-(e.row-1)/rows;
-    for(const f of FACES){const base=positions.length/3;for(let q=0;q<4;q++){const v=f.v[q];positions.push(minX+v[0]*cellW,minY+v[1]*cellH,minZ+v[2]*depth);normals.push(...f.n);const uv=UV_CORNERS[q],ux=f.n[2]===-1?1-uv[0]:uv[0];uvs.push(ux?u1:u0,uv[1]?v1:v0)}for(const q of TRI)indices.push(base+q)}
+  const group=new THREE.Group(),grid=periodicGridMetrics(),elementGeometry=new THREE.BoxGeometry(BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+  const indexCount=elementGeometry.index.count;elementGeometry.clearGroups();elementGeometry.addGroup(0,indexCount-6,0);elementGeometry.addGroup(indexCount-6,6,1);
+  group.name="Periodic Table · 118 Standard Blocks";
+  for(const e of PERIODIC_ELEMENTS){
+    const missionState=elementMissions?.getElementState(e.atomicNumber)||"locked",sideColor=new THREE.Color(familyColor(e.category));if(missionState==="locked")sideColor.multiplyScalar(.42);const position=periodicBlockPosition(e,grid),sideMaterial=new THREE.MeshStandardMaterial({color:sideColor,roughness:.42,metalness:.08,transparent:false,opacity:1,depthWrite:true,depthTest:true}),frontMaterial=new THREE.MeshBasicMaterial({map:periodicElementTexture(e),transparent:false,opacity:1,depthWrite:true,depthTest:true});
+    const cube=new THREE.Mesh(elementGeometry,[sideMaterial,frontMaterial]);
+    cube.name=`Elemento ${e.atomicNumber} · ${e.symbol}`;cube.position.copy(position);cube.scale.set(1,1,1);cube.castShadow=settings.shadows>0;cube.receiveShadow=true;
+    registerPeriodicCollision(position.x,position.y,position.z,`element:${e.atomicNumber}`);cube.userData={atomicNumber:e.atomicNumber,symbol:e.symbol,blockSize:BLOCK_SIZE,colliderIndex:periodicCollisionBoxes.length-1,missionState};group.add(cube)
   }
-  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(positions,3));g.setAttribute("normal",new THREE.Float32BufferAttribute(normals,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(uvs,2));g.setIndex(indices);g.computeBoundingSphere();const m=new THREE.MeshStandardMaterial({map:texture,roughness:.3,metalness:.2});const mesh=new THREE.Mesh(g,m);mesh.userData.periodicElementBlocks=PERIODIC_ELEMENTS.length;mesh.castShadow=settings.shadows>0;mesh.receiveShadow=true;return mesh
+  group.userData={periodicElementBlocks:PERIODIC_ELEMENTS.length,blockSize:BLOCK_SIZE,colliderCount:periodicCollisionBoxes.length};return group
 }
-function textPanelTexture(title,subtitle){const c=document.createElement("canvas");c.width=1024;c.height=180;const x=c.getContext("2d"),g=x.createLinearGradient(0,0,1024,0);g.addColorStop(0,"#102b31");g.addColorStop(.5,"#1e5554");g.addColorStop(1,"#102b31");x.fillStyle=g;x.fillRect(0,0,1024,180);x.strokeStyle="#d7ae59";x.lineWidth=8;x.strokeRect(5,5,1014,170);x.textAlign="center";x.fillStyle="#eafff7";x.font="900 52px system-ui";x.fillText(title,512,76);x.fillStyle="rgba(221,255,247,.72)";x.font="700 24px system-ui";x.fillText(subtitle,512,126);const t=new THREE.CanvasTexture(c);t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.encoding=THREE.sRGBEncoding;return t}
-function disposeObject(root){root?.traverse(o=>{if(o.geometry)o.geometry.dispose();if(Array.isArray(o.material))for(const m of o.material){if(m?.map)m.map.dispose();m?.dispose?.()}else if(o.material){if(o.material.map)o.material.map.dispose();o.material.dispose?.()}})}
+function textPanelTexture(title,subtitle){
+  // The texture and the in-world panel now share nearly the same aspect ratio,
+  // preventing the heading from being stretched into a thin, blurred strip.
+  const c=document.createElement("canvas");c.width=2048;c.height=160;
+  const x=c.getContext("2d"),g=x.createLinearGradient(0,0,c.width,0);
+  g.addColorStop(0,"#0b252b");g.addColorStop(.5,"#175651");g.addColorStop(1,"#0b252b");
+  x.fillStyle=g;x.fillRect(0,0,c.width,c.height);
+  x.strokeStyle="#d7ae59";x.lineWidth=7;x.strokeRect(4,4,c.width-8,c.height-8);
+  x.textAlign="center";x.textBaseline="middle";
+  x.shadowColor="rgba(0,0,0,.48)";x.shadowBlur=8;x.shadowOffsetY=3;
+  x.fillStyle="#f2fffb";x.font='900 72px "Arial Black", Arial, sans-serif';x.fillText(title,c.width/2,58,c.width-120);
+  x.shadowBlur=3;x.shadowOffsetY=1;x.fillStyle="rgba(226,255,248,.82)";x.font='700 27px Arial, sans-serif';x.fillText(subtitle,c.width/2,119,c.width-140);
+  const t=new THREE.CanvasTexture(c);t.magFilter=THREE.LinearFilter;t.minFilter=THREE.LinearMipMapLinearFilter;t.generateMipmaps=true;t.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());t.encoding=THREE.sRGBEncoding;return t
+}
+function disposeObject(root){
+  const geometries=new Set(),materials=new Set(),textures=new Set();root?.traverse(object=>{if(object.geometry)geometries.add(object.geometry);for(const material of Array.isArray(object.material)?object.material:[object.material])if(material){materials.add(material);if(material.map)textures.add(material.map)}});
+  for(const texture of textures)texture.dispose?.();for(const material of materials)material.dispose?.();for(const geometry of geometries)geometry.dispose?.()
+}
 function refreshPeriodicWall(){
-  if(!periodicWallRoot)return;for(const child of [...periodicWallRoot.children]){periodicWallRoot.remove(child);disposeObject(child)}
-  const y=LAB_LAYOUT.y,rear=LAB_LAYOUT.cz+LAB_LAYOUT.halfD,backMat=new THREE.MeshStandardMaterial({color:0x0b181c,roughness:.35,metalness:.42}),frameMat=new THREE.MeshStandardMaterial({color:0xd6aa51,roughness:.2,metalness:.8});
-  const back=new THREE.Mesh(new THREE.BoxGeometry(18.4,7.55,.18),backMat);back.position.set(PERIODIC_STATION.x,y+4.22,rear-.19);periodicWallRoot.add(back);
-  const title=new THREE.Mesh(new THREE.PlaneGeometry(14.1,1.12),new THREE.MeshBasicMaterial({map:textPanelTexture("TABELA PERIÓDICA","118 ELEMENTOS · CADA ELEMENTO EM SEU PRÓPRIO BLOCO"),side:THREE.FrontSide}));title.position.set(PERIODIC_STATION.x,y+7.38,rear-.305);title.rotation.y=Math.PI;periodicWallRoot.add(title);
+  if(!periodicWallRoot)return;periodicCollisionBoxes.length=0;periodicColliderIds.clear();for(const child of [...periodicWallRoot.children]){periodicWallRoot.remove(child);disposeObject(child)}
+  const grid=periodicGridMetrics(),rear=LAB_LAYOUT.cz+LAB_LAYOUT.halfD,topBlockCenter=grid.originY+(PERIODIC_ROWS-1)*BLOCK_SIZE;
+  const title=new THREE.Mesh(new THREE.PlaneGeometry(15.8,1.22),new THREE.MeshBasicMaterial({map:textPanelTexture("TABELA PERIÓDICA","118 ELEMENTOS · 1 BLOCO PADRÃO CADA"),side:THREE.FrontSide}));title.position.set(PERIODIC_STATION.x,topBlockCenter+BLOCK_SIZE*1.18,rear-.015);title.rotation.y=Math.PI;periodicWallRoot.add(title);
   periodicWallRoot.add(periodicBlocksMesh());
-  for(const [x,y1,w,h] of [[PERIODIC_STATION.x,y+4.15,14.85,.1],[PERIODIC_STATION.x,y+1.02,14.85,.1],[PERIODIC_STATION.x-7.38,y+4.15,.1,6.35],[PERIODIC_STATION.x+7.38,y+4.15,.1,6.35]]){const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,.3),frameMat);b.position.set(x,y1,rear-.31);periodicWallRoot.add(b)}
+  periodicWallRoot.userData={blockSize:BLOCK_SIZE,elementCount:PERIODIC_ELEMENTS.length,colliderCount:periodicCollisionBoxes.length};periodicVisualSignature=missionVisualSignature()
+}
+const LAB_ANCHORS=Object.freeze({
+  "lab-desk-left":Object.freeze({x:LAB_LAYOUT.cx-7,z:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+7,support:"floor",zone:"ala-analitica"}),
+  "lab-desk-right":Object.freeze({x:LAB_LAYOUT.cx+7,z:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+7,support:"floor",zone:"ala-instrumental"}),
+  "chemistry-bench-main":Object.freeze({x:LAB_LAYOUT.cx-6,z:LAB_LAYOUT.cz-1,support:"floor",zone:"quimica"}),
+  "chemistry-bench-secondary":Object.freeze({x:LAB_LAYOUT.cx+6,z:LAB_LAYOUT.cz-1,support:"floor",zone:"quimica"}),
+  "reception-left":Object.freeze({x:LAB_LAYOUT.cx-LAB_LAYOUT.halfW+5,z:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+3.5,support:"floor",zone:"recepcao"}),
+  "cabinet-left":Object.freeze({x:LAB_LAYOUT.cx-LAB_LAYOUT.halfW+1.55,z:LAB_LAYOUT.cz+2,support:"floor",zone:"armazenamento"}),
+  "cabinet-right":Object.freeze({x:LAB_LAYOUT.cx+LAB_LAYOUT.halfW-.75,z:LAB_LAYOUT.cz+2,support:"floor",zone:"armazenamento"}),
+  "reactor-left":Object.freeze({x:LAB_LAYOUT.cx-7,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-5,support:"floor",zone:"reatores"}),
+  "cryo-right":Object.freeze({x:LAB_LAYOUT.cx+7,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-5,support:"floor",zone:"reatores"}),
+  "display-pedestal-01":Object.freeze({x:LAB_LAYOUT.cx+LAB_LAYOUT.halfW-4,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-5,support:"floor",zone:"exposicao"}),
+  "servers-rear-left":Object.freeze({x:LAB_LAYOUT.cx-LAB_LAYOUT.halfW+3,z:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-2,support:"floor",zone:"servidores"}),
+  "professor-position":Object.freeze({x:LAB_LAYOUT.cx-5,z:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+3,support:"floor",zone:"recepcao"}),
+  "periodic-table-origin":Object.freeze({x:PERIODIC_STATION.x,z:PERIODIC_STATION.z,support:"wall",zone:"tabela"}),
+  "ceiling-light-01":Object.freeze({x:LAB_LAYOUT.cx-8,z:LAB_LAYOUT.cz-7,support:"ceiling",zone:"iluminacao"}),
+  "ceiling-light-02":Object.freeze({x:LAB_LAYOUT.cx,z:LAB_LAYOUT.cz-7,support:"ceiling",zone:"iluminacao"}),
+  "ceiling-light-03":Object.freeze({x:LAB_LAYOUT.cx+8,z:LAB_LAYOUT.cz-7,support:"ceiling",zone:"iluminacao"}),
+  "ceiling-light-04":Object.freeze({x:LAB_LAYOUT.cx-8,z:LAB_LAYOUT.cz+2,support:"ceiling",zone:"iluminacao"}),
+  "ceiling-light-05":Object.freeze({x:LAB_LAYOUT.cx,z:LAB_LAYOUT.cz+2,support:"ceiling",zone:"iluminacao"}),
+  "ceiling-light-06":Object.freeze({x:LAB_LAYOUT.cx+8,z:LAB_LAYOUT.cz+2,support:"ceiling",zone:"iluminacao"})
+});
+const LAB_PROP_DEFINITIONS=Object.freeze([
+  {id:"reception-main",kind:"reception",anchor:"reception-left",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"recepcao",rotation:0,scale:[1,1,1],bounds:[6.2,1.4,1.5],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["monitor","frasco"]},
+  {id:"desk-analytical",kind:"console",anchor:"lab-desk-left",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"ala-analitica",rotation:0,scale:[1,1,1],bounds:[4.5,1.5,1.5],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["computador","analisador"]},
+  {id:"desk-instrumental",kind:"console",anchor:"lab-desk-right",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"ala-instrumental",rotation:0,scale:[1,1,1],bounds:[4.5,1.5,1.5],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["computador","espectrometro"]},
+  {id:"chemistry-main",kind:"bench",anchor:"chemistry-bench-main",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"quimica",rotation:0,scale:[1,1,1],bounds:[5.5,1.25,1.6],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["vidrarias","frascos"]},
+  {id:"chemistry-secondary",kind:"bench",anchor:"chemistry-bench-secondary",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"quimica",rotation:0,scale:[1,1,1],bounds:[5.5,1.25,1.6],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["vidrarias","centrifuga"]},
+  {id:"storage-left",kind:"cabinet",anchor:"cabinet-left",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"armazenamento",rotation:0,scale:[1,1,1],bounds:[1.1,3.1,3.2],floorOffset:0,wallOffset:.05,collision:true,decorative:false,interactive:false,contents:["reagentes"]},
+  {id:"storage-right",kind:"cabinet",anchor:"cabinet-right",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"armazenamento",rotation:0,scale:[1,1,1],bounds:[1.1,3.1,3.2],floorOffset:0,wallOffset:.05,collision:true,decorative:false,interactive:false,contents:["reagentes"]},
+  {id:"reactor-main",kind:"reactor",anchor:"reactor-left",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"reatores",rotation:0,scale:[1,1,1],bounds:[2.4,3.5,2.4],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["camara-de-reacao"]},
+  {id:"cryo-main",kind:"cryo",anchor:"cryo-right",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"reatores",rotation:0,scale:[1,1,1],bounds:[2.2,3.3,2.2],floorOffset:0,wallOffset:0,collision:true,decorative:false,interactive:true,contents:["nucleo-criogenico"]},
+  {id:"atom-display",kind:"atom",anchor:"display-pedestal-01",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"exposicao",rotation:0,scale:[1,1,1],bounds:[1.8,2.6,1.8],floorOffset:0,wallOffset:0,collision:true,decorative:true,interactive:false,contents:["modelo-atomico"]},
+  {id:"server-bank",kind:"servers",anchor:"servers-rear-left",allowedSupport:"floor",requiredSupportSurface:"laboratory-floor",allowedRoom:"servidores",rotation:0,scale:[1,1,1],bounds:[3.6,3.2,1],floorOffset:0,wallOffset:.05,collision:true,decorative:false,interactive:false,contents:["servidores"]},
+  ...["01","02","03","04","05","06"].map(id=>({id:`ceiling-light-${id}`,kind:"light",anchor:`ceiling-light-${id}`,allowedSupport:"ceiling",requiredSupportSurface:"laboratory-ceiling",allowedRoom:"iluminacao",rotation:0,scale:[1,1,1],bounds:[3,.15,.24],floorOffset:0,wallOffset:0,collision:false,decorative:true,interactive:false,contents:["luminaria"]}))
+].map(definition=>Object.freeze(definition)));
+const LAB_GENERATION_ORDER=Object.freeze([
+  "determine-safe-origin","reserve-protected-footprint","clear-conflicting-world-content","generate-foundation","generate-floor",
+  "generate-exterior-walls","generate-interior-walls","generate-ceiling-and-roof","generate-doors-windows-entrances-corridors",
+  "generate-laboratory-furniture","generate-functional-stations","generate-periodic-table","generate-decorative-equipment",
+  "generate-lighting","generate-collision-data","validate-and-repair-structure","ready-for-player"
+]);
+const labGenerationReport={version:LAB_VALIDATION_VERSION,seed:WORLD_SEED,order:[],repairs:[],validation:null,completedAt:0};
+function resetLabGenerationReport(){labGenerationReport.version=LAB_VALIDATION_VERSION;labGenerationReport.seed=WORLD_SEED;labGenerationReport.order.length=0;labGenerationReport.repairs.length=0;labGenerationReport.validation=null;labGenerationReport.completedAt=0}
+function recordLabGenerationStep(step){if(!LAB_GENERATION_ORDER.includes(step))throw new Error(`Etapa de laboratório desconhecida: ${step}`);if(!labGenerationReport.order.includes(step))labGenerationReport.order.push(step)}
+const LAB_RESERVED_PATHS=Object.freeze([
+  Object.freeze({id:"entrada-principal",minX:LAB_LAYOUT.cx-3,maxX:LAB_LAYOUT.cx+2,minZ:LAB_LAYOUT.cz-LAB_LAYOUT.halfD-1,maxZ:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+5}),
+  Object.freeze({id:"corredor-central",minX:LAB_LAYOUT.cx-2.2,maxX:LAB_LAYOUT.cx+2.2,minZ:LAB_LAYOUT.cz-LAB_LAYOUT.halfD+4,maxZ:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-2.7}),
+  Object.freeze({id:"acesso-tabela",minX:LAB_LAYOUT.cx-10.8,maxX:LAB_LAYOUT.cx+10.8,minZ:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-3.1,maxZ:LAB_LAYOUT.cz+LAB_LAYOUT.halfD-1})
+]);
+function boxesOverlapXZ(a,b,margin=.08){return a.minX<b.maxX-margin&&a.maxX>b.minX+margin&&a.minZ<b.maxZ-margin&&a.maxZ>b.minZ+margin}
+function resolveLabPropPlacement(definition){
+  const anchor=LAB_ANCHORS[definition.anchor];if(!anchor||anchor.support!==definition.allowedSupport)return null;
+  const [sx,sy,sz]=definition.bounds,x=anchor.x,z=anchor.z,y=anchor.support==="ceiling"?LAB_LAYOUT.y+LAB_LAYOUT.height-sy/2-definition.floorOffset:LAB_LAYOUT.y+sy/2+definition.floorOffset,box=makeCollisionBox(x,y,z,sx,sy,sz,definition.rotation);
+  const bounds=labStructureBounds(0),inside=box.minX>=bounds.left+BLOCK_SIZE&&box.maxX<=bounds.right&&box.minZ>=bounds.front+BLOCK_SIZE&&box.maxZ<=bounds.rear&&box.minY>=LAB_LAYOUT.y&&box.maxY<=LAB_LAYOUT.y+LAB_LAYOUT.height;
+  if(!inside)return null;
+  if(anchor.support==="floor"){for(const [px,pz] of [[box.minX+.05,box.minZ+.05],[box.maxX-.05,box.minZ+.05],[box.minX+.05,box.maxZ-.05],[box.maxX-.05,box.maxZ-.05]])if(!BDEF[getBlock(Math.floor(px),LAB_LAYOUT.y-1,Math.floor(pz))]?.solid)return null}
+  if(definition.collision&&(LAB_RESERVED_PATHS.some(path=>boxesOverlapXZ(box,path))||labPropPlacements.some(placement=>placement.collision&&boxesOverlapXZ(box,placement.box))))return null;
+  return {definition,anchor,x,y,z,box,collision:definition.collision}
 }
 function createLaboratoryDecor(){
   if(labDecorRoot){scene.remove(labDecorRoot);disposeObject(labDecorRoot)}
-  const root=new THREE.Group();root.name="Professor Carbono Grand Laboratory";labDecorRoot=root;scene.add(root);periodicWallRoot=new THREE.Group();periodicWallRoot.name="Periodic Element Block Wall";root.add(periodicWallRoot);
-  const {cx,cz,halfW,halfD,y,height}=LAB_LAYOUT,front=cz-halfD,rear=cz+halfD,left=cx-halfW,right=cx+halfW,metal=labMaterial(0x29373e,.72,.28),white=labMaterial(0xe5ecea,.12,.28),counter=labMaterial(0x17282e,.58,.2),teal=labMaterial(0x4ec8b4,.18,.2,0x123f39),brass=labMaterial(0xd6aa51,.78,.22),glass=new THREE.MeshStandardMaterial({color:0x9ee8ee,transparent:true,opacity:.28,roughness:.05,metalness:.08,depthWrite:false}),dark=labMaterial(0x111b20,.58,.22),ceramic=labMaterial(0xe4d7c7,.04,.42),violet=labMaterial(0x8069ba,.18,.25,0x211842);
-  const addBox=(x1,y1,z1,sx,sy,sz,mat=white,ry=0)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x1,y1,z1);m.rotation.y=ry;m.castShadow=settings.shadows>0;m.receiveShadow=settings.shadows>0;root.add(m);return m};
-  const addCylinder=(x1,y1,z1,rt,rb,h,mat=metal,segments=14,rx=0,rz=0)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),mat);m.position.set(x1,y1,z1);m.rotation.x=rx;m.rotation.z=rz;m.castShadow=settings.shadows>0;root.add(m);return m};
-  const makeConsole=(x1,z1,rot=0,color=0x63ecd3)=>{addBox(x1,y+.63,z1,2.35,1.08,1.05,metal,rot);addBox(x1,y+1.22,z1,2.15,.16,.88,counter,rot);const sx=x1-Math.sin(rot)*.58,sz=z1-Math.cos(rot)*.58;makeScreen(root,sx,y+1.72,sz,1.55,.7,rot,color)};
-  const makeHood=(x1,z1)=>{addBox(x1,y+1.45,z1,2.5,2.62,.78,metal);addBox(x1,y+1.38,z1-.42,2.12,2.02,.055,glass);addBox(x1,y+2.88,z1,2.72,.26,.96,white);addCylinder(x1,y+4.08,z1,.22,.22,2.18,metal)};
-  const makeCylinderRack=(x1,z1,count=4)=>{addBox(x1,y+.1,z1,count*.48+.4,.16,.68,metal);for(let i=0;i<count;i++){const xx=x1+(i-(count-1)/2)*.48;addCylinder(xx,y+.72,z1,.16,.19,1.18,[teal,violet,brass,white][i%4]);addCylinder(xx,y+1.36,z1,.065,.065,.14,metal,10)}};
-  // Entrada monumental e recepção
-  addBox(cx-1.67,y+1.66,front+.08,.24,3.32,.36,metal);addBox(cx+.67,y+1.66,front+.08,.24,3.32,.36,metal);addBox(cx-.5,y+3.27,front+.08,2.58,.24,.36,metal);addBox(cx-.5,y+3.1,front-.13,2.26,.1,.42,teal);addBox(cx-1.52,y+1.62,front-.16,.08,3.08,.42,brass);addBox(cx+.52,y+1.62,front-.16,.08,3.08,.42,brass);
-  const doorRoot=new THREE.Group();doorRoot.name="Carbon Instant Airlock";labDoorVisualRoot=doorRoot;root.add(doorRoot);const doorPart=(parent,mat,pos,scale)=>{const m=new THREE.Mesh(cubeGeo,mat);m.position.set(...pos);m.scale.set(...scale);m.castShadow=settings.shadows>0;m.receiveShadow=true;parent.add(m);return m},makeLeaf=(side)=>{const leaf=new THREE.Group(),dir=side<0?1:-1,center=.47*dir;leaf.position.set(side<0?cx-1:cx+1,y,front+.5);doorPart(leaf,metal,[center,.55,0],[.94,1.08,.13]);doorPart(leaf,teal,[center,1.48,0],[.94,.78,.13]);doorPart(leaf,glass,[center,1.48,-.075],[.68,.55,.025]);doorPart(leaf,brass,[center,.08,-.09],[.88,.07,.04]);doorPart(leaf,brass,[center,1.92,-.09],[.88,.07,.04]);doorPart(leaf,brass,[center+dir*.34,.72,-.105],[.055,.28,.055]);doorPart(leaf,teal,[center-dir*.41,1.0,-.1],[.06,1.78,.045]);doorRoot.add(leaf);return leaf};doorRoot.userData.left=makeLeaf(-1);doorRoot.userData.right=makeLeaf(1);const doorOpen=getBlock(cx-1,y,front)===BLOCK.DOOR_OPEN;doorRoot.userData.left.rotation.y=doorOpen?-Math.PI/2:0;doorRoot.userData.right.rotation.y=doorOpen?Math.PI/2:0;
-
-  addBox(cx-8.2,y+.54,front+2.4,5.6,1.02,1.1,counter);addBox(cx-8.2,y+1.08,front+2.4,5.75,.16,1.26,white);makeScreen(root,cx-7.05,y+1.63,front+1.75,1.12,.56,0,0x70f2cf);makeBottle(root,cx-9.5,y+1.38,front+1.82,0x57cde2,.9);
-  addBox(cx+8.4,y+1.45,front+2.5,3.4,2.72,.86,metal);addBox(cx+8.4,y+1.44,front+2.03,3.0,2.25,.06,glass);makeCylinderRack(cx+8.4,front+3.4,5);
-  // Quatro ilhas centrais com corredores amplos
-  for(const [dz,accent] of [[front+5.7,0x55dcb4],[cz-.5,0x5db9e8],[cz+4.2,0xd868a7]]){for(const xoff of [-4.0,4.0]){addBox(cx+xoff,y+.49,dz,5.5,.92,1.45,dark);addBox(cx+xoff,y+1.0,dz,5.65,.16,1.6,ceramic);for(let q=-2;q<=2;q++)makeBottle(root,cx+xoff+q*.93,y+1.36,dz-.18,[accent,0x5db9e8,0xd868a7,0xe2c64d,0x9d73df][(q+2)%5],.68)}}
-  // Ala analítica à esquerda: capelas, cromatografia e destilação
-  for(const z1 of [front+6.2,cz+1.2,rear-4.5])makeHood(left+2.25,z1);
-  const distX=left+5.1,distZ=cz-2.4;addBox(distX,y+.55,distZ,3.2,1.0,1.3,dark);addBox(distX,y+1.08,distZ,3.3,.14,1.42,ceramic);const flask=new THREE.Mesh(new THREE.SphereGeometry(.38,18,14),glass);flask.scale.y=1.25;flask.position.set(distX-.65,y+1.58,distZ);root.add(flask);const liquid=new THREE.Mesh(new THREE.SphereGeometry(.32,16,12),labMaterial(0x5fbfe0,.05,.18,0x103946));liquid.scale.set(1,.48,1);liquid.position.set(distX-.65,y+1.38,distZ);root.add(liquid);const condenser=addCylinder(distX+.48,y+2.02,distZ,.115,.115,2.55,glass,14,0,Math.PI/2.72);const coil=new THREE.Mesh(new THREE.TorusGeometry(.24,.035,8,28,Math.PI*1.75),brass);coil.position.set(distX+.48,y+2.02,distZ);coil.rotation.y=Math.PI/2;root.add(coil);
-  // Ala instrumental à direita
-  makeConsole(right-3.3,front+6.1,0,0x63ecd3);makeConsole(right-3.3,cz+.7,0,0x8797ff);makeConsole(right-3.3,rear-4.4,0,0xe28ad0);
-  const scopeX=right-6.0,scopeZ=cz-2.4;addBox(scopeX,y+.55,scopeZ,3.6,1.0,1.18,dark);addBox(scopeX,y+1.08,scopeZ,3.72,.14,1.3,ceramic);const scopeArm=new THREE.Mesh(new THREE.TorusGeometry(.38,.085,8,22,Math.PI*1.25),metal);scopeArm.rotation.set(Math.PI/2,0,-.25);scopeArm.position.set(scopeX-.62,y+1.68,scopeZ);root.add(scopeArm);addCylinder(scopeX-.46,y+1.98,scopeZ,.08,.1,.44,dark,10,0,.35);addCylinder(scopeX+.72,y+1.42,scopeZ,.52,.62,.5,white,18);addCylinder(scopeX+.72,y+1.7,scopeZ,.46,.46,.07,glass,18);
-  // Reator, câmara criogênica e servidor científico
-  const reactorX=left+5.4,reactorZ=rear-4.2;addCylinder(reactorX,y+1.55,reactorZ,1.05,1.15,2.8,metal,20);addCylinder(reactorX,y+2.98,reactorZ,.88,1.02,.26,brass,20);addCylinder(reactorX,y+1.62,reactorZ,.72,.72,1.45,glass,20);for(let i=0;i<3;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.92,.045,8,32),i===1?brass:teal);ring.rotation.x=Math.PI/2;ring.position.set(reactorX,y+.75+i*.86,reactorZ);root.add(ring)}
-  const cryoX=right-5.2,cryoZ=rear-4.0;addCylinder(cryoX,y+1.48,cryoZ,.92,1.02,2.72,white,20);addCylinder(cryoX,y+1.5,cryoZ,.75,.75,2.2,glass,20);const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.46,1),violet);core.position.set(cryoX,y+1.5,cryoZ);core.userData.cryoCore=true;labCryoCore=core;root.add(core);
-  for(let i=0;i<4;i++){const x1=left+1.15+i*1.35;addBox(x1,y+1.6,rear-1.05,1.08,3.0,.78,metal);makeScreen(root,x1,y+2.03,rear-1.48,.72,.44,0,[0x63ecd3,0x8797ff,0xe28ad0,0xe6c85a][i])}
-  // Armários de reagentes laterais e cilindros
-  for(const side of [-1,1])for(let i=0;i<5;i++){const x1=side<0?left+1.0:right-1.0,z1=front+4.2+i*2.85;addBox(x1,y+1.48,z1,.74,2.72,1.95,white);addBox(x1-side*.4,y+1.48,z1,.055,2.38,1.62,glass);for(let r=0;r<3;r++)makeBottle(root,x1-side*.46,y+.68+r*.64,z1-.48,[0x4ed0b3,0xd46799,0x6f8ee8][r],.52)}
-  makeCylinderRack(left+5.2,rear-1.2,6);makeCylinderRack(right-5.2,rear-1.2,6);
-  // Holograma atômico central, menor e afastado da entrada
-  const atom=new THREE.Group();labAtomRoot=atom;atom.position.set(cx,y+2.05,rear-5.05);root.add(atom);const nucleus=new THREE.Mesh(new THREE.IcosahedronGeometry(.29,1),teal);atom.add(nucleus);for(let i=0;i<3;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.82,.027,8,52),i===1?brass:teal);ring.rotation.set(i*.92,i*.61,i*.38);atom.add(ring)}atom.userData.labAtom=true;addBox(cx,y+.32,rear-5.05,2.5,.62,2.5,dark);addBox(cx,y+.68,rear-5.05,2.66,.12,2.66,brass);
-  // Tubulação aérea e iluminação arquitetônica
-  for(const x1 of [left+3.0,cx-4,cx,cx+4,right-3.0]){const pipe=addCylinder(x1,y+height-.55,cz,.11,.11,halfD*1.65,metal,10,Math.PI/2,0);pipe.rotation.z=0}
-  for(const z1 of [front+3.2,cz-1.5,cz+3.3,rear-2.1])for(const x1 of [cx-8,cx-4,cx,cx+4,cx+8]){addBox(x1,y+height-.18,z1,2.75,.075,.2,teal);const light=new THREE.PointLight(0x79e8d3,.38,7.5,2);light.position.set(x1,y+height-.55,z1);root.add(light)}
-  refreshPeriodicWall();root.traverse(o=>{if(o.isMesh){o.castShadow=settings.shadows>0;o.receiveShadow=settings.shadows>0}})
+  labCollisionBoxes.length=0;periodicCollisionBoxes.length=0;labStationZones.length=0;labPropPlacements.length=0;labColliderIds.clear();periodicColliderIds.clear();labAtomRoot=labCryoCore=labDoorVisualRoot=null;
+  const root=new THREE.Group();root.name="Professor Carbono · Authored Laboratory";labDecorRoot=root;scene.add(root);periodicWallRoot=new THREE.Group();periodicWallRoot.name="Periodic Element Block Wall";root.add(periodicWallRoot);
+  const {cx,cz,halfW,halfD,y}=LAB_LAYOUT,front=cz-halfD,metal=labMaterial(0x29373e,.72,.28),white=labMaterial(0xe5ecea,.12,.28),counter=labMaterial(0x17282e,.58,.2),teal=labMaterial(0x4ec8b4,.18,.2,0x123f39),brass=labMaterial(0xd6aa51,.78,.22),dark=labMaterial(0x111b20,.58,.22),ceramic=labMaterial(0xe4d7c7,.04,.42),violet=labMaterial(0x8069ba,.18,.25,0x211842),glass=new THREE.MeshStandardMaterial({color:0x9ee8ee,transparent:true,opacity:.28,roughness:.05,metalness:.08,depthWrite:false,depthTest:true,colorWrite:true,side:THREE.DoubleSide});
+  glass.userData.intentionalTransparency=true;
+  const addBox=(parent,x1,y1,z1,sx,sy,sz,material=white,ry=0)=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);mesh.position.set(x1,y1,z1);mesh.rotation.y=ry;parent.add(mesh);return mesh};
+  const addCylinder=(parent,x1,y1,z1,rt,rb,h,material=metal,segments=16)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material);mesh.position.set(x1,y1,z1);parent.add(mesh);return mesh};
+  const addBottleSet=(parent,x1,y1,z1,count=4)=>{for(let index=0;index<count;index++)makeBottle(parent,x1+(index-(count-1)/2)*.72,y1,z1,[0x4ed0b3,0xd46799,0x6f8ee8,0xe2c64d][index%4],.7)};
+  const buildProp=placement=>{
+    const {definition:def,x,z}=placement,group=new THREE.Group();group.name=def.id;group.userData={stableId:def.id,placement:{...def},anchor:def.anchor};root.add(group);
+    if(def.kind==="reception"){addBox(group,x,y+.55,z,6,1.05,1.35,counter);addBox(group,x,y+1.14,z,6.15,.14,1.48,white);makeScreen(group,x+1.6,y+1.63,z-.72,1.18,.55,0,0x70f2cf);makeBottle(group,x-1.8,y+1.38,z-.2,0x57cde2,.82);addLabStation(x,z,3.3)}
+    else if(def.kind==="bench"){addBox(group,x,y+.5,z,5.35,.94,1.48,dark);addBox(group,x,y+1.04,z,5.5,.14,1.6,ceramic);addBottleSet(group,x,y+1.35,z-.15,5);addLabStation(x,z,3)}
+    else if(def.kind==="console"){addBox(group,x,y+.52,z,4.35,.98,1.35,metal);addBox(group,x,y+1.08,z,4.48,.14,1.48,counter);makeScreen(group,x,y+1.62,z-.74,1.6,.65,0,def.id.includes("instrumental")?0x8797ff:0x63ecd3);addLabStation(x,z,2.6)}
+    else if(def.kind==="cabinet"){addBox(group,x,y+1.55,z,1,3,3.05,white);addBox(group,x+(x<cx?.51:-.51),y+1.55,z,.045,2.6,2.7,glass);for(let row=0;row<3;row++)makeBottle(group,x+(x<cx?.57:-.57),y+.65+row*.76,z-.7,[0x4ed0b3,0xd46799,0x6f8ee8][row],.55)}
+    else if(def.kind==="reactor"){addCylinder(group,x,y+1.65,z,1.05,1.15,3.15,metal,20);addCylinder(group,x,y+1.7,z,.72,.72,1.75,glass,20);for(let index=0;index<3;index++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.9,.045,8,32),index===1?brass:teal);ring.rotation.x=Math.PI/2;ring.position.set(x,y+.75+index*.93,z);group.add(ring)}addLabStation(x,z,2.3)}
+    else if(def.kind==="cryo"){addCylinder(group,x,y+1.58,z,.94,1.04,3,white,20);addCylinder(group,x,y+1.6,z,.75,.75,2.35,glass,20);const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.46,1),violet);core.position.set(x,y+1.62,z);core.userData.cryoCore=true;labCryoCore=core;group.add(core);addLabStation(x,z,2.2)}
+    else if(def.kind==="atom"){addBox(group,x,y+.32,z,1.75,.64,1.75,dark);addBox(group,x,y+.7,z,1.82,.1,1.82,brass);const atom=new THREE.Group();atom.position.set(x,y+1.65,z);group.add(atom);const nucleus=new THREE.Mesh(new THREE.IcosahedronGeometry(.24,1),teal);atom.add(nucleus);for(let index=0;index<3;index++){const ring=new THREE.Mesh(new THREE.TorusGeometry(.58,.022,8,42),index===1?brass:teal);ring.rotation.set(index*.92,index*.61,index*.38);atom.add(ring)}atom.userData.labAtom=true;labAtomRoot=atom}
+    else if(def.kind==="servers"){for(let index=0;index<3;index++){const xx=x-1.15+index*1.15;addBox(group,xx,y+1.55,z,1.02,3.05,.9,metal);makeScreen(group,xx,y+1.95,z-.46,.7,.42,0,[0x63ecd3,0x8797ff,0xe28ad0][index])}}
+    else if(def.kind==="light"){addBox(group,x,LAB_LAYOUT.y+LAB_LAYOUT.height-.18,z,3,.08,.22,teal);const light=new THREE.PointLight(0x79e8d3,.5,9,2);light.position.set(x,LAB_LAYOUT.y+LAB_LAYOUT.height-.55,z);group.add(light)}
+    if(def.collision)registerLabCollision(placement.x,placement.y,placement.z,...def.bounds,def.rotation,def.id);
+    labPropPlacements.push({...placement,group})
+  };
+  for(const definition of LAB_PROP_DEFINITIONS.filter(item=>!["atom","light"].includes(item.kind))){const placement=resolveLabPropPlacement(definition);if(!placement){console.warn(`[QuimiCraft][Laboratório] Prop ignorado por validação: ${definition.id}`);continue}buildProp(placement)}
+  recordLabGenerationStep("generate-laboratory-furniture");
+  recordLabGenerationStep("generate-functional-stations");
+  const portalCenter=cx-.5,portalHalf=2,doorwayZ=front+.5;addBox(root,portalCenter-(portalHalf+.58),y+2.15,front+.08,.28,4.3,.4,metal);addBox(root,portalCenter+(portalHalf+.58),y+2.15,front+.08,.28,4.3,.4,metal);addBox(root,portalCenter,y+4.2,front+.08,5.46,.32,.4,metal);addBox(root,portalCenter,y+3.96,front-.14,5.14,.1,.46,teal);
+  const doorRoot=new THREE.Group(),doorCubeGeometry=new THREE.BoxGeometry(1,1,1);doorRoot.name="Carbon Grand Airlock";labDoorVisualRoot=doorRoot;root.add(doorRoot);const doorPart=(parent,material,pos,scale)=>{const mesh=new THREE.Mesh(doorCubeGeometry,material);mesh.position.set(...pos);mesh.scale.set(...scale);parent.add(mesh);return mesh},makeLeaf=side=>{const leaf=new THREE.Group(),dir=side<0?1:-1,panelW=1.96,center=dir*panelW*.5;leaf.position.set(side<0?portalCenter-portalHalf:portalCenter+portalHalf,y,doorwayZ);doorPart(leaf,metal,[center,1.08,0],[panelW,2.08,.15]);doorPart(leaf,teal,[center,2.35,0],[panelW,1.06,.15]);doorPart(leaf,glass,[center,2.35,-.084],[panelW-.34,.78,.026]);doorPart(leaf,brass,[center,.14,-.096],[panelW-.2,.08,.04]);doorPart(leaf,brass,[center,3,-.096],[panelW-.2,.08,.04]);doorRoot.add(leaf);return leaf};
+  doorRoot.userData.left=makeLeaf(-1);doorRoot.userData.right=makeLeaf(1);const doorOpen=getBlock(cx-2,y,front)===BLOCK.DOOR_OPEN;doorRoot.userData.left.rotation.y=doorOpen?-Math.PI/2:0;doorRoot.userData.right.rotation.y=doorOpen?Math.PI/2:0;
+  refreshPeriodicWall();
+  recordLabGenerationStep("generate-periodic-table");
+  for(const definition of LAB_PROP_DEFINITIONS.filter(item=>item.kind==="atom")){const placement=resolveLabPropPlacement(definition);if(placement)buildProp(placement);else console.warn(`[QuimiCraft][Laboratório] Prop decorativo ignorado: ${definition.id}`)}
+  recordLabGenerationStep("generate-decorative-equipment");
+  for(const definition of LAB_PROP_DEFINITIONS.filter(item=>item.kind==="light")){const placement=resolveLabPropPlacement(definition);if(placement)buildProp(placement);else console.warn(`[QuimiCraft][Laboratório] Luminária ignorada: ${definition.id}`)}
+  recordLabGenerationStep("generate-lighting");
+  recordLabGenerationStep("generate-collision-data");
+  root.traverse(object=>{if(object.isMesh){object.castShadow=settings.shadows>0;object.receiveShadow=settings.shadows>0;object.visible=true;if(object.material&&!Array.isArray(object.material)&&!object.material.transparent){object.material.opacity=1;object.material.depthWrite=true;object.material.depthTest=true;object.material.colorWrite=true}}})
 }
-function updateLabDecor(now){if(labAtomRoot){labAtomRoot.rotation.y=now*.00035;labAtomRoot.children.slice(1).forEach((r,i)=>r.rotation.z+=.002+i*.0008)}if(labCryoCore){labCryoCore.rotation.y=now*.0007;const s=1+Math.sin(now*.003)*.06;labCryoCore.scale.setScalar(s)}if(labDoorVisualRoot){const open=getBlock(LAB_LAYOUT.cx-1,LAB_LAYOUT.y,LAB_LAYOUT.cz-LAB_LAYOUT.halfD)===BLOCK.DOOR_OPEN,l=labDoorVisualRoot.userData.left,r=labDoorVisualRoot.userData.right,t=open?Math.PI/2:0;l.rotation.y=lerp(l.rotation.y,-t,.24);r.rotation.y=lerp(r.rotation.y,t,.24)}}
-function seedLaboratory(){
-  const {cx,cz,halfW,halfD,y,height}=LAB_LAYOUT,version="qc_lab_v47",front=cz-halfD,rear=cz+halfD,left=cx-halfW,right=cx+halfW;
-  if(!localStorage[version]){
-    // A atualização 4.7 reconstrói toda a área do laboratório antigo sem deixar paredes, portas ou bancadas fantasma.
-    for(const k of [...mods.keys()]){const [x,yy,z]=k.split("|").map(Number);if(x>=left-3&&x<=right+3&&z>=front-6&&z<=rear+3&&yy>=y-6&&yy<=y+height+3)mods.delete(k)}
-    for(const [k] of [...doorMeta]){const [x,yy,z]=k.split("|").map(Number);if(x>=left-3&&x<=right+3&&z>=front-6&&z<=rear+3&&yy>=y-2&&yy<=y+height+2)doorMeta.delete(k)}
-    const oldX=Math.floor(spawn.x+4),oldZ=Math.floor(spawn.z+2),oldY=terrainHeight(oldX,oldZ)+1;for(let x=oldX-4;x<=oldX+5;x++)for(let z=oldZ-4;z<=oldZ+5;z++)for(let yy=oldY-1;yy<=oldY+5;yy++)mods.set(key3(x,yy,z),BLOCK.AIR);
-    // Terraplenagem, fundação profunda e piso monumental de 27 × 21 blocos.
-    for(let x=left-1;x<=right+1;x++)for(let z=front-1;z<=rear+1;z++)for(let yy=y;yy<=y+height+1;yy++)mods.set(key3(x,yy,z),BLOCK.AIR);
-    for(let x=left;x<=right;x++)for(let z=front;z<=rear;z++){
-      for(let yy=y-5;yy<y-1;yy++)mods.set(key3(x,yy,z),BLOCK.DEEPSTONE);
-      const edge=Math.abs(x-cx)===halfW||Math.abs(z-cz)===halfD,checker=((x-cx)+(z-cz))&1;mods.set(key3(x,y-1,z),edge?BLOCK.SLATE:(checker?BLOCK.MARBLE:BLOCK.ALCHEMY_BRICK));
-    }
-    // Fachada: porta dupla de laboratório exatamente no vão, sem bloco sobrando e sem sobreposição.
-    for(let yy=0;yy<height;yy++)for(let x=left;x<=right;x++)for(const z of [front,rear]){
-      const doorCell=z===front&&(x===cx-1||x===cx)&&yy<=1,transom=z===front&&(x===cx-1||x===cx)&&yy===2,frontWindow=z===front&&yy>=2&&yy<=5&&Math.abs(x-cx)>3&&Math.abs(x-cx)<halfW-1,backTable=z===rear&&Math.abs(x-cx)<=8;
-      if(doorCell)continue;mods.set(key3(x,y+yy,z),transom||frontWindow?BLOCK.GLASS:(backTable?BLOCK.SLATE:(yy===0?BLOCK.SLATE:BLOCK.MARBLE)));
-    }
-    for(let yy=0;yy<height;yy++)for(let z=front;z<=rear;z++)for(const x of [left,right]){const window=yy>=2&&yy<=5&&z>front+2&&z<rear-2&&((z-front)%4!==0);mods.set(key3(x,y+yy,z),window?BLOCK.GLASS:(yy===0?BLOCK.SLATE:BLOCK.MARBLE))}
-    // Teto alto com três faixas de claraboia.
-    for(let x=left;x<=right;x++)for(let z=front;z<=rear;z++){const skylight=Math.abs(x-cx)<=8&&[0,1,2].includes(Math.abs((z-cz)%5))&&Math.abs(z-cz)<halfD-1;mods.set(key3(x,y+height,z),skylight?BLOCK.GLASS:BLOCK.SLATE)}
-    // Porta dupla sincronizada: cada folha gira na própria dobradiça e ambas respondem juntas imediatamente.
-    for(const [doorX,hinge] of [[cx-1,-1],[cx,1]])for(const [yy,half] of [[y,0],[y+1,1]]){const k=key3(doorX,yy,front);mods.set(k,BLOCK.DOOR);doorMeta.set(k,{axis:0,half,hinge,swing:1,style:"carbon",group:"carbon-main-airlock"})}
-    // Bases sólidas dos equipamentos, deixando um corredor central largo até a Tabela Periódica.
-    const benchCells=[],rect=(x0,x1,z0,z1)=>{for(let x=x0;x<=x1;x++)for(let z=z0;z<=z1;z++)benchCells.push([x,z])};
-    rect(cx-11,cx-6,front+2,front+3);rect(cx+7,cx+10,front+2,front+3);
-    for(const z1 of [front+5,cz-1,cz+4]){rect(cx-6,cx-2,z1,z1+1);rect(cx+2,cx+6,z1,z1+1)}
-    for(const z1 of [front+5,cz, rear-5]){rect(left+1,left+3,z1,z1+1);rect(right-3,right-1,z1,z1+1)}
-    rect(left+4,left+7,cz-3,cz-2);rect(right-7,right-4,cz-3,cz-2);rect(left+4,left+6,rear-5,rear-3);rect(right-6,right-4,rear-5,rear-3);rect(cx-1,cx+1,rear-6,rear-4);
-    for(const [xx,zz] of benchCells)mods.set(key3(xx,y,zz),BLOCK.LAB);
-    // Patamar largo e escadaria limpa alinhados com a entrada.
-    for(let z=front-2;z<=front-1;z++)for(let x=cx-3;x<=cx+2;x++){for(let yy=Math.max(1,terrainHeight(x,z)-1);yy<=y-1;yy++)mods.set(key3(x,yy,z),BLOCK.ALCHEMY_BRICK);for(let yy=y;yy<=y+3;yy++)mods.set(key3(x,yy,z),BLOCK.AIR)}
-    for(let step=1;step<=4;step++){const z=front-2-step,top=y-1-step;for(let x=cx-3;x<=cx+2;x++){for(let yy=Math.max(1,terrainHeight(x,z)-1);yy<=top;yy++)mods.set(key3(x,yy,z),BLOCK.ALCHEMY_BRICK);for(let yy=top+1;yy<=y+3;yy++)mods.set(key3(x,yy,z),BLOCK.AIR)}}
-    for(const x1 of [cx-10,cx-5,cx,cx+5,cx+10])for(const z1 of [front+3,cz+2,rear-2])mods.set(key3(x1,y+height-1,z1),BLOCK.SPECTRAL);
-    localStorage[version]="1";
+function updateLabDecor(now){if(labAtomRoot){labAtomRoot.rotation.y=now*.00035;labAtomRoot.children.slice(1).forEach((r,i)=>r.rotation.z+=.002+i*.0008)}if(labCryoCore){labCryoCore.rotation.y=now*.0007;const s=1+Math.sin(now*.003)*.06;labCryoCore.scale.setScalar(s)}if(labDoorVisualRoot){const open=getBlock(LAB_LAYOUT.cx-2,LAB_LAYOUT.y,LAB_LAYOUT.cz-LAB_LAYOUT.halfD)===BLOCK.DOOR_OPEN,l=labDoorVisualRoot.userData.left,r=labDoorVisualRoot.userData.right,t=open?Math.PI/2:0;l.rotation.y=lerp(l.rotation.y,-t,.24);r.rotation.y=lerp(r.rotation.y,t,.24)}}
+function buildLaboratoryRequirements(){
+  const {cx,cz,halfW,halfD,y,height}=LAB_LAYOUT,left=cx-halfW,right=cx+halfW,front=cz-halfD,rear=cz+halfD,requirements=[],foundationCells=new Set();
+  const add=(component,x,yy,z,id)=>requirements.push({component,x,y:yy,z,id});
+  const addFoundation=(x,z)=>{const key=`${x},${z}`;if(!foundationCells.has(key)){foundationCells.add(key);add("foundation",x,1,z,BLOCK.DEEPSTONE)}};
+  for(let x=left-LAB_PROTECTION_MARGIN;x<=right+LAB_PROTECTION_MARGIN;x++)for(let z=front-LAB_PROTECTION_MARGIN;z<=rear+LAB_PROTECTION_MARGIN;z++)addFoundation(x,z);
+  for(let x=left;x<=right;x++)for(let z=front;z<=rear;z++){
+    const edge=x===left||x===right||z===front||z===rear,checker=((x-cx)+(z-cz))&1;
+    add("floor",x,y-1,z,edge?BLOCK.SLATE:(checker?BLOCK.MARBLE:BLOCK.ALCHEMY_BRICK));
+    const skylight=Math.abs(x-cx)<=12&&[0,1,2].includes(Math.abs((z-cz)%5))&&Math.abs(z-cz)<halfD-1;
+    add("ceiling",x,y+height,z,skylight?BLOCK.GLASS:BLOCK.SLATE)
   }
-  // Pontos críticos sempre são restaurados, inclusive em saves migrados do 4.6.
-  for(const [doorX,hinge] of [[cx-1,-1],[cx,1]])for(const [yy,half] of [[y,0],[y+1,1]]){const k=key3(doorX,yy,front);if(![BLOCK.DOOR,BLOCK.DOOR_OPEN].includes(mods.get(k)))mods.set(k,BLOCK.DOOR);doorMeta.set(k,{axis:0,half,hinge,swing:1,style:"carbon",group:"carbon-main-airlock"})}
-  mods.set(key3(cx-5,y,front+5),BLOCK.LAB);mods.set(key3(cx,y+height-1,cz),BLOCK.SPECTRAL);saveMods();saveDoorMeta();createLaboratoryDecor()
+  for(let level=0;level<height;level++){
+    for(let x=left;x<=right;x++)for(const z of [front,rear]){
+      const doorCell=z===front&&x>=cx-2&&x<=cx+1&&level<=2,transom=z===front&&x>=cx-2&&x<=cx+1&&level===3,frontWindow=z===front&&level>=3&&level<=8&&Math.abs(x-cx)>5&&Math.abs(x-cx)<halfW-1,backTable=z===rear&&Math.abs(x-cx)<=11;
+      add(doorCell?"door":"exterior-wall",x,y+level,z,doorCell?null:(transom||frontWindow?BLOCK.GLASS:(backTable?BLOCK.SLATE:(level===0?BLOCK.SLATE:BLOCK.MARBLE))))
+    }
+    for(let z=front+1;z<rear;z++)for(const x of [left,right]){
+      const window=level>=2&&level<=8&&z>front+2&&z<rear-2&&((z-front)%4!==0);
+      add("exterior-wall",x,y+level,z,window?BLOCK.GLASS:(level===0?BLOCK.SLATE:BLOCK.MARBLE))
+    }
+  }
+  for(let step=1;step<=LAB_ENTRANCE_LENGTH;step++){
+    const z=front-step,surface=LAB_LAYOUT.entranceSurfaces.get(z);
+    for(let x=cx-4;x<=cx+3;x++){addFoundation(x,z);add("entrance-corridor",x,surface,z,BLOCK.ALCHEMY_BRICK)}
+  }
+  for(const [coordinate,surface] of LAB_LAYOUT.villagePathSurfaces){
+    const [x,z]=coordinate.split(",").map(Number);addFoundation(x,z);if(!inLabEntranceCorridor(x,z)&&!labBoundsContains(x,z,0))add("village-transition",x,surface,z,BLOCK.VILLAGE_BRICK)
+  }
+  return requirements
 }
-
-function seedVillage(){if(localStorage.qc_village_v44)return;for(const b of VILLAGE_BUILDINGS){const x=b.x,z=b.z-3,y=VILLAGE.base+1;for(const [yy,half] of [[y,0],[y+1,1]]){mods.set(key3(x,yy,z),BLOCK.DOOR);doorMeta.set(key3(x,yy,z),{axis:0,half})}}for(let i=-2;i<=2;i++)for(const side of [-1,1]){const x=VILLAGE.x+i*VILLAGE.spacing+side*4,z=VILLAGE.z+5,y=VILLAGE.base+1;mods.set(key3(x,y,z),BLOCK.SPECTRAL)}localStorage.qc_village_v44="1";saveMods();saveDoorMeta()}
+function rebuildLaboratoryChunks(){
+  for(const descriptor of labChunkDescriptors())if(chunks.has(descriptor.k))rebuildChunk(descriptor.cx,descriptor.cz)
+}
+function validateLaboratory({repair=true,recordStep=true}={}){
+  const requirements=buildLaboratoryRequirements(),requirementCoordinates=new Set(requirements.map(required=>key3(required.x,required.y,required.z))),failures=[],repairedComponents=new Set();
+  for(const required of requirements){
+    const actual=getBlock(required.x,required.y,required.z),valid=required.component==="door"?[BLOCK.DOOR,BLOCK.DOOR_OPEN].includes(actual):actual===required.id;
+    if(valid)continue;
+    failures.push({...required,actual});
+    if(repair){
+      const replacement=required.component==="door"?BLOCK.DOOR:required.id;
+      labRepairOverrides.set(key3(required.x,required.y,required.z),replacement);
+      repairedComponents.add(required.component)
+    }
+  }
+  const periodicMeshes=[];periodicWallRoot?.traverse(object=>{if(object.isMesh&&Number.isInteger(object.userData?.atomicNumber))periodicMeshes.push(object)});
+  const periodicNumbers=new Set(periodicMeshes.map(mesh=>mesh.userData.atomicNumber)),periodicPositions=new Set(periodicMeshes.map(mesh=>`${mesh.position.x}|${mesh.position.y}|${mesh.position.z}`));
+  const periodicDimensionsValid=periodicMeshes.every(mesh=>{
+    mesh.geometry.computeBoundingBox();const box=mesh.geometry.boundingBox,size=new THREE.Vector3();box.getSize(size);
+    return mesh.scale.x===1&&mesh.scale.y===1&&mesh.scale.z===1&&Math.abs(size.x-BLOCK_SIZE)<1e-8&&Math.abs(size.y-BLOCK_SIZE)<1e-8&&Math.abs(size.z-BLOCK_SIZE)<1e-8
+  });
+  const periodicColliderById=new Map(periodicCollisionBoxes.map(box=>[box.id,box])),periodicColliderDimensionsValid=periodicCollisionBoxes.every(box=>Math.abs(box.maxX-box.minX-BLOCK_SIZE)<1e-8&&Math.abs(box.maxY-box.minY-BLOCK_SIZE)<1e-8&&Math.abs(box.maxZ-box.minZ-BLOCK_SIZE)<1e-8),periodicColliderAlignmentValid=periodicMeshes.every(mesh=>{const collider=periodicColliderById.get(`element:${mesh.userData.atomicNumber}`);return collider&&Math.abs((collider.minX+collider.maxX)/2-mesh.position.x)<1e-8&&Math.abs((collider.minY+collider.maxY)/2-mesh.position.y)<1e-8&&Math.abs((collider.minZ+collider.maxZ)/2-mesh.position.z)<1e-8});
+  const propsInsideAndSupported=labPropPlacements.every(placement=>{
+    const def=placement.definition,bounds=labStructureBounds(0),inside=placement.box.minX>=bounds.left+BLOCK_SIZE&&placement.box.maxX<=bounds.right&&placement.box.minZ>=bounds.front+BLOCK_SIZE&&placement.box.maxZ<=bounds.rear;
+    const supported=def.allowedSupport==="ceiling"?Math.abs(placement.box.maxY-(LAB_LAYOUT.y+LAB_LAYOUT.height))<1e-7:Math.abs(placement.box.minY-LAB_LAYOUT.y)<1e-7;
+    return inside&&supported&&!LAB_RESERVED_PATHS.some(path=>placement.collision&&boxesOverlapXZ(placement.box,path))
+  });
+  const propIds=labPropPlacements.map(placement=>placement.definition.id),uniquePropIds=new Set(propIds),requiredPropIds=LAB_PROP_DEFINITIONS.map(definition=>definition.id);
+  const collidingProps=labPropPlacements.filter(placement=>placement.collision),labColliderById=new Map(labCollisionBoxes.map(box=>[box.id,box])),labColliderAlignmentValid=collidingProps.every(placement=>{const collider=labColliderById.get(placement.definition.id),expected=placement.box;return collider&&["minX","maxX","minY","maxY","minZ","maxZ"].every(key=>Math.abs(collider[key]-expected[key])<1e-8)});
+  const materialsValid=(()=>{
+    let valid=true;
+    labDecorRoot?.traverse(object=>{
+      if(!object.isMesh)return;
+      if(!object.visible||object.scale.x===0||object.scale.y===0||object.scale.z===0){valid=false;return}
+      const materials=Array.isArray(object.material)?object.material:[object.material];
+      for(const material of materials){
+        if(!material||material.visible===false||material.depthTest===false||material.colorWrite===false){valid=false;continue}
+        if(!material.userData?.intentionalTransparency&&(material.transparent||material.opacity!==1||material.depthWrite===false))valid=false
+      }
+    });
+    return valid
+  })();
+  const terrainMaterialValid=terrainMat.visible!==false&&terrainMat.opacity===1&&terrainMat.transparent===false&&terrainMat.depthWrite===true&&terrainMat.depthTest===true&&terrainMat.colorWrite===true&&terrainMat.side===THREE.FrontSide;
+  const {cx,cz,halfD,y}=LAB_LAYOUT,front=cz-halfD,doorMetadata=[cx-2,cx-1,cx,cx+1].flatMap(x=>[y,y+1,y+2].map(yy=>doorMeta.get(key3(x,yy,front)))),doorMetadataValid=doorMetadata.length===12&&doorMetadata.every(meta=>meta?.group==="carbon-main-airlock"),doorApproaches=[front-1,front+1].every(z=>BDEF[getBlock(cx-1,y-1,z)]?.solid&&!BDEF[getBlock(cx-1,y,z)]?.solid&&!BDEF[getBlock(cx-1,y+1,z)]?.solid&&!aabbHitsLabDecor(cx-1.8,cx-.2,y,y+1.75,z-.4,z+.4)),doorAccessible=doorMetadataValid&&doorApproaches;
+  const professorAnchor=LAB_ANCHORS["professor-position"],professorRouteStart={x:cx-1,z:front+2},professorReachable=Array.from({length:12},(_,index)=>{const t=index/11,x=lerp(professorRouteStart.x,professorAnchor.x,t),z=lerp(professorRouteStart.z,professorAnchor.z,t);return !aabbHitsLabDecor(x-.32,x+.32,y,y+1.75,z-.32,z+.32)&&!BDEF[getBlock(Math.floor(x),y,Math.floor(z))]?.solid&&!BDEF[getBlock(Math.floor(x),y+1,Math.floor(z))]?.solid}).every(Boolean);
+  const chemistryBench=labPropPlacements.find(placement=>placement.definition.id==="chemistry-main"),chemistryWorkbenchReachable=!!chemistryBench&&[[-1,0],[1,0],[0,-1],[0,1]].some(([dx,dz])=>{const offset=(Math.max(chemistryBench.definition.bounds[0],chemistryBench.definition.bounds[2])/2)+.8,x=chemistryBench.x+dx*offset,z=chemistryBench.z+dz*offset;return !aabbHitsLabDecor(x-.3,x+.3,y,y+1.75,z-.3,z+.3)&&!BDEF[getBlock(Math.floor(x),y,Math.floor(z))]?.solid});
+  const checks={
+    originGridAligned:Number.isInteger(LAB_LAYOUT.cx)&&Number.isInteger(LAB_LAYOUT.cz)&&Number.isInteger(LAB_LAYOUT.y),
+    baseElevationSafe:LAB_LAYOUT.y>WATER_LEVEL&&LAB_LAYOUT.y+LAB_LAYOUT.height<MAX_Y,
+    footprintSamples:LAB_LAYOUT.terrain.sampleCount,
+    requiredVoxelCount:requirements.length,
+    uniqueRequiredVoxelCoordinates:requirementCoordinates.size,
+    duplicateRequiredVoxelCoordinates:requirements.length-requirementCoordinates.size,
+    structuralFailures:failures.length,
+    foundationCount:requirements.filter(item=>item.component==="foundation").length,
+    floorCount:requirements.filter(item=>item.component==="floor").length,
+    ceilingCount:requirements.filter(item=>item.component==="ceiling").length,
+    exteriorWallCount:requirements.filter(item=>item.component==="exterior-wall").length,
+    interiorWallCount:0,
+    interiorLayout:"open-plan",
+    doorAccessible,
+    periodicElementCount:periodicMeshes.length,
+    uniquePeriodicElements:periodicNumbers.size,
+    uniquePeriodicPositions:periodicPositions.size,
+    periodicColliderCount:periodicCollisionBoxes.length,
+    periodicDimensionsValid,
+    periodicColliderDimensionsValid,
+    periodicColliderAlignmentValid,
+    periodicFloorClearance:Math.min(...periodicMeshes.map(mesh=>mesh.position.y-BLOCK_SIZE/2))-LAB_LAYOUT.y,
+    periodicCeilingClearance:LAB_LAYOUT.y+LAB_LAYOUT.height-Math.max(...periodicMeshes.map(mesh=>mesh.position.y+BLOCK_SIZE/2)),
+    labColliderCount:labCollisionBoxes.length,
+    uniqueLabColliders:labColliderIds.size,
+    labColliderAlignmentValid,
+    labColliderCountMatchesProps:labCollisionBoxes.length===collidingProps.length,
+    propCount:propIds.length,
+    uniquePropCount:uniquePropIds.size,
+    propsInsideAndSupported,
+    allRequiredPropsPlaced:requiredPropIds.every(id=>uniquePropIds.has(id)),
+    materialsValid,
+    terrainMaterialValid,
+    chemistryWorkbenchReady:labStationZones.length>=4,
+    chemistryWorkbenchReachable,
+    professorReachable
+  };
+  const periodicInvalid=periodicMeshes.length!==118||periodicNumbers.size!==118||periodicPositions.size!==118||periodicCollisionBoxes.length!==118||!periodicDimensionsValid||!periodicColliderDimensionsValid||!periodicColliderAlignmentValid||checks.periodicFloorClearance<PERIODIC_FLOOR_MARGIN||checks.periodicCeilingClearance<0;
+  const decorInvalid=labCollisionBoxes.length!==labColliderIds.size||labCollisionBoxes.length!==collidingProps.length||!labColliderAlignmentValid||uniquePropIds.size!==propIds.length||!checks.allRequiredPropsPlaced||!propsInsideAndSupported||!materialsValid||!checks.chemistryWorkbenchReady;
+  if(repair&&!doorMetadataValid){const isOpen=[cx-2,cx-1,cx,cx+1].some(x=>getBlock(x,y,front)===BLOCK.DOOR_OPEN);for(const doorX of [cx-2,cx-1,cx,cx+1])for(const [yy,half] of [[y,0],[y+1,1],[y+2,2]]){const key=key3(doorX,yy,front);mods.set(key,isOpen?BLOCK.DOOR_OPEN:BLOCK.DOOR);doorMeta.set(key,{axis:0,half,hinge:doorX<cx?-1:1,swing:1,style:"carbon",group:"carbon-main-airlock"})}saveMods();saveDoorMeta();repairedComponents.add("main-airlock")}
+  if(repair&&decorInvalid){createLaboratoryDecor();repairedComponents.add("laboratory-props-and-collisions")}
+  else if(repair&&periodicInvalid){refreshPeriodicWall();repairedComponents.add("periodic-table")}
+  const valid=failures.length===0&&requirementCoordinates.size===requirements.length&&checks.originGridAligned&&checks.baseElevationSafe&&doorAccessible&&!periodicInvalid&&labCollisionBoxes.length===labColliderIds.size&&labCollisionBoxes.length===collidingProps.length&&labColliderAlignmentValid&&uniquePropIds.size===propIds.length&&checks.allRequiredPropsPlaced&&propsInsideAndSupported&&materialsValid&&terrainMaterialValid&&checks.chemistryWorkbenchReady&&chemistryWorkbenchReachable&&professorReachable;
+  if(repairedComponents.size){
+    for(const component of repairedComponents){labGenerationReport.repairs.push(component);console.warn(`[QuimiCraft][Laboratório] Componente reparado: ${component}`)}
+    rebuildLaboratoryChunks()
+  }
+  const report={valid:valid&&(!repair||repairedComponents.size===0),repaired:repairedComponents.size>0,checks,failures:failures.slice(0,20),repairCount:repairedComponents.size};
+  labGenerationReport.validation=report;if(recordStep)recordLabGenerationStep("validate-and-repair-structure");
+  return report
+}
+function seedLaboratory(){
+  resetLabGenerationReport();labRepairOverrides.clear();
+  const {cx,cz,halfW,halfD,y,height}=LAB_LAYOUT,front=cz-halfD,left=cx-halfW,right=cx+halfW,rear=cz+halfD;
+  recordLabGenerationStep("determine-safe-origin");
+  recordLabGenerationStep("reserve-protected-footprint");
+  const doorWasOpen=[cx-2,cx-1,cx,cx+1].some(x=>mods.get(key3(x,y,front))===BLOCK.DOOR_OPEN);
+  for(const k of [...mods.keys()]){
+    const [x,yy,z]=k.split("|").map(Number);
+    if(((x>=left-LAB_PROTECTION_MARGIN&&x<=right+LAB_PROTECTION_MARGIN&&z>=front-LAB_PROTECTION_MARGIN&&z<=rear+LAB_PROTECTION_MARGIN)||inLabEntranceCorridor(x,z,1)||inLabVillagePath(x,z))&&yy>=0&&yy<MAX_Y)mods.delete(k)
+  }
+  for(const [k] of [...doorMeta]){
+    const [x,yy,z]=k.split("|").map(Number);
+    if(((x>=left-LAB_PROTECTION_MARGIN&&x<=right+LAB_PROTECTION_MARGIN&&z>=front-LAB_PROTECTION_MARGIN&&z<=rear+LAB_PROTECTION_MARGIN)||inLabEntranceCorridor(x,z,1)||inLabVillagePath(x,z))&&yy>=0&&yy<MAX_Y)doorMeta.delete(k)
+  }
+  recordLabGenerationStep("clear-conflicting-world-content");
+  recordLabGenerationStep("generate-foundation");
+  recordLabGenerationStep("generate-floor");
+  recordLabGenerationStep("generate-exterior-walls");
+  recordLabGenerationStep("generate-interior-walls");
+  recordLabGenerationStep("generate-ceiling-and-roof");
+  for(const doorX of [cx-2,cx-1,cx,cx+1])for(const [yy,half] of [[y,0],[y+1,1],[y+2,2]]){const k=key3(doorX,yy,front);mods.set(k,doorWasOpen?BLOCK.DOOR_OPEN:BLOCK.DOOR);doorMeta.set(k,{axis:0,half,hinge:doorX<cx?-1:1,swing:1,style:"carbon",group:"carbon-main-airlock"})}
+  recordLabGenerationStep("generate-doors-windows-entrances-corridors");
+  saveMods();saveDoorMeta();createLaboratoryDecor();
+  const validation=validateLaboratory();
+  localStorage.qc_lab_validation_v60=JSON.stringify({version:LAB_VALIDATION_VERSION,seed:WORLD_SEED,origin:{x:cx,y,z:cz},terrain:LAB_LAYOUT.terrain,propIds:labPropPlacements.map(placement=>placement.definition.id),validation,order:labGenerationReport.order});
+  rebuildLaboratoryChunks();
+  return validation
+}
+function seedVillage(){
+  for(const building of VILLAGE_BUILDINGS){
+    const x=building.x,z=building.z-3,y=VILLAGE.base+1,wasOpen=[y,y+1].some(yy=>mods.get(key3(x,yy,z))===BLOCK.DOOR_OPEN);
+    for(const [yy,half] of [[y,0],[y+1,1]]){const k=key3(x,yy,z);mods.set(k,wasOpen?BLOCK.DOOR_OPEN:BLOCK.DOOR);doorMeta.set(k,{axis:0,half,hinge:-1,swing:1,group:`village-${building.gx}-${building.gz}`})}
+  }
+  for(let i=-2;i<=2;i++)for(const side of [-1,1]){const x=VILLAGE.x+i*VILLAGE.spacing+side*4,z=VILLAGE.z+5,y=VILLAGE.base+1;mods.set(key3(x,y,z),BLOCK.SPECTRAL)}
+  localStorage.qc_village_v44="1";saveMods();saveDoorMeta();return validateVillage()
+}
+function validateVillage(){
+  const failures=[];
+  for(const building of VILLAGE_BUILDINGS){
+    const x=building.x,z=building.z-3,y=VILLAGE.base+1;
+    for(const yy of [y,y+1])if(![BLOCK.DOOR,BLOCK.DOOR_OPEN].includes(getBlock(x,yy,z)))failures.push({component:"door",x,y:yy,z});
+    const wallChecks=[[building.x-3,VILLAGE.base+2,building.z],[building.x+3,VILLAGE.base+2,building.z],[building.x,VILLAGE.base+2,building.z+3]];
+    for(const [wx,wy,wz] of wallChecks)if(!BDEF[getBlock(wx,wy,wz)]?.solid)failures.push({component:"wall",x:wx,y:wy,z:wz})
+  }
+  const roadChecks=[];for(let x=VILLAGE.x-25;x<=VILLAGE.x+25;x+=5)roadChecks.push([x,VILLAGE.z]);for(let z=VILLAGE.z-25;z<=VILLAGE.z+25;z+=5)roadChecks.push([VILLAGE.x,z]);
+  for(const [x,z] of roadChecks)if(!BDEF[getBlock(x,VILLAGE.base,z)]?.solid)failures.push({component:"road",x,y:VILLAGE.base,z});
+  const report={version:60,valid:failures.length===0,buildingCount:VILLAGE_BUILDINGS.length,houseCount:VILLAGE_BUILDINGS.filter(building=>building.kind==="house").length,shopCount:VILLAGE_BUILDINGS.filter(building=>building.kind==="shop").length,doorColliderCount:VILLAGE_BUILDINGS.length*2,failures:failures.slice(0,20)};
+  localStorage.qc_village_state_v60=JSON.stringify(report);return report
+}
+function parseWorldState(){
+  let saved=null;try{saved=JSON.parse(localStorage.qc_world_state_v60||"null")}catch(error){console.warn("[QuimiCraft][Carregamento] Save de mundo inválido; usando migração segura.",error)}
+  if(!saved||saved.seed!==WORLD_SEED)return null;
+  if(saved.player&&Number.isFinite(saved.player.x)&&Number.isFinite(saved.player.z))worldBoot.preferredSpawn={x:saved.player.x,z:saved.player.z};
+  if(saved.player){player.health=clamp(Number(saved.player.health)||100,1,100);player.mana=clamp(Number(saved.player.mana)||100,0,100)}
+  if(Number.isFinite(saved.day))state.day=clamp(saved.day,0,.999999);
+  if(Number.isInteger(saved.dayCount)&&saved.dayCount>0)state.dayCount=saved.dayCount;
+  return saved
+}
+function saveWorldState(){
+  const data={version:60,seed:WORLD_SEED,player:{x:player.pos.x,y:player.pos.y,z:player.pos.z,health:player.health,mana:player.mana},day:state.day,dayCount:state.dayCount,laboratory:{validationVersion:LAB_VALIDATION_VERSION,origin:{x:LAB_LAYOUT.cx,y:LAB_LAYOUT.y,z:LAB_LAYOUT.cz},valid:!!labGenerationReport.validation?.valid,props:labPropPlacements.map(placement=>placement.definition.id)},village:{version:60,generated:true},periodicTable:elementMissions?.exportState?.()||null,savedAt:Date.now()};
+  try{localStorage.qc_world_state_v60=JSON.stringify(data);return true}catch(error){console.warn("[QuimiCraft] Não foi possível salvar o estado consolidado do mundo.",error);return false}
+}
+function nextRenderFrame(){return new Promise(resolve=>(window.requestAnimationFrame||window.setTimeout)(resolve))}
+function addBootRequiredChunks(stageId,descriptors){
+  worldBoot.stageChunkKeys=new Set(descriptors.map(descriptor=>descriptor.k));
+  for(const descriptor of descriptors){const previous=worldBoot.requiredChunks.get(descriptor.k);if(!previous||descriptor.d<previous.d)worldBoot.requiredChunks.set(descriptor.k,descriptor)}
+  setBootStage(stageId,0,`0 / ${worldBoot.stageChunkKeys.size} chunks`);centerChunk.x=999;centerChunk.z=999;ensureChunks(true);updateBootChunkProgress()
+}
+function waitForBootChunks(stageId,descriptors,timeoutMs=45000){
+  addBootRequiredChunks(stageId,descriptors);
+  return new Promise((resolve,reject)=>{
+    const started=performance.now(),check=()=>{
+      if(!worldBoot.running)return reject(new Error("carregamento cancelado"));
+      const missing=descriptors.filter(descriptor=>!chunks.has(descriptor.k));updateBootChunkProgress();
+      if(!missing.length)return resolve();
+      if(performance.now()-started>timeoutMs)return reject(new Error(`${missing.length} chunks não ficaram prontos`));
+      (window.requestAnimationFrame||window.setTimeout)(check)
+    };check()
+  })
+}
+async function runBootStage(stageId,task,maxRetries=2){
+  let lastError=null;
+  for(let attempt=0;attempt<=maxRetries;attempt++){
+    worldBoot.attempt=attempt+1;setBootStage(stageId,0,attempt?`tentativa ${attempt+1}`:"");
+    try{const result=await task(attempt);worldBoot.completedStages.add(stageId);setBootStage(stageId,1);return result}
+    catch(error){lastError=error;console.warn(`[QuimiCraft][Carregamento] Falha na etapa “${stageId}” (tentativa ${attempt+1}/${maxRetries+1}).`,error);if(attempt<maxRetries)await nextRenderFrame()}
+  }
+  throw lastError||new Error(`Falha na etapa ${stageId}`)
+}
+function playerAreaDescriptors(){
+  const preferred=worldBoot.preferredSpawn||spawn,cx=Math.floor(preferred.x/CHUNK),cz=Math.floor(preferred.z/CHUNK);
+  return ringChunkKeys(cx,cz,effectivePreloadRadius())
+}
+function villageAreaDescriptors(){return ringChunkKeys(Math.floor(VILLAGE.x/CHUNK),Math.floor(VILLAGE.z/CHUNK),effectivePreloadRadius())}
+function validateReadyWorld(){
+  const lab=validateLaboratory({repair:false}),village=validateVillage(),missions=elementMissions.validateDefinitions(),allChunks=initialPreloadDescriptors().every(descriptor=>chunks.has(descriptor.k)),professor=npcs.find(npc=>npc.role==="carbon");
+  return {valid:lab.valid&&village.valid&&missions.valid&&allChunks&&!!professor&&labStationZones.length>=4,lab,village,missions,allChunks,professorReady:!!professor,chemistryReady:labStationZones.length>=4}
+}
+async function startWorldLoading(){
+  if(worldBoot.running)return;
+  state.startQueued=true;state.loading=true;state.awaitingEntry=false;state.playing=false;state.left=false;state.right=false;state.started=false;state.paused=false;initialReady=false;document.exitPointerLock?.();
+  $("loading").classList.remove("hidden");$("loaderError").hidden=true;$("loaderFill").style.width="0%";$("loaderTip").textContent="O jogo começa somente depois que o laboratório, a vila, os arredores e todas as colisões forem validados.";$("hud").classList.remove("visible");
+  worldBoot.running=true;worldBoot.error=null;worldBoot.attempt=0;worldBoot.stage="initializing";worldBoot.stageFraction=0;worldBoot.requiredChunks.clear();worldBoot.stageChunkKeys.clear();worldBoot.completedStages.clear();worldBoot.preferredSpawn=null;
+  try{
+    await runBootStage("initializing",async()=>{if(!Number.isInteger(WORLD_SEED)||WORLD_SEED<1)throw new Error("semente de mundo inválida");await nextRenderFrame();return WORLD_SEED});
+    await runBootStage("loading-save",async()=>{worldBoot.loadedState=parseWorldState();saveInventory();elementMissions.sync();await nextRenderFrame()});
+    await runBootStage("loading-assets",async()=>{const materialReady=atlas.texture&&terrainMat&&waterMat&&lavaMat,systemsReady=window.QuimiCraftSystems&&PERIODIC_ELEMENTS.length===118;if(!materialReady||!systemsReady)throw new Error("texturas, materiais ou sistemas essenciais indisponíveis");atlas.texture.needsUpdate=true;await nextRenderFrame()});
+    await runBootStage("generating-terrain",()=>waitForBootChunks("generating-terrain",playerAreaDescriptors()));
+    await runBootStage("generating-laboratory",async()=>{
+      const generated=seedLaboratory(),verified=generated.repaired?validateLaboratory({repair:false}):generated;
+      if(!verified.valid)throw new Error(`laboratório inválido: ${verified.checks.structuralFailures} falhas estruturais`);
+      await waitForBootChunks("generating-laboratory",labChunkDescriptors())
+    });
+    await runBootStage("validating-laboratory",async()=>{
+      const report=validateLaboratory();const verified=report.repaired?validateLaboratory({repair:false}):report;
+      if(!verified.valid)throw new Error("a validação do laboratório não convergiu para um estado seguro");
+      const expected=LAB_GENERATION_ORDER.slice(0,-1);if(!expected.every((step,index)=>labGenerationReport.order[index]===step))throw new Error("ordem de geração do laboratório incompleta");
+      await nextRenderFrame()
+    });
+    await runBootStage("generating-village",async()=>{const report=seedVillage();if(!report.valid)throw new Error(`vila inválida: ${report.failures.length} componentes ausentes`);await waitForBootChunks("generating-village",villageAreaDescriptors())});
+    await runBootStage("generating-surroundings",()=>waitForBootChunks("generating-surroundings",initialPreloadDescriptors()));
+    await runBootStage("preparing-collisions",async()=>{
+      const report=validateLaboratory({repair:false}),village=validateVillage();
+      if(!report.valid||!village.valid||periodicCollisionBoxes.length!==118||labCollisionBoxes.length!==labColliderIds.size)throw new Error("dados de colisão incompletos ou duplicados");
+      await nextRenderFrame()
+    });
+    await runBootStage("preparing-gameplay",async()=>{
+      initWorldLife();
+      const preferred=worldBoot.preferredSpawn||spawn;if(!syncPlayerToSafeGround(preferred.x,preferred.z)&&!syncPlayerToSafeGround(spawn.x,spawn.z))throw new Error("nenhum ponto de spawn seguro foi encontrado");
+      const professor=npcs.find(npc=>npc.role==="carbon");if(!professor)throw new Error("Prof. Carbono não foi criado");
+      updateTorches();applyCharacterStyle();updateMissionHud();renderInventory();updateChemHud();updateVitals();await nextRenderFrame()
+    });
+    await runBootStage("ready",async()=>{
+      const ready=validateReadyWorld();if(!ready.valid)throw new Error("a verificação final do mundo falhou");
+      recordLabGenerationStep("ready-for-player");labGenerationReport.completedAt=Date.now();
+      if(labGenerationReport.order.some((step,index)=>LAB_GENERATION_ORDER[index]!==step)||labGenerationReport.order.length!==LAB_GENERATION_ORDER.length)throw new Error("pipeline final do laboratório fora de ordem");
+      saveWorldState();$("loaderTip").textContent="Laboratório, vila, arredores, missões e colisões verificados.";await nextRenderFrame()
+    });
+    finishInitialLoad()
+  }catch(error){
+    worldBoot.running=false;worldBoot.error=error;state.loading=true;state.playing=false;state.started=false;$("loaderCopy").textContent="Geração interrompida com segurança";$("loaderErrorCopy").textContent=`A etapa “${worldBoot.stage}” não pôde ser concluída. Nenhum mundo incompleto foi liberado.`;$("loaderError").hidden=false;console.error(`[QuimiCraft][Carregamento] Mundo não liberado. Etapa: ${worldBoot.stage}.`,error)
+  }
+}
 
 let toastTimer;function toast(msg){const e=$("toast");e.textContent=msg;e.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove("show"),1700)}
-function chatMessage(author,text){const log=$("chatLog"),m=document.createElement("div");m.className="chat-msg";m.innerHTML=`<b>${author}:</b> ${String(text).replace(/[<>]/g,"")}`;log.appendChild(m);while(log.children.length>6)log.removeChild(log.firstChild);setTimeout(()=>{if(m.parentNode)m.style.opacity=.32},9000)}
+function chatMessage(author,text,options={}){
+  const speaker=String(author||""),fallbackCategory=speaker==="SISTEMA"?"system":speaker==="QUÍMICA"?"chemistry":"dialogue";
+  return messageCenter?.add({speaker,text,category:options.category||fallbackCategory,...options})
+}
 function chooseSlot(i){state.selected=(i+9)%9;renderHotbar()}
-function uiBlocking(){return state.inventory||state.chemistry||state.periodic||state.shop||state.character||state.chat||state.devOpen||state.graphics}
-function requestPointer(){if(state.started&&!uiBlocking()&&!state.paused)renderer.domElement.requestPointerLock()}
+function uiBlocking(){return state.loading||state.awaitingEntry||state.inventory||state.chemistry||state.periodic||state.shop||state.character||state.chat||state.devOpen||state.graphics||state.history||state.professor}
+function requestPointer({notify=false}={}){
+  if(!state.started||state.loading||uiBlocking()||state.paused||document.pointerLockElement===renderer.domElement)return false;
+  try{
+    const result=renderer.domElement.requestPointerLock();
+    if(result&&typeof result.catch==="function")result.catch(error=>handlePointerLockFailure(error,notify));
+    return true
+  }catch(error){handlePointerLockFailure(error,notify);return false}
+}
+function handlePointerLockFailure(error,notify=false){
+  state.playing=false;state.left=false;
+  console.warn("[QuimiCraft] O navegador bloqueou a captura do mouse. Um clique direto no botão Continuar é necessário.",error);
+  if(state.started&&!state.loading&&!uiBlocking()){
+    $("pauseCopy").textContent=location.protocol==="file:"&&window.self!==window.top?"Este arquivo foi aberto dentro de uma prévia/iframe. Abra o index.html diretamente em uma aba do navegador e clique em Continuar.":"O navegador não autorizou a captura automática do mouse. Clique em Continuar para entrar novamente.";
+    showPause()
+  }
+  if(notify)toast("Clique em Continuar para capturar o mouse")
+}
 function openInventory(){state.inventory=true;state.playing=false;state.left=false;$("inventory").classList.add("open");$("inventory").setAttribute("aria-hidden","false");document.exitPointerLock();renderInventory()}
 function closeInventory(){state.inventory=false;$("inventory").classList.remove("open");$("inventory").setAttribute("aria-hidden","true");if(state.started)requestPointer()}
-function closeModals(){state.inventory=state.chemistry=state.periodic=state.shop=state.character=state.chat=state.devOpen=state.graphics=false;state.paused=false;for(const id of ["inventory","chemistry","periodicTable","shop","character","devMenu","graphics","pause"])$(id).classList.remove("open");$("chat").classList.remove("open")}
-function showPause(){if(!state.started||uiBlocking())return;state.playing=false;state.left=false;state.paused=true;$("pause").classList.add("open")}
+function closeModals(){state.inventory=state.chemistry=state.periodic=state.shop=state.character=state.chat=state.devOpen=state.graphics=state.history=state.professor=false;state.paused=false;for(const id of ["inventory","chemistry","periodicTable","shop","character","devMenu","graphics","professor","messageHistory","pause"])$(id).classList.remove("open");$("chat").classList.remove("open")}
+function showPause(){if(state.loading||!state.started||uiBlocking())return;state.playing=false;state.left=false;state.paused=true;$("pause").classList.add("open")}
+let historyReturnToPause=false;
+function openMessageHistory(fromPause=false){
+  if(state.loading)return;historyReturnToPause=!!fromPause||state.paused;state.history=true;state.playing=false;state.left=false;state.paused=historyReturnToPause;$("pause").classList.remove("open");$("messageHistory").classList.add("open");$("messageHistory").setAttribute("aria-hidden","false");document.exitPointerLock();messageCenter.renderHistory(messageCenter.getFilter())
+}
+function closeMessageHistory(){
+  state.history=false;$("messageHistory").classList.remove("open");$("messageHistory").setAttribute("aria-hidden","true");
+  if(historyReturnToPause){state.paused=true;$("pause").classList.add("open")}else{state.paused=false;requestPointer()}
+  historyReturnToPause=false
+}
 function openChat(){if(!state.started||uiBlocking())return;state.chat=true;state.playing=false;state.left=false;$("chat").classList.add("open");document.exitPointerLock();setTimeout(()=>$("chatInput").focus(),30)}
 function closeChat(){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";requestPointer()}
 function submitChat(){const text=$("chatInput").value.trim();if(!text)return closeChat();if(text.toLowerCase()==="-mododev"){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";return openDev()}chatMessage("VOCÊ",text);if(text.startsWith("/")&&dev.allRecipes)runDevCommand(text.slice(1));closeChat()}
@@ -880,24 +1542,41 @@ function openGraphics(){state.graphics=true;state.paused=false;$("pause").classL
 function closeGraphics(){state.graphics=false;$("graphics").classList.remove("open");state.paused=true;$("pause").classList.add("open")}
 function saveSettings(){localStorage.qc_settings=JSON.stringify(settings)}
 
-$("playBtn").onclick=()=>{initAudio();state.started=true;state.paused=false;$("titleScreen").classList.add("hidden");$("hud").classList.add("visible");chatMessage("PROF. CARBONO","O Laboratório Carbono foi ampliado. A entrada dupla agora abre em conjunto, e a Tabela Periódica monumental possui um bloco 3D para cada elemento.");chatMessage("GUARDIÃ ÍRIS","A Vila dos Elementos fica a leste, perto de X 48 · Z −22. Há vinte casas e cinco lojas.");requestPointer();setTimeout(()=>$("controls").classList.add("hide"),12000)};
+$("playBtn").onclick=()=>{if(openStandaloneLocalFile())return;initAudio();$("loaderReady").hidden=true;startWorldLoading()};
+$("loaderRetry").onclick=()=>{$("loaderReady").hidden=true;startWorldLoading()};
+$("loaderEnter").onclick=enterLoadedWorld;
 $("customizeBtn").onclick=openCharacter;$("newWorldTitleBtn").onclick=restartWorld;$("newWorldBtn").onclick=restartWorld;
-$("resumeBtn").onclick=()=>{state.paused=false;$("pause").classList.remove("open");requestPointer()};$("graphicsBtn").onclick=openGraphics;$("restartBtn").onclick=respawn;
-$("titleBtn").onclick=()=>{state.started=false;state.playing=false;state.paused=false;$("pause").classList.remove("open");$("hud").classList.remove("visible");$("titleScreen").classList.remove("hidden")};
-document.querySelector("[data-close=inventory]").onclick=closeInventory;$("recipeBookToggle").onclick=()=>{recipeBookOpen=!recipeBookOpen;updateRecipeBookState()};$("recipeBookClose").onclick=()=>{recipeBookOpen=false;updateRecipeBookState()};$("craftOutput").onclick=()=>craft();document.querySelector("[data-close=chemistry]").onclick=closeChemistry;$("periodicTableBtn").onclick=openPeriodicTable;document.querySelector("[data-close=periodicTable]").onclick=closePeriodicTable;document.querySelector("[data-close=shop]").onclick=closeShop;document.querySelector("[data-close=character]").onclick=closeCharacter;document.querySelector("[data-close=devMenu]").onclick=closeDev;document.querySelector("[data-close=graphics]").onclick=closeGraphics;
+$("resumeBtn").onclick=()=>{state.paused=false;$("pause").classList.remove("open");$("pauseCopy").textContent="O laboratório, a vila e as criaturas esperam por você.";requestPointer({notify:true})};$("pauseHistoryBtn").onclick=()=>openMessageHistory(true);$("graphicsBtn").onclick=openGraphics;$("restartBtn").onclick=respawn;
+$("titleBtn").onclick=()=>{saveWorldState();state.started=false;state.startQueued=false;state.awaitingEntry=false;state.playing=false;state.paused=false;$("pause").classList.remove("open");$("hud").classList.remove("visible");$("titleScreen").classList.remove("hidden");messageCenter.clearVisible()};
+document.querySelector("[data-close=inventory]").onclick=closeInventory;$("recipeBookToggle").onclick=()=>{recipeBookOpen=!recipeBookOpen;updateRecipeBookState()};$("recipeBookClose").onclick=()=>{recipeBookOpen=false;updateRecipeBookState()};$("craftOutput").onclick=()=>craft();document.querySelector("[data-close=chemistry]").onclick=closeChemistry;$("periodicTableBtn").onclick=openPeriodicTable;document.querySelector("[data-close=periodicTable]").onclick=closePeriodicTable;document.querySelector("[data-close=shop]").onclick=closeShop;document.querySelector("[data-close=character]").onclick=closeCharacter;document.querySelector("[data-close=devMenu]").onclick=closeDev;document.querySelector("[data-close=graphics]").onclick=closeGraphics;document.querySelector("[data-close=professor]").onclick=closeProfessor;document.querySelector("[data-close=messageHistory]").onclick=closeMessageHistory;
+$("historyHudBtn").onclick=()=>openMessageHistory(false);
+$("professorActions").querySelectorAll("[data-professor-view]").forEach(button=>button.onclick=()=>renderProfessor(button.dataset.professorView));
+$("historyFilters").querySelectorAll("[data-history-filter]").forEach(button=>button.onclick=()=>{$("historyFilters").querySelectorAll("[data-history-filter]").forEach(item=>item.classList.toggle("active",item===button));messageCenter.setFilter(button.dataset.historyFilter)});
 $("settingsToggle").onclick=()=>{$("settingsToggle").classList.toggle("open");$("settings").classList.toggle("open")};
 $("qualityPreset").onchange=e=>applyPreset(e.target.value);$("renderDistance").oninput=e=>$("renderOut").value=`${e.target.value} chunks`;$("renderDistance").onchange=e=>{settings.render=+e.target.value;settings.preset="custom";saveSettings();centerChunk.x=999;ensureChunks(true)};
 for(const [id,key,rebuild] of [["shadowQuality","shadows",false],["aoQuality","ao",true],["waterQuality","water",false],["particleQuality","particles",false],["vegetationQuality","vegetation",true],["resolutionScale","resolution",false],["mobDensity","mobs",false]])$(id).onchange=e=>{settings[key]=+e.target.value;settings.preset="custom";applyGraphics(rebuild)};
 $("cloudToggle").onchange=e=>{settings.clouds=e.target.checked;settings.preset="custom";applyGraphics()};$("sensitivity").oninput=e=>{settings.sense=+e.target.value/100;$("senseOut").value=`${e.target.value}%`;saveSettings()};$("volume").oninput=e=>{settings.volume=+e.target.value/100;$("volumeOut").value=`${e.target.value}%`;if(master)master.gain.value=settings.volume*.32;saveSettings()};
 $("runCommand").onclick=()=>{runDevCommand($("devCommand").value);$("devCommand").value=""};$("devCommand").onkeydown=e=>{if(e.key==="Enter"){$("runCommand").click();e.stopPropagation()}};$("chatInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();submitChat()}else if(e.key==="Escape"){e.stopPropagation();closeChat()}};
 
-document.addEventListener("pointerlockchange",()=>{const locked=document.pointerLockElement===renderer.domElement;if(locked){state.playing=true;state.paused=false;$("pause").classList.remove("open")}else if(state.started&&!uiBlocking())showPause()});
+document.addEventListener("pointerlockchange",()=>{const locked=document.pointerLockElement===renderer.domElement;if(locked&&!state.loading){state.playing=true;state.paused=false;$("pauseCopy").textContent="O laboratório, a vila e as criaturas esperam por você.";$("pause").classList.remove("open")}else if(locked&&state.loading)document.exitPointerLock();else if(state.started&&!uiBlocking())showPause()});
+document.addEventListener("pointerlockerror",event=>handlePointerLockFailure(event,false));
 document.addEventListener("mousemove",e=>{if(!state.playing)return;player.yaw-=e.movementX*.00155*settings.sense;player.pitch=clamp(player.pitch-e.movementY*.00155*settings.sense,-Math.PI/2+.02,Math.PI/2-.02)});
-document.addEventListener("keydown",e=>{if(state.chat)return;if(e.code==="Enter"&&state.started){e.preventDefault();return openChat()}if(e.code==="Escape"&&state.periodic){e.preventDefault();return closePeriodicTable()}if(e.code==="Escape"&&state.inventory){e.preventDefault();return closeInventory()}if((e.code==="Tab"||e.code==="KeyE")&&state.started&&!state.chemistry&&!state.periodic&&!state.shop&&!state.character&&!state.devOpen&&!state.graphics&&!state.paused){e.preventDefault();return state.inventory?closeInventory():openInventory()}keys[e.code]=true;if(e.code.startsWith("Digit")){const n=+e.code.slice(5);if(n>=1&&n<=9)chooseSlot(n-1)}if(e.code==="KeyC"&&state.playing){e.preventDefault();cycleCamera()}if(e.code==="KeyF"&&state.playing){e.preventDefault();interact()}if(e.code==="Space"&&!dev.fly){e.preventDefault();if(state.playing){if(player.inWater)player.vel.y=Math.max(player.vel.y,2.6);else if(player.onGround){player.vel.y=7.2;player.onGround=false;player.fallStart=player.pos.y}}}});
-document.addEventListener("keyup",e=>keys[e.code]=false);renderer.domElement.addEventListener("mousedown",e=>{if(!state.playing)return;if(e.button===0){if(WEAPONS.has(selectedItem()))attackSelected(false);else state.left=true}if(e.button===2)useOrPlace()});document.addEventListener("mouseup",e=>{if(e.button===0)state.left=false});renderer.domElement.addEventListener("contextmenu",e=>e.preventDefault());renderer.domElement.addEventListener("wheel",e=>{if(state.playing){e.preventDefault();chooseSlot(state.selected+(e.deltaY>0?1:-1))}},{passive:false});
+document.addEventListener("keydown",e=>{
+  if(state.loading||state.awaitingEntry){e.preventDefault();return}
+  if(state.chat)return;
+  if(e.code==="Escape"){
+    e.preventDefault();
+    if(state.history)return closeMessageHistory();if(state.professor)return closeProfessor();if(state.periodic)return closePeriodicTable();if(state.inventory)return closeInventory();if(state.chemistry)return closeChemistry();if(state.shop)return closeShop();if(state.character)return closeCharacter();if(state.devOpen)return closeDev();if(state.graphics)return closeGraphics();if(state.paused){state.paused=false;$("pause").classList.remove("open");return requestPointer()}if(state.started)return showPause()
+  }
+  if(e.code==="Enter"&&state.started){e.preventDefault();return openChat()}
+  if(e.code==="Tab"&&state.started&&!uiBlocking()&&!state.paused){e.preventDefault();return state.inventory?closeInventory():openInventory()}
+  if(e.code==="KeyM"&&state.started&&!uiBlocking()){e.preventDefault();const stats=elementMissions.getStats();if(stats.introduced){elementMissions.setTrackerHidden(!stats.trackerHidden);updateMissionHud()}return}
+  keys[e.code]=true;if(e.code.startsWith("Digit")){const n=+e.code.slice(5);if(n>=1&&n<=9)chooseSlot(n-1)}if(e.code==="KeyC"&&state.playing){e.preventDefault();cycleCamera()}if(e.code==="KeyE"&&state.playing){e.preventDefault();interact()}if(e.code==="Space"&&!dev.fly){e.preventDefault();if(state.playing){if(player.inWater)player.vel.y=Math.max(player.vel.y,2.6);else if(player.onGround){player.vel.y=7.2;player.onGround=false;player.fallStart=player.pos.y}}}
+});
+document.addEventListener("keyup",e=>keys[e.code]=false);renderer.domElement.addEventListener("click",()=>{if(state.started&&!state.loading&&!state.playing&&!state.paused&&!uiBlocking())requestPointer({notify:true})});renderer.domElement.addEventListener("mousedown",e=>{if(!state.playing)return;if(e.button===0){if(WEAPONS.has(selectedItem()))attackSelected(false);else state.left=true}if(e.button===2)useOrPlace()});document.addEventListener("mouseup",e=>{if(e.button===0)state.left=false});renderer.domElement.addEventListener("contextmenu",e=>e.preventDefault());renderer.domElement.addEventListener("wheel",e=>{if(state.playing){e.preventDefault();chooseSlot(state.selected+(e.deltaY>0?1:-1))}},{passive:false});
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio*(+settings.resolution||1),1.6))});syncGraphicControls();applyGraphics();
 
-let prevDay=state.day,bubbleClock=0;
+let prevDay=state.day,bubbleClock=0,lastWorldSaveAt=0,wasNearLaboratory=false;
 const colorNight=new THREE.Color(0x071326),colorDawn=new THREE.Color(0xd8795c),colorDay=new THREE.Color(0x8bc8e7),colorFog=new THREE.Color();
 function updateCycle(dt,now){
   if(!state.paused){state.day=(state.day+dt/DAY_SECONDS)%1;if(state.day<prevDay)state.dayCount++;prevDay=state.day}
@@ -912,11 +1591,18 @@ function updateCycle(dt,now){
   if(solar<-.2&&audioCtx&&now-lastCricket>1800+Math.random()*3600){lastCricket=now;cricket()}
 }
 function updateMenu(now){playerBody.visible=false;firstHands.visible=false;const a=now*.000045,r=34,focus=new THREE.Vector3(spawn.x+7,terrainHeight(spawn.x+7,spawn.z+5)+4,spawn.z+5);camera.position.set(focus.x+Math.cos(a)*r,focus.y+14+Math.sin(a*.7)*4,focus.z+Math.sin(a)*r);camera.lookAt(focus);camera.fov=57;camera.updateProjectionMatrix()}
-function updateHud(){state.frames++;const now=performance.now();if(now-state.fpsTime>500){state.fps=Math.round(state.frames*1000/(now-state.fpsTime||1));state.frames=0;state.fpsTime=now;$("fps").textContent=`FPS ${state.fps}`;$("coords").innerHTML=`X ${Math.floor(player.pos.x)} &nbsp; Y ${Math.floor(player.pos.y)} &nbsp; Z ${Math.floor(player.pos.z)}`;$("biome").textContent=biomeAt(player.pos.x,player.pos.z).toUpperCase()}}
+function updateHud(){state.frames++;const now=performance.now();if(now-state.fpsTime>500){state.fps=Math.round(state.frames*1000/(now-state.fpsTime||1));state.frames=0;state.fpsTime=now;const biome=biomeAt(player.pos.x,player.pos.z);$("fps").textContent=`FPS ${state.fps}`;$("coords").innerHTML=`X ${Math.floor(player.pos.x)} &nbsp; Y ${Math.floor(player.pos.y)} &nbsp; Z ${Math.floor(player.pos.z)}`;$("biome").textContent=biome.toUpperCase();if(state.playing&&biome!==lastMissionBiome){lastMissionBiome=biome;elementMissions?.recordEvent("visit_biome",{id:biome})}}}
+function verifyLaboratoryOnEntry(){
+  if(!npcs.some(npc=>npc.role==="carbon")){console.warn("[QuimiCraft][Laboratório] Prof. Carbono ausente; NPC restaurado no socket professor-position.");ensureProfessorCarbono()}
+  let report=validateLaboratory({recordStep:false});if(report.repaired)report=validateLaboratory({repair:false,recordStep:false});
+  if(!report.valid){console.warn("[QuimiCraft][Laboratório] Verificação de entrada detectou conteúdo inconsistente; reconstruindo apenas a decoração e as colisões.");createLaboratoryDecor();report=validateLaboratory({recordStep:false});if(report.repaired)report=validateLaboratory({repair:false,recordStep:false})}
+  if(report.valid&&labGenerationReport.repairs.length)messageCenter.add({category:"system",text:"O Laboratório Carbono foi verificado e um componente foi reparado com segurança."});
+  return report.valid
+}
 function bubble(pos){if(settings.particles===0)return;const m=new THREE.Mesh(new THREE.SphereGeometry(.035+Math.random()*.045,6,5),new THREE.MeshBasicMaterial({color:0xa7eaff,transparent:true,opacity:.48,wireframe:true}));m.position.set(pos.x+(Math.random()-.5)*.55,pos.y+.4+Math.random(),pos.z+(Math.random()-.5)*.55);m.userData.v=new THREE.Vector3((Math.random()-.5)*.08,.38+Math.random()*.3,(Math.random()-.5)*.08);m.userData.life=.7+Math.random()*.8;particleGroup.add(m);particles.push(m)}
 function animate(now){
   requestAnimationFrame(animate);const dt=Math.min(.035,Math.max(.001,(now-state.lastFrame)/1000));state.lastFrame=now;processChunks();
-  if(state.playing){updatePhysics(dt);ensureChunks();updateTarget(dt);updateEntities(dt,now);updateProjectiles(dt);updateDrops(dt,now);updateEnemyHud(dt);updateInteraction();updateLabDecor(now);bubbleClock+=dt;if(player.inWater&&bubbleClock>.17){bubbleClock=0;bubble(player.pos)}}else if(!state.started)updateMenu(now);else updatePlayerCamera(dt,false);
+  if(state.playing){updatePhysics(dt);ensureChunks();updateTarget(dt);updateEntities(dt,now);updateProjectiles(dt);updateDrops(dt,now);updateEnemyHud(dt);updateInteraction();updateLabDecor(now);const nearLab=labBoundsContains(player.pos.x,player.pos.z,3);if(nearLab&&!wasNearLaboratory)verifyLaboratoryOnEntry();wasNearLaboratory=nearLab;bubbleClock+=dt;if(player.inWater&&bubbleClock>.17){bubbleClock=0;bubble(player.pos)}if(now-lastWorldSaveAt>10000){lastWorldSaveAt=now;saveWorldState()}}else if(!state.started)updateMenu(now);else updatePlayerCamera(dt,false);
   updateCycle(dt,now);updateParticles(dt);updateHud();renderer.render(scene,camera);
 }
-seedLaboratory();seedVillage();applyCharacterStyle();updateMissionHud();if(!localStorage.qc_v44_wallet&&countItem("gold_nugget")===0){addItem("gold_nugget",10);localStorage.qc_v44_wallet="1"}saveInventory();renderInventory();updateChemHud();updateVitals();ensureChunks(true);updateTorches();requestAnimationFrame(animate);
+applyCharacterStyle();updateMissionHud();saveInventory();renderInventory();updateChemHud();updateVitals();if(isEmbeddedLocalFile())$("localFrameNotice").hidden=false;window.addEventListener("beforeunload",()=>{if(initialReady)saveWorldState()});requestAnimationFrame(animate);

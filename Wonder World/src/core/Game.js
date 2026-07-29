@@ -475,6 +475,7 @@ export class Game {
             await this.ensureBuiltThrough(1, "Preparando o prólogo…");
             this.ui.updateLoading("Organizando o inventário…", "Removendo o progresso anterior e posicionando os objetos.", 68);
             this.inventory.restore([], this.itemCatalog);
+            this.syncTorchAvailability();
             this.inventoryOpen = false;
             this.ui.hideInventory();
             this.stage = "prologue";
@@ -547,6 +548,7 @@ export class Game {
         this.fire.fuel = save.torchFuel;
         this.world.restoreProgress(save.inventory, save.solvedPuzzles, save.powerRestored, save.checkpoint, save.openedContainers, save.lootedContainers, save.activatedCheckpoints);
         this.inventory.restore(save.inventory, this.itemCatalog);
+        this.syncTorchAvailability();
         this.lastCheckpoint = save.checkpoint;
         this.runtimeCheckpointPositions.set(save.checkpoint, Vector3.FromArray(save.checkpointPosition));
         this.endings = new Set(save.endings);
@@ -900,7 +902,12 @@ export class Game {
             "restore-power": [
                 "Você precisa de quatro peças: chave, fusível, cabo e manivela.",
                 "A chave está na loja de presentes; as outras peças ficam em setores próximos do corredor principal.",
-                "Quando reunir tudo, volte ao painel elétrico."
+                "Empurre o caixote da manutenção para revelar o cabo escondido no chão."
+            ],
+            "repair-power-panel": [
+                "As quatro peças já foram coletadas.",
+                "Volte ao setor elétrico no corredor da esquerda.",
+                "Interaja com o quadro elétrico para instalar as peças e ligar a energia."
             ],
             "survive-plush": [
                 "Use a tocha acesa contra os brinquedos quando eles se aproximarem.",
@@ -909,7 +916,7 @@ export class Game {
             ],
             "solve-body-puzzles": [
                 "Há quatro salas temáticas: mãos, olhos, coração e pés.",
-                "Leia os letreiros e pistas de cada sala antes de mexer nos mecanismos.",
+                "Mãos: 2, 4, 3 e 1 giros finais. Olhos: 2, 3 e 4 giros. Coração: válvulas 2, 1 e 3, depois três pulsações regulares. Pés: 1, 3, 2, 4.",
                 "Concluir as quatro partes abre o caminho para o auditório."
             ],
             "enter-auditorium": [
@@ -1068,6 +1075,13 @@ export class Game {
         this.engine.setHardwareScalingLevel(scaling);
         this.horrorLighting.applyPerformancePreset(settings.performancePreset);
     }
+    syncTorchAvailability() {
+        const available = this.inventory.has("torch") || this.inventory.has("replacementTorch");
+        if (this.fire.torchAvailable !== available)
+            this.fire.setTorchAvailable(available);
+        else if (available)
+            this.fire.ensureTorchVisualIntegrity();
+    }
     toggleTorch() {
         if (!this.player.enabled || (!this.inventory.has("torch") && !this.inventory.has("replacementTorch")))
             return;
@@ -1177,6 +1191,7 @@ export class Game {
         // rendered on some browsers.
         this.construction.update(deltaSeconds);
         this.horrorLighting.update(deltaSeconds);
+        this.syncTorchAvailability();
         if (this.construction.active)
             return;
         this.player.update(deltaSeconds);
@@ -1614,6 +1629,7 @@ export class Game {
             "reach-side-door": "ALCANCE A ENTRADA LATERAL.",
             "search-friends": "PROCURE SINAIS DOS SEUS AMIGOS E RESTAURE A ELETRICIDADE.",
             "restore-power": "RESTAURE A ELETRICIDADE.",
+            "repair-power-panel": "VOLTE AO QUADRO ELÉTRICO E INSTALE AS PEÇAS.",
             "solve-body-puzzles": "ATIVE AS QUATRO PARTES DO CORPO PARA ABRIR O AUDITÓRIO.",
             "enter-auditorium": "ENTRE NO AUDITÓRIO.",
             "defeat-body": "DERROTE BODY.",

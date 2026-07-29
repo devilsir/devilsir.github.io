@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Marcha dos Cátions — Estrofe 3</title>
+<style>
+  :root{
+    --bg:#0f1117; --ink:#e5e7eb; --muted:#9aa4b2;
+    --acid:#5eead4;   /* HCl (não usado aqui) */
+    --h2s:#34d399;    /* H2S */
+    --ammS:#60a5fa;   /* (NH4)2S */
+    --unknown:#8b5cf6;
+    --white:#ffffff; --black:#0b0b0b;
+    --orange:#f59e0b; --amber:#d97706; --yellow:#fbbf24; --lemon:#fde047;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 800px at 70% -20%, #1f2430 0%, var(--bg) 38%, #0b0d12 100%);
+    color:var(--ink); min-height:100vh; display:grid; place-items:center; padding:20px;
+  }
+  .wrap{display:grid; gap:18px; width:min(1350px, 97vw);}
+  .top{display:grid; grid-template-columns:  0.9fr 1.3fr; gap:16px;}
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:16px 18px; backdrop-filter: blur(6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  h1{font-size:20px;margin:0 0 8px 0; letter-spacing:.3px}
+  .poem{line-height:1.6; font-size:15.5px; white-space:pre-line}
+  .line{
+    color:var(--muted); transition: color .25s, text-shadow .25s, background .25s;
+    padding:2px 6px; border-radius:8px; margin:1px 0; cursor:pointer;
+  }
+  .line:hover{ background: rgba(251,191,36,.1); color:#fef3c7 }
+  .line.active{color:var(--ink); text-shadow: 0 0 12px rgba(255,255,255,.18)}
+  .hint{font-size:12px;color:#aab3bf;margin-top:6px}
+  .controls{display:flex;gap:10px; flex-wrap:wrap}
+  button{
+    appearance:none; border:none; color:#0b0d12; font-weight:600;
+    padding:10px 14px; border-radius:12px; cursor:pointer;
+    background: linear-gradient(180deg, #e9edf7, #cfd7e6);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .ghost{ background:transparent; color:#e5e7eb; border:1px solid rgba(255,255,255,.2); box-shadow:none }
+  button:active{transform:translateY(1px)}
+  #lab{ width:100%; height:640px; display:block; border-radius:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    border:1px solid rgba(255,255,255,0.08);
+  }
+
+  /* SVG styling */
+  .glass{fill:rgba(255,255,255,0.06); stroke:rgba(255,255,255,0.25); stroke-width:2}
+  .liquid{fill:var(--unknown); opacity:.9}
+  .label{font-size:12px; fill:#c7cfdb}
+  .small{font-size:10px}
+  .hidden{opacity:0; pointer-events:none}
+  .fade{transition:opacity .6s ease}
+  .grow{transition:all .6s ease}
+  .tube{filter: drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+  .pipette{filter: drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+  .drop{opacity:0}
+  .fall{animation:dropFall 1.0s ease-in forwards}
+  @keyframes dropFall{
+    0%{opacity:1; transform: translateY(-6px)}
+    80%{opacity:1; transform: translateY(165px)}
+    100%{opacity:0; transform: translateY(175px)}
+  }
+
+  /* H2S bubbling */
+  .bubble{opacity:0}
+  @keyframes rise{
+    0%{opacity:0; transform:translateY(60px)}
+    10%{opacity:1}
+    80%{opacity:1}
+    100%{opacity:0; transform:translateY(-40px)}
+  }
+  .bubbling .b1{ animation: rise 1.2s ease-in-out 1 both; }
+  .bubbling .b2{ animation: rise 1.2s ease-in-out 1 both; animation-delay:.2s;}
+  .bubbling .b3{ animation: rise 1.2s ease-in-out 1 both; animation-delay:.4s;}
+
+  /* effects */
+  .pulse-clear{animation:pulseClear 1.0s ease-in-out 2}
+  @keyframes pulseClear{ 0%{opacity:.6} 50%{opacity:.15} 100%{opacity:.6} }
+  .legend{font-size:11px; fill:#b7c0ce}
+</style>
+  <script src="scene-prelude.js"></script>
+  <link rel="stylesheet" href="scene-shared.css">
+</head>
+<body data-scene-index="1">
+  <div class="wrap">
+
+    <div class="top">
+      <div class="card">
+        <h1>Estrofe 3 — Poema da Marcha dos Cátions</h1>
+        <div class="poem" id="poem">
+<span class="line">Se feito o tratamento precedente</span>
+<span class="line">Nenhum precipitado ali se desse,</span>
+<span class="line">Faz-se no líquido passar uma corrente</span>
+<span class="line">De um gás denominado agadoiesse.</span>
+<span class="line">Bismuto, ouro, platina e mais o cobre</span>
+<span class="line">Cada um por precipitado negro se descobre;</span>
+<span class="line">Também do chumbo e do mercúrio aqui figura</span>
+<span class="line">Como só o piolho na costura.</span>
+<span class="line">Antimônio dá precipitado alaranjado,</span>
+<span class="line">Estanoso, amarelo-acastanhado;</span>
+<span class="line">E é de cor amarela mui garrida</span>
+<span class="line">Do cádmio, estânico e raticida.</span>
+<span class="line">Do estanho, platina e ouro</span>
+<span class="line">Antimônio e mata-rato</span>
+<span class="line">O precipitado é muito solúvel</span>
+<span class="line">No sulfeto de amônio.</span>
+        </div>
+        <div class="hint">H₂S (“agadoiesse”) gera sulfetos: negros (Bi, Cu, Au, Pt), coloridos (Sb laranja; Sn(II) amarelo-acastanhado; Cd/As/Sn(IV) amarelos). (NH₄)₂S dissolve Sb/Sn/As/Au/Pt; Bi/Cu/Cd ficam.</div>
+        <div class="controls" style="margin-top:10px;">
+          <button id="play">▶ Play</button>
+          <button id="pause">⏸ Pausar</button>
+          <button id="reset" class="ghost">⟲ Reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- LAB SCENE -->
+        <svg id="lab" viewBox="0 0 880 450" aria-labelledby="title desc" role="img">
+          <title id="title">Cena — Estrofe 3: H₂S e (NH₄)₂S</title>
+          <desc id="desc">H₂S borbulhando no becker; rack com 8 tubos (Bi, Cu, Au/Pt, Cd, Sb, Sn(II), Sn(IV), As); pipeta de (NH₄)₂S dissolve seletivamente.</desc>
+
+          <!-- bench -->
+          <rect x="0" y="320" width="880" height="130" fill="url(#bench)"/>
+          <defs>
+            <linearGradient id="bench" x1="0" y1="320" x2="0" y2="450">
+              <stop offset="0%" stop-color="#1b202b"/>
+              <stop offset="100%" stop-color="#12151c"/>
+            </linearGradient>
+          </defs>
+
+          <!-- beaker with hose -->
+          <g id="beaker" transform="translate(20,60)">
+            <rect x="0" y="0" width="180" height="10" rx="4" class="glass"/>
+            <rect x="0" y="10" width="180" height="230" rx="12" class="glass"/>
+            <rect id="unknownLiquid" x="7" y="140" width="166" height="92" rx="8" class="liquid"/>
+            <text x="90" y="260" text-anchor="middle" class="label">Amostra (sem ppt anterior)</text>
+            <!-- hose -->
+            <g id="hose" transform="translate(150,0)">
+              <rect x="-10" y="-20" width="6" height="160" rx="3" fill="#a5f3fc" stroke="#67e8f9"/>
+              <circle class="bubble b1" cx="-7" cy="120" r="5" fill="var(--h2s)"/>
+              <circle class="bubble b2" cx="-14" cy="130" r="4" fill="var(--h2s)"/>
+              <circle class="bubble b3" cx="-3" cy="135" r="3" fill="var(--h2s)"/>
+              <text x="-34" y="-28" class="label">H₂S</text>
+            </g>
+          </g>
+
+          <!-- rack of tubes -->
+          <g id="tubes" class="fade hidden" transform="translate(230,30)">
+            <!-- columns 8 tubes, width 70, step 80 -->
+            <!-- Bi (black) -->
+            <g class="tube" id="tBi" transform="translate(0,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqBi" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptBi" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="#0b0b0b" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Bi³⁺</text>
+            </g>
+
+            <!-- Cu (black) -->
+            <g class="tube" id="tCu" transform="translate(80,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqCu" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptCu" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="#0b0b0b" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Cu²⁺</text>
+            </g>
+
+            <!-- Au/Pt (black) -->
+            <g class="tube" id="tAuPt" transform="translate(160,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqAuPt" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptAuPt" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="#0b0b0b" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Au/Pt</text>
+            </g>
+
+            <!-- Cd (yellow; stays) -->
+            <g class="tube" id="tCd" transform="translate(240,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqCd" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptCd" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--lemon)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Cd²⁺</text>
+            </g>
+
+            <!-- Sb (orange; dissolves in (NH4)2S) -->
+            <g class="tube" id="tSb" transform="translate(320,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqSb" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptSb" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--orange)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Sb³⁺</text>
+            </g>
+
+            <!-- Sn(II) amber; dissolves -->
+            <g class="tube" id="tSnII" transform="translate(400,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqSnII" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptSnII" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--amber)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Sn²⁺</text>
+            </g>
+
+            <!-- Sn(IV) yellow; dissolves -->
+            <g class="tube" id="tSnIV" transform="translate(480,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqSnIV" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptSnIV" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--yellow)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Sn⁴⁺</text>
+            </g>
+
+            <!-- As (yellow; dissolves) -->
+            <g class="tube" id="tAs" transform="translate(560,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqAs" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptAs" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--yellow)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">As³⁺</text>
+            </g>
+
+            <text x="280" y="320" text-anchor="middle" class="legend">Após H₂S: negros (Bi, Cu, Au/Pt); amarelos (Cd, Sn⁴⁺, As); âmbar/laranja (Sn²⁺, Sb).</text>
+          </g>
+
+          <!-- pipette (NH4)2S -->
+          <g id="pipAmm" class="pipette fade hidden" transform="translate(300,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6" />
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--ammS)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropAmm" class="drop" cx="7" cy="120" r="6" fill="var(--ammS)"/>
+            <text x="26" y="40" class="label">(NH₄)₂S</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:13px; color:#9fb0c8">
+      H₂S precipita o <b>Grupo II</b>. Negros: Bi, Cu, Au, Pt (Pb/Hg aparecem raramente aqui). Amarelos/laranja: Sb, Sn(II), Sn(IV), Cd, As.  
+      Em <b>(NH₄)₂S</b> (sulfeto de amônio): <u>dissolvem</u> Sb/Sn/As/Au/Pt (tiocomplexos); <u>permanecem</u> Bi/Cu/Cd.
+    </div>
+  </div>
+
+<script>
+(function(){
+  const lines = Array.from(document.querySelectorAll('.line'));
+  const showLine = (idx) => {
+    lines.forEach(el => el.classList.remove('active'));
+    if (idx>=0 && idx<lines.length) lines[idx].classList.add('active');
+  };
+
+  // Elements
+  const hose = document.getElementById('hose');
+  const beaker = document.getElementById('beaker');
+  const tubes = document.getElementById('tubes');
+  const pipAmm = document.getElementById('pipAmm');
+  const dropAmm = document.getElementById('dropAmm');
+
+  // ppt rects
+  const ppt = {
+    Bi: document.getElementById('pptBi'),
+    Cu: document.getElementById('pptCu'),
+    AuPt: document.getElementById('pptAuPt'),
+    Cd: document.getElementById('pptCd'),
+    Sb: document.getElementById('pptSb'),
+    SnII: document.getElementById('pptSnII'),
+    SnIV: document.getElementById('pptSnIV'),
+    As: document.getElementById('pptAs')
+  };
+
+  const playBtn = document.getElementById('play');
+  const pauseBtn = document.getElementById('pause');
+  const resetBtn = document.getElementById('reset');
+
+  let playing = false;
+  let current = -1;
+  let timer = null;
+
+  // Absolute X centers for tubes (tubes group at x=280; each step 80, center at +35)
+  const baseX = 230, step = 80, center = 35, topY = 5;
+  const X = {
+    Bi: baseX + 0*step + center,
+    Cu: baseX + 1*step + center,
+    AuPt: baseX + 2*step + center,
+    Cd: baseX + 3*step + center,
+    Sb: baseX + 4*step + center,
+    SnII: baseX + 5*step + center,
+    SnIV: baseX + 6*step + center,
+    As: baseX + 7*step + center
+  };
+
+  function setOpacity(el,v){ el.style.opacity=String(v); }
+  function reveal(el){ el.classList.remove('hidden'); setOpacity(el,1); }
+  function hide(el){ setOpacity(el,0); el.classList.add('hidden'); }
+  function movePip(x,y){ pipAmm.setAttribute('transform',`translate(${x},${y})`); }
+  function dropOnce(){
+    setOpacity(dropAmm,1);
+    dropAmm.classList.remove('fall'); void dropAmm.offsetWidth; dropAmm.classList.add('fall');
+    setTimeout(()=> setOpacity(dropAmm,0), 1000);
+  }
+
+  function resetScene(){
+    if (timer) { clearTimeout(timer); timer=null; }
+    playing=false; current=-1;
+    lines.forEach(el => el.classList.remove('active'));
+    hose.classList.remove('bubbling');
+    hide(tubes); hide(pipAmm);
+    setOpacity(dropAmm,0); dropAmm.classList.remove('fall');
+    for(const k in ppt){
+      const r = ppt[k];
+      r.setAttribute('height','14'); r.setAttribute('y','236'); setOpacity(r,0);
+    }
+    movePip(X.Sb, topY);
+    pauseBtn.textContent='⏸ Pausar';
+  }
+
+  // Steps aligned with lines
+  const steps = [
+    {line:0, delay:800, fn:(instant)=>{ showLine(0); }},
+    {line:1, delay:800, fn:(instant)=>{ showLine(1); }},
+    {line:2, delay:900, fn:(instant)=>{ showLine(2); }},
+    // Start H2S bubbling
+    {line:3, delay:1200, fn:(instant)=>{
+      showLine(3);
+      hose.classList.add('bubbling');
+    }},
+    // Blacks appear: Bi, Au/Pt, Cu
+    {line:4, delay:800, fn:(instant)=>{
+      reveal(tubes); showLine(4);
+      [ppt.Bi, ppt.AuPt, ppt.Cu].forEach(p=>{ setOpacity(p,1); p.setAttribute('y','214'); p.setAttribute('height','36'); });
+    }},
+    {line:5, delay:600, fn:(instant)=>{ showLine(5); }},
+    // Note Pb/Hg (raros) — we just highlight line
+    {line:6, delay:700, fn:(instant)=>{ showLine(6); }},
+    {line:7, delay:700, fn:(instant)=>{ showLine(7); }},
+    // Sb orange
+    {line:8, delay:600, fn:(instant)=>{ showLine(8); setOpacity(ppt.Sb,1); pGrow(ppt.Sb); }},
+    // Sn(II) amber
+    {line:9, delay:600, fn:(instant)=>{ showLine(9); setOpacity(ppt.SnII,1); pGrow(ppt.SnII); }},
+    // Cd + Sn(IV) + As yellows
+    {line:10, delay:800, fn:(instant)=>{
+      showLine(10);
+      [ppt.Cd, ppt.SnIV, ppt.As].forEach(p=>{ setOpacity(p,1); pGrow(p); });
+    }},
+    // Aparece (NH4)2S
+    {line:11, delay:500, fn:(instant)=>{ showLine(11); reveal(pipAmm); movePip(X.SnII, topY); }},
+    {line:12, delay:400, fn:(instant)=>{ showLine(12); movePip(X.Sb, topY); if(!instant) dropOnce(); }},
+    // dissolve hint
+    {line:13, delay:600, fn:(instant)=>{ showLine(13); setOpacity(ppt.Sb,0); }},
+    // Destaca a ideia de solubilidade antes da frase final.
+    {line:14, delay:700, fn:(instant)=>{ showLine(14); }},
+    // (NH4)2S dissolve others: Sn(II), Sn(IV), As, Au/Pt
+    {line:15, delay:1200, fn:(instant)=>{
+      showLine(15);
+      [ ['SnII',X.SnII], ['SnIV',X.SnIV], ['As',X.As], ['AuPt',X.AuPt] ].forEach(([k,x],i)=>{
+        setTimeout(()=>{ movePip(x, topY); if(!instant) dropOnce(); setOpacity(ppt[k],0); }, i*250);
+      });
+    }},
+  ];
+
+  function pGrow(r){ r.setAttribute('y','214'); r.setAttribute('height','36'); }
+
+  const cueForLine = (idx)=> Math.min(idx, steps.length-1);
+
+  function applyUpTo(target){
+    resetScene();
+    for(let i=0;i<=target;i++){ steps[i].fn(true); }
+    current = target;
+  }
+
+  function runFromCurrent(){
+    if (playing) return;
+    playing = true;
+    function next(){
+      if (!playing) return;
+      const n = current + 1;
+      if (n >= steps.length){ playing=false; return; }
+      current = n;
+      const s = steps[current];
+      s.fn(false);
+      timer = setTimeout(next, s.delay);
+    }
+    next();
+  }
+
+  function pause(){ playing=false; if (timer){ clearTimeout(timer); timer=null; } }
+
+  // UI events
+  playBtn.addEventListener('click', runFromCurrent);
+  pauseBtn.addEventListener('click', ()=>{
+    if (playing){ pause(); pauseBtn.textContent='▶ Retomar'; }
+    else { pauseBtn.textContent='⏸ Pausar'; runFromCurrent(); }
+  });
+  resetBtn.addEventListener('click', resetScene);
+
+  // Click-to-seek
+  lines.forEach((el, idx)=>{
+    el.title='Clique para pular para esta parte';
+    el.addEventListener('click', ()=>{ pause(); applyUpTo(cueForLine(idx)); });
+  });
+
+  // bootstrap
+  resetScene();
+})();
+</script>
+  <script src="scene-shared.js"></script>
+</body>
+</html>

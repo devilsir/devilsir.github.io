@@ -156,9 +156,11 @@ export class InteractionSystem {
                 this.highlight.addMesh(next.mesh, new Color3(1, 0.73, 0.25));
             }
         }
-        // The user-facing instruction is deliberately consistent. The specific
-        // action remains available in the registered definition for documents/tests.
-        this.onPrompt("Aperte E para interagir");
+        const hintValue = typeof next.definition.contextHint === "function"
+            ? next.definition.contextHint()
+            : next.definition.contextHint;
+        const hint = typeof hintValue === "string" ? hintValue.trim() : "";
+        this.onPrompt(hint ? `Aperte E para interagir\n${hint}` : "Aperte E para interagir");
     }
     findBestCandidate() {
         this.camera.computeWorldMatrix(true);
@@ -176,7 +178,7 @@ export class InteractionSystem {
             const nearestToPlayer = this.closestPointInBox(playerPosition, box.minimumWorld, box.maximumWorld);
             const nearestToCamera = this.closestPointInBox(cameraPosition, box.minimumWorld, box.maximumWorld);
             const distance = Vector3.Distance(playerPosition, nearestToPlayer);
-            const maxDistance = definition.maxDistance ?? 4.5;
+            const maxDistance = Math.min(definition.maxDistance ?? 1.75, 2.15);
             if (!Number.isFinite(distance) || distance > maxDistance)
                 continue;
             const aimPoint = Vector3.DistanceSquared(cameraPosition, nearestToCamera) > 0.0001
@@ -187,9 +189,9 @@ export class InteractionSystem {
             const facing = Vector3.Dot(forward, direction);
             // At close range proximity is authoritative. Farther away, the object only
             // needs to be broadly in front instead of under a pixel-perfect crosshair.
-            if (distance > 3.25 && facing < -0.35)
+            if (distance > 1.05 && facing < 0.12)
                 continue;
-            const facingPenalty = distance <= 2.25 ? 0 : (1 - Math.max(-1, Math.min(1, facing))) * 0.25;
+            const facingPenalty = distance <= 0.85 ? 0 : (1 - Math.max(-1, Math.min(1, facing))) * 0.62;
             const score = distance + facingPenalty + (definition.priority ?? 0);
             if (score < bestScore) {
                 best = candidate;

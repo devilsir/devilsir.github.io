@@ -199,7 +199,7 @@ export class MannequinSystem {
         const push = selected.position.subtract(origin);
         push.y = 0;
         if (push.lengthSquared() > 0.001)
-            selected.position.addInPlace(push.normalize().scale(charged ? 1.5 : 0.7));
+            this.moveRecordSafely(selected, push.normalize().scale(charged ? 1.5 : 0.7));
         this.audio.mannequinBreak(selected.position);
         if (selected.health <= 0) {
             selected.state = "crushed";
@@ -374,7 +374,7 @@ export class MannequinSystem {
             const away = record.position.subtract(this.player.collider.position);
             away.y = 0;
             if (away.lengthSquared() > 0.001 && this.movementEnabled) {
-                record.position.addInPlace(away.normalize().scale(deltaSeconds * (record.state === "crawler" ? 3.2 : 4.8)));
+                this.moveRecordSafely(record, away.normalize().scale(deltaSeconds * (record.state === "crawler" ? 4.2 : 5.8)));
                 record.rotationY = Math.atan2(away.x, away.z);
             }
             record.anticipation = 0;
@@ -406,7 +406,7 @@ export class MannequinSystem {
                 this.onDamage(this.rulesCollapsed > 0.65 ? 18 : 11);
                 record.anticipation = 0;
                 const retreat = record.position.subtract(this.player.collider.position).normalize().scale(2.2);
-                record.position.addInPlace(retreat);
+                this.moveRecordSafely(record, retreat);
             }
             return;
         }
@@ -423,12 +423,49 @@ export class MannequinSystem {
         desired.normalize();
         const navigated = this.navigationDirection(record, desired);
         record.rotationY = Math.atan2(navigated.x, navigated.z);
-        record.position.addInPlace(navigated.scale(speed * deltaSeconds));
+        this.moveRecordSafely(record, navigated.scale(speed * deltaSeconds));
         record.movePhase += deltaSeconds * speed * 3;
         if (now - record.lastJointCue > (record.state === "running" ? 0.7 : 1.8) && Math.random() < 0.12) {
             record.lastJointCue = now;
             this.audio.mannequinJoint(record.position, record.state === "running" ? 0.65 : 0.32);
         }
+    }
+    moveRecordSafely(record, movement) {
+        const horizontal = movement.clone();
+        horizontal.y = 0;
+        if (horizontal.lengthSquared() < 0.000001)
+            return false;
+        const canMove = (delta) => {
+            const distance = delta.length();
+            if (distance < 0.0001)
+                return true;
+            const direction = delta.scale(1 / distance);
+            const side = new Vector3(-direction.z, 0, direction.x).scale(record.state === "crawler" ? 0.24 : 0.34);
+            const base = record.position.add(new Vector3(0, record.state === "crawler" ? 0.42 : 0.82, 0));
+            const origins = [base, base.add(side), base.subtract(side)];
+            return origins.every((origin) => {
+                const pick = this.scene.pickWithRay(new Ray(origin, direction, distance + 0.42), (mesh) => {
+                    if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+                        return false;
+                    return !mesh.metadata?.mannequinVisual;
+                });
+                return !pick?.hit || pick.distance > distance + 0.3;
+            });
+        };
+        if (canMove(horizontal)) {
+            record.position.addInPlace(horizontal);
+            return true;
+        }
+        const axes = [new Vector3(horizontal.x, 0, 0), new Vector3(0, 0, horizontal.z)]
+            .sort((a, b) => b.lengthSquared() - a.lengthSquared());
+        let moved = false;
+        for (const axis of axes) {
+            if (axis.lengthSquared() > 0.000001 && canMove(axis)) {
+                record.position.addInPlace(axis);
+                moved = true;
+            }
+        }
+        return moved;
     }
     navigationDirection(record, desired) {
         const origin = record.position.add(new Vector3(0, 0.8, 0));

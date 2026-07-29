@@ -1992,7 +1992,10 @@
     (WRITING_FIELDS[state.page] || []).forEach((field) => {
       const isOwnerField = field.key === "dono";
       const textarea = document.createElement(isOwnerField ? "input" : "textarea");
+      const fieldId = `album-writing-${state.page}-${field.key}`;
       if (isOwnerField) { textarea.type = "text"; textarea.maxLength = 32; textarea.autocomplete = "name"; textarea.spellcheck = false; }
+      textarea.id = fieldId;
+      textarea.name = `album-note-${field.key}`;
       textarea.className = `writing-field ${field.className || ""}`.trim();
       textarea.dataset.fieldKey = field.key;
       textarea.setAttribute("aria-label", field.label); textarea.placeholder = field.placeholder;
@@ -2015,7 +2018,11 @@
         textarea.value = state.playerName;
         saveState(); renderRankingProfile(); queuePlayerSync(80);
       });
-      elements.interactiveLayer.append(textarea);
+      const label = document.createElement("label");
+      label.className = "visually-hidden";
+      label.htmlFor = fieldId;
+      label.textContent = field.label;
+      elements.interactiveLayer.append(label, textarea);
 
       const formatButton = document.createElement("button");
       formatButton.type = "button";

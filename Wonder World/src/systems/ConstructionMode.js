@@ -6,6 +6,7 @@ import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
+import { Ray } from "@babylonjs/core/Culling/ray";
 const STORAGE_KEY = "atracao-final-construction-layout-v2";
 const DEG = Math.PI / 180;
 export class ConstructionMode {
@@ -896,7 +897,6 @@ export class ConstructionMode {
     }
     updateCustomMobs(deltaSeconds) {
         const playerPosition = this.player.collider.position;
-        const torch = this.fire.getTorchThreatPosition();
         for (const runtime of this.custom.values()) {
             const mob = runtime.mob;
             if (!mob || mob.dead || !runtime.root.isEnabled())
@@ -908,12 +908,11 @@ export class ConstructionMode {
             if (distance > 24 || distance < 0.001)
                 continue;
             const direction = toPlayer.normalize();
-            const torchDistance = torch ? Vector3.Distance(torch, position) : Number.POSITIVE_INFINITY;
-            const repelled = torchDistance < 7.5;
-            const speed = mob.speed * (repelled ? -1.8 : distance < 1.2 ? 0 : 1);
+            const repelled = this.fire.isTorchThreatNear(position);
+            const speed = mob.speed * (repelled ? -2.35 : distance < 1.2 ? 0 : 1);
             const movement = direction.scale(speed * deltaSeconds);
             movement.y = 0;
-            runtime.root.position.addInPlace(movement);
+            this.moveCustomMobSafely(runtime, movement);
             runtime.root.rotation.y = Math.atan2(direction.x, direction.z);
             if (!repelled && distance < 1.25 && mob.damageCooldown <= 0) {
                 this.player.damage(10);
@@ -922,6 +921,43 @@ export class ConstructionMode {
                     this.callbacks.onPlayerDeath();
             }
         }
+    }
+    moveCustomMobSafely(runtime, movement) {
+        const horizontal = movement.clone();
+        horizontal.y = 0;
+        if (horizontal.lengthSquared() < 0.000001)
+            return false;
+        const canMove = (delta) => {
+            const distance = delta.length();
+            if (distance < 0.0001)
+                return true;
+            const direction = delta.scale(1 / distance);
+            const side = new Vector3(-direction.z, 0, direction.x).scale(0.38);
+            const base = runtime.root.position.add(new Vector3(0, 0.78, 0));
+            const origins = [base, base.add(side), base.subtract(side)];
+            return origins.every((origin) => {
+                const pick = this.scene.pickWithRay(new Ray(origin, direction, distance + 0.46), (mesh) => {
+                    if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+                        return false;
+                    return mesh.metadata?.editorObjectId !== runtime.record.id;
+                });
+                return !pick?.hit || pick.distance > distance + 0.34;
+            });
+        };
+        if (canMove(horizontal)) {
+            runtime.root.position.addInPlace(horizontal);
+            return true;
+        }
+        const axes = [new Vector3(horizontal.x, 0, 0), new Vector3(0, 0, horizontal.z)]
+            .sort((a, b) => b.lengthSquared() - a.lengthSquared());
+        let moved = false;
+        for (const axis of axes) {
+            if (axis.lengthSquared() > 0.000001 && canMove(axis)) {
+                runtime.root.position.addInPlace(axis);
+                moved = true;
+            }
+        }
+        return moved;
     }
     selectNode(node) {
         const resolved = node ? this.resolveLogicalRoot(node) : null;
@@ -1264,7 +1300,7 @@ export class ConstructionMode {
         return null;
     }
     isEditableNode(node) {
-        if (!node || node === this.player.collider || node === this.player.camera)
+        if (!node || node === this.player.collider || node === this.player.camera || node.metadata?.constructionLocked)
             return false;
         const name = String(node.name ?? "").toLowerCase();
         if (!name || name.startsWith("editor-root-") || node.metadata?.editorCustom || node.metadata?.editorHelper)
@@ -1427,7 +1463,7 @@ export class ConstructionMode {
         return {
             format: "atracao-final-construction-maps",
             version: 3,
-            gameVersion: "5.2.3",
+            gameVersion: "5.2.6",
             exportedAt: new Date().toISOString(),
             maps,
             summary

@@ -2,6 +2,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Ray } from "@babylonjs/core/Culling/ray";
 export class PlushEnemy {
     root;
     state;
@@ -133,7 +134,7 @@ export class PlushEnemy {
             const push = impulseDirection.clone();
             push.y = 0;
             if (push.lengthSquared() > 0.001)
-                this.root.position.addInPlace(push.normalize().scale(0.45));
+                this.moveSafely(push.normalize().scale(0.45));
         }
         this.state = this.health <= 0 ? "dead" : "retreating";
         this.stateTimer = 0;
@@ -148,7 +149,7 @@ export class PlushEnemy {
         const away = this.getPosition().subtract(position);
         away.y = 0;
         if (away.lengthSquared() > 0.001)
-            this.root.position.addInPlace(away.normalize().scale(Math.max(0.15, strength) * 0.35));
+            this.moveSafely(away.normalize().scale(Math.max(0.15, strength) * 0.52));
         this.state = "retreating";
         this.stateTimer = 0;
     }
@@ -231,7 +232,7 @@ export class PlushEnemy {
         }
         else if (this.state === "crawling") {
             const speed = distance < 3.2 ? 2.2 : 1.25;
-            this.root.position.addInPlace(direction.scale(speed * step));
+            this.moveSafely(direction.scale(speed * step));
             this.root.position.y = Math.max(0, this.root.position.y + Math.sin(this.stateTimer * 8) * 0.002);
             this.root.rotation.z = Math.sin(this.stateTimer * 7) * 0.08;
             if (distance < 1.7 && this.attackCooldown <= 0) {
@@ -241,7 +242,7 @@ export class PlushEnemy {
             }
         }
         else if (this.state === "lunging") {
-            this.root.position.addInPlace(direction.scale(step * 5.8));
+            this.moveSafely(direction.scale(step * 5.8));
             this.root.position.y = Math.sin(Math.min(1, this.stateTimer / 0.5) * Math.PI) * 0.65;
             if (distance < 1.05 && this.stateTimer < 0.55) {
                 this.player.damage(12);
@@ -254,19 +255,56 @@ export class PlushEnemy {
             }
         }
         else if (this.state === "retreating") {
-            this.root.position.subtractInPlace(direction.scale(step * 2.8));
+            this.moveSafely(direction.scale(step * -2.8));
             if (this.stateTimer > 1.5) {
                 this.state = "crawling";
                 this.stateTimer = 0;
             }
         }
         else if (this.state === "burning") {
-            this.root.position.addInPlace(direction.scale(step * -1.5));
+            this.moveSafely(direction.scale(step * -1.9));
             this.root.rotation.y += step * 3.4;
             this.root.rotation.z = Math.sin(this.stateTimer * 13) * 0.28;
             if (this.health <= 0)
                 this.kill();
         }
+    }
+    moveSafely(movement) {
+        const horizontal = movement.clone();
+        horizontal.y = 0;
+        if (horizontal.lengthSquared() < 0.000001)
+            return false;
+        const canMove = (delta) => {
+            const distance = delta.length();
+            if (distance < 0.0001)
+                return true;
+            const direction = delta.scale(1 / distance);
+            const side = new Vector3(-direction.z, 0, direction.x).scale(0.38);
+            const base = this.root.position.add(new Vector3(0, 0.72, 0));
+            const origins = [base, base.add(side), base.subtract(side)];
+            return origins.every((origin) => {
+                const pick = this.scene.pickWithRay(new Ray(origin, direction, distance + 0.46), (mesh) => {
+                    if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+                        return false;
+                    return !this.containsMesh(mesh);
+                });
+                return !pick?.hit || pick.distance > distance + 0.34;
+            });
+        };
+        if (canMove(horizontal)) {
+            this.root.position.addInPlace(horizontal);
+            return true;
+        }
+        const axes = [new Vector3(horizontal.x, 0, 0), new Vector3(0, 0, horizontal.z)]
+            .sort((a, b) => b.lengthSquared() - a.lengthSquared());
+        let moved = false;
+        for (const axis of axes) {
+            if (axis.lengthSquared() > 0.000001 && canMove(axis)) {
+                this.root.position.addInPlace(axis);
+                moved = true;
+            }
+        }
+        return moved;
     }
     kill() {
         if (this.state === "dead" && this.deathTimer > 0)

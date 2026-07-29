@@ -50,7 +50,7 @@
             <button class="icon-button" id="musicButton" type="button" aria-label="Abrir controle de volume" title="Controle de volume">♫</button>
             <div class="volume-popover" id="volumePopover" hidden>
               <label for="musicVolume"><span>Volume</span><strong id="musicVolumeLabel">35%</strong></label>
-              <input id="musicVolume" type="range" min="0" max="100" value="35" step="1" />
+              <input id="musicVolume" name="musicVolume" type="range" min="0" max="100" value="35" step="1" />
             </div>
           </div>
           <button class="icon-button" id="settingsButton" type="button" aria-label="Abrir configurações e saves" title="Configurações">⚙</button>
@@ -164,7 +164,7 @@
           <section class="daily-leaderboard" aria-labelledby="dailyLeaderboardTitle">
             <div class="daily-section-heading">
               <div><span class="eyebrow">Recordes de hoje</span><h2 id="dailyLeaderboardTitle">Placar diário</h2></div>
-              <label><span>Desafio</span><select id="dailyLeaderboardSelect" aria-label="Escolher desafio diário do placar"></select></label>
+              <label><span>Desafio</span><select id="dailyLeaderboardSelect" name="dailyLeaderboardSelect" aria-label="Escolher desafio diário do placar"></select></label>
             </div>
             <div class="daily-ranking-status" id="dailyRankingStatus" role="status">Seu recorde local aparecerá aqui.</div>
             <div class="daily-ranking-list" id="dailyRankingList"></div>
@@ -251,7 +251,7 @@
             </div>
             <label class="ranking-game-picker" id="rankingGamePicker" hidden>
               <span>Minijogo</span>
-              <select id="rankingGameSelect" aria-label="Escolher minijogo do ranking"></select>
+              <select id="rankingGameSelect" name="rankingGameSelect" aria-label="Escolher minijogo do ranking"></select>
             </label>
             <button class="soft-button ranking-refresh" id="refreshRanking" type="button" aria-label="Atualizar ranking">↻ <span>Atualizar</span></button>
           </div>
@@ -311,7 +311,7 @@
         <p>Esse nome vai aparecer na capa do álbum e nos rankings.</p>
         <form id="welcomeForm">
           <label for="welcomeName">Seu nome</label>
-          <input id="welcomeName" type="text" maxlength="32" autocomplete="name" placeholder="Digite seu nome" required />
+          <input id="welcomeName" name="welcomeName" type="text" maxlength="32" autocomplete="name" placeholder="Digite seu nome" required />
           <button class="primary-button full" type="submit">Começar meu álbum</button>
         </form>
       </section>
@@ -334,7 +334,7 @@
             <div class="puzzle-guide-control" id="puzzleGuideControl" hidden role="group" aria-label="Modo guia">
               <button class="puzzle-guide-button" id="puzzleGuideButton" type="button" aria-pressed="false">Modo guia</button>
               <label class="puzzle-guide-toggle" for="puzzleGuideToggle">
-                <input id="puzzleGuideToggle" type="checkbox" aria-label="Ativar modo guia" />
+                <input id="puzzleGuideToggle" name="puzzleGuideToggle" type="checkbox" aria-label="Ativar modo guia" />
                 <span class="puzzle-guide-switch" aria-hidden="true"><i></i></span>
                 <b id="puzzleGuideState">OFF</b>
               </label>
@@ -361,13 +361,13 @@
 
           <div class="profile-editable profile-name-field">
             <label for="profileName">Nome <button class="profile-edit-button" data-profile-field="name" type="button" aria-label="Editar nome">✎</button></label>
-            <input id="profileName" type="text" value="Não informado" readonly />
+            <input id="profileName" name="profileName" type="text" value="Não informado" readonly />
           </div>
 
           <div class="profile-facts">
             <article class="profile-editable">
               <label for="profileInfo">Informações <button class="profile-edit-button" data-profile-field="info" type="button" aria-label="Editar informações">✎</button></label>
-              <textarea id="profileInfo" rows="2" readonly>Não informado</textarea>
+              <textarea id="profileInfo" name="profileInfo" rows="2" readonly>Não informado</textarea>
             </article>
             <article>
               <span>No álbum</span>
@@ -377,7 +377,7 @@
 
           <div class="profile-description profile-editable">
             <label for="profileText">Sobre esta lembrança <button class="profile-edit-button" data-profile-field="text" type="button" aria-label="Editar texto sobre a lembrança">✎</button></label>
-            <textarea id="profileText" rows="5" readonly>Não informado</textarea>
+            <textarea id="profileText" name="profileText" rows="5" readonly>Não informado</textarea>
           </div>
           <button class="primary-button full profile-continue" id="profileContinue" type="button">Continuar o álbum</button>
         </div>
@@ -392,21 +392,21 @@
         </header>
         <div class="text-style-content">
           <label for="textFont">Fonte</label>
-          <select id="textFont">
+          <select id="textFont" name="textFont">
             <option value="Segoe UI, Arial, sans-serif">Limpa</option>
             <option value="Georgia, Times New Roman, serif">Clássica</option>
             <option value="Trebuchet MS, Arial, sans-serif">Suave</option>
             <option value="Comic Sans MS, cursive">Manual</option>
             <option value="Courier New, monospace">Máquina de escrever</option>
           </select>
-          <label>Cor</label>
-          <div class="color-options" id="textColorOptions">
+          <span class="text-style-field-label" id="textColorOptionsLabel">Cor</span>
+          <div class="color-options" id="textColorOptions" role="group" aria-labelledby="textColorOptionsLabel">
             <button type="button" data-color="#655c4c" style="--swatch:#655c4c" aria-label="Marrom"></button>
             <button type="button" data-color="#a64f3d" style="--swatch:#a64f3d" aria-label="Terracota"></button>
             <button type="button" data-color="#4f6547" style="--swatch:#4f6547" aria-label="Verde"></button>
             <button type="button" data-color="#456d73" style="--swatch:#456d73" aria-label="Azul"></button>
             <button type="button" data-color="#2f2a25" style="--swatch:#2f2a25" aria-label="Preto"></button>
-            <label class="custom-color" for="textColor"><span>+</span><input id="textColor" type="color" value="#655c4c" aria-label="Escolher outra cor" /></label>
+            <label class="custom-color" for="textColor"><span>+</span><input id="textColor" name="textColor" type="color" value="#655c4c" aria-label="Escolher outra cor" /></label>
           </div>
           <div class="text-preview" id="textStylePreview">Uma lembrança especial...</div>
           <button class="secondary-button" id="resetTextStyle" type="button">Voltar ao padrão desta caixa</button>
@@ -421,7 +421,8 @@
           <button class="icon-button close-modal" id="closeSecret" type="button" aria-label="Fechar acesso reservado">×</button>
         </header>
         <form id="secretForm" class="secret-content">
-          <input id="secretInput" type="text" autocomplete="off" aria-label="Frase secreta" />
+          <label class="visually-hidden" for="secretInput">Frase secreta</label>
+          <input id="secretInput" name="secretInput" type="text" autocomplete="off" aria-label="Frase secreta" />
           <button class="primary-button" type="submit">Confirmar</button>
         </form>
       </section>
@@ -440,7 +441,7 @@
               <button class="secondary-button" id="exportSave" type="button">↓ Exportar save JSON</button>
               <button class="secondary-button" id="importSave" type="button">↑ Importar save JSON</button>
               <button class="secondary-button" id="syncSaveNow" type="button">↻ Sincronizar agora</button>
-              <input id="importSaveFile" type="file" accept="application/json,.json" hidden />
+              <input id="importSaveFile" name="importSaveFile" type="file" accept="application/json,.json" hidden />
             </div>
             <div class="import-summary" id="importSummary" hidden>
               <strong>Save pronto para importar</strong>
@@ -456,9 +457,9 @@
 
           <section class="settings-section">
             <div class="settings-section-title"><div><h3>Acessibilidade</h3><p>As escolhas ficam salvas neste perfil.</p></div></div>
-            <label class="settings-toggle"><span><strong>Reduzir movimento</strong><small>Remove tremores, pulsos e animações intensas.</small></span><input id="reducedMotionSetting" type="checkbox" /></label>
-            <label class="settings-toggle"><span><strong>Alto contraste</strong><small>Reforça bordas, textos e estados selecionados.</small></span><input id="highContrastSetting" type="checkbox" /></label>
-            <label class="settings-toggle"><span><strong>Assistência de mira no Luxor</strong><small>Mantém a previsão ampliada também no Extremo e Inferno.</small></span><input id="aimAssistSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Reduzir movimento</strong><small>Remove tremores, pulsos e animações intensas.</small></span><input id="reducedMotionSetting" name="reducedMotionSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Alto contraste</strong><small>Reforça bordas, textos e estados selecionados.</small></span><input id="highContrastSetting" name="highContrastSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Assistência de mira no Luxor</strong><small>Mantém a previsão ampliada também no Extremo e Inferno.</small></span><input id="aimAssistSetting" name="aimAssistSetting" type="checkbox" /></label>
           </section>
 
           <section class="settings-section interrupted-settings" id="interruptedSettings" hidden>

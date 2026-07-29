@@ -247,6 +247,7 @@ export class WorldBuilder {
             "search-friends": this.checkpoints.power,
             "survive-plush": this.checkpoints.power,
             "restore-power": this.checkpoints.power,
+            "repair-power-panel": this.checkpoints.power,
             "solve-body-puzzles": this.nearestUnsolvedPuzzleCheckpoint(),
             "enter-auditorium": new Vector3(0, 0.12, 137),
             "defeat-body": this.checkpoints.auditorium,
@@ -371,7 +372,9 @@ export class WorldBuilder {
         this.panelKeyTaken = inventoryIds.includes("panelKey");
         this.keyTaken = this.panelKeyTaken;
         this.fuseTaken = inventoryIds.includes("fuse");
+        this.lockerOpened = this.fuseTaken;
         this.cableTaken = inventoryIds.includes("cable");
+        this.crateMoved = this.cableTaken;
         this.crankTaken = inventoryIds.includes("crank");
         this.bandageTaken = inventoryIds.includes("bandage");
         for (const [id, rig] of this.lootContainerRigs) {
@@ -383,6 +386,7 @@ export class WorldBuilder {
         }
         this.scene.getMeshByName("improvised-torch-pickup")?.setEnabled(!this.torchTaken);
         this.scene.getMeshByName("electrical-panel-key")?.setEnabled(!this.panelKeyTaken);
+        this.scene.getMeshByName("visible-cable")?.setEnabled(this.crateMoved && !this.cableTaken);
         this.scene.getMeshByName("soda-crank")?.setEnabled(!this.crankTaken);
         this.scene.getMeshByName("maintenance-bandage")?.setEnabled(!this.bandageTaken);
         const postBoss = inventoryIds.includes("bodyCard") || checkpoint === "body-defeated" || checkpoint === "body-card" || checkpoint === "chapter2-transition";
@@ -571,19 +575,39 @@ export class WorldBuilder {
                     ? "[E] FORÇAR A ENTRADA LATERAL"
                     : "A CERCA BLOQUEIA O CAMINHO",
             enabled: () => !this.enteredWonderWorld,
-            maxDistance: 5.4,
-            ignoreLineOfSight: true,
+            maxDistance: 2.05,
+            contextHint: () => {
+                if (!this.fenceOpened)
+                    return "A cerca ainda bloqueia a entrada.";
+                if (!this.inventory.has("torch"))
+                    return "A porta está escura demais. Encontre uma tocha.";
+                if (!this.inventory.has("fuel"))
+                    return "A tocha está sem combustível.";
+                if (!this.fire.torchLit)
+                    return "A porta está muito escura. Acenda a tocha para abrir.";
+                return "A trava agora está visível.";
+            },
             onInteract: () => {
                 if (!this.fenceOpened) {
                     this.ui.toast("A seção danificada da cerca ainda bloqueia o caminho.");
                     return;
                 }
                 if (!this.inventory.has("torch")) {
-                    this.ui.toast("Você precisa encontrar uma tocha antes de examinar a trava.");
+                    const message = "A porta está escura demais. Preciso encontrar uma tocha.";
+                    this.ui.showSubtitle("Pensamento", message, 3200);
+                    this.ui.toast(message);
                     return;
                 }
-                if (!this.inventory.has("fuel") || !this.fire.torchLit) {
-                    this.ui.toast("Abasteça a tocha e acenda-a com [F] para enxergar a trava.");
+                if (!this.inventory.has("fuel")) {
+                    const message = "A tocha está sem combustível. Não consigo enxergar a trava.";
+                    this.ui.showSubtitle("Pensamento", message, 3200);
+                    this.ui.toast(message);
+                    return;
+                }
+                if (!this.fire.torchLit) {
+                    const message = "A porta está muito escura. Preciso acender a tocha para abrir.";
+                    this.ui.showSubtitle("Pensamento", message, 3400);
+                    this.ui.toast("Acenda a tocha com [F].");
                     return;
                 }
                 if (!this.sideDoorOpened) {
@@ -720,12 +744,21 @@ export class WorldBuilder {
         brokenPanel.checkCollisions = true;
         this.interaction.register(brokenPanel, {
             prompt: () => this.inventory.has("torch") && this.inventory.has("fuel") ? "[E] LEVANTAR A SEÇÃO DANIFICADA" : "A ESTRUTURA ESTÁ PRESA E É DIFÍCIL ENXERGAR",
+            maxDistance: 2.05,
+            contextHint: () => !this.inventory.has("torch")
+                ? "Está escuro demais para examinar a cerca."
+                : !this.inventory.has("fuel")
+                    ? "A tocha precisa de combustível."
+                    : !this.fire.torchLit
+                        ? "Acenda a tocha para enxergar a trava da cerca."
+                        : "A seção danificada pode ser levantada.",
             onInteract: () => {
                 if (!this.inventory.has("torch") || !this.inventory.has("fuel")) {
                     this.ui.toast("Encontre luz e combustível antes de atravessar.");
                     return;
                 }
                 if (!this.fire.torchLit) {
+                    this.ui.showSubtitle("Pensamento", "Está escuro demais. Preciso acender a tocha para enxergar a trava.", 3300);
                     this.ui.toast("Acenda a tocha com [F].");
                     return;
                 }
@@ -1160,7 +1193,6 @@ Pressione E novamente ou Esc para fechar.`);
         desk.position = new Vector3(0, 0.65, 51);
         desk.material = this.materials.get("wood", 0);
         desk.checkCollisions = true;
-        this.createTextSign("lobby-map", "VOCÊ ESTÁ AQUI", new Vector3(0, 2.8, 58.8), 5, 2, new Color3(0.42, 0.12, 0.08));
         for (let i = 0; i < 4; i += 1) {
             const turnstile = MeshBuilder.CreateCylinder(`turnstile-${i}`, { height: 1.1, diameter: 0.22, tessellation: 8 }, this.scene);
             turnstile.position = new Vector3(-4.5 + i * 3, 0.55, 57);
@@ -1268,27 +1300,48 @@ Pressione E novamente ou Esc para fechar.`);
         crate.position = new Vector3(-20, 0.7, 83);
         crate.material = this.materials.get("wood", 0);
         crate.checkCollisions = true;
+        const cable = MeshBuilder.CreateTorus("visible-cable", { diameter: 1.2, thickness: 0.12, tessellation: 24 }, this.scene);
+        cable.position = new Vector3(-20, 0.17, 83);
+        cable.rotation.x = Math.PI / 2;
+        cable.scaling.y = 0.34;
+        cable.material = this.materials.get("metal", 1);
+        cable.setEnabled(false);
+        const cablePlugA = MeshBuilder.CreateBox("visible-cable-plug-a", { width: 0.22, height: 0.12, depth: 0.3 }, this.scene);
+        cablePlugA.parent = cable;
+        cablePlugA.position = new Vector3(0.52, 0, 0);
+        cablePlugA.material = this.materials.get("plastic", 0);
+        const cablePlugB = MeshBuilder.CreateBox("visible-cable-plug-b", { width: 0.22, height: 0.12, depth: 0.3 }, this.scene);
+        cablePlugB.parent = cable;
+        cablePlugB.position = new Vector3(-0.52, 0, 0);
+        cablePlugB.material = this.materials.get("plastic", 0);
         this.interaction.register(crate, {
-            prompt: () => this.cableTaken ? "CAIXOTE VAZIO" : this.crateMoved ? "[E] PEGAR O CABO REVELADO" : "[E] EMPURRAR O CAIXOTE",
+            prompt: () => this.crateMoved ? "CAIXOTE MOVIDO" : "[E] EMPURRAR O CAIXOTE",
+            contextHint: () => this.crateMoved ? "O cabo agora está visível no chão." : "Parece haver algo escondido atrás dele.",
             onInteract: () => {
-                if (!this.crateMoved) {
-                    this.crateMoved = true;
-                    crate.position.x += 3.2;
-                    this.audio.impact(0.7);
+                if (this.crateMoved)
                     return;
-                }
-                if (!this.cableTaken) {
-                    this.cableTaken = true;
-                    this.inventory.add(ITEM_CATALOG.cable);
-                    this.audio.pickup();
-                    this.updatePowerObjective();
-                }
+                this.crateMoved = true;
+                crate.position.x += 3.2;
+                cable.setEnabled(!this.cableTaken);
+                this.audio.impact(0.7);
+                this.ui.toast("O caixote revelou um cabo de cobre no chão.");
             }
         });
-        const cable = MeshBuilder.CreateTorus("visible-cable", { diameter: 1.2, thickness: 0.12, tessellation: 24 }, this.scene);
-        cable.position = new Vector3(-20, 0.2, 83);
-        cable.rotation.x = Math.PI / 2;
-        cable.material = this.materials.get("metal", 1);
+        this.interaction.register(cable, {
+            prompt: () => this.cableTaken ? "CABO JÁ COLETADO" : "[E] PEGAR CABO DE COBRE",
+            enabled: () => this.crateMoved && !this.cableTaken,
+            guidePriority: -8,
+            contextHint: "Peça necessária para o quadro elétrico.",
+            onInteract: () => {
+                if (this.cableTaken)
+                    return;
+                this.cableTaken = true;
+                this.inventory.add(ITEM_CATALOG.cable);
+                cable.setEnabled(false);
+                this.audio.pickup();
+                this.updatePowerObjective();
+            }
+        });
         // Hollow fuse locker: back, sides, top and bottom remain fixed while only the
         // front door rotates. The old implementation rotated the entire solid box.
         const lockerRoot = new TransformNode("fuse-locker-root", this.scene);
@@ -1378,7 +1431,10 @@ Pressione E novamente ou Esc para fechar.`);
         lever.position = new Vector3(0, 0, -0.45);
         lever.material = this.materials.get("plastic", 0);
         this.interaction.register(panel, {
-            prompt: () => this.powerRestored ? "QUADRO ELÉTRICO OPERACIONAL" : "[E] REPARAR O QUADRO ELÉTRICO",
+            prompt: () => this.powerRestored ? "QUADRO ELÉTRICO OPERACIONAL" : this.hasAllPowerParts() ? "[E] INSTALAR AS PEÇAS NO QUADRO ELÉTRICO" : "[E] REPARAR O QUADRO ELÉTRICO",
+            guideObjectives: ["repair-power-panel"],
+            guidePriority: -30,
+            contextHint: () => this.powerRestored ? "A energia do setor já foi restabelecida." : this.hasAllPowerParts() ? "Todas as quatro peças já foram coletadas." : "Faltam peças para completar o reparo.",
             onInteract: () => {
                 if (this.powerRestored)
                     return;
@@ -1419,6 +1475,7 @@ Pressione E novamente ou Esc para fechar.`);
             }
             this.interaction.register(palm, {
                 prompt: () => this.solvedPuzzles.has("hands") ? "MECANISMO DAS MÃOS ATIVO" : `[E] AJUSTAR MÃO ${i + 1}`,
+                contextHint: "Pista: giros finais 2 · 4 · 3 · 1.",
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("hands")) {
                         if (!this.powerRestored)
@@ -1433,7 +1490,7 @@ Pressione E novamente ou Esc para fechar.`);
                 }
             });
         }
-        this.createTextSign("hands-clue", "ABRAÇAR · SEGURAR · SOLTAR · PROTEGER", new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
+        this.createTextSign("hands-clue", "GIROS FINAIS: 2 · 4 · 3 · 1", new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
     }
     createEyesPuzzle() {
         this.createTextSign("eyes-title", "OLHOS · VEJA O QUE ELES VEEM", new Vector3(16, 4.6, 124.7), 7.8, 1.2, new Color3(0.17, 0.32, 0.38));
@@ -1445,6 +1502,7 @@ Pressione E novamente ou Esc para fechar.`);
             mirror.checkCollisions = true;
             this.interaction.register(mirror, {
                 prompt: () => this.solvedPuzzles.has("eyes") ? "FEIXE ÓPTICO ESTÁVEL" : `[E] GIRAR ESPELHO ${i + 1}`,
+                contextHint: "Pista: espelhos 1, 2 e 3 terminam com 2, 3 e 4 giros.",
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("eyes")) {
                         if (!this.powerRestored)
@@ -1459,10 +1517,7 @@ Pressione E novamente ou Esc para fechar.`);
                 }
             });
         }
-        for (let i = 0; i < 3; i += 1) {
-            const symbol = this.createTextSign(`eye-symbol-${i}`, ["△", "○", "□"][i], new Vector3(12 + i * 4, 3, 125.1), 1.3, 1.3, new Color3(0.7, 0.65, 0.45));
-            symbol.rotation.y = Math.PI;
-        }
+        this.createTextSign("eyes-clue", "ESPELHOS: 2 · 3 · 4", new Vector3(16, 2.35, 125.1), 5.5, 0.9, new Color3(0.7, 0.65, 0.45));
     }
     createHeartPuzzle() {
         this.createTextSign("heart-title", "CORAÇÃO · MANTENHA O RITMO", new Vector3(-16, 4.6, 143.7), 7.2, 1.2, new Color3(0.55, 0.05, 0.04));
@@ -1474,6 +1529,7 @@ Pressione E novamente ou Esc para fechar.`);
             valve.material = this.materials.get("metal", i);
             this.interaction.register(valve, {
                 prompt: () => this.solvedPuzzles.has("heart") ? "PRESSÃO ESTÁVEL" : `[E] GIRAR VÁLVULA ${i + 1}`,
+                contextHint: "Pista: pressão 2 · 1 · 3 e depois três pulsações regulares.",
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("heart")) {
                         if (!this.powerRestored)
@@ -1493,6 +1549,7 @@ Pressione E novamente ou Esc para fechar.`);
         pump.checkCollisions = true;
         this.interaction.register(pump, {
             prompt: "[E] ACIONAR PULSO DA BOMBA",
+            contextHint: "Depois de ajustar as válvulas para 2 · 1 · 3, faça três pulsações no mesmo ritmo.",
             onInteract: () => {
                 if (!this.powerRestored || this.solvedPuzzles.has("heart"))
                     return;
@@ -1536,6 +1593,7 @@ Pressione E novamente ou Esc para fechar.`);
             panel.checkCollisions = true;
             this.interaction.register(panel, {
                 prompt: () => this.solvedPuzzles.has("feet") ? "SEQUÊNCIA CONCLUÍDA" : `[E] PISAR NA PLACA ${index + 1}`,
+                contextHint: "Pista: 1 → 3 → 2 → 4.",
                 maxDistance: 2.6,
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("feet"))
@@ -1556,7 +1614,7 @@ Pressione E novamente ou Esc para fechar.`);
                 }
             });
         });
-        this.createTextSign("feet-clue", "1 → 3 → 2 → 4", new Vector3(16, 2.3, 143.8), 4, 0.9, new Color3(0.58, 0.45, 0.14));
+        this.createTextSign("feet-clue", "PASSOS: 1 → 3 → 2 → 4", new Vector3(16, 2.3, 143.8), 4.8, 0.9, new Color3(0.58, 0.45, 0.14));
     }
     createAuditorium() {
         const floor = MeshBuilder.CreateCylinder("auditorium-floor", { height: 0.3, diameter: 38, tessellation: 48 }, this.scene);
@@ -2023,9 +2081,16 @@ Pressione E novamente ou Esc para fechar.`);
         this.setDoorwayBlocked(this.auditoriumDoorBlocker, false);
         this.audio.impact(1.1);
     }
+    hasAllPowerParts() {
+        return ["panelKey", "fuse", "cable", "crank"].every((id) => this.inventory.has(id));
+    }
     updatePowerObjective() {
         const ids = ["panelKey", "fuse", "cable", "crank"];
         const found = ids.filter((id) => this.inventory.has(id)).length;
+        if (found >= ids.length) {
+            this.objective.set("repair-power-panel", "TODAS AS PEÇAS FORAM COLETADAS. VOLTE AO QUADRO ELÉTRICO.");
+            return;
+        }
         this.objective.set("restore-power", `RESTAURE A ELETRICIDADE. PEÇAS ENCONTRADAS: ${found}/4.`);
     }
     enableFacilityLights(enabled) {

@@ -1321,20 +1321,76 @@ export class Chapter5World {
                 mannequin.lastObserved = performance.now();
                 continue;
             }
+            if (this.fire.isTorchThreatNear(mannequin.root.position)) {
+                const away = mannequin.root.position.subtract(this.player.collider.position);
+                away.y = 0;
+                if (away.lengthSquared() > 0.001) {
+                    this.moveSceneMobSafely(mannequin.root, away.normalize().scale(deltaSeconds * 4.8));
+                    mannequin.root.rotation.y = Math.atan2(away.x, away.z);
+                    mannequin.moved = true;
+                }
+                continue;
+            }
             if (distance < 18 && performance.now() - mannequin.lastObserved > 260) {
                 const towardPlayer = this.player.collider.position.subtract(mannequin.root.position);
                 towardPlayer.y = 0;
                 if (towardPlayer.length() > 2.3)
-                    mannequin.root.position.addInPlace(towardPlayer.normalize().scale(deltaSeconds * 1.9));
+                    this.moveSceneMobSafely(mannequin.root, towardPlayer.normalize().scale(deltaSeconds * 1.9));
                 mannequin.root.rotation.y = Math.atan2(towardPlayer.x, towardPlayer.z);
                 mannequin.moved = true;
                 if (distance < 2.4) {
                     this.player.damage(8);
                     this.ui.flashDamage(0.42);
-                    mannequin.root.position.addInPlace(towardPlayer.normalize().scale(-4));
+                    this.moveSceneMobSafely(mannequin.root, towardPlayer.normalize().scale(-4));
                 }
             }
         }
+    }
+    moveSceneMobSafely(root, movement) {
+        const horizontal = movement.clone();
+        horizontal.y = 0;
+        if (horizontal.lengthSquared() < 0.000001)
+            return false;
+        const belongsToRoot = (mesh) => {
+            let current = mesh;
+            while (current) {
+                if (current === root)
+                    return true;
+                current = current.parent ?? null;
+            }
+            return false;
+        };
+        const canMove = (delta) => {
+            const distance = delta.length();
+            if (distance < 0.0001)
+                return true;
+            const direction = delta.scale(1 / distance);
+            const side = new Vector3(-direction.z, 0, direction.x).scale(0.36);
+            const base = root.position.add(new Vector3(0, 0.85, 0));
+            const origins = [base, base.add(side), base.subtract(side)];
+            return origins.every((origin) => {
+                const pick = this.scene.pickWithRay(new Ray(origin, direction, distance + 0.44), (mesh) => {
+                    if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+                        return false;
+                    return !belongsToRoot(mesh);
+                });
+                return !pick?.hit || pick.distance > distance + 0.32;
+            });
+        };
+        if (canMove(horizontal)) {
+            root.position.addInPlace(horizontal);
+            return true;
+        }
+        const axes = [new Vector3(horizontal.x, 0, 0), new Vector3(0, 0, horizontal.z)]
+            .sort((a, b) => b.lengthSquared() - a.lengthSquared());
+        let moved = false;
+        for (const axis of axes) {
+            if (axis.lengthSquared() > 0.000001 && canMove(axis)) {
+                root.position.addInPlace(axis);
+                moved = true;
+            }
+        }
+        return moved;
     }
     updateBridge(deltaSeconds) {
         if (this.phase !== "bridge")

@@ -17,11 +17,13 @@ export class FireSystem {
     torchLight;
     torchBeam;
     torchFlames = [];
+    torchHandle = null;
     burnables = new Map();
     fires = [];
     scorchMarks = [];
     maxFires = 18;
     maxScorches = 28;
+    torchRepulsionRadius = 10.5;
     updateAccumulator = 0;
     constructor(scene, camera, audio, materials) {
         this.scene = scene;
@@ -62,7 +64,28 @@ export class FireSystem {
         this.torchAvailable = available;
         if (!available)
             this.torchLit = false;
+        this.ensureTorchVisualIntegrity();
         this.torchRoot.setEnabled(available);
+        if (this.torchHandle && !this.torchHandle.isDisposed()) {
+            this.torchHandle.setEnabled(available);
+            this.torchHandle.visibility = 1;
+        }
+    }
+    ensureTorchVisualIntegrity() {
+        if (!this.torchHandle || this.torchHandle.isDisposed()) {
+            this.torchFlames.forEach((flame) => {
+                if (!flame.isDisposed())
+                    flame.dispose();
+            });
+            this.torchFlames = [];
+            this.createTorchVisuals();
+        }
+        this.torchRoot.metadata = { ...(this.torchRoot.metadata ?? {}), constructionLocked: true, torchRig: true };
+        if (this.torchHandle)
+            this.torchHandle.metadata = { ...(this.torchHandle.metadata ?? {}), constructionLocked: true, torchRig: true };
+        this.torchFlames.forEach((flame) => {
+            flame.metadata = { ...(flame.metadata ?? {}), constructionLocked: true, torchRig: true };
+        });
     }
     toggleTorch() {
         if (!this.torchAvailable)
@@ -141,10 +164,11 @@ export class FireSystem {
         return this.isTorchThreatNear(position, radius)
             || this.fires.some((fire) => Vector3.Distance(fire.root.position, position) <= radius);
     }
-    isTorchThreatNear(position, radius = 5.5) {
+    isTorchThreatNear(position, radius = this.torchRepulsionRadius) {
         if (!this.torchAvailable || !this.torchLit)
             return false;
-        return Vector3.Distance(this.camera.globalPosition, position) <= radius;
+        const effectiveRadius = Math.max(radius, this.torchRepulsionRadius);
+        return Vector3.Distance(this.camera.globalPosition, position) <= effectiveRadius;
     }
     getTorchThreatPosition() {
         return this.torchAvailable && this.torchLit ? this.camera.globalPosition.clone() : null;
@@ -176,6 +200,7 @@ export class FireSystem {
             fire.source = runtime;
     }
     update(deltaSeconds) {
+        this.ensureTorchVisualIntegrity();
         if (!this.torchAvailable)
             this.torchLit = false;
         this.torchRoot.setEnabled(this.torchAvailable);
@@ -247,17 +272,22 @@ export class FireSystem {
     }
     createTorchVisuals() {
         const handle = MeshBuilder.CreateCylinder("torch-handle", { height: 0.72, diameter: 0.055, tessellation: 8 }, this.scene);
+        this.torchHandle = handle;
         handle.parent = this.torchRoot;
         handle.rotation.z = -0.3;
         handle.position.y = -0.18;
         handle.material = this.materials.get("wood", 1);
         handle.isPickable = false;
+        handle.alwaysSelectAsActiveMesh = true;
+        handle.metadata = { constructionLocked: true, torchRig: true };
         for (let i = 0; i < 4; i += 1) {
             const flame = MeshBuilder.CreateSphere(`torch-flame-${i}`, { diameter: 0.12 + i * 0.025, segments: 6 }, this.scene);
             flame.parent = this.torchRoot;
             flame.position = new Vector3((Math.random() - 0.5) * 0.12, 0.08 + i * 0.07, (Math.random() - 0.5) * 0.1);
             flame.material = this.materials.emissive(`torch-${i}`, i % 2 ? new Color3(1, 0.2, 0.02) : new Color3(1, 0.66, 0.07), 2);
             flame.isPickable = false;
+            flame.alwaysSelectAsActiveMesh = true;
+            flame.metadata = { constructionLocked: true, torchRig: true };
             flame.setEnabled(false);
             this.torchFlames.push(flame);
         }
