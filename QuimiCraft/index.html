@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0a1821">
-<title>QuimiCraft Voxel — Laboratório Carbono v6.0</title>
+<title>QuimiCraft Voxel — Ciência & Sobrevivência v7.0</title>
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/character-customization.css">
+<link rel="stylesheet" href="styles/science.css">
 </head>
 <body>
 <div id="game"></div>
@@ -52,8 +53,17 @@
       <div class="setting"><label for="mobDensity">Quantidade de criaturas</label><select id="mobDensity"><option value="0">Nenhuma</option><option value="1">Poucas</option><option value="2" selected>Normal</option><option value="3">Muitas</option></select></div>
       <div class="setting"><label for="sensitivity">Sensibilidade do mouse</label><output id="senseOut">50%</output><input id="sensitivity" type="range" min="15" max="100" value="50"></div>
       <div class="setting"><label for="volume">Volume</label><output id="volumeOut">70%</output><input id="volume" type="range" min="0" max="100" value="70"></div>
+      <div class="settings-divider"><span>Acessibilidade e sobrevivência</span></div>
+      <div class="setting"><label for="reducedMotion">Movimento reduzido</label><label class="switch"><input id="reducedMotion" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="reducedUnderwater">Reduzir distorção subaquática</label><label class="switch"><input id="reducedUnderwater" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="reducedFlashing">Reduzir flashes</label><label class="switch"><input id="reducedFlashing" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="largeInterfaceText">Texto maior</label><label class="switch"><input id="largeInterfaceText" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="highContrast">Alto contraste</label><label class="switch"><input id="highContrast" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="colorblindHazards">Ícones de risco daltônicos</label><label class="switch"><input id="colorblindHazards" type="checkbox"><span></span></label></div>
+      <div class="setting"><label for="survivalDifficulty">Dificuldade de sobrevivência</label><select id="survivalDifficulty"><option value="relaxed">Relaxada</option><option value="normal" selected>Normal</option><option value="hard">Intensa</option></select></div>
+      <div class="setting"><label for="scienceExplanation">Explicações científicas</label><select id="scienceExplanation"><option value="simple">Simplificadas</option><option value="standard" selected>Equilibradas</option><option value="extended">Estendidas</option></select></div>
     </div></div>
-    <div class="save-note">VERSÃO 6.0 · LABORATÓRIO CARBONO PROTEGIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
+    <div class="save-note">VERSÃO 7.0 · CIÊNCIA, RISCOS & PESQUISA &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
   </div>
 </section>
 
@@ -63,14 +73,24 @@
   <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
   <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div><div id="missionHud" class="mission-hud"></div>
   <button id="historyHudBtn" class="history-hud-button" type="button" aria-label="Abrir Histórico de mensagens">Histórico</button>
-  <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div></div>
+  <div class="science-hud-actions"><button id="notebookHudBtn" type="button" aria-label="Abrir Caderno Científico"><b>N</b><span>Caderno</span></button><button id="researchHudBtn" type="button" aria-label="Abrir Árvore de Pesquisa"><b>R</b><span>Pesquisa</span></button></div>
+  <div id="temperatureHud" class="temperature-hud" data-state="comfortable"><div class="temperature-head"><span id="temperatureLabel">Confortável</span><b id="temperatureValue">37.0 °C</b></div><div class="temperature-track"><i id="temperatureFill"></i><span></span></div></div>
+  <div class="left-hazard-stack" aria-label="Riscos e efeitos ativos">
+    <div id="hazardHud" class="hazard-hud" aria-live="polite"></div>
+    <div id="statusEffects" class="status-effects" aria-label="Efeitos ativos"></div>
+  </div>
+  <div class="vitals"><div class="vital-row"><span>VIDA</span><div class="vital-track"><div id="healthFill" class="vital-fill health-fill"></div></div><span id="healthNum" class="vital-num">100</span></div><div class="vital-row"><span>MANA</span><div class="vital-track"><div id="manaFill" class="vital-fill mana-fill"></div></div><span id="manaNum" class="vital-num">100</span></div><div class="vital-row"><span>FOME</span><div class="vital-track"><div id="hungerFill" class="vital-fill hunger-fill"></div></div><span id="hungerNum" class="vital-num">100</span></div><div class="vital-row"><span>SEDE</span><div class="vital-track"><div id="thirstFill" class="vital-fill thirst-fill"></div></div><span id="thirstNum" class="vital-num">100</span></div><div id="breathRow" class="vital-row breath-row"><span>FÔLEGO</span><div class="vital-track"><div id="breathFill" class="vital-fill breath-fill"></div></div><span id="breathNum" class="vital-num">100</span></div></div>
   <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
   <div id="hotbar" class="hotbar"></div>
   <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
   <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>C</kbd> câmera <kbd>E</kbd> interagir <kbd>ENTER</kbd> chat <kbd>TAB</kbd> inventário</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário</div>
 </div>
-<div id="waterOverlay" class="water-overlay"></div><div id="damage" class="damage"></div>
+<div id="mobileControls" class="mobile-controls" aria-label="Controles móveis">
+  <div class="mobile-move"><button type="button" data-mobile-key="KeyW" aria-label="Mover para frente">▲</button><button type="button" data-mobile-key="KeyA" aria-label="Mover para esquerda">◀</button><button type="button" data-mobile-key="KeyS" aria-label="Mover para trás">▼</button><button type="button" data-mobile-key="KeyD" aria-label="Mover para direita">▶</button></div>
+  <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
+</div>
+<div id="waterOverlay" class="water-overlay" aria-hidden="true"><span class="water-caustics"></span><span id="breathWarning" class="breath-warning">FÔLEGO BAIXO</span></div><div id="climateOverlay" class="climate-overlay" aria-hidden="true"></div><div id="damage" class="damage"></div>
 
 <section id="inventory" class="modal mc-inventory-modal" aria-hidden="true">
   <div class="mc-inventory-shell">
@@ -83,15 +103,17 @@
       <div class="mc-inventory-top">
         <div class="mc-equipment-area">
           <div class="mc-armor-column" aria-label="Armadura">
-            <div class="mc-equipment-slot" data-icon="◯" title="Capacete"></div>
-            <div class="mc-equipment-slot" data-icon="◇" title="Peitoral"></div>
-            <div class="mc-equipment-slot" data-icon="Ⅱ" title="Calças"></div>
-            <div class="mc-equipment-slot" data-icon="⌒" title="Botas"></div>
+            <div id="equipHead" class="mc-equipment-slot" data-equip-slot="head" data-icon="◯" title="Cabeça" role="button" tabindex="0" aria-label="Equipamento da cabeça"></div>
+            <div id="equipFace" class="mc-equipment-slot" data-equip-slot="face" data-icon="▽" title="Rosto" role="button" tabindex="0" aria-label="Equipamento do rosto"></div>
+            <div id="equipChest" class="mc-equipment-slot" data-equip-slot="chest" data-icon="◇" title="Peitoral" role="button" tabindex="0" aria-label="Equipamento do peitoral"></div>
+            <div id="equipHands" class="mc-equipment-slot" data-equip-slot="hands" data-icon="⌁" title="Mãos" role="button" tabindex="0" aria-label="Equipamento das mãos"></div>
+            <div id="equipLegs" class="mc-equipment-slot" data-equip-slot="legs" data-icon="Ⅱ" title="Pernas" role="button" tabindex="0" aria-label="Equipamento das pernas"></div>
+            <div id="equipFeet" class="mc-equipment-slot" data-equip-slot="feet" data-icon="⌒" title="Pés" role="button" tabindex="0" aria-label="Equipamento dos pés"></div>
           </div>
           <div class="mc-character-stage"><div id="inventoryAvatar" class="avatar-pixel mc-avatar" data-hair-style="0" aria-label="Prévia do personagem">
               <span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span>
             </div><span class="mc-stage-shadow"></span></div>
-          <div class="mc-offhand-wrap"><div class="mc-equipment-slot mc-offhand" data-icon="⬡" title="Mão secundária"></div></div>
+          <div class="mc-offhand-wrap"><div id="equipBack" class="mc-equipment-slot mc-back" data-equip-slot="back" data-icon="▥" title="Costas" role="button" tabindex="0" aria-label="Equipamento das costas"></div><div id="equipOffhand" class="mc-equipment-slot mc-offhand" data-equip-slot="offhand" data-icon="⬡" title="Mão secundária" role="button" tabindex="0" aria-label="Equipamento da mão secundária"></div></div>
         </div>
         <div class="mc-crafting-area">
           <div class="mc-craft-title"><span>Criação</span><small>grade 2 × 2</small></div>
@@ -108,7 +130,7 @@
       <div id="inventoryGrid" class="mc-slot-grid mc-main-grid" aria-label="Itens da mochila"></div>
       <div class="mc-section-title mc-hotbar-title">Barra rápida</div>
       <div id="inventoryHotbar" class="mc-slot-grid mc-hotbar-grid" aria-label="Barra rápida"></div>
-      <div class="mc-inventory-hint"><kbd>TAB</kbd> fechar <span>•</span> arraste para organizar <span>•</span> clique na saída para criar</div>
+      <div class="mc-inventory-hint"><kbd>TAB</kbd> fechar <span>•</span> clique ou arraste para equipar <span>•</span> clique no equipamento para remover</div>
     </div>
   </div>
 </section>
@@ -167,6 +189,21 @@
   <div class="history-scroll"><div id="historyList" class="history-list"></div><p id="historyEmpty" class="history-empty">Nenhuma mensagem nesta categoria.</p></div>
 </div></section>
 
+<section id="scientificNotebook" class="modal science-modal" aria-hidden="true"><div class="modal-card science-card notebook-card" role="dialog" aria-modal="true" aria-labelledby="scientificNotebookTitle">
+  <div class="modal-head science-modal-head"><div><p class="eyebrow">Arquivo de campo persistente</p><h2 id="scientificNotebookTitle" class="modal-title">Caderno Científico</h2><p id="notebookStats" class="modal-sub">0 amostras · 0 pontos disponíveis</p></div><button class="close" data-close-science="scientificNotebook" type="button" aria-label="Fechar Caderno Científico">×</button></div>
+  <div class="science-layout"><nav id="notebookTabs" class="notebook-tabs" aria-label="Seções do Caderno Científico"></nav><main id="notebookContent" class="science-content"></main></div>
+</div></section>
+
+<section id="researchTree" class="modal science-modal" aria-hidden="true"><div class="modal-card science-card research-card" role="dialog" aria-modal="true" aria-labelledby="researchTreeTitle">
+  <div class="modal-head science-modal-head"><div><p class="eyebrow">Progressão científica</p><h2 id="researchTreeTitle" class="modal-title">Árvore de Pesquisa</h2><p id="researchPoints" class="modal-sub">0 pontos disponíveis</p></div><button class="close" data-close-science="researchTree" type="button" aria-label="Fechar Árvore de Pesquisa">×</button></div>
+  <main id="researchContent" class="research-content"></main>
+</div></section>
+
+<section id="scienceStation" class="modal science-modal" aria-hidden="true"><div class="modal-card science-card station-card" role="dialog" aria-modal="true" aria-labelledby="scienceStationTitle">
+  <div class="modal-head science-modal-head"><div><p class="eyebrow">Laboratório Carbono · equipamento funcional</p><h2 id="scienceStationTitle" class="modal-title">Estação Científica</h2><p id="scienceStationSubtitle" class="modal-sub">Selecione um equipamento para iniciar.</p></div><button class="close" data-close-science="scienceStation" type="button" aria-label="Fechar estação científica">×</button></div>
+  <div class="station-layout"><nav id="scienceStationNav" class="station-nav" aria-label="Equipamentos desta bancada"></nav><main id="scienceStationContent" class="station-content"></main></div>
+</div></section>
+
 <section id="devMenu" class="modal" aria-hidden="true"><div class="modal-card dev-card">
   <div class="modal-head"><div><p class="eyebrow">Console experimental</p><h2 class="modal-title">Modo DEV</h2><p class="modal-sub">Ferramentas locais deste mundo. Digite <b>-mododev</b> no chat para reabrir.</p></div><button class="close" data-close="devMenu">×</button></div>
   <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="command-row"><input id="devCommand" autocomplete="off" placeholder="Ex.: fly, heal, spawn golem, give crystal 64"><button id="runCommand" class="primary">Executar</button></div><div class="dev-help">fly · heal · speed 1–5 · infinite · recipes · time day|sunset|night · give item quantidade · tp x y z · spawn golem|wisp|magma|scorpion|deer|owl · clear mobs</div></div>
@@ -180,6 +217,8 @@
 <script src="assets/three.min.js"></script>
 <script src="js/character-customization.js"></script>
 <script src="js/quimicraft-systems.js"></script>
+<script src="js/science-core.js"></script>
+<script src="js/science-ui.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

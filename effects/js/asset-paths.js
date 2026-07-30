@@ -4,14 +4,16 @@ window.ASSET_PATHS = {
       key: 'lucas',
       label: 'Lucas',
       path: './assets/models/lucas.glb',
-      character: 'lucas'
+      character: 'lucas',
+      rotationY: -Math.PI / 2
     },
     {
       key: 'devilsir_wow',
       label: 'Devilsir (World of Warcraft)',
       path: './assets/models/devilsir_world_of_warcraft.glb',
       character: 'devilsir',
-      variant: 'world_of_warcraft'
+      variant: 'world_of_warcraft',
+      rotationY: -Math.PI / 2
     },
     {
       key: 'devilsir_runescape',
@@ -19,6 +21,7 @@ window.ASSET_PATHS = {
       path: './assets/models/devilsir_runescape.glb',
       character: 'devilsir',
       variant: 'runescape',
+      rotationY: 0,
       fitBounds: 'skeleton',
       fitTargetHeight: 1.0,
       runescapeStaffRoot: 'root_51',
@@ -64,29 +67,59 @@ window.ASSET_PATHS = {
       pets: ['lilith']
     },
     {
+      key: 'pietro',
+      label: 'Pietro',
+      pets: ['pietro']
+    },
+    {
       key: 'apollo_lilith',
       label: 'Apollo + Lilith',
       pets: ['apollo', 'lilith']
+    },
+    {
+      key: 'apollo_pietro',
+      label: 'Apollo + Pietro',
+      pets: ['apollo', 'pietro']
+    },
+    {
+      key: 'lilith_pietro',
+      label: 'Lilith + Pietro',
+      pets: ['lilith', 'pietro']
+    },
+    {
+      key: 'all_pets',
+      label: 'Apollo + Lilith + Pietro',
+      pets: ['apollo', 'lilith', 'pietro']
     }
   ],
   pets: {
     apollo: {
       label: 'Apollo',
-      path: './assets/models/pet_apollo.glb',
+      path: './assets/models/apollo_todas_animacoes.glb',
       side: 'left',
       placement: 'nearModel',
-      gap: 0.024,
+      gap: 0.035,
       targetHeight: 0.34,
       position: { y: 0, z: 0 },
       rotationY: 0
     },
     lilith: {
       label: 'Lilith',
-      path: './assets/models/pet_lilith.glb',
+      path: './assets/models/lilith_todas_animacoes.glb',
       side: 'right',
       placement: 'nearModel',
-      gap: 0.024,
+      gap: 0.035,
       targetHeight: 0.31,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    pietro: {
+      label: 'Pietro',
+      path: './assets/models/pietro_todas_animacoes.glb',
+      side: 'center',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.32,
       position: { y: 0, z: 0 },
       rotationY: 0
     }

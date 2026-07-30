@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6ead7">
+  <meta name="description" content="Pocket Companions is a cozy browser-based 3D virtual pet experience.">
+  <title>Pocket Companions</title>
+  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to companion</a>
+
+  <div class="app-background" aria-hidden="true">
+    <div class="ambient-orb orb-one"></div>
+    <div class="ambient-orb orb-two"></div>
+    <div class="ambient-dots"></div>
+  </div>
+
+  <main id="main-content" class="experience" tabindex="-1">
+    <section id="stage" class="stage" aria-label="3D companion scene">
+      <canvas id="companion-canvas" aria-label="Interactive 3D companion"></canvas>
+      <div id="scene-caption" class="scene-caption" role="status" aria-live="polite"></div>
+      <div id="dialogue-bubble" class="dialogue-bubble" role="status" aria-live="polite" hidden></div>
+      <div id="interaction-hint" class="interaction-hint" hidden>Tap your companion or tap the floor to move.</div>
+      <div id="clean-sponge" class="clean-sponge" hidden aria-hidden="true"><img src="assets/icons/sponge-cursor.svg" alt=""></div>
+    </section>
+
+    <section id="loading-screen" class="screen loading-screen is-visible" aria-labelledby="loading-title">
+      <div class="loading-card">
+        <div class="loading-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="eyebrow">Pocket Companions</p>
+        <h1 id="loading-title">Preparing a cozy little world</h1>
+        <p id="loading-message">Checking companion models and warming up the room…</p>
+        <div class="progress-track" aria-label="Loading progress">
+          <div id="loading-progress" class="progress-fill"></div>
+        </div>
+        <p id="loading-percent" class="loading-percent">0%</p>
+        <div id="loading-error" class="loading-error" hidden>
+          <strong>That did not load correctly.</strong>
+          <span id="loading-error-message"></span>
+          <button id="retry-loading" class="button button-primary" type="button">Retry</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="title-screen" class="screen title-screen" aria-labelledby="app-title" hidden>
+      <div class="title-copy">
+        <p class="eyebrow">A tiny world with a big heart</p>
+        <h1 id="app-title">Pocket<br>Companions</h1>
+        <p class="tagline">Take care of them. Grow together.</p>
+        <div class="title-actions">
+          <button id="start-button" class="button button-primary button-large" type="button">Start</button>
+          <button id="continue-button" class="button button-secondary button-large" type="button" hidden>Continue</button>
+        </div>
+        <div class="utility-actions">
+          <button class="icon-button" data-open-modal="settings-modal" type="button" aria-label="Open settings">Settings</button>
+          <button class="icon-button" data-open-modal="accessibility-modal" type="button" aria-label="Open accessibility settings">Accessibility</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="selection-screen" class="screen selection-screen" aria-labelledby="selection-title" hidden>
+      <header class="selection-header">
+        <button id="selection-back" class="icon-button" type="button">Back</button>
+        <div>
+          <p class="eyebrow">Choose your companion</p>
+          <h1 id="selection-title">Meet your new best friend</h1>
+        </div>
+        <button id="selection-sound" class="icon-button" type="button">Hear them</button>
+      </header>
+      <div class="selection-controls" aria-label="Companion carousel controls">
+        <button id="previous-pet" class="carousel-button" type="button" aria-label="Previous companion">Previous</button>
+        <article class="pet-profile">
+          <p id="selection-trait" class="pet-trait"></p>
+          <h2 id="selection-name"></h2>
+          <p id="selection-description"></p>
+          <div class="selection-dots" role="tablist" aria-label="Companions">
+            <button type="button" data-pet-dot="apollo" aria-label="Select Apollo"></button>
+            <button type="button" data-pet-dot="lilith" aria-label="Select Lilith"></button>
+            <button type="button" data-pet-dot="pietro" aria-label="Select Pietro"></button>
+          </div>
+        </article>
+        <button id="next-pet" class="carousel-button" type="button" aria-label="Next companion">Next</button>
+      </div>
+      <div class="selection-footer">
+        <p>Drag to rotate. Scroll or pinch to zoom slightly.</p>
+        <p class="selection-warning">Changing companions later requires another save slot or resetting this slot.</p>
+        <button id="choose-pet" class="button button-primary button-large" type="button">Choose this companion</button>
+      </div>
+    </section>
+
+    <section id="game-interface" class="game-interface" hidden>
+      <header class="topbar">
+        <div class="pet-identity">
+          <button id="slot-button" class="slot-chip" type="button" aria-label="Open save slots">Slot 1</button>
+          <div>
+            <p id="pet-emotion" class="emotion-label">Calm</p>
+            <h1 id="pet-name">Companion</h1>
+          </div>
+        </div>
+        <div class="progress-summary">
+          <span id="level-label">Level 1</span>
+          <div class="xp-track" aria-label="Experience progress"><div id="xp-fill"></div></div>
+          <span id="currency-label" class="currency-label">120 sparks</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="daily-button" class="icon-button" type="button">Daily</button>
+          <button id="photo-button" class="icon-button" type="button">Photo</button>
+          <button class="icon-button" data-open-modal="settings-modal" type="button">Settings</button>
+          <button id="pause-button" class="icon-button" type="button" aria-pressed="false">Pause</button>
+        </div>
+      </header>
+
+      <aside id="needs-panel" class="needs-panel" aria-label="Companion needs">
+        <button id="needs-toggle" class="panel-handle" type="button" aria-expanded="true">Needs</button>
+        <div id="needs-list" class="needs-list"></div>
+      </aside>
+
+      <div class="primary-actions" aria-label="Care actions">
+        <button class="action-button" data-action="feed" type="button"><span>Feed</span><small>Choose food</small></button>
+        <button class="action-button" data-action="play" type="button"><span>Play</span><small>Quick games</small></button>
+        <button class="action-button" data-action="pet" type="button"><span>Pet</span><small>Gentle attention</small></button>
+        <button class="action-button" data-action="clean" type="button"><span>Clean</span><small>Brush and bubbles</small></button>
+        <button class="action-button" data-action="sleep" type="button"><span>Sleep</span><small>Rest and recover</small></button>
+        <button class="action-button" data-action="medicine" type="button"><span>Care</span><small>Check symptoms</small></button>
+      </div>
+
+      <nav class="bottom-navigation" aria-label="Main navigation">
+        <button class="nav-button is-active" data-panel="home" type="button">Home</button>
+        <button class="nav-button" data-panel="care" type="button">Care</button>
+        <button class="nav-button" data-panel="play" type="button">Play</button>
+        <button class="nav-button" data-panel="explore" type="button">Explore</button>
+        <button class="nav-button" data-panel="collection" type="button">Collection</button>
+      </nav>
+
+      <aside id="drawer" class="drawer" aria-labelledby="drawer-title" hidden>
+        <header class="drawer-header">
+          <div><p class="eyebrow">Pocket Companions</p><h2 id="drawer-title">Care</h2></div>
+          <button id="close-drawer" class="icon-button" type="button" aria-label="Close panel">Close</button>
+        </header>
+        <div id="drawer-content" class="drawer-content"></div>
+      </aside>
+
+      <div id="clean-overlay" class="clean-overlay" hidden>
+        <div class="clean-card">
+          <p class="eyebrow">Cleaning time</p>
+          <h2>Scrub with the sponge</h2>
+          <p>Move the sponge over your companion to build fluffy soap foam and wash them clean.</p>
+          <div class="progress-track"><div id="clean-progress" class="progress-fill"></div></div>
+          <button id="finish-clean" class="button button-primary" type="button" disabled>Finish cleaning</button>
+        </div>
+      </div>
+
+      <div id="sleep-overlay" class="sleep-overlay" hidden>
+        <div>
+          <p class="eyebrow">Resting peacefully</p>
+          <h2 id="sleep-title">Sweet dreams</h2>
+          <p id="sleep-status">Energy is recovering faster.</p>
+          <button id="wake-button" class="button button-secondary" type="button">Wake up</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="slots-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Local saves</p><h2>Choose a save slot</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="slots-list" class="slots-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="name-modal" class="modal">
+    <form id="name-form" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">One last thing</p><h2>Name your companion</h2></div><button class="icon-button" type="button" data-close-modal="name-modal">Close</button></header>
+      <label class="field-label" for="pet-name-input">Companion name</label>
+      <input id="pet-name-input" name="petName" type="text" minlength="1" maxlength="18" autocomplete="off" required>
+      <p id="name-pet-summary" class="field-help"></p>
+      <button class="button button-primary" type="submit">Begin together</button>
+    </form>
+  </dialog>
+
+  <dialog id="food-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Feed</p><h2>What sounds good?</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="food-list" class="card-grid"></div>
+      <p id="fullness-note" class="field-help"></p>
+    </form>
+  </dialog>
+
+  <dialog id="game-modal" class="modal game-modal">
+    <div class="modal-card modal-game-card">
+      <header class="modal-header"><div><p class="eyebrow">Play together</p><h2 id="game-title">Minigame</h2></div><button id="close-game" class="icon-button" type="button">Close</button></header>
+      <div id="game-area" class="game-area" aria-live="polite"></div>
+      <div id="game-result" class="game-result" hidden></div>
+    </div>
+  </dialog>
+
+  <dialog id="daily-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Gentle routine</p><h2>Today’s activities</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="streak-summary" class="streak-summary"></div>
+      <div id="daily-list" class="daily-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="care-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Friendly care</p><h2>How are they feeling?</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="symptom-summary" class="symptom-summary"></div>
+      <div class="care-options">
+        <button type="button" data-care-option="clean" class="card-button">Clean up</button>
+        <button type="button" data-care-option="rest" class="card-button">Rest</button>
+        <button type="button" data-care-option="food" class="card-button">Offer food</button>
+        <button type="button" data-care-option="medicine" class="card-button">Use gentle medicine</button>
+      </div>
+      <p class="field-help">This is a fictional pet-care system, not real-world medical guidance.</p>
+    </form>
+  </dialog>
+
+  <dialog id="photo-modal" class="modal photo-modal">
+    <div class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Photo mode</p><h2>Capture a memory</h2></div><button id="close-photo" class="icon-button" type="button">Close</button></header>
+      <div class="photo-controls">
+        <label>Pose<select id="photo-pose"><option value="idle">Calm</option><option value="walk">Walking</option><option value="run">Excited</option><option value="jump_end">Celebrating</option></select></label>
+        <label>Environment<select id="photo-environment"></select></label>
+        <label>Frame<select id="photo-frame"><option value="none">None</option><option value="soft">Soft border</option><option value="sparkle">Sparkles</option></select></label>
+        <button id="capture-photo" class="button button-primary" type="button">Save image</button>
+      </div>
+      <p class="field-help">Drag the companion to rotate and use the mouse wheel or pinch to adjust the view.</p>
+    </div>
+  </dialog>
+
+  <dialog id="settings-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div class="settings-grid">
+        <label>Master volume<input id="master-volume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Music volume<input id="music-volume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Effects volume<input id="effects-volume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Ambient volume<input id="ambient-volume" type="range" min="0" max="1" step="0.05"></label>
+        <label class="switch-row"><span>Mute all audio</span><input id="mute-audio" type="checkbox"></label>
+        <label class="switch-row"><span>Real-time need decay</span><input id="real-time-decay" type="checkbox"></label>
+        <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" type="checkbox"></label>
+        <label>Fixed visual time<select id="fixed-time"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
+      </div>
+      <div class="backup-actions">
+        <button id="export-save" class="button button-secondary" type="button">Export backup</button>
+        <label class="button button-secondary file-button">Import backup<input id="import-save" type="file" accept="application/json"></label>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="accessibility-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Make it yours</p><h2>Accessibility</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div class="settings-grid">
+        <label class="switch-row"><span>High contrast</span><input id="high-contrast" type="checkbox"></label>
+        <label class="switch-row"><span>Reduced motion</span><input id="reduced-motion" type="checkbox"></label>
+        <label class="switch-row"><span>Simplified minigames</span><input id="simplified-games" type="checkbox"></label>
+        <label class="switch-row"><span>Sound captions</span><input id="sound-captions" type="checkbox"></label>
+        <label>Text size<input id="text-scale" type="range" min="0.9" max="1.3" step="0.05"></label>
+        <label>Interaction sensitivity<input id="interaction-sensitivity" type="range" min="0.7" max="1.5" step="0.1"></label>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="tutorial-modal" class="modal tutorial-modal">
+    <div class="modal-card">
+      <p id="tutorial-count" class="eyebrow">Step 1 of 5</p>
+      <h2 id="tutorial-title">Say hello</h2>
+      <p id="tutorial-copy"></p>
+      <div class="tutorial-actions">
+        <button id="skip-tutorial" class="button button-ghost" type="button">Skip</button>
+        <button id="next-tutorial" class="button button-primary" type="button">Next</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="confirm-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Please confirm</p><h2 id="confirm-title">Reset this save?</h2></div></header>
+      <p id="confirm-copy"></p>
+      <div class="dialog-actions"><button class="button button-secondary" value="cancel">Cancel</button><button id="confirm-action" class="button button-danger" value="confirm">Confirm</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="js/app.js?v=7-position-games-fix"></script>
+</body>
+</html>

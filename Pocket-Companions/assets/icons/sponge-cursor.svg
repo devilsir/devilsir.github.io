@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd36e"/>
+      <stop offset="100%" stop-color="#f3a449"/>
+    </linearGradient>
+    <linearGradient id="foam" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#dff7ff" stop-opacity="0.98"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <ellipse cx="97" cy="34" rx="12" ry="12" fill="url(#foam)"/>
+    <ellipse cx="109" cy="49" rx="8" ry="8" fill="url(#foam)"/>
+    <ellipse cx="86" cy="50" rx="7" ry="7" fill="url(#foam)"/>
+    <ellipse cx="28" cy="22" rx="9" ry="9" fill="url(#foam)"/>
+    <ellipse cx="17" cy="34" rx="6" ry="6" fill="url(#foam)"/>
+  </g>
+  <g transform="rotate(-13 54 70)">
+    <rect x="16" y="38" width="76" height="56" rx="18" fill="url(#body)" stroke="#c97824" stroke-width="4"/>
+    <path d="M27 48c7-6 14 6 20 0s14 6 20 0 14 6 20 0" fill="none" stroke="#f7e0a0" stroke-linecap="round" stroke-width="6" opacity="0.8"/>
+    <path d="M28 65c5-4 10 4 16 0s10 4 16 0 10 4 16 0 10 4 16 0" fill="none" stroke="#f7e0a0" stroke-linecap="round" stroke-width="6" opacity="0.72"/>
+    <path d="M28 81c6-4 11 4 17 0s11 4 17 0 11 4 17 0" fill="none" stroke="#f7e0a0" stroke-linecap="round" stroke-width="6" opacity="0.68"/>
+  </g>
+</svg>
