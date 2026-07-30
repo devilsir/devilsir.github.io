@@ -5,13 +5,25 @@ import { GameStore } from './store.js';
 import { AudioSystem } from './audio.js';
 import { CompanionScene } from './scene.js';
 import { MinigameManager } from './games.js';
-import { PETS, NEEDS, FOODS, ROOMS, MINIGAMES } from './config.js';
+import { PETS, NEEDS, FOODS, ROOMS, MINIGAMES, SHOP_OFFERS } from './config.js';
 import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
+import { getLanguage, initI18n, setLanguage } from './i18n.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const store = new GameStore();
+initI18n({
+  language: store.settings.language || 'pt-BR',
+  onChange: (language) => {
+    store.updateSettings({ language });
+    if (store.active) {
+      updateUI(true);
+      renderDaily();
+      if (!drawer.hidden && activePanel !== 'home') renderDrawer(activePanel, false);
+    }
+  }
+});
 const audio = new AudioSystem(() => store.settings);
 const scene = new CompanionScene($('#companion-canvas'), () => store.settings, (name) => playSound(name));
 
@@ -53,8 +65,10 @@ let sleepTransitioning = false;
 let lastScrubSoundAt = 0;
 let lastWaterSoundAt = 0;
 let lastSpongePoint = null;
+let photoCaptureInProgress = false;
+let lastPetVoiceAt = 0;
 
-const petOrder = ['apollo', 'lilith', 'pietro'];
+const petOrder = Object.keys(PETS);
 const tutorialSteps = [
   { title: 'Say hello', copy: 'Tap or gently drag over the actual 3D companion. Little moments of attention build happiness and bond.' },
   { title: 'Read their needs', copy: 'The needs panel shows food, happiness, energy, hygiene, health, and bond. Words accompany every color.' },
@@ -77,7 +91,7 @@ const games = new MinigameManager({
       <div class="game-result-copy">
         <span class="game-result-stars" aria-label="${rating} out of 3 stars">${stars}</span>
         <div><strong>${success ? `${game.name} complete!` : 'Good try!'}</strong><small>${detail || (success ? 'Great teamwork.' : 'Your companion still enjoyed playing.')}</small></div>
-        <div class="game-result-rewards"><span>+${currency} sparks</span><span>+${xp} XP</span></div>
+        <div class="game-result-rewards"><span>+${currency} coins</span><span>+${xp} XP</span></div>
       </div>
       <div class="game-result-actions">
         <button id="replay-game" class="button button-primary" type="button">Play again</button>
@@ -95,6 +109,7 @@ const games = new MinigameManager({
     });
     updateUI(true);
     showDialogue(success ? choose(['That was amazing!', 'Again sometime?', 'We make a great team!']) : 'That was still fun!', 2);
+    if (store.active) playPetVoice(success ? 'happy' : 'calm', store.active.companionId, { probability: success ? 0.78 : 0.42, volume: 0.62 });
   }
 });
 
@@ -112,7 +127,7 @@ async function loadExperience() {
     loadingMessage.textContent = 'Building the room and preparing the renderer…';
     setLoading(4);
     await scene.init();
-    loadingMessage.textContent = 'Inspecting Apollo, Lilith, and Pietro…';
+    loadingMessage.textContent = `Inspecting all ${petOrder.length} companions…`;
     await scene.preloadAll((value) => setLoading(8 + value * 0.84));
     loadingMessage.textContent = 'Framing paws, checking textures, and rendering the first stable frame…';
     scene.setPet('apollo', { selection: false });
@@ -135,6 +150,7 @@ function setLoading(value) {
 }
 
 function showOnly(name) {
+  document.body.dataset.screen = name;
   Object.entries(screens).forEach(([key, element]) => {
     element.hidden = key !== name;
     element.classList.toggle('is-visible', key === name);
@@ -287,6 +303,7 @@ async function enterGame() {
   }
   if (!slot.tutorialComplete) showTutorial(slot.tutorialStep || 0);
   await scene.renderStableFrame();
+  if (!slot.isSleeping) playPetVoice('call', slot.companionId, { probability: 0.58, cooldown: 0 });
 }
 
 function startLoops() {
@@ -303,7 +320,7 @@ function startLoops() {
         $$('[data-action="sleep"] span').forEach((element) => { element.textContent = 'Sleep'; });
         updateAmbient();
         showDialogue('I woke up naturally. I feel rested!', 3);
-        playSound('positive', { volume: 0.45 });
+        if (!playPetVoice('happy', store.active.companionId, { probability: 0.82, volume: 0.68 })) playSound('positive', { volume: 0.45 });
       }
       updateUI();
       maybeContextDialogue();
@@ -321,7 +338,7 @@ function updateUI(force = false) {
   $('#pet-name').textContent = slot.petName;
   $('#slot-button').textContent = `Slot ${slot.slotIndex + 1}`;
   $('#level-label').textContent = `Level ${slot.level}`;
-  $('#currency-label').textContent = `${slot.currency} sparks`;
+  $('#currency-label').textContent = `${slot.currency} coins`;
   const threshold = store.levelThreshold(slot.level);
   $('#xp-fill').style.width = `${clamp(slot.stats.experience / threshold * 100)}%`;
   const emotion = determineEmotion(slot.stats, slot.isSleeping);
@@ -428,6 +445,42 @@ function playSound(name, options = {}) {
   if (captions[name]) caption(captions[name]);
 }
 
+
+function playPetVoice(context = 'call', petId = null, options = {}) {
+  const resolvedId = petId || store.active?.companionId || petOrder[selectionIndex];
+  const pet = PETS[resolvedId];
+  if (!pet?.voices) return false;
+  const probability = options.probability ?? 1;
+  if (Math.random() > probability) return false;
+  const now = performance.now();
+  const cooldown = options.cooldown ?? 1350;
+  if (!options.force && now - lastPetVoiceAt < cooldown) return false;
+  const pool = Array.isArray(pet.voices[context]) ? pet.voices[context] : [pet.voices[context] || pet.voices.call];
+  const sound = choose(pool.filter(Boolean));
+  if (!sound) return false;
+  lastPetVoiceAt = now;
+  const base = pet.voiceOptions || {};
+  const naturalRateVariation = 1 + (Math.random() - 0.5) * 0.022;
+  audio.play(sound, {
+    ...base,
+    ...options,
+    rate: (options.rate ?? base.rate ?? 1) * naturalRateVariation,
+    volume: options.volume ?? base.volume ?? 0.82
+  });
+  const language = getLanguage();
+  const captions = language === 'en'
+    ? {
+        cat: { call: `${pet.name} meows.`, happy: `${pet.name} chirps happily.`, calm: `${pet.name} purrs softly.` },
+        dog: { call: `${pet.name} barks.`, happy: `${pet.name} lets out a playful yip.`, calm: `${pet.name} makes a soft, calm sound.` }
+      }
+    : {
+        cat: { call: `${pet.name} mia.`, happy: `${pet.name} solta um trinado feliz.`, calm: `${pet.name} ronrona baixinho.` },
+        dog: { call: `${pet.name} late.`, happy: `${pet.name} solta um latido brincalhão.`, calm: `${pet.name} faz um som calmo e baixinho.` }
+      };
+  caption(captions[pet.species]?.[context] || captions[pet.species]?.call || '');
+  return true;
+}
+
 function handleAction(action) {
   if (!store.active || paused) return;
   playSound('click');
@@ -504,6 +557,7 @@ async function feedPet(foodId) {
   store.track('feed');
   scene.spawnParticles(foodId === 'treat' ? 'star' : 'heart', foodId === 'treat' ? 9 : 5);
   showDialogue(foodId === 'water' ? 'Refreshing!' : 'Yum, that hit the spot!', 2.4);
+  playPetVoice('happy', slot.companionId, { probability: foodId === 'treat' ? 0.82 : 0.58, volume: 0.68 });
   updateUI(true);
   store.persist();
 }
@@ -607,7 +661,7 @@ function processPetAttention(dragging) {
   const calmModifier = PETS[slot.companionId].modifiers.calmBond || 1;
   const sensitivity = store.settings.interactionSensitivity || 1;
   store.modifyStats({ happiness: 0.75 * sensitivity, bond: 0.42 * calmModifier * sensitivity }, 'pet');
-  if (!dragging) playSound('positive', { volume: 0.28, rate: 1.2 });
+  if (!dragging && !playPetVoice('happy', slot.companionId, { probability: 0.46, volume: 0.62 })) playSound('positive', { volume: 0.24, rate: 1.2 });
   if (timestamps.length % 5 === 0) store.gainProgress(2, 1);
 }
 
@@ -637,6 +691,7 @@ function finishCleaning() {
   scene.spawnParticles('clean', 12);
   playSound('water', { volume: 0.12, rate: 1.08 });
   showDialogue('Fresh, fluffy, and sparkling clean!', 3);
+  playPetVoice('happy', store.active.companionId, { probability: 0.62, volume: 0.64 });
   updateUI(true);
 }
 
@@ -664,9 +719,10 @@ async function toggleSleep(forceValue) {
     $$('[data-action="sleep"] span').forEach((element) => { element.textContent = sleeping ? 'Wake' : 'Sleep'; });
     if (sleeping) {
       playSound('sleep');
+      setTimeout(() => playPetVoice('calm', slot.companionId, { probability: 0.86, volume: 0.48, cooldown: 0 }), 180);
       showDialogue('Good night. I’ll be right here.', 3);
     } else {
-      playSound('positive', { volume: 0.45 });
+      if (!playPetVoice('happy', slot.companionId, { probability: 0.84, volume: 0.66, cooldown: 0 })) playSound('positive', { volume: 0.45 });
       showDialogue('I’m awake and feeling brighter!', 2);
     }
     updateAmbient();
@@ -729,6 +785,7 @@ function renderDrawer(panel, scrollTop = false) {
   drawerTitle.textContent = panel[0].toUpperCase() + panel.slice(1);
   if (panel === 'care') renderCareDrawer();
   if (panel === 'play') renderPlayDrawer();
+  if (panel === 'shop') renderShopDrawer();
   if (panel === 'explore') renderExploreDrawer();
   if (panel === 'collection') renderCollectionDrawer();
   if (scrollTop) drawerContent.scrollTop = 0;
@@ -761,34 +818,66 @@ function renderCareDrawer() {
     careGrid.append(button);
   });
   careSection.append(careGrid);
-  const marketSection = document.createElement('section');
-  marketSection.className = 'drawer-section';
-  marketSection.innerHTML = '<h3>Pocket market</h3><p>Restock with sparks earned through care and play. No real purchases.</p>';
-  const marketGrid = document.createElement('div');
-  marketGrid.className = 'card-grid';
-  const offers = [
-    ['meal', 'Balanced meal', 12], ['snack', 'Crunchy snack', 8], ['treat', 'Star treat', 10],
-    ['water', 'Fresh water', 5], ['medicine', 'Gentle medicine', 20]
-  ];
-  offers.forEach(([itemId, label, cost]) => {
+
+  const shopShortcut = document.createElement('section');
+  shopShortcut.className = 'drawer-section shop-shortcut';
+  shopShortcut.innerHTML = '<h3>Need more supplies?</h3><p>Earn coins in minigames and use them to restock food, water, and medicine.</p>';
+  const shopButton = document.createElement('button');
+  shopButton.type = 'button';
+  shopButton.className = 'button button-secondary';
+  shopButton.textContent = 'Open supply shop';
+  shopButton.addEventListener('click', () => openPanel('shop'));
+  shopShortcut.append(shopButton);
+  drawerContent.append(status, foodSection, careSection, shopShortcut);
+}
+
+function renderShopDrawer() {
+  const slot = store.active;
+  drawerContent.innerHTML = '';
+
+  const intro = document.createElement('section');
+  intro.className = 'drawer-section';
+  intro.innerHTML = '<p class="eyebrow">Supply shop</p><h3>Restock your companion’s essentials</h3><p>Coins are earned by completing minigames and daily activities. Every purchase is stored in this save.</p>';
+
+  const wallet = document.createElement('div');
+  wallet.className = 'shop-wallet';
+  wallet.innerHTML = `<span class="shop-coin" aria-hidden="true">●</span><div><small>Coin balance</small><strong>${slot.currency} coins</strong></div>`;
+
+  const grid = document.createElement('div');
+  grid.className = 'shop-grid';
+  SHOP_OFFERS.forEach((offer) => {
+    const owned = slot.inventory[offer.id] ?? 0;
+    const canBuy = slot.currency >= offer.cost;
+    const card = document.createElement('article');
+    card.className = `shop-card ${canBuy ? '' : 'is-unaffordable'}`;
+    card.innerHTML = `
+      <div class="shop-card-heading">
+        <span class="shop-item-symbol" aria-hidden="true">${offer.symbol}</span>
+        <span class="shop-owned">${owned} in inventory</span>
+      </div>
+      <strong>${offer.name}</strong>
+      <p>${offer.description}</p>
+    `;
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'card-button';
-    button.innerHTML = `<strong>${label}</strong><span>+1 item · ${cost} sparks</span>`;
+    button.className = 'shop-buy-button';
+    button.disabled = !canBuy;
+    button.innerHTML = `<span>Buy +${offer.amount}</span><strong>${offer.cost} coins</strong>`;
     button.addEventListener('click', () => {
-      if (store.purchaseItem(itemId, cost, 1)) {
-        playSound('positive', { volume: 0.42 });
-        toast(`${label} added to inventory.`);
-        renderCareDrawer();
-        updateUI(true);
-      } else {
-        toast(`You need ${cost} sparks for ${label}.`);
+      if (!store.purchaseItem(offer.id, offer.cost, offer.amount)) {
+        toast(`You need ${offer.cost} coins for ${offer.name}.`);
+        return;
       }
+      playSound('positive', { volume: 0.42 });
+      toast(`${offer.name} purchased.`);
+      updateUI(true);
+      renderShopDrawer();
     });
-    marketGrid.append(button);
+    card.append(button);
+    grid.append(card);
   });
-  marketSection.append(marketGrid);
-  drawerContent.append(status, foodSection, careSection, marketSection);
+
+  drawerContent.append(intro, wallet, grid);
 }
 
 function renderPlayDrawer() {
@@ -804,7 +893,7 @@ function renderPlayDrawer() {
       <strong>${game.name}</strong>
       <span>${game.description}</span>
       <small class="game-card-controls">${game.controls}</small>
-      <div class="room-meta"><span>+${game.reward} sparks</span><span>+${game.xp} XP</span></div>
+      <div class="room-meta"><span>+${game.reward} coins</span><span>+${game.xp} XP</span></div>
     `;
     button.addEventListener('click', () => openGame(game.id));
     grid.append(button);
@@ -824,7 +913,7 @@ function openGame(id) {
 
 function renderExploreDrawer() {
   const slot = store.active;
-  drawerContent.innerHTML = '<section class="drawer-section"><h3>Small worlds to discover</h3><p>New spaces unlock through care, levels, and sparks. Essential actions remain available everywhere.</p></section>';
+  drawerContent.innerHTML = '<section class="drawer-section"><h3>Small worlds to discover</h3><p>New spaces unlock through care, levels, and coins. Essential actions remain available everywhere.</p></section>';
   const grid = document.createElement('div');
   grid.className = 'card-grid';
   Object.values(ROOMS).forEach((room) => {
@@ -833,7 +922,7 @@ function renderExploreDrawer() {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `room-card ${current ? 'is-current' : ''}`;
-    button.innerHTML = `<strong>${room.name}</strong><span>${room.description}</span><div class="room-meta"><span>${unlocked ? (current ? 'Current room' : 'Unlocked') : `Level ${room.unlockLevel}`}</span><span>${unlocked ? '' : `${room.cost} sparks`}</span></div>`;
+    button.innerHTML = `<strong>${room.name}</strong><span>${room.description}</span><div class="room-meta"><span>${unlocked ? (current ? 'Current room' : 'Unlocked') : `Level ${room.unlockLevel}`}</span><span>${unlocked ? '' : `${room.cost} coins`}</span></div>`;
     button.addEventListener('click', () => selectRoom(room.id));
     grid.append(button);
   });
@@ -854,7 +943,7 @@ function selectRoom(roomId) {
       return;
     }
     if (slot.currency < room.cost) {
-      toast(`${room.name} needs ${room.cost} sparks.`);
+      toast(`${room.name} needs ${room.cost} coins.`);
       return;
     }
     if (!store.unlockRoom(roomId)) return;
@@ -975,91 +1064,62 @@ function renderDaily() {
   if (slot.daily.claimed) {
     const reward = document.createElement('p');
     reward.className = 'field-help';
-    reward.textContent = 'Today’s gentle milestone reward has been added: 55 sparks and 35 XP.';
+    reward.textContent = 'Today’s gentle milestone reward has been added: 55 coins and 35 XP.';
     list.append(reward);
   }
 }
 
 function openPhotoMode() {
-  if (!store.active) return;
+  if (!store.active || photoCaptureInProgress) return;
   closeDrawer();
-  const environmentSelect = $('#photo-environment');
-  environmentSelect.innerHTML = '';
-  store.active.unlockedRooms.forEach((roomId) => {
-    const option = document.createElement('option');
-    option.value = roomId;
-    option.textContent = ROOMS[roomId]?.name || roomId;
-    option.selected = roomId === store.active.activeRoom;
-    environmentSelect.append(option);
-  });
+  const overlay = $('#photo-overlay');
   scene.setPhotoMode(true);
-  screens.game.classList.add('photo-mode');
-  screens.game.classList.remove('photo-frame-soft', 'photo-frame-sparkle');
-  screens.game.querySelectorAll('.topbar, .needs-panel, .primary-actions, .bottom-navigation').forEach((element) => { element.style.visibility = 'hidden'; });
-  const dialog = $('#photo-modal');
-  if (!dialog.open) dialog.show();
-  scene.playAnimation($('#photo-pose').value, { fade: 0.25, force: true });
+  document.body.classList.add('photo-mode-active');
+  overlay.hidden = false;
+  overlay.classList.remove('is-capturing');
+  scene.playAnimation('idle', { fade: 0.25, force: true });
+  requestAnimationFrame(() => $('#capture-photo')?.focus({ preventScroll: true }));
 }
 
 function closePhotoMode() {
-  const dialog = $('#photo-modal');
-  if (dialog.open) dialog.close();
+  const overlay = $('#photo-overlay');
+  overlay.hidden = true;
+  overlay.classList.remove('is-capturing');
+  document.body.classList.remove('photo-mode-active');
   scene.setPhotoMode(false);
-  screens.game.classList.remove('photo-frame-soft', 'photo-frame-sparkle');
-  screens.game.querySelectorAll('.topbar, .needs-panel, .primary-actions, .bottom-navigation').forEach((element) => { element.style.visibility = ''; });
   scene.playAnimation('idle', { fade: 0.25, force: true });
 }
 
 async function capturePhoto() {
   const slot = store.active;
-  if (!slot) return;
-  const sourceUrl = scene.captureImage();
-  const image = new Image();
-  image.src = sourceUrl;
-  await image.decode();
-  const output = document.createElement('canvas');
-  output.width = image.naturalWidth;
-  output.height = image.naturalHeight;
-  const context = output.getContext('2d');
-  context.drawImage(image, 0, 0);
+  const overlay = $('#photo-overlay');
+  if (!slot || overlay.hidden || photoCaptureInProgress) return;
 
-  const frame = $('#photo-frame').value;
-  const inset = Math.max(18, Math.round(output.width * 0.025));
-  if (frame === 'soft') {
-    context.save();
-    context.strokeStyle = 'rgba(255, 250, 241, 0.9)';
-    context.lineWidth = Math.max(18, Math.round(output.width * 0.015));
-    context.lineJoin = 'round';
-    context.strokeRect(inset, inset, output.width - inset * 2, output.height - inset * 2);
-    context.strokeStyle = 'rgba(71, 57, 51, 0.18)';
-    context.lineWidth = Math.max(2, Math.round(output.width * 0.002));
-    context.strokeRect(inset * 1.45, inset * 1.45, output.width - inset * 2.9, output.height - inset * 2.9);
-    context.restore();
-  } else if (frame === 'sparkle') {
-    context.save();
-    context.strokeStyle = 'rgba(255, 220, 102, 0.96)';
-    context.lineWidth = Math.max(7, Math.round(output.width * 0.006));
-    context.setLineDash([12, 16]);
-    context.strokeRect(inset, inset, output.width - inset * 2, output.height - inset * 2);
-    context.setLineDash([]);
-    context.fillStyle = 'rgba(255, 242, 172, 0.96)';
-    context.font = `${Math.max(22, Math.round(output.width * 0.032))}px system-ui`;
-    const marks = [[inset * 1.5, inset * 2], [output.width - inset * 3, inset * 2.2], [inset * 1.7, output.height - inset * 1.4], [output.width - inset * 3.2, output.height - inset * 1.5]];
-    marks.forEach(([x, y], index) => context.fillText(index % 2 ? '✦' : '✧', x, y));
-    context.restore();
+  photoCaptureInProgress = true;
+  overlay.classList.add('is-capturing');
+  playSound('click');
+
+  try {
+    await wait(90);
+    const sourceUrl = scene.captureImage();
+    const link = document.createElement('a');
+    link.href = sourceUrl;
+    link.download = `${slot.petName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'companion'}-${Date.now()}.png`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+
+    slot.photoCount = (slot.photoCount || 0) + 1;
+    store.gainProgress(3, 1);
+    store.persist();
+
+    await wait(280);
+    closePhotoMode();
+    toast('Photo saved locally.');
+  } finally {
+    photoCaptureInProgress = false;
+    overlay.classList.remove('is-capturing');
   }
-
-  const finalUrl = output.toDataURL('image/png');
-  const link = document.createElement('a');
-  link.href = finalUrl;
-  link.download = `${slot.petName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'companion'}-${Date.now()}.png`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  slot.photoCount = (slot.photoCount || 0) + 1;
-  toast('Photo saved locally.');
-  store.gainProgress(3, 1);
-  store.persist();
 }
 
 function showTutorial(index = 0) {
@@ -1112,6 +1172,7 @@ function colorWithAlpha(hex, alpha) {
 }
 
 function applySettingsToDocument() {
+  if (getLanguage() !== (store.settings.language || 'pt-BR')) setLanguage(store.settings.language || 'pt-BR');
   document.body.classList.toggle('high-contrast', store.settings.highContrast);
   document.body.classList.toggle('reduced-motion', store.settings.reducedMotion);
   document.documentElement.style.setProperty('--text-scale', store.settings.textScale);
@@ -1194,6 +1255,25 @@ function toast(message) {
   setTimeout(() => item.remove(), 3600);
 }
 
+function renderPetDots() {
+  const container = $('.selection-dots');
+  container.innerHTML = '';
+  petOrder.forEach((id, index) => {
+    const pet = PETS[id];
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.dataset.petDot = id;
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', `Select ${pet.name}`);
+    dot.title = pet.name;
+    dot.addEventListener('click', () => {
+      selectionIndex = index;
+      updateSelection();
+    });
+    container.append(dot);
+  });
+}
+
 function bindGlobalControls() {
   $('#retry-loading').addEventListener('click', () => location.reload());
   $('#start-button').addEventListener('click', async () => { await audio.unlock(); startNewFlow(); });
@@ -1202,11 +1282,11 @@ function bindGlobalControls() {
   $('#previous-pet').addEventListener('click', () => shiftSelection(-1));
   $('#next-pet').addEventListener('click', () => shiftSelection(1));
   $('#choose-pet').addEventListener('click', chooseSelection);
-  $('#selection-sound').addEventListener('click', () => playSound(`character-${petOrder[selectionIndex]}`));
-  $$('[data-pet-dot]').forEach((dot) => dot.addEventListener('click', () => {
-    selectionIndex = petOrder.indexOf(dot.dataset.petDot);
-    updateSelection();
-  }));
+  $('#selection-sound').addEventListener('click', () => {
+    const pet = PETS[petOrder[selectionIndex]];
+    playPetVoice('call', pet.id, { force: true, cooldown: 0 });
+  });
+  renderPetDots();
 
   $('#name-form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -1259,21 +1339,7 @@ function bindGlobalControls() {
     if (option === 'medicine') useMedicine();
   }));
 
-  $('#photo-pose').addEventListener('change', (event) => scene.playAnimation(event.target.value, { fade: 0.25, force: true }));
-  $('#photo-environment').addEventListener('change', (event) => {
-    const roomId = event.target.value;
-    if (store.setRoom(roomId)) {
-      scene.buildEnvironment(roomId);
-      scene.placePetSafely();
-      updateAmbient();
-    }
-  });
-  $('#photo-frame').addEventListener('change', (event) => {
-    screens.game.classList.remove('photo-frame-soft', 'photo-frame-sparkle');
-    if (event.target.value !== 'none') screens.game.classList.add(`photo-frame-${event.target.value}`);
-  });
   $('#capture-photo').addEventListener('click', capturePhoto);
-  $('#close-photo').addEventListener('click', closePhotoMode);
 
   $('#next-tutorial').addEventListener('click', advanceTutorial);
   $('#skip-tutorial').addEventListener('click', skipTutorial);
@@ -1305,6 +1371,7 @@ function bindGlobalControls() {
     if (!file) return;
     try {
       store.importData(await file.text());
+      setLanguage(store.settings.language || 'pt-BR');
       syncSettingsInputs();
       applySettingsToDocument();
       toast('Backup imported successfully.');
@@ -1348,7 +1415,7 @@ function bindGlobalControls() {
   store.addEventListener('daily', renderDaily);
   store.addEventListener('daily-complete', () => {
     playSound('positive');
-    toast('Daily activities complete: +55 sparks and +35 XP.');
+    toast('Daily activities complete: +55 coins and +35 XP.');
     renderDaily();
   });
   store.addEventListener('settings', applySettingsToDocument);
@@ -1360,7 +1427,7 @@ function bindGlobalControls() {
 function handleKeyboardShortcuts(event) {
   if (!store.active || event.target.matches('input, select, textarea')) return;
   if (event.key === 'Escape') {
-    if ($('#photo-modal').open) closePhotoMode();
+    if (!$('#photo-overlay').hidden) closePhotoMode();
     else if (!drawer.hidden) closeDrawer();
     return;
   }

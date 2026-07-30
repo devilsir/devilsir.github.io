@@ -1,7 +1,7 @@
 {
   "name": "Pocket Companions",
   "short_name": "Companions",
-  "description": "Take care of a living 3D companion and grow together.",
+  "description": "Cuide de um pet virtual 3D e cresçam juntos.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

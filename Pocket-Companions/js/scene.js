@@ -33,6 +33,7 @@ export class CompanionScene extends EventTarget {
     this.running = false;
     this.frameId = null;
     this.target = null;
+    this.movementOutcome = 'idle';
     this.velocity = new THREE.Vector3();
     this.baseCamera = { x: 0, y: 2.4, z: 6.2 };
     this.cameraTarget = new THREE.Vector3(0, 1.1, 0);
@@ -157,7 +158,14 @@ export class CompanionScene extends EventTarget {
 
   preparePet(id, gltf) {
     const model = gltf.scene;
-    const missing = ANIMATION_NAMES.filter((name) => !gltf.animations.some((clip) => clip.name === name));
+    const normalizedAnimations = gltf.animations.map((clip) => {
+      const normalizedName = clip.name.split('|').pop().trim();
+      if (normalizedName === clip.name) return clip;
+      const normalizedClip = clip.clone();
+      normalizedClip.name = normalizedName;
+      return normalizedClip;
+    });
+    const missing = ANIMATION_NAMES.filter((name) => !normalizedAnimations.some((clip) => clip.name === name));
     if (missing.length) console.warn(`[Pocket Companions] ${id} is missing animations:`, missing);
 
     model.traverse((child) => {
@@ -192,7 +200,7 @@ export class CompanionScene extends EventTarget {
     modelHolder.rotation.y = 0;
     stage.position.set(0, 0, 0);
 
-    const controller = new AnimationController(model, gltf.animations, (sound) => this.soundPlayer(sound));
+    const controller = new AnimationController(model, normalizedAnimations, (sound) => this.soundPlayer(sound));
     controller.play('idle', { fade: 0.01, force: true });
 
     const finalBox = new THREE.Box3().setFromObject(model);
@@ -839,6 +847,7 @@ export class CompanionScene extends EventTarget {
     const pet = this.currentPet;
     if (!pet) return;
     this.target = null;
+    this.movementOutcome = 'idle';
     this.eatingState = null;
     pet.model.position.copy(pet.baseModelPosition);
     pet.model.rotation.copy(pet.baseModelRotation);
@@ -848,21 +857,31 @@ export class CompanionScene extends EventTarget {
     pet.controller.play('idle', { fade: 0.2, force: true });
   }
 
+  stopMovement(outcome = 'stopped') {
+    const pet = this.currentPet;
+    this.target = null;
+    this.movementOutcome = outcome;
+    if (pet) pet.controller.play('idle', { fade: 0.2 });
+    this.onMovement?.(outcome === 'blocked' ? 'blocked' : 'stop');
+    if (outcome === 'blocked') this.dispatchEvent(new CustomEvent('path-blocked'));
+  }
+
   moveToAndWait(x, z, { run = false, timeout = 1800 } = {}) {
     const destination = this.findSafePosition(new THREE.Vector3(x, 0, z));
     this.moveTo(destination.x, destination.z, run);
     const started = performance.now();
     return new Promise((resolve) => {
       const check = () => {
-        if (!this.currentPet || !this.target) {
-          resolve(true);
+        if (!this.currentPet) {
+          resolve(false);
+          return;
+        }
+        if (!this.target) {
+          resolve(this.movementOutcome === 'arrived');
           return;
         }
         if (performance.now() - started >= timeout) {
-          this.target = null;
-          this.currentPet.stage.position.copy(destination);
-          this.currentPet.controller.play('idle', { fade: 0.18 });
-          this.onMovement?.('stop');
+          this.stopMovement('timeout');
           resolve(false);
           return;
         }
@@ -876,6 +895,7 @@ export class CompanionScene extends EventTarget {
     if (!this.currentPet || this.mode === 'selection' || this.mode === 'sleep' || this.cleanMode) return;
     this.target = new THREE.Vector3(clamp(x, -4.4, 4.4), 0, clamp(z, -2.75, 2.75));
     this.target.run = run;
+    this.movementOutcome = 'moving';
   }
 
   triggerJump() { return this.currentPet?.controller.jumpSequence(); }
@@ -1049,30 +1069,32 @@ export class CompanionScene extends EventTarget {
     const distance = direction.length();
     if (distance < 0.08) {
       position.copy(this.target);
-      this.target = null;
-      pet.controller.play('idle', { fade: 0.22 });
-      this.onMovement?.('stop');
+      this.stopMovement('arrived');
       return;
     }
+
     direction.normalize();
     const running = Boolean(this.target.run) || distance > 3.4;
     const speed = running ? 2.55 : 1.2;
     const step = Math.min(distance, speed * delta);
-    const next = position.clone().addScaledVector(direction, step);
-    if (!this.isBlocked(next.x, next.z)) {
-      position.copy(next);
-    } else {
-      const slideX = new THREE.Vector3(next.x, position.y, position.z);
-      const slideZ = new THREE.Vector3(position.x, position.y, next.z);
-      if (!this.isBlocked(slideX.x, slideX.z)) position.copy(slideX);
-      else if (!this.isBlocked(slideZ.x, slideZ.z)) position.copy(slideZ);
-      else {
-        this.target = null;
-        pet.controller.play('idle', { fade: 0.2 });
-        this.onMovement?.('stop');
-        return;
+    const substeps = Math.max(1, Math.ceil(step / 0.055));
+    const substepDistance = step / substeps;
+    let blocked = false;
+
+    for (let index = 0; index < substeps; index += 1) {
+      const next = position.clone().addScaledVector(direction, substepDistance);
+      if (this.isBlocked(next.x, next.z)) {
+        blocked = true;
+        break;
       }
+      position.copy(next);
     }
+
+    if (blocked) {
+      this.stopMovement('blocked');
+      return;
+    }
+
     const desiredYaw = Math.atan2(direction.x, direction.z);
     pet.modelHolder.rotation.y = this.smoothAngle(pet.modelHolder.rotation.y, desiredYaw, Math.min(1, delta * 8));
     pet.controller.play(running ? 'run' : 'walk', { fade: 0.18 });

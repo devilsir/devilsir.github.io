@@ -1,4 +1,4 @@
-export const APP_VERSION = 1;
+export const APP_VERSION = 5;
 export const STORAGE_KEY = 'pocket-companions:saves:v1';
 export const SETTINGS_KEY = 'pocket-companions:global-settings:v1';
 
@@ -11,6 +11,13 @@ export const PETS = {
     accent2: '#77c8ff',
     personality: 'Adventurous, bright, and always ready to explore. Apollo gains extra joy from running and obstacle games.',
     trait: 'Trailblazer',
+    species: 'cat',
+    voices: {
+      call: 'voice-apollo-call',
+      happy: 'voice-apollo-happy',
+      calm: 'voice-apollo-calm'
+    },
+    voiceOptions: { volume: 0.82 },
     modifiers: { boredom: 1.12, obstacle: 1.2, calmBond: 0.95, foodJoy: 1.0 }
   },
   lilith: {
@@ -21,6 +28,13 @@ export const PETS = {
     accent2: '#ff91bd',
     personality: 'Curious, graceful, and observant. Lilith loves hidden discoveries and builds a strong bond through calm attention.',
     trait: 'Quiet Wonder',
+    species: 'cat',
+    voices: {
+      call: 'voice-lilith-call',
+      happy: 'voice-lilith-happy',
+      calm: 'voice-lilith-calm'
+    },
+    voiceOptions: { volume: 0.80 },
     modifiers: { boredom: 0.92, obstacle: 0.95, calmBond: 1.25, foodJoy: 0.95 }
   },
   pietro: {
@@ -31,7 +45,133 @@ export const PETS = {
     accent2: '#ffd66b',
     personality: 'Affectionate, playful, and delightfully food-motivated. Pietro recovers happiness quickly when cared for.',
     trait: 'Big Heart',
+    species: 'cat',
+    voices: {
+      call: 'voice-pietro-call',
+      happy: 'voice-pietro-happy',
+      calm: 'voice-pietro-calm'
+    },
+    voiceOptions: { volume: 0.84 },
     modifiers: { boredom: 1.0, obstacle: 1.0, calmBond: 1.08, foodJoy: 1.22 }
+  },
+  chica: {
+    id: 'chica',
+    name: 'Chica',
+    model: 'assets/models/chica_todas_animacoes.glb',
+    accent: '#f3a86f',
+    accent2: '#ffd98a',
+    personality: 'Warm, curious, and effortlessly charming. Chica loves gentle attention and turns everyday care into a happy little ritual.',
+    trait: 'Sunny Spirit',
+    species: 'dog',
+    voices: {
+      call: 'voice-chica-call',
+      happy: 'voice-chica-happy',
+      calm: 'voice-chica-calm'
+    },
+    voiceOptions: { volume: 0.82 },
+    modifiers: { boredom: 0.96, obstacle: 1.0, calmBond: 1.18, foodJoy: 1.08 }
+  },
+  kate: {
+    id: 'kate',
+    name: 'Kate',
+    model: 'assets/models/kate_todas_animacoes.glb',
+    accent: '#d58fc4',
+    accent2: '#91c8e8',
+    personality: 'Poised, clever, and quietly affectionate. Kate notices every detail and builds trust through calm play and consistent care.',
+    trait: 'Velvet Focus',
+    species: 'dog',
+    voices: {
+      call: 'voice-kate-call',
+      happy: 'voice-kate-happy',
+      calm: 'voice-kate-calm'
+    },
+    voiceOptions: { volume: 0.74 },
+    modifiers: { boredom: 0.9, obstacle: 1.02, calmBond: 1.24, foodJoy: 0.96 }
+  },
+  bolt: {
+    id: 'bolt',
+    name: 'Bolt',
+    model: 'assets/models/bolt_todas_animacoes.glb',
+    accent: '#67b9ff',
+    accent2: '#ffe56f',
+    personality: 'Fast, fearless, and bursting with playful energy. Bolt thrives on movement, agility challenges, and active adventures.',
+    trait: 'Live Wire',
+    species: 'dog',
+    voices: {
+      call: 'voice-bolt-call',
+      happy: 'voice-bolt-happy',
+      calm: 'voice-bolt-calm'
+    },
+    voiceOptions: { volume: 0.78 },
+    modifiers: { boredom: 1.18, obstacle: 1.3, calmBond: 0.94, foodJoy: 1.0 }
+  },
+  caramelo: {
+    id: 'caramelo',
+    name: 'Caramelo',
+    model: 'assets/models/caramelo_todas_animacoes.glb',
+    accent: '#d99458',
+    accent2: '#79d3b4',
+    personality: 'Friendly, loyal, and impossible not to love. Caramelo is happiest near you and appreciates snacks almost as much as affection.',
+    trait: 'Golden Heart',
+    species: 'dog',
+    voices: {
+      call: 'voice-caramelo-call',
+      happy: 'voice-caramelo-happy',
+      calm: 'voice-caramelo-calm'
+    },
+    voiceOptions: { volume: 0.82 },
+    modifiers: { boredom: 0.98, obstacle: 1.04, calmBond: 1.16, foodJoy: 1.2 }
+  },
+  kiara: {
+    id: 'kiara',
+    name: 'Kiara',
+    model: 'assets/models/kiara_todas_animacoes.glb',
+    accent: '#ae8cf2',
+    accent2: '#f2a7bc',
+    personality: 'Confident, attentive, and deeply loyal. Kiara enjoys exploring but forms her strongest bond through patient companionship.',
+    trait: 'Loyal Spark',
+    species: 'dog',
+    voices: {
+      call: 'voice-kiara-call',
+      happy: 'voice-kiara-happy',
+      calm: 'voice-kiara-calm'
+    },
+    voiceOptions: { volume: 0.84 },
+    modifiers: { boredom: 1.0, obstacle: 1.1, calmBond: 1.2, foodJoy: 1.02 }
+  },
+  pacoca: {
+    id: 'pacoca',
+    name: 'Paçoca',
+    model: 'assets/models/pacoca_todas_animacoes.glb',
+    accent: '#d8a06f',
+    accent2: '#fff0a6',
+    personality: 'Sweet, cuddly, and full of cozy charm. Paçoca loves gentle affection, warm routines, and turns quiet moments into instant comfort.',
+    trait: 'Cozy Crumb',
+    species: 'dog',
+    voices: {
+      call: 'voice-pacoca-call',
+      happy: 'voice-pacoca-happy',
+      calm: 'voice-pacoca-calm'
+    },
+    voiceOptions: { volume: 0.78 },
+    modifiers: { boredom: 0.94, obstacle: 0.98, calmBond: 1.28, foodJoy: 1.12 }
+  },
+  simba: {
+    id: 'simba',
+    name: 'Simba',
+    model: 'assets/models/simba_todas_animacoes.glb',
+    accent: '#e2a14b',
+    accent2: '#9fd3ff',
+    personality: 'Bold, playful, and proudly affectionate. Simba loves to show off, explore every corner, and reward your care with big, confident energy.',
+    trait: 'Royal Bounce',
+    species: 'dog',
+    voices: {
+      call: 'voice-simba-call',
+      happy: 'voice-simba-happy',
+      calm: 'voice-simba-calm'
+    },
+    voiceOptions: { volume: 0.80 },
+    modifiers: { boredom: 1.08, obstacle: 1.16, calmBond: 1.05, foodJoy: 1.08 }
   }
 };
 
@@ -54,6 +194,14 @@ export const FOODS = {
   treat: { id: 'treat', name: 'Star treat', description: 'Pure joy, best enjoyed after a proper meal.', hunger: 7, happiness: 16, health: -1, energy: 2, fullness: 9, sound: 'treat' },
   water: { id: 'water', name: 'Fresh water', description: 'Hydration that supports health and energy.', hunger: 2, happiness: 2, health: 5, energy: 6, fullness: 5, sound: 'water' }
 };
+
+export const SHOP_OFFERS = [
+  { id: 'meal', name: 'Balanced meal', description: 'A complete meal for hunger and health.', cost: 12, amount: 1, symbol: '◆' },
+  { id: 'snack', name: 'Crunchy snack', description: 'A quick snack with a happiness boost.', cost: 8, amount: 1, symbol: '◇' },
+  { id: 'treat', name: 'Star treat', description: 'A special treat for extra happiness.', cost: 10, amount: 1, symbol: '★' },
+  { id: 'water', name: 'Fresh water', description: 'Restores hydration, health, and energy.', cost: 5, amount: 1, symbol: '◒' },
+  { id: 'medicine', name: 'Gentle medicine', description: 'A care supply for moments of low health.', cost: 20, amount: 1, symbol: '+' }
+];
 
 export const ROOMS = {
   living: { id: 'living', name: 'Living room', unlockLevel: 1, cost: 0, description: 'A warm home base with everything close by.' },
@@ -86,6 +234,7 @@ export const COLLECTION_ITEMS = [
 ];
 
 export const DEFAULT_SETTINGS = {
+  language: 'pt-BR',
   masterVolume: 0.75,
   musicVolume: 0.4,
   effectsVolume: 0.8,

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,6 +14,15 @@
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
+  <div class="language-switcher" aria-label="Language">
+    <span class="language-switcher-icon" aria-hidden="true">◎</span>
+    <label for="language-select">Language</label>
+    <select id="language-select" data-language-select aria-label="Language">
+      <option value="pt-BR">Português</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
   <a class="skip-link" href="#main-content">Skip to companion</a>
 
   <div class="app-background" aria-hidden="true">
@@ -80,11 +89,7 @@
           <p id="selection-trait" class="pet-trait"></p>
           <h2 id="selection-name"></h2>
           <p id="selection-description"></p>
-          <div class="selection-dots" role="tablist" aria-label="Companions">
-            <button type="button" data-pet-dot="apollo" aria-label="Select Apollo"></button>
-            <button type="button" data-pet-dot="lilith" aria-label="Select Lilith"></button>
-            <button type="button" data-pet-dot="pietro" aria-label="Select Pietro"></button>
-          </div>
+          <div class="selection-dots" role="tablist" aria-label="Companions"></div>
         </article>
         <button id="next-pet" class="carousel-button" type="button" aria-label="Next companion">Next</button>
       </div>
@@ -107,7 +112,7 @@
         <div class="progress-summary">
           <span id="level-label">Level 1</span>
           <div class="xp-track" aria-label="Experience progress"><div id="xp-fill"></div></div>
-          <span id="currency-label" class="currency-label">120 sparks</span>
+          <span id="currency-label" class="currency-label">120 coins</span>
         </div>
         <div class="topbar-actions">
           <button id="daily-button" class="icon-button" type="button">Daily</button>
@@ -135,6 +140,7 @@
         <button class="nav-button is-active" data-panel="home" type="button">Home</button>
         <button class="nav-button" data-panel="care" type="button">Care</button>
         <button class="nav-button" data-panel="play" type="button">Play</button>
+        <button class="nav-button" data-panel="shop" type="button">Shop</button>
         <button class="nav-button" data-panel="explore" type="button">Explore</button>
         <button class="nav-button" data-panel="collection" type="button">Collection</button>
       </nav>
@@ -146,6 +152,18 @@
         </header>
         <div id="drawer-content" class="drawer-content"></div>
       </aside>
+
+      <div id="photo-overlay" class="photo-overlay" hidden aria-label="Photo mode">
+        <div class="photo-viewfinder" aria-hidden="true">
+          <span class="photo-corner photo-corner-top-left"></span>
+          <span class="photo-corner photo-corner-top-right"></span>
+          <span class="photo-corner photo-corner-bottom-left"></span>
+          <span class="photo-corner photo-corner-bottom-right"></span>
+        </div>
+        <button id="capture-photo" class="photo-shutter" type="button" aria-label="Take photo">
+          <span class="camera-glyph" aria-hidden="true"><span class="camera-lens"></span></span>
+        </button>
+      </div>
 
       <div id="clean-overlay" class="clean-overlay" hidden>
         <div class="clean-card">
@@ -223,19 +241,6 @@
     </form>
   </dialog>
 
-  <dialog id="photo-modal" class="modal photo-modal">
-    <div class="modal-card modal-wide">
-      <header class="modal-header"><div><p class="eyebrow">Photo mode</p><h2>Capture a memory</h2></div><button id="close-photo" class="icon-button" type="button">Close</button></header>
-      <div class="photo-controls">
-        <label>Pose<select id="photo-pose"><option value="idle">Calm</option><option value="walk">Walking</option><option value="run">Excited</option><option value="jump_end">Celebrating</option></select></label>
-        <label>Environment<select id="photo-environment"></select></label>
-        <label>Frame<select id="photo-frame"><option value="none">None</option><option value="soft">Soft border</option><option value="sparkle">Sparkles</option></select></label>
-        <button id="capture-photo" class="button button-primary" type="button">Save image</button>
-      </div>
-      <p class="field-help">Drag the companion to rotate and use the mouse wheel or pinch to adjust the view.</p>
-    </div>
-  </dialog>
-
   <dialog id="settings-modal" class="modal">
     <form method="dialog" class="modal-card modal-wide">
       <header class="modal-header"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-button" value="cancel">Close</button></header>
@@ -248,6 +253,7 @@
         <label class="switch-row"><span>Real-time need decay</span><input id="real-time-decay" type="checkbox"></label>
         <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" type="checkbox"></label>
         <label>Fixed visual time<select id="fixed-time"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
+        <label>Language<select id="settings-language-select" data-language-select aria-label="Language"><option value="pt-BR">Português</option><option value="en">English</option></select></label>
       </div>
       <div class="backup-actions">
         <button id="export-save" class="button button-secondary" type="button">Export backup</button>
@@ -292,6 +298,6 @@
 
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-  <script type="module" src="js/app.js?v=7-position-games-fix"></script>
+  <script type="module" src="js/app.js?v=12-gameplay-shop"></script>
 </body>
 </html>

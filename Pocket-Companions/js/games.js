@@ -544,7 +544,11 @@ export class MinigameManager {
     const totalNotes = simplified ? 18 : 28;
     const beatGap = simplified ? 760 : 610;
     const travelTime = simplified ? 1900 : 1650;
-    const { score, timer, status, instruction } = this.createHud('Tap the matching lane when notes reach the line', Math.ceil((totalNotes * beatGap + travelTime + 1000) / 1000));
+    const timing = simplified
+      ? { perfect: 110, early: 260, late: 280 }
+      : { perfect: 75, early: 170, late: 195 };
+    const duration = Math.ceil((totalNotes * beatGap + travelTime + timing.late + 850) / 1000);
+    const { score, timer, status, instruction } = this.createHud('Tap the matching lane when notes reach the line', duration);
     const stage = document.createElement('div');
     stage.className = 'rhythm-stage';
     const lanes = document.createElement('div');
@@ -586,12 +590,12 @@ export class MinigameManager {
         resolved: false
       });
     }
+
     let points = 0;
     let hits = 0;
     let misses = 0;
     let combo = 0;
     let bestCombo = 0;
-    let lastFrame = performance.now();
 
     const updateHud = () => {
       const accuracy = hits + misses ? Math.round((hits / (hits + misses)) * 100) : 100;
@@ -606,12 +610,19 @@ export class MinigameManager {
     const hitLane = (lane) => {
       if (!this.active || this.active.completed) return;
       const now = performance.now();
-      const candidates = notes.filter((note) => !note.resolved && note.lane === lane && Math.abs(note.hitAt - now) <= (simplified ? 320 : 245));
-      const closest = candidates.sort((a, b) => Math.abs(a.hitAt - now) - Math.abs(b.hitAt - now))[0];
+      const candidates = notes
+        .filter((entry) => {
+          if (entry.resolved || entry.lane !== lane) return false;
+          const delta = now - entry.hitAt;
+          return delta >= -timing.early && delta <= timing.late;
+        })
+        .sort((a, b) => Math.abs(a.hitAt - now) - Math.abs(b.hitAt - now));
+      const closest = candidates[0];
       if (!closest) {
         misses += 1;
         combo = 0;
         pulseLane(lane, 'is-miss');
+        instruction.textContent = 'Wait for the note to reach the line';
         this.audio.play('land', { rate: 0.8, volume: 0.25 });
         updateHud();
         return;
@@ -619,7 +630,7 @@ export class MinigameManager {
       closest.resolved = true;
       closest.note.classList.add('is-hit');
       const difference = Math.abs(closest.hitAt - now);
-      const perfect = difference <= (simplified ? 125 : 90);
+      const perfect = difference <= timing.perfect;
       points += perfect ? 120 + combo * 4 : 75 + combo * 2;
       hits += 1;
       combo += 1;
@@ -630,12 +641,14 @@ export class MinigameManager {
       if (combo > 0 && combo % 8 === 0) this.scene.triggerJump();
       updateHud();
     };
+
     laneButtons.forEach((button) => {
       const handler = () => hitLane(Number(button.dataset.lane));
       button.addEventListener('pointerdown', handler);
       this.register(() => button.removeEventListener('pointerdown', handler));
     });
     const keyHandler = (event) => {
+      if (event.repeat) return;
       const map = { a: 0, s: 1, k: 2, l: 3, ArrowLeft: 0, ArrowDown: 1, ArrowUp: 2, ArrowRight: 3 };
       const lane = map[event.key] ?? map[event.key.toLowerCase?.()];
       if (lane === undefined) return;
@@ -645,20 +658,30 @@ export class MinigameManager {
     window.addEventListener('keydown', keyHandler);
     this.register(() => window.removeEventListener('keydown', keyHandler));
 
+    let frameId = 0;
     const frame = (now) => {
       if (!this.active || this.active.completed) return;
-      const delta = Math.min(0.05, (now - lastFrame) / 1000);
-      lastFrame = now;
+      const lanesRect = lanes.getBoundingClientRect();
+      const lineRect = hitLine.getBoundingClientRect();
+      const startY = -24;
+      const targetY = lineRect.top + lineRect.height * 0.5 - lanesRect.top;
+      const endY = lanesRect.height + 26;
+
       for (const entry of notes) {
         if (entry.resolved) continue;
-        const progress = (now - entry.spawnAt) / travelTime;
-        if (progress < 0) {
+        if (now < entry.spawnAt) {
           entry.note.style.opacity = '0';
           continue;
         }
         entry.note.style.opacity = '1';
-        entry.note.style.top = `${clamp(progress * 82, -4, 96)}%`;
-        if (now > entry.hitAt + (simplified ? 330 : 250)) {
+        if (now <= entry.hitAt) {
+          const progress = clamp((now - entry.spawnAt) / travelTime, 0, 1);
+          entry.note.style.top = `${startY + (targetY - startY) * progress}px`;
+        } else {
+          const after = clamp((now - entry.hitAt) / Math.max(1, timing.late + 210), 0, 1);
+          entry.note.style.top = `${targetY + (endY - targetY) * after}px`;
+        }
+        if (now > entry.hitAt + timing.late) {
           entry.resolved = true;
           entry.note.classList.add('is-missed');
           misses += 1;
@@ -666,6 +689,7 @@ export class MinigameManager {
           updateHud();
         }
       }
+
       if (notes.every((entry) => entry.resolved)) {
         const accuracy = hits / totalNotes;
         this.complete(accuracy >= (simplified ? 0.55 : 0.62), {
@@ -677,11 +701,14 @@ export class MinigameManager {
       }
       frameId = requestAnimationFrame(frame);
     };
-    let frameId = requestAnimationFrame(frame);
+    frameId = requestAnimationFrame(frame);
     this.register(() => cancelAnimationFrame(frameId));
-    this.runTimer(Math.ceil((totalNotes * beatGap + travelTime + 1000) / 1000), () => {
+    this.runTimer(duration, () => {
       const accuracy = hits / totalNotes;
-      this.complete(accuracy >= 0.62, { rating: accuracy >= 0.88 ? 3 : accuracy >= 0.7 ? 2 : 1, detail: `${Math.round(accuracy * 100)}% accuracy` });
+      this.complete(accuracy >= (simplified ? 0.55 : 0.62), {
+        rating: accuracy >= 0.88 ? 3 : accuracy >= 0.7 ? 2 : 1,
+        detail: `${Math.round(accuracy * 100)}% accuracy`
+      });
     }, timer);
     this.scene.playAnimation('run', { fade: 0.25, force: true, timeScale: 0.9 });
     updateHud();
@@ -691,6 +718,9 @@ export class MinigameManager {
     const simplified = this.store.settings.simplifiedGames;
     const avatarUrl = this.scene.getPetAvatarDataUrl();
     const totalObstacles = simplified ? 8 : 12;
+    const reactionWindows = simplified
+      ? { jump: 620, duck: 500 }
+      : { jump: 460, duck: 360 };
     const { score, timer, status, instruction } = this.createHud('Jump over crates and duck under ribbons', 34);
     const stage = document.createElement('div');
     stage.className = 'agility-stage';
@@ -716,6 +746,7 @@ export class MinigameManager {
     let action = 'run';
     let actionStartedAt = 0;
     let actionUntil = 0;
+    const lastActionAt = { jump: -Infinity, duck: -Infinity };
     const jumpDuration = simplified ? 980 : 900;
     const duckDuration = simplified ? 760 : 650;
     let lastFrame = performance.now();
@@ -728,9 +759,10 @@ export class MinigameManager {
     const setAction = (nextAction) => {
       if (!this.active || this.active.completed) return;
       const now = performance.now();
-      if (action !== 'run' && now < actionUntil) return;
+      if (now - actionStartedAt < 90) return;
       action = nextAction;
       actionStartedAt = now;
+      lastActionAt[nextAction] = now;
       actionUntil = now + (nextAction === 'jump' ? jumpDuration : duckDuration);
       avatar.style.setProperty('--jump-duration', `${jumpDuration}ms`);
       avatar.style.setProperty('--duck-duration', `${duckDuration}ms`);
@@ -751,6 +783,7 @@ export class MinigameManager {
       this.register(() => button.removeEventListener('pointerdown', handler));
     });
     const keyHandler = (event) => {
+      if (event.repeat) return;
       if ([' ', 'ArrowUp'].includes(event.key)) {
         event.preventDefault();
         setAction('jump');
@@ -770,11 +803,18 @@ export class MinigameManager {
       element.className = `agility-obstacle is-${type}`;
       element.innerHTML = '<span></span>';
       track.append(element);
-      obstacles.push({ element, type, progress: 0, resolved: false, speed: randomBetween(simplified ? 0.245 : 0.27, simplified ? 0.285 : 0.32) });
+      obstacles.push({
+        element,
+        type,
+        progress: 0,
+        resolved: false,
+        speed: randomBetween(simplified ? 0.245 : 0.27, simplified ? 0.285 : 0.32)
+      });
       spawned += 1;
       instruction.textContent = type === 'jump' ? 'Crate ahead — jump!' : 'Ribbon ahead — duck!';
     };
 
+    let frameId = 0;
     const frame = (now) => {
       if (!this.active || this.active.completed) return;
       const delta = Math.min(0.04, (now - lastFrame) / 1000);
@@ -789,22 +829,31 @@ export class MinigameManager {
         lastSpawn = now;
         spawn();
       }
+
+      const avatarRect = avatar.getBoundingClientRect();
+      const judgeX = avatarRect.left + avatarRect.width * 0.72;
       for (let index = obstacles.length - 1; index >= 0; index -= 1) {
         const obstacle = obstacles[index];
         obstacle.progress += obstacle.speed * delta;
         const x = 105 - obstacle.progress * 102;
         obstacle.element.style.left = `${x}%`;
-        if (!obstacle.resolved && x <= 24) {
+        const obstacleRect = obstacle.element.getBoundingClientRect();
+
+        if (!obstacle.resolved && obstacleRect.left <= judgeX) {
           obstacle.resolved = true;
-          const actionProgress = action === 'run' ? 0 : clamp((now - actionStartedAt) / Math.max(1, actionUntil - actionStartedAt), 0, 1);
-          const clearedJump = obstacle.type === 'jump' && action === 'jump' && actionProgress >= 0.12 && actionProgress <= 0.92;
-          const clearedDuck = obstacle.type === 'duck' && action === 'duck' && actionProgress <= 0.95;
-          if (clearedJump || clearedDuck) {
+          const responseTime = now - lastActionAt[obstacle.type];
+          const correctlyTimed = responseTime >= 0 && responseTime <= reactionWindows[obstacle.type];
+          if (correctlyTimed) {
             cleared += 1;
             obstacle.element.classList.add('is-cleared');
+            instruction.textContent = responseTime < 230 ? 'Perfect timing!' : 'Cleared!';
             this.audio.play('positive', { rate: 1.0 + cleared * 0.02, volume: 0.42 });
           } else {
             lives -= 1;
+            const hadMatchingInput = Number.isFinite(lastActionAt[obstacle.type]);
+            instruction.textContent = hadMatchingInput && responseTime > reactionWindows[obstacle.type]
+              ? 'Too early — react closer to the obstacle'
+              : 'Too late';
             avatar.classList.add('is-hit');
             this.schedule(() => avatar.classList.remove('is-hit'), 260);
             this.audio.play('land', { rate: 0.7, volume: 0.6 });
@@ -831,9 +880,9 @@ export class MinigameManager {
       }
       frameId = requestAnimationFrame(frame);
     };
-    let frameId = requestAnimationFrame(frame);
+    frameId = requestAnimationFrame(frame);
     this.register(() => cancelAnimationFrame(frameId));
-    this.runTimer(34, () => this.complete(cleared >= Math.ceil(totalObstacles * 0.7), {
+    this.runTimer(34, () => this.complete(cleared >= Math.ceil(totalObstacles * (simplified ? 0.62 : 0.7)), {
       bonus: cleared,
       rating: lives === 3 ? 3 : lives === 2 ? 2 : 1,
       detail: `${cleared}/${totalObstacles} obstacles cleared`
