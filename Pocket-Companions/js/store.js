@@ -2,7 +2,9 @@ import {
   APP_VERSION, STORAGE_KEY, SETTINGS_KEY, DEFAULT_SETTINGS, DECAY_PER_HOUR,
   MAX_OFFLINE_HOURS, PETS, ROOMS, COLLECTION_ITEMS
 } from './config.js';
-import { clamp, safeParse, todayKey, uid } from './utils.js';
+import { clamp, safeParse, todayKey, daysBetweenDateKeys, uid } from './utils.js';
+import { PersistentRepository } from './persistence.js';
+import { migrateLivingState } from './living-systems.js';
 
 const OBJECTIVE_POOL = [
   { id: 'feed-2', label: 'Feed your companion twice', type: 'feed', target: 2 },
@@ -51,11 +53,21 @@ const baseSlot = (slotIndex, companionId, petName) => ({
   visitedRooms: ['living'],
   photoCount: 0,
   daily: createDailyState(),
-  streak: { current: 0, best: 0, lastCompletedDate: null, graceAvailable: true },
+  streak: {
+    current: 0,
+    best: 0,
+    lastCompletedDate: null,
+    graceAvailable: true,
+    graceUsedDate: null,
+    completedSinceGrace: 0,
+    pendingGraceDate: null
+  },
+  dailyHistory: [],
   tutorialStep: 0,
   tutorialComplete: false,
   interactions: { petTimestamps: [], totalPetting: 0, lastDialogueAt: 0, lastAutonomousAt: 0 },
-  settings: {}
+  settings: {},
+  living: null
 });
 
 function createDailyState() {
@@ -79,6 +91,7 @@ function migrateSlot(slot, slotIndex) {
   migrated.stats = { ...defaults.stats, ...(slot.stats || {}) };
   migrated.interactions = { ...defaults.interactions, ...(slot.interactions || {}) };
   migrated.streak = { ...defaults.streak, ...(slot.streak || {}) };
+  migrated.dailyHistory = Array.isArray(slot.dailyHistory) ? slot.dailyHistory.slice(-30) : [];
   migrated.discoveredFoods = Array.isArray(slot.discoveredFoods) ? slot.discoveredFoods : [];
   migrated.visitedRooms = Array.isArray(slot.visitedRooms) ? slot.visitedRooms : ['living'];
   migrated.photoCount = Math.max(0, Math.floor(Number(slot.photoCount) || 0));
@@ -89,23 +102,65 @@ function migrateSlot(slot, slotIndex) {
   if (!migrated.unlockedRooms.includes('living')) migrated.unlockedRooms.unshift('living');
   migrated.activeRoom = migrated.unlockedRooms.includes(migrated.activeRoom) ? migrated.activeRoom : 'living';
   migrated.unlockedItems = Array.isArray(migrated.unlockedItems) ? migrated.unlockedItems : ['starter-bowl'];
-  migrated.daily = migrated.daily?.date === todayKey() ? migrated.daily : createDailyState();
+  migrated.daily = migrated.daily?.date ? migrated.daily : createDailyState();
+  migrated.living = migrateLivingState(migrated);
   return migrated;
 }
 
 export class GameStore extends EventTarget {
   constructor() {
     super();
-    this.settings = { ...DEFAULT_SETTINGS, ...safeParse(localStorage.getItem(SETTINGS_KEY), {}) };
-    const raw = safeParse(localStorage.getItem(STORAGE_KEY), { version: APP_VERSION, slots: [null, null, null], activeSlot: null });
-    this.data = {
+    this.repository = new PersistentRepository();
+    this.persistenceReady = false;
+    this.flushTimer = null;
+    this.lastBackupAt = 0;
+
+    const localSettingsText = localStorage.getItem(SETTINGS_KEY);
+    const localSettings = safeParse(localSettingsText, null);
+    const localRaw = safeParse(localStorage.getItem(STORAGE_KEY), { version: APP_VERSION, slots: [null, null, null], activeSlot: null });
+    this.hasLocalSettings = Boolean(localSettings && typeof localSettings === 'object');
+    this.settings = { ...DEFAULT_SETTINGS, ...(localSettings?.value || localSettings || {}) };
+    this.data = this.normalizeData(localRaw?.value || localRaw);
+    this.lastTick = Date.now();
+    this.ensureDaily();
+    this.writeLocalMirror();
+    this.ready = this.initializePersistence();
+
+    addEventListener('pagehide', () => this.flushPersistentStorage(true));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') this.flushPersistentStorage(true);
+    });
+  }
+
+  normalizeData(raw) {
+    return {
       version: APP_VERSION,
+      updatedAt: Number(raw?.updatedAt) || 0,
       slots: [0, 1, 2].map((index) => migrateSlot(raw?.slots?.[index], index)),
       activeSlot: Number.isInteger(raw?.activeSlot) ? raw.activeSlot : null
     };
-    this.lastTick = Date.now();
+  }
+
+  async initializePersistence() {
+    try {
+      await this.repository.requestDurableStorage();
+      const [primary, backup, settingsRecord] = await Promise.all([
+        this.repository.get('game'),
+        this.repository.get('game-backup'),
+        this.repository.get('settings')
+      ]);
+      const candidates = [primary, backup, { value: this.data, savedAt: this.data.updatedAt || 0 }]
+        .filter((entry) => entry?.value?.slots)
+        .sort((a, b) => (b.savedAt || b.value?.updatedAt || 0) - (a.savedAt || a.value?.updatedAt || 0));
+      if (candidates[0]) this.data = this.normalizeData(candidates[0].value);
+      if (!this.hasLocalSettings && settingsRecord?.value) this.settings = { ...DEFAULT_SETTINGS, ...settingsRecord.value };
+    } catch (error) {
+      console.warn('[Pocket Companions] Persistent memory recovery fell back to the local mirror.', error);
+    }
     this.ensureDaily();
-    this.persist();
+    this.persistenceReady = true;
+    this.writeLocalMirror();
+    await this.flushPersistentStorage(true);
   }
 
   get active() {
@@ -117,6 +172,7 @@ export class GameStore extends EventTarget {
   createSlot(index, companionId, petName) {
     if (!PETS[companionId]) throw new Error('Unknown companion.');
     this.data.slots[index] = baseSlot(index, companionId, petName.trim() || PETS[companionId].name);
+    this.data.slots[index].living = migrateLivingState(this.data.slots[index]);
     this.data.activeSlot = index;
     this.persist();
     this.emit('slot-created');
@@ -141,9 +197,46 @@ export class GameStore extends EventTarget {
   }
 
   ensureDaily() {
+    const today = todayKey();
     for (const slot of this.data.slots) {
-      if (slot && slot.daily?.date !== todayKey()) slot.daily = createDailyState();
+      if (!slot) continue;
+      if (!slot.daily?.date) slot.daily = createDailyState();
+      if (slot.daily.date !== today) {
+        slot.dailyHistory = Array.isArray(slot.dailyHistory) ? slot.dailyHistory : [];
+        slot.dailyHistory.push({
+          date: slot.daily.date,
+          claimed: Boolean(slot.daily.claimed),
+          completed: slot.daily.objectives?.filter((objective) => objective.complete).length || 0,
+          total: slot.daily.objectives?.length || 0
+        });
+        slot.dailyHistory = slot.dailyHistory.slice(-30);
+        slot.daily = createDailyState();
+      }
+      this.reconcileStreak(slot, today);
     }
+  }
+
+  reconcileStreak(slot, today = todayKey()) {
+    const streak = slot.streak;
+    if (!streak.lastCompletedDate || streak.current <= 0) {
+      streak.pendingGraceDate = null;
+      return;
+    }
+    const gap = daysBetweenDateKeys(streak.lastCompletedDate, today);
+    if (gap === null || gap <= 1) {
+      streak.pendingGraceDate = null;
+      return;
+    }
+    if (gap === 2 && streak.graceAvailable) {
+      streak.pendingGraceDate = today;
+      return;
+    }
+    streak.current = 0;
+    streak.lastCompletedDate = null;
+    streak.graceAvailable = true;
+    streak.graceUsedDate = null;
+    streak.completedSinceGrace = 0;
+    streak.pendingGraceDate = null;
   }
 
   applyOfflineProgress() {
@@ -177,6 +270,10 @@ export class GameStore extends EventTarget {
   tick(now = Date.now()) {
     const slot = this.active;
     if (!slot) return;
+    if (slot.daily?.date !== todayKey()) {
+      this.ensureDaily();
+      this.persist();
+    }
     const elapsedHours = Math.min(MAX_OFFLINE_HOURS, Math.max(0, (now - this.lastTick) / 3600000));
     this.lastTick = now;
     if (this.settings.realTimeDecay && !slot.isSleeping) {
@@ -271,13 +368,37 @@ export class GameStore extends EventTarget {
     if (!slot.achievements.includes('daily-rhythm')) slot.achievements.push('daily-rhythm');
     slot.currency += 55;
     slot.stats.experience += 35;
+
     const date = todayKey();
-    if (slot.streak.lastCompletedDate !== date) {
-      slot.streak.current += 1;
-      slot.streak.best = Math.max(slot.streak.best, slot.streak.current);
-      slot.streak.lastCompletedDate = date;
-      slot.streak.graceAvailable = true;
+    const streak = slot.streak;
+    if (streak.lastCompletedDate !== date) {
+      const gap = streak.lastCompletedDate ? daysBetweenDateKeys(streak.lastCompletedDate, date) : null;
+      if (!streak.lastCompletedDate || gap === null || gap <= 0 || gap > 2 || (gap === 2 && !streak.graceAvailable)) {
+        streak.current = 1;
+        streak.graceAvailable = true;
+        streak.graceUsedDate = null;
+        streak.completedSinceGrace = 0;
+      } else if (gap === 1) {
+        streak.current += 1;
+        if (!streak.graceAvailable) {
+          streak.completedSinceGrace += 1;
+          if (streak.completedSinceGrace >= 7) {
+            streak.graceAvailable = true;
+            streak.graceUsedDate = null;
+            streak.completedSinceGrace = 0;
+          }
+        }
+      } else if (gap === 2 && streak.graceAvailable) {
+        streak.current += 1;
+        streak.graceAvailable = false;
+        streak.graceUsedDate = date;
+        streak.completedSinceGrace = 0;
+      }
+      streak.best = Math.max(streak.best, streak.current);
+      streak.lastCompletedDate = date;
+      streak.pendingGraceDate = null;
     }
+    this.persist();
     this.emit('daily-complete');
   }
 
@@ -323,7 +444,8 @@ export class GameStore extends EventTarget {
 
   updateSettings(patch) {
     this.settings = { ...this.settings, ...patch };
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
+    this.writeLocalMirror();
+    this.schedulePersistentFlush();
     this.emit('settings');
   }
 
@@ -340,19 +462,61 @@ export class GameStore extends EventTarget {
       activeSlot: Number.isInteger(parsed.data.activeSlot) ? parsed.data.activeSlot : null
     };
     this.settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
+    this.ensureDaily();
     this.persist();
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
+    this.flushPersistentStorage(true);
     this.emit('imported');
   }
 
   recoverCorruption() {
-    this.data = { version: APP_VERSION, slots: [null, null, null], activeSlot: null };
+    this.data = { version: APP_VERSION, updatedAt: Date.now(), slots: [null, null, null], activeSlot: null };
     this.persist();
+    this.flushPersistentStorage(true);
+  }
+
+  writeLocalMirror() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(this.settings));
+    } catch (error) {
+      console.warn('[Pocket Companions] Could not update local save mirror.', error);
+    }
+  }
+
+  schedulePersistentFlush() {
+    if (!this.persistenceReady || this.flushTimer) return;
+    this.flushTimer = setTimeout(() => {
+      this.flushTimer = null;
+      this.flushPersistentStorage();
+    }, 350);
+  }
+
+  async flushPersistentStorage(forceBackup = false) {
+    if (!this.persistenceReady) return false;
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+    }
+    const savedAt = Date.now();
+    const record = { value: this.data, savedAt };
+    const writes = [
+      this.repository.put('game', record),
+      this.repository.put('settings', { value: this.settings, savedAt })
+    ];
+    if (forceBackup || savedAt - this.lastBackupAt > 60000) {
+      writes.push(this.repository.put('game-backup', record));
+      this.lastBackupAt = savedAt;
+    }
+    const results = await Promise.all(writes);
+    return results.every(Boolean);
   }
 
   persist() {
-    if (this.active) this.active.lastActive = Date.now();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+    const now = Date.now();
+    if (this.active) this.active.lastActive = now;
+    this.data.updatedAt = now;
+    this.writeLocalMirror();
+    this.schedulePersistentFlush();
   }
 
   getCollection() {

@@ -72,6 +72,41 @@ window.ASSET_PATHS = {
       pets: ['pietro']
     },
     {
+      key: 'bolt',
+      label: 'Bolt',
+      pets: ['bolt']
+    },
+    {
+      key: 'caramelo',
+      label: 'Caramelo',
+      pets: ['caramelo']
+    },
+    {
+      key: 'chica',
+      label: 'Chica',
+      pets: ['chica']
+    },
+    {
+      key: 'kate',
+      label: 'Kate',
+      pets: ['kate']
+    },
+    {
+      key: 'kiara',
+      label: 'Kiara',
+      pets: ['kiara']
+    },
+    {
+      key: 'pacoca',
+      label: 'Paçoca',
+      pets: ['pacoca']
+    },
+    {
+      key: 'simba',
+      label: 'Simba',
+      pets: ['simba']
+    },
+    {
       key: 'apollo_lilith',
       label: 'Apollo + Lilith',
       pets: ['apollo', 'lilith']
@@ -88,8 +123,8 @@ window.ASSET_PATHS = {
     },
     {
       key: 'all_pets',
-      label: 'Apollo + Lilith + Pietro',
-      pets: ['apollo', 'lilith', 'pietro']
+      label: 'Todos os pets',
+      pets: ['apollo', 'lilith', 'pietro', 'bolt', 'caramelo', 'chica', 'kate', 'kiara', 'pacoca', 'simba']
     }
   ],
   pets: {
@@ -120,6 +155,76 @@ window.ASSET_PATHS = {
       placement: 'nearModel',
       gap: 0.04,
       targetHeight: 0.32,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    bolt: {
+      label: 'Bolt',
+      path: './assets/models/bolt_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.39,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    caramelo: {
+      label: 'Caramelo',
+      path: './assets/models/caramelo_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    chica: {
+      label: 'Chica',
+      path: './assets/models/chica_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.46,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    kate: {
+      label: 'Kate',
+      path: './assets/models/kate_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.39,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    kiara: {
+      label: 'Kiara',
+      path: './assets/models/kiara_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    pacoca: {
+      label: 'Paçoca',
+      path: './assets/models/pacoca_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.5,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    simba: {
+      label: 'Simba',
+      path: './assets/models/simba_todas_animacoes.glb',
+      side: 'center',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
       position: { y: 0, z: 0 },
       rotationY: 0
     }

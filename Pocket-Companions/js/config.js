@@ -1,4 +1,4 @@
-export const APP_VERSION = 5;
+export const APP_VERSION = 18;
 export const STORAGE_KEY = 'pocket-companions:saves:v1';
 export const SETTINGS_KEY = 'pocket-companions:global-settings:v1';
 
@@ -248,7 +248,15 @@ export const DEFAULT_SETTINGS = {
   realTimeLighting: true,
   fixedVisualTime: 'day',
   simplifiedGames: false,
-  captions: true
+  captions: true,
+  reducedWeatherEffects: false,
+  emotionHints: true,
+  bodyLanguageDescriptions: true,
+  multiPetRendering: true,
+  dynamicWeather: true,
+  weatherMode: 'dynamic',
+  seasonMode: 'automatic',
+  lowPerformanceMode: false
 };
 
 export const DECAY_PER_HOUR = {

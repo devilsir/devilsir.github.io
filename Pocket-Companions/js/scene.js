@@ -3,6 +3,7 @@ import { GLTFLoader } from '../vendor/GLTFLoader.js';
 import { PETS, ANIMATION_NAMES } from './config.js';
 import { AnimationController } from './animations.js';
 import { clamp, lerp, randomBetween } from './utils.js';
+import { PET_ACCESSORY_FITS } from './living-data.js';
 
 const ROOM_PALETTES = {
   living: { floor: 0xe5b98f, wall: 0xf6e5cd, accent: 0xf3a36c, sky: 0xcfe8f5 },
@@ -33,6 +34,11 @@ export class CompanionScene extends EventTarget {
     this.running = false;
     this.frameId = null;
     this.target = null;
+    this.pathWaypoints = [];
+    this.finalTarget = null;
+    this.pathRun = false;
+    this.repathAttempts = 0;
+    this.petLoadRequest = 0;
     this.movementOutcome = 'idle';
     this.velocity = new THREE.Vector3();
     this.baseCamera = { x: 0, y: 2.4, z: 6.2 };
@@ -66,10 +72,34 @@ export class CompanionScene extends EventTarget {
     this.paused = false;
     this.lastAutonomous = 0;
     this.autonomousTarget = null;
+    this.autonomyProvider = null;
     this.onPetGesture = null;
     this.onCleanProgress = null;
     this.onMovement = null;
     this.resizeObserver = null;
+    this.secondaryPetId = null;
+    this.secondaryTarget = null;
+    this.secondaryLastDecision = 0;
+    this.weatherGroup = new THREE.Group();
+    this.weatherParticles = [];
+    this.worldState = { weather: 'clear', season: 'spring' };
+    this.decorationRecords = [];
+    this.decorationGroup = null;
+    this.accessoryGroup = null;
+    this.accessoryBinding = null;
+    this.accessoryWorldPosition = new THREE.Vector3();
+    this.accessoryTargetPosition = new THREE.Vector3();
+    this.accessoryAnchorOffset = new THREE.Vector3();
+    this.accessoryBoneQuaternion = new THREE.Quaternion();
+    this.accessoryHolderQuaternion = new THREE.Quaternion();
+    this.accessoryTargetQuaternion = new THREE.Quaternion();
+    this.bodyLanguageState = { id: 'relaxed', intensity: 0.5 };
+    this.bodyLanguageClock = 0;
+    this.scentGroup = null;
+    this.dreamGroup = null;
+    this.dreamTheme = null;
+    this.eventGroup = null;
+    this.travelLocation = null;
   }
 
   async init() {
@@ -96,6 +126,7 @@ export class CompanionScene extends EventTarget {
 
     this.scene.add(this.environment);
     this.scene.add(this.petStage);
+    this.scene.add(this.weatherGroup);
     this.createLights();
     this.buildEnvironment('living');
     this.bindEvents();
@@ -129,23 +160,28 @@ export class CompanionScene extends EventTarget {
 
   async preloadAll(progressCallback = () => {}) {
     const entries = Object.values(PETS);
-    let loaded = 0;
-    const total = entries.length;
-    await Promise.all(entries.map(async (pet) => {
-      const gltf = await this.loadModel(pet.model, (fraction) => {
-        progressCallback(clamp(((loaded + fraction) / total) * 100));
-      });
-      const record = this.preparePet(pet.id, gltf);
-      this.pets.set(pet.id, record);
-      this.petStage.add(record.stage);
-      record.stage.visible = false;
-      loaded += 1;
-      progressCallback((loaded / total) * 100);
-    }));
+    let completed = 0;
+    let cursor = 0;
+    const workers = Array.from({ length: Math.min(3, entries.length) }, async () => {
+      while (cursor < entries.length) {
+        const pet = entries[cursor];
+        cursor += 1;
+        try {
+          const response = await fetch(pet.model, { cache: 'force-cache' });
+          if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+          await response.arrayBuffer();
+        } catch (error) {
+          console.warn(`[Pocket Companions] Could not warm the cache for ${pet.model}.`, error);
+        }
+        completed += 1;
+        progressCallback((completed / entries.length) * 100);
+      }
+    });
+    await Promise.all(workers);
     progressCallback(100);
   }
 
-  loadModel(url, progressCallback) {
+  loadModel(url, progressCallback = () => {}) {
     return new Promise((resolve, reject) => {
       this.loader.load(url, resolve, (event) => {
         if (event.lengthComputable && event.total > 0) progressCallback(event.loaded / event.total);
@@ -172,7 +208,7 @@ export class CompanionScene extends EventTarget {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
-        child.frustumCulled = true;
+        child.frustumCulled = child.isSkinnedMesh ? false : true;
       }
     });
 
@@ -220,21 +256,48 @@ export class CompanionScene extends EventTarget {
     };
   }
 
-  setPet(id, { selection = false } = {}) {
-    if (!this.pets.has(id)) throw new Error(`Pet ${id} is not loaded.`);
+  async setPet(id, { selection = false } = {}) {
+    if (!PETS[id]) throw new Error(`Unknown pet ${id}.`);
+    const requestId = ++this.petLoadRequest;
+    let record = this.pets.get(id);
+
+    if (!record) {
+      const gltf = await this.loadModel(PETS[id].model);
+      record = this.preparePet(id, gltf);
+      if (requestId !== this.petLoadRequest) {
+        this.disposePetRecord(record);
+        return false;
+      }
+      this.petStage.add(record.stage);
+      this.pets.set(id, record);
+    }
+
+    if (requestId !== this.petLoadRequest) return false;
+    for (const [key, other] of [...this.pets.entries()]) {
+      if (key === id || key === this.secondaryPetId) continue;
+      this.pets.delete(key);
+      this.disposePetRecord(other);
+    }
+
+    if (this.accessoryBinding && this.accessoryBinding.holder !== record.modelHolder) {
+      this.accessoryGroup?.removeFromParent();
+      this.disposeObject(this.accessoryGroup);
+      this.accessoryGroup = null;
+      this.accessoryBinding = null;
+    }
     this.currentPetId = id;
-    this.pets.forEach((record, key) => {
-      record.stage.visible = key === id;
-      record.stage.position.set(0, 0, 0);
-      record.modelHolder.rotation.set(0, 0, 0);
-      record.model.position.copy(record.baseModelPosition);
-      record.model.rotation.copy(record.baseModelRotation);
-      if (key === id) record.controller.play('idle', { fade: 0.24, force: true });
-    });
+    if (this.secondaryPetId === id) this.secondaryPetId = null;
+    record.stage.visible = true;
+    record.stage.position.set(0, 0, 0);
+    record.modelHolder.rotation.set(0, 0, 0);
+    record.model.position.copy(record.baseModelPosition);
+    record.model.rotation.copy(record.baseModelRotation);
+    record.controller.play('idle', { fade: 0.24, force: true });
     this.mode = selection ? 'selection' : 'home';
-    this.target = null;
+    this.stopMovement('stopped');
     this.autonomousTarget = null;
     this.frameCurrentPet(selection);
+    return true;
   }
 
   get currentPet() { return this.pets.get(this.currentPetId) || null; }
@@ -259,10 +322,11 @@ export class CompanionScene extends EventTarget {
   setReducedMotion() {
     if (!this.renderer) return;
     const settings = this.settingsProvider();
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, settings.reducedMotion ? 1.15 : this.isMobile() ? 1.5 : 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, settings.reducedMotion || settings.lowPerformanceMode ? 1.05 : this.isMobile() ? 1.45 : 1.8));
   }
 
   buildEnvironment(roomId) {
+    this.travelLocation = null;
     this.roomId = roomId;
     this.windowGlass = null;
     this.obstacles = [];
@@ -327,6 +391,8 @@ export class CompanionScene extends EventTarget {
     }
     this.configureObstacles(roomId);
     this.applyLighting();
+    this.setWorldState(this.worldState);
+    this.setDecorations(this.decorationRecords);
   }
 
   configureObstacles(roomId) {
@@ -369,6 +435,127 @@ export class CompanionScene extends EventTarget {
       x + radius > obstacle.minX && x - radius < obstacle.maxX &&
       z + radius > obstacle.minZ && z - radius < obstacle.maxZ
     );
+  }
+
+  hasClearPath(from, to, radius = 0.34) {
+    const distance = from.distanceTo(to);
+    const steps = Math.max(1, Math.ceil(distance / 0.09));
+    for (let index = 1; index <= steps; index += 1) {
+      const t = index / steps;
+      const x = lerp(from.x, to.x, t);
+      const z = lerp(from.z, to.z, t);
+      if (this.isBlocked(x, z, radius)) return false;
+    }
+    return true;
+  }
+
+  findPath(start, destination, radius = 0.34) {
+    const cell = 0.28;
+    const minX = -4.4;
+    const maxX = 4.4;
+    const minZ = -2.75;
+    const maxZ = 2.75;
+    const safeStart = start.clone();
+    const safeEnd = destination.clone();
+    safeStart.set(clamp(safeStart.x, minX, maxX), 0, clamp(safeStart.z, minZ, maxZ));
+    safeEnd.set(clamp(safeEnd.x, minX, maxX), 0, clamp(safeEnd.z, minZ, maxZ));
+    if (!this.isBlocked(safeEnd.x, safeEnd.z, radius) && this.hasClearPath(safeStart, safeEnd, radius)) return [safeEnd];
+
+    const cols = Math.floor((maxX - minX) / cell) + 1;
+    const rows = Math.floor((maxZ - minZ) / cell) + 1;
+    const toCell = (point) => ({
+      x: clamp(Math.round((point.x - minX) / cell), 0, cols - 1),
+      z: clamp(Math.round((point.z - minZ) / cell), 0, rows - 1)
+    });
+    const toWorld = (node) => new THREE.Vector3(minX + node.x * cell, 0, minZ + node.z * cell);
+    const keyOf = (node) => `${node.x}:${node.z}`;
+    const walkable = (node) => {
+      if (node.x < 0 || node.x >= cols || node.z < 0 || node.z >= rows) return false;
+      const point = toWorld(node);
+      return !this.isBlocked(point.x, point.z, radius);
+    };
+    const nearestWalkable = (origin) => {
+      if (walkable(origin)) return origin;
+      for (let ring = 1; ring < 8; ring += 1) {
+        for (let dx = -ring; dx <= ring; dx += 1) {
+          for (let dz = -ring; dz <= ring; dz += 1) {
+            if (Math.max(Math.abs(dx), Math.abs(dz)) !== ring) continue;
+            const candidate = { x: origin.x + dx, z: origin.z + dz };
+            if (walkable(candidate)) return candidate;
+          }
+        }
+      }
+      return null;
+    };
+
+    const startNode = nearestWalkable(toCell(safeStart));
+    const endNode = nearestWalkable(toCell(safeEnd));
+    if (!startNode || !endNode) return [];
+
+    const open = [startNode];
+    const openKeys = new Set([keyOf(startNode)]);
+    const cameFrom = new Map();
+    const gScore = new Map([[keyOf(startNode), 0]]);
+    const fScore = new Map([[keyOf(startNode), Math.hypot(endNode.x - startNode.x, endNode.z - startNode.z)]]);
+    const directions = [
+      [1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1],
+      [1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, 1, Math.SQRT2], [-1, -1, Math.SQRT2]
+    ];
+
+    while (open.length) {
+      open.sort((a, b) => (fScore.get(keyOf(a)) ?? Infinity) - (fScore.get(keyOf(b)) ?? Infinity));
+      const current = open.shift();
+      const currentKey = keyOf(current);
+      openKeys.delete(currentKey);
+      if (current.x === endNode.x && current.z === endNode.z) {
+        const cells = [current];
+        let cursor = currentKey;
+        while (cameFrom.has(cursor)) {
+          const previous = cameFrom.get(cursor);
+          cells.push(previous);
+          cursor = keyOf(previous);
+        }
+        cells.reverse();
+        const raw = cells.slice(1).map(toWorld);
+        const resolvedEnd = !this.isBlocked(safeEnd.x, safeEnd.z, radius) && this.hasClearPath(toWorld(endNode), safeEnd, radius)
+          ? safeEnd
+          : toWorld(endNode);
+        if (!raw.length || raw[raw.length - 1].distanceTo(resolvedEnd) > 0.02) raw.push(resolvedEnd);
+        const smoothed = [];
+        let anchor = safeStart;
+        for (let index = 0; index < raw.length;) {
+          let furthest = index;
+          for (let probe = index; probe < raw.length; probe += 1) {
+            if (!this.hasClearPath(anchor, raw[probe], radius)) break;
+            furthest = probe;
+          }
+          const waypoint = raw[furthest];
+          smoothed.push(waypoint);
+          anchor = waypoint;
+          index = furthest + 1;
+        }
+        return smoothed;
+      }
+
+      for (const [dx, dz, cost] of directions) {
+        const neighbor = { x: current.x + dx, z: current.z + dz };
+        if (!walkable(neighbor)) continue;
+        if (dx !== 0 && dz !== 0) {
+          if (!walkable({ x: current.x + dx, z: current.z }) || !walkable({ x: current.x, z: current.z + dz })) continue;
+        }
+        const neighborKey = keyOf(neighbor);
+        const tentative = (gScore.get(currentKey) ?? Infinity) + cost;
+        if (tentative >= (gScore.get(neighborKey) ?? Infinity)) continue;
+        cameFrom.set(neighborKey, current);
+        gScore.set(neighborKey, tentative);
+        fScore.set(neighborKey, tentative + Math.hypot(endNode.x - neighbor.x, endNode.z - neighbor.z));
+        if (!openKeys.has(neighborKey)) {
+          open.push(neighbor);
+          openKeys.add(neighborKey);
+        }
+      }
+    }
+    return [];
   }
 
   box(width, height, depth, material, x, y, z) {
@@ -512,7 +699,7 @@ export class CompanionScene extends EventTarget {
   async playEatingSequence(foodId, duration = 1800) {
     const pet = this.currentPet;
     if (!pet) return;
-    this.target = null;
+    this.clearMovementPath();
     pet.stage.position.copy(this.getFeedApproach(foodId));
     const bowlPoint = (foodId === 'water' ? this.feedAnchor.clone().add(new THREE.Vector3(1.05, 0, 0)) : this.feedAnchor.clone());
     pet.controller.play('idle', { fade: 0.2, force: true, timeScale: 1.08 });
@@ -716,7 +903,7 @@ export class CompanionScene extends EventTarget {
   placePetOnBed() {
     const pet = this.currentPet;
     if (!pet) return;
-    this.target = null;
+    this.clearMovementPath();
     pet.model.position.copy(pet.baseModelPosition);
     pet.model.rotation.copy(pet.baseModelRotation);
     pet.model.rotation.z = -Math.PI / 2;
@@ -737,7 +924,7 @@ export class CompanionScene extends EventTarget {
   wakePetFromBed() {
     const pet = this.currentPet;
     if (!pet) return;
-    this.target = null;
+    this.clearMovementPath();
     pet.model.position.copy(pet.baseModelPosition);
     pet.model.rotation.copy(pet.baseModelRotation);
     pet.modelHolder.rotation.set(0, 0, 0);
@@ -752,7 +939,13 @@ export class CompanionScene extends EventTarget {
       this.mode = 'sleep';
       if (pet) {
         this.placePetOnBed();
-        pet.controller.play('idle', { fade: 0.6, timeScale: 0.52, force: true });
+        const sleepClip = ['sleep', 'lying_down_idle', 'lie_down', 'idle'].find((name) => pet.controller.has(name)) || 'idle';
+        pet.controller.play(sleepClip, {
+          fade: 0.6,
+          loop: sleepClip === 'sleep' || sleepClip.endsWith('_idle') || sleepClip === 'idle',
+          timeScale: sleepClip === 'idle' ? 0.52 : 1,
+          force: true
+        });
       }
       this.frameCurrentPet(false);
       this.baseCamera.y = Math.max(this.baseCamera.y, this.sleepSurfaceY + 1.15);
@@ -762,7 +955,16 @@ export class CompanionScene extends EventTarget {
       this.mode = 'home';
       if (pet) {
         this.wakePetFromBed();
-        pet.controller.play('idle', { fade: 0.4, timeScale: 1, force: true });
+        const wakeClip = ['get_up_from_lying_down', 'get_up_from_sitting'].find((name) => pet.controller.has(name));
+        if (wakeClip) {
+          const action = pet.controller.play(wakeClip, { fade: 0.3, loop: false, timeScale: 1, force: true });
+          const duration = action?.getClip?.().duration || 1.2;
+          window.setTimeout(() => {
+            if (this.currentPet === pet && this.mode === 'home') pet.controller.play('idle', { fade: 0.28, force: true });
+          }, Math.max(450, duration * 1000));
+        } else {
+          pet.controller.play('idle', { fade: 0.4, timeScale: 1, force: true });
+        }
       }
       this.frameCurrentPet(false);
     }
@@ -772,7 +974,7 @@ export class CompanionScene extends EventTarget {
     this.cleanMode = true;
     this.cleanProgress = 0;
     this.mode = 'clean';
-    this.target = null;
+    this.clearMovementPath();
     this.currentPet?.controller.play('idle', { fade: 0.25, timeScale: 0.78, force: true });
     this.seedDirtMarks();
   }
@@ -846,7 +1048,7 @@ export class CompanionScene extends EventTarget {
   placePetSafely(preferred = null) {
     const pet = this.currentPet;
     if (!pet) return;
-    this.target = null;
+    this.clearMovementPath();
     this.movementOutcome = 'idle';
     this.eatingState = null;
     pet.model.position.copy(pet.baseModelPosition);
@@ -857,9 +1059,17 @@ export class CompanionScene extends EventTarget {
     pet.controller.play('idle', { fade: 0.2, force: true });
   }
 
+  clearMovementPath() {
+    this.target = null;
+    this.pathWaypoints = [];
+    this.finalTarget = null;
+    this.pathRun = false;
+    this.repathAttempts = 0;
+  }
+
   stopMovement(outcome = 'stopped') {
     const pet = this.currentPet;
-    this.target = null;
+    this.clearMovementPath();
     this.movementOutcome = outcome;
     if (pet) pet.controller.play('idle', { fade: 0.2 });
     this.onMovement?.(outcome === 'blocked' ? 'blocked' : 'stop');
@@ -892,10 +1102,22 @@ export class CompanionScene extends EventTarget {
   }
 
   moveTo(x, z, run = false) {
-    if (!this.currentPet || this.mode === 'selection' || this.mode === 'sleep' || this.cleanMode) return;
-    this.target = new THREE.Vector3(clamp(x, -4.4, 4.4), 0, clamp(z, -2.75, 2.75));
+    const pet = this.currentPet;
+    if (!pet || this.mode === 'selection' || this.mode === 'sleep' || this.cleanMode) return false;
+    const destination = this.findSafePosition(new THREE.Vector3(clamp(x, -4.4, 4.4), 0, clamp(z, -2.75, 2.75)));
+    const route = this.findPath(pet.stage.position.clone(), destination);
+    if (!route.length) {
+      this.stopMovement('blocked');
+      return false;
+    }
+    this.finalTarget = destination.clone();
+    this.pathRun = Boolean(run);
+    this.pathWaypoints = route.slice(1);
+    this.target = route[0].clone();
     this.target.run = run;
+    this.repathAttempts = 0;
     this.movementOutcome = 'moving';
+    return true;
   }
 
   triggerJump() { return this.currentPet?.controller.jumpSequence(); }
@@ -1048,16 +1270,30 @@ export class CompanionScene extends EventTarget {
     if (!enabled) this.autonomousTarget = null;
   }
 
+  setAutonomyProvider(provider) { this.autonomyProvider = typeof provider === 'function' ? provider : null; }
+
+  autonomousPoint(target) {
+    const points = {
+      bed: this.sleepAnchor.clone(), food: this.feedApproach.clone(), water: this.feedApproach.clone().add(new THREE.Vector3(0.75,0,0)),
+      player: new THREE.Vector3(0,0,1.75), window: new THREE.Vector3(-3.2,0,-0.45), safe: new THREE.Vector3(-2.45,0,1.45),
+      toy: new THREE.Vector3(2.1,0,0.85), favorite: new THREE.Vector3(-1.5,0,0.65), friend: this.secondaryPetId ? this.pets.get(this.secondaryPetId)?.stage.position.clone() : null
+    };
+    if (target === 'roam' || !points[target]) return new THREE.Vector3(randomBetween(-3.2,3.2),0,randomBetween(-2.0,2.0));
+    return points[target];
+  }
+
   updateAutonomous(time) {
     if (!this.autonomousEnabled || this.mode !== 'home' || this.target || !this.currentPet) return;
     const settings = this.settingsProvider();
     const interval = settings.reducedMotion ? 19000 : 11000;
     if (time - this.lastAutonomous < interval) return;
     this.lastAutonomous = time;
-    const x = randomBetween(-2.8, 2.8);
-    const z = randomBetween(-1.9, 1.9);
-    this.moveTo(x, z, Math.random() > 0.72);
-    this.dispatchEvent(new CustomEvent('autonomous'));
+    const action = this.autonomyProvider?.() || { id: 'explore', target: 'roam', run: Math.random() > 0.72 };
+    if (!action) return;
+    const point = this.findSafePosition(this.autonomousPoint(action.target));
+    const moved = this.moveTo(point.x, point.z, Boolean(action.run));
+    if (action.animation && !moved) this.currentPet.controller.play(action.animation, { force: true, fade: 0.25, loop: action.animation.endsWith('_idle') });
+    this.dispatchEvent(new CustomEvent('autonomous', { detail: action }));
   }
 
   updateMovement(delta) {
@@ -1069,12 +1305,17 @@ export class CompanionScene extends EventTarget {
     const distance = direction.length();
     if (distance < 0.08) {
       position.copy(this.target);
-      this.stopMovement('arrived');
+      if (this.pathWaypoints.length) {
+        this.target = this.pathWaypoints.shift().clone();
+        this.target.run = this.pathRun;
+      } else {
+        this.stopMovement('arrived');
+      }
       return;
     }
 
     direction.normalize();
-    const running = Boolean(this.target.run) || distance > 3.4;
+    const running = Boolean(this.pathRun) || distance > 3.4;
     const speed = running ? 2.55 : 1.2;
     const step = Math.min(distance, speed * delta);
     const substeps = Math.max(1, Math.ceil(step / 0.055));
@@ -1091,6 +1332,16 @@ export class CompanionScene extends EventTarget {
     }
 
     if (blocked) {
+      if (this.finalTarget && this.repathAttempts < 2) {
+        this.repathAttempts += 1;
+        const route = this.findPath(position.clone(), this.finalTarget);
+        if (route.length) {
+          this.pathWaypoints = route.slice(1);
+          this.target = route[0].clone();
+          this.target.run = this.pathRun;
+          return;
+        }
+      }
       this.stopMovement('blocked');
       return;
     }
@@ -1192,6 +1443,8 @@ export class CompanionScene extends EventTarget {
   updateActionPose(delta) {
     const pet = this.currentPet;
     if (!pet) return;
+    this.bodyLanguageClock += delta;
+
     if (this.eatingState) {
       this.eatingState.timeLeft -= delta;
       this.eatingState.elapsed += delta;
@@ -1204,12 +1457,50 @@ export class CompanionScene extends EventTarget {
         const consume = Math.max(0.28, Math.min(1, this.eatingState.timeLeft / Math.max(0.1, this.eatingState.total)));
         this.foodDisplay.entry.contentGroup.scale.set(consume, 1, consume);
       }
-    } else if (this.mode !== 'sleep') {
-      pet.model.position.lerp(pet.baseModelPosition, Math.min(1, delta * 8));
-      pet.model.rotation.x = lerp(pet.model.rotation.x, pet.baseModelRotation.x, Math.min(1, delta * 7));
-      pet.model.rotation.y = lerp(pet.model.rotation.y, pet.baseModelRotation.y, Math.min(1, delta * 7));
-      pet.model.rotation.z = lerp(pet.model.rotation.z, pet.baseModelRotation.z, Math.min(1, delta * 7));
+      return;
     }
+
+    if (this.mode === 'sleep') return;
+
+    const ease = Math.min(1, delta * 7);
+    const basePosition = pet.baseModelPosition.clone();
+    const baseRotation = pet.baseModelRotation.clone();
+    const targetPosition = basePosition.clone();
+    const targetRotation = baseRotation.clone();
+    const isMoving = Boolean(this.target);
+    const canExpress = this.mode === 'home' && !isMoving;
+
+    if (canExpress) {
+      const language = this.bodyLanguageState || { id: 'relaxed', intensity: 0.5 };
+      const strength = clamp(language.intensity || 0.5, 0, 0.72);
+      const phase = this.bodyLanguageClock;
+      const profile = {
+        'low-and-close': { x: -0.055, z: 0.018, y: -0.024 },
+        'head-tilt': { x: 0, z: 0.058, y: 0.006 },
+        'short-pacing': { x: 0, z: 0, y: 0, swayZ: [0.012, 4.6] },
+        upright: { x: 0.03, z: 0, y: 0.02 },
+        heavy: { x: -0.03, z: 0, y: -0.014 },
+        bouncy: { x: 0.01, z: 0, y: 0.01, bobY: [0.012, 3.3], swayZ: [0.01, 3.3] },
+        'play-bow': { x: -0.07, z: 0, y: -0.014 },
+        pacing: { x: 0, z: 0, y: 0, swayZ: [0.014, 3.0] },
+        approaching: { x: 0.014, z: 0, y: 0.012 },
+        watchful: { x: 0.016, z: 0.012, y: 0.01 },
+        'slow-looking': { x: -0.012, z: 0.01, y: -0.006 },
+        relaxed: { x: 0, z: 0, y: 0 }
+      }[language.id] || { x: 0, z: 0, y: 0 };
+
+      targetPosition.y += profile.y * strength;
+      if (profile.bobY) targetPosition.y += Math.sin(phase * profile.bobY[1]) * profile.bobY[0] * strength;
+      targetRotation.x += profile.x * strength;
+      targetRotation.z += profile.z * strength;
+      if (profile.swayZ) targetRotation.z += Math.sin(phase * profile.swayZ[1]) * profile.swayZ[0] * strength;
+    }
+
+    pet.model.position.lerp(targetPosition, ease);
+    pet.model.rotation.x = lerp(pet.model.rotation.x, targetRotation.x, ease);
+    pet.model.rotation.y = lerp(pet.model.rotation.y, targetRotation.y, ease);
+    pet.model.rotation.z = lerp(pet.model.rotation.z, targetRotation.z, ease);
+    pet.modelHolder.rotation.z = lerp(pet.modelHolder.rotation.z, 0, Math.min(1, delta * 4));
   }
 
   animate = () => {
@@ -1223,8 +1514,11 @@ export class CompanionScene extends EventTarget {
     });
     this.updateMovement(delta);
     this.updateAutonomous(time);
+    this.updateSecondary(delta, time);
+    this.updateWorldEffects(delta);
     this.updateParticles(delta);
     this.updateActionPose(delta);
+    this.updateAccessoryBinding(delta);
     this.updateCamera(delta);
     this.renderer.render(this.scene, this.camera);
   };
@@ -1369,6 +1663,505 @@ export class CompanionScene extends EventTarget {
     if (this.currentPet) this.currentPet.modelHolder.rotation.y += delta;
   }
 
+
+  setWorldState({ weather = this.worldState.weather, season = this.worldState.season } = {}) {
+    this.worldState = { weather, season };
+    if (!this.scene || !this.hemisphere || !this.keyLight || !this.weatherGroup) return;
+    this.applyLighting();
+    while (this.weatherGroup.children.length) {
+      const object = this.weatherGroup.children[0];
+      this.weatherGroup.remove(object);
+      this.disposeObject(object);
+    }
+    this.weatherParticles = [];
+    const settings = this.settingsProvider();
+    const reduced = settings.reducedMotion || settings.reducedWeatherEffects;
+    const seasonTints = { spring: 0xf3ead8, summer: 0xe9f3dc, autumn: 0xead7bd, winter: 0xdce7ee };
+    const weatherTints = { rain: 0xb9c5cf, thunderstorm: 0x74808f, snow: 0xdceaf3, fog: 0xc9d0cf, sunshine: 0xffecc6, rainbow: 0xe7e0f4, clear: seasonTints[season] || 0xf3ead8, wind: seasonTints[season] || 0xf3ead8 };
+    const tint = weatherTints[weather] ?? 0xf3ead8;
+    const tintColor = new THREE.Color(tint);
+    if (this.dayPhase === 'night') tintColor.multiplyScalar(0.25);
+    else if (this.dayPhase === 'sunset') tintColor.lerp(new THREE.Color(0xe8a079), 0.32);
+    this.scene.background?.copy?.(tintColor);
+    if (this.scene.fog) this.scene.fog.color.copy(tintColor);
+    const intensity = weather === 'thunderstorm' ? 0.72 : weather === 'fog' ? 0.86 : 1;
+    this.hemisphere.intensity = 2.15 * intensity;
+    this.keyLight.intensity = (weather === 'sunshine' ? 3.8 : weather === 'thunderstorm' ? 1.55 : 3.0) * intensity;
+    const count = reduced ? 24 : this.isMobile() ? 55 : 90;
+    const kind = ['rain','thunderstorm','snow','wind'].includes(weather) ? weather : season === 'autumn' ? 'leaves' : null;
+    if (kind) {
+      const geometry = kind === 'snow'
+        ? new THREE.SphereGeometry(0.035, 5, 4)
+        : kind === 'leaves'
+          ? new THREE.PlaneGeometry(0.09, 0.055)
+          : new THREE.PlaneGeometry(0.018, kind === 'rain' || kind === 'thunderstorm' ? 0.32 : 0.09);
+      const material = new THREE.MeshBasicMaterial({
+        color: kind === 'snow' ? 0xffffff : kind === 'leaves' ? 0xd77b43 : 0x9fc7e3,
+        transparent: true,
+        opacity: kind === 'rain' || kind === 'thunderstorm' ? 0.62 : 0.78,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      for (let i = 0; i < count; i += 1) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(randomBetween(-5.2, 5.2), randomBetween(0.3, 5.6), randomBetween(-3.4, 3.4));
+        mesh.rotation.z = kind === 'rain' || kind === 'thunderstorm' ? -0.16 : randomBetween(-Math.PI, Math.PI);
+        this.weatherGroup.add(mesh);
+        this.weatherParticles.push({ mesh, kind, speed: kind === 'snow' ? randomBetween(0.25, 0.55) : kind === 'leaves' ? randomBetween(0.45, 0.9) : randomBetween(2.8, 4.5), phase: Math.random() * Math.PI * 2 });
+      }
+    }
+    if (weather === 'rainbow') {
+      const colors = [0xe36b6b,0xf2a35b,0xf3d969,0x70c77d,0x69a7db,0x9b78d3];
+      const arc = new THREE.Group();
+      colors.forEach((color, index) => {
+        const mesh = new THREE.Mesh(new THREE.TorusGeometry(2.2 - index * 0.08, 0.035, 7, 48, Math.PI), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.7 }));
+        mesh.rotation.z = Math.PI;
+        arc.add(mesh);
+      });
+      arc.position.set(2.6, 2.5, -3.0);
+      this.weatherGroup.add(arc);
+    }
+  }
+
+  updateWorldEffects(delta) {
+    for (const particle of this.weatherParticles) {
+      const { mesh, kind, speed, phase } = particle;
+      mesh.position.y -= speed * delta;
+      if (kind === 'snow' || kind === 'leaves' || kind === 'wind') {
+        mesh.position.x += Math.sin(performance.now() * 0.0015 + phase) * delta * (kind === 'wind' ? 1.2 : 0.28);
+        mesh.rotation.z += delta * (kind === 'leaves' ? 2 : 0.4);
+      }
+      if (mesh.position.y < -0.1) {
+        mesh.position.y = randomBetween(4.4, 6.1);
+        mesh.position.x = randomBetween(-5.2, 5.2);
+        mesh.position.z = randomBetween(-3.4, 3.4);
+      }
+    }
+    if (this.dreamGroup) {
+      this.dreamGroup.rotation.y += delta * 0.08;
+      this.dreamGroup.children.forEach((child, index) => { child.position.y += Math.sin(performance.now() * 0.0018 + index) * delta * 0.12; child.rotation.y += delta * 0.25; });
+    }
+  }
+
+  createDecorationMesh(item) {
+    const group = new THREE.Group();
+    const material = new THREE.MeshStandardMaterial({ color: 0xe7a873, roughness: 0.82 });
+    const accent = new THREE.MeshStandardMaterial({ color: 0x8cc7b8, roughness: 0.78 });
+    if (item === 'cozy-bed') {
+      group.add(this.box(1.7, 0.28, 1.1, material, 0, 0.14, 0));
+      group.add(this.box(1.3, 0.18, 0.78, accent, 0, 0.36, 0));
+    } else if (item === 'sofa') {
+      group.add(this.box(2.0, 0.45, 0.85, material, 0, 0.28, 0));
+      group.add(this.box(2.0, 0.75, 0.22, accent, 0, 0.62, -0.34));
+    } else if (item === 'scratch-post') {
+      group.add(new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,1.15,12), material));
+      group.children[0].position.y = 0.58;
+      group.add(this.box(0.75,0.12,0.75,accent,0,0.06,0));
+    } else if (item === 'rug') {
+      const rug = this.roundedRug(1.9, 1.3, 0xd6a6cb); group.add(rug);
+    } else if (item === 'plant') {
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.36,0.45,12), material); pot.position.y = 0.23; group.add(pot);
+      for (let i=0;i<5;i+=1) { const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6), accent); leaf.scale.set(0.55,1.2,0.45); leaf.position.set(Math.sin(i*1.25)*0.18,0.67+Math.cos(i)*0.08,Math.cos(i*1.25)*0.18); group.add(leaf); }
+    } else if (item === 'lamp') {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.07,1.15,10), material); pole.position.y=0.58; group.add(pole);
+      const shade = new THREE.Mesh(new THREE.ConeGeometry(0.34,0.45,14,1,true), accent); shade.position.y=1.15; group.add(shade);
+    } else if (item === 'toy-box') {
+      group.add(this.box(1.0,0.55,0.7,material,0,0.28,0));
+      for(let i=0;i<3;i+=1){ const ball=new THREE.Mesh(new THREE.SphereGeometry(0.15,8,6),accent); ball.position.set(-0.25+i*0.25,0.65,0); group.add(ball); }
+    } else if (item === 'bowl') {
+      const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.33,0.25,0.18,18,1,true), accent); bowl.position.y=0.09; group.add(bowl);
+    }
+    group.traverse((child) => { if (child.isMesh) { child.castShadow=true; child.receiveShadow=true; } });
+    return group;
+  }
+
+  validateDecorationPlacement(x, z, width, depth) {
+    if (!this.scene || this.travelLocation) return true;
+    const obstacle = { minX: x - width / 2, maxX: x + width / 2, minZ: z - depth / 2, maxZ: z + depth / 2, dynamic: true, preview: true };
+    this.obstacles.push(obstacle);
+    try {
+      const start = this.currentPet?.stage?.position?.clone?.() || new THREE.Vector3(0, 0, 0);
+      const destinations = [
+        new THREE.Vector3(0, 0, 0),
+        this.feedApproach?.clone?.() || new THREE.Vector3(2.8, 0, -1.15),
+        this.wakeAnchor?.clone?.() || new THREE.Vector3(-1.5, 0, -0.25),
+        new THREE.Vector3(3.8, 0, 2.1),
+        new THREE.Vector3(-3.8, 0, 2.1)
+      ];
+      return destinations.every((destination) => this.findPath(start, destination, 0.36).length > 0);
+    } finally {
+      const index = this.obstacles.indexOf(obstacle);
+      if (index >= 0) this.obstacles.splice(index, 1);
+    }
+  }
+
+  setDecorations(records = []) {
+    this.decorationRecords = Array.isArray(records) ? records : [];
+    this.obstacles = this.obstacles.filter((obstacle) => !obstacle.dynamic);
+    if (this.decorationGroup?.parent) {
+      this.decorationGroup.parent.remove(this.decorationGroup);
+      this.disposeObject(this.decorationGroup);
+    }
+    this.decorationGroup = new THREE.Group();
+    this.decorationGroup.name = 'player-decorations';
+    const roomRecords = this.decorationRecords.filter((record) => record.room === this.roomId || (!record.room && this.roomId === 'living'));
+    for (const record of roomRecords) {
+      const object = this.createDecorationMesh(record.item);
+      object.position.set(record.x || 0, 0, record.z || 0);
+      object.rotation.y = record.rotation || 0;
+      object.userData.decorationId = record.id;
+      this.decorationGroup.add(object);
+      const sizes = { 'cozy-bed':[1.8,1.2],sofa:[2.2,1],'scratch-post':[0.8,0.8],rug:[2,1.4],plant:[0.7,0.7],lamp:[0.7,0.7],'toy-box':[1.1,0.8],bowl:[0.7,0.7] };
+      const [width, depth] = sizes[record.item] || [1,1];
+      if (record.item !== 'rug') this.obstacles.push({ minX: object.position.x-width/2, maxX: object.position.x+width/2, minZ: object.position.z-depth/2, maxZ: object.position.z+depth/2, dynamic: true });
+    }
+    this.environment.add(this.decorationGroup);
+  }
+
+  findAttachmentBone(record, anchor = 'neck') {
+    const preferences = anchor === 'head'
+      ? ['head0', 'head', 'skull', 'face', 'neck1']
+      : anchor === 'back'
+        ? ['body_top0', 'body_top1', 'spine', 'chest', 'back', 'body']
+        : ['neck1', 'neck0', 'neck', 'body_top1', 'spine', 'chest'];
+    let best = null;
+    let bestScore = -Infinity;
+
+    record.model.traverse((child) => {
+      if (!child.isBone) return;
+      const name = child.name.toLowerCase();
+      let score = -1000;
+      preferences.forEach((pattern, index) => {
+        if (name === pattern) score = Math.max(score, 1000 - index * 40);
+        else if (name.startsWith(pattern)) score = Math.max(score, 800 - index * 40);
+        else if (name.includes(pattern)) score = Math.max(score, 600 - index * 40);
+      });
+      if (name.includes('end') || name.includes('tip')) score -= 700;
+      if (score > bestScore) {
+        best = child;
+        bestScore = score;
+      }
+    });
+
+    return bestScore > -1000 ? best : null;
+  }
+
+  vectorFromScaledArray(values = [0, 0, 0], size = { x: 1, y: 1, z: 1 }) {
+    return new THREE.Vector3(values[0] * size.x, values[1] * size.y, values[2] * size.z);
+  }
+
+  eulerFromArray(values = [0, 0, 0]) {
+    return new THREE.Euler(values[0] || 0, values[1] || 0, values[2] || 0);
+  }
+
+  getAccessoryTransform(pet, id, anchorType) {
+    const defaults = PET_ACCESSORY_FITS.default || {};
+    const petFit = PET_ACCESSORY_FITS[pet.id] || {};
+    const defaultAccessory = defaults.accessories?.[id] || {};
+    const petAccessory = petFit.accessories?.[id] || {};
+    const size = pet.size || { x: 1, y: 1, z: 1 };
+    const anchorOffset = this.vectorFromScaledArray(petFit[anchorType] || defaults[anchorType] || [0, 0, 0], size);
+    const localOffset = this.vectorFromScaledArray(petAccessory.position || defaultAccessory.position || [0, 0, 0], size);
+    const rotationValues = petAccessory.rotation || defaultAccessory.rotation || [0, 0, 0];
+    const scale = (defaults.scale || 1) * (petFit.scale || 1) * (defaultAccessory.scale || 1) * (petAccessory.scale || 1);
+    return { anchorOffset, localOffset, rotation: this.eulerFromArray(rotationValues), scale };
+  }
+
+  getFallbackAccessoryAnchor(anchorType, pet) {
+    const h = pet.size.y || 1.2;
+    const d = pet.size.z || 0.8;
+    if (anchorType === 'head') return new THREE.Vector3(0, h * 0.82, -d * 0.03);
+    if (anchorType === 'back') return new THREE.Vector3(0, h * 0.52, -d * 0.2);
+    return new THREE.Vector3(0, h * 0.57, d * 0.08);
+  }
+
+  setAccessory(id = null) {
+    if (this.accessoryGroup) {
+      this.accessoryGroup.removeFromParent();
+      this.disposeObject(this.accessoryGroup);
+      this.accessoryGroup = null;
+    }
+    this.accessoryBinding = null;
+
+    const pet = this.currentPet;
+    if (!pet || !id) return;
+
+    const anchorType = ['bow', 'hat', 'glasses'].includes(id) ? 'head' : ['backpack', 'cape'].includes(id) ? 'back' : 'neck';
+    const root = new THREE.Group();
+    root.name = `accessory-${id}`;
+    const group = new THREE.Group();
+    group.name = `accessory-${id}-visual`;
+    root.add(group);
+
+    const primary = new THREE.MeshStandardMaterial({ color: 0xe15f75, roughness: 0.72, metalness: 0.04 });
+    const gold = new THREE.MeshStandardMaterial({ color: 0xf2c75d, roughness: 0.55, metalness: 0.2 });
+    const h = pet.size.y || 1.2;
+    const w = pet.size.x || 0.8;
+    const d = pet.size.z || 0.8;
+    const transform = this.getAccessoryTransform(pet, id, anchorType);
+
+    if (id === 'collar' || id === 'bandana' || id === 'tag') {
+      const collar = new THREE.Mesh(new THREE.TorusGeometry(Math.max(0.18, w * 0.23), 0.03, 10, 28), primary);
+      collar.rotation.x = Math.PI / 2;
+      group.add(collar);
+      if (id === 'bandana') {
+        const knot = this.box(Math.max(0.08, w * 0.08), Math.max(0.05, h * 0.04), Math.max(0.04, d * 0.04), primary, 0, -0.02, 0.07);
+        const flapLeft = new THREE.Mesh(new THREE.ConeGeometry(Math.max(0.07, w * 0.08), Math.max(0.18, h * 0.16), 3), primary);
+        flapLeft.position.set(-Math.max(0.06, w * 0.07), -Math.max(0.1, h * 0.1), Math.max(0.08, d * 0.08));
+        flapLeft.rotation.set(Math.PI, 0.2, -0.2);
+        const flapRight = flapLeft.clone();
+        flapRight.position.x *= -1;
+        flapRight.rotation.z *= -1;
+        group.add(knot, flapLeft, flapRight);
+      }
+      if (id === 'tag') {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.007, 6, 16), gold);
+        ring.position.set(0, -0.02, 0.06);
+        const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.018, 18), gold);
+        plate.rotation.x = Math.PI / 2;
+        plate.position.set(0, -0.08, 0.085);
+        group.add(ring, plate);
+      }
+    } else if (id === 'bow') {
+      const left = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), primary);
+      left.scale.set(1.45, 0.68, 0.55);
+      left.position.x = -0.12;
+      const right = left.clone();
+      right.position.x = 0.12;
+      const knot = new THREE.Mesh(new THREE.SphereGeometry(0.065, 10, 8), gold);
+      group.add(left, right, knot);
+    } else if (id === 'hat') {
+      const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.04, 24), primary);
+      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.26, 18), gold);
+      crown.position.y = 0.15;
+      group.add(brim, crown);
+    } else if (id === 'glasses') {
+      for (const x of [-0.145, 0.145]) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.102, 0.016, 8, 20), primary);
+        ring.position.x = x;
+        group.add(ring);
+      }
+      group.add(this.box(0.09, 0.022, 0.022, gold, 0, 0, 0));
+    } else if (id === 'backpack') {
+      group.add(this.box(Math.max(0.34, w * 0.44), Math.max(0.36, h * 0.3), Math.max(0.17, d * 0.22), primary, 0, 0, 0));
+      group.add(this.box(Math.max(0.12, w * 0.14), Math.max(0.08, h * 0.07), Math.max(0.03, d * 0.04), gold, 0, -Math.max(0.02, h * 0.03), Math.max(0.1, d * 0.12)));
+    } else if (id === 'cape') {
+      const cape = new THREE.Mesh(new THREE.PlaneGeometry(Math.max(0.52, w * 0.72), Math.max(0.7, h * 0.6)), primary);
+      cape.rotation.x = -0.16;
+      cape.position.z = -Math.max(0.1, d * 0.14);
+      group.add(cape);
+    }
+
+    root.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.frustumCulled = false;
+      }
+    });
+
+    group.position.copy(transform.localOffset);
+    group.rotation.copy(transform.rotation);
+    group.scale.setScalar(transform.scale);
+    pet.modelHolder.add(root);
+
+    const bone = this.findAttachmentBone(pet, anchorType);
+    if (bone) {
+      pet.modelHolder.updateWorldMatrix(true, false);
+      bone.updateWorldMatrix(true, false);
+
+      bone.getWorldPosition(this.accessoryWorldPosition);
+      pet.modelHolder.worldToLocal(this.accessoryWorldPosition);
+      root.position.copy(this.accessoryWorldPosition).add(transform.anchorOffset);
+
+      bone.getWorldQuaternion(this.accessoryBoneQuaternion);
+      pet.modelHolder.getWorldQuaternion(this.accessoryHolderQuaternion);
+      const relativeBoneQuaternion = this.accessoryHolderQuaternion.clone().invert().multiply(this.accessoryBoneQuaternion);
+
+      this.accessoryBinding = {
+        root,
+        bone,
+        holder: pet.modelHolder,
+        anchorOffset: transform.anchorOffset.clone(),
+        orientationCorrection: relativeBoneQuaternion.clone().invert()
+      };
+    } else {
+      root.position.copy(this.getFallbackAccessoryAnchor(anchorType, pet)).add(transform.anchorOffset);
+    }
+
+    this.accessoryGroup = root;
+    root.updateMatrixWorld(true);
+  }
+
+  updateAccessoryBinding(delta) {
+    const binding = this.accessoryBinding;
+    if (!binding?.root?.parent || !binding.bone?.parent || !binding.holder?.parent) return;
+
+    binding.holder.updateWorldMatrix(true, false);
+    binding.bone.updateWorldMatrix(true, false);
+
+    binding.bone.getWorldPosition(this.accessoryWorldPosition);
+    this.accessoryTargetPosition.copy(this.accessoryWorldPosition);
+    binding.holder.worldToLocal(this.accessoryTargetPosition);
+
+    binding.bone.getWorldQuaternion(this.accessoryBoneQuaternion);
+    binding.holder.getWorldQuaternion(this.accessoryHolderQuaternion);
+    this.accessoryTargetQuaternion
+      .copy(this.accessoryHolderQuaternion)
+      .invert()
+      .multiply(this.accessoryBoneQuaternion)
+      .multiply(binding.orientationCorrection);
+
+    this.accessoryAnchorOffset.copy(binding.anchorOffset).applyQuaternion(this.accessoryTargetQuaternion);
+    this.accessoryTargetPosition.add(this.accessoryAnchorOffset);
+
+    const settings = this.settingsProvider?.() || {};
+    const follow = settings.reducedMotion ? 1 : 1 - Math.exp(-Math.max(0, delta) * 24);
+    binding.root.position.lerp(this.accessoryTargetPosition, follow);
+    binding.root.quaternion.slerp(this.accessoryTargetQuaternion, follow);
+  }
+
+  async setSecondaryPet(id = null) {
+    if (!this.scene || !this.petStage) { this.secondaryPetId = id && id !== this.currentPetId ? id : null; return true; }
+    if (this.secondaryPetId && this.secondaryPetId !== id) {
+      const old = this.pets.get(this.secondaryPetId);
+      if (old) { this.pets.delete(this.secondaryPetId); this.disposePetRecord(old); }
+    }
+    this.secondaryPetId = id && id !== this.currentPetId ? id : null;
+    this.secondaryTarget = null;
+    if (!this.secondaryPetId || this.settingsProvider().multiPetRendering === false) return true;
+    let record = this.pets.get(this.secondaryPetId);
+    if (!record) {
+      const gltf = await this.loadModel(PETS[this.secondaryPetId].model);
+      record = this.preparePet(this.secondaryPetId, gltf);
+      this.petStage.add(record.stage);
+      this.pets.set(this.secondaryPetId, record);
+    }
+    record.stage.visible = true;
+    record.stage.position.copy(this.findSafePosition(new THREE.Vector3(1.8,0,0.8)));
+    record.modelHolder.rotation.y = Math.PI;
+    record.controller.play('idle', { force:true, fade:0.2 });
+    return true;
+  }
+
+  updateSecondary(delta, time) {
+    if (!this.secondaryPetId || this.mode !== 'home') return;
+    const secondary = this.pets.get(this.secondaryPetId);
+    const primary = this.currentPet;
+    if (!secondary || !primary) return;
+    if (!this.secondaryTarget && time - this.secondaryLastDecision > (this.settingsProvider().reducedMotion ? 18000 : 9000)) {
+      this.secondaryLastDecision = time;
+      const preferred = new THREE.Vector3(randomBetween(-3.2,3.2),0,randomBetween(-2.0,2.0));
+      const route = this.findPath(secondary.stage.position.clone(), preferred, 0.4);
+      this.secondaryTarget = route.at(-1) || this.findSafePosition(preferred);
+    }
+    const separation = secondary.stage.position.clone().sub(primary.stage.position); separation.y=0;
+    if (separation.length() < 0.72) {
+      separation.normalize();
+      secondary.stage.position.addScaledVector(separation, delta*0.9);
+      primary.stage.position.addScaledVector(separation, -delta*0.3);
+    }
+    if (!this.secondaryTarget) return;
+    const direction = this.secondaryTarget.clone().sub(secondary.stage.position); direction.y=0;
+    const distance=direction.length();
+    if(distance<0.1){ this.secondaryTarget=null; secondary.controller.play('idle',{fade:0.2}); return; }
+    direction.normalize();
+    const next=secondary.stage.position.clone().addScaledVector(direction,Math.min(distance,delta*0.85));
+    if(this.isBlocked(next.x,next.z,0.4)){ this.secondaryTarget=null; secondary.controller.play('idle',{fade:0.15,force:true}); return; }
+    secondary.stage.position.copy(next);
+    secondary.modelHolder.rotation.y=this.smoothAngle(secondary.modelHolder.rotation.y,Math.atan2(direction.x,direction.z),Math.min(1,delta*7));
+    secondary.controller.play('walk',{fade:0.18});
+  }
+
+  playSocialInteraction(kind = 'play') {
+    const secondary = this.secondaryPetId ? this.pets.get(this.secondaryPetId) : null;
+    const primary = this.currentPet;
+    if (!secondary || !primary) return;
+    this.stopMovement('social');
+    const midpoint = primary.stage.position.clone().add(secondary.stage.position).multiplyScalar(0.5);
+    const offset = new THREE.Vector3(0.55,0,0);
+    primary.stage.position.copy(this.findSafePosition(midpoint.clone().sub(offset)));
+    secondary.stage.position.copy(this.findSafePosition(midpoint.clone().add(offset)));
+    primary.modelHolder.rotation.y=Math.PI/2; secondary.modelHolder.rotation.y=-Math.PI/2;
+    const action = kind === 'play' && primary.controller.has('give_paw') ? 'give_paw' : kind === 'rest' && primary.controller.has('lie_down') ? 'lie_down' : 'idle';
+    const secondAction = kind === 'play' && secondary.controller.has('give_paw') ? 'give_paw' : kind === 'rest' && secondary.controller.has('lie_down') ? 'lie_down' : 'idle';
+    primary.controller.play(action,{force:true,loop:false,fade:0.2}); secondary.controller.play(secondAction,{force:true,loop:false,fade:0.2});
+    setTimeout(()=>{primary.controller.play('idle',{force:true,fade:0.2});secondary.controller.play('idle',{force:true,fade:0.2});},1700);
+  }
+
+  setBodyLanguage(id = 'relaxed', intensity = 0.5) {
+    const previous = this.bodyLanguageState?.id;
+    this.bodyLanguageState = { id, intensity: clamp(intensity, 0, 1) };
+    if (previous !== id) this.bodyLanguageClock = 0;
+  }
+
+  showScentTrail(secretId = null) {
+    if (this.scentGroup) { this.scentGroup.removeFromParent(); this.disposeObject(this.scentGroup); this.scentGroup=null; }
+    if (!this.currentPet) return;
+    const targets = { 'buried-chest':[-2.4,1.6], 'toy-under-bed':[-3.1,-1.2], apparition:[2.7,1.5], 'shooting-star':[2.8,-1.2], 'secret-door':[4.0,-1.8], rainbow:[1.9,-1.8], 'hidden-picnic':[2.2,1.55] };
+    const targetArray=targets[secretId] || [randomBetween(-3,3),randomBetween(-1.8,1.8)];
+    const target=new THREE.Vector3(targetArray[0],0,targetArray[1]);
+    const route=this.findPath(this.currentPet.stage.position.clone(),target);
+    if(!route.length) return;
+    const group=new THREE.Group();
+    const material=new THREE.MeshBasicMaterial({color:0xb58cff,transparent:true,opacity:0.74});
+    const points=[this.currentPet.stage.position.clone(),...route];
+    for(let i=0;i<points.length-1;i+=1){ const a=points[i],b=points[i+1],distance=a.distanceTo(b),steps=Math.max(1,Math.floor(distance/0.32)); for(let j=1;j<=steps;j+=1){ const p=a.clone().lerp(b,j/steps); const mark=new THREE.Mesh(new THREE.RingGeometry(0.06,0.11,8),material); mark.rotation.x=-Math.PI/2; mark.position.copy(p); mark.position.y=0.025; group.add(mark); } }
+    this.scene.add(group); this.scentGroup=group;
+    setTimeout(()=>{ if(this.scentGroup===group){group.removeFromParent();this.disposeObject(group);this.scentGroup=null;} },9000);
+  }
+
+  startDream(theme = 'stars') {
+    if (this.dreamGroup) this.endDream();
+    this.dreamTheme=theme;
+    const group=new THREE.Group();
+    const colors={treats:0xffb65e,clouds:0xb9ddff,space:0x8d72d8,vacuum:0xff8e94,ocean:0x63c9db,stars:0xffdf77,memory:0xe5bca5,friends:0x9ad9b7};
+    const material=new THREE.MeshStandardMaterial({color:colors[theme]||0xffdf77,emissive:colors[theme]||0xffdf77,emissiveIntensity:0.32,roughness:0.55});
+    for(let i=0;i<14;i+=1){ const geometry=i%3===0?new THREE.TorusGeometry(0.14,0.045,6,12):i%3===1?new THREE.SphereGeometry(0.12,7,5):new THREE.ConeGeometry(0.11,0.28,5); const mesh=new THREE.Mesh(geometry,material); mesh.position.set(randomBetween(-4.2,4.2),randomBetween(0.5,4.5),randomBetween(-3,2)); group.add(mesh); }
+    this.scene.add(group); this.dreamGroup=group;
+    this.scene.background.setHex(theme==='space'?0x201a42:0xcbd9ed);
+    this.scene.fog.color.copy(this.scene.background);
+  }
+
+  endDream() { if(this.dreamGroup){this.dreamGroup.removeFromParent();this.disposeObject(this.dreamGroup);this.dreamGroup=null;} this.dreamTheme=null; this.setWorldState(this.worldState); }
+
+  setEventTheme(eventId = null) {
+    if(this.eventGroup){this.eventGroup.removeFromParent();this.disposeObject(this.eventGroup);this.eventGroup=null;}
+    if(!eventId) return;
+    const group=new THREE.Group(); const color=eventId.includes('winter')?0xaee4ff:eventId.includes('spooky')?0x9b78d3:eventId.includes('spring')?0xf39ac2:0xffc868; const material=new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:0.18,roughness:0.7});
+    for(let i=0;i<8;i+=1){const mesh=new THREE.Mesh(new THREE.SphereGeometry(0.12,7,5),material);mesh.position.set(-4+i*1.1,2.6+Math.sin(i)*0.2,-3.0);group.add(mesh);} this.scene.add(group);this.eventGroup=group;
+  }
+
+  async buildTravelEnvironment(locationId, weather = 'clear', season = 'spring') {
+    this.buildEnvironment('park');
+    this.travelLocation=locationId;
+    this.roomId=locationId;
+    const palette={beach:0xe7d099,forest:0x638861,'city-street':0x8d9198,farm:0x9dad66,'snow-trail':0xd9e8ee,'night-park':0x53647b,'pet-fair':0xd9a985,'town-square':0xb9aa98,clinic:0xd8e9e8};
+    const color=palette[locationId]||0x8fb47b;
+    const floor=this.environment.getObjectByName('walk-floor'); if(floor?.material?.color) floor.material.color.setHex(color);
+    const mat=new THREE.MeshStandardMaterial({color:locationId==='snow-trail'?0xffffff:locationId==='night-park'?0x8db0d2:0xf2c56d,roughness:0.85});
+    const wood=new THREE.MeshStandardMaterial({color:0x8f6647,roughness:0.9});
+    if(locationId==='beach'){for(let i=0;i<5;i++){const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(0.22+Math.random()*0.18,0),mat);rock.position.set(-3+i*1.5,0.2,randomBetween(-2,2));this.environment.add(rock);}}
+    else if(locationId==='forest'){for(let i=0;i<7;i++){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.2,1.5,8),wood);trunk.position.set(-4+i*1.35,0.75,(i%2?1.9:-2));this.environment.add(trunk);}}
+    else if(locationId==='city-street'||locationId==='town-square'){for(let i=0;i<4;i++){const post=this.box(0.12,1.8,0.12,wood,-3.5+i*2.3,0.9,-2.5);this.environment.add(post);}}
+    else if(locationId==='farm'){for(let i=0;i<6;i++){const bale=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.55,12),mat);bale.rotation.z=Math.PI/2;bale.position.set(-3+i*1.2,0.32,(i%2?1.8:-1.8));this.environment.add(bale);}}
+    else if(locationId==='snow-trail'){for(let i=0;i<8;i++){const snow=new THREE.Mesh(new THREE.SphereGeometry(0.15+Math.random()*0.18,7,5),mat);snow.position.set(randomBetween(-4.5,4.5),0.12,randomBetween(-2.5,2.5));this.environment.add(snow);}}
+    else if(locationId==='pet-fair'){for(let i=0;i<5;i++){const flag=this.box(0.35,0.22,0.03,mat,-3+i*1.5,2.5,-2.8);flag.rotation.z=i%2?0.15:-0.15;this.environment.add(flag);}}
+    else if(locationId==='clinic'){
+      const clean=new THREE.MeshStandardMaterial({color:0xf5fbfa,roughness:0.84});
+      const teal=new THREE.MeshStandardMaterial({color:0x66adab,roughness:0.72});
+      this.environment.add(this.box(3.2,0.85,1.0,clean,-2.5,0.43,-1.8));
+      this.environment.add(this.box(1.9,0.62,1.0,teal,1.4,0.32,-1.7));
+      this.environment.add(this.box(1.25,0.12,0.9,clean,1.4,0.7,-1.7));
+      const scale=new THREE.Mesh(new THREE.CylinderGeometry(0.68,0.72,0.12,24),teal);scale.position.set(2.9,0.07,1.35);this.environment.add(scale);
+      const sign=this.box(2.0,1.2,0.08,teal,-2.2,2.0,-3.25);this.environment.add(sign);
+      this.obstacles.push({minX:-4.1,maxX:-0.9,minZ:-2.3,maxZ:-1.3,dynamic:true},{minX:0.45,maxX:2.35,minZ:-2.25,maxZ:-1.15,dynamic:true});
+    }
+    this.obstacles=this.obstacles.filter((o)=>!o.dynamic || locationId==='clinic');
+    this.setWorldState({weather,season});
+    this.setDecorations([]);
+    await this.renderStableFrame();
+  }
+
   setPhotoMode(enabled) {
     this.mode = enabled ? 'photo' : 'home';
     if (!enabled) this.frameCurrentPet(false);
@@ -1454,12 +2247,27 @@ export class CompanionScene extends EventTarget {
 
   pause(value) { this.paused = Boolean(value); }
 
+  disposeMaterial(material) {
+    if (!material) return;
+    for (const value of Object.values(material)) {
+      if (value?.isTexture) value.dispose?.();
+    }
+    material.dispose?.();
+  }
+
   disposeObject(object) {
-    object.traverse?.((child) => {
+    object?.traverse?.((child) => {
       child.geometry?.dispose?.();
-      if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose?.());
-      else child.material?.dispose?.();
+      if (Array.isArray(child.material)) child.material.forEach((material) => this.disposeMaterial(material));
+      else this.disposeMaterial(child.material);
     });
+  }
+
+  disposePetRecord(record) {
+    if (!record) return;
+    record.controller?.dispose?.();
+    record.stage?.removeFromParent?.();
+    this.disposeObject(record.stage);
   }
 
   dispose() {
@@ -1472,7 +2280,8 @@ export class CompanionScene extends EventTarget {
     this.canvas.removeEventListener('pointerup', this.handlePointerUp);
     this.canvas.removeEventListener('pointercancel', this.handlePointerUp);
     this.canvas.removeEventListener('wheel', this.handleWheel);
-    this.pets.forEach((record) => record.controller.dispose());
+    this.pets.forEach((record) => this.disposePetRecord(record));
+    this.pets.clear();
     this.renderer?.dispose();
   }
 }

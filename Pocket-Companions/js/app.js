@@ -5,7 +5,18 @@ import { GameStore } from './store.js';
 import { AudioSystem } from './audio.js';
 import { CompanionScene } from './scene.js';
 import { MinigameManager } from './games.js';
-import { PETS, NEEDS, FOODS, ROOMS, MINIGAMES, SHOP_OFFERS } from './config.js';
+import * as CONFIG from './config.js';
+
+const { PETS, NEEDS, FOODS, ROOMS, MINIGAMES } = CONFIG;
+const SHOP_OFFERS = Array.isArray(CONFIG.SHOP_OFFERS)
+  ? CONFIG.SHOP_OFFERS
+  : [
+      { id: 'meal', name: 'Balanced meal', description: 'A complete meal for hunger and health.', cost: 12, amount: 1, symbol: '◆' },
+      { id: 'snack', name: 'Crunchy snack', description: 'A quick snack with a happiness boost.', cost: 8, amount: 1, symbol: '◇' },
+      { id: 'treat', name: 'Star treat', description: 'A special treat for extra happiness.', cost: 10, amount: 1, symbol: '★' },
+      { id: 'water', name: 'Fresh water', description: 'Restores hydration, health, and energy.', cost: 5, amount: 1, symbol: '◒' },
+      { id: 'medicine', name: 'Gentle medicine', description: 'A care supply for moments of low health.', cost: 20, amount: 1, symbol: '+' }
+    ];
 import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
 import { getLanguage, initI18n, setLanguage } from './i18n.js';
 
@@ -124,13 +135,17 @@ async function init() {
 async function loadExperience() {
   try {
     loadingError.hidden = true;
+    loadingMessage.textContent = 'Restoring persistent companion memories…';
+    await store.ready;
+    applySettingsToDocument();
+    syncSettingsInputs();
     loadingMessage.textContent = 'Building the room and preparing the renderer…';
     setLoading(4);
     await scene.init();
     loadingMessage.textContent = `Inspecting all ${petOrder.length} companions…`;
     await scene.preloadAll((value) => setLoading(8 + value * 0.84));
     loadingMessage.textContent = 'Framing paws, checking textures, and rendering the first stable frame…';
-    scene.setPet('apollo', { selection: false });
+    await scene.setPet('apollo', { selection: false });
     await scene.renderStableFrame();
     setLoading(100);
     await wait(store.settings.reducedMotion ? 20 : 260);
@@ -235,14 +250,13 @@ function beginSelection(slotIndex) {
   closeDialog($('#slots-modal'));
   selectionIndex = 0;
   showOnly('selection');
-  updateSelection();
+  void updateSelection();
   scene.setAutonomous(false);
 }
 
-function updateSelection() {
+async function updateSelection() {
   const id = petOrder[selectionIndex];
   const pet = PETS[id];
-  scene.setPet(id, { selection: true });
   setTheme(pet);
   $('#selection-name').textContent = pet.name;
   $('#selection-trait').textContent = pet.trait;
@@ -252,11 +266,12 @@ function updateSelection() {
     dot.classList.toggle('is-active', active);
     dot.setAttribute('aria-selected', String(active));
   });
+  await scene.setPet(id, { selection: true });
 }
 
 function shiftSelection(direction) {
   selectionIndex = (selectionIndex + direction + petOrder.length) % petOrder.length;
-  updateSelection();
+  void updateSelection();
   playSound('click');
 }
 
@@ -283,7 +298,7 @@ async function enterGame() {
   if (!slot) return;
   showOnly('game');
   setTheme(PETS[slot.companionId]);
-  scene.setPet(slot.companionId, { selection: false });
+  await scene.setPet(slot.companionId, { selection: false });
   scene.buildEnvironment(slot.activeRoom);
   if (slot.isSleeping) scene.enterSleepMode(true);
   else scene.placePetSafely();
@@ -1421,7 +1436,10 @@ function bindGlobalControls() {
   store.addEventListener('settings', applySettingsToDocument);
 
   window.addEventListener('keydown', handleKeyboardShortcuts);
-  window.addEventListener('beforeunload', () => store.persist());
+  window.addEventListener('beforeunload', () => {
+    store.persist();
+    store.flushPersistentStorage(true);
+  });
 }
 
 function handleKeyboardShortcuts(event) {
@@ -1445,7 +1463,7 @@ function handleKeyboardShortcuts(event) {
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js')
+    navigator.serviceWorker.register('sw.js?v=16-atomic-cache')
       .then((registration) => registration.update())
       .catch((error) => console.warn('[Pocket Companions] Service worker registration failed:', error));
   }

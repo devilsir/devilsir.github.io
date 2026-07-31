@@ -1648,7 +1648,24 @@ function getNearModelPetPlacement(petRoot, entry, fallbackPosition) {
   towardCamera.normalize()
 
   let desiredWorld
-  if (entry.side === 'center') {
+  const formationCount = Number(entry.formationCount)
+  const formationIndex = Number(entry.formationIndex)
+  if (Number.isFinite(formationCount) && formationCount > 3 && Number.isFinite(formationIndex)) {
+    const maxPerRow = 5
+    const row = Math.floor(formationIndex / maxPerRow)
+    const rowStart = row * maxPerRow
+    const rowCount = Math.min(maxPerRow, formationCount - rowStart)
+    const column = formationIndex - rowStart
+    const lateralSpacing = Math.max(petSize.x + 0.055, 0.29)
+    const depthSpacing = Math.max(petSize.z + 0.06, 0.27)
+    const lateral = (column - (rowCount - 1) * 0.5) * lateralSpacing
+    const characterHalfDepth = Math.max(characterSize.z * 0.5, 0.08)
+    const petHalfDepth = Math.max(petSize.z * 0.5, 0.04)
+    const depth = characterHalfDepth + petHalfDepth + gap + row * depthSpacing
+    desiredWorld = characterCenterWorld.clone()
+      .add(cameraRight.clone().multiplyScalar(lateral))
+      .add(towardCamera.clone().multiplyScalar(depth))
+  } else if (entry.side === 'center') {
     const characterHalfDepth = Math.max(characterSize.z * 0.5, 0.08)
     const petHalfDepth = Math.max(petSize.z * 0.5, 0.04)
     desiredWorld = characterCenterWorld.clone().add(towardCamera.clone().multiplyScalar(characterHalfDepth + petHalfDepth + gap))
@@ -1690,7 +1707,7 @@ function playPetAnimationInstance(instance, requestedName, fadeDuration = 0.2) {
   }
   if (instance.action) instance.action.fadeOut(fadeDuration)
   const normalizedClipName = String(clip.name || '').toLowerCase()
-  const oneShot = normalizedClipName === 'jump_start' || normalizedClipName === 'jump_fall' || normalizedClipName === 'jump_end'
+  const oneShot = ['jump_start', 'jump_fall', 'jump_end'].some(name => normalizedClipName.includes(name))
   nextAction.reset()
   nextAction.enabled = true
   nextAction.setLoop(oneShot ? THREE.LoopOnce : THREE.LoopRepeat, oneShot ? 1 : Infinity)
@@ -1814,9 +1831,12 @@ function applyPetMode(mode) {
   petState.group = group
   modelPivot.add(group)
   const loader = new THREE.GLTFLoader()
-  petKeys.forEach(key => {
-    const entry = getPetEntry(key)
-    if (!entry || !entry.path) return
+  petKeys.forEach((key, index) => {
+    const sourceEntry = getPetEntry(key)
+    if (!sourceEntry || !sourceEntry.path) return
+    const entry = petKeys.length > 3
+      ? { ...sourceEntry, formationIndex: index, formationCount: petKeys.length }
+      : sourceEntry
     loader.load(entry.path, gltf => {
       if (token !== petState.token || group !== petState.group) return
       addPetToGroup(gltf, entry, group)

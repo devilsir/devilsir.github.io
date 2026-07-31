@@ -17,7 +17,7 @@
   <div class="language-switcher" aria-label="Language">
     <span class="language-switcher-icon" aria-hidden="true">◎</span>
     <label for="language-select">Language</label>
-    <select id="language-select" data-language-select aria-label="Language">
+    <select id="language-select" name="language" data-language-select aria-label="Language">
       <option value="pt-BR">Português</option>
       <option value="en">English</option>
     </select>
@@ -137,20 +137,50 @@
       </div>
 
       <nav class="bottom-navigation" aria-label="Main navigation">
-        <button class="nav-button is-active" data-panel="home" type="button">Home</button>
-        <button class="nav-button" data-panel="care" type="button">Care</button>
-        <button class="nav-button" data-panel="play" type="button">Play</button>
-        <button class="nav-button" data-panel="shop" type="button">Shop</button>
-        <button class="nav-button" data-panel="explore" type="button">Explore</button>
-        <button class="nav-button" data-panel="collection" type="button">Collection</button>
+        <button class="nav-button is-active" data-panel="home" type="button" aria-label="Home" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5z"/></svg>
+          <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-button" data-panel="care" type="button" aria-label="Care">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S4 16 4 9.4A4.4 4.4 0 0 1 12 6.8a4.4 4.4 0 0 1 8 2.6c0 6.6-8 11.1-8 11.1Z"/><path d="M12 9v6M9 12h6"/></svg>
+          <span class="nav-label">Care</span>
+        </button>
+        <button class="nav-button" data-panel="play" type="button" aria-label="Play">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 7.2h7.4a4 4 0 0 1 3.8 2.8l1.1 3.6a3 3 0 0 1-5 3l-1.5-1.6H9.9l-1.5 1.6a3 3 0 0 1-5-3L4.5 10a4 4 0 0 1 3.8-2.8Z"/><path d="M8 10v4M6 12h4M16.5 11.5h.01M18.5 13.5h.01"/></svg>
+          <span class="nav-label">Play</span>
+        </button>
+        <button class="nav-button" data-panel="shop" type="button" aria-label="Shop">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+          <span class="nav-label">Shop</span>
+        </button>
+        <button class="nav-button" data-panel="explore" type="button" aria-label="Explore">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4 5.4-2.2Z"/></svg>
+          <span class="nav-label">Explore</span>
+        </button>
+        <button class="nav-button" data-panel="collection" type="button" aria-label="Collection">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M9 4v16M13 8h3M13 12h3"/></svg>
+          <span class="nav-label">Collection</span>
+        </button>
+        <button class="nav-button" data-panel="life" type="button" aria-label="Life">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M12 7v5l3 2M7.8 16.2l8.4-8.4"/></svg>
+          <span class="nav-label">Life</span>
+        </button>
       </nav>
 
-      <aside id="drawer" class="drawer" aria-labelledby="drawer-title" hidden>
+      <aside id="drawer" class="drawer" aria-labelledby="drawer-title" tabindex="-1" hidden>
         <header class="drawer-header">
-          <div><p class="eyebrow">Pocket Companions</p><h2 id="drawer-title">Care</h2></div>
-          <button id="close-drawer" class="icon-button" type="button" aria-label="Close panel">Close</button>
+          <span class="drawer-handle" aria-hidden="true"></span>
+          <div class="drawer-heading"><p class="eyebrow">Pocket Companions</p><h2 id="drawer-title">Care</h2></div>
+          <div class="drawer-header-actions">
+            <button id="drawer-expand" class="icon-button drawer-expand" type="button" aria-label="Expand panel" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 14 4-4 4 4"/><path d="M8 19h8"/></svg>
+            </button>
+            <button id="close-drawer" class="icon-button drawer-close" type="button" aria-label="Close panel">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
+            </button>
+          </div>
         </header>
-        <div id="drawer-content" class="drawer-content"></div>
+        <div id="drawer-content" class="drawer-content" tabindex="0"></div>
       </aside>
 
       <div id="photo-overlay" class="photo-overlay" hidden aria-label="Photo mode">
@@ -245,19 +275,19 @@
     <form method="dialog" class="modal-card modal-wide">
       <header class="modal-header"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-button" value="cancel">Close</button></header>
       <div class="settings-grid">
-        <label>Master volume<input id="master-volume" type="range" min="0" max="1" step="0.05"></label>
-        <label>Music volume<input id="music-volume" type="range" min="0" max="1" step="0.05"></label>
-        <label>Effects volume<input id="effects-volume" type="range" min="0" max="1" step="0.05"></label>
-        <label>Ambient volume<input id="ambient-volume" type="range" min="0" max="1" step="0.05"></label>
-        <label class="switch-row"><span>Mute all audio</span><input id="mute-audio" type="checkbox"></label>
-        <label class="switch-row"><span>Real-time need decay</span><input id="real-time-decay" type="checkbox"></label>
-        <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" type="checkbox"></label>
-        <label>Fixed visual time<select id="fixed-time"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
-        <label>Language<select id="settings-language-select" data-language-select aria-label="Language"><option value="pt-BR">Português</option><option value="en">English</option></select></label>
+        <label>Master volume<input id="master-volume" name="masterVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Music volume<input id="music-volume" name="musicVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Effects volume<input id="effects-volume" name="effectsVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Ambient volume<input id="ambient-volume" name="ambientVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label class="switch-row"><span>Mute all audio</span><input id="mute-audio" name="muteAudio" type="checkbox"></label>
+        <label class="switch-row"><span>Real-time need decay</span><input id="real-time-decay" name="realTimeDecay" type="checkbox"></label>
+        <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" name="realTimeLighting" type="checkbox"></label>
+        <label>Fixed visual time<select id="fixed-time" name="fixedTime"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
+        <label>Language<select id="settings-language-select" name="settingsLanguage" data-language-select aria-label="Language"><option value="pt-BR">Português</option><option value="en">English</option></select></label>
       </div>
       <div class="backup-actions">
         <button id="export-save" class="button button-secondary" type="button">Export backup</button>
-        <label class="button button-secondary file-button">Import backup<input id="import-save" type="file" accept="application/json"></label>
+        <label class="button button-secondary file-button">Import backup<input id="import-save" name="importSave" type="file" accept="application/json"></label>
       </div>
     </form>
   </dialog>
@@ -266,12 +296,17 @@
     <form method="dialog" class="modal-card">
       <header class="modal-header"><div><p class="eyebrow">Make it yours</p><h2>Accessibility</h2></div><button class="icon-button" value="cancel">Close</button></header>
       <div class="settings-grid">
-        <label class="switch-row"><span>High contrast</span><input id="high-contrast" type="checkbox"></label>
-        <label class="switch-row"><span>Reduced motion</span><input id="reduced-motion" type="checkbox"></label>
-        <label class="switch-row"><span>Simplified minigames</span><input id="simplified-games" type="checkbox"></label>
-        <label class="switch-row"><span>Sound captions</span><input id="sound-captions" type="checkbox"></label>
-        <label>Text size<input id="text-scale" type="range" min="0.9" max="1.3" step="0.05"></label>
-        <label>Interaction sensitivity<input id="interaction-sensitivity" type="range" min="0.7" max="1.5" step="0.1"></label>
+        <label class="switch-row"><span>High contrast</span><input id="high-contrast" name="highContrast" type="checkbox"></label>
+        <label class="switch-row"><span>Reduced motion</span><input id="reduced-motion" name="reducedMotion" type="checkbox"></label>
+        <label class="switch-row"><span>Simplified minigames</span><input id="simplified-games" name="simplifiedGames" type="checkbox"></label>
+        <label class="switch-row"><span>Sound captions</span><input id="sound-captions" name="soundCaptions" type="checkbox"></label>
+        <label class="switch-row"><span>Reduced weather effects</span><input id="reduced-weather-effects" name="reducedWeatherEffects" type="checkbox"></label>
+        <label class="switch-row"><span>Emotional text hints</span><input id="emotion-hints" name="emotionHints" type="checkbox"></label>
+        <label class="switch-row"><span>Body language descriptions</span><input id="body-language-descriptions" name="bodyLanguageDescriptions" type="checkbox"></label>
+        <label class="switch-row"><span>Render a second pet</span><input id="multi-pet-rendering" name="multiPetRendering" type="checkbox"></label>
+        <label class="switch-row"><span>Low performance mode</span><input id="low-performance-mode" name="lowPerformanceMode" type="checkbox"></label>
+        <label>Text size<input id="text-scale" name="textScale" type="range" min="0.9" max="1.3" step="0.05"></label>
+        <label>Interaction sensitivity<input id="interaction-sensitivity" name="interactionSensitivity" type="range" min="0.7" max="1.5" step="0.1"></label>
       </div>
     </form>
   </dialog>
@@ -298,6 +333,38 @@
 
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
-  <script type="module" src="js/app.js?v=12-gameplay-shop"></script>
+  <script type="module">
+    const ASSET_BUILD = '21-accessory-render-binding-fix';
+    const BUILD_MARKER = 'pocket-companions:asset-build';
+
+    async function clearLegacyAssetCaches() {
+      const previousBuild = localStorage.getItem(BUILD_MARKER);
+      if (previousBuild === ASSET_BUILD) return;
+
+      try {
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(
+            cacheNames
+              .filter((name) => name.startsWith('pocket-companions-'))
+              .map((name) => caches.delete(name))
+          );
+        }
+
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+        }
+      } catch (error) {
+        console.warn('[Pocket Companions] Could not fully clear an old asset cache:', error);
+      } finally {
+        // This marker is separate from the game save. IndexedDB and save keys remain untouched.
+        localStorage.setItem(BUILD_MARKER, ASSET_BUILD);
+      }
+    }
+
+    await clearLegacyAssetCaches();
+    await import('./js/app-v17.js');
+  </script>
 </body>
 </html>

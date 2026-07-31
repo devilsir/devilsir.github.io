@@ -12,6 +12,7 @@ const fxModeSelect = document.getElementById('fxMode')
 const handItemModeSelect = document.getElementById('handItemMode')
 const petModeSelect = document.getElementById('petMode')
 const petAnimationModeSelect = document.getElementById('petAnimationMode')
+const petMovementModeSelect = document.getElementById('petMovementMode')
 const qualityModeSelect = document.getElementById('qualityMode')
 const sceneModeSelect = document.getElementById('sceneMode')
 const lightingModeSelect = document.getElementById('lightingMode')
@@ -204,9 +205,12 @@ let petState = {
   token: 0,
   instances: [],
   animationMode: 'auto',
+  motionMode: 'inPlace',
   autoStep: 0,
   autoTimer: 0
 }
+const PET_SCENE_CENTER = new THREE.Vector3(0, 0, 0.35)
+
 let environmentState = {
   currentScene: 'studio',
   lightingMode: 'auto',
@@ -223,7 +227,8 @@ let environmentState = {
   petStepTimer: 0,
   charFootSide: 1,
   petFootSide: 1,
-  groundY: 0.185
+  groundY: 0.185,
+  sceneObstacles: {}
 }
 let performanceMode = false
 let currentModelKey = 'lucas'
@@ -420,6 +425,36 @@ function registerSway(item, axis = 'z', amplitude = 0.06, speed = 1.1) {
   environmentState.swayItems.push({ item, axis, amplitude, speed, phase: Math.random() * Math.PI * 2, baseRotation: item.rotation[axis] })
 }
 
+const SCENE_NAV_CONFIG = {
+  studio: { bounds: { shape: 'rect', minX: -4.35, maxX: 4.35, minZ: -2.75, maxZ: 4.45 } },
+  garden: { bounds: { shape: 'circle', x: 0, z: 0, radius: 4.95 } },
+  forest: { bounds: { shape: 'circle', x: 0, z: 0, radius: 5.45 } },
+  room: { bounds: { shape: 'rect', minX: -3.85, maxX: 3.75, minZ: -3.6, maxZ: 3.55 } },
+  stars: { bounds: { shape: 'circle', x: 0, z: 0, radius: 5.15 } },
+  snow: { bounds: { shape: 'circle', x: 0, z: 0, radius: 5.2 } }
+}
+
+function resetSceneObstacles() {
+  environmentState.sceneObstacles = { studio: [], garden: [], forest: [], room: [], stars: [], snow: [] }
+}
+
+function getSceneObstacleList(sceneKey) {
+  if (!environmentState.sceneObstacles[sceneKey]) environmentState.sceneObstacles[sceneKey] = []
+  return environmentState.sceneObstacles[sceneKey]
+}
+
+function addSceneCircleObstacle(sceneKey, x, z, radius, padding = 0.08) {
+  getSceneObstacleList(sceneKey).push({ type: 'circle', x, z, radius, padding })
+}
+
+function addSceneBoxObstacle(sceneKey, x, z, width, depth, padding = 0.08) {
+  getSceneObstacleList(sceneKey).push({ type: 'box', x, z, width, depth, padding })
+}
+
+function getSceneNavConfig(sceneKey) {
+  return SCENE_NAV_CONFIG[sceneKey] || SCENE_NAV_CONFIG.studio
+}
+
 function createTree(options = {}) {
   const trunkColor = options.trunkColor || 0x7b5536
   const leafColor = options.leafColor || 0x6ab562
@@ -455,7 +490,7 @@ function createRock(color = 0x7f8791, scale = 1) {
   return mesh
 }
 
-function scatterGroundDecor(group, options = {}) {
+function scatterGroundDecor(group, options = {}, sceneKey = null) {
   const radius = options.radius || 3.8
   const grassCount = options.grassCount || 26
   const flowerCount = options.flowerCount || 8
@@ -479,12 +514,14 @@ function scatterGroundDecor(group, options = {}) {
     group.add(flower)
   }
   for (let i = 0; i < rockCount; i++) {
-    const rock = createRock(options.rockColor || 0x7f8791, 0.8 + Math.random() * 0.9)
+    const rockScale = 0.8 + Math.random() * 0.9
+    const rock = createRock(options.rockColor || 0x7f8791, rockScale)
     const angle = Math.random() * Math.PI * 2
     const dist = 1.2 + Math.random() * radius * 0.88
     rock.position.set(Math.cos(angle) * dist, 0.28, Math.sin(angle) * dist)
     rock.rotation.set(Math.random() * 0.2, Math.random() * Math.PI, Math.random() * 0.2)
     group.add(rock)
+    if (sceneKey) addSceneCircleObstacle(sceneKey, rock.position.x, rock.position.z, 0.14 * rockScale + 0.08, 0.04)
   }
 }
 
@@ -503,13 +540,14 @@ function createGardenScene() {
   path.position.y = 0.182
   path.receiveShadow = true
   group.add(path)
-  scatterGroundDecor(group, { radius: 4.2, grassCount: 34, flowerCount: 12, rockCount: 5, detail: 1, grassColor: 0x6cb45a, rockColor: 0x77818b })
+  scatterGroundDecor(group, { radius: 4.2, grassCount: 34, flowerCount: 12, rockCount: 5, detail: 1, grassColor: 0x6cb45a, rockColor: 0x77818b }, 'garden')
   const treePositions = [[-2.9, -2.0], [3.2, -1.6], [-3.4, 2.4], [2.6, 2.5]]
   treePositions.forEach(([x, z], index) => {
     const tree = createTree({ scale: 0.85 + index * 0.05, leafColor: index % 2 ? 0x5ea15b : 0x75bb67, trunkColor: 0x7b5536 })
     tree.position.set(x, 0, z)
     tree.rotation.y = Math.random() * Math.PI
     group.add(tree)
+    addSceneCircleObstacle('garden', x, z, 0.48 + index * 0.03, 0.08)
   })
   return group
 }
@@ -524,7 +562,7 @@ function createForestScene() {
   moss.position.y = 0.181
   moss.receiveShadow = true
   group.add(moss)
-  scatterGroundDecor(group, { radius: 4.9, grassCount: 42, flowerCount: 6, rockCount: 9, grassColor: 0x4d8e49, rockColor: 0x555f68, detail: 1 })
+  scatterGroundDecor(group, { radius: 4.9, grassCount: 42, flowerCount: 6, rockCount: 9, grassColor: 0x4d8e49, rockColor: 0x555f68, detail: 1 }, 'forest')
   for (let i = 0; i < 8; i++) {
     const angle = (Math.PI * 2 * i) / 8 + (i % 2) * 0.12
     const dist = 4.1 + (i % 3) * 0.55
@@ -532,6 +570,7 @@ function createForestScene() {
     tree.position.set(Math.cos(angle) * dist, 0, Math.sin(angle) * dist)
     tree.rotation.y = Math.random() * Math.PI
     group.add(tree)
+    addSceneCircleObstacle('forest', tree.position.x, tree.position.z, 0.52, 0.08)
   }
   return group
 }
@@ -748,22 +787,146 @@ function createRoomScene() {
   const artInnerB = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.03), createStandardMaterial(0xd7b37c, 0.9, 0.02))
   artInnerB.position.set(-2.95, 2.1, -3.82)
   group.add(wallArtA, artInnerA, wallArtB, artInnerB)
+
+  addSceneBoxObstacle('room', -2.55, 1.7, 2.0, 2.8, 0.12)
+  addSceneBoxObstacle('room', -1.28, 1.62, 0.7, 0.62, 0.08)
+  addSceneBoxObstacle('room', -1.1, -3.18, 1.95, 0.95, 0.1)
+  addSceneCircleObstacle('room', -1.08, -2.25, 0.44, 0.08)
+  addSceneBoxObstacle('room', 2.95, -3.1, 1.5, 0.5, 0.08)
+  addSceneBoxObstacle('room', 3.15, 2.7, 1.4, 0.7, 0.08)
+  addSceneBoxObstacle('room', 2.2, 0.55, 2.05, 1.15, 0.1)
+  addSceneBoxObstacle('room', 2.2, 1.8, 1.35, 0.95, 0.1)
+  addSceneCircleObstacle('room', 0.75, 2.95, 0.34, 0.06)
+  addSceneCircleObstacle('room', -3.1, -2.65, 0.32, 0.06)
   return group
 }
 function createStudioScene() {
   const group = new THREE.Group()
   group.name = 'StudioScene'
-  const haloRing = new THREE.Mesh(new THREE.TorusGeometry(3.1, 0.05, 18, 72), new THREE.MeshBasicMaterial({ color: 0x7fb2ff, transparent: true, opacity: 0.18 }))
-  haloRing.rotation.x = Math.PI / 2
-  haloRing.position.y = 0.19
-  group.add(haloRing)
-  for (let i = 0; i < 5; i++) {
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.4 + i * 0.2, 0.12), new THREE.MeshStandardMaterial({ color: 0x32455f, emissive: 0x2c4f95, emissiveIntensity: 0.45, roughness: 0.35, metalness: 0.45 }))
-    const angle = (Math.PI * 2 * i) / 5
-    beam.position.set(Math.cos(angle) * 2.6, 1.25, Math.sin(angle) * 2.6)
-    beam.castShadow = true
-    group.add(beam)
+
+  const floor = new THREE.Mesh(
+    new THREE.CircleGeometry(5.4, 72),
+    createStandardMaterial(0x121923, 0.82, 0.12)
+  )
+  floor.rotation.x = -Math.PI / 2
+  floor.position.y = 0.005
+  floor.receiveShadow = true
+  group.add(floor)
+
+  const backdrop = new THREE.Mesh(
+    new THREE.PlaneGeometry(10.8, 5.6),
+    createStandardMaterial(0x182332, 0.88, 0.06)
+  )
+  backdrop.position.set(0, 2.75, -3.65)
+  backdrop.receiveShadow = true
+  group.add(backdrop)
+
+  const stage = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.15, 2.28, 0.16, 72),
+    createStandardMaterial(0x202d3d, 0.5, 0.32)
+  )
+  stage.position.y = 0.08
+  stage.receiveShadow = true
+  stage.castShadow = true
+  group.add(stage)
+
+  const stageTop = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.06, 2.08, 0.035, 72),
+    createStandardMaterial(0x293a4f, 0.38, 0.3, 0x152b4c, 0.16)
+  )
+  stageTop.position.y = 0.177
+  stageTop.receiveShadow = true
+  group.add(stageTop)
+
+  const rim = new THREE.Mesh(
+    new THREE.TorusGeometry(2.08, 0.025, 16, 96),
+    new THREE.MeshBasicMaterial({ color: 0x79aef7, transparent: true, opacity: 0.72 })
+  )
+  rim.rotation.x = Math.PI / 2
+  rim.position.y = 0.198
+  group.add(rim)
+
+  const archMaterial = new THREE.MeshStandardMaterial({
+    color: 0x293b51,
+    emissive: 0x376ea7,
+    emissiveIntensity: 0.34,
+    roughness: 0.44,
+    metalness: 0.36
+  })
+  const archGlowMaterial = new THREE.MeshBasicMaterial({ color: 0x83bdff, transparent: true, opacity: 0.42 })
+  ;[-1.55, 0, 1.55].forEach((x, i) => {
+    const pillarL = new THREE.Mesh(new THREE.BoxGeometry(0.09, 2.75, 0.12), archMaterial)
+    const pillarR = pillarL.clone()
+    pillarL.position.set(x - 0.58, 1.55, -3.25 + Math.abs(i - 1) * 0.08)
+    pillarR.position.set(x + 0.58, 1.55, -3.25 + Math.abs(i - 1) * 0.08)
+    const top = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.045, 12, 36, Math.PI), archMaterial)
+    top.rotation.z = Math.PI
+    top.position.set(x, 2.92, -3.25 + Math.abs(i - 1) * 0.08)
+    const glow = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.012, 8, 40, Math.PI), archGlowMaterial)
+    glow.rotation.z = Math.PI
+    glow.position.copy(top.position)
+    glow.position.z += 0.015
+    group.add(pillarL, pillarR, top, glow)
+  })
+
+  const makeSoftbox = (x, y, z, rotY, scale = 1) => {
+    const rig = new THREE.Group()
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(0.82 * scale, 1.18 * scale, 0.09),
+      createStandardMaterial(0x121820, 0.48, 0.58)
+    )
+    const diffuser = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.68 * scale, 1.02 * scale),
+      new THREE.MeshBasicMaterial({ color: 0xe9f4ff, transparent: true, opacity: 0.78, side: THREE.DoubleSide })
+    )
+    diffuser.position.z = 0.052
+    const stand = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.035, 1.55, 10),
+      createStandardMaterial(0x1b222b, 0.4, 0.72)
+    )
+    stand.position.y = -1.2 * scale
+    rig.add(frame, diffuser, stand)
+    rig.position.set(x, y, z)
+    rig.rotation.y = rotY
+    group.add(rig)
   }
+  makeSoftbox(-3.0, 2.15, 0.25, Math.PI * 0.38, 0.92)
+  makeSoftbox(3.0, 2.15, 0.25, -Math.PI * 0.38, 0.92)
+
+  const overhead = new THREE.Mesh(
+    new THREE.BoxGeometry(2.0, 0.08, 0.72),
+    createStandardMaterial(0x1b2532, 0.42, 0.52, 0x7fc0ff, 0.2)
+  )
+  overhead.position.set(0, 3.65, -0.35)
+  overhead.rotation.x = -0.12
+  group.add(overhead)
+
+  const overheadGlow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.72, 0.5),
+    new THREE.MeshBasicMaterial({ color: 0xeaf6ff, transparent: true, opacity: 0.58, side: THREE.DoubleSide })
+  )
+  overheadGlow.position.set(0, 3.6, -0.28)
+  overheadGlow.rotation.x = Math.PI / 2 - 0.12
+  group.add(overheadGlow)
+
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 2 * i) / 6
+    const lamp = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.055, 0.075, 0.2, 16),
+      createStandardMaterial(0x1a2532, 0.42, 0.52, 0x5ba6ff, 0.55)
+    )
+    lamp.position.set(Math.cos(angle) * 2.48, 0.23, Math.sin(angle) * 2.1 + 0.08)
+    lamp.rotation.z = Math.PI / 2
+    group.add(lamp)
+    addSceneCircleObstacle('studio', lamp.position.x, lamp.position.z, 0.18, 0.05)
+  }
+
+  addSceneBoxObstacle('studio', -3.0, 0.25, 1.1, 0.5, 0.08)
+  addSceneBoxObstacle('studio', 3.0, 0.25, 1.1, 0.5, 0.08)
+  addSceneBoxObstacle('studio', -2.13, -3.17, 0.22, 0.22, 0.05)
+  addSceneBoxObstacle('studio', -0.58, -3.25, 0.22, 0.22, 0.05)
+  addSceneBoxObstacle('studio', 0.97, -3.25, 0.22, 0.22, 0.05)
+  addSceneBoxObstacle('studio', 2.13, -3.17, 0.22, 0.22, 0.05)
   return group
 }
 
@@ -870,6 +1033,7 @@ function createStarsScene() {
     crystal.castShadow = true
     crystal.receiveShadow = true
     group.add(crystal)
+    addSceneCircleObstacle('stars', crystal.position.x, crystal.position.z, 0.16 + (i % 4) * 0.03, 0.04)
   }
 
   const fireflyConstellation = new THREE.Group()
@@ -900,6 +1064,7 @@ function createSnowScene() {
   icyPond.position.set(1.7, 0.184, -1.25)
   icyPond.receiveShadow = true
   group.add(icyPond)
+  addSceneCircleObstacle('snow', 1.7, -1.25, 0.95, 0.08)
 
   const mountainBand = new THREE.Group()
   for (let i = 0; i < 12; i++) {
@@ -947,6 +1112,7 @@ function createSnowScene() {
     tree.position.set(x, 0, z)
     tree.rotation.y = Math.random() * Math.PI
     group.add(tree)
+    addSceneCircleObstacle('snow', x, z, 0.52 + index * 0.03, 0.08)
   })
 
   for (let i = 0; i < 8; i++) {
@@ -956,6 +1122,7 @@ function createSnowScene() {
     snowRock.position.set(Math.cos(angle) * dist, 0.28, Math.sin(angle) * dist)
     snowRock.rotation.set(Math.random() * 0.2, Math.random() * Math.PI, Math.random() * 0.2)
     group.add(snowRock)
+    addSceneCircleObstacle('snow', snowRock.position.x, snowRock.position.z, 0.22 + Math.random() * 0.09, 0.04)
   }
 
   for (let i = 0; i < 16; i++) {
@@ -971,6 +1138,7 @@ function createSnowScene() {
 }
 
 function buildEnvironmentScenes() {
+  resetSceneObstacles()
   environmentState.groups = {
     studio: createStudioScene(),
     garden: createGardenScene(),
@@ -1608,10 +1776,8 @@ function stylePetRoot(petRoot, entry) {
 }
 
 function getPetCharacterCenterWorld() {
-  if (centerBone) {
-    const center = new THREE.Vector3()
-    centerBone.getWorldPosition(center)
-    return center
+  if (modelRoot && modelRoot.userData && modelRoot.userData.petPlacementStableWorld) {
+    return modelRoot.userData.petPlacementStableWorld.clone()
   }
   if (modelRoot && modelRoot.userData && modelRoot.userData.petPlacementCenterLocal) {
     return modelRoot.localToWorld(modelRoot.userData.petPlacementCenterLocal.clone())
@@ -1622,51 +1788,42 @@ function getPetCharacterCenterWorld() {
 
 function getNearModelPetPlacement(petRoot, entry, fallbackPosition) {
   const fallback = fallbackPosition || new THREE.Vector3(0, 0, 0)
-  if (!petRoot || !entry || entry.placement !== 'nearModel') return fallback
-  if (!modelRoot || !modelPivot || !camera) return fallback
-  modelPivot.updateWorldMatrix(true, true)
-  camera.updateMatrixWorld(true)
-
-  const characterSize = modelRoot.userData && modelRoot.userData.petPlacementSize
-    ? modelRoot.userData.petPlacementSize.clone()
-    : new THREE.Box3().setFromObject(modelRoot).getSize(new THREE.Vector3())
-  const petSize = petRoot.userData && petRoot.userData.petPlacementSize
+  const petSize = petRoot && petRoot.userData && petRoot.userData.petPlacementSize
     ? petRoot.userData.petPlacementSize.clone()
-    : new THREE.Box3().setFromObject(petRoot).getSize(new THREE.Vector3())
-  const characterCenterWorld = getPetCharacterCenterWorld()
-  const gapValue = Number(entry.gap)
-  const gap = Number.isFinite(gapValue) && gapValue >= 0 ? gapValue : 0.035
+    : new THREE.Vector3(0.25, 0.32, 0.25)
+  const groundY = 0
+  const gapValue = Number(entry && entry.gap)
+  const gap = Number.isFinite(gapValue) && gapValue >= 0 ? gapValue : 0.04
+  const formationCount = Number(entry && entry.formationCount)
+  const formationIndex = Number(entry && entry.formationIndex)
 
-  const cameraRight = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0)
-  cameraRight.y = 0
-  if (cameraRight.lengthSq() < 0.0001) cameraRight.set(1, 0, 0)
-  cameraRight.normalize()
-
-  const towardCamera = camera.position.clone().sub(characterCenterWorld)
-  towardCamera.y = 0
-  if (towardCamera.lengthSq() < 0.0001) towardCamera.set(0, 0, 1)
-  towardCamera.normalize()
-
-  let desiredWorld
-  if (entry.side === 'center') {
-    const characterHalfDepth = Math.max(characterSize.z * 0.5, 0.08)
-    const petHalfDepth = Math.max(petSize.z * 0.5, 0.04)
-    desiredWorld = characterCenterWorld.clone().add(towardCamera.clone().multiplyScalar(characterHalfDepth + petHalfDepth + gap))
+  let position = new THREE.Vector3(0, groundY, 0.78)
+  if (Number.isFinite(formationCount) && formationCount > 1 && Number.isFinite(formationIndex)) {
+    const maxPerRow = formationCount > 6 ? 5 : Math.min(formationCount, 4)
+    const row = Math.floor(formationIndex / maxPerRow)
+    const rowStart = row * maxPerRow
+    const rowCount = Math.min(maxPerRow, formationCount - rowStart)
+    const column = formationIndex - rowStart
+    const spacingX = Math.max(0.38, petSize.x + 0.12)
+    const spacingZ = Math.max(0.42, petSize.z + 0.16)
+    position.x = (column - (rowCount - 1) * 0.5) * spacingX
+    position.z = 0.72 + row * spacingZ
+  } else if (entry && entry.side === 'left') {
+    position.set(-0.72 - petSize.x * 0.25 - gap, groundY, 0.48)
+  } else if (entry && entry.side === 'right') {
+    position.set(0.72 + petSize.x * 0.25 + gap, groundY, 0.48)
+  } else if (entry && entry.side === 'center') {
+    position.set(0, groundY, 0.86 + petSize.z * 0.2)
   } else {
-    const sideSign = entry.side === 'right' ? 1 : -1
-    const characterHalfWidth = Math.max(characterSize.x * 0.5, 0.08)
-    const petHalfWidth = Math.max(petSize.x * 0.5, 0.04)
-    desiredWorld = characterCenterWorld.clone().add(cameraRight.clone().multiplyScalar(sideSign * (characterHalfWidth + petHalfWidth + gap)))
+    position.copy(fallback)
+    position.y = groundY
   }
 
-  const lateralOffset = Number(entry.lateralOffset)
-  if (Number.isFinite(lateralOffset) && lateralOffset !== 0) desiredWorld.add(cameraRight.clone().multiplyScalar(lateralOffset))
-  const forwardOffset = Number(entry.forwardOffset)
-  if (Number.isFinite(forwardOffset) && forwardOffset !== 0) desiredWorld.add(towardCamera.clone().multiplyScalar(forwardOffset))
-
-  const desiredLocal = modelPivot.worldToLocal(desiredWorld)
-  desiredLocal.y = Number.isFinite(Number(fallback.y)) ? Number(fallback.y) : 0
-  return desiredLocal
+  const lateralOffset = Number(entry && entry.lateralOffset)
+  if (Number.isFinite(lateralOffset)) position.x += lateralOffset
+  const forwardOffset = Number(entry && entry.forwardOffset)
+  if (Number.isFinite(forwardOffset)) position.z += forwardOffset
+  return position
 }
 
 function findPetClip(instance, requestedName) {
@@ -1676,6 +1833,24 @@ function findPetClip(instance, requestedName) {
     || instance.clips.find(clip => String(clip.name || '').toLowerCase().includes(requested))
     || instance.clips.find(clip => String(clip.name || '').toLowerCase().includes('idle'))
     || instance.clips[0]
+}
+
+function findPetRootMotionNode(root) {
+  if (!root) return null
+  let exactRoot = null
+  let fallbackBone = null
+  root.traverse(obj => {
+    if (!fallbackBone && obj.isBone) fallbackBone = obj
+    if (!exactRoot && normalizeName(obj.name) === 'root') exactRoot = obj
+  })
+  return exactRoot || fallbackBone
+}
+
+function lockPetRootMotion(instance) {
+  if (!instance || !instance.rootMotionNode || !instance.rootMotionBase) return
+  instance.rootMotionNode.position.x = instance.rootMotionBase.x
+  instance.rootMotionNode.position.z = instance.rootMotionBase.z
+  instance.rootMotionNode.updateMatrix()
 }
 
 function playPetAnimationInstance(instance, requestedName, fadeDuration = 0.2) {
@@ -1690,7 +1865,7 @@ function playPetAnimationInstance(instance, requestedName, fadeDuration = 0.2) {
   }
   if (instance.action) instance.action.fadeOut(fadeDuration)
   const normalizedClipName = String(clip.name || '').toLowerCase()
-  const oneShot = normalizedClipName === 'jump_start' || normalizedClipName === 'jump_fall' || normalizedClipName === 'jump_end'
+  const oneShot = ['jump_start', 'jump_fall', 'jump_end'].some(name => normalizedClipName.includes(name))
   nextAction.reset()
   nextAction.enabled = true
   nextAction.setLoop(oneShot ? THREE.LoopOnce : THREE.LoopRepeat, oneShot ? 1 : Infinity)
@@ -1716,8 +1891,64 @@ const PET_AUTO_SEQUENCE = [
   { clip: 'idle', duration: 3.2 }
 ]
 
+const PET_RANDOM_AUTO_ACTIONS = [
+  [{ clip: 'idle', minDuration: 2.2, maxDuration: 5.2 }],
+  [{ clip: 'walk', minDuration: 1.35, maxDuration: 3.1 }],
+  [{ clip: 'run', minDuration: 0.8, maxDuration: 1.75 }],
+  [
+    { clip: 'jump_start', duration: 0.32 },
+    { clip: 'jump', duration: 0.92 },
+    { clip: 'jump_fall', duration: 0.82 },
+    { clip: 'jump_end', duration: 0.68 },
+    { clip: 'idle', minDuration: 1.4, maxDuration: 2.8 }
+  ]
+]
+
 function getCurrentPetAutoStep() {
   return PET_AUTO_SEQUENCE[petState.autoStep % PET_AUTO_SEQUENCE.length]
+}
+
+function getSelectedPetCount() {
+  const modeEntry = getPetModeEntry(petState.current)
+  return modeEntry && Array.isArray(modeEntry.pets) ? modeEntry.pets.length : petState.instances.length
+}
+
+function usesIndependentRandomPetAuto() {
+  return petState.animationMode === 'auto' && getSelectedPetCount() > 1
+}
+
+function getRandomPetStepDuration(step) {
+  if (!step) return 1
+  if (Number.isFinite(Number(step.duration))) return Number(step.duration)
+  const min = Number.isFinite(Number(step.minDuration)) ? Number(step.minDuration) : 1.2
+  const max = Number.isFinite(Number(step.maxDuration)) ? Number(step.maxDuration) : min
+  return THREE.MathUtils.randFloat(Math.min(min, max), Math.max(min, max))
+}
+
+function startNextRandomPetAction(instance, fadeDuration = 0.22) {
+  if (!instance) return
+  instance.randomAuto = instance.randomAuto || { queue: [], timer: 0, lastActionIndex: -1 }
+  const state = instance.randomAuto
+
+  if (!state.queue.length) {
+    let nextIndex = Math.floor(Math.random() * PET_RANDOM_AUTO_ACTIONS.length)
+    if (PET_RANDOM_AUTO_ACTIONS.length > 1 && nextIndex === state.lastActionIndex) {
+      nextIndex = (nextIndex + 1 + Math.floor(Math.random() * (PET_RANDOM_AUTO_ACTIONS.length - 1))) % PET_RANDOM_AUTO_ACTIONS.length
+    }
+    state.lastActionIndex = nextIndex
+    state.queue = PET_RANDOM_AUTO_ACTIONS[nextIndex].map(step => ({ ...step }))
+  }
+
+  const step = state.queue.shift()
+  state.timer = getRandomPetStepDuration(step)
+  playPetAnimationInstance(instance, step.clip, fadeDuration)
+}
+
+function initializeRandomPetAuto(instance, stagger = true) {
+  if (!instance) return
+  instance.randomAuto = { queue: [], timer: 0, lastActionIndex: -1 }
+  startNextRandomPetAction(instance, 0.12)
+  if (stagger && instance.randomAuto) instance.randomAuto.timer *= THREE.MathUtils.randFloat(0.45, 1.15)
 }
 
 function applyPetAnimationMode(mode) {
@@ -1725,8 +1956,17 @@ function applyPetAnimationMode(mode) {
   petState.autoStep = 0
   const autoStep = getCurrentPetAutoStep()
   petState.autoTimer = autoStep.duration
-  const clipName = petState.animationMode === 'auto' ? autoStep.clip : petState.animationMode
-  for (const instance of petState.instances) playPetAnimationInstance(instance, clipName, 0.18)
+
+  if (usesIndependentRandomPetAuto()) {
+    petState.instances.forEach(instance => initializeRandomPetAuto(instance, true))
+  } else {
+    const clipName = petState.animationMode === 'auto' ? autoStep.clip : petState.animationMode
+    for (const instance of petState.instances) {
+      instance.randomAuto = null
+      playPetAnimationInstance(instance, clipName, 0.18)
+    }
+  }
+
   if (petAnimationModeSelect && petAnimationModeSelect.value !== petState.animationMode) {
     petAnimationModeSelect.value = petState.animationMode
   }
@@ -1735,15 +1975,332 @@ function applyPetAnimationMode(mode) {
 function updatePetAnimations(dt) {
   if (!playState) return
   for (const instance of petState.instances) {
-    if (instance && instance.mixer) instance.mixer.update(dt)
+    if (!instance) continue
+    if (instance.mixer) instance.mixer.update(dt)
+    lockPetRootMotion(instance)
   }
   if (petState.animationMode !== 'auto' || !petState.instances.length) return
-  petState.autoTimer -= dt * parseFloat(speedRange.value)
+
+  const speed = parseFloat(speedRange.value)
+  if (usesIndependentRandomPetAuto()) {
+    for (const instance of petState.instances) {
+      if (!instance) continue
+      if (!instance.randomAuto) initializeRandomPetAuto(instance, true)
+      instance.randomAuto.timer -= dt * speed
+      if (instance.randomAuto.timer <= 0) startNextRandomPetAction(instance, 0.22)
+    }
+    return
+  }
+
+  petState.autoTimer -= dt * speed
   if (petState.autoTimer > 0) return
   petState.autoStep = (petState.autoStep + 1) % PET_AUTO_SEQUENCE.length
   const step = getCurrentPetAutoStep()
   petState.autoTimer = step.duration
   for (const instance of petState.instances) playPetAnimationInstance(instance, step.clip, 0.22)
+}
+
+function getPetSceneBounds() {
+  const config = getSceneNavConfig(environmentState.currentScene)
+  return config.bounds
+}
+
+function clampPetScenePosition(position, baseY = 0, petRadius = 0) {
+  const bounds = getPetSceneBounds()
+  if (bounds.shape === 'circle') {
+    const centerX = Number.isFinite(Number(bounds.x)) ? Number(bounds.x) : 0
+    const centerZ = Number.isFinite(Number(bounds.z)) ? Number(bounds.z) : 0
+    const maxRadius = Math.max(0.2, bounds.radius - petRadius - 0.05)
+    const dx = position.x - centerX
+    const dz = position.z - centerZ
+    const dist = Math.hypot(dx, dz)
+    if (dist > maxRadius) {
+      const inv = maxRadius / Math.max(dist, 0.0001)
+      position.x = centerX + dx * inv
+      position.z = centerZ + dz * inv
+    }
+  } else {
+    position.x = THREE.MathUtils.clamp(position.x, bounds.minX + petRadius + 0.04, bounds.maxX - petRadius - 0.04)
+    position.z = THREE.MathUtils.clamp(position.z, bounds.minZ + petRadius + 0.04, bounds.maxZ - petRadius - 0.04)
+  }
+  position.y = baseY
+  return position
+}
+
+function getSceneObstacleFootprints(sceneKey = environmentState.currentScene) {
+  const obstacles = getSceneObstacleList(sceneKey)
+  return obstacles.map(obstacle => {
+    if (obstacle.type === 'circle') {
+      const radius = obstacle.radius + (obstacle.padding || 0)
+      return {
+        minX: obstacle.x - radius,
+        maxX: obstacle.x + radius,
+        minZ: obstacle.z - radius,
+        maxZ: obstacle.z + radius,
+        centerX: obstacle.x,
+        centerZ: obstacle.z,
+        source: obstacle
+      }
+    }
+    const halfW = obstacle.width * 0.5 + (obstacle.padding || 0)
+    const halfD = obstacle.depth * 0.5 + (obstacle.padding || 0)
+    return {
+      minX: obstacle.x - halfW,
+      maxX: obstacle.x + halfW,
+      minZ: obstacle.z - halfD,
+      maxZ: obstacle.z + halfD,
+      centerX: obstacle.x,
+      centerZ: obstacle.z,
+      source: obstacle
+    }
+  })
+}
+
+function getRandomPointInCurrentScene(baseY = 0, petRadius = 0) {
+  const bounds = getPetSceneBounds()
+  const pos = new THREE.Vector3(0, baseY, 0)
+  if (bounds.shape === 'circle') {
+    const centerX = Number.isFinite(Number(bounds.x)) ? Number(bounds.x) : 0
+    const centerZ = Number.isFinite(Number(bounds.z)) ? Number(bounds.z) : 0
+    const maxRadius = Math.max(0.35, bounds.radius - petRadius - 0.12)
+    const angle = Math.random() * Math.PI * 2
+    const radius = Math.sqrt(Math.random()) * maxRadius
+    pos.set(centerX + Math.cos(angle) * radius, baseY, centerZ + Math.sin(angle) * radius)
+  } else {
+    pos.set(
+      THREE.MathUtils.randFloat(bounds.minX + petRadius + 0.08, bounds.maxX - petRadius - 0.08),
+      baseY,
+      THREE.MathUtils.randFloat(bounds.minZ + petRadius + 0.08, bounds.maxZ - petRadius - 0.08)
+    )
+  }
+  return clampPetScenePosition(pos, baseY, petRadius)
+}
+
+
+function getPetBlockRadius(wrapper) {
+  if (!wrapper || !wrapper.userData) return 0.22
+  const petRoot = wrapper.userData.petRoot
+  const size = petRoot && petRoot.userData ? petRoot.userData.petPlacementSize : null
+  if (!size) return 0.22
+  return Math.max(0.18, Math.min(0.58, Math.max(Number(size.x) || 0, Number(size.z) || 0) * 0.56))
+}
+
+function getPetCandidateFootprint(position, radius) {
+  return {
+    minX: position.x - radius,
+    maxX: position.x + radius,
+    minZ: position.z - radius,
+    maxZ: position.z + radius,
+    centerX: position.x,
+    centerZ: position.z
+  }
+}
+
+function getPetCollisionBlockers(ignoreInstance = null) {
+  const blockers = []
+  const characterFootprint = getObjectFootprint(modelRoot, 0.055)
+  if (characterFootprint) blockers.push(characterFootprint)
+  blockers.push(...getSceneObstacleFootprints(environmentState.currentScene))
+  for (const other of petState.instances) {
+    if (!other || other === ignoreInstance || !other.wrapper) continue
+    const otherFootprint = other.root
+      ? getObjectFootprint(other.root, 0.025)
+      : getPetCandidateFootprint(other.wrapper.position, getPetBlockRadius(other.wrapper))
+    if (otherFootprint) blockers.push(otherFootprint)
+  }
+  return blockers
+}
+
+function isPetPositionBlocked(position, petRadius, ignoreInstance = null) {
+  if (!position) return true
+  const candidate = getPetCandidateFootprint(position, petRadius)
+  for (const blocker of getPetCollisionBlockers(ignoreInstance)) {
+    if (getFootprintOverlap(candidate, blocker)) return true
+  }
+  return false
+}
+
+function moveCandidateOutsideFootprint(position, radius, blocker, overlap) {
+  if (!position || !blocker || !overlap) return false
+  const padding = 0.025
+  if (overlap.overlapX < overlap.overlapZ) {
+    const direction = position.x >= blocker.centerX ? 1 : -1
+    position.x += direction * (overlap.overlapX + padding)
+  } else {
+    const direction = position.z >= blocker.centerZ ? 1 : -1
+    position.z += direction * (overlap.overlapZ + padding)
+  }
+  return true
+}
+
+function applyPetBlockers(instance, position, baseY = 0, avoidPets = true) {
+  if (!position) return new THREE.Vector3(0, baseY, 0)
+  const wrapper = instance && instance.wrapper ? instance.wrapper : null
+  const petRadius = getPetBlockRadius(wrapper)
+  const result = position.clone()
+  result.y = baseY
+  clampPetScenePosition(result, baseY, petRadius)
+
+  for (let pass = 0; pass < 8; pass++) {
+    let changed = false
+    const blockers = []
+    const characterFootprint = getObjectFootprint(modelRoot, 0.055)
+    if (characterFootprint) blockers.push(characterFootprint)
+    blockers.push(...getSceneObstacleFootprints(environmentState.currentScene))
+    if (avoidPets) {
+      for (const other of petState.instances) {
+        if (!other || other === instance || !other.wrapper) continue
+        const footprint = other.root
+          ? getObjectFootprint(other.root, 0.025)
+          : getPetCandidateFootprint(other.wrapper.position, getPetBlockRadius(other.wrapper))
+        if (footprint) blockers.push(footprint)
+      }
+    }
+
+    for (const blocker of blockers) {
+      const candidate = getPetCandidateFootprint(result, petRadius)
+      const overlap = getFootprintOverlap(candidate, blocker)
+      if (!overlap) continue
+      moveCandidateOutsideFootprint(result, petRadius, blocker, overlap)
+      clampPetScenePosition(result, baseY, petRadius)
+      changed = true
+    }
+    if (!changed) break
+  }
+  result.y = baseY
+  return result
+}
+
+function resolveAllPetBlockers(iterations = 4) {
+  if (!petState.instances.length) return
+  const totalIterations = Math.max(1, Math.min(12, Number(iterations) || 4))
+  for (let pass = 0; pass < totalIterations; pass++) {
+    let changed = false
+    for (const instance of petState.instances) {
+      if (!instance || !instance.wrapper) continue
+      const wrapper = instance.wrapper
+      const baseY = Number.isFinite(Number(wrapper.userData.baseY)) ? Number(wrapper.userData.baseY) : wrapper.position.y
+      const before = wrapper.position.clone()
+      const corrected = applyPetBlockers(instance, before, baseY, true)
+      wrapper.position.copy(corrected)
+      wrapper.updateWorldMatrix(true, true)
+      if (before.distanceToSquared(corrected) > 0.000001) {
+        changed = true
+        if (instance.roam && petState.motionMode === 'scene') assignPetSceneTarget(instance)
+      }
+    }
+    if (!changed) break
+  }
+}
+
+function createPetSceneStartPosition(index = 0, total = 1, baseY = 0) {
+  const petRadius = 0.2
+  let pos = getRandomPointInCurrentScene(baseY, petRadius)
+  const count = Math.max(1, total)
+  if (count > 1) {
+    const angle = (index / count) * Math.PI * 2 + Math.PI * 0.15
+    const spread = Math.min(1.8, 0.9 + Math.floor(index / 4) * 0.28)
+    pos = new THREE.Vector3(
+      PET_SCENE_CENTER.x + Math.sin(angle) * spread,
+      baseY,
+      PET_SCENE_CENTER.z + Math.cos(angle) * spread
+    )
+    clampPetScenePosition(pos, baseY, petRadius)
+  }
+  return pos
+}
+
+function assignPetSceneTarget(instance) {
+  if (!instance || !instance.wrapper) return
+  const baseY = Number.isFinite(Number(instance.wrapper.userData.baseY)) ? Number(instance.wrapper.userData.baseY) : 0
+  const roam = instance.roam || (instance.roam = {})
+  const petRadius = getPetBlockRadius(instance.wrapper)
+  let chosen = null
+  for (let attempt = 0; attempt < 32; attempt++) {
+    const candidate = getRandomPointInCurrentScene(baseY, petRadius)
+    if (!isPetPositionBlocked(candidate, petRadius, instance)) {
+      chosen = candidate
+      break
+    }
+    if (!chosen) chosen = candidate
+  }
+  roam.target = chosen || getRandomPointInCurrentScene(baseY, petRadius)
+}
+
+function initializePetSceneMovement(resetPositions = false) {
+  if (!petState.instances.length) return
+  const total = petState.instances.length
+  petState.instances.forEach((instance, index) => {
+    if (!instance || !instance.wrapper) return
+    const baseY = Number.isFinite(Number(instance.wrapper.userData.baseY)) ? Number(instance.wrapper.userData.baseY) : 0
+    instance.roam = instance.roam || {}
+    if (resetPositions || !instance.roam.initialized) {
+      const start = createPetSceneStartPosition(index, total, baseY)
+      instance.wrapper.position.copy(start)
+      instance.wrapper.position.copy(applyPetBlockers(instance, instance.wrapper.position, baseY, true))
+      instance.wrapper.rotation.y = Math.atan2(instance.wrapper.position.x - PET_SCENE_CENTER.x, instance.wrapper.position.z - PET_SCENE_CENTER.z)
+      instance.roam.initialized = true
+    }
+    assignPetSceneTarget(instance)
+  })
+  resolveAllPetBlockers(4)
+}
+
+function getPetTravelSpeed(instance) {
+  if (!instance || !instance.clipName) return 0
+  if (isRunClip(instance.clipName)) return 1.05
+  if (isLocomotionClip(instance.clipName)) return 0.48
+  return 0
+}
+
+function updatePetMovement(dt) {
+  if (petState.motionMode !== 'scene' || !petState.instances.length) return
+  const speedMultiplier = playState ? parseFloat(speedRange.value) : 0
+  petState.instances.forEach((instance, index) => {
+    if (!instance || !instance.wrapper) return
+    const wrapper = instance.wrapper
+    const baseY = Number.isFinite(Number(wrapper.userData.baseY)) ? Number(wrapper.userData.baseY) : 0
+    wrapper.position.y = baseY
+    instance.roam = instance.roam || {}
+    if (!instance.roam.initialized) {
+      const start = createPetSceneStartPosition(index, petState.instances.length, baseY)
+      wrapper.position.copy(applyPetBlockers(instance, start, baseY, true))
+      wrapper.position.y = baseY
+      instance.roam.initialized = true
+    }
+    if (!instance.roam.target) assignPetSceneTarget(instance)
+    const travelSpeed = getPetTravelSpeed(instance)
+    if (!travelSpeed || !speedMultiplier) return
+
+    const toTarget = instance.roam.target.clone().sub(wrapper.position)
+    toTarget.y = 0
+    let distance = toTarget.length()
+    if (distance < 0.08) {
+      assignPetSceneTarget(instance)
+      toTarget.copy(instance.roam.target).sub(wrapper.position)
+      toTarget.y = 0
+      distance = toTarget.length()
+      if (distance < 0.0001) return
+    }
+
+    toTarget.normalize()
+    const move = Math.min(distance, travelSpeed * speedMultiplier * dt)
+    const proposedPosition = wrapper.position.clone().addScaledVector(toTarget, move)
+    const adjustedPosition = applyPetBlockers(instance, proposedPosition, baseY, true)
+    const displacement = adjustedPosition.clone().sub(wrapper.position)
+    displacement.y = 0
+    wrapper.position.copy(adjustedPosition)
+    clampPetScenePosition(wrapper.position, baseY)
+
+    if (displacement.lengthSq() < 0.00002) {
+      assignPetSceneTarget(instance)
+      return
+    }
+
+    const desiredYaw = Math.atan2(displacement.x, displacement.z)
+    const angleDelta = Math.atan2(Math.sin(desiredYaw - wrapper.rotation.y), Math.cos(desiredYaw - wrapper.rotation.y))
+    wrapper.rotation.y += angleDelta * Math.min(1, dt * (isRunClip(instance.clipName) ? 8 : 6))
+  })
 }
 
 function addPetToGroup(gltf, entry, group) {
@@ -1763,6 +2320,8 @@ function addPetToGroup(gltf, entry, group) {
   wrapper.userData.petEntry = entry
   wrapper.userData.fallbackPosition = fallbackPosition
   const placement = getNearModelPetPlacement(petRoot, entry, fallbackPosition)
+  wrapper.userData.anchorPosition = placement.clone()
+  wrapper.userData.baseY = placement.y
   wrapper.position.copy(placement)
   group.add(wrapper)
 
@@ -1774,31 +2333,173 @@ function addPetToGroup(gltf, entry, group) {
       mixer: new THREE.AnimationMixer(petRoot),
       clips,
       action: null,
-      clipName: null
+      clipName: null,
+      roam: null,
+      rootMotionNode: findPetRootMotionNode(petRoot),
+      rootMotionBase: null
     }
+    if (instance.rootMotionNode) instance.rootMotionBase = instance.rootMotionNode.position.clone()
     petState.instances.push(instance)
     attachPetShadows()
-    const currentAuto = getCurrentPetAutoStep()
-    const initialClip = petState.animationMode === 'auto' ? currentAuto.clip : petState.animationMode
-    playPetAnimationInstance(instance, initialClip, 0)
+    if (usesIndependentRandomPetAuto()) {
+      initializeRandomPetAuto(instance, true)
+    } else {
+      const currentAuto = getCurrentPetAutoStep()
+      const initialClip = petState.animationMode === 'auto' ? currentAuto.clip : petState.animationMode
+      playPetAnimationInstance(instance, initialClip, 0)
+    }
+    if (petState.motionMode === 'scene') initializePetSceneMovement(true)
+    else resolveAllPetBlockers(4)
   } else {
     console.warn('Pet sem animações disponíveis:', entry.label || entry.path)
   }
 }
 
-function updatePetPlacements() {
-  if (!petState.group || !modelPivot || !camera) return
-  for (const wrapper of petState.group.children) {
-    const petRoot = wrapper && wrapper.userData ? wrapper.userData.petRoot : null
-    const entry = wrapper && wrapper.userData ? wrapper.userData.petEntry : null
-    const fallbackPosition = wrapper && wrapper.userData ? wrapper.userData.fallbackPosition : null
+function updatePetPlacements(force = false) {
+  if (!petState.group || !camera) return
+  if (!force) {
+    for (const wrapper of petState.group.children) {
+      if (!wrapper) continue
+      const baseY = wrapper.userData && Number.isFinite(Number(wrapper.userData.baseY)) ? Number(wrapper.userData.baseY) : wrapper.position.y
+      wrapper.position.y = baseY
+    }
+    return
+  }
+  if (petState.motionMode === 'scene') {
+    initializePetSceneMovement(true)
+    return
+  }
+  for (const instance of petState.instances) {
+    if (!instance || !instance.wrapper) continue
+    const wrapper = instance.wrapper
+    const petRoot = wrapper.userData ? wrapper.userData.petRoot : null
+    const entry = wrapper.userData ? wrapper.userData.petEntry : null
+    const fallbackPosition = wrapper.userData ? wrapper.userData.fallbackPosition : null
     if (!petRoot || !entry) continue
-    wrapper.position.copy(getNearModelPetPlacement(petRoot, entry, fallbackPosition))
+    const basePlacement = getNearModelPetPlacement(petRoot, entry, fallbackPosition)
+    wrapper.position.copy(applyPetBlockers(instance, basePlacement, basePlacement.y, true))
+    wrapper.userData.anchorPosition = wrapper.position.clone()
+    wrapper.userData.baseY = wrapper.position.y
+  }
+  resolveAllPetBlockers(4)
+}
+
+function getObjectFootprint(object, margin = 0) {
+  if (!object) return null
+  object.updateWorldMatrix(true, true)
+  const box = new THREE.Box3().setFromObject(object)
+  if (box.isEmpty()) return null
+  return {
+    minX: box.min.x - margin,
+    maxX: box.max.x + margin,
+    minZ: box.min.z - margin,
+    maxZ: box.max.z + margin,
+    centerX: (box.min.x + box.max.x) * 0.5,
+    centerZ: (box.min.z + box.max.z) * 0.5
   }
 }
 
-function applyPetMode(mode) {
-  petState.current = mode || 'none'
+function getFootprintOverlap(a, b) {
+  if (!a || !b) return null
+  const overlapX = Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX)
+  const overlapZ = Math.min(a.maxZ, b.maxZ) - Math.max(a.minZ, b.minZ)
+  if (overlapX <= 0 || overlapZ <= 0) return null
+  return { overlapX, overlapZ }
+}
+
+function moveWrapperForFootprintCollision(wrapper, footprint, blocker, overlap, amount = 1) {
+  if (!wrapper || !footprint || !blocker || !overlap) return false
+  const baseY = Number.isFinite(Number(wrapper.userData.baseY)) ? Number(wrapper.userData.baseY) : wrapper.position.y
+  const padding = 0.018
+  if (overlap.overlapX < overlap.overlapZ) {
+    const direction = footprint.centerX >= blocker.centerX ? 1 : -1
+    wrapper.position.x += direction * (overlap.overlapX + padding) * amount
+  } else {
+    const direction = footprint.centerZ >= blocker.centerZ ? 1 : -1
+    wrapper.position.z += direction * (overlap.overlapZ + padding) * amount
+  }
+  clampPetScenePosition(wrapper.position, baseY)
+  wrapper.updateWorldMatrix(true, true)
+  return true
+}
+
+function resolvePetVisualBlockpaths(iterations = 5) {
+  if (!petState.instances.length) return
+  const characterFootprint = getObjectFootprint(modelRoot, 0.045)
+
+  for (let pass = 0; pass < iterations; pass++) {
+    let changed = false
+
+    if (characterFootprint) {
+      for (const instance of petState.instances) {
+        if (!instance || !instance.wrapper || !instance.root) continue
+        lockPetRootMotion(instance)
+        const petFootprint = getObjectFootprint(instance.root, 0.025)
+        const overlap = getFootprintOverlap(petFootprint, characterFootprint)
+        if (overlap && moveWrapperForFootprintCollision(instance.wrapper, petFootprint, characterFootprint, overlap, 1)) {
+          changed = true
+          if (instance.roam) assignPetSceneTarget(instance)
+        }
+      }
+    }
+
+    const obstacleFootprints = getSceneObstacleFootprints(environmentState.currentScene)
+    if (obstacleFootprints.length) {
+      for (const instance of petState.instances) {
+        if (!instance || !instance.wrapper || !instance.root) continue
+        lockPetRootMotion(instance)
+        for (const obstacle of obstacleFootprints) {
+          const petFootprint = getObjectFootprint(instance.root, 0.02)
+          const overlap = getFootprintOverlap(petFootprint, obstacle)
+          if (!overlap) continue
+          if (moveWrapperForFootprintCollision(instance.wrapper, petFootprint, obstacle, overlap, 1)) {
+            changed = true
+            if (instance.roam) assignPetSceneTarget(instance)
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < petState.instances.length; i++) {
+      const first = petState.instances[i]
+      if (!first || !first.wrapper || !first.root) continue
+      lockPetRootMotion(first)
+      for (let j = i + 1; j < petState.instances.length; j++) {
+        const second = petState.instances[j]
+        if (!second || !second.wrapper || !second.root) continue
+        lockPetRootMotion(second)
+        const firstFootprint = getObjectFootprint(first.root, 0.018)
+        const secondFootprint = getObjectFootprint(second.root, 0.018)
+        const overlap = getFootprintOverlap(firstFootprint, secondFootprint)
+        if (!overlap) continue
+        moveWrapperForFootprintCollision(first.wrapper, firstFootprint, secondFootprint, overlap, 0.52)
+        const refreshedFirst = getObjectFootprint(first.root, 0.018)
+        const refreshedSecond = getObjectFootprint(second.root, 0.018)
+        const remaining = getFootprintOverlap(refreshedSecond, refreshedFirst)
+        if (remaining) moveWrapperForFootprintCollision(second.wrapper, refreshedSecond, refreshedFirst, remaining, 0.55)
+        if (first.roam) assignPetSceneTarget(first)
+        if (second.roam) assignPetSceneTarget(second)
+        changed = true
+      }
+    }
+
+    if (!changed) break
+  }
+}
+
+function applyPetMovementMode(mode) {
+  petState.motionMode = mode === 'scene' ? 'scene' : 'inPlace'
+  if (petMovementModeSelect && petMovementModeSelect.value !== petState.motionMode) {
+    petMovementModeSelect.value = petState.motionMode
+  }
+  if (petState.motionMode === 'scene') {
+    initializePetSceneMovement(true)
+  } else {
+    updatePetPlacements(true)
+  }
+}
+
+function applyPetMode(mode) {  petState.current = mode || 'none'
   clearPets()
   if (!modelPivot) return
   const modeEntry = getPetModeEntry(petState.current)
@@ -1812,11 +2513,14 @@ function applyPetMode(mode) {
   const group = new THREE.Group()
   group.name = 'PetGroup'
   petState.group = group
-  modelPivot.add(group)
+  scene.add(group)
   const loader = new THREE.GLTFLoader()
-  petKeys.forEach(key => {
-    const entry = getPetEntry(key)
-    if (!entry || !entry.path) return
+  petKeys.forEach((key, index) => {
+    const sourceEntry = getPetEntry(key)
+    if (!sourceEntry || !sourceEntry.path) return
+    const entry = petKeys.length > 3
+      ? { ...sourceEntry, formationIndex: index, formationCount: petKeys.length }
+      : sourceEntry
     loader.load(entry.path, gltf => {
       if (token !== petState.token || group !== petState.group) return
       addPetToGroup(gltf, entry, group)
@@ -3811,6 +4515,8 @@ function setupModel(gltf, modelKey = currentModelKey) {
   modelRoot.userData.petPlacementCenterLocal = modelRoot.worldToLocal(placementCenterWorld.clone())
   centerBone = pickCenterBone(modelRoot)
   stabilizeCharacterOnPlatform()
+  modelRoot.updateWorldMatrix(true, true)
+  modelRoot.userData.petPlacementStableWorld = getModelFitBox(modelRoot, fitEntry).getCenter(new THREE.Vector3())
   cameraControl.target.set(0, box.min.y + size.y * 0.56, 0)
   resetCameraView()
   modelRoot.traverse(obj => {
@@ -3901,9 +4607,15 @@ if (petAnimationModeSelect) {
     applyPetAnimationMode(petAnimationModeSelect.value)
   })
 }
+if (petMovementModeSelect) {
+  petMovementModeSelect.addEventListener('change', () => {
+    applyPetMovementMode(petMovementModeSelect.value)
+  })
+}
 if (sceneModeSelect) {
   sceneModeSelect.addEventListener('change', () => {
     applyEnvironmentScene(sceneModeSelect.value)
+    if (petState.motionMode === 'scene') initializePetSceneMovement(true)
   })
 }
 if (lightingModeSelect) {
@@ -3939,10 +4651,12 @@ function animate() {
   const dt = Math.min(clock.getDelta(), 0.05)
   if (mixer && playState) mixer.update(dt)
   updatePetAnimations(dt)
+  updatePetMovement(dt)
   enforceRunescapeStaffAnchor()
   if (modelPivot && centerBone) stabilizeCharacterOnPlatform()
   updateCameraController()
   updatePetPlacements()
+  resolvePetVisualBlockpaths(6)
   updateHandAccessoryWorld()
   updateEnvironmentDetails(dt)
   platformGlow.material.opacity = 0.44 + Math.sin(clock.elapsedTime * 2.0) * 0.08
@@ -3957,6 +4671,7 @@ applyEnvironmentScene(sceneModeSelect ? sceneModeSelect.value : 'studio')
 applyLightingMode(lightingModeSelect ? lightingModeSelect.value : 'auto')
 applyAmbienceMode(ambienceModeSelect ? ambienceModeSelect.value : 'full')
 applyQualityMode(qualityModeSelect ? qualityModeSelect.value : 'normal')
+applyPetMovementMode(petMovementModeSelect ? petMovementModeSelect.value : 'inPlace')
 updateModelSpecificControls()
 loadSelectedModel(modelSelect && modelSelect.value ? modelSelect.value : 'lucas')
 animate()
