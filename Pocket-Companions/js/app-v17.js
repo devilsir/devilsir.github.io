@@ -21,6 +21,7 @@ import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
 import { getLanguage, initI18n, setLanguage } from './i18n.js';
 import { LivingSystems } from './living-systems.js';
 import { LivingUI } from './living-ui.js';
+import { WardrobeController } from './wardrobe.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -41,6 +42,7 @@ const audio = new AudioSystem(() => store.settings);
 const scene = new CompanionScene($('#companion-canvas'), () => store.settings, (name) => playSound(name));
 const living = new LivingSystems({ store, scene, playSound, showDialogue, toast, onWorldChange: updateAmbient });
 const livingUI = new LivingUI({ systems: living, store, scene, toast, showDialogue, playSound, refreshMain: () => updateUI(true), openGame });
+const wardrobe = new WardrobeController({ scene, store, living, toast, closeDrawer, languageProvider: getLanguage });
 
 const screens = {
   loading: $('#loading-screen'),

@@ -269,150 +269,161 @@ export const EVENT_MISSIONS = {
 export const PET_ACCESSORY_FITS = {
   default: {
     scale: 1,
-    head: [0, 0.02, 0.015],
-    neck: [0, -0.01, 0.02],
-    back: [0, 0.015, -0.02],
+    head: [0, 0, 0],
+    neck: [0, 0, 0],
+    back: [0, 0, 0],
     accessories: {
-      collar: { position: [0, -0.015, 0.02], rotation: [Math.PI / 2, 0, 0], scale: 1.02 },
-      bandana: { position: [0, -0.02, 0.07], rotation: [Math.PI / 2, 0, 0], scale: 1 },
-      tag: { position: [0, -0.045, 0.085], rotation: [0, 0, 0], scale: 0.94 },
-      bow: { position: [0.06, 0.08, 0.01], rotation: [0, 0, 0.38], scale: 0.84 },
-      hat: { position: [0, 0.13, -0.015], rotation: [0, 0, 0], scale: 0.86 },
-      glasses: { position: [0, 0.03, 0.11], rotation: [0, 0, 0], scale: 0.74 },
-      backpack: { position: [0, 0.01, -0.09], rotation: [0.04, 0, 0], scale: 0.92 },
-      cape: { position: [0, 0, -0.07], rotation: [0.16, 0, 0], scale: 0.98 }
+      collar: { position: [0, -0.035, 0.075], rotation: [0, 0, 0], scale: 1 },
+      bandana: { position: [0, -0.055, 0.08], rotation: [0, 0, 0], scale: 1 },
+      tag: { position: [0, -0.018, 0.135], rotation: [0, 0, 0], scale: 1 },
+      bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 1 },
+      hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 1 },
+      glasses: { position: [0, -0.085, 0.115], rotation: [0, 0, 0], scale: 0.62 },
+      backpack: { position: [0, 0.095, -0.065], rotation: [0.08, 0, 0], scale: 1 },
+      cape: { position: [0, 0.08, -0.015], rotation: [0, 0, 0], scale: 1 }
     }
   },
   apollo: {
-    scale: 0.9,
-    head: [0, 0.016, 0.01],
-    neck: [0, -0.02, 0.022],
-    back: [0, 0.01, -0.028],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      glasses: { position: [0, 0.025, 0.128], scale: 0.7 },
-      hat: { position: [0, 0.15, -0.018], scale: 0.82 },
-      backpack: { position: [0, 0, -0.1], scale: 0.88 },
-      cape: { position: [0, -0.01, -0.085], scale: 0.92 }
+      collar: { position: [0, -0.1, 0.16], rotation: [0, 0, 0], scale: 0.96 },
+      bandana: { position: [0, -0.055, 0.075], rotation: [0, 0, 0], scale: 0.88 },
+      bow: { position: [0.075, 0.105, 0.02], rotation: [0, 0, 0.32], scale: 0.65 },
+      hat: { position: [0, 0.135, -0.005], rotation: [0, 0, 0], scale: 0.64 },
+      glasses: { position: [0, -0.04, 0.135], rotation: [0, 0, 0], scale: 0.62 },
+      backpack: { position: [0, 0.095, -0.075], rotation: [0.08, 0, 0], scale: 0.86 },
+      cape: { position: [0, 0.075, -0.02], rotation: [0, 0, 0], scale: 0.9 },
+      tag: { position: [0, -0.1, 0.18], rotation: [0, 0, 0], scale: 0.92 }
     }
   },
   lilith: {
-    scale: 0.88,
-    head: [0, 0.014, 0.018],
-    neck: [0, -0.024, 0.024],
-    back: [0, 0.008, -0.03],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      bow: { position: [0.065, 0.082, 0.012], scale: 0.8 },
-      glasses: { position: [0, 0.028, 0.13], scale: 0.68 },
-      hat: { position: [0, 0.152, -0.016], scale: 0.8 }
+      collar: { position: [0, -0.1, 0.12], rotation: [0, 0, 0], scale: 0.94 },
+      bandana: { position: [0, -0.05, 0.07], rotation: [0, 0, 0], scale: 0.86 },
+      bow: { position: [0.07, 0.1, 0.025], rotation: [0, 0, 0.3], scale: 0.58 },
+      hat: { position: [0, 0.12, 0], rotation: [0, 0, 0], scale: 0.6 },
+      glasses: { position: [0, 0.02, 0.18], rotation: [0, 0, 0], scale: 0.6 },
+      backpack: { position: [0, 0.09, -0.055], rotation: [0.08, 0, 0], scale: 0.84 },
+      cape: { position: [0, 0.075, -0.005], rotation: [0, 0, 0], scale: 0.88 },
+      tag: { position: [0, -0.1, 0.14], rotation: [0, 0, 0], scale: 0.9 }
     }
   },
   pietro: {
-    scale: 0.94,
-    head: [0, 0.018, 0.016],
-    neck: [0, -0.012, 0.028],
-    back: [0, 0.018, -0.024],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      bow: { position: [0.062, 0.078, 0.008], scale: 0.86 },
-      glasses: { position: [0, 0.026, 0.124], scale: 0.72 },
-      hat: { position: [0, 0.145, -0.012], scale: 0.84 }
+      collar: { position: [0, -0.08, 0.16], rotation: [0, 0, 0], scale: 0.98 },
+      bandana: { position: [0, -0.05, 0.08], rotation: [0, 0, 0], scale: 0.92 },
+      bow: { position: [0.08, 0.1, 0.02], rotation: [0, 0, 0.3], scale: 0.62 },
+      hat: { position: [0, 0.135, 0], rotation: [0, 0, 0], scale: 0.68 },
+      glasses: { position: [0, -0.04, 0.24], rotation: [0, 0, 0], scale: 0.66 },
+      backpack: { position: [0, 0.1, -0.055], rotation: [0.08, 0, 0], scale: 0.9 },
+      cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.94 },
+      tag: { position: [0, -0.08, 0.18], rotation: [0, 0, 0], scale: 0.94 }
     }
   },
   chica: {
-    scale: 0.92,
-    head: [0, 0.025, 0.028],
-    neck: [0, -0.028, 0.045],
-    back: [0, 0.018, -0.04],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.018, 0.03], scale: 1.04 },
-      bandana: { position: [0, -0.024, 0.085], scale: 1.02 },
-      tag: { position: [0, -0.05, 0.1], scale: 1 },
-      glasses: { position: [0, 0.028, 0.14], scale: 0.78 },
-      hat: { position: [0, 0.158, -0.025], scale: 0.9 },
-      backpack: { position: [0, 0.012, -0.105], scale: 0.96 },
-      cape: { position: [0, -0.008, -0.092], scale: 1.02 }
+      collar: { position: [0, -0.045, 0.055], rotation: [0, 0, 0], scale: 0.98 },
+      bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.92 },
+      bow: { position: [0.08, 0.11, 0.025], rotation: [0, 0, 0.32], scale: 0.68 },
+      hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.71 },
+      glasses: { position: [0, -0.105, 0.105], rotation: [0, 0, 0], scale: 0.59 },
+      backpack: { position: [0, 0.1, -0.075], rotation: [0.08, 0, 0], scale: 0.92 },
+      cape: { position: [0, 0.075, -0.02], rotation: [0, 0, 0], scale: 0.98 },
+      tag: { position: [0, -0.025, 0.13], rotation: [0, 0, 0], scale: 0.94 }
     }
   },
   kate: {
-    scale: 0.95,
-    head: [0, 0.02, 0.02],
-    neck: [0, -0.018, 0.038],
-    back: [0, 0.02, -0.03],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.016, 0.028], scale: 1.04 },
-      bandana: { position: [0, -0.02, 0.084], scale: 1.02 },
-      glasses: { position: [0, 0.026, 0.136], scale: 0.78 },
-      backpack: { position: [0, 0.012, -0.104], scale: 0.97 }
+      collar: { position: [0, -0.04, 0.075], rotation: [0, 0, 0], scale: 1.02 },
+      bandana: { position: [0, -0.055, 0.085], rotation: [0, 0, 0], scale: 0.96 },
+      bow: { position: [0.085, 0.105, 0.02], rotation: [0, 0, 0.32], scale: 0.72 },
+      hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 0.78 },
+      glasses: { position: [0, -0.1, 0.12], rotation: [0, 0, 0], scale: 0.64 },
+      backpack: { position: [0, 0.105, -0.055], rotation: [0.08, 0, 0], scale: 0.96 },
+      cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 1 },
+      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.96 }
     }
   },
   bolt: {
-    scale: 0.88,
-    head: [0, 0.03, 0.03],
-    neck: [0, -0.026, 0.04],
-    back: [0, 0.025, -0.03],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.02, 0.028], scale: 1.05 },
-      bandana: { position: [0, -0.026, 0.082], scale: 1.04 },
-      glasses: { position: [0, 0.026, 0.138], scale: 0.79 },
-      hat: { position: [0, 0.162, -0.026], scale: 0.9 }
+      collar: { position: [0, -0.04, 0.07], rotation: [0, 0, 0], scale: 0.98 },
+      bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.9 },
+      bow: { position: [0.075, 0.11, 0.025], rotation: [0, 0, 0.32], scale: 0.65 },
+      hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.68 },
+      glasses: { position: [0, -0.095, 0.115], rotation: [0, 0, 0], scale: 0.62 },
+      backpack: { position: [0, 0.1, -0.06], rotation: [0.08, 0, 0], scale: 0.9 },
+      cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.94 },
+      tag: { position: [0, -0.02, 0.135], rotation: [0, 0, 0], scale: 0.9 }
     }
   },
   caramelo: {
-    scale: 0.96,
-    head: [0, 0.022, 0.03],
-    neck: [0, -0.02, 0.042],
-    back: [0, 0.022, -0.038],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.02, 0.03], scale: 1.06 },
-      bandana: { position: [0, -0.024, 0.086], scale: 1.05 },
-      tag: { position: [0, -0.052, 0.104], scale: 1.02 },
-      glasses: { position: [0, 0.028, 0.142], scale: 0.8 },
-      backpack: { position: [0, 0.014, -0.11], scale: 1 },
-      cape: { position: [0, -0.008, -0.094], scale: 1.04 }
+      collar: { position: [0, -0.04, 0.065], rotation: [0, 0, 0], scale: 1.06 },
+      bandana: { position: [0, -0.055, 0.09], rotation: [0, 0, 0], scale: 1 },
+      bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.72 },
+      hat: { position: [0, 0.125, 0], rotation: [0, 0, 0], scale: 0.78 },
+      glasses: { position: [0, -0.105, 0.115], rotation: [0, 0, 0], scale: 0.64 },
+      backpack: { position: [0, 0.1, -0.07], rotation: [0.08, 0, 0], scale: 0.98 },
+      cape: { position: [0, 0.08, -0.015], rotation: [0, 0, 0], scale: 1.02 },
+      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.98 }
     }
   },
   kiara: {
-    scale: 0.96,
-    head: [0, 0.022, 0.028],
-    neck: [0, -0.02, 0.042],
-    back: [0, 0.024, -0.04],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.02, 0.03], scale: 1.06 },
-      bandana: { position: [0, -0.024, 0.086], scale: 1.05 },
-      tag: { position: [0, -0.052, 0.104], scale: 1.02 },
-      glasses: { position: [0, 0.03, 0.143], scale: 0.8 },
-      backpack: { position: [0, 0.016, -0.11], scale: 1 },
-      cape: { position: [0, -0.008, -0.095], scale: 1.04 }
+      collar: { position: [0, -0.04, 0.065], rotation: [0, 0, 0], scale: 1.05 },
+      bandana: { position: [0, -0.055, 0.09], rotation: [0, 0, 0], scale: 0.99 },
+      bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.72 },
+      hat: { position: [0, 0.12, 0], rotation: [0, 0, 0], scale: 0.78 },
+      glasses: { position: [0, -0.1, 0.11], rotation: [0, 0, 0], scale: 0.62 },
+      backpack: { position: [0, 0.1, -0.07], rotation: [0.08, 0, 0], scale: 0.97 },
+      cape: { position: [0, 0.08, -0.015], rotation: [0, 0, 0], scale: 1.01 },
+      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.97 }
     }
   },
   pacoca: {
-    scale: 0.9,
-    head: [0, 0.022, 0.028],
-    neck: [0, -0.028, 0.04],
-    back: [0, 0.02, -0.03],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.02, 0.03], scale: 1.04 },
-      bandana: { position: [0, -0.026, 0.082], scale: 1.03 },
-      glasses: { position: [0, 0.028, 0.138], scale: 0.79 },
-      backpack: { position: [0, 0.012, -0.104], scale: 0.95 }
+      collar: { position: [0, -0.045, 0.07], rotation: [0, 0, 0], scale: 0.98 },
+      bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.92 },
+      bow: { position: [0.07, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.65 },
+      hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 0.72 },
+      glasses: { position: [0, -0.095, 0.115], rotation: [0, 0, 0], scale: 0.6 },
+      backpack: { position: [0, 0.1, -0.06], rotation: [0.08, 0, 0], scale: 0.88 },
+      cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.92 },
+      tag: { position: [0, -0.02, 0.135], rotation: [0, 0, 0], scale: 0.92 }
     }
   },
   simba: {
-    scale: 1.02,
-    head: [0, 0.03, 0.04],
-    neck: [0, -0.012, 0.05],
-    back: [0, 0.04, -0.05],
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.018, 0.032], scale: 1.12 },
-      bandana: { position: [0, -0.024, 0.09], scale: 1.1 },
-      tag: { position: [0, -0.056, 0.11], scale: 1.08 },
-      glasses: { position: [0, 0.032, 0.148], scale: 0.84 },
-      hat: { position: [0, 0.17, -0.03], scale: 0.98 },
-      backpack: { position: [0, 0.02, -0.12], scale: 1.06 },
-      cape: { position: [0, -0.01, -0.1], scale: 1.1 }
+      collar: { position: [0, -0.04, 0.075], rotation: [0, 0, 0], scale: 1.12 },
+      bandana: { position: [0, -0.055, 0.095], rotation: [0, 0, 0], scale: 1.04 },
+      bow: { position: [0.08, 0.11, 0.03], rotation: [0, 0, 0.32], scale: 0.74 },
+      hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.82 },
+      glasses: { position: [0, -0.105, 0.12], rotation: [0, 0, 0], scale: 0.68 },
+      backpack: { position: [0, 0.105, -0.075], rotation: [0.08, 0, 0], scale: 1.02 },
+      cape: { position: [0, 0.085, -0.02], rotation: [0, 0, 0], scale: 1.06 },
+      tag: { position: [0, -0.02, 0.145], rotation: [0, 0, 0], scale: 1.04 }
     }
   }
 };
-
 
 export const DREAMS = {
   treats: { name: { en: 'Giant Treat Chase', pt: 'Caçada aos Petiscos Gigantes' } }, clouds: { name: { en: 'Cloud Flight', pt: 'Voo entre Nuvens' } },

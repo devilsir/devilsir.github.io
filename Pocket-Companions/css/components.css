@@ -1290,3 +1290,202 @@ body.high-contrast .drawer-section { border-color: var(--ink-900); }
   .living-feature::before,
   .living-disclosure > summary::after { transition: none; }
 }
+
+/* Accessory calibration wardrobe */
+.wardrobe-panel {
+  position: absolute;
+  z-index: 58;
+  top: max(5.9rem, calc(var(--safe-top) + 5.1rem));
+  right: max(0.8rem, var(--safe-right));
+  bottom: max(0.8rem, var(--safe-bottom));
+  width: min(430px, 94vw);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  pointer-events: auto;
+  border: 1px solid rgba(255,255,255,0.78);
+  border-radius: 28px;
+  background: rgba(255, 250, 241, 0.93);
+  box-shadow: 0 28px 86px rgba(48, 37, 32, 0.25);
+  backdrop-filter: blur(20px) saturate(132%);
+  -webkit-backdrop-filter: blur(20px) saturate(132%);
+}
+.wardrobe-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.2rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+.wardrobe-header h2 { margin: 0; font-size: 1.65rem; }
+.wardrobe-scroll {
+  min-height: 0;
+  padding: 1rem 1.2rem 1.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.wardrobe-intro {
+  margin: 0 0 1rem;
+  color: var(--ink-600);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+.wardrobe-selectors { display: grid; gap: 0.75rem; }
+.wardrobe-selectors label,
+.wardrobe-axis-grid label {
+  display: grid;
+  gap: 0.38rem;
+  color: var(--ink-700);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+.wardrobe-selectors select { min-height: 43px; padding-block: 0.6rem; }
+.wardrobe-gizmo-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(73,58,49,0.12);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.58);
+}
+.wardrobe-gizmo-button {
+  min-width: 0;
+  min-height: 62px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.58rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink-600);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.wardrobe-gizmo-button:hover { transform: translateY(-1px); background: rgba(255,255,255,0.8); color: var(--ink-900); }
+.wardrobe-gizmo-button.is-active,
+.wardrobe-gizmo-button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--accent-soft);
+  color: var(--ink-900);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.66), 0 8px 18px rgba(83,60,47,0.08);
+}
+.wardrobe-gizmo-button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent); outline-offset: 2px; }
+.wardrobe-gizmo-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wardrobe-gizmo-button kbd {
+  display: grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 0.2rem;
+  border: 1px solid rgba(73,58,49,0.16);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.76);
+  color: var(--ink-500);
+  font: 800 0.58rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.wardrobe-gizmo-help {
+  margin: 0.48rem 0 0;
+  color: var(--ink-500);
+  font-size: 0.65rem;
+  line-height: 1.45;
+}
+.wardrobe-view-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.9rem 0;
+}
+.wardrobe-view-row .button { min-height: 40px; padding: 0.55rem 0.5rem; font-size: 0.72rem; }
+.wardrobe-transform {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(73,58,49,0.11);
+  border-radius: 17px;
+  background: rgba(255,255,255,0.58);
+}
+.wardrobe-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.72rem;
+}
+.wardrobe-section-heading h3 { margin: 0; font-size: 0.92rem; }
+.wardrobe-section-heading small { color: var(--ink-500); font-size: 0.65rem; }
+.wardrobe-axis-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.48rem; }
+.wardrobe-axis-grid label span {
+  color: var(--ink-500);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.wardrobe-axis-grid input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0.55rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink-900);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.wardrobe-axis-grid input[type="number"]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-color: var(--accent);
+}
+.wardrobe-link-scale {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-600);
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.wardrobe-link-scale input { width: 18px; height: 18px; }
+.wardrobe-status {
+  min-height: 2.6rem;
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.78rem;
+  border-radius: 13px;
+  background: var(--accent-soft);
+  color: var(--ink-700);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+.wardrobe-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+.wardrobe-actions .button { min-height: 42px; padding: 0.62rem 0.65rem; font-size: 0.72rem; }
+body.wardrobe-open .needs-panel,
+body.wardrobe-open .primary-actions,
+body.wardrobe-open .bottom-navigation,
+body.wardrobe-open .dialogue-bubble,
+body.wardrobe-open .interaction-hint,
+body.wardrobe-open .scene-caption { display: none !important; }
+body.wardrobe-open .topbar { right: min(450px, 35vw); }
+body.high-contrast .wardrobe-panel,
+body.high-contrast .wardrobe-transform { border-color: var(--ink-900); background: var(--panel-solid); }

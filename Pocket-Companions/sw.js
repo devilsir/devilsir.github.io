@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pocket-companions-v21-accessory-render-binding-fix';
+const CACHE_NAME = 'pocket-companions-v23-wardrobe-transform-gizmos';
 const LOCAL_ASSETS = [
   './',
   './index.html',
@@ -69,6 +69,7 @@ const LOCAL_ASSETS = [
   './css/components.css',
   './css/responsive.css',
   './js/animations.js',
+  './js/accessory-gizmo.js',
   './js/app-v17.js',
   './js/audio.js',
   './js/config.js',
@@ -77,6 +78,7 @@ const LOCAL_ASSETS = [
   './js/living-data.js',
   './js/living-systems.js',
   './js/living-ui.js',
+  './js/wardrobe.js',
   './js/persistence.js',
   './js/scene.js',
   './js/store.js',

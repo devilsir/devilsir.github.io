@@ -424,3 +424,27 @@
   .drawer { height: min(52dvh, 420px); }
   .drawer.is-expanded { top: max(4.15rem, calc(var(--safe-top) + 4.15rem)); }
 }
+
+@media (max-width: 900px) {
+  body.wardrobe-open .topbar { right: max(0.45rem, var(--safe-right)); }
+  .topbar-actions #wardrobe-button { display: block; min-height: 38px; padding: 0.52rem 0.62rem; font-size: 0.68rem; }
+  .wardrobe-panel {
+    top: max(4.7rem, calc(var(--safe-top) + 4.2rem));
+    left: max(0.45rem, var(--safe-left));
+    right: max(0.45rem, var(--safe-right));
+    bottom: max(0.45rem, var(--safe-bottom));
+    width: auto;
+    max-height: 58dvh;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .wardrobe-panel { max-height: 64dvh; }
+  .wardrobe-header { padding: 0.9rem 0.95rem 0.72rem; }
+  .wardrobe-scroll { padding: 0.8rem 0.95rem 1rem; }
+  .wardrobe-axis-grid { gap: 0.35rem; }
+  .wardrobe-axis-grid input[type="number"] { padding-inline: 0.4rem; font-size: 0.72rem; }
+  .wardrobe-section-heading { align-items: flex-start; }
+  .wardrobe-link-scale { white-space: normal; }
+}

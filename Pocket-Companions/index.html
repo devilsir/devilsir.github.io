@@ -117,6 +117,7 @@
         <div class="topbar-actions">
           <button id="daily-button" class="icon-button" type="button">Daily</button>
           <button id="photo-button" class="icon-button" type="button">Photo</button>
+          <button id="wardrobe-button" class="icon-button" type="button">Armário</button>
           <button class="icon-button" data-open-modal="settings-modal" type="button">Settings</button>
           <button id="pause-button" class="icon-button" type="button" aria-pressed="false">Pause</button>
         </div>
@@ -181,6 +182,93 @@
           </div>
         </header>
         <div id="drawer-content" class="drawer-content" tabindex="0"></div>
+      </aside>
+
+      <aside id="wardrobe-panel" class="wardrobe-panel" aria-labelledby="wardrobe-title" hidden>
+        <header class="wardrobe-header">
+          <div>
+            <p class="eyebrow">Editor de encaixes</p>
+            <h2 id="wardrobe-title">Armário</h2>
+          </div>
+          <button id="wardrobe-close" class="icon-button" type="button" aria-label="Fechar Armário">Fechar</button>
+        </header>
+
+        <div class="wardrobe-scroll">
+          <p class="wardrobe-intro">Escolha um pet e um acessório. Os ajustes são aplicados ao modelo em tempo real e ficam salvos apenas neste navegador até você exportar o JSON.</p>
+
+          <div class="wardrobe-selectors">
+            <label for="wardrobe-pet">Pet
+              <select id="wardrobe-pet" name="wardrobePet"></select>
+            </label>
+            <label for="wardrobe-accessory">Acessório
+              <select id="wardrobe-accessory" name="wardrobeAccessory"></select>
+            </label>
+            <label for="wardrobe-animation">Animação de teste
+              <select id="wardrobe-animation" name="wardrobeAnimation"></select>
+            </label>
+          </div>
+
+          <div class="wardrobe-gizmo-toolbar" role="toolbar" aria-label="Ferramentas do gizmo 3D">
+            <button class="wardrobe-gizmo-button is-active" type="button" data-wardrobe-gizmo="translate" aria-pressed="true" title="Mover (W)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M2 12h20M12 2l-3 3m3-3 3 3M22 12l-3-3m3 3-3 3M12 22l3-3m-3 3-3-3M2 12l3 3m-3-3 3-3"/></svg>
+              <span>Mover</span><kbd>W</kbd>
+            </button>
+            <button class="wardrobe-gizmo-button" type="button" data-wardrobe-gizmo="rotate" aria-pressed="false" title="Rotacionar (E)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M19 12a7 7 0 0 0-12-5L4 10M5 12a7 7 0 0 0 12 5l3-3"/></svg>
+              <span>Rotacionar</span><kbd>E</kbd>
+            </button>
+            <button class="wardrobe-gizmo-button" type="button" data-wardrobe-gizmo="scale" aria-pressed="false" title="Escalar (R)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M9 4 4 9M15 20l5-5M15 4h5v5M20 4l-5 5M9 20H4v-5M4 20l5-5"/></svg>
+              <span>Escalar</span><kbd>R</kbd>
+            </button>
+          </div>
+          <p class="wardrobe-gizmo-help">Arraste os eixos no acessório. Vermelho = X, verde = Y e azul = Z.</p>
+
+          <div class="wardrobe-view-row" aria-label="Ângulos de visualização">
+            <button class="button button-secondary" type="button" data-wardrobe-view="0">Frente</button>
+            <button class="button button-secondary" type="button" data-wardrobe-view="-1.5707963267948966">Lado</button>
+            <button class="button button-secondary" type="button" data-wardrobe-view="3.141592653589793">Costas</button>
+          </div>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-position-title">
+            <div class="wardrobe-section-heading"><h3 id="wardrobe-position-title">Posição</h3><small>offset local normalizado</small></div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-position-x"><span>X</span><input id="wardrobe-position-x" name="wardrobePositionX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-position-y"><span>Y</span><input id="wardrobe-position-y" name="wardrobePositionY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-position-z"><span>Z</span><input id="wardrobe-position-z" name="wardrobePositionZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-rotation-title">
+            <div class="wardrobe-section-heading"><h3 id="wardrobe-rotation-title">Rotação</h3><small>graus no editor</small></div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-rotation-x"><span>X</span><input id="wardrobe-rotation-x" name="wardrobeRotationX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-rotation-y"><span>Y</span><input id="wardrobe-rotation-y" name="wardrobeRotationY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-rotation-z"><span>Z</span><input id="wardrobe-rotation-z" name="wardrobeRotationZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-scale-title">
+            <div class="wardrobe-section-heading">
+              <div><h3 id="wardrobe-scale-title">Escala</h3><small>multiplicador por eixo</small></div>
+              <label class="wardrobe-link-scale" for="wardrobe-link-scale"><input id="wardrobe-link-scale" name="wardrobeLinkScale" type="checkbox" checked> Vincular eixos</label>
+            </div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-scale-x"><span>X</span><input id="wardrobe-scale-x" name="wardrobeScaleX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-scale-y"><span>Y</span><input id="wardrobe-scale-y" name="wardrobeScaleY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-scale-z"><span>Z</span><input id="wardrobe-scale-z" name="wardrobeScaleZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <p id="wardrobe-status" class="wardrobe-status" aria-live="polite"></p>
+
+          <div class="wardrobe-actions">
+            <button id="wardrobe-reset-current" class="button button-secondary" type="button">Resetar acessório</button>
+            <button id="wardrobe-reset-all" class="button button-ghost" type="button">Resetar tudo</button>
+            <button id="wardrobe-copy" class="button button-secondary" type="button">Copiar JSON</button>
+            <button id="wardrobe-export" class="button button-primary" type="button">Exportar JSON</button>
+          </div>
+        </div>
       </aside>
 
       <div id="photo-overlay" class="photo-overlay" hidden aria-label="Photo mode">
@@ -334,7 +422,7 @@
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    const ASSET_BUILD = '21-accessory-render-binding-fix';
+    const ASSET_BUILD = '23-wardrobe-transform-gizmos';
     const BUILD_MARKER = 'pocket-companions:asset-build';
 
     async function clearLegacyAssetCaches() {

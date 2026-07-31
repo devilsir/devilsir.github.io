@@ -4,6 +4,7 @@ import { PETS, ANIMATION_NAMES } from './config.js';
 import { AnimationController } from './animations.js';
 import { clamp, lerp, randomBetween } from './utils.js';
 import { PET_ACCESSORY_FITS } from './living-data.js';
+import { AccessoryTransformGizmo } from './accessory-gizmo.js';
 
 const ROOM_PALETTES = {
   living: { floor: 0xe5b98f, wall: 0xf6e5cd, accent: 0xf3a36c, sky: 0xcfe8f5 },
@@ -86,6 +87,10 @@ export class CompanionScene extends EventTarget {
     this.decorationRecords = [];
     this.decorationGroup = null;
     this.accessoryGroup = null;
+    this.accessoryVisualGroup = null;
+    this.currentAccessoryId = null;
+    this.currentAccessoryAnchorType = null;
+    this.accessoryFitOverrides = null;
     this.accessoryBinding = null;
     this.accessoryWorldPosition = new THREE.Vector3();
     this.accessoryTargetPosition = new THREE.Vector3();
@@ -93,6 +98,9 @@ export class CompanionScene extends EventTarget {
     this.accessoryBoneQuaternion = new THREE.Quaternion();
     this.accessoryHolderQuaternion = new THREE.Quaternion();
     this.accessoryTargetQuaternion = new THREE.Quaternion();
+    this.accessoryGizmo = null;
+    this.accessoryGizmoEnabled = false;
+    this.accessoryGizmoDragging = false;
     this.bodyLanguageState = { id: 'relaxed', intensity: 0.5 };
     this.bodyLanguageClock = 0;
     this.scentGroup = null;
@@ -129,6 +137,17 @@ export class CompanionScene extends EventTarget {
     this.scene.add(this.weatherGroup);
     this.createLights();
     this.buildEnvironment('living');
+    this.accessoryGizmo = new AccessoryTransformGizmo({
+      scene: this.scene,
+      camera: this.camera,
+      domElement: this.canvas,
+      onDraggingChange: (dragging) => { this.accessoryGizmoDragging = dragging; },
+      onChange: (interaction) => {
+        const fit = this.getAccessoryEditableFit();
+        if (!fit) return;
+        this.dispatchEvent(new CustomEvent('accessory-gizmo-change', { detail: { ...fit, ...interaction } }));
+      }
+    });
     this.bindEvents();
     this.resize();
     this.running = true;
@@ -1520,6 +1539,7 @@ export class CompanionScene extends EventTarget {
     this.updateActionPose(delta);
     this.updateAccessoryBinding(delta);
     this.updateCamera(delta);
+    this.accessoryGizmo?.update();
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -1858,13 +1878,95 @@ export class CompanionScene extends EventTarget {
     const defaults = PET_ACCESSORY_FITS.default || {};
     const petFit = PET_ACCESSORY_FITS[pet.id] || {};
     const defaultAccessory = defaults.accessories?.[id] || {};
-    const petAccessory = petFit.accessories?.[id] || {};
+    const configuredAccessory = petFit.accessories?.[id] || {};
+    const runtimeAccessory = this.accessoryFitOverrides?.pets?.[pet.id]?.accessories?.[id] || {};
+    const petAccessory = { ...configuredAccessory, ...runtimeAccessory };
     const size = pet.size || { x: 1, y: 1, z: 1 };
     const anchorOffset = this.vectorFromScaledArray(petFit[anchorType] || defaults[anchorType] || [0, 0, 0], size);
     const localOffset = this.vectorFromScaledArray(petAccessory.position || defaultAccessory.position || [0, 0, 0], size);
     const rotationValues = petAccessory.rotation || defaultAccessory.rotation || [0, 0, 0];
-    const scale = (defaults.scale || 1) * (petFit.scale || 1) * (defaultAccessory.scale || 1) * (petAccessory.scale || 1);
+    const baseScale = (defaults.scale || 1) * (petFit.scale || 1);
+    const defaultScaleValue = defaultAccessory.scale ?? 1;
+    const petScaleValue = petAccessory.scale ?? 1;
+    const defaultScale = Array.isArray(defaultScaleValue)
+      ? new THREE.Vector3(defaultScaleValue[0] ?? 1, defaultScaleValue[1] ?? defaultScaleValue[0] ?? 1, defaultScaleValue[2] ?? defaultScaleValue[0] ?? 1)
+      : new THREE.Vector3(defaultScaleValue, defaultScaleValue, defaultScaleValue);
+    const petScale = Array.isArray(petScaleValue)
+      ? new THREE.Vector3(petScaleValue[0] ?? 1, petScaleValue[1] ?? petScaleValue[0] ?? 1, petScaleValue[2] ?? petScaleValue[0] ?? 1)
+      : new THREE.Vector3(petScaleValue, petScaleValue, petScaleValue);
+    const scale = defaultScale.multiply(petScale).multiplyScalar(baseScale);
     return { anchorOffset, localOffset, rotation: this.eulerFromArray(rotationValues), scale };
+  }
+
+  setAccessoryFitOverrides(overrides = null) {
+    this.accessoryFitOverrides = overrides;
+    this.refreshAccessoryTransform();
+  }
+
+  refreshAccessoryTransform() {
+    const pet = this.currentPet;
+    if (!pet || !this.currentAccessoryId || !this.accessoryVisualGroup) return false;
+    const transform = this.getAccessoryTransform(pet, this.currentAccessoryId, this.currentAccessoryAnchorType);
+    this.accessoryVisualGroup.position.copy(transform.localOffset);
+    this.accessoryVisualGroup.rotation.copy(transform.rotation);
+    this.accessoryVisualGroup.scale.copy(transform.scale);
+    if (this.accessoryBinding) this.accessoryBinding.anchorOffset.copy(transform.anchorOffset);
+    else if (this.accessoryGroup) this.accessoryGroup.position.copy(this.getFallbackAccessoryAnchor(this.currentAccessoryAnchorType, pet)).add(transform.anchorOffset);
+    this.accessoryGroup?.updateMatrixWorld(true);
+    this.accessoryGizmo?.update();
+    return true;
+  }
+
+  setPetPreviewRotation(yaw = 0) {
+    if (!this.currentPet) return;
+    this.currentPet.modelHolder.rotation.y = Number(yaw) || 0;
+  }
+
+  setAccessoryGizmoEnabled(enabled = false) {
+    this.accessoryGizmoEnabled = Boolean(enabled);
+    this.accessoryGizmo?.setEnabled(this.accessoryGizmoEnabled);
+    if (this.accessoryGizmoEnabled && this.accessoryVisualGroup) this.accessoryGizmo?.attach(this.accessoryVisualGroup);
+    else if (!this.accessoryGizmoEnabled) this.accessoryGizmo?.detach();
+  }
+
+  setAccessoryGizmoMode(mode = 'translate') {
+    this.accessoryGizmo?.setMode(mode);
+  }
+
+  setAccessoryGizmoUniformScale(enabled = true) {
+    this.accessoryGizmo?.setUniformScale(enabled);
+  }
+
+  getAccessoryEditableFit() {
+    const pet = this.currentPet;
+    const id = this.currentAccessoryId;
+    const visual = this.accessoryVisualGroup;
+    if (!pet || !id || !visual) return null;
+
+    const defaults = PET_ACCESSORY_FITS.default || {};
+    const petFit = PET_ACCESSORY_FITS[pet.id] || {};
+    const defaultAccessory = defaults.accessories?.[id] || {};
+    const size = pet.size || { x: 1, y: 1, z: 1 };
+    const safeSize = {
+      x: Math.max(0.0001, size.x || 1),
+      y: Math.max(0.0001, size.y || 1),
+      z: Math.max(0.0001, size.z || 1)
+    };
+    const defaultScaleValue = defaultAccessory.scale ?? 1;
+    const defaultScale = Array.isArray(defaultScaleValue)
+      ? new THREE.Vector3(defaultScaleValue[0] ?? 1, defaultScaleValue[1] ?? defaultScaleValue[0] ?? 1, defaultScaleValue[2] ?? defaultScaleValue[0] ?? 1)
+      : new THREE.Vector3(defaultScaleValue, defaultScaleValue, defaultScaleValue);
+    const fixedScale = defaultScale.multiplyScalar((defaults.scale || 1) * (petFit.scale || 1));
+
+    return {
+      position: [visual.position.x / safeSize.x, visual.position.y / safeSize.y, visual.position.z / safeSize.z],
+      rotation: [visual.rotation.x, visual.rotation.y, visual.rotation.z],
+      scale: [
+        visual.scale.x / Math.max(0.0001, fixedScale.x),
+        visual.scale.y / Math.max(0.0001, fixedScale.y),
+        visual.scale.z / Math.max(0.0001, fixedScale.z)
+      ]
+    };
   }
 
   getFallbackAccessoryAnchor(anchorType, pet) {
@@ -1876,11 +1978,15 @@ export class CompanionScene extends EventTarget {
   }
 
   setAccessory(id = null) {
+    this.accessoryGizmo?.detach();
     if (this.accessoryGroup) {
       this.accessoryGroup.removeFromParent();
       this.disposeObject(this.accessoryGroup);
       this.accessoryGroup = null;
     }
+    this.accessoryVisualGroup = null;
+    this.currentAccessoryId = null;
+    this.currentAccessoryAnchorType = null;
     this.accessoryBinding = null;
 
     const pet = this.currentPet;
@@ -1961,7 +2067,10 @@ export class CompanionScene extends EventTarget {
 
     group.position.copy(transform.localOffset);
     group.rotation.copy(transform.rotation);
-    group.scale.setScalar(transform.scale);
+    group.scale.copy(transform.scale);
+    this.accessoryVisualGroup = group;
+    this.currentAccessoryId = id;
+    this.currentAccessoryAnchorType = anchorType;
     pet.modelHolder.add(root);
 
     const bone = this.findAttachmentBone(pet, anchorType);
@@ -1990,6 +2099,7 @@ export class CompanionScene extends EventTarget {
 
     this.accessoryGroup = root;
     root.updateMatrixWorld(true);
+    if (this.accessoryGizmoEnabled) this.accessoryGizmo?.attach(this.accessoryVisualGroup);
   }
 
   updateAccessoryBinding(delta) {
@@ -2282,6 +2392,8 @@ export class CompanionScene extends EventTarget {
     this.canvas.removeEventListener('wheel', this.handleWheel);
     this.pets.forEach((record) => this.disposePetRecord(record));
     this.pets.clear();
+    this.accessoryGizmo?.dispose();
+    this.accessoryGizmo = null;
     this.renderer?.dispose();
   }
 }
