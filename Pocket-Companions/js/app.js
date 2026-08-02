@@ -19,6 +19,11 @@ const SHOP_OFFERS = Array.isArray(CONFIG.SHOP_OFFERS)
     ];
 import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
 import { getLanguage, initI18n, setLanguage } from './i18n.js';
+import { LivingSystems } from './living-systems.js';
+import { LivingUI } from './living-ui.js';
+import { WardrobeController } from './wardrobe.js';
+import { formatOfflineEvent } from './simulation/offline-simulation.js';
+import { eventLabel, responseLabel } from './simulation/events.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -36,7 +41,10 @@ initI18n({
   }
 });
 const audio = new AudioSystem(() => store.settings);
-const scene = new CompanionScene($('#companion-canvas'), () => store.settings, (name) => playSound(name));
+const scene = new CompanionScene($('#companion-canvas'), () => store.settings, (name, options) => playSound(name, options));
+const living = new LivingSystems({ store, scene, playSound, showDialogue, toast, onWorldChange: updateAmbient });
+const livingUI = new LivingUI({ systems: living, store, scene, toast, showDialogue, playSound, refreshMain: () => updateUI(true), openGame });
+const wardrobe = new WardrobeController({ scene, store, living, toast, closeDrawer, languageProvider: getLanguage });
 
 const screens = {
   loading: $('#loading-screen'),
@@ -57,6 +65,7 @@ const cleanSponge = $('#clean-sponge');
 const drawer = $('#drawer');
 const drawerTitle = $('#drawer-title');
 const drawerContent = $('#drawer-content');
+const drawerExpand = $('#drawer-expand');
 const toastRegion = $('#toast-region');
 
 let pendingSlotIndex = 0;
@@ -78,6 +87,7 @@ let lastWaterSoundAt = 0;
 let lastSpongePoint = null;
 let photoCaptureInProgress = false;
 let lastPetVoiceAt = 0;
+let lastDrawerTrigger = null;
 
 const petOrder = Object.keys(PETS);
 const tutorialSteps = [
@@ -95,6 +105,9 @@ const games = new MinigameManager({
   audio,
   onCaption: caption,
   onComplete: ({ success, currency, xp, game, rating, detail }) => {
+    const skillBonus = success ? Math.round(currency * living.skillEffect('minigame')) : 0;
+    if (skillBonus > 0) store.gainProgress(0, skillBonus);
+    const rewardCurrency = currency + skillBonus;
     const result = $('#game-result');
     const stars = `${'★'.repeat(rating)}${'☆'.repeat(3 - rating)}`;
     result.hidden = false;
@@ -102,7 +115,7 @@ const games = new MinigameManager({
       <div class="game-result-copy">
         <span class="game-result-stars" aria-label="${rating} out of 3 stars">${stars}</span>
         <div><strong>${success ? `${game.name} complete!` : 'Good try!'}</strong><small>${detail || (success ? 'Great teamwork.' : 'Your companion still enjoyed playing.')}</small></div>
-        <div class="game-result-rewards"><span>+${currency} coins</span><span>+${xp} XP</span></div>
+        <div class="game-result-rewards"><span>+${rewardCurrency} coins</span><span>+${xp} XP</span></div>
       </div>
       <div class="game-result-actions">
         <button id="replay-game" class="button button-primary" type="button">Play again</button>
@@ -118,6 +131,7 @@ const games = new MinigameManager({
       closeDialog($('#game-modal'));
       currentGameId = null;
     });
+    living.record('play', { gameId: game.id, success, rating }, { timeline: true });
     updateUI(true);
     showDialogue(success ? choose(['That was amazing!', 'Again sometime?', 'We make a great team!']) : 'That was still fun!', 2);
     if (store.active) playPetVoice(success ? 'happy' : 'calm', store.active.companionId, { probability: success ? 0.78 : 0.42, volume: 0.62 });
@@ -300,6 +314,7 @@ async function enterGame() {
   setTheme(PETS[slot.companionId]);
   await scene.setPet(slot.companionId, { selection: false });
   scene.buildEnvironment(slot.activeRoom);
+  const activation = await living.activate();
   if (slot.isSleeping) scene.enterSleepMode(true);
   else scene.placePetSafely();
   scene.setAutonomous(!slot.isSleeping);
@@ -311,7 +326,10 @@ async function enterGame() {
   startLoops();
   $('#interaction-hint').hidden = false;
   setTimeout(() => { $('#interaction-hint').hidden = true; }, 5500);
-  if (lastAwayMilliseconds > 60000) {
+  if (activation?.offlineSummary) {
+    showOfflineSummary(activation.offlineSummary);
+    showDialogue(activation.offlineSummary.text, 3);
+  } else if (lastAwayMilliseconds > 60000) {
     showDialogue(returnGreeting(lastAwayMilliseconds), 2);
   } else {
     showDialogue(`Hi! I’m ${slot.petName}.`, 1);
@@ -328,6 +346,7 @@ function startLoops() {
     if (!paused) {
       const wasSleeping = Boolean(store.active?.isSleeping);
       store.tick();
+      living.tick();
       if (wasSleeping && store.active && !store.active.isSleeping) {
         scene.enterSleepMode(false);
         scene.setAutonomous(true);
@@ -356,14 +375,26 @@ function updateUI(force = false) {
   $('#currency-label').textContent = `${slot.currency} coins`;
   const threshold = store.levelThreshold(slot.level);
   $('#xp-fill').style.width = `${clamp(slot.stats.experience / threshold * 100)}%`;
-  const emotion = determineEmotion(slot.stats, slot.isSleeping);
+  const emotion = living.state ? living.emotionLabel() : determineEmotion(slot.stats, slot.isSleeping);
   $('#pet-emotion').textContent = emotion;
-  document.body.dataset.emotion = emotion.toLowerCase();
+  document.body.dataset.emotion = living.state?.emotion?.id || emotion.toLowerCase();
+  const bodyHint = $('#body-language-hint');
+  if (bodyHint && living.state && store.settings.bodyLanguageDescriptions) {
+    const interpretation = living.interpretHiddenDesire({ accessibility: true });
+    const posture = living.state.bodyLanguage.last.replaceAll('-', ' ');
+    bodyHint.textContent = interpretation || `${getLanguage() === 'en' ? 'Body language' : 'Linguagem corporal'}: ${posture}.`;
+    bodyHint.hidden = false;
+  } else if (bodyHint) bodyHint.hidden = true;
+  const debug = $('#simulation-debug');
+  if (debug) {
+    debug.hidden = !store.settings.simulationDebug;
+    if (!debug.hidden) $('#simulation-debug-content').textContent = JSON.stringify(living.simulationDebugSnapshot(), null, 2);
+  }
   renderNeeds();
   if (slot.isSleeping) {
     $('#sleep-status').textContent = `Energy ${Math.round(slot.stats.energy)}%. It will recover faster while resting.`;
   }
-  if (activePanel !== 'home' && !drawer.hidden) renderDrawer(activePanel, false);
+  if (activePanel === 'life' && !drawer.hidden) livingUI.updateLiveData();
   store.applyLevelUnlocks();
 }
 
@@ -413,6 +444,51 @@ function returnGreeting(milliseconds) {
   ]);
 }
 
+function showOfflineSummary(summary) {
+  if (!summary) return;
+  $('#offline-summary-title').textContent = getLanguage() === 'en' ? 'While you were away' : 'Enquanto você estava fora';
+  $('#offline-summary-copy').textContent = summary.text;
+  const list = $('#offline-event-list');
+  list.innerHTML = '';
+  summary.events.forEach((event) => {
+    const item = document.createElement('li');
+    item.textContent = formatOfflineEvent(event, store.active.petName, getLanguage());
+    list.append(item);
+  });
+  $('#offline-cap-note').hidden = !summary.capped;
+  openDialog($('#offline-summary-modal'));
+}
+
+function renderEmergentEvent(detail) {
+  const panel = $('#emergent-event-panel');
+  if (!panel) return;
+  if (detail.phase === 'resolved' || !detail.event) {
+    panel.hidden = true;
+    $('#emergent-event-actions').innerHTML = '';
+    return;
+  }
+  const event = detail.event;
+  panel.hidden = false;
+  $('#emergent-event-title').textContent = eventLabel(event.id, getLanguage());
+  $('#emergent-event-copy').textContent = getLanguage() === 'en' ? 'Something unexpected is happening in the room. Your response will become part of the companion’s memory.' : 'Algo inesperado está acontecendo no ambiente. Sua resposta fará parte da memória do pet.';
+  const actions = $('#emergent-event-actions');
+  actions.innerHTML = '';
+  event.responses.forEach((response) => {
+    const control = document.createElement('button');
+    control.type = 'button';
+    control.className = 'button button-secondary';
+    control.textContent = responseLabel(response, getLanguage());
+    control.addEventListener('click', () => {
+      if (living.respondToEmergentEvent(response)) {
+        panel.hidden = true;
+        toast(getLanguage() === 'en' ? 'Your response became a lasting memory.' : 'Sua resposta virou uma memória duradoura.');
+        updateUI(true);
+      }
+    });
+    actions.append(control);
+  });
+}
+
 function maybeContextDialogue() {
   const slot = store.active;
   if (!slot || dialogueBubble.hidden === false) return;
@@ -457,7 +533,7 @@ function playSound(name, options = {}) {
     water: 'Water trickles', clean: 'Bubbles and brushing', toy: 'Toy squeak', jump: 'Jump', land: 'Soft landing', sleep: 'Calm sleepy tone', medicine: 'Gentle care chime'
   };
   audio.play(name, options);
-  if (captions[name]) caption(captions[name]);
+  if (captions[name] && options.caption !== false) caption(captions[name]);
 }
 
 
@@ -541,6 +617,14 @@ async function feedPet(foodId) {
     showDialogue('I’m happily full right now. Maybe later?', 4);
     return;
   }
+  const reaction = living.foodReaction(foodId);
+  if (!reaction.allow) {
+    showDialogue(getLanguage() === 'en' ? 'I remember this one… could we try something else?' : 'Eu lembro dessa comida… podemos tentar outra?', 4);
+    scene.playAnimation?.('idle', { force: true, fade: 0.2 });
+    living.evaluateEmotion(true);
+    updateUI(true);
+    return;
+  }
   closeDialog($('#food-modal'));
   if (slot.isSleeping) await toggleSleep(false);
   if (slot.activeRoom !== 'living') {
@@ -568,8 +652,11 @@ async function feedPet(foodId) {
     bond: 1.2,
     fullness: food.fullness
   }, `feed-${foodId}`);
+  if (foodId === 'water') living.hydrate(24, 'bowl-water');
+  else if (food.health > 0) living.hydrate(Math.min(4, food.health), foodId);
   store.gainProgress(7, 3);
   store.track('feed');
+  living.record('feed', { foodId }, { timeline: true });
   scene.spawnParticles(foodId === 'treat' ? 'star' : 'heart', foodId === 'treat' ? 9 : 5);
   showDialogue(foodId === 'water' ? 'Refreshing!' : 'Yum, that hit the spot!', 2.4);
   playPetVoice('happy', slot.companionId, { probability: foodId === 'treat' ? 0.82 : 0.58, volume: 0.68 });
@@ -582,7 +669,7 @@ function encouragePetting() {
   $('#interaction-hint').hidden = false;
   setTimeout(() => { $('#interaction-hint').hidden = true; }, 3500);
   scene.spawnParticles('heart', 4);
-  processPetAttention(false);
+  processPetAttention({ kind: 'accessible-gentle', region: 'head', speed: 240, duration: 950, dragging: false, accessible: true });
 }
 
 function activateCleanCursor() {
@@ -658,9 +745,10 @@ function syncCleanSponge(event) {
   positionCleanSponge(event);
 }
 
-function processPetAttention(dragging) {
+function processPetAttention(gesture = {}) {
   const slot = store.active;
   if (!slot) return;
+  const dragging = Boolean(gesture.dragging);
   const now = Date.now();
   const timestamps = slot.interactions.petTimestamps.filter((time) => now - time < 60000);
   const cap = 14;
@@ -673,10 +761,15 @@ function processPetAttention(dragging) {
   slot.interactions.petTimestamps = timestamps;
   slot.interactions.totalPetting = (slot.interactions.totalPetting || 0) + 1;
   if (slot.interactions.totalPetting >= 20 && !slot.achievements.includes('gentle-friend')) slot.achievements.push('gentle-friend');
-  const calmModifier = PETS[slot.companionId].modifiers.calmBond || 1;
   const sensitivity = store.settings.interactionSensitivity || 1;
-  store.modifyStats({ happiness: 0.75 * sensitivity, bond: 0.42 * calmModifier * sensitivity }, 'pet');
-  if (!dragging && !playPetVoice('happy', slot.companionId, { probability: 0.46, volume: 0.62 })) playSound('positive', { volume: 0.24, rate: 1.2 });
+  const reaction = living.directInteraction(gesture);
+  store.modifyStats(Object.fromEntries(Object.entries(reaction.changes || {}).map(([key, value]) => [key, value * sensitivity])), 'pet');
+  if (reaction.overstimulated) {
+    scene.moveTo?.(scene.currentPet.stage.position.x - 0.7, scene.currentPet.stage.position.z + 0.35, false);
+    showDialogue(getLanguage() === 'en' ? 'A little space, please.' : 'Um pouquinho de espaço, por favor.', 4);
+  } else if (reaction.accepted && !dragging && !playPetVoice('happy', slot.companionId, { probability: 0.46, volume: 0.62 })) {
+    playSound('positive', { volume: 0.24, rate: 1.2 });
+  }
   if (timestamps.length % 5 === 0) store.gainProgress(2, 1);
 }
 
@@ -702,6 +795,8 @@ function finishCleaning() {
   store.modifyStats({ hygiene: Math.max(18, progress * 0.35), happiness: 6, health: 2, bond: 2 }, 'clean');
   store.gainProgress(10, 5);
   store.track('clean');
+  living.record('groom', { actionId: 'bath' }, { timeline: true });
+  living.treatCondition('bath');
   playSound('positive');
   scene.spawnParticles('clean', 12);
   playSound('water', { volume: 0.12, rate: 1.08 });
@@ -728,6 +823,8 @@ async function toggleSleep(forceValue) {
     }
 
     store.setSleeping(sleeping);
+    const recentWakes = sleeping ? 0 : living.state.recentActions.filter((action) => action.type === 'wake' && Date.now() - action.at < 10 * 60000).length;
+    living.record(sleeping ? 'sleep' : 'wake', sleeping ? {} : { repeated: recentWakes >= 2 }, { timeline: sleeping });
     scene.enterSleepMode(sleeping);
     scene.setAutonomous(!sleeping);
     $('#sleep-overlay').hidden = !sleeping;
@@ -775,8 +872,13 @@ function useMedicine() {
     showDialogue('I feel okay. Let’s save that for when it is useful.', 3);
     return;
   }
+  const effective = living.treatCondition('medicine');
+  if (!effective && living.state?.conditions?.length) {
+    showDialogue('That medicine does not match the current symptoms. Let’s use the recommended care instead.', 4);
+    return;
+  }
   slot.inventory.medicine -= 1;
-  store.modifyStats({ health: 22, energy: -2, happiness: 2 }, 'medicine');
+  store.modifyStats({ health: effective ? 12 : 5, energy: -2, happiness: 2 }, 'medicine');
   store.gainProgress(6, 0);
   playSound('medicine');
   showDialogue('A little rest should help too.', 4);
@@ -784,26 +886,45 @@ function useMedicine() {
   updateUI(true);
 }
 
-function openPanel(panel) {
+function openPanel(panel, trigger = null) {
   if (panel === 'home') {
-    closeDrawer();
+    const homeTrigger = trigger || document.querySelector('.nav-button[data-panel="home"]');
+    closeDrawer({ restoreFocus: false });
     setActiveNav('home');
+    requestAnimationFrame(() => homeTrigger?.focus({ preventScroll: true }));
     return;
   }
+  const changingPanel = activePanel !== panel;
+  lastDrawerTrigger = trigger || document.activeElement || document.querySelector(`.nav-button[data-panel="${panel}"]`);
   activePanel = panel;
-  renderDrawer(panel, true);
   drawer.hidden = false;
+  drawer.classList.remove('is-closing');
+  drawer.classList.toggle('is-life', panel === 'life');
+  drawerExpand?.setAttribute('aria-expanded', String(drawer.classList.contains('is-expanded')));
+  renderDrawer(panel, changingPanel);
   setActiveNav(panel);
+  requestAnimationFrame(() => drawerContent.focus({ preventScroll: true }));
 }
 
 function renderDrawer(panel, scrollTop = false) {
-  drawerTitle.textContent = panel[0].toUpperCase() + panel.slice(1);
+  const panelLabels = {
+    care: getLanguage() === 'en' ? 'Care' : 'Cuidado',
+    play: getLanguage() === 'en' ? 'Play' : 'Brincar',
+    shop: getLanguage() === 'en' ? 'Shop' : 'Loja',
+    explore: getLanguage() === 'en' ? 'Explore' : 'Explorar',
+    collection: getLanguage() === 'en' ? 'Collection' : 'Coleção',
+    life: getLanguage() === 'en' ? 'Life' : 'Vida'
+  };
+  const previousScroll = drawerContent.scrollTop;
+  if (panel !== 'life') delete drawerContent.dataset.lifeFeature;
+  drawerTitle.textContent = panelLabels[panel] || panel;
   if (panel === 'care') renderCareDrawer();
   if (panel === 'play') renderPlayDrawer();
   if (panel === 'shop') renderShopDrawer();
   if (panel === 'explore') renderExploreDrawer();
   if (panel === 'collection') renderCollectionDrawer();
-  if (scrollTop) drawerContent.scrollTop = 0;
+  if (panel === 'life') livingUI.render(drawerContent, livingUI.tab, { preserveScroll: !scrollTop });
+  if (panel !== 'life') drawerContent.scrollTop = scrollTop ? 0 : Math.min(previousScroll, Math.max(0, drawerContent.scrollHeight - drawerContent.clientHeight));
 }
 
 function renderCareDrawer() {
@@ -918,6 +1039,7 @@ function renderPlayDrawer() {
 
 function openGame(id) {
   currentGameId = id;
+  scene.setAutonomous(false);
   const game = MINIGAMES.find((item) => item.id === id);
   $('#game-title').textContent = game?.name || 'Minigame';
   $('#game-result').hidden = true;
@@ -965,13 +1087,17 @@ function selectRoom(roomId) {
     toast(`${room.name} unlocked.`);
     playSound('positive');
   }
+  const firstVisit = !slot.visitedRooms?.includes(roomId);
   store.setRoom(roomId);
   if (roomId === 'park' && scene.dayPhase === 'night' && !slot.unlockedItems.includes('stargazer-memory')) {
     slot.unlockedItems.push('stargazer-memory');
     slot.memories.push('stargazer-memory');
   }
   scene.buildEnvironment(roomId);
+  scene.setWorldState({ weather: living.currentWeather(), season: living.currentSeason() });
+  scene.setDecorations(living.state.decorations);
   scene.placePetSafely();
+  living.record('walk', { room: roomId }, { timeline: firstVisit });
   updateAmbient();
   showDialogue(roomGreeting(roomId), 2);
   renderExploreDrawer();
@@ -1053,14 +1179,26 @@ function renderCollectionDrawer() {
   });
 }
 
-function closeDrawer() {
+function closeDrawer({ restoreFocus = true } = {}) {
+  if (drawer.hidden) return;
   drawer.hidden = true;
+  drawer.classList.remove('is-expanded', 'is-life');
+  drawerExpand?.setAttribute('aria-expanded', 'false');
   activePanel = 'home';
   setActiveNav('home');
+  if (restoreFocus) {
+    const target = lastDrawerTrigger?.isConnected ? lastDrawerTrigger : document.querySelector('.nav-button[data-panel="home"]');
+    requestAnimationFrame(() => target?.focus({ preventScroll: true }));
+  }
 }
 
 function setActiveNav(panel) {
-  $$('.nav-button').forEach((button) => button.classList.toggle('is-active', button.dataset.panel === panel));
+  $$('.nav-button').forEach((button) => {
+    const active = button.dataset.panel === panel;
+    button.classList.toggle('is-active', active);
+    if (active) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
 }
 
 function renderDaily() {
@@ -1120,6 +1258,7 @@ async function capturePhoto() {
     const link = document.createElement('a');
     link.href = sourceUrl;
     link.download = `${slot.petName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'companion'}-${Date.now()}.png`;
+    living.recordPhoto(link.download);
     document.body.append(link);
     link.click();
     link.remove();
@@ -1192,6 +1331,12 @@ function applySettingsToDocument() {
   document.body.classList.toggle('reduced-motion', store.settings.reducedMotion);
   document.documentElement.style.setProperty('--text-scale', store.settings.textScale);
   scene.setReducedMotion?.();
+  document.body.classList.toggle('low-performance', store.settings.lowPerformanceMode);
+  const debugOverlay = $('#simulation-debug');
+  if (debugOverlay) debugOverlay.hidden = !store.settings.simulationDebug || !store.active;
+  scene.setWorldState?.({ weather: living.currentWeather(), season: living.currentSeason() });
+  if (!store.settings.multiPetRendering) scene.setSecondaryPet?.(null);
+  else if (living.state?.secondaryPetId) scene.setSecondaryPet?.(living.state.secondaryPetId);
   audio.applyVolumes();
 }
 
@@ -1209,6 +1354,16 @@ function syncSettingsInputs() {
     '#reduced-motion': ['reducedMotion', 'checked'],
     '#simplified-games': ['simplifiedGames', 'checked'],
     '#sound-captions': ['captions', 'checked'],
+    '#reduced-weather-effects': ['reducedWeatherEffects', 'checked'],
+    '#emotion-hints': ['emotionHints', 'checked'],
+    '#body-language-descriptions': ['bodyLanguageDescriptions', 'checked'],
+    '#multi-pet-rendering': ['multiPetRendering', 'checked'],
+    '#low-performance-mode': ['lowPerformanceMode', 'checked'],
+    '#routine-learning': ['routineLearning', 'checked'],
+    '#routine-anticipation': ['routineAnticipation', 'value'],
+    '#contextual-camera': ['contextualCamera', 'checked'],
+    '#advanced-dirt-effects': ['advancedDirtEffects', 'checked'],
+    '#simulation-debug-setting': ['simulationDebug', 'checked'],
     '#text-scale': ['textScale', 'value'],
     '#interaction-sensitivity': ['interactionSensitivity', 'value']
   };
@@ -1222,6 +1377,9 @@ function updateSetting(key, value) {
   store.updateSettings({ [key]: value });
   applySettingsToDocument();
   if (['realTimeLighting', 'fixedVisualTime'].includes(key)) scene.applyLighting();
+  if (['reducedWeatherEffects', 'lowPerformanceMode'].includes(key)) scene.setWorldState?.({ weather: living.currentWeather(), season: living.currentSeason() });
+  if (key === 'advancedDirtEffects' && living.state?.simulation?.dirt) scene.setPetDirtState?.(living.state.simulation.dirt);
+  if (key === 'multiPetRendering') scene.setSecondaryPet?.(value ? living.state?.secondaryPetId : null);
   if (['masterVolume', 'musicVolume', 'effectsVolume', 'ambientVolume', 'muted'].includes(key)) audio.applyVolumes();
   updateAmbient();
 }
@@ -1321,8 +1479,15 @@ function bindGlobalControls() {
   }));
 
   $$('.action-button').forEach((button) => button.addEventListener('click', () => handleAction(button.dataset.action)));
-  $$('.nav-button').forEach((button) => button.addEventListener('click', () => openPanel(button.dataset.panel)));
-  $('#close-drawer').addEventListener('click', closeDrawer);
+  $$('.nav-button').forEach((button) => button.addEventListener('click', () => openPanel(button.dataset.panel, button)));
+  $('#close-drawer').addEventListener('click', () => closeDrawer());
+  drawerExpand?.addEventListener('click', () => {
+    const expanded = drawer.classList.toggle('is-expanded');
+    drawerExpand.setAttribute('aria-expanded', String(expanded));
+    drawerExpand.setAttribute('aria-label', expanded ? (getLanguage() === 'en' ? 'Collapse panel' : 'Recolher painel') : (getLanguage() === 'en' ? 'Expand panel' : 'Expandir painel'));
+  });
+  ['pointerdown', 'click', 'dblclick', 'contextmenu'].forEach((type) => drawer.addEventListener(type, (event) => event.stopPropagation()));
+  drawer.addEventListener('wheel', (event) => event.stopPropagation(), { passive: true });
   $('#needs-toggle').addEventListener('click', () => {
     const panel = $('#needs-panel');
     panel.classList.toggle('is-collapsed');
@@ -1342,9 +1507,10 @@ function bindGlobalControls() {
   window.addEventListener('pointermove', syncCleanSponge);
   window.addEventListener('pointerup', () => { cleanSponge.classList.remove('is-scrubbing'); if (stageElement.classList.contains('is-cleaning')) cleanSponge.classList.add('is-visible'); });
 
-  $('#close-game').addEventListener('click', () => { games.stop(); closeDialog($('#game-modal')); currentGameId = null; });
-  $('#game-modal').addEventListener('cancel', () => games.stop());
-  $('#game-modal').addEventListener('close', () => games.stop());
+  const finishGameModal = () => { games.stop(); if (store.active && !store.active.isSleeping) scene.setAutonomous(true); currentGameId = null; };
+  $('#close-game').addEventListener('click', () => { finishGameModal(); closeDialog($('#game-modal')); });
+  $('#game-modal').addEventListener('cancel', finishGameModal);
+  $('#game-modal').addEventListener('close', finishGameModal);
 
   $$('[data-care-option]').forEach((button) => button.addEventListener('click', () => {
     const option = button.dataset.careOption;
@@ -1366,15 +1532,23 @@ function bindGlobalControls() {
 
   const numericSettings = [
     ['#master-volume', 'masterVolume'], ['#music-volume', 'musicVolume'], ['#effects-volume', 'effectsVolume'], ['#ambient-volume', 'ambientVolume'],
-    ['#text-scale', 'textScale'], ['#interaction-sensitivity', 'interactionSensitivity']
+    ['#text-scale', 'textScale'], ['#interaction-sensitivity', 'interactionSensitivity'], ['#routine-anticipation', 'routineAnticipation']
   ];
   numericSettings.forEach(([selector, key]) => $(selector).addEventListener('input', (event) => updateSetting(key, Number(event.target.value))));
   const booleanSettings = [
     ['#mute-audio', 'muted'], ['#real-time-decay', 'realTimeDecay'], ['#real-time-lighting', 'realTimeLighting'],
-    ['#high-contrast', 'highContrast'], ['#reduced-motion', 'reducedMotion'], ['#simplified-games', 'simplifiedGames'], ['#sound-captions', 'captions']
+    ['#high-contrast', 'highContrast'], ['#reduced-motion', 'reducedMotion'], ['#simplified-games', 'simplifiedGames'], ['#sound-captions', 'captions'],
+    ['#reduced-weather-effects', 'reducedWeatherEffects'], ['#emotion-hints', 'emotionHints'], ['#body-language-descriptions', 'bodyLanguageDescriptions'], ['#multi-pet-rendering', 'multiPetRendering'], ['#low-performance-mode', 'lowPerformanceMode'],
+    ['#routine-learning', 'routineLearning'], ['#contextual-camera', 'contextualCamera'], ['#advanced-dirt-effects', 'advancedDirtEffects'], ['#simulation-debug-setting', 'simulationDebug']
   ];
   booleanSettings.forEach(([selector, key]) => $(selector).addEventListener('change', (event) => updateSetting(key, event.target.checked)));
   $('#fixed-time').addEventListener('change', (event) => updateSetting('fixedVisualTime', event.target.value));
+  $('#reset-learned-routines').addEventListener('click', () => confirmAction(
+    getLanguage() === 'en' ? 'Reset learned routines?' : 'Redefinir rotinas aprendidas?',
+    getLanguage() === 'en' ? 'Habits and memories remain, but time-based routine confidence will start over.' : 'Hábitos e memórias permanecem, mas a confiança das rotinas por horário recomeçará.',
+    () => { living.resetLearnedRoutines(); toast(getLanguage() === 'en' ? 'Learned routines reset.' : 'Rotinas aprendidas redefinidas.'); }
+  ));
+  $('#close-offline-summary').addEventListener('click', () => closeDialog($('#offline-summary-modal')));
 
   $('#export-save').addEventListener('click', () => {
     const blob = new Blob([store.exportData()], { type: 'application/json' });
@@ -1400,7 +1574,7 @@ function bindGlobalControls() {
     }
   });
 
-  scene.onPetGesture = ({ dragging }) => processPetAttention(dragging);
+  scene.onPetGesture = (gesture) => processPetAttention(gesture);
   scene.onCleanProgress = (progress) => {
     $('#clean-progress').style.width = `${progress}%`;
     $('#finish-clean').disabled = progress < 68;
@@ -1417,6 +1591,7 @@ function bindGlobalControls() {
   scene.addEventListener('autonomous', () => {
     if (Math.random() < 0.28) showDialogue(choose(['Just stretching my legs.', 'I found a favorite spot.', 'Come see this side of the room!']), 1);
   });
+  living.addEventListener('emergent-event', (event) => renderEmergentEvent(event.detail));
 
   store.addEventListener('stats', () => updateUI(true));
   store.addEventListener('progress', (event) => {
@@ -1443,12 +1618,13 @@ function bindGlobalControls() {
 }
 
 function handleKeyboardShortcuts(event) {
-  if (!store.active || event.target.matches('input, select, textarea')) return;
+  if (!store.active) return;
   if (event.key === 'Escape') {
     if (!$('#photo-overlay').hidden) closePhotoMode();
     else if (!drawer.hidden) closeDrawer();
     return;
   }
+  if (event.target.matches('input, select, textarea, button, summary, [role="button"]')) return;
   const keyMap = { f: 'feed', p: 'play', c: 'clean', s: 'sleep', m: 'medicine' };
   const action = keyMap[event.key.toLowerCase()];
   if (action) {
@@ -1463,7 +1639,7 @@ function handleKeyboardShortcuts(event) {
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js?v=16-atomic-cache')
+    navigator.serviceWorker.register('sw.js?v=26-living-agent')
       .then((registration) => registration.update())
       .catch((error) => console.warn('[Pocket Companions] Service worker registration failed:', error));
   }

@@ -37,6 +37,13 @@
       <div id="scene-caption" class="scene-caption" role="status" aria-live="polite"></div>
       <div id="dialogue-bubble" class="dialogue-bubble" role="status" aria-live="polite" hidden></div>
       <div id="interaction-hint" class="interaction-hint" hidden>Tap your companion or tap the floor to move.</div>
+      <div id="body-language-hint" class="body-language-hint" role="status" aria-live="polite" hidden></div>
+      <aside id="emergent-event-panel" class="emergent-event-panel" aria-live="polite" hidden>
+        <strong id="emergent-event-title"></strong>
+        <p id="emergent-event-copy"></p>
+        <div id="emergent-event-actions" class="emergent-event-actions"></div>
+      </aside>
+      <aside id="simulation-debug" class="simulation-debug" aria-label="Simulation debug overlay" hidden><pre id="simulation-debug-content"></pre></aside>
       <div id="clean-sponge" class="clean-sponge" hidden aria-hidden="true"><img src="assets/icons/sponge-cursor.svg" alt=""></div>
     </section>
 
@@ -359,6 +366,15 @@
     </form>
   </dialog>
 
+  <dialog id="offline-summary-modal" class="modal">
+    <div class="modal-card offline-summary-card">
+      <header class="modal-header"><div><p class="eyebrow">Continuous life</p><h2 id="offline-summary-title">While you were away</h2></div><button id="close-offline-summary" class="icon-button" type="button">Close</button></header>
+      <p id="offline-summary-copy"></p>
+      <ol id="offline-event-list" class="offline-event-list"></ol>
+      <p id="offline-cap-note" class="field-help" hidden>The simulation was capped to keep progress safe and balanced.</p>
+    </div>
+  </dialog>
+
   <dialog id="settings-modal" class="modal">
     <form method="dialog" class="modal-card modal-wide">
       <header class="modal-header"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-button" value="cancel">Close</button></header>
@@ -372,8 +388,14 @@
         <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" name="realTimeLighting" type="checkbox"></label>
         <label>Fixed visual time<select id="fixed-time" name="fixedTime"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
         <label>Language<select id="settings-language-select" name="settingsLanguage" data-language-select aria-label="Language"><option value="pt-BR">Português</option><option value="en">English</option></select></label>
+        <label class="switch-row"><span>Learn recurring routines</span><input id="routine-learning" name="routineLearning" type="checkbox"></label>
+        <label>Routine anticipation<input id="routine-anticipation" name="routineAnticipation" type="range" min="0" max="1" step="0.05"></label>
+        <label class="switch-row"><span>Contextual camera</span><input id="contextual-camera" name="contextualCamera" type="checkbox"></label>
+        <label class="switch-row"><span>Persistent dirt effects</span><input id="advanced-dirt-effects" name="advancedDirtEffects" type="checkbox"></label>
+        <label class="switch-row"><span>Simulation debug overlay</span><input id="simulation-debug-setting" name="simulationDebug" type="checkbox"></label>
       </div>
       <div class="backup-actions">
+        <button id="reset-learned-routines" class="button button-secondary" type="button">Reset learned routines</button>
         <button id="export-save" class="button button-secondary" type="button">Export backup</button>
         <label class="button button-secondary file-button">Import backup<input id="import-save" name="importSave" type="file" accept="application/json"></label>
       </div>
@@ -422,7 +444,7 @@
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    const ASSET_BUILD = '23-wardrobe-transform-gizmos';
+    const ASSET_BUILD = '26-living-agent';
     const BUILD_MARKER = 'pocket-companions:asset-build';
 
     async function clearLegacyAssetCaches() {
@@ -452,7 +474,7 @@
     }
 
     await clearLegacyAssetCaches();
-    await import('./js/app-v17.js');
+    await import('./js/app.js');
   </script>
 </body>
 </html>

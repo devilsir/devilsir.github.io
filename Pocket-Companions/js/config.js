@@ -1,4 +1,4 @@
-export const APP_VERSION = 18;
+export const APP_VERSION = 19;
 export const STORAGE_KEY = 'pocket-companions:saves:v1';
 export const SETTINGS_KEY = 'pocket-companions:global-settings:v1';
 
@@ -256,7 +256,12 @@ export const DEFAULT_SETTINGS = {
   dynamicWeather: true,
   weatherMode: 'dynamic',
   seasonMode: 'automatic',
-  lowPerformanceMode: false
+  lowPerformanceMode: false,
+  routineLearning: true,
+  routineAnticipation: 0.65,
+  contextualCamera: true,
+  advancedDirtEffects: true,
+  simulationDebug: false
 };
 
 export const DECAY_PER_HOUR = {

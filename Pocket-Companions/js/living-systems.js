@@ -6,6 +6,9 @@ import {
 } from './living-data.js';
 import { clamp, uid, todayKey } from './utils.js';
 import { getLanguage } from './i18n.js';
+import { SimulationRuntime } from './simulation/simulation.js';
+import { migrateSimulationState } from './simulation/schema.js';
+import { applyTrainingResult, evaluateTrainingAttempt, migrateTrainingRecord } from './simulation/training.js';
 
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -70,7 +73,7 @@ export function createLivingState(slot) {
     recipesUnlocked: ['pumpkin-bowl'],
     preparedMeals: {},
     grooming: { tolerance: 50, actions: {}, shampoo: 'gentle' },
-    commands: Object.fromEntries(Object.keys(COMMANDS).map((id) => [id, { mastery: 0, attempts: 0, successes: 0, lastAt: 0 }])),
+    commands: Object.fromEntries(Object.keys(COMMANDS).map((id) => [id, migrateTrainingRecord({}, id)])),
     skills: { points: 1, spent: 0, unlocked: [], freeResets: 1 },
     lifeStage: 'young',
     quest: { id: slot.companionId, step: 0, completed: false, choices: [], ready: false, objectiveProgress: 0, lastTrigger: null },
@@ -93,7 +96,7 @@ export function createLivingState(slot) {
     scent: { level: 1, experience: 0, found: [] },
     longTermMemories: [],
     recentActions: [],
-    simulation: { lastAt: Date.now(), lastEmotionAt: 0, lastConditionCheckAt: 0, lastAutonomyAt: 0, lastPersistAt: 0 },
+    simulation: migrateSimulationState(slot, null),
     autonomy: { recent: [], lastActionAt: 0, blockedTargets: [] },
     antiExploit: {}
   };
@@ -108,7 +111,7 @@ export function migrateLivingState(slot) {
   merged.preferences = Object.fromEntries(Object.entries(defaults.preferences).map(([key, value]) => [key, { ...value, ...(source.preferences?.[key] || {}) }]));
   merged.ingredients = { ...defaults.ingredients, ...(source.ingredients || {}) };
   merged.preparedMeals = { ...defaults.preparedMeals, ...(source.preparedMeals || {}) };
-  merged.commands = Object.fromEntries(Object.entries(defaults.commands).map(([key, value]) => [key, { ...value, ...(source.commands?.[key] || {}) }]));
+  merged.commands = Object.fromEntries(Object.entries(defaults.commands).map(([key]) => [key, migrateTrainingRecord(source.commands?.[key], key)]));
   merged.skills = { ...defaults.skills, ...(source.skills || {}), unlocked: Array.isArray(source.skills?.unlocked) ? [...new Set(source.skills.unlocked)].slice(0, 9) : [] };
   merged.world = { ...defaults.world, ...(source.world || {}) };
   merged.grooming = { ...defaults.grooming, ...(source.grooming || {}), actions: { ...defaults.grooming.actions, ...(source.grooming?.actions || {}) } };
@@ -123,6 +126,14 @@ export function migrateLivingState(slot) {
   merged.bodyLanguage = { ...defaults.bodyLanguage, ...(source.bodyLanguage || {}) };
   merged.autonomy = { ...defaults.autonomy, ...(source.autonomy || {}), recent: Array.isArray(source.autonomy?.recent) ? source.autonomy.recent.slice(-8) : [], blockedTargets: Array.isArray(source.autonomy?.blockedTargets) ? source.autonomy.blockedTargets.slice(-10) : [] };
   merged.relationships = source.relationships && typeof source.relationships === 'object' ? source.relationships : {};
+  for (const [key, relationship] of Object.entries(merged.relationships)) {
+    merged.relationships[key] = {
+      familiarity: 10, trust: 8, affection: relationship?.attachment || relationship?.comfort || 4,
+      rivalry: 4, jealousy: 0, playCompatibility: relationship?.playfulness || 10,
+      resourceTension: 0, protectiveTendency: 0, playfulness: 10, comfort: 8,
+      attachment: 4, interactions: 0, ...(relationship || {})
+    };
+  }
   merged.furnitureInventory = source.furnitureInventory && typeof source.furnitureInventory === 'object' ? source.furnitureInventory : {};
   merged.memoryCosmetics = { ...defaults.memoryCosmetics, ...(source.memoryCosmetics || {}), frames: Array.isArray(source.memoryCosmetics?.frames) ? [...new Set(source.memoryCosmetics.frames)].slice(-16) : ['plain'], stickers: Array.isArray(source.memoryCosmetics?.stickers) ? [...new Set(source.memoryCosmetics.stickers)].slice(-30) : [], backgrounds: Array.isArray(source.memoryCosmetics?.backgrounds) ? [...new Set(source.memoryCosmetics.backgrounds)].slice(-16) : ['classic'] };
   merged.conditions = Array.isArray(source.conditions) ? source.conditions.slice(0, 4) : [];
@@ -131,7 +142,7 @@ export function migrateLivingState(slot) {
   merged.decorations = Array.isArray(source.decorations) ? source.decorations.slice(0, 32) : [];
   merged.eventArchive = Array.isArray(source.eventArchive) ? source.eventArchive.slice(-24) : [];
   merged.recentActions = Array.isArray(source.recentActions) ? source.recentActions.slice(-30) : [];
-  merged.simulation = { ...defaults.simulation, ...(source.simulation || {}) };
+  merged.simulation = migrateSimulationState(slot, source.simulation);
   merged.hydration = clamp(Number(source.hydration ?? defaults.hydration), 0, 100);
   merged.activeEvent = source.activeEvent && typeof source.activeEvent === 'object' ? source.activeEvent : null;
   if (merged.activeEvent && !Array.isArray(merged.activeEvent.missions)) {
@@ -152,6 +163,7 @@ export class LivingSystems extends EventTarget {
     this.bus = new EventTarget();
     this.lastTickAt = Date.now();
     this.lastSecondaryTickAt = Date.now();
+    this.simulationRuntime = new SimulationRuntime(this);
   }
 
   get slot() { return this.store.active; }
@@ -178,6 +190,7 @@ export class LivingSystems extends EventTarget {
     await this.scene.setSecondaryPet?.(state.secondaryPetId);
     this.scene.setAutonomyProvider?.(() => this.chooseAutonomousAction());
     this.evaluateEmotion(true);
+    return this.simulationRuntime.activate();
   }
 
   ensureWeekly(now = Date.now()) {
@@ -208,7 +221,7 @@ export class LivingSystems extends EventTarget {
       this.lastSecondaryTickAt = now;
       this.tickSecondaryPet(Math.min(elapsedHours, 0.25));
     }
-    this.updateBodyLanguage();
+    this.simulationRuntime.tick(now);
     this.refreshLifeStage();
     if (now - (state.simulation.lastPersistAt || 0) > 10000) {
       state.simulation.lastPersistAt = now;
@@ -277,34 +290,7 @@ export class LivingSystems extends EventTarget {
   }
 
   chooseAutonomousAction() {
-    const slot = this.slot;
-    const state = this.state;
-    if (!slot || !state || slot.isSleeping) return null;
-    const stats = slot.stats;
-    const emotion = state.emotion.id;
-    const traits = state.personality;
-    const recent = state.autonomy?.recent || [];
-    const cooldownPenalty = (id) => recent.slice(-3).includes(id) ? 28 : 0;
-    const candidates = [
-      { id: 'drink', score: (100 - state.hydration) * 0.88 + (100 - stats.health) * 0.18, target: 'water' },
-      { id: 'food-bowl', score: (100 - stats.hunger) * 0.82 + traits.foodMotivated * 0.25, target: 'food' },
-      { id: 'bed-rest', score: (100 - stats.energy) * 1.05 + traits.lazy * 0.32 + (emotion === 'sleepy' ? 40 : 0), target: 'bed', animation: 'lie_down' },
-      { id: 'safe-place', score: (emotion === 'frightened' || emotion === 'anxious') ? 88 + (100 - traits.brave) * 0.2 : 0, target: 'safe', animation: 'sit' },
-      { id: 'ask-affection', score: traits.affectionate * 0.38 + (100 - stats.bond) * 0.22 + (emotion === 'lonely' ? 46 : 0), target: 'player', animation: 'sit' },
-      { id: 'toy-play', score: traits.playful * 0.55 + stats.energy * 0.22 + (emotion === 'playful' ? 35 : 0), target: 'toy', run: true },
-      { id: 'window-watch', score: traits.curious * 0.48 + traits.calm * 0.18 + (['rain','snow','rainbow'].includes(this.currentWeather()) ? 22 : 0), target: 'window', animation: 'sit' },
-      { id: 'favorite-place', score: traits.independent * 0.35 + traits.calm * 0.2 + (emotion === 'content' ? 24 : 0) + (state.longTermMemories.some((m) => m.type === 'memorable-walk' && m.detail?.location === state.preferences.favoriteEnvironment.value) ? 10 : 0), target: 'favorite', animation: traits.lazy > 55 ? 'lie_down' : 'sit' },
-      { id: 'seek-friend', score: state.secondaryPetId ? traits.sociable * 0.48 + this.relationship().comfort * 0.18 : 0, target: 'friend' },
-      { id: 'explore', score: traits.curious * 0.45 + traits.brave * 0.2 + stats.energy * 0.15, target: 'roam', run: traits.playful > 72 }
-    ];
-    for (const candidate of candidates) candidate.score -= cooldownPenalty(candidate.id);
-    candidates.sort((a, b) => b.score - a.score);
-    const selected = candidates[0];
-    if (!selected || selected.score < 18) return { id: 'idle', target: 'roam' };
-    state.autonomy ||= { recent: [], lastActionAt: 0, blockedTargets: [] };
-    cappedPush(state.autonomy.recent, selected.id, 8);
-    state.autonomy.lastActionAt = Date.now();
-    return selected;
+    return this.simulationRuntime.chooseAutonomousAction();
   }
 
   evaluateEmotion(force = false) {
@@ -390,6 +376,7 @@ export class LivingSystems extends EventTarget {
     if (options.timeline) this.addTimeline(type, detail, options.photo || null);
     this.progressQuestFromEvent(type, detail);
     this.progressActiveEvent(type, detail);
+    this.simulationRuntime.observe(type, detail);
     if (type === 'weather' && detail.weather === 'thunderstorm') this.addMemory('storm', { room: this.slot.activeRoom }, -0.45, 0.72);
     this.bus.dispatchEvent(new CustomEvent(type, { detail }));
     this.store.persist();
@@ -623,6 +610,7 @@ export class LivingSystems extends EventTarget {
     } else {
       this.store.modifyStats({ happiness: -1 }, `groom-${actionId}-hesitate`);
       this.traitChange('stubborn', 0.12, 'groom');
+      this.record('groom', { actionId, success: false }, { timeline: true });
     }
     return { ok: true, success };
   }
@@ -633,33 +621,32 @@ export class LivingSystems extends EventTarget {
   }
 
   async train(commandId) {
-    const command = this.state.commands[commandId];
+    const command = this.state.commands[commandId] = migrateTrainingRecord(this.state.commands[commandId], commandId);
     if (!command || this.slot.stats.energy < 12) return { ok: false, reason: 'energy' };
     this.scene.setAutonomous?.(false);
     const skillBonus = this.skillEffect('training');
-    const attention = (this.slot.stats.energy + this.slot.stats.happiness + this.state.personality.calm) / 300;
-    const motivation = (this.slot.stats.bond + (100 - this.state.personality.stubborn) + this.state.personality.foodMotivated * 0.3) / 230;
-    const chance = clamp(0.28 + attention * 0.28 + motivation * 0.24 + skillBonus - command.mastery / 420, 0.25, 0.92);
-    command.attempts += 1;
-    command.lastAt = Date.now();
-    const success = Math.random() < chance;
+    const room = this.scene.travelLocation || this.slot.activeRoom;
+    const weather = this.currentWeather();
+    const distraction = clamp((this.state.secondaryPetId ? 18 : 0) + (['thunderstorm', 'wind'].includes(weather) ? 32 : 0) + (room === 'park' ? 16 : 0), 0, 100);
+    const previousRooms = new Set(command.practiceHistory.map((entry) => entry.room));
+    const context = { ...this.slot.stats, room, weather, distraction, newContext: command.practiceHistory.length > 2 && !previousRooms.has(room) };
+    const attempt = evaluateTrainingAttempt({ command, context, traits: this.state.personality, relationship: this.state.secondaryPetId ? this.relationship() : { trust: this.slot.stats.bond }, rewardQuality: 0.7, skillBonus });
+    const success = Math.random() < attempt.chance;
+    applyTrainingResult(command, { success, context, rewardQuality: attempt.rewardQuality, responseDelay: attempt.responseDelay });
     this.store.modifyStats({ energy: -4, happiness: success ? 3 : -0.5, bond: success ? 1.5 : 0.2 }, 'training');
     if (success) {
-      command.successes += 1;
-      command.mastery = clamp(command.mastery + 9 + skillBonus * 30, 0, 100);
       this.teachSecondaryByObservation(commandId, command.mastery);
-      this.record('training-success', { commandId }, { timeline: command.successes === 1 || command.mastery >= 100 });
+      this.record('training-success', { commandId, room, distraction, responseDelay: attempt.responseDelay, reward: 'praise' }, { timeline: command.successes === 1 || command.mastery >= 100 });
       this.updateWeekly('training', 1);
       this.store.gainProgress(9, 3);
       const animation = this.commandAnimation(commandId);
       if (commandId === 'jump') await this.scene.triggerJump?.(); else this.scene.playAnimation?.(animation, { loop: animation.endsWith('_idle'), force: true, fade: 0.2 });
       setTimeout(() => { this.scene.playAnimation?.('idle', { force: true, fade: 0.25 }); if (!this.slot.isSleeping) this.scene.setAutonomous?.(true); }, 1600);
     } else {
-      command.mastery = clamp(command.mastery + 2, 0, 100);
-      this.record('training-fail', { commandId });
+      this.record('training-fail', { commandId, room, distraction, responseDelay: attempt.responseDelay });
       if (!this.slot.isSleeping) this.scene.setAutonomous?.(true);
     }
-    return { ok: true, success, mastery: Math.round(command.mastery), animation: this.commandAnimation(commandId) };
+    return { ok: true, success, mastery: Math.round(command.mastery), confidence: Math.round(command.confidence), responseDelay: attempt.responseDelay, animation: this.commandAnimation(commandId) };
   }
 
   teachSecondaryByObservation(commandId, primaryMastery) {
@@ -677,6 +664,10 @@ export class LivingSystems extends EventTarget {
     const animation = this.commandAnimation(commandId);
     if (commandId === 'come') this.scene.moveTo?.(0, 1.7, false);
     else if (commandId === 'fetch') this.scene.moveTo?.(2.2, 0.7, true);
+    else if (commandId === 'bed') this.scene.runSemanticAction?.('bed-rest');
+    else if (commandId === 'follow') this.scene.setContextualFollow?.(true);
+    else if (commandId === 'stop' || commandId === 'wait') this.scene.stopMovement?.('command');
+    else if (commandId === 'marker') this.scene.runSemanticAction?.('trained-command');
     else if (commandId === 'jump') this.scene.triggerJump?.();
     else this.scene.playAnimation?.(animation, { force: true, loop: animation.endsWith('_idle'), fade: 0.22 });
     this.record('command', { commandId });
@@ -819,11 +810,11 @@ export class LivingSystems extends EventTarget {
     return true;
   }
 
-  canPlaceDecoration(item, x, z) {
+  canPlaceDecoration(item, x, z, ignoreId = null) {
     if (!FURNITURE[item]) return false;
     const [width, depth] = FURNITURE[item].size;
     if (Math.abs(x) + width / 2 > 4.1 || Math.abs(z) + depth / 2 > 2.45) return false;
-    const clear = !this.state.decorations.some((other) => other.room === this.slot.activeRoom && Math.abs(other.x - x) < (width + (FURNITURE[other.item]?.size?.[0] || 1)) / 2 && Math.abs(other.z - z) < (depth + (FURNITURE[other.item]?.size?.[1] || 1)) / 2);
+    const clear = !this.state.decorations.some((other) => other.id !== ignoreId && other.room === this.slot.activeRoom && Math.abs(other.x - x) < (width + (FURNITURE[other.item]?.size?.[0] || 1)) / 2 && Math.abs(other.z - z) < (depth + (FURNITURE[other.item]?.size?.[1] || 1)) / 2);
     return clear && (this.scene.validateDecorationPlacement?.(x, z, width, depth) ?? true);
   }
 
@@ -904,9 +895,10 @@ export class LivingSystems extends EventTarget {
   }
 
   relationship(otherId = this.state?.secondaryPetId) {
-    if (!otherId) return { familiarity: 0, trust: 0, playfulness: 0, comfort: 0, rivalry: 0, attachment: 0 };
+    const defaults = { familiarity: 0, trust: 0, affection: 0, rivalry: 0, jealousy: 0, playCompatibility: 0, resourceTension: 0, protectiveTendency: 0, playfulness: 0, comfort: 0, attachment: 0, interactions: 0 };
+    if (!otherId) return defaults;
     const key = [this.slot.companionId, otherId].sort().join(':');
-    this.state.relationships[key] ||= { familiarity: 10, trust: 8, playfulness: 10, comfort: 8, rivalry: 4, attachment: 4, interactions: 0 };
+    this.state.relationships[key] = { ...defaults, familiarity: 10, trust: 8, affection: 5, playCompatibility: 10, playfulness: 10, comfort: 8, rivalry: 4, attachment: 4, ...(this.state.relationships[key] || {}) };
     return this.state.relationships[key];
   }
 
@@ -926,9 +918,14 @@ export class LivingSystems extends EventTarget {
     relationship.familiarity = clamp(relationship.familiarity + 3, 0, 100);
     relationship.trust = clamp(relationship.trust + (kind === 'share' ? 4 : 2), 0, 100);
     relationship.playfulness = clamp(relationship.playfulness + (kind === 'play' ? 4 : 1), 0, 100);
+    relationship.playCompatibility = clamp(relationship.playCompatibility + (kind === 'play' ? 3.5 : 0.8), 0, 100);
     relationship.comfort = clamp(relationship.comfort + 2, 0, 100);
+    relationship.affection = clamp(relationship.affection + (kind === 'share' ? 3 : 1.2), 0, 100);
     relationship.attachment = clamp(relationship.attachment + 1.5, 0, 100);
     relationship.rivalry = clamp(relationship.rivalry + (kind === 'compete' ? 3 : -1), 0, 100);
+    relationship.jealousy = clamp(relationship.jealousy + (kind === 'compete' ? 2 : -0.7), 0, 100);
+    relationship.resourceTension = clamp(relationship.resourceTension + (kind === 'share' ? -2 : kind === 'compete' ? 2.5 : -0.4), 0, 100);
+    relationship.protectiveTendency = clamp(relationship.protectiveTendency + (kind === 'share' ? 1.2 : 0.25), 0, 100);
     this.scene.playSocialInteraction?.(kind);
     this.record('social', { otherId: this.state.secondaryPetId, kind }, { timeline: relationship.interactions === 1 });
     this.addMemory('pet-relationship', { otherId: this.state.secondaryPetId, kind }, kind === 'compete' ? 0.1 : 0.75, 0.55);
@@ -944,10 +941,7 @@ export class LivingSystems extends EventTarget {
   }
 
   updateBodyLanguage() {
-    const emotion = this.state.emotion.id;
-    const mapping = { excited: 'bouncy', bored: 'slow-looking', frightened: 'low-and-close', jealous: 'watchful', sleepy: 'heavy', curious: 'head-tilt', irritated: 'short-pacing', content: 'relaxed', lonely: 'approaching', proud: 'upright', anxious: 'pacing', playful: 'play-bow' };
-    this.state.bodyLanguage.last = mapping[emotion] || 'relaxed';
-    this.scene.setBodyLanguage?.(this.state.bodyLanguage.last, this.state.emotion.intensity);
+    this.simulationRuntime.updateBodyLanguage();
   }
 
   playObservation(answer) {
@@ -1077,6 +1071,83 @@ export class LivingSystems extends EventTarget {
   }
 
   replayEvent(eventId) { return this.startEvent(eventId); }
+
+  directInteraction(gesture = {}) {
+    const result = this.simulationRuntime.directInteraction(gesture);
+    this.record('pet', {
+      kind: gesture.kind || result.region || 'calm', region: result.region,
+      accepted: result.accepted, overstimulated: result.overstimulated,
+      reaction: result.reaction, speed: gesture.speed || 0, duration: gesture.duration || 0,
+      comforting: (gesture.speed || 0) < 850
+    });
+    return result;
+  }
+
+  interpretHiddenDesire(options = {}) {
+    return this.simulationRuntime.interpretDesire(options);
+  }
+
+  observeHiddenDesire(amount = 1) {
+    return this.simulationRuntime.observeDesire(amount);
+  }
+
+  resetLearnedRoutines() {
+    this.simulationRuntime.resetRoutines();
+    return true;
+  }
+
+  respondToEmergentEvent(response) {
+    return this.simulationRuntime.respondToEvent(response);
+  }
+
+  simulationDebugSnapshot() {
+    return this.simulationRuntime.debugSnapshot();
+  }
+
+  learnedPatterns() {
+    return {
+      habits: this.simulationRuntime.strongestHabits(8),
+      routines: this.simulationRuntime.routineSummary(8),
+      memories: [...(this.state.simulation.episodicMemories || [])].sort((a, b) => (b.lastRecalledAt || b.lastAt || b.timestamp) - (a.lastRecalledAt || a.lastAt || a.timestamp)).slice(0, 10),
+      fears: Object.entries(this.state.simulation.fears || {}).map(([id, fear]) => ({ id, ...fear })).sort((a, b) => b.intensity - a.intensity),
+      offline: this.state.simulation.offline.lastSummary,
+      event: this.state.simulation.emergentEvents.active,
+      desire: this.interpretHiddenDesire({ accessibility: true })
+    };
+  }
+
+  async startWorldActivity(activityId) {
+    const activities = {
+      fetch: { energy: 7, happiness: 7, bond: 1.7, species: 'any' },
+      'hide-treat': { energy: 5, happiness: 6, bond: 1.5, species: 'any' },
+      'scent-trail': { energy: 6, happiness: 7, bond: 1.8, species: 'dog' },
+      laser: { energy: 7, happiness: 8, bond: 1.4, species: 'cat' },
+      'obstacle-course': { energy: 9, happiness: 8, bond: 2, species: 'any' },
+      'command-sequence': { energy: 6, happiness: 5, bond: 2.2, species: 'any' },
+      'hide-seek': { energy: 7, happiness: 8, bond: 2.2, species: 'any' },
+      'toy-selection': { energy: 4, happiness: 6, bond: 1.3, species: 'any' }
+    };
+    const activity = activities[activityId];
+    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    if (!activity) return { ok: false, reason: 'unknown' };
+    if (activity.species !== 'any' && activity.species !== species) return { ok: false, reason: 'species' };
+    if (this.slot.stats.energy < activity.energy + 4) return { ok: false, reason: 'energy' };
+    this.scene.setAutonomous?.(false);
+    let result;
+    try {
+      result = await this.scene.runWorldActivity?.(activityId, { species, petId: this.slot.companionId, mastery: this.state.commands });
+    } finally {
+      if (!this.slot.isSleeping) this.scene.setAutonomous?.(true);
+    }
+    if (!result?.ok) return result || { ok: false, reason: 'scene' };
+    const quality = clamp(Number(result.quality) || 0.65, 0.2, 1);
+    this.store.modifyStats({ energy: -activity.energy, happiness: activity.happiness * quality, bond: activity.bond * quality }, `world-activity-${activityId}`);
+    this.store.gainProgress(Math.round(5 + quality * 7), Math.round(2 + quality * 4));
+    this.record('play', { gameId: activityId, activityId, success: quality >= 0.45, objectId: result.objectId, importance: 0.6 }, { timeline: true });
+    this.addMemory('world-activity', { activityId, room: this.scene.travelLocation || this.slot.activeRoom }, 0.65, 0.58);
+    if (activityId === 'toy-selection' && result.objectId) this.observePreference('favoriteToy', result.objectId, true, 15);
+    return { ...result, reward: Math.round(2 + quality * 4) };
+  }
 
   profileSummary() {
     const topTraits = Object.entries(this.state.personality).sort((a, b) => b[1] - a[1]).slice(0, 3);

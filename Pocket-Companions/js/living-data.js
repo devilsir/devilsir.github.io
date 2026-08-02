@@ -1,4 +1,4 @@
-export const LIVING_SCHEMA = 4;
+export const LIVING_SCHEMA = 5;
 
 export const TRAITS = ['playful', 'lazy', 'affectionate', 'brave', 'stubborn', 'foodMotivated', 'sociable', 'independent', 'curious', 'calm'];
 
@@ -81,7 +81,13 @@ export const COMMANDS = {
   jump: { name: { en: 'Jump', pt: 'Pular' }, animation: ['jump_start', 'jump', 'jump_end'] },
   dead: { name: { en: 'Play dead', pt: 'Fingir de morto' }, animation: ['lie_down', 'lying_down_idle', 'idle'] },
   dance: { name: { en: 'Dance', pt: 'Dançar' }, animation: ['give_paw', 'jump', 'idle'] },
-  come: { name: { en: 'Come here', pt: 'Vem aqui' }, animation: ['run', 'walk'] }
+  come: { name: { en: 'Come here', pt: 'Vem aqui' }, animation: ['run', 'walk'] },
+  bed: { name: { en: 'Go to bed', pt: 'Ir para a cama' }, animation: ['walk', 'lie_down', 'idle'] },
+  leave: { name: { en: 'Leave it', pt: 'Deixa' }, animation: ['sit', 'idle'] },
+  wait: { name: { en: 'Wait', pt: 'Esperar' }, animation: ['sitting_idle', 'sit', 'idle'] },
+  follow: { name: { en: 'Follow', pt: 'Seguir' }, animation: ['walk', 'run'] },
+  stop: { name: { en: 'Stop', pt: 'Parar' }, animation: ['idle', 'sit'] },
+  marker: { name: { en: 'Touch marker', pt: 'Tocar o marcador' }, animation: ['walk', 'give_paw', 'idle'] }
 };
 
 export const SKILL_PATHS = {

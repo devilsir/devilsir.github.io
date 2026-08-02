@@ -241,28 +241,17 @@ export class GameStore extends EventTarget {
 
   applyOfflineProgress() {
     const slot = this.active;
-    if (!slot || !this.settings.realTimeDecay) return 0;
+    if (!slot) return 0;
     const now = Date.now();
     const elapsedHours = Math.min(MAX_OFFLINE_HOURS, Math.max(0, (now - (slot.lastActive || now)) / 3600000));
-    if (elapsedHours < 0.01) return elapsedHours;
-    const personality = PETS[slot.companionId]?.modifiers || {};
-    if (slot.isSleeping) {
-      slot.stats.hunger = clamp(slot.stats.hunger - DECAY_PER_HOUR.hunger * elapsedHours * 0.55);
-      slot.stats.happiness = clamp(slot.stats.happiness - DECAY_PER_HOUR.happiness * elapsedHours * 0.22);
-      slot.stats.energy = clamp(slot.stats.energy + 28 * elapsedHours);
-      slot.stats.hygiene = clamp(slot.stats.hygiene - DECAY_PER_HOUR.hygiene * elapsedHours * 0.45);
-      slot.stats.health = clamp(slot.stats.health + 2.2 * elapsedHours);
-      if (slot.stats.energy >= 99) slot.isSleeping = false;
-    } else {
-      slot.stats.hunger = clamp(slot.stats.hunger - DECAY_PER_HOUR.hunger * elapsedHours);
-      slot.stats.happiness = clamp(slot.stats.happiness - DECAY_PER_HOUR.happiness * elapsedHours * (personality.boredom || 1));
-      slot.stats.energy = clamp(slot.stats.energy - DECAY_PER_HOUR.energy * elapsedHours);
-      slot.stats.hygiene = clamp(slot.stats.hygiene - DECAY_PER_HOUR.hygiene * elapsedHours);
-      const pressure = Math.max(0, 35 - Math.min(slot.stats.hunger, slot.stats.energy, slot.stats.hygiene)) / 35;
-      slot.stats.health = clamp(slot.stats.health - (DECAY_PER_HOUR.health + pressure * 1.8) * elapsedHours);
+    slot.living = migrateLivingState(slot);
+    if (this.settings.realTimeDecay && elapsedHours >= 0.01) {
+      slot.living.simulation.offline.pending = {
+        from: slot.lastActive || now - elapsedHours * 3600000,
+        to: now,
+        durationMs: elapsedHours * 3600000
+      };
     }
-    slot.stats.bond = clamp(slot.stats.bond - DECAY_PER_HOUR.bond * elapsedHours);
-    slot.stats.fullness = clamp(slot.stats.fullness - 5 * elapsedHours);
     slot.lastActive = now;
     return elapsedHours;
   }

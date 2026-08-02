@@ -447,4 +447,8 @@
   .wardrobe-axis-grid input[type="number"] { padding-inline: 0.4rem; font-size: 0.72rem; }
   .wardrobe-section-heading { align-items: flex-start; }
   .wardrobe-link-scale { white-space: normal; }
+  .body-language-hint { bottom: calc(9.7rem + var(--safe-bottom)); max-width: 88vw; font-size: 0.68rem; }
+  .emergent-event-panel { top: auto; right: max(0.55rem, var(--safe-right)); bottom: calc(10rem + var(--safe-bottom)); width: min(360px, calc(100vw - 1.1rem)); }
+  .simulation-debug { left: max(0.45rem, var(--safe-left)); top: max(4.8rem, calc(var(--safe-top) + 4.3rem)); width: calc(100vw - 0.9rem); max-height: 34vh; }
+  .decoration-editor-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
