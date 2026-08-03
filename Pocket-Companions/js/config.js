@@ -1,6 +1,7 @@
-export const APP_VERSION = 19;
+export const APP_VERSION = 24;
 export const STORAGE_KEY = 'pocket-companions:saves:v1';
 export const SETTINGS_KEY = 'pocket-companions:global-settings:v1';
+export const ROBOT_COMPANIONS_ENABLED = false;
 
 export const PETS = {
   apollo: {
@@ -185,7 +186,8 @@ export const NEEDS = [
   { key: 'energy', label: 'Energy', icon: 'bolt', good: 'Rested', low: 'Tired' },
   { key: 'hygiene', label: 'Hygiene', icon: 'drop', good: 'Fresh', low: 'Needs cleaning' },
   { key: 'health', label: 'Health', icon: 'heart', good: 'Feeling good', low: 'Needs care' },
-  { key: 'bond', label: 'Bond', icon: 'spark', good: 'Close friends', low: 'Getting acquainted' }
+  { key: 'bond', label: 'Bond', icon: 'spark', good: 'Close friends', low: 'Getting acquainted' },
+  { key: 'social', label: 'Sociability', icon: 'paw', good: 'Socially fulfilled', low: 'Needs company' }
 ];
 
 export const FOODS = {
@@ -200,7 +202,7 @@ export const SHOP_OFFERS = [
   { id: 'snack', name: 'Crunchy snack', description: 'A quick snack with a happiness boost.', cost: 8, amount: 1, symbol: '◇' },
   { id: 'treat', name: 'Star treat', description: 'A special treat for extra happiness.', cost: 10, amount: 1, symbol: '★' },
   { id: 'water', name: 'Fresh water', description: 'Restores hydration, health, and energy.', cost: 5, amount: 1, symbol: '◒' },
-  { id: 'medicine', name: 'Gentle medicine', description: 'A care supply for moments of low health.', cost: 20, amount: 1, symbol: '+' }
+  { id: 'medicine', name: 'Gentle medicine', description: 'A care supply for moments of low health.', cost: 20, amount: 1, symbol: '+' },
 ];
 
 export const ROOMS = {
@@ -209,8 +211,22 @@ export const ROOMS = {
   bedroom: { id: 'bedroom', name: 'Bedroom', unlockLevel: 2, cost: 70, description: 'A peaceful place for deeper rest.' },
   kitchen: { id: 'kitchen', name: 'Kitchen', unlockLevel: 3, cost: 110, description: 'A bright spot for meals and food discoveries.' },
   playroom: { id: 'playroom', name: 'Playroom', unlockLevel: 3, cost: 130, description: 'Extra room for toys and quick games.' },
+  bathroom: { id: 'bathroom', name: 'Bathroom', unlockLevel: 4, cost: 150, description: 'A polished bath space with tubs, storage, and fresh routines.' },
   park: { id: 'park', name: 'Pocket park', unlockLevel: 4, cost: 170, description: 'A tiny outdoor park made for running.' },
   training: { id: 'training', name: 'Training area', unlockLevel: 5, cost: 220, description: 'A compact course for jumping and movement.' }
+};
+
+
+
+export const ROBOT_COMPANIONS = {
+  'robot-dog': { id: 'robot-dog', name: 'Unitree Buddy', model: 'assets/models/robot_dog_unitree_go1.glb', targetHeight: 0.92, accent: '#89c4ff' },
+  'robot-cat': { id: 'robot-cat', name: 'Circuit Cat', model: 'assets/models/robotic_cat.glb', targetHeight: 0.76, accent: '#ffb7d1' }
+};
+
+export const OUTDOOR_WILDLIFE = {
+  rabbit: { id: 'rabbit', model: 'assets/models/rabbit_rigged.glb', targetHeight: 0.52 },
+  butterfly: { id: 'butterfly', model: 'assets/models/ulysses_butterfly.glb', targetHeight: 0.12, yawOffset: Math.PI },
+  butterfly2: { id: 'butterfly2', model: 'assets/models/animated_butterfly.glb', targetHeight: 0.18, yawOffset: 0 }
 };
 
 export const MINIGAMES = [

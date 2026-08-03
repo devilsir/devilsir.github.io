@@ -114,6 +114,13 @@ export const activitiesMethods = {
     this.emergentVisualState = null;
     if (!event || !this.scene) {
       if (!this.activityState && !this.secondaryAction) this.contextualFocus = null;
+      if (this.mode !== 'sleep') {
+        requestAnimationFrame(() => {
+          this.ensurePetOutsideObstacles?.(this.currentPet, this.currentPet?.stage?.position?.clone?.());
+          const secondary = this.secondaryPetId ? this.pets?.get?.(this.secondaryPetId) : null;
+          if (secondary) this.ensurePetOutsideObstacles?.(secondary, secondary.stage?.position?.clone?.());
+        });
+      }
       return;
     }
     const group = new THREE.Group();
@@ -130,6 +137,16 @@ export const activitiesMethods = {
     this.emergentEventGroup = group;
     this.emergentVisualState = { event, mesh, phase: Math.random() * Math.PI * 2 };
     this.contextualFocus = mesh.position.clone();
+    if (this.mode !== 'sleep') {
+      const stabilize = () => {
+        if (!this.emergentVisualState || this.mode === 'sleep') return;
+        this.ensurePetOutsideObstacles?.(this.currentPet, this.currentPet?.stage?.position?.clone?.());
+        const secondary = this.secondaryPetId ? this.pets?.get?.(this.secondaryPetId) : null;
+        if (secondary) this.ensurePetOutsideObstacles?.(secondary, secondary.stage?.position?.clone?.());
+      };
+      requestAnimationFrame(stabilize);
+      window.setTimeout(stabilize, 140);
+    }
   },
 
   updateSceneNarratives(delta) {

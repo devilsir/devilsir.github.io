@@ -60,28 +60,86 @@ export class AudioSystem {
     this.musicSource = null;
     this.currentMusic = null;
     this.currentAmbient = null;
+    this.desiredMusic = null;
+    this.desiredAmbient = null;
+    this.unlocked = false;
+    this.unlockPromise = null;
+    this.gestureTarget = null;
+    this.gestureHandler = null;
+    this.musicRequestId = 0;
+    this.ambientRequestId = 0;
   }
 
-  async unlock() {
-    if (!this.context) {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      this.context = new AudioContextClass();
-      this.master = this.context.createGain();
-      this.effects = this.context.createGain();
-      this.ambient = this.context.createGain();
-      this.music = this.context.createGain();
-      this.effects.connect(this.master);
-      this.ambient.connect(this.master);
-      this.music.connect(this.master);
-      this.master.connect(this.context.destination);
-      this.applyVolumes();
+  bindGestureUnlock(target = document) {
+    if (!target?.addEventListener || this.gestureHandler) return;
+    this.gestureTarget = target;
+    this.gestureHandler = () => { void this.unlock({ fromGesture: true }); };
+    target.addEventListener('pointerdown', this.gestureHandler, { capture: true, passive: true });
+    target.addEventListener('touchstart', this.gestureHandler, { capture: true, passive: true });
+    target.addEventListener('keydown', this.gestureHandler, { capture: true });
+  }
+
+  unbindGestureUnlock() {
+    if (!this.gestureTarget || !this.gestureHandler) return;
+    this.gestureTarget.removeEventListener('pointerdown', this.gestureHandler, true);
+    this.gestureTarget.removeEventListener('touchstart', this.gestureHandler, true);
+    this.gestureTarget.removeEventListener('keydown', this.gestureHandler, true);
+    this.gestureTarget = null;
+    this.gestureHandler = null;
+  }
+
+  canUnlockNow(fromGesture = false) {
+    if (fromGesture) return true;
+    const activation = typeof navigator !== 'undefined' ? navigator.userActivation : null;
+    return Boolean(activation?.isActive || this.context?.state === 'running');
+  }
+
+  createGraph() {
+    if (this.context) return true;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return false;
+    this.context = new AudioContextClass();
+    this.master = this.context.createGain();
+    this.effects = this.context.createGain();
+    this.ambient = this.context.createGain();
+    this.music = this.context.createGain();
+    this.effects.connect(this.master);
+    this.ambient.connect(this.master);
+    this.music.connect(this.master);
+    this.master.connect(this.context.destination);
+    this.applyVolumes();
+    return true;
+  }
+
+  async unlock({ fromGesture = false } = {}) {
+    if (this.context?.state === 'running') {
+      this.unlocked = true;
+      this.unbindGestureUnlock();
+      return true;
     }
-    if (this.context.state === 'suspended') await this.context.resume();
+    if (!this.canUnlockNow(fromGesture)) return false;
+    if (this.unlockPromise) return this.unlockPromise;
+
+    this.unlockPromise = (async () => {
+      if (!this.createGraph()) return false;
+      try {
+        if (this.context.state === 'suspended') await this.context.resume();
+      } catch {
+        return false;
+      }
+      this.unlocked = this.context.state === 'running';
+      if (!this.unlocked) return false;
+      this.applyVolumes();
+      this.unbindGestureUnlock();
+      void this.flushPendingTracks();
+      return true;
+    })().finally(() => { this.unlockPromise = null; });
+
+    return this.unlockPromise;
   }
 
   applyVolumes() {
-    if (!this.context) return;
+    if (!this.context || !this.master || !this.effects || !this.ambient || !this.music) return;
     const settings = this.getSettings();
     const mute = settings.muted ? 0 : 1;
     const master = Math.max(0, Math.min(1, settings.masterVolume ?? 1)) * mute;
@@ -92,8 +150,8 @@ export class AudioSystem {
   }
 
   async load(name) {
-    await this.unlock();
-    if (!this.context || this.buffers.has(name)) return this.buffers.get(name);
+    if (!this.unlocked || !this.context) return null;
+    if (this.buffers.has(name)) return this.buffers.get(name);
     const path = SOUND_PATHS[name];
     if (!path) return null;
     try {
@@ -110,10 +168,10 @@ export class AudioSystem {
   }
 
   async play(name, options = {}) {
-    await this.unlock();
+    if (!this.unlocked && !(await this.unlock())) return null;
     this.applyVolumes();
     const buffer = await this.load(name);
-    if (!buffer || !this.context) return;
+    if (!buffer || !this.context) return null;
     const source = this.context.createBufferSource();
     const gain = this.context.createGain();
     gain.gain.value = options.volume ?? 1;
@@ -126,10 +184,12 @@ export class AudioSystem {
   }
 
   async setAmbient(name) {
-    if (this.currentAmbient === name) return;
-    await this.unlock();
+    this.desiredAmbient = name || null;
+    const requestId = ++this.ambientRequestId;
+    if (!name || !this.unlocked || !this.context) return null;
+    if (this.currentAmbient === name && this.ambientSource) return this.ambientSource;
     const buffer = await this.load(name);
-    if (!buffer || !this.context) return;
+    if (!buffer || !this.context || requestId !== this.ambientRequestId || this.desiredAmbient !== name) return null;
     if (this.ambientSource) {
       try { this.ambientSource.stop(); } catch {}
       this.ambientSource.disconnect();
@@ -141,14 +201,16 @@ export class AudioSystem {
     source.start();
     this.ambientSource = source;
     this.currentAmbient = name;
+    return source;
   }
 
-
   async setMusic(name) {
-    if (this.currentMusic === name) return;
-    await this.unlock();
+    this.desiredMusic = name || null;
+    const requestId = ++this.musicRequestId;
+    if (!name || !this.unlocked || !this.context) return null;
+    if (this.currentMusic === name && this.musicSource) return this.musicSource;
     const buffer = await this.load(name);
-    if (!buffer || !this.context) return;
+    if (!buffer || !this.context || requestId !== this.musicRequestId || this.desiredMusic !== name) return null;
     if (this.musicSource) {
       try { this.musicSource.stop(); } catch {}
       this.musicSource.disconnect();
@@ -160,23 +222,38 @@ export class AudioSystem {
     source.start();
     this.musicSource = source;
     this.currentMusic = name;
+    return source;
+  }
+
+  async flushPendingTracks() {
+    if (!this.unlocked) return;
+    const music = this.desiredMusic;
+    const ambient = this.desiredAmbient;
+    await Promise.all([
+      music ? this.setMusic(music) : Promise.resolve(),
+      ambient ? this.setAmbient(ambient) : Promise.resolve()
+    ]);
   }
 
   stopMusic() {
+    this.desiredMusic = null;
+    this.musicRequestId += 1;
     if (this.musicSource) {
       try { this.musicSource.stop(); } catch {}
       this.musicSource.disconnect();
       this.musicSource = null;
-      this.currentMusic = null;
     }
+    this.currentMusic = null;
   }
 
   stopAmbient() {
+    this.desiredAmbient = null;
+    this.ambientRequestId += 1;
     if (this.ambientSource) {
       try { this.ambientSource.stop(); } catch {}
       this.ambientSource.disconnect();
       this.ambientSource = null;
-      this.currentAmbient = null;
     }
+    this.currentAmbient = null;
   }
 }

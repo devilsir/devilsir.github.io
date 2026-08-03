@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b0b12" />
+    <meta
+      name="description"
+      content="Werewolf Bite — um RPG de fantasia sombria para navegador sobre Moonborn e Bloodbound."
+    />
+    <title>Werewolf Bite</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=20260803-reward-enemy-art-v3" />
+    <link rel="stylesheet" href="character.css" />
+  </head>
+  <body>
+    <noscript
+      ><div class="noscript">Werewolf Bite precisa de JavaScript para funcionar.</div></noscript
+    >
+
+    <div id="boot" class="boot-screen" aria-live="polite">
+      <div class="boot-mark" aria-hidden="true">WB</div>
+      <div class="boot-title">WEREWOLF BITE</div>
+      <div class="boot-line"><span></span></div>
+      <p id="bootText">Despertando o Eclipse Oco…</p>
+    </div>
+
+    <div id="app" class="app-shell is-hidden">
+      <div id="fx" class="global-fx" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="cloud cloud-a"></div>
+        <div class="cloud cloud-b"></div>
+        <div class="fog fog-a"></div>
+        <div class="fog fog-b"></div>
+        <canvas id="particleCanvas"></canvas>
+        <div id="lightning" class="lightning"></div>
+      </div>
+
+      <section
+        id="opening"
+        class="opening-screen screen is-active"
+        aria-label="Tela de abertura"
+      >
+        <div class="ruined-city" aria-hidden="true">
+          <div class="tower t1"></div>
+          <div class="tower t2"></div>
+          <div class="tower t3"></div>
+          <div class="arch"></div>
+          <div class="spire"></div>
+          <div class="silhouette wolf-sil"></div>
+          <div class="silhouette vamp-sil"></div>
+          <div class="bat b1">◆</div>
+          <div class="bat b2">◆</div>
+          <div class="bat b3">◆</div>
+        </div>
+        <div class="opening-card glass-panel">
+          <div class="eyebrow">O ECLIPSE OCO COMEÇOU</div>
+          <h1 class="game-logo"><span>WEREWOLF</span><strong>BITE</strong></h1>
+          <p class="opening-copy">
+            Duas linhagens. Uma noite agonizante. A fronteira ancestral se rompeu,
+            e algo mais antigo que as duas facções está se alimentando da guerra.
+          </p>
+          <div class="opening-actions">
+            <button type="button" id="newGameBtn" class="btn btn-primary">Novo jogo</button>
+            <button type="button" id="continueBtn" class="btn btn-secondary">Continuar</button>
+            <button type="button" data-open-modal="settings" class="btn btn-ghost">
+              Settings
+            </button>
+            <button type="button" data-open-modal="credits" class="btn btn-ghost">
+              Credits
+            </button>
+          </div>
+          <div class="opening-footer">
+            <button type="button"
+              id="muteBtnOpening"
+              class="icon-btn"
+              aria-label="Ativar ou desativar áudio"
+            >
+              ♪
+            </button>
+            <span>Crônica local • salvamento automático ativado</span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="creator"
+        class="creator-screen screen"
+        aria-label="Criação de personagem"
+      >
+        <div class="creator-grid">
+          <div id="creatorPreviewPanel" class="creator-preview glass-panel">
+            <div class="creator-heading">
+              <div>
+                <span class="eyebrow">O ATELIÊ DA NOITE</span>
+                <h2>Forje sua lenda</h2>
+              </div>
+              <span
+                id="creatorFactionSeal"
+                class="creator-faction-seal"
+                aria-hidden="true"
+                >◒</span
+              >
+            </div>
+            <div class="creator-stage-frame">
+              <div
+                id="creatorPortrait"
+                class="portrait-stage large"
+                aria-live="polite"
+              ></div>
+              <div class="creator-stage-actions">
+                <button
+                  type="button"
+                  id="randomizeCharacterBtn"
+                  class="stage-action"
+                  aria-label="Sortear aparência"
+                >
+                  ✦ Sortear
+                </button>
+                <button
+                  type="button"
+                  id="creatorFocusBtn"
+                  class="stage-action"
+                  aria-pressed="false"
+                >
+                  ◎ Foco no retrato
+                </button>
+              </div>
+              <div class="creator-nameplate" aria-live="polite">
+                <span id="creatorPreviewBloodline">Moonborn</span>
+                <strong id="creatorPreviewName">Herdeiro sem nome</strong>
+                <small id="creatorLookSummary"
+                  >Sua silhueta será descrita aqui.</small
+                >
+              </div>
+            </div>
+            <div
+              id="creatorLookBadges"
+              class="creator-look-badges"
+              role="group"
+              aria-label="Resumo da aparência atual"
+            ></div>
+            <div id="creatorFactionLore" class="faction-lore"></div>
+          </div>
+
+          <form id="creatorForm" class="creator-form glass-panel">
+            <header class="creator-form-header">
+              <span class="eyebrow">CRIAÇÃO DE PERSONAGEM</span>
+              <h2>Cada cicatriz conta uma guerra</h2>
+              <p>
+                Crie um retrato em camadas com silhueta marcante, história
+                ritual e identidade de facção. Cada escolha é salva e pode ser
+                editada depois.
+              </p>
+            </header>
+
+            <div class="field creator-name-field">
+              <label for="characterName">Nome do personagem</label>
+              <input
+                type="text"
+                id="characterName"
+                name="name"
+                maxlength="18"
+                autocomplete="off"
+                placeholder="Digite um nome"
+                required
+              />
+            </div>
+
+            <fieldset class="choice-group creator-faction-choice">
+              <legend class="field-label">Linhagem</legend>
+              <div class="segmented two">
+                <button
+                  type="button"
+                  class="seg faction-seg active"
+                  data-choice="faction"
+                  data-value="moonborn"
+                  aria-pressed="true"
+                >
+                  <span class="faction-icon" aria-hidden="true">◒</span>
+                  <span
+                    ><strong>Moonborn</strong
+                    ><small>Instinto • osso • pedra da lua</small></span
+                  >
+                </button>
+                <button
+                  type="button"
+                  class="seg faction-seg"
+                  data-choice="faction"
+                  data-value="bloodbound"
+                  aria-pressed="false"
+                >
+                  <span class="faction-icon" aria-hidden="true">♦</span>
+                  <span
+                    ><strong>Bloodbound</strong
+                    ><small>Ritual • veludo • cristal de sangue</small></span
+                  >
+                </button>
+              </div>
+            </fieldset>
+
+            <div
+              class="creator-tabs"
+              role="tablist"
+              aria-label="Categorias de personalização do personagem"
+            >
+              <button
+                type="button"
+                id="creatorTabForm"
+                class="creator-tab active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="creatorPanelForm"
+                data-creator-tab="form"
+              >
+                Form
+              </button>
+              <button
+                type="button"
+                id="creatorTabFeatures"
+                class="creator-tab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="creatorPanelFeatures"
+                data-creator-tab="features"
+              >
+                Features
+              </button>
+              <button
+                type="button"
+                id="creatorTabRegalia"
+                class="creator-tab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="creatorPanelRegalia"
+                data-creator-tab="regalia"
+              >
+                Regalia
+              </button>
+              <button
+                type="button"
+                id="creatorTabLegacy"
+                class="creator-tab"
+                role="tab"
+                aria-selected="false"
+                aria-controls="creatorPanelLegacy"
+                data-creator-tab="legacy"
+              >
+                Legacy
+              </button>
+            </div>
+
+            <section
+              id="creatorPanelForm"
+              class="creator-tab-panel active"
+              role="tabpanel"
+              aria-labelledby="creatorTabForm"
+              data-creator-panel="form"
+            >
+              <div class="creator-section-copy">
+                <span>01</span>
+                <div>
+                  <h3>Base visual</h3>
+                  <p>Escolha a arte-base e o tom de pele ou pelagem.</p>
+                </div>
+              </div>
+              <div class="creator-field-grid">
+                <div class="field">
+                  <label for="portraitSelect">Arte base</label
+                  ><select id="portraitSelect" name="portrait"></select>
+                </div>
+                <div class="field">
+                  <label for="skinSelect">Tom de pele / pelagem</label
+                  ><select id="skinSelect" name="skinColor"></select>
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="creatorPanelFeatures"
+              class="creator-tab-panel"
+              role="tabpanel"
+              aria-labelledby="creatorTabFeatures"
+              data-creator-panel="features"
+              hidden
+            >
+              <div class="creator-section-copy">
+                <span>02</span>
+                <div>
+                  <h3>Traços</h3>
+                  <p>Modele o olhar, a juba e as marcas sobrenaturais.</p>
+                </div>
+              </div>
+              <div class="creator-field-grid">
+                <div class="field">
+                  <label for="hairSelect">Estilo de cabelo / pelagem</label
+                  ><select id="hairSelect" name="hairStyle"></select>
+                </div>
+                <div class="field">
+                  <label for="hairColorSelect">Cor do cabelo / pelagem</label
+                  ><select id="hairColorSelect" name="hairColor"></select>
+                </div>
+                <div class="field">
+                  <label for="beardSelect">Barba / focinho</label
+                  ><select id="beardSelect" name="beardStyle"></select>
+                </div>
+                <div class="field">
+                  <label for="eyeSelect">Cor dos olhos</label
+                  ><select id="eyeSelect" name="eyeColor"></select>
+                </div>
+                <div class="field">
+                  <label for="eyeGlowSelect">Brilho dos olhos</label
+                  ><select id="eyeGlowSelect" name="eyeGlow"></select>
+                </div>
+                <div class="field wide">
+                  <label for="markingSelect">Cicatrizes e marcas</label
+                  ><select id="markingSelect" name="marking"></select>
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="creatorPanelRegalia"
+              class="creator-tab-panel"
+              role="tabpanel"
+              aria-labelledby="creatorTabRegalia"
+              data-creator-panel="regalia"
+              hidden
+            >
+              <div class="creator-section-copy">
+                <span>03</span>
+                <div>
+                  <h3>Indumentária</h3>
+                  <p>
+                    Layer leather, ritual cloth, engraved metal and heirloom
+                    details.
+                  </p>
+                </div>
+              </div>
+              <div class="creator-field-grid">
+                <div class="field">
+                  <label for="outfitSelect">Traje base</label
+                  ><select id="outfitSelect" name="outfit"></select>
+                </div>
+<div class="field">
+                  <label for="accessorySelect">Acessório de família</label
+                  ><select id="accessorySelect" name="accessory"></select>
+                </div>
+                <div class="field">
+                  <label for="metalSelect">Acabamento metálico</label
+                  ><select id="metalSelect" name="metal"></select>
+                </div>
+                <div class="field wide">
+                  <label for="accentSelect">Cor ritual</label
+                  ><select id="accentSelect" name="accent"></select>
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="creatorPanelLegacy"
+              class="creator-tab-panel"
+              role="tabpanel"
+              aria-labelledby="creatorTabLegacy"
+              data-creator-panel="legacy"
+              hidden
+            >
+              <div class="creator-section-copy">
+                <span>04</span>
+                <div>
+                  <h3>Legado</h3>
+                  <p>
+                    Escolha o passado e a disciplina que moldam sua crônica.
+                  </p>
+                </div>
+              </div>
+              <div class="creator-field-grid">
+                <div class="field">
+                  <label for="backgroundSelect">Origem</label
+                  ><select id="backgroundSelect" name="background"></select>
+                </div>
+                <div class="field">
+                  <label for="specSelect">Especialização</label
+                  ><select id="specSelect" name="specialization"></select>
+                </div>
+              </div>
+              <div id="specDescription" class="spec-card"></div>
+            </section>
+
+            <div class="creator-actions">
+              <button type="button" id="creatorBackBtn" class="btn btn-ghost">
+                Back
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Seal the Linhagem
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="game" class="game-screen screen" aria-label="Interface do jogo">
+        <header class="topbar">
+          <button type="button"
+            id="menuToggle"
+            class="icon-btn mobile-only"
+            aria-label="Abrir navegação"
+          >
+            ☰
+          </button>
+          <div class="brand-mini">
+            <span>WB</span><strong>Werewolf Bite</strong>
+          </div>
+          <div class="top-resources">
+            <div class="resource-chip health">
+              <span>♥</span><b id="topHealth">0/0</b>
+            </div>
+            <div class="resource-chip energy">
+              <span>⚡</span><b id="topEnergy">0/0</b
+              ><small id="energyTimer"></small>
+            </div>
+            <div class="resource-chip gold">
+              <span>◈</span><b id="topGold">0</b>
+            </div>
+            <div class="resource-chip shards">
+              <span>✦</span><b id="topShards">0</b>
+            </div>
+          </div>
+          <div class="top-actions">
+            <button type="button" id="dailyBtn" class="icon-btn" title="Recompensas diárias">
+              ☾
+            </button>
+            <button type="button" id="manualSaveBtn" class="icon-btn" title="Salvar">▣</button>
+            <button type="button" id="muteBtn" class="icon-btn" title="Áudio">♪</button>
+          </div>
+        </header>
+
+        <aside id="sidebar" class="sidebar">
+          <div id="sidebarProfile" class="sidebar-profile"></div>
+          <nav id="mainNav" class="main-nav" aria-label="Navegação principal">
+            <button type="button" data-view="overview" class="nav-item active">
+              <span>⌂</span>Overview
+            </button>
+            <button type="button" data-view="character" class="nav-item">
+              <span>♟</span>Character
+            </button>
+            <button type="button" data-view="hunt" class="nav-item">
+              <span>◒</span>Hunt
+            </button>
+            <button type="button" data-view="city" class="nav-item">
+              <span>♜</span>City
+            </button>
+            <button type="button" data-view="arena" class="nav-item">
+              <span>⚔</span>Arena
+            </button>
+            <button type="button" data-view="missions" class="nav-item">
+              <span>◆</span>Missions
+            </button>
+            <button type="button" data-view="inventory" class="nav-item">
+              <span>▦</span>Inventory
+            </button>
+            <button type="button" data-view="merchant" class="nav-item">
+              <span>♧</span>Merchant
+            </button>
+            <button type="button" data-view="hideout" class="nav-item">
+              <span>⌂</span>Hideout
+            </button>
+            <button type="button" data-view="clan" class="nav-item">
+              <span>♛</span>Clan
+            </button>
+            <button type="button" data-view="bestiary" class="nav-item">
+              <span>☠</span>Bestiary
+            </button>
+            <button type="button" data-view="achievements" class="nav-item">
+              <span>★</span>Achievements
+            </button>
+            <button type="button" data-view="ranking" class="nav-item">
+              <span>▲</span>Ranking
+            </button>
+            <button type="button" data-view="messages" class="nav-item">
+              <span>✉</span>Messages
+            </button>
+            <button type="button" data-view="settings" class="nav-item">
+              <span>⚙</span>Settings
+            </button>
+          </nav>
+        </aside>
+
+        <main id="viewRoot" class="view-root" tabindex="-1"></main>
+        <div id="mobileNav" class="mobile-nav"></div>
+      </section>
+
+      <section
+        id="combatOverlay"
+        class="combat-overlay"
+        aria-label="Combate"
+        aria-hidden="true"
+      ></section>
+      <section
+        id="eventOverlay"
+        class="event-overlay"
+        aria-label="Evento de caçada"
+        aria-hidden="true"
+      ></section>
+
+      <div id="modalRoot" class="modal-root" aria-live="polite"></div>
+      <div id="toastRoot" class="toast-root" aria-live="polite"></div>
+      <div id="tooltip" class="tooltip" role="tooltip"></div>
+    </div>
+
+    <input
+      id="saveImportInput"
+      name="saveImport"
+      type="file"
+      accept="application/json"
+      aria-label="Importar arquivo de salvamento"
+      hidden
+    />
+
+    <script src="js/config.js?v=20260803-reward-enemy-art-v3"></script>
+    <script src="js/data.js"></script>
+    <script src="js/i18n-ptbr.js"></script>
+    <script src="js/portrait-presets.js?v=20260802-moonborn-svg-v3"></script>
+    <script src="js/character-art.js?v=20260803-reward-enemy-art-v3"></script>
+    <script src="js/app.js?v=20260803-story-progress-v1"></script>
+  </body>
+</html>

@@ -101,7 +101,7 @@
         <button id="next-pet" class="carousel-button" type="button" aria-label="Next companion">Next</button>
       </div>
       <div class="selection-footer">
-        <p>Drag to rotate. Scroll or pinch to zoom slightly.</p>
+        <p>Drag to rotate. Scroll or pinch to zoom in and out.</p>
         <p class="selection-warning">Changing companions later requires another save slot or resetting this slot.</p>
         <button id="choose-pet" class="button button-primary button-large" type="button">Choose this companion</button>
       </div>
@@ -125,6 +125,7 @@
           <button id="daily-button" class="icon-button" type="button">Daily</button>
           <button id="photo-button" class="icon-button" type="button">Photo</button>
           <button id="wardrobe-button" class="icon-button" type="button">Armário</button>
+          <button id="build-button" class="icon-button" type="button">Construir</button>
           <button class="icon-button" data-open-modal="settings-modal" type="button">Settings</button>
           <button id="pause-button" class="icon-button" type="button" aria-pressed="false">Pause</button>
         </div>
@@ -201,19 +202,20 @@
         </header>
 
         <div class="wardrobe-scroll">
-          <p class="wardrobe-intro">Escolha um pet e um acessório. Os ajustes são aplicados ao modelo em tempo real e ficam salvos apenas neste navegador até você exportar o JSON.</p>
+          <p class="wardrobe-intro">Personalize somente o pet ativo. O modelo permanece estático enquanto você ajusta os acessórios já desbloqueados.</p>
 
-          <div class="wardrobe-selectors">
-            <label for="wardrobe-pet">Pet
-              <select id="wardrobe-pet" name="wardrobePet"></select>
-            </label>
-            <label for="wardrobe-accessory">Acessório
+          <div class="wardrobe-active-pet" aria-live="polite">
+            <span>Pet selecionado</span>
+            <strong id="wardrobe-pet-name">—</strong>
+            <small>As mudanças deste armário não são aplicadas aos outros pets.</small>
+          </div>
+
+          <div class="wardrobe-selectors wardrobe-selectors-single">
+            <label for="wardrobe-accessory">Acessório desbloqueado
               <select id="wardrobe-accessory" name="wardrobeAccessory"></select>
             </label>
-            <label for="wardrobe-animation">Animação de teste
-              <select id="wardrobe-animation" name="wardrobeAnimation"></select>
-            </label>
           </div>
+          <p id="wardrobe-empty" class="wardrobe-empty" hidden>Você ainda não desbloqueou acessórios para este pet. Visite a Loja para comprar o primeiro.</p>
 
           <div class="wardrobe-gizmo-toolbar" role="toolbar" aria-label="Ferramentas do gizmo 3D">
             <button class="wardrobe-gizmo-button is-active" type="button" data-wardrobe-gizmo="translate" aria-pressed="true" title="Mover (W)">
@@ -271,10 +273,86 @@
 
           <div class="wardrobe-actions">
             <button id="wardrobe-reset-current" class="button button-secondary" type="button">Resetar acessório</button>
-            <button id="wardrobe-reset-all" class="button button-ghost" type="button">Resetar tudo</button>
+            <button id="wardrobe-reset-all" class="button button-ghost" type="button">Resetar encaixes deste pet</button>
             <button id="wardrobe-copy" class="button button-secondary" type="button">Copiar JSON</button>
             <button id="wardrobe-export" class="button button-primary" type="button">Exportar JSON</button>
           </div>
+        </div>
+      </aside>
+
+      <aside id="build-panel" class="build-panel" aria-labelledby="build-title" hidden>
+        <header class="build-header">
+          <div>
+            <p class="eyebrow">Loja e construção</p>
+            <h2 id="build-title">Decorar ambiente</h2>
+          </div>
+          <button id="build-close" class="icon-button" type="button" aria-label="Fechar modo construção">Fechar</button>
+        </header>
+        <div class="build-scroll">
+          <div class="build-room-summary">
+            <div><span>Área atual</span><strong id="build-room-name">—</strong></div>
+            <div><span>Saldo</span><strong id="build-wallet">0 moedas</strong></div>
+          </div>
+
+          <section class="build-upgrade-card" aria-labelledby="build-upgrade-title">
+            <div>
+              <p class="eyebrow">Expansão permanente</p>
+              <h3 id="build-upgrade-title">Tamanho do cômodo</h3>
+              <p id="build-upgrade-copy">Nível atual e próxima expansão.</p>
+            </div>
+            <button id="build-upgrade" class="button button-primary" type="button">Melhorar</button>
+          </section>
+
+          <div class="build-tabs" role="tablist" aria-label="Loja e construção">
+            <button class="build-tab is-active" id="build-shop-tab" data-build-tab="shop" role="tab" aria-selected="true" type="button">Loja da área</button>
+            <button class="build-tab" id="build-place-tab" data-build-tab="place" role="tab" aria-selected="false" type="button">Construir</button>
+          </div>
+
+          <section id="build-shop-view" class="build-view" role="tabpanel" aria-labelledby="build-shop-tab">
+            <p class="build-intro">A loja mostra somente móveis compatíveis com este ambiente.</p>
+            <div id="build-shop-grid" class="build-shop-grid"></div>
+          </section>
+
+          <section id="build-place-view" class="build-view" role="tabpanel" aria-labelledby="build-place-tab" hidden>
+            <div class="build-subsection">
+              <div class="build-section-heading"><h3>Itens guardados</h3><small>Compre na loja e posicione aqui</small></div>
+              <div id="build-inventory-grid" class="build-inventory-grid"></div>
+            </div>
+
+            <div class="build-subsection">
+              <label for="build-placed-select">Móvel posicionado
+                <select id="build-placed-select" name="buildPlacedSelect"></select>
+              </label>
+              <p id="build-empty" class="build-empty" hidden>Nenhum móvel comprado foi posicionado neste ambiente.</p>
+            </div>
+
+            <div class="wardrobe-gizmo-toolbar build-gizmo-toolbar" role="toolbar" aria-label="Ferramentas de construção 3D">
+              <button class="wardrobe-gizmo-button is-active" type="button" data-build-gizmo="translate" aria-pressed="true"><span>Mover</span><kbd>W</kbd></button>
+              <button class="wardrobe-gizmo-button" type="button" data-build-gizmo="rotate" aria-pressed="false"><span>Girar</span><kbd>E</kbd></button>
+              <button class="wardrobe-gizmo-button" type="button" data-build-gizmo="scale" aria-pressed="false"><span>Escalar</span><kbd>R</kbd></button>
+            </div>
+            <p class="wardrobe-gizmo-help">Selecione um móvel na cena ou na lista. Mover: vermelho X, verde Y (altura), azul Z. A posição, rotação e escala ficam salvas.</p>
+
+            <section class="wardrobe-transform">
+              <div class="wardrobe-section-heading"><h3>Transformação</h3><small>valores do móvel selecionado</small></div>
+              <div class="build-transform-grid">
+                <label for="build-x"><span>X</span><input id="build-x" name="buildX" type="number" step="0.05" inputmode="decimal"></label>
+                <label for="build-y"><span>Y (altura)</span><input id="build-y" name="buildY" type="number" min="0" max="5.5" step="0.05" inputmode="decimal"></label>
+                <label for="build-z"><span>Z</span><input id="build-z" name="buildZ" type="number" step="0.05" inputmode="decimal"></label>
+                <label for="build-rotation"><span>Rotação</span><input id="build-rotation" name="buildRotation" type="number" step="1" inputmode="decimal"></label>
+                <label for="build-scale"><span>Escala</span><input id="build-scale" name="buildScale" type="number" min="0.55" max="2.2" step="0.05" inputmode="decimal"></label>
+              </div>
+            </section>
+
+            <p id="build-status" class="wardrobe-status" aria-live="polite"></p>
+            <div class="build-actions">
+              <button id="build-apply" class="button button-primary" type="button">Aplicar posição</button>
+              <button id="build-store-item" class="button button-secondary" type="button">Guardar móvel</button>
+              <button id="build-sell-item" class="button button-ghost" type="button">Vender</button>
+              <button id="build-reset-room" class="button button-ghost" type="button">Guardar todos</button>
+              <button id="build-export-json" class="button button-secondary" type="button">Exportar JSON</button>
+            </div>
+          </section>
         </div>
       </aside>
 
@@ -441,10 +519,127 @@
     </form>
   </dialog>
 
+
+  <aside id="dev-panel" class="dev-panel" aria-labelledby="dev-title" hidden>
+    <header class="dev-panel-header">
+      <div>
+        <p class="eyebrow">NARDELLI</p>
+        <h2 id="dev-title">Modo DEV</h2>
+      </div>
+      <button id="dev-close" class="icon-button" type="button" aria-label="Desativar modo DEV">×</button>
+    </header>
+
+    <div class="dev-panel-body">
+      <div class="dev-pet-card">
+        <span>Pet ativo</span>
+        <strong id="dev-pet-name">Nenhum pet ativo</strong>
+      </div>
+
+      <button id="dev-maximize" class="button button-primary dev-full-button" type="button">Reaplicar máximos e desbloqueios</button>
+
+      <section class="dev-section" aria-labelledby="dev-animation-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-animation-title">Teste de animações</h3>
+          <small id="dev-current-animation">—</small>
+        </div>
+        <label for="dev-animation-select">Clipe carregado
+          <select id="dev-animation-select" name="devAnimation"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-play-once" class="button button-secondary" type="button">Tocar uma vez</button>
+          <button id="dev-play-loop" class="button button-secondary" type="button">Repetir</button>
+          <button id="dev-play-idle" class="button button-ghost" type="button">Voltar ao idle</button>
+        </div>
+        <label class="switch-row dev-switch-row">
+          <span>Animações aleatórias</span>
+          <input id="dev-random-toggle" name="devRandomAnimations" type="checkbox">
+        </label>
+        <label for="dev-random-speed">Intervalo aleatório
+          <span class="dev-range-line">
+            <input id="dev-random-speed" name="devRandomSpeed" type="range" min="900" max="6000" step="100" value="2400">
+            <output id="dev-random-speed-value" for="dev-random-speed">2.4 s</output>
+          </span>
+        </label>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-behavior-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-behavior-title">Eventos do pet</h3>
+          <small>movimento + colisão</small>
+        </div>
+        <div class="dev-quick-grid" aria-label="Atalhos de eventos do pet">
+          <button class="button button-secondary" type="button" data-dev-behavior="climb">Subir em algo</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="favorite">Lugar favorito</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="quiet">Canto tranquilo</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="window">Olhar janela</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="sleep">Descansar</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="explore">Explorar</button>
+        </div>
+        <label for="dev-behavior-select">Outro comportamento
+          <select id="dev-behavior-select" name="devBehavior"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-trigger-behavior" class="button button-primary" type="button">Disparar evento</button>
+          <button id="dev-stop-behavior" class="button button-ghost" type="button">Encerrar e voltar</button>
+        </div>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-world-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-world-title">Clima e mundo</h3>
+          <small id="dev-world-summary">—</small>
+        </div>
+        <div class="dev-weather-grid" aria-label="Atalhos de clima">
+          <button class="button button-secondary" type="button" data-dev-weather="rain">Chuva</button>
+          <button class="button button-secondary" type="button" data-dev-weather="thunderstorm">Temporal</button>
+          <button class="button button-secondary" type="button" data-dev-weather="snow">Neve</button>
+          <button class="button button-secondary" type="button" data-dev-weather="rainbow">Arco-íris</button>
+          <button class="button button-secondary" type="button" data-dev-weather="clear">Limpo</button>
+        </div>
+        <div class="dev-control-grid">
+          <label for="dev-weather-select">Clima
+            <select id="dev-weather-select" name="devWeather"></select>
+          </label>
+          <button id="dev-apply-weather" class="button button-secondary" type="button">Aplicar clima</button>
+          <label for="dev-season-select">Estação
+            <select id="dev-season-select" name="devSeason"></select>
+          </label>
+          <button id="dev-apply-season" class="button button-secondary" type="button">Aplicar estação</button>
+          <label for="dev-room-select">Ambiente
+            <select id="dev-room-select" name="devRoom"></select>
+          </label>
+          <button id="dev-go-room" class="button button-secondary" type="button">Ir ao ambiente</button>
+          <label for="dev-time-select">Horário visual
+            <select id="dev-time-select" name="devTime"></select>
+          </label>
+          <button id="dev-apply-time" class="button button-secondary" type="button">Aplicar horário</button>
+        </div>
+        <button id="dev-restore-world" class="button button-ghost dev-full-button-soft" type="button">Restaurar mundo anterior ao teste</button>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-event-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-event-title">Eventos emergentes</h3>
+          <small>cards e consequências</small>
+        </div>
+        <label for="dev-event-select">Evento
+          <select id="dev-event-select" name="devEmergentEvent"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-trigger-event" class="button button-primary" type="button">Iniciar evento</button>
+          <button id="dev-clear-event" class="button button-ghost" type="button">Remover evento</button>
+        </div>
+      </section>
+
+      <p id="dev-status" class="dev-status" aria-live="polite"></p>
+      <p class="dev-hint">Digite <strong>NARDELLI</strong> novamente para fechar.</p>
+    </div>
+  </aside>
+
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    const ASSET_BUILD = '26-living-agent';
+    const ASSET_BUILD = '38-room-shop-build-mode';
     const BUILD_MARKER = 'pocket-companions:asset-build';
 
     async function clearLegacyAssetCaches() {

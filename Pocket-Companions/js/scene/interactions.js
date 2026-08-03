@@ -19,7 +19,9 @@ export const interactionsMethods = {
     this.canvas.addEventListener('pointermove', this.handlePointerMove);
     this.canvas.addEventListener('pointerup', this.handlePointerUp);
     this.canvas.addEventListener('pointercancel', this.handlePointerUp);
-    this.canvas.addEventListener('wheel', this.handleWheel, { passive: false });
+    this.canvas.addEventListener('pointerleave', this.handleViewportPointerLeave);
+    window.addEventListener('pointermove', this.handleViewportPointerMove);
+    window.addEventListener('wheel', this.handleWheel, { passive: false, capture: true });
     document.addEventListener('visibilitychange', () => {
       this.clock.getDelta();
     });
@@ -54,6 +56,7 @@ export const interactionsMethods = {
   },
 
   processPetGesture(hit, dragging = false) {
+    if (this.petControlsLocked) return;
     const now = performance.now();
     if (now - this.pointerState.lastPetAt < (dragging ? 160 : 70)) return;
     this.pointerState.lastPetAt = now;
@@ -75,7 +78,21 @@ export const interactionsMethods = {
     });
   },
 
+  handleViewportPointerMove(event) {
+    if (!this.canvas || !this.buildViewportPointer) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    this.buildViewportPointer.x = event.clientX;
+    this.buildViewportPointer.y = event.clientY;
+    this.buildViewportPointer.inside = inside;
+  },
+
+  handleViewportPointerLeave() {
+    if (this.buildViewportPointer) this.buildViewportPointer.inside = false;
+  },
+
   processCleanHit(hit) {
+    if (this.petControlsLocked) return;
     const now = performance.now();
     if (now - this.pointerState.lastPetAt < 70) return;
     this.pointerState.lastPetAt = now;

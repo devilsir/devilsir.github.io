@@ -8,7 +8,7 @@ import { MinigameManager } from './games.js';
 import * as CONFIG from './config.js';
 
 const { PETS, NEEDS, FOODS, ROOMS, MINIGAMES } = CONFIG;
-const SHOP_OFFERS = Array.isArray(CONFIG.SHOP_OFFERS)
+const SHOP_OFFERS = (Array.isArray(CONFIG.SHOP_OFFERS)
   ? CONFIG.SHOP_OFFERS
   : [
       { id: 'meal', name: 'Balanced meal', description: 'A complete meal for hunger and health.', cost: 12, amount: 1, symbol: '◆' },
@@ -16,17 +16,39 @@ const SHOP_OFFERS = Array.isArray(CONFIG.SHOP_OFFERS)
       { id: 'treat', name: 'Star treat', description: 'A special treat for extra happiness.', cost: 10, amount: 1, symbol: '★' },
       { id: 'water', name: 'Fresh water', description: 'Restores hydration, health, and energy.', cost: 5, amount: 1, symbol: '◒' },
       { id: 'medicine', name: 'Gentle medicine', description: 'A care supply for moments of low health.', cost: 20, amount: 1, symbol: '+' }
-    ];
+    ]).filter((offer) => !String(offer?.id || '').startsWith('robot-'));
 import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
 import { getLanguage, initI18n, setLanguage } from './i18n.js';
 import { LivingSystems } from './living-systems.js';
 import { LivingUI } from './living-ui.js';
 import { WardrobeController } from './wardrobe.js';
+import { BuildModeController } from './build-mode.js';
+import { DevTools } from './dev-tools.js';
 import { formatOfflineEvent } from './simulation/offline-simulation.js';
 import { eventLabel, responseLabel } from './simulation/events.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+
+const BODY_LANGUAGE_LABELS = {
+  relaxed: { en: 'relaxed', pt: 'relaxado' },
+  approaching: { en: 'approaching', pt: 'se aproximando' },
+  watchful: { en: 'watchful', pt: 'atento' },
+  'slow-looking': { en: 'looking around slowly', pt: 'observando devagar' },
+  'play-bow': { en: 'play bow', pt: 'convite para brincar' },
+  bouncy: { en: 'bouncy', pt: 'saltitante' },
+  'head-tilt': { en: 'head tilt', pt: 'cabeça inclinada' },
+  pacing: { en: 'pacing', pt: 'andando de um lado para o outro' },
+  upright: { en: 'upright posture', pt: 'postura ereta' },
+  'low-and-close': { en: 'low and close', pt: 'corpo baixo e recolhido' },
+  heavy: { en: 'heavy posture', pt: 'postura pesada e sonolenta' }
+};
+
+function bodyLanguageLabel(id) {
+  const language = getLanguage() === 'en' ? 'en' : 'pt';
+  return BODY_LANGUAGE_LABELS[id]?.[language] || String(id || 'relaxed').replaceAll('-', ' ');
+}
 
 const store = new GameStore();
 initI18n({
@@ -41,10 +63,13 @@ initI18n({
   }
 });
 const audio = new AudioSystem(() => store.settings);
+audio.bindGestureUnlock(document);
 const scene = new CompanionScene($('#companion-canvas'), () => store.settings, (name, options) => playSound(name, options));
 const living = new LivingSystems({ store, scene, playSound, showDialogue, toast, onWorldChange: updateAmbient });
 const livingUI = new LivingUI({ systems: living, store, scene, toast, showDialogue, playSound, refreshMain: () => updateUI(true), openGame });
 const wardrobe = new WardrobeController({ scene, store, living, toast, closeDrawer, languageProvider: getLanguage });
+const builder = new BuildModeController({ scene, store, living, toast, closeDrawer, refreshMain: () => updateUI(true), languageProvider: getLanguage });
+const devTools = new DevTools({ store, scene, living, toast, refreshMain: () => updateUI(true) });
 
 const screens = {
   loading: $('#loading-screen'),
@@ -313,8 +338,12 @@ async function enterGame() {
   showOnly('game');
   setTheme(PETS[slot.companionId]);
   await scene.setPet(slot.companionId, { selection: false });
+  const activeLivingState = living.ensure();
+  scene.setRoomUpgrades(activeLivingState?.roomUpgrades || {});
   scene.buildEnvironment(slot.activeRoom);
+  scene.setLivingWorldState?.({ roomId: slot.activeRoom, inventory: slot.inventory, petId: slot.companionId });
   const activation = await living.activate();
+  devTools.onGameEntered();
   if (slot.isSleeping) scene.enterSleepMode(true);
   else scene.placePetSafely();
   scene.setAutonomous(!slot.isSleeping);
@@ -381,7 +410,7 @@ function updateUI(force = false) {
   const bodyHint = $('#body-language-hint');
   if (bodyHint && living.state && store.settings.bodyLanguageDescriptions) {
     const interpretation = living.interpretHiddenDesire({ accessibility: true });
-    const posture = living.state.bodyLanguage.last.replaceAll('-', ' ');
+    const posture = bodyLanguageLabel(living.state.bodyLanguage.last);
     bodyHint.textContent = interpretation || `${getLanguage() === 'en' ? 'Body language' : 'Linguagem corporal'}: ${posture}.`;
     bodyHint.hidden = false;
   } else if (bodyHint) bodyHint.hidden = true;
@@ -390,6 +419,7 @@ function updateUI(force = false) {
     debug.hidden = !store.settings.simulationDebug;
     if (!debug.hidden) $('#simulation-debug-content').textContent = JSON.stringify(living.simulationDebugSnapshot(), null, 2);
   }
+  scene.setLivingWorldState?.({ roomId: slot.activeRoom, inventory: slot.inventory, petId: slot.companionId });
   renderNeeds();
   if (slot.isSleeping) {
     $('#sleep-status').textContent = `Energy ${Math.round(slot.stats.energy)}%. It will recover faster while resting.`;
@@ -573,7 +603,7 @@ function playPetVoice(context = 'call', petId = null, options = {}) {
 }
 
 function handleAction(action) {
-  if (!store.active || paused) return;
+  if (!store.active || paused || builder.isOpen) return;
   playSound('click');
   if (action === 'feed') openFoodModal();
   if (action === 'play') openPanel('play');
@@ -983,13 +1013,16 @@ function renderShopDrawer() {
   grid.className = 'shop-grid';
   SHOP_OFFERS.forEach((offer) => {
     const owned = slot.inventory[offer.id] ?? 0;
-    const canBuy = slot.currency >= offer.cost;
+    const isSingleUnlock = offer.id.startsWith('robot-');
+    const hasAnyRobot = Number(slot.inventory['robot-dog'] || 0) + Number(slot.inventory['robot-cat'] || 0) > 0;
+    const alreadyUnlocked = isSingleUnlock && (owned >= 1 || hasAnyRobot);
+    const canBuy = !alreadyUnlocked && slot.currency >= offer.cost;
     const card = document.createElement('article');
     card.className = `shop-card ${canBuy ? '' : 'is-unaffordable'}`;
     card.innerHTML = `
       <div class="shop-card-heading">
         <span class="shop-item-symbol" aria-hidden="true">${offer.symbol}</span>
-        <span class="shop-owned">${owned} in inventory</span>
+        <span class="shop-owned">${offer.id.startsWith('robot-') ? `${owned ? 'Unlocked' : 'Not owned yet'}` : `${owned} in inventory`}</span>
       </div>
       <strong>${offer.name}</strong>
       <p>${offer.description}</p>
@@ -998,7 +1031,9 @@ function renderShopDrawer() {
     button.type = 'button';
     button.className = 'shop-buy-button';
     button.disabled = !canBuy;
-    button.innerHTML = `<span>Buy +${offer.amount}</span><strong>${offer.cost} coins</strong>`;
+    button.innerHTML = alreadyUnlocked
+      ? `<span>Owned</span><strong>✓</strong>`
+      : `<span>${isSingleUnlock ? 'Unlock companion' : `Buy +${offer.amount}`}</span><strong>${offer.cost} coins</strong>`;
     button.addEventListener('click', () => {
       if (!store.purchaseItem(offer.id, offer.cost, offer.amount)) {
         toast(`You need ${offer.cost} coins for ${offer.name}.`);
@@ -1112,6 +1147,7 @@ function roomGreeting(roomId) {
     kitchen: 'Something delicious could happen here.',
     playroom: 'Look at all these toys!',
     park: 'Let’s run all the way across!',
+    bathroom: 'Fresh, tidy, and ready for a spa moment.',
     training: 'Ready, set, jump!'
   };
   return messages[roomId] || 'A new place to explore!';
@@ -1386,6 +1422,7 @@ function updateSetting(key, value) {
 
 function updateAmbient() {
   if (!store.active) return;
+  scene.setLivingWorldState?.({ roomId: store.active.activeRoom, inventory: store.active.inventory, petId: store.active.companionId });
   if (store.settings.muted) {
     audio.applyVolumes();
     return;
@@ -1449,8 +1486,8 @@ function renderPetDots() {
 
 function bindGlobalControls() {
   $('#retry-loading').addEventListener('click', () => location.reload());
-  $('#start-button').addEventListener('click', async () => { await audio.unlock(); startNewFlow(); });
-  $('#continue-button').addEventListener('click', async () => { await audio.unlock(); continueFlow(); });
+  $('#start-button').addEventListener('click', async () => { await audio.unlock({ fromGesture: true }); startNewFlow(); });
+  $('#continue-button').addEventListener('click', async () => { await audio.unlock({ fromGesture: true }); continueFlow(); });
   $('#selection-back').addEventListener('click', showTitle);
   $('#previous-pet').addEventListener('click', () => shiftSelection(-1));
   $('#next-pet').addEventListener('click', () => shiftSelection(1));
@@ -1473,7 +1510,7 @@ function bindGlobalControls() {
 
   $$('[data-close-modal]').forEach((button) => button.addEventListener('click', () => closeDialog($(`#${button.dataset.closeModal}`))));
   $$('[data-open-modal]').forEach((button) => button.addEventListener('click', async () => {
-    await audio.unlock();
+    await audio.unlock({ fromGesture: true });
     syncSettingsInputs();
     openDialog($(`#${button.dataset.openModal}`));
   }));
@@ -1619,6 +1656,10 @@ function bindGlobalControls() {
 
 function handleKeyboardShortcuts(event) {
   if (!store.active) return;
+  if (builder.isOpen) {
+    if (event.key === 'Escape') builder.close();
+    return;
+  }
   if (event.key === 'Escape') {
     if (!$('#photo-overlay').hidden) closePhotoMode();
     else if (!drawer.hidden) closeDrawer();
@@ -1639,7 +1680,7 @@ function handleKeyboardShortcuts(event) {
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js?v=26-living-agent')
+    navigator.serviceWorker.register('sw.js?v=39-build-pet-lock')
       .then((registration) => registration.update())
       .catch((error) => console.warn('[Pocket Companions] Service worker registration failed:', error));
   }

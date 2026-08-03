@@ -31,6 +31,7 @@ const baseSlot = (slotIndex, companionId, petName) => ({
     hygiene: 86,
     health: 92,
     bond: 20,
+    social: 38,
     experience: 0,
     fullness: 22
   },
@@ -271,6 +272,7 @@ export class GameStore extends EventTarget {
       slot.stats.happiness = clamp(slot.stats.happiness - DECAY_PER_HOUR.happiness * elapsedHours * (personality.boredom || 1));
       slot.stats.energy = clamp(slot.stats.energy - DECAY_PER_HOUR.energy * elapsedHours);
       slot.stats.hygiene = clamp(slot.stats.hygiene - DECAY_PER_HOUR.hygiene * elapsedHours);
+      slot.stats.social = clamp((slot.stats.social ?? 38) - 0.45 * elapsedHours);
       slot.stats.fullness = clamp(slot.stats.fullness - 5 * elapsedHours);
       const weakestNeed = Math.min(slot.stats.hunger, slot.stats.energy, slot.stats.hygiene);
       if (weakestNeed < 30) slot.stats.health = clamp(slot.stats.health - (30 - weakestNeed) * 0.12 * elapsedHours);
@@ -417,10 +419,17 @@ export class GameStore extends EventTarget {
   purchaseItem(itemId, cost, amount = 1) {
     const slot = this.active;
     if (!slot || slot.currency < cost || amount <= 0) return false;
+    if (String(itemId || '').startsWith('robot-')) return false;
+    const singleUnlockItems = new Set(['robot-dog', 'robot-cat']);
+    const currentOwned = Number(slot.inventory[itemId] || 0);
+    const ownsAnyRobot = Number(slot.inventory['robot-dog'] || 0) + Number(slot.inventory['robot-cat'] || 0) > 0;
+    if (singleUnlockItems.has(itemId) && (currentOwned >= 1 || ownsAnyRobot)) return false;
+    const finalAmount = singleUnlockItems.has(itemId) ? 1 : amount;
+    if (slot.currency < cost) return false;
     slot.currency -= cost;
-    slot.inventory[itemId] = (slot.inventory[itemId] || 0) + amount;
+    slot.inventory[itemId] = singleUnlockItems.has(itemId) ? 1 : currentOwned + finalAmount;
     this.persist();
-    this.emit('inventory', { itemId, amount, cost });
+    this.emit('inventory', { itemId, amount: finalAmount, cost });
     return true;
   }
 

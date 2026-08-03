@@ -116,18 +116,17 @@ function emotionScore(behavior, emotion) {
 }
 
 function findObjects(context, behavior) {
-  let objects = objectsForBehavior(context.room, context.species, behavior.id);
+  const all = Array.isArray(context.objects) && context.objects.length
+    ? context.objects
+    : objectsForBehavior(context.room, context.species, behavior.id);
+  let objects = all.filter((object) => Array.isArray(object.actions) && object.actions.includes(behavior.id));
   if (behavior.object) objects = objects.filter((object) => object.type === behavior.object || object.actions.includes(behavior.id));
   if (behavior.id === 'favorite-place') {
-    objects = [
-      ...objectsForBehavior(context.room, context.species, 'bed-rest'),
-      ...objectsForBehavior(context.room, context.species, 'high-rest'),
-      ...objectsForBehavior(context.room, context.species, 'window-watch')
-    ];
+    objects = all.filter((object) => Array.isArray(object.actions)
+      && (object.actions.includes('bed-rest') || object.actions.includes('high-rest') || object.actions.includes('window-watch')));
   }
   if (behavior.id === 'investigate-sound' || behavior.id === 'investigate-object' || behavior.id === 'guard-object') {
-    const all = context.objects || [];
-    objects = all.filter((object) => ['window', 'door', 'movable', 'cabinet', 'toy', 'target', 'puzzle'].includes(object.type));
+    objects = all.filter((object) => ['window', 'door', 'movable', 'cabinet', 'toy', 'target', 'puzzle', 'bench', 'hide', 'tree', 'perch'].includes(object.type));
   }
   return objects;
 }

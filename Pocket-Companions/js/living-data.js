@@ -1,4 +1,4 @@
-export const LIVING_SCHEMA = 5;
+export const LIVING_SCHEMA = 6;
 
 export const TRAITS = ['playful', 'lazy', 'affectionate', 'brave', 'stubborn', 'foodMotivated', 'sociable', 'independent', 'curious', 'calm'];
 
@@ -24,7 +24,7 @@ export const EMOTIONS = {
 
 export const FOOD_PREFERENCES = ['meal', 'snack', 'treat', 'water', 'pumpkin-bowl', 'fish-rice', 'berry-bites', 'garden-stew'];
 export const TOY_PREFERENCES = ['rope-toy', 'ball', 'feather', 'puzzle-cube'];
-export const ENVIRONMENT_PREFERENCES = ['living', 'garden', 'bedroom', 'kitchen', 'playroom', 'park', 'training', 'beach', 'forest', 'snow-trail', 'night-park'];
+export const ENVIRONMENT_PREFERENCES = ['living', 'garden', 'bedroom', 'kitchen', 'playroom', 'bathroom', 'park', 'training', 'beach', 'forest', 'snow-trail', 'night-park'];
 export const AFFECTION_PREFERENCES = ['head', 'back', 'calm', 'playful'];
 export const WEATHER_TYPES = ['clear', 'rain', 'thunderstorm', 'snow', 'fog', 'wind', 'sunshine', 'rainbow'];
 export const SEASONS = ['spring', 'summer', 'autumn', 'winter'];
@@ -72,22 +72,46 @@ export const SHAMPOOS = {
 };
 
 export const COMMANDS = {
-  sit: { name: { en: 'Sit', pt: 'Sentar' }, animation: ['sit', 'sitting_idle', 'idle'] },
-  lie: { name: { en: 'Lie down', pt: 'Deitar' }, animation: ['lie_down', 'lying_down_idle', 'idle'] },
-  paw: { name: { en: 'Give paw', pt: 'Dar a pata' }, animation: ['give_paw', 'paw_attack', 'idle'] },
-  stay: { name: { en: 'Stay', pt: 'Ficar' }, animation: ['sitting_idle', 'idle'] },
-  roll: { name: { en: 'Roll over', pt: 'Rolar' }, animation: ['lie_down', 'jump', 'idle'] },
-  fetch: { name: { en: 'Fetch', pt: 'Buscar' }, animation: ['run', 'walk'] },
-  jump: { name: { en: 'Jump', pt: 'Pular' }, animation: ['jump_start', 'jump', 'jump_end'] },
-  dead: { name: { en: 'Play dead', pt: 'Fingir de morto' }, animation: ['lie_down', 'lying_down_idle', 'idle'] },
-  dance: { name: { en: 'Dance', pt: 'Dançar' }, animation: ['give_paw', 'jump', 'idle'] },
-  come: { name: { en: 'Come here', pt: 'Vem aqui' }, animation: ['run', 'walk'] },
-  bed: { name: { en: 'Go to bed', pt: 'Ir para a cama' }, animation: ['walk', 'lie_down', 'idle'] },
-  leave: { name: { en: 'Leave it', pt: 'Deixa' }, animation: ['sit', 'idle'] },
-  wait: { name: { en: 'Wait', pt: 'Esperar' }, animation: ['sitting_idle', 'sit', 'idle'] },
-  follow: { name: { en: 'Follow', pt: 'Seguir' }, animation: ['walk', 'run'] },
-  stop: { name: { en: 'Stop', pt: 'Parar' }, animation: ['idle', 'sit'] },
-  marker: { name: { en: 'Touch marker', pt: 'Tocar o marcador' }, animation: ['walk', 'give_paw', 'idle'] }
+  sit: {
+    name: { en: 'Sit', pt: 'Sentar' },
+    description: { en: 'Sit and remain seated.', pt: 'Sentar e permanecer na pose.' },
+    behavior: 'sit',
+    requiredAnimations: ['sit', 'sitting_idle']
+  },
+  lie: {
+    name: { en: 'Lie down', pt: 'Deitar' },
+    description: { en: 'Lie down and remain resting.', pt: 'Deitar e permanecer descansando.' },
+    behavior: 'lie',
+    requiredAnimations: ['lie_down', 'lying_down_idle']
+  },
+  paw: {
+    name: { en: 'Give paw', pt: 'Dar a pata' },
+    description: { en: 'Offer one paw once.', pt: 'Dar uma pata uma única vez.' },
+    behavior: 'paw',
+    requiredAnimations: ['give_paw']
+  },
+  jump: {
+    name: { en: 'Jump', pt: 'Pular' },
+    description: { en: 'Perform one complete jump.', pt: 'Executar um pulo completo.' },
+    behavior: 'jump',
+    requiredAnimations: ['jump']
+  },
+  come: {
+    name: { en: 'Come here', pt: 'Vir até você' },
+    description: { en: 'Walk to the player position.', pt: 'Ir até a posição do tutor.' },
+    behavior: 'come'
+  },
+  bed: {
+    name: { en: 'Go to bed', pt: 'Ir para a cama' },
+    description: { en: 'Go to a usable bed in the current room.', pt: 'Ir até uma cama utilizável do ambiente atual.' },
+    behavior: 'bed'
+  },
+  marker: {
+    name: { en: 'Go to platform', pt: 'Ir para a plataforma' },
+    description: { en: 'Go to the training platform.', pt: 'Ir até a plataforma da área de treinamento.' },
+    behavior: 'marker',
+    rooms: ['training']
+  }
 };
 
 export const SKILL_PATHS = {
@@ -202,26 +226,99 @@ export const SECRETS = {
   'hidden-picnic': { name: { en: 'Hidden scent picnic', pt: 'Piquenique escondido pelo cheiro' }, room: 'town-square', reward: 55, condition: 'scent' }
 };
 
+export const ROOM_UPGRADES = {
+  living: { name: { en: 'Living room', pt: 'Sala de estar' }, costs: [320, 720, 1450], scales: [1, 1.18, 1.38, 1.62] },
+  bedroom: { name: { en: 'Bedroom', pt: 'Quarto' }, costs: [300, 680, 1380], scales: [1, 1.18, 1.38, 1.62] },
+  kitchen: { name: { en: 'Kitchen', pt: 'Cozinha' }, costs: [340, 760, 1520], scales: [1, 1.18, 1.38, 1.62] },
+  playroom: { name: { en: 'Playroom', pt: 'Sala de brincar' }, costs: [300, 700, 1420], scales: [1, 1.18, 1.38, 1.62] },
+  bathroom: { name: { en: 'Bathroom', pt: 'Banheiro' }, costs: [320, 740, 1480], scales: [1, 1.18, 1.38, 1.62] },
+  garden: { name: { en: 'Garden', pt: 'Jardim' }, costs: [360, 820, 1640], scales: [1, 1.2, 1.42, 1.68] },
+  park: { name: { en: 'Park', pt: 'Parque' }, costs: [380, 860, 1720], scales: [1, 1.2, 1.42, 1.68] },
+  training: { name: { en: 'Training yard', pt: 'Área de treino' }, costs: [360, 800, 1600], scales: [1, 1.2, 1.42, 1.68] }
+};
+
 export const FURNITURE = {
-  'cozy-bed': { name: { en: 'Cozy bed', pt: 'Cama aconchegante' }, cost: 65, size: [1.8, 1.2], comfort: 8, kind: 'bed' },
-  sofa: { name: { en: 'Pocket sofa', pt: 'Sofá de bolso' }, cost: 90, size: [2.2, 1], comfort: 9, kind: 'sofa' },
-  'scratch-post': { name: { en: 'Scratching post', pt: 'Arranhador' }, cost: 55, size: [0.8, 0.8], comfort: 4, kind: 'post' },
-  rug: { name: { en: 'Soft rug', pt: 'Tapete macio' }, cost: 42, size: [2.0, 1.4], comfort: 5, kind: 'rug' },
-  plant: { name: { en: 'Safe pocket plant', pt: 'Planta de bolso segura' }, cost: 48, size: [0.7, 0.7], comfort: 3, kind: 'plant' },
-  lamp: { name: { en: 'Moon lamp', pt: 'Luminária lunar' }, cost: 58, size: [0.7, 0.7], comfort: 4, kind: 'lamp' },
-  'toy-box': { name: { en: 'Toy box', pt: 'Caixa de brinquedos' }, cost: 62, size: [1.1, 0.8], comfort: 5, kind: 'toy' },
-  bowl: { name: { en: 'Color bowl', pt: 'Tigela colorida' }, cost: 30, size: [0.7, 0.7], comfort: 2, kind: 'bowl' }
+  sofa: { name: { en: 'Pocket sofa', pt: 'Sofá de bolso' }, cost: 90, size: [2.2, 1], comfort: 9, kind: 'sofa', rooms: ['living'] },
+  'coffee-table': { name: { en: 'Round coffee table', pt: 'Mesa de centro redonda' }, cost: 72, size: [1.4, 1.0], comfort: 4, kind: 'coffee-table', rooms: ['living'] },
+  armchair: { name: { en: 'Cozy armchair', pt: 'Poltrona aconchegante' }, cost: 82, size: [1.15, 1.05], comfort: 7, kind: 'armchair', rooms: ['living','bedroom'] },
+  'media-console': { name: { en: 'Media console', pt: 'Rack de mídia' }, cost: 105, size: [1.8, .75], comfort: 4, kind: 'media-console', rooms: ['living'] },
+  bookshelf: { name: { en: 'Low bookshelf', pt: 'Estante baixa' }, cost: 96, size: [1.6, .7], comfort: 5, kind: 'bookshelf', rooms: ['living','bedroom','bathroom'] },
+  rug: { name: { en: 'Soft rug', pt: 'Tapete macio' }, cost: 42, size: [2.0, 1.4], comfort: 5, kind: 'rug', rooms: ['living','bedroom','playroom','bathroom'] },
+  plant: { name: { en: 'Safe pocket plant', pt: 'Planta de bolso segura' }, cost: 48, size: [.7, .7], comfort: 3, kind: 'plant', rooms: ['living','bedroom','kitchen','playroom','bathroom','garden'] },
+  lamp: { name: { en: 'Moon lamp', pt: 'Luminária lunar' }, cost: 58, size: [.7, .7], comfort: 4, kind: 'lamp', rooms: ['living','bedroom','playroom'] },
+
+  'cozy-bed': { name: { en: 'Cozy bed', pt: 'Cama aconchegante' }, cost: 65, size: [1.8, 1.2], comfort: 8, kind: 'bed', rooms: ['bedroom','living','playroom','park'] },
+  dresser: { name: { en: 'Three-drawer dresser', pt: 'Cômoda de três gavetas' }, cost: 98, size: [1.8, .75], comfort: 5, kind: 'dresser', rooms: ['bedroom'] },
+  nightstand: { name: { en: 'Tiny nightstand', pt: 'Criado-mudo' }, cost: 54, size: [.75, .65], comfort: 3, kind: 'nightstand', rooms: ['bedroom'] },
+  desk: { name: { en: 'Study desk', pt: 'Escrivaninha' }, cost: 110, size: [1.8, .95], comfort: 5, kind: 'desk', rooms: ['bedroom'] },
+  'pet-wardrobe': { name: { en: 'Pet wardrobe', pt: 'Guarda-roupa do pet' }, cost: 125, size: [1.5, .8], comfort: 6, kind: 'wardrobe', rooms: ['bedroom'] },
+
+  'dining-table': { name: { en: 'Dining table', pt: 'Mesa de jantar' }, cost: 120, size: [2.4, 1.45], comfort: 7, kind: 'dining-table', rooms: ['kitchen'] },
+  'kitchen-island': { name: { en: 'Kitchen island', pt: 'Ilha de cozinha' }, cost: 145, size: [2.2, 1.15], comfort: 6, kind: 'kitchen-island', rooms: ['kitchen'] },
+  pantry: { name: { en: 'Tall pantry', pt: 'Despensa alta' }, cost: 118, size: [1.15, .85], comfort: 4, kind: 'pantry', rooms: ['kitchen'] },
+  'stool-pair': { name: { en: 'Pair of stools', pt: 'Par de banquetas' }, cost: 68, size: [1.3, .7], comfort: 4, kind: 'stools', rooms: ['kitchen'] },
+  bowl: { name: { en: 'Color bowl station', pt: 'Estação de tigelas' }, cost: 30, size: [.9, .7], comfort: 2, kind: 'bowl', rooms: ['kitchen','living'] },
+
+  bathtub: { name: { en: 'Pocket bathtub', pt: 'Banheira de bolso' }, cost: 140, size: [2.0, 1.15], comfort: 10, kind: 'bathtub', rooms: ['bathroom'] },
+  toilet: { name: { en: 'Tiny toilet', pt: 'Privada compacta' }, cost: 78, size: [0.95, 0.8], comfort: 2, kind: 'toilet', rooms: ['bathroom'] },
+  sink: { name: { en: 'Pet sink vanity', pt: 'Pia com gabinete' }, cost: 95, size: [1.35, 0.75], comfort: 4, kind: 'sink', rooms: ['bathroom'] },
+  shower: { name: { en: 'Rain shower', pt: 'Chuveiro' }, cost: 118, size: [1.35, 1.0], comfort: 5, kind: 'shower', rooms: ['bathroom'] },
+  hamper: { name: { en: 'Laundry hamper', pt: 'Cesto de roupa' }, cost: 42, size: [0.8, 0.65], comfort: 1, kind: 'hamper', rooms: ['bathroom','bedroom'] },
+  mirror: { name: { en: 'Round mirror', pt: 'Espelho redondo' }, cost: 50, size: [0.9, 0.16], comfort: 3, kind: 'mirror', rooms: ['bathroom','bedroom'] },
+  'bath-stool': { name: { en: 'Spa stool', pt: 'Banqueta de spa' }, cost: 56, size: [0.9, 0.72], comfort: 4, kind: 'bath-stool', rooms: ['bathroom'] },
+  'towel-rack': { name: { en: 'Towel rack', pt: 'Toalheiro' }, cost: 52, size: [1.15, 0.32], comfort: 3, kind: 'towel-rack', rooms: ['bathroom'] },
+  'bath-cabinet': { name: { en: 'Bathroom cabinet', pt: 'Armário de banheiro' }, cost: 112, size: [1.5, 0.62], comfort: 5, kind: 'bath-cabinet', rooms: ['bathroom'] },
+  'bath-mat': { name: { en: 'Cloud bath mat', pt: 'Tapete de banho nuvem' }, cost: 46, size: [1.7, 1.0], comfort: 6, kind: 'bath-mat', rooms: ['bathroom'] },
+
+  'scratch-post': { name: { en: 'Scratching post', pt: 'Arranhador' }, cost: 55, size: [.8, .8], comfort: 4, kind: 'post', rooms: ['playroom','living'] },
+  'toy-box': { name: { en: 'Toy box', pt: 'Caixa de brinquedos' }, cost: 62, size: [1.1, .8], comfort: 5, kind: 'toy', rooms: ['playroom','living'] },
+  'play-tunnel': { name: { en: 'Play tunnel', pt: 'Túnel de brincar' }, cost: 74, size: [1.8, 1.0], comfort: 6, kind: 'tunnel', rooms: ['playroom','training'] },
+  'cat-tree': { name: { en: 'Climbing tower', pt: 'Torre de escalada' }, cost: 135, size: [1.35, 1.1], comfort: 10, kind: 'cat-tree', rooms: ['playroom'] },
+  'low-play-table': { name: { en: 'Low play table', pt: 'Mesa baixa de brincar' }, cost: 70, size: [1.3, 1.3], comfort: 4, kind: 'low-table', rooms: ['playroom'] },
+  'ball-pit': { name: { en: 'Pocket ball pit', pt: 'Piscina de bolinhas' }, cost: 128, size: [1.8, 1.45], comfort: 9, kind: 'ball-pit', rooms: ['playroom'] },
+
+  'garden-bench': { name: { en: 'Garden bench', pt: 'Banco de jardim' }, cost: 86, size: [2.0, .75], comfort: 7, kind: 'bench', rooms: ['garden','park'] },
+  planter: { name: { en: 'Flower planter', pt: 'Jardineira florida' }, cost: 64, size: [1.7, .65], comfort: 4, kind: 'planter', rooms: ['garden','park'] },
+  fountain: { name: { en: 'Small fountain', pt: 'Fonte pequena' }, cost: 150, size: [1.4, 1.4], comfort: 9, kind: 'fountain', rooms: ['garden','park'] },
+  pergola: { name: { en: 'Pocket pergola', pt: 'Pergolado de bolso' }, cost: 190, size: [2.4, 1.8], comfort: 11, kind: 'pergola', rooms: ['garden','park'] },
+  'picnic-table': { name: { en: 'Picnic table', pt: 'Mesa de piquenique' }, cost: 128, size: [2.3, 1.65], comfort: 8, kind: 'picnic-table', rooms: ['garden','park'] },
+
+  hurdle: { name: { en: 'Training hurdle', pt: 'Barreira de treino' }, cost: 58, size: [1.55, .45], comfort: 2, kind: 'hurdle', rooms: ['training'] },
+  ramp: { name: { en: 'Agility ramp', pt: 'Rampa de agilidade' }, cost: 112, size: [2.2, 1.0], comfort: 5, kind: 'ramp', rooms: ['training'] },
+  'training-platform': { name: { en: 'Training platform', pt: 'Plataforma de treino' }, cost: 96, size: [2.0, 1.5], comfort: 4, kind: 'platform', rooms: ['training'] },
+  'trainer-bench': { name: { en: 'Trainer bench', pt: 'Banco do treinador' }, cost: 92, size: [2.0, .8], comfort: 5, kind: 'bench', rooms: ['training','park'] },
+  'jump-ring': { name: { en: 'Jump ring', pt: 'Salto com aro' }, cost: 98, size: [1.8, .85], comfort: 3, kind: 'jump-ring', rooms: ['training'] },
+  'weave-poles': { name: { en: 'Weave poles', pt: 'Postes de slalom' }, cost: 84, size: [2.4, .8], comfort: 2, kind: 'weave-poles', rooms: ['training'] },
+  'trophy-shelf': { name: { en: 'Trophy shelf', pt: 'Estante de troféus' }, cost: 122, size: [1.65, .75], comfort: 4, kind: 'bookshelf', rooms: ['training'] },
+  'cone-set': { name: { en: 'Cone set', pt: 'Kit de cones' }, cost: 42, size: [1.2, .9], comfort: 1, kind: 'cone-set', rooms: ['training'] }
 };
 
 export const ACCESSORIES = {
-  collar: { name: { en: 'Color collar', pt: 'Coleira colorida' }, cost: 45, anchor: 'neck' },
-  bandana: { name: { en: 'Adventure bandana', pt: 'Bandana de aventura' }, cost: 55, anchor: 'neck' },
-  bow: { name: { en: 'Tiny bow', pt: 'Lacinho' }, cost: 50, anchor: 'head' },
-  hat: { name: { en: 'Explorer hat', pt: 'Chapéu de explorador' }, cost: 85, anchor: 'head' },
-  glasses: { name: { en: 'Star glasses', pt: 'Óculos estelares' }, cost: 75, anchor: 'head' },
-  backpack: { name: { en: 'Small backpack', pt: 'Mochilinha' }, cost: 90, anchor: 'back' },
-  cape: { name: { en: 'Pocket cape', pt: 'Capinha' }, cost: 80, anchor: 'back' },
-  tag: { name: { en: 'Memory tag', pt: 'Plaquinha de memória' }, cost: 40, anchor: 'neck' }
+
+  bandana: { name: { en: 'Violet bandana', pt: 'Bandana violeta' }, cost: 55, anchor: 'neck', fit: 'bandana', model: './assets/models/accessories/bandanas/bandanas_01.glb', modelScale: 1 },
+  'bandana-2': { name: { en: 'Blue bandana', pt: 'Bandana azul' }, cost: 60, anchor: 'neck', fit: 'bandana', model: './assets/models/accessories/bandanas/bandanas_02.glb', modelScale: 1 },
+  'bandana-3': { name: { en: 'Forest bandana', pt: 'Bandana floresta' }, cost: 65, anchor: 'neck', fit: 'bandana', model: './assets/models/accessories/bandanas/bandanas_03.glb', modelScale: 1 },
+
+  bow: { name: { en: 'Coral bow', pt: 'Laço coral' }, cost: 50, anchor: 'head', fit: 'bow', model: './assets/models/accessories/lacos/lacos_01.glb', modelScale: 1.35 },
+  'bow-2': { name: { en: 'Blue bow', pt: 'Laço azul' }, cost: 55, anchor: 'head', fit: 'bow', model: './assets/models/accessories/lacos/lacos_02.glb', modelScale: 1.35 },
+  'bow-3': { name: { en: 'Green bow', pt: 'Laço verde' }, cost: 60, anchor: 'head', fit: 'bow', model: './assets/models/accessories/lacos/lacos_03.glb', modelScale: 1.35 },
+
+  hat: { name: { en: 'Adventure hat I', pt: 'Chapéu aventureiro I' }, cost: 85, anchor: 'head', fit: 'hat', model: './assets/models/accessories/chapeus/chapeus_01.glb', modelScale: 2, modelOffset: [0, 0.08, 0] },
+  'hat-2': { name: { en: 'Adventure hat II', pt: 'Chapéu aventureiro II' }, cost: 90, anchor: 'head', fit: 'hat', model: './assets/models/accessories/chapeus/chapeus_02.glb', modelScale: 2, modelOffset: [0, 0.08, 0] },
+  'hat-3': { name: { en: 'Adventure hat III', pt: 'Chapéu aventureiro III' }, cost: 95, anchor: 'head', fit: 'hat', model: './assets/models/accessories/chapeus/chapeus_03.glb', modelScale: 2, modelOffset: [0, 0.08, 0] },
+
+  glasses: { name: { en: 'Pink glasses', pt: 'Óculos rosa' }, cost: 75, anchor: 'head', fit: 'glasses', model: './assets/models/accessories/oculos/oculos_01.glb', modelScale: 1.7 },
+  'glasses-2': { name: { en: 'Blue glasses', pt: 'Óculos azul' }, cost: 80, anchor: 'head', fit: 'glasses', model: './assets/models/accessories/oculos/oculos_02.glb', modelScale: 1.7 },
+  'glasses-3': { name: { en: 'Classic glasses', pt: 'Óculos clássico' }, cost: 85, anchor: 'head', fit: 'glasses', model: './assets/models/accessories/oculos/oculos_03.glb', modelScale: 1.7 },
+
+  backpack: { name: { en: 'Coral backpack', pt: 'Mochila coral' }, cost: 90, anchor: 'back', fit: 'backpack', model: './assets/models/accessories/mochilas/mochilas_01.glb', modelScale: 1.25 },
+  'backpack-2': { name: { en: 'Blue backpack', pt: 'Mochila azul' }, cost: 95, anchor: 'back', fit: 'backpack', model: './assets/models/accessories/mochilas/mochilas_02.glb', modelScale: 1.25 },
+  'backpack-3': { name: { en: 'Lilac backpack', pt: 'Mochila lilás' }, cost: 100, anchor: 'back', fit: 'backpack', model: './assets/models/accessories/mochilas/mochilas_03.glb', modelScale: 1.25 },
+
+  cape: { name: { en: 'Crimson cape', pt: 'Capa carmesim' }, cost: 80, anchor: 'back', fit: 'cape', model: './assets/models/accessories/capas/capas_01.glb', modelScale: 1.9 },
+  'cape-2': { name: { en: 'Blue cape', pt: 'Capa azul' }, cost: 85, anchor: 'back', fit: 'cape', model: './assets/models/accessories/capas/capas_02.glb', modelScale: 1.9 },
+  'cape-3': { name: { en: 'Forest cape', pt: 'Capa floresta' }, cost: 90, anchor: 'back', fit: 'cape', model: './assets/models/accessories/capas/capas_03.glb', modelScale: 1.9 },
+
 };
 
 export const EVENTS = [
@@ -279,9 +376,7 @@ export const PET_ACCESSORY_FITS = {
     neck: [0, 0, 0],
     back: [0, 0, 0],
     accessories: {
-      collar: { position: [0, -0.035, 0.075], rotation: [0, 0, 0], scale: 1 },
       bandana: { position: [0, -0.055, 0.08], rotation: [0, 0, 0], scale: 1 },
-      tag: { position: [0, -0.018, 0.135], rotation: [0, 0, 0], scale: 1 },
       bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 1 },
       hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 1 },
       glasses: { position: [0, -0.085, 0.115], rotation: [0, 0, 0], scale: 0.62 },
@@ -293,140 +388,120 @@ export const PET_ACCESSORY_FITS = {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.1, 0.16], rotation: [0, 0, 0], scale: 0.96 },
       bandana: { position: [0, -0.055, 0.075], rotation: [0, 0, 0], scale: 0.88 },
       bow: { position: [0.075, 0.105, 0.02], rotation: [0, 0, 0.32], scale: 0.65 },
       hat: { position: [0, 0.135, -0.005], rotation: [0, 0, 0], scale: 0.64 },
       glasses: { position: [0, -0.04, 0.135], rotation: [0, 0, 0], scale: 0.62 },
       backpack: { position: [0, 0.095, -0.075], rotation: [0.08, 0, 0], scale: 0.86 },
       cape: { position: [0, 0.075, -0.02], rotation: [0, 0, 0], scale: 0.9 },
-      tag: { position: [0, -0.1, 0.18], rotation: [0, 0, 0], scale: 0.92 }
     }
   },
   lilith: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.1, 0.12], rotation: [0, 0, 0], scale: 0.94 },
       bandana: { position: [0, -0.05, 0.07], rotation: [0, 0, 0], scale: 0.86 },
       bow: { position: [0.07, 0.1, 0.025], rotation: [0, 0, 0.3], scale: 0.58 },
       hat: { position: [0, 0.12, 0], rotation: [0, 0, 0], scale: 0.6 },
       glasses: { position: [0, 0.02, 0.18], rotation: [0, 0, 0], scale: 0.6 },
       backpack: { position: [0, 0.09, -0.055], rotation: [0.08, 0, 0], scale: 0.84 },
       cape: { position: [0, 0.075, -0.005], rotation: [0, 0, 0], scale: 0.88 },
-      tag: { position: [0, -0.1, 0.14], rotation: [0, 0, 0], scale: 0.9 }
     }
   },
   pietro: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.08, 0.16], rotation: [0, 0, 0], scale: 0.98 },
       bandana: { position: [0, -0.05, 0.08], rotation: [0, 0, 0], scale: 0.92 },
       bow: { position: [0.08, 0.1, 0.02], rotation: [0, 0, 0.3], scale: 0.62 },
       hat: { position: [0, 0.135, 0], rotation: [0, 0, 0], scale: 0.68 },
       glasses: { position: [0, -0.04, 0.24], rotation: [0, 0, 0], scale: 0.66 },
       backpack: { position: [0, 0.1, -0.055], rotation: [0.08, 0, 0], scale: 0.9 },
       cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.94 },
-      tag: { position: [0, -0.08, 0.18], rotation: [0, 0, 0], scale: 0.94 }
     }
   },
   chica: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.045, 0.055], rotation: [0, 0, 0], scale: 0.98 },
       bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.92 },
       bow: { position: [0.08, 0.11, 0.025], rotation: [0, 0, 0.32], scale: 0.68 },
       hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.71 },
       glasses: { position: [0, -0.105, 0.105], rotation: [0, 0, 0], scale: 0.59 },
       backpack: { position: [0, 0.1, -0.075], rotation: [0.08, 0, 0], scale: 0.92 },
       cape: { position: [0, 0.075, -0.02], rotation: [0, 0, 0], scale: 0.98 },
-      tag: { position: [0, -0.025, 0.13], rotation: [0, 0, 0], scale: 0.94 }
     }
   },
   kate: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.04, 0.075], rotation: [0, 0, 0], scale: 1.02 },
       bandana: { position: [0, -0.055, 0.085], rotation: [0, 0, 0], scale: 0.96 },
       bow: { position: [0.085, 0.105, 0.02], rotation: [0, 0, 0.32], scale: 0.72 },
       hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 0.78 },
       glasses: { position: [0, -0.1, 0.12], rotation: [0, 0, 0], scale: 0.64 },
       backpack: { position: [0, 0.105, -0.055], rotation: [0.08, 0, 0], scale: 0.96 },
       cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 1 },
-      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.96 }
     }
   },
   bolt: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.04, 0.07], rotation: [0, 0, 0], scale: 0.98 },
       bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.9 },
       bow: { position: [0.075, 0.11, 0.025], rotation: [0, 0, 0.32], scale: 0.65 },
       hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.68 },
       glasses: { position: [0, -0.095, 0.115], rotation: [0, 0, 0], scale: 0.62 },
       backpack: { position: [0, 0.1, -0.06], rotation: [0.08, 0, 0], scale: 0.9 },
       cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.94 },
-      tag: { position: [0, -0.02, 0.135], rotation: [0, 0, 0], scale: 0.9 }
     }
   },
   caramelo: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.04, 0.065], rotation: [0, 0, 0], scale: 1.06 },
       bandana: { position: [0, -0.055, 0.09], rotation: [0, 0, 0], scale: 1 },
       bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.72 },
       hat: { position: [0, 0.125, 0], rotation: [0, 0, 0], scale: 0.78 },
       glasses: { position: [0, -0.105, 0.115], rotation: [0, 0, 0], scale: 0.64 },
       backpack: { position: [0, 0.1, -0.07], rotation: [0.08, 0, 0], scale: 0.98 },
       cape: { position: [0, 0.08, -0.015], rotation: [0, 0, 0], scale: 1.02 },
-      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.98 }
     }
   },
   kiara: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.04, 0.065], rotation: [0, 0, 0], scale: 1.05 },
       bandana: { position: [0, -0.055, 0.09], rotation: [0, 0, 0], scale: 0.99 },
       bow: { position: [0.075, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.72 },
       hat: { position: [0, 0.12, 0], rotation: [0, 0, 0], scale: 0.78 },
       glasses: { position: [0, -0.1, 0.11], rotation: [0, 0, 0], scale: 0.62 },
       backpack: { position: [0, 0.1, -0.07], rotation: [0.08, 0, 0], scale: 0.97 },
       cape: { position: [0, 0.08, -0.015], rotation: [0, 0, 0], scale: 1.01 },
-      tag: { position: [0, -0.02, 0.14], rotation: [0, 0, 0], scale: 0.97 }
     }
   },
   pacoca: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.045, 0.07], rotation: [0, 0, 0], scale: 0.98 },
       bandana: { position: [0, -0.06, 0.085], rotation: [0, 0, 0], scale: 0.92 },
       bow: { position: [0.07, 0.105, 0.025], rotation: [0, 0, 0.32], scale: 0.65 },
       hat: { position: [0, 0.13, 0], rotation: [0, 0, 0], scale: 0.72 },
       glasses: { position: [0, -0.095, 0.115], rotation: [0, 0, 0], scale: 0.6 },
       backpack: { position: [0, 0.1, -0.06], rotation: [0.08, 0, 0], scale: 0.88 },
       cape: { position: [0, 0.08, -0.01], rotation: [0, 0, 0], scale: 0.92 },
-      tag: { position: [0, -0.02, 0.135], rotation: [0, 0, 0], scale: 0.92 }
     }
   },
   simba: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
     accessories: {
-      collar: { position: [0, -0.04, 0.075], rotation: [0, 0, 0], scale: 1.12 },
       bandana: { position: [0, -0.055, 0.095], rotation: [0, 0, 0], scale: 1.04 },
       bow: { position: [0.08, 0.11, 0.03], rotation: [0, 0, 0.32], scale: 0.74 },
       hat: { position: [0, 0.14, 0], rotation: [0, 0, 0], scale: 0.82 },
       glasses: { position: [0, -0.105, 0.12], rotation: [0, 0, 0], scale: 0.68 },
       backpack: { position: [0, 0.105, -0.075], rotation: [0.08, 0, 0], scale: 1.02 },
       cape: { position: [0, 0.085, -0.02], rotation: [0, 0, 0], scale: 1.06 },
-      tag: { position: [0, -0.02, 0.145], rotation: [0, 0, 0], scale: 1.04 }
     }
   }
 };

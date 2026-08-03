@@ -1,16 +1,17 @@
 import { MAX_OFFLINE_HOURS, PETS } from '../config.js';
-import { clamp } from '../utils.js';
+import { clamp, uid } from '../utils.js';
 import { getLanguage } from '../i18n.js';
 import { BehavioralAgent } from './agent.js';
 import { bodyLanguageFor, fulfillHiddenDesire, interpretHiddenDesire, observeHiddenDesire, updateHiddenDesire } from './body-language.js';
-import { cleanupReservations, environmentObjects, releaseObject, reserveObject } from './environment-actions.js';
-import { applyEventConsequence, advanceEmergentEvent, evaluateEventScheduler, recoverEventState, respondToEmergentEvent } from './events.js';
+import { cleanupReservations, environmentObjects, objectsForBehavior, releaseObject, reserveObject, semanticObjectById } from './environment-actions.js';
+import { applyEventConsequence, advanceEmergentEvent, EMERGENT_EVENTS, evaluateEventScheduler, recoverEventState, respondToEmergentEvent } from './events.js';
 import { maintainHabits, reinforceHabit, strongestHabits } from './habits.js';
 import { bridgeLongTermMemory, maintainMemories, recordEpisodicMemory } from './memory.js';
 import { simulateOfflineLife } from './offline-simulation.js';
 import { maintainRoutines, observeRoutine, resetRoutines, routineSummary } from './routines.js';
 import { compactSimulationState, migrateSimulationState, timeWindow } from './schema.js';
 import { physicalProfile, speciesForPet } from './species-behaviors.js';
+import { behaviorDefinition } from './utility-ai.js';
 
 const HOUR = 3600000;
 const MEANINGFUL = new Set(['feed', 'hydrate', 'pet', 'play', 'walk', 'groom', 'sleep', 'wake', 'social', 'training-success', 'training-fail', 'weather', 'secret', 'quest', 'treatment', 'ignored']);
@@ -145,7 +146,7 @@ export class SimulationRuntime {
       dirtTotal,
       overstimulation: this.state.directInteraction.overstimulation || 0,
       hiddenDesire: this.state.agent.hiddenDesire,
-      objects: environmentObjects(this.host.scene.travelLocation || this.slot.activeRoom, species),
+      objects: this.host.scene.getSemanticEnvironmentObjects?.(this.host.scene.travelLocation || this.slot.activeRoom, species) || environmentObjects(this.host.scene.travelLocation || this.slot.activeRoom, species),
       settings: this.host.store.settings,
       lowPerformance: Boolean(this.host.store.settings.lowPerformanceMode),
       minimumUntil: this.state.agent.minimumUntil,
@@ -187,7 +188,7 @@ export class SimulationRuntime {
       dirtTotal: Object.values(dirt).reduce((sum, value) => sum + Number(value || 0), 0) / Math.max(1, Object.keys(dirt).length),
       overstimulation: living.simulation.directInteraction.overstimulation || 0,
       hiddenDesire: living.simulation.agent.hiddenDesire,
-      objects: environmentObjects(this.host.scene.travelLocation || this.slot.activeRoom, species),
+      objects: this.host.scene.getSemanticEnvironmentObjects?.(this.host.scene.travelLocation || this.slot.activeRoom, species) || environmentObjects(this.host.scene.travelLocation || this.slot.activeRoom, species),
       settings: this.host.store.settings,
       lowPerformance: Boolean(this.host.store.settings.lowPerformanceMode),
       minimumUntil: living.simulation.agent.minimumUntil,
@@ -310,6 +311,131 @@ export class SimulationRuntime {
     }
     state.agent.navigationState = 'moving';
     return action;
+  }
+
+  forceAutonomousAction(behaviorId, options = {}) {
+    const state = this.ensure();
+    const context = this.context();
+    if (!state || !context || !this.agent || this.slot.isSleeping) return { ok: false, reason: 'Pet indisponível para o teste.' };
+
+    const definition = behaviorDefinition(behaviorId);
+    if (!definition) return { ok: false, reason: 'Comportamento desconhecido.' };
+
+    const now = Date.now();
+    const sceneObjects = Array.isArray(context.objects) && context.objects.length
+      ? context.objects
+      : environmentObjects(context.room, context.species);
+    let object = options.objectId ? sceneObjects.find((entry) => entry.id === options.objectId) || semanticObjectById(context.room, context.species, options.objectId) : null;
+    if (!object && behaviorId === 'favorite-place') {
+      const favorites = sceneObjects.filter((entry) => Array.isArray(entry.actions)
+        && (entry.actions.includes('bed-rest') || entry.actions.includes('high-rest') || entry.actions.includes('window-watch')));
+      object = favorites.find((entry) => entry.id === options.objectId) || favorites[0] || null;
+    }
+    if (!object && ['avoid-affection', 'avoid-rain', 'fear-response', 'seek-solitude'].includes(behaviorId)) {
+      object = sceneObjects.find((entry) => entry.id === 'quiet-corner') || semanticObjectById(context.room, context.species, 'quiet-corner');
+    }
+    if (!object && !options.objectId) object = sceneObjects.find((entry) => Array.isArray(entry.actions) && entry.actions.includes(behaviorId)) || objectsForBehavior(context.room, context.species, behaviorId)[0] || null;
+
+    const objectRequired = !definition.roam && !definition.targetFriend && !['idle-observe', 'groom', 'explore'].includes(behaviorId);
+    if (objectRequired && !object) return { ok: false, reason: 'Nenhum alvo compatível existe neste ambiente.' };
+
+    this.host.scene.setAutonomous?.(false);
+    const hold = clamp(Number(options.hold) || Number(definition.min) || 8000, 1800, 30000);
+    const token = uid();
+    const animation = options.animation || definition.animation || 'idle';
+    const action = {
+      id: behaviorId,
+      token,
+      target: definition.targetFriend ? 'friend' : object?.id || (definition.roam || behaviorId === 'explore' ? 'roam' : 'roam'),
+      objectId: object?.id || null,
+      point: object?.approach ? { x: object.approach[0], z: object.approach[1] } : options.point || null,
+      interactionPoint: object?.interaction ? { x: object.interaction[0], z: object.interaction[1] } : null,
+      surface: Number.isFinite(Number(object?.surfaceY))
+        ? {
+            center: object?.interaction ? { x: object.interaction[0], z: object.interaction[1] } : null,
+            y: Number(object.surfaceY),
+            size: Array.isArray(object.surfaceSize) ? object.surfaceSize.slice(0, 2).map(Number) : null,
+            yaw: Number.isFinite(Number(object.surfaceYaw)) ? Number(object.surfaceYaw) : null,
+            margin: Number.isFinite(Number(object.surfaceMargin)) ? Number(object.surfaceMargin) : 0.06
+          }
+        : null,
+      verticalHeight: definition.vertical ? Number(object?.surfaceY) || 0.5 : 0,
+      run: options.run == null ? Boolean(definition.run) : Boolean(options.run),
+      animation,
+      hold,
+      cooldown: Number(definition.cooldown) || 10000,
+      interruptPriority: Number(definition.interrupt) || 0,
+      score: 999,
+      devForced: true
+    };
+
+    if (action.objectId && !reserveObject(state, action.objectId, this.slot.companionId, hold + 9000, true)) {
+      return { ok: false, reason: 'O alvo está ocupado.' };
+    }
+
+    state.agent.currentAction = behaviorId;
+    state.agent.actionSince = now;
+    state.agent.minimumUntil = now + hold;
+    state.agent.nextDecisionAt = now + hold + 800;
+    state.agent.lastDecisionAt = now;
+    state.agent.currentScore = 999;
+    state.agent.targetObjectId = action.objectId;
+    state.agent.target = action.target;
+    state.agent.actionToken = token;
+    state.agent.navigationState = 'moving';
+
+    const started = this.host.scene.startAutonomousAction?.(action);
+    if (!started) {
+      releaseObject(state, action.objectId, this.slot.companionId);
+      if (state.agent.currentAction === behaviorId && state.agent.actionToken === token) this.agent.complete(action, 'blocked');
+      return { ok: false, reason: 'O pet não encontrou uma rota física válida até o alvo.' };
+    }
+    this.host.store.persist();
+    return { ok: true, action };
+  }
+
+  stopForcedAutonomousAction() {
+    const interrupted = this.host.scene.interruptAutonomous?.('dev-stop') || false;
+    this.host.scene.setAutonomous?.(true);
+    if (!interrupted && this.host.scene.currentPet) {
+      this.host.scene.placePetSafely?.(this.host.scene.currentPet.stage.position);
+    }
+    return true;
+  }
+
+  forceEmergentEvent(eventId) {
+    const state = this.ensure();
+    const context = this.context();
+    const definition = EMERGENT_EVENTS.find((event) => event.id === eventId);
+    if (!state || !context || !definition) return { ok: false, reason: 'Evento indisponível.' };
+
+    if (state.emergentEvents.active) this.clearEmergentEvent();
+    const now = Date.now();
+    const active = {
+      instanceId: uid(), id: definition.id, phase: 'active', startedAt: now, activeAt: now,
+      endsAt: now + Math.max(30, Number(definition.duration) || 60) * 1000,
+      responses: [...definition.responses], response: null, consequence: null,
+      room: context.room, weather: context.weather,
+      participants: context.hasFriend ? [context.petId, context.friendId] : [context.petId],
+      memoryType: definition.memory, rare: Boolean(definition.rare), devForced: true
+    };
+    state.emergentEvents.active = active;
+    state.emergentEvents.nextEvaluationAt = active.endsAt + 30000;
+    this.handleEventTransition({ transition: 'started', active });
+    this.host.store.persist();
+    return { ok: true, event: active };
+  }
+
+  clearEmergentEvent() {
+    const state = this.ensure();
+    const active = state?.emergentEvents?.active;
+    if (!state || !active) return false;
+    state.emergentEvents.active = null;
+    state.emergentEvents.nextEvaluationAt = Date.now() + 30000;
+    this.host.scene.setEmergentEvent?.(null);
+    this.host.dispatchEvent(new CustomEvent('emergent-event', { detail: { phase: 'resolved', event: { ...active, devCancelled: true } } }));
+    this.host.store.persist();
+    return true;
   }
 
   processExpiredDesire(state, context, now = Date.now(), living = this.living) {

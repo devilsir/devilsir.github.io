@@ -312,8 +312,33 @@ export class LivingUI {
   }
 
   render_training(root) {
-    const state=this.systems.state;this.heading(root,L('Commands and training','Comandos e treinamento'),L('Learn new commands together','Aprendam novos comandos juntos'));
-    const grid=this.grid(root);Object.entries(COMMANDS).forEach(([id,command])=>{const progress=state.commands[id];const level=this.systems.commandLevel(progress.mastery);const card=this.card(loc(command.name),`${L(level,this.commandLevelPt(level))} · ${Math.round(progress.mastery)}%`);card.innerHTML+=`<div class="living-meter"><i style="width:${progress.mastery}%"></i></div><small>${L('Confidence','Confiança')} ${Math.round(progress.confidence)}% · ${L('Response','Resposta')} ${(progress.responseDelay/1000).toFixed(1)}s · ${L('Distraction resistance','Resistência a distrações')} ${Math.round(progress.distractionResistance)}%</small>`;card.append(button(L('Practice','Praticar'),async()=>{const result=await this.systems.train(id);this.refresh(!result.ok?L('More energy is needed.','É preciso mais energia.'):result.success?`${L('Successful contextual repetition','Repetição contextual bem-sucedida')} · ${(result.responseDelay/1000).toFixed(1)}s`:L('The context was difficult; confidence will recover with good timing.','O contexto estava difícil; a confiança se recupera com um bom momento.'));}),button(L('Use now','Usar agora'),()=>{const ok=this.systems.useCommand(id);this.refresh(ok?L('Command used in the room.','Comando usado no ambiente.'):L('Practice until the command reaches Learning.','Pratique até o comando chegar a Aprendendo.'));},{disabled:progress.mastery<28}));grid.append(card);});
+    const state=this.systems.state;
+    this.heading(root,L('Commands and training','Comandos e treinamento'),L('Only real commands supported by this pet','Somente comandos reais compatíveis com este pet'),L('Commands without a matching GLB animation are hidden instead of using an unrelated movement.','Comandos sem uma animação correspondente no GLB ficam ocultos, em vez de usar um movimento sem relação.'));
+    const commands=this.systems.availableCommands();
+    const grid=this.grid(root);
+    commands.forEach(([id,command])=>{
+      const progress=state.commands[id] || { mastery:0, confidence:0, responseDelay:1500, distractionResistance:0 };
+      const level=this.systems.commandLevel(progress.mastery);
+      const card=this.card(loc(command.name),`${loc(command.description)} · ${L(level,this.commandLevelPt(level))} · ${Math.round(progress.mastery)}%`);
+      card.innerHTML+=`<div class="living-meter"><i style="width:${progress.mastery}%"></i></div><small>${L('Confidence','Confiança')} ${Math.round(progress.confidence)}% · ${L('Response','Resposta')} ${(progress.responseDelay/1000).toFixed(1)}s · ${L('Distraction resistance','Resistência a distrações')} ${Math.round(progress.distractionResistance)}%</small>`;
+      card.append(
+        button(L('Practice','Praticar'),async()=>{
+          const result=await this.systems.train(id);
+          const message=!result.ok
+            ? (result.reason==='energy'?L('More energy is needed.','É preciso mais energia.'):L('This command is not available for this pet or room.','Este comando não está disponível para este pet ou ambiente.'))
+            : result.success
+              ? `${L('Successful contextual repetition','Repetição contextual bem-sucedida')} · ${(result.responseDelay/1000).toFixed(1)}s`
+              : L('The context was difficult; confidence will recover with good timing.','O contexto estava difícil; a confiança se recupera com um bom momento.');
+          this.refresh(message);
+        }),
+        button(L('Use now','Usar agora'),()=>{
+          const ok=this.systems.useCommand(id);
+          this.refresh(ok?L('Command used in the room.','Comando usado no ambiente.'):L('Practice until the command reaches Learning.','Pratique até o comando chegar a Aprendendo.'));
+        },{disabled:progress.mastery<28})
+      );
+      grid.append(card);
+    });
+    if(!commands.length) root.append(this.card(L('No compatible command here','Nenhum comando compatível aqui'),L('Change rooms or choose a pet whose GLB contains the required animation.','Troque de ambiente ou escolha um pet cujo GLB possua a animação necessária.')));
   }
 
   render_skills(root) {
@@ -374,27 +399,16 @@ export class LivingUI {
   }
 
   render_decor(root) {
-    const state=this.systems.state;this.heading(root,L('Room decoration','Decoração do ambiente'),L('Choose a piece and a position','Escolha um móvel e uma posição'));
-    const positions=[[-2.5,1.7],[0,1.8],[2.5,1.6],[-1.8,0.4],[1.8,0.4]];const grid=this.grid(root);Object.entries(FURNITURE).forEach(([id,item])=>{const owned=state.furnitureInventory[id]||0;const card=this.card(loc(item.name),`${owned?`${owned} ${L('stored','guardado')}`:`${item.cost} ${L('coins','moedas')}`} · +${item.comfort} ${L('comfort','conforto')}`);const select=document.createElement('select');select.id=`living-furniture-position-${id}`;select.name=`furniturePosition-${id}`;select.setAttribute('aria-label',`${L('Position','Posição')}: ${loc(item.name)}`);positions.forEach(([x,z],index)=>{const option=document.createElement('option');option.value=`${x},${z}`;option.textContent=`${L('Position','Posição')} ${index+1} (${x}, ${z})`;select.append(option);});card.append(select,button(owned?L('Place stored item','Posicionar item guardado'):L('Buy and place','Comprar e posicionar'),()=>{const [x,z]=select.value.split(',').map(Number);const ok=this.systems.buyAndPlaceFurniture(id,x,z,0);this.refresh(ok?L('Furniture placed.','Móvel posicionado.'):L('Invalid placement or insufficient coins.','Posição inválida ou moedas insuficientes.'));},{disabled:owned<=0&&this.store.active.currency<item.cost}));grid.append(card);});
-    this.heading(root,L('Placed in this room','Posicionados neste ambiente'),L('Preview, move, rotate, confirm or cancel','Visualize, mova, gire, confirme ou cancele'));
-    const placed=this.grid(root);
-    state.decorations.filter((entry)=>entry.room===this.store.active.activeRoom).forEach((entry)=>{
-      const editing=this.decorationDraft?.id===entry.id;
-      const draft=editing?this.decorationDraft:entry;
-      const valid=this.systems.canPlaceDecoration(draft.item,draft.x,draft.z,entry.id);
-      if(editing)this.scene.showDecorationPreview?.(draft,valid);
-      const card=this.card(loc(FURNITURE[entry.item]?.name),editing?`${L('Preview','Prévia')} X ${draft.x.toFixed(1)} · Z ${draft.z.toFixed(1)} · ${valid?L('valid','válida'):L('collision','colisão')}`:L('Placed in this room','Posicionado neste ambiente'));
-      if(editing){
-        const controls=document.createElement('div');controls.className='decoration-editor-controls';
-        const adjust=(dx,dz,rotation=0)=>()=>{this.decorationDraft={...draft,x:Number((draft.x+dx).toFixed(2)),z:Number((draft.z+dz).toFixed(2)),rotation:(draft.rotation||0)+rotation};this.render(this.container,'decor',{preserveScroll:true});};
-        controls.append(button('X −',adjust(-0.25,0)),button('X +',adjust(0.25,0)),button('Z −',adjust(0,-0.25)),button('Z +',adjust(0,0.25)),button(L('Rotate 15°','Girar 15°'),adjust(0,0,Math.PI/12)));
-        card.append(controls,button(L('Reset preview','Redefinir prévia'),()=>{this.decorationDraft={...entry};this.render(this.container,'decor',{preserveScroll:true});}),button(L('Confirm position','Confirmar posição'),()=>{const ok=this.systems.moveDecoration(entry.id,draft.x,draft.z,draft.rotation||0);if(ok){this.decorationDraft=null;this.scene.clearDecorationPreview?.();}this.refresh(ok?L('Position confirmed.','Posição confirmada.'):L('This preview collides with an object or route.','Esta prévia colide com um objeto ou rota.'));},{disabled:!valid,className:'button button-primary'}),button(L('Cancel edit','Cancelar edição'),()=>{this.decorationDraft=null;this.scene.clearDecorationPreview?.();this.refresh();}));
-      }else{
-        card.append(button(L('Edit with preview','Editar com prévia'),()=>{this.decorationDraft={...entry};this.render(this.container,'decor',{preserveScroll:true});}),button(L('Store','Guardar'),()=>{this.systems.storeDecoration(entry.id);this.refresh(L('Furniture returned to storage.','Móvel devolvido ao inventário.'));}),button(L('Sell','Vender'),()=>{this.systems.sellDecoration(entry.id);this.refresh(L('Furniture sold and part of the coins returned.','Móvel vendido e parte das moedas devolvida.'));}));
-      }
-      placed.append(card);
-    });
-    root.append(button(L('Reset this room','Redefinir este ambiente'),()=>{this.decorationDraft=null;this.scene.clearDecorationPreview?.();this.systems.resetRoomDecorations();this.refresh(L('Placed furniture was stored away.','Os móveis posicionados foram guardados.'));}));
+    const room=this.store.active.activeRoom;
+    const compatible=Object.values(FURNITURE).filter((item)=>!Array.isArray(item.rooms)||item.rooms.includes(room)).length;
+    const placed=this.systems.state.decorations.filter((entry)=>entry.room===room).length;
+    const stored=Object.entries(this.systems.state.furnitureInventory).filter(([id,count])=>count>0&&(!FURNITURE[id]?.rooms||FURNITURE[id].rooms.includes(room))).reduce((sum,[,count])=>sum+count,0);
+    this.heading(root,L('Room shop and construction','Loja e construção do ambiente'),L('Furniture filtered for the current area','Móveis filtrados para a área atual'));
+    const summary=this.card(L('Current room','Ambiente atual'),`${compatible} ${L('compatible furniture options','opções de móveis compatíveis')} · ${placed} ${L('placed','posicionados')} · ${stored} ${L('stored','guardados')}`);
+    summary.append(button(L('Open construction mode','Abrir modo construção'),()=>{document.querySelector('#build-button')?.click();},{className:'button button-primary'}));
+    root.append(summary);
+    const copy=this.card(L('Permanent room expansions','Expansões permanentes'),L('Increase the usable floor area up to three times, then arrange furniture freely with the 3D gizmo.','Aumente a área útil em até três níveis e depois organize os móveis livremente com o gizmo 3D.'));
+    root.append(copy);
   }
 
   render_style(root) {

@@ -1,6 +1,5 @@
 import * as THREE from '../../vendor/three.module.js';
-import { lerp } from '../utils.js';
-import { PET_ACCESSORY_FITS } from '../living-data.js';
+import { ACCESSORIES, PET_ACCESSORY_FITS } from '../living-data.js';
 
 export const accessoriesMethods = {
   findAttachmentBone(record, anchor = 'neck') {
@@ -39,12 +38,19 @@ export const accessoriesMethods = {
     return new THREE.Euler(values[0] || 0, values[1] || 0, values[2] || 0);
   },
 
+  getAccessoryFitId(id) {
+    return ACCESSORIES[id]?.fit || id;
+  },
+
   getAccessoryTransform(pet, id, anchorType) {
+    const fitId = this.getAccessoryFitId(id);
     const defaults = PET_ACCESSORY_FITS.default || {};
     const petFit = PET_ACCESSORY_FITS[pet.id] || {};
-    const defaultAccessory = defaults.accessories?.[id] || {};
-    const configuredAccessory = petFit.accessories?.[id] || {};
-    const runtimeAccessory = this.accessoryFitOverrides?.pets?.[pet.id]?.accessories?.[id] || {};
+    const defaultAccessory = defaults.accessories?.[fitId] || {};
+    const configuredAccessory = petFit.accessories?.[fitId] || {};
+    const runtimeAccessory = this.accessoryFitOverrides?.pets?.[pet.id]?.accessories?.[id]
+      || this.accessoryFitOverrides?.pets?.[pet.id]?.accessories?.[fitId]
+      || {};
     const petAccessory = { ...configuredAccessory, ...runtimeAccessory };
     const size = pet.size || { x: 1, y: 1, z: 1 };
     const anchorOffset = this.vectorFromScaledArray(petFit[anchorType] || defaults[anchorType] || [0, 0, 0], size);
@@ -108,9 +114,10 @@ export const accessoriesMethods = {
     const visual = this.accessoryVisualGroup;
     if (!pet || !id || !visual) return null;
 
+    const fitId = this.getAccessoryFitId(id);
     const defaults = PET_ACCESSORY_FITS.default || {};
     const petFit = PET_ACCESSORY_FITS[pet.id] || {};
-    const defaultAccessory = defaults.accessories?.[id] || {};
+    const defaultAccessory = defaults.accessories?.[fitId] || {};
     const size = pet.size || { x: 1, y: 1, z: 1 };
     const safeSize = {
       x: Math.max(0.0001, size.x || 1),
@@ -142,95 +149,64 @@ export const accessoriesMethods = {
     return new THREE.Vector3(0, h * 0.57, d * 0.08);
   },
 
-  setAccessory(id = null) {
+  configureAccessoryMeshes(object) {
+    object.traverse((child) => {
+      if (!child.isMesh) return;
+      child.castShadow = true;
+      child.receiveShadow = true;
+      child.frustumCulled = false;
+      child.raycast = () => {};
+    });
+  },
+
+  prepareLoadedAccessory(model, definition) {
+    const wrapper = new THREE.Group();
+    wrapper.name = 'imported-accessory-model';
+    model.updateMatrixWorld(true);
+    const bounds = new THREE.Box3().setFromObject(model);
+    if (!bounds.isEmpty()) {
+      const center = bounds.getCenter(new THREE.Vector3());
+      model.position.sub(center);
+    }
+    wrapper.add(model);
+    const modelScale = Number(definition.modelScale) || 1;
+    wrapper.scale.setScalar(modelScale);
+    if (Array.isArray(definition.modelOffset)) wrapper.position.fromArray(definition.modelOffset);
+    if (Array.isArray(definition.modelRotation)) wrapper.rotation.fromArray(definition.modelRotation);
+    this.configureAccessoryMeshes(wrapper);
+    return wrapper;
+  },
+
+  clearAccessory() {
+    this.accessoryLoadRequest = (this.accessoryLoadRequest || 0) + 1;
     this.accessoryGizmo?.detach();
     if (this.accessoryGroup) {
       this.accessoryGroup.removeFromParent();
       this.disposeObject(this.accessoryGroup);
-      this.accessoryGroup = null;
     }
+    this.accessoryGroup = null;
     this.accessoryVisualGroup = null;
     this.currentAccessoryId = null;
     this.currentAccessoryAnchorType = null;
     this.accessoryBinding = null;
+  },
 
+  setAccessory(id = null) {
+    this.clearAccessory();
+    const requestId = this.accessoryLoadRequest;
     const pet = this.currentPet;
-    if (!pet || !id) return;
+    const definition = ACCESSORIES[id];
+    if (!pet || !id || !definition?.model) return Promise.resolve(false);
 
-    const anchorType = ['bow', 'hat', 'glasses'].includes(id) ? 'head' : ['backpack', 'cape'].includes(id) ? 'back' : 'neck';
+    const fitId = definition.fit || id;
+    const anchorType = definition.anchor || (['bow', 'hat', 'glasses'].includes(fitId) ? 'head' : ['backpack', 'cape'].includes(fitId) ? 'back' : 'neck');
     const root = new THREE.Group();
     root.name = `accessory-${id}`;
     const group = new THREE.Group();
     group.name = `accessory-${id}-visual`;
     root.add(group);
 
-    const primary = new THREE.MeshStandardMaterial({ color: 0xe15f75, roughness: 0.72, metalness: 0.04 });
-    const gold = new THREE.MeshStandardMaterial({ color: 0xf2c75d, roughness: 0.55, metalness: 0.2 });
-    const h = pet.size.y || 1.2;
-    const w = pet.size.x || 0.8;
-    const d = pet.size.z || 0.8;
     const transform = this.getAccessoryTransform(pet, id, anchorType);
-
-    if (id === 'collar' || id === 'bandana' || id === 'tag') {
-      const collar = new THREE.Mesh(new THREE.TorusGeometry(Math.max(0.18, w * 0.23), 0.03, 10, 28), primary);
-      collar.rotation.x = Math.PI / 2;
-      group.add(collar);
-      if (id === 'bandana') {
-        const knot = this.box(Math.max(0.08, w * 0.08), Math.max(0.05, h * 0.04), Math.max(0.04, d * 0.04), primary, 0, -0.02, 0.07);
-        const flapLeft = new THREE.Mesh(new THREE.ConeGeometry(Math.max(0.07, w * 0.08), Math.max(0.18, h * 0.16), 3), primary);
-        flapLeft.position.set(-Math.max(0.06, w * 0.07), -Math.max(0.1, h * 0.1), Math.max(0.08, d * 0.08));
-        flapLeft.rotation.set(Math.PI, 0.2, -0.2);
-        const flapRight = flapLeft.clone();
-        flapRight.position.x *= -1;
-        flapRight.rotation.z *= -1;
-        group.add(knot, flapLeft, flapRight);
-      }
-      if (id === 'tag') {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.007, 6, 16), gold);
-        ring.position.set(0, -0.02, 0.06);
-        const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.018, 18), gold);
-        plate.rotation.x = Math.PI / 2;
-        plate.position.set(0, -0.08, 0.085);
-        group.add(ring, plate);
-      }
-    } else if (id === 'bow') {
-      const left = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), primary);
-      left.scale.set(1.45, 0.68, 0.55);
-      left.position.x = -0.12;
-      const right = left.clone();
-      right.position.x = 0.12;
-      const knot = new THREE.Mesh(new THREE.SphereGeometry(0.065, 10, 8), gold);
-      group.add(left, right, knot);
-    } else if (id === 'hat') {
-      const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.04, 24), primary);
-      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.26, 18), gold);
-      crown.position.y = 0.15;
-      group.add(brim, crown);
-    } else if (id === 'glasses') {
-      for (const x of [-0.145, 0.145]) {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.102, 0.016, 8, 20), primary);
-        ring.position.x = x;
-        group.add(ring);
-      }
-      group.add(this.box(0.09, 0.022, 0.022, gold, 0, 0, 0));
-    } else if (id === 'backpack') {
-      group.add(this.box(Math.max(0.34, w * 0.44), Math.max(0.36, h * 0.3), Math.max(0.17, d * 0.22), primary, 0, 0, 0));
-      group.add(this.box(Math.max(0.12, w * 0.14), Math.max(0.08, h * 0.07), Math.max(0.03, d * 0.04), gold, 0, -Math.max(0.02, h * 0.03), Math.max(0.1, d * 0.12)));
-    } else if (id === 'cape') {
-      const cape = new THREE.Mesh(new THREE.PlaneGeometry(Math.max(0.52, w * 0.72), Math.max(0.7, h * 0.6)), primary);
-      cape.rotation.x = -0.16;
-      cape.position.z = -Math.max(0.1, d * 0.14);
-      group.add(cape);
-    }
-
-    root.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.frustumCulled = false;
-        child.raycast = () => {};
-      }
-    });
-
     group.position.copy(transform.localOffset);
     group.rotation.copy(transform.rotation);
     group.scale.copy(transform.scale);
@@ -265,7 +241,45 @@ export const accessoriesMethods = {
 
     this.accessoryGroup = root;
     root.updateMatrixWorld(true);
-    if (this.accessoryGizmoEnabled) this.accessoryGizmo?.attach(this.accessoryVisualGroup);
+    if (this.accessoryGizmoEnabled) this.accessoryGizmo?.attach(group);
+
+
+    group.userData.loading = true;
+    return new Promise((resolve) => {
+      this.loader.load(
+        definition.model,
+        (gltf) => {
+          const stillCurrent = requestId === this.accessoryLoadRequest
+            && this.currentPet === pet
+            && this.currentAccessoryId === id
+            && root.parent;
+          if (!stillCurrent) {
+            this.disposeObject(gltf.scene);
+            resolve(false);
+            return;
+          }
+          const imported = this.prepareLoadedAccessory(gltf.scene, definition);
+          group.add(imported);
+          group.userData.loading = false;
+          root.updateMatrixWorld(true);
+          this.accessoryGizmo?.update();
+          this.dispatchEvent?.(new CustomEvent('accessory-loaded', { detail: { id, petId: pet.id } }));
+          resolve(true);
+        },
+        undefined,
+        (error) => {
+          const stillCurrent = requestId === this.accessoryLoadRequest
+            && this.currentPet === pet
+            && this.currentAccessoryId === id
+            && root.parent;
+          if (stillCurrent) {
+            console.warn(`Could not load accessory model ${definition.model}.`, error);
+            this.clearAccessory();
+          }
+          resolve(false);
+        }
+      );
+    });
   },
 
   updateAccessoryBinding(delta) {

@@ -1,6 +1,6 @@
 import * as THREE from '../vendor/three.module.js';
 import { GLTFLoader } from '../vendor/GLTFLoader.js';
-import { PETS, ANIMATION_NAMES } from './config.js';
+import { PETS, ANIMATION_NAMES, ROBOT_COMPANIONS, ROBOT_COMPANIONS_ENABLED, OUTDOOR_WILDLIFE } from './config.js';
 import { AnimationController } from './animations.js';
 import { AccessoryTransformGizmo } from './accessory-gizmo.js';
 import { environmentMethods } from './scene/environment.js';
@@ -10,7 +10,9 @@ import { interactionsMethods } from './scene/interactions.js';
 import { accessoriesMethods } from './scene/accessories.js';
 import { mediaMethods } from './scene/media.js';
 import { activitiesMethods } from './scene/activities.js';
+import { buildingMethods } from './scene/building.js';
 import { physicalProfile } from './simulation/species-behaviors.js';
+import { clamp, lerp, randomBetween } from './utils.js';
 
 function neutralizeHorizontalRootMotion(clip) {
   const cloned = clip.clone();
@@ -29,6 +31,19 @@ function neutralizeHorizontalRootMotion(clip) {
   return cloned;
 }
 
+function stripExtremeScaleTracks(clip) {
+  const cloned = clip.clone();
+  cloned.tracks = cloned.tracks.filter((track) => {
+    if (!track.name.endsWith('.scale')) return true;
+    for (const value of track.values) {
+      const magnitude = Math.abs(Number(value) || 0);
+      if (magnitude > 10 || magnitude < 0.001) return false;
+    }
+    return true;
+  });
+  return cloned;
+}
+
 function findExpressionBones(model) {
   const bones = [];
   model.traverse((child) => { if (child.isBone) bones.push(child); });
@@ -40,6 +55,57 @@ function findExpressionBones(model) {
     delta: new THREE.Quaternion(),
     euler: new THREE.Euler()
   };
+}
+
+
+function normalizeActionName(name = '') {
+  return String(name).trim().toLowerCase();
+}
+
+function resolveActionName(controller, candidates = [], fallback = null) {
+  if (!controller) return fallback;
+  const available = controller.list();
+  const lookup = new Map(available.map(({ name }) => [normalizeActionName(name), name]));
+  for (const candidate of candidates) {
+    const key = normalizeActionName(candidate);
+    if (lookup.has(key)) return lookup.get(key);
+  }
+  for (const { name } of available) {
+    const lower = normalizeActionName(name);
+    if (candidates.some((candidate) => lower.includes(normalizeActionName(candidate)))) return name;
+  }
+  return fallback || available[0]?.name || null;
+}
+
+
+function shortestAngleDelta(from, to) {
+  return Math.atan2(Math.sin(to - from), Math.cos(to - from));
+}
+
+function dampAngle(from, to, turnRate, delta) {
+  const alpha = 1 - Math.exp(-Math.max(0.01, turnRate) * Math.max(0, delta));
+  return from + shortestAngleDelta(from, to) * alpha;
+}
+
+function configureCompanionMotion(record, motion = {}) {
+  const controller = record?.controller;
+  if (!controller) {
+    record.idleClip = null;
+    record.moveClip = null;
+    return record;
+  }
+  record.idleClip = motion.idle === false
+    ? null
+    : resolveActionName(controller, motion.idle || ['idle', '1idle', 'stand', 'standing'], controller.list()[0]?.name || null);
+  const numberedMoveClip = Number.isInteger(motion.moveIndex)
+    ? record.clipNames?.[motion.zeroBased === true ? motion.moveIndex : motion.moveIndex - 1] || null
+    : null;
+  const resolvedMoveClip = numberedMoveClip && controller.has(numberedMoveClip)
+    ? numberedMoveClip
+    : resolveActionName(controller, motion.move || ['walk', 'walking', 'trot', 'run', 'playing', 'move', 'metarigaction'], null);
+  record.moveClip = resolvedMoveClip && resolvedMoveClip !== record.idleClip ? resolvedMoveClip : record.idleClip;
+  if (record.idleClip) controller.play(record.idleClip, { fade: 0.01, force: true, loop: true });
+  return record;
 }
 
 export class CompanionScene extends EventTarget {
@@ -73,6 +139,10 @@ export class CompanionScene extends EventTarget {
     this.cameraTarget = new THREE.Vector3(0, 1.1, 0);
     this.pointer = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
+    this.occlusionRaycaster = new THREE.Raycaster();
+    this.occludableObjects = [];
+    this.occludedObjects = new Set();
+    this.occlusionEnvironmentChildCount = -1;
     this.floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     this.pointerState = { down: false, x: 0, y: 0, startX: 0, startY: 0, totalDx: 0, totalDy: 0, dragged: false, lastPetAt: 0, startedAt: 0, lastMoveAt: 0, lastHitPoint: null, onPet: false };
     this.activePointers = new Map();
@@ -98,6 +168,7 @@ export class CompanionScene extends EventTarget {
     this.eatingState = null;
     this.petPortraitCache = new Map();
     this.paused = false;
+    this.staticPetPreview = false;
     this.lastAutonomous = 0;
     this.autonomousTarget = null;
     this.autonomousEnabled = false;
@@ -128,6 +199,7 @@ export class CompanionScene extends EventTarget {
     this.currentAccessoryAnchorType = null;
     this.accessoryFitOverrides = null;
     this.accessoryBinding = null;
+    this.accessoryLoadRequest = 0;
     this.accessoryWorldPosition = new THREE.Vector3();
     this.accessoryTargetPosition = new THREE.Vector3();
     this.accessoryAnchorOffset = new THREE.Vector3();
@@ -152,6 +224,27 @@ export class CompanionScene extends EventTarget {
     this.persistentDirtMarks = [];
     this.decorationPreview = null;
     this.travelLocation = null;
+    this.roomUpgradeLevels = {};
+    this.defaultFurnitureTransforms = {};
+    this.defaultFurnitureStored = {};
+    this.defaultFurnitureObjects = [];
+    this.currentRoomDimensions = null;
+    this.buildCameraPan = new THREE.Vector2(0, 0);
+    this.buildViewportPointer = { x: 0, y: 0, inside: false };
+    this.buildGizmo = null;
+    this.buildGizmoEnabled = false;
+    this.buildGizmoDragging = false;
+    this.buildSelectedDecorationId = null;
+    this.petControlsLocked = false;
+    this.ambientPopulationGroup = new THREE.Group();
+    this.wildlifeGroup = new THREE.Group();
+    this.robotCompanionGroup = new THREE.Group();
+    this.ambientPopulation = [];
+    this.wildlifePopulation = [];
+    this.robotCompanions = [];
+    this.looseModelCache = new Map();
+    this.worldPopulationToken = 0;
+    this.lastLivingWorldKey = '';
   }
 
   async init() {
@@ -170,7 +263,7 @@ export class CompanionScene extends EventTarget {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xf4ead8);
-    this.scene.fog = new THREE.Fog(0xf4ead8, 9, 18);
+    this.scene.fog = null;
 
     this.camera = new THREE.PerspectiveCamera(38, 1, 0.05, 40);
     this.camera.position.set(this.baseCamera.x, this.baseCamera.y, this.baseCamera.z);
@@ -179,6 +272,9 @@ export class CompanionScene extends EventTarget {
     this.scene.add(this.environment);
     this.scene.add(this.petStage);
     this.scene.add(this.weatherGroup);
+    this.scene.add(this.ambientPopulationGroup);
+    this.scene.add(this.wildlifeGroup);
+    this.scene.add(this.robotCompanionGroup);
     this.createLights();
     this.buildEnvironment('living');
     this.accessoryGizmo = new AccessoryTransformGizmo({
@@ -192,6 +288,18 @@ export class CompanionScene extends EventTarget {
         this.dispatchEvent(new CustomEvent('accessory-gizmo-change', { detail: { ...fit, ...interaction } }));
       }
     });
+    this.buildGizmo = new AccessoryTransformGizmo({
+      scene: this.scene,
+      camera: this.camera,
+      domElement: this.canvas,
+      onDraggingChange: (dragging) => { this.buildGizmoDragging = dragging; },
+      onChange: (interaction) => {
+        const transform = this.getBuildSelectionTransform?.();
+        if (!transform) return;
+        this.dispatchEvent(new CustomEvent('build-gizmo-change', { detail: { ...transform, ...interaction } }));
+      }
+    });
+    this.buildGizmo.setUniformScale(true);
     this.bindEvents();
     this.resize();
     this.running = true;
@@ -299,6 +407,277 @@ export class CompanionScene extends EventTarget {
     };
   }
 
+
+  async loadLooseRecord(url, {
+    targetHeight = 0.8,
+    hueShift = 0,
+    saturationBoost = 0,
+    brightnessBoost = 0,
+    stripScaleJumps = false,
+    deferMotion = false
+  } = {}) {
+    const gltf = await this.loadModel(url);
+    const model = gltf.scene;
+    const animations = (gltf.animations || []).map((clip) => {
+      let normalized = neutralizeHorizontalRootMotion(clip);
+      if (stripScaleJumps) normalized = stripExtremeScaleTracks(normalized);
+      normalized.name = clip.name.split('|').pop().trim();
+      return normalized;
+    });
+    model.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        if (child.material?.color) {
+          child.material = child.material.clone();
+          const hsl = { h: 0, s: 0, l: 0 };
+          child.material.color.getHSL(hsl);
+          child.material.color.setHSL((hsl.h + hueShift + 1) % 1, clamp(hsl.s + saturationBoost, 0, 1), clamp(hsl.l + brightnessBoost, 0, 1));
+        }
+      }
+    });
+    const stage = new THREE.Group();
+    const modelHolder = new THREE.Group();
+    stage.add(modelHolder);
+    modelHolder.add(model);
+    const initialBox = new THREE.Box3().setFromObject(model);
+    const initialSize = initialBox.getSize(new THREE.Vector3());
+    const scale = targetHeight / Math.max(0.001, initialSize.y || 1);
+    model.scale.setScalar(scale);
+    model.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.x -= center.x;
+    model.position.z -= center.z;
+    model.position.y -= box.min.y;
+    model.updateMatrixWorld(true);
+    const controller = animations.length ? new AnimationController(model, animations, (sound) => this.soundPlayer(sound)) : null;
+    const record = {
+      stage,
+      modelHolder,
+      model,
+      controller,
+      clipNames: animations.map((clip) => clip.name),
+      velocity: new THREE.Vector3(),
+      target: null,
+      baseY: 0,
+      wanderSpeed: 0.5,
+      radius: 0.34,
+      kind: 'ambient',
+      idleClip: null,
+      moveClip: null
+    };
+    return deferMotion ? record : configureCompanionMotion(record);
+  }
+
+  async loadLooseRecordSafe(url, options = {}) {
+    try {
+      return await this.loadLooseRecord(url, options);
+    } catch (error) {
+      console.warn(`[Pocket Companions] Modelo ambiental não carregado: ${url}`, error);
+      return null;
+    }
+  }
+
+  setRobotCompanionsVisible() {
+    if (this.robotCompanionGroup) this.robotCompanionGroup.visible = false;
+  }
+
+  clearOutdoorPopulation() {
+    for (const collection of [this.ambientPopulation, this.wildlifePopulation, this.robotCompanions]) {
+      for (const entry of collection || []) {
+        entry.controller?.dispose?.();
+        entry.stage?.removeFromParent?.();
+        this.disposeObject(entry.stage);
+      }
+    }
+    this.ambientPopulation = [];
+    this.wildlifePopulation = [];
+    this.robotCompanions = [];
+    [this.ambientPopulationGroup, this.wildlifeGroup, this.robotCompanionGroup].forEach((group) => {
+      while (group.children.length) group.remove(group.children[0]);
+    });
+  }
+
+  async setLivingWorldState({ roomId = this.roomId, inventory = {}, petId = this.currentPetId } = {}) {
+    const outdoors = ['garden', 'park'].includes(roomId);
+    const key = JSON.stringify({ roomId, petId, robotsEnabled: Boolean(ROBOT_COMPANIONS_ENABLED) });
+    if (key === this.lastLivingWorldKey) return;
+    this.lastLivingWorldKey = key;
+    const token = ++this.worldPopulationToken;
+    this.clearOutdoorPopulation();
+    if (this.robotCompanionGroup) this.robotCompanionGroup.visible = false;
+    const bounds = this.getWalkBounds(0.9);
+    if (outdoors) {
+      const ambientIds = Object.keys(PETS).filter((id) => id !== petId).slice(0, 3);
+    for (let i = 0; i < Math.min(3, ambientIds.length); i += 1) {
+      const id = ambientIds[i];
+      const profile = physicalProfile(id);
+      const record = await this.loadLooseRecordSafe(PETS[id].model, { targetHeight: Math.max(0.9, profile.targetHeight * (0.9 + i * 0.03)), hueShift: 0.08 * (i + 1), saturationBoost: 0.08, brightnessBoost: 0.03 });
+      if (!record) continue;
+      if (token !== this.worldPopulationToken) { record.controller?.dispose?.(); this.disposeObject(record.stage); return; }
+      record.kind = 'ambient-pet';
+      record.wanderSpeed = 0.42 + i * 0.04;
+      record.target = new THREE.Vector3(randomBetween(bounds.minX, bounds.maxX), 0, randomBetween(bounds.minZ, bounds.maxZ));
+      record.stage.position.copy(record.target.clone().add(new THREE.Vector3(randomBetween(-0.6, 0.6), 0, randomBetween(-0.6, 0.6))));
+      this.ambientPopulation.push(record);
+      this.ambientPopulationGroup.add(record.stage);
+    }
+    const rabbit = await this.loadLooseRecordSafe(OUTDOOR_WILDLIFE.rabbit.model, { targetHeight: 0.5 });
+    if (rabbit && token !== this.worldPopulationToken) { rabbit.controller?.dispose?.(); this.disposeObject(rabbit.stage); return; }
+    if (rabbit) {
+      rabbit.kind = 'rabbit';
+      rabbit.wanderSpeed = 0.58;
+      rabbit.stage.position.set(bounds.minX + 1.4, 0, bounds.maxZ - 1.2);
+      rabbit.target = new THREE.Vector3(bounds.maxX - 1.6, 0, bounds.minZ + 1.7);
+      this.wildlifePopulation.push(rabbit);
+      this.wildlifeGroup.add(rabbit.stage);
+    }
+    for (const keyId of ['butterfly', 'butterfly2']) {
+      const def = OUTDOOR_WILDLIFE[keyId];
+      const fly = await this.loadLooseRecordSafe(def.model, { targetHeight: def.targetHeight || 0.18 });
+      if (!fly) continue;
+      if (token !== this.worldPopulationToken) { fly.controller?.dispose?.(); this.disposeObject(fly.stage); return; }
+      fly.kind = 'butterfly';
+      fly.baseY = 1.05 + Math.random() * 0.55;
+      fly.orbitRadius = 1.2 + Math.random() * 1.4;
+      fly.orbitSpeed = 0.4 + Math.random() * 0.35;
+      fly.phase = Math.random() * Math.PI * 2;
+      fly.yawOffset = Number(def.yawOffset || 0);
+      fly.center = new THREE.Vector3(randomBetween(bounds.minX + 1, bounds.maxX - 1), fly.baseY, randomBetween(bounds.minZ + 1, bounds.maxZ - 1));
+      this.wildlifePopulation.push(fly);
+      this.wildlifeGroup.add(fly.stage);
+    }
+    }
+    const activeRobotId = ROBOT_COMPANIONS_ENABLED
+      ? Object.keys(ROBOT_COMPANIONS).find((robotId) => inventory?.[robotId] > 0)
+      : null;
+    for (const robotId of (activeRobotId ? [activeRobotId] : [])) {
+      const def = ROBOT_COMPANIONS[robotId];
+      const robot = await this.loadLooseRecordSafe(def.model, {
+        targetHeight: def.targetHeight || 0.82,
+        stripScaleJumps: robotId === 'robot-cat',
+        deferMotion: robotId === 'robot-cat'
+      });
+      if (!robot) continue;
+      if (token !== this.worldPopulationToken) { robot.controller?.dispose?.(); this.disposeObject(robot.stage); return; }
+      robot.kind = 'robot';
+      robot.followOffset = new THREE.Vector3(robotId === 'robot-cat' ? -1.28 : 1.34, 0, robotId === 'robot-cat' ? 0.98 : 0.92);
+      robot.wanderSpeed = robotId === 'robot-dog' ? 1.0 : 0.88;
+      robot.lastMoveAt = 0;
+      robot.forwardYawOffset = robotId === 'robot-dog' ? -Math.PI / 2 : 0;
+      robot.turnRate = robotId === 'robot-dog' ? 7.5 : 8.5;
+      robot.navigationRadius = robotId === 'robot-dog' ? 0.38 : 0.31;
+      robot.radius = robot.navigationRadius;
+      robot.pathWaypoints = [];
+      robot.pathTarget = null;
+      robot.lastPathAt = 0;
+      configureCompanionMotion(robot, robotId === 'robot-dog'
+        ? { idle: false, moveIndex: 13 }
+        : { idle: false, move: ['metarigAction', 'walk', 'playing'] });
+      robot.freezeOnStop = true;
+      const petPosition = this.currentPet?.stage?.position?.clone?.() || new THREE.Vector3();
+      const initialDesired = petPosition.add(robot.followOffset.clone());
+      robot.stage.position.copy(this.findSafeEntityPosition?.(initialDesired, robot.navigationRadius, robot) || this.findSafePosition(initialDesired, robot.navigationRadius));
+      this.robotCompanions.push(robot);
+      this.robotCompanionGroup.add(robot.stage);
+    }
+  }
+
+  updateAmbientOutdoorLife(delta, time) {
+    const bounds = this.getWalkBounds(0.9);
+    const updateWalker = (entry, speedMultiplier = 1) => {
+      if (!entry?.stage) return;
+      entry.controller?.update?.(delta);
+      if (!entry.target || entry.stage.position.distanceTo(entry.target) < 0.25) {
+        entry.target = new THREE.Vector3(randomBetween(bounds.minX, bounds.maxX), 0, randomBetween(bounds.minZ, bounds.maxZ));
+      }
+      const dir = entry.target.clone().sub(entry.stage.position);
+      const dist = Math.hypot(dir.x, dir.z);
+      if (dist > 0.001) {
+        dir.normalize();
+        const step = Math.min(dist, (entry.wanderSpeed || 0.45) * speedMultiplier * delta);
+        entry.stage.position.x += dir.x * step;
+        entry.stage.position.z += dir.z * step;
+        entry.modelHolder.rotation.y = Math.atan2(dir.x, dir.z);
+        if (entry.controller && entry.moveClip && entry.controller.currentName !== entry.moveClip) entry.controller.play(entry.moveClip, { force: true, fade: 0.18, loop: true });
+      } else if (entry.controller && entry.idleClip) {
+        if (entry.controller.currentName !== entry.idleClip) entry.controller.play(entry.idleClip, { force: true, fade: 0.18, loop: true });
+      }
+    };
+    this.ambientPopulation.forEach((entry) => updateWalker(entry, 1));
+    this.wildlifePopulation.forEach((entry) => {
+      entry.controller?.update?.(delta);
+      if (entry.kind === 'butterfly') {
+        entry.phase += delta * (entry.orbitSpeed || 0.5);
+        entry.stage.position.set(entry.center.x + Math.cos(entry.phase) * entry.orbitRadius, entry.baseY + Math.sin(entry.phase * 2) * 0.16, entry.center.z + Math.sin(entry.phase) * entry.orbitRadius * 0.55);
+        entry.modelHolder.rotation.y = (-entry.phase) + (entry.yawOffset || 0);
+      } else updateWalker(entry, 1.15);
+    });
+    const current = this.currentPet;
+    this.robotCompanions.forEach((entry, index) => {
+      entry.controller?.update?.(delta);
+      if (!current?.stage || entry.stage?.visible === false) return;
+      const radius = Math.max(0.22, Number(entry.navigationRadius || entry.radius) || 0.3);
+      const offset = entry.followOffset || new THREE.Vector3(index ? 1.34 : -1.28, 0, index ? 0.92 : 0.98);
+      const desiredRaw = current.stage.position.clone().add(offset.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), current.modelHolder.rotation.y || 0));
+      const desired = this.findSafeEntityPosition?.(desiredRaw, radius, entry) || this.findSafePosition(desiredRaw, radius);
+
+      // Recover cleanly if an old save or room rebuild left the robot inside geometry or another pet.
+      const currentlyInvalid = this.isBlocked(entry.stage.position.x, entry.stage.position.z, radius)
+        || this.livingEntityCollisionAt?.(entry.stage.position.x, entry.stage.position.z, radius, entry, 0.03);
+      if (currentlyInvalid) {
+        entry.stage.position.copy(desired);
+        entry.pathWaypoints = [];
+        entry.pathTarget = desired.clone();
+      }
+
+      const targetChanged = !entry.pathTarget || entry.pathTarget.distanceToSquared(desired) > 0.09;
+      if (targetChanged || !entry.pathWaypoints?.length) {
+        entry.lastPathAt = time;
+        entry.pathTarget = desired.clone();
+        const route = this.findPath(entry.stage.position.clone(), desired, radius);
+        entry.pathWaypoints = route.length ? route.map((point) => point.clone()) : [];
+      }
+
+      while (entry.pathWaypoints?.length && entry.stage.position.distanceTo(entry.pathWaypoints[0]) < 0.02) entry.pathWaypoints.shift();
+      const moveTarget = entry.pathWaypoints?.[0] || desired;
+      const direction = moveTarget.clone().sub(entry.stage.position);
+      direction.y = 0;
+      const distance = direction.length();
+      const finalDistance = entry.stage.position.distanceTo(desired);
+
+      if (distance > 0.01 && finalDistance > 0.1) {
+        entry.lastMoveAt = time;
+        direction.normalize();
+        const step = Math.min(distance, (entry.wanderSpeed || 0.8) * delta);
+        const next = entry.stage.position.clone().addScaledVector(direction, step);
+        const blocked = this.isBlocked(next.x, next.z, radius)
+          || this.livingEntityCollisionAt?.(next.x, next.z, radius, entry, 0.07);
+        if (blocked) {
+          entry.pathWaypoints = [];
+          entry.lastPathAt = 0;
+        } else {
+          entry.stage.position.copy(next);
+          const targetYaw = Math.atan2(direction.x, direction.z) + (entry.forwardYawOffset || 0);
+          entry.modelHolder.rotation.y = dampAngle(entry.modelHolder.rotation.y, targetYaw, entry.turnRate || 8, delta);
+          if (entry.controller && entry.moveClip) {
+            if (entry.controller.currentName !== entry.moveClip) {
+              entry.controller.play(entry.moveClip, { force: true, fade: 0.12, loop: true, timeScale: 1 });
+            } else if (entry.controller.currentAction?.paused) {
+              entry.controller.currentAction.paused = false;
+              entry.controller.currentAction.setEffectiveTimeScale(1);
+            }
+          }
+        }
+      } else if (entry.freezeOnStop && entry.controller?.currentAction && time - (entry.lastMoveAt || 0) > 320) {
+        entry.controller.currentAction.paused = true;
+      } else if (entry.controller && entry.idleClip && time - (entry.lastMoveAt || 0) > 320) {
+        if (entry.controller.currentName !== entry.idleClip) entry.controller.play(entry.idleClip, { force: true, fade: 0.2, loop: true });
+      }
+    });
+  }
+
   async setPet(id, { selection = false } = {}) {
     if (!PETS[id]) throw new Error(`Unknown pet ${id}.`);
     const requestId = ++this.petLoadRequest;
@@ -340,6 +719,7 @@ export class CompanionScene extends EventTarget {
     this.stopMovement('stopped');
     this.autonomousTarget = null;
     this.frameCurrentPet(selection);
+    this.dispatchEvent(new CustomEvent('pet-changed', { detail: { id, selection } }));
     return true;
   }
 
@@ -362,6 +742,29 @@ export class CompanionScene extends EventTarget {
     if (mode !== 'clean') this.cleanMode = false;
   }
 
+  setStaticPetPreview(enabled = true) {
+    this.staticPetPreview = Boolean(enabled);
+    const pet = this.currentPet;
+    if (!pet?.controller) return;
+
+    if (this.staticPetPreview) {
+      this.stopMovement('stopped');
+      this.autonomousTarget = null;
+      pet.model.position.copy(pet.baseModelPosition);
+      pet.model.rotation.copy(pet.baseModelRotation);
+      pet.modelHolder.rotation.z = 0;
+      pet.controller.mixer.timeScale = 1;
+      pet.controller.play('idle', { fade: 0, force: true, loop: true });
+      pet.controller.mixer.setTime(0);
+      pet.controller.mixer.timeScale = 0;
+      this.updateAccessoryBinding?.(0);
+      return;
+    }
+
+    pet.controller.mixer.timeScale = 1;
+    pet.controller.play('idle', { fade: 0.12, force: true, loop: true });
+  }
+
   setReducedMotion() {
     if (!this.renderer) return;
     const settings = this.settingsProvider();
@@ -375,22 +778,48 @@ export class CompanionScene extends EventTarget {
     const delta = Math.min(this.clock.getDelta(), 0.05);
     const time = performance.now();
     this.pets.forEach((record) => {
-      if (record.stage.visible) record.controller.update(delta);
+      if (record.stage.visible && !(this.staticPetPreview && record === this.currentPet)) record.controller.update(delta);
     });
     this.updateMovement(delta);
     this.updateAutonomous(time);
     this.updateSecondary(delta, time);
     this.updateWorldEffects(delta);
+    this.updateAmbientOutdoorLife(delta, time);
     this.updateParticles(delta);
-    this.updateActionPose(delta);
+    if (!this.staticPetPreview) this.updateActionPose(delta);
     this.updateAccessoryBinding(delta);
     this.updateSceneNarratives?.(delta);
+    if ((this.emergentVisualState || this.eventGroup) && time - (this.lastEventSpawnSafetyAt || 0) > 500) {
+      this.lastEventSpawnSafetyAt = time;
+      this.ensurePetOutsideObstacles?.(this.currentPet, this.currentPet?.stage?.position?.clone?.());
+      const secondary = this.secondaryPetId ? this.pets?.get?.(this.secondaryPetId) : null;
+      if (secondary) this.ensurePetOutsideObstacles?.(secondary, secondary.stage?.position?.clone?.());
+    }
     this.updateCamera(delta);
+    this.updateFurnitureOcclusion?.(delta);
     this.accessoryGizmo?.update();
+    this.buildGizmo?.update();
     this.renderer.render(this.scene, this.camera);
   };
 
+  handleViewportPointerMove = (event) => {
+    if (!this.canvas || !this.buildViewportPointer) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    this.buildViewportPointer.x = event.clientX;
+    this.buildViewportPointer.y = event.clientY;
+    this.buildViewportPointer.inside = inside;
+  };
+
+  handleViewportPointerLeave = () => {
+    if (this.buildViewportPointer) this.buildViewportPointer.inside = false;
+  };
+
   handlePointerDown = (event) => {
+    if (this.petControlsLocked) {
+      this.selectBuildObjectAt?.(event);
+      return;
+    }
     this.canvas.setPointerCapture?.(event.pointerId);
     this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     this.pointerState.down = true;
@@ -421,12 +850,20 @@ export class CompanionScene extends EventTarget {
   };
 
   handlePointerMove = (event) => {
+    this.handleViewportPointerMove(event);
+    if (this.petControlsLocked) return;
     if (!this.pointerState.down) return;
     this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (this.activePointers.size === 2 && (this.mode === 'selection' || this.mode === 'photo')) {
+    if (this.activePointers.size === 2 && this.mode !== 'title') {
       const points = [...this.activePointers.values()];
       const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
-      if (this.pinchDistance) this.baseCamera.z = clamp(this.baseCamera.z - (distance - this.pinchDistance) * 0.012, 3.5, 8.5);
+      if (this.pinchDistance) {
+        const pet = this.currentPet;
+        const minZoom = this.mode === 'selection' ? 2.6 : 3.0;
+        const maxZoom = this.mode === 'photo' ? 15 : 12.5;
+        this.baseCamera.z = clamp(this.baseCamera.z - (distance - this.pinchDistance) * 0.012, minZoom, maxZoom);
+        if (pet && this.mode !== 'selection') this.baseCamera.y = clamp(this.baseCamera.y + (distance - this.pinchDistance) * -0.0035, Math.max(1.4, pet.size.y * 0.5), 7.2);
+      }
       this.pinchDistance = distance;
       this.pointerState.dragged = true;
       return;
@@ -456,6 +893,7 @@ export class CompanionScene extends EventTarget {
   };
 
   handlePointerUp = (event) => {
+    if (this.petControlsLocked) return;
     this.activePointers.delete(event.pointerId);
     if (this.activePointers.size < 2) this.pinchDistance = null;
     if (!this.pointerState.down) return;
@@ -472,9 +910,23 @@ export class CompanionScene extends EventTarget {
   };
 
   handleWheel = (event) => {
-    if (this.mode !== 'selection' && this.mode !== 'photo') return;
+    if (this.mode === 'title' || !this.currentPet || event.ctrlKey) return;
+    const target = event.target instanceof Element ? event.target : null;
+    const interactive = target?.closest?.('input, select, textarea, button, [contenteditable="true"], .drawer, .modal-card, .wardrobe-panel, .build-panel, .dev-panel, .bottom-navigation, .topbar, .primary-actions, .needs-panel, .living-tab-rail');
+    if (interactive) return;
+    const rect = this.canvas.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
+
     event.preventDefault();
-    this.baseCamera.z = clamp(this.baseCamera.z + event.deltaY * 0.003, 3.5, 8.5);
+    const pet = this.currentPet;
+    const minZoom = this.mode === 'selection' ? 2.45 : 2.8;
+    const maxZoom = this.mode === 'photo' ? 15 : 13.5;
+    const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? window.innerHeight : 1;
+    const delta = clamp(event.deltaY * unit, -240, 240);
+    this.baseCamera.z = clamp(this.baseCamera.z + delta * 0.0065, minZoom, maxZoom);
+    if (this.mode !== 'selection') {
+      this.baseCamera.y = clamp(this.baseCamera.y + delta * 0.00135, Math.max(1.35, pet.size.y * 0.48), 7.4);
+    }
   };
 
   resize = () => {
@@ -524,11 +976,17 @@ export class CompanionScene extends EventTarget {
     this.canvas.removeEventListener('pointermove', this.handlePointerMove);
     this.canvas.removeEventListener('pointerup', this.handlePointerUp);
     this.canvas.removeEventListener('pointercancel', this.handlePointerUp);
-    this.canvas.removeEventListener('wheel', this.handleWheel);
+    this.canvas.removeEventListener('pointerleave', this.handleViewportPointerLeave);
+    window.removeEventListener('pointermove', this.handleViewportPointerMove);
+    window.removeEventListener('wheel', this.handleWheel, true);
+    this.restoreFurnitureOcclusion?.(true);
     this.pets.forEach((record) => this.disposePetRecord(record));
     this.pets.clear();
+    this.clearOutdoorPopulation();
     this.accessoryGizmo?.dispose();
     this.accessoryGizmo = null;
+    this.buildGizmo?.dispose();
+    this.buildGizmo = null;
     this.renderer?.dispose();
   }
 }
@@ -541,5 +999,6 @@ Object.assign(
   interactionsMethods,
   accessoriesMethods,
   mediaMethods,
-  activitiesMethods
+  activitiesMethods,
+  buildingMethods
 );

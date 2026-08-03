@@ -52,10 +52,19 @@ export class BehavioralAgent {
       objectId: resolved.object?.id || null,
       point: resolved.object?.approach ? { x: resolved.object.approach[0], z: resolved.object.approach[1] } : null,
       interactionPoint: resolved.object?.interaction ? { x: resolved.object.interaction[0], z: resolved.object.interaction[1] } : null,
+      surface: Number.isFinite(Number(resolved.object?.surfaceY))
+        ? {
+            center: resolved.object?.interaction ? { x: resolved.object.interaction[0], z: resolved.object.interaction[1] } : null,
+            y: Number(resolved.object.surfaceY),
+            size: Array.isArray(resolved.object.surfaceSize) ? resolved.object.surfaceSize.slice(0, 2).map(Number) : null,
+            yaw: Number.isFinite(Number(resolved.object.surfaceYaw)) ? Number(resolved.object.surfaceYaw) : null,
+            margin: Number.isFinite(Number(resolved.object.surfaceMargin)) ? Number(resolved.object.surfaceMargin) : 0.06
+          }
+        : null,
       verticalHeight: resolved.vertical ? Number(resolved.object?.surfaceY) || 0.5 : 0,
       run: Boolean(resolved.run),
-      animation: resolved.animation || 'idle',
-      hold: resolved.min,
+      animation: resolved.object?.animationMapping?.[resolved.id] || resolved.animation || 'idle',
+      hold: Number(resolved.object?.holdMapping?.[resolved.id]) || resolved.min,
       cooldown: resolved.cooldown,
       interruptPriority: resolved.interrupt || 0,
       score: resolved.score

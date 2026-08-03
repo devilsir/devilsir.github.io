@@ -1,5 +1,5 @@
 import { PETS } from './config.js';
-import { ACCESSORIES, PET_ACCESSORY_FITS, ANIMATION_CAPABILITIES } from './living-data.js';
+import { ACCESSORIES, PET_ACCESSORY_FITS } from './living-data.js';
 import { downloadBlob } from './utils.js';
 
 const STORAGE_KEY = 'pocket-companions:wardrobe-calibration-v1';
@@ -19,8 +19,9 @@ function scaleVector(value = 1) {
 
 function fitFor(petId, accessoryId) {
   const defaults = PET_ACCESSORY_FITS.default || {};
-  const defaultAccessory = defaults.accessories?.[accessoryId] || {};
-  const petAccessory = PET_ACCESSORY_FITS[petId]?.accessories?.[accessoryId] || {};
+  const fitId = ACCESSORIES[accessoryId]?.fit || accessoryId;
+  const defaultAccessory = defaults.accessories?.[fitId] || {};
+  const petAccessory = PET_ACCESSORY_FITS[petId]?.accessories?.[fitId] || {};
   return {
     position: clone(petAccessory.position || defaultAccessory.position || [0, 0, 0]),
     rotation: clone(petAccessory.rotation || defaultAccessory.rotation || [0, 0, 0]),
@@ -63,22 +64,23 @@ export class WardrobeController {
     this.closeDrawer = closeDrawer;
     this.languageProvider = languageProvider;
     this.panel = document.querySelector('#wardrobe-panel');
-    this.petSelect = document.querySelector('#wardrobe-pet');
+    this.petName = document.querySelector('#wardrobe-pet-name');
     this.accessorySelect = document.querySelector('#wardrobe-accessory');
-    this.animationSelect = document.querySelector('#wardrobe-animation');
+    this.emptyState = document.querySelector('#wardrobe-empty');
     this.linkScale = document.querySelector('#wardrobe-link-scale');
     this.status = document.querySelector('#wardrobe-status');
     this.isOpen = false;
     this.previous = null;
-    this.petId = Object.keys(PETS)[0];
-    this.accessoryId = Object.keys(ACCESSORIES)[0];
+    this.petId = null;
+    this.accessoryId = null;
     this.data = this.load();
+    this.scene.setAccessoryFitOverrides?.(this.data);
     this.inputs = new Map();
     this.gizmoMode = 'translate';
     this.gizmoButtons = [...document.querySelectorAll('[data-wardrobe-gizmo]')];
     this.gizmoSyncFrame = null;
     this.bind();
-    this.populateSelectors();
+    this.populateAccessories();
   }
 
   get language() { return this.languageProvider?.() || 'pt-BR'; }
@@ -96,29 +98,65 @@ export class WardrobeController {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
   }
 
-  populateSelectors() {
-    this.petSelect.innerHTML = '';
-    Object.entries(PETS).forEach(([id, pet]) => {
-      const option = document.createElement('option');
-      option.value = id;
-      option.textContent = pet.name || id;
-      this.petSelect.append(option);
-    });
+  ownedAccessoryIds() {
+    const owned = Array.isArray(this.living.state?.accessories?.owned)
+      ? this.living.state.accessories.owned
+      : [];
+    return [...new Set(owned)].filter((id) => Boolean(ACCESSORIES[id]?.model));
+  }
+
+  populateAccessories(preferredId = null) {
+    if (!this.accessorySelect) return null;
+    const owned = this.ownedAccessoryIds();
+    const equipped = this.living.state?.accessories?.equipped || null;
     this.accessorySelect.innerHTML = '';
-    Object.entries(ACCESSORIES).forEach(([id, accessory]) => {
+
+    if (!owned.length) {
+      const option = document.createElement('option');
+      option.value = '';
+      option.textContent = 'Nenhum acessório desbloqueado';
+      this.accessorySelect.append(option);
+      this.accessorySelect.disabled = true;
+      this.accessoryId = null;
+      if (this.emptyState) this.emptyState.hidden = false;
+      this.setEditorEnabled(false);
+      return null;
+    }
+
+    owned.forEach((id) => {
       const option = document.createElement('option');
       option.value = id;
-      option.textContent = localized(accessory.name, this.language);
+      option.textContent = localized(ACCESSORIES[id].name, this.language);
       this.accessorySelect.append(option);
     });
+
+    const selected = owned.includes(preferredId)
+      ? preferredId
+      : owned.includes(equipped)
+        ? equipped
+        : owned[0];
+    this.accessorySelect.disabled = false;
+    this.accessorySelect.value = selected;
+    this.accessoryId = selected;
+    if (this.emptyState) this.emptyState.hidden = true;
+    this.setEditorEnabled(true);
+    return selected;
+  }
+
+  setEditorEnabled(enabled) {
+    const active = Boolean(enabled);
+    this.scene.setAccessoryGizmoEnabled?.(this.isOpen && active);
+    this.gizmoButtons.forEach((button) => { button.disabled = !active; });
+    document.querySelectorAll('[data-wardrobe-view], #wardrobe-reset-current, #wardrobe-reset-all, .wardrobe-axis-grid input')
+      .forEach((control) => { control.disabled = !active; });
+    if (this.linkScale) this.linkScale.disabled = !active;
+    this.panel?.classList.toggle('wardrobe-is-empty', !active);
   }
 
   bind() {
     document.querySelector('#wardrobe-button')?.addEventListener('click', () => this.open());
     document.querySelector('#wardrobe-close')?.addEventListener('click', () => this.close());
-    this.petSelect?.addEventListener('change', () => this.selectPet(this.petSelect.value));
     this.accessorySelect?.addEventListener('change', () => this.selectAccessory(this.accessorySelect.value));
-    this.animationSelect?.addEventListener('change', () => this.playAnimation(this.animationSelect.value));
     this.linkScale?.addEventListener('change', () => {
       this.scene.setAccessoryGizmoUniformScale?.(this.linkScale.checked);
       this.renderInputs();
@@ -137,48 +175,68 @@ export class WardrobeController {
     });
     this.panel?.addEventListener('pointerdown', (event) => event.stopPropagation());
     this.panel?.addEventListener('wheel', (event) => event.stopPropagation(), { passive: true });
+    window.addEventListener('pagehide', () => {
+      this.captureCurrentSceneFit();
+      this.persist();
+    });
   }
 
   async open() {
-    if (this.isOpen || !this.store.active) return;
+    const slot = this.store.active;
+    if (this.isOpen || !slot) return;
     this.isOpen = true;
     this.previous = {
-      petId: this.store.active.companionId,
-      accessoryId: this.living.state?.accessories?.equipped || null,
-      roomId: this.store.active.activeRoom,
+      slotId: slot.id,
+      petId: slot.companionId,
+      roomId: slot.activeRoom,
       secondaryPetId: this.living.state?.secondaryPetId || null,
-      sleeping: Boolean(this.store.active.isSleeping)
+      sleeping: Boolean(slot.isSleeping)
     };
+    this.petId = slot.companionId;
+    if (this.petName) this.petName.textContent = PETS[this.petId]?.name || slot.petName || this.petId;
+
     this.closeDrawer?.();
     document.body.classList.add('wardrobe-open');
     this.panel.hidden = false;
     this.scene.setAutonomous?.(false);
     await this.scene.setSecondaryPet?.(null);
     this.scene.setAccessoryFitOverrides?.(this.data);
-    this.petId = this.previous.petId || this.petId;
-    this.petSelect.value = this.petId;
-    await this.selectPet(this.petId, false);
-    this.accessoryId = this.accessorySelect.value || this.accessoryId;
-    await this.selectAccessory(this.accessoryId, false);
-    this.scene.setAccessoryGizmoEnabled?.(true);
+    await this.scene.setPet(this.petId, { selection: true });
+    this.scene.setMode?.('selection');
+    this.scene.setStaticPetPreview?.(true);
+
+    const equipped = this.living.state?.accessories?.equipped || null;
+    const selected = this.populateAccessories(equipped || this.accessoryId);
+    if (selected) await this.selectAccessory(selected, false, selected !== equipped);
+    else await this.scene.setAccessory(null);
+
     this.scene.setAccessoryGizmoUniformScale?.(this.linkScale.checked);
     this.setGizmoMode(this.gizmoMode, false);
-    this.setStatus('Use o gizmo no acessório. W move, E rotaciona e R escala; apenas um modo fica ativo por vez.');
+    this.setEditorEnabled(Boolean(selected));
+    await this.scene.renderStableFrame?.();
+    this.setStatus(selected
+      ? `Editando apenas ${PETS[this.petId]?.name || 'o pet ativo'}. O modelo fica estático e somente acessórios desbloqueados aparecem aqui.`
+      : 'Este pet ainda não desbloqueou acessórios. Compre um item na Loja para personalizá-lo.');
   }
 
   async close() {
     if (!this.isOpen) return;
-    this.isOpen = false;
+    this.captureCurrentSceneFit();
     this.persist();
+    this.isOpen = false;
     this.scene.setAccessoryGizmoEnabled?.(false);
+    this.scene.setStaticPetPreview?.(false);
     this.panel.hidden = true;
     document.body.classList.remove('wardrobe-open');
-    this.scene.setAccessoryFitOverrides?.(null);
+    this.scene.setAccessoryFitOverrides?.(this.data);
+
     const previous = this.previous;
-    if (previous?.petId) {
+    const activeSlot = this.store.active;
+    if (previous?.petId && activeSlot?.id === previous.slotId && activeSlot.companionId === previous.petId) {
       await this.scene.setPet(previous.petId, { selection: false });
       this.scene.buildEnvironment(previous.roomId || 'living');
-      this.scene.setAccessory(previous.accessoryId);
+      this.scene.setAccessoryFitOverrides?.(this.data);
+      await this.scene.setAccessory(this.living.state?.accessories?.equipped || null);
       if (previous.sleeping) this.scene.enterSleepMode?.(true);
       else this.scene.placePetSafely?.();
       await this.scene.setSecondaryPet?.(previous.secondaryPetId);
@@ -187,49 +245,29 @@ export class WardrobeController {
     this.previous = null;
   }
 
-  async selectPet(petId, announce = true) {
-    if (!PETS[petId]) return;
-    this.petId = petId;
-    this.petSelect.value = petId;
-    await this.scene.setPet(petId, { selection: true });
-    this.scene.setMode?.('selection');
-    this.scene.setAccessoryFitOverrides?.(this.data);
-    this.populateAnimations();
-    this.scene.setAccessory(this.accessoryId);
-    if (this.isOpen) {
-      this.scene.setAccessoryGizmoEnabled?.(true);
-      this.scene.setAccessoryGizmoMode?.(this.gizmoMode);
+  async selectAccessory(accessoryId, announce = true, equip = true) {
+    if (!this.ownedAccessoryIds().includes(accessoryId)) return false;
+    if (this.isOpen && this.accessoryId && this.accessoryId !== accessoryId) {
+      this.captureCurrentSceneFit();
+      this.persist();
     }
-    this.renderInputs();
-    await this.scene.renderStableFrame?.();
-    if (announce) this.setStatus(`${PETS[petId].name}: ${localized(ACCESSORIES[this.accessoryId].name, this.language)}.`);
-  }
 
-  async selectAccessory(accessoryId, announce = true) {
-    if (!ACCESSORIES[accessoryId]) return;
+    const activeSlot = this.store.active;
+    if (!activeSlot || activeSlot.id !== this.previous?.slotId || activeSlot.companionId !== this.petId) return false;
+
     this.accessoryId = accessoryId;
     this.accessorySelect.value = accessoryId;
-    this.scene.setAccessory(accessoryId);
+    if (equip) {
+      this.living.state.accessories.equipped = accessoryId;
+      this.store.persist();
+    }
+    await this.scene.setAccessory(accessoryId);
+    this.scene.setStaticPetPreview?.(true);
+    this.setEditorEnabled(true);
     this.renderInputs();
     await this.scene.renderStableFrame?.();
-    if (announce) this.setStatus(`${localized(ACCESSORIES[accessoryId].name, this.language)} selecionado.`);
-  }
-
-  populateAnimations() {
-    const animations = ANIMATION_CAPABILITIES[this.petId] || ['idle'];
-    this.animationSelect.innerHTML = '';
-    animations.forEach((id) => {
-      const option = document.createElement('option');
-      option.value = id;
-      option.textContent = id.replaceAll('_', ' ');
-      this.animationSelect.append(option);
-    });
-    this.animationSelect.value = animations.includes('idle') ? 'idle' : animations[0];
-  }
-
-  playAnimation(animationId) {
-    if (!animationId) return;
-    this.scene.playAnimation?.(animationId, { force: true, fade: 0.18, loop: true });
+    if (announce) this.setStatus(`${localized(ACCESSORIES[accessoryId].name, this.language)} equipado somente em ${PETS[this.petId]?.name || 'seu pet'}.`);
+    return true;
   }
 
   setGizmoMode(mode, announce = true) {
@@ -275,8 +313,21 @@ export class WardrobeController {
     }
   }
 
+  captureCurrentSceneFit() {
+    if (!this.isOpen || !this.petId || !this.accessoryId) return false;
+    const snapshot = this.scene.getAccessoryEditableFit?.();
+    const fit = this.currentFit();
+    if (!snapshot || !fit) return false;
+    fit.position = snapshot.position.slice(0, 3).map(Number);
+    fit.rotation = snapshot.rotation.slice(0, 3).map(Number);
+    fit.scale = snapshot.scale.slice(0, 3).map((value) => Math.max(0.001, Number(value)));
+    return true;
+  }
+
   currentFit() {
-    return this.data.pets[this.petId].accessories[this.accessoryId];
+    return this.petId && this.accessoryId
+      ? this.data.pets?.[this.petId]?.accessories?.[this.accessoryId] || null
+      : null;
   }
 
   renderInputs() {
@@ -305,6 +356,7 @@ export class WardrobeController {
   handleInput(groupId, index, value) {
     if (!Number.isFinite(value)) return;
     const fit = this.currentFit();
+    if (!fit) return;
     if (groupId === 'rotation') fit.rotation[index] = value * Math.PI / 180;
     else if (groupId === 'scale' && this.linkScale.checked) fit.scale = [value, value, value];
     else fit[groupId][index] = value;
@@ -316,6 +368,7 @@ export class WardrobeController {
   }
 
   resetCurrent() {
+    if (!this.petId || !this.accessoryId) return;
     this.data.pets[this.petId].accessories[this.accessoryId] = fitFor(this.petId, this.accessoryId);
     this.persist();
     this.scene.setAccessoryFitOverrides?.(this.data);
@@ -325,12 +378,15 @@ export class WardrobeController {
   }
 
   resetAll() {
-    this.data = buildBaseCalibration();
+    if (!this.petId) return;
+    Object.keys(ACCESSORIES).forEach((accessoryId) => {
+      this.data.pets[this.petId].accessories[accessoryId] = fitFor(this.petId, accessoryId);
+    });
     this.persist();
     this.scene.setAccessoryFitOverrides?.(this.data);
     this.scene.refreshAccessoryTransform?.();
     this.renderInputs();
-    this.setStatus('Todos os encaixes voltaram aos valores originais.');
+    this.setStatus(`Todos os encaixes de ${PETS[this.petId]?.name || 'este pet'} voltaram aos valores originais.`);
   }
 
   exportPayload() {
@@ -363,7 +419,7 @@ export class WardrobeController {
     const payload = this.exportPayload();
     const stamp = new Date().toISOString().slice(0, 10);
     downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), `pocket-companions-acessorios-${stamp}.json`);
-    this.setStatus('JSON de todos os pets exportado.');
+    this.setStatus('JSON de calibração exportado.');
     this.toast?.('JSON do Armário exportado.');
   }
 

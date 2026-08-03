@@ -20,6 +20,12 @@ export class AnimationController {
 
   has(name) { return this.actions.has(name); }
 
+  list() {
+    return [...this.actions.entries()]
+      .map(([name, action]) => ({ name, duration: Number(action.getClip()?.duration) || 0 }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   play(name, { fade = 0.28, loop = true, timeScale = 1, force = false } = {}) {
     const next = this.actions.get(name);
     if (!next) return null;

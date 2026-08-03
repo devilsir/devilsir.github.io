@@ -1,7 +1,7 @@
 import {
   LIVING_SCHEMA, TRAITS, PET_TRAIT_SEEDS, EMOTIONS, FOOD_PREFERENCES, TOY_PREFERENCES, ENVIRONMENT_PREFERENCES,
   AFFECTION_PREFERENCES, WEATHER_TYPES, SEASONS, CONDITIONS, INGREDIENTS, RECIPES, GROOMING, COMMANDS,
-  SKILL_PATHS, LIFE_STAGES, PET_QUESTS, PET_QUEST_TRIGGERS, WALK_LOCATIONS, SECRETS, FURNITURE, ACCESSORIES, EVENTS, EVENT_MISSIONS, DREAMS,
+  SKILL_PATHS, LIFE_STAGES, PET_QUESTS, PET_QUEST_TRIGGERS, WALK_LOCATIONS, SECRETS, FURNITURE, ROOM_UPGRADES, ACCESSORIES, EVENTS, EVENT_MISSIONS, DREAMS,
   SHAMPOOS, ANIMATION_CAPABILITIES
 } from './living-data.js';
 import { clamp, uid, todayKey } from './utils.js';
@@ -16,6 +16,7 @@ const WEEK = 7 * DAY;
 const deepClone = (value) => JSON.parse(JSON.stringify(value));
 const localized = (value) => typeof value === 'string' ? value : (getLanguage() === 'en' ? value?.en : value?.pt) || value?.en || '';
 const numberHash = (text = '') => [...String(text)].reduce((hash, char) => ((hash * 31) + char.charCodeAt(0)) >>> 0, 2166136261);
+const chance = (probability = 0.5) => Math.random() < clamp(Number(probability) || 0, 0, 1);
 const seededChoice = (items, seed, offset = 0) => items[(numberHash(`${seed}:${offset}`) % items.length + items.length) % items.length];
 const cappedPush = (array, item, max) => { array.push(item); if (array.length > max) array.splice(0, array.length - max); };
 const weekKey = (time = Date.now()) => Math.floor((time - new Date(2024, 0, 1).getTime()) / WEEK);
@@ -81,7 +82,10 @@ export function createLivingState(slot) {
     world: { weather: 'clear', weatherStartedAt: Date.now(), season: 'spring', seasonStartedAt: Date.now(), weatherSeed: numberHash(slot.id), fixedWeather: null, fixedSeason: null },
     secrets: {},
     decorations: [],
+    defaultFurnitureTransforms: {},
+    defaultFurnitureStored: {},
     furnitureInventory: {},
+    roomUpgrades: Object.fromEntries(Object.keys(ROOM_UPGRADES).map((id) => [id, 0])),
     accessories: { owned: [], equipped: null },
     timeline: [],
     memoryCosmetics: { frames: ['plain'], stickers: [], backgrounds: ['classic'], favoritePhotoId: null },
@@ -120,7 +124,13 @@ export function migrateLivingState(slot) {
   merged.bondCalendar = { ...defaults.bondCalendar, ...(source.bondCalendar || {}), days: source.bondCalendar?.days && typeof source.bondCalendar.days === 'object' ? source.bondCalendar.days : {} };
   merged.quest = { ...defaults.quest, ...(source.quest || {}), choices: Array.isArray(source.quest?.choices) ? source.quest.choices.slice(-12) : [] };
   merged.clinic = { ...defaults.clinic, ...(source.clinic || {}), weightHistory: Array.isArray(source.clinic?.weightHistory) ? source.clinic.weightHistory.slice(-24) : [] };
-  merged.accessories = { ...defaults.accessories, ...(source.accessories || {}), owned: Array.isArray(source.accessories?.owned) ? [...new Set(source.accessories.owned)].filter((id) => ACCESSORIES[id]) : [] };
+  const ownedAccessories = Array.isArray(source.accessories?.owned)
+    ? [...new Set(source.accessories.owned)].filter((id) => ACCESSORIES[id]?.model)
+    : [];
+  const equippedAccessory = ownedAccessories.includes(source.accessories?.equipped)
+    ? source.accessories.equipped
+    : null;
+  merged.accessories = { ...defaults.accessories, ...(source.accessories || {}), owned: ownedAccessories, equipped: equippedAccessory };
   merged.dreams = { ...defaults.dreams, ...(source.dreams || {}), played: Array.isArray(source.dreams?.played) ? source.dreams.played.slice(-30) : [], rare: Array.isArray(source.dreams?.rare) ? [...new Set(source.dreams.rare)].slice(-20) : [] };
   merged.scent = { ...defaults.scent, ...(source.scent || {}), found: Array.isArray(source.scent?.found) ? [...new Set(source.scent.found)].slice(-40) : [] };
   merged.bodyLanguage = { ...defaults.bodyLanguage, ...(source.bodyLanguage || {}) };
@@ -135,11 +145,27 @@ export function migrateLivingState(slot) {
     };
   }
   merged.furnitureInventory = source.furnitureInventory && typeof source.furnitureInventory === 'object' ? source.furnitureInventory : {};
+  merged.defaultFurnitureTransforms = source.defaultFurnitureTransforms && typeof source.defaultFurnitureTransforms === 'object' ? source.defaultFurnitureTransforms : {};
+  merged.defaultFurnitureStored = source.defaultFurnitureStored && typeof source.defaultFurnitureStored === 'object' ? source.defaultFurnitureStored : {};
+  merged.roomUpgrades = { ...defaults.roomUpgrades, ...(source.roomUpgrades || {}) };
+  Object.keys(merged.roomUpgrades).forEach((room) => { merged.roomUpgrades[room] = clamp(Math.floor(Number(merged.roomUpgrades[room]) || 0), 0, 3); });
   merged.memoryCosmetics = { ...defaults.memoryCosmetics, ...(source.memoryCosmetics || {}), frames: Array.isArray(source.memoryCosmetics?.frames) ? [...new Set(source.memoryCosmetics.frames)].slice(-16) : ['plain'], stickers: Array.isArray(source.memoryCosmetics?.stickers) ? [...new Set(source.memoryCosmetics.stickers)].slice(-30) : [], backgrounds: Array.isArray(source.memoryCosmetics?.backgrounds) ? [...new Set(source.memoryCosmetics.backgrounds)].slice(-16) : ['classic'] };
   merged.conditions = Array.isArray(source.conditions) ? source.conditions.slice(0, 4) : [];
   merged.timeline = Array.isArray(source.timeline) ? source.timeline.slice(-180) : [];
   merged.longTermMemories = Array.isArray(source.longTermMemories) ? source.longTermMemories.slice(-80) : [];
-  merged.decorations = Array.isArray(source.decorations) ? source.decorations.slice(0, 32) : [];
+  merged.decorations = [];
+  if (Array.isArray(source.decorations)) {
+    for (const raw of source.decorations.slice(0, 120)) {
+      const item = FURNITURE[raw?.item];
+      if (!item) continue;
+      const room = raw.room || 'living';
+      if (Array.isArray(item.rooms) && !item.rooms.includes(room)) {
+        merged.furnitureInventory[raw.item] = (merged.furnitureInventory[raw.item] || 0) + 1;
+        continue;
+      }
+      merged.decorations.push({ ...raw, room, y: clamp(Number(raw?.y) || 0, 0, 5.5), scale: clamp(Number(raw?.scale) || 1, 0.55, 2.2) });
+    }
+  }
   merged.eventArchive = Array.isArray(source.eventArchive) ? source.eventArchive.slice(-24) : [];
   merged.recentActions = Array.isArray(source.recentActions) ? source.recentActions.slice(-30) : [];
   merged.simulation = migrateSimulationState(slot, source.simulation);
@@ -182,6 +208,10 @@ export class LivingSystems extends EventTarget {
     if (!this.ensure()) return;
     this.refreshLifeStage(false);
     const state = this.state;
+    this.scene.setRoomUpgrades?.(state.roomUpgrades);
+    this.scene.setDefaultFurnitureTransforms?.(state.defaultFurnitureTransforms);
+    this.scene.setDefaultFurnitureStored?.(state.defaultFurnitureStored);
+    if (!this.scene.travelLocation && this.scene.roomId === this.slot.activeRoom) this.scene.buildEnvironment?.(this.slot.activeRoom);
     this.scene.setWorldState?.({ weather: this.currentWeather(), season: this.currentSeason() });
     this.scene.setDecorations?.(state.decorations);
     this.scene.setAccessory?.(state.accessories.equipped);
@@ -221,6 +251,7 @@ export class LivingSystems extends EventTarget {
       this.lastSecondaryTickAt = now;
       this.tickSecondaryPet(Math.min(elapsedHours, 0.25));
     }
+    if (['garden', 'park'].includes(this.slot.activeRoom)) this.applyOutdoorSociability(now);
     this.simulationRuntime.tick(now);
     this.refreshLifeStage();
     if (now - (state.simulation.lastPersistAt || 0) > 10000) {
@@ -291,6 +322,22 @@ export class LivingSystems extends EventTarget {
 
   chooseAutonomousAction() {
     return this.simulationRuntime.chooseAutonomousAction();
+  }
+
+  forceAutonomousAction(behaviorId, options = {}) {
+    return this.simulationRuntime.forceAutonomousAction(behaviorId, options);
+  }
+
+  stopForcedAutonomousAction() {
+    return this.simulationRuntime.stopForcedAutonomousAction();
+  }
+
+  forceEmergentEvent(eventId) {
+    return this.simulationRuntime.forceEmergentEvent(eventId);
+  }
+
+  clearEmergentEvent() {
+    return this.simulationRuntime.clearEmergentEvent();
   }
 
   evaluateEmotion(force = false) {
@@ -615,12 +662,126 @@ export class LivingSystems extends EventTarget {
     return { ok: true, success };
   }
 
-  commandAnimation(commandId) {
+  commandAvailability(commandId) {
+    const definition = COMMANDS[commandId];
+    if (!definition) return { available: false, reason: 'unknown' };
+    const room = this.scene.travelLocation || this.slot.activeRoom;
+    if (Array.isArray(definition.rooms) && !definition.rooms.includes(room)) return { available: false, reason: 'room' };
     const capability = new Set(ANIMATION_CAPABILITIES[this.slot.companionId] || ['idle']);
-    return COMMANDS[commandId]?.animation.find((clip) => capability.has(clip)) || 'idle';
+    const missing = (definition.requiredAnimations || []).filter((clip) => !capability.has(clip));
+    if (missing.length) return { available: false, reason: 'animation', missing };
+    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    const objects = this.scene.getSemanticEnvironmentObjects?.(room, species) || [];
+    if (definition.behavior === 'bed' && !objects.some((entry) => entry.type === 'bed' || entry.actions?.includes('bed-rest'))) {
+      return { available: false, reason: 'no-bed' };
+    }
+    if (definition.behavior === 'marker' && !objects.some((entry) => entry.id?.includes('platform') || entry.actions?.includes('trained-command'))) {
+      return { available: false, reason: 'no-marker' };
+    }
+    return { available: true, reason: null };
+  }
+
+  availableCommands() {
+    return Object.entries(COMMANDS).filter(([id]) => this.commandAvailability(id).available);
+  }
+
+  commandAnimation(commandId) {
+    if (!this.commandAvailability(commandId).available) return null;
+    const capability = new Set(ANIMATION_CAPABILITIES[this.slot.companionId] || ['idle']);
+    return COMMANDS[commandId]?.requiredAnimations?.find((clip) => capability.has(clip)) || null;
+  }
+
+  async performCommandPose(commandId, { practice = false } = {}) {
+    const pet = this.scene.currentPet;
+    const controller = pet?.controller;
+    if (!pet || !controller || !this.commandAvailability(commandId).available) return false;
+    const stillCurrent = () => this.scene.currentPet === pet;
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    this.scene.stopMovement?.(`command-${commandId}`);
+
+    if (commandId === 'sit') {
+      const completed = await controller.playOnce('sit', { fade: 0.14, timeScale: 1 });
+      if (!completed || !stillCurrent()) return false;
+      controller.play('sitting_idle', { force: true, fade: 0.12, loop: true });
+      if (practice) {
+        await wait(2200);
+        if (!stillCurrent() || controller.currentName !== 'sitting_idle') return true;
+        if (controller.has('get_up_from_sitting')) await controller.playOnce('get_up_from_sitting', { fade: 0.14, timeScale: 1 });
+        if (stillCurrent()) controller.play('idle', { force: true, fade: 0.18, loop: true });
+      }
+      return true;
+    }
+
+    if (commandId === 'lie') {
+      const completed = await controller.playOnce('lie_down', { fade: 0.14, timeScale: 1 });
+      if (!completed || !stillCurrent()) return false;
+      controller.play('lying_down_idle', { force: true, fade: 0.12, loop: true });
+      if (practice) {
+        await wait(2200);
+        if (!stillCurrent() || controller.currentName !== 'lying_down_idle') return true;
+        if (controller.has('get_up_from_lying_down')) await controller.playOnce('get_up_from_lying_down', { fade: 0.14, timeScale: 1 });
+        if (stillCurrent()) controller.play('idle', { force: true, fade: 0.18, loop: true });
+      }
+      return true;
+    }
+
+    if (commandId === 'paw') {
+      const completed = await controller.playOnce('give_paw', { fade: 0.14, timeScale: 1 });
+      if (completed && stillCurrent()) controller.play('idle', { force: true, fade: 0.18, loop: true });
+      return Boolean(completed);
+    }
+
+    if (commandId === 'jump') {
+      // Each GLB already contains one complete jump clip. Playing jump_start/jump_fall/jump_end
+      // in sequence causes vertical discontinuities because those clips use different root heights.
+      controller.onSound?.('jump');
+      const completed = await controller.playOnce('jump', { fade: 0.08, timeScale: 1 });
+      if (completed && stillCurrent()) {
+        controller.onSound?.('land');
+        controller.play('idle', { force: true, fade: 0.16, loop: true });
+      }
+      return Boolean(completed);
+    }
+
+    return false;
+  }
+
+  async executeCommand(commandId, { practice = false } = {}) {
+    const availability = this.commandAvailability(commandId);
+    if (!availability.available) return false;
+    const behavior = COMMANDS[commandId]?.behavior;
+    if (['sit', 'lie', 'paw', 'jump'].includes(behavior)) return this.performCommandPose(commandId, { practice });
+
+    const room = this.scene.travelLocation || this.slot.activeRoom;
+    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    const objects = this.scene.getSemanticEnvironmentObjects?.(room, species) || [];
+
+    if (behavior === 'come') {
+      const player = objects.find((entry) => entry.id === 'player-space');
+      const point = player?.approach || [0, 1.75];
+      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+    }
+
+    if (behavior === 'bed') {
+      const bed = objects.find((entry) => entry.type === 'bed' || entry.actions?.includes('bed-rest'));
+      const point = bed?.approach;
+      if (!point) return false;
+      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+    }
+
+    if (behavior === 'marker') {
+      const marker = objects.find((entry) => entry.id?.includes('platform') || entry.actions?.includes('trained-command'));
+      const point = marker?.approach;
+      if (!point) return false;
+      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+    }
+
+    return false;
   }
 
   async train(commandId) {
+    const availability = this.commandAvailability(commandId);
+    if (!availability.available) return { ok: false, reason: availability.reason, missing: availability.missing || [] };
     const command = this.state.commands[commandId] = migrateTrainingRecord(this.state.commands[commandId], commandId);
     if (!command || this.slot.stats.energy < 12) return { ok: false, reason: 'energy' };
     this.scene.setAutonomous?.(false);
@@ -634,19 +795,21 @@ export class LivingSystems extends EventTarget {
     const success = Math.random() < attempt.chance;
     applyTrainingResult(command, { success, context, rewardQuality: attempt.rewardQuality, responseDelay: attempt.responseDelay });
     this.store.modifyStats({ energy: -4, happiness: success ? 3 : -0.5, bond: success ? 1.5 : 0.2 }, 'training');
-    if (success) {
-      this.teachSecondaryByObservation(commandId, command.mastery);
-      this.record('training-success', { commandId, room, distraction, responseDelay: attempt.responseDelay, reward: 'praise' }, { timeline: command.successes === 1 || command.mastery >= 100 });
-      this.updateWeekly('training', 1);
-      this.store.gainProgress(9, 3);
-      const animation = this.commandAnimation(commandId);
-      if (commandId === 'jump') await this.scene.triggerJump?.(); else this.scene.playAnimation?.(animation, { loop: animation.endsWith('_idle'), force: true, fade: 0.2 });
-      setTimeout(() => { this.scene.playAnimation?.('idle', { force: true, fade: 0.25 }); if (!this.slot.isSleeping) this.scene.setAutonomous?.(true); }, 1600);
-    } else {
-      this.record('training-fail', { commandId, room, distraction, responseDelay: attempt.responseDelay });
+    let performed = false;
+    try {
+      if (success) {
+        this.teachSecondaryByObservation(commandId, command.mastery);
+        this.record('training-success', { commandId, room, distraction, responseDelay: attempt.responseDelay, reward: 'praise' }, { timeline: command.successes === 1 || command.mastery >= 100 });
+        this.updateWeekly('training', 1);
+        this.store.gainProgress(9, 3);
+        performed = await this.executeCommand(commandId, { practice: true });
+      } else {
+        this.record('training-fail', { commandId, room, distraction, responseDelay: attempt.responseDelay });
+      }
+    } finally {
       if (!this.slot.isSleeping) this.scene.setAutonomous?.(true);
     }
-    return { ok: true, success, mastery: Math.round(command.mastery), confidence: Math.round(command.confidence), responseDelay: attempt.responseDelay, animation: this.commandAnimation(commandId) };
+    return { ok: true, success, performed, mastery: Math.round(command.mastery), confidence: Math.round(command.confidence), responseDelay: attempt.responseDelay, animation: this.commandAnimation(commandId) };
   }
 
   teachSecondaryByObservation(commandId, primaryMastery) {
@@ -655,21 +818,14 @@ export class LivingSystems extends EventTarget {
     if (!other) return;
     other.living = migrateLivingState(other);
     const observed = other.living.commands[commandId];
+    if (!observed) return;
     observed.mastery = clamp(observed.mastery + 0.8 + this.relationship().trust / 150, 0, 100);
   }
 
   useCommand(commandId) {
     const command = this.state.commands[commandId];
-    if (!command || command.mastery < 28) return false;
-    const animation = this.commandAnimation(commandId);
-    if (commandId === 'come') this.scene.moveTo?.(0, 1.7, false);
-    else if (commandId === 'fetch') this.scene.moveTo?.(2.2, 0.7, true);
-    else if (commandId === 'bed') this.scene.runSemanticAction?.('bed-rest');
-    else if (commandId === 'follow') this.scene.setContextualFollow?.(true);
-    else if (commandId === 'stop' || commandId === 'wait') this.scene.stopMovement?.('command');
-    else if (commandId === 'marker') this.scene.runSemanticAction?.('trained-command');
-    else if (commandId === 'jump') this.scene.triggerJump?.();
-    else this.scene.playAnimation?.(animation, { force: true, loop: animation.endsWith('_idle'), fade: 0.22 });
+    if (!command || command.mastery < 28 || !this.commandAvailability(commandId).available) return false;
+    void this.executeCommand(commandId, { practice: false });
     this.record('command', { commandId });
     return true;
   }
@@ -754,7 +910,8 @@ export class LivingSystems extends EventTarget {
       this.state.quest.completed = true;
       this.slot.currency += 75;
       this.state.skills.points += 1;
-      if (!this.state.accessories.owned.includes('tag')) this.state.accessories.owned.push('tag');
+      const questReward = Object.keys(ACCESSORIES).find((id) => ACCESSORIES[id]?.model && !this.state.accessories.owned.includes(id));
+      if (questReward) this.state.accessories.owned.push(questReward);
       this.addMemory('quest-complete', { quest: this.slot.companionId, choice }, 0.95, 1);
     }
     return true;
@@ -810,39 +967,158 @@ export class LivingSystems extends EventTarget {
     return true;
   }
 
-  canPlaceDecoration(item, x, z, ignoreId = null) {
-    if (!FURNITURE[item]) return false;
-    const [width, depth] = FURNITURE[item].size;
-    if (Math.abs(x) + width / 2 > 4.1 || Math.abs(z) + depth / 2 > 2.45) return false;
-    const clear = !this.state.decorations.some((other) => other.id !== ignoreId && other.room === this.slot.activeRoom && Math.abs(other.x - x) < (width + (FURNITURE[other.item]?.size?.[0] || 1)) / 2 && Math.abs(other.z - z) < (depth + (FURNITURE[other.item]?.size?.[1] || 1)) / 2);
-    return clear && (this.scene.validateDecorationPlacement?.(x, z, width, depth) ?? true);
+  furnitureAvailableInRoom(itemId, room = this.slot.activeRoom) {
+    const item = FURNITURE[itemId];
+    return Boolean(item && (!Array.isArray(item.rooms) || item.rooms.includes(room)));
+  }
+
+  roomUpgradeLevel(room = this.slot.activeRoom) {
+    return clamp(Math.floor(Number(this.state.roomUpgrades?.[room]) || 0), 0, 3);
+  }
+
+  roomUpgradeScale(room = this.slot.activeRoom) {
+    const data = ROOM_UPGRADES[room];
+    return Number(data?.scales?.[this.roomUpgradeLevel(room)] || 1);
+  }
+
+  upgradeRoom(room = this.slot.activeRoom) {
+    const data = ROOM_UPGRADES[room];
+    if (!data) return { ok: false, reason: 'unavailable' };
+    const level = this.roomUpgradeLevel(room);
+    if (level >= 3) return { ok: false, reason: 'max' };
+    const cost = Number(data.costs[level]) || 0;
+    if (this.slot.currency < cost) return { ok: false, reason: 'coins', cost };
+    this.slot.currency -= cost;
+    this.state.roomUpgrades[room] = level + 1;
+    this.scene.setRoomUpgrades?.(this.state.roomUpgrades);
+    this.scene.setDefaultFurnitureStored?.(this.state.defaultFurnitureStored);
+    if (this.slot.activeRoom === room && !this.scene.travelLocation) {
+      this.scene.buildEnvironment?.(room);
+      this.scene.setWorldState?.({ weather: this.currentWeather(), season: this.currentSeason() });
+      this.scene.setDecorations?.(this.state.decorations);
+      this.scene.placePetSafely?.();
+    }
+    this.record('room-upgrade', { room, level: level + 1, cost }, { timeline: true });
+    this.store.persist();
+    return { ok: true, level: level + 1, cost };
+  }
+
+  canPlaceDecoration(item, x, z, ignoreId = null, rotation = 0, scale = 1, validateRoute = true) {
+    if (!this.furnitureAvailableInRoom(item)) return false;
+    const safeScale = clamp(Number(scale) || 1, 0.55, 2.2);
+    const [baseWidth, baseDepth] = FURNITURE[item].size;
+    const quarter = Math.abs(Math.sin(Number(rotation) || 0));
+    const width = (baseWidth * (1 - quarter) + baseDepth * quarter) * safeScale;
+    const depth = (baseDepth * (1 - quarter) + baseWidth * quarter) * safeScale;
+    const bounds = this.scene.getWalkBounds?.(0.34) || { minX: -4.1, maxX: 4.1, minZ: -2.45, maxZ: 2.45 };
+    if (x - width / 2 < bounds.minX || x + width / 2 > bounds.maxX || z - depth / 2 < bounds.minZ || z + depth / 2 > bounds.maxZ) return false;
+    const clear = !this.state.decorations.some((other) => {
+      if (other.id === ignoreId || other.room !== this.slot.activeRoom) return false;
+      const otherItem = FURNITURE[other.item];
+      if (!otherItem) return false;
+      const otherScale = clamp(Number(other.scale) || 1, 0.55, 2.2);
+      const otherQuarter = Math.abs(Math.sin(Number(other.rotation) || 0));
+      const otherWidth = (otherItem.size[0] * (1 - otherQuarter) + otherItem.size[1] * otherQuarter) * otherScale;
+      const otherDepth = (otherItem.size[1] * (1 - otherQuarter) + otherItem.size[0] * otherQuarter) * otherScale;
+      return Math.abs(other.x - x) < (width + otherWidth) / 2 + 0.08 && Math.abs(other.z - z) < (depth + otherDepth) / 2 + 0.08;
+    });
+    return clear && (!validateRoute || FURNITURE[item].kind === 'rug' || (this.scene.validateDecorationPlacement?.(x, z, width, depth) ?? true));
+  }
+
+  buyFurniture(itemId) {
+    const item = FURNITURE[itemId];
+    if (!item || !this.furnitureAvailableInRoom(itemId) || this.slot.currency < item.cost) return false;
+    this.slot.currency -= item.cost;
+    this.state.furnitureInventory[itemId] = (this.state.furnitureInventory[itemId] || 0) + 1;
+    this.record('furniture-buy', { item: itemId, room: this.slot.activeRoom }, { timeline: true });
+    this.store.persist();
+    return true;
+  }
+
+  findDecorationSpot(itemId) {
+    const bounds = this.scene.getWalkBounds?.(0.55) || { minX: -4, maxX: 4, minZ: -2.4, maxZ: 2.4 };
+    const candidates = [];
+    for (let z = bounds.maxZ - 0.45; z >= bounds.minZ + 0.45; z -= 0.55) {
+      for (let x = bounds.minX + 0.45; x <= bounds.maxX - 0.45; x += 0.55) candidates.push({ x, z });
+    }
+    candidates.sort((a, b) => (a.x * a.x + a.z * a.z) - (b.x * b.x + b.z * b.z));
+    return candidates.find((point) => this.canPlaceDecoration(itemId, point.x, point.z)) || null;
+  }
+
+  placeOwnedFurniture(itemId) {
+    const owned = this.state.furnitureInventory[itemId] || 0;
+    if (owned <= 0 || !this.furnitureAvailableInRoom(itemId)) return { ok: false, reason: 'inventory' };
+    const point = this.findDecorationSpot(itemId);
+    if (!point) return { ok: false, reason: 'space' };
+    this.state.furnitureInventory[itemId] -= 1;
+    const record = { id: uid(), item: itemId, room: this.slot.activeRoom, x: point.x, y: 0, z: point.z, rotation: 0, scale: 1 };
+    this.state.decorations.push(record);
+    this.scene.setDecorations?.(this.state.decorations);
+    this.record('decorate', { item: itemId }, { timeline: true });
+    this.store.persist();
+    return { ok: true, record };
   }
 
   buyAndPlaceFurniture(item, x = 0, z = 1.8, rotation = 0) {
     const furniture = FURNITURE[item];
     const owned = this.state.furnitureInventory[item] || 0;
-    if (!furniture || (owned <= 0 && this.slot.currency < furniture.cost) || !this.canPlaceDecoration(item, x, z)) return false;
+    if (!furniture || !this.furnitureAvailableInRoom(item) || (owned <= 0 && this.slot.currency < furniture.cost) || !this.canPlaceDecoration(item, x, z, null, rotation, 1)) return false;
     if (owned > 0) this.state.furnitureInventory[item] -= 1; else this.slot.currency -= furniture.cost;
-    this.state.decorations.push({ id: uid(), item, room: this.slot.activeRoom, x, z, rotation });
+    this.state.decorations.push({ id: uid(), item, room: this.slot.activeRoom, x, y: 0, z, rotation, scale: 1 });
     this.scene.setDecorations?.(this.state.decorations);
     this.record('decorate', { item }, { timeline: true });
+    this.store.persist();
     return true;
   }
 
-  moveDecoration(id, x, z, rotation = 0) {
+  moveDecoration(id, x, y = 0, z, rotation = 0, scale = 1) {
     const item = this.state.decorations.find((entry) => entry.id === id);
-    if (!item) return false;
-    const old = { ...item };
-    this.state.decorations = this.state.decorations.filter((entry) => entry.id !== id);
+    if (!item || !this.canPlaceDecoration(item.item, x, z, id, rotation, scale, false)) return false;
+    Object.assign(item, { x, y: clamp(Number(y) || 0, 0, 5.5), z, rotation, scale: clamp(Number(scale) || 1, 0.55, 2.2) });
     this.scene.setDecorations?.(this.state.decorations);
-    if (!this.canPlaceDecoration(item.item, x, z)) {
-      this.state.decorations.push(old);
-      this.scene.setDecorations?.(this.state.decorations);
-      return false;
+    this.store.persist();
+    return true;
+  }
+
+  saveDefaultFurnitureTransform(room, key, transform = {}) {
+    if (!room || !key) return false;
+    this.state.defaultFurnitureTransforms ||= {};
+    this.state.defaultFurnitureTransforms[room] ||= {};
+    const record = {
+      x: Number(transform.x) || 0,
+      y: clamp(Number(transform.y) || 0, 0, 5.5),
+      z: Number(transform.z) || 0,
+      rotation: Number(transform.rotation) || 0,
+      scale: clamp(Number(transform.scale) || 1, 0.55, 2.2)
+    };
+    this.state.defaultFurnitureTransforms[room][key] = record;
+    this.scene.setDefaultFurnitureTransforms?.(this.state.defaultFurnitureTransforms);
+    this.scene.updateDefaultFurnitureAnchors?.(key);
+    this.scene.rebuildDefaultFurnitureObstacles?.();
+    this.store.persist();
+    return true;
+  }
+
+  storeDefaultFurniture(room = this.slot.activeRoom, key = null, itemId = null) {
+    if (!room || !key) return false;
+
+    this.state.defaultFurnitureStored ||= {};
+    this.state.defaultFurnitureStored[room] ||= {};
+    if (this.state.defaultFurnitureStored[room][key]) return false;
+
+    let resolvedItem = itemId;
+    if (!resolvedItem) {
+      const record = this.scene.getDefaultFurnitureRecords?.().find((entry) => entry.room === room && entry.key === key);
+      resolvedItem = record?.item || null;
     }
-    Object.assign(item, { x, z, rotation });
-    this.state.decorations.push(item);
-    this.scene.setDecorations?.(this.state.decorations);
+
+    this.state.defaultFurnitureStored[room][key] = true;
+    if (resolvedItem && FURNITURE[resolvedItem]) {
+      this.state.furnitureInventory[resolvedItem] = (this.state.furnitureInventory[resolvedItem] || 0) + 1;
+    }
+
+    this.scene.setDefaultFurnitureStored?.(this.state.defaultFurnitureStored);
+    this.scene.syncSemanticAnchors?.();
     this.store.persist();
     return true;
   }
@@ -887,7 +1163,7 @@ export class LivingSystems extends EventTarget {
   }
 
   equipAccessory(id) {
-    if (id && !this.state.accessories.owned.includes(id)) return false;
+    if (id && (!ACCESSORIES[id]?.model || !this.state.accessories.owned.includes(id))) return false;
     this.state.accessories.equipped = id || null;
     this.scene.setAccessory?.(id || null);
     this.record('accessory', { id }, { timeline: Boolean(id) });
@@ -1042,7 +1318,7 @@ export class LivingSystems extends EventTarget {
     cappedPush(this.state.eventArchive, completed, 24);
     this.state.activeEvent = null;
     this.slot.currency += 55;
-    const reward = ['bow','bandana','tag'].find((id) => !this.state.accessories.owned.includes(id));
+    const reward = Object.keys(ACCESSORIES).find((id) => ACCESSORIES[id]?.model && !this.state.accessories.owned.includes(id));
     if (reward) this.state.accessories.owned.push(reward);
     const furnitureReward = completed.id === 'winter-lights' ? 'lamp' : completed.id === 'spring-festival' ? 'plant' : 'rug';
     this.state.furnitureInventory[furnitureReward] = (this.state.furnitureInventory[furnitureReward] || 0) + 1;
@@ -1056,6 +1332,17 @@ export class LivingSystems extends EventTarget {
   }
 
   advanceEvent() { return false; }
+
+
+  applyOutdoorSociability(now = Date.now()) {
+    if (!this.slot || !['garden', 'park'].includes(this.slot.activeRoom)) return;
+    const last = Number(this.state?.simulation?.lastOutdoorSocialAt || 0);
+    if (now - last < 9000) return;
+    this.state.simulation.lastOutdoorSocialAt = now;
+    const socialGain = 0.85;
+    this.store.modifyStats({ social: socialGain, happiness: 0.35, bond: 0.16 }, 'outdoor-social');
+    if (chance(0.4)) this.record('social', { room: this.slot.activeRoom, robots: 0, ambient: true });
+  }
 
   recordPhoto(filename = '') {
     const entry = this.addTimeline('photo', { filename }, filename);
@@ -1155,4 +1442,4 @@ export class LivingSystems extends EventTarget {
   }
 }
 
-export { CONDITIONS, INGREDIENTS, RECIPES, GROOMING, SHAMPOOS, COMMANDS, SKILL_PATHS, LIFE_STAGES, PET_QUESTS, PET_QUEST_TRIGGERS, WALK_LOCATIONS, SECRETS, FURNITURE, ACCESSORIES, EVENTS, EVENT_MISSIONS, DREAMS, EMOTIONS, WEATHER_TYPES, SEASONS };
+export { CONDITIONS, INGREDIENTS, RECIPES, GROOMING, SHAMPOOS, COMMANDS, SKILL_PATHS, LIFE_STAGES, PET_QUESTS, PET_QUEST_TRIGGERS, WALK_LOCATIONS, SECRETS, FURNITURE, ROOM_UPGRADES, ACCESSORIES, EVENTS, EVENT_MISSIONS, DREAMS, EMOTIONS, WEATHER_TYPES, SEASONS };
