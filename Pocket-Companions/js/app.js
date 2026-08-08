@@ -127,6 +127,14 @@ const mobileUiQuery = window.matchMedia('(max-width: 900px), (max-height: 560px)
 const isMobileUi = () => mobileUiQuery.matches;
 const uiText = (english, portuguese) => getLanguage() === 'en' ? english : portuguese;
 
+function unlockAudioFromGesture() {
+  // Mobile browsers may leave AudioContext.resume() pending even after a valid
+  // tap. Audio enhancement must never block navigation or opening a panel.
+  void audio.unlock({ fromGesture: true }).catch((error) => {
+    console.warn('[Pocket Companions] Audio unlock deferred:', error);
+  });
+}
+
 function syncMobilePauseLabel() {
   const label = $('[data-mobile-command="pause"] strong');
   if (label) label.textContent = paused ? uiText('Resume', 'Retomar') : uiText('Pause', 'Pausar');
@@ -1802,7 +1810,7 @@ function renderPetDots() {
 
 async function handleMobileCommand(command) {
   closeMobileMenu();
-  await audio.unlock({ fromGesture: true });
+  unlockAudioFromGesture();
   if (command === 'play' || command === 'explore' || command === 'life') {
     openPanel(command, mobileMenuButton);
     return;
@@ -1835,8 +1843,8 @@ async function handleMobileCommand(command) {
 
 function bindGlobalControls() {
   $('#retry-loading').addEventListener('click', () => location.reload());
-  $('#start-button').addEventListener('click', async () => { await audio.unlock({ fromGesture: true }); startNewFlow(); });
-  $('#continue-button').addEventListener('click', async () => { await audio.unlock({ fromGesture: true }); continueFlow(); });
+  $('#start-button').addEventListener('click', () => { unlockAudioFromGesture(); startNewFlow(); });
+  $('#continue-button').addEventListener('click', () => { unlockAudioFromGesture(); continueFlow(); });
   $('#selection-back').addEventListener('click', showTitle);
   $('#previous-pet').addEventListener('click', () => shiftSelection(-1));
   $('#next-pet').addEventListener('click', () => shiftSelection(1));
@@ -1858,8 +1866,8 @@ function bindGlobalControls() {
   });
 
   $$('[data-close-modal]').forEach((button) => button.addEventListener('click', () => closeDialog($(`#${button.dataset.closeModal}`))));
-  $$('[data-open-modal]').forEach((button) => button.addEventListener('click', async () => {
-    await audio.unlock({ fromGesture: true });
+  $$('[data-open-modal]').forEach((button) => button.addEventListener('click', () => {
+    unlockAudioFromGesture();
     syncSettingsInputs();
     openDialog($(`#${button.dataset.openModal}`));
   }));
@@ -2079,7 +2087,7 @@ function handleKeyboardShortcuts(event) {
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js?v=40-mobile-first-redesign')
+    navigator.serviceWorker.register('sw.js?v=65-mobile-touch-actions')
       .then((registration) => registration.update())
       .catch((error) => console.warn('[Pocket Companions] Service worker registration failed:', error));
   }
