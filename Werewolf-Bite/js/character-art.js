@@ -8,27 +8,6 @@
   var staticPresets = window.WB_SVG_PRESETS || [];
 
   var appearance = {
-    hair: [
-      "Feral Crown",
-      "War Braids",
-      "Razor Crop",
-      "Cathedral Crest",
-      "Velvet Lengths",
-      "Ritual Shave",
-      "Reliquary Knots",
-      "Moon Mane",
-      "Noble Sweep",
-    ],
-    beards: [
-      "None",
-      "Ash Stubble",
-      "Dagger Goatee",
-      "Court Beard",
-      "Chain Braids",
-      "Imperial Fang",
-      "Feral Ruff",
-      "Moon Braids",
-    ],
     skin: [
       "Ash",
       "Umber",
@@ -60,47 +39,11 @@
       "Moonlight",
       "Obsidian",
     ],
-    markings: [
-      "None",
-      "Moon Sigil",
-      "Blood Sigil",
-      "Ritual Runes",
-      "Claw Marks",
-      "Eclipse Cracks",
-      "War Paint",
-      "Silver Brands",
-      "Constellation",
-    ],
-    outfits: [
-      "Wanderer",
-      "Warplate",
-      "Hunter",
-      "Ritualist",
-      "Noble",
-      "Warden",
-      "Bloodweave",
-      "Moonhide",
-      "Silver Reliquary",
-      "Night Corsair",
-    ],
-    cloaks: [
-      "None",
-      "Tattered Mantle",
-      "Wolf Pelt",
-      "Crimson Court",
-      "Grave Shroud",
-      "Moon Veil",
-      "Bone Mantle",
-      "Eclipse Mantle",
-    ],
     accessories: [
       "None",
-      "Moonstone Torque",
-      "Bone Charms",
       "Silver Ear Cuffs",
       "Blood Crystal Earrings",
       "Ritual Veil",
-      "Trophy Fangs",
       "Raven Feather",
       "Chain Halo",
       "Reliquary Brooch",
@@ -139,23 +82,13 @@
 
   var factionAppearance = {
     moonborn: {
-      hair: ["Feral Crown", "War Braids", "Razor Crop", "Cathedral Crest", "Ritual Shave", "Reliquary Knots", "Moon Mane", "Noble Sweep"],
-      beards: ["None", "Ash Stubble", "Dagger Goatee", "Chain Braids", "Feral Ruff", "Moon Braids"],
       skin: ["Ash", "Umber", "Onyx", "Russet", "Silver", "Sable", "Alabaster"],
-      markings: ["None", "Moon Sigil", "Ritual Runes", "Claw Marks", "Eclipse Cracks", "War Paint", "Silver Brands", "Constellation"],
-      outfits: ["Wanderer", "Warplate", "Hunter", "Ritualist", "Warden", "Moonhide", "Silver Reliquary"],
-      cloaks: ["None", "Tattered Mantle", "Wolf Pelt", "Moon Veil", "Bone Mantle", "Eclipse Mantle"],
-      accessories: ["None", "Moonstone Torque", "Bone Charms", "Silver Ear Cuffs", "Trophy Fangs", "Raven Feather", "Reliquary Brooch", "Thorn Crown"],
+      accessories: ["None"],
       metals: ["Blackened Silver", "Grave Iron", "Moon Silver", "Ancient Gold", "Obsidian"],
       accents: ["Night Blue", "Bone", "Moss", "Violet", "Ash", "Ember", "Teal"]
     },
     bloodbound: {
-      hair: ["Feral Crown", "War Braids", "Razor Crop", "Cathedral Crest", "Velvet Lengths", "Ritual Shave", "Reliquary Knots", "Noble Sweep"],
-      beards: ["None", "Ash Stubble", "Dagger Goatee", "Court Beard", "Chain Braids", "Imperial Fang"],
       skin: ["Ash", "Umber", "Pale", "Onyx", "Russet", "Sable", "Alabaster"],
-      markings: ["None", "Blood Sigil", "Ritual Runes", "Claw Marks", "Eclipse Cracks", "War Paint", "Constellation"],
-      outfits: ["Wanderer", "Warplate", "Ritualist", "Noble", "Bloodweave", "Silver Reliquary", "Night Corsair"],
-      cloaks: ["None", "Tattered Mantle", "Crimson Court", "Grave Shroud", "Bone Mantle", "Eclipse Mantle"],
       accessories: ["None", "Silver Ear Cuffs", "Blood Crystal Earrings", "Ritual Veil", "Raven Feather", "Chain Halo", "Reliquary Brooch", "Thorn Crown"],
       metals: ["Blackened Silver", "Grave Iron", "Blood Bronze", "Ancient Gold", "Obsidian"],
       accents: ["Crimson", "Bone", "Violet", "Ash", "Ember", "Teal"]
@@ -168,33 +101,42 @@
     return (curated || appearance[source] || []).slice();
   }
 
-  var defaults = {
+  // Campos visuais antigos permanecem apenas como valores internos fixos para
+  // compatibilidade com o renderer e saves existentes; não são personalizáveis.
+  var fixedVisual = {
     moonborn: {
       hair: "feral crown",
       beard: "none",
+      marking: "none",
+      outfit: "wanderer",
+      cloak: "none",
+    },
+    bloodbound: {
+      hair: "razor crop",
+      beard: "none",
+      marking: "none",
+      outfit: "wanderer",
+      cloak: "none",
+    },
+  };
+
+  var defaults = {
+    moonborn: {
       skin: "ash",
       eyes: "amber",
       eyeGlow: "radiant",
       hairColor: "obsidian",
-      marking: "moon sigil",
-      outfit: "hunter",
-      cloak: "none",
-      accessory: "bone charms",
+      accessory: "none",
       metal: "moon silver",
       accent: "night blue",
       background: "survivor",
       portrait: "moonborn_howlwarden",
     },
     bloodbound: {
-      hair: "razor crop",
-      beard: "none",
       skin: "pale",
       eyes: "crimson",
       eyeGlow: "dormant",
       hairColor: "raven",
-      marking: "none",
-      outfit: "wanderer",
-      cloak: "none",
       accessory: "none",
       metal: "blood bronze",
       accent: "crimson",
@@ -414,44 +356,39 @@
     var source = raw || {};
     var result = {};
     var fields = {
-      hair: "hair",
-      beard: "beards",
       skin: "skin",
       eyes: "eyes",
       eyeGlow: "eyeGlow",
       hairColor: "hairColor",
-      marking: "markings",
-      outfit: "outfits",
-      accessory: "accessories",
       metal: "metals",
       accent: "accents",
       background: "backgrounds",
     };
     Object.keys(fields).forEach(function (key) {
       var allowed = optionsFor(fields[key], bloodline).map(lower);
-      var candidate = remapAppearanceValue(
-        fields[key],
+      var candidate = lower(
         source[key] !== undefined ? source[key] : defaults[bloodline][key],
       );
       result[key] =
         allowed.indexOf(candidate) >= 0 ? candidate : defaults[bloodline][key];
     });
-    result.cloak = "none";
-    if (
-      bloodline === "bloodbound" &&
-      lower(source.hair) === "velvet lengths" &&
-      lower(source.beard || "none") === "none" &&
-      lower(source.marking) === "blood sigil" &&
-      lower(source.outfit) === "noble" &&
-      lower(source.accessory) === "blood crystal earrings"
-    ) {
-      result.hair = "razor crop";
-      result.beard = "none";
-      result.eyeGlow = "dormant";
-      result.marking = "none";
-      result.outfit = "wanderer";
+
+    if (bloodline === "bloodbound") {
+      var allowedAccessories = optionsFor("accessories", bloodline).map(lower);
+      var accessoryCandidate = lower(
+        source.accessory !== undefined
+          ? source.accessory
+          : defaults[bloodline].accessory,
+      );
+      result.accessory =
+        allowedAccessories.indexOf(accessoryCandidate) >= 0
+          ? accessoryCandidate
+          : defaults[bloodline].accessory;
+    } else {
       result.accessory = "none";
     }
+
+    Object.assign(result, fixedVisual[bloodline]);
     result.portrait = normalizePreset(
       source.portrait !== undefined
         ? source.portrait
@@ -465,15 +402,10 @@
     var bloodline = faction === "bloodbound" ? "bloodbound" : "moonborn";
     var result = {};
     var fields = {
-      hair: "hair",
-      beard: "beards",
       skin: "skin",
       eyes: "eyes",
       eyeGlow: "eyeGlow",
       hairColor: "hairColor",
-      marking: "markings",
-      outfit: "outfits",
-      accessory: "accessories",
       metal: "metals",
       accent: "accents",
       background: "backgrounds",
@@ -481,11 +413,10 @@
     Object.keys(fields).forEach(function (key) {
       result[key] = lower(U.pick(optionsFor(fields[key], bloodline)));
     });
-    if (bloodline === "moonborn" && result.skin === "pale")
-      result.skin = "silver";
-    if (bloodline === "bloodbound" && result.outfit === "moonhide")
-      result.outfit = "bloodweave";
-    result.cloak = "none";
+    result.accessory =
+      bloodline === "bloodbound"
+        ? lower(U.pick(optionsFor("accessories", bloodline)))
+        : "none";
     var portraitChoices = presetOptions(bloodline);
     result.portrait = portraitChoices.length
       ? normalizePreset(U.pick(portraitChoices).id, bloodline)
@@ -494,10 +425,8 @@
   }
 
   function defaultAppearance(faction) {
-    return Object.assign(
-      {},
-      defaults[faction === "bloodbound" ? "bloodbound" : "moonborn"],
-    );
+    var bloodline = faction === "bloodbound" ? "bloodbound" : "moonborn";
+    return normalizeAppearance(defaults[bloodline], bloodline);
   }
 
   var presetAnchors = {
@@ -513,6 +442,13 @@
     bloodbound_bloodhalo: { viewBox: "0 0 512 512", x: 256, y: 86, gap: 36, unit: 1 },
     bloodbound_dark_prince: { viewBox: "0 0 512 512", x: 256, y: 113, gap: 36, unit: 1 },
     bloodbound_royal_dusk: { viewBox: "0 0 512 512", x: 256, y: 90, gap: 28, unit: 1 },
+    moonborn_ironmaw: { viewBox: "0 0 512 512", x: 256, y: 110, gap: 54, unit: 1 },
+    moonborn_bloodscratch: { viewBox: "0 0 512 512", x: 256, y: 118, gap: 50, unit: 1 },
+    moonborn_stormpelt: { viewBox: "0 0 512 512", x: 256, y: 150, gap: 44, unit: 1 },
+    bloodbound_mooncourt: { viewBox: "0 0 512 512", x: 256, y: 92, gap: 34, unit: 1 },
+    bloodbound_nightwing: { viewBox: "0 0 512 512", x: 256, y: 98, gap: 34, unit: 1 },
+    bloodbound_velvetfang: { viewBox: "0 0 512 512", x: 256, y: 88, gap: 32, unit: 1 },
+    bloodbound_blackveil: { viewBox: "0 0 512 512", x: 256, y: 98, gap: 34, unit: 1 },
   };
 
   function presetColors(a) {
@@ -626,6 +562,13 @@
     bloodbound_bloodhalo: { skin: ["skin-grad"], cloak: ["cape-inner", "cape-outer"], outfit: ["vest-grad"], metal: ["gold-grad", "cane-grad"] },
     bloodbound_dark_prince: { skin: ["skinGrad"], cloak: ["capeInner", "capeOuter"], outfit: ["vestGrad"], metal: ["goldGrad"] },
     bloodbound_royal_dusk: { skin: ["skinGrad"], cloak: ["capeOuterGrad", "capeInnerGrad"], outfit: ["vestGrad", "bootGrad"], metal: ["goldGrad", "caneGrad"] },
+    moonborn_ironmaw: { fur: ["fur-dark", "fur-mid", "fur-light"], skin: ["skin-dark"], outfit: ["pants-grad"], bone: ["claw-grad"], metal: ["gold"] },
+    moonborn_bloodscratch: { fur: ["fur-base"], outfit: ["pants-base"], eyes: ["eye-glow"] },
+    moonborn_stormpelt: { fur: ["torsoGrad"], outfit: ["pantsGrad"] },
+    bloodbound_mooncourt: { skin: ["skin-grad"], cloak: ["cape-inner"], outfit: ["vest-grad"], metal: ["gold-grad"] },
+    bloodbound_nightwing: { skin: ["skin"], hair: ["hair-grad"], cloak: ["cape-grad", "collar-grad"], outfit: ["vest-grad"] },
+    bloodbound_velvetfang: { skin: ["skinGrad"], cloak: ["capeOuter", "capeInner", "redGrad"], outfit: ["vestGrad"], metal: ["goldGrad"] },
+    bloodbound_blackveil: { skin: ["skin"], cloak: ["cape-outer-left", "cape-outer-right", "cape-inner"], outfit: ["vest-grad", "pants"], metal: ["gold"] },
   };
 
   function svgHex(value) {
@@ -870,13 +813,10 @@
 
   function svgApplyVariants(root, a, faction, presetId, entity, colors) {
     var anchor = presetAnchors[presetId] || { viewBox: "0 0 512 512", x: 256, y: faction === "bloodbound" ? 98 : 125, gap: faction === "bloodbound" ? 34 : 54, unit: 1 };
-    svgApplyHair(root, a, faction, presetId, colors);
-    if (a.marking === "none") svgSetPartStyle(root, "markings", "display:none");
-    else {
-      svgRecolorPart(root, "markings", [colors.accentDark, colors.accentLight], {});
-      svgAppendFragment(root, "wb-svg-part wb-svg-marking", presetMarkingGeometry(a, faction, anchor, colors));
-    }
-    svgAppendFragment(root, "wb-svg-part wb-svg-accessory", presetAccessoryGeometry(a, faction, anchor, colors));
+    svgRecolorPart(root, "hair", [colors.hairDark, svgMix(colors.hairLight, colors.hairDark, .45)], {});
+    svgSetPartStyle(root, "markings", "display:none");
+    if (faction === "bloodbound")
+      svgAppendFragment(root, "wb-svg-part wb-svg-accessory", presetAccessoryGeometry(a, faction, anchor, colors));
     svgAppendFragment(root, "wb-svg-part wb-svg-equipment", presetEquipmentGeometry(entity, faction, anchor, colors));
   }
 
@@ -920,6 +860,13 @@
     bloodbound_bloodhalo: { x: 256, top: 10, mouth: 118, face: 35, s: 0.86 },
     bloodbound_dark_prince: { x: 256, top: 34, mouth: 151, face: 34, s: 0.9 },
     bloodbound_royal_dusk: { x: 256, top: 24, mouth: 122, face: 29, s: 0.82 },
+    moonborn_ironmaw: { x: 256, top: 44, mouth: 186, face: 72, s: 1 },
+    moonborn_bloodscratch: { x: 256, top: 40, mouth: 190, face: 74, s: 1 },
+    moonborn_stormpelt: { x: 256, top: 96, mouth: 194, face: 58, s: 0.95 },
+    bloodbound_mooncourt: { x: 256, top: 34, mouth: 124, face: 34, s: 0.9 },
+    bloodbound_nightwing: { x: 256, top: 30, mouth: 122, face: 34, s: 0.9 },
+    bloodbound_velvetfang: { x: 256, top: 18, mouth: 118, face: 32, s: 0.88 },
+    bloodbound_blackveil: { x: 256, top: 26, mouth: 124, face: 33, s: 0.88 },
   };
 
   var refinedFurPalettes = {
@@ -1350,16 +1297,13 @@
 
   function svgApplyVariants(root, a, faction, presetId, entity, colors) {
     var fit = refinedFit(presetId, faction);
-    svgApplyHair(root, a, faction, presetId, colors);
-    svgInsertFragment(root, "wb-svg-part wb-svg-outfit-detail", presetOutfitGeometry(a, faction, fit, colors), "front");
+    svgRecolorPart(root, "hair", [colors.hairDark, svgMix(colors.hairLight, colors.hairDark, .45), colors.hairLight], {});
     svgSolidifyFirstWerewolf(root, a, presetId, colors);
-    if (a.marking === "none") svgSetPartStyle(root, "markings", "display:none");
-    else {
-      svgRecolorPart(root, "markings", [colors.accentDark, colors.accentDark, colors.accentLight], {});
-      svgInsertFragment(root, "wb-svg-part wb-svg-marking", presetMarkingGeometry(a, faction, fit, colors), "front");
+    svgSetPartStyle(root, "markings", "display:none");
+    if (faction === "bloodbound") {
+      var accessoryBehind = a.accessory === "chain halo" || a.accessory === "raven feather" || a.accessory === "ritual veil";
+      svgInsertFragment(root, "wb-svg-part wb-svg-accessory", presetAccessoryGeometry(a, faction, fit, colors), accessoryBehind ? "behind" : "front");
     }
-    var accessoryBehind = a.accessory === "chain halo" || a.accessory === "raven feather" || a.accessory === "ritual veil";
-    svgInsertFragment(root, "wb-svg-part wb-svg-accessory", presetAccessoryGeometry(a, faction, fit, colors), accessoryBehind ? "behind" : "front");
     svgInsertFragment(root, "wb-svg-part wb-svg-equipment", presetEquipmentGeometry(entity, faction, fit, colors), "front");
   }
 
@@ -1495,8 +1439,7 @@
       if (doc.querySelector("parsererror")) throw new Error("SVG inválido");
       var root = doc.documentElement;
       if (size === "battle") svgStripBattleBackground(root);
-      if ((faction === "bloodbound" && isUntouchedBloodboundAppearance(a)) ||
-          (faction === "moonborn" && isUntouchedMoonbornAppearance(a)))
+      if (faction === "bloodbound" && isUntouchedBloodboundAppearance(a))
         return serializeExactPresetRoot(root, label, presetId, serial);
       var colors = presetColors(a);
       var profile = presetPartProfiles[presetId] || {};
@@ -1509,6 +1452,7 @@
       var i;
       for (i = 0; i < (profile.fur || []).length; i++) svgRecolorGradient(root, profile.fur[i], furPalette);
       for (i = 0; i < (profile.skin || []).length; i++) svgRecolorGradient(root, profile.skin[i], skinPalette);
+      for (i = 0; i < (profile.hair || []).length; i++) svgRecolorGradient(root, profile.hair[i], [colors.hairDark, colors.hairLight]);
       for (i = 0; i < (profile.outfit || []).length; i++) svgRecolorGradient(root, profile.outfit[i], outfitPalette);
       for (i = 0; i < (profile.cloak || []).length; i++) svgRecolorGradient(root, profile.cloak[i], cloakPalette);
       for (i = 0; i < (profile.metal || []).length; i++) svgRecolorGradient(root, profile.metal[i], metalPalette);
@@ -1617,18 +1561,17 @@
   function describe(entity) {
     var faction = entity.faction === "bloodbound" ? "bloodbound" : "moonborn";
     var a = normalizeAppearance(entity.appearance, faction);
+    var accessoryText =
+      faction === "bloodbound" && a.accessory !== "none"
+        ? ", acessório " + PT.label(a.accessory).toLowerCase()
+        : "";
     return (
       D.factions[faction].name +
-      ", usando " +
-      PT.label(a.outfit) +
-      ", com cabelo ou pelagem " +
-      PT.label(a.hair).toLowerCase() +
-      ", barba / focinho " +
-      PT.label(a.beard).toLowerCase() +
       ", olhos " +
       PT.label(a.eyes).toLowerCase() +
-      " e " +
-      PT.label(a.accessory).toLowerCase() +
+      ", acabamento " +
+      PT.label(a.metal).toLowerCase() +
+      accessoryText +
       (a.portrait ? ", retrato " + presetLabel(a.portrait).toLowerCase() : "")
     );
   }
@@ -2167,7 +2110,7 @@
 
   function outfitLayer(a, faction, colors, ids, p) {
     var outfit = a.outfit;
-    if (faction === "moonborn" && outfit === "wanderer") {
+    if (faction === "moonborn") {
       var waistL = 210 - p.waist;
       var waistR = 210 + p.waist;
       var beltY = p.waistY + 16;

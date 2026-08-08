@@ -679,15 +679,10 @@
         .join("");
     };
     const fields = {
-      hairSelect: "hair",
-      beardSelect: "beards",
       skinSelect: "skin",
       eyeSelect: "eyes",
       eyeGlowSelect: "eyeGlow",
       hairColorSelect: "hairColor",
-      markingSelect: "markings",
-      outfitSelect: "outfits",
-      accessorySelect: "accessories",
       metalSelect: "metals",
       accentSelect: "accents",
       backgroundSelect: "backgrounds",
@@ -695,8 +690,22 @@
     Object.entries(fields).forEach(([id, key]) =>
       fill("#" + id, D.appearance[key]),
     );
-    fillPortraits("moonborn", Art.defaultAppearance("moonborn").portrait);
-    setCreatorAppearance(Art.defaultAppearance("moonborn"));
+    const syncFactionOnlyFields = (faction, appearance) => {
+      const isBloodbound = faction === "bloodbound";
+      const accessoryField = $("[data-bloodbound-only]");
+      if (accessoryField) accessoryField.hidden = !isBloodbound;
+      const accessoryOptions = Art.optionsFor
+        ? Art.optionsFor("accessories", faction)
+        : ["None"];
+      fill("#accessorySelect", accessoryOptions.length ? accessoryOptions : ["None"]);
+      $("#accessorySelect").value = isBloodbound
+        ? appearance.accessory || "none"
+        : "none";
+    };
+    const initialAppearance = Art.defaultAppearance("moonborn");
+    fillPortraits("moonborn", initialAppearance.portrait);
+    syncFactionOnlyFields("moonborn", initialAppearance);
+    setCreatorAppearance(initialAppearance);
     $$('[data-choice="faction"]').forEach((b) =>
       b.addEventListener("click", () => {
         $$('[data-choice="faction"]').forEach((x) => {
@@ -705,6 +714,7 @@
         });
         const nextAppearance = Art.defaultAppearance(b.dataset.value);
         fillPortraits(b.dataset.value, nextAppearance.portrait);
+        syncFactionOnlyFields(b.dataset.value, nextAppearance);
         setCreatorAppearance(nextAppearance);
         updateCreator();
         sfx("click");
@@ -755,14 +765,10 @@
   function setCreatorAppearance(appearance) {
     const ids = {
       portrait: "portraitSelect",
-      hair: "hairSelect",
-      beard: "beardSelect",
       skin: "skinSelect",
       eyes: "eyeSelect",
       eyeGlow: "eyeGlowSelect",
       hairColor: "hairColorSelect",
-      marking: "markingSelect",
-      outfit: "outfitSelect",
       accessory: "accessorySelect",
       metal: "metalSelect",
       accent: "accentSelect",
@@ -792,15 +798,12 @@
     const faction = $('[data-choice="faction"].active').dataset.value;
     const raw = {
       portrait: $("#portraitSelect").value,
-      hair: $("#hairSelect").value,
-      beard: $("#beardSelect").value,
       skin: $("#skinSelect").value,
       eyes: $("#eyeSelect").value,
       eyeGlow: $("#eyeGlowSelect").value,
       hairColor: $("#hairColorSelect").value,
-      marking: $("#markingSelect").value,
-      outfit: $("#outfitSelect").value,
-      accessory: $("#accessorySelect").value,
+      accessory:
+        faction === "bloodbound" ? $("#accessorySelect").value : "none",
       metal: $("#metalSelect").value,
       accent: $("#accentSelect").value,
       background: $("#backgroundSelect").value,
@@ -851,9 +854,9 @@
     $("#creatorLookSummary").textContent = Art.describe(data);
     const badgeValues = [
       data.appearance.body,
-      data.appearance.hair,
-      data.appearance.outfit,
       data.appearance.accessory,
+      data.appearance.metal,
+      data.appearance.accent,
     ].filter((v) => v && v !== "none");
     $("#creatorLookBadges").innerHTML = badgeValues
       .map((v) => '<span class="look-badge">' + esc(U.title(v)) + "</span>")
@@ -1332,16 +1335,14 @@
     const controls = [
       ["portrait", "Arte base", "portraits"],
       ["skin", "Skin / fur", "skin"],
-      ["hair", "Hair / fur style", "hair"],
-      ["beard", "Beard / muzzle", "beards"],
       ["hairColor", "Hair / fur color", "hairColor"],
       ["eyes", "Eye color", "eyes"],
       ["eyeGlow", "Eye radiance", "eyeGlow"],
-      ["marking", "Scars / markings", "markings"],
-      ["outfit", "Base outfit", "outfits"],
-      ["accessory", "Heirloom", "accessories"],
+      ...(p.faction === "bloodbound"
+        ? [["accessory", "Heirloom", "accessories"]]
+        : []),
       ["metal", "Metal finish", "metals"],
-      ["accent", "Ritual color", "accents"],
+      ["accent", "Clothing color", "accents"],
       ["background", "Origin scenery", "backgrounds"],
     ];
     const equipped = slots

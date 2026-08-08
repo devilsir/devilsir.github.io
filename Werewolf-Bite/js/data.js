@@ -75,10 +75,8 @@
   };
 
   D.appearance = {
-    hair: ["Feral Crown", "War Braids", "Razor Crop", "Cathedral Crest", "Velvet Lengths"],
     skin: ["Ash", "Umber", "Pale", "Onyx", "Russet", "Silver"],
     eyes: ["Amber", "Crimson", "Ice", "Violet", "Emerald", "White"],
-    outfits: ["Wanderer", "Warplate", "Hunter", "Ritualist", "Noble"],
     backgrounds: ["Exile", "Survivor", "Acolyte", "Outrider", "Heir"],
   };
 
@@ -1010,10 +1008,8 @@
       record: `${U.rand(4, 92)}–${U.rand(1, 45)}`,
       power: Math.floor(level * 45 + rating * 0.35 + U.rand(-40, 80)),
       appearance: {
-        hair: U.pick(D.appearance.hair),
         skin: U.pick(D.appearance.skin),
         eyes: U.pick(D.appearance.eyes),
-        outfit: U.pick(D.appearance.outfits),
       },
     };
   };
