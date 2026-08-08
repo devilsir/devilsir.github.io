@@ -66,6 +66,8 @@ export class WardrobeController {
     this.panel = document.querySelector('#wardrobe-panel');
     this.petName = document.querySelector('#wardrobe-pet-name');
     this.accessorySelect = document.querySelector('#wardrobe-accessory');
+    this.categoryTabs = document.querySelector('#wardrobe-category-tabs');
+    this.itemGrid = document.querySelector('#wardrobe-item-grid');
     this.emptyState = document.querySelector('#wardrobe-empty');
     this.linkScale = document.querySelector('#wardrobe-link-scale');
     this.status = document.querySelector('#wardrobe-status');
@@ -77,6 +79,7 @@ export class WardrobeController {
     this.scene.setAccessoryFitOverrides?.(this.data);
     this.inputs = new Map();
     this.gizmoMode = 'translate';
+    this.mobileCategory = 'all';
     this.gizmoButtons = [...document.querySelectorAll('[data-wardrobe-gizmo]')];
     this.gizmoSyncFrame = null;
     this.bind();
@@ -120,6 +123,7 @@ export class WardrobeController {
       this.accessoryId = null;
       if (this.emptyState) this.emptyState.hidden = false;
       this.setEditorEnabled(false);
+      this.renderMobileAccessoryBrowser(owned, equipped);
       return null;
     }
 
@@ -140,15 +144,92 @@ export class WardrobeController {
     this.accessoryId = selected;
     if (this.emptyState) this.emptyState.hidden = true;
     this.setEditorEnabled(true);
+    this.renderMobileAccessoryBrowser(owned, equipped);
     return selected;
+  }
+
+  renderMobileAccessoryBrowser(owned = this.ownedAccessoryIds(), equipped = this.living.state?.accessories?.equipped || null) {
+    if (!this.categoryTabs || !this.itemGrid) return;
+    const categories = [
+      ['all', this.language === 'en' ? 'All' : 'Todos'],
+      ['head', this.language === 'en' ? 'Head' : 'Cabeça'],
+      ['neck', this.language === 'en' ? 'Neck' : 'Pescoço'],
+      ['back', this.language === 'en' ? 'Body' : 'Corpo']
+    ];
+    this.categoryTabs.innerHTML = '';
+    categories.forEach(([id, label]) => {
+      const button = document.createElement('button');
+      const active = this.mobileCategory === id;
+      button.type = 'button';
+      button.className = `wardrobe-category-tab ${active ? 'is-active' : ''}`;
+      button.textContent = label;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(active));
+      button.addEventListener('click', () => {
+        this.mobileCategory = id;
+        this.renderMobileAccessoryBrowser();
+      });
+      this.categoryTabs.append(button);
+    });
+
+    const filtered = owned.filter((id) => this.mobileCategory === 'all' || ACCESSORIES[id]?.anchor === this.mobileCategory);
+    this.itemGrid.innerHTML = '';
+    if (this.mobileCategory === 'all') {
+      const clear = document.createElement('button');
+      clear.type = 'button';
+      clear.className = `wardrobe-item-card ${equipped ? '' : 'is-equipped'}`;
+      clear.setAttribute('aria-pressed', String(!equipped));
+      clear.innerHTML = `<span class="wardrobe-item-preview" aria-hidden="true">×</span><strong>${this.language === 'en' ? 'No accessory' : 'Sem acessório'}</strong>${equipped ? '' : '<span class="wardrobe-equipped-mark" aria-hidden="true">✓</span>'}`;
+      clear.addEventListener('click', () => this.clearEquippedAccessory());
+      this.itemGrid.append(clear);
+    }
+
+    filtered.forEach((id) => {
+      const accessory = ACCESSORIES[id];
+      const active = equipped === id;
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `wardrobe-item-card ${active ? 'is-equipped' : ''}`;
+      card.setAttribute('aria-pressed', String(active));
+      card.setAttribute('aria-label', `${localized(accessory.name, this.language)}${active ? (this.language === 'en' ? ', equipped' : ', equipado') : ''}`);
+      const symbol = accessory.anchor === 'head' ? '◉' : accessory.anchor === 'neck' ? '⌁' : '◇';
+      card.innerHTML = `<span class="wardrobe-item-preview" aria-hidden="true">${symbol}</span><strong>${localized(accessory.name, this.language)}</strong>${active ? '<span class="wardrobe-equipped-mark" aria-hidden="true">✓</span>' : ''}`;
+      card.addEventListener('click', () => this.selectAccessory(id));
+      this.itemGrid.append(card);
+    });
+
+    if (!filtered.length && this.mobileCategory !== 'all') {
+      const empty = document.createElement('p');
+      empty.className = 'field-help';
+      empty.textContent = this.language === 'en' ? 'No unlocked items in this category yet.' : 'Nenhum item desbloqueado nesta categoria.';
+      this.itemGrid.append(empty);
+    }
+  }
+
+  async clearEquippedAccessory() {
+    if (!this.isOpen || !this.store.active) return false;
+    this.captureCurrentSceneFit();
+    this.persist();
+    this.living.state.accessories.equipped = null;
+    this.store.persist();
+    this.accessoryId = null;
+    await this.scene.setAccessory(null);
+    this.scene.setStaticPetPreview?.(true);
+    this.setEditorEnabled(false);
+    this.renderMobileAccessoryBrowser(this.ownedAccessoryIds(), null);
+    await this.scene.renderStableFrame?.();
+    this.setStatus(this.language === 'en' ? 'Accessory removed. Your companion stays visible for the next choice.' : 'Acessório removido. Seu pet continua visível para a próxima escolha.');
+    return true;
   }
 
   setEditorEnabled(enabled) {
     const active = Boolean(enabled);
     this.scene.setAccessoryGizmoEnabled?.(this.isOpen && active);
     this.gizmoButtons.forEach((button) => { button.disabled = !active; });
-    document.querySelectorAll('[data-wardrobe-view], #wardrobe-reset-current, #wardrobe-reset-all, .wardrobe-axis-grid input')
+    document.querySelectorAll('#wardrobe-reset-current, #wardrobe-reset-all, .wardrobe-axis-grid input')
       .forEach((control) => { control.disabled = !active; });
+    const mobileUi = window.matchMedia('(max-width: 900px), (max-height: 560px) and (pointer: coarse)').matches;
+    document.querySelectorAll('[data-wardrobe-view]').forEach((control) => { control.disabled = !active && !mobileUi; });
     if (this.linkScale) this.linkScale.disabled = !active;
     this.panel?.classList.toggle('wardrobe-is-empty', !active);
   }
@@ -166,6 +247,12 @@ export class WardrobeController {
     });
     this.scene.addEventListener?.('accessory-gizmo-change', (event) => this.handleGizmoChange(event.detail));
     document.addEventListener('keydown', (event) => this.handleShortcut(event));
+    window.addEventListener('languagechange', () => {
+      if (!this.isOpen) return;
+      const preferred = this.accessoryId || this.living.state?.accessories?.equipped || null;
+      if (preferred) this.populateAccessories(preferred);
+      this.renderMobileAccessoryBrowser();
+    });
     document.querySelector('#wardrobe-reset-current')?.addEventListener('click', () => this.resetCurrent());
     document.querySelector('#wardrobe-reset-all')?.addEventListener('click', () => this.resetAll());
     document.querySelector('#wardrobe-export')?.addEventListener('click', () => this.exportJson());
@@ -173,7 +260,7 @@ export class WardrobeController {
     document.querySelectorAll('[data-wardrobe-view]').forEach((button) => {
       button.addEventListener('click', () => this.scene.setPetPreviewRotation?.(Number(button.dataset.wardrobeView)));
     });
-    this.panel?.addEventListener('pointerdown', (event) => event.stopPropagation());
+    ['pointerdown', 'pointermove', 'click', 'dblclick', 'contextmenu'].forEach((type) => this.panel?.addEventListener(type, (event) => event.stopPropagation()));
     this.panel?.addEventListener('wheel', (event) => event.stopPropagation(), { passive: true });
     window.addEventListener('pagehide', () => {
       this.captureCurrentSceneFit();
@@ -266,6 +353,7 @@ export class WardrobeController {
     this.setEditorEnabled(true);
     this.renderInputs();
     await this.scene.renderStableFrame?.();
+    this.renderMobileAccessoryBrowser();
     if (announce) this.setStatus(`${localized(ACCESSORIES[accessoryId].name, this.language)} equipado somente em ${PETS[this.petId]?.name || 'seu pet'}.`);
     return true;
   }
@@ -287,6 +375,11 @@ export class WardrobeController {
 
   handleShortcut(event) {
     if (!this.isOpen || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      return;
+    }
     const tag = event.target?.tagName?.toLowerCase();
     if (['input', 'select', 'textarea'].includes(tag) || event.target?.isContentEditable) return;
     const mode = { w: 'translate', e: 'rotate', r: 'scale' }[event.key.toLowerCase()];

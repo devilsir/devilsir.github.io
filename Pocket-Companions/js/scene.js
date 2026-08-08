@@ -137,6 +137,8 @@ export class CompanionScene extends EventTarget {
     this.velocity = new THREE.Vector3();
     this.baseCamera = { x: 0, y: 2.4, z: 6.2 };
     this.cameraTarget = new THREE.Vector3(0, 1.1, 0);
+    this.cameraOrbitYaw = 0;
+    this.cameraOrbitPitch = 0;
     this.pointer = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
     this.occlusionRaycaster = new THREE.Raycaster();
@@ -144,7 +146,7 @@ export class CompanionScene extends EventTarget {
     this.occludedObjects = new Set();
     this.occlusionEnvironmentChildCount = -1;
     this.floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    this.pointerState = { down: false, x: 0, y: 0, startX: 0, startY: 0, totalDx: 0, totalDy: 0, dragged: false, lastPetAt: 0, startedAt: 0, lastMoveAt: 0, lastHitPoint: null, onPet: false };
+    this.pointerState = { down: false, x: 0, y: 0, startX: 0, startY: 0, totalDx: 0, totalDy: 0, dragged: false, multiTouch: false, cameraDrag: false, lastPetAt: 0, startedAt: 0, lastMoveAt: 0, lastHitPoint: null, onPet: false };
     this.activePointers = new Map();
     this.pinchDistance = null;
     this.cleanMode = false;
@@ -734,6 +736,8 @@ export class CompanionScene extends EventTarget {
     this.baseCamera = selection
       ? { x: 0, y: height * 0.72, z: distance * 0.92 }
       : { x: 0, y: height * 0.8, z: distance };
+    this.cameraOrbitYaw = 0;
+    this.cameraOrbitPitch = 0;
     this.cameraTarget.set(0, height * 0.48, 0);
   }
 
@@ -804,6 +808,10 @@ export class CompanionScene extends EventTarget {
 
   handleViewportPointerMove = (event) => {
     if (!this.canvas || !this.buildViewportPointer) return;
+    if (this.isUiInteractionTarget?.(event.target)) {
+      this.buildViewportPointer.inside = false;
+      return;
+    }
     const rect = this.canvas.getBoundingClientRect();
     const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
     this.buildViewportPointer.x = event.clientX;
@@ -820,10 +828,23 @@ export class CompanionScene extends EventTarget {
       this.selectBuildObjectAt?.(event);
       return;
     }
+    if (event.pointerType !== 'mouse') event.preventDefault();
     this.canvas.setPointerCapture?.(event.pointerId);
     this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (this.activePointers.size > 1) {
+      const points = [...this.activePointers.values()];
+      this.pinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      this.pointerState.down = true;
+      this.pointerState.dragged = true;
+      this.pointerState.multiTouch = true;
+      this.pointerState.cameraDrag = false;
+      this.pointerState.onPet = false;
+      return;
+    }
     this.pointerState.down = true;
     this.pointerState.dragged = false;
+    this.pointerState.multiTouch = false;
+    this.pointerState.cameraDrag = false;
     this.pointerState.startX = event.clientX;
     this.pointerState.startY = event.clientY;
     this.pointerState.totalDx = 0;
@@ -833,10 +854,6 @@ export class CompanionScene extends EventTarget {
     this.pointerState.gestureSpeed = 0;
     this.pointerState.x = event.clientX;
     this.pointerState.y = event.clientY;
-    if (this.activePointers.size === 2) {
-      const points = [...this.activePointers.values()];
-      this.pinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
-    }
     this.updatePointer(event);
     const hits = this.raycastPet();
     if (hits.length) {
@@ -853,8 +870,9 @@ export class CompanionScene extends EventTarget {
     this.handleViewportPointerMove(event);
     if (this.petControlsLocked) return;
     if (!this.pointerState.down) return;
+    if (event.pointerType !== 'mouse') event.preventDefault();
     this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (this.activePointers.size === 2 && this.mode !== 'title') {
+    if (this.activePointers.size >= 2 && this.mode !== 'title') {
       const points = [...this.activePointers.values()];
       const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
       if (this.pinchDistance) {
@@ -865,6 +883,12 @@ export class CompanionScene extends EventTarget {
         if (pet && this.mode !== 'selection') this.baseCamera.y = clamp(this.baseCamera.y + (distance - this.pinchDistance) * -0.0035, Math.max(1.4, pet.size.y * 0.5), 7.2);
       }
       this.pinchDistance = distance;
+      this.pointerState.dragged = true;
+      this.pointerState.multiTouch = true;
+      this.pointerState.cameraDrag = false;
+      return;
+    }
+    if (this.pointerState.multiTouch) {
       this.pointerState.dragged = true;
       return;
     }
@@ -877,13 +901,20 @@ export class CompanionScene extends EventTarget {
     const instantSpeed = Math.hypot(dx, dy) / elapsed * 1000;
     this.pointerState.gestureSpeed = lerp(this.pointerState.gestureSpeed || 0, instantSpeed, 0.55);
     this.pointerState.lastMoveAt = movedAt;
-    if (Math.abs(dx) + Math.abs(dy) > 4) this.pointerState.dragged = true;
+    if (Math.hypot(this.pointerState.totalDx, this.pointerState.totalDy) > 6) this.pointerState.dragged = true;
     this.pointerState.x = event.clientX;
     this.pointerState.y = event.clientY;
     this.updatePointer(event);
 
     if (this.mode === 'selection' && this.currentPet) {
       if (this.pointerState.onPet) this.currentPet.modelHolder.rotation.y += dx * 0.008;
+      return;
+    }
+
+    if (!this.pointerState.onPet && this.pointerState.dragged && this.isMobile() && ['home', 'photo'].includes(this.mode)) {
+      this.cameraOrbitYaw = Math.atan2(Math.sin(this.cameraOrbitYaw - dx * 0.0065), Math.cos(this.cameraOrbitYaw - dx * 0.0065));
+      this.cameraOrbitPitch = clamp(this.cameraOrbitPitch + dy * 0.005, -1.2, 1.8);
+      this.pointerState.cameraDrag = true;
       return;
     }
 
@@ -894,26 +925,44 @@ export class CompanionScene extends EventTarget {
 
   handlePointerUp = (event) => {
     if (this.petControlsLocked) return;
+    if (event.pointerType !== 'mouse') event.preventDefault();
+    const suppressWorldAction = this.pointerState.multiTouch || this.activePointers.size > 1 || event.type === 'pointercancel';
     this.activePointers.delete(event.pointerId);
+    if (this.canvas.hasPointerCapture?.(event.pointerId)) this.canvas.releasePointerCapture(event.pointerId);
     if (this.activePointers.size < 2) this.pinchDistance = null;
     if (!this.pointerState.down) return;
     this.pointerState.down = this.activePointers.size > 0;
+    if (suppressWorldAction) {
+      this.pointerState.dragged = true;
+      this.pointerState.onPet = false;
+      if (!this.activePointers.size) {
+        this.pointerState.down = false;
+        this.pointerState.multiTouch = false;
+        this.pointerState.cameraDrag = false;
+      }
+      return;
+    }
     if (this.mode === 'selection' && !this.pointerState.onPet && Math.abs(this.pointerState.totalDx) > 70) {
       this.dispatchEvent(new CustomEvent('selection-swipe', { detail: { direction: this.pointerState.totalDx < 0 ? 1 : -1 } }));
+      this.pointerState.onPet = false;
+      this.pointerState.cameraDrag = false;
       return;
     }
     if (!this.pointerState.dragged && !this.pointerState.onPet && this.mode === 'home') {
       this.updatePointer(event);
       const point = new THREE.Vector3();
-      if (this.raycaster.ray.intersectPlane(this.floorPlane, point)) this.moveTo(point.x, point.z, false);
+      if (this.raycaster.ray.intersectPlane(this.floorPlane, point)) this.moveToPlayerCommand(point.x, point.z, false);
+    }
+    if (!this.activePointers.size) {
+      this.pointerState.multiTouch = false;
+      this.pointerState.cameraDrag = false;
+      this.pointerState.onPet = false;
     }
   };
 
   handleWheel = (event) => {
     if (this.mode === 'title' || !this.currentPet || event.ctrlKey) return;
-    const target = event.target instanceof Element ? event.target : null;
-    const interactive = target?.closest?.('input, select, textarea, button, [contenteditable="true"], .drawer, .modal-card, .wardrobe-panel, .build-panel, .dev-panel, .bottom-navigation, .topbar, .primary-actions, .needs-panel, .living-tab-rail');
-    if (interactive) return;
+    if (this.isUiInteractionTarget?.(event.target)) return;
     const rect = this.canvas.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
 
@@ -940,7 +989,7 @@ export class CompanionScene extends EventTarget {
     this.renderer.setSize(width, height, false);
   };
 
-  isMobile() { return window.matchMedia('(max-width: 760px)').matches; }
+  isMobile() { return window.matchMedia('(max-width: 900px), (max-height: 560px) and (pointer: coarse)').matches; }
 
   pause(value) { this.paused = Boolean(value); }
 

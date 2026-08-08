@@ -13,6 +13,8 @@ export const buildingMethods = {
     if (this.pointerState) {
       this.pointerState.down = false;
       this.pointerState.dragged = false;
+      this.pointerState.multiTouch = false;
+      this.pointerState.cameraDrag = false;
       this.pointerState.onPet = false;
     }
     if (this.buildGizmoEnabled) {

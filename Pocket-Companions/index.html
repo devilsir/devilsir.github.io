@@ -101,19 +101,24 @@
         <button id="next-pet" class="carousel-button" type="button" aria-label="Next companion">Next</button>
       </div>
       <div class="selection-footer">
-        <p>Drag to rotate. Scroll or pinch to zoom in and out.</p>
-        <p class="selection-warning">Changing companions later requires another save slot or resetting this slot.</p>
         <button id="choose-pet" class="button button-primary button-large" type="button">Choose this companion</button>
       </div>
     </section>
 
     <section id="game-interface" class="game-interface" hidden>
       <header class="topbar">
+        <button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open quick menu" aria-controls="mobile-menu-sheet" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+        </button>
         <div class="pet-identity">
           <button id="slot-button" class="slot-chip" type="button" aria-label="Open save slots">Slot 1</button>
           <div>
             <p id="pet-emotion" class="emotion-label">Calm</p>
             <h1 id="pet-name">Companion</h1>
+            <div id="mobile-vitals" class="mobile-vitals" role="meter" aria-label="Bond" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="mobile-vitals-icon" aria-hidden="true">♥</span>
+              <span class="mobile-vitals-track"><span id="mobile-vitals-fill"></span></span>
+            </div>
           </div>
         </div>
         <div class="progress-summary">
@@ -122,17 +127,17 @@
           <span id="currency-label" class="currency-label">120 coins</span>
         </div>
         <div class="topbar-actions">
-          <button id="daily-button" class="icon-button" type="button">Daily</button>
-          <button id="photo-button" class="icon-button" type="button">Photo</button>
-          <button id="wardrobe-button" class="icon-button" type="button">Armário</button>
-          <button id="build-button" class="icon-button" type="button">Construir</button>
-          <button class="icon-button" data-open-modal="settings-modal" type="button">Settings</button>
+          <button id="daily-button" class="icon-button" type="button" aria-label="Open daily activities">Daily</button>
+          <button id="photo-button" class="icon-button" type="button" aria-label="Open photo mode">Photo</button>
+          <button id="wardrobe-button" class="icon-button" type="button" aria-label="Open wardrobe">Armário</button>
+          <button id="build-button" class="icon-button" type="button" aria-label="Open build mode">Construir</button>
+          <button class="icon-button" data-open-modal="settings-modal" type="button" aria-label="Open settings">Settings</button>
           <button id="pause-button" class="icon-button" type="button" aria-pressed="false">Pause</button>
         </div>
       </header>
 
       <aside id="needs-panel" class="needs-panel" aria-label="Companion needs">
-        <button id="needs-toggle" class="panel-handle" type="button" aria-expanded="true">Needs</button>
+        <button id="needs-toggle" class="panel-handle" type="button" aria-controls="needs-list" aria-expanded="true">Needs</button>
         <div id="needs-list" class="needs-list"></div>
       </aside>
 
@@ -148,11 +153,13 @@
       <nav class="bottom-navigation" aria-label="Main navigation">
         <button class="nav-button is-active" data-panel="home" type="button" aria-label="Home" aria-current="page">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5z"/></svg>
-          <span class="nav-label">Home</span>
+          <span class="nav-label nav-label-standard">Home</span>
+          <span class="nav-label nav-label-mobile">Home</span>
         </button>
         <button class="nav-button" data-panel="care" type="button" aria-label="Care">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S4 16 4 9.4A4.4 4.4 0 0 1 12 6.8a4.4 4.4 0 0 1 8 2.6c0 6.6-8 11.1-8 11.1Z"/><path d="M12 9v6M9 12h6"/></svg>
-          <span class="nav-label">Care</span>
+          <span class="nav-label nav-label-standard">Care</span>
+          <span class="nav-label nav-label-mobile">Companion</span>
         </button>
         <button class="nav-button" data-panel="play" type="button" aria-label="Play">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 7.2h7.4a4 4 0 0 1 3.8 2.8l1.1 3.6a3 3 0 0 1-5 3l-1.5-1.6H9.9l-1.5 1.6a3 3 0 0 1-5-3L4.5 10a4 4 0 0 1 3.8-2.8Z"/><path d="M8 10v4M6 12h4M16.5 11.5h.01M18.5 13.5h.01"/></svg>
@@ -160,7 +167,8 @@
         </button>
         <button class="nav-button" data-panel="shop" type="button" aria-label="Shop">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
-          <span class="nav-label">Shop</span>
+          <span class="nav-label nav-label-standard">Shop</span>
+          <span class="nav-label nav-label-mobile">Shop</span>
         </button>
         <button class="nav-button" data-panel="explore" type="button" aria-label="Explore">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4 5.4-2.2Z"/></svg>
@@ -168,13 +176,36 @@
         </button>
         <button class="nav-button" data-panel="collection" type="button" aria-label="Collection">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M9 4v16M13 8h3M13 12h3"/></svg>
-          <span class="nav-label">Collection</span>
+          <span class="nav-label nav-label-standard">Collection</span>
+          <span class="nav-label nav-label-mobile">Items</span>
         </button>
         <button class="nav-button" data-panel="life" type="button" aria-label="Life">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M12 7v5l3 2M7.8 16.2l8.4-8.4"/></svg>
           <span class="nav-label">Life</span>
         </button>
       </nav>
+
+      <div id="mobile-menu-scrim" class="mobile-menu-scrim" hidden></div>
+      <aside id="mobile-menu-sheet" class="mobile-menu-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title" hidden>
+        <header class="mobile-sheet-header">
+          <span class="mobile-sheet-handle" aria-hidden="true"></span>
+          <div><p class="eyebrow">Pocket Companions</p><h2 id="mobile-menu-title">Quick actions</h2></div>
+          <button id="mobile-menu-close" class="mobile-sheet-close" type="button" aria-label="Close quick menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </button>
+        </header>
+        <div class="mobile-menu-grid">
+          <button type="button" data-mobile-command="play"><span aria-hidden="true">✦</span><strong>Play</strong></button>
+          <button type="button" data-mobile-command="explore"><span aria-hidden="true">⌁</span><strong>Explore</strong></button>
+          <button type="button" data-mobile-command="life"><span aria-hidden="true">♡</span><strong>Pet life</strong></button>
+          <button type="button" data-mobile-command="wardrobe"><span aria-hidden="true">◒</span><strong>Wardrobe</strong></button>
+          <button type="button" data-mobile-command="build"><span aria-hidden="true">◇</span><strong>Decorate</strong></button>
+          <button type="button" data-mobile-command="daily"><span aria-hidden="true">✓</span><strong>Daily</strong></button>
+          <button type="button" data-mobile-command="slots"><span aria-hidden="true">▣</span><strong>Saves</strong></button>
+          <button type="button" data-mobile-command="settings"><span aria-hidden="true">⚙</span><strong>Settings</strong></button>
+          <button type="button" data-mobile-command="pause"><span aria-hidden="true">Ⅱ</span><strong>Pause</strong></button>
+        </div>
+      </aside>
 
       <aside id="drawer" class="drawer" aria-labelledby="drawer-title" tabindex="-1" hidden>
         <header class="drawer-header">
@@ -209,6 +240,11 @@
             <strong id="wardrobe-pet-name">—</strong>
             <small>As mudanças deste armário não são aplicadas aos outros pets.</small>
           </div>
+
+          <section class="wardrobe-mobile-browser" aria-label="Accessory categories">
+            <div id="wardrobe-category-tabs" class="wardrobe-category-tabs" role="tablist" aria-label="Accessory categories"></div>
+            <div id="wardrobe-item-grid" class="wardrobe-item-grid" aria-live="polite"></div>
+          </section>
 
           <div class="wardrobe-selectors wardrobe-selectors-single">
             <label for="wardrobe-accessory">Acessório desbloqueado
@@ -357,15 +393,26 @@
       </aside>
 
       <div id="photo-overlay" class="photo-overlay" hidden aria-label="Photo mode">
+        <div class="photo-top-controls">
+          <button id="photo-close" class="photo-edge-button" type="button" aria-label="Close photo mode">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+          <button class="photo-edge-button" data-open-modal="settings-modal" type="button" aria-label="Open photo settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20.3h-3v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.56-1.03h-.08v-3h.08A1.7 1.7 0 0 0 7 9.94a1.7 1.7 0 0 0-.34-1.88L6.6 8l2.12-2.12.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7v-.08h3v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 8l-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03h.08v3h-.08A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          </button>
+        </div>
         <div class="photo-viewfinder" aria-hidden="true">
           <span class="photo-corner photo-corner-top-left"></span>
           <span class="photo-corner photo-corner-top-right"></span>
           <span class="photo-corner photo-corner-bottom-left"></span>
           <span class="photo-corner photo-corner-bottom-right"></span>
         </div>
-        <button id="capture-photo" class="photo-shutter" type="button" aria-label="Take photo">
-          <span class="camera-glyph" aria-hidden="true"><span class="camera-lens"></span></span>
-        </button>
+        <div class="photo-capture-control">
+          <button id="capture-photo" class="photo-shutter" type="button" aria-label="Take photo">
+            <span class="camera-glyph" aria-hidden="true"><span class="camera-lens"></span></span>
+          </button>
+          <span class="photo-capture-label">Capture</span>
+        </div>
       </div>
 
       <div id="clean-overlay" class="clean-overlay" hidden>
@@ -639,7 +686,7 @@
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    const ASSET_BUILD = '38-room-shop-build-mode';
+    const ASSET_BUILD = '40-mobile-first-redesign';
     const BUILD_MARKER = 'pocket-companions:asset-build';
 
     async function clearLegacyAssetCaches() {

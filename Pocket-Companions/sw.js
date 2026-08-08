@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pocket-companions-v63-robots-disabled';
+const CACHE_NAME = 'pocket-companions-v64-mobile-first-redesign';
 const LOCAL_ASSETS = [
   './',
   './index.html',

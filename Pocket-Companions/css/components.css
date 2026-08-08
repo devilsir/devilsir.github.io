@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+.mobile-menu-button,
+.mobile-vitals,
+.nav-label-mobile,
+.mobile-menu-scrim,
+.mobile-menu-sheet,
+.wardrobe-mobile-browser,
+.photo-top-controls,
+.photo-capture-label { display: none; }
+
 .language-switcher {
   position: fixed;
   z-index: 95;
@@ -102,7 +111,7 @@ body.photo-mode-active > .language-switcher { display: none; }
 .selection-header { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: start; max-width: 1280px; width: 100%; margin: 0 auto; }
 .selection-header > div { text-align: center; }
 .selection-header h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.6rem); }
-.selection-controls { display: grid; grid-template-columns: auto minmax(260px, 440px) auto; justify-content: center; align-items: end; gap: clamp(0.75rem, 5vw, 4rem); padding-bottom: 8vh; }
+.selection-controls { display: grid; grid-template-columns: auto minmax(260px, 440px) auto; justify-content: center; align-items: end; gap: clamp(0.75rem, 5vw, 4rem); padding-bottom: 1.5vh; }
 .carousel-button { min-width: 96px; min-height: 48px; padding: 0.8rem; border-radius: 18px; background: var(--panel); box-shadow: var(--shadow-soft); font-weight: 850; }
 .pet-profile { padding: 1.35rem 1.5rem; border-radius: var(--radius-md); background: var(--panel); box-shadow: var(--shadow-soft); text-align: center; backdrop-filter: blur(12px); }
 .pet-profile h2 { margin-bottom: 0.55rem; font-size: clamp(2rem, 5vw, 3rem); }
@@ -114,10 +123,10 @@ body.photo-mode-active > .language-switcher { display: none; }
 .selection-footer { pointer-events: auto; justify-self: center; width: min(760px, 94vw); text-align: center; }
 .selection-footer p { margin-bottom: 0.35rem; color: var(--ink-700); }
 .selection-warning { font-size: 0.82rem; }
-.selection-footer .button { margin-top: 0.8rem; }
+.selection-footer .button { margin-top: 0; }
 
 .game-interface { position: absolute; inset: 0; z-index: 20; pointer-events: none; padding: max(0.8rem, var(--safe-top)) max(0.8rem, var(--safe-right)) max(0.8rem, var(--safe-bottom)) max(0.8rem, var(--safe-left)); }
-.game-interface button, .game-interface .needs-panel, .game-interface .primary-actions, .drawer, .clean-overlay, .sleep-overlay { pointer-events: auto; }
+.game-interface button, .game-interface .topbar, .game-interface .bottom-navigation, .game-interface .needs-panel, .game-interface .primary-actions, .drawer, .clean-overlay, .sleep-overlay { pointer-events: auto; }
 .topbar { position: absolute; top: max(0.8rem, var(--safe-top)); left: max(0.8rem, var(--safe-left)); right: max(0.8rem, var(--safe-right)); display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 280px) auto; align-items: center; gap: 0.75rem; padding: 0.65rem 0.75rem; border-radius: 22px; background: rgba(255, 250, 241, 0.78); border: 1px solid rgba(255,255,255,0.66); box-shadow: 0 12px 34px rgba(61, 47, 40, 0.1); backdrop-filter: blur(15px); }
 .pet-identity { display: flex; align-items: center; gap: 0.75rem; min-width: 0; overflow: hidden; }
 .pet-identity h1 { margin: 0; font-size: clamp(1.08rem, 1.65vw, 1.42rem); line-height: 1.02; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -491,12 +500,20 @@ body.photo-mode-active #companion-canvas { cursor: crosshair; }
 
 .photo-overlay.is-capturing::after { animation: photo-flash 0.42s ease-out both; }
 
+.photo-capture-control {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
 .photo-viewfinder {
   position: absolute;
   width: min(82vw, 980px);
   height: min(74vh, 680px);
   max-width: calc(100vw - 2.5rem);
-  max-height: calc(100vh - 2.5rem);
+  max-height: calc(var(--app-height) - 2.5rem);
   filter: drop-shadow(0 2px 12px rgba(0,0,0,0.22));
 }
 
@@ -666,14 +683,6 @@ body.photo-mode-active #companion-canvas { cursor: crosshair; }
 .dream-spark.is-collected { opacity: .15; transform: scale(.7); }
 .low-performance .living-card { box-shadow: none; }
 .low-performance .living-meter i { transition: none; }
-
-@media (max-width: 760px) {
-  .bottom-navigation { width: calc(100vw - 1rem); gap: .18rem; padding: .35rem; overflow-x: auto; grid-template-columns: repeat(7, minmax(64px,1fr)); }
-  .bottom-navigation .nav-button { min-width: 64px; font-size: .68rem; padding-inline: .35rem; }
-  .living-grid { grid-template-columns: 1fr; }
-  .skill-path { grid-template-columns: 1fr; }
-  .dream-arena { grid-template-columns: repeat(5,1fr); }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .living-meter i, .dream-spark { transition: none; }
@@ -1606,7 +1615,7 @@ body.wardrobe-open .simulation-debug { display: none !important; }
   right: max(1rem, var(--safe-right));
   bottom: max(1rem, var(--safe-bottom));
   width: min(390px, calc(100vw - 2rem));
-  max-height: min(720px, calc(100dvh - 2rem));
+  max-height: min(720px, calc(var(--app-height) - 2rem));
   overflow: hidden;
   border: 1px solid rgba(221, 202, 255, 0.34);
   border-radius: 24px;
@@ -1636,7 +1645,7 @@ body.wardrobe-open .simulation-debug { display: none !important; }
 .dev-panel-body {
   display: grid;
   gap: 0.85rem;
-  max-height: calc(min(720px, 100dvh - 2rem) - 74px);
+  max-height: calc(min(720px, var(--app-height) - 2rem) - 74px);
   overflow-y: auto;
   padding: 0.9rem 1rem 1rem;
 }
@@ -1688,7 +1697,7 @@ body.dev-mode-active::after {
   position: fixed;
   z-index: 179;
   right: max(1.35rem, calc(var(--safe-right) + 0.35rem));
-  bottom: calc(max(1rem, var(--safe-bottom)) + min(720px, calc(100dvh - 2rem)) - 0.55rem);
+  bottom: calc(max(1rem, var(--safe-bottom)) + min(720px, calc(var(--app-height) - 2rem)) - 0.55rem);
   padding: 0.25rem 0.5rem;
   border-radius: 999px;
   background: #a56eff;

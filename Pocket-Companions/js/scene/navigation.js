@@ -51,8 +51,9 @@ export const navigationMethods = {
           controller.play('idle', { force: true, fade: 0.16, loop: true });
         });
       } else {
-        const chosen = controller.has(animation) ? animation : 'idle';
-        const shouldLoop = ['idle', 'walk', 'run', 'sitting_idle'].includes(chosen);
+        const requested = controller.has(animation) ? animation : 'idle';
+        const chosen = ['walk', 'run'].includes(requested) ? 'idle' : requested;
+        const shouldLoop = ['idle', 'sitting_idle'].includes(chosen);
         if (shouldLoop) {
           controller.play(chosen, {
             force: true,
@@ -285,8 +286,8 @@ export const navigationMethods = {
   ensurePetOutsideObstacles(pet = this.currentPet, preferred = null) {
     if (!pet?.stage || this.mode === 'sleep' || this.trainingTraversalState) return false;
     const isIntentionalSurface = pet === this.currentPet
-      ? Boolean(this.activeAutonomousAction?.surface)
-      : Boolean(this.secondaryAction?.surface);
+      ? Boolean(this.activeAutonomousAction?.surface && !this.target)
+      : Boolean(this.secondaryAction?.surface && !this.secondaryTarget);
     if (isIntentionalSurface) return false;
     const radius = Math.max(0.2, Number(pet.navigationRadius) || 0.34);
     const position = pet.stage.position;
@@ -376,10 +377,15 @@ export const navigationMethods = {
   moveTo(x, z, run = false) {
     const pet = this.currentPet;
     if (!pet || this.petControlsLocked || this.mode === 'selection' || this.mode === 'sleep' || this.cleanMode) return false;
-    const bounds = this.getWalkBounds(Math.max(0.42, (pet.navigationRadius || 0.34) + 0.12));
-    const destination = this.findSafePosition(new THREE.Vector3(clamp(x, bounds.minX, bounds.maxX), 0, clamp(z, bounds.minZ, bounds.maxZ)));
+    const radius = pet.navigationRadius || 0.34;
+    const bounds = this.getWalkBounds(Math.max(0.42, radius + 0.12));
+    const destination = this.findSafeEntityPosition(
+      new THREE.Vector3(clamp(x, bounds.minX, bounds.maxX), 0, clamp(z, bounds.minZ, bounds.maxZ)),
+      radius,
+      pet
+    );
     if (pet.stage.position.distanceTo(destination) > 0.12) this.clearAutonomousPose(pet);
-    const route = this.findPath(pet.stage.position.clone(), destination, pet.navigationRadius || 0.34);
+    const route = this.findPath(pet.stage.position.clone(), destination, radius);
     if (!route.length) {
       this.stopMovement('blocked');
       return false;
@@ -392,6 +398,14 @@ export const navigationMethods = {
     this.repathAttempts = 0;
     this.movementOutcome = 'moving';
     return true;
+  },
+
+  moveToPlayerCommand(x, z, run = false) {
+    const pet = this.currentPet;
+    if (!pet || this.petControlsLocked || this.mode === 'selection' || this.mode === 'sleep' || this.cleanMode) return false;
+    if (this.activeAutonomousAction) this.interruptAutonomous('player-move');
+    this.ensurePetOutsideObstacles(pet, pet.stage.position.clone());
+    return this.moveTo(x, z, run);
   },
 
   setAutonomous(enabled) {
@@ -410,7 +424,7 @@ export const navigationMethods = {
     this.movementOutcome = 'idle';
     this.activeAutonomousAction = action;
     this.lastAutonomous = performance.now();
-    const point = this.findSafePosition(this.autonomousPoint(action));
+    const point = this.findSafeEntityPosition(this.autonomousPoint(action), this.currentPet.navigationRadius || 0.34, this.currentPet);
     const distance = this.currentPet.stage.position.distanceTo(point);
     let moved = false;
     if (distance > 0.12) moved = this.moveTo(point.x, point.z, Boolean(action.run));
@@ -452,7 +466,7 @@ export const navigationMethods = {
     const action = this.autonomyProvider?.() || { id: 'explore', target: 'roam', run: Math.random() > 0.72 };
     if (!action) return;
     this.activeAutonomousAction = action;
-    const point = this.findSafePosition(this.autonomousPoint(action));
+    const point = this.findSafeEntityPosition(this.autonomousPoint(action), this.currentPet.navigationRadius || 0.34, this.currentPet);
     const moved = this.moveTo(point.x, point.z, Boolean(action.run));
     if (!moved && this.movementOutcome !== 'blocked') this.beginAutonomousInteraction(action);
     this.dispatchEvent(new CustomEvent('autonomous', { detail: action }));
@@ -707,9 +721,10 @@ export const navigationMethods = {
     }
 
     if (blocked) {
-      if (this.finalTarget && this.repathAttempts < 2) {
+      const recovered = this.ensurePetOutsideObstacles(pet, position.clone());
+      if (this.finalTarget && this.repathAttempts < 3) {
         this.repathAttempts += 1;
-        const route = this.findPath(position.clone(), this.finalTarget, pet.navigationRadius || 0.34);
+        const route = this.findPath(pet.stage.position.clone(), this.finalTarget, pet.navigationRadius || 0.34);
         if (route.length) {
           this.pathWaypoints = route.slice(1);
           this.target = route[0].clone();
@@ -717,6 +732,7 @@ export const navigationMethods = {
           return;
         }
       }
+      if (recovered) pet.controller.play('idle', { force: true, fade: 0.12, loop: true });
       this.stopMovement('blocked');
       return;
     }
@@ -884,6 +900,15 @@ export const navigationMethods = {
         desired.x += (contextual.x - pet.stage.position.x) * 0.18;
         desired.z -= 0.35;
       }
+    }
+    if (['home', 'photo'].includes(this.mode) && (Math.abs(this.cameraOrbitYaw || 0) > 0.0001 || Math.abs(this.cameraOrbitPitch || 0) > 0.0001)) {
+      const relativeX = desired.x - focus.x;
+      const relativeZ = desired.z - focus.z;
+      const radius = Math.max(0.1, Math.hypot(relativeX, relativeZ));
+      const angle = Math.atan2(relativeX, relativeZ) + (this.cameraOrbitYaw || 0);
+      desired.x = focus.x + Math.sin(angle) * radius;
+      desired.z = focus.z + Math.cos(angle) * radius;
+      desired.y = clamp(desired.y + (this.cameraOrbitPitch || 0), 1.15, 8.2);
     }
     if (settings.reducedMotion) {
       this.camera.position.copy(desired);

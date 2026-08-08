@@ -2,6 +2,17 @@ import * as THREE from '../../vendor/three.module.js';
 import { clamp, lerp, randomBetween } from '../utils.js';
 
 export const interactionsMethods = {
+  isUiInteractionTarget(target) {
+    const element = target instanceof Element ? target : null;
+    return Boolean(element?.closest?.([
+      'input', 'select', 'textarea', 'button', 'summary', '[contenteditable="true"]',
+      'dialog', '.drawer', '.modal-card', '.wardrobe-panel', '.build-panel', '.dev-panel',
+      '.bottom-navigation', '.topbar', '.primary-actions', '.needs-panel', '.living-tab-rail',
+      '.mobile-menu-sheet', '.mobile-menu-scrim', '.photo-top-controls', '.photo-capture-control',
+      '.clean-overlay', '.sleep-overlay', '.language-switcher', '.screen'
+    ].join(', ')));
+  },
+
   renderStableFrame() {
     return new Promise((resolve) => {
       requestAnimationFrame(() => {
@@ -80,6 +91,10 @@ export const interactionsMethods = {
 
   handleViewportPointerMove(event) {
     if (!this.canvas || !this.buildViewportPointer) return;
+    if (this.isUiInteractionTarget(event.target)) {
+      this.buildViewportPointer.inside = false;
+      return;
+    }
     const rect = this.canvas.getBoundingClientRect();
     const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
     this.buildViewportPointer.x = event.clientX;

@@ -759,21 +759,21 @@ export class LivingSystems extends EventTarget {
     if (behavior === 'come') {
       const player = objects.find((entry) => entry.id === 'player-space');
       const point = player?.approach || [0, 1.75];
-      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+      return Boolean((this.scene.moveToPlayerCommand || this.scene.moveTo)?.call(this.scene, point[0], point[1], false));
     }
 
     if (behavior === 'bed') {
       const bed = objects.find((entry) => entry.type === 'bed' || entry.actions?.includes('bed-rest'));
       const point = bed?.approach;
       if (!point) return false;
-      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+      return Boolean((this.scene.moveToPlayerCommand || this.scene.moveTo)?.call(this.scene, point[0], point[1], false));
     }
 
     if (behavior === 'marker') {
       const marker = objects.find((entry) => entry.id?.includes('platform') || entry.actions?.includes('trained-command'));
       const point = marker?.approach;
       if (!point) return false;
-      return Boolean(this.scene.moveTo?.(point[0], point[1], false));
+      return Boolean((this.scene.moveToPlayerCommand || this.scene.moveTo)?.call(this.scene, point[0], point[1], false));
     }
 
     return false;

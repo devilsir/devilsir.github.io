@@ -21,6 +21,7 @@ import { clamp, choose, downloadBlob, formatTimeAway, wait } from './utils.js';
 import { getLanguage, initI18n, setLanguage } from './i18n.js';
 import { LivingSystems } from './living-systems.js';
 import { LivingUI } from './living-ui.js';
+import { ACCESSORIES, FURNITURE } from './living-data.js';
 import { WardrobeController } from './wardrobe.js';
 import { BuildModeController } from './build-mode.js';
 import { DevTools } from './dev-tools.js';
@@ -55,6 +56,7 @@ initI18n({
   language: store.settings.language || 'pt-BR',
   onChange: (language) => {
     store.updateSettings({ language });
+    syncMobilePauseLabel();
     if (store.active) {
       updateUI(true);
       renderDaily();
@@ -92,6 +94,11 @@ const drawerTitle = $('#drawer-title');
 const drawerContent = $('#drawer-content');
 const drawerExpand = $('#drawer-expand');
 const toastRegion = $('#toast-region');
+const mobileMenuButton = $('#mobile-menu-button');
+const mobileMenuSheet = $('#mobile-menu-sheet');
+const mobileMenuScrim = $('#mobile-menu-scrim');
+const mobileVitals = $('#mobile-vitals');
+const mobileVitalsFill = $('#mobile-vitals-fill');
 
 let pendingSlotIndex = 0;
 let selectionIndex = 0;
@@ -113,6 +120,43 @@ let lastSpongePoint = null;
 let photoCaptureInProgress = false;
 let lastPetVoiceAt = 0;
 let lastDrawerTrigger = null;
+let mobileInventoryCategory = 'supplies';
+let mobileInventorySelection = null;
+
+const mobileUiQuery = window.matchMedia('(max-width: 900px), (max-height: 560px) and (pointer: coarse)');
+const isMobileUi = () => mobileUiQuery.matches;
+const uiText = (english, portuguese) => getLanguage() === 'en' ? english : portuguese;
+
+function syncMobilePauseLabel() {
+  const label = $('[data-mobile-command="pause"] strong');
+  if (label) label.textContent = paused ? uiText('Resume', 'Retomar') : uiText('Pause', 'Pausar');
+}
+
+function closeMobileNeeds() {
+  const panel = $('#needs-panel');
+  panel?.classList.remove('is-mobile-open');
+  document.body.classList.remove('mobile-needs-open');
+  $('#needs-toggle')?.setAttribute('aria-expanded', isMobileUi() ? 'false' : String(!panel?.classList.contains('is-collapsed')));
+}
+
+function closeMobileMenu({ restoreFocus = false } = {}) {
+  if (mobileMenuSheet) mobileMenuSheet.hidden = true;
+  if (mobileMenuScrim) mobileMenuScrim.hidden = true;
+  document.body.classList.remove('mobile-menu-open');
+  mobileMenuButton?.setAttribute('aria-expanded', 'false');
+  if (restoreFocus) requestAnimationFrame(() => mobileMenuButton?.focus({ preventScroll: true }));
+}
+
+function openMobileMenu() {
+  if (!isMobileUi() || !store.active || builder.isOpen || wardrobe.isOpen) return;
+  closeMobileNeeds();
+  closeDrawer({ restoreFocus: false });
+  mobileMenuSheet.hidden = false;
+  mobileMenuScrim.hidden = false;
+  document.body.classList.add('mobile-menu-open');
+  mobileMenuButton?.setAttribute('aria-expanded', 'true');
+  requestAnimationFrame(() => $('[data-mobile-command]', mobileMenuSheet)?.focus({ preventScroll: true }));
+}
 
 const petOrder = Object.keys(PETS);
 const tutorialSteps = [
@@ -205,6 +249,13 @@ function setLoading(value) {
 
 function showOnly(name) {
   document.body.dataset.screen = name;
+  if (name !== 'game') {
+    closeMobileMenu();
+    closeMobileNeeds();
+    document.body.classList.remove('drawer-open');
+    document.body.classList.remove('emergent-event-open');
+    document.body.classList.remove('clean-mode-active');
+  }
   Object.entries(screens).forEach(([key, element]) => {
     element.hidden = key !== name;
     element.classList.toggle('is-visible', key === name);
@@ -305,7 +356,24 @@ async function updateSelection() {
     dot.classList.toggle('is-active', active);
     dot.setAttribute('aria-selected', String(active));
   });
+  syncSelectionDots();
   await scene.setPet(id, { selection: true });
+}
+
+function syncSelectionDots() {
+  $$('[data-pet-dot]').forEach((dot, index) => {
+    if (!isMobileUi()) {
+      dot.classList.remove('is-mobile-nearby');
+      dot.style.removeProperty('order');
+      return;
+    }
+    const count = petOrder.length;
+    let offset = (index - selectionIndex + count) % count;
+    if (offset > count / 2) offset -= count;
+    const nearby = Math.abs(offset) <= 2;
+    dot.classList.toggle('is-mobile-nearby', nearby);
+    dot.style.order = String(offset + 2);
+  });
 }
 
 function shiftSelection(direction) {
@@ -402,6 +470,9 @@ function updateUI(force = false) {
   $('#slot-button').textContent = `Slot ${slot.slotIndex + 1}`;
   $('#level-label').textContent = `Level ${slot.level}`;
   $('#currency-label').textContent = `${slot.currency} coins`;
+  const bond = clamp(slot.stats.bond);
+  if (mobileVitalsFill) mobileVitalsFill.style.width = `${bond}%`;
+  mobileVitals?.setAttribute('aria-valuenow', String(Math.round(bond)));
   const threshold = store.levelThreshold(slot.level);
   $('#xp-fill').style.width = `${clamp(slot.stats.experience / threshold * 100)}%`;
   const emotion = living.state ? living.emotionLabel() : determineEmotion(slot.stats, slot.isSleeping);
@@ -494,11 +565,13 @@ function renderEmergentEvent(detail) {
   if (!panel) return;
   if (detail.phase === 'resolved' || !detail.event) {
     panel.hidden = true;
+    document.body.classList.remove('emergent-event-open');
     $('#emergent-event-actions').innerHTML = '';
     return;
   }
   const event = detail.event;
   panel.hidden = false;
+  document.body.classList.add('emergent-event-open');
   $('#emergent-event-title').textContent = eventLabel(event.id, getLanguage());
   $('#emergent-event-copy').textContent = getLanguage() === 'en' ? 'Something unexpected is happening in the room. Your response will become part of the companion’s memory.' : 'Algo inesperado está acontecendo no ambiente. Sua resposta fará parte da memória do pet.';
   const actions = $('#emergent-event-actions');
@@ -511,6 +584,7 @@ function renderEmergentEvent(detail) {
     control.addEventListener('click', () => {
       if (living.respondToEmergentEvent(response)) {
         panel.hidden = true;
+        document.body.classList.remove('emergent-event-open');
         toast(getLanguage() === 'en' ? 'Your response became a lasting memory.' : 'Sua resposta virou uma memória duradoura.');
         updateUI(true);
       }
@@ -805,7 +879,10 @@ function processPetAttention(gesture = {}) {
 
 function startCleaning() {
   if (store.active.isSleeping) toggleSleep();
+  closeMobileMenu();
+  closeMobileNeeds();
   closeDrawer();
+  document.body.classList.add('clean-mode-active');
   $('#clean-overlay').hidden = false;
   $('#clean-progress').style.width = '0%';
   $('#finish-clean').disabled = true;
@@ -820,6 +897,7 @@ function finishCleaning() {
   const progress = scene.cleanProgress;
   if (progress < 68) return;
   $('#clean-overlay').hidden = true;
+  document.body.classList.remove('clean-mode-active');
   scene.stopCleanMode();
   deactivateCleanCursor();
   store.modifyStats({ hygiene: Math.max(18, progress * 0.35), happiness: 6, health: 2, bond: 2 }, 'clean');
@@ -917,6 +995,8 @@ function useMedicine() {
 }
 
 function openPanel(panel, trigger = null) {
+  closeMobileMenu();
+  closeMobileNeeds();
   if (panel === 'home') {
     const homeTrigger = trigger || document.querySelector('.nav-button[data-panel="home"]');
     closeDrawer({ restoreFocus: false });
@@ -928,6 +1008,7 @@ function openPanel(panel, trigger = null) {
   lastDrawerTrigger = trigger || document.activeElement || document.querySelector(`.nav-button[data-panel="${panel}"]`);
   activePanel = panel;
   drawer.hidden = false;
+  document.body.classList.add('drawer-open');
   drawer.classList.remove('is-closing');
   drawer.classList.toggle('is-life', panel === 'life');
   drawerExpand?.setAttribute('aria-expanded', String(drawer.classList.contains('is-expanded')));
@@ -942,7 +1023,7 @@ function renderDrawer(panel, scrollTop = false) {
     play: getLanguage() === 'en' ? 'Play' : 'Brincar',
     shop: getLanguage() === 'en' ? 'Shop' : 'Loja',
     explore: getLanguage() === 'en' ? 'Explore' : 'Explorar',
-    collection: getLanguage() === 'en' ? 'Collection' : 'Coleção',
+    collection: isMobileUi() ? uiText('Items', 'Itens') : getLanguage() === 'en' ? 'Collection' : 'Coleção',
     life: getLanguage() === 'en' ? 'Life' : 'Vida'
   };
   const previousScroll = drawerContent.scrollTop;
@@ -952,7 +1033,10 @@ function renderDrawer(panel, scrollTop = false) {
   if (panel === 'play') renderPlayDrawer();
   if (panel === 'shop') renderShopDrawer();
   if (panel === 'explore') renderExploreDrawer();
-  if (panel === 'collection') renderCollectionDrawer();
+  if (panel === 'collection') {
+    if (isMobileUi()) renderMobileInventoryDrawer();
+    else renderCollectionDrawer();
+  }
   if (panel === 'life') livingUI.render(drawerContent, livingUI.tab, { preserveScroll: !scrollTop });
   if (panel !== 'life') drawerContent.scrollTop = scrollTop ? 0 : Math.min(previousScroll, Math.max(0, drawerContent.scrollHeight - drawerContent.clientHeight));
 }
@@ -1215,7 +1299,233 @@ function renderCollectionDrawer() {
   });
 }
 
+function mobileInventoryItems(category) {
+  const slot = store.active;
+  if (!slot) return [];
+
+  if (category === 'supplies') {
+    const foodItems = Object.values(FOODS).map((food) => ({
+      id: food.id,
+      name: food.name,
+      description: food.description,
+      quantity: Number(slot.inventory[food.id] || 0),
+      preview: { meal: '◆', snack: '◇', treat: '★', water: '◒' }[food.id] || '•',
+      rarity: food.id === 'treat' ? 'rare' : food.id === 'water' ? 'uncommon' : 'common',
+      kind: 'food'
+    }));
+    return [...foodItems, {
+      id: 'medicine',
+      name: uiText('Gentle medicine', 'Remédio suave'),
+      description: uiText('Use when your companion needs a little extra health care.', 'Use quando seu companheiro precisar de um cuidado extra de saúde.'),
+      quantity: Number(slot.inventory.medicine || 0),
+      preview: '✚',
+      rarity: 'rare',
+      kind: 'medicine'
+    }];
+  }
+
+  if (category === 'style') {
+    const owned = new Set(living.state?.accessories?.owned || []);
+    return Object.entries(ACCESSORIES).filter(([id]) => owned.has(id)).map(([id, accessory]) => ({
+      id,
+      name: accessory.name?.[getLanguage() === 'en' ? 'en' : 'pt'] || accessory.name?.pt || accessory.name?.en || id,
+      description: uiText(
+        `${accessory.anchor === 'head' ? 'Head' : accessory.anchor === 'neck' ? 'Neck' : 'Body'} accessory ready to equip.`,
+        `Acessório de ${accessory.anchor === 'head' ? 'cabeça' : accessory.anchor === 'neck' ? 'pescoço' : 'corpo'} pronto para equipar.`
+      ),
+      quantity: 1,
+      preview: accessory.anchor === 'head' ? '◉' : accessory.anchor === 'neck' ? '⌁' : '◇',
+      rarity: accessory.cost >= 90 ? 'special' : accessory.cost >= 75 ? 'rare' : 'uncommon',
+      kind: 'accessory'
+    }));
+  }
+
+  if (category === 'furniture') {
+    return Object.entries(FURNITURE).filter(([id]) => Number(living.state?.furnitureInventory?.[id] || 0) > 0).map(([id, furniture]) => ({
+      id,
+      name: furniture.name?.[getLanguage() === 'en' ? 'en' : 'pt'] || furniture.name?.pt || furniture.name?.en || id,
+      description: uiText(`Stored decoration · comfort +${furniture.comfort}.`, `Decoração guardada · conforto +${furniture.comfort}.`),
+      quantity: Number(living.state.furnitureInventory[id] || 0),
+      preview: furniture.kind === 'lamp' ? '✦' : furniture.kind === 'bed' ? '⌒' : furniture.kind === 'plant' ? '♧' : '▦',
+      rarity: furniture.cost >= 120 ? 'special' : furniture.cost >= 90 ? 'rare' : furniture.cost >= 60 ? 'uncommon' : 'common',
+      kind: 'furniture'
+    }));
+  }
+
+  return store.getCollection().map((item) => ({
+    id: item.id,
+    name: item.unlocked ? item.name : uiText('Undiscovered', 'Não descoberto'),
+    description: item.unlocked ? item.description : item.condition,
+    quantity: item.unlocked ? 1 : 0,
+    preview: item.unlocked ? item.type.slice(0, 2).toUpperCase() : '?',
+    rarity: item.type === 'Memory' || item.type === 'Photo' ? 'special' : item.type === 'Toy' ? 'rare' : 'uncommon',
+    kind: 'collection',
+    unlocked: item.unlocked
+  }));
+}
+
+function renderMobileInventoryDrawer() {
+  const slot = store.active;
+  if (!slot) return;
+  drawerContent.innerHTML = '';
+
+  const shell = document.createElement('div');
+  shell.className = 'mobile-inventory-shell';
+  const summary = document.createElement('div');
+  summary.className = 'mobile-inventory-summary';
+  const summaryCopy = document.createElement('div');
+  const summaryTitle = document.createElement('strong');
+  summaryTitle.textContent = uiText('Pocket inventory', 'Inventário de bolso');
+  const summaryHelp = document.createElement('small');
+  summaryHelp.textContent = uiText('Tap an item to see its details.', 'Toque em um item para ver os detalhes.');
+  summaryCopy.append(summaryTitle, summaryHelp);
+  const count = document.createElement('span');
+  count.className = 'mobile-inventory-count';
+  summary.append(summaryCopy, count);
+
+  const tabs = document.createElement('div');
+  tabs.className = 'mobile-inventory-tabs';
+  tabs.setAttribute('role', 'tablist');
+  const categories = [
+    ['supplies', uiText('Supplies', 'Cuidados')],
+    ['style', uiText('Style', 'Estilo')],
+    ['furniture', uiText('Furniture', 'Móveis')],
+    ['collection', uiText('Memories', 'Memórias')]
+  ];
+  categories.forEach(([id, label]) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `mobile-inventory-tab ${mobileInventoryCategory === id ? 'is-active' : ''}`;
+    button.textContent = label;
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-selected', String(mobileInventoryCategory === id));
+    button.addEventListener('click', () => {
+      mobileInventoryCategory = id;
+      mobileInventorySelection = null;
+      renderMobileInventoryDrawer();
+    });
+    tabs.append(button);
+  });
+
+  const items = mobileInventoryItems(mobileInventoryCategory);
+  const ownedCount = items.reduce((total, item) => total + Math.max(0, Number(item.quantity || 0)), 0);
+  count.textContent = uiText(`${ownedCount} owned`, `${ownedCount} itens`);
+  const selectedKey = items.some((item) => `${mobileInventoryCategory}:${item.id}` === mobileInventorySelection)
+    ? mobileInventorySelection
+    : items.length ? `${mobileInventoryCategory}:${items[0].id}` : null;
+  mobileInventorySelection = selectedKey;
+
+  const grid = document.createElement('div');
+  grid.className = 'mobile-inventory-grid';
+  if (!items.length) {
+    const empty = document.createElement('p');
+    empty.className = 'field-help';
+    empty.textContent = mobileInventoryCategory === 'style'
+      ? uiText('No accessories unlocked yet. Find them in the shop and through adventures.', 'Nenhum acessório desbloqueado. Encontre itens na loja e nas aventuras.')
+      : uiText('Nothing stored in this category yet.', 'Ainda não há itens guardados nesta categoria.');
+    grid.append(empty);
+  }
+
+  items.forEach((item) => {
+    const key = `${mobileInventoryCategory}:${item.id}`;
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = `mobile-inventory-card ${selectedKey === key ? 'is-selected' : ''}`;
+    card.setAttribute('aria-pressed', String(selectedKey === key));
+    card.setAttribute('aria-label', `${item.name}, ${item.quantity} ${uiText('owned', 'disponíveis')}`);
+    const preview = document.createElement('span');
+    preview.className = 'mobile-item-preview';
+    preview.setAttribute('aria-hidden', 'true');
+    preview.textContent = item.preview;
+    const name = document.createElement('strong');
+    name.textContent = item.name;
+    const quantity = document.createElement('span');
+    quantity.className = 'mobile-item-quantity';
+    quantity.textContent = `×${item.quantity}`;
+    const rarity = document.createElement('span');
+    rarity.className = `mobile-item-rarity ${item.rarity === 'common' ? '' : `is-${item.rarity}`}`;
+    rarity.setAttribute('aria-hidden', 'true');
+    card.append(preview, name, quantity, rarity);
+    card.addEventListener('click', () => {
+      mobileInventorySelection = key;
+      renderMobileInventoryDrawer();
+      requestAnimationFrame(() => $('.mobile-item-detail', drawerContent)?.scrollIntoView({ block: 'nearest', behavior: store.settings.reducedMotion ? 'auto' : 'smooth' }));
+    });
+    grid.append(card);
+  });
+
+  shell.append(summary, tabs, grid);
+  const selected = items.find((item) => `${mobileInventoryCategory}:${item.id}` === selectedKey);
+  if (selected) shell.append(renderMobileItemDetail(selected));
+  drawerContent.append(shell);
+}
+
+function renderMobileItemDetail(item) {
+  const detail = document.createElement('section');
+  detail.className = 'mobile-item-detail';
+  const copy = document.createElement('div');
+  const title = document.createElement('h3');
+  title.textContent = item.name;
+  const description = document.createElement('p');
+  description.textContent = item.description;
+  copy.append(title, description);
+  const actions = document.createElement('div');
+  actions.className = 'mobile-item-detail-actions';
+
+  const addAction = (label, handler, { disabled = false, secondary = false } = {}) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `button ${secondary ? 'button-secondary' : 'button-primary'}`;
+    button.textContent = label;
+    button.disabled = disabled;
+    button.addEventListener('click', handler);
+    actions.append(button);
+  };
+
+  if (item.kind === 'food') {
+    addAction(uiText('Use', 'Usar'), async () => {
+      closeDrawer({ restoreFocus: false });
+      await feedPet(item.id);
+    }, { disabled: item.quantity <= 0 });
+  } else if (item.kind === 'medicine') {
+    addAction(uiText('Check health', 'Ver saúde'), () => {
+      closeDrawer({ restoreFocus: false });
+      openCareModal();
+    }, { disabled: item.quantity <= 0 });
+  } else if (item.kind === 'accessory') {
+    const equipped = living.state?.accessories?.equipped === item.id;
+    addAction(equipped ? uiText('Remove', 'Remover') : uiText('Equip', 'Equipar'), () => {
+      living.equipAccessory(equipped ? null : item.id);
+      store.persist();
+      playSound('click');
+      renderMobileInventoryDrawer();
+      updateUI(true);
+    });
+    addAction(uiText('Preview', 'Experimentar'), () => {
+      closeDrawer({ restoreFocus: false });
+      wardrobe.open();
+    }, { secondary: true });
+  } else if (item.kind === 'furniture') {
+    addAction(uiText('Place', 'Posicionar'), async () => {
+      closeDrawer({ restoreFocus: false });
+      await builder.open();
+      builder.setTab('place');
+    });
+  } else if (item.kind === 'collection' && item.unlocked) {
+    const isPhoto = item.id === 'sparkle-pose';
+    if (isPhoto) addAction(uiText('Open camera', 'Abrir câmera'), () => {
+      closeDrawer({ restoreFocus: false });
+      openPhotoMode();
+    });
+  }
+
+  detail.append(copy);
+  if (actions.children.length) detail.append(actions);
+  return detail;
+}
+
 function closeDrawer({ restoreFocus = true } = {}) {
+  document.body.classList.remove('drawer-open');
   if (drawer.hidden) return;
   drawer.hidden = true;
   drawer.classList.remove('is-expanded', 'is-life');
@@ -1260,6 +1570,8 @@ function renderDaily() {
 
 function openPhotoMode() {
   if (!store.active || photoCaptureInProgress) return;
+  closeMobileMenu();
+  closeMobileNeeds();
   closeDrawer();
   const overlay = $('#photo-overlay');
   scene.setPhotoMode(true);
@@ -1438,11 +1750,15 @@ function togglePause() {
   scene.pause(paused);
   $('#pause-button').setAttribute('aria-pressed', String(paused));
   $('#pause-button').textContent = paused ? 'Resume' : 'Pause';
+  syncMobilePauseLabel();
   toast(paused ? 'Paused. Needs are frozen while this screen is paused.' : 'Resumed.');
 }
 
 function openDialog(dialog) {
   if (!dialog || dialog.open) return;
+  closeMobileMenu();
+  closeMobileNeeds();
+  if (isMobileUi()) closeDrawer({ restoreFocus: false });
   dialog.showModal();
 }
 
@@ -1482,6 +1798,39 @@ function renderPetDots() {
     });
     container.append(dot);
   });
+}
+
+async function handleMobileCommand(command) {
+  closeMobileMenu();
+  await audio.unlock({ fromGesture: true });
+  if (command === 'play' || command === 'explore' || command === 'life') {
+    openPanel(command, mobileMenuButton);
+    return;
+  }
+  if (command === 'wardrobe') {
+    await wardrobe.open();
+    return;
+  }
+  if (command === 'build') {
+    await builder.open();
+    return;
+  }
+  if (command === 'daily') {
+    renderDaily();
+    openDialog($('#daily-modal'));
+    return;
+  }
+  if (command === 'slots') {
+    renderSlots('continue');
+    openDialog($('#slots-modal'));
+    return;
+  }
+  if (command === 'settings') {
+    syncSettingsInputs();
+    openDialog($('#settings-modal'));
+    return;
+  }
+  if (command === 'pause') togglePause();
 }
 
 function bindGlobalControls() {
@@ -1527,12 +1876,47 @@ function bindGlobalControls() {
   drawer.addEventListener('wheel', (event) => event.stopPropagation(), { passive: true });
   $('#needs-toggle').addEventListener('click', () => {
     const panel = $('#needs-panel');
+    if (isMobileUi()) {
+      const opening = !panel.classList.contains('is-mobile-open');
+      closeMobileMenu();
+      if (opening) closeDrawer({ restoreFocus: false });
+      panel.classList.toggle('is-mobile-open', opening);
+      document.body.classList.toggle('mobile-needs-open', opening);
+      $('#needs-toggle').setAttribute('aria-expanded', String(opening));
+      return;
+    }
     panel.classList.toggle('is-collapsed');
     $('#needs-toggle').setAttribute('aria-expanded', String(!panel.classList.contains('is-collapsed')));
+  });
+  mobileMenuButton?.addEventListener('click', () => {
+    if (mobileMenuSheet.hidden) openMobileMenu();
+    else closeMobileMenu({ restoreFocus: true });
+  });
+  $('#mobile-menu-close')?.addEventListener('click', () => closeMobileMenu({ restoreFocus: true }));
+  mobileMenuScrim?.addEventListener('click', () => closeMobileMenu({ restoreFocus: true }));
+  $$('[data-mobile-command]').forEach((button) => button.addEventListener('click', () => handleMobileCommand(button.dataset.mobileCommand)));
+  mobileMenuSheet?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab') return;
+    const focusable = $$('button:not(:disabled)', mobileMenuSheet).filter((button) => button.offsetParent !== null);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+  [mobileMenuSheet, mobileMenuScrim, $('#needs-panel')].filter(Boolean).forEach((element) => {
+    ['pointerdown', 'pointermove', 'click', 'dblclick', 'contextmenu'].forEach((type) => element.addEventListener(type, (event) => event.stopPropagation()));
+    element.addEventListener('wheel', (event) => event.stopPropagation(), { passive: true });
   });
   $('#slot-button').addEventListener('click', () => { renderSlots('continue'); openDialog($('#slots-modal')); });
   $('#daily-button').addEventListener('click', () => { renderDaily(); openDialog($('#daily-modal')); });
   $('#photo-button').addEventListener('click', openPhotoMode);
+  $('#photo-close')?.addEventListener('click', closePhotoMode);
   $('#pause-button').addEventListener('click', togglePause);
   $('#finish-clean').addEventListener('click', finishCleaning);
   $('#wake-button').addEventListener('click', () => toggleSleep(false));
@@ -1631,6 +2015,10 @@ function bindGlobalControls() {
   living.addEventListener('emergent-event', (event) => renderEmergentEvent(event.detail));
 
   store.addEventListener('stats', () => updateUI(true));
+  store.addEventListener('inventory', () => {
+    updateUI(true);
+    if (isMobileUi() && activePanel === 'collection' && !drawer.hidden) renderMobileInventoryDrawer();
+  });
   store.addEventListener('progress', (event) => {
     if (event.detail.leveled) {
       playSound('positive');
@@ -1647,6 +2035,15 @@ function bindGlobalControls() {
   });
   store.addEventListener('settings', applySettingsToDocument);
 
+  const syncResponsiveUi = () => {
+    closeMobileMenu();
+    closeMobileNeeds();
+    syncSelectionDots();
+    if (!drawer.hidden && activePanel === 'collection') renderDrawer('collection', false);
+  };
+  if (mobileUiQuery.addEventListener) mobileUiQuery.addEventListener('change', syncResponsiveUi);
+  else mobileUiQuery.addListener?.(syncResponsiveUi);
+
   window.addEventListener('keydown', handleKeyboardShortcuts);
   window.addEventListener('beforeunload', () => {
     store.persist();
@@ -1661,7 +2058,9 @@ function handleKeyboardShortcuts(event) {
     return;
   }
   if (event.key === 'Escape') {
-    if (!$('#photo-overlay').hidden) closePhotoMode();
+    if (!mobileMenuSheet?.hidden) closeMobileMenu({ restoreFocus: true });
+    else if ($('#needs-panel')?.classList.contains('is-mobile-open')) closeMobileNeeds();
+    else if (!$('#photo-overlay').hidden) closePhotoMode();
     else if (!drawer.hidden) closeDrawer();
     return;
   }
@@ -1680,7 +2079,7 @@ function handleKeyboardShortcuts(event) {
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js?v=39-build-pet-lock')
+    navigator.serviceWorker.register('sw.js?v=40-mobile-first-redesign')
       .then((registration) => registration.update())
       .catch((error) => console.warn('[Pocket Companions] Service worker registration failed:', error));
   }

@@ -167,7 +167,7 @@ export const activitiesMethods = {
   runSemanticAction(actionId) {
     const mapping = { 'bed-rest': this.sleepAnchor, 'trained-command': new THREE.Vector3(2.1, 0, 1.7) };
     const point = mapping[actionId] || new THREE.Vector3(0, 0, 1.6);
-    return this.moveTo(point.x, point.z, false);
+    return (this.moveToPlayerCommand || this.moveTo).call(this, point.x, point.z, false);
   },
 
   setContextualFollow(enabled = false) {
