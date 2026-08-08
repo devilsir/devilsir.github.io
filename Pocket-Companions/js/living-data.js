@@ -5,6 +5,7 @@ export const TRAITS = ['playful', 'lazy', 'affectionate', 'brave', 'stubborn', '
 export const PET_TRAIT_SEEDS = {
   apollo: { playful: 64, lazy: 25, affectionate: 58, brave: 72, stubborn: 42, foodMotivated: 48, sociable: 60, independent: 52, curious: 88, calm: 48 },
   lilith: { playful: 45, lazy: 44, affectionate: 67, brave: 55, stubborn: 49, foodMotivated: 40, sociable: 48, independent: 73, curious: 86, calm: 78 },
+  pandora: { playful: 58, lazy: 46, affectionate: 74, brave: 57, stubborn: 44, foodMotivated: 45, sociable: 55, independent: 68, curious: 91, calm: 76 },
   pietro: { playful: 74, lazy: 48, affectionate: 88, brave: 50, stubborn: 45, foodMotivated: 86, sociable: 72, independent: 35, curious: 68, calm: 58 },
   chica: { playful: 63, lazy: 38, affectionate: 78, brave: 58, stubborn: 38, foodMotivated: 61, sociable: 75, independent: 38, curious: 71, calm: 66 },
   kate: { playful: 49, lazy: 42, affectionate: 68, brave: 61, stubborn: 52, foodMotivated: 46, sociable: 55, independent: 70, curious: 77, calm: 80 },
@@ -147,6 +148,7 @@ export const PET_QUESTS = {
   kiara: { title: { en: 'The Place We Remember', pt: 'O Lugar que Lembramos' }, steps: [{ en: 'Find an old garden clue.', pt: 'Encontre uma pista antiga no jardim.' }, { en: 'Visit the forest.', pt: 'Visite a floresta.' }, { en: 'Take a memory photo.', pt: 'Tire uma foto de lembrança.' }] },
   apollo: { title: { en: 'The Garden Signal', pt: 'O Sinal do Jardim' }, steps: [{ en: 'Investigate the garden at sunset.', pt: 'Investigue o jardim ao pôr do sol.' }, { en: 'Find a hidden star seed.', pt: 'Encontre uma semente estelar.' }, { en: 'Unlock the secret photo spot.', pt: 'Desbloqueie o ponto secreto de foto.' }] },
   lilith: { title: { en: 'Moonlit Footprints', pt: 'Pegadas ao Luar' }, steps: [{ en: 'Visit the night park.', pt: 'Visite o parque noturno.' }, { en: 'Follow the silver clues.', pt: 'Siga as pistas prateadas.' }, { en: 'Meet the friendly apparition.', pt: 'Encontre a aparição amigável.' }] },
+  pandora: { title: { en: 'Pandora and the Hidden Glow', pt: 'Pandora e o Brilho Escondido' }, steps: [{ en: 'Explore the garden together.', pt: 'Explore o jardim com ela.' }, { en: 'Discover a hidden secret.', pt: 'Descubra um segredo escondido.' }, { en: 'Take a memory photo.', pt: 'Tire uma foto de lembrança.' }] },
   pietro: { title: { en: 'The Curious Little Lock', pt: 'A Fechadura Curiosa' }, steps: [{ en: 'Find three puzzle marks.', pt: 'Encontre três marcas de quebra-cabeça.' }, { en: 'Solve the garden pattern.', pt: 'Resolva o padrão do jardim.' }, { en: 'Open the tiny secret door.', pt: 'Abra a pequena porta secreta.' }] },
   kate: { title: { en: 'A Helping Paw', pt: 'Uma Patinha Amiga' }, steps: [{ en: 'Meet a companion pet.', pt: 'Encontre outro pet.' }, { en: 'Share a toy peacefully.', pt: 'Compartilhe um brinquedo em paz.' }, { en: 'Complete a social memory.', pt: 'Complete uma memória social.' }] },
   caramelo: { title: { en: 'The Mysterious Trail', pt: 'A Trilha Misteriosa' }, steps: [{ en: 'Find the first scent clue.', pt: 'Encontre a primeira pista de cheiro.' }, { en: 'Track it through the town square.', pt: 'Siga pela praça.' }, { en: 'Discover the hidden picnic.', pt: 'Descubra o piquenique escondido.' }] }
@@ -187,6 +189,11 @@ export const PET_QUEST_TRIGGERS = {
     { type: 'walk', key: 'location', value: 'night-park' },
     { type: 'scent' },
     { type: 'secret', key: 'id', value: 'apparition' }
+  ],
+  pandora: [
+    { type: 'walk', key: 'room', value: 'garden' },
+    { type: 'secret' },
+    { type: 'photo' }
   ],
   pietro: [
     { type: 'play', any: [{ key: 'gameId', value: 'hidden' }, { key: 'gameId', value: 'memory' }] },
@@ -408,6 +415,18 @@ export const PET_ACCESSORY_FITS = {
       cape: { position: [0, 0.075, -0.005], rotation: [0, 0, 0], scale: 0.88 },
     }
   },
+  pandora: {
+    scale: 1,
+    bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
+    accessories: {
+      bandana: { position: [0, -0.05, 0.07], rotation: [0, 0, 0], scale: 0.86 },
+      bow: { position: [0.07, 0.1, 0.025], rotation: [0, 0, 0.3], scale: 0.58 },
+      hat: { position: [0, 0.12, 0], rotation: [0, 0, 0], scale: 0.6 },
+      glasses: { position: [0, 0.02, 0.18], rotation: [0, 0, 0], scale: 0.6 },
+      backpack: { position: [0, 0.09, -0.055], rotation: [0.08, 0, 0], scale: 0.84 },
+      cape: { position: [0, 0.075, -0.005], rotation: [0, 0, 0], scale: 0.88 },
+    }
+  },
   pietro: {
     scale: 1,
     bones: { head: 'head0', neck: 'neck0', back: 'body_top0' },
@@ -516,6 +535,7 @@ export const DREAMS = {
 export const ANIMATION_CAPABILITIES = {
   apollo: ['bite_attack','get_up_from_lying_down','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','walk'],
   lilith: ['bite_attack','get_up_from_lying_down','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','walk'],
+  pandora: ['bite_attack','get_up_from_lying_down','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','walk'],
   pietro: ['bite_attack','get_up_from_lying_down','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','walk'],
   caramelo: ['bite_attack','get_up_from_lying_down','get_up_from_sitting','give_paw','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','sit','sitting_idle','sleep','threaten','walk'],
   bolt: ['bite_attack','get_up_from_lying_down','get_up_from_sitting','give_paw','idle','jump','jump_end','jump_fall','jump_start','lie_down','lying_down_idle','paw_attack','run','sit','sitting_idle','sleep','threaten','walk'],

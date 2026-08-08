@@ -96,6 +96,21 @@ export const navigationMethods = {
     );
   },
 
+  petClearance(pet = this.currentPet, { interaction = false } = {}) {
+    const radius = Math.max(0.2, Number(pet?.navigationRadius) || 0.34);
+    if (!interaction) return radius;
+    const sizeClass = pet?.physicalSize;
+    const extra = sizeClass === 'large' ? 0.10 : sizeClass === 'medium' ? 0.055 : 0.025;
+    return radius + extra;
+  },
+
+  findSafePetPosition(preferred = new THREE.Vector3(0, 0, 0), pet = this.currentPet, { interaction = false, avoidEntities = true } = {}) {
+    const clearance = this.petClearance(pet, { interaction });
+    return avoidEntities
+      ? this.findSafeEntityPosition(preferred, clearance, pet)
+      : this.findSafePosition(preferred, clearance);
+  },
+
   hasClearPath(from, to, radius = 0.34) {
     const distance = from.distanceTo(to);
     const steps = Math.max(1, Math.ceil(distance / 0.09));
@@ -291,7 +306,7 @@ export const navigationMethods = {
     if (isIntentionalSurface) return false;
     const radius = Math.max(0.2, Number(pet.navigationRadius) || 0.34);
     const position = pet.stage.position;
-    const blocked = this.isBlocked(position.x, position.z, radius * 0.82);
+    const blocked = this.isBlocked(position.x, position.z, radius);
     const overlapping = this.livingEntityCollisionAt(position.x, position.z, radius, pet, 0.04);
     if (!blocked && !overlapping) return false;
     const fallback = preferred?.isVector3 ? preferred : position.clone();
@@ -350,7 +365,7 @@ export const navigationMethods = {
   },
 
   moveToAndWait(x, z, { run = false, timeout = 1800 } = {}) {
-    const destination = this.findSafePosition(new THREE.Vector3(x, 0, z));
+    const destination = this.findSafePetPosition(new THREE.Vector3(x, 0, z), this.currentPet);
     this.moveTo(destination.x, destination.z, run);
     const started = performance.now();
     return new Promise((resolve) => {
@@ -424,7 +439,7 @@ export const navigationMethods = {
     this.movementOutcome = 'idle';
     this.activeAutonomousAction = action;
     this.lastAutonomous = performance.now();
-    const point = this.findSafeEntityPosition(this.autonomousPoint(action), this.currentPet.navigationRadius || 0.34, this.currentPet);
+    const point = this.findSafePetPosition(this.autonomousPoint(action), this.currentPet, { interaction: true });
     const distance = this.currentPet.stage.position.distanceTo(point);
     let moved = false;
     if (distance > 0.12) moved = this.moveTo(point.x, point.z, Boolean(action.run));
@@ -466,7 +481,7 @@ export const navigationMethods = {
     const action = this.autonomyProvider?.() || { id: 'explore', target: 'roam', run: Math.random() > 0.72 };
     if (!action) return;
     this.activeAutonomousAction = action;
-    const point = this.findSafeEntityPosition(this.autonomousPoint(action), this.currentPet.navigationRadius || 0.34, this.currentPet);
+    const point = this.findSafePetPosition(this.autonomousPoint(action), this.currentPet, { interaction: true });
     const moved = this.moveTo(point.x, point.z, Boolean(action.run));
     if (!moved && this.movementOutcome !== 'blocked') this.beginAutonomousInteraction(action);
     this.dispatchEvent(new CustomEvent('autonomous', { detail: action }));
@@ -624,7 +639,7 @@ export const navigationMethods = {
       }
     }
     if (action.surface && !this.placePetOnActionSurface(pet, action)) {
-      pet.stage.position.copy(this.findSafePosition(this.autonomyReturnPoint));
+      pet.stage.position.copy(this.findSafePetPosition(this.autonomyReturnPoint, pet));
       pet.stage.position.y = 0;
       pet.controller.play('idle', { force: true, fade: 0.2 });
       this.activeAutonomousAction = null;
@@ -658,7 +673,7 @@ export const navigationMethods = {
     if (!action) return;
     if (pet) {
       const fallback = action.point ? new THREE.Vector3(action.point.x, 0, action.point.z) : this.autonomyReturnPoint;
-      if (fallback) pet.stage.position.copy(this.findSafePosition(fallback));
+      if (fallback) pet.stage.position.copy(this.findSafePetPosition(fallback, pet));
       pet.stage.position.y = 0;
       const keepQuietSit = this.isQuietCornerAction(action) && pet.autonomousPose?.location === 'quiet-corner';
       if (keepQuietSit) {
@@ -940,7 +955,7 @@ export const navigationMethods = {
       this.pets.set(this.secondaryPetId, record);
     }
     record.stage.visible = true;
-    record.stage.position.copy(this.findSafePosition(new THREE.Vector3(1.8,0,0.8)));
+    record.stage.position.copy(this.findSafePetPosition(new THREE.Vector3(1.8,0,0.8), record));
     record.modelHolder.rotation.y = Math.PI;
     record.controller.play('idle', { force:true, fade:0.2 });
     return true;
@@ -967,8 +982,9 @@ export const navigationMethods = {
         : action.point && Number.isFinite(action.point.x) && Number.isFinite(action.point.z)
           ? new THREE.Vector3(action.point.x, 0, action.point.z)
           : new THREE.Vector3(randomBetween(-3.2,3.2),0,randomBetween(-2.0,2.0));
-      if (secondary.stage.position.distanceTo(preferred) > 0.12) this.clearAutonomousPose(secondary);
-      const route = this.findPath(secondary.stage.position.clone(), preferred, secondary.navigationRadius || 0.4);
+      const safePreferred = this.findSafePetPosition(preferred, secondary, { interaction: true });
+      if (secondary.stage.position.distanceTo(safePreferred) > 0.12) this.clearAutonomousPose(secondary);
+      const route = this.findPath(secondary.stage.position.clone(), safePreferred, secondary.navigationRadius || 0.4);
       if (!route.length) {
         this.secondaryAction = null;
         this.dispatchEvent(new CustomEvent('secondary-path-blocked', { detail: { action } }));
@@ -1020,7 +1036,7 @@ export const navigationMethods = {
     this.secondaryTarget = null;
     this.secondaryReturnPoint = secondary.stage.position.clone();
     if (action.surface && !this.placePetOnActionSurface(secondary, action)) {
-      secondary.stage.position.copy(this.findSafePosition(this.secondaryReturnPoint));
+      secondary.stage.position.copy(this.findSafePetPosition(this.secondaryReturnPoint, secondary));
       secondary.stage.position.y = 0;
       secondary.controller.play('idle', { force: true, fade: 0.2 });
       this.secondaryAction = null;
@@ -1051,7 +1067,7 @@ export const navigationMethods = {
     if (!action) return;
     if (secondary) {
       const fallback = action.point ? new THREE.Vector3(action.point.x, 0, action.point.z) : this.secondaryReturnPoint;
-      if (fallback) secondary.stage.position.copy(this.findSafePosition(fallback));
+      if (fallback) secondary.stage.position.copy(this.findSafePetPosition(fallback, secondary));
       secondary.stage.position.y = 0;
       const keepQuietSit = this.isQuietCornerAction(action) && secondary.autonomousPose?.location === 'quiet-corner';
       if (keepQuietSit) {
@@ -1081,8 +1097,8 @@ export const navigationMethods = {
     this.stopMovement('social');
     const midpoint = primary.stage.position.clone().add(secondary.stage.position).multiplyScalar(0.5);
     const offset = new THREE.Vector3(0.55,0,0);
-    primary.stage.position.copy(this.findSafePosition(midpoint.clone().sub(offset)));
-    secondary.stage.position.copy(this.findSafePosition(midpoint.clone().add(offset)));
+    primary.stage.position.copy(this.findSafePetPosition(midpoint.clone().sub(offset), primary));
+    secondary.stage.position.copy(this.findSafePetPosition(midpoint.clone().add(offset), secondary));
     primary.modelHolder.rotation.y=Math.PI/2; secondary.modelHolder.rotation.y=-Math.PI/2;
     const action = kind === 'play' && primary.controller.has('give_paw') ? 'give_paw' : kind === 'rest' && primary.controller.has('lie_down') ? 'lie_down' : 'idle';
     const secondAction = kind === 'play' && secondary.controller.has('give_paw') ? 'give_paw' : kind === 'rest' && secondary.controller.has('lie_down') ? 'lie_down' : 'idle';

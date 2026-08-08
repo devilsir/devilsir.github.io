@@ -595,7 +595,7 @@ export const environmentMethods = {
   getFeedApproach(foodId = 'meal') {
     const desired = this.feedApproach.clone();
     desired.x = this.feedAnchor.x + (foodId === 'water' ? 0.78 : 0.22);
-    return this.findSafePosition(desired);
+    return this.findSafePetPosition?.(desired, this.currentPet, { interaction: true }) || this.findSafePosition(desired);
   },
 
   async playEatingSequence(foodId, duration = 1800) {
@@ -1729,7 +1729,7 @@ export const environmentMethods = {
     pet.model.position.copy(pet.baseModelPosition);
     pet.model.rotation.copy(pet.baseModelRotation);
     pet.modelHolder.rotation.set(0, 0, 0);
-    pet.stage.position.copy(this.findSafePosition(this.wakeAnchor));
+    pet.stage.position.copy(this.findSafePetPosition?.(this.wakeAnchor, pet) || this.findSafePosition(this.wakeAnchor, pet.navigationRadius || 0.34));
     pet.stage.position.y = 0;
   },
 

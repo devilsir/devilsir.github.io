@@ -3,16 +3,17 @@ const DOGS = new Set(['chica', 'kate', 'bolt', 'caramelo', 'kiara', 'pacoca', 's
 export const PET_PHYSICAL_PROFILES = {
   apollo: { targetHeight: 1.08, radius: 0.31, size: 'cat' },
   lilith: { targetHeight: 1.08, radius: 0.31, size: 'cat' },
+  pandora: { targetHeight: 1.08, radius: 0.32, size: 'cat' },
   pietro: { targetHeight: 1.12, radius: 0.33, size: 'cat' },
   // Dog sizes aligned with the reference app proportions:
   // small dogs ≈ 1.2x cat height, medium ≈ 1.35x, large ≈ 1.5x+
   bolt: { targetHeight: 1.22, radius: 0.34, size: 'small' },
   kate: { targetHeight: 1.24, radius: 0.35, size: 'small' },
-  chica: { targetHeight: 1.44, radius: 0.41, size: 'medium' },
-  caramelo: { targetHeight: 1.60, radius: 0.47, size: 'large' },
-  kiara: { targetHeight: 1.62, radius: 0.48, size: 'large' },
-  pacoca: { targetHeight: 1.58, radius: 0.46, size: 'large' },
-  simba: { targetHeight: 1.62, radius: 0.48, size: 'large' }
+  chica: { targetHeight: 1.44, radius: 0.45, size: 'medium' },
+  caramelo: { targetHeight: 1.60, radius: 0.54, size: 'large' },
+  kiara: { targetHeight: 1.62, radius: 0.56, size: 'large' },
+  pacoca: { targetHeight: 1.58, radius: 0.55, size: 'large' },
+  simba: { targetHeight: 1.62, radius: 0.56, size: 'large' }
 };
 
 export function speciesForPet(petId, configuredSpecies = null) {

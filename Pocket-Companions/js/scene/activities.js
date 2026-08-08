@@ -75,7 +75,7 @@ export const activitiesMethods = {
       } else {
         for (let index = 0; index < points.length; index += 1) {
           const [x, z] = points[index];
-          const point = this.findSafePosition(new THREE.Vector3(x, 0, z));
+          const point = this.findSafePetPosition(new THREE.Vector3(x, 0, z), pet, { interaction: true });
           this.contextualFocus = point.clone();
           this.activityState.phase = index;
           const arrived = await this.moveToAndWait(point.x, point.z, { run: ['fetch', 'laser', 'hide-seek', 'obstacle-course'].includes(id), timeout: 4600 });

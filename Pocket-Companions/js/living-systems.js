@@ -9,6 +9,7 @@ import { getLanguage } from './i18n.js';
 import { SimulationRuntime } from './simulation/simulation.js';
 import { migrateSimulationState } from './simulation/schema.js';
 import { applyTrainingResult, evaluateTrainingAttempt, migrateTrainingRecord } from './simulation/training.js';
+import { speciesForPet } from './simulation/species-behaviors.js';
 
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -670,7 +671,7 @@ export class LivingSystems extends EventTarget {
     const capability = new Set(ANIMATION_CAPABILITIES[this.slot.companionId] || ['idle']);
     const missing = (definition.requiredAnimations || []).filter((clip) => !capability.has(clip));
     if (missing.length) return { available: false, reason: 'animation', missing };
-    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    const species = speciesForPet(this.slot.companionId);
     const objects = this.scene.getSemanticEnvironmentObjects?.(room, species) || [];
     if (definition.behavior === 'bed' && !objects.some((entry) => entry.type === 'bed' || entry.actions?.includes('bed-rest'))) {
       return { available: false, reason: 'no-bed' };
@@ -753,7 +754,7 @@ export class LivingSystems extends EventTarget {
     if (['sit', 'lie', 'paw', 'jump'].includes(behavior)) return this.performCommandPose(commandId, { practice });
 
     const room = this.scene.travelLocation || this.slot.activeRoom;
-    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    const species = speciesForPet(this.slot.companionId);
     const objects = this.scene.getSemanticEnvironmentObjects?.(room, species) || [];
 
     if (behavior === 'come') {
@@ -1266,7 +1267,7 @@ export class LivingSystems extends EventTarget {
   scentSearch() {
     const location = this.scene.travelLocation || this.slot.activeRoom;
     const secret = Object.entries(SECRETS).find(([id, value]) => this.secretAvailable(id) && value.room === location);
-    const isDog = ['chica','kate','bolt','caramelo','kiara','pacoca','simba'].includes(this.slot.companionId);
+    const isDog = speciesForPet(this.slot.companionId) === 'dog';
     const speciesBonus = isDog ? 0.13 : this.state.personality.curious / 800;
     const chance = clamp(0.36 + speciesBonus + this.state.scent.level * 0.04 + this.skillEffect('scent'), 0.36, 0.92);
     const found = secret && Math.random() < chance;
@@ -1415,7 +1416,7 @@ export class LivingSystems extends EventTarget {
       'toy-selection': { energy: 4, happiness: 6, bond: 1.3, species: 'any' }
     };
     const activity = activities[activityId];
-    const species = ['apollo', 'lilith', 'pietro'].includes(this.slot.companionId) ? 'cat' : 'dog';
+    const species = speciesForPet(this.slot.companionId);
     if (!activity) return { ok: false, reason: 'unknown' };
     if (activity.species !== 'any' && activity.species !== species) return { ok: false, reason: 'species' };
     if (this.slot.stats.energy < activity.energy + 4) return { ok: false, reason: 'energy' };

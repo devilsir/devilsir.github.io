@@ -1,4 +1,4 @@
-export const APP_VERSION = 24;
+export const APP_VERSION = 25;
 export const STORAGE_KEY = 'pocket-companions:saves:v1';
 export const SETTINGS_KEY = 'pocket-companions:global-settings:v1';
 export const ROBOT_COMPANIONS_ENABLED = false;
@@ -37,6 +37,23 @@ export const PETS = {
     },
     voiceOptions: { volume: 0.80 },
     modifiers: { boredom: 0.92, obstacle: 0.95, calmBond: 1.25, foodJoy: 0.95 }
+  },
+  pandora: {
+    id: 'pandora',
+    name: 'Pandora',
+    model: 'assets/models/pandora_todas_animacoes.glb',
+    accent: '#f2d8ee',
+    accent2: '#b9d9ff',
+    personality: 'Gentle, curious, and quietly mischievous. Pandora loves calm exploration, cozy hiding spots, and watching the world from a safe perch.',
+    trait: 'Moonlit Curiosity',
+    species: 'cat',
+    voices: {
+      call: 'voice-lilith-call',
+      happy: 'voice-lilith-happy',
+      calm: 'voice-lilith-calm'
+    },
+    voiceOptions: { volume: 0.78, rate: 1.04 },
+    modifiers: { boredom: 0.96, obstacle: 1.02, calmBond: 1.22, foodJoy: 0.98 }
   },
   pietro: {
     id: 'pietro',

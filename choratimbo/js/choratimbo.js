@@ -3,19 +3,23 @@ import {OrbitControls} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples
 import {FBXLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/FBXLoader.js";
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 import {clone as cloneSkeleton} from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/SkeletonUtils.js";
+import {MOBILE_MODE,MOBILE_CONFIG} from "./device-mode.js";
 
 const assetUrl=path=>new URL(`../${path}`,import.meta.url).href;
 
 const textureData={"baseColor":assetUrl("assets/textures/main_basecolor.png"),"normal":assetUrl("assets/textures/main_normal.png"),"emissive":assetUrl("assets/textures/main_emissive.png"),"roughness":assetUrl("assets/textures/main_roughness.png"),"metallic":assetUrl("assets/textures/main_metallic.png")};
-const mainModelUrl=assetUrl("assets/models/timbo_principal_lowpoly_v2.glb");
-;
+const mainModelUrl=assetUrl(MOBILE_MODE?"assets/models/mobile/timbo_principal_mobile.glb":"assets/models/timbo_principal_lowpoly_v2.glb");
 const fallingGlbData={
-  sombrero:assetUrl("assets/models/sombreroLUCASANIMATED.glb"),
-  timboGuarana:assetUrl("assets/models/TIMBOGUARANA.glb"),
-  timboGordin:assetUrl("assets/models/TIMBOGUARANAGORDIN.glb")
+  sombrero:assetUrl(MOBILE_MODE?"assets/models/mobile/sombrero_mobile.glb":"assets/models/sombreroLUCASANIMATED.glb"),
+  timboGuarana:assetUrl(MOBILE_MODE?"assets/models/mobile/timbo_guarana_mobile.glb":"assets/models/TIMBOGUARANA.glb"),
+  timboGordin:assetUrl(MOBILE_MODE?"assets/models/mobile/timbo_gordin_mobile.glb":"assets/models/TIMBOGUARANAGORDIN.glb")
 };
 const container=document.getElementById("app");
 const status=document.getElementById("status");
+if(MOBILE_MODE){
+  const loader=status.querySelector(".loader");
+  if(loader)loader.textContent="Carregando modo mobile leve…";
+}
 let autoRotate=true;
 let flipMode=false;
 let loadedTextures=[];
@@ -23,14 +27,19 @@ let loadedTextures=[];
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.01,100000);
 camera.position.set(0,1.2,6);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+const renderer=new THREE.WebGLRenderer({
+  antialias:!MOBILE_MODE,
+  alpha:true,
+  powerPreference:"high-performance",
+  precision:MOBILE_MODE?"mediump":"highp"
+});
+renderer.setPixelRatio(MOBILE_MODE?MOBILE_CONFIG.pixelRatio:Math.min(devicePixelRatio||1,2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure=1.16;
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=!MOBILE_MODE;
+if(!MOBILE_MODE)renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement);
 
 const controls=new OrbitControls(camera,renderer.domElement);
@@ -41,36 +50,44 @@ controls.autoRotate=false;
 
 const pivot=new THREE.Group();
 scene.add(pivot);
-scene.add(new THREE.HemisphereLight(0xffffff,0x293241,1.85));
-const key=new THREE.DirectionalLight(0xffffff,3.35);key.position.set(1.8,3.9,8.8);key.castShadow=true;scene.add(key);
-const frontFill=new THREE.DirectionalLight(0xfff3ea,2.15);frontFill.position.set(-1.2,1.8,9.6);scene.add(frontFill);
-const fill=new THREE.DirectionalLight(0xffddc7,1.65);fill.position.set(.2,1.6,6.2);scene.add(fill);
-const rim=new THREE.DirectionalLight(0xc7dcff,1.15);rim.position.set(-4.5,2.5,-4.0);scene.add(rim);
-const ground=new THREE.Mesh(new THREE.CircleGeometry(200,96),new THREE.ShadowMaterial({opacity:.20}));
-ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+scene.add(new THREE.HemisphereLight(0xffffff,0x293241,MOBILE_MODE?1.7:1.85));
+const key=new THREE.DirectionalLight(0xffffff,MOBILE_MODE?2.85:3.35);key.position.set(1.8,3.9,8.8);key.castShadow=!MOBILE_MODE;scene.add(key);
+if(MOBILE_MODE){
+  const mobileFill=new THREE.DirectionalLight(0xffeadf,1.3);mobileFill.position.set(-1.4,1.7,7.4);scene.add(mobileFill);
+}else{
+  const frontFill=new THREE.DirectionalLight(0xfff3ea,2.15);frontFill.position.set(-1.2,1.8,9.6);scene.add(frontFill);
+  const fill=new THREE.DirectionalLight(0xffddc7,1.65);fill.position.set(.2,1.6,6.2);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xc7dcff,1.15);rim.position.set(-4.5,2.5,-4.0);scene.add(rim);
+}
+const ground=MOBILE_MODE?new THREE.Group():new THREE.Mesh(new THREE.CircleGeometry(200,96),new THREE.ShadowMaterial({opacity:.20}));
+if(!MOBILE_MODE){ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;}
+scene.add(ground);
 
 const fallingOverlay=document.getElementById("fallingOverlay");
 const fallingScene=new THREE.Scene();
 const fallingCamera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.01,10000);
 fallingCamera.position.set(0,0,12);
 fallingCamera.lookAt(0,0,0);
-const fallingRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
-fallingRenderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
-fallingRenderer.setSize(innerWidth,innerHeight);
-fallingRenderer.outputColorSpace=THREE.SRGBColorSpace;
-fallingRenderer.toneMapping=THREE.ACESFilmicToneMapping;
-fallingRenderer.toneMappingExposure=1.34;
-fallingRenderer.shadowMap.enabled=true;
-fallingRenderer.shadowMap.type=THREE.PCFSoftShadowMap;
-fallingRenderer.domElement.style.pointerEvents="none";
-fallingRenderer.domElement.style.position="absolute";
-fallingRenderer.domElement.style.inset="0";
-fallingOverlay.appendChild(fallingRenderer.domElement);
+let fallingRenderer=null;
+if(!MOBILE_MODE){
+  fallingRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
+  fallingRenderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  fallingRenderer.setSize(innerWidth,innerHeight);
+  fallingRenderer.outputColorSpace=THREE.SRGBColorSpace;
+  fallingRenderer.toneMapping=THREE.ACESFilmicToneMapping;
+  fallingRenderer.toneMappingExposure=1.34;
+  fallingRenderer.shadowMap.enabled=true;
+  fallingRenderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  fallingRenderer.domElement.style.pointerEvents="none";
+  fallingRenderer.domElement.style.position="absolute";
+  fallingRenderer.domElement.style.inset="0";
+  fallingOverlay.appendChild(fallingRenderer.domElement);
+}
 const fallingLayer=new THREE.Group();
-fallingScene.add(new THREE.HemisphereLight(0xffffff,0x263148,2.25));
-const fallingKey=new THREE.DirectionalLight(0xffffff,3.2);fallingKey.position.set(-2.2,4.8,7.4);fallingKey.castShadow=true;fallingScene.add(fallingKey);
-const fallingFill=new THREE.DirectionalLight(0xffe5d2,2.2);fallingFill.position.set(3.6,2.4,6.2);fallingScene.add(fallingFill);
-const fallingRim=new THREE.DirectionalLight(0x9fd8ff,2.0);fallingRim.position.set(0,3.8,-4.5);fallingScene.add(fallingRim);
+fallingScene.add(new THREE.HemisphereLight(0xffffff,0x263148,MOBILE_MODE?1.9:2.25));
+const fallingKey=new THREE.DirectionalLight(0xffffff,MOBILE_MODE?2.5:3.2);fallingKey.position.set(-2.2,4.8,7.4);fallingKey.castShadow=!MOBILE_MODE;fallingScene.add(fallingKey);
+const fallingFill=new THREE.DirectionalLight(0xffe5d2,MOBILE_MODE?1.45:2.2);fallingFill.position.set(3.6,2.4,6.2);fallingScene.add(fallingFill);
+if(!MOBILE_MODE){const fallingRim=new THREE.DirectionalLight(0x9fd8ff,2.0);fallingRim.position.set(0,3.8,-4.5);fallingScene.add(fallingRim);}
 fallingScene.add(fallingLayer);
 let mainModelForRain=null;
 let fallingAssetsPromise=null;
@@ -116,7 +133,7 @@ function collectTexture(texture){
 }
 function polishMaterials(object){
   allMaterials(object,(mat,mesh)=>{
-    mesh.castShadow=true;mesh.receiveShadow=true;
+    mesh.castShadow=!MOBILE_MODE;mesh.receiveShadow=!MOBILE_MODE;
     mat.side=THREE.DoubleSide;
     mat.transparent=false;
     mat.alphaTest=0;
@@ -129,7 +146,10 @@ function polishMaterials(object){
     if(mat.specular && mat.specular.isColor) mat.specular.set(0x111111);
     if(mat.map){mat.map.colorSpace=THREE.SRGBColorSpace;collectTexture(mat.map);}
     if(mat.emissiveMap){mat.emissiveMap.colorSpace=THREE.SRGBColorSpace;mat.emissiveIntensity=0;collectTexture(mat.emissiveMap);}
-    if(mat.normalMap){mat.normalScale=new THREE.Vector2(.85,.85);collectTexture(mat.normalMap);}
+    if(mat.normalMap){
+      if(MOBILE_MODE){mat.normalMap=null;}
+      else{mat.normalScale=new THREE.Vector2(.85,.85);collectTexture(mat.normalMap);}
+    }
     if(mat.bumpMap){collectTexture(mat.bumpMap);}
     if(mat.roughnessMap)collectTexture(mat.roughnessMap);
     if(mat.metalnessMap)collectTexture(mat.metalnessMap);
@@ -158,9 +178,9 @@ function fixFallingUvOrientation(geometry){
 function tuneFallingObject(object){
   object.traverse(child=>{
     if(!child.isMesh)return;
-    child.castShadow=true;
-    child.receiveShadow=true;
-    if(child.frustumCulled!==undefined)child.frustumCulled=false;
+    child.castShadow=!MOBILE_MODE;
+    child.receiveShadow=!MOBILE_MODE;
+    if(child.frustumCulled!==undefined)child.frustumCulled=MOBILE_MODE;
     const mats=Array.isArray(child.material)?child.material:[child.material];
     for(const mat of mats){
       if(!mat)continue;
@@ -205,12 +225,17 @@ function ensureFallingAsset(key){
 }
 function ensureFallingAssets(){
   if(!fallingAssetsPromise){
-    fallingAssetsPromise=Promise.all([
+    const tasks=MOBILE_MODE?[
+      ensureFallingAsset("sombrero"),
+      ensureFallingAsset("timboGuarana")
+    ]:[
       ensureFallingAsset("sombrero"),
       ensureFallingAsset("timboGuarana"),
       ensureFallingAsset("timboGordin")
-    ]).then(([sombrero,timboGuarana,timboGordin])=>{
-      fallingAssets={sombrero,timboGuarana,timboGordin};
+    ];
+    fallingAssetsPromise=Promise.all(tasks).then(items=>{
+      fallingAssets={sombrero:items[0],timboGuarana:items[1]};
+      if(items[2])fallingAssets.timboGordin=items[2];
       return fallingAssets;
     });
   }
@@ -267,7 +292,7 @@ function createRainActor(proto,index,total,session){
   root.userData.baseScale=normalized.scale.x;
   root.visible=true;
   fallingLayer.add(root);
-  const actor={root,animatedRoot:object,proto,session,mixer:null,currentAction:null,procName:"",procTime:0,procDuration:0,age:0,fallVelocity:randomBetween(-.06,.04),gravity:randomBetween(.42,.72),groundY,landed:false,bounce:randomBetween(.36,.58),spin:randomBetween(-2.4,2.4),swayPhase:randomBetween(0,Math.PI*2),swaySpeed:randomBetween(1.35,2.75),driftX:randomBetween(-.08,.08),driftZ:randomBetween(-.02,.02)};
+  const actor={root,visualRoot:normalized,animatedRoot:object,proto,session,mixer:null,currentAction:null,procName:"",procTime:0,procDuration:0,age:0,fallVelocity:randomBetween(-.06,.04),gravity:randomBetween(.42,.72),groundY,landed:false,bounce:randomBetween(.36,.58),spin:randomBetween(-2.4,2.4),swayPhase:randomBetween(0,Math.PI*2),swaySpeed:randomBetween(1.35,2.75),driftX:randomBetween(-.08,.08),driftZ:randomBetween(-.02,.02)};
   if(proto.animations.length){
     actor.mixer=new THREE.AnimationMixer(object);
     actor.mixer.addEventListener("finished",event=>{
@@ -310,6 +335,13 @@ function updateProceduralActor(actor,delta){
   const t=actor.procTime;
   const s=Math.sin(t*actor.swaySpeed+actor.swayPhase);
   const c=Math.cos(t*actor.swaySpeed*.92+actor.swayPhase);
+
+  // IMPORTANT: efeitos visuais nunca alteram o Y do root de física.
+  // Antes, a ação "pula" somava altura no mesmo root responsável pela queda,
+  // então um dos modelos podia parecer travado no ar. O salto agora acontece
+  // apenas no filho visual, enquanto a gravidade continua descendo o ator.
+  if(actor.visualRoot)actor.visualRoot.position.y=0;
+
   if(actor.procName==="balanca"){
     actor.root.rotation.z=s*.42;
     actor.root.rotation.x=c*.18;
@@ -317,7 +349,7 @@ function updateProceduralActor(actor,delta){
     actor.root.rotation.y+=delta*(actor.spin||2.2);
     actor.root.rotation.z=s*.16;
   }else if(actor.procName==="pula"){
-    actor.root.position.y+=Math.max(0,Math.sin(t*Math.PI*2.4))*delta*1.1;
+    if(actor.visualRoot)actor.visualRoot.position.y=Math.max(0,Math.sin(t*Math.PI*2.4))*.18;
     actor.root.rotation.z=s*.22;
   }else if(actor.procName==="ginga"){
     actor.root.rotation.y+=Math.sin(t*5.4)*delta*.75;
@@ -372,7 +404,11 @@ async function startFallingModels(){
   const session=++fallingSession;
   stopFallingModels();
   fallingSession=session;
-  const lineup=[
+  const lineup=MOBILE_MODE?[
+    ...Array.from({length:MOBILE_CONFIG.fallingSombreros},()=>"sombrero"),
+    ...Array.from({length:MOBILE_CONFIG.fallingGuaranas},()=>"timboGuarana"),
+    ...Array.from({length:MOBILE_CONFIG.fallingGordins},()=>"timboGordin")
+  ]:[
     ...Array.from({length:5},()=>"sombrero"),
     ...Array.from({length:3},()=>"timboGuarana"),
     "timboGordin"
@@ -430,12 +466,14 @@ async function init(){
   try{
     const model=await loadMainModel();
     polishMaterials(model);
-    mainModelForRain=cloneSkeleton(model);
+    if(!MOBILE_MODE)mainModelForRain=cloneSkeleton(model);
     pivot.add(model);
     fitCameraToObject(model);
-    ensureFallingAsset("sombrero").catch(error=>console.error(error));
-    ensureFallingAsset("timboGuarana").catch(error=>console.error(error));
-    setTimeout(()=>ensureFallingAsset("timboGordin").catch(error=>console.error(error)),2500);
+    if(!MOBILE_MODE){
+      ensureFallingAsset("sombrero").catch(error=>console.error(error));
+      ensureFallingAsset("timboGuarana").catch(error=>console.error(error));
+      setTimeout(()=>ensureFallingAsset("timboGordin").catch(error=>console.error(error)),2500);
+    }
     setTimeout(()=>{if(status.style.display!=="none")status.style.display="none";},1200);
     animate();
   }catch(error){
@@ -444,17 +482,31 @@ async function init(){
   }
 }
 const startTime=performance.now();
-function animate(){
+let lastMobileRender=0;
+function animate(frameTime){
   requestAnimationFrame(animate);
-  const now=performance.now();
+  if(document.hidden)return;
+  const now=Number.isFinite(frameTime)?frameTime:performance.now();
+  if(MOBILE_MODE&&now-lastMobileRender<1000/MOBILE_CONFIG.maxFps)return;
+  if(MOBILE_MODE)lastMobileRender=now;
   const delta=Math.min(.05,(now-lastFrameTime)/1000||0);
   lastFrameTime=now;
   const seconds=(now-startTime)/1000;
   if(autoRotate)pivot.rotation.y=seconds/8*Math.PI*2;
   updateFallingActors(delta);
   controls.update();
+  renderer.autoClear=true;
   renderer.render(scene,camera);
-  fallingRenderer.render(fallingScene,fallingCamera);
+  if(MOBILE_MODE){
+    if(fallingActors.length){
+      renderer.autoClear=false;
+      renderer.clearDepth();
+      renderer.render(fallingScene,fallingCamera);
+      renderer.autoClear=true;
+    }
+  }else if(fallingRenderer){
+    fallingRenderer.render(fallingScene,fallingCamera);
+  }
 }
 const specialButton=document.getElementById("specialButton");
 const specialToast=document.getElementById("specialToast");
@@ -620,11 +672,17 @@ function startDiscoBallCanvas(){
   discoBallAnimationStarted=true;
   discoBallStartTime=0;
   const cycleMs=420;
+  let lastDraw=0;
   const loop=(time)=>{
-    if(!discoBallStartTime) discoBallStartTime=time;
-    const elapsed=time-discoBallStartTime;
-    const shift=(elapsed%cycleMs)/cycleMs;
-    drawDiscoBallFrame(shift);
+    if(!discoBallStartTime)discoBallStartTime=time;
+    const shouldDraw=!MOBILE_MODE||clubOverlay.classList.contains("show");
+    const frameInterval=MOBILE_MODE?1000/MOBILE_CONFIG.discoFps:0;
+    if(shouldDraw&&(!frameInterval||time-lastDraw>=frameInterval)){
+      const elapsed=time-discoBallStartTime;
+      const shift=(elapsed%cycleMs)/cycleMs;
+      drawDiscoBallFrame(shift);
+      lastDraw=time;
+    }
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
@@ -633,7 +691,7 @@ function createPartyLights(){
   if(lightDotsReady)return;
   lightDotsReady=true;
   const palette=["#59d7ff","#ff4fd8","#ffd84d","#8e6bff","#53ffb2","#ffffff","#ff7a42"];
-  const count=44;
+  const count=MOBILE_MODE?MOBILE_CONFIG.partyLightCount:44;
   for(let i=0;i<count;i++){
     const dot=document.createElement("span");
     dot.className="light-dot";
@@ -995,7 +1053,12 @@ exportPreset.addEventListener("change",()=>{syncCustomSizeVisibility(); if(expor
 [exportFormat,exportFps,exportQuality,exportBg,exportWidth,exportHeight].forEach(el=>el.addEventListener("change",()=>{if(exportUsagePreset.value!=="manual") exportUsagePreset.value="manual";}));
 syncCustomSizeVisibility();
 applyUsagePreset();
-addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();fallingCamera.aspect=innerWidth/innerHeight;fallingCamera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);fallingRenderer.setSize(innerWidth,innerHeight);});
+addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  fallingCamera.aspect=innerWidth/innerHeight;fallingCamera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  if(fallingRenderer)fallingRenderer.setSize(innerWidth,innerHeight);
+});
 
 function animateBrowserFavicon(){
   const frames=[assetUrl("assets/images/favicon.png"),assetUrl("assets/images/asset_015_a17301b9.png"),assetUrl("assets/images/asset_016_3496cf85.png"),assetUrl("assets/images/asset_017_060851aa.png"),assetUrl("assets/images/asset_018_a139c47d.png"),assetUrl("assets/images/asset_019_ea3401e7.png"),assetUrl("assets/images/asset_020_79984085.png"),assetUrl("assets/images/asset_021_cb1814e4.png"),assetUrl("assets/images/asset_022_585b7aeb.png"),assetUrl("assets/images/asset_023_bf5a6d12.png"),assetUrl("assets/images/asset_024_22a61ce5.png"),assetUrl("assets/images/asset_025_29984d62.png"),assetUrl("assets/images/asset_026_b8496a20.png"),assetUrl("assets/images/asset_027_fc0c97d9.png"),assetUrl("assets/images/asset_028_125b5ceb.png"),assetUrl("assets/images/asset_029_ef98040a.png"),assetUrl("assets/images/asset_030_cd75b0dd.png"),assetUrl("assets/images/asset_031_9002bd34.png"),assetUrl("assets/images/asset_032_58048fea.png"),assetUrl("assets/images/asset_033_c410109b.png"),assetUrl("assets/images/asset_034_ccf55cea.png"),assetUrl("assets/images/asset_035_22dc23c8.png"),assetUrl("assets/images/asset_036_6d97304c.png"),assetUrl("assets/images/asset_037_045179e8.png"),assetUrl("assets/images/asset_038_6ab98099.png"),assetUrl("assets/images/asset_039_70ec8196.png"),assetUrl("assets/images/asset_040_5b745118.png"),assetUrl("assets/images/asset_041_1382efdc.png"),assetUrl("assets/images/asset_042_0838f5a4.png"),assetUrl("assets/images/asset_043_00c95985.png"),assetUrl("assets/images/asset_044_c3fd10d8.png"),assetUrl("assets/images/asset_045_dd366cb2.png"),assetUrl("assets/images/asset_046_3830f197.png"),assetUrl("assets/images/asset_047_1ff5d20a.png"),assetUrl("assets/images/asset_048_e404be8a.png"),assetUrl("assets/images/asset_049_bce77cf3.png"),assetUrl("assets/images/asset_050_33a86818.png"),assetUrl("assets/images/asset_051_5c69014a.png"),assetUrl("assets/images/asset_052_2b379267.png"),assetUrl("assets/images/asset_053_9d24fda8.png"),assetUrl("assets/images/asset_054_539c0eb5.png"),assetUrl("assets/images/asset_055_1fa90de2.png"),assetUrl("assets/images/asset_056_1232db54.png"),assetUrl("assets/images/asset_057_e8f74da4.png"),assetUrl("assets/images/asset_058_d7f509c0.png"),assetUrl("assets/images/asset_059_e4a8e618.png"),assetUrl("assets/images/asset_060_c5092bcb.png"),assetUrl("assets/images/asset_061_a98a9b8e.png"),assetUrl("assets/images/asset_062_7cc13214.png"),assetUrl("assets/images/asset_063_00a21ec5.png"),assetUrl("assets/images/asset_064_a25d6f7d.png"),assetUrl("assets/images/asset_065_4f8386aa.png"),assetUrl("assets/images/asset_066_44be67ae.png"),assetUrl("assets/images/asset_067_441927f1.png"),assetUrl("assets/images/asset_068_b7b2a0cb.png"),assetUrl("assets/images/asset_069_160a4cc2.png"),assetUrl("assets/images/asset_070_71d9add4.png"),assetUrl("assets/images/asset_071_bae980c5.png"),assetUrl("assets/images/asset_072_1344036c.png"),assetUrl("assets/images/asset_073_940b1b6d.png"),assetUrl("assets/images/asset_074_cb59d00b.png"),assetUrl("assets/images/asset_075_d32ff114.png"),assetUrl("assets/images/asset_076_513262e2.png"),assetUrl("assets/images/asset_077_5a2450fd.png"),assetUrl("assets/images/asset_078_29200a7e.png"),assetUrl("assets/images/asset_079_f117d0cb.png"),assetUrl("assets/images/asset_080_4507f456.png"),assetUrl("assets/images/asset_081_3606a7c0.png"),assetUrl("assets/images/asset_082_94e05f0b.png"),assetUrl("assets/images/asset_083_1644c9b0.png"),assetUrl("assets/images/asset_084_245889ea.png"),assetUrl("assets/images/asset_085_d0ad84d4.png"),assetUrl("assets/images/asset_086_8a0d3494.png"),assetUrl("assets/images/asset_087_aa54e15d.png"),assetUrl("assets/images/asset_088_fc9b7150.png"),assetUrl("assets/images/asset_089_17c3ae21.png"),assetUrl("assets/images/asset_090_77e4391e.png"),assetUrl("assets/images/asset_091_6d8c34a6.png"),assetUrl("assets/images/asset_092_f29bd6c2.png"),assetUrl("assets/images/asset_093_aae1fffe.png")];
@@ -1019,6 +1082,8 @@ function animateBrowserFavicon(){
   }
   tick();
 }
-animateBrowserFavicon();
-startDiscoBallCanvas();
+if(!MOBILE_MODE){
+  animateBrowserFavicon();
+  startDiscoBallCanvas();
+}
 init();

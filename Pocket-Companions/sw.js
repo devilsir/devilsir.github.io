@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pocket-companions-v65-mobile-touch-actions';
+const CACHE_NAME = 'pocket-companions-v66-pandora-large-pet-collision';
 const LOCAL_ASSETS = [
   './',
   './index.html',
@@ -62,6 +62,7 @@ const LOCAL_ASSETS = [
   './assets/models/kate_todas_animacoes.glb',
   './assets/models/kiara_todas_animacoes.glb',
   './assets/models/lilith_todas_animacoes.glb',
+  './assets/models/pandora_todas_animacoes.glb',
   './assets/models/pacoca_todas_animacoes.glb',
   './assets/models/pietro_todas_animacoes.glb',
   './assets/models/simba_todas_animacoes.glb',

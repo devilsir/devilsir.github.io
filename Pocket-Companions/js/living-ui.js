@@ -4,6 +4,7 @@ import {
 } from './living-systems.js';
 import { PETS } from './config.js';
 import { getLanguage } from './i18n.js';
+import { speciesForPet } from './simulation/species-behaviors.js';
 
 const L = (en, pt) => getLanguage() === 'en' ? en : pt;
 const loc = (value) => typeof value === 'string' ? value : (getLanguage() === 'en' ? value?.en : value?.pt) || value?.en || '';
@@ -362,7 +363,7 @@ export class LivingUI {
   }
 
   render_activities(root) {
-    const species = ['apollo','lilith','pietro'].includes(this.store.active.companionId) ? 'cat' : 'dog';
+    const species = speciesForPet(this.store.active.companionId);
     this.heading(root, L('Activities inside the current 3D environment', 'Atividades dentro do ambiente 3D atual'), L('Play with the real companion model', 'Brinque com o modelo real do pet'), L('These activities move the companion and props through the room; they are not separate flat minigames.', 'Estas atividades movimentam o pet e objetos pelo ambiente; não são minijogos planos separados.'));
     const activities = [
       ['fetch', L('Fetch', 'Buscar'), L('Follow a thrown toy and bring it back.', 'Seguir um brinquedo lançado e trazê-lo de volta.'), 'any'],
