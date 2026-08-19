@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import vm from "node:vm";
+import { fileURLToPath } from "node:url";
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
+const bundle=await readFile(path.join(root,"js/game.bundle.js"),"utf8");
+
+function runtime(search=""){
+  const listeners=new Map(),storage=new Map(),nodes=new Map(),noop=()=>{};
+  const gradient={addColorStop:noop},canvasContext=new Proxy({imageSmoothingEnabled:false,createRadialGradient:()=>gradient,createLinearGradient:()=>gradient,createPattern:()=>({}),measureText:text=>({width:String(text).length*7}),getImageData:(x,y,w=1,h=1)=>({data:new Uint8ClampedArray(Math.max(1,w*h*4))})},{get:(target,key)=>key in target?target[key]:noop,set:(target,key,value)=>(target[key]=value,true)});
+  const style=()=>({setProperty:noop,removeProperty:noop});
+  const classList=()=>({add:noop,remove:noop,toggle:()=>false,contains:()=>false});
+  const node=id=>{if(nodes.has(id))return nodes.get(id);const value={id,hidden:false,disabled:false,value:"1",checked:false,dataset:{},style:style(),classList:classList(),parentElement:null,children:[],width:960,height:540,naturalWidth:64,naturalHeight:64,complete:true,paused:true,innerHTML:"",textContent:"",src:"",appendChild(child){child.parentElement=this;this.children.push(child);return child;},insertAdjacentHTML:noop,remove:noop,focus:noop,click:noop,select:noop,setAttribute:noop,removeAttribute:noop,addEventListener:noop,setPointerCapture:noop,releasePointerCapture:noop,hasPointerCapture:()=>false,getBoundingClientRect:()=>({left:0,top:0,width:960,height:540}),getContext:()=>canvasContext,querySelector:selector=>node(`${id} ${selector}`),querySelectorAll:()=>[],play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};value.parentElement=value;nodes.set(id,value);return value;};
+  const document={head:node("head"),body:node("body"),documentElement:node("html"),hidden:false,createElement:tag=>node(`created-${tag}-${nodes.size}`),createTextNode:text=>({textContent:text}),querySelector:selector=>node(selector),querySelectorAll:selector=>selector===".screen"?[node("title-screen"),node("exploration-screen"),node("battle-screen")]:[],getElementById:id=>node(id),addEventListener:noop,execCommand:()=>true};
+  class ImageStub{constructor(){this.complete=false;this.naturalWidth=64;this.naturalHeight=96;this.width=64;this.height=96;}set src(value){this._src=value;queueMicrotask(()=>{this.complete=true;this.onload?.();});}get src(){return this._src;}}
+  const location={search,protocol:"file:",hostname:"",href:`file:///jogo/index.html${search}`},performance={now:()=>Date.now()},navigator={getGamepads:()=>[],clipboard:{writeText:async()=>{}}},window={document,location,performance,navigator,addEventListener:(type,handler)=>{if(!listeners.has(type))listeners.set(type,[]);listeners.get(type).push(handler);},removeEventListener:noop,innerWidth:1280,innerHeight:720};
+  const context={console,document,window,location,performance,navigator,Image:ImageStub,ResizeObserver:class{observe(){}disconnect(){}},MutationObserver:class{observe(){}disconnect(){}},requestAnimationFrame:()=>1,cancelAnimationFrame:noop,setTimeout:(callback)=>{queueMicrotask(callback);return 1;},clearTimeout:noop,setInterval:()=>1,clearInterval:noop,queueMicrotask,structuredClone,URLSearchParams,URL:{createObjectURL:()=>"blob:test",revokeObjectURL:noop},Blob,crypto:{getRandomValues:array=>(array.fill(7),array)},localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,String(value)),removeItem:key=>storage.delete(key)},getComputedStyle:()=>({position:"relative"}),globalThis:null};
+  context.globalThis=context;window.window=window;window.globalThis=context;window.getComputedStyle=context.getComputedStyle;return{context,nodes,storage};
+}
+
+async function smoke(search,exerciseIsolation=false){
+  const {context}=runtime(search),errors=[];context.console={...console,error:(...args)=>errors.push(args.map(String).join(" ")),warn:()=>{}};vm.runInNewContext(bundle,context,{filename:"game.bundle.js",timeout:10000});for(let index=0;index<12;index++)await Promise.resolve();const dev=context.__VOZ_DEV__,initiallyEnabled=Boolean(dev?.enabled);let isolation=null;
+  if(exerciseIsolation&&dev){dev.disable();const baseline=structuredClone(dev.context.getState());baseline.flags.draft=false;baseline.flags.devSession=false;baseline.discoveredRegions=[0];baseline.unlockedForms=["base"];baseline.learnedSkills=["strike"];baseline.tower.unlocked=false;baseline.tower.currency=3;dev.context.setState(baseline);dev.enable();const active=dev.context.getState(),sanitized=dev.sanitizeState(active),temporary=active.discoveredRegions.length===10&&active.unlockedForms.length>1&&active.tower.unlocked&&active.tower.currency>=999,saveClean=sanitized.discoveredRegions.length===1&&sanitized.unlockedForms.length===1&&!sanitized.tower.unlocked&&sanitized.tower.currency===3;dev.disable();const restored=dev.context.getState(),restoredClean=restored.discoveredRegions.length===1&&restored.unlockedForms.length===1&&!restored.tower.unlocked&&restored.tower.currency===3&&!restored.flags.devSession;isolation={temporary,saveClean,restoredClean,valid:temporary&&saveClean&&restoredClean};}
+  return{search,devCreated:Boolean(dev),devEnabled:Boolean(dev?.enabled),initiallyEnabled,accessAllowed:Boolean(dev?.accessAllowed),isolation,errors};
+}
+
+const normal=await smoke(""),developer=await smoke("?dev=1",true),checks={normalBoot:normal.devCreated&&!normal.initiallyEnabled,devBoot:developer.devCreated&&developer.initiallyEnabled&&developer.accessAllowed,stateIsolation:developer.isolation?.valid===true,noErrors:normal.errors.length===0&&developer.errors.length===0};const result={valid:Object.values(checks).every(Boolean),checks,normal,developer};console.log(JSON.stringify(result,null,2));if(!result.valid)process.exitCode=1;

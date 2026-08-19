@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111e">
+  <meta name="description" content="Experiência interativa da Marcha dos Cátions: poesia, reações químicas e fluxograma analítico.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27%2307111e%27/%3E%3Cpath d=%27M23 10v15L13 46a7 7 0 0 0 6 10h26a7 7 0 0 0 6-10L41 25V10%27 fill=%27none%27 stroke=%27%2368e6ff%27 stroke-width=%274%27/%3E%3Cpath d=%27M18 43h28%27 stroke=%27%2353e3ca%27 stroke-width=%274%27/%3E%3C/svg%3E">
+  <title>Marcha dos Cátions — Laboratório Interativo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="is-intro">
+  <a class="skip-link" href="#experienceStage">Pular para a experiência</a>
+
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-grid"></div>
+    <div class="ambient-orb ambient-orb-a"></div>
+    <div class="ambient-orb ambient-orb-b"></div>
+    <div class="ambient-particles" id="ambientParticles"></div>
+  </div>
+
+  <div class="intro" id="intro" role="dialog" aria-label="Introdução à Marcha dos Cátions">
+    <button class="intro-skip" id="skipIntro" type="button">Pular introdução</button>
+    <div class="intro-mark" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <p>Laboratório poético de análise qualitativa</p>
+    <h1>Marcha dos Cátions</h1>
+    <div class="intro-scan"></div>
+  </div>
+
+  <div class="app-shell" id="appShell">
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-symbol" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M16 5v11L8 31a8 8 0 0 0 7 12h18a8 8 0 0 0 7-12l-8-15V5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M13 30h22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="19" cy="35" r="2" fill="currentColor"/><circle cx="27" cy="32" r="1.6" fill="currentColor"/><circle cx="31" cy="38" r="1.3" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <p class="eyebrow">Experiência científica interativa</p>
+          <h1>Marcha dos Cátions</h1>
+          <p class="subtitle">Poesia, experimentação e visualização da análise qualitativa em uma única jornada.</p>
+        </div>
+      </div>
+
+      <div class="header-meta">
+        <div class="section-chip" aria-live="polite">
+          <span class="section-chip-dot"></span>
+          <span id="currentSectionLabel">Estrofes 1 e 2</span>
+        </div>
+        <div class="header-actions" aria-label="Controles globais">
+          <button class="icon-button" id="soundToggle" type="button" aria-pressed="false" aria-label="Ativar sons sutis" title="Som: desativado">
+            <svg class="icon-sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 9c1.3 1.6 1.3 4.4 0 6M19 6c3 3.2 3 8.8 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="icon-sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m17 9 4 4m0-4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <button class="icon-button" id="legendButton" type="button" aria-haspopup="dialog" aria-controls="legendDialog" aria-label="Abrir legenda visual" title="Legenda visual">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="8" cy="17" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.5 7h7M10.5 17h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+          <button class="icon-button" id="aboutButton" type="button" aria-haspopup="dialog" aria-controls="aboutDialog" aria-label="Sobre este trabalho" title="Sobre este trabalho">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 10.8v6M12 7.2h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="progress-overview" aria-label="Progresso global">
+      <div class="progress-copy">
+        <span>Progresso da análise</span>
+        <strong id="globalProgressText">0%</strong>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="globalProgressBar">
+        <span id="globalProgressFill"></span>
+      </div>
+    </section>
+
+    <nav class="experiment-nav" aria-label="Linha do tempo dos experimentos" id="experimentNav">
+      <div class="nav-progress" aria-hidden="true"><span id="navProgressLine"></span></div>
+
+      <button class="nav-step is-active" type="button" data-index="0" data-target="scene1" aria-current="step">
+        <span class="nav-step-number">01</span>
+        <span class="nav-step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 3v5l-4 8a4 4 0 0 0 3.5 5.8h7A4 4 0 0 0 19 16l-4-8V3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 15h10" stroke="currentColor" stroke-width="1.7"/></svg>
+        </span>
+        <span class="nav-step-copy"><strong>Cloretos</strong><small>Estrofes 1 e 2</small></span>
+        <span class="nav-step-state" aria-hidden="true">✓</span>
+      </button>
+
+      <button class="nav-step" type="button" data-index="1" data-target="scene2">
+        <span class="nav-step-number">02</span>
+        <span class="nav-step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 18c3-1 3-4 3-7 0-4 2-7 6-7 3 0 5 2 5 5 0 5-6 6-6 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="5" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        </span>
+        <span class="nav-step-copy"><strong>Sulfetos ácidos</strong><small>Estrofe 3</small></span>
+        <span class="nav-step-state" aria-hidden="true">✓</span>
+      </button>
+
+      <button class="nav-step" type="button" data-index="2" data-target="scene3">
+        <span class="nav-step-number">03</span>
+        <span class="nav-step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 3h10M9 3v6l-4 8a3 3 0 0 0 2.7 4h8.6A3 3 0 0 0 19 17l-4-8V3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="16" r="1" fill="currentColor"/><circle cx="14" cy="18" r="1.2" fill="currentColor"/></svg>
+        </span>
+        <span class="nav-step-copy"><strong>Sulfeto de amônio</strong><small>Estrofe 4</small></span>
+        <span class="nav-step-state" aria-hidden="true">✓</span>
+      </button>
+
+      <button class="nav-step" type="button" data-index="3" data-target="scene4">
+        <span class="nav-step-number">04</span>
+        <span class="nav-step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3c1 4-3 5-1 9 1-2 3-2 4-4 3 4 3 9 0 12-3 3-8 1-9-3-1-4 2-6 4-8 0 3 0 6 2 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="nav-step-copy"><strong>Chama e seletivos</strong><small>Estrofes 5 e 6</small></span>
+        <span class="nav-step-state" aria-hidden="true">✓</span>
+      </button>
+
+      <button class="nav-step" type="button" data-index="4" data-target="scene5">
+        <span class="nav-step-number">05</span>
+        <span class="nav-step-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="16" width="7" height="5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 5.5h4M17.5 8v8M7 8v10h7" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        </span>
+        <span class="nav-step-copy"><strong>Fluxograma</strong><small>Síntese analítica</small></span>
+        <span class="nav-step-state" aria-hidden="true">✓</span>
+      </button>
+    </nav>
+
+    <main id="experienceStage" class="experience-stage" tabindex="-1">
+      <section class="control-deck" aria-label="Controles da experiência">
+        <div class="mode-switch" role="group" aria-label="Modo de interação">
+          <button type="button" class="mode-button is-active" data-mode="guided" aria-pressed="true">
+            <span aria-hidden="true">▶</span> Guiado
+          </button>
+          <button type="button" class="mode-button" data-mode="explore" aria-pressed="false">
+            <span aria-hidden="true">⌁</span> Exploração
+          </button>
+        </div>
+
+        <div class="transport" role="group" aria-label="Reprodução da reação">
+          <button type="button" class="control-button" id="previousStep" aria-label="Etapa anterior" title="Etapa anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M18 6l-8 6 8 6V6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="control-button control-button-primary" id="playPause" aria-label="Reproduzir experiência" title="Reproduzir">
+            <svg class="play-shape" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" fill="currentColor"/></svg>
+            <svg class="pause-shape" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+          <button type="button" class="control-button" id="nextStep" aria-label="Próxima etapa" title="Próxima etapa">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5v14M6 6l8 6-8 6V6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="control-button" id="replayStep" aria-label="Repetir reação atual" title="Repetir reação atual">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.7M4 4v4.7h4.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="control-button" id="resetScene" aria-label="Reiniciar cena" title="Reiniciar cena">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6v5h5M5.5 10.5A7.5 7.5 0 1 1 7 17.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <label class="speed-control" for="speedSelect">
+          <span>Velocidade</span>
+          <select id="speedSelect" name="speed">
+            <option value="0.75">0,75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1,25×</option>
+            <option value="1.5">1,5×</option>
+          </select>
+        </label>
+
+        <button type="button" class="secondary-action" id="knowledgeButton">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6l1 3 3 2v8l-3 2-1 2H9l-1-2-3-2V9l3-2 1-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m9 12 2 2 4-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Testar observação
+        </button>
+      </section>
+
+      <section class="step-readout" aria-label="Etapa atual">
+        <div class="step-readout-copy">
+          <span class="step-kicker" id="modeLabel">Modo guiado</span>
+          <strong id="stepDescription">Pronto para iniciar a sequência dos cloretos.</strong>
+        </div>
+        <label class="scrubber-wrap" for="stepScrubber">
+          <span class="sr-only">Navegar pelas linhas do poema</span>
+          <input type="range" id="stepScrubber" min="0" max="13" value="0" step="1">
+          <span class="scrubber-progress" id="scrubberProgress" aria-hidden="true"></span>
+        </label>
+        <span class="step-counter" id="stepCounter">01 / 14</span>
+      </section>
+
+      <section class="frame-stage" id="frameStage" aria-live="polite">
+        <div class="frame-loader" id="frameLoader" aria-hidden="true">
+          <div class="loader-flask"><span></span></div>
+          <p>Preparando a bancada…</p>
+        </div>
+        <iframe id="scene1" class="scene-frame is-active" src="scenes/scene-1.html" title="Experimento das estrofes 1 e 2: cloretos" data-index="0"></iframe>
+        <iframe id="scene2" class="scene-frame" src="scenes/scene-2.html" title="Experimento da estrofe 3: sulfetos em meio ácido" data-index="1" hidden></iframe>
+        <iframe id="scene3" class="scene-frame" src="scenes/scene-3.html" title="Experimento da estrofe 4: sulfeto de amônio" data-index="2" hidden></iframe>
+        <iframe id="scene4" class="scene-frame" src="scenes/scene-4.html" title="Experimento das estrofes 5 e 6: alcalino-terrosos e alcalinos" data-index="3" hidden></iframe>
+        <iframe id="scene5" class="scene-frame scene-frame-flow" src="scenes/scene-5.html" title="Fluxograma editável da Marcha dos Cátions" data-index="4" hidden></iframe>
+      </section>
+    </main>
+
+    <footer class="context-footer">
+      <div>
+        <strong id="footerSectionTitle">Grupo dos cloretos</strong>
+        <span id="footerSectionText">Observe a formação do precipitado branco e sua resposta à amônia.</span>
+      </div>
+      <button type="button" class="text-button" id="resetProgress">Reiniciar progresso</button>
+    </footer>
+  </div>
+
+  <dialog class="glass-dialog" id="aboutDialog" aria-labelledby="aboutTitle">
+    <form method="dialog" class="dialog-shell">
+      <div class="dialog-header">
+        <div><span class="dialog-kicker">Sobre este trabalho</span><h2 id="aboutTitle">Marcha dos Cátions</h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
+      </div>
+      <div class="dialog-content">
+        <p>Uma interpretação interativa do poema científico que conduz a marcha analítica dos cátions por observações, reagentes e testes de identificação.</p>
+        <div class="citation-card">
+          <span>Título e fonte original</span>
+          <strong>Marcha dos Cátions — Professor Pedro B. de Andrade, adaptado.</strong>
+          <p>Revista Medicamenta, vol. III, nº 29, maio de 1924.</p>
+        </div>
+        <p class="dialog-note">O conteúdo científico, a ordem das reações, as fórmulas, os versos e as explicações originais foram preservados.</p>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="glass-dialog" id="legendDialog" aria-labelledby="legendTitle">
+    <form method="dialog" class="dialog-shell">
+      <div class="dialog-header">
+        <div><span class="dialog-kicker">Linguagem visual</span><h2 id="legendTitle">Legenda da experiência</h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
+      </div>
+      <div class="legend-grid dialog-content">
+        <div class="legend-item"><span class="legend-swatch swatch-hcl"></span><div><strong>HCl</strong><small>Ácido clorídrico / grupo dos cloretos</small></div></div>
+        <div class="legend-item"><span class="legend-swatch swatch-h2s"></span><div><strong>H₂S</strong><small>Sulfetos em meio ácido</small></div></div>
+        <div class="legend-item"><span class="legend-swatch swatch-ammonium"></span><div><strong>(NH₄)₂S</strong><small>Sulfeto de amônio</small></div></div>
+        <div class="legend-item"><span class="legend-symbol precipitate"></span><div><strong>Precipitado</strong><small>Partículas formadas e sedimentadas</small></div></div>
+        <div class="legend-item"><span class="legend-symbol dissolve"></span><div><strong>Dissolução</strong><small>Fragmentação e clareamento da solução</small></div></div>
+        <div class="legend-item"><span class="legend-symbol gas"></span><div><strong>Liberação de gás</strong><small>Bolhas e deslocamento suave do líquido</small></div></div>
+        <div class="legend-item"><span class="legend-symbol flame"></span><div><strong>Teste de chama</strong><small>Emissão característica para identificação</small></div></div>
+        <div class="legend-item"><span class="legend-symbol complete">✓</span><div><strong>Reação concluída</strong><small>Etapa visitada ou finalizada</small></div></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="glass-dialog knowledge-dialog" id="knowledgeDialog" aria-labelledby="knowledgeTitle">
+    <form method="dialog" class="dialog-shell" id="knowledgeForm">
+      <div class="dialog-header">
+        <div><span class="dialog-kicker">Teste sua observação</span><h2 id="knowledgeTitle">O que aconteceu na reação?</h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Fechar">×</button>
+      </div>
+      <div class="dialog-content">
+        <p id="knowledgeQuestion"></p>
+        <div class="answer-grid" id="knowledgeAnswers"></div>
+        <div class="knowledge-feedback" id="knowledgeFeedback" role="status" aria-live="polite"></div>
+        <div class="dialog-actions">
+          <button type="button" class="secondary-action" id="retryKnowledge" hidden>Tentar novamente</button>
+          <button type="submit" class="text-button">Pular / fechar</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-only" id="screenReaderStatus" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

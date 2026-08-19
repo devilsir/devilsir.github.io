@@ -1,0 +1,2002 @@
+import "@babylonjs/core/Collisions/collisionCoordinator";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { Scene } from "@babylonjs/core/scene";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Ray } from "@babylonjs/core/Culling/ray";
+import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
+import { SpotLight } from "@babylonjs/core/Lights/spotLight";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { SettingsStore } from "../systems/Settings.js";
+import { SaveSystem, DEFAULT_CHAPTER2_SAVE, DEFAULT_CHAPTER3_SAVE, DEFAULT_CHAPTER4_SAVE, DEFAULT_CHAPTER5_SAVE } from "../systems/SaveSystem.js";
+import { GameUI } from "../ui/GameUI.js";
+import { AudioManager } from "../systems/AudioManager.js";
+import { PlayerController } from "./PlayerController.js";
+import { InteractionSystem } from "../systems/InteractionSystem.js";
+import { Inventory } from "../systems/Inventory.js";
+import { ObjectiveSystem } from "../systems/ObjectiveSystem.js";
+import { ProceduralMaterials } from "../world/ProceduralMaterials.js";
+import { FireSystem } from "../systems/FireSystem.js";
+import { GuidePathSystem } from "../systems/GuidePathSystem.js";
+import { HorrorLightingSystem } from "../systems/HorrorLightingSystem.js";
+import { ConstructionMode } from "../systems/ConstructionMode.js";
+import { ITEM_CATALOG, WorldBuilder } from "../world/WorldBuilder.js";
+import { BodyBoss } from "../entities/BodyBoss.js";
+export class Game {
+    canvas;
+    engine;
+    scene;
+    settingsStore = new SettingsStore();
+    saveSystem = new SaveSystem();
+    ui;
+    audio;
+    materials;
+    player;
+    interaction;
+    inventory;
+    objectives;
+    fire;
+    world;
+    guide;
+    horrorLighting;
+    construction;
+    chapter2;
+    chapter3;
+    chapter4;
+    chapter5;
+    itemCatalog = { ...ITEM_CATALOG };
+    safeMode;
+    boss;
+    menuRoot;
+    menuProjector;
+    menuBodyParts = [];
+    stage = "menu";
+    paused = false;
+    inventoryOpen = false;
+    initialized = false;
+    prologueElapsed = 0;
+    screamPlayed = false;
+    ambientEventIndex = 0;
+    ambientTimer = 0;
+    nextLightning = 3;
+    debugEnabled = false;
+    lastCheckpoint = "prologue-start";
+    chapterTransitionStarted = false;
+    fireDamageCooldown = 0;
+    collisionDebugVisible = false;
+    endings = new Set();
+    worldBuilt = false;
+    chapter2Built = false;
+    chapter3Built = false;
+    chapter4Built = false;
+    chapter5Built = false;
+    movementDebugOverlay = null;
+    movementDebugAccumulator = 0;
+    maxLives = 3;
+    lives = 3;
+    runtimeCheckpointPositions = new Map();
+    constructionRestorePlayer = false;
+    constructionRestoreGuide = false;
+    respawning = false;
+    menuActionBusy = false;
+    constructor(canvas, uiRoot) {
+        this.canvas = canvas;
+        this.safeMode = new URLSearchParams(location.search).get("safe") === "1";
+        if (this.safeMode) {
+            this.settingsStore.value = {
+                ...this.settingsStore.value,
+                performancePreset: "performance",
+                reducedCameraShake: true,
+                reducedFlashing: true,
+                reducedHeadBob: true
+            };
+        }
+        this.engine = new Engine(canvas, !this.safeMode, {
+            preserveDrawingBuffer: false,
+            stencil: true,
+            antialias: true,
+            powerPreference: this.safeMode ? "low-power" : "high-performance",
+            disableWebGL2Support: this.safeMode
+        });
+        this.scene = new Scene(this.engine);
+        this.scene.collisionsEnabled = true;
+        this.scene.clearColor = new Color4(0.012, 0.014, 0.019, 1);
+        this.scene.skipPointerMovePicking = true;
+        this.ui = new GameUI(uiRoot, this.settingsStore.value);
+        this.audio = new AudioManager(this.settingsStore.value);
+        this.materials = new ProceduralMaterials(this.scene, this.safeMode ? 128 : this.settingsStore.value.performancePreset === "performance" ? 256 : 512);
+        this.inventory = new Inventory((items) => {
+            this.ui.updateStatus(this.player?.health ?? 100, this.fire?.fuel ?? 0, items, this.lives, this.player?.armor ?? 0);
+            this.fire?.setTorchAvailable(items.some((item) => item.id === "torch" || item.id === "replacementTorch"));
+        });
+        this.objectives = new ObjectiveSystem((objective) => {
+            this.ui.setObjective(objective.text);
+            if (objective.id !== "none")
+                this.audio.objective();
+            this.guide?.invalidate();
+        });
+        this.player = new PlayerController(this.scene, canvas, this.audio, this.settingsStore.value, {
+            onPause: () => this.togglePause(),
+            onTorchToggle: () => this.toggleTorch(),
+            onInteract: () => this.interaction?.interact(),
+            onFireUse: () => this.usePrimaryAction(false),
+            onThrow: () => this.throwObject(),
+            onSoundDevice: () => this.deploySoundDevice(),
+            onRearDoor: () => this.closeRearDoor(),
+            onHeavyAttack: () => this.usePrimaryAction(true),
+            onContextAction: () => this.contextAction(),
+            onFootstep: (position, intensity, surface, sprinting, crouching) => {
+                if (this.stage === "chapter3")
+                    this.chapter3?.emitPlayerMovementNoise(intensity, surface, sprinting, crouching);
+                if (this.stage === "chapter5")
+                    this.chapter5?.emitPlayerMovementNoise(intensity, surface, sprinting, crouching);
+            }
+        });
+        this.interaction = new InteractionSystem(this.scene, this.player.camera, () => this.player.collider.getAbsolutePosition(), (prompt) => this.ui.setInteractionPrompt(prompt));
+        this.fire = new FireSystem(this.scene, this.player.camera, this.audio, this.materials);
+        this.fire.setTorchAvailable(false);
+        this.world = new WorldBuilder(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, {
+            onEnteredWonderWorld: () => this.enterWonderWorld(),
+            onPowerRestored: () => this.checkpoint("electrical-restored", "chapter1"),
+            onPuzzleSolved: () => this.checkpoint("body-puzzles", "chapter1"),
+            onBossRequested: () => this.startBoss(),
+            onBodyCardObtained: () => this.checkpoint("body-card", "chapter1"),
+            onChapterTransition: () => this.startChapterTransition(),
+            onPlayerDamaged: () => void this.handleRespawn("Você recupera o fôlego no último ponto seguro."),
+            onCheckpointActivated: (id, position) => this.activateSurvivalCheckpoint(id, position)
+        });
+        this.guide = new GuidePathSystem(this.scene, this.materials, this.player, () => this.guideRouteForCurrentObjective());
+        this.boss = new BodyBoss(this.scene, this.materials, this.player, this.fire, this.audio, this.ui, {
+            onPhaseChanged: (phase) => this.checkpoint(`body-phase-${phase}`, "boss", phase),
+            onDefeated: () => this.finishBoss(),
+            onHint: (text) => this.ui.toast(text, 3400),
+            canUseItem: () => this.inventory.has("bandage"),
+            onUseItem: () => this.inventory.remove("bandage"),
+            onArenaDamage: (severity) => this.world.damageArenaCover(severity)
+        });
+        this.world.attachBoss(this.boss);
+        const backdrop = this.createMenuBackdrop();
+        this.menuRoot = backdrop.root;
+        this.menuProjector = backdrop.projector;
+        this.setupSceneLighting();
+        this.horrorLighting = new HorrorLightingSystem(this.scene, this.player.camera, this.safeMode);
+        this.construction = new ConstructionMode(this.scene, this.canvas, this.player, this.materials, this.interaction, this.inventory, this.fire, () => this.itemCatalog, {
+            onActiveChanged: (active) => this.handleConstructionModeChanged(active),
+            onToast: (message, duration) => this.ui.toast(message, duration),
+            onLoadingStart: (message, detail) => this.ui.showLoading(message, detail),
+            onLoadingUpdate: (message, detail, progress) => this.ui.updateLoading(message, detail, progress),
+            onLoadingEnd: () => this.ui.hideLoading(),
+            getCurrentMap: () => this.constructionMapId(),
+            onCheckpoint: (id, position) => this.activateSurvivalCheckpoint(id, position),
+            onPlayerDeath: () => void this.handleRespawn("A criatura derruba você. O último checkpoint responde.")
+        });
+        this.bindUI();
+        this.bindGlobalEvents();
+        this.applySettings(this.settingsStore.value);
+        if (new URLSearchParams(location.search).get("movementdebug") === "1")
+            this.installMovementDiagnostics();
+    }
+    async initialize() {
+        if (this.initialized)
+            return;
+        this.initialized = true;
+        // Start rendering and show the menu before constructing the campaign. Building all
+        // five chapters synchronously here previously left slower browsers on a blank page.
+        this.enterMenuMode();
+        this.ui.setContinueEnabled(this.saveSystem.hasSave());
+        this.engine.runRenderLoop(() => {
+            const deltaSeconds = Math.min(0.05, this.engine.getDeltaTime() / 1000);
+            this.update(deltaSeconds);
+            this.scene.render();
+        });
+        window.addEventListener("resize", () => this.engine.resize());
+        this.ui.hideLoading();
+        if (this.debugEnabled) {
+            // Debug chapter selection expects every destination to exist. Build incrementally
+            // while keeping a visible loading screen instead of locking the first frame.
+            await this.ensureBuiltThrough(5, "Preparando ferramentas de desenvolvimento…");
+        }
+        if (sessionStorage.getItem("atracao-final-auto-new") === "1") {
+            sessionStorage.removeItem("atracao-final-auto-new");
+            await this.startNewGame();
+        }
+    }
+    async ensureChapter2Created() {
+        if (this.chapter2)
+            return this.chapter2;
+        const { Chapter2World, CHAPTER2_ITEMS } = await import("../world/Chapter2World.js");
+        Object.assign(this.itemCatalog, CHAPTER2_ITEMS);
+        this.chapter2 = new Chapter2World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+            onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter2"),
+            onChapterComplete: () => void this.finishChapter2(),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
+        });
+        return this.chapter2;
+    }
+    async ensureChapter3Created() {
+        if (this.chapter3)
+            return this.chapter3;
+        const { Chapter3World, CHAPTER3_ITEMS } = await import("../world/Chapter3World.js");
+        Object.assign(this.itemCatalog, CHAPTER3_ITEMS);
+        this.chapter3 = new Chapter3World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+            onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter3"),
+            onChapterComplete: () => void this.finishChapter3(),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
+        });
+        return this.chapter3;
+    }
+    async ensureChapter4Created() {
+        if (this.chapter4)
+            return this.chapter4;
+        const { Chapter4World, CHAPTER4_ITEMS } = await import("../world/Chapter4World.js");
+        Object.assign(this.itemCatalog, CHAPTER4_ITEMS);
+        this.chapter4 = new Chapter4World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+            onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter4"),
+            onChapterComplete: () => void this.finishChapter4(),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto estável da prisão."),
+            onReturnMenu: () => {
+                this.saveSystem.write(this.currentSavePayload());
+                this.enterMenuMode();
+            },
+            onEndingDiscovered: (endingId) => {
+                this.endings.add(endingId);
+                this.checkpoint("bad-ending-retry", "chapter4");
+            }
+        });
+        return this.chapter4;
+    }
+    async ensureChapter5Created() {
+        if (this.chapter5)
+            return this.chapter5;
+        const { Chapter5World, CHAPTER5_ITEMS } = await import("../world/Chapter5World.js");
+        Object.assign(this.itemCatalog, CHAPTER5_ITEMS);
+        this.chapter5 = new Chapter5World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+            onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter5"),
+            onChapterComplete: () => this.finishChapter5(),
+            onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto seguro com Noah."),
+            onEndingDiscovered: (endingId) => {
+                this.endings.add(endingId);
+                this.saveSystem.write(this.currentSavePayload());
+            },
+            getEndingCount: () => this.endings.size,
+            onReturnMenu: () => {
+                this.saveSystem.write(this.currentSavePayload());
+                this.enterMenuMode();
+            }
+        });
+        return this.chapter5;
+    }
+    requireChapter2() {
+        if (!this.chapter2)
+            throw new Error("O Capítulo 2 ainda não foi carregado.");
+        return this.chapter2;
+    }
+    requireChapter3() {
+        if (!this.chapter3)
+            throw new Error("O Capítulo 3 ainda não foi carregado.");
+        return this.chapter3;
+    }
+    requireChapter4() {
+        if (!this.chapter4)
+            throw new Error("O Capítulo 4 ainda não foi carregado.");
+        return this.chapter4;
+    }
+    requireChapter5() {
+        if (!this.chapter5)
+            throw new Error("O Capítulo 5 ainda não foi carregado.");
+        return this.chapter5;
+    }
+    async ensureBuiltThrough(chapter, message) {
+        this.ui.showLoading(message, "Carregando módulos e geometria procedural.");
+        try {
+            await this.yieldToBrowser();
+            if (!this.worldBuilt) {
+                this.ui.updateLoading("Construindo o estacionamento e o Wonder World…", "Criando pisos, paredes, portas, carros e colisões.", 22);
+                this.world.build();
+                this.worldBuilt = true;
+                await this.yieldToBrowser();
+            }
+            if (chapter >= 2 && !this.chapter2Built) {
+                this.ui.updateLoading("Carregando o departamento de modelagem…", "Importando os sistemas do Capítulo 2.", 34);
+                const chapter2 = await this.ensureChapter2Created();
+                await this.yieldToBrowser();
+                this.ui.updateLoading("Construindo o departamento de modelagem…", "Montando salas, puzzles e inimigos.", 44);
+                chapter2.build();
+                this.chapter2Built = true;
+                await this.yieldToBrowser();
+            }
+            if (chapter >= 3 && !this.chapter3Built) {
+                this.ui.updateLoading("Carregando a caixa de sustos…", "Importando os sistemas do Capítulo 3.", 52);
+                const chapter3 = await this.ensureChapter3Created();
+                await this.yieldToBrowser();
+                this.ui.updateLoading("Construindo a caixa de sustos…", "Montando atrações, rotas e ameaças.", 60);
+                chapter3.build();
+                this.chapter3Built = true;
+                await this.yieldToBrowser();
+            }
+            if (chapter >= 4 && !this.chapter4Built) {
+                this.ui.updateLoading("Carregando a prisão subterrânea…", "Importando os sistemas do Capítulo 4.", 67);
+                const chapter4 = await this.ensureChapter4Created();
+                await this.yieldToBrowser();
+                this.ui.updateLoading("Construindo a prisão subterrânea…", "Criando celas, corredores e eventos.", 74);
+                chapter4.build();
+                this.chapter4Built = true;
+                await this.yieldToBrowser();
+            }
+            if (chapter >= 5 && !this.chapter5Built) {
+                this.ui.updateLoading("Carregando os arquivos centrais…", "Importando os sistemas do Capítulo 5.", 81);
+                const chapter5 = await this.ensureChapter5Created();
+                await this.yieldToBrowser();
+                this.ui.updateLoading("Construindo os arquivos centrais…", "Finalizando o último setor da campanha.", 88);
+                chapter5.build();
+                this.chapter5Built = true;
+                await this.yieldToBrowser();
+            }
+            this.ui.updateLoading("Finalizando a cena…", "Atualizando iluminação, seleção de objetos e colisões.", 94);
+            this.construction.rescanAndApply();
+            this.horrorLighting.rescanLights();
+            await this.settleLoadingFrames(2);
+        }
+        catch (error) {
+            this.ui.showFatalError(error);
+            throw error;
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+    }
+    yieldToBrowser() {
+        return new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
+    }
+    async settleLoadingFrames(frameCount = 2) {
+        for (let frame = 0; frame < frameCount; frame += 1)
+            await this.yieldToBrowser();
+        await new Promise((resolve) => window.setTimeout(resolve, 35));
+    }
+    bindUI() {
+        this.ui.bindMenu((action) => void this.handleMenuAction(action));
+        this.ui.bindPauseButtons();
+    }
+    bindGlobalEvents() {
+        const unlockAudio = () => {
+            window.removeEventListener("pointerdown", unlockAudio);
+            window.removeEventListener("keydown", unlockAudio);
+            void this.audio.unlock().then(() => {
+                if (this.stage === "menu" && this.audio.unlocked)
+                    this.audio.startProjector();
+            }).catch((error) => {
+                console.warn("O áudio continuará desativado até o navegador permitir a reprodução.", error);
+            });
+        };
+        window.addEventListener("pointerdown", unlockAudio);
+        window.addEventListener("keydown", unlockAudio);
+        window.addEventListener("keydown", (event) => {
+            if (!event.repeat
+                && (event.code === "KeyE" || event.code === "Escape")
+                && this.stage !== "menu"
+                && this.ui.dismissGameplayText()) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+            if (event.code === "KeyE" && !event.repeat && this.stage !== "menu" && !this.paused && !this.inventoryOpen) {
+                event.preventDefault();
+                this.interaction.interact();
+            }
+            if (event.code === "Tab") {
+                event.preventDefault();
+                if (!event.repeat)
+                    this.toggleInventory();
+            }
+            if (event.code === "KeyH" && !event.repeat && this.stage !== "menu" && !this.paused && !this.inventoryOpen) {
+                event.preventDefault();
+                this.toggleGuide();
+            }
+            if (event.code === "Backquote" && this.debugEnabled)
+                this.toggleDebug();
+            if (event.code === "KeyP" && this.debugEnabled)
+                this.saveSystem.write(this.currentSavePayload());
+        }, { capture: true });
+        document.addEventListener("pointerlockchange", () => {
+            if (this.stage !== "menu" && !this.paused && document.pointerLockElement !== this.canvas) {
+                this.ui.toast("Clique no jogo para retomar o controle do mouse.", 1800);
+            }
+        });
+        this.debugEnabled = new URLSearchParams(location.search).get("debug") === "1";
+    }
+    async handleMenuAction(action) {
+        const startsLoading = action === "new" || action === "continue" || action === "load";
+        if (startsLoading && this.menuActionBusy)
+            return;
+        if (startsLoading)
+            this.menuActionBusy = true;
+        try {
+            await this.audio.unlock();
+            this.audio.uiClick();
+            if (action === "new") {
+                this.endings = new Set(this.saveSystem.getEndingGallery());
+                this.saveSystem.clear();
+                if (this.hasRuntimeProgress()) {
+                    this.ui.showLoading("Reiniciando a campanha…", "Limpando a sessão atual e reconstruindo o Wonder World.");
+                    this.player.setEnabled(false);
+                    this.player.releasePointerLock();
+                    sessionStorage.setItem("atracao-final-auto-new", "1");
+                    await this.yieldToBrowser();
+                    location.reload();
+                    return;
+                }
+                await this.startNewGame();
+            }
+            else if (action === "continue" || action === "load") {
+                const save = this.saveSystem.load();
+                if (save)
+                    await this.loadGame(save);
+                else
+                    this.ui.toast("Nenhum jogo salvo foi encontrado.");
+            }
+            else if (action === "tips") {
+                this.openTips(true);
+            }
+            else if (action === "settings") {
+                this.openSettings(false, true);
+            }
+            else if (action === "accessibility") {
+                this.openSettings(true, true);
+            }
+            else if (action === "credits") {
+                this.ui.showCredits();
+            }
+        }
+        finally {
+            if (startsLoading)
+                this.menuActionBusy = false;
+        }
+    }
+    hasRuntimeProgress() {
+        return this.prologueElapsed > 0
+            || this.world.enteredWonderWorld
+            || this.world.solvedPuzzles.size > 0
+            || this.inventory.list().length > 0
+            || this.world.bodyDefeated
+            || Boolean(this.chapter2?.active)
+            || Boolean(this.chapter3?.active)
+            || Boolean(this.chapter4?.active)
+            || Boolean(this.chapter5?.active);
+    }
+    async startNewGame() {
+        this.ui.showLoading("Iniciando nova campanha…", "Preparando o estacionamento, as colisões e o estado inicial.");
+        this.ui.hideMenu();
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        try {
+            await this.yieldToBrowser();
+            await this.ensureBuiltThrough(1, "Preparando o prólogo…");
+            this.ui.updateLoading("Organizando o inventário…", "Removendo o progresso anterior e posicionando os objetos.", 68);
+            this.inventory.restore([], this.itemCatalog);
+            this.syncTorchAvailability();
+            this.inventoryOpen = false;
+            this.ui.hideInventory();
+            this.stage = "prologue";
+            this.chapterTransitionStarted = false;
+            this.fireDamageCooldown = 0;
+            this.menuProjector.intensity = 0;
+            this.audio.startProjector();
+            this.ui.updateLoading("Preparando o filme de abertura…", "Sincronizando áudio, interface e câmera.", 88);
+            await this.settleLoadingFrames(2);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        await this.ui.playOpeningFilm(() => undefined);
+        this.ui.showLoading("Entrando no estacionamento…", "Finalizando câmera, objetivos e iluminação.");
+        try {
+            this.ui.ensureGameplayVisible();
+            this.audio.stopLoop("projector");
+            this.audio.startRain();
+            this.audio.startHorrorDrone();
+            this.menuRoot.setEnabled(false);
+            this.player.teleport(this.world.checkpoints.prologue.clone(), 0);
+            this.player.health = 100;
+            this.player.armor = 0;
+            this.lives = this.maxLives;
+            this.guide.setEnabled(this.settingsStore.value.guideLightEnabled !== false);
+            this.fire.fuel = 0;
+            this.fire.torchLit = false;
+            this.ui.showHud();
+            this.objectives.set("wait-friends", "AGUARDE SEUS AMIGOS RETORNAREM.");
+            this.prologueElapsed = 0;
+            this.screamPlayed = false;
+            this.ambientTimer = 4;
+            this.lastCheckpoint = "prologue-start";
+            this.checkpoint("prologue-start", "prologue");
+            this.ui.updateLoading("Tudo pronto.", "Liberando os controles…", 96);
+            await this.settleLoadingFrames(3);
+            this.player.setEnabled(true);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        this.ui.showSubtitle("Protagonista", "Isso é uma péssima ideia. Eu vou esperar aqui fora.", 4300);
+        this.ui.toast("WASD para andar · E interage · F acende a tocha · H mostra o caminho · Tab inventário · F2 construção", 6800);
+    }
+    async loadGame(save) {
+        this.ui.showLoading("Carregando jogo salvo…", "Reconstruindo o cenário e restaurando o último checkpoint.");
+        this.ui.hideMenu();
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        try {
+            await this.yieldToBrowser();
+
+        const requiredChapter = save.stage === "chapter5" || save.stage === "campaign-complete" || save.stage === "chapter5-transition" ? 5
+            : save.stage === "chapter4" || save.stage === "chapter4-transition" ? 4
+                : save.stage === "chapter3" || save.stage === "chapter3-transition" ? 3
+                    : save.stage === "chapter2" || save.stage === "chapter2-transition" ? 2
+                        : 1;
+        await this.ensureBuiltThrough(requiredChapter, "Restaurando o Wonder World…");
+        this.ui.hideMenu();
+        this.menuRoot.setEnabled(false);
+        this.ui.ensureGameplayVisible();
+        this.inventoryOpen = false;
+        this.ui.hideInventory();
+        this.stage = save.stage;
+        this.player.health = save.playerHealth;
+        this.player.armor = save.playerArmor;
+        this.lives = save.lives;
+        this.guide.setEnabled(this.settingsStore.value.guideLightEnabled !== false);
+        this.fire.fuel = save.torchFuel;
+        this.world.restoreProgress(save.inventory, save.solvedPuzzles, save.powerRestored, save.checkpoint, save.openedContainers, save.lootedContainers, save.activatedCheckpoints);
+        this.inventory.restore(save.inventory, this.itemCatalog);
+        this.syncTorchAvailability();
+        this.lastCheckpoint = save.checkpoint;
+        this.runtimeCheckpointPositions.set(save.checkpoint, Vector3.FromArray(save.checkpointPosition));
+        this.endings = new Set(save.endings);
+        this.objectives.set(save.objectiveId, this.objectiveTextFor(save.objectiveId));
+        if (save.stage === "prologue") {
+            this.teleportToSafePosition(this.destinationForCheckpoint(save.checkpoint, save.stage));
+            this.player.setEnabled(true);
+            this.audio.startRain();
+            this.prologueElapsed = 20;
+            this.screamPlayed = true;
+        }
+        else if (save.stage === "chapter5" || save.stage === "campaign-complete") {
+            this.world.enteredWonderWorld = true;
+            this.audio.startInteriorHum();
+            this.requireChapter5().restore(save.chapter5, save.checkpoint);
+            if (save.stage === "campaign-complete")
+                this.player.setEnabled(false);
+        }
+        else if (save.stage === "chapter4" || save.stage === "chapter5-transition") {
+            this.world.enteredWonderWorld = true;
+            this.audio.startInteriorHum();
+            this.requireChapter4().restore(save.chapter4, save.checkpoint);
+            if (save.stage === "chapter5-transition") {
+                this.player.setEnabled(false);
+                this.ui.hideLoading();
+                await this.finishChapter4();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
+            }
+        }
+        else if (save.stage === "chapter3" || save.stage === "chapter4-transition") {
+            this.world.enteredWonderWorld = true;
+            this.audio.startInteriorHum();
+            this.requireChapter3().restore(save.chapter3, save.checkpoint);
+            if (save.stage === "chapter4-transition") {
+                this.player.setEnabled(false);
+                this.ui.hideLoading();
+                await this.finishChapter3();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
+            }
+        }
+        else if (save.stage === "chapter2" || save.stage === "chapter3-transition") {
+            this.world.enteredWonderWorld = true;
+            this.audio.startInteriorHum();
+            this.requireChapter2().restore(save.chapter2, save.checkpoint);
+            if (save.stage === "chapter3-transition") {
+                this.player.setEnabled(false);
+                this.ui.hideLoading();
+                await this.finishChapter2();
+                this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
+            }
+        }
+        else {
+            this.world.enteredWonderWorld = true;
+            this.audio.startInteriorHum();
+            this.teleportToSafePosition(this.destinationForCheckpoint(save.checkpoint, save.stage));
+            this.player.setEnabled(true);
+        }
+        // Chapter restore routines also restore their own animation state and may
+        // briefly teleport to an authored room centre. The save now carries the exact
+        // collision-free checkpoint position, so make that the final authority.
+        if (!["chapter2-transition", "chapter3-transition", "chapter4-transition", "chapter5-transition", "campaign-complete"].includes(save.stage)) {
+            this.teleportToSafePosition(this.destinationForCheckpoint(save.checkpoint, save.stage));
+        }
+        if (save.checkpoint === "body-defeated" && !save.inventory.includes("bodyCard")) {
+            this.boss.markDefeatedForRestore();
+            this.world.revealBodyCard(this.boss.getNose());
+            this.objectives.set("inspect-nose", "INSPECIONE O NARIZ DE BODY.");
+        }
+        if (save.stage === "boss") {
+            this.boss.start(Math.max(1, save.bossPhase));
+            this.objectives.set("defeat-body", "DERROTE BODY.");
+        }
+        if (save.stage === "chapter2-transition") {
+            this.ui.hideLoading();
+            await this.startChapterTransition();
+            this.ui.showLoading("Finalizando o jogo salvo…", "Validando o novo capítulo e o checkpoint restaurado.");
+        }
+        // Chapter restore routines may place the player before every collider has updated.
+        // Validate the final position on the next frame so saves/checkpoints can never
+        // leave the collision ellipsoid inside a station, wall or closed door.
+        window.setTimeout(() => this.correctUnsafePlayerPosition(), 0);
+        this.ui.toast("Jogo carregado.");
+                this.ui.updateLoading("Finalizando o carregamento…", "Validando posição, colisões, objetivos e iluminação.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+    }
+    enterMenuMode() {
+        this.stage = "menu";
+        this.paused = false;
+        this.inventoryOpen = false;
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.ui.hideHud();
+        this.ui.hidePause();
+        this.ui.hideInventory();
+        this.guide.setEnabled(false);
+        this.ui.setEndingGallery(this.saveSystem.getEndingGallery());
+        this.ui.showMenu();
+        this.menuRoot.setEnabled(true);
+        this.menuProjector.intensity = 12;
+        this.player.teleport(new Vector3(0, 2.2, -48), 0);
+        this.player.lookAtWorld(new Vector3(0, 3.3, -35));
+        this.audio.stopAll();
+        if (this.audio.unlocked)
+            this.audio.startProjector();
+        this.ui.setContinueEnabled(this.saveSystem.hasSave());
+    }
+    enterWonderWorld() {
+        if (this.world.enteredWonderWorld)
+            return;
+        this.world.enteredWonderWorld = true;
+        this.stage = "chapter1";
+        this.audio.stopLoop("rain");
+        this.audio.startInteriorHum();
+        this.player.teleport(new Vector3(18.2, 0.12, 42.4), Math.PI);
+        this.ui.showSoundCaption("a porta de metal bate atrás de você");
+        this.audio.impact(1.3);
+        window.setTimeout(() => {
+            this.world.closeSideEntranceBehindPlayer();
+            this.fire.torchLit = false;
+        }, 600);
+        void this.ui.showChapterCard("ATRAÇÃO FINAL", "CAPÍTULO 1 · O CORPO", 4300).then(() => {
+            this.objectives.set("search-friends", "PROCURE SINAIS DOS SEUS AMIGOS E RESTAURE A ELETRICIDADE.");
+            this.ui.showSubtitle("Protagonista", "Ei! Vocês estão aí?", 3200);
+            this.checkpoint("chapter1-entry", "chapter1");
+        });
+    }
+    startBoss() {
+        if (this.boss.active || this.world.bodyDefeated)
+            return;
+        this.stage = "boss";
+        this.objectives.set("defeat-body", "DERROTE BODY.");
+        this.ui.showSubtitle("Body", "Braços para abraçar. Pernas para correr. Você trouxe o resto?", 6200);
+        this.audio.playVoiceLikeLine(4.2);
+        this.boss.start(1);
+        this.checkpoint("body-phase-1", "boss", 1);
+    }
+    finishBoss() {
+        this.world.bodyDefeated = true;
+        this.boss.detachNose();
+        this.ui.hideBossUI();
+        this.ui.showSubtitle("Voz desconhecida", "Você não se lembra porque eles tiraram isso de você.", 6100);
+        this.audio.playVoiceLikeLine(3.8);
+        this.world.revealBodyCard(this.boss.getNose());
+        this.objectives.set("inspect-nose", "INSPECIONE O NARIZ DE BODY.");
+        this.stage = "chapter1";
+        this.checkpoint("body-defeated", "chapter1");
+    }
+    async startChapterTransition() {
+        if (this.chapterTransitionStarted)
+            return;
+        this.chapterTransitionStarted = true;
+        this.stage = "chapter2-transition";
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.objectives.set("chapter2-descend", "AGUARDE O ELEVADOR CONCLUIR A DESCIDA.");
+        this.audio.impact(0.8);
+        this.checkpoint("chapter2-transition", "chapter2-transition");
+        this.ui.showLoading("Descendo para o próximo setor…", "Preparando o departamento de modelagem.");
+        try {
+            await new Promise((resolve) => window.setTimeout(resolve, 950));
+            await this.ensureBuiltThrough(2, "Preparando o departamento de modelagem…");
+            this.ui.updateLoading("Departamento carregado.", "Posicionando o elevador e ativando os objetivos.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        await this.ui.showChapterCard("CAPÍTULO 2 — NÃO VIRE AS COSTAS.", "", 4700);
+        this.stage = "chapter2";
+        this.chapterTransitionStarted = false;
+        this.requireChapter2().startFromElevator();
+    }
+    async finishChapter2() {
+        if (this.chapterTransitionStarted && this.stage === "chapter3-transition")
+            return;
+        this.chapterTransitionStarted = true;
+        this.stage = "chapter3-transition";
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.checkpoint("chapter3-transition", "chapter3-transition");
+        this.ui.showLoading("Abrindo a próxima atração…", "Preparando a Caixa de Sustos.");
+        try {
+            await this.ensureBuiltThrough(3, "Preparando a caixa de sustos…");
+            this.ui.updateLoading("A atração está pronta.", "Sincronizando inimigos, portas e objetivos.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        await this.ui.showChapterCard("CAPÍTULO 3 — A CAIXA DE SUSTOS.", "", 5600);
+        this.stage = "chapter3";
+        this.chapterTransitionStarted = false;
+        this.requireChapter3().startFromTransition();
+    }
+    async finishChapter3() {
+        if (this.chapterTransitionStarted && this.stage === "chapter4-transition")
+            return;
+        this.chapterTransitionStarted = true;
+        this.stage = "chapter4-transition";
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.checkpoint("chapter4-transition", "chapter4-transition");
+        this.ui.showLoading("Descendo para a prisão…", "Preparando corredores, celas e rotas de fuga.");
+        try {
+            await this.ensureBuiltThrough(4, "Preparando a prisão subterrânea…");
+            this.ui.updateLoading("Prisão carregada.", "Finalizando colisões e pontos seguros.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        await this.ui.showChapterCard("CAPÍTULO 4 — O CAMINHO SEGURO.", "", 5800);
+        this.stage = "chapter4";
+        this.chapterTransitionStarted = false;
+        this.requireChapter4().startFromTransition();
+    }
+    async finishChapter4() {
+        if (this.chapterTransitionStarted && this.stage === "chapter5-transition")
+            return;
+        this.chapterTransitionStarted = true;
+        this.stage = "chapter5-transition";
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.checkpoint("chapter5-transition", "chapter5-transition");
+        this.ui.showLoading("Acessando os arquivos centrais…", "Preparando o setor final da campanha.");
+        try {
+            await this.ensureBuiltThrough(5, "Preparando os arquivos centrais…");
+            this.ui.updateLoading("Arquivos centrais carregados.", "Sincronizando Noah, eventos e o objetivo final.", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+        }
+        await this.ui.showChapterCard("CAPÍTULO 5 — PROVA DE VIDA.", "", 5800);
+        this.stage = "chapter5";
+        this.chapterTransitionStarted = false;
+        this.requireChapter5().startFromTransition(this.requireChapter4().serialize().postDefeatAttackCount);
+    }
+    finishChapter5() {
+        this.stage = "campaign-complete";
+        this.lastCheckpoint = "campaign-complete";
+        this.saveSystem.write(this.currentSavePayload());
+        this.ui.setContinueEnabled(true);
+        this.ui.showDocument("CAMPANHA CONCLUÍDA", "O final verdadeiro foi registrado. Você pode retornar ao menu, revisar os finais descobertos ou iniciar uma nova campanha sem apagar este registro.", () => this.enterMenuMode());
+    }
+    togglePause() {
+        if (this.inventoryOpen) {
+            this.closeInventory();
+            return;
+        }
+        if (this.stage === "menu" || this.chapterTransitionStarted)
+            return;
+        this.paused = !this.paused;
+        this.player.setEnabled(!this.paused);
+        if (this.paused) {
+            this.player.releasePointerLock();
+            this.ui.showPause((action) => {
+                if (action === "resume")
+                    this.togglePause();
+                else if (action === "tips")
+                    this.openTips(false);
+                else if (action === "settings")
+                    this.openSettings(false, false);
+                else if (action === "menu") {
+                    this.paused = false;
+                    this.saveSystem.write(this.currentSavePayload());
+                    this.enterMenuMode();
+                }
+            });
+        }
+        else {
+            this.ui.hidePause();
+            this.player.requestPointerLock();
+        }
+    }
+    toggleInventory() {
+        if (this.stage === "menu" || this.chapterTransitionStarted)
+            return;
+        if (this.inventoryOpen) {
+            this.closeInventory();
+            return;
+        }
+        if (this.paused || !this.player.enabled)
+            return;
+        this.inventoryOpen = true;
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.ui.setInteractionPrompt(null);
+        this.ui.showInventory(this.inventory.list(), () => this.closeInventory());
+    }
+    closeInventory() {
+        if (!this.inventoryOpen)
+            return;
+        this.inventoryOpen = false;
+        this.ui.hideInventory();
+        if (this.stage !== "menu" && !this.chapterTransitionStarted && !this.paused) {
+            this.player.setEnabled(true);
+            this.ui.toast("Clique no jogo para retomar o controle do mouse.", 1800);
+        }
+    }
+    openTips(fromMenu) {
+        const objective = fromMenu
+            ? "INICIE OU CONTINUE UMA PARTIDA PARA RECEBER ORIENTAÇÕES DO OBJETIVO ATUAL."
+            : this.objectives.get().text;
+        const hints = fromMenu
+            ? [
+                "Durante a partida, abra o menu de pausa com Esc e selecione DICAS.",
+                "O painel sempre acompanha o objetivo atual e mostra os próximos passos sem revelar toda a história.",
+                "Objetos interativos exibem uma mensagem quando você olha para eles de perto."
+            ]
+            : this.hintsForCurrentObjective();
+        this.ui.showTips(objective, hints);
+    }
+    hintsForCurrentObjective() {
+        const id = this.objectives.get().id;
+        const hints = {
+            "wait-friends": [
+                "Explore o estacionamento enquanto espera; o prólogo avança sozinho após alguns segundos.",
+                "Observe os carros, o galpão de manutenção à esquerda e a fachada do Wonder World.",
+                "Quando ouvir um grito vindo do prédio, procure uma forma de entrar."
+            ],
+            "find-entry": [
+                "Vá até o pequeno galpão de manutenção no lado esquerdo do estacionamento.",
+                "Pegue a tocha improvisada no chão usando E.",
+                "Depois, procure combustível no porta-malas de um dos carros abandonados."
+            ],
+            "find-fuel": [
+                "O combustível está no porta-malas do carro mais à esquerda do estacionamento.",
+                "Interaja uma vez para forçar o porta-malas e outra vez para retirar a gasolina.",
+                "Com a tocha abastecida, siga para a parte danificada da cerca à direita."
+            ],
+            "cross-fence": [
+                "Acenda a tocha com F.",
+                "A seção quebrada da cerca fica no lado direito da fachada, perto da entrada lateral.",
+                "Aproxime-se do painel inclinado e use E para levantá-lo."
+            ],
+            "reach-side-door": [
+                "Passe pela abertura da cerca e aproxime-se da porta metálica lateral.",
+                "Mantenha a tocha acesa para enxergar a trava quebrada.",
+                "Use E na porta para entrar no Wonder World."
+            ],
+            "search-friends": [
+                "Procure a chave do quadro elétrico na loja de presentes.",
+                "Explore as áreas próximas para encontrar fusível, cabo e manivela.",
+                "Leve as quatro peças ao setor elétrico e interaja com o painel."
+            ],
+            "restore-power": [
+                "Você precisa de quatro peças: chave, fusível, cabo e manivela.",
+                "A chave está na loja de presentes; as outras peças ficam em setores próximos do corredor principal.",
+                "Empurre o caixote da manutenção para revelar o cabo escondido no chão."
+            ],
+            "repair-power-panel": [
+                "As quatro peças já foram coletadas.",
+                "Volte ao setor elétrico no corredor da esquerda.",
+                "Interaja com o quadro elétrico para instalar as peças e ligar a energia."
+            ],
+            "survive-plush": [
+                "Use a tocha acesa contra os brinquedos quando eles se aproximarem.",
+                "Não fique cercado entre as estantes; use os corredores para recuar.",
+                "Continue procurando as peças do quadro elétrico depois de sobreviver ao ataque."
+            ],
+            "solve-body-puzzles": [
+                "Há quatro salas temáticas: mãos, olhos, coração e pés.",
+                "Mãos: 2, 4, 3 e 1 giros finais. Olhos: 2, 3 e 4 giros. Coração: válvulas 2, 1 e 3, depois três pulsações regulares. Pés: 1, 3, 2, 4.",
+                "Concluir as quatro partes abre o caminho para o auditório."
+            ],
+            "enter-auditorium": [
+                "Retorne ao corredor central e siga até a porta marcada TEATRO BODY.",
+                "A porta deve estar aberta depois dos quatro puzzles.",
+                "Prepare a tocha e procure cobertura antes de avançar."
+            ],
+            "defeat-body": [
+                "Observe o padrão dos ataques e use as cadeiras como cobertura.",
+                "Aproxime-se apenas durante as janelas em que Body fica vulnerável.",
+                "Use curativos quando a vida estiver baixa."
+            ],
+            "inspect-nose": [
+                "Aproxime-se da cabeça de Body depois da luta.",
+                "Olhe diretamente para o nariz e use E.",
+                "Recolha o cartão liberado para continuar."
+            ],
+            "unlock-underground": [
+                "Leve o Cartão do Corpo até o leitor perto do elevador subterrâneo.",
+                "Olhe para o leitor e use E.",
+                "Entre no elevador quando a passagem abrir."
+            ],
+            "learn-observation": [
+                "Os manequins só avançam quando deixam seu campo de visão.",
+                "Caminhe de costas quando necessário e faça movimentos lentos.",
+                "Mantenha o grupo enquadrado até alcançar a saída do corredor."
+            ],
+            "recover-cells": [
+                "Explore os três setores laterais do departamento de modelagem.",
+                "Cada célula de energia está ligada a um pequeno desafio ambiental.",
+                "Volte à máquina central quando reunir as três."
+            ],
+            "blackout-control": [
+                "Localize as três chaves de reserva antes do próximo apagão.",
+                "Ative uma chave por vez e memorize a rota entre elas.",
+                "Durante a escuridão, use som e observação para evitar os manequins."
+            ],
+            "activate-machine": [
+                "Insira as três células na máquina central.",
+                "Verifique os módulos ao redor e ative os sistemas ainda apagados.",
+                "Acompanhe o contador mostrado no objetivo."
+            ],
+            "sphere-arena-1": [
+                "Produza som para atrair os manequins até os trilhos.",
+                "Espere o grupo ficar sobre a área de impacto.",
+                "Libere a esfera quando o caminho estiver alinhado."
+            ],
+            "sphere-arena-2": [
+                "Observe para qual ramo os trilhos conduzem a esfera.",
+                "Remova os bloqueios do caminho escolhido.",
+                "Use sons para manter os manequins na trajetória."
+            ],
+            "sphere-arena-3": [
+                "Continue se movendo entre as zonas seguras durante as ondas.",
+                "Use a esfera quando vários inimigos estiverem alinhados.",
+                "Acione o retorno para reutilizá-la."
+            ],
+            "follow-music": [
+                "Pare por alguns segundos e identifique de onde vem a melodia.",
+                "Siga o som pelos corredores, verificando portas laterais.",
+                "A caixa de música marca a rota de saída."
+            ],
+            "follow-jesse-melody": [
+                "Use fones ou as legendas de som para localizar a melodia.",
+                "A intensidade aumenta conforme você se aproxima.",
+                "Prepare uma rota de fuga antes de interagir com a caixa."
+            ],
+            "escape-jesse": [
+                "Corra sem parar em direção ao elevador de serviço.",
+                "Feche portas atrás de você para ganhar alguns segundos.",
+                "Evite becos e não pare para explorar durante a perseguição."
+            ],
+            "activate-five-generators": [
+                "Siga a numeração e os cabos para localizar cada gerador.",
+                "Alguns exigem componentes encontrados perto de Daniel.",
+                "O quinto gerador precisa da ajuda de Maya."
+            ],
+            "escape-cell": [
+                "Examine a cela inteira e procure peças soltas perto da cama e da parede.",
+                "Use o intercomunicador para provocar uma falha no sistema.",
+                "Aja quando a iluminação do corredor oscilar."
+            ],
+            "cross-fragile-floor": [
+                "Observe rachaduras, marcas e padrões antes de pisar.",
+                "Atravesse uma placa por vez e evite áreas já danificadas.",
+                "Recuar rapidamente pode quebrar o piso atrás de você."
+            ],
+            "identify-mimic": [
+                "Compare memórias, ferimentos, reflexos e movimentos das identidades.",
+                "Procure contradições antes de acusar alguém.",
+                "Reúna várias evidências; uma pista isolada pode ser uma armadilha."
+            ],
+            "approach-noah": [
+                "Avance devagar e mantenha a voz enquadrada antes de chegar perto.",
+                "Não ataque imediatamente; observe sinais de respiração e reação.",
+                "Use E quando o prompt de interação aparecer."
+            ],
+            "prove-life": [
+                "Siga as instruções do teste e coordene suas ações com Noah.",
+                "Use comandos de companheiro quando o jogo solicitar duas posições.",
+                "Sinais humanos consistentes são mais importantes que velocidade."
+            ],
+            "search-archives": [
+                "Investigue terminais, gavetas e documentos junto de Noah.",
+                "Mantenha Noah por perto para ações sincronizadas.",
+                "Procure registros ligados ao seu nome e à infância."
+            ],
+            "find-own-file": [
+                "Siga os números de arquivo e referências encontradas nos documentos.",
+                "O arquivo infantil está em um setor mais profundo dos arquivos centrais.",
+                "Depois de encontrá-lo, leve as informações ao núcleo."
+            ],
+            "final-jesse": [
+                "Não deixe Noah muito distante durante a fuga.",
+                "Use obstáculos e portas para atrasar Jesse.",
+                "Priorize a rota de saída em vez de enfrentar a criatura."
+            ]
+        };
+        return hints[id] ?? [
+            "Leia o objetivo atual no topo da tela e explore a área relacionada.",
+            "Aproxime-se de objetos, portas e mecanismos; use E quando o prompt aparecer.",
+            "Observe luzes, sons, cabos, marcas no chão e documentos: eles indicam a próxima ação."
+        ];
+    }
+    openSettings(accessibilityOnly, fromMenu) {
+        this.ui.showSettings(this.settingsStore.value, {
+            onSave: (settings) => {
+                const saved = this.settingsStore.save(settings);
+                this.applySettings(saved);
+                // The pause screen remains mounted below settings, preserving its original callbacks.
+            },
+            onReset: () => {
+                const defaults = this.settingsStore.reset();
+                this.applySettings(defaults);
+                this.ui.toast("Configurações restauradas.");
+            },
+            onClose: () => {
+                if (fromMenu)
+                    this.ui.showMenu();
+            }
+        }, accessibilityOnly);
+    }
+    applySettings(settings) {
+        this.ui.applySettings(settings);
+        this.audio.applySettings(settings);
+        this.player.applySettings(settings);
+        this.interaction.setHighContrast(settings.highContrastInteractions);
+        if (this.guide && this.guide.enabled !== settings.guideLightEnabled)
+            this.guide.setEnabled(settings.guideLightEnabled);
+        this.boss.setExtendedReactionWindows(settings.extendedBossWindows);
+        this.chapter2?.applySettings(settings);
+        this.chapter3?.applySettings(settings);
+        this.chapter4?.applySettings(settings);
+        this.chapter5?.applySettings(settings);
+        const scaling = settings.performancePreset === "performance" ? 1.5 : settings.performancePreset === "cinematic" ? 0.82 : 1;
+        this.engine.setHardwareScalingLevel(scaling);
+        this.horrorLighting.applyPerformancePreset(settings.performancePreset);
+    }
+    syncTorchAvailability() {
+        const available = this.inventory.has("torch") || this.inventory.has("replacementTorch");
+        if (this.fire.torchAvailable !== available)
+            this.fire.setTorchAvailable(available);
+        else if (available)
+            this.fire.ensureTorchVisualIntegrity();
+    }
+    toggleTorch() {
+        if (!this.player.enabled || (!this.inventory.has("torch") && !this.inventory.has("replacementTorch")))
+            return;
+        if (this.stage === "chapter2" && !this.requireChapter2().canUseTorch()) {
+            this.ui.toast("A corrente de ar apaga a chama antes que ela se forme.");
+            return;
+        }
+        if (this.stage === "chapter3" && !this.requireChapter3().canUseTorch()) {
+            this.ui.toast("O gás e a ventilação tornam a chama perigosa neste setor.");
+            return;
+        }
+        if (this.stage === "chapter5" && !this.requireChapter5().canUseTorch()) {
+            this.ui.toast("A chama não pode ser usada durante esta sequência.");
+            return;
+        }
+        if (this.stage === "chapter4" && !this.requireChapter4().canUseTorch()) {
+            this.ui.toast("Seu equipamento ainda está no depósito de evidências.");
+            return;
+        }
+        const changed = this.fire.toggleTorch();
+        if (!changed)
+            this.ui.toast("A tocha está sem combustível.");
+        else {
+            if (this.stage === "chapter3")
+                this.requireChapter3().emitTorchNoise(false);
+            this.ui.toast(this.fire.torchLit ? "Tocha acesa." : "Tocha apagada.", 1100);
+        }
+    }
+    usePrimaryAction(charged = false) {
+        if (!this.player.enabled)
+            return;
+        if (this.construction.handlePrimaryAttack(charged))
+            return;
+        if (this.stage === "chapter5" && this.requireChapter5().handlePrimaryAttack(charged))
+            return;
+        if (this.stage === "chapter4" && this.requireChapter4().handlePrimaryAttack(charged))
+            return;
+        if (this.stage === "chapter3" && this.requireChapter3().handlePrimaryAttack(charged))
+            return;
+        if (this.stage === "chapter2" && (charged || !this.fire.torchLit) && this.requireChapter2().handlePrimaryAttack(charged))
+            return;
+        if ((this.stage === "prologue" || this.stage === "chapter1") && (charged || !this.fire.torchLit) && this.world.handlePrimaryAttack(charged))
+            return;
+        if (!charged)
+            this.useTorch();
+    }
+    useTorch() {
+        if (!this.player.enabled || !this.fire.torchLit)
+            return;
+        if (this.stage === "chapter2" && !this.requireChapter2().canUseTorch())
+            return;
+        if (this.stage === "chapter3" && !this.requireChapter3().canUseTorch())
+            return;
+        if (this.stage === "chapter5" && !this.requireChapter5().canUseTorch())
+            return;
+        if (this.stage === "chapter4" && !this.requireChapter4().canUseTorch())
+            return;
+        if (this.stage === "chapter3")
+            this.requireChapter3().emitTorchNoise(true);
+        const burned = this.fire.useTorch();
+        if (burned)
+            this.ui.showSoundCaption("o tecido estala e começa a queimar");
+    }
+    throwObject() {
+        if (!this.player.enabled)
+            return;
+        if (this.stage === "chapter5" && this.requireChapter5().throwObject())
+            return;
+        if (this.stage === "chapter3") {
+            this.requireChapter3().throwObject();
+            return;
+        }
+        if (this.stage === "chapter2" && this.requireChapter2().throwNoiseObject())
+            this.audio.metalLure(this.player.camera.globalPosition);
+    }
+    deploySoundDevice() {
+        if (!this.player.enabled || this.stage !== "chapter2")
+            return;
+        this.requireChapter2().deploySoundDevice();
+    }
+    closeRearDoor() {
+        if (!this.player.enabled)
+            return;
+        if (this.stage === "chapter3" && this.requireChapter3().closeRearDoor())
+            return;
+        if (this.stage === "chapter2")
+            this.requireChapter2().closeNearestRearDoor();
+    }
+    contextAction() {
+        if (!this.player.enabled)
+            return;
+        if (this.stage === "chapter5") {
+            this.requireChapter5().handleContextAction();
+            return;
+        }
+        if (this.stage === "chapter4") {
+            this.requireChapter4().handleContextAction();
+            return;
+        }
+        if (this.stage === "chapter3")
+            this.requireChapter3().handleContextAction();
+    }
+    update(deltaSeconds) {
+        // Keep simulation, camera and rendering in one deterministic loop. The old
+        // controller ran from Scene.onBeforeRender, after the game systems had already
+        // updated, which allowed the collider/audio to advance while a stale camera was
+        // rendered on some browsers.
+        this.construction.update(deltaSeconds);
+        this.horrorLighting.update(deltaSeconds);
+        this.syncTorchAvailability();
+        if (this.construction.active)
+            return;
+        this.player.update(deltaSeconds);
+        this.updateMovementDiagnostics(deltaSeconds);
+        const time = performance.now() * 0.001;
+        if (this.stage === "menu") {
+            this.updateMenuBackdrop(time);
+            return;
+        }
+        if (this.paused || this.inventoryOpen)
+            return;
+        this.interaction.update(deltaSeconds);
+        this.guide.update(deltaSeconds);
+        if (this.stage === "chapter5" || this.stage === "campaign-complete")
+            this.requireChapter5().update(deltaSeconds);
+        else if (this.stage === "chapter4" || this.stage === "chapter5-transition")
+            this.requireChapter4().update(deltaSeconds);
+        else if (this.stage === "chapter3" || this.stage === "chapter4-transition")
+            this.requireChapter3().update(deltaSeconds);
+        else if (this.stage === "chapter2" || this.stage === "chapter3-transition")
+            this.requireChapter2().update(deltaSeconds);
+        else
+            this.world.update();
+        this.fireDamageCooldown = Math.max(0, this.fireDamageCooldown - deltaSeconds);
+        if (this.fire.nearestFireDistance(this.player.collider.position) < 1.15 && this.fireDamageCooldown <= 0) {
+            this.player.damage(6);
+            this.ui.flashDamage(0.35);
+            this.ui.showSoundCaption("o calor queima sua pele", 1000);
+            this.fireDamageCooldown = 0.65;
+        }
+        this.ui.updateStatus(this.player.health, this.fire.fuel, this.inventory.list(), this.lives, this.player.armor);
+        this.ui.setStamina(this.player.stamina);
+        if (this.stage === "prologue" || this.stage === "chapter1")
+            this.updateLightning(deltaSeconds);
+        if (this.stage === "prologue")
+            this.updatePrologue(deltaSeconds);
+        if (this.player.health < 25 && Math.random() < deltaSeconds * 0.4)
+            this.ui.showSoundCaption("respiração ofegante", 1200);
+    }
+    toggleGuide() {
+        const enabled = this.guide.toggle();
+        this.settingsStore.save({ guideLightEnabled: enabled });
+        this.ui.toast(enabled ? "GUIA LUMINOSO ATIVADO · siga as marcas no chão." : "Guia luminoso desativado.", 1800);
+    }
+    guideRouteForCurrentObjective() {
+        const objectiveId = this.objectives.get().id;
+        if (this.stage === "prologue" || this.stage === "chapter1" || this.stage === "boss")
+            return this.world.getGuideRoute(objectiveId);
+        let roomTarget = null;
+        let hasAuthoredTarget = false;
+        if (this.stage === "chapter2" || this.stage === "chapter3-transition") {
+            const c = this.requireChapter2().checkpoints;
+            const map = {
+                "chapter2-descend": c.chapter2Elevator, "learn-observation": c.mannequinCorridor, "recover-cells": c.mirrorRoom,
+                "blackout-control": c.controlRoom, "activate-machine": c.machine, "sphere-arena-1": c.arena1,
+                "sphere-arena-2": c.arena2, "sphere-arena-3": c.arena3, "escape-arena": c.maya, "sphere-return": c.maya, "follow-music": c.chapter3
+            };
+            const authoredTarget = this.requireChapter2().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
+        }
+        else if (this.stage === "chapter3" || this.stage === "chapter4-transition") {
+            const c = this.requireChapter3().checkpoints;
+            const map = {
+                "follow-jesse-melody": c.musicCorridor, "watch-jack-box": c.jackChamber, "escape-jesse": c.chase4,
+                "survive-elevator": c.serviceElevator, "inspect-daniel-room": c.danielRoom, "collect-daniel-items": c.danielRoom,
+                "activate-five-generators": this.nearestInactiveGeneratorTarget(c), "ventilate-gas-room": c.generator3, "reach-generator5": c.generator5,
+                "synchronize-generator5": c.generator5, "talk-to-maya": c.mayaChamber, "watch-maya": c.mayaChamber
+            };
+            const authoredTarget = this.requireChapter3().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
+        }
+        else if (this.stage === "chapter4" || this.stage === "chapter5-transition") {
+            const c = this.requireChapter4().checkpoints;
+            const map = {
+                "wake-prison": c.prisonCell, "escape-cell": c.prisonCell, "open-cell-lock": c.observationCorridor,
+                "observe-guard": c.guardStation, "repair-intercom": c.guardStation, "cross-fragile-floor": c.fragileFloor,
+                "choose-route": c.choice, "recover-equipment": c.equipment, "follow-blood": c.blood,
+                "identify-mimic": c.identityTesting, "defeat-mimic": c.mimicArena, "search-mimic-remains": c.mimicArena,
+                "reach-archives": c.archives, "after-mimic": c.archives, "find-maintenance-route": c.chapter5
+            };
+            const authoredTarget = this.requireChapter4().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
+        }
+        else if (this.stage === "chapter5" || this.stage === "campaign-complete") {
+            const c = this.requireChapter5().checkpoints;
+            const map = {
+                "approach-noah": c.proof, "prove-life": c.proof, "search-archives": c.employeeArchives, "find-own-file": c.employeeArchives,
+                "recover-memory": c.memoryLab, "escape-collapse": c.archiveCore, "body-return": c.burnedAuditorium,
+                "mannequin-return": c.mannequinTransit, "escape-mannequin": c.mannequinTransit, "final-jesse": c.finalJesse,
+                "burning-archives": c.burningArchives, "maintenance-bridge": c.bridge, "synchronized-exit": c.finalExit
+            };
+            const authoredTarget = this.requireChapter5().guideTargetForObjective(objectiveId);
+            hasAuthoredTarget = authoredTarget !== null;
+            roomTarget = authoredTarget ?? map[objectiveId]?.clone() ?? null;
+        }
+        if (!roomTarget)
+            return null;
+        const preciseTarget = hasAuthoredTarget ? roomTarget : (this.interaction.getGuideTarget(objectiveId, roomTarget, 28) ?? roomTarget);
+        return this.buildCampaignGuideRoute(preciseTarget);
+    }
+    nearestInactiveGeneratorTarget(checkpoints) {
+        const chapter = this.requireChapter3();
+        const states = chapter.generatorStates;
+        const targets = [checkpoints.generator1, checkpoints.generator2, checkpoints.generator3, checkpoints.generator4, checkpoints.generator5];
+        const pending = targets.filter((_target, index) => !states[index]);
+        if (pending.length === 0)
+            return checkpoints.generator5.clone();
+        return pending.sort((a, b) => Vector3.Distance(a, this.player.collider.position) - Vector3.Distance(b, this.player.collider.position))[0].clone();
+    }
+    buildCampaignGuideRoute(target) {
+        const player = this.player.collider.position.clone();
+        const y = Math.max(0.12, Math.min(player.y, target.y));
+        const fixed = (x, z, py = y) => (_point) => new Vector3(x, py, z);
+        const zones = [
+            { bounds: [-40, -11, 263, 298], portal: fixed(-10.2, 270) },
+            { bounds: [11, 42, 260, 304], portal: fixed(10.2, 272) },
+            { bounds: [-42, -11, 302, 335], portal: fixed(-10.2, 309) },
+            { bounds: [11, 41, 306, 335], portal: fixed(10.2, 320) },
+            { bounds: [-40, -8, 784, 812], portal: fixed(-7.2, 798) },
+            { bounds: [8, 40, 815, 846], portal: fixed(7.2, 830) },
+            { bounds: [-40, -8, 849, 883], portal: fixed(-7.2, 866) },
+            { bounds: [8, 40, 888, 920], portal: fixed(7.2, 904) },
+            { bounds: [-30, -5, 1105, 1130], portal: fixed(-5.2, 1118) },
+            { bounds: [5, 30, 1128, 1157], portal: fixed(5.2, 1142) },
+            { bounds: [-28, -16, 1250, 1315], portal: (point) => new Vector3(-16.8, y, point.z < 1282 ? 1253 : 1311) },
+            { bounds: [16, 28, 1250, 1315], portal: (point) => new Vector3(16.8, y, point.z < 1282 ? 1253 : 1311) }
+        ];
+        const findZone = (point) => zones.find(({ bounds }) => point.x >= bounds[0] && point.x <= bounds[1] && point.z >= bounds[2] && point.z <= bounds[3]) ?? null;
+        const route = [];
+        const push = (point) => {
+            const adjusted = point.clone();
+            adjusted.y = Number.isFinite(point.y) ? point.y : y;
+            const previous = route[route.length - 1];
+            if (!previous || Vector3.Distance(previous, adjusted) > 0.65)
+                route.push(adjusted);
+        };
+        const playerZone = findZone(player);
+        const targetZone = findZone(target);
+        if (playerZone && playerZone === targetZone)
+            return [target.clone()];
+        if (playerZone) {
+            const portal = playerZone.portal(player);
+            push(portal);
+            push(new Vector3(0, portal.y, portal.z));
+        }
+        else if (Math.abs(player.x) > 7.5 && player.z < 1470) {
+            push(new Vector3(0, y, player.z));
+        }
+        if (targetZone) {
+            const portal = targetZone.portal(target);
+            push(new Vector3(0, portal.y, portal.z));
+            push(portal);
+            push(target);
+        }
+        else {
+            if (Math.abs(target.x) <= 8 && Math.abs(player.z - target.z) > 7)
+                push(new Vector3(0, target.y, target.z));
+            push(target);
+        }
+        return route;
+    }
+    activateSurvivalCheckpoint(id, position) {
+        this.lastCheckpoint = id;
+        this.runtimeCheckpointPositions.set(id, this.findSafeSpawnPosition(position));
+        this.lives = Math.min(this.maxLives, this.lives + 1);
+        this.player.health = 100;
+        this.saveSystem.write(this.currentSavePayload());
+        this.ui.setContinueEnabled(true);
+        this.ui.toast(`CHECKPOINT SALVO · ${this.lives}/${this.maxLives} vidas`, 2100);
+    }
+    async handleRespawn(message) {
+        if (this.respawning || this.stage === "menu")
+            return;
+        this.respawning = true;
+        const wasEnabled = this.player.enabled;
+        this.player.setEnabled(false);
+        this.player.releasePointerLock();
+        this.ui.showLoading("Retornando ao checkpoint…", "Estabilizando o cenário e removendo ameaças do ponto de retorno.");
+        try {
+            await this.yieldToBrowser();
+            this.lives = Math.max(0, this.lives - 1);
+            if (this.lives <= 0) {
+                this.lives = this.maxLives;
+                this.player.armor = 0;
+                this.fire.fuel = Math.max(0, this.fire.fuel - 15);
+                this.ui.updateLoading("Reconstruindo o último ponto seguro…", "Todas as vidas foram consumidas. Aplicando as penalidades.", 42);
+            }
+            else {
+                this.ui.updateLoading("Restaurando o último ponto seguro…", `${this.lives} ${this.lives === 1 ? "vida restante" : "vidas restantes"}.`, 42);
+            }
+            this.player.health = Math.max(45, this.player.health);
+            this.world.resetEnemiesForPlayerRespawn();
+            this.construction.resetMobsForRespawn();
+            if (this.chapter2Built)
+                this.chapter2?.resetEnemiesForPlayerRespawn();
+            if (this.chapter3Built)
+                this.chapter3?.resetEnemiesForPlayerRespawn();
+            this.ui.updateLoading("Reposicionando o jogador…", "Procurando uma área livre perto do checkpoint.", 72);
+            await this.yieldToBrowser();
+            const destination = this.destinationForCheckpoint(this.lastCheckpoint, this.stage);
+            this.teleportToSafePosition(destination);
+            this.correctUnsafePlayerPosition();
+            this.saveSystem.write(this.currentSavePayload());
+            this.ui.updateLoading("Checkpoint restaurado.", "Liberando os controles…", 96);
+            await this.settleLoadingFrames(3);
+        }
+        finally {
+            this.ui.hideLoading();
+            this.respawning = false;
+            if (wasEnabled && this.stage !== "menu" && !this.chapterTransitionStarted)
+                this.player.setEnabled(true);
+        }
+        if (this.lives === this.maxLives && this.player.armor === 0)
+            this.ui.toast("SEM VIDAS · retorno ao último checkpoint. Combustível e proteção foram parcialmente perdidos.", 4300);
+        else
+            this.ui.toast(`${message} · ${this.lives} ${this.lives === 1 ? "vida restante" : "vidas restantes"}.`, 3200);
+    }
+    updatePrologue(deltaSeconds) {
+        this.prologueElapsed += deltaSeconds;
+        this.ambientTimer -= deltaSeconds;
+        if (this.ambientTimer <= 0) {
+            this.playPrologueAmbientEvent();
+            this.ambientTimer = 4.8 + Math.random() * 4.5;
+        }
+        if (!this.screamPlayed && this.prologueElapsed > 18) {
+            this.screamPlayed = true;
+            this.audio.plushCry();
+            this.ui.showSoundCaption("um grito humano ecoa de dentro do prédio", 4200);
+            this.ui.showSubtitle("Voz distante", "NÃO! SOLTA—", 3000);
+            this.objectives.set("find-entry", "ENCONTRE UMA ENTRADA PARA O WONDER WORLD.");
+        }
+    }
+    playPrologueAmbientEvent() {
+        const events = [
+            () => {
+                this.audio.impact(0.45);
+                this.ui.showSoundCaption("um impacto metálico distante");
+            },
+            () => {
+                this.ui.showSoundCaption("um motor de brinquedo gira por alguns segundos");
+                this.audio.plushCry();
+            },
+            () => {
+                this.ui.flashLightning();
+                this.ui.showSoundCaption("uma silhueta desaparece atrás de uma janela");
+            },
+            () => {
+                this.world.flashRandomCarHeadlights(1900);
+                this.audio.impact(0.22);
+                this.ui.showSoundCaption("os faróis de um carro acendem sozinhos");
+            }
+        ];
+        events[this.ambientEventIndex % events.length]?.();
+        this.ambientEventIndex += 1;
+    }
+    updateLightning(deltaSeconds) {
+        this.nextLightning -= deltaSeconds;
+        if (this.nextLightning > 0)
+            return;
+        this.nextLightning = 5 + Math.random() * 11;
+        this.ui.flashLightning();
+        this.audio.thunder(0.75 + Math.random() * 0.35);
+        const exteriorLight = this.scene.getLightByName("storm-directional");
+        if (exteriorLight) {
+            exteriorLight.intensity = 4.8;
+            window.setTimeout(() => exteriorLight.intensity = 0.55, 140);
+        }
+    }
+    checkpoint(checkpoint, stage, bossPhase = this.boss.phase) {
+        this.lastCheckpoint = checkpoint;
+        this.stage = stage;
+        // Automatic checkpoints used to save only a room-centre identifier. Several
+        // of those centres overlap consoles, gates or checkpoint props. Preserve the
+        // player's nearest collision-free position at the exact moment of progress.
+        const current = this.player.collider.position.clone();
+        const blockedAtCheckpoint = this.isSpawnPositionBlocked(current);
+        const safePosition = this.findSafeSpawnPosition(current);
+        this.runtimeCheckpointPositions.set(checkpoint, safePosition);
+        if (blockedAtCheckpoint)
+            window.setTimeout(() => this.teleportToSafePosition(safePosition), 0);
+        this.saveSystem.write({ ...this.currentSavePayload(), checkpoint, stage, bossPhase });
+        this.ui.setContinueEnabled(true);
+    }
+    currentSavePayload() {
+        return {
+            stage: this.stage,
+            checkpoint: this.lastCheckpoint,
+            checkpointPosition: this.checkpointPositionTuple(),
+            objectiveId: this.objectives.get().id,
+            inventory: this.inventory.ids(),
+            solvedPuzzles: [...this.world.solvedPuzzles],
+            powerRestored: this.world.powerRestored,
+            torchFuel: this.fire.fuel,
+            playerHealth: Math.max(1, this.player.health),
+            playerArmor: this.player.armor,
+            lives: this.lives,
+            bossPhase: this.boss.phase,
+            openedContainers: this.world.getOpenedLootContainers(),
+            lootedContainers: this.world.getLootedContainers(),
+            activatedCheckpoints: this.world.getActivatedCheckpoints(),
+            guideEnabled: this.guide.enabled,
+            chapter2: this.chapter2?.serialize() ?? DEFAULT_CHAPTER2_SAVE,
+            chapter3: this.chapter3?.serialize() ?? DEFAULT_CHAPTER3_SAVE,
+            chapter4: this.chapter4?.serialize() ?? DEFAULT_CHAPTER4_SAVE,
+            chapter5: this.chapter5?.serialize() ?? DEFAULT_CHAPTER5_SAVE,
+            endings: [...this.endings]
+        };
+    }
+    checkpointPositionTuple() {
+        const stored = this.runtimeCheckpointPositions.get(this.lastCheckpoint);
+        const point = stored ?? this.player.collider.position;
+        return [point.x, point.y, point.z];
+    }
+    destinationForCheckpoint(checkpoint, stage) {
+        const runtimeCheckpoint = this.runtimeCheckpointPositions.get(checkpoint);
+        if (runtimeCheckpoint)
+            return runtimeCheckpoint.clone();
+        const survivalCheckpoint = this.world.getSurvivalCheckpointPosition(checkpoint);
+        if (survivalCheckpoint)
+            return survivalCheckpoint;
+        if (stage === "chapter5" || stage === "campaign-complete" || checkpoint.startsWith("chapter5-") || checkpoint === "true-ending" || checkpoint === "post-credits" || checkpoint === "campaign-complete") {
+            return this.requireChapter5().destinationForCheckpoint(checkpoint);
+        }
+        if (stage === "chapter4" || stage === "chapter5-transition" || checkpoint.startsWith("mimic-") || checkpoint === "prisonCell" || checkpoint === "floor-complete" || checkpoint === "equipment-recovered" || checkpoint === "bad-ending-retry" || checkpoint === "chapter5-transition") {
+            return this.requireChapter4().destinationForCheckpoint(checkpoint);
+        }
+        if (stage === "chapter3" || stage === "chapter4-transition" || checkpoint.startsWith("generator-") || checkpoint.startsWith("jesse-chase-") || checkpoint === "daniel" || checkpoint === "maya-reveal" || checkpoint === "chapter4-transition") {
+            return this.requireChapter3().destinationForCheckpoint(checkpoint);
+        }
+        if (stage === "chapter2" || stage === "chapter3-transition" || checkpoint.startsWith("chapter2-") || checkpoint.startsWith("arena-") || checkpoint === "chapter3-transition") {
+            return this.requireChapter2().destinationForCheckpoint(checkpoint);
+        }
+        if (checkpoint.startsWith("body-phase") || checkpoint === "body-defeated")
+            return this.world.checkpoints.auditorium.clone();
+        if (checkpoint === "electrical-restored")
+            return this.world.checkpoints.power.clone();
+        if (checkpoint === "body-puzzles")
+            return this.world.checkpoints.hands.clone();
+        if (checkpoint === "body-card")
+            return this.world.checkpoints.auditorium.clone();
+        if (checkpoint === "chapter2-transition" || stage === "chapter2-transition")
+            return this.world.checkpoints.elevator.clone();
+        if (checkpoint === "chapter1-entry" || stage === "chapter1")
+            return this.world.checkpoints.lobby.clone();
+        return this.world.checkpoints.prologue.clone();
+    }
+    teleportToSafePosition(preferred, rotationY = 0) {
+        this.player.teleport(this.findSafeSpawnPosition(preferred), rotationY);
+    }
+    correctUnsafePlayerPosition() {
+        if (!this.player.enabled || this.stage === "menu")
+            return;
+        const current = this.player.collider.position.clone();
+        if (!this.isSpawnPositionBlocked(current))
+            return;
+        const checkpoint = this.runtimeCheckpointPositions.get(this.lastCheckpoint) ?? current;
+        this.player.teleport(this.findSafeSpawnPosition(checkpoint));
+        this.ui.toast("Posição do checkpoint corrigida para uma área livre.", 1800);
+    }
+    findSafeSpawnPosition(preferred) {
+        const offsets = [Vector3.Zero()];
+        for (const radius of [1.4, 2.4, 3.6, 5.0, 6.5]) {
+            for (let index = 0; index < 12; index += 1) {
+                const angle = index / 12 * Math.PI * 2;
+                offsets.push(new Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));
+            }
+        }
+        for (const offset of offsets) {
+            const candidate = preferred.add(offset);
+            candidate.y = this.findSpawnFloorHeight(candidate);
+            if (!this.isSpawnPositionBlocked(candidate))
+                return candidate;
+        }
+        // Last-resort vertical release. This is deliberately above the preferred
+        // point and lets Babylon settle the player onto the floor instead of keeping
+        // the ellipsoid embedded in a collider.
+        return preferred.add(new Vector3(0, 1.35, 0));
+    }
+    findSpawnFloorHeight(point) {
+        const origin = new Vector3(point.x, point.y + 4.5, point.z);
+        const pick = this.scene.pickWithRay(new Ray(origin, new Vector3(0, -1, 0), 11), (mesh) => this.isWalkableSpawnFloor(mesh));
+        return pick?.hit && pick.pickedPoint ? pick.pickedPoint.y + 0.12 : point.y;
+    }
+    isWalkableSpawnFloor(mesh) {
+        if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+            return false;
+        const name = mesh.name.toLowerCase();
+        if (mesh.metadata?.mapBoundary || mesh.metadata?.doorwayBlocker || mesh.metadata?.roomCeiling)
+            return false;
+        if (name.includes("wall") || name.includes("door") || name.includes("ceiling") || name.includes("roof") || name.includes("foundation"))
+            return false;
+        return Boolean(mesh.metadata?.guideFloor
+            || mesh.metadata?.continuousInteriorFloor
+            || name.includes("floor")
+            || name.includes("ground")
+            || name.includes("platform")
+            || name.includes("stage")
+            || name.includes("bridge-section")
+            || name.includes("ramp")
+            || name.includes("track"));
+    }
+    isSpawnPositionBlocked(position) {
+        const radius = 0.56;
+        const bottom = position.y + 0.08;
+        const top = position.y + 1.78;
+        for (const mesh of this.scene.meshes) {
+            if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
+                continue;
+            if (mesh.metadata?.checkpointDecoration || mesh.metadata?.guideMarker)
+                continue;
+            const name = mesh.name.toLowerCase();
+            if (name.includes("floor") || name.includes("ground") || name.includes("foundation") || name.includes("threshold"))
+                continue;
+            mesh.computeWorldMatrix(true);
+            const box = mesh.getBoundingInfo().boundingBox;
+            if (box.maximumWorld.y <= bottom || box.minimumWorld.y >= top)
+                continue;
+            if (box.maximumWorld.x < position.x - radius || box.minimumWorld.x > position.x + radius)
+                continue;
+            if (box.maximumWorld.z < position.z - radius || box.minimumWorld.z > position.z + radius)
+                continue;
+            return true;
+        }
+        return false;
+    }
+    objectiveTextFor(id) {
+        const mapping = {
+            "wait-friends": "AGUARDE SEUS AMIGOS RETORNAREM.",
+            "find-entry": "ENCONTRE UMA ENTRADA PARA O WONDER WORLD.",
+            "find-fuel": "ENCONTRE COMBUSTÍVEL EM UM VEÍCULO ABANDONADO.",
+            "cross-fence": "ATRAVESSE A SEÇÃO DANIFICADA DA CERCA.",
+            "reach-side-door": "ALCANCE A ENTRADA LATERAL.",
+            "search-friends": "PROCURE SINAIS DOS SEUS AMIGOS E RESTAURE A ELETRICIDADE.",
+            "restore-power": "RESTAURE A ELETRICIDADE.",
+            "repair-power-panel": "VOLTE AO QUADRO ELÉTRICO E INSTALE AS PEÇAS.",
+            "solve-body-puzzles": "ATIVE AS QUATRO PARTES DO CORPO PARA ABRIR O AUDITÓRIO.",
+            "enter-auditorium": "ENTRE NO AUDITÓRIO.",
+            "defeat-body": "DERROTE BODY.",
+            "inspect-nose": "INSPECIONE O NARIZ DE BODY.",
+            "unlock-underground": "USE O CARTÃO DO CORPO NA PASSAGEM SUBTERRÂNEA.",
+            "descend": "DESÇA PARA AS INSTALAÇÕES SUBTERRÂNEAS.",
+            "chapter2-descend": "AGUARDE O ELEVADOR CONCLUIR A DESCIDA.",
+            "learn-observation": "ATRAVESSE O CORREDOR SEM DEIXAR OS MANEQUINS SAÍREM DE VISTA.",
+            "recover-cells": "RECUPERE AS TRÊS CÉLULAS DE ENERGIA.",
+            "blackout-control": "ATIVE AS TRÊS CHAVES DE RESERVA ENTRE OS APAGÕES.",
+            "activate-machine": "ATIVE A MÁQUINA CENTRAL COM AS TRÊS CÉLULAS.",
+            "sphere-arena-1": "ATRAIA OS MANEQUINS PARA OS TRILHOS E LIBERE A ESFERA.",
+            "sphere-arena-2": "ESCOLHA O TRILHO, REMOVA OS BLOQUEIOS E LIBERE A ESFERA.",
+            "sphere-arena-3": "SOBREVIVA ÀS ONDAS E USE O RETORNO DA ESFERA.",
+            "sphere-return": "ACIONE O GUINCHO DE RETORNO E ALCANCE UMA ZONA SEGURA.",
+            "escape-arena": "FUJA PELA ROTA DE SAÍDA ANTES QUE O SISTEMA REINICIE.",
+            "follow-music": "SIGA A MELODIA DA CAIXA DE MÚSICA.",
+            "follow-jesse-melody": "SIGA A MELODIA ATÉ A CAIXA DE BRINQUEDO.",
+            "watch-jack-box": "ENCONTRE A ORIGEM DA MELODIA.",
+            "escape-jesse": "CORRA ATÉ O ELEVADOR DE SERVIÇO.",
+            "survive-elevator": "MANTENHA JESSE FORA ATÉ AS PORTAS FECHAREM.",
+            "inspect-daniel-room": "EXAMINE DANIEL E RECOLHA O EQUIPAMENTO PRÓXIMO.",
+            "collect-daniel-items": "RECOLHA O EQUIPAMENTO DE DANIEL.",
+            "activate-five-generators": "ATIVE OS CINCO GERADORES.",
+            "ventilate-gas-room": "VENTILE A SALA, DERROTE O EXPERIMENTO E REPARE O GERADOR 3.",
+            "reach-generator5": "ALCANCE O GERADOR FINAL. ELE EXIGE DUAS PESSOAS.",
+            "talk-to-maya": "APROXIME-SE DE MAYA E ATIVE O GERADOR FINAL.",
+            "synchronize-generator5": "SEGURE A ALAVANCA ESQUERDA ENQUANTO MAYA MANTÉM A OUTRA.",
+            "watch-maya": "OBSERVE MAYA.",
+            "wake-prison": "DESCUBRA ONDE VOCÊ ESTÁ.",
+            "escape-cell": "ESCAPE DA CELA SEM SEU EQUIPAMENTO.",
+            "repair-intercom": "USE O FIO SOLTO NO INTERCOMUNICADOR.",
+            "observe-guard": "OBSERVE O CORREDOR E ACIONE A ALAVANCA DURANTE A FALHA DE LUZ.",
+            "open-cell-lock": "USE A HASTE NO MECANISMO DA PORTA.",
+            "find-maintenance-route": "ENCONTRE A PASSAGEM DE MANUTENÇÃO ATRÁS DA OBSERVAÇÃO.",
+            "cross-fragile-floor": "ATRAVESSE O PISO DE TESTE.",
+            "choose-route": "DECIDA ENTRE RECUPERAR O EQUIPAMENTO OU SEGUIR O RASTRO DE SANGUE.",
+            "recover-equipment": "RECUPERE SEU EQUIPAMENTO NO DEPÓSITO DE EVIDÊNCIAS.",
+            "follow-blood": "SIGA O RASTRO DE SANGUE.",
+            "identify-mimic": "REÚNA EVIDÊNCIAS PARA IDENTIFICAR AS FALSAS IDENTIDADES.",
+            "defeat-mimic": "SOBREVIVA AO TESTE DE IDENTIDADE.",
+            "search-mimic-remains": "PROCURE UMA ROTA PARA OS ARQUIVOS.",
+            "reach-archives": "ALCANCE OS NÍVEIS CENTRAIS DE ARQUIVO.",
+            "approach-noah": "APROXIME-SE DA VOZ SEM BAIXAR A GUARDA.",
+            "prove-life": "PROVE QUE VOCÊ E NOAH SÃO HUMANOS.",
+            "search-archives": "INVESTIGUE OS ARQUIVOS CENTRAIS COM NOAH.",
+            "find-own-file": "ENCONTRE SEU ARQUIVO INFANTIL E ACESSE O NÚCLEO.",
+            "recover-memory": "RECONSTRUA A MEMÓRIA SUPRIMIDA.",
+            "escape-collapse": "ESCAPE DOS ARQUIVOS COM NOAH.",
+            "body-return": "ATRAVESSE O AUDITÓRIO QUEIMADO.",
+            "mannequin-return": "MANTENHA OS MANEQUINS SOB OBSERVAÇÃO.",
+            "final-jesse": "FUJA DE JESSE E NÃO DEIXE NOAH PARA TRÁS.",
+            "burning-archives": "ATRAVESSE OS ARQUIVOS EM CHAMAS.",
+            "maintenance-bridge": "ATRAVESSE A PONTE DE MANUTENÇÃO.",
+            "synchronized-exit": "ATIVE OS DOIS LEITORES DE CARTÃO EM SINCRONIA."
+        };
+        return mapping[id] ?? "CONTINUE EXPLORANDO O WONDER WORLD.";
+    }
+    setupSceneLighting() {
+        const ambient = new HemisphericLight("ambient", new Vector3(0, 1, 0), this.scene);
+        ambient.diffuse = new Color3(0.075, 0.09, 0.125);
+        ambient.groundColor = new Color3(0.008, 0.007, 0.009);
+        ambient.intensity = 0.13;
+        const storm = new DirectionalLight("storm-directional", new Vector3(-0.4, -1, 0.25), this.scene);
+        storm.position = new Vector3(20, 35, -20);
+        storm.diffuse = new Color3(0.22, 0.31, 0.48);
+        storm.intensity = 0.16;
+    }
+    constructionMapId() {
+        if (this.stage === "chapter5" || this.stage === "campaign-complete")
+            return "chapter5";
+        if (this.stage === "chapter4" || this.stage === "chapter5-transition")
+            return "chapter4";
+        if (this.stage === "chapter3" || this.stage === "chapter4-transition")
+            return "chapter3";
+        if (this.stage === "chapter2" || this.stage === "chapter3-transition")
+            return "chapter2";
+        if (this.stage === "menu")
+            return "global";
+        return "chapter1";
+    }
+    handleConstructionModeChanged(active) {
+        this.horrorLighting.setEditorMode(active);
+        if (active) {
+            this.constructionRestorePlayer = this.player.enabled;
+            this.constructionRestoreGuide = this.guide.enabled;
+            this.player.setEnabled(false);
+            this.player.releasePointerLock();
+            this.guide.setEnabled(false);
+            this.ui.dismissGameplayText();
+        }
+        else {
+            this.guide.setEnabled(this.constructionRestoreGuide);
+            if (this.stage !== "menu" && !this.paused && !this.inventoryOpen && this.constructionRestorePlayer) {
+                this.player.setEnabled(true);
+                this.canvas.focus();
+            }
+        }
+    }
+    installMovementDiagnostics() {
+        const overlay = document.createElement("pre");
+        overlay.id = "movement-diagnostics";
+        overlay.style.position = "fixed";
+        overlay.style.left = "10px";
+        overlay.style.top = "10px";
+        overlay.style.zIndex = "1000";
+        overlay.style.margin = "0";
+        overlay.style.padding = "8px 10px";
+        overlay.style.maxWidth = "min(520px, 92vw)";
+        overlay.style.whiteSpace = "pre-wrap";
+        overlay.style.pointerEvents = "none";
+        overlay.style.background = "rgba(0,0,0,.82)";
+        overlay.style.border = "1px solid rgba(255,255,255,.3)";
+        overlay.style.color = "#d9f2d9";
+        overlay.style.font = "12px/1.35 Consolas, monospace";
+        overlay.textContent = "Diagnóstico de movimento iniciando…";
+        document.body.appendChild(overlay);
+        this.movementDebugOverlay = overlay;
+    }
+    updateMovementDiagnostics(deltaSeconds) {
+        if (!this.movementDebugOverlay)
+            return;
+        this.movementDebugAccumulator += deltaSeconds;
+        if (this.movementDebugAccumulator < 0.12)
+            return;
+        this.movementDebugAccumulator = 0;
+        const snapshot = this.player.getDebugSnapshot();
+        this.movementDebugOverlay.textContent = [
+            "TESTE DE MOVIMENTO · FECHE A ABA PARA ENCERRAR",
+            `Fase: ${this.stage} · FPS: ${Math.round(this.engine.getFps())}`,
+            `Controle ativo: ${snapshot.enabled ? "SIM" : "NÃO"} · Câmera ativa: ${snapshot.activeCamera ? "SIM" : "NÃO"}`,
+            `No chão: ${snapshot.grounded ? "SIM" : "NÃO"} · Mouse capturado: ${snapshot.pointerLocked ? "SIM" : "NÃO"}`,
+            `Corpo: ${snapshot.collider}`,
+            `Câmera local: ${snapshot.cameraLocal}`,
+            `Velocidade: ${snapshot.velocity} · queda: ${snapshot.verticalVelocity}`,
+            "WASD deve alterar CORPO e VELOCIDADE. Clique na imagem para capturar o mouse."
+        ].join("\n");
+    }
+    createMenuBackdrop() {
+        const root = new TransformNode("menu-backdrop", this.scene);
+        root.position = new Vector3(0, 0, -35);
+        const torso = MeshBuilder.CreateSphere("menu-body-torso", { diameter: 5.2, segments: 14 }, this.scene);
+        torso.parent = root;
+        torso.position.y = 3.3;
+        torso.scaling = new Vector3(1.15, 1.2, 0.8);
+        torso.material = this.materials.get("plush", 0);
+        this.menuBodyParts.push(torso);
+        const head = MeshBuilder.CreateSphere("menu-body-head", { diameter: 3.3, segments: 14 }, this.scene);
+        head.parent = root;
+        head.position.y = 7;
+        head.material = this.materials.get("plush", 0);
+        this.menuBodyParts.push(head);
+        const nose = MeshBuilder.CreateSphere("menu-body-nose", { diameter: 0.9, segments: 10 }, this.scene);
+        nose.parent = head;
+        nose.position = new Vector3(0, 0, -1.52);
+        nose.material = this.materials.get("plastic", 0);
+        this.menuBodyParts.push(nose);
+        for (let index = 0; index < 4; index += 1) {
+            const arm = MeshBuilder.CreateCapsule(`menu-body-arm-${index}`, { height: 4.1, radius: 0.48, tessellation: 10 }, this.scene);
+            arm.parent = root;
+            const left = index < 2;
+            arm.position = new Vector3(left ? -2.6 : 2.6, index % 2 ? 2.8 : 4.5, 0.2);
+            arm.rotation.z = (left ? 1 : -1) * (0.45 + (index % 2) * 0.25);
+            arm.material = this.materials.get("plush", 0);
+            this.menuBodyParts.push(arm);
+        }
+        const projector = new SpotLight("menu-projector", new Vector3(-7, 8, -44), new Vector3(0.45, -0.25, 1), Math.PI / 4, 2.2, this.scene);
+        projector.diffuse = new Color3(0.95, 0.82, 0.57);
+        projector.intensity = 12;
+        projector.range = 35;
+        return { root, projector };
+    }
+    updateMenuBackdrop(time) {
+        this.menuProjector.intensity = 7 + Math.random() * 6 + Math.sin(time * 18) * 0.8;
+        this.menuProjector.direction.x = 0.4 + Math.sin(time * 0.7) * 0.08;
+        this.menuRoot.rotation.y = Math.sin(time * 0.24) * 0.06;
+        this.menuBodyParts.forEach((part, index) => {
+            if (index > 2)
+                part.rotation.x = Math.sin(time * (0.4 + index * 0.08) + index) * 0.08;
+        });
+        if (Math.random() < 0.004)
+            this.ui.flashLightning();
+    }
+    toggleDebug() {
+        this.ui.showDebug({
+            teleport: (destination) => {
+                const chapter5Position = this.requireChapter5().checkpoints[destination];
+                const chapter4Position = this.requireChapter4().checkpoints[destination];
+                const chapter3Position = this.requireChapter3().checkpoints[destination];
+                const chapter2Position = this.requireChapter2().checkpoints[destination];
+                if (chapter5Position) {
+                    this.requireChapter5().enableForDebug();
+                    this.stage = "chapter5";
+                    this.world.enteredWonderWorld = true;
+                    this.player.teleport(chapter5Position.clone());
+                }
+                else if (chapter4Position) {
+                    this.requireChapter4().enableForDebug();
+                    this.stage = "chapter4";
+                    this.world.enteredWonderWorld = true;
+                    this.player.teleport(chapter4Position.clone());
+                }
+                else if (chapter3Position) {
+                    this.requireChapter3().enableForDebug();
+                    this.stage = "chapter3";
+                    this.world.enteredWonderWorld = true;
+                    this.player.teleport(chapter3Position.clone());
+                }
+                else if (chapter2Position) {
+                    this.requireChapter2().enableForDebug();
+                    this.stage = "chapter2";
+                    this.world.enteredWonderWorld = true;
+                    this.player.teleport(chapter2Position.clone());
+                }
+                else {
+                    const position = this.world.checkpoints[destination] ?? this.world.checkpoints.prologue;
+                    this.player.teleport(position.clone());
+                }
+                this.ui.toast(`Teleportado: ${destination}`);
+            },
+            giveItems: () => {
+                Object.values(this.itemCatalog).forEach((item) => this.inventory.add(item));
+                this.fire.addFuel(100);
+                this.ui.toast("Todos os itens adicionados.");
+            },
+            toggleInfiniteFuel: () => {
+                this.fire.infiniteFuel = !this.fire.infiniteFuel;
+                this.ui.toast(`Combustível infinito: ${this.fire.infiniteFuel ? "ON" : "OFF"}`);
+            },
+            toggleInvulnerability: () => {
+                this.player.invulnerable = !this.player.invulnerable;
+                this.ui.toast(`Invulnerabilidade: ${this.player.invulnerable ? "ON" : "OFF"}`);
+            },
+            resetPuzzle: () => this.world.resetNearestPuzzle(),
+            startBoss: () => {
+                this.world.auditoriumOpened = true;
+                this.player.teleport(this.world.checkpoints.auditorium.clone());
+                this.startBoss();
+            },
+            bossPhase: (phase) => {
+                if (!this.boss.active)
+                    this.startBoss();
+                this.boss.setPhase(phase);
+            },
+            toggleCollisions: () => {
+                this.collisionDebugVisible = !this.collisionDebugVisible;
+                for (const mesh of this.scene.meshes) {
+                    mesh.showBoundingBox = this.collisionDebugVisible && Boolean(mesh.checkCollisions);
+                }
+                this.player.collider.isVisible = this.collisionDebugVisible;
+                this.player.collider.showBoundingBox = this.collisionDebugVisible;
+                this.ui.toast(`Formas de colisão: ${this.collisionDebugVisible ? "VISÍVEIS" : "OCULTAS"}`);
+            },
+            toggleMannequinMovement: () => {
+                this.requireChapter2().enableForDebug();
+                this.ui.toast(`Movimento dos manequins: ${this.requireChapter2().toggleMannequinMovement() ? "ON" : "OFF"}`);
+            },
+            toggleObservationVisualization: () => this.ui.toast(`Observação: ${this.requireChapter2().toggleObservationVisualization() ? "VISÍVEL" : "OCULTA"}`),
+            toggleOcclusionVisualization: () => this.ui.toast(`Raios de oclusão: ${this.requireChapter2().toggleOcclusionVisualization() ? "VISÍVEIS" : "OCULTOS"}`),
+            forceBlackout: () => {
+                this.requireChapter2().enableForDebug();
+                this.requireChapter2().forceBlackout();
+            },
+            grantEnergyCells: () => {
+                this.requireChapter2().enableForDebug();
+                this.requireChapter2().grantEnergyCells();
+            },
+            resetMirrorPuzzle: () => this.requireChapter2().resetMirrorPuzzle(),
+            resetShelfPuzzle: () => this.requireChapter2().resetShelfPuzzle(),
+            startSphereArena: (arena) => {
+                this.requireChapter2().enableForDebug();
+                this.stage = "chapter2";
+                this.requireChapter2().startArena(arena);
+            },
+            setMannequinCount: (count) => {
+                this.requireChapter2().enableForDebug();
+                this.requireChapter2().setMannequinCount(count);
+                this.ui.toast(`Manequins ativos: ${count}`);
+            },
+            startJesseIntroduction: () => {
+                this.stage = "chapter3";
+                this.requireChapter3().startJesseIntroduction();
+            },
+            startChaseSegment: (segment) => {
+                this.stage = "chapter3";
+                this.requireChapter3().startChaseSegment(segment);
+            },
+            setNoiseLevel: (level) => {
+                this.stage = "chapter3";
+                this.requireChapter3().enableForDebug();
+                this.requireChapter3().setNoiseLevel(level);
+                this.ui.toast(`Perigo sonoro: ${level}`);
+            },
+            forceJesseSearch: () => {
+                this.stage = "chapter3";
+                this.requireChapter3().enableForDebug();
+                this.requireChapter3().forceJesseSearch();
+            },
+            toggleNoiseVisualization: () => this.ui.toast(`Propagação do ruído: ${this.requireChapter3().toggleNoiseVisualization() ? "VISÍVEL" : "OCULTA"}`),
+            toggleJesseVisualization: () => this.ui.toast(`Alvo de Jesse: ${this.requireChapter3().toggleJesseVisualization() ? "VISÍVEL" : "OCULTO"}`),
+            grantGeneratorComponents: () => {
+                this.stage = "chapter3";
+                this.requireChapter3().enableForDebug();
+                this.requireChapter3().grantGeneratorComponents();
+            },
+            resetMelodyPuzzle: () => this.requireChapter3().resetMelodyPuzzle(),
+            spawnMiniboss: () => {
+                this.stage = "chapter3";
+                this.requireChapter3().spawnMiniboss();
+            },
+            triggerMayaReveal: () => {
+                this.stage = "chapter3";
+                this.requireChapter3().triggerMayaReveal();
+            },
+            previewMimicIdentity: (identity) => {
+                if (this.stage === "chapter4")
+                    this.requireChapter4().previewMimicIdentity(identity);
+                else {
+                    this.stage = "chapter3";
+                    this.requireChapter3().previewMimicIdentity(identity);
+                }
+            },
+            resetFragileFloor: () => this.requireChapter4().resetFragileFloor(),
+            revealFloorSolution: () => this.requireChapter4().revealFloorSolution(),
+            triggerBadEnding: () => {
+                this.stage = "chapter4";
+                this.requireChapter4().triggerBadEnding();
+            },
+            grantChapter4Equipment: () => {
+                this.stage = "chapter4";
+                this.requireChapter4().grantEquipment();
+            },
+            forceMimicEvidence: (evidence) => {
+                this.stage = "chapter4";
+                this.requireChapter4().forceIdentityInconsistency(evidence);
+            },
+            startMimicBossPhase: (phase) => {
+                this.stage = "chapter4";
+                this.requireChapter4().startBossPhase(phase);
+            },
+            setPostDefeatAttackCount: (count) => this.requireChapter4().setPostDefeatAttackCount(count),
+            inspectEndingFlags: () => this.requireChapter4().inspectEndingFlags(),
+            setNoahCommand: (command) => {
+                this.stage = "chapter5";
+                this.requireChapter5().debugSetNoah(command);
+            },
+            triggerTrueEnding: () => {
+                this.stage = "chapter5";
+                this.requireChapter5().debugTriggerTrueEnding();
+            },
+            inspectChapter5: () => this.requireChapter5().debugInspect(),
+            refreshState: () => [
+                `stage=${this.stage} paused=${this.paused}`,
+                `position=${this.player.collider.position.toString()}`,
+                `health=${this.player.health.toFixed(1)} fuel=${this.fire.fuel.toFixed(1)} torch=${this.fire.torchLit}`,
+                `objective=${this.objectives.get().id}`,
+                `inventory=${this.inventory.ids().join(", ")}`,
+                `puzzles=${[...this.world.solvedPuzzles].join(", ")}`,
+                this.boss.inspectState(),
+                `plush=${this.world.plushEnemies.map((enemy) => enemy.state).join(", ") || "none"}`,
+                this.requireChapter2().inspectState(),
+                this.requireChapter3().inspectState(),
+                this.requireChapter4().inspectState(),
+                this.requireChapter5().debugInspect(),
+                `fps=${this.engine.getFps().toFixed(0)}`,
+                this.saveSystem.inspect()
+            ].join("\n")
+        });
+    }
+}

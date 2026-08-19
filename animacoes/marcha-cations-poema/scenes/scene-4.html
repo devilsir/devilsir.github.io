@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Marcha dos Cátions — Estrofes 5 e 6</title>
+<style>
+  :root{
+    --bg:#0f1117; --ink:#e5e7eb; --muted:#9aa4b2;
+    --unknown:#8b5cf6;
+    --white:#ffffff; --black:#0b0b0b;
+    --green:#84cc16; --red:#ef4444; --orange:#f59e0b; --lilac:#a78bfa; --yellow:#fbbf24; --crimson:#f43f5e; --gray:#cbd5e1;
+    --ammS:#60a5fa; --sulf:#34d399; --carb:#7dd3fc; --pt:#fde68a; --pyro:#93c5fd;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 800px at 70% -20%, #1f2430 0%, var(--bg) 38%, #0b0d12 100%);
+    color:var(--ink); min-height:100vh; display:grid; place-items:center; padding:20px;
+  }
+  .wrap{display:grid; gap:18px; width:min(1400px, 98vw);}
+  .top{display:grid; grid-template-columns: 0.95fr 1.25fr; gap:16px;}
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:16px 18px; backdrop-filter: blur(6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  h1{font-size:20px;margin:0 0 8px 0; letter-spacing:.3px}
+  .poem{line-height:1.6; font-size:15.5px; white-space:pre-line}
+  .line{
+    color:var(--muted); transition: color .25s, text-shadow .25s, background .25s;
+    padding:2px 6px; border-radius:8px; margin:1px 0; cursor:pointer;
+  }
+  .line:hover{ background: rgba(251,191,36,.1); color:#fef3c7 }
+  .line.active{color:var(--ink); text-shadow: 0 0 12px rgba(255,255,255,.18)}
+  .hint{font-size:12px;color:#aab3bf;margin-top:6px}
+  .controls{display:flex;gap:10px; flex-wrap:wrap}
+  button{
+    appearance:none; border:none; color:#0b0d12; font-weight:600;
+    padding:10px 14px; border-radius:12px; cursor:pointer;
+    background: linear-gradient(180deg, #e9edf7, #cfd7e6);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .ghost{ background:transparent; color:#e5e7eb; border:1px solid rgba(255,255,255,.2); box-shadow:none }
+  button:active{transform:translateY(1px)}
+  #lab{
+    width:100%; height:640px; display:block; border-radius:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    border:1px solid rgba(255,255,255,0.08);
+  }
+
+  /* SVG styling */
+  .glass{fill:rgba(255,255,255,0.06); stroke:rgba(255,255,255,0.25); stroke-width:2}
+  .liquid{fill:var(--unknown); opacity:.9}
+  .label{font-size:12px; fill:#c7cfdb}
+  .small{font-size:10px}
+  .hidden{opacity:0; pointer-events:none}
+  .fade{transition:opacity .6s ease}
+  .grow{transition:all .6s ease}
+  .tube{filter: drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+  .pipette{filter: drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+  .drop{opacity:0}
+  .fall{animation:dropFall 1.0s ease-in forwards}
+  @keyframes dropFall{
+    0%{opacity:1; transform: translateY(-6px)}
+    80%{opacity:1; transform: translateY(165px)}
+    100%{opacity:0; transform: translateY(175px)}
+  }
+
+  /* flames row */
+  .flame{opacity:0; transition:opacity .5s ease; filter: drop-shadow(0 10px 16px rgba(0,0,0,.35)); transform-origin: 30px 26px}
+  .flicker{ animation:flick 1.15s ease-in-out infinite alternate }
+  @keyframes flick{
+    0%{ transform: translateY(0) scaleY(1.00) scaleX(1.00); }
+    100%{ transform: translateY(-3px) scaleY(1.15) scaleX(.95); }
+  }
+  .flameWrap{ transform: translate(30px,26px) scale(1.45) translate(-30px,-26px); }
+  .burner text{ font-size:11px; fill:#9fb0c8 }
+  .legend{font-size:11px; fill:#b7c0ce}
+
+  /* === Spectro panel (abaixo dos bicos) === */
+  #specWrap{ margin-top:-34px; padding:8px 18px 0 }
+  #spectro{ width:100%; height:190px; display:block }
+  .axis text{ font-size:10.5px; fill:#c7cfdb }
+  .specLine{ stroke-width:2.5; opacity:.95 }
+  .ionLabel{ font-size:11px; fill:#e5e7eb; display:none }
+  .legendNote{ font-size:11px; fill:#9fb0c8 }
+
+</style>
+  <script src="scene-prelude.js"></script>
+  <link rel="stylesheet" href="scene-shared.css">
+</head>
+<body data-scene-index="3">
+  <div class="wrap">
+
+    <div class="top">
+      <div class="card">
+        <h1>Estrofes 5 e 6 — Poema da Marcha dos Cátions</h1>
+        <div class="poem" id="poem">
+<span class="line">Estrôncio, bário, cálcio e magnésio</span>
+<span class="line">Ficam mudos e quietos.</span>
+<span class="line">Porém, com os carbonatos alcalinos,</span>
+<span class="line">Ou sulfatos solúveis destas bases</span>
+<span class="line">Não querem ter brinquedos.</span>
+<span class="line">Só o magnésio por anomalia,</span>
+<span class="line">Com os sulfatos, fica em harmonia,</span>
+<span class="line">Na chama, a cor do bário esverdeada,</span>
+<span class="line">A do estrôncio, que é muito avermelhada.</span>
+<span class="line">O cálcio tem a chama alaranjada</span>
+<span class="line">E o sulfato é solúvel na água fria.</span>
+
+<span class="line">Por nenhum dos reagentes precedentes,</span>
+<span class="line">Amônia, ou sódio ou potássio precipita.</span>
+<span class="line">E nem dos seus sais o lítio</span>
+<span class="line">Que dá chama tão bonita.</span>
+<span class="line">Porém, o cloreto de platina,</span>
+<span class="line">O potássio e a amônia elimina.</span>
+<span class="line">O potássio na chama é cor lilás,</span>
+<span class="line">A amônio na chama nada faz.</span>
+<span class="line">Com o piroantimoniato de potássio</span>
+<span class="line">O sódio não quer graça</span>
+<span class="line">E mesmo cai na armadilha</span>
+<span class="line">Por ter a chama amarela.</span>
+        </div>
+        <div class="controls" style="margin-top:10px;">
+          <button id="play">▶ Play</button>
+          <button id="pause">⏸ Pausar</button>
+          <button id="reset" class="ghost">⟲ Reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- LAB SCENE -->
+        <svg id="lab" viewBox="0 0 860 560" aria-labelledby="title desc" role="img">
+          <title id="title">Cena — Estrofes 5 e 6</title>
+          <desc id="desc">Rack de terrosos e alcalinos sem chamas no topo; fileira inferior exclusiva para o teste de chama.</desc>
+
+          <!-- bench -->
+          <rect x="0" y="350" width="860" height="210" fill="url(#bench)"/>
+          <defs>
+            <linearGradient id="bench" x1="0" y1="350" x2="0" y2="560">
+              <stop offset="0%" stop-color="#1b202b"/>
+              <stop offset="100%" stop-color="#12151c"/>
+            </linearGradient>
+          
+          <!-- flame gradients -->
+          <radialGradient id="gBa" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="35%" stop-color="#eaffd5"/>
+            <stop offset="100%" stop-color="var(--green)"/>
+          </radialGradient>
+          <radialGradient id="gSr" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#ffd2d2"/>
+            <stop offset="100%" stop-color="var(--red)"/>
+          </radialGradient>
+          <radialGradient id="gCa" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="35%" stop-color="#ffe8c7"/>
+            <stop offset="100%" stop-color="var(--orange)"/>
+          </radialGradient>
+          <radialGradient id="gK" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#e7dcff"/>
+            <stop offset="100%" stop-color="var(--lilac)"/>
+          </radialGradient>
+          <radialGradient id="gNa" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="35%" stop-color="#fff1b3"/>
+            <stop offset="100%" stop-color="var(--yellow)"/>
+          </radialGradient>
+          <radialGradient id="gLi" cx="50%" cy="55%" r="70%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#ffd1da"/>
+            <stop offset="100%" stop-color="var(--crimson)"/>
+          </radialGradient>
+    
+          </defs>
+
+          <!-- left rack: earth alkali -->
+          <g id="rackTerroso" transform="translate(20,40)">
+            <text x="180" y="-52" text-anchor="middle" class="label">Terrosos</text>
+            <g id="tSr" class="tube" transform="translate(0,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqSr" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptSr" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <rect id="so4Sr" class="grow" x="7" y="222" width="66" height="12" rx="6" fill="#e5e7eb" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Sr²⁺</text>
+            </g>
+            <g id="tBa" class="tube" transform="translate(100,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqBa" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptBa" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <rect id="so4Ba" class="grow" x="7" y="222" width="66" height="12" rx="6" fill="#e5e7eb" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Ba²⁺</text>
+            </g>
+            <g id="tCa" class="tube" transform="translate(200,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqCa" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptCa" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <rect id="so4Ca" class="grow" x="7" y="222" width="66" height="12" rx="6" fill="#e5e7eb" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Ca²⁺</text>
+            </g>
+            <g id="tMg" class="tube" transform="translate(300,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqMg" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptMg" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <rect id="so4Mg" class="grow" x="7" y="222" width="66" height="12" rx="6" fill="#e5e7eb" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Mg²⁺</text>
+            </g>
+            <text x="170" y="310" text-anchor="middle" class="legend">Carbonato: ppts em Sr/Ba/Ca/Mg. Sulfato: ppts em Sr/Ba/Ca; MgSO₄ fica solúvel.</text>
+          </g>
+
+          <!-- right rack: alkali and ammonium -->
+          <g id="rackAlk" transform="translate(450,40)">
+            <text x="160" y="-52" text-anchor="middle" class="label">Alcalinos & NH₄⁺</text>
+            <g id="tNH4" class="tube" transform="translate(0,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqNH4" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptNH4" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">NH₄⁺</text>
+            </g>
+            <g id="tNa" class="tube" transform="translate(100,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqNa" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptNa" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Na⁺</text>
+            </g>
+            <g id="tK" class="tube" transform="translate(200,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqK" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptK" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">K⁺</text>
+            </g>
+            <g id="tLi" class="tube" transform="translate(300,0)">
+              <rect x="0" y="0" width="80" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="80" height="240" rx="18" class="glass"/>
+              <rect id="liqLi" x="7" y="200" width="66" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptLi" class="grow" x="7" y="236" width="66" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="40" y="270" text-anchor="middle" class="label">Li⁺</text>
+            </g>
+            <text x="160" y="310" text-anchor="middle" class="legend">Sem ppt com reagentes anteriores; provas específicas abaixo.</text>
+          </g>
+
+          <!-- bottom flame row -->
+          <g id="flameRow" transform="translate(40,405)">
+            <text x="400" y="-18" text-anchor="middle" class="label">Teste de chama</text>
+
+            <!-- Burners helper -->
+            <!-- Ba -->
+            <g class="burner" id="bBa" transform="translate(0,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flBa" class="flame flicker" fill="url(#gBa)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">Ba</text>
+            </g>
+            <!-- Sr -->
+            <g class="burner" id="bSr" transform="translate(80,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flSr" class="flame flicker" fill="url(#gSr)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">Sr</text>
+            </g>
+            <!-- Ca -->
+            <g class="burner" id="bCa" transform="translate(160,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flCa" class="flame flicker" fill="url(#gCa)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">Ca</text>
+            </g>
+
+            <!-- spacer -->
+            <g transform="translate(260,0)"><text x="0" y="60" class="label">|</text></g>
+
+            <!-- K -->
+            <g class="burner" id="bK" transform="translate(300,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flK" class="flame flicker" fill="url(#gK)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">K</text>
+            </g>
+            <!-- NH4 -->
+            <g class="burner" id="bNH4" transform="translate(400,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flNH4" class="flame" stroke="var(--gray)" stroke-dasharray="3 3" fill="transparent" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">NH₄</text>
+            </g>
+            <!-- Na -->
+            <g class="burner" id="bNa" transform="translate(460,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flNa" class="flame flicker" fill="url(#gNa)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">Na</text>
+            </g>
+            <!-- Li -->
+            <g class="burner" id="bLi" transform="translate(540,0)">
+              <rect x="12" y="40" width="36" height="10" rx="3" fill="#64748b"/>
+              <g class="flameWrap">
+              <path id="flLi" class="flame flicker" fill="url(#gLi)" d="M30,10 C36,18 35,26 30,38 C25,26 24,18 30,10 Z"/>
+            </g>
+              <text x="30" y="64" text-anchor="middle">Li</text>
+            </g>
+          </g>
+
+          <!-- pipettes -->
+          <g id="pipCO3" class="pipette fade hidden" transform="translate(160,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6"/>
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--carb)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropCO3" class="drop" cx="7" cy="120" r="6" fill="var(--carb)"/>
+            <text x="26" y="40" class="label">Na₂CO₃</text>
+          </g>
+
+          <g id="pipSO4" class="pipette fade hidden" transform="translate(260,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6"/>
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--sulf)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropSO4" class="drop" cx="7" cy="120" r="6" fill="var(--sulf)"/>
+            <text x="26" y="40" class="label">Na₂SO₄</text>
+          </g>
+
+          <g id="pipPt" class="pipette fade hidden" transform="translate(590,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6"/>
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--pt)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropPt" class="drop" cx="7" cy="120" r="6" fill="var(--pt)"/>
+            <text x="26" y="40" class="label">H₂PtCl₆</text>
+          </g>
+
+          <g id="pipPyro" class="pipette fade hidden" transform="translate(690,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6"/>
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--pyro)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropPyro" class="drop" cx="7" cy="120" r="6" fill="var(--pyro)"/>
+            <text x="26" y="40" class="label">K–piroantimoniato</text>
+          </g>
+        </svg>
+
+        <!-- Painel de Espectro (abaixo dos bicos) -->
+        <div id="specWrap">
+          <svg id="spectro" viewBox="0 0 860 190" aria-label="Espectro visível com linhas marcadas">
+            <defs>
+              <linearGradient id="vis" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"  stop-color="#4b00a7"/>
+                <stop offset="10%" stop-color="#3d2bd3"/>
+                <stop offset="20%" stop-color="#2a67ff"/>
+                <stop offset="30%" stop-color="#20b4ff"/>
+                <stop offset="40%" stop-color="#1be4ff"/>
+                <stop offset="50%" stop-color="#12ff9f"/>
+                <stop offset="60%" stop-color="#7bff33"/>
+                <stop offset="70%" stop-color="#f5ff1a"/>
+                <stop offset="80%" stop-color="#ffd21a"/>
+                <stop offset="90%" stop-color="#ff7a1a"/>
+                <stop offset="100%" stop-color="#ff1a1a"/>
+              </linearGradient>
+              <!-- glow p/ linhas -->
+              <filter id="specGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2.2" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+    
+            </defs>
+            <rect x="40" y="24" width="780" height="26" rx="8" fill="url(#vis)" opacity=".85" />
+            <g class="axis" transform="translate(40,52)">
+              <!-- ticks 400..700 nm -->
+              <g transform="translate(0,0)"><line y1="0" y2="8" stroke="#c7cfdb"/><text y="22" x="-8">400</text></g>
+              <g transform="translate(183.75,0)"><line y1="0" y2="8" stroke="#c7cfdb"/><text y="22" x="-8">500</text></g>
+              <g transform="translate(367.5,0)"><line y1="0" y2="8" stroke="#c7cfdb"/><text y="22" x="-8">620</text></g>
+              <g transform="translate(780,0)"><line y1="0" y2="8" stroke="#c7cfdb"/><text y="22" x="-8">700</text></g>
+            </g>
+
+            <!-- grupos por íon (linhas serão posicionadas via JS) -->
+            <g id="grpBa" data-ion="Ba"><text class="ionLabel" x="40" y="140">Ba</text></g>
+            <g id="grpSr" data-ion="Sr"><text class="ionLabel" x="110" y="140">Sr</text></g>
+            <g id="grpCa" data-ion="Ca"><text class="ionLabel" x="180" y="140">Ca</text></g>
+            <g id="grpK"  data-ion="K"><text class="ionLabel" x="250" y="140">K</text></g>
+            <g id="grpNa" data-ion="Na"><text class="ionLabel" x="320" y="140">Na</text></g>
+            <g id="grpLi" data-ion="Li"><text class="ionLabel" x="390" y="140">Li</text></g>
+            <g id="grpNH4" data-ion="NH4"><text class="ionLabel" x="460" y="140">NH₄⁺</text></g>
+</svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card" style="font-size:13px; color:#9fb0c8">
+      Terrosos — Na₂CO₃: carbonatos ↓ (todos). Na₂SO₄: sulfatos ↓ em Sr/Ba/Ca; MgSO₄ fica em solução.  
+      Alcalinos/NH₄⁺ — nenhum ppt com os anteriores; K⁺ ↓ com H₂PtCl₆ (cloroplatinato), Na⁺ ↓ com K-piroantimoniato.  
+      Faixa inferior: teste de chama — Ba verde, Sr vermelho, Ca laranja, K lilás, Na amarelo, Li carmim; NH₄⁺ sem cor (mostro cinza discreto só para marcar “sem chama”).
+    </div>
+  </div>
+
+<script>
+(function(){
+  const lines = Array.from(document.querySelectorAll('.line'));
+  const showLine = (idx) => { lines.forEach(el => el.classList.remove('active')); if (idx>=0 && idx<lines.length) lines[idx].classList.add('active'); };
+
+  // Terrosos
+  const pptSr = document.getElementById('pptSr'), pptBa = document.getElementById('pptBa'), pptCa = document.getElementById('pptCa'), pptMg = document.getElementById('pptMg');
+  const so4Sr = document.getElementById('so4Sr'), so4Ba = document.getElementById('so4Ba'), so4Ca = document.getElementById('so4Ca'), so4Mg = document.getElementById('so4Mg');
+  const pipCO3 = document.getElementById('pipCO3'), dropCO3 = document.getElementById('dropCO3');
+  const pipSO4 = document.getElementById('pipSO4'), dropSO4 = document.getElementById('dropSO4');
+
+  // Alcalinos
+  const pptNH4 = document.getElementById('pptNH4'), pptNa = document.getElementById('pptNa'), pptK = document.getElementById('pptK'), pptLi = document.getElementById('pptLi');
+  const pipPt = document.getElementById('pipPt'), dropPt = document.getElementById('dropPt');
+  const pipPyro = document.getElementById('pipPyro'), dropPyro = document.getElementById('dropPyro');
+
+  // Flames (bottom row)
+  const flBa = document.getElementById('flBa'), flSr = document.getElementById('flSr'), flCa = document.getElementById('flCa');
+  const flK = document.getElementById('flK'), flNH4 = document.getElementById('flNH4'), flNa = document.getElementById('flNa'), flLi = document.getElementById('flLi');
+
+  const playBtn = document.getElementById('play'), pauseBtn = document.getElementById('pause'), resetBtn = document.getElementById('reset');
+  let playing=false, current=-1, timer=null;
+
+  function setOpacity(el,v){ el.style.opacity=String(v); }
+  function reveal(el){ el.classList.remove('hidden'); setOpacity(el,1); }
+  function hide(el){ setOpacity(el,0); el.classList.add('hidden'); }
+  function dropOnce(el){ setOpacity(el,1); el.classList.remove('fall'); void el.offsetWidth; el.classList.add('fall'); setTimeout(()=>setOpacity(el,0), 900); }
+  function grow(r){ r.setAttribute('y','214'); r.setAttribute('height','36'); }
+  function resetFlames(){ [flBa,flSr,flCa,flK,flNH4,flNa,flLi].forEach(f=> setOpacity(f,0)); }
+
+  function resetScene(){
+    if (timer){ clearTimeout(timer); timer=null; }
+    playing=false; current=-1;
+    lines.forEach(el => el.classList.remove('active'));
+    hide(pipCO3); hide(pipSO4); hide(pipPt); hide(pipPyro);
+    [dropCO3,dropSO4,dropPt,dropPyro].forEach(d=>{ d.classList.remove('fall'); setOpacity(d,0); });
+    [pptSr,pptBa,pptCa,pptMg,so4Sr,so4Ba,so4Ca,so4Mg,pptNH4,pptNa,pptK,pptLi].forEach(r=>{ setOpacity(r,0); r.setAttribute('y','236'); r.setAttribute('height','14'); });
+    resetFlames(); ['Ba','Sr','Ca','K','Na','Li','NH4'].forEach(ion=> highlightIon(ion, false));
+    pauseBtn.textContent='⏸ Pausar';
+  }
+
+  // Steps tied to lines (same timings; flames now appear on bottom row)
+  
+  // === Espectro (linhas) ===
+  const spectro = document.getElementById('spectro');
+  function nmToX(nm){
+    
+    const nmMin = 400, nmMax = 700;
+    const xMin = 40, xMax = 820; // matches rect width 780 at x=40
+    const clamped = Math.max(nmMin, Math.min(nm, nmMax));
+    return xMin + (xMax - xMin) * (clamped - nmMin) / (nmMax - nmMin);
+  }
+  function wavelengthToRGB(nm){
+    // Dan Bruton-ish approximation (clamped 400-700 nm), gamma 0.8
+    let R=0, G=0, B=0, S=1.0;
+    if (nm < 400) nm = 400; if (nm > 700) nm = 700;
+    if (nm >= 400 && nm < 440){ R = -(nm - 440)/(440-400); G = 0; B = 1; }
+    else if (nm < 490){ R = 0; G = (nm - 440)/(490-440); B = 1; }
+    else if (nm < 510){ R = 0; G = 1; B = -(nm - 510)/(510-490); }
+    else if (nm < 580){ R = (nm - 510)/(580-510); G = 1; B = 0; }
+    else if (nm < 645){ R = 1; G = -(nm - 645)/(645-580); B = 0; }
+    else { R = 1; G = 0; B = 0; }
+    // intensity factor at edges
+    if (nm >= 400 && nm < 420){ S = 0.3 + 0.7*(nm-400)/(420-400); }
+    else if (nm > 645 && nm <= 700){ S = 0.3 + 0.7*(700-nm)/(700-645); }
+    const gamma = 0.8;
+    const to255 = v => Math.round(255 * (v<=0 ? 0 : (S * (v ** gamma))));
+    return `rgb(${to255(R)}, ${to255(G)}, ${to255(B)})`;
+  }
+  const ionLines = {
+    'Na': [589.0, 589.6],
+    'K':  [404.4, 404.7],
+    'Li': [670.8],
+    'Sr': [606.0, 671.0],
+    'Ba': [516.0, 524.0],
+    'Ca': [422.7, 622.0],
+    'NH4': []
+  };
+  
+  function layoutSpectro(){
+    ['Ba','Sr','Ca','K','Na','Li','NH4'].forEach(ion=>{
+      const g = spectro?.querySelector('#grp'+ion); if (!g) return;
+      // remove old lines
+      Array.from(g.querySelectorAll('line')).forEach(n=>g.removeChild(n));
+      const lines = ionLines[ion]||[];
+      lines.forEach(wl=>{
+        const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
+        ln.setAttribute('class','specLine');
+        ln.setAttribute('x1', nmToX(wl)); ln.setAttribute('x2', nmToX(wl));
+        ln.setAttribute('y1','30'); ln.setAttribute('y2','90');
+        ln.setAttribute('stroke', wavelengthToRGB(wl));
+        ln.setAttribute('filter', 'url(#specGlow)');
+        g.insertBefore(ln, g.firstChild);
+      });
+    });
+  }
+  function highlightIon(ion, on){
+    const g = spectro?.querySelector('#grp'+ion); if (!g) return;
+    g.style.display = on ? 'block' : 'none';
+  }
+
+  // Mostra só o íon atual: apaga chamas/linhas anteriores e liga a atual
+  
+  // Liga o íon atual e mantém os anteriores acesos (persistente até reset)
+  
+  // Acende só a chama (sem mostrar linhas do espectro)
+  function onlyFlame(ion){
+    const map = { Ba: flBa, Sr: flSr, Ca: flCa, K: flK, Na: flNa, Li: flLi, NH4: flNH4 };
+    const el = map[ion];
+    if (el){ setOpacity(el, 1); }
+    // não mexe em highlightIon -> espectro fica como está
+  }
+
+  function onlyIon(ion){
+    const map = { Ba: flBa, Sr: flSr, Ca: flCa, K: flK, Na: flNa, Li: flLi, NH4: flNH4 };
+    const el = map[ion];
+    if (el){ setOpacity(el, 1); }
+    if (ion !== 'NH4'){ highlightIon(ion, true); } // NH4 não tem linhas
+  }
+
+
+  layoutSpectro();
+  ['Ba','Sr','Ca','K','Na','Li','NH4'].forEach(ion=> highlightIon(ion, false));
+
+  const steps = [
+    {line:0, delay:700, fn:(i)=>{ showLine(0); }},
+    {line:1, delay:600, fn:(i)=>{ showLine(1); }},
+    {line:2, delay:600, fn:(i)=>{ showLine(2); reveal(pipCO3); }},
+    {line:3, delay:600, fn:(i)=>{ showLine(3); }},
+    {line:4, delay:1000, fn:(i)=>{ showLine(4); dropOnce(dropCO3); [pptSr,pptBa,pptCa,pptMg].forEach(p=>{ setOpacity(p,1); grow(p); }); }},
+    {line:5, delay:700, fn:(i)=>{ showLine(5); }},
+    {line:6, delay:900, fn:(i)=>{ showLine(6); reveal(pipSO4); dropOnce(dropSO4); [so4Sr,so4Ba,so4Ca].forEach(p=>{ setOpacity(p,1); grow(p); }); }},
+    {line:7, delay:700, fn:(i)=>{ showLine(7); }},
+    {line:8, delay:600, fn:(i)=>{ showLine(8); onlyFlame('Ba'); }},
+    {line:9, delay:600, fn:(i)=>{ showLine(9); onlyFlame('Sr'); }},
+    {line:10, delay:600, fn:(i)=>{ showLine(10); onlyIon('Ca'); }},
+    {line:11, delay:900, fn:(i)=>{ showLine(11); }},
+
+    // Second stanza
+    {line:12, delay:700, fn:(i)=>{ showLine(12); }},
+    {line:13, delay:700, fn:(i)=>{ showLine(13); }},
+    {line:14, delay:700, fn:(i)=>{ showLine(14); }},
+    {line:15, delay:700, fn:(i)=>{ showLine(15); onlyIon('Li'); }},
+    {line:16, delay:700, fn:(i)=>{ showLine(16); reveal(pipPt); }},
+    {line:17, delay:900, fn:(i)=>{ showLine(17); dropOnce(dropPt); setOpacity(pptK,1); grow(pptK); onlyIon('K'); }},
+    {line:18, delay:700, fn:(i)=>{ showLine(18); }},
+    {line:19, delay:700, fn:(i)=>{ showLine(19); onlyIon('NH4'); }},
+    {line:20, delay:700, fn:(i)=>{ showLine(20); reveal(pipPyro); }},
+    {line:21, delay:900, fn:(i)=>{ showLine(21); dropOnce(dropPyro); setOpacity(pptNa,1); grow(pptNa); }},
+    {line:22, delay:700, fn:(i)=>{ showLine(22); onlyIon('Na'); }},
+  ];
+
+  const cueForLine = (idx)=> Math.min(idx, steps.length-1);
+  function applyUpTo(target){ resetScene(); for(let i=0;i<=target;i++){ steps[i].fn(true); } current=target; }
+  function runFromCurrent(){
+    if (playing) return; playing=true;
+    const next = ()=>{
+      if (!playing) return;
+      const n = current + 1; if (n>=steps.length){ playing=false; return; }
+      current = n; const s = steps[current]; s.fn(false); timer = setTimeout(next, s.delay);
+    };
+    next();
+  }
+  function pause(){ playing=false; if (timer){ clearTimeout(timer); timer=null; } }
+
+  document.getElementById('play').addEventListener('click', runFromCurrent);
+  document.getElementById('pause').addEventListener('click', ()=>{ if (playing){ pause(); pauseBtn.textContent='▶ Retomar'; } else { pauseBtn.textContent='⏸ Pausar'; runFromCurrent(); } });
+  document.getElementById('reset').addEventListener('click', resetScene);
+
+  // Click-to-seek
+  lines.forEach((el, idx)=>{ el.title='Clique para pular para esta parte'; el.addEventListener('click', ()=>{ pause(); applyUpTo(cueForLine(idx)); }); });
+
+  resetScene();
+})();
+</script>
+  <script src="scene-shared.js"></script>
+</body>
+</html>

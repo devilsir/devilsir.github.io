@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Marcha dos Cátions — Estrofe 4</title>
+<style>
+  :root{
+    --bg:#0f1117; --ink:#e5e7eb; --muted:#9aa4b2;
+    --ammS:#60a5fa;   /* (NH4)2S */
+    --unknown:#8b5cf6;
+    --white:#ffffff; --black:#0b0b0b;
+    --apple:#86efac; --rose:#f9a8d4;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 800px at 70% -20%, #1f2430 0%, var(--bg) 38%, #0b0d12 100%);
+    color:var(--ink); min-height:100vh; display:grid; place-items:center; padding:20px;
+  }
+  .wrap{display:grid; gap:18px; width:min(1400px, 98vw);}
+  .top{display:grid; grid-template-columns: 0.95fr 1.25fr; gap:16px;}
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:16px 18px; backdrop-filter: blur(6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  h1{font-size:20px;margin:0 0 8px 0; letter-spacing:.3px}
+  .poem{line-height:1.6; font-size:15.5px; white-space:pre-line}
+  .line{
+    color:var(--muted); transition: color .25s, text-shadow .25s, background .25s;
+    padding:2px 6px; border-radius:8px; margin:1px 0; cursor:pointer;
+  }
+  .line:hover{ background: rgba(251,191,36,.1); color:#fef3c7 }
+  .line.active{color:var(--ink); text-shadow: 0 0 12px rgba(255,255,255,.18)}
+  .hint{font-size:12px;color:#aab3bf;margin-top:6px}
+  .controls{display:flex;gap:10px; flex-wrap:wrap}
+  button{
+    appearance:none; border:none; color:#0b0d12; font-weight:600;
+    padding:10px 14px; border-radius:12px; cursor:pointer;
+    background: linear-gradient(180deg, #e9edf7, #cfd7e6);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .ghost{ background:transparent; color:#e5e7eb; border:1px solid rgba(255,255,255,.2); box-shadow:none }
+  button:active{transform:translateY(1px)}
+  #lab{ width:100%; height:680px; display:block; border-radius:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    border:1px solid rgba(255,255,255,0.08);
+  }
+
+  /* SVG styling */
+  .glass{fill:rgba(255,255,255,0.06); stroke:rgba(255,255,255,0.25); stroke-width:2}
+  .liquid{fill:var(--unknown); opacity:.9}
+  .label{font-size:12px; fill:#c7cfdb}
+  .small{font-size:10px}
+  .hidden{opacity:0; pointer-events:none}
+  .fade{transition:opacity .6s ease}
+  .grow{transition:all .6s ease}
+  .tube{filter: drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+  .pipette{filter: drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+  .drop{opacity:0}
+  .fall{animation:dropFall 1.0s ease-in forwards}
+  @keyframes dropFall{
+    0%{opacity:1; transform: translateY(-6px)}
+    80%{opacity:1; transform: translateY(165px)}
+    100%{opacity:0; transform: translateY(175px)}
+  }
+
+  .legend{font-size:11px; fill:#b7c0ce}
+</style>
+  <script src="scene-prelude.js"></script>
+  <link rel="stylesheet" href="scene-shared.css">
+</head>
+<body data-scene-index="2">
+  <div class="wrap">
+
+    <div class="top">
+      <div class="card">
+        <h1>Estrofe 4 — Poema da Marcha dos Cátions</h1>
+        <div class="poem" id="poem">
+<span class="line">Se nem agaceele ou agadoiesse</span>
+<span class="line">Vos der ainda algum precipitado,</span>
+<span class="line">Sulfeto de amônia adicionai</span>
+<span class="line">Ao sobrenadante que tereis neutralizado.</span>
+<span class="line">Cromo, alumínio, ferro e mais o zinco,</span>
+<span class="line">O níquel, o cobalto e o manganês,</span>
+<span class="line">Desta fora, tratados com certeza,</span>
+<span class="line">Serão precipitados desta vez.</span>
+<span class="line">Ferro, níquel e cobalto</span>
+<span class="line">Precipitam em negro franco;</span>
+<span class="line">Do alumínio ou zinco,</span>
+<span class="line">O precipitado é branco.</span>
+<span class="line">De cor verde maçã</span>
+<span class="line">É do cromo;</span>
+<span class="line">Porém, o do manganês</span>
+<span class="line">É da cor rósea da pele.</span>
+        </div>
+        <div class="hint">(NH₄)₂S no sobrenadante neutro: precipitam os “do grupo” — Fe/Ni/Co pretos, Al/Zn brancos, Cr verde-maçã, Mn rosa.</div>
+        <div class="controls" style="margin-top:10px;">
+          <button id="play">▶ Play</button>
+          <button id="pause">⏸ Pausar</button>
+          <button id="reset" class="ghost">⟲ Reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- LAB SCENE -->
+        <svg id="lab" viewBox="0 0 820 450" aria-labelledby="title desc" role="img">
+          <title id="title">Cena — Estrofe 4: (NH₄)₂S</title>
+          <desc id="desc">Sobrenadante neutralizado no becker; rack com 7 tubos (Cr, Al, Fe, Zn, Ni, Co, Mn); pipeta de (NH₄)₂S move e pinga centralizada.</desc>
+
+          <!-- bench -->
+          <rect x="0" y="320" width="820" height="130" fill="url(#bench)"/>
+          <defs>
+            <linearGradient id="bench" x1="0" y1="320" x2="0" y2="450">
+              <stop offset="0%" stop-color="#1b202b"/>
+              <stop offset="100%" stop-color="#12151c"/>
+            </linearGradient>
+          </defs>
+
+          <!-- beaker -->
+          <g id="beaker" transform="translate(20,60)">
+            <rect x="0" y="0" width="180" height="10" rx="4" class="glass"/>
+            <rect x="0" y="10" width="180" height="230" rx="12" class="glass"/>
+            <rect id="unknownLiquid" x="7" y="140" width="166" height="92" rx="8" class="liquid"/>
+            <text x="90" y="260" text-anchor="middle" class="label">Sobrenadante neutralizado</text>
+          </g>
+
+          <!-- rack of tubes in poem order: Cr, Al, Fe, Zn, Ni, Co, Mn -->
+          <g id="tubes" class="fade hidden" transform="translate(230,30)">
+            <!-- A helper for each tube -->
+            <!-- Cr (green apple) -->
+            <g class="tube" id="tCr" transform="translate(0,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqCr" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptCr" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--apple)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Cr³⁺</text>
+            </g>
+            <!-- Al (white) -->
+            <g class="tube" id="tAl" transform="translate(80,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqAl" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptAl" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Al³⁺</text>
+            </g>
+            <!-- Fe (black) -->
+            <g class="tube" id="tFe" transform="translate(160,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqFe" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptFe" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--black)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Fe³⁺</text>
+            </g>
+            <!-- Zn (white) -->
+            <g class="tube" id="tZn" transform="translate(240,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqZn" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptZn" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--white)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Zn²⁺</text>
+            </g>
+            <!-- Ni (black) -->
+            <g class="tube" id="tNi" transform="translate(320,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqNi" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptNi" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--black)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Ni²⁺</text>
+            </g>
+            <!-- Co (black) -->
+            <g class="tube" id="tCo" transform="translate(400,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqCo" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptCo" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--black)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Co²⁺</text>
+            </g>
+            <!-- Mn (rose) -->
+            <g class="tube" id="tMn" transform="translate(480,0)">
+              <rect x="0" y="0" width="70" height="16" rx="6" class="glass"/>
+              <rect x="0" y="16" width="70" height="240" rx="18" class="glass"/>
+              <rect id="liqMn" x="7" y="200" width="56" height="50" rx="10" fill="#93c5fd" opacity="0.85"/>
+              <rect id="pptMn" class="grow" x="7" y="236" width="56" height="14" rx="6" fill="var(--rose)" opacity="0"/>
+              <text x="35" y="270" text-anchor="middle" class="label">Mn²⁺</text>
+            </g>
+
+            <text x="280" y="320" text-anchor="middle" class="legend">Grupo “(NH₄)₂S”: Fe/Ni/Co negros; Al/Zn brancos; Cr verde; Mn rosa.</text>
+          </g>
+
+          <!-- pipette (NH4)2S -->
+          <g id="pipAmm" class="pipette fade hidden" transform="translate(265,5)">
+            <rect x="0" y="0" width="14" height="90" rx="6" fill="#dbeafe" stroke="#a0b8e6" />
+            <rect x="2" y="8" width="10" height="66" rx="4" fill="var(--ammS)"/>
+            <polygon points="7,90 14,120 0,120" fill="#cdd5e1"/>
+            <circle id="dropAmm" class="drop" cx="7" cy="120" r="6" fill="var(--ammS)"/>
+            <text x="26" y="40" class="label">(NH₄)₂S</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:13px; color:#9fb0c8">
+      Se HCl/H₂S não deram ppt, adiciona-se <b>(NH₄)₂S</b> ao sobrenadante neutro.  
+      Precipitados esperados: <b>Fe/Ni/Co</b> negros; <b>Al/Zn</b> brancos; <b>Cr</b> verde-maçã; <b>Mn</b> rosa.
+    </div>
+  </div>
+
+<script>
+(function(){
+  const lines = Array.from(document.querySelectorAll('.line'));
+  const showLine = (idx) => {
+    lines.forEach(el => el.classList.remove('active'));
+    if (idx>=0 && idx<lines.length) lines[idx].classList.add('active');
+  };
+
+  // Elements
+  const tubes = document.getElementById('tubes');
+  const pip = document.getElementById('pipAmm');
+  const drop = document.getElementById('dropAmm');
+
+  const ppt = {
+    Cr: document.getElementById('pptCr'),
+    Al: document.getElementById('pptAl'),
+    Fe: document.getElementById('pptFe'),
+    Zn: document.getElementById('pptZn'),
+    Ni: document.getElementById('pptNi'),
+    Co: document.getElementById('pptCo'),
+    Mn: document.getElementById('pptMn')
+  };
+
+  const playBtn = document.getElementById('play');
+  const pauseBtn = document.getElementById('pause');
+  const resetBtn = document.getElementById('reset');
+
+  let playing=false, current=-1, timer=null;
+
+  // Tube centers (group at x=280; step 80; center +35)
+  const baseX = 230, step=80, c=35, topY=5;
+  const X={ Cr:baseX+0*step+c, Al:baseX+1*step+c, Fe:baseX+2*step+c, Zn:baseX+3*step+c, Ni:baseX+4*step+c, Co:baseX+5*step+c, Mn:baseX+6*step+c };
+
+  function setOpacity(el,v){ el.style.opacity=String(v); }
+  function reveal(el){ el.classList.remove('hidden'); setOpacity(el,1); }
+  function hide(el){ setOpacity(el,0); el.classList.add('hidden'); }
+  function move(x,y){ pip.setAttribute('transform',`translate(${x},${y})`); }
+  function dropOnce(){
+    setOpacity(drop,1);
+    drop.classList.remove('fall'); void drop.offsetWidth; drop.classList.add('fall');
+    setTimeout(()=> setOpacity(drop,0), 900);
+  }
+  function grow(r){ r.setAttribute('y','214'); r.setAttribute('height','36'); }
+
+  function resetScene(){
+    if (timer){ clearTimeout(timer); timer=null; }
+    playing=false; current=-1;
+    lines.forEach(el => el.classList.remove('active'));
+    hide(tubes); hide(pip); setOpacity(drop,0); drop.classList.remove('fall');
+    Object.values(ppt).forEach(r=>{ r.setAttribute('y','236'); r.setAttribute('height','14'); setOpacity(r,0); });
+    move(X.Cr, topY);
+    pauseBtn.textContent='⏸ Pausar';
+  }
+
+  const steps=[
+    {line:0, delay:700, fn:(i)=>{ showLine(0); }},
+    {line:1, delay:700, fn:(i)=>{ showLine(1); }},
+    // Primeiro a pipeta aparece; a gota só cai no verso seguinte, já sobre o sobrenadante neutralizado.
+    {line:2, delay:850, fn:(i)=>{ showLine(2); reveal(pip); move(70, topY); }},
+    {line:3, delay:900, fn:(i)=>{ showLine(3); move(70, topY); if(!i) dropOnce(); }},
+    {line:4, delay:650, fn:(i)=>{ showLine(4); reveal(tubes); }},
+    {line:5, delay:650, fn:(i)=>{ showLine(5); }},
+    {line:6, delay:650, fn:(i)=>{ showLine(6); }},
+    // Não revelar todos os precipitados de uma vez: eles surgem apenas quando cada prova acontece.
+    {line:7, delay:850, fn:(i)=>{ showLine(7); move(X.Fe, topY); }},
+    // Fe, Ni, Co → black
+    {line:8, delay:1450, fn:(i)=>{
+      showLine(8);
+      [['Fe',X.Fe],['Ni',X.Ni],['Co',X.Co]].forEach(([k,x],idx)=>{
+        setTimeout(()=>{ move(x, topY); if(!i) dropOnce(); setOpacity(ppt[k],1); grow(ppt[k]); }, idx*360);
+      });
+    }},
+    {line:9, delay:650, fn:(i)=>{ showLine(9);} },
+    // Al & Zn → white
+    {line:10, delay:850, fn:(i)=>{ showLine(10); move(X.Al, topY); if(!i) dropOnce(); setOpacity(ppt.Al,1); grow(ppt.Al); }},
+    {line:11, delay:850, fn:(i)=>{ showLine(11); move(X.Zn, topY); if(!i) dropOnce(); setOpacity(ppt.Zn,1); grow(ppt.Zn); }},
+    // Cr green
+    {line:12, delay:650, fn:(i)=>{ showLine(12);} },
+    {line:13, delay:950, fn:(i)=>{ showLine(13); move(X.Cr, topY); if(!i) dropOnce(); setOpacity(ppt.Cr,1); grow(ppt.Cr); }},
+    // Mn pink
+    {line:14, delay:650, fn:(i)=>{ showLine(14);} },
+    {line:15, delay:950, fn:(i)=>{ showLine(15); move(X.Mn, topY); if(!i) dropOnce(); setOpacity(ppt.Mn,1); grow(ppt.Mn); }},
+  ];
+
+  const cueForLine=(idx)=> Math.min(idx, steps.length-1);
+
+  function applyUpTo(target){
+    resetScene();
+    for(let i=0;i<=target;i++){ steps[i].fn(true); }
+    current=target;
+  }
+
+  function runFromCurrent(){
+    if (playing) return;
+    playing=true;
+    function next(){
+      if (!playing) return;
+      const n=current+1;
+      if (n>=steps.length){ playing=false; return; }
+      current=n;
+      const s=steps[current];
+      s.fn(false);
+      timer=setTimeout(next, s.delay);
+    }
+    next();
+  }
+  function pause(){ playing=false; if (timer){ clearTimeout(timer); timer=null; } }
+
+  // UI
+  document.getElementById('play').addEventListener('click', runFromCurrent);
+  document.getElementById('pause').addEventListener('click', ()=>{
+    if (playing){ pause(); pauseBtn.textContent='▶ Retomar'; }
+    else { pauseBtn.textContent='⏸ Pausar'; runFromCurrent(); }
+  });
+  document.getElementById('reset').addEventListener('click', resetScene);
+
+  // Click-to-seek
+  lines.forEach((el, idx)=>{
+    el.title='Clique para pular para esta parte';
+    el.addEventListener('click', ()=>{ pause(); applyUpTo(cueForLine(idx)); });
+  });
+
+  // bootstrap
+  resetScene();
+})();
+</script>
+  <script src="scene-shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#08060d" />
+    <meta name="description" content="The Little Museum of Lilith — an intimate interactive memorial." />
+    <title>The Little Museum of Lilith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="museum-canvas" aria-label="Interactive 3D memorial museum for Lilith"></canvas>
+    <div id="world-label-layer" aria-hidden="true"></div>
+
+    <div id="loading-screen" class="loading-screen" aria-live="polite">
+      <div class="loading-card">
+        <p id="loading-kicker" class="eyebrow">Preparando o museu</p>
+        <h2 id="loading-title">Carregando memórias da Lilith</h2>
+        <p id="loading-status">Organizando fotos, luzes e modelos…</p>
+        <div class="loading-bar"><span id="loading-progress"></span></div>
+      </div>
+    </div>
+
+    <button id="language-button" class="icon-button language-toggle" aria-label="Mudar idioma" title="Mudar idioma">PT</button>
+
+    <div id="intro" class="intro is-visible" aria-live="polite">
+      <div class="intro-stars" aria-hidden="true"></div>
+      <div class="intro-content">
+        <p class="eyebrow intro-step step-1">For Lilith</p>
+        <h1 class="intro-poem intro-step step-2">Born beneath a Friday night sky.<br />Loved through every season.<br />Remembered forever.</h1>
+        <p class="intro-dates intro-step step-3">December 13, 2019 — May 27, 2026</p>
+        <p class="intro-subtitle intro-step step-4">A small place for a very big love.</p>
+        <button id="enter-button" class="primary-button intro-step step-5" disabled>Entrar no Museu da Lilith</button>
+      </div>
+      <p class="intro-signature">A small museum for a love too large to disappear.</p>
+    </div>
+
+    <header id="hud" class="hud is-hidden">
+      <div class="hud-brand">
+        <span class="hud-title">The Little Museum of Lilith</span>
+        <span class="hud-dates">December 13, 2019 — May 27, 2026</span>
+      </div>
+      <div class="hud-actions">
+        <button id="brightness-button" class="icon-button" aria-label="Balanced light" title="Balanced light">☀</button>
+        <button id="sound-button" class="icon-button" aria-label="Toggle sound" title="Toggle sound">♪</button>
+        <button id="help-button" class="icon-button" aria-label="Open controls" title="Controls">?</button>
+      </div>
+    </header>
+
+    <div id="reticle" class="reticle is-hidden" aria-hidden="true"><span></span></div>
+
+    <div id="interaction-prompt" class="interaction-prompt" role="status">
+      <span class="keycap">E</span>
+      <span id="interaction-text">Interact</span>
+    </div>
+
+    <aside id="room-card" class="room-card" aria-live="polite">
+      <span id="room-kicker" class="room-kicker"></span>
+      <h2 id="room-title"></h2>
+      <p id="room-date" class="room-date"></p>
+      <p id="room-description"></p>
+    </aside>
+
+    <aside id="artwork-card" class="artwork-card" aria-live="polite">
+      <span id="artwork-card-kicker" class="room-kicker"></span>
+      <h3 id="artwork-card-title"></h3>
+      <p id="artwork-card-date"></p>
+    </aside>
+
+    <div id="star-progress" class="star-progress is-hidden" aria-label="Memory stars discovered">
+      <span class="star-icon">✦</span>
+      <span><strong id="star-count">0</strong> / 13</span>
+      <span class="star-progress-label">memories found</span>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <section id="memory-reveal" class="memory-reveal" role="dialog" aria-modal="true" aria-labelledby="memory-number">
+      <button class="close-button" data-close="memory-reveal" aria-label="Close">×</button>
+      <span class="memory-star">✦</span>
+      <p id="memory-number" class="memory-number"></p>
+      <h2 id="memory-title"></h2>
+      <p id="memory-message"></p>
+      <button class="secondary-button" data-close="memory-reveal">Keep exploring</button>
+    </section>
+
+    <section id="artwork-modal" class="modal artwork-modal" role="dialog" aria-modal="true" aria-labelledby="artwork-title">
+      <div class="modal-backdrop" data-close="artwork-modal"></div>
+      <div class="modal-panel artwork-panel">
+        <button class="close-button" data-close="artwork-modal" aria-label="Close">×</button>
+        <div class="artwork-image-wrap">
+          <img id="artwork-image" alt="Lilith portrait" />
+          <button id="fullscreen-image-button" class="image-action">View high resolution</button>
+        </div>
+        <div class="artwork-copy">
+          <p id="artwork-date" class="eyebrow"></p>
+          <h2 id="artwork-title"></h2>
+          <p id="artwork-caption" class="artwork-caption"></p>
+          <p id="artwork-memory" class="artwork-memory"></p>
+          <div class="artwork-actions">
+            <button id="favorite-button" class="secondary-button">♡ Add to favorites</button>
+            <button id="audio-button" class="secondary-button is-hidden">Play memory audio</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="archive-modal" class="modal archive-modal" role="dialog" aria-modal="true" aria-labelledby="archive-title">
+      <div class="modal-backdrop" data-close="archive-modal"></div>
+      <div class="modal-panel archive-panel">
+        <button class="close-button" data-close="archive-modal" aria-label="Close">×</button>
+        <div class="archive-heading">
+          <div>
+            <p class="eyebrow">Complete Collection</p>
+            <h2 id="archive-title">Lilith’s Photo Archive</h2>
+          </div>
+          <span id="archive-count" class="archive-count"></span>
+        </div>
+        <p class="archive-intro">Every photograph from the supplied collections is preserved here. Select one to see it in detail.</p>
+        <div id="archive-grid" class="archive-grid"></div>
+      </div>
+    </section>
+
+    <section id="letter-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="letter-title">
+      <div class="modal-backdrop" data-close="letter-modal"></div>
+      <div class="modal-panel letter-panel">
+        <button class="close-button" data-close="letter-modal" aria-label="Close">×</button>
+        <p class="eyebrow">The Thirteenth Room</p>
+        <h2 id="letter-title">A letter for Lilith</h2>
+        <div id="letter-content" class="letter-content"></div>
+      </div>
+    </section>
+
+    <section id="garden-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="garden-title">
+      <div class="modal-backdrop" data-close="garden-modal"></div>
+      <div class="modal-panel garden-panel">
+        <button class="close-button" data-close="garden-modal" aria-label="Close">×</button>
+        <p class="eyebrow">Garden of Memories</p>
+        <h2 id="garden-title">Leave a light for Lilith</h2>
+        <p>Every message becomes a new glowing star in the garden sky. It stays on this device.</p>
+        <form id="garden-form">
+          <label for="garden-message">Your message</label>
+          <textarea id="garden-message" maxlength="220" rows="4" placeholder="Thank you for choosing me."></textarea>
+          <div class="form-footer">
+            <span id="message-count">0 / 220</span>
+            <button type="submit" class="primary-button">Place a star</button>
+          </div>
+        </form>
+        <div id="garden-messages" class="garden-messages"></div>
+      </div>
+    </section>
+
+    <section id="help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <div class="modal-backdrop" data-close="help-modal"></div>
+      <div class="modal-panel help-panel">
+        <button class="close-button" data-close="help-modal" aria-label="Close">×</button>
+        <p class="eyebrow">How to visit</p>
+        <h2 id="help-title">Move gently through the museum</h2>
+        <div class="controls-grid">
+          <div><span class="keycap">W A S D</span><p>Walk</p></div>
+          <div><span class="keycap">Mouse</span><p>Look around</p></div>
+          <div><span class="keycap">E</span><p>Interact</p></div>
+          <div><span class="keycap">Esc</span><p>Release cursor</p></div>
+        </div>
+        <p class="small-note">On touch devices, drag to look and use the on-screen controls.</p>
+      </div>
+    </section>
+
+    <section id="final-overlay" class="final-overlay" aria-live="polite">
+      <div class="final-copy">
+        <p class="final-name">Lilith</p>
+        <p class="final-dates">December 13, 2019 — May 27, 2026</p>
+        <div class="final-lines">
+          <p>You were here.<br />You were loved.<br />You changed everything.<br />And nothing can erase that.</p>
+          <p>Your life was not only the time between two dates.<br />It was every moment of love held between them.</p>
+          <strong>Loved forever. Forgotten never.</strong>
+        </div>
+        <button id="look-sky-button" class="primary-button">Look at the Sky</button>
+      </div>
+    </section>
+
+    <section id="sky-message" class="sky-message" aria-live="polite">
+      <p>Goodnight, Lilith.<br />The light you left behind is still here.</p>
+      <button id="return-button" class="secondary-button">Return to the Beginning</button>
+    </section>
+
+    <div id="mobile-controls" class="mobile-controls" aria-hidden="true">
+      <div class="mobile-move">
+        <button data-move="forward">▲</button>
+        <div><button data-move="left">◀</button><button data-move="backward">▼</button><button data-move="right">▶</button></div>
+      </div>
+      <button id="mobile-interact" class="mobile-interact">E</button>
+    </div>
+
+    <script src="./data.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/"
+        }
+      }
+    </script>
+    <!-- Open with ABRIR-MUSEU.bat. The version query prevents stale browser cache. -->
+    <script type="module" src="./main.js?v=29"></script>
+  </body>
+</html>

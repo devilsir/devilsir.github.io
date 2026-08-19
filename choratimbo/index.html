@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIMIMI TIMBÓ</title>
+<link id="animatedFavicon" rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+<link rel="stylesheet" href="./choratimbo.css">
+<link rel="stylesheet" href="./mobile.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="app"></div>
+<div id="fallingOverlay"></div>
+<div id="status"><div class="loader">Carregando modelo com material original…</div></div>
+<div class="panel">
+  <div class="panel-stack">
+    <button id="specialButton" class="main-cta" type="button">Rafael Antonio Fernandes Timbó, Queridinha, clique aqui</button>
+    <button id="exportRevealButton" class="secondary-cta export-launch hidden" type="button">Exportar animação 8s</button>
+    <div id="exportModal" class="export-modal">
+      <div class="export-head">
+        <strong>Exportar giro 360° / 8s</strong>
+        <button id="closeExport" class="icon-btn" type="button">Fechar</button>
+      </div>
+      <div class="export-grid">
+        <label class="preset-wide"><span>Preset</span><select id="exportUsagePreset">
+          <option value="manual" selected>Manual</option>
+          <option value="favicon_leve">Favicon leve</option>
+          <option value="favicon_padrao">Favicon padrão</option>
+          <option value="icone_site">Ícone animado para site</option>
+          <option value="badge_ui">Badge / UI compacta</option>
+          <option value="sticker_web">Sticker para web</option>
+          <option value="preview_site">Preview para site</option>
+          <option value="social_square">Social quadrado</option>
+          <option value="aba_navegador">Aba do navegador</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="discord_emoji">Discord emoji</option>
+          <option value="loader_site">Loader de site</option>
+          <option value="portfolio_thumb">Thumbnail de portfólio</option>
+        </select></label>
+        <label><span>Formato</span><select id="exportFormat"><option value="gif">GIF</option><option value="webm">Vídeo WEBM</option></select></label>
+        <label><span>Tamanho</span><select id="exportPreset"><option value="16">16 × 16</option><option value="32">32 × 32</option><option value="48">48 × 48</option><option value="64" selected>64 × 64</option><option value="96">96 × 96</option><option value="128">128 × 128</option><option value="256">256 × 256</option><option value="512">512 × 512</option><option value="custom">Personalizado</option></select></label>
+        <label id="customWidthWrap" class="custom-size hidden"><span>Largura</span><input id="exportWidth" type="number" min="16" max="2048" step="1" value="64"></label>
+        <label id="customHeightWrap" class="custom-size hidden"><span>Altura</span><input id="exportHeight" type="number" min="16" max="2048" step="1" value="64"></label>
+        <label><span>FPS</span><select id="exportFps"><option value="8">8</option><option value="12" selected>12</option><option value="16">16</option><option value="24">24</option><option value="30">30</option></select></label>
+        <label><span>Qualidade</span><select id="exportQuality"><option value="low">Baixa</option><option value="medium" selected>Média</option><option value="high">Alta</option></select></label>
+        <label><span>Fundo</span><select id="exportBg"><option value="#0b1020" selected>Escuro</option><option value="#000000">Preto</option><option value="#ffffff">Branco</option><option value="transparent">Transparente</option></select></label>
+        <label><span>Duração</span><input id="exportDuration" name="exportDuration" type="text" value="8 segundos" disabled></label>
+      </div>
+      <div class="export-foot">
+        <div id="exportProgress" class="export-progress">Pronto para exportar</div>
+        <button id="generateExport" class="secondary-cta" type="button">Gerar arquivo</button>
+      </div>
+      <div class="export-note">Use os presets para gerar rapidinho versões prontas de favicon, aba do navegador, WhatsApp, Discord emoji, loader de site, preview, social e thumbnail de portfólio. GIF funciona bem para ícones animados; WEBM costuma ficar mais leve para web e preview.</div>
+    </div>
+  </div>
+</div>
+<div id="screenFlash"></div>
+<div id="clubOverlay">
+  <div class="ball-chain"></div>
+  <canvas id="discoBallCanvas" class="disco-ball" width="400" height="400"></canvas>
+  <div class="beam a"></div>
+  <div class="beam b"></div>
+  <div class="beam c"></div>
+  <div class="beam d"></div>
+  <div class="light-field" id="lightField"></div>
+</div>
+<div id="bigMessage"><span>Chora, queridinha</span></div>
+<div id="specialToast" class="toast">MUAHAHAHAHA 😈</div>
+<script type="module" src="./js/choratimbo.js"></script>
+</body>
+</html>

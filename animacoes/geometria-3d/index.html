@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Geometria Molecular 3D</title>
+
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<div class="app">
+<aside>
+<h1>Geometria Molecular 3D</h1>
+<fieldset>
+<legend>Geometria (VSEPR)</legend>
+<label for="geom">Escolha um arranjo</label>
+<select id="geom">
+<optgroup label="Sem pares não-ligantes (E=0)">
+<option value="linear">Linear (AX2)</option>
+<option value="trigonal_planar">Trigonal planar (AX3)</option>
+<option selected="" value="tetrahedral">Tetraédrica (AX4)</option>
+<option value="trigonal_bipyramidal">Bipirâmide trigonal (AX5)</option>
+<option value="octahedral">Octaédrica (AX6)</option>
+</optgroup>
+<optgroup label="Com pares não-ligantes">
+<option value="bent_tp">Angular (AX2E, base trigonal planar)</option>
+<option value="trigonal_pyramidal">Piramidal trigonal (AX3E)</option>
+<option value="bent_tet">Angular (AX2E2, base tetraédrica)</option>
+<option value="see_saw">Gangorra / Seesaw (AX4E)</option>
+<option value="t_shaped">Em T (AX3E2)</option>
+<option value="linear_tbp">Linear (AX2E3, base TBP)</option>
+<option value="square_pyramidal">Piramidal quadrada (AX5E)</option>
+<option value="square_planar">Quadrada planar (AX4E2)</option>
+</optgroup>
+</select>
+<div class="row">
+<div><label for="bondLen">Comprimento de ligação</label><input id="bondLen" max="2.2" min="0.6" step="0.01" type="range" value="1.25"/></div>
+<div><label for="size">Raio do átomo central</label><input id="size" max="1.2" min="0.35" step="0.01" type="range" value="0.64"/></div>
+</div>
+<div class="row">
+<div><label for="ligandRadius">Raio dos ligantes</label><input id="ligandRadius" max="0.8" min="0.18" step="0.01" type="range" value="0.44"/></div>
+<div><label for="bondRadius">Raio da ligação</label><input id="bondRadius" max="0.18" min="0.03" step="0.005" type="range" value="0.085"/></div>
+</div>
+<div class="row">
+<div><label for="lpScale">Tamanho do par não-ligante</label><input id="lpScale" max="1.8" min="0.6" step="0.01" type="range" value="1.0"/></div>
+<div><label for="ambient">Luz ambiente</label><input id="ambient" max="1" min="0" step="0.01" type="range" value="0.45"/></div>
+</div>
+<div class="row">
+<div><label for="sat">Saturação</label><input id="sat" max="2" min="0" step="0.01" type="range" value="1.25"/></div>
+<div><label for="specK">Brilho especular</label><input id="specK" max="0.6" min="0" step="0.005" type="range" value="0.14"/></div>
+</div>
+<div class="row">
+<div><label for="refl">Reflexo (ambiente)</label><input id="refl" max="0.8" min="0" step="0.01" type="range" value="0.18"/></div>
+<div></div>
+</div>
+<div class="row">
+<div><label for="ligandColor">Cor dos ligantes</label><input id="ligandColor" type="color" value="#0b2e87"/></div>
+<div><label for="lpColor">Cor dos pares não-ligantes</label><input id="lpColor" type="color" value="#ffcf4d"/></div>
+</div>
+<div><label for="coreColor">Cor do átomo central</label><input id="coreColor" type="color" value="#ffffff"/></div>
+<div class="row">
+<div>
+<label for="bondType">Tipo de ligação</label>
+<select id="bondType">
+<option selected="" value="1">Simples (–)</option>
+<option value="2">Dupla (=)</option>
+<option value="3">Tripla (≡)</option>
+</select>
+</div>
+<div>
+<label class="small"><input checked="" id="showAxes" type="checkbox"/> Mostrar eixos XYZ</label>
+</div>
+</div>
+<button class="btn" id="save">Salvar imagem (PNG)</button>
+</fieldset>
+<fieldset>
+<legend>Fundo espacial</legend>
+<div class="row">
+<div><label for="bgBrightness">Brilho</label><input id="bgBrightness" max="1.6" min="0" step="0.01" type="range" value="1.0"/></div>
+<div><label for="bgStars">Densidade de estrelas</label><input id="bgStars" max="2.5" min="0" step="0.01" type="range" value="1.3"/></div>
+</div>
+</fieldset>
+<fieldset>
+<legend>Rotação do modelo</legend>
+<div class="row3">
+<div><label for="rotXS">Ângulo X (°)</label><input id="rotXS" max="180" min="-180" step="1" type="range" value="0"/></div>
+<div><label for="rotYS">Ângulo Y (°)</label><input id="rotYS" max="180" min="-180" step="1" type="range" value="0"/></div>
+<div><label for="rotZS">Ângulo Z (°)</label><input id="rotZS" max="180" min="-180" step="1" type="range" value="0"/></div>
+</div>
+<button class="btn" id="rotReset">Resetar rotação</button>
+</fieldset>
+<fieldset id="infoBox">
+<legend>Geometria selecionada</legend>
+<div class="badges"><div class="badge" id="infoName">—</div><div class="badge" id="infoArr">—</div></div>
+<div class="small" id="infoIdeal" style="margin-top:6px">—</div>
+</fieldset>
+</aside>
+<main>
+<canvas id="gl"></canvas>
+<div class="hud" id="hud">—</div>
+</main>
+</div>
+
+<script src="script.js"></script></body>
+</html>

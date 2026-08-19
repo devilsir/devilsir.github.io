@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Marcha dos Cátions — Fluxograma interativo</title>
+<style>
+  :root{
+    --bg:#0e0f12; --panel:#151823; --muted:#98a2b3; --text:#e6e8ec; --accent:#7dd3fc;
+    --g0:#ffffff;       /* decisão/genérico agora branco */
+    --g1:#cdeafe;       /* HCl (agaceele) */
+    --g2:#ffe7b9;       /* H2S (agadoiesse) */
+    --g3:#d7f5d7;       /* (NH4)2S */
+    --g4:#e8d5ff;       /* Alcalino-terrosos */
+    --g5:#ffd5e5;       /* Alcalinos / NH4+ */
+  }
+  html,body{height:100%}
+  body{
+    margin:0; background:radial-gradient(1200px 800px at 20% 15%, #151823 0%, #0e0f12 55%, #0a0b0f 100%);
+    color:var(--text); font:500 14px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    overflow:hidden;
+  }
+  header{
+    position:fixed; inset:16px 16px auto 16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; z-index:3;
+    background:color-mix(in oklab, var(--panel) 88%, transparent); border:1px solid #232839;
+    padding:10px 12px; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.35); backdrop-filter: blur(6px);
+  }
+  header h1{font-size:14px; font-weight:700; margin:0 6px 0 2px; letter-spacing:.2px; color:#c9d4ff}
+  .btn{
+    appearance:none; border:none; background:#1d2233; color:#dbe2ff; padding:8px 12px; border-radius:12px; font-weight:700; cursor:pointer;
+    border:1px solid #2a3147; transition:transform .06s ease, background .2s ease, border .2s ease;
+  }
+  .btn:hover{background:#242b42}
+  .btn:active{transform:translateY(1px)}
+  .switch{
+    display:flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid #2a3147; border-radius:999px; background:#1a1f30;
+  }
+  .switch input{accent-color:#7dd3fc}
+  #canvas{position:fixed; inset:0; z-index:0}
+  .side{
+    position:fixed; right:16px; top:76px; width:400px; height:calc(100% - 92px); z-index:2;
+    background:color-mix(in oklab, var(--panel) 92%, transparent);
+    border:1px solid #232839; border-radius:16px; padding:14px; box-shadow:0 10px 30px rgba(0,0,0,.35); overflow:auto;
+  }
+  .side h2{margin:.2rem 0 .4rem; font-size:16px}
+  .side .muted{color:var(--muted); font-size:12px}
+  .detail{white-space:pre-wrap; font-size:13px; margin:.7rem 0}
+  .legend{display:grid; gap:8px; margin-top:.6rem}
+  .legend .item{display:flex; align-items:center; gap:8px; font-size:12px; color:#cfd6ff}
+  .sw{width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.25)}
+  footer{
+    position:fixed; left:16px; bottom:16px; z-index:2;
+    background:color-mix(in oklab, var(--panel) 90%, transparent); border:1px solid #232839;
+    border-radius:12px; padding:8px 10px; color:#c9cfe8; font-size:12px; letter-spacing:.2px;
+  }
+  .kbd{background:#10131c; border:1px solid #2a3147; padding:1px 6px; border-radius:6px; font-weight:700; color:#dbe2ff}
+  a{color:#9dd2ff; text-decoration:none}
+
+  /* Editor UI */
+  .field{display:grid; gap:6px; margin:.6rem 0}
+  .field label{font-size:12px; color:#c9d4ff}
+  .field input[type="text"], .field textarea, .field select, .field input[type="color"]{
+    width:100%; background:#0f1220; color:#e6e8ec; border:1px solid #2a3147; border-radius:10px; padding:8px 10px; font:inherit;
+  }
+  .inline{display:flex; gap:8px; align-items:center}
+  details.config{margin-top:10px; border:1px solid #232839; border-radius:12px; padding:8px; background:#0f1220}
+  details.config summary{cursor:pointer; color:#c9d4ff}
+  .aside-buttons{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+  .legend-list{display:grid; gap:6px; margin-top:8px}
+  .legend-row{display:flex; align-items:center; gap:8px; font-size:12px; color:#cfd6ff}
+  .legend-row button{margin-left:auto}
+</style>
+  <link rel="stylesheet" href="flowchart-enhance.css">
+</head>
+<body data-scene-index="4">
+  <header>
+    <h1>Marcha dos Cátions – Fluxograma</h1>
+    <button class="btn" id="resetBtn">Reset view</button>
+    <button class="btn" id="exportPngBtn">Exportar PNG</button>
+    <button class="btn" id="exportLayoutBtn">Exportar posições (JSON)</button>
+    <button class="btn" id="showPositionsBtn">Ler posições</button>
+    <input type="file" id="fileLayoutIn" aria-label="Importar layout JSON" accept=".json,application/json" style="display:none" />
+    <button class="btn" id="addNodeBtn">Adicionar balão</button>
+    <button class="btn" id="addEdgeBtn">Adicionar seta</button>
+    <label class="switch" title="Mostra/oculta versos do poema no painel">
+      <input type="checkbox" id="versosToggle" checked />
+      <span>Mostrar versos</span>
+    </label>
+  </header>
+
+  <canvas id="canvas"></canvas>
+
+  <aside class="side" id="side">
+    <h2 id="title">Clique num bloco ✨</h2>
+    <div class="muted" id="group"></div>
+    <div class="detail" id="detail"></div>
+    <div class="detail" id="versos"></div>
+
+    <div class="aside-buttons">
+      <button class="btn" id="applyNodeBtn" style="display:none;">Aplicar alterações do balão</button>
+      <button class="btn" id="applyEdgeBtn" style="display:none;">Aplicar alterações da seta</button>
+    </div>
+
+    <details class="config" id="nodeEditor" open style="display:none;">
+      <summary>Edição do balão</summary>
+      <div class="field">
+        <label for="nodeTitle">Título</label>
+        <input type="text" id="nodeTitle" />
+      </div>
+      <div class="field">
+        <label for="nodeDetail">Detalhe</label>
+        <textarea id="nodeDetail" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="nodeGroup">Grupo / Cor do balão</label>
+        <div class="inline">
+          <select id="nodeGroup"></select>
+          <input type="color" id="nodeColor" aria-label="Cor personalizada do balão" value="#ffffff" style="display:none; width:48px; padding:0; border-radius:8px; height:36px;" />
+        </div>
+      </div>
+    </details>
+
+    <details class="config" id="edgeEditor" style="display:none;">
+      <summary>Edição da seta</summary>
+      <div class="field">
+        <label for="edgeLabel">Legenda (texto da seta)</label>
+        <input type="text" id="edgeLabel" />
+      </div>
+    </details>
+
+    <details class="config" id="addEdgePanel" style="display:none;">
+      <summary>Adicionar nova seta</summary>
+      <div class="field">
+        <label for="edgeFrom">De (balão origem)</label>
+        <select id="edgeFrom"></select>
+      </div>
+      <div class="field">
+        <label for="edgeTo">Para (balão destino)</label>
+        <select id="edgeTo"></select>
+      </div>
+      <div class="field">
+        <label for="edgeNewLabel">Legenda</label>
+        <input type="text" id="edgeNewLabel" />
+      </div>
+      <button class="btn" id="createEdgeBtn">Criar seta</button>
+    </details>
+
+    <details class="config" id="groupLegendPanel">
+      <summary>Adicionar legenda de grupo</summary>
+      <div class="field">
+        <label for="newGroupName">Nome do grupo</label>
+        <input type="text" id="newGroupName" />
+      </div>
+      <div class="field">
+        <label for="newGroupColor">Cor do grupo</label>
+        <input type="color" id="newGroupColor" value="#9efcff" />
+      </div>
+      <button class="btn" id="addGroupBtn">Adicionar à legenda</button>
+      <div class="legend-list" id="customLegendList"></div>
+    </details>
+
+    <details class="config" id="posDetails">
+      <summary>Posições dos balões</summary>
+      <pre id="posPre" style="white-space:pre; font:12px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#c9cfe8; background:#0f1220; border:1px solid #232839; padding:8px; border-radius:8px; margin-top:.5rem; max-height:220px; overflow:auto;"></pre>
+    </details>
+
+    <h3 style="margin:.8rem 0 .2rem; font-size:14px; color:#c9d4ff">Legenda de grupos</h3>
+    <div class="legend" id="legendStatic">
+      <!-- preenchido via JS -->
+    </div>
+  </aside>
+
+  <footer>
+    Clique 1x seleciona • Duplo clique alterna Edição • Arraste vazio = mover • Roda = zoom • <span class="kbd">Esc</span> sai
+  </footer>
+
+<script>
+/* ========= setup ========= */
+const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d', { alpha: true });
+
+function resizeCanvas(){
+  const {innerWidth:w, innerHeight:h} = window;
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  draw();
+}
+window.addEventListener('resize', resizeCanvas);
+
+function getCSS(prop){
+  try{
+    const M={'--g0':'#ffffff','--g1':'#cdeafe','--g2':'#ffe7b9','--g3':'#d7f5d7','--g4':'#e8d5ff','--g5':'#ffd5e5'};
+    if(M[prop]) return M[prop];
+  } catch(e){}
+  return getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
+}
+/* ========= helpers ========= */
+function roundRect(ctx, x,y,w,h,r){
+  const rr = Math.max(0, Math.min(r, Math.min(w,h)/2));
+  ctx.beginPath();
+  ctx.moveTo(x+rr, y);
+  ctx.arcTo(x+w, y, x+w, y+h, rr);
+  ctx.arcTo(x+w, y+h, x, y+h, rr);
+  ctx.arcTo(x, y+h, x, y, rr);
+  ctx.arcTo(x, y, x+w, y, rr);
+  ctx.closePath();
+}
+function worldToScreen(wx, wy){ return {x: wx*scale + panX, y: wy*scale + panY}; }
+function screenToWorld(sx, sy){ return {x: (sx - panX)/scale, y:(sy - panY)/scale}; }
+function clamp(v, a, b){return Math.max(a, Math.min(b, v));}
+function newId(prefix='n'){ return prefix + Math.random().toString(36).slice(2,8); }
+
+/* ========= dynamic groups ========= */
+const baseGroups = {
+  g0:{name:'Decisão / Genérico', color:getCSS('--g0')},
+  g1:{name:'HCl (agaceele)', color:getCSS('--g1')},
+  g2:{name:'H₂S (agadoiesse)', color:getCSS('--g2')},
+  g3:{name:'(NH₄)₂S', color:getCSS('--g3')},
+  g4:{name:'Alcalino-terrosos', color:getCSS('--g4')},
+  g5:{name:'Alcalinos & NH₄⁺', color:getCSS('--g5')}
+};
+let groups = JSON.parse(JSON.stringify(baseGroups)); // clone
+
+let customIndex = 1;
+function addCustomGroup(name, color){
+  const id = 'gc' + (customIndex++);
+  groups[id] = { name, color };
+  rebuildLegend();
+  rebuildNodeGroupSelect();
+  return id;
+}
+function removeCustomGroup(id){
+  if(!id.startsWith('gc')) return;
+  delete groups[id];
+  // Move nós desse grupo para g0
+  for(const n of nodes) if(n.group===id) n.group = 'g0';
+  rebuildLegend();
+  rebuildNodeGroupSelect();
+  draw();
+}
+
+function rebuildLegend(){
+  const wrap = document.getElementById('legendStatic');
+  wrap.innerHTML = '';
+  const order = Object.keys(groups);
+  for(const gid of order){
+    const item = document.createElement('div');
+    item.className = 'item legend-row';
+    const sw = document.createElement('span');
+    sw.className = 'sw'; sw.style.background = groups[gid].color;
+    const text = document.createElement('span');
+    text.textContent = groups[gid].name + (gid.startsWith('gc') ? ' (custom)' : '');
+    item.appendChild(sw); item.appendChild(text);
+    if(gid.startsWith('gc')){
+      const btn = document.createElement('button');
+      btn.className = 'btn'; btn.textContent = 'Remover';
+      btn.addEventListener('click', ()=> removeCustomGroup(gid));
+      item.appendChild(btn);
+    }
+    wrap.appendChild(item);
+  }
+  // também lista os custom no painel de gerenciamento
+  const list = document.getElementById('customLegendList');
+  list.innerHTML = '';
+  for(const gid of Object.keys(groups)){
+    if(!gid.startsWith('gc')) continue;
+    const row = document.createElement('div');
+    row.className = 'legend-row';
+    const sw = document.createElement('span'); sw.className='sw'; sw.style.background = groups[gid].color;
+    const span = document.createElement('span'); span.textContent = groups[gid].name;
+    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Remover'; btn.onclick=()=>removeCustomGroup(gid);
+    row.appendChild(sw); row.appendChild(span); row.appendChild(btn);
+    list.appendChild(row);
+  }
+}
+
+function rebuildNodeGroupSelect(){
+  const sel = document.getElementById('nodeGroup');
+  sel.innerHTML = '';
+  for(const [gid, g] of Object.entries(groups)){
+    const opt = document.createElement('option');
+    opt.value = gid; opt.textContent = g.name;
+    sel.appendChild(opt);
+  }
+  const sep = document.createElement('option');
+  sep.disabled = true; sep.textContent = '──────────';
+  sel.appendChild(sep);
+  const optCustom = document.createElement('option');
+  optCustom.value = 'customColor'; optCustom.textContent = 'Cor custom (sem legenda)';
+  sel.appendChild(optCustom);
+}
+
+/* ========= data from uploaded layout ========= */
+let nodes = [{"id": "start", "x": -100, "y": -560, "w": 220, "h": 70, "r": 14, "group": "g0", "customColor": null, "title": "Sendo-vos dado um sal…", "detail": "Amostra inicial para análise qualitativa de cátions.", "versos": "Sendo-vos dado um sal a examinar"}, {"id": "soluvel", "x": -120, "y": -400, "w": 260, "h": 96, "r": 16, "group": "g0", "customColor": null, "title": "É solúvel em água?", "detail": "Primeiro passo: verificar se o sal dissolve.", "versos": "Primeiro indagar\nSe o sal em questão\nÉ solúvel ou não."}, {"id": "insol", "x": -772.6599256222602, "y": -263.87200724747424, "w": 320, "h": 100, "r": 14, "group": "g0", "customColor": null, "title": "Não solúvel", "detail": "Rota fora do escopo do poema (tratativas específicas para sais pouco solúveis).", "versos": "—"}, {"id": "hcl", "x": 266.32996281113014, "y": -274.6801487554794, "w": 300, "h": 104, "r": 16, "group": "g1", "customColor": null, "title": "Adicionar HCl (agaceele)", "detail": "Prova do grupo: cloretos pouco solúveis.", "versos": "Se for solúvel\nLançai sobre ele\nAlgumas gotas\nDe agaceele."}, {"id": "hcl_precip", "x": -224.3912462592175, "y": -137.73814507954808, "w": 400, "h": 160, "r": 16, "group": "g1", "customColor": null, "title": "Precipitado branco?", "detail": "Se sim: Grupo dos cloretos Ag⁺, Pb²⁺, Hg₂²⁺.\n• AgCl dissolve em NH₃\n• PbCl₂ permanece\n• Hg₂Cl₂ escurece com NH₃", "versos": "Se branco se formar precipitado\nChumbo, ou prata, ou mercúrio está detectado.\nE, enquanto que o de chumbo não se move\nO de prata na amônia se dissolve;\nE o de mercúrio à amônia percebendo,\nVai-se no mesmo instante enegrecendo."}, {"id": "h2s", "x": 700, "y": -40, "w": 390, "h": 176, "r": 16, "group": "g2", "customColor": null, "title": "Sem precipitado → borbulhar H₂S", "detail": "Sulfetos do grupo ácido.\n• Precipitado negro: Bi, Cu, Pb, Hg, Au, Pt\n• Laranja: Sb\n• Amarelo-acastanhado: Sn(II)\n• Amarelo: Cd, Sn(IV), As", "versos": "Se feito o tratamento precedente\nNenhum precipitado ali se desse,\nFaz-se no líquido passar uma corrente\nDe um gás denominado agadoiesse.\nBismuto, ouro, platina e mais o cobre…"}, {"id": "nh4_2s", "x": 700, "y": 300, "w": 400, "h": 180, "r": 16, "group": "g3", "customColor": null, "title": "Ainda nada? → (NH₄)₂S após neutralizar", "detail": "Precipitação de hidróxidos/sulfetos:\n• Preto: Fe, Ni, Co\n• Branco: Al, Zn\n• Verde-maçã: Cr\n• Rosa: Mn", "versos": "Sulfeto de amônia adicionai…\nFerro, níquel e cobalto (preto)\nAl ou Zn (branco)\nCr (verde maçã)\nMn (róseo)."}, {"id": "earth", "x": 699.4701456732548, "y": 713.0819716569581, "w": 400, "h": 180, "r": 16, "group": "g4", "customColor": null, "title": "Restam Sr, Ba, Ca, Mg", "detail": "Testes: carbonatos/sulfatos e chama.\n• Ba: chama esverdeada\n• Sr: muito avermelhada\n• Ca: alaranjada; CaSO₄ solúvel em água fria\n• Mg: “anomalia” com sulfatos", "versos": "Estrôncio, bário, cálcio e magnésio…\nNa chama: Ba verde, Sr vermelho, Ca laranja."}, {"id": "alkali", "x": 696.851596468736, "y": 1083.749276581282, "w": 400, "h": 188, "r": 16, "group": "g5", "customColor": null, "title": "Sem precipitar por nada: Na, K, Li, NH₄⁺", "detail": "• K: chama lilás; seletivo com H₂PtCl₆\n• NH₄⁺: sem cor na chama; também eliminado por H₂PtCl₆\n• Na: chama amarela; piroantimoniato de K\n• Li: “chama bonita” (poema)", "versos": "Por nenhum dos reagentes precedentes…\nO potássio na chama é lilás…\nO sódio cai na armadilha (amarela)."}, {"id": "fim", "x": -222.2057972448567, "y": 551.7677100388062, "w": 280, "h": 72, "r": 14, "group": "g0", "customColor": null, "title": "Identificação alcançada", "detail": "Fim do caminho para a(s) espécie(s) indicada(s).", "versos": "—"}];
+let edges = [{"from": "start", "to": "soluvel", "label": "", "ctrlYWorld": null}, {"from": "soluvel", "to": "insol", "label": "Não", "ctrlYWorld": null}, {"from": "soluvel", "to": "hcl", "label": "Sim", "ctrlYWorld": null}, {"from": "hcl", "to": "hcl_precip", "label": "forma ppt", "ctrlYWorld": null}, {"from": "hcl", "to": "h2s", "label": "Nada", "ctrlYWorld": null}, {"from": "h2s", "to": "nh4_2s", "label": "Sem precipitado", "ctrlYWorld": null}, {"from": "h2s", "to": "fim", "label": "Precipitado identificado", "ctrlYWorld": null}, {"from": "hcl_precip", "to": "fim", "label": "Ag⁺ / Pb²⁺ / Hg(I)", "ctrlYWorld": null}, {"from": "nh4_2s", "to": "earth", "label": "Supernatante limpo", "ctrlYWorld": null}, {"from": "nh4_2s", "to": "fim", "label": "Precipitado identificado", "ctrlYWorld": null}, {"from": "earth", "to": "alkali", "label": "Ainda não?", "ctrlYWorld": null}, {"from": "earth", "to": "fim", "label": "Chama / solubilidade", "ctrlYWorld": null}, {"from": "alkali", "to": "fim", "label": "Chama / seletivos", "ctrlYWorld": null}];
+
+/* ensure default properties exist */
+for(const n of nodes){
+  n.r = n.r ?? 14;
+  n.w = n.w ?? 260; n.h = n.h ?? 100;
+  n.versos = n.versos ?? '—';
+  n.edit = false;
+}
+for(const e of edges) e.edit = false;
+
+/* ========= camera & state ========= */
+let scale = 1.0, panX = 0, panY = 0;
+let isMouseDown = false, isPanning = false;
+let downX = 0, downY = 0, lastX = 0, lastY = 0;
+let hoveredNode = null, hoveredEdge = null;
+let selectedNode = null, selectedEdge = null;
+let draggingNode = null;
+let draggingEdge = null;
+const ARROW_SIZE = 5;
+const ARROW_GAP  = 12;
+
+/* ========= UI refs ========= */
+const titleEl = document.getElementById('title');
+const groupEl = document.getElementById('group');
+const detailEl = document.getElementById('detail');
+const versosEl = document.getElementById('versos');
+const versosToggle = document.getElementById('versosToggle');
+
+const nodeEditor = document.getElementById('nodeEditor');
+const edgeEditor = document.getElementById('edgeEditor');
+const applyNodeBtn = document.getElementById('applyNodeBtn');
+const applyEdgeBtn = document.getElementById('applyEdgeBtn');
+
+const nodeTitleIn = document.getElementById('nodeTitle');
+const nodeDetailIn = document.getElementById('nodeDetail');
+const nodeGroupIn = document.getElementById('nodeGroup');
+const nodeColorIn = document.getElementById('nodeColor');
+
+const addEdgePanel = document.getElementById('addEdgePanel');
+const edgeFromSel = document.getElementById('edgeFrom');
+const edgeToSel = document.getElementById('edgeTo');
+const edgeNewLabelIn = document.getElementById('edgeNewLabel');
+const createEdgeBtn = document.getElementById('createEdgeBtn');
+
+const edgeLabelIn = document.getElementById('edgeLabel');
+const posPre = document.getElementById('posPre');
+const addGroupBtn = document.getElementById('addGroupBtn');
+const newGroupName = document.getElementById('newGroupName');
+const newGroupColor = document.getElementById('newGroupColor');
+
+/* ========= events ========= */
+canvas.addEventListener('mousedown', (e)=>{
+  isMouseDown = true; isPanning = false;
+  downX = lastX = e.clientX; downY = lastY = e.clientY;
+
+  const pos = screenToWorld(e.clientX, e.clientY);
+  const node = hitTestNode(pos.x, pos.y);
+  const edgeInfo = hitTestEdgeHandle(e.clientX, e.clientY);
+
+  if(node && node.edit){
+    draggingNode = { node, dx: pos.x - node.x, dy: pos.y - node.y };
+  }else if(edgeInfo && edgeInfo.edge.edit){
+    draggingEdge = { edge: edgeInfo.edge };
+    ensureEdgeCtrl(edgeInfo.edge);
+  }
+});
+
+window.addEventListener('mouseup', (e)=>{
+  if(draggingNode){ draggingNode = null; }
+  if(draggingEdge){ draggingEdge = null; }
+
+  const moved = Math.hypot(e.clientX - downX, e.clientY - downY) > 4;
+  if(isMouseDown && !isPanning && !moved){
+    const pos = screenToWorld(e.clientX, e.clientY);
+    const node = hitTestNode(pos.x, pos.y);
+    const edgeInfo = hitTestEdgeHandle(e.clientX, e.clientY);
+    if(node){
+      selectNode(node);
+    }else if(edgeInfo){
+      selectEdge(edgeInfo.edge);
+    }else{
+      clearSelection();
+    }
+  }
+  isMouseDown = false; isPanning = false;
+});
+
+window.addEventListener('mousemove', (e)=>{
+  const pos = screenToWorld(e.clientX, e.clientY);
+  if(draggingNode){
+    draggingNode.node.x = pos.x - draggingNode.dx;
+    draggingNode.node.y = pos.y - draggingNode.dy;
+    draw(); return;
+  }
+  if(draggingEdge){
+    draggingEdge.edge.ctrlYWorld = screenToWorld(0, e.clientY).y;
+    draw(); return;
+  }
+  if(isMouseDown && !isPanning){
+    const moved = Math.hypot(e.clientX - downX, e.clientY - downY) > 6;
+    if(moved){
+      const startPos = screenToWorld(downX, downY);
+      if(!hitTestNode(startPos.x, startPos.y) && !hitTestEdgeHandle(downX, downY)){
+        isPanning = true;
+      }
+    }
+  }
+  if(isPanning){
+    panX += (e.clientX - lastX);
+    panY += (e.clientY - lastY);
+    draw();
+  }else{
+    hoveredNode = hitTestNode(pos.x, pos.y);
+    hoveredEdge = hitTestEdgeHandle(e.clientX, e.clientY)?.edge || null;
+    canvas.style.cursor = hoveredNode || hoveredEdge ? 'pointer' : (isMouseDown ? 'grabbing' : 'grab');
+  }
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+canvas.addEventListener('wheel', (e)=>{
+  e.preventDefault();
+  const { clientX:mx, clientY:my, deltaY } = e;
+  const zoom = Math.exp(-deltaY * 0.0015);
+  const before = screenToWorld(mx, my);
+  scale = clamp(scale * zoom, 0.4, 3.0);
+  const after = screenToWorld(mx, my);
+  panX += (mx - after.x*scale) - (mx - before.x*scale);
+  panY += (my - after.y*scale) - (my - before.y*scale);
+  draw();
+}, {passive:false});
+
+canvas.addEventListener('dblclick', (e)=>{
+  const posW = screenToWorld(e.clientX, e.clientY);
+  const node = hitTestNode(posW.x, posW.y);
+  const edgeInfo = hitTestEdgeHandle(e.clientX, e.clientY);
+
+  if(node){
+    node.edit = !node.edit;
+    selectNode(node);
+  }else if(edgeInfo){
+    edgeInfo.edge.edit = !edgeInfo.edge.edit;
+    selectEdge(edgeInfo.edge);
+    ensureEdgeCtrl(edgeInfo.edge);
+  }
+  draw();
+});
+
+window.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    nodes.forEach(n=> n.edit=false);
+    edges.forEach(ed=> ed.edit=false);
+    clearSelection();
+    draw();
+  }
+});
+
+/* ========= hit tests ========= */
+function hitTestNode(wx, wy){
+  for(const n of nodes){
+    if(wx>=n.x && wx<=n.x+n.w && wy>=n.y && wy<=n.y+n.h) return n;
+  }
+  return null;
+}
+function hitTestEdgeHandle(sx, sy){
+  for(const ed of edges){
+    const info = getEdgeGeom(ed);
+    const hx = info.handleX, hy = info.handleY;
+    const d2 = (sx - hx)*(sx - hx) + (sy - hy)*(sy - hy);
+    const R = 10;
+    if(d2 <= R*R) return {edge: ed, x:hx, y:hy};
+  }
+  return null;
+}
+
+/* ========= selection & editors ========= */
+function clearSelection(){
+  selectedNode = null; selectedEdge = null;
+  titleEl.textContent = 'Clique num bloco ✨';
+  groupEl.textContent = ''; detailEl.textContent = ''; versosEl.textContent = '';
+  nodeEditor.style.display = 'none'; edgeEditor.style.display = 'none';
+  applyNodeBtn.style.display = 'none'; applyEdgeBtn.style.display = 'none';
+}
+
+function selectNode(n){
+  selectedNode = n; selectedEdge = null;
+  titleEl.textContent = n.title;
+  const g = groups[n.group]; 
+  groupEl.textContent = (g ? g.name : (n.customColor ? 'Cor custom' : '—'));
+  detailEl.textContent = n.detail || '';
+  versosEl.style.display = versosToggle.checked ? 'block' : 'none';
+  versosEl.innerHTML = `<b>Versos:</b>\n${n.versos || ''}`;
+
+  // populate editor
+  nodeTitleIn.value = n.title || '';
+  nodeDetailIn.value = n.detail || '';
+  rebuildNodeGroupSelect();
+  if(n.customColor && !g){
+    nodeGroupIn.value = 'customColor';
+    nodeColorIn.value = n.customColor || '#ffffff';
+    nodeColorIn.style.display = 'block';
+  } else {
+    nodeGroupIn.value = n.group || 'g0';
+    nodeColorIn.style.display = 'none';
+  }
+  nodeEditor.style.display = 'block';
+  edgeEditor.style.display = 'none';
+  applyNodeBtn.style.display = 'inline-block';
+  applyEdgeBtn.style.display = 'none';
+}
+
+function selectEdge(e){
+  selectedEdge = e; selectedNode = null;
+  titleEl.textContent = 'Seta selecionada';
+  groupEl.textContent = `${e.from} → ${e.to}`;
+  detailEl.textContent = e.label || '(sem legenda)';
+  versosEl.style.display = 'none';
+  // populate editor
+  edgeLabelIn.value = e.label || '';
+  edgeEditor.style.display = 'block';
+  nodeEditor.style.display = 'none';
+  applyEdgeBtn.style.display = 'inline-block';
+  applyNodeBtn.style.display = 'none';
+}
+
+applyNodeBtn.addEventListener('click', ()=>{
+  if(!selectedNode) return;
+  selectedNode.title = nodeTitleIn.value.trim() || selectedNode.title;
+  selectedNode.detail = nodeDetailIn.value;
+  if(nodeGroupIn.value === 'customColor'){
+    selectedNode.customColor = nodeColorIn.value;
+    selectedNode.group = '';
+  }else{
+    selectedNode.group = nodeGroupIn.value;
+    selectedNode.customColor = null;
+  }
+  titleEl.textContent = selectedNode.title;
+  const g = groups[selectedNode.group];
+  groupEl.textContent = (g ? g.name : (selectedNode.customColor ? 'Cor custom' : '—'));
+  detailEl.textContent = selectedNode.detail || '';
+  draw();
+});
+
+nodeGroupIn.addEventListener('change', ()=>{
+  nodeColorIn.style.display = nodeGroupIn.value === 'customColor' ? 'block' : 'none';
+});
+
+applyEdgeBtn.addEventListener('click', ()=>{
+  if(!selectedEdge) return;
+  selectedEdge.label = edgeLabelIn.value;
+  detailEl.textContent = selectedEdge.label || '(sem legenda)';
+  draw();
+});
+
+/* ========= add node/edge ========= */
+document.getElementById('addNodeBtn').addEventListener('click', ()=>{
+  const centerW = screenToWorld(canvas.clientWidth/2, canvas.clientHeight/2);
+  const n = {
+    id: newId('n'), x: centerW.x-140, y: centerW.y-60, w:280, h:120, r:16, group:'g0',
+    title:'Novo balão', detail:'Edite o texto no painel à direita.', versos:'—', edit:true
+  };
+  nodes.push(n);
+  selectNode(n);
+  draw();
+});
+
+function refreshEdgeSelects(){
+  edgeFromSel.innerHTML = nodes.map(n=>`<option value="${n.id}">${n.id} — ${n.title}</option>`).join('');
+  edgeToSel.innerHTML = edgeFromSel.innerHTML;
+}
+document.getElementById('addEdgeBtn').addEventListener('click', ()=>{
+  refreshEdgeSelects();
+  addEdgePanel.style.display = 'block';
+  addEdgePanel.open = true;
+});
+createEdgeBtn.addEventListener('click', ()=>{
+  const from = edgeFromSel.value, to = edgeToSel.value;
+  if(!from || !to || from===to) return;
+  const e = {from, to, label: edgeNewLabelIn.value || '', edit:true};
+  edges.push(e);
+  selectEdge(e);
+  draw();
+});
+
+/* ========= add group legend ========= */
+addGroupBtn.addEventListener('click', ()=>{
+  const name = newGroupName.value.trim();
+  const color = newGroupColor.value;
+  if(!name) return;
+  const id = addCustomGroup(name, color);
+  // Se houver um nó selecionado, já aplica nele
+  if(selectedNode && nodeGroupIn){
+    selectedNode.group = id; selectedNode.customColor = null;
+    nodeGroupIn.value = id;
+    draw();
+  }
+  newGroupName.value = '';
+});
+
+/* ========= drawing ========= */
+function draw(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,w,h);
+  drawGrid();
+  for(const e of edges) drawEdge(e);
+  for(const n of nodes) drawNode(n);
+}
+
+function drawGrid(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  ctx.save();
+  ctx.setTransform(scale,0,0,scale,panX,panY);
+  const step = 50;
+  const minx = -panX/scale - 2000, maxx = (w - panX)/scale + 2000;
+  const miny = -panY/scale - 2000, maxy = (h - panY)/scale + 2000;
+  ctx.beginPath();
+  for(let x=Math.floor(minx/step)*step; x<maxx; x+=step){ ctx.moveTo(x, miny); ctx.lineTo(x, maxy); }
+  for(let y=Math.floor(miny/step)*step; y<maxy; y+=step){ ctx.moveTo(minx, y); ctx.lineTo(maxx, y); }
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawNode(n){
+  const {x,y} = worldToScreen(n.x, n.y);
+  const w = n.w*scale, h = n.h*scale;
+  const r = Math.max(8, n.r*scale);
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.shadowColor = 'rgba(0,0,0,.35)';
+  ctx.shadowBlur = 20; ctx.shadowOffsetY = 8;
+
+  roundRect(ctx, 0,0, w,h, r);
+  const g = groups[n.group];
+  ctx.fillStyle = n.customColor || (g ? g.color : '#ffffff');
+  ctx.fill();
+
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(0,0,0,.25)';
+  ctx.stroke();
+
+  if(n.edit){
+    ctx.setLineDash([6,4]);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#6ee7ff';
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }else if(hoveredNode === n){
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#9acbff';
+    ctx.stroke();
+  }
+
+  // clipping do texto
+  ctx.save();
+  roundRect(ctx, 0,0, w,h, Math.max(0,r-2));
+  ctx.clip();
+
+  const pad = 12 * scale;
+  const lineTitle = Math.max(14, 15*scale);
+  const lineBody  = Math.max(12, 13*scale);
+
+  // Title (até 2 linhas)
+  ctx.fillStyle = '#10121a';
+  ctx.font = `${Math.max(11, 12*scale)}px Inter, system-ui`;
+  ctx.textBaseline = 'top';
+  let yy = pad;
+  yy = drawWrappedEllipsis(ctx, n.title || '', pad, yy, w - pad*2, lineTitle, 2);
+
+  yy += 5 * scale;
+
+  // Preview (até 2 linhas para evitar sobreposição visual em nós menores)
+  ctx.fillStyle = '#2b3249';
+  ctx.font = `${Math.max(10, 11*scale)}px Inter, system-ui`;
+  const preview = (n.detail||'').split('\n')[0];
+  const remaining = h - yy - pad;
+  const maxLines = Math.max(1, Math.min(2, Math.floor(remaining/lineBody)));
+  if(remaining > lineBody*0.5){
+    drawWrappedEllipsis(ctx, preview, pad, yy, w - pad*2, lineBody, maxLines);
+  }
+
+  ctx.restore(); // clip
+  ctx.restore(); // translate
+}
+
+function ensureEdgeCtrl(e){
+  const geom = getEdgeGeom(e);
+  if(typeof e.ctrlYWorld !== 'number'){
+    e.ctrlYWorld = screenToWorld(0, geom.defaultCtrlY).y;
+  }
+}
+
+function getEdgeGeom(e){
+  const a = nodes.find(n=>n.id===e.from);
+  const b = nodes.find(n=>n.id===e.to);
+  const aC = {x:a.x + a.w/2, y:a.y + a.h};
+  const bC = {x:b.x + b.w/2, y:b.y};
+
+  const A = worldToScreen(aC.x, aC.y);
+  const B = worldToScreen(bC.x, bC.y);
+  const BgapY = B.y - ARROW_GAP;
+
+  const defaultCtrlY = (A.y + BgapY)/2;
+  const ctrlY = (typeof e.ctrlYWorld === 'number') ? worldToScreen(0, e.ctrlYWorld).y : defaultCtrlY;
+  const handleX = (A.x + B.x)/2;
+  const handleY = ctrlY;
+  return {A, B, BgapY, ctrlY, defaultCtrlY, handleX, handleY};
+}
+
+function drawEdge(e){
+  const {A, B, BgapY, ctrlY, handleX, handleY} = getEdgeGeom(e);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(A.x, A.y);
+  ctx.bezierCurveTo(A.x, ctrlY, B.x, ctrlY, B.x, BgapY);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'rgba(180,200,255,.6)';
+  ctx.stroke();
+
+  // arrow head
+  drawArrowHead(B.x, BgapY, Math.PI/2);
+
+  // label
+  if(e.label){
+    ctx.font = '12px Inter, system-ui';
+    ctx.fillStyle = '#c9d4ff';
+    ctx.textAlign = 'center';
+    ctx.fillText(e.label, (A.x+B.x)/2, ctrlY - 8);
+  }
+
+  // handle de edição (só quando em modo edição)
+  if(e.edit){
+    ctx.beginPath();
+    ctx.arc(handleX, handleY, 6, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(110,231,255,0.25)';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#6ee7ff';
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawArrowHead(x, y, angle){
+  const s = ARROW_SIZE;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0,0); ctx.lineTo(-s, -s); ctx.lineTo(s, -s); ctx.closePath();
+  ctx.fillStyle = 'rgba(180,200,255,.9)';
+  ctx.fill();
+  ctx.restore();
+}
+
+/* === word-wrap com ELLIPSIS === */
+function drawWrappedEllipsis(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+  const rawLines = (text || '').toString().split(/\n+/);
+  let yy = y;
+  let lines = 0;
+
+  function trimToWidth(str, suffix=''){
+    let out = str;
+    while(out.length > 0 && ctx.measureText(out + suffix).width > maxWidth) out = out.slice(0, -1);
+    return out + suffix;
+  }
+
+  function commit(line, isLast=false){
+    if(lines >= maxLines) return false;
+    const safe = isLast ? trimToWidth(line.trim(), '…') : trimToWidth(line.trim(), '');
+    ctx.fillText(safe, x, yy);
+    yy += lineHeight;
+    lines += 1;
+    return lines < maxLines;
+  }
+
+  for(let blockIndex = 0; blockIndex < rawLines.length && lines < maxLines; blockIndex++){
+    const words = rawLines[blockIndex].split(/\s+/).filter(Boolean);
+    if(!words.length){
+      if(!commit('', false)) break;
+      continue;
+    }
+    let line = '';
+    for(let i = 0; i < words.length; i++){
+      const word = words[i];
+      const candidate = line ? `${line} ${word}` : word;
+      if(ctx.measureText(candidate).width <= maxWidth){
+        line = candidate;
+        continue;
+      }
+      if(!line){
+        const isLast = lines + 1 === maxLines;
+        commit(word, isLast);
+        line = '';
+      }else{
+        const isLast = lines + 1 === maxLines;
+        if(!commit(line, isLast)) return yy;
+        line = word;
+      }
+      if(lines >= maxLines) return yy;
+    }
+    if(line && lines < maxLines){
+      const isLast = blockIndex < rawLines.length - 1 || lines + 1 === maxLines;
+      if(!commit(line, isLast && (blockIndex < rawLines.length - 1 ? true : false))) return yy;
+    }
+  }
+  return yy;
+}
+
+/* ========= sidebar controls ========= */
+versosToggle.addEventListener('change', ()=>{
+  if(selectedNode) versosEl.style.display = versosToggle.checked ? 'block' : 'none';
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  const n = nodes.find(nn=>nn.id==='start') || nodes[0];
+  const cx = n.x + n.w/2, cy = n.y + n.h/2 - 140;
+  scale = 1.0;
+  const vw = canvas.clientWidth, vh = canvas.clientHeight;
+  panX = vw/2 - cx*scale; panY = vh/2 - cy*scale;
+  draw();
+});
+
+
+
+document.getElementById('exportPngBtn').addEventListener('click', ()=>{
+  // ==== 1) Bounds em coordenadas de mundo ====
+  function computeBounds(){
+    if(!nodes || !nodes.length){
+      return {minX:0, minY:0, maxX:1000, maxY:600};
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for(const n of nodes){
+      minX = Math.min(minX, n.x);
+      minY = Math.min(minY, n.y);
+      maxX = Math.max(maxX, n.x + n.w);
+      maxY = Math.max(maxY, n.y + n.h);
+    }
+    for(const e of edges){
+      const a = nodes.find(n=>n.id===e.from);
+      const b = nodes.find(n=>n.id===e.to);
+      if(a && b){
+        const ax = a.x + a.w/2, ay = a.y + a.h;
+        const bx = b.x + b.w/2, by = b.y;
+        minX = Math.min(minX, ax, bx);
+        maxX = Math.max(maxX, ax, bx);
+        minY = Math.min(minY, ay, by);
+        maxY = Math.max(maxY, ay, by);
+        if(typeof e.ctrlYWorld === 'number'){
+          minY = Math.min(minY, e.ctrlYWorld);
+          maxY = Math.max(maxY, e.ctrlYWorld);
+        }
+      }
+    }
+    const pad = 60;
+    return {minX:minX-pad, minY:minY-pad, maxX:maxX+pad, maxY:maxY+pad};
+  }
+  const B = computeBounds();
+  const worldW = Math.max(1, B.maxX - B.minX);
+  const worldH = Math.max(1, B.maxY - B.minY);
+
+  // ==== 2) Canvas de export ====
+  const scaleExport = 2;
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width  = Math.ceil(worldW * scaleExport);
+  exportCanvas.height = Math.ceil(worldH * scaleExport);
+  const ex = exportCanvas.getContext('2d');
+  ex.imageSmoothingEnabled = true;
+
+  // fundo
+  ex.fillStyle = getCSS('--bg') || '#0e0f12';
+  ex.fillRect(0,0,exportCanvas.width, exportCanvas.height);
+
+  // helpers locais
+  function w2sX(wx){ return (wx - B.minX) * scaleExport; }
+  function w2sY(wy){ return (wy - B.minY) * scaleExport; }
+  function rr(ctx, x,y,w,h,r){
+    const rr = Math.max(0, Math.min(r, Math.min(w,h)/2));
+    ctx.beginPath();
+    ctx.moveTo(x+rr, y);
+    ctx.arcTo(x+w, y, x+w, y+h, rr);
+    ctx.arcTo(x+w, y+h, x, y+h, rr);
+    ctx.arcTo(x, y+h, x, y, rr);
+    ctx.arcTo(x, y, x+w, y, rr);
+    ctx.closePath();
+  }
+  function drawGridExp(){
+    const step = 50 * scaleExport;
+    ex.save();
+    ex.beginPath();
+    for(let x=0; x<=exportCanvas.width; x+=step){ ex.moveTo(x, 0); ex.lineTo(x, exportCanvas.height); }
+    for(let y=0; y<=exportCanvas.height; y+=step){ ex.moveTo(0, y); ex.lineTo(exportCanvas.width, y); }
+    ex.strokeStyle = 'rgba(255,255,255,0.04)';
+    ex.lineWidth = 1;
+    ex.stroke();
+    ex.restore();
+  }
+  function drawArrowHeadExp(x, y, angle){
+    const s = 5; // mesmo ARROW_SIZE
+    ex.save();
+    ex.translate(x, y);
+    ex.rotate(angle);
+    ex.beginPath();
+    ex.moveTo(0,0); ex.lineTo(-s, -s); ex.lineTo(s, -s); ex.closePath();
+    ex.fillStyle = 'rgba(180,200,255,.9)';
+    ex.fill();
+    ex.restore();
+  }
+  function drawWrappedEllipsisExp(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const rawLines = (text || '').toString().split(/\n+/);
+    let yy = y;
+    let lines = 0;
+    function trimToWidth(str, suffix=''){
+      let out = str;
+      while(out.length > 0 && ctx.measureText(out + suffix).width > maxWidth) out = out.slice(0, -1);
+      return out + suffix;
+    }
+    function commit(line, isLast=false){
+      if(lines >= maxLines) return false;
+      const safe = isLast ? trimToWidth(line.trim(), '…') : trimToWidth(line.trim(), '');
+      ctx.fillText(safe, x, yy);
+      yy += lineHeight;
+      lines += 1;
+      return lines < maxLines;
+    }
+    for(let blockIndex = 0; blockIndex < rawLines.length && lines < maxLines; blockIndex++){
+      const words = rawLines[blockIndex].split(/\s+/).filter(Boolean);
+      if(!words.length){
+        if(!commit('', false)) break;
+        continue;
+      }
+      let line = '';
+      for(let i = 0; i < words.length; i++){
+        const word = words[i];
+        const candidate = line ? `${line} ${word}` : word;
+        if(ctx.measureText(candidate).width <= maxWidth){
+          line = candidate;
+          continue;
+        }
+        if(!line){
+          const isLast = lines + 1 === maxLines;
+          commit(word, isLast);
+          line = '';
+        }else{
+          const isLast = lines + 1 === maxLines;
+          if(!commit(line, isLast)) return yy;
+          line = word;
+        }
+        if(lines >= maxLines) return yy;
+      }
+      if(line && lines < maxLines){
+        const isLast = blockIndex < rawLines.length - 1 || lines + 1 === maxLines;
+        if(!commit(line, isLast && (blockIndex < rawLines.length - 1 ? true : false))) return yy;
+      }
+    }
+    return yy;
+  }
+  function drawNodeExp(n){
+    const x = w2sX(n.x), y = w2sY(n.y);
+    const w = n.w * scaleExport, h = n.h * scaleExport;
+    const r = Math.max(8, (n.r||14) * scaleExport);
+
+    ex.save();
+    ex.translate(x, y);
+    ex.shadowColor = 'rgba(0,0,0,.35)';
+    ex.shadowBlur = 20; ex.shadowOffsetY = 8;
+
+    rr(ex, 0,0, w,h, r);
+    const g = groups[n.group];
+    ex.fillStyle = n.customColor || (g ? g.color : '#ffffff');
+    ex.fill();
+
+    ex.lineWidth = 1.5;
+    ex.strokeStyle = 'rgba(0,0,0,.25)';
+    ex.stroke();
+
+    // clipping do texto
+    ex.save();
+    rr(ex, 0,0, w,h, Math.max(0,r-2));
+    ex.clip();
+
+    const pad = 12 * scaleExport;
+    const lineTitle = Math.max(14, 15*scaleExport);
+    const lineBody  = Math.max(12, 13*scaleExport);
+
+    ex.fillStyle = '#10121a';
+    ex.font = `${Math.max(11, 12*scaleExport)}px Inter, system-ui`;
+    ex.textBaseline = 'top';
+    let yy = pad;
+    yy = drawWrappedEllipsisExp(ex, n.title || '', pad, yy, w - pad*2, lineTitle, 2);
+
+    yy += 5 * scaleExport;
+
+    ex.fillStyle = '#2b3249';
+    ex.font = `${Math.max(10, 11*scaleExport)}px Inter, system-ui`;
+    const preview = (n.detail||'').split('\n')[0];
+    const remaining = h - yy - pad;
+    const maxLines = Math.max(1, Math.min(2, Math.floor(remaining/lineBody)));
+    if(remaining > lineBody*0.5){
+      drawWrappedEllipsisExp(ex, preview, pad, yy, w - pad*2, lineBody, maxLines);
+    }
+
+    ex.restore(); // clip
+    ex.restore(); // translate
+  }
+  function drawEdgeExp(e){
+    const a = nodes.find(n=>n.id===e.from);
+    const b = nodes.find(n=>n.id===e.to);
+    if(!a || !b) return;
+    const Ax = w2sX(a.x + a.w/2), Ay = w2sY(a.y + a.h);
+    const Bx = w2sX(b.x + b.w/2), By = w2sY(b.y);
+    const BgapY = By - 12; // ARROW_GAP export
+
+    const defaultCtrlY = (Ay + BgapY)/2;
+    const ctrlY = (typeof e.ctrlYWorld === 'number') ? w2sY(e.ctrlYWorld) : defaultCtrlY;
+    const midX = (Ax + Bx)/2;
+
+    ex.save();
+    ex.beginPath();
+    ex.moveTo(Ax, Ay);
+    ex.bezierCurveTo(Ax, ctrlY, Bx, ctrlY, Bx, BgapY);
+    ex.lineWidth = 2;
+    ex.strokeStyle = 'rgba(180,200,255,.6)';
+    ex.stroke();
+
+    drawArrowHeadExp(Bx, BgapY, Math.PI/2);
+
+    if(e.label){
+      ex.font = '12px Inter, system-ui';
+      ex.fillStyle = '#c9d4ff';
+      ex.textAlign = 'center';
+      ex.fillText(e.label, midX, ctrlY - 8);
+    }
+    ex.restore();
+  }
+
+  // Render
+  drawGridExp();
+  for(const e of edges) drawEdgeExp(e);
+  for(const n of nodes) drawNodeExp(n);
+
+  const url = exportCanvas.toDataURL('image/png');
+  const a = document.createElement('a'); a.href = url; a.download = 'fluxograma_marcha_cations_full.png'; a.click();
+});
+
+
+
+document.getElementById('exportLayoutBtn').addEventListener('click', ()=>{
+  const json = JSON.stringify(serializeLayout(), null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'fluxograma_layout.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('showPositionsBtn').addEventListener('click', ()=>{
+  document.getElementById('fileLayoutIn').click();
+});
+
+/* ==== layout export & pos list ==== */
+
+/* ==== import layout from JSON ==== */
+document.getElementById('fileLayoutIn').addEventListener('change', (ev)=>{
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const obj = JSON.parse(reader.result);
+      importLayout(obj);
+    }catch(err){
+      alert('Arquivo inválido. Certifique-se de selecionar o JSON exportado.');
+      // A interface informa o erro sem poluir o console do navegador.
+    }
+  };
+  reader.readAsText(file);
+  ev.target.value = ''; // reset input
+});
+
+function importLayout(obj){
+  // 1) Groups (merge; custom groups substituem mesmas chaves)
+  if(obj.groups && typeof obj.groups === 'object'){
+    groups = Object.assign({}, groups, obj.groups);
+    rebuildLegend();
+    rebuildNodeGroupSelect();
+  }
+
+  // 2) Nodes
+  if(Array.isArray(obj.nodes)){
+    // Replace; ensure defaults
+    nodes = obj.nodes.map(n => ({
+      id: n.id,
+      x: +n.x || 0, y: +n.y || 0,
+      w: n.w ?? 260, h: n.h ?? 100, r: n.r ?? 14,
+      group: n.group || (n.customColor ? '' : 'g0'),
+      customColor: n.customColor || null,
+      title: n.title || '',
+      detail: n.detail || '',
+      versos: n.versos || '—',
+      edit: false
+    }));
+  }else if(obj.nodesById){ // fallback format
+    for(const [id, nz] of Object.entries(obj.nodesById)){
+      const n = nodes.find(x => x.id === id);
+      if(!n) continue;
+      if(typeof nz.x === 'number') n.x = nz.x;
+      if(typeof nz.y === 'number') n.y = nz.y;
+      if(typeof nz.w === 'number') n.w = nz.w;
+      if(typeof nz.h === 'number') n.h = nz.h;
+    }
+  }
+
+  // 3) Edges
+  if(Array.isArray(obj.edges)){
+    edges = obj.edges.map(e => ({
+      from: e.from, to: e.to, label: e.label || '',
+      ctrlYWorld: (typeof e.ctrlYWorld === 'number') ? e.ctrlYWorld : null,
+      edit: false
+    }));
+  }
+
+  clearSelection();
+  updatePositionsPanel();
+  draw();
+}
+
+function serializeLayout(){
+  return {
+    nodes: nodes.map(n => ({ id:n.id, x:n.x, y:n.y, w:n.w, h:n.h, r:n.r, group:n.group, customColor:n.customColor||null, title:n.title, detail:n.detail, versos:n.versos })),
+    edges: edges.map(e => ({ from:e.from, to:e.to, label:e.label || '', ctrlYWorld: (typeof e.ctrlYWorld==='number'? e.ctrlYWorld : null) })),
+    groups: groups
+  };
+}
+function updatePositionsPanel(){
+  const lines = nodes.map(n => `${n.id.padEnd(10)}  x:${n.x.toFixed(1).padStart(7)}  y:${n.y.toFixed(1).padStart(7)}  w:${n.w}  h:${n.h}  group:${n.group||'-'}`).join('\n');
+  posPre.textContent = lines || '(nenhum)';
+  const det = document.getElementById('posDetails'); if(det && !det.open) det.open = true;
+}
+
+/* ========= init ========= */
+rebuildLegend();
+rebuildNodeGroupSelect();
+resizeCanvas();
+(function initialView(){
+  const n = nodes.find(nn=>nn.id==='start') || nodes[0];
+  const cx = n.x + n.w/2, cy = n.y + n.h/2 - 140;
+  const vw = canvas.clientWidth, vh = canvas.clientHeight;
+  panX = vw/2 - cx*scale; panY = vh/2 - cy*scale;
+  draw();
+})();
+</script>
+  <script src="flowchart-enhance.js"></script>
+</body>
+</html>

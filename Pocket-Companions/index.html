@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6ead7">
+  <meta name="description" content="Pocket Companions is a cozy browser-based 3D virtual pet experience.">
+  <title>Pocket Companions</title>
+  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="language-switcher" aria-label="Language">
+    <span class="language-switcher-icon" aria-hidden="true">◎</span>
+    <label for="language-select">Language</label>
+    <select id="language-select" name="language" data-language-select aria-label="Language">
+      <option value="pt-BR">Português</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <a class="skip-link" href="#main-content">Skip to companion</a>
+
+  <div class="app-background" aria-hidden="true">
+    <div class="ambient-orb orb-one"></div>
+    <div class="ambient-orb orb-two"></div>
+    <div class="ambient-dots"></div>
+  </div>
+
+  <main id="main-content" class="experience" tabindex="-1">
+    <section id="stage" class="stage" aria-label="3D companion scene">
+      <canvas id="companion-canvas" aria-label="Interactive 3D companion"></canvas>
+      <div id="scene-caption" class="scene-caption" role="status" aria-live="polite"></div>
+      <div id="dialogue-bubble" class="dialogue-bubble" role="status" aria-live="polite" hidden></div>
+      <div id="interaction-hint" class="interaction-hint" hidden>Tap your companion or tap the floor to move.</div>
+      <div id="body-language-hint" class="body-language-hint" role="status" aria-live="polite" hidden></div>
+      <aside id="emergent-event-panel" class="emergent-event-panel" aria-live="polite" hidden>
+        <strong id="emergent-event-title"></strong>
+        <p id="emergent-event-copy"></p>
+        <div id="emergent-event-actions" class="emergent-event-actions"></div>
+      </aside>
+      <aside id="simulation-debug" class="simulation-debug" aria-label="Simulation debug overlay" hidden><pre id="simulation-debug-content"></pre></aside>
+      <div id="clean-sponge" class="clean-sponge" hidden aria-hidden="true"><img src="assets/icons/sponge-cursor.svg" alt=""></div>
+    </section>
+
+    <section id="loading-screen" class="screen loading-screen is-visible" aria-labelledby="loading-title">
+      <div class="loading-card">
+        <div class="loading-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="eyebrow">Pocket Companions</p>
+        <h1 id="loading-title">Preparing a cozy little world</h1>
+        <p id="loading-message">Checking companion models and warming up the room…</p>
+        <div class="progress-track" aria-label="Loading progress">
+          <div id="loading-progress" class="progress-fill"></div>
+        </div>
+        <p id="loading-percent" class="loading-percent">0%</p>
+        <div id="loading-error" class="loading-error" hidden>
+          <strong>That did not load correctly.</strong>
+          <span id="loading-error-message"></span>
+          <button id="retry-loading" class="button button-primary" type="button">Retry</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="title-screen" class="screen title-screen" aria-labelledby="app-title" hidden>
+      <div class="title-copy">
+        <p class="eyebrow">A tiny world with a big heart</p>
+        <h1 id="app-title">Pocket<br>Companions</h1>
+        <p class="tagline">Take care of them. Grow together.</p>
+        <div class="title-actions">
+          <button id="start-button" class="button button-primary button-large" type="button">Start</button>
+          <button id="continue-button" class="button button-secondary button-large" type="button" hidden>Continue</button>
+        </div>
+        <div class="utility-actions">
+          <button class="icon-button" data-open-modal="settings-modal" type="button" aria-label="Open settings">Settings</button>
+          <button class="icon-button" data-open-modal="accessibility-modal" type="button" aria-label="Open accessibility settings">Accessibility</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="selection-screen" class="screen selection-screen" aria-labelledby="selection-title" hidden>
+      <header class="selection-header">
+        <button id="selection-back" class="icon-button" type="button">Back</button>
+        <div>
+          <p class="eyebrow">Choose your companion</p>
+          <h1 id="selection-title">Meet your new best friend</h1>
+        </div>
+        <button id="selection-sound" class="icon-button" type="button">Hear them</button>
+      </header>
+      <div class="selection-controls" aria-label="Companion carousel controls">
+        <button id="previous-pet" class="carousel-button" type="button" aria-label="Previous companion">Previous</button>
+        <article class="pet-profile">
+          <p id="selection-trait" class="pet-trait"></p>
+          <h2 id="selection-name"></h2>
+          <p id="selection-description"></p>
+          <div class="selection-dots" role="tablist" aria-label="Companions"></div>
+        </article>
+        <button id="next-pet" class="carousel-button" type="button" aria-label="Next companion">Next</button>
+      </div>
+      <div class="selection-footer">
+        <button id="choose-pet" class="button button-primary button-large" type="button">Choose this companion</button>
+      </div>
+    </section>
+
+    <section id="game-interface" class="game-interface" hidden>
+      <header class="topbar">
+        <button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Open quick menu" aria-controls="mobile-menu-sheet" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+        </button>
+        <div class="pet-identity">
+          <button id="slot-button" class="slot-chip" type="button" aria-label="Open save slots">Slot 1</button>
+          <div>
+            <p id="pet-emotion" class="emotion-label">Calm</p>
+            <h1 id="pet-name">Companion</h1>
+            <div id="mobile-vitals" class="mobile-vitals" role="meter" aria-label="Bond" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="mobile-vitals-icon" aria-hidden="true">♥</span>
+              <span class="mobile-vitals-track"><span id="mobile-vitals-fill"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="progress-summary">
+          <span id="level-label">Level 1</span>
+          <div class="xp-track" aria-label="Experience progress"><div id="xp-fill"></div></div>
+          <span id="currency-label" class="currency-label">120 coins</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="daily-button" class="icon-button" type="button" aria-label="Open daily activities">Daily</button>
+          <button id="photo-button" class="icon-button" type="button" aria-label="Open photo mode">Photo</button>
+          <button id="wardrobe-button" class="icon-button" type="button" aria-label="Open wardrobe">Armário</button>
+          <button id="build-button" class="icon-button" type="button" aria-label="Open build mode">Construir</button>
+          <button class="icon-button" data-open-modal="settings-modal" type="button" aria-label="Open settings">Settings</button>
+          <button id="pause-button" class="icon-button" type="button" aria-pressed="false">Pause</button>
+        </div>
+      </header>
+
+      <aside id="needs-panel" class="needs-panel" aria-label="Companion needs">
+        <button id="needs-toggle" class="panel-handle" type="button" aria-controls="needs-list" aria-expanded="true">Needs</button>
+        <div id="needs-list" class="needs-list"></div>
+      </aside>
+
+      <div class="primary-actions" aria-label="Care actions">
+        <button class="action-button" data-action="feed" type="button"><span>Feed</span><small>Choose food</small></button>
+        <button class="action-button" data-action="play" type="button"><span>Play</span><small>Quick games</small></button>
+        <button class="action-button" data-action="pet" type="button"><span>Pet</span><small>Gentle attention</small></button>
+        <button class="action-button" data-action="clean" type="button"><span>Clean</span><small>Brush and bubbles</small></button>
+        <button class="action-button" data-action="sleep" type="button"><span>Sleep</span><small>Rest and recover</small></button>
+        <button class="action-button" data-action="medicine" type="button"><span>Care</span><small>Check symptoms</small></button>
+      </div>
+
+      <nav class="bottom-navigation" aria-label="Main navigation">
+        <button class="nav-button is-active" data-panel="home" type="button" aria-label="Home" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5z"/></svg>
+          <span class="nav-label nav-label-standard">Home</span>
+          <span class="nav-label nav-label-mobile">Home</span>
+        </button>
+        <button class="nav-button" data-panel="care" type="button" aria-label="Care">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S4 16 4 9.4A4.4 4.4 0 0 1 12 6.8a4.4 4.4 0 0 1 8 2.6c0 6.6-8 11.1-8 11.1Z"/><path d="M12 9v6M9 12h6"/></svg>
+          <span class="nav-label nav-label-standard">Care</span>
+          <span class="nav-label nav-label-mobile">Companion</span>
+        </button>
+        <button class="nav-button" data-panel="play" type="button" aria-label="Play">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 7.2h7.4a4 4 0 0 1 3.8 2.8l1.1 3.6a3 3 0 0 1-5 3l-1.5-1.6H9.9l-1.5 1.6a3 3 0 0 1-5-3L4.5 10a4 4 0 0 1 3.8-2.8Z"/><path d="M8 10v4M6 12h4M16.5 11.5h.01M18.5 13.5h.01"/></svg>
+          <span class="nav-label">Play</span>
+        </button>
+        <button class="nav-button" data-panel="shop" type="button" aria-label="Shop">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+          <span class="nav-label nav-label-standard">Shop</span>
+          <span class="nav-label nav-label-mobile">Shop</span>
+        </button>
+        <button class="nav-button" data-panel="explore" type="button" aria-label="Explore">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.2 5.4-5.4 2.2 2.2-5.4 5.4-2.2Z"/></svg>
+          <span class="nav-label">Explore</span>
+        </button>
+        <button class="nav-button" data-panel="collection" type="button" aria-label="Collection">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M9 4v16M13 8h3M13 12h3"/></svg>
+          <span class="nav-label nav-label-standard">Collection</span>
+          <span class="nav-label nav-label-mobile">Items</span>
+        </button>
+        <button class="nav-button" data-panel="life" type="button" aria-label="Life">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M12 7v5l3 2M7.8 16.2l8.4-8.4"/></svg>
+          <span class="nav-label">Life</span>
+        </button>
+      </nav>
+
+      <div id="mobile-menu-scrim" class="mobile-menu-scrim" hidden></div>
+      <aside id="mobile-menu-sheet" class="mobile-menu-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title" hidden>
+        <header class="mobile-sheet-header">
+          <span class="mobile-sheet-handle" aria-hidden="true"></span>
+          <div><p class="eyebrow">Pocket Companions</p><h2 id="mobile-menu-title">Quick actions</h2></div>
+          <button id="mobile-menu-close" class="mobile-sheet-close" type="button" aria-label="Close quick menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </button>
+        </header>
+        <div class="mobile-menu-grid">
+          <button type="button" data-mobile-command="play"><span aria-hidden="true">✦</span><strong>Play</strong></button>
+          <button type="button" data-mobile-command="explore"><span aria-hidden="true">⌁</span><strong>Explore</strong></button>
+          <button type="button" data-mobile-command="life"><span aria-hidden="true">♡</span><strong>Pet life</strong></button>
+          <button type="button" data-mobile-command="wardrobe"><span aria-hidden="true">◒</span><strong>Wardrobe</strong></button>
+          <button type="button" data-mobile-command="build"><span aria-hidden="true">◇</span><strong>Decorate</strong></button>
+          <button type="button" data-mobile-command="daily"><span aria-hidden="true">✓</span><strong>Daily</strong></button>
+          <button type="button" data-mobile-command="slots"><span aria-hidden="true">▣</span><strong>Saves</strong></button>
+          <button type="button" data-mobile-command="settings"><span aria-hidden="true">⚙</span><strong>Settings</strong></button>
+          <button type="button" data-mobile-command="pause"><span aria-hidden="true">Ⅱ</span><strong>Pause</strong></button>
+        </div>
+      </aside>
+
+      <aside id="drawer" class="drawer" aria-labelledby="drawer-title" tabindex="-1" hidden>
+        <header class="drawer-header">
+          <span class="drawer-handle" aria-hidden="true"></span>
+          <div class="drawer-heading"><p class="eyebrow">Pocket Companions</p><h2 id="drawer-title">Care</h2></div>
+          <div class="drawer-header-actions">
+            <button id="drawer-expand" class="icon-button drawer-expand" type="button" aria-label="Expand panel" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 14 4-4 4 4"/><path d="M8 19h8"/></svg>
+            </button>
+            <button id="close-drawer" class="icon-button drawer-close" type="button" aria-label="Close panel">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m7 7 10 10M17 7 7 17"/></svg>
+            </button>
+          </div>
+        </header>
+        <div id="drawer-content" class="drawer-content" tabindex="0"></div>
+      </aside>
+
+      <aside id="wardrobe-panel" class="wardrobe-panel" aria-labelledby="wardrobe-title" hidden>
+        <header class="wardrobe-header">
+          <div>
+            <p class="eyebrow">Editor de encaixes</p>
+            <h2 id="wardrobe-title">Armário</h2>
+          </div>
+          <button id="wardrobe-close" class="icon-button" type="button" aria-label="Fechar Armário">Fechar</button>
+        </header>
+
+        <div class="wardrobe-scroll">
+          <p class="wardrobe-intro">Personalize somente o pet ativo. O modelo permanece estático enquanto você ajusta os acessórios já desbloqueados.</p>
+
+          <div class="wardrobe-active-pet" aria-live="polite">
+            <span>Pet selecionado</span>
+            <strong id="wardrobe-pet-name">—</strong>
+            <small>As mudanças deste armário não são aplicadas aos outros pets.</small>
+          </div>
+
+          <section class="wardrobe-mobile-browser" aria-label="Accessory categories">
+            <div id="wardrobe-category-tabs" class="wardrobe-category-tabs" role="tablist" aria-label="Accessory categories"></div>
+            <div id="wardrobe-item-grid" class="wardrobe-item-grid" aria-live="polite"></div>
+          </section>
+
+          <div class="wardrobe-selectors wardrobe-selectors-single">
+            <label for="wardrobe-accessory">Acessório desbloqueado
+              <select id="wardrobe-accessory" name="wardrobeAccessory"></select>
+            </label>
+          </div>
+          <p id="wardrobe-empty" class="wardrobe-empty" hidden>Você ainda não desbloqueou acessórios para este pet. Visite a Loja para comprar o primeiro.</p>
+
+          <div class="wardrobe-gizmo-toolbar" role="toolbar" aria-label="Ferramentas do gizmo 3D">
+            <button class="wardrobe-gizmo-button is-active" type="button" data-wardrobe-gizmo="translate" aria-pressed="true" title="Mover (W)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M2 12h20M12 2l-3 3m3-3 3 3M22 12l-3-3m3 3-3 3M12 22l3-3m-3 3-3-3M2 12l3 3m-3-3 3-3"/></svg>
+              <span>Mover</span><kbd>W</kbd>
+            </button>
+            <button class="wardrobe-gizmo-button" type="button" data-wardrobe-gizmo="rotate" aria-pressed="false" title="Rotacionar (E)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M19 12a7 7 0 0 0-12-5L4 10M5 12a7 7 0 0 0 12 5l3-3"/></svg>
+              <span>Rotacionar</span><kbd>E</kbd>
+            </button>
+            <button class="wardrobe-gizmo-button" type="button" data-wardrobe-gizmo="scale" aria-pressed="false" title="Escalar (R)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M9 4 4 9M15 20l5-5M15 4h5v5M20 4l-5 5M9 20H4v-5M4 20l5-5"/></svg>
+              <span>Escalar</span><kbd>R</kbd>
+            </button>
+          </div>
+          <p class="wardrobe-gizmo-help">Arraste os eixos no acessório. Vermelho = X, verde = Y e azul = Z.</p>
+
+          <div class="wardrobe-view-row" aria-label="Ângulos de visualização">
+            <button class="button button-secondary" type="button" data-wardrobe-view="0">Frente</button>
+            <button class="button button-secondary" type="button" data-wardrobe-view="-1.5707963267948966">Lado</button>
+            <button class="button button-secondary" type="button" data-wardrobe-view="3.141592653589793">Costas</button>
+          </div>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-position-title">
+            <div class="wardrobe-section-heading"><h3 id="wardrobe-position-title">Posição</h3><small>offset local normalizado</small></div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-position-x"><span>X</span><input id="wardrobe-position-x" name="wardrobePositionX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-position-y"><span>Y</span><input id="wardrobe-position-y" name="wardrobePositionY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-position-z"><span>Z</span><input id="wardrobe-position-z" name="wardrobePositionZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-rotation-title">
+            <div class="wardrobe-section-heading"><h3 id="wardrobe-rotation-title">Rotação</h3><small>graus no editor</small></div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-rotation-x"><span>X</span><input id="wardrobe-rotation-x" name="wardrobeRotationX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-rotation-y"><span>Y</span><input id="wardrobe-rotation-y" name="wardrobeRotationY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-rotation-z"><span>Z</span><input id="wardrobe-rotation-z" name="wardrobeRotationZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <section class="wardrobe-transform" aria-labelledby="wardrobe-scale-title">
+            <div class="wardrobe-section-heading">
+              <div><h3 id="wardrobe-scale-title">Escala</h3><small>multiplicador por eixo</small></div>
+              <label class="wardrobe-link-scale" for="wardrobe-link-scale"><input id="wardrobe-link-scale" name="wardrobeLinkScale" type="checkbox" checked> Vincular eixos</label>
+            </div>
+            <div class="wardrobe-axis-grid">
+              <label for="wardrobe-scale-x"><span>X</span><input id="wardrobe-scale-x" name="wardrobeScaleX" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-scale-y"><span>Y</span><input id="wardrobe-scale-y" name="wardrobeScaleY" type="number" inputmode="decimal"></label>
+              <label for="wardrobe-scale-z"><span>Z</span><input id="wardrobe-scale-z" name="wardrobeScaleZ" type="number" inputmode="decimal"></label>
+            </div>
+          </section>
+
+          <p id="wardrobe-status" class="wardrobe-status" aria-live="polite"></p>
+
+          <div class="wardrobe-actions">
+            <button id="wardrobe-reset-current" class="button button-secondary" type="button">Resetar acessório</button>
+            <button id="wardrobe-reset-all" class="button button-ghost" type="button">Resetar encaixes deste pet</button>
+            <button id="wardrobe-copy" class="button button-secondary" type="button">Copiar JSON</button>
+            <button id="wardrobe-export" class="button button-primary" type="button">Exportar JSON</button>
+          </div>
+        </div>
+      </aside>
+
+      <aside id="build-panel" class="build-panel" aria-labelledby="build-title" hidden>
+        <header class="build-header">
+          <div>
+            <p class="eyebrow">Loja e construção</p>
+            <h2 id="build-title">Decorar ambiente</h2>
+          </div>
+          <button id="build-close" class="icon-button" type="button" aria-label="Fechar modo construção">Fechar</button>
+        </header>
+        <div class="build-scroll">
+          <div class="build-room-summary">
+            <div><span>Área atual</span><strong id="build-room-name">—</strong></div>
+            <div><span>Saldo</span><strong id="build-wallet">0 moedas</strong></div>
+          </div>
+
+          <section class="build-upgrade-card" aria-labelledby="build-upgrade-title">
+            <div>
+              <p class="eyebrow">Expansão permanente</p>
+              <h3 id="build-upgrade-title">Tamanho do cômodo</h3>
+              <p id="build-upgrade-copy">Nível atual e próxima expansão.</p>
+            </div>
+            <button id="build-upgrade" class="button button-primary" type="button">Melhorar</button>
+          </section>
+
+          <div class="build-tabs" role="tablist" aria-label="Loja e construção">
+            <button class="build-tab is-active" id="build-shop-tab" data-build-tab="shop" role="tab" aria-selected="true" type="button">Loja da área</button>
+            <button class="build-tab" id="build-place-tab" data-build-tab="place" role="tab" aria-selected="false" type="button">Construir</button>
+          </div>
+
+          <section id="build-shop-view" class="build-view" role="tabpanel" aria-labelledby="build-shop-tab">
+            <p class="build-intro">A loja mostra somente móveis compatíveis com este ambiente.</p>
+            <div id="build-shop-grid" class="build-shop-grid"></div>
+          </section>
+
+          <section id="build-place-view" class="build-view" role="tabpanel" aria-labelledby="build-place-tab" hidden>
+            <div class="build-subsection">
+              <div class="build-section-heading"><h3>Itens guardados</h3><small>Compre na loja e posicione aqui</small></div>
+              <div id="build-inventory-grid" class="build-inventory-grid"></div>
+            </div>
+
+            <div class="build-subsection">
+              <label for="build-placed-select">Móvel posicionado
+                <select id="build-placed-select" name="buildPlacedSelect"></select>
+              </label>
+              <p id="build-empty" class="build-empty" hidden>Nenhum móvel comprado foi posicionado neste ambiente.</p>
+            </div>
+
+            <div class="wardrobe-gizmo-toolbar build-gizmo-toolbar" role="toolbar" aria-label="Ferramentas de construção 3D">
+              <button class="wardrobe-gizmo-button is-active" type="button" data-build-gizmo="translate" aria-pressed="true"><span>Mover</span><kbd>W</kbd></button>
+              <button class="wardrobe-gizmo-button" type="button" data-build-gizmo="rotate" aria-pressed="false"><span>Girar</span><kbd>E</kbd></button>
+              <button class="wardrobe-gizmo-button" type="button" data-build-gizmo="scale" aria-pressed="false"><span>Escalar</span><kbd>R</kbd></button>
+            </div>
+            <p class="wardrobe-gizmo-help">Selecione um móvel na cena ou na lista. Mover: vermelho X, verde Y (altura), azul Z. A posição, rotação e escala ficam salvas.</p>
+
+            <section class="wardrobe-transform">
+              <div class="wardrobe-section-heading"><h3>Transformação</h3><small>valores do móvel selecionado</small></div>
+              <div class="build-transform-grid">
+                <label for="build-x"><span>X</span><input id="build-x" name="buildX" type="number" step="0.05" inputmode="decimal"></label>
+                <label for="build-y"><span>Y (altura)</span><input id="build-y" name="buildY" type="number" min="0" max="5.5" step="0.05" inputmode="decimal"></label>
+                <label for="build-z"><span>Z</span><input id="build-z" name="buildZ" type="number" step="0.05" inputmode="decimal"></label>
+                <label for="build-rotation"><span>Rotação</span><input id="build-rotation" name="buildRotation" type="number" step="1" inputmode="decimal"></label>
+                <label for="build-scale"><span>Escala</span><input id="build-scale" name="buildScale" type="number" min="0.55" max="2.2" step="0.05" inputmode="decimal"></label>
+              </div>
+            </section>
+
+            <p id="build-status" class="wardrobe-status" aria-live="polite"></p>
+            <div class="build-actions">
+              <button id="build-apply" class="button button-primary" type="button">Aplicar posição</button>
+              <button id="build-store-item" class="button button-secondary" type="button">Guardar móvel</button>
+              <button id="build-sell-item" class="button button-ghost" type="button">Vender</button>
+              <button id="build-reset-room" class="button button-ghost" type="button">Guardar todos</button>
+              <button id="build-export-json" class="button button-secondary" type="button">Exportar JSON</button>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <div id="photo-overlay" class="photo-overlay" hidden aria-label="Photo mode">
+        <div class="photo-top-controls">
+          <button id="photo-close" class="photo-edge-button" type="button" aria-label="Close photo mode">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+          <button class="photo-edge-button" data-open-modal="settings-modal" type="button" aria-label="Open photo settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20.3h-3v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.56-1.03h-.08v-3h.08A1.7 1.7 0 0 0 7 9.94a1.7 1.7 0 0 0-.34-1.88L6.6 8l2.12-2.12.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7v-.08h3v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 8l-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03h.08v3h-.08A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          </button>
+        </div>
+        <div class="photo-viewfinder" aria-hidden="true">
+          <span class="photo-corner photo-corner-top-left"></span>
+          <span class="photo-corner photo-corner-top-right"></span>
+          <span class="photo-corner photo-corner-bottom-left"></span>
+          <span class="photo-corner photo-corner-bottom-right"></span>
+        </div>
+        <div class="photo-capture-control">
+          <button id="capture-photo" class="photo-shutter" type="button" aria-label="Take photo">
+            <span class="camera-glyph" aria-hidden="true"><span class="camera-lens"></span></span>
+          </button>
+          <span class="photo-capture-label">Capture</span>
+        </div>
+      </div>
+
+      <div id="clean-overlay" class="clean-overlay" hidden>
+        <div class="clean-card">
+          <p class="eyebrow">Cleaning time</p>
+          <h2>Scrub with the sponge</h2>
+          <p>Move the sponge over your companion to build fluffy soap foam and wash them clean.</p>
+          <div class="progress-track"><div id="clean-progress" class="progress-fill"></div></div>
+          <button id="finish-clean" class="button button-primary" type="button" disabled>Finish cleaning</button>
+        </div>
+      </div>
+
+      <div id="sleep-overlay" class="sleep-overlay" hidden>
+        <div>
+          <p class="eyebrow">Resting peacefully</p>
+          <h2 id="sleep-title">Sweet dreams</h2>
+          <p id="sleep-status">Energy is recovering faster.</p>
+          <button id="wake-button" class="button button-secondary" type="button">Wake up</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="slots-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Local saves</p><h2>Choose a save slot</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="slots-list" class="slots-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="name-modal" class="modal">
+    <form id="name-form" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">One last thing</p><h2>Name your companion</h2></div><button class="icon-button" type="button" data-close-modal="name-modal">Close</button></header>
+      <label class="field-label" for="pet-name-input">Companion name</label>
+      <input id="pet-name-input" name="petName" type="text" minlength="1" maxlength="18" autocomplete="off" required>
+      <p id="name-pet-summary" class="field-help"></p>
+      <button class="button button-primary" type="submit">Begin together</button>
+    </form>
+  </dialog>
+
+  <dialog id="food-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Feed</p><h2>What sounds good?</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="food-list" class="card-grid"></div>
+      <p id="fullness-note" class="field-help"></p>
+    </form>
+  </dialog>
+
+  <dialog id="game-modal" class="modal game-modal">
+    <div class="modal-card modal-game-card">
+      <header class="modal-header"><div><p class="eyebrow">Play together</p><h2 id="game-title">Minigame</h2></div><button id="close-game" class="icon-button" type="button">Close</button></header>
+      <div id="game-area" class="game-area" aria-live="polite"></div>
+      <div id="game-result" class="game-result" hidden></div>
+    </div>
+  </dialog>
+
+  <dialog id="daily-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Gentle routine</p><h2>Today’s activities</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="streak-summary" class="streak-summary"></div>
+      <div id="daily-list" class="daily-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="care-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Friendly care</p><h2>How are they feeling?</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div id="symptom-summary" class="symptom-summary"></div>
+      <div class="care-options">
+        <button type="button" data-care-option="clean" class="card-button">Clean up</button>
+        <button type="button" data-care-option="rest" class="card-button">Rest</button>
+        <button type="button" data-care-option="food" class="card-button">Offer food</button>
+        <button type="button" data-care-option="medicine" class="card-button">Use gentle medicine</button>
+      </div>
+      <p class="field-help">This is a fictional pet-care system, not real-world medical guidance.</p>
+    </form>
+  </dialog>
+
+  <dialog id="offline-summary-modal" class="modal">
+    <div class="modal-card offline-summary-card">
+      <header class="modal-header"><div><p class="eyebrow">Continuous life</p><h2 id="offline-summary-title">While you were away</h2></div><button id="close-offline-summary" class="icon-button" type="button">Close</button></header>
+      <p id="offline-summary-copy"></p>
+      <ol id="offline-event-list" class="offline-event-list"></ol>
+      <p id="offline-cap-note" class="field-help" hidden>The simulation was capped to keep progress safe and balanced.</p>
+    </div>
+  </dialog>
+
+  <dialog id="settings-modal" class="modal">
+    <form method="dialog" class="modal-card modal-wide">
+      <header class="modal-header"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div class="settings-grid">
+        <label>Master volume<input id="master-volume" name="masterVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Music volume<input id="music-volume" name="musicVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Effects volume<input id="effects-volume" name="effectsVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label>Ambient volume<input id="ambient-volume" name="ambientVolume" type="range" min="0" max="1" step="0.05"></label>
+        <label class="switch-row"><span>Mute all audio</span><input id="mute-audio" name="muteAudio" type="checkbox"></label>
+        <label class="switch-row"><span>Real-time need decay</span><input id="real-time-decay" name="realTimeDecay" type="checkbox"></label>
+        <label class="switch-row"><span>Sync lighting to local time</span><input id="real-time-lighting" name="realTimeLighting" type="checkbox"></label>
+        <label>Fixed visual time<select id="fixed-time" name="fixedTime"><option value="morning">Morning</option><option value="day">Day</option><option value="sunset">Sunset</option><option value="night">Night</option></select></label>
+        <label>Language<select id="settings-language-select" name="settingsLanguage" data-language-select aria-label="Language"><option value="pt-BR">Português</option><option value="en">English</option></select></label>
+        <label class="switch-row"><span>Learn recurring routines</span><input id="routine-learning" name="routineLearning" type="checkbox"></label>
+        <label>Routine anticipation<input id="routine-anticipation" name="routineAnticipation" type="range" min="0" max="1" step="0.05"></label>
+        <label class="switch-row"><span>Contextual camera</span><input id="contextual-camera" name="contextualCamera" type="checkbox"></label>
+        <label class="switch-row"><span>Persistent dirt effects</span><input id="advanced-dirt-effects" name="advancedDirtEffects" type="checkbox"></label>
+        <label class="switch-row"><span>Simulation debug overlay</span><input id="simulation-debug-setting" name="simulationDebug" type="checkbox"></label>
+      </div>
+      <div class="backup-actions">
+        <button id="reset-learned-routines" class="button button-secondary" type="button">Reset learned routines</button>
+        <button id="export-save" class="button button-secondary" type="button">Export backup</button>
+        <label class="button button-secondary file-button">Import backup<input id="import-save" name="importSave" type="file" accept="application/json"></label>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="accessibility-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Make it yours</p><h2>Accessibility</h2></div><button class="icon-button" value="cancel">Close</button></header>
+      <div class="settings-grid">
+        <label class="switch-row"><span>High contrast</span><input id="high-contrast" name="highContrast" type="checkbox"></label>
+        <label class="switch-row"><span>Reduced motion</span><input id="reduced-motion" name="reducedMotion" type="checkbox"></label>
+        <label class="switch-row"><span>Simplified minigames</span><input id="simplified-games" name="simplifiedGames" type="checkbox"></label>
+        <label class="switch-row"><span>Sound captions</span><input id="sound-captions" name="soundCaptions" type="checkbox"></label>
+        <label class="switch-row"><span>Reduced weather effects</span><input id="reduced-weather-effects" name="reducedWeatherEffects" type="checkbox"></label>
+        <label class="switch-row"><span>Emotional text hints</span><input id="emotion-hints" name="emotionHints" type="checkbox"></label>
+        <label class="switch-row"><span>Body language descriptions</span><input id="body-language-descriptions" name="bodyLanguageDescriptions" type="checkbox"></label>
+        <label class="switch-row"><span>Render a second pet</span><input id="multi-pet-rendering" name="multiPetRendering" type="checkbox"></label>
+        <label class="switch-row"><span>Low performance mode</span><input id="low-performance-mode" name="lowPerformanceMode" type="checkbox"></label>
+        <label>Text size<input id="text-scale" name="textScale" type="range" min="0.9" max="1.3" step="0.05"></label>
+        <label>Interaction sensitivity<input id="interaction-sensitivity" name="interactionSensitivity" type="range" min="0.7" max="1.5" step="0.1"></label>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="tutorial-modal" class="modal tutorial-modal">
+    <div class="modal-card">
+      <p id="tutorial-count" class="eyebrow">Step 1 of 5</p>
+      <h2 id="tutorial-title">Say hello</h2>
+      <p id="tutorial-copy"></p>
+      <div class="tutorial-actions">
+        <button id="skip-tutorial" class="button button-ghost" type="button">Skip</button>
+        <button id="next-tutorial" class="button button-primary" type="button">Next</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="confirm-modal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-header"><div><p class="eyebrow">Please confirm</p><h2 id="confirm-title">Reset this save?</h2></div></header>
+      <p id="confirm-copy"></p>
+      <div class="dialog-actions"><button class="button button-secondary" value="cancel">Cancel</button><button id="confirm-action" class="button button-danger" value="confirm">Confirm</button></div>
+    </form>
+  </dialog>
+
+
+  <aside id="dev-panel" class="dev-panel" aria-labelledby="dev-title" hidden>
+    <header class="dev-panel-header">
+      <div>
+        <p class="eyebrow">NARDELLI</p>
+        <h2 id="dev-title">Modo DEV</h2>
+      </div>
+      <button id="dev-close" class="icon-button" type="button" aria-label="Desativar modo DEV">×</button>
+    </header>
+
+    <div class="dev-panel-body">
+      <div class="dev-pet-card">
+        <span>Pet ativo</span>
+        <strong id="dev-pet-name">Nenhum pet ativo</strong>
+      </div>
+
+      <button id="dev-maximize" class="button button-primary dev-full-button" type="button">Reaplicar máximos e desbloqueios</button>
+
+      <section class="dev-section" aria-labelledby="dev-animation-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-animation-title">Teste de animações</h3>
+          <small id="dev-current-animation">—</small>
+        </div>
+        <label for="dev-animation-select">Clipe carregado
+          <select id="dev-animation-select" name="devAnimation"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-play-once" class="button button-secondary" type="button">Tocar uma vez</button>
+          <button id="dev-play-loop" class="button button-secondary" type="button">Repetir</button>
+          <button id="dev-play-idle" class="button button-ghost" type="button">Voltar ao idle</button>
+        </div>
+        <label class="switch-row dev-switch-row">
+          <span>Animações aleatórias</span>
+          <input id="dev-random-toggle" name="devRandomAnimations" type="checkbox">
+        </label>
+        <label for="dev-random-speed">Intervalo aleatório
+          <span class="dev-range-line">
+            <input id="dev-random-speed" name="devRandomSpeed" type="range" min="900" max="6000" step="100" value="2400">
+            <output id="dev-random-speed-value" for="dev-random-speed">2.4 s</output>
+          </span>
+        </label>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-behavior-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-behavior-title">Eventos do pet</h3>
+          <small>movimento + colisão</small>
+        </div>
+        <div class="dev-quick-grid" aria-label="Atalhos de eventos do pet">
+          <button class="button button-secondary" type="button" data-dev-behavior="climb">Subir em algo</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="favorite">Lugar favorito</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="quiet">Canto tranquilo</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="window">Olhar janela</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="sleep">Descansar</button>
+          <button class="button button-secondary" type="button" data-dev-behavior="explore">Explorar</button>
+        </div>
+        <label for="dev-behavior-select">Outro comportamento
+          <select id="dev-behavior-select" name="devBehavior"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-trigger-behavior" class="button button-primary" type="button">Disparar evento</button>
+          <button id="dev-stop-behavior" class="button button-ghost" type="button">Encerrar e voltar</button>
+        </div>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-world-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-world-title">Clima e mundo</h3>
+          <small id="dev-world-summary">—</small>
+        </div>
+        <div class="dev-weather-grid" aria-label="Atalhos de clima">
+          <button class="button button-secondary" type="button" data-dev-weather="rain">Chuva</button>
+          <button class="button button-secondary" type="button" data-dev-weather="thunderstorm">Temporal</button>
+          <button class="button button-secondary" type="button" data-dev-weather="snow">Neve</button>
+          <button class="button button-secondary" type="button" data-dev-weather="rainbow">Arco-íris</button>
+          <button class="button button-secondary" type="button" data-dev-weather="clear">Limpo</button>
+        </div>
+        <div class="dev-control-grid">
+          <label for="dev-weather-select">Clima
+            <select id="dev-weather-select" name="devWeather"></select>
+          </label>
+          <button id="dev-apply-weather" class="button button-secondary" type="button">Aplicar clima</button>
+          <label for="dev-season-select">Estação
+            <select id="dev-season-select" name="devSeason"></select>
+          </label>
+          <button id="dev-apply-season" class="button button-secondary" type="button">Aplicar estação</button>
+          <label for="dev-room-select">Ambiente
+            <select id="dev-room-select" name="devRoom"></select>
+          </label>
+          <button id="dev-go-room" class="button button-secondary" type="button">Ir ao ambiente</button>
+          <label for="dev-time-select">Horário visual
+            <select id="dev-time-select" name="devTime"></select>
+          </label>
+          <button id="dev-apply-time" class="button button-secondary" type="button">Aplicar horário</button>
+        </div>
+        <button id="dev-restore-world" class="button button-ghost dev-full-button-soft" type="button">Restaurar mundo anterior ao teste</button>
+      </section>
+
+      <section class="dev-section" aria-labelledby="dev-event-title">
+        <div class="dev-section-heading">
+          <h3 id="dev-event-title">Eventos emergentes</h3>
+          <small>cards e consequências</small>
+        </div>
+        <label for="dev-event-select">Evento
+          <select id="dev-event-select" name="devEmergentEvent"></select>
+        </label>
+        <div class="dev-button-grid">
+          <button id="dev-trigger-event" class="button button-primary" type="button">Iniciar evento</button>
+          <button id="dev-clear-event" class="button button-ghost" type="button">Remover evento</button>
+        </div>
+      </section>
+
+      <p id="dev-status" class="dev-status" aria-live="polite"></p>
+      <p class="dev-hint">Digite <strong>NARDELLI</strong> novamente para fechar.</p>
+    </div>
+  </aside>
+
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module">
+    const ASSET_BUILD = '40-mobile-first-redesign';
+    const BUILD_MARKER = 'pocket-companions:asset-build';
+
+    async function clearLegacyAssetCaches() {
+      const previousBuild = localStorage.getItem(BUILD_MARKER);
+      if (previousBuild === ASSET_BUILD) return;
+
+      try {
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(
+            cacheNames
+              .filter((name) => name.startsWith('pocket-companions-'))
+              .map((name) => caches.delete(name))
+          );
+        }
+
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+        }
+      } catch (error) {
+        console.warn('[Pocket Companions] Could not fully clear an old asset cache:', error);
+      } finally {
+        // This marker is separate from the game save. IndexedDB and save keys remain untouched.
+        localStorage.setItem(BUILD_MARKER, ASSET_BUILD);
+      }
+    }
+
+    await clearLegacyAssetCaches();
+    await import('./js/app.js');
+  </script>
+</body>
+</html>

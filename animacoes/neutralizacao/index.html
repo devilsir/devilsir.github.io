@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Laboratório Interativo de Neutralização</title>
+
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<div class="wrap">
+<header style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+<h1>Laboratório Interativo de Neutralização</h1>
+<div class="badges">
+<span class="badge">pH dinâmico</span>
+<span class="badge">mudança de cor</span>
+<span class="badge">precipitado</span>
+<span class="badge">gás</span>
+</div>
+</header>
+<div class="grid">
+<div class="col-left">
+<div class="row">
+<div class="card">
+<h3 style="margin:0 0 8px">Ácido</h3>
+<label>Tipo
+              <select id="acidSel"></select>
+</label>
+<div class="row">
+<label>Concentração (mol/L)
+                <input id="cA" step="0.01" type="number" value="1"/>
+</label>
+<label>Volume (mL)
+                <input id="vA" step="1" type="number" value="25"/>
+</label>
+</div>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">Base</h3>
+<label>Tipo
+              <select id="baseSel"></select>
+</label>
+<div class="row">
+<label>Concentração (mol/L)
+                <input id="cB" step="0.01" type="number" value="1"/>
+</label>
+<label>Volume (mL)
+                <input id="vB" step="1" type="number" value="25"/>
+</label>
+</div>
+</div>
+<div class="card" style="grid-column:1/-1">
+<h3 style="margin:0 0 8px">Indicador</h3>
+<div id="indicatorBtns" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+<div class="phbar" style="margin-top:10px"><div class="phfill" style="width:100%"></div></div>
+</div>
+</div>
+<div class="card">
+<div class="buttons" style="margin-bottom:10px">
+<button class="btn primary" id="mixBtn">Misturar</button>
+<button class="btn" id="resetBtn">Resetar</button>
+<div class="mini">Volume total: <b id="vtxt">50</b> mL</div>
+</div>
+<div class="beaker">
+<div class="glass"></div>
+<div class="liquid" id="liquid">
+<div class="liquidTint" id="liquidTint"></div>
+<div class="surfaceShine"></div>
+<div class="rising-layer" id="rising"></div>
+<div class="surface-layer" id="surface"></div>
+<div class="sediment-layer" id="sediment"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-right">
+<div class="card">
+<h3 style="margin:0 0 6px">Equação (aprox.)</h3>
+<div class="eq" id="eqText">—</div>
+<div class="badges" id="phenos" style="margin-top:8px"></div>
+</div>
+<div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div>
+<h4 style="margin:0 0 6px">pH estimado</h4>
+<div id="phVal" style="font-size:28px;font-weight:700">7.00</div>
+<div class="mini" id="regime">neutro</div>
+<div class="phbar" style="margin-top:10px"><div class="phfill" id="phFill" style="width:50%"></div></div>
+</div>
+<div>
+<h4 style="margin:0 0 6px">Produtos previstos</h4>
+<ul id="prodList"></ul>
+<div class="mini" style="margin-top:6px">Obs.: aproximações didáticas (25 °C).</div>
+</div>
+</div>
+<div class="card">
+<h3 style="margin:0 8px 10px 0">Exemplos rápidos</h3>
+<div id="examples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+</div>
+<details class="card">
+<summary style="cursor:pointer"><b>Como o pH é calculado?</b></summary>
+<ul>
+<li>Fortes em excesso: pH por [H⁺]/[OH⁻].</li>
+<li>Ácido fraco + base forte: tampão (Henderson–Hasselbalch); na equivalência, hidrólise de A⁻.</li>
+<li>Base fraca (NH₃) + ácido forte: análogo (pKa do NH₄⁺).</li>
+<li>Carbonatos/bicarbonatos: mostram CO₂ e tratamos como fortes no pH final.</li>
+</ul>
+</details>
+</div>
+</div>
+<footer>Bolhas ficam na superfície; precipitado assenta e permanece.</footer>
+</div>
+
+<script src="script.js"></script></body>
+</html>

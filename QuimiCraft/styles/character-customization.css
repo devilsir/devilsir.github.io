@@ -1,0 +1,109 @@
+/* Character customization module */
+.avatar-pixel {
+  --accent: #2f7c72;
+}
+.avatar-pixel span { z-index: 2; }
+.avatar-head { z-index: 4 !important; }
+.avatar-body,
+.avatar-arm-l,
+.avatar-arm-r,
+.avatar-leg-l,
+.avatar-leg-r { z-index: 2 !important; }
+.avatar-eye-l,
+.avatar-eye-r { z-index: 7 !important; }
+.avatar-accent {
+  left: 10px;
+  top: 78px;
+  width: 54px;
+  height: 12px;
+  z-index: 5 !important;
+  background: var(--accent);
+  border-radius: 2px !important;
+}
+.avatar-hair-piece {
+  display: none !important;
+  z-index: 6 !important;
+  background: var(--hair);
+}
+.avatar-hair-back { z-index: 3 !important; }
+
+/* Curto */
+.avatar-pixel[data-hair-style="0"] .avatar-hair-top,
+.avatar-pixel[data-hair-style="0"] .avatar-hair-left,
+.avatar-pixel[data-hair-style="0"] .avatar-hair-right,
+.avatar-pixel[data-hair-style="0"] .avatar-hair-fringe { display: block !important; }
+.avatar-pixel[data-hair-style="0"] .avatar-hair-top { left: 11px; top: 5px; width: 52px; height: 22px; border-radius: 10px 10px 4px 4px; }
+.avatar-pixel[data-hair-style="0"] .avatar-hair-left { left: 10px; top: 15px; width: 9px; height: 26px; border-radius: 7px 2px 5px 5px; }
+.avatar-pixel[data-hair-style="0"] .avatar-hair-right { left: 55px; top: 15px; width: 9px; height: 24px; border-radius: 2px 7px 5px 5px; }
+.avatar-pixel[data-hair-style="0"] .avatar-hair-fringe { top: 18px; height: 9px; border-radius: 1px 1px 5px 5px; }
+.avatar-pixel[data-hair-style="0"] .fringe-a { left: 18px; width: 12px; transform: rotate(7deg); }
+.avatar-pixel[data-hair-style="0"] .fringe-b { left: 29px; width: 14px; top: 20px; }
+.avatar-pixel[data-hair-style="0"] .fringe-c { left: 42px; width: 13px; transform: rotate(-7deg); }
+
+/* Longo */
+.avatar-pixel[data-hair-style="1"] .avatar-hair-top,
+.avatar-pixel[data-hair-style="1"] .avatar-hair-left,
+.avatar-pixel[data-hair-style="1"] .avatar-hair-right,
+.avatar-pixel[data-hair-style="1"] .avatar-hair-back,
+.avatar-pixel[data-hair-style="1"] .avatar-hair-fringe { display: block !important; }
+.avatar-pixel[data-hair-style="1"] .avatar-hair-top { left: 10px; top: 4px; width: 54px; height: 23px; border-radius: 12px 12px 3px 3px; }
+.avatar-pixel[data-hair-style="1"] .avatar-hair-back { left: 8px; top: 14px; width: 58px; height: 62px; border-radius: 12px 12px 7px 7px; }
+.avatar-pixel[data-hair-style="1"] .avatar-hair-left { left: 8px; top: 16px; width: 12px; height: 58px; border-radius: 8px 3px 7px 7px; }
+.avatar-pixel[data-hair-style="1"] .avatar-hair-right { left: 54px; top: 16px; width: 12px; height: 58px; border-radius: 3px 8px 7px 7px; }
+.avatar-pixel[data-hair-style="1"] .avatar-hair-fringe { top: 18px; height: 11px; border-radius: 2px 2px 7px 7px; }
+.avatar-pixel[data-hair-style="1"] .fringe-a { left: 17px; width: 17px; transform: rotate(8deg); }
+.avatar-pixel[data-hair-style="1"] .fringe-b { left: 31px; width: 15px; top: 20px; }
+.avatar-pixel[data-hair-style="1"] .fringe-c { left: 43px; width: 14px; transform: rotate(-8deg); }
+
+/* Coque */
+.avatar-pixel[data-hair-style="2"] .avatar-hair-top,
+.avatar-pixel[data-hair-style="2"] .avatar-hair-left,
+.avatar-pixel[data-hair-style="2"] .avatar-hair-right,
+.avatar-pixel[data-hair-style="2"] .avatar-hair-bun { display: block !important; }
+.avatar-pixel[data-hair-style="2"] .avatar-hair-top { left: 11px; top: 7px; width: 52px; height: 21px; border-radius: 15px 15px 4px 4px; }
+.avatar-pixel[data-hair-style="2"] .avatar-hair-left { left: 10px; top: 17px; width: 9px; height: 27px; border-radius: 7px 2px 5px 5px; }
+.avatar-pixel[data-hair-style="2"] .avatar-hair-right { left: 55px; top: 17px; width: 9px; height: 27px; border-radius: 2px 7px 5px 5px; }
+.avatar-pixel[data-hair-style="2"] .avatar-hair-bun { left: 24px; top: -13px; width: 27px; height: 27px; border-radius: 9px; transform: rotate(45deg); }
+
+/* Moicano */
+.avatar-pixel[data-hair-style="3"] .avatar-hair-crest { display: block !important; }
+.avatar-pixel[data-hair-style="3"] .avatar-hair-crest { width: 14px; border-radius: 7px 7px 2px 2px; }
+.avatar-pixel[data-hair-style="3"] .crest-a { left: 22px; top: 4px; height: 27px; transform: rotate(-12deg); }
+.avatar-pixel[data-hair-style="3"] .crest-b { left: 30px; top: -2px; height: 34px; }
+.avatar-pixel[data-hair-style="3"] .crest-c { left: 39px; top: 4px; height: 27px; transform: rotate(12deg); }
+
+.style-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.style-option {
+  min-height: 68px;
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  text-align: center;
+}
+.hair-style-icon {
+  position: relative;
+  width: 28px;
+  height: 25px;
+  border-radius: 8px 8px 5px 5px;
+  background: var(--hair-preview, #382921);
+  box-shadow: inset 0 -5px rgba(0,0,0,.14);
+}
+.hair-style-icon i { position: absolute; display: block; background: inherit; box-shadow: inherit; }
+.hair-style-icon[data-style="0"] i:nth-child(1) { left: 2px; right: 2px; top: 4px; height: 8px; border-radius: 8px 8px 2px 2px; }
+.hair-style-icon[data-style="0"] i:nth-child(2) { left: 2px; top: 9px; width: 5px; height: 11px; border-radius: 4px; }
+.hair-style-icon[data-style="0"] i:nth-child(3) { right: 2px; top: 9px; width: 5px; height: 11px; border-radius: 4px; }
+.hair-style-icon[data-style="1"] i:nth-child(1) { left: 2px; right: 2px; top: 3px; height: 9px; border-radius: 8px 8px 2px 2px; }
+.hair-style-icon[data-style="1"] i:nth-child(2) { left: 1px; top: 8px; width: 6px; height: 17px; border-radius: 4px; }
+.hair-style-icon[data-style="1"] i:nth-child(3) { right: 1px; top: 8px; width: 6px; height: 17px; border-radius: 4px; }
+.hair-style-icon[data-style="2"] i:nth-child(1) { left: 3px; right: 3px; top: 6px; height: 8px; border-radius: 8px 8px 2px 2px; }
+.hair-style-icon[data-style="2"] i:nth-child(2) { left: 9px; top: -5px; width: 11px; height: 11px; border-radius: 4px; transform: rotate(45deg); }
+.hair-style-icon[data-style="2"] i:nth-child(3) { display: none; }
+.hair-style-icon[data-style="3"] { background: transparent; box-shadow: none; }
+.hair-style-icon[data-style="3"] i { bottom: 2px; width: 7px; border-radius: 5px 5px 1px 1px; background: #382921; }
+.hair-style-icon[data-style="3"] i:nth-child(1) { left: 4px; height: 17px; transform: rotate(-12deg); }
+.hair-style-icon[data-style="3"] i:nth-child(2) { left: 11px; height: 23px; }
+.hair-style-icon[data-style="3"] i:nth-child(3) { right: 3px; height: 17px; transform: rotate(12deg); }
+
+@media(max-width:760px){
+  .style-options { grid-template-columns: repeat(2, 1fr); }
+}

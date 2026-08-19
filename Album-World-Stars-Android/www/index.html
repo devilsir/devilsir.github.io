@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#071c3e" />
+    <meta
+      name="description"
+      content="Álbum digital World Stars 2026 da Escola Estadual Santa Rita de Cássia."
+    />
+    <title>World Stars 2026 — Álbum Digital</title>
+    <link rel="icon" type="image/png" href="assets/app-icon.png" />
+    <link rel="apple-touch-icon" href="assets/app-icon.png" />
+    <link rel="stylesheet" href="app.css" />
+    <script defer src="references.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <header class="topbar">
+        <button class="brand" id="brandButton" type="button" aria-label="Ir para a capa do álbum">
+          <span class="brand-mark" id="brandMark" aria-hidden="true">★</span>
+          <span class="brand-copy">
+            <strong>World Stars</strong>
+            <small>Álbum digital · 2026</small>
+          </span>
+        </button>
+
+        <nav class="desktop-nav" aria-label="Navegação principal">
+          <button class="nav-pill is-active" data-view="album" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Zm16 0A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>
+            Álbum
+          </button>
+          <button class="nav-pill" data-view="inventory" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>
+            Inventário
+          </button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="progress-chip" id="progressChip" type="button" aria-label="Abrir inventário">
+            <span class="mini-progress" id="miniProgress" aria-hidden="true"><i>0</i></span>
+            <span><strong id="headerProgress">0/77</strong><small>colecionadas</small></span>
+          </button>
+          <div class="music-control" id="musicControl">
+            <button class="icon-button music-button" id="musicButton" type="button" aria-label="Abrir controle de volume" aria-expanded="false" title="Música">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+            </button>
+            <div class="volume-popover" id="volumePopover" hidden>
+              <label for="musicVolume"><span>Música</span><strong id="musicVolumeLabel">30%</strong></label>
+              <input id="musicVolume" type="range" min="0" max="100" value="30" step="1" aria-label="Volume da música" />
+            </div>
+          </div>
+          <button class="icon-button" id="resetButton" type="button" aria-label="Recomeçar álbum" title="Recomeçar álbum">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.9 7.5A8 8 0 1 1 4 12M4 4v4h4"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="view album-view is-active" id="albumView" aria-labelledby="albumTitle">
+          <div class="album-column">
+            <div class="section-heading compact-heading">
+              <div>
+                <span class="eyebrow" id="pageEyebrow">Capa</span>
+                <h1 id="albumTitle">Meu álbum</h1>
+              </div>
+              <div class="page-heading-actions">
+                <button class="fullscreen-button" id="fullscreenPage" type="button" aria-label="Abrir página em tela cheia">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+                  <span>Tela cheia</span>
+                </button>
+                <span class="page-counter" id="pageCounter">1 / 12</span>
+              </div>
+            </div>
+
+            <div class="album-navigator">
+              <button class="page-arrow previous" id="previousPage" type="button" aria-label="Página anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+
+              <div class="page-wrap" id="pageWrap">
+                <div class="page-loading" id="pageLoading"><span></span><span></span><span></span></div>
+                <img id="albumPage" alt="Capa do álbum World Stars 2026" draggable="false" />
+                <div class="sticker-layer" id="stickerLayer" aria-live="polite"></div>
+                <button class="fullscreen-exit" id="exitFullscreen" type="button" aria-label="Sair da tela cheia">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>
+                  Sair
+                </button>
+              </div>
+
+              <button class="page-arrow next" id="nextPage" type="button" aria-label="Próxima página">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+
+            <div class="page-strip" id="pageStrip" aria-label="Escolher página"></div>
+          </div>
+
+          <aside class="collection-panel" id="collectionPanel">
+            <div class="panel-card progress-card">
+              <div class="progress-ring" id="progressRing"><span><strong id="progressPercent">0%</strong><small>completo</small></span></div>
+              <div class="progress-copy">
+                <span class="eyebrow light">Minha coleção</span>
+                <h2><span id="unlockedCount">0</span> de 77</h2>
+                <p><span id="placedCount">0</span> coladas no álbum</p>
+              </div>
+            </div>
+
+            <div class="panel-card scan-card">
+              <span class="scan-spark" aria-hidden="true">✦</span>
+              <span class="eyebrow">Nova figurinha</span>
+              <h2>Quer mais uma?</h2>
+              <p>Envie a imagem da figurinha ou conquiste uma nova acertando pelo menos 3 de 5 perguntas.</p>
+              <div class="scan-card-actions">
+                <button class="primary-button full" id="openScanner" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+                  Adicionar por imagem
+                </button>
+                <button class="secondary-button full challenge-launch" id="openQuestionChallenge" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3a3 3 0 0 0 6 0V4M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4M12 10v7M8 20h8M9 17h6"/></svg>
+                  Desafio 3 de 5
+                </button>
+              </div>
+              <div class="collection-methods"><span>Imagem</span><i></i><span>Perguntas</span></div>
+            </div>
+
+            <div class="panel-card mini-inventory">
+              <div class="card-title-row">
+                <div><span class="eyebrow">Prontas para colar</span><h2>Inventário</h2></div>
+                <button class="text-button" data-view="inventory" type="button">Ver todas</button>
+              </div>
+              <div class="mini-grid" id="miniInventory"></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="view inventory-view" id="inventoryView" aria-labelledby="inventoryTitle">
+          <div class="section-heading inventory-heading">
+            <div>
+              <span class="eyebrow">Minha coleção</span>
+              <h1 id="inventoryTitle">Inventário de figurinhas</h1>
+              <p>As desbloqueadas ficam aqui até você colar no álbum.</p>
+            </div>
+            <div class="inventory-heading-actions">
+              <button class="secondary-button paste-all-button" id="pasteAllButton" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v14H7zM4 7h3v13h10v-2M10 8h4M10 11h4M10 14h3"/></svg>
+                <span id="pasteAllLabel">Nada para colar</span>
+              </button>
+              <button class="secondary-button" id="openQuestionChallengeInventory" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 4v3a3 3 0 0 0 6 0V4M7 7H4v2a4 4 0 0 0 4 4M17 7h3v2a4 4 0 0 1-4 4M12 10v7M8 20h8M9 17h6"/></svg>
+                Desafio 3 de 5
+              </button>
+              <button class="primary-button" id="openScannerInventory" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+                Nova figurinha
+              </button>
+            </div>
+          </div>
+
+          <div class="inventory-stats" aria-label="Resumo da coleção">
+            <article><span class="stat-icon yellow">★</span><div><strong id="statUnlocked">0</strong><small>colecionadas</small></div></article>
+            <article><span class="stat-icon green">✓</span><div><strong id="statPlaced">0</strong><small>coladas</small></div></article>
+            <article><span class="stat-icon blue">◇</span><div><strong id="statMissing">77</strong><small>faltando</small></div></article>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filtrar figurinhas">
+              <button class="is-active" data-filter="all" type="button">Todas</button>
+              <button data-filter="available" type="button">Para colar</button>
+              <button data-filter="placed" type="button">Coladas</button>
+              <button data-filter="missing" type="button">Faltando</button>
+            </div>
+            <span id="filterCount">77 figurinhas</span>
+          </div>
+
+          <div class="inventory-grid" id="inventoryGrid"></div>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Navegação principal">
+        <button class="is-active" data-view="album" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Zm16 0A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/></svg>
+          <span>Álbum</span>
+        </button>
+        <button class="scan-nav" id="mobileScanner" type="button" aria-label="Adicionar figurinha">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg></span>
+          <small>Escanear</small>
+        </button>
+        <button data-view="inventory" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>
+          <span>Inventário</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="paste-banner" id="pasteBanner" role="status" aria-live="polite">
+      <img id="pasteThumb" alt="" />
+      <div><strong id="pasteTitle">Figurinha pronta</strong><span id="pasteMessage">Toque no espaço iluminado para colar.</span></div>
+      <button id="cancelPaste" type="button">Cancelar</button>
+    </div>
+
+    <div class="modal-backdrop" id="bulkPasteModal" hidden>
+      <section class="bulk-paste-modal" role="dialog" aria-modal="true" aria-labelledby="bulkPasteTitle" aria-describedby="bulkPasteDescription">
+        <div class="bulk-paste-icon" aria-hidden="true">★</div>
+        <span class="eyebrow">Preencher álbum</span>
+        <h2 id="bulkPasteTitle">Colar todas as figurinhas?</h2>
+        <p id="bulkPasteDescription"><strong id="bulkPasteCount">0</strong> figurinhas prontas serão processadas em ordem numérica. As conquistadas no desafio serão coladas direto; as adicionadas por imagem pedirão uma pergunta antes. O álbum muda de página automaticamente.</p>
+        <div class="modal-actions bulk-paste-actions">
+          <button class="secondary-button" id="cancelBulkPaste" type="button">Cancelar</button>
+          <button class="primary-button" id="confirmBulkPaste" type="button">Sim, colar todas</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="scannerModal" hidden>
+      <section class="scanner-modal" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Reconhecimento de imagem</span><h2 id="scannerTitle">Adicionar figurinha</h2></div>
+          <button class="icon-button close-modal" id="closeScanner" type="button" aria-label="Fechar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+
+        <div class="scanner-step source-step" id="sourceStep">
+          <div class="scan-illustration" aria-hidden="true">
+            <span class="scan-corner top-left"></span><span class="scan-corner top-right"></span>
+            <span class="scan-corner bottom-left"></span><span class="scan-corner bottom-right"></span>
+            <svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+          </div>
+          <h3>Mostre sua figurinha</h3>
+          <p>Use boa luz e fotografe a figurinha inteira. Você poderá ajustar o enquadramento antes de comparar.</p>
+          <div class="source-actions">
+            <label class="primary-button full input-button" for="cameraInput">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-2h5.6L16 6h2a2 2 0 0 1 2 2v10H4V8Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+              Tirar foto
+            </label>
+            <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
+            <label class="secondary-button full input-button" for="galleryInput">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 15l4-4 3 3 2-2 7 7M15.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/></svg>
+              Enviar imagem
+            </label>
+            <input id="galleryInput" type="file" accept="image/*" hidden />
+          </div>
+          <div class="offline-seal"><span>✓</span><div><strong>Imagem pronta para comparar</strong><small>Enquadre a figurinha inteira para melhorar o resultado.</small></div></div>
+        </div>
+
+        <div class="scanner-step crop-step" id="cropStep" hidden>
+          <div class="crop-copy"><h3>Enquadre só a figurinha</h3><p>Arraste a foto e use o controle de zoom. Alinhe as bordas dentro da moldura.</p></div>
+          <div class="crop-stage" id="cropStage">
+            <canvas id="cropCanvas" width="300" height="450" aria-label="Área para enquadrar a figurinha"></canvas>
+            <div class="crop-guide" aria-hidden="true"><span></span><span></span><span></span><span></span><i></i></div>
+          </div>
+          <label class="zoom-control" for="zoomRange">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 4 4M8 10.5h5"/></svg>
+            <input id="zoomRange" type="range" min="1" max="3" value="1" step="0.01" />
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 4 4M7.5 10.5h6M10.5 7.5v6"/></svg>
+          </label>
+          <div class="modal-actions split">
+            <button class="secondary-button" id="chooseAnother" type="button">Outra foto</button>
+            <button class="primary-button" id="analyzeSticker" type="button">Comparar figurinha</button>
+          </div>
+        </div>
+
+        <div class="scanner-step analyzing-step" id="analyzingStep" hidden>
+          <div class="analysis-orbit" aria-hidden="true"><span></span><i></i></div>
+          <h3>Comparando detalhes…</h3>
+          <p>Conferindo cores, formas, retrato e número da figurinha.</p>
+          <div class="analysis-bar"><span></span></div>
+        </div>
+
+        <div class="scanner-step result-step" id="resultStep" hidden>
+          <div class="result-badge" id="resultBadge"><span id="resultIcon">✓</span></div>
+          <span class="eyebrow" id="resultEyebrow">Figurinha reconhecida</span>
+          <h3 id="resultTitle">Match encontrado!</h3>
+          <p id="resultMessage">A imagem passou pelo limite de 15% de semelhança.</p>
+          <div class="match-card">
+            <img id="matchedSticker" alt="Figurinha encontrada" />
+            <div class="match-data">
+              <span>Melhor resultado</span>
+              <strong id="matchedLabel">Figurinha 01</strong>
+              <div class="score-meter"><span><i id="scoreFill"></i></span><strong id="scoreValue">0%</strong></div>
+              <small>mínimo necessário: 15%</small>
+            </div>
+          </div>
+          <div class="modal-actions result-actions" id="resultActions"></div>
+        </div>
+      </section>
+    </div>
+
+
+    <div class="modal-backdrop quiz-backdrop" id="quizModal" hidden>
+      <section class="scanner-modal quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Desafio rápido</span><h2 id="quizTitle">Pergunta para colar</h2></div>
+          <button class="icon-button close-modal" id="closeQuiz" type="button" aria-label="Fechar pergunta">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+        <div class="quiz-step">
+          <div class="quiz-hero">
+            <img id="quizSticker" alt="Sticker ready to paste" />
+            <div>
+              <span id="quizNumber">Sticker 01</span>
+              <strong>Acerte para colar</strong>
+              <small>A figurinha será colada no álbum depois da resposta correta.</small>
+            </div>
+          </div>
+          <p class="quiz-kicker">Escolha a resposta correta:</p>
+          <h3 id="quizQuestion">Question</h3>
+          <div class="quiz-options" id="quizOptions"></div>
+          <p class="quiz-feedback" id="quizFeedback" hidden></p>
+          <div class="modal-actions quiz-actions">
+            <button class="secondary-button" id="quizCancel" type="button">Cancelar</button>
+            <button class="primary-button" id="quizRetry" type="button" hidden>Outra pergunta</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div class="modal-backdrop challenge-backdrop" id="challengeModal" hidden>
+      <section class="scanner-modal challenge-modal" role="dialog" aria-modal="true" aria-labelledby="challengeTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Conquiste uma figurinha</span><h2 id="challengeTitle">Desafio 3 de 5</h2></div>
+          <button class="icon-button close-modal" id="closeChallenge" type="button" aria-label="Fechar desafio">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+
+        <div class="challenge-play" id="challengePlay">
+          <div class="challenge-hero">
+            <div class="challenge-sticker-shell" id="challengeStickerShell">
+              <img id="challengeSticker" alt="Figurinha do desafio" />
+              <span aria-hidden="true">?</span>
+            </div>
+            <div>
+              <span id="challengeStickerNumber">Figurinha 01</span>
+              <strong>Valendo uma nova figurinha</strong>
+              <small>Responda às 5 perguntas. Com 3 acertos, ela entra no inventário.</small>
+            </div>
+          </div>
+
+          <div class="challenge-status" aria-label="Progresso do desafio">
+            <div><span>Pergunta</span><strong id="challengeProgressText">1 de 5</strong></div>
+            <div class="challenge-dots" id="challengeDots" aria-hidden="true"></div>
+            <div><span>Acertos</span><strong id="challengeScore">0</strong></div>
+          </div>
+
+          <p class="quiz-kicker">Escolha uma alternativa:</p>
+          <h3 id="challengeQuestion">Pergunta</h3>
+          <div class="quiz-options" id="challengeOptions"></div>
+          <p class="quiz-feedback" id="challengeFeedback" hidden></p>
+          <div class="modal-actions challenge-actions">
+            <button class="secondary-button" id="challengeCancel" type="button">Cancelar</button>
+            <button class="primary-button" id="challengeNext" type="button" hidden>Próxima pergunta</button>
+          </div>
+        </div>
+
+        <div class="challenge-result" id="challengeResult" hidden>
+          <div class="challenge-result-badge" id="challengeResultBadge"><span id="challengeResultIcon">★</span></div>
+          <span class="eyebrow" id="challengeResultEyebrow">Desafio concluído</span>
+          <h3 id="challengeResultTitle">Figurinha conquistada!</h3>
+          <p id="challengeResultMessage">Você acertou 3 de 5 perguntas.</p>
+          <div class="challenge-reveal"><img id="challengeResultSticker" alt="Figurinha conquistada" /><strong id="challengeResultLabel">Figurinha 01</strong></div>
+          <div class="modal-actions challenge-result-actions" id="challengeResultActions"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop secret-backdrop" id="secretModal" hidden>
+      <section class="secret-modal" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+        <button class="profile-close" id="closeSecret" type="button" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+        <span class="secret-star" aria-hidden="true">★</span>
+        <span class="eyebrow">World Stars</span>
+        <h2 id="secretTitle">Acesso especial</h2>
+        <form id="secretForm">
+          <label for="secretInput">Digite o código</label>
+          <input id="secretInput" type="text" autocomplete="off" spellcheck="false" />
+          <button class="primary-button full" type="submit">Confirmar</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop profile-backdrop" id="profileModal" hidden>
+      <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileName">
+        <button class="profile-close" id="closeProfile" type="button" aria-label="Fechar perfil">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+        <div class="profile-visual">
+          <span class="profile-star star-one" aria-hidden="true">★</span>
+          <span class="profile-star star-two" aria-hidden="true">✦</span>
+          <div class="profile-sticker-frame"><img id="profileSticker" alt="" /></div>
+        </div>
+        <div class="profile-content">
+          <span class="profile-unlocked"><i>✓</i> Perfil desbloqueado</span>
+          <span class="eyebrow" id="profileNumber">Figurinha 00</span>
+          <h2 id="profileName">Lucas Xavier Nardelli</h2>
+          <p class="profile-role" id="profileRole">Professor de Língua Inglesa</p>
+          <div class="profile-facts">
+            <article class="editable-profile-field"><span>Idade <button class="profile-edit-button" id="editProfileAge" type="button" aria-label="Editar idade">✎</button></span><strong id="profileAge">Não informada</strong></article>
+            <article><span>No álbum</span><strong id="profileLocation">Página 2 · espaço 1</strong></article>
+          </div>
+          <div class="profile-description">
+            <span>Sobre <button class="profile-edit-button" id="editProfileDescription" type="button" aria-label="Editar sobre">✎</button></span>
+            <p id="profileDescription">Professor de Língua Inglesa e idealizador do projeto World Stars 2026.</p>
+          </div>
+          <button class="primary-button full profile-continue" id="profileContinue" type="button">Continuar o álbum</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastIcon">✓</span><p id="toastMessage">Pronto!</p></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+    <audio id="backgroundMusic" src="assets/audio/album-da-copa.mp3" preload="auto" loop></audio>
+    <canvas id="analysisCanvas" width="96" height="144" hidden></canvas>
+  </body>
+</html>
