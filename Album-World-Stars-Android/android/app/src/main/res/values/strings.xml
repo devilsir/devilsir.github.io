@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">World Stars Album</string>
+    <string name="title_activity_main">World Stars Album</string>
+    <string name="package_name">com.timbo.worldstarsalbum</string>
+    <string name="custom_url_scheme">com.timbo.worldstarsalbum</string>
+</resources>

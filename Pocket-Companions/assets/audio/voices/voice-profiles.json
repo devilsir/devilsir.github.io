@@ -1,0 +1,318 @@
+{
+  "apollo": {
+    "species": "cat",
+    "files": {
+      "call": "assets/audio/voices/voice-apollo-call.wav",
+      "happy": "assets/audio/voices/voice-apollo-happy.wav",
+      "calm": "assets/audio/voices/voice-apollo-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "cat",
+      "base": 465,
+      "dur": 0.61,
+      "scale": 0.98,
+      "contour": [
+        [
+          0,
+          0.93
+        ],
+        [
+          0.18,
+          1.18
+        ],
+        [
+          0.55,
+          1.04
+        ],
+        [
+          1,
+          0.72
+        ]
+      ],
+      "trem": 6.1,
+      "breath": 0.025,
+      "rough": 0.01,
+      "chirp": 2,
+      "purr": 27.2,
+      "tone": 168,
+      "warmth": 1.02
+    }
+  },
+  "lilith": {
+    "species": "cat",
+    "files": {
+      "call": "assets/audio/voices/voice-lilith-call.wav",
+      "happy": "assets/audio/voices/voice-lilith-happy.wav",
+      "calm": "assets/audio/voices/voice-lilith-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "cat",
+      "base": 545,
+      "dur": 0.72,
+      "scale": 1.07,
+      "contour": [
+        [
+          0,
+          0.88
+        ],
+        [
+          0.25,
+          1.28
+        ],
+        [
+          0.62,
+          1.12
+        ],
+        [
+          1,
+          0.82
+        ]
+      ],
+      "trem": 7.4,
+      "breath": 0.018,
+      "rough": 0.006,
+      "chirp": 1,
+      "purr": 28.6,
+      "tone": 188,
+      "warmth": 0.96
+    }
+  },
+  "pietro": {
+    "species": "cat",
+    "files": {
+      "call": "assets/audio/voices/voice-pietro-call.wav",
+      "happy": "assets/audio/voices/voice-pietro-happy.wav",
+      "calm": "assets/audio/voices/voice-pietro-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "cat",
+      "base": 365,
+      "dur": 0.68,
+      "scale": 0.9,
+      "contour": [
+        [
+          0,
+          1.02
+        ],
+        [
+          0.16,
+          1.1
+        ],
+        [
+          0.48,
+          0.93
+        ],
+        [
+          1,
+          0.64
+        ]
+      ],
+      "trem": 5.2,
+      "breath": 0.044,
+      "rough": 0.025,
+      "chirp": 2,
+      "purr": 25.8,
+      "tone": 142,
+      "warmth": 1.12
+    }
+  },
+  "bolt": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-bolt-call.wav",
+      "happy": "assets/audio/voices/voice-bolt-happy.wav",
+      "calm": "assets/audio/voices/voice-bolt-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 430,
+      "pattern": [
+        0.155,
+        0.17
+      ],
+      "gaps": [
+        0.09
+      ],
+      "formants": [
+        820,
+        1780,
+        3100
+      ],
+      "noise": 0.39,
+      "rough": 0.022,
+      "growl": 0.0,
+      "happy": 3,
+      "calm": "whine"
+    }
+  },
+  "chica": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-chica-call.wav",
+      "happy": "assets/audio/voices/voice-chica-happy.wav",
+      "calm": "assets/audio/voices/voice-chica-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 285,
+      "pattern": [
+        0.275
+      ],
+      "gaps": [],
+      "formants": [
+        650,
+        1450,
+        2680
+      ],
+      "noise": 0.34,
+      "rough": 0.03,
+      "growl": 0.04,
+      "happy": 2,
+      "calm": "huff"
+    }
+  },
+  "kate": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-kate-call.wav",
+      "happy": "assets/audio/voices/voice-kate-happy.wav",
+      "calm": "assets/audio/voices/voice-kate-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 505,
+      "pattern": [
+        0.12,
+        0.13
+      ],
+      "gaps": [
+        0.065
+      ],
+      "formants": [
+        900,
+        1980,
+        3400
+      ],
+      "noise": 0.32,
+      "rough": 0.015,
+      "growl": 0.0,
+      "happy": 3,
+      "calm": "whine"
+    }
+  },
+  "caramelo": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-caramelo-call.wav",
+      "happy": "assets/audio/voices/voice-caramelo-happy.wav",
+      "calm": "assets/audio/voices/voice-caramelo-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 245,
+      "pattern": [
+        0.22,
+        0.205
+      ],
+      "gaps": [
+        0.13
+      ],
+      "formants": [
+        590,
+        1320,
+        2450
+      ],
+      "noise": 0.41,
+      "rough": 0.038,
+      "growl": 0.07,
+      "happy": 2,
+      "calm": "huff"
+    }
+  },
+  "kiara": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-kiara-call.wav",
+      "happy": "assets/audio/voices/voice-kiara-happy.wav",
+      "calm": "assets/audio/voices/voice-kiara-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 175,
+      "pattern": [
+        0.34
+      ],
+      "gaps": [],
+      "formants": [
+        480,
+        1120,
+        2180
+      ],
+      "noise": 0.46,
+      "rough": 0.048,
+      "growl": 0.14,
+      "happy": 2,
+      "calm": "huff"
+    }
+  },
+  "pacoca": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-pacoca-call.wav",
+      "happy": "assets/audio/voices/voice-pacoca-happy.wav",
+      "calm": "assets/audio/voices/voice-pacoca-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 355,
+      "pattern": [
+        0.18,
+        0.195
+      ],
+      "gaps": [
+        0.105
+      ],
+      "formants": [
+        735,
+        1600,
+        2900
+      ],
+      "noise": 0.3,
+      "rough": 0.021,
+      "growl": 0.02,
+      "happy": 2,
+      "calm": "whine"
+    }
+  },
+  "simba": {
+    "species": "dog",
+    "files": {
+      "call": "assets/audio/voices/voice-simba-call.wav",
+      "happy": "assets/audio/voices/voice-simba-happy.wav",
+      "calm": "assets/audio/voices/voice-simba-calm.wav"
+    },
+    "acousticProfile": {
+      "species": "dog",
+      "base": 315,
+      "pattern": [
+        0.14,
+        0.155,
+        0.18
+      ],
+      "gaps": [
+        0.065,
+        0.09
+      ],
+      "formants": [
+        700,
+        1510,
+        2780
+      ],
+      "noise": 0.37,
+      "rough": 0.028,
+      "growl": 0.03,
+      "happy": 3,
+      "calm": "whine"
+    }
+  }
+}

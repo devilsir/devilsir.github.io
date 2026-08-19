@@ -1,0 +1,55 @@
+/*
+ * Alternating project-card grid
+ * Desktop rhythm: 2 cards / 3 cards / 2 cards / 3 cards / ...
+ * Uses a 12-column base so 2-card and 3-card rows remain mathematically equal.
+ */
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+/* 5-card cycle:
+   01–02 = 2 cards per row
+   03–05 = 3 cards per row
+   then the pattern repeats forever. */
+.projects > .project:nth-child(5n + 1),
+.projects > .project:nth-child(5n + 2) {
+  grid-column: span 6 !important;
+}
+
+.projects > .project:nth-child(5n + 3),
+.projects > .project:nth-child(5n + 4),
+.projects > .project:nth-child(5n + 5) {
+  grid-column: span 4 !important;
+}
+
+/* If the collection ends with only the first card of a 2-card row,
+   keep that final card centered instead of leaving it awkwardly on the left. */
+.projects > .project:last-of-type:nth-child(5n + 1) {
+  grid-column: 4 / span 6 !important;
+}
+
+/* Tablet: prioritize readable card width over the decorative desktop rhythm. */
+@media (max-width: 900px) {
+  .projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .projects > .project,
+  .projects > .project:last-of-type:nth-child(5n + 1) {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Mobile: one card per row. */
+@media (max-width: 620px) {
+  .projects {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects > .project,
+  .projects > .project:last-of-type:nth-child(5n + 1) {
+    grid-column: 1 / -1 !important;
+  }
+}

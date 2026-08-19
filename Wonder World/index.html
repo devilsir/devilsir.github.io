@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070708" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23050506%27/%3E%3Cpath d=%27M14 48 28 14h8l14 34h-9l-3-8H25l-3 8zm14-16h7l-3.5-10z%27 fill=%27%23d13b2f%27/%3E%3C/svg%3E" />
+    <title>ATRAÇÃO FINAL · Construção</title>
+    <style>
+      html, body { width: 100%; height: 100%; margin: 0; background: #050506; overflow: hidden; }
+      #boot-fallback { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; color: #f2ead8; background: radial-gradient(circle at 50% 42%, rgba(120,25,20,.18), transparent 38%), #050506; font-family: "Courier New", monospace; }
+      .boot-fallback-panel { width: min(680px, 88vw); text-align: center; padding: 32px; }
+      .boot-fallback-kicker { color: #b8a98e; letter-spacing: .22em; font-size: 11px; }
+      .boot-fallback-panel h1 { letter-spacing: .25em; font-size: clamp(28px, 6vw, 58px); }
+      .boot-fallback-spinner { width: 42px; height: 42px; margin: 24px auto; border: 2px solid rgba(255,255,255,.14); border-top-color: #d13b2f; border-radius: 50%; animation: bootSpin .9s linear infinite; }
+      @keyframes bootSpin { to { transform: rotate(360deg); } }
+    </style>
+      <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="boot-fallback">
+      <div class="boot-fallback-panel">
+        <div class="boot-fallback-kicker">WONDER WORLD · SISTEMA 1964</div>
+        <h1>ATRAÇÃO FINAL</h1>
+        <div class="boot-fallback-spinner" aria-hidden="true"></div>
+        <p id="boot-status">Preparando a inicialização…</p>
+      </div>
+    </div>
+    <div id="app">
+      <canvas id="game-canvas" aria-label="ATRAÇÃO FINAL"></canvas>
+      <div id="ui-root"></div>
+    </div>
+    
+      <script src="https://cdn.jsdelivr.net/npm/babylonjs@9.15.0/babylon.js"></script>
+    <script type="importmap">{
+  "imports": {
+    "@babylonjs/core/Cameras/camera": "./babylon-shim.js",
+    "@babylonjs/core/Cameras/freeCamera": "./babylon-shim.js",
+    "@babylonjs/core/Events/pointerEvents": "./babylon-shim.js",
+    "@babylonjs/core/Gizmos/gizmoManager": "./babylon-shim.js",
+    "@babylonjs/core/Collisions/collisionCoordinator": "./babylon-shim.js",
+    "@babylonjs/core/Culling/ray": "./babylon-shim.js",
+    "@babylonjs/core/Engines/engine": "./babylon-shim.js",
+    "@babylonjs/core/Layers/highlightLayer": "./babylon-shim.js",
+    "@babylonjs/core/Layers/glowLayer": "./babylon-shim.js",
+    "@babylonjs/core/Lights/directionalLight": "./babylon-shim.js",
+    "@babylonjs/core/Lights/hemisphericLight": "./babylon-shim.js",
+    "@babylonjs/core/Lights/pointLight": "./babylon-shim.js",
+    "@babylonjs/core/Lights/spotLight": "./babylon-shim.js",
+    "@babylonjs/core/Materials/PBR/pbrMaterial": "./babylon-shim.js",
+    "@babylonjs/core/Materials/Textures/dynamicTexture": "./babylon-shim.js",
+    "@babylonjs/core/Materials/Textures/mirrorTexture": "./babylon-shim.js",
+    "@babylonjs/core/Materials/standardMaterial": "./babylon-shim.js",
+    "@babylonjs/core/Maths/math.color": "./babylon-shim.js",
+    "@babylonjs/core/Maths/math.plane": "./babylon-shim.js",
+    "@babylonjs/core/Maths/math.vector": "./babylon-shim.js",
+    "@babylonjs/core/Meshes/abstractMesh": "./babylon-shim.js",
+    "@babylonjs/core/Meshes/mesh": "./babylon-shim.js",
+    "@babylonjs/core/Meshes/meshBuilder": "./babylon-shim.js",
+    "@babylonjs/core/Meshes/thinInstanceMesh": "./babylon-shim.js",
+    "@babylonjs/core/Meshes/transformNode": "./babylon-shim.js",
+    "@babylonjs/core/Particles/particleSystem": "./babylon-shim.js",
+    "@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline": "./babylon-shim.js",
+    "@babylonjs/core/scene": "./babylon-shim.js"
+  }
+}</script>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

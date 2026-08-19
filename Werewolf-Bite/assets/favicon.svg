@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Werewolf Bite crest">
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#24283a"/>
+      <stop offset="1" stop-color="#080910"/>
+    </linearGradient>
+    <linearGradient id="fang" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f3ead8"/>
+      <stop offset="1" stop-color="#a99b82"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#night)" stroke="#b92940" stroke-width="3"/>
+  <path d="M40 13a19 19 0 1 0 9 31 22 22 0 1 1-9-31Z" fill="#9fbce5"/>
+  <path d="M20 31 30 55l5-18 8 15 2-26-13 8Z" fill="url(#fang)" stroke="#ede2cf" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="45" cy="20" r="3" fill="#e13f58"/>
+</svg>

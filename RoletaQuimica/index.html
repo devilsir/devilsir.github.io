@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, minimum-scale=0.5, maximum-scale=5">
+<title>Roleta Química Web</title>
+<link rel="stylesheet" href="./index.css">
+
+<link rel="stylesheet" href="./editmode-v3-style.css" id="editmode-v3-style">
+
+</head>
+<body>
+<div class="viewport"><main id="stage" class="stage">
+  <section id="intro" class="screen active">
+    <img class="bg" id="introBg"><video id="introVideo" class="videoFull" autoplay playsinline></video>
+    <div id="introContent" class="modalArea" style="opacity:0;transition:opacity .2s"></div>
+  </section>
+  <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div></section>
+  <section id="transition" class="screen"><video id="transitionVideo" class="videoFull" playsinline></video></section>
+  <section id="game" class="screen"><img class="bg contain" data-a="xicara de cima.png"><div id="scoreboard" class="gameScore"></div><div class="wheelArea"><div id="wheelWrap" class="wheelWrap"><canvas id="wheelCanvas" width="1040" height="1040"></canvas><button id="spinBtn" class="kbtn" style="left:210px;top:210px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div><button id="gameBack" class="kbtn" style="right:22px;top:0;width:180px;height:80px"><img data-a="setavoltar.png"></button></div><div id="instruction" class="instruction"><img data-a="setadica.png" style="position:absolute;left:728px;top:304px;width:100px;height:100px"><div class="outlinedText">Clique para girar</div><button id="spinBtn2" class="kbtn" style="left:670px;top:385px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div></section>
+  <section id="addedit" class="screen"><img class="bg" data-a="fundo generico.jpg"><div id="addEditContent" class="scroll kvScroll" style="position:absolute;inset:0;padding:10px"></div></section>
+  <section id="list" class="screen"><img class="bg" data-a="listarperguntas.jpg"><div id="listControls" class="modalArea"></div><div id="questionList" class="scroll kvScroll" style="position:absolute;left:0;bottom:176px;width:1366px;height:176px;padding:0 8px"></div></section>
+  <section id="predef" class="screen"><img class="bg" data-a="fundo generico2.jpg"><div id="predefControls" class="modalArea"></div><div id="predefQuestions" class="scroll kvScroll" style="position:absolute;left:34px;top:247px;width:1298px;height:353px;padding:10px"></div></section>
+  <section id="history" class="screen"><div class="historyRoot"><div style="height:48px"><button id="histBack" class="nativeBtn" style="width:120px;height:48px;text-align:center">Voltar</button></div><div id="histList" class="scroll" style="flex:1"></div></div></section>
+  <section id="credits" class="screen"><img class="bg" data-a="fundo_creditos.png"><div class="creditTitle">Créditos</div><div id="creditsBox" class="creditBox"></div><button id="creditsBack" class="kbtn" style="left:27px;top:35px;width:60px;height:60px"><img data-a="setavoltar.png"></button></section>
+  <div id="overlay" class="overlay"><div id="popupHost"></div></div>
+
+  <div id="mobileRotateOverlay" class="mobileRotateOverlay">
+    <div class="rotateCard">
+      <div class="rotateIcon">↻</div>
+      <h2>Vire o celular</h2>
+      <p>Para jogar melhor, use o dispositivo na horizontal. A roleta e os popups foram pensados para esse formato.</p>
+      <button id="forcePortraitBtn" type="button">Continuar mesmo assim</button>
+      <button id="fullscreenMobileBtn" type="button">Tela cheia</button>
+    </div>
+  </div>
+
+  <div id="mobileScrollSpacer" class="mobileScrollSpacer"></div>
+  <div id="toast" class="toast"></div>
+</main></div>
+<script src="./payload.js"></script>
+<script src="./index.js"></script>
+</main></div>
+</body>
+</html>

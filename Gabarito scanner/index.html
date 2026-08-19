@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#10131a" />
+    <meta
+      name="description"
+      content="Leitor OMR de folhas de respostas com correção de perspectiva, confiança e revisão manual."
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <meta name="application-name" content="OMR Scanner" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="OMR Scanner" />
+    <title>Leitor OMR ENEM</title>
+    <script type="module" crossorigin src="./assets/index-OMRfix6.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-RXXbEzxx.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Leitor OMR — início">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><b>OMR</b><em>/SCAN</em></span>
+        </a>
+        <div class="engine-state" id="engineState" role="status" aria-live="polite">
+          <span class="state-dot is-loading"></span>
+          <span>Preparando visão computacional</span>
+        </div>
+        <button class="ghost-button compact" id="installAppButton" type="button" hidden>
+          Instalar app
+        </button>
+        <button class="ghost-button compact" id="newScanButton" type="button" hidden>
+          Nova leitura
+        </button>
+      </header>
+
+      <nav class="stepper" aria-label="Etapas da leitura">
+        <button class="step is-active" data-step="upload" type="button">
+          <span>01</span><b>Foto</b>
+        </button>
+        <i></i>
+        <button class="step" data-step="crop" type="button" disabled>
+          <span>02</span><b>Recorte</b>
+        </button>
+        <i></i>
+        <button class="step" data-step="recognition" type="button" disabled>
+          <span>03</span><b>Leitura</b>
+        </button>
+        <i></i>
+        <button class="step" data-step="review" type="button" disabled>
+          <span>04</span><b>Revisão</b>
+        </button>
+      </nav>
+
+      <main>
+        <section class="screen is-active" id="uploadScreen" aria-labelledby="uploadTitle">
+          <div class="intro-copy">
+            <p class="eyebrow">Leitura óptica baseada na imagem</p>
+            <h1 id="uploadTitle">A folha fala.<br /><span>A gente mede a evidência.</span></h1>
+            <p>
+              Fotografe o gabarito inteiro. O sistema corrige a perspectiva, encontra as bolhas impressas e
+              sinaliza o que realmente precisa de revisão.
+            </p>
+          </div>
+
+          <div class="upload-layout">
+            <article class="drop-card" id="dropZone">
+              <input id="fileInput" type="file" accept="image/*" hidden />
+              <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden />
+              <div class="scanner-glyph" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><i></i>
+              </div>
+              <div>
+                <p class="eyebrow">Começar leitura</p>
+                <h2>Solte a foto aqui</h2>
+                <p>JPG, PNG ou HEIC compatível com o navegador. A folha deve aparecer inteira.</p>
+              </div>
+              <div class="upload-actions">
+                <button class="primary-button" id="chooseFileButton" type="button">Escolher foto</button>
+                <button class="secondary-button" id="cameraButton" type="button">Usar câmera</button>
+              </div>
+              <button class="text-button" id="demoButton" type="button">Testar com folha de demonstração</button>
+            </article>
+
+            <aside class="setup-card">
+              <div class="card-heading">
+                <div>
+                  <p class="eyebrow">Configuração da prova</p>
+                  <h2>Estrutura esperada</h2>
+                </div>
+                <span class="badge">Editável</span>
+              </div>
+
+              <div class="field-grid three-columns">
+                <label class="field">
+                  <span>Questões</span>
+                  <input id="questionCount" type="number" min="1" max="180" value="50" inputmode="numeric" />
+                </label>
+                <label class="field">
+                  <span>Alternativas</span>
+                  <select id="optionCount">
+                    <option value="4">A–D</option>
+                    <option value="5" selected>A–E</option>
+                    <option value="6">A–F</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Valor da prova</span>
+                  <input id="maxGrade" type="number" min="0.1" max="1000" step="0.1" value="10" inputmode="decimal" />
+                </label>
+              </div>
+              <p class="grade-preview" id="pointsPerQuestionHint">Cada questão vale 0,20 ponto.</p>
+
+              <label class="field">
+                <span>Modo de estrutura</span>
+                <select id="recognitionMode">
+                  <option value="auto" selected>Detectar bolhas automaticamente</option>
+                  <option value="template" disabled>Modelo salvo — nenhum disponível</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Ordem em páginas com colunas</span>
+                <select id="readingOrder">
+                  <option value="columns" selected>Coluna por coluna</option>
+                  <option value="rows">Linha por linha</option>
+                </select>
+              </label>
+
+              <label class="field answer-key-field">
+                <span>Gabarito oficial</span>
+                <textarea
+                  id="answerKeyInput"
+                  rows="7"
+                  spellcheck="false"
+                  placeholder="1 A&#10;2 C&#10;3 E&#10;4 B&#10;5 D&#10;11 --"
+                ></textarea>
+                <small id="answerKeyHint">Aceita linhas numeradas, sequência “A C E B D” ou array JSON. Use “--” para questão anulada (ex.: 11 --).</small>
+              </label>
+            </aside>
+          </div>
+
+          <div class="trust-strip" aria-label="Recursos do sistema">
+            <span><i>01</i> Homografia real</span>
+            <span><i>02</i> Calibração por folha</span>
+            <span><i>03</i> Confiança por questão</span>
+            <span><i>04</i> Correção manual</span>
+          </div>
+        </section>
+
+        <section class="screen" id="cropScreen" aria-labelledby="cropTitle">
+          <div class="screen-heading">
+            <div>
+              <p class="eyebrow">Etapa 02 · Recorte geométrico</p>
+              <h1 id="cropTitle">Confirme os quatro cantos da folha</h1>
+              <p>Os pontos ficam presos aos pixels da imagem, mesmo quando o visualizador muda de tamanho.</p>
+            </div>
+            <div class="confidence-chip" id="documentConfidence">
+              <span></span>
+              <div><small>Detecção da página</small><b>—</b></div>
+            </div>
+          </div>
+
+          <div class="crop-workspace">
+            <div class="editor-card">
+              <div class="toolbar" aria-label="Controles do recorte">
+                <button class="tool-button" id="rotateLeftButton" type="button" title="Girar 90° à esquerda">
+                  ↶ <span>Girar</span>
+                </button>
+                <button class="tool-button" id="rotateRightButton" type="button" title="Girar 90° à direita">
+                  ↷ <span>Girar</span>
+                </button>
+                <button class="tool-button" id="redetectButton" type="button">⌁ <span>Redetectar</span></button>
+                <button class="tool-button" id="resetCornersButton" type="button">↺ <span>Resetar</span></button>
+                <span class="toolbar-spacer"></span>
+                <span class="toolbar-note">Arraste as alças verdes</span>
+              </div>
+              <div class="crop-viewport" id="cropViewport">
+                <div class="canvas-stack crop-canvas-stack" id="cropCanvasStack">
+                  <canvas id="sourceCanvas"></canvas>
+                  <canvas id="cropOverlayCanvas"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <aside class="crop-aside">
+              <div class="mini-guide">
+                <p class="eyebrow">Para uma leitura forte</p>
+                <ol>
+                  <li><span>1</span> Inclua todas as bolhas.</li>
+                  <li><span>2</span> Encoste os pontos nos cantos do papel.</li>
+                  <li><span>3</span> Evite cortar a última linha.</li>
+                </ol>
+              </div>
+              <div class="warning-box" id="documentWarning" hidden></div>
+              <button class="primary-button wide" id="confirmCropButton" type="button">
+                Corrigir perspectiva e ler
+              </button>
+              <button class="text-button wide" id="backToUploadButton" type="button">Trocar fotografia</button>
+            </aside>
+          </div>
+        </section>
+
+        <section class="screen" id="processingScreen" aria-labelledby="processingTitle">
+          <div class="processing-card">
+            <div class="processing-visual" aria-hidden="true">
+              <div class="sheet-lines"><i></i><i></i><i></i><i></i><i></i></div>
+              <span></span>
+            </div>
+            <p class="eyebrow">Visão computacional em execução</p>
+            <h1 id="processingTitle">Lendo a estrutura da folha</h1>
+            <p id="processingStage">Preparando imagem…</p>
+            <div class="progress-track"><i id="processingProgress"></i></div>
+            <small id="processingDetail">Nenhuma resposta será forçada quando a evidência for fraca.</small>
+          </div>
+        </section>
+
+        <section class="screen" id="resultsScreen" aria-labelledby="resultsTitle">
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow">Etapa 04 · Resultado auditável</p>
+              <h1 id="resultsTitle">Leitura concluída</h1>
+              <p id="resultLead">Revise as marcações destacadas antes de fechar a nota.</p>
+            </div>
+            <div class="score-lockup">
+              <small id="gradeLabel">Nota final</small>
+              <strong id="gradeScore">— / 10,00</strong>
+              <div class="score-breakdown">
+                <span id="scoreFraction">— / — acertos</span>
+                <span id="scorePercent">—%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-grid" id="metricGrid">
+            <article class="metric correct"><span>Corretas</span><b id="correctCount">0</b></article>
+            <article class="metric incorrect"><span>Incorretas</span><b id="incorrectCount">0</b></article>
+            <article class="metric blank"><span>Em branco</span><b id="blankCount">0</b></article>
+            <article class="metric multiple"><span>Múltiplas</span><b id="multipleCount">0</b></article>
+            <article class="metric ambiguous"><span>Revisar</span><b id="ambiguousCount">0</b></article>
+            <article class="metric annulled"><span>Anuladas</span><b id="annulledCount">0</b></article>
+          </div>
+
+          <details class="result-key-card" id="resultKeyCard">
+            <summary>
+              <span>
+                <small>Gabarito oficial</small>
+                <strong id="resultKeyStatus">Pronto para calcular a nota</strong>
+              </span>
+              <span class="result-key-action">Editar</span>
+            </summary>
+            <div class="result-key-editor">
+              <label class="field" for="resultAnswerKeyInput">
+                <span>Respostas corretas</span>
+                <textarea
+                  id="resultAnswerKeyInput"
+                  rows="5"
+                  spellcheck="false"
+                  placeholder="1 A&#10;2 C&#10;3 D&#10;4 B&#10;11 --"
+                ></textarea>
+              </label>
+              <div class="result-key-footer">
+                <small id="resultAnswerKeyHint">Edite o gabarito e recalcule sem repetir a leitura. Use “--” para anular uma questão.</small>
+                <div class="result-key-buttons">
+                  <button class="text-button" id="useDetectedAsKeyButton" type="button">Esta folha é o gabarito mestre</button>
+                  <button class="secondary-button" id="applyResultKeyButton" type="button">Aplicar e recalcular</button>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="results-workspace">
+            <article class="viewer-card">
+              <div class="toolbar viewer-toolbar">
+                <div class="segmented-control" aria-label="Camada visual">
+                  <button class="is-active" data-view-layer="rectified" type="button">Folha</button>
+                  <button data-view-layer="normalized" type="button">Contraste</button>
+                  <button data-view-layer="threshold" type="button">Limiar</button>
+                </div>
+                <span class="toolbar-spacer"></span>
+                <button class="tool-button icon-only" id="zoomOutButton" type="button" aria-label="Diminuir zoom">−</button>
+                <button class="tool-button zoom-value" id="zoomFitButton" type="button">Ajustar</button>
+                <button class="tool-button zoom-value" id="zoom100Button" type="button">100%</button>
+                <button class="tool-button icon-only" id="zoomInButton" type="button" aria-label="Aumentar zoom">＋</button>
+              </div>
+              <div class="viewer-viewport" id="viewerViewport">
+                <div class="zoom-stage" id="zoomStage">
+                  <canvas id="rectifiedCanvas"></canvas>
+                  <canvas id="resultOverlayCanvas"></canvas>
+                </div>
+              </div>
+              <div class="viewer-footer">
+                <span id="zoomReadout">Ajustado</span>
+                <span>Role para zoom · arraste para mover · toque numa bolha para corrigir</span>
+              </div>
+            </article>
+
+            <aside class="review-panel">
+              <div class="review-header">
+                <div>
+                  <p class="eyebrow">Questão por questão</p>
+                  <h2>Revisão</h2>
+                </div>
+                <label class="toggle-label">
+                  <input id="uncertainOnlyToggle" type="checkbox" />
+                  <span></span>
+                  Só incertas
+                </label>
+              </div>
+              <div class="question-list" id="questionList"></div>
+            </aside>
+          </div>
+
+          <div class="analysis-grid">
+            <article class="quality-card">
+              <div class="quality-score"><strong id="qualityScore">—%</strong><span>qualidade da leitura</span></div>
+              <div class="quality-bars" id="qualityBars"></div>
+              <ul class="diagnostic-list" id="diagnosticList"></ul>
+            </article>
+
+            <article class="debug-card">
+              <div class="card-heading">
+                <div>
+                  <p class="eyebrow">Auditoria visual</p>
+                  <h2>Modo de depuração</h2>
+                </div>
+                <label class="switch">
+                  <input id="debugToggle" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+              <div class="debug-options" id="debugOptions" aria-disabled="true">
+                <label><input type="checkbox" data-debug="rows" checked /> Linhas</label>
+                <label><input type="checkbox" data-debug="bubbles" checked /> Elipses</label>
+                <label><input type="checkbox" data-debug="centers" /> Centros</label>
+                <label><input type="checkbox" data-debug="scores" /> Scores</label>
+                <label><input type="checkbox" data-debug="inferred" checked /> Inferidos</label>
+              </div>
+              <p id="geometrySummary">Aguardando modelo geométrico.</p>
+            </article>
+          </div>
+
+          <div class="result-actions">
+            <button class="secondary-button" id="saveTemplateButton" type="button">Salvar este layout como modelo</button>
+            <button class="secondary-button" id="exportJsonButton" type="button">Exportar dados JSON</button>
+            <button class="primary-button" id="finishButton" type="button">Finalizar revisão</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="review-sheet" id="reviewSheet" role="dialog" aria-modal="true" aria-labelledby="reviewSheetTitle" hidden>
+      <button class="review-backdrop" id="reviewBackdrop" type="button" aria-label="Fechar revisão"></button>
+      <div class="review-sheet-panel">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="review-sheet-heading">
+          <div>
+            <p class="eyebrow" id="reviewSheetMeta">Revisão manual</p>
+            <h2 id="reviewSheetTitle">Questão —</h2>
+          </div>
+          <button class="close-button" id="closeReviewButton" type="button" aria-label="Fechar">×</button>
+        </div>
+        <div class="bubble-evidence" id="bubbleEvidence"></div>
+        <p class="review-help">Escolha a resposta final. A leitura original continua salva para auditoria.</p>
+        <div class="manual-options" id="manualOptions"></div>
+        <button class="text-button wide" id="clearOverrideButton" type="button">Usar novamente a resposta detectada</button>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="./pwa.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+@keyframes floatSignal {0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+@keyframes pulseRing {0%{transform:scale(.88);opacity:.72}70%,100%{transform:scale(1.22);opacity:0}}
+@keyframes scanLine {0%{transform:translateY(-110%)}100%{transform:translateY(110vh)}}
+@keyframes revealUp {from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes shimmer {0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes glitchX {0%,92%,100%{transform:none;filter:none}93%{transform:translateX(-2px);filter:hue-rotate(40deg)}95%{transform:translateX(3px)}97%{transform:translateX(-1px)}}
+@keyframes correctPop {0%{transform:scale(.96)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shakeSoft {0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes orbit {to{transform:rotate(360deg)}}
+@keyframes barGrow {from{width:0}}
+.reveal{animation:revealUp .45s cubic-bezier(.2,.8,.2,1) both}
+.glitch-title{animation:glitchX 5s infinite}
+.correct-pop{animation:correctPop .35s ease}
+.shake-soft{animation:shakeSoft .28s ease}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}

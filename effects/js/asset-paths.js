@@ -1,0 +1,244 @@
+window.ASSET_PATHS = {
+  modelCatalog: [
+    {
+      key: 'lucas',
+      label: 'Lucas',
+      path: './assets/models/lucas.glb',
+      character: 'lucas',
+      rotationY: -Math.PI / 2
+    },
+    {
+      key: 'devilsir_wow',
+      label: 'Devilsir (World of Warcraft)',
+      path: './assets/models/devilsir_world_of_warcraft.glb',
+      character: 'devilsir',
+      variant: 'world_of_warcraft',
+      rotationY: -Math.PI / 2
+    },
+    {
+      key: 'devilsir_runescape',
+      label: 'Devilsir (Runescape)',
+      path: './assets/models/devilsir_runescape.glb',
+      character: 'devilsir',
+      variant: 'runescape',
+      rotationY: 0,
+      fitBounds: 'skeleton',
+      fitTargetHeight: 1.0,
+      runescapeStaffRoot: 'root_51',
+      runescapeStaffHandAnchor: 'root_151',
+      animationLabels: {
+        'Runescape - Animação original': 'Runescape - Animação original',
+        'Runescape - Walk curto': 'Runescape - Walk curto',
+        'Runescape - Run curto': 'Runescape - Run curto',
+        'Runescape - Run rápido': 'Runescape - Run rápido'
+      },
+      animationSources: [
+        {
+          path: './assets/models/devilsir_runescape_walk.glb',
+          label: 'Runescape - Walk',
+          clipLabels: [null, 'Runescape - Walk curto'],
+          skipClipIndexes: [0],
+          protectRunescapeStaff: true
+        },
+        {
+          path: './assets/models/devilsir_runescape_run.glb',
+          label: 'Runescape - Run',
+          clipLabels: [null, 'Runescape - Run curto', 'Runescape - Run rápido'],
+          skipClipIndexes: [0],
+          protectRunescapeStaff: true
+        }
+      ]
+    }
+  ],
+  petCatalog: [
+    {
+      key: 'none',
+      label: 'Sem pet',
+      pets: []
+    },
+    {
+      key: 'apollo',
+      label: 'Apollo',
+      pets: ['apollo']
+    },
+    {
+      key: 'lilith',
+      label: 'Lilith',
+      pets: ['lilith']
+    },
+    {
+      key: 'pietro',
+      label: 'Pietro',
+      pets: ['pietro']
+    },
+    {
+      key: 'bolt',
+      label: 'Bolt',
+      pets: ['bolt']
+    },
+    {
+      key: 'caramelo',
+      label: 'Caramelo',
+      pets: ['caramelo']
+    },
+    {
+      key: 'chica',
+      label: 'Chica',
+      pets: ['chica']
+    },
+    {
+      key: 'kate',
+      label: 'Kate',
+      pets: ['kate']
+    },
+    {
+      key: 'kiara',
+      label: 'Kiara',
+      pets: ['kiara']
+    },
+    {
+      key: 'pacoca',
+      label: 'Paçoca',
+      pets: ['pacoca']
+    },
+    {
+      key: 'simba',
+      label: 'Simba',
+      pets: ['simba']
+    },
+    {
+      key: 'apollo_lilith',
+      label: 'Apollo + Lilith',
+      pets: ['apollo', 'lilith']
+    },
+    {
+      key: 'apollo_pietro',
+      label: 'Apollo + Pietro',
+      pets: ['apollo', 'pietro']
+    },
+    {
+      key: 'lilith_pietro',
+      label: 'Lilith + Pietro',
+      pets: ['lilith', 'pietro']
+    },
+    {
+      key: 'all_pets',
+      label: 'Todos os pets',
+      pets: ['apollo', 'lilith', 'pietro', 'bolt', 'caramelo', 'chica', 'kate', 'kiara', 'pacoca', 'simba']
+    }
+  ],
+  pets: {
+    apollo: {
+      label: 'Apollo',
+      path: './assets/models/apollo_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.035,
+      targetHeight: 0.34,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    lilith: {
+      label: 'Lilith',
+      path: './assets/models/lilith_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.035,
+      targetHeight: 0.31,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    pietro: {
+      label: 'Pietro',
+      path: './assets/models/pietro_todas_animacoes.glb',
+      side: 'center',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.32,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    bolt: {
+      label: 'Bolt',
+      path: './assets/models/bolt_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.39,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    caramelo: {
+      label: 'Caramelo',
+      path: './assets/models/caramelo_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    chica: {
+      label: 'Chica',
+      path: './assets/models/chica_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.46,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    kate: {
+      label: 'Kate',
+      path: './assets/models/kate_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.39,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    kiara: {
+      label: 'Kiara',
+      path: './assets/models/kiara_todas_animacoes.glb',
+      side: 'left',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    pacoca: {
+      label: 'Paçoca',
+      path: './assets/models/pacoca_todas_animacoes.glb',
+      side: 'right',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.5,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    },
+    simba: {
+      label: 'Simba',
+      path: './assets/models/simba_todas_animacoes.glb',
+      side: 'center',
+      placement: 'nearModel',
+      gap: 0.04,
+      targetHeight: 0.52,
+      position: { y: 0, z: 0 },
+      rotationY: 0
+    }
+  },
+  models: {
+    lucas: './assets/models/lucas.glb',
+    devilsir_wow: './assets/models/devilsir_world_of_warcraft.glb',
+    devilsir_runescape: './assets/models/devilsir_runescape.glb',
+    devilsir_runescape_walk: './assets/models/devilsir_runescape_walk.glb',
+    devilsir_runescape_run: './assets/models/devilsir_runescape_run.glb',
+    devilsir: './assets/models/devilsir_world_of_warcraft.glb',
+    sword: './assets/models/sword.glb'
+  },
+  textures: {
+    lava: './assets/lava_texture.png'
+  }
+};

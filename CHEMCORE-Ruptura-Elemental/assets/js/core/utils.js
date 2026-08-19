@@ -1,0 +1,25 @@
+(function(){
+ const C=window.ChemCore=window.ChemCore||{};
+ const U=C.Utils={};
+ U.clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ U.lerp=(a,b,t)=>a+(b-a)*t;
+ U.invLerp=(a,b,v)=>a===b?0:(v-a)/(b-a);
+ U.rects=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+ U.distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+ U.escape=s=>String(s??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+ U.formatTime=s=>{s=Math.max(0,Math.floor(s||0));const m=Math.floor(s/60),r=s%60;return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`};
+ U.formatDate=d=>new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium',timeStyle:'short'}).format(d instanceof Date?d:new Date(d));
+ U.id=prefix=>`${prefix||'id'}-${Math.random().toString(36).slice(2,9)}`;
+ U.seeded=seed=>{let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}};
+ U.hash=s=>{let h=2166136261;for(const ch of String(s)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)};
+ U.download=(filename,text,type='application/json')=>{const blob=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)};
+ U.csvCell=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+ U.shuffle=(arr,rng=Math.random)=>{const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+ U.debounce=(fn,ms=200)=>{let t;return(...args)=>{clearTimeout(t);t=setTimeout(()=>fn(...args),ms)}};
+ U.safeJSON=(text,fallback)=>{try{return JSON.parse(text)}catch{return fallback}};
+ U.chemicalHTML=s=>U.escape(s).replace(/([A-Za-z\)])(\d+)/g,'$1<sub>$2</sub>').replace(/\^(\d*[+-])/g,'<sup>$1</sup>');
+ U.modeLabel={electron:'Pulso Eletrônico',proton:'Âncora de Prótons',thermal:'Carga Térmica',neutralization:'Campo de Neutralização',scanner:'Scanner Molecular',catalyst:'Dash Catalítico'};
+ U.modeColor={electron:'#27e4ff',proton:'#b05cff',thermal:'#ffb12f',neutralization:'#b7ff39',scanner:'#ff4fd8',catalyst:'#3ae0c3'};
+ U.actionLabel={left:'Mover à esquerda',right:'Mover à direita',jump:'Pular / pulo duplo / salto na parede',dash:'Dash Catalítico',fire:'Atirar com o Modulador',interact:'Interagir / Scanner',pause:'Pausar',mode1:'Modo 1',mode2:'Modo 2',mode3:'Modo 3',mode4:'Modo 4',mode5:'Modo 5'};
+ U.keyName=code=>({Space:'Espaço',ArrowLeft:'←',ArrowRight:'→',ArrowUp:'↑',ArrowDown:'↓',Escape:'Esc',ShiftLeft:'Shift',ShiftRight:'Shift',KeyA:'A',KeyD:'D',KeyJ:'J',KeyE:'E',KeyP:'P',Digit1:'1',Digit2:'2',Digit3:'3',Digit4:'4',Digit5:'5'}[code]||code.replace('Key','').replace('Digit',''));
+})();

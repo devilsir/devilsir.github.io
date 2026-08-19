@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#667456" />
+    <meta name="description" content="Álbum digital Recordações em Família com 64 figurinhas e desafios." />
+    <title>Recordações em Família — Álbum Digital</title>
+    <link rel="icon" type="image/webp" href="assets/app-icon.webp" />
+    <link rel="stylesheet" href="app.css" />
+    <script defer src="recordacoes-core.js"></script>
+    <script defer src="supabase-config.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <header class="topbar">
+        <button class="brand" id="brandButton" type="button" aria-label="Voltar para a capa">
+          <img src="assets/app-icon.webp" alt="" />
+          <span><strong>Recordações</strong><small>Álbum de família · 2026</small></span>
+        </button>
+
+        <nav class="desktop-nav" aria-label="Navegação principal">
+          <button class="nav-pill is-active" data-view="album" type="button">
+            <span aria-hidden="true">▤</span> Álbum
+          </button>
+          <button class="nav-pill" data-view="challenges" type="button">
+            <span aria-hidden="true">◇</span> Desafios
+          </button>
+          <button class="nav-pill daily-nav-pill" data-view="daily" type="button">
+            <span aria-hidden="true">☀</span> Diários
+          </button>
+          <button class="nav-pill free-nav-pill" data-view="free" type="button">
+            <span aria-hidden="true">✦</span> Desafio Livre
+          </button>
+          <button class="nav-pill" data-view="ranking" type="button">
+            <span aria-hidden="true">♛</span> Ranking
+          </button>
+          <button class="nav-pill" data-view="inventory" type="button">
+            <span aria-hidden="true">▦</span> Inventário
+          </button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="progress-chip" id="progressChip" type="button" aria-label="Abrir inventário">
+            <span class="mini-progress" id="miniProgress"><i>0</i></span>
+            <span><strong id="headerProgress">0/64</strong><small>liberadas</small></span>
+          </button>
+          <div class="music-control" id="musicControl">
+            <button class="icon-button" id="musicButton" type="button" aria-label="Abrir controle de volume" title="Controle de volume">♫</button>
+            <div class="volume-popover" id="volumePopover" hidden>
+              <label for="musicVolume"><span>Volume</span><strong id="musicVolumeLabel">35%</strong></label>
+              <input id="musicVolume" name="musicVolume" type="range" min="0" max="100" value="35" step="1" />
+            </div>
+          </div>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="Abrir configurações e saves" title="Configurações">⚙</button>
+          <button class="icon-button" id="resetButton" type="button" aria-label="Recomeçar álbum" title="Recomeçar">↻</button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section class="view album-view is-active" id="albumView" aria-labelledby="albumTitle">
+          <div class="album-column">
+            <div class="section-heading compact-heading">
+              <div><span class="eyebrow" id="pageEyebrow">Capa</span><h1 id="albumTitle">Meu álbum</h1></div>
+              <div class="page-heading-actions">
+                <button class="soft-button" id="fullscreenPage" type="button" aria-label="Abrir página em tela cheia">⛶ <span>Tela cheia</span></button>
+                <span class="page-counter" id="pageCounter">1 / 12</span>
+              </div>
+            </div>
+
+            <div class="album-navigator">
+              <button class="page-arrow previous" id="previousPage" type="button" aria-label="Página anterior">‹</button>
+              <div class="page-wrap" id="pageWrap">
+                <div class="page-loading" id="pageLoading"><span></span><span></span><span></span></div>
+                <img id="albumPage" alt="" draggable="false" />
+                <div class="interactive-layer" id="interactiveLayer" aria-live="polite"></div>
+                <button class="fullscreen-exit" id="exitFullscreen" type="button">Fechar tela cheia</button>
+              </div>
+              <button class="page-arrow next" id="nextPage" type="button" aria-label="Próxima página">›</button>
+            </div>
+            <div class="page-strip" id="pageStrip" aria-label="Escolher página"></div>
+          </div>
+
+          <aside class="collection-panel">
+            <article class="panel-card progress-card">
+              <div class="progress-ring" id="progressRing"><span><strong id="progressPercent">0%</strong><small>completo</small></span></div>
+              <div><span class="eyebrow light">Nossa coleção</span><h2><span id="unlockedCount">0</span> de 64</h2><p><span id="placedCount">0</span> coladas no álbum</p></div>
+            </article>
+
+            <article class="panel-card challenge-card-main">
+              <span class="spark" aria-hidden="true">✦</span>
+              <span class="eyebrow">Escolha sua lembrança</span>
+              <h2>Resolva, libere e cole</h2>
+              <p>Todos os 64 desafios estão disponíveis. Escolha qualquer um para jogar.</p>
+              <button class="primary-button full" id="nextChallenge" type="button">Escolher um desafio</button>
+              <div class="offline-note">● Progresso salvo neste aparelho</div>
+            </article>
+
+            <article class="panel-card mini-inventory">
+              <div class="card-title-row"><div><span class="eyebrow">Prontas para colar</span><h2>Inventário</h2></div><button class="text-button" data-view="inventory" type="button">Ver todas</button></div>
+              <div class="mini-grid" id="miniInventory"></div>
+            </article>
+          </aside>
+        </section>
+
+        <section class="view challenges-view" id="challengesView" aria-labelledby="challengesTitle">
+          <div class="section-heading inventory-heading">
+            <div><span class="eyebrow">64 figurinhas · 64 jogos</span><h1 id="challengesTitle">Desafios da família</h1><p>Há quebra-cabeças, memória, cobrinha, blocos, trilhas de bolinhas e outras surpresas.</p></div>
+            <button class="primary-button" id="continueChallenge" type="button">Escolher qualquer desafio</button>
+          </div>
+
+          <div class="inventory-stats">
+            <article><span class="stat-icon terracotta">◇</span><div><strong id="statSolved">0</strong><small>desafios vencidos</small></div></article>
+            <article><span class="stat-icon green">✓</span><div><strong id="statPlaced">0</strong><small>figurinhas coladas</small></div></article>
+            <article><span class="stat-icon gold">♡</span><div><strong id="statMissing">64</strong><small>lembranças faltando</small></div></article>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filtrar desafios">
+              <button class="is-active" data-challenge-filter="all" type="button">Todos</button>
+              <button data-challenge-filter="locked" type="button">Para jogar</button>
+              <button data-challenge-filter="available" type="button">Vencidos</button>
+              <button data-challenge-filter="placed" type="button">Colados</button>
+            </div>
+            <span id="filterCount">64 desafios</span>
+          </div>
+          <div class="challenge-grid" id="challengeGrid"></div>
+        </section>
+
+        <section class="view daily-view" id="dailyView" aria-labelledby="dailyTitle">
+          <div class="daily-hero">
+            <div class="daily-hero-copy">
+              <span class="free-kicker">☀ Uma nova seleção por dia</span>
+              <h1 id="dailyTitle">Desafios Diários</h1>
+              <p>Três partidas determinísticas para toda a família. O jogo do dia fica congelado enquanto você estiver jogando.</p>
+              <div class="daily-countdown" aria-live="polite">
+                <span>Próxima rotação em</span>
+                <strong id="dailyCountdown">00:00:00</strong>
+                <small id="dailyDateLabel">Horário de São Paulo</small>
+              </div>
+            </div>
+            <div class="daily-streak-card">
+              <span class="daily-streak-flame" aria-hidden="true">✦</span>
+              <div><small>Sequência atual</small><strong><b id="dailyStreak">0</b> dias</strong><span id="dailyGrace">1 dia de proteção disponível</span></div>
+            </div>
+          </div>
+
+          <div class="daily-state-bar">
+            <div><span class="sync-dot"></span><strong id="dailyStatus">Preparando os desafios de hoje…</strong></div>
+            <button class="soft-button" id="dailyRefresh" type="button">↻ <span>Atualizar placar</span></button>
+          </div>
+
+          <div class="daily-grid" id="dailyGrid"></div>
+
+          <section class="daily-rewards" aria-labelledby="dailyRewardsTitle">
+            <div class="daily-section-heading">
+              <div><span class="eyebrow">Presenças da semana</span><h2 id="dailyRewardsTitle">Trilha de 7 dias</h2><p>Complete os três desafios para liberar o presente do dia. Nenhuma recompensa altera a dificuldade.</p></div>
+              <button class="primary-button" id="claimDailyReward" type="button" disabled>Recompensa indisponível</button>
+            </div>
+            <div class="daily-reward-track" id="dailyRewardTrack"></div>
+          </section>
+
+          <section class="daily-leaderboard" aria-labelledby="dailyLeaderboardTitle">
+            <div class="daily-section-heading">
+              <div><span class="eyebrow">Recordes de hoje</span><h2 id="dailyLeaderboardTitle">Placar diário</h2></div>
+              <label><span>Desafio</span><select id="dailyLeaderboardSelect" name="dailyLeaderboardSelect" aria-label="Escolher desafio diário do placar"></select></label>
+            </div>
+            <div class="daily-ranking-status" id="dailyRankingStatus" role="status">Seu recorde local aparecerá aqui.</div>
+            <div class="daily-ranking-list" id="dailyRankingList"></div>
+          </section>
+        </section>
+
+        <section class="view free-view" id="freeView" aria-labelledby="freeTitle">
+          <div class="free-hero">
+            <div class="free-hero-copy">
+              <span class="free-kicker">✦ Modo sem limites</span>
+              <h1 id="freeTitle">Desafio Livre</h1>
+              <p>Jogue qualquer modalidade quantas vezes quiser. Escolha a dificuldade, avance por 10 fases diferentes e faça a maior pontuação.</p>
+              <div class="free-hero-badges">
+                <span><strong>8</strong> modalidades</span>
+                <span><strong>5</strong> dificuldades</span>
+                <span><strong>10</strong> fases</span>
+                <span><strong id="freeWins">0</strong> vitórias</span>
+              </div>
+            </div>
+            <div class="free-hero-orbit" aria-hidden="true">
+              <span>15</span><span>●</span><span>✦</span><span>▦</span><i>◇</i>
+            </div>
+          </div>
+
+          <div class="free-difficulty-panel">
+            <div>
+              <span class="eyebrow">Intensidade escolhida</span>
+              <h2 id="freeDifficultyName">Normal</h2>
+              <p id="freeDifficultyDescription">O equilíbrio ideal entre raciocínio, velocidade e precisão.</p>
+            </div>
+            <div class="free-difficulty-tabs" role="group" aria-label="Escolher dificuldade do Desafio Livre">
+              <button data-free-difficulty="facil" type="button"><i></i>Fácil</button>
+              <button class="is-active" data-free-difficulty="normal" type="button"><i></i>Normal</button>
+              <button data-free-difficulty="dificil" type="button"><i></i>Difícil</button>
+              <button data-free-difficulty="extremo" type="button"><i></i>Extremo</button>
+              <button data-free-difficulty="inferno" type="button"><i></i>Inferno</button>
+            </div>
+          </div>
+
+          <section class="luxor-campaign-hub" aria-labelledby="luxorCampaignTitle">
+            <div class="luxor-campaign-heading">
+              <div>
+                <span class="free-kicker">● Jornada especial</span>
+                <h2 id="luxorCampaignTitle">Luxor das Recordações</h2>
+                <p>40 níveis originais, oito capítulos, guardiões, ondas, poderes e bolinhas especiais.</p>
+              </div>
+              <button class="soft-button luxor-loadout-open" id="openLuxorLoadout" type="button"><span aria-hidden="true">✦</span> Escolher poderes</button>
+            </div>
+            <div class="luxor-campaign-summary">
+              <span><small>Nível liberado</small><strong id="luxorUnlockedLevel">1/40</strong></span>
+              <span><small>Estrelas</small><strong id="luxorTotalStars">0/120</strong></span>
+              <span><small>Capítulos</small><strong id="luxorChaptersDone">0/8</strong></span>
+              <span><small>Poderes equipados</small><strong id="luxorEquippedSummary">3</strong></span>
+            </div>
+            <div class="luxor-chapter-grid" id="luxorChapterGrid" aria-label="Capítulos de Luxor"></div>
+            <div class="luxor-level-map" id="luxorLevelMap" aria-live="polite"></div>
+          </section>
+
+          <div class="free-game-grid" id="freeGameGrid"></div>
+        </section>
+
+        <section class="view ranking-view" id="rankingView" aria-labelledby="rankingTitle">
+          <div class="ranking-hero">
+            <div>
+              <span class="free-kicker">♛ Recordistas da família</span>
+              <h1 id="rankingTitle">Ranking</h1>
+              <p>Compare figurinhas liberadas e as melhores pontuações de cada minijogo.</p>
+            </div>
+            <article class="ranking-player-card">
+              <span class="ranking-avatar" id="rankingPlayerAvatar">RF</span>
+              <div>
+                <small>Seu perfil <b class="ranking-player-badge" id="rankingPlayerBadge" hidden></b></small>
+                <strong id="rankingPlayerName">Jogador</strong>
+                <em class="ranking-player-title" id="rankingPlayerTitle" hidden></em>
+                <span class="ranking-player-meta"><b id="rankingPlayerStickers">0</b> figurinhas · <b id="rankingPlayerPoints">0</b> pontos</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="ranking-controls">
+            <div class="ranking-tabs" role="tablist" aria-label="Tipo de ranking">
+              <button class="is-active" data-ranking-mode="stickers" type="button" role="tab" aria-selected="true">Figurinhas liberadas</button>
+              <button data-ranking-mode="games" type="button" role="tab" aria-selected="false">Desafios livres</button>
+            </div>
+            <label class="ranking-game-picker" id="rankingGamePicker" hidden>
+              <span>Minijogo</span>
+              <select id="rankingGameSelect" name="rankingGameSelect" aria-label="Escolher minijogo do ranking"></select>
+            </label>
+            <button class="soft-button ranking-refresh" id="refreshRanking" type="button" aria-label="Atualizar ranking">↻ <span>Atualizar</span></button>
+          </div>
+
+          <div class="ranking-game-grid" id="rankingGameGrid" hidden aria-label="Todos os minijogos do ranking"></div>
+          <div class="ranking-status" id="rankingStatus" role="status">Carregando recordistas...</div>
+          <div class="ranking-podium" id="rankingPodium"></div>
+          <div class="ranking-list" id="rankingList"></div>
+        </section>
+
+        <section class="view inventory-view" id="inventoryView" aria-labelledby="inventoryTitle">
+          <div class="section-heading inventory-heading">
+            <div><span class="eyebrow">Minha coleção</span><h1 id="inventoryTitle">Inventário de figurinhas</h1><p>Veja o que falta liberar, o que já pode ser colado e o que está guardado no álbum.</p></div>
+            <button class="primary-button" id="inventoryChooseChallenge" type="button">Abrir desafios</button>
+          </div>
+
+          <div class="inventory-stats">
+            <article><span class="stat-icon terracotta">◇</span><div><strong id="inventoryUnlocked">0</strong><small>figurinhas liberadas</small></div></article>
+            <article><span class="stat-icon gold">✦</span><div><strong id="inventoryAvailable">0</strong><small>prontas para colar</small></div></article>
+            <article><span class="stat-icon green">✓</span><div><strong id="inventoryPlaced">0</strong><small>coladas no álbum</small></div></article>
+          </div>
+
+          <div class="inventory-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filtrar inventário">
+              <button class="is-active" data-inventory-filter="all" type="button">Todas</button>
+              <button data-inventory-filter="locked" type="button">Bloqueadas</button>
+              <button data-inventory-filter="available" type="button">Para colar</button>
+              <button data-inventory-filter="placed" type="button">Coladas</button>
+            </div>
+            <span id="inventoryFilterCount">64 figurinhas</span>
+          </div>
+          <div class="inventory-grid" id="inventoryGrid"></div>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Navegação principal">
+        <button class="is-active" data-view="album" type="button"><span aria-hidden="true">▤</span><small>Álbum</small></button>
+        <button data-view="challenges" type="button"><span>◇</span><small>Álbum+</small></button>
+        <button data-view="daily" type="button"><span aria-hidden="true">☀</span><small>Diário</small></button>
+        <button class="play-main" data-view="free" type="button"><span>✦</span><small>Livre</small></button>
+        <button data-view="ranking" type="button"><span aria-hidden="true">♛</span><small>Ranking</small></button>
+        <button data-view="inventory" type="button"><span aria-hidden="true">▦</span><small>Inventário</small></button>
+      </nav>
+    </div>
+
+    <div class="paste-banner" id="pasteBanner" role="status" aria-live="polite">
+      <img id="pasteThumb" alt="" />
+      <div><strong id="pasteTitle">Figurinha pronta</strong><span>Toque no espaço iluminado para colar.</span></div>
+      <button id="cancelPaste" type="button">Cancelar</button>
+    </div>
+
+    <div class="modal-backdrop welcome-backdrop" id="welcomeModal" hidden>
+      <section class="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+        <img src="assets/app-icon.webp" alt="" />
+        <span class="eyebrow">Seu álbum começa aqui</span>
+        <h2 id="welcomeTitle">Como você se chama?</h2>
+        <p>Esse nome vai aparecer na capa do álbum e nos rankings.</p>
+        <form id="welcomeForm">
+          <label for="welcomeName">Seu nome</label>
+          <input id="welcomeName" name="welcomeName" type="text" maxlength="32" autocomplete="name" placeholder="Digite seu nome" required />
+          <button class="primary-button full" type="submit">Começar meu álbum</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="puzzleModal" hidden>
+      <section class="puzzle-modal" role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow" id="puzzleEyebrow">Desafio 01 de 64</span><h2 id="puzzleTitle">Quebra-cabeça</h2></div>
+          <button class="icon-button close-modal" id="closePuzzle" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="puzzle-intro">
+          <img id="puzzleSticker" alt="Figurinha que será liberada" />
+          <div><p id="puzzleDescription"></p><strong id="puzzleObjective"></strong></div>
+        </div>
+        <div class="puzzle-stage" id="puzzleStage"></div>
+        <footer class="puzzle-footer">
+          <span id="puzzleStatus" role="status">Boa sorte!</span>
+          <div class="puzzle-footer-tools">
+            <div class="puzzle-guide-control" id="puzzleGuideControl" hidden role="group" aria-label="Modo guia">
+              <button class="puzzle-guide-button" id="puzzleGuideButton" type="button" aria-pressed="false">Modo guia</button>
+              <label class="puzzle-guide-toggle" for="puzzleGuideToggle">
+                <input id="puzzleGuideToggle" name="puzzleGuideToggle" type="checkbox" aria-label="Ativar modo guia" />
+                <span class="puzzle-guide-switch" aria-hidden="true"><i></i></span>
+                <b id="puzzleGuideState">OFF</b>
+              </label>
+            </div>
+            <span class="puzzle-guide-hint" id="puzzleGuideHint" hidden>Toque no destaque</span>
+            <span class="free-live-timer" id="freeLiveTimer" hidden aria-label="Tempo da partida">00:00,0</span>
+            <button class="secondary-button" id="restartPuzzle" type="button">Recomeçar</button>
+          </div>
+        </footer>
+      </section>
+    </div>
+
+    <div class="modal-backdrop profile-backdrop" id="profileModal" hidden>
+      <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileName">
+        <button class="profile-close" id="closeProfile" type="button" aria-label="Fechar perfil">×</button>
+        <div class="profile-visual">
+          <span class="profile-star star-one" aria-hidden="true">★</span>
+          <span class="profile-star star-two" aria-hidden="true">✦</span>
+          <div class="profile-sticker-frame"><img id="profileSticker" alt="" /></div>
+        </div>
+        <div class="profile-content">
+          <span class="profile-unlocked"><i>✓</i> Perfil da lembrança</span>
+          <span class="eyebrow" id="profileNumber">Figurinha 01</span>
+
+          <div class="profile-editable profile-name-field">
+            <label for="profileName">Nome <button class="profile-edit-button" data-profile-field="name" type="button" aria-label="Editar nome">✎</button></label>
+            <input id="profileName" name="profileName" type="text" value="Não informado" readonly />
+          </div>
+
+          <div class="profile-facts">
+            <article class="profile-editable">
+              <label for="profileInfo">Informações <button class="profile-edit-button" data-profile-field="info" type="button" aria-label="Editar informações">✎</button></label>
+              <textarea id="profileInfo" name="profileInfo" rows="2" readonly>Não informado</textarea>
+            </article>
+            <article>
+              <span>No álbum</span>
+              <strong id="profileLocation">Página 2 · espaço 1</strong>
+            </article>
+          </div>
+
+          <div class="profile-description profile-editable">
+            <label for="profileText">Sobre esta lembrança <button class="profile-edit-button" data-profile-field="text" type="button" aria-label="Editar texto sobre a lembrança">✎</button></label>
+            <textarea id="profileText" name="profileText" rows="5" readonly>Não informado</textarea>
+          </div>
+          <button class="primary-button full profile-continue" id="profileContinue" type="button">Continuar o álbum</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="textStyleModal" hidden>
+      <section class="small-modal" role="dialog" aria-modal="true" aria-labelledby="textStyleTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Personalizar caixa</span><h2 id="textStyleTitle">Cor e fonte do texto</h2></div>
+          <button class="icon-button close-modal" id="closeTextStyle" type="button" aria-label="Fechar personalização">×</button>
+        </header>
+        <div class="text-style-content">
+          <label for="textFont">Fonte</label>
+          <select id="textFont" name="textFont">
+            <option value="Segoe UI, Arial, sans-serif">Limpa</option>
+            <option value="Georgia, Times New Roman, serif">Clássica</option>
+            <option value="Trebuchet MS, Arial, sans-serif">Suave</option>
+            <option value="Comic Sans MS, cursive">Manual</option>
+            <option value="Courier New, monospace">Máquina de escrever</option>
+          </select>
+          <span class="text-style-field-label" id="textColorOptionsLabel">Cor</span>
+          <div class="color-options" id="textColorOptions" role="group" aria-labelledby="textColorOptionsLabel">
+            <button type="button" data-color="#655c4c" style="--swatch:#655c4c" aria-label="Marrom"></button>
+            <button type="button" data-color="#a64f3d" style="--swatch:#a64f3d" aria-label="Terracota"></button>
+            <button type="button" data-color="#4f6547" style="--swatch:#4f6547" aria-label="Verde"></button>
+            <button type="button" data-color="#456d73" style="--swatch:#456d73" aria-label="Azul"></button>
+            <button type="button" data-color="#2f2a25" style="--swatch:#2f2a25" aria-label="Preto"></button>
+            <label class="custom-color" for="textColor"><span>+</span><input id="textColor" name="textColor" type="color" value="#655c4c" aria-label="Escolher outra cor" /></label>
+          </div>
+          <div class="text-preview" id="textStylePreview">Uma lembrança especial...</div>
+          <button class="secondary-button" id="resetTextStyle" type="button">Voltar ao padrão desta caixa</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="secretModal" hidden>
+      <section class="small-modal secret-modal" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Acesso reservado</span><h2 id="secretTitle">Digite a frase</h2></div>
+          <button class="icon-button close-modal" id="closeSecret" type="button" aria-label="Fechar acesso reservado">×</button>
+        </header>
+        <form id="secretForm" class="secret-content">
+          <label class="visually-hidden" for="secretInput">Frase secreta</label>
+          <input id="secretInput" name="secretInput" type="text" autocomplete="off" aria-label="Frase secreta" />
+          <button class="primary-button" type="submit">Confirmar</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop settings-backdrop" id="settingsModal" hidden>
+      <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Preferências e segurança</span><h2 id="settingsTitle">Configurações</h2></div>
+          <button class="icon-button close-modal" id="closeSettings" type="button" aria-label="Fechar configurações">×</button>
+        </header>
+        <div class="settings-content">
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Save e sincronização</h3><p>O álbum funciona offline e mantém um backup local automático.</p></div><span class="cloud-status is-local" id="cloudStatus"><i></i> Local</span></div>
+            <div class="settings-actions">
+              <button class="secondary-button" id="exportSave" type="button">↓ Exportar save JSON</button>
+              <button class="secondary-button" id="importSave" type="button">↑ Importar save JSON</button>
+              <button class="secondary-button" id="syncSaveNow" type="button">↻ Sincronizar agora</button>
+              <input id="importSaveFile" name="importSaveFile" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="import-summary" id="importSummary" hidden>
+              <strong>Save pronto para importar</strong>
+              <p id="importSummaryText"></p>
+              <div><button class="primary-button" id="confirmImportSave" type="button">Substituir pelo save validado</button><button class="secondary-button" id="cancelImportSave" type="button">Cancelar</button></div>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Recompensas do perfil</h3><p>Equipe os presentes conquistados no ciclo de sete dias.</p></div><span class="cosmetic-token-count" id="cosmeticTokenCount">0 trocas</span></div>
+            <div class="cosmetic-shelf" id="cosmeticShelf" aria-label="Recompensas diárias conquistadas"></div>
+          </section>
+
+          <section class="settings-section">
+            <div class="settings-section-title"><div><h3>Acessibilidade</h3><p>As escolhas ficam salvas neste perfil.</p></div></div>
+            <label class="settings-toggle"><span><strong>Reduzir movimento</strong><small>Remove tremores, pulsos e animações intensas.</small></span><input id="reducedMotionSetting" name="reducedMotionSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Alto contraste</strong><small>Reforça bordas, textos e estados selecionados.</small></span><input id="highContrastSetting" name="highContrastSetting" type="checkbox" /></label>
+            <label class="settings-toggle"><span><strong>Assistência de mira no Luxor</strong><small>Mantém a previsão ampliada também no Extremo e Inferno.</small></span><input id="aimAssistSetting" name="aimAssistSetting" type="checkbox" /></label>
+          </section>
+
+          <section class="settings-section interrupted-settings" id="interruptedSettings" hidden>
+            <div class="settings-section-title"><div><h3>Partida interrompida</h3><p id="interruptedSettingsText">Há uma partida que pode ser retomada.</p></div></div>
+            <div class="settings-actions">
+              <button class="primary-button" id="continueInterruptedSettings" type="button">Continuar partida</button>
+              <button class="secondary-button" id="restartInterruptedSettings" type="button">Reiniciar fase</button>
+              <button class="secondary-button danger-button" id="discardInterruptedSettings" type="button">Descartar</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop recovery-backdrop" id="recoveryModal" hidden>
+      <section class="small-modal recovery-modal" role="dialog" aria-modal="true" aria-labelledby="recoveryTitle">
+        <span class="recovery-emblem" aria-hidden="true">↻</span>
+        <span class="eyebrow">Sessão recuperada</span>
+        <h2 id="recoveryTitle">Quer continuar de onde parou?</h2>
+        <p id="recoveryText">A partida foi pausada e nenhum tempo avançou enquanto o álbum esteve fechado.</p>
+        <div class="recovery-actions">
+          <button class="primary-button" id="continueInterrupted" type="button">Continuar partida</button>
+          <button class="secondary-button" id="restartInterrupted" type="button">Reiniciar fase</button>
+          <button class="text-button danger-text" id="discardInterrupted" type="button">Descartar partida</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop cloud-conflict-backdrop" id="cloudConflictModal" hidden>
+      <section class="small-modal cloud-conflict-modal" role="dialog" aria-modal="true" aria-labelledby="cloudConflictTitle">
+        <span class="eyebrow">Escolha necessária</span>
+        <h2 id="cloudConflictTitle">Há dois saves diferentes</h2>
+        <p id="cloudConflictText">Este aparelho e a nuvem possuem mudanças recentes. Nada será sobrescrito sem sua escolha.</p>
+        <div class="conflict-compare" id="cloudConflictCompare"></div>
+        <div class="conflict-actions">
+          <button class="primary-button" id="keepDeviceSave" type="button">Manter este aparelho</button>
+          <button class="secondary-button" id="useCloudSave" type="button">Usar save da nuvem</button>
+          <button class="secondary-button" id="mergeCloudSave" type="button">Mesclar campos seguros</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop luxor-loadout-backdrop" id="luxorLoadoutModal" hidden>
+      <section class="luxor-loadout-modal" role="dialog" aria-modal="true" aria-labelledby="luxorLoadoutTitle">
+        <header class="modal-header">
+          <div><span class="eyebrow">Escolha três poderes</span><h2 id="luxorLoadoutTitle">Álbum de poderes</h2></div>
+          <button class="icon-button close-modal" id="closeLuxorLoadout" type="button" aria-label="Fechar seleção de poderes">×</button>
+        </header>
+        <p>Os poderes recarregam com grupos longos, combos, precisão e reações em cadeia. Eles não são consumíveis permanentes.</p>
+        <div class="luxor-power-grid" id="luxorPowerGrid"></div>
+        <div class="luxor-loadout-footer"><span id="luxorLoadoutCount">3 de 3 selecionados</span><button class="primary-button" id="saveLuxorLoadout" type="button">Salvar combinação</button></div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <audio id="backgroundMusic" src="assets/audio/lembrancas-de-familia.mp3" preload="auto" loop></audio>
+  </body>
+</html>

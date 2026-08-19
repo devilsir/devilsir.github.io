@@ -1,0 +1,21 @@
+{
+  "name": "world-stars-album-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pacote Android/Capacitor do Album Digital World Stars 2026.",
+  "scripts": {
+    "cap:add:android": "cap add android",
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android",
+    "apk:debug": "cd android && gradlew.bat assembleDebug",
+    "icons": "capacitor-assets generate --android"
+  },
+  "dependencies": {
+    "@capacitor/android": "latest",
+    "@capacitor/core": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "latest",
+    "@capacitor/assets": "latest"
+  }
+}

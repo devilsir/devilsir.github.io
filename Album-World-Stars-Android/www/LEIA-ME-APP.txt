@@ -1,0 +1,47 @@
+ÁLBUM DIGITAL WORLD STARS 2026
+Escola Estadual Santa Rita de Cássia
+
+COMO ABRIR
+1. Extraia todo o conteúdo do arquivo ZIP.
+2. Abra o arquivo index.html no Chrome, Edge, Firefox ou Safari.
+3. Não mova o index.html para fora desta pasta: as artes estão na pasta assets.
+
+COMO USAR
+- Navegue pelas 12 páginas usando as setas ou arrastando a página no celular.
+- Toque em “Adicionar figurinha” ou “Escanear”.
+- Tire uma foto ou escolha uma imagem já salva.
+- Arraste e amplie até deixar somente a figurinha dentro da moldura.
+- Se a semelhança for de 15% ou mais, ela entra automaticamente no inventário.
+- No inventário, toque em “Colar no álbum”, escolha o espaço amarelo iluminado e responda o quiz em inglês.
+- A figurinha só será colada se a resposta do quiz estiver correta. Se errar, use “Retry” para receber outra pergunta. Se cancelar, ela não cola e fica guardada para tentar depois.
+- A música de fundo começa com volume em 30%. Use o botão de música no topo para abrir o controle de volume.
+- Depois de colar, o perfil da pessoa abre com nome, idade, função e descrição.
+- Use “Tela cheia” acima da página para ampliar o álbum e “Sair” para voltar.
+
+ORDEM DO ÁLBUM
+- A Figurinha 00 é Lucas Xavier Nardelli, professor de Língua Inglesa.
+- Ela ocupa o primeiro espaço; as demais figurinhas foram deslocadas a partir dela.
+
+PRIVACIDADE E FUNCIONAMENTO OFFLINE
+- Nenhuma imagem é enviada para a internet.
+- O reconhecimento acontece dentro do navegador.
+- O progresso fica salvo somente neste aparelho e neste navegador.
+- Depois de extrair o ZIP, o aplicativo não precisa de internet.
+
+DICA PARA A FOTO
+Use luz uniforme, evite reflexos e enquadre as quatro bordas da figurinha.
+
+- No álbum, clique/segure e arraste para os lados para trocar de página no mouse ou no touch.
+
+
+Atualização: adicionadas 13 novas figurinhas extras nas páginas 10 e 11 do álbum.
+
+
+Atualização do quiz:
+- Banco de questões ampliado para 105 perguntas em inglês.
+- Perguntas respondidas corretamente não aparecem novamente neste aparelho.
+
+Atualização desta versão:
+- O app sempre abre na capa do álbum.
+- A música pausa ao fechar/minimizar o app ou sair da página.
+- Perfil: idade e texto “Sobre” agora podem ser editados pelo botão de lápis.

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Models and animations</title>
+<link rel="stylesheet" href="./css/style.css">
+<link rel="icon" href="./favicon.ico" sizes="any">
+</head>
+<body>
+<div id="app"></div>
+<div id="loading">Carregando modelo e animações…</div>
+<div id="ui">
+<h1>Modelos e animações</h1>
+<p>Personagens, armas, spells, animações e pets.</p>
+<div class="row stack">
+<div>
+<label for="modelSelect">Personagem</label>
+<select id="modelSelect"></select>
+</div>
+</div>
+<div class="row stack">
+<div>
+<label for="animationSelect">Escolher animação</label>
+<select id="animationSelect"></select>
+</div>
+</div>
+<div class="row">
+<button type="button" id="prevBtn" class="secondary">Anterior</button>
+<button type="button" id="playBtn">Play</button>
+<button type="button" id="nextBtn" class="secondary">Próxima</button>
+</div>
+<div class="row">
+<button type="button" id="fxOnlyBtn" class="ghost">Só com efeitos</button>
+<button type="button" id="resetCamBtn" class="ghost">Resetar câmera</button>
+</div>
+<div class="row stack">
+<div>
+<label for="fxMode">Efeito</label>
+<select id="fxMode">
+<option value="auto">Auto</option>
+<option value="none">Sem efeito</option>
+<option value="fire">Bolas de fogo</option>
+<option value="ice">Rajadas de gelo</option>
+<option value="lightning">Raios pelas mãos</option>
+<option value="wind">Vento</option>
+<option value="lava">Lava</option>
+<option value="earth">Terra</option>
+<option value="water">Água</option>
+<option value="shadow">Sombra</option>
+<option value="light">Luz</option>
+<option value="crystal">Cristal</option>
+<option value="void">Void</option>
+</select>
+</div>
+<div>
+<label for="handItemMode">Item na mão</label>
+<select id="handItemMode">
+<option value="none">Nenhum</option>
+<option value="sword">Espada</option>
+</select>
+</div>
+<div>
+<label for="petMode">Pet</label>
+<select id="petMode"></select>
+</div>
+<div>
+<label for="petAnimationMode">Animação dos pets</label>
+<select id="petAnimationMode">
+<option value="auto">Automática</option>
+<option value="idle">Parados</option>
+<option value="walk">Caminhando</option>
+<option value="run">Correndo</option>
+<option value="jump_start">Preparando salto</option>
+<option value="jump">No ar</option>
+<option value="jump_fall">Caindo</option>
+<option value="jump_end">Pousando</option>
+</select>
+</div>
+<div>
+<label for="petMovementMode">Modo de deslocamento dos pets</label>
+<select id="petMovementMode">
+<option value="inPlace">Animação no lugar</option>
+<option value="scene">Animação pelo cenário</option>
+</select>
+</div>
+<div>
+<label for="sceneMode">Cenário</label>
+<select id="sceneMode">
+<option value="studio">Estúdio</option>
+<option value="garden">Jardim</option>
+<option value="room">Quarto aconchegante</option>
+<option value="forest">Floresta low poly</option>
+<option value="stars">Céu estrelado</option>
+<option value="snow">Cenário na neve</option>
+</select>
+</div>
+<div>
+<label for="lightingMode">Luz</label>
+<select id="lightingMode">
+<option value="auto">Automática do cenário</option>
+<option value="morning">Manhã</option>
+<option value="sunset">Pôr do sol</option>
+<option value="night">Noite</option>
+<option value="studio">Estúdio</option>
+<option value="cycle">Ciclo automático</option>
+</select>
+</div>
+<div>
+<label for="ambienceMode">Detalhes ambientais</label>
+<select id="ambienceMode">
+<option value="full">Completo</option>
+<option value="soft">Suave</option>
+<option value="none">Desligado</option>
+</select>
+</div>
+<div>
+<label for="qualityMode">Modo</label>
+<select id="qualityMode">
+<option value="normal">Normal</option>
+<option value="performance">Desempenho</option>
+</select>
+</div>
+<div>
+<label for="speedRange">Velocidade da animação</label>
+<input id="speedRange" type="range" min="0.25" max="1.75" step="0.05" value="1">
+</div>
+</div>
+<div id="status">
+<span class="badge" id="currentAnimBadge">Animação: -</span>
+<span class="badge" id="currentFxBadge">FX: -</span>
+</div>
+<div id="hint">Arraste pra girar a câmera. Scroll dá zoom. Agora também dá pra trocar cenário, variar a iluminação e ligar detalhes ambientais como grama em movimento, partículas e pegadas.</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script type="text/javascript" src="./js/asset-paths.js?v=20260731-pet-sizes-random"></script>
+<script type="text/javascript" src="./js/app-classic.js?v=20260731-pets-world-studio-runtime-fix2"></script>
+</body>
+</html>
