@@ -465,3 +465,131 @@ body.isMobileLandscape .viewport{
     min-height:56px;
   }
 }
+
+
+/* v11: filtro de matérias + bancos de Inglês 6º–9º */
+.filterPopupWithSubjects #areaChecks{height:318px}
+.filterPopupWithSubjects #diffChecks{height:318px}
+.subjectFilterBox{position:absolute;left:55px;top:422px;width:983px;height:94px;padding:8px 14px;border-radius:14px;background:rgba(34,12,4,.34);border:1px solid rgba(255,235,190,.22);text-shadow:0 2px 3px #000}
+.subjectFilterTitle{font-size:18px;font-weight:700;margin-bottom:7px}.subjectFilterTitle small{font-size:14px;font-weight:400;opacity:.88}
+.subjectChecks{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.subjectChip{display:flex;align-items:center;gap:7px;min-height:31px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.11);font-size:16px;cursor:pointer}.subjectChip input{width:19px;height:19px;margin:0}.subjectChip b{display:inline-flex;min-width:22px;height:22px;padding:0 6px;align-items:center;justify-content:center;border-radius:999px;background:rgba(0,0,0,.3);font-size:12px}.subjectChip.isEmpty{opacity:.48;cursor:not-allowed}.subjectSummary{position:absolute;right:14px;top:10px;max-width:430px;text-align:right;font-size:13px;opacity:.9}
+.subjectStartBtn,.subjectCancelBtn{position:absolute!important;top:536px!important;height:46px!important;line-height:46px!important;background:rgba(118,43,0,.78)!important;border-radius:7px!important}.subjectStartBtn{left:338px!important;width:190px!important}.subjectCancelBtn{left:565px!important;width:200px!important}
+.questionMeta{text-align:center;font-size:14px;letter-spacing:.02em;opacity:.82;margin-bottom:2px}.listMeta{font-size:13px;opacity:.72;font-weight:700}
+
+/* FIX v24: formulário adicionar/editar — ações não sobrepõem o caminho da imagem */
+#addEditContent{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:10px 18px 42px!important;
+  scrollbar-gutter:stable;
+}
+#addEditContent .addEditForm{
+  position:relative;
+  width:100%;
+  min-height:max-content;
+  padding:0 0 34px;
+}
+#addEditContent .fieldRow{
+  position:relative;
+  min-height:48px;
+  margin:10px 0;
+  flex-wrap:nowrap;
+}
+#addEditContent .fieldRow label{
+  flex:0 0 30%;
+}
+#addEditContent .addMetaBtn{
+  flex:0 0 180px;
+  width:180px;
+}
+#addEditContent .imagePathRow{
+  margin-bottom:22px!important;
+}
+#addEditContent .formActions{
+  min-height:54px;
+  margin-top:22px!important;
+  margin-bottom:30px!important;
+  padding-top:0;
+  isolation:isolate;
+}
+#addEditContent .formActions .stdBtn{
+  height:52px!important;
+}
+
+/* FIX v25: formulário em fluxo normal + Nova Matéria visível + labels acessíveis */
+#addEditContent{
+  padding:8px 18px 12px!important;
+}
+#addEditContent .addEditForm{
+  min-height:0!important;
+  padding:0 0 8px!important;
+}
+#addEditContent .fieldRow{
+  min-height:38px!important;
+  margin:4px 0!important;
+  gap:10px!important;
+  flex-wrap:nowrap!important;
+}
+#addEditContent .fieldRow label,
+#addEditContent .fieldRow .fieldLabel,
+#addEditContent .fieldRow .fieldSpacer{
+  flex:0 0 30%!important;
+  width:30%!important;
+  text-align:right;
+  font-size:20px;
+}
+#addEditContent .selectFieldBox{
+  flex:1;
+  position:relative;
+  height:38px;
+  min-width:0;
+}
+#addEditContent .selectFieldBox .kselect{
+  left:0!important;
+  top:0!important;
+  bottom:auto!important;
+  width:100%!important;
+  height:38px!important;
+  position:absolute!important;
+}
+#addEditContent .fieldRow input{
+  min-width:0;
+  height:34px;
+}
+#addEditContent .subjectCreateRow{
+  position:relative!important;
+  visibility:visible!important;
+  display:flex!important;
+  opacity:1!important;
+}
+#addEditContent .addMetaBtn{
+  position:static!important;
+  left:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  flex:0 0 180px!important;
+  width:180px!important;
+  height:40px!important;
+  line-height:40px!important;
+}
+#addEditContent .imagePathRow{
+  margin-bottom:4px!important;
+}
+#addEditContent .formActions{
+  min-height:48px!important;
+  margin-top:6px!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+  position:relative!important;
+}
+#addEditContent .formActions .stdBtn{
+  position:static!important;
+  left:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  height:46px!important;
+  line-height:46px!important;
+}
