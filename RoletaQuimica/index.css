@@ -1,4 +1,4 @@
-*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff;user-select:none}button,select,input,textarea{font-family:inherit}.viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#050505}.stage{position:relative;width:1366px;height:705px;overflow:hidden;background:#000;transform-origin:center center}.screen{position:absolute;inset:0;display:none;overflow:hidden}.screen.active{display:block}.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}.bg.contain{object-fit:contain}.videoFull{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;background:#000}.abs{position:absolute}.kbtn{position:absolute;border:0;background:transparent;padding:0;margin:0;display:block}.kbtn img{width:100%;height:100%;object-fit:fill;display:block;pointer-events:none}.kbtn:active{transform:translateY(1px)}.ktext{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:20px;text-shadow:0 2px 3px #000;pointer-events:none}.kselect{position:absolute;color:#fff;text-align:center;font-size:20px}.kselect .selHead{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background-size:100% 100%;text-shadow:0 2px 3px #000;cursor:pointer;padding:0 10px}.kselect .selOpts{position:absolute;left:0;top:100%;width:100%;max-height:260px;overflow:auto;z-index:80;display:none}.kselect.open .selOpts{display:block}.kselect .selOpt{height:48px;display:flex;align-items:center;justify-content:center;background-size:100% 100%;cursor:pointer;color:#fff;text-shadow:0 2px 3px #000}.kselect .selOpt:hover{filter:brightness(1.13)}.overlay{position:absolute;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:500}.overlay.show{display:flex}.popup{position:relative;background-size:100% 100%;background-repeat:no-repeat;color:#fff;text-shadow:0 2px 3px #000;overflow:hidden}.popupInner{position:absolute;inset:0;padding:20px}.scroll{overflow:auto}.label{font-size:20px;color:#fff;text-shadow:0 2px 3px #000}.stdBtn{border:0;color:#fff;font-size:20px;text-shadow:0 2px 3px #000;background-size:100% 100%;height:48px;cursor:pointer}.stdBtn:hover{filter:brightness(1.08)}.stdBtn:active{filter:brightness(1.18)}.checkRow{display:flex;align-items:center;height:30px;gap:8px;font-size:20px}.checkRow input{width:22px;height:22px}.gameScore{position:absolute;left:10px;top:10px;width:1346px;height:70px;display:flex;align-items:center;justify-content:center;gap:18px;font-size:20px}.scoreLabel{min-width:135px;text-align:center}.wheelArea{position:absolute;left:0;right:0;top:128px;height:360px}.wheelWrap{position:absolute;left:50%;top:50%;width:520px;height:520px;transform:translate(-50%,-50%)}#wheelCanvas{position:absolute;inset:0;width:100%;height:100%;}.instruction{position:absolute;inset:0;background:rgba(0,0,0,.8);z-index:90}.outlinedText{position:absolute;left:0;right:0;text-align:center;font-size:25px;color:red;text-shadow:-2px 0 #fff,0 2px #fff,2px 0 #fff,0 -2px #fff;top:435px}.fieldRow{display:flex;align-items:center;min-height:40px;margin:10px 0;gap:10px}.fieldRow label{width:30%;text-align:right;font-size:20px}.fieldRow input,.fieldRow textarea{flex:1;height:36px;font-size:18px;background:#fff;color:#000;border:1px solid #888;padding:4px}.fieldRow textarea{height:60px;resize:none}.listRow{height:40px;display:flex;align-items:center;gap:4px}.listRow .qText{flex:1;height:40px;display:flex;align-items:center;font-size:18px;text-align:left;overflow:hidden;padding-left:8px}.predefItem{display:flex;align-items:center;height:34px;font-size:18px;gap:8px}.historyRoot{position:absolute;inset:0;background:#1d1d1d;padding:12px;display:flex;flex-direction:column;gap:8px}.nativeBtn{background:#efefef;color:#111;border:2px solid #888;border-radius:2px;height:48px;font-size:16px;text-align:left;padding:8px 12px;white-space:normal}.toast{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);background:rgba(0,0,0,.88);border:2px solid rgba(255,255,255,.35);border-radius:8px;padding:12px 18px;font-size:20px;display:none;z-index:1000}.toast.show{display:block}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff;user-select:none}button,select,input,textarea{font-family:inherit}.viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#050505}.stage{position:relative;width:1366px;height:705px;overflow:hidden;background:#000;transform-origin:center center}.screen{position:absolute;inset:0;display:none;overflow:hidden}.screen.active{display:block}.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}.bg.contain{object-fit:contain}.videoFull{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;background:#000}.abs{position:absolute}.kbtn{position:absolute;border:0;background:transparent;padding:0;margin:0;display:block}.kbtn img{width:100%;height:100%;object-fit:fill;display:block;pointer-events:none}.kbtn:active{transform:translateY(1px)}.ktext{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:20px;text-shadow:0 2px 3px #000;pointer-events:none}.kselect{position:absolute;color:#fff;text-align:center;font-size:20px;z-index:120}.kselect.open{z-index:1200}.kselect .selHead{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background-size:100% 100%;text-shadow:0 2px 3px #000;cursor:pointer;padding:0 12px;line-height:1.1}.kselect .selOpts{position:absolute;left:0;top:calc(100% + 4px);bottom:auto;width:100%;max-height:260px;overflow:auto;z-index:1201;display:none}.kselect.open .selOpts{display:block}.kselect.openUp .selOpts{top:auto;bottom:calc(100% + 4px)}.kselect .selOpt{height:48px;display:flex;align-items:center;justify-content:center;background-size:100% 100%;cursor:pointer;color:#fff;text-shadow:0 2px 3px #000}.kselect .selOpt:hover{filter:brightness(1.13)}.overlay{position:absolute;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:500}.overlay.show{display:flex}.popup{position:relative;background-size:100% 100%;background-repeat:no-repeat;color:#fff;text-shadow:0 2px 3px #000;overflow:visible}.popupInner{position:absolute;inset:0;padding:20px;overflow:visible}.scroll{overflow:auto}.label{font-size:20px;color:#fff;text-shadow:0 2px 3px #000}.stdBtn{border:0;color:#fff;font-size:20px;text-shadow:0 2px 3px #000;background-size:100% 100%;height:48px;cursor:pointer}.stdBtn:hover{filter:brightness(1.08)}.stdBtn:active{filter:brightness(1.18)}.checkRow{display:flex;align-items:center;height:30px;gap:8px;font-size:20px}.checkRow input{width:22px;height:22px}.gameScore{position:absolute;left:10px;top:10px;width:1346px;height:70px;display:flex;align-items:center;justify-content:center;gap:18px;font-size:20px}.scoreLabel{min-width:135px;text-align:center}.wheelArea{position:absolute;left:0;right:0;top:128px;height:360px}.wheelWrap{position:absolute;left:50%;top:50%;width:520px;height:520px;transform:translate(-50%,-50%)}#wheelCanvas{position:absolute;inset:0;width:100%;height:100%;}.instruction{position:absolute;inset:0;background:rgba(0,0,0,.8);z-index:90}.outlinedText{position:absolute;left:0;right:0;text-align:center;font-size:25px;color:red;text-shadow:-2px 0 #fff,0 2px #fff,2px 0 #fff,0 -2px #fff;top:435px}.fieldRow{display:flex;align-items:center;min-height:40px;margin:10px 0;gap:10px}.fieldRow label{width:30%;text-align:right;font-size:20px}.fieldRow input,.fieldRow textarea{flex:1;height:36px;font-size:18px;background:#fff;color:#000;border:1px solid #888;padding:4px}.fieldRow textarea{height:60px;resize:none}.listRow{min-height:46px;display:flex;align-items:center;gap:8px;padding:2px 0}.listRow .qText{flex:1;min-height:46px;display:flex;align-items:center;font-size:18px;text-align:left;overflow:hidden;padding:0 10px;line-height:1.12}.listEditBtn{flex:0 0 auto}.predefItem{display:flex;align-items:center;height:34px;font-size:18px;gap:8px}.historyRoot{position:absolute;inset:0;background:#1d1d1d;padding:12px;display:flex;flex-direction:column;gap:8px}.nativeBtn{background:#efefef;color:#111;border:2px solid #888;border-radius:2px;height:48px;font-size:16px;text-align:left;padding:8px 12px;white-space:normal}.toast{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);background:rgba(0,0,0,.88);border:2px solid rgba(255,255,255,.35);border-radius:8px;padding:12px 18px;font-size:20px;display:none;z-index:1000}.toast.show{display:block}
 .editToolbar{position:absolute;left:8px;top:8px;z-index:1700;background:rgba(0,0,0,.82);border:1px solid rgba(255,220,120,.55);border-radius:10px;padding:7px;display:flex;align-items:center;gap:6px;color:#fff;font-size:12px;text-shadow:none;box-shadow:0 6px 18px rgba(0,0,0,.45)}
 .editToolbar button{height:28px;border:1px solid rgba(255,220,120,.55);background:#4b210c;color:#ffe6a6;border-radius:7px;padding:0 8px;font-size:12px;cursor:pointer}.editToolbar button.active{background:#f0b441;color:#241000;font-weight:bold}.editToolbar input{width:54px;height:26px;border-radius:6px;border:1px solid #73502b;background:#fff;color:#111;font-size:12px;padding:2px 4px}.editToolbar .editName{min-width:130px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffe6a6}.editToolbar .editHint{color:#d7c49e}
 .editLayer{position:absolute;inset:0;z-index:1550;pointer-events:none}.editLayer.on{pointer-events:none}.editBox{position:absolute;display:none;border:2px dashed #00e5ff;background:rgba(0,229,255,.05);box-shadow:0 0 0 9999px rgba(0,0,0,0);cursor:move;pointer-events:auto}.editLayer.on .editBox{display:block}.editBox.selected{border:3px solid #ffe15a;background:rgba(255,225,90,.12);box-shadow:0 0 0 2px rgba(0,0,0,.35)}.editBoxLabel{position:absolute;left:0;top:-20px;max-width:250px;background:rgba(0,0,0,.78);color:#fff4b5;font:12px Arial;padding:2px 5px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}.editResizeHandle{position:absolute;right:-10px;bottom:-10px;width:20px;height:20px;border-radius:5px;background:#ffe15a;border:2px solid #160702;z-index:4;cursor:nwse-resize;pointer-events:auto}.editOn .kbtn:active{transform:none}.editOn button,.editOn .kselect{cursor:move!important}
@@ -592,4 +592,362 @@ body.isMobileLandscape .viewport{
   width:auto!important;
   height:46px!important;
   line-height:46px!important;
+}
+
+
+/* v34: suporte a questões discursivas */
+#addEditContent textarea{
+  min-width:0;
+  min-height:58px;
+  padding:7px 9px;
+  font-size:18px;
+  line-height:1.25;
+  background:#fff;
+  color:#000;
+  border:1px solid #888;
+  resize:vertical;
+}
+#discursiveFields[hidden],#objectiveFields[hidden]{display:none!important}
+.discursiveControls{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+  margin-top:4px;
+}
+.discursiveReveal{
+  width:100%;
+  min-height:48px;
+  font-size:18px!important;
+}
+.expectedAnswer{
+  padding:14px 18px;
+  border:1px solid rgba(255,235,190,.55);
+  border-radius:10px;
+  background:rgba(38,14,4,.72);
+  color:#fff3d0;
+  font-size:18px;
+  line-height:1.35;
+  text-align:left;
+  white-space:pre-wrap;
+  text-shadow:0 2px 3px #000;
+}
+.expectedAnswer[hidden]{display:none!important}
+.discursiveJudgeRow{
+  display:grid;
+  grid-template-columns:1fr 1fr .72fr;
+  gap:10px;
+}
+.discursiveJudge,.discursiveHint{
+  min-height:52px;
+  font-size:19px!important;
+}
+.correctManual{filter:brightness(1.08)}
+.wrongManual{filter:brightness(.92)}
+
+/* v35: correção automática de questões discursivas */
+.discursiveAnswerLabel{
+  font-size:18px;
+  text-align:left;
+  color:#fff3d0;
+  text-shadow:0 2px 3px #000;
+}
+.discursiveAnswerInput{
+  width:100%;
+  min-height:54px;
+  padding:10px 14px;
+  border:2px solid rgba(255,235,190,.7);
+  border-radius:8px;
+  background:#fff;
+  color:#111;
+  font-size:21px;
+  outline:none;
+  user-select:text;
+}
+.discursiveAnswerInput:focus{
+  border-color:#fff3d0;
+  box-shadow:0 0 0 3px rgba(255,243,208,.2);
+}
+.discursiveToleranceNote{
+  margin-top:-5px;
+  color:#ffe8b0;
+  font-size:14px;
+  line-height:1.25;
+  text-align:left;
+  text-shadow:0 1px 2px #000;
+}
+.discursiveAnswerActions{
+  display:grid;
+  grid-template-columns:1fr .45fr;
+  gap:10px;
+}
+.discursiveSubmit,.discursiveHint{
+  min-height:52px;
+  font-size:19px!important;
+}
+.discursiveEditHelp{
+  margin:-2px 0 6px 30%;
+  padding-left:10px;
+  max-width:70%;
+  color:#f2d8a0;
+  font-size:14px;
+  line-height:1.3;
+  text-align:left;
+}
+
+/* v36: questões de Verdadeiro ou Falso */
+#trueFalseFields[hidden]{display:none!important}
+.trueFalseControls{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+  margin-top:8px;
+}
+.trueFalseAnswerRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  width:100%;
+}
+.trueFalseBtn{
+  min-height:74px;
+  height:74px;
+  font-size:24px!important;
+  font-weight:700;
+  letter-spacing:.2px;
+}
+.trueFalseBtn:hover{filter:brightness(1.13)}
+.trueFalseHint{
+  align-self:center;
+  width:42%;
+  min-height:48px;
+  font-size:18px!important;
+}
+.trueFalseEditHelp{
+  margin:-2px 0 6px 30%;
+  padding-left:10px;
+  max-width:70%;
+  color:#f2d8a0;
+  font-size:14px;
+  line-height:1.3;
+  text-align:left;
+}
+
+/* v37: questões objetivas com 2 a 5 alternativas */
+.objectiveAlternativeRow[hidden]{display:none!important}
+.objectiveEditHelp{
+  margin:-2px 0 6px 30%;
+  padding-left:10px;
+  max-width:70%;
+  color:#f2d8a0;
+  font-size:14px;
+  line-height:1.3;
+  text-align:left;
+}
+
+
+/* FIX vNext: popup de predefinição + dica 85% */
+.predefStartPopup{height:100%;display:flex;flex-direction:column;gap:10px;padding:28px 26px 24px;box-sizing:border-box}
+.predefStartTitle{font-size:22px;line-height:1.2;text-align:center;margin:8px 0 6px;color:#fff;text-shadow:0 2px 3px #000;word-break:break-word}
+.predefStartLabel{font-size:18px;margin-top:2px}
+.predefStartSelectBox{position:relative;height:50px;width:360px;max-width:100%}
+.predefStartActions{display:flex;gap:14px;margin-top:12px}
+.predefStartFootnote{font-size:14px;line-height:1.35;text-align:center;opacity:.95;margin-top:2px}
+.hintPenalty{font-size:14px;line-height:1.35;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;margin-bottom:10px}
+
+
+/* FIX final: botão salvar predefinição + popup mais alinhado */
+#predefSaveBtn, .predefSaveBtn{
+  border:none!important;
+  outline:none!important;
+  box-shadow:none!important;
+  background-color:transparent!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
+}
+#predefSaveBtn:focus, #predefSaveBtn:focus-visible,
+.predefSaveBtn:focus, .predefSaveBtn:focus-visible{
+  border:none!important;
+  outline:none!important;
+  box-shadow:none!important;
+}
+#predefSaveBtn::-moz-focus-inner, .predefSaveBtn::-moz-focus-inner{
+  border:0!important;
+}
+
+.predefStartPopup{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  padding:40px 28px 24px;
+  box-sizing:border-box;
+}
+.predefStartTitle{
+  width:100%;
+  max-width:340px;
+  font-size:20px;
+  line-height:1.15;
+  text-align:center;
+  margin:0 0 4px;
+  color:#fff;
+  text-shadow:0 2px 3px #000;
+  word-break:break-word;
+}
+.predefStartLabel{
+  width:100%;
+  max-width:360px;
+  font-size:18px;
+  margin-top:0;
+  align-self:center;
+}
+.predefStartSelectBox{
+  position:relative;
+  height:50px;
+  width:360px;
+  max-width:100%;
+}
+.predefStartActions{
+  width:100%;
+  max-width:360px;
+  display:flex;
+  gap:14px;
+  margin-top:8px;
+}
+.predefStartFootnote{
+  width:100%;
+  max-width:360px;
+  font-size:13px;
+  line-height:1.35;
+  text-align:center;
+  opacity:.96;
+  margin-top:0;
+}
+
+.kselect .selHead.smallText{font-size:14px}
+
+
+/* FIX extra: popup predef title + list edit button */
+.predefStartPopup{
+  padding:56px 24px 20px !important;
+  gap:10px !important;
+}
+.predefStartTitle{
+  max-width:320px !important;
+  font-size:18px !important;
+  line-height:1.1 !important;
+  margin:2px auto 10px !important;
+}
+.predefStartFootnote{
+  font-size:12px !important;
+  line-height:1.25 !important;
+}
+.listRow{
+  min-height:40px !important;
+  gap:6px !important;
+}
+.listRow .qText{
+  min-height:40px !important;
+}
+.listEditBtn{
+  width:98px !important;
+  height:34px !important;
+}
+.listEditBtn img{
+  object-fit:fill;
+}
+
+/* Áreas especiais selecionáveis nas predefinições */
+.predefSpecialBlock{
+  margin:0 0 12px;
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(20,8,3,.34);
+  border-radius:8px;
+}
+.predefSpecialTitle{
+  font-size:17px;
+  font-weight:700;
+  margin:0 0 6px;
+  color:#ffe0a0;
+  text-shadow:0 2px 3px #000;
+}
+.predefSpecialItem{
+  display:inline-flex;
+  width:auto;
+  min-width:170px;
+  margin-right:12px;
+  padding-right:8px;
+}
+.predefSpecialItem input{
+  width:20px;
+  height:20px;
+}
+.predefEmpty{
+  padding:14px 8px;
+  font-size:17px;
+  opacity:.9;
+}
+
+
+/* list filters and edit button refresh */
+#listMode .selHead,
+#listArea .selHead,
+#listDiff .selHead{
+  font-size:34px;
+}
+#listMode .selOpt,
+#listArea .selOpt,
+#listDiff .selOpt{
+  font-size:34px;
+  line-height:1;
+}
+.listRow{
+  min-height:48px !important;
+  gap:10px !important;
+}
+.listRow .qText{
+  min-height:48px !important;
+}
+.listEditBtn{
+  position:relative;
+  flex:0 0 auto;
+  width:112px !important;
+  height:46px !important;
+  border:1px solid rgba(255,220,170,.35);
+  border-radius:8px;
+  background:linear-gradient(180deg, rgba(123,55,10,.98) 0%, rgba(103,42,5,.98) 100%);
+  color:#f8e7c2;
+  font-size:28px;
+  font-weight:700;
+  line-height:1;
+  text-shadow:0 2px 3px rgba(0,0,0,.6);
+  box-shadow:inset 0 1px 0 rgba(255,230,190,.16), 0 2px 8px rgba(0,0,0,.18);
+  cursor:pointer;
+  padding:0;
+}
+.listEditBtn:hover{filter:brightness(1.08)}
+.listEditBtn:active{transform:translateY(1px);filter:brightness(1.15)}
+
+
+/* proportional edit button sizing */
+.listRow{
+  min-height:44px !important;
+  gap:8px !important;
+}
+.listRow .qText{
+  min-height:44px !important;
+  font-size:18px !important;
+  line-height:1.1 !important;
+}
+.listEditBtn{
+  width:90px !important;
+  height:38px !important;
+  font-size:18px !important;
+  font-weight:700 !important;
+  border-radius:7px !important;
+  align-self:center !important;
 }
