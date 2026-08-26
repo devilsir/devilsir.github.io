@@ -601,13 +601,27 @@ function syncWheelTransform(angle=wheel.angle){
   if(!c)return;
   c.style.transform=`rotate(${angle}deg)`;
 }
+function setWheelFallbackVisible(visible){
+  const img=$('#wheelFallback');
+  if(!img)return;
+  img.style.visibility=visible?'visible':'hidden';
+}
+function updateWheelFallback(){
+  const c=$('#wheelCanvas');
+  const img=$('#wheelFallback');
+  if(!c||!img)return;
+  try{
+    img.src=c.toDataURL('image/png');
+    img.style.visibility='visible';
+  }catch(e){}
+}
 function drawWheel(highlightSelected=true){
   const c=$('#wheelCanvas');
   if(!c)return;
-  const ctx=c.getContext('2d',{alpha:true,desynchronized:true});
+  const ctx=c.getContext('2d',{alpha:true});
   const W=c.width,H=c.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2*.9;
   ctx.clearRect(0,0,W,H);
-  if(!wheel.segments.length){syncWheelTransform();return}
+  if(!wheel.segments.length){syncWheelTransform();setWheelFallbackVisible(false);return}
 
   // A arte líquida é cara de desenhar, então ela é rasterizada apenas quando
   // a composição da roda muda ou quando precisamos destacar o resultado.
@@ -637,6 +651,7 @@ function drawWheel(highlightSelected=true){
   ctx.fill();
 
   syncWheelTransform();
+  updateWheelFallback();
 }
 function bright(c){return liquidColor(c,'light')}
 function bright(c){return liquidColor(c,'light')}
@@ -669,6 +684,7 @@ function stopWheelAnimation(){
   wheel.speed=0;
   const c=$('#wheelCanvas');
   if(c)c.classList.remove('wheelSpinning');
+  setWheelFallbackVisible(true);
 }
 function finishSpin(targetAngle){
   const c=$('#wheelCanvas');
@@ -681,6 +697,7 @@ function finishSpin(targetAngle){
     c.classList.remove('wheelSpinning');
     c.style.transform=`rotate(${wheel.angle}deg)`;
   }
+  setWheelFallbackVisible(true);
   // Só agora redesenha para aplicar o brilho à fatia realmente selecionada.
   drawWheel(true);
   const seg=selectedSeg();
@@ -708,6 +725,7 @@ function spin(){
   // Desenha uma única textura sem highlight. Daqui até o final do giro,
   // só a propriedade transform muda: nada de gradientes/paths por frame.
   drawWheel(false);
+  setWheelFallbackVisible(false);
   if(c)c.classList.add('wheelSpinning');
 
   if(c&&typeof c.animate==='function'){
@@ -724,7 +742,7 @@ function spin(){
     );
     wheel.spinAnimation=anim;
     anim.onfinish=()=>finishSpin(targetAngle);
-    anim.oncancel=()=>{if(c)c.classList.remove('wheelSpinning')};
+    anim.oncancel=()=>{if(c)c.classList.remove('wheelSpinning');setWheelFallbackVisible(true)};
     return;
   }
 
