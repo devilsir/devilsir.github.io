@@ -3,10 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, minimum-scale=0.5, maximum-scale=5">
-<title>Roleta Química Web</title>
-<link rel="stylesheet" href="./index.css?v=25">
+<title>Roleta Química do Café</title>
+<meta name="application-name" content="Roleta Química do Café">
+<meta name="theme-color" content="#6f2c0c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Roleta Química">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="stylesheet" href="./index.css?v=27">
 
 <link rel="stylesheet" href="./editmode-v3-style.css?v=25" id="editmode-v3-style">
+<link rel="stylesheet" href="./pwa.css?v=1">
 
 </head>
 <body>
@@ -15,7 +25,7 @@
     <img class="bg" id="introBg"><video id="introVideo" class="videoFull" autoplay playsinline></video>
     <div id="introContent" class="modalArea" style="opacity:0;transition:opacity .2s"></div>
   </section>
-  <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div></section>
+  <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div><button id="pwaInstallBtn" type="button" hidden aria-label="Instalar Roleta Química como aplicativo">Instalar app</button></section>
   <section id="transition" class="screen"><video id="transitionVideo" class="videoFull" playsinline></video></section>
   <section id="game" class="screen"><img class="bg contain" data-a="xicara de cima.png"><div id="scoreboard" class="gameScore"></div><div class="wheelArea"><div id="wheelWrap" class="wheelWrap"><canvas id="wheelCanvas" width="1040" height="1040"></canvas><button id="spinBtn" class="kbtn" style="left:210px;top:210px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div><button id="gameBack" class="kbtn" style="right:22px;top:0;width:180px;height:80px"><img data-a="setavoltar.png"></button></div><div id="instruction" class="instruction"><img data-a="setadica.png" style="position:absolute;left:728px;top:304px;width:100px;height:100px"><div class="outlinedText">Clique para girar</div><button id="spinBtn2" class="kbtn" style="left:670px;top:385px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div></section>
   <section id="addedit" class="screen"><img class="bg" data-a="fundo generico.jpg"><div id="addEditContent" class="scroll kvScroll" style="position:absolute;inset:0;padding:10px"></div></section>
@@ -41,6 +51,7 @@
 <script src="./payload.js?v=25"></script>
 <script src="./english-banks.js?v=26"></script>
 <script src="./english-presets.js?v=26"></script>
-<script src="./index.js?v=26"></script>
+<script src="./index.js?v=27"></script>
+<script src="./pwa.js?v=1"></script>
 </body>
 </html>

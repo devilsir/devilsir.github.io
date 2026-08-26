@@ -951,3 +951,23 @@ body.isMobileLandscape .viewport{
   border-radius:7px !important;
   align-self:center !important;
 }
+
+/* Mobile/tablet performance: the wheel is composited as a single GPU layer while spinning. */
+#wheelCanvas{
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  contain:paint;
+}
+#wheelCanvas.wheelSpinning{
+  will-change:transform;
+}
+@media (pointer:coarse){
+  #wheelCanvas{
+    image-rendering:auto;
+  }
+  #game .bg{
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+  }
+}

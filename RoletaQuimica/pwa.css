@@ -1,0 +1,28 @@
+/* PWA install affordance. Hidden until the browser reports the app as installable. */
+#pwaInstallBtn{
+  position:absolute;
+  left:1071px;
+  top:618px;
+  width:190px;
+  height:58px;
+  z-index:145;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:0 18px;
+  border:0;
+  border-radius:7px;
+  background:rgba(118,43,0,.88);
+  color:#fff5da;
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.2px;
+  text-align:center;
+  text-shadow:0 2px 3px rgba(0,0,0,.8);
+  cursor:pointer;
+  box-shadow:inset 0 0 0 2px rgba(255,196,105,.28),0 4px 12px rgba(0,0,0,.22);
+}
+#pwaInstallBtn:hover{background:rgba(142,55,2,.94)}
+#pwaInstallBtn:active{transform:translateY(1px)}
+#pwaInstallBtn.is-visible{display:flex}
+@media (display-mode:standalone){#pwaInstallBtn{display:none!important}}
