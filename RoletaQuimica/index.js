@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const P=window.ROULETTE_PAYLOAD,A=P.assets,EXTRA_DBS=window.ROULETTE_ENGLISH_BANKS||{},DEFAULT_DBS={...(P.dbs||{}),...EXTRA_DBS},POS=P.positions,CREDITS=P.credits;
+const P=window.ROULETTE_PAYLOAD,A=P.assets,EXTRA_DBS=window.ROULETTE_ENGLISH_BANKS||{},BUILTIN_PRESETS=window.ROULETTE_BUILTIN_PRESETS||{},DEFAULT_DBS={...(P.dbs||{}),...EXTRA_DBS},POS=P.positions,CREDITS=P.credits;
 const DB_KEY='qc1_db_clean_questions_v2',PRE_KEY='qc1_predefs',HIST_KEY='qc1_history_clean_v1';
 function isTestAreaName(n){let s=String(n||'').trim().toLowerCase();return s==='teste'||s==='test'||s==='área teste'||s==='area teste'||s.startsWith('teste ')}
 function inferSubject(q,mode=''){
@@ -42,7 +42,7 @@ function cleanRuntimePredefs(pre){
   });
   return pre||{};
 }
-let DB=cleanRuntimeDB(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS))),PRE=cleanRuntimePredefs(load(PRE_KEY,P.predefs||{}));
+let DB=cleanRuntimeDB(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
 save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;
@@ -128,8 +128,10 @@ function show(id){current=id;$$('.screen').forEach(s=>s.classList.toggle('active
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)}function closePopup(){clearInterval(timer);timer=null;const ov=$('#overlay');ov.onclick=null;ov.classList.remove('show');$('#popupHost').innerHTML=''}function popup(html,w=820,h=520,bg='popup genérico HD.png',closeOnOutside=false){const host=$('#popupHost'),ov=$('#overlay');host.innerHTML=`<div class="popup" style="width:${w}px;height:${h}px;background-image:url('${A[bg]||''}')"><div class="popupInner">${html}</div></div>`;ov.onclick=closeOnOutside?e=>{if(e.target===ov)closePopup()}:null;ov.classList.add('show');return $('.popupInner',host)}
 function imgBtn(parent,id,name,x,y,w,h,cb,hover){const blank='./assets/embedded/transparent-pixel.gif';const b=document.createElement('button');b.id=id||'';b.className='kbtn';b.style.left=x+'px';b.style.bottom=y+'px';b.style.width=w+'px';b.style.height=h+'px';const im=document.createElement('img');im.src=A[name]||blank;b.appendChild(im);if(hover){b.onmouseenter=()=>im.src=A[hover]||A[name]||blank;b.onmouseleave=()=>im.src=A[name]||blank;b.onmousedown=()=>im.src=A[hover]||A[name]||blank;b.onmouseup=()=>im.src=A[hover]||A[name]||blank;}b.onclick=cb;parent.appendChild(b);return b}
 function textImgBtn(name,text,cb){return `<button class="stdBtn" style="background-image:url('${A[name]||''}');width:100%">${esc(text)}</button>`}
-function makeSelect(parent,id,values,text,x,y,w,h,bg='botao generico telainicial.png',hover='botao generico telainicial_hover.png',onchange){const div=document.createElement('div');div.className='kselect';div.id=id;div.style.left=x+'px';div.style.bottom=y+'px';div.style.width=w+'px';div.style.height=h+'px';div.dataset.value=text;div.tabIndex=0;div.setAttribute('role','combobox');div.setAttribute('aria-haspopup','listbox');div.setAttribute('aria-expanded','false');div.innerHTML=`<div class="selHead" style="background-image:url('${A[bg]||''}')">${esc(text)}</div><div class="selOpts" role="listbox">${values.map(v=>`<div class="selOpt" role="option" style="background-image:url('${A[bg]||''}')" data-v="${esc(v)}">${esc(v)}</div>`).join('')}</div>`;const head=$('.selHead',div);const toggle=()=>{const willOpen=!div.classList.contains('open');$$('.kselect.open').forEach(o=>{if(o!==div){o.classList.remove('open');o.setAttribute('aria-expanded','false')}});div.classList.toggle('open',willOpen);div.setAttribute('aria-expanded',String(willOpen))};head.onmouseenter=()=>head.style.backgroundImage=`url('${A[hover]||A[bg]||''}')`;head.onmouseleave=()=>head.style.backgroundImage=`url('${A[bg]||''}')`;head.onclick=e=>{e.stopPropagation();toggle()};div.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}else if(e.key==='Escape'){div.classList.remove('open');div.setAttribute('aria-expanded','false')}};$$('.selOpt',div).forEach(o=>o.onclick=e=>{e.stopPropagation();div.dataset.value=o.dataset.v;head.textContent=o.dataset.v;div.classList.remove('open');div.setAttribute('aria-expanded','false');onchange&&onchange(o.dataset.v,div)});parent.appendChild(div);return div}document.addEventListener('click',()=>$$('.kselect.open').forEach(o=>{o.classList.remove('open');o.setAttribute('aria-expanded','false')}));
-function getSel(id){return $('#'+id)?.dataset.value||''}function setSel(id,v){const el=$('#'+id);if(!el)return;el.dataset.value=v;$('.selHead',el).textContent=v}function modeDB(m){return DB[m]||DB['Coffee Lovers']}function subjectOf(q,mode=''){return inferSubject(q,mode)}function subjectOptions(mode){let d=modeDB(mode),saved=Array.isArray(d.materias)?d.materias:[],found=[...new Set((d.perguntas||[]).map(q=>subjectOf(q,mode)).filter(Boolean))];return[...new Set([...SUBJECTS,...saved,...found].map(v=>String(v).trim()).filter(Boolean))]}function defaultSubjectForMode(mode){let found=[...new Set((modeDB(mode).perguntas||[]).map(q=>subjectOf(q,mode)).filter(Boolean))];return found.length===1?found[0]:(['6º ano','7º ano','8º ano','9º ano'].includes(mode)?'Inglês':'Química')}function diffs(m){return (modeDB(m).dificuldades||['Fácil','Médio','Difícil']).map(d=>String(d))}function parseTime(t){let [m,s]=t.split(':').map(Number);return m*60+s}function diffNorm(d){let s=String(d||'').toLowerCase();if(s==='1'||s==='fácil'||s==='facil')return'fácil';if(s==='2'||s==='médio'||s==='medio')return'médio';if(s==='3'||s==='difícil'||s==='dificil')return'difícil';return s}function pts(d){return {'fácil':15,'médio':20,'difícil':30}[diffNorm(d)]||15}function rgba(c,a=1){if(!Array.isArray(c))return`rgba(80,80,80,${a})`;return`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${c[3]??a})`}function hex(c){if(!Array.isArray(c))return'#ffffff';return '#'+c.slice(0,3).map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('')}function fromHex(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255,1]}
+function fitSelectText(target){const head=target?.classList?.contains('selHead')?target:$('.selHead',target);if(!head)return;const wrap=head.closest('.kselect');const width=wrap?.clientWidth||head.clientWidth||180;const id=wrap?.id||'';let size=width>=240?20:width>=200?18:16;if(id==='spinner_equipes'||id==='spinner_tempo'||id==='spinner_game_mode'||id==='listMode'||id==='listArea'||id==='listDiff'||id==='preSel'||id==='preMode'||id==='preArea'||id==='preDiff')size=34;else if(id==='spinner_predefinicao')size=24;head.style.fontSize=size+'px';head.style.letterSpacing='0';head.style.whiteSpace='nowrap';head.style.overflow='hidden';head.style.textOverflow='ellipsis';let min=(id.startsWith('spinner_')||id==='listMode'||id==='listArea'||id==='listDiff'||id==='preSel'||id==='preMode'||id==='preArea'||id==='preDiff')?18:12;let tries=0;while(head.scrollWidth>head.clientWidth-6&&size>min&&tries<24){size-=1;head.style.fontSize=size+'px';tries++;}}
+function fitSelectOptions(selectEl){if(!selectEl)return;const id=selectEl.id||'';let base=(id==='listMode'||id==='listArea'||id==='listDiff'||id==='preSel'||id==='preMode'||id==='preArea'||id==='preDiff')?34:20;$('.selOpts',selectEl)?.querySelectorAll?.('.selOpt')?.forEach(opt=>{let size=base;opt.style.fontSize=size+'px';opt.style.padding='0 10px';opt.style.whiteSpace='nowrap';opt.style.overflow='hidden';opt.style.textOverflow='ellipsis';let tries=0;while(opt.scrollWidth>opt.clientWidth-6&&size>16&&tries<24){size-=1;opt.style.fontSize=size+'px';tries++;}})}
+function makeSelect(parent,id,values,text,x,y,w,h,bg='botao generico telainicial.png',hover='botao generico telainicial_hover.png',onchange){const div=document.createElement('div');div.className='kselect';div.id=id;div.style.left=x+'px';div.style.bottom=y+'px';div.style.width=w+'px';div.style.height=h+'px';div.dataset.value=text;div.tabIndex=0;div.setAttribute('role','combobox');div.setAttribute('aria-haspopup','listbox');div.setAttribute('aria-expanded','false');div.innerHTML=`<div class="selHead" style="background-image:url('${A[bg]||''}')">${esc(text)}</div><div class="selOpts" role="listbox">${values.map(v=>`<div class="selOpt" role="option" style="background-image:url('${A[bg]||''}')" data-v="${esc(v)}">${esc(v)}</div>`).join('')}</div>`;const head=$('.selHead',div),opts=$('.selOpts',div);const close=()=>{div.classList.remove('open','openUp');div.setAttribute('aria-expanded','false')};const positionOpts=()=>{const stageRect=($('#stage')?.getBoundingClientRect?.())||{top:0,bottom:window.innerHeight};const rect=div.getBoundingClientRect();const desired=Math.min(Math.max(values.length*48,48),260);const margin=8;const spaceBelow=Math.max(0,stageRect.bottom-rect.bottom-margin);const spaceAbove=Math.max(0,rect.top-stageRect.top-margin);const forceUp=div.dataset.forceUp==='true';const openUp=forceUp?(spaceAbove>=96||spaceAbove>=spaceBelow):(spaceBelow<Math.min(160,desired)&&spaceAbove>spaceBelow);div.classList.toggle('openUp',openUp);const preferredSpace=openUp?spaceAbove:spaceBelow;const fallbackSpace=openUp?spaceBelow:spaceAbove;const available=Math.max(96,Math.min(desired,(preferredSpace||fallbackSpace)||desired));opts.style.maxHeight=available+'px'};const open=()=>{positionOpts();$$('.kselect.open').forEach(o=>{if(o!==div){o.classList.remove('open','openUp');o.setAttribute('aria-expanded','false')}});div.classList.add('open');div.setAttribute('aria-expanded','true');requestAnimationFrame(positionOpts)};const toggle=()=>div.classList.contains('open')?close():open();head.onmouseenter=()=>head.style.backgroundImage=`url('${A[hover]||A[bg]||''}')`;head.onmouseleave=()=>head.style.backgroundImage=`url('${A[bg]||''}')`;head.onclick=e=>{e.stopPropagation();toggle()};div.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}else if(e.key==='Escape'){close()}};$$('.selOpt',div).forEach(o=>o.onclick=e=>{e.stopPropagation();div.dataset.value=o.dataset.v;head.textContent=o.dataset.v;fitSelectText(div);close();onchange&&onchange(o.dataset.v,div)});window.addEventListener('resize',()=>{fitSelectText(div);fitSelectOptions(div);if(div.classList.contains('open'))positionOpts()});parent.appendChild(div);fitSelectText(div);fitSelectOptions(div);return div}document.addEventListener('click',()=>$$('.kselect.open').forEach(o=>{o.classList.remove('open','openUp');o.setAttribute('aria-expanded','false')}));
+function getSel(id){return $('#'+id)?.dataset.value||''}function setSel(id,v){const el=$('#'+id);if(!el)return;el.dataset.value=v;$('.selHead',el).textContent=v;fitSelectText(el)}function modeDB(m){return DB[m]||DB['Coffee Lovers']}function subjectOf(q,mode=''){return inferSubject(q,mode)}function subjectOptions(mode){let d=modeDB(mode),saved=Array.isArray(d.materias)?d.materias:[],found=[...new Set((d.perguntas||[]).map(q=>subjectOf(q,mode)).filter(Boolean))];return[...new Set([...SUBJECTS,...saved,...found].map(v=>String(v).trim()).filter(Boolean))]}function defaultSubjectForMode(mode){let found=[...new Set((modeDB(mode).perguntas||[]).map(q=>subjectOf(q,mode)).filter(Boolean))];return found.length===1?found[0]:(['6º ano','7º ano','8º ano','9º ano'].includes(mode)?'Inglês':'Química')}function diffs(m){return (modeDB(m).dificuldades||['Fácil','Médio','Difícil']).map(d=>String(d))}function parseTime(t){let [m,s]=t.split(':').map(Number);return m*60+s}function diffNorm(d){let s=String(d||'').toLowerCase();if(s==='1'||s==='fácil'||s==='facil')return'fácil';if(s==='2'||s==='médio'||s==='medio')return'médio';if(s==='3'||s==='difícil'||s==='dificil')return'difícil';return s}function pts(d){return {'fácil':15,'médio':20,'difícil':30}[diffNorm(d)]||15}function effectivePts(d,usedHint=false){return usedHint?Math.max(1,Math.round(pts(d)*0.85)):pts(d)}function rgba(c,a=1){if(!Array.isArray(c))return`rgba(80,80,80,${a})`;return`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${c[3]??a})`}function hex(c){if(!Array.isArray(c))return'#ffffff';return '#'+c.slice(0,3).map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('')}function fromHex(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255,1]}
 function renderIntro(){const cont=$('#introContent');cont.innerHTML='';let p=POS.intro||{};imgBtn(cont,'btn_config','configurar.png',p.btn_config?.[0]??1133,p.btn_config?.[1]??577,90,90,()=>show('home'),'configurar_hover.png');imgBtn(cont,'btn_instrucoes','instruções.png',p.btn_instrucoes?.[0]??273,p.btn_instrucoes?.[1]??29,256,80,showInstructions,'instruções_hover.png');imgBtn(cont,'btn_comecar','começar.png',p.btn_comecar?.[0]??553,p.btn_comecar?.[1]??129,220,60,openModePopup,'começar_hover.png');imgBtn(cont,'btn_creditos','créditos.png',p.btn_creditos?.[0]??870,p.btn_creditos?.[1]??41,179.2,56,()=>show('credits'),'créditos_hover.png')}
 function bootIntro(){renderIntro();$('#introBg').src=A['introdução cartoon.jpg']||'';let v=$('#introVideo');v.src=A['introdução.mp4']||'';v.muted=true;v.onended=()=>{$('#introContent').style.opacity=1;v.style.opacity=0};setTimeout(()=>{if($('#introContent').style.opacity==='0'){$('#introContent').style.opacity=1;v.style.opacity=0}},1600);v.play?.().catch(()=>{$('#introContent').style.opacity=1;v.style.opacity=0})}
 function showInstructions(){popup(`<img src="${A['cardinstruções.png']||''}" style="width:100%;height:100%;object-fit:contain">`,500,700,'fundotransparente.png',true)}
@@ -154,12 +156,12 @@ function openModePopup(){
   };
   $('#introCancel').onclick=closePopup;
 }
-function renderHome(){const c=$('#homeControls');c.innerHTML='';let p=POS.home||{};makeSelect(c,'spinner_game_mode',MODES,'Clique para escolher',p.spinner_game_mode?.[0]??872,p.spinner_game_mode?.[1]??415,180,80);makeSelect(c,'spinner_equipes',['2','3','4','5','6','7','8'],'2',p.spinner_equipes?.[0]??871,p.spinner_equipes?.[1]??625,180,80);makeSelect(c,'spinner_tempo',TIMES,'1:00',p.spinner_tempo?.[0]??871,p.spinner_tempo?.[1]??520,180,80);makeSelect(c,'spinner_predefinicao',['Escolher Predefinição',...Object.keys(PRE)],'Escolher Predefinição',p.spinner_predefinicao?.[0]??50,p.spinner_predefinicao?.[1]??50,250,60,'botao generico telainicial.png','botao generico telainicial_hover.png',n=>{if(n!=='Escolher Predefinição')openPredefStart(n)});imgBtn(c,'btn_iniciar','iniciar jogo.png',p.btn_iniciar?.[0]??761,p.btn_iniciar?.[1]??275,237.5,95,startFilterPopup,'iniciar jogo_hover.png');imgBtn(c,'btn_volume','volume.png',p.btn_volume?.[0]??1200,p.btn_volume?.[1]??600,90,90,openVolume,'volume_hover.png');imgBtn(c,'btn_adicionar','adicionar perguntas.png',p.btn_adicionar?.[0]??335,p.btn_adicionar?.[1]??275,237.5,95,()=>show('addedit'),'adicionar perguntas_hover.png');imgBtn(c,'btn_listar','listar perguntas.png',p.btn_listar?.[0]??761,p.btn_listar?.[1]??175,237.5,95,()=>show('list'),'listar perguntas_hover.png');imgBtn(c,'btn_voltar','setavoltar.png',p.btn_voltar?.[0]??99,p.btn_voltar?.[1]??586,180,80,()=>show('intro'),'setavoltar_hover.png');imgBtn(c,'btn_predefinicoes','predefinições.png',p.btn_predefinicoes?.[0]??335,p.btn_predefinicoes?.[1]??175,237.5,95,()=>show('predef'),'predefinições_hover.png');imgBtn(c,'btn_historico','historico.png',p.btn_historico?.[0]??1050,p.btn_historico?.[1]??45,237.5,95,()=>show('history'),'historico_hover.png')}
+function renderHome(){const c=$('#homeControls');c.innerHTML='';let p=POS.home||{};makeSelect(c,'spinner_game_mode',MODES,'Escolher',p.spinner_game_mode?.[0]??872,p.spinner_game_mode?.[1]??415,180,80);makeSelect(c,'spinner_equipes',['2','3','4','5','6','7','8'],'2',p.spinner_equipes?.[0]??871,p.spinner_equipes?.[1]??625,180,80);makeSelect(c,'spinner_tempo',TIMES,'1:00',p.spinner_tempo?.[0]??871,p.spinner_tempo?.[1]??520,180,80);const homePredefSel=makeSelect(c,'spinner_predefinicao',['Predefinições',...Object.keys(PRE)],'Escolher Predefinição',p.spinner_predefinicao?.[0]??50,p.spinner_predefinicao?.[1]??50,250,60,'botao generico telainicial.png','botao generico telainicial_hover.png',n=>{if(n!=='Escolher Predefinição')openPredefStart(n)});homePredefSel.dataset.forceUp='true';imgBtn(c,'btn_iniciar','iniciar jogo.png',p.btn_iniciar?.[0]??761,p.btn_iniciar?.[1]??275,237.5,95,startFilterPopup,'iniciar jogo_hover.png');imgBtn(c,'btn_volume','volume.png',p.btn_volume?.[0]??1200,p.btn_volume?.[1]??600,90,90,openVolume,'volume_hover.png');imgBtn(c,'btn_adicionar','adicionar perguntas.png',p.btn_adicionar?.[0]??335,p.btn_adicionar?.[1]??275,237.5,95,()=>show('addedit'),'adicionar perguntas_hover.png');imgBtn(c,'btn_listar','listar perguntas.png',p.btn_listar?.[0]??761,p.btn_listar?.[1]??175,237.5,95,()=>show('list'),'listar perguntas_hover.png');imgBtn(c,'btn_voltar','setavoltar.png',p.btn_voltar?.[0]??99,p.btn_voltar?.[1]??586,180,80,()=>show('intro'),'setavoltar_hover.png');imgBtn(c,'btn_predefinicoes','predefinições.png',p.btn_predefinicoes?.[0]??335,p.btn_predefinicoes?.[1]??175,237.5,95,()=>show('predef'),'predefinições_hover.png');imgBtn(c,'btn_historico','historico.png',p.btn_historico?.[0]??1050,p.btn_historico?.[1]??45,237.5,95,()=>show('history'),'historico_hover.png')}
 function openVolume(){let m=popup(`<div style="display:flex;flex-direction:column;gap:14px;padding:20px"><label class="label" for="ms">Música: <span id="mv">${bgm.volume.toFixed(2)}</span></label><input id="ms" type="range" min="0" max="1" step=".01" value="${bgm.volume}"><label class="label" for="es">Efeitos: <span id="ev">${okSound.volume.toFixed(2)}</span></label><input id="es" type="range" min="0" max="1" step=".01" value="${okSound.volume}"><button id="playM" class="stdBtn" style="background-image:url('${A['botao generico popup generico.png']}')">Tocar música</button><button id="ok" class="stdBtn" style="background-image:url('${A['botao generico popup generico.png']}')">OK</button></div>`,400,300);$('#ms').oninput=e=>{$('#mv').textContent=(bgm.volume=+e.target.value).toFixed(2)};$('#es').oninput=e=>{okSound.volume=errSound.volume=+e.target.value;$('#ev').textContent=okSound.volume.toFixed(2)};$('#playM').onclick=()=>bgm.play().catch(()=>{});$('#ok').onclick=closePopup}
 function msg(title,message,after){let m=popup(`<div style="display:flex;flex-direction:column;height:100%;align-items:center;justify-content:center;gap:28px"><div class="label" style="font-size:24px;text-align:center">${esc(message)}</div><button id="msgOk" class="stdBtn" style="background-image:url('${A['botao generico popup generico.png']}');width:240px">OK</button></div>`,820,360);$('#msgOk').onclick=()=>{closePopup();after&&after()}}
 function startFilterPopup(){
   let mode=getSel('spinner_game_mode');
-  if(mode==='Clique para escolher'||!mode){msg('Erro','Por favor, escolha um modo de jogo!');return}
+  if(!MODES.includes(mode)){msg('Modo de jogo','Selecione um modo de jogo antes de iniciar.');return}
   let data=modeDB(mode),areas=Object.keys(data.areas||{}),difs=data.dificuldades||['Fácil','Médio','Difícil'];
   let subjects=subjectOptions(mode),counts=Object.fromEntries(subjects.map(sub=>[sub,(data.perguntas||[]).filter(q=>subjectOf(q,mode)===sub).length]));
   let html=`<div class="filterPopupRoot filterPopupWithSubjects">
@@ -205,8 +207,13 @@ function startFilterPopup(){
   $('#gameCancelBtn').onclick=closePopup;
 }
 
-function openPredefStart(n){let pd=PRE[n];if(!pd){msg('Erro','Predefinição não encontrada.');return}let m=popup(`<div style="display:flex;flex-direction:column;gap:12px;padding:20px"><div class="label">Selecione o tempo:</div><div id="pdTimeBox" style="position:relative;height:50px;width:350px"></div><div class="label">Selecione o número de equipes:</div><div id="pdEqBox" style="position:relative;height:50px;width:350px"></div><button id="pdStart" class="stdBtn" style="background-image:url('${A['botao generico popup generico.png']}')">Iniciar Jogo</button></div>`,400,400);makeSelect($('#pdTimeBox'), 'pdTime', TIMES, '1:00',0,0,350,50,'botao generico popup generico.png','botao generico popup generico.png');makeSelect($('#pdEqBox'), 'pdEq',['2','3','4','5','6','7','8'],'2',0,0,350,50,'botao generico popup generico.png','botao generico popup generico.png');$('#pdStart').onclick=()=>{closePopup();let qs=pd.perguntas||[],areas=[...new Set(qs.map(q=>q.area))],ds=[...new Set(qs.map(q=>diffNorm(q.dificuldade)))];setupGame(pd.modo||'Coffee Lovers',parseInt(getSel('pdEq')),parseTime(getSel('pdTime')),areas,ds,[...new Set(qs.map(q=>subjectOf(q,pd.modo||'')))],qs)}}
+function openPredefStart(n){let pd=PRE[n];if(!pd){msg('Erro','Predefinição não encontrada.');return}let m=popup(`<div class="predefStartPopup"><div class="predefStartTitle">${esc(n)}</div><div class="label predefStartLabel">Selecione o tempo:</div><div id="pdTimeBox" class="predefStartSelectBox"></div><div class="label predefStartLabel">Selecione o número de equipes:</div><div id="pdEqBox" class="predefStartSelectBox"></div><div class="predefStartActions"><button id="pdStart" class="stdBtn" style="flex:1;background-image:url('${A['botao generico popup generico.png']}')">Iniciar Jogo</button><button id="pdCancel" class="stdBtn" style="flex:1;background-image:url('${A['botao generico popup generico.png']}')">Cancelar</button></div><div class="predefStartFootnote">Usar dica reduz a pontuação da questão para 85% do valor original.</div></div>`,440,455);makeSelect($('#pdTimeBox'), 'pdTime', TIMES, '1:00',0,0,360,50,'botao generico popup generico.png','botao generico popup generico.png');makeSelect($('#pdEqBox'), 'pdEq',['2','3','4','5','6','7','8'],'2',0,0,360,50,'botao generico popup generico.png','botao generico popup generico.png');$('#pdCancel').onclick=closePopup;$('#pdStart').onclick=()=>{let timeValue=getSel('pdTime')||'1:00',eqValue=parseInt(getSel('pdEq')||'2',10);let qs=Array.isArray(pd.perguntas)?pd.perguntas:[];if(!qs.length){msg('Erro','Essa predefinição não possui perguntas.');return}let presetAreas=Array.isArray(pd.areas_selected)?pd.areas_selected:[];let areas=[...new Set([...qs.map(q=>q.area),...presetAreas].filter(Boolean))],ds=[...new Set(qs.map(q=>diffNorm(q.dificuldade)).filter(Boolean))],subjects=[...new Set(qs.map(q=>subjectOf(q,pd.modo||'')).filter(Boolean))];closePopup();setupGame(pd.modo||'Coffee Lovers',Number.isFinite(eqValue)?eqValue:2,parseTime(timeValue||'1:00'),areas,ds.length?ds:['fácil','médio','difícil'],subjects,qs)}}
 function setupGame(mode,teams,timeLimit,areas,difs,subjects,preQs){
+  if(!MODES.includes(mode)){
+    game=null;
+    msg('Modo de jogo','Selecione um modo de jogo válido antes de iniciar.');
+    return;
+  }
   game={
     id:'s'+Date.now(),
     game_mode:mode,
@@ -220,6 +227,7 @@ function setupGame(mode,teams,timeLimit,areas,difs,subjects,preQs){
     rounds:[],
     used_questions:[],
     started_at:new Date().toLocaleString('pt-BR'),
+    started_at_ms:Date.now(),
     preQs
   };
   game.areas_selected=sanitizeAreasForGame(game.areas_selected);
@@ -254,19 +262,71 @@ function setupGame(mode,teams,timeLimit,areas,difs,subjects,preQs){
 function questionKey(q){
   return String((q&&q.materia)||'')+'||'+String((q&&q.area)||'')+'||'+String((q&&q.dificuldade)||'')+'||'+String((q&&q.pergunta)||'')
 }
+function questionType(q){
+  const raw=String(q?.tipo||'objetiva').trim().toLocaleLowerCase('pt-BR').replace(/[\s-]+/g,'_');
+  if(raw==='discursiva')return 'discursiva';
+  if(['verdadeiro_falso','verdadeiro_ou_falso','vf','v_f','true_false','truefalse'].includes(raw))return 'verdadeiro_falso';
+  return 'objetiva';
+}
+function questionTypeLabel(qOrType){
+  const type=typeof qOrType==='string'?questionType({tipo:qOrType}):questionType(qOrType);
+  if(type==='discursiva')return 'Discursiva';
+  if(type==='verdadeiro_falso')return 'Verdadeiro ou Falso';
+  return 'Objetiva';
+}
+function trueFalseCorrect(q){
+  if(typeof q?.correta_vf==='boolean')return q.correta_vf;
+  if(typeof q?.correta==='boolean')return q.correta;
+  const raw=String(q?.correta_vf??q?.resposta_correta_vf??'').trim().toLocaleLowerCase('pt-BR');
+  if(['verdadeiro','true','v','1'].includes(raw))return true;
+  if(['falso','false','f','0'].includes(raw))return false;
+  return null;
+}
+function normalizeDiscursiveAnswer(value){
+  return String(value??'')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .toLocaleLowerCase('pt-BR')
+    .replace(/[^a-z0-9]+/g,'');
+}
+function discursiveAcceptedAnswers(q){
+  const extras=Array.isArray(q?.respostas_aceitas)?q.respostas_aceitas:[];
+  return [q?.resposta_esperada,...extras]
+    .map(v=>String(v??'').trim())
+    .filter(Boolean);
+}
+function discursiveAnswerMatches(input,q){
+  const normalized=normalizeDiscursiveAnswer(input);
+  if(!normalized)return false;
+  if(q?.aceitar_qualquer_resposta===true)return true;
+  return discursiveAcceptedAnswers(q).some(v=>normalizeDiscursiveAnswer(v)===normalized);
+}
+function objectiveAlternativeCount(q){
+  const n=Array.isArray(q?.alternativas)?q.alternativas.length:4;
+  return Math.max(2,Math.min(5,Number.isInteger(n)?n:4));
+}
+function objectiveCorrectIndex(q){
+  const n=objectiveAlternativeCount(q);
+  const idx=Number(q?.correta);
+  return Number.isInteger(idx)&&idx>=0&&idx<n?idx:0;
+}
 function validQuestionPool(area){
   if(!game)return[];
   let used=new Set(game.used_questions||[]);
   let pool=game.preQs?game.preQs:(modeDB(game.game_mode).perguntas||[]);
-  return pool.filter(p=>
-    p.area===area &&
-    (!(game.subjects_selected||[]).length||(game.subjects_selected||[]).includes(subjectOf(p,game.game_mode))) &&
-    game.difficulties_selected.includes(diffNorm(p.dificuldade)) &&
-    Array.isArray(p.alternativas) &&
-    p.alternativas.length===4 &&
-    p.correta!==undefined &&
-    !used.has(questionKey(p))
-  )
+  return pool.filter(p=>{
+    const type=questionType(p);
+    const validByType=type==='discursiva'
+      ? !!String(p.resposta_esperada||'').trim()
+      : type==='verdadeiro_falso'
+        ? trueFalseCorrect(p)!==null
+        : (Array.isArray(p.alternativas)&&p.alternativas.length>=2&&p.alternativas.length<=5&&p.alternativas.every(v=>String(v??'').trim())&&Number.isInteger(Number(p.correta))&&Number(p.correta)>=0&&Number(p.correta)<p.alternativas.length);
+    return p.area===area &&
+      (!(game.subjects_selected||[]).length||(game.subjects_selected||[]).includes(subjectOf(p,game.game_mode))) &&
+      game.difficulties_selected.includes(diffNorm(p.dificuldade)) &&
+      validByType &&
+      !used.has(questionKey(p))
+  })
 }
 function hasAvailableQuestions(area){
   return SPECIAL.has(area)||validQuestionPool(area).length>0
@@ -343,7 +403,9 @@ function buildWheel(){
   let mode=game.game_mode,data=modeDB(mode),pairs;
   game.areas_selected=sanitizeAreasForGame(game.areas_selected);
   if(game.preQs){
-    let areas=[...new Set(game.preQs.map(q=>q.area))].filter(a=>game.areas_selected.includes(a)&&hasAvailableQuestions(a));
+    let questionAreas=[...new Set(game.preQs.map(q=>q.area))].filter(a=>game.areas_selected.includes(a)&&hasAvailableQuestions(a));
+    let specialAreas=(game.areas_selected||[]).filter(a=>SPECIAL.has(a)&&(data.areas||{})[a]);
+    let areas=[...new Set([...questionAreas,...specialAreas])];
     pairs=areas.map(a=>[a,(data.areas||{})[a]||[Math.random(),Math.random(),Math.random(),1]])
   }else{
     pairs=Object.entries(data.areas||{}).filter(([a])=>game.areas_selected.includes(a)&&(SPECIAL.has(a)||hasAvailableQuestions(a)))
@@ -617,8 +679,67 @@ function pickQuestion(area){
 function questionPopup(area,q){
   let tl=game.time_limit_secs,rem=tl;
   let color=(modeDB(game.game_mode).areas||{})[area]||[.2,.2,.2,1];
-  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div id="timerLabel" class="label" style="height:48px;text-align:center;font-size:18px">Tempo restante: ${rem}s</div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${esc(subjectOf(q,game.game_mode))} · ${esc(area)} · ${esc(q.dificuldade||'')}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${[...(q.alternativas||[]),'Dica'].map((a,i)=>`<button class="stdBtn ans" data-i="${i}" style="background-image:url('${A['botao generico popup generico.png']}');font-size:18px">${esc(a)}</button>`).join('')}</div></div></div>`;
+  const type=questionType(q);
+  const meta=`${esc(subjectOf(q,game.game_mode))} · ${esc(area)} · ${esc(q.dificuldade||'')} · ${questionTypeLabel(type)}`;
+  let controls='';
+  if(type==='discursiva'){
+    controls=`<div class="discursiveControls">
+      <label class="discursiveAnswerLabel" for="discursiveAnswerInput">Digite a resposta:</label>
+      <input id="discursiveAnswerInput" class="discursiveAnswerInput" type="text" autocomplete="off" spellcheck="false" placeholder="Escreva sua resposta aqui">
+      <div class="discursiveToleranceNote">Maiúsculas/minúsculas, acentos, espaços, hífens e pontuação não alteram a correção.</div>
+      <div class="discursiveAnswerActions">
+        <button id="submitDiscursiveAnswer" class="stdBtn discursiveSubmit" style="background-image:url('${A['botao generico popup generico.png']}')">Responder</button>
+        <button class="stdBtn discursiveHint" data-result="hint" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>
+      </div>
+    </div>`;
+  }else if(type==='verdadeiro_falso'){
+    controls=`<div class="trueFalseControls">
+      <div class="trueFalseAnswerRow" role="group" aria-label="Escolha Verdadeiro ou Falso">
+        <button class="stdBtn trueFalseBtn trueFalseTrue" data-v="true" style="background-image:url('${A['botao generico popup generico.png']}')">Verdadeiro</button>
+        <button class="stdBtn trueFalseBtn trueFalseFalse" data-v="false" style="background-image:url('${A['botao generico popup generico.png']}')">Falso</button>
+      </div>
+      <button class="stdBtn trueFalseHint" type="button" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>
+    </div>`;
+  }else{
+    controls=[...(q.alternativas||[]),'Dica'].map((a,i)=>`<button class="stdBtn ans" data-i="${i}" style="background-image:url('${A['botao generico popup generico.png']}');font-size:18px">${esc(a)}</button>`).join('');
+  }
+  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div id="timerLabel" class="label" style="height:48px;text-align:center;font-size:18px">Tempo restante: ${rem}s</div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${meta}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${controls}</div></div></div>`;
   popup(html,1093,494,'popup genérico HD.png').parentElement.style.backgroundColor=rgba(color,.3);
+  let hintUsed=false;
+  const finishQuestion=(correct,answerMarked=null)=>{
+    const marked=type==='discursiva'
+      ? String(answerMarked??'')
+      : type==='verdadeiro_falso'
+        ? (answerMarked===true?'Verdadeiro':answerMarked===false?'Falso':String(answerMarked??''))
+        : answerMarked;
+    const expected=type==='discursiva'
+      ? (q.resposta_esperada||'')
+      : type==='verdadeiro_falso'
+        ? (trueFalseCorrect(q)===true?'Verdadeiro':'Falso')
+        : q.correta;
+    const awardedPoints=correct?effectivePts(q.dificuldade,hintUsed):0;
+    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:marked,correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
+    game.rounds.push(rec);
+    markQuestionUsed(q);
+    if(correct){
+      okSound.play().catch(()=>{});
+      game.scores[game.current_team]+=awardedPoints;
+      renderScore();
+      closePopup();
+      rebuildWheelAfterQuestion(area);
+      msg('Pontos',hintUsed?`+${awardedPoints} pontos adicionados! (com dica = 85%)`:`+${awardedPoints} pontos adicionados!`,nextTeam)
+    }else{
+      errSound.play().catch(()=>{});
+      closePopup();
+      rebuildWheelAfterQuestion(area);
+      const feedback=type==='discursiva'&&q.resposta_esperada
+        ? `Que pena, você errou! Resposta esperada: ${q.resposta_esperada}`
+        : type==='verdadeiro_falso'
+          ? `Que pena, você errou! Resposta correta: ${trueFalseCorrect(q)?'Verdadeiro':'Falso'}`
+          : 'Que pena, você errou!';
+      msg('Pontos',feedback,nextTeam)
+    }
+  };
   timer=setInterval(()=>{
     if(rem<=0){
       closePopup();
@@ -631,21 +752,54 @@ function questionPopup(area,q){
     let l=$('#timerLabel');
     if(l)l.textContent=`Tempo restante: ${rem}s`
   },1000);
+  if(type==='discursiva'){
+    const input=$('#discursiveAnswerInput');
+    const submit=$('#submitDiscursiveAnswer');
+    const hint=$('.discursiveHint');
+    const gradeDiscursive=e=>{
+      e&&e.preventDefault&&e.preventDefault();
+      e&&e.stopPropagation&&e.stopPropagation();
+      const answer=String(input?.value||'').trim();
+      if(!answer){toast('Digite uma resposta antes de continuar.');input?.focus();return}
+      finishQuestion(discursiveAnswerMatches(answer,q),answer);
+    };
+    if(submit)submit.onclick=gradeDiscursive;
+    if(input){
+      input.focus();
+      input.addEventListener('keydown',e=>{if(e.key==='Enter')gradeDiscursive(e)});
+    }
+    if(hint)hint.onclick=e=>{e.preventDefault();e.stopPropagation();hintUsed=true;showHint(q)};
+    return;
+  }
+  if(type==='verdadeiro_falso'){
+    const correctValue=trueFalseCorrect(q);
+    $$('.trueFalseBtn').forEach(b=>b.onclick=e=>{
+      e&&e.preventDefault&&e.preventDefault();
+      e&&e.stopPropagation&&e.stopPropagation();
+      const marked=b.dataset.v==='true';
+      finishQuestion(marked===correctValue,marked);
+    });
+    const hint=$('.trueFalseHint');
+    if(hint)hint.onclick=e=>{e.preventDefault();e.stopPropagation();hintUsed=true;showHint(q)};
+    return;
+  }
   $$('.ans').forEach(b=>b.onclick=e=>{
     e&&e.preventDefault&&e.preventDefault();
     e&&e.stopPropagation&&e.stopPropagation();
     let i=+b.dataset.i;
-    if(i===(q.alternativas||[]).length){showHint(q);return}
-    let correct=i===Number(q.correta),rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,answer_marked:i,correct_answer:q.correta,is_correct:correct,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
+    if(i===(q.alternativas||[]).length){hintUsed=true;showHint(q);return}
+    let correct=i===Number(q.correta);
+    const awardedPoints=correct?effectivePts(q.dificuldade,hintUsed):0;
+    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:i,correct_answer:q.correta,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
     game.rounds.push(rec);
     markQuestionUsed(q);
     if(correct){
       okSound.play().catch(()=>{});
-      game.scores[game.current_team]+=pts(q.dificuldade);
+      game.scores[game.current_team]+=awardedPoints;
       renderScore();
       closePopup();
       rebuildWheelAfterQuestion(area);
-      msg('Pontos',`+${pts(q.dificuldade)} pontos adicionados!`,nextTeam)
+      msg('Pontos',hintUsed?`+${awardedPoints} pontos adicionados! (com dica = 85%)`:`+${awardedPoints} pontos adicionados!`,nextTeam)
     }else{
       errSound.play().catch(()=>{});
       closePopup();
@@ -664,6 +818,7 @@ function showHint(q){
   layer.className='hintLayer';
   layer.innerHTML=`<div class="hintCard" role="dialog" aria-modal="true">
     <h2>Dica</h2>
+    <div class="hintPenalty">Usar a dica reduz a pontuação desta questão para 85% do valor original.</div>
     <div class="hintText">${esc(q.dica_texto||'Sem dica cadastrada.')}</div>
     <button class="hintOk" type="button">OK</button>
   </div>`;
@@ -688,16 +843,62 @@ function showHint(q){
   host.appendChild(layer);
 }
 function nextTeam(){if(!game)return;game.current_team=(game.current_team+1)%game.num_teams;renderScore()}
-function endGame(){if(!game||!game.scores.length)return;let max=Math.max(...game.scores),w=game.scores.map((s,i)=>s===max?i+1:null).filter(Boolean),txt=w.length===1?`Equipe ${w[0]} venceu com ${max} pontos!`:`Empate entre as equipes: ${w.join(', ')} com ${max} pontos!`;let hist=load(HIST_KEY,[]);hist.push({...game,ended_at:new Date().toLocaleString('pt-BR'),final_scoreboard:Object.fromEntries(game.scores.map((s,i)=>[`Equipe ${i+1}`,s]))});save(HIST_KEY,hist);msg('Jogo Encerrado',txt,()=>{game=null;show('intro')})}
+function parseHistoryDate(value){
+  if(!value)return NaN;
+  if(typeof value==='number')return Number.isFinite(value)?value:NaN;
+  const direct=Date.parse(value);
+  if(Number.isFinite(direct))return direct;
+  const m=String(value).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:,)?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if(!m)return NaN;
+  return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]),Number(m[5]),Number(m[6]||0)).getTime();
+}
+function historyDurationSeconds(s){
+  for(const key of ['duration_secs','duration_seconds','duration']){
+    const n=Number(s?.[key]);
+    if(Number.isFinite(n)&&n>=0)return Math.round(n);
+  }
+  const start=Number(s?.started_at_ms)||parseHistoryDate(s?.started_at);
+  const end=Number(s?.ended_at_ms)||parseHistoryDate(s?.ended_at);
+  if(Number.isFinite(start)&&Number.isFinite(end)&&end>=start)return Math.round((end-start)/1000);
+  const roundSeconds=(s?.rounds||[]).reduce((sum,r)=>sum+(Number(r?.answer_time_secs)||0),0);
+  return roundSeconds>0?Math.round(roundSeconds):null;
+}
+function formatHistoryDuration(s){
+  const total=historyDurationSeconds(s);
+  if(total==null)return '—';
+  const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;
+  if(h>0)return `${h}h ${m}min ${sec}s`;
+  if(m>0)return `${m}min ${sec}s`;
+  return `${sec}s`;
+}
+function endGame(){if(!game||!game.scores.length)return;let max=Math.max(...game.scores),w=game.scores.map((s,i)=>s===max?i+1:null).filter(Boolean),txt=w.length===1?`Equipe ${w[0]} venceu com ${max} pontos!`:`Empate entre as equipes: ${w.join(', ')} com ${max} pontos!`;let hist=load(HIST_KEY,[]);const endedAtMs=Date.now(),startMs=Number(game.started_at_ms)||parseHistoryDate(game.started_at),durationSecs=Number.isFinite(startMs)?Math.max(0,Math.round((endedAtMs-startMs)/1000)):null;hist.push({...game,ended_at:new Date(endedAtMs).toLocaleString('pt-BR'),ended_at_ms:endedAtMs,duration_secs:durationSecs,final_scoreboard:Object.fromEntries(game.scores.map((s,i)=>[`Equipe ${i+1}`,s]))});save(HIST_KEY,hist);msg('Jogo Encerrado',txt,()=>{game=null;show('intro')})}
 function renderAddEdit(){
-  let c=$('#addEditContent'),m=editingIndex?.mode||addEditDraftMode||'Coffee Lovers',existing=editingIndex?modeDB(editingIndex.mode).perguntas[editingIndex.index]:null,initialSubject=existing?subjectOf(existing,editingIndex.mode):defaultSubjectForMode(m);
+  let c=$('#addEditContent');
+  if(editingIndex&&!addEditDraftMode)addEditDraftMode=editingIndex.mode;
+  let m=addEditDraftMode||editingIndex?.mode||'Coffee Lovers',existing=editingIndex?modeDB(editingIndex.mode).perguntas[editingIndex.index]:null,initialSubject=existing?subjectOf(existing,editingIndex.mode):defaultSubjectForMode(m),initialType=questionType(existing||{});
   c.innerHTML=`<div class="addEditForm">
     <div class="fieldRow"><span class="fieldLabel" id="editModeLabel">Modo de Jogo:</span><div id="editModeBox" class="selectFieldBox"></div></div>
     <div class="fieldRow"><span class="fieldLabel" id="editSubjectLabel">Matéria:</span><div id="editSubjectBox" class="selectFieldBox"></div></div>
     <div class="fieldRow subjectCreateRow"><label for="newSubject">Nova Matéria:</label><input id="newSubject" type="text" placeholder="Ex.: Física"><button id="addSubject" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Adicionar</button></div>
     <div class="fieldRow"><span class="fieldLabel" id="editAreaLabel">Área:</span><div id="editAreaBox" class="selectFieldBox"></div></div>
     <div class="fieldRow"><label for="newArea">Nova Área:</label><input id="newArea" type="text"><button id="addArea" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Adicionar</button></div>
-    ${['Pergunta:','Alternativa 0:','Alternativa 1:','Alternativa 2:','Alternativa 3:','Resposta Correta (0-3):'].map((l,i)=>`<div class="fieldRow"><label for="f${i}">${l}</label><input id="f${i}" ${i===5?'type="number" min="0" max="3" step="1"':'type="text"'}></div>`).join('')}
+    <div class="fieldRow"><span class="fieldLabel" id="editTypeLabel">Tipo de questão:</span><div id="editTypeBox" class="selectFieldBox"></div></div>
+    <div class="fieldRow"><label for="f0">Pergunta:</label><textarea id="f0" rows="2"></textarea></div>
+    <div id="objectiveFields">
+      <div class="fieldRow"><span class="fieldLabel" id="objectiveAltCountLabel">Quantidade de alternativas:</span><div id="objectiveAltCountBox" class="selectFieldBox"></div></div>
+      ${['A','B','C','D','E'].map((letter,i)=>`<div class="fieldRow objectiveAlternativeRow" data-alt-index="${i}"><label for="f${i+1}">Alternativa ${letter}:</label><input id="f${i+1}" type="text"></div>`).join('')}
+      <div class="fieldRow"><span class="fieldLabel" id="objectiveCorrectLabel">Resposta correta:</span><div id="objectiveCorrectBox" class="selectFieldBox"></div></div>
+      <div class="objectiveEditHelp">Escolha entre 2 e 5 alternativas. No jogo, somente as alternativas preenchidas para esta questão serão exibidas.</div>
+    </div>
+    <div id="discursiveFields" hidden>
+      <div class="fieldRow"><label for="expectedAnswerInput">Resposta esperada:</label><textarea id="expectedAnswerInput" rows="2" placeholder="Ex.: Guarda-roupa"></textarea></div>
+      <div class="discursiveEditHelp">A correção ignora automaticamente maiúsculas/minúsculas, acentos, espaços, hífens e pontuação. Ex.: “Guarda-roupa”, “guarda roupa” e “Guardaroupa” são equivalentes.</div>
+      <div class="fieldRow"><label for="acceptedAnswersInput">Outras respostas aceitas:</label><textarea id="acceptedAnswersInput" rows="3" placeholder="Opcional. Uma por linha. Ex.: Roupeiro&#10;Armário"></textarea></div>
+    </div>
+    <div id="trueFalseFields" hidden>
+      <div class="fieldRow"><span class="fieldLabel" id="trueFalseCorrectLabel">Resposta correta:</span><div id="trueFalseCorrectBox" class="selectFieldBox"></div></div>
+      <div class="trueFalseEditHelp">No jogo, esta pergunta terá apenas dois botões de resposta: <strong>Verdadeiro</strong> e <strong>Falso</strong>.</div>
+    </div>
     <div class="fieldRow"><span class="fieldLabel" id="editDiffLabel">Dificuldade:</span><div id="diffBox" class="selectFieldBox"></div></div>
     <div class="fieldRow"><label for="areaColor">Cor da Área:</label><input id="areaColor" type="color" value="#ffffff"></div>
     <div class="fieldRow"><label for="hintText">Dica (Texto):</label><input id="hintText" type="text"></div>
@@ -705,19 +906,34 @@ function renderAddEdit(){
     <div class="fieldRow formActions"><span class="fieldSpacer" aria-hidden="true"></span><button id="saveQ" type="button" class="stdBtn" style="flex:1;background-image:url('${A['botao generico listarperguntas.png']}')">Salvar</button><button id="cancelQ" type="button" class="stdBtn" style="flex:1;background-image:url('${A['botao generico listarperguntas.png']}')">Cancelar</button></div>
   </div>`;
   if(!$('#addBack')){imgBtn(c,'addBack','setavoltar.png',20,20,122,86,()=>show('home'),'setavoltar_hover.png');}
-  makeSelect($('#editModeBox'),'editMode',MODES,m,0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',v=>{if(!editingIndex)addEditDraftMode=v;renderAddEdit()});
+  makeSelect($('#editModeBox'),'editMode',MODES,m,0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',v=>{addEditDraftMode=v;renderAddEdit()});
   let currentMode=getSel('editMode')||m;
   makeSelect($('#editSubjectBox'),'editSubject',subjectOptions(currentMode),initialSubject,0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png');
   let areas=Object.keys(modeDB(currentMode).areas||{});
   makeSelect($('#editAreaBox'),'editArea',areas,'Selecione uma Área',0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',a=>{$('#areaColor').value=hex((modeDB(getSel('editMode')).areas||{})[a])});
+  makeSelect($('#editTypeBox'),'editType',['Objetiva','Discursiva','Verdadeiro ou Falso'],questionTypeLabel(initialType),0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',updateQuestionTypeFields);
+  const initialAltCount=objectiveAlternativeCount(existing);
+  makeSelect($('#objectiveAltCountBox'),'objectiveAltCount',['2','3','4','5'],String(initialAltCount),0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',updateObjectiveAlternativeFields);
+  renderObjectiveCorrectSelect(initialAltCount,String.fromCharCode(65+objectiveCorrectIndex(existing)));
+  makeSelect($('#trueFalseCorrectBox'),'trueFalseCorrect',['Verdadeiro','Falso'],trueFalseCorrect(existing)===false?'Falso':'Verdadeiro',0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png');
   makeSelect($('#diffBox'),'editDiff',['Fácil','Médio','Difícil'],'Fácil',0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png');
-  [['editMode','editModeLabel'],['editSubject','editSubjectLabel'],['editArea','editAreaLabel'],['editDiff','editDiffLabel']].forEach(([id,labelId])=>{let el=$('#'+id);if(el){el.setAttribute('role','combobox');el.setAttribute('aria-haspopup','listbox');el.setAttribute('aria-expanded','false');el.setAttribute('aria-labelledby',labelId);el.tabIndex=0;}});
+  [['editMode','editModeLabel'],['editSubject','editSubjectLabel'],['editArea','editAreaLabel'],['editType','editTypeLabel'],['objectiveAltCount','objectiveAltCountLabel'],['objectiveCorrect','objectiveCorrectLabel'],['trueFalseCorrect','trueFalseCorrectLabel'],['editDiff','editDiffLabel']].forEach(([id,labelId])=>{let el=$('#'+id);if(el){el.setAttribute('role','combobox');el.setAttribute('aria-haspopup','listbox');el.setAttribute('aria-expanded','false');el.setAttribute('aria-labelledby',labelId);el.tabIndex=0;}});
   if(editingIndex){
     let q=modeDB(editingIndex.mode).perguntas[editingIndex.index];
-    setSel('editMode',editingIndex.mode);setSel('editSubject',subjectOf(q,editingIndex.mode));setSel('editArea',q.area);setSel('editDiff',q.dificuldade);
-    $('#f0').value=q.pergunta||'';(q.alternativas||[]).forEach((a,i)=>$('#f'+(i+1)).value=a);$('#f5').value=q.correta;$('#hintText').value=q.dica_texto||'';$('#hintImg').value=q.dica_imagem||'';$('#areaColor').value=hex((modeDB(editingIndex.mode).areas||{})[q.area]);
+    const targetMode=getSel('editMode')||m;
+    const targetSubjects=subjectOptions(targetMode);
+    const targetAreas=Object.keys(modeDB(targetMode).areas||{});
+    const currentSubject=subjectOf(q,editingIndex.mode);
+    setSel('editMode',targetMode);setSel('editSubject',targetSubjects.includes(currentSubject)?currentSubject:defaultSubjectForMode(targetMode));setSel('editArea',targetAreas.includes(q.area)?q.area:'Selecione uma Área');setSel('editType',questionTypeLabel(q));setSel('editDiff',q.dificuldade);
+    if(questionType(q)==='verdadeiro_falso')setSel('trueFalseCorrect',trueFalseCorrect(q)===false?'Falso':'Verdadeiro');
+    if(questionType(q)==='objetiva'){setSel('objectiveAltCount',String(objectiveAlternativeCount(q)));renderObjectiveCorrectSelect(objectiveAlternativeCount(q),String.fromCharCode(65+objectiveCorrectIndex(q)));}
+    $('#f0').value=q.pergunta||'';(q.alternativas||[]).forEach((a,i)=>{let f=$('#f'+(i+1));if(f)f.value=a});$('#expectedAnswerInput').value=q.resposta_esperada||'';if($('#acceptedAnswersInput'))$('#acceptedAnswersInput').value=(q.respostas_aceitas||[]).join('\n');$('#hintText').value=q.dica_texto||'';$('#hintImg').value=q.dica_imagem||'';
+    const colorSource=(modeDB(targetMode).areas||{})[getSel('editArea')] || (modeDB(editingIndex.mode).areas||{})[q.area];
+    if(colorSource)$('#areaColor').value=hex(colorSource);
   }
-  $('#cancelQ').onclick=()=>{editingIndex=null;show('home')};
+  updateQuestionTypeFields();
+  updateObjectiveAlternativeFields();
+  $('#cancelQ').onclick=()=>{editingIndex=null;addEditDraftMode='Coffee Lovers';show('home')};
   $('#addSubject').onclick=()=>{
     let mm=getSel('editMode'),raw=$('#newSubject').value.trim();
     if(!raw){toast('Digite o nome da matéria.');$('#newSubject').focus();return}
@@ -731,14 +947,101 @@ function renderAddEdit(){
   $('#newArea').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#addArea').click();}});
   $('#saveQ').onclick=saveQuestion;
 }
-function saveQuestion(){let m=getSel('editMode'),a=getSel('editArea');addEditDraftMode=m||addEditDraftMode;if(a==='Selecione uma Área'||!a){msg('Erro','Selecione ou adicione uma área.');return}let q={materia:getSel('editSubject')||defaultSubjectForMode(m),area:a,pergunta:$('#f0').value,alternativas:[$('#f1').value,$('#f2').value,$('#f3').value,$('#f4').value],correta:Number($('#f5').value)||0,dificuldade:getSel('editDiff'),dica_texto:$('#hintText').value,dica_imagem:$('#hintImg').value};let d=modeDB(m);d.materias=Array.isArray(d.materias)?d.materias:[];if(q.materia&&!d.materias.some(v=>String(v).toLocaleLowerCase('pt-BR')===q.materia.toLocaleLowerCase('pt-BR')))d.materias.push(q.materia);d.areas[a]=fromHex($('#areaColor').value);if(editingIndex&&editingIndex.mode===m)d.perguntas[editingIndex.index]=q;else d.perguntas.push(q);save(DB_KEY,DB);editingIndex=null;msg('Sucesso','Pergunta salva.',()=>show('home'))}
-function renderList(){const c=$('#listControls');c.innerHTML='';let p=POS.list||{};makeSelect(c,'listMode',MODES,'Coffee Lovers',p.spinner_game_mode_list?.[0]??794,p.spinner_game_mode_list?.[1]??571,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',()=>renderListRows());imgBtn(c,'btn_voltar_listar','setavoltar.png',p.btn_voltar_listar?.[0]??40,p.btn_voltar_listar?.[1]??571,180,80,()=>show('home'),'setavoltar_hover.png');makeSelect(c,'listArea',['Todas',...Object.keys(modeDB('Coffee Lovers').areas||{})],'Todas',p.spinner_area_filter?.[0]??366,p.spinner_area_filter?.[1]??407,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows);makeSelect(c,'listDiff',['Todas','Fácil','Médio','Difícil'],'Todas',p.spinner_difficulty_filter?.[0]??762,p.spinner_difficulty_filter?.[1]??410,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows);renderListRows()}
-function renderListRows(){let m=getSel('listMode')||'Coffee Lovers';let areaSel=$('#listArea'),cur=areaSel?getSel('listArea'):'Todas';if(areaSel){let vals=['Todas',...Object.keys(modeDB(m).areas||{})];areaSel.remove();makeSelect($('#listControls'),'listArea',vals,vals.includes(cur)?cur:'Todas',POS.list.spinner_area_filter?.[0]??366,POS.list.spinner_area_filter?.[1]??407,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows)}let area=getSel('listArea')||'Todas',diff=getSel('listDiff')||'Todas';let rows=(modeDB(m).perguntas||[]).map((q,i)=>({q,i})).filter(o=>(area==='Todas'||o.q.area===area)&&(diff==='Todas'||String(o.q.dificuldade).charAt(0).toUpperCase()+String(o.q.dificuldade).slice(1)===diff));$('#questionList').innerHTML=rows.map(({q,i})=>`<div class="listRow"><div class="qText"><span class="listMeta">${esc(subjectOf(q,m))} · ${esc(q.area)} · ${esc(q.dificuldade)}</span>&nbsp; ${esc(q.pergunta)}</div><button class="kbtn editQ" data-i="${i}" style="position:relative;width:120px;height:40px"><img src="${A['botao generico listarperguntaseditar.png']||''}"></button></div>`).join('');$$('.editQ').forEach(b=>b.onclick=()=>{editingIndex={mode:m,index:+b.dataset.i};show('addedit')})}
-function renderPredef(){let c=$('#predefControls');c.innerHTML='';makeSelect(c,'preSel',['Escolher Predefinição',...Object.keys(PRE)],'Escolher Predefinição',341.5-125,705*.8-60,250,60);makeSelect(c,'preMode',['Todas',...MODES],'Todas',683-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preArea',['Todas'],'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preDiff',['Todas','Fácil','Médio','Difícil'],'Todas',1229.4-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);let save=document.createElement('button');save.className='stdBtn';save.style.cssText=`position:absolute;left:${683-125}px;bottom:${705*.02}px;width:250px;height:60px;background-image:url('${A['botao generico telainicial.png']}')`;save.textContent='Salvar Predefinição';save.onclick=savePredef;c.appendChild(save);imgBtn(c,'preBack','setavoltar.png',10,10,60,60,()=>show('home'),'setavoltar_hover.png');renderPredefQuestions()}
-function renderPredefQuestions(){let m=getSel('preMode')||'Todas';let areas=m==='Todas'?[...new Set(MODES.flatMap(mm=>Object.keys(modeDB(mm).areas||{})))]:Object.keys(modeDB(m).areas||{});let areaEl=$('#preArea');if(areaEl){let old=getSel('preArea');areaEl.remove();makeSelect($('#predefControls'),'preArea',['Todas',...areas],areas.includes(old)?old:'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions)}let area=getSel('preArea')||'Todas',diff=getSel('preDiff')||'Todas';let qs=[];(m==='Todas'?MODES:[m]).forEach(mm=>(modeDB(mm).perguntas||[]).forEach((q,i)=>{if((area==='Todas'||q.area===area)&&(diff==='Todas'||q.dificuldade===diff))qs.push({...q,_mode:mm,_i:i})}));$('#predefQuestions').innerHTML=qs.map((q,idx)=>`<label class="predefItem"><input type="checkbox" checked data-idx="${idx}"><span>${esc(q.pergunta)}</span></label>`).join('');$('#predefQuestions')._qs=qs}
-function savePredef(){let name=prompt('Nome da predefinição:');if(!name)return;let qs=$('#predefQuestions')._qs||[],sel=$$('#predefQuestions input:checked').map(i=>qs[+i.dataset.idx]);PRE[name]={modo:getSel('preMode')==='Todas'?'Coffee Lovers':getSel('preMode'),perguntas:sel};save(PRE_KEY,PRE);msg('Sucesso','Predefinição salva.',()=>show('home'))}
-function renderHistory(){let h=load(HIST_KEY,[]).slice().reverse();$('#histList').innerHTML=h.length?h.map((s,i)=>`<button class="nativeBtn histItem" data-i="${i}" style="width:100%;margin-bottom:8px"> ${esc(s.started_at)} | Modo: ${esc(s.game_mode)} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: —s</button>`).join(''):`<div style="height:140px;padding-top:24px;text-align:center;font-size:20px">Nenhuma sessão registrada ainda.</div>`;$$('.histItem').forEach(b=>b.onclick=()=>openHist(h[+b.dataset.i]));$('#histBack').onclick=()=>show('home')}
-function openHist(s){let lines=[` ${s.started_at} | Modo: ${s.game_mode} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: —s`,'--------------------------------------------------------------------------------',`Matérias: ${(s.subjects_selected||[]).join(', ')||'Todas disponíveis'}`,`Áreas: ${(s.areas_selected||[]).join(', ')||'—'}`,`Dificuldades: ${(s.difficulties_selected||[]).join(', ')||'—'}`,'',...(s.rounds||[]).map((r,i)=>`${String(i+1).padStart(2,'0')}. [${r.materia||''} | ${r.area||''} | ${r.difficulty||''} | Equipe ${r.equipe}]\n    Pergunta: ${r.question||''}\n    Resposta: ${r.answer_marked} | Correta: ${r.correct_answer} | Resultado: ${r.is_correct?'Certo':'Errado'}\n    Tempo gasto: ${r.answer_time_secs||'—'} s`)];let m=popup(`<pre class="scroll" style="white-space:pre-wrap;height:370px;font-size:16px">${esc(lines.join('\n'))}</pre><div style="display:flex;gap:8px"><button id="exportTxt" class="nativeBtn" style="width:160px;text-align:center">Exportar TXT</button><button id="exportCsv" class="nativeBtn" style="width:160px;text-align:center">Exportar CSV</button><button id="closeH" class="nativeBtn" style="width:120px;text-align:center">Fechar</button></div>`,900,520);$('#closeH').onclick=closePopup;$('#exportTxt').onclick=()=>download('historico_roleta.txt',lines.join('\n'),'text/plain');$('#exportCsv').onclick=()=>download('historico_roleta.csv',(s.rounds||[]).map(r=>[r.equipe,r.materia||'',r.area,r.difficulty,r.question,r.answer_marked,r.correct_answer,r.is_correct].map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n'),'text/csv')}
+function renderObjectiveCorrectSelect(count,preferred){
+  const box=$('#objectiveCorrectBox');
+  if(!box)return;
+  const old=$('#objectiveCorrect');
+  if(old)old.remove();
+  const letters=['A','B','C','D','E'].slice(0,Math.max(2,Math.min(5,Number(count)||4)));
+  const selected=letters.includes(preferred)?preferred:letters[0];
+  const el=makeSelect(box,'objectiveCorrect',letters,selected,0,0,500,38,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png');
+  el.setAttribute('role','combobox');el.setAttribute('aria-haspopup','listbox');el.setAttribute('aria-expanded','false');el.setAttribute('aria-labelledby','objectiveCorrectLabel');el.tabIndex=0;
+}
+function updateObjectiveAlternativeFields(){
+  const count=Math.max(2,Math.min(5,Number(getSel('objectiveAltCount'))||4));
+  $$('.objectiveAlternativeRow').forEach(row=>{row.hidden=Number(row.dataset.altIndex)>=count});
+  const current=getSel('objectiveCorrect')||'A';
+  renderObjectiveCorrectSelect(count,current);
+}
+function updateQuestionTypeFields(){
+  const selected=getSel('editType')||'Objetiva';
+  const type=questionType({tipo:selected});
+  const objective=$('#objectiveFields'),discursive=$('#discursiveFields'),trueFalse=$('#trueFalseFields');
+  if(objective)objective.hidden=type!=='objetiva';
+  if(discursive)discursive.hidden=type!=='discursiva';
+  if(trueFalse)trueFalse.hidden=type!=='verdadeiro_falso';
+  if(type==='objetiva')updateObjectiveAlternativeFields();
+}
+function saveQuestion(){
+  let m=getSel('editMode'),a=getSel('editArea');addEditDraftMode=m||addEditDraftMode;
+  if(a==='Selecione uma Área'||!a){msg('Erro','Selecione ou adicione uma área.');return}
+  const pergunta=$('#f0').value.trim();
+  if(!pergunta){msg('Erro','Digite a pergunta.');return}
+  const tipo=questionType({tipo:getSel('editType')||'Objetiva'});
+  let q={materia:getSel('editSubject')||defaultSubjectForMode(m),area:a,tipo,pergunta,dificuldade:getSel('editDiff'),dica_texto:$('#hintText').value,dica_imagem:$('#hintImg').value};
+  if(tipo==='discursiva'){
+    q.resposta_esperada=$('#expectedAnswerInput').value.trim();
+    if(!q.resposta_esperada){msg('Erro','Digite uma resposta esperada para a questão discursiva.');return}
+    q.respostas_aceitas=String($('#acceptedAnswersInput')?.value||'')
+      .split(/\r?\n|;/)
+      .map(v=>v.trim())
+      .filter(Boolean)
+      .filter(v=>normalizeDiscursiveAnswer(v)!==normalizeDiscursiveAnswer(q.resposta_esperada));
+  }else if(tipo==='verdadeiro_falso'){
+    q.correta_vf=(getSel('trueFalseCorrect')||'Verdadeiro')==='Verdadeiro';
+  }else{
+    const altCount=Math.max(2,Math.min(5,Number(getSel('objectiveAltCount'))||4));
+    q.alternativas=Array.from({length:altCount},(_,i)=>String($('#f'+(i+1))?.value||'').trim());
+    if(q.alternativas.some(v=>!v)){msg('Erro',`Preencha as ${altCount} alternativas da questão objetiva.`);return}
+    const correctLetter=getSel('objectiveCorrect')||'A';
+    const correta='ABCDE'.indexOf(correctLetter);
+    if(correta<0||correta>=altCount){msg('Erro','Selecione uma resposta correta entre as alternativas disponíveis.');return}
+    q.correta=correta;
+  }
+  let d=modeDB(m);d.materias=Array.isArray(d.materias)?d.materias:[];
+  if(q.materia&&!d.materias.some(v=>String(v).toLocaleLowerCase('pt-BR')===q.materia.toLocaleLowerCase('pt-BR')))d.materias.push(q.materia);
+  d.areas[a]=fromHex($('#areaColor').value);
+  if(editingIndex&&editingIndex.mode===m){
+    d.perguntas[editingIndex.index]=q;
+  }else if(editingIndex){
+    let oldModeDB=modeDB(editingIndex.mode);
+    if(Array.isArray(oldModeDB.perguntas)&&editingIndex.index>=0&&editingIndex.index<oldModeDB.perguntas.length)oldModeDB.perguntas.splice(editingIndex.index,1);
+    d.perguntas.push(q);
+  }else d.perguntas.push(q);
+  const movedMode=editingIndex&&editingIndex.mode!==m;
+  const saveMsg=movedMode?(tipo==='discursiva'?'Pergunta discursiva movida e salva.':tipo==='verdadeiro_falso'?'Pergunta de Verdadeiro ou Falso movida e salva.':'Pergunta objetiva movida e salva.'):(tipo==='discursiva'?'Pergunta discursiva salva.':tipo==='verdadeiro_falso'?'Pergunta de Verdadeiro ou Falso salva.':'Pergunta objetiva salva.');
+  save(DB_KEY,DB);editingIndex=null;addEditDraftMode='Coffee Lovers';msg('Sucesso',saveMsg,()=>show('home'))
+}
+function renderList(){const c=$('#listControls');c.innerHTML='';let p=POS.list||{};const modePos=p.listMode||p.spinner_game_mode_list||[794,571],areaPos=p.listArea||p.spinner_area_filter||[366,407],diffPos=p.listDiff||p.spinner_difficulty_filter||[762,410],backPos=p.btn_voltar_listar||[40,571];makeSelect(c,'listMode',MODES,'Coffee Lovers',modePos[0]??794,modePos[1]??571,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',()=>renderListRows());imgBtn(c,'btn_voltar_listar','setavoltar.png',backPos[0]??40,backPos[1]??571,126,86,()=>show('home'),'setavoltar_hover.png');makeSelect(c,'listArea',['Todas',...Object.keys(modeDB('Coffee Lovers').areas||{})],'Todas',areaPos[0]??366,areaPos[1]??407,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows);makeSelect(c,'listDiff',['Todas','Fácil','Médio','Difícil'],'Todas',diffPos[0]??762,diffPos[1]??410,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows);renderListRows()}
+function renderListRows(){let m=getSel('listMode')||'Coffee Lovers';let p=POS.list||{};const areaPos=p.listArea||p.spinner_area_filter||[366,407];let areaSel=$('#listArea'),cur=areaSel?getSel('listArea'):'Todas';if(areaSel){let vals=['Todas',...Object.keys(modeDB(m).areas||{})];areaSel.remove();makeSelect($('#listControls'),'listArea',vals,vals.includes(cur)?cur:'Todas',areaPos[0]??366,areaPos[1]??407,180,80,'botao generico listarperguntas.png','botao generico listarperguntas_hover.png',renderListRows)}let area=getSel('listArea')||'Todas',diff=getSel('listDiff')||'Todas';let rows=(modeDB(m).perguntas||[]).map((q,i)=>({q,i})).filter(o=>(area==='Todas'||o.q.area===area)&&(diff==='Todas'||String(o.q.dificuldade).charAt(0).toUpperCase()+String(o.q.dificuldade).slice(1)===diff));$('#questionList').innerHTML=rows.map(({q,i})=>`<div class="listRow"><div class="qText"><span class="listMeta">${esc(subjectOf(q,m))} · ${esc(q.area)} · ${esc(q.dificuldade)} · ${questionTypeLabel(q)}</span>&nbsp; ${esc(q.pergunta)}</div><button class="editQ listEditBtn" data-i="${i}" type="button">Editar</button></div>`).join('');$$('.editQ').forEach(b=>b.onclick=()=>{editingIndex={mode:m,index:+b.dataset.i};addEditDraftMode=m;show('addedit')})}
+function renderPredef(){let c=$('#predefControls');c.innerHTML='';makeSelect(c,'preSel',['Predefinições',...Object.keys(PRE)],'Predefinições',341.5-125,705*.8-60,250,60);makeSelect(c,'preMode',['Todas',...MODES],'Todas',683-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preArea',['Todas'],'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preDiff',['Todas','Fácil','Médio','Difícil'],'Todas',1229.4-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);let save=document.createElement('button');save.id='predefSaveBtn';save.className='stdBtn predefSaveBtn';save.style.cssText=`position:absolute;left:${683-125}px;bottom:${705*.02}px;width:250px;height:60px;background-image:url('${A['botao generico telainicial.png']}')`;save.textContent='Salvar Predefinição';save.onclick=e=>{savePredef();e.currentTarget.blur&&e.currentTarget.blur()};save.onmouseup=()=>save.blur&&save.blur();save.onmouseleave=()=>save.blur&&save.blur();c.appendChild(save);imgBtn(c,'preBack','setavoltar.png',10,10,60,60,()=>show('home'),'setavoltar_hover.png');renderPredefQuestions()}
+function renderPredefQuestions(){let m=getSel('preMode')||'Todas';let modes=m==='Todas'?MODES:[m];let areas=m==='Todas'?[...new Set(MODES.flatMap(mm=>Object.keys(modeDB(mm).areas||{})))]:Object.keys(modeDB(m).areas||{});let areaEl=$('#preArea');if(areaEl){let old=getSel('preArea');areaEl.remove();makeSelect($('#predefControls'),'preArea',['Todas',...areas],areas.includes(old)?old:'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions)}let area=getSel('preArea')||'Todas',diff=getSel('preDiff')||'Todas';let qs=[];modes.forEach(mm=>(modeDB(mm).perguntas||[]).forEach((q,i)=>{if((area==='Todas'||q.area===area)&&(diff==='Todas'||q.dificuldade===diff))qs.push({...q,_mode:mm,_i:i})}));let specialAreas=[...new Set(modes.flatMap(mm=>Object.keys(modeDB(mm).areas||{}).filter(a=>SPECIAL.has(a))))].filter(a=>area==='Todas'||a===area);let specialHtml=specialAreas.length?`<div class="predefSpecialBlock"><div class="predefSpecialTitle">Áreas especiais da roleta</div>${specialAreas.map(a=>`<label class="predefItem predefSpecialItem"><input type="checkbox" checked data-special-area="${esc(a)}"><span>${esc(a)}</span></label>`).join('')}</div>`:'';let questionHtml=qs.length?qs.map((q,idx)=>`<label class="predefItem"><input type="checkbox" checked data-idx="${idx}"><span>${esc(q.pergunta)}</span></label>`).join(''):`<div class="predefEmpty">${SPECIAL.has(area)?'Esta é uma área especial de pontuação e não possui pergunta própria.':'Nenhuma pergunta encontrada para este filtro.'}</div>`;$('#predefQuestions').innerHTML=specialHtml+questionHtml;$('#predefQuestions')._qs=qs}
+function savePredef(){let name=prompt('Nome da predefinição:');if(!name)return;let qs=$('#predefQuestions')._qs||[],sel=$$('#predefQuestions input[data-idx]:checked').map(i=>qs[+i.dataset.idx]).filter(Boolean),specials=$$('#predefQuestions input[data-special-area]:checked').map(i=>i.dataset.specialArea).filter(Boolean),normalAreas=sel.map(q=>q.area).filter(Boolean),areasSelected=[...new Set([...normalAreas,...specials])];PRE[name]={modo:getSel('preMode')==='Todas'?'Coffee Lovers':getSel('preMode'),perguntas:sel,areas_selected:areasSelected};save(PRE_KEY,PRE);msg('Sucesso','Predefinição salva com as áreas selecionadas.',()=>show('home'))}
+function renderHistory(){let h=load(HIST_KEY,[]).slice().reverse();$('#histList').innerHTML=h.length?h.map((s,i)=>`<button class="nativeBtn histItem" data-i="${i}" style="width:100%;margin-bottom:8px"> ${esc(s.started_at)} | Modo: ${esc(s.game_mode)} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: ${esc(formatHistoryDuration(s))}</button>`).join(''):`<div style="height:140px;padding-top:24px;text-align:center;font-size:20px">Nenhuma sessão registrada ainda.</div>`;$$('.histItem').forEach(b=>b.onclick=()=>openHist(h[+b.dataset.i]));$('#histBack').onclick=()=>show('home')}
+function openHist(s){
+  let lines=[
+    ` ${s.started_at} | Modo: ${s.game_mode} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: ${formatHistoryDuration(s)}`,
+    '--------------------------------------------------------------------------------',
+    `Matérias: ${(s.subjects_selected||[]).join(', ')||'Todas disponíveis'}`,
+    `Áreas: ${(s.areas_selected||[]).join(', ')||'—'}`,
+    `Dificuldades: ${(s.difficulties_selected||[]).join(', ')||'—'}`,
+    '',
+    ...(s.rounds||[]).map((r,i)=>{
+      const type=questionTypeLabel(r.question_type||'objetiva');
+      const marked=r.answer_marked??'—';
+      const expected=r.correct_answer??'—';
+      return `${String(i+1).padStart(2,'0')}. [${r.materia||''} | ${r.area||''} | ${r.difficulty||''} | ${type} | Equipe ${r.equipe}]\n    Pergunta: ${r.question||''}\n    Resposta/Correção: ${marked} | Gabarito/Esperada: ${expected} | Resultado: ${r.is_correct?'Certo':'Errado'}\n    Tempo gasto: ${r.answer_time_secs||'—'} s`
+    })
+  ];
+  popup(`<pre class="scroll" style="white-space:pre-wrap;height:370px;font-size:16px">${esc(lines.join('\n'))}</pre><div style="display:flex;gap:8px"><button id="exportTxt" class="nativeBtn" style="width:160px;text-align:center">Exportar TXT</button><button id="exportCsv" class="nativeBtn" style="width:160px;text-align:center">Exportar CSV</button><button id="closeH" class="nativeBtn" style="width:120px;text-align:center">Fechar</button></div>`,900,520);
+  $('#closeH').onclick=closePopup;
+  $('#exportTxt').onclick=()=>download('historico_roleta.txt',lines.join('\n'),'text/plain');
+  $('#exportCsv').onclick=()=>{
+    const header=['Equipe','Matéria','Área','Dificuldade','Tipo','Pergunta','Resposta/Correção','Gabarito/Esperada','Resultado'];
+    const rows=(s.rounds||[]).map(r=>[r.equipe,r.materia||'',r.area,r.difficulty,questionTypeLabel(r.question_type||'objetiva'),r.question,r.answer_marked??'',r.correct_answer??'',r.is_correct?'Certo':'Errado']);
+    download('historico_roleta.csv',[header,...rows].map(row=>row.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),'text/csv')
+  }
+}
 function download(name,txt,type){let b=new Blob([txt],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function renderCredits(){
   let box=$('#creditsBox');
@@ -757,9 +1060,9 @@ function openCredit(i){let c=CREDITS[i];popup(`<div style="display:flex;flex-dir
 
 
 function initLayoutEditorV3(){
-  const STORE='qc1_layout_overrides_editmode_v33_subject_filter';
+  const STORE='qc1_layout_overrides_editmode_v34_user_layout_v32';
   const OLD_STORE='__none__';
-  const DEFAULT_APPLIED_LAYOUT={"intro:btn_config":{"left":1047.2,"top":27.4,"width":74.6,"height":73.6},"intro:btn_instrucoes":{"left":306.8,"top":606.6,"width":235.8,"height":56.9},"intro:btn_comecar":{"left":565.6,"top":524.9,"width":220,"height":60},"intro:btn_creditos":{"left":835.3,"top":603.2,"width":201.4,"height":57.9},"home:spinner_game_mode":{"left":873.9,"top":210,"width":180,"height":80},"home:spinner_equipes":{"left":874.9,"top":3.9,"width":180,"height":80},"home:spinner_tempo":{"left":873.9,"top":107.9,"width":180,"height":80},"home:spinner_predefinicao":{"left":34.6,"top":553.5,"width":250,"height":60},"home:btn_iniciar":{"left":760,"top":341.7,"width":216.2,"height":69},"home:btn_volume":{"left":1200,"top":15,"width":90,"height":90},"home:btn_adicionar":{"left":334,"top":342.7,"width":237.5,"height":68},"home:btn_listar":{"left":763.9,"top":427.3,"width":215.3,"height":68},"home:btn_voltar":{"left":22.8,"top":48.6,"width":122.1,"height":86.8},"home:btn_predefinicoes":{"left":334,"top":427.3,"width":238.4,"height":66.1},"home:btn_historico":{"left":1071.2,"top":548.6,"width":189.3,"height":57.4},"game:spinBtn":{"left":174.4,"top":174.4,"width":133.6,"height":126.8},"game:gameBack":{"left":64.6,"top":27,"width":100.9,"height":94.5},"game:spinBtn2":{"left":629.6,"top":329.6,"width":110.6,"height":102.9},"addedit:editMode":{"left":0.9,"top":-0.9,"width":500,"height":40},"addedit:editArea":{"left":0,"top":0,"width":500,"height":40},"addedit:addArea":{"left":1164.1,"top":114.8,"width":180,"height":48},"addedit:editDiff":{"left":0,"top":0,"width":500,"height":40},"addedit:item_4":{"left":0,"top":0,"width":180,"height":48},"addedit:saveQ":{"left":428.2,"top":680,"width":457,"height":48},"addedit:cancelQ":{"left":893.1,"top":680.8,"width":457,"height":48},"list:listMode":{"left":794,"top":54,"width":180,"height":80},"list:btn_voltar_listar":{"left":40,"top":54,"width":126,"height":85.8},"list:listDiff":{"left":762,"top":215,"width":180,"height":80},"list:listArea":{"left":366,"top":218,"width":180,"height":80},"list:item_4":{"left":0,"top":0,"width":120,"height":40},"list:item_5":{"left":0,"top":0,"width":120,"height":40},"list:item_6":{"left":0,"top":0,"width":120,"height":40},"list:item_7":{"left":0,"top":0,"width":120,"height":40},"list:item_8":{"left":0,"top":0,"width":120,"height":40},"list:item_9":{"left":0,"top":0,"width":120,"height":40},"list:item_10":{"left":0,"top":0,"width":120,"height":40},"list:item_11":{"left":0,"top":0,"width":120,"height":40},"list:item_12":{"left":0,"top":0,"width":120,"height":40},"list:item_13":{"left":0,"top":0,"width":120,"height":40},"list:item_14":{"left":0,"top":0,"width":120,"height":40},"list:item_15":{"left":0,"top":0,"width":120,"height":40},"list:item_16":{"left":0,"top":0,"width":120,"height":40},"list:item_17":{"left":0,"top":0,"width":120,"height":40},"list:item_18":{"left":0,"top":0,"width":120,"height":40},"list:item_19":{"left":0,"top":0,"width":120,"height":40},"list:item_20":{"left":0,"top":0,"width":120,"height":40},"list:item_21":{"left":0,"top":0,"width":120,"height":40},"list:item_22":{"left":0,"top":0,"width":120,"height":40},"list:item_23":{"left":0,"top":0,"width":120,"height":40},"list:item_24":{"left":0,"top":0,"width":120,"height":40},"list:item_25":{"left":0,"top":0,"width":120,"height":40},"list:item_26":{"left":0,"top":0,"width":120,"height":40},"list:item_27":{"left":0,"top":0,"width":120,"height":40},"list:item_28":{"left":0,"top":0,"width":120,"height":40},"list:item_29":{"left":0,"top":0,"width":120,"height":40},"list:item_30":{"left":0,"top":0,"width":120,"height":40},"list:item_31":{"left":0,"top":0,"width":120,"height":40},"list:item_32":{"left":0,"top":0,"width":120,"height":40},"list:item_33":{"left":0,"top":0,"width":120,"height":40},"list:item_34":{"left":0,"top":0,"width":120,"height":40},"list:item_35":{"left":0,"top":0,"width":120,"height":40},"list:item_36":{"left":0,"top":0,"width":120,"height":40},"list:item_37":{"left":0,"top":0,"width":120,"height":40},"list:item_38":{"left":0,"top":0,"width":120,"height":40},"list:item_39":{"left":0,"top":0,"width":120,"height":40},"list:item_40":{"left":0,"top":0,"width":120,"height":40},"list:item_41":{"left":0,"top":0,"width":120,"height":40},"list:item_42":{"left":0,"top":0,"width":120,"height":40},"list:item_43":{"left":0,"top":0,"width":120,"height":40},"list:item_44":{"left":0,"top":0,"width":120,"height":40},"list:item_45":{"left":0,"top":0,"width":120,"height":40},"list:item_46":{"left":0,"top":0,"width":120,"height":40},"list:item_47":{"left":0,"top":0,"width":120,"height":40},"list:item_48":{"left":0,"top":0,"width":120,"height":40},"list:item_49":{"left":0,"top":0,"width":120,"height":40},"list:item_50":{"left":0,"top":0,"width":120,"height":40},"list:item_51":{"left":0,"top":0,"width":120,"height":40},"list:item_52":{"left":0,"top":0,"width":120,"height":40},"list:item_53":{"left":0,"top":0,"width":120,"height":40},"list:item_54":{"left":0,"top":0,"width":120,"height":40},"list:item_55":{"left":0,"top":0,"width":120,"height":40},"list:item_56":{"left":0,"top":0,"width":120,"height":40},"list:item_57":{"left":0,"top":0,"width":120,"height":40},"list:item_58":{"left":0,"top":0,"width":120,"height":40},"list:item_59":{"left":0,"top":0,"width":120,"height":40},"list:item_60":{"left":0,"top":0,"width":120,"height":40},"list:item_61":{"left":0,"top":0,"width":120,"height":40},"list:item_62":{"left":0,"top":0,"width":120,"height":40},"list:item_63":{"left":0,"top":0,"width":120,"height":40},"predef:preSel":{"left":216.5,"top":141,"width":250,"height":60},"predef:preMode":{"left":583,"top":141,"width":200,"height":60},"predef:preDiff":{"left":1129.4,"top":141,"width":200,"height":60},"predef:item_3":{"left":558,"top":630.9,"width":250,"height":60},"predef:preBack":{"left":39.9,"top":40.9,"width":87,"height":83.1},"predef:preArea":{"left":856.2,"top":141,"width":200,"height":60},"history:histBack":{"left":0,"top":0,"width":120,"height":48},"history:item_1":{"left":0,"top":0,"width":100,"height":40},"credits:creditBtn_0":{"left":0,"top":0,"width":197,"height":400},"credits:creditBtn_1":{"left":217,"top":0,"width":197,"height":400},"credits:creditBtn_2":{"left":434,"top":0,"width":197,"height":400},"credits:creditBtn_3":{"left":653,"top":0,"width":197,"height":400},"credits:creditsBack":{"left":27,"top":35,"width":60,"height":60},"popup:intro:openModePopup:introMode":{"left":28,"top":8,"width":594,"height":50},"popup:intro:openModePopup:introEq":{"left":28,"top":83,"width":594,"height":50},"popup:intro:openModePopup:introTime":{"left":28,"top":158,"width":594,"height":50},"popup:intro:openModePopup:introConfirm":{"left":88,"top":254,"width":200,"height":60},"popup:intro:openModePopup:introCancel":{"left":316,"top":254,"width":200,"height":60},"popup:home:startFilterPopup:filterStart":{"left":80,"top":455,"width":190,"height":44},"popup:home:startFilterPopup:filterCancel":{"left":280,"top":455,"width":200,"height":44},"popup:home:volume:playM":{"left":20,"top":178,"width":360,"height":48},"popup:home:volume:ok":{"left":20,"top":240,"width":360,"height":48},"addedit:addBack":{"left":47,"top":48.9,"width":122,"height":86},"history:item_2":{"left":0,"top":0,"width":100,"height":40},"history:item_3":{"left":0,"top":0,"width":100,"height":40},"popup:intro:introMode":{"left":-2.9,"top":65.9,"width":594,"height":50},"popup:intro:introConfirm":{"left":-302.8,"top":57.9,"width":200,"height":48},"popup:intro:introCancel":{"left":166.8,"top":60.8,"width":200,"height":48},"popup:intro:introTime":{"left":0,"top":229.4,"width":594,"height":50},"popup:intro:introEq":{"left":-3.8,"top":146.7,"width":594,"height":50},"popup:home:filterStart":{"left":345.7,"top":436.5,"width":190,"height":44},"popup:home:filterCancel":{"left":577.3,"top":436.5,"width":200,"height":44},"game:wheelWrap":{"left":443.7,"top":143.2,"width":482.4,"height":475.6},"history:item_4":{"left":0,"top":0,"width":100,"height":40},"popup:home:filterTitle":{"left":-10.6,"top":48.6,"width":1093,"height":34},"popup:home:filterAreaLabel":{"left":239.4,"top":78.2,"width":260,"height":30},"popup:home:areaChecks":{"left":67.8,"top":112.1,"width":503.9,"height":279.4},"popup:home:filterDiffLabel":{"left":703.5,"top":81.1,"width":260,"height":30},"popup:home:diffChecks":{"left":582,"top":113.1,"width":420,"height":318},"history:item_5":{"left":0,"top":0,"width":100,"height":40},"history:item_6":{"left":0,"top":0,"width":100,"height":40},"history:item_7":{"left":0,"top":0,"width":100,"height":40}};
+  const DEFAULT_APPLIED_LAYOUT={"intro:btn_config":{"left":1047.2,"top":27.4,"width":74.6,"height":73.6},"intro:btn_instrucoes":{"left":306.8,"top":606.6,"width":235.8,"height":56.9},"intro:btn_comecar":{"left":565.6,"top":524.9,"width":220,"height":60},"intro:btn_creditos":{"left":835.3,"top":603.2,"width":201.4,"height":57.9},"home:spinner_game_mode":{"left":873.9,"top":210,"width":180,"height":80},"home:spinner_equipes":{"left":874.9,"top":3.9,"width":180,"height":80},"home:spinner_tempo":{"left":873.9,"top":107.9,"width":180,"height":80},"home:spinner_predefinicao":{"left":34.6,"top":553.5,"width":250,"height":60},"home:btn_iniciar":{"left":765.8,"top":340.6,"width":216.2,"height":68.9},"home:btn_volume":{"left":1200,"top":15,"width":90,"height":90},"home:btn_adicionar":{"left":338.9,"top":336.8,"width":237.5,"height":68},"home:btn_listar":{"left":763.9,"top":427.3,"width":215.3,"height":68},"home:btn_voltar":{"left":22.8,"top":48.6,"width":122.1,"height":86.8},"home:btn_predefinicoes":{"left":334,"top":427.3,"width":238.4,"height":66.1},"home:btn_historico":{"left":1071.2,"top":548.6,"width":189.3,"height":57.4},"game:spinBtn":{"left":0,"top":-30,"width":133.6,"height":126.8},"game:gameBack":{"left":64.6,"top":27,"width":100.9,"height":94.5},"game:spinBtn2":{"left":0,"top":-30,"width":110.6,"height":102.9},"addedit:editMode":{"left":0.9,"top":-0.9,"width":500,"height":40},"addedit:editArea":{"left":0,"top":0,"width":500,"height":40},"addedit:addArea":{"left":1164.1,"top":114.8,"width":180,"height":48},"addedit:editDiff":{"left":0,"top":0,"width":500,"height":40},"addedit:item_4":{"left":0,"top":0,"width":180,"height":48},"addedit:saveQ":{"left":428.2,"top":680,"width":457,"height":48},"addedit:cancelQ":{"left":893.1,"top":680.8,"width":457,"height":48},"list:listMode":{"left":794,"top":54,"width":180,"height":80},"list:btn_voltar_listar":{"left":40,"top":54,"width":126,"height":85.8},"list:listDiff":{"left":762,"top":215,"width":180,"height":80},"list:listArea":{"left":366,"top":218,"width":180,"height":80},"list:item_4":{"left":0,"top":0,"width":120,"height":40},"list:item_5":{"left":0,"top":0,"width":120,"height":40},"list:item_6":{"left":0,"top":0,"width":120,"height":40},"list:item_7":{"left":0,"top":0,"width":120,"height":40},"list:item_8":{"left":0,"top":0,"width":120,"height":40},"list:item_9":{"left":0,"top":0,"width":120,"height":40},"list:item_10":{"left":0,"top":0,"width":120,"height":40},"list:item_11":{"left":0,"top":0,"width":120,"height":40},"list:item_12":{"left":0,"top":0,"width":120,"height":40},"list:item_13":{"left":0,"top":0,"width":120,"height":40},"list:item_14":{"left":0,"top":0,"width":120,"height":40},"list:item_15":{"left":0,"top":0,"width":120,"height":40},"list:item_16":{"left":0,"top":0,"width":120,"height":40},"list:item_17":{"left":0,"top":0,"width":120,"height":40},"list:item_18":{"left":0,"top":0,"width":120,"height":40},"list:item_19":{"left":0,"top":0,"width":120,"height":40},"list:item_20":{"left":0,"top":0,"width":120,"height":40},"list:item_21":{"left":0,"top":0,"width":120,"height":40},"list:item_22":{"left":0,"top":0,"width":120,"height":40},"list:item_23":{"left":0,"top":0,"width":120,"height":40},"list:item_24":{"left":0,"top":0,"width":120,"height":40},"list:item_25":{"left":0,"top":0,"width":120,"height":40},"list:item_26":{"left":0,"top":0,"width":120,"height":40},"list:item_27":{"left":0,"top":0,"width":120,"height":40},"list:item_28":{"left":0,"top":0,"width":120,"height":40},"list:item_29":{"left":0,"top":0,"width":120,"height":40},"list:item_30":{"left":0,"top":0,"width":120,"height":40},"list:item_31":{"left":0,"top":0,"width":120,"height":40},"list:item_32":{"left":0,"top":0,"width":120,"height":40},"list:item_33":{"left":0,"top":0,"width":120,"height":40},"list:item_34":{"left":0,"top":0,"width":120,"height":40},"list:item_35":{"left":0,"top":0,"width":120,"height":40},"list:item_36":{"left":0,"top":0,"width":120,"height":40},"list:item_37":{"left":0,"top":0,"width":120,"height":40},"list:item_38":{"left":0,"top":0,"width":120,"height":40},"list:item_39":{"left":0,"top":0,"width":120,"height":40},"list:item_40":{"left":0,"top":0,"width":120,"height":40},"list:item_41":{"left":0,"top":0,"width":120,"height":40},"list:item_42":{"left":0,"top":0,"width":120,"height":40},"list:item_43":{"left":0,"top":0,"width":120,"height":40},"list:item_44":{"left":0,"top":0,"width":120,"height":40},"list:item_45":{"left":0,"top":0,"width":120,"height":40},"list:item_46":{"left":0,"top":0,"width":120,"height":40},"list:item_47":{"left":0,"top":0,"width":120,"height":40},"list:item_48":{"left":0,"top":0,"width":120,"height":40},"list:item_49":{"left":0,"top":0,"width":120,"height":40},"list:item_50":{"left":0,"top":0,"width":120,"height":40},"list:item_51":{"left":0,"top":0,"width":120,"height":40},"list:item_52":{"left":0,"top":0,"width":120,"height":40},"list:item_53":{"left":0,"top":0,"width":120,"height":40},"list:item_54":{"left":0,"top":0,"width":120,"height":40},"list:item_55":{"left":0,"top":0,"width":120,"height":40},"list:item_56":{"left":0,"top":0,"width":120,"height":40},"list:item_57":{"left":0,"top":0,"width":120,"height":40},"list:item_58":{"left":0,"top":0,"width":120,"height":40},"list:item_59":{"left":0,"top":0,"width":120,"height":40},"list:item_60":{"left":0,"top":0,"width":120,"height":40},"list:item_61":{"left":0,"top":0,"width":120,"height":40},"list:item_62":{"left":0,"top":0,"width":120,"height":40},"list:item_63":{"left":0,"top":0,"width":120,"height":40},"predef:preSel":{"left":216.5,"top":141,"width":250,"height":60},"predef:preMode":{"left":583,"top":141,"width":200,"height":60},"predef:preDiff":{"left":1129.4,"top":141,"width":200,"height":60},"predef:preBack":{"left":39.9,"top":40.9,"width":87,"height":83.1},"predef:preArea":{"left":856.2,"top":141,"width":200,"height":60},"history:histBack":{"left":0,"top":0,"width":120,"height":48},"history:item_1":{"left":0,"top":0,"width":100,"height":40},"credits:creditBtn_0":{"left":0,"top":0,"width":197,"height":400},"credits:creditBtn_1":{"left":217,"top":0,"width":197,"height":400},"credits:creditBtn_2":{"left":434,"top":0,"width":197,"height":400},"credits:creditBtn_3":{"left":653,"top":0,"width":197,"height":400},"credits:creditsBack":{"left":27,"top":35,"width":60,"height":60},"popup:intro:openModePopup:introMode":{"left":28,"top":8,"width":594,"height":50},"popup:intro:openModePopup:introEq":{"left":28,"top":83,"width":594,"height":50},"popup:intro:openModePopup:introTime":{"left":28,"top":158,"width":594,"height":50},"popup:intro:openModePopup:introConfirm":{"left":88,"top":254,"width":200,"height":60},"popup:intro:openModePopup:introCancel":{"left":316,"top":254,"width":200,"height":60},"popup:home:startFilterPopup:filterStart":{"left":80,"top":455,"width":190,"height":44},"popup:home:startFilterPopup:filterCancel":{"left":280,"top":455,"width":200,"height":44},"popup:home:volume:playM":{"left":20,"top":178,"width":360,"height":48},"popup:home:volume:ok":{"left":20,"top":240,"width":360,"height":48},"addedit:addBack":{"left":47,"top":48.9,"width":122,"height":86},"history:item_2":{"left":0,"top":0,"width":100,"height":40},"history:item_3":{"left":0,"top":0,"width":100,"height":40},"popup:intro:introMode":{"left":-2.9,"top":65.9,"width":594,"height":50},"popup:intro:introConfirm":{"left":-302.8,"top":57.9,"width":200,"height":48},"popup:intro:introCancel":{"left":166.8,"top":60.8,"width":200,"height":48},"popup:intro:introTime":{"left":0,"top":229.4,"width":594,"height":50},"popup:intro:introEq":{"left":-3.8,"top":146.7,"width":594,"height":50},"popup:home:filterStart":{"left":345.7,"top":436.5,"width":190,"height":44},"popup:home:filterCancel":{"left":577.3,"top":436.5,"width":200,"height":44},"game:wheelWrap":{"left":443.7,"top":143.2,"width":482.4,"height":475.6},"history:item_4":{"left":0,"top":0,"width":100,"height":40},"popup:home:filterTitle":{"left":-10.6,"top":48.6,"width":1093,"height":34},"popup:home:filterAreaLabel":{"left":239.4,"top":78.2,"width":260,"height":30},"popup:home:areaChecks":{"left":67.8,"top":112.1,"width":503.9,"height":279.4},"popup:home:filterDiffLabel":{"left":703.5,"top":81.1,"width":260,"height":30},"popup:home:diffChecks":{"left":582,"top":113.1,"width":420,"height":318},"history:item_5":{"left":0,"top":0,"width":100,"height":40},"history:item_6":{"left":0,"top":0,"width":100,"height":40},"history:item_7":{"left":0,"top":0,"width":100,"height":40},"predef:predefSaveBtn":{"left":558,"top":630.9,"width":250,"height":60}};
   let editMode=false, selected=null, drag=null, scheduled=false, drawing=false;
   let layout={...DEFAULT_APPLIED_LAYOUT,...(load(STORE,null)||{})};
   const stage=$('#stage');
