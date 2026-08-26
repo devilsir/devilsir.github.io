@@ -13,7 +13,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-<link rel="stylesheet" href="./index.css?v=27">
+<link rel="stylesheet" href="./index.css?v=28">
 
 <link rel="stylesheet" href="./editmode-v3-style.css?v=25" id="editmode-v3-style">
 <link rel="stylesheet" href="./pwa.css?v=1">
@@ -27,7 +27,7 @@
   </section>
   <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div><button id="pwaInstallBtn" type="button" hidden aria-label="Instalar Roleta Química como aplicativo">Instalar app</button></section>
   <section id="transition" class="screen"><video id="transitionVideo" class="videoFull" playsinline></video></section>
-  <section id="game" class="screen"><img class="bg contain" data-a="xicara de cima.png"><div id="scoreboard" class="gameScore"></div><div class="wheelArea"><div id="wheelWrap" class="wheelWrap"><canvas id="wheelCanvas" width="1040" height="1040"></canvas><button id="spinBtn" class="kbtn" style="left:210px;top:210px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div><button id="gameBack" class="kbtn" style="right:22px;top:0;width:180px;height:80px"><img data-a="setavoltar.png"></button></div><div id="instruction" class="instruction"><img data-a="setadica.png" style="position:absolute;left:728px;top:304px;width:100px;height:100px"><div class="outlinedText">Clique para girar</div><button id="spinBtn2" class="kbtn" style="left:670px;top:385px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div></section>
+  <section id="game" class="screen"><img class="bg contain" data-a="xicara de cima.png"><div id="scoreboard" class="gameScore"></div><div class="wheelArea"><div id="wheelWrap" class="wheelWrap"><img id="wheelFallback" alt="" aria-hidden="true"><canvas id="wheelCanvas" width="1040" height="1040"></canvas><button id="spinBtn" class="kbtn" style="left:210px;top:210px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div><button id="gameBack" class="kbtn" style="right:22px;top:0;width:180px;height:80px"><img data-a="setavoltar.png"></button></div><div id="instruction" class="instruction"><img data-a="setadica.png" style="position:absolute;left:728px;top:304px;width:100px;height:100px"><div class="outlinedText">Clique para girar</div><button id="spinBtn2" class="kbtn" style="left:670px;top:385px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div></section>
   <section id="addedit" class="screen"><img class="bg" data-a="fundo generico.jpg"><div id="addEditContent" class="scroll kvScroll" style="position:absolute;inset:0;padding:10px"></div></section>
   <section id="list" class="screen"><img class="bg" data-a="listarperguntas.jpg"><div id="listControls" class="modalArea"></div><div id="questionList" class="scroll kvScroll" style="position:absolute;left:0;bottom:176px;width:1366px;height:176px;padding:0 8px"></div></section>
   <section id="predef" class="screen"><img class="bg" data-a="fundo generico2.jpg"><div id="predefControls" class="modalArea"></div><div id="predefQuestions" class="scroll kvScroll" style="position:absolute;left:34px;top:247px;width:1298px;height:353px;padding:10px"></div></section>
@@ -51,7 +51,7 @@
 <script src="./payload.js?v=25"></script>
 <script src="./english-banks.js?v=26"></script>
 <script src="./english-presets.js?v=26"></script>
-<script src="./index.js?v=27"></script>
+<script src="./index.js?v=28"></script>
 <script src="./pwa.js?v=1"></script>
 </body>
 </html>
