@@ -1,5 +1,18 @@
 (()=>{'use strict';
 const P=window.ROULETTE_PAYLOAD,A=P.assets,EXTRA_DBS=window.ROULETTE_ENGLISH_BANKS||{},BUILTIN_PRESETS=window.ROULETTE_BUILTIN_PRESETS||{},DEFAULT_DBS={...(P.dbs||{}),...EXTRA_DBS},POS=P.positions,CREDITS=P.credits;
+const TOUCH_PERF_PROFILE=matchMedia('(pointer: coarse)').matches||'ontouchstart'in window;
+if(TOUCH_PERF_PROFILE){
+  // Assets equivalentes em resolução adequada para tablets/celulares.
+  // Evita decodificar texturas 4K e ícones 1024px que aparecem a ~100px na UI.
+  Object.assign(A,{
+    'xicara de cima.png':'./assets/embedded/xicara-de-cima-tablet.webp',
+    'botao_girar.png':'./assets/embedded/botao-girar-tablet.webp',
+    'botao_girar_hover.png':'./assets/embedded/botao-girar-hover-tablet.webp',
+    'setavoltar.png':'./assets/embedded/setavoltar-tablet.webp',
+    'setavoltar_hover.png':'./assets/embedded/setavoltar-hover-tablet.webp',
+    'setadica.png':'./assets/embedded/setadica-tablet.webp'
+  });
+}
 const DB_KEY='qc1_db_clean_questions_v2',PRE_KEY='qc1_predefs',HIST_KEY='qc1_history_clean_v1';
 function isTestAreaName(n){let s=String(n||'').trim().toLowerCase();return s==='teste'||s==='test'||s==='área teste'||s==='area teste'||s.startsWith('teste ')}
 function inferSubject(q,mode=''){
@@ -43,7 +56,7 @@ function cleanRuntimePredefs(pre){
   return pre||{};
 }
 let DB=cleanRuntimeDB(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
-save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
+save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;
   return {w:vv?vv.width:innerWidth,h:vv?vv.height:innerHeight};
@@ -243,6 +256,12 @@ function setupGame(mode,teams,timeLimit,areas,difs,subjects,preQs){
     return;
   }
   renderScore();
+  // Prepara a textura da roda e pede a decodificação do fundo ainda fora da tela.
+  // No primeiro jogo isso acontece durante o vídeo de transição, escondendo o custo
+  // inicial de rasterização/decodificação em tablets.
+  drawWheel(true);
+  const gameBg=$('#game .bg');
+  if(gameBg&&typeof gameBg.decode==='function')gameBg.decode().catch(()=>{});
   if(firstGame){
     firstGame=false;
     show('transition');
@@ -250,12 +269,11 @@ function setupGame(mode,teams,timeLimit,areas,difs,subjects,preQs){
     v.src=A['transição roleta.mp4']||'';
     v.muted=true;
     v.currentTime=0;
-    v.onended=()=>{show('game');drawWheel();};
-    v.play?.().catch(()=>{show('game');drawWheel();});
-    setTimeout(()=>{if(current==='transition'){show('game');drawWheel();}},2500)
+    v.onended=()=>{show('game');};
+    v.play?.().catch(()=>{show('game');});
+    setTimeout(()=>{if(current==='transition'){show('game');}},2500)
   }else{
     show('game');
-    drawWheel()
   }
   $('#instruction').style.display='block'
 }
@@ -578,39 +596,47 @@ function drawHandlePointerCue(ctx,cx,cy,r,t){
   // Sem desenho extra: a alça da caneca funciona só como referência lógica.
   // O destaque acontece na própria fatia selecionada, sem triângulo/brilho residual.
 }
-function drawWheel(){
-  let c=$('#wheelCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2*.9;
+function syncWheelTransform(angle=wheel.angle){
+  const c=$('#wheelCanvas');
+  if(!c)return;
+  c.style.transform=`rotate(${angle}deg)`;
+}
+function drawWheel(highlightSelected=true){
+  const c=$('#wheelCanvas');
+  if(!c)return;
+  const ctx=c.getContext('2d',{alpha:true,desynchronized:true});
+  const W=c.width,H=c.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2*.9;
   ctx.clearRect(0,0,W,H);
-  if(!wheel.segments.length)return;
-  let t=performance.now();
+  if(!wheel.segments.length){syncWheelTransform();return}
 
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.rotate(wheel.angle*Math.PI/180);
-  ctx.translate(-cx,-cy);
-
-  let total=wheel.segments.reduce((a,s)=>a+s.peso,0),cur=0,pointerLocal=normDeg(HANDLE_POINTER_DEG-wheel.angle);
-  for(let seg of wheel.segments){
-    let deg=seg.peso/total*360,rad1=cur*Math.PI/180,rad2=(cur+deg)*Math.PI/180;
-    let selected=angleInSegment(cur,cur+deg,pointerLocal);
+  // A arte líquida é cara de desenhar, então ela é rasterizada apenas quando
+  // a composição da roda muda ou quando precisamos destacar o resultado.
+  // Durante o giro, o canvas pronto é rotacionado pela camada de composição/GPU.
+  const t=performance.now();
+  const total=wheel.segments.reduce((a,s)=>a+s.peso,0);
+  const pointerLocal=normDeg(HANDLE_POINTER_DEG-wheel.angle);
+  let cur=0;
+  for(const seg of wheel.segments){
+    const deg=seg.peso/total*360;
+    const rad1=cur*Math.PI/180,rad2=(cur+deg)*Math.PI/180;
+    const selected=!!highlightSelected&&angleInSegment(cur,cur+deg,pointerLocal);
     drawLiquidSegment(ctx,cx,cy,r,rad1,rad2,seg,selected,t);
-    cur+=deg
+    cur+=deg;
   }
 
   drawCoffeeSwirl(ctx,cx,cy,r,t);
   drawHandlePointerCue(ctx,cx,cy,r,t);
 
-  // Vinheta circular pra encaixar melhor na xícara
   ctx.beginPath();
   ctx.arc(cx,cy,r,0,Math.PI*2);
-  let rim=ctx.createRadialGradient(cx,cy,r*.72,cx,cy,r);
+  const rim=ctx.createRadialGradient(cx,cy,r*.72,cx,cy,r);
   rim.addColorStop(0,'rgba(0,0,0,0)');
   rim.addColorStop(.72,'rgba(0,0,0,0)');
   rim.addColorStop(1,'rgba(25,10,3,.34)');
   ctx.fillStyle=rim;
   ctx.fill();
 
-  ctx.restore();
+  syncWheelTransform();
 }
 function bright(c){return liquidColor(c,'light')}
 function bright(c){return liquidColor(c,'light')}
@@ -633,26 +659,88 @@ function selectedSeg(){
   }
   return wheel.segments[0]
 }
+function stopWheelAnimation(){
+  if(wheel.raf){cancelAnimationFrame(wheel.raf);wheel.raf=null}
+  if(wheel.spinAnimation){
+    try{wheel.spinAnimation.cancel()}catch(e){}
+    wheel.spinAnimation=null;
+  }
+  wheel.anim=false;
+  wheel.speed=0;
+  const c=$('#wheelCanvas');
+  if(c)c.classList.remove('wheelSpinning');
+}
+function finishSpin(targetAngle){
+  const c=$('#wheelCanvas');
+  wheel.angle=normDeg(targetAngle);
+  wheel.speed=0;
+  wheel.anim=false;
+  wheel.raf=null;
+  wheel.spinAnimation=null;
+  if(c){
+    c.classList.remove('wheelSpinning');
+    c.style.transform=`rotate(${wheel.angle}deg)`;
+  }
+  // Só agora redesenha para aplicar o brilho à fatia realmente selecionada.
+  drawWheel(true);
+  const seg=selectedSeg();
+  if(seg)handleArea(seg.nome);
+}
 function spin(){
   if(!game||wheel.anim)return;
   buildWheel();
-  drawWheel();
   if(!wheel.segments.length||!game.areas_selected.some(a=>!SPECIAL.has(a))){
     msg('Fim das perguntas','Não há mais áreas com perguntas disponíveis.',endGame);
-    return
+    return;
   }
+
   $('#instruction').style.display='none';
+  stopWheelAnimation();
   wheel.anim=true;
-  let initial=800+Math.random()*100,acc=.1,dec=4+Math.random()*2,state='acc',at=0,dtm=0,last=performance.now();
-  function step(t){
-    let dt=(t-last)/1000;last=t;
-    if(state==='acc'){at+=dt;if(at<acc)wheel.speed=at/acc*initial;else{state='dec';dtm=0;wheel.speed=initial}}
-    if(state==='dec'){dtm+=dt;if(dtm<dec)wheel.speed=initial*(1-dtm/dec);else{wheel.speed=0;wheel.anim=false;drawWheel();let seg=selectedSeg();if(seg)handleArea(seg.nome);return}}
-    wheel.angle=(wheel.angle+wheel.speed*dt)%360;
-    drawWheel();
-    wheel.raf=requestAnimationFrame(step)
+
+  const c=$('#wheelCanvas');
+  const startAngle=normDeg(wheel.angle);
+  const extraTurns=6+Math.floor(Math.random()*3);
+  const randomStop=Math.random()*360;
+  const targetAngle=startAngle+extraTurns*360+randomStop;
+  const duration=4200+Math.random()*900;
+
+  // Desenha uma única textura sem highlight. Daqui até o final do giro,
+  // só a propriedade transform muda: nada de gradientes/paths por frame.
+  drawWheel(false);
+  if(c)c.classList.add('wheelSpinning');
+
+  if(c&&typeof c.animate==='function'){
+    const anim=c.animate(
+      [
+        {transform:`rotate(${startAngle}deg)`},
+        {transform:`rotate(${targetAngle}deg)`}
+      ],
+      {
+        duration,
+        easing:'cubic-bezier(.08,.62,.12,1)',
+        fill:'forwards'
+      }
+    );
+    wheel.spinAnimation=anim;
+    anim.onfinish=()=>finishSpin(targetAngle);
+    anim.oncancel=()=>{if(c)c.classList.remove('wheelSpinning')};
+    return;
   }
-  wheel.raf=requestAnimationFrame(step)
+
+  // Fallback antigo, mas também leve: atualiza apenas o transform do canvas.
+  const start=performance.now();
+  const delta=targetAngle-startAngle;
+  const easeOut=t=>1-Math.pow(1-t,4);
+  function step(now){
+    if(!wheel.anim)return;
+    const p=Math.min(1,(now-start)/duration);
+    const a=startAngle+delta*easeOut(p);
+    if(c)c.style.transform=`rotate(${a}deg)`;
+    if(p<1){wheel.raf=requestAnimationFrame(step);return}
+    finishSpin(targetAngle);
+  }
+  wheel.raf=requestAnimationFrame(step);
 }
 function handleArea(area){
   if(!area){msg('Erro','Nenhuma área foi selecionada!');return}
@@ -871,7 +959,7 @@ function formatHistoryDuration(s){
   if(m>0)return `${m}min ${sec}s`;
   return `${sec}s`;
 }
-function endGame(){if(!game||!game.scores.length)return;let max=Math.max(...game.scores),w=game.scores.map((s,i)=>s===max?i+1:null).filter(Boolean),txt=w.length===1?`Equipe ${w[0]} venceu com ${max} pontos!`:`Empate entre as equipes: ${w.join(', ')} com ${max} pontos!`;let hist=load(HIST_KEY,[]);const endedAtMs=Date.now(),startMs=Number(game.started_at_ms)||parseHistoryDate(game.started_at),durationSecs=Number.isFinite(startMs)?Math.max(0,Math.round((endedAtMs-startMs)/1000)):null;hist.push({...game,ended_at:new Date(endedAtMs).toLocaleString('pt-BR'),ended_at_ms:endedAtMs,duration_secs:durationSecs,final_scoreboard:Object.fromEntries(game.scores.map((s,i)=>[`Equipe ${i+1}`,s]))});save(HIST_KEY,hist);msg('Jogo Encerrado',txt,()=>{game=null;show('intro')})}
+function endGame(){if(!game||!game.scores.length)return;stopWheelAnimation();let max=Math.max(...game.scores),w=game.scores.map((s,i)=>s===max?i+1:null).filter(Boolean),txt=w.length===1?`Equipe ${w[0]} venceu com ${max} pontos!`:`Empate entre as equipes: ${w.join(', ')} com ${max} pontos!`;let hist=load(HIST_KEY,[]);const endedAtMs=Date.now(),startMs=Number(game.started_at_ms)||parseHistoryDate(game.started_at),durationSecs=Number.isFinite(startMs)?Math.max(0,Math.round((endedAtMs-startMs)/1000)):null;hist.push({...game,ended_at:new Date(endedAtMs).toLocaleString('pt-BR'),ended_at_ms:endedAtMs,duration_secs:durationSecs,final_scoreboard:Object.fromEntries(game.scores.map((s,i)=>[`Equipe ${i+1}`,s]))});save(HIST_KEY,hist);msg('Jogo Encerrado',txt,()=>{game=null;show('intro')})}
 function renderAddEdit(){
   let c=$('#addEditContent');
   if(editingIndex&&!addEditDraftMode)addEditDraftMode=editingIndex.mode;
@@ -1482,13 +1570,8 @@ function initLayoutEditorV3(){
 initLayoutEditorV3();
 
 $('#spinBtn').onclick=spin;$('#spinBtn2').onclick=spin;$('#gameBack').onclick=endGame;
-function liquidIdleLoop(){
-  if(current==='game'&&game&&!wheel.anim&&wheel.segments&&wheel.segments.length){
-    drawWheel();
-  }
-  requestAnimationFrame(liquidIdleLoop);
-}
-requestAnimationFrame(liquidIdleLoop);
+// O efeito líquido antes era redesenhado a ~60 FPS mesmo com a roleta parada.
+// Manter a textura estática reduz drasticamente CPU/GPU e consumo de bateria em tablets.
 const gameBackBtn=$('#gameBack'),gameBackImg=$('#gameBack img');
 if(gameBackBtn&&gameBackImg){
   gameBackBtn.onmouseenter=()=>{gameBackImg.src=A['setavoltar_hover.png']||A['setavoltar.png']||gameBackImg.src};
