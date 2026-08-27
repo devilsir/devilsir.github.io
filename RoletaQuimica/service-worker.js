@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'roleta-quimica-cafe-v11-english-preset-audit';
+const CACHE_NAME = 'roleta-quimica-cafe-v15-separated-question-hint-images';
 const APP_SHELL = [
   './assets/embedded/adicionar-perguntas-c315fc0b.png',
   './assets/embedded/adicionar-perguntas_hover-eaef1d34.png',
@@ -90,7 +90,14 @@ const APP_SHELL = [
   './payload.js',
   './pwa.css',
   './pwa.js',
-  './xlsx-lite.js'
+  './xlsx-lite.js',
+  './assets/questions/7ano_cat_box.svg',
+  './assets/questions/7ano_ball_table.svg',
+  './assets/questions/7ano_book_table.svg',
+  './assets/questions/7ano_library_between.svg',
+  './assets/questions/6ano_lamp_table.svg',
+  './assets/questions/6ano_cat_chair.svg',
+  './assets/questions/6ano_school_between.svg',
 ];
 
 self.addEventListener('install', event => {

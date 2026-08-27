@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" fill="#f7fff9"/>
+  <rect x="90" y="185" width="190" height="145" rx="12" fill="#d0f0ff" stroke="#5180a4" stroke-width="8"/>
+  <rect x="345" y="155" width="210" height="175" rx="12" fill="#ffd89f" stroke="#9b6a2d" stroke-width="8"/>
+  <rect x="620" y="185" width="190" height="145" rx="12" fill="#ece8ff" stroke="#7567b3" stroke-width="8"/>
+  <text x="185" y="260" text-anchor="middle" font-family="Arial" font-size="38" fill="#27485f">BANK</text>
+  <text x="450" y="255" text-anchor="middle" font-family="Arial" font-size="38" fill="#5b3a1c">SCHOOL</text>
+  <text x="715" y="260" text-anchor="middle" font-family="Arial" font-size="38" fill="#4b4476">PARK</text>
+  <text x="450" y="455" text-anchor="middle" font-family="Arial" font-size="34" fill="#42523e">Observe a posição da escola.</text>
+</svg>

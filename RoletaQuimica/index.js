@@ -46,33 +46,53 @@ function mergeDefaultModes(db){
   return db;
 }
 function applyBuiltInContentFixes(db){
-  const mode=db&&db['8º ano'];
-  if(!mode||!Array.isArray(mode.perguntas))return db;
-  const isBuiltin=q=>String(q?.builtin_patch||'')==='8ano_more_comparatives_future_to_be_v1';
-  mode.perguntas.forEach(q=>{
-    if(!isBuiltin(q))return;
-    const text=String(q.pergunta||'');
-    const addAccepted=(items)=>{q.respostas_aceitas=[...new Set([...(Array.isArray(q.respostas_aceitas)?q.respostas_aceitas:[]),...items])]};
-    if(text==='Complete com o verbo to be no futuro: Tomorrow, I ___ at school early.'){
-      q.pergunta='Complete com o verbo to be no futuro simples usando will: Tomorrow, I ___ at school early.';
-      q.dica_texto='Nesta questão, use o futuro simples com will: will + be.';
-    }else if(text==='Passe para o futuro usando o verbo to be: “She is tired today.” Use “tomorrow” na nova frase.'){
-      addAccepted(['she is going to be tired tomorrow',"she's going to be tired tomorrow",'ela vai estar cansada amanhã','ela estará cansada amanhã']);
-      q.dica_texto='Você pode formar a frase com will be ou com am/is/are going to be. Mantenha “tired” e use “tomorrow”.';
-    }else if(text==='Complete na forma negativa: They ___ at home tonight.'){
-      q.pergunta='Complete no futuro simples com will, na forma negativa: They ___ at home tonight.';
-      q.dica_texto="Nesta questão, use will na negativa: will not / won't + be.";
-    }else if(text==='Qual pergunta com o verbo to be no futuro está correta?'){
-      q.pergunta='Qual pergunta com o verbo to be no futuro simples usando will está correta?';
-      q.dica_texto='Nesta questão, use a estrutura Will + sujeito + be... ?';
-    }else if(text==='“Will you be at the party tomorrow?” está correta para perguntar se alguém estará em uma festa no futuro.'){
-      q.pergunta='“Will you be at the party tomorrow?” está correta como pergunta no futuro simples com will.';
-      q.dica_texto='Observe a estrutura do futuro simples: Will + sujeito + be + complemento.';
-    }else if(text==='Traduza usando o verbo to be no futuro: “Nós estaremos felizes amanhã.”'){
-      addAccepted(['we are going to be happy tomorrow',"we're going to be happy tomorrow",'nós vamos estar felizes amanhã','nos vamos estar felizes amanha']);
-      q.dica_texto='Você pode usar we will be ou we are going to be para expressar a ideia no futuro.';
-    }
-  });
+  const mode8=db&&db['8º ano'];
+  if(mode8&&Array.isArray(mode8.perguntas)){
+    const isBuiltin=q=>String(q?.builtin_patch||'')==='8ano_more_comparatives_future_to_be_v1';
+    mode8.perguntas.forEach(q=>{
+      if(!isBuiltin(q))return;
+      const text=String(q.pergunta||'');
+      const addAccepted=(items)=>{q.respostas_aceitas=[...new Set([...(Array.isArray(q.respostas_aceitas)?q.respostas_aceitas:[]),...items])]};
+      if(text==='Complete com o verbo to be no futuro: Tomorrow, I ___ at school early.'){
+        q.pergunta='Complete com o verbo to be no futuro simples usando will: Tomorrow, I ___ at school early.';
+        q.dica_texto='Nesta questão, use o futuro simples com will: will + be.';
+      }else if(text==='Passe para o futuro usando o verbo to be: “She is tired today.” Use “tomorrow” na nova frase.'){
+        addAccepted(['she is going to be tired tomorrow',"she's going to be tired tomorrow",'ela vai estar cansada amanhã','ela estará cansada amanhã']);
+        q.dica_texto='Você pode formar a frase com will be ou com am/is/are going to be. Mantenha “tired” e use “tomorrow”.';
+      }else if(text==='Complete na forma negativa: They ___ at home tonight.'){
+        q.pergunta='Complete no futuro simples com will, na forma negativa: They ___ at home tonight.';
+        q.dica_texto="Nesta questão, use will na negativa: will not / won't + be.";
+      }else if(text==='Qual pergunta com o verbo to be no futuro está correta?'){
+        q.pergunta='Qual pergunta com o verbo to be no futuro simples usando will está correta?';
+        q.dica_texto='Nesta questão, use a estrutura Will + sujeito + be... ?';
+      }else if(text==='“Will you be at the party tomorrow?” está correta para perguntar se alguém estará em uma festa no futuro.'){
+        q.pergunta='“Will you be at the party tomorrow?” está correta como pergunta no futuro simples com will.';
+        q.dica_texto='Observe a estrutura do futuro simples: Will + sujeito + be + complemento.';
+      }else if(text==='Traduza usando o verbo to be no futuro: “Nós estaremos felizes amanhã.”'){
+        addAccepted(['we are going to be happy tomorrow',"we're going to be happy tomorrow",'nós vamos estar felizes amanhã','nos vamos estar felizes amanha']);
+        q.dica_texto='Você pode usar we will be ou we are going to be para expressar a ideia no futuro.';
+      }
+    });
+  }
+  const mode6=db&&db['6º ano'];
+  if(mode6&&Array.isArray(mode6.perguntas)){
+    mode6.perguntas.forEach(q=>{
+      const text=String(q.pergunta||'');
+      if(text==='The lamp is ___ the table.'){
+        q.pergunta='According to the image, the lamp is ___ the table.';
+        q.imagem_pergunta='./assets/questions/6ano_lamp_table.svg';
+        q.dica_texto='Look carefully at the object and the table.';
+      }else if(text==='The cat is ___ the chair.'){
+        q.pergunta='According to the image, the cat is ___ the chair.';
+        q.imagem_pergunta='./assets/questions/6ano_cat_chair.svg';
+        q.dica_texto='Look at the cat and the chair.';
+      }else if(text==='The school is ___ the bank and the park.'){
+        q.pergunta='According to the image, the school is ___ the bank and the park.';
+        q.imagem_pergunta='./assets/questions/6ano_school_between.svg';
+        q.dica_texto='The school is in the middle of the bank and the park.';
+      }
+    });
+  }
   return db;
 }
 function cleanRuntimeDB(db){
@@ -97,7 +117,7 @@ function cleanRuntimePredefs(pre){
 }
 let DB=cleanRuntimeDB(applyBuiltInContentFixes(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS)))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
 save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
-function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function resolveImageSource(value){const raw=String(value||'').trim();if(!raw)return'';if(/^data:|^blob:|^https?:|^\.\//i.test(raw))return raw;if(raw.startsWith('/'))return raw;if(A[raw])return A[raw];return raw}function hasQuestionHint(q){return !!(String(q?.dica_texto||'').trim()||String(q?.dica_imagem||'').trim())}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;
   return {w:vv?vv.width:innerWidth,h:vv?vv.height:innerHeight};
 }
@@ -907,9 +927,18 @@ function handleArea(area){
   questionPopup(area,q)
 }
 function addPoints(n){
-  if(n>0){game.scores[game.current_team]+=n;msg('Pontos',`+${n} pontos adicionados!`,nextTeam);okSound.play().catch(()=>{})}
-  else{game.scores[game.current_team]=Math.max(0,game.scores[game.current_team]+n);msg('Pontos',`${n} pontos subtraídos!`,nextTeam);errSound.play().catch(()=>{})}
-  renderScore()
+  if(!game)return;
+  const group=`O grupo (Equipe ${game.current_team+1})`;
+  if(n>0){
+    game.scores[game.current_team]+=n;
+    msg('Pontos',`+${n} Pontos! ${group} pode repetir o giro.`);
+    okSound.play().catch(()=>{});
+  }else{
+    game.scores[game.current_team]=Math.max(0,game.scores[game.current_team]+n);
+    msg('Pontos',`${n} Pontos! ${group} pode repetir o giro.`);
+    errSound.play().catch(()=>{});
+  }
+  renderScore();
 }
 function pickQuestion(area){
   let pool=validQuestionPool(area);
@@ -928,7 +957,7 @@ function questionPopup(area,q){
       <div class="discursiveToleranceNote">Maiúsculas/minúsculas, acentos e pontuação não alteram a correção. Conceitos equivalentes em português/inglês e listas com e/ou, / ou vírgula também são aceitos.</div>
       <div class="discursiveAnswerActions">
         <button id="submitDiscursiveAnswer" class="stdBtn discursiveSubmit" style="background-image:url('${A['botao generico popup generico.png']}')">Responder</button>
-        <button class="stdBtn discursiveHint" data-result="hint" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>
+        ${hasQuestionHint(q)?`<button class="stdBtn discursiveHint" data-result="hint" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>`:''}
       </div>
     </div>`;
   }else if(type==='verdadeiro_falso'){
@@ -937,12 +966,14 @@ function questionPopup(area,q){
         <button class="stdBtn trueFalseBtn trueFalseTrue" data-v="true" style="background-image:url('${A['botao generico popup generico.png']}')">Verdadeiro</button>
         <button class="stdBtn trueFalseBtn trueFalseFalse" data-v="false" style="background-image:url('${A['botao generico popup generico.png']}')">Falso</button>
       </div>
-      <button class="stdBtn trueFalseHint" type="button" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>
+      ${hasQuestionHint(q)?`<button class="stdBtn trueFalseHint" type="button" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>`:''}
     </div>`;
   }else{
-    controls=[...(q.alternativas||[]),'Dica'].map((a,i)=>`<button class="stdBtn ans" data-i="${i}" style="background-image:url('${A['botao generico popup generico.png']}');font-size:18px">${esc(a)}</button>`).join('');
+    const objectiveChoices=[...(q.alternativas||[])];if(hasQuestionHint(q))objectiveChoices.push('Dica');controls=objectiveChoices.map((a,i)=>`<button class="stdBtn ans" data-i="${i}" style="background-image:url('${A['botao generico popup generico.png']}');font-size:18px">${esc(a)}</button>`).join('');
   }
-  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div id="timerLabel" class="label" style="height:48px;text-align:center;font-size:18px">Tempo restante: ${rem}s</div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${meta}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${controls}</div></div></div>`;
+  const questionImageSrc=resolveImageSource(q.imagem_pergunta||q.question_image||'');
+  const questionImageHtml=questionImageSrc?`<div class="questionPromptImageWrap"><img class="questionPromptImage" src="${esc(questionImageSrc)}" alt="Imagem da pergunta" onerror="this.closest('div').style.display='none'"></div>`:'';
+  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div id="timerLabel" class="label" style="height:48px;text-align:center;font-size:18px">Tempo restante: ${rem}s</div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${meta}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${questionImageHtml}${controls}</div></div></div>`;
   popup(html,1093,494,'popup genérico HD.png').parentElement.style.backgroundColor=rgba(color,.3);
   let hintUsed=false;
   const finishQuestion=(correct,answerMarked=null)=>{
@@ -957,7 +988,7 @@ function questionPopup(area,q){
         ? (trueFalseCorrect(q)===true?'Verdadeiro':'Falso')
         : q.correta;
     const awardedPoints=correct?effectivePts(q.dificuldade,hintUsed):0;
-    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:marked,correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
+    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_image:q.imagem_pergunta||q.question_image||'',question_type:type,answer_marked:marked,correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
     game.rounds.push(rec);
     markQuestionUsed(q);
     if(correct){
@@ -986,7 +1017,7 @@ function questionPopup(area,q){
         : type==='verdadeiro_falso'
           ? (trueFalseCorrect(q)===true?'Verdadeiro':'Falso')
           : q.correta;
-      game.rounds.push({materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:'Tempo esgotado',correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:false,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:0,equipe:game.current_team+1,answer_time_secs:tl,question_key:questionKey(q),timed_out:true});
+      game.rounds.push({materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_image:q.imagem_pergunta||q.question_image||'',question_type:type,answer_marked:'Tempo esgotado',correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:false,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:0,equipe:game.current_team+1,answer_time_secs:tl,question_key:questionKey(q),timed_out:true});
       closePopup();
       markQuestionUsed(q);
       rebuildWheelAfterQuestion(area);
@@ -1032,10 +1063,10 @@ function questionPopup(area,q){
     e&&e.preventDefault&&e.preventDefault();
     e&&e.stopPropagation&&e.stopPropagation();
     let i=+b.dataset.i;
-    if(i===(q.alternativas||[]).length){hintUsed=true;showHint(q);return}
+    if(hasQuestionHint(q)&&i===(q.alternativas||[]).length){hintUsed=true;showHint(q);return}
     let correct=i===Number(q.correta);
     const awardedPoints=correct?effectivePts(q.dificuldade,hintUsed):0;
-    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:i,correct_answer:q.correta,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
+    let rec={materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_image:q.imagem_pergunta||q.question_image||'',question_type:type,answer_marked:i,correct_answer:q.correta,is_correct:correct,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:awardedPoints,equipe:game.current_team+1,answer_time_secs:tl-rem,question_key:questionKey(q)};
     game.rounds.push(rec);
     markQuestionUsed(q);
     if(correct){
@@ -1056,6 +1087,9 @@ function questionPopup(area,q){
 function showHint(q){
   const host=$('#popupHost');
   if(!host)return;
+  const hintText=String(q?.dica_texto||'').trim();
+  const hintImageSrc=resolveImageSource(q?.dica_imagem||'');
+  if(!hintText&&!hintImageSrc){toast('Esta pergunta não possui dica cadastrada.');return}
   const old=host.querySelector('.hintLayer');
   if(old)old.remove();
 
@@ -1064,7 +1098,8 @@ function showHint(q){
   layer.innerHTML=`<div class="hintCard" role="dialog" aria-modal="true">
     <h2>Dica</h2>
     <div class="hintPenalty">Usar a dica reduz a pontuação desta questão para 85% do valor original.</div>
-    <div class="hintText">${esc(q.dica_texto||'Sem dica cadastrada.')}</div>
+    ${hintText?`<div class="hintText">${esc(hintText)}</div>`:''}
+    ${hintImageSrc?`<div class="hintMediaWrap"><img class="hintMediaImage" src="${esc(hintImageSrc)}" alt="Imagem da dica" onerror="this.closest('div').style.display='none'"></div>`:''}
     <button class="hintOk" type="button">OK</button>
   </div>`;
 
@@ -1129,6 +1164,11 @@ function renderAddEdit(){
     <div class="fieldRow"><label for="newArea">Nova Área:</label><input id="newArea" type="text"><button id="addArea" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Adicionar</button></div>
     <div class="fieldRow"><span class="fieldLabel" id="editTypeLabel">Tipo de questão:</span><div id="editTypeBox" class="selectFieldBox"></div></div>
     <div class="fieldRow"><label for="f0">Pergunta:</label><textarea id="f0" rows="2"></textarea></div>
+    <div class="editorMediaBlock questionMediaBlock">
+      <div class="editorMediaTitle">Imagem da pergunta <span>opcional</span></div>
+      <div class="fieldRow imagePathRow"><label for="questionImg">Caminho da imagem:</label><input id="questionImg" type="text" placeholder="URL, caminho local ou Data URL"><button id="chooseQuestionImg" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Escolher Arquivo</button><input id="questionImgFile" type="file" accept="image/*" hidden></div>
+      <div class="fieldRow imagePreviewRow"><label>Prévia:</label><img id="questionImgPreview" class="editorImagePreview" hidden alt="Prévia da imagem da pergunta"></div>
+    </div>
     <div id="objectiveFields">
       <div class="fieldRow"><span class="fieldLabel" id="objectiveAltCountLabel">Quantidade de alternativas:</span><div id="objectiveAltCountBox" class="selectFieldBox"></div></div>
       ${['A','B','C','D','E'].map((letter,i)=>`<div class="fieldRow objectiveAlternativeRow" data-alt-index="${i}"><label for="f${i+1}">Alternativa ${letter}:</label><input id="f${i+1}" type="text"></div>`).join('')}
@@ -1146,8 +1186,13 @@ function renderAddEdit(){
     </div>
     <div class="fieldRow"><span class="fieldLabel" id="editDiffLabel">Dificuldade:</span><div id="diffBox" class="selectFieldBox"></div></div>
     <div class="fieldRow"><label for="areaColor">Cor da Área:</label><input id="areaColor" type="color" value="#ffffff"></div>
-    <div class="fieldRow"><label for="hintText">Dica (Texto):</label><input id="hintText" type="text"></div>
-    <div class="fieldRow imagePathRow"><label for="hintImg">Caminho da Imagem:</label><input id="hintImg" type="text"><button id="chooseHintImg" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Escolher Arquivo</button></div>
+    <div class="editorMediaBlock hintMediaBlock">
+      <div class="editorMediaTitle">Dica <span>opcional</span></div>
+      <div class="editorMediaHelp">A dica pode ser só texto, só imagem ou texto + imagem.</div>
+      <div class="fieldRow"><label for="hintText">Texto da dica:</label><input id="hintText" type="text" placeholder="Opcional"></div>
+      <div class="fieldRow imagePathRow"><label for="hintImg">Caminho da imagem:</label><input id="hintImg" type="text" placeholder="URL, caminho local ou Data URL"><button id="chooseHintImg" type="button" class="stdBtn addMetaBtn" style="background-image:url('${A['botao generico listarperguntas.png']}')">Escolher Arquivo</button><input id="hintImgFile" type="file" accept="image/*" hidden></div>
+      <div class="fieldRow imagePreviewRow"><label>Prévia:</label><img id="hintImgPreview" class="editorImagePreview" hidden alt="Prévia da imagem da dica"></div>
+    </div>
     <div class="fieldRow formActions"><span class="fieldSpacer" aria-hidden="true"></span><button id="saveQ" type="button" class="stdBtn" style="flex:1;background-image:url('${A['botao generico listarperguntas.png']}')">Salvar</button><button id="cancelQ" type="button" class="stdBtn" style="flex:1;background-image:url('${A['botao generico listarperguntas.png']}')">Cancelar</button></div>
   </div>`;
   if(!$('#addBack')){imgBtn(c,'addBack','setavoltar.png',20,20,122,86,()=>show('home'),'setavoltar_hover.png');}
@@ -1172,12 +1217,16 @@ function renderAddEdit(){
     setSel('editMode',targetMode);setSel('editSubject',targetSubjects.includes(currentSubject)?currentSubject:defaultSubjectForMode(targetMode));setSel('editArea',targetAreas.includes(q.area)?q.area:'Selecione uma Área');setSel('editType',questionTypeLabel(q));setSel('editDiff',q.dificuldade);
     if(questionType(q)==='verdadeiro_falso')setSel('trueFalseCorrect',trueFalseCorrect(q)===false?'Falso':'Verdadeiro');
     if(questionType(q)==='objetiva'){setSel('objectiveAltCount',String(objectiveAlternativeCount(q)));renderObjectiveCorrectSelect(objectiveAlternativeCount(q),String.fromCharCode(65+objectiveCorrectIndex(q)));}
-    $('#f0').value=q.pergunta||'';(q.alternativas||[]).forEach((a,i)=>{let f=$('#f'+(i+1));if(f)f.value=a});$('#expectedAnswerInput').value=q.resposta_esperada||'';if($('#acceptedAnswersInput'))$('#acceptedAnswersInput').value=(q.respostas_aceitas||[]).join('\n');$('#hintText').value=q.dica_texto||'';$('#hintImg').value=q.dica_imagem||'';
+    $('#f0').value=q.pergunta||'';$('#questionImg').value=q.imagem_pergunta||q.question_image||'';(q.alternativas||[]).forEach((a,i)=>{let f=$('#f'+(i+1));if(f)f.value=a});$('#expectedAnswerInput').value=q.resposta_esperada||'';if($('#acceptedAnswersInput'))$('#acceptedAnswersInput').value=(q.respostas_aceitas||[]).join('\n');$('#hintText').value=q.dica_texto||'';$('#hintImg').value=q.dica_imagem||'';
     const colorSource=(modeDB(targetMode).areas||{})[getSel('editArea')] || (modeDB(editingIndex.mode).areas||{})[q.area];
     if(colorSource)$('#areaColor').value=hex(colorSource);
   }
   updateQuestionTypeFields();
   updateObjectiveAlternativeFields();
+  const updateEditorImagePreview=(inputId,previewId)=>{const input=$('#'+inputId),preview=$('#'+previewId);if(!input||!preview)return;const src=resolveImageSource(input.value);if(src){preview.src=src;preview.hidden=false}else{preview.src='';preview.hidden=true}};
+  const bindEditorImagePicker=(buttonId,fileId,inputId,previewId)=>{const button=$('#'+buttonId),file=$('#'+fileId),input=$('#'+inputId);if(input){input.addEventListener('input',()=>updateEditorImagePreview(inputId,previewId));updateEditorImagePreview(inputId,previewId)}if(button&&file){button.onclick=()=>file.click();file.onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{input.value=String(rd.result||'');updateEditorImagePreview(inputId,previewId)};rd.readAsDataURL(f);e.target.value='';};}};
+  bindEditorImagePicker('chooseQuestionImg','questionImgFile','questionImg','questionImgPreview');
+  bindEditorImagePicker('chooseHintImg','hintImgFile','hintImg','hintImgPreview');
   $('#cancelQ').onclick=()=>{editingIndex=null;addEditDraftMode='Coffee Lovers';show('home')};
   $('#addSubject').onclick=()=>{
     let mm=getSel('editMode'),raw=$('#newSubject').value.trim();
@@ -1223,7 +1272,7 @@ function saveQuestion(){
   const pergunta=$('#f0').value.trim();
   if(!pergunta){msg('Erro','Digite a pergunta.');return}
   const tipo=questionType({tipo:getSel('editType')||'Objetiva'});
-  let q={materia:getSel('editSubject')||defaultSubjectForMode(m),area:a,tipo,pergunta,dificuldade:getSel('editDiff'),dica_texto:$('#hintText').value,dica_imagem:$('#hintImg').value};
+  let q={materia:getSel('editSubject')||defaultSubjectForMode(m),area:a,tipo,pergunta,imagem_pergunta:$('#questionImg').value.trim(),dificuldade:getSel('editDiff'),dica_texto:$('#hintText').value,dica_imagem:$('#hintImg').value.trim()};
   if(tipo==='discursiva'){
     q.resposta_esperada=$('#expectedAnswerInput').value.trim();
     if(!q.resposta_esperada){msg('Erro','Digite uma resposta esperada para a questão discursiva.');return}

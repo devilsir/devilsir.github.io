@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#fff9f0"/>
+  <rect x="180" y="250" width="440" height="30" rx="10" fill="#935d33"/>
+  <rect x="215" y="280" width="22" height="130" fill="#734421"/>
+  <rect x="563" y="280" width="22" height="130" fill="#734421"/>
+  <rect x="382" y="180" width="36" height="70" fill="#777"/>
+  <path d="M340 185 h120 l-18 46 h-84z" fill="#ffd05f" stroke="#c79111" stroke-width="6"/>
+  <ellipse cx="400" cy="252" rx="40" ry="8" fill="#666"/>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial" font-size="34" fill="#5b3a1c">Observe onde está a lâmpada.</text>
+</svg>
