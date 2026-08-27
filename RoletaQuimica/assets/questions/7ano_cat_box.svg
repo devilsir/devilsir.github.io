@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#fff7ef"/>
+  <rect x="230" y="170" width="340" height="220" rx="12" fill="#f3d2a4" stroke="#8a5a2b" stroke-width="8"/>
+  <rect x="210" y="145" width="380" height="36" rx="10" fill="#e8be86" stroke="#8a5a2b" stroke-width="8"/>
+  <circle cx="400" cy="270" r="55" fill="#6a6a6a"/>
+  <circle cx="360" cy="215" r="18" fill="#6a6a6a"/>
+  <circle cx="440" cy="215" r="18" fill="#6a6a6a"/>
+  <circle cx="382" cy="265" r="7" fill="#fff"/><circle cx="418" cy="265" r="7" fill="#fff"/>
+  <path d="M393 286 Q400 294 407 286" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial" font-size="34" fill="#5b3a1c">Observe a posição do gato.</text>
+</svg>

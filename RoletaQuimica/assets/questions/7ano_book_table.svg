@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#fff8f2"/>
+  <rect x="180" y="210" width="440" height="30" rx="10" fill="#935d33"/>
+  <rect x="215" y="240" width="22" height="145" fill="#734421"/>
+  <rect x="563" y="240" width="22" height="145" fill="#734421"/>
+  <rect x="310" y="150" width="180" height="44" rx="6" fill="#3f76bf" stroke="#214d88" stroke-width="6"/>
+  <rect x="322" y="160" width="72" height="24" fill="#d9e8ff"/>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial" font-size="34" fill="#5b3a1c">Observe onde está o livro.</text>
+</svg>

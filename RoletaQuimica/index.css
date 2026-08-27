@@ -1046,3 +1046,17 @@ body.isMobileLandscape .viewport{
 .historyInsightList.solo{grid-template-columns:1fr}
 .historyQuickActionsBox{height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:26px 34px}.historyQuickActionsBox h2{margin:0;text-align:center;font-size:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.historyQuickActionsBox p{margin:0;text-align:center;color:#d7bcaa}.historyQuickActionsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.historyQuickActionsGrid button{height:42px;font-size:14px}
 @media (max-width:1150px){#history .historyWorkspace{grid-template-columns:1fr}#history .historyCardMeta{max-width:none}.historyAnalyticsKpis.cleaner{grid-template-columns:repeat(3,1fr)}}
+
+
+/* Question/hint images */
+.questionPromptImageWrap{display:flex;justify-content:center;align-items:center;padding:4px 0 8px}.questionPromptImage{max-width:100%;width:min(520px,100%);max-height:210px;object-fit:contain;border-radius:16px;border:1px solid rgba(255,194,130,.28);background:rgba(255,255,255,.06);padding:8px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.hintMediaWrap{display:flex;justify-content:center;align-items:center;margin-top:10px}.hintMediaImage{max-width:100%;width:min(420px,100%);max-height:220px;object-fit:contain;border-radius:14px;border:1px solid rgba(255,194,130,.25);background:rgba(255,255,255,.04);padding:8px}
+.imagePreviewRow{align-items:flex-start}.editorImagePreview{width:220px;max-width:100%;max-height:140px;object-fit:contain;border-radius:10px;border:1px solid rgba(255,184,113,.24);background:rgba(255,255,255,.05);padding:6px}
+
+/* Editor: mídia separada da pergunta e da dica */
+.editorMediaBlock{margin:12px 0;padding:12px 14px;border:1px solid rgba(255,185,110,.2);border-radius:12px;background:rgba(45,15,4,.32)}
+.editorMediaTitle{font-size:18px;font-weight:800;color:#fff0df;margin-bottom:6px}
+.editorMediaTitle span{font-size:12px;font-weight:600;color:#cba68c;text-transform:uppercase;letter-spacing:.55px;margin-left:5px}
+.editorMediaHelp{font-size:13px;color:#d8bca8;margin:0 0 8px 30%;padding-left:10px;line-height:1.3}
+.editorMediaBlock .fieldRow{margin:7px 0}
+@media (max-width:900px){.editorMediaHelp{margin-left:0;padding-left:0}}

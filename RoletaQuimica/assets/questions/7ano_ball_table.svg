@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#f7fbff"/>
+  <rect x="180" y="140" width="440" height="32" rx="10" fill="#9a6438"/>
+  <rect x="210" y="170" width="22" height="180" fill="#7c4d2a"/>
+  <rect x="568" y="170" width="22" height="180" fill="#7c4d2a"/>
+  <circle cx="400" cy="300" r="48" fill="#f08b2f" stroke="#cf6a14" stroke-width="8"/>
+  <path d="M400 252 v96 M352 300 h96" stroke="#cf6a14" stroke-width="6"/>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial" font-size="34" fill="#3c4955">Observe onde está a bola.</text>
+</svg>
