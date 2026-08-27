@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'roleta-quimica-cafe-v8-preset8-is-are';
+const CACHE_NAME = 'roleta-quimica-cafe-v11-english-preset-audit';
 const APP_SHELL = [
   './assets/embedded/adicionar-perguntas-c315fc0b.png',
   './assets/embedded/adicionar-perguntas_hover-eaef1d34.png',
@@ -89,7 +89,8 @@ const APP_SHELL = [
   './manifest.webmanifest',
   './payload.js',
   './pwa.css',
-  './pwa.js'
+  './pwa.js',
+  './xlsx-lite.js'
 ];
 
 self.addEventListener('install', event => {
