@@ -32,6 +32,46 @@ function mergeDefaultModes(db){
     Object.entries(builtin.areas||{}).forEach(([a,c])=>{if(!(a in db[mode].areas))db[mode].areas[a]=JSON.parse(JSON.stringify(c))});
     if(!Array.isArray(db[mode].dificuldades)||!db[mode].dificuldades.length)db[mode].dificuldades=JSON.parse(JSON.stringify(builtin.dificuldades||['Fácil','Médio','Difícil']));
     if(!Array.isArray(db[mode].perguntas))db[mode].perguntas=[];
+    // Content patches are appended once to existing local databases, so updates add
+    // new built-in questions without resetting questions created or edited by the user.
+    const patchQuestions=(builtin.perguntas||[]).filter(q=>q&&q.builtin_patch);
+    if(patchQuestions.length){
+      const existing=new Set(db[mode].perguntas.map(q=>String(q.area||'')+'||'+String(q.pergunta||'')));
+      patchQuestions.forEach(q=>{
+        const k=String(q.area||'')+'||'+String(q.pergunta||'');
+        if(!existing.has(k)){db[mode].perguntas.push(JSON.parse(JSON.stringify(q)));existing.add(k)}
+      });
+    }
+  });
+  return db;
+}
+function applyBuiltInContentFixes(db){
+  const mode=db&&db['8º ano'];
+  if(!mode||!Array.isArray(mode.perguntas))return db;
+  const isBuiltin=q=>String(q?.builtin_patch||'')==='8ano_more_comparatives_future_to_be_v1';
+  mode.perguntas.forEach(q=>{
+    if(!isBuiltin(q))return;
+    const text=String(q.pergunta||'');
+    const addAccepted=(items)=>{q.respostas_aceitas=[...new Set([...(Array.isArray(q.respostas_aceitas)?q.respostas_aceitas:[]),...items])]};
+    if(text==='Complete com o verbo to be no futuro: Tomorrow, I ___ at school early.'){
+      q.pergunta='Complete com o verbo to be no futuro simples usando will: Tomorrow, I ___ at school early.';
+      q.dica_texto='Nesta questão, use o futuro simples com will: will + be.';
+    }else if(text==='Passe para o futuro usando o verbo to be: “She is tired today.” Use “tomorrow” na nova frase.'){
+      addAccepted(['she is going to be tired tomorrow',"she's going to be tired tomorrow",'ela vai estar cansada amanhã','ela estará cansada amanhã']);
+      q.dica_texto='Você pode formar a frase com will be ou com am/is/are going to be. Mantenha “tired” e use “tomorrow”.';
+    }else if(text==='Complete na forma negativa: They ___ at home tonight.'){
+      q.pergunta='Complete no futuro simples com will, na forma negativa: They ___ at home tonight.';
+      q.dica_texto="Nesta questão, use will na negativa: will not / won't + be.";
+    }else if(text==='Qual pergunta com o verbo to be no futuro está correta?'){
+      q.pergunta='Qual pergunta com o verbo to be no futuro simples usando will está correta?';
+      q.dica_texto='Nesta questão, use a estrutura Will + sujeito + be... ?';
+    }else if(text==='“Will you be at the party tomorrow?” está correta para perguntar se alguém estará em uma festa no futuro.'){
+      q.pergunta='“Will you be at the party tomorrow?” está correta como pergunta no futuro simples com will.';
+      q.dica_texto='Observe a estrutura do futuro simples: Will + sujeito + be + complemento.';
+    }else if(text==='Traduza usando o verbo to be no futuro: “Nós estaremos felizes amanhã.”'){
+      addAccepted(['we are going to be happy tomorrow',"we're going to be happy tomorrow",'nós vamos estar felizes amanhã','nos vamos estar felizes amanha']);
+      q.dica_texto='Você pode usar we will be ou we are going to be para expressar a ideia no futuro.';
+    }
   });
   return db;
 }
@@ -55,7 +95,7 @@ function cleanRuntimePredefs(pre){
   });
   return pre||{};
 }
-let DB=cleanRuntimeDB(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
+let DB=cleanRuntimeDB(applyBuiltInContentFixes(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS)))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
 save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;
@@ -307,6 +347,91 @@ function normalizeDiscursiveAnswer(value){
     .toLocaleLowerCase('pt-BR')
     .replace(/[^a-z0-9]+/g,'');
 }
+
+// Equivalências conceituais PT-BR ↔ EN para respostas discursivas.
+// A ideia é aceitar o nome do conceito nos dois idiomas sem transformar
+// exercícios que exigem uma frase específica em respostas livres demais.
+const DISC_EQUIV_GROUPS=[
+  ['simple future','future simple','futuro simples'],
+  ['immediate future','futuro imediato'],
+  ['future continuous','continuous future','futuro continuo'],
+  ['future perfect','perfect future','futuro perfeito'],
+  ['comparative','comparativo'],
+  ['comparative of equality','equality comparative','comparativo de igualdade'],
+  ['comparative of superiority','superiority comparative','comparativo de superioridade'],
+  ['comparative of inferiority','inferiority comparative','comparativo de inferioridade'],
+  ['superlative','superlativo'],
+  ['simple present','present simple','presente simples'],
+  ['present continuous','continuous present','presente continuo'],
+  ['simple past','past simple','passado simples'],
+  ['past continuous','continuous past','passado continuo'],
+  ['regular verb','regular verbs','verbo regular','verbos regulares'],
+  ['irregular verb','irregular verbs','verbo irregular','verbos irregulares'],
+  ['modal verb','modal verbs','verbo modal','verbos modais'],
+  ['zero conditional','conditional zero','0 conditional','condicional zero','condicional 0'],
+  ['first conditional','1st conditional','conditional one','conditional 1','1 conditional','primeiro condicional','condicional 1'],
+  ['second conditional','2nd conditional','conditional two','conditional 2','2 conditional','segundo condicional','condicional 2'],
+  ['fact','fato'],
+  ['opinion','opiniao'],
+  ['prefix','prefixo'],
+  ['true','verdadeiro'],
+  ['false','falso'],
+  ['to be','ser ou estar','ser e estar','verbo ser ou estar','verbo ser e estar'],
+  ['in','inside','dentro','dentro de'],
+  ['on','sobre','em cima','em cima de'],
+  ['out','outside','fora'],
+  ['under','below','embaixo','embaixo de','abaixo','abaixo de'],
+  ['above','acima','acima de'],
+  ['behind','atras','atras de'],
+  ['in front of','na frente de'],
+  ['next to','beside','ao lado','ao lado de'],
+  ['between','entre'],
+  ['near','perto','perto de'],
+  ['yes','sim'],
+  ['no','nao']
+];
+const DISC_EQUIV_LOOKUP=(()=>{
+  const map=new Map();
+  DISC_EQUIV_GROUPS.forEach((group,index)=>{
+    const key='@eq'+index;
+    group.forEach(v=>map.set(normalizeDiscursiveAnswer(v),key));
+  });
+  return map;
+})();
+function canonicalDiscursiveAtom(value){
+  const compact=normalizeDiscursiveAnswer(value);
+  return DISC_EQUIV_LOOKUP.get(compact)||compact;
+}
+function normalizedDiscursiveText(value){
+  return String(value??'')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .toLocaleLowerCase('pt-BR')
+    .replace(/[“”‘’]/g,"'")
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function splitDiscursiveList(value){
+  let text=normalizedDiscursiveText(value);
+  if(!text)return null;
+  // Aceita, entre outras: in e on / in ou on / in,on / in/on / in;on / in & on.
+  text=text
+    .replace(/[\/,;|&+]+/g,'§')
+    .replace(/\b(?:e|ou|and|or)\b/g,'§');
+  const parts=text.split('§').map(v=>v.trim()).filter(Boolean);
+  return parts.length>=2?parts.map(canonicalDiscursiveAtom):null;
+}
+function discursiveOrderMatters(q){
+  const prompt=normalizedDiscursiveText(q?.pergunta||'');
+  return /\b[a-e]\)|\bprimeiro\b|\bdepois\b|\brespectivamente\b|\bna ordem\b/.test(prompt);
+}
+function sameDiscursiveList(input,expected,q){
+  const a=splitDiscursiveList(input),b=splitDiscursiveList(expected);
+  if(!a||!b||a.length!==b.length)return false;
+  if(discursiveOrderMatters(q))return a.every((v,i)=>v===b[i]);
+  const aa=a.slice().sort(),bb=b.slice().sort();
+  return aa.every((v,i)=>v===bb[i]);
+}
 function discursiveAcceptedAnswers(q){
   const extras=Array.isArray(q?.respostas_aceitas)?q.respostas_aceitas:[];
   return [q?.resposta_esperada,...extras]
@@ -317,7 +442,15 @@ function discursiveAnswerMatches(input,q){
   const normalized=normalizeDiscursiveAnswer(input);
   if(!normalized)return false;
   if(q?.aceitar_qualquer_resposta===true)return true;
-  return discursiveAcceptedAnswers(q).some(v=>normalizeDiscursiveAnswer(v)===normalized);
+  const accepted=discursiveAcceptedAnswers(q);
+  return accepted.some(expected=>{
+    // 1) mesma resposta ignorando caixa, acentos, espaços, hífens e pontuação;
+    if(normalizeDiscursiveAnswer(expected)===normalized)return true;
+    // 2) mesmo conceito escrito em português ou inglês;
+    if(canonicalDiscursiveAtom(expected)===canonicalDiscursiveAtom(input))return true;
+    // 3) listas com separadores diferentes: e, ou, and, or, /, vírgula, ;, &, +.
+    return sameDiscursiveList(input,expected,q);
+  });
 }
 function objectiveAlternativeCount(q){
   const n=Array.isArray(q?.alternativas)?q.alternativas.length:4;
@@ -792,7 +925,7 @@ function questionPopup(area,q){
     controls=`<div class="discursiveControls">
       <label class="discursiveAnswerLabel" for="discursiveAnswerInput">Digite a resposta:</label>
       <input id="discursiveAnswerInput" class="discursiveAnswerInput" type="text" autocomplete="off" spellcheck="false" placeholder="Escreva sua resposta aqui">
-      <div class="discursiveToleranceNote">Maiúsculas/minúsculas, acentos, espaços, hífens e pontuação não alteram a correção.</div>
+      <div class="discursiveToleranceNote">Maiúsculas/minúsculas, acentos e pontuação não alteram a correção. Conceitos equivalentes em português/inglês e listas com e/ou, / ou vírgula também são aceitos.</div>
       <div class="discursiveAnswerActions">
         <button id="submitDiscursiveAnswer" class="stdBtn discursiveSubmit" style="background-image:url('${A['botao generico popup generico.png']}')">Responder</button>
         <button class="stdBtn discursiveHint" data-result="hint" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>
@@ -998,7 +1131,7 @@ function renderAddEdit(){
     </div>
     <div id="discursiveFields" hidden>
       <div class="fieldRow"><label for="expectedAnswerInput">Resposta esperada:</label><textarea id="expectedAnswerInput" rows="2" placeholder="Ex.: Guarda-roupa"></textarea></div>
-      <div class="discursiveEditHelp">A correção ignora automaticamente maiúsculas/minúsculas, acentos, espaços, hífens e pontuação. Ex.: “Guarda-roupa”, “guarda roupa” e “Guardaroupa” são equivalentes.</div>
+      <div class="discursiveEditHelp">A correção ignora maiúsculas/minúsculas, acentos, espaços, hífens e pontuação; aceita equivalentes PT/EN cadastrados e variações de listas com e/ou, and/or, /, vírgula, ponto e vírgula, & ou +.</div>
       <div class="fieldRow"><label for="acceptedAnswersInput">Outras respostas aceitas:</label><textarea id="acceptedAnswersInput" rows="3" placeholder="Opcional. Uma por linha. Ex.: Roupeiro&#10;Armário"></textarea></div>
     </div>
     <div id="trueFalseFields" hidden>
