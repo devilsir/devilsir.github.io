@@ -981,6 +981,12 @@ function questionPopup(area,q){
   };
   timer=setInterval(()=>{
     if(rem<=0){
+      const expected=type==='discursiva'
+        ? (q.resposta_esperada||'')
+        : type==='verdadeiro_falso'
+          ? (trueFalseCorrect(q)===true?'Verdadeiro':'Falso')
+          : q.correta;
+      game.rounds.push({materia:subjectOf(q,game.game_mode),area,difficulty:q.dificuldade,question:q.pergunta,question_type:type,answer_marked:'Tempo esgotado',correct_answer:expected,accepted_answers:type==='discursiva'?discursiveAcceptedAnswers(q):undefined,is_correct:false,hint_used:hintUsed,base_points:pts(q.dificuldade),awarded_points:0,equipe:game.current_team+1,answer_time_secs:tl,question_key:questionKey(q),timed_out:true});
       closePopup();
       markQuestionUsed(q);
       rebuildWheelAfterQuestion(area);
@@ -1256,30 +1262,334 @@ function renderListRows(){let m=getSel('listMode')||'Coffee Lovers';let p=POS.li
 function renderPredef(){let c=$('#predefControls');c.innerHTML='';makeSelect(c,'preSel',['Predefinições',...Object.keys(PRE)],'Predefinições',341.5-125,705*.8-60,250,60);makeSelect(c,'preMode',['Todas',...MODES],'Todas',683-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preArea',['Todas'],'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);makeSelect(c,'preDiff',['Todas','Fácil','Médio','Difícil'],'Todas',1229.4-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions);let save=document.createElement('button');save.id='predefSaveBtn';save.className='stdBtn predefSaveBtn';save.style.cssText=`position:absolute;left:${683-125}px;bottom:${705*.02}px;width:250px;height:60px;background-image:url('${A['botao generico telainicial.png']}')`;save.textContent='Salvar Predefinição';save.onclick=e=>{savePredef();e.currentTarget.blur&&e.currentTarget.blur()};save.onmouseup=()=>save.blur&&save.blur();save.onmouseleave=()=>save.blur&&save.blur();c.appendChild(save);imgBtn(c,'preBack','setavoltar.png',10,10,60,60,()=>show('home'),'setavoltar_hover.png');renderPredefQuestions()}
 function renderPredefQuestions(){let m=getSel('preMode')||'Todas';let modes=m==='Todas'?MODES:[m];let areas=m==='Todas'?[...new Set(MODES.flatMap(mm=>Object.keys(modeDB(mm).areas||{})))]:Object.keys(modeDB(m).areas||{});let areaEl=$('#preArea');if(areaEl){let old=getSel('preArea');areaEl.remove();makeSelect($('#predefControls'),'preArea',['Todas',...areas],areas.includes(old)?old:'Todas',956.2-100,705*.8-60,200,60,'botao generico telainicial.png','botao generico telainicial.png',renderPredefQuestions)}let area=getSel('preArea')||'Todas',diff=getSel('preDiff')||'Todas';let qs=[];modes.forEach(mm=>(modeDB(mm).perguntas||[]).forEach((q,i)=>{if((area==='Todas'||q.area===area)&&(diff==='Todas'||q.dificuldade===diff))qs.push({...q,_mode:mm,_i:i})}));let specialAreas=[...new Set(modes.flatMap(mm=>Object.keys(modeDB(mm).areas||{}).filter(a=>SPECIAL.has(a))))].filter(a=>area==='Todas'||a===area);let specialHtml=specialAreas.length?`<div class="predefSpecialBlock"><div class="predefSpecialTitle">Áreas especiais da roleta</div>${specialAreas.map(a=>`<label class="predefItem predefSpecialItem"><input type="checkbox" checked data-special-area="${esc(a)}"><span>${esc(a)}</span></label>`).join('')}</div>`:'';let questionHtml=qs.length?qs.map((q,idx)=>`<label class="predefItem"><input type="checkbox" checked data-idx="${idx}"><span>${esc(q.pergunta)}</span></label>`).join(''):`<div class="predefEmpty">${SPECIAL.has(area)?'Esta é uma área especial de pontuação e não possui pergunta própria.':'Nenhuma pergunta encontrada para este filtro.'}</div>`;$('#predefQuestions').innerHTML=specialHtml+questionHtml;$('#predefQuestions')._qs=qs}
 function savePredef(){let name=prompt('Nome da predefinição:');if(!name)return;let qs=$('#predefQuestions')._qs||[],sel=$$('#predefQuestions input[data-idx]:checked').map(i=>qs[+i.dataset.idx]).filter(Boolean),specials=$$('#predefQuestions input[data-special-area]:checked').map(i=>i.dataset.specialArea).filter(Boolean),normalAreas=sel.map(q=>q.area).filter(Boolean),areasSelected=[...new Set([...normalAreas,...specials])];PRE[name]={modo:getSel('preMode')==='Todas'?'Coffee Lovers':getSel('preMode'),perguntas:sel,areas_selected:areasSelected};save(PRE_KEY,PRE);msg('Sucesso','Predefinição salva com as áreas selecionadas.',()=>show('home'))}
-function renderHistory(){let h=load(HIST_KEY,[]).slice().reverse();$('#histList').innerHTML=h.length?h.map((s,i)=>`<button class="nativeBtn histItem" data-i="${i}" style="width:100%;margin-bottom:8px"> ${esc(s.started_at)} | Modo: ${esc(s.game_mode)} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: ${esc(formatHistoryDuration(s))}</button>`).join(''):`<div style="height:140px;padding-top:24px;text-align:center;font-size:20px">Nenhuma sessão registrada ainda.</div>`;$$('.histItem').forEach(b=>b.onclick=()=>openHist(h[+b.dataset.i]));$('#histBack').onclick=()=>show('home')}
-function openHist(s){
-  let lines=[
-    ` ${s.started_at} | Modo: ${s.game_mode} | Equipes: ${s.num_teams} | Tempo/questão: ${s.time_limit_secs}s | Duração: ${formatHistoryDuration(s)}`,
-    '--------------------------------------------------------------------------------',
+const historyView={query:'',sort:'newest',selectedIndex:null,analyticsTab:'summary'};
+function historyName(s,index=0){
+  const custom=String(s?.history_name||s?.name||'').trim();
+  if(custom)return custom;
+  const mode=String(s?.game_mode||'Partida').trim()||'Partida';
+  const ms=Number(s?.started_at_ms)||parseHistoryDate(s?.started_at);
+  if(Number.isFinite(ms)){
+    const d=new Date(ms),dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),hh=String(d.getHours()).padStart(2,'0'),mi=String(d.getMinutes()).padStart(2,'0');
+    return `${mode} · ${dd}/${mm} ${hh}:${mi}`;
+  }
+  return `${mode} · Partida ${index+1}`;
+}
+function historyNorm(value){return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR')}
+function historyAccuracy(s){
+  const rounds=Array.isArray(s?.rounds)?s.rounds:[];
+  if(!rounds.length)return null;
+  const correct=rounds.filter(r=>r?.is_correct===true).length;
+  return Math.round(correct/rounds.length*100);
+}
+function historyScoreEntries(s){
+  if(s?.final_scoreboard&&typeof s.final_scoreboard==='object')return Object.entries(s.final_scoreboard);
+  return (s?.scores||[]).map((score,i)=>[`Equipe ${i+1}`,score]);
+}
+function historyWinner(s){
+  const scores=historyScoreEntries(s).map(([name,score])=>[name,Number(score)||0]);
+  if(!scores.length)return '—';
+  const max=Math.max(...scores.map(x=>x[1]));
+  const winners=scores.filter(x=>x[1]===max).map(x=>x[0]);
+  return `${winners.join(' / ')} (${max} pts)`;
+}
+
+function historyAverage(values){
+  const valid=(values||[]).map(Number).filter(Number.isFinite);
+  return valid.length?valid.reduce((a,b)=>a+b,0)/valid.length:null;
+}
+function historyRoundTime(r){
+  const n=Number(r?.answer_time_secs);return Number.isFinite(n)&&n>=0?n:null;
+}
+function historyTeamMetrics(s){
+  const rounds=Array.isArray(s?.rounds)?s.rounds:[];
+  const scores=historyScoreEntries(s);
+  const teamCount=Math.max(Number(s?.num_teams)||0,scores.length,...rounds.map(r=>Number(r?.equipe)||0),0);
+  const byScore=new Map(scores.map(([name,score],i)=>[i+1,{name:String(name||`Equipe ${i+1}`),score:Number(score)||0}]));
+  return Array.from({length:teamCount},(_,i)=>{
+    const team=i+1,teamRounds=rounds.filter(r=>Number(r?.equipe)===team),correct=teamRounds.filter(r=>r?.is_correct===true).length;
+    const hints=teamRounds.filter(r=>r?.hint_used===true).length,times=teamRounds.map(historyRoundTime).filter(v=>v!==null);
+    const areaMap={};
+    teamRounds.forEach(r=>{const key=String(r?.area||'Sem área');const a=areaMap[key]||(areaMap[key]={total:0,correct:0});a.total++;if(r?.is_correct===true)a.correct++});
+    const areas=Object.entries(areaMap).map(([area,v])=>({area,total:v.total,correct:v.correct,accuracy:v.total?Math.round(v.correct/v.total*100):0})).sort((a,b)=>b.accuracy-a.accuracy||b.total-a.total);
+    const scoreRec=byScore.get(team)||{name:`Equipe ${team}`,score:Number(s?.scores?.[i])||0};
+    return {team,name:scoreRec.name,score:scoreRec.score,rounds:teamRounds.length,correct,accuracy:teamRounds.length?Math.round(correct/teamRounds.length*100):0,hints,hintRate:teamRounds.length?Math.round(hints/teamRounds.length*100):0,avgTime:times.length?historyAverage(times):null,pointsFromQuestions:teamRounds.reduce((sum,r)=>sum+(Number(r?.awarded_points)||0),0),areas};
+  });
+}
+function historyGameMetrics(s){
+  const rounds=Array.isArray(s?.rounds)?s.rounds:[],teams=historyTeamMetrics(s),correct=rounds.filter(r=>r?.is_correct===true).length,hints=rounds.filter(r=>r?.hint_used===true).length,times=rounds.map(historyRoundTime).filter(v=>v!==null),totalScore=teams.reduce((sum,t)=>sum+t.score,0);
+  return {rounds:rounds.length,correct,accuracy:rounds.length?correct/rounds.length*100:null,hints,hintRate:rounds.length?hints/rounds.length*100:null,avgTime:times.length?historyAverage(times):null,totalScore,avgScorePerTeam:teams.length?totalScore/teams.length:null,pointsPerRound:rounds.length?totalScore/rounds.length:null,teams};
+}
+function historyAreaMetrics(s){
+  const map={};(s?.rounds||[]).forEach(r=>{const k=String(r?.area||'Sem área');const v=map[k]||(map[k]={area:k,total:0,correct:0,hints:0});v.total++;if(r?.is_correct===true)v.correct++;if(r?.hint_used===true)v.hints++});
+  return Object.values(map).map(v=>({...v,accuracy:v.total?v.correct/v.total*100:0,hintRate:v.total?v.hints/v.total*100:0})).sort((a,b)=>b.accuracy-a.accuracy||b.total-a.total);
+}
+function historyMetricAverage(hist,key){
+  return historyAverage((hist||[]).map(s=>historyGameMetrics(s)[key]).filter(v=>v!==null));
+}
+function historyRank(hist,currentIndex,key,higherBetter=true){
+  const rows=(hist||[]).map((s,i)=>({i,v:historyGameMetrics(s)[key]})).filter(x=>x.v!==null&&Number.isFinite(Number(x.v)));
+  rows.sort((a,b)=>higherBetter?b.v-a.v:a.v-b.v);
+  const pos=rows.findIndex(x=>x.i===currentIndex);return pos<0?null:{rank:pos+1,total:rows.length,value:rows[pos].v};
+}
+function historyFmtMetric(value,suffix='',digits=0){
+  if(value===null||value===undefined||value==='')return '—';const n=Number(value);if(!Number.isFinite(n))return '—';return `${n.toFixed(digits).replace('.',',')}${suffix}`;
+}
+function historyBarChart(title,rows,opts={}){
+  const max=Number(opts.max)||Math.max(1,...rows.map(r=>Number(r.value)||0));
+  return `<section class="historyChartCard"><div class="historyChartTitle">${esc(title)}</div><div class="historyBars">${rows.map(r=>{const value=Number(r.value)||0,p=Math.max(0,Math.min(100,max?value/max*100:0));return `<div class="historyBarRow"><div class="historyBarLabel" title="${esc(r.label)}">${esc(r.label)}</div><div class="historyBarTrack"><span style="width:${p.toFixed(2)}%"></span></div><div class="historyBarValue">${esc(r.display??historyFmtMetric(value,opts.suffix||'',opts.digits||0))}</div></div>`}).join('')}</div></section>`;
+}
+function historyComparisonRows(current,average){
+  const defs=[['Aproveitamento','accuracy','%',0,100],['Pts por rodada','pointsPerRound','',1,null],['Média por equipe','avgScorePerTeam',' pts',1,null],['Uso de dicas','hintRate','%',0,100],['Tempo médio','avgTime','s',1,null]];
+  return defs.map(([label,key,suffix,digits,fixedMax])=>{const c=current[key],a=average[key],max=fixedMax||Math.max(1,Number(c)||0,Number(a)||0);return {label,key,current:c,average:a,max,suffix,digits}});
+}
+function historyComparisonChart(current,average){
+  return `<section class="historyCompareCard"><div class="historySectionTitle"><b>Este jogo vs. outros jogos</b><span>Métricas normalizadas para comparar partidas com quantidades diferentes de equipes e rodadas.</span></div><div class="historyCompareRows">${historyComparisonRows(current,average).map(r=>{const cp=Math.max(0,Math.min(100,(Number(r.current)||0)/r.max*100)),ap=Math.max(0,Math.min(100,(Number(r.average)||0)/r.max*100));return `<div class="historyCompareRow"><div class="historyCompareLabel">${esc(r.label)}</div><div class="historyCompareBars"><div><span>Atual</span><i><b class="current" style="width:${cp.toFixed(2)}%"></b></i><strong>${esc(historyFmtMetric(r.current,r.suffix,r.digits))}</strong></div><div><span>Hist.</span><i><b class="average" style="width:${ap.toFixed(2)}%"></b></i><strong>${esc(historyFmtMetric(r.average,r.suffix,r.digits))}</strong></div></div></div>`}).join('')}</div></section>`;
+}
+function historyTrendSvg(hist,currentIndex){
+  const games=(hist||[]).map((s,i)=>({s,i,t:Number(s?.started_at_ms)||parseHistoryDate(s?.started_at)||i,acc:historyGameMetrics(s).accuracy})).filter(x=>x.acc!==null).sort((a,b)=>a.t-b.t);
+  if(!games.length)return '<div class="historyNoData">Sem dados suficientes para tendência.</div>';
+  const W=520,H=128,padX=18,padY=15,innerW=W-padX*2,innerH=H-padY*2;
+  const pts=games.map((g,i)=>{const x=games.length===1?W/2:padX+i/(games.length-1)*innerW,y=padY+(100-g.acc)/100*innerH;return {...g,x,y}});
+  const poly=pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  return `<svg class="historyTrendSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolução do aproveitamento entre partidas"><line x1="${padX}" y1="${padY}" x2="${padX}" y2="${H-padY}" class="gridAxis"/><line x1="${padX}" y1="${H-padY}" x2="${W-padX}" y2="${H-padY}" class="gridAxis"/><line x1="${padX}" y1="${padY+innerH*.5}" x2="${W-padX}" y2="${padY+innerH*.5}" class="gridLine"/><polyline points="${poly}" class="trendLine"/>${pts.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.i===currentIndex?5:3.2}" class="${p.i===currentIndex?'trendPoint current':'trendPoint'}"><title>${esc(historyName(p.s,p.i))}: ${Math.round(p.acc)}%</title></circle>`).join('')}<text x="${padX+3}" y="${padY+9}" class="trendLabel">100%</text><text x="${padX+3}" y="${H-padY-5}" class="trendLabel">0%</text></svg>`;
+}
+function historyInsights(s,index,hist){
+  const m=historyGameMetrics(s),teams=m.teams.filter(t=>t.rounds>0||t.score!==0),areas=historyAreaMetrics(s),others=hist.filter((_,i)=>i!==index),om={accuracy:historyMetricAverage(others,'accuracy'),pointsPerRound:historyMetricAverage(others,'pointsPerRound'),avgScorePerTeam:historyMetricAverage(others,'avgScorePerTeam'),hintRate:historyMetricAverage(others,'hintRate'),avgTime:historyMetricAverage(others,'avgTime')},items=[];
+  if(teams.length){
+    const byScore=[...teams].sort((a,b)=>b.score-a.score),top=byScore[0],second=byScore[1];
+    if(second&&top.score!==second.score)items.push(`<b>${esc(top.name)}</b> liderou o placar por <b>${historyFmtMetric(top.score-second.score,' pts',0)}</b>.`);else if(second)items.push(`O placar terminou empatado entre as equipes líderes.`);
+    const byAcc=[...teams].filter(t=>t.rounds).sort((a,b)=>b.accuracy-a.accuracy);if(byAcc.length)items.push(`<b>${esc(byAcc[0].name)}</b> teve o melhor aproveitamento: <b>${byAcc[0].accuracy}%</b>.`);
+    const byTime=[...teams].filter(t=>t.avgTime!==null).sort((a,b)=>a.avgTime-b.avgTime);if(byTime.length)items.push(`<b>${esc(byTime[0].name)}</b> respondeu mais rápido em média: <b>${historyFmtMetric(byTime[0].avgTime,'s',1)}</b>.`);
+  }
+  if(areas.length){const best=areas[0],worst=[...areas].sort((a,b)=>a.accuracy-b.accuracy||b.total-a.total)[0];items.push(`Área mais forte do jogo: <b>${esc(best.area)}</b> (${Math.round(best.accuracy)}%).`);if(worst&&worst.area!==best.area)items.push(`Área para retomar: <b>${esc(worst.area)}</b> (${Math.round(worst.accuracy)}%).`)}
+  if(others.length&&om.accuracy!==null&&m.accuracy!==null){const d=m.accuracy-om.accuracy;items.push(`O aproveitamento desta partida ficou <b>${Math.abs(d).toFixed(0)} p.p.</b> ${d>=0?'acima':'abaixo'} da média dos outros jogos (${Math.round(om.accuracy)}%).`);const rank=historyRank(hist,index,'accuracy',true);if(rank)items.push(`Por aproveitamento, esta partida está em <b>${rank.rank}º de ${rank.total}</b> no histórico.`)}
+  return {items,othersAverage:om};
+}
+function renderHistoryAnalytics(index=historyView.selectedIndex){
+  const panel=$('#histAnalytics');if(!panel)return;
+  const hist=load(HIST_KEY,[]);if(!hist.length){panel.innerHTML='<div class="historyAnalyticsEmpty"><strong>Análises do jogo</strong><span>Selecione uma partida quando houver histórico salvo.</span></div>';return}
+  let i=Number(index);if(!Number.isInteger(i)||i<0||i>=hist.length)i=hist.length-1;historyView.selectedIndex=i;
+  const s=hist[i],m=historyGameMetrics(s),teams=m.teams,ins=historyInsights(s,i,hist),others=hist.filter((_,idx)=>idx!==i);
+  const avg=ins.othersAverage;
+  const scoreRows=teams.map(t=>({label:t.name,value:t.score,display:`${t.score} pts`}));
+  const accuracyRows=teams.map(t=>({label:t.name,value:t.accuracy,display:`${t.accuracy}%`}));
+  const timeRows=teams.map(t=>({label:t.name,value:t.avgTime??0,display:t.avgTime===null?'—':historyFmtMetric(t.avgTime,'s',1)}));
+  const hintRows=teams.map(t=>({label:t.name,value:t.hintRate,display:`${t.hintRate}%`}));
+  const tabs=[
+    ['summary','Resumo'],
+    ['teams','Equipes'],
+    ['history','Histórico'],
+    ['insights','Insights']
+  ];
+  const active=tabs.some(([id])=>id===historyView.analyticsTab)?historyView.analyticsTab:'summary';
+  const summaryBlock=`<div class="historySectionStack">${teams.length?`<div class="historyChartsGrid compact">${historyBarChart('Placar por equipe',scoreRows,{digits:0})}${historyBarChart('Aproveitamento por equipe',accuracyRows,{max:100,suffix:'%'})}</div>`:'<div class="historyNoData">Sem dados por equipe nesta partida.</div>'}</div>`;
+  const teamsBlock=`<div class="historySectionStack">${teams.length?`<div class="historyChartsGrid">${historyBarChart('Placar por equipe',scoreRows,{digits:0})}${historyBarChart('Aproveitamento por equipe',accuracyRows,{max:100,suffix:'%'})}${historyBarChart('Tempo médio de resposta',timeRows,{digits:1,suffix:'s'})}${historyBarChart('Uso de dicas por equipe',hintRows,{max:100,suffix:'%'})}</div>`:'<div class="historyNoData">Sem dados por equipe nesta partida.</div>'}</div>`;
+  const historyBlock=`<div class="historySectionStack">${others.length?historyComparisonChart(m,avg):'<div class="historyCompareEmpty"><b>Comparação histórica</b><span>Salve pelo menos mais uma partida para comparar este jogo com os outros.</span></div>'}<section class="historyTrendCard"><div class="historySectionTitle"><b>Evolução do aproveitamento</b><span>Cada ponto representa uma partida salva; o ponto maior é o jogo selecionado.</span></div>${historyTrendSvg(hist,i)}</section></div>`;
+  const insightsBlock=`<div class="historySectionStack"><section class="historyInsights only"><div class="historySectionTitle"><b>Leitura dos resultados</b><span>Destaques automáticos para apoiar a revisão do jogo.</span></div><div class="historyInsightList solo">${ins.items.length?ins.items.map(x=>`<div class="historyInsightItem">${x}</div>`).join(''):'<div class="historyNoData">Ainda não há dados suficientes para gerar conclusões.</div>'}</div></section></div>`;
+  const blocks={summary:summaryBlock,teams:teamsBlock,history:historyBlock,insights:insightsBlock};
+  panel.innerHTML=`<div class="historyAnalyticsHead cleaner"><div><span class="historyAnalyticsEyebrow">PARTIDA SELECIONADA</span><h2>${esc(historyName(s,i))}</h2><p>${esc(s.started_at||'—')} · ${esc(s.game_mode||'Jogo')} · ${teams.length} equipes</p></div><div class="historyAnalyticsHeadActions"><button id="histAnalyticsDetails" class="historyDetailBtn">Detalhes</button><button id="histAnalyticsMore" class="historyDetailBtn ghost">Mais</button></div></div><div class="historyAnalyticsKpis cleaner"><div><b>${historyFmtMetric(m.accuracy,'%',0)}</b><span>Aproveitamento</span></div><div><b>${historyFmtMetric(m.pointsPerRound,'',1)}</b><span>Pts / rodada</span></div><div><b>${historyWinner(s)}</b><span>Vencedor</span></div></div><div class="historyAnalyticsTabs">${tabs.map(([id,label])=>`<button class="historyTabBtn ${id===active?'active':''}" data-history-tab="${id}">${label}</button>`).join('')}</div><div class="historyAnalyticsScroll compact">${blocks[active]||summaryBlock}</div>`;
+  const detail=$('#histAnalyticsDetails');if(detail)detail.onclick=()=>openHist(s,i);
+  const more=$('#histAnalyticsMore');if(more)more.onclick=()=>openHistoryActions(i);
+  $$('[data-history-tab]',panel).forEach(btn=>btn.onclick=()=>{historyView.analyticsTab=btn.dataset.historyTab;renderHistoryAnalytics(i)});
+}
+function historyAnswerDisplay(r,value){
+  if(value===null||value===undefined||value==='')return '—';
+  const type=questionType(r?.question_type||'objetiva');
+  if(type==='objetiva'){
+    const n=Number(value);
+    if(Number.isInteger(n)&&n>=0&&n<26)return String.fromCharCode(65+n);
+  }
+  return String(value);
+}
+function historyRoundsCount(s){return Array.isArray(s?.rounds)?s.rounds.length:0}
+function historyFileName(value,fallback='historico_roleta'){
+  const clean=String(value||fallback).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,70);
+  return clean||fallback;
+}
+function historyTextLines(s,index=0){
+  return [
+    historyName(s,index),
+    `Início: ${s.started_at||'—'}`,
+    `Fim: ${s.ended_at||'—'}`,
+    `Modo: ${s.game_mode||'—'}`,
+    `Equipes: ${s.num_teams||'—'}`,
+    `Tempo por questão: ${s.time_limit_secs||'—'}s`,
+    `Duração: ${formatHistoryDuration(s)}`,
+    `Vencedor: ${historyWinner(s)}`,
+    `Placares: ${historyScoreEntries(s).map(([n,v])=>`${n}: ${v}`).join(' | ')||'—'}`,
     `Matérias: ${(s.subjects_selected||[]).join(', ')||'Todas disponíveis'}`,
     `Áreas: ${(s.areas_selected||[]).join(', ')||'—'}`,
     `Dificuldades: ${(s.difficulties_selected||[]).join(', ')||'—'}`,
     '',
     ...(s.rounds||[]).map((r,i)=>{
       const type=questionTypeLabel(r.question_type||'objetiva');
-      const marked=r.answer_marked??'—';
-      const expected=r.correct_answer??'—';
-      return `${String(i+1).padStart(2,'0')}. [${r.materia||''} | ${r.area||''} | ${r.difficulty||''} | ${type} | Equipe ${r.equipe}]\n    Pergunta: ${r.question||''}\n    Resposta/Correção: ${marked} | Gabarito/Esperada: ${expected} | Resultado: ${r.is_correct?'Certo':'Errado'}\n    Tempo gasto: ${r.answer_time_secs||'—'} s`
+      return `${String(i+1).padStart(2,'0')}. [Equipe ${r.equipe||'—'} | ${r.materia||''} | ${r.area||''} | ${r.difficulty||''} | ${type}]\n    Pergunta: ${r.question||''}\n    Resposta: ${historyAnswerDisplay(r,r.answer_marked)} | Gabarito: ${historyAnswerDisplay(r,r.correct_answer)} | Resultado: ${r.is_correct?'Certo':'Errado'} | Pontos: ${r.awarded_points??0}\n    Dica: ${r.hint_used?'Sim':'Não'} | Tempo: ${r.answer_time_secs??'—'} s`;
     })
   ];
-  popup(`<pre class="scroll" style="white-space:pre-wrap;height:370px;font-size:16px">${esc(lines.join('\n'))}</pre><div style="display:flex;gap:8px"><button id="exportTxt" class="nativeBtn" style="width:160px;text-align:center">Exportar TXT</button><button id="exportCsv" class="nativeBtn" style="width:160px;text-align:center">Exportar CSV</button><button id="closeH" class="nativeBtn" style="width:120px;text-align:center">Fechar</button></div>`,900,520);
-  $('#closeH').onclick=closePopup;
-  $('#exportTxt').onclick=()=>download('historico_roleta.txt',lines.join('\n'),'text/plain');
-  $('#exportCsv').onclick=()=>{
-    const header=['Equipe','Matéria','Área','Dificuldade','Tipo','Pergunta','Resposta/Correção','Gabarito/Esperada','Resultado'];
-    const rows=(s.rounds||[]).map(r=>[r.equipe,r.materia||'',r.area,r.difficulty,questionTypeLabel(r.question_type||'objetiva'),r.question,r.answer_marked??'',r.correct_answer??'',r.is_correct?'Certo':'Errado']);
-    download('historico_roleta.csv',[header,...rows].map(row=>row.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n'),'text/csv')
+}
+function historyToSheet(s,index=0){
+  if(!window.XLSXLite)throw new Error('Exportador XLSX indisponível');
+  const C=window.XLSXLite.cell;
+  const rounds=Array.isArray(s.rounds)?s.rounds:[];
+  const rows=[
+    [C(historyName(s,index),'title')],
+    [C('Início','label'),s.started_at||'—',C('Fim','label'),s.ended_at||'—',C('Duração','label'),formatHistoryDuration(s)],
+    [C('Modo','label'),s.game_mode||'—',C('Equipes','label'),Number(s.num_teams)||0,C('Tempo/questão','label'),`${s.time_limit_secs||'—'}s`],
+    [C('Vencedor','label'),historyWinner(s),C('Rodadas','label'),rounds.length,C('Aproveitamento','label'),historyAccuracy(s)==null?'—':`${historyAccuracy(s)}%`],
+    [C('Placares','label'),historyScoreEntries(s).map(([n,v])=>`${n}: ${v}`).join(' | ')||'—'],
+    [C('Matérias','label'),(s.subjects_selected||[]).join(', ')||'Todas disponíveis'],
+    [C('Áreas','label'),(s.areas_selected||[]).join(', ')||'—'],
+    [C('Dificuldades','label'),(s.difficulties_selected||[]).join(', ')||'—'],
+    [],
+    ['Rodada','Equipe','Matéria','Área','Dificuldade','Tipo','Pergunta','Resposta marcada','Gabarito / esperada','Resultado','Dica usada','Pontos base','Pontos obtidos','Tempo (s)'].map(v=>C(v,'header')),
+    ...rounds.map((r,i)=>[
+      i+1,
+      r.equipe??'',
+      r.materia||'',
+      r.area||'',
+      r.difficulty||'',
+      questionTypeLabel(r.question_type||'objetiva'),
+      r.question||'',
+      historyAnswerDisplay(r,r.answer_marked),
+      historyAnswerDisplay(r,r.correct_answer),
+      C(r.is_correct?'Certo':'Errado',r.is_correct?'good':'bad'),
+      r.hint_used?'Sim':'Não',
+      Number(r.base_points)||0,
+      Number(r.awarded_points)||0,
+      Number(r.answer_time_secs)||0
+    ])
+  ];
+  return {name:historyName(s,index),rows,colWidths:[8,10,16,22,14,18,48,28,28,14,12,12,14,11],merges:['A1:N1','B5:N5','B6:N6','B7:N7','B8:N8'],freezeRows:10};
+}
+function historySummarySheet(hist){
+  const C=window.XLSXLite.cell;
+  const sessions=hist.map((s,i)=>({s,i})).reverse();
+  const rows=[
+    [C('Histórico — Roleta Química do Café','title')],
+    [`Exportado em ${new Date().toLocaleString('pt-BR')}`],
+    [],
+    ['Nome','Data','Modo','Equipes','Rodadas','Acertos','Aproveitamento','Duração','Vencedor'].map(v=>C(v,'header')),
+    ...sessions.map(({s,i})=>{
+      const rounds=s.rounds||[],correct=rounds.filter(r=>r?.is_correct===true).length,acc=historyAccuracy(s);
+      return [historyName(s,i),s.started_at||'—',s.game_mode||'—',Number(s.num_teams)||0,rounds.length,correct,acc==null?'—':`${acc}%`,formatHistoryDuration(s),historyWinner(s)];
+    })
+  ];
+  return {name:'Resumo',rows,colWidths:[34,22,18,10,10,10,16,16,28],merges:['A1:I1'],freezeRows:4};
+}
+function downloadBlob(name,blob){
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)
+}
+function exportHistoryXlsx(s,index=0){
+  try{
+    const blob=window.XLSXLite.createWorkbookBlob([historyToSheet(s,index)]);
+    downloadBlob(`${historyFileName(historyName(s,index))}.xlsx`,blob);
+    toast('Planilha exportada.');
+  }catch(e){console.error(e);toast('Não foi possível exportar a planilha.')}
+}
+function exportAllHistoryXlsx(){
+  const hist=load(HIST_KEY,[]);
+  if(!hist.length){toast('Nenhum histórico para exportar.');return}
+  try{
+    const sessions=hist.map((s,i)=>({s,i})).reverse();
+    const sheets=[historySummarySheet(hist),...sessions.map(({s,i})=>historyToSheet(s,i))];
+    const blob=window.XLSXLite.createWorkbookBlob(sheets);
+    downloadBlob(`historico_roleta_${new Date().toISOString().slice(0,10)}.xlsx`,blob);
+    toast(`Exportadas ${hist.length} partidas em uma planilha.`);
+  }catch(e){console.error(e);toast('Não foi possível exportar o histórico.')}
+}
+function exportHistoryCsv(s,index=0){
+  const header=['Rodada','Equipe','Matéria','Área','Dificuldade','Tipo','Pergunta','Resposta marcada','Gabarito / esperada','Resultado','Dica usada','Pontos base','Pontos obtidos','Tempo (s)'];
+  const rows=(s.rounds||[]).map((r,i)=>[i+1,r.equipe,r.materia||'',r.area||'',r.difficulty||'',questionTypeLabel(r.question_type||'objetiva'),r.question||'',historyAnswerDisplay(r,r.answer_marked),historyAnswerDisplay(r,r.correct_answer),r.is_correct?'Certo':'Errado',r.hint_used?'Sim':'Não',r.base_points??'',r.awarded_points??'',r.answer_time_secs??'']);
+  const csv=[header,...rows].map(row=>row.map(x=>`"${String(x??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  download(`${historyFileName(historyName(s,index))}.csv`,'\ufeff'+csv,'text/csv;charset=utf-8');
+}
+function renameHistory(index){
+  const hist=load(HIST_KEY,[]),s=hist[index];if(!s)return;
+  const current=historyName(s,index);
+  popup(`<div class="historyRenameBox"><h2>Renomear partida</h2><p>Esse nome também será usado como nome da aba ao exportar o Excel.</p><input id="historyRenameInput" maxlength="90" value="${esc(current)}" aria-label="Novo nome"><div class="historyDialogActions"><button id="historyRenameSave" class="historyPrimaryBtn">Salvar nome</button><button id="historyRenameCancel" class="historyBackBtn">Cancelar</button></div></div>`,620,340);
+  const input=$('#historyRenameInput');setTimeout(()=>{input?.focus();input?.select()},30);
+  $('#historyRenameCancel').onclick=closePopup;
+  const commit=()=>{const name=String(input?.value||'').trim();if(!name){toast('Digite um nome para a partida.');return}hist[index]={...s,history_name:name};save(HIST_KEY,hist);closePopup();renderHistory();toast('Histórico renomeado.')};
+  $('#historyRenameSave').onclick=commit;if(input)input.onkeydown=e=>{if(e.key==='Enter')commit()};
+}
+function deleteHistory(index){
+  const hist=load(HIST_KEY,[]),s=hist[index];if(!s)return;
+  popup(`<div class="historyConfirmBox"><h2>Excluir histórico?</h2><p>“${esc(historyName(s,index))}” será removido permanentemente deste dispositivo.</p><div class="historyDialogActions"><button id="historyDeleteConfirm" class="historyDangerBtn">Excluir</button><button id="historyDeleteCancel" class="historyBackBtn">Cancelar</button></div></div>`,620,320);
+  $('#historyDeleteCancel').onclick=closePopup;
+  $('#historyDeleteConfirm').onclick=()=>{hist.splice(index,1);save(HIST_KEY,hist);closePopup();renderHistory();toast('Histórico removido.')};
+}
+function clearAllHistory(){
+  const hist=load(HIST_KEY,[]);if(!hist.length){toast('O histórico já está vazio.');return}
+  popup(`<div class="historyConfirmBox"><h2>Limpar todo o histórico?</h2><p>As ${hist.length} partidas salvas serão apagadas deste dispositivo. Se quiser guardar uma cópia, exporte tudo antes.</p><div class="historyDialogActions"><button id="historyClearConfirm" class="historyDangerBtn">Apagar tudo</button><button id="historyClearCancel" class="historyBackBtn">Cancelar</button></div></div>`,650,330);
+  $('#historyClearCancel').onclick=closePopup;
+  $('#historyClearConfirm').onclick=()=>{save(HIST_KEY,[]);closePopup();renderHistory();toast('Histórico limpo.')};
+}
+function openHistoryActions(index){
+  const hist=load(HIST_KEY,[]),s=hist[index];if(!s)return;
+  popup(`<div class="historyQuickActionsBox"><h2>${esc(historyName(s,index))}</h2><p>Escolha uma ação para esta partida.</p><div class="historyQuickActionsGrid"><button id="histActRename" class="historyPrimaryBtn">Renomear</button><button id="histActXlsx" class="historyPrimaryBtn">Exportar Excel</button><button id="histActCsv" class="historyPrimaryBtn">Exportar CSV</button><button id="histActTxt" class="historyPrimaryBtn">Exportar TXT</button><button id="histActDelete" class="historyDangerBtn">Excluir</button><button id="histActCancel" class="historyBackBtn">Fechar</button></div></div>`,620,360);
+  $('#histActCancel').onclick=closePopup;
+  $('#histActRename').onclick=()=>{closePopup();renameHistory(index)};
+  $('#histActXlsx').onclick=()=>{closePopup();exportHistoryXlsx(s,index)};
+  $('#histActCsv').onclick=()=>{closePopup();exportHistoryCsv(s,index)};
+  $('#histActTxt').onclick=()=>{closePopup();exportHistoryTxt(s,index)};
+  $('#histActDelete').onclick=()=>{closePopup();deleteHistory(index)};
+}
+function renderHistory(){
+  const hist=load(HIST_KEY,[]),rounds=hist.flatMap(s=>Array.isArray(s.rounds)?s.rounds:[]),correct=rounds.filter(r=>r?.is_correct===true).length,totalSecs=hist.reduce((sum,s)=>sum+(historyDurationSeconds(s)||0),0),avg=rounds.length?Math.round(correct/rounds.length*100):null;
+  const stats=$('#histStats');if(stats)stats.innerHTML=[
+    [hist.length,'Partidas salvas'],
+    [rounds.length,'Perguntas respondidas'],
+    [avg==null?'—':`${avg}%`,'Aproveitamento geral'],
+    [formatHistoryDuration({duration_secs:totalSecs}),'Tempo total de jogo']
+  ].map(([v,l])=>`<div class="historyStat"><div class="historyStatValue">${esc(v)}</div><div class="historyStatLabel">${esc(l)}</div></div>`).join('');
+  const search=$('#histSearch'),sort=$('#histSort');
+  if(search){search.value=historyView.query;search.oninput=e=>{historyView.query=e.target.value;renderHistoryRows()}}
+  if(sort){sort.value=historyView.sort;sort.onchange=e=>{historyView.sort=e.target.value;renderHistoryRows()}}
+  $('#histBack').onclick=()=>show('home');
+  $('#histExportAll').onclick=exportAllHistoryXlsx;
+  $('#histDeleteAll').onclick=clearAllHistory;
+  renderHistoryRows();
+  renderHistoryAnalytics();
+}
+function selectHistoryForAnalytics(index){
+  historyView.selectedIndex=index;
+  historyView.analyticsTab='summary';
+  renderHistoryRows();
+  renderHistoryAnalytics(index);
+}
+function renderHistoryRows(){
+  const list=$('#histList');if(!list)return;
+  const hist=load(HIST_KEY,[]),query=historyNorm(historyView.query).trim();
+  if(hist.length&&(historyView.selectedIndex===null||historyView.selectedIndex<0||historyView.selectedIndex>=hist.length))historyView.selectedIndex=hist.length-1;
+  let entries=hist.map((s,index)=>({s,index}));
+  if(query)entries=entries.filter(({s,index})=>historyNorm([historyName(s,index),s.started_at,s.ended_at,s.game_mode,(s.subjects_selected||[]).join(' '),(s.areas_selected||[]).join(' ')].join(' ')).includes(query));
+  entries.sort((a,b)=>{
+    if(historyView.sort==='oldest')return (Number(a.s.started_at_ms)||parseHistoryDate(a.s.started_at)||0)-(Number(b.s.started_at_ms)||parseHistoryDate(b.s.started_at)||0);
+    if(historyView.sort==='name')return historyName(a.s,a.index).localeCompare(historyName(b.s,b.index),'pt-BR');
+    if(historyView.sort==='mode')return String(a.s.game_mode||'').localeCompare(String(b.s.game_mode||''),'pt-BR')||historyName(a.s,a.index).localeCompare(historyName(b.s,b.index),'pt-BR');
+    return (Number(b.s.started_at_ms)||parseHistoryDate(b.s.started_at)||0)-(Number(a.s.started_at_ms)||parseHistoryDate(a.s.started_at)||0);
+  });
+  if(!entries.length){
+    list.innerHTML=`<div class="historyEmpty"><strong>${hist.length?'Nenhuma partida encontrada':'Nenhuma partida salva ainda'}</strong><span>${hist.length?'Tente outro termo de busca.':'Quando você encerrar um jogo, o resultado completo vai aparecer aqui.'}</span></div>`;
+    return;
   }
+  list.innerHTML=entries.map(({s,index})=>{
+    const rounds=historyRoundsCount(s),acc=historyAccuracy(s),scores=historyScoreEntries(s),selected=index===historyView.selectedIndex,winner=historyWinner(s);
+    return `<article class="historyCard clean ${selected?'selected':''}" data-hi="${index}"><div class="historyCardTop" data-select="${index}"><div class="historyCardTitleRow"><h2 class="historyCardTitle">${esc(historyName(s,index))}</h2><span class="historyModeBadge">${esc(s.game_mode||'Jogo')}</span></div><div class="historyDate">${esc(s.started_at||'Data não registrada')}</div><div class="historyMetrics minimal"><div class="historyMetric"><strong>${s.num_teams||'—'}</strong><span>Equipes</span></div><div class="historyMetric"><strong>${rounds}</strong><span>Rodadas</span></div><div class="historyMetric"><strong>${acc==null?'—':acc+'%'}</strong><span>Acertos</span></div></div><div class="historyCardFoot"><div class="historyScores compact">${scores.slice(0,2).map(([n,v])=>`<span class="historyScoreChip">${esc(n)} <b>${esc(v)} pts</b></span>`).join('')}${scores.length>2?`<span class="historyScoreChip more">+${scores.length-2}</span>`:''}</div><div class="historyCardMeta">${esc(formatHistoryDuration(s))} · ${esc(winner)}</div></div></div><div class="historyCardActions clean"><button class="historyCardBtn analyze" data-act="analyze" data-i="${index}">Analisar</button><button class="historyCardBtn" data-act="open" data-i="${index}">Detalhes</button><button class="historyCardBtn subtle" data-act="more" data-i="${index}">Mais</button></div></article>`;
+  }).join('');
+  $$('[data-select]',list).forEach(el=>el.onclick=()=>selectHistoryForAnalytics(+el.dataset.select));
+  $$('[data-act]',list).forEach(btn=>btn.onclick=e=>{e.stopPropagation();const i=+btn.dataset.i,s=hist[i];if(!s)return;const act=btn.dataset.act;if(act==='analyze')selectHistoryForAnalytics(i);else if(act==='open')openHist(s,i);else if(act==='more')openHistoryActions(i)});
+}
+function openHist(s,index=0){
+  const rounds=Array.isArray(s.rounds)?s.rounds:[],acc=historyAccuracy(s),scores=historyScoreEntries(s),correct=rounds.filter(r=>r?.is_correct===true).length;
+  const table=rounds.length?`<table class="historyDetailTable"><thead><tr><th>#</th><th>Equipe</th><th>Área / tipo</th><th>Pergunta</th><th>Resposta</th><th>Gabarito</th><th>Resultado</th><th>Pontos</th></tr></thead><tbody>${rounds.map((r,i)=>`<tr class="${r.is_correct?'isCorrect':'isWrong'}"><td>${i+1}</td><td>${esc(r.equipe??'—')}</td><td>${esc(r.area||'—')}<br><small>${esc(questionTypeLabel(r.question_type||'objetiva'))} · ${esc(r.difficulty||'')}</small></td><td>${esc(r.question||'')}</td><td>${esc(historyAnswerDisplay(r,r.answer_marked))}</td><td>${esc(historyAnswerDisplay(r,r.correct_answer))}</td><td><span class="historyDetailResult ${r.is_correct?'ok':'bad'}">${r.is_correct?'Certo':'Errado'}</span>${r.hint_used?'<br><small>com dica</small>':''}</td><td>${esc(r.awarded_points??0)}</td></tr>`).join('')}</tbody></table>`:`<div class="historyEmpty" style="height:150px"><strong>Sem rodadas registradas</strong><span>Esta sessão não possui respostas salvas.</span></div>`;
+  popup(`<div class="historyDetail"><div class="historyDetailHead"><div class="historyDetailHeadText"><div class="historyDetailTitle">${esc(historyName(s,index))}</div><div class="historyDetailSub">${esc(s.started_at||'—')} · ${esc(s.game_mode||'Jogo')} · ${esc((s.subjects_selected||[]).join(', ')||'Todas as matérias')}</div></div><button id="closeH" class="historyBackBtn">Fechar</button></div><div class="historyDetailSummary"><div class="historyDetailKpi"><b>${rounds.length}</b><span>Rodadas</span></div><div class="historyDetailKpi"><b>${correct}/${rounds.length}</b><span>Acertos</span></div><div class="historyDetailKpi"><b>${acc==null?'—':acc+'%'}</b><span>Aproveitamento</span></div><div class="historyDetailKpi"><b>${esc(formatHistoryDuration(s))}</b><span>Duração</span></div></div><div class="historyScores">${scores.map(([n,v])=>`<span class="historyScoreChip">${esc(n)} <b>${esc(v)} pts</b></span>`).join('')}</div><div class="historyDetailTableWrap">${table}</div><div class="historyDetailActions"><button id="histRenameDetail" class="historyDetailBtn">Renomear</button><button id="exportXlsx" class="historyDetailBtn">Exportar Excel</button><button id="exportCsv" class="historyDetailBtn">CSV</button><button id="exportTxt" class="historyDetailBtn">TXT</button><button id="deleteHistDetail" class="historyDetailBtn danger">Excluir histórico</button></div></div>`,1120,620,'popup genérico HD.png');
+  $('#closeH').onclick=closePopup;
+  $('#histRenameDetail').onclick=()=>renameHistory(index);
+  $('#exportXlsx').onclick=()=>exportHistoryXlsx(s,index);
+  $('#exportCsv').onclick=()=>exportHistoryCsv(s,index);
+  $('#exportTxt').onclick=()=>download(`${historyFileName(historyName(s,index))}.txt`,historyTextLines(s,index).join('\n'),'text/plain;charset=utf-8');
+  $('#deleteHistDetail').onclick=()=>deleteHistory(index);
 }
 function download(name,txt,type){let b=new Blob([txt],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function renderCredits(){
