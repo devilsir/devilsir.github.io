@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'roleta-quimica-cafe-v3-mobile-wheel-fix';
+const CACHE_NAME = 'roleta-quimica-cafe-v8-preset8-is-are';
 const APP_SHELL = [
   './assets/embedded/adicionar-perguntas-c315fc0b.png',
   './assets/embedded/adicionar-perguntas_hover-eaef1d34.png',
