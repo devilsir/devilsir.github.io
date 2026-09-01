@@ -73,6 +73,19 @@ const stopBtn = $("#stopBtn");
 const readingBar = $("#readingBar");
 const readingText = $("#readingText");
 
+const historyList = $("#historyList");
+const historyEmpty = $("#historyEmpty");
+const historyCount = $("#historyCount");
+const clearHistoryBtn = $("#clearHistoryBtn");
+const storageStatus = $("#storageStatus");
+
+const HISTORY_DB = "LeitorLivrosMemoria";
+const HISTORY_DB_VERSION = 1;
+const HISTORY_STORE = "pages";
+let historyDbPromise = null;
+let historyObjectUrls = [];
+
+
 function absolute(path) {
   return new URL(path, window.location.href).href;
 }
@@ -100,6 +113,277 @@ function setOfflineUI(state, title, detail, progress = null) {
   offlineTitle.textContent = title;
   offlineDetail.textContent = detail;
 }
+
+
+function openHistoryDb() {
+  if (historyDbPromise) return historyDbPromise;
+
+  historyDbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(HISTORY_DB, HISTORY_DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(HISTORY_STORE)) {
+        const store = db.createObjectStore(HISTORY_STORE, { keyPath: "id", autoIncrement: true });
+        store.createIndex("createdAt", "createdAt", { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+
+  return historyDbPromise;
+}
+
+async function requestPersistentMemory() {
+  try {
+    if (navigator.storage?.persist) {
+      const persisted = await navigator.storage.persist();
+      storageStatus.textContent = persisted ? "Memória protegida" : "Memória local";
+    } else {
+      storageStatus.textContent = "Memória local";
+    }
+    await updateStorageEstimate();
+  } catch {
+    storageStatus.textContent = "Memória local";
+  }
+}
+
+async function updateStorageEstimate() {
+  try {
+    if (!navigator.storage?.estimate) return;
+    const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+    const usedMB = usage / 1024 / 1024;
+    if (quota > 0) {
+      storageStatus.textContent = `${usedMB < 10 ? usedMB.toFixed(1) : Math.round(usedMB)} MB usados`;
+    }
+  } catch {}
+}
+
+function dbRequest(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function compressImageForHistory(file) {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxSide = 1500;
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(bitmap, 0, 0, w, h);
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .82));
+    return blob || file;
+  } catch {
+    return file;
+  }
+}
+
+async function saveHistoryPage(imageFile, text, language) {
+  if (!imageFile || !text.trim()) return null;
+
+  const db = await openHistoryDb();
+  const imageBlob = await compressImageForHistory(imageFile);
+
+  const record = {
+    createdAt: Date.now(),
+    language,
+    text: text.trim(),
+    imageBlob
+  };
+
+  const tx = db.transaction(HISTORY_STORE, "readwrite");
+  const id = await dbRequest(tx.objectStore(HISTORY_STORE).add(record));
+
+  await renderHistory();
+  await updateStorageEstimate();
+  showHistoryToast("Página salva na memória");
+  return id;
+}
+
+async function getHistoryPages() {
+  const db = await openHistoryDb();
+  const tx = db.transaction(HISTORY_STORE, "readonly");
+  const records = await dbRequest(tx.objectStore(HISTORY_STORE).getAll());
+  return records.sort((a, b) => b.createdAt - a.createdAt);
+}
+
+async function getHistoryPage(id) {
+  const db = await openHistoryDb();
+  const tx = db.transaction(HISTORY_STORE, "readonly");
+  return await dbRequest(tx.objectStore(HISTORY_STORE).get(Number(id)));
+}
+
+async function deleteHistoryPage(id) {
+  const db = await openHistoryDb();
+  const tx = db.transaction(HISTORY_STORE, "readwrite");
+  await dbRequest(tx.objectStore(HISTORY_STORE).delete(Number(id)));
+  await renderHistory();
+  await updateStorageEstimate();
+}
+
+async function clearHistory() {
+  const db = await openHistoryDb();
+  const tx = db.transaction(HISTORY_STORE, "readwrite");
+  await dbRequest(tx.objectStore(HISTORY_STORE).clear());
+  await renderHistory();
+  await updateStorageEstimate();
+}
+
+function historyLanguageLabel(language) {
+  if (language === "por") return "Português";
+  if (language === "eng") return "English";
+  if (language === "por+eng") return "PT + EN";
+  return language || "OCR";
+}
+
+function escapeHistoryText(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+async function renderHistory() {
+  if (!historyList) return;
+
+  historyObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  historyObjectUrls = [];
+
+  let pages = [];
+  try {
+    pages = await getHistoryPages();
+  } catch (error) {
+    console.error("Histórico:", error);
+    historyEmpty.hidden = false;
+    historyEmpty.innerHTML = "<strong>Não foi possível abrir a memória.</strong><span>O navegador bloqueou o IndexedDB ou ocorreu um erro de armazenamento.</span>";
+    return;
+  }
+
+  historyList.innerHTML = "";
+  historyEmpty.hidden = pages.length > 0;
+  historyCount.textContent = `${pages.length} ${pages.length === 1 ? "página" : "páginas"}`;
+
+  for (const page of pages) {
+    const date = new Date(page.createdAt);
+    const dateText = new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit", month: "2-digit", year: "numeric"
+    }).format(date);
+    const timeText = new Intl.DateTimeFormat("pt-BR", {
+      hour: "2-digit", minute: "2-digit"
+    }).format(date);
+
+    const imageUrl = URL.createObjectURL(page.imageBlob);
+    historyObjectUrls.push(imageUrl);
+
+    const article = document.createElement("article");
+    article.className = "history-item";
+    article.dataset.id = page.id;
+    article.innerHTML = `
+      <div class="history-thumb">
+        <img src="${imageUrl}" alt="Página salva em ${dateText} às ${timeText}">
+      </div>
+      <div class="history-body">
+        <div class="history-meta">
+          <span class="history-date">${dateText}</span>
+          <span class="history-time">${timeText}</span>
+          <span class="history-lang">${historyLanguageLabel(page.language)}</span>
+        </div>
+        <p class="history-text">${escapeHistoryText(page.text)}</p>
+        <div class="history-actions">
+          <button class="secondary open-history" type="button">Abrir</button>
+          <button class="secondary listen-history" type="button">▶ Ouvir</button>
+          <button class="delete-history" type="button">Excluir</button>
+        </div>
+      </div>
+    `;
+    historyList.appendChild(article);
+  }
+}
+
+async function openHistoryRecord(id, listen = false) {
+  const page = await getHistoryPage(id);
+  if (!page) return;
+
+  stopReading();
+  textArea.value = page.text || "";
+  updateTextStats();
+  saveSettings();
+
+  if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+  currentImageFile = new File([page.imageBlob], `pagina-${page.id}.jpg`, {
+    type: page.imageBlob.type || "image/jpeg"
+  });
+  currentImageUrl = URL.createObjectURL(page.imageBlob);
+  preview.src = currentImageUrl;
+  previewLayout.hidden = false;
+  ocrLanguage.value = page.language || "por";
+  ocrStatus.textContent = "Página carregada da memória.";
+  updateOcrButton();
+
+  document.querySelector("#text")?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  if (listen) {
+    setTimeout(startReading, 250);
+  }
+}
+
+let historyToastTimer = null;
+function showHistoryToast(message) {
+  let toast = document.querySelector(".history-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "history-toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(historyToastTimer);
+  historyToastTimer = setTimeout(() => toast.classList.remove("show"), 1900);
+}
+
+historyList?.addEventListener("click", async (event) => {
+  const item = event.target.closest(".history-item");
+  if (!item) return;
+
+  const id = Number(item.dataset.id);
+
+  if (event.target.closest(".open-history")) {
+    await openHistoryRecord(id, false);
+  }
+
+  if (event.target.closest(".listen-history")) {
+    await openHistoryRecord(id, true);
+  }
+
+  if (event.target.closest(".delete-history")) {
+    if (confirm("Excluir esta página salva?")) {
+      await deleteHistoryPage(id);
+      showHistoryToast("Página excluída");
+    }
+  }
+});
+
+clearHistoryBtn?.addEventListener("click", async () => {
+  const pages = await getHistoryPages();
+  if (!pages.length) return;
+
+  if (confirm(`Apagar as ${pages.length} páginas salvas deste aparelho? Esta ação não pode ser desfeita.`)) {
+    await clearHistory();
+    showHistoryToast("Histórico apagado");
+  }
+});
 
 async function registerOffline() {
   if (!("serviceWorker" in navigator)) {
@@ -425,9 +709,19 @@ ocrBtn.addEventListener("click", async () => {
     textArea.value = (result.data.text || "").trim();
     updateTextStats();
     saveSettings();
+
+    if (textArea.value.trim()) {
+      try {
+        await saveHistoryPage(currentImageFile, textArea.value, ocrLanguage.value);
+      } catch (historyError) {
+        console.error("Falha ao salvar histórico:", historyError);
+        showHistoryToast("Texto reconhecido, mas a memória não pôde salvar");
+      }
+    }
+
     ocrProgressBar.style.width = "100%";
     ocrProgressText.textContent = "100%";
-    ocrStatus.textContent = "Texto reconhecido.";
+    ocrStatus.textContent = "Texto reconhecido e salvo na memória.";
   } catch (err) {
     console.error(err);
     ocrStatus.textContent = "Não consegui reconhecer esta página.";
@@ -626,10 +920,13 @@ testVoiceBtn.addEventListener("click", () => {
 window.addEventListener("beforeunload", () => {
   speechSynthesis.cancel();
   if (currentImageUrl) URL.revokeObjectURL(currentImageUrl);
+  historyObjectUrls.forEach(url => URL.revokeObjectURL(url));
   if (ocrWorker) { try { ocrWorker.terminate(); } catch {} }
 });
 
 updateTextStats();
 updateSliders();
 updateOcrButton();
+requestPersistentMemory();
+renderHistory();
 registerOffline();

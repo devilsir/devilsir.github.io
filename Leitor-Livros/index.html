@@ -185,6 +185,35 @@
       </p>
     </section>
 
+
+    <section class="card history-card" id="historySection">
+      <div class="section-head history-head">
+        <div>
+          <p class="eyebrow">4 · Memória</p>
+          <h2>Histórico de páginas</h2>
+        </div>
+        <div class="history-head-actions">
+          <span id="historyCount" class="badge neutral">0 páginas</span>
+          <button id="clearHistoryBtn" class="ghost danger-ghost" type="button">Apagar histórico</button>
+        </div>
+      </div>
+
+      <div class="history-info">
+        <div>
+          <strong>Memória persistente</strong>
+          <span>Após cada OCR, o app guarda a imagem, a data, a hora e o texto reconhecido neste aparelho.</span>
+        </div>
+        <span id="storageStatus" class="storage-status">Verificando armazenamento…</span>
+      </div>
+
+      <div id="historyEmpty" class="history-empty">
+        <strong>Nenhuma página salva ainda.</strong>
+        <span>Fotografe uma página e reconheça o texto. Ela aparecerá aqui automaticamente.</span>
+      </div>
+
+      <div id="historyList" class="history-list" aria-live="polite"></div>
+    </section>
+
     <section class="privacy-card">
       <strong>Privacidade local</strong>
       <p>A foto da página é processada pelo OCR dentro do navegador. O app não possui servidor para receber suas fotos ou o texto reconhecido.</p>
