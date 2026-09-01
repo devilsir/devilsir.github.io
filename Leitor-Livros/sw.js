@@ -1,4 +1,4 @@
-const CACHE = "leitor-livros-v1.0.0";
+const CACHE = "leitor-livros-v1.1.0";
 const BASE = new URL("./", self.location.href);
 
 const APP_SHELL = [
