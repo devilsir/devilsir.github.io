@@ -2,6 +2,8 @@
 const clubOverlay=document.getElementById("clubOverlay");
 const lightField=document.getElementById("lightField");
 const discoBallCanvas=document.getElementById("discoBallCanvas");
+const isMobileExperience=window.matchMedia("(max-width: 768px), (pointer: coarse)").matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||"");
+const discoFrameInterval=isMobileExperience?50:33;
 let lightDotsReady=false;
 let discoBallAnimationStarted=false;
 let discoBallStartTime=0;
@@ -11,8 +13,9 @@ let discoFrameId=0;
 let pageIsVisible=!document.hidden;
 function fitCanvas(force){
   const rect=discoBallCanvas.getBoundingClientRect();
-  const ratio=Math.min(window.devicePixelRatio||1,2);
-  const size=Math.max(120,Math.round(Math.min(rect.width||198,rect.height||198)*ratio));
+  const ratio=isMobileExperience?1:Math.min(window.devicePixelRatio||1,2);
+  const minSize=isMobileExperience?96:120;
+  const size=Math.max(minSize,Math.round(Math.min(rect.width||198,rect.height||198)*ratio));
   if(force||cachedCanvasSize!==size){
     cachedCanvasSize=size;
     discoBallCanvas.width=size;
@@ -43,7 +46,7 @@ function drawDiscoBallFrame(shift){
   bg.addColorStop(1,"#050507");
   ctx.fillStyle=bg;
   ctx.fillRect(cx-r-6,cy-r-6,r*2+12,r*2+12);
-  const rows=13;
+  const rows=isMobileExperience?9:13;
   const gap=Math.max(1,r*.011);
   const offsetPx=shift*r*.183;
   for(let row=0;row<rows;row++){
@@ -134,7 +137,7 @@ function startDiscoBallCanvas(){
       return;
     }
     if(!discoBallStartTime)discoBallStartTime=time;
-    if(time-lastDiscoDrawTime>=33){
+    if(time-lastDiscoDrawTime>=discoFrameInterval){
       lastDiscoDrawTime=time;
       const elapsed=time-discoBallStartTime;
       const shift=(elapsed%cycleMs)/cycleMs;
@@ -158,11 +161,11 @@ function createPartyLights(){
   if(lightDotsReady)return;
   lightDotsReady=true;
   const palette=["#59d7ff","#ff4fd8","#ffd84d","#8e6bff","#53ffb2","#ffffff","#ff7a42"];
-  const count=44;
+  const count=isMobileExperience?18:44;
   for(let i=0;i<count;i++){
     const dot=document.createElement("span");
     dot.className="light-dot";
-    const size=8+Math.random()*20;
+    const size=isMobileExperience?6+Math.random()*12:8+Math.random()*20;
     dot.style.width=`${size}px`;
     dot.style.height=`${size}px`;
     dot.style.left=`${Math.random()*100}%`;
@@ -170,8 +173,10 @@ function createPartyLights(){
     dot.style.color=palette[i%palette.length];
     dot.style.animationDelay=`${(Math.random()*1.5).toFixed(2)}s`;
     dot.style.animationDuration=`${(1.3+Math.random()*1.6).toFixed(2)}s`;
-    dot.style.setProperty("--dx",`${(-120+Math.random()*240).toFixed(0)}px`);
-    dot.style.setProperty("--dy",`${(-90+Math.random()*180).toFixed(0)}px`);
+    const travelX=isMobileExperience?72:120;
+    const travelY=isMobileExperience?54:90;
+    dot.style.setProperty("--dx",`${(-travelX+Math.random()*travelX*2).toFixed(0)}px`);
+    dot.style.setProperty("--dy",`${(-travelY+Math.random()*travelY*2).toFixed(0)}px`);
     lightField.appendChild(dot);
   }
 }

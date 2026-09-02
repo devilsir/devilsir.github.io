@@ -42,3 +42,26 @@ canvas {
   opacity: 0;
   transition: opacity 0.35s ease;
 }
+
+/* Mobile performance/layout profile */
+@supports (height: 100dvh) {
+  html,
+  body {
+    height: 100dvh;
+  }
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  body {
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #loading {
+    max-width: calc(100vw - 32px);
+    padding: 9px 13px;
+    font-size: 12px;
+    text-align: center;
+    backdrop-filter: none;
+  }
+}
