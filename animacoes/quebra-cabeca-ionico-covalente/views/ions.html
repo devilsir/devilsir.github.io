@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
+<meta name="description" content="Quebra-cabeça educacional de ligações iônicas com peças físicas, cargas e eletroneutralidade.">
+<title>Puzzle Iônico</title>
+<link rel="stylesheet" href="ions.inline-style-01.css">
+<link rel="stylesheet" href="ions.inline-style-02.css">
+<link rel="stylesheet" href="ions.inline-styles.css">
+<script defer src="../../../../Chat/widget/chat-widget.js?v=chat-widget-20260718-global-v3"></script>
+<script defer src="../../../../Chat/widget/simoens-accessibility.js?v=a11y-widget-20260814-frame-bridge"></script>
+</head>
+<body>
+<a class="acess-skip-link simoens-inline-style-ions-001 simoens-inline-event-ions-001" href="#conteudo-principal">Ir para o conteúdo principal</a>
+<header>
+  <div class="titleBlock">
+    <span class="titleIcon" aria-hidden="true">🧩</span>
+    <div><h1>Puzzle Iônico</h1><p>Encaixe cargas opostas até fechar todas as conexões.</p></div>
+  </div>
+  <span class="spacer"></span>
+  <button class="toggleSide" id="toggleSide" type="button">Esconder painel</button>
+</header>
+<main id="conteudo-principal">
+  <section class="col tray" id="leftCol">
+    <h2><span>Bandeja de peças</span><input aria-label="Pesquisar íon" id="searchBox" placeholder="Buscar íon..." type="search"></h2>
+    <div id="library"></div>
+    <div class="toolbar trayToolbar">
+      <button id="clearBoard" type="button" title="Limpar mesa">Limpar mesa</button>
+    </div>
+  </section>
+
+  <section class="col boardCol">
+    <div class="modeBar" aria-label="Modo de jogo">
+      <span class="modeLabel">Modo</span>
+      <div class="modeTabs" role="group" aria-label="Escolher modo">
+        <button class="modeBtn active" id="modeCreation" type="button" aria-pressed="true">✦ Criação</button>
+        <button class="modeBtn" id="modeChallenge" type="button" aria-pressed="false">🎯 Desafios</button>
+      </div>
+      <div class="challengeControls" id="challengeControls" hidden>
+        <label>Dificuldade
+          <select id="challengeDifficultyFilter" aria-label="Dificuldade dos desafios">
+            <option value="all">Todas</option>
+            <option value="facil">Fácil</option>
+            <option value="medio">Médio</option>
+            <option value="dificil">Difícil</option>
+          </select>
+        </label>
+        <span class="challengeStat">✓ <b id="challengeSolved">0</b></span>
+        <span class="challengeStat">🔥 <b id="challengeStreak">0</b></span>
+      </div>
+    </div>
+    <div class="missionBar" id="missionBar">
+      <div class="missionCopy">
+        <span class="eyebrow">MODO CRIAÇÃO</span>
+        <strong id="missionText">Monte qualquer composto iônico.</strong>
+        <small id="missionHint">Explore livremente: combine peças, teste cargas e construa suas próprias espécies.</small>
+      </div>
+      <div class="missionActions">
+        <span class="difficultyBadge" id="difficultyBadge" hidden>Fácil</span>
+        <button class="hintBtn" id="challengeHint" type="button" hidden>💡 Dica</button>
+        <button class="challengeBtn" id="newChallenge" type="button" hidden>↻ Outro</button>
+      </div>
+    </div>
+    <h2 class="boardHeading"><span>Mesa de montagem</span><span class="boardLegend"><i class="legendTab"></i> cátion <i class="legendSocket"></i> ânion</span></h2>
+    <div class="boardWrap" id="boardWrap"><div aria-label="Área de montagem do quebra-cabeça iônico" id="board" role="group"><div class="boardEmpty" id="boardEmpty"><b>Arraste as peças para cá</b><span>Aproxime os encaixes até sentir o snap.</span></div></div></div>
+    <div class="toolbar boardToolbar">
+      <button class="ok primary" id="check" type="button">✓ Conferir</button>
+      <button class="bad" id="deleteSel" type="button">Remover peça</button>
+      <span class="simoens-inline-style-ions-002"></span>
+      <button id="addPlus" title="Adicionar sinal de +" type="button">+ (adicionar)</button>
+      <button id="addArrow" title="Adicionar seta de reação" type="button">→ (reação)</button>
+      <button id="addEq" title="Adicionar seta de equilíbrio" type="button">⇌ (equilíbrio)</button>
+    </div>
+  </section>
+
+  <section class="col readoutCol" id="side">
+    <h2>Painel do composto</h2>
+    <div id="calc">
+      <div class="readCard chargeCard"><span>Carga total</span><strong class="badge" id="charge">0</strong></div>
+      <div class="readGrid">
+        <div><span>Peças</span><strong id="count">0</strong></div>
+        <div><span>Encaixes</span><strong id="connectionCount">0</strong></div>
+      </div>
+      <div class="formulaCard"><span>Expressão montada</span><div class="big" id="formulaOut">—</div></div>
+      <div class="note puzzleTip">
+        <b>Como jogar</b>
+        <div>As saliências representam cargas positivas e as cavidades, cargas negativas. Cada encaixe só pode receber uma peça oposta.</div>
+        <div>Quando todas as cargas se anulam, o conjunto fica eletroneutro.</div>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <div class="list" id="legend"></div>
+  </section>
+</main>
+<script src="ions.inline-script-01.js"></script>
+<script src="ions.inline-script-02.js"></script>
+<script defer src="ions.inline-events.js"></script>
+</body>
+</html>
