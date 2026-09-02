@@ -631,6 +631,8 @@ chatIsOpen = true;
 hideClickHint();
 chatBubble.classList.add("open");
 chatBubble.setAttribute("aria-hidden", "false");
+document.documentElement.classList.add("chat-open");
+if (isMobileExperience) renderer.domElement.style.pointerEvents = "none";
 }
 
 function hideChatBubble() {
@@ -638,6 +640,8 @@ if (!chatBubble) return;
 chatIsOpen = false;
 chatBubble.classList.remove("open");
 chatBubble.setAttribute("aria-hidden", "true");
+document.documentElement.classList.remove("chat-open");
+if (isMobileExperience) renderer.domElement.style.pointerEvents = "auto";
 }
 
 function setClickPointerFromEvent(event) {

@@ -219,97 +219,213 @@
   }
 }
 
-/* Compact mobile menu: replaces the large speech balloon with a fitted sheet. */
-@media (max-width: 768px), (pointer: coarse) {
+/* Responsive mobile layout: same visual language as desktop, without overlapping the character. */
+@media (max-width: 900px), (pointer: coarse) {
   #chatBubble {
-    left: 10px;
-    right: 10px;
-    top: max(10px, env(safe-area-inset-top));
-    width: auto;
-    min-height: 0;
-    max-height: calc(100dvh - max(20px, env(safe-area-inset-top)) - max(10px, env(safe-area-inset-bottom)));
-    padding: 56px 16px calc(18px + env(safe-area-inset-bottom));
-    border: 2px solid rgba(255, 79, 216, 0.72);
-    border-radius: 26px;
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 0 20px rgba(255, 79, 216, 0.24), 0 0 32px rgba(0, 255, 255, 0.14);
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    justify-content: flex-start;
-    gap: 14px;
+    z-index: 20;
   }
 
-  #chatBubble::before {
-    display: none;
+  #chatClose {
+    z-index: 22;
+    touch-action: manipulation;
   }
 
-  .chatText {
-    width: 100%;
-    max-width: 520px;
-    font-size: clamp(15px, 4.3vw, 18px);
-    line-height: 1.35;
-    padding: 0 4px;
-    box-sizing: border-box;
-  }
-
-  .chatLinks {
-    width: 100%;
-    max-width: 520px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding: 0;
+  #clickHint {
+    z-index: 21;
+    max-width: calc(100vw - 28px);
+    padding: 9px 13px;
+    font-size: 13px;
+    text-align: center;
+    backdrop-filter: none;
+    animation-duration: 1.8s;
   }
 
   .chatLinks a {
-    width: 100%;
-    min-width: 0;
-    min-height: 42px;
-    padding: 9px 10px;
-    box-sizing: border-box;
-    font-size: 12px;
-    line-height: 1.2;
-    white-space: normal;
-    text-align: center;
     touch-action: manipulation;
   }
 
   .chatLinks a:hover {
     transform: none;
   }
+}
+
+/* Portrait phones/tablets: bubble above, character below. */
+@media (max-width: 900px) and (orientation: portrait),
+       (pointer: coarse) and (orientation: portrait) {
+  #chatBubble {
+    left: 50%;
+    right: auto;
+    top: max(8px, env(safe-area-inset-top));
+    bottom: auto;
+    width: min(94vw, 560px);
+    min-height: clamp(300px, 40dvh, 390px);
+    max-height: min(46dvh, 430px);
+    padding: clamp(38px, 5.2dvh, 54px) 20px clamp(70px, 8dvh, 92px);
+    transform: translateX(-50%) translateY(10px) scale(.97);
+    justify-content: center;
+    gap: clamp(7px, 1.1dvh, 11px);
+    overflow: visible;
+  }
+
+  #chatBubble.open {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  #chatBubble::before {
+    display: block;
+    inset: 0 0 -2px 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 540' preserveAspectRatio='none'%3E%3Cpath d='M98 18 H622 Q702 18 702 98 V320 Q702 404 622 404 H454 C454 442 440 474 415 500 C388 526 350 541 300 540 C328 511 347 483 357 452 C366 429 370 414 372 404 H98 Q18 404 18 320 V98 Q18 18 98 18 Z' fill='white' stroke='%23ff4fd8' stroke-width='8' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+    animation-duration: 10s;
+  }
+
+  .chatText {
+    width: min(82vw, 450px);
+    max-width: 450px;
+    font-size: clamp(12.5px, 3.55vw, 17px);
+    line-height: 1.24;
+    padding: 0 8px;
+  }
+
+  .chatLinks {
+    width: min(84vw, 455px);
+    max-width: 455px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 7px;
+    padding: 0;
+    max-height: min(17dvh, 132px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .chatLinks a {
+    width: auto;
+    min-width: 0;
+    min-height: 29px;
+    padding: 6px 9px;
+    box-sizing: border-box;
+    font-size: clamp(9.5px, 2.7vw, 12.5px);
+    line-height: 1.08;
+    white-space: nowrap;
+  }
 
   #chatClose {
-    top: 12px;
-    right: 12px;
-    width: 36px;
-    height: 36px;
+    top: clamp(14px, 2dvh, 20px);
+    right: clamp(15px, 4vw, 24px);
+    width: 34px;
+    height: 34px;
     border-width: 2px;
-    line-height: 30px;
-    animation: none;
-    box-shadow: 0 0 14px rgba(255, 79, 216, 0.34);
-    touch-action: manipulation;
+    font-size: 21px;
+    line-height: 28px;
+    animation-duration: 10s;
   }
 
   #clickHint {
     bottom: calc(14px + env(safe-area-inset-bottom));
-    max-width: calc(100vw - 28px);
-    padding: 10px 14px;
-    font-size: 13px;
-    text-align: center;
-    backdrop-filter: none;
-    animation-duration: 1.8s;
   }
 }
 
-@media (max-width: 430px) {
+/* Landscape phones/tablets: desktop composition, character left + bubble right. */
+@media (orientation: landscape) and (max-height: 700px) and (pointer: coarse),
+       (orientation: landscape) and (max-width: 1100px) {
+  #chatBubble {
+    left: auto;
+    right: max(8px, env(safe-area-inset-right));
+    top: 50%;
+    bottom: auto;
+    width: min(47vw, 540px);
+    min-height: min(88dvh, 430px);
+    max-height: calc(100dvh - 16px);
+    padding: clamp(28px, 6dvh, 46px) 20px clamp(58px, 10dvh, 86px);
+    gap: clamp(5px, 1.6dvh, 10px);
+    justify-content: center;
+    transform: translateY(calc(-50% + 10px)) scale(.97);
+    overflow: visible;
+  }
+
+  #chatBubble.open {
+    transform: translateY(-50%) scale(1);
+  }
+
+  #chatBubble::before {
+    display: block;
+    inset: 0 0 -2px 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 540' preserveAspectRatio='none'%3E%3Cpath d='M98 18 H622 Q702 18 702 98 V320 Q702 404 622 404 H454 C454 442 440 474 415 500 C388 526 350 541 300 540 C328 511 347 483 357 452 C366 429 370 414 372 404 H98 Q18 404 18 320 V98 Q18 18 98 18 Z' fill='white' stroke='%23ff4fd8' stroke-width='8' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+    animation-duration: 10s;
+  }
+
+  .chatText {
+    width: 100%;
+    max-width: 410px;
+    font-size: clamp(10.5px, 1.75vw, 15px);
+    line-height: 1.2;
+    padding: 0 9px;
+  }
+
   .chatLinks {
-    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px 6px;
+    padding: 0;
+    max-height: min(29dvh, 155px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 
   .chatLinks a {
-    min-height: 40px;
+    width: auto;
+    min-height: 26px;
+    padding: 5px 8px;
+    font-size: clamp(8.5px, 1.25vw, 11px);
+    line-height: 1.06;
+    white-space: nowrap;
+  }
+
+  #chatClose {
+    top: 13px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+    font-size: 19px;
+    line-height: 24px;
+    animation-duration: 10s;
+  }
+
+  #clickHint {
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    font-size: 11px;
+  }
+}
+
+/* Very narrow portrait screens keep the desktop-style pills, just tighter. */
+@media (max-width: 390px) and (orientation: portrait) {
+  #chatBubble {
+    width: 96vw;
+    min-height: 310px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .chatText {
+    width: 84vw;
+    font-size: 12px;
+  }
+
+  .chatLinks {
+    width: 87vw;
+    gap: 5px;
+  }
+
+  .chatLinks a {
+    padding: 5px 7px;
+    font-size: 9px;
   }
 }
 

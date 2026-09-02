@@ -51,10 +51,18 @@ canvas {
   }
 }
 
-@media (max-width: 768px), (pointer: coarse) {
+@media (max-width: 900px), (pointer: coarse) {
   body {
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  body > canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    transform-origin: 50% 50%;
+    transition: transform 0.34s cubic-bezier(.2,.82,.2,1);
   }
 
   #loading {
@@ -63,5 +71,26 @@ canvas {
     font-size: 12px;
     text-align: center;
     backdrop-filter: none;
+  }
+}
+
+/* When the bubble opens, create actual visual space for it instead of layering it over the model. */
+@media (max-width: 900px) and (orientation: portrait),
+       (pointer: coarse) and (orientation: portrait) {
+  html.chat-open body > canvas {
+    transform: translateY(clamp(150px, 24dvh, 220px)) scale(.84);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 700px) and (pointer: coarse),
+       (orientation: landscape) and (max-width: 1100px) {
+  html.chat-open body > canvas {
+    transform: translateX(clamp(-250px, -22vw, -120px)) scale(.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body > canvas {
+    transition: none !important;
   }
 }
