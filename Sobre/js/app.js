@@ -1,12 +1,25 @@
 
 const APP_CONFIG = window.APP_CONFIG || {};
-const modelUrl = APP_CONFIG.modelPath || "assets/models/personagem.glb";
+const mobileQuery = window.matchMedia("(max-width: 768px), (pointer: coarse)");
+const isMobileExperience = mobileQuery.matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
+const modelUrl = isMobileExperience
+  ? (APP_CONFIG.mobileModelPath || APP_CONFIG.modelPath || "assets/models/personagem.glb")
+  : (APP_CONFIG.modelPath || "assets/models/personagem.glb");
+const targetFrameRate = isMobileExperience ? (APP_CONFIG.mobileFrameRate || 30) : 60;
+const minFrameInterval = 1000 / targetFrameRate;
 const GLTFLoader = THREE.GLTFLoader;
 const loading = document.getElementById("loading");
+if (isMobileExperience) document.documentElement.classList.add("mobile-performance");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.01, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const renderer = new THREE.WebGLRenderer({
+  antialias: !isMobileExperience,
+  alpha: true,
+  premultipliedAlpha: false,
+  powerPreference: "high-performance"
+});
+const maxPixelRatio = isMobileExperience ? (APP_CONFIG.mobileMaxPixelRatio || 1.25) : 2;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 0);
 if ("outputColorSpace" in renderer && THREE.SRGBColorSpace) {
@@ -49,6 +62,7 @@ let modelRoot = null;
 const chatBubble = document.getElementById("chatBubble");
 const chatClose = document.getElementById("chatClose");
 const clickHint = document.getElementById("clickHint");
+if (isMobileExperience && clickHint) clickHint.textContent = "Toque na cabeça";
 const raycaster = new THREE.Raycaster();
 const clickPointer = new THREE.Vector2();
 const downPointer = { x: 0, y: 0 };
@@ -71,13 +85,14 @@ const followQuaternion = new THREE.Quaternion();
 const headTargetQuaternion = new THREE.Quaternion();
 let chatIsOpen = false;
 let animationFrameId = 0;
+let lastRenderedAt = 0;
 let pageIsVisible = !document.hidden;
 let lastMouthEased = -1;
 let mouthUpdateFrame = 0;
 let lastCursorRaycastTime = 0;
 let lastCursorHit = false;
 let lastMouthUpdateTime = -1;
-const mouthUpdateIntervalMs = 1000 / 30;
+const mouthUpdateIntervalMs = 1000 / (isMobileExperience ? 20 : 30);
 
 
 function normalizeName(value) {
@@ -580,21 +595,24 @@ arr[i + 1] = base[i + 1] + factorY[n] * eased;
 arr[i + 2] = base[i + 2] + factorZ[n] * eased;
 }
 position.needsUpdate = true;
-if (mouthUpdateFrame % 8 === 0 || eased === 0) mesh.geometry.computeVertexNormals();
+if (mouthUpdateFrame % (isMobileExperience ? 16 : 8) === 0 || eased === 0) mesh.geometry.computeVertexNormals();
 }
 }
 
-function animate() {
+function animate(now = performance.now()) {
 if (!pageIsVisible) {
 animationFrameId = 0;
 return;
 }
+if (!lastRenderedAt || now - lastRenderedAt >= minFrameInterval) {
+lastRenderedAt = now;
 const elapsed = clock.getElapsedTime();
 updateHeadTurn();
 updateEyes();
 updateBlink(elapsed);
 updateMouth(elapsed);
 renderer.render(scene, camera);
+}
 animationFrameId = requestAnimationFrame(animate);
 }
 function startRenderLoop() {
@@ -728,6 +746,7 @@ resizeFrameId = requestAnimationFrame(() => {
 resizeFrameId = 0;
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
 renderer.setSize(window.innerWidth, window.innerHeight);
 });
 });
@@ -750,7 +769,7 @@ registerMouth(modelRoot);
 frameModel(modelRoot);
 loading.classList.add("hidden");
 setTimeout(() => loading.remove(), 500);
-console.log(`olhos rastreando: ${eyePivots.length} | cabeca seguindo mouse: ${headTurnPivot ? 1 : 0} | palpebras: ${eyelids.length} | boca vinculada: ${mouthParts.length} | cabeca deformando: ${headMouthDriver ? 1 : 0}`);
+console.log(`perfil: ${isMobileExperience ? "mobile leve" : "desktop"} | olhos rastreando: ${eyePivots.length} | cabeca seguindo mouse: ${headTurnPivot ? 1 : 0} | palpebras: ${eyelids.length} | boca vinculada: ${mouthParts.length} | cabeca deformando: ${headMouthDriver ? 1 : 0}`);
 startRenderLoop();
 }, undefined, (error) => {
 console.error(error);

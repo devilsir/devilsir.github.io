@@ -170,3 +170,61 @@
     100% { top: 20px; }
   }
 }
+
+/* Lighter club effects on phones/tablets. */
+@media (max-width: 768px), (pointer: coarse) {
+  #clubOverlay .beam {
+    width: 78vw;
+    height: 76vh;
+    filter: blur(1px);
+  }
+
+  #clubOverlay .beam.b,
+  #clubOverlay .beam.d {
+    display: none;
+  }
+
+  #clubOverlay .light-dot {
+    filter: none;
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  #clubOverlay .disco-ball {
+    width: clamp(92px, 30vmin, 130px);
+    height: clamp(92px, 30vmin, 130px);
+    box-shadow: 0 0 22px rgba(255, 255, 255, 0.16);
+  }
+
+  #clubOverlay.show .disco-ball {
+    animation: discoBallDrop 2.3s cubic-bezier(.18,.84,.22,1) forwards, discoPulse 1.8s ease-in-out infinite .9s;
+  }
+
+  #clubOverlay.show .beam {
+    animation-duration: 1.7s;
+  }
+
+  #clubOverlay.show .light-dot {
+    animation-duration: 3.2s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #clubOverlay .beam,
+  #clubOverlay .light-dot {
+    display: none !important;
+  }
+
+  #clubOverlay.show .ball-chain,
+  #clubOverlay.show .disco-ball {
+    animation: none !important;
+  }
+
+  #clubOverlay .ball-chain {
+    top: 0;
+    opacity: 1;
+  }
+
+  #clubOverlay .disco-ball {
+    top: 14px;
+  }
+}
