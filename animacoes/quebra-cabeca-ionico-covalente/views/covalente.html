@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta name="description" content="Quebra-cabeça educacional de ligações covalentes com elétrons de valência e peças atômicas."/>
+<title>Puzzle Covalente</title>
+<link rel="stylesheet" href="covalente.inline-style-01.css">
+<link rel="stylesheet" href="covalente.inline-styles.css">
+<script defer src="../../../../Chat/widget/chat-widget.js?v=chat-widget-20260718-global-v3"></script>
+<script defer src="../../../../Chat/widget/simoens-accessibility.js?v=a11y-widget-20260814-frame-bridge"></script>
+</head>
+<body>
+<a class="acess-skip-link simoens-inline-style-covalente-001 simoens-inline-event-covalente-001" href="#conteudo-principal">Ir para o conteúdo principal</a>
+<header>
+  <div class="titleBlock">
+    <span class="titleIcon" aria-hidden="true">⚛️</span>
+    <div><h1>Puzzle Covalente</h1><p>Puxe um elétron até outro átomo para criar uma ponte de ligação.</p></div>
+  </div>
+  <span class="spacer"></span>
+  <button class="toggleSide" id="toggleSide" type="button">Esconder painel</button>
+</header>
+<main id="conteudo-principal">
+  <section class="col tray" id="leftCol">
+    <h2><span>Bandeja de átomos</span><input aria-label="Pesquisar elemento" id="searchBox" placeholder="Buscar elemento..." type="search"/></h2>
+    <div id="library">
+      <div class="lib-section" id="atomsSec"><div class="lib-title">Átomos</div><div class="grid" id="atomsGrid"></div></div>
+      <div class="lib-section" id="symbolsSec"><div class="lib-title">Símbolos de reação</div><div class="grid" id="symbolsGrid"></div></div>
+    </div>
+    <div class="toolbar trayToolbar">
+      <button class="danger" id="rmBond" type="button">Desmontar ligação</button>
+      <button class="ghostBtn" id="clearBoard" type="button">Limpar mesa</button>
+    </div>
+  </section>
+
+  <section class="col boardCol">
+    <div class="modeBar" aria-label="Modo de jogo">
+      <span class="modeLabel">Modo</span>
+      <div class="modeTabs" role="group" aria-label="Escolher modo">
+        <button class="modeBtn active" id="modeCreation" type="button" aria-pressed="true">✦ Criação</button>
+        <button class="modeBtn" id="modeChallenge" type="button" aria-pressed="false">🎯 Desafios</button>
+      </div>
+      <div class="challengeControls" id="challengeControls" hidden>
+        <label>Dificuldade
+          <select id="challengeDifficultyFilter" aria-label="Dificuldade dos desafios">
+            <option value="all">Todas</option>
+            <option value="facil">Fácil</option>
+            <option value="medio">Médio</option>
+            <option value="dificil">Difícil</option>
+          </select>
+        </label>
+        <span class="challengeStat">✓ <b id="challengeSolved">0</b></span>
+        <span class="challengeStat">🔥 <b id="challengeStreak">0</b></span>
+      </div>
+    </div>
+    <div class="missionBar" id="missionBar">
+      <div class="missionCopy">
+        <span class="eyebrow">MODO CRIAÇÃO</span>
+        <strong id="missionText">Monte qualquer molécula.</strong>
+        <small id="missionHint">Explore livremente: combine átomos e teste ligações simples, duplas e triplas.</small>
+      </div>
+      <div class="missionActions">
+        <span class="difficultyBadge" id="difficultyBadge" hidden>Fácil</span>
+        <button class="hintBtn" id="challengeHint" type="button" hidden>💡 Dica</button>
+        <button class="challengeBtn" id="newChallenge" type="button" hidden>↻ Outro</button>
+      </div>
+    </div>
+    <h2 class="boardHeading"><span>Mesa molecular</span><span class="boardLegend"><i class="electronLegend"></i> elétron livre <i class="bondLegend"></i> ligação</span></h2>
+    <div class="boardWrap" id="boardWrap"><div aria-label="Área de montagem do quebra-cabeça covalente" id="board" role="group"><div class="boardEmpty" id="boardEmpty"><b>Arraste os átomos para cá</b><span>Puxe elétrons para construir as pontes entre as peças.</span></div></div></div>
+    <div class="toolbar boardToolbar"><button class="primary challengeOnly" id="checkChallenge" type="button" hidden>✓ Conferir desafio</button><span class="microHint">Dica: ligações duplas e triplas usam mais de uma ponte entre o mesmo par de átomos.</span></div>
+  </section>
+
+  <section class="col readoutCol" id="side">
+    <h2>Painel da molécula</h2>
+    <div id="calc">
+      <div class="readGrid">
+        <div><span>Ligações</span><strong id="bondCount">0</strong></div>
+        <div><span>Peças</span><strong id="count">0</strong></div>
+      </div>
+      <div class="formulaCard"><span>Espécies montadas</span><div class="big" id="formulaOut">—</div></div>
+      <div class="note puzzleTip">
+        <b>Como jogar</b>
+        <div>Os pontos azuis são elétrons disponíveis. Puxe um deles até outro átomo para compartilhar o par.</div>
+        <div>As pontes físicas mostram ligações simples, duplas ou triplas.</div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="guide"><canvas aria-label="Guia visual de criação de ligação covalente" role="img" id="acess-canvas-1" aria-describedby="acess-canvas-1-descricao-acessivel">Seu navegador não conseguiu carregar esta visualização.</canvas><p id="acess-canvas-1-descricao-acessivel" class="simoens-inline-style-covalente-005">Linha-guia entre o elétron selecionado e um elétron-alvo de outro átomo.</p></div>
+<script src="covalente.inline-script-01.js"></script>
+<script src="covalente.inline-script-02.js"></script>
+<script defer src="covalente.inline-events.js"></script>
+</body>
+</html>
