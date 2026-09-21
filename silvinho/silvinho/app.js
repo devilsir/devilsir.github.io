@@ -120,6 +120,7 @@ const multiplayer = {
   localReady: false,
   gameStarted: false,
   lastRevision: -1,
+  lastEventId: 0,
   pollTimer: null,
   polling: false,
   applyingRemote: false,
@@ -373,6 +374,7 @@ async function connectMultiplayer(kind) {
     multiplayer.playerId = data.playerId;
     multiplayer.hostId = data.lobby.hostId;
     multiplayer.lastRevision = data.lobby.revision;
+    multiplayer.lastEventId = Number(data.lobby.latestEventId) || 0;
     multiplayer.localReady = false;
     multiplayer.initializingGame = false;
     await loadInviteUrl();
@@ -490,25 +492,52 @@ function serializeGameSnapshot(reason = 'state') {
   };
 }
 
-async function pushMultiplayerSnapshot(reason = 'state') {
-  if (!multiplayer.active || !multiplayer.gameStarted || multiplayer.applyingRemote || !multiplayer.lobbyCode) return;
-  try {
-    const data = await apiRequest('/api/lobby/snapshot', {
-      method: 'POST',
-      body: JSON.stringify({
-        code: multiplayer.lobbyCode,
-        playerId: multiplayer.playerId,
-        snapshot: serializeGameSnapshot(reason),
-      }),
-    });
-    if (Number.isFinite(data.revision)) multiplayer.lastRevision = data.revision;
-  } catch (error) {
-    console.warn('[multiplayer] falha ao sincronizar:', error);
+let multiplayerSnapshotQueue = Promise.resolve();
+let multiplayerSnapshotSequence = 0;
+
+function pushMultiplayerSnapshot(reason = 'state') {
+  if (!multiplayer.active || !multiplayer.gameStarted || multiplayer.applyingRemote || !multiplayer.lobbyCode) {
+    return Promise.resolve();
   }
+
+  // Capture the state NOW, then serialize every write through one queue. Without
+  // this, a fast LETTER click can overtake the previous WHEEL snapshot and an
+  // older request may arrive at the server after the turn has already changed.
+  const snapshot = serializeGameSnapshot(reason);
+  const sequence = ++multiplayerSnapshotSequence;
+  const payload = {
+    code: multiplayer.lobbyCode,
+    playerId: multiplayer.playerId,
+    sequence,
+    snapshot,
+  };
+
+  multiplayerSnapshotQueue = multiplayerSnapshotQueue
+    .catch(() => {})
+    .then(async () => {
+      // If this client no longer owns the turn, the server will also reject the
+      // stale write. Keeping the request queued preserves action order locally.
+      const data = await apiRequest('/api/lobby/snapshot', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      if (Number.isFinite(data.revision)) {
+        multiplayer.lastRevision = Math.max(multiplayer.lastRevision, data.revision);
+      }
+    })
+    .catch((error) => {
+      console.warn(`[multiplayer] snapshot ${sequence} (${reason}) rejeitado:`, error);
+      // A rejected stale snapshot normally means the authoritative turn already
+      // advanced. Pull it immediately instead of waiting for the next poll tick.
+      setTimeout(() => pollLobby(), 0);
+    });
+
+  return multiplayerSnapshotQueue;
 }
 
 function applyRemoteSnapshot(snapshot) {
   if (!snapshot || typeof snapshot !== 'object') return;
+  const previousTurnOwnerId = currentPlayer()?.id || '';
   const shouldStartFinale = Boolean(snapshot.finale) && !game.finale;
   multiplayer.applyingRemote = true;
   closeWardrobeForGame();
@@ -527,6 +556,17 @@ function applyRemoteSnapshot(snapshot) {
   game.phase = snapshot.phase || 'spin';
   game.currentWheelSegment = snapshot.currentWheelSegment ? { ...snapshot.currentWheelSegment } : null;
   game.spinning = false;
+
+  const nextTurnOwnerId = currentPlayer()?.id || '';
+  const turnActuallyChanged = Boolean(previousTurnOwnerId && nextTurnOwnerId && previousTurnOwnerId !== nextTurnOwnerId);
+  // Every rule that passes the turn (wrong letter, PASSA, PERDE TUDO, wrong
+  // solve) starts the receiver in spin phase. This also heals any stale
+  // intermediate wheel snapshot that might have left phase='letter'.
+  if (turnActuallyChanged && game.phase !== 'solved' && game.phase !== 'finale') {
+    game.phase = 'spin';
+    game.currentWheelSegment = null;
+  }
+  cancelAnimationFrame(wheelAnimationFrame);
   if (Number.isFinite(snapshot.wheelAngle)) wheelAngle = snapshot.wheelAngle;
   game.finale = false;
 
@@ -546,6 +586,11 @@ function applyRemoteSnapshot(snapshot) {
   // every turn-sensitive control for the player whose turn just arrived.
   multiplayer.applyingRemote = false;
   syncControls();
+  // Some browsers can still have the old disabled state queued from the same
+  // event loop turn. Recompute once more after DOM/state settling.
+  requestAnimationFrame(() => {
+    if (!multiplayer.applyingRemote && multiplayer.gameStarted && !game.finale) syncControls();
+  });
 
   if (shouldStartFinale) startFinale({ remote: true });
 }
@@ -573,6 +618,68 @@ function initializeMultiplayerGame(lobby) {
   setTimeout(() => {
     multiplayer.initializingGame = false;
   }, 300);
+}
+
+
+async function sendMultiplayerEvent(type, payload = {}) {
+  if (!multiplayer.active || !multiplayer.gameStarted || !multiplayer.lobbyCode || !multiplayer.playerId) return null;
+  try {
+    const data = await apiRequest('/api/lobby/event', {
+      method: 'POST',
+      body: JSON.stringify({
+        code: multiplayer.lobbyCode,
+        playerId: multiplayer.playerId,
+        type,
+        payload,
+      }),
+    });
+    return data.event || null;
+  } catch (error) {
+    console.warn(`[multiplayer] evento ${type} falhou:`, error);
+    return null;
+  }
+}
+
+function multiplayerPlayerName(playerId) {
+  return game.players.find((player) => player.id === playerId)?.name || 'Outro jogador';
+}
+
+function processMultiplayerEvents(lobby) {
+  if (!multiplayer.active || !Array.isArray(lobby?.events)) return;
+  const events = [...lobby.events]
+    .filter((event) => Number(event?.id) > multiplayer.lastEventId)
+    .sort((a, b) => Number(a.id) - Number(b.id));
+
+  for (const event of events) {
+    multiplayer.lastEventId = Math.max(multiplayer.lastEventId, Number(event.id) || 0);
+    if (!event || event.playerId === multiplayer.playerId) continue; // local already renders immediately
+
+    if (event.type === 'audio') {
+      const src = String(event.payload?.src || '');
+      if (src) {
+        playAudioSource(src, {
+          broadcast: false,
+          sourcePlayerId: event.playerId,
+          sourcePlayerName: multiplayerPlayerName(event.playerId),
+        });
+      }
+      continue;
+    }
+
+    if (event.type === 'wheel-spin') {
+      const payload = event.payload || {};
+      const segments = wheelSegments();
+      const selectedIndex = clamp(Number(payload.selectedIndex) || 0, 0, Math.max(0, segments.length - 1));
+      animateWheelSpin({
+        startAngle: Number(payload.startAngle),
+        targetAngle: Number(payload.targetAngle),
+        duration: Number(payload.duration),
+        selectedIndex,
+        authoritative: false,
+        sourcePlayerName: multiplayerPlayerName(event.playerId),
+      });
+    }
+  }
 }
 
 function handleLobbyStatus(lobby) {
@@ -612,6 +719,15 @@ async function pollLobby() {
     if (changed || lobby.status === 'countdown' || !multiplayer.gameStarted) {
       handleLobbyStatus(lobby);
       multiplayer.lastRevision = Math.max(multiplayer.lastRevision, lobby.revision);
+    }
+    // Apply transient events only AFTER any authoritative snapshot from this poll.
+    // Otherwise a turn snapshot received together with a spin event could cancel
+    // the remote wheel animation immediately.
+    processMultiplayerEvents(lobby);
+    // Self-heal a button that was left disabled by an earlier remote update.
+    if (multiplayer.gameStarted && !multiplayer.applyingRemote && canLocalInteract()) {
+      const shouldSpinBeEnabled = !game.spinning && game.phase === 'spin';
+      if (spinButton.disabled === shouldSpinBeEnabled) syncControls();
     }
   } catch (error) {
     console.warn('[multiplayer] lobby indisponível:', error);
@@ -1328,17 +1444,64 @@ function chooseWheelIndex(segments) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function spinWheel() {
+function animateWheelSpin({
+  startAngle,
+  targetAngle,
+  duration,
+  selectedIndex,
+  authoritative = false,
+  sourcePlayerName = '',
+}) {
+  const segments = wheelSegments();
+  if (!segments.length) return;
+  const safeIndex = clamp(Number(selectedIndex) || 0, 0, segments.length - 1);
+  const safeStart = Number.isFinite(startAngle) ? startAngle : wheelAngle;
+  const safeTarget = Number.isFinite(targetAngle) ? targetAngle : safeStart;
+  const safeDuration = clamp(Number(duration) || 2900, 900, 6000);
+
+  game.spinning = true;
+  game.currentWheelSegment = null;
+  wheelResult.textContent = 'girando...';
+  phaseDisplay.textContent = sourcePlayerName ? `${sourcePlayerName}: girando a roleta` : 'segura!';
+  syncControls();
+
+  wheelAnimStart = performance.now();
+  wheelAnimDuration = safeDuration;
+  wheelTargetAngle = safeTarget;
+  wheelAngle = safeStart;
+
+  const animateSpin = (now) => {
+    const t = clamp((now - wheelAnimStart) / wheelAnimDuration, 0, 1);
+    const eased = cubicOut(t);
+    wheelAngle = safeStart + (safeTarget - safeStart) * eased;
+    drawWheel(wheelAngle);
+
+    if (t < 1) {
+      wheelAnimationFrame = requestAnimationFrame(animateSpin);
+      return;
+    }
+
+    wheelAngle = safeTarget % (Math.PI * 2);
+    drawWheel(wheelAngle);
+    if (authoritative) {
+      finishWheelSpin(segments[safeIndex]);
+    } else {
+      // Keep remote controls locked until the authoritative end-of-spin snapshot arrives.
+      game.spinning = true;
+      syncControls();
+    }
+  };
+
+  cancelAnimationFrame(wheelAnimationFrame);
+  wheelAnimationFrame = requestAnimationFrame(animateSpin);
+}
+
+async function spinWheel() {
   if (!canLocalInteract()) {
     if (multiplayer.active) setToast(`Agora é a vez de ${currentPlayer()?.name || 'outro jogador'}`, 'bad');
     return;
   }
   if (game.spinning || game.phase !== 'spin') return;
-  game.spinning = true;
-  game.currentWheelSegment = null;
-  wheelResult.textContent = 'girando...';
-  phaseDisplay.textContent = 'segura!';
-  syncControls();
 
   const segments = wheelSegments();
   const selectedIndex = chooseWheelIndex(segments);
@@ -1352,29 +1515,33 @@ function spinWheel() {
   let delta = desiredNormalized - currentNormalized;
   if (delta < 0) delta += Math.PI * 2;
   const extraTurns = (5 + Math.floor(Math.random() * 3)) * Math.PI * 2;
-
-  wheelAnimStart = performance.now();
-  wheelAnimDuration = 2700 + Math.random() * 500;
   const startAngle = wheelAngle;
-  wheelTargetAngle = startAngle + extraTurns + delta;
+  const targetAngle = startAngle + extraTurns + delta;
+  const duration = 2700 + Math.random() * 500;
 
-  const animateSpin = (now) => {
-    const t = clamp((now - wheelAnimStart) / wheelAnimDuration, 0, 1);
-    const eased = cubicOut(t);
-    wheelAngle = startAngle + (wheelTargetAngle - startAngle) * eased;
-    drawWheel(wheelAngle);
+  // Lock instantly so a double click cannot create two spins while the event is sent.
+  game.spinning = true;
+  game.currentWheelSegment = null;
+  wheelResult.textContent = 'girando...';
+  phaseDisplay.textContent = 'segura!';
+  syncControls();
 
-    if (t < 1) {
-      wheelAnimationFrame = requestAnimationFrame(animateSpin);
-    } else {
-      wheelAngle = wheelTargetAngle % (Math.PI * 2);
-      drawWheel(wheelAngle);
-      finishWheelSpin(segments[selectedIndex]);
-    }
-  };
+  if (multiplayer.active) {
+    await sendMultiplayerEvent('wheel-spin', {
+      startAngle,
+      targetAngle,
+      duration,
+      selectedIndex,
+    });
+  }
 
-  cancelAnimationFrame(wheelAnimationFrame);
-  wheelAnimationFrame = requestAnimationFrame(animateSpin);
+  animateWheelSpin({
+    startAngle,
+    targetAngle,
+    duration,
+    selectedIndex,
+    authoritative: true,
+  });
 }
 
 function finishWheelSpin(segment) {
@@ -1414,6 +1581,24 @@ spinButton.addEventListener('click', spinWheel);
 // -----------------------------------------------------------------------------
 let audio = null;
 let lastAudioIndex = -1;
+let audioPlayToken = 0;
+let mediaUnlocked = false;
+
+function unlockMediaPlayback() {
+  if (mediaUnlocked) return;
+  mediaUnlocked = true;
+  // A tiny silent WAV is played during a real user gesture. This gives remote
+  // multiplayer audio a much better chance of being accepted later by autoplay policies.
+  try {
+    const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=');
+    silent.volume = 0.001;
+    const promise = silent.play();
+    if (promise?.catch) promise.catch(() => {});
+  } catch (_) {}
+}
+
+document.addEventListener('pointerdown', unlockMediaPlayback, { capture: true, once: true });
+document.addEventListener('keydown', unlockMediaPlayback, { capture: true, once: true });
 
 function chooseAudioIndex(list) {
   if (list.length <= 1) return 0;
@@ -1423,7 +1608,73 @@ function chooseAudioIndex(list) {
   return index;
 }
 
-function playRandomAudio({ shortOnly = false } = {}) {
+function prettyAudioName(src) {
+  try {
+    return decodeURIComponent(String(src).split('/').pop() || 'áudio')
+      .replace(/\.[a-z0-9]+$/i, '')
+      .replace(/[_-]+/g, ' ');
+  } catch (_) {
+    return 'áudio';
+  }
+}
+
+function playAudioSource(src, {
+  broadcast = false,
+  sourcePlayerId = multiplayer.playerId,
+  sourcePlayerName = '',
+} = {}) {
+  if (!src) return;
+  const token = ++audioPlayToken;
+  const absoluteSrc = new URL(src, window.location.href).href;
+
+  if (audio) {
+    audio.onended = null;
+    audio.onerror = null;
+    audio.pause();
+    try { audio.currentTime = 0; } catch (_) {}
+  }
+
+  audio = new Audio();
+  audio.preload = 'auto';
+  audio.src = absoluteSrc;
+  audio.load();
+
+  const who = sourcePlayerName || (sourcePlayerId ? multiplayerPlayerName(sourcePlayerId) : '');
+  const label = prettyAudioName(src);
+  audioStatus.textContent = who && multiplayer.active ? `${who}: ${label}` : label;
+  audioOrbButton.classList.add('is-playing');
+  playTalk(4500);
+  impulseBoth(0.8);
+
+  const started = audio.play();
+  if (started?.catch) {
+    started.catch((error) => {
+      if (token !== audioPlayToken) return;
+      console.warn('[audio] reprodução bloqueada:', error);
+      audioStatus.textContent = 'clique uma vez na página para liberar o áudio';
+      audioOrbButton.classList.remove('is-playing');
+    });
+  }
+
+  audio.onended = () => {
+    if (token !== audioPlayToken) return;
+    talkAction?.stop();
+    audioStatus.textContent = 'clique no botão roxo';
+    audioOrbButton.classList.remove('is-playing');
+  };
+  audio.onerror = () => {
+    if (token !== audioPlayToken) return;
+    console.warn('[audio] falha ao carregar:', absoluteSrc);
+    audioStatus.textContent = 'falha ao carregar áudio';
+    audioOrbButton.classList.remove('is-playing');
+  };
+
+  if (broadcast && multiplayer.active && multiplayer.gameStarted) {
+    sendMultiplayerEvent('audio', { src }).catch(() => {});
+  }
+}
+
+function playRandomAudio({ shortOnly = false, broadcast = multiplayer.active } = {}) {
   const list = Array.isArray(config.audioFiles) ? config.audioFiles.filter(Boolean) : [];
   if (!list.length) {
     audioStatus.textContent = 'adicione áudios em config.js';
@@ -1435,32 +1686,19 @@ function playRandomAudio({ shortOnly = false } = {}) {
   if (shortOnly && list.length > 1) candidates = list.slice(1);
   const localIndex = chooseAudioIndex(candidates);
   const src = candidates[localIndex];
-
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
-  }
-
-  audio = new Audio(src);
-  audio.preload = 'auto';
-  audioStatus.textContent = src.split('/').pop().replace(/_/g, ' ');
-  audioOrbButton.classList.add('is-playing');
-  playTalk(4500);
-  impulseBoth(0.8);
-
-  audio.play().catch(() => {
-    audioStatus.textContent = 'clique de novo para liberar áudio';
-    audioOrbButton.classList.remove('is-playing');
+  playAudioSource(src, {
+    broadcast,
+    sourcePlayerId: multiplayer.playerId,
+    sourcePlayerName: multiplayer.active
+      ? (game.players[localMultiplayerIndex()]?.name || 'Jogador')
+      : '',
   });
-
-  audio.addEventListener('ended', () => {
-    talkAction?.stop();
-    audioStatus.textContent = 'clique no botão roxo';
-    audioOrbButton.classList.remove('is-playing');
-  }, { once: true });
 }
 
-audioOrbButton.addEventListener('click', () => playRandomAudio());
+audioOrbButton.addEventListener('click', () => {
+  unlockMediaPlayback();
+  playRandomAudio({ broadcast: multiplayer.active });
+});
 
 // -----------------------------------------------------------------------------
 // THREE.JS presenter + breast physics driven by the GLB Breast_Jelly_* clips
