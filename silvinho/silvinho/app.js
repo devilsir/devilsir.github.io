@@ -538,10 +538,14 @@ function applyRemoteSnapshot(snapshot) {
   if (phaseDisplay) phaseDisplay.textContent = snapshot.phaseText || `${currentPlayer()?.name || 'Jogador'}: gire para jogar`;
   if (solvePanel) solvePanel.hidden = true;
   buildPuzzleBoard();
-  syncControls();
   applyPlayerOutfit(currentPlayer());
   drawWheel(wheelAngle);
+
+  // IMPORTANT: while a remote snapshot is being applied, canLocalInteract()
+  // intentionally returns false. Re-enable interaction first, then recalculate
+  // every turn-sensitive control for the player whose turn just arrived.
   multiplayer.applyingRemote = false;
+  syncControls();
 
   if (shouldStartFinale) startFinale({ remote: true });
 }
