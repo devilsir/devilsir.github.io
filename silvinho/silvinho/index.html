@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0451ca">
+  <meta name="color-scheme" content="dark">
+  <title>Roda a Roda do Silvio</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <section id="modeMenu" class="mode-menu" role="dialog" aria-modal="true" aria-labelledby="modeMenuTitle">
+    <div class="mode-menu__card">
+      <div class="player-setup__eyebrow">RODA A RODA</div>
+      <h1 id="modeMenuTitle">Como você quer jogar?</h1>
+      <p>Single Player mantém o jogo local. Multiplayer usa o servidor do seu PC pelo Cloudflare.</p>
+      <div class="mode-choice-grid">
+        <button id="singlePlayerModeButton" type="button">
+          <strong>SINGLE PLAYER</strong>
+          <small>1 a 4 pessoas no mesmo computador</small>
+        </button>
+        <button id="multiplayerModeButton" type="button">
+          <strong>MULTIPLAYER</strong>
+          <small>Cada pessoa abre o jogo no próprio navegador</small>
+        </button>
+      </div>
+
+      <section id="multiplayerConnectPanel" class="multiplayer-connect" hidden>
+        <label class="multiplayer-server-field">
+          <span>SERVIDOR MULTIPLAYER</span>
+          <input id="multiplayerServerInput" type="url" placeholder="https://xxxxx.trycloudflare.com" autocomplete="url" spellcheck="false">
+          <small>Rode <b>start_cloudflare.bat</b> no seu PC e cole aqui a URL HTTPS exibida no terminal.</small>
+        </label>
+        <label>
+          <span>SEU NOME</span>
+          <input id="multiplayerNameInput" type="text" maxlength="24" value="Jogador" autocomplete="nickname">
+        </label>
+        <div class="multiplayer-connect__actions">
+          <button id="createLobbyButton" class="game-button game-button--confirm" type="button">CRIAR LOBBY</button>
+          <div class="multiplayer-join-row">
+            <input id="lobbyCodeInput" type="text" maxlength="5" placeholder="CÓDIGO" autocomplete="off" spellcheck="false">
+            <button id="joinLobbyButton" class="game-button" type="button">ENTRAR</button>
+          </div>
+        </div>
+        <div id="multiplayerConnectStatus" class="multiplayer-connect__status">Informe o servidor Cloudflare, depois crie ou entre em um lobby.</div>
+        <button id="backToModeMenuButton" class="mode-back" type="button">← VOLTAR</button>
+      </section>
+    </div>
+  </section>
+
+  <section id="playerSetup" class="player-setup is-hidden" role="dialog" aria-modal="true" aria-labelledby="playerSetupTitle">
+    <div class="player-setup__card">
+      <div class="player-setup__eyebrow">RODA A RODA</div>
+      <h1 id="playerSetupTitle">Quantos jogadores?</h1>
+      <p>Escolha de 1 a 4 participantes para começar.</p>
+      <div class="player-count-grid" aria-label="Número de jogadores">
+        <button type="button" data-player-count="1">1<small>jogador</small></button>
+        <button type="button" data-player-count="2">2<small>jogadores</small></button>
+        <button type="button" data-player-count="3">3<small>jogadores</small></button>
+        <button type="button" data-player-count="4">4<small>jogadores</small></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="multiplayerCountdown" class="multiplayer-countdown" hidden aria-live="assertive">
+    <small>TODOS PRONTOS</small>
+    <strong id="multiplayerCountdownNumber">5</strong>
+    <span>O JOGO VAI COMEÇAR</span>
+  </section>
+
+  <main class="game-shell is-setup">
+    <header class="show-header" aria-label="Placar do jogo">
+      <div class="score-card">
+        <span id="playerDisplay">JOGADOR 1</span>
+        <strong id="scoreDisplay">0</strong>
+      </div>
+
+      <div class="round-lights" aria-label="Rodada atual">
+        <span class="round-light is-active">1</span>
+        <span class="round-light">2</span>
+        <span class="round-light">3</span>
+      </div>
+
+      <div class="show-logo" aria-label="Roda a Roda">
+        <span>RODA</span>
+        <strong>A RODA</strong>
+      </div>
+
+      <div class="round-readout">
+        <small>RODADA</small>
+        <strong id="roundDisplay">1</strong>
+      </div>
+    </header>
+
+    <div id="playerStrip" class="player-strip" aria-label="Placar dos jogadores"></div>
+
+    <section class="stage-layout">
+      <section class="board-zone" aria-label="Painel do jogo">
+        <section id="wardrobePanel" class="wardrobe-panel" hidden aria-live="polite">
+          <div class="wardrobe-eyebrow">MONTE SEU SILVIO</div>
+          <h2 id="wardrobePlayerTitle">JOGADOR 1</h2>
+          <section id="multiplayerLobbyBar" class="multiplayer-lobby-bar" hidden>
+            <div>
+              <small>LOBBY</small>
+              <strong id="multiplayerLobbyCode">-----</strong>
+            </div>
+            <div class="multiplayer-lobby-address">
+              <small>LINK DE CONVITE</small>
+              <strong id="multiplayerInviteUrl">carregando endereço…</strong>
+            </div>
+            <div id="multiplayerLobbyPlayers" class="multiplayer-lobby-players" aria-label="Jogadores do lobby"></div>
+          </section>
+
+          <p>Escolha um de cada. O posicionamento usa exatamente os acessórios de referência do GLB.</p>
+
+          <div class="wardrobe-grid">
+            <div class="wardrobe-selector" data-wardrobe-category="hat">
+              <span class="wardrobe-label">CABEÇA</span>
+              <div class="wardrobe-picker">
+                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="hat" aria-label="Chapéu anterior">‹</button>
+                <strong id="wardrobeHatName">—</strong>
+                <button type="button" class="wardrobe-arrow" data-wardrobe-next="hat" aria-label="Próximo chapéu">›</button>
+              </div>
+            </div>
+
+            <div class="wardrobe-selector" data-wardrobe-category="glasses">
+              <span class="wardrobe-label">ÓCULOS</span>
+              <div class="wardrobe-picker">
+                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="glasses" aria-label="Óculos anterior">‹</button>
+                <strong id="wardrobeGlassesName">—</strong>
+                <button type="button" class="wardrobe-arrow" data-wardrobe-next="glasses" aria-label="Próximo óculos">›</button>
+              </div>
+            </div>
+
+            <div class="wardrobe-selector" data-wardrobe-category="bra">
+              <span class="wardrobe-label">PEITÕES</span>
+              <div class="wardrobe-picker">
+                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="bra" aria-label="Sutiã anterior">‹</button>
+                <strong id="wardrobeBraName">—</strong>
+                <button type="button" class="wardrobe-arrow" data-wardrobe-next="bra" aria-label="Próximo sutiã">›</button>
+              </div>
+            </div>
+          </div>
+
+          <section class="wardrobe-edit-panel" aria-label="Ajuste fino dos acessórios">
+            <label class="wardrobe-edit-toggle" for="accessoryEditToggle">
+              <input id="accessoryEditToggle" type="checkbox">
+              <span class="wardrobe-edit-check" aria-hidden="true"></span>
+              <span>
+                <strong>EDIÇÃO DE ENCAIXE</strong>
+                <small>Mover, rotacionar e escalonar o acessório no próprio Silvio</small>
+              </span>
+            </label>
+
+            <div id="accessoryEditTools" class="wardrobe-edit-tools" hidden>
+              <div class="wardrobe-edit-targets" aria-label="Acessório para editar">
+                <button type="button" data-edit-target="hat">CABEÇA</button>
+                <button type="button" data-edit-target="glasses">ÓCULOS</button>
+                <button type="button" data-edit-target="bra">PEITÕES</button>
+              </div>
+
+              <div class="wardrobe-edit-modes" aria-label="Ferramenta de transformação">
+                <button type="button" data-transform-mode="translate">MOVER</button>
+                <button type="button" data-transform-mode="rotate">ROTACIONAR</button>
+                <button type="button" data-transform-mode="scale">ESCALONAR</button>
+                <button id="accessoryResetButton" type="button" class="is-reset">RESETAR</button>
+              </div>
+
+              <div class="wardrobe-edit-status">
+                <span id="accessoryEditStatus">Editando: cabeça</span>
+                <small>Os ajustes ficam salvos automaticamente para cada acessório.</small>
+              </div>
+            </div>
+          </section>
+
+          <div class="wardrobe-progress">
+            <span id="wardrobeProgress">JOGADOR 1 DE 1</span>
+            <button id="wardrobeConfirmButton" class="game-button game-button--confirm" type="button">PRONTO</button>
+          </div>
+        </section>
+        <div class="board-frame">
+          <div id="puzzleBoard" class="puzzle-board" aria-live="polite"></div>
+        </div>
+
+        <div class="category-band">
+          <span id="categoryDisplay">—</span>
+        </div>
+
+        <div class="status-line">
+          <div>
+            <small>RODA</small>
+            <strong id="wheelResult">GIRE A RODA</strong>
+          </div>
+          <div>
+            <small>STATUS</small>
+            <strong id="phaseDisplay">GIRE PARA JOGAR</strong>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button id="spinButton" class="game-button game-button--spin" type="button">GIRAR RODA</button>
+          <button id="solveButton" class="game-button" type="button">RESOLVER</button>
+          <button id="newRoundButton" class="game-button game-button--danger" type="button">NOVA RODADA</button>
+        </div>
+
+        <div class="solve-panel" id="solvePanel" hidden>
+          <input id="solveInput" type="text" placeholder="Digite a frase inteira" autocomplete="off">
+          <button id="confirmSolveButton" class="game-button game-button--confirm" type="button">CONFIRMAR</button>
+        </div>
+
+        <section class="keyboard-panel" aria-label="Teclado virtual">
+          <div id="keyboard" class="keyboard"></div>
+          <div class="keyboard-caption">TECLADO VIRTUAL</div>
+        </section>
+      </section>
+
+      <aside class="host-zone" aria-label="Apresentador e roda">
+        <div class="host-stage">
+          <div class="host-label">APRESENTADOR</div>
+          <div id="viewer" class="viewer" aria-label="Modelo 3D do Silvio. Arraste os peitos para interagir.">
+            <div id="loadingOverlay" class="loading-overlay">
+              <div class="loading-spinner"></div>
+              <strong id="loadingText">Carregando Silvio…</strong>
+            </div>
+          </div>
+
+          <button id="audioOrbButton" class="audio-orb" type="button" aria-label="Tocar áudio do Silvio">
+            <img src="./assets/ui/audio-orb.png" alt="">
+            <span>ÁUDIO</span>
+          </button>
+
+          <div class="host-hint" id="viewerHint">CARREGANDO MODELO 3D…</div>
+          <div class="audio-status" id="audioStatus">CLIQUE NO BOTÃO ROXO</div>
+        </div>
+
+        <div class="wheel-stage">
+          <div class="wheel-pointer" aria-hidden="true"></div>
+          <canvas id="wheelCanvas" width="720" height="720" aria-label="Roda de prêmios"></canvas>
+          <div class="wheel-floor"></div>
+        </div>
+      </aside>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
