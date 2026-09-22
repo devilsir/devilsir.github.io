@@ -2,10 +2,28 @@ window.SILVIO_CONFIG = {
   modelPath: './assets/model/lucas.glb',
   characters: [
     { id: 'lucas', label: 'Lucas', path: './assets/model/lucas.glb' },
-    { id: 'alexandre', label: 'Alexandre', path: './assets/model/alexandre.glb' }
+    { id: 'alexandre', label: 'Alexandre', path: './assets/model/alexandre.glb' },
+    { id: 'silvio_bursto_animado', label: 'Silvio Bursto', path: './assets/model/silvioburstoanimado.glb' },
+    { id: 'silvio_corpo_animado', label: 'Silvio Corpo', path: './assets/model/silviocorpoanimado.glb' },
+    { id: 'silvio_corpo_animado_2', label: 'Silvio Corpo 2', path: './assets/model/SILVIOCORPOANIMADO2.glb' }
   ],
-  finalAudio: '',
-  audioFiles: [],
+  finalAudio: './assets/audio/parabens-final.wav',
+  audioFiles: [
+    './assets/audio/silvio_santos_e_o_bambu_mp3cut.mp3',
+    './assets/audio/e-ta-bom.mp3',
+    './assets/audio/silvio_santos_diz_que_pena_1_.mp3',
+    './assets/audio/nao-consegue-ne-moises-meme_04Iqgj4.mp3',
+    './assets/audio/silvio-santos-sera-que-e-bom.mp3',
+    './assets/audio/silvio-santos-que-eu-faco.mp3',
+    './assets/audio/silvo-santos-erra-desgracado.mp3',
+    './assets/audio/e-mesmo-e-verdade-silvio-santos.mp3',
+    './assets/audio/silvio-santos-o-seu-tempo-acabou.mp3',
+    './assets/audio/tmp9ynyqwxm.mp3',
+    './assets/audio/como_ZQTTFwJ.mp3',
+    './assets/audio/silvio-santos-nao-naaaaao.mp3',
+    './assets/audio/silvio-santos-cala-a-boca.mp3',
+    './assets/audio/silvio-santos-erotismo.mp3'
+  ],
   autoBlink: false,
   blinkMinSeconds: 2.8,
   blinkMaxSeconds: 5.8,
