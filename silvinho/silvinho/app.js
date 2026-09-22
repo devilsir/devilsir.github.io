@@ -122,7 +122,10 @@ const multiplayer = {
   lastRevision: -1,
   lastEventId: 0,
   pollTimer: null,
+  eventPollTimer: null,
   polling: false,
+  eventPolling: false,
+  processedEventIds: new Set(),
   applyingRemote: false,
   initializingGame: false,
   inviteUrl: '',
@@ -188,11 +191,12 @@ function apiUrl(path) {
 }
 
 async function apiRequest(path, options = {}) {
+  const method = String(options.method || 'GET').toUpperCase();
   const response = await fetch(apiUrl(path), {
     cache: 'no-store',
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...(method === 'GET' || method === 'HEAD' ? {} : { 'Content-Type': 'application/json' }),
       ...(options.headers || {}),
     },
   });
@@ -375,6 +379,7 @@ async function connectMultiplayer(kind) {
     multiplayer.hostId = data.lobby.hostId;
     multiplayer.lastRevision = data.lobby.revision;
     multiplayer.lastEventId = Number(data.lobby.latestEventId) || 0;
+    multiplayer.processedEventIds.clear();
     multiplayer.localReady = false;
     multiplayer.initializingGame = false;
     await loadInviteUrl();
@@ -633,6 +638,7 @@ async function sendMultiplayerEvent(type, payload = {}) {
         payload,
       }),
     });
+    if (data.event) scheduleMultiplayerEvent(data.event, Number(data.serverNow) || Date.now());
     return data.event || null;
   } catch (error) {
     console.warn(`[multiplayer] evento ${type} falhou:`, error);
@@ -644,26 +650,38 @@ function multiplayerPlayerName(playerId) {
   return game.players.find((player) => player.id === playerId)?.name || 'Outro jogador';
 }
 
-function processMultiplayerEvents(lobby) {
-  if (!multiplayer.active || !Array.isArray(lobby?.events)) return;
-  const events = [...lobby.events]
-    .filter((event) => Number(event?.id) > multiplayer.lastEventId)
-    .sort((a, b) => Number(a.id) - Number(b.id));
+function scheduleMultiplayerEvent(event, observedServerNow = Date.now()) {
+  const eventId = Number(event?.id) || 0;
+  if (!eventId || multiplayer.processedEventIds.has(eventId)) return;
+  multiplayer.processedEventIds.add(eventId);
 
-  for (const event of events) {
-    multiplayer.lastEventId = Math.max(multiplayer.lastEventId, Number(event.id) || 0);
-    if (!event || event.playerId === multiplayer.playerId) continue; // local already renders immediately
+  // Prevent an infinitely growing client-side Set during a very long session.
+  if (multiplayer.processedEventIds.size > 512) {
+    const keepFrom = Math.max(0, multiplayer.lastEventId - 128);
+    multiplayer.processedEventIds = new Set(
+      [...multiplayer.processedEventIds].filter((id) => Number(id) >= keepFrom),
+    );
+  }
+
+  const startsAt = Number(event.startsAt) || Number(event.createdAt) || observedServerNow;
+  const serverSeenAt = Number(observedServerNow || Date.now());
+  const delay = clamp(startsAt - serverSeenAt, 0, 2500);
+  const initialLateness = Math.max(0, serverSeenAt - startsAt);
+  const localScheduledAt = Date.now() + delay;
+
+  window.setTimeout(() => {
+    if (!multiplayer.active || !multiplayer.gameStarted) return;
+    const elapsedMs = initialLateness + Math.max(0, Date.now() - localScheduledAt);
 
     if (event.type === 'audio') {
       const src = String(event.payload?.src || '');
-      if (src) {
-        playAudioSource(src, {
-          broadcast: false,
-          sourcePlayerId: event.playerId,
-          sourcePlayerName: multiplayerPlayerName(event.playerId),
-        });
-      }
-      continue;
+      if (!src) return;
+      playAudioSource(src, {
+        broadcast: false,
+        sourcePlayerId: event.playerId,
+        sourcePlayerName: multiplayerPlayerName(event.playerId),
+      });
+      return;
     }
 
     if (event.type === 'wheel-spin') {
@@ -675,10 +693,36 @@ function processMultiplayerEvents(lobby) {
         targetAngle: Number(payload.targetAngle),
         duration: Number(payload.duration),
         selectedIndex,
-        authoritative: false,
+        authoritative: event.playerId === multiplayer.playerId,
         sourcePlayerName: multiplayerPlayerName(event.playerId),
+        elapsedMs,
       });
     }
+  }, delay);
+}
+
+async function pollMultiplayerEvents() {
+  if (!multiplayer.active || !multiplayer.gameStarted || multiplayer.eventPolling || !multiplayer.lobbyCode) return;
+  multiplayer.eventPolling = true;
+  try {
+    const query = new URLSearchParams({
+      code: multiplayer.lobbyCode,
+      playerId: multiplayer.playerId,
+      after: String(multiplayer.lastEventId || 0),
+      _: String(Date.now()),
+    });
+    const data = await apiRequest(`/api/lobby/events?${query.toString()}`, { method: 'GET', headers: {} });
+    const events = Array.isArray(data.events) ? [...data.events] : [];
+    events.sort((a, b) => Number(a?.id || 0) - Number(b?.id || 0));
+
+    for (const event of events) {
+      scheduleMultiplayerEvent(event, Number(data.serverNow) || Date.now());
+      multiplayer.lastEventId = Math.max(multiplayer.lastEventId, Number(event?.id) || 0);
+    }
+  } catch (error) {
+    console.warn('[multiplayer] eventos indisponíveis:', error);
+  } finally {
+    multiplayer.eventPolling = false;
   }
 }
 
@@ -712,7 +756,7 @@ async function pollLobby() {
   if (!multiplayer.active || multiplayer.polling) return;
   multiplayer.polling = true;
   try {
-    const query = new URLSearchParams({ code: multiplayer.lobbyCode, playerId: multiplayer.playerId });
+    const query = new URLSearchParams({ code: multiplayer.lobbyCode, playerId: multiplayer.playerId, _: String(Date.now()) });
     const data = await apiRequest(`/api/lobby/state?${query.toString()}`, { method: 'GET', headers: {} });
     const lobby = data.lobby;
     const changed = lobby.revision !== multiplayer.lastRevision;
@@ -720,11 +764,7 @@ async function pollLobby() {
       handleLobbyStatus(lobby);
       multiplayer.lastRevision = Math.max(multiplayer.lastRevision, lobby.revision);
     }
-    // Apply transient events only AFTER any authoritative snapshot from this poll.
-    // Otherwise a turn snapshot received together with a spin event could cancel
-    // the remote wheel animation immediately.
-    processMultiplayerEvents(lobby);
-    // Self-heal a button that was left disabled by an earlier remote update.
+    // Self-heal controls after any authoritative turn update.
     if (multiplayer.gameStarted && !multiplayer.applyingRemote && canLocalInteract()) {
       const shouldSpinBeEnabled = !game.spinning && game.phase === 'spin';
       if (spinButton.disabled === shouldSpinBeEnabled) syncControls();
@@ -739,8 +779,12 @@ async function pollLobby() {
 
 function startLobbyPolling() {
   clearInterval(multiplayer.pollTimer);
-  multiplayer.pollTimer = setInterval(pollLobby, 400);
+  clearInterval(multiplayer.eventPollTimer);
+  multiplayer.pollTimer = setInterval(pollLobby, 350);
+  // Transient effects need a faster independent channel than game snapshots.
+  multiplayer.eventPollTimer = setInterval(pollMultiplayerEvents, 100);
   pollLobby();
+  pollMultiplayerEvents();
 }
 
 let accessoryEditEnabled = false;
@@ -1451,6 +1495,7 @@ function animateWheelSpin({
   selectedIndex,
   authoritative = false,
   sourcePlayerName = '',
+  elapsedMs = 0,
 }) {
   const segments = wheelSegments();
   if (!segments.length) return;
@@ -1465,7 +1510,10 @@ function animateWheelSpin({
   phaseDisplay.textContent = sourcePlayerName ? `${sourcePlayerName}: girando a roleta` : 'segura!';
   syncControls();
 
-  wheelAnimStart = performance.now();
+  // Back-date the local animation when this event arrived late. This keeps
+  // every browser at the same point of the spin instead of each starting at receipt time.
+  const safeElapsed = clamp(Number(elapsedMs) || 0, 0, Math.max(0, safeDuration - 1));
+  wheelAnimStart = performance.now() - safeElapsed;
   wheelAnimDuration = safeDuration;
   wheelTargetAngle = safeTarget;
   wheelAngle = safeStart;
@@ -1527,12 +1575,22 @@ async function spinWheel() {
   syncControls();
 
   if (multiplayer.active) {
-    await sendMultiplayerEvent('wheel-spin', {
+    const event = await sendMultiplayerEvent('wheel-spin', {
       startAngle,
       targetAngle,
       duration,
       selectedIndex,
     });
+    if (!event) {
+      game.spinning = false;
+      wheelResult.textContent = 'gire a roda';
+      phaseDisplay.textContent = `${currentPlayer().name}: gire para jogar`;
+      syncControls();
+      setToast('Não foi possível sincronizar a roleta', 'bad');
+    }
+    // In multiplayer the server event starts the animation for EVERY client,
+    // including the player who clicked GIRAR.
+    return;
   }
 
   animateWheelSpin({
@@ -1686,12 +1744,36 @@ function playRandomAudio({ shortOnly = false, broadcast = multiplayer.active } =
   if (shortOnly && list.length > 1) candidates = list.slice(1);
   const localIndex = chooseAudioIndex(candidates);
   const src = candidates[localIndex];
+  const localName = multiplayer.active
+    ? (game.players[localMultiplayerIndex()]?.name || 'Jogador')
+    : '';
+
+  if (broadcast && multiplayer.active && multiplayer.gameStarted) {
+    // The server event is the single source of truth. The sender waits for the
+    // same startsAt timestamp as every other client, so everybody hears it together.
+    sendMultiplayerEvent('audio', { src }).then((event) => {
+      if (!event) {
+        // Network failure fallback: at least keep the local button responsive.
+        playAudioSource(src, {
+          broadcast: false,
+          sourcePlayerId: multiplayer.playerId,
+          sourcePlayerName: localName,
+        });
+      }
+    }).catch(() => {
+      playAudioSource(src, {
+        broadcast: false,
+        sourcePlayerId: multiplayer.playerId,
+        sourcePlayerName: localName,
+      });
+    });
+    return;
+  }
+
   playAudioSource(src, {
-    broadcast,
+    broadcast: false,
     sourcePlayerId: multiplayer.playerId,
-    sourcePlayerName: multiplayer.active
-      ? (game.players[localMultiplayerIndex()]?.name || 'Jogador')
-      : '',
+    sourcePlayerName: localName,
   });
 }
 
