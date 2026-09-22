@@ -637,7 +637,7 @@ let accessoryTransformControls = null;
 let transformDragging = false;
 let accessoryTransformDirty = false;
 
-const ACCESSORY_EDIT_STORAGE_KEY = 'rodaRodapersonagem.accessoryFits.v4';
+const ACCESSORY_EDIT_STORAGE_KEY = 'rodaRodapersonagem.accessoryFits.v5';
 let accessoryEditPresets = {};
 try {
   accessoryEditPresets = JSON.parse(localStorage.getItem(ACCESSORY_EDIT_STORAGE_KEY) || '{}') || {};
@@ -772,53 +772,113 @@ function clearSavedAccessoryTransform(category, item) {
   persistAccessoryEditPresets();
 }
 
-function computeRenderableLocalBox(root) {
-  const box = new THREE.Box3();
-  const tmpBox = new THREE.Box3();
-  const inv = new THREE.Matrix4();
-  let hasMesh = false;
+function computeRenderedGeometryWorldCenter(root) {
+  if (!root) return new THREE.Vector3();
   root.updateMatrixWorld(true);
-  inv.copy(root.matrixWorld).invert();
+
+  const sum = new THREE.Vector3();
+  const point = new THREE.Vector3();
+  let count = 0;
+
   root.traverse((child) => {
     if (!child.isMesh || !child.geometry) return;
     const geometry = child.geometry;
-    if (!geometry.boundingBox) geometry.computeBoundingBox();
-    if (!geometry.boundingBox) return;
-    tmpBox.copy(geometry.boundingBox);
-    tmpBox.applyMatrix4(child.matrixWorld);
-    tmpBox.applyMatrix4(inv);
-    if (!hasMesh) {
-      box.copy(tmpBox);
-      hasMesh = true;
-    } else {
-      box.union(tmpBox);
+    const position = geometry.getAttribute('position');
+    if (!position) return;
+
+    const index = geometry.getIndex();
+    if (index) {
+      // Somente vértices realmente usados pelos triângulos renderizados.
+      // Alguns GLBs possuem milhares de vértices órfãos, que deslocavam o pivot.
+      const used = new Set();
+      const drawStart = Math.max(0, Number(geometry.drawRange?.start) || 0);
+      const drawCount = Number(geometry.drawRange?.count);
+      const drawEnd = Number.isFinite(drawCount) && drawCount >= 0
+        ? Math.min(index.count, drawStart + drawCount)
+        : index.count;
+      for (let i = drawStart; i < drawEnd; i += 1) used.add(index.getX(i));
+      used.forEach((vertexIndex) => {
+        point.fromBufferAttribute(position, vertexIndex).applyMatrix4(child.matrixWorld);
+        sum.add(point);
+        count += 1;
+      });
+      return;
+    }
+
+    const drawStart = Math.max(0, Number(geometry.drawRange?.start) || 0);
+    const drawCount = Number(geometry.drawRange?.count);
+    const drawEnd = Number.isFinite(drawCount) && drawCount >= 0
+      ? Math.min(position.count, drawStart + drawCount)
+      : position.count;
+    for (let i = drawStart; i < drawEnd; i += 1) {
+      point.fromBufferAttribute(position, i).applyMatrix4(child.matrixWorld);
+      sum.add(point);
+      count += 1;
     }
   });
-  return hasMesh ? box : null;
+
+  if (!count) return root.getWorldPosition(new THREE.Vector3());
+  return sum.multiplyScalar(1 / count);
 }
 
-function wrapObjectWithGeometryOrigin(template) {
-  const inner = template.clone(true);
-  const wrapper = new THREE.Group();
-  wrapper.name = `${template.name || 'Object'}.GeometryOrigin`;
-  const localBox = computeRenderableLocalBox(inner);
-  const geometryCenter = localBox ? localBox.getCenter(new THREE.Vector3()) : new THREE.Vector3();
-  inner.position.sub(geometryCenter);
-  wrapper.userData.geometryOriginCenter = geometryCenter.toArray();
-  wrapper.add(inner);
-  return wrapper;
+function placeRawAccessoryAtReference(object, category) {
+  if (!object) return;
+  const base = config.accessoryTransforms?.[category];
+  if (base?.position) object.position.fromArray(base.position);
+  else object.position.set(0, 0, 0);
+  if (base?.quaternion) object.quaternion.fromArray(base.quaternion);
+  else object.quaternion.identity();
+  if (base?.scale) object.scale.fromArray(base.scale);
+  else object.scale.set(1, 1, 1);
 }
 
-function positionForGeometryOrigin(basePosition, quaternion, scale, geometryCenterArray) {
-  const pos = new THREE.Vector3().fromArray(basePosition || [0, 0, 0]);
-  const quat = new THREE.Quaternion().fromArray(quaternion || [0, 0, 0, 1]);
-  const scl = Array.isArray(scale) ? new THREE.Vector3().fromArray(scale) : new THREE.Vector3(1, 1, 1);
-  const center = Array.isArray(geometryCenterArray)
-    ? new THREE.Vector3().fromArray(geometryCenterArray)
-    : new THREE.Vector3();
-  center.multiply(scl).applyQuaternion(quat);
-  pos.add(center);
-  return pos;
+function createGeometryOriginPivot(instance, category, item) {
+  if (!modelRoot || !instance) return null;
+
+  // Primeiro mantém exatamente o encaixe visual antigo.
+  placeRawAccessoryAtReference(instance, category);
+  modelRoot.add(instance);
+  modelRoot.updateMatrixWorld(true);
+  instance.updateMatrixWorld(true);
+
+  // Equivalente em runtime a Blender: Set Origin -> Origin to Geometry.
+  // O centro é calculado só com a geometria realmente renderizada.
+  const centerWorld = computeRenderedGeometryWorldCenter(instance);
+  const centerLocal = modelRoot.worldToLocal(centerWorld.clone());
+
+  const pivot = new THREE.Group();
+  pivot.name = `AccessoryPivot.${category}.${item?.id || 'item'}`;
+  pivot.position.copy(centerLocal);
+  pivot.userData.isAccessoryGeometryPivot = true;
+  modelRoot.add(pivot);
+  pivot.updateMatrixWorld(true);
+
+  // Preserva 100% a posição mundial da malha ao trocar o parent.
+  pivot.attach(instance);
+
+  pivot.userData.referenceTransform = {
+    position: pivot.position.toArray(),
+    quaternion: pivot.quaternion.toArray(),
+    scale: pivot.scale.toArray(),
+  };
+  return pivot;
+}
+
+function applyBaseOrSavedAccessoryTransform(object, category, item) {
+  if (!object) return;
+  const reference = object.userData?.referenceTransform;
+  if (reference) {
+    object.position.fromArray(reference.position || [0, 0, 0]);
+    object.quaternion.fromArray(reference.quaternion || [0, 0, 0, 1]);
+    object.scale.fromArray(reference.scale || [1, 1, 1]);
+  } else {
+    placeRawAccessoryAtReference(object, category);
+  }
+
+  const saved = savedAccessoryTransform(category, item);
+  if (saved?.position) object.position.fromArray(saved.position);
+  if (saved?.quaternion) object.quaternion.fromArray(saved.quaternion);
+  if (saved?.scale) object.scale.fromArray(saved.scale);
 }
 
 function normalizeModelPlacement() {
@@ -834,25 +894,6 @@ function normalizeModelPlacement() {
   modelRoot.position.z -= center.z;
   modelRoot.updateMatrixWorld(true);
   return bodyRoot;
-}
-
-function applyBaseOrSavedAccessoryTransform(object, category, item) {
-  if (!object) return;
-  const base = config.accessoryTransforms?.[category];
-  const geometryCenter = object.userData?.geometryOriginCenter;
-  const baseQuat = base?.quaternion || [0, 0, 0, 1];
-  const baseScale = base?.scale || [1, 1, 1];
-  if (base?.quaternion) object.quaternion.fromArray(base.quaternion);
-  if (base?.scale) object.scale.fromArray(base.scale);
-  if (base?.position) {
-    const adjusted = positionForGeometryOrigin(base.position, baseQuat, baseScale, geometryCenter);
-    object.position.copy(adjusted);
-  }
-
-  const saved = savedAccessoryTransform(category, item);
-  if (saved?.position) object.position.fromArray(saved.position);
-  if (saved?.quaternion) object.quaternion.fromArray(saved.quaternion);
-  if (saved?.scale) object.scale.fromArray(saved.scale);
 }
 
 function updateEditTargetUI() {
@@ -2267,11 +2308,15 @@ async function equipAccessory(category, item, token) {
   try {
     const template = await loadAccessoryTemplate(item.path);
     if (!template || token !== outfitApplyToken || !modelRoot) return;
-    const instance = wrapObjectWithGeometryOrigin(template);
-    instance.name = `Accessory.${category}.${item.id || 'item'}`;
-    applyBaseOrSavedAccessoryTransform(instance, category, item);
-    modelRoot.add(instance);
-    equippedAccessories[category] = instance;
+    const rawInstance = template.clone(true);
+    rawInstance.name = `AccessoryMesh.${category}.${item.id || 'item'}`;
+    const pivot = createGeometryOriginPivot(rawInstance, category, item);
+    if (!pivot || token !== outfitApplyToken || !modelRoot) {
+      if (pivot?.parent) pivot.parent.remove(pivot);
+      return;
+    }
+    applyBaseOrSavedAccessoryTransform(pivot, category, item);
+    equippedAccessories[category] = pivot;
 
     if (accessoryEditEnabled && game.wardrobeActive && activeEditCategory === category) {
       attachTransformToActiveAccessory();
