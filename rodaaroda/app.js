@@ -637,7 +637,7 @@ let accessoryTransformControls = null;
 let transformDragging = false;
 let accessoryTransformDirty = false;
 
-const ACCESSORY_EDIT_STORAGE_KEY = 'rodaRodapersonagem.accessoryFits.v3';
+const ACCESSORY_EDIT_STORAGE_KEY = 'rodaRodapersonagem.accessoryFits.v4';
 let accessoryEditPresets = {};
 try {
   accessoryEditPresets = JSON.parse(localStorage.getItem(ACCESSORY_EDIT_STORAGE_KEY) || '{}') || {};
@@ -772,12 +772,82 @@ function clearSavedAccessoryTransform(category, item) {
   persistAccessoryEditPresets();
 }
 
+function computeRenderableLocalBox(root) {
+  const box = new THREE.Box3();
+  const tmpBox = new THREE.Box3();
+  const inv = new THREE.Matrix4();
+  let hasMesh = false;
+  root.updateMatrixWorld(true);
+  inv.copy(root.matrixWorld).invert();
+  root.traverse((child) => {
+    if (!child.isMesh || !child.geometry) return;
+    const geometry = child.geometry;
+    if (!geometry.boundingBox) geometry.computeBoundingBox();
+    if (!geometry.boundingBox) return;
+    tmpBox.copy(geometry.boundingBox);
+    tmpBox.applyMatrix4(child.matrixWorld);
+    tmpBox.applyMatrix4(inv);
+    if (!hasMesh) {
+      box.copy(tmpBox);
+      hasMesh = true;
+    } else {
+      box.union(tmpBox);
+    }
+  });
+  return hasMesh ? box : null;
+}
+
+function wrapObjectWithGeometryOrigin(template) {
+  const inner = template.clone(true);
+  const wrapper = new THREE.Group();
+  wrapper.name = `${template.name || 'Object'}.GeometryOrigin`;
+  const localBox = computeRenderableLocalBox(inner);
+  const geometryCenter = localBox ? localBox.getCenter(new THREE.Vector3()) : new THREE.Vector3();
+  inner.position.sub(geometryCenter);
+  wrapper.userData.geometryOriginCenter = geometryCenter.toArray();
+  wrapper.add(inner);
+  return wrapper;
+}
+
+function positionForGeometryOrigin(basePosition, quaternion, scale, geometryCenterArray) {
+  const pos = new THREE.Vector3().fromArray(basePosition || [0, 0, 0]);
+  const quat = new THREE.Quaternion().fromArray(quaternion || [0, 0, 0, 1]);
+  const scl = Array.isArray(scale) ? new THREE.Vector3().fromArray(scale) : new THREE.Vector3(1, 1, 1);
+  const center = Array.isArray(geometryCenterArray)
+    ? new THREE.Vector3().fromArray(geometryCenterArray)
+    : new THREE.Vector3();
+  center.multiply(scl).applyQuaternion(quat);
+  pos.add(center);
+  return pos;
+}
+
+function normalizeModelPlacement() {
+  if (!modelRoot) return null;
+  modelRoot.position.set(0, 0, 0);
+  modelRoot.updateMatrixWorld(true);
+  const bodyRoot = modelRoot.getObjectByName('ROOT') || modelRoot;
+  const box = new THREE.Box3().setFromObject(bodyRoot);
+  if (box.isEmpty()) return bodyRoot;
+  const center = box.getCenter(new THREE.Vector3());
+  modelRoot.position.x -= center.x;
+  modelRoot.position.y -= box.min.y;
+  modelRoot.position.z -= center.z;
+  modelRoot.updateMatrixWorld(true);
+  return bodyRoot;
+}
+
 function applyBaseOrSavedAccessoryTransform(object, category, item) {
   if (!object) return;
   const base = config.accessoryTransforms?.[category];
-  if (base?.position) object.position.fromArray(base.position);
+  const geometryCenter = object.userData?.geometryOriginCenter;
+  const baseQuat = base?.quaternion || [0, 0, 0, 1];
+  const baseScale = base?.scale || [1, 1, 1];
   if (base?.quaternion) object.quaternion.fromArray(base.quaternion);
   if (base?.scale) object.scale.fromArray(base.scale);
+  if (base?.position) {
+    const adjusted = positionForGeometryOrigin(base.position, baseQuat, baseScale, geometryCenter);
+    object.position.copy(adjusted);
+  }
 
   const saved = savedAccessoryTransform(category, item);
   if (saved?.position) object.position.fromArray(saved.position);
@@ -1617,14 +1687,14 @@ function fitCamera(object) {
   const vFov = THREE.MathUtils.degToRad(camera.fov);
   const safeAspect = Math.max(0.01, camera.aspect || 1);
   const hFov = 2 * Math.atan(Math.tan(vFov * 0.5) * safeAspect);
-  const fitHeight = (size.y * 0.56) / Math.tan(vFov * 0.5);
-  const fitWidth = (size.x * 0.56) / Math.tan(hFov * 0.5);
-  const fitDepth = Math.max(size.z * 1.35, 0.01);
+  const fitHeight = (size.y * 0.62) / Math.tan(vFov * 0.5);
+  const fitWidth = (size.x * 0.68) / Math.tan(hFov * 0.5);
+  const fitDepth = Math.max(size.z * 1.45, 0.01);
   const distance = Math.max(fitHeight, fitWidth, fitDepth);
 
-  controls.target.copy(center);
-  controls.target.y += size.y * 0.02;
-  camera.position.set(center.x, center.y + size.y * 0.02, center.z + distance * 1.10);
+  const target = new THREE.Vector3(0, Math.max(size.y * 0.50, center.y), 0);
+  controls.target.copy(target);
+  camera.position.set(0, target.y + size.y * 0.02, distance * 1.14);
   camera.near = Math.max(0.001, distance / 120);
   camera.far = Math.max(100, distance * 100);
   camera.updateProjectionMatrix();
@@ -2197,7 +2267,7 @@ async function equipAccessory(category, item, token) {
   try {
     const template = await loadAccessoryTemplate(item.path);
     if (!template || token !== outfitApplyToken || !modelRoot) return;
-    const instance = template.clone(true);
+    const instance = wrapObjectWithGeometryOrigin(template);
     instance.name = `Accessory.${category}.${item.id || 'item'}`;
     applyBaseOrSavedAccessoryTransform(instance, category, item);
     modelRoot.add(instance);
@@ -2259,16 +2329,17 @@ function startFinale({ remote = false } = {}) {
 
   if (modelRoot) {
     modelRoot.rotation.set(0, 0, 0);
+    normalizeModelPlacement();
   }
 
   requestAnimationFrame(() => {
     resizeViewer();
-    const bodyRoot = modelRoot?.getObjectByName('ROOT') || modelRoot;
+    const bodyRoot = normalizeModelPlacement() || (modelRoot?.getObjectByName('ROOT') || modelRoot);
     if (bodyRoot) fitCamera(bodyRoot);
   });
   setTimeout(() => {
     resizeViewer();
-    const bodyRoot = modelRoot?.getObjectByName('ROOT') || modelRoot;
+    const bodyRoot = normalizeModelPlacement() || (modelRoot?.getObjectByName('ROOT') || modelRoot);
     if (bodyRoot) fitCamera(bodyRoot);
   }, 120);
 
@@ -2324,7 +2395,7 @@ function loadCharacterForPlayer(player = currentPlayer()) {
       });
 
       hideReferenceAccessories();
-      const bodyRoot = modelRoot.getObjectByName('ROOT') || modelRoot;
+      const bodyRoot = normalizeModelPlacement() || (modelRoot.getObjectByName('ROOT') || modelRoot);
       fitCamera(bodyRoot);
       setupAnimations(gltf);
       setupBreasts();
