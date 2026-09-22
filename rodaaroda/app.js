@@ -250,17 +250,40 @@ multiplayerServerInput?.addEventListener('change', () => {
   setMultiplayerConnectStatus(server ? 'Servidor salvo. Crie ou entre em um lobby.' : 'URL de servidor inválida.', !server);
 });
 
+// Compatibility layer for the SAME multiplayer server used by the Silvio game.
+// That server stores accessory slots as hat/glasses/bra and has no dedicated
+// character field. For this version, `bra` carries the shirt index and the
+// character index is encoded inside the stored player name, then hidden again
+// everywhere in the UI.
+function decodeLobbyIdentity(rawName, fallback = 'Jogador') {
+  const raw = String(rawName || fallback);
+  const match = raw.match(/~ch(\d{1,2})$/i);
+  const character = match ? Math.max(0, Number(match[1]) || 0) : 0;
+  const name = (match ? raw.slice(0, match.index) : raw).trim() || fallback;
+  return { name, character };
+}
+
+function encodeLobbyIdentity(name, character = 0) {
+  const clean = decodeLobbyIdentity(name, 'Jogador').name.replace(/~ch\d{1,2}$/i, '').trim() || 'Jogador';
+  // Existing server limits names to 24 chars; reserve room for metadata.
+  const suffix = `~ch${Math.max(0, Math.min(20, Number(character) || 0))}`;
+  return `${clean.slice(0, Math.max(1, 24 - suffix.length))}${suffix}`;
+}
+
 function playerFromLobby(entry, index, previous = null) {
+  const identity = decodeLobbyIdentity(entry.name, `Jogador ${index + 1}`);
   return {
     id: entry.id,
-    name: entry.name || `Jogador ${index + 1}`,
+    name: identity.name,
     score: previous?.score || 0,
     outfit: {
       hat: Number(entry.outfit?.hat) || 0,
       glasses: Number(entry.outfit?.glasses) || 0,
-      shirt: Number(entry.outfit?.shirt) || 0,
+      shirt: Number(entry.outfit?.shirt ?? entry.outfit?.bra) || 0,
     },
-    character: Number.isFinite(Number(entry.character)) ? Number(entry.character) : (previous?.character || 0),
+    character: Number.isFinite(Number(entry.character))
+      ? Number(entry.character)
+      : (identity.character ?? previous?.character ?? 0),
     removedAccessories: Array.isArray(previous?.removedAccessories) ? [...previous.removedAccessories] : [],
     ready: Boolean(entry.ready),
   };
@@ -286,7 +309,8 @@ function updateLobbyBar(lobby) {
     lobby.players.forEach((player) => {
       const badge = document.createElement('span');
       badge.className = `multiplayer-lobby-player${player.ready ? ' is-ready' : ''}${player.id === multiplayer.playerId ? ' is-me' : ''}`;
-      badge.textContent = `${player.name}${player.ready ? ' • PRONTO' : ' • VESTINDO'}`;
+      const lobbyIdentity = decodeLobbyIdentity(player.name, 'Jogador');
+      badge.textContent = `${lobbyIdentity.name}${player.ready ? ' • PRONTO' : ' • VESTINDO'}`;
       multiplayerLobbyPlayers.appendChild(badge);
     });
   }
@@ -479,8 +503,13 @@ async function updateMultiplayerPlayer(ready = multiplayer.localReady) {
     body: JSON.stringify({
       code: multiplayer.lobbyCode,
       playerId: multiplayer.playerId,
-      outfit: player.outfit,
-      character: Number(player.character) || 0,
+      outfit: {
+        hat: Number(player.outfit?.hat) || 0,
+        glasses: Number(player.outfit?.glasses) || 0,
+        // SAME Silvio server: its legacy `bra` slot is reused for CAMISA here.
+        bra: Number(player.outfit?.shirt) || 0,
+      },
+      name: encodeLobbyIdentity(player.name, player.character),
       ready,
     }),
   });
@@ -541,7 +570,6 @@ function serializeGameSnapshot(reason = 'state') {
       outfit: { ...player.outfit },
       character: Number(player.character) || 0,
       removedAccessories: [...(player.removedAccessories || [])],
-      character: Number(player.character) || 0,
     })),
     currentPlayerIndex: game.currentPlayerIndex,
     puzzle: game.puzzle ? { ...game.puzzle } : null,
@@ -665,12 +693,17 @@ function initializeMultiplayerGame(lobby) {
   const previousById = new Map(game.players.map((player) => [player.id, player]));
   game.players = lobby.players.map((entry, index) => {
     const previous = previousById.get(entry.id);
+    const identity = decodeLobbyIdentity(entry.name, `Jogador ${index + 1}`);
     return {
       id: entry.id,
-      name: entry.name || `Jogador ${index + 1}`,
+      name: identity.name,
       score: 0,
-      outfit: { hat: Number(entry.outfit?.hat) || 0, glasses: Number(entry.outfit?.glasses) || 0, shirt: Number(entry.outfit?.shirt ?? entry.outfit?.bra) || 0 },
-      character: Number.isFinite(Number(entry.character)) ? Number(entry.character) : 0,
+      outfit: {
+        hat: Number(entry.outfit?.hat) || 0,
+        glasses: Number(entry.outfit?.glasses) || 0,
+        shirt: Number(entry.outfit?.shirt ?? entry.outfit?.bra) || 0,
+      },
+      character: Number.isFinite(Number(entry.character)) ? Number(entry.character) : identity.character,
       removedAccessories: [],
     };
   });
