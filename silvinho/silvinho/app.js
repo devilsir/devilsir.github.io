@@ -61,6 +61,7 @@ const multiplayerConnectStatus = $('#multiplayerConnectStatus');
 const multiplayerLobbyBar = $('#multiplayerLobbyBar');
 const multiplayerLobbyCode = $('#multiplayerLobbyCode');
 const multiplayerInviteUrl = $('#multiplayerInviteUrl');
+const copyInviteButton = $('#copyInviteButton');
 const multiplayerLobbyPlayers = $('#multiplayerLobbyPlayers');
 const multiplayerCountdown = $('#multiplayerCountdown');
 const multiplayerCountdownNumber = $('#multiplayerCountdownNumber');
@@ -325,7 +326,58 @@ async function loadInviteUrl() {
     multiplayerInviteUrl.textContent = multiplayer.inviteUrl;
     multiplayerInviteUrl.title = multiplayer.inviteUrl;
   }
+  if (copyInviteButton) copyInviteButton.disabled = !multiplayer.inviteUrl;
 }
+
+async function copyInviteLink() {
+  const link = String(multiplayer.inviteUrl || multiplayerInviteUrl?.textContent || '').trim();
+  if (!link || link === 'carregando endereço…') return;
+
+  let copied = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(link);
+      copied = true;
+    }
+  } catch (error) {
+    console.warn('[multiplayer] clipboard API indisponível:', error);
+  }
+
+  if (!copied) {
+    const input = document.createElement('textarea');
+    input.value = link;
+    input.setAttribute('readonly', '');
+    input.style.position = 'fixed';
+    input.style.left = '-9999px';
+    input.style.top = '0';
+    document.body.appendChild(input);
+    input.focus();
+    input.select();
+    try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+    input.remove();
+  }
+
+  if (copyInviteButton) {
+    const original = 'COPIAR LINK';
+    copyInviteButton.textContent = copied ? 'COPIADO!' : 'SELECIONE O LINK';
+    copyInviteButton.classList.toggle('is-copied', copied);
+    clearTimeout(copyInviteLink._timer);
+    copyInviteLink._timer = setTimeout(() => {
+      copyInviteButton.textContent = original;
+      copyInviteButton.classList.remove('is-copied');
+    }, 1600);
+  }
+
+  if (!copied && multiplayerInviteUrl) {
+    const range = document.createRange();
+    range.selectNodeContents(multiplayerInviteUrl);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+}
+
+copyInviteButton?.addEventListener('click', copyInviteLink);
 
 function beginMultiplayerWardrobe(lobby) {
   game.finale = false;
