@@ -1176,15 +1176,15 @@ function solvePuzzleSuccess() {
   game.phase = 'solved';
   const winner = currentPlayer();
   winner.score += 1000;
-  const removedLabel = removeOneAccessory(winner);
   updateScore();
   buildPuzzleBoard();
-  phaseDisplay.textContent = removedLabel ? `ACERTOU! ${winner.name} tirou ${removedLabel}` : 'ACERTOU! +1000';
+  phaseDisplay.textContent = `ACERTOU! ${winner.name} +1000`;
   wheelResult.textContent = game.round >= 3 ? 'final!' : 'rodada concluída';
   solvePanel.hidden = true;
-  setToast(removedLabel ? `${winner.name} tirou ${removedLabel}!` : 'ACERTOU A FRASE! +1000', 'good');
+  setToast(`${winner.name} ACERTOU A FRASE! +1000`, 'good');
   playTalk(1400);
   impulseBoth(1.35);
+  // O look permanece intacto durante todas as rodadas.
   applyPlayerOutfit(winner);
   syncControls();
   pushMultiplayerSnapshot('round-win');
