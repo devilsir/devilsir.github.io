@@ -1,11 +1,14 @@
-const CACHE_NAME = 'omr-scanner-v6';
+const CACHE_NAME = 'omr-scanner-v7';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './pwa.js',
+  './history-addon.js',
   './assets/index-OMRfix6.js',
   './assets/index-RXXbEzxx.css',
+  './assets/history-addon.css',
+  './vendor/opencv.js',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
