@@ -1,11 +1,11 @@
-const CACHE_NAME = 'omr-scanner-v8';
+const CACHE_NAME = 'omr-scanner-v9';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './pwa.js',
   './history-addon.js',
-  './assets/index-OMRfix6.js',
+  './assets/index-OMRfix9.js',
   './assets/index-RXXbEzxx.css',
   './assets/history-addon.css',
   './vendor/opencv.js',
@@ -45,6 +45,23 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Scripts/styles use network-first so a new build cannot be trapped behind an old PWA cache.
+  const versionSensitive = request.destination === 'script' || request.destination === 'style' || url.pathname.endsWith('/manifest.webmanifest');
+  if (versionSensitive) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
