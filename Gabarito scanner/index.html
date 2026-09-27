@@ -18,6 +18,7 @@
     <title>Leitor OMR ENEM</title>
     <script type="module" crossorigin src="./assets/index-OMRfix6.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-RXXbEzxx.css">
+    <link rel="stylesheet" href="./assets/history-addon.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -30,12 +31,17 @@
           <span class="state-dot is-loading"></span>
           <span>Preparando visão computacional</span>
         </div>
-        <button class="ghost-button compact" id="installAppButton" type="button" hidden>
-          Instalar app
-        </button>
-        <button class="ghost-button compact" id="newScanButton" type="button" hidden>
-          Nova leitura
-        </button>
+        <div class="topbar-actions">
+          <button class="ghost-button compact history-button" id="historyButton" type="button">
+            Histórico <span class="history-count-badge" id="historyCountBadge" hidden>0</span>
+          </button>
+          <button class="ghost-button compact" id="installAppButton" type="button" hidden>
+            Instalar app
+          </button>
+          <button class="ghost-button compact" id="newScanButton" type="button" hidden>
+            Nova leitura
+          </button>
+        </div>
       </header>
 
       <nav class="stepper" aria-label="Etapas da leitura">
@@ -94,6 +100,18 @@
                 </div>
                 <span class="badge">Editável</span>
               </div>
+
+              <div class="field-grid identity-grid">
+                <label class="field">
+                  <span>Matéria</span>
+                  <input id="subjectName" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Matemática" />
+                </label>
+                <label class="field">
+                  <span>Aluno</span>
+                  <input id="studentName" type="text" maxlength="120" autocomplete="off" placeholder="Nome do aluno" />
+                </label>
+              </div>
+              <p class="identity-hint">A matéria e o aluno acompanham a foto, a nota e as questões erradas no histórico.</p>
 
               <div class="field-grid three-columns">
                 <label class="field">
@@ -236,6 +254,18 @@
             </div>
           </div>
 
+          <div class="result-identity-card" aria-label="Identificação desta leitura">
+            <label class="field compact-field">
+              <span>Aluno</span>
+              <input id="resultStudentName" type="text" maxlength="120" autocomplete="off" placeholder="Nome do aluno" />
+            </label>
+            <label class="field compact-field">
+              <span>Matéria</span>
+              <input id="resultSubjectName" type="text" maxlength="80" autocomplete="off" placeholder="Ex.: Matemática" />
+            </label>
+            <span class="autosave-note" id="historyAutosaveState">O resultado será salvo automaticamente no histórico.</span>
+          </div>
+
           <div class="metric-grid" id="metricGrid">
             <article class="metric correct"><span>Corretas</span><b id="correctCount">0</b></article>
             <article class="metric incorrect"><span>Incorretas</span><b id="incorrectCount">0</b></article>
@@ -371,8 +401,35 @@
       </div>
     </div>
 
+    <div class="history-modal" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle" hidden>
+      <button class="history-backdrop" id="historyBackdrop" type="button" aria-label="Fechar histórico"></button>
+      <section class="history-panel" aria-label="Histórico de correções">
+        <header class="history-panel-header">
+          <div>
+            <p class="eyebrow">Arquivo local</p>
+            <h2 id="historyTitle">Histórico por aluno</h2>
+            <p>Fotos e resultados ficam neste dispositivo.</p>
+          </div>
+          <button class="close-button" id="closeHistoryButton" type="button" aria-label="Fechar">×</button>
+        </header>
+        <div class="history-toolbar">
+          <label class="history-search">
+            <span>Buscar</span>
+            <input id="historySearch" type="search" placeholder="Aluno ou matéria" autocomplete="off" />
+          </label>
+          <div class="history-summary" id="historySummary">Nenhuma leitura salva.</div>
+        </div>
+        <div class="history-list" id="historyList"></div>
+        <footer class="history-panel-footer">
+          <span>Armazenamento local · as fotos não saem do aparelho.</span>
+          <button class="text-button" id="clearHistoryButton" type="button">Limpar histórico</button>
+        </footer>
+      </section>
+    </div>
+
     <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
     <script src="./pwa.js" defer></script>
+    <script src="./history-addon.js" defer></script>
   </body>
 </html>
