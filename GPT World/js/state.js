@@ -36,8 +36,9 @@ export function loadSettings() {
   if (![1,2,3].includes(Number(settings.battleSpeed))) settings.battleSpeed = 1;
   else settings.battleSpeed = Number(settings.battleSpeed);
   if (!["normal","large","extra-large"].includes(settings.fontSize)) settings.fontSize = settings.fontSize === "grande" ? "large" : "normal";
-  settings.autoBattle = Boolean(settings.autoBattle);
-  settings.autoBattleItems = Boolean(settings.autoBattleItems);
+  const explicitAuto = Number(saved?.autoBattleConsentVersion || 0) >= 1;
+  settings.autoBattle = explicitAuto ? Boolean(settings.autoBattle) : false;
+  settings.autoBattleItems = explicitAuto ? Boolean(settings.autoBattleItems) : false;
   return settings;
 }
 
@@ -132,7 +133,7 @@ export function createNewState(route, ngPlus=false, visualVariant="masculino") {
     createdAt:Date.now(), updatedAt:Date.now(), playTime:0,
     route, visualVariant:variant, rivalVisualVariant:variant, ngPlus, gameMode:"world",
     regionIndex:0, discoveredRegions:[0], completedRegions:[],
-    worldScaleVersion:2, position:{x:348,y:1738}, facing:"front",
+    worldScaleVersion:3, position:{x:261,y:1304}, facing:"front",
     level:ngPlus ? 6 : 1, xp:0, nextXp:100,
     hp:ngPlus ? 182 : 126, maxHp:ngPlus ? 182 : 126,
     focus:ngPlus ? 122 : 88, maxFocus:ngPlus ? 122 : 88,
@@ -174,12 +175,18 @@ function migrateState(raw) {
   clean.settings = hasGlobalSettings
     ? { ...(raw.settings || {}), ...globalSettings, keys:{...DEFAULT_SETTINGS.keys,...(raw.settings?.keys||{}),...globalSettings.keys} }
     : { ...globalSettings, ...(raw.settings || {}), keys:{...DEFAULT_SETTINGS.keys,...globalSettings.keys,...(raw.settings?.keys||{})} };
-  clean.settings.autoBattle = Boolean(hasGlobalSettings ? globalSettings.autoBattle : (raw.settings?.autoBattle ?? clean.settings.autoBattle));
-  clean.settings.autoBattleItems = Boolean(hasGlobalSettings ? globalSettings.autoBattleItems : (raw.settings?.autoBattleItems ?? clean.settings.autoBattleItems));
+  clean.settings.autoBattle = Boolean(globalSettings.autoBattle);
+  clean.settings.autoBattleItems = Boolean(globalSettings.autoBattleItems);
   if (!["normal","large","extra-large"].includes(clean.settings.fontSize)) clean.settings.fontSize = "normal";
   const oldPosition = {x:310,y:770,...(raw.position || {})};
-  clean.position = Number(raw.worldScaleVersion) >= 2 ? oldPosition : {x:oldPosition.x*2,y:oldPosition.y*2};
-  clean.worldScaleVersion = 2;
+  const worldScaleVersion=Number(raw.worldScaleVersion)||1;
+  clean.position = worldScaleVersion >= 3 ? oldPosition : worldScaleVersion >= 2 ? {x:oldPosition.x*.75,y:oldPosition.y*.75} : {x:oldPosition.x*1.5,y:oldPosition.y*1.5};
+  clean.worldScaleVersion = 3;
+  if(raw.subArea?.id === "frost_cave"){
+    const returnPosition=raw.subArea.returnPosition;
+    if(returnPosition&&Number.isFinite(returnPosition.x)&&Number.isFinite(returnPosition.y))clean.position={x:returnPosition.x,y:returnPosition.y};
+  }
+  delete clean.subArea;
   clean.philosophy = {order:0,will:0,free:0,silence:0,...(raw.philosophy || {})};
   clean.companions = {
     eliara:{unlocked:true,loyalty:50,hp:92,maxHp:92,...(raw.companions?.eliara || {})},
@@ -214,7 +221,7 @@ export function loadGame(slot="auto") {
 export function deleteSave(slot) { localStorage.removeItem(`${SAVE_PREFIX}${slot}`); }
 
 export function listSaves() {
-  return ["auto","1","2","3"].map((slot) => {
+  return ["auto","1","2"].map((slot) => {
     const state = loadGame(slot);
     return state ? {
       slot, route:state.route, region:REGIONS[state.regionIndex]?.name || "Desconhecida", level:state.level,

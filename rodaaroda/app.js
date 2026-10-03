@@ -1,9 +1,36 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { dataStore, uid, nowIso } from './data-store.js?v=20261003-clean3';
+import { createPlatformUI } from './platform-ui.js?v=20261003-clean3';
 
 const config = window.SILVIO_CONFIG || {};
+
+const ALLOWED_CHARACTERS = Object.freeze([
+  Object.freeze({ id: 'silvio_bursto_animado', label: 'Silvio Busto Animado', path: './assets/model/silvioburstoanimado.glb' }),
+  Object.freeze({ id: 'silvio_corpo_animado', label: 'Silvio Corpo Animado', path: './assets/model/silviocorpoanimado.glb' }),
+  Object.freeze({ id: 'silvio_corpo_animado_2', label: 'Silvio Corpo Animado 2', path: './assets/model/SILVIOCORPOANIMADO2.glb' }),
+]);
+
+function purgeLegacyAccessoryStateAndUi() {
+  try {
+    localStorage.removeItem('rodaRodapersonagem.accessoryFits.v6');
+    localStorage.removeItem('roda-a-roda.accessory-transforms');
+  } catch (_) {}
+
+  document.querySelectorAll('.wardrobe-selector[data-wardrobe-category]').forEach((row) => {
+    if (row.dataset.wardrobeCategory !== 'character') row.remove();
+  });
+
+  [
+    '#accessoryEditToggle', '#accessoryEditTools', '#accessoryEditStatus',
+    '#accessoryResetButton', '#accessoryExportCurrentButton', '#accessoryExportAllButton',
+    '#wardrobeHatName', '#wardrobeGlassesName', '#wardrobeShirtName',
+    '.wardrobe-edit-tools', '.wardrobe-edit-targets', '.wardrobe-transform-editor',
+  ].forEach((selector) => document.querySelectorAll(selector).forEach((node) => node.remove()));
+}
+
+purgeLegacyAccessoryStateAndUi();
 
 // -----------------------------------------------------------------------------
 // DOM
@@ -39,15 +66,6 @@ const wardrobePlayerTitle = $('#wardrobePlayerTitle');
 const wardrobeProgress = $('#wardrobeProgress');
 const wardrobeConfirmButton = $('#wardrobeConfirmButton');
 const wardrobeCharacterName = $('#wardrobeCharacterName');
-const wardrobeHatName = $('#wardrobeHatName');
-const wardrobeShirtName = $('#wardrobeShirtName');
-const wardrobeGlassesName = $('#wardrobeGlassesName');
-const accessoryEditToggle = $('#accessoryEditToggle');
-const accessoryEditTools = $('#accessoryEditTools');
-const accessoryEditStatus = $('#accessoryEditStatus');
-const accessoryResetButton = $('#accessoryResetButton');
-const accessoryEditTargetButtons = [...document.querySelectorAll('[data-edit-target]')];
-const accessoryTransformModeButtons = [...document.querySelectorAll('[data-transform-mode]')];
 const modeMenu = $('#modeMenu');
 const singlePlayerModeButton = $('#singlePlayerModeButton');
 const multiplayerModeButton = $('#multiplayerModeButton');
@@ -66,6 +84,14 @@ const copyInviteButton = $('#copyInviteButton');
 const multiplayerLobbyPlayers = $('#multiplayerLobbyPlayers');
 const multiplayerCountdown = $('#multiplayerCountdown');
 const multiplayerCountdownNumber = $('#multiplayerCountdownNumber');
+const questionDisplay = $('#questionDisplay');
+const hintDisplay = $('#hintDisplay');
+const hintButton = $('#hintButton');
+const scoreFeedback = $('#scoreFeedback');
+const centralButton = $('#centralButton');
+const fullscreenButton = $('#fullscreenButton');
+const volumeControl = $('#volumeControl');
+const muteButton = $('#muteButton');
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -92,6 +118,86 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+const platformUI = createPlatformUI({ store: dataStore, config, toast: setToast });
+let gameRules = { ...(config.defaultRules || {}) };
+let lastGameSetup = { themeIds: [], difficulty: 'all', rounds: 3, noRepeat: true, randomMix: true };
+
+async function loadPersistentGameConfig() {
+  await dataStore.ready;
+  gameRules = { ...(config.defaultRules || {}), ...(await dataStore.getKv('rules', config.defaultRules || {})) };
+  lastGameSetup = { ...lastGameSetup, ...(await dataStore.getKv('lastSetup', {})) };
+}
+loadPersistentGameConfig().then(() => {
+  if (dataStore.fallback) setToast('IndexedDB indisponível — dados serão salvos no armazenamento local de compatibilidade.', 'warning');
+}).catch((error) => {
+  console.warn('[dados] configuração persistente indisponível:', error);
+  setToast('Não foi possível carregar todas as preferências salvas.', 'warning');
+});
+
+async function offerResumeSession() {
+  await dataStore.ready;
+  const saved = await dataStore.getKv('activeSession', null);
+  if (!saved?.session || !saved?.puzzle || !Array.isArray(saved.players)) return;
+  const card = document.querySelector('.mode-menu__card');
+  if (!card || card.querySelector('[data-resume-session]')) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'resume-session-button';
+  button.dataset.resumeSession = '1';
+  button.innerHTML = `<strong>CONTINUAR PARTIDA</strong><small>Rodada ${Number(saved.round) || 1} • salva ${new Date(saved.savedAt || Date.now()).toLocaleString('pt-BR')}</small>`;
+  card.insertBefore(button, card.querySelector('.mode-tools'));
+  button.addEventListener('click', () => {
+    multiplayer.active = false;
+    game.setup = { ...lastGameSetup, ...(saved.setup || {}) };
+    game.session = saved.session;
+    game.round = Number(saved.round) || 1;
+    game.players = saved.players.map((player, index) => ({
+      name: player.name || `Jogador ${index + 1}`,
+      score: Number(player.score) || 0,
+      roundScore: Number(player.roundScore) || 0,
+      character: clamp(Number(player.character) || 0, 0, Math.max(0, characterList().length - 1)),
+    }));
+    game.currentPlayerIndex = clamp(Number(saved.currentPlayerIndex) || 0, 0, Math.max(0, game.players.length - 1));
+    game.puzzle = { ...saved.puzzle };
+    game.guessed = new Set(Array.isArray(saved.guessed) ? saved.guessed : []);
+    game.phase = saved.phase || 'spin';
+    game.roundState = saved.roundState || null;
+    game.wardrobeActive = false;
+    game.finale = false;
+    modeMenu?.classList.add('is-hidden');
+    playerSetup?.classList.add('is-hidden');
+    gameShell?.classList.remove('is-setup', 'is-wardrobe', 'is-finale');
+    if (wardrobePanel) wardrobePanel.hidden = true;
+    categoryDisplay.textContent = game.puzzle.category || game.puzzle.theme || '—';
+    if (questionDisplay) questionDisplay.textContent = game.puzzle.question || `Tema: ${game.puzzle.category || 'GERAL'}`;
+    const used = game.roundState?.hintsUsed || [];
+    if (hintDisplay) { hintDisplay.hidden = !used.length; hintDisplay.textContent = used.length ? `DICA ${used.length}/${game.puzzle.hints?.length || used.length} • ${used[used.length - 1]?.text || ''}` : ''; }
+    roundDisplay.textContent = String(game.round);
+    updatePlayersUI(); updateRoundLights(); buildPuzzleBoard(); syncControls(); applyPlayerCharacter(currentPlayer());
+    phaseDisplay.textContent = `${currentPlayer().name}: ${game.phase === 'letter' ? 'escolha uma letra' : 'gire para jogar'}`;
+    setToast('Partida restaurada', 'good');
+  });
+}
+
+
+function showScoreFeedback(text, negative = false) {
+  if (!scoreFeedback) return;
+  scoreFeedback.textContent = text;
+  scoreFeedback.className = `score-feedback is-showing ${negative ? 'is-negative' : 'is-positive'}`;
+  clearTimeout(showScoreFeedback._timer);
+  showScoreFeedback._timer = setTimeout(() => { scoreFeedback.className = 'score-feedback'; }, 1080);
+}
+
+function showRoundResult(playerName, bonus, round = game.round) {
+  document.querySelector('.round-result-banner')?.remove();
+  const node = document.createElement('div');
+  node.className = 'round-result-banner';
+  node.innerHTML = `<small>RODADA ${Number(round) || 1} CONCLUÍDA</small><strong>${String(playerName || 'JOGADOR').toUpperCase()}</strong><span>+${Number(bonus || 0).toLocaleString('pt-BR')} PONTOS</span>`;
+  document.body.appendChild(node);
+  requestAnimationFrame(() => node.classList.add('is-visible'));
+  setTimeout(() => { node.classList.remove('is-visible'); setTimeout(() => node.remove(), 280); }, 1700);
+}
+
 // -----------------------------------------------------------------------------
 // Game state
 // -----------------------------------------------------------------------------
@@ -100,9 +206,8 @@ let game = {
   players: [{
     name: 'Jogador 1',
     score: 0,
-    outfit: { hat: 0, glasses: 0, shirt: 0 },
+    roundScore: 0,
     character: 0,
-    removedAccessories: [],
   }],
   currentPlayerIndex: 0,
   puzzle: null,
@@ -113,6 +218,11 @@ let game = {
   wardrobePlayerIndex: 0,
   wardrobeActive: false,
   finale: false,
+  setup: { themeIds: [], difficulty: 'all', rounds: 3, noRepeat: true, randomMix: true },
+  session: null,
+  roundState: null,
+  comboByPlayer: {},
+  historyFinalized: false,
 };
 
 const multiplayer = {
@@ -135,7 +245,7 @@ const multiplayer = {
   serverBase: '',
 };
 
-let multiplayerOutfitSyncTimer = null;
+let multiplayerCharacterSyncTimer = null;
 
 const MULTIPLAYER_SERVER_STORAGE_KEY = 'rodaRodapersonagem.multiplayerServer.v1';
 const startupParams = new URLSearchParams(location.search);
@@ -175,6 +285,8 @@ multiplayer.serverBase = defaultMultiplayerServer();
 if (multiplayerServerInput) multiplayerServerInput.value = multiplayer.serverBase;
 const startupLobbyCode = normalizeLobbyCode(startupParams.get('lobby') || '');
 if (startupLobbyCode && lobbyCodeInput) lobbyCodeInput.value = startupLobbyCode;
+
+offerResumeSession().catch((error) => console.warn('[sessão] não foi possível oferecer retomada:', error));
 
 function saveMultiplayerServer(value) {
   const normalized = normalizeServerBase(value);
@@ -250,11 +362,9 @@ multiplayerServerInput?.addEventListener('change', () => {
   setMultiplayerConnectStatus(server ? 'Servidor salvo. Crie ou entre em um lobby.' : 'URL de servidor inválida.', !server);
 });
 
-// Compatibility layer for the SAME multiplayer server used by the Silvio game.
-// That server stores accessory slots as hat/glasses/bra and has no dedicated
-// character field. For this version, `bra` carries the shirt index and the
-// character index is encoded inside the stored player name, then hidden again
-// everywhere in the UI.
+// Compatibility layer for the existing multiplayer server.
+// Character choice is encoded in the player name because the legacy server
+// does not expose a dedicated character field on every deployment.
 function decodeLobbyIdentity(rawName, fallback = 'Jogador') {
   const raw = String(rawName || fallback);
   const match = raw.match(/~ch(\d{1,2})$/i);
@@ -266,7 +376,7 @@ function decodeLobbyIdentity(rawName, fallback = 'Jogador') {
 function encodeLobbyIdentity(name, character = 0) {
   const clean = decodeLobbyIdentity(name, 'Jogador').name.replace(/~ch\d{1,2}$/i, '').trim() || 'Jogador';
   // Existing server limits names to 24 chars; reserve room for metadata.
-  const suffix = `~ch${Math.max(0, Math.min(20, Number(character) || 0))}`;
+  const suffix = `~ch${Math.max(0, Math.min(2, Number(character) || 0))}`;
   return `${clean.slice(0, Math.max(1, 24 - suffix.length))}${suffix}`;
 }
 
@@ -276,15 +386,10 @@ function playerFromLobby(entry, index, previous = null) {
     id: entry.id,
     name: identity.name,
     score: previous?.score || 0,
-    outfit: {
-      hat: Number(entry.outfit?.hat) || 0,
-      glasses: Number(entry.outfit?.glasses) || 0,
-      shirt: Number(entry.outfit?.shirt ?? entry.outfit?.bra) || 0,
-    },
+    roundScore: previous?.roundScore || 0,
     character: Number.isFinite(Number(entry.character))
       ? Number(entry.character)
       : (identity.character ?? previous?.character ?? 0),
-    removedAccessories: Array.isArray(previous?.removedAccessories) ? [...previous.removedAccessories] : [],
     ready: Boolean(entry.ready),
   };
 }
@@ -310,7 +415,7 @@ function updateLobbyBar(lobby) {
       const badge = document.createElement('span');
       badge.className = `multiplayer-lobby-player${player.ready ? ' is-ready' : ''}${player.id === multiplayer.playerId ? ' is-me' : ''}`;
       const lobbyIdentity = decodeLobbyIdentity(player.name, 'Jogador');
-      badge.textContent = `${lobbyIdentity.name}${player.ready ? ' • PRONTO' : ' • VESTINDO'}`;
+      badge.textContent = `${lobbyIdentity.name}${player.ready ? ' • PRONTO' : ' • ESCOLHENDO'}`;
       multiplayerLobbyPlayers.appendChild(badge);
     });
   }
@@ -322,10 +427,8 @@ function syncPlayersFromLobby(lobby) {
   game.players = lobby.players.map((entry, index) => {
     const previous = previousById.get(entry.id);
     const player = playerFromLobby(entry, index, previous);
-    // Never let a polling tick undo the accessory the local player just clicked
-    // while their new outfit is still on its way to the server.
-    if (entry.id === multiplayer.playerId && previous?.outfit && !entry.ready) {
-      player.outfit = { ...previous.outfit };
+    // Keep the local character choice while the update is still travelling to the server.
+    if (entry.id === multiplayer.playerId && previous && !entry.ready) {
       player.character = Number(previous.character) || 0;
     }
     return player;
@@ -336,10 +439,10 @@ function syncPlayersFromLobby(lobby) {
   const localEntry = lobby.players.find((player) => player.id === multiplayer.playerId);
   multiplayer.localReady = Boolean(localEntry?.ready);
   document.body.classList.toggle('is-local-ready', multiplayer.localReady);
-  if (wardrobeConfirmButton) wardrobeConfirmButton.textContent = multiplayer.localReady ? 'EDITAR LOOK' : 'PRONTO';
+  if (wardrobeConfirmButton) wardrobeConfirmButton.textContent = multiplayer.localReady ? 'EDITAR PERSONAGEM' : 'PRONTO';
   if (wardrobeProgress) wardrobeProgress.textContent = multiplayer.localReady ? 'PRONTO • AGUARDANDO OS OUTROS' : `VOCÊ É ${game.players[localIndex]?.name?.toUpperCase() || 'JOGADOR'}`;
   updatePlayersUI();
-  if (game.wardrobeActive && !transformDragging) renderWardrobePlayer();
+  if (game.wardrobeActive) renderWardrobePlayer();
 }
 
 async function loadInviteUrl() {
@@ -464,7 +567,7 @@ async function connectMultiplayer(kind) {
     await loadInviteUrl();
     beginMultiplayerWardrobe(data.lobby);
     startLobbyPolling();
-    setToast(`LOBBY ${data.lobby.code} • monte seu personagem`, 'good');
+    setToast(`LOBBY ${data.lobby.code} • escolha seu Silvio`, 'good');
   } catch (error) {
     setMultiplayerConnectStatus(error.message || 'Não foi possível conectar ao servidor Cloudflare.', true);
   } finally {
@@ -487,10 +590,10 @@ if (startupLobbyCode || startupParams.get('server')) {
     !multiplayer.serverBase);
 }
 
-function scheduleMultiplayerOutfitSync() {
+function scheduleMultiplayerCharacterSync() {
   if (!multiplayer.active || multiplayer.gameStarted || multiplayer.localReady) return;
-  clearTimeout(multiplayerOutfitSyncTimer);
-  multiplayerOutfitSyncTimer = setTimeout(() => updateMultiplayerPlayer(false).catch(() => {}), 120);
+  clearTimeout(multiplayerCharacterSyncTimer);
+  multiplayerCharacterSyncTimer = setTimeout(() => updateMultiplayerPlayer(false).catch(() => {}), 120);
 }
 
 async function updateMultiplayerPlayer(ready = multiplayer.localReady) {
@@ -503,12 +606,7 @@ async function updateMultiplayerPlayer(ready = multiplayer.localReady) {
     body: JSON.stringify({
       code: multiplayer.lobbyCode,
       playerId: multiplayer.playerId,
-      outfit: {
-        hat: Number(player.outfit?.hat) || 0,
-        glasses: Number(player.outfit?.glasses) || 0,
-        // SAME Silvio server: its legacy `bra` slot is reused for CAMISA here.
-        bra: Number(player.outfit?.shirt) || 0,
-      },
+      outfit: { hat: 0, glasses: 0, bra: 0 },
       name: encodeLobbyIdentity(player.name, player.character),
       ready,
     }),
@@ -546,7 +644,6 @@ function showCountdown(lobby) {
 }
 
 function closeWardrobeForGame() {
-  setAccessoryEditing(false);
   game.wardrobeActive = false;
   document.body.classList.remove('is-local-ready');
   gameShell?.classList.remove('is-wardrobe', 'is-setup');
@@ -559,17 +656,20 @@ function closeWardrobeForGame() {
 
 function serializeGameSnapshot(reason = 'state') {
   return {
-    version: 1,
+    version: 2,
     reason,
     timestamp: Date.now(),
     round: game.round,
+    setup: game.setup ? JSON.parse(JSON.stringify(game.setup)) : null,
+    session: game.session ? JSON.parse(JSON.stringify(game.session)) : null,
+    roundState: game.roundState ? JSON.parse(JSON.stringify(game.roundState)) : null,
+    comboByPlayer: { ...(game.comboByPlayer || {}) },
     players: game.players.map((player) => ({
       id: player.id || '',
       name: player.name,
       score: Number(player.score) || 0,
-      outfit: { ...player.outfit },
+      roundScore: Number(player.roundScore) || 0,
       character: Number(player.character) || 0,
-      removedAccessories: [...(player.removedAccessories || [])],
     })),
     currentPlayerIndex: game.currentPlayerIndex,
     puzzle: game.puzzle ? { ...game.puzzle } : null,
@@ -627,20 +727,33 @@ function pushMultiplayerSnapshot(reason = 'state') {
 }
 
 function applyRemoteSnapshot(snapshot) {
-  if (!snapshot || typeof snapshot !== 'object') return;
+  if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.players) || !snapshot.players.length) {
+    console.warn('[multiplayer] snapshot inválido ignorado:', snapshot);
+    setToast('Estado multiplayer inválido recebido; aguardando nova sincronização', 'bad');
+    return;
+  }
+  if (snapshot.puzzle && typeof snapshot.puzzle !== 'object') {
+    console.warn('[multiplayer] puzzle inválido no snapshot:', snapshot.puzzle);
+    setToast('Pergunta multiplayer inválida; aguardando nova sincronização', 'bad');
+    return;
+  }
+  if (!snapshot.finale) platformUI.hideResults?.();
   const previousTurnOwnerId = currentPlayer()?.id || '';
   const shouldStartFinale = Boolean(snapshot.finale) && !game.finale;
   multiplayer.applyingRemote = true;
   closeWardrobeForGame();
   multiplayer.gameStarted = true;
   game.round = Number(snapshot.round) || 1;
+  if (snapshot.setup && typeof snapshot.setup === 'object') game.setup = { ...snapshot.setup };
+  if (snapshot.session && typeof snapshot.session === 'object') game.session = JSON.parse(JSON.stringify(snapshot.session));
+  game.roundState = snapshot.roundState && typeof snapshot.roundState === 'object' ? JSON.parse(JSON.stringify(snapshot.roundState)) : null;
+  game.comboByPlayer = snapshot.comboByPlayer && typeof snapshot.comboByPlayer === 'object' ? { ...snapshot.comboByPlayer } : {};
   game.players = Array.isArray(snapshot.players) ? snapshot.players.map((player, index) => ({
     id: player.id || '',
     name: player.name || `Jogador ${index + 1}`,
     score: Number(player.score) || 0,
-    outfit: { hat: Number(player.outfit?.hat) || 0, glasses: Number(player.outfit?.glasses) || 0, shirt: Number(player.outfit?.shirt ?? player.outfit?.bra) || 0 },
+    roundScore: Number(player.roundScore) || 0,
     character: Number.isFinite(Number(player.character)) ? Number(player.character) : 0,
-    removedAccessories: Array.isArray(player.removedAccessories) ? [...player.removedAccessories] : [],
   })) : game.players;
   game.currentPlayerIndex = clamp(Number(snapshot.currentPlayerIndex) || 0, 0, Math.max(0, game.players.length - 1));
   game.puzzle = snapshot.puzzle ? { ...snapshot.puzzle } : game.puzzle;
@@ -666,11 +779,18 @@ function applyRemoteSnapshot(snapshot) {
   updateRoundLights();
   if (roundDisplay) roundDisplay.textContent = String(game.round);
   if (categoryDisplay) categoryDisplay.textContent = game.puzzle?.category || '—';
+  if (questionDisplay) questionDisplay.textContent = game.puzzle?.question || (game.puzzle?.category ? `Tema: ${game.puzzle.category}` : '—');
+  if (snapshot.reason === 'round-win' && game.roundState?.solvedBy) showRoundResult(game.roundState.solvedBy, game.roundState.solveBonus || 0, game.round);
+  if (hintDisplay) {
+    const used = game.roundState?.hintsUsed || [];
+    hintDisplay.hidden = !used.length;
+    hintDisplay.textContent = used.length ? `DICA ${used.length}/${game.puzzle?.hints?.length || used.length} • ${used[used.length - 1]?.text || used[used.length - 1] || ''}` : '';
+  }
   if (wheelResult) wheelResult.textContent = snapshot.wheelResultText || (game.currentWheelSegment?.label || 'gire a roda');
   if (phaseDisplay) phaseDisplay.textContent = snapshot.phaseText || `${currentPlayer()?.name || 'Jogador'}: gire para jogar`;
   if (solvePanel) solvePanel.hidden = true;
   buildPuzzleBoard();
-  applyPlayerOutfit(currentPlayer());
+  applyPlayerCharacter(currentPlayer());
   drawWheel(wheelAngle);
 
   // IMPORTANT: while a remote snapshot is being applied, canLocalInteract()
@@ -687,7 +807,7 @@ function applyRemoteSnapshot(snapshot) {
   if (shouldStartFinale) startFinale({ remote: true });
 }
 
-function initializeMultiplayerGame(lobby) {
+async function initializeMultiplayerGame(lobby) {
   if (multiplayer.initializingGame || multiplayer.gameStarted || lobby.hostId !== multiplayer.playerId) return;
   multiplayer.initializingGame = true;
   const previousById = new Map(game.players.map((player) => [player.id, player]));
@@ -698,21 +818,19 @@ function initializeMultiplayerGame(lobby) {
       id: entry.id,
       name: identity.name,
       score: 0,
-      outfit: {
-        hat: Number(entry.outfit?.hat) || 0,
-        glasses: Number(entry.outfit?.glasses) || 0,
-        shirt: Number(entry.outfit?.shirt ?? entry.outfit?.bra) || 0,
-      },
+      roundScore: 0,
       character: Number.isFinite(Number(entry.character)) ? Number(entry.character) : identity.character,
-      removedAccessories: [],
-    };
+      };
   });
   game.currentPlayerIndex = 0;
   game.round = 1;
   game.finale = false;
+  await loadPersistentGameConfig();
+  game.setup = { ...lastGameSetup };
+  createMatchSession();
   multiplayer.gameStarted = true;
   closeWardrobeForGame();
-  startRound();
+  await startRound();
   setTimeout(() => {
     multiplayer.initializingGame = false;
   }, 300);
@@ -881,22 +999,6 @@ function startLobbyPolling() {
   pollMultiplayerEvents();
 }
 
-let accessoryEditEnabled = false;
-let activeEditCategory = 'hat';
-let activeTransformMode = 'translate';
-let accessoryTransformControls = null;
-let transformDragging = false;
-let accessoryTransformDirty = false;
-
-const ACCESSORY_EDIT_STORAGE_KEY = 'rodaRodapersonagem.accessoryFits.v6';
-let accessoryEditPresets = {};
-try {
-  accessoryEditPresets = JSON.parse(localStorage.getItem(ACCESSORY_EDIT_STORAGE_KEY) || '{}') || {};
-} catch (error) {
-  console.warn('[acessórios] não foi possível ler os ajustes salvos:', error);
-  accessoryEditPresets = {};
-}
-
 function currentPlayer() {
   return game.players[game.currentPlayerIndex] || game.players[0];
 }
@@ -910,9 +1012,7 @@ function updatePlayersUI() {
   game.players.forEach((item, index) => {
     const pill = document.createElement('div');
     pill.className = `player-pill${index === game.currentPlayerIndex ? ' is-current' : ''}`;
-    const removed = Array.isArray(item.removedAccessories) ? item.removedAccessories.length : 0;
-    const wornCount = Math.max(0, 3 - removed);
-    pill.innerHTML = `<span>${item.name}<small class="outfit-count">${wornCount}/3 ACESS.</small></span><strong>${item.score.toLocaleString('pt-BR')}</strong>`;
+    pill.innerHTML = `<span>${item.name}</span><strong>${item.score.toLocaleString('pt-BR')}</strong>`;
     playerStrip.appendChild(pill);
   });
 }
@@ -925,9 +1025,8 @@ function setPlayerCount(count) {
   game.players = Array.from({ length: safeCount }, (_, index) => ({
     name: `Jogador ${index + 1}`,
     score: 0,
-    outfit: { hat: index % 6, glasses: index % 6, shirt: index % 6 },
+    roundScore: 0,
     character: index % Math.max(1, characterList().length),
-    removedAccessories: [],
   }));
   game.currentPlayerIndex = 0;
   game.round = 1;
@@ -936,17 +1035,17 @@ function setPlayerCount(count) {
   gameShell?.classList.remove('is-setup');
   beginWardrobeSetup();
   updatePlayersUI();
-  setToast(`${safeCount} jogador${safeCount > 1 ? 'es' : ''} • hora de montar os personagens`, 'good');
+  setToast(`${safeCount} jogador${safeCount > 1 ? 'es' : ''} • escolha uma versão do Silvio`, 'good');
 }
 
 function nextPlayer(message = '') {
   if (game.players.length <= 1) {
-    applyPlayerOutfit(currentPlayer());
+    applyPlayerCharacter(currentPlayer());
     return;
   }
   game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
   updatePlayersUI();
-  applyPlayerOutfit(currentPlayer());
+  applyPlayerCharacter(currentPlayer());
   const player = currentPlayer();
   if (message) setToast(`${message} • vez de ${player.name}`, 'bad');
   phaseDisplay.textContent = `vez de ${player.name}`;
@@ -956,20 +1055,8 @@ document.querySelectorAll('[data-player-count]').forEach((button) => {
   button.addEventListener('click', () => setPlayerCount(button.dataset.playerCount));
 });
 
-const wardrobeNameNodes = {
-  hat: wardrobeHatName,
-  glasses: wardrobeGlassesName,
-  shirt: wardrobeShirtName,
-};
-
-function accessoryList(category) {
-  const list = config.accessories?.[category];
-  return Array.isArray(list) ? list : [];
-}
-
 function characterList() {
-  const list = Array.isArray(config.characters) ? config.characters : [];
-  return list.length ? list : [{ id: 'default', label: 'Personagem', path: config.modelPath || './assets/model/lucas.glb' }];
+  return ALLOWED_CHARACTERS.map((character) => ({ ...character }));
 }
 
 function characterForPlayer(player = currentPlayer()) {
@@ -981,155 +1068,6 @@ function characterForPlayer(player = currentPlayer()) {
 
 function currentWardrobePlayer() {
   return game.players[game.wardrobePlayerIndex] || currentPlayer();
-}
-
-function selectedAccessoryItem(category, player = currentWardrobePlayer()) {
-  const list = accessoryList(category);
-  if (!player || !list.length) return null;
-  const index = clamp(Number(player.outfit?.[category]) || 0, 0, list.length - 1);
-  return list[index] || null;
-}
-
-function accessoryEditKey(category, item) {
-  return item ? `${category}:${item.id || item.path || 'item'}` : '';
-}
-
-function persistAccessoryEditPresets() {
-  try {
-    localStorage.setItem(ACCESSORY_EDIT_STORAGE_KEY, JSON.stringify(accessoryEditPresets));
-  } catch (error) {
-    console.warn('[acessórios] não foi possível salvar o encaixe:', error);
-  }
-}
-
-function savedAccessoryTransform(category, item) {
-  return accessoryEditPresets[accessoryEditKey(category, item)] || null;
-}
-
-function saveAccessoryTransform(category, item, object, { persist = true } = {}) {
-  if (!category || !item || !object) return;
-  accessoryEditPresets[accessoryEditKey(category, item)] = {
-    position: object.position.toArray(),
-    quaternion: object.quaternion.toArray(),
-    scale: object.scale.toArray(),
-  };
-  if (persist) persistAccessoryEditPresets();
-}
-
-function clearSavedAccessoryTransform(category, item) {
-  const key = accessoryEditKey(category, item);
-  if (!key) return;
-  delete accessoryEditPresets[key];
-  persistAccessoryEditPresets();
-}
-
-function computeRenderedGeometryWorldCenter(root) {
-  if (!root) return new THREE.Vector3();
-  root.updateMatrixWorld(true);
-
-  const sum = new THREE.Vector3();
-  const point = new THREE.Vector3();
-  let count = 0;
-
-  root.traverse((child) => {
-    if (!child.isMesh || !child.geometry) return;
-    const geometry = child.geometry;
-    const position = geometry.getAttribute('position');
-    if (!position) return;
-
-    const index = geometry.getIndex();
-    if (index) {
-      // Somente vértices realmente usados pelos triângulos renderizados.
-      // Alguns GLBs possuem milhares de vértices órfãos, que deslocavam o pivot.
-      const used = new Set();
-      const drawStart = Math.max(0, Number(geometry.drawRange?.start) || 0);
-      const drawCount = Number(geometry.drawRange?.count);
-      const drawEnd = Number.isFinite(drawCount) && drawCount >= 0
-        ? Math.min(index.count, drawStart + drawCount)
-        : index.count;
-      for (let i = drawStart; i < drawEnd; i += 1) used.add(index.getX(i));
-      used.forEach((vertexIndex) => {
-        point.fromBufferAttribute(position, vertexIndex).applyMatrix4(child.matrixWorld);
-        sum.add(point);
-        count += 1;
-      });
-      return;
-    }
-
-    const drawStart = Math.max(0, Number(geometry.drawRange?.start) || 0);
-    const drawCount = Number(geometry.drawRange?.count);
-    const drawEnd = Number.isFinite(drawCount) && drawCount >= 0
-      ? Math.min(position.count, drawStart + drawCount)
-      : position.count;
-    for (let i = drawStart; i < drawEnd; i += 1) {
-      point.fromBufferAttribute(position, i).applyMatrix4(child.matrixWorld);
-      sum.add(point);
-      count += 1;
-    }
-  });
-
-  if (!count) return root.getWorldPosition(new THREE.Vector3());
-  return sum.multiplyScalar(1 / count);
-}
-
-function placeRawAccessoryAtReference(object, category) {
-  if (!object) return;
-  const base = config.accessoryTransforms?.[category];
-  if (base?.position) object.position.fromArray(base.position);
-  else object.position.set(0, 0, 0);
-  if (base?.quaternion) object.quaternion.fromArray(base.quaternion);
-  else object.quaternion.identity();
-  if (base?.scale) object.scale.fromArray(base.scale);
-  else object.scale.set(1, 1, 1);
-}
-
-function createGeometryOriginPivot(instance, category, item) {
-  if (!modelRoot || !instance) return null;
-
-  // Primeiro mantém exatamente o encaixe visual antigo.
-  placeRawAccessoryAtReference(instance, category);
-  modelRoot.add(instance);
-  modelRoot.updateMatrixWorld(true);
-  instance.updateMatrixWorld(true);
-
-  // Equivalente em runtime a Blender: Set Origin -> Origin to Geometry.
-  // O centro é calculado só com a geometria realmente renderizada.
-  const centerWorld = computeRenderedGeometryWorldCenter(instance);
-  const centerLocal = modelRoot.worldToLocal(centerWorld.clone());
-
-  const pivot = new THREE.Group();
-  pivot.name = `AccessoryPivot.${category}.${item?.id || 'item'}`;
-  pivot.position.copy(centerLocal);
-  pivot.userData.isAccessoryGeometryPivot = true;
-  modelRoot.add(pivot);
-  pivot.updateMatrixWorld(true);
-
-  // Preserva 100% a posição mundial da malha ao trocar o parent.
-  pivot.attach(instance);
-
-  pivot.userData.referenceTransform = {
-    position: pivot.position.toArray(),
-    quaternion: pivot.quaternion.toArray(),
-    scale: pivot.scale.toArray(),
-  };
-  return pivot;
-}
-
-function applyBaseOrSavedAccessoryTransform(object, category, item) {
-  if (!object) return;
-  const reference = object.userData?.referenceTransform;
-  if (reference) {
-    object.position.fromArray(reference.position || [0, 0, 0]);
-    object.quaternion.fromArray(reference.quaternion || [0, 0, 0, 1]);
-    object.scale.fromArray(reference.scale || [1, 1, 1]);
-  } else {
-    placeRawAccessoryAtReference(object, category);
-  }
-
-  const saved = savedAccessoryTransform(category, item);
-  if (saved?.position) object.position.fromArray(saved.position);
-  if (saved?.quaternion) object.quaternion.fromArray(saved.quaternion);
-  if (saved?.scale) object.scale.fromArray(saved.scale);
 }
 
 function normalizeModelPlacement() {
@@ -1147,57 +1085,6 @@ function normalizeModelPlacement() {
   return bodyRoot;
 }
 
-function updateEditTargetUI() {
-  accessoryEditTargetButtons.forEach((button) => {
-    button.classList.toggle('is-active', button.dataset.editTarget === activeEditCategory);
-  });
-  accessoryTransformModeButtons.forEach((button) => {
-    button.classList.toggle('is-active', button.dataset.transformMode === activeTransformMode);
-  });
-  document.querySelectorAll('.wardrobe-selector[data-wardrobe-category]').forEach((row) => {
-    row.classList.toggle('is-edit-target', row.dataset.wardrobeCategory === activeEditCategory && accessoryEditEnabled);
-  });
-
-  if (accessoryEditStatus) {
-    const labels = { hat: 'cabeça', glasses: 'óculos', shirt: 'camisa' };
-    const item = selectedAccessoryItem(activeEditCategory);
-    accessoryEditStatus.textContent = `Editando: ${labels[activeEditCategory] || activeEditCategory}${item?.label ? ` • ${item.label}` : ''}`;
-  }
-}
-
-function attachTransformToActiveAccessory() {
-  if (!accessoryTransformControls) return;
-  accessoryTransformControls.detach();
-  if (!accessoryEditEnabled || !game.wardrobeActive) return;
-  const object = equippedAccessories?.[activeEditCategory];
-  if (!object) return;
-  object.updateMatrixWorld(true);
-  accessoryTransformControls.attach(object);
-  accessoryTransformControls.setMode(activeTransformMode);
-  accessoryTransformControls.setSpace(activeTransformMode === 'translate' ? 'world' : 'local');
-}
-
-function setAccessoryEditTarget(category) {
-  if (!['hat', 'glasses', 'shirt'].includes(category)) return;
-  activeEditCategory = category;
-  updateEditTargetUI();
-  attachTransformToActiveAccessory();
-}
-
-function setAccessoryEditing(enabled, { syncCheckbox = true } = {}) {
-  accessoryEditEnabled = Boolean(enabled) && game.wardrobeActive && !game.finale;
-  if (syncCheckbox && accessoryEditToggle) accessoryEditToggle.checked = accessoryEditEnabled;
-  if (accessoryEditTools) accessoryEditTools.hidden = !accessoryEditEnabled;
-  if (accessoryTransformControls && !accessoryEditEnabled) accessoryTransformControls.detach();
-  if (accessoryEditEnabled) attachTransformToActiveAccessory();
-  updateEditTargetUI();
-  if (viewerHint && game.wardrobeActive) {
-    viewerHint.textContent = accessoryEditEnabled
-      ? 'EDIÇÃO ATIVA • USE O GIZMO 3D PARA MOVER, ROTACIONAR OU ESCALONAR'
-      : `${currentWardrobePlayer()?.name?.toUpperCase() || 'JOGADOR'} • ESCOLHA CABEÇA, ÓCULOS E CAMISA`;
-  }
-}
-
 function beginWardrobeSetup() {
   game.wardrobeActive = true;
   game.wardrobePlayerIndex = 0;
@@ -1205,9 +1092,6 @@ function beginWardrobeSetup() {
   gameShell?.classList.add('is-wardrobe');
   if (wardrobePanel) wardrobePanel.hidden = false;
   renderWardrobePlayer();
-
-  // Wait for the wardrobe grid to settle, then update canvas + camera to the
-  // new, wider viewer. Without this the old canvas aspect gets CSS-stretched.
   scheduleViewerResize({ refit: true });
   setTimeout(() => scheduleViewerResize({ refit: true }), 80);
 }
@@ -1223,38 +1107,12 @@ function renderWardrobePlayer() {
       ? (multiplayer.localReady ? 'PRONTO • AGUARDANDO OS OUTROS' : `VOCÊ É ${player.name.toUpperCase()}`)
       : `JOGADOR ${game.wardrobePlayerIndex + 1} DE ${game.players.length}`;
   }
-  for (const category of ['hat', 'glasses', 'shirt']) {
-    const list = accessoryList(category);
-    const index = clamp(Number(player.outfit?.[category]) || 0, 0, Math.max(0, list.length - 1));
-    player.outfit[category] = index;
-    const item = list[index];
-    if (wardrobeNameNodes[category]) wardrobeNameNodes[category].textContent = item?.label || '—';
-  }
   game.currentPlayerIndex = game.wardrobePlayerIndex;
   updatePlayersUI();
-  applyPlayerOutfit(player);
-  if (viewerHint) viewerHint.textContent = `${player.name.toUpperCase()} • ESCOLHA PERSONAGEM, CABEÇA, ÓCULOS E CAMISA`;
+  applyPlayerCharacter(player);
+  if (viewerHint) viewerHint.textContent = `${player.name.toUpperCase()} • ESCOLHA UMA DAS 3 VERSÕES DO SILVIO`;
 }
 
-function cycleWardrobe(category, direction) {
-  if (!game.wardrobeActive) return;
-  const player = game.players[game.wardrobePlayerIndex];
-  const list = accessoryList(category);
-  if (!player || !list.length) return;
-  const current = Number(player.outfit?.[category]) || 0;
-  player.outfit[category] = (current + direction + list.length) % list.length;
-  if (accessoryEditEnabled) activeEditCategory = category;
-  renderWardrobePlayer();
-  updateEditTargetUI();
-  scheduleMultiplayerOutfitSync();
-}
-
-document.querySelectorAll('[data-wardrobe-prev]').forEach((button) => {
-  button.addEventListener('click', () => cycleWardrobe(button.dataset.wardrobePrev, -1));
-});
-document.querySelectorAll('[data-wardrobe-next]').forEach((button) => {
-  button.addEventListener('click', () => cycleWardrobe(button.dataset.wardrobeNext, 1));
-});
 document.querySelectorAll('[data-character-prev]').forEach((button) => {
   button.addEventListener('click', () => {
     if (!game.wardrobeActive) return;
@@ -1264,9 +1122,10 @@ document.querySelectorAll('[data-character-prev]').forEach((button) => {
     player.character = (Number(player.character) || 0) - 1;
     if (player.character < 0) player.character = list.length - 1;
     renderWardrobePlayer();
-    scheduleMultiplayerOutfitSync();
+    scheduleMultiplayerCharacterSync();
   });
 });
+
 document.querySelectorAll('[data-character-next]').forEach((button) => {
   button.addEventListener('click', () => {
     if (!game.wardrobeActive) return;
@@ -1275,49 +1134,19 @@ document.querySelectorAll('[data-character-next]').forEach((button) => {
     if (!player || !list.length) return;
     player.character = ((Number(player.character) || 0) + 1) % list.length;
     renderWardrobePlayer();
-    scheduleMultiplayerOutfitSync();
+    scheduleMultiplayerCharacterSync();
   });
 });
 
-document.querySelectorAll('.wardrobe-selector[data-wardrobe-category]').forEach((row) => {
-  row.addEventListener('click', () => {
-    if (accessoryEditEnabled) setAccessoryEditTarget(row.dataset.wardrobeCategory);
-  });
-});
-
-accessoryEditToggle?.addEventListener('change', () => {
-  setAccessoryEditing(accessoryEditToggle.checked, { syncCheckbox: false });
-});
-
-accessoryEditTargetButtons.forEach((button) => {
-  button.addEventListener('click', () => setAccessoryEditTarget(button.dataset.editTarget));
-});
-
-accessoryTransformModeButtons.forEach((button) => {
-  button.addEventListener('click', () => {
-    activeTransformMode = button.dataset.transformMode || 'translate';
-    if (accessoryTransformControls) {
-      accessoryTransformControls.setMode(activeTransformMode);
-      accessoryTransformControls.setSpace(activeTransformMode === 'translate' ? 'world' : 'local');
-    }
-    updateEditTargetUI();
-  });
-});
-
-accessoryResetButton?.addEventListener('click', () => {
-  const player = currentWardrobePlayer();
-  const item = selectedAccessoryItem(activeEditCategory, player);
-  const object = equippedAccessories?.[activeEditCategory];
-  if (!item || !object) return;
-  clearSavedAccessoryTransform(activeEditCategory, item);
-  applyBaseOrSavedAccessoryTransform(object, activeEditCategory, item);
-  attachTransformToActiveAccessory();
-  setToast(`${item.label} voltou ao encaixe de referência`, 'good');
-});
-
-wardrobeConfirmButton?.addEventListener('click', () => {
+wardrobeConfirmButton?.addEventListener('click', async () => {
   if (!game.wardrobeActive) return;
   if (multiplayer.active) {
+    if (multiplayer.hostId === multiplayer.playerId && !multiplayer.localReady) {
+      const setup = await platformUI.openSetup({ multiplayer: true, host: true });
+      if (!setup) return;
+      lastGameSetup = { ...setup };
+      game.setup = { ...setup };
+    }
     toggleMultiplayerReady();
     return;
   }
@@ -1327,55 +1156,194 @@ wardrobeConfirmButton?.addEventListener('click', () => {
     return;
   }
 
-  setAccessoryEditing(false);
   game.wardrobeActive = false;
   game.currentPlayerIndex = 0;
   gameShell?.classList.remove('is-wardrobe');
   if (wardrobePanel) wardrobePanel.hidden = true;
   updatePlayersUI();
-  applyPlayerOutfit(currentPlayer());
+  applyPlayerCharacter(currentPlayer());
   scheduleViewerResize({ refit: true });
   setTimeout(() => scheduleViewerResize({ refit: true }), 80);
-  startRound();
-  setToast('PERSONAGENS PRONTOS • AGORA VALE!', 'good');
+  requestLocalGameSetup();
 });
 
-function pickPuzzle() {
-  const pool = Array.isArray(config.puzzlePool) && config.puzzlePool.length
-    ? config.puzzlePool
-    : [{ category: 'DIVA POP', phrase: 'DIVA POP SEM LIMITE' }];
-
-  const previous = game.puzzle?.phrase;
-  const candidates = pool.length > 1 ? pool.filter(item => item.phrase !== previous) : pool;
-  return candidates[Math.floor(Math.random() * candidates.length)];
+function difficultyMultiplier(difficulty) {
+  if (!gameRules.difficultyBonusEnabled) return 1;
+  return Number(gameRules.difficultyMultipliers?.[difficulty]) || 1;
 }
 
-function startRound({ increment = false } = {}) {
+async function pickPuzzle() {
+  await dataStore.ready;
+  const themes = await dataStore.listThemes();
+  const questions = await dataStore.listQuestions();
+  const enabledThemes = new Set(themes.filter((theme) => theme.enabled).map((theme) => theme.id));
+  const selectedThemes = game.setup?.themeIds?.length ? new Set(game.setup.themeIds) : enabledThemes;
+  const difficulty = game.setup?.difficulty || 'all';
+  let pool = questions.filter((q) => q.enabled && enabledThemes.has(q.themeId) && selectedThemes.has(q.themeId) && (difficulty === 'all' || q.difficulty === difficulty));
+  if (!pool.length) throw new Error('Nenhuma pergunta ativa atende aos filtros da partida.');
+
+  if (game.setup?.randomMix === false) {
+    const orderedThemes = (game.setup?.themeIds || []).filter((id) => pool.some((q) => q.themeId === id));
+    if (orderedThemes.length > 1) {
+      const targetTheme = orderedThemes[(Math.max(1, Number(game.round) || 1) - 1) % orderedThemes.length];
+      const themedPool = pool.filter((q) => q.themeId === targetTheme);
+      if (themedPool.length) pool = themedPool;
+    }
+  }
+
+  const recent = new Set(await dataStore.getKv('recentQuestionIds', []));
+  const sessionUsed = new Set(game.session?.usedQuestionIds || []);
+  if (game.setup?.noRepeat !== false) {
+    let candidates = pool.filter((q) => !sessionUsed.has(q.id) && !recent.has(q.id));
+    if (!candidates.length) candidates = pool.filter((q) => !sessionUsed.has(q.id));
+    if (!candidates.length) {
+      sessionUsed.clear();
+      if (game.session) game.session.usedQuestionIds = [];
+      candidates = [...pool];
+    }
+    pool = candidates;
+  }
+
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  const theme = themes.find((item) => item.id === picked.themeId);
+  const recentList = [picked.id, ...[...recent].filter((id) => id !== picked.id)].slice(0, 40);
+  dataStore.setKv('recentQuestionIds', recentList).catch(() => {});
+  if (game.session && !game.session.usedQuestionIds.includes(picked.id)) game.session.usedQuestionIds.push(picked.id);
+  return {
+    id: picked.id,
+    themeId: picked.themeId,
+    category: theme?.name || 'GERAL',
+    theme: theme?.name || 'GERAL',
+    question: picked.question || '',
+    phrase: picked.answer,
+    answer: picked.answer,
+    hints: Array.isArray(picked.hints) ? [...picked.hints] : [],
+    difficulty: picked.difficulty || 'medium',
+    baseScore: picked.baseScore,
+    tags: [...(picked.tags || [])],
+  };
+}
+
+function createMatchSession() {
+  const id = uid('match');
+  game.session = {
+    id,
+    startedAt: nowIso(),
+    startedAtMs: Date.now(),
+    mode: multiplayer.active ? 'multiplayer' : 'single',
+    selectedThemes: (game.setup?.themeIds || []).map((id) => dataStore.cache.themes.find((theme) => theme.id === id)?.name || id),
+    setup: JSON.parse(JSON.stringify(game.setup || {})),
+    rules: JSON.parse(JSON.stringify(gameRules || {})),
+    usedQuestionIds: [],
+    rounds: [],
+  };
+  game.historyFinalized = false;
+  game.comboByPlayer = {};
+  game.players.forEach((player) => { player.roundScore = 0; player.score = 0; });
+}
+
+async function startConfiguredMatch(setup = lastGameSetup) {
+  platformUI.hideResults?.();
+  await loadPersistentGameConfig();
+  game.setup = { ...lastGameSetup, ...(setup || {}) };
+  lastGameSetup = { ...game.setup };
+  game.round = 1;
+  game.currentPlayerIndex = 0;
+  game.finale = false;
+  createMatchSession();
+  updatePlayersUI();
+  await startRound();
+}
+
+async function requestLocalGameSetup() {
+  const setup = await platformUI.openSetup({ multiplayer: false, host: true });
+  if (!setup) {
+    game.wardrobeActive = true;
+    game.phase = 'wardrobe';
+    gameShell?.classList.add('is-wardrobe');
+    if (wardrobePanel) wardrobePanel.hidden = false;
+    return;
+  }
+  await startConfiguredMatch(setup);
+  setToast('PERSONAGENS PRONTOS • AGORA VALE!', 'good');
+}
+
+async function startRound({ increment = false } = {}) {
   if (game.finale) return;
+  if (!game.session) createMatchSession();
   if (increment) game.round += 1;
-  if (game.round > 3) {
+  const totalRounds = Math.max(1, Number(game.setup?.rounds) || 3);
+  if (game.round > totalRounds) {
     startFinale();
     return;
   }
-  game.puzzle = pickPuzzle();
+
+  try {
+    game.puzzle = await pickPuzzle();
+  } catch (error) {
+    console.error('[conteúdo] falha ao selecionar pergunta:', error);
+    setToast(error.message || 'Nenhuma pergunta disponível', 'bad');
+    if (questionDisplay) questionDisplay.textContent = 'Não há perguntas disponíveis para estes filtros.';
+    game.phase = 'spin';
+    syncControls();
+    return;
+  }
+
   game.guessed = new Set();
   game.phase = 'spin';
   game.currentWheelSegment = null;
   game.spinning = false;
+  game.roundState = {
+    questionId: game.puzzle.id,
+    theme: game.puzzle.theme,
+    question: game.puzzle.question,
+    answer: game.puzzle.answer,
+    difficulty: game.puzzle.difficulty,
+    startedAt: nowIso(),
+    startedAtMs: Date.now(),
+    hintsUsed: [],
+    lettersAttempted: [],
+    incorrectLetters: [],
+    incorrectSolves: [],
+    wheelResults: [],
+    pointsAwarded: 0,
+    solvedBy: null,
+  };
+  game.players.forEach((player) => { player.roundScore = 0; });
   solvePanel.hidden = true;
   solveInput.value = '';
   wheelResult.textContent = 'gira a roda';
   phaseDisplay.textContent = `${currentPlayer().name}: gire para jogar`;
   categoryDisplay.textContent = game.puzzle.category;
+  if (questionDisplay) questionDisplay.textContent = game.puzzle.question || `Tema: ${game.puzzle.category}`;
+  if (hintDisplay) { hintDisplay.hidden = true; hintDisplay.textContent = ''; }
   roundDisplay.textContent = String(game.round);
   updateScore();
   updateRoundLights();
   buildPuzzleBoard();
   buildKeyboard();
   syncControls();
-  applyPlayerOutfit(currentPlayer());
+  applyPlayerCharacter(currentPlayer());
   impulseBoth(0.45);
+  saveActiveSession();
   pushMultiplayerSnapshot(increment ? 'next-round' : 'round-start');
+}
+
+function saveActiveSession() {
+  if (multiplayer.active || !game.session || game.finale) return;
+  const snapshot = {
+    savedAt: nowIso(),
+    setup: game.setup,
+    session: game.session,
+    round: game.round,
+    players: game.players.map((p) => ({ ...p })),
+    currentPlayerIndex: game.currentPlayerIndex,
+    puzzle: game.puzzle,
+    guessed: [...game.guessed],
+    phase: game.phase,
+    roundState: game.roundState,
+  };
+  dataStore.setKv('activeSession', snapshot).catch(() => {});
 }
 
 function updateScore() {
@@ -1383,8 +1351,22 @@ function updateScore() {
 }
 
 function updateRoundLights() {
-  document.querySelectorAll('.round-light').forEach((light, index) => {
-    light.classList.toggle('is-active', index === ((game.round - 1) % 3));
+  const holder = document.querySelector('.round-lights');
+  if (!holder) return;
+  const total = Math.max(1, Number(game.setup?.rounds) || 3);
+  const visible = Math.min(total, 8);
+  if (holder.children.length !== visible) {
+    holder.innerHTML = '';
+    for (let i = 0; i < visible; i += 1) {
+      const light = document.createElement('span');
+      light.className = 'round-light';
+      light.textContent = total > 8 && i === visible - 1 ? '…' : String(i + 1);
+      holder.appendChild(light);
+    }
+  }
+  [...holder.children].forEach((light, index) => {
+    const mappedIndex = total > 8 && game.round > 7 ? visible - 1 : game.round - 1;
+    light.classList.toggle('is-active', index === mappedIndex);
   });
 }
 
@@ -1482,8 +1464,40 @@ function syncControls() {
   spinButton.disabled = !localTurn || game.spinning || game.phase !== 'spin';
   solveButton.disabled = !localTurn || game.spinning || game.phase === 'solved';
   confirmSolveButton.disabled = !localTurn || game.spinning || game.phase === 'solved';
+  if (hintButton) {
+    const usedCount = game.roundState?.hintsUsed?.length || 0;
+    const totalHints = game.puzzle?.hints?.length || 0;
+    const penalties = Array.isArray(gameRules.hintPenalties) ? gameRules.hintPenalties : [];
+    const penalty = penalties[Math.min(usedCount, Math.max(0, penalties.length - 1))] || 0;
+    hintButton.disabled = !localTurn || game.spinning || game.phase === 'solved' || usedCount >= totalHints || !totalHints;
+    hintButton.textContent = totalHints && usedCount < totalHints ? `DICA • -${penalty}` : 'DICA';
+    hintButton.title = totalHints ? `${usedCount}/${totalHints} dicas usadas` : 'Esta pergunta não possui dicas';
+  }
   buildKeyboard();
 }
+
+function useHint() {
+  if (!canLocalInteract() || game.phase === 'solved' || !game.puzzle) return;
+  const hints = Array.isArray(game.puzzle.hints) ? game.puzzle.hints : [];
+  const usedCount = game.roundState?.hintsUsed?.length || 0;
+  if (usedCount >= hints.length) return;
+  const penalties = Array.isArray(gameRules.hintPenalties) ? gameRules.hintPenalties : [];
+  const penalty = Math.max(0, Number(penalties[Math.min(usedCount, Math.max(0, penalties.length - 1))]) || 0);
+  const player = currentPlayer();
+  player.score = Math.max(0, (player.score || 0) - penalty);
+  player.roundScore = Math.max(0, (player.roundScore || 0) - penalty);
+  game.roundState.hintsUsed.push({ index: usedCount, text: hints[usedCount], player: player.name, penalty, at: nowIso() });
+  game.roundState.pointsAwarded -= penalty;
+  if (hintDisplay) { hintDisplay.hidden = false; hintDisplay.textContent = `DICA ${usedCount + 1}/${hints.length} • ${hints[usedCount]}`; }
+  updateScore();
+  showScoreFeedback(`DICA -${penalty}`, true);
+  setToast(`Dica ${usedCount + 1}/${hints.length} • -${penalty}`, 'bad');
+  saveActiveSession();
+  syncControls();
+  pushMultiplayerSnapshot('hint');
+}
+
+hintButton?.addEventListener('click', useHint);
 
 function guessLetter(letter) {
   if (!canLocalInteract()) {
@@ -1497,22 +1511,37 @@ function guessLetter(letter) {
   const matches = [...normalizedPhrase].filter(ch => ch === letter).length;
   const segment = game.currentWheelSegment;
   const value = Number(segment?.value) || 0;
+  const player = currentPlayer();
+  const playerKey = player.id || player.name;
+  let earned = 0;
 
   if (matches > 0) {
-    const earned = value * matches;
-    currentPlayer().score += earned;
+    const streak = (game.comboByPlayer[playerKey] || 0) + 1;
+    game.comboByPlayer[playerKey] = streak;
+    const comboMultiplier = gameRules.comboEnabled
+      ? Math.min(Number(gameRules.maxComboMultiplier) || 1.5, 1 + Math.max(0, streak - 1) * (Number(gameRules.comboStep) || 0.1))
+      : 1;
+    earned = Math.round(value * matches * comboMultiplier);
+    player.score += earned;
+    player.roundScore = (player.roundScore || 0) + earned;
+    if (game.roundState) game.roundState.pointsAwarded += earned;
     updateScore();
-    phaseDisplay.textContent = `${matches}x ${letter} • +${earned}`;
-    setToast(`${matches} letra${matches > 1 ? 's' : ''} ${letter} • +${earned}`, 'good');
+    const comboLabel = comboMultiplier > 1 ? ` • COMBO x${comboMultiplier.toFixed(1)}` : '';
+    phaseDisplay.textContent = `${matches}x ${letter} • +${earned}${comboLabel}`;
+    setToast(`${matches} letra${matches > 1 ? 's' : ''} ${letter} • +${earned}${comboLabel}`, 'good');
+    showScoreFeedback(`+${earned}${comboMultiplier > 1 ? `  x${comboMultiplier.toFixed(1)}` : ''}`);
     playTalk(700);
     impulseBoth(0.5 + Math.min(matches, 3) * 0.1);
   } else {
+    game.comboByPlayer[playerKey] = 0;
     phaseDisplay.textContent = `não tem ${letter}`;
     setToast(`Não tem ${letter}`, 'bad');
     playRandomAudio({ shortOnly: true });
+    if (game.roundState) game.roundState.incorrectLetters.push({ letter, player: player.name, at: nowIso() });
     nextPlayer(`Não tem ${letter}`);
   }
 
+  if (game.roundState) game.roundState.lettersAttempted.push({ letter, player: player.name, correct: matches > 0, matches, wheelValue: value, earned, at: nowIso() });
   buildPuzzleBoard();
 
   if (isPuzzleFullyRevealed()) {
@@ -1526,6 +1555,7 @@ function guessLetter(letter) {
   setTimeout(() => {
     if (game.phase === 'spin') phaseDisplay.textContent = `${currentPlayer().name}: gire para jogar`;
   }, 900);
+  saveActiveSession();
   syncControls();
   pushMultiplayerSnapshot(matches > 0 ? 'letter-hit' : 'letter-miss');
 }
@@ -1535,24 +1565,79 @@ function isPuzzleFullyRevealed() {
   return [...uniqueLetters].every(letter => game.guessed.has(letter));
 }
 
+function finalizeCurrentRound({ solved = false, solvedBy = null } = {}) {
+  if (!game.roundState || game.roundState.finalized) return;
+  game.roundState.finalized = true;
+  game.roundState.completedAt = nowIso();
+  game.roundState.durationMs = Math.max(0, Date.now() - (game.roundState.startedAtMs || Date.now()));
+  game.roundState.solvedBy = solvedBy?.name || game.roundState.solvedBy || null;
+  game.roundState.finalScores = game.players.map((player) => ({ name: player.name, score: player.score, roundScore: player.roundScore || 0 }));
+  if (game.session) game.session.rounds.push(JSON.parse(JSON.stringify(game.roundState)));
+  dataStore.recordQuestionPerformance(game.roundState.questionId, {
+    solved,
+    hintsUsed: game.roundState.hintsUsed?.length || 0,
+    durationMs: game.roundState.durationMs,
+  }).catch((error) => console.warn('[stats] falha ao registrar desempenho da pergunta:', error));
+}
+
+async function finalizeMatchHistory() {
+  if (game.historyFinalized || !game.session) return null;
+  game.historyFinalized = true;
+  const ranking = [...game.players].sort((a, b) => (b.score || 0) - (a.score || 0));
+  const record = {
+    id: game.session.id,
+    startedAt: game.session.startedAt,
+    completedAt: nowIso(),
+    durationMs: Math.max(0, Date.now() - (game.session.startedAtMs || Date.now())),
+    mode: game.session.mode,
+    players: game.players.map((player) => ({ name: player.name, score: player.score || 0 })),
+    winner: ranking[0] ? { name: ranking[0].name, score: ranking[0].score || 0 } : null,
+    selectedThemes: [...(game.session.selectedThemes || [])],
+    setup: JSON.parse(JSON.stringify(game.setup || {})),
+    rules: JSON.parse(JSON.stringify(gameRules || {})),
+    rounds: JSON.parse(JSON.stringify(game.session.rounds || [])),
+  };
+  try {
+    await dataStore.addHistory(record);
+    await dataStore.setKv('activeSession', null);
+  } catch (error) {
+    console.warn('[histórico] não foi possível salvar a partida:', error);
+    setToast('Partida concluída, mas o histórico local não pôde ser salvo', 'bad');
+  }
+  return record;
+}
+
 function solvePuzzleSuccess() {
+  if (game.phase === 'solved' || game.finale) return;
   game.phase = 'solved';
   const winner = currentPlayer();
-  winner.score += 1000;
+  const baseBonus = game.puzzle?.baseScore != null ? Number(game.puzzle.baseScore) || 0 : Number(gameRules.solveBonus) || 1000;
+  const bonus = Math.round(baseBonus * difficultyMultiplier(game.puzzle?.difficulty));
+  winner.score += bonus;
+  winner.roundScore = (winner.roundScore || 0) + bonus;
+  if (game.roundState) {
+    game.roundState.pointsAwarded += bonus;
+    game.roundState.solveBonus = bonus;
+    game.roundState.solvedBy = winner.name;
+  }
   updateScore();
   buildPuzzleBoard();
-  phaseDisplay.textContent = `ACERTOU! ${winner.name} +1000`;
-  wheelResult.textContent = game.round >= 3 ? 'final!' : 'rodada concluída';
+  phaseDisplay.textContent = `ACERTOU! ${winner.name} +${bonus}`;
+  const totalRounds = Math.max(1, Number(game.setup?.rounds) || 3);
+  wheelResult.textContent = game.round >= totalRounds ? 'final!' : 'rodada concluída';
   solvePanel.hidden = true;
-  setToast(`${winner.name} ACERTOU A FRASE! +1000`, 'good');
+  setToast(`${winner.name} ACERTOU A FRASE! +${bonus}`, 'good');
+  showScoreFeedback(`BÔNUS +${bonus}`);
+  showRoundResult(winner.name, bonus, game.round);
   playTalk(1400);
   impulseBoth(1.35);
-  // O look permanece intacto durante todas as rodadas.
-  applyPlayerOutfit(winner);
+  applyPlayerCharacter(winner);
+  finalizeCurrentRound({ solved: true, solvedBy: winner });
+  saveActiveSession();
   syncControls();
   pushMultiplayerSnapshot('round-win');
 
-  if (game.round >= 3) {
+  if (game.round >= totalRounds) {
     setTimeout(() => startFinale(), 1350);
   } else if (multiplayer.active && !multiplayer.applyingRemote) {
     setTimeout(() => {
@@ -1577,16 +1662,27 @@ function trySolve() {
   if (answer === target) {
     solvePuzzleSuccess();
   } else {
-    currentPlayer().score = Math.max(0, currentPlayer().score - 200);
+    const player = currentPlayer();
+    const penalty = Math.max(0, Number(gameRules.wrongSolvePenalty) || 0);
+    player.score = Math.max(0, player.score - penalty);
+    player.roundScore = Math.max(0, (player.roundScore || 0) - penalty);
+    const playerKey = player.id || player.name;
+    game.comboByPlayer[playerKey] = 0;
+    if (game.roundState) {
+      game.roundState.pointsAwarded -= penalty;
+      game.roundState.incorrectSolves.push({ player: player.name, answer: solveInput.value.trim(), penalty, at: nowIso() });
+    }
     updateScore();
-    setToast('Resposta errada • -200', 'bad');
+    showScoreFeedback(`-${penalty}`, true);
+    setToast(`Resposta errada • -${penalty}`, 'bad');
     playRandomAudio({ shortOnly: true });
-    nextPlayer('Resposta errada');
+    if (gameRules.wrongSolveLosesTurn !== false) nextPlayer('Resposta errada');
     game.phase = 'spin';
     game.currentWheelSegment = null;
     wheelResult.textContent = 'gire novamente';
     phaseDisplay.textContent = `${currentPlayer().name}: gire para jogar`;
     solvePanel.hidden = true;
+    saveActiveSession();
     syncControls();
     pushMultiplayerSnapshot('solve-miss');
   }
@@ -1607,10 +1703,12 @@ solveInput.addEventListener('keydown', (event) => {
 });
 newRoundButton.addEventListener('click', () => {
   if (multiplayer.active) return;
-  if (game.round >= 3 && game.phase === 'solved') {
+  const totalRounds = Math.max(1, Number(game.setup?.rounds) || 3);
+  if (game.round >= totalRounds && game.phase === 'solved') {
     startFinale();
     return;
   }
+  if (game.roundState && !game.roundState.finalized) finalizeCurrentRound({ solved: false });
   startRound({ increment: true });
 });
 
@@ -1850,10 +1948,23 @@ function finishWheelSpin(segment) {
   game.spinning = false;
   game.currentWheelSegment = segment;
   wheelResult.textContent = segment.label;
+  const player = currentPlayer();
+  if (game.roundState) game.roundState.wheelResults.push({ player: player?.name || '', label: segment.label, value: Number(segment.value) || 0, type: segment.type || 'score', at: nowIso() });
 
   if (segment.type === 'bankrupt') {
-    currentPlayer().score = 0;
+    if (gameRules.bankruptBehavior === 'round') {
+      const lost = player.roundScore || 0;
+      player.score = Math.max(0, (player.score || 0) - lost);
+      player.roundScore = 0;
+      if (game.roundState) game.roundState.pointsAwarded -= lost;
+    } else {
+      const lost = player.score || 0;
+      player.score = 0;
+      player.roundScore = 0;
+      if (game.roundState) game.roundState.pointsAwarded -= lost;
+    }
     updateScore();
+    showScoreFeedback('PERDE TUDO', true);
     game.phase = 'spin';
     phaseDisplay.textContent = 'PERDEU TUDO';
     setToast('PERDEU TUDO!', 'bad');
@@ -1872,6 +1983,7 @@ function finishWheelSpin(segment) {
     setToast(`Vale ${segment.value} por letra`, 'good');
   }
 
+  saveActiveSession();
   syncControls();
   pushMultiplayerSnapshot(segment.type === 'bankrupt' ? 'bankrupt' : segment.type === 'loseTurn' ? 'pass-turn' : 'wheel-value');
 }
@@ -1882,9 +1994,48 @@ spinButton.addEventListener('click', spinWheel);
 // Audio orb
 // -----------------------------------------------------------------------------
 let audio = null;
+let finalAudio = null;
 let lastAudioIndex = -1;
 let audioPlayToken = 0;
 let mediaUnlocked = false;
+let masterVolume = 0.8;
+let lastAudibleVolume = 0.8;
+try { masterVolume = clamp(Number(localStorage.getItem('rodaARoda.volume.v1') ?? 0.8), 0, 1); } catch {}
+if (masterVolume > 0) lastAudibleVolume = masterVolume;
+if (volumeControl) volumeControl.value = String(masterVolume);
+function syncMasterVolume() {
+  if (audio) audio.volume = masterVolume;
+  if (finalAudio) finalAudio.volume = masterVolume;
+  if (muteButton) {
+    muteButton.textContent = masterVolume <= 0 ? 'SOM' : 'MUDO';
+    muteButton.setAttribute('aria-pressed', masterVolume <= 0 ? 'true' : 'false');
+    muteButton.setAttribute('aria-label', masterVolume <= 0 ? 'Ativar som' : 'Silenciar áudio');
+  }
+  try { localStorage.setItem('rodaARoda.volume.v1', String(masterVolume)); } catch {}
+}
+volumeControl?.addEventListener('input', () => {
+  masterVolume = clamp(Number(volumeControl.value) || 0, 0, 1);
+  if (masterVolume > 0) lastAudibleVolume = masterVolume;
+  syncMasterVolume();
+});
+muteButton?.addEventListener('click', () => {
+  if (masterVolume > 0) {
+    lastAudibleVolume = masterVolume;
+    masterVolume = 0;
+  } else {
+    masterVolume = clamp(lastAudibleVolume || 0.8, 0.05, 1);
+  }
+  if (volumeControl) volumeControl.value = String(masterVolume);
+  syncMasterVolume();
+});
+syncMasterVolume();
+centralButton?.addEventListener('click', () => platformUI.open('content'));
+fullscreenButton?.addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  } catch (error) { console.warn('[fullscreen]', error); }
+});
 
 function unlockMediaPlayback() {
   if (mediaUnlocked) return;
@@ -1938,6 +2089,7 @@ function playAudioSource(src, {
 
   audio = new Audio();
   audio.preload = 'auto';
+  audio.volume = masterVolume;
   audio.src = absoluteSrc;
   audio.load();
 
@@ -1946,6 +2098,7 @@ function playAudioSource(src, {
   audioStatus.textContent = who && multiplayer.active ? `${who}: ${label}` : label;
   audioOrbButton.classList.add('is-playing');
   playTalk(4500);
+  playRandomAudioAnimation();
   impulseBoth(0.8);
 
   const started = audio.play();
@@ -1955,18 +2108,21 @@ function playAudioSource(src, {
       console.warn('[audio] reprodução bloqueada:', error);
       audioStatus.textContent = 'clique uma vez na página para liberar o áudio';
       audioOrbButton.classList.remove('is-playing');
+      stopAudioAnimation();
     });
   }
 
   audio.onended = () => {
     if (token !== audioPlayToken) return;
     talkAction?.stop();
+    stopAudioAnimation();
     audioStatus.textContent = 'clique no botão roxo';
     audioOrbButton.classList.remove('is-playing');
   };
   audio.onerror = () => {
     if (token !== audioPlayToken) return;
     console.warn('[audio] falha ao carregar:', absoluteSrc);
+    stopAudioAnimation();
     audioStatus.textContent = 'falha ao carregar áudio';
     audioOrbButton.classList.remove('is-playing');
   };
@@ -2065,35 +2221,6 @@ controls.enableZoom = true;
 controls.minDistance = 0.9;
 controls.maxDistance = 4.2;
 
-accessoryTransformControls = new TransformControls(camera, renderer.domElement);
-accessoryTransformControls.setSize(0.72);
-accessoryTransformControls.setMode(activeTransformMode);
-accessoryTransformControls.setSpace('world');
-scene.add(accessoryTransformControls.getHelper());
-
-accessoryTransformControls.addEventListener('dragging-changed', (event) => {
-  transformDragging = Boolean(event.value);
-  controls.enabled = !transformDragging;
-  viewer.classList.toggle('is-transforming', transformDragging);
-
-  if (!transformDragging && accessoryTransformDirty) {
-    const item = selectedAccessoryItem(activeEditCategory);
-    const object = equippedAccessories?.[activeEditCategory];
-    if (item && object) saveAccessoryTransform(activeEditCategory, item, object, { persist: true });
-    accessoryTransformDirty = false;
-  }
-});
-
-accessoryTransformControls.addEventListener('objectChange', () => {
-  if (!accessoryEditEnabled || !game.wardrobeActive) return;
-  const item = selectedAccessoryItem(activeEditCategory);
-  const object = equippedAccessories?.[activeEditCategory];
-  if (item && object) {
-    saveAccessoryTransform(activeEditCategory, item, object, { persist: false });
-    accessoryTransformDirty = true;
-  }
-});
-
 const clock = new THREE.Clock();
 const tmpVec = new THREE.Vector3();
 const tmpQuat = new THREE.Quaternion();
@@ -2102,6 +2229,11 @@ let modelRoot = null;
 let mixer = null;
 let blinkAction = null;
 let talkAction = null;
+let standAction = null;
+let audioAnimationAction = null;
+let audioAnimationClips = [];
+let standClipName = '';
+let lastAudioAnimationName = '';
 let blinkTimer = null;
 let modelRotationDrag = null;
 let breastPointerDrag = null;
@@ -2154,6 +2286,79 @@ function fitCamera(object) {
   controls.update();
 }
 
+function normalizedAnimationName(name = '') {
+  return String(name).trim().toLowerCase().replace(/\.\d+$/i, '');
+}
+
+function isPresenterAudioPlaying() {
+  return Boolean((audio && !audio.paused && !audio.ended) || (finalAudio && !finalAudio.paused && !finalAudio.ended));
+}
+
+function chooseStandClip(animations = []) {
+  const priorities = ['standing_relax', 'idle', 'agree'];
+  for (const target of priorities) {
+    const clip = animations.find((candidate) => normalizedAnimationName(candidate.name) === target);
+    if (clip) return clip;
+  }
+  return animations[0] || null;
+}
+
+function chooseAudioAnimationClips(animations = [], standClip = null) {
+  const reactionPattern = /(?:^|_)(?:sing|clap|sob|hug|agree|afraid|angry|bow|cheer|complain|scratch|heart|wave|freaky|cry|depressed|scared|defeat)(?:_|$)/i;
+  const ignoredPattern = /^(?:blink|talk|breast_jelly_)/i;
+  const safe = animations.filter((clip) => {
+    if (!clip || clip === standClip || ignoredPattern.test(clip.name || '')) return false;
+    return reactionPattern.test(normalizedAnimationName(clip.name));
+  });
+  if (safe.length) return safe;
+  return animations.filter((clip) => clip && clip !== standClip && !ignoredPattern.test(clip.name || ''));
+}
+
+function playStandAnimation({ immediate = false } = {}) {
+  if (!standAction) return;
+  const previous = audioAnimationAction;
+  audioAnimationAction = null;
+  if (previous && previous !== standAction) {
+    if (immediate) previous.stop();
+    else previous.fadeOut(0.22);
+  }
+  standAction.enabled = true;
+  standAction.setLoop(THREE.LoopRepeat, Infinity);
+  standAction.clampWhenFinished = false;
+  standAction.setEffectiveWeight(1);
+  standAction.setEffectiveTimeScale(normalizedAnimationName(standClipName) === 'agree' ? 0.42 : 1);
+  if (!standAction.isRunning()) standAction.reset().play();
+  if (!immediate) standAction.fadeIn(0.22);
+}
+
+function playRandomAudioAnimation() {
+  if (!mixer || !audioAnimationClips.length) return;
+  let candidates = audioAnimationClips;
+  if (candidates.length > 1 && lastAudioAnimationName) {
+    const filtered = candidates.filter((clip) => clip.name !== lastAudioAnimationName);
+    if (filtered.length) candidates = filtered;
+  }
+  const clip = candidates[Math.floor(Math.random() * candidates.length)];
+  if (!clip) return;
+  lastAudioAnimationName = clip.name;
+
+  const next = mixer.clipAction(clip);
+  const previous = audioAnimationAction || standAction;
+  audioAnimationAction = next;
+  next.enabled = true;
+  next.reset();
+  next.setLoop(THREE.LoopRepeat, Infinity);
+  next.clampWhenFinished = false;
+  next.setEffectiveWeight(1);
+  next.setEffectiveTimeScale(1);
+  next.play();
+  if (previous && previous !== next) next.crossFadeFrom(previous, 0.2, false);
+}
+
+function stopAudioAnimation() {
+  playStandAnimation();
+}
+
 function setupAnimations(gltf) {
   mixer = new THREE.AnimationMixer(gltf.scene);
   const clips = new Map(gltf.animations.map(clip => [clip.name, clip]));
@@ -2171,6 +2376,15 @@ function setupAnimations(gltf) {
     talkAction.setLoop(THREE.LoopRepeat, Infinity);
   }
 
+  const standClip = chooseStandClip(gltf.animations);
+  standClipName = standClip?.name || '';
+  standAction = standClip ? mixer.clipAction(standClip) : null;
+  audioAnimationAction = null;
+  audioAnimationClips = chooseAudioAnimationClips(gltf.animations, standClip);
+  lastAudioAnimationName = '';
+  playStandAnimation({ immediate: true });
+  if (isPresenterAudioPlaying()) playRandomAudioAnimation();
+
   breastClipActions.clear();
   gltf.animations
     .filter(clip => /^Breast_Jelly_/i.test(clip.name))
@@ -2186,6 +2400,8 @@ function setupAnimations(gltf) {
       breastClipActions.set(clip.name, { clip, action });
     });
 
+  console.info('[animation] stand:', standClipName || 'nenhum');
+  console.info('[animation] reações de áudio:', audioAnimationClips.map(clip => clip.name));
   console.info('[jelly] clips carregados:', [...breastClipActions.keys()]);
 }
 
@@ -2410,7 +2626,7 @@ function rotateModelFromPointer(dx, dy, dtSeconds) {
 }
 
 function onPointerDown(event) {
-  if (event.button !== 0 || !modelRoot || accessoryEditEnabled || transformDragging) return;
+  if (event.button !== 0 || !modelRoot) return;
   const hit = closestBreast(event);
   const now = performance.now();
 
@@ -2444,7 +2660,6 @@ function onPointerDown(event) {
 }
 
 function onPointerMove(event) {
-  if (accessoryEditEnabled || transformDragging) return;
   const now = performance.now();
 
   if (breastPointerDrag && event.pointerId === breastPointerDrag.pointerId) {
@@ -2511,292 +2726,28 @@ renderer.domElement.addEventListener('wheel', (event) => {
   injectBreastPhysics(0, Math.sign(event.deltaY || 0) * 10, 0.7);
 }, { passive: true });
 
-window.addEventListener('keydown', (event) => {
-  if (!accessoryEditEnabled || !game.wardrobeActive) return;
-  if (event.target?.matches?.('input, textarea, select')) return;
-  const key = event.key.toLowerCase();
-  const mode = key === 'w' ? 'translate' : key === 'e' ? 'rotate' : key === 'r' ? 'scale' : null;
-  if (!mode) return;
-  activeTransformMode = mode;
-  accessoryTransformControls?.setMode(mode);
-  accessoryTransformControls?.setSpace(mode === 'translate' ? 'world' : 'local');
-  updateEditTargetUI();
-  event.preventDefault();
-});
+
 
 const loader = new GLTFLoader();
-const accessoryLoader = new GLTFLoader();
-const accessoryCache = new Map();
-const equippedAccessories = { hat: null, glasses: null, shirt: null };
-let outfitApplyToken = 0;
-let finalAudio = null;
-
-const builtInAccessoryNames = ['bone_azul', 'sutia_azul_renda', 'oculos_tartaruga_marrom'];
-
-const hairNodesHiddenByHat = Array.isArray(config.accessoryOcclusion?.hatHideNodes)
-  ? config.accessoryOcclusion.hatHideNodes
-  : ['tripo_part_1', 'tripo_part_8', 'tripo_part_10'];
-const braBodyNodes = Array.isArray(config.accessoryOcclusion?.shirtBodyNodes)
-  ? config.accessoryOcclusion.shirtBodyNodes
-  : ['tripo_part_0', 'tripo_part_21'];
-const hatHideHairIds = new Set(
-  Array.isArray(config.accessoryOcclusion?.hatHideHairIds)
-    ? config.accessoryOcclusion.hatHideHairIds
-    : ['bone_azul', 'bone_preto', 'bucket_vermelho', 'gorro_cinza'],
-);
-const originalHairVisibility = new Map();
-
-function setHatHairOcclusion() {
-  // A cabeça/cabelo do personagem deve permanecer exatamente como no GLB original.
-  // A antiga barreira de acessórios escondia partes reais do modelo e foi desativada.
-  if (!modelRoot) return;
-  hairNodesHiddenByHat.forEach((name) => {
-    const object = modelRoot.getObjectByName(name);
-    if (!object) return;
-    if (!originalHairVisibility.has(name)) originalHairVisibility.set(name, object.visible);
-    object.visible = originalHairVisibility.get(name);
-  });
-}
-
-function applyStencilExclusionToObject(object, stencilRef, stencilMask) {
-  if (!object?.isMesh) return;
-  const source = Array.isArray(object.material) ? object.material : [object.material];
-  const prepared = source.map((material) => {
-    if (!material) return material;
-    const clone = material.clone();
-    clone.stencilWrite = true;
-    clone.stencilRef = stencilRef;
-    clone.stencilFunc = THREE.NotEqualStencilFunc;
-    clone.stencilFuncMask = stencilMask;
-    clone.stencilWriteMask = 0x00;
-    clone.stencilFail = THREE.KeepStencilOp;
-    clone.stencilZFail = THREE.KeepStencilOp;
-    clone.stencilZPass = THREE.KeepStencilOp;
-    clone.needsUpdate = true;
-    return clone;
-  });
-  object.material = Array.isArray(object.material) ? prepared : prepared[0];
-}
-
-function prepareBodyStencilForBarriers() {
-  if (!modelRoot) return;
-
-  // Bit 1 = chapéus/bonés. Só o cabelo testa esse bit.
-  for (const name of hairNodesHiddenByHat) {
-    applyStencilExclusionToObject(modelRoot.getObjectByName(name), 0x01, 0x01);
-  }
-
-  // Bit 2 = camisas/tops. Só torso + seios testam esse bit, então braços e
-  // outras partes do corpo continuam podendo passar naturalmente na frente.
-  for (const name of braBodyNodes) {
-    applyStencilExclusionToObject(modelRoot.getObjectByName(name), 0x02, 0x02);
-  }
-}
-
-function makeBarrierMaterial(sourceMaterial, stencilRef, stencilMask) {
-  const material = new THREE.MeshBasicMaterial({
-    map: sourceMaterial?.map || null,
-    alphaMap: sourceMaterial?.alphaMap || null,
-    alphaTest: Math.max(0.01, Number(sourceMaterial?.alphaTest) || 0),
-    side: THREE.DoubleSide,
-    colorWrite: false,
-    depthWrite: false,
-    depthTest: false,
-    stencilWrite: true,
-    stencilRef,
-    stencilFuncMask: stencilMask,
-    stencilWriteMask: stencilMask,
-    stencilFunc: THREE.AlwaysStencilFunc,
-    stencilFail: THREE.ReplaceStencilOp,
-    stencilZFail: THREE.ReplaceStencilOp,
-    stencilZPass: THREE.ReplaceStencilOp,
-  });
-  material.transparent = false;
-  material.toneMapped = false;
-  return material;
-}
-
-function prepareAccessoryAntiClipping(instance, category) {
-  if (!instance) return;
-  const barrierEnabled = config.accessoryOcclusion?.enabled !== false
-    && ['hat', 'shirt'].includes(category);
-  const stencilRef = category === 'hat' ? 0x01 : 0x02;
-  const stencilMask = stencilRef;
-
-  const meshes = [];
-  instance.traverse((object) => {
-    if (object.isMesh && !object.userData?.isAccessoryBarrier) meshes.push(object);
-  });
-
-  for (const mesh of meshes) {
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    const visibleMaterials = materials.map((material) => {
-      if (!material) return material;
-      const clone = material.clone();
-      clone.polygonOffset = true;
-      clone.polygonOffsetFactor = category === 'shirt' ? -3.5 : -2.0;
-      clone.polygonOffsetUnits = category === 'shirt' ? -5.0 : -3.0;
-      clone.needsUpdate = true;
-      return clone;
-    });
-    mesh.material = Array.isArray(mesh.material) ? visibleMaterials : visibleMaterials[0];
-    mesh.renderOrder = 20;
-
-    if (!barrierEnabled) continue;
-    const sourceMaterial = visibleMaterials[0];
-    const barrier = new THREE.Mesh(
-      mesh.geometry,
-      makeBarrierMaterial(sourceMaterial, stencilRef, stencilMask),
-    );
-    barrier.name = `Barrier.${category}.${mesh.name || 'mesh'}`;
-    barrier.userData.isAccessoryBarrier = true;
-    barrier.renderOrder = -100;
-    barrier.frustumCulled = false;
-    mesh.add(barrier);
-  }
-}
-
-function hideReferenceAccessories() {
-  if (!modelRoot) return;
-  builtInAccessoryNames.forEach((name) => {
-    const obj = modelRoot.getObjectByName(name);
-    if (obj) obj.visible = false;
-  });
-}
-
-function accessoryCategoryLabel(category) {
-  if (category === 'hat') return 'o acessório da cabeça';
-  if (category === 'glasses') return 'os óculos';
-  if (category === 'shirt') return 'a camisa';
-  return 'um acessório';
-}
-
-function removeOneAccessory(player) {
-  if (!player) return '';
-  if (!Array.isArray(player.removedAccessories)) player.removedAccessories = [];
-  const order = Array.isArray(config.accessoryRemovalOrder) && config.accessoryRemovalOrder.length
-    ? config.accessoryRemovalOrder
-    : ['glasses', 'hat', 'shirt'];
-  const category = order.find((key) => !player.removedAccessories.includes(key));
-  if (!category) return '';
-  player.removedAccessories.push(category);
-  return accessoryCategoryLabel(category);
-}
-
-function removeEquippedAccessory(category) {
-  const current = equippedAccessories[category];
-  if (accessoryTransformControls?.object === current) accessoryTransformControls.detach();
-  if (current?.parent) current.parent.remove(current);
-  equippedAccessories[category] = null;
-}
-
-function removeAllEquippedAccessories() {
-  for (const category of Object.keys(equippedAccessories)) removeEquippedAccessory(category);
-}
-
-function loadAccessoryTemplate(path) {
-  if (!path) return Promise.resolve(null);
-  if (!accessoryCache.has(path)) {
-    const url = new URL(path, window.location.href).href;
-    accessoryCache.set(path, new Promise((resolve, reject) => {
-      accessoryLoader.load(url, (gltf) => {
-        gltf.scene.traverse((obj) => {
-          if (obj.isMesh) {
-            obj.frustumCulled = false;
-            obj.castShadow = false;
-            obj.receiveShadow = false;
-          }
-        });
-        resolve(gltf.scene);
-      }, undefined, reject);
-    }));
-  }
-  return accessoryCache.get(path);
-}
-
-async function equipAccessory(category, item, token) {
-  const current = equippedAccessories[category];
-
-  // Keep the same pivot alive while polling/rendering the wardrobe. Recreating
-  // it every 350 ms detached TransformControls, which made the gizmo look like
-  // it could not move the accessory.
-  if (current && item
-      && current.userData?.accessoryId === (item.id || item.path)
-      && current.userData?.accessoryPath === item.path) {
-    if (accessoryEditEnabled && game.wardrobeActive && activeEditCategory === category
-        && accessoryTransformControls?.object !== current) {
-      attachTransformToActiveAccessory();
-    }
-    return current;
-  }
-
-  removeEquippedAccessory(category);
-  if (!modelRoot || !item) return null;
-  try {
-    const template = await loadAccessoryTemplate(item.path);
-    if (!template || token !== outfitApplyToken || !modelRoot) return null;
-    const rawInstance = template.clone(true);
-    rawInstance.name = `AccessoryMesh.${category}.${item.id || 'item'}`;
-    const pivot = createGeometryOriginPivot(rawInstance, category, item);
-    if (!pivot || token !== outfitApplyToken || !modelRoot) {
-      if (pivot?.parent) pivot.parent.remove(pivot);
-      return null;
-    }
-    pivot.userData.accessoryId = item.id || item.path;
-    pivot.userData.accessoryPath = item.path;
-    pivot.userData.accessoryCategory = category;
-    applyBaseOrSavedAccessoryTransform(pivot, category, item);
-    equippedAccessories[category] = pivot;
-
-    if (accessoryEditEnabled && game.wardrobeActive && activeEditCategory === category) {
-      requestAnimationFrame(() => attachTransformToActiveAccessory());
-    }
-    return pivot;
-  } catch (error) {
-    console.error(`[acessório] falha ao carregar ${category}:`, item.path, error);
-    return null;
-  }
-}
-
-function applyPlayerOutfit(player) {
+function applyPlayerCharacter(player) {
   if (!player || game.finale) return;
   const desiredUrl = desiredCharacterUrl(player);
-  if (!modelRoot || currentCharacterUrl !== desiredUrl) {
-    loadCharacterForPlayer(player);
-    return;
-  }
-  const token = ++outfitApplyToken;
-  const removed = new Set(Array.isArray(player.removedAccessories) ? player.removedAccessories : []);
-  const hatList = accessoryList('hat');
-  const hatIndex = clamp(Number(player.outfit?.hat) || 0, 0, Math.max(0, hatList.length - 1));
-  const activeHat = removed.has('hat') ? null : hatList[hatIndex];
-  setHatHairOcclusion(Boolean(activeHat && hatHideHairIds.has(activeHat.id)));
-
-  for (const category of ['hat', 'glasses', 'shirt']) {
-    const list = accessoryList(category);
-    const index = clamp(Number(player.outfit?.[category]) || 0, 0, Math.max(0, list.length - 1));
-    const item = removed.has(category) ? null : list[index];
-    equipAccessory(category, item, token);
-  }
-  updateEditTargetUI();
+  if (!modelRoot || currentCharacterUrl !== desiredUrl) loadCharacterForPlayer(player);
 }
 
-function startFinale({ remote = false } = {}) {
+async function startFinale({ remote = false } = {}) {
   if (game.finale) return;
   game.finale = true;
   game.phase = 'finale';
   if (multiplayer.active && !remote) pushMultiplayerSnapshot('finale');
-  setAccessoryEditing(false);
   game.wardrobeActive = false;
   clearTimeout(blinkTimer);
-  removeAllEquippedAccessories();
-  setHatHairOcclusion(false);
-  hideReferenceAccessories();
 
   if (audio) {
     audio.pause();
     audio.currentTime = 0;
     audioOrbButton?.classList.remove('is-playing');
+    stopAudioAnimation();
   }
 
   document.body.classList.add('is-finale');
@@ -2823,19 +2774,74 @@ function startFinale({ remote = false } = {}) {
   if (config.finalAudio) {
     finalAudio = new Audio(config.finalAudio);
     finalAudio.preload = 'auto';
+    finalAudio.volume = masterVolume;
     if (talkAction) talkAction.reset().play();
+    playRandomAudioAnimation();
     finalAudio.play().catch((error) => {
       console.warn('Áudio final aguardando gesto do usuário:', error);
+      stopAudioAnimation();
     });
-    finalAudio.addEventListener('ended', () => talkAction?.stop(), { once: true });
+    finalAudio.addEventListener('ended', () => {
+      talkAction?.stop();
+      stopAudioAnimation();
+    }, { once: true });
   }
+
+  if (game.roundState && !game.roundState.finalized) finalizeCurrentRound({ solved: false });
+  const record = await finalizeMatchHistory();
+  const summary = record || {
+    players: game.players.map((player) => ({ name: player.name, score: player.score || 0 })),
+    winner: [...game.players].sort((a, b) => (b.score || 0) - (a.score || 0))[0],
+    rounds: game.session?.rounds || [],
+    durationMs: game.session ? Date.now() - (game.session.startedAtMs || Date.now()) : 0,
+  };
+  setTimeout(() => {
+    platformUI.showResults(summary, {
+      playAgain: async (sameSettings) => {
+        if (multiplayer.active && multiplayer.hostId !== multiplayer.playerId) {
+          setToast('O host controla a próxima partida', 'bad');
+          return;
+        }
+        document.body.classList.remove('is-finale');
+        gameShell?.classList.remove('is-finale');
+        finalAudio?.pause();
+        stopAudioAnimation();
+        game.finale = false;
+        game.phase = 'spin';
+        loadCharacterForPlayer(currentPlayer());
+        if (sameSettings) {
+          await startConfiguredMatch(game.setup);
+        } else {
+          const setup = await platformUI.openSetup({ multiplayer: multiplayer.active, host: !multiplayer.active || multiplayer.hostId === multiplayer.playerId });
+          if (setup) await startConfiguredMatch(setup);
+        }
+      },
+      menu: () => location.reload(),
+    });
+  }, 950);
 }
 let currentCharacterUrl = '';
 let characterLoadToken = 0;
 
+function disposeCharacterResources(root) {
+  if (!root) return;
+  root.traverse((object) => {
+    if (!object.isMesh) return;
+    object.geometry?.dispose?.();
+    const materials = Array.isArray(object.material) ? object.material : [object.material];
+    for (const material of materials) {
+      if (!material) continue;
+      for (const value of Object.values(material)) {
+        if (value?.isTexture) value.dispose?.();
+      }
+      material.dispose?.();
+    }
+  });
+}
+
 function desiredCharacterUrl(player = currentPlayer()) {
   const character = characterForPlayer(player);
-  return new URL(character?.path || config.modelPath || './assets/model/lucas.glb', window.location.href).href;
+  return new URL(character?.path || config.modelPath || './assets/model/silvioburstoanimado.glb', window.location.href).href;
 }
 
 function loadCharacterForPlayer(player = currentPlayer()) {
@@ -2843,15 +2849,20 @@ function loadCharacterForPlayer(player = currentPlayer()) {
   const token = ++characterLoadToken;
   currentCharacterUrl = modelUrl;
   clearTimeout(blinkTimer);
-  removeAllEquippedAccessories();
-  setHatHairOcclusion(false);
   if (modelRoot) {
-    scene.remove(modelRoot);
+    const previousRoot = modelRoot;
+    scene.remove(previousRoot);
+    disposeCharacterResources(previousRoot);
     modelRoot = null;
   }
   mixer = null;
   blinkAction = null;
   talkAction = null;
+  standAction = null;
+  audioAnimationAction = null;
+  audioAnimationClips = [];
+  standClipName = '';
+  lastAudioAnimationName = '';
   breastClipActions.clear();
   breastBones.left = null;
   breastBones.right = null;
@@ -2871,7 +2882,6 @@ function loadCharacterForPlayer(player = currentPlayer()) {
         }
       });
 
-      hideReferenceAccessories();
       const bodyRoot = normalizeModelPlacement() || (modelRoot.getObjectByName('ROOT') || modelRoot);
       fitCamera(bodyRoot);
       setupAnimations(gltf);
@@ -2879,10 +2889,9 @@ function loadCharacterForPlayer(player = currentPlayer()) {
       resizeViewer();
       scheduleBlink();
       const previewPlayer = game.wardrobeActive ? game.players[game.wardrobePlayerIndex] : currentPlayer();
-      applyPlayerOutfit(previewPlayer);
       if (loadingOverlay) loadingOverlay.classList.add('is-hidden');
       viewerHint.textContent = game.wardrobeActive
-        ? `${previewPlayer?.name?.toUpperCase() || 'JOGADOR'} • ESCOLHA O LOOK`
+        ? `${previewPlayer?.name?.toUpperCase() || 'JOGADOR'} • ESCOLHA UMA VERSÃO DO SILVIO`
         : 'GIRE O PERSONAGEM PARA VER MELHOR';
     },
     (progress) => {
@@ -2897,6 +2906,7 @@ function loadCharacterForPlayer(player = currentPlayer()) {
     (error) => {
       console.error('Falha ao carregar o modelo:', modelUrl, error);
       if (loadingText) loadingText.textContent = 'Falha ao carregar o personagem.';
+      setToast('Não foi possível carregar esta versão do Silvio. Escolha outra variante.', 'bad');
     },
   );
 }
@@ -2933,7 +2943,7 @@ function forceLocalRoundWin() {
     const index = localMultiplayerIndex();
     if (index >= 0) game.currentPlayerIndex = index;
   }
-  setToast('SOUOLUCAS • RODADA GANHA', 'good');
+  setToast('SOUOSILVIO • RODADA GANHA', 'good');
   solvePuzzleSuccess();
 }
 
@@ -2942,7 +2952,7 @@ window.addEventListener('keydown', (event) => {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
   if (/^[a-zA-Z]$/.test(event.key)) {
     cheatBuffer = (cheatBuffer + event.key.toLowerCase()).slice(-24);
-    if (cheatBuffer.endsWith('souolucas')) {
+    if (cheatBuffer.endsWith('souosilvio')) {
       cheatBuffer = '';
       forceLocalRoundWin();
       return;

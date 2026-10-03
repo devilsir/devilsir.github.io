@@ -319,28 +319,19 @@ def main() -> None:
         "world remember decoded player visual",
     )
 
-    # The world editor and developer collision switch feed the real movement query.
+    # Keep every internal world block walkable while preserving the outer map boundary
+    # and explicit developer/editor collision overrides. This replacement is idempotent.
     text = replace_once(
         text,
-        '    collides(position, index = this.getState()?.regionIndex || 0) {\n      const radius = 21, border = 64;',
-        '''    collides(position, index = this.getState()?.regionIndex || 0) {
+        '    collides(position, index = this.getState()?.regionIndex || 0) {\n      const radius = 21, border = 64;\n      if (position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius) return true;\n      return this.obstacles(index).some((box) => position.x + radius > box.x && position.x - radius < box.x + box.w && position.y + radius > box.y && position.y - radius < box.y + box.h);\n    }',
+        """    collides(position, index = this.getState()?.regionIndex || 0) {
       if (globalThis.__VOZ_DEV__?.enabled && globalThis.__VOZ_DEV__.flags?.playerCollision === false) return false;
       const editorCollision = globalThis.__VOZ_DEV__?.enabled ? globalThis.__VOZ_DEV__.editor?.worldCollisionAt?.(position, index) : null;
       if (typeof editorCollision === "boolean") return editorCollision;
       const radius = 21, border = 64;
-      if (position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius) return true;
-      const shippedOverride = MapOverridesModule.worldMapOverride(index);
-      const shippedNavigation = MapOverridesModule.worldNavigationValue(index, position.x, position.y, shippedOverride?.metadata?.gridSize || 64);
-      if (["blocked", "hazard", "void"].includes(shippedNavigation)) return true;
-      if ((shippedOverride?.props || []).some((prop) => PropPresentationModule.propBlocksPoint(prop, position.x, position.y, radius))) return true;
-      if (["walkable", "path", "bridge"].includes(shippedNavigation)) return false;''',
-        "world editor collision",
-    )
-    text = replace_once(
-        text,
-        '      if (position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius) return true;\n      return this.obstacles(index).some((box) => position.x + radius > box.x && position.x - radius < box.x + box.w && position.y + radius > box.y && position.y - radius < box.y + box.h);',
-        '      const shippedObstacles = MapOverridesModule.worldMapOverride(index)?.obstacles;\n      const obstacles = Array.isArray(shippedObstacles) ? shippedObstacles : this.obstacles(index);\n      return obstacles.some((box) => position.x + radius > box.x && position.x - radius < box.x + box.w && position.y + radius > box.y && position.y - radius < box.y + box.h);',
-        "world shipped obstacles",
+      return position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius;
+    }""",
+        "world all-terrain walkability",
     )
     text = replace_once(
         text,
@@ -445,10 +436,20 @@ def main() -> None:
       return actor.lastVisibleImg || resolved || actor.img;
     }
     preloadActorSprite(actor) {
-      if (!actor?.img || this.pendingSprites.has(actor.img)) return;
+      if (!actor?.img || !this.cache || this.pendingSprites.has(actor.img)) return;
+      const current = this.cache.get?.(actor.img);
+      if (current) {
+        const resolved = this.cache.aliases?.get?.(actor.img) || actor.img;
+        if (resolved) actor.lastVisibleImg = resolved;
+        return;
+      }
       this.pendingSprites.add(actor.img);
-      this.cache?.loadFirst?.(actor.img, actor.imgFallbacks || []).then(() => {
-        if (!this.battle?.ended) this.render();
+      this.cache.loadFirst?.(actor.img, actor.imgFallbacks || []).then((image) => {
+        if (!image) return;
+        const resolved = this.cache.aliases?.get?.(actor.img) || actor.img;
+        const changed = resolved && actor.lastVisibleImg !== resolved;
+        if (resolved) actor.lastVisibleImg = resolved;
+        if (changed && !this.battle?.ended) this.render();
       }).finally(() => this.pendingSprites.delete(actor.img));
     }
     render() {

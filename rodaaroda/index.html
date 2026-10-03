@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="dark">
   <title>Roda a Roda</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=20261003-clean3">
   <script type="importmap">
   {
     "imports": {
@@ -78,6 +78,7 @@
   </section>
 
   <main class="game-shell is-setup">
+    <div class="show-tools" aria-label="Controles gerais"><button id="centralButton" type="button">CENTRAL</button><button id="fullscreenButton" type="button">TELA CHEIA</button><button id="muteButton" type="button" aria-pressed="false" aria-label="Silenciar áudio">MUDO</button><label class="volume-control"><span>VOLUME</span><input id="volumeControl" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume geral"></label></div>
     <header class="show-header" aria-label="Placar do jogo">
       <div class="score-card">
         <span id="playerDisplay">JOGADOR 1</span>
@@ -106,7 +107,7 @@
     <section class="stage-layout">
       <section class="board-zone" aria-label="Painel do jogo">
         <section id="wardrobePanel" class="wardrobe-panel" hidden aria-live="polite">
-          <div class="wardrobe-eyebrow">MONTE SEU PERSONAGEM</div>
+          <div class="wardrobe-eyebrow">ESCOLHA SEU SILVIO</div>
           <h2 id="wardrobePlayerTitle">JOGADOR 1</h2>
           <section id="multiplayerLobbyBar" class="multiplayer-lobby-bar" hidden>
             <div>
@@ -121,76 +122,18 @@
             <div id="multiplayerLobbyPlayers" class="multiplayer-lobby-players" aria-label="Jogadores do lobby"></div>
           </section>
 
-          <p>Escolha um personagem e um de cada acessório. As palavras agora são leves, aleatórias e do dia a dia.</p>
+          <p>Escolha entre as três versões disponíveis do Silvio. O conteúdo da partida vem da sua biblioteca de temas e perguntas.</p>
 
           <div class="wardrobe-grid">
             <div class="wardrobe-selector" data-wardrobe-category="character">
-              <span class="wardrobe-label">PERSONAGEM</span>
+              <span class="wardrobe-label">VERSÃO</span>
               <div class="wardrobe-picker">
                 <button type="button" class="wardrobe-arrow" data-character-prev aria-label="Personagem anterior">‹</button>
                 <strong id="wardrobeCharacterName">—</strong>
                 <button type="button" class="wardrobe-arrow" data-character-next aria-label="Próximo personagem">›</button>
               </div>
             </div>
-
-            <div class="wardrobe-selector" data-wardrobe-category="hat">
-              <span class="wardrobe-label">CABEÇA</span>
-              <div class="wardrobe-picker">
-                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="hat" aria-label="Chapéu anterior">‹</button>
-                <strong id="wardrobeHatName">—</strong>
-                <button type="button" class="wardrobe-arrow" data-wardrobe-next="hat" aria-label="Próximo chapéu">›</button>
-              </div>
-            </div>
-
-            <div class="wardrobe-selector" data-wardrobe-category="glasses">
-              <span class="wardrobe-label">ÓCULOS</span>
-              <div class="wardrobe-picker">
-                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="glasses" aria-label="Óculos anterior">‹</button>
-                <strong id="wardrobeGlassesName">—</strong>
-                <button type="button" class="wardrobe-arrow" data-wardrobe-next="glasses" aria-label="Próximo óculos">›</button>
-              </div>
-            </div>
-
-            <div class="wardrobe-selector" data-wardrobe-category="shirt">
-              <span class="wardrobe-label">CAMISA</span>
-              <div class="wardrobe-picker">
-                <button type="button" class="wardrobe-arrow" data-wardrobe-prev="shirt" aria-label="Camisa anterior">‹</button>
-                <strong id="wardrobeShirtName">—</strong>
-                <button type="button" class="wardrobe-arrow" data-wardrobe-next="shirt" aria-label="Próxima camisa">›</button>
-              </div>
-            </div>
           </div>
-
-          <section class="wardrobe-edit-panel" aria-label="Ajuste fino dos acessórios">
-            <label class="wardrobe-edit-toggle" for="accessoryEditToggle">
-              <input id="accessoryEditToggle" type="checkbox">
-              <span class="wardrobe-edit-check" aria-hidden="true"></span>
-              <span>
-                <strong>EDIÇÃO DE ENCAIXE</strong>
-                <small>Mover, rotacionar e escalonar o acessório no personagem</small>
-              </span>
-            </label>
-
-            <div id="accessoryEditTools" class="wardrobe-edit-tools" hidden>
-              <div class="wardrobe-edit-targets" aria-label="Acessório para editar">
-                <button type="button" data-edit-target="hat">CABEÇA</button>
-                <button type="button" data-edit-target="glasses">ÓCULOS</button>
-                <button type="button" data-edit-target="shirt">CAMISA</button>
-              </div>
-
-              <div class="wardrobe-edit-modes" aria-label="Ferramenta de transformação">
-                <button type="button" data-transform-mode="translate">MOVER</button>
-                <button type="button" data-transform-mode="rotate">ROTACIONAR</button>
-                <button type="button" data-transform-mode="scale">ESCALONAR</button>
-                <button id="accessoryResetButton" type="button" class="is-reset">RESETAR</button>
-              </div>
-
-              <div class="wardrobe-edit-status">
-                <span id="accessoryEditStatus">Editando: cabeça</span>
-                <small>Os ajustes ficam salvos automaticamente para cada acessório.</small>
-              </div>
-            </div>
-          </section>
 
           <div class="wardrobe-progress">
             <span id="wardrobeProgress">JOGADOR 1 DE 1</span>
@@ -205,6 +148,12 @@
           <span id="categoryDisplay">—</span>
         </div>
 
+        <section class="question-clue" aria-live="polite">
+          <small>PERGUNTA</small>
+          <strong id="questionDisplay">Escolha uma partida para começar.</strong>
+          <div id="hintDisplay" class="hint-display" hidden></div>
+        </section>
+
         <div class="status-line">
           <div>
             <small>RODA</small>
@@ -218,9 +167,11 @@
 
         <div class="actions-row">
           <button id="spinButton" class="game-button game-button--spin" type="button">GIRAR RODA</button>
+          <button id="hintButton" class="game-button game-button--hint" type="button">DICA</button>
           <button id="solveButton" class="game-button" type="button">RESOLVER</button>
           <button id="newRoundButton" class="game-button game-button--danger" type="button">NOVA RODADA</button>
         </div>
+        <div id="scoreFeedback" class="score-feedback" aria-live="polite"></div>
 
         <div class="solve-panel" id="solvePanel" hidden>
           <input id="solveInput" type="text" placeholder="Digite a frase inteira" autocomplete="off">
@@ -263,7 +214,15 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </main>
 
-  <script src="./config.js"></script>
-  <script type="module" src="./app.js"></script>
+  <script>
+    window.RODA_A_RODA_BUILD = '20261003-clean3';
+    try {
+      navigator.serviceWorker?.getRegistrations?.().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+      }).catch(() => {});
+    } catch (_) {}
+  </script>
+  <script src="./config.js?v=20261003-clean3"></script>
+  <script type="module" src="./app.js?v=20261003-clean3"></script>
 </body>
 </html>
