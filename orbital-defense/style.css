@@ -6,3 +6,75 @@
 @media(max-width:600px){.app-shell{padding:10px 8px 0}.topbar{flex-wrap:wrap;margin-bottom:12px}.brand-mark{width:34px;height:34px;font-size:22px}.brand-mark span{font-size:13px;right:4px}.brand-mark:after{inset:5px -6px}.brand-wrap{gap:10px}h1{font-size:20px}.brand-wrap p{font-size:8px;max-width:none}.main-nav{width:100%;justify-content:space-between;border-bottom:1px solid #bd8dea29;padding-bottom:4px;margin-top:3px}.main-nav button{font-size:10px;padding:7px 9px}.main-nav #settingsBtn{font-size:17px}.command-bar{padding:11px;gap:8px}.mission-heading strong{font-size:11px}.panel-kicker{font-size:7px}.primary-btn{font-size:10px;padding:10px 11px}.play-controls{gap:5px}.secondary-control{padding:9px;font-size:9px}.hud{gap:8px;padding-top:10px}.hud-pill{min-width:0;grid-template-columns:17px auto;column-gap:4px;grid-template-rows:19px 11px}.hud-pill>span:not(.hud-icon){font-size:16px}.hud-pill img,.hud-icon{width:17px;height:20px;font-size:18px}.hud-pill small{font-size:6px}.mission-timeline{gap:10px;padding:0 11px;height:26px}.mission-timeline>span{font-size:6px}.game-stage{aspect-ratio:1.5}.tutorial-bubble{width:220px;max-width:59%;gap:6px}.tutorial-bubble .panel-kicker{font-size:5px}.tutorial-bubble p{font-size:7px;line-height:1.4}.tutorial-bubble img{display:none}.tutorial-bubble button{font-size:14px}.boss-bar{width:200px;max-width:53%;left:72%;top:8px;padding:7px}.boss-bar>div:first-child{flex-direction:column;gap:3px;margin-bottom:4px}.power-rail{bottom:7px;right:8px;gap:4px}.power-rail button{padding:3px 5px;border-radius:5px}.power-rail button>span{font-size:13px}.power-rail b{font-size:6px}.status-strip{font-size:8px;gap:8px}.status-strip>span{display:none}.wave-preview>.panel-kicker{flex-basis:70px;font-size:6px}.incoming-item img{width:25px;height:25px}.incoming-item>span{font-size:7px}.incoming-item b{font-size:8px}.workspace{gap:11px}.deck-panel{padding:13px 10px 10px}.deck-heading h2{font-size:15px}.rail-hint{font-size:8px}.unit-card{flex-basis:125px;min-width:125px;min-height:153px;padding:8px}.unit-card img{height:54px;width:64px}.unit-card strong{font-size:10px}.unit-meta p{font-size:7px}.rate-chip{font-size:6px}.deck-foot{gap:12px}.physics-card strong{font-size:9px;white-space:normal}.physics-card p{font-size:8px}.deck-foot .secondary-btn{font-size:8px;padding:8px}.tower-panel{width:230px;bottom:38px;right:8px;max-height:calc(100% - 48px)}.tower-panel-head img{width:36px;height:36px}.tower-panel-head strong{font-size:11px}.tower-panel-stats>span{font-size:9px;padding:6px}.tower-panel-stats b{font-size:6px}.tower-upgrade-preview{font-size:8px}.tower-level{font-size:7px}.tower-panel-head .panel-kicker{font-size:6px}.tower-panel-actions{margin-top:7px}.branch-options{gap:5px}.branch-option{padding:6px}.branch-option strong{font-size:9px}.branch-option span{font-size:7px}.toast{font-size:8px;bottom:45px;padding:7px 10px;max-width:85%}.modal{padding:10px}.modal-card{padding:20px;max-height:calc(100dvh - 20px);border-radius:13px}.mentor{gap:12px}.mentor img{width:50px;height:80px}.mentor h2{font-size:19px}.mentor.compact img{width:36px;height:59px}.mentor.compact h2{font-size:17px}.quiz-mentor p{font-size:9px}.modal-card>p{font-size:11px}.quiz-option{font-size:11px;padding:10px}.challenge-controls .secondary-control{font-size:8px;padding:8px}.challenge-controls label{font-size:9px;gap:5px}.simulation-readout{font-size:9px;padding:8px}.quiz-feedback{font-size:10px;padding:11px}.formula-box{padding:15px;margin:15px 0}.result-stats{gap:5px}.result-stats span{font-size:17px}.result-stats small{font-size:7px}.hub-heading{margin-bottom:18px}.hub-heading h2{font-size:23px}.hub-heading p{font-size:10px}.campaign-summary{gap:20px;padding:13px;max-height:98px}.campaign-summary strong{font-size:23px}.campaign-summary span{font-size:7px}.campaign-summary img{height:90px;width:49px}.campaign-summary small{font-size:10px}.campaign-grid{gap:8px}.campaign-node{min-height:155px;padding:13px}.campaign-node strong{font-size:11px}.chapter-index{font-size:22px}.extra-modes{grid-template-columns:1fr}.research-grid{grid-template-columns:1fr}.codex-layout{grid-template-columns:1fr}.codex-list{max-height:220px}.codex-details{min-height:300px;padding:15px}.settings-grid{grid-template-columns:1fr;gap:10px}.save-actions>span{width:100%;flex-basis:100%}.debug-grid{grid-template-columns:1fr}.controls-guide p{font-size:10px}.lab-controls{gap:7px}.lab-controls label{font-size:9px;padding:9px}.scientific-note{font-size:9px}.gravity-result{font-size:9px}.gravity-result strong{font-size:19px}footer{font-size:6px;gap:10px}.footer-dot{padding:0 3px}footer>span:last-child{max-width:45%;text-align:right}}
 
 .moon-options{display:grid;gap:5px;margin:10px 0}.moon-options>span{font-size:9px;color:#c8d3ef}.moon-upgrade{border:1px solid #9abcea44;border-radius:6px;background:#799cbe10;padding:7px;color:#c9dcf4;text-align:left;font-size:8px}
+
+
+/* Guided tutorial -------------------------------------------------------- */
+.tutorial-guide{position:fixed;inset:0;z-index:2600;pointer-events:none}.tutorial-shade{position:fixed;background:#05020bc7;backdrop-filter:blur(1.5px);pointer-events:auto;transition:left .24s ease,top .24s ease,width .24s ease,height .24s ease}.tutorial-spotlight{position:fixed;border:2px solid #f4cf7a;border-radius:16px;box-shadow:0 0 0 3px #c88dff36,0 0 34px #d99cff73,inset 0 0 24px #f4ca7716;pointer-events:none;transition:left .24s ease,top .24s ease,width .24s ease,height .24s ease;animation:tutorialPulse 1.35s ease-in-out infinite}.tutorial-pointer{position:fixed;z-index:2602;color:#f6cf79;font-size:31px;line-height:1;text-shadow:0 0 14px #d999ff;pointer-events:none;animation:tutorialArrow 1s ease-in-out infinite}.tutorial-card{position:fixed;z-index:2604;width:min(390px,calc(100vw - 24px));padding:18px 18px 15px;background:linear-gradient(150deg,#171020fa,#0b0713fa);border:1px solid #d7aeff79;border-radius:16px;box-shadow:0 18px 70px #000b,0 0 34px #a768e41f;backdrop-filter:blur(18px);pointer-events:auto}.tutorial-card.centered{left:50%!important;top:50%!important;transform:translate(-50%,-50%)}.tutorial-card:not(.centered){transform:none}.tutorial-card-head{display:flex;align-items:center;gap:13px;padding-right:20px}.tutorial-card-head img{width:48px;height:70px;object-fit:contain;object-position:top;filter:drop-shadow(0 7px 10px #0008)}.tutorial-card-head h3{font-size:19px;font-weight:650;margin-top:5px;line-height:1.1}.tutorial-card p{font-size:12px;line-height:1.65;color:#ddd0e8;margin-top:13px}.tutorial-instruction{margin-top:12px;padding:10px 11px;border:1px solid #f3cc7438;border-left:2px solid #f1cb77;border-radius:8px;background:#f1c56e0b;color:#f6dca3;font-size:10px;line-height:1.55;font-weight:620}.tutorial-actions{display:flex;align-items:center;gap:11px;margin-top:14px}.tutorial-actions .primary-btn{padding:9px 12px}.tutorial-skip{position:absolute;right:8px;top:7px;width:31px;height:31px;border:0;background:transparent;color:#b9a4c8;font-size:22px;line-height:1;border-radius:50%}.tutorial-skip:hover{background:#ffffff09}.tutorial-skip-text{border:0;background:transparent;color:#9e89ae;font-size:9px;padding:8px}.tutorial-skip-text:hover{color:#d9c2e8}@keyframes tutorialPulse{0%,100%{box-shadow:0 0 0 3px #c88dff28,0 0 25px #d99cff55,inset 0 0 20px #f4ca770c}50%{box-shadow:0 0 0 6px #c88dff25,0 0 45px #f3c8ff8a,inset 0 0 28px #f4ca7718}}@keyframes tutorialArrow{0%,100%{translate:0 -2px}50%{translate:0 7px}}
+@media(max-width:720px){.tutorial-card{left:10px!important;right:10px!important;bottom:10px!important;top:auto!important;width:auto;transform:none!important;padding:14px}.tutorial-card-head img{width:37px;height:55px}.tutorial-card-head h3{font-size:15px}.tutorial-card p{font-size:10px;line-height:1.5}.tutorial-instruction{font-size:9px;padding:8px}.tutorial-actions{margin-top:10px}.tutorial-pointer{font-size:24px}.tutorial-spotlight{border-radius:12px}}
+@media(prefers-reduced-motion:reduce){.tutorial-spotlight,.tutorial-pointer{animation:none}.tutorial-shade,.tutorial-spotlight{transition:none}}
+
+/* Combat dock: keep the build deck beside the viewer so gameplay never requires page scrolling. */
+.combat-layout{display:grid;grid-template-columns:minmax(0,1fr) clamp(330px,23vw,400px);gap:12px;align-items:start;min-width:0}
+.viewer-stack{min-width:0}
+.combat-dock{width:100%;min-width:0;min-height:0;padding:13px 12px 10px;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;align-self:start}
+.combat-dock .deck-heading{flex:0 0 auto;margin-bottom:9px;gap:10px}
+.combat-dock .deck-heading h2{font-size:15px;margin-top:4px;line-height:1.15}
+.combat-dock .deck-heading h2 span{display:block;margin:4px 0 0;font-size:8px}
+.combat-dock .rail-hint{font-size:8px;white-space:nowrap}
+.combat-dock .rail-hint span{font-size:13px;margin-left:4px}
+.combat-dock .card-deck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:7px;flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:2px 4px 7px 1px;scrollbar-width:thin;overscroll-behavior:contain}
+.combat-dock .card-deck::-webkit-scrollbar{width:6px;height:0}
+.combat-dock .unit-card{width:100%;min-width:0;min-height:96px;height:96px;display:grid;grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto 1fr auto;column-gap:7px;align-items:start;padding:7px 7px 6px;border-radius:8px}
+.combat-dock .unit-card img{grid-column:1;grid-row:1/3;width:42px;height:42px;margin:1px 0 0;align-self:center}
+.combat-dock .unit-info{grid-column:2;grid-row:1/3;min-width:0}
+.combat-dock .unit-card strong{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.combat-dock .unit-meta{display:block;margin-top:3px;min-width:0}
+.combat-dock .unit-meta .damage-tag{display:inline-block;font-size:5px;padding:1px 3px;margin-bottom:3px}
+.combat-dock .unit-meta p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:6.5px;line-height:1.25;min-height:16px}
+.combat-dock .cost-stack{grid-column:1/-1;grid-row:3;align-self:end;padding-top:4px;gap:4px}
+.combat-dock .cost{font-size:8.5px}
+.combat-dock .rate-chip{font-size:5.5px;padding:2px 4px;white-space:nowrap}
+.combat-dock .deck-foot{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;padding-top:8px;margin-top:0}
+.combat-dock .physics-card{display:block;min-width:0}
+.combat-dock .physics-card strong{display:block;font-size:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.combat-dock .physics-card p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:6.5px;line-height:1.35;margin-top:3px}
+.combat-dock .law-badge{display:none}
+.combat-dock .deck-foot .secondary-btn{font-size:7px;padding:7px 8px;max-width:105px;white-space:normal;line-height:1.2}
+
+@media(max-width:1100px) and (min-width:981px){
+ .combat-layout{grid-template-columns:minmax(0,1fr) 300px;gap:9px}
+ .combat-dock{padding:10px 9px 8px}
+ .combat-dock .card-deck{gap:5px}
+ .combat-dock .unit-card{height:91px;min-height:91px;grid-template-columns:36px minmax(0,1fr);column-gap:5px;padding:6px}
+ .combat-dock .unit-card img{width:36px;height:36px}
+ .combat-dock .deck-foot{grid-template-columns:1fr}
+ .combat-dock .deck-foot .secondary-btn{width:100%;max-width:none;padding:6px}
+}
+
+@media(max-width:980px){
+ .combat-layout{display:block}
+ .combat-dock{height:auto!important;margin-top:11px;padding:13px 10px 10px;overflow:hidden}
+ .combat-dock .deck-heading{margin-bottom:10px}
+ .combat-dock .deck-heading h2{font-size:15px}
+ .combat-dock .deck-heading h2 span{display:none}
+ .combat-dock .rail-hint{font-size:8px}
+ .combat-dock .rail-hint span{font-size:14px}
+ .combat-dock .card-deck{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 11px;flex:none}
+ .combat-dock .card-deck::-webkit-scrollbar{height:6px;width:auto}
+ .combat-dock .unit-card{display:flex;flex:0 0 125px;min-width:125px;width:125px;height:auto;min-height:150px;padding:8px}
+ .combat-dock .unit-card img{width:64px;height:54px;margin:0 auto 6px}
+ .combat-dock .unit-info{width:100%}
+ .combat-dock .unit-card strong{font-size:10px}
+ .combat-dock .unit-meta{display:flex;margin-top:4px}
+ .combat-dock .unit-meta .damage-tag{font-size:6px;margin-bottom:0}
+ .combat-dock .unit-meta p{display:block;font-size:7px;min-height:0}
+ .combat-dock .cost-stack{width:100%;margin-top:auto;padding-top:7px}
+ .combat-dock .cost{font-size:10px}
+ .combat-dock .rate-chip{font-size:6px}
+ .combat-dock .deck-foot{display:flex;flex-direction:row;align-items:center;gap:12px}
+ .combat-dock .physics-card{display:flex;align-items:center}
+ .combat-dock .physics-card strong{font-size:9px}
+ .combat-dock .physics-card p{display:block;font-size:8px}
+ .combat-dock .law-badge{display:inline-block}
+ .combat-dock .deck-foot .secondary-btn{max-width:none;font-size:8px;padding:8px}
+}
