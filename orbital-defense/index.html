@@ -26,10 +26,21 @@
   <div class="play-controls"><button id="speedBtn" class="secondary-control" aria-label="Alterar velocidade">1×</button><button id="pauseBtn" class="secondary-control" aria-label="Pausar">Ⅱ</button><button id="startWaveBtn" class="primary-btn">Iniciar batalha <span>↗</span></button></div>
  </div>
  <div class="mission-timeline"><span>ESTABILIDADE DA MISSÃO</span><div class="mission-progress-wrap"><div class="mission-progress"><span id="missionProgress"></span></div><div id="checkpointTrack" class="checkpoint-track"><i></i><i></i><i></i></div></div><span id="difficultyLabel">PADRÃO</span></div>
- <div id="gameStage" class="game-stage">
+ <div class="combat-layout">
+  <div class="viewer-stack">
+   <div id="gameStage" class="game-stage">
   <canvas id="gameCanvas" width="1280" height="720"></canvas>
   <div id="pregameOverlay" class="pregame-overlay"><div class="pregame-orbit" aria-hidden="true"></div><div><strong>SISTEMA EM PREPARAÇÃO</strong><span>Construa com a energia disponível. A geração começa na batalha.</span></div></div>
-  <div id="tutorial" class="tutorial-bubble"><img id="tutorialMentor" src="assets/kepler.png" alt="Johannes Kepler"><div><span class="panel-kicker">KEPLER · PRIMEIRA MISSÃO</span><p id="tutorialText"></p></div><button id="tutorialSkip" aria-label="Ocultar tutorial">×</button></div>
+  <div id="tutorial" class="tutorial-guide hidden" aria-live="polite" aria-label="Tutorial guiado">
+   <div class="tutorial-shade" data-shade="top"></div><div class="tutorial-shade" data-shade="left"></div><div class="tutorial-shade" data-shade="right"></div><div class="tutorial-shade" data-shade="bottom"></div>
+   <div id="tutorialSpotlight" class="tutorial-spotlight" aria-hidden="true"></div><div id="tutorialPointer" class="tutorial-pointer" aria-hidden="true">➜</div>
+   <aside id="tutorialCard" class="tutorial-card">
+    <button id="tutorialSkip" class="tutorial-skip" aria-label="Pular tutorial">×</button>
+    <div class="tutorial-card-head"><img id="tutorialMentor" src="assets/kepler.png" alt="Johannes Kepler"><div><span id="tutorialCounter" class="panel-kicker">TUTORIAL</span><h3 id="tutorialTitle">Primeira órbita</h3></div></div>
+    <p id="tutorialText"></p><div id="tutorialInstruction" class="tutorial-instruction"></div>
+    <div class="tutorial-actions"><button id="tutorialNext" class="primary-btn">Continuar <span>→</span></button><button id="tutorialSkipText" class="tutorial-skip-text">Pular tutorial</button></div>
+   </aside>
+  </div>
   <div id="bossBar" class="boss-bar hidden"><div><strong id="bossName"></strong><span id="bossPhaseLabel"></span></div><div class="boss-meter"><span id="bossHP"></span></div></div>
   <div id="towerPanel" class="tower-panel hidden">
    <button id="towerPanelClose" class="tower-panel-close" aria-label="Fechar inspeção">×</button>
@@ -39,14 +50,16 @@
   </div>
   <div id="powerRail" class="power-rail" aria-label="Poderes ativos"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div><div id="tooltip" class="tooltip"></div>
+   </div>
+   <div class="status-strip"><div><span class="dot live"></span><strong id="statusText">Preparação</strong></div><span id="hintText">Monte sua defesa.</span></div>
+   <div id="wavePreview" class="wave-preview glass"><span class="panel-kicker">SINAIS DE APROXIMAÇÃO</span><div id="incomingEnemies" class="incoming-enemies"></div><span id="laneInfo"></span></div>
+  </div>
+  <section class="deck-panel combat-dock glass" aria-label="Seleção de defensores">
+   <div class="deck-heading"><div><span class="panel-kicker">DEFESA PLANETÁRIA</span><h2>Monte sua órbita<span>Selecione sem sair do campo.</span></h2></div><span class="rail-hint">Role aqui <span aria-hidden="true">↓</span></span></div>
+   <div id="cardDeck" class="card-deck"></div>
+   <div class="deck-foot"><div class="physics-card"><strong id="physicsTitle">Cada rota tem seu tempo.</strong><p id="physicsText">Órbitas circulares ao redor da mesma estrela: v ∝ 1/√r. No jogo, isso inspira a velocidade das cinco rotas.</p><span id="lawBadge" class="law-badge">Física em ação</span></div><button id="labBtn" class="secondary-btn">Laboratório orbital <span>↗</span></button></div>
+  </section>
  </div>
- <div class="status-strip"><div><span class="dot live"></span><strong id="statusText">Preparação</strong></div><span id="hintText">Monte sua defesa.</span></div>
- <div id="wavePreview" class="wave-preview glass"><span class="panel-kicker">SINAIS DE APROXIMAÇÃO</span><div id="incomingEnemies" class="incoming-enemies"></div><span id="laneInfo"></span></div>
-</section>
-<section class="deck-panel glass" aria-label="Seleção de defensores">
- <div class="deck-heading"><div><span class="panel-kicker">DEFESA PLANETÁRIA</span><h2>Monte sua órbita<span>Selecione. Posicione. Evolua.</span></h2></div><span class="rail-hint">Role para explorar <span aria-hidden="true">↔</span></span></div>
- <div id="cardDeck" class="card-deck"></div>
- <div class="deck-foot"><div class="physics-card"><strong id="physicsTitle">Cada rota tem seu tempo.</strong><p id="physicsText">Órbitas circulares ao redor da mesma estrela: v ∝ 1/√r. No jogo, isso inspira a velocidade das cinco rotas.</p><span id="lawBadge" class="law-badge">Física em ação</span></div><button id="labBtn" class="secondary-btn">Laboratório orbital <span>↗</span></button></div>
 </section>
 </main>
 <footer><span>ORBITAL! <span class="footer-dot">·</span> OBSERVE. EXPERIMENTE. DEFENDA.</span><span>1–0 selecionar <span class="footer-dot">·</span> Espaço pausar <span class="footer-dot">·</span> Enter posicionar</span></footer>

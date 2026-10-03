@@ -247,21 +247,21 @@ function updatePreparation(){
 }
 function startStage(index,mode='campaign',modifier=null){
  modal.classList.add('hidden');quizModal.classList.add('hidden');labModal.classList.add('hidden')
- waveIndex=index;gameMode=mode;endlessRound=1;randomModifier=modifier;resetGame(index);saveRun()
+ waveIndex=index;gameMode=mode;endlessRound=1;randomModifier=modifier;resetGame(index);saveRun();if(typeof TutorialGuide!=='undefined'){TutorialGuide.scanUnlocks('campaign');TutorialGuide.resumeUnlocks()}
 }
 
 
 function buildDeck(){
- const scroll=cardDeck.scrollLeft;cardDeck.innerHTML=''
+ const scrollX=cardDeck.scrollLeft,scrollY=cardDeck.scrollTop;cardDeck.innerHTML=''
  for(const [id,u] of Object.entries(unitDefs)){
   const el=document.createElement('button'),unlocked=canPlace(id)
   el.className='unit-card'+(id===selected?' selected':'')+(unlocked?'':' locked');el.dataset.unit=id;el.setAttribute('aria-pressed',id===selected);el.title=u.tip;el.setAttribute('aria-label',`${u.name}, ${u.desc}, ${u.cost} energia${unlocked?'':', ainda bloqueado'}`)
   const cycle=u.kind==='harvest'?`${u.rate.toFixed(1)}s / ciclo`:u.kind==='barrier'?`${u.hp} HP`:u.kind==='moon'?'anexar a planeta':u.kind==='probe'?'radar orbital':`${u.rate.toFixed(1)}s / tiro`
   el.innerHTML=`<img src="${assetPath(imageMap[u.img])}" alt=""><span class="unit-info"><strong>${u.name}</strong><span class="unit-meta"><span class="damage-tag" data-type="${u.damageType}">${u.kind==='barrier'?'BARREIRA':u.kind==='harvest'?'ECONOMIA':damageShort[u.damageType]}</span><p>${u.desc}</p></span></span><span class="cost-stack"><span class="cost">${unlocked?'✦ '+u.cost:'🔒 Pesquisa'}</span><span class="rate-chip">${cycle}</span></span>`
-  el.onclick=()=>{if(!unlocked){showToast(id==='jupiter'?'Júpiter chega no primeiro checkpoint.':'Avance na campanha ou desbloqueie na pesquisa.');return}selected=id;powerMode=null;hideTowerPanel();document.querySelectorAll('.unit-card').forEach(c=>{c.classList.toggle('selected',c.dataset.unit===id);c.setAttribute('aria-pressed',c.dataset.unit===id)});physicsTitle.textContent=u.name+' · '+u.desc;physicsText.textContent=u.tip;lawBadge.textContent=u.kind==='barrier'?'Bloqueio orbital':u.kind==='harvest'?'Economia estelar':damageNames[u.damageType];showToast(`${u.name} selecionado`)}
+  el.onclick=()=>{if(!unlocked){showToast(id==='jupiter'?'Júpiter chega no primeiro checkpoint.':'Avance na campanha ou desbloqueie na pesquisa.');return}selected=id;powerMode=null;hideTowerPanel();document.querySelectorAll('.unit-card').forEach(c=>{c.classList.toggle('selected',c.dataset.unit===id);c.setAttribute('aria-pressed',c.dataset.unit===id)});physicsTitle.textContent=u.name+' · '+u.desc;physicsText.textContent=u.tip;lawBadge.textContent=u.kind==='barrier'?'Bloqueio orbital':u.kind==='harvest'?'Economia estelar':damageNames[u.damageType];showToast(`${u.name} selecionado`);tutorialEvent(id==='miniSun'?'select-miniSun':id==='mercury'?'select-mercury':id==='jupiter'?'select-jupiter':'select-unit')}
   cardDeck.appendChild(el)
  }
- cardDeck.scrollLeft=scroll
+ cardDeck.scrollLeft=scrollX;cardDeck.scrollTop=scrollY
 }
 
 function getTowerStats(tower,levelOverride=null){
@@ -359,7 +359,7 @@ function resetCheckpointUI(){
 }
 
 function resetGame(stage=0){
- waveIndex=Math.max(0,Math.min(7,stage));energy=waves[waveIndex].start+(Progress.has('battery')?120:0);initialHealth=difficultyStats().health;health=initialHealth;running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;defenders=[];enemies=[];projectiles=[];particles=[];energyOrbs=[];floatingTexts=[];spawnQueue=[];passiveTimer=0;orbTimer=0;phaseCompletePending=false;simTime=0;lastUIUpdate=0;saveTimer=0;penaltyBossActive=false;temporaryBuff=0;globalFreeze=0;cinematic=0;shake=0;powerMode=null;orbitConfig={e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0};powerCharges={flare:1,freeze:1,shift:2,slingshot:1,eclipse:1,supernova:1};tutorialStep=0;tutorialDone=waveIndex!==0||Progress.data.achievements.includes('tutorial');hideTowerPanel();resetCheckpointUI();updateHud();missionTitle.textContent=waves[waveIndex].title;startWaveBtn.textContent='Iniciar batalha';startWaveBtn.disabled=false;statusText.textContent='Preparação · simulação congelada';hintText.textContent=waves[waveIndex].dialogue;missionProgress.style.width='0%';pregameOverlay.classList.remove('hidden-start');modalClose.style.display='block';buildDeck();updatePreparation()
+ waveIndex=Math.max(0,Math.min(7,stage));energy=waves[waveIndex].start+(Progress.has('battery')?120:0);initialHealth=difficultyStats().health;health=initialHealth;running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;defenders=[];enemies=[];projectiles=[];particles=[];energyOrbs=[];floatingTexts=[];spawnQueue=[];passiveTimer=0;orbTimer=0;phaseCompletePending=false;simTime=0;lastUIUpdate=0;saveTimer=0;penaltyBossActive=false;temporaryBuff=0;globalFreeze=0;cinematic=0;shake=0;powerMode=null;orbitConfig={e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0};powerCharges={flare:1,freeze:1,shift:2,slingshot:1,eclipse:1,supernova:1};tutorialStep=0;tutorialDone=waveIndex!==0||Progress.data.achievements.includes('tutorial')||!!Progress.data.tutorialDismissed;hideTowerPanel();resetCheckpointUI();updateHud();missionTitle.textContent=waves[waveIndex].title;startWaveBtn.textContent='Iniciar batalha';startWaveBtn.disabled=false;statusText.textContent='Preparação · simulação congelada';hintText.textContent=waves[waveIndex].dialogue;missionProgress.style.width='0%';pregameOverlay.classList.remove('hidden-start');modalClose.style.display='block';buildDeck();updatePreparation()
  if(!Progress.available)showToast('Salvamento local indisponível. Exporte o progresso pelas configurações.')
 }
 
@@ -409,7 +409,7 @@ function spawnSuperboss(phase,checkpoint){
  enemies.push(enemy);Progress.discover('super'+index);penaltyBossActive=true;runStats.superbosses++;AudioSystem.play('boss');shake=.6;cinematic=.7;showToast(`${b.name} · reforço de emergência +180 energia`);energy=Math.min(9999,energy+180);statusText.textContent='⚠ SUPERBOSS · progressão suspensa';updateHud();saveRun()
 }
 
-function behaviorLabel(kind){return ({normal:'trajetória estável',armor:'blindagem pesada',rage:'acelera abaixo de 50% de vida',skater:'trajetória acelerada',shieldRegen:'escudo regenera fora de combate',split:'divide-se ao ser destruído',regen:'regenera fora de combate',phase:'intangibilidade periódica',rogueBoss:'ondas de gravidade e ruptura',binaryBoss:'escudo alternado entre fases',vortex:'distorce projéteis e bloqueia espaços',cometBoss:'acelera e deixa rastro térmico',neutronBoss:'pulsa e desativa construções',solarBoss:'explosões térmicas',heavy:'resiste a empurrões',magnetic:'reduz cadência de torres elétricas',leech:'suprime geração próxima',jumper:'troca de rota',parasite:'desativa Mini Sóis',runner:'acelera no trecho interno',dark:'resiste ao dano convencional',linked:'a perda do par fortalece o sobrevivente'})[kind]||kind}
+function behaviorLabel(kind){return ({normal:'trajetória estável',armor:'blindagem pesada',rage:'acelera abaixo de 50% de vida',skater:'trajetória acelerada',shieldRegen:'escudo regenera fora de combate',split:'divide-se ao ser destruído',regen:'regenera fora de combate',phase:'intangibilidade periódica',rogueBoss:'ruptura gravitacional · na fase 3 empurra construções próximas 1 casa para longe',binaryBoss:'escudo alternado entre fases',vortex:'distorce projéteis e bloqueia espaços',cometBoss:'acelera e deixa rastro térmico',neutronBoss:'pulsa e desativa construções',solarBoss:'explosões térmicas',heavy:'resiste a empurrões',magnetic:'reduz cadência de torres elétricas',leech:'suprime geração próxima',jumper:'troca de rota',parasite:'desativa Mini Sóis',runner:'acelera no trecho interno',dark:'resiste ao dano convencional',linked:'a perda do par fortalece o sobrevivente'})[kind]||kind}
 
 function getCanvasPos(evt){
  const r=canvas.getBoundingClientRect()
@@ -443,7 +443,7 @@ function placeAt(p){
  if(selected==='moon'&&occupied&&!['miniSun','gravity','probe','belt'].includes(occupied.type)){
   if(occupied.moon){showToast('Este planeta já tem uma Lua.');showTowerPanel(occupied);return}if(!canPlace('moon')||energy<unitDefs.moon.cost){showToast('Lua bloqueada ou energia insuficiente.');return}energy-=unitDefs.moon.cost;occupied.moon={level:1,hp:180,maxHp:180,spent:75,phase:0};AudioSystem.play('place');showTowerPanel(occupied);updateHud();saveRun();return
  }
- if(occupied){showTowerPanel(occupied);return}
+ if(occupied){showTowerPanel(occupied);tutorialEvent('tower-inspect');return}
  if(selected==='moon'){showToast('Selecione um planeta existente para anexar a Lua.');return}
  hideTowerPanel();const def=unitDefs[selected];if(!canPlace(selected)){showToast('Desbloqueie este defensor na pesquisa.');return}if(energy<def.cost){showToast('Energia insuficiente');return}
  energy-=def.cost;const tower={id:nextEntityId++,type:selected,lane:cell.lane,col:cell.col,x:cell.x,y:cell.y,level:1,hp:def.hp,maxHp:def.hp,cooldown:def.kind==='harvest'?4:1,pulse:0,spent:def.cost,disabled:0,hitTimer:0};const stats=getTowerStats(tower);tower.hp=stats.maxHp;tower.maxHp=stats.maxHp;defenders.push(tower);if(!runStats.types.includes(selected))runStats.types.push(selected);updateHud();burst(cell.x,cell.y,def.color,12);AudioSystem.play('place');tutorialEvent(def.kind==='harvest'?'miniSun':def.kind==='barrier'?'barrier':'attacker');saveRun()
@@ -453,9 +453,8 @@ canvas.addEventListener('click',e=>placeAt(getCanvasPos(e)))
 function slotBlocked(cell){return enemies.some(e=>e.behavior==='vortex'&&e.bossPhase>=2&&e.phaseClock%9<3&&Math.abs(e.x-cell.x)<145&&Math.abs(e.lane-cell.lane)<=1)}
 function tutorialEvent(event){
  if(tutorialDone||waveIndex!==0||gameMode!=='campaign')return
- const steps=['miniSun','attacker','start','collect','inspect','checkpoint','barrier','upgrade']
- if(event===steps[tutorialStep]){tutorialStep++;if(tutorialStep>=steps.length){tutorialDone=true;if(!Progress.data.achievements.includes('tutorial'))Progress.data.achievements.push('tutorial');Progress.persist()}}
- if(typeof Interface!=='undefined')Interface.tutorial()
+ if(typeof TutorialGuide!=='undefined')TutorialGuide.event(event)
+ else if(typeof Interface!=='undefined')Interface.tutorial()
 }
 
 function armorFactor(type){if(type==='pierce')return .08;if(type==='plasma')return .5;if(type==='gravity')return .65;if(type==='electric')return .7;if(type==='solar')return .55;if(type==='cryo')return .8;return 1}
@@ -507,24 +506,25 @@ function showCheckpoint(phase,cp){
   order.forEach(({text,index})=>{const b=document.createElement('button');b.className='quiz-option';b.textContent=text;b.dataset.choice=index;b.onclick=()=>answerCheckpoint(index);quizOptions.appendChild(b)})
   const preview=document.createElement('canvas');preview.width=640;preview.height=130;preview.className='physics-canvas mini-context';visual.appendChild(preview);Physics.ellipse(preview,.4,Math.PI*.7,{sectors:phase===2||phase===6})
  }else Physics.renderChallenge(q,visual,answerCheckpoint)
- quizModal.classList.remove('hidden');statusText.textContent=`Checkpoint ${cp+1}/3 · simulação pausada`;quizModal.querySelector('button,input')?.focus();saveRun()
+ quizModal.classList.remove('hidden');statusText.textContent=`Checkpoint ${cp+1}/3 · simulação pausada`;if(typeof Interface!=='undefined')Interface.tutorial();quizModal.querySelector('button,input')?.focus();saveRun()
 }
 
 function answerCheckpoint(choice){
  if(!checkpointInProgress||!quizContinue.classList.contains('hidden'))return
  const phase=waveIndex,cp=checkpointIndex,q=questions[phase][cp],correct=q.kind==='choice'?choice===q.correct:choice===true
  quizOptions.querySelectorAll('button').forEach(b=>{b.disabled=true;if(Number(b.dataset.choice)===q.correct)b.classList.add('correct');else if(Number(b.dataset.choice)===choice)b.classList.add('wrong')})
- checkpointStates[cp]=correct?'ok':'failed';checkpointTrack.children[cp].classList.add(correct?'active':'failed');checkpointIndex++;tutorialEvent('checkpoint')
+ checkpointStates[cp]=correct?'ok':'failed';checkpointTrack.children[cp].classList.add(correct?'active':'failed');checkpointIndex++
  if(correct){energy=Math.min(9999,energy+90);runStats.correct++;runStats.score+=250;temporaryBuff=12;Progress.earn(2);AudioSystem.play('correct');quizFeedback.className='quiz-feedback good';quizFeedback.innerHTML=`<strong>✓ Estabilizado · +90 energia · +2 pesquisa · dano +15% por 12s.</strong><br>${q.why}`;pendingSuperboss=null}
  else{AudioSystem.play('wrong');quizFeedback.className='quiz-feedback bad';quizFeedback.innerHTML=`<strong>Configuração incorreta.</strong> ${q.why}<br><br>Um <strong>SUPERBOSS</strong> interromperá os reforços normais até ser derrotado. Se alcançar o núcleo, a missão termina. Você recebe 180 energia de emergência.`;pendingSuperboss={phase,checkpoint:cp}}
- quizContinue.classList.remove('hidden');quizContinue.focus();buildDeck();updateHud();saveRun()
+ quizContinue.classList.remove('hidden');quizContinue.focus();buildDeck();updateHud();saveRun();if(typeof TutorialGuide!=='undefined')TutorialGuide.scanUnlocks('checkpoint')
 }
 
 function closeCheckpoint(){
  if(quizContinue.classList.contains('hidden'))return
  quizModal.classList.add('hidden');paused=false;checkpointInProgress=false
+ tutorialEvent('checkpoint');if(typeof TutorialGuide!=='undefined')TutorialGuide.resumeUnlocks()
  if(pendingSuperboss){const b=pendingSuperboss;pendingSuperboss=null;spawnSuperboss(b.phase,b.checkpoint)}else statusText.textContent='Batalha · sistema ativo'
- updatePreparation();saveRun()
+ updatePreparation();if(typeof Interface!=='undefined')Interface.tutorial();saveRun()
 }
 
 function spawnEnergyOrb(x,y,value=35,life=18){
@@ -537,13 +537,34 @@ function damageTower(d,amount){
  if(d.moon&&d.moon.hp>0){const intercepted=amount*(d.moon.branch==='a'?.45:.3);d.moon.hp-=intercepted;amount-=intercepted;if(d.moon.hp<=0){burst(d.x,d.y,'#e6d9fa',7);d.moon=null}}
  d.hp-=amount
 }
+function defenderContactRadius(d){return d.type==='jupiter'?48:d.type==='saturn'?55:d.type==='gravity'?40:d.type==='miniSun'?32:d.type==='belt'?42:36}
+function enemyContactRadius(e){return Math.max(25,e.size*.42)}
+function contactGap(e,d){return enemyContactRadius(e)+defenderContactRadius(d)}
+function displaceDefenderFromRogueBoss(e,d){
+ // Only the rogue/errant-planet boss is allowed to move a defender.
+ // Push AWAY from the boss so a defender cannot cross through it and ping-pong
+ // between adjacent cells on consecutive gravity pulses.
+ if(e.behavior!=='rogueBoss'||e.bossPhase<3)return false
+ if(d.lastBossDisplaceId===e.id&&simTime-(d.lastBossDisplaceAt||0)<3.8)return false
+ const direction=d.x<e.x?-1:1
+ const col=d.col+direction
+ if(col<0||col>=gridX.length)return false
+ if(defenders.some(n=>n!==d&&n.lane===d.lane&&n.col===col))return false
+ d.col=col;d.x=gridX[col];d.y=curveY(d.lane,d.x);d.lastBossDisplaceId=e.id;d.lastBossDisplaceAt=simTime
+ burst(d.x,d.y,'#ca9aff',10);addText(d.x,d.y-52,'RUPTURA · 1 CASA','#e3bbff')
+ return true
+}
+
 function updateBoss(e,dt){
  const ratio=e.hp/e.maxHp,phase=ratio<.33?3:ratio<.67?2:1
- if(phase>e.bossPhase){e.bossPhase=phase;shake=.3;AudioSystem.play('boss');showToast(`${e.name} · fase ${phase}`);if(e.behavior==='binaryBoss')e.shield=Math.min(e.maxShield,e.shield+e.maxShield*.45)}
+ if(phase>e.bossPhase){e.bossPhase=phase;shake=.3;AudioSystem.play('boss');showToast(e.behavior==='rogueBoss'&&phase===3?`${e.name} · fase 3 · ruptura gravitacional ativa`: `${e.name} · fase ${phase}`);if(e.behavior==='binaryBoss')e.shield=Math.min(e.maxShield,e.shield+e.maxShield*.45)}
  e.abilityTimer-=dt;if(e.abilityTimer>0)return;e.abilityTimer=phase===3?4:6
  const close=defenders.filter(d=>Math.hypot(d.x-e.x,d.y-e.y)<(phase>1?270:170))
  if(e.behavior==='rogueBoss'){
-  for(const d of close){damageTower(d,12*phase);d.disabled=Math.max(d.disabled,1);if(phase===3){const col=d.col+(d.x<e.x?1:-1);if(col>=0&&col<7&&!defenders.some(n=>n!==d&&n.lane===d.lane&&n.col===col)){d.col=col;d.x=gridX[col];d.y=curveY(d.lane,d.x)}}}burst(e.x,e.y,'#ca9aff',15)
+  let displaced=false
+  for(const d of close){damageTower(d,12*phase);d.disabled=Math.max(d.disabled,1);if(phase===3&&displaceDefenderFromRogueBoss(e,d))displaced=true}
+  if(displaced)showToast('Ruptura gravitacional · construção empurrada para longe')
+  burst(e.x,e.y,'#ca9aff',15)
  }
  if(e.behavior==='neutronBoss'){for(const d of close){d.disabled=Math.max(d.disabled,1+phase*.5);damageTower(d,9*phase)}burst(e.x,e.y,'#8edcff',18)}
  if(e.behavior==='cometBoss'||e.behavior==='solarBoss'){for(const d of close)damageTower(d,(e.behavior==='solarBoss'?18:10)*phase);burst(e.x,e.y,'#ffa05e',18)}
@@ -587,6 +608,10 @@ function update(dt){
  if(simTime-lastUIUpdate>.12){lastUIUpdate=simTime;missionProgress.style.width=`${Math.min(100,waveSpawned/Math.max(1,waveTotal)*100)}%`;updateHud();if(typeof Interface!=='undefined')Interface.bossBar()}
  const magnetic=enemies.filter(e=>e.behavior==='magnetic'),suppressors=enemies.filter(e=>e.behavior==='leech'||e.behavior==='parasite')
  for(const d of defenders){
+  // Defenders live on orbital grid cells. Their render/physics position must always
+  // derive from lane+column; only placement, Shift, or the explicit rogueBoss
+  // displacement ability may change those grid coordinates.
+  if(Number.isInteger(d.col)&&Number.isInteger(d.lane)&&gridX[d.col]!==undefined){d.x=gridX[d.col];d.y=curveY(d.lane,d.x)}
   d.disabled=Math.max(0,(d.disabled||0)-dt);d.hitTimer=Math.max(0,(d.hitTimer||0)-dt);if(d.moon)d.moon.phase=(d.moon.phase||0)+dt*1.5
   const u=unitDefs[d.type],stats=getTowerStats(d)
   if(stats.branch.regen&&d.hitTimer<=0)d.hp=Math.min(stats.maxHp,d.hp+stats.branch.regen*dt)
@@ -639,8 +664,8 @@ function update(dt){
   if(e.freeze>0)multiplier=0
   if(globalFreeze>0)multiplier*=Progress.has('powers')?0:.3
   const step=e.speed*multiplier*laneSpeed[e.lane]*e.slow*dt;e.x-=step;e.y=curveY(e.lane,e.x)
-  const blocker=defenders.filter(d=>d.lane===e.lane&&d.hp>0&&e.x>=d.x-20&&e.x<=d.x+44).sort((a,b)=>b.x-a.x)[0]
-  if(blocker){e.x=Math.max(e.x,blocker.x+43);const stats=getTowerStats(blocker);damageTower(blocker,e.contactDps*stats.blockDamageMultiplier*dt);if(stats.branch.reflect)applyDamage(e,stats.branch.reflect*dt,'electric',true)}
+  const blocker=defenders.filter(d=>d.lane===e.lane&&d.hp>0&&e.x>=d.x&&e.x-d.x<=contactGap(e,d)).sort((a,b)=>b.x-a.x)[0]
+  if(blocker){e.x=blocker.x+contactGap(e,blocker);e.y=curveY(e.lane,e.x);const stats=getTowerStats(blocker);damageTower(blocker,e.contactDps*stats.blockDamageMultiplier*dt);if(stats.branch.reflect)applyDamage(e,stats.branch.reflect*dt,'electric',true)}
   if(e.x<sun.x+45){e.hp=0;e.escaped=true;if(!debugState.invincible)health-=e.isSuperboss?Math.max(health,e.coreDamage):e.coreDamage;burst(sun.x+20,e.y,'#ff6a55',15);AudioSystem.play('wrong');shake=.2;showToast(`Núcleo atingido · −${e.coreDamage}`);if(e.isSuperboss)penaltyBossActive=false;if(health<=0){endGame(false);return}}
  }
  const lost=defenders.filter(d=>d.hp<=0);for(const d of lost){if(unitDefs[d.type].kind==='barrier')runStats.barriersLost++;burst(d.x,d.y,'#bc9aff',15);if(selectedTower===d)hideTowerPanel()}defenders=defenders.filter(d=>d.hp>0)
@@ -669,7 +694,7 @@ function finishPhase(){
   if(energy>=800&&!Progress.data.achievements.includes('reserva'))Progress.data.achievements.push('reserva')
   if(waveIndex===7&&!Progress.data.achievements.includes('campanha'))Progress.data.achievements.push('campanha')
  }else if(gameMode==='endless'){Progress.data.endlessBest=Math.max(Progress.data.endlessBest,endlessRound);Progress.earn(3)}else Progress.earn(4)
- Progress.persist();AudioSystem.play('victory');showLesson(waves[waveIndex].lesson)
+ Progress.persist();buildDeck();AudioSystem.play('victory');showLesson(waves[waveIndex].lesson);if(typeof TutorialGuide!=='undefined')TutorialGuide.scanUnlocks('campaign')
  formulaBox.innerHTML=`<div class="rating-stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><div class="result-stats"><span>${runStats.score}<small>pontos</small></span><span>${runStats.kills}<small>inimigos</small></span><span>${runStats.correct}/3<small>descobertas</small></span><span>${health}/${initialHealth}<small>núcleo</small></span></div><p class="result-law">${lessons[waves[waveIndex].lesson].formula}</p>`
  modalAction.textContent=gameMode==='endless'?'Preparar próxima onda':waveIndex===7?'Concluir campanha':'Próximo capítulo';updatePreparation()
 }
@@ -796,8 +821,9 @@ function endGame(win){
 }
 
 function syncDeckHeight(){
- if(!deckPanel)return
- deckPanel.style.height='auto'
+ if(!deckPanel||!gameStage)return
+ if(window.matchMedia('(min-width:981px)').matches)deckPanel.style.height=Math.max(0,Math.round(gameStage.getBoundingClientRect().height))+'px'
+ else deckPanel.style.height='auto'
 }
 
 function updateLab(){const m=+massSlider.value,r=+distanceSlider.value,f=m/(r*r);massOut.textContent=m;distanceOut.textContent=r;forceOut.textContent=f.toFixed(2);gravityPulse.style.width=`${Math.min(100,15+f*160)}%`;gravityPulse.style.opacity=Math.min(1,.25+f*1.5);gravityPlanet.style.transform=`scale(${.8+m*.035})`;document.querySelector('.gravity-line').style.margin=`0 ${Math.max(0,(r-1)*4)}px`}
@@ -816,11 +842,11 @@ towerPanelClose.onclick=hideTowerPanel
 upgradeTowerBtn.onclick=()=>upgradeSelectedTower()
 sellTowerBtn.onclick=sellSelectedTower
 let labWasPaused=false
-labBtn.onclick=()=>{labWasPaused=paused;hideTowerPanel();paused=true;labModal.classList.remove('hidden');updateLab();Physics.labOpen()}
-labClose.onclick=()=>{labModal.classList.add('hidden');paused=labWasPaused}
+labBtn.onclick=()=>{labWasPaused=paused;hideTowerPanel();paused=true;labModal.classList.remove('hidden');updateLab();Physics.labOpen();tutorialEvent('lab')}
+labClose.onclick=()=>{labModal.classList.add('hidden');paused=labWasPaused;if(typeof Interface!=='undefined')Interface.tutorial()}
 massSlider.oninput=updateLab
 distanceSlider.oninput=updateLab
-cardDeck.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();cardDeck.scrollBy({left:e.deltaY,behavior:Progress.data.settings.reduced?'instant':'smooth'})}},{passive:false})
+cardDeck.addEventListener('wheel',e=>{if(window.matchMedia('(max-width:980px)').matches&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();cardDeck.scrollBy({left:e.deltaY,behavior:Progress.data.settings.reduced?'instant':'smooth'})}},{passive:false})
 canvas.tabIndex=0;canvas.setAttribute('aria-label','Campo orbital. Setas navegam pelos espaços; Enter posiciona ou inspeciona; C coleta energia.')
 window.addEventListener('keydown',e=>{
  if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return
@@ -836,4 +862,5 @@ window.addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused&&!checkpointInProgress){paused=true;statusText.textContent='Pausado ao trocar de aba';saveRun()}})
 window.addEventListener('pagehide',saveRun)
 window.addEventListener('resize',syncDeckHeight)
+if(window.ResizeObserver)new ResizeObserver(syncDeckHeight).observe(gameStage)
 buildDeck();seededStars();resetGame(Progress.data.chapter);syncDeckHeight();requestAnimationFrame(frame)
