@@ -1,0 +1,11 @@
+{
+  "mission": 1,
+  "complete": true,
+  "gameOver": false,
+  "coreHealth": 8,
+  "checkpointsCorrect": 3,
+  "kills": 16,
+  "invincibility": false,
+  "strategy": "Mini Sol; dois Mercúrios de nível 2; dois Cinturões; dois Júpiteres; coleta de energia; checkpoints corretos",
+  "note": "Tempo e energia finais variam com a aleatoriedade da partida."
+}

@@ -1,0 +1,3677 @@
+{
+  "valido": true,
+  "imagens": 458,
+  "personagens": 138,
+  "mobs": 320,
+  "caminhosDirecionaisDoJogo": 448,
+  "dimensoesOriginaisPreservadas": true,
+  "caminhosOriginaisPreservados": true,
+  "transparenciaReal": true,
+  "bordasTransparentes": true,
+  "arquivos": [
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_01_mamute_glacial/boss_01_mamute_glacial_back.webp",
+      "largura": 248,
+      "altura": 356,
+      "bytes": 130994,
+      "alpha": true,
+      "sha256": "5a0868a7aec5fbfe20ae1f4a414ab513fb93dcf61a136e2eee72dc7158be0bf6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_01_mamute_glacial/boss_01_mamute_glacial_front.webp",
+      "largura": 252,
+      "altura": 356,
+      "bytes": 134682,
+      "alpha": true,
+      "sha256": "5060b9a724282e9c998f9244fd0e64a12ee58661fee0946740005a05ecdac7bf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_01_mamute_glacial/boss_01_mamute_glacial_left.webp",
+      "largura": 296,
+      "altura": 322,
+      "bytes": 126960,
+      "alpha": true,
+      "sha256": "982c2e598f4ec1e18f4a533c21e5d69453c1b2e51051c87609e512a407c77475"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_01_mamute_glacial/boss_01_mamute_glacial_right.webp",
+      "largura": 309,
+      "altura": 322,
+      "bytes": 143774,
+      "alpha": true,
+      "sha256": "c9a55bfc073b7cc28b7f72f3f49bfa21675ef99818b1859a030bc180955fc55e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_02_rei_lich_glacial/boss_02_rei_lich_glacial_back.webp",
+      "largura": 242,
+      "altura": 356,
+      "bytes": 95096,
+      "alpha": true,
+      "sha256": "110b37723e6f2fba882ad745ac4814d4c6db33cbe3562cd363d13662f5bea776"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_02_rei_lich_glacial/boss_02_rei_lich_glacial_front.webp",
+      "largura": 263,
+      "altura": 356,
+      "bytes": 117292,
+      "alpha": true,
+      "sha256": "fa79ac1442fc617cdf8a9bd5b6441536e3e7a809cd1f69ffde3834008b3003a9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_02_rei_lich_glacial/boss_02_rei_lich_glacial_left.webp",
+      "largura": 251,
+      "altura": 356,
+      "bytes": 99852,
+      "alpha": true,
+      "sha256": "e4bcafa0b0113927fc06b633dc9354c54d51f83f772e22c490d760752d0ce19d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/boss_02_rei_lich_glacial/boss_02_rei_lich_glacial_right.webp",
+      "largura": 259,
+      "altura": 351,
+      "bytes": 109790,
+      "alpha": true,
+      "sha256": "9e6317faa2141911d9d205deababfb9d4b083ad67c2d77790427b67da0994fdd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/miniboss_urso_cristal/miniboss_urso_cristal_back.webp",
+      "largura": 214,
+      "altura": 265,
+      "bytes": 76510,
+      "alpha": true,
+      "sha256": "76ad38106c8d92d6147f3073655dfae077c3762afdb4f7feae3bf88c12c98a2f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/miniboss_urso_cristal/miniboss_urso_cristal_front.webp",
+      "largura": 254,
+      "altura": 279,
+      "bytes": 97256,
+      "alpha": true,
+      "sha256": "d78c89a50e21a670dcadc2a69b4357b359131919b9921775d7843077df4a950c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/miniboss_urso_cristal/miniboss_urso_cristal_left.webp",
+      "largura": 287,
+      "altura": 239,
+      "bytes": 93310,
+      "alpha": true,
+      "sha256": "d868374e90b81fd1fa9c2dce8e7e12543f76212ebc9a7e35f9a397aa332341bb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/01_frostrim/miniboss_urso_cristal/miniboss_urso_cristal_right.webp",
+      "largura": 269,
+      "altura": 235,
+      "bytes": 91186,
+      "alpha": true,
+      "sha256": "9d30309d8e82ac2061f7499b7ff5d5bb3fd4c83e321fbfef2bb7ab15a4984899"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_01_colosso_floresta/boss_01_colosso_floresta_back.webp",
+      "largura": 277,
+      "altura": 356,
+      "bytes": 153586,
+      "alpha": true,
+      "sha256": "65338acbd6d9405bf25295a7f63972ccea67c02209feb894202d8e3a644be9c6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_01_colosso_floresta/boss_01_colosso_floresta_front.webp",
+      "largura": 279,
+      "altura": 356,
+      "bytes": 155562,
+      "alpha": true,
+      "sha256": "3385f41080c07424e0b64d37000ac40b982aec2a063b3b3593f8494463ff330e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_01_colosso_floresta/boss_01_colosso_floresta_left.webp",
+      "largura": 212,
+      "altura": 354,
+      "bytes": 114698,
+      "alpha": true,
+      "sha256": "045148d1b2caa77390f8bd02a48de4ec436849cf1f1a3ff0f7725c218b6efe95"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_01_colosso_floresta/boss_01_colosso_floresta_right.webp",
+      "largura": 203,
+      "altura": 354,
+      "bytes": 107160,
+      "alpha": true,
+      "sha256": "a6295f9127ec48e48b3c679e2fbcedd792d3d886790b9c100ac8f71f9d26c5c3"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_02_espirito_cervo/boss_02_espirito_cervo_back.webp",
+      "largura": 210,
+      "altura": 356,
+      "bytes": 113678,
+      "alpha": true,
+      "sha256": "278e1090f4aa7d95e4c81ed0de115bf75d0e276987ff19919a61020026599f60"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_02_espirito_cervo/boss_02_espirito_cervo_front.webp",
+      "largura": 228,
+      "altura": 356,
+      "bytes": 127564,
+      "alpha": true,
+      "sha256": "3134cc545b9ed0176ba7383a62534fad1375615370e290d02bfaaeef2119977c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_02_espirito_cervo/boss_02_espirito_cervo_left.webp",
+      "largura": 192,
+      "altura": 356,
+      "bytes": 101774,
+      "alpha": true,
+      "sha256": "c0b3029842e24ccec7a0f307b6773b7b3f357dce593c752717f9048535fce087"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/boss_02_espirito_cervo/boss_02_espirito_cervo_right.webp",
+      "largura": 188,
+      "altura": 356,
+      "bytes": 98558,
+      "alpha": true,
+      "sha256": "069ea23c4c2f3fa567bc9e9784aee77348307cdf18973439052828610d4dc5d8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/miniboss_urso_musgo/miniboss_urso_musgo_back.webp",
+      "largura": 258,
+      "altura": 310,
+      "bytes": 121632,
+      "alpha": true,
+      "sha256": "f611a2083bc289b50ef9615945ba8983fec46e7ad4f5d5780970519d745ac2ee"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/miniboss_urso_musgo/miniboss_urso_musgo_front.webp",
+      "largura": 264,
+      "altura": 321,
+      "bytes": 124848,
+      "alpha": true,
+      "sha256": "6213fe8a89d73065cdbee3988e7f68a8023b03dacd86865597b4c700a1a549e9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/miniboss_urso_musgo/miniboss_urso_musgo_left.webp",
+      "largura": 266,
+      "altura": 296,
+      "bytes": 103322,
+      "alpha": true,
+      "sha256": "57ea1dcb254d7e6679df3a13103286006eec428d8491a6131501dcadf8ec0c80"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/02_verdevale/miniboss_urso_musgo/miniboss_urso_musgo_right.webp",
+      "largura": 276,
+      "altura": 296,
+      "bytes": 114550,
+      "alpha": true,
+      "sha256": "8d7a93a69e402d3c583fd9798fe8cec1af7a55593d1ecf20c5e8102ea9f2f0ad"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_01_dragao_vulcanico/boss_01_dragao_vulcanico_back.webp",
+      "largura": 268,
+      "altura": 339,
+      "bytes": 114770,
+      "alpha": true,
+      "sha256": "59431ed91bc369b68f786d0f63a38665df077a8449b301ae403f600db4a7e047"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_01_dragao_vulcanico/boss_01_dragao_vulcanico_front.webp",
+      "largura": 298,
+      "altura": 325,
+      "bytes": 141340,
+      "alpha": true,
+      "sha256": "707100ef0e58e0ace9cdd27fda870cede3850c65781316b882745818dc6e999f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_01_dragao_vulcanico/boss_01_dragao_vulcanico_left.webp",
+      "largura": 247,
+      "altura": 318,
+      "bytes": 110824,
+      "alpha": true,
+      "sha256": "2ce051e53fcec7530c24d2cd9bc8e2bda08f409fb5a7ffae4eb8d769ef1cace9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_01_dragao_vulcanico/boss_01_dragao_vulcanico_right.webp",
+      "largura": 252,
+      "altura": 318,
+      "bytes": 108158,
+      "alpha": true,
+      "sha256": "9f233cb6a39606dd798c0e7b1f2ef4efe8f600660dc5202c6de3ec9724aa34ff"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_02_titan_lava/boss_02_titan_lava_back.webp",
+      "largura": 271,
+      "altura": 356,
+      "bytes": 128202,
+      "alpha": true,
+      "sha256": "64834cb2fb9086b9e71c20f2d71df687b81b4e5be9a45a11c09064ea721117b5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_02_titan_lava/boss_02_titan_lava_front.webp",
+      "largura": 293,
+      "altura": 356,
+      "bytes": 144340,
+      "alpha": true,
+      "sha256": "03cfd78d9b1b7889b1c51faf60c0f9aedf727bb714904083f3523aafb7f2f0f2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_02_titan_lava/boss_02_titan_lava_left.webp",
+      "largura": 147,
+      "altura": 356,
+      "bytes": 71574,
+      "alpha": true,
+      "sha256": "1fec4bb2876c231c88584ace50e060328b4bab65c4e368a57b10832be01a73c0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/boss_02_titan_lava/boss_02_titan_lava_right.webp",
+      "largura": 148,
+      "altura": 356,
+      "bytes": 73870,
+      "alpha": true,
+      "sha256": "3ed20374287e6cc4dceb8cf55b42f4e9fe6fc61c044f46ac595503da1304cba5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/miniboss_senhor_salamandra/miniboss_senhor_salamandra_back.webp",
+      "largura": 261,
+      "altura": 325,
+      "bytes": 103990,
+      "alpha": true,
+      "sha256": "b15984daff083c18d28ba1988f33b8165dacb69afa0888256265de4bf81702d8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/miniboss_senhor_salamandra/miniboss_senhor_salamandra_front.webp",
+      "largura": 257,
+      "altura": 328,
+      "bytes": 106156,
+      "alpha": true,
+      "sha256": "ffb9b770528dca2027a36254d3856e21ca916ed87993444c74a4199802fadf83"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/miniboss_senhor_salamandra/miniboss_senhor_salamandra_left.webp",
+      "largura": 224,
+      "altura": 327,
+      "bytes": 80930,
+      "alpha": true,
+      "sha256": "90c9bc41e3d341f2d607d9d4353717c3fc97c88a3f02a9b13f4b992fc095435e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/03_vulkor/miniboss_senhor_salamandra/miniboss_senhor_salamandra_right.webp",
+      "largura": 238,
+      "altura": 327,
+      "bytes": 90906,
+      "alpha": true,
+      "sha256": "760002accc28f63d5b93f846461936558c32874c4b3d0fe3166b6dd9c8404eae"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_01_carneiro_cristal/boss_01_carneiro_cristal_back.webp",
+      "largura": 256,
+      "altura": 340,
+      "bytes": 124320,
+      "alpha": true,
+      "sha256": "55129be5c10996c8f3bc53203d4eebe9a7c8be7176237404e1b6b4ae82440696"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_01_carneiro_cristal/boss_01_carneiro_cristal_front.webp",
+      "largura": 284,
+      "altura": 352,
+      "bytes": 136720,
+      "alpha": true,
+      "sha256": "ecb5450005a36e751d480b8b007fd17c4db2b12283e04665162743d913b796e3"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_01_carneiro_cristal/boss_01_carneiro_cristal_left.webp",
+      "largura": 249,
+      "altura": 321,
+      "bytes": 106804,
+      "alpha": true,
+      "sha256": "b96226fc45f69b427358f8dee26717b138b526dae0d98b5dd78ac3853f6acbb0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_01_carneiro_cristal/boss_01_carneiro_cristal_right.webp",
+      "largura": 248,
+      "altura": 318,
+      "bytes": 107120,
+      "alpha": true,
+      "sha256": "556dac8861cb0321b22f8bcafdd7b35e3721e1aa09d6928c3f8073e09e8fbe6c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_02_dragao_pedra/boss_02_dragao_pedra_back.webp",
+      "largura": 276,
+      "altura": 329,
+      "bytes": 114152,
+      "alpha": true,
+      "sha256": "8df4fa582b7a1a794fa54ce8cf19221731ddfd4c93e67d96f9dc540242a50dc8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_02_dragao_pedra/boss_02_dragao_pedra_front.webp",
+      "largura": 285,
+      "altura": 321,
+      "bytes": 121962,
+      "alpha": true,
+      "sha256": "c20ad7eb9a77e6ff3ba5e715064d54cb6721c22d872a8818c4ab1a1ae88e8550"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_02_dragao_pedra/boss_02_dragao_pedra_left.webp",
+      "largura": 250,
+      "altura": 305,
+      "bytes": 104036,
+      "alpha": true,
+      "sha256": "e250b84e989e9a3388a808864d5588f9dd37cfd83bfaa3fb686964e927d62856"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/boss_02_dragao_pedra/boss_02_dragao_pedra_right.webp",
+      "largura": 248,
+      "altura": 303,
+      "bytes": 101554,
+      "alpha": true,
+      "sha256": "85ece359d339dc8345a6dc0b609405a39dfb3b224b93115966ef4a8b92f4e8a4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/miniboss_fortaleza_golem/miniboss_fortaleza_golem_back.webp",
+      "largura": 269,
+      "altura": 295,
+      "bytes": 99714,
+      "alpha": true,
+      "sha256": "ad681e80d6d4e44540e14c7e8edb6ffbe343696eda5d190c871ecc23705d6b30"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/miniboss_fortaleza_golem/miniboss_fortaleza_golem_front.webp",
+      "largura": 293,
+      "altura": 300,
+      "bytes": 112146,
+      "alpha": true,
+      "sha256": "e1d16cce7682dc963508cf5eb29fc2898a549915f3d73cf96fa1211ce5ed57a6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/miniboss_fortaleza_golem/miniboss_fortaleza_golem_left.webp",
+      "largura": 260,
+      "altura": 296,
+      "bytes": 82286,
+      "alpha": true,
+      "sha256": "fd0dc024cdc619781fad3d13aab152472e7edbb8edab1a9adffe8b8832643b99"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/04_durakar/miniboss_fortaleza_golem/miniboss_fortaleza_golem_right.webp",
+      "largura": 259,
+      "altura": 296,
+      "bytes": 82962,
+      "alpha": true,
+      "sha256": "54f168e742bb4a38d8640003b22953c44cd05b3a768b1f540b80435b0e6a2fe9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_01_rei_jaguar/boss_01_rei_jaguar_back.webp",
+      "largura": 237,
+      "altura": 356,
+      "bytes": 117104,
+      "alpha": true,
+      "sha256": "b489f3b5777266b97ae0cdb7105704a77bff2c233468d45486ef6a0957013357"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_01_rei_jaguar/boss_01_rei_jaguar_front.webp",
+      "largura": 285,
+      "altura": 356,
+      "bytes": 147758,
+      "alpha": true,
+      "sha256": "aaf83f04dd97eaf3bc6a3980df2910477151308b032e2990475f6604b29aa0a5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_01_rei_jaguar/boss_01_rei_jaguar_left.webp",
+      "largura": 279,
+      "altura": 356,
+      "bytes": 129532,
+      "alpha": true,
+      "sha256": "bd32a3817ec622f74d8dd24f4c803221c1723ff1255153be14a34ad97260f83a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_01_rei_jaguar/boss_01_rei_jaguar_right.webp",
+      "largura": 258,
+      "altura": 356,
+      "bytes": 118950,
+      "alpha": true,
+      "sha256": "4e528e4f7d9c4b3864710848aff540c087c50d7fb699010efa8bf52f49c63d37"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_02_hidra_selva/boss_02_hidra_selva_back.webp",
+      "largura": 264,
+      "altura": 356,
+      "bytes": 157070,
+      "alpha": true,
+      "sha256": "9df6e845bf2d4ccf05f370afe78de96c0f04d3471dc6687c3c9e2a3f09dbde91"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_02_hidra_selva/boss_02_hidra_selva_front.webp",
+      "largura": 267,
+      "altura": 356,
+      "bytes": 163570,
+      "alpha": true,
+      "sha256": "3e35595d89c64b0da93ffcaaa5c88c202ec18e383b81398fa6418f15d91b827b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_02_hidra_selva/boss_02_hidra_selva_left.webp",
+      "largura": 223,
+      "altura": 356,
+      "bytes": 133686,
+      "alpha": true,
+      "sha256": "492ef21d6095150e27a701b17e0633a2a90d4e88e48167196608dc3fa8beb618"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/boss_02_hidra_selva/boss_02_hidra_selva_right.webp",
+      "largura": 210,
+      "altura": 356,
+      "bytes": 120302,
+      "alpha": true,
+      "sha256": "e64d08f07b1247763cb19c79dd82ace85c1d4b5e74cd51199cfb12a737ca0cb5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/miniboss_flor_devastadora/miniboss_flor_devastadora_back.webp",
+      "largura": 271,
+      "altura": 355,
+      "bytes": 139462,
+      "alpha": true,
+      "sha256": "74d2cf3f65c7939b3626bc25a5176c1c0c46c6160dc0f2cdf08d1df45d7711de"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/miniboss_flor_devastadora/miniboss_flor_devastadora_front.webp",
+      "largura": 275,
+      "altura": 356,
+      "bytes": 144914,
+      "alpha": true,
+      "sha256": "cafce4dab9883acf362b9d2a6ad31cf188b09417fe850e200172847990d38819"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/miniboss_flor_devastadora/miniboss_flor_devastadora_left.webp",
+      "largura": 248,
+      "altura": 349,
+      "bytes": 133886,
+      "alpha": true,
+      "sha256": "04378131136b83c8a4e0aac7403033f0e1b0e0c6907ce71b2ee525f8696992a0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/05_jungara/miniboss_flor_devastadora/miniboss_flor_devastadora_right.webp",
+      "largura": 224,
+      "altura": 347,
+      "bytes": 111404,
+      "alpha": true,
+      "sha256": "5700b52a8462cbd3cb4b8a637c329764cd1ad859ce17e09fd223e2ae21675798"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_01_leao_rei/boss_01_leao_rei_back.webp",
+      "largura": 236,
+      "altura": 301,
+      "bytes": 69528,
+      "alpha": true,
+      "sha256": "f56f869cbea4a8661132257cadddb98488ca0b092076a5c43a52afcd0c1cfe43"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_01_leao_rei/boss_01_leao_rei_front.webp",
+      "largura": 256,
+      "altura": 301,
+      "bytes": 95260,
+      "alpha": true,
+      "sha256": "eff6ebf9bbbad5e9dd92d07e0440fe88b7a3db71d782655145f17bc4f3b4f221"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_01_leao_rei/boss_01_leao_rei_left.webp",
+      "largura": 288,
+      "altura": 302,
+      "bytes": 108828,
+      "alpha": true,
+      "sha256": "e3f0c0a9f31a803ddf6e4b8d4cd980fef8c115883ac20c78a6802e808d5df817"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_01_leao_rei/boss_01_leao_rei_right.webp",
+      "largura": 226,
+      "altura": 298,
+      "bytes": 83932,
+      "alpha": true,
+      "sha256": "9692421ce5754bdbaf8bed28e8e38e81b85c5c6acc6cad16391cfe2230bf5621"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_02_escorpiao_imperial/boss_02_escorpiao_imperial_back.webp",
+      "largura": 267,
+      "altura": 356,
+      "bytes": 96002,
+      "alpha": true,
+      "sha256": "537ee406005c6c67e8ab045b587b70e3f25b355556cbd80e3637e9609eebc7c1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_02_escorpiao_imperial/boss_02_escorpiao_imperial_front.webp",
+      "largura": 227,
+      "altura": 356,
+      "bytes": 79960,
+      "alpha": true,
+      "sha256": "5ef9484f70a3079fff8d58c8f94d772baae2f54c78ebc3acfe8b771b036a92b6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_02_escorpiao_imperial/boss_02_escorpiao_imperial_left.webp",
+      "largura": 234,
+      "altura": 356,
+      "bytes": 74624,
+      "alpha": true,
+      "sha256": "412eb669348116ec7e883b2d5818b8292b6a305a52a06de46d9cfccc06198c08"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/boss_02_escorpiao_imperial/boss_02_escorpiao_imperial_right.webp",
+      "largura": 234,
+      "altura": 356,
+      "bytes": 77210,
+      "alpha": true,
+      "sha256": "71ebc617fda171cfcf985b26fa4abb8b58f99655e4d040103ebe2b060bde75d2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/miniboss_harpia_solar/miniboss_harpia_solar_back.webp",
+      "largura": 252,
+      "altura": 339,
+      "bytes": 122486,
+      "alpha": true,
+      "sha256": "6e9da5d74b2d38d83c195b3eef9278104b00fd0bc5963bea56825ce51ad474a6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/miniboss_harpia_solar/miniboss_harpia_solar_front.webp",
+      "largura": 260,
+      "altura": 345,
+      "bytes": 127228,
+      "alpha": true,
+      "sha256": "699fe71287daf6cdc826918431a70e34d45cc514a3d7ef1fd93365f8b7a30f62"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/miniboss_harpia_solar/miniboss_harpia_solar_left.webp",
+      "largura": 244,
+      "altura": 345,
+      "bytes": 108150,
+      "alpha": true,
+      "sha256": "37f17c99b1a0ee4698957fa139dfa740586474456aca9db455ba900ead3623c6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/06_arenoria/miniboss_harpia_solar/miniboss_harpia_solar_right.webp",
+      "largura": 251,
+      "altura": 345,
+      "bytes": 107522,
+      "alpha": true,
+      "sha256": "ddeac3d383d462b54be1cfecb6cb7bba0aaa616fabd53eab261ab8de9094679d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_01_caranguejo_recife/boss_01_caranguejo_recife_back.webp",
+      "largura": 284,
+      "altura": 356,
+      "bytes": 104542,
+      "alpha": true,
+      "sha256": "1376d63cbc0a1dbac7d23af04a60d4734bb7e6fa70533b2a3bd1bf23f0e36626"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_01_caranguejo_recife/boss_01_caranguejo_recife_front.webp",
+      "largura": 254,
+      "altura": 356,
+      "bytes": 94840,
+      "alpha": true,
+      "sha256": "643a83c19605db1a7cf306f34db325b2517826aac9760b6ba1670b3ff7668f9c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_01_caranguejo_recife/boss_01_caranguejo_recife_left.webp",
+      "largura": 286,
+      "altura": 356,
+      "bytes": 119688,
+      "alpha": true,
+      "sha256": "14e863a3769fcb4113abd1d9c276eaa8e1eab4a3fa58c2c2cd87a7499fe0a420"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_01_caranguejo_recife/boss_01_caranguejo_recife_right.webp",
+      "largura": 261,
+      "altura": 356,
+      "bytes": 98082,
+      "alpha": true,
+      "sha256": "82a5625897129ce122e947fccba78145e04458856b7fb64dcfd59caf2d075ebd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_02_idolo_vulcanico/boss_02_idolo_vulcanico_back.webp",
+      "largura": 267,
+      "altura": 356,
+      "bytes": 108512,
+      "alpha": true,
+      "sha256": "cef4dc901cf2ccfbf87d04eb23386aeb28f3dfd3d43e5b9874b01e11c17e0eae"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_02_idolo_vulcanico/boss_02_idolo_vulcanico_front.webp",
+      "largura": 240,
+      "altura": 356,
+      "bytes": 102786,
+      "alpha": true,
+      "sha256": "b62d11e5abe0315867aeb9b65f87bb5ec8909638ec8caa6ea5da6c8441e44b94"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_02_idolo_vulcanico/boss_02_idolo_vulcanico_left.webp",
+      "largura": 267,
+      "altura": 356,
+      "bytes": 111032,
+      "alpha": true,
+      "sha256": "505c8865fde94301fb3099efc3862b12bc82ef40168aa1d613646be0fc0ba14f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/boss_02_idolo_vulcanico/boss_02_idolo_vulcanico_right.webp",
+      "largura": 198,
+      "altura": 356,
+      "bytes": 72368,
+      "alpha": true,
+      "sha256": "99633a30d102564b6013132ca756aedda4cf2829ca2bdf6a88ffd8edf84ef522"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/miniboss_capitao_fantasma/miniboss_capitao_fantasma_back.webp",
+      "largura": 313,
+      "altura": 351,
+      "bytes": 130684,
+      "alpha": true,
+      "sha256": "b0ce477272e26ac124825942e878cfd442e5c4ad0ea3f473ddcf943a48571032"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/miniboss_capitao_fantasma/miniboss_capitao_fantasma_front.webp",
+      "largura": 275,
+      "altura": 351,
+      "bytes": 137854,
+      "alpha": true,
+      "sha256": "dd23124bee14b34351e9dd6288f711f2d8b2c77d1af53c21c5336a03b160af71"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/miniboss_capitao_fantasma/miniboss_capitao_fantasma_left.webp",
+      "largura": 281,
+      "altura": 340,
+      "bytes": 115296,
+      "alpha": true,
+      "sha256": "a6aee6d01976ab40713f9646f1a58019d2d9fc8938ff8dbc765eb2c5f529a524"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/07_marisol/miniboss_capitao_fantasma/miniboss_capitao_fantasma_right.webp",
+      "largura": 228,
+      "altura": 343,
+      "bytes": 105882,
+      "alpha": true,
+      "sha256": "4b9424fe8dbb742da19a5ac76f9cce1fb059c64b88876e459779e561d94ae81f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_01_rei_abissal/boss_01_rei_abissal_back.webp",
+      "largura": 271,
+      "altura": 307,
+      "bytes": 121414,
+      "alpha": true,
+      "sha256": "29771fcf3283376d7e230104af00bbfc7b979d25b5edf2473152378929e78fd0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_01_rei_abissal/boss_01_rei_abissal_front.webp",
+      "largura": 284,
+      "altura": 308,
+      "bytes": 126498,
+      "alpha": true,
+      "sha256": "df4b0671faac464eda59365ac6fecd9958836bf39c653e589c55704e79432c2f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_01_rei_abissal/boss_01_rei_abissal_left.webp",
+      "largura": 245,
+      "altura": 302,
+      "bytes": 113036,
+      "alpha": true,
+      "sha256": "eed598ee77b5770e06860d8ae7698a0671325cb931c8a6d9859832cdd7e6e98b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_01_rei_abissal/boss_01_rei_abissal_right.webp",
+      "largura": 252,
+      "altura": 300,
+      "bytes": 110358,
+      "alpha": true,
+      "sha256": "3ddc1c997810720a20fdfbd6ffccef25e7c27662bd370468731a71fe1a6fbf99"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_02_leviata_abissal/boss_02_leviata_abissal_back.webp",
+      "largura": 240,
+      "altura": 355,
+      "bytes": 116994,
+      "alpha": true,
+      "sha256": "5355054b22fe731a2ea5fb9873dc34ed33abfbaddc69324b3d94b11dd1e42b62"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_02_leviata_abissal/boss_02_leviata_abissal_front.webp",
+      "largura": 246,
+      "altura": 356,
+      "bytes": 129384,
+      "alpha": true,
+      "sha256": "996bff998c9099f87e9269e9f3c86374d78c5cca628e5d1829465c14cb74fcde"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_02_leviata_abissal/boss_02_leviata_abissal_left.webp",
+      "largura": 252,
+      "altura": 350,
+      "bytes": 127738,
+      "alpha": true,
+      "sha256": "101ff09b911359c73ccbcbde41e6892a290f2101ecbb6674df0e72fa991115c5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/boss_02_leviata_abissal/boss_02_leviata_abissal_right.webp",
+      "largura": 256,
+      "altura": 349,
+      "bytes": 129984,
+      "alpha": true,
+      "sha256": "441705f4f4613f567088e760e2d9f871f26328c03ae110e39603411b918eb02e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/miniboss_colosso_coral/miniboss_colosso_coral_back.webp",
+      "largura": 283,
+      "altura": 341,
+      "bytes": 141904,
+      "alpha": true,
+      "sha256": "51e86d70f5a3c8781b2713cfc99e69f9b735b0e201ae907d2a2ceba96dcd0ebf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/miniboss_colosso_coral/miniboss_colosso_coral_front.webp",
+      "largura": 289,
+      "altura": 347,
+      "bytes": 150104,
+      "alpha": true,
+      "sha256": "fea0e7643e382e0379263aa36e43e4716988eb84d8ff19e51bff46b4feb06328"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/miniboss_colosso_coral/miniboss_colosso_coral_left.webp",
+      "largura": 210,
+      "altura": 333,
+      "bytes": 91902,
+      "alpha": true,
+      "sha256": "fb7405195b9047980a05f3f314a0c48485848bd0f35a18d6b236eae59cd02b4a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/08_abyssara/miniboss_colosso_coral/miniboss_colosso_coral_right.webp",
+      "largura": 222,
+      "altura": 333,
+      "bytes": 108430,
+      "alpha": true,
+      "sha256": "4398dfc50da76b9bd1e76bd6fe33505031068ead3bfcac3846caa4d6990caf3c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_01_rei_necromante/boss_01_rei_necromante_back.webp",
+      "largura": 247,
+      "altura": 356,
+      "bytes": 112808,
+      "alpha": true,
+      "sha256": "971d564ef4a32dac12e0983814ceba3397955aed8edf7f8b64f476ae41015366"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_01_rei_necromante/boss_01_rei_necromante_front.webp",
+      "largura": 265,
+      "altura": 356,
+      "bytes": 127440,
+      "alpha": true,
+      "sha256": "15926d0dbc6a80159cf4cf70cda3fc99971a0ad0ee4de4eeecb32a4f9181bba0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_01_rei_necromante/boss_01_rei_necromante_left.webp",
+      "largura": 271,
+      "altura": 356,
+      "bytes": 109126,
+      "alpha": true,
+      "sha256": "4ab86d4cc9a0e20515066ded70f3057f99ad4a12ae548377e5e507aefaaef65c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_01_rei_necromante/boss_01_rei_necromante_right.webp",
+      "largura": 262,
+      "altura": 356,
+      "bytes": 103684,
+      "alpha": true,
+      "sha256": "4744aa90cf3f1b2b40ca29621375e92006c52d3c672e160fad2237be07c9a451"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_02_abominacao_colossal/boss_02_abominacao_colossal_back.webp",
+      "largura": 305,
+      "altura": 356,
+      "bytes": 136558,
+      "alpha": true,
+      "sha256": "b5c99cec2e60b5227f0c78f264b31c2bdd20af9984d6531a6bbc87624a80fbc7"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_02_abominacao_colossal/boss_02_abominacao_colossal_front.webp",
+      "largura": 279,
+      "altura": 356,
+      "bytes": 121218,
+      "alpha": true,
+      "sha256": "1aa6cc1a862305063452530abe7bb490400cd8e483d95f8884b372837284f398"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_02_abominacao_colossal/boss_02_abominacao_colossal_left.webp",
+      "largura": 236,
+      "altura": 356,
+      "bytes": 100124,
+      "alpha": true,
+      "sha256": "1a5ba8b76fe6f26e15fcc8e1260e32d1e0fc81a727644459e11b189a37eaf731"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/boss_02_abominacao_colossal/boss_02_abominacao_colossal_right.webp",
+      "largura": 233,
+      "altura": 356,
+      "bytes": 98084,
+      "alpha": true,
+      "sha256": "ccacb6c32bb44e15eec832aaf188b7282e588daf213d09eeb801dc5f123e917d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/miniboss_arquimago_sombrio/miniboss_arquimago_sombrio_back.webp",
+      "largura": 266,
+      "altura": 334,
+      "bytes": 116506,
+      "alpha": true,
+      "sha256": "58eee25e953879342bcea7019de5192ed298409efcf8c3578cb9af20228f55e4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/miniboss_arquimago_sombrio/miniboss_arquimago_sombrio_front.webp",
+      "largura": 284,
+      "altura": 334,
+      "bytes": 128758,
+      "alpha": true,
+      "sha256": "c244ad108295b365168ab1e428ee40e98e9faedc1d68df5f2b2111b1f56cfad5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/miniboss_arquimago_sombrio/miniboss_arquimago_sombrio_left.webp",
+      "largura": 262,
+      "altura": 328,
+      "bytes": 110810,
+      "alpha": true,
+      "sha256": "83b6ca5d73c16a29bf6f171381ccabf1863328eab63a90b674cdb26a0591c552"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/09_sombravia/miniboss_arquimago_sombrio/miniboss_arquimago_sombrio_right.webp",
+      "largura": 270,
+      "altura": 328,
+      "bytes": 111728,
+      "alpha": true,
+      "sha256": "f6ba1d82bf4914a25010e29fdc3afbbc43f8110f7c559e92725c2a2b249d2987"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_01_grifo_tempestade/boss_01_grifo_tempestade_back.webp",
+      "largura": 309,
+      "altura": 356,
+      "bytes": 132422,
+      "alpha": true,
+      "sha256": "7879842d05afd41c9d04a4f4f21c1c78b83db8c0baa96b2528b1bb59a58b0980"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_01_grifo_tempestade/boss_01_grifo_tempestade_front.webp",
+      "largura": 293,
+      "altura": 356,
+      "bytes": 132824,
+      "alpha": true,
+      "sha256": "1bff0bbed40d07d07ffa4a43c1f1504327d8cc0a97a4283571df8c0362302c90"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_01_grifo_tempestade/boss_01_grifo_tempestade_left.webp",
+      "largura": 277,
+      "altura": 356,
+      "bytes": 131866,
+      "alpha": true,
+      "sha256": "8d2a3cea8f62ce73b895aa378c8195e0de6040c18abc7bf93a8a6d8932ec761a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_01_grifo_tempestade/boss_01_grifo_tempestade_right.webp",
+      "largura": 224,
+      "altura": 356,
+      "bytes": 94592,
+      "alpha": true,
+      "sha256": "7893129d38eeba2104fb409743868dcd6eeda8a7594ce997da73778122d055cf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_02_dragao_tempestade/boss_02_dragao_tempestade_back.webp",
+      "largura": 267,
+      "altura": 356,
+      "bytes": 117294,
+      "alpha": true,
+      "sha256": "dfb3f27f4a394e15939e8d8db00d12ec5ef4f8ce483dddd380413af3585fe0ee"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_02_dragao_tempestade/boss_02_dragao_tempestade_front.webp",
+      "largura": 254,
+      "altura": 356,
+      "bytes": 106930,
+      "alpha": true,
+      "sha256": "953e32965835c8bdc87c81a279435bfb3c0684bb8e22bba1d819e479b2d4b5a6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_02_dragao_tempestade/boss_02_dragao_tempestade_left.webp",
+      "largura": 247,
+      "altura": 356,
+      "bytes": 108932,
+      "alpha": true,
+      "sha256": "e3b9aac40a4164294af0859454d64cf86cab24016a4cbccc7ca1a0e93ceaf9d4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/boss_02_dragao_tempestade/boss_02_dragao_tempestade_right.webp",
+      "largura": 227,
+      "altura": 356,
+      "bytes": 79940,
+      "alpha": true,
+      "sha256": "d9e5ac0cb09a7464a41e6e5b67219e7ef7fda80c4137d7b08271a0ca88c3da2c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/miniboss_cavaleiro_tempestade/miniboss_cavaleiro_tempestade_back.webp",
+      "largura": 213,
+      "altura": 285,
+      "bytes": 95080,
+      "alpha": true,
+      "sha256": "42f2c4e4f55a0437f3dc90d317f6d53abb2330a98d96b27f951bab6da84cba8b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/miniboss_cavaleiro_tempestade/miniboss_cavaleiro_tempestade_front.webp",
+      "largura": 223,
+      "altura": 285,
+      "bytes": 104866,
+      "alpha": true,
+      "sha256": "2b797a519631cbd8140c3c18ffbf58b3d6c46b5708288f71c9d7402c3ff12054"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/miniboss_cavaleiro_tempestade/miniboss_cavaleiro_tempestade_left.webp",
+      "largura": 184,
+      "altura": 291,
+      "bytes": 79364,
+      "alpha": true,
+      "sha256": "d9ed026d5f9ad792409b628a6d2fa0dd38bebab18ed4a22e6041e32c22dfcde6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/bosses_e_minibosses/10_tempestia/miniboss_cavaleiro_tempestade/miniboss_cavaleiro_tempestade_right.webp",
+      "largura": 179,
+      "altura": 291,
+      "bytes": 75890,
+      "alpha": true,
+      "sha256": "b4fee43f1f4d2713f658e3513fb752cbda1d2178ac5a43afb9a2bd1eeaa79fc8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/elemental_gelo/elemental_gelo_back.webp",
+      "largura": 202,
+      "altura": 209,
+      "bytes": 62786,
+      "alpha": true,
+      "sha256": "b07f62e905b6b43375f8ce86b45139516f37da3cdae1d5ba69993248be3abd8c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/elemental_gelo/elemental_gelo_front.webp",
+      "largura": 207,
+      "altura": 210,
+      "bytes": 65128,
+      "alpha": true,
+      "sha256": "874bed858c7465a2f7eca41f5b2ec7ef83a9a1cb440adb796f711d519f756108"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/elemental_gelo/elemental_gelo_left.webp",
+      "largura": 114,
+      "altura": 209,
+      "bytes": 42550,
+      "alpha": true,
+      "sha256": "57f863b9a6aa309f9f403eecbe68f90db321612bf78e70b7ce70821c4cfaa232"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/elemental_gelo/elemental_gelo_right.webp",
+      "largura": 113,
+      "altura": 209,
+      "bytes": 41910,
+      "alpha": true,
+      "sha256": "63d7a1ebec91f84ec94325a32093f5613b5150fff93429fff1c82985e49c2f77"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/fada_gelo/fada_gelo_back.webp",
+      "largura": 234,
+      "altura": 199,
+      "bytes": 56418,
+      "alpha": true,
+      "sha256": "c233b24cfc0096c242965822fea7b1ae1c5b7caa1be90d09503b4417c8d5337b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/fada_gelo/fada_gelo_front.webp",
+      "largura": 242,
+      "altura": 206,
+      "bytes": 58696,
+      "alpha": true,
+      "sha256": "a6b8789d5167b081d8e409edc82994ab86d3456c05bd1f6cd4033036f2e9f1cd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/fada_gelo/fada_gelo_left.webp",
+      "largura": 134,
+      "altura": 197,
+      "bytes": 38316,
+      "alpha": true,
+      "sha256": "d2855eb86effc5465394e856a51bb762d67b2003a4cb3420838ffeb4701752b3"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/fada_gelo/fada_gelo_right.webp",
+      "largura": 125,
+      "altura": 197,
+      "bytes": 35222,
+      "alpha": true,
+      "sha256": "b8c5527b045b32004f898f601f8d486666cb67d465afe3c00b3b378357729f5c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/gigante_gelo/gigante_gelo_back.webp",
+      "largura": 246,
+      "altura": 214,
+      "bytes": 64874,
+      "alpha": true,
+      "sha256": "405f3fd486fe38c8a8b06fe5de0185029f6846f94db61f21dac9e4a0a861d256"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/gigante_gelo/gigante_gelo_front.webp",
+      "largura": 239,
+      "altura": 214,
+      "bytes": 70718,
+      "alpha": true,
+      "sha256": "beca477934b5d686d08d184c35aa62a1e6a4a37c0dcfe30a2bb1519e0917dcfc"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/gigante_gelo/gigante_gelo_left.webp",
+      "largura": 191,
+      "altura": 204,
+      "bytes": 57966,
+      "alpha": true,
+      "sha256": "8f6273966229a51de9a8a2b1865d976903b2e5fd1fd5d0d0ab2c199baac42760"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/gigante_gelo/gigante_gelo_right.webp",
+      "largura": 194,
+      "altura": 204,
+      "bytes": 56508,
+      "alpha": true,
+      "sha256": "ba7707b477156d662356a300595a2b5a05f266fbd434417a2e591ca76be8e3d5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/guerreiro_esqueleto_gelo/guerreiro_esqueleto_gelo_back.webp",
+      "largura": 221,
+      "altura": 202,
+      "bytes": 53462,
+      "alpha": true,
+      "sha256": "42553741b94e2d4248dc1cd6920af1599be4757ec36db77224e0432b78e7e9b4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/guerreiro_esqueleto_gelo/guerreiro_esqueleto_gelo_front.webp",
+      "largura": 206,
+      "altura": 203,
+      "bytes": 58534,
+      "alpha": true,
+      "sha256": "92e171960de8e43dd7a9ef2e18433521429d0c1669789d72b2dc95b41b2080b2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/guerreiro_esqueleto_gelo/guerreiro_esqueleto_gelo_left.webp",
+      "largura": 181,
+      "altura": 200,
+      "bytes": 47290,
+      "alpha": true,
+      "sha256": "9ca78fe8888fef6e7ad0c90fc5efa7997ea9de82ad415ef58464915ec496f80b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/guerreiro_esqueleto_gelo/guerreiro_esqueleto_gelo_right.webp",
+      "largura": 170,
+      "altura": 200,
+      "bytes": 45752,
+      "alpha": true,
+      "sha256": "29bd95083bd02d5b645ebc4341b1608852c898dc18928277423ec096a5bdf145"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/lobo_gelo/lobo_gelo_back.webp",
+      "largura": 182,
+      "altura": 206,
+      "bytes": 53194,
+      "alpha": true,
+      "sha256": "3b6175062875a5b6940780d70eb92783137c96cdf910e81e71cd62fe1366a13b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/lobo_gelo/lobo_gelo_front.webp",
+      "largura": 191,
+      "altura": 209,
+      "bytes": 56658,
+      "alpha": true,
+      "sha256": "55558941afe480854959768befb49710a8e8a43e53023d21910d29927aa8275a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/lobo_gelo/lobo_gelo_left.webp",
+      "largura": 225,
+      "altura": 197,
+      "bytes": 51118,
+      "alpha": true,
+      "sha256": "2e76e273060d2042be2d4bcca8eb6467b9e543ea8f1d29fddf2a827002e086ea"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/01_frostrim/lobo_gelo/lobo_gelo_right.webp",
+      "largura": 216,
+      "altura": 196,
+      "bytes": 54114,
+      "alpha": true,
+      "sha256": "137cb050dbc1b8277067bef96cff0b4f07130585c1ee9537051e84c73006dbbe"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/aranha_floresta/aranha_floresta_back.webp",
+      "largura": 248,
+      "altura": 174,
+      "bytes": 59316,
+      "alpha": true,
+      "sha256": "b1becbbab16f1486f83c10f4de32aa7bfb48f9f4fc5b80ce72bd4b71400cd237"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/aranha_floresta/aranha_floresta_front.webp",
+      "largura": 259,
+      "altura": 181,
+      "bytes": 66288,
+      "alpha": true,
+      "sha256": "a38c5e336985aeb7f9bf113a7096e1c9b126fa7def6874b230e7ab034a9977ba"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/aranha_floresta/aranha_floresta_left.webp",
+      "largura": 233,
+      "altura": 165,
+      "bytes": 54516,
+      "alpha": true,
+      "sha256": "487f512aa9afd7cebb9a42e77d675f62dbc60edc5a1d15a10fe01dee079cad7b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/aranha_floresta/aranha_floresta_right.webp",
+      "largura": 233,
+      "altura": 165,
+      "bytes": 55280,
+      "alpha": true,
+      "sha256": "028a48ecf322e4004c7a52f5a50e4e2ce91ac80348e23245567b47c7aafcb9f9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/cervo_espectral/cervo_espectral_back.webp",
+      "largura": 168,
+      "altura": 218,
+      "bytes": 60570,
+      "alpha": true,
+      "sha256": "0d70913f896c84f45aeff29af9cd5bd16a46eb701c44b91bcb8e7911be71bc07"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/cervo_espectral/cervo_espectral_front.webp",
+      "largura": 180,
+      "altura": 218,
+      "bytes": 61748,
+      "alpha": true,
+      "sha256": "2749384882b00a7d88fd8d1d786d796a449efa84c6747f19e67b449086d85fe1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/cervo_espectral/cervo_espectral_left.webp",
+      "largura": 171,
+      "altura": 216,
+      "bytes": 57348,
+      "alpha": true,
+      "sha256": "a71e9ab360cfbc58911c19c9cd48ca0a0164ebce5d6a60be77ee2e011393e6c5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/cervo_espectral/cervo_espectral_right.webp",
+      "largura": 166,
+      "altura": 216,
+      "bytes": 55752,
+      "alpha": true,
+      "sha256": "fcded95d1e13510fb1765a5ebdb9f45bf8c9d6230ec3205a81f7bb0485748c02"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/ent_floresta/ent_floresta_back.webp",
+      "largura": 211,
+      "altura": 213,
+      "bytes": 74060,
+      "alpha": true,
+      "sha256": "26bcb7c461db6b467d11e8a9e2f213fc17755bdb43c22a5d17981589f6b5651c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/ent_floresta/ent_floresta_front.webp",
+      "largura": 211,
+      "altura": 213,
+      "bytes": 73558,
+      "alpha": true,
+      "sha256": "12a08e90926ed07bd005c5bd0618e62c47d0c66039899a9988bf492d8828f6c3"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/ent_floresta/ent_floresta_left.webp",
+      "largura": 153,
+      "altura": 212,
+      "bytes": 46898,
+      "alpha": true,
+      "sha256": "001f3a5786a06370da003962c5fba51275e05df53930a2c31737b67d7d8eddd6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/ent_floresta/ent_floresta_right.webp",
+      "largura": 150,
+      "altura": 212,
+      "bytes": 45696,
+      "alpha": true,
+      "sha256": "8261caadc2399d3e5032fe8108159c349435d05dd2451d9789698639a26152d2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/javali_floresta/javali_floresta_back.webp",
+      "largura": 192,
+      "altura": 194,
+      "bytes": 56106,
+      "alpha": true,
+      "sha256": "45feb6be51a735760b8a109ee880def4139addd3868dee837de73e383ff51986"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/javali_floresta/javali_floresta_front.webp",
+      "largura": 204,
+      "altura": 199,
+      "bytes": 57502,
+      "alpha": true,
+      "sha256": "adeece3e2ec2b9155e649bf0e5fc6cd63e4d9a2c9a00bf6df21fd2492db34768"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/javali_floresta/javali_floresta_left.webp",
+      "largura": 249,
+      "altura": 183,
+      "bytes": 49608,
+      "alpha": true,
+      "sha256": "30dbdc04b88e5cbd7ae5b0f483ca33a4e53c63a376581ab56f0e720db4e3b2d1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/javali_floresta/javali_floresta_right.webp",
+      "largura": 243,
+      "altura": 183,
+      "bytes": 51092,
+      "alpha": true,
+      "sha256": "4cf28cc5e4a7a90d33c2893fc73f73fa6b90fb1531b29b59f49dd9b77b6bdce2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/xama_cogumelo/xama_cogumelo_back.webp",
+      "largura": 197,
+      "altura": 203,
+      "bytes": 60390,
+      "alpha": true,
+      "sha256": "13d72bfed00d71fce7bbba18cdb70e16701ebbb689de8ac4faa6a4a28fbc17fc"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/xama_cogumelo/xama_cogumelo_front.webp",
+      "largura": 189,
+      "altura": 206,
+      "bytes": 58974,
+      "alpha": true,
+      "sha256": "40559c4b7190f46a62f2073bd47c42edddb6ad505698722d8f407eca32aae44b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/xama_cogumelo/xama_cogumelo_left.webp",
+      "largura": 197,
+      "altura": 194,
+      "bytes": 51322,
+      "alpha": true,
+      "sha256": "d7ca36df3c3fe85c3548f32ea4787a414a7f49eb7a8f8499a7e77b8e6743386a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/02_verdevale/xama_cogumelo/xama_cogumelo_right.webp",
+      "largura": 191,
+      "altura": 194,
+      "bytes": 51896,
+      "alpha": true,
+      "sha256": "5a29bb790bfbd04a78eeb045de6abee3c8747def260ee67b1b2a7461a91df5d2"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/dragao_fogo/dragao_fogo_back.webp",
+      "largura": 212,
+      "altura": 214,
+      "bytes": 61062,
+      "alpha": true,
+      "sha256": "02e4596e48f603f93736c1f97da82a01d169dfb86c936a196b9689f78c4c3ea9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/dragao_fogo/dragao_fogo_front.webp",
+      "largura": 223,
+      "altura": 213,
+      "bytes": 67984,
+      "alpha": true,
+      "sha256": "9e92f7d240d0596d489f2aa9fa7d9d025da09bdd2c53e2fb99a22f55eb80013c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/dragao_fogo/dragao_fogo_left.webp",
+      "largura": 175,
+      "altura": 206,
+      "bytes": 48830,
+      "alpha": true,
+      "sha256": "28945ab67776b9bc27e0f98ade575d0ee7910da4174cf059e62d8a300f8c10b9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/dragao_fogo/dragao_fogo_right.webp",
+      "largura": 177,
+      "altura": 206,
+      "bytes": 56750,
+      "alpha": true,
+      "sha256": "501060b9009bf22acd4f952ead8745fe785e9d82d5532a5e1aa9b59feaecbbf9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/elemental_fogo/elemental_fogo_back.webp",
+      "largura": 193,
+      "altura": 204,
+      "bytes": 47726,
+      "alpha": true,
+      "sha256": "8a6583b3feb4e1cde8a8e6b76c611d30e01a820965e3786ab339b8a308ddc5ba"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/elemental_fogo/elemental_fogo_front.webp",
+      "largura": 195,
+      "altura": 204,
+      "bytes": 49890,
+      "alpha": true,
+      "sha256": "6f89fc674a0069fc5e1f179d0c2da7a310e492737b5758662f49018baa22c252"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/elemental_fogo/elemental_fogo_left.webp",
+      "largura": 152,
+      "altura": 206,
+      "bytes": 42074,
+      "alpha": true,
+      "sha256": "a227ead547f117a2d74f635741d11fc6ed81b435c1b4629c529de1e1090d6bcf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/elemental_fogo/elemental_fogo_right.webp",
+      "largura": 153,
+      "altura": 204,
+      "bytes": 43880,
+      "alpha": true,
+      "sha256": "abc34054daafd4000d075e04681bb4312b1ea64421cf2f55943aae23aa93425b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/espectro_cinzas/espectro_cinzas_back.webp",
+      "largura": 191,
+      "altura": 205,
+      "bytes": 51512,
+      "alpha": true,
+      "sha256": "fbc1e542393eb44a68e65cf8e112be275727fde648b4b2194c72d04c03937b69"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/espectro_cinzas/espectro_cinzas_front.webp",
+      "largura": 203,
+      "altura": 206,
+      "bytes": 57858,
+      "alpha": true,
+      "sha256": "cb786a04d02475248227ad512f7838c18c79fa824e4a8a79048b3d56e99ce513"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/espectro_cinzas/espectro_cinzas_left.webp",
+      "largura": 179,
+      "altura": 205,
+      "bytes": 51108,
+      "alpha": true,
+      "sha256": "09db896e6219f1c52171ab362faeb4c119c2660f80ba094c83ef022a30908c53"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/espectro_cinzas/espectro_cinzas_right.webp",
+      "largura": 185,
+      "altura": 205,
+      "bytes": 52694,
+      "alpha": true,
+      "sha256": "010cc00b01a4d1be398edda23c92f03b8ddf30b8487956ef121c995753c6d0ac"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/golem_lava/golem_lava_back.webp",
+      "largura": 213,
+      "altura": 207,
+      "bytes": 64400,
+      "alpha": true,
+      "sha256": "e24433934f317a68a6cbe68faf7590833fbca017e762aa512053eb9efc4b41aa"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/golem_lava/golem_lava_front.webp",
+      "largura": 230,
+      "altura": 210,
+      "bytes": 69314,
+      "alpha": true,
+      "sha256": "46afb59a93d7a03a7c4df31a9356d0f2d01ba2918e53584bc819af3febe94cd5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/golem_lava/golem_lava_left.webp",
+      "largura": 143,
+      "altura": 206,
+      "bytes": 39942,
+      "alpha": true,
+      "sha256": "5e2f9979f1b3d258222993060aa3979faebbd52bbe418cd359a2ade99364d63a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/golem_lava/golem_lava_right.webp",
+      "largura": 143,
+      "altura": 206,
+      "bytes": 38534,
+      "alpha": true,
+      "sha256": "f14c914542b5b7ff2dae6b0c460679cab4a289c5516298d45e579c19992ca278"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/salamandra_guerreira/salamandra_guerreira_back.webp",
+      "largura": 226,
+      "altura": 196,
+      "bytes": 56414,
+      "alpha": true,
+      "sha256": "77a89a70d65af59fc9ab73ddb94612ce420ca0f547182c4120985453a7d1664d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/salamandra_guerreira/salamandra_guerreira_front.webp",
+      "largura": 237,
+      "altura": 197,
+      "bytes": 58732,
+      "alpha": true,
+      "sha256": "8216252a691f83891ac6077a9155803bfd2d8ff11cd5154784005551ec227fdb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/salamandra_guerreira/salamandra_guerreira_left.webp",
+      "largura": 175,
+      "altura": 197,
+      "bytes": 46048,
+      "alpha": true,
+      "sha256": "b7f8834b273c8cb8c350dcad1c3bc899e50906ec6b6909fbf3f30af1b1aa3c80"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/03_vulkor/salamandra_guerreira/salamandra_guerreira_right.webp",
+      "largura": 213,
+      "altura": 197,
+      "bytes": 44868,
+      "alpha": true,
+      "sha256": "a6f917bbadf3a115fa4a4f3d7b5c108d6fc32c3149821e03aac1ec6b0f8c2d5e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/aranha_cristal/aranha_cristal_back.webp",
+      "largura": 231,
+      "altura": 197,
+      "bytes": 55596,
+      "alpha": true,
+      "sha256": "6db297c38bb7050f1cf9059997e4f8297c51807518cc926f335565343af50979"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/aranha_cristal/aranha_cristal_front.webp",
+      "largura": 237,
+      "altura": 199,
+      "bytes": 56404,
+      "alpha": true,
+      "sha256": "10bfc04d386a1c1213340f4951706e9707663116f67049696a7b3b5ffd0eaa9b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/aranha_cristal/aranha_cristal_left.webp",
+      "largura": 194,
+      "altura": 178,
+      "bytes": 42810,
+      "alpha": true,
+      "sha256": "34bd0bc7aee592653ae78a20951cc27fa68ea3df59fdb6b28f54ed633934d364"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/aranha_cristal/aranha_cristal_right.webp",
+      "largura": 193,
+      "altura": 178,
+      "bytes": 43042,
+      "alpha": true,
+      "sha256": "eb6dae038c4cdb882ed8661d1e883f9ea5f5a53179a5d77fa9fd00c20e1e4352"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/carneiro_montanha/carneiro_montanha_back.webp",
+      "largura": 214,
+      "altura": 195,
+      "bytes": 46888,
+      "alpha": true,
+      "sha256": "3f27e15cee3a2e35e15037cb2195648d59c11cb0f84f3c63d79a97b13e0be139"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/carneiro_montanha/carneiro_montanha_front.webp",
+      "largura": 212,
+      "altura": 196,
+      "bytes": 52490,
+      "alpha": true,
+      "sha256": "a4ae4809a296e754a16a0a461bb0ad4ac6f48fea5c59d6274ae151a8d3e6940d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/carneiro_montanha/carneiro_montanha_left.webp",
+      "largura": 181,
+      "altura": 192,
+      "bytes": 42294,
+      "alpha": true,
+      "sha256": "a21529edfca4c05cac314fff1405531ad5d4b511c0be1e3739625af058d3bfb6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/carneiro_montanha/carneiro_montanha_right.webp",
+      "largura": 181,
+      "altura": 192,
+      "bytes": 43056,
+      "alpha": true,
+      "sha256": "ef722d9d042e9863d56c78794c1b680034bf1badd6b697b827651410cefd9c56"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/dragao_pedra/dragao_pedra_back.webp",
+      "largura": 238,
+      "altura": 182,
+      "bytes": 45704,
+      "alpha": true,
+      "sha256": "45bb0ff440f16d80b7c5bd4429a18f949055bcabfcf9f7f2dff3bfeb90cca47e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/dragao_pedra/dragao_pedra_front.webp",
+      "largura": 243,
+      "altura": 186,
+      "bytes": 55468,
+      "alpha": true,
+      "sha256": "ebd10c361de07814a5367e51ead407312be5a781a9cda464d8a0112ae717fc1e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/dragao_pedra/dragao_pedra_left.webp",
+      "largura": 225,
+      "altura": 189,
+      "bytes": 51496,
+      "alpha": true,
+      "sha256": "2510ce194b6b1147211a3f88549046e8514f730c73c18b4c76ac2d93279b66ee"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/dragao_pedra/dragao_pedra_right.webp",
+      "largura": 223,
+      "altura": 189,
+      "bytes": 51426,
+      "alpha": true,
+      "sha256": "095595ca603a513822911e6ddf2f44518c05f69b9474efaf382a5f195dfe743a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/golem_pedra/golem_pedra_back.webp",
+      "largura": 240,
+      "altura": 227,
+      "bytes": 71748,
+      "alpha": true,
+      "sha256": "faf7f8c7a3fe4e6f43d5337e09e7c9b63ccc0c94e2e10ff913adbb9fe1a3bdcf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/golem_pedra/golem_pedra_front.webp",
+      "largura": 234,
+      "altura": 231,
+      "bytes": 75508,
+      "alpha": true,
+      "sha256": "bece73004f516b14f7099061ccbc1715d9e0dc541a391805dc04863537508dd6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/golem_pedra/golem_pedra_left.webp",
+      "largura": 162,
+      "altura": 229,
+      "bytes": 50572,
+      "alpha": true,
+      "sha256": "92f648ce5a60c685badd85e32cf06b3ef0440e9a4ca3518c80bad22b5708221f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/golem_pedra/golem_pedra_right.webp",
+      "largura": 141,
+      "altura": 229,
+      "bytes": 37812,
+      "alpha": true,
+      "sha256": "2d0d28e891f0483e70c3c462e691f65e83966b44c02513667befd0c2d8bc8b3e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/minotauro_rochoso/minotauro_rochoso_back.webp",
+      "largura": 188,
+      "altura": 193,
+      "bytes": 47164,
+      "alpha": true,
+      "sha256": "57848e4cd9c3f19c846fd7062e535e654a9d96dd973e00989210eb241259800c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/minotauro_rochoso/minotauro_rochoso_front.webp",
+      "largura": 200,
+      "altura": 196,
+      "bytes": 54702,
+      "alpha": true,
+      "sha256": "d4541cc25f3969332e4ab14542800a0528a88096baa686143d781c4f1575ba65"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/minotauro_rochoso/minotauro_rochoso_left.webp",
+      "largura": 157,
+      "altura": 196,
+      "bytes": 35726,
+      "alpha": true,
+      "sha256": "d29ea2d98f38e74887e5283cb268a75a112cf44c97f505ad57572ff49a4d0e68"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/04_durakar/minotauro_rochoso/minotauro_rochoso_right.webp",
+      "largura": 158,
+      "altura": 196,
+      "bytes": 36090,
+      "alpha": true,
+      "sha256": "06bc6e5ae6d980d0fb0e20d3481144b9577ab5f603adc7d0b6b9e949ac531f25"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/gorila_selva/gorila_selva_back.webp",
+      "largura": 206,
+      "altura": 197,
+      "bytes": 45558,
+      "alpha": true,
+      "sha256": "b5220e1a163d4b36d3d460d9fc327c50592323807c44f918736aa6af70f87c00"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/gorila_selva/gorila_selva_front.webp",
+      "largura": 214,
+      "altura": 201,
+      "bytes": 49532,
+      "alpha": true,
+      "sha256": "c16dee79999a2fbb77ebb80dd965fa11a71f6ac37c66f8652731821f130f2792"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/gorila_selva/gorila_selva_left.webp",
+      "largura": 159,
+      "altura": 198,
+      "bytes": 42552,
+      "alpha": true,
+      "sha256": "74bd38dc30afc88a7a1e6871eac64ba69fcf4224d28371cefc9e59df9a4514c8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/gorila_selva/gorila_selva_right.webp",
+      "largura": 155,
+      "altura": 199,
+      "bytes": 40632,
+      "alpha": true,
+      "sha256": "3884e891e587def0636c4c6b2a7ba7f78afb6500b0351bcc61cc49334334118a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/jaguar_tribal/jaguar_tribal_back.webp",
+      "largura": 203,
+      "altura": 223,
+      "bytes": 60834,
+      "alpha": true,
+      "sha256": "a72480d0035190074654fcd957f36b8487019b6ba7cd8b6ad0b098586d1708e0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/jaguar_tribal/jaguar_tribal_front.webp",
+      "largura": 201,
+      "altura": 223,
+      "bytes": 65048,
+      "alpha": true,
+      "sha256": "5c17e68c434f64490565b765cfd291f447a91667bedf4393adad1d28aec7b5cf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/jaguar_tribal/jaguar_tribal_left.webp",
+      "largura": 197,
+      "altura": 220,
+      "bytes": 53378,
+      "alpha": true,
+      "sha256": "9ccd18ae815a50bce702c21f90c193bf9ef86644c592d3a172238951a1ebf629"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/jaguar_tribal/jaguar_tribal_right.webp",
+      "largura": 189,
+      "altura": 220,
+      "bytes": 53970,
+      "alpha": true,
+      "sha256": "fd3b5816a2346ab6f9fbf07f34965b0226aedb204126a6a5aadb39b2f77f4421"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/planta_carnivora/planta_carnivora_back.webp",
+      "largura": 233,
+      "altura": 202,
+      "bytes": 72320,
+      "alpha": true,
+      "sha256": "748c0268e32fc9eaae4b6ef872dfe6954c9063a462bb30fa76403ec8ac6215b7"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/planta_carnivora/planta_carnivora_front.webp",
+      "largura": 235,
+      "altura": 202,
+      "bytes": 75560,
+      "alpha": true,
+      "sha256": "7719fbc26fda53d307b72711b0bd2f63cda0e31737dd2de5cdbd97903f4953b0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/planta_carnivora/planta_carnivora_left.webp",
+      "largura": 194,
+      "altura": 202,
+      "bytes": 56468,
+      "alpha": true,
+      "sha256": "297cd64f475d1ab2799356b8824b93acb0faa616edc39ca585a887ab45db1858"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/planta_carnivora/planta_carnivora_right.webp",
+      "largura": 194,
+      "altura": 202,
+      "bytes": 55168,
+      "alpha": true,
+      "sha256": "bb76a671a99aa27017814400b32d2e4bba126746d1aa5e8d5e3cb4076b3ddbbb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/serpente_selva/serpente_selva_back.webp",
+      "largura": 228,
+      "altura": 198,
+      "bytes": 54562,
+      "alpha": true,
+      "sha256": "dd0dd76067517830cca4c0e16921b69f3d748b9f39ce1347bbbb23b78658eafa"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/serpente_selva/serpente_selva_front.webp",
+      "largura": 235,
+      "altura": 199,
+      "bytes": 56982,
+      "alpha": true,
+      "sha256": "2befde192e6da471c828c901e7582485ce164ecfbca537d8af57d05d4d573565"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/serpente_selva/serpente_selva_left.webp",
+      "largura": 203,
+      "altura": 198,
+      "bytes": 52760,
+      "alpha": true,
+      "sha256": "9ed33f09d649a070380e330b7601d4c0d859ae48343c8026f5768c2aa6b16cfa"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/serpente_selva/serpente_selva_right.webp",
+      "largura": 201,
+      "altura": 198,
+      "bytes": 52452,
+      "alpha": true,
+      "sha256": "dbe34b37bb69bcaba73c7b70314b0c49d0b513fc21712888628d82a51452f2f7"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/xama_tribal/xama_tribal_back.webp",
+      "largura": 191,
+      "altura": 192,
+      "bytes": 54070,
+      "alpha": true,
+      "sha256": "d8a4ddc7298bd9a4a3f2e9d7fedf77b97900f0ccff8cd64747815e723675c4e7"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/xama_tribal/xama_tribal_front.webp",
+      "largura": 189,
+      "altura": 199,
+      "bytes": 59328,
+      "alpha": true,
+      "sha256": "5530d165aede5a048d5c6de13aec5659984af4f2a853548b8593b8b03648685f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/xama_tribal/xama_tribal_left.webp",
+      "largura": 158,
+      "altura": 199,
+      "bytes": 47654,
+      "alpha": true,
+      "sha256": "e7d01b82d7d4c35def95638dc39affe22b7e956a5bf8c142fa43c5428c419468"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/05_jungara/xama_tribal/xama_tribal_right.webp",
+      "largura": 151,
+      "altura": 200,
+      "bytes": 48532,
+      "alpha": true,
+      "sha256": "85212c3c2c87045cf3307ea8c9cb63503d45a002c33539a6d82e3563fcf194da"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/escorpiao_deserto/escorpiao_deserto_back.webp",
+      "largura": 162,
+      "altura": 189,
+      "bytes": 35018,
+      "alpha": true,
+      "sha256": "47955e1010d946206098b19c04c2eb8cb9de8295f798cfca14eb95d1c839d87d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/escorpiao_deserto/escorpiao_deserto_front.webp",
+      "largura": 197,
+      "altura": 202,
+      "bytes": 49398,
+      "alpha": true,
+      "sha256": "5962e7f4e415fa482f62bae9cb4ab28f551619f2f53852edad5399b8ddedcf91"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/escorpiao_deserto/escorpiao_deserto_left.webp",
+      "largura": 167,
+      "altura": 203,
+      "bytes": 37238,
+      "alpha": true,
+      "sha256": "69c2a49eece7c62b2bf7a4dd46745915520263e77d311f663b91b945c07dea59"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/escorpiao_deserto/escorpiao_deserto_right.webp",
+      "largura": 170,
+      "altura": 203,
+      "bytes": 38714,
+      "alpha": true,
+      "sha256": "61dc94b4b84cb646242344feca53e6d92cd26784326dfa75f29b945a1e73ab1d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/golem_areia/golem_areia_back.webp",
+      "largura": 209,
+      "altura": 213,
+      "bytes": 66032,
+      "alpha": true,
+      "sha256": "cec43ee8345756e5ccf5cc75c9897356e8c9c2b8beae0c79de121ae6d17a1f23"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/golem_areia/golem_areia_front.webp",
+      "largura": 224,
+      "altura": 214,
+      "bytes": 71378,
+      "alpha": true,
+      "sha256": "5e458bff5387bbd49b416ebc8c1cf7d49ed1b2985a9d068c7cdb009b8fae5114"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/golem_areia/golem_areia_left.webp",
+      "largura": 108,
+      "altura": 217,
+      "bytes": 36482,
+      "alpha": true,
+      "sha256": "48c931fb33a5fe7dace9fbbfba34ec7e920bf4552dd2e286d1d312973e4ab3d1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/golem_areia/golem_areia_right.webp",
+      "largura": 107,
+      "altura": 217,
+      "bytes": 35568,
+      "alpha": true,
+      "sha256": "e09542c5ec697ae498e157a5ce3b2c9e85070543412fba6f53a4154392450f32"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/harpia_deserto/harpia_deserto_back.webp",
+      "largura": 191,
+      "altura": 211,
+      "bytes": 50376,
+      "alpha": true,
+      "sha256": "6df5157dec453b53745fe2584e5c59b24489b7d83e57df088800f58d37db5344"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/harpia_deserto/harpia_deserto_front.webp",
+      "largura": 224,
+      "altura": 218,
+      "bytes": 68034,
+      "alpha": true,
+      "sha256": "5c9cab055f5d694bf85fec578c235b8937e005d616fcbdeb5a782121ca7fc856"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/harpia_deserto/harpia_deserto_left.webp",
+      "largura": 193,
+      "altura": 212,
+      "bytes": 54798,
+      "alpha": true,
+      "sha256": "929b05a05623ed675d331a9372d49fb381f13ee98a0112412ca74b8148509a7a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/harpia_deserto/harpia_deserto_right.webp",
+      "largura": 186,
+      "altura": 211,
+      "bytes": 51336,
+      "alpha": true,
+      "sha256": "17e39875bec1068d475d0871373812e6a7e454486749be0b276ce9e0b16d2563"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/hiena_deserto/hiena_deserto_back.webp",
+      "largura": 145,
+      "altura": 191,
+      "bytes": 30784,
+      "alpha": true,
+      "sha256": "f209ab8c812ffdbf75868ecd43462a1ed06c7677fdb12e9bf8aaf398f153d2bd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/hiena_deserto/hiena_deserto_front.webp",
+      "largura": 176,
+      "altura": 196,
+      "bytes": 42476,
+      "alpha": true,
+      "sha256": "693ebf51eca1d2681221be0a5c19719ca66f216e630c68fcb452b7a835e880fd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/hiena_deserto/hiena_deserto_left.webp",
+      "largura": 210,
+      "altura": 178,
+      "bytes": 44752,
+      "alpha": true,
+      "sha256": "c6ce8e3217e16b966eea3b7e908054c40178924e1f797d06bb5105fecf2f9691"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/hiena_deserto/hiena_deserto_right.webp",
+      "largura": 207,
+      "altura": 179,
+      "bytes": 45684,
+      "alpha": true,
+      "sha256": "8ef93f29b328a845a010b14e97770693edc035869f2ba14a7e4895022c9ff466"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/leao_deserto/leao_deserto_back.webp",
+      "largura": 187,
+      "altura": 225,
+      "bytes": 48006,
+      "alpha": true,
+      "sha256": "89f628b63d31b3a473e3875a68c34c9c9a21df7f4ca2eea7df54d894bab495ba"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/leao_deserto/leao_deserto_front.webp",
+      "largura": 167,
+      "altura": 228,
+      "bytes": 59908,
+      "alpha": true,
+      "sha256": "b4fa12770fac257629b91394bc408d5ef752fa159c14a03ab22703fe13e4f3fb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/leao_deserto/leao_deserto_left.webp",
+      "largura": 218,
+      "altura": 213,
+      "bytes": 59800,
+      "alpha": true,
+      "sha256": "ec0dc0ac2fe9a35150e81138bbca75bbc75cd6d3469a76e57d363a5c9befb567"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/06_arenoria/leao_deserto/leao_deserto_right.webp",
+      "largura": 210,
+      "altura": 212,
+      "bytes": 57750,
+      "alpha": true,
+      "sha256": "9e5d742737f4039413fcac99fc274ae7a4c6a22ae51a34ca1079aa22b345ec18"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/caranguejo_coral/caranguejo_coral_back.webp",
+      "largura": 270,
+      "altura": 226,
+      "bytes": 88462,
+      "alpha": true,
+      "sha256": "a713ad3b53899668b9547258f25005ee1c8c54cd66f0d95e3921c7a16cfcf51c"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/caranguejo_coral/caranguejo_coral_front.webp",
+      "largura": 253,
+      "altura": 228,
+      "bytes": 87738,
+      "alpha": true,
+      "sha256": "ac2914c89969c7d7bb9e9915e3529302f88ed981e32324eee6793d229480d452"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/caranguejo_coral/caranguejo_coral_left.webp",
+      "largura": 192,
+      "altura": 224,
+      "bytes": 65344,
+      "alpha": true,
+      "sha256": "57b0b9bb801e8f603ebb17f696e5a614f4bc28d8b6b6daf105eb175b51d14528"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/caranguejo_coral/caranguejo_coral_right.webp",
+      "largura": 192,
+      "altura": 224,
+      "bytes": 60808,
+      "alpha": true,
+      "sha256": "ca0492e7e8791cc830e2f0a5e84880fd7b3a4cc5faa91365d6d1d4e58eadcb48"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/coco_carnivoro/coco_carnivoro_back.webp",
+      "largura": 170,
+      "altura": 213,
+      "bytes": 57984,
+      "alpha": true,
+      "sha256": "d7e259740f40b70ac33a3f7201e3221b567f1aa06e04aa5ab4e7172e6fdbca6b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/coco_carnivoro/coco_carnivoro_front.webp",
+      "largura": 173,
+      "altura": 218,
+      "bytes": 61604,
+      "alpha": true,
+      "sha256": "fc60d0e45f80634c7402169475e710d14735da8882de148be5ada669bf1ff7e7"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/coco_carnivoro/coco_carnivoro_left.webp",
+      "largura": 166,
+      "altura": 216,
+      "bytes": 58300,
+      "alpha": true,
+      "sha256": "5b6f466190f888c1349a68596f7f46f41933c4fdd56b04d0bc5c33f83b2047bc"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/coco_carnivoro/coco_carnivoro_right.webp",
+      "largura": 166,
+      "altura": 216,
+      "bytes": 58908,
+      "alpha": true,
+      "sha256": "7500880cf9609e7c80f5b4bdfc7faeb286dd9ca0e848ff66ec26b6e25241e618"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/idolo_tiki/idolo_tiki_back.webp",
+      "largura": 241,
+      "altura": 228,
+      "bytes": 84696,
+      "alpha": true,
+      "sha256": "b459801c64027fa58b2d27abd260e1e13672fa3b18b2e56c136b6203fc5fb79a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/idolo_tiki/idolo_tiki_front.webp",
+      "largura": 234,
+      "altura": 228,
+      "bytes": 85532,
+      "alpha": true,
+      "sha256": "1c02187716bb5d135b37355fd5e7d19fd784660b1d5002a248b3cd9a02398262"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/idolo_tiki/idolo_tiki_left.webp",
+      "largura": 146,
+      "altura": 232,
+      "bytes": 49788,
+      "alpha": true,
+      "sha256": "7c0261407372e54bdc79ac6f9986c85c7d0e46f0c0068e7542f10cc5c37359fb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/idolo_tiki/idolo_tiki_right.webp",
+      "largura": 146,
+      "altura": 232,
+      "bytes": 50322,
+      "alpha": true,
+      "sha256": "fd5cac1d3b4d49d89e27fae09c3f4fc781ed8f1fd05d54627dce665e4c4c0c15"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/lagarto_tropical/lagarto_tropical_back.webp",
+      "largura": 143,
+      "altura": 209,
+      "bytes": 40404,
+      "alpha": true,
+      "sha256": "bec5f461eb7de91fe99a3cdb655a574fce0810341e16d3b80018ea08833d3c0d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/lagarto_tropical/lagarto_tropical_front.webp",
+      "largura": 220,
+      "altura": 213,
+      "bytes": 60460,
+      "alpha": true,
+      "sha256": "349394bb185e6e3779bca0d4aec028472d305738db9bad87ce7c88f775038dfb"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/lagarto_tropical/lagarto_tropical_left.webp",
+      "largura": 231,
+      "altura": 210,
+      "bytes": 61992,
+      "alpha": true,
+      "sha256": "d4cc564b3da0cfd115f193bdb1e13d7382d2842ebe61c818a504d2f891059235"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/lagarto_tropical/lagarto_tropical_right.webp",
+      "largura": 228,
+      "altura": 210,
+      "bytes": 60044,
+      "alpha": true,
+      "sha256": "5e91697217e6bee376f8e1fb58939c091d5fa66907b55c260c2ec7021ffe74ad"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/pirata_fantasma/pirata_fantasma_back.webp",
+      "largura": 192,
+      "altura": 210,
+      "bytes": 55688,
+      "alpha": true,
+      "sha256": "7060285f70c57b9766f9d58dc387145c713f94c4801cd8c2286a51510afdefa4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/pirata_fantasma/pirata_fantasma_front.webp",
+      "largura": 230,
+      "altura": 213,
+      "bytes": 62768,
+      "alpha": true,
+      "sha256": "ae46836189efd49137d5b1d37553d36285bc3555649a7fe47d08ac50482dc27f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/pirata_fantasma/pirata_fantasma_left.webp",
+      "largura": 158,
+      "altura": 212,
+      "bytes": 50188,
+      "alpha": true,
+      "sha256": "d80e4ff6692b23a02169db2df6aab18e15e237884192aace590ad620ca127b78"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/07_marisol/pirata_fantasma/pirata_fantasma_right.webp",
+      "largura": 181,
+      "altura": 212,
+      "bytes": 53712,
+      "alpha": true,
+      "sha256": "d68b4df8353a6cae89b89308c68ae09a5f09b8584c7ed0808eeddc62c3a7b641"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/agua_viva_abissal/agua_viva_abissal_back.webp",
+      "largura": 179,
+      "altura": 210,
+      "bytes": 65438,
+      "alpha": true,
+      "sha256": "725bf8f7435610c8be79666609b476fdd20ffcc39c818162bcea5ffdd8099f05"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/agua_viva_abissal/agua_viva_abissal_front.webp",
+      "largura": 183,
+      "altura": 212,
+      "bytes": 67278,
+      "alpha": true,
+      "sha256": "1a3d3b2df0ad0bd970a65f06f2ffd529493032f98a41a46495e70fcebecffd84"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/agua_viva_abissal/agua_viva_abissal_left.webp",
+      "largura": 166,
+      "altura": 212,
+      "bytes": 53216,
+      "alpha": true,
+      "sha256": "4a31fad0466f585089edc137e6e30faa7061426febf5a1a865da465f26cbe0fc"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/agua_viva_abissal/agua_viva_abissal_right.webp",
+      "largura": 165,
+      "altura": 211,
+      "bytes": 54254,
+      "alpha": true,
+      "sha256": "15c0fff0988a85e2701aeba77bd6e92fa7f46529c28a873b94c6054d39f24bb0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/golem_coral/golem_coral_back.webp",
+      "largura": 235,
+      "altura": 220,
+      "bytes": 76898,
+      "alpha": true,
+      "sha256": "11c0ebc73a6d8d4d2085b1774c7d722145d51e591be9a01147f5bd19b609be96"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/golem_coral/golem_coral_front.webp",
+      "largura": 234,
+      "altura": 220,
+      "bytes": 74782,
+      "alpha": true,
+      "sha256": "0b776bc568c3f86a89b6134dc05ca5eb46c45cec293374652dec015eafd43125"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/golem_coral/golem_coral_left.webp",
+      "largura": 127,
+      "altura": 220,
+      "bytes": 47948,
+      "alpha": true,
+      "sha256": "834676cb20e0878cbaff810e150a4a1cc17492ab9b9d1413440d172831d5583b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/golem_coral/golem_coral_right.webp",
+      "largura": 126,
+      "altura": 220,
+      "bytes": 48988,
+      "alpha": true,
+      "sha256": "69e85fb54e460beb656b5266d2cf6d285dafd0bf3c64aebd5b4694dfb40ccfc8"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/monstro_algas/monstro_algas_back.webp",
+      "largura": 170,
+      "altura": 205,
+      "bytes": 55830,
+      "alpha": true,
+      "sha256": "83abce02c957595001907a01fd03174153ceb4f3f0ccb1080b45716609cb633b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/monstro_algas/monstro_algas_front.webp",
+      "largura": 197,
+      "altura": 209,
+      "bytes": 68834,
+      "alpha": true,
+      "sha256": "2e6884baf30f890f2ecf96d6ae93c87ee9556356e1f77f0c53de60e1ee7e40ec"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/monstro_algas/monstro_algas_left.webp",
+      "largura": 155,
+      "altura": 214,
+      "bytes": 52084,
+      "alpha": true,
+      "sha256": "040f1482a253b8404549adac5c1c0de72f142c741f5b70e515c5c3eec9a7eccf"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/monstro_algas/monstro_algas_right.webp",
+      "largura": 154,
+      "altura": 214,
+      "bytes": 50588,
+      "alpha": true,
+      "sha256": "845485666333b81792571180bf02aea43c9de7bb06fa41ee4665d44976c8ab75"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/pescador_abissal/pescador_abissal_back.webp",
+      "largura": 182,
+      "altura": 226,
+      "bytes": 60122,
+      "alpha": true,
+      "sha256": "b12cd5918d152ca83b6a0f631e05548c3deccd41ace3098689ddca744adda8b1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/pescador_abissal/pescador_abissal_front.webp",
+      "largura": 186,
+      "altura": 226,
+      "bytes": 62880,
+      "alpha": true,
+      "sha256": "c73d1a4e458f7cc8c73c58ac01bb0d9dc71b8dd077a75de215b6f14fa6ba34e9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/pescador_abissal/pescador_abissal_left.webp",
+      "largura": 156,
+      "altura": 226,
+      "bytes": 49160,
+      "alpha": true,
+      "sha256": "50db3d88f76635f54bc9d303b785da3e887fdeed468f3ba872d134e1874d541f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/pescador_abissal/pescador_abissal_right.webp",
+      "largura": 152,
+      "altura": 223,
+      "bytes": 46156,
+      "alpha": true,
+      "sha256": "5e9b9edfd7e8908796781dee8a56db58b63f5ae591f4effd082fc7c7c1555aa9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/serpente_marinha/serpente_marinha_back.webp",
+      "largura": 135,
+      "altura": 209,
+      "bytes": 37250,
+      "alpha": true,
+      "sha256": "ad7c2cbe47e8ff5dbd738962f40bf88fed7ddd203acaff92ffc951a48974d809"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/serpente_marinha/serpente_marinha_front.webp",
+      "largura": 174,
+      "altura": 227,
+      "bytes": 64448,
+      "alpha": true,
+      "sha256": "325ee7960aa657ada9319a363fbc7fe4542e4ace5c705a0196b1064eb8d5bf20"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/serpente_marinha/serpente_marinha_left.webp",
+      "largura": 160,
+      "altura": 221,
+      "bytes": 53376,
+      "alpha": true,
+      "sha256": "cd45971f6e033a578c506b65af7941970bbe8f026a9d5c5846ba2f47161c499f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/08_abyssara/serpente_marinha/serpente_marinha_right.webp",
+      "largura": 149,
+      "altura": 222,
+      "bytes": 47536,
+      "alpha": true,
+      "sha256": "6aec315b350c6559814b048be34c2c598d6b03eab08072df9ee85e341a405fd0"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/abominacao/abominacao_back.webp",
+      "largura": 226,
+      "altura": 208,
+      "bytes": 69044,
+      "alpha": true,
+      "sha256": "6c60cd2a55240d8ecf9f39999a90e6899ff4d981d5379d1d07b492cab72bf2ea"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/abominacao/abominacao_front.webp",
+      "largura": 233,
+      "altura": 209,
+      "bytes": 72078,
+      "alpha": true,
+      "sha256": "c17bdd3395ea7dcc64e5f2166acc75c3b13827520cefa61c255b2245b30c9c17"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/abominacao/abominacao_left.webp",
+      "largura": 153,
+      "altura": 206,
+      "bytes": 49670,
+      "alpha": true,
+      "sha256": "a485b1e917ef3ad8922f90cb85932b296d1d256cbda015bd84f51fb4e61f71cd"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/abominacao/abominacao_right.webp",
+      "largura": 154,
+      "altura": 206,
+      "bytes": 48488,
+      "alpha": true,
+      "sha256": "6271e6f3f92155511b5a0f071aa04ab4a12aa3322bad756f5e4456cb10a6508f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cao_esqueleto/cao_esqueleto_back.webp",
+      "largura": 96,
+      "altura": 168,
+      "bytes": 24520,
+      "alpha": true,
+      "sha256": "177ee8964edce3a864dcc28f8b5ed887e065b90b591dc432e9ee435df97b5eb4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cao_esqueleto/cao_esqueleto_front.webp",
+      "largura": 106,
+      "altura": 173,
+      "bytes": 23572,
+      "alpha": true,
+      "sha256": "343341c2022109962379028fff8e07736a29ecc5ead4c45711af2d8c594efc73"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cao_esqueleto/cao_esqueleto_left.webp",
+      "largura": 226,
+      "altura": 176,
+      "bytes": 43958,
+      "alpha": true,
+      "sha256": "9598a9d78c89c4979578229030b21e6ca1b046608f471851079d6d6b0e2775b1"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cao_esqueleto/cao_esqueleto_right.webp",
+      "largura": 226,
+      "altura": 176,
+      "bytes": 43404,
+      "alpha": true,
+      "sha256": "58aa958639f5d7d7b6875af299693a022f44a1d560959d2aa9d77f2677f64c27"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cavaleiro_morto/cavaleiro_morto_back.webp",
+      "largura": 194,
+      "altura": 221,
+      "bytes": 58136,
+      "alpha": true,
+      "sha256": "24866f73c39f8b30ed07d69e0de27188b956f199a1e2dbd032bec785b7b29276"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cavaleiro_morto/cavaleiro_morto_front.webp",
+      "largura": 201,
+      "altura": 222,
+      "bytes": 60158,
+      "alpha": true,
+      "sha256": "0d2c8350a01890c34a41cc27c2dc2a32b65565c87ac1764be263f1f493f27dc6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cavaleiro_morto/cavaleiro_morto_left.webp",
+      "largura": 177,
+      "altura": 213,
+      "bytes": 49102,
+      "alpha": true,
+      "sha256": "5de074c2588497fabaef2243c74c93b684131fa4fb8680fa4e7fb8f1d1aa176a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/cavaleiro_morto/cavaleiro_morto_right.webp",
+      "largura": 176,
+      "altura": 213,
+      "bytes": 48220,
+      "alpha": true,
+      "sha256": "8e214eeb1868ac58f527617c07b2219ab74ffd3c12f6f8e266552695a3c9dca6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/ceifador_sombrio/ceifador_sombrio_back.webp",
+      "largura": 211,
+      "altura": 218,
+      "bytes": 60638,
+      "alpha": true,
+      "sha256": "508a9c692eef69d90e60925137ddc615d9c5915606dadd91185ab29ffc21c37a"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/ceifador_sombrio/ceifador_sombrio_front.webp",
+      "largura": 218,
+      "altura": 216,
+      "bytes": 63826,
+      "alpha": true,
+      "sha256": "20f10978012e2a2417e65c7a2e6adabc49339176fa140f76f001fa2d5ba693ff"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/ceifador_sombrio/ceifador_sombrio_left.webp",
+      "largura": 175,
+      "altura": 215,
+      "bytes": 46050,
+      "alpha": true,
+      "sha256": "45df75f35bd3247f35293beeb5fbee422dc0b2f02541807112de252a100f6836"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/ceifador_sombrio/ceifador_sombrio_right.webp",
+      "largura": 179,
+      "altura": 215,
+      "bytes": 48368,
+      "alpha": true,
+      "sha256": "e56140652a629414825a0d2f55726a59e651f4ee3d9076460b7de3ff3242bfe5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/corvo_sombrio/corvo_sombrio_back.webp",
+      "largura": 172,
+      "altura": 188,
+      "bytes": 46480,
+      "alpha": true,
+      "sha256": "d094fbb491226ee823953f7375ef49cde87434955b6c5e65ae9944dd2968226f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/corvo_sombrio/corvo_sombrio_front.webp",
+      "largura": 175,
+      "altura": 190,
+      "bytes": 50478,
+      "alpha": true,
+      "sha256": "d2eaf73a4d389ab728b189c65746d221bb61dfbfb11d03c859d2da012e7bf099"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/corvo_sombrio/corvo_sombrio_left.webp",
+      "largura": 204,
+      "altura": 187,
+      "bytes": 47176,
+      "alpha": true,
+      "sha256": "fe020acfc174de90c191e750554e86d2ac9b5191b7cafc1c864921d4f11a5db5"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/09_sombravia/corvo_sombrio/corvo_sombrio_right.webp",
+      "largura": 203,
+      "altura": 186,
+      "bytes": 45498,
+      "alpha": true,
+      "sha256": "18d8165fe663f14f193e0dadf235b19c36d9c0e695d668fd203a0770f1a3c80b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/aguia_tempestade/aguia_tempestade_back.webp",
+      "largura": 235,
+      "altura": 184,
+      "bytes": 51326,
+      "alpha": true,
+      "sha256": "fe18aef46fddf5bde8aa85577acbea8652c7872da000e471cb626f762ac93b8d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/aguia_tempestade/aguia_tempestade_front.webp",
+      "largura": 267,
+      "altura": 194,
+      "bytes": 56890,
+      "alpha": true,
+      "sha256": "f049a370392a1d9a032698a44f87db0c791d30673be1f238fcfd4b697ccc8db3"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/aguia_tempestade/aguia_tempestade_left.webp",
+      "largura": 166,
+      "altura": 188,
+      "bytes": 45532,
+      "alpha": true,
+      "sha256": "e10fa829f17e059ef4822d3a36e4efe0c6d8502b2b588fda0ac63e792ee5dfec"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/aguia_tempestade/aguia_tempestade_right.webp",
+      "largura": 164,
+      "altura": 186,
+      "bytes": 44050,
+      "alpha": true,
+      "sha256": "fc1dfb3161acabee2ee64d7872539494ef2045e1feeaedf2b60528e31df2284b"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/arraia_eletrica/arraia_eletrica_back.webp",
+      "largura": 231,
+      "altura": 176,
+      "bytes": 39340,
+      "alpha": true,
+      "sha256": "8a83ab3db32089df60ded42ffd971c92c87f51551a79435670f9d7cc63a391f4"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/arraia_eletrica/arraia_eletrica_front.webp",
+      "largura": 230,
+      "altura": 174,
+      "bytes": 39678,
+      "alpha": true,
+      "sha256": "51f152721f2c161eb77f5f42ce3036e7e4240c645ddc5d0bcda80f846010c293"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/arraia_eletrica/arraia_eletrica_left.webp",
+      "largura": 187,
+      "altura": 154,
+      "bytes": 27340,
+      "alpha": true,
+      "sha256": "efc806a8ff0a14ba6bb81923b3253f79c18efa20024293e6140c5c5b135a905e"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/arraia_eletrica/arraia_eletrica_right.webp",
+      "largura": 187,
+      "altura": 152,
+      "bytes": 27134,
+      "alpha": true,
+      "sha256": "65b93f71529bd257fa6fbffea82c042a6734dad425503751c35e26790c1b2285"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/dragao_tempestade/dragao_tempestade_back.webp",
+      "largura": 237,
+      "altura": 178,
+      "bytes": 52028,
+      "alpha": true,
+      "sha256": "b30a7d3de6039eec08ee4c0a66c0357e033b1d2695a0419e1b70d5f4d8d6245f"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/dragao_tempestade/dragao_tempestade_front.webp",
+      "largura": 258,
+      "altura": 179,
+      "bytes": 53484,
+      "alpha": true,
+      "sha256": "540cedd1f1d481a62f0bf77c7def2bfbed26a5148694d4a4d62184a60482c549"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/dragao_tempestade/dragao_tempestade_left.webp",
+      "largura": 194,
+      "altura": 178,
+      "bytes": 44260,
+      "alpha": true,
+      "sha256": "9530b5719c56dfb04a27329472aded238665f272eeebb7cf49b4d985baa7a612"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/dragao_tempestade/dragao_tempestade_right.webp",
+      "largura": 192,
+      "altura": 177,
+      "bytes": 43432,
+      "alpha": true,
+      "sha256": "2bc8c6c21c4778798a799640be5fb4c0653e7193ec457dff41f47b2a6a2853ef"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/elemental_nuvem/elemental_nuvem_back.webp",
+      "largura": 206,
+      "altura": 206,
+      "bytes": 49366,
+      "alpha": true,
+      "sha256": "73cc382aa6356b9eec9d751790873a7c5fa401c4019fe60ebc45294183825617"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/elemental_nuvem/elemental_nuvem_front.webp",
+      "largura": 240,
+      "altura": 208,
+      "bytes": 51100,
+      "alpha": true,
+      "sha256": "ca545fe9a89e29ff560a9c4c78dc67a2890ae6aa2ec94f78b7a63d2574742173"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/elemental_nuvem/elemental_nuvem_left.webp",
+      "largura": 156,
+      "altura": 200,
+      "bytes": 41630,
+      "alpha": true,
+      "sha256": "d45272baa16c068591a1825332969ca8b0ea9f3fc019f84753212854cc34dc98"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/elemental_nuvem/elemental_nuvem_right.webp",
+      "largura": 164,
+      "altura": 200,
+      "bytes": 42418,
+      "alpha": true,
+      "sha256": "eb2a57845ead51500d75d75dac2596b6e2a31bf6c1d49bce414c481e8dc26b2d"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/xama_tempestade/xama_tempestade_back.webp",
+      "largura": 167,
+      "altura": 208,
+      "bytes": 44632,
+      "alpha": true,
+      "sha256": "923ac86c16b1aed85f2b1a3842d5ff4a09ecc377dec63613e5119b82a1019f14"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/xama_tempestade/xama_tempestade_front.webp",
+      "largura": 158,
+      "altura": 207,
+      "bytes": 47622,
+      "alpha": true,
+      "sha256": "530dc6afda090dc69e5dcc250ff346a4260aeefbfd00eaa8fd21b618c9ed19f9"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/xama_tempestade/xama_tempestade_left.webp",
+      "largura": 137,
+      "altura": 202,
+      "bytes": 48996,
+      "alpha": true,
+      "sha256": "b28893224aac6e78495b4350e6efb0d353a108bc160aa1f55f63bc148365e0a6"
+    },
+    {
+      "arquivo": "assets/pixel/mobs/sprites_separadas/normais/10_tempestia/xama_tempestade/xama_tempestade_right.webp",
+      "largura": 132,
+      "altura": 202,
+      "bytes": 43386,
+      "alpha": true,
+      "sha256": "452816fcd3eba23119f1296f7739c3e5fbbe9aba94d0274f592dcbb29a27218b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_canonicas/lucas_feminina.png",
+      "largura": 449,
+      "altura": 997,
+      "bytes": 860697,
+      "alpha": true,
+      "sha256": "c699e5202e765c1742016ef759715df32eeaf28469dd6984de040343b0fea077"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_canonicas/lucas_masculino.png",
+      "largura": 569,
+      "altura": 1044,
+      "bytes": 1225461,
+      "alpha": true,
+      "sha256": "068d08b1557431822b4c9de98b682f9e24ff4f4f08b0df250b4abdbadad2c22a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_canonicas/timbo_feminina.png",
+      "largura": 598,
+      "altura": 1053,
+      "bytes": 966841,
+      "alpha": true,
+      "sha256": "983e642d1afc7af7ef9efbcd47c5df135f840309d7e9192b0257ba56fdddce75"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_canonicas/timbo_masculino.png",
+      "largura": 641,
+      "altura": 1082,
+      "bytes": 1135787,
+      "alpha": true,
+      "sha256": "30089779c4bfe5745d3e18f158cdbcbb3025e4d69f8e3a1e2ce6dfd642420887"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_completas_sem_fundo/pessoa_oculos/pessoa_oculos_fada_mulher.webp",
+      "largura": 858,
+      "altura": 1303,
+      "bytes": 1228490,
+      "alpha": true,
+      "sha256": "3a84c398a90f5eb8b34079378c4b6a27113322daaec22c62d8dc44ca174e3ca0"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_completas_sem_fundo/pessoa_oculos/pessoa_oculos_personagem_2d.webp",
+      "largura": 477,
+      "altura": 1303,
+      "bytes": 475736,
+      "alpha": true,
+      "sha256": "92125552e8e24e6ef126acb5c166b63d2b9e4436c5744e20380f66519d2c0d8d"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_completas_sem_fundo/timbo/timbo_anao.webp",
+      "largura": 927,
+      "altura": 1303,
+      "bytes": 1061168,
+      "alpha": true,
+      "sha256": "2323061081496a1ccb412cfe29cf68450d51ca9265acc3d41cbca3ef2540d16a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/artes_completas_sem_fundo/timbo/timbo_personagem_2d.webp",
+      "largura": 622,
+      "altura": 1303,
+      "bytes": 578180,
+      "alpha": true,
+      "sha256": "8990e1f72729c32e14f7898bce034df85f50b0bc8630cbd13a44037527f23030"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_feminino/anao_oculos_feminino_back.webp",
+      "largura": 258,
+      "altura": 286,
+      "bytes": 83420,
+      "alpha": true,
+      "sha256": "f7640352728a4690534e4187389a1197bb403dc6a20e0f66e32d382e05220f13"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_feminino/anao_oculos_feminino_front.webp",
+      "largura": 270,
+      "altura": 347,
+      "bytes": 100776,
+      "alpha": true,
+      "sha256": "bf1b5689098a3846094913217480c0cbcc51bed6ec1080b7f791e2405a811d8c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_feminino/anao_oculos_feminino_left.webp",
+      "largura": 239,
+      "altura": 294,
+      "bytes": 82012,
+      "alpha": true,
+      "sha256": "10b0926184871ca1d5fb091b2bdd228f00e77980066c09d11f07f09de4051bf6"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_feminino/anao_oculos_feminino_right.webp",
+      "largura": 255,
+      "altura": 284,
+      "bytes": 80370,
+      "alpha": true,
+      "sha256": "2ad34f703979d0d44614231ba0d10da6da23dcbf40a0a0dd39a625ff9dd85181"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_masculino/anao_oculos_masculino_back.webp",
+      "largura": 269,
+      "altura": 290,
+      "bytes": 85856,
+      "alpha": true,
+      "sha256": "cd548aea1d525efbb056a96f0f073c497478b0ee6fd0abc8853a5c6a5523b773"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_masculino/anao_oculos_masculino_front.webp",
+      "largura": 285,
+      "altura": 340,
+      "bytes": 105702,
+      "alpha": true,
+      "sha256": "81353d2d20ec2c417bbd36319af9a6046f4e4232cd9ba781f5b31a642ec09b9e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_masculino/anao_oculos_masculino_left.webp",
+      "largura": 268,
+      "altura": 290,
+      "bytes": 75250,
+      "alpha": true,
+      "sha256": "1d64322dbed50c818101678f7f2d4fb9686014d5ed5e7a96f3843f0972f847c9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_oculos_masculino/anao_oculos_masculino_right.webp",
+      "largura": 259,
+      "altura": 284,
+      "bytes": 75380,
+      "alpha": true,
+      "sha256": "d5f7b760bb92d4866bd487c003a256527ebf32925ab0c570810c83ed42398f71"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_feminino/anao_timbo_feminino_back.webp",
+      "largura": 276,
+      "altura": 282,
+      "bytes": 83724,
+      "alpha": true,
+      "sha256": "45f0e9710a4ed3843951c99b08a8a5bfddf00843047a2ff03ed5540aae03cd60"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_feminino/anao_timbo_feminino_front.webp",
+      "largura": 284,
+      "altura": 323,
+      "bytes": 99090,
+      "alpha": true,
+      "sha256": "d2962c349a3fedf31d7eb8d8fe5ce7dca98166e36aba89f7a1e1c53c274ce8ac"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_feminino/anao_timbo_feminino_left.webp",
+      "largura": 267,
+      "altura": 286,
+      "bytes": 83090,
+      "alpha": true,
+      "sha256": "dba5ebc371fbf3472d1b4fab7d64fed8cc2a5acd8cc3ba0c0d115cc925f59ea8"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_feminino/anao_timbo_feminino_right.webp",
+      "largura": 252,
+      "altura": 277,
+      "bytes": 78480,
+      "alpha": true,
+      "sha256": "4db6bc60447cfb2df6ef95fe3ae639674423cb7b6b52b754e32618e85198f127"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_masculino/anao_timbo_masculino_back.webp",
+      "largura": 257,
+      "altura": 299,
+      "bytes": 82272,
+      "alpha": true,
+      "sha256": "e3615d4654167f3c4581df3644e7ca78554f60686ad7ab994258888943e7f920"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_masculino/anao_timbo_masculino_front.webp",
+      "largura": 297,
+      "altura": 320,
+      "bytes": 100358,
+      "alpha": true,
+      "sha256": "52e459572d8de1ce25c930bb0738f14cce63ef1d006c97444e0bcf37cf22ba08"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_masculino/anao_timbo_masculino_left.webp",
+      "largura": 277,
+      "altura": 303,
+      "bytes": 80974,
+      "alpha": true,
+      "sha256": "c99f9ea944f54782a42fa26e2f95be889716219e655e305d1be6781de1516ce9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/anao_timbo_masculino/anao_timbo_masculino_right.webp",
+      "largura": 240,
+      "altura": 294,
+      "bytes": 77128,
+      "alpha": true,
+      "sha256": "f64a8e9612e534f858b97da7bf3bc267f4de053b20b624d833fbd593ccd981d6"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/base_oculos_feminino/base_oculos_feminino_front.webp",
+      "largura": 177,
+      "altura": 327,
+      "bytes": 71452,
+      "alpha": true,
+      "sha256": "418c16d210cdc735b94553836a0a9fc5123761fd2abb6d204da260bdf3baf0d1"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/base_timbo_feminino/base_timbo_feminino_front.webp",
+      "largura": 186,
+      "altura": 308,
+      "bytes": 60604,
+      "alpha": true,
+      "sha256": "bbc9ab417f8ae27017131ddb4bbec78819e0aa16ce9b3fb08843501d6ec39e86"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_feminino/fada_oculos_feminino_back.webp",
+      "largura": 227,
+      "altura": 285,
+      "bytes": 83290,
+      "alpha": true,
+      "sha256": "834545cc14bd7d15b51fdd0dcfbf152c832532c02c1c086b14052673a89d024d"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_feminino/fada_oculos_feminino_front.webp",
+      "largura": 338,
+      "altura": 343,
+      "bytes": 109348,
+      "alpha": true,
+      "sha256": "5daaace347bf0d7477cd277847af6d71d5550dd6db154edc944a4b265eaeb10a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_feminino/fada_oculos_feminino_left.webp",
+      "largura": 201,
+      "altura": 295,
+      "bytes": 70916,
+      "alpha": true,
+      "sha256": "73c263625e651370fd7dce68424e4e744b19cde3eaaba57306b50b2c95e22195"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_feminino/fada_oculos_feminino_right.webp",
+      "largura": 188,
+      "altura": 287,
+      "bytes": 68852,
+      "alpha": true,
+      "sha256": "973edeb43cdf10eb38b6a87add008be5e5094a97585b396d6e25593feacf4501"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_masculino/fada_oculos_masculino_back.webp",
+      "largura": 233,
+      "altura": 278,
+      "bytes": 78178,
+      "alpha": true,
+      "sha256": "59afd05c52765e3afbf647db9d8011374a0fdae3191b9d1c514f1d786c76ceb9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_masculino/fada_oculos_masculino_front.webp",
+      "largura": 325,
+      "altura": 341,
+      "bytes": 113080,
+      "alpha": true,
+      "sha256": "8dabc7c6260961d05ec8ab420b95b87e046ead4bb95f9495860d650948313aa4"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_masculino/fada_oculos_masculino_left.webp",
+      "largura": 201,
+      "altura": 279,
+      "bytes": 63314,
+      "alpha": true,
+      "sha256": "cdace0b94dc873660e61614bc5435f59ee0af1aa73a80e3add97d015ec584f6a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_oculos_masculino/fada_oculos_masculino_right.webp",
+      "largura": 193,
+      "altura": 276,
+      "bytes": 63206,
+      "alpha": true,
+      "sha256": "8f98f0cf58793099cc06d8496953e84630ec6f4304de9b4150522c405cecb270"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_feminino/fada_timbo_feminino_back.webp",
+      "largura": 223,
+      "altura": 267,
+      "bytes": 70458,
+      "alpha": true,
+      "sha256": "ff7984d98a8d8cebc257561faff6fd62484a9c8b9e098fafaaaec672945094fe"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_feminino/fada_timbo_feminino_front.webp",
+      "largura": 302,
+      "altura": 334,
+      "bytes": 106624,
+      "alpha": true,
+      "sha256": "45c74668a5299a6fc6aba141d135b56c62578dc9b85533bd04e4d53f52e3f36b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_feminino/fada_timbo_feminino_left.webp",
+      "largura": 196,
+      "altura": 269,
+      "bytes": 58094,
+      "alpha": true,
+      "sha256": "52314ccad4d1f115a03bf8ce2441045aecc5c8218eb396fdae866bb2161deccb"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_feminino/fada_timbo_feminino_right.webp",
+      "largura": 194,
+      "altura": 265,
+      "bytes": 56592,
+      "alpha": true,
+      "sha256": "3807c1f938a94230d48016d72651789b2bc766211db15da34b4920ec3b51ec61"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_masculino/fada_timbo_masculino_back.webp",
+      "largura": 237,
+      "altura": 283,
+      "bytes": 75224,
+      "alpha": true,
+      "sha256": "b373f25e7161648dab3c5c77a9029c47e00c427afafefc853081febbb8745d87"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_masculino/fada_timbo_masculino_front.webp",
+      "largura": 300,
+      "altura": 337,
+      "bytes": 104812,
+      "alpha": true,
+      "sha256": "d2bcbdb9c5f8a2225003742b76cc926abc96961675e172228f99517ad4b09397"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_masculino/fada_timbo_masculino_left.webp",
+      "largura": 199,
+      "altura": 292,
+      "bytes": 66890,
+      "alpha": true,
+      "sha256": "9bcc569a0c9f77d96f1c87757afe9f0343af60bc53777eab66acb9da36869522"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/fada_timbo_masculino/fada_timbo_masculino_right.webp",
+      "largura": 192,
+      "altura": 286,
+      "bytes": 65286,
+      "alpha": true,
+      "sha256": "a065d3eaf21889cc76fb7e9fbd552320b236e6c60242c9bb52d168d6b1503889"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_feminino/lobisomem_oculos_feminino_back.webp",
+      "largura": 198,
+      "altura": 291,
+      "bytes": 71322,
+      "alpha": true,
+      "sha256": "6033675725476aaf24decb4c62ae6603e713949a2b9d107100b906b63f896579"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_feminino/lobisomem_oculos_feminino_front.webp",
+      "largura": 271,
+      "altura": 346,
+      "bytes": 99434,
+      "alpha": true,
+      "sha256": "36b1bfb9673d5c8ec01ebe1e628d3247f07d300a4ede494eab19264e4a851030"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_feminino/lobisomem_oculos_feminino_left.webp",
+      "largura": 219,
+      "altura": 297,
+      "bytes": 74082,
+      "alpha": true,
+      "sha256": "58ff5fe5a4ef87c2459e6a5b77110caf5f5fbeb71bd84f29f6e6f9a4171d9a81"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_feminino/lobisomem_oculos_feminino_right.webp",
+      "largura": 195,
+      "altura": 295,
+      "bytes": 62270,
+      "alpha": true,
+      "sha256": "69cc688b974bb6844e0ec293fb23c31fe8844866d6c342fe33ccfedcf451e136"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_masculino/lobisomem_oculos_masculino_back.webp",
+      "largura": 203,
+      "altura": 278,
+      "bytes": 69616,
+      "alpha": true,
+      "sha256": "df2c16c0529a45f85e195d1c2d85206590e96d95350ba39b74c8017a30b4851c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_masculino/lobisomem_oculos_masculino_front.webp",
+      "largura": 279,
+      "altura": 345,
+      "bytes": 104468,
+      "alpha": true,
+      "sha256": "91860156524b4dc9413f1db6be53103c22a931559127dbb84a9c89d2de47ee01"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_masculino/lobisomem_oculos_masculino_left.webp",
+      "largura": 218,
+      "altura": 285,
+      "bytes": 68236,
+      "alpha": true,
+      "sha256": "fe07c13020ec7732da7d129e23c4aa9b47578f45ef396c273fe0ea03a9e00526"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_oculos_masculino/lobisomem_oculos_masculino_right.webp",
+      "largura": 214,
+      "altura": 283,
+      "bytes": 66540,
+      "alpha": true,
+      "sha256": "d2d9bd693ace044087493aab59c6cc2c7d951f6d54460b1b96bb1f75da051f93"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_feminino/lobisomem_timbo_feminino_back.webp",
+      "largura": 206,
+      "altura": 278,
+      "bytes": 69608,
+      "alpha": true,
+      "sha256": "129d8d0b22377cd08b6cd40df364fa40a6ba9130b560c45b13ce358334791796"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_feminino/lobisomem_timbo_feminino_front.webp",
+      "largura": 278,
+      "altura": 340,
+      "bytes": 102070,
+      "alpha": true,
+      "sha256": "10123dd5c0a0c3c4352e968de73e917ce9cd4d5f6d8f5204f1e0de9de49da87b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_feminino/lobisomem_timbo_feminino_left.webp",
+      "largura": 215,
+      "altura": 286,
+      "bytes": 76050,
+      "alpha": true,
+      "sha256": "8bef79064a2dbaa9cafb84ae80517bf6e3d15aeaac576f2697d3c8a70a78d23a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_feminino/lobisomem_timbo_feminino_right.webp",
+      "largura": 211,
+      "altura": 284,
+      "bytes": 73704,
+      "alpha": true,
+      "sha256": "2c431cb922c97d5aa8b599360d5a0ed645da13dca6fb55fa0bf0feae2b702366"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_masculino/lobisomem_timbo_masculino_back.webp",
+      "largura": 216,
+      "altura": 283,
+      "bytes": 73324,
+      "alpha": true,
+      "sha256": "8eb7b1a0e426f64d57d2dc56850f1467c909cf395fd9f944b12d4275738d9dd0"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_masculino/lobisomem_timbo_masculino_front.webp",
+      "largura": 284,
+      "altura": 340,
+      "bytes": 103790,
+      "alpha": true,
+      "sha256": "35fdf5ada5c65a79cbd3e13147723ebe05879e092c0472e1dc342619d7a38696"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_masculino/lobisomem_timbo_masculino_left.webp",
+      "largura": 227,
+      "altura": 287,
+      "bytes": 71634,
+      "alpha": true,
+      "sha256": "39960c741120a4315ed3701f3962abd20a3f1aa40da827e8f5e3b22dedbe3c0e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/lobisomem_timbo_masculino/lobisomem_timbo_masculino_right.webp",
+      "largura": 229,
+      "altura": 284,
+      "bytes": 71788,
+      "alpha": true,
+      "sha256": "f75802867aad06c55baa7fe7749f102979df3cd44cb4be1861537d4efb008e7b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_feminino/mago_oculos_feminino_back.webp",
+      "largura": 201,
+      "altura": 270,
+      "bytes": 82010,
+      "alpha": true,
+      "sha256": "47d681316b94077caa097533104b57d169c65e2a528d30bd49d4dbc98dfd6baf"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_feminino/mago_oculos_feminino_front.webp",
+      "largura": 249,
+      "altura": 327,
+      "bytes": 116972,
+      "alpha": true,
+      "sha256": "c7c76a74ef8be566414ef08829cde1d40c33a747853281e039e8e75644010f84"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_feminino/mago_oculos_feminino_left.webp",
+      "largura": 211,
+      "altura": 287,
+      "bytes": 88148,
+      "alpha": true,
+      "sha256": "a966ce76cf1a71a513e14eb8f30543d34afbac0c3c25e5c4426fd78b599ce739"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_feminino/mago_oculos_feminino_right.webp",
+      "largura": 197,
+      "altura": 288,
+      "bytes": 88440,
+      "alpha": true,
+      "sha256": "d6d89dbe81479fb88028b027ae8e1c28472cb297a0ce4da69b18fb63a6927034"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_masculino/mago_oculos_masculino_back.webp",
+      "largura": 201,
+      "altura": 270,
+      "bytes": 87314,
+      "alpha": true,
+      "sha256": "a2bb6ab4dd8806d986be3e0eb4eab7a3bc9331dc87192ddeb4c5acdee007c113"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_masculino/mago_oculos_masculino_front.webp",
+      "largura": 251,
+      "altura": 336,
+      "bytes": 128088,
+      "alpha": true,
+      "sha256": "70572b3ebb60879087583746bebce98c2ba0262945e169cd2dcbf1dedd5395ae"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_masculino/mago_oculos_masculino_left.webp",
+      "largura": 205,
+      "altura": 276,
+      "bytes": 83776,
+      "alpha": true,
+      "sha256": "f1caa20e3e498e22adb30ed1c9a401356e2ed65b7e536cdaee2ccdf2d63e06e5"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_oculos_masculino/mago_oculos_masculino_right.webp",
+      "largura": 198,
+      "altura": 275,
+      "bytes": 78904,
+      "alpha": true,
+      "sha256": "a1c9870b9282ba7307416f16a7056d134162d30db291cbeef4030063941a9475"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_feminino/mago_timbo_feminino_back.webp",
+      "largura": 186,
+      "altura": 268,
+      "bytes": 67768,
+      "alpha": true,
+      "sha256": "17cd3ac611cb8bc0c4caad53a1472c5b97ecb00713cd001fd1e584d7221ae05b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_feminino/mago_timbo_feminino_front.webp",
+      "largura": 252,
+      "altura": 309,
+      "bytes": 88632,
+      "alpha": true,
+      "sha256": "cdcd67fcb7749aa5fbd413b37b90985ce63f0d8567bf5cfa698ef255894c53b2"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_feminino/mago_timbo_feminino_left.webp",
+      "largura": 201,
+      "altura": 270,
+      "bytes": 64100,
+      "alpha": true,
+      "sha256": "717b177b070c492b20dbb06b996fea5cf560fa6eb85b28eeb6dbc2833d7f2ddf"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_feminino/mago_timbo_feminino_right.webp",
+      "largura": 189,
+      "altura": 271,
+      "bytes": 62432,
+      "alpha": true,
+      "sha256": "3d5f41378352d9a99b80b6adabf72d179dbe73e347cf0c19b3ae1cd90869215e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_masculino/mago_timbo_masculino_back.webp",
+      "largura": 202,
+      "altura": 269,
+      "bytes": 68338,
+      "alpha": true,
+      "sha256": "75381e3a7a1faf45371be728215fa148f89d6b7489dc2fc5bc77e62d16bcc8ab"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_masculino/mago_timbo_masculino_front.webp",
+      "largura": 245,
+      "altura": 326,
+      "bytes": 96362,
+      "alpha": true,
+      "sha256": "9b2bbb324a8faf8f4bfdeab1c745c3f7b8e8d737a67f0591828f4496c5fb3835"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_masculino/mago_timbo_masculino_left.webp",
+      "largura": 217,
+      "altura": 285,
+      "bytes": 70364,
+      "alpha": true,
+      "sha256": "59d6f58e56f465183557cbb221bb00dc601c84e2e2b101cbf86216367cb11e5e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/mago_timbo_masculino/mago_timbo_masculino_right.webp",
+      "largura": 213,
+      "altura": 281,
+      "bytes": 67460,
+      "alpha": true,
+      "sha256": "98ce82113736eb4acf4a60b4f1ce89ada5134486ddfa0a09cfe7cb1ce8896f31"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_feminino/necromante_oculos_feminino_back.webp",
+      "largura": 260,
+      "altura": 294,
+      "bytes": 81908,
+      "alpha": true,
+      "sha256": "6edfb2e1342b12a7c98d1ffe1949a5ea255f2c2d6c7022d3ac103da6ae101297"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_feminino/necromante_oculos_feminino_front.webp",
+      "largura": 351,
+      "altura": 344,
+      "bytes": 112908,
+      "alpha": true,
+      "sha256": "7828fdff98937651d87b7aaff44e5a80512489fb60571ef0ba24abb35eff9d13"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_feminino/necromante_oculos_feminino_left.webp",
+      "largura": 277,
+      "altura": 282,
+      "bytes": 75576,
+      "alpha": true,
+      "sha256": "5c6d43383ededfd1ad5f37d763f99e24d1d89d9d7936f327d9b7992eaa8ccbf3"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_feminino/necromante_oculos_feminino_right.webp",
+      "largura": 236,
+      "altura": 265,
+      "bytes": 68098,
+      "alpha": true,
+      "sha256": "0a52d40b65eb7e2d101a75271eec68b9e565eed1d8f13b4c8283408044e3ba5d"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_masculino/necromante_oculos_masculino_back.webp",
+      "largura": 260,
+      "altura": 281,
+      "bytes": 72288,
+      "alpha": true,
+      "sha256": "8d1134c3b33d8fa4a2d288ca8f4e082ca3d8bb235fe3c0e562077c67a0f6470d"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_masculino/necromante_oculos_masculino_front.webp",
+      "largura": 352,
+      "altura": 324,
+      "bytes": 98522,
+      "alpha": true,
+      "sha256": "6706852541c063ebf844288ea1996852d33b238932002ffd52af6d0447970210"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_masculino/necromante_oculos_masculino_left.webp",
+      "largura": 280,
+      "altura": 273,
+      "bytes": 66766,
+      "alpha": true,
+      "sha256": "0721583aff33e3b640108c6356ece5d7661cd9b2b91401db4e7c42baec51a9b7"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_oculos_masculino/necromante_oculos_masculino_right.webp",
+      "largura": 244,
+      "altura": 264,
+      "bytes": 61736,
+      "alpha": true,
+      "sha256": "649040f7b6d8fce7b36586f439ebc597b65e873be7c853d5e49ae921ca3813a3"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_feminino/necromante_timbo_feminino_back.webp",
+      "largura": 252,
+      "altura": 280,
+      "bytes": 71842,
+      "alpha": true,
+      "sha256": "26912bcbbf8132924cec4397d9e1a9d7ea4f99b6edfbe29c6cc1895d50bdda19"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_feminino/necromante_timbo_feminino_front.webp",
+      "largura": 305,
+      "altura": 335,
+      "bytes": 105254,
+      "alpha": true,
+      "sha256": "25a5d6135e6f3f17c8a2f91fb5fa9c5662359a38169d7d56a20acddb4b11033f"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_feminino/necromante_timbo_feminino_left.webp",
+      "largura": 273,
+      "altura": 271,
+      "bytes": 67736,
+      "alpha": true,
+      "sha256": "f48f65cda5e2ea0ee48fe5233c5f36e843e9bfe62829b45594fab64d849c7627"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_feminino/necromante_timbo_feminino_right.webp",
+      "largura": 242,
+      "altura": 259,
+      "bytes": 64232,
+      "alpha": true,
+      "sha256": "a0fc0276f3e39053feffd0c8787d7c84cf1a6d7899cae9301393ce52d72dcd6c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_masculino/necromante_timbo_masculino_back.webp",
+      "largura": 267,
+      "altura": 290,
+      "bytes": 76096,
+      "alpha": true,
+      "sha256": "61847d5c967027fd3eec48684a8b87e698e02d78de2c5347efac8135231030d9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_masculino/necromante_timbo_masculino_front.webp",
+      "largura": 311,
+      "altura": 333,
+      "bytes": 102746,
+      "alpha": true,
+      "sha256": "eac1b33727524faa7745f096e20e61dc3db22cd84ccf1782e29bb23023bcb60e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_masculino/necromante_timbo_masculino_left.webp",
+      "largura": 287,
+      "altura": 283,
+      "bytes": 71688,
+      "alpha": true,
+      "sha256": "049ae80bddc0e2acb2147c2e3ed65666ccc3558e0a5c3990f60061f1b50e4909"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/necromante_timbo_masculino/necromante_timbo_masculino_right.webp",
+      "largura": 250,
+      "altura": 267,
+      "bytes": 61400,
+      "alpha": true,
+      "sha256": "d894e43f53f1430abd2c90aa0008c7a61ab12c26c71b75ed2ac64ae71decae4b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_feminino/sereia_oculos_feminino_back.webp",
+      "largura": 224,
+      "altura": 292,
+      "bytes": 71570,
+      "alpha": true,
+      "sha256": "3d7cf38d27324628cb74cd9385882cb648bcfb1ca1f124f274ca0116c3ef53d3"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_feminino/sereia_oculos_feminino_front.webp",
+      "largura": 352,
+      "altura": 330,
+      "bytes": 112748,
+      "alpha": true,
+      "sha256": "0f0b12a571d03fbfd242d91a490e7e5fbe757fb73e61aae6f6d6f975ee25e12c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_feminino/sereia_oculos_feminino_left.webp",
+      "largura": 249,
+      "altura": 294,
+      "bytes": 86150,
+      "alpha": true,
+      "sha256": "fa48257fb36760bd1dc4091bd72341710fc8ab6cd0adab34b37553d3cb458e81"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_feminino/sereia_oculos_feminino_right.webp",
+      "largura": 224,
+      "altura": 288,
+      "bytes": 78046,
+      "alpha": true,
+      "sha256": "716c8851fca3205f2a74a671aada3fdf946de43cd96fcb48adef01d23d6ef86a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_masculino/sereia_oculos_masculino_back.webp",
+      "largura": 246,
+      "altura": 288,
+      "bytes": 78408,
+      "alpha": true,
+      "sha256": "58df4159d6b3cbf27a8160087bde6f0ad68ee5c29835c4c0575a2d651b045ae4"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_masculino/sereia_oculos_masculino_front.webp",
+      "largura": 352,
+      "altura": 330,
+      "bytes": 117580,
+      "alpha": true,
+      "sha256": "05f14a4f58a9794fbd3aedda8b2bd5f75e42faae7aa003e2be1c988cc0f569e9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_masculino/sereia_oculos_masculino_left.webp",
+      "largura": 266,
+      "altura": 290,
+      "bytes": 87846,
+      "alpha": true,
+      "sha256": "e90fa345f708d2d0beabefaae0da5574019ae5b8d11f323870c985db0359443a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_oculos_masculino/sereia_oculos_masculino_right.webp",
+      "largura": 254,
+      "altura": 285,
+      "bytes": 87370,
+      "alpha": true,
+      "sha256": "12167922cb10a47627a767f45d0e02bf11dc4fd2212eac69b5302b6efbd3fc66"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_feminino/sereia_timbo_feminino_back.webp",
+      "largura": 240,
+      "altura": 289,
+      "bytes": 86480,
+      "alpha": true,
+      "sha256": "77df39d1f05a836dff844e2083ffe55da08cd218c96e04fbf8d2e3d1396be8fb"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_feminino/sereia_timbo_feminino_front.webp",
+      "largura": 302,
+      "altura": 331,
+      "bytes": 121116,
+      "alpha": true,
+      "sha256": "38feccda20b0e26c0b7f3664bac11cad66cce44fae0dd67de8bb0ee7cb2a55f7"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_feminino/sereia_timbo_feminino_left.webp",
+      "largura": 255,
+      "altura": 290,
+      "bytes": 97846,
+      "alpha": true,
+      "sha256": "37a322faadb43c5c084e984711624ab6508e7b0306894755d4165891f110e0c2"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_feminino/sereia_timbo_feminino_right.webp",
+      "largura": 247,
+      "altura": 288,
+      "bytes": 91300,
+      "alpha": true,
+      "sha256": "af2ab092b243577dd88ba0786826d7e2dc532af21f839b989be3073acc164878"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_masculino/sereia_timbo_masculino_back.webp",
+      "largura": 248,
+      "altura": 289,
+      "bytes": 84040,
+      "alpha": true,
+      "sha256": "9dae5557f6e215d8d790337475d4af2f1b46def74ac418a4722c1123f93f0f5c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_masculino/sereia_timbo_masculino_front.webp",
+      "largura": 290,
+      "altura": 339,
+      "bytes": 102760,
+      "alpha": true,
+      "sha256": "3e8a7b0e2fe6307df6ad47124c25ac5bf466092b3f9beee5e35b0371440ad3c0"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_masculino/sereia_timbo_masculino_left.webp",
+      "largura": 242,
+      "altura": 295,
+      "bytes": 77250,
+      "alpha": true,
+      "sha256": "b1a32a6ee7baa97c41df54e63450ff8e91e5a22ead46650185e11adf4be0934c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/sereia_timbo_masculino/sereia_timbo_masculino_right.webp",
+      "largura": 245,
+      "altura": 290,
+      "bytes": 82780,
+      "alpha": true,
+      "sha256": "e3169e7c38f015514841bb068b0ed8f8594892fd45f70af87f6f7d1cc761cd57"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_feminino/vampiro_oculos_feminino_back.webp",
+      "largura": 176,
+      "altura": 276,
+      "bytes": 70910,
+      "alpha": true,
+      "sha256": "5bc22c17b693e9b5110cc8825ec02e8ef58e91649642ebdb9c1c17b9ac1e05bb"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_feminino/vampiro_oculos_feminino_front.webp",
+      "largura": 245,
+      "altura": 344,
+      "bytes": 110734,
+      "alpha": true,
+      "sha256": "1fd5a03caf8e7945044544627558ee7aa802eed0ef4240c68212200e6704e61c"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_feminino/vampiro_oculos_feminino_left.webp",
+      "largura": 164,
+      "altura": 290,
+      "bytes": 57648,
+      "alpha": true,
+      "sha256": "d6f672154b67522ffbc802f5069192ec86c0361d8d8f32def0dcf028735b61d6"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_feminino/vampiro_oculos_feminino_right.webp",
+      "largura": 161,
+      "altura": 286,
+      "bytes": 56104,
+      "alpha": true,
+      "sha256": "7bbd8685ea0e90eb4592fa8cc94092ee9f57c7528a5ff94ca9fd09f46b1bb501"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_masculino/vampiro_oculos_masculino_back.webp",
+      "largura": 182,
+      "altura": 275,
+      "bytes": 74078,
+      "alpha": true,
+      "sha256": "1ff4577256f222ce98d47ed646a783a8ccf2655046dcb58c1ecd9719c4666ae6"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_masculino/vampiro_oculos_masculino_front.webp",
+      "largura": 260,
+      "altura": 340,
+      "bytes": 111610,
+      "alpha": true,
+      "sha256": "97a62d7e287e16ef434a80232d02c8bf14a065702f4b36baec8d9edf5d63eb58"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_masculino/vampiro_oculos_masculino_left.webp",
+      "largura": 163,
+      "altura": 275,
+      "bytes": 58330,
+      "alpha": true,
+      "sha256": "c9b201414f280389b697a347dd3e33df2748ac6b7a464b98086aff92cf989cae"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_oculos_masculino/vampiro_oculos_masculino_right.webp",
+      "largura": 162,
+      "altura": 274,
+      "bytes": 55420,
+      "alpha": true,
+      "sha256": "23e95fca232dc682ed0013970a234bb7673a54d622508255c1e272f83197cddd"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_feminino/vampiro_timbo_feminino_back.webp",
+      "largura": 171,
+      "altura": 274,
+      "bytes": 37132,
+      "alpha": true,
+      "sha256": "47e268aa842fcb49b8ce18e5b019cd823cd3bf9655e1bd92fee0d98e4aa69a5a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_feminino/vampiro_timbo_feminino_front.webp",
+      "largura": 253,
+      "altura": 324,
+      "bytes": 89398,
+      "alpha": true,
+      "sha256": "92463f9820f33ed57bc0c196c392ec0eafa902a79a9c6784a80638220579ecd6"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_feminino/vampiro_timbo_feminino_left.webp",
+      "largura": 177,
+      "altura": 270,
+      "bytes": 59718,
+      "alpha": true,
+      "sha256": "d1d6c87426075c67169c47b054e0287e9f1377c7bac85df325cd8a610f883add"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_feminino/vampiro_timbo_feminino_right.webp",
+      "largura": 172,
+      "altura": 268,
+      "bytes": 55304,
+      "alpha": true,
+      "sha256": "d6ed116b36e12a2bd02fb656271e12e0ecbede0e28979bdc6b5dd5059295c6ac"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_masculino/vampiro_timbo_masculino_back.webp",
+      "largura": 190,
+      "altura": 276,
+      "bytes": 47238,
+      "alpha": true,
+      "sha256": "204fb802300ecee127eae3026b7e2eddb0f617cbb4868324ac1e9f588791afcb"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_masculino/vampiro_timbo_masculino_front.webp",
+      "largura": 264,
+      "altura": 333,
+      "bytes": 91344,
+      "alpha": true,
+      "sha256": "0792262fa2a9655e594a0facdf8bdaa9183bf96e97ce992d74b1823159f9cb08"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_masculino/vampiro_timbo_masculino_left.webp",
+      "largura": 168,
+      "altura": 282,
+      "bytes": 51428,
+      "alpha": true,
+      "sha256": "c26040acf7a4f6dc2737bc9838814a05a11f2a84e2d0ed885b5fd2419b5f8a01"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/vampiro_timbo_masculino/vampiro_timbo_masculino_right.webp",
+      "largura": 167,
+      "altura": 282,
+      "bytes": 50362,
+      "alpha": true,
+      "sha256": "240bd025be5e1db59e4f61dd3ee3b225a32df13ffe837a7d97e934b0eda6d46e"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_feminino/warlock_oculos_feminino_back.webp",
+      "largura": 236,
+      "altura": 269,
+      "bytes": 91120,
+      "alpha": true,
+      "sha256": "864198e12ddbab6c7ce768b9efc409c63e7c1ae6f85b6023de1dec0f7c0ecd73"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_feminino/warlock_oculos_feminino_front.webp",
+      "largura": 303,
+      "altura": 327,
+      "bytes": 126362,
+      "alpha": true,
+      "sha256": "66846c80a49e11b9b1e561a84388062acfcbeb0adf047a68f9002d91ca9e96f3"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_feminino/warlock_oculos_feminino_left.webp",
+      "largura": 280,
+      "altura": 292,
+      "bytes": 98116,
+      "alpha": true,
+      "sha256": "4e1baae3e0ac907caeec180edfd7b9af3bf4e159c2881bbe84edeae601f8c29a"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_feminino/warlock_oculos_feminino_right.webp",
+      "largura": 233,
+      "altura": 264,
+      "bytes": 78282,
+      "alpha": true,
+      "sha256": "3b7c141ffbd98e9cf438f1d29487cda30228368fd97b66ee5ec843b58e3ed2bd"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_masculino/warlock_oculos_masculino_back.webp",
+      "largura": 250,
+      "altura": 264,
+      "bytes": 86838,
+      "alpha": true,
+      "sha256": "e1d835b9eea3a300319a47fd90d444f84aa424eacfb45de7473132550fd00038"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_masculino/warlock_oculos_masculino_front.webp",
+      "largura": 321,
+      "altura": 335,
+      "bytes": 132008,
+      "alpha": true,
+      "sha256": "1d1b7a7e82bfde6ebf22e81ab570439484062ce36e9f41aab758077462d5d8a4"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_masculino/warlock_oculos_masculino_left.webp",
+      "largura": 272,
+      "altura": 278,
+      "bytes": 92228,
+      "alpha": true,
+      "sha256": "ed617c7a7c67f1348b520b32cc3ea23b72ca18a1d40f1ceb0aae65a5c42889de"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_oculos_masculino/warlock_oculos_masculino_right.webp",
+      "largura": 217,
+      "altura": 254,
+      "bytes": 75560,
+      "alpha": true,
+      "sha256": "f8615032d6af79cf62d3378a3c0d635d97d5c217e72a3599b0686a147aa70bbd"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_feminino/warlock_timbo_feminino_back.webp",
+      "largura": 239,
+      "altura": 267,
+      "bytes": 72616,
+      "alpha": true,
+      "sha256": "02a42e8ef8bc062857ff32ec10b9d83e02ebfd1dcf9a31e3839f01b361cb4de3"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_feminino/warlock_timbo_feminino_front.webp",
+      "largura": 265,
+      "altura": 310,
+      "bytes": 99206,
+      "alpha": true,
+      "sha256": "84bc5fea97569043d474e0c98f01469beed8273b600f11a845514fd7f1e4face"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_feminino/warlock_timbo_feminino_left.webp",
+      "largura": 266,
+      "altura": 292,
+      "bytes": 83802,
+      "alpha": true,
+      "sha256": "47a523c1b254121df394e021ff59fc49f28f674f53369e623c7f5be4bade185b"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_feminino/warlock_timbo_feminino_right.webp",
+      "largura": 227,
+      "altura": 260,
+      "bytes": 65900,
+      "alpha": true,
+      "sha256": "5a2993f72dfe36012d15edcc24f31d521ed3ab4813f59191c8267c662f4d9c35"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_masculino/warlock_timbo_masculino_back.webp",
+      "largura": 248,
+      "altura": 269,
+      "bytes": 69666,
+      "alpha": true,
+      "sha256": "0522694e965377552086983a2430c1251ea28136b24354b9297306a1667967e9"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_masculino/warlock_timbo_masculino_front.webp",
+      "largura": 267,
+      "altura": 326,
+      "bytes": 100872,
+      "alpha": true,
+      "sha256": "50f0d64fa08a1152d3d8a64973be819a33fe9c4dcb61a9053b8ad403f1b09318"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_masculino/warlock_timbo_masculino_left.webp",
+      "largura": 276,
+      "altura": 293,
+      "bytes": 78974,
+      "alpha": true,
+      "sha256": "8004b5316dcce46698d80fb282fe337e007a8914dbd347173806751230ba9368"
+    },
+    {
+      "arquivo": "assets/pixel/personagens/sprites_separadas/warlock_timbo_masculino/warlock_timbo_masculino_right.webp",
+      "largura": 226,
+      "altura": 268,
+      "bytes": 69032,
+      "alpha": true,
+      "sha256": "3516035bce6def508d06cedc31c38fde65103be99c9d1008ee95fe89b1f3ed51"
+    }
+  ]
+}

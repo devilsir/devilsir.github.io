@@ -690,8 +690,9 @@ var VozPartida = (() => {
     if (![1, 2, 3].includes(Number(settings.battleSpeed))) settings.battleSpeed = 1;
     else settings.battleSpeed = Number(settings.battleSpeed);
     if (!["normal", "large", "extra-large"].includes(settings.fontSize)) settings.fontSize = settings.fontSize === "grande" ? "large" : "normal";
-    settings.autoBattle = Boolean(settings.autoBattle);
-    settings.autoBattleItems = Boolean(settings.autoBattleItems);
+    const explicitAuto = Number(saved?.autoBattleConsentVersion || 0) >= 1;
+    settings.autoBattle = explicitAuto ? Boolean(settings.autoBattle) : false;
+    settings.autoBattleItems = explicitAuto ? Boolean(settings.autoBattleItems) : false;
     return settings;
   }
   function saveSettings(settings) {
@@ -859,8 +860,8 @@ var VozPartida = (() => {
       regionIndex: 0,
       discoveredRegions: [0],
       completedRegions: [],
-      worldScaleVersion: 2,
-      position: { x: 348, y: 1738 },
+      worldScaleVersion: 3,
+      position: { x: 261, y: 1304 },
       facing: "front",
       level: ngPlus ? 6 : 1,
       xp: 0,
@@ -922,12 +923,18 @@ var VozPartida = (() => {
     const globalSettings = loadSettings();
     const hasGlobalSettings = Boolean(safeParse(localStorage.getItem(SETTINGS_KEY), null));
     clean.settings = hasGlobalSettings ? { ...raw.settings || {}, ...globalSettings, keys: { ...DEFAULT_SETTINGS.keys, ...raw.settings?.keys || {}, ...globalSettings.keys } } : { ...globalSettings, ...raw.settings || {}, keys: { ...DEFAULT_SETTINGS.keys, ...globalSettings.keys, ...raw.settings?.keys || {} } };
-    clean.settings.autoBattle = Boolean(hasGlobalSettings ? globalSettings.autoBattle : raw.settings?.autoBattle ?? clean.settings.autoBattle);
-    clean.settings.autoBattleItems = Boolean(hasGlobalSettings ? globalSettings.autoBattleItems : raw.settings?.autoBattleItems ?? clean.settings.autoBattleItems);
+    clean.settings.autoBattle = Boolean(globalSettings.autoBattle);
+    clean.settings.autoBattleItems = Boolean(globalSettings.autoBattleItems);
     if (!["normal", "large", "extra-large"].includes(clean.settings.fontSize)) clean.settings.fontSize = "normal";
     const oldPosition = { x: 310, y: 770, ...raw.position || {} };
-    clean.position = Number(raw.worldScaleVersion) >= 2 ? oldPosition : { x: oldPosition.x * 2, y: oldPosition.y * 2 };
-    clean.worldScaleVersion = 2;
+    const worldScaleVersion = Number(raw.worldScaleVersion) || 1;
+    clean.position = worldScaleVersion >= 3 ? oldPosition : worldScaleVersion >= 2 ? { x: oldPosition.x * 0.75, y: oldPosition.y * 0.75 } : { x: oldPosition.x * 1.5, y: oldPosition.y * 1.5 };
+    clean.worldScaleVersion = 3;
+    if (raw.subArea?.id === "frost_cave") {
+      const returnPosition = raw.subArea.returnPosition;
+      if (returnPosition && Number.isFinite(returnPosition.x) && Number.isFinite(returnPosition.y)) clean.position = { x: returnPosition.x, y: returnPosition.y };
+    }
+    delete clean.subArea;
     clean.philosophy = { order: 0, will: 0, free: 0, silence: 0, ...raw.philosophy || {} };
     clean.companions = {
       eliara: { unlocked: true, loyalty: 50, hp: 92, maxHp: 92, ...raw.companions?.eliara || {} },
@@ -963,7 +970,7 @@ var VozPartida = (() => {
     return true;
   }
   function listSaves() {
-    return ["auto", "1", "2", "3"].map((slot) => {
+    return ["auto", "1", "2"].map((slot) => {
       const state2 = loadGame(slot);
       return state2 ? {
         slot,
@@ -1398,9 +1405,10 @@ var VozPartida = (() => {
   // js/exploration.js
   var now = () => globalThis.performance?.now?.() || Date.now();
   var ALPHA_THRESHOLD = 8;
-  var WORLD_SCALE = 2;
-  var PLAYER_HEIGHT = 68;
-  var ENTITY_HEIGHTS = { npc: 72, normal: 86, miniboss: 112, boss: 140 };
+  var WORLD_SCALE = 1.5;
+  var PLAYER_HEIGHT = 82;
+  var ENTITY_HEIGHTS = { npc: 86, normal: 103, miniboss: 134, boss: 168 };
+  var GROUND_OFFSET = 14;
   var FLYING_ENEMIES = /* @__PURE__ */ new Set([
     "fada_gelo",
     "espectro_cinzas",
@@ -1576,7 +1584,7 @@ var VozPartida = (() => {
       this.paused = true;
       this.lastTime = now();
       this.camera = { x: 0, y: 0 };
-      this.world = { w: 2896, h: 2172, sourceW: 1448, sourceH: 1086 };
+      this.world = { w: 2172, h: 1629, sourceW: 1448, sourceH: 1086 };
       this.nearEntity = null;
       this.frame = 0;
       this.entities = [];
@@ -1628,7 +1636,7 @@ var VozPartida = (() => {
     }
     playerCandidates(state2, direction) {
       const front = formSprite(state2.route, state2.activeForm, "front", state2.visualVariant);
-      const exact = state2.visualVariant === "feminino" && state2.activeForm === "base" ? front : formSprite(state2.route, state2.activeForm, direction, state2.visualVariant);
+      const exact = formSprite(state2.route, state2.activeForm, direction, state2.visualVariant);
       return { exact, candidates: [front, characterArt(state2.route, state2.visualVariant)] };
     }
     enemyCandidates(region, id, direction, boss) {
@@ -1833,15 +1841,7 @@ var VozPartida = (() => {
       const editorCollision = globalThis.__VOZ_DEV__?.enabled ? globalThis.__VOZ_DEV__.editor?.worldCollisionAt?.(position, index) : null;
       if (typeof editorCollision === "boolean") return editorCollision;
       const radius = 21, border = 64;
-      if (position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius) return true;
-      const shippedOverride = MapOverridesModule.worldMapOverride(index);
-      const shippedNavigation = MapOverridesModule.worldNavigationValue(index, position.x, position.y, shippedOverride?.metadata?.gridSize || 64);
-      if (["blocked", "hazard", "void"].includes(shippedNavigation)) return true;
-      if ((shippedOverride?.props || []).some((prop) => PropPresentationModule.propBlocksPoint(prop, position.x, position.y, radius))) return true;
-      if (["walkable", "path", "bridge"].includes(shippedNavigation)) return false;
-      const shippedObstacles = MapOverridesModule.worldMapOverride(index)?.obstacles;
-      const obstacles = Array.isArray(shippedObstacles) ? shippedObstacles : this.obstacles(index);
-      return obstacles.some((box) => position.x + radius > box.x && position.x - radius < box.x + box.w && position.y + radius > box.y && position.y - radius < box.y + box.h);
+      return position.x < border + radius || position.y < border + radius || position.x > this.world.w - border - radius || position.y > this.world.h - border - radius;
     }
     interact() {
       if (this.paused || !this.nearEntity) return;
@@ -1878,6 +1878,8 @@ var VozPartida = (() => {
       if (!image) return null;
       const bounds = this.cache.getBounds(image), width = targetHeight * (bounds.w / bounds.h), x = centerX - width / 2, y = groundY - targetHeight;
       this.ctx.save();
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.imageSmoothingQuality = "high";
       this.ctx.globalAlpha = alpha;
       if (mirror) {
         this.ctx.translate(centerX * 2, 0);
@@ -1908,11 +1910,14 @@ var VozPartida = (() => {
     }
     drawWorldObjects(region) {
       const placements = this.layout(region.id).objects;
+      const baseWidths = [230, 185, 220, 150];
+      const regionWidths = { 0: [230, 59, 220, 150] };
+      const widths = regionWidths[region.id] || baseWidths;
       region.tileObjects.forEach((file, index) => {
         const image = this.cache.get(tileSprite(region, file));
         if (!image) return;
         const p = this.toWorld(placements[index]);
-        const bounds = this.cache.getBounds(image), targetWidth = [230, 185, 220, 150][index], scale = targetWidth / bounds.w, targetHeight = bounds.h * scale;
+        const bounds = this.cache.getBounds(image), targetWidth = widths[index] || baseWidths[index] || 160, scale = targetWidth / bounds.w, targetHeight = bounds.h * scale;
         this.ctx.drawImage(image, bounds.x, bounds.y, bounds.w, bounds.h, Math.round(p.x - this.camera.x - targetWidth / 2), Math.round(p.y - this.camera.y - targetHeight), Math.round(targetWidth), Math.round(targetHeight));
       });
     }
@@ -1922,7 +1927,7 @@ var VozPartida = (() => {
       const ctx = this.ctx;
       ctx.save();
       if (entity.type === "npc" || entity.type === "encounter") {
-        const image = this.cache.get(entity.sprite), height = entity.height || ENTITY_HEIGHTS.npc, float = entity.flying ? Math.sin(now() / 520 + entity.x) * 2.2 : 0, feet = ground + float, alpha = entity.locked ? 0.32 : 1;
+        const image = this.cache.get(entity.sprite), height = entity.height || ENTITY_HEIGHTS.npc, float = entity.flying ? Math.sin(now() / 520 + entity.x) * 2.2 : 0, feet = ground + (entity.flying ? float : GROUND_OFFSET), alpha = entity.locked ? 0.32 : 1;
         ctx.globalAlpha = alpha;
         ctx.fillStyle = "rgba(0,0,0,.38)";
         ctx.beginPath();
@@ -1989,13 +1994,13 @@ var VozPartida = (() => {
       this.ctx.drawImage(image, bounds.x, bounds.y, bounds.w, bounds.h, x - width / 2, ground - targetHeight, width, targetHeight);
     }
     drawPlayer(state2) {
-      const spec = this.playerCandidates(state2, state2.facing), loadedImage = this.cache.resolveFirst(spec.exact, spec.candidates), image = loadedImage || this.lastPlayerImage, x = Math.round(state2.position.x - this.camera.x), ground = Math.round(state2.position.y - this.camera.y);
+      const spec = this.playerCandidates(state2, state2.facing), loadedImage = this.cache.resolveFirst(spec.exact, spec.candidates), image = loadedImage || this.lastPlayerImage, x = Math.round(state2.position.x - this.camera.x), ground = Math.round(state2.position.y - this.camera.y) + GROUND_OFFSET;
       if (loadedImage) this.lastPlayerImage = loadedImage;
       this.ctx.fillStyle = "rgba(0,0,0,.48)";
       this.ctx.beginPath();
       this.ctx.ellipse(x, ground + 4, 20, 6, 0, 0, Math.PI * 2);
       this.ctx.fill();
-      const resolved = this.cache.aliases.get(spec.exact) || spec.exact, derived = resolved === characterArt(state2.route, state2.visualVariant), frontOnly = state2.visualVariant === "feminino" && state2.activeForm === "base", mirror = (derived || frontOnly) && state2.facing === "left";
+      const resolved = this.cache.aliases.get(spec.exact) || spec.exact, derived = resolved === characterArt(state2.route, state2.visualVariant), mirror = derived && state2.facing === "left";
       this.drawCropped(image, x, ground, PLAYER_HEIGHT, { mirror });
       const route = ROUTES[state2.route];
       this.ctx.strokeStyle = route.color;
@@ -2441,7 +2446,13 @@ var VozPartida = (() => {
       else if (skill.target === "allAllies") this.resolveSkill(actor, skill, this.living(this.party));
     }
     async resolveSkill(actor, skill, targets) {
-      if (!this.beginAction(actor) || actor.focus < skill.cost) return;
+      if (!actor || actor.focus < skill.cost || this.battle.current?.id !== actor.id) return;
+      const validTargets = (targets || []).filter((target) => target && target.hp > 0);
+      if (!validTargets.length) {
+        this.checkOutcome();
+        return;
+      }
+      if (!this.beginAction(actor)) return;
       actor.focus -= skill.cost;
       this.battle.lastSkill = skill.id;
       this.animateActor(actor, "cast");
@@ -2449,7 +2460,7 @@ var VozPartida = (() => {
       this.effect(skill.effect, skill.target === "allEnemies" ? "burst" : "projectile");
       this.log(`${actor.name} usa ${skill.name}.`);
       await this.delay(420);
-      for (const target of targets) {
+      for (const target of validTargets) {
         if (skill.healing) {
           if (this.battle.reverseHealing) {
             const damage = this.calculateDamage(actor, target, skill.power);
@@ -2676,6 +2687,10 @@ var VozPartida = (() => {
     }
     chooseTargets(team, callback) {
       const targets = this.living(team === "enemy" ? this.enemies : this.party);
+      if (!targets.length) {
+        if (!this.checkOutcome() && this.battle.current?.team === "party" && !this.actionInProgress) this.renderActionMenu(this.battle.current);
+        return;
+      }
       if (targets.length === 1) return callback(targets[0]);
       this.actions.querySelectorAll("button").forEach((button) => button.disabled = true);
       this.detail.innerHTML = `<small>SELECIONE O ALVO</small><p>Clique em um ${team === "enemy" ? "inimigo" : "aliado"} para confirmar.</p>`;
@@ -2691,8 +2706,15 @@ var VozPartida = (() => {
       });
     }
     async enemyTurn(actor) {
+      if (!actor || actor.hp <= 0 || this.battle.current?.id !== actor.id) {
+        this.actionInProgress = false;
+        return this.nextTurn();
+      }
       const targets = this.living(this.party);
-      if (!targets.length) return this.checkOutcome();
+      if (!targets.length) {
+        this.actionInProgress = false;
+        return this.checkOutcome();
+      }
       const target = targets.reduce((weak, current) => current.hp / current.maxHp < weak.hp / weak.maxHp ? current : weak, targets[0]);
       const special = (actor.boss || actor.miniboss) && Math.random() < 0.42;
       if (special) {
@@ -2811,6 +2833,7 @@ var VozPartida = (() => {
     toggleAuto() {
       const state2 = this.getState();
       state2.settings.autoBattle = !state2.settings.autoBattle;
+      state2.settings.autoBattleConsentVersion = 1;
       saveSettings(state2.settings);
       this.updateAutoButton();
       this.audio.ui();
@@ -3007,10 +3030,20 @@ var VozPartida = (() => {
       return actor.lastVisibleImg || resolved || actor.img;
     }
     preloadActorSprite(actor) {
-      if (!actor?.img || this.pendingSprites.has(actor.img)) return;
+      if (!actor?.img || !this.cache || this.pendingSprites.has(actor.img)) return;
+      const current = this.cache.get?.(actor.img);
+      if (current) {
+        const resolved = this.cache.aliases?.get?.(actor.img) || actor.img;
+        if (resolved) actor.lastVisibleImg = resolved;
+        return;
+      }
       this.pendingSprites.add(actor.img);
-      this.cache?.loadFirst?.(actor.img, actor.imgFallbacks || []).then(() => {
-        if (!this.battle?.ended) this.render();
+      this.cache.loadFirst?.(actor.img, actor.imgFallbacks || []).then((image) => {
+        if (!image) return;
+        const resolved = this.cache.aliases?.get?.(actor.img) || actor.img;
+        const changed = resolved && actor.lastVisibleImg !== resolved;
+        if (resolved) actor.lastVisibleImg = resolved;
+        if (changed && !this.battle?.ended) this.render();
       }).finally(() => this.pendingSprites.delete(actor.img));
     }
     render() {
@@ -3038,14 +3071,20 @@ var VozPartida = (() => {
         return `<span class="initiative-chip ${actor.team} ${index === 0 ? "current" : ""}" title="${actor.name}">${actor.name.slice(0, 2).toUpperCase()}</span>`;
       }).join("");
     }
+    actorNode(actor) {
+      if (!actor) return null;
+      const id = String(actor.id);
+      const escaped = globalThis.CSS?.escape ? globalThis.CSS.escape(id) : id.replace(/["\\]/g, "\\$&");
+      return this.screen.querySelector(`.combatant[data-id="${escaped}"]`);
+    }
     animateActor(actor, className) {
-      const node = this.screen.querySelector(`.combatant[data-id="${CSS.escape(actor.id)}"]`);
+      const node = this.actorNode(actor);
       if (!node) return;
       node.classList.add(className);
       setTimeout(() => node.classList.remove(className), 700 / this.speed);
     }
     damageNumber(actor, amount, heal = false) {
-      const node = this.screen.querySelector(`.combatant[data-id="${CSS.escape(actor.id)}"]`);
+      const node = this.actorNode(actor);
       if (!node) return;
       const arena = this.screen.querySelector("#battle-arena").getBoundingClientRect(), rect = node.getBoundingClientRect();
       const number = document.createElement("span");
@@ -3366,7 +3405,7 @@ var VozPartida = (() => {
     }
     saves() {
       const entries = listSaves(), draft = Boolean(this.getState()?.flags?.draft);
-      return `${this.header("Salvar e Carregar", "Tr\xEAs espa\xE7os manuais e um salvamento autom\xE1tico protegido contra dados corrompidos.")}<div class="save-list">${entries.map((entry) => `<article class="save-slot"><div class="slot-number">${entry.slot === "auto" ? "AUTO" : `0${entry.slot}`}</div><div>${entry.empty ? `<strong>Espa\xE7o vazio</strong><p>Nenhuma realidade preservada.</p>` : `<strong>${ROUTES[entry.route].name} (${entry.visualVariant === "feminino" ? "Feminina" : "Masculina"}) \u2022 N\xEDvel ${entry.level}</strong><p>${entry.region} \u2022 ${entry.commands}/10 Comandos \u2022 ${new Date(entry.updatedAt).toLocaleString("pt-BR")}${entry.ngPlus ? " \u2022 NOVO JOGO +" : ""}</p>`}</div><div class="save-slot-actions">${!draft && entry.slot !== "auto" ? `<button class="small-action" data-save-slot="${entry.slot}">Salvar</button>` : ""}${entry.empty ? "" : `<button class="small-action" data-load-slot="${entry.slot}">Carregar</button>${entry.slot !== "auto" ? `<button class="small-action" data-delete-slot="${entry.slot}">Excluir</button>` : ""}`}</div></article>`).join("")}</div>`;
+      return `${this.header("Salvar e Carregar", "Dois perfis manuais e um salvamento autom\xE1tico protegido contra dados corrompidos.")}<div class="save-list">${entries.map((entry) => `<article class="save-slot"><div class="slot-number">${entry.slot === "auto" ? "AUTO" : `PERFIL 0${entry.slot}`}</div><div>${entry.empty ? `<strong>Espa\xE7o vazio</strong><p>Nenhuma realidade preservada.</p>` : `<strong>${ROUTES[entry.route].name} (${entry.visualVariant === "feminino" ? "Feminina" : "Masculina"}) \u2022 N\xEDvel ${entry.level}</strong><p>${entry.region} \u2022 ${entry.commands}/10 Comandos \u2022 ${new Date(entry.updatedAt).toLocaleString("pt-BR")}${entry.ngPlus ? " \u2022 NOVO JOGO +" : ""}</p>`}</div><div class="save-slot-actions">${!draft && entry.slot !== "auto" ? `<button class="small-action" data-save-slot="${entry.slot}">Salvar</button>` : ""}${entry.empty ? "" : `<button class="small-action" data-load-slot="${entry.slot}">Carregar</button>${entry.slot !== "auto" ? `<button class="small-action" data-delete-slot="${entry.slot}">Excluir</button>` : ""}`}</div></article>`).join("")}</div>`;
     }
     writeSave(slot) {
       const state2 = this.getState();
@@ -3420,6 +3459,7 @@ var VozPartida = (() => {
     toggleSetting(key2) {
       const state2 = this.getState();
       state2.settings[key2] = !state2.settings[key2];
+      if (key2 === "autoBattle" || key2 === "autoBattleItems") state2.settings.autoBattleConsentVersion = 1;
       saveSettings(state2.settings);
       this.audio.ui();
       this.callbacks.onApplySettings?.();
@@ -3881,27 +3921,27 @@ const WORLD_MAP_OVERRIDES=Object.freeze({
     version:1,
     regionId:0,
     coordinateSystem:"world-space",
-    world:Object.freeze({w:2892,h:2176}),
-    spawn:Object.freeze({x:289.2,y:1784.32}),
+    world:Object.freeze({w:2169,h:1632}),
+    spawn:Object.freeze({x:216.9,y:1338.24}),
     navigationRaster:Object.freeze({
       encoding:"binary-rows",
       gridSize:8,
       width:362,
       height:272,
       pathValue:"path",
-      blockedValue:"blocked",
+      blockedValue:"path",
       rows:FROSTRIM_NAVIGATION_ROWS
     }),
     entities:Object.freeze([
-      Object.freeze({id:"npc",x:572,y:1612}),
-      Object.freeze({id:"altar",x:2156,y:1460}),
-      Object.freeze({id:"boss1",x:2156,y:1084}),
-      Object.freeze({id:"boss2",x:2484,y:1476}),
-      Object.freeze({id:"portal",x:2508,y:1332}),
+      Object.freeze({id:"npc",x:429,y:1209}),
+      Object.freeze({id:"altar",x:1617,y:1095}),
+      Object.freeze({id:"boss1",x:1617,y:813}),
+      Object.freeze({id:"boss2",x:1863,y:1107}),
+      Object.freeze({id:"portal",x:1881,y:999}),
     ]),
     metadata:Object.freeze({
       gridSize:8,
-      source:"frostrim-user-path-mask",
+      source:"frostrim-all-cells-walkable",
       visualMapUnchanged:true
     })
   })
@@ -4589,7 +4629,7 @@ class TowerEngine {
   resume(){if(!this.floor)return;this.active=true;this.paused=false;this.lastTime=now();this.canvas.focus();}
 
   playerCandidates(state,direction) {
-    const front=formSprite(state.route,state.activeForm,"front",state.visualVariant),exact=state.visualVariant==="feminino"&&state.activeForm==="base"?front:formSprite(state.route,state.activeForm,direction,state.visualVariant);
+    const front=formSprite(state.route,state.activeForm,"front",state.visualVariant),exact=formSprite(state.route,state.activeForm,direction,state.visualVariant);
     return{exact,candidates:[front,characterArt(state.route,state.visualVariant)]};
   }
 
@@ -4624,7 +4664,7 @@ class TowerEngine {
     for(const entity of this.floor.entities){
       entity.hidden=entity.type==="encounter"?cleared.has(entity.id):entity.type==="chest"?opened.has(entity.id):["rest","event","choice","ambush"].includes(entity.type)?events.has(entity.id):["valve","node","echo","memory","key","rune"].includes(entity.type)?objectives.has(entity.id):entity.type==="living-altar"?altars.has(entity.id):false;
       if(entity.type==="encounter"){
-        const enemyId=entity.encounter.enemyIds[0],regionIndex=entity.encounter.enemyRegions[0]??this.floor.familyIndex,region=REGIONS[regionIndex],boss=entity.encounter.enemyKinds?.[0]!=="normal";entity.enemyId=enemyId;entity.enemyRegion=regionIndex;if(typeof entity.flying!=="boolean")entity.flying=FLYING.has(enemyId);entity.facing=entity.facing||"front";entity.spriteSpecs={};for(const direction of["front","back","left","right"])entity.spriteSpecs[direction]=this.enemyCandidates(region,enemyId,direction,boss);entity.height=Number(entity.height)||(entity.encounter.major?142:entity.encounter.elite?112:86);
+        const enemyId=entity.encounter.enemyIds[0],regionIndex=entity.encounter.enemyRegions[0]??this.floor.familyIndex,region=REGIONS[regionIndex],boss=entity.encounter.enemyKinds?.[0]!=="normal";entity.enemyId=enemyId;entity.enemyRegion=regionIndex;if(typeof entity.flying!=="boolean")entity.flying=FLYING.has(enemyId);entity.facing=entity.facing||"front";entity.spriteSpecs={};for(const direction of["front","back","left","right"])entity.spriteSpecs[direction]=this.enemyCandidates(region,enemyId,direction,boss);entity.height=Number(entity.height)||(entity.encounter.major?170:entity.encounter.elite?134:103);
       }
     }
     const exit=this.floor.entities.find((entry)=>entry.type==="exit");if(exit)exit.locked=!this.floor.objective.completed;
@@ -4808,11 +4848,11 @@ class TowerEngine {
     const actors=[...this.visibleProps().filter((entry)=>visible(entry)),...this.floor.entities.filter((entry)=>!entry.hidden&&visible(entry)),{id:"player",type:"player",x:this.position.x,y:this.position.y}].sort((a,b)=>(a.path?propSortY(a):a.y)-(b.path?propSortY(b):b.y));for(const actor of actors){if(actor.type==="player")this.drawPlayer();else if(actor.path)this.drawProp(actor);else this.drawEntity(actor);}this.drawOrganicEffects();if(this.debugVisual)this.drawVisualDebug();this.drawMinimap();
   }
 
-  drawImage(image,centerX,groundY,height,{alpha=1,mirror=false,ctx=this.ctx}={}) {if(!image)return;const bounds=this.cache.getBounds(image),width=height*(bounds.w/bounds.h),x=centerX-width/2,y=groundY-height;ctx.save();ctx.globalAlpha=alpha;if(mirror){ctx.translate(centerX*2,0);ctx.scale(-1,1);}ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,x,y,width,height);ctx.restore();return{width,height};}
+  drawImage(image,centerX,groundY,height,{alpha=1,mirror=false,ctx=this.ctx}={}) {if(!image)return;const bounds=this.cache.getBounds(image),width=height*(bounds.w/bounds.h),x=centerX-width/2,y=groundY-height;ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.globalAlpha=alpha;if(mirror){ctx.translate(centerX*2,0);ctx.scale(-1,1);}ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,x,y,width,height);ctx.restore();return{width,height};}
   drawProp(prop){const image=this.cache.get(prop.path);if(!image)return;const shadow=propShadowSpec(prop);if(shadow.opacity>0&&shadow.width>0&&shadow.height>0){this.ctx.fillStyle=`rgba(0,0,0,${shadow.opacity})`;this.ctx.beginPath();this.ctx.ellipse(Math.round(shadow.x-this.camera.x),Math.round(shadow.y-this.camera.y),Math.max(2,shadow.width/2),Math.max(1,shadow.height/2),0,0,Math.PI*2);this.ctx.fill();}const box=propVisualBounds(prop),bounds=prop.sourceBounds,anchorX=Math.round(prop.x+prop.anchorOffsetX-this.camera.x),anchorY=Math.round(prop.y+prop.anchorOffsetY-this.camera.y);this.ctx.save();this.ctx.globalAlpha=prop.alpha??1;this.ctx.translate(anchorX,anchorY);if(prop.rotation&&prop.canRotate!==false)this.ctx.rotate(Number(prop.rotation)*Math.PI/180);if(prop.mirror&&prop.canMirror!==false)this.ctx.scale(-1,1);this.ctx.drawImage(image,bounds[0],bounds[1],bounds[2],bounds[3],Math.round(box.x-this.camera.x-anchorX),Math.round(box.y-this.camera.y-anchorY),Math.round(box.w),Math.round(box.h));this.ctx.restore();}
 
   resolveVisual(spec){let image=this.cache.get(spec.exact);if(image)return image;for(const candidate of spec.candidates||[]){image=this.cache.get(candidate);if(image)break;}if(!this.pendingVisuals.has(spec.exact)){this.pendingVisuals.add(spec.exact);this.cache.loadFirst(spec.exact,spec.candidates).finally(()=>this.pendingVisuals.delete(spec.exact));}return image||null;}
-  drawPlayer(){const state=this.getState(),spec=this.playerCandidates(state,state.facing),resolved=this.cache.aliases.get(spec.exact)||spec.exact,loadedImage=this.resolveVisual(spec),image=loadedImage||this.lastPlayerImage,x=Math.round(this.position.x-this.camera.x),ground=Math.round(this.position.y-this.camera.y),derived=resolved===characterArt(state.route,state.visualVariant),frontOnly=state.visualVariant==="feminino"&&state.activeForm==="base";if(loadedImage)this.lastPlayerImage=loadedImage;this.ctx.fillStyle="rgba(0,0,0,.52)";this.ctx.beginPath();this.ctx.ellipse(x,ground+4,20,6,0,0,Math.PI*2);this.ctx.fill();this.drawImage(image,x,ground,68,{mirror:(derived||frontOnly)&&state.facing==="left"});this.ctx.strokeStyle=ROUTES[state.route].color;this.ctx.globalAlpha=.58;this.ctx.beginPath();this.ctx.arc(x,ground-34,25+Math.sin(now()/260)*1.5,0,Math.PI*2);this.ctx.stroke();this.ctx.globalAlpha=1;}
+  drawPlayer(){const state=this.getState(),spec=this.playerCandidates(state,state.facing),resolved=this.cache.aliases.get(spec.exact)||spec.exact,loadedImage=this.resolveVisual(spec),image=loadedImage||this.lastPlayerImage,x=Math.round(this.position.x-this.camera.x),ground=Math.round(this.position.y-this.camera.y),derived=resolved===characterArt(state.route,state.visualVariant);if(loadedImage)this.lastPlayerImage=loadedImage;this.ctx.fillStyle="rgba(0,0,0,.52)";this.ctx.beginPath();this.ctx.ellipse(x,ground+4,20,6,0,0,Math.PI*2);this.ctx.fill();this.drawImage(image,x,ground,82,{mirror:derived&&state.facing==="left"});this.ctx.strokeStyle=ROUTES[state.route].color;this.ctx.globalAlpha=.58;this.ctx.beginPath();this.ctx.arc(x,ground-34,25+Math.sin(now()/260)*1.5,0,Math.PI*2);this.ctx.stroke();this.ctx.globalAlpha=1;}
 
   drawEntity(entity) {
     const x=Math.round(entity.x-this.camera.x),ground=Math.round(entity.y-this.camera.y),ctx=this.ctx,pulse=Math.sin(now()/360+entity.x*.01);

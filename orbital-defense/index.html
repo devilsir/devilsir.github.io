@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090510">
+<title>ORBITAL! — Defenda o sistema</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+ <div class="brand-wrap"><div class="brand-mark" aria-hidden="true">O<span>!</span></div><div><h1>ORBITAL<span>!</span></h1><p>Defenda o sistema. Domine as leis do universo.</p></div></div>
+ <nav class="main-nav" aria-label="Exploração"><button id="campaignBtn">Campanha</button><button id="researchBtn">Pesquisa <span id="researchValue">0</span></button><button id="codexBtn">Observatório</button><button id="settingsBtn" aria-label="Configurações">⚙</button></nav>
+</header>
+<main class="workspace">
+<section class="game-wrap" aria-label="Defesa orbital">
+ <div class="command-bar glass">
+  <div class="mission-heading"><span class="panel-kicker" id="phaseBadge">PREPARAÇÃO</span><strong id="missionTitle">01 · O sistema silencioso</strong></div>
+  <div class="hud">
+   <div class="hud-pill energy-hud"><img src="assets/defender_miniSun.png" alt=""><span id="energyValue">420</span><small>Energia estelar</small></div>
+   <div class="hud-pill"><span class="hud-icon" aria-hidden="true">◇</span><span id="healthValue">8</span><small>Núcleo solar</small></div>
+   <div class="hud-pill"><span class="hud-icon" aria-hidden="true">◎</span><span id="waveValue">1/8</span><small>Capítulo</small></div>
+   <div class="hud-pill checkpoint-pill"><span class="hud-icon" aria-hidden="true">✧</span><span id="checkpointValue">0/3</span><small>Descobertas</small></div>
+  </div>
+  <div class="play-controls"><button id="speedBtn" class="secondary-control" aria-label="Alterar velocidade">1×</button><button id="pauseBtn" class="secondary-control" aria-label="Pausar">Ⅱ</button><button id="startWaveBtn" class="primary-btn">Iniciar batalha <span>↗</span></button></div>
+ </div>
+ <div class="mission-timeline"><span>ESTABILIDADE DA MISSÃO</span><div class="mission-progress-wrap"><div class="mission-progress"><span id="missionProgress"></span></div><div id="checkpointTrack" class="checkpoint-track"><i></i><i></i><i></i></div></div><span id="difficultyLabel">PADRÃO</span></div>
+ <div id="gameStage" class="game-stage">
+  <canvas id="gameCanvas" width="1280" height="720"></canvas>
+  <div id="pregameOverlay" class="pregame-overlay"><div class="pregame-orbit" aria-hidden="true"></div><div><strong>SISTEMA EM PREPARAÇÃO</strong><span>Construa com a energia disponível. A geração começa na batalha.</span></div></div>
+  <div id="tutorial" class="tutorial-bubble"><img id="tutorialMentor" src="assets/kepler.png" alt="Johannes Kepler"><div><span class="panel-kicker">KEPLER · PRIMEIRA MISSÃO</span><p id="tutorialText"></p></div><button id="tutorialSkip" aria-label="Ocultar tutorial">×</button></div>
+  <div id="bossBar" class="boss-bar hidden"><div><strong id="bossName"></strong><span id="bossPhaseLabel"></span></div><div class="boss-meter"><span id="bossHP"></span></div></div>
+  <div id="towerPanel" class="tower-panel hidden">
+   <button id="towerPanelClose" class="tower-panel-close" aria-label="Fechar inspeção">×</button>
+   <div class="tower-panel-head"><img id="towerPanelImg" src="assets/defender_earth.png" alt=""><div><span class="panel-kicker">DEFENSOR ORBITAL</span><strong id="towerPanelName"></strong><span id="towerPanelLevel" class="tower-level"></span></div></div>
+   <div id="towerPanelStats" class="tower-panel-stats"></div><p id="towerSpecial" class="tower-special"></p><div id="moonOptions" class="moon-options"></div><div id="towerUpgradePreview" class="tower-upgrade-preview"></div><div id="branchOptions" class="branch-options hidden"></div>
+   <div class="tower-panel-actions"><button id="upgradeTowerBtn" class="tower-upgrade-btn">Melhorar</button><button id="sellTowerBtn" class="tower-sell-btn">Vender</button></div>
+  </div>
+  <div id="powerRail" class="power-rail" aria-label="Poderes ativos"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div><div id="tooltip" class="tooltip"></div>
+ </div>
+ <div class="status-strip"><div><span class="dot live"></span><strong id="statusText">Preparação</strong></div><span id="hintText">Monte sua defesa.</span></div>
+ <div id="wavePreview" class="wave-preview glass"><span class="panel-kicker">SINAIS DE APROXIMAÇÃO</span><div id="incomingEnemies" class="incoming-enemies"></div><span id="laneInfo"></span></div>
+</section>
+<section class="deck-panel glass" aria-label="Seleção de defensores">
+ <div class="deck-heading"><div><span class="panel-kicker">DEFESA PLANETÁRIA</span><h2>Monte sua órbita<span>Selecione. Posicione. Evolua.</span></h2></div><span class="rail-hint">Role para explorar <span aria-hidden="true">↔</span></span></div>
+ <div id="cardDeck" class="card-deck"></div>
+ <div class="deck-foot"><div class="physics-card"><strong id="physicsTitle">Cada rota tem seu tempo.</strong><p id="physicsText">Órbitas circulares ao redor da mesma estrela: v ∝ 1/√r. No jogo, isso inspira a velocidade das cinco rotas.</p><span id="lawBadge" class="law-badge">Física em ação</span></div><button id="labBtn" class="secondary-btn">Laboratório orbital <span>↗</span></button></div>
+</section>
+</main>
+<footer><span>ORBITAL! <span class="footer-dot">·</span> OBSERVE. EXPERIMENTE. DEFENDA.</span><span>1–0 selecionar <span class="footer-dot">·</span> Espaço pausar <span class="footer-dot">·</span> Enter posicionar</span></footer>
+</div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-card glass"><button id="modalClose" class="modal-close" aria-label="Fechar">×</button><div class="mentor"><img id="mentorImg" src="assets/kepler.png" alt="Mentor"><div><span id="modalKicker" class="panel-kicker">DESCOBERTA</span><h2 id="modalTitle"></h2></div></div><p id="modalText"></p><div id="formulaBox" class="formula-box"></div><button id="modalAction" class="primary-btn wide">Continuar</button><button id="resultCampaignBtn" class="secondary-btn wide">Mapa da campanha</button></div></div>
+<div id="quizModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="quizQuestion"><div class="modal-card quiz-card glass"><div class="quiz-topline"><span id="quizKicker" class="panel-kicker">CHECKPOINT 1/3</span><span id="quizPhase" class="quiz-phase"></span></div><div class="mentor compact quiz-mentor"><img id="quizMentor" src="assets/kepler.png" alt="Mentor"><div><h2 id="quizQuestion"></h2><p>Experimente a física para estabilizar o sistema.</p></div></div><div id="quizVisual"></div><div id="quizOptions" class="quiz-options"></div><div id="quizFeedback" class="quiz-feedback hidden" role="status" aria-live="polite"></div><button id="quizContinue" class="primary-btn wide hidden">Voltar à batalha</button></div></div>
+<div id="labModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="labTitle"><div class="modal-card lab-card glass"><button id="labClose" class="modal-close" aria-label="Fechar laboratório">×</button><div class="mentor compact"><img id="labMentor" src="assets/kepler.png" alt="Mentor"><div><span class="panel-kicker">OBSERVE AS RELAÇÕES</span><h2 id="labTitle">Laboratório orbital</h2></div></div><div class="gravity-section"><div class="lab-controls"><label>Massa relativa <strong id="massOut">5</strong><input id="massSlider" type="range" min="1" max="10" value="5"></label><label>Distância relativa <strong id="distanceOut">5</strong><input id="distanceSlider" type="range" min="1" max="10" value="5"></label></div><div class="gravity-demo"><div id="gravityPlanet" class="gravity-planet"><img src="assets/defender_jupiter.png" alt="Corpo massivo"></div><div class="gravity-line"><span id="gravityPulse"></span></div><div class="gravity-rock"><img src="assets/enemy_asteroid.png" alt="Asteroide"></div></div><div class="gravity-result"><span>F = G·M·m/r² · G = m = 1</span><strong id="forceOut">0.20</strong></div></div></div></div>
+<div id="hubModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="hubTitle"><div class="modal-card hub-card glass"><button id="hubClose" class="modal-close" aria-label="Fechar painel">×</button><div class="hub-heading"><span id="hubKicker" class="panel-kicker"></span><h2 id="hubTitle"></h2><p id="hubIntro"></p></div><div id="hubContent"></div></div></div>
+<script src="js/assets.js"></script><script src="js/progress.js"></script><script src="js/audio.js"></script><script src="js/physics.js"></script><script src="js/content.js"></script><script src="game.js"></script><script src="js/ui.js"></script>
+</body>
+</html>

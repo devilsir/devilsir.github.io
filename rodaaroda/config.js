@@ -1,11 +1,9 @@
 window.SILVIO_CONFIG = {
-  modelPath: './assets/model/lucas.glb',
+  modelPath: './assets/model/silvioburstoanimado.glb',
   characters: [
-    { id: 'lucas', label: 'Lucas', path: './assets/model/lucas.glb' },
-    { id: 'alexandre', label: 'Alexandre', path: './assets/model/alexandre.glb' },
-    { id: 'silvio_bursto_animado', label: 'Silvio Bursto', path: './assets/model/silvioburstoanimado.glb' },
-    { id: 'silvio_corpo_animado', label: 'Silvio Corpo', path: './assets/model/silviocorpoanimado.glb' },
-    { id: 'silvio_corpo_animado_2', label: 'Silvio Corpo 2', path: './assets/model/SILVIOCORPOANIMADO2.glb' }
+    { id: 'silvio_bursto_animado', label: 'Silvio Busto Animado', path: './assets/model/silvioburstoanimado.glb' },
+    { id: 'silvio_corpo_animado', label: 'Silvio Corpo Animado', path: './assets/model/silviocorpoanimado.glb' },
+    { id: 'silvio_corpo_animado_2', label: 'Silvio Corpo Animado 2', path: './assets/model/SILVIOCORPOANIMADO2.glb' }
   ],
   finalAudio: './assets/audio/parabens-final.wav',
   audioFiles: [
@@ -15,7 +13,6 @@ window.SILVIO_CONFIG = {
     './assets/audio/nao-consegue-ne-moises-meme_04Iqgj4.mp3',
     './assets/audio/silvio-santos-sera-que-e-bom.mp3',
     './assets/audio/silvio-santos-que-eu-faco.mp3',
-    './assets/audio/silvo-santos-erra-desgracado.mp3',
     './assets/audio/e-mesmo-e-verdade-silvio-santos.mp3',
     './assets/audio/silvio-santos-o-seu-tempo-acabou.mp3',
     './assets/audio/tmp9ynyqwxm.mp3',
@@ -33,60 +30,20 @@ window.SILVIO_CONFIG = {
   jellyStiffness: 48,
   jellyDamping: 6.4,
 
-  accessoryTransforms: {
-    hat: {
-      position: [-0.003403332084417343, 0.9347323179244995, 0.044968802481889725],
-      quaternion: [0, -0.475876122713089, 0, 0.8795123100280762],
-      scale: [1.2053751945495605, 1.20537531375885, 1.2053751945495605]
-    },
-    shirt: {
-      position: [0.018, 0.235, 0.082],
-      quaternion: [0, -0.4812147915363312, 0, 0.8766027092933655],
-      scale: [1.78, 1.78, 1.78]
-    },
-    glasses: {
-      position: [-0.12674850225448608, 0.5932216644287109, 0.09231123328208923],
-      quaternion: [0, -0.5352711081504822, 0, 0.8446803689002991],
-      scale: [0.569379985332489, 0.5693800449371338, 0.569379985332489]
-    }
+  defaultRules: {
+    solveBonus: 1000,
+    wrongSolvePenalty: 200,
+    hintPenalties: [150, 250, 400],
+    difficultyMultipliers: { easy: 1, medium: 1.15, hard: 1.35 },
+    difficultyBonusEnabled: false,
+    comboEnabled: false,
+    comboStep: 0.1,
+    maxComboMultiplier: 1.5,
+    bankruptBehavior: 'match',
+    wrongSolveLosesTurn: true
   },
 
-  accessoryOcclusion: {
-    enabled: false,
-    hatHideNodes: [],
-    hatHideHairIds: [],
-    shirtBodyNodes: []
-  },
-
-  accessories: {
-    hat: [
-      { id: 'bone_azul', label: 'Boné Azul', path: './assets/accessories/chapeus/bone_azul.glb' },
-      { id: 'bone_preto', label: 'Boné Preto', path: './assets/accessories/chapeus/bone_preto.glb' },
-      { id: 'bucket_vermelho', label: 'Bucket Vermelho', path: './assets/accessories/chapeus/chapeu_bucket_vermelho.glb' },
-      { id: 'cowboy_marrom', label: 'Cowboy Marrom', path: './assets/accessories/chapeus/chapeu_cowboy_marrom.glb' },
-      { id: 'palha_dourado', label: 'Chapéu de Palha', path: './assets/accessories/chapeus/chapeu_palha_dourado.glb' },
-      { id: 'gorro_cinza', label: 'Gorro Cinza', path: './assets/accessories/chapeus/gorro_cinza.glb' }
-    ],
-    shirt: [
-      { id: 'camisa_estampada_vermelha', label: 'Camisa Estampada Vermelha', path: './assets/accessories/camisas/camisa_estampada_vermelha_manga_curta.glb' },
-      { id: 'camisa_jeans_azul', label: 'Camisa Jeans Azul', path: './assets/accessories/camisas/camisa_jeans_azul_manga_longa.glb' },
-      { id: 'camisa_polo_azul_marinho', label: 'Camisa Polo Azul Marinho', path: './assets/accessories/camisas/camisa_polo_azul_marinho.glb' },
-      { id: 'camisa_social_branca', label: 'Camisa Social Branca', path: './assets/accessories/camisas/camisa_social_branca_manga_longa.glb' },
-      { id: 'camisa_social_rosa', label: 'Camisa Social Rosa', path: './assets/accessories/camisas/camisa_social_rosa_manga_longa.glb' },
-      { id: 'camisa_xadrez_amarela_preta', label: 'Camisa Xadrez Amarela e Preta', path: './assets/accessories/camisas/camisa_xadrez_amarela_preta_manga_longa.glb' }
-    ],
-    glasses: [
-      { id: 'aviador_dourado', label: 'Aviador Dourado', path: './assets/accessories/oculos/oculos_aviador_dourado.glb' },
-      { id: 'esportivo_preto', label: 'Esportivo Preto', path: './assets/accessories/oculos/oculos_esportivo_preto.glb' },
-      { id: 'quadrado_preto', label: 'Quadrado Preto', path: './assets/accessories/oculos/oculos_quadrado_preto.glb' },
-      { id: 'redondo_dourado', label: 'Redondo Dourado', path: './assets/accessories/oculos/oculos_redondo_dourado.glb' },
-      { id: 'tartaruga_marrom', label: 'Tartaruga Marrom', path: './assets/accessories/oculos/oculos_tartaruga_marrom.glb' },
-      { id: 'transparente_verde', label: 'Transparente Verde', path: './assets/accessories/oculos/oculos_transparente_verde.glb' }
-    ]
-  },
-  accessoryRemovalOrder: ['glasses', 'hat', 'shirt'],
-
-  puzzlePool: [
+  defaultPuzzles: [
     { category: 'NATUREZA', phrase: 'CACHOEIRA GELADA' },
     { category: 'NATUREZA', phrase: 'TRILHA NA MATA' },
     { category: 'NATUREZA', phrase: 'PRAIA AO AMANHECER' },
@@ -107,6 +64,45 @@ window.SILVIO_CONFIG = {
     { category: 'LAZER', phrase: 'PIQUENIQUE NO GRAMADO' },
     { category: 'LAZER', phrase: 'BICICLETA NA CICLOVIA' },
     { category: 'LAZER', phrase: 'FOTO DO POR DO SOL' }
+  ],
+
+  sampleQuestions: [
+    {
+      id: 'sample_cinema_jurassic_park',
+      theme: 'CINEMA',
+      question: 'Qual filme mostra um parque habitado por dinossauros clonados?',
+      answer: 'JURASSIC PARK',
+      hints: ['Foi lançado nos anos 1990.', 'Foi dirigido por Steven Spielberg.', 'A vida encontra um jeito.'],
+      difficulty: 'medium',
+      tags: ['filmes', 'dinossauros']
+    },
+    {
+      id: 'sample_musica_garota_ipanema',
+      theme: 'MÚSICA',
+      question: 'Qual canção brasileira começa descrevendo uma garota que passa cheia de graça?',
+      answer: 'GAROTA DE IPANEMA',
+      hints: ['É um clássico da bossa nova.', 'Tom Jobim e Vinicius de Moraes estão ligados à composição.'],
+      difficulty: 'easy',
+      tags: ['brasil', 'bossa nova']
+    },
+    {
+      id: 'sample_ciencia_planeta_vermelho',
+      theme: 'CIÊNCIA',
+      question: 'Qual planeta é conhecido como Planeta Vermelho?',
+      answer: 'MARTE',
+      hints: ['É um planeta rochoso.', 'Fica depois da Terra na ordem a partir do Sol.'],
+      difficulty: 'easy',
+      tags: ['espaço', 'astronomia']
+    },
+    {
+      id: 'sample_brasil_pao_queijo',
+      theme: 'BRASIL',
+      question: 'Qual quitute mineiro é feito tradicionalmente com polvilho e queijo?',
+      answer: 'PAO DE QUEIJO',
+      hints: ['É muito comum no café da manhã.', 'É fortemente associado a Minas Gerais.'],
+      difficulty: 'easy',
+      tags: ['comida', 'minas gerais']
+    }
   ],
   wheelSegments: [
     { label: '100', value: 100, color: '#ef404a' },

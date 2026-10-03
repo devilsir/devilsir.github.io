@@ -2,9 +2,10 @@ import { REGIONS, ROUTES, COMPANIONS, asset, characterArt, formSprite, mobSprite
 
 const now = () => globalThis.performance?.now?.() || Date.now();
 const ALPHA_THRESHOLD = 8;
-const WORLD_SCALE = 2;
-const PLAYER_HEIGHT = 68;
-const ENTITY_HEIGHTS = { npc:72, normal:86, miniboss:112, boss:140 };
+const WORLD_SCALE = 1.5;
+const PLAYER_HEIGHT = 82;
+const ENTITY_HEIGHTS = { npc:86, normal:103, miniboss:134, boss:168 };
+const GROUND_OFFSET = 14;
 const FLYING_ENEMIES = new Set([
   "fada_gelo","espectro_cinzas","dragao_fogo","dragao_pedra","harpia_deserto","pirata_fantasma",
   "agua_viva_abissal","corvo_sombrio","dragao_tempestade","aguia_tempestade","arraia_eletrica","elemental_nuvem",
@@ -122,7 +123,7 @@ export class ExplorationEngine {
     this.canvas=canvas;this.ctx=canvas.getContext("2d",{alpha:false});this.ctx.imageSmoothingEnabled=false;
     this.minimap=minimap;this.mctx=minimap.getContext("2d");this.getState=getState;this.cache=cache;this.audio=audio;
     this.callbacks={onInteract,onEncounter,onPortal,onTower,onHud,onPrompt,onLoading};this.keys=new Set();this.target=null;this.running=false;this.paused=true;
-    this.lastTime=now();this.camera={x:0,y:0};this.world={w:2896,h:2172,sourceW:1448,sourceH:1086};this.nearEntity=null;this.frame=0;this.entities=[];this.touchSprint=false;this.moving=false;
+    this.lastTime=now();this.camera={x:0,y:0};this.world={w:2172,h:1629,sourceW:1448,sourceH:1086};this.nearEntity=null;this.frame=0;this.entities=[];this.touchSprint=false;this.moving=false;
     this.bindEvents();
   }
 
@@ -150,7 +151,7 @@ export class ExplorationEngine {
 
   playerCandidates(state,direction) {
     const front=formSprite(state.route,state.activeForm,"front",state.visualVariant);
-    const exact=state.visualVariant==="feminino"&&state.activeForm==="base"?front:formSprite(state.route,state.activeForm,direction,state.visualVariant);
+    const exact=formSprite(state.route,state.activeForm,direction,state.visualVariant);
     return{exact,candidates:[front,characterArt(state.route,state.visualVariant)]};
   }
 
@@ -240,8 +241,8 @@ export class ExplorationEngine {
   }
 
   collides(position,index=this.getState()?.regionIndex||0) {
-    const radius=21,border=64;if(position.x<border+radius||position.y<border+radius||position.x>this.world.w-border-radius||position.y>this.world.h-border-radius)return true;
-    return this.obstacles(index).some((box)=>position.x+radius>box.x&&position.x-radius<box.x+box.w&&position.y+radius>box.y&&position.y-radius<box.y+box.h);
+    const radius=21,border=64;
+    return position.x<border+radius||position.y<border+radius||position.x>this.world.w-border-radius||position.y>this.world.h-border-radius;
   }
 
   interact(){if(this.paused||!this.nearEntity)return;const entity=this.nearEntity;this.audio.confirm();if(entity.type==="encounter"){if(entity.locked)return this.callbacks.onInteract?.({type:"locked",entity});this.paused=true;this.callbacks.onEncounter?.(entity.encounter,entity);}else if(entity.type==="portal")this.callbacks.onPortal?.();else if(entity.type==="tower"){this.paused=true;this.callbacks.onTower?.();}else this.callbacks.onInteract?.(entity);}
@@ -253,20 +254,23 @@ export class ExplorationEngine {
   }
 
   drawCropped(image,centerX,groundY,targetHeight,{alpha=1,mirror=false}={}) {
-    if(!image)return null;const bounds=this.cache.getBounds(image),width=targetHeight*(bounds.w/bounds.h),x=centerX-width/2,y=groundY-targetHeight;this.ctx.save();this.ctx.globalAlpha=alpha;
+    if(!image)return null;const bounds=this.cache.getBounds(image),width=targetHeight*(bounds.w/bounds.h),x=centerX-width/2,y=groundY-targetHeight;this.ctx.save();this.ctx.imageSmoothingEnabled=true;this.ctx.imageSmoothingQuality="high";this.ctx.globalAlpha=alpha;
     if(mirror){this.ctx.translate(centerX*2,0);this.ctx.scale(-1,1);this.ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,x,y,width,targetHeight);}else this.ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,x,y,width,targetHeight);
     this.ctx.restore();return{width,height:targetHeight,x,y};
   }
 
   drawWorldObjects(region) {
     const placements=this.layout(region.id).objects;
-    region.tileObjects.forEach((file,index)=>{const image=this.cache.get(tileSprite(region,file));if(!image)return;const p=this.toWorld(placements[index]);const bounds=this.cache.getBounds(image),targetWidth=[230,185,220,150][index],scale=targetWidth/bounds.w,targetHeight=bounds.h*scale;this.ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,Math.round(p.x-this.camera.x-targetWidth/2),Math.round(p.y-this.camera.y-targetHeight),Math.round(targetWidth),Math.round(targetHeight));});
+    const baseWidths=[230,185,220,150];
+    const regionWidths={0:[230,59,220,150]};
+    const widths=regionWidths[region.id]||baseWidths;
+    region.tileObjects.forEach((file,index)=>{const image=this.cache.get(tileSprite(region,file));if(!image)return;const p=this.toWorld(placements[index]);const bounds=this.cache.getBounds(image),targetWidth=widths[index]||baseWidths[index]||160,scale=targetWidth/bounds.w,targetHeight=bounds.h*scale;this.ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,Math.round(p.x-this.camera.x-targetWidth/2),Math.round(p.y-this.camera.y-targetHeight),Math.round(targetWidth),Math.round(targetHeight));});
   }
 
   drawEntity(entity,region) {
     const x=Math.round(entity.x-this.camera.x),ground=Math.round(entity.y-this.camera.y);if(x<-190||ground<-190||x>this.canvas.width+190||ground>this.canvas.height+190)return;const ctx=this.ctx;ctx.save();
     if(entity.type==="npc"||entity.type==="encounter"){
-      const image=this.cache.get(entity.sprite),height=entity.height||ENTITY_HEIGHTS.npc,float=entity.flying?Math.sin(now()/520+entity.x)*2.2:0,feet=ground+float,alpha=entity.locked?.32:1;ctx.globalAlpha=alpha;ctx.fillStyle="rgba(0,0,0,.38)";ctx.beginPath();ctx.ellipse(x,ground+4,Math.max(19,height*.28),Math.max(5,height*.07),0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+      const image=this.cache.get(entity.sprite),height=entity.height||ENTITY_HEIGHTS.npc,float=entity.flying?Math.sin(now()/520+entity.x)*2.2:0,feet=ground+(entity.flying?float:GROUND_OFFSET),alpha=entity.locked?.32:1;ctx.globalAlpha=alpha;ctx.fillStyle="rgba(0,0,0,.38)";ctx.beginPath();ctx.ellipse(x,ground+4,Math.max(19,height*.28),Math.max(5,height*.07),0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
       this.drawCropped(image,x,feet,height,{alpha});if(entity.type==="npc"||!entity.locked){ctx.globalAlpha=alpha;ctx.fillStyle=entity.type==="npc"?"#ffe49d":"#ff5574";ctx.beginPath();ctx.moveTo(x,feet-height-13);ctx.lineTo(x+7,feet-height-6);ctx.lineTo(x,feet-height+1);ctx.lineTo(x-7,feet-height-6);ctx.fill();}
     }else if(entity.type==="chest"){const image=this.cache.get(tileSprite(region,region.tileObjects[1]));this.drawObject(image,x,ground,70);ctx.strokeStyle="#ffe39a";ctx.strokeRect(x-27,ground-41,54,38);}
     else if(entity.type==="altar"){const image=this.cache.get(tileSprite(region,region.tileObjects[2]));this.drawObject(image,x,ground,104);ctx.strokeStyle=region.palette[0];ctx.beginPath();ctx.arc(x,ground-35,34+Math.sin(now()/300)*2,0,Math.PI*2);ctx.stroke();}
@@ -278,8 +282,8 @@ export class ExplorationEngine {
   drawObject(image,x,ground,targetHeight){if(!image)return;const bounds=this.cache.getBounds(image),width=targetHeight*(bounds.w/bounds.h);this.ctx.drawImage(image,bounds.x,bounds.y,bounds.w,bounds.h,x-width/2,ground-targetHeight,width,targetHeight);}
 
   drawPlayer(state) {
-    const spec=this.playerCandidates(state,state.facing),image=this.cache.get(spec.exact),x=Math.round(state.position.x-this.camera.x),ground=Math.round(state.position.y-this.camera.y);this.ctx.fillStyle="rgba(0,0,0,.48)";this.ctx.beginPath();this.ctx.ellipse(x,ground+4,20,6,0,0,Math.PI*2);this.ctx.fill();
-    const resolved=this.cache.aliases.get(spec.exact)||spec.exact,derived=resolved===characterArt(state.route,state.visualVariant),frontOnly=state.visualVariant==="feminino"&&state.activeForm==="base",mirror=(derived||frontOnly)&&state.facing==="left";this.drawCropped(image,x,ground,PLAYER_HEIGHT,{mirror});const route=ROUTES[state.route];this.ctx.strokeStyle=route.color;this.ctx.globalAlpha=.5;this.ctx.beginPath();this.ctx.arc(x,ground-34,26+Math.sin(now()/250)*1.5,0,Math.PI*2);this.ctx.stroke();this.ctx.globalAlpha=1;
+    const spec=this.playerCandidates(state,state.facing),image=this.cache.get(spec.exact),x=Math.round(state.position.x-this.camera.x),ground=Math.round(state.position.y-this.camera.y)+GROUND_OFFSET;this.ctx.fillStyle="rgba(0,0,0,.48)";this.ctx.beginPath();this.ctx.ellipse(x,ground+4,20,6,0,0,Math.PI*2);this.ctx.fill();
+    const resolved=this.cache.aliases.get(spec.exact)||spec.exact,derived=resolved===characterArt(state.route,state.visualVariant),mirror=derived&&state.facing==="left";this.drawCropped(image,x,ground,PLAYER_HEIGHT,{mirror});const route=ROUTES[state.route];this.ctx.strokeStyle=route.color;this.ctx.globalAlpha=.5;this.ctx.beginPath();this.ctx.arc(x,ground-34,26+Math.sin(now()/250)*1.5,0,Math.PI*2);this.ctx.stroke();this.ctx.globalAlpha=1;
   }
 
   drawLighting(region){const gradient=this.ctx.createRadialGradient(this.canvas.width/2,this.canvas.height/2,160,this.canvas.width/2,this.canvas.height/2,650);gradient.addColorStop(0,"rgba(0,0,0,0)");gradient.addColorStop(1,"rgba(3,2,8,.48)");this.ctx.fillStyle=gradient;this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);this.ctx.fillStyle=region.id===7?"rgba(30,87,170,.12)":region.id===2?"rgba(180,42,13,.08)":"rgba(0,0,0,0)";this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);}

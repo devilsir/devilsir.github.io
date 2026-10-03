@@ -1,0 +1,6 @@
+import fs from 'node:fs'
+import {createRequire} from 'node:module'
+import {harness} from './harness.mjs'
+const require=createRequire(import.meta.url)
+const {createCanvas,loadImage}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES?process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/@napi-rs/canvas':'@napi-rs/canvas')
+const h=harness();await Promise.all(h.run('Object.values(imgs)').map(i=>i.decode()));h.run('startStage(4);tutorialDone=true;energy=9999;for(const [type,lane,col] of [["miniSun",0,0],["mercury",0,1],["earth",1,1],["mars",2,1],["uranus",3,1],["neptune",4,1],["jupiter",0,4],["saturn",2,4],["gravity",1,3]]){selected=type;placeAt({x:gridX[col],y:curveY(lane,gridX[col])})}startWave();spawnQueue=[];waveTotal=100;sunAppear=1;for(let i=0;i<15;i++)enemies.push(createEnemy(["ice","fire","shield","jumper","iron"][i%5],i%5,{x:820+(i%3)*100}));simTime=3;render()');const preview=createCanvas(1280,720),ctx=preview.getContext('2d');ctx.fillStyle='#06030a';ctx.fillRect(0,0,1280,720);ctx.drawImage(h.canvas(),0,0);fs.writeFileSync(new URL('./artifacts/combat-preview.png',import.meta.url),preview.toBuffer('image/png'));console.log(h.run('({sun:imgs.sun.complete,width:imgs.sun.naturalWidth,mercury:imgs.mercury.naturalWidth,defenders:defenders.length})'));await h.close()

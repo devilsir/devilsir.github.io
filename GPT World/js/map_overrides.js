@@ -281,27 +281,27 @@ export const WORLD_MAP_OVERRIDES=Object.freeze({
     version:1,
     regionId:0,
     coordinateSystem:"world-space",
-    world:Object.freeze({w:2892,h:2176}),
-    spawn:Object.freeze({x:289.2,y:1784.32}),
+    world:Object.freeze({w:2169,h:1632}),
+    spawn:Object.freeze({x:216.9,y:1338.24}),
     navigationRaster:Object.freeze({
       encoding:"binary-rows",
       gridSize:8,
       width:362,
       height:272,
       pathValue:"path",
-      blockedValue:"blocked",
+      blockedValue:"path",
       rows:FROSTRIM_NAVIGATION_ROWS
     }),
     entities:Object.freeze([
-      Object.freeze({id:"npc",x:572,y:1612}),
-      Object.freeze({id:"altar",x:2156,y:1460}),
-      Object.freeze({id:"boss1",x:2156,y:1084}),
-      Object.freeze({id:"boss2",x:2484,y:1476}),
-      Object.freeze({id:"portal",x:2508,y:1332}),
+      Object.freeze({id:"npc",x:429,y:1209}),
+      Object.freeze({id:"altar",x:1617,y:1095}),
+      Object.freeze({id:"boss1",x:1617,y:813}),
+      Object.freeze({id:"boss2",x:1863,y:1107}),
+      Object.freeze({id:"portal",x:1881,y:999}),
     ]),
     metadata:Object.freeze({
       gridSize:8,
-      source:"frostrim-user-path-mask",
+      source:"frostrim-all-cells-walkable",
       visualMapUnchanged:true
     })
   })

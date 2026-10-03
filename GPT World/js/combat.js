@@ -261,12 +261,15 @@ export class CombatSystem {
   }
 
   async resolveSkill(actor,skill,targets) {
-    if(!this.beginAction(actor)||actor.focus<skill.cost)return;
+    if(!actor||actor.focus<skill.cost||this.battle.current?.id!==actor.id)return;
+    const validTargets=(targets||[]).filter((target)=>target&&target.hp>0);
+    if(!validTargets.length){this.checkOutcome();return;}
+    if(!this.beginAction(actor))return;
     actor.focus-=skill.cost;this.battle.lastSkill=skill.id;
     this.animateActor(actor,"cast");this.audio.spell(skill.element);this.effect(skill.effect,skill.target==="allEnemies"?"burst":"projectile");
     this.log(`${actor.name} usa ${skill.name}.`);
     await this.delay(420);
-    for(const target of targets){
+    for(const target of validTargets){
       if(skill.healing){
         if(this.battle.reverseHealing){
           const damage=this.calculateDamage(actor,target,skill.power);target.hp=Math.max(0,target.hp-damage);this.damageNumber(target,damage,false);this.log(`A Maré Negra converte a cura em ${damage} de dano!`);
@@ -367,6 +370,7 @@ export class CombatSystem {
 
   chooseTargets(team,callback) {
     const targets=this.living(team==="enemy"?this.enemies:this.party);
+    if(!targets.length){if(!this.checkOutcome()&&this.battle.current?.team==="party"&&!this.actionInProgress)this.renderActionMenu(this.battle.current);return;}
     if(targets.length===1)return callback(targets[0]);
     this.actions.querySelectorAll("button").forEach((button)=>button.disabled=true);
     this.detail.innerHTML=`<small>SELECIONE O ALVO</small><p>Clique em um ${team==="enemy"?"inimigo":"aliado"} para confirmar.</p>`;
@@ -378,7 +382,8 @@ export class CombatSystem {
   }
 
   async enemyTurn(actor) {
-    const targets=this.living(this.party);if(!targets.length)return this.checkOutcome();
+    if(!actor||actor.hp<=0||this.battle.current?.id!==actor.id){this.actionInProgress=false;return this.nextTurn();}
+    const targets=this.living(this.party);if(!targets.length){this.actionInProgress=false;return this.checkOutcome();}
     const target=targets.reduce((weak,current)=>current.hp/current.maxHp<weak.hp/weak.maxHp?current:weak,targets[0]);
     const special=(actor.boss||actor.miniboss)&&Math.random()<.42;
     if(special){
@@ -515,12 +520,19 @@ export class CombatSystem {
     this.initiative.innerHTML=ids.map((id,index)=>{const actor=this.actorById(id);if(!actor)return"";return`<span class="initiative-chip ${actor.team} ${index===0?"current":""}" title="${actor.name}">${actor.name.slice(0,2).toUpperCase()}</span>`;}).join("");
   }
 
+  actorNode(actor) {
+    if(!actor)return null;
+    const id=String(actor.id);
+    const escaped=globalThis.CSS?.escape?globalThis.CSS.escape(id):id.replace(/[\"\\]/g,"\\$&");
+    return this.screen.querySelector(`.combatant[data-id="${escaped}"]`);
+  }
+
   animateActor(actor,className) {
-    const node=this.screen.querySelector(`.combatant[data-id="${CSS.escape(actor.id)}"]`);if(!node)return;node.classList.add(className);setTimeout(()=>node.classList.remove(className),700/this.speed);
+    const node=this.actorNode(actor);if(!node)return;node.classList.add(className);setTimeout(()=>node.classList.remove(className),700/this.speed);
   }
 
   damageNumber(actor,amount,heal=false) {
-    const node=this.screen.querySelector(`.combatant[data-id="${CSS.escape(actor.id)}"]`);if(!node)return;
+    const node=this.actorNode(actor);if(!node)return;
     const arena=this.screen.querySelector("#battle-arena").getBoundingClientRect(),rect=node.getBoundingClientRect();
     const number=document.createElement("span");number.className=`damage-number ${heal?"heal":""}`;number.textContent=`${heal?"+":"−"}${amount}`;number.style.left=`${rect.left-arena.left+rect.width/2}px`;number.style.top=`${rect.top-arena.top+rect.height*.25}px`;this.effectStage.appendChild(number);setTimeout(()=>number.remove(),1000);
     if(!heal&&this.getState().settings.screenShake>0){this.screen.classList.add("shake");setTimeout(()=>this.screen.classList.remove("shake"),180);}
