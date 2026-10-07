@@ -1,11 +1,11 @@
 const Progress=(()=>{
  const key='orbital-save-v2'
- const curriculumVersion=3
- const unlockStage={miniSun:0,mercury:0,jupiter:0,belt:1,venus:1,mars:2,uranus:2,earth:3,neptune:3,saturn:4,gravity:4,moon:5,probe:5,pulsar:6,neutron:7}
+ const curriculumVersion=5
+ const unlockStage={miniSun:0,mercury:0,jupiter:0,belt:1,venus:1,mars:2,uranus:2,earth:3,neptune:3,saturn:4,gravity:4,moon:5,probe:5,pulsar:6,collector:6,neutron:7,janus:7}
  const defaults=()=>({version:2,curriculumVersion,unlocked:1,chapter:0,research:0,nodes:[],codex:[],scores:{},stars:{},achievements:[],endlessBest:0,unlockTipsSeen:['miniSun','mercury'],settings:{difficulty:'standard',master:.65,music:.25,sfx:.65,shake:true,numbers:true,reduced:false,contrast:false,large:false},resume:null})
  const inferUnlockTips=d=>{
   const chapter=Math.max(0,Math.min(7,Number(d.chapter)||0)),seen=['miniSun','mercury']
-  for(const [id,stage] of Object.entries(unlockStage))if(stage<chapter&&!seen.includes(id))seen.push(id)
+  for(const [id,stage] of Object.entries(unlockStage))if(stage<chapter&&id!=='collector'&&!seen.includes(id))seen.push(id)
   if((d.achievements||[]).includes('tutorial')&&!seen.includes('jupiter'))seen.push('jupiter')
   return seen
  }
