@@ -65,6 +65,7 @@ const sun={x:112,y:360,r:74}
 const damageNames={kinetic:'Cinético',plasma:'Plasma',gravity:'Gravitacional',cryo:'Criogênico',pierce:'Perfurante',solar:'Solar',electric:'Elétrico'}
 const damageShort={kinetic:'KIN',plasma:'PLA',gravity:'GRAV',cryo:'CRIO',pierce:'PERF',solar:'SOL',electric:'ELEC'}
 const damageColors={kinetic:'#ffd05d',plasma:'#ff7656',gravity:'#b77cff',cryo:'#67eaff',pierce:'#eaf7ff',solar:'#ffe56d',electric:'#70f1ff'}
+const BALANCE={towerDamage:1.05,towerHp:1.05,enemySpeed:.94,enemyContact:.95,mainSunInterval:28.5,venusSplashRadius:145,venusSplashDamage:.68}
 
 const imgs={}
 const imageMap={
@@ -231,7 +232,20 @@ function unlockLabel(id){
 function canPlace(id){return isUnlocked(id)&&!(randomModifier==='noSun'&&id==='miniSun')}
 function nearby(d,type,radius=175){return defenders.some(n=>n!==d&&n.type===type&&Math.hypot(n.x-d.x,n.y-d.y)<=radius)}
 function towerSynergies(d){return Content.synergies.filter(s=>s.a===d.type?(s.b==='moon'?!!d.moon:nearby(d,s.b)):s.b===d.type?nearby(d,s.a):false)}
-function getBranch(d){return d.branch?Content.branches[d.type][d.branch==='a'?0:1][2]:{}}
+function scaleBranchEffects(base,level=0){
+ if(!base||level<=0)return {}
+ const power=level>=2?1.45:1,out={}
+ const multiplierKeys=new Set(['damage','rate','range','hp','energy','area','burnDps','fracture','shield','vulnerability','rear','ring','allyRate','collectorSpeed','energyBonus'])
+ for(const [key,value] of Object.entries(base)){
+  if(typeof value!=='number'){out[key]=value;continue}
+  if(key==='jumps'||key==='pierces'){out[key]=Math.max(1,Math.round(value+(level-1)));continue}
+  if((key==='slow'||key==='field')&&value<1){out[key]=Math.max(.08,1-(1-value)*power);continue}
+  if(multiplierKeys.has(key)){out[key]=1+(value-1)*power;continue}
+  out[key]=value*power
+ }
+ return out
+}
+function getBranch(d){if(!d.branch)return {};const row=Content.branches?.[d.type]?.[d.branch==='a'?0:1];return scaleBranchEffects(row?.[2]||{},d.branchLevel||1)}
 function currentDamageType(d){return getBranch(d).type||unitDefs[d.type].damageType}
 function addText(x,y,text,color){if(!Progress.data.settings.numbers)return;if(floatingTexts.length>70)floatingTexts.shift();floatingTexts.push({x,y,text,color,life:.85})}
 function saveRun(){
@@ -243,7 +257,7 @@ function saveRun(){
 function loadRun(){
  const r=Progress.data.resume
  if(!r||r.version!==2||!Array.isArray(r.defenders)||!Array.isArray(r.enemies))return false
- waveIndex=Math.max(0,Math.min(7,r.waveIndex||0));energy=Math.max(0,Math.min(9999,r.energy||0));health=Math.max(1,r.health||8);initialHealth=r.initialHealth||8;gameMode=r.gameMode||'campaign';endlessRound=r.endlessRound||1;randomModifier=r.randomModifier||null;orbitConfig=r.orbitConfig||{e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0,...r.runStats};powerCharges={...powerCharges,...r.powerCharges};simTime=r.simTime||0;spawnQueue=(r.spawnQueue||[]).filter(t=>enemyDefs[t]);spawnTimer=r.spawnTimer||1;waveSpawned=r.waveSpawned||0;waveTotal=r.waveTotal||0;checkpointIndex=Math.min(3,r.checkpointIndex||0);checkpointStates=r.checkpointStates||[null,null,null];pendingSuperboss=r.pendingSuperboss||null;penaltyBossActive=!!r.penaltyBossActive;running=!!r.running;gameStarted=!!r.gameStarted;defenders=r.defenders.filter(d=>unitDefs[d.type]);enemies=r.enemies.filter(e=>e.type==='superboss'||enemyDefs[e.type]);energyOrbs=r.energyOrbs||[];selected=unitDefs[r.selected]?r.selected:'mercury';tutorialStep=r.tutorialStep||0;tutorialDone=!!r.tutorialDone;nextEntityId=r.nextEntityId||1000;projectiles=[];paused=running;gameOver=false;sunAppear=gameStarted?1:0;checkpointInProgress=false;phaseCompletePending=false
+ waveIndex=Math.max(0,Math.min(7,r.waveIndex||0));energy=Math.max(0,Math.min(9999,r.energy||0));health=Math.max(1,r.health||8);initialHealth=r.initialHealth||8;gameMode=r.gameMode||'campaign';endlessRound=r.endlessRound||1;randomModifier=r.randomModifier||null;orbitConfig=r.orbitConfig||{e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0,...r.runStats};powerCharges={...powerCharges,...r.powerCharges};simTime=r.simTime||0;spawnQueue=(r.spawnQueue||[]).filter(t=>enemyDefs[t]);spawnTimer=r.spawnTimer||1;waveSpawned=r.waveSpawned||0;waveTotal=r.waveTotal||0;checkpointIndex=Math.min(3,r.checkpointIndex||0);checkpointStates=r.checkpointStates||[null,null,null];pendingSuperboss=r.pendingSuperboss||null;penaltyBossActive=!!r.penaltyBossActive;running=!!r.running;gameStarted=!!r.gameStarted;defenders=r.defenders.filter(d=>unitDefs[d.type]);for(const d of defenders){if(d.branch){if((d.level||1)<4)d.level=4;d.branchLevel=d.branchLevel||1}if(d.moon?.branch){if((d.moon.level||1)<4)d.moon.level=4;d.moon.branchLevel=d.moon.branchLevel||1}}enemies=r.enemies.filter(e=>e.type==='superboss'||enemyDefs[e.type]);energyOrbs=r.energyOrbs||[];selected=unitDefs[r.selected]?r.selected:'mercury';tutorialStep=r.tutorialStep||0;tutorialDone=!!r.tutorialDone;nextEntityId=r.nextEntityId||1000;projectiles=[];paused=running;gameOver=false;sunAppear=gameStarted?1:0;checkpointInProgress=false;phaseCompletePending=false
  for(const [i,mark] of [...checkpointTrack.children].entries())mark.className=checkpointStates[i]==='ok'?'active':checkpointStates[i]==='failed'?'failed':''
  startWaveBtn.disabled=false;startWaveBtn.textContent=running?'Continuar batalha':'Iniciar batalha';missionTitle.textContent=waves[waveIndex].title;pregameOverlay.classList.toggle('hidden-start',running);buildDeck();updateHud();updatePreparation();statusText.textContent=running?'Progresso retomado · pausado':'Preparação retomada';return true
 }
@@ -261,71 +275,115 @@ function buildDeck(){
  for(const [id,u] of Object.entries(unitDefs)){
   const el=document.createElement('button'),unlocked=canPlace(id)
   el.className='unit-card'+(id===selected?' selected':'')+(unlocked?'':' locked');el.dataset.unit=id;el.setAttribute('aria-pressed',id===selected);el.title=u.tip;el.setAttribute('aria-label',`${u.name}, ${u.desc}, ${u.cost} energia${unlocked?'':', ainda bloqueado'}`)
-  const cycle=u.kind==='harvest'?`${u.rate.toFixed(1)}s / ciclo`:u.kind==='barrier'?`${u.hp} HP`:u.kind==='moon'?'anexar a planeta':u.kind==='probe'?'radar orbital':`${u.rate.toFixed(1)}s / tiro`
-  el.innerHTML=`<img src="${assetPath(imageMap[u.img])}" alt=""><span class="unit-info"><strong>${u.name}</strong><span class="unit-meta"><span class="damage-tag" data-type="${u.damageType}">${u.kind==='barrier'?'BARREIRA':u.kind==='harvest'?'ECONOMIA':damageShort[u.damageType]}</span><p>${u.desc}</p></span></span><span class="cost-stack"><span class="cost">${unlocked?'✦ '+u.cost:unlockLabel(id)}</span><span class="rate-chip">${cycle}</span></span>`
-  el.onclick=()=>{if(!unlocked){const st=unitUnlockStage(id);showToast(id==='jupiter'&&Progress.data.unlocked<=1?'Júpiter chega no primeiro checkpoint do tutorial.':`Esta construção é apresentada na fase ${st+1}.`);return}selected=id;powerMode=null;hideTowerPanel();document.querySelectorAll('.unit-card').forEach(c=>{c.classList.toggle('selected',c.dataset.unit===id);c.setAttribute('aria-pressed',c.dataset.unit===id)});physicsTitle.textContent=u.name+' · '+u.desc;physicsText.textContent=u.tip;lawBadge.textContent=u.kind==='barrier'?'Bloqueio orbital':u.kind==='harvest'?'Economia estelar':damageNames[u.damageType];showToast(`${u.name} selecionado`);if(typeof TutorialGuide!=='undefined')TutorialGuide.unitSelected?.(id);tutorialEvent(id==='miniSun'?'select-miniSun':id==='mercury'?'select-mercury':id==='jupiter'?'select-jupiter':'select-unit')}
+  const cycle=u.kind==='harvest'?`${u.rate.toFixed(1)}s / ciclo`:u.kind==='collector'?`${Math.round(u.range)} px coleta`:u.kind==='barrier'?`${Math.round(u.hp*BALANCE.towerHp)} HP`:u.kind==='moon'?'anexar a planeta':u.kind==='probe'?'radar orbital':`${u.rate.toFixed(1)}s / tiro`
+  el.innerHTML=`<img src="${assetPath(imageMap[u.img])}" alt=""><span class="unit-info"><strong>${u.name}</strong><span class="unit-meta"><span class="damage-tag" data-type="${u.damageType}">${u.kind==='barrier'?'BARREIRA':u.kind==='harvest'||u.kind==='collector'?'ECONOMIA':damageShort[u.damageType]}</span><p>${u.desc}</p></span></span><span class="cost-stack"><span class="cost">${unlocked?'✦ '+u.cost:unlockLabel(id)}</span><span class="rate-chip">${cycle}</span></span>`
+  el.onclick=()=>{if(!unlocked){const st=unitUnlockStage(id);showToast(id==='jupiter'&&Progress.data.unlocked<=1?'Júpiter chega no primeiro checkpoint do tutorial.':`Esta construção é apresentada na fase ${st+1}.`);return}selected=id;powerMode=null;hideTowerPanel();document.querySelectorAll('.unit-card').forEach(c=>{c.classList.toggle('selected',c.dataset.unit===id);c.setAttribute('aria-pressed',c.dataset.unit===id)});physicsTitle.textContent=u.name+' · '+u.desc;physicsText.textContent=u.tip;lawBadge.textContent=u.kind==='barrier'?'Bloqueio orbital':u.kind==='harvest'||u.kind==='collector'?'Economia estelar':damageNames[u.damageType];showToast(`${u.name} selecionado`);if(typeof TutorialGuide!=='undefined')TutorialGuide.unitSelected?.(id);tutorialEvent(id==='miniSun'?'select-miniSun':id==='mercury'?'select-mercury':id==='jupiter'?'select-jupiter':'select-unit')}
   cardDeck.appendChild(el)
  }
  cardDeck.scrollLeft=scrollX;cardDeck.scrollTop=scrollY
 }
 
+function baseLevelScale(level){
+ const i=Math.max(0,Math.min(3,(level||1)-1))
+ return {damage:[1,1.22,1.48,1.78][i],rate:[1,.92,.84,.76][i],range:[1,1.05,1.10,1.15][i],hp:[1,1.25,1.55,1.9][i],energy:[1,1.25,1.5,1.8][i],barrier:[0,.07,.13,.18][i]}
+}
 function getTowerStats(tower,levelOverride=null){
- const u=unitDefs[tower.type],level=levelOverride||tower.level||1,branch=level>=3?getBranch(tower):{}
- let damage=u.damage*[1,1.3,1.7][level-1]*(branch.damage||1),rate=u.rate?u.rate*[1,.88,.75][level-1]*(branch.rate||1):0,range=u.range*[1,1.08,1.16][level-1]*(branch.range||1)
+ const u=unitDefs[tower.type],level=Math.max(1,Math.min(4,levelOverride||tower.level||1)),base=baseLevelScale(level),branch=tower.branch?getBranch(tower):{}
+ let damage=u.damage*BALANCE.towerDamage*base.damage*(branch.damage||1),rate=u.rate?u.rate*base.rate*(branch.rate||1):0,range=u.range*base.range*(branch.range||1)
  if(Progress.has('precision')&&['mercury','pulsar'].includes(tower.type))damage*=1.15
  if(Progress.has('neutron')&&tower.type==='neutron')damage*=1.2
  if(Progress.has('gravity')&&['earth','gravity'].includes(tower.type))range*=1.2
  if(nearby(tower,'miniSun')){if(tower.type==='mars')damage*=1.2;if(tower.type==='mercury')damage*=1.15}
- if(tower.moon)range*=(tower.moon.branch==='b'?1.35:1.14+(tower.moon.level-1)*.04)*(Progress.has('moon')?1.08:1)
+ if(tower.moon)range*=(tower.moon.branch==='b'?(tower.moon.branchLevel>=2?1.45:1.35):1.14+(tower.moon.level-1)*.04)*(Progress.has('moon')?1.08:1)
  if(nearby(tower,'probe',210)){range*=1.1;if(defenders.some(d=>d.type==='probe'&&d.branch==='b'&&Math.hypot(d.x-tower.x,d.y-tower.y)<210))rate*=.85}
  if(orbitConfig.bonus)damage*=1.1
  if(temporaryBuff>0)damage*=1.15
- return {level,damage,rate,range,maxHp:Math.round(u.hp*[1,1.4,1.9][level-1]*(branch.hp||1)*(Progress.has('defense')?1.2:1)),energyValue:Math.round(45*[1,1.35,1.8][level-1]*(branch.energy||1)*(Progress.has('economy')?1.2:1)*difficultyStats().energy),blockDamageMultiplier:Math.max(.23,(u.blockDamageMultiplier||1)-(u.kind==='barrier'?[0,.1,.18][level-1]:0)),damageType:currentDamageType(tower),branch}
+ return {level,damage,rate,range,maxHp:Math.round(u.hp*BALANCE.towerHp*base.hp*(branch.hp||1)*(Progress.has('defense')?1.2:1)),energyValue:Math.round(45*base.energy*(branch.energy||1)*(Progress.has('economy')?1.2:1)*difficultyStats().energy),blockDamageMultiplier:Math.max(.23,(u.blockDamageMultiplier||1)-(u.kind==='barrier'?base.barrier:0)),damageType:currentDamageType(tower),branch}
 }
 
 function getUpgradeCost(tower){
- const u=unitDefs[tower.type]
- if((tower.level||1)>=3)return 0
- const mult=(tower.level||1)===1?.72:1.08
- return Math.max(25,Math.round(u.cost*mult/5)*5)
+ const u=unitDefs[tower.type],level=tower.level||1
+ if(level<4){const mult=[.72,1.02,1.34][level-1];return Math.max(25,Math.round(u.cost*mult/5)*5)}
+ if(!tower.branch)return Math.max(35,Math.round(u.cost*1.62/5)*5)
+ if((tower.branchLevel||1)<2)return Math.max(45,Math.round(u.cost*1.95/5)*5)
+ return 0
 }
 
 function towerStatsHtml(tower,stats){
  const u=unitDefs[tower.type]
  let html=`<span><b>HP</b>${Math.max(0,Math.ceil(tower.hp))}/${stats.maxHp}</span>`
  if(u.kind==='harvest')html+=`<span><b>Energia</b>+${stats.energyValue}</span><span><b>Próximo ciclo</b>${Math.max(0,tower.cooldown).toFixed(1)}s</span><span><b>Intervalo</b>${stats.rate.toFixed(1)}s</span>`
+ else if(u.kind==='collector')html+=`<span><b>Coleta</b>Automática</span><span><b>Alcance</b>${Math.round(stats.range)}</span><span><b>Bônus</b>${Math.round(((stats.branch.energyBonus||1)-1)*100)}%</span>`
  else if(u.kind==='barrier')html+=`<span><b>Absorção</b>${Math.round((1-stats.blockDamageMultiplier)*100)}%</span><span><b>Função</b>Bloqueio</span><span><b>Contato</b>${tower.type==='saturn'?'Anéis':stats.branch.reflect?'Reflexão':'Campo'}</span>`
  else html+=`<span><b>Dano</b>${Math.round(stats.damage)} · ${damageShort[stats.damageType]}</span><span><b>Cadência</b>${stats.rate.toFixed(2)}s</span><span><b>Alcance</b>${Math.round(stats.range)}</span>`
  return html
 }
 
 function towerUpgradeText(tower){
- const level=tower.level||1
- if(level>=3)return 'Nível máximo alcançado.'
- const current=getTowerStats(tower,level)
- const next=getTowerStats(tower,level+1)
- const u=unitDefs[tower.type]
+ const level=tower.level||1,u=unitDefs[tower.type]
+ if(level>=4)return tower.branch?(tower.branchLevel||1)>=2?'Especialização no nível máximo.':'Aprimore a especialização escolhida para o nível 2.':'Nível 4 alcançado. Escolha uma especialização.'
+ const current=getTowerStats(tower,level),next=getTowerStats(tower,level+1)
  if(u.kind==='harvest')return `Próximo nível: +${next.energyValue} energia a cada ${next.rate.toFixed(1)}s e ${next.maxHp} HP.`
+ if(u.kind==='collector')return `Próximo nível: alcance de coleta ${Math.round(next.range)} e ${next.maxHp} HP.`
  if(u.kind==='barrier')return `Próximo nível: ${next.maxHp} HP e ${Math.round((1-next.blockDamageMultiplier)*100)}% de absorção de dano de contato.`
  return `Próximo nível: ${Math.round(next.damage)} de dano, ${next.rate.toFixed(2)}s de cadência e ${Math.round(next.range)} de alcance.`
 }
 
 function showTowerPanel(tower){
- selectedTower=tower;const u=unitDefs[tower.type],stats=getTowerStats(tower)
- towerPanelImg.src=`${assetPath(imageMap[u.img])}`;towerPanelName.textContent=u.name;towerPanelLevel.textContent=`Nível ${tower.level||1}${tower.branch?' · '+Content.branches[tower.type][tower.branch==='a'?0:1][0]:''}`;towerPanelStats.innerHTML=towerStatsHtml(tower,stats)
- const synergies=towerSynergies(tower)
- towerUpgradePreview.textContent=(tower.level>=3?Content.branches[tower.type][tower.branch==='b'?1:0][1]:towerUpgradeText(tower))+(synergies.length?' · '+synergies.map(s=>'✧ '+s.name).join(' / '):'')
- const cost=getUpgradeCost(tower);upgradeTowerBtn.textContent=tower.level>=3?'Nível máximo':`Melhorar · ✦ ${cost}`;upgradeTowerBtn.disabled=tower.level>=3||energy<cost||randomModifier==='noUpgrades'
- const branchPanel=document.getElementById('branchOptions');if(branchPanel){branchPanel.innerHTML='';branchPanel.classList.toggle('hidden',tower.level!==2);if(tower.level===2){upgradeTowerBtn.classList.add('hidden');Content.branches[tower.type].forEach(([name,desc],i)=>{const b=document.createElement('button');b.className='branch-option';b.innerHTML=`<strong>${name}</strong><span>${desc} · ✦ ${cost}</span>`;b.disabled=energy<cost||randomModifier==='noUpgrades';b.onclick=()=>upgradeSelectedTower(i===0?'a':'b');branchPanel.appendChild(b)})}else upgradeTowerBtn.classList.remove('hidden')}
+ selectedTower=tower;const u=unitDefs[tower.type],stats=getTowerStats(tower),branches=Content.branches?.[tower.type]||[],branchLevel=tower.branch?(tower.branchLevel||1):0,branchName=tower.branch?branches[tower.branch==='a'?0:1]?.[0]:''
+ towerPanelImg.src=`${assetPath(imageMap[u.img])}`;towerPanelName.textContent=u.name;towerPanelLevel.textContent=`Nível ${tower.level||1}${tower.branch?' · '+branchName+' Nv. '+branchLevel:''}`;towerPanelStats.innerHTML=towerStatsHtml(tower,stats)
+ const synergies=towerSynergies(tower),branchDesc=tower.branch?branches[tower.branch==='a'?0:1]?.[1]:''
+ towerUpgradePreview.textContent=(tower.branch?`${branchDesc} · Especialização ${branchLevel}/2`:towerUpgradeText(tower))+(synergies.length?' · '+synergies.map(s=>'✧ '+s.name).join(' / '):'')
+ const cost=getUpgradeCost(tower),needsBranch=(tower.level||1)>=4&&!tower.branch,maxed=!!tower.branch&&branchLevel>=2
+ upgradeTowerBtn.textContent=maxed?'Evolução máxima':needsBranch?'Escolha uma especialização':tower.branch?`Aprimorar ${branchName} para Nv. 2 · ✦ ${cost}`:`Melhorar para Nível ${(tower.level||1)+1} · ✦ ${cost}`
+ upgradeTowerBtn.disabled=maxed||needsBranch||energy<cost||randomModifier==='noUpgrades';upgradeTowerBtn.classList.toggle('hidden',needsBranch)
+ const branchPanel=document.getElementById('branchOptions');if(branchPanel){
+  branchPanel.classList.toggle('hidden',!needsBranch)
+  const branchKey=needsBranch?`${tower.id}:${tower.type}:${tower.level}:${Math.floor(energy)>=cost}:${randomModifier||''}`:''
+  if(!needsBranch){branchPanel.innerHTML='';branchPanel.dataset.renderKey=''}
+  else if(branchPanel.dataset.renderKey!==branchKey){
+   branchPanel.dataset.renderKey=branchKey;branchPanel.innerHTML='<div class="branch-title">Nível 4 completo · escolha uma especialização</div>'
+   for(const [i,[name,desc]] of branches.entries()){
+    const b=document.createElement('button');b.className='branch-option';b.dataset.branch=i===0?'a':'b';b.innerHTML=`<strong>${name} · Nv. 1</strong><span>${desc}</span><small>${energy>=cost?'Especializar · ✦ '+cost:'Faltam ✦ '+Math.ceil(cost-energy)}</small>`;b.disabled=energy<cost||randomModifier==='noUpgrades';b.onclick=()=>upgradeSelectedTower(i===0?'a':'b');branchPanel.appendChild(b)
+   }
+   if(!branches.length){const msg=document.createElement('div');msg.className='branch-empty';msg.textContent='Especializações indisponíveis para esta construção.';branchPanel.appendChild(msg)}
+  }
+ }
  const special=document.getElementById('towerSpecial');if(special)special.textContent=u.tip+(tower.moon?' · Lua anexada: intercepta dano e amplia alcance.':'')+(tower.disabled>0?' · Temporariamente desativado.':'')
- const moonPanel=document.getElementById('moonOptions');if(moonPanel){moonPanel.innerHTML='';if(tower.moon){const m=tower.moon;moonPanel.innerHTML=`<span>☾ Lua · Lv ${m.level} · ${Math.ceil(m.hp)}/${m.maxHp} HP</span>`;const branches=m.level===2?['a','b']:[null];for(const branch of branches)if(m.level<3){const b=document.createElement('button');b.className='moon-upgrade';b.textContent=m.level===2?(branch==='a'?'Escudo de maré':'Observatório lunar')+' · ✦ 80':'Evoluir Lua · ✦ 55';b.disabled=energy<(m.level===2?80:55)||randomModifier==='noUpgrades';b.onclick=()=>upgradeMoon(tower,branch);moonPanel.appendChild(b)}}}
+ const moonPanel=document.getElementById('moonOptions');if(moonPanel){
+  const m=tower.moon
+  if(!m){moonPanel.innerHTML='';moonPanel.dataset.renderKey=''}
+  else{
+   const mLevel=m.level||1,mBranchLevel=m.branch?(m.branchLevel||1):0,mCost=getMoonUpgradeCost(m),mMax=!!m.branch&&mBranchLevel>=2,mNeeds=mLevel>=4&&!m.branch,mKey=`${tower.id}:${mLevel}:${m.branch||''}:${mBranchLevel}:${Math.floor(energy)>=mCost}:${randomModifier||''}`
+   if(moonPanel.dataset.renderKey!==mKey){
+    moonPanel.dataset.renderKey=mKey;moonPanel.innerHTML=`<span>☾ Lua · Nv ${mLevel}${m.branch?' · '+(m.branch==='a'?'Escudo de maré':'Observatório lunar')+' '+mBranchLevel+'/2':''} · ${Math.ceil(m.hp)}/${m.maxHp} HP</span>`
+    if(mNeeds){for(const branch of ['a','b']){const b=document.createElement('button');b.className='moon-upgrade';b.textContent=(branch==='a'?'Escudo de maré':'Observatório lunar')+' · Nv. 1 · ✦ '+mCost;b.disabled=energy<mCost||randomModifier==='noUpgrades';b.onclick=()=>upgradeMoon(tower,branch);moonPanel.appendChild(b)}}
+    else if(!mMax){const b=document.createElement('button');b.className='moon-upgrade';b.textContent=m.branch?`Aprimorar especialização · Nv. 2 · ✦ ${mCost}`:`Evoluir Lua para Nv. ${mLevel+1} · ✦ ${mCost}`;b.disabled=energy<mCost||randomModifier==='noUpgrades';b.onclick=()=>upgradeMoon(tower);moonPanel.appendChild(b)}
+    else{const done=document.createElement('small');done.textContent='Lua no nível máximo.';moonPanel.appendChild(done)}
+   }else{const label=moonPanel.querySelector('span');if(label)label.textContent=`☾ Lua · Nv ${mLevel}${m.branch?' · '+(m.branch==='a'?'Escudo de maré':'Observatório lunar')+' '+mBranchLevel+'/2':''} · ${Math.ceil(m.hp)}/${m.maxHp} HP`}
+  }
+ }
  sellTowerBtn.textContent=`Vender · +✦ ${Math.round(((tower.spent||u.cost)+(tower.moon?.spent||0))*.65)}`;towerPanel.classList.remove('hidden')
 }
 
+function getMoonUpgradeCost(moon){
+ const level=moon.level||1
+ if(level<4)return [55,75,95][level-1]
+ if(!moon.branch)return 120
+ if((moon.branchLevel||1)<2)return 145
+ return 0
+}
 function upgradeMoon(host,branch=null){
- if(paused||gameOver||randomModifier==='noUpgrades'||!host.moon||host.moon.level>=3)return
- const moon=host.moon,cost=moon.level===2?80:55;if(energy<cost||moon.level===2&&!branch)return
- energy-=cost;moon.spent+=cost;moon.level++;if(branch)moon.branch=branch;const old=moon.maxHp;moon.maxHp=Math.round(180*[1,1.4,1.9][moon.level-1]*(branch==='a'?1.3:1));moon.hp=Math.min(moon.maxHp,moon.hp+moon.maxHp-old);AudioSystem.play('upgrade');showTowerPanel(host);updateHud();saveRun()
+ if(gameOver||randomModifier==='noUpgrades'||!host.moon)return
+ const moon=host.moon,level=moon.level||1,needsBranch=level>=4&&!moon.branch,maxed=!!moon.branch&&(moon.branchLevel||1)>=2
+ if(maxed)return
+ if(needsBranch&&!branch){showToast('Escolha uma especialização para a Lua.');return}
+ const cost=getMoonUpgradeCost(moon);if(energy<cost)return
+ energy-=cost;moon.spent=(moon.spent||75)+cost
+ if(level<4)moon.level=level+1
+ else if(!moon.branch){moon.branch=branch;moon.branchLevel=1}
+ else moon.branchLevel=(moon.branchLevel||1)+1
+ const hpScale=[1,1.25,1.55,1.9][Math.max(0,Math.min(3,(moon.level||1)-1))],old=moon.maxHp;moon.maxHp=Math.round(180*BALANCE.towerHp*hpScale);moon.hp=Math.min(moon.maxHp,moon.hp+moon.maxHp-old);AudioSystem.play('upgrade');showTowerPanel(host);updateHud();saveRun()
 }
 
 function hideTowerPanel(){
@@ -334,17 +392,21 @@ function hideTowerPanel(){
 }
 
 function upgradeSelectedTower(branch=null){
- if(!selectedTower||!defenders.includes(selectedTower)||paused||gameOver)return
+ if(!selectedTower||!defenders.includes(selectedTower)||gameOver)return
  if(randomModifier==='noUpgrades'){showToast('Este desafio não permite upgrades.');return}
- const level=selectedTower.level||1;if(level>=3)return
- if(level===2&&!branch){showToast('Escolha uma das duas especializações.');return}
- const cost=getUpgradeCost(selectedTower);if(energy<cost){showToast('Energia insuficiente');return}
- const oldStats=getTowerStats(selectedTower);energy-=cost;selectedTower.spent=(selectedTower.spent||unitDefs[selectedTower.type].cost)+cost;selectedTower.level=level+1;if(branch)selectedTower.branch=branch
+ const level=selectedTower.level||1,branchLevel=selectedTower.branch?(selectedTower.branchLevel||1):0
+ if(selectedTower.branch&&branchLevel>=2)return
+ if(level>=4&&!selectedTower.branch&&!branch){showToast('Escolha uma das duas especializações.');return}
+ const cost=getUpgradeCost(selectedTower);if(!cost||energy<cost){if(cost)showToast('Energia insuficiente');return}
+ const oldStats=getTowerStats(selectedTower);energy-=cost;selectedTower.spent=(selectedTower.spent||unitDefs[selectedTower.type].cost)+cost
+ if(level<4)selectedTower.level=level+1
+ else if(!selectedTower.branch){selectedTower.branch=branch;selectedTower.branchLevel=1}
+ else selectedTower.branchLevel=branchLevel+1
  const stats=getTowerStats(selectedTower);selectedTower.maxHp=stats.maxHp;selectedTower.hp=Math.min(stats.maxHp,selectedTower.hp+stats.maxHp-oldStats.maxHp+stats.maxHp*.12);selectedTower.cooldown=Math.min(selectedTower.cooldown||0,stats.rate||0);burst(selectedTower.x,selectedTower.y,'#d88cff',20);AudioSystem.play('upgrade');tutorialEvent('upgrade');updateHud();showTowerPanel(selectedTower);saveRun()
 }
 
 function sellSelectedTower(){
- if(!selectedTower||!defenders.includes(selectedTower)||paused||gameOver)return
+ if(!selectedTower||!defenders.includes(selectedTower)||gameOver)return
  const tower=selectedTower,refund=Math.round(((tower.spent||unitDefs[tower.type].cost)+(tower.moon?.spent||0))*.65);energy=Math.min(9999,energy+refund);burst(tower.x,tower.y,'#d88cff',12);defenders=defenders.filter(d=>d!==tower);hideTowerPanel();updateHud();showToast(`Vendido · +${refund} energia`);saveRun()
 }
 
@@ -399,7 +461,23 @@ function startWave(){
 function createEnemy(type,laneOverride=null,override={}){
  const d=enemyDefs[type],config=difficultyStats(),lane=laneOverride===null?waves[waveIndex].lanes[Math.floor(Math.random()*waves[waveIndex].lanes.length)]:laneOverride,scaling=gameMode==='endless'?1+(endlessRound-1)*.2:1+waveIndex*.08,bossScale=['boss','binary','blackhole','cometBoss','neutronBoss'].includes(type)?waves[waveIndex].bossScale||1:1
  const hp=Math.round(d.hp*config.hp*scaling*bossScale),shield=Math.round(d.shield*config.hp*scaling*bossScale)
- return {id:nextEntityId++,type,name:d.name,tag:d.tag,lane,x:W+55,y:curveY(lane,W+55),hp,maxHp:hp,speed:d.speed*config.speed,size:d.size,img:d.img,reward:Math.round(d.reward*config.energy),coreDamage:d.coreDamage,armor:d.armor,shield,maxShield:shield,contactDps:d.contactDps,resist:{...d.resist},behavior:d.behavior||'normal',regen:d.regen||0,shieldRegen:d.shieldRegen||0,splitOnDeath:d.splitOnDeath||0,slow:1,slowTimer:0,flash:0,phase:Math.random()*6.2,phaseClock:0,burnTimer:0,burnDps:0,vulnerableTimer:0,hitTimer:0,isSuperboss:false,bossPhase:1,abilityTimer:7,freeze:0,lastLaneSwitch:0,escaped:false,...override}
+ const enemy={id:nextEntityId++,type,name:d.name,tag:d.tag,lane,x:W+55,y:curveY(lane,W+55),hp,maxHp:hp,speed:d.speed*config.speed,size:d.size,img:d.img,reward:Math.round(d.reward*config.energy),coreDamage:d.coreDamage,armor:d.armor,shield,maxShield:shield,contactDps:d.contactDps,resist:{...d.resist},behavior:d.behavior||'normal',regen:d.regen||0,shieldRegen:d.shieldRegen||0,splitOnDeath:d.splitOnDeath||0,slow:1,slowTimer:0,flash:0,phase:Math.random()*6.2,phaseClock:0,burnTimer:0,burnDps:0,vulnerableTimer:0,hitTimer:0,isSuperboss:false,bossPhase:1,abilityTimer:7,freeze:0,lastLaneSwitch:0,escaped:false,...override}
+ enemy.speed=Math.max(1,(Number(enemy.speed)||1)*BALANCE.enemySpeed)
+ enemy.contactDps=Math.max(0,(Number(enemy.contactDps)||0)*BALANCE.enemyContact)
+ return enemy
+}
+
+function setupJanusTraining(tower){
+ if(!tower||enemies.some(e=>e.trainingJanus))return
+ const mk=(x,label)=>createEnemy('phase',tower.lane,{x,hp:70,maxHp:70,speed:16,reward:0,coreDamage:0,armor:0,shield:0,maxShield:0,tag:label,behavior:'normal',trainingJanus:true,size:54})
+ enemies.push(mk(Math.min(W-70,tower.x+185),'TREINO →'),mk(Math.max(sun.x+90,tower.x-185),'← TREINO'))
+ showToast('Treino Janus preparado · há um alvo em cada lado')
+}
+function setupCollectorTraining(tower){
+ if(!tower||energyOrbs.some(o=>o.trainingCollector))return
+ const samples=[[-170,-60,15],[130,-85,15],[185,55,20]]
+ for(const [dx,dy,value] of samples)energyOrbs.push({x:Math.max(sun.x+70,Math.min(W-55,tower.x+dx)),y:Math.max(55,Math.min(H-55,tower.y+dy)),value,life:60,phase:Math.random()*6,vy:0,source:'training',trainingCollector:true})
+ showToast('Treino de coleta preparado · retome sem clicar nas partículas')
 }
 
 function spawnEnemy(type){
@@ -477,14 +555,14 @@ function placeAt(p){
  const occupied=defenders.find(d=>d.lane===cell.lane&&d.col===cell.col)
  if(tutorialPausedAction==='placement'&&occupied&&TutorialGuide.expectedPlacementType?.()!=='moon'){showToast('Use o espaço vazio destacado pelo tutorial.');return}
  if(selected==='moon'&&occupied&&!['miniSun','gravity','probe','belt'].includes(occupied.type)){
-  if(occupied.moon){showToast('Este planeta já tem uma Lua.');showTowerPanel(occupied);return}if(!canPlace('moon')||energy<unitDefs.moon.cost){showToast('Lua bloqueada ou energia insuficiente.');return}energy-=unitDefs.moon.cost;occupied.moon={level:1,hp:180,maxHp:180,spent:75,phase:0};AudioSystem.play('place');showTowerPanel(occupied);updateHud();saveRun();if(typeof TutorialGuide!=='undefined')TutorialGuide.afterPlacement(occupied,'moon');return
+  if(occupied.moon){showToast('Este planeta já tem uma Lua.');showTowerPanel(occupied);return}if(!canPlace('moon')||energy<unitDefs.moon.cost){showToast('Lua bloqueada ou energia insuficiente.');return}energy-=unitDefs.moon.cost;occupied.moon={level:1,hp:Math.round(180*BALANCE.towerHp),maxHp:Math.round(180*BALANCE.towerHp),spent:75,phase:0};AudioSystem.play('place');showTowerPanel(occupied);updateHud();saveRun();if(typeof TutorialGuide!=='undefined')TutorialGuide.afterPlacement(occupied,'moon');return
  }
  if(occupied){showTowerPanel(occupied);tutorialEvent('tower-inspect');return}
  if(selected==='moon'){showToast('Selecione um planeta existente para anexar a Lua.');return}
  hideTowerPanel();const def=unitDefs[selected];if(!canPlace(selected)){showToast(`Esta construção é apresentada na fase ${unitUnlockStage(selected)+1}.`);return}if(energy<def.cost){showToast('Energia insuficiente');return}
  energy-=def.cost;const tower={id:nextEntityId++,type:selected,lane:cell.lane,col:cell.col,x:cell.x,y:cell.y,level:1,hp:def.hp,maxHp:def.hp,cooldown:def.kind==='harvest'?4:1,pulse:0,spent:def.cost,disabled:0,hitTimer:0};const stats=getTowerStats(tower);tower.hp=stats.maxHp;tower.maxHp=stats.maxHp;defenders.push(tower);if(!runStats.types.includes(selected))runStats.types.push(selected);updateHud();burst(cell.x,cell.y,def.color,12);AudioSystem.play('place');tutorialEvent(def.kind==='harvest'?'miniSun':def.kind==='barrier'?'barrier':'attacker');if(typeof TutorialGuide!=='undefined')TutorialGuide.afterPlacement(tower);saveRun()
 }
-function collectOrb(index){const o=energyOrbs[index];energy=Math.min(9999,energy+o.value);runStats.energyCollected+=o.value;energyOrbs.splice(index,1);addText(o.x,o.y,'+✦ '+o.value,'#ffdc77');AudioSystem.play('collect');tutorialEvent('collect');updateHud()}
+function collectOrb(index,multiplier=1,automatic=false){const o=energyOrbs[index];if(!o)return;const gained=Math.max(1,Math.round(o.value*multiplier));energy=Math.min(9999,energy+gained);runStats.energyCollected+=gained;energyOrbs.splice(index,1);addText(o.x,o.y,(automatic?'AUTO ':'')+'+✦ '+gained,'#ffdc77');AudioSystem.play('collect');if(!automatic)tutorialEvent('collect');updateHud()}
 canvas.addEventListener('click',e=>placeAt(getCanvasPos(e)))
 function slotBlocked(cell){return enemies.some(e=>e.behavior==='vortex'&&e.bossPhase>=2&&e.phaseClock%9<3&&Math.abs(e.x-cell.x)<145&&Math.abs(e.lane-cell.lane)<=1)}
 function tutorialEvent(event){
@@ -507,10 +585,25 @@ function applyDamage(enemy,amount,type,quiet=false){
  return dealt+shieldDamage
 }
 
+function launchProjectile(def,target,u,stats,damageMult=1,offsetX=24){
+ if(!target||projectiles.length>150)return false
+ projectiles.push({x:def.x+offsetX,y:def.y-4,lane:def.lane,target,owner:def,damage:stats.damage*damageMult,speed:u.kind==='pierce'?540:420,color:damageColors[stats.damageType]||u.color,type:u.kind,damageType:stats.damageType,life:5,hitsLeft:stats.branch.pierces||(u.kind==='pierce'?(3+(def.type==='pulsar'&&Progress.has('pulsar')?2:0)):1),hitIds:[],branch:stats.branch})
+ return true
+}
 function shoot(def,target,u,stats){
- if(projectiles.length>150)return
- projectiles.push({x:def.x+24,y:def.y-4,lane:def.lane,target,owner:def,damage:stats.damage,speed:u.kind==='pierce'?540:420,color:damageColors[stats.damageType]||u.color,type:u.kind,damageType:stats.damageType,life:5,hitsLeft:stats.branch.pierces||(u.kind==='pierce'?(3+(d.type==='pulsar'&&Progress.has('pulsar')?2:0)):1),hitIds:[],branch:stats.branch})
+ if(!launchProjectile(def,target,u,stats))return
  def.cooldown=stats.rate;AudioSystem.play('shot')
+}
+function shootDual(def,u,stats){
+ if(projectiles.length>148)return false
+ const sameLane=enemies.filter(e=>e.hp>0&&e.lane===def.lane&&Math.abs(e.x-def.x)<stats.range)
+ const front=sameLane.filter(e=>e.x>=def.x-20).reduce((best,e)=>!best||e.x<best.x?e:best,null)
+ const back=sameLane.filter(e=>e.x<def.x-20).reduce((best,e)=>!best||e.x>best.x?e:best,null)
+ let fired=false
+ if(front)fired=launchProjectile(def,front,u,stats,1,24)||fired
+ if(back)fired=launchProjectile(def,back,u,stats,stats.branch.rear||1,-24)||fired
+ if(fired){def.cooldown=stats.rate;AudioSystem.play('shot');burst(def.x,def.y,u.color,5)}
+ return fired
 }
 
 function pulseDefender(d,u,stats){
@@ -526,7 +619,7 @@ function pulseDefender(d,u,stats){
 
 function triggerCheckpointIfNeeded(){
  if(!running||checkpointInProgress||penaltyBossActive||checkpointIndex>=3||!waveTotal)return false
- const thresholds=[.25,.5,.75]
+ const thresholds=[.20,.52,.84]
  const fraction=waveSpawned/waveTotal
  if(fraction+1e-6<thresholds[checkpointIndex])return false
  showCheckpoint(waveIndex,checkpointIndex)
@@ -574,7 +667,7 @@ function damageTower(d,amount){
  if(d.moon&&d.moon.hp>0){const intercepted=amount*(d.moon.branch==='a'?.45:(Progress.has('moon')?.35:.3));d.moon.hp-=intercepted;amount-=intercepted;if(d.moon.hp<=0){burst(d.x,d.y,'#e6d9fa',7);d.moon=null}}
  d.hp-=amount
 }
-function defenderContactRadius(d){return d.type==='jupiter'?48:d.type==='saturn'?55:d.type==='gravity'?40:d.type==='miniSun'?32:d.type==='belt'?42:36}
+function defenderContactRadius(d){return d.type==='jupiter'?48:d.type==='saturn'?55:d.type==='gravity'||d.type==='collector'?40:d.type==='miniSun'?32:d.type==='belt'?42:36}
 function enemyContactRadius(e){return Math.max(25,e.size*.42)}
 function contactGap(e,d){return enemyContactRadius(e)+defenderContactRadius(d)}
 function displaceDefenderFromRogueBoss(e,d){
@@ -599,18 +692,18 @@ function updateBoss(e,dt){
  const close=defenders.filter(d=>Math.hypot(d.x-e.x,d.y-e.y)<(phase>1?270:170))
  if(e.behavior==='rogueBoss'){
   let displaced=false
-  for(const d of close){damageTower(d,12*phase);d.disabled=Math.max(d.disabled,1);if(phase===3&&displaceDefenderFromRogueBoss(e,d))displaced=true}
+  for(const d of close){damageTower(d,12*phase*BALANCE.enemyContact);d.disabled=Math.max(d.disabled,1);if(phase===3&&displaceDefenderFromRogueBoss(e,d))displaced=true}
   if(displaced)showToast('Ruptura gravitacional · construção empurrada para longe')
   burst(e.x,e.y,'#ca9aff',15)
  }
- if(e.behavior==='neutronBoss'){for(const d of close){d.disabled=Math.max(d.disabled,1+phase*.5);damageTower(d,9*phase)}burst(e.x,e.y,'#8edcff',18)}
- if(e.behavior==='cometBoss'||e.behavior==='solarBoss'){for(const d of close)damageTower(d,(e.behavior==='solarBoss'?18:10)*phase);burst(e.x,e.y,'#ffa05e',18)}
+ if(e.behavior==='neutronBoss'){for(const d of close){d.disabled=Math.max(d.disabled,1+phase*.5);damageTower(d,9*phase*BALANCE.enemyContact)}burst(e.x,e.y,'#8edcff',18)}
+ if(e.behavior==='cometBoss'||e.behavior==='solarBoss'){for(const d of close)damageTower(d,(e.behavior==='solarBoss'?18:10)*phase*BALANCE.enemyContact);burst(e.x,e.y,'#ffa05e',18)}
  if(e.behavior==='vortex'){
   for(const d of close)d.disabled=Math.max(d.disabled,1.2)
   if(phase===3&&enemies.length<55){enemies.push(createEnemy('phase',e.lane,{x:e.x+60,hp:95,maxHp:95,reward:10}));Progress.discover('phase')}
   burst(e.x,e.y,'#b173ee',18)
  }
- if(e.behavior==='binaryBoss'){for(const d of close)damageTower(d,10*phase);e.vulnerableTimer=phase===3?3:0;burst(e.x,e.y,'#ffb9ec',14)}
+ if(e.behavior==='binaryBoss'){for(const d of close)damageTower(d,10*phase*BALANCE.enemyContact);e.vulnerableTimer=phase===3?3:0;burst(e.x,e.y,'#ffb9ec',14)}
 }
 function usePower(id){
  if(!running||paused||gameOver||!powerCharges[id])return
@@ -639,7 +732,7 @@ function update(dt){
  if(cinematic>0){cinematic=Math.max(0,cinematic-dt);return}
  simTime+=dt;sunAppear=Math.min(1,sunAppear+dt*1.45);globalFreeze=Math.max(0,globalFreeze-dt);temporaryBuff=Math.max(0,temporaryBuff-dt);shake=Math.max(0,shake-dt);saveTimer+=dt;orbTimer+=dt
  if(saveTimer>=5){saveTimer=0;saveRun()}
- if(orbTimer>=30){orbTimer=0;spawnEnergyOrb(270+Math.random()*650,100+Math.random()*510,20,20)}
+ if(orbTimer>=BALANCE.mainSunInterval){orbTimer=0;spawnEnergyOrb(sun.x+120+Math.random()*70,sun.y-95+Math.random()*190,20,20)}
  for(const o of energyOrbs){o.life-=dt;o.y+=o.vy*dt;o.vy*=Math.pow(.2,dt)}energyOrbs=energyOrbs.filter(o=>o.life>0)
  if(!penaltyBossActive){spawnTimer-=dt;if(spawnQueue.length&&spawnTimer<=0&&enemies.length<80){spawnEnemy(spawnQueue.shift());waveSpawned++;const trainingBurst=gameMode==='campaign'&&waves[waveIndex].trainingWave?.length&&waveSpawned<waves[waveIndex].trainingWave.length;spawnTimer=trainingBurst?.9:waveIndex===0?4.1:Math.max(1.5,3.2-waveIndex*.16)}if(triggerCheckpointIfNeeded())return}
  if(simTime-lastUIUpdate>.12){lastUIUpdate=simTime;missionProgress.style.width=`${Math.min(100,waveSpawned/Math.max(1,waveTotal)*100)}%`;updateHud();if(typeof Interface!=='undefined')Interface.bossBar()}
@@ -653,17 +746,23 @@ function update(dt){
   const u=unitDefs[d.type],stats=getTowerStats(d)
   if(stats.branch.regen&&d.hitTimer<=0)d.hp=Math.min(stats.maxHp,d.hp+stats.branch.regen*dt)
   if(d.disabled>0)continue
+  if(u.kind==='collector'){
+   const pullSpeed=3.6*(stats.branch.collectorSpeed||1),bonus=stats.branch.energyBonus||1
+   for(let i=energyOrbs.length-1;i>=0;i--){const o=energyOrbs[i],dx=d.x-o.x,dy=d.y-o.y,dist=Math.hypot(dx,dy);if(dist>stats.range)continue;const step=Math.min(1,pullSpeed*dt);o.x+=dx*step;o.y+=dy*step;o.vy=0;o.life=Math.max(o.life,2);if(dist<30)collectOrb(i,bonus,true)}
+   d.pulse=energyOrbs.some(o=>Math.hypot(o.x-d.x,o.y-d.y)<stats.range)?.55:Math.max(0,d.pulse-dt);continue
+  }
   if(u.kind==='harvest'&&suppressors.some(e=>Math.hypot(e.x-d.x,e.y-d.y)<180)){d.pulse=.6;continue}
   const interfered=stats.damageType==='electric'&&magnetic.some(e=>Math.hypot(e.x-d.x,e.y-d.y)<220);d.cooldown-=dt*(interfered?.5:1);d.pulse=Math.max(0,d.pulse-dt)
   if(u.kind==='barrier'){
    const field=d.type==='jupiter'&&(nearby(d,'earth')||stats.branch.field)?200:stats.branch.field?150:0
    if(field)for(const e of enemies)if(Math.abs(e.lane-d.lane)<=1&&Math.hypot(e.x-d.x,e.y-d.y)<field){e.slow=Math.min(e.slow,stats.branch.field||.78);e.slowTimer=.3}
-   if(d.type==='saturn')for(const e of enemies){const trapped=nearby(d,'gravity',230)&&e.vulnerableTimer>0&&Math.hypot(e.x-d.x,e.y-d.y)<210;if(Math.hypot(e.x-d.x,e.y-d.y)<75||trapped)applyDamage(e,12*(stats.branch.ring||1)*dt,'pierce',true)}continue
+   if(d.type==='saturn')for(const e of enemies){const trapped=nearby(d,'gravity',230)&&e.vulnerableTimer>0&&Math.hypot(e.x-d.x,e.y-d.y)<210;if(Math.hypot(e.x-d.x,e.y-d.y)<75||trapped)applyDamage(e,12*BALANCE.towerDamage*(stats.branch.ring||1)*dt,'pierce',true)}continue
   }
   // Economia também obedece à pausa: Mini Sol nunca completa ciclo nem gera
   // partículas enquanto a simulação está congelada.
   if(u.kind==='harvest'&&d.cooldown<=0){if(paused)continue;d.cooldown=stats.rate;spawnEnergyOrb(d.x+22,d.y-31,stats.energyValue,22);burst(d.x,d.y-10,'#ffd661',8);continue}
   if(['well','probe'].includes(u.kind)&&d.cooldown<=0){pulseDefender(d,u,stats);continue}
+  if(u.kind==='dualshot'&&d.cooldown<=0){shootDual(d,u,stats);continue}
   if(d.cooldown<=0){const valid=enemies.filter(e=>e.hp>0&&e.lane===d.lane&&e.x>d.x-30&&e.x-d.x<stats.range).reduce((best,e)=>!best||e.x<best.x?e:best,null);if(valid)shoot(d,valid,u,stats)}
  }
  for(const p of projectiles){
@@ -675,7 +774,15 @@ function update(dt){
    applyDamage(target,p.damage*frozenBonus*(p.type==='neutron'&&target.vulnerableTimer>0&&owner&&nearby(owner,'gravity')?1.35:1)*(target.shield>0?(branch.shield||1):1),p.damageType)
    if(branch.corrosion)target.armor=Math.max(0,target.armor-branch.corrosion)
    if(p.type==='burn'||branch.burn){target.burnTimer=Math.max(target.burnTimer,3.4*(thermal?1.5:1));target.burnDps=Math.max(target.burnDps,10*(branch.burnDps||1))}
-   if(p.type==='solarburst'||branch.splash||p.type==='neutron'){const radius=(p.type==='neutron'?165:105)*(branch.area||1);for(const other of enemies)if(other!==target&&Math.hypot(other.x-target.x,other.y-target.y)<radius)applyDamage(other,p.damage*.55*(p.type==='neutron'&&other.vulnerableTimer>0?1.35:1),p.damageType,true)}
+   if(p.type==='solarburst'||branch.splash||p.type==='neutron'){
+    const radius=(p.type==='neutron'?165:p.type==='solarburst'?BALANCE.venusSplashRadius:115)*(branch.area||1)
+    const splashMult=p.type==='solarburst'?BALANCE.venusSplashDamage:.55
+    if(p.type==='solarburst')burst(target.x,target.y,'#ffe56d',18)
+    for(const other of enemies)if(other!==target&&other.hp>0&&Math.hypot(other.x-target.x,other.y-target.y)<=radius){
+     const dealt=applyDamage(other,p.damage*splashMult*(p.type==='neutron'&&other.vulnerableTimer>0?1.35:1),p.damageType,true)
+     if(p.type==='solarburst'&&dealt>0){other.flash=Math.max(other.flash,.08);addText(other.x,other.y-18,'↯ '+Math.round(dealt),'#ffeaa0')}
+    }
+   }
    if(p.type==='chain'){let jumps=0;for(const other of enemies.filter(e=>e!==target&&e.hp>0&&Math.hypot(e.x-target.x,e.y-target.y)<190).sort((a,b)=>Math.hypot(a.x-target.x,a.y-target.y)-Math.hypot(b.x-target.x,b.y-target.y))){applyDamage(other,p.damage*(jumps?.43:.68),'electric');burst(other.x,other.y,'#70f1ff',4);if(++jumps>=(branch.jumps||2))break}}
    if(p.type==='slow'){target.slow=Math.min(target.slow,branch.slow||(owner?.moon?.hp>0?.46:.63));target.slowTimer=2.8;target.vulnerableTimer=2;target.vulnerability=branch.vulnerability||1.18}
    if(p.type==='cryo'){target.slow=Math.min(target.slow,.43);target.slowTimer=2.8;target.freeze=Math.max(target.freeze,branch.freeze||.28);target.cryoTimer=2.8}
@@ -784,7 +891,8 @@ function drawDefenders(){
   const u=unitDefs[d.type],stats=getTowerStats(d),size=d.type==='jupiter'?106:d.type==='saturn'?126:d.type==='gravity'?92:d.type==='miniSun'?76:d.type==='belt'?94:83,clock=Progress.data.settings.reduced?0:simTime
   ctx.save();ctx.translate(d.x,d.y-5);if(!['probe','saturn','pulsar','belt'].includes(d.type))ctx.rotate(Math.sin(clock*.12+d.id)*.055);ctx.shadowColor=u.color;ctx.shadowBlur=d.level>=3?16:6;drawImageContain(imgs[u.img],0,0,size,size,d.disabled>0?.35:1);ctx.restore()
   if(d.type==='miniSun'&&running){const ready=1-Math.max(0,d.cooldown)/stats.rate;ctx.beginPath();ctx.arc(d.x,d.y-5,36+ready*3,0,Math.PI*2*ready);ctx.strokeStyle='#ffd476a8';ctx.lineWidth=2;ctx.stroke()}
-  if(d.level>1){ctx.beginPath();ctx.ellipse(d.x,d.y-3,size*.57,size*.34,clock*.14,0,Math.PI*2);ctx.strokeStyle=d.branch==='b'?'#7ae4ff77':'#d395ff77';ctx.lineWidth=d.level>=3?2:1;ctx.stroke();ctx.fillStyle='#e5c4ff';ctx.font='10px system-ui';ctx.textAlign='center';ctx.fillText('•'.repeat(d.level),d.x,d.y-54);ctx.textAlign='left'}
+  if(d.level>1){ctx.beginPath();ctx.ellipse(d.x,d.y-3,size*.57,size*.34,clock*.14,0,Math.PI*2);ctx.strokeStyle=d.branch==='b'?'#7ae4ff77':'#d395ff77';ctx.lineWidth=d.level>=3?2:1;ctx.stroke();ctx.fillStyle='#e5c4ff';ctx.font='10px system-ui';ctx.textAlign='center';ctx.fillText('•'.repeat(Math.min(4,d.level)),d.x,d.y-54);ctx.textAlign='left'}
+  if(d.type==='collector'&&(d.pulse>0||selectedTower===d)){const stats=getTowerStats(d);ctx.beginPath();ctx.arc(d.x,d.y,Math.min(stats.range,620),0,Math.PI*2);ctx.strokeStyle='#ffb36f38';ctx.lineWidth=2;ctx.setLineDash([6,10]);ctx.stroke();ctx.setLineDash([])}
   if(d.moon){const angle=clock*1.5,moonX=d.x+Math.cos(angle)*46,moonY=d.y+Math.sin(angle)*24;drawImageContain(imgs.moon,moonX,moonY,23,23);ctx.strokeStyle='#c8caff22';ctx.beginPath();ctx.ellipse(d.x,d.y,46,24,0,0,Math.PI*2);ctx.stroke()}
   if(towerSynergies(d).length){ctx.fillStyle='#bce7ff';ctx.font='12px system-ui';ctx.fillText('✧',d.x+31,d.y-31)}
   if(d.disabled>0){ctx.fillStyle='#ffb0c8';ctx.font='15px system-ui';ctx.fillText('Ⅱ',d.x-6,d.y)}
