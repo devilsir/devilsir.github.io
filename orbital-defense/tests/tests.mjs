@@ -20,6 +20,11 @@ await test('Preparation: placement, no energy, no cooldown or motion before and 
 await test('Mini Sun activates only in battle and energy requires collection',h=>{
  place(h,'miniSun',0,1);h.run('startWave();spawnQueue=[];waveTotal=100;');const energy=h.run('energy');steps(h,4.3);assert.ok(h.run('energyOrbs.length')>=1);assert.equal(h.run('energy'),energy);h.run('collectOrb(0)');assert.ok(h.run('energy')>energy)
 })
+await test('Paused battle allows building while Mini Sun production stays frozen',h=>{
+ setup(h,0);h.run('Progress.data.unlocked=8;checkpointIndex=1;buildDeck();startWave();spawnQueue=[];waveTotal=100;paused=true;energy=9000;defenders=[];energyOrbs=[];selected="jupiter";placeAt({x:gridX[5],y:curveY(0,gridX[5])});');assert.equal(h.run('defenders.length'),1);assert.equal(h.run('defenders[0].type'),'jupiter')
+ h.run('selected="miniSun";placeAt({x:gridX[1],y:curveY(2,gridX[1])});defenders.find(d=>d.type==="miniSun").cooldown=0;energyOrbs=[];');steps(h,10);assert.equal(h.run('energyOrbs.length'),0);assert.equal(h.run('defenders.find(d=>d.type==="miniSun").cooldown'),0)
+ assert.deepEqual(h.run('Content.trainingSituations.jupiter.point'),[0.6641,0.1391,112])
+})
 await test('Towers attack; typed resistance and damage over time do not inflate with framerate',h=>{
  setup(h,2);place(h,'mars',0,1);h.run('startWave();spawnQueue=[];waveTotal=100;enemies=[createEnemy("ice",0,{x:650})];');const hp=h.run('enemies[0].hp');steps(h,4);assert.ok(h.run('enemies[0]?.hp||0')<hp)
  h.run('enemies=[createEnemy("asteroid",0,{hp:1000,maxHp:1000})];for(let i=0;i<100;i++)applyDamage(enemies[0],.1,"plasma",true)');assert.ok(Math.abs(h.run('enemies[0].hp')-990)<.001)
