@@ -1,14 +1,49 @@
 const Content={
  stages:[
   {title:'01 · Tutorial orbital',short:'Tutorial orbital',topic:'Primeiros passos',lesson:0,lanes:[0,2],start:420,spawns:[['asteroid',7],['armored',2],['swarm',2],['boss',1]],mentor:'kepler',dialogue:'Duas rotas estão abertas. Um Mini Sol financia a defesa; Mercúrio enfrenta a rocha. Os outros corpos chegam com suas descobertas.',fact:'Nas rotas do jogo, a velocidade é inspirada em órbitas circulares ao redor da mesma estrela.',color:'#cc9aff',bossScale:.36},
-  {title:'02 · A forma das órbitas',short:'A forma das órbitas',topic:'1ª Lei de Kepler',lesson:0,lanes:[0,1,2,3,4],start:670,spawns:[['asteroid',7],['armored',3],['swarm',3],['phase',2],['boss',1]],mentor:'kepler',dialogue:'Uma elipse tem dois focos. O Sol ocupa um deles. Escolha a geometria da missão no laboratório.',fact:'O círculo é um caso particular de elipse, com excentricidade zero.',color:'#b98aff',bossScale:.7,puzzle:'ellipse'},
-  {title:'03 · Velocidade no periélio',short:'Velocidade no periélio',topic:'2ª Lei de Kepler',lesson:1,lanes:[0,1,2,3,4],start:760,spawns:[['ice',5],['fire',3],['runner',4],['swarm',3],['cometBoss',1]],mentor:'kepler',dialogue:'No periélio da mesma órbita elíptica, a velocidade é máxima. Calor contra gelo; criogenia contra fogo.',fact:'Áreas iguais são varridas em intervalos de tempo iguais.',color:'#71dbff',puzzle:'speed'},
-  {title:'04 · O relógio do sistema',short:'O relógio do sistema',topic:'3ª Lei de Kepler',lesson:2,lanes:[0,1,2,3,4],start:850,spawns:[['shield',4],['crystal',4],['iron',3],['jumper',3],['binary',1]],mentor:'kepler',dialogue:'Ao redor da mesma estrela, T²/a³ é constante. Use o tempo de viagem das rotas externas a seu favor.',fact:'A relação entre período e semieixo maior depende também da massa do corpo central.',color:'#dbb2ff'},
-  {title:'05 · A força invisível',short:'A força invisível',topic:'Gravitação de Newton',lesson:3,lanes:[0,1,2,3,4],start:920,spawns:[['iron',4],['magnetic',3],['rogueMoon',3],['leech',2],['shield',3],['boss',1]],mentor:'newton',dialogue:'Eu fico com a força invisível. Dobrar uma massa dobra a atração. Dobrar a distância a divide por quatro.',fact:'F = G·M·m/r²: a força depende das duas massas e da distância entre os centros.',color:'#eec579',puzzle:'gravity'},
-  {title:'06 · Mundos errantes',short:'Mundos errantes',topic:'Massa e velocidade de escape',lesson:5,lanes:[0,1,2,3,4],start:1050,spawns:[['rogueMoon',4],['binaryObject',3],['parasite',3],['crystal',4],['boss',1],['binary',1]],mentor:'newton',dialogue:'Corpos de maior massa resistem ao empurrão no jogo. Na simulação, observe como a massa central altera a velocidade de escape.',fact:'A velocidade de escape ideal é √(2GM/r), sem resistência do ar e sem nova propulsão.',color:'#e2a083',puzzle:'escape'},
-  {title:'07 · Tempestades gravitacionais',short:'Tempestades gravitacionais',topic:'Sinergias e marés',lesson:6,lanes:[0,1,2,3,4],start:1150,spawns:[['magnetic',4],['leech',3],['jumper',4],['dark',3],['neutronBoss',1]],mentor:'newton',dialogue:'Urano congela, Netuno amplifica. Um Poço G agrupa alvos para Saturno. Descubra o que funciona em conjunto.',fact:'Marés surgem da diferença da atração gravitacional entre regiões de um corpo.',color:'#8cdafa'},
-  {title:'08 · Colapso',short:'Colapso',topic:'Astrofísica extrema',lesson:4,lanes:[0,1,2,3,4],start:1280,spawns:[['dark',4],['phase',4],['parasite',3],['runner',3],['neutronBoss',1],['blackhole',1]],mentor:'newton',dialogue:'Uma estrela de nêutrons pulsa; o horizonte bloqueia espaços. Perfuração e suas pesquisas serão decisivas.',fact:'Buracos negros exigem relatividade geral. Nossa defesa usa efeitos de gravidade simplificados.',color:'#ff87bd',puzzle:'stable'}
+  {title:'02 · A forma das órbitas',short:'A forma das órbitas',topic:'1ª Lei de Kepler',lesson:0,lanes:[0,1,2,3,4],start:670,spawns:[['asteroid',7],['armored',3],['swarm',3],['phase',2],['boss',1]],mentor:'kepler',dialogue:'Uma elipse tem dois focos. O Sol ocupa um deles. Escolha a geometria da missão no laboratório.',fact:'O círculo é um caso particular de elipse, com excentricidade zero.',color:'#b98aff',bossScale:.7,puzzle:'ellipse',trainingWave:['swarm','swarm','armored'],trainingLanes:[2,2,2]},
+  {title:'03 · Velocidade no periélio',short:'Velocidade no periélio',topic:'2ª Lei de Kepler',lesson:1,lanes:[0,1,2,3,4],start:760,spawns:[['ice',5],['fire',3],['runner',4],['swarm',3],['cometBoss',1]],mentor:'kepler',dialogue:'No periélio da mesma órbita elíptica, a velocidade é máxima. Calor contra gelo; criogenia contra fogo.',fact:'Áreas iguais são varridas em intervalos de tempo iguais.',color:'#71dbff',puzzle:'speed',trainingWave:['ice','fire','ice','fire'],trainingLanes:[1,3,1,3]},
+  {title:'04 · O relógio do sistema',short:'O relógio do sistema',topic:'3ª Lei de Kepler',lesson:2,lanes:[0,1,2,3,4],start:850,spawns:[['shield',4],['crystal',4],['iron',3],['jumper',3],['binary',1]],mentor:'kepler',dialogue:'Ao redor da mesma estrela, T²/a³ é constante. Use o tempo de viagem das rotas externas a seu favor.',fact:'A relação entre período e semieixo maior depende também da massa do corpo central.',color:'#dbb2ff',trainingWave:['jumper','shield','shield'],trainingLanes:[2,1,1]},
+  {title:'05 · A força invisível',short:'A força invisível',topic:'Gravitação de Newton',lesson:3,lanes:[0,1,2,3,4],start:920,spawns:[['iron',4],['magnetic',3],['rogueMoon',3],['leech',2],['shield',3],['boss',1]],mentor:'newton',dialogue:'Eu fico com a força invisível. Dobrar uma massa dobra a atração. Dobrar a distância a divide por quatro.',fact:'F = G·M·m/r²: a força depende das duas massas e da distância entre os centros.',color:'#eec579',puzzle:'gravity',trainingWave:['iron','magnetic','rogueMoon'],trainingLanes:[2,2,2]},
+  {title:'06 · Mundos errantes',short:'Mundos errantes',topic:'Massa e velocidade de escape',lesson:5,lanes:[0,1,2,3,4],start:1050,spawns:[['rogueMoon',4],['binaryObject',3],['parasite',3],['crystal',4],['boss',1],['binary',1]],mentor:'newton',dialogue:'Corpos de maior massa resistem ao empurrão no jogo. Na simulação, observe como a massa central altera a velocidade de escape.',fact:'A velocidade de escape ideal é √(2GM/r), sem resistência do ar e sem nova propulsão.',color:'#e2a083',puzzle:'escape',trainingWave:['binaryObject','binaryObject','parasite'],trainingLanes:[2,2,2]},
+  {title:'07 · Tempestades gravitacionais',short:'Tempestades gravitacionais',topic:'Sinergias e marés',lesson:6,lanes:[0,1,2,3,4],start:1150,spawns:[['magnetic',4],['leech',3],['jumper',4],['dark',3],['neutronBoss',1]],mentor:'newton',dialogue:'Urano congela, Netuno amplifica. Um Poço G agrupa alvos para Saturno. Descubra o que funciona em conjunto.',fact:'Marés surgem da diferença da atração gravitacional entre regiões de um corpo.',color:'#8cdafa',trainingWave:['dark','dark','jumper'],trainingLanes:[2,2,2]},
+  {title:'08 · Colapso',short:'Colapso',topic:'Astrofísica extrema',lesson:4,lanes:[0,1,2,3,4],start:1280,spawns:[['dark',4],['phase',4],['parasite',3],['runner',3],['neutronBoss',1],['blackhole',1]],mentor:'newton',dialogue:'Uma estrela de nêutrons pulsa; o horizonte bloqueia espaços. Perfuração e suas pesquisas serão decisivas.',fact:'Buracos negros exigem relatividade geral. Nossa defesa usa efeitos de gravidade simplificados.',color:'#ff87bd',puzzle:'stable',trainingWave:['phase','dark','phase'],trainingLanes:[2,2,2]}
  ],
+ unitUnlockStages:{
+  miniSun:0,mercury:0,jupiter:0,
+  belt:1,venus:1,
+  mars:2,uranus:2,
+  earth:3,neptune:3,
+  saturn:4,gravity:4,
+  moon:5,probe:5,
+  pulsar:6,
+  neutron:7
+ },
+ stageUnlocks:[
+  ['miniSun','mercury','jupiter'],
+  ['belt','venus'],
+  ['mars','uranus'],
+  ['earth','neptune'],
+  ['saturn','gravity'],
+  ['moon','probe'],
+  ['pulsar'],
+  ['neutron']
+ ],
+ trainingSituations:{
+  jupiter:{title:'Segure a rota com uma barreira',scenario:'Júpiter tem muito HP e existe para receber o contato antes dos atacantes. Neste treino, ele deve ficar na frente da formação, na rota superior, criando tempo para Mercúrio continuar atirando.',instruction:'Posicione Júpiter no ponto destacado, mais à frente da rota. A simulação continua pausada enquanto você constrói.',point:[0.6641,0.1391,112],enemy:'inimigos de contato'},
+  belt:{title:'Segure a linha',scenario:'A fase começa com enxames e rochas pressionando a mesma rota. O Cinturão existe para comprar alguns segundos sem gastar a energia de um gigante gasoso.',instruction:'Coloque o Cinturão mais à frente da rota para ele receber o contato primeiro.',point:[0.6641,0.5,112],enemy:'enxames rápidos'},
+  venus:{title:'Ataque grupos, não indivíduos',scenario:'Logo no início chegam inimigos em grupo. Vênus transforma cada disparo em uma explosão solar, então rende muito mais quando vários alvos estão próximos.',instruction:'Posicione Vênus atrás da barreira para ele atacar o grupo enquanto o Cinturão segura a linha.',point:[0.4922,0.5,112],enemy:'enxames orbitais'},
+  mars:{title:'Calor contra gelo',scenario:'Cometas de gelo entram cedo nesta fase. Marte aplica plasma e queimadura, causando dano contínuo justamente enquanto eles atravessam a rota.',instruction:'Coloque Marte numa rota em que os cometas de gelo terão bastante caminho pela frente.',point:[0.4063,0.3542,112],enemy:'cometas de gelo'},
+  uranus:{title:'Frio contra fogo',scenario:'Meteoros ígneos são rápidos e resistem a plasma. Urano reduz sua velocidade com criogenia e ainda causa dano muito eficiente contra esse tipo de ameaça.',instruction:'Posicione Urano numa rota diferente da de Marte para comparar os dois matchups.',point:[0.4063,0.6458,112],enemy:'meteoros ígneos'},
+  earth:{title:'Controle antes do dano',scenario:'Saltadores e alvos móveis começam a pressionar rotas diferentes. A Terra desacelera com gravidade, mantendo os inimigos mais tempo sob fogo das outras torres.',instruction:'Coloque a Terra numa posição central para controlar uma rota por mais tempo.',point:[0.4922,0.5,112],enemy:'saltadores orbitais'},
+  neptune:{title:'Quebre escudos',scenario:'Asteroides escudados aparecem cedo. Netuno usa eletricidade, descarrega escudos e ainda encadeia o raio quando os inimigos ficam próximos.',instruction:'Posicione Netuno onde ele consiga pegar uma sequência de alvos na mesma aproximação.',point:[0.4063,0.3542,112],enemy:'asteroides escudados'},
+  saturn:{title:'Barreira com função ofensiva',scenario:'Ameaças pesadas chegam em grupos. Saturno segura a linha e seus anéis podem punir inimigos que ficam presos perto dele.',instruction:'Coloque Saturno na frente da formação, deixando espaço logo atrás para controle gravitacional.',point:[0.6641,0.5,112],enemy:'corpos pesados'},
+  gravity:{title:'Agrupe para multiplicar dano',scenario:'O Poço G não existe para matar sozinho: ele prende e vulnerabiliza grupos. Nesta fase, isso prepara os alvos para Saturno e para ataques em área.',instruction:'Coloque o Poço G logo atrás de Saturno para manter vários inimigos perto dos anéis.',point:[0.5781,0.5,112],enemy:'grupos densos'},
+  moon:{title:'Proteja um planeta existente',scenario:'A Lua não ocupa uma casa vazia: ela orbita uma construção já colocada, intercepta parte do dano e amplia seu alcance. Para demonstrar isso, uma Terra de treinamento será posicionada sem custo.',instruction:'Selecione Lua e clique na Terra de treinamento para anexá-la.',point:[0.4063,0.5,112],enemy:'pressão prolongada',requiresHost:true},
+  probe:{title:'Faça várias torres renderem mais',scenario:'A Sonda marca inimigos para receberem mais dano e aumenta o alcance de aliados próximos. Ela vale mais quando serve várias construções ao mesmo tempo.',instruction:'Posicione a Sonda no centro da formação para cobrir mais de uma rota e mais de um aliado.',point:[0.4922,0.5,112],enemy:'alvos resistentes'},
+  pulsar:{title:'Perfure uma fila inteira',scenario:'Fragmentos escuros e ameaças blindadas aparecem em sequência. O Pulsar dispara pela rota e atravessa vários alvos, aproveitando filas longas.',instruction:'Coloque o Pulsar mais atrás: seu alcance enorme permite atravessar a fila antes que ela chegue à defesa.',point:[0.3203,0.5,112],enemy:'filas blindadas'},
+  neutron:{title:'Poucos tiros, impacto enorme',scenario:'A última fase traz alvos extremos, incluindo o microburaco negro. A Estrela de Nêutrons é cara e lenta, mas cada impacto perfura armadura e explode em área.',instruction:'Proteja a Estrela de Nêutrons no fundo da formação; ela precisa de tempo para disparar.',point:[0.3203,0.5,112],enemy:'anomalias extremas'}
+ },
  extras:{
   moon:{name:'Lua',cost:75,img:'moon',desc:'Satélite que protege e amplia',damage:7,rate:2.6,range:210,hp:180,kind:'moon',damageType:'kinetic',color:'#d9e4ff',tip:'Selecione Lua e clique em um planeta. Ela intercepta parte do dano e amplia o alcance; com a Terra, fortalece o controle de maré.'},
   belt:{name:'Cinturão',cost:65,img:'belt',desc:'Barreira rápida de emergência',damage:0,rate:0,range:0,hp:420,kind:'barrier',damageType:'kinetic',color:'#c0a796',blockDamageMultiplier:.82,tip:'Baixo custo e vida média. Uma segunda linha de defesa contra ameaças rápidas.'},
@@ -37,11 +72,11 @@ const Content={
   {id:'economy',category:'Energia',name:'Fusão eficiente',cost:6,desc:'Mini Sóis produzem +20% de energia.',needs:[]},
   {id:'battery',category:'Energia',name:'Reserva estelar',cost:10,desc:'Comece missões com +120 energia.',needs:['economy']},
   {id:'defense',category:'Defesa planetária',name:'Atmosferas reforçadas',cost:7,desc:'Todas as construções têm +20% de HP.',needs:[]},
-  {id:'moon',category:'Mecânica orbital',name:'Sistema lunar',cost:6,desc:'Desbloqueia a Lua e a sinergia de maré.',needs:[]},
+  {id:'moon',category:'Mecânica orbital',name:'Dinâmica de marés',cost:6,desc:'Luas interceptam +5% de dano e ampliam ainda mais o alcance do planeta hospedeiro.',needs:[]},
   {id:'precision',category:'Mecânica orbital',name:'Balística orbital',cost:9,desc:'Mercúrio e Pulsar causam +15% de dano.',needs:[]},
   {id:'gravity',category:'Gravidade',name:'Campo ampliado',cost:10,desc:'Terra e Poço G ganham +20% de alcance.',needs:['moon']},
-  {id:'pulsar',category:'Astrofísica avançada',name:'Observação de pulsares',cost:10,desc:'Desbloqueia o Pulsar perfurante.',needs:['precision']},
-  {id:'neutron',category:'Astrofísica avançada',name:'Matéria degenerada',cost:16,desc:'Desbloqueia a estrela de nêutrons.',needs:['pulsar']},
+  {id:'pulsar',category:'Astrofísica avançada',name:'Feixe coerente',cost:10,desc:'Pulsares atravessam +2 alvos por disparo.',needs:['precision']},
+  {id:'neutron',category:'Astrofísica avançada',name:'Matéria degenerada',cost:16,desc:'Estrelas de nêutrons causam +20% de dano.',needs:['pulsar']},
   {id:'powers',category:'Gravidade',name:'Manobras gravitacionais',cost:10,desc:'Desbloqueia Estilingue e Eclipse.',needs:['gravity']},
   {id:'supernova',category:'Astrofísica avançada',name:'Supernova controlada',cost:18,desc:'Uma Supernova por missão e velocidade 3×.',needs:['neutron','powers']}
  ],
@@ -84,17 +119,95 @@ const Content={
   questions.splice(0,questions.length,...this.challenges())
  },
  challenges(){
-  const choice=(q,options,correct,why)=>({kind:'choice',q,options,correct,why})
-  const task=(kind,q,why,extra={})=>({kind,q,why,...extra})
+  const BNCC='BNCC EM13CNT204 · CRMG EM13CNT204X'
+  const INVEST='BNCC EM13CNT301 · CRMG EM13CNT210MG'
+  const MODELS='BNCC EM13CNT201 · CRMG EM13CNT210MG'
+  const choice=(q,options,correct,why,skill=BNCC)=>({kind:'choice',q,options,correct,why,skill})
+  const task=(kind,q,why,extra={},skill=BNCC)=>({kind,q,why,skill,...extra})
   return [
-   [task('focus','Posicione o Sol em um foco desta elipse.','O Sol ocupa um dos focos da órbita elíptica. O centro geométrico só coincide com os focos no caso circular.'),choice('Qual defesa derrete um cometa de gelo?',['Marte: plasma','Urano: criogenia','Uma barreira sem ataque'],0,'Neste jogo, plasma é eficaz contra gelo. Cometas reais sublimam quando recebem energia do Sol.'),task('speed','Marque o ponto de maior velocidade nesta mesma órbita.','A velocidade é máxima no periélio e mínima no afélio da mesma órbita elíptica.')],
-   [task('focus','Arraste o Sol até um dos focos.','Os focos ficam no eixo maior. O Sol não precisa ocupar o centro geométrico.'),task('eccentricity','Ajuste a excentricidade para 0,60.','Excentricidade zero corresponde a uma circunferência; valores entre zero e um descrevem elipses.',{target:.6}),choice('Uma órbita circular é compatível com o modelo de elipse?',['Sim: é uma elipse com e = 0','Não: círculos nunca são órbitas','Só quando não há gravidade'],0,'A circunferência é um caso particular de elipse, com focos coincidentes.')],
-   [task('speed','Escolha onde este planeta se move mais rápido.','Pela lei das áreas, a maior velocidade ocorre no periélio da mesma elipse.'),task('areas','Compare os setores: qual afirmação vale para tempos iguais?','Os setores varridos a partir do foco têm áreas iguais, mesmo com arcos de comprimentos diferentes.'),choice('No afélio desta mesma órbita, a velocidade é...',['A menor da órbita','A maior da órbita','Sempre zero'],0,'O corpo continua em movimento no afélio; sua velocidade é mínima ali.')],
-   [task('order','Ordene as órbitas pelo período, do menor para o maior.','Ao redor da mesma massa central, T cresce como a³ᐟ².'),task('period','Ajuste o semieixo maior até o período ser 8 anos.','Com a em unidades astronômicas e massa central de um Sol, T = a³ᐟ² anos. Para T = 8, a = 4.',{target:8}),choice('Ao redor da mesma estrela, dobrar a muda T por...',['2√2 ≈ 2,83','2','4'],0,'T² ∝ a³. Quando a dobra, T é multiplicado por √8 = 2√2.')],
-   [task('gravity','Dobre a distância e observe a força relativa.','Mantendo as massas, F cai a um quarto porque a distância está ao quadrado.',{target:.25}),task('mass','Ajuste a massa para dobrar a atração.','A força é diretamente proporcional a cada massa quando a distância permanece fixa.',{target:2}),choice('Qual expressão calcula a força gravitacional clássica?',['F = G·M·m/r²','F = G·M·m·r²','F = G/r'],0,'A força depende do produto das massas e do inverso do quadrado da distância.')],
-   [task('escape','Selecione a velocidade mínima ideal para escapar.','vₑ = √(2GM/r). No modelo com G = M = r = 1, vₑ = √2 ≈ 1,414.',{target:Math.SQRT2}),task('mass','Dobre a massa central sem mudar a distância.','Uma massa central maior aumenta a atração na mesma distância.',{target:2}),choice('A massa de um planeta altera a velocidade de escape desse planeta?',['Sim: vₑ cresce com √M','Não: só a cor importa','Sim: ela diminui sempre'],0,'A velocidade de escape ideal da superfície depende de M e do raio r do planeta.')],
-   [task('gravity','Configure a distância para obter F/F₀ = 0,25.','Dobrar a distância divide a força por quatro.',{target:.25}),choice('O que produz as marés?',['A diferença da gravidade entre partes de um corpo','A gravidade desaparecer durante a noite','A cor azul do planeta'],0,'O gradiente do campo gravitacional produz diferenças de atração entre regiões de um corpo.'),task('areas','Compare áreas varridas em intervalos iguais.','Conservar a taxa de área varrida exige acelerar perto do foco e desacelerar longe dele.')],
-   [choice('Um pulsar é geralmente...',['Uma estrela de nêutrons em rotação','Um planeta gasoso','Um cometa metálico'],0,'A rotação faz os feixes de um pulsar cruzarem nossa linha de visão, produzindo pulsos.'),task('escape','Defina a velocidade de escape ideal para G = M = r = 1.','O valor ideal é √2, sem atmosfera e sem propulsão adicional.',{target:Math.SQRT2}),choice('Qual modelo é necessário para descrever o horizonte de um buraco negro?',['Relatividade geral','Apenas a lei das áreas','A escala de temperatura'],0,'A gravitação newtoniana é uma aproximação. Horizontes de eventos exigem relatividade geral.')]
+   [
+    choice('Um asteroide descreve uma órbita aproximadamente circular com rapidez constante. Por que ainda existe aceleração?',[
+     'Porque a direção do vetor velocidade muda continuamente',
+     'Porque a rapidez aumenta a cada instante',
+     'Porque a gravidade deixa de atuar em metade da órbita',
+     'Porque todo movimento circular ocorre sem força resultante'
+    ],0,'A aceleração pode existir mesmo sem mudança no módulo da velocidade: no movimento circular, a direção do vetor velocidade muda e a aceleração aponta para o centro.',BNCC),
+    choice('Um satélite artificial permanece em órbita ao redor da Terra principalmente porque...',[
+     'possui velocidade tangencial enquanto a gravidade curva continuamente sua trajetória',
+     'está longe o bastante para a gravidade da Terra ser nula',
+     'seus motores precisam empurrá-lo o tempo todo para cima',
+     'a atmosfera o sustenta como uma asa'
+    ],0,'Uma órbita pode ser entendida como uma queda livre contínua: a gravidade fornece a aceleração centrípeta, enquanto a velocidade tangencial impede uma queda radial direta.',BNCC),
+    choice('Uma sonda desloca-se 1 200 km em linha reta, no mesmo sentido, durante 60 s. Qual é o módulo de sua velocidade média nesse intervalo?',[
+     '20 km/s','72 km/s','1 260 km/s','0,05 km/s'
+    ],0,'O módulo da velocidade média é o módulo do deslocamento dividido pelo intervalo de tempo: 1 200/60 = 20 km/s.',INVEST)
+   ],
+   [
+    task('focus','Posicione o Sol em um dos focos da órbita elíptica.','Na 1ª Lei de Kepler, o Sol ocupa um dos focos da elipse, e não necessariamente o centro geométrico.',{},BNCC),
+    task('eccentricity','Ajuste a excentricidade para e = 0,60.','A excentricidade mede o alongamento da órbita: e = 0 é circular e, para uma elipse, 0 < e < 1.',{target:.6},INVEST),
+    choice('Mantendo o mesmo semieixo maior, o que acontece com a forma da órbita quando a excentricidade aumenta de 0,20 para 0,70?',[
+     'A órbita fica mais alongada','A órbita se torna um círculo perfeito','O Sol passa obrigatoriamente para o centro','O período orbital torna-se zero'
+    ],0,'Quanto maior a excentricidade de uma elipse, mais alongada é sua forma. Uma circunferência corresponde a e = 0.',BNCC)
+   ],
+   [
+    task('speed','Na mesma órbita elíptica, marque a região em que o planeta apresenta maior velocidade.','Pela 2ª Lei de Kepler, o corpo se move mais rapidamente no periélio e mais lentamente no afélio.',{},BNCC),
+    task('areas','Para dois intervalos de tempo iguais, escolha a relação correta entre as áreas varridas pelo raio vetor.','A 2ª Lei de Kepler estabelece que áreas iguais são varridas em tempos iguais.',{},INVEST),
+    choice('Um planeta leva 30 dias para percorrer um trecho próximo ao periélio e outros 30 dias para percorrer um trecho próximo ao afélio. Comparando as áreas varridas pelo raio que liga o planeta ao Sol, espera-se que elas sejam...',[
+     'aproximadamente iguais','maior no periélio porque a velocidade é maior','maior no afélio porque a distância é maior','nulas no afélio'
+    ],0,'A velocidade e o comprimento dos arcos mudam, mas a área varrida por unidade de tempo permanece constante.',BNCC)
+   ],
+   [
+    task('order','Ordene as órbitas de 1 UA, 2 UA e 3 UA pelo período, do menor para o maior.','Para corpos que orbitam a mesma estrela, T²/a³ é constante. Portanto, órbitas maiores têm períodos maiores.',{},BNCC),
+    task('period','Ajuste o semieixo maior até obter um período de aproximadamente 8 anos.','Para uma estrela com massa igual à do Sol e usando anos e UA, T² = a³. Se T = 8 anos, a = 4 UA.',{target:8},INVEST),
+    choice('Para um planeta orbitando uma estrela de 1 massa solar, use T² = a³, com T em anos e a em UA. Se a = 9 UA, qual é aproximadamente o período orbital?',[
+     '27 anos','9 anos','81 anos','3 anos'
+    ],0,'T² = 9³ = 729; portanto T = √729 = 27 anos.',BNCC)
+   ],
+   [
+    task('gravity','Dobre a distância entre os corpos e ajuste a simulação até F/F₀ = 0,25.','Pela Lei da Gravitação Universal, mantendo as massas constantes, F ∝ 1/r². Dobrar r reduz F a um quarto.',{target:.25},BNCC),
+    task('mass','Mantenha a distância fixa e ajuste uma das massas para que a força dobre.','A força gravitacional é diretamente proporcional a cada uma das massas: F ∝ M·m.',{target:2},INVEST),
+    choice('Dois corpos atraem-se com força F. Se as duas massas forem duplicadas e a distância entre seus centros for triplicada, a nova força será...',[
+     '4F/9','9F/4','4F','F/9'
+    ],0,'Pela relação F ∝ M·m/r²: duplicar as duas massas multiplica a força por 4, enquanto triplicar a distância divide por 9. Resultado: 4F/9.',BNCC)
+   ],
+   [
+    task('escape','No modelo ideal G = M = r = 1, ajuste a velocidade inicial para a velocidade mínima de escape.','A velocidade de escape é vₑ = √(2GM/r). Nesse modelo, vₑ = √2 ≈ 1,414.',{target:Math.SQRT2},BNCC),
+    choice('Dois planetas têm a mesma massa, mas o planeta B tem raio quatro vezes maior. Comparando as velocidades de escape na superfície, vₑ = √(2GM/r), temos...',[
+     'vₑ(B) = vₑ(A)/2','vₑ(B) = 2vₑ(A)','vₑ(B) = 4vₑ(A)','vₑ(B) = vₑ(A)'
+    ],0,'Com a mesma massa, vₑ ∝ 1/√r. Se o raio aumenta por um fator 4, a velocidade de escape é dividida por √4 = 2.',BNCC),
+    choice('Para um mesmo corpo central e a mesma distância r, a velocidade de escape é maior que a velocidade orbital circular por qual fator?',[
+     '√2','2','1/√2','4'
+    ],0,'v_orb = √(GM/r) e vₑ = √(2GM/r). Logo, vₑ = √2·v_orb.',INVEST)
+   ],
+   [
+    choice('As marés terrestres estão ligadas principalmente...',[
+     'à diferença da atração gravitacional entre diferentes regiões da Terra',
+     'ao desaparecimento periódico da gravidade durante a noite',
+     'à rotação da Lua produzir vento no espaço',
+     'à força gravitacional ser exatamente igual em toda a Terra'
+    ],0,'Marés são efeitos de gradiente gravitacional: a atração não tem exatamente o mesmo valor e direção em todos os pontos de um corpo extenso.',BNCC),
+    task('gravity','Ajuste a distância até a força gravitacional ficar aproximadamente na metade do valor inicial.','Como F/F₀ = 1/r², obter metade da força exige r ≈ √2 vezes a distância inicial.',{target:.5},INVEST),
+    choice('Se a Lua estivesse significativamente mais próxima da Terra, mantendo as demais condições, a tendência seria de marés...',[
+     'mais intensas, porque o gradiente gravitacional aumentaria','mais fracas, porque a gravidade lunar diminuiria','iguais, pois marés não dependem de distância','nulas, pois a Lua deixaria de atrair os oceanos'
+    ],0,'A diferença de atração gravitacional entre o lado próximo e o lado distante da Terra cresce fortemente quando a distância à Lua diminui.',BNCC)
+   ],
+   [
+    choice('Uma estrela de nêutrons mantém grande massa concentrada em um raio muito pequeno. Em comparação com um corpo de mesma massa e raio maior, sua velocidade de escape na superfície tende a ser...',[
+     'maior','menor','igual a zero','independente do raio'
+    ],0,'Como vₑ = √(2GM/r), reduzir muito o raio mantendo a massa aumenta a velocidade de escape.',BNCC),
+    choice('Um pulsar é interpretado atualmente como...',[
+     'uma estrela de nêutrons em rotação cujos feixes podem cruzar nossa linha de visão',
+     'um planeta gasoso que pisca porque entra na sombra de sua estrela',
+     'um cometa que emite pulsos por combustão',
+     'uma região do espaço sem gravidade'
+    ],0,'Pulsares são estrelas de nêutrons altamente magnetizadas e em rotação, observadas como pulsos quando seus feixes varrem nossa direção.',MODELS),
+    choice('Por que a Gravitação Universal de Newton não é suficiente para descrever o horizonte de eventos de um buraco negro?',[
+     'Porque fenômenos gravitacionais extremos exigem a descrição relativística do espaço-tempo',
+     'Porque a gravidade deixa de existir perto de um buraco negro',
+     'Porque Newton só estudou movimentos sem aceleração',
+     'Porque buracos negros não possuem massa'
+    ],0,'A gravitação newtoniana funciona como aproximação em muitos casos, mas horizontes de eventos exigem a Relatividade Geral.',MODELS)
+   ]
   ]
  }
 }

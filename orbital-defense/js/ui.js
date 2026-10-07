@@ -5,28 +5,28 @@ var TutorialGuide=(()=>{
   {title:'Núcleo solar',text:'Este é o HP do seu sistema. Quando um inimigo atravessa toda a rota e chega ao Sol, o núcleo perde vida. Se chegar a zero, a missão termina.',instruction:'Barreiras compram tempo; dano elimina a ameaça antes que ela alcance o núcleo.',manual:true,target:'#healthValue'},
   {title:'Capítulo e descobertas',text:'Aqui você acompanha o capítulo e os três checkpoints científicos da missão. Os checkpoints pausam a batalha e testam a ideia de física apresentada na fase.',instruction:'Acertos dão energia, +2 pontos de pesquisa e um bônus temporário. Ao concluir capítulos você também recebe pesquisa; ela é permanente.',manual:true,target:'.checkpoint-pill'},
   {title:'Sinais de aproximação',text:'Antes de iniciar, esta faixa mostra quais inimigos estão chegando e em qual quantidade. Use isso para escolher os tipos de dano e a quantidade de barreiras.',instruction:'Passe o cursor nos inimigos durante a batalha para ver resistências e fraquezas.',manual:true,target:'#wavePreview'},
-  {title:'Seu baralho orbital',text:'Cada carta é uma construção. Ela mostra função, custo, cadência e um resumo do comportamento. Cartas bloqueadas são liberadas pela campanha ou por pesquisas específicas.',instruction:'O deck fica junto do visualizador para você não precisar rolar a página no meio do combate.',manual:true,target:'.deck-panel'},
+  {title:'Seu baralho orbital',text:'Cada carta é uma construção. Ela mostra função, custo, cadência e um resumo do comportamento. Para não sobrecarregar, novas cartas entram aos poucos conforme os capítulos da campanha.',instruction:'O deck fica junto do visualizador para você não precisar rolar a página no meio do combate.',manual:true,target:'.deck-panel'},
   {title:'1. Crie sua economia',text:'O Mini Sol não ataca. Ele gera partículas de energia durante a batalha e permite sustentar upgrades e novas construções.',instruction:'Clique na carta MINI SOL para continuar.',event:'select-miniSun',target:'.unit-card[data-unit="miniSun"]'},
-  {title:'2. Posicione o Mini Sol',text:'Construções ficam nos pontos das órbitas. Nesta missão, apenas duas rotas estão abertas. Você pode construir antes de iniciar a batalha.',instruction:'Clique no espaço destacado da rota superior.',event:'miniSun',target:'stage',point:[0.3203,0.1697,112]},
+  {title:'2. Posicione o Mini Sol',text:'Construções ficam nos pontos das órbitas. Nesta missão, apenas duas rotas estão abertas. Você pode construir antes de iniciar a batalha.',instruction:'Clique no espaço destacado da rota superior. Assim que a construção for colocada, o tutorial congela a ação para explicar o resultado.',event:'miniSun',target:'stage',point:[0.3203,0.1697,112]},
   {title:'3. Escolha um atacante',text:'Mercúrio é uma torre de tiro cinético: simples, barata e ótima para aprender o fluxo de combate.',instruction:'Clique na carta MERCÚRIO.',event:'select-mercury',target:'.unit-card[data-unit="mercury"]'},
-  {title:'4. Proteja outra rota',text:'Ataques só atingem inimigos da mesma rota. Espalhar atacantes impede que uma linha fique completamente sem defesa.',instruction:'Posicione Mercúrio no espaço destacado da rota central.',event:'attacker',target:'stage',point:[0.4063,0.5,112]},
+  {title:'4. Proteja outra rota',text:'Ataques só atingem inimigos da mesma rota. Espalhar atacantes impede que uma linha fique completamente sem defesa.',instruction:'Posicione Mercúrio no espaço destacado da rota central. O jogo vai pausar logo depois para você conferir o que acabou de colocar.',event:'attacker',target:'stage',point:[0.4063,0.5,112]},
   {title:'5. Inicie a batalha',text:'Na preparação tudo fica congelado: inimigos não se movem e Mini Sóis ainda não geram energia. Você pode reorganizar a estratégia sem pressão.',instruction:'Clique em INICIAR BATALHA.',event:'start',target:'#startWaveBtn'},
-  {title:'Velocidade e pausa',text:'Durante a batalha, 1×/2× muda a velocidade da simulação e o botão de pausa congela o combate. Espaço também pausa pelo teclado. Uma pesquisa avançada libera 3×.',instruction:'O tutorial pausou o jogo agora. Clique em Continuar para retomar.',manual:true,pause:true,target:'.play-controls'},
+  {title:'Velocidade e pausa',text:'Durante a batalha, 1×/2× muda a velocidade da simulação e o botão de pausa congela o combate. Mesmo pausado, você ainda pode selecionar e posicionar planetas para reorganizar sua defesa. Inimigos, projéteis, timers e a produção do Mini Sol ficam congelados.',instruction:'PAUSADO = CONSTRUÇÃO LIBERADA · Mini Sol só volta a produzir energia quando a simulação for retomada.',manual:true,pause:true,target:'.play-controls'},
   {title:'Colete energia',text:'Quando um Mini Sol completa seu ciclo, uma partícula dourada aparece no campo. Ela expira depois de alguns segundos.',instruction:'Clique na primeira partícula dourada que aparecer.',event:'collect',target:'orb'},
-  {title:'Leia o inimigo',text:'Cada ameaça tem HP, armadura, escudo, velocidade, comportamento e multiplicadores de resistência. Isso muda qual torre é mais eficiente.',instruction:'Passe o cursor sobre um asteroide para abrir a ficha dele.',event:'inspect',target:'enemy'},
+  {title:'Clique no meteoro',text:'Cada ameaça tem HP, armadura, escudo, velocidade, comportamento e resistências. Para você conseguir inspecionar sem perder o alvo, a simulação fica congelada nesta etapa.',instruction:'O meteoro está PARADO. Clique no asteroide destacado; depois da leitura, use RETOMAR BATALHA para voltar ao combate.',event:'inspect',pause:true,target:'enemy'},
   {title:'Checkpoint científico',text:'Quando o progresso alcança os marcadores da linha da missão, a batalha pausa automaticamente e abre um desafio. Não há cronômetro: experimente antes de responder.',instruction:'Conclua o próximo checkpoint para continuar o tutorial.',event:'checkpoint',target:'#checkpointTrack'},
-  {title:'Júpiter desbloqueado',text:'O primeiro checkpoint libera Júpiter nesta missão. Ele é uma barreira gasosa: quase não causa dano, mas possui muito HP e reduz o dano de contato.',instruction:'Clique na carta JÚPITER.',event:'select-jupiter',target:'.unit-card[data-unit="jupiter"]',unlockId:'jupiter'},
-  {title:'Coloque a barreira na frente',text:'Inimigos param quando encostam numa construção. Por isso barreiras funcionam melhor mais à direita, na frente dos atacantes.',instruction:'Posicione Júpiter no ponto destacado.',event:'barrier',target:'stage',point:[0.6641,0.1391,112]},
+  {title:'Júpiter desbloqueado',text:'O primeiro checkpoint libera Júpiter nesta missão. Ele é uma barreira gasosa: quase não causa dano, mas possui muito HP e reduz o dano de contato. A batalha permanece congelada enquanto você escolhe onde colocá-lo.',instruction:'SIMULAÇÃO PAUSADA · Clique na carta JÚPITER.',event:'select-jupiter',pause:true,target:'.unit-card[data-unit="jupiter"]',unlockId:'jupiter'},
+  {title:'Coloque a barreira na frente',text:'Inimigos param quando encostam numa construção. Por isso barreiras funcionam melhor mais à direita, na frente dos atacantes. A pausa congela apenas a simulação: o sistema de construção continua ativo, então Júpiter pode ser colocado normalmente agora.',instruction:'SIMULAÇÃO PAUSADA · Posicione Júpiter no ponto destacado. Mini Sóis também podem ser colocados durante a pausa, mas não produzem energia até a batalha voltar.',event:'barrier',pause:true,target:'stage',point:[0.6641,0.1391,112]},
   {title:'Inspecione uma construção',text:'Clicar numa torre já colocada abre seu painel. Ali aparecem HP, dano, alcance, cadência, especializações, sinergias, venda e upgrade.',instruction:'Clique no Júpiter que você acabou de posicionar.',event:'tower-inspect',target:'tower'},
   {title:'Faça um upgrade',text:'Upgrades gastam energia e melhoram a função principal da unidade. No nível 3, várias torres recebem especializações diferentes.',instruction:'Clique em MELHORAR no painel da torre.',event:'upgrade',target:'#upgradeTowerBtn'},
   {title:'Poderes ativos',text:'Os botões no canto do campo são poderes de emergência com cargas limitadas. Erupção, Congelar e Manobra são básicos; Estilingue, Eclipse e Supernova dependem da árvore de pesquisa.',instruction:'Poderes não substituem uma boa formação: guarde as cargas para vazamentos, bosses e situações em que a defesa normal falhar.',manual:true,pause:true,target:'#powerRail'},
   {title:'Laboratório orbital',text:'O laboratório não é só uma tela de teoria: ele permite experimentar massa, distância, gravidade e relações usadas nos desafios científicos.',instruction:'Clique em LABORATÓRIO ORBITAL. Explore e feche a janela para continuar.',event:'lab',target:'#labBtn'},
   {title:'Campanha',text:'A Campanha organiza os oito capítulos. Estrelas registram seu desempenho e capítulos concluídos liberam novas missões, construções e modos.',instruction:'Seu progresso de campanha, pesquisa e observatório fica salvo entre partidas.',manual:true,pause:true,target:'#campaignBtn'},
-  {title:'Pesquisa persistente',text:'Pontos de pesquisa não são energia de construção. Eles ficam salvos fora da missão e servem para comprar melhorias permanentes, novas construções e poderes.',instruction:'Clique em PESQUISA para abrir a árvore. A batalha permanecerá pausada.',event:'research-open',pause:true,target:'#researchBtn'},
+  {title:'Pesquisa persistente',text:'Pontos de pesquisa não são energia de construção. Eles ficam salvos fora da missão e servem para aprofundar construções já apresentadas, comprar melhorias permanentes e liberar poderes.',instruction:'Clique em PESQUISA para abrir a árvore. A batalha permanecerá pausada.',event:'research-open',pause:true,target:'#researchBtn'},
   {title:'Como ganhar pesquisa',text:'Você recebe pesquisa ao acertar checkpoints e ao concluir missões. Repetir capítulos também rende pontos, mas a primeira conclusão costuma dar mais.',instruction:'O total disponível aparece no topo da tela e aqui dentro. Gastar pontos não afeta sua energia da batalha.',manual:true,pause:true,allowHub:true,target:'#hubIntro',mentor:'newton'},
   {title:'Categorias e nós',text:'A árvore é separada por Energia, Defesa planetária, Mecânica orbital, Gravidade e Astrofísica avançada. Cada cartão é um nó de pesquisa com custo e efeito próprio.',instruction:'Nós com ✓ já foram pesquisados. Nós apagados podem estar sem pontos suficientes ou esperando um pré-requisito.',manual:true,pause:true,allowHub:true,target:'.research-category',mentor:'newton'},
   {title:'Pré-requisitos',text:'Algumas pesquisas formam cadeias. Reserva estelar, por exemplo, só pode ser comprada depois de Fusão eficiente. Pesquisas avançadas podem exigir duas descobertas anteriores.',instruction:'Leia a linha “Requer” antes de planejar onde gastar seus pontos.',manual:true,pause:true,allowHub:true,target:'.research-node[data-research="battery"]',mentor:'newton'},
-  {title:'Pesquisa que libera construções',text:'Alguns nós não apenas melhoram números: eles adicionam novas cartas ao seu deck. Sistema lunar libera a Lua; Observação de pulsares libera o Pulsar; Matéria degenerada libera a Estrela de nêutrons.',instruction:'Quando uma construção nova for liberada, o jogo vai pausar e mostrar um mini-tutorial específico para ela.',manual:true,pause:true,allowHub:true,target:'.research-node[data-research="moon"]',mentor:'newton'},
+  {title:'Pesquisa aprofunda o que você já aprendeu',text:'As construções novas agora são apresentadas pela campanha, no momento em que a fase cria uma situação para ensiná-las. A Pesquisa melhora essas ferramentas: Dinâmica de marés fortalece a Lua, Feixe coerente melhora o Pulsar e Matéria degenerada aumenta o dano da Estrela de Nêutrons.',instruction:'Assim você aprende primeiro a função da construção em campo e só depois investe em especializações permanentes.',manual:true,pause:true,allowHub:true,target:'.research-node[data-research="moon"]',mentor:'newton'},
   {title:'Melhorias permanentes',text:'Outros nós alteram todas as missões: Mini Sóis podem produzir mais, construções podem ganhar HP, Mercúrio pode causar mais dano e campos gravitacionais podem alcançar mais longe.',instruction:'Esses bônus continuam ativos ao trocar de capítulo e também valem ao rejogar missões antigas.',manual:true,pause:true,allowHub:true,target:'.research-node[data-research="defense"]',mentor:'newton'},
   {title:'Volte à defesa',text:'Você pode abrir Pesquisa sempre que precisar revisar a árvore. Enquanto este painel está aberto, a batalha fica congelada.',instruction:'Clique no × para fechar a Pesquisa e continuar.',event:'research-close',pause:true,allowHub:true,target:'#hubClose',mentor:'newton'},
   {title:'Observatório',text:'O Observatório registra cada tipo de inimigo que você encontra. É onde você consulta HP base, armadura, escudo, velocidade, comportamento, fraquezas, resistências e a nota científica.',instruction:'Clique em OBSERVATÓRIO.',event:'codex-open',pause:true,target:'#codexBtn'},
@@ -52,11 +52,11 @@ var TutorialGuide=(()=>{
   neutron:{role:'impacto pesado perfurante',text:'A Estrela de nêutrons é cara e lenta, mas cada disparo causa dano enorme, atravessa armadura e explode em área.',tip:'Proteja o investimento e combine com Poço G: alvos presos recebem ainda mais valor dos impactos pesados.'},
   probe:{role:'suporte e marcação',text:'A Sonda não é uma torre de dano. Ela marca inimigos em rotas próximas para receberem mais dano e aumenta o alcance de aliados ao redor.',tip:'Coloque entre duas rotas ou no centro de um grupo de atacantes para multiplicar o valor de várias construções ao mesmo tempo.'}
  }
- let autoPaused=false,frame=0,scrollTick=0,currentUnlock=null,unlockQueue=[]
+ let autoPaused=false,frame=0,scrollTick=0,currentUnlock=null,actionPause=null,unlockQueue=[]
  const $=id=>document.getElementById(id)
  function mainActive(){return !tutorialDone&&waveIndex===0&&gameMode==='campaign'}
- function active(){return !!currentUnlock||mainActive()}
- function currentStep(){return currentUnlock?makeUnlockStep(currentUnlock):steps[Math.min(tutorialStep,steps.length-1)]}
+ function active(){return !!actionPause||!!currentUnlock||mainActive()}
+ function currentStep(){return actionPause||(currentUnlock?makeUnlockStep(currentUnlock):steps[Math.min(tutorialStep,steps.length-1)])}
  function hubOpen(){return !document.getElementById('hubModal')?.classList.contains('hidden')}
  function overlayBlocked(step=currentStep()){return checkpointInProgress||!quizModal.classList.contains('hidden')||!modal.classList.contains('hidden')||!labModal.classList.contains('hidden')||(hubOpen()&&!step?.allowHub)}
  function syncPauseUI(){if(!running)return;pauseBtn.textContent=paused?'▶':'Ⅱ';pauseBtn.setAttribute('aria-label',paused?'Continuar':'Pausar');startWaveBtn.disabled=!paused;startWaveBtn.textContent=paused?'Continuar batalha':'Batalha em curso'}
@@ -65,10 +65,10 @@ var TutorialGuide=(()=>{
   if(!should&&autoPaused){paused=false;autoPaused=false;statusText.textContent='Batalha · sistema ativo';syncPauseUI()}
  }
  function suspend(){cancelAnimationFrame(frame);frame=0;$('tutorial').classList.add('hidden');document.body.classList.remove('tutorial-active')}
- function seenList(){if(!Array.isArray(Progress.data.unlockTipsSeen))Progress.data.unlockTipsSeen=['miniSun','mercury','belt'];return Progress.data.unlockTipsSeen}
+ function seenList(){if(!Array.isArray(Progress.data.unlockTipsSeen))Progress.data.unlockTipsSeen=['miniSun','mercury'];return Progress.data.unlockTipsSeen}
  function markSeen(id){const list=seenList();if(!list.includes(id))list.push(id);unlockQueue=unlockQueue.filter(item=>item.id!==id);Progress.persist()}
  function finish(skipped=false){
-  setAutoPause(false);tutorialDone=true;tutorialStep=steps.length;suspend()
+  actionPause=null;setAutoPause(false);tutorialDone=true;tutorialStep=steps.length;suspend()
   if(skipped)Progress.data.tutorialDismissed=true;else{Progress.data.tutorialDismissed=false;markSeen('jupiter');if(!Progress.data.achievements.includes('tutorial'))Progress.data.achievements.push('tutorial')}
   Progress.persist();saveRun();if(!skipped)showToast('Tutorial concluído · Primeiros passos desbloqueado');scanUnlocks('tutorial')
  }
@@ -76,34 +76,90 @@ var TutorialGuide=(()=>{
   if(!currentUnlock)return
   const id=currentUnlock.id;markSeen(id);currentUnlock=null;suspend()
   if(unlockQueue.length){tryStartUnlock();return}
-  setAutoPause(false);saveRun();showToast(`${unitDefs[id]?.name||'Construção'} · tutorial registrado`)
+  setAutoPause(false);if(!running&&!gameOver)startWaveBtn.disabled=false;saveRun();showToast(`${unitDefs[id]?.name||'Construção'} · exercício concluído`)
  }
  function advance(){
-  if(currentUnlock){finishUnlock();return}
+  if(actionPause){actionPause=null;setAutoPause(false);saveRun();render();return}
+  if(currentUnlock){
+   if((currentUnlock.phase||'intro')==='intro'){currentUnlock.phase='select';render();return}
+   if(currentUnlock.phase==='result'){finishUnlock();return}
+   return
+  }
   const step=steps[tutorialStep];if(!step?.manual)return
   if(step.finish){finish(false);return}
   tutorialStep=Math.min(steps.length-1,tutorialStep+1);if(steps[tutorialStep]?.unlockId)markSeen(steps[tutorialStep].unlockId);saveRun();render()
  }
  function event(name){
-  if(!mainActive()||currentUnlock)return
-  const step=steps[tutorialStep];if(step?.event!==name)return
-  tutorialStep++;if(tutorialStep>=steps.length){finish(false);return}if(steps[tutorialStep]?.unlockId)markSeen(steps[tutorialStep].unlockId);saveRun();render()
+  if(!mainActive()||currentUnlock||actionPause)return false
+  const step=steps[tutorialStep];if(step?.event!==name)return false
+  tutorialStep++;if(tutorialStep>=steps.length){finish(false);return true}if(steps[tutorialStep]?.unlockId)markSeen(steps[tutorialStep].unlockId);saveRun();render();return true
+ }
+ function pausedCanvasAction(){
+  if(currentUnlock?.phase==='placement')return 'placement'
+  if(!mainActive()||currentUnlock||actionPause)return null
+  const step=steps[tutorialStep]
+  if(!step?.pause)return null
+  if(step.event==='inspect')return 'inspect'
+  if(['miniSun','attacker','barrier'].includes(step.event))return 'placement'
+  return null
+ }
+ function allowsPausedCanvasAction(){return !!pausedCanvasAction()}
+ function expectedPlacementType(){
+  if(currentUnlock?.phase==='placement')return currentUnlock.id
+  if(!mainActive()||currentUnlock||actionPause)return null
+  const event=steps[tutorialStep]?.event
+  return event==='miniSun'?'miniSun':event==='attacker'?'mercury':event==='barrier'?'jupiter':null
+ }
+ function locksSimulation(){return active()&&!!currentStep()?.pause}
+ function afterPlacement(tower,placedType=null){
+  if(!tower)return
+  const id=placedType||tower.type
+  if(currentUnlock?.phase==='placement'&&currentUnlock.id===id){
+   currentUnlock.phase='result';currentUnlock.entityId=tower.id;saveRun();render();return
+  }
+  if(!mainActive()||currentUnlock||actionPause)return
+  const u=unitDefs[id]||unitDefs[tower.type],g=unlockGuides[id]||unlockGuides[tower.type]
+  const role=g?.role||u?.desc||'defesa orbital',detail=g?.text||u?.tip||'A construção entrou na sua formação.'
+  actionPause={title:`Construção posicionada · ${u?.name||id}`,text:`${detail} O tutorial congelou a ação logo após o posicionamento para você conseguir conferir a função sem perder o que está acontecendo na rota.`,instruction:`FUNÇÃO: ${String(role).toUpperCase()} · Clique em RETOMAR BATALHA quando terminar de ler.`,manual:true,pause:true,target:'placedTower',entityId:tower.id,action:true,mentor:'kepler'}
+  render()
+ }
+ function afterEnemyInspect(hit){
+  if(!mainActive()||currentUnlock||actionPause||!hit)return
+  const hp=Math.max(0,Math.ceil(hit.hp)),speed=Math.round(hit.speed*(typeof laneSpeed!=='undefined'?laneSpeed[hit.lane]||1:1))
+  actionPause={title:`Inimigo inspecionado · ${hit.name}`,text:`A batalha foi pausada no instante do clique. Este alvo tem ${hp} HP, armadura ${hit.armor||0}${hit.shield?`, escudo ${Math.ceil(hit.shield)}`:''} e velocidade aproximada de ${speed} px/s nesta rota. O comportamento “${typeof behaviorLabel==='function'?behaviorLabel(hit.behavior):hit.behavior}” também muda a forma de enfrentá-lo.`,instruction:'Use essa pausa para ler a ameaça com calma. Ao clicar em RETOMAR BATALHA, a simulação continua exatamente daqui.',manual:true,pause:true,target:'inspectedEnemy',entityId:hit.id,action:true,mentor:'kepler'}
+  render()
+ }
+ function unitSelected(id){
+  if(!currentUnlock||currentUnlock.phase!=='select'||currentUnlock.id!==id)return false
+  const training=Content.trainingSituations?.[id]
+  if(training?.requiresHost){
+   const host=typeof ensureTrainingHost==='function'?ensureTrainingHost('earth'):null
+   if(host)currentUnlock.hostId=host.id
+  }
+  currentUnlock.phase='placement';render();return true
  }
  function makeUnlockStep(item){
-  const id=item.id,u=unitDefs[id],g=unlockGuides[id]||{role:u?.desc||'nova função',text:u?.tip||'Uma nova construção entrou no seu deck.',tip:'Teste a nova opção durante a preparação para entender seu papel.'}
-  const source=item.source==='research'?'A Pesquisa acabou de liberar esta construção.':item.source==='checkpoint'?'Uma descoberta acabou de liberar esta construção.':'Esta construção acabou de entrar no seu deck.'
-  return {title:`Nova construção · ${u?.name||id}`,text:`${source} ${g.text}`,instruction:`FUNÇÃO: ${String(g.role).toUpperCase()} · ${g.tip} A simulação fica pausada enquanto você lê esta dica.`,manual:true,pause:true,target:`.unit-card[data-unit="${id}"]`,mentor:waveIndex>=4?'newton':'kepler',unlock:true}
+  const id=item.id,u=unitDefs[id],g=unlockGuides[id]||{role:u?.desc||'nova função',text:u?.tip||'Uma nova construção entrou no seu deck.',tip:'Teste a nova opção durante a preparação para entender seu papel.'},training=Content.trainingSituations?.[id]||{}
+  const phase=item.phase||'intro',mentor=waveIndex>=4?'newton':'kepler'
+  if(phase==='intro')return {title:`Fase ${waveIndex+1} · nova construção: ${u?.name||id}`,text:`${g.text} SITUAÇÃO DE TREINO: ${training.scenario||'A fase foi preparada para você perceber onde esta ferramenta faz diferença.'}`,instruction:`ALVO DESTA FASE: ${String(training.enemy||g.role).toUpperCase()} · Leia a ideia e clique em PRATICAR AGORA.`,manual:true,pause:true,target:`.unit-card[data-unit="${id}"]`,mentor,unlock:true,nextLabel:'Praticar agora'}
+  if(phase==='select')return {title:`Escolha ${u?.name||id}`,text:`Agora vamos usar a construção em campo. ${training.instruction||g.tip}`,instruction:`SIMULAÇÃO PAUSADA · Clique na carta ${String(u?.name||id).toUpperCase()}.`,manual:false,pause:true,target:`.unit-card[data-unit="${id}"]`,mentor,unlock:true}
+  if(phase==='placement'){
+   const target=id==='moon'?'trainingHost':'stage',entityId=id==='moon'?item.hostId:null
+   return {title:`Posicione ${u?.name||id}`,text:training.scenario||g.text,instruction:`SIMULAÇÃO PAUSADA · ${training.instruction||'Posicione a construção no ponto destacado.'}`,manual:false,pause:true,target,entityId,point:training.point,mentor,unlock:true}
+  }
+  return {title:`Aplicação concluída · ${u?.name||id}`,text:`Você acabou de preparar ${u?.name||id} para a situação que esta fase vai apresentar. ${g.tip}`,instruction:`Quando a batalha começar, observe especialmente ${training.enemy||'os alvos desta fase'} e compare o resultado com as torres anteriores.`,manual:true,pause:true,target:'placedTower',entityId:item.entityId,mentor,unlock:true,nextLabel:'Concluir exercício'}
  }
  function scanUnlocks(source='campaign'){
   const seen=seenList(),queued=new Set(unlockQueue.map(x=>x.id));if(currentUnlock)queued.add(currentUnlock.id)
-  for(const id of Object.keys(unitDefs))if(isUnlocked(id)&&!seen.includes(id)&&!queued.has(id))unlockQueue.push({id,source})
+  const stageUnits=Content.stageUnlocks?.[waveIndex]||[]
+  for(const id of stageUnits)if(isUnlocked(id)&&!seen.includes(id)&&!queued.has(id))unlockQueue.push({id,source,phase:'intro'})
   if(!mainActive())tryStartUnlock()
  }
  function tryStartUnlock(){
   if(currentUnlock||mainActive()||!unlockQueue.length)return
   if(overlayBlocked({allowHub:false}))return
-  while(unlockQueue.length){const item=unlockQueue.shift();if(!seenList().includes(item.id)&&isUnlocked(item.id)){currentUnlock=item;break}}
-  if(!currentUnlock){setAutoPause(false);suspend();return}
+  while(unlockQueue.length){const item=unlockQueue.shift();if(!seenList().includes(item.id)&&isUnlocked(item.id)&&(Content.unitUnlockStages?.[item.id]??waveIndex)===waveIndex){currentUnlock=item;break}}
+  if(!currentUnlock){setAutoPause(false);if(!running&&!gameOver)startWaveBtn.disabled=false;suspend();return}
   setAutoPause(true,'Nova construção · simulação pausada');render()
  }
  function resumeUnlocks(){scanUnlocks('campaign');if(!mainActive())tryStartUnlock();else render()}
@@ -111,8 +167,16 @@ var TutorialGuide=(()=>{
  function rectOf(left,top,width,height){return {left,top,width,height,right:left+width,bottom:top+height}}
  function getRect(step){
   if(step.center)return null
-  if(step.target==='stage'&&step.point){const r=gameStage.getBoundingClientRect(),[xr,yr,size]=step.point,sz=Math.min(size||110,Math.max(78,r.width*.11));return rectOf(r.left+r.width*xr-sz/2,r.top+r.height*yr-sz/2,sz,sz)}
+  if(step.target==='stage'){
+   // Todo passo de posicionamento precisa deixar um "buraco" clicável no overlay.
+   // Se algum conteúdo futuro esquecer de fornecer point, usamos uma célula segura
+   // em vez de cobrir o canvas inteiro e bloquear a construção.
+   const r=gameStage.getBoundingClientRect(),[xr,yr,size]=step.point||[0.6641,0.5,112],sz=Math.min(size||110,Math.max(78,r.width*.11));return rectOf(r.left+r.width*xr-sz/2,r.top+r.height*yr-sz/2,sz,sz)
+  }
   if(step.target==='enemy'){const e=enemies.find(n=>n.hp>0);if(e){const r=gameStage.getBoundingClientRect(),sz=Math.max(72,Math.min(135,e.size*r.width/1280*1.45)),x=r.left+e.x/1280*r.width,y=r.top+e.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}const r=gameStage.getBoundingClientRect();return rectOf(r.left+r.width*.68,r.top+r.height*.13,Math.min(180,r.width*.2),Math.min(150,r.height*.3))}
+  if(step.target==='inspectedEnemy'){const e=enemies.find(n=>n.id===step.entityId&&n.hp>0);if(e){const r=gameStage.getBoundingClientRect(),sz=Math.max(82,Math.min(150,e.size*r.width/1280*1.55)),x=r.left+e.x/1280*r.width,y=r.top+e.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}return gameStage.getBoundingClientRect()}
+  if(step.target==='placedTower'){const d=defenders.find(n=>n.id===step.entityId);if(d){const r=gameStage.getBoundingClientRect(),sz=110,x=r.left+d.x/1280*r.width,y=r.top+d.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}return gameStage.getBoundingClientRect()}
+  if(step.target==='trainingHost'){const d=defenders.find(n=>n.id===step.entityId);if(d){const r=gameStage.getBoundingClientRect(),sz=118,x=r.left+d.x/1280*r.width,y=r.top+d.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}return gameStage.getBoundingClientRect()}
   if(step.target==='orb'){const o=energyOrbs[0];if(o){const r=gameStage.getBoundingClientRect(),sz=92,x=r.left+o.x/1280*r.width,y=r.top+o.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}return gameStage.getBoundingClientRect()}
   if(step.target==='tower'){const d=defenders.find(n=>n.type==='jupiter')||defenders[defenders.length-1];if(d){const r=gameStage.getBoundingClientRect(),sz=105,x=r.left+d.x/1280*r.width,y=r.top+d.y/720*r.height;return rectOf(x-sz/2,y-sz/2,sz,sz)}return gameStage.getBoundingClientRect()}
   const el=step.target?document.querySelector(step.target):null;if(!el||el.offsetParent===null)return null
@@ -140,16 +204,16 @@ var TutorialGuide=(()=>{
  function render(){
   const el=$('tutorial');if(!active()){setAutoPause(false);suspend();return}
   const step=currentStep();if(!step){if(mainActive())finish(false);else finishUnlock();return}if(overlayBlocked(step)){suspend();return}
-  setAutoPause(!!step.pause,step.unlock?'Nova construção · simulação pausada':'Tutorial · simulação pausada');el.classList.remove('hidden');document.body.classList.add('tutorial-active')
-  $('tutorialCounter').textContent=step.unlock?'NOVA CONSTRUÇÃO':`TUTORIAL · ${Math.min(tutorialStep+1,steps.length)}/${steps.length}`;$('tutorialTitle').textContent=step.title;$('tutorialText').textContent=step.text;$('tutorialInstruction').textContent=step.instruction||'';$('tutorialMentor').src=assetPath((step.mentor||(tutorialStep>=23?'newton':'kepler'))+'.png')
-  const next=$('tutorialNext');next.classList.toggle('hidden',!step.manual);next.innerHTML=step.finish?'Concluir tutorial <span>✓</span>':step.unlock?(unlockQueue.length?'Próxima construção <span>→</span>':'Entendi <span>✓</span>'):'Continuar <span>→</span>'
-  $('tutorialSkip').classList.toggle('hidden',!!step.unlock);$('tutorialSkipText').classList.toggle('hidden',!!step.unlock)
+  setAutoPause(!!step.pause,step.unlock?'Nova construção · simulação pausada':'Tutorial · simulação pausada');if(step.unlock&&!running)startWaveBtn.disabled=true;el.classList.remove('hidden');document.body.classList.add('tutorial-active')
+  $('tutorialCounter').textContent=step.action?'PAUSA DO TUTORIAL':step.unlock?'NOVA CONSTRUÇÃO':`TUTORIAL · ${Math.min(tutorialStep+1,steps.length)}/${steps.length}`;$('tutorialTitle').textContent=step.title;$('tutorialText').textContent=step.text;$('tutorialInstruction').textContent=step.instruction||'';$('tutorialMentor').src=assetPath((step.mentor||(tutorialStep>=23?'newton':'kepler'))+'.png')
+  const next=$('tutorialNext');next.classList.toggle('hidden',!step.manual);next.innerHTML=step.action?'Retomar batalha <span>▶</span>':step.finish?'Concluir tutorial <span>✓</span>':step.nextLabel?`${step.nextLabel} <span>→</span>`:step.unlock?'Entendi <span>✓</span>':'Continuar <span>→</span>'
+  $('tutorialSkip').classList.toggle('hidden',!!step.unlock||!!step.action);$('tutorialSkipText').classList.toggle('hidden',!!step.unlock||!!step.action)
   cancelAnimationFrame(frame);requestAnimationFrame(()=>{const target=step.target&&typeof step.target==='string'?document.querySelector(step.target):null;if(target?.classList.contains('unit-card')){const deck=$('cardDeck'),dr=deck.getBoundingClientRect(),tr=target.getBoundingClientRect();if(window.matchMedia('(min-width:981px)').matches)deck.scrollTop+=tr.top-dr.top-(dr.height-tr.height)/2;else deck.scrollLeft+=tr.left-dr.left-(dr.width-tr.width)/2}updateSpotlight()})
  }
- function restart(){setAutoPause(false);currentUnlock=null;unlockQueue=[];Progress.data.tutorialDismissed=false;startStage(0,'campaign');tutorialDone=false;tutorialStep=0;if(Progress.data.resume){Progress.data.resume.tutorialDone=false;Progress.data.resume.tutorialStep=0}saveRun();render();showToast('Tutorial guiado reiniciado')}
+ function restart(){actionPause=null;setAutoPause(false);currentUnlock=null;unlockQueue=[];Progress.data.tutorialDismissed=false;startStage(0,'campaign');tutorialDone=false;tutorialStep=0;if(Progress.data.resume){Progress.data.resume.tutorialDone=false;Progress.data.resume.tutorialStep=0}saveRun();render();showToast('Tutorial guiado reiniciado')}
  function refreshPosition(){if(!active()||$('tutorial').classList.contains('hidden'))return;const step=currentStep();if(overlayBlocked(step))return;cancelAnimationFrame(scrollTick);scrollTick=requestAnimationFrame(()=>{scrollTick=0;updateSpotlight()})}
  window.addEventListener('resize',refreshPosition);window.addEventListener('scroll',refreshPosition,true)
- return {steps,event,render,advance,finish,restart,scanUnlocks,resumeUnlocks,markSeen,hubLocked,get unlockActive(){return !!currentUnlock}}
+ return {steps,event,render,advance,finish,restart,scanUnlocks,resumeUnlocks,markSeen,hubLocked,afterPlacement,afterEnemyInspect,pausedCanvasAction,allowsPausedCanvasAction,expectedPlacementType,locksSimulation,unitSelected,get unlockActive(){return !!currentUnlock},get actionPaused(){return !!actionPause}}
 })()
 
 var Interface=(()=>{
@@ -171,7 +235,7 @@ var Interface=(()=>{
   content.innerHTML=`<div class="campaign-summary"><div><strong>${stars}<small>/24</small></strong><span>estrelas</span></div><div><strong>${Progress.data.research}</strong><span>pontos de pesquisa</span></div><div><strong>${Progress.data.codex.length}</strong><span>corpos catalogados</span></div><img src="${assetPath((Progress.data.unlocked>=5?'newton':'kepler')+'.png')}" alt="Mentor"></div><div class="campaign-grid"></div><div class="extra-modes"><button id="endlessBtn" class="mode-card"><strong>Órbita infinita <span>∞</span></strong><p>${Progress.data.unlocked>=5?'Ondas crescentes, pesquisa contínua e defesa persistente.':'Complete o capítulo 4 para desbloquear.'}</p><small>Recorde: onda ${Progress.data.endlessBest}</small></button><button id="dailyBtn" class="mode-card"><strong>Desafio do dia <span>✧</span></strong><p>Uma missão com um modificador que muda a estratégia.</p><small id="dailyModifier"></small></button></div><div class="achievement-strip"></div>`
   const grid=content.querySelector('.campaign-grid')
   waves.forEach((w,i)=>{
-   const unlocked=i<Progress.data.unlocked,star=Number(Progress.data.stars[i]||0),b=document.createElement('button');b.className='campaign-node'+(unlocked?'':' locked')+(i===waveIndex?' current':'');b.disabled=!unlocked;b.innerHTML=`<span class="chapter-index">${unlocked?String(i+1).padStart(2,'0'):'🔒'}</span><span class="chapter-topic">${w.topic}</span><strong>${w.short}</strong><span class="chapter-stars">${'★'.repeat(star)}${'☆'.repeat(3-star)}</span><small>${unlocked?(Progress.data.scores[i]||0)+' pts':'Capítulo anterior necessário'}</small>`;b.onclick=()=>{const fresh=()=>{close();modal.classList.add('hidden');startStage(i);showToast(w.dialogue)};if(running&&!gameOver){content.innerHTML=`<div class="switch-stage"><h3>Iniciar ${escape(w.short)}?</h3><p>A pesquisa e as estrelas continuam salvas. A batalha em andamento será substituída.</p><button id="confirmStage" class="primary-btn">Iniciar capítulo</button><button id="cancelStage" class="secondary-btn">Continuar batalha atual</button></div>`;document.getElementById('confirmStage').onclick=fresh;document.getElementById('cancelStage').onclick=campaign}else fresh()};grid.appendChild(b)
+   const unlocked=i<Progress.data.unlocked,star=Number(Progress.data.stars[i]||0),b=document.createElement('button'),newNames=(Content.stageUnlocks?.[i]||[]).map(id=>unitDefs[id]?.name||id).join(' + ');b.className='campaign-node'+(unlocked?'':' locked')+(i===waveIndex?' current':'');b.disabled=!unlocked;b.innerHTML=`<span class="chapter-index">${unlocked?String(i+1).padStart(2,'0'):'🔒'}</span><span class="chapter-topic">${w.topic}</span><strong>${w.short}</strong><span class="chapter-stars">${'★'.repeat(star)}${'☆'.repeat(3-star)}</span><small>${unlocked?(Progress.data.scores[i]||0)+' pts':'Capítulo anterior necessário'}</small>${newNames?`<small>Novas construções: ${escape(newNames)}</small>`:''}`;b.onclick=()=>{const fresh=()=>{close();modal.classList.add('hidden');startStage(i);showToast(w.dialogue)};if(running&&!gameOver){content.innerHTML=`<div class="switch-stage"><h3>Iniciar ${escape(w.short)}?</h3><p>A pesquisa e as estrelas continuam salvas. A batalha em andamento será substituída.</p><button id="confirmStage" class="primary-btn">Iniciar capítulo</button><button id="cancelStage" class="secondary-btn">Continuar batalha atual</button></div>`;document.getElementById('confirmStage').onclick=fresh;document.getElementById('cancelStage').onclick=campaign}else fresh()};grid.appendChild(b)
   })
   const modifiers=['inner','noSun','fast','noUpgrades','eccentric'],today=new Date().toLocaleDateString('sv-SE'),hash=[...today].reduce((s,c)=>s*31+c.charCodeAt(0),7)>>>0,modifier=modifiers[hash%modifiers.length],labels={inner:'Apenas rotas internas',noSun:'Sem Mini Sóis',fast:'Velocidade dos inimigos +45%',noUpgrades:'Sem upgrades',eccentric:'Alta excentricidade'}
   document.getElementById('dailyModifier').textContent=labels[modifier]+' · '+today
