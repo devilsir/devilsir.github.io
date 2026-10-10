@@ -42,7 +42,6 @@ const quizQuestion=document.getElementById('quizQuestion')
 const quizOptions=document.getElementById('quizOptions')
 const quizFeedback=document.getElementById('quizFeedback')
 const quizContinue=document.getElementById('quizContinue')
-const pregameOverlay=document.getElementById('pregameOverlay')
 const physicsTitle=document.getElementById('physicsTitle')
 const physicsText=document.getElementById('physicsText')
 const lawBadge=document.getElementById('lawBadge')
@@ -259,7 +258,7 @@ function loadRun(){
  if(!r||r.version!==2||!Array.isArray(r.defenders)||!Array.isArray(r.enemies))return false
  waveIndex=Math.max(0,Math.min(7,r.waveIndex||0));energy=Math.max(0,Math.min(9999,r.energy||0));health=Math.max(1,r.health||8);initialHealth=r.initialHealth||8;gameMode=r.gameMode||'campaign';endlessRound=r.endlessRound||1;randomModifier=r.randomModifier||null;orbitConfig=r.orbitConfig||{e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0,...r.runStats};powerCharges={...powerCharges,...r.powerCharges};simTime=r.simTime||0;spawnQueue=(r.spawnQueue||[]).filter(t=>enemyDefs[t]);spawnTimer=r.spawnTimer||1;waveSpawned=r.waveSpawned||0;waveTotal=r.waveTotal||0;checkpointIndex=Math.min(3,r.checkpointIndex||0);checkpointStates=r.checkpointStates||[null,null,null];pendingSuperboss=r.pendingSuperboss||null;penaltyBossActive=!!r.penaltyBossActive;running=!!r.running;gameStarted=!!r.gameStarted;defenders=r.defenders.filter(d=>unitDefs[d.type]);for(const d of defenders){if(d.branch){if((d.level||1)<4)d.level=4;d.branchLevel=d.branchLevel||1}if(d.moon?.branch){if((d.moon.level||1)<4)d.moon.level=4;d.moon.branchLevel=d.moon.branchLevel||1}}enemies=r.enemies.filter(e=>e.type==='superboss'||enemyDefs[e.type]);energyOrbs=r.energyOrbs||[];selected=unitDefs[r.selected]?r.selected:'mercury';tutorialStep=r.tutorialStep||0;tutorialDone=!!r.tutorialDone;nextEntityId=r.nextEntityId||1000;projectiles=[];paused=running;gameOver=false;sunAppear=gameStarted?1:0;checkpointInProgress=false;phaseCompletePending=false
  for(const [i,mark] of [...checkpointTrack.children].entries())mark.className=checkpointStates[i]==='ok'?'active':checkpointStates[i]==='failed'?'failed':''
- startWaveBtn.disabled=false;startWaveBtn.textContent=running?'Continuar batalha':'Iniciar batalha';missionTitle.textContent=waves[waveIndex].title;pregameOverlay.classList.toggle('hidden-start',running);buildDeck();updateHud();updatePreparation();statusText.textContent=running?'Progresso retomado · pausado':'Preparação retomada';return true
+ startWaveBtn.disabled=false;startWaveBtn.textContent=running?'Continuar batalha':'Iniciar batalha';missionTitle.textContent=waves[waveIndex].title;buildDeck();updateHud();updatePreparation();statusText.textContent=running?'Progresso retomado · pausado':'Preparação retomada';return true
 }
 function updatePreparation(){
  if(typeof Interface!=='undefined'){Interface.preview();Interface.tutorial();Interface.powers()}
@@ -427,7 +426,7 @@ function resetCheckpointUI(){
 }
 
 function resetGame(stage=0){
- waveIndex=Math.max(0,Math.min(7,stage));energy=waves[waveIndex].start+(Progress.has('battery')?120:0);initialHealth=difficultyStats().health;health=initialHealth;running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;defenders=[];enemies=[];projectiles=[];particles=[];energyOrbs=[];floatingTexts=[];spawnQueue=[];passiveTimer=0;orbTimer=0;phaseCompletePending=false;simTime=0;lastUIUpdate=0;saveTimer=0;penaltyBossActive=false;temporaryBuff=0;globalFreeze=0;cinematic=0;shake=0;powerMode=null;orbitConfig={e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0};powerCharges={flare:1,freeze:1,shift:2,slingshot:1,eclipse:1,supernova:1};tutorialStep=0;tutorialDone=waveIndex!==0||Progress.data.achievements.includes('tutorial')||!!Progress.data.tutorialDismissed;hideTowerPanel();resetCheckpointUI();updateHud();missionTitle.textContent=waves[waveIndex].title;startWaveBtn.textContent='Iniciar batalha';startWaveBtn.disabled=false;statusText.textContent='Preparação · simulação congelada';hintText.textContent=waves[waveIndex].dialogue;missionProgress.style.width='0%';pregameOverlay.classList.remove('hidden-start');modalClose.style.display='block';buildDeck();updatePreparation()
+ waveIndex=Math.max(0,Math.min(7,stage));energy=waves[waveIndex].start+(Progress.has('battery')?120:0);initialHealth=difficultyStats().health;health=initialHealth;running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;defenders=[];enemies=[];projectiles=[];particles=[];energyOrbs=[];floatingTexts=[];spawnQueue=[];passiveTimer=0;orbTimer=0;phaseCompletePending=false;simTime=0;lastUIUpdate=0;saveTimer=0;penaltyBossActive=false;temporaryBuff=0;globalFreeze=0;cinematic=0;shake=0;powerMode=null;orbitConfig={e:.45,v:1,bonus:false};runStats={kills:0,score:0,correct:0,superbosses:0,barriersLost:0,types:[],energyCollected:0};powerCharges={flare:1,freeze:1,shift:2,slingshot:1,eclipse:1,supernova:1};tutorialStep=0;tutorialDone=waveIndex!==0||Progress.data.achievements.includes('tutorial')||!!Progress.data.tutorialDismissed;hideTowerPanel();resetCheckpointUI();updateHud();missionTitle.textContent=waves[waveIndex].title;startWaveBtn.textContent='Iniciar batalha';startWaveBtn.disabled=false;statusText.textContent='Preparação · simulação congelada';hintText.textContent=waves[waveIndex].dialogue;missionProgress.style.width='0%';modalClose.style.display='block';buildDeck();updatePreparation()
  if(!Progress.available)showToast('Salvamento local indisponível. Exporte o progresso pelas configurações.')
 }
 
@@ -447,7 +446,7 @@ function beginPhase(){
  spawnQueue=[...training,...spawnQueue]
  if(waveIndex===0&&gameMode==='campaign'){const i=spawnQueue.indexOf('asteroid');if(i>0)[spawnQueue[0],spawnQueue[i]]=[spawnQueue[i],spawnQueue[0]]}
  for(const [type,count] of bosses)for(let i=0;i<count;i++)spawnQueue.push(type)
- waveTotal=spawnQueue.length;waveSpawned=0;running=true;paused=false;gameStarted=true;spawnTimer=2;resetCheckpointUI();startWaveBtn.disabled=true;missionTitle.textContent=w.title;statusText.textContent=gameMode==='endless'?`Órbita infinita · onda ${endlessRound}`:'Batalha · sistema ativo';hintText.textContent=w.fact;missionProgress.style.width='0%';pregameOverlay.classList.add('hidden-start');sunAppear=.01;tutorialEvent('start');updatePreparation();updateHud();saveRun()
+ waveTotal=spawnQueue.length;waveSpawned=0;running=true;paused=false;gameStarted=true;spawnTimer=2;resetCheckpointUI();startWaveBtn.disabled=true;missionTitle.textContent=w.title;statusText.textContent=gameMode==='endless'?`Órbita infinita · onda ${endlessRound}`:'Batalha · sistema ativo';hintText.textContent=w.fact;missionProgress.style.width='0%';sunAppear=.01;tutorialEvent('start');updatePreparation();updateHud();saveRun()
 }
 
 function startWave(){
@@ -954,7 +953,7 @@ function handleModalAction(){
  if(modalMode==='end'){if(gameMode==='endless'){startStage(Progress.data.chapter,'endless')}else startStage(waveIndex);return}
  if(phaseCompletePending){
   phaseCompletePending=false
-  if(gameMode==='endless'){endlessRound++;waveIndex=3+(endlessRound%5);running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;energy=Math.min(9999,energy+300);initialHealth=Math.max(initialHealth,health);resetCheckpointUI();startWaveBtn.disabled=false;startWaveBtn.textContent='Iniciar próxima onda';missionTitle.textContent=`Órbita infinita · onda ${endlessRound}`;statusText.textContent='Preparação · próxima onda';pregameOverlay.classList.remove('hidden-start');buildDeck();updateHud();updatePreparation();saveRun();return}
+  if(gameMode==='endless'){endlessRound++;waveIndex=3+(endlessRound%5);running=false;paused=false;gameOver=false;gameStarted=false;sunAppear=0;energy=Math.min(9999,energy+300);initialHealth=Math.max(initialHealth,health);resetCheckpointUI();startWaveBtn.disabled=false;startWaveBtn.textContent='Iniciar próxima onda';missionTitle.textContent=`Órbita infinita · onda ${endlessRound}`;statusText.textContent='Preparação · próxima onda';buildDeck();updateHud();updatePreparation();saveRun();return}
   if(gameMode==='challenge'){endGame(true);return}
   if(waveIndex===7){endGame(true);return}
   waveIndex++;Progress.data.chapter=waveIndex;startStage(waveIndex);return
