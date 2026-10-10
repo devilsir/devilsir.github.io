@@ -72,13 +72,21 @@ var TutorialGuide=(()=>{
  function finish(skipped=false){
   actionPause=null;setAutoPause(false);tutorialDone=true;tutorialStep=steps.length;suspend()
   if(skipped)Progress.data.tutorialDismissed=true;else{Progress.data.tutorialDismissed=false;markSeen('jupiter');if(!Progress.data.achievements.includes('tutorial'))Progress.data.achievements.push('tutorial')}
-  Progress.persist();saveRun();if(!skipped)showToast('Tutorial concluído · Primeiros passos desbloqueado');scanUnlocks('tutorial')
+  if(!running&&!gameOver)startWaveBtn.disabled=false
+  Progress.persist();saveRun();showToast(skipped?'Tutorial pulado · construa e jogue livremente!':'Tutorial concluído · Primeiros passos desbloqueado');scanUnlocks('tutorial')
  }
- function finishUnlock(){
+ function skip(){
+  // O tutorial principal pode ser dispensado mesmo durante as pausas de leitura.
+  // Nos guias de novas unidades, apenas a orientação atual é dispensada.
+  if(currentUnlock){finishUnlock(true);return}
+  if(mainActive()){finish(true);return}
+  if(actionPause){actionPause=null;setAutoPause(false);suspend();saveRun();showToast('Aviso dispensado')}
+ }
+ function finishUnlock(skipped=false){
   if(!currentUnlock)return
   const id=currentUnlock.id;markSeen(id);currentUnlock=null;suspend()
   if(unlockQueue.length){tryStartUnlock();return}
-  setAutoPause(false);if(!running&&!gameOver)startWaveBtn.disabled=false;saveRun();showToast(`${unitDefs[id]?.name||'Construção'} · exercício concluído`)
+  setAutoPause(false);if(!running&&!gameOver)startWaveBtn.disabled=false;saveRun();showToast(`${unitDefs[id]?.name||'Construção'} · exercício ${skipped?'pulado':'concluído'}`)
  }
  function advance(){
   if(actionPause){actionPause=null;setAutoPause(false);saveRun();render();return}
@@ -107,12 +115,23 @@ var TutorialGuide=(()=>{
  }
  function allowsPausedCanvasAction(){return !!pausedCanvasAction()}
  function expectedPlacementType(){
+  if(actionPause)return null
   if(currentUnlock?.phase==='placement')return currentUnlock.id
   if(!mainActive()||currentUnlock||actionPause)return null
   const event=steps[tutorialStep]?.event
   return event==='miniSun'?'miniSun':event==='attacker'?'mercury':event==='barrier'?'jupiter':null
  }
  function locksSimulation(){return active()&&!!currentStep()?.pause}
+ function ensureRequiredActionEnergy(){
+  // Só repõe o que falta no passo OBRIGATÓRIO. Construções normais nunca
+  // recebem energia extra; a mesma proteção vale para as mini-aulas das fases.
+  const type=expectedPlacementType(),step=currentStep()
+  const required=type?unitDefs[type]?.cost:(mainActive()&&step?.event==='upgrade'&&selectedTower?getUpgradeCost(selectedTower):0)
+  if(!Number.isFinite(required)||required<=0||energy>=required)return
+  const bonus=Math.ceil(required-energy)
+  energy=Math.min(9999,required);updateHud();saveRun()
+  showToast(`Tutorial · +${bonus} de energia para a ação obrigatória`)
+ }
  function afterPlacement(tower,placedType=null){
   if(!tower)return
   const id=placedType||tower.type
@@ -207,16 +226,19 @@ var TutorialGuide=(()=>{
  function render(){
   const el=$('tutorial');if(!active()){setAutoPause(false);suspend();return}
   const step=currentStep();if(!step){if(mainActive())finish(false);else finishUnlock();return}if(overlayBlocked(step)){suspend();return}
+  ensureRequiredActionEnergy()
   setAutoPause(!!step.pause,step.unlock?'Nova construção · simulação pausada':'Tutorial · simulação pausada');if(step.unlock&&!running)startWaveBtn.disabled=true;el.classList.remove('hidden');document.body.classList.add('tutorial-active')
   $('tutorialCounter').textContent=step.action?'PAUSA DO TUTORIAL':step.unlock?'NOVA CONSTRUÇÃO':`TUTORIAL · ${Math.min(tutorialStep+1,steps.length)}/${steps.length}`;$('tutorialTitle').textContent=step.title;$('tutorialText').textContent=step.text;$('tutorialInstruction').textContent=step.instruction||'';$('tutorialMentor').src=assetPath((step.mentor||(tutorialStep>=23?'newton':'kepler'))+'.png')
   const next=$('tutorialNext');next.classList.toggle('hidden',!step.manual);next.innerHTML=step.action?'Retomar batalha <span>▶</span>':step.finish?'Concluir tutorial <span>✓</span>':step.nextLabel?`${step.nextLabel} <span>→</span>`:step.unlock?'Entendi <span>✓</span>':'Continuar <span>→</span>'
-  $('tutorialSkip').classList.toggle('hidden',!!step.unlock||!!step.action);$('tutorialSkipText').classList.toggle('hidden',!!step.unlock||!!step.action)
+  const skipLabel=currentUnlock?'Pular este exercício':mainActive()?'Pular tutorial':'Dispensar aviso'
+  $('tutorialSkip').classList.remove('hidden');$('tutorialSkipText').classList.remove('hidden')
+  $('tutorialSkip').setAttribute('aria-label',skipLabel);$('tutorialSkip').title=skipLabel;$('tutorialSkipText').textContent=skipLabel
   cancelAnimationFrame(frame);requestAnimationFrame(()=>{const target=step.target&&typeof step.target==='string'?document.querySelector(step.target):null;if(target?.classList.contains('unit-card')){const deck=$('cardDeck'),dr=deck.getBoundingClientRect(),tr=target.getBoundingClientRect();if(window.matchMedia('(min-width:981px)').matches)deck.scrollTop+=tr.top-dr.top-(dr.height-tr.height)/2;else deck.scrollLeft+=tr.left-dr.left-(dr.width-tr.width)/2}updateSpotlight()})
  }
  function restart(){actionPause=null;setAutoPause(false);currentUnlock=null;unlockQueue=[];Progress.data.tutorialDismissed=false;startStage(0,'campaign');tutorialDone=false;tutorialStep=0;if(Progress.data.resume){Progress.data.resume.tutorialDone=false;Progress.data.resume.tutorialStep=0}saveRun();render();showToast('Tutorial guiado reiniciado')}
  function refreshPosition(){if(!active()||$('tutorial').classList.contains('hidden'))return;const step=currentStep();if(overlayBlocked(step))return;cancelAnimationFrame(scrollTick);scrollTick=requestAnimationFrame(()=>{scrollTick=0;updateSpotlight()})}
  window.addEventListener('resize',refreshPosition);window.addEventListener('scroll',refreshPosition,true)
- return {steps,event,render,advance,finish,restart,scanUnlocks,resumeUnlocks,markSeen,hubLocked,afterPlacement,afterEnemyInspect,pausedCanvasAction,allowsPausedCanvasAction,expectedPlacementType,locksSimulation,unitSelected,get unlockActive(){return !!currentUnlock},get actionPaused(){return !!actionPause}}
+ return {steps,event,render,advance,finish,skip,restart,scanUnlocks,resumeUnlocks,markSeen,hubLocked,afterPlacement,afterEnemyInspect,pausedCanvasAction,allowsPausedCanvasAction,expectedPlacementType,locksSimulation,unitSelected,get unlockActive(){return !!currentUnlock},get actionPaused(){return !!actionPause}}
 })()
 
 var Interface=(()=>{
@@ -314,7 +336,7 @@ var Interface=(()=>{
   for(const [id,property] of [['debugInvincible','invincible'],['debugHitboxes','hitboxes'],['debugFPS','fps'],['debugSlow','slow']])document.getElementById(id).onchange=e=>debugState[property]=e.target.checked
  }
  document.getElementById('campaignBtn').onclick=()=>open('campaign');document.getElementById('researchBtn').onclick=()=>open('research');document.getElementById('codexBtn').onclick=()=>open('codex');document.getElementById('settingsBtn').onclick=()=>open('settings');document.getElementById('hubClose').onclick=close
- document.getElementById('tutorialSkip').onclick=()=>TutorialGuide.finish(true);document.getElementById('tutorialSkipText').onclick=()=>TutorialGuide.finish(true);document.getElementById('tutorialNext').onclick=()=>TutorialGuide.advance()
+ document.getElementById('tutorialSkip').onclick=()=>TutorialGuide.skip();document.getElementById('tutorialSkipText').onclick=()=>TutorialGuide.skip();document.getElementById('tutorialNext').onclick=()=>TutorialGuide.advance()
  document.getElementById('speedBtn').onclick=()=>{speedScale=speedScale===1?2:speedScale===2&&Progress.has('supernova')?3:1;document.getElementById('speedBtn').textContent=speedScale+'×'}
  document.getElementById('resultCampaignBtn').onclick=()=>{phaseCompletePending=false;modal.classList.add('hidden');gameOver=true;Progress.data.resume=null;Progress.persist();open('campaign')}
  window.addEventListener('keydown',e=>{
