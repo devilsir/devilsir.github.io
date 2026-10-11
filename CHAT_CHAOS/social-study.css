@@ -1,0 +1,19 @@
+/* v1.1 · Learning-first interface: EN answers until correction, neutral isolated word hints */
+.word-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:12px 0}
+.word-chips .word-chip{display:flex;flex-direction:column;text-align:left;gap:4px;max-width:250px;background:#101e2b;border:1px solid #325165;border-radius:10px;padding:10px 12px;color:#deedf7;cursor:pointer}
+.word-chips .word-chip:hover,.word-chips .word-chip:focus-visible{border-color:#71e5f6;background:#1a2b3d;outline:2px solid #71e5f633}
+.word-chips .word-chip b{font-size:14px;color:#8ff5ff}
+.word-chips .word-chip span{font-size:12px;line-height:1.45}
+.answer-btn.bilingual-option .option-lines{gap:8px;flex:1}
+.answer-btn.bilingual-option .option-en{font-size:clamp(13px,1.15vw,16px)}
+.post-translation{display:block;margin:12px 0 2px;padding:12px 14px;border:1px solid #4c4071;background:#1a1b31;border-radius:10px;color:#d5cdfc;font-size:13px;line-height:1.5}
+.answer-btn .option-pt{border-top:1px solid #63507750;padding-top:8px}
+#guideContent .guide-feedback{line-height:1.55}
+/* mobile design in buzzer.html uses its own styles */
+@media(max-width:680px){.word-chips .word-chip{max-width:100%;min-width:43%}.word-chips{gap:7px}}
+
+.social-platform-filters{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 18px}
+.social-platform-filters[hidden]{display:none}
+.social-platform-filter{cursor:pointer;padding:8px 11px;border:1px solid #4a3b61;border-radius:10px;background:#161327;color:#d5cce7;font-size:12px;font-weight:700}
+.social-platform-filter:hover,.social-platform-filter:focus-visible{border-color:#70dff0}
+.social-platform-filter.active{border-color:#7ce4ee;background:#172c37;color:#b7f4ff}

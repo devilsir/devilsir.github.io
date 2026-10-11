@@ -227,7 +227,6 @@ const Expansion=(()=>{
   const cols=[...new Set(rows.flatMap(Object.keys))],csv='\ufeff'+[cols.join(';'),...rows.map(r=>cols.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(';'))].join('\r\n')
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=file;a.click();setTimeout(()=>URL.revokeObjectURL(url),1800)
  }
- function teacherView(){document.getElementById('frontTeacherAccess')?.click()}
  function observatory(){
   open('Atlas do Sistema Solar','Explore proporções, distâncias e propriedades reais.','Os poderes de combate dos planetas são fictícios.')
   const planets=[['Mercúrio',.383,.39,88,'Planeta rochoso, quase sem atmosfera.'],['Vênus',.949,.72,225,'Atmosfera densa, rica em dióxido de carbono.'],['Terra',1,1,365,'Único planeta com vida confirmada.'],['Marte',.532,1.52,687,'Possui a maior montanha vulcânica conhecida do Sistema Solar.'],['Júpiter',11.2,5.20,4333,'Gigante gasoso com uma enorme tempestade.'],['Saturno',9.45,9.58,10759,'Seus anéis são feitos sobretudo de gelo e fragmentos.'],['Urano',4.01,19.2,30688,'Seu eixo de rotação é muito inclinado.'],['Netuno',3.88,30.1,60182,'Possui ventos muito intensos na atmosfera.']]
@@ -238,7 +237,7 @@ const Expansion=(()=>{
  }
  function init(){
   const nav=document.querySelector('.main-nav')
-  if(nav){const anchor=$('settingsBtn');for(const [id,name,fn] of [['challengeBtn','Desafios',challengeView],['teacherBtn','Professor',()=>teacherView()],['atlasBtn','Atlas',observatory]]){
+  if(nav){const anchor=$('settingsBtn');for(const [id,name,fn] of [['challengeBtn','Desafios',challengeView],['atlasBtn','Atlas',observatory]]){
     const b=document.createElement('button');b.id=id;b.textContent=name;b.onclick=fn;nav.insertBefore(b,anchor)
   }}
   $('expansionClose').onclick=()=>close()

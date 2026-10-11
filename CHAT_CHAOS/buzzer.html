@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08070d">
+<title>CHAT CHAOS — Buzzer</title>
+<style>
+:root{--bg:#08070d;--panel:#12101a;--line:#2a2440;--text:#f7f2ff;--muted:#9c93aa;--purple:#9a5cff;--cyan:#4de8ff;--pink:#ff4fc3;--green:#4cff9a;--red:#ff4d6d;--yellow:#ffe66d}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 50% 10%,#211437 0,transparent 35%),var(--bg);color:var(--text)}body{min-height:100dvh;display:grid;place-items:center;padding:20px}.app{width:min(520px,100%)}.brand{font-weight:1000;font-size:30px;letter-spacing:-1.5px;text-shadow:2px 0 var(--pink),-2px 0 var(--cyan)}.sub{font:11px ui-monospace,monospace;color:var(--cyan);letter-spacing:.12em;margin:5px 0 20px}.panel{background:linear-gradient(180deg,#171421,#0e0d14);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 25px 70px #0008}.status{display:flex;align-items:center;justify-content:space-between;gap:10px;font:10px ui-monospace,monospace;color:var(--muted);margin-bottom:14px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);display:inline-block;margin-right:6px}.row{display:grid;gap:8px;margin:12px 0}.row label{font-size:11px;color:var(--muted)}input,select{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:#0b0a10;color:white;font-size:16px;outline:0}.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.team{border:1px solid var(--line);background:#0d0c13;color:white;border-radius:14px;padding:13px;text-align:left;font-weight:800;cursor:pointer}.team.selected{border-color:var(--cyan);background:#102027;box-shadow:0 0 20px #4de8ff18}.team span{font-size:22px;margin-right:8px}.buzz{width:100%;aspect-ratio:1.55;border-radius:28px;border:2px solid #6b3cff;background:radial-gradient(circle at 50% 35%,#b882ff,#6c38e7 55%,#3c1b96);color:white;font-weight:1000;font-size:clamp(38px,11vw,64px);letter-spacing:-2px;box-shadow:0 16px 0 #301576,0 25px 70px #8f4cff45;cursor:pointer;transition:.08s;margin-top:18px;touch-action:manipulation}.buzz:active:not(:disabled){transform:translateY(8px);box-shadow:0 8px 0 #301576,0 15px 45px #8f4cff40}.buzz:disabled{filter:grayscale(.55);opacity:.45;box-shadow:none}.message{text-align:center;min-height:62px;margin-top:20px}.message strong{display:block;font-size:22px}.message small{color:var(--muted);line-height:1.4}.won{color:var(--green)}.lost{color:var(--red)}.waiting{color:var(--yellow)}.round{font:10px ui-monospace,monospace;color:#665e71;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:18px;text-align:center}@media(max-width:430px){body{padding:12px}.panel{padding:16px}.team-grid{grid-template-columns:1fr}.buzz{aspect-ratio:1.35}}
+
+.team small{display:block;font-size:11px;color:var(--muted);margin-top:5px}.team:disabled{opacity:.5;cursor:not-allowed}.voting-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:20px;font-size:12px}.voting-head span{color:var(--cyan);font-size:10px}.join{width:100%;margin:12px 0;background:#261c41;border:1px solid var(--purple);border-radius:13px;padding:15px;color:white;font-weight:900;font-size:14px}.join:disabled{opacity:.5}#joinedMessage{color:var(--muted);font-size:12px;line-height:1.6}.mobile-question{margin:18px 0;background:#21172c;border:1px solid #63468e;border-radius:16px;padding:15px}.mobile-question small{font-size:10px;color:var(--cyan);letter-spacing:.05em}.mobile-question h3{line-height:1.35;font-size:16px}.mobile-question .quote{margin-top:10px;padding:12px;border-radius:10px;background:#0e0b18;color:#f4dbff;line-height:1.55;font-size:14px}.mobile-answers{display:grid;gap:10px}.mobile-answer{min-height:66px;width:100%;display:flex;align-items:center;text-align:left;gap:12px;background:#181425;border:1px solid #49345f;color:#fff;border-radius:12px;padding:12px;font:600 14px/1.4 system-ui;cursor:pointer}.mobile-answer .mobile-option-lines{display:grid;gap:6px;min-width:0;white-space:normal;line-height:1.45}.mobile-answer .mobile-en,.mobile-answer .mobile-pt{display:flex;gap:7px;align-items:start;overflow-wrap:anywhere}.mobile-answer .mobile-pt{font-weight:500;color:#c9bae2}.mobile-answer .mobile-en em,.mobile-answer .mobile-pt em{font:800 9px/1.4 ui-monospace,monospace;font-style:normal;letter-spacing:.04em;background:#6adcec;color:#0b1724;border-radius:4px;padding:2px 4px;flex:none}.mobile-answer .mobile-pt em{background:#b697ff;color:#1a1026}.mobile-wordbank{margin:10px 0 2px;display:flex;gap:6px;flex-wrap:wrap}.mobile-wordbank span{border:1px solid #41606c;background:#10212b;color:#dcfaff;border-radius:7px;padding:5px 7px;font-size:11px}.mobile-wordbank b{color:#80edff}.mobile-word-title{font-size:10px;color:#a6b8c9;margin-top:12px}.mobile-answer b{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:9px;color:#111;background:var(--cyan)}.mobile-answer.picked{border-color:var(--green);background:#0e2920}.mobile-answer:disabled{cursor:default}.mobile-answer:not(.picked):disabled{opacity:.6}.footnote{font-size:11px;color:var(--muted);line-height:1.5}#voteError{color:#ff899d;font-size:12px;line-height:1.5;font-weight:700;margin-top:10px}
+
+.phone-audio{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:12px 0 10px}
+.phone-audio button{border:1px solid #377f91;background:#12333e;color:#e8faff;border-radius:11px;padding:11px 12px;min-height:43px;font:800 12px/1.3 system-ui;cursor:pointer}
+.phone-audio button:active{background:#1e5262}
+.phone-audio label{display:flex;align-items:center;gap:4px;color:#b7b4dc;font:12px system-ui}
+.phone-audio input{accent-color:#9a8aff}
+</style>
+</head>
+<body><div class="app"><div class="brand">CHAT CHAOS</div><div class="sub">BUZZER E VOTAÇÃO // CELULAR</div><div class="panel"><div class="status"><span><i class="dot" id="dot"></i><span id="conn">CONECTANDO</span></span><span id="roundStatus">AGUARDANDO JOGO</span></div><div class="row"><label>SEU NOME (opcional)</label><input id="nickname" maxlength="30" placeholder="ex: Lucas"></div><div class="row"><label>SUA EQUIPE</label><div class="team-grid" id="teams"></div></div><button class="buzz" id="buzz" disabled>EU SEI! ⚡</button><div class="message" id="message"><strong class="waiting">Aguardando rodada...</strong><small>O professor precisa iniciar uma questão.</small></div><div class="round" id="round"></div></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let current=null,lastRound='',selected=Number(localStorage.getItem('ccBuzzerTeam')??-1),busy=false;
+let token=localStorage.getItem('ccVoteToken')||'',joinedTeam=Number(localStorage.getItem('ccVoteJoinedTeam')??-1);
+let votedRound=localStorage.getItem('ccVoteLastRound')||'', votedChoice=Number(localStorage.getItem('ccVoteLastChoice')??-1);
+let gameId=localStorage.getItem('ccVoteGameId')||'';
+let voteError='';
+$('#nickname').value=localStorage.getItem('ccBuzzerName')||'';
+$('#nickname').oninput=e=>localStorage.setItem('ccBuzzerName',e.target.value);
+const panel=$('.panel'),buzz=$('#buzz');
+const area=document.createElement('div');area.id='voteArea';area.style.display='none';
+area.innerHTML=`<div class="voting-head"><strong id="voteTitle">SUA EQUIPE</strong><span id="voteRoundState"></span></div>
+  <button type="button" class="join" id="joinBtn">✅ ENTRAR NA EQUIPE</button>
+  <div id="joinedMessage"></div><div id="voteError" role="alert"></div>
+  <div id="phoneAudioControls" class="phone-audio" style="display:none"><button type="button" id="phoneListenMessage">🔊 Ouvir contexto</button><button type="button" id="phoneListenPrompt">🔊 Ouvir pergunta (PT)</button><label><input type="checkbox" id="phoneSlow"/> 🐢 Mais devagar</label></div>
+  <div id="mobileQuestion" class="mobile-question"></div>
+  <div id="mobileAnswers" class="mobile-answers"></div>
+  <p class="footnote">Cada integrante vota uma vez por rodada. A maioria decide a resposta da equipe.</p>`;
+buzz.before(area);
+const post=async(path,data)=>{const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const v=await r.json();if(!r.ok)throw new Error(v.error||String(r.status));return v};
+const setMessage=(header,desc='',color='waiting')=>{$('#message').innerHTML=`<strong class="${color}">${esc(header)}</strong><small>${esc(desc)}</small>`};
+function renderTeams(teams=[]){
+ const locked=current?.mode==='vote'&&token&&joinedTeam>=0;
+ $('#teams').innerHTML=teams.map(t=>`<button class="team ${+t.index===selected?'selected':''}" ${locked&&+t.index!==joinedTeam?'disabled':''} data-team="${t.index}"><span>${esc(t.avatar||'⚡')}</span>${esc(t.name)}${current?.mode==='vote'?`<small>${t.registered||0}/${t.members} integrantes</small>`:''}</button>`).join('');
+ document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{selected=+b.dataset.team;localStorage.setItem('ccBuzzerTeam',selected);renderTeams(current?.teams||[]);update()});
+}
+function update(){
+ if(!current)return;
+ const vote=current.mode==='vote';area.style.display=vote?'block':'none';buzz.style.display=vote?'none':'block';
+ const active=!!current.round&&!!current.teams?.length,paused=!!current.paused;
+ $('#round').textContent=current.round||'SEM RODADA ATIVA';
+ $('#roundStatus').textContent=paused?'PAUSADO':current.voteClosed?'VOTOS ENCERRADOS':active?(vote?'VOTAÇÃO ABERTA':'RODADA VALENDO'):'AGUARDANDO';
+ const valid=current.teams?.some(t=>+t.index===selected);
+ if(!valid&&current.teams?.length){selected=+current.teams[0].index;localStorage.setItem('ccBuzzerTeam',selected);renderTeams(current.teams)}
+ if(vote){
+   const joined=!!token&&joinedTeam===selected;
+   const memberAlreadyVoted=joined&&votedRound===current.round;
+   $('#joinBtn').textContent=memberAlreadyVoted?'✅ INSCRIÇÃO CONFIRMADA':joined?'↩ SAIR DA EQUIPE':'✅ ENTRAR NA EQUIPE';
+   $('#joinBtn').disabled=busy||!valid||memberAlreadyVoted||paused&&joined;
+   $('#voteTitle').textContent=joined?`👥 ${current.teams.find(t=>+t.index===selected)?.name||'EQUIPE'}`:'ESCOLHA SUA EQUIPE';
+   $('#voteRoundState').textContent=current.voteClosed?'ENCERRADA':'AGUARDANDO VOTOS';
+   const yourVote=joined&&votedRound===current.round;
+   $('#joinedMessage').textContent=joined?`Integrante conectado · ${current.teams.find(t=>t.index===joinedTeam)?.voted||0}/${current.teams.find(t=>t.index===joinedTeam)?.members||0} votos`:'Digite seu nome e toque em ENTRAR NA EQUIPE.';
+   $('#voteError').textContent=voteError;
+   $('#phoneAudioControls').style.display=joined&&current.question?'flex':'none';
+   $('#mobileQuestion').innerHTML=joined&&current.question?`<small>${current.question.type==='boss'?'👾 BATALHA FINAL':'💬 QUESTÃO DA RODADA'}</small><h3>${esc(current.question.prompt||'Qual alternativa está correta?')}</h3><div class="quote">${esc(current.question.chat)}</div>${current.question.words?.length?`<div class="mobile-word-title">🧩 PALAVRAS ISOLADAS DA MENSAGEM E DAS OPÇÕES</div><div class="mobile-wordbank">${current.question.words.map(w=>`<span><b>${esc(w[0])}</b> → ${esc(w[1])}</span>`).join('')}</div>`:''}`:'';
+   $('#mobileAnswers').innerHTML=joined&&current.question?current.question.answers.map((a,i)=>`<button class="mobile-answer ${yourVote&&votedChoice===i?'picked':''}" data-choice="${i}" ${!active||paused||current.voteClosed||yourVote||busy?'disabled':''}><b>${'ABCD'[i]}</b><span class="mobile-option-lines"><span class="mobile-en"><em>EN</em>${esc(String(a).split('\n')[0])}</span></span></button>`).join(''):'';
+   document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>sendVote(+b.dataset.choice));
+   if(paused)setMessage('⏸ JOGO PAUSADO','Aguarde o professor.');
+   else if(current.voteClosed){
+     const teamResult=current.voteResults?.find(t=>t.teamIndex===selected);
+     const choice=teamResult?.choice;
+     setMessage('📊 VOTAÇÃO ENCERRADA',choice===null||choice===undefined?'A equipe empatou ou não recebeu votos.':`A equipe escolheu ${'ABCD'[choice]} pela maioria.`,'won');
+   }else if(yourVote)setMessage('✅ VOTO REGISTRADO',`Você escolheu ${'ABCD'[votedChoice]}. Aguarde o professor revelar.`, 'won');
+   else if(joined)setMessage('🗳️ SUA VEZ!','Toque em uma alternativa para votar.');
+   else setMessage('👥 ENTRE EM UMA EQUIPE','Há uma vaga para cada integrante configurado.');
+   return;
+ }
+ const winner=current.winner;
+ buzz.disabled=!active||!valid||!!winner||busy||paused;
+ if(paused)setMessage('⏸ JOGO PAUSADO','Espere o professor retomar a rodada.');
+ else if(winner){if(+winner.teamIndex===selected)setMessage('⚡ SUA EQUIPE GANHOU!',`${winner.teamName} conquistou o direito de resposta.`,'won');else setMessage('OUTRA EQUIPE FOI MAIS RÁPIDA',`${winner.teamName} apertou primeiro.`,'lost')}
+ else if(active)setMessage('PRONTO! ⚡','Aperte assim que souber a resposta.');
+ else setMessage('Aguardando rodada...','O professor precisa iniciar uma questão.');
+}
+async function sendVote(choice){
+ if(!current||!token||busy||current.voteClosed||current.paused)return;
+ busy=true;voteError='';update();
+ try{await post('/api/vote',{token,round:current.round,choice});votedRound=current.round;votedChoice=choice;
+ localStorage.setItem('ccVoteLastRound',votedRound);localStorage.setItem('ccVoteLastChoice',String(votedChoice));setMessage('✅ VOTO ENVIADO!','Aguarde os outros integrantes.','won');}
+ catch(e){voteError='⚠ Voto não enviado: '+(e.message==='already_voted'?'Este integrante já votou.':e.message);setMessage('VOTO NÃO ENVIADO',voteError,'lost');if(e.message==='not_registered'){token='';joinedTeam=-1;localStorage.removeItem('ccVoteToken');localStorage.removeItem('ccVoteJoinedTeam')}}
+ finally{busy=false;setTimeout(poll,70)}
+}
+const phoneSpeak=(content,lang='en-US')=>{
+ if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){
+  voteError='⚠ A voz não está disponível neste navegador.';update();return;
+ }
+ if(!content)return;
+ const u=new SpeechSynthesisUtterance(String(content));u.lang=lang;u.rate=$('#phoneSlow').checked?.76:.98;
+ const voices=speechSynthesis.getVoices();u.voice=voices.find(v=>v.lang.toLowerCase()===lang.toLowerCase()&&v.localService)||voices.find(v=>v.lang.toLowerCase()===lang.toLowerCase())||voices.find(v=>v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()))||null;
+ speechSynthesis.cancel();speechSynthesis.speak(u);
+};
+$('#phoneListenMessage').onclick=()=>{if(current?.question){const v=current.question.chat;phoneSpeak(v,/\b(escolha|encontre|aluno|aluna|colega|escreveu|jogada|partida|após|o streamer|a streamer|a pessoa|a atualização|questão)\b/i.test(v)?'pt-BR':'en-US')}};
+$('#phoneListenPrompt').onclick=()=>{if(current?.question)phoneSpeak(current.question.prompt||'Qual alternativa está correta?','pt-BR')};
+$('#joinBtn').onclick=async()=>{
+ if(busy||!current||current.mode!=='vote')return;
+ busy=true;voteError='';$('#joinBtn').disabled=true;
+ try{
+   if(token&&joinedTeam===selected){await post('/api/leave',{token});token='';joinedTeam=-1;localStorage.removeItem('ccVoteToken');localStorage.removeItem('ccVoteJoinedTeam');}
+   else {const result=await post('/api/join',{token,teamIndex:selected,nickname:$('#nickname').value.trim()||'Aluno'});token=result.token;joinedTeam=result.teamIndex;localStorage.setItem('ccVoteToken',token);localStorage.setItem('ccVoteJoinedTeam',String(joinedTeam))}
+ }catch(e){voteError='⚠ '+(e.message==='team_full'?'Equipe completa! Peça ao professor para ajustar o número de integrantes.':e.message==='already_voted'?'Você já votou nesta rodada; não pode sair agora.':e.message);setMessage('NÃO FOI POSSÍVEL ENTRAR',voteError,'lost')}
+ busy=false;await poll();renderTeams(current?.teams||[]);
+};
+buzz.onclick=async()=>{if(busy||selected<0)return;busy=true;buzz.disabled=true;setMessage('ENVIANDO...');try{const r=await post('/api/buzz',{teamIndex:selected,nickname:$('#nickname').value.trim()});if(!r.accepted&&r.winner)setMessage('QUASE! OUTRA EQUIPE FOI PRIMEIRO',r.winner.teamName,'lost')}catch{setMessage('ERRO DE CONEXÃO','','lost')}busy=false;setTimeout(poll,70)};
+async function poll(){try{
+ const d=await fetch('/api/state',{cache:'no-store'}).then(r=>r.json());
+ current=d;$('#dot').style.background='var(--green)';$('#conn').textContent='CONECTADO';
+ if(d.gameId&&d.mode==='vote'&&gameId!==d.gameId){
+   token='';joinedTeam=-1;votedRound='';votedChoice=-1;gameId=d.gameId;voteError='';
+   ['ccVoteToken','ccVoteJoinedTeam','ccVoteLastRound','ccVoteLastChoice'].forEach(k=>localStorage.removeItem(k));
+   localStorage.setItem('ccVoteGameId',gameId);
+ }
+ if(d.round!==lastRound){lastRound=d.round;busy=false;renderTeams(d.teams||[])}
+ else if(!$('#teams').children.length&&d.teams?.length)renderTeams(d.teams);
+ if(d.mode==='vote'&&token&&joinedTeam>=0&&d.teams.some(t=>t.index===joinedTeam))selected=joinedTeam;
+ // Team configuration changes invalidate memberships when old token no longer exists.
+ update();
+ }catch{$('#dot').style.background='var(--red)';$('#conn').textContent='OFFLINE';buzz.disabled=true}}
+poll();setInterval(poll,600);
+</script></body></html>

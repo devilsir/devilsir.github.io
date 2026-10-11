@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0712" />
+  <title>CHAT CHAOS — Survive the Internet</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="academy.css" />
+  <link rel="stylesheet" href="language-lab.css" />
+  <link rel="stylesheet" href="social-study.css" />
+</head>
+<body>
+  <div id="app">
+    <div class="bg-grid"></div>
+    <div class="scanlines"></div>
+
+    <header class="topbar hidden" id="topbar">
+      <div class="brand-mini"><span class="brand-glitch">CHAT CHAOS</span><small>survive the internet</small></div>
+      <div class="chapter-pill" id="chapterPill">GROUP CHAT</div>
+      <div class="top-actions">
+        <button class="icon-btn" id="btnSound" title="Som">♫</button>
+        <button class="icon-btn" id="btnLan" title="Celulares na rede local">⌁</button>
+        <button class="icon-btn" id="btnTeacherTop" title="Teacher Mode">✦</button>
+        <button class="icon-btn" id="btnGlossary" title="Glossário">⌘</button>
+        <button class="icon-btn" id="btnPause" title="Pausar">Ⅱ</button>
+        <button class="icon-btn" id="btnHome" title="Menu">⌂</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="screen active" id="screen-home">
+        <div class="hero-shell">
+          <div class="hero-copy">
+            <div class="eyebrow">CLASSROOM EDITION // v1.1</div>
+            <h1 class="mega-title" data-text="CHAT CHAOS">CHAT CHAOS</h1>
+            <p class="subtitle">Aprenda inglês. Sobreviva à internet.</p>
+            <p class="hero-text">BOOMER.EXE embaralhou as gírias da internet! Jogue em equipe, aprenda pelo contexto, colecione cartas e derrote o chefão. Inglês com pistas de palavras isoladas, sem entregar a resposta!</p>
+            <div class="hero-buttons">
+              <button class="btn primary" id="btnStartCampaign">▶ COMEÇAR CAMPANHA</button>
+              <button class="btn secondary" id="btnQuickPlay">⚡ QUICK PLAY</button>
+              <button class="btn ghost" id="btnHowTo">? COMO JOGAR</button>
+              <button class="btn teacher-home" id="btnTeacher">✎ EDITAR / CRIAR PERGUNTAS</button>
+              <button class="btn ghost" id="btnCardsHome">🃏 MINHAS CARTAS</button>
+              <button class="btn ghost" id="btnWordBankHome">📖 DICIONÁRIO INGLÊS–PORTUGUÊS</button>
+            </div>
+            <div class="home-tags">
+              <span>186 GÍRIAS</span><span>1.580+ PALAVRAS TRADUZIDAS</span><span>82 FRASES ÚTEIS</span><span>313 QUESTÕES</span><span>4 MUNDOS</span><span>2–4 EQUIPES</span><span>VOTOS PELO CELULAR</span><span>MODO PROFESSOR</span>
+            </div>
+          </div>
+          <div class="hero-terminal panel">
+            <div class="terminal-top"><span></span><span></span><span></span><b>boomer.exe</b></div>
+            <div class="terminal-body" id="bootTerminal"></div>
+            <div class="villain-face" aria-hidden="true">
+              <div class="face-screen"><div class="eye e1"></div><div class="eye e2"></div><div class="mouth"></div></div>
+              <div class="signal s1"></div><div class="signal s2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-setup">
+        <div class="center-card panel setup-card">
+          <div class="section-kicker">PREPARE A PARTIDA</div>
+          <h2>Monte as equipes</h2>
+          <p>Escolha quantas equipes vão jogar. O jogo alterna automaticamente o turno entre elas.</p>
+          <div class="team-count" id="teamCountButtons">
+            <button data-count="2" class="count-btn active">2</button>
+            <button data-count="3" class="count-btn">3</button>
+            <button data-count="4" class="count-btn">4</button>
+          </div>
+          <div class="playmode-box panel" id="playmodeBox">
+            <div class="learning-head"><span>🕹️ COMO A TURMA VAI RESPONDER?</span><small>Selecione um modo</small></div>
+            <div class="playmode-choices" role="radiogroup" aria-label="Modo de jogo">
+              <label class="playmode-option"><input type="radio" name="classroomMode" value="projector" checked><span><b>📽️ PROJETOR</b><small>Modo clássico: uma resposta por equipe a cada turno.</small></span></label>
+              <label class="playmode-option"><input type="radio" name="classroomMode" value="vote"><span><b>📱 CELULARES · VOTAÇÃO</b><small>Vários alunos por equipe votam de seus celulares. Vale a maioria.</small></span></label>
+            </div>
+            <p id="playmodeNote" class="learning-note">Projetor: jogue aqui. Buzzer opcional pelo Wi‑Fi.</p>
+          </div>
+          <div class="team-form" id="teamForm"></div>
+          <div class="member-config panel hidden" id="memberConfig">
+            <div class="learning-head"><span>👥 INTEGRANTES POR EQUIPE</span><small>Um celular para cada integrante</small></div>
+            <div id="memberRows" class="member-rows"></div>
+            <p class="learning-note">Cada aluno escolhe sua equipe, informa o nome e vota em A, B, C ou D. O professor encerra a votação para revelar o resultado.</p>
+          </div>
+          <div class="learning-setup panel">
+            <div class="learning-head"><span>🎓 CONFIGURAÇÕES DA AULA</span><small>Ajuste o desafio ao nível da turma</small></div>
+            <div class="academy-settings">
+              <label>Série <select id="classGrade"><option value="6">6º ano</option><option value="7">7º ano</option><option value="8">8º ano</option><option value="9">9º ano</option></select></label>
+              <label>Nível de inglês <select id="difficulty"><option value="newbie">🌱 Newbie — fácil</option><option value="pro">⚡ Pro — médio</option><option value="legend">🔥 Legend — difícil</option></select></label>
+              <label>Questões no Quick Play <select id="questionCount"><option value="8">8 — aula curtinha</option><option value="12">12 — rápido</option><option value="16" selected>16 — padrão</option><option value="20">20 — aula completa</option></select></label>
+              <label>⏱️ Tempo para responder <select id="responseTime" aria-label="Tempo de resposta por questão"><option value="30">30 segundos</option><option value="60" selected>1 minuto</option><option value="90">1 minuto e 30 segundos</option><option value="120">2 minutos</option><option value="150">2 minutos e 30 segundos</option><option value="180">3 minutos</option><option value="210">3 minutos e 30 segundos</option><option value="240">4 minutos</option></select></label>
+            </div>
+            <p class="learning-note" id="difficultySummary">Perguntas com tempo maior, dicas de português e feedback didático.</p>
+          </div>
+          <div class="row-actions editor-shortcut"><button class="btn ghost small" id="btnSetupEditor" type="button">✎ EDITAR OU ADICIONAR PERGUNTAS</button></div>
+          <div class="setup-options">
+            <label><input type="checkbox" id="optTimer" checked /> Cronômetro por questão</label>
+            <label><input type="checkbox" id="optHints" checked /> Poderes habilitados</label>
+            <label><input type="checkbox" id="optTutorial" checked /> Tutorial inicial</label>
+            <label><input type="checkbox" id="optSounds" checked /> Sons e feedback de arcade</label>
+            <label><input type="checkbox" id="optEvents" checked /> Eventos aleatórios</label>
+            <label><input type="checkbox" id="optReview" checked /> Revisão de erros durante a partida</label>
+            <label><input type="checkbox" id="optBuzzer" /> Buzzer por celular (opcional no Projetor)</label>
+          </div>
+          <div class="row-actions"><button class="btn ghost" id="btnBackHome">← VOLTAR</button><button class="btn primary" id="btnLaunch">ENTRAR NA INTERNET →</button></div>
+        </div>
+      </section>
+
+
+      <section class="screen" id="screen-characters">
+        <div class="character-wrap">
+          <div class="campaign-head">
+            <div><div class="section-kicker">ESCOLHA SEU PERSONAGEM</div><h2>Escolha os avatares</h2><p class="muted-copy">Cada equipe escolhe um personagem. Os avatares aparecem durante toda a partida.</p></div>
+            <div class="select-status" id="avatarSelectStatus">0 / 2 READY</div>
+          </div>
+          <div class="avatar-team-tabs" id="avatarTeamTabs"></div>
+          <div class="avatar-grid" id="avatarGrid"></div>
+          <div class="character-preview panel" id="characterPreview"></div>
+          <div class="row-actions"><button class="btn ghost" id="btnCharactersBack">← VOLTAR</button><button class="btn primary" id="btnCharactersStart">LOCK IN →</button></div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-map">
+        <div class="campaign-wrap">
+          <div class="campaign-head">
+            <div><div class="section-kicker">MAPA DA CAMPANHA</div><h2>Restaure a Internet</h2></div>
+            <div class="global-score">XP DA TURMA <strong id="globalScore">0</strong></div>
+          </div>
+          <div class="chapter-grid" id="chapterGrid"></div>
+          <div class="team-strip" id="mapTeamStrip"></div>
+          <div class="map-coach panel" id="mapCoach"><img src="assets/mascot.svg" alt="Mascote Pixel"/><div><strong>PIX, o guia digital</strong><p>Cada mundo tem desafios diferentes. Clique na primeira zona para começar!</p></div></div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-game">
+        <div class="game-layout">
+          <aside class="team-rail panel" id="teamRail"></aside>
+          <section class="game-stage">
+            <div class="active-event hidden" id="activeEventHud"></div>
+            <div class="stage-meta">
+              <div class="mode-badge" id="modeBadge">DECODE THE CHAT</div>
+              <div class="progress-wrap"><div class="progress-bar"><div id="progressFill"></div></div><span id="progressText">1 / 6</span></div>
+              <div class="timer-wrap" id="timerWrap"><svg viewBox="0 0 42 42" class="timer-ring"><circle cx="21" cy="21" r="17" class="ring-bg"></circle><circle cx="21" cy="21" r="17" class="ring-fg" id="timerRing"></circle></svg><span id="timerText">01:00</span></div>
+            </div>
+            <div class="cringe-hud panel" id="cringeHud"><div><span>CRINGE METER</span><b id="cringeValue">0%</b></div><div class="cringe-track"><i id="cringeFill"></i></div><small id="cringeLabel">CLEAN CHAT</small></div>
+
+            <div class="question-card panel" id="questionCard">
+              <div class="chat-head"><div class="avatar" id="speakerAvatar">👾</div><div><b id="speakerName">user_404</b><small id="speakerStatus">online</small></div><div class="chat-dots">•••</div></div>
+              <div class="question-zone">
+                <div class="context-chip" id="contextChip">GROUP CHAT</div>
+                <h3 id="questionPrompt">Carregando...</h3>
+                <div class="world-stage" id="worldStage" aria-hidden="true"></div>
+                <div class="chat-bubble" id="chatBubble"></div>
+                <div class="help-tools" id="helpTools">
+                  <button class="help-btn" id="btnTranslate" type="button">🌎 Pistas em português</button>
+                  <button class="help-btn" id="btnSecondChance" type="button">💛 Segunda chance</button>
+                  <span class="help-counter" id="helpCounter"></span>
+                </div>
+                <div id="translationHelp" class="translation-help hidden" role="status"></div>
+                <div class="format-callout" id="formatCallout"></div>
+                <div class="answers" id="answers"></div>
+              </div>
+              <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon">✓</div>
+                <div><strong id="feedbackTitle">SLANG RESTORED</strong><div id="feedbackText"></div></div>
+                <button class="btn primary small" id="btnNext">NEXT →</button>
+              </div>
+            </div>
+
+            <div class="vote-panel panel hidden" id="votePanelGame" aria-live="polite"></div>
+            <div class="powerbar panel" id="powerbar"></div>
+            <div class="learning-progress panel" id="learningProgress"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-boss">
+        <div class="boss-wrap">
+          <div class="boss-top">
+            <div><div class="section-kicker danger">DESAFIO FINAL</div><h2>BOOMER.EXE</h2></div>
+            <div class="boss-timer" id="bossTimer" aria-live="off">⏱ <span id="bossTimeText">01:00</span></div><div class="boss-hp"><span>HP</span><div class="hp-track"><div id="bossHpFill"></div></div><b id="bossHpText">100%</b></div>
+          </div>
+          <div class="boss-arena">
+            <div class="boss-monster panel" id="bossMonster"><div class="damage-layer" id="damageLayer"></div><div class="boss-core">B</div><div class="boss-eye left"></div><div class="boss-eye right"></div><div class="boss-mouth"></div><div class="error-float f1">404</div><div class="error-float f2">LOL = LOTS OF LOVE?</div><div class="error-float f3">TRANSLATION FAILED</div></div>
+            <div class="boss-question panel">
+              <div class="mode-badge boss">CHEFÃO: DECODIFIQUE A MENSAGEM</div>
+              <h3 id="bossPrompt">“GLHF. Their main is OP. We're cooked. GG.”</h3>
+              <p id="bossInstruction">Escolha a melhor tradução da mensagem inteira.</p>
+              <div class="boss-phase-bubble" id="bossPhaseBubble">👾 “Vocês nunca vão entender minha linguagem!”</div>
+              <div class="boss-help" id="bossHelp"><button type="button" id="btnBossHint" class="help-btn">💡 Dica do chefão</button><button type="button" id="btnBossShield" class="help-btn">🛡️ Escudo de equipe</button></div>
+              <div class="translation-help hidden" id="bossHintPanel"></div><p class="boss-round-status" id="bossRoundStatus">O combate continua até o HP chegar a 0.</p>
+              <div class="answers boss-answers" id="bossAnswers"></div>
+              <div class="vote-panel panel hidden" id="votePanelBoss" aria-live="polite"></div>
+              <div class="feedback" id="bossFeedback"><div class="feedback-icon" id="bossFeedbackIcon">⚡</div><div><strong id="bossFeedbackTitle">CRITICAL HIT!</strong><div id="bossFeedbackText"></div></div><button class="btn primary small" id="btnBossNext">ATTACK →</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-results">
+        <div class="results-wrap">
+          <div class="results-hero">
+            <div class="section-kicker success">CONEXÃO RESTAURADA</div>
+            <h2>A INTERNET FOI SALVA!</h2>
+            <p>BOOMER.EXE foi neutralizado. Pelo menos até a próxima gíria aparecer.</p>
+          </div>
+          <div class="podium" id="podium"></div>
+          <div class="result-stats" id="resultStats"></div>
+          <section class="result-learning panel" id="resultLearning"></section>
+          <div class="row-actions center"><button class="btn secondary" id="btnExportReport">⇩ EXPORTAR RELATÓRIO CSV</button><button class="btn ghost" id="btnCardsResults">🃏 VER CARTAS</button></div>
+          <div class="row-actions center"><button class="btn secondary" id="btnReplay">↻ JOGAR DE NOVO</button><button class="btn primary" id="btnReturnHome">MENU PRINCIPAL</button></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal" id="modalTutorial">
+      <div class="modal-card panel wide">
+        <button class="modal-x" data-close="modalTutorial">×</button>
+        <div class="section-kicker">COMO JOGAR</div>
+        <h2 id="tutorialTitle">Bem-vindo ao Chat Chaos</h2>
+        <div class="tutorial-body" id="tutorialBody"></div>
+        <div class="tutorial-dots" id="tutorialDots"></div>
+        <div class="row-actions"><button class="btn ghost" id="tutorialPrev">←</button><button class="btn primary" id="tutorialNext">PRÓXIMO →</button></div>
+      </div>
+    </div>
+
+    <div class="modal" id="modalGlossary">
+      <div class="modal-card panel glossary-card">
+        <button class="modal-x" data-close="modalGlossary">×</button>
+        <div class="section-kicker">DICIONÁRIO DE APOIO · ENGLISH + PORTUGUÊS</div>
+        <h2>Glossário e palavras traduzidas</h2>
+        <div class="dictionary-tabs" role="tablist" aria-label="Tipo de dicionário"><button id="dictSlangs" class="dict-tab active" type="button" aria-selected="true">🎮 Gírias</button><button id="dictWords" class="dict-tab" type="button" aria-selected="false">📖 Palavras comuns (<span id="dictionaryCount">0</span>)</button></div>
+        <input class="search" id="glossarySearch" placeholder="Buscar gíria..." aria-label="Buscar palavra ou gíria" />
+        <div class="dictionary-guidance" id="dictionaryHelp">Gírias aparecem aqui como material de estudo; durante a questão, as pistas mostram apenas palavras neutras.</div>
+        <div class="glossary-grid" id="glossaryGrid"></div>
+      </div>
+    </div>
+
+    <div class="modal" id="modalPause">
+      <div class="modal-card panel pause-card">
+        <div class="pause-symbol">Ⅱ</div><h2>JOGO PAUSADO</h2><p>A internet continuará caótica quando você voltar.</p>
+        <button class="btn primary" id="btnResume">RETOMAR</button>
+      </div>
+    </div>
+
+
+    <div class="modal" id="modalEvent">
+      <div class="modal-card panel event-card">
+        <div class="event-icon" id="eventIcon">⚠</div><div class="section-kicker">EVENTO ALEATÓRIO</div>
+        <h2 id="eventTitle">LAG SPIKE</h2><p id="eventText"></p><div class="event-effect" id="eventEffect"></div>
+        <button class="btn primary" id="btnEventContinue">CONTINUAR →</button>
+      </div>
+    </div>
+
+    <div class="modal" id="modalLan">
+      <div class="modal-card panel lan-card">
+        <button class="modal-x" data-close="modalLan">×</button><div class="section-kicker">MULTIPLAYER EM SALA</div>
+        <h2>Celulares: buzzer ou votação</h2>
+        <div class="lan-status" id="lanStatus"></div>
+        <div class="lan-url" id="lanUrl">Abra o jogo via server.py para ativar.</div>
+        <p>Com todos no mesmo Wi‑Fi, os alunos acessam <b>/buzzer.html</b>. No modo Projetor, o celular é um buzzer opcional. No modo Celulares, cada integrante entra na própria equipe e escolhe uma alternativa por questão. O professor revela a votação.</p>
+        <div class="buzzer-monitor" id="buzzerMonitor"></div>
+      </div>
+    </div>
+
+    <div class="modal" id="modalTeacher">
+      <div class="modal-card panel teacher-card">
+        <button class="modal-x" data-close="modalTeacher">×</button>
+        <div class="teacher-head"><div><div class="section-kicker">MODO PROFESSOR</div><h2>Editor de perguntas</h2><p>Edite questões existentes ou crie novas, com respostas em inglês e português. As alterações entram nas próximas partidas.</p></div><div class="teacher-count" id="teacherCount">0 CUSTOM</div></div>
+        <div class="teacher-layout">
+          <aside class="teacher-list-wrap"><div class="teacher-actions"><button class="btn secondary small" id="btnNewQuestion">+ NOVA</button><button class="btn ghost small" id="btnExportQuestions">EXPORTAR</button><label class="btn ghost small file-label">IMPORTAR<input type="file" id="importQuestions" accept="application/json" /></label></div><div class="teacher-filters"><input type="search" id="teacherSearch" aria-label="Buscar questões" placeholder="🔎 Pesquisar perguntas ou gírias" /><select id="teacherZoneFilter" aria-label="Filtrar por zona"><option value="all">Todas as zonas</option><option value="0">Group Chat</option><option value="1">Gaming Lobby</option><option value="2">Social Feed</option><option value="3">Stream Chat</option><option value="custom">Criadas por mim</option></select></div><div class="teacher-list" id="teacherList"></div></aside>
+          <section class="teacher-editor">
+            <input type="hidden" id="qEditId" />
+            <div class="editor-grid"><label>Zona<select id="qChapter"><option value="0">Group Chat</option><option value="1">Gaming Lobby</option><option value="2">Social Feed</option><option value="3">Stream Chat</option></select></label><label>Modo<input id="qMode" value="Decode the Chat" /></label></div>
+            <label>Enunciado<input id="qPrompt" placeholder="O que a pessoa quer dizer?" /></label>
+            <label>Mensagem / contexto<textarea id="qChat" rows="3" placeholder="“I’m cooked.”"></textarea></label>
+            <label>Nota de leitura em português (opcional; aparece apenas DEPOIS de responder) <textarea id="qContextPt" rows="2" placeholder="Ex.: Observe por que essa expressão combina com o contexto."></textarea></label>
+            <div class="editor-grid"><label>Slang destacada<input id="qSlang" placeholder="cooked" /></label><label>Resposta correta<select id="qCorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label></div>
+            <div class="teacher-bilingual-help">🧩 Durante a pergunta, o aluno verá apenas o inglês. A tradução em português da alternativa certa aparecerá SOMENTE depois da correção, no projetor. As pistas mostram palavras isoladas.</div>
+            <div class="answer-editor bilingual-editor"><div class="answer-edit-block"><div class="answer-edit-head"><span class="editor-letter">A</span><label class="correct-radio"><input type="radio" name="correctAnswer" value="0" checked/> Correta</label></div><label><span>🇺🇸 Inglês</span><input id="qEn0" placeholder="Alternative in English" maxlength="4000" /></label><label><span>🇧🇷 Português</span><input id="qPt0" placeholder="Alternativa em português" maxlength="4000" /></label></div><div class="answer-edit-block"><div class="answer-edit-head"><span class="editor-letter">B</span><label class="correct-radio"><input type="radio" name="correctAnswer" value="1" /> Correta</label></div><label><span>🇺🇸 Inglês</span><input id="qEn1" placeholder="Alternative in English" maxlength="4000" /></label><label><span>🇧🇷 Português</span><input id="qPt1" placeholder="Alternativa em português" maxlength="4000" /></label></div><div class="answer-edit-block"><div class="answer-edit-head"><span class="editor-letter">C</span><label class="correct-radio"><input type="radio" name="correctAnswer" value="2" /> Correta</label></div><label><span>🇺🇸 Inglês</span><input id="qEn2" placeholder="Alternative in English" maxlength="4000" /></label><label><span>🇧🇷 Português</span><input id="qPt2" placeholder="Alternativa em português" maxlength="4000" /></label></div><div class="answer-edit-block"><div class="answer-edit-head"><span class="editor-letter">D</span><label class="correct-radio"><input type="radio" name="correctAnswer" value="3" /> Correta</label></div><label><span>🇺🇸 Inglês</span><input id="qEn3" placeholder="Alternative in English" maxlength="4000" /></label><label><span>🇧🇷 Português</span><input id="qPt3" placeholder="Alternativa em português" maxlength="4000" /></label></div></div>
+            <div class="teacher-preview panel" id="teacherPreview" aria-live="polite"></div>
+            <label>Explicação pós-resposta<textarea id="qExplain" rows="2"></textarea></label>
+            <div class="row-actions"><button class="btn danger-btn" id="btnDeleteQuestion">EXCLUIR</button><button class="btn ghost" id="btnDuplicateQuestion">DUPLICAR</button><button class="btn primary" id="btnSaveQuestion">SALVAR QUESTÃO</button></div>
+            <div class="teacher-note" id="teacherStorageNote" role="status" aria-live="polite">Modo offline: questões salvas neste navegador. Para salvar também em arquivo, abra o jogo pelo servidor LAN.</div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="modalCards"><div class="modal-card panel cards-modal"><button class="modal-x" data-close="modalCards">×</button><div class="section-kicker">SLANGDEX • SUA COLEÇÃO</div><h2>Cartas desbloqueadas 🃏</h2><div id="collectionStats" class="collection-stats"></div><div id="collectionFilter" class="collection-filter"></div><div id="cardGrid" class="card-grid"></div></div></div>
+    <div class="modal" id="modalGuided"><div class="modal-card panel guide-modal">
+      <div class="guide-heading"><img src="assets/mascot.svg" alt="PIX, seu guia"/><div><div class="section-kicker">TUTORIAL NA PRÁTICA • PODE PULAR</div><h2>PIX ensina em 1 minuto</h2></div></div>
+      <div class="guide-steps" id="guideSteps"></div><div id="guideContent" class="guide-content"></div>
+      <div class="row-actions"><button class="btn ghost" id="guideSkip">PULAR TUTORIAL</button><button class="btn primary" id="guideNext" disabled>CONTINUAR →</button></div>
+    </div></div>
+    <div class="toast" id="toast"></div>
+  </div>
+  <script src="app.js"></script>
+  <script src="content-pack.js"></script>
+  <script src="context-support.js"></script>
+  <script src="classroom-questions.js"></script>
+  <script src="bilingual-answers.js"></script>
+  <script src="word-bank.js"></script>
+  <script src="language-data.js"></script>
+  <script src="slang-challenges.js"></script>
+  <script src="social-media-pack.js"></script>
+  <script src="contextual-hints.js"></script>
+  <script src="upgrade.js"></script>
+  <script src="academy.js"></script>
+  <script src="vote-mode.js"></script>
+  <script src="language-lab.js"></script>
+</body>
+</html>

@@ -164,27 +164,7 @@ const Session=(()=>{
  }
  function openTeacherConsole(password,section='overview'){
   panel('ACESSO DOCENTE','Área do professor','Gerencie o conteúdo científico e acompanhe a aprendizagem com controle sobre as contas dos alunos.','');
-  const root=document.createElement('div');$('frontPanelBody').appendChild(root);TeacherConsole.mount(root,{password,tab:section,students:el=>teacherDirectory(password,el)});teacherOnline($('frontPanelBody'));
- }
- function teacherOnline(root){
-  const cloud=document.createElement('section');cloud.className='admin-pane cloud-teacher';cloud.innerHTML='<h3>☁ Dados online · Supabase</h3><p>Conecte a conta docente autorizada no Supabase para consultar as duas turmas e publicar o banco de questões online.</p><form id="cloudTeacherForm" class="front-profile-form"><label>E-mail do professor no Supabase<input id="cloudTeacherEmail" type="email" autocomplete="username" required></label><label>Senha da conta docente<input id="cloudTeacherPassword" type="password" autocomplete="current-password" required></label><p class="profile-error" id="cloudTeacherError" role="alert"></p><button class="primary-btn" type="submit">Conectar conta docente</button></form><div id="cloudTeacherResults"></div>';
-  root.appendChild(cloud);
-  cloud.querySelector('#cloudTeacherForm').onsubmit=async e=>{e.preventDefault();const form=e.target,button=form.querySelector('button');button.disabled=true;
-   try{await OrbitalCloud.teacherLogin(cloud.querySelector('#cloudTeacherEmail').value,cloud.querySelector('#cloudTeacherPassword').value);cloud.querySelector('#cloudTeacherPassword').value='';form.classList.add('hidden');await OrbitalCloud.teacherSync();await showTeacherOnline(cloud.querySelector('#cloudTeacherResults'));}
-   catch(err){cloud.querySelector('#cloudTeacherError').textContent=OrbitalCloud.pretty(err)}finally{button.disabled=false}
-  };
-  if(OrbitalCloud.state.teacher){cloud.querySelector('#cloudTeacherForm').classList.add('hidden');showTeacherOnline(cloud.querySelector('#cloudTeacherResults')).catch(e=>{cloud.querySelector('#cloudTeacherResults').textContent=e.message})}
- }
- async function showTeacherOnline(box){
-  const people=await OrbitalCloud.students();const answers=people.flatMap(p=>(p.save?.answerHistory||[]).map(a=>({...a,aluno:p.name,turma:p.classroom})));
-  const phases=people.flatMap(p=>Object.values(p.save?.phaseRecords||{}).flatMap(x=>(x.history||[]).map(a=>({...a,aluno:p.name,turma:p.classroom}))));
-  box.innerHTML=`<div class="admin-metrics"><div class="admin-metric"><span>ALUNOS ONLINE</span><strong>${people.length}</strong></div><div class="admin-metric"><span>RESPOSTAS</span><strong>${answers.length}</strong></div><div class="admin-metric"><span>FASES CONCLUÍDAS</span><strong>${phases.length}</strong></div></div><div class="admin-actions"><button class="secondary-btn" id="onlineRefresh">↻ Atualizar</button><button class="secondary-btn" id="onlineAnswers">Exportar respostas CSV ↓</button><button class="secondary-btn" id="onlinePhases">Exportar fases CSV ↓</button><button class="primary-btn" id="onlinePublish">Publicar banco local</button><button class="secondary-btn" id="onlineDownload">Carregar banco online</button></div><div class="admin-report-table"><table><thead><tr><th>Turma</th><th>Aluno</th><th>Capítulo</th><th>Score total</th><th>Respostas</th><th>Último save</th></tr></thead><tbody>${people.map(p=>`<tr><td>${esc(p.classroom)}</td><td>${esc(p.name)}</td><td>${Math.min(8,Number(p.save?.chapter||0)+1)}</td><td>${fmt(Object.values(p.save?.phaseRecords||{}).reduce((n,x)=>n+(Number(x.bestScore)||0),0))}</td><td>${(p.save?.answerHistory||[]).length}</td><td>${esc(new Date(p.updated_at).toLocaleString('pt-BR'))}</td></tr>`).join('')||'<tr><td colspan="6">Nenhum aluno conectado ao banco.</td></tr>'}</tbody></table></div><p id="onlineStatus" role="status"></p>`;
-  const csv=(rows,name)=>{if(!rows.length){box.querySelector('#onlineStatus').textContent='Nenhum registro para exportar.';return}const keys=[...new Set(rows.flatMap(Object.keys))].filter(k=>!['answers','history'].includes(k));const quote=x=>'"'+String(x??'').replace(/\r?\n/g,' ').replace(/^[\s]*[=+@-]/,"'$&").replace(/"/g,'""')+'"';const content='\ufeff'+[keys.join(';'),...rows.map(row=>keys.map(k=>quote(row[k])).join(';'))].join('\r\n');const a=document.createElement('a'),link=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));a.href=link;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(link),1500)};
-  box.querySelector('#onlineRefresh').onclick=()=>showTeacherOnline(box);
-  box.querySelector('#onlineAnswers').onclick=()=>csv(answers,'orbital-respostas-online.csv');
-  box.querySelector('#onlinePhases').onclick=()=>csv(phases,'orbital-fases-online.csv');
-  box.querySelector('#onlinePublish').onclick=async()=>{if(!window.confirm('Publicar as questões deste navegador para todos os alunos? Isso substituirá o banco online.'))return;try{await OrbitalCloud.writeCurriculum(TeacherConsole.settings());box.querySelector('#onlineStatus').textContent='✓ Banco de questões publicado para os alunos.'}catch(err){box.querySelector('#onlineStatus').textContent=err.message}};
-  box.querySelector('#onlineDownload').onclick=async()=>{if(!window.confirm('Carregar banco online? Isso substituirá as questões deste navegador.'))return;try{const cfg=await OrbitalCloud.curriculum();if(cfg)TeacherConsole.applyRemote(cfg);box.querySelector('#onlineStatus').textContent='✓ Questões atualizadas.'}catch(err){box.querySelector('#onlineStatus').textContent=err.message}};
+  const root=document.createElement('div');$('frontPanelBody').appendChild(root);TeacherConsole.mount(root,{password,tab:section,students:el=>teacherDirectory(password,el)});
  }
  function authorizeChange(title,description,onApprove,onCancel){
   const existing=$('teacherConfirm');if(existing)existing.remove();
@@ -213,7 +193,6 @@ const Session=(()=>{
   $('frontTeacherAccess').textContent='🔒 Área do professor';
   $('frontTeacherAccess').onclick=()=>authorizeChange('Área do professor','Digite a senha para administrar questões, relatórios, alunos e configurações.',password=>openTeacherConsole(password));
   $('menuHomeBtn').onclick=showMenu;
-  const teacher=$('teacherBtn');if(teacher)teacher.onclick=()=>authorizeChange('Área do professor','Acesso exclusivo para administrar a turma.',password=>openTeacherConsole(password));
   const scoreLink=document.createElement('button');scoreLink.id='navScoreBtn';scoreLink.textContent='Placar';scoreLink.onclick=viewScore;nav?.insertBefore(scoreLink,$('settingsBtn'));
   const back=document.createElement('button');back.id='navPlayBtn';back.textContent='▶ Jogar';back.className='nav-play';back.onclick=()=>enterPlay(true);nav?.insertBefore(back,nav.firstChild);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&OrbitalCloud.state.pending)OrbitalCloud.flush().catch(()=>{})});setInterval(()=>{const el=$('cloudSyncStatus');if(!el)return;const state=OrbitalCloud.state;el.textContent=state.student?(state.lastError?'☁ Pendência de sincronização':state.pending?'☁ Salvando progresso…':'☁ Progresso sincronizado'):'☁ Login obrigatório para sincronizar'},3000);window.addEventListener('pagehide',()=>{unlockedId=null;OrbitalCloud.logout()});
