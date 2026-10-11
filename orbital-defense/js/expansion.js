@@ -131,7 +131,6 @@ const Expansion=(()=>{
   if(e.type==='cometBoss'&&!e.fragmented&&e.x>sun.x+210&&enemies.length<72){e.fragmented=true;for(const offset of [-42,50]){const shard=createEnemy('ice',e.lane,{x:e.x+offset,hp:95,maxHp:95,speed:35,reward:10,size:47,tag:'FRAGMENTO',splitOnDeath:0});enemies.push(shard)}burst(e.x,e.y,'#a5f5ff',25);showToast('Cometa fragmentado: duas ameaças menores!')}
  }
  function bossWarning(b){
-  const bar=$('bossBar');if(bar){bar.classList.add('imminent');setTimeout(()=>bar.classList.remove('imminent'),1800)}
   AudioSystem.play('event');if(b.hp>0)showToast(`${b.name}: ataque iminente! Proteja sua formação.`)
  }
  function attempt(cp){return Math.max(1,Number(attempts[cp]||1))}

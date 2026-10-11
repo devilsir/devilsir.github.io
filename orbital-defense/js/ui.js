@@ -326,9 +326,6 @@ var Interface=(()=>{
   for(const b of rail.children){const id=b.dataset.power,unlocked=!['slingshot','eclipse','supernova'].includes(id)||(id==='supernova'?Progress.has('supernova'):Progress.has('powers'));b.classList.toggle('hidden',!unlocked);b.disabled=!running||paused||gameOver||!powerCharges[id];b.querySelector('b').textContent=powerCharges[id]||0}
   document.getElementById('researchValue').textContent=Progress.data.research
  }
- function bossBar(){
-  const boss=enemies.find(e=>e.isSuperboss)||enemies.find(e=>e.tag==='BOSS'||['blackhole','binary'].includes(e.type)),bar=document.getElementById('bossBar');bar.classList.toggle('hidden',!boss);if(!boss)return;document.getElementById('bossName').textContent=boss.name;document.getElementById('bossPhaseLabel').textContent='Fase '+boss.bossPhase+' · '+Math.ceil(boss.hp)+' HP'+(['rogueBoss','binaryBoss','neutronBoss','cometBoss','solarBoss','vortex'].includes(boss.behavior)?' · Pulso em '+Math.max(0,Math.ceil(boss.abilityTimer||0))+'s':'')+(boss.isSuperboss?' · reforços suspensos':'');document.getElementById('bossHP').style.width=Math.max(0,boss.hp/boss.maxHp*100)+'%';bar.classList.toggle('superboss',boss.isSuperboss)
- }
  function debug(){
   heading('DESENVOLVEDOR · F8','Laboratório de testes.','Controles locais para verificar combate, fases e checkpoints.')
   content.innerHTML=`<div class="debug-grid"><button id="debugEnergy">+1.000 energia</button><button id="debugKill">Eliminar todos os alvos</button><button id="debugCheckpoint">Abrir próximo checkpoint</button><button id="debugSuper">Invocar superboss</button><label>Inimigo<select id="debugEnemy">${Object.entries(enemyDefs).map(([id,d])=>`<option value="${id}">${d.name}</option>`).join('')}</select></label><button id="debugSpawn">Invocar na rota 3</button><label>Capítulo<select id="debugStage">${waves.map((w,i)=>`<option value="${i}">${w.short}</option>`).join('')}</select></label><button id="debugSetStage">Carregar capítulo</button><label><input id="debugInvincible" type="checkbox" ${debugState.invincible?'checked':''}>Invencibilidade</label><label><input id="debugHitboxes" type="checkbox" ${debugState.hitboxes?'checked':''}>Hitboxes</label><label><input id="debugFPS" type="checkbox" ${debugState.fps?'checked':''}>FPS</label><label><input id="debugSlow" type="checkbox" ${debugState.slow?'checked':''}>Câmera lenta</label></div>`
@@ -354,7 +351,7 @@ var Interface=(()=>{
   }
  })
  applySettings();loadRun();preview();tutorial();powers();TutorialGuide.scanUnlocks('load')
- return {open,close,preview,tutorial,powers,bossBar,applySettings}
+ return {open,close,preview,tutorial,powers,applySettings}
 })()
 
 if(typeof Expansion!=='undefined')Expansion.init()

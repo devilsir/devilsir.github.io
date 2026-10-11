@@ -73,9 +73,9 @@ body.mobile-landscape .power-rail button{min-width:30px;min-height:30px;padding:
 body.mobile-landscape .power-rail button small{display:none}
 body.mobile-landscape .toast{font-size:10px;padding:5px 8px;bottom:30px;max-width:68%}
 body.mobile-landscape .tooltip{display:none!important}
-body.mobile-landscape .boss-bar{width:min(250px,60%);top:4px;left:55%;padding:5px 7px;max-width:65%}
-body.mobile-landscape .boss-bar strong{font-size:9px}
-body.mobile-landscape .boss-bar span{font-size:8px}
+
+
+
 body.mobile-landscape .app-shell>footer{display:none}
 body.mobile-landscape .menu-visible .app-shell{filter:none}
 body.mobile-landscape .front-menu{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}

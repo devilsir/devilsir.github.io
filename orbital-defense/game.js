@@ -768,7 +768,7 @@ function update(dt){
  if(orbTimer>=BALANCE.mainSunInterval){orbTimer=0;spawnEnergyOrb(sun.x+120+Math.random()*70,sun.y-95+Math.random()*190,20,20)}
  for(const o of energyOrbs){o.life-=dt;o.y+=o.vy*dt;o.vy*=Math.pow(.2,dt)}energyOrbs=energyOrbs.filter(o=>o.life>0)
  if(!penaltyBossActive){spawnTimer-=dt;if(spawnQueue.length&&spawnTimer<=0&&enemies.length<80){spawnEnemy(spawnQueue.shift());waveSpawned++;const trainingBurst=gameMode==='campaign'&&waves[waveIndex].trainingWave?.length&&waveSpawned<waves[waveIndex].trainingWave.length;spawnTimer=trainingBurst?.9:waveIndex===0?4.1:Math.max(1.5,3.2-waveIndex*.16)}if(triggerCheckpointIfNeeded())return}
- if(simTime-lastUIUpdate>.12){lastUIUpdate=simTime;missionProgress.style.width=`${Math.min(100,waveSpawned/Math.max(1,waveTotal)*100)}%`;updateHud();if(typeof Interface!=='undefined')Interface.bossBar()}
+ if(simTime-lastUIUpdate>.12){lastUIUpdate=simTime;missionProgress.style.width=`${Math.min(100,waveSpawned/Math.max(1,waveTotal)*100)}%`;updateHud()}
  const magnetic=enemies.filter(e=>e.behavior==='magnetic'),suppressors=enemies.filter(e=>e.behavior==='leech'||e.behavior==='parasite')
  for(const d of defenders){
   // Defenders live on orbital grid cells. Their render/physics position must always
