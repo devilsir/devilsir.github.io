@@ -96,6 +96,8 @@ const Physics=(()=>{
    if(q.kind==='period')correct=Math.abs(Math.pow(state.value,1.5)-q.target)<.15
    if(q.kind==='escape')correct=Math.abs(state.value-q.target)<.035
    if(q.kind==='order')correct=state.order.join(',')==='1,2,3'
+   // Captura a configuração que o aluno realmente selecionou ANTES de mostrar a correção.
+   const selection={kind:q.kind,label:q.kind==='focus'?`Sol em x=${Math.round(state.sunX)}, y=${Math.round(state.sunY)}`:q.kind==='order'?`Ordem: ${state.order.join(' → ')} UA`:q.kind==='speed'?({0:'Periélio',1:'Afélio'})[state.choice]||'Sem seleção':q.kind==='areas'?({0:'Áreas iguais',1:'Distâncias iguais'})[state.choice]||'Sem seleção':`${Number(state.value).toLocaleString('pt-BR',{maximumFractionDigits:2})} · ${q.kind}`};
    answered=true;controls.querySelectorAll('button,input').forEach(b=>b.disabled=true);check.disabled=true
    if(!correct){
     if(q.kind==='focus'){state.sunX=320+136*.55;state.sunY=163.2}
@@ -106,7 +108,7 @@ const Physics=(()=>{
     if(q.kind==='order')state.order=[1,2,3]
     draw();readout.textContent+=' · configuração correta mostrada acima'
    }
-   submit(correct)
+   submit(correct,selection)
   }
   draw()
  }

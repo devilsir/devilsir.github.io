@@ -1,0 +1,78 @@
+#frontPanel:has(.admin-console){background:linear-gradient(125deg,#1b1128f5,#0b0915f5);padding:clamp(13px,1.8vw,28px)}
+#frontPanel:has(.admin-console)>h2{font-size:clamp(22px,2.4vw,34px);margin-bottom:3px}
+#frontPanel:has(.admin-console)>p{margin-bottom:14px}
+.admin-console{color:#f4eaff;font-size:13px;line-height:1.5;min-width:0}
+.admin-console *{box-sizing:border-box}
+.admin-heading,.admin-section-head,.admin-editor-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}
+.admin-heading h3{font-size:clamp(19px,2.3vw,29px);letter-spacing:-.03em;margin:4px 0}
+.admin-heading p,.admin-section-head p,.admin-editor-head p{color:#b6a2ca;margin:4px 0;line-height:1.5}
+.admin-shield{padding:9px 14px;border:1px solid #cda4e450;background:#c190e316;border-radius:12px;color:#ebd5ff;font-size:12px;display:flex;gap:8px;white-space:nowrap}
+.admin-tabs{display:flex;flex-wrap:wrap;gap:7px;border-bottom:1px solid #b987df36;padding-bottom:14px;margin-bottom:23px}
+.admin-tabs button{flex:1;min-width:125px;padding:11px 8px;border:1px solid #9166b348;border-radius:10px;background:#201430;color:#cbb8e4;font-size:12px;font-weight:650;white-space:nowrap}
+.admin-tabs button.active{background:linear-gradient(135deg,#764ba9,#52337f);border-color:#e1b8ff;color:#fff;box-shadow:0 4px 24px #a06ee520}
+.admin-content{min-height:330px}
+.admin-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.admin-metric{display:flex;flex-direction:column;gap:5px;padding:19px 16px;background:linear-gradient(138deg,#2a193c,#191124);border:1px solid #8758a43d;border-radius:14px;min-width:0}
+.admin-metric span{font-size:10px;font-weight:750;letter-spacing:.07em;color:#bd9ed7}
+.admin-metric strong{font-size:clamp(23px,2.5vw,34px);color:#e5b9ff;letter-spacing:-.05em;line-height:1.2}
+.admin-metric small{font-size:11px;color:#b9a5c7}
+.admin-overview-layout,.admin-settings-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.admin-pane{padding:20px;background:#170f24;border:1px solid #a37cb146;border-radius:15px}
+.admin-pane h4,.admin-section-head h4{font-size:18px;color:#f9edff;margin:0 0 6px}
+.admin-pane>p,.admin-original p{color:#c7afd9;line-height:1.65;margin:8px 0 18px}
+.admin-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.admin-actions .primary-btn,.admin-actions .secondary-btn,.admin-file-btn,.admin-question-actions button,.admin-original-list button{padding:9px 13px;min-height:39px;font-size:12px;border-radius:9px;cursor:pointer}
+.admin-file-btn{display:inline-flex;align-items:center;border:1px solid #a884c4;background:#2d1c40;color:#fff;font-weight:700}
+.admin-file-btn:hover{background:#57376e}
+.admin-pills{display:flex;flex-wrap:wrap;gap:7px}.admin-pills span{border:1px solid #956cbd55;background:#382349;padding:7px 10px;border-radius:99px;font-size:11px;color:#e4c6ff}
+.admin-recent{display:grid;gap:8px;margin:12px 0}.admin-recent>div{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #a474b337;padding:8px 0}
+.admin-recent span{color:#e7d7f3}.admin-recent strong{font-size:11px;white-space:nowrap}.admin-right{color:#83f4cb!important}.admin-wrong{color:#ffb0a2!important}
+.admin-section-head{align-items:start;margin-bottom:16px}.admin-section-head .admin-actions{justify-content:flex-end;margin-top:0}
+.admin-section-head .admin-actions button,.admin-section-head .admin-actions label{white-space:nowrap}
+.admin-filter-row{display:grid;grid-template-columns:minmax(170px,2fr) repeat(3,minmax(108px,1fr));gap:10px;padding:14px;margin:0 0 14px;border:1px solid #8765a344;border-radius:13px;background:#1b1329}
+.admin-filter-row label,.admin-editor label,.admin-setting-field{display:flex;flex-direction:column;gap:6px;font-size:11px;color:#d1b9e6;font-weight:700;min-width:0}
+.admin-console input:not([type=checkbox]),.admin-console select,.admin-console textarea{color:#f7eaff;background:#100a1a;border:1px solid #8767a7;border-radius:9px;min-height:40px;width:100%;padding:9px 11px;font:inherit;font-size:12px;outline-offset:2px}
+.admin-console textarea{resize:vertical;min-height:80px;line-height:1.6}
+.admin-console input::placeholder,.admin-console textarea::placeholder{color:#83708e}
+.admin-console input:focus,.admin-console select:focus,.admin-console textarea:focus{outline:2px solid #cf9dff}
+.admin-console input[type=checkbox]{accent-color:#c08ef2;width:19px;height:19px;flex:none}
+.admin-question-results{display:grid;gap:11px}.admin-result-count{font-size:11px;color:#b99dcd;margin:0 0 2px}
+.admin-question-card{padding:18px 19px;background:linear-gradient(130deg,#20132e,#14101f);border:1px solid #9a73ae45;border-radius:13px;min-width:0}
+.admin-question-card.is-disabled{opacity:.65}
+.admin-question-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.admin-question-meta span{background:#5d3a7638;border:1px solid #9e69be40;padding:3px 8px;border-radius:6px;font-size:10px;color:#dcc1f0}
+.admin-question-meta .admin-tag-live{background:#25685947;border-color:#64d6ac70;color:#9df6d5}
+.admin-question-meta .admin-tag-off{color:#c7bacb;background:#29222d}
+.admin-question-card h5{font-size:15px;margin:0 0 8px;line-height:1.5;color:#f4e8ff;overflow-wrap:anywhere}
+.admin-question-card small{display:block;font-size:11px;color:#ae9abb;line-height:1.6;overflow-wrap:anywhere}
+.admin-question-answer{font-size:12px;color:#bca5d1;margin:0 0 6px}.admin-question-answer strong{color:#aaf2cf}
+.admin-question-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid #a777b144}
+.admin-question-actions button,.admin-original-list button{background:#322044;color:#f6dcff;border:1px solid #946cad;font-weight:650}
+.admin-question-actions button:hover,.admin-original-list button:hover{background:#633d7a}
+.admin-question-actions button.danger{margin-left:auto;border-color:#b96e88;color:#ffc4d1;background:#55253666}
+.admin-empty{padding:32px 20px;text-align:center;color:#cbb3db;border:1px dashed #8666a0;border-radius:12px}
+.admin-editor{border:1px solid #cf9cff99;padding:clamp(15px,2.4vw,25px);border-radius:16px;background:linear-gradient(145deg,#301b45,#191128);box-shadow:0 14px 35px #0003;margin:0 0 20px;display:grid;gap:13px}
+.admin-editor-head{margin-bottom:2px}.admin-editor h4{font-size:20px;margin:4px 0}.admin-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.admin-answers{margin-top:2px}
+.admin-editor .admin-correct-label{color:#85ffcc;font-size:10px}.admin-answers label span{min-height:14px}
+.admin-inline-toggle{display:flex!important;flex-direction:row!important;align-items:center;gap:12px!important;border:1px solid #8964a044;background:#241533;padding:13px;border-radius:10px;margin:5px 0 12px;cursor:pointer;font-size:12px!important}
+.admin-inline-toggle span{display:flex;flex-direction:column;gap:4px;font-weight:400}.admin-inline-toggle small{color:#bba5d0;font-size:11px}
+.admin-editor-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.admin-editor-footer p{color:#ffc6a3;font-size:12px;margin:0}
+.admin-original{margin-top:23px;border:1px solid #6c4e844f;border-radius:13px;padding:13px 18px;background:#160f20}
+.admin-original summary{cursor:pointer;font-weight:700;color:#e3c6f3}.admin-original summary span{float:right}
+.admin-original-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.admin-original-list article{display:grid;gap:9px;background:#25182f;border-radius:10px;padding:12px}
+.admin-original-list article>span{color:#b78fd9;font-size:10px;letter-spacing:.07em}
+.admin-original-list article strong{font-size:12px;line-height:1.5;font-weight:600}
+.admin-original-list button{justify-self:start;font-size:10px;min-height:0}
+.admin-report-table{overflow:auto;border:1px solid #9b77ac55;border-radius:12px;max-height:430px}
+.admin-report-table table{border-collapse:collapse;width:100%;font-size:11px;min-width:720px}
+.admin-report-table th{position:sticky;top:0;background:#342044;color:#f3e1ff;text-align:left;padding:12px 10px}
+.admin-report-table td{border-top:1px solid #81669a44;padding:11px 10px;color:#d9c9e5;vertical-align:top;max-width:230px;overflow-wrap:anywhere}
+.admin-setting-foot{font-size:11px;color:#a3f2d0!important;margin-top:16px!important}
+.admin-console .teacher-student-list{max-width:none}
+.admin-console .teacher-student-editor{max-width:600px}
+@media(max-width:850px){.admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-tabs button{min-width:90px}.admin-section-head{flex-direction:column}.admin-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-original-list{grid-template-columns:1fr}}
+@media(max-width:560px){.admin-overview-layout,.admin-settings-layout,.admin-form-grid{grid-template-columns:1fr}.admin-shield span{display:none}.admin-metric{padding:12px}.admin-heading{align-items:flex-start}.admin-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-tabs button{min-width:0}.admin-section-head .admin-actions{justify-content:start}.admin-filter-row{grid-template-columns:1fr}.admin-question-card{padding:12px}.admin-question-actions button.danger{margin-left:0}}
+@media(max-height:480px){.admin-tabs{gap:4px;padding-bottom:8px;margin-bottom:11px}.admin-tabs button{padding:7px 5px}.admin-heading{margin-bottom:8px}.admin-heading p{display:none}.admin-metric{padding:10px}.admin-console{font-size:11px}}
+
+.admin-preview-box{padding:17px;border:1px solid #b99acf;border-radius:12px;background:#120b1e}.admin-preview-box.hidden{display:none}.admin-preview-box h4{font-size:17px;color:#f8eeff;line-height:1.5;margin:9px 0}.admin-preview-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.admin-preview-options>div{background:#241734;border:1px solid #9571ac68;border-radius:9px;padding:12px;font-size:12px}.admin-preview-options>div.is-answer{border-color:#84f5cc;background:#225b503b}.admin-preview-box p{font-size:12px;color:#d0badc;line-height:1.6;margin:12px 0 0}.admin-phase-title{font-size:16px;color:#f5e5ff;margin:23px 0 10px}@media(max-width:650px){.admin-preview-options{grid-template-columns:1fr}}
