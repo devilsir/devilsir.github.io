@@ -13,7 +13,7 @@ const AudioSystem=(()=>{
   const t=context.currentTime+delay,o=context.createOscillator(),g=context.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);if(end)o.frequency.exponentialRampToValueAtTime(end,t+duration);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(volume,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(destination);o.start(t);o.stop(t+duration+.03);o.onended=()=>{o.disconnect();g.disconnect()}
  }
  function play(name){
-  const bank={shot:[340,.07,'triangle',.035,90],impact:[95,.13,'triangle',.06,40],collect:[880,.18,'sine',.09,1320],upgrade:[440,.32,'sine',.09,880],correct:[660,.4,'sine',.1,1320],wrong:[160,.5,'sawtooth',.045,60],boss:[75,.9,'sawtooth',.06,35],victory:[523,.8,'sine',.1,1046],defeat:[220,.8,'triangle',.1,55],power:[200,.6,'sine',.12,1200],place:[300,.15,'sine',.08,600]}
+  const bank={shot:[340,.07,'triangle',.035,90],impact:[95,.13,'triangle',.06,40],collect:[880,.18,'sine',.09,1320],upgrade:[440,.32,'sine',.09,880],correct:[660,.4,'sine',.1,1320],wrong:[160,.5,'sawtooth',.045,60],boss:[75,.9,'sawtooth',.06,35],victory:[523,.8,'sine',.1,1046],defeat:[220,.8,'triangle',.1,55],power:[200,.6,'sine',.12,1200],place:[300,.15,'sine',.08,600],combo:[610,.24,'triangle',.07,980],event:[160,.42,'sawtooth',.04,100],perk:[530,.33,'sine',.09,780],undo:[390,.18,'sine',.06,260]}
   const b=bank[name];if(!b)return;tone(b[0],b[1],b[2],b[3],sfx,0,b[4]);if(['correct','victory','upgrade'].includes(name))tone(b[0]*1.5,b[1],'sine',b[3]*.55,sfx,.12)
  }
  function tick(active){
