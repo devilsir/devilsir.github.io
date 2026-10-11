@@ -15,12 +15,12 @@ const Session=(()=>{
  }
  function showMenu(){
   if(checkpointInProgress){showToast('Conclua a pergunta antes de abrir o menu.');return}
-  if(!inMenu){previousPaused=paused;paused=true;saveRun()}
+  if(!inMenu){previousPaused=paused;paused=true;saveRun()}OrbitalCloud.logoutTeacher()
   inMenu=true;document.body.classList.add('menu-visible');renderIntro();
   $('frontMenu').classList.remove('hidden');$('frontNew').focus();
  }
  function enterPlay(requestScreen=true){
-  if(!player())return false;
+  if(!player())return false;OrbitalCloud.logoutTeacher();
   const hadMenu=inMenu;inMenu=false;document.body.classList.remove('menu-visible');$('frontMenu').classList.add('hidden');
   if(hadMenu&&gameStarted&&!gameOver&&!checkpointInProgress&&modal.classList.contains('hidden'))paused=previousPaused;
   if(requestScreen)fullscreen();
@@ -32,45 +32,46 @@ const Session=(()=>{
  }
  function panel(tag,title,lead,markup){$('frontMain').classList.add('hidden');$('frontPanel').classList.remove('hidden');$('frontPanelTag').textContent=tag;$('frontPanelTitle').textContent=title;$('frontPanelLead').textContent=lead;$('frontPanelBody').innerHTML=markup;$('frontBack').focus()}
  function validation(input,error){const name=input.value.trim().replace(/\s+/g,' ');if(name.length<2||name.length>48){error.textContent='Digite um nome de 2 a 48 caracteres.';input.focus();return null}return name}
+ const classes='<option value="Turma 1">Turma 1</option><option value="Turma 2">Turma 2</option>';
  function viewNew(){
-  const hasExisting=Object.keys(Progress.profiles()).length>0;
-  panel('NOVA EXPEDIÇÃO','Crie seu perfil','Seu nome e sua senha serão necessários para continuar a campanha após fechar ou atualizar a página.',`<form id="newProfileForm" class="front-profile-form"><label>Nome do explorador<input id="newProfileName" name="player" maxlength="48" minlength="2" autocomplete="off" required placeholder="Seu nome aqui" aria-describedby="profileError"></label><label>Crie sua senha pessoal<input id="newProfilePassword" type="password" minlength="4" maxlength="64" required autocomplete="new-password" placeholder="Pelo menos 4 caracteres"></label><label>Confirme a senha<input id="newProfileConfirm" type="password" minlength="4" maxlength="64" required autocomplete="new-password" placeholder="Repita a mesma senha"></label><label class="password-visibility"><input id="newProfileShow" type="checkbox"> Mostrar as senhas enquanto digito</label><p class="front-hint">${hasExisting?'Os outros perfis e seus progressos serão preservados.':'A senha será solicitada sempre que abrir ou atualizar o jogo.'} O professor poderá consultá-la mediante autorização.</p><p id="profileError" class="profile-error" role="alert"></p><button class="primary-btn wide" type="submit">Criar perfil e iniciar ↗</button></form>`);
-  $('newProfileName').focus();
-  $('newProfileShow').onchange=e=>{for(const id of ['newProfilePassword','newProfileConfirm'])$(id).type=e.target.checked?'text':'password'};
+  panel('NOVO PERFIL ONLINE','Nova expedição','Seu progresso será sincronizado ao Supabase. Você poderá continuar em outros dispositivos.',`<form id="newProfileForm" class="front-profile-form"><label>Nome do explorador<input id="newProfileName" minlength="2" maxlength="48" required autocomplete="off" placeholder="Seu nome"></label><label>Turma<select id="newProfileClass">${classes}</select></label><label>Crie sua senha<input id="newProfilePassword" type="password" minlength="6" maxlength="64" required autocomplete="new-password" placeholder="Pelo menos 6 caracteres"></label><label>Repita sua senha<input id="newProfileConfirm" type="password" minlength="6" maxlength="64" required autocomplete="new-password"></label><label class="password-visibility"><input id="newProfileShow" type="checkbox"> Mostrar as senhas</label><p class="front-hint">A senha será solicitada após atualizar ou fechar a página. A conta online permite continuar de outro dispositivo. O professor não terá acesso à sua senha original.</p><p id="profileError" class="profile-error" role="alert"></p><button class="primary-btn wide" type="submit">Criar perfil online ↗</button></form>`);
+  $('newProfileName').focus();$('newProfileShow').onchange=e=>{for(const id of ['newProfilePassword','newProfileConfirm'])$(id).type=e.target.checked?'text':'password'};
   $('newProfileForm').onsubmit=async e=>{e.preventDefault();if(authBusy)return;const name=validation($('newProfileName'),$('profileError'));if(!name)return;
-   const password=$('newProfilePassword').value;
-   if(!StudentAccess.policy(password)){$('profileError').textContent='Crie uma senha de 4 a 64 caracteres.';return}
-   if(password!==$('newProfileConfirm').value){$('profileError').textContent='As duas senhas não são iguais.';return}
-   const duplicate=Object.values(Progress.profiles()).some(slot=>slot?.save?.playerName&&slot.save.playerName.trim().toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'));
-   if(duplicate){$('profileError').textContent='Já existe um jogo com este nome. Use Carregar jogo salvo.';return}
+   const group=$('newProfileClass').value,password=$('newProfilePassword').value;if(password.length<6){$('profileError').textContent='Use uma senha de pelo menos 6 caracteres.';return}if(password!==$('newProfileConfirm').value){$('profileError').textContent='As senhas não conferem.';return}
    authBusy=true;const submit=$('newProfileForm').querySelector('[type="submit"]');submit.disabled=true;
-   try{const credentials=await StudentAccess.prepare(password);const profile=Progress.makeProfile(name);StudentAccess.store(profile.profileId,credentials);unlockedId=profile.profileId;startStage(0);previousPaused=false;enterPlay(true)}
-   catch(err){$('profileError').textContent='Não foi possível criar o perfil: '+err.message}
-   finally{authBusy=false;if(submit.isConnected)submit.disabled=false}
-  }
+   try{const id=await OrbitalCloud.signup(name,group,password);const profile=Progress.makeProfile(name,id,group);const saved=await OrbitalCloud.flush();if(!saved)throw Error(OrbitalCloud.state.lastError||'Não foi possível salvar na nuvem. Tente Carregar jogo salvo com a senha criada.');unlockedId=profile.profileId;await OrbitalCloud.getCurriculum();startStage(0);previousPaused=false;enterPlay(true)}
+   catch(err){$('profileError').textContent='Não foi possível concluir: '+OrbitalCloud.pretty(err)}finally{authBusy=false;if(submit.isConnected)submit.disabled=false}
+  };
  }
  function viewLoad(){
-  const slots=Progress.profiles(),entries=Object.entries(slots).filter(([,v])=>v?.save?.playerName).sort((a,b)=>(b[1].updated||0)-(a[1].updated||0));
-  const legacy=!Progress.data.profileId&&(Progress.data.unlocked>1||Progress.data.research>0||Object.keys(Progress.data.scores||{}).length>0||Progress.data.resume);
-  panel('ACESSO DO EXPLORADOR','Carregar jogo salvo','Escolha seu nome e digite sua senha. Após F5 ou ao voltar ao jogo, será obrigatório entrar novamente.',`<div class="save-slot-list">${entries.map(([id,v])=>`<article class="save-slot"><div class="save-slot-avatar">✦</div><div><strong>${esc(v.name)}</strong><small>Capítulo ${Math.min(8,(Number(v.chapter)||0)+1)} · ${new Date(v.updated).toLocaleDateString('pt-BR')} · ${fmt(Object.values(v.save.phaseRecords||{}).reduce((sum,x)=>sum+(Number(x.bestScore)||0),0))} pts</small>${!StudentAccess.has(id)?'<small class="locked-notice">🔒 Senha pendente: solicite ao professor.</small>':''}</div><button class="primary-btn" data-load="${esc(id)}" ${!StudentAccess.has(id)?'disabled':''}>Entrar ↗</button></article>`).join('')}${legacy?'<p class="front-hint">Há um progresso antigo sem nome. Peça ao professor para recuperá-lo e cadastrar uma senha.</p>':''}${entries.length===0&&!legacy?'<p class="front-empty">Nenhum jogo salvo encontrado. Escolha “Novo jogo” para começar.</p>':''}</div><div id="studentLoginBox"></div><p class="front-hint">Esqueceu a senha? O professor pode consultá-la ou substituí-la em “Senhas dos alunos”, no menu principal.</p>`);
+  const slots=Progress.profiles(),entries=Object.entries(slots).filter(([,v])=>v?.save?.playerName&&!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(v.save.profileId||''));
+  panel('RETOMAR CAMPANHA','Carregar jogo salvo','Entre com seu nome, turma e senha para recuperar os dados online.',`<form id="cloudLoginForm" class="front-profile-form"><label>Nome do explorador<input id="cloudName" minlength="2" maxlength="48" required autocomplete="username" placeholder="Seu nome cadastrado"></label><label>Turma<select id="cloudClass">${classes}</select></label><label>Sua senha<input id="cloudPassword" type="password" minlength="6" maxlength="64" required autocomplete="current-password"></label><p id="cloudLoginError" class="profile-error" role="alert"></p><button class="primary-btn wide" type="submit">Carregar do Supabase ↗</button></form><details class="cloud-legacy" style="margin-top:24px"><summary>Progresso de versões anteriores neste aparelho (${entries.length})</summary><div class="save-slot-list">${entries.map(([id,v])=>`<article class="save-slot"><div><strong>${esc(v.name)}</strong><small>Capítulo ${Math.min(8,Number(v.chapter||0)+1)} · Salvo apenas aqui</small></div><button class="secondary-btn" data-load="${esc(id)}" ${!StudentAccess.has(id)?'disabled':''}>Abrir local</button></article>`).join('')||'<p>Não há perfis antigos neste navegador.</p>'}</div><div id="studentLoginBox"></div></details>`);
   $('frontPanelBody').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>studentLogin(b.dataset.load,slots[b.dataset.load]?.name));
+  $('cloudLoginForm').onsubmit=async e=>{e.preventDefault();if(authBusy)return;authBusy=true;const submit=$('cloudLoginForm').querySelector('[type="submit"]');submit.disabled=true;
+   try{const name=validation($('cloudName'),$('cloudLoginError'));if(!name)return;const group=$('cloudClass').value,id=await OrbitalCloud.login(name,group,$('cloudPassword').value);$('cloudPassword').value='';const remote=await OrbitalCloud.retrieve();if(!remote){if(Progress.profiles()[id]?.save)Progress.restoreProfile(id);else Progress.makeProfile(name,id,group);if(!await OrbitalCloud.flush())throw Error(OrbitalCloud.state.lastError||'Não foi possível criar o save online.')}else{
+     const local=Progress.profiles()[id];if(local?.save&&local.updated>Date.parse(remote.updated_at)+3000&&window.confirm('Há um salvamento mais recente neste dispositivo. Deseja enviar essa versão para a nuvem?')){Progress.restoreProfile(id);if(!await OrbitalCloud.flush())throw Error(OrbitalCloud.state.lastError||'Falha ao enviar save local.')}else Progress.acceptCloud(remote);
+    }
+    unlockedId=id;await OrbitalCloud.getCurriculum();if(!loadRun())startStage(Progress.data.chapter||0);Interface.applySettings();buildDeck();updateHud();previousPaused=paused;enterPlay(true);
+   }catch(err){$('cloudLoginError').textContent=OrbitalCloud.pretty(err)}finally{authBusy=false;if(submit.isConnected)submit.disabled=false}
+  };
  }
  function studentLogin(id,name){
   if(!StudentAccess.has(id)){showToast('Somente o professor pode cadastrar a senha deste perfil.');return}
-  const box=$('studentLoginBox');box.innerHTML=`<form id="studentLoginForm" class="front-profile-form login-form"><span class="panel-kicker">ACESSO INDIVIDUAL</span><h3>${esc(name||'Explorador')}</h3><label>Sua senha<input id="studentLoginPassword" type="password" maxlength="64" required autocomplete="off" placeholder="Digite sua senha"></label><label class="password-visibility"><input id="studentLoginShow" type="checkbox"> Mostrar senha</label><p id="studentLoginError" class="profile-error" role="alert"></p><button class="primary-btn wide" type="submit">Entrar na minha campanha ↗</button></form>`;
+  const box=$('studentLoginBox');box.innerHTML=`<form id="studentLoginForm" class="front-profile-form login-form"><span class="panel-kicker">ACESSO INDIVIDUAL</span><h3>${esc(name||'Explorador')}</h3><label>Sua senha<input id="studentLoginPassword" type="password" maxlength="64" required autocomplete="off" placeholder="Digite sua senha"></label><label class="password-visibility"><input id="studentLoginShow" type="checkbox"> Mostrar senha</label><label class="password-visibility"><input id="migrateToCloud" type="checkbox"> Enviar meu progresso antigo para o Supabase</label><div id="legacyCloudFields" class="hidden"><label>Turma online<select id="legacyCloudClass">${classes}</select></label><label>Nova senha para a conta online (6 ou mais caracteres)<input id="legacyCloudPassword" type="password" minlength="6" maxlength="64" autocomplete="new-password"></label></div><p id="studentLoginError" class="profile-error" role="alert"></p><button class="primary-btn wide" type="submit">Entrar na minha campanha ↗</button></form>`;
+  $('migrateToCloud').onchange=e=>$('legacyCloudFields').classList.toggle('hidden',!e.target.checked);
   $('studentLoginShow').onchange=e=>$('studentLoginPassword').type=e.target.checked?'text':'password';
   $('studentLoginPassword').focus();
   $('studentLoginForm').onsubmit=async e=>{e.preventDefault();if(authBusy)return;authBusy=true;const submit=$('studentLoginForm').querySelector('[type="submit"]');submit.disabled=true;
    try{const okay=await StudentAccess.verify(id,$('studentLoginPassword').value);$('studentLoginPassword').value='';
     if(!okay){$('studentLoginError').textContent='Senha incorreta. Confira e tente novamente.';return}
-    Progress.restoreProfile(id);unlockedId=id;if(!loadRun())startStage(Progress.data.chapter||0);Interface.applySettings();buildDeck();updateHud();previousPaused=paused;enterPlay(true);
+    Progress.restoreProfile(id);let activeId=id;if($('migrateToCloud').checked){const group=$('legacyCloudClass').value,pw=$('legacyCloudPassword').value;if(pw.length<6)throw Error('Defina uma nova senha online de pelo menos 6 caracteres.');const cloudId=await OrbitalCloud.signup(Progress.data.playerName,group,pw);Progress.linkCloud(cloudId,group);if(!await OrbitalCloud.flush())throw Error('O cadastro iniciou, mas o save ainda não foi enviado. Tente entrar pelo login online.');activeId=cloudId;await OrbitalCloud.getCurriculum();}unlockedId=activeId;if(!loadRun())startStage(Progress.data.chapter||0);Interface.applySettings();buildDeck();updateHud();previousPaused=paused;enterPlay(true);
    }catch(err){$('studentLoginError').textContent=err.message}
    finally{authBusy=false;if(submit.isConnected)submit.disabled=false}
   };
  }
  function teacherDirectory(teacherPassword,container=null){
-  const entries=Object.entries(Progress.profiles()).filter(([,v])=>v?.save?.playerName).sort((a,b)=>String(a[1].name).localeCompare(String(b[1].name),'pt-BR'));
-  const listMarkup=`<div class="teacher-student-list">${entries.map(([id,v])=>`<article class="teacher-student" data-student="${esc(id)}"><div><strong>${esc(v.name)}</strong><small>${StudentAccess.has(id)?'Senha cadastrada':'Perfil antigo · senha ainda não cadastrada'}</small><p class="teacher-secret hidden" data-secret="${esc(id)}"></p></div><div class="teacher-student-actions"><button class="secondary-btn" data-reveal="${esc(id)}" ${StudentAccess.has(id)?'':'disabled'}>Ver senha</button><button class="secondary-btn" data-change="${esc(id)}">${StudentAccess.has(id)?'Trocar senha':'Cadastrar senha'}</button></div></article>`).join('')||'<p class="front-empty">Ainda não há alunos cadastrados.</p>'}</div><div id="teacherStudentEditor"></div><p id="teacherStudentError" class="profile-error" role="alert"></p>`;
+  const entries=Object.entries(Progress.profiles()).filter(([id,v])=>v?.save?.playerName&&!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(id)).sort((a,b)=>String(a[1].name).localeCompare(String(b[1].name),'pt-BR'));
+  const listMarkup=`<p class="front-hint">Perfis antigos deste aparelho. As contas online são gerenciadas pela conta docente do Supabase; a senha original não fica disponível.</p><div class="teacher-student-list">${entries.map(([id,v])=>`<article class="teacher-student" data-student="${esc(id)}"><div><strong>${esc(v.name)}</strong><small>${StudentAccess.has(id)?'Senha cadastrada':'Perfil antigo · senha ainda não cadastrada'}</small><p class="teacher-secret hidden" data-secret="${esc(id)}"></p></div><div class="teacher-student-actions"><button class="secondary-btn" data-reveal="${esc(id)}" ${StudentAccess.has(id)?'':'disabled'}>Ver senha</button><button class="secondary-btn" data-change="${esc(id)}">${StudentAccess.has(id)?'Trocar senha':'Cadastrar senha'}</button></div></article>`).join('')||'<p class="front-empty">Ainda não há alunos cadastrados.</p>'}</div><div id="teacherStudentEditor"></div><p id="teacherStudentError" class="profile-error" role="alert"></p>`;
   if(container)container.innerHTML=listMarkup;else panel('GESTÃO PROTEGIDA','Senhas dos alunos','Exclusivo do professor.',listMarkup);
   const target=container||$('frontPanelBody');
   target.querySelectorAll('[data-reveal]').forEach(btn=>btn.onclick=async()=>{
@@ -163,7 +164,27 @@ const Session=(()=>{
  }
  function openTeacherConsole(password,section='overview'){
   panel('ACESSO DOCENTE','Área do professor','Gerencie o conteúdo científico e acompanhe a aprendizagem com controle sobre as contas dos alunos.','');
-  TeacherConsole.mount($('frontPanelBody'),{password,tab:section,students:el=>teacherDirectory(password,el)});
+  const root=document.createElement('div');$('frontPanelBody').appendChild(root);TeacherConsole.mount(root,{password,tab:section,students:el=>teacherDirectory(password,el)});teacherOnline($('frontPanelBody'));
+ }
+ function teacherOnline(root){
+  const cloud=document.createElement('section');cloud.className='admin-pane cloud-teacher';cloud.innerHTML='<h3>☁ Dados online · Supabase</h3><p>Conecte a conta docente autorizada no Supabase para consultar as duas turmas e publicar o banco de questões online.</p><form id="cloudTeacherForm" class="front-profile-form"><label>E-mail do professor no Supabase<input id="cloudTeacherEmail" type="email" autocomplete="username" required></label><label>Senha da conta docente<input id="cloudTeacherPassword" type="password" autocomplete="current-password" required></label><p class="profile-error" id="cloudTeacherError" role="alert"></p><button class="primary-btn" type="submit">Conectar conta docente</button></form><div id="cloudTeacherResults"></div>';
+  root.appendChild(cloud);
+  cloud.querySelector('#cloudTeacherForm').onsubmit=async e=>{e.preventDefault();const form=e.target,button=form.querySelector('button');button.disabled=true;
+   try{await OrbitalCloud.teacherLogin(cloud.querySelector('#cloudTeacherEmail').value,cloud.querySelector('#cloudTeacherPassword').value);cloud.querySelector('#cloudTeacherPassword').value='';form.classList.add('hidden');await OrbitalCloud.teacherSync();await showTeacherOnline(cloud.querySelector('#cloudTeacherResults'));}
+   catch(err){cloud.querySelector('#cloudTeacherError').textContent=OrbitalCloud.pretty(err)}finally{button.disabled=false}
+  };
+  if(OrbitalCloud.state.teacher){cloud.querySelector('#cloudTeacherForm').classList.add('hidden');showTeacherOnline(cloud.querySelector('#cloudTeacherResults')).catch(e=>{cloud.querySelector('#cloudTeacherResults').textContent=e.message})}
+ }
+ async function showTeacherOnline(box){
+  const people=await OrbitalCloud.students();const answers=people.flatMap(p=>(p.save?.answerHistory||[]).map(a=>({...a,aluno:p.name,turma:p.classroom})));
+  const phases=people.flatMap(p=>Object.values(p.save?.phaseRecords||{}).flatMap(x=>(x.history||[]).map(a=>({...a,aluno:p.name,turma:p.classroom}))));
+  box.innerHTML=`<div class="admin-metrics"><div class="admin-metric"><span>ALUNOS ONLINE</span><strong>${people.length}</strong></div><div class="admin-metric"><span>RESPOSTAS</span><strong>${answers.length}</strong></div><div class="admin-metric"><span>FASES CONCLUÍDAS</span><strong>${phases.length}</strong></div></div><div class="admin-actions"><button class="secondary-btn" id="onlineRefresh">↻ Atualizar</button><button class="secondary-btn" id="onlineAnswers">Exportar respostas CSV ↓</button><button class="secondary-btn" id="onlinePhases">Exportar fases CSV ↓</button><button class="primary-btn" id="onlinePublish">Publicar banco local</button><button class="secondary-btn" id="onlineDownload">Carregar banco online</button></div><div class="admin-report-table"><table><thead><tr><th>Turma</th><th>Aluno</th><th>Capítulo</th><th>Score total</th><th>Respostas</th><th>Último save</th></tr></thead><tbody>${people.map(p=>`<tr><td>${esc(p.classroom)}</td><td>${esc(p.name)}</td><td>${Math.min(8,Number(p.save?.chapter||0)+1)}</td><td>${fmt(Object.values(p.save?.phaseRecords||{}).reduce((n,x)=>n+(Number(x.bestScore)||0),0))}</td><td>${(p.save?.answerHistory||[]).length}</td><td>${esc(new Date(p.updated_at).toLocaleString('pt-BR'))}</td></tr>`).join('')||'<tr><td colspan="6">Nenhum aluno conectado ao banco.</td></tr>'}</tbody></table></div><p id="onlineStatus" role="status"></p>`;
+  const csv=(rows,name)=>{if(!rows.length){box.querySelector('#onlineStatus').textContent='Nenhum registro para exportar.';return}const keys=[...new Set(rows.flatMap(Object.keys))].filter(k=>!['answers','history'].includes(k));const quote=x=>'"'+String(x??'').replace(/\r?\n/g,' ').replace(/^[\s]*[=+@-]/,"'$&").replace(/"/g,'""')+'"';const content='\ufeff'+[keys.join(';'),...rows.map(row=>keys.map(k=>quote(row[k])).join(';'))].join('\r\n');const a=document.createElement('a'),link=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));a.href=link;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(link),1500)};
+  box.querySelector('#onlineRefresh').onclick=()=>showTeacherOnline(box);
+  box.querySelector('#onlineAnswers').onclick=()=>csv(answers,'orbital-respostas-online.csv');
+  box.querySelector('#onlinePhases').onclick=()=>csv(phases,'orbital-fases-online.csv');
+  box.querySelector('#onlinePublish').onclick=async()=>{if(!window.confirm('Publicar as questões deste navegador para todos os alunos? Isso substituirá o banco online.'))return;try{await OrbitalCloud.writeCurriculum(TeacherConsole.settings());box.querySelector('#onlineStatus').textContent='✓ Banco de questões publicado para os alunos.'}catch(err){box.querySelector('#onlineStatus').textContent=err.message}};
+  box.querySelector('#onlineDownload').onclick=async()=>{if(!window.confirm('Carregar banco online? Isso substituirá as questões deste navegador.'))return;try{const cfg=await OrbitalCloud.curriculum();if(cfg)TeacherConsole.applyRemote(cfg);box.querySelector('#onlineStatus').textContent='✓ Questões atualizadas.'}catch(err){box.querySelector('#onlineStatus').textContent=err.message}};
  }
  function authorizeChange(title,description,onApprove,onCancel){
   const existing=$('teacherConfirm');if(existing)existing.remove();
@@ -183,19 +204,19 @@ const Session=(()=>{
   $('teacherConfirmPass').focus();
  }
  function enforceLock(){
-  TeacherConsole.destroy();unlockedId=null;inMenu=true;paused=true;document.body.classList.add('menu-visible');$('frontMenu').classList.remove('hidden');renderIntro();
+  OrbitalCloud.logout();TeacherConsole.destroy();unlockedId=null;inMenu=true;paused=true;document.body.classList.add('menu-visible');$('frontMenu').classList.remove('hidden');renderIntro();
  }
  function initialize(){
   const nav=document.querySelector('.main-nav');if(nav)$('frontNavigation').appendChild(nav);
   $('frontNew').onclick=viewNew;$('frontLoad').onclick=viewLoad;$('frontContinue').onclick=()=>{if(!player())return viewLoad();enterPlay(true);if(!Progress.data.resume&&gameOver)startStage(Progress.data.chapter||0)};
-  $('frontInstructions').onclick=instructions;$('frontCredits').onclick=credits;$('frontScore').onclick=viewScore;$('frontBack').onclick=()=>{TeacherConsole.destroy();renderIntro()};
+  $('frontInstructions').onclick=instructions;$('frontCredits').onclick=credits;$('frontScore').onclick=viewScore;$('frontBack').onclick=()=>{TeacherConsole.destroy();OrbitalCloud.logoutTeacher();renderIntro()};
   $('frontTeacherAccess').textContent='🔒 Área do professor';
   $('frontTeacherAccess').onclick=()=>authorizeChange('Área do professor','Digite a senha para administrar questões, relatórios, alunos e configurações.',password=>openTeacherConsole(password));
   $('menuHomeBtn').onclick=showMenu;
   const teacher=$('teacherBtn');if(teacher)teacher.onclick=()=>authorizeChange('Área do professor','Acesso exclusivo para administrar a turma.',password=>openTeacherConsole(password));
   const scoreLink=document.createElement('button');scoreLink.id='navScoreBtn';scoreLink.textContent='Placar';scoreLink.onclick=viewScore;nav?.insertBefore(scoreLink,$('settingsBtn'));
   const back=document.createElement('button');back.id='navPlayBtn';back.textContent='▶ Jogar';back.className='nav-play';back.onclick=()=>enterPlay(true);nav?.insertBefore(back,nav.firstChild);
-  window.addEventListener('pagehide',()=>{unlockedId=null});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&OrbitalCloud.state.pending)OrbitalCloud.flush().catch(()=>{})});setInterval(()=>{const el=$('cloudSyncStatus');if(!el)return;const state=OrbitalCloud.state;el.textContent=state.student?(state.lastError?'☁ Pendência de sincronização':state.pending?'☁ Salvando progresso…':'☁ Progresso sincronizado'):'☁ Login obrigatório para sincronizar'},3000);window.addEventListener('pagehide',()=>{unlockedId=null;OrbitalCloud.logout()});
   window.addEventListener('pageshow',e=>{if(e.persisted)enforceLock()});
   $('frontMenu').classList.remove('hidden');document.body.classList.add('menu-visible');renderIntro();
  }
