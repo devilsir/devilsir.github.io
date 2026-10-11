@@ -1,0 +1,50 @@
+{
+  "version": "1.2",
+  "mapsReviewed": [
+    "hub",
+    "chapter-1",
+    "room-1",
+    "chapter-2",
+    "room-2",
+    "chapter-3",
+    "room-3",
+    "chapter-4",
+    "room-4",
+    "chapter-5",
+    "room-5",
+    "chapter-6",
+    "room-6",
+    "library",
+    "park",
+    "market",
+    "garden"
+  ],
+  "method": "Individual native Canvas renders and Node integration tests. No browser was available.",
+  "checks": {
+    "campaign": "6 chapters and bosses; 18 clues; original minigames",
+    "communityMissions": 12,
+    "readings": 31,
+    "historyQuestions": 51,
+    "culturalActivities": 6,
+    "reciprocalConversations": 17,
+    "npcActions": [
+      "waiting",
+      "walking",
+      "sitting",
+      "reading",
+      "writing",
+      "working",
+      "watering",
+      "playing",
+      "listening",
+      "observing",
+      "conversing"
+    ],
+    "audioLoops": 9,
+    "audioLicense": "CC0-1.0",
+    "saveMigration": "Version 1 campaign and optional neighborhood data preserved"
+  },
+  "limits": [
+    "Real browser UI, HTML audio playback, touch and gamepad were not browser-verified."
+  ]
+}

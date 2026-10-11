@@ -1,0 +1,14 @@
+VOICES — original synthetic ambience WAV assets
+
+Scope: plaza.wav, library.wav, park.wav, market.wav, studio.wav, lab.wav, garden.wav, archive.wav, newsroom.wav.
+Created originally for VOICES in this project; no downloaded or recorded samples.
+
+These nine sound files are dedicated to the public domain under
+CC0 1.0 Universal (CC0-1.0).
+They may be used, copied, modified and redistributed without an audio fee.
+
+License text and dedication:
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+This dedication does not cover institutional texts, linked sources, third-party
+websites or other works outside these nine original synthetic WAV files.

@@ -1,0 +1,62 @@
+{
+  "project": "VOICES: REBOOT THE STORY",
+  "consulted": "2026-10-10",
+  "scope": "Conexões curtas com ciência, música, artes visuais e o Ofício das Baianas de Acarajé.",
+  "notes": "Parágrafos de New Harmony, moradores, diálogos, questões situacionais e atividades são criação didática original. Conexões factuais breves são identificadas nos livros. Não reproduzimos obras, letras, partituras ou depoimentos nem atribuímos falas a pessoas reais. O registro estadual de 2012 e o nacional de 2005 têm âmbitos diferentes.",
+  "sources": [
+    {
+      "id": "cozy_sonia_columbia",
+      "name": "Columbia University, ILAS — Dr. Sônia Guimarães on STEM, Equity, and Innovation",
+      "url": "https://ilas.columbia.edu/events/dr-sonia-guimaraes-stem-equity-and-innovation",
+      "note": "Perfil apresentado em evento de 2025: pesquisa de Sônia Guimarães em semicondutores e sensores de calor. Resumo breve, sem reproduzir depoimentos."
+    },
+    {
+      "id": "cozy_jaqueline_bahiana",
+      "name": "Escola Bahiana de Medicina e Saúde Pública — Jaqueline Góes e a homenagem de 2021",
+      "url": "https://www.bahiana.edu.br/noticia/37983/professora-da-bahiana-a-biomedica-jaqueline-goes-e-homenageada-com-boneca-barbie/",
+      "note": "Identifica Jaqueline Góes de Jesus como biomédica e integrante de uma equipe de sequenciamento do genoma viral. A notícia da FAPESP apresenta a colaboração e as instituições participantes."
+    },
+    {
+      "id": "cozy_genoma_fapesp",
+      "name": "Agência FAPESP — Tecnologia que sequenciou coronavírus em 48 horas permitirá monitorar epidemia em tempo real",
+      "url": "https://agencia.fapesp.br/tecnologia-que-sequenciou-coronavirus-em-48-horas-permitira-monitorar-epidemia-em-tempo-real/32637",
+      "note": "Notícia de 2/3/2020: trabalho conjunto do Instituto Adolfo Lutz, USP e Oxford; equipe coordenada por Claudio Tavares Sacchi e Jaqueline Goes de Jesus."
+    },
+    {
+      "id": "cozy_pixinguinha_ims",
+      "name": "Instituto Moreira Salles — Acervo Pixinguinha",
+      "url": "https://ims.com.br/titular-colecao/pixinguinha/",
+      "note": "Arquivo pessoal sob guarda do IMS desde 2000, com partituras e arranjos. Referência documental; não reproduzimos partituras nem gravações."
+    },
+    {
+      "id": "cozy_ivone_itau",
+      "name": "Itaú Cultural — Ocupação Dona Ivone Lara",
+      "url": "https://www.itaucultural.org.br/ocupacao/dona-ivone-lara/",
+      "note": "Apresentação institucional de sua atuação como cantora, compositora e instrumentista. Sem letras, citações pessoais ou reprodução de obras."
+    },
+    {
+      "id": "cozy_rosana_pinacoteca",
+      "name": "Pinacoteca de São Paulo — Rosana Paulino: a costura da memória",
+      "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/",
+      "note": "Exposição de 2018–2019: memória familiar, representação negra e trabalho com fotografias em Parede da memória. Desenhos do jogo são originais."
+    },
+    {
+      "id": "cozy_auxiliadora_masp",
+      "name": "MASP — Maria Auxiliadora: vida cotidiana, pintura e resistência",
+      "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia",
+      "note": "Apresentação da exposição de 2018: vida cotidiana, cultura afro-brasileira e relevos na pintura. Não reproduzimos telas da artista."
+    },
+    {
+      "id": "cozy_baianas_iphan",
+      "name": "Iphan, Bem Brasileiro — Ofício das baianas de acarajé",
+      "url": "https://bcr.iphan.gov.br/bens-culturais/oficio-das-baianas-de-acaraje/",
+      "note": "Registro nacional no Livro dos Saberes em 14/1/2005; conhecimentos culinários, religiosos e culturais. A prática é anterior ao reconhecimento institucional."
+    },
+    {
+      "id": "cozy_baianas_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional."
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "project": "VOICES: REBOOT THE STORY",
+  "consulted": "2026-10-10",
+  "scope": "Ampliação de leituras, perguntas, moradores e conversas.",
+  "notes": "Leituras e conversas usam cenas ficcionais de New Harmony. Apenas as conexões identificadas e os registros citados apresentam fatos históricos ou institucionais. Não há falas atribuídas a figuras históricas reais.",
+  "sources": [
+    {
+      "id": "abolition_law",
+      "name": "Presidência da República — Lei nº 3.353, de 13 de maio de 1888",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou."
+    },
+    {
+      "id": "johnson_nasa",
+      "name": "NASA — Katherine Johnson Biography",
+      "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha."
+    },
+    {
+      "id": "kongo_met",
+      "name": "The Met — Kongo: Power and Majesty, Exhibition Galleries",
+      "url": "https://www.metmuseum.org/exhibitions/listings/2015/kongo/exhibition-galleries",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento."
+    },
+    {
+      "id": "learning_bn_manuscripts",
+      "name": "Fundação Biblioteca Nacional — Manuscritos",
+      "url": "https://www.gov.br/bn/pt-br/atuacao/colecoes-e-servicos-aos-leitores/manuscritos",
+      "note": "Conexão breve: a Divisão de Manuscritos conserva documentos variados e inclui cadernos originais de Carolina de Jesus. Não reproduzimos os cadernos ou falas da autora."
+    },
+    {
+      "id": "learning_capoeira_iphan",
+      "name": "Iphan — Detentores da capoeira no RJ e salvaguarda",
+      "url": "https://www.gov.br/iphan/pt-br/assuntos/noticias/mestres-e-mestras-da-capoeira-no-rj-promovem-encontro-estadual-da-salvaguarda",
+      "note": "Conexão breve: conhecimentos dos mestres e mestras; a roda combina diferentes elementos culturais. Registro indexado verificado; a abertura integral encontrou erro."
+    },
+    {
+      "id": "learning_child_rights",
+      "name": "UNICEF — Convenção sobre os Direitos da Criança",
+      "url": "https://www.unicef.org/brazil/convencao-sobre-os-direitos-da-crianca",
+      "note": "Referência breve aos direitos de não discriminação, opinião e privacidade. As escolhas locais são exemplos educativos ficcionais, não aconselhamento jurídico."
+    },
+    {
+      "id": "learning_cultural_rights",
+      "name": "Nações Unidas no Brasil — Artigo 27: vida cultural, artística e científica",
+      "url": "https://brasil.un.org/pt-br/81985-artigo-27-direito-%C3%A0-vida-cultural-art%C3%ADstica-e-cient%C3%ADfica",
+      "note": "Conexão breve: participação na vida cultural. O projeto fictício da cidade ilustra uma barreira prática, sem prometer solucionar desigualdades com uma escolha."
+    },
+    {
+      "id": "learning_diversity_unesco",
+      "name": "UNESCO — Universal Declaration on Cultural Diversity",
+      "url": "https://www.unesco.org/en/legal-affairs/unesco-universal-declaration-cultural-diversity",
+      "note": "Conexão breve: diversidade cultural, expressão e direitos humanos. A escolha de canções em New Harmony é um exemplo original."
+    },
+    {
+      "id": "learning_funai_diversity",
+      "name": "Funai — Visão de povos indígenas",
+      "url": "https://sii.funai.gov.br/funai_sii/informacoes_indigenas/visao/visao_povos_indigenas.wsp",
+      "note": "Conexão breve: diversidade sociocultural, línguas e formas de organização de povos indígenas. Não trata Tainá como representante de todos os povos."
+    },
+    {
+      "id": "learning_icom",
+      "name": "ICOM — Museum Definition",
+      "url": "https://icom.museum/en/resources/standards-guidelines/museum-definition/",
+      "note": "Conexão breve: pesquisa, interpretação, acessibilidade e participação comunitária na definição de museu aprovada em 2022. Não reproduzimos o texto integral."
+    },
+    {
+      "id": "learning_kongo_capital",
+      "name": "UNESCO — Mbanza Kongo",
+      "url": "https://whc.unesco.org/en/list/1511/",
+      "note": "Conexão breve: Mbanza Kongo foi capital política e espiritual do Reino do Kongo; sítio atualmente em Angola."
+    },
+    {
+      "id": "learning_living_heritage",
+      "name": "UNESCO — Intangible cultural heritage, glossary",
+      "url": "https://whc.unesco.org/en/glossary/40",
+      "note": "Conexão breve: patrimônio imaterial transmitido e recriado pelas comunidades. A produção sonora do jogo é original."
+    },
+    {
+      "id": "learning_mali_trade",
+      "name": "The Met — The Trans-Saharan Gold Trade",
+      "url": "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
+      "note": "Conexão breve: Mali e redes transaarianas de comércio. O trajeto fictício de New Harmony não é reconstrução de uma rota histórica."
+    },
+    {
+      "id": "learning_nasa_report",
+      "name": "NASA NTRS — Technical Note D-233",
+      "url": "https://ntrs.nasa.gov/citations/19980227091",
+      "note": "Documento institucional original de 1960 identifica T. H. Skopinski e Katherine G. Johnson como autores; usado somente para ler autoria e escopo, sem reproduzir fórmulas."
+    },
+    {
+      "id": "learning_oecd_accountability",
+      "name": "OCDE — Advancing accountability in AI",
+      "url": "https://www.oecd.org/en/publications/advancing-accountability-in-ai_2448f04b-en.html",
+      "note": "Conexão breve: responsabilidade e gestão de riscos durante o ciclo de vida de sistemas de IA. O calendário de revisão da narrativa é um exercício original."
+    },
+    {
+      "id": "learning_oecd_transparency",
+      "name": "OCDE — Transparency and explainability",
+      "url": "https://oecd.ai/en/dashboards/ai-principles/P7",
+      "note": "Conexão breve: informação compreensível sobre sistemas e resultados. Os dados e os botões de New Harmony são ficção, não descrição de todos os sistemas de IA."
+    },
+    {
+      "id": "learning_reboucas_iphan",
+      "name": "Iphan — Armazém Docas André Rebouças",
+      "url": "https://www.gov.br/iphan/pt-br/sala-de-imprensa/notas-e-avisos-de-pauta/antigo-edificio-docas-dom-pedro-ii-no-rio-passara-a-se-chamar-armazem-docas-andre-reboucas",
+      "note": "Conexão breve: homenagem ao engenheiro e abolicionista André Rebouças e à contribuição negra na história brasileira. Informação verificada no registro institucional indexado; a abertura integral encontrou erro."
+    },
+    {
+      "id": "learning_songhai_site",
+      "name": "UNESCO — Tomb of Askia",
+      "url": "https://whc.unesco.org/en/list/1139/",
+      "note": "Conexão breve: o monumento em Gao se relaciona a Songhai e ao reinado de Askia Mohamed. A leitura não o atribui a Mansa Musa."
+    },
+    {
+      "id": "learning_timbuktu",
+      "name": "UNESCO — Timbuktu",
+      "url": "https://whc.unesco.org/en/list/119/",
+      "note": "Conexão breve: Tombuctu como centro de estudo e circulação de manuscritos nos séculos XV e XVI, em seu contexto da África Ocidental."
+    },
+    {
+      "id": "media_unesco",
+      "name": "UNESCO — Do you trust what you watch or read?",
+      "url": "https://www.unesco.org/en/articles/do-you-trust-what-you-watch-or-read",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta."
+    },
+    {
+      "id": "routes_unesco",
+      "name": "UNESCO Courier — From political recognition to demands for justice",
+      "url": "https://courier.unesco.org/en/articles/political-recognition-demands-justice",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio."
+    },
+    {
+      "id": "samba_iphan",
+      "name": "Iphan — Samba de Roda e reconhecimento pela UNESCO",
+      "url": "https://bcr.iphan.gov.br/acoes-de-salvaguarda/reconhecimento-do-samba-de-roda-do-estado-da-bahia-pela-unesco-como-obra-prima-do-patrimonio-oral-e-imaterial-da-humanidade-e-posterior-incorporacao-a-lista-representativa/",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica."
+    },
+    {
+      "id": "school_unicef",
+      "name": "UNICEF e parceiros — Indicadores da Qualidade na Educação: Relações Raciais na Escola",
+      "url": "https://www.unicef.org/brazil/relatorios/indicadores-da-qualidade-na-educacao-relacoes-raciais-na-escola",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento."
+    }
+  ]
+}

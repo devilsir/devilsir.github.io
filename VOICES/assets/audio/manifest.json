@@ -1,0 +1,96 @@
+{
+  "license": "CC0-1.0",
+  "method": "Original synthetic sonification; no recordings or external samples.",
+  "loops": [
+    {
+      "file": "plaza.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.088,
+      "original": true,
+      "seed": 901
+    },
+    {
+      "file": "library.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0269,
+      "original": true,
+      "seed": 902
+    },
+    {
+      "file": "park.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0704,
+      "original": true,
+      "seed": 903
+    },
+    {
+      "file": "market.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0632,
+      "original": true,
+      "seed": 904
+    },
+    {
+      "file": "studio.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0266,
+      "original": true,
+      "seed": 905
+    },
+    {
+      "file": "lab.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0315,
+      "original": true,
+      "seed": 906
+    },
+    {
+      "file": "garden.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0269,
+      "original": true,
+      "seed": 907
+    },
+    {
+      "file": "archive.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0178,
+      "original": true,
+      "seed": 908
+    },
+    {
+      "file": "newsroom.wav",
+      "duration": 16,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bits": 16,
+      "peak": 0.0186,
+      "original": true,
+      "seed": 909
+    }
+  ]
+}

@@ -1,0 +1,458 @@
+{
+  "name": "VOICES — Saberes do bairro",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "creator": "Original artwork created for the VOICES project",
+  "created": "2026-10-11",
+  "source": "tools/create_cultural_assets.py",
+  "art": "Original code-native pixel illustrations. No downloaded photographs, traced artworks or external textures. All character identities and geometric garment prints are fictional original designs.",
+  "culturalContext": "The baiana display is a contextual educational mannequin: bata, rounded skirt, torço and pano da costa. It carries no sacred bead colors or ritual objects. The three wrap compositions use descriptive names; they are not named ceremonial styles. Locs, twists, afro and braids are distinct examples, without assigning universal meanings or beliefs to their wearers.",
+  "references": {
+    "ipac-baianas": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+    "fundaj-panos": "https://pesquisaescolar.fundaj.gov.br/pt-br/artigo/panos-da-costa/",
+    "secom-negra-jho": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
+    "sv-nago": "https://www.saovicente.sp.gov.br/informacao/sao-vicente-une-moda-tradicao-e-raizes-em-oficina-de-trancas",
+    "ufu-trancas": "https://repositorio.ufu.br/bitstream/123456789/33895/4/Tran%C3%A7asAfroIdentidade.pdf",
+    "juvrio-trancas": "https://juv.prefeitura.rio/noticias/jovens-da-pavuna-aprendem-tecnica-de-trancas-profissionais-na-casa-da-juventude/",
+    "cms-abara": "https://www.cms.ba.gov.br/noticias/dia-da-baiana-de-acaraje"
+  },
+  "referenceUse": "Primary and institutional references informed limited physical distinctions and context before drawing. Original compositions do not reproduce an artwork, an exhibition item or a complete cultural tradition.",
+  "props": {
+    "braid-mirror": {
+      "index": 0,
+      "x": 0,
+      "y": 0
+    },
+    "braid-chair": {
+      "index": 1,
+      "x": 48,
+      "y": 0
+    },
+    "braid-tools": {
+      "index": 2,
+      "x": 96,
+      "y": 0
+    },
+    "hair-catalog": {
+      "index": 3,
+      "x": 144,
+      "y": 0
+    },
+    "sewing-machine": {
+      "index": 4,
+      "x": 192,
+      "y": 0
+    },
+    "fabric-folds": {
+      "index": 5,
+      "x": 240,
+      "y": 0
+    },
+    "garment-rack": {
+      "index": 6,
+      "x": 288,
+      "y": 0
+    },
+    "fitting-mirror": {
+      "index": 7,
+      "x": 336,
+      "y": 0
+    },
+    "acaraje-tray": {
+      "index": 8,
+      "x": 0,
+      "y": 48
+    },
+    "abara-basket": {
+      "index": 9,
+      "x": 48,
+      "y": 48
+    },
+    "cocada-tray": {
+      "index": 10,
+      "x": 96,
+      "y": 48
+    },
+    "ingredient-beans": {
+      "index": 11,
+      "x": 144,
+      "y": 48
+    },
+    "dende-bottle": {
+      "index": 12,
+      "x": 192,
+      "y": 48
+    },
+    "cloth-wrap-display": {
+      "index": 13,
+      "x": 240,
+      "y": 48
+    },
+    "baiana-display": {
+      "index": 14,
+      "x": 288,
+      "y": 48
+    },
+    "culture-books": {
+      "index": 15,
+      "x": 336,
+      "y": 48
+    },
+    "listening-station": {
+      "index": 16,
+      "x": 0,
+      "y": 96
+    },
+    "interview-notebook": {
+      "index": 17,
+      "x": 48,
+      "y": 96
+    },
+    "pattern-table": {
+      "index": 18,
+      "x": 96,
+      "y": 96
+    },
+    "folded-pano": {
+      "index": 19,
+      "x": 144,
+      "y": 96
+    },
+    "context-label": {
+      "index": 20,
+      "x": 192,
+      "y": 96
+    },
+    "community-portrait": {
+      "index": 21,
+      "x": 240,
+      "y": 96
+    },
+    "hair-care-shelf": {
+      "index": 22,
+      "x": 288,
+      "y": 96
+    },
+    "textile-samples": {
+      "index": 23,
+      "x": 336,
+      "y": 96
+    }
+  },
+  "atlas": {
+    "path": "assets/tilesets/culture-props.png",
+    "width": 384,
+    "height": 144,
+    "cellWidth": 48,
+    "cellHeight": 48,
+    "columns": 8,
+    "rows": 3,
+    "anchor": "bottom-center"
+  },
+  "characters": {
+    "bisa": {
+      "name": "Bisa",
+      "age": 36,
+      "role": "Trancista e anfitriã do catálogo de cabelos",
+      "personality": "Atenta, bem-humorada e cuidadosa com o que cada cliente escolhe; desenha suas composições antes de começar.",
+      "appearance": "Pele negra retinta, tranças nagô reunidas em coque, brincos pequenos e avental verde sobre camiseta clara.",
+      "preferredPlaces": [
+        "market"
+      ],
+      "relationships": [
+        "Dandara, vizinha de trabalho",
+        "Viviane, amiga da feira"
+      ],
+      "activities": [
+        "organizar ferramentas",
+        "consultar o catálogo",
+        "conversar com clientes"
+      ],
+      "identity": "Personagem negro(a) brasileiro(a), original e fictício(a).",
+      "sprite": "assets/characters/bisa.png",
+      "portrait": "assets/characters/bisa-portrait.png"
+    },
+    "dandara": {
+      "name": "Dandara",
+      "age": 29,
+      "role": "Costureira e autora de roupas do bairro",
+      "personality": "Criativa, prática e curiosa; adapta as roupas ao uso e às preferências da pessoa.",
+      "appearance": "Pele negra, turbante de nó frontal em composição original, blusa coral com desenho geométrico autoral e tênis.",
+      "preferredPlaces": [
+        "chapter-5"
+      ],
+      "relationships": [
+        "Bisa, colega da feira",
+        "Jamila, colaboradora da mostra"
+      ],
+      "activities": [
+        "comparar amostras",
+        "costurar",
+        "guardar tecido",
+        "conversar"
+      ],
+      "identity": "Personagem negro(a) brasileiro(a), original e fictício(a).",
+      "sprite": "assets/characters/dandara.png",
+      "portrait": "assets/characters/dandara-portrait.png"
+    },
+    "jaci": {
+      "name": "Jaci",
+      "age": 43,
+      "role": "Educadora do museu e mediadora de leitura",
+      "personality": "Acolhedora e precisa; gosta de perguntar quem contou uma história e de rever a legenda com os colegas.",
+      "appearance": "Pele negra retinta, cabelo natural curto, cardigan verde-azulado, caderno e sapatos confortáveis.",
+      "preferredPlaces": [
+        "room-2"
+      ],
+      "relationships": [
+        "Bento, colega do arquivo",
+        "Jamila, parceira de mediação"
+      ],
+      "activities": [
+        "ler fichas",
+        "revisar legendas",
+        "organizar livros",
+        "receber visitantes"
+      ],
+      "identity": "Personagem negro(a) brasileiro(a), original e fictício(a).",
+      "sprite": "assets/characters/jaci.png",
+      "portrait": "assets/characters/jaci-portrait.png"
+    }
+  },
+  "sprite": {
+    "width": 128,
+    "height": 192,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "columns": 4,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up",
+      "working",
+      "greeting"
+    ]
+  },
+  "portrait": {
+    "width": 384,
+    "height": 96,
+    "cellWidth": 96,
+    "columns": {
+      "neutral": 0,
+      "happy": 1,
+      "concerned": 2,
+      "focused": 3
+    }
+  },
+  "illustrations": {
+    "hair-nago": {
+      "path": "assets/culture/hair-nago.png",
+      "title": "Tranças nagô: desenho junto à raiz",
+      "category": "hair",
+      "references": [
+        "ufu-trancas",
+        "sv-nago"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "hair-box-braids": {
+      "path": "assets/culture/hair-box-braids.png",
+      "title": "Box braids: tranças soltas",
+      "category": "hair",
+      "references": [
+        "ufu-trancas",
+        "juvrio-trancas"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "hair-twists": {
+      "path": "assets/culture/hair-twists.png",
+      "title": "Twists: duas mechas torcidas",
+      "category": "hair",
+      "references": [
+        "ufu-trancas"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "hair-locs": {
+      "path": "assets/culture/hair-locs.png",
+      "title": "Locs: uma silhueta entre muitas",
+      "category": "hair",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "hair-afro": {
+      "path": "assets/culture/hair-afro.png",
+      "title": "Afro arredondado: textura e volume",
+      "category": "hair",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "wrap-front-knot": {
+      "path": "assets/culture/wrap-front-knot.png",
+      "title": "Composição autoral: nó frontal",
+      "category": "wrap",
+      "references": [
+        "secom-negra-jho"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "wrap-side-fold": {
+      "path": "assets/culture/wrap-side-fold.png",
+      "title": "Composição autoral: dobra lateral",
+      "category": "wrap",
+      "references": [
+        "secom-negra-jho"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "wrap-band": {
+      "path": "assets/culture/wrap-band.png",
+      "title": "Composição autoral: faixa de tecido",
+      "category": "wrap",
+      "references": [
+        "secom-negra-jho"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "clothes-cardigan": {
+      "path": "assets/culture/clothes-cardigan.png",
+      "title": "Cardigan e roupa de leitura",
+      "category": "clothing",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "clothes-printed-blouse": {
+      "path": "assets/culture/clothes-printed-blouse.png",
+      "title": "Blusa com estampa autoral",
+      "category": "clothing",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "clothes-overalls": {
+      "path": "assets/culture/clothes-overalls.png",
+      "title": "Jardineira para o cotidiano",
+      "category": "clothing",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "clothes-baiana": {
+      "path": "assets/culture/clothes-baiana.png",
+      "title": "Bata, saia rodada, torço e pano da costa",
+      "category": "clothing",
+      "references": [
+        "ipac-baianas",
+        "fundaj-panos"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "food-acaraje": {
+      "path": "assets/culture/food-acaraje.png",
+      "title": "Acarajé: casca frita e recheio visível",
+      "category": "food",
+      "references": [
+        "ipac-baianas"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "food-abara": {
+      "path": "assets/culture/food-abara.png",
+      "title": "Abará: massa cozida em folha de bananeira",
+      "category": "food",
+      "references": [
+        "cms-abara"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "food-cocada": {
+      "path": "assets/culture/food-cocada.png",
+      "title": "Cocadas branca e marrom no tabuleiro",
+      "category": "food",
+      "references": [
+        "ipac-baianas"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "cloth-pano-da-costa": {
+      "path": "assets/culture/cloth-pano-da-costa.png",
+      "title": "Pano da costa em uma mostra contextualizada",
+      "category": "textile",
+      "references": [
+        "ipac-baianas",
+        "fundaj-panos"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "ingredients-beans-dende": {
+      "path": "assets/culture/ingredients-beans-dende.png",
+      "title": "Feijão-fradinho e azeite de dendê",
+      "category": "food",
+      "references": [
+        "ipac-baianas"
+      ],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    },
+    "textile-workshop": {
+      "path": "assets/culture/textile-workshop.png",
+      "title": "Ateliê autoral de Dandara",
+      "category": "textile",
+      "references": [],
+      "width": 128,
+      "height": 128,
+      "nativePixelGrid": 64,
+      "original": true
+    }
+  }
+}

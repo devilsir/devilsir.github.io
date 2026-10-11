@@ -1,0 +1,288 @@
+{
+  "version": "1.6",
+  "checkedAt": "2026-10-11T20:34:16.880906+00:00",
+  "environment": "Node VM, minimal DOM harness, native Canvas and mocked audio; not a browser",
+  "testGroups": 56,
+  "passed": true,
+  "scripts": 26,
+  "runtimePngAssets": 149,
+  "editor": {
+    "catalogObjects": 254,
+    "addedObjectTiles": 64,
+    "historicalPortraits": 6,
+    "separateLayoutAndAdventureSaves": true,
+    "sceneDocumentRevision": 2,
+    "optionalOriginalObjectDeletion": true,
+    "essentialObjectProtection": true
+  },
+  "learning": {
+    "booksAndNotes": 50,
+    "historyQuestions": 108,
+    "communityMissions": 20,
+    "newSourceRecords": 26
+  },
+  "maps": [
+    {
+      "id": "hub",
+      "purpose": "Uma praça de encontro, com água, sombra e caminhos claros.",
+      "zones": 3,
+      "decor": 19,
+      "interactions": 27,
+      "people": 5,
+      "walkingPoints": 472,
+      "issues": []
+    },
+    {
+      "id": "library",
+      "purpose": "Uma biblioteca de bairro, com empréstimo, leitura e conservação.",
+      "zones": 4,
+      "decor": 15,
+      "interactions": 22,
+      "people": 5,
+      "walkingPoints": 289,
+      "issues": []
+    },
+    {
+      "id": "park",
+      "purpose": "Um parque com lago, observação, picnic e roda de leitura.",
+      "zones": 4,
+      "decor": 19,
+      "interactions": 11,
+      "people": 4,
+      "walkingPoints": 475,
+      "issues": []
+    },
+    {
+      "id": "market",
+      "purpose": "Uma feira com alimentos, oficina de tecidos, trabalho de trancista e conversas sobre os saberes de cada pessoa.",
+      "zones": 5,
+      "decor": 19,
+      "interactions": 23,
+      "people": 5,
+      "walkingPoints": 490,
+      "issues": []
+    },
+    {
+      "id": "garden",
+      "purpose": "Uma horta compartilhada com ferramentas e turnos de cuidado.",
+      "zones": 4,
+      "decor": 18,
+      "interactions": 9,
+      "people": 2,
+      "walkingPoints": 382,
+      "issues": []
+    },
+    {
+      "id": "chapter-1",
+      "purpose": "Um distrito musical com palco, ensaio e escuta.",
+      "zones": 2,
+      "decor": 12,
+      "interactions": 25,
+      "people": 4,
+      "walkingPoints": 486,
+      "issues": []
+    },
+    {
+      "id": "room-1",
+      "purpose": "Um estúdio de ensaio com ferramentas e pausas.",
+      "zones": 3,
+      "decor": 14,
+      "interactions": 19,
+      "people": 2,
+      "walkingPoints": 300,
+      "issues": []
+    },
+    {
+      "id": "chapter-2",
+      "purpose": "Um museu com pátio de acolhimento e percursos de visita.",
+      "zones": 3,
+      "decor": 13,
+      "interactions": 25,
+      "people": 4,
+      "walkingPoints": 470,
+      "issues": []
+    },
+    {
+      "id": "room-2",
+      "purpose": "Um arquivo de pesquisa e curadoria cuidadosa.",
+      "zones": 3,
+      "decor": 12,
+      "interactions": 22,
+      "people": 2,
+      "walkingPoints": 294,
+      "issues": []
+    },
+    {
+      "id": "chapter-3",
+      "purpose": "Um pátio de ciência aberto à observação e à escrita.",
+      "zones": 3,
+      "decor": 8,
+      "interactions": 19,
+      "people": 3,
+      "walkingPoints": 489,
+      "issues": []
+    },
+    {
+      "id": "room-3",
+      "purpose": "Um laboratório organizado para testar ideias em equipe.",
+      "zones": 3,
+      "decor": 9,
+      "interactions": 15,
+      "people": 2,
+      "walkingPoints": 314,
+      "issues": []
+    },
+    {
+      "id": "chapter-4",
+      "purpose": "Um bairro de informação pública e jornal comunitário.",
+      "zones": 3,
+      "decor": 10,
+      "interactions": 20,
+      "people": 3,
+      "walkingPoints": 498,
+      "issues": []
+    },
+    {
+      "id": "room-4",
+      "purpose": "Uma redação pequena com entrevistas, rascunhos e revisão.",
+      "zones": 3,
+      "decor": 9,
+      "interactions": 12,
+      "people": 2,
+      "walkingPoints": 315,
+      "issues": []
+    },
+    {
+      "id": "chapter-5",
+      "purpose": "Um espaço de encontro, participação e arte comunitária.",
+      "zones": 3,
+      "decor": 12,
+      "interactions": 21,
+      "people": 3,
+      "walkingPoints": 495,
+      "issues": []
+    },
+    {
+      "id": "room-5",
+      "purpose": "Uma assembleia com escuta, propostas e participação tranquila.",
+      "zones": 3,
+      "decor": 12,
+      "interactions": 16,
+      "people": 4,
+      "walkingPoints": 314,
+      "issues": []
+    },
+    {
+      "id": "chapter-6",
+      "purpose": "Um arquivo cívico que reúne as contribuições da cidade.",
+      "zones": 3,
+      "decor": 9,
+      "interactions": 18,
+      "people": 2,
+      "walkingPoints": 484,
+      "issues": []
+    },
+    {
+      "id": "room-6",
+      "purpose": "Um catálogo técnico cuidado por pessoas, com revisão e backups.",
+      "zones": 3,
+      "decor": 11,
+      "interactions": 14,
+      "people": 2,
+      "walkingPoints": 309,
+      "issues": []
+    }
+  ],
+  "suites": {
+    "runtime": {
+      "date": "2026-10-11T20:31:43.826Z",
+      "passed": [
+        "All 26 scripts and 149 runtime PNG assets load.",
+        "New game, three-step intro, character, delta-time movement, collision and hub rendering.",
+        "Playable prologue and Word Runner, with translation and vocabulary.",
+        "Chapter 1: intro, three clues, two branching conversations, beat, 3-stage boss, resolution.",
+        "Chapter 2: intro, three clues, two branching conversations, timeline, 3-stage boss, resolution.",
+        "Chapter 3: intro, three clues, two branching conversations, evidence, 3-stage boss, resolution.",
+        "Chapter 4: intro, three clues, two branching conversations, bias, 3-stage boss, resolution.",
+        "Chapter 5: intro, three clues, two branching conversations, city, 3-stage boss, resolution.",
+        "Chapter 6: intro, three clues, two branching conversations, final, 3-stage boss, resolution.",
+        "Beginning-to-ending completion: six chapters,18 clues, all six minigame systems and six bosses.",
+        "Save/load round trip in a LocalStorage-compatible harness.",
+        "Grade, translation, classroom preferences and local team rotation.",
+        "Teacher-created question is validated, saved, merged and reloaded.",
+        "Custom glossary persists; malformed content rejected.",
+        "Custom questions appear and function in an English practice terminal.",
+        "Enterable library and regional interiors render and have usable spawn positions.",
+        "All50 books/notes read through real page controls; all108 historical questions resolved, retry feedback and searchable collection verified.",
+        "All12 community missions completed through their interactions: delivery, interview, collection, sequence, curatorship, experiment, newsroom, watering, cataloguing, observation, consent and human review.",
+        "NPCs and animals follow collision-aware routes in all17 maps; 65 walkers moved; optional motion disabling verified.",
+        "Ambient file selection, mute, volume and user-unlock logic pass with a mocked Audio element; actual sound playback requires browser verification.",
+        "Expanded progress save/load and migration of previous version1 saves preserve the six-chapter campaign.",
+        "Flood-fill collision validation: all interactable objects in all17 maps can be approached.",
+        "All runtime data is inline/local; no fetch, modules, network assets or playback backend."
+      ]
+    },
+    "cozy": {
+      "date": "2026-10-11T20:29:47.522Z",
+      "passed": [
+        "All six cultural activities support reading, explanations, retry and persistent completion.",
+        "Instrument timbre, three original scene sketches, seed labels, visibly improved garden and written assembly choices persist.",
+        "Occupied seating, standing, transition cleanup, safe saved spawns and player/NPC body collisions verified.",
+        "125 seconds simulated separately in all 17 maps: body separation, furniture collision, reserved spots, reciprocal turns and interruptions checked.",
+        "Reduced motion, stationary population and persistent text access with ambient chatter disabled verified.",
+        "Environment crossfade keeps outgoing/incoming loops, removes old tracks, respects mute and independent volume; HTML audio is mocked.",
+        "New optional progress survives save/reload; previous saves migrate without losing campaign/garden data; malformed optional fields are normalized."
+      ]
+    },
+    "interface": {
+      "date": "2026-10-11T20:31:38.799Z",
+      "passed": [
+        "Seven landscape, portrait and wide viewports preserve aspect ratio, player visibility, object clicks and original arcade pointer controls.",
+        "All 17 scenario-based maps are distinct; the pond, entrances, scene framing, region visits and persistent garden changes are reflected without changing player state.",
+        "Notebook sections, themed book/note art, accent-insensitive search, four filters, empty feedback, page index, English support and saved reading access work through the actual menu handlers.",
+        "Settings volumes, themed pause/inventory/glossary/archive, persisted HUD collapse, keyboard focus cycling and the existing save format remain functional."
+      ]
+    },
+    "culture": {
+      "date": "2026-10-11T20:31:42.153Z",
+      "passed": [
+        "All eight books have five pages, English support, source links, themed covers and questions for grades 6/7/8. All 18 original illustrated pieces can be examined, consulted and revisited from the notebook and library.",
+        "Hair-technique and food-preparation comparisons support incomplete answers, explanatory retry, source consultation without losing selections and saved results.",
+        "Contextual captions, original outfit composition and a three-turn fictional interview all complete through world interactions; source consultation resumes choices and interview position.",
+        "Three new residents appear once, pause for the player and resume their activities. Eight reciprocal cultural exchanges use actual co-located people, alternate speakers and cycle after a conversation finishes.",
+        "Five new mission results, all observed pieces and the original outfit survive save/reload. Previous and malformed optional saves are normalized while preserving campaign progress. Text remains accessible with reduced motion and ambient chatter disabled.",
+        "All 17 full maps rendered with the actual game renderer and locally bundled PNG assets for individual visual review. No test browser was used."
+      ]
+    },
+    "scene-editor": {
+      "date": "2026-10-11T20:30:57.077Z",
+      "passed": [
+        "Editor opens from the title with 254 locally drawn objects and all 17 maps, without creating or overwriting an adventure. Every default map passes continuous-edge reachability checks.",
+        "Real palette placement, pointer drag, coordinate inspector, rotated collisions, collision toggles, duplication, removal and undo/redo handlers work together.",
+        "Moving a usable bench rebuilds its reserved activity destination. Moving a vendor counter moves its work anchors and resident home; moving a hosted food interaction moves its counter. Campaign NPCs cannot be deleted.",
+        "Path painting, custom musical interaction, authored labels and a collision-aware walking preview work through UI handlers. Escape resumes editing; the visit does not advance quests.",
+        "Export/import preserves authored scenes and all 17 map profiles, excludes adventure data and rejects unknown assets, invalid coordinates, missing educational interactions and prototype keys. Drafts reopen; applied layouts use separate LocalStorage keys.",
+        "F2 opens during play; simulation and play time pause, save writes are suppressed, and visits to locked editor maps leave campaign progress unchanged. Added instruments play normally after application. Blocked layouts are rejected atomically, preserving portals, doors and characters.",
+        "Applied editor layouts survive reload and rebuilding alongside version-1 adventure saves; minimap cache keys include layout revisions."
+      ]
+    },
+    "heritage": {
+      "date": "2026-10-11T20:32:58.460Z",
+      "passed": [
+        "Six unique historical exhibit characters open third-person sourced dialogues, portraits and related books; no invented personal speeches.",
+        "All 21 cultural objects respond in their actual maps with illustrated cards, context and sources. Eight instruments and a blues/rock station expose original sound patterns and equivalent written information.",
+        "Eleven three-page books have existing English-learning support, themed covers and verified source IDs; all 33 grade-specific questions support explanation and retry. New notebook records remain accessible.",
+        "Completed comparisons mark reviewed exhibits in the world and unlock new contextual resident responses.",
+        "Mila and Ravi have unique homes and meaningful activities, pause for dialogue and offer three new missions. Workshops resume after reading; saved early comparisons reconcile later and neighborhood workshops remain available.",
+        "R/Shift+R and absolute rotations keep seat artwork and sitting direction aligned. Deselect button, Escape from fields, empty-floor click and right-click release selection and return to selection mode.",
+        "Original optional scenes and objects can be removed; their collisions and activity anchors disappear. Fountain movement/rotation updates water rendering and bounds. Campaign NPCs, quest interactions and garden beds remain protected.",
+        "Revision-2 exports persist rotation and original-object removals through apply and full-world reload, preserve adventure saves and reject essential deletions or invalid rotation. Previous scene files receive new educational exhibits; removing a physical portrait preserves archive access.",
+        "Optional heritage progress normalizes malformed and earlier saves without losing chapter progress; cultural text remains available with reduced motion and ambient chatter disabled."
+      ]
+    }
+  },
+  "limitations": [
+    "No supported test browser was available. CSS, touch ergonomics, native pointer capture, browser file pickers, Web Audio activation and actual audible playback were not verified.",
+    "All 17 maps were individually rendered with the actual game renderer; continuous-edge flood fill checks reachability and activity destinations."
+  ]
+}

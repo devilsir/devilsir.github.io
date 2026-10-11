@@ -1,0 +1,110 @@
+{
+  "version": "1.4",
+  "date": "2026-10-11",
+  "result": "passed",
+  "verificationEnvironment": "Node DOM harness with native Canvas and locally bundled assets; not a browser",
+  "mapsReviewed": [
+    "hub",
+    "library",
+    "park",
+    "market",
+    "garden",
+    "chapter-1",
+    "chapter-2",
+    "chapter-3",
+    "chapter-4",
+    "chapter-5",
+    "chapter-6",
+    "room-1",
+    "room-2",
+    "room-3",
+    "room-4",
+    "room-5",
+    "room-6"
+  ],
+  "counts": {
+    "maps": 17,
+    "runtimeScripts": 20,
+    "runtimePNGs": 131,
+    "readings": 39,
+    "historyQuestions": 75,
+    "communityMissions": 17,
+    "newCulturalBooks": 8,
+    "newCulturalQuestions": 24,
+    "newCulturalMissions": 5,
+    "newResidents": 3,
+    "newIllustrations": 18,
+    "newObjectTiles": 24,
+    "newCovers": 4,
+    "newReciprocalConversations": 8,
+    "newReadingReferences": 15,
+    "additionalArtReferences": 4
+  },
+  "checks": {
+    "runtime": {
+      "date": "2026-10-11T14:44:38.411Z",
+      "passed": [
+        "All 20 scripts and 131 runtime PNG assets load.",
+        "New game, three-step intro, character, delta-time movement, collision and hub rendering.",
+        "Playable prologue and Word Runner, with translation and vocabulary.",
+        "Chapter 1: intro, three clues, two branching conversations, beat, 3-stage boss, resolution.",
+        "Chapter 2: intro, three clues, two branching conversations, timeline, 3-stage boss, resolution.",
+        "Chapter 3: intro, three clues, two branching conversations, evidence, 3-stage boss, resolution.",
+        "Chapter 4: intro, three clues, two branching conversations, bias, 3-stage boss, resolution.",
+        "Chapter 5: intro, three clues, two branching conversations, city, 3-stage boss, resolution.",
+        "Chapter 6: intro, three clues, two branching conversations, final, 3-stage boss, resolution.",
+        "Beginning-to-ending completion: six chapters,18 clues, all six minigame systems and six bosses.",
+        "Save/load round trip in a LocalStorage-compatible harness.",
+        "Grade, translation, classroom preferences and local team rotation.",
+        "Teacher-created question is validated, saved, merged and reloaded.",
+        "Custom glossary persists; malformed content rejected.",
+        "Custom questions appear and function in an English practice terminal.",
+        "Enterable library and regional interiors render and have usable spawn positions.",
+        "All39 books/notes read through real page controls; all75 historical questions resolved, retry feedback and searchable collection verified.",
+        "All12 community missions completed through their interactions: delivery, interview, collection, sequence, curatorship, experiment, newsroom, watering, cataloguing, observation, consent and human review.",
+        "NPCs and animals follow collision-aware routes in all17 maps; 63 walkers moved; optional motion disabling verified.",
+        "Ambient file selection, mute, volume and user-unlock logic pass with a mocked Audio element; actual sound playback requires browser verification.",
+        "Expanded progress save/load and migration of previous version1 saves preserve the six-chapter campaign.",
+        "Flood-fill collision validation: all interactable objects in all17 maps can be approached.",
+        "All runtime data is inline/local; no fetch, modules, network assets or playback backend."
+      ]
+    },
+    "cozy": {
+      "date": "2026-10-11T14:48:50.135Z",
+      "passed": [
+        "All six cultural activities support reading, explanations, retry and persistent completion.",
+        "Instrument timbre, three original scene sketches, seed labels, visibly improved garden and written assembly choices persist.",
+        "Occupied seating, standing, transition cleanup, safe saved spawns and player/NPC body collisions verified.",
+        "125 seconds simulated separately in all 17 maps: body separation, furniture collision, reserved spots, reciprocal turns and interruptions checked.",
+        "Reduced motion, stationary population and persistent text access with ambient chatter disabled verified.",
+        "Environment crossfade keeps outgoing/incoming loops, removes old tracks, respects mute and independent volume; HTML audio is mocked.",
+        "New optional progress survives save/reload; previous saves migrate without losing campaign/garden data; malformed optional fields are normalized."
+      ]
+    },
+    "interface": {
+      "date": "2026-10-11T14:44:33.027Z",
+      "passed": [
+        "Seven landscape, portrait and wide viewports preserve aspect ratio, player visibility, object clicks and original arcade pointer controls.",
+        "All 17 scenario-based maps are distinct; the pond, entrances, scene framing, region visits and persistent garden changes are reflected without changing player state.",
+        "Notebook sections, themed book/note art, accent-insensitive search, four filters, empty feedback, page index, English support and saved reading access work through the actual menu handlers.",
+        "Settings volumes, themed pause/inventory/glossary/archive, persisted HUD collapse, keyboard focus cycling and the existing save format remain functional."
+      ]
+    },
+    "culture": {
+      "date": "2026-10-11T14:48:50.401Z",
+      "passed": [
+        "All eight books have five pages, English support, source links, themed covers and questions for grades 6/7/8. All 18 original illustrated pieces can be examined, consulted and revisited from the notebook and library.",
+        "Hair-technique and food-preparation comparisons support incomplete answers, explanatory retry, source consultation without losing selections and saved results.",
+        "Contextual captions, original outfit composition and a three-turn fictional interview all complete through world interactions; source consultation resumes choices and interview position.",
+        "Three new residents appear once, pause for the player and resume their activities. Eight reciprocal cultural exchanges use actual co-located people, alternate speakers and cycle after a conversation finishes.",
+        "Five new mission results, all observed pieces and the original outfit survive save/reload. Previous and malformed optional saves are normalized while preserving campaign progress. Text remains accessible with reduced motion and ambient chatter disabled.",
+        "All 17 full maps rendered with the actual game renderer and locally bundled PNG assets for individual visual review. No test browser was used."
+      ]
+    }
+  },
+  "limits": [
+    "No supported browser was available. Responsive CSS, actual audio, keyboard defaults, touch, gamepad and fullscreen require browser verification."
+  ],
+  "saves": "Existing version 1 campaign saves are preserved. New optional cultural fields normalize missing or malformed data.",
+  "offline": "Runtime scripts, artwork, font and audio are local. External research links are optional."
+}

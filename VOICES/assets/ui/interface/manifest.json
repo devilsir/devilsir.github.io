@@ -1,0 +1,69 @@
+{
+  "name": "VOICES · Interface de arquivo vivo",
+  "version": "1.4",
+  "origin": "Ilustrações SVG originais do projeto, construídas com formas em uma grade de pixels.",
+  "icons": [
+    "voice",
+    "journal",
+    "notebook",
+    "book",
+    "inventory",
+    "map",
+    "archive",
+    "pix",
+    "leaf",
+    "community",
+    "settings",
+    "teacher",
+    "music",
+    "science",
+    "biology",
+    "art",
+    "history",
+    "market",
+    "media",
+    "compass",
+    "expand",
+    "pause",
+    "sound",
+    "search",
+    "check",
+    "pin"
+  ],
+  "covers": [
+    "music",
+    "science",
+    "biology",
+    "art",
+    "history",
+    "leaf",
+    "market",
+    "media",
+    "community",
+    "voice"
+  ],
+  "notes": [
+    "music",
+    "science",
+    "biology",
+    "art",
+    "history",
+    "leaf",
+    "market",
+    "media",
+    "community",
+    "voice"
+  ],
+  "patterns": [
+    "binding",
+    "paper"
+  ],
+  "external_assets": [],
+  "culture_covers": [
+    "hair",
+    "textiles",
+    "food",
+    "beliefs"
+  ],
+  "culture_covers_license": "CC0-1.0"
+}

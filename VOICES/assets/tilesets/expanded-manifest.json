@@ -1,0 +1,2142 @@
+{
+  "version": "1.6",
+  "license": "CC0-1.0",
+  "attributionRequired": false,
+  "author": "Original VOICES pixel art",
+  "atlas": "assets/tilesets/expanded-props.png",
+  "generator": "tools/create_expanded_assets.py",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 8,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.",
+  "visualReferences": [
+    {
+      "indices": [
+        40,
+        42,
+        43
+      ],
+      "institution": "IPHAN",
+      "url": "https://bibliotecadigital.iphan.gov.br/bitstreams/835bd81e-1742-433d-bd9f-dbe2e8dbdbe4/download",
+      "use": "Instrument silhouettes: bowed berimbau with gourd; paired metal agogô bells; ridged bamboo reco-reco."
+    },
+    {
+      "indices": [
+        41
+      ],
+      "institution": "Museu Regional do Caeté / Brasiliana Museus",
+      "url": "https://brasiliana.museus.gov.br/acervos/5348249-2/",
+      "use": "Conical wooden atabaque, narrow cylindrical lower support, leather head and braided tension cord. Material and shape references only; original pixel illustration."
+    },
+    {
+      "indices": [
+        44
+      ],
+      "institution": "Secretaria da Cultura do Ceará",
+      "url": "https://www.ce.gov.br/secult/2022/04/12/vila-da-musica-realiza-oficina-de-xequere-neste-mes-de-abril/",
+      "use": "Rounded gourd surrounded by a loose bead net."
+    },
+    {
+      "indices": [
+        45
+      ],
+      "institution": "Musica Brasilis",
+      "url": "https://musicabrasilis.org.br/pt-br/instrumentos/cuica/",
+      "use": "Cylindrical friction drum with one skin; internal stick is not represented as an external striking beater."
+    },
+    {
+      "indices": [
+        46
+      ],
+      "institution": "The Metropolitan Museum of Art",
+      "url": "https://www.metmuseum.org/art/collection/search/503722",
+      "use": "Goblet-shaped djembe with skin head, narrow waist, flared foot and tension cords."
+    },
+    {
+      "indices": [
+        47
+      ],
+      "institution": "Prefeitura do Recife",
+      "url": "https://www2.recife.pe.gov.br/noticias/04/03/2016/nucleo-de-cultura-afro-oferece-oficina-de-ilu",
+      "use": "Hand-played ilú supported on a tripod; distinct from a goblet-shaped djembe."
+    },
+    {
+      "indices": [
+        48
+      ],
+      "institution": "UNILAB",
+      "url": "https://repositorio.unilab.edu.br/xmlui/bitstream/handle/123456789/2637/2022_proj_anandasantana.pdf?isAllowed=y&sequence=1",
+      "use": "Headwrap folds on a neutral display, without assigning the term ojá to every headwrap."
+    },
+    {
+      "indices": [
+        49
+      ],
+      "institution": "Museu Afro Brasil",
+      "url": "https://museuafrobrasil.org.br/acervo/fio-de-contas-de-orixa-2/",
+      "use": "Bead necklaces on their own contextual exhibit support."
+    },
+    {
+      "indices": [
+        50
+      ],
+      "institution": "Universidade Federal da Bahia",
+      "url": "https://ppgav.ufba.br/sites/ppgav.ufba.br/files/dissertacao_ana_nascimento_final.pdf",
+      "use": "Rectangular pano da costa displayed draped, with bands rather than a universal Kente pattern."
+    },
+    {
+      "indices": [
+        51,
+        52
+      ],
+      "institution": "Victoria and Albert Museum",
+      "url": "https://www.vam.ac.uk/articles/cloth-of-a-continent-africa-fashion",
+      "use": "Kente has stitched woven strips with alternating geometric blocks; Ankara has repeated printed motifs."
+    },
+    {
+      "indices": [
+        53
+      ],
+      "institution": "Museu Histórico Nacional",
+      "url": "https://brasiliana3.museus.gov.br/brasiliana/penca-de-balangandas-3/",
+      "use": "Metal holder and chain with differently shaped hanging pendants."
+    },
+    {
+      "indices": [
+        55
+      ],
+      "institution": "Smithsonian National Museum of African Art",
+      "url": "https://africa.si.edu/collection/object/nmafa_86-12-5",
+      "use": "Copper-alloy material cue only. The original game mask is not a replica or attributed to a specific people."
+    },
+    {
+      "indices": [
+        56
+      ],
+      "institution": "The Metropolitan Museum of Art",
+      "url": "https://www.metmuseum.org/art/collection/search/311004",
+      "use": "Research reference for a wooden seated ancestor figure and its specific Bembe-Kongo context. The game sculpture is an original teaching illustration, not a replica or a universal ancestor figure."
+    },
+    {
+      "indices": [
+        58
+      ],
+      "institution": "The Metropolitan Museum of Art",
+      "url": "https://www.metmuseum.org/art/collection/search/317688",
+      "use": "Sankofa bird with feet forward and head turned back toward its tail."
+    },
+    {
+      "indices": [
+        57,
+        59
+      ],
+      "institution": "Museu Afro Brasil",
+      "url": "https://museuafrobrasil.org.br/acervo/ferramenta-de-orixa-ogum/",
+      "use": "Iron tools in a contextual museum display; no unsupported Ibi identification."
+    },
+    {
+      "indices": [
+        60
+      ],
+      "institution": "Fundação Joaquim Nabuco",
+      "url": "https://pesquisaescolar.fundaj.gov.br/pt-br/artigo/talismas-e-amuletos/",
+      "use": "Small cloth bag and cord as a descriptive amulet study, not a power-up or a Patachas attribution."
+    }
+  ],
+  "palette": {
+    "ink": "#111729",
+    "outline": "#1b2039",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "violetdark": "#463575",
+    "violet": "#7860be",
+    "violetlight": "#b498f0",
+    "cyan": "#59d9dd",
+    "cyandark": "#278c9d",
+    "cyanlight": "#b8f4ea",
+    "amber": "#efb74e",
+    "amberdark": "#a66c32",
+    "amberlight": "#ffdd88",
+    "coral": "#ed7978",
+    "coraldark": "#ab4d65",
+    "corallight": "#ffc0a0",
+    "white": "#eeeada",
+    "paper": "#d8dccf",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "greenlight": "#9cd3a0",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "greylight": "#afb5ba",
+    "grey": "#768894",
+    "darkgrey": "#49576d",
+    "pink": "#dd9dc3"
+  },
+  "props": [
+    {
+      "index": 0,
+      "id": "sofa",
+      "name": "Sofá de dois lugares",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.44,
+        "width": 0.68,
+        "height": 0.45
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "waiting"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "upholstered-armchair",
+      "name": "Poltrona acolchoada",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.44,
+        "width": 0.68,
+        "height": 0.45
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "waiting"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "single-bed",
+      "name": "Cama de solteiro",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "bunk-bed",
+      "name": "Beliche",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "dresser",
+      "name": "Cômoda",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "wardrobe",
+      "name": "Guarda-roupa",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "bedside-cabinet",
+      "name": "Mesa de cabeceira",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "kitchen-stove",
+      "name": "Fogão",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "fridge",
+      "name": "Geladeira",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "kitchen-sink",
+      "name": "Pia da cozinha",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "dining-table",
+      "name": "Mesa de jantar",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "dining-chair",
+      "name": "Cadeira de jantar",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.44,
+        "width": 0.68,
+        "height": 0.45
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "waiting"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "rocking-chair",
+      "name": "Cadeira de balanço",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.44,
+        "width": 0.68,
+        "height": 0.45
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "waiting"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "classroom-desk",
+      "name": "Carteira escolar",
+      "category": "educação",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "round-stool",
+      "name": "Banquinho redondo",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.44,
+        "width": 0.68,
+        "height": 0.45
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "waiting"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "long-bookcase",
+      "name": "Estante larga de livros",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "wall-shelf",
+      "name": "Prateleira de parede",
+      "category": "casa",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "object",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "coat-stand",
+      "name": "Cabideiro",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.78,
+        "width": 0.52,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "floor-lamp",
+      "name": "Luminária de chão",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.78,
+        "width": 0.52,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "wall-clock",
+      "name": "Relógio de parede",
+      "category": "casa",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "object",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "woven-rug",
+      "name": "Tapete tecido",
+      "category": "casa",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "curtain",
+      "name": "Cortina",
+      "category": "casa",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "object",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "bathroom-sink",
+      "name": "Pia de banheiro",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "toilet",
+      "name": "Vaso sanitário",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 24,
+      "id": "laundry-basin",
+      "name": "Tanque de lavar",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 0,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 25,
+      "id": "washing-machine",
+      "name": "Máquina de lavar",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.16,
+        "y": 0.15,
+        "width": 0.68,
+        "height": 0.74
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 26,
+      "id": "tool-bench",
+      "name": "Bancada de ferramentas",
+      "category": "oficina",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 27,
+      "id": "easel",
+      "name": "Cavalete de pintura",
+      "category": "arte",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 28,
+      "id": "sewing-table",
+      "name": "Mesa de costura",
+      "category": "oficina",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 29,
+      "id": "reception-counter",
+      "name": "Balcão de recepção",
+      "category": "comunidade",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 30,
+      "id": "computer-desk",
+      "name": "Mesa de computador",
+      "category": "tecnologia",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 31,
+      "id": "storage-chest",
+      "name": "Baú de armazenamento",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 32,
+      "id": "crate-stack",
+      "name": "Caixotes empilhados",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 0,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 33,
+      "id": "chess-table",
+      "name": "Mesa de xadrez",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 34,
+      "id": "picnic-table",
+      "name": "Mesa de piquenique",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 35,
+      "id": "decorative-planter",
+      "name": "Jardineira com flores",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 36,
+      "id": "drinking-fountain",
+      "name": "Bebedouro",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 37,
+      "id": "bicycle-rack",
+      "name": "Bicicletário",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.03,
+        "y": 0.6,
+        "width": 0.91,
+        "height": 0.29
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 38,
+      "id": "litter-bin",
+      "name": "Lixeira com tampa",
+      "category": "serviços",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 39,
+      "id": "accessible-low-table",
+      "name": "Mesa baixa com espaço livre",
+      "category": "comunidade",
+      "solidFootprint": [
+        {
+          "x": 0.08,
+          "y": 0.65,
+          "width": 0.12,
+          "height": 0.23
+        },
+        {
+          "x": 0.82,
+          "y": 0.65,
+          "width": 0.12,
+          "height": 0.23
+        }
+      ],
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 0.83,
+          "facing": "north",
+          "state": "reading"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 224,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 40,
+      "id": "berimbau",
+      "name": "Berimbau",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 0,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 41,
+      "id": "atabaque",
+      "name": "Atabaque",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 32,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 42,
+      "id": "agogo",
+      "name": "Agogô",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 64,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 43,
+      "id": "reco-reco",
+      "name": "Reco-reco de bambu",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 96,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 44,
+      "id": "xequere",
+      "name": "Xequerê",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 128,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 45,
+      "id": "cuica",
+      "name": "Cuíca",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 160,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 46,
+      "id": "djembe",
+      "name": "Djembe",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 192,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 47,
+      "id": "ilu",
+      "name": "Ilú",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.25,
+        "y": 0.64,
+        "width": 0.5,
+        "height": 0.24
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "perform": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 224,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 48,
+      "id": "headwrap-display",
+      "name": "Turbante em suporte",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 0,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 49,
+      "id": "beads-display",
+      "name": "Fio de contas em exposição",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 32,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 50,
+      "id": "pano-da-costa-display",
+      "name": "Pano da costa em suporte",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 64,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 51,
+      "id": "kente-cloth",
+      "name": "Tecido Kente em exposição",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 96,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 52,
+      "id": "ankara-cloth",
+      "name": "Tecido Ankara em exposição",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 128,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 53,
+      "id": "balangandas-display",
+      "name": "Penca de balangandãs",
+      "category": "tecidos e adornos",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 160,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 54,
+      "id": "wooden-mask-display",
+      "name": "Máscara de madeira em suporte",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 192,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 55,
+      "id": "metal-mask-display",
+      "name": "Máscara de metal em suporte",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 224,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 56,
+      "id": "ancestral-sculpture-display",
+      "name": "Escultura ancestral em exposição",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 0,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 57,
+      "id": "orixa-context-exhibit",
+      "name": "Escultura artística · referência a Ogum",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 32,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 58,
+      "id": "sankofa-relief",
+      "name": "Relevo didático Sankofa",
+      "category": "arte",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 64,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 59,
+      "id": "iron-tools-display",
+      "name": "Exposição de ferramentas de ferro",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 96,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 60,
+      "id": "amulet-display",
+      "name": "Amuleto em exposição",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.7,
+        "width": 0.6,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 128,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    },
+    {
+      "index": 61,
+      "id": "museum-label-desk",
+      "name": "Mesa de legendas do museu",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 160,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 62,
+      "id": "biography-display",
+      "name": "Painel de biografia",
+      "category": "educação",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 63,
+      "id": "record-player",
+      "name": "Toca-discos",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.47,
+        "width": 0.82,
+        "height": 0.43
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 224,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

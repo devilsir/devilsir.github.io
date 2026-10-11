@@ -1,0 +1,110 @@
+{
+  "name": "VOICES original pixel world expansion",
+  "version": 1,
+  "tileSize": 32,
+  "npcSprite": {
+    "pattern": "assets/characters/{id}.png",
+    "width": 128,
+    "height": 192,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "columns": 4,
+    "rows": {
+      "down": 0,
+      "left": 1,
+      "right": 2,
+      "up": 3,
+      "interaction": 4,
+      "celebration": 5
+    },
+    "idleColumn": 0
+  },
+  "npcPortrait": {
+    "pattern": "assets/characters/{id}-portrait.png",
+    "width": 288,
+    "height": 96,
+    "cellWidth": 96,
+    "cellHeight": 96,
+    "columns": {
+      "neutral": 0,
+      "happy": 1,
+      "concerned": 2
+    }
+  },
+  "characters": [
+    "gardener",
+    "vendor",
+    "guide",
+    "archivist",
+    "technician",
+    "teacher",
+    "courier",
+    "elder",
+    "student2",
+    "percussionist"
+  ],
+  "animals": {
+    "file": "assets/characters/animals.png",
+    "width": 128,
+    "height": 192,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "frames": 4,
+    "rows": {
+      "dog": 0,
+      "cat": 1,
+      "pigeon": 2,
+      "bird": 3,
+      "duck": 4,
+      "butterfly": 5
+    },
+    "crop": "sx=frame*32;sy=row*32"
+  },
+  "props": {
+    "file": "assets/tilesets/world-props.png",
+    "width": 256,
+    "height": 128,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "columns": 8,
+    "rows": 4,
+    "ids": {
+      "flowerbed": 0,
+      "vegetablebed": 1,
+      "awning": 2,
+      "fruitcrate": 3,
+      "cart": 4,
+      "picnic": 5,
+      "bicycle": 6,
+      "mailbox": 7,
+      "stacknewspapers": 8,
+      "readingrug": 9,
+      "armchair": 10,
+      "wallclock": 11,
+      "maptable": 12,
+      "displaycase": 13,
+      "recordplayer": 14,
+      "musicstand": 15,
+      "streetart": 16,
+      "accessiblepath": 17,
+      "pondedge": 18,
+      "waterlily": 19,
+      "pilescrolls": 20,
+      "printingpress": 21,
+      "solarpanel": 22,
+      "antenna": 23,
+      "serverrack": 24,
+      "cablebox": 25,
+      "projectboard": 26,
+      "handwash": 27,
+      "feedingbowl": 28,
+      "nest": 29,
+      "lantern": 30,
+      "clothesline": 31
+    },
+    "crop": "sx=(id%8)*32;sy=Math.floor(id/8)*32"
+  },
+  "preview": "assets/ui/world-preview.png",
+  "source": "tools/create_world_assets.py",
+  "authoring": "Original deterministic Pillow pixel drawing. Base sprite helper import only; old sheets are never regenerated or overwritten. Real alpha. Contemporary respectful appearance and occupations."
+}

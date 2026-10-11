@@ -1,0 +1,29 @@
+{
+  "version": "1.3",
+  "maps": 17,
+  "ui_svg_assets": 48,
+  "scripts": 18,
+  "save_format": "voices.v1 / version 1",
+  "offline": true,
+  "checks": {
+    "runtime": {
+      "passed": 23,
+      "date": "2026-10-11T04:24:29.387Z",
+      "environment": "Node VM + minimal DOM harness + native Canvas (NOT a browser)"
+    },
+    "cozy": {
+      "passed": 7,
+      "date": "2026-10-11T04:21:09.368Z",
+      "environment": "Node DOM harness, native Canvas and mocked HTML Audio; no browser"
+    },
+    "interface": {
+      "passed": 4,
+      "date": "2026-10-11T04:30:14.051Z",
+      "environment": "Node DOM harness + native Canvas; CSS/browser layout and actual touch/fullscreen are not verified"
+    }
+  },
+  "browser_verified": false,
+  "limits": [
+    "CSS layout, touch, fullscreen and actual audio were not browser-verified."
+  ]
+}

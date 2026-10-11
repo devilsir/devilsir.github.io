@@ -1,0 +1,1070 @@
+{
+  "version": "1.5",
+  "license": "CC0-1.0",
+  "attributionRequired": false,
+  "author": "Original VOICES pixel art",
+  "atlas": "assets/tilesets/scene-props.png",
+  "generator": "tools/create_scene_assets.py",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 4,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.",
+  "palette": {
+    "ink": "#111729",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "amberlight": "#ffdd88",
+    "paper": "#d8dccf",
+    "white": "#eeeada",
+    "grey": "#768894",
+    "greylight": "#afb5ba",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "coral": "#ed7978",
+    "violet": "#7860be",
+    "cyandark": "#278c9d"
+  },
+  "props": [
+    {
+      "index": 0,
+      "id": "bench-south",
+      "name": "Banco voltado ao sul",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.25,
+        "width": 0.8,
+        "height": 0.6
+      },
+      "anchors": {
+        "seat": {
+          "x": 0.5,
+          "y": 0.58,
+          "facing": "south",
+          "state": "sitting"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "waiting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "bench-north",
+      "name": "Banco voltado ao norte",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.25,
+        "width": 0.8,
+        "height": 0.6
+      },
+      "anchors": {
+        "seat": {
+          "x": 0.5,
+          "y": 0.4,
+          "facing": "north",
+          "state": "sitting"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": -0.12,
+          "facing": "south",
+          "state": "waiting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "bench-east",
+      "name": "Banco voltado a leste",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.2,
+        "y": 0.25,
+        "width": 0.6,
+        "height": 0.6
+      },
+      "anchors": {
+        "seat": {
+          "x": 0.56,
+          "y": 0.58,
+          "facing": "east",
+          "state": "sitting"
+        },
+        "approach": {
+          "x": 1.1,
+          "y": 0.65,
+          "facing": "west",
+          "state": "waiting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "bench-west",
+      "name": "Banco voltado a oeste",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.2,
+        "y": 0.25,
+        "width": 0.6,
+        "height": 0.6
+      },
+      "anchors": {
+        "seat": {
+          "x": 0.44,
+          "y": 0.58,
+          "facing": "west",
+          "state": "sitting"
+        },
+        "approach": {
+          "x": -0.1,
+          "y": 0.65,
+          "facing": "east",
+          "state": "waiting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "low-reading-table",
+      "name": "Mesa baixa de leitura",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "desk-returns",
+      "name": "Balcão de devoluções",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "study-desk",
+      "name": "Mesa de estudo",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "round-cafe-table",
+      "name": "Mesa de café",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.14,
+        "y": 0.28,
+        "width": 0.74,
+        "height": 0.58
+      },
+      "anchors": {
+        "first": {
+          "x": -0.18,
+          "y": 0.7,
+          "facing": "east",
+          "state": "sitting"
+        },
+        "second": {
+          "x": 1.18,
+          "y": 0.7,
+          "facing": "west",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "stage-platform",
+      "name": "Tablado de apresentações",
+      "category": "música",
+      "solidFootprint": null,
+      "anchors": {
+        "perform": {
+          "x": 0.5,
+          "y": 0.4,
+          "facing": "south",
+          "state": "working"
+        },
+        "audience": {
+          "x": 0.5,
+          "y": 1.45,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "music",
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "instrument-storage",
+      "name": "Estante de instrumentos",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.12,
+        "width": 0.76,
+        "height": 0.79
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "cable-mat",
+      "name": "Passagem protegida de cabos",
+      "category": "música",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "music-station",
+      "name": "Mesa de gravação",
+      "category": "música",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "stall-fruit-counter",
+      "name": "Banca de frutas",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.07,
+        "y": 0.42,
+        "width": 0.86,
+        "height": 0.43
+      },
+      "anchors": {
+        "vendor": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "working"
+        },
+        "customer": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "stall-food-counter",
+      "name": "Tabuleiro de comidas",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.07,
+        "y": 0.42,
+        "width": 0.86,
+        "height": 0.43
+      },
+      "anchors": {
+        "vendor": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "working"
+        },
+        "customer": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "stall-cloth-counter",
+      "name": "Banca de tecidos",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.07,
+        "y": 0.42,
+        "width": 0.86,
+        "height": 0.43
+      },
+      "anchors": {
+        "vendor": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "working"
+        },
+        "customer": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "workshop-hair-counter",
+      "name": "Balcão da trancista",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.07,
+        "y": 0.42,
+        "width": 0.86,
+        "height": 0.43
+      },
+      "anchors": {
+        "vendor": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "working"
+        },
+        "customer": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "garden-tool-rack",
+      "name": "Suporte de ferramentas",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.12,
+        "width": 0.76,
+        "height": 0.79
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "compost-bin",
+      "name": "Composteira fechada",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.32,
+        "width": 0.7,
+        "height": 0.55
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "garden",
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "water-barrel",
+      "name": "Reservatório da horta",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.2,
+        "y": 0.34,
+        "width": 0.58,
+        "height": 0.48
+      },
+      "anchors": {
+        "tap": {
+          "x": 1.08,
+          "y": 0.8,
+          "facing": "west",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "garden",
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "seed-workbench",
+      "name": "Mesa de sementes",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "exhibition-plinth",
+      "name": "Base de exposição",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.19,
+        "y": 0.31,
+        "width": 0.64,
+        "height": 0.56
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "museum-label-stand",
+      "name": "Legenda de exposição",
+      "category": "museu",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.68,
+        "width": 0.6,
+        "height": 0.24
+      },
+      "anchors": {
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "archive-workbench",
+      "name": "Mesa de conservação",
+      "category": "arquivo",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "catalog-cabinet",
+      "name": "Fichário de catálogo",
+      "category": "arquivo",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.12,
+        "width": 0.76,
+        "height": 0.79
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 24,
+      "id": "lab-workbench",
+      "name": "Bancada de laboratório",
+      "category": "ciência",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 0,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 25,
+      "id": "observation-table",
+      "name": "Mesa de observação",
+      "category": "ciência",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 32,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 26,
+      "id": "newsroom-desk",
+      "name": "Mesa da redação",
+      "category": "jornalismo",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 64,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 27,
+      "id": "interview-table",
+      "name": "Mesa de entrevista",
+      "category": "jornalismo",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "reporter": {
+          "x": 0.5,
+          "y": 1.15,
+          "facing": "north",
+          "state": "reading"
+        },
+        "guest": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "conversing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 96,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 28,
+      "id": "assembly-table",
+      "name": "Mesa da assembleia",
+      "category": "comunidade",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "facilitator": {
+          "x": 0.5,
+          "y": -0.18,
+          "facing": "south",
+          "state": "working"
+        },
+        "participant": {
+          "x": 0.5,
+          "y": 1.15,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 128,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 29,
+      "id": "public-catalog-desk",
+      "name": "Balcão do catálogo",
+      "category": "arquivo",
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "anchors": {
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        },
+        "approach": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "sourceRect": {
+        "x": 160,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 30,
+      "id": "shade-pergola",
+      "name": "Pergolado de sombra",
+      "category": "convívio",
+      "solidFootprint": [
+        {
+          "x": 0.12,
+          "y": 0.63,
+          "width": 0.1,
+          "height": 0.24
+        },
+        {
+          "x": 0.81,
+          "y": 0.63,
+          "width": 0.1,
+          "height": 0.24
+        }
+      ],
+      "anchors": {
+        "shelter": {
+          "x": 0.5,
+          "y": 0.8,
+          "facing": "south",
+          "state": "waiting"
+        }
+      },
+      "layer": "canopy",
+      "interaction": "none",
+      "sourceRect": {
+        "x": 192,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 31,
+      "id": "planter-border",
+      "name": "Borda de canteiro",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.05,
+        "y": 0.3,
+        "width": 0.9,
+        "height": 0.55
+      },
+      "anchors": {
+        "tend": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "garden",
+      "sourceRect": {
+        "x": 224,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "VOICES — Pessoas, memória e criação",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "creator": "Original pixel illustrations created for VOICES",
+  "created": "2026-10-11",
+  "source": "tools/create_heritage_characters.py",
+  "art": "Original simplified educational pixel illustrations; no photographs, traced artwork, external textures, logos or copied portraits.",
+  "historicalUse": "Historical figures are labeled educational exhibit illustrations with third-person biography. They do not deliver invented first-person speech, endorsements or attributed quotations. Clothing depicts an original illustrative interpretation, not an authenticated outfit or sacred costume.",
+  "sprite": {
+    "width": 128,
+    "height": 192,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "columns": 4,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up",
+      "interaction",
+      "greeting"
+    ]
+  },
+  "portrait": {
+    "width": 288,
+    "height": 96,
+    "cellWidth": 96,
+    "cellHeight": 96,
+    "nativePixelGrid": 48,
+    "columns": {
+      "neutral": 0,
+      "happy": 1,
+      "concerned": 2
+    }
+  },
+  "characters": {
+    "history-nina": {
+      "name": "Nina Simone",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-nina.png",
+      "portrait": "assets/characters/history-nina-portrait.png",
+      "reference": "https://www.ninasimone.com/biography/"
+    },
+    "history-tim": {
+      "name": "Tim Maia",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-tim.png",
+      "portrait": "assets/characters/history-tim-portrait.png",
+      "reference": "https://enciclopedia.itaucultural.org.br/pessoas/4595-tim-maia"
+    },
+    "history-king": {
+      "name": "Martin Luther King Jr.",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-king.png",
+      "portrait": "assets/characters/history-king-portrait.png",
+      "reference": "https://www.nps.gov/subjects/civilrights/martin-luther-king.htm"
+    },
+    "history-machado": {
+      "name": "Machado de Assis",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-machado.png",
+      "portrait": "assets/characters/history-machado-portrait.png",
+      "reference": "https://www.academia.org.br/academicos/machado-de-assis/biografia"
+    },
+    "history-carolina": {
+      "name": "Carolina Maria de Jesus",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-carolina.png",
+      "portrait": "assets/characters/history-carolina-portrait.png",
+      "reference": "https://ims.com.br/titular-colecao/carolina-maria-de-jesus/"
+    },
+    "history-katherine": {
+      "name": "Katherine Johnson",
+      "historical": true,
+      "identity": "Original educational illustration of a historical figure.",
+      "role": "Stationary educational portrait exhibit",
+      "sprite": "assets/characters/history-katherine.png",
+      "portrait": "assets/characters/history-katherine-portrait.png",
+      "reference": "https://www.nasa.gov/image-article/katherine-johnson-portrait/"
+    },
+    "mila": {
+      "name": "Mila",
+      "historical": false,
+      "identity": "Personagem negra brasileira original e fictícia.",
+      "role": "Educadora musical e guitarrista",
+      "sprite": "assets/characters/mila.png",
+      "portrait": "assets/characters/mila-portrait.png"
+    },
+    "ravi": {
+      "name": "Ravi",
+      "historical": false,
+      "identity": "Personagem negro brasileiro original e fictício.",
+      "role": "Livreiro e mediador de leitura",
+      "sprite": "assets/characters/ravi.png",
+      "portrait": "assets/characters/ravi-portrait.png"
+    }
+  }
+}

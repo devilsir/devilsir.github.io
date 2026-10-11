@@ -1,0 +1,23 @@
+{
+  "format": "voices-content",
+  "version": 1,
+  "questions": [
+    {
+      "id": "example-source",
+      "chapter": 1,
+      "grade": 6,
+      "prompt": "Complete: We ___ the source before sharing.",
+      "options": ["check", "checks", "checking", "to checks"],
+      "correct": 0,
+      "explanation": "Com we, usamos check no Simple Present. Source significa fonte de informação."
+    }
+  ],
+  "glossary": [
+    {
+      "en": "archive",
+      "pt": "arquivo",
+      "example": "We maintain the archive together.",
+      "examplePt": "Cuidamos do arquivo em conjunto."
+    }
+  ]
+}
