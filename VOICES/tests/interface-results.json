@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-12T07:35:19.535Z",
+  "environment": "Node DOM harness + native Canvas; CSS/browser layout and actual touch/fullscreen are not verified",
+  "viewports": [
+    {
+      "physical": [
+        1920,
+        940
+      ],
+      "canvas": [
+        1176,
+        576
+      ],
+      "camera": [
+        108,
+        480
+      ]
+    },
+    {
+      "physical": [
+        2560,
+        1306
+      ],
+      "canvas": [
+        1280,
+        654
+      ],
+      "camera": [
+        56,
+        402
+      ]
+    },
+    {
+      "physical": [
+        1440,
+        766
+      ],
+      "canvas": [
+        1082,
+        576
+      ],
+      "camera": [
+        155,
+        480
+      ]
+    },
+    {
+      "physical": [
+        1280,
+        586
+      ],
+      "canvas": [
+        1258,
+        576
+      ],
+      "camera": [
+        67,
+        480
+      ]
+    },
+    {
+      "physical": [
+        390,
+        729
+      ],
+      "canvas": [
+        480,
+        898
+      ],
+      "camera": [
+        456,
+        158
+      ]
+    },
+    {
+      "physical": [
+        844,
+        288
+      ],
+      "canvas": [
+        1688,
+        576
+      ],
+      "camera": [
+        -124,
+        480
+      ]
+    },
+    {
+      "physical": [
+        320,
+        453
+      ],
+      "canvas": [
+        480,
+        680
+      ],
+      "camera": [
+        456,
+        376
+      ]
+    }
+  ],
+  "passed": [
+    "Seven landscape, portrait and wide viewports preserve aspect ratio, player visibility, object clicks and original arcade pointer controls.",
+    "All 18 scenario-based maps are distinct; the pond, entrances, scene framing, region visits and persistent garden changes are reflected without changing player state.",
+    "Notebook sections, themed book/note art, accent-insensitive search, four filters, empty feedback, page index, English support and saved reading access work through the actual menu handlers.",
+    "Settings volumes, themed pause/inventory/glossary/archive, persisted HUD collapse, keyboard focus cycling and the existing save format remain functional."
+  ],
+  "limitations": [
+    "No supported browser was available. CSS layout, touch ergonomics, fullscreen permissions and actual audio still need browser review."
+  ]
+}

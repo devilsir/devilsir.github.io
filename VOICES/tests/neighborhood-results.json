@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-12T07:40:34.296Z",
+  "environment": "Node VM + minimal DOM + native Canvas; no browser",
+  "counts": {
+    "newAssets": 64,
+    "floorStyles": 12,
+    "protestParticipants": 24,
+    "reviewedReadings": 50,
+    "bilingualRecords": 201
+  },
+  "passed": [
+    "All 50 readings keep IDs, sources and connected paragraphs. Grade-specific, scalar, dynamic and branching dialogue translations remain nonempty and resolve correctly for grades 6, 7 and 8.",
+    "The 64 new local assets include 12 historical portraits placed in relevant locations. Every portrait opens its corresponding sourced reading; portraits and skin tones have no recoloring roles.",
+    "The protest has 24 distinct original participants and 24 collision-aware NPC bodies, readable signs, fictional neighbor dialogue and a sourced historical panel. Chatter/mute controls and the low bubble limit are respected.",
+    "Material changes affect only declared wood/fabric pixels; original outlines, highlights outside those roles and transparency stay intact.",
+    "Scale, rotation and declared material colors work through actual inspector handlers on original objects and new furniture; collision geometry scales with the fountain, and duplication preserves furniture colors.",
+    "Whole and half rectangular floor tiles paint by pointer stroke, rotate into either axis, preserve colors, undo/redo as one action and cancel without leaving partial paint.",
+    "Optional protest and heritage displays can be deleted without lingering collisions or being resurrected by current imports. Essential protections remain active; invalid colors and scales are rejected.",
+    "Scale/color/floor edits survive apply and full-world reload using a separate layout save. Older revision-2 scene files gain the new optional exhibits; campaign progress remains byte-equivalent except its save timestamp.",
+    "Printed book text and pencil notebook/note text use bundled fonts with local licenses. The 120 educational questions, 24 optional missions and offline asset loading remain available."
+  ],
+  "limitations": [
+    "Responsive CSS, actual browser typography, pointer capture/touch and audible Web Audio require a supported browser."
+  ]
+}

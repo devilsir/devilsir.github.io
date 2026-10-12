@@ -127,7 +127,7 @@ V.Cozy={ready:false,clock:0,seated:null,layouts:V.cozyLayouts,
  },
  updateChats(m,dt){for(const g of m.chats){g.clock+=dt;g.members.forEach(o=>{o.chatSpeaking=false;o.bubble='';});
    if(g.phase==='rest'){g.wait-=dt;if(g.wait<=0&&g.members.every(o=>o.chatReady&&!o.responding&&!o.greeting)){g.phase='approach';g.clock=0;g.retry=0;g.members.forEach(o=>{o.chatReady=false;this.release(m,o);});g.members.forEach((o,i)=>{o.route=[];this.chooseTask(m,o,g['anchor'+i]);});}}
-   else if(g.phase==='approach'){if(g.members.every((o,i)=>V.dist(o,g['anchor'+i])<9)){g.phase='talk';g.clock=0;g.talking=true;g.members.forEach(o=>{o.action='conversing';o.taskTime=25;});}else{g.retry-=dt;if(g.retry<=0){g.retry=1.5;g.members.forEach((o,i)=>{if(!o.route.length&&V.dist(o,g['anchor'+i])>=9)this.chooseTask(m,o,g['anchor'+i]);});}if(g.clock>45)this.endChat(m,g);}}
+   else if(g.phase==='approach'){if(g.members.every((o,i)=>V.dist(o,g['anchor'+i])<9)){g.phase='talk';g.clock=0;g.talking=true;g.members.forEach(o=>{o.action='conversing';o.taskTime=25;});}else{g.retry-=dt;if(g.retry<=0){g.retry=1.5;g.members.forEach((o,i)=>{if(!o.route.length&&V.dist(o,g['anchor'+i])>=9)this.chooseTask(m,o,g['anchor'+i]);});}if(g.clock>(g.approachLimit||45))this.endChat(m,g);}}
    else if(g.phase==='talk'){const turn=Math.floor(g.clock/4.5);if(turn>=g.lines.length){this.endChat(m,g);continue;}const speaker=g.members[turn%2];speaker.chatSpeaking=true;speaker.bubble=g.lines[turn];g.members.forEach((o,i)=>{o.dir=i?1:2;o.walking=false;});}
   }},
  endChat(m,g){g.phase='rest';g.talking=false;g.wait=27+hash(g.id)%13;g.clock=0;for(const o of g.members){o.chatReady=false;o.chatSpeaking=false;o.bubble='';this.release(m,o);o.action='waiting';o.taskTime=2+o.member*2;o.destination=null;o.route=[];}},

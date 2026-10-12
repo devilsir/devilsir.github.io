@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171827"><meta name="description" content="Uma aventura sobre as histórias que merecem ser ouvidas. RPG educativo offline para o 6º ao 8º ano.">
-  <title>VOICES 2.1 — Reboot the Story</title>
+  <title>VOICES 2.2 — Reboot the Story</title>
   <link rel="icon" href="assets/ui/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/interface.css">
@@ -27,7 +27,7 @@
     <footer class="title-footer"><span><b class="status-light"></b> AVENTURA OFFLINE · 6º — 8º ANO</span><span>Explore. Escute. Investigue.</span></footer>
   </section>
   <section id="game-screen" class="screen game-screen" hidden>
-    <header class="game-top"><button id="home-button" class="wordmark" aria-label="Pausar e abrir menu">VOICES<span>_</span></button><div class="location-block"><small>NEW HARMONY · ARQUIVO VIVO · 2.1</small><strong id="location-name">Praça das vozes</strong></div><div id="team-role" class="role-label"></div><div class="viewer-controls"><button id="scene-editor-button" class="viewer-edit" aria-label="Abrir editor de cenário" title="Editar cenário (F2)"><img class="ui-art" src="assets/ui/interface/scene.svg" width="24" height="24" alt=""><span>Editar cenário</span><kbd>F2</kbd></button><button id="hud-toggle" class="viewer-icon" aria-label="Recolher objetivos sobre o cenário" aria-pressed="false" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="24" height="24" alt=""></button><button id="viewer-fullscreen" class="viewer-icon" aria-label="Expandir jogo para tela cheia" title="Tela cheia"><img class="ui-art" src="assets/ui/interface/expand.svg" width="24" height="24" alt=""></button></div><button id="pause-button" class="quiet">Pausar <kbd>Esc</kbd></button></header>
+    <header class="game-top"><button id="home-button" class="wordmark" aria-label="Pausar e abrir menu">VOICES<span>_</span></button><div class="location-block"><small>NEW HARMONY · ARQUIVO VIVO · 2.2</small><strong id="location-name">Praça das vozes</strong></div><div id="team-role" class="role-label"></div><div class="viewer-controls"><button id="scene-editor-button" class="viewer-edit" aria-label="Abrir editor de cenário" title="Editar cenário (F2)"><img class="ui-art" src="assets/ui/interface/scene.svg" width="24" height="24" alt=""><span>Editar cenário</span><kbd>F2</kbd></button><button id="hud-toggle" class="viewer-icon" aria-label="Recolher objetivos sobre o cenário" aria-pressed="false" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="24" height="24" alt=""></button><button id="viewer-fullscreen" class="viewer-icon" aria-label="Expandir jogo para tela cheia" title="Tela cheia"><img class="ui-art" src="assets/ui/interface/expand.svg" width="24" height="24" alt=""></button></div><button id="pause-button" class="quiet">Pausar <kbd>Esc</kbd></button></header>
     <div id="stage" class="stage">
       <canvas id="world-canvas" width="960" height="540" tabindex="0" aria-label="Mundo do jogo. Mova com WASD ou setas. Interaja com E. Abra o diário com J."></canvas>
       <div class="mission-hud"><div class="chapter-chip" id="chapter-chip">PRÓLOGO</div><button id="mission-tracker"><strong id="mission-name">Uma falha no arquivo</strong><span id="mission-objective">Encontre PIX na praça.</span></button><div class="mission-progress" id="mission-progress"></div></div>
@@ -69,4 +69,8 @@
 <script src="js/protest-world.js"></script>
 <script src="js/furnishings-content.js"></script>
 <script src="js/furnishings-world.js"></script>
+<script src="js/regional-assets.js"></script>
+<script src="js/regional-furniture.js"></script>
+<script src="js/regional-content.js"></script>
+<script src="js/regional-world.js"></script>
 </body></html>

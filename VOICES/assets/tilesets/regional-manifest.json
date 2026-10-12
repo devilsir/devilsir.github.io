@@ -1,0 +1,1039 @@
+{
+  "version": "2.2",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attributionRequired": false,
+  "creator": "Original VOICES pixel art",
+  "generator": "tools/create_regional_props.py",
+  "atlas": "assets/tilesets/regional-props.png",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 3,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "palette": {
+    "ink": "#111729",
+    "outline": "#1b2039",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "violetdark": "#463575",
+    "violet": "#7860be",
+    "violetlight": "#b498f0",
+    "cyan": "#59d9dd",
+    "cyandark": "#278c9d",
+    "cyanlight": "#b8f4ea",
+    "amber": "#efb74e",
+    "amberdark": "#a66c32",
+    "amberlight": "#ffdd88",
+    "coral": "#ed7978",
+    "coraldark": "#ab4d65",
+    "corallight": "#ffc0a0",
+    "white": "#eeeada",
+    "paper": "#d8dccf",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "greenlight": "#9cd3a0",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "greylight": "#afb5ba",
+    "grey": "#768894",
+    "darkgrey": "#49576d",
+    "pink": "#dd9dc3"
+  },
+  "props": [
+    {
+      "index": 0,
+      "id": "regional-fruit-work-stall",
+      "family": "regional",
+      "name": "Banca de frutas com toldo e bancada",
+      "category": "mobiliário",
+      "mapTheme": "market",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.03,
+          "y": 0.64,
+          "width": 0.94,
+          "height": 0.25
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#913f4f",
+          "#c16660",
+          "#e7a995"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "regional-food-tray-counter",
+      "family": "regional",
+      "name": "Tabuleiro de comida com bandejas e potes",
+      "category": "mobiliário",
+      "mapTheme": "market",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.12,
+          "y": 0.66,
+          "width": 0.79,
+          "height": 0.22
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "regional-textile-workshop-canopy",
+      "family": "regional",
+      "name": "Cobertura da oficina de tecidos",
+      "category": "mobiliário",
+      "mapTheme": "market",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.03,
+          "y": 0.66,
+          "width": 0.37,
+          "height": 0.24
+        },
+        {
+          "x": 0.72,
+          "y": 0.6,
+          "width": 0.25,
+          "height": 0.3
+        }
+      ],
+      "layer": "canopy",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "regional-braiding-care-station",
+      "family": "regional",
+      "name": "Estação da trancista com espelho",
+      "category": "mobiliário",
+      "mapTheme": "market",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.03,
+          "y": 0.66,
+          "width": 0.18,
+          "height": 0.16
+        },
+        {
+          "x": 0.27,
+          "y": 0.75,
+          "width": 0.38,
+          "height": 0.17
+        },
+        {
+          "x": 0.64,
+          "y": 0.66,
+          "width": 0.3,
+          "height": 0.18
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "regional-refreshment-cart-canopy",
+      "family": "regional",
+      "name": "Toldo do carrinho de refrescos",
+      "category": "arquitetura",
+      "mapTheme": "hub",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.64,
+          "width": 0.1,
+          "height": 0.3
+        },
+        {
+          "x": 0.84,
+          "y": 0.64,
+          "width": 0.1,
+          "height": 0.3
+        }
+      ],
+      "layer": "canopy",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#a66c32",
+          "#efb74e",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "regional-square-music-shelter",
+      "family": "regional",
+      "name": "Abrigo pequeno para música da praça",
+      "category": "arquitetura",
+      "mapTheme": "hub",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.03,
+          "y": 0.65,
+          "width": 0.1,
+          "height": 0.29
+        },
+        {
+          "x": 0.88,
+          "y": 0.65,
+          "width": 0.1,
+          "height": 0.29
+        }
+      ],
+      "layer": "canopy",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "regional-library-light-column",
+      "family": "regional",
+      "name": "Coluna de iluminação da biblioteca",
+      "category": "mobiliário",
+      "mapTheme": "library",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.3,
+          "y": 0.82,
+          "width": 0.42,
+          "height": 0.13
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "regional-cat-cushioned-basket",
+      "family": "regional",
+      "name": "Cesta almofadada de descanso do gato",
+      "category": "mobiliário",
+      "mapTheme": "library",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.12,
+          "y": 0.7,
+          "width": 0.76,
+          "height": 0.18
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "regional-reading-lamp-books",
+      "family": "regional",
+      "name": "Mesa com luminária e livros",
+      "category": "mobiliário",
+      "mapTheme": "library",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.16,
+          "y": 0.69,
+          "width": 0.75,
+          "height": 0.22
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "regional-low-garden-fence",
+      "family": "regional",
+      "name": "Cerca baixa de canteiro",
+      "category": "arquitetura",
+      "mapTheme": "garden",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.03,
+          "y": 0.75,
+          "width": 0.94,
+          "height": 0.13
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "regional-garden-tool-shed",
+      "family": "regional",
+      "name": "Depósito de ferramentas da horta",
+      "category": "mobiliário",
+      "mapTheme": "garden",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.1,
+          "y": 0.66,
+          "width": 0.78,
+          "height": 0.26
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "regional-water-barrel-tap",
+      "family": "regional",
+      "name": "Barril de água com torneira",
+      "category": "mobiliário",
+      "mapTheme": "garden",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.23,
+          "y": 0.7,
+          "width": 0.56,
+          "height": 0.23
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "regional-open-rehearsal-roof",
+      "family": "regional",
+      "name": "Cobertura do ensaio aberto",
+      "category": "arquitetura",
+      "mapTheme": "chapter-1",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.67,
+          "width": 0.1,
+          "height": 0.28
+        },
+        {
+          "x": 0.84,
+          "y": 0.67,
+          "width": 0.1,
+          "height": 0.28
+        }
+      ],
+      "layer": "canopy",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "regional-studio-glazed-partition",
+      "family": "regional",
+      "name": "Partição acústica do estúdio com vidro",
+      "category": "arquitetura",
+      "mapTheme": "room-1",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.1,
+          "y": 0.76,
+          "width": 0.81,
+          "height": 0.13
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "regional-protected-museum-case",
+      "family": "regional",
+      "name": "Vitrine de exposição com base",
+      "category": "mobiliário",
+      "mapTheme": "room-2",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.13,
+          "y": 0.66,
+          "width": 0.74,
+          "height": 0.23
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ],
+        "stone": [
+          "#6d6c69",
+          "#a6a293",
+          "#d4cdb8"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "regional-conservation-articulated-lamp",
+      "family": "regional",
+      "name": "Luminária articulada de conservação",
+      "category": "mobiliário",
+      "mapTheme": "room-2",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.19,
+          "y": 0.82,
+          "width": 0.62,
+          "height": 0.13
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "regional-experimental-bed-fence",
+      "family": "regional",
+      "name": "Canteiro experimental cercado com etiquetas",
+      "category": "mobiliário",
+      "mapTheme": "chapter-3",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.66,
+          "width": 0.88,
+          "height": 0.25
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "regional-laboratory-window-divider",
+      "family": "regional",
+      "name": "Divisória do laboratório com visor",
+      "category": "arquitetura",
+      "mapTheme": "room-3",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.1,
+          "y": 0.78,
+          "width": 0.81,
+          "height": 0.14
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "regional-avenue-news-stall",
+      "family": "regional",
+      "name": "Banca de jornal da avenida",
+      "category": "mobiliário",
+      "mapTheme": "chapter-4",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.66,
+          "width": 0.87,
+          "height": 0.24
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "regional-interview-fabric-booth",
+      "family": "regional",
+      "name": "Cabine de entrevista com painel de tecido",
+      "category": "arquitetura",
+      "mapTheme": "room-4",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.67,
+          "width": 0.09,
+          "height": 0.24
+        },
+        {
+          "x": 0.85,
+          "y": 0.67,
+          "width": 0.09,
+          "height": 0.24
+        },
+        {
+          "x": 0.3,
+          "y": 0.75,
+          "width": 0.44,
+          "height": 0.2
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "regional-community-pergola",
+      "family": "regional",
+      "name": "Pérgola do centro comunitário",
+      "category": "arquitetura",
+      "mapTheme": "chapter-5",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.06,
+          "y": 0.65,
+          "width": 0.1,
+          "height": 0.3
+        },
+        {
+          "x": 0.85,
+          "y": 0.65,
+          "width": 0.1,
+          "height": 0.3
+        }
+      ],
+      "layer": "canopy",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "stone": [
+          "#6d6c69",
+          "#a6a293",
+          "#d4cdb8"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "regional-inward-arc-seat",
+      "family": "regional",
+      "name": "Assento em arco voltado à roda",
+      "category": "mobiliário",
+      "mapTheme": "room-5",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.04,
+          "y": 0.52,
+          "width": 0.19,
+          "height": 0.35
+        },
+        {
+          "x": 0.23,
+          "y": 0.43,
+          "width": 0.54,
+          "height": 0.18
+        },
+        {
+          "x": 0.77,
+          "y": 0.52,
+          "width": 0.19,
+          "height": 0.35
+        }
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "regional-civic-archive-gallery",
+      "family": "regional",
+      "name": "Módulo de galeria do arquivo cívico",
+      "category": "mobiliário",
+      "mapTheme": "chapter-6",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.12,
+          "y": 0.75,
+          "width": 0.78,
+          "height": 0.17
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ],
+        "stone": [
+          "#6d6c69",
+          "#a6a293",
+          "#d4cdb8"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "regional-organized-control-divider",
+      "family": "regional",
+      "name": "Divisória do controle com cabos organizados",
+      "category": "arquitetura",
+      "mapTheme": "room-6",
+      "solid": true,
+      "solidFootprint": [
+        {
+          "x": 0.07,
+          "y": 0.8,
+          "width": 0.85,
+          "height": 0.14
+        }
+      ],
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "hub": "A fonte organiza os largos; refrescos ficam a oeste e a música a leste. O portal do capítulo 1 foi afastado do abrigo para continuar legível. Biblioteca e central têm alamedas de aproximação próprias.",
+  "library": "As estantes formam alas ao redor do jardim interno. Leitura silenciosa, estudo e encadernação têm áreas distintas; os dois retratos foram unificados com seus pontos de consulta. A cesta fica ao lado do gato, fora da saída.",
+  "park": "A trilha acompanha uma margem em duas enseadas, ligadas por uma ponte curta na parte estreita. O piquenique ocupa a sombra a sudoeste, e a observação de aves fica separada do fluxo da ponte.",
+  "market": "Uma rua longitudinal conecta quatro ofícios. Cada banca ganhou uma estrutura própria e área de trabalho; o tabuleiro de Viviane substitui o prato ampliado. Mesa de corte, carretéis e cadeira foram afastados das sobreposições detectadas.",
+  "garden": "A planta vertical organiza água, ferramentas, canteiros, composto, viveiro e descanso. Os três canteiros de missão conservam sua identificação. Cerca e viveiro foram reposicionados para não cobrir plantas nem o canteiro elevado.",
+  "chapter-1": "A rua em diagonal liga palco, ensaio aberto e escuta. A cobertura protege a área de ensaio; o painel interativo foi colocado à frente dela. A faixa atrás do edifício foi fechada para eliminar uma pequena área caminhável isolada.",
+  "room-1": "O estúdio em L distingue ensaio coletivo e gravação. A divisória com vidro está junto à cabine, o console pertence à gravação e o carrinho de cabos fica ao seu lado. As leituras usam livros e folhas visíveis, sem teclados duplicados.",
+  "chapter-2": "O acolhimento ocupa o pátio central. Mali, Songhai e Kongo têm percursos separados, com contextos próprios. O guia, a cobertura e o balcão estão ligados à chegada; as amostras didáticas ficam junto a cada percurso.",
+  "room-2": "O arquivo em T separa catalogação e conservação nas alas. A consulta documentada ocupa a haste do T, com espaço para parar diante das obras e leituras. Vitrine e iluminação ficam próximas ao trabalho de conservação.",
+  "chapter-3": "O pátio arredondado distingue demonstração de vento, observação e registro. O canteiro cercado pertence ao experimento; treliças com flores substituem composteiras que não faziam sentido como vegetação de borda.",
+  "room-3": "Duas alas técnicas são ligadas por um corredor e pela mesa de comparação em equipe. Gavetas, instrumentos e cadernos ficam junto às bancadas; a divisória indica a separação das estações sem fechar a circulação.",
+  "chapter-4": "A avenida longa distribui notícias, correções e manutenção em sequência. A ágora central oferece espaço de conversa. A nova banca é ligada aos jornais; vasos de hibisco substituem objetos que estavam sendo usados indevidamente como árvores.",
+  "room-4": "A redação em L acompanha o trabalho da entrevista à edição e à correção. O armário de tecido pertence ao canto de entrevista; as folhas de revisão ficam perto das referências, com o corredor de retorno livre.",
+  "chapter-5": "O campus reserva um largo para os 24 participantes da manifestação e mantém a passagem até o centro comunitário. Mural, pérgola, propostas, escola e plantio têm áreas próprias. Cerca viva e flores substituem estações de coleta repetidas.",
+  "room-5": "A assembleia em leque coloca a facilitação à frente dos assentos em arco. A participação escrita tem seu próprio canto, e a maquete fica na lateral para não ocupar a roda. Há passagem entre a entrada e os pontos de participação.",
+  "chapter-6": "O arquivo cívico tem pátios escalonados: consulta pública, contribuições e restauração. Galeria, caixas e estantes pertencem aos respectivos registros; samambaias e suculentas ocupam as bordas sem repetir grandes suportes de legenda.",
+  "room-6": "A sala horizontal mantém revisão humana a oeste e equipamentos protegidos a leste. Rack, cópias e cabos ficam agrupados; o painel de progresso está no corredor e não cobre os pontos de consulta.",
+  "beach": "A praia não foi redesenhada. Planta e captura foram comparadas byte a byte com a versão 2.1; ambas permanecem idênticas."
+}

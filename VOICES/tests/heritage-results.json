@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-12T07:40:34.325Z",
+  "environment": "Node VM, minimal DOM, native Canvas and captured audio-note scheduling; not a browser",
+  "counts": {
+    "newObjectTiles": 64,
+    "historicalPortraits": 6,
+    "fictionalResidents": 2,
+    "books": 11,
+    "historyQuestions": 33,
+    "missions": 3,
+    "culturalEntries": 21,
+    "sourceRecords": 26
+  },
+  "passed": [
+    "Six unique historical exhibit characters open third-person sourced dialogues, portraits and related books; no invented personal speeches.",
+    "All 21 cultural objects respond in their actual maps with illustrated cards, context and sources. Eight instruments and a blues/rock station expose original sound patterns and equivalent written information.",
+    "Eleven connected books have existing English-learning support, themed covers and verified source IDs; all 33 grade-specific questions support explanation and retry. New notebook records remain accessible.",
+    "Completed comparisons mark reviewed exhibits in the world and unlock new contextual resident responses.",
+    "Mila and Ravi have unique homes and meaningful activities, pause for dialogue and offer three new missions. Workshops resume after reading; saved early comparisons reconcile later and neighborhood workshops remain available.",
+    "R/Shift+R and absolute rotations keep seat artwork and sitting direction aligned. Deselect button, Escape from fields, empty-floor click and right-click release selection and return to selection mode.",
+    "Original optional scenes and objects can be removed; their collisions and activity anchors disappear. Fountain movement/rotation updates water rendering and bounds. Campaign NPCs, quest interactions and garden beds remain protected.",
+    "Revision-4 exports persist rotation and original-object removals through apply and full-world reload, preserve adventure saves and reject essential deletions or invalid rotation. Previous scene files receive new educational exhibits; removing a physical portrait preserves archive access.",
+    "Optional heritage progress normalizes malformed and earlier saves without losing chapter progress; cultural text remains available with reduced motion and ambient chatter disabled."
+  ],
+  "limitations": [
+    "No browser was available. CSS, native pointer capture, touch, file picker and audible Web Audio were not verified."
+  ]
+}

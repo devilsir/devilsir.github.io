@@ -1,0 +1,149 @@
+{
+  "date": "2026-10-12T07:40:31.652Z",
+  "environment": "Node VM + minimal DOM + native Canvas; not a browser",
+  "counts": {
+    "balloonTypes": 9,
+    "newFurniture": 24,
+    "newResidents": 4,
+    "newColorPalettes": 9,
+    "catalog": 618,
+    "assets": 247,
+    "residents": 60
+  },
+  "balloonGeometry": [
+    {
+      "kind": "greeting",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        73,
+        127,
+        214,
+        64
+      ]
+    },
+    {
+      "kind": "question",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        73,
+        127,
+        214,
+        64
+      ]
+    },
+    {
+      "kind": "attention",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        73,
+        111,
+        214,
+        64
+      ]
+    },
+    {
+      "kind": "reply",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        73,
+        -23,
+        214,
+        214
+      ]
+    },
+    {
+      "kind": "surprise",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        64,
+        109,
+        232,
+        82
+      ]
+    },
+    {
+      "kind": "thought",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        64,
+        97,
+        232,
+        82
+      ]
+    },
+    {
+      "kind": "shout",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        64,
+        109,
+        232,
+        82
+      ]
+    },
+    {
+      "kind": "practical",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        73,
+        127,
+        214,
+        64
+      ]
+    },
+    {
+      "kind": "conversation",
+      "anchor": {
+        "x": 180,
+        "y": 203
+      },
+      "bounds": [
+        49,
+        127,
+        214,
+        64
+      ]
+    }
+  ],
+  "observedRemarkKinds": [
+    "attention",
+    "conversation",
+    "reply",
+    "surprise",
+    "practical"
+  ],
+  "passed": [
+    "Vozes e objetos opens through the toolbar, V, pause and each of seven visible notebook sections; all six portraits, 21 contextual objects and sources remain available.",
+    "Nine distinct balloon silhouettes preserve their NPC head anchor under camera panning, character movement, scaling and screen-edge clipping; long lines wrap completely and chatter can be disabled.",
+    "24 original furniture tiles, four sprite/portrait pairs and nine new editable color palettes load offline, recolor their declared materials and retain CC0 metadata.",
+    "Cecília, Gilberto, Ivana and Joel have distinct homes and meaningful work/rest destinations. 150-second routines remain collision-aware; ambient remarks are staggered, interrupted by interaction and cleared across transitions.",
+    "New furniture supports editor placement, nine colors, rotation, scaling, deletion and undo. Revision-6 migration adds NPC destinations while preserving customized furniture layouts and version-1 adventure saves."
+  ],
+  "limitations": [
+    "Real browser CSS/layout, touch, pointer capture and audible audio are not verified."
+  ]
+}

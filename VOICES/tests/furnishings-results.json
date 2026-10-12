@@ -1,0 +1,20 @@
+{
+  "version": "2.1",
+  "date": "2026-10-12T07:38:12.883Z",
+  "environment": "Node VM + minimal DOM + native Canvas; not a browser",
+  "counts": {
+    "newFurniture": 144,
+    "placedFurniture": 108,
+    "environments": 18,
+    "catalog": 618,
+    "palettes": 30
+  },
+  "passed": [
+    "144 distinct original CC0 furniture tiles load offline with finite normalized collision footprints and declared recolorable materials. All tiles are nonempty and every tile changes under a chosen palette; the complete catalog has 618 props and 29 selectable colors plus original.",
+    "Each of the 18 locations retains its eight themed furniture designs through scenes and decorations, with a contextual interaction. Entrances, objectives, people and activity anchors remain reachable in every map.",
+    "The default furniture palette includes all 144 additions. Stone and the other materials save/import correctly; rotation, scale, removal, undo, deselection and apply work through the inspector. Existing adventure progress stays equivalent and regional layouts migrate to the new authored plan while the beach customization remains unchanged."
+  ],
+  "limitations": [
+    "Real browser CSS, pointer capture and touch are not verified."
+  ]
+}

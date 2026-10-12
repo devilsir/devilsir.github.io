@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-12T07:43:21.274Z",
+  "environment": "Actual game Canvas renderer through editor preview, native PNG captures and geometric position/composition interpreter; not a browser screenshot",
+  "maps": [
+    {
+      "id": "hub",
+      "purpose": "Uma praça octogonal: a fonte organiza quatro largos ligados por alamedas, com biblioteca ao noroeste e música no lado oposto.",
+      "width": 38,
+      "height": 26,
+      "walkingPoints": 669,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "library",
+      "purpose": "Biblioteca com duas alas ao redor de um pequeno jardim interno; devolução próxima da entrada do acervo, estudo a leste e leitura silenciosa ao sudoeste.",
+      "width": 30,
+      "height": 22,
+      "walkingPoints": 465,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "park",
+      "purpose": "Parque de contorno orgânico com lago a leste, uma ponte curta, trilha em circuito, piquenique sob árvores e um mirante separado.",
+      "width": 36,
+      "height": 30,
+      "walkingPoints": 681,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "market",
+      "purpose": "Feira em uma rua alongada com pátios de ofícios; frutas, tecidos, comida e cabelos têm áreas de preparo próprias, sem quatro bancas idênticas.",
+      "width": 42,
+      "height": 24,
+      "walkingPoints": 715,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "garden",
+      "purpose": "Horta comprida com terraços em zigue-zague; água no alto, composto a jusante, sementes protegidas e canteiros acessíveis pelo caminho central.",
+      "width": 27,
+      "height": 33,
+      "walkingPoints": 622,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-1",
+      "purpose": "Uma rua de música em diagonal liga o palco íntimo ao pátio de ensaio; os ouvintes ocupam bancos voltados aos músicos, e as descobertas ficam na galeria de escuta.",
+      "width": 40,
+      "height": 25,
+      "walkingPoints": 648,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-1",
+      "purpose": "Estúdio horizontal em L, com uma cabine de gravação isolada, instrumentos organizados no ensaio e mesa técnica junto ao corredor de saída.",
+      "width": 29,
+      "height": 17,
+      "walkingPoints": 315,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-2",
+      "purpose": "Um pátio de museu com entrada monumental e três percursos de visita distintos, preservando os contextos de Mali, Songhai e Kongo.",
+      "width": 35,
+      "height": 29,
+      "walkingPoints": 668,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-2",
+      "purpose": "Arquivo em T: catalogação e conservação em alas distintas, ligados a uma área de consulta estreita com documentos e legendas organizados por contexto.",
+      "width": 25,
+      "height": 27,
+      "walkingPoints": 355,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-3",
+      "purpose": "Pátio de ciência arredondado com áreas abertas para experimentar vento, comparar sombras, observar o céu e registrar resultados, sem a mesma disposição de museu ou feira.",
+      "width": 33,
+      "height": 31,
+      "walkingPoints": 645,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-3",
+      "purpose": "Laboratório de alas paralelas, com bancadas técnicas nas laterais e uma mesa comum no meio; os cadernos ficam junto às experiências e os equipamentos não tomam a passagem.",
+      "width": 31,
+      "height": 20,
+      "walkingPoints": 429,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-4",
+      "purpose": "Uma avenida longa: o quiosque de notícias, a área de correções e a oficina de mídia se distribuem em sequência, com travessias e uma ágora central para conversar.",
+      "width": 46,
+      "height": 21,
+      "walkingPoints": 644,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-4",
+      "purpose": "Redação em L vertical, com sala de entrevista no alto, mesa editorial em ferradura no centro e uma linha de revisão até as correções, sem repetir a planta do laboratório.",
+      "width": 23,
+      "height": 26,
+      "walkingPoints": 394,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-5",
+      "purpose": "Campus comunitário com largo de manifestação a oeste, mural e convivência ao sul, escola a leste e uma área ampla de propostas e participação acessível.",
+      "width": 44,
+      "height": 32,
+      "walkingPoints": 1021,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-5",
+      "purpose": "Salão em leque, com assentos em arco voltados para a facilitação, maquete em mesa própria e uma alternativa de participação por escrito fora da roda.",
+      "width": 33,
+      "height": 24,
+      "walkingPoints": 515,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "chapter-6",
+      "purpose": "Arquivo cívico em pátios escalonados: consulta pública na chegada, memória documentada a leste e revisão humana em uma praça de restauração ao sul.",
+      "width": 37,
+      "height": 34,
+      "walkingPoints": 792,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "room-6",
+      "purpose": "Sala horizontal com tecnologia organizada na ala leste e mesas de revisão na ala oeste, ligadas por um corredor limpo e uma estação de acompanhamento do restauro.",
+      "width": 35,
+      "height": 19,
+      "walkingPoints": 463,
+      "issues": [],
+      "compositionFlags": []
+    },
+    {
+      "id": "beach",
+      "purpose": "Uma praia de bairro com calçadão, sombra, descanso, observação e um ponto educativo sobre Iemanjá.",
+      "width": 32,
+      "height": 24,
+      "walkingPoints": 464,
+      "issues": [],
+      "compositionFlags": []
+    }
+  ]
+}
