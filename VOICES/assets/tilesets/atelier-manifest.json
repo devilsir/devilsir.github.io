@@ -1,0 +1,822 @@
+{
+  "version": "2.0",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attributionRequired": false,
+  "creator": "Original VOICES pixel art",
+  "generator": "tools/create_atelier_assets.py",
+  "atlas": "assets/tilesets/atelier-props.png",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 3,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "colorRoleConvention": "Only these exact RGB triples may be recolored: shadow, body, highlight. Skin, outlines, contents and alpha remain unchanged.",
+  "palette": {
+    "ink": "#111729",
+    "outline": "#1b2039",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "violetdark": "#463575",
+    "violet": "#7860be",
+    "violetlight": "#b498f0",
+    "cyan": "#59d9dd",
+    "cyandark": "#278c9d",
+    "cyanlight": "#b8f4ea",
+    "amber": "#efb74e",
+    "amberdark": "#a66c32",
+    "amberlight": "#ffdd88",
+    "coral": "#ed7978",
+    "coraldark": "#ab4d65",
+    "corallight": "#ffc0a0",
+    "white": "#eeeada",
+    "paper": "#d8dccf",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "greenlight": "#9cd3a0",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "greylight": "#afb5ba",
+    "grey": "#768894",
+    "darkgrey": "#49576d",
+    "pink": "#dd9dc3"
+  },
+  "props": [
+    {
+      "index": 0,
+      "id": "atelier-wall-cabinet",
+      "family": "atelier",
+      "name": "Armário suspenso de duas portas",
+      "category": "casa",
+      "solid": false,
+      "solidFootprint": null,
+      "layer": "wall",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "atelier-archival-cabinet",
+      "family": "atelier",
+      "name": "Armário de pastas com etiquetas",
+      "category": "arquivo",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "atelier-recommendation-cart",
+      "family": "atelier",
+      "name": "Carrinho de indicações de leitura",
+      "category": "biblioteca",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "atelier-adjustable-lamp",
+      "family": "atelier",
+      "name": "Luminária de braço articulado",
+      "category": "biblioteca",
+      "solid": true,
+      "solidFootprint": [
+        0.24,
+        0.78,
+        0.52,
+        0.16
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "atelier-folding-chair",
+      "family": "atelier",
+      "name": "Cadeira dobrável de madeira",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "atelier-wood-armchair",
+      "family": "atelier",
+      "name": "Poltrona de madeira com almofada",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "atelier-woven-armchair",
+      "family": "atelier",
+      "name": "Poltrona de palhinha",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "atelier-oval-coffee-table",
+      "family": "atelier",
+      "name": "Mesa de centro oval",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "atelier-entry-console",
+      "family": "atelier",
+      "name": "Aparador estreito de entrada",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "atelier-low-sideboard",
+      "family": "atelier",
+      "name": "Bufê baixo com portas de correr",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "atelier-kitchen-cupboard",
+      "family": "atelier",
+      "name": "Cristaleira com louças do cotidiano",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "atelier-square-cafe-table",
+      "family": "atelier",
+      "name": "Mesa quadrada de café",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "atelier-round-stool",
+      "family": "atelier",
+      "name": "Banquinho redondo de três pés",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.24,
+        0.78,
+        0.52,
+        0.16
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "atelier-upholstered-bench",
+      "family": "atelier",
+      "name": "Banco estofado com braços",
+      "category": "convívio",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "atelier-bakery-display",
+      "family": "atelier",
+      "name": "Vitrine de pães e bolos",
+      "category": "feira",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "atelier-pottery-shelf",
+      "family": "atelier",
+      "name": "Estante de cerâmica artesanal",
+      "category": "ateliê",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "atelier-tool-workbench",
+      "family": "atelier",
+      "name": "Bancada com morsa e ferramentas",
+      "category": "oficina",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "atelier-record-player-cabinet",
+      "family": "atelier",
+      "name": "Móvel de discos com toca-discos",
+      "category": "música",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "atelier-hanging-herbs",
+      "family": "atelier",
+      "name": "Vaso pendente de ervas",
+      "category": "horta",
+      "solid": false,
+      "solidFootprint": null,
+      "layer": "wall",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "atelier-umbrella-basket",
+      "family": "atelier",
+      "name": "Cesto trançado para guarda-chuvas",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.24,
+        0.78,
+        0.52,
+        0.16
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ],
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "atelier-linen-shelves",
+      "family": "atelier",
+      "name": "Estante aberta de toalhas dobradas",
+      "category": "casa",
+      "solid": true,
+      "solidFootprint": [
+        0.13,
+        0.69,
+        0.74,
+        0.23
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ],
+        "fabric": [
+          "#2b5355",
+          "#588e7d",
+          "#9abfa5"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "atelier-community-pinboard",
+      "family": "atelier",
+      "name": "Painel de recados com moldura",
+      "category": "comunidade",
+      "solid": false,
+      "solidFootprint": null,
+      "layer": "wall",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "atelier-recycling-station",
+      "family": "atelier",
+      "name": "Estação de coleta com etiquetas",
+      "category": "comunidade",
+      "solid": true,
+      "solidFootprint": [
+        0.05,
+        0.66,
+        0.9,
+        0.22
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "metal": [
+          "#49576d",
+          "#768894",
+          "#afb5ba"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "atelier-museum-label-easel",
+      "family": "atelier",
+      "name": "Suporte inclinado de legenda",
+      "category": "museu",
+      "solid": true,
+      "solidFootprint": [
+        0.24,
+        0.78,
+        0.52,
+        0.16
+      ],
+      "layer": "object",
+      "interaction": null,
+      "colorRoles": {
+        "wood": [
+          "#624535",
+          "#805a49",
+          "#b99068"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

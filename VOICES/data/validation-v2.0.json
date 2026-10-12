@@ -1,0 +1,841 @@
+{
+  "version": "2.0",
+  "totalTestGroups": 86,
+  "browserTested": false,
+  "reports": {
+    "runtime": {
+      "date": "2026-10-12T02:06:28.697Z",
+      "environment": "Node VM + minimal DOM harness + native Canvas (NOT a browser)",
+      "passed": [
+        "All 43 scripts and 197 runtime PNG assets load.",
+        "New game, three-step intro, character, delta-time movement, collision and hub rendering.",
+        "Playable prologue and Word Runner, with translation and vocabulary.",
+        "Chapter 1: intro, three clues, two branching conversations, beat, 3-stage boss, resolution.",
+        "Chapter 2: intro, three clues, two branching conversations, timeline, 3-stage boss, resolution.",
+        "Chapter 3: intro, three clues, two branching conversations, evidence, 3-stage boss, resolution.",
+        "Chapter 4: intro, three clues, two branching conversations, bias, 3-stage boss, resolution.",
+        "Chapter 5: intro, three clues, two branching conversations, city, 3-stage boss, resolution.",
+        "Chapter 6: intro, three clues, two branching conversations, final, 3-stage boss, resolution.",
+        "Beginning-to-ending completion: six chapters,18 clues, all six minigame systems and six bosses.",
+        "Save/load round trip in a LocalStorage-compatible harness.",
+        "Grade, translation, classroom preferences and local team rotation.",
+        "Teacher-created question is validated, saved, merged and reloaded.",
+        "Custom glossary persists; malformed content rejected.",
+        "Custom questions appear and function in an English practice terminal.",
+        "Enterable library and regional interiors render and have usable spawn positions.",
+        "All53 books/notes read through real page controls; all117 historical questions resolved, retry feedback and searchable collection verified.",
+        "All12 community missions completed through their interactions: delivery, interview, collection, sequence, curatorship, experiment, newsroom, watering, cataloguing, observation, consent and human review.",
+        "NPCs and animals follow collision-aware routes in all18 maps; 83 walkers moved; optional motion disabling verified.",
+        "Ambient file selection, mute, volume and user-unlock logic pass with a mocked Audio element; actual sound playback requires browser verification.",
+        "Expanded progress save/load and migration of previous version1 saves preserve the six-chapter campaign.",
+        "Flood-fill collision validation: all interactable objects in all18 maps can be approached.",
+        "All runtime data is inline/local; no fetch, modules, network assets or playback backend."
+      ],
+      "limitations": [
+        "No installed test browser. Real Chrome/Edge UI layout, keyboard default events, Web Audio permission, gamepad and touch were not browser-verified.",
+        "Canvas renders use the same game renderer and PNG assets. The DOM harness is limited and does not validate responsive CSS."
+      ]
+    },
+    "cozy": {
+      "date": "2026-10-12T02:13:28.363Z",
+      "environment": "Node DOM harness, native Canvas and mocked HTML Audio; no browser",
+      "passed": [
+        "All six cultural activities support reading, explanations, retry and persistent completion.",
+        "Instrument timbre, three original scene sketches, seed labels, visibly improved garden and written assembly choices persist.",
+        "Occupied seating, standing, transition cleanup, safe saved spawns and player/NPC body collisions verified.",
+        "125 seconds simulated separately in all 18 maps: body separation, furniture collision, reserved spots, reciprocal turns and interruptions checked.",
+        "Reduced motion, stationary population and persistent text access with ambient chatter disabled verified.",
+        "Environment crossfade keeps outgoing/incoming loops, removes old tracks, respects mute and independent volume; HTML audio is mocked.",
+        "New optional progress survives save/reload; previous saves migrate without losing campaign/garden data; malformed optional fields are normalized."
+      ],
+      "conversations": [
+        {
+          "map": "hub",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "chapter-1",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "room-1",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "chapter-2",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "room-2",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "chapter-3",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "room-3",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "chapter-4",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "room-4",
+          "speakers": 2,
+          "talkingFrames": 313
+        },
+        {
+          "map": "chapter-5",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "room-5",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "chapter-6",
+          "speakers": 2,
+          "talkingFrames": 448
+        },
+        {
+          "map": "room-6",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "library",
+          "speakers": 2,
+          "talkingFrames": 322
+        },
+        {
+          "map": "park",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "market",
+          "speakers": 3,
+          "talkingFrames": 313
+        },
+        {
+          "map": "garden",
+          "speakers": 2,
+          "talkingFrames": 224
+        },
+        {
+          "map": "beach",
+          "speakers": 2,
+          "talkingFrames": 248
+        }
+      ],
+      "states": [
+        "waiting",
+        "observing",
+        "sleeping",
+        "walking",
+        "resting",
+        "sitting",
+        "playing",
+        "conversing",
+        "listening",
+        "perching",
+        "reading",
+        "working",
+        "writing",
+        "swimming",
+        "drawing",
+        "watering"
+      ],
+      "limitations": [
+        "Responsive CSS, actual browser sound, keyboard events, gamepad and touch require browser verification."
+      ]
+    },
+    "interface": {
+      "date": "2026-10-12T02:07:56.972Z",
+      "environment": "Node DOM harness + native Canvas; CSS/browser layout and actual touch/fullscreen are not verified",
+      "viewports": [
+        {
+          "physical": [
+            1920,
+            940
+          ],
+          "canvas": [
+            1176,
+            576
+          ],
+          "camera": [
+            -12,
+            288
+          ]
+        },
+        {
+          "physical": [
+            2560,
+            1306
+          ],
+          "canvas": [
+            1280,
+            654
+          ],
+          "camera": [
+            -64,
+            210
+          ]
+        },
+        {
+          "physical": [
+            1440,
+            766
+          ],
+          "canvas": [
+            1082,
+            576
+          ],
+          "camera": [
+            59,
+            288
+          ]
+        },
+        {
+          "physical": [
+            1280,
+            586
+          ],
+          "canvas": [
+            1258,
+            576
+          ],
+          "camera": [
+            -53,
+            288
+          ]
+        },
+        {
+          "physical": [
+            390,
+            729
+          ],
+          "canvas": [
+            480,
+            898
+          ],
+          "camera": [
+            360,
+            -17
+          ]
+        },
+        {
+          "physical": [
+            844,
+            288
+          ],
+          "canvas": [
+            1688,
+            576
+          ],
+          "camera": [
+            -268,
+            288
+          ]
+        },
+        {
+          "physical": [
+            320,
+            453
+          ],
+          "canvas": [
+            480,
+            680
+          ],
+          "camera": [
+            360,
+            184
+          ]
+        }
+      ],
+      "passed": [
+        "Seven landscape, portrait and wide viewports preserve aspect ratio, player visibility, object clicks and original arcade pointer controls.",
+        "All 18 scenario-based maps are distinct; the pond, entrances, scene framing, region visits and persistent garden changes are reflected without changing player state.",
+        "Notebook sections, themed book/note art, accent-insensitive search, four filters, empty feedback, page index, English support and saved reading access work through the actual menu handlers.",
+        "Settings volumes, themed pause/inventory/glossary/archive, persisted HUD collapse, keyboard focus cycling and the existing save format remain functional."
+      ],
+      "limitations": [
+        "No supported browser was available. CSS layout, touch ergonomics, fullscreen permissions and actual audio still need browser review."
+      ]
+    },
+    "culture": {
+      "date": "2026-10-12T02:08:43.657Z",
+      "environment": "Node DOM harness, native Canvas and local assets; not a browser",
+      "counts": {
+        "maps": 18,
+        "newBooks": 8,
+        "newHistoryQuestions": 24,
+        "newMissions": 5,
+        "newResidents": 3,
+        "illustrations": 26,
+        "objectTiles": 24,
+        "culturalConversations": 8,
+        "sources": 15
+      },
+      "passed": [
+        "All eight books have connected pages, English support, source links, themed covers and questions for grades 6/7/8. All 26 original illustrated pieces can be examined, consulted and revisited from the notebook and library.",
+        "Hair-technique and food-preparation comparisons support incomplete answers, explanatory retry, source consultation without losing selections and saved results.",
+        "Contextual captions, original outfit composition and a three-turn fictional interview all complete through world interactions; source consultation resumes choices and interview position.",
+        "Three new residents appear once, pause for the player and resume their activities. Eight reciprocal cultural exchanges use actual co-located people, alternate speakers and cycle after a conversation finishes.",
+        "Five new mission results, all observed pieces and the original outfit survive save/reload. Previous and malformed optional saves are normalized while preserving campaign progress. Text remains accessible with reduced motion and ambient chatter disabled.",
+        "All 18 full maps rendered with the actual game renderer and locally bundled PNG assets for individual visual review. No test browser was used."
+      ],
+      "chats": [
+        {
+          "map": "chapter-2",
+          "variants": 1,
+          "speakers": [
+            "jaci",
+            "guide"
+          ]
+        },
+        {
+          "map": "room-4",
+          "variants": 1,
+          "speakers": [
+            "otavio",
+            "celso"
+          ]
+        },
+        {
+          "map": "chapter-5",
+          "variants": 1,
+          "speakers": [
+            "jamila",
+            "resident"
+          ]
+        },
+        {
+          "map": "room-5",
+          "variants": 1,
+          "speakers": [
+            "luzia",
+            "dora"
+          ]
+        },
+        {
+          "map": "library",
+          "variants": 1,
+          "speakers": [
+            "aline",
+            "amara"
+          ]
+        },
+        {
+          "map": "market",
+          "variants": 3,
+          "speakers": [
+            "bisa",
+            "dandara",
+            "viviane"
+          ]
+        }
+      ],
+      "limitations": [
+        "Responsive CSS and actual keyboard/touch/audio behavior require supported-browser verification."
+      ]
+    },
+    "scene-editor": {
+      "date": "2026-10-12T02:08:02.573Z",
+      "environment": "Node VM + minimal DOM harness + native Canvas; not a browser",
+      "counts": {
+        "maps": 18,
+        "paletteObjects": 450,
+        "newProps": 272
+      },
+      "passed": [
+        "Editor opens from the title with 450 locally drawn objects and all 18 maps, without creating or overwriting an adventure. Every default map passes continuous-edge reachability checks.",
+        "Real palette placement, pointer drag, coordinate inspector, rotated collisions, collision toggles, duplication, removal and undo/redo handlers work together.",
+        "Moving a usable bench rebuilds its reserved activity destination. Moving a vendor counter moves its work anchors and resident home; moving a hosted food interaction moves its counter. Campaign NPCs cannot be deleted.",
+        "Path painting, custom musical interaction, authored labels and a collision-aware walking preview work through UI handlers. Escape resumes editing; the visit does not advance quests.",
+        "Export/import preserves authored scenes and all 18 map profiles, excludes adventure data and rejects unknown assets, invalid coordinates, missing educational interactions and prototype keys. Drafts reopen; applied layouts use separate LocalStorage keys.",
+        "F2 opens during play; simulation and play time pause, save writes are suppressed, and visits to locked editor maps leave campaign progress unchanged. Added instruments play normally after application. Blocked layouts are rejected atomically, preserving portals, doors and characters.",
+        "Applied editor layouts survive reload and rebuilding alongside version-1 adventure saves; minimap cache keys include layout revisions."
+      ],
+      "limitations": [
+        "CSS panel layout and real pointer capture, touch, file picker and browser audio require supported-browser verification."
+      ]
+    },
+    "heritage": {
+      "date": "2026-10-12T02:07:59.312Z",
+      "environment": "Node VM, minimal DOM, native Canvas and captured audio-note scheduling; not a browser",
+      "counts": {
+        "newObjectTiles": 64,
+        "historicalPortraits": 6,
+        "fictionalResidents": 2,
+        "books": 11,
+        "historyQuestions": 33,
+        "missions": 3,
+        "culturalEntries": 21,
+        "sourceRecords": 26
+      },
+      "passed": [
+        "Six unique historical exhibit characters open third-person sourced dialogues, portraits and related books; no invented personal speeches.",
+        "All 21 cultural objects respond in their actual maps with illustrated cards, context and sources. Eight instruments and a blues/rock station expose original sound patterns and equivalent written information.",
+        "Eleven connected books have existing English-learning support, themed covers and verified source IDs; all 33 grade-specific questions support explanation and retry. New notebook records remain accessible.",
+        "Completed comparisons mark reviewed exhibits in the world and unlock new contextual resident responses.",
+        "Mila and Ravi have unique homes and meaningful activities, pause for dialogue and offer three new missions. Workshops resume after reading; saved early comparisons reconcile later and neighborhood workshops remain available.",
+        "R/Shift+R and absolute rotations keep seat artwork and sitting direction aligned. Deselect button, Escape from fields, empty-floor click and right-click release selection and return to selection mode.",
+        "Original optional scenes and objects can be removed; their collisions and activity anchors disappear. Fountain movement/rotation updates water rendering and bounds. Campaign NPCs, quest interactions and garden beds remain protected.",
+        "Revision-4 exports persist rotation and original-object removals through apply and full-world reload, preserve adventure saves and reject essential deletions or invalid rotation. Previous scene files receive new educational exhibits; removing a physical portrait preserves archive access.",
+        "Optional heritage progress normalizes malformed and earlier saves without losing chapter progress; cultural text remains available with reduced motion and ambient chatter disabled."
+      ],
+      "limitations": [
+        "No browser was available. CSS, native pointer capture, touch, file picker and audible Web Audio were not verified."
+      ]
+    },
+    "neighborhood": {
+      "date": "2026-10-12T02:13:23.311Z",
+      "environment": "Node VM + minimal DOM + native Canvas; no browser",
+      "counts": {
+        "newAssets": 64,
+        "floorStyles": 12,
+        "protestParticipants": 24,
+        "reviewedReadings": 50,
+        "bilingualRecords": 201
+      },
+      "passed": [
+        "All 50 readings keep IDs, sources and connected paragraphs. Grade-specific, scalar, dynamic and branching dialogue translations remain nonempty and resolve correctly for grades 6, 7 and 8.",
+        "The 64 new local assets include 12 historical portraits placed in relevant locations. Every portrait opens its corresponding sourced reading; portraits and skin tones have no recoloring roles.",
+        "The protest has 24 distinct original participants and 24 physical body bounds, readable signs, fictional neighbor dialogue and a sourced historical panel. Chatter/mute controls and the low bubble limit are respected.",
+        "Material changes affect only declared wood/fabric pixels; original outlines, highlights outside those roles and transparency stay intact.",
+        "Scale, rotation and declared material colors work through actual inspector handlers on original objects and new furniture; collision geometry scales with the fountain, and duplication preserves furniture colors.",
+        "Whole and half rectangular floor tiles paint by pointer stroke, rotate into either axis, preserve colors, undo/redo as one action and cancel without leaving partial paint.",
+        "Optional protest and heritage displays can be deleted without lingering collisions or being resurrected by current imports. Essential protections remain active; invalid colors and scales are rejected.",
+        "Scale/color/floor edits survive apply and full-world reload using a separate layout save. Older revision-2 scene files gain the new optional exhibits; campaign progress remains byte-equivalent except its save timestamp.",
+        "Printed book text and pencil notebook/note text use bundled fonts with local licenses. The 117 educational questions, 23 optional missions and offline asset loading remain available."
+      ],
+      "limitations": [
+        "Responsive CSS, actual browser typography, pointer capture/touch and audible Web Audio require a supported browser."
+      ]
+    },
+    "coast": {
+      "date": "2026-10-12T02:08:40.281Z",
+      "environment": "Node VM, minimal DOM, native Canvas and mocked audio; not a browser",
+      "counts": {
+        "maps": 18,
+        "catalog": 450,
+        "repairedIllustrations": 10,
+        "newClothingArt": 8,
+        "newResidents": 8,
+        "newPropTiles": 64,
+        "newAnimalTypes": 8,
+        "newReadings": 3,
+        "newHistoryQuestions": 9,
+        "newMissions": 3
+      },
+      "passed": [
+        "The 10 repaired clothing/hair images, eight new gallery pieces, eight distinct beach residents, 64 props and eight animated animals load locally with original art, transparent sprites and licenses.",
+        "All six historical notebook cards draw populated portraits from the correct sheet cell and use an existing book icon. Names, sourced biographies and related readings remain intact.",
+        "The beach is connected to the square, region atlas, minimap and editor. All 18 default maps keep reachable entrances and educational interactions.",
+        "Iemanjá is a sourced original artistic representation with third-person captions. Three readings, nine grade-specific questions and three optional activities support consultation, explanatory retry and persistent outcomes.",
+        "150 seconds of beach routines keep people and animals within appropriate routes, stagger waiting/work/rest, alternate reciprocal speakers and resume player-interrupted conversations. Text remains available with chatter and motion disabled.",
+        "Escape cancels paint/drag, releases a selection, dismisses help or exits walking preview while always keeping the editor open; explicit Close and Apply still work.",
+        "Eight new floor patterns support whole/half painting, colors and rotation. Revision-4 layout files preserve edits and add the beach to older exports without replacing adventure progress.",
+        "Beach saves and completed activities reload, previous version-1 saves migrate, and the local original wave loop uses the existing crossfade, mute, volume and activation controls. Real browser audio remains unverified."
+      ],
+      "limitations": [
+        "Actual browser CSS/typography, pointer capture/touch, file picker and audible audio were not verified."
+      ]
+    },
+    "translation": {
+      "date": "2026-10-12T02:06:20.827Z",
+      "environment": "Node VM + minimal DOM + native Canvas; not a browser",
+      "counts": {
+        "reviewedEnglishTexts": 891,
+        "simulatedDialogueLines": 14601,
+        "uniqueRuntimeEnglishTexts": 408,
+        "clueDialogs": 54,
+        "bookConnections": 159,
+        "conversationLines": 54,
+        "grades": [
+          6,
+          7,
+          8
+        ]
+      },
+      "passed": [
+        "54 actual clue dialogs, 54 archive cards and 159 book English connections use the matching Portuguese text for grades 6, 7 and 8.",
+        "First/repeat NPC dialogs, seven contextual actions, completed/incomplete progress, prologues and blocked challenges all resolve a reviewed translation in all three grades.",
+        "Reciprocal conversations use scene-specific English instead of generic templates; extra Portuguese sentences, sarong/towel confusion and hold/store confusion have regressions.",
+        "The complete reviewed registry, legacy conversation history, save reload, custom teacher text and translation visibility work together without changing campaign progress."
+      ]
+    },
+    "neighbors": {
+      "date": "2026-10-12T02:08:43.234Z",
+      "environment": "Node VM + minimal DOM + native Canvas; not a browser",
+      "counts": {
+        "newFurniture": 32,
+        "newResidents": 4,
+        "newBreeds": 6,
+        "maps": 18,
+        "catalog": 450,
+        "assets": 197
+      },
+      "passed": [
+        "32 distinct furniture assets, six animated breed rows and four sprite/portrait pairs load locally; their original pixels and embedded recoloring source have CC0 metadata.",
+        "Abel, Yara, Nilo and Rute each appear once, have appropriate activity destinations, respond to the player and retain matched English–Portuguese speech.",
+        "120 seconds per map keep new NPC and pet routes clear; all six dogs have nearby resident ownership and persistent field notes visible in the notebook. All 18 map access checks pass.",
+        "Visible Edit scene and F2 open the editor. New furniture can be placed, scaled, rotated, recolored, deleted and undone. Escape deselects while keeping editing open; old layouts migrate and new deletions persist."
+      ],
+      "limitations": [
+        "CSS layout, real browser keyboard events, touch and audible sound were not tested."
+      ]
+    },
+    "neighborhood-ui": {
+      "date": "2026-10-12T02:16:52.925Z",
+      "environment": "Node VM + minimal DOM + native Canvas; not a browser",
+      "counts": {
+        "balloonTypes": 9,
+        "newFurniture": 24,
+        "newResidents": 4,
+        "newColorPalettes": 9,
+        "catalog": 450,
+        "assets": 197,
+        "residents": 36
+      },
+      "balloonGeometry": [
+        {
+          "kind": "greeting",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            73,
+            127,
+            214,
+            64
+          ]
+        },
+        {
+          "kind": "question",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            73,
+            127,
+            214,
+            64
+          ]
+        },
+        {
+          "kind": "attention",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            73,
+            111,
+            214,
+            64
+          ]
+        },
+        {
+          "kind": "reply",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            73,
+            -23,
+            214,
+            214
+          ]
+        },
+        {
+          "kind": "surprise",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            64,
+            109,
+            232,
+            82
+          ]
+        },
+        {
+          "kind": "thought",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            64,
+            97,
+            232,
+            82
+          ]
+        },
+        {
+          "kind": "shout",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            64,
+            109,
+            232,
+            82
+          ]
+        },
+        {
+          "kind": "practical",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            73,
+            127,
+            214,
+            64
+          ]
+        },
+        {
+          "kind": "conversation",
+          "anchor": {
+            "x": 180,
+            "y": 203
+          },
+          "bounds": [
+            49,
+            127,
+            214,
+            64
+          ]
+        }
+      ],
+      "observedRemarkKinds": [
+        "attention",
+        "question",
+        "conversation",
+        "reply",
+        "surprise",
+        "practical",
+        "thought",
+        "greeting"
+      ],
+      "passed": [
+        "Vozes e objetos opens through the toolbar, V, pause and each of seven visible notebook sections; all six portraits, 21 contextual objects and sources remain available.",
+        "Nine distinct balloon silhouettes preserve their NPC head anchor under camera panning, character movement, scaling and screen-edge clipping; long lines wrap completely and chatter can be disabled.",
+        "24 original furniture tiles, four sprite/portrait pairs and nine new editable color palettes load offline, recolor their declared materials and retain CC0 metadata.",
+        "Cecília, Gilberto, Ivana and Joel have distinct homes and meaningful work/rest destinations. 150-second routines remain collision-aware; ambient remarks are staggered, interrupted by interaction and cleared across transitions.",
+        "New furniture supports editor placement, nine colors, rotation, scaling, deletion and undo. Revision-6 migration adds NPC destinations while preserving customized furniture layouts and version-1 adventure saves."
+      ],
+      "limitations": [
+        "Real browser CSS/layout, touch, pointer capture and audible audio are not verified."
+      ]
+    },
+    "maps": {
+      "date": "2026-10-12T02:11:48.924Z",
+      "environment": "Actual Canvas scene renderer + continuous-edge collision flood fill; not a browser",
+      "maps": [
+        {
+          "id": "hub",
+          "purpose": "Uma praça de encontro, com água, sombra e caminhos claros.",
+          "zones": 3,
+          "decor": 20,
+          "interactions": 28,
+          "people": 5,
+          "walkingPoints": 473,
+          "issues": []
+        },
+        {
+          "id": "library",
+          "purpose": "Uma biblioteca de bairro, com empréstimo, leitura e conservação.",
+          "zones": 4,
+          "decor": 20,
+          "interactions": 24,
+          "people": 6,
+          "walkingPoints": 289,
+          "issues": []
+        },
+        {
+          "id": "park",
+          "purpose": "Um parque com lago, observação, picnic e roda de leitura.",
+          "zones": 4,
+          "decor": 22,
+          "interactions": 11,
+          "people": 5,
+          "walkingPoints": 480,
+          "issues": []
+        },
+        {
+          "id": "market",
+          "purpose": "Uma feira com alimentos, oficina de tecidos, trabalho de trancista e conversas sobre os saberes de cada pessoa.",
+          "zones": 5,
+          "decor": 26,
+          "interactions": 23,
+          "people": 6,
+          "walkingPoints": 486,
+          "issues": []
+        },
+        {
+          "id": "garden",
+          "purpose": "Uma horta compartilhada com ferramentas e turnos de cuidado.",
+          "zones": 4,
+          "decor": 24,
+          "interactions": 9,
+          "people": 3,
+          "walkingPoints": 385,
+          "issues": []
+        },
+        {
+          "id": "beach",
+          "purpose": "Uma praia de bairro com calçadão, sombra, descanso, observação e um ponto educativo sobre Iemanjá.",
+          "zones": 4,
+          "decor": 22,
+          "interactions": 16,
+          "people": 9,
+          "walkingPoints": 460,
+          "issues": []
+        },
+        {
+          "id": "chapter-1",
+          "purpose": "Um distrito musical com palco, ensaio e escuta.",
+          "zones": 2,
+          "decor": 14,
+          "interactions": 27,
+          "people": 5,
+          "walkingPoints": 486,
+          "issues": []
+        },
+        {
+          "id": "room-1",
+          "purpose": "Um estúdio de ensaio com ferramentas e pausas.",
+          "zones": 3,
+          "decor": 15,
+          "interactions": 21,
+          "people": 2,
+          "walkingPoints": 302,
+          "issues": []
+        },
+        {
+          "id": "chapter-2",
+          "purpose": "Um museu com pátio de acolhimento e percursos de visita.",
+          "zones": 3,
+          "decor": 14,
+          "interactions": 26,
+          "people": 5,
+          "walkingPoints": 469,
+          "issues": []
+        },
+        {
+          "id": "room-2",
+          "purpose": "Um arquivo de pesquisa e curadoria cuidadosa.",
+          "zones": 3,
+          "decor": 14,
+          "interactions": 25,
+          "people": 2,
+          "walkingPoints": 293,
+          "issues": []
+        },
+        {
+          "id": "chapter-3",
+          "purpose": "Um pátio de ciência aberto à observação e à escrita.",
+          "zones": 3,
+          "decor": 9,
+          "interactions": 20,
+          "people": 3,
+          "walkingPoints": 489,
+          "issues": []
+        },
+        {
+          "id": "room-3",
+          "purpose": "Um laboratório organizado para testar ideias em equipe.",
+          "zones": 3,
+          "decor": 10,
+          "interactions": 17,
+          "people": 2,
+          "walkingPoints": 314,
+          "issues": []
+        },
+        {
+          "id": "chapter-4",
+          "purpose": "Um bairro de informação pública e jornal comunitário.",
+          "zones": 3,
+          "decor": 11,
+          "interactions": 20,
+          "people": 3,
+          "walkingPoints": 501,
+          "issues": []
+        },
+        {
+          "id": "room-4",
+          "purpose": "Uma redação pequena com entrevistas, rascunhos e revisão.",
+          "zones": 3,
+          "decor": 12,
+          "interactions": 13,
+          "people": 3,
+          "walkingPoints": 315,
+          "issues": []
+        },
+        {
+          "id": "chapter-5",
+          "purpose": "Um espaço de encontro, participação e arte comunitária.",
+          "zones": 4,
+          "decor": 12,
+          "interactions": 23,
+          "people": 3,
+          "walkingPoints": 480,
+          "issues": []
+        },
+        {
+          "id": "room-5",
+          "purpose": "Uma assembleia com escuta, propostas e participação tranquila.",
+          "zones": 3,
+          "decor": 14,
+          "interactions": 17,
+          "people": 4,
+          "walkingPoints": 311,
+          "issues": []
+        },
+        {
+          "id": "chapter-6",
+          "purpose": "Um arquivo cívico que reúne as contribuições da cidade.",
+          "zones": 3,
+          "decor": 11,
+          "interactions": 18,
+          "people": 3,
+          "walkingPoints": 485,
+          "issues": []
+        },
+        {
+          "id": "room-6",
+          "purpose": "Um catálogo técnico cuidado por pessoas, com revisão e backups.",
+          "zones": 3,
+          "decor": 12,
+          "interactions": 15,
+          "people": 2,
+          "walkingPoints": 309,
+          "issues": []
+        }
+      ]
+    }
+  }
+}

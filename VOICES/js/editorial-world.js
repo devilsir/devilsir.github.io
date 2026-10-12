@@ -1,0 +1,9 @@
+(function(){'use strict';
+const V=window.V,data=V.editorialContent,original=V.Living.initContent.bind(V.Living),start=V.Dialogue.start.bind(V.Dialogue),show=V.Dialogue.show.bind(V.Dialogue);
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+V.Editorial={applied:false,errors:[],apply(){if(this.applied)return;this.applied=true;for(const patch of data.readings){const r=V.learning.readings.find(r=>r.id===patch.id);if(!r){this.errors.push(patch.id);continue;}Object.assign(r,{paragraphs:patch.paragraphs.slice(),en:patch.en,pt:patch.pt});}for(const patch of data.translations){const root=patch.scope==='resident'?V.learning.residents.find(r=>r.id===patch.id):patch.scope==='culturalContent'?V.culturalContent:V.content;let item=root;for(const key of patch.path)item=item?.[key];if(!item||!same(item.en,patch.expectedEn)){this.errors.push(patch.scope+':'+patch.path.join('.'));continue;}item.pt=patch.pt;if(patch.ptByGrade)item.ptByGrade={...patch.ptByGrade};else delete item.ptByGrade;if(patch.contextPt)item.contextPt=patch.contextPt;}for(const patch of data.figureTranslations){const f=V.heritageContent.figures.find(f=>f.id===patch.id);if(f&&same(f.facts,patch.expectedFacts))f.enFacts=patch.enFacts.slice();else this.errors.push('figure:'+patch.id);}},
+ line(input){const line={...input},patch=data.dialogueTranslations.find(p=>same(p.en,input.en)&&p.pt===input.pt);if(patch){if(patch.correctedEn)line.en=patch.correctedEn;if(patch.correctedPt)line.pt=patch.correctedPt;if(patch.ptByGrade)line.ptByGrade=patch.ptByGrade;}if(line.ptByGrade)line.pt=V.lang(line.ptByGrade);return line;}};
+V.Living.initContent=function(){original();V.Editorial.apply();};
+V.Dialogue.start=function(lines,...args){return start(lines.map(line=>V.Editorial.line(line)),...args);};
+V.Dialogue.show=function(){if(this.lines[this.index])this.lines[this.index]=V.Editorial.line(this.lines[this.index]);return show();};
+})();

@@ -1,0 +1,112 @@
+{
+  "version": "1.9",
+  "license": "CC0-1.0",
+  "creator": "Original VOICES pixel art",
+  "generator": "tools/create_neighbors_assets.py",
+  "atlas": "assets/characters/neighbors-animals.png",
+  "width": 128,
+  "height": 192,
+  "cellWidth": 32,
+  "cellHeight": 32,
+  "columns": 4,
+  "rows": 6,
+  "artStatus": "Original pixels, no copied photographs. Each row is one visually distinct dog breed, with four walking or resting frames and transparent background. Natural ears and tails are retained. No breed is assigned a universal temperament.",
+  "animals": [
+    {
+      "id": "poodle",
+      "name": "Poodle",
+      "species": "dog",
+      "breed": "Poodle",
+      "row": 0,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Pelagem cacheada apricot, orelhas caídas e cauda com pelo.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/poodle-standard/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    },
+    {
+      "id": "dachshund",
+      "name": "Dachshund",
+      "species": "dog",
+      "breed": "Dachshund",
+      "row": 1,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Corpo comprido e baixo, patas curtas e orelhas caídas.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/dachshund/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    },
+    {
+      "id": "beagle",
+      "name": "Beagle",
+      "species": "dog",
+      "breed": "Beagle",
+      "row": 2,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Pelagem tricolor, orelhas caídas e ponta clara na cauda.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/beagle/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    },
+    {
+      "id": "siberian-husky",
+      "name": "Husky siberiano",
+      "species": "dog",
+      "breed": "Husky siberiano",
+      "row": 3,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Pelagem cinza e branca, orelhas eretas e cauda peluda.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/siberian-husky/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    },
+    {
+      "id": "boxer",
+      "name": "Boxer",
+      "species": "dog",
+      "breed": "Boxer",
+      "row": 4,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Pelagem fulva, focinho escuro curto, peito claro e orelhas naturais caídas.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/boxer/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    },
+    {
+      "id": "shih-tzu",
+      "name": "Shih-tzu",
+      "species": "dog",
+      "breed": "Shih-tzu",
+      "row": 5,
+      "frames": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "description": "Cachorro pequeno de pelagem longa branca e dourada, cauda emplumada.",
+      "reference": {
+        "institution": "American Kennel Club",
+        "url": "https://www.akc.org/dog-breeds/shih-tzu/"
+      },
+      "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
+    }
+  ]
+}

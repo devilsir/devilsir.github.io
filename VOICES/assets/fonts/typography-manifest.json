@@ -1,0 +1,18 @@
+{
+  "fonts": [
+    {
+      "file": "voices-pencil.woff",
+      "family": "Patrick Hand",
+      "author": "Patrick Wagesreiter",
+      "license": "SIL Open Font License 1.1",
+      "source": "https://github.com/google/fonts/tree/main/ofl/patrickhand"
+    },
+    {
+      "file": "voices-print.woff",
+      "family": "DejaVu Serif",
+      "license": "DejaVu font license",
+      "source": "https://dejavu-fonts.github.io/",
+      "licenseFile": "LICENSE.txt"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "version": "1.7",
+  "readingsReviewed": 50,
+  "paragraphs": 148,
+  "bilingualRecordsReviewed": 201,
+  "gradeSpecificPairs": 561,
+  "dynamicDialoguePairs": 29,
+  "historicalPortraitPairs": 12,
+  "preserved": [
+    "IDs",
+    "fontes",
+    "autoria",
+    "fatos necessários às 108 questões",
+    "campanha",
+    "ramificações e flags",
+    "inglês por ano escolar"
+  ],
+  "editorialRules": [
+    "Abertura situada, explicação conectada e consequência compreensível",
+    "Ficção e referência histórica identificadas",
+    "EN e PT exprimem o mesmo conteúdo",
+    "Contexto adicional separado de tradução",
+    "Sem citações históricas inventadas"
+  ],
+  "integration": {
+    "load": "Load after heritage-content.js, before initialization; apply after Living.initContent has merged the 50 readings.",
+    "readings": "Match by id and copy paragraphs, en, pt without changing remaining metadata.",
+    "translations": "Resolve scope content -> V.content, resident -> V.learning.residents by id, culturalContent -> V.culturalContent; validate expectedEn, then copy pt and ptByGrade. contextPt is separate educational context.",
+    "dialogue": "Before original Dialogue.start, clone each line and resolve ptByGrade with V.lang; match dialogueTranslations by existing en and pt, replace correctedEn/correctedPt or ptByGrade while preserving speaker, choices and callbacks.",
+    "figures": "Match V.heritageContent.figures by id, validate expectedFacts, then copy enFacts."
+  },
+  "verificationLimits": "Text and schema reviewed locally; browser interaction and visual typography belong to the main integration checks."
+}

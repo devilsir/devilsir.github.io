@@ -1,0 +1,33 @@
+{
+  "version": "2.1",
+  "sources": [
+    {
+      "id": "protest-origin",
+      "name": "Black Lives Matter · origem e princípios",
+      "url": "https://blacklivesmatter.com/about/",
+      "note": "Fonte do movimento para sua origem em 2013 e o reconhecimento de vidas, cultura e contribuições negras."
+    },
+    {
+      "id": "protest-ferguson",
+      "name": "Black Lives Matter · Herstory",
+      "url": "https://blacklivesmatter.com/herstory/",
+      "note": "Relato histórico do movimento sobre a atuação coletiva em Ferguson em 2014 e a participação de mulheres e pessoas LGBTQ+."
+    },
+    {
+      "id": "protest-museum-plaza",
+      "name": "Smithsonian NMAAHC · placa de Black Lives Matter Plaza",
+      "url": "https://nmaahc.si.edu/object/nmaahc_2025.32",
+      "note": "Registro de uma placa de 2020 e contexto das manifestações em Washington, D.C. A cena do jogo não reproduz esse lugar."
+    },
+    {
+      "id": "protest-museum-signs",
+      "name": "Smithsonian NMAAHC · manifestações e cartazes de 2020",
+      "url": "https://nmaahc.si.edu/object/nmaahc_2021.31.70",
+      "note": "Registro de uma fotografia de Tommy Oliver em Los Angeles em 2020. A fotografia não foi copiada; os sprites e cartazes do jogo são originais."
+    }
+  ],
+  "notes": "Moradores e diálogos fictícios; história apresentada em terceira pessoa. Sem citações atribuídas, imagens de museu copiadas ou gravações históricas. Artes e exercícios sonoros originais.",
+  "artLicense": "CC0-1.0",
+  "assetIndex": "assets/characters/protest-manifest.json",
+  "furnitureIndex": "assets/tilesets/furnishings-manifest.json"
+}

@@ -1,0 +1,2113 @@
+{
+  "version": "1.8",
+  "license": "CC0-1.0",
+  "attributionRequired": false,
+  "author": "Original VOICES pixel art",
+  "atlas": "assets/tilesets/beach-props.png",
+  "generator": "tools/create_beach_assets.py",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 8,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "colorRoleConvention": "Exact RGB shadow, body and highlight. Preserve outlines, alpha and unlisted colors.",
+  "artStatus": "All pixels, clothing prints and floor motifs are original artwork for VOICES. No sacred object or copied clothing pattern is used as generic decoration.",
+  "palette": {
+    "ink": "#111729",
+    "outline": "#1b2039",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "violetdark": "#463575",
+    "violet": "#7860be",
+    "violetlight": "#b498f0",
+    "cyan": "#59d9dd",
+    "cyandark": "#278c9d",
+    "cyanlight": "#b8f4ea",
+    "amber": "#efb74e",
+    "amberdark": "#a66c32",
+    "amberlight": "#ffdd88",
+    "coral": "#ed7978",
+    "coraldark": "#ab4d65",
+    "corallight": "#ffc0a0",
+    "white": "#eeeada",
+    "paper": "#d8dccf",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "greenlight": "#9cd3a0",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "greylight": "#afb5ba",
+    "grey": "#768894",
+    "darkgrey": "#49576d",
+    "pink": "#dd9dc3"
+  },
+  "props": [
+    {
+      "index": 0,
+      "id": "coral-parasol",
+      "name": "Guarda-sol listrado coral",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.8,
+        "width": 0.2,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "blue-parasol",
+      "name": "Guarda-sol listrado azul",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.8,
+        "width": 0.2,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#278c9d",
+          "#59d9dd",
+          "#b8f4ea"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "reclining-chair",
+      "name": "Espreguiçadeira de madeira",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.67,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "beach-chair",
+      "name": "Cadeira de praia dobrável",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.67,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "fabric": [
+          "#278c9d",
+          "#59d9dd",
+          "#b8f4ea"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "beach-towel",
+      "name": "Canga listrada sobre a areia",
+      "category": "praia",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "sandcastle",
+      "name": "Castelo de areia",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "cooler-box",
+      "name": "Caixa térmica",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#278c9d",
+          "#59d9dd",
+          "#b8f4ea"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "lifeguard-platform",
+      "name": "Posto de salva-vidas",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "surfboard",
+      "name": "Prancha de surfe",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.8,
+        "width": 0.2,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "surfboard-rack",
+      "name": "Suporte de pranchas",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "float-ring",
+      "name": "Boia circular",
+      "category": "praia",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "safety-buoy",
+      "name": "Boia de sinalização",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "volleyball-net",
+      "name": "Rede de vôlei",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "beach-shower",
+      "name": "Ducha do calçadão",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.8,
+        "width": 0.2,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "sorted-bins",
+      "name": "Lixeiras de coleta",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "beach-boardwalk",
+      "name": "Passarela de madeira",
+      "category": "praia",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "rope-fence",
+      "name": "Cerca baixa de corda",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "fishing-boat",
+      "name": "Barco de pesca em descanso",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.45,
+        "width": 0.85,
+        "height": 0.44
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "shore-shells",
+      "name": "Conchas sobre a areia",
+      "category": "praia",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "kiosk-table",
+      "name": "Mesa do quiosque",
+      "category": "praia",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.67,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "single-bed",
+      "name": "Cama de solteiro com colcha",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "bunk-bed",
+      "name": "Beliche de madeira",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "bedside-table",
+      "name": "Criado-mudo com luminária",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "shoe-cabinet",
+      "name": "Sapateira com calçados",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 24,
+      "id": "laundry-basket",
+      "name": "Cesto de roupa de tecido",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 25,
+      "id": "bathroom-sink",
+      "name": "Pia com armário e espelho",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 32,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 26,
+      "id": "bathtub",
+      "name": "Banheira",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 27,
+      "id": "refrigerator",
+      "name": "Geladeira da cozinha",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 96,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 28,
+      "id": "cooking-stove",
+      "name": "Fogão com panela",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 128,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 29,
+      "id": "kitchen-sink",
+      "name": "Pia da cozinha",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 30,
+      "id": "pantry-shelf",
+      "name": "Estante de despensa",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.3,
+        "width": 0.68,
+        "height": 0.58
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 31,
+      "id": "breakfast-cart",
+      "name": "Carrinho de café da manhã",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 32,
+      "id": "sewing-machine",
+      "name": "Mesa com máquina de costura",
+      "category": "ateliê",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 33,
+      "id": "easel-canvas",
+      "name": "Cavalete com pintura original",
+      "category": "ateliê",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 34,
+      "id": "toy-storage",
+      "name": "Caixa com brinquedos",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 35,
+      "id": "rocking-chair",
+      "name": "Cadeira de balanço",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.67,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 36,
+      "id": "outdoor-picnic-table",
+      "name": "Mesa de piquenique com bancos",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.67,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 37,
+      "id": "water-drinking-fountain",
+      "name": "Bebedouro de água",
+      "category": "comunidade",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 38,
+      "id": "street-lamp",
+      "name": "Luminária de praça",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.8,
+        "width": 0.2,
+        "height": 0.15
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 39,
+      "id": "flower-market-cart",
+      "name": "Carrinho de flores",
+      "category": "feira",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 40,
+      "id": "leaning-coconut-palm",
+      "name": "Coqueiro inclinado",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.35,
+        "y": 0.82,
+        "width": 0.28,
+        "height": 0.12
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 41,
+      "id": "straight-coconut-palm",
+      "name": "Coqueiro reto",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.35,
+        "y": 0.82,
+        "width": 0.28,
+        "height": 0.12
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 42,
+      "id": "dune-grass",
+      "name": "Capim junto à duna",
+      "category": "plantas e flores",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 43,
+      "id": "coastal-shrub",
+      "name": "Arbusto costeiro",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 44,
+      "id": "dune-flowers",
+      "name": "Planta rasteira florida",
+      "category": "plantas e flores",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 45,
+      "id": "agave-clump",
+      "name": "Agave ornamental",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 46,
+      "id": "bromeliad",
+      "name": "Bromélia em canteiro",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 47,
+      "id": "hibiscus-bush",
+      "name": "Moita de hibisco",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 48,
+      "id": "sand-dry",
+      "name": "Areia seca",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#baa578",
+          "#dbc394",
+          "#e7d1aa"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 49,
+      "id": "sand-wet",
+      "name": "Areia úmida",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#ad9673",
+          "#b5a181",
+          "#c6b593"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 50,
+      "id": "sand-footprints",
+      "name": "Areia com pegadas",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#af9873",
+          "#d8c091",
+          "#e7d1aa"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 51,
+      "id": "promenade-stone",
+      "name": "Pedras do calçadão",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#8f8f82",
+          "#bcb5a2",
+          "#ded8c9"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 52,
+      "id": "wave-mosaic",
+      "name": "Mosaico de ondas do calçadão",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#4f5961",
+          "#ded8c9",
+          "#eeeada"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 53,
+      "id": "wood-deck",
+      "name": "Tábuas do deque",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 54,
+      "id": "terracotta-floor",
+      "name": "Ladrilho de terracota",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#ba806a",
+          "#d09477",
+          "#e0b7a1"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 55,
+      "id": "light-gravel",
+      "name": "Cascalho claro",
+      "category": "pisos",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "none",
+      "colorRoles": {
+        "floor": [
+          "#9a9c91",
+          "#c7bfad",
+          "#e7dfce"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "floorTile": true
+    },
+    {
+      "index": 56,
+      "id": "printed-dress-display",
+      "name": "Vestido estampado no manequim",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 57,
+      "id": "blouse-display",
+      "name": "Blusa estampada no cabide",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#463575",
+          "#7860be",
+          "#b498f0"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 58,
+      "id": "casual-shirt-display",
+      "name": "Camiseta e bermuda no cabide",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#278c9d",
+          "#59d9dd",
+          "#b8f4ea"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 59,
+      "id": "headwrap-display",
+      "name": "Turbante de uso pessoal no suporte",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#463575",
+          "#7860be",
+          "#b498f0"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 60,
+      "id": "scarf-display",
+      "name": "Lenço estampado dobrado",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 61,
+      "id": "sandals-display",
+      "name": "Sandálias na prateleira",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 62,
+      "id": "beachwear-display",
+      "name": "Maiô e camisa de praia no cabide",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    },
+    {
+      "index": 63,
+      "id": "accessory-display",
+      "name": "Óculos, brincos e bolsa no expositor",
+      "category": "vestuário",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.6,
+        "width": 0.76,
+        "height": 0.3
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.14,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
+      "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
+    }
+  ]
+}

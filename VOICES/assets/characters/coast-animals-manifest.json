@@ -1,0 +1,166 @@
+{
+  "version": "1.8",
+  "license": "CC0-1.0",
+  "attributionRequired": false,
+  "author": "Original VOICES pixel art",
+  "atlas": "assets/characters/coast-animals.png",
+  "generator": "tools/create_beach_assets.py",
+  "tileSize": 32,
+  "columns": 4,
+  "rows": 8,
+  "animals": [
+    {
+      "index": 0,
+      "row": 0,
+      "id": "dog-mongrel",
+      "name": "Cachorro sem raça definida",
+      "kind": "dog",
+      "habitat": "land",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 1,
+      "row": 1,
+      "id": "dog-retriever",
+      "name": "Golden retriever",
+      "kind": "dog",
+      "habitat": "land",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 2,
+      "row": 2,
+      "id": "cat-tabby",
+      "name": "Gato de pelagem tigrada",
+      "kind": "cat",
+      "habitat": "land",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 3,
+      "row": 3,
+      "id": "cat-tuxedo",
+      "name": "Gato de pelagem preta e branca",
+      "kind": "cat",
+      "habitat": "land",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 4,
+      "row": 4,
+      "id": "shore-crab",
+      "name": "Caranguejo da praia",
+      "kind": "crab",
+      "habitat": "shore",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 5,
+      "row": 5,
+      "id": "gull",
+      "name": "Gaivota",
+      "kind": "bird",
+      "habitat": "shore",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 6,
+      "row": 6,
+      "id": "sea-turtle",
+      "name": "Tartaruga marinha",
+      "kind": "turtle",
+      "habitat": "water",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    },
+    {
+      "index": 7,
+      "row": 7,
+      "id": "shoaling-fish",
+      "name": "Peixe de cardume",
+      "kind": "fish",
+      "habitat": "water",
+      "frameCount": 4,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameDuration": 0.2,
+      "sourceRect": {
+        "x": 0,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "artStatus": "Original pixel art; stylized species silhouette, not scientific species identification."
+    }
+  ],
+  "wildlifeNote": "Observe wildlife without touching, feeding or collecting it. Sea turtles are wildlife and are not pets."
+}

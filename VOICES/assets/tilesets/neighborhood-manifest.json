@@ -1,0 +1,2547 @@
+{
+  "version": "1.7",
+  "license": "CC0-1.0",
+  "attributionRequired": false,
+  "author": "Original VOICES pixel art",
+  "atlas": "assets/tilesets/neighborhood-props.png",
+  "generator": "tools/create_neighborhood_assets.py",
+  "tileSize": 32,
+  "columns": 8,
+  "rows": 8,
+  "coordinateUnits": "tile-fraction",
+  "sourceRectUnits": "pixel",
+  "colorRoleConvention": "Each role lists exact source RGB hex colors in shadow, body, highlight order. Replace only listed colors of this individual prop; outlines, alpha, portraits and skin colors are preserved.",
+  "palette": {
+    "ink": "#111729",
+    "outline": "#1b2039",
+    "navy": "#263250",
+    "navylight": "#465777",
+    "violetdark": "#463575",
+    "violet": "#7860be",
+    "violetlight": "#b498f0",
+    "cyan": "#59d9dd",
+    "cyandark": "#278c9d",
+    "cyanlight": "#b8f4ea",
+    "amber": "#efb74e",
+    "amberdark": "#a66c32",
+    "amberlight": "#ffdd88",
+    "coral": "#ed7978",
+    "coraldark": "#ab4d65",
+    "corallight": "#ffc0a0",
+    "white": "#eeeada",
+    "paper": "#d8dccf",
+    "green": "#58aa83",
+    "greendark": "#2f6b69",
+    "greenlight": "#9cd3a0",
+    "brown": "#805a49",
+    "brownlight": "#b99068",
+    "greylight": "#afb5ba",
+    "grey": "#768894",
+    "darkgrey": "#49576d",
+    "pink": "#dd9dc3"
+  },
+  "visualReferences": [
+    {
+      "indices": [
+        48
+      ],
+      "institution": "Nina Simone official archive",
+      "url": "https://www.ninasimone.com/biography/"
+    },
+    {
+      "indices": [
+        49
+      ],
+      "institution": "Instituto Cultural Cravo Albin",
+      "url": "https://dicionariompb.com.br/artista/tim-maia/"
+    },
+    {
+      "indices": [
+        50
+      ],
+      "institution": "Academia Brasileira de Letras",
+      "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia"
+    },
+    {
+      "indices": [
+        51
+      ],
+      "institution": "Instituto Moreira Salles",
+      "url": "https://ims.com.br/titular-colecao/carolina-maria-de-jesus/"
+    },
+    {
+      "indices": [
+        52
+      ],
+      "institution": "NASA",
+      "url": "https://www.nasa.gov/image-article/katherine-johnson-portrait/"
+    },
+    {
+      "indices": [
+        53
+      ],
+      "institution": "UFMG / Literafro",
+      "url": "https://www.letras.ufmg.br/literafro/autoras/188-conceicao-evaristo"
+    },
+    {
+      "indices": [
+        54
+      ],
+      "institution": "CNEN",
+      "url": "https://www.gov.br/cnen/pt-br/assunto/ultimas-noticias/cnen-sedia-encontro-ancestralidade-e-ciencia"
+    },
+    {
+      "indices": [
+        55
+      ],
+      "institution": "Museu Catavento",
+      "url": "https://museucatavento.org.br/mulheres-na-ciencia/jaqueline-goes/FOLDER.pdf"
+    },
+    {
+      "indices": [
+        56
+      ],
+      "institution": "Instituto Moreira Salles",
+      "url": "https://ims.com.br/titular-colecao/pixinguinha/"
+    },
+    {
+      "indices": [
+        57
+      ],
+      "institution": "Instituto Moreira Salles",
+      "url": "https://acervos.ims.com.br/index.php/Detail/objects/60260"
+    },
+    {
+      "indices": [
+        58
+      ],
+      "institution": "Pinacoteca",
+      "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/"
+    },
+    {
+      "indices": [
+        59
+      ],
+      "institution": "MASP",
+      "url": "https://masp.org.br/exposicoes/maria-auxiliadora-vida-cotidiana-pintura-e-resistencia"
+    }
+  ],
+  "artStatus": "All pixels are original. Stylized portraits use biographical visual references, without tracing or copying photographs. Abstract masks and full-figured sculptures are original neighborhood art, without a claimed traditional or ritual attribution.",
+  "props": [
+    {
+      "index": 0,
+      "id": "wingback-chair",
+      "name": "Poltrona com encosto alto",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 1,
+      "id": "corner-sofa",
+      "name": "Sofá de canto",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 2,
+      "id": "round-dining-table",
+      "name": "Mesa redonda de jantar",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 3,
+      "id": "large-dining-table",
+      "name": "Mesa comprida de jantar",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 4,
+      "id": "writing-desk",
+      "name": "Escrivaninha com gavetas",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "working"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 5,
+      "id": "dressing-table",
+      "name": "Penteadeira com espelho",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 6,
+      "id": "glass-cabinet",
+      "name": "Cristaleira",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.2,
+        "width": 0.7,
+        "height": 0.67
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 7,
+      "id": "sliding-wardrobe",
+      "name": "Armário com portas de correr",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.2,
+        "width": 0.7,
+        "height": 0.67
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 8,
+      "id": "kitchen-cabinet",
+      "name": "Armário da cozinha",
+      "category": "cozinha",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.2,
+        "width": 0.7,
+        "height": 0.67
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 9,
+      "id": "sideboard",
+      "name": "Aparador",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 10,
+      "id": "television-stand",
+      "name": "Rack com televisão",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 11,
+      "id": "magazine-rack",
+      "name": "Porta-revistas",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 12,
+      "id": "wall-coat-rack",
+      "name": "Cabideiro de parede",
+      "category": "casa",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "wall",
+      "interaction": "none",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 13,
+      "id": "slatted-bench",
+      "name": "Banco de madeira com ripas",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 14,
+      "id": "curved-bench",
+      "name": "Banco curvo de jardim",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 15,
+      "id": "stone-bench",
+      "name": "Banco de pedra",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 32,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 16,
+      "id": "backless-bench",
+      "name": "Banco de jardim sem encosto",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 17,
+      "id": "double-park-bench",
+      "name": "Banco duplo de praça",
+      "category": "convívio",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 18,
+      "id": "floor-cushions",
+      "name": "Almofadas de leitura",
+      "category": "biblioteca",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ],
+        "secondFabric": [
+          "#463575",
+          "#7860be",
+          "#b498f0"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 19,
+      "id": "stacked-chairs",
+      "name": "Cadeiras empilhadas",
+      "category": "comunidade",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 20,
+      "id": "folding-chair",
+      "name": "Cadeira dobrável",
+      "category": "comunidade",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 21,
+      "id": "bar-stool",
+      "name": "Banqueta alta",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 22,
+      "id": "storage-ottoman",
+      "name": "Pufe com baú",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.48,
+        "width": 0.76,
+        "height": 0.4
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "seat": {
+          "x": 0.5,
+          "y": 0.64,
+          "facing": "south",
+          "state": "sitting"
+        }
+      },
+      "layer": "object",
+      "interaction": "sit",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ],
+        "fabric": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 23,
+      "id": "baby-crib",
+      "name": "Berço de madeira",
+      "category": "casa",
+      "solidFootprint": {
+        "x": 0.15,
+        "y": 0.2,
+        "width": 0.7,
+        "height": 0.67
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "wood": [
+          "#805a49",
+          "#b99068",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 64,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 24,
+      "id": "mango-tree",
+      "name": "Mangueira",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.75,
+        "width": 0.22,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 25,
+      "id": "yellow-ipe",
+      "name": "Ipê-amarelo",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.75,
+        "width": 0.22,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#a66c32",
+          "#efb74e",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 26,
+      "id": "flamboyant-tree",
+      "name": "Flamboyant",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.75,
+        "width": 0.22,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 27,
+      "id": "garden-palm",
+      "name": "Palmeira de jardim",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.75,
+        "width": 0.22,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 28,
+      "id": "bamboo-clump",
+      "name": "Touceira de bambu",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.12,
+        "y": 0.8,
+        "width": 0.76,
+        "height": 0.12
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 29,
+      "id": "plumeria-tree",
+      "name": "Jasmim-manga",
+      "category": "árvores",
+      "solidFootprint": {
+        "x": 0.4,
+        "y": 0.75,
+        "width": 0.22,
+        "height": 0.2
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 30,
+      "id": "trimmed-hedge",
+      "name": "Cerca viva aparada",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 31,
+      "id": "fern-planter",
+      "name": "Samambaia em vaso",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 96,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 32,
+      "id": "succulent-pots",
+      "name": "Vasos de suculentas",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 0,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 33,
+      "id": "window-flower-box",
+      "name": "Floreira de janela",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 32,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 34,
+      "id": "sunflower-bed",
+      "name": "Canteiro de girassóis",
+      "category": "plantas e flores",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#a66c32",
+          "#efb74e",
+          "#ffdd88"
+        ]
+      },
+      "sourceRect": {
+        "x": 64,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 35,
+      "id": "hibiscus-planter",
+      "name": "Vaso de hibisco",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 96,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 36,
+      "id": "bougainvillea-trellis",
+      "name": "Treliça com primavera",
+      "category": "plantas e flores",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#dd9dc3",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 128,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 37,
+      "id": "wildflower-border",
+      "name": "Canteiro de flores do bairro",
+      "category": "plantas e flores",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ],
+        "flowers": [
+          "#ab4d65",
+          "#ed7978",
+          "#ffc0a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 160,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 38,
+      "id": "water-lily",
+      "name": "Ninféias sobre a água",
+      "category": "plantas e flores",
+      "solidFootprint": null,
+      "anchors": {},
+      "layer": "ground",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 192,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 39,
+      "id": "herb-planter",
+      "name": "Jardineira de ervas",
+      "category": "horta",
+      "solidFootprint": {
+        "x": 0.08,
+        "y": 0.65,
+        "width": 0.85,
+        "height": 0.22
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "work": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "observing"
+        }
+      },
+      "layer": "object",
+      "interaction": "observe",
+      "colorRoles": {
+        "foliage": [
+          "#2f6b69",
+          "#58aa83",
+          "#9cd3a0"
+        ]
+      },
+      "sourceRect": {
+        "x": 224,
+        "y": 128,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 40,
+      "id": "full-figured-standing-woman",
+      "name": "Escultura: mulher de corpo amplo",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 0,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 41,
+      "id": "full-figured-seated-woman",
+      "name": "Escultura: mulher sentada",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 32,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 42,
+      "id": "hands-sculpture",
+      "name": "Escultura: mãos que se encontram",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 43,
+      "id": "spiral-metal-sculpture",
+      "name": "Escultura: espiral de metal",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 96,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 44,
+      "id": "round-wood-mask",
+      "name": "Máscara circular original",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 128,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 45,
+      "id": "long-wood-mask",
+      "name": "Máscara alongada original",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 46,
+      "id": "abstract-metal-mask",
+      "name": "Máscara geométrica de metal",
+      "category": "esculturas",
+      "solidFootprint": {
+        "x": 0.22,
+        "y": 0.73,
+        "width": 0.58,
+        "height": 0.17
+      },
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "object",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 47,
+      "id": "mask-triptych",
+      "name": "Painel de três máscaras originais",
+      "category": "esculturas",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 160,
+        "width": 32,
+        "height": 32
+      },
+      "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
+      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+    },
+    {
+      "index": 48,
+      "id": "portrait-nina",
+      "name": "Quadro: Nina Simone",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 0,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Nina Simone",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            48
+          ],
+          "institution": "Nina Simone official archive",
+          "url": "https://www.ninasimone.com/biography/"
+        }
+      ]
+    },
+    {
+      "index": 49,
+      "id": "portrait-tim",
+      "name": "Quadro: Tim Maia",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 32,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Tim Maia",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            49
+          ],
+          "institution": "Instituto Cultural Cravo Albin",
+          "url": "https://dicionariompb.com.br/artista/tim-maia/"
+        }
+      ]
+    },
+    {
+      "index": 50,
+      "id": "portrait-machado",
+      "name": "Quadro: Machado de Assis",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Machado de Assis",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            50
+          ],
+          "institution": "Academia Brasileira de Letras",
+          "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia"
+        }
+      ]
+    },
+    {
+      "index": 51,
+      "id": "portrait-carolina",
+      "name": "Quadro: Carolina Maria de Jesus",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 96,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Carolina Maria de Jesus",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            51
+          ],
+          "institution": "Instituto Moreira Salles",
+          "url": "https://ims.com.br/titular-colecao/carolina-maria-de-jesus/"
+        }
+      ]
+    },
+    {
+      "index": 52,
+      "id": "portrait-katherine",
+      "name": "Quadro: Katherine Johnson",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 128,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Katherine Johnson",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            52
+          ],
+          "institution": "NASA",
+          "url": "https://www.nasa.gov/image-article/katherine-johnson-portrait/"
+        }
+      ]
+    },
+    {
+      "index": 53,
+      "id": "portrait-conceicao",
+      "name": "Quadro: Conceição Evaristo",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Conceição Evaristo",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            53
+          ],
+          "institution": "UFMG / Literafro",
+          "url": "https://www.letras.ufmg.br/literafro/autoras/188-conceicao-evaristo"
+        }
+      ]
+    },
+    {
+      "index": 54,
+      "id": "portrait-sonia",
+      "name": "Quadro: Sônia Guimarães",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Sônia Guimarães",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            54
+          ],
+          "institution": "CNEN",
+          "url": "https://www.gov.br/cnen/pt-br/assunto/ultimas-noticias/cnen-sedia-encontro-ancestralidade-e-ciencia"
+        }
+      ]
+    },
+    {
+      "index": 55,
+      "id": "portrait-jaqueline",
+      "name": "Quadro: Jaqueline Góes de Jesus",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 192,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Jaqueline Góes de Jesus",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            55
+          ],
+          "institution": "Museu Catavento",
+          "url": "https://museucatavento.org.br/mulheres-na-ciencia/jaqueline-goes/FOLDER.pdf"
+        }
+      ]
+    },
+    {
+      "index": 56,
+      "id": "portrait-pixinguinha",
+      "name": "Quadro: Pixinguinha",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 0,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Pixinguinha",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            56
+          ],
+          "institution": "Instituto Moreira Salles",
+          "url": "https://ims.com.br/titular-colecao/pixinguinha/"
+        }
+      ]
+    },
+    {
+      "index": 57,
+      "id": "portrait-ivone",
+      "name": "Quadro: Dona Ivone Lara",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 32,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Dona Ivone Lara",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            57
+          ],
+          "institution": "Instituto Moreira Salles",
+          "url": "https://acervos.ims.com.br/index.php/Detail/objects/60260"
+        }
+      ]
+    },
+    {
+      "index": 58,
+      "id": "portrait-rosana",
+      "name": "Quadro: Rosana Paulino",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 64,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Rosana Paulino",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            58
+          ],
+          "institution": "Pinacoteca",
+          "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/"
+        }
+      ]
+    },
+    {
+      "index": 59,
+      "id": "portrait-maria-auxiliadora",
+      "name": "Quadro: Maria Auxiliadora da Silva",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 96,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      },
+      "historicalName": "Maria Auxiliadora da Silva",
+      "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
+      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "references": [
+        {
+          "indices": [
+            59
+          ],
+          "institution": "MASP",
+          "url": "https://masp.org.br/exposicoes/maria-auxiliadora-vida-cotidiana-pintura-e-resistencia"
+        }
+      ]
+    },
+    {
+      "index": 60,
+      "id": "painting-landscape",
+      "name": "Quadro: paisagem do parque",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 128,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 61,
+      "id": "painting-neighborhood",
+      "name": "Quadro: nosso bairro",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 160,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 62,
+      "id": "painting-geometric",
+      "name": "Quadro: caminhos e cores",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 192,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "index": 63,
+      "id": "small-gallery-wall",
+      "name": "Painel de pequenas pinturas",
+      "category": "quadros",
+      "solidFootprint": null,
+      "anchors": {
+        "approach": {
+          "x": 0.5,
+          "y": 1.12,
+          "facing": "north",
+          "state": "observing"
+        },
+        "read": {
+          "x": 0.5,
+          "y": 1.1,
+          "facing": "north",
+          "state": "reading"
+        }
+      },
+      "layer": "wall",
+      "interaction": "read",
+      "colorRoles": {},
+      "sourceRect": {
+        "x": 224,
+        "y": 224,
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

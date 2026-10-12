@@ -3,7 +3,7 @@
   const V=window.V;
   // Original score, effects and local CC0 soundscapes.
   const themes={menu:[57,60,64,67,64,60,55,60],hub:[60,64,67,72,67,64,62,67],rhythm:[48,55,60,63,55,60,67,63],museum:[50,57,62,65,62,57,53,60],lab:[60,67,74,72,69,67,64,62],network:[45,52,57,60,57,52,48,55],community:[60,65,69,72,69,65,67,64],final:[45,48,52,57,55,52,48,45],boss:[45,45,52,48,45,55,52,48],victory:[60,64,67,72,76,72,79,84]};
-  const files={plaza:'plaza',library:'library',park:'park',market:'market',garden:'garden',studio:'studio',lab:'lab',archive:'archive',newsroom:'newsroom'};
+  const files={beach:'beach',plaza:'plaza',library:'library',park:'park',market:'market',garden:'garden',studio:'studio',lab:'lab',archive:'archive',newsroom:'newsroom'};
   V.Audio={
     ctx:null,musicGain:null,sfxGain:null,unlocked:false,theme:'menu',beat:0,timer:null,
     ambient:null,ambientTracks:[],fadeTime:1,fadeDuration:.9,mixerTimer:null,environment:'plaza',ambientError:false,stepTime:0,visibilityBound:false,
@@ -38,7 +38,7 @@
       if(t===1){this.ambientTracks=this.ambientTracks.filter(track=>{if(track.target===0){track.el.pause();return false;}return true;});}this.apply();
     },
     setEnvironment(map){
-      const next=map.id==='library'?'library':map.id==='park'?'park':map.id==='market'?'market':map.id==='garden'?'garden':map.theme==='room'?map.chapter===1?'studio':map.chapter===3?'lab':map.chapter===4?'newsroom':map.chapter===2||map.chapter===6?'archive':'library':map.chapter===1?'studio':map.chapter===3?'lab':map.chapter===4?'newsroom':map.chapter===6?'archive':map.chapter===5?'park':'plaza';
+      const next=map.id==='beach'?'beach':map.id==='library'?'library':map.id==='park'?'park':map.id==='market'?'market':map.id==='garden'?'garden':map.theme==='room'?map.chapter===1?'studio':map.chapter===3?'lab':map.chapter===4?'newsroom':map.chapter===2||map.chapter===6?'archive':'library':map.chapter===1?'studio':map.chapter===3?'lab':map.chapter===4?'newsroom':map.chapter===6?'archive':map.chapter===5?'park':'plaza';
       if(next===this.environment){this.apply();return;}this.environment=next;
       if(this.ambient){const el=this.createAmbient();if(el){for(const track of this.ambientTracks){track.start=track.gain;track.target=0;}this.ambient=el;this.ambientTracks.push({el,gain:0,start:0,target:1});while(this.ambientTracks.length>3)this.ambientTracks.shift().el.pause();this.fadeTime=0;}}this.apply();
     },

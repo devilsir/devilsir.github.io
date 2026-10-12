@@ -493,15 +493,25 @@ def prop(index, id):
 
 def cultural(d, index, id):
     if id == "berimbau":
-        line(d, (20, 2, 16, 4, 13, 9, 10, 18, 9, 28), "ink", 3)
-        line(d, (20, 2, 16, 4, 13, 9, 10, 18, 9, 28), "brownlight")
-        line(d, (20, 2, 9, 28), "paper")
-        ell(d, (10, 15, 22, 26), "amberdark", "ink")
-        ell(d, (12, 16, 20, 24), "brownlight", "brown")
-        ell(d, (12, 19, 16, 23), "navy", "ink")
-        line(d, (25, 13, 21, 27), "brownlight", 2)
-        poly(d, [(23, 25), (28, 25), (29, 29), (23, 29)], "amberlight", "ink")
-        line(d, (25, 23, 25, 25, 27, 25, 27, 23), "brown")
+        line(d, (17, 2, 12, 5, 8, 11, 7, 16, 9, 23, 17, 29), "ink", 3)
+        line(d, (17, 2, 12, 5, 8, 11, 7, 16, 9, 23, 17, 29), "brownlight")
+        line(d, (18, 2, 18, 29), "grey")
+        line(d, (18, 3, 18, 17), "paper")
+        line(d, (17, 2, 19, 2), "brown")
+        line(d, (17, 29, 19, 29), "brown")
+        ell(d, (9, 19, 20, 28), "amberdark", "ink")
+        ell(d, (11, 20, 18, 26), "brownlight", "brown")
+        ell(d, (10, 21, 13, 25), "navy", "ink")
+        line(d, (11, 20, 17, 20), "amberlight")
+        line(d, (9, 22, 18, 22), "brown")
+        line(d, (25, 6, 23, 24), "ink", 3)
+        line(d, (25, 6, 23, 24), "brownlight")
+        ell(d, (23, 16, 26, 19), "greylight", "ink")
+        poly(d, [(25, 24), (29, 24), (30, 29), (24, 29)], "amberlight", "ink")
+        line(d, (26, 21, 26, 24, 28, 24, 28, 21), "brown")
+        for x in (26, 28):
+            line(d, (x, 25, x, 28), "brownlight")
+        line(d, (25, 27, 29, 27), "brown")
     elif id == "atabaque":
         poly(d, [(6, 6), (26, 6), (23, 24), (20, 29), (12, 29), (9, 24)], "brown", "ink")
         for x in (9, 13, 19, 23):
@@ -798,6 +808,10 @@ def metadata(index, id, name, category):
     record = {"index": index, "id": id, "name": name, "category": category, "solidFootprint": footprint, "anchors": anchors, "layer": layer, "interaction": interaction, "sourceRect": {"x": index%8*32, "y": index//8*32, "width": 32, "height": 32}}
     if 48 <= index <= 60:
         record["illustrationStatus"] = "Original educational illustration. Specific meanings require the accompanying sourced text; this sprite is not an authentic ritual object or a replica."
+    if id == "berimbau":
+        record["designRevision"] = "1.7"
+        record["depictedParts"] = ["verga de madeira arqueada", "arame de aço tensionado", "cabaça ressonadora na parte inferior", "baqueta", "caxixi", "dobrão"]
+        record["references"] = ["https://bibliotecadigital.iphan.gov.br/bitstreams/835bd81e-1742-433d-bd9f-dbe2e8dbdbe4/download", "https://music.yale.edu/browse-collection/berimbau-42032010"]
     return record
 
 def main():

@@ -1,0 +1,379 @@
+{
+  "sources": [
+    {
+      "id": "coast_duke_iemanja",
+      "name": "Duke University — Sacred Arts of the Black Atlantic: figure of the Goddess Iemanjá (C018)",
+      "url": "https://sacredart.caaar.duke.edu/artifacts/figure-of-the-goddess-iemanja/",
+      "note": "Ficha de uma figura turística de um contexto de Candomblé, com pele negra, vestido branco, metal prateado, coroa, véu de contas e abebé. Referência contextual; nenhuma fotografia, objeto ou ornamento do acervo foi copiado. Não se trata de uma descrição universal."
+    },
+    {
+      "id": "coast_salvador_festa",
+      "name": "Prefeitura de Salvador, portal Salvador da Bahia — Festa de Iemanjá",
+      "url": "https://www.salvadordabahia.com/festa-de-iemanja/",
+      "note": "Consultados a data de 2 de fevereiro, o bairro do Rio Vermelho e o papel da Colônia de Pescadores. Não usamos recomendações de rituais, horários atuais ou descrições de personalidades atribuídas a adeptos."
+    },
+    {
+      "id": "coast_iphan_bembe",
+      "name": "Iphan, Bem Brasileiro — Bembé do Mercado",
+      "url": "https://bcr.iphan.gov.br/bens-culturais/bembe-do-mercado/",
+      "note": "Celebração específica de Santo Amaro, Bahia, conduzida por casas de Candomblé, que relaciona liberdade, memória e homenagens a Iemanjá e Oxum. Não é apresentada como a Festa do Rio Vermelho nem como celebração de todas as religiões."
+    },
+    {
+      "id": "coast_icmbio_fauna",
+      "name": "ICMBio, APA de Cairuçu — Respeite os animais e as plantas",
+      "url": "https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/marinho/lista-de-ucs/apa-de-cairucu/informacoes-sobre-visitacao-apa-de-cairucu/respeite-os-animais-e-as-plantas",
+      "note": "Orientações públicas para observar animais a distância, não oferecer alimento e manter flores e plantas silvestres no local. A praia de VOICES é ficcional e não reproduz esta unidade de conservação."
+    }
+  ],
+  "readings": [
+    {
+      "id": "coast-book-iemanja",
+      "title": "Iemanjá: imagem, contexto e respeito",
+      "kind": "book",
+      "chapter": 5,
+      "map": "beach",
+      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "theme": "Representação, arte e religiosidade",
+      "artTheme": "coast",
+      "paragraphs": [
+        "Na mostra da orla, uma criação original de VOICES representa Iemanjá como mulher negra, com vestido azul-claro e branco, coroa prateada, véu de contas e abebé. O desenho é uma interpretação artística educativa. Sua legenda não apresenta a figura como uma pessoa histórica nem lhe atribui falas sagradas.",
+        "Uma ficha da Universidade Duke descreve outra figura de Iemanjá, ligada a um contexto de Candomblé: pele negra, roupa branca, acessórios prateados, coroa, véu de contas e abebé. A ficha identifica aquela peça como objeto turístico. Nossa arte não é uma cópia desse objeto nem uma demonstração de ritual.",
+        "Samira, mediadora fictícia, convida a comparar desenho e legenda: o que pode ser visto? O que depende da fonte? Candomblé e Umbanda não devem ser tratados como nomes intercambiáveis. Uma representação não resume todas as comunidades; procure saber de quem, de onde e de qual contexto vem cada imagem. É possível aprender com respeito sem declarar uma crença pessoal.",
+        "Outro registro público leva a Salvador: a Festa de Iemanjá acontece em 2 de fevereiro, no Rio Vermelho, com participação da Colônia de Pescadores. Lugar, data e comunidade ajudam a situar essa referência. A praia ficcional do jogo tem uma mostra educativa; não reproduz uma cerimônia dessa festa."
+      ],
+      "paragraphsEn": [
+        "In the seafront exhibition, an original VOICES creation depicts Iemanjá as a Black woman with a light-blue and white dress, a silver-colored crown, a beaded veil and an abebé. The drawing is an educational artistic interpretation. Its caption does not present the figure as a historical person or attribute sacred speech to her.",
+        "A Duke University catalog entry describes another figure of Iemanjá associated with a Candomblé context: dark skin, white clothing, silver-colored accessories, a crown, a beaded veil and an abebé. The entry identifies that piece as a tourist object. Our art is not a copy of that object or a demonstration of a ritual.",
+        "Samira, a fictional mediator, invites visitors to compare the drawing and the caption: what can be seen? What depends on the source? Candomblé and Umbanda should not be treated as interchangeable names. One depiction does not summarize every community; look for who, where and which context each image comes from. It is possible to learn respectfully without declaring a personal belief.",
+        "Another public record leads to Salvador: the Festa de Iemanjá takes place on February 2 in Rio Vermelho, with the participation of the fishing colony. Place, date and community help situate this reference. The fictional beach in the game has an educational exhibition; it does not reproduce a ceremony from that festival."
+      ],
+      "en": "This is an original artistic depiction of Iemanjá.",
+      "pt": "Esta é uma representação artística original de Iemanjá.",
+      "sourceIds": [
+        "coast_duke_iemanja",
+        "coast_salvador_festa"
+      ],
+      "questionId": "coast-history-01-6"
+    },
+    {
+      "id": "coast-book-shared-care",
+      "title": "A praia é um espaço compartilhado",
+      "kind": "book",
+      "chapter": 5,
+      "map": "beach",
+      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "theme": "Convivência, ambiente e autoria",
+      "artTheme": "coast",
+      "paragraphs": [
+        "Beto prepara um canto de descanso junto ao caminho da Praia das Marés. A mesa fica perto dos bancos; o acesso ao mar continua livre. Na cena ficcional, as pessoas combinam recolher o próprio lixo, guardar equipamentos no lugar e deixar espaço para quem circula.",
+        "O cuidado com animais e plantas também entra no combinado. O ICMBio recomenda observar animais a distância, não oferecer comida e não retirar flores e plantas silvestres. Essa orientação informa a atividade do jogo; a Praia das Marés não é uma reprodução da APA de Cairuçu, lugar citado na fonte.",
+        "Beto propõe comparar dois desenhos: um banco bloqueia o caminho; no outro, pessoas sentadas convivem com uma passagem livre. A turma escolhe uma organização e explica o motivo. O mural registra a proposta com autoria. Uma boa solução atende às pessoas e ao ambiente, em vez de usar decoração para esconder um problema."
+      ],
+      "paragraphsEn": [
+        "Beto prepares a resting corner beside the path at Praia das Marés. The table is close to the benches; access to the sea remains clear. In the fictional scene, people agree to take their own rubbish away, return equipment to its place and leave space for people moving through.",
+        "Care for animals and plants is also part of the agreement. ICMBio recommends observing animals from a distance, not offering food and not removing wild flowers and plants. This guidance informs the game activity; Praia das Marés is not a reconstruction of the Cairuçu protected area mentioned in the source.",
+        "Beto suggests comparing two drawings: in one, a bench blocks the path; in the other, seated people share the space with a clear route. The group chooses an arrangement and explains its reason. The board records the proposal with authorship. A good solution serves people and the environment instead of using decoration to hide a problem."
+      ],
+      "en": "We keep the path clear and care for the beach.",
+      "pt": "Mantemos o caminho livre e cuidamos da praia.",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ],
+      "questionId": "coast-history-02-6"
+    },
+    {
+      "id": "coast-note-observation",
+      "title": "Caderno de observação da orla",
+      "kind": "note",
+      "chapter": 5,
+      "map": "beach",
+      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "theme": "Observação, evidência e cuidado compartilhado",
+      "artTheme": "nature",
+      "paragraphs": [
+        "A observadora fictícia Lara escolhe um banco antes de abrir o caderno. Primeiro registra o lugar e o momento; depois descreve o que consegue ver. “Uma ave caminhou perto da água” é uma observação. “Ela está procurando o amigo” é uma hipótese que a imagem sozinha não confirma.",
+        "O ICMBio orienta visitantes da APA de Cairuçu a observar animais a distância, não lhes oferecer comida e manter flores e plantas silvestres no local. A atividade da praia segue esse cuidado: o jogador observa movimentos e compara anotações, sem capturar ou alimentar animais.",
+        "Lara acrescenta uma dúvida ao lado do desenho: o que seria preciso observar para testar minha ideia? Ela compara duas notas sem esconder as diferenças. O mural guarda o registro do grupo com data e autoria. Cuidar do espaço inclui deixar caminho livre e recolher o próprio lixo; conhecer uma praia também é aprender a compartilhá-la."
+      ],
+      "paragraphsEn": [
+        "The fictional observer Lara chooses a bench before opening her notebook. First she records the place and the moment; then she describes what she can see. “A bird walked near the water” is an observation. “It is looking for its friend” is a hypothesis that the image alone does not confirm.",
+        "ICMBio advises visitors to the Cairuçu protected area to observe animals from a distance, not offer them food and leave wild flowers and plants where they are. The beach activity follows that care: the player observes movement and compares notes without capturing or feeding animals.",
+        "Lara adds a question beside the drawing: what would I need to observe to test my idea? She compares two notes without hiding their differences. The board keeps the group record with its date and authorship. Caring for the space includes keeping routes clear and taking your own rubbish away; getting to know a beach also means learning to share it."
+      ],
+      "en": "We observe animals from a distance.",
+      "pt": "Observamos os animais a distância.",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ],
+      "questionId": "coast-history-03-6"
+    }
+  ],
+  "questions": [
+    {
+      "id": "coast-history-01-6",
+      "chapter": 5,
+      "grade": 6,
+      "prompt": "Qual objeto aparece na mão da representação artística de Iemanjá?",
+      "options": [
+        "Um telescópio.",
+        "Um abebé.",
+        "Uma enxada.",
+        "Um violão."
+      ],
+      "correct": 1,
+      "explanation": "A leitura e a legenda nomeiam o abebé. Identificar o objeto não substitui conhecer o contexto da imagem.",
+      "subject": "history",
+      "readingId": "coast-book-iemanja",
+      "sourceIds": [
+        "coast_duke_iemanja",
+        "coast_salvador_festa"
+      ]
+    },
+    {
+      "id": "coast-history-01-7",
+      "chapter": 5,
+      "grade": 7,
+      "prompt": "A ficha da Universidade Duke trata a peça consultada como:",
+      "options": [
+        "Uma fotografia de todas as comunidades.",
+        "Uma pessoa histórica dando uma entrevista.",
+        "Um objeto turístico de um contexto de Candomblé.",
+        "Uma roupa obrigatória para todos os moradores."
+      ],
+      "correct": 2,
+      "explanation": "A ficha identifica o contexto e o tipo daquela peça. Nossa ilustração é outra criação, feita para o jogo.",
+      "subject": "history",
+      "readingId": "coast-book-iemanja",
+      "sourceIds": [
+        "coast_duke_iemanja",
+        "coast_salvador_festa"
+      ]
+    },
+    {
+      "id": "coast-history-01-8",
+      "chapter": 5,
+      "grade": 8,
+      "prompt": "Qual legenda evita transformar uma única imagem em regra universal?",
+      "options": [
+        "Toda comunidade usa exatamente este vestido.",
+        "A aparência determina a religião de qualquer pessoa.",
+        "Candomblé e Umbanda são nomes intercambiáveis.",
+        "Criação original de VOICES; veja a referência e o contexto da representação."
+      ],
+      "correct": 3,
+      "explanation": "Autoria e contexto ajudam a apreciar a imagem sem afirmar que ela representa todas as tradições.",
+      "subject": "history",
+      "readingId": "coast-book-iemanja",
+      "sourceIds": [
+        "coast_duke_iemanja",
+        "coast_salvador_festa"
+      ]
+    },
+    {
+      "id": "coast-history-02-6",
+      "chapter": 5,
+      "grade": 6,
+      "prompt": "Que cuidado faz parte do combinado da Praia das Marés?",
+      "options": [
+        "Deixar o próprio lixo na areia.",
+        "Dar comida a animais silvestres.",
+        "Manter o caminho livre e recolher o próprio lixo.",
+        "Cobrir a entrada com móveis."
+      ],
+      "correct": 2,
+      "explanation": "No livro, as pessoas combinam cuidar do espaço e deixar passagem. O lixo deve sair da praia com quem o trouxe.",
+      "subject": "history",
+      "readingId": "coast-book-shared-care",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    },
+    {
+      "id": "coast-history-02-7",
+      "chapter": 5,
+      "grade": 7,
+      "prompt": "Qual organização Beto propõe comparar?",
+      "options": [
+        "Um caminho bloqueado e uma passagem livre junto aos bancos.",
+        "Dois bancos com nomes diferentes, sem olhar o caminho.",
+        "Duas cores de areia para descobrir a crença das pessoas.",
+        "Duas festas que ele apresenta como idênticas."
+      ],
+      "correct": 0,
+      "explanation": "O desenho permite observar se as pessoas conseguem circular. Mudar a decoração não resolve uma passagem bloqueada.",
+      "subject": "history",
+      "readingId": "coast-book-shared-care",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    },
+    {
+      "id": "coast-history-02-8",
+      "chapter": 5,
+      "grade": 8,
+      "prompt": "A turma escolheu o desenho com bancos e passagem livre. Como registrar a decisão?",
+      "options": [
+        "Apagar os nomes para não mostrar quem participou.",
+        "Usar a cor do banco como única justificativa.",
+        "Afirmar que a praia do jogo reproduz a APA de Cairuçu.",
+        "Creditar a proposta e explicar como ela atende à circulação e ao cuidado do espaço."
+      ],
+      "correct": 3,
+      "explanation": "Autoria e justificativa tornam a proposta compreensível. O livro distingue a praia ficcional da unidade de conservação citada.",
+      "subject": "history",
+      "readingId": "coast-book-shared-care",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    },
+    {
+      "id": "coast-history-03-6",
+      "chapter": 5,
+      "grade": 6,
+      "prompt": "Como participar da atividade de observação da praia?",
+      "options": [
+        "Dar comida à ave para fazê-la chegar perto.",
+        "Capturar o animal para desenhar.",
+        "Retirar flores silvestres como recompensa.",
+        "Observar a distância e registrar o que se vê."
+      ],
+      "correct": 3,
+      "explanation": "A nota apresenta observar a distância e não alimentar ou capturar animais. O desenho e a anotação são a recompensa.",
+      "subject": "history",
+      "readingId": "coast-note-observation",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    },
+    {
+      "id": "coast-history-03-7",
+      "chapter": 5,
+      "grade": 7,
+      "prompt": "Qual frase registra uma observação descrita no caderno?",
+      "options": [
+        "A ave caminhou perto da água.",
+        "A ave quer encontrar seu amigo.",
+        "A ave está triste porque perdeu uma festa.",
+        "Todas as aves gostam dessa comida."
+      ],
+      "correct": 0,
+      "explanation": "O movimento perto da água pode ser visto. As outras frases atribuem sentimentos ou generalizam sem evidência.",
+      "subject": "history",
+      "readingId": "coast-note-observation",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    },
+    {
+      "id": "coast-history-03-8",
+      "chapter": 5,
+      "grade": 8,
+      "prompt": "Duas anotações descrevem movimentos diferentes de uma ave. O que o grupo pode fazer?",
+      "options": [
+        "Apagar uma das notas para parecer que todos concordaram.",
+        "Escolher a nota mais bonita como única evidência.",
+        "Comparar lugar e momento e registrar o que ainda precisa observar.",
+        "Inventar uma causa para os movimentos e tratá-la como certeza."
+      ],
+      "correct": 2,
+      "explanation": "Comparar contexto e manter perguntas abertas ajuda a separar observação, hipótese e conclusão.",
+      "subject": "history",
+      "readingId": "coast-note-observation",
+      "sourceIds": [
+        "coast_icmbio_fauna"
+      ]
+    }
+  ],
+  "iemanja": {
+    "id": "iemanja",
+    "title": "Iemanjá — representação artística",
+    "description": "Ilustração educativa original: mulher negra de vestido azul-claro e branco, coroa prateada, véu de contas e abebé. A legenda contextualiza a imagem; não atribui falas sagradas nem reproduz uma cerimônia.",
+    "sourceIds": [
+      "coast_duke_iemanja"
+    ],
+    "readingId": "coast-book-iemanja",
+    "lines": [
+      {
+        "speaker": "Legenda da obra",
+        "en": "This is an original artistic depiction of Iemanjá.",
+        "pt": "Esta é uma representação artística original de Iemanjá."
+      },
+      {
+        "speaker": "Legenda da obra",
+        "en": "The caption names the crown, the beaded veil and the abebé.",
+        "pt": "A legenda nomeia a coroa, o véu de contas e o abebé."
+      },
+      {
+        "speaker": "Legenda da obra",
+        "en": "One image does not represent every community.",
+        "pt": "Uma imagem não representa todas as comunidades."
+      }
+    ]
+  },
+  "activitySuggestions": [
+    {
+      "id": "coast-observe",
+      "type": "observation",
+      "title": "Ver antes de concluir",
+      "readingIds": [
+        "coast-note-observation"
+      ],
+      "owner": "Lara",
+      "description": "Observe dois movimentos de animais de pontos acessíveis da orla, compare registros e escolha a frase que descreve algo visível.",
+      "reward": "Um desenho e uma anotação com autoria entram no mural; os animais permanecem livres."
+    },
+    {
+      "id": "coast-curate",
+      "type": "curation",
+      "title": "Uma legenda com contexto",
+      "readingIds": [
+        "coast-book-iemanja",
+        "coast-book-shared-care"
+      ],
+      "owner": "Samira",
+      "description": "Escolha autoria, contexto e fonte para a legenda da representação artística e identifique o que pode ser observado no desenho.",
+      "reward": "O painel ganha uma legenda completa e uma conversa nova com a mediadora."
+    },
+    {
+      "id": "coast-compare",
+      "type": "comparison",
+      "title": "Um caminho para todo mundo",
+      "readingIds": [
+        "coast-book-shared-care"
+      ],
+      "owner": "Beto",
+      "description": "Compare dois desenhos da área de descanso, escolha o que mantém a passagem livre e justifique a proposta.",
+      "reward": "O mural recebe a proposta de convivência com autoria e justificativa; a área de descanso fica organizada."
+    }
+  ],
+  "assetLicense": {
+    "license": "CC0-1.0",
+    "creator": "Original educational pixel art created for VOICES",
+    "source": "tools/create_iemanja_assets.py",
+    "sprite": {
+      "path": "assets/characters/iemanja.png",
+      "width": 128,
+      "height": 192,
+      "cellWidth": 32,
+      "cellHeight": 32,
+      "columns": 4,
+      "rows": [
+        "down",
+        "left",
+        "right",
+        "up",
+        "interaction",
+        "greeting"
+      ]
+    },
+    "portrait": {
+      "path": "assets/characters/iemanja-portrait.png",
+      "width": 288,
+      "height": 96,
+      "cellWidth": 96,
+      "cellHeight": 96,
+      "nativePixelGrid": 48
+    },
+    "referencePolicy": "Original interpretation of publicly documented features, not copied or traced from the uploaded photograph or a museum object. No authentic religious performance or recording is presented."
+  }
+}

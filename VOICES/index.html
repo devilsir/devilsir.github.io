@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171827"><meta name="description" content="Uma aventura sobre as histórias que merecem ser ouvidas. RPG educativo offline para o 6º ao 8º ano.">
-  <title>VOICES — Reboot the Story</title>
+  <title>VOICES 2.1 — Reboot the Story</title>
   <link rel="icon" href="assets/ui/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/interface.css">
   <link rel="stylesheet" href="css/culture.css"><link rel="stylesheet" href="css/scene-editor.css">
+<link rel="stylesheet" href="css/neighborhood.css"><link rel="stylesheet" href="css/coast.css">
 </head>
 <body>
 <div id="app">
@@ -21,12 +22,12 @@
       <p class="tagline">Every story deserves to be heard.</p>
       <p class="title-desc">As memórias da cidade estão desaparecendo.<br>Junte sua equipe. Encontre as pistas. Reescreva o sistema.</p>
       <div class="title-actions"><button id="new-game" class="primary large">Começar aventura <span>↗</span></button><button id="continue-game" class="secondary large" hidden>Continuar <span>→</span></button></div>
-      <div class="title-links"><button id="teacher-button" class="quiet">Sala do professor</button><button id="settings-button" class="quiet">Configurações</button><button id="title-editor-button" class="quiet">Editar cenários</button><button id="credits-button" class="quiet">Créditos e fontes</button></div>
+      <div class="title-links"><button id="teacher-button" class="quiet">Sala do professor</button><button id="settings-button" class="quiet">Configurações</button><button id="title-editor-button" class="secondary title-editor-link">Editar cenários</button><button id="credits-button" class="quiet">Créditos e fontes</button></div>
     </main>
     <footer class="title-footer"><span><b class="status-light"></b> AVENTURA OFFLINE · 6º — 8º ANO</span><span>Explore. Escute. Investigue.</span></footer>
   </section>
   <section id="game-screen" class="screen game-screen" hidden>
-    <header class="game-top"><button id="home-button" class="wordmark" aria-label="Pausar e abrir menu">VOICES<span>_</span></button><div class="location-block"><small>NEW HARMONY · ARQUIVO VIVO</small><strong id="location-name">Praça das vozes</strong></div><div id="team-role" class="role-label"></div><div class="viewer-controls"><button id="scene-editor-button" class="viewer-icon" aria-label="Abrir editor de cenário" title="Editar cenário (F2)"><img class="ui-art" src="assets/ui/interface/scene.svg" width="24" height="24" alt=""></button><button id="hud-toggle" class="viewer-icon" aria-label="Recolher objetivos sobre o cenário" aria-pressed="false" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="24" height="24" alt=""></button><button id="viewer-fullscreen" class="viewer-icon" aria-label="Expandir jogo para tela cheia" title="Tela cheia"><img class="ui-art" src="assets/ui/interface/expand.svg" width="24" height="24" alt=""></button></div><button id="pause-button" class="quiet">Pausar <kbd>Esc</kbd></button></header>
+    <header class="game-top"><button id="home-button" class="wordmark" aria-label="Pausar e abrir menu">VOICES<span>_</span></button><div class="location-block"><small>NEW HARMONY · ARQUIVO VIVO · 2.1</small><strong id="location-name">Praça das vozes</strong></div><div id="team-role" class="role-label"></div><div class="viewer-controls"><button id="scene-editor-button" class="viewer-edit" aria-label="Abrir editor de cenário" title="Editar cenário (F2)"><img class="ui-art" src="assets/ui/interface/scene.svg" width="24" height="24" alt=""><span>Editar cenário</span><kbd>F2</kbd></button><button id="hud-toggle" class="viewer-icon" aria-label="Recolher objetivos sobre o cenário" aria-pressed="false" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="24" height="24" alt=""></button><button id="viewer-fullscreen" class="viewer-icon" aria-label="Expandir jogo para tela cheia" title="Tela cheia"><img class="ui-art" src="assets/ui/interface/expand.svg" width="24" height="24" alt=""></button></div><button id="pause-button" class="quiet">Pausar <kbd>Esc</kbd></button></header>
     <div id="stage" class="stage">
       <canvas id="world-canvas" width="960" height="540" tabindex="0" aria-label="Mundo do jogo. Mova com WASD ou setas. Interaja com E. Abra o diário com J."></canvas>
       <div class="mission-hud"><div class="chapter-chip" id="chapter-chip">PRÓLOGO</div><button id="mission-tracker"><strong id="mission-name">Uma falha no arquivo</strong><span id="mission-objective">Encontre PIX na praça.</span></button><div class="mission-progress" id="mission-progress"></div></div>
@@ -36,7 +37,7 @@
       <div id="arcade-hud" class="arcade-hud" hidden></div>
       <div id="touch-controls" class="touch-controls"><div id="joystick" class="joystick" aria-label="Joystick virtual"><div id="stick" class="stick"></div></div><button id="touch-interact" class="touch-action" aria-label="Interagir ou ativar ferramenta">E</button><button id="touch-shield" class="touch-action shield" aria-label="Escudo">Espaço</button></div>
     </div>
-    <footer class="game-toolbar"><div class="player-chip"><img id="hud-portrait" alt="Seu personagem"><div><strong id="player-name">Nia</strong><small id="player-grade">Explorador · 6º ano</small></div></div><nav class="tools"><button id="inventory-button"><span class="icon" data-icon="inventory"></span><span>Mochila</span><kbd>I</kbd></button><button id="journal-button"><span class="icon" data-icon="journal"></span><span>Diário</span><kbd>J</kbd></button><button id="notebook-button"><span class="icon" data-icon="journal"></span><span>Caderno</span><kbd>K</kbd></button><button id="map-button"><span class="icon" data-icon="map"></span><span>Regiões</span><kbd>M</kbd></button><button id="glossary-button"><span class="icon" data-icon="translate"></span><span>PIX</span><kbd>T</kbd></button><button id="gallery-button"><span class="icon" data-icon="source"></span><span>Arquivo</span><kbd>G</kbd></button></nav><span id="save-status" class="save-status" aria-live="polite">Pronto</span></footer>
+    <footer class="game-toolbar"><div class="player-chip"><img id="hud-portrait" alt="Seu personagem"><div><strong id="player-name">Nia</strong><small id="player-grade">Explorador · 6º ano</small></div></div><nav class="tools"><button id="inventory-button"><span class="icon" data-icon="inventory"></span><span>Mochila</span><kbd>I</kbd></button><button id="journal-button"><span class="icon" data-icon="journal"></span><span>Diário</span><kbd>J</kbd></button><button id="notebook-button"><span class="icon" data-icon="journal"></span><span>Caderno</span><kbd>K</kbd></button><button id="heritage-button" class="heritage-shortcut" title="Vozes e objetos (V)"><img class="ui-art" src="assets/ui/interface/book.svg" width="28" height="28" alt=""><span>Vozes e objetos</span><kbd>V</kbd></button><button id="map-button"><span class="icon" data-icon="map"></span><span>Regiões</span><kbd>M</kbd></button><button id="glossary-button"><span class="icon" data-icon="translate"></span><span>PIX</span><kbd>T</kbd></button><button id="gallery-button"><span class="icon" data-icon="source"></span><span>Arquivo</span><kbd>G</kbd></button></nav><span id="save-status" class="save-status" aria-live="polite">Pronto</span></footer>
   </section>
   <div id="editor-root" hidden></div><div id="modal-root"></div><div id="dialogue-root"></div><div id="toast-root" aria-live="polite"></div>
   <div id="loading" class="loading"><div class="loading-logo">V<span>_</span></div><p>Organizando as memórias…</p></div>
@@ -46,4 +47,26 @@
 <script src="js/heritage-content.js"></script><script src="js/neighborhood-design.js"></script><script src="js/scene-editor.js"></script>
 <script src="js/editor-actions.js"></script>
 <script src="js/heritage-world.js"></script>
+<script src="js/neighborhood-assets.js"></script>
+<script src="js/editorial-content.js"></script>
+<script src="js/editorial-world.js"></script>
+<script src="js/neighborhood-world.js"></script>
+<script src="js/editor-tools.js"></script>
+<script src="js/wardrobe-content.js"></script>
+<script src="js/beach-assets.js"></script>
+<script src="js/coast-content.js"></script>
+<script src="js/coast-world.js"></script>
+<script src="js/neighbors-content.js"></script>
+<script src="js/neighbors-world.js"></script>
+<script src="js/translation-content.js"></script>
+<script src="js/translation-world.js"></script>
+<script src="js/atelier-content.js"></script>
+<script src="js/atelier-world.js"></script>
+<script src="js/neighborhood-navigation.js"></script>
+<script src="js/neighborhood-balloons.js"></script>
+<script src="js/protest-content.js"></script>
+<script src="js/protest-learning.js"></script>
+<script src="js/protest-world.js"></script>
+<script src="js/furnishings-content.js"></script>
+<script src="js/furnishings-world.js"></script>
 </body></html>

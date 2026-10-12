@@ -1353,7 +1353,20 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "designRevision": "1.7",
+      "depictedParts": [
+        "verga de madeira arqueada",
+        "arame de aço tensionado",
+        "cabaça ressonadora na parte inferior",
+        "baqueta",
+        "caxixi",
+        "dobrão"
+      ],
+      "references": [
+        "https://bibliotecadigital.iphan.gov.br/bitstreams/835bd81e-1742-433d-bd9f-dbe2e8dbdbe4/download",
+        "https://music.yale.edu/browse-collection/berimbau-42032010"
+      ]
     },
     {
       "index": 41,

@@ -1,0 +1,10 @@
+(function(){'use strict';
+const V=window.V,L=V.Living,H=V.Heritage;
+const sections=[['quests','Investigação','journal'],['missions','Comunidade','community'],['readings','Livros e notas','book'],['field','Campo','leaf'],['neighborhood','Bairro vivo','voice'],['culture','Culturas negras','book'],['heritage','Vozes e objetos','book']];
+L.nav=function(tab){return `<nav class="tabs living-tabs notebook-sections" aria-label="Todas as seções do caderno">${sections.map(([id,label,icon])=>`<button data-notebook-tab="${id}" class="${tab===id?'active':''}" aria-current="${tab===id?'page':'false'}">${V.Interface.icon(icon)}<span>${label}</span></button>`).join('')}</nav>`;};
+V.Cozy.nav=tab=>L.nav(tab);
+const bind=V.Game.bind.bind(V.Game),pause=V.Game.pause.bind(V.Game),keys=V.Game.onKey.bind(V.Game);
+V.Game.bind=function(){bind();V.$('#heritage-button').onclick=()=>L.journal('heritage');};
+V.Game.pause=function(reason){pause(reason);if(V.Game.mode!=='explore')return;const host=V.$('#pause-resume')?.parentElement;if(host){const button=document.createElement('button');button.id='pause-heritage';button.className='secondary';button.textContent='Vozes e objetos · retratos e contextos';button.onclick=()=>H.journal();host.append(button);}};
+V.Game.onKey=function(k,e){if(k==='v'&&this.screen==='game'&&this.mode==='explore'&&!V.SceneEditor.active&&!V.modal&&!V.Dialogue.active){e.preventDefault?.();L.journal('heritage');return;}return keys(k,e);};
+})();

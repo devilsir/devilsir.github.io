@@ -1,0 +1,252 @@
+{
+  "version": "1.8",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "creator": "Original pixel illustrations created for VOICES",
+  "generator": "tools/create_wardrobe_assets.py",
+  "originalArt": true,
+  "referenceUse": "Context and original visual studies only. No copied images, traced photographs, authentic religious costume claims or reproduced commercial textile designs.",
+  "galleryDimensions": {
+    "width": 128,
+    "height": 128,
+    "nativePixelGrid": 64
+  },
+  "spriteDimensions": {
+    "width": 128,
+    "height": 192,
+    "cellWidth": 32,
+    "cellHeight": 32,
+    "rows": [
+      "down",
+      "left",
+      "right",
+      "up",
+      "interaction",
+      "greeting"
+    ]
+  },
+  "portraitDimensions": {
+    "width": 288,
+    "height": 96,
+    "cellWidth": 96,
+    "cellHeight": 96,
+    "nativePixelGrid": 48,
+    "columns": [
+      "neutral",
+      "happy",
+      "concerned"
+    ]
+  },
+  "revisedGallery": [
+    "clothes-cardigan",
+    "clothes-printed-blouse",
+    "clothes-overalls",
+    "clothes-baiana",
+    "cloth-pano-da-costa",
+    "hair-nago",
+    "hair-box-braids",
+    "hair-twists",
+    "hair-locs",
+    "hair-afro"
+  ],
+  "newGallery": [
+    {
+      "id": "clothes-wrap-dress",
+      "asset": "clothes-wrap-dress",
+      "title": "Vestido transpassado de Dandara",
+      "category": "clothes",
+      "description": "Decote transpassado, faixa na cintura e saia com caimento. A estampa geométrica foi criada para esta peça do jogo.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-flowing-dress",
+      "asset": "clothes-flowing-dress",
+      "title": "Vestido leve de alças",
+      "category": "clothes",
+      "description": "Vestido cotidiano de alças largas, cintura suave e saia longa com pregas. A cor azul é uma escolha da personagem.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-loose-shirt",
+      "asset": "clothes-loose-shirt",
+      "title": "Camisa de corte amplo",
+      "category": "clothes",
+      "description": "Camisa com mangas soltas e abertura curta no decote; as linhas coloridas são uma criação original de Dandara.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-long-skirt",
+      "asset": "clothes-long-skirt",
+      "title": "Saia longa com bolsos",
+      "category": "clothes",
+      "description": "Cós, bolsos laterais e pregas dão forma à saia. O desenho autoral combina conforto e espaço para pequenos objetos.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-cropped-jacket",
+      "asset": "clothes-cropped-jacket",
+      "title": "Jaqueta curta e calça",
+      "category": "clothes",
+      "description": "Jaqueta de corte curto, gola dobrada e punhos sobre uma calça de cintura alta. As peças têm costuras e bolsos visíveis.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "wrap-high-fold",
+      "asset": "wrap-high-fold",
+      "title": "Turbante: dobras altas",
+      "category": "wrap",
+      "description": "Estudo cotidiano original com dobras altas e tecido sobreposto. A direção das pregas ajuda a ler o volume.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_negra_jho"
+      ],
+      "readingIds": [
+        "culture-book-03"
+      ]
+    },
+    {
+      "id": "wrap-tied-back",
+      "asset": "wrap-tied-back",
+      "title": "Turbante: amarração atrás",
+      "category": "wrap",
+      "description": "Estudo cotidiano original em que o tecido abraça a cabeça e termina em uma amarração atrás, com pontas curtas.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_negra_jho"
+      ],
+      "readingIds": [
+        "culture-book-03"
+      ]
+    },
+    {
+      "id": "accessories-earrings",
+      "asset": "accessories-earrings",
+      "title": "Brincos e pulseira de Dandara",
+      "category": "clothes",
+      "description": "Argolas, pequenos brincos geométricos e uma pulseira larga de desenho contemporâneo original. São escolhas pessoais da criadora.",
+      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    }
+  ],
+  "characters": {
+    "beach-lara": {
+      "name": "Lara",
+      "role": "Nadadora e professora de artes",
+      "quote": "O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno.",
+      "accent": "#7ed0ce",
+      "sprite": "assets/characters/beach-lara.png",
+      "portrait": "assets/characters/beach-lara-portrait.png"
+    },
+    "beach-jorge": {
+      "name": "Jorge",
+      "role": "Marceneiro em um dia de descanso",
+      "quote": "Hoje a oficina ficou fechada. Vim escutar as ondas.",
+      "accent": "#f0ae6d",
+      "sprite": "assets/characters/beach-jorge.png",
+      "portrait": "assets/characters/beach-jorge-portrait.png"
+    },
+    "beach-samira": {
+      "name": "Samira",
+      "role": "Costureira e visitante da praia",
+      "quote": "Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada.",
+      "accent": "#e19caf",
+      "sprite": "assets/characters/beach-samira.png",
+      "portrait": "assets/characters/beach-samira-portrait.png"
+    },
+    "beach-ivo": {
+      "name": "Ivo",
+      "role": "Técnico de som e leitor na praia",
+      "quote": "O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir.",
+      "accent": "#8cb4d8",
+      "sprite": "assets/characters/beach-ivo.png",
+      "portrait": "assets/characters/beach-ivo-portrait.png"
+    },
+    "beach-nalu": {
+      "name": "Nalu",
+      "role": "Vendedora do quiosque e cozinheira",
+      "quote": "Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos.",
+      "accent": "#f3d087",
+      "sprite": "assets/characters/beach-nalu.png",
+      "portrait": "assets/characters/beach-nalu-portrait.png"
+    },
+    "beach-celina": {
+      "name": "Teresa",
+      "role": "Bibliotecária aposentada e frequentadora da praia",
+      "quote": "Trouxe um livro curto para ler entre uma conversa e outra.",
+      "accent": "#9bd4b4",
+      "sprite": "assets/characters/beach-celina.png",
+      "portrait": "assets/characters/beach-celina-portrait.png"
+    },
+    "beach-rebeca": {
+      "name": "Rebeca",
+      "role": "Guarda-vidas",
+      "quote": "Antes de entrar na água, veja a orientação do posto e fale com a equipe.",
+      "accent": "#ffd286",
+      "sprite": "assets/characters/beach-rebeca.png",
+      "portrait": "assets/characters/beach-rebeca-portrait.png"
+    },
+    "beach-beto": {
+      "name": "Beto",
+      "role": "Estudante e desenhista",
+      "quote": "Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois.",
+      "accent": "#c3b6df",
+      "sprite": "assets/characters/beach-beto.png",
+      "portrait": "assets/characters/beach-beto-portrait.png"
+    }
+  },
+  "sources": [
+    {
+      "id": "wardrobe_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Referência para saia rodada, bata, torço e pano da costa no contexto do ofício. Não copiamos fotografias, tecidos ou adereços rituais."
+    },
+    {
+      "id": "wardrobe_negra_jho",
+      "name": "SECOM Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff",
+      "url": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
+      "note": "Referência de autoria e variedade de composições. As amarrações de VOICES são desenhos cotidianos originais; não reproduzem peças da exposição nem lhes atribuem significado ritual."
+    },
+    {
+      "id": "wardrobe_mab",
+      "name": "Museu Afro Brasil Emanoel Araujo — Indumentária",
+      "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
+      "note": "Referência para distinguir peças do cotidiano e contextos cerimoniais. Os cortes, estampas e acessórios apresentados são desenhos originais do jogo."
+    }
+  ]
+}
