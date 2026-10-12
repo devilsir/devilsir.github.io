@@ -30,7 +30,8 @@ function sensesFor(kind,key){
   const known=data.polysemy[key];
   if(known)return known.map(s=>({meaning:s[0],example:s[1],translation:s[2]}));
   const pt=words.entries[key]||'';
-  return [{meaning:pt,example:`I learned the word “${key}” today.`,translation:`Aprendi a palavra “${key}” hoje.`,study:true}];
+  const usage=window.ChatChaosWordExamples?.[key.toLowerCase()];
+  return [{meaning:pt,example:usage?.[0]||null,translation:usage?.[1]||null}];
  }
  if(kind==='phrase'){
   const p=data.phrases.find(s=>s.term===key);if(!p)return [];
@@ -191,7 +192,7 @@ function openDetail(kind,key){
   $('#labDetailTerm').textContent=key;$('#labDetailDescription').textContent=item?.meaning||words.entries[key]||'';
   $('#labDetailSpeak').textContent=kind==='word'?'🔊 Ouvir palavra':'🔊 Ouvir expressão';
   $('#labSlow').checked=slow;
-  const senses=sensesFor(kind,key);$('#labSenses').innerHTML=senses.map((s,i)=>`<section class="lab-sense"><div class="lab-sense-top"><span class="lab-sense-number">SIGNIFICADO ${i+1}</span><strong>${escape(s.meaning)}</strong></div><div class="lab-example"><div class="lab-lang-line"><span class="lab-lang">EN</span><span>${escape(s.example)}</span></div><div class="lab-lang-line"><span class="lab-lang pt">PT</span><span>${escape(s.translation||legacyTranslations[key]||moreTranslations[key]||'Confira a tradução do significado acima.')}</span></div>${s.study?'<small>Exemplo de vocabulário (uso da palavra como objeto de estudo).</small>':''}<div class="lab-audio-actions"><button type="button" class="lab-sound compact" data-speak-example="${i}">🔊 Ouvir exemplo (EN)</button><button type="button" class="lab-sound secondary compact" data-speak-translation="${i}">🔊 Ouvir tradução (PT)</button></div></div></section>`).join('');
+  const senses=sensesFor(kind,key);$('#labSenses').innerHTML=senses.map((s,i)=>`<section class="lab-sense"><div class="lab-sense-top"><span class="lab-sense-number">SIGNIFICADO ${i+1}</span><strong>${escape(s.meaning)}</strong></div>${s.example&&s.translation?`<div class="lab-example"><div class="lab-lang-line"><span class="lab-lang">EN</span><span>${escape(s.example)}</span></div><div class="lab-lang-line"><span class="lab-lang pt">PT</span><span>${escape(s.translation)}</span></div><div class="lab-audio-actions"><button type="button" class="lab-sound compact" data-speak-example="${i}">🔊 Ouvir exemplo (EN)</button><button type="button" class="lab-sound secondary compact" data-speak-translation="${i}">🔊 Ouvir tradução (PT)</button></div></div>`:'<div class="lab-example"><p>Exemplo contextual em revisão. Você ainda pode ouvir a pronúncia da palavra.</p></div>'}</section>`).join('');
   setAudioStatus('');detail.classList.add('open');$('#labDetailClose').focus();
 }
 function closeDetail(){detail.classList.remove('open');currentDetail=null;if(voiceOk)speechSynthesis.cancel();if(oldFocus.node?.isConnected)oldFocus.node.focus()}

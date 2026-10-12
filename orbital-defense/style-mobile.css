@@ -181,3 +181,8 @@ body.mobile-landscape .large-ui .unit-card{min-width:0;min-height:80px}
  body.mobile-landscape .front-metrics{margin-top:6px;gap:10px}
  body.mobile-landscape .front-content{flex:0 0 auto}
 }
+
+body.mobile-landscape .arsenal-game-btn{left:4px;bottom:3px;z-index:8;font-size:9px;padding:5px 6px}
+body.mobile-landscape .power-rail{left:57px;right:4px;bottom:3px;flex-wrap:nowrap;max-width:none;overflow-x:auto;justify-content:flex-start;gap:4px}
+body.mobile-landscape .power-rail button{min-width:31px;flex:0 0 auto}
+body.mobile-landscape .coin-hud{display:none}

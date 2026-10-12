@@ -31,6 +31,17 @@ const OrbitalCloud=(()=>{
  function flush(){clearTimeout(timer);timer=null;return enqueue(JSON.parse(JSON.stringify(Progress.data)))}
  async function retrieve(){const s=state.student;if(!s)return null;const r=await send('/orbital_profiles',{token:await token('student'),query:'?id=eq.'+encodeURIComponent(s.user.id)+'&select=id,name,classroom,save,updated_at'});return Array.isArray(r)?r[0]||null:null}
  async function teacherLogin(mail,password){const r=await send('/token',{method:'POST',query:'?grant_type=password',body:{email:mail.trim(),password}});if(!r?.access_token||!r?.user?.id)throw Error('Autenticação do professor falhou.');state.teacher={...r,until:Date.now()+(r.expires_in||3600)*1000};try{const t=await send('/orbital_teacher_roles',{token:await token('teacher'),query:'?user_id=eq.'+encodeURIComponent(r.user.id)+'&select=user_id'});if(!t?.length)throw Error('Esta conta ainda não está autorizada como professor. Execute a etapa de autorização do SQL.');return true}catch(e){state.teacher=null;throw e}}
+ async function teacherAdmin(action,id,password=null){
+  if(!state.teacher)throw Error('Entre com uma conta docente autorizada no Supabase.');
+  if(!/^[a-f0-9-]{36}$/i.test(String(id||'')))throw Error('Identificador do aluno inválido.');
+  if(!['reset-password','delete-student'].includes(action))throw Error('Ação inválida.');
+  const auth=await token('teacher');let response;
+  try{response=await fetch(url+'/functions/v1/orbital-teacher-admin',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+auth,'Content-Type':'application/json'},body:JSON.stringify({action,studentId:id,...(action==='reset-password'?{password}:{})}),cache:'no-store'})}
+  catch{throw Error('Não foi possível conectar à função administrativa do Supabase.');}
+  let result={};try{result=await response.json()}catch{}
+  if(!response.ok)throw Error(result?.error||((response.status===404||response.status===503)?'Publique a Edge Function orbital-teacher-admin no Supabase.':'Falha administrativa HTTP '+response.status));
+  return result;
+ }
  async function students(){if(!state.teacher)throw Error('Entre como professor.');return await send('/orbital_profiles',{token:await token('teacher'),query:'?select=id,name,classroom,save,updated_at&order=classroom.asc,name.asc'})}
  async function curriculum(){const person=state.student?'student':state.teacher?'teacher':null;if(!person)return null;const data=await send('/orbital_curriculum',{token:await token(person),query:'?id=eq.1&select=config'});return data?.[0]?.config||null}
  async function writeCurriculum(config){if(!state.teacher)throw Error('O professor precisa conectar sua conta Supabase para publicar as perguntas.');await send('/orbital_curriculum',{method:'POST',token:await token('teacher'),body:{id:1,config,updated_at:new Date().toISOString()}})}
@@ -39,5 +50,5 @@ const OrbitalCloud=(()=>{
  async function getCurriculum(){try{const cfg=await curriculum();if(cfg&&typeof TeacherConsole!=='undefined')TeacherConsole.applyRemote(cfg);return true}catch(e){state.lastError=pretty(e);return false}}
  function logoutTeacher(){state.teacher=null;clearTimeout(teacherTimer)}
  function logout(){state.student=null;logoutTeacher();clearTimeout(timer);state.pending=false}
- return {url,key,state,signup,login,logout,retrieve,flush,schedule,teacherLogin,students,curriculum,writeCurriculum,scheduleCurriculum,teacherSync,getCurriculum,logoutTeacher,classroom,pretty};
+ return {url,key,state,signup,login,logout,retrieve,flush,schedule,teacherLogin,students,teacherAdmin,curriculum,writeCurriculum,scheduleCurriculum,teacherSync,getCurriculum,logoutTeacher,classroom,pretty};
 })();
