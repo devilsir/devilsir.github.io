@@ -4,7 +4,7 @@ const E=window.CHEMSCAPE_ENGINE,V=window.CHEMSCAPE_V7;if(!E||!V)return;
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const worlds=()=>({...E.levels().worlds,...E.levels().rooms}),meta=window.CHEMSCAPE_ASSET_META,cache=new Map();
 const regionNames={orchard:'Pomar Experimental',aion:'Complexo AION',city:'Nova Aurora',military:'Base Sentinela',forest:'Floresta Alterada',rupture:'Zona da Ruptura',frontier:'Fronteira do Conflito',human:'Ponteclara',goblin:'Liga do Cobre',lunar:'Bosque Lunargênteo',blood:'Academia Rubra',sanctuary:'Santuário de Maera',orc:'Vale da Forja',troll:'Aldeia das Marés',tauren:'Planícies de Âmbar',ruins:'Ruínas do Limiar'};
-let selected='world1',zoom=1,cx=3360,cy=1920,drag=null,pin=null,hover=null,filter='',identity='',lastRender=0;
+let thumbRevision=0,lastSignature='';let selected='world1',zoom=1,cx=3360,cy=1920,drag=null,pin=null,hover=null,filter='',identity='',lastRender=0;
 const options={npcs:true,drops:true,hostile:false,regions:true};
 const panel=$('maps');panel.classList.add('atlas-overlay');panel.innerHTML=[
  '<div class="atlas-panel"><header class="atlas-header"><div><div class="eyebrow">CADERNO DE ELIAS · CARTOGRAFIA</div><h2>Atlas da Convergência</h2></div><button id="atlas-close" class="atlas-close" aria-label="Fechar mapa">×</button></header>',
@@ -12,15 +12,23 @@ const panel=$('maps');panel.classList.add('atlas-overlay');panel.innerHTML=[
  '<div class="atlas-content"><div class="atlas-stage"><canvas id="atlas-canvas" width="960" height="540" aria-label="Mapa global explorável"></canvas><div class="atlas-compass"><img src="'+E.assetPath(V.ui.compass)+'" alt=""><span>N</span></div><div class="atlas-zoom"><button id="atlas-plus" aria-label="Aumentar zoom">+</button><button id="atlas-minus" aria-label="Diminuir zoom">−</button><button id="atlas-fit" aria-label="Mostrar mapa completo">⌖</button></div><div id="atlas-tooltip"></div></div><aside class="atlas-side"><div class="atlas-side-heading">LUGARES E TERRITÓRIOS</div><input id="atlas-search" placeholder="Buscar região…" aria-label="Buscar região"><div id="atlas-regions"></div><div class="atlas-legend"><label><input data-atlas-option="npcs" type="checkbox" checked><i class="atlas-dot npc"></i>Habitantes e serviços</label><label><input data-atlas-option="drops" type="checkbox" checked><i class="atlas-dot drop"></i>Drops e colheitas</label><label><input data-atlas-option="hostile" type="checkbox"><i class="atlas-dot enemy"></i>Criaturas hostis</label><label><input data-atlas-option="regions" type="checkbox" checked> Nomes das regiões</label></div><button id="atlas-clear-pin">Remover marcador</button><div id="atlas-pin-text">Clique no mapa para marcar um destino.</div></aside></div>',
  '<footer class="atlas-footer"><span>Arraste para explorar · Roda: zoom · Clique: marcar destino</span><span id="atlas-world-label"></span></footer><div class="atlas-chapters"><span>CAPÍTULOS</span><button data-atlas-chapter="intro">00 · Laboratório AION</button><button data-atlas-chapter="world1">01 · O Véu</button><button data-atlas-chapter="alchemy">02 · Vitrália</button><span class="future-chapter">Arquipélago · Em breve</span><span class="future-chapter">Terras Desconhecidas · Em breve</span></div></div>'
 ].join('');
-const canvas=$('atlas-canvas'),c=canvas.getContext('2d'),CW=960,CH=540;
+const canvas=$('atlas-canvas'),c=canvas.getContext('2d'),CW=960,CH=540;const DPR=Math.min(2,window.devicePixelRatio||1);canvas.width=CW*DPR;canvas.height=CH*DPR;
 function currentMap(){return worlds()[selected];}
-const thumbs=new Map(),thumbQueue=[];let thumbPending=0;function pumpThumbs(){while(thumbPending<8&&thumbQueue.length){const r=thumbQueue.shift();thumbPending++;r.img.onload=()=>{r.ready=true;thumbPending--;pumpThumbs();};r.img.onerror=()=>{r.failed=true;thumbPending--;pumpThumbs();};r.img.src=E.assetPath(r.file);}}function image(file){if(!file)return null;if(!file.includes('/thumbs/'))return E.image(file);let r=thumbs.get(file);if(!r){r={file,img:new Image(),ready:false,failed:false};thumbs.set(file,r);thumbQueue.push(r);pumpThumbs();while(thumbs.size>192){const key=[...thumbs].find(([k,v])=>v.ready&&k!==file)?.[0];if(!key)break;thumbs.delete(key);}}return r;}
+const thumbs=new Map();let thumbPending=0;const thumbQueue=[];
+function image(file){if(!file)return null;const r=E.image(file);if(file.includes('/thumbs/')&&thumbs.get(file)!==r){thumbs.set(file,r);r.promise?.then(()=>thumbRevision++).catch(()=>thumbRevision++);while(thumbs.size>192)thumbs.delete(thumbs.keys().next().value);}return r;}
 function fit(){const l=currentMap();if(!l)return;zoom=1;cx=l.bounds[0]+l.bounds[2]/2;cy=l.bounds[1]+l.bounds[3]/2;}
 function scale(){const l=currentMap();return l?Math.min((CW-44)/l.bounds[2],(CH-44)/l.bounds[3])*zoom:1;}
 function project(x,y){const k=scale();return [CW/2+(x-cx)*k,CH/2+(y-cy)*k];}
 function unproject(x,y){const k=scale();return [cx+(x-CW/2)/k,cy+(y-CH/2)/k];}
 function setZoom(value,point=[CW/2,CH/2]){const p=unproject(...point);zoom=Math.max(1,Math.min(7,value));const k=scale();cx=p[0]-(point[0]-CW/2)/k;cy=p[1]-(point[1]-CH/2)/k;clampView();}
 function clampView(){const l=currentMap();if(!l)return;cx=Math.max(l.bounds[0],Math.min(l.bounds[0]+l.bounds[2],cx));cy=Math.max(l.bounds[1],Math.min(l.bounds[1]+l.bounds[3],cy));}
+function drawDetail(g,l,box){
+ g.save();if(l.custom)window.CHEMSCAPE_BUILDER.drawFloor(g,l,true);
+ const size=l.floor?.size||512;for(let y=Math.max(0,Math.floor(box.y/size));y<=Math.floor((box.y+box.h)/size);y++)for(let x=Math.max(0,Math.floor(box.x/size));x<=Math.floor((box.x+box.w)/size);x++){const file=l.floor?.files?.[x+','+y],r=file&&E.image(file);if(r?.ready)g.drawImage(r.img,x*size,y*size);}
+ window.CHEMSCAPE_EDITOR?.renderPaint(g,l,{x:box.x+box.w/2,y:box.y+box.h/2,zoom:scale()},CW,CH);
+ for(const o of [...l.objects].sort((a,b)=>(a.depthY??a.y)-(b.depthY??b.y))){if(o.hidden)continue;const b=E.spriteBox(o);if(b.x+b.w<box.x||b.y+b.h<box.y||b.x>box.x+box.w||b.y>box.y+box.h)continue;const m=E.levels().sprites[o.sprite],r=m&&E.image(m.file);if(!r?.ready)continue;const sh=m.sheet,n=sh?.animations?.idle?.[0]||0,cell=sh?[n%sh.cols*sh.fw,Math.floor(n/sh.cols)*sh.fh,sh.fw,sh.fh]:m.cell||[0,0,m.w,m.h],anchor=m.anchor||[cell[2]/2,cell[3]],k=(m.scale??1)*(o.scale??1);g.save();g.translate(o.x,o.y);g.rotate((o.rotation||0)*Math.PI/180);g.scale((o.flipX?-1:1)*k,(o.flipY?-1:1)*k);g.drawImage(r.img,...cell,-anchor[0],-anchor[1],cell[2],cell[3]);g.restore();}
+ g.restore();
+}
 function base(l){
  const state=E.atlasState();let rec=cache.get(l.id);if(rec&&rec.level===l&&rec.revision===state.revision&&rec.complete&&rec.textureGeneration===(window.CHEMSCAPE_FLOOR_TEXTURES?.generation||0))return rec;
  const k=Math.min(1024/l.bounds[2],700/l.bounds[3]),im=document.createElement('canvas');im.width=Math.ceil(l.bounds[2]*k);im.height=Math.ceil(l.bounds[3]*k);
@@ -47,7 +55,7 @@ function markers(l){
  for(const o of l.objects)if(o.enter&&!o.hidden){const p=o.door||[o.x,o.y];items.push({x:p[0],y:p[1],type:'door',label:o.name||'Entrada',color:'#8ae2dd'});}
  if(l.exit)items.push({x:l.exit[0],y:l.exit[1],type:'door',label:'Saída para o exterior',color:'#8ae2dd'});
  if(l.id==='world1'&&!s.campaign.crystalFound){const point=s.campaign.slimeDefeated?l.crystal:l.slime;if(point)items.push({x:point[0],y:point[1],type:'quest',label:s.campaign.slimeDefeated?'Cristal de Limiar':'Criatura anômala',color:'#dfafff'});}
- return items;
+ return items.filter(p=>{if(E.editMode())return true;if(['npc','enemy','drop'].includes(p.type))return live&&window.CHEMSCAPE_FOG.visible(l,s.campaign,p.x,p.y,s.player);return window.CHEMSCAPE_FOG.explored(l,s.campaign,p.x,p.y);});
 }
 function drawMark(g,p,size=3){
  g.save();g.lineWidth=1.3;g.strokeStyle='#132d38';
@@ -61,13 +69,13 @@ function drawPlayer(g,x,y,heading,size=8){
 }
 function regionLabel(r){return regionNames[r.id]||r.name.split('·')[0].trim();}
 function renderRegions(){
- const l=currentMap(),f=filter.toLocaleLowerCase();$('atlas-regions').innerHTML=(l?.regions||[]).filter(r=>regionLabel(r).toLocaleLowerCase().includes(f)).map((r,i)=>{
+ const l=currentMap(),f=filter.toLocaleLowerCase();$('atlas-regions').innerHTML=(l?.regions||[]).filter(r=>(E.editMode()||window.CHEMSCAPE_FOG.explored(l,E.atlasState().campaign,...(r.center||[r.bounds[0]+r.bounds[2]/2,r.bounds[1]+r.bounds[3]/2])))&&regionLabel(r).toLocaleLowerCase().includes(f)).map((r,i)=>{
   const faction=V.factions[r.id],im=faction?'<img src="'+E.assetPath(faction.emblem)+'" alt="">':'<span class="region-circle">'+(l.world==='science'?'Cs':'◈')+'</span>';
   return '<button data-atlas-region="'+esc(r.id||r.name)+'">'+im+'<span>'+esc(regionLabel(r))+'<small>'+esc(r.id==='ruins'?'Exploração e ressonância':r.id==='frontier'?'Fronteira e checkpoints':r.id==='aion'?'Pesquisa e acesso ao laboratório':r.id==='city'?'Comércio, hospital e residências':'Território e pontos de interesse')+'</small></span></button>';
  }).join('');
  for(const button of $('atlas-regions').querySelectorAll('button'))button.onclick=()=>{const r=l.regions.find(r=>(r.id||r.name)===button.dataset.atlasRegion);cx=r.center?.[0]??r.bounds[0]+r.bounds[2]/2;cy=r.center?.[1]??r.bounds[1]+r.bounds[3]/2;zoom=Math.max(1.5,Math.min(5,Math.min(l.bounds[2]/(r.bounds[2]*1.5),l.bounds[3]/(r.bounds[3]*1.5))));};
 }
-function selectWorld(id){if(!worlds()[id])return;selected=id;fit();filter='';$('atlas-search').value='';renderRegions();updateTabs();}
+function selectWorld(id){if(!worlds()[id])return;lastSignature='';selected=id;fit();filter='';$('atlas-search').value='';renderRegions();updateTabs();}
 function updateTabs(){
  for(const b of panel.querySelectorAll('[data-atlas-world]')){b.classList.toggle('active',b.dataset.atlasWorld===selected);b.disabled=!E.allowedScene(b.dataset.atlasWorld);}
  for(const b of panel.querySelectorAll('[data-atlas-chapter]'))b.disabled=!E.allowedScene(b.dataset.atlasChapter);
@@ -82,9 +90,10 @@ function refreshIdentity(){
  for(const [i,b]of [...document.querySelectorAll('#skillGuide .guide-skill > b')].entries())if(V.skills[i]&&!b.querySelector('img')){b.textContent='';const im=document.createElement('img');im.src=E.assetPath(V.ui[V.skills[i]]);im.alt='';b.append(im);}
 }
 function render(){
- const l=currentMap();if(!l)return;const s=E.atlasState(),k=scale(),r=base(l);c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,CW,CH);c.fillStyle='#101f27';c.fillRect(0,0,CW,CH);c.imageSmoothingEnabled=false;
- c.save();c.translate(CW/2,CH/2);c.scale(k,k);c.translate(-cx,-cy);c.drawImage(r.canvas,...l.bounds);c.strokeStyle='#d2d3a7aa';c.lineWidth=2/k;c.strokeRect(...l.bounds);c.restore();
- if(options.regions)for(const reg of l.regions||[]){const x=reg.center?.[0]??reg.bounds[0]+reg.bounds[2]/2,y=reg.center?.[1]??reg.bounds[1]+reg.bounds[3]/2,[px,py]=project(x,y);if(px<-80||py<-30||px>CW+80||py>CH+30)continue;
+ const l=currentMap();if(!l)return;const s=E.atlasState(),k=scale(),signature=[selected,zoom,cx,cy,s.revision,s.imageVersion,thumbRevision,window.CHEMSCAPE_FLOOR_TEXTURES?.generation,JSON.stringify(pin),JSON.stringify(hover),JSON.stringify(options)].join('|');if(signature===lastSignature)return;lastSignature=signature;const r=base(l);$('atlas-world-label').textContent=l.name+' · '+window.CHEMSCAPE_FOG.percent(l,s.campaign)+'% explorado';c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,CW,CH);c.fillStyle='#101f27';c.fillRect(0,0,CW,CH);c.imageSmoothingEnabled=false;
+ c.save();c.translate(CW/2,CH/2);c.scale(k,k);c.translate(-cx,-cy);c.drawImage(r.canvas,...l.bounds);if(k>.24)drawDetail(c,l,{x:cx-CW/2/k,y:cy-CH/2/k,w:CW/k,h:CH/k});c.strokeStyle='#d2d3a7aa';c.lineWidth=2/k;c.strokeRect(...l.bounds);c.restore();
+ if(!E.editMode())window.CHEMSCAPE_FOG.atlas(c,l,s.campaign,s.level?.id===l.id?s.player:null,{scale:k,width:CW,height:CH,cx,cy,dpr:DPR});
+ if(options.regions)for(const reg of l.regions||[]){const x=reg.center?.[0]??reg.bounds[0]+reg.bounds[2]/2,y=reg.center?.[1]??reg.bounds[1]+reg.bounds[3]/2,[px,py]=project(x,y);if(!E.editMode()&&!window.CHEMSCAPE_FOG.explored(l,s.campaign,x,y))continue;if(px<-80||py<-30||px>CW+80||py>CH+30)continue;
   const text=regionLabel(reg).toUpperCase();c.font='bold 11px system-ui';const w=c.measureText(text).width;c.fillStyle='#10252bdc';c.beginPath();c.roundRect(px-w/2-8,py-22,w+16,22,5);c.fill();c.textAlign='center';c.fillStyle='#f4efd0';c.fillText(text,px,py-7);
  }
  for(const item of markers(l)){const p=project(item.x,item.y);if(p[0]<-8||p[0]>CW+8||p[1]<-8||p[1]>CH+8)continue;drawMark(c,{...item,x:p[0],y:p[1]},zoom>2?4:2.5);}
@@ -94,9 +103,9 @@ function render(){
 }
 function minimap(){
  const s=E.atlasState(),l=s.level;if(!l||!s.player)return;const mini=$('minimap'),g=mini.getContext('2d'),n=mini.width,mid=n/2,range=l.parent?1450:1900,k=n/range,r=base(l);
- g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,n,n);g.fillStyle='#132c35';g.fillRect(0,0,n,n);g.save();g.beginPath();g.roundRect(3,3,n-6,n-6,11);g.clip();g.save();g.translate(mid,mid);g.scale(k,k);g.translate(-s.player.x,-s.player.y);g.drawImage(r.canvas,...l.bounds);g.restore();
+ g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,n,n);g.fillStyle='#132c35';g.fillRect(0,0,n,n);g.save();g.beginPath();g.roundRect(3,3,n-6,n-6,11);g.clip();g.save();g.translate(mid,mid);g.scale(k,k);g.translate(-s.player.x,-s.player.y);g.drawImage(r.canvas,...l.bounds);g.restore();if(!E.editMode())window.CHEMSCAPE_FOG.atlas(g,l,s.campaign,s.player,{scale:k,width:n,height:n,cx:s.player.x,cy:s.player.y});
  for(const item of markers(l)){const x=mid+(item.x-s.player.x)*k,y=mid+(item.y-s.player.y)*k;if(x<6||y<6||x>n-6||y>n-6)continue;drawMark(g,{...item,x,y},item.type==='quest'?3:2);}
- for(const e of s.enemies)if(e.hostile&&e.hp>0&&e.respawn<=0){const x=mid+(e.x-s.player.x)*k,y=mid+(e.y-s.player.y)*k;if(x>6&&y>6&&x<n-6&&y<n-6)drawMark(g,{x,y,type:'enemy',color:'#ef8788'},2);}
+ for(const e of s.enemies)if(e.hostile&&e.hp>0&&e.respawn<=0&&(E.editMode()||window.CHEMSCAPE_FOG.visible(l,s.campaign,e.x,e.y,s.player))){const x=mid+(e.x-s.player.x)*k,y=mid+(e.y-s.player.y)*k;if(x>6&&y>6&&x<n-6&&y<n-6)drawMark(g,{x,y,type:'enemy',color:'#ef8788'},2);}
  if(pin?.world===l.id){const x=mid+(pin.x-s.player.x)*k,y=mid+(pin.y-s.player.y)*k;diamond(g,Math.max(8,Math.min(n-8,x)),Math.max(8,Math.min(n-8,y)),4,'#ffe397');}
  g.strokeStyle='#f5f0c62f';g.beginPath();g.arc(mid,mid,n*.3,0,Math.PI*2);g.stroke();drawPlayer(g,mid,mid,s.player.heading||0,6);g.restore();
  g.strokeStyle=l.world==='science'?'#81d4c28f':'#b4a1da9f';g.lineWidth=2;g.beginPath();g.roundRect(3,3,n-6,n-6,11);g.stroke();g.font='bold 10px system-ui';g.fillStyle='#f4efd1';g.textAlign='center';g.fillText('N',mid,16);
@@ -123,5 +132,5 @@ const typography=document.createElement('div');typography.className='interface-f
 function font(value){$('game-shell').dataset.font=['sans','serif','mono'].includes(value)?value:'sans';}
 try{font(localStorage.getItem('chemscape-ui-font'));}catch{}$('interface-font').value=$('game-shell').dataset.font;$('interface-font').onchange=e=>{font(e.target.value);try{localStorage.setItem('chemscape-ui-font',e.target.value);}catch{}};
 function loop(now){requestAnimationFrame(loop);if(now-lastRender<1000/20)return;lastRender=now;if(!panel.classList.contains('hidden')){render();updatePin();}if(E.atlasState().screen==='journal')refreshIdentity();}
-window.CHEMSCAPE_ATLAS={open,minimap,refreshIdentity,render,selectWorld,get state(){return {selected,zoom,cx,cy,pin:pin?{...pin}:null,cache:cache.size,thumbnails:thumbs.size,pendingThumbnails:thumbPending+thumbQueue.length};}};refreshIdentity();requestAnimationFrame(loop);
+window.CHEMSCAPE_ATLAS={open,minimap,refreshIdentity,render,selectWorld,setZoom,get state(){return {selected,zoom,cx,cy,pin:pin?{...pin}:null,cache:cache.size,thumbnails:thumbs.size,pendingThumbnails:thumbPending+thumbQueue.length};}};refreshIdentity();requestAnimationFrame(loop);
 })();
