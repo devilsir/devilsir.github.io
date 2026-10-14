@@ -1,0 +1,1015 @@
+{
+  "tile_size": 32,
+  "columns": 8,
+  "count": 168,
+  "items": [
+    {
+      "index": 0,
+      "name": "Feijoada na cumbuca",
+      "category": "comidas",
+      "file": "000_feijoada-na-cumbuca.png"
+    },
+    {
+      "index": 1,
+      "name": "Acarajé com recheio",
+      "category": "comidas",
+      "file": "001_acaraje-com-recheio.png"
+    },
+    {
+      "index": 2,
+      "name": "Vatapá cremoso",
+      "category": "comidas",
+      "file": "002_vatapa-cremoso.png"
+    },
+    {
+      "index": 3,
+      "name": "Caruru com quiabo",
+      "category": "comidas",
+      "file": "003_caruru-com-quiabo.png"
+    },
+    {
+      "index": 4,
+      "name": "Moqueca baiana",
+      "category": "comidas",
+      "file": "004_moqueca-baiana.png"
+    },
+    {
+      "index": 5,
+      "name": "Bobó de camarão",
+      "category": "comidas",
+      "file": "005_bobo-de-camarao.png"
+    },
+    {
+      "index": 6,
+      "name": "Arroz de coco",
+      "category": "comidas",
+      "file": "006_arroz-de-coco.png"
+    },
+    {
+      "index": 7,
+      "name": "Angu de milho",
+      "category": "comidas",
+      "file": "007_angu-de-milho.png"
+    },
+    {
+      "index": 8,
+      "name": "Mungunzá doce",
+      "category": "comidas",
+      "file": "008_mungunza-doce.png"
+    },
+    {
+      "index": 9,
+      "name": "Cuscuz nordestino",
+      "category": "comidas",
+      "file": "009_cuscuz-nordestino.png"
+    },
+    {
+      "index": 10,
+      "name": "Canjica com canela",
+      "category": "comidas",
+      "file": "010_canjica-com-canela.png"
+    },
+    {
+      "index": 11,
+      "name": "Caldo de feijão",
+      "category": "comidas",
+      "file": "011_caldo-de-feijao.png"
+    },
+    {
+      "index": 12,
+      "name": "Abará na folha",
+      "category": "comidas",
+      "file": "012_abara-na-folha.png"
+    },
+    {
+      "index": 13,
+      "name": "Xinxim de galinha",
+      "category": "comidas",
+      "file": "013_xinxim-de-galinha.png"
+    },
+    {
+      "index": 14,
+      "name": "Galinhada",
+      "category": "comidas",
+      "file": "014_galinhada.png"
+    },
+    {
+      "index": 15,
+      "name": "Arroz com pequi",
+      "category": "comidas",
+      "file": "015_arroz-com-pequi.png"
+    },
+    {
+      "index": 16,
+      "name": "Bolinho de estudante",
+      "category": "comidas",
+      "file": "016_bolinho-de-estudante.png"
+    },
+    {
+      "index": 17,
+      "name": "Cocada branca",
+      "category": "comidas",
+      "file": "017_cocada-branca.png"
+    },
+    {
+      "index": 18,
+      "name": "Cocada queimada",
+      "category": "comidas",
+      "file": "018_cocada-queimada.png"
+    },
+    {
+      "index": 19,
+      "name": "Pé de moleque",
+      "category": "comidas",
+      "file": "019_pe-de-moleque.png"
+    },
+    {
+      "index": 20,
+      "name": "Pamonha na palha",
+      "category": "comidas",
+      "file": "020_pamonha-na-palha.png"
+    },
+    {
+      "index": 21,
+      "name": "Paçoca caseira",
+      "category": "comidas",
+      "file": "021_pacoca-caseira.png"
+    },
+    {
+      "index": 22,
+      "name": "Bolo de fubá",
+      "category": "comidas",
+      "file": "022_bolo-de-fuba.png"
+    },
+    {
+      "index": 23,
+      "name": "Bolo de mandioca",
+      "category": "comidas",
+      "file": "023_bolo-de-mandioca.png"
+    },
+    {
+      "index": 24,
+      "name": "Tapioca recheada",
+      "category": "comidas",
+      "file": "024_tapioca-recheada.png"
+    },
+    {
+      "index": 25,
+      "name": "Pão de queijo",
+      "category": "comidas",
+      "file": "025_pao-de-queijo.png"
+    },
+    {
+      "index": 26,
+      "name": "Pastel de feira",
+      "category": "comidas",
+      "file": "026_pastel-de-feira.png"
+    },
+    {
+      "index": 27,
+      "name": "Empadinha",
+      "category": "comidas",
+      "file": "027_empadinha.png"
+    },
+    {
+      "index": 28,
+      "name": "Milho cozido",
+      "category": "comidas",
+      "file": "028_milho-cozido.png"
+    },
+    {
+      "index": 29,
+      "name": "Banana da terra",
+      "category": "comidas",
+      "file": "029_banana-da-terra.png"
+    },
+    {
+      "index": 30,
+      "name": "Manga cortada",
+      "category": "comidas",
+      "file": "030_manga-cortada.png"
+    },
+    {
+      "index": 31,
+      "name": "Abacaxi em fatias",
+      "category": "comidas",
+      "file": "031_abacaxi-em-fatias.png"
+    },
+    {
+      "index": 32,
+      "name": "Melancia em fatias",
+      "category": "comidas",
+      "file": "032_melancia-em-fatias.png"
+    },
+    {
+      "index": 33,
+      "name": "Jaca aberta",
+      "category": "comidas",
+      "file": "033_jaca-aberta.png"
+    },
+    {
+      "index": 34,
+      "name": "Goiaba cortada",
+      "category": "comidas",
+      "file": "034_goiaba-cortada.png"
+    },
+    {
+      "index": 35,
+      "name": "Coco aberto",
+      "category": "comidas",
+      "file": "035_coco-aberto.png"
+    },
+    {
+      "index": 36,
+      "name": "Café coado",
+      "category": "comidas",
+      "file": "036_cafe-coado.png"
+    },
+    {
+      "index": 37,
+      "name": "Suco de acerola",
+      "category": "comidas",
+      "file": "037_suco-de-acerola.png"
+    },
+    {
+      "index": 38,
+      "name": "Água de coco",
+      "category": "comidas",
+      "file": "038_agua-de-coco.png"
+    },
+    {
+      "index": 39,
+      "name": "Chá de ervas",
+      "category": "comidas",
+      "file": "039_cha-de-ervas.png"
+    },
+    {
+      "index": 40,
+      "name": "Tacho de doce",
+      "category": "comidas",
+      "file": "040_tacho-de-doce.png"
+    },
+    {
+      "index": 41,
+      "name": "Panelada de legumes",
+      "category": "comidas",
+      "file": "041_panelada-de-legumes.png"
+    },
+    {
+      "index": 42,
+      "name": "Tábua de pães",
+      "category": "comidas",
+      "file": "042_tabua-de-paes.png"
+    },
+    {
+      "index": 43,
+      "name": "Prato de frutas",
+      "category": "comidas",
+      "file": "043_prato-de-frutas.png"
+    },
+    {
+      "index": 44,
+      "name": "Travessa de salgados",
+      "category": "comidas",
+      "file": "044_travessa-de-salgados.png"
+    },
+    {
+      "index": 45,
+      "name": "Doces em bandeja",
+      "category": "comidas",
+      "file": "045_doces-em-bandeja.png"
+    },
+    {
+      "index": 46,
+      "name": "Espetinhos assados",
+      "category": "comidas",
+      "file": "046_espetinhos-assados.png"
+    },
+    {
+      "index": 47,
+      "name": "Cesta de hortaliças",
+      "category": "comidas",
+      "file": "047_cesta-de-hortalicas.png"
+    },
+    {
+      "index": 48,
+      "name": "Vestido de chita amarelo",
+      "category": "roupas",
+      "file": "048_vestido-de-chita-amarelo.png"
+    },
+    {
+      "index": 49,
+      "name": "Vestido floral azul",
+      "category": "roupas",
+      "file": "049_vestido-floral-azul.png"
+    },
+    {
+      "index": 50,
+      "name": "Vestido estampado vermelho",
+      "category": "roupas",
+      "file": "050_vestido-estampado-vermelho.png"
+    },
+    {
+      "index": 51,
+      "name": "Vestido estampado verde",
+      "category": "roupas",
+      "file": "051_vestido-estampado-verde.png"
+    },
+    {
+      "index": 52,
+      "name": "Vestido branco com renda",
+      "category": "roupas",
+      "file": "052_vestido-branco-com-renda.png"
+    },
+    {
+      "index": 53,
+      "name": "Saia rodada de chita",
+      "category": "roupas",
+      "file": "053_saia-rodada-de-chita.png"
+    },
+    {
+      "index": 54,
+      "name": "Saia longa azul",
+      "category": "roupas",
+      "file": "054_saia-longa-azul.png"
+    },
+    {
+      "index": 55,
+      "name": "Saia de patchwork",
+      "category": "roupas",
+      "file": "055_saia-de-patchwork.png"
+    },
+    {
+      "index": 56,
+      "name": "Camisa social clara",
+      "category": "roupas",
+      "file": "056_camisa-social-clara.png"
+    },
+    {
+      "index": 57,
+      "name": "Camisa social azul",
+      "category": "roupas",
+      "file": "057_camisa-social-azul.png"
+    },
+    {
+      "index": 58,
+      "name": "Camisa bordada",
+      "category": "roupas",
+      "file": "058_camisa-bordada.png"
+    },
+    {
+      "index": 59,
+      "name": "Camisa estampada tropical",
+      "category": "roupas",
+      "file": "059_camisa-estampada-tropical.png"
+    },
+    {
+      "index": 60,
+      "name": "Blusa estampada violeta",
+      "category": "roupas",
+      "file": "060_blusa-estampada-violeta.png"
+    },
+    {
+      "index": 61,
+      "name": "Blusa vermelha",
+      "category": "roupas",
+      "file": "061_blusa-vermelha.png"
+    },
+    {
+      "index": 62,
+      "name": "Jaqueta jeans",
+      "category": "roupas",
+      "file": "062_jaqueta-jeans.png"
+    },
+    {
+      "index": 63,
+      "name": "Jaqueta marrom",
+      "category": "roupas",
+      "file": "063_jaqueta-marrom.png"
+    },
+    {
+      "index": 64,
+      "name": "Casaco de lã escura",
+      "category": "roupas",
+      "file": "064_casaco-de-la-escura.png"
+    },
+    {
+      "index": 65,
+      "name": "Colete estampado",
+      "category": "roupas",
+      "file": "065_colete-estampado.png"
+    },
+    {
+      "index": 66,
+      "name": "Conjunto de alfaiataria",
+      "category": "roupas",
+      "file": "066_conjunto-de-alfaiataria.png"
+    },
+    {
+      "index": 67,
+      "name": "Terno bege",
+      "category": "roupas",
+      "file": "067_terno-bege.png"
+    },
+    {
+      "index": 68,
+      "name": "Macacão utilitário",
+      "category": "roupas",
+      "file": "068_macacao-utilitario.png"
+    },
+    {
+      "index": 69,
+      "name": "Macacão amarelo",
+      "category": "roupas",
+      "file": "069_macacao-amarelo.png"
+    },
+    {
+      "index": 70,
+      "name": "Calça com padronagem",
+      "category": "roupas",
+      "file": "070_calca-com-padronagem.png"
+    },
+    {
+      "index": 71,
+      "name": "Calça de linho",
+      "category": "roupas",
+      "file": "071_calca-de-linho.png"
+    },
+    {
+      "index": 72,
+      "name": "Calça jeans",
+      "category": "roupas",
+      "file": "072_calca-jeans.png"
+    },
+    {
+      "index": 73,
+      "name": "Calça colorida",
+      "category": "roupas",
+      "file": "073_calca-colorida.png"
+    },
+    {
+      "index": 74,
+      "name": "Túnica longa vinho",
+      "category": "roupas",
+      "file": "074_tunica-longa-vinho.png"
+    },
+    {
+      "index": 75,
+      "name": "Túnica estampada azul",
+      "category": "roupas",
+      "file": "075_tunica-estampada-azul.png"
+    },
+    {
+      "index": 76,
+      "name": "Manto cerimonial fictício",
+      "category": "roupas",
+      "file": "076_manto-cerimonial-ficticio.png"
+    },
+    {
+      "index": 77,
+      "name": "Lenço estampado",
+      "category": "roupas",
+      "file": "077_lenco-estampado.png"
+    },
+    {
+      "index": 78,
+      "name": "Turbante de tecido",
+      "category": "roupas",
+      "file": "078_turbante-de-tecido.png"
+    },
+    {
+      "index": 79,
+      "name": "Chapéu de palha",
+      "category": "roupas",
+      "file": "079_chapeu-de-palha.png"
+    },
+    {
+      "index": 80,
+      "name": "Sandálias de couro",
+      "category": "roupas",
+      "file": "080_sandalias-de-couro.png"
+    },
+    {
+      "index": 81,
+      "name": "Botas pretas",
+      "category": "roupas",
+      "file": "081_botas-pretas.png"
+    },
+    {
+      "index": 82,
+      "name": "Tênis branco",
+      "category": "roupas",
+      "file": "082_tenis-branco.png"
+    },
+    {
+      "index": 83,
+      "name": "Bolsa de tecido colorido",
+      "category": "roupas",
+      "file": "083_bolsa-de-tecido-colorido.png"
+    },
+    {
+      "index": 84,
+      "name": "Bolsa de palha",
+      "category": "roupas",
+      "file": "084_bolsa-de-palha.png"
+    },
+    {
+      "index": 85,
+      "name": "Colar de contas",
+      "category": "roupas",
+      "file": "085_colar-de-contas.png"
+    },
+    {
+      "index": 86,
+      "name": "Brincos dourados",
+      "category": "roupas",
+      "file": "086_brincos-dourados.png"
+    },
+    {
+      "index": 87,
+      "name": "Pulseiras coloridas",
+      "category": "roupas",
+      "file": "087_pulseiras-coloridas.png"
+    },
+    {
+      "index": 88,
+      "name": "Chita vermelha floral",
+      "category": "tecidos",
+      "file": "088_chita-vermelha-floral.png"
+    },
+    {
+      "index": 89,
+      "name": "Chita amarela floral",
+      "category": "tecidos",
+      "file": "089_chita-amarela-floral.png"
+    },
+    {
+      "index": 90,
+      "name": "Chita azul floral",
+      "category": "tecidos",
+      "file": "090_chita-azul-floral.png"
+    },
+    {
+      "index": 91,
+      "name": "Chita verde floral",
+      "category": "tecidos",
+      "file": "091_chita-verde-floral.png"
+    },
+    {
+      "index": 92,
+      "name": "Xadrez azul e creme",
+      "category": "tecidos",
+      "file": "092_xadrez-azul-e-creme.png"
+    },
+    {
+      "index": 93,
+      "name": "Xadrez vermelho e ouro",
+      "category": "tecidos",
+      "file": "093_xadrez-vermelho-e-ouro.png"
+    },
+    {
+      "index": 94,
+      "name": "Listrado terra e areia",
+      "category": "tecidos",
+      "file": "094_listrado-terra-e-areia.png"
+    },
+    {
+      "index": 95,
+      "name": "Listrado azul e branco",
+      "category": "tecidos",
+      "file": "095_listrado-azul-e-branco.png"
+    },
+    {
+      "index": 96,
+      "name": "Patchwork multicolorido",
+      "category": "tecidos",
+      "file": "096_patchwork-multicolorido.png"
+    },
+    {
+      "index": 97,
+      "name": "Patchwork de jeans",
+      "category": "tecidos",
+      "file": "097_patchwork-de-jeans.png"
+    },
+    {
+      "index": 98,
+      "name": "Poás azul claro",
+      "category": "tecidos",
+      "file": "098_poas-azul-claro.png"
+    },
+    {
+      "index": 99,
+      "name": "Poás vinho",
+      "category": "tecidos",
+      "file": "099_poas-vinho.png"
+    },
+    {
+      "index": 100,
+      "name": "Geométrico em amarelo",
+      "category": "tecidos",
+      "file": "100_geometrico-em-amarelo.png"
+    },
+    {
+      "index": 101,
+      "name": "Geométrico em verde",
+      "category": "tecidos",
+      "file": "101_geometrico-em-verde.png"
+    },
+    {
+      "index": 102,
+      "name": "Geométrico em índigo",
+      "category": "tecidos",
+      "file": "102_geometrico-em-indigo.png"
+    },
+    {
+      "index": 103,
+      "name": "Geométrico em terracota",
+      "category": "tecidos",
+      "file": "103_geometrico-em-terracota.png"
+    },
+    {
+      "index": 104,
+      "name": "Floral em fundo preto",
+      "category": "tecidos",
+      "file": "104_floral-em-fundo-preto.png"
+    },
+    {
+      "index": 105,
+      "name": "Floral em fundo creme",
+      "category": "tecidos",
+      "file": "105_floral-em-fundo-creme.png"
+    },
+    {
+      "index": 106,
+      "name": "Folhagens tropicais",
+      "category": "tecidos",
+      "file": "106_folhagens-tropicais.png"
+    },
+    {
+      "index": 107,
+      "name": "Folhagens miúdas",
+      "category": "tecidos",
+      "file": "107_folhagens-miudas.png"
+    },
+    {
+      "index": 108,
+      "name": "Estampa com zigue-zague",
+      "category": "tecidos",
+      "file": "108_estampa-com-zigue-zague.png"
+    },
+    {
+      "index": 109,
+      "name": "Estampa de losangos",
+      "category": "tecidos",
+      "file": "109_estampa-de-losangos.png"
+    },
+    {
+      "index": 110,
+      "name": "Estampa de triângulos",
+      "category": "tecidos",
+      "file": "110_estampa-de-triangulos.png"
+    },
+    {
+      "index": 111,
+      "name": "Estampa de espirais",
+      "category": "tecidos",
+      "file": "111_estampa-de-espirais.png"
+    },
+    {
+      "index": 112,
+      "name": "Inspiração kente — dourado",
+      "category": "tecidos",
+      "file": "112_inspiracao-kente-dourado.png"
+    },
+    {
+      "index": 113,
+      "name": "Inspiração kente — verde",
+      "category": "tecidos",
+      "file": "113_inspiracao-kente-verde.png"
+    },
+    {
+      "index": 114,
+      "name": "Inspiração adire — índigo",
+      "category": "tecidos",
+      "file": "114_inspiracao-adire-indigo.png"
+    },
+    {
+      "index": 115,
+      "name": "Inspiração bogolan — terra",
+      "category": "tecidos",
+      "file": "115_inspiracao-bogolan-terra.png"
+    },
+    {
+      "index": 116,
+      "name": "Renda branca",
+      "category": "tecidos",
+      "file": "116_renda-branca.png"
+    },
+    {
+      "index": 117,
+      "name": "Renda bege",
+      "category": "tecidos",
+      "file": "117_renda-bege.png"
+    },
+    {
+      "index": 118,
+      "name": "Bordado vermelho",
+      "category": "tecidos",
+      "file": "118_bordado-vermelho.png"
+    },
+    {
+      "index": 119,
+      "name": "Bordado azul",
+      "category": "tecidos",
+      "file": "119_bordado-azul.png"
+    },
+    {
+      "index": 120,
+      "name": "Tecido artesanal lilás",
+      "category": "tecidos",
+      "file": "120_tecido-artesanal-lilas.png"
+    },
+    {
+      "index": 121,
+      "name": "Tecido artesanal coral",
+      "category": "tecidos",
+      "file": "121_tecido-artesanal-coral.png"
+    },
+    {
+      "index": 122,
+      "name": "Algodão cru",
+      "category": "tecidos",
+      "file": "122_algodao-cru.png"
+    },
+    {
+      "index": 123,
+      "name": "Linho natural",
+      "category": "tecidos",
+      "file": "123_linho-natural.png"
+    },
+    {
+      "index": 124,
+      "name": "Veludo verde",
+      "category": "tecidos",
+      "file": "124_veludo-verde.png"
+    },
+    {
+      "index": 125,
+      "name": "Veludo bordô",
+      "category": "tecidos",
+      "file": "125_veludo-bordo.png"
+    },
+    {
+      "index": 126,
+      "name": "Jeans lavado",
+      "category": "tecidos",
+      "file": "126_jeans-lavado.png"
+    },
+    {
+      "index": 127,
+      "name": "Jeans índigo",
+      "category": "tecidos",
+      "file": "127_jeans-indigo.png"
+    },
+    {
+      "index": 128,
+      "name": "Tecido com bolinhas",
+      "category": "tecidos",
+      "file": "128_tecido-com-bolinhas.png"
+    },
+    {
+      "index": 129,
+      "name": "Tecido com estrelas",
+      "category": "tecidos",
+      "file": "129_tecido-com-estrelas.png"
+    },
+    {
+      "index": 130,
+      "name": "Mosaico colorido",
+      "category": "tecidos",
+      "file": "130_mosaico-colorido.png"
+    },
+    {
+      "index": 131,
+      "name": "Faixas paralelas",
+      "category": "tecidos",
+      "file": "131_faixas-paralelas.png"
+    },
+    {
+      "index": 132,
+      "name": "Florais miúdos",
+      "category": "tecidos",
+      "file": "132_florais-miudos.png"
+    },
+    {
+      "index": 133,
+      "name": "Florais grandes",
+      "category": "tecidos",
+      "file": "133_florais-grandes.png"
+    },
+    {
+      "index": 134,
+      "name": "Onda multicolorida",
+      "category": "tecidos",
+      "file": "134_onda-multicolorida.png"
+    },
+    {
+      "index": 135,
+      "name": "Retalhos geométricos",
+      "category": "tecidos",
+      "file": "135_retalhos-geometricos.png"
+    },
+    {
+      "index": 136,
+      "name": "Zumbi dos Palmares",
+      "category": "personalidades negras",
+      "file": "136_zumbi-dos-palmares.png"
+    },
+    {
+      "index": 137,
+      "name": "Dandara dos Palmares",
+      "category": "personalidades negras",
+      "file": "137_dandara-dos-palmares.png"
+    },
+    {
+      "index": 138,
+      "name": "Machado de Assis",
+      "category": "personalidades negras",
+      "file": "138_machado-de-assis.png"
+    },
+    {
+      "index": 139,
+      "name": "Carolina Maria de Jesus",
+      "category": "personalidades negras",
+      "file": "139_carolina-maria-de-jesus.png"
+    },
+    {
+      "index": 140,
+      "name": "Luiz Gama",
+      "category": "personalidades negras",
+      "file": "140_luiz-gama.png"
+    },
+    {
+      "index": 141,
+      "name": "Antonieta de Barros",
+      "category": "personalidades negras",
+      "file": "141_antonieta-de-barros.png"
+    },
+    {
+      "index": 142,
+      "name": "Milton Santos",
+      "category": "personalidades negras",
+      "file": "142_milton-santos.png"
+    },
+    {
+      "index": 143,
+      "name": "Lélia Gonzalez",
+      "category": "personalidades negras",
+      "file": "143_lelia-gonzalez.png"
+    },
+    {
+      "index": 144,
+      "name": "Abdias do Nascimento",
+      "category": "personalidades negras",
+      "file": "144_abdias-do-nascimento.png"
+    },
+    {
+      "index": 145,
+      "name": "Ruth de Souza",
+      "category": "personalidades negras",
+      "file": "145_ruth-de-souza.png"
+    },
+    {
+      "index": 146,
+      "name": "Conceição Evaristo",
+      "category": "personalidades negras",
+      "file": "146_conceicao-evaristo.png"
+    },
+    {
+      "index": 147,
+      "name": "Gilberto Gil",
+      "category": "personalidades negras",
+      "file": "147_gilberto-gil.png"
+    },
+    {
+      "index": 148,
+      "name": "Elza Soares",
+      "category": "personalidades negras",
+      "file": "148_elza-soares.png"
+    },
+    {
+      "index": 149,
+      "name": "Nina Simone",
+      "category": "personalidades negras",
+      "file": "149_nina-simone.png"
+    },
+    {
+      "index": 150,
+      "name": "Katherine Johnson",
+      "category": "personalidades negras",
+      "file": "150_katherine-johnson.png"
+    },
+    {
+      "index": 151,
+      "name": "Rosa Parks",
+      "category": "personalidades negras",
+      "file": "151_rosa-parks.png"
+    },
+    {
+      "index": 152,
+      "name": "Harriet Tubman",
+      "category": "personalidades negras",
+      "file": "152_harriet-tubman.png"
+    },
+    {
+      "index": 153,
+      "name": "Martin Luther King Jr.",
+      "category": "personalidades negras",
+      "file": "153_martin-luther-king-jr.png"
+    },
+    {
+      "index": 154,
+      "name": "Nelson Mandela",
+      "category": "personalidades negras",
+      "file": "154_nelson-mandela.png"
+    },
+    {
+      "index": 155,
+      "name": "Steve Biko",
+      "category": "personalidades negras",
+      "file": "155_steve-biko.png"
+    },
+    {
+      "index": 156,
+      "name": "Angela Davis",
+      "category": "personalidades negras",
+      "file": "156_angela-davis.png"
+    },
+    {
+      "index": 157,
+      "name": "Wangari Maathai",
+      "category": "personalidades negras",
+      "file": "157_wangari-maathai.png"
+    },
+    {
+      "index": 158,
+      "name": "Marielle Franco",
+      "category": "personalidades negras",
+      "file": "158_marielle-franco.png"
+    },
+    {
+      "index": 159,
+      "name": "Pelé",
+      "category": "personalidades negras",
+      "file": "159_pele.png"
+    },
+    {
+      "index": 160,
+      "name": "Marta Vieira da Silva",
+      "category": "personalidades negras",
+      "file": "160_marta-vieira-da-silva.png"
+    },
+    {
+      "index": 161,
+      "name": "Rebeca Andrade",
+      "category": "personalidades negras",
+      "file": "161_rebeca-andrade.png"
+    },
+    {
+      "index": 162,
+      "name": "Serena Williams",
+      "category": "personalidades negras",
+      "file": "162_serena-williams.png"
+    },
+    {
+      "index": 163,
+      "name": "Chimamanda Ngozi Adichie",
+      "category": "personalidades negras",
+      "file": "163_chimamanda-ngozi-adichie.png"
+    },
+    {
+      "index": 164,
+      "name": "Maya Angelou",
+      "category": "personalidades negras",
+      "file": "164_maya-angelou.png"
+    },
+    {
+      "index": 165,
+      "name": "James Baldwin",
+      "category": "personalidades negras",
+      "file": "165_james-baldwin.png"
+    },
+    {
+      "index": 166,
+      "name": "Sueli Carneiro",
+      "category": "personalidades negras",
+      "file": "166_sueli-carneiro.png"
+    },
+    {
+      "index": 167,
+      "name": "Cartola",
+      "category": "personalidades negras",
+      "file": "167_cartola.png"
+    }
+  ]
+}

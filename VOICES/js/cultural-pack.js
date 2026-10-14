@@ -1,0 +1,7 @@
+(function(){'use strict';
+const V=window.V,C=V.Cozy,E=V.SceneEditor;
+const previous={load:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),place:E.place.bind(E)};
+V.Assets.load=async function(){await Promise.all([previous.load(),new Promise(resolve=>{const img=new Image();img.onload=()=>{this.images['cultural-pack']=img;V.EditorMaterials.images['cultural-pack']=img;resolve();};img.onerror=()=>{this.errors.push('assets/tilesets/voices-cultural-pack.png');resolve();};img.src='assets/tilesets/voices-cultural-pack.png';})]);return this.errors;};
+C.prop=function(ctx,family,index,x,y,size=48,materials=null){if(family==='cultural-pack'){const img=V.Assets.images['cultural-pack'];if(img&&Number.isInteger(index)&&index>=0&&index<168)ctx.drawImage(img,index%8*32,Math.floor(index/8)*32,32,32,Math.round(x),Math.round(y),size,size);return;}return previous.prop(ctx,family,index,x,y,size,materials);};
+E.place=function(x,y){const a=V.sceneAssets[this.asset],interacting=this.tool==='interaction'&&a?.family==='cultural-pack'&&a?.category==='personalidades negras';previous.place(x,y);if(!interacting||this.selection?.kind!=='scene')return;const scene=this.design().scenes.find(o=>o.id===this.selection.id);if(!scene)return;scene.kind='notice';scene.title=a.name;scene.text=(V.culturalPackBios[a.name]||'Conheça a trajetória desta personalidade negra.')+' Representação artística em pixel art: o sprite não é um retrato documental.';this.refresh();};
+})();

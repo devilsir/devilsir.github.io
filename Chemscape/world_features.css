@@ -1,0 +1,67 @@
+#game-shell{--realm-glow:#81d4c2}
+#game-shell[data-realm=alchemy]{--realm-glow:#bda4ed}
+#game-shell[data-font=serif] .panel,#game-shell[data-font=serif] .dialogue-panel,#game-shell[data-font=serif] #quest{font-family:Georgia,"Times New Roman",serif}
+#game-shell[data-font=mono] .panel,#game-shell[data-font=mono] .dialogue-panel,#game-shell[data-font=mono] #quest{font-family:"Courier New",monospace}
+.right-tools button img{width:23px;height:23px;object-fit:contain;image-rendering:pixelated;vertical-align:middle}
+#btnEditor{display:flex;align-items:center;justify-content:center;gap:5px;min-width:92px!important;font-size:10px}
+#btnEditor img{width:18px;height:18px}
+#skillbar{border-color:color-mix(in srgb,var(--realm-glow) 32%,transparent);padding-top:8px;background:linear-gradient(180deg,#15313ddd,#08131ef0)}
+.skill b{display:flex;align-items:center;justify-content:center;height:37px}
+.skill b img{width:33px;height:33px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 2px 2px #0007)}
+.skill:hover b img{filter:drop-shadow(0 0 5px var(--realm-glow))}
+.guide-skill>b img{width:30px;height:30px;object-fit:contain;image-rendering:pixelated}
+#mobile button img{width:30px;height:30px;object-fit:contain;image-rendering:pixelated}
+#mini{background:linear-gradient(145deg,#163641ef,#081a29f5);border-color:color-mix(in srgb,var(--realm-glow) 60%,transparent);box-shadow:0 8px 24px #0008,0 0 0 3px #06111b55;cursor:pointer;padding:6px 5px 5px}
+#mini:focus-visible{outline:2px solid var(--realm-glow);outline-offset:3px}
+#minimap{background:#19343c}
+#mini>span{letter-spacing:1.3px;font-size:9px;color:#d6e4d7;display:flex;align-items:center;justify-content:center;gap:5px;padding-top:4px}
+#mini kbd{border:1px solid #77a8a44f;padding:1px 3px;border-radius:3px;background:#092432;font-size:9px}
+#hud .portrait img:not(.portraitBorder){image-rendering:pixelated;object-fit:contain}
+.slot.consumable{cursor:pointer}.slot.consumable:hover{border-color:#99dfbd;box-shadow:inset 0 0 18px #81ccad22}
+.interface-fonts{display:flex;align-items:center;gap:16px;border-top:1px solid #a8d3ce25;margin-top:20px;padding-top:16px}
+.interface-fonts label{font-size:12px;color:#b8d4cf}.interface-fonts select{color:#dfebdc;background:#173440;border:1px solid #6b9d9b66;border-radius:7px;padding:8px 12px}
+.atlas-overlay{background:radial-gradient(ellipse at 30% 20%,#24464dca,#050d17f5 70%)}
+.atlas-panel{width:min(1180px,94%);max-height:94%;display:flex;flex-direction:column;color:#e8ebd9;background:#102630;border:1px solid #81b5b45c;border-radius:17px;box-shadow:0 20px 85px #000a;overflow:hidden}
+.atlas-header{display:flex;justify-content:space-between;align-items:center;padding:17px 22px 11px;background:linear-gradient(120deg,#173d45,#132b3a)}
+.atlas-header .eyebrow{font-size:9px;letter-spacing:2.2px;color:#aacfc2}.atlas-header h2{font-family:Georgia,"Times New Roman",serif;font-size:25px;letter-spacing:.3px;font-weight:500;margin:4px 0 0}
+.atlas-close{background:#092332;border:1px solid #8db1b354;color:#d7e7da;width:34px;height:34px;border-radius:8px;font-size:26px;line-height:26px}
+.atlas-tabs{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid #779a9a35;background:#0b212c}
+.atlas-tabs button,.atlas-tabs select{border:1px solid #6a969558;border-radius:7px;background:#14323d;color:#cce0d6;padding:8px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:7px}
+.atlas-tabs button img{width:22px;height:22px;image-rendering:pixelated;object-fit:contain}
+.atlas-tabs button.active{background:#2e635f;color:#faf2d5;border-color:#b7d6b388}
+.atlas-tabs button:disabled{opacity:.36;cursor:default}.atlas-tabs select{max-width:240px}
+#atlas-current{margin-left:auto}
+.atlas-content{display:grid;grid-template-columns:minmax(0,1fr) 245px;min-height:0;flex:1}
+.atlas-stage{position:relative;background:#10232c;min-height:0;display:grid;place-items:center;overflow:hidden}
+#atlas-canvas{display:block;width:100%;height:auto;max-height:100%;aspect-ratio:16/9;object-fit:contain;cursor:grab;touch-action:none;image-rendering:pixelated}
+#atlas-canvas:active{cursor:grabbing}
+.atlas-compass{position:absolute;top:13px;left:14px;width:40px;height:46px;pointer-events:none;text-align:center}
+.atlas-compass img{width:32px;height:32px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 2px 2px #0008)}
+.atlas-compass span{display:block;font-size:8px;color:#e9e9cc;letter-spacing:1px}
+.atlas-zoom{position:absolute;left:14px;bottom:14px;display:flex;gap:4px}
+.atlas-zoom button{width:31px;height:31px;background:#0c2634ed;color:#e1e6cd;border:1px solid #97b9a65e;border-radius:6px;font-size:19px}
+#atlas-tooltip{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);color:#e9e9cb;background:#0b2537e8;border:1px solid #95b8a645;border-radius:6px;padding:7px 12px;font-size:11px;white-space:nowrap;pointer-events:none}
+.atlas-side{padding:16px 13px 11px;background:#142d38;border-left:1px solid #809f9e35;overflow:auto;max-height:470px}
+.atlas-side-heading{font-size:9px;color:#9ec5be;letter-spacing:1.4px;margin-bottom:10px}
+#atlas-search{width:100%;box-sizing:border-box;padding:8px 10px;color:#e1eddc;background:#0d232f;border:1px solid #6f989756;border-radius:6px;outline:none;font-size:11px}
+#atlas-regions{margin-top:9px;max-height:255px;overflow:auto;scrollbar-width:thin;scrollbar-color:#476567 transparent}
+#atlas-regions button{width:100%;display:flex;align-items:center;gap:9px;border:0;border-bottom:1px solid #90c0b11c;background:transparent;color:#e5e9d1;text-align:left;padding:9px 3px}
+#atlas-regions button:hover{background:#37636538}
+#atlas-regions img,.region-circle{width:27px;height:27px;object-fit:contain;image-rendering:pixelated;flex-shrink:0}
+.region-circle{display:grid;place-items:center;font-size:12px;color:#afdbcf;border:1px solid #739f9050;border-radius:50%}
+#atlas-regions button>span{font-size:11px;font-weight:600}
+#atlas-regions small{display:block;font-size:9px;font-weight:400;color:#8fafa9;line-height:1.5;margin-top:2px}
+.atlas-legend{padding:10px 0;margin-top:7px;border-top:1px solid #6f969344}
+.atlas-legend label{display:flex;gap:6px;align-items:center;font-size:10px;color:#b6d0c4;margin:5px 0}
+.atlas-legend input{accent-color:#72baaa;width:12px;height:12px;margin:0 2px 0 0}
+.atlas-dot{display:inline-block;width:5px;height:5px;border-radius:50%}
+.atlas-dot.npc{background:#ffe9a9}.atlas-dot.drop{background:#e6c071;border-radius:0;transform:rotate(45deg)}.atlas-dot.enemy{background:#f38588}
+#atlas-clear-pin{padding:6px 9px;border:1px solid #7aa09450;border-radius:5px;background:#173a45;color:#c5d8c4;font-size:10px}
+#atlas-pin-text{font-size:10px;color:#9ec0b8;line-height:1.6;padding-top:7px}
+.atlas-footer{display:flex;justify-content:space-between;gap:12px;font-size:9px;color:#9fc1b5;padding:10px 17px;background:#0c202c;border-top:1px solid #779a9a35}
+.atlas-chapters{display:flex;align-items:center;gap:9px;padding:9px 17px;background:#102630;font-size:9px;color:#b1c9b8}
+.atlas-chapters>span:first-child{font-size:8px;letter-spacing:1px}
+.atlas-chapters button{border:1px solid #79998635;border-radius:5px;background:#193441;color:#d7e2c8;font-size:9px;padding:5px 7px}
+.atlas-chapters button:disabled,.future-chapter{opacity:.35}
+@media(max-width:900px){.atlas-panel{width:98%;max-height:98%}.atlas-content{grid-template-columns:minmax(0,1fr) 190px}.atlas-side{padding:9px}.atlas-header{padding:12px 15px 8px}.atlas-header h2{font-size:21px}.atlas-tabs{padding:7px 9px;gap:4px}.atlas-tabs button,.atlas-tabs select{padding:6px;font-size:10px}.atlas-tabs button img{width:17px;height:17px}.atlas-tabs select{max-width:145px}.atlas-chapters{flex-wrap:wrap;gap:5px}.future-chapter{display:none}}
+@media(max-width:600px){.atlas-content{grid-template-columns:minmax(0,1fr)}.atlas-side{max-height:145px;border-left:0;border-top:1px solid #90c0b133}.atlas-side-heading,#atlas-search,.atlas-legend{display:none}#atlas-regions{display:flex;max-height:60px;overflow-x:auto;margin:0}#atlas-regions button{width:auto;min-width:135px;flex-shrink:0}#atlas-regions small{display:none}#atlas-clear-pin{float:right}#atlas-interior{display:none}.atlas-tabs button img{display:none}.atlas-footer{font-size:8px}.atlas-compass{top:5px;left:5px;width:28px;height:28px}.atlas-compass img{width:22px;height:22px}.atlas-compass span{display:none}#btnEditor{min-width:72px!important;font-size:8px}#btnEditor img{width:15px;height:15px}.skill b img{width:26px;height:26px}}
