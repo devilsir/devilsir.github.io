@@ -24,8 +24,8 @@ function clampView(){const l=currentMap();if(!l)return;cx=Math.max(l.bounds[0],M
 function base(l){
  const state=E.atlasState();let rec=cache.get(l.id);if(rec&&rec.level===l&&rec.revision===state.revision&&rec.complete&&rec.textureGeneration===(window.CHEMSCAPE_FLOOR_TEXTURES?.generation||0))return rec;
  const k=Math.min(1024/l.bounds[2],700/l.bounds[3]),im=document.createElement('canvas');im.width=Math.ceil(l.bounds[2]*k);im.height=Math.ceil(l.bounds[3]*k);
- const g=im.getContext('2d');g.imageSmoothingEnabled=false;g.fillStyle=l.world==='science'?'#6c8556':'#758c5b';g.fillRect(0,0,im.width,im.height);g.scale(k,k);g.translate(-l.bounds[0],-l.bounds[1]);let complete=true;
- const floor=image(l.floor?.overview);if(floor?.ready)g.drawImage(floor.img,...l.bounds);else if(floor&&!floor.failed)complete=false;
+ const g=im.getContext('2d');g.imageSmoothingEnabled=false;g.fillStyle=l.custom?'#101f27':l.world==='science'?'#6c8556':'#758c5b';g.fillRect(0,0,im.width,im.height);g.scale(k,k);g.translate(-l.bounds[0],-l.bounds[1]);let complete=true;
+ if(l.custom)window.CHEMSCAPE_BUILDER.drawFloor(g,l,true);const floor=image(l.floor?.overview);if(floor?.ready)g.drawImage(floor.img,...l.bounds);else if(floor&&!floor.failed)complete=false;
  if(l.paint?.tiles)for(const [key,t]of Object.entries(l.paint.tiles).sort((a,b)=>(a[1].order||0)-(b[1].order||0))){const [s,x,y]=key.split(':').map(Number);g.save();if(t.circle){g.beginPath();g.arc(...t.circle,0,Math.PI*2);g.clip();}if(t.texture&&window.CHEMSCAPE_FLOOR_TEXTURES){if(!window.CHEMSCAPE_FLOOR_TEXTURES.draw(g,t.texture,{x:x*s,y:y*s,w:s,h:s}))complete=false;}else{g.fillStyle=t.color;g.fillRect(x*s,y*s,s,s);}g.restore();}
  for(const o of [...l.objects].sort((a,b)=>(a.depthY??a.y)-(b.depthY??b.y))){if(o.hidden||o.kind==='flower')continue;const m=meta[o.sprite],r=image(m?.thumb);if(!r?.ready){if(r&&!r.failed)complete=false;continue;}const b=E.spriteBox(o),side=Math.max(b.w,b.h)*1.07;g.drawImage(r.img,b.x+b.w/2-side/2,b.y+b.h/2-side/2,side,side);}
  if(state.campaign.limiarPuzzle&&l.puzzleBridge){const b=l.puzzleBridge;g.fillStyle='#bf985b';g.fillRect(b.x-b.w/2,b.y-b.h/2,b.w,b.h);}
@@ -43,6 +43,7 @@ function markers(l){
  for(const p of live?s.samples:l.samples||[])if(!p.done&&(p.id.startsWith('sample')||s.campaign.maeraSpoken)&&!((p.id.startsWith('sample')?s.campaign.samples:s.campaign.anchors)||[]).includes(p.id))items.push({x:p.x,y:p.y,type:'quest',label:p.name,color:p.color||'#c9a3ff'});
  if(l.portal&&s.campaign.maeraSpoken)items.push({x:l.portal[0],y:l.portal[1],type:'portal',label:l.world==='science'?'Portal para Vitrália':'Portal para o AION',color:'#bfa2f1'});
  if(l.labDoor)items.push({x:l.labDoor[0],y:l.labDoor[1],type:'door',label:'Laboratório AION',color:'#8ae2dd'});
+ for(const o of l.objects)if(o.connection&&!o.hidden)items.push({x:o.x,y:o.y,type:o.connection.type,label:(o.name||'Passagem')+' → '+(worlds()[o.connection.target]?.name||'Destino'),color:o.connection.type==='portal'?'#bfa2f1':'#8ae2dd'});
  for(const o of l.objects)if(o.enter&&!o.hidden){const p=o.door||[o.x,o.y];items.push({x:p[0],y:p[1],type:'door',label:o.name||'Entrada',color:'#8ae2dd'});}
  if(l.exit)items.push({x:l.exit[0],y:l.exit[1],type:'door',label:'Saída para o exterior',color:'#8ae2dd'});
  if(l.id==='world1'&&!s.campaign.crystalFound){const point=s.campaign.slimeDefeated?l.crystal:l.slime;if(point)items.push({x:point[0],y:point[1],type:'quest',label:s.campaign.slimeDefeated?'Cristal de Limiar':'Criatura anômala',color:'#dfafff'});}
@@ -72,7 +73,7 @@ function updateTabs(){
  for(const b of panel.querySelectorAll('[data-atlas-chapter]'))b.disabled=!E.allowedScene(b.dataset.atlasChapter);
  $('atlas-interior').value=E.levels().rooms[selected]?selected:'';$('atlas-world-label').textContent=currentMap()?.name||'';
 }
-function open(){const s=E.atlasState();selectWorld(s.level?.id||'world1');refreshIdentity();const interiors=$('atlas-interior');interiors.innerHTML='<option value="">Interiores…</option>'+Object.entries(E.levels().rooms).filter(([id,l])=>E.allowedScene(l.parent)).map(([id,l])=>'<option value="'+id+'">'+esc(l.name)+'</option>').join('');interiors.value=E.levels().rooms[selected]?selected:'';render();}
+function open(){const s=E.atlasState();selectWorld(s.level?.id||'world1');refreshIdentity();const interiors=$('atlas-interior');interiors.innerHTML='<option value="">Interiores…</option>'+Object.entries(E.levels().rooms).filter(([id,l])=>E.allowedScene(id)).map(([id,l])=>'<option value="'+id+'">'+esc(l.name)+'</option>').join('');interiors.value=E.levels().rooms[selected]?selected:'';render();}
 function refreshIdentity(){
  const s=E.atlasState(),kind=s.level?.world==='alchemy'?'alchemy':'science';if(kind!==identity){identity=kind;const portrait=document.querySelector('#hud .portrait img:not(.portraitBorder)');if(portrait)portrait.src=E.assetPath(kind==='alchemy'?V.portraitAlchemy:'SPRITES/Cientista/portrait scientist.png');$('game-shell').dataset.realm=kind;}
  for(const [index,key]of V.skills.entries()){const button=document.querySelector('.skill[data-skill="'+['one','two','three','four','five','six','seven','eight','nine'][index]+'"]');if(button&&!button.querySelector('img')){const icon=button.querySelector('b');icon.textContent='';const im=document.createElement('img');im.src=E.assetPath(V.ui[key]);im.alt='';icon.append(im);button.setAttribute('aria-label',button.title);}}
