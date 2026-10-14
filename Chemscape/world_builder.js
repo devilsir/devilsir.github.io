@@ -135,7 +135,7 @@ function applyUnit(){
  const patch={name,level,scale,x,y};
  if(s.group==='mobs'){
   const d=R().monster(o,l.world),hp=+$('cb-unit-hp').value,xp=+$('cb-unit-xp').value;
-  patch.overrides={...clone(o.overrides||{}),name,level,scale,stats:{...d.stats,maxHP:hp},xp,behavior:{...d.behavior,aggression:$('cb-unit-aggression').value}};
+  const adjusted=R().scaleMonster(d,level);patch.overrides={...clone(o.overrides||{}),name,level,scale,stats:{...adjusted.stats,maxHP:hp===d.stats.maxHP?adjusted.stats.maxHP:hp},xp:xp===d.xp?adjusted.xp:xp,behavior:{...d.behavior,aggression:$('cb-unit-aggression').value}};
   const def={...d,...patch.overrides},doc=clone(R().data);doc.monsters[def.id]=def;R().validateDefinitions(doc);
  }else{
   const lines=$('cb-unit-lines').value.split('\n').map(v=>v.trim()).filter(Boolean),path=$('cb-unit-path').value.split('\n').filter(v=>v.trim()).map(v=>v.split(',').map(Number)),speed=+$('cb-unit-speed').value;
