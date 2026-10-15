@@ -9,7 +9,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/apple.png",
+      "icon": "items/resources/apple.png",
       "sprite": "v7_drop_apple",
       "worldTags": [
         "science",
@@ -49,7 +49,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/pear.png",
+      "icon": "items/resources/pear.png",
       "sprite": "v7_drop_pear",
       "worldTags": [
         "science",
@@ -89,7 +89,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/orange.png",
+      "icon": "items/resources/orange.png",
       "sprite": "v7_drop_orange",
       "worldTags": [
         "science",
@@ -129,7 +129,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/berries.png",
+      "icon": "items/resources/berries.png",
       "sprite": "v7_drop_berries",
       "worldTags": [
         "science",
@@ -169,7 +169,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/mushroom.png",
+      "icon": "items/resources/mushroom.png",
       "sprite": "v7_drop_mushroom",
       "worldTags": [
         "science",
@@ -209,7 +209,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/herb.png",
+      "icon": "items/resources/herb.png",
       "sprite": "v7_drop_herb",
       "worldTags": [
         "science",
@@ -249,7 +249,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/dust.png",
+      "icon": "items/resources/dust.png",
       "sprite": "v7_drop_dust",
       "worldTags": [
         "science",
@@ -289,7 +289,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/copper.png",
+      "icon": "items/resources/copper.png",
       "sprite": "v7_drop_copper",
       "worldTags": [
         "science",
@@ -329,7 +329,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/iron.png",
+      "icon": "items/resources/iron.png",
       "sprite": "v7_drop_iron",
       "worldTags": [
         "science",
@@ -369,7 +369,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/crystal.png",
+      "icon": "items/resources/crystal.png",
       "sprite": "v7_drop_crystal",
       "worldTags": [
         "science",
@@ -409,7 +409,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/circuit.png",
+      "icon": "items/resources/circuit.png",
       "sprite": "v7_drop_circuit",
       "worldTags": [
         "science",
@@ -449,7 +449,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/health_potion.png",
+      "icon": "items/resources/health_potion.png",
       "sprite": "v7_drop_health_potion",
       "worldTags": [
         "science",
@@ -489,7 +489,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "misc",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/coins.png",
+      "icon": "items/resources/coins.png",
       "sprite": "v7_drop_coins",
       "worldTags": [
         "science",
@@ -529,7 +529,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/ration.png",
+      "icon": "items/resources/ration.png",
       "sprite": "v7_drop_ration",
       "worldTags": [
         "science",
@@ -569,7 +569,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/empty_flask.png",
+      "icon": "items/resources/empty_flask.png",
       "sprite": "v7_drop_empty_flask",
       "worldTags": [
         "science",
@@ -609,7 +609,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/mana_potion.png",
+      "icon": "items/resources/mana_potion.png",
       "sprite": "v7_drop_mana_potion",
       "worldTags": [
         "science",
@@ -649,7 +649,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Recuperação de campo. Use quando vida ou energia estiverem abaixo do máximo.",
       "category": "consumable",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/battery.png",
+      "icon": "items/resources/battery.png",
       "sprite": "v7_drop_battery",
       "worldTags": [
         "science",
@@ -689,7 +689,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Material encontrado entre as leis da ciência e da alquimia.",
       "category": "material",
       "rarity": "common",
-      "icon": "rebuilt/expansion_v7/ui/claw.png",
+      "icon": "items/resources/claw.png",
       "sprite": "v7_drop_claw",
       "worldTags": [
         "science",
@@ -729,7 +729,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/circuit.png",
+      "icon": "items/resources/circuit.png",
       "sprite": "v7_drop_circuit",
       "worldTags": [
         "science",
@@ -769,7 +769,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/battery.png",
+      "icon": "items/resources/battery.png",
       "sprite": "v7_drop_battery",
       "worldTags": [
         "science",
@@ -809,7 +809,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/crystal.png",
+      "icon": "items/resources/crystal.png",
       "sprite": "v7_drop_crystal",
       "worldTags": [
         "science",
@@ -849,7 +849,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/dust.png",
+      "icon": "items/resources/dust.png",
       "sprite": "v7_drop_dust",
       "worldTags": [
         "science",
@@ -889,7 +889,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/copper.png",
+      "icon": "items/resources/copper.png",
       "sprite": "v7_drop_copper",
       "worldTags": [
         "science",
@@ -929,7 +929,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Evidência da investigação da Convergência. Guardada para a campanha.",
       "category": "quest",
       "rarity": "story",
-      "icon": "rebuilt/expansion_v7/ui/crystal.png",
+      "icon": "items/resources/crystal.png",
       "sprite": "v7_drop_crystal",
       "worldTags": [
         "science",
@@ -969,7 +969,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Instrumento de campo calibrado para canalizar pulsos físicos e alquímicos.",
       "category": "weapon",
       "rarity": "uncommon",
-      "icon": "rpg/icons/catalisador-aion.png",
+      "icon": "items/equipment/catalisador-aion.png",
       "sprite": "rpg_catalisador-aion",
       "worldTags": [
         "science"
@@ -1011,7 +1011,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Fibras de proteção para pesquisas além do laboratório.",
       "category": "armor",
       "rarity": "uncommon",
-      "icon": "rpg/icons/jaleco-reforcado.png",
+      "icon": "items/equipment/jaleco-reforcado.png",
       "sprite": "rpg_jaleco-reforcado",
       "worldTags": [
         "science"
@@ -1053,7 +1053,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Revela padrões nas trajetórias de partículas.",
       "category": "accessory",
       "rarity": "uncommon",
-      "icon": "rpg/icons/lente-ressonante.png",
+      "icon": "items/equipment/lente-ressonante.png",
       "sprite": "rpg_lente-ressonante",
       "worldTags": [
         "science"
@@ -1095,7 +1095,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Um cristal afinado pela arquialquimista de Vitrália.",
       "category": "weapon",
       "rarity": "rare",
-      "icon": "rpg/icons/cetro-vitriol.png",
+      "icon": "items/equipment/cetro-vitriol.png",
       "sprite": "rpg_cetro-vitriol",
       "worldTags": [
         "alchemy"
@@ -1137,7 +1137,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Símbolos tecidos por quem estuda as duas leis.",
       "category": "armor",
       "rarity": "rare",
-      "icon": "rpg/icons/manto-do-limiar.png",
+      "icon": "items/equipment/manto-do-limiar.png",
       "sprite": "rpg_manto-do-limiar",
       "worldTags": [
         "alchemy"
@@ -1179,7 +1179,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "description": "Uma peça simples de engenharia goblin.",
       "category": "accessory",
       "rarity": "rare",
-      "icon": "rpg/icons/anel-do-cobre.png",
+      "icon": "items/equipment/anel-do-cobre.png",
       "sprite": "rpg_anel-do-cobre",
       "worldTags": [
         "alchemy"
@@ -2454,7 +2454,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "one",
       "name": "Catálise",
       "description": "Pulso frontal de energia catalítica.",
-      "icon": "rebuilt/expansion_v7/ui/catalysis.png",
+      "icon": "ui/icons/catalysis.png",
       "branch": "catalyst",
       "kind": "active",
       "effect": "hit",
@@ -2520,7 +2520,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "two",
       "name": "Chuva Argêntea",
       "description": "Partículas de prata desaceleram os adversários.",
-      "icon": "rebuilt/expansion_v7/ui/silver_rain.png",
+      "icon": "ui/icons/silver_rain.png",
       "branch": "science",
       "kind": "active",
       "effect": "slow",
@@ -2586,7 +2586,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "three",
       "name": "Elemental",
       "description": "Invoca um elemental que pulsa energia contra alvos próximos.",
-      "icon": "rebuilt/expansion_v7/ui/elemental.png",
+      "icon": "ui/icons/elemental.png",
       "branch": "alchemy",
       "kind": "active",
       "effect": "summon",
@@ -2652,7 +2652,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "four",
       "name": "Frasco Instável",
       "description": "Vapores instáveis causam dano e intoxicação.",
-      "icon": "rebuilt/expansion_v7/ui/flask.png",
+      "icon": "ui/icons/flask.png",
       "branch": "catalyst",
       "kind": "active",
       "effect": "poison",
@@ -2718,7 +2718,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "five",
       "name": "Precipitação",
       "description": "Uma nuvem libera precipitação em área ao longo do tempo.",
-      "icon": "rebuilt/expansion_v7/ui/storm.png",
+      "icon": "ui/icons/storm.png",
       "branch": "science",
       "kind": "active",
       "effect": "storm",
@@ -2784,7 +2784,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "six",
       "name": "Respiração",
       "description": "Estabiliza o ritmo do corpo e recupera vida.",
-      "icon": "rebuilt/expansion_v7/ui/healing.png",
+      "icon": "ui/icons/healing.png",
       "branch": "alchemy",
       "kind": "active",
       "effect": "heal",
@@ -2850,7 +2850,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "seven",
       "name": "Metamorfose",
       "description": "Transmuta energia em força e aceleração.",
-      "icon": "rebuilt/expansion_v7/ui/metamorphosis.png",
+      "icon": "ui/icons/metamorphosis.png",
       "branch": "alchemy",
       "kind": "active",
       "effect": "buff",
@@ -2916,7 +2916,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "eight",
       "name": "Pedra Filosofal",
       "description": "Forma uma barreira e recupera energia.",
-      "icon": "rebuilt/expansion_v7/ui/philosopher.png",
+      "icon": "ui/icons/philosopher.png",
       "branch": "convergence",
       "kind": "active",
       "effect": "shield",
@@ -2982,7 +2982,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "nine",
       "name": "Singularidade",
       "description": "Uma descarga interrompe ataques e atinge uma grande área.",
-      "icon": "rebuilt/expansion_v7/ui/singularity.png",
+      "icon": "ui/icons/singularity.png",
       "branch": "convergence",
       "kind": "active",
       "effect": "interrupt",
@@ -3048,7 +3048,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "precision",
       "name": "Método preciso",
       "description": "Um protocolo permanente. Cada graduação amplia os bônus indicados.",
-      "icon": "rebuilt/expansion_v7/ui/catalysis.png",
+      "icon": "ui/icons/catalysis.png",
       "branch": "catalyst",
       "kind": "passive",
       "effect": "passive",
@@ -3086,7 +3086,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "calibration",
       "name": "Calibração científica",
       "description": "Um protocolo permanente. Cada graduação amplia os bônus indicados.",
-      "icon": "rebuilt/expansion_v7/ui/science.png",
+      "icon": "ui/icons/science.png",
       "branch": "science",
       "kind": "passive",
       "effect": "passive",
@@ -3124,7 +3124,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "vital-flow",
       "name": "Fluxo vital",
       "description": "Um protocolo permanente. Cada graduação amplia os bônus indicados.",
-      "icon": "rebuilt/expansion_v7/ui/alchemy.png",
+      "icon": "ui/icons/alchemy.png",
       "branch": "alchemy",
       "kind": "passive",
       "effect": "passive",
@@ -3162,7 +3162,7 @@ window.CHEMSCAPE_DEFINITIONS = {
       "id": "two-laws",
       "name": "Duas leis",
       "description": "Um protocolo permanente. Cada graduação amplia os bônus indicados.",
-      "icon": "rebuilt/expansion_v7/ui/portal.png",
+      "icon": "ui/icons/portal.png",
       "branch": "convergence",
       "kind": "passive",
       "effect": "passive",
@@ -3564,5 +3564,5 @@ window.CHEMSCAPE_DEFINITIONS = {
     }
   ]
 };
-Object.assign(window.CHEMSCAPE_LEVELS.sprites, {"rpg_catalisador-aion": {"file": "rpg/icons/catalisador-aion.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_jaleco-reforcado": {"file": "rpg/icons/jaleco-reforcado.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_lente-ressonante": {"file": "rpg/icons/lente-ressonante.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_cetro-vitriol": {"file": "rpg/icons/cetro-vitriol.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_manto-do-limiar": {"file": "rpg/icons/manto-do-limiar.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_anel-do-cobre": {"file": "rpg/icons/anel-do-cobre.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}});
-Object.assign(window.CHEMSCAPE_ASSET_META, {"rpg_catalisador-aion": {"label": "Catalisador AION", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/catalisador-aion.png", "kind": "drop"}, "rpg_jaleco-reforcado": {"label": "Jaleco reforçado", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/jaleco-reforcado.png", "kind": "drop"}, "rpg_lente-ressonante": {"label": "Lente ressonante", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/lente-ressonante.png", "kind": "drop"}, "rpg_cetro-vitriol": {"label": "Cetro de Vitriol", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/cetro-vitriol.png", "kind": "drop"}, "rpg_manto-do-limiar": {"label": "Manto do Limiar", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/manto-do-limiar.png", "kind": "drop"}, "rpg_anel-do-cobre": {"label": "Anel da Liga do Cobre", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "rpg/icons/anel-do-cobre.png", "kind": "drop"}});
+Object.assign(window.CHEMSCAPE_LEVELS.sprites, {"rpg_catalisador-aion": {"file": "items/equipment/catalisador-aion.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_jaleco-reforcado": {"file": "items/equipment/jaleco-reforcado.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_lente-ressonante": {"file": "items/equipment/lente-ressonante.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_cetro-vitriol": {"file": "items/equipment/cetro-vitriol.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_manto-do-limiar": {"file": "items/equipment/manto-do-limiar.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}, "rpg_anel-do-cobre": {"file": "items/equipment/anel-do-cobre.png", "w": 96, "h": 96, "scale": 0.45, "anchor": [48, 88], "effect": false}});
+Object.assign(window.CHEMSCAPE_ASSET_META, {"rpg_catalisador-aion": {"label": "Catalisador AION", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/catalisador-aion.png", "kind": "drop"}, "rpg_jaleco-reforcado": {"label": "Jaleco reforçado", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/jaleco-reforcado.png", "kind": "drop"}, "rpg_lente-ressonante": {"label": "Lente ressonante", "world": "science", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/lente-ressonante.png", "kind": "drop"}, "rpg_cetro-vitriol": {"label": "Cetro de Vitriol", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/cetro-vitriol.png", "kind": "drop"}, "rpg_manto-do-limiar": {"label": "Manto do Limiar", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/manto-do-limiar.png", "kind": "drop"}, "rpg_anel-do-cobre": {"label": "Anel da Liga do Cobre", "world": "alchemy", "entity": "pickup", "category": "Equipamento", "thumb": "items/equipment/anel-do-cobre.png", "kind": "drop"}});

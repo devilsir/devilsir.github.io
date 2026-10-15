@@ -21,7 +21,7 @@ function waterTile(type,color,phase,overlay=false){
  tileCache.set(key,tile);while(tileCache.size>64){const k=tileCache.keys().next().value;tileCache.get(k).width=0;tileCache.delete(k);}return tile;
 }
 function paintMasks(keys,l,resolution,cx,cy){
- const F=window.CHEMSCAPE_FLOOR_LAYERS,tiles=[...keys].filter(k=>F.visible(l,k)).sort((a,b)=>F.compare(l,a,b)),groups=new Map();
+ const tiles=[...keys].sort((a,b)=>(l.paint.tiles[a]?.order||0)-(l.paint.tiles[b]?.order||0)),groups=new Map();
  for(const key of tiles){const t=l.paint.tiles[key];if(t&&waterTypes[t.type]){const id=t.type;if(!groups.has(id)){const canvas=document.createElement('canvas');canvas.width=canvas.height=resolution;groups.set(id,{canvas,type:t.type,color:t.color});}}}
  for(const key of tiles){const t=l.paint.tiles[key];if(!t)continue;const [s,x,y]=key.split(':').map(Number),rx=(x*s-cx*512)*resolution/512,ry=(y*s-cy*512)*resolution/512,rw=s*resolution/512;
   for(const [id,g]of groups){const c=g.canvas.getContext('2d');c.save();if(t.circle){c.beginPath();c.arc((t.circle[0]-cx*512)*resolution/512,(t.circle[1]-cy*512)*resolution/512,t.circle[2]*resolution/512,0,Math.PI*2);c.clip();}c.clearRect(rx,ry,rw,rw);if(id===t.type){c.fillStyle='#fff';c.fillRect(rx,ry,rw,rw);}c.restore();}
@@ -44,18 +44,25 @@ function animateRiver(c,l,view,time,W,H){
  if(!regions.length)return;c.save();c.beginPath();for(const r of regions)c.rect(r.x+1,r.y,r.w-2,r.h);c.clip();
  c.fillStyle=c.createPattern(waterTile(l.world==='alchemy'?'water_fresh':'water',waterTypes.water[1],time,true),'repeat');c.fillRect(bx,by,bw,bh);c.restore();
 }
-function shadow(c,o,m,player,ready){
- if(!m||!ready||o.hidden||o.shadow===false||m.shadow===false||m.groundPlane)return false;
- const meta=window.CHEMSCAPE_ASSET_META?.[o.sprite],actor=o===player||o.maxHp!==undefined||o.pathIndex!==undefined||['npc','creature'].includes(meta?.entity)||o.activity!==undefined;
- const item=o.drop||o.itemId||['pickup','drop'].includes(o.kind),tree=o.kind==='tree'||meta?.entity==='tree';
- const k=(m.scale??1)*(typeof o.scale==='number'?o.scale:1),fw=m.sheet?.fw||m.cell?.[2]||m.w,fh=m.sheet?.fh||m.cell?.[3]||m.h,v=m.visualBounds||[0,0,fw,fh],anchor=o.anchor||m.anchor||[fw/2,fh],angle=actor?0:(o.rotation||0)*Math.PI/180;
- let dx=(v[0]+v[2]/2-anchor[0])*k,dy=(v[1]+v[3]-anchor[1])*k+2,rx=Math.max(4,Math.min(actor?30:item?21:100,v[2]*k*(actor ? .23 : item ? .3 : .34))),ry=Math.max(2,Math.min(actor?8:18,rx*.24));
- if(!actor&&o.solid){const scale=typeof o.scale==='number'?o.scale:1;dx=(o.solid[0]+o.solid[2]/2)*scale;dy=(o.solid[1]+o.solid[3])*scale+3;rx=Math.max(5,Math.min(125,o.solid[2]*scale*.44));ry=Math.max(3,Math.min(20,o.solid[3]*scale*.24));}
- if(tree){rx=Math.min(34,rx);ry=Math.min(10,ry);}dx*=o.flipX?-1:1;dy*=o.flipY?-1:1;const x=o.x+dx*Math.cos(angle)-dy*Math.sin(angle),y=o.y+dx*Math.sin(angle)+dy*Math.cos(angle),height=Math.min(200,v[3]*k);
- c.save();if(!m.hasShadow){c.fillStyle=actor?'#08132145':item?'#08132150':'#0813213d';for(const [scale,alpha]of [[1.18,.22],[1,.45],[.72,.55]]){c.globalAlpha=alpha;c.beginPath();c.ellipse(x,y,rx*scale,ry*scale,angle,0,Math.PI*2);c.fill();}}
- c.globalAlpha=1;c.fillStyle=actor?'#09182a21':'#09182a1c';c.beginPath();c.ellipse(x+height*.12,y+height*.055,rx*(tree?1.75:1.1),Math.max(2,ry+height*.055),angle+.18,0,Math.PI*2);c.fill();c.restore();return true;
+function shadowFootprint(o,m,metadata={},isActor=false){
+ const k=(m.scale??1)*(o.scale??1),w=m.sheet?.fw||m.cell?.[2]||m.w||32,h=m.sheet?.fh||m.cell?.[3]||m.h||32,v=m.visualBounds||[0,0,w,h],a=o.anchor||m.anchor||[w/2,h],solid=Array.isArray(o.solid)&&o.solid.length===4?o.solid:null;
+ let lx=(v[0]+v[2]/2-a[0])*k,ly=(v[1]+v[3]-a[1])*k+1,rx=Math.min(isActor?26:130,Math.max(3,v[2]*k*(isActor?.24:.31))),ry;
+ if(solid&&!isActor){const z=o.scale??1;lx=(solid[0]+solid[2]/2)*z;ly=(solid[1]+solid[3]*.65)*z;rx=Math.max(3,Math.min(130,Math.abs(solid[2]*z)*.43));ry=Math.min(16,Math.max(1.5,Math.abs(solid[3]*z)*.25),rx*.34);}
+ else ry=Math.min(isActor?8:16,Math.max(1.5,rx*.22));
+ if(o.drop||metadata.entity==='drop'||metadata.entity==='pickup'||metadata.kind==='pickup'){rx=Math.max(2,Math.min(rx,10,v[2]*k*.38));ry=Math.min(3,rx*.3);}
+ const flipX=(!!o.flipX)!==(o.face<0&&!m.noFlip),flipY=!!o.flipY,angle=(Number(o.rotation)||0)*Math.PI/180;lx*=flipX?-1:1;ly*=flipY?-1:1;
+ return {x:o.x+lx*Math.cos(angle)-ly*Math.sin(angle),y:o.y+lx*Math.sin(angle)+ly*Math.cos(angle),rx,ry,angle};
 }
-
+function shadow(c,o,m,player,ready){
+ if(!m||!ready||o.hidden||o.shadow===false||m.shadow===false||m.hasShadow||m.effect)return;
+ const metadata=window.CHEMSCAPE_ASSET_META?.[o.sprite]||{},isActor=o===player||o.maxHp!==undefined||o.pathIndex!==undefined||metadata.entity==='npc',kind=o.kind||metadata.kind;
+ if(!isActor&&['floor','water','effect','decal'].includes(kind))return;
+ const {x,y,rx,ry,angle}=shadowFootprint(o,m,metadata,isActor),pixel=1;
+ if(![x,y,rx,ry].every(Number.isFinite)||rx<=0||ry<=0)return;
+ c.save();c.translate(Math.round(x),Math.round(y));c.rotate(angle);c.globalAlpha=isActor?.26:.2;c.fillStyle='#10161b';
+ for(let row=-Math.ceil(ry);row<=Math.ceil(ry);row++){const ratio=1-(row/ry)**2;if(ratio<=0)continue;const half=Math.max(1,Math.floor(rx*Math.sqrt(ratio)));c.fillRect(-half,row,half*2,pixel);}
+ c.restore();
+}
 function dropGlow(c,o,m,time){
  if(!m||!o.drop)return;c.save();c.translate(o.x,o.y);c.fillStyle='#f1dc9d25';c.beginPath();c.ellipse(0,0,16,5,0,0,Math.PI*2);c.fill();
  if(Math.sin(time*3+(o.x+o.y)*.01)>.72){c.fillStyle='#ffe8a2';c.fillRect(10,-32,1,6);c.fillRect(8,-30,5,1);}c.restore();
@@ -70,5 +77,5 @@ function rift(c,bridge,time){
 function beacon(c,x,y,time,color){
  const pulse=(time*.6)%1;c.save();c.strokeStyle=color;c.globalAlpha=(1-pulse)*.35;c.lineWidth=1.5;c.beginPath();c.ellipse(x,y,15+pulse*15,5+pulse*5,0,0,Math.PI*2);c.stroke();c.restore();
 }
-window.CHEMSCAPE_VISUAL={waterTypes,waterTile,paintMasks,paintWater,animateRiver,shadow,dropGlow,beacon,rift};
+window.CHEMSCAPE_VISUAL={waterTypes,waterTile,paintMasks,paintWater,animateRiver,shadow,shadowFootprint,dropGlow,beacon,rift};
 })();

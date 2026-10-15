@@ -187,8 +187,8 @@ function overlay(ctx,l,v){
 window.CHEMSCAPE_BUILDER={contains,polygon,drawFloor,validateMap,validateConnection,panel:tab=>tab==='builder'?scenePanel():tab==='connections'?connectionPanel():unitsPanel(),bindPanel,pointer,cancel,resetDraft:()=>{cancel();connectionDraft=null;},overlay,createMap,connect,makeMap};
 for(const world of ['science','alchemy']){
  const id='builder_door_'+world;
- window.CHEMSCAPE_LEVELS.sprites[id]={file:'rebuilt/'+id+'.svg',w:64,h:96,anchor:[32,90],scale:1};
- window.CHEMSCAPE_ASSET_META[id]={thumb:'rebuilt/'+id+'.svg',label:world==='science'?'Porta AION':'Porta de Vitrália',world,kind:'prop',category:'Portas',tags:['porta','interior','passagem']};
+ window.CHEMSCAPE_LEVELS.sprites[id]={file:'environment/doors/'+id+'.svg',w:64,h:96,anchor:[32,90],scale:1};
+ window.CHEMSCAPE_ASSET_META[id]={thumb:'environment/doors/'+id+'.svg',label:world==='science'?'Porta AION':'Porta de Vitrália',world,kind:'prop',category:'Portas',tags:['porta','interior','passagem']};
 }
 window.addEventListener('DOMContentLoaded',()=>{
  const nav=$('ce-tabs');for(const [id,label]of [['builder','Criar cenário'],['connections','Portas & Portais'],['units','Unidades']]){const b=document.createElement('button');b.dataset.tab=id;b.textContent=label;nav.append(b);}

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0a1821">
-<title>QuimiCraft Voxel — Ciência & Sobrevivência v7.0</title>
+<title>QuimiCraft Voxel — Ciência & Sobrevivência v7.2</title>
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/character-customization.css">
 <link rel="stylesheet" href="styles/science.css">
 </head>
-<body>
+<body><div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
 <div id="game"></div>
 
 <div id="loading" class="screen hidden" aria-live="polite">
@@ -35,21 +35,21 @@
   <div class="title-panel">
     <p class="eyebrow">Uma aventura procedural</p>
     <h1 class="logo">QUIMI<br>CRAFT<span>Voxel survival</span></h1>
-    <p class="tagline">Explore biomas vivos, visite a Vila dos Elementos e conheça o novo Laboratório Carbono: um centro científico completo com equipamentos, reações avançadas e uma missão na Tabela Periódica.</p>
+    <p class="tagline">Explore um mundo contínuo com cordilheiras, lagos extensos e estruturas distantes, visite a Vila dos Elementos e conheça o novo Laboratório Carbono: um centro científico completo com equipamentos, reações avançadas e uma missão na Tabela Periódica.</p>
     <div id="localFrameNotice" class="local-frame-notice" hidden>Este arquivo foi aberto dentro de uma prévia. Ao clicar em Jogar, o QuimiCraft será aberto diretamente em uma nova aba para permitir o controle do mouse.</div>
     <button id="playBtn" class="primary">Jogar</button>
     <div class="title-actions"><button id="customizeBtn" class="secondary">Personalizar personagem</button><button id="newWorldTitleBtn" class="secondary danger">Recomeçar mundo</button></div>
     <button id="settingsToggle" class="settings-toggle">Configurações <i>⌄</i></button>
     <div id="settings" class="settings"><div>
       <div class="setting"><label for="qualityPreset">Qualidade gráfica</label><select id="qualityPreset"><option value="low">Baixa — desempenho</option><option value="medium">Média</option><option value="high" selected>Alta</option><option value="cinematic">Cinemática</option><option value="custom">Personalizada</option></select></div>
-      <div class="setting"><label for="renderDistance">Distância de render</label><output id="renderOut">5 chunks</output><input id="renderDistance" type="range" min="3" max="6" value="5"></div>
+      <div class="setting"><label for="renderDistance">Distância de render</label><output id="renderOut">8 chunks</output><input id="renderDistance" type="range" min="3" max="12" value="8"></div>
       <div class="setting"><label for="shadowQuality">Sombras dinâmicas</label><select id="shadowQuality"><option value="0">Desativadas</option><option value="1">Baixas</option><option value="2" selected>Altas</option></select></div>
       <div class="setting"><label for="aoQuality">Ambient occlusion</label><select id="aoQuality"><option value="0">Desativado</option><option value="1">Suave</option><option value="2" selected>Completo</option></select></div>
       <div class="setting"><label for="waterQuality">Qualidade da água</label><select id="waterQuality"><option value="0">Simples</option><option value="1">Média</option><option value="2" selected>Reflexiva</option></select></div>
       <div class="setting"><label for="particleQuality">Partículas</label><select id="particleQuality"><option value="0">Desativadas</option><option value="1">Reduzidas</option><option value="2" selected>Completas</option></select></div>
       <div class="setting"><label for="vegetationQuality">Vegetação e detalhes</label><select id="vegetationQuality"><option value="0">Essencial</option><option value="1">Reduzida</option><option value="2" selected>Completa</option></select></div>
       <div class="setting"><label for="resolutionScale">Escala de resolução</label><select id="resolutionScale"><option value="0.65">65%</option><option value="0.85">85%</option><option value="1" selected>100%</option></select></div>
-      <div class="setting"><label for="cloudToggle">Nuvens e estrelas</label><label class="switch"><input id="cloudToggle" type="checkbox" checked><span></span></label></div>
+      <div class="setting"><label for="cloudToggle">Nuvens volumétricas e estrelas</label><label class="switch"><input id="cloudToggle" type="checkbox" checked><span></span></label></div>
       <div class="setting"><label for="mobDensity">Quantidade de criaturas</label><select id="mobDensity"><option value="0">Nenhuma</option><option value="1">Poucas</option><option value="2" selected>Normal</option><option value="3">Muitas</option></select></div>
       <div class="setting"><label for="sensitivity">Sensibilidade do mouse</label><output id="senseOut">50%</output><input id="sensitivity" type="range" min="15" max="100" value="50"></div>
       <div class="setting"><label for="volume">Volume</label><output id="volumeOut">70%</output><input id="volume" type="range" min="0" max="100" value="70"></div>
@@ -63,7 +63,7 @@
       <div class="setting"><label for="survivalDifficulty">Dificuldade de sobrevivência</label><select id="survivalDifficulty"><option value="relaxed">Relaxada</option><option value="normal" selected>Normal</option><option value="hard">Intensa</option></select></div>
       <div class="setting"><label for="scienceExplanation">Explicações científicas</label><select id="scienceExplanation"><option value="simple">Simplificadas</option><option value="standard" selected>Equilibradas</option><option value="extended">Estendidas</option></select></div>
     </div></div>
-    <div class="save-note">VERSÃO 7.0 · CIÊNCIA, RISCOS & PESQUISA &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
+    <div class="save-note">VERSÃO 7.3 · MUNDO EXPANDIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
   </div>
 </section>
 
@@ -84,7 +84,7 @@
   <div id="hotbar" class="hotbar"></div>
   <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
   <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> habilidade/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário</div>
 </div>
 <div id="mobileControls" class="mobile-controls" aria-label="Controles móveis">
   <div class="mobile-move"><button type="button" data-mobile-key="KeyW" aria-label="Mover para frente">▲</button><button type="button" data-mobile-key="KeyA" aria-label="Mover para esquerda">◀</button><button type="button" data-mobile-key="KeyS" aria-label="Mover para trás">▼</button><button type="button" data-mobile-key="KeyD" aria-label="Mover para direita">▶</button></div>
