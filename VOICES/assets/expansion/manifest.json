@@ -1,0 +1,924 @@
+{
+  "version": 10,
+  "art": "Original generated pixel-art sprites for VOICES",
+  "assets": [
+    {
+      "family": "campus",
+      "index": 0,
+      "name": "Banco curvo de pedra · restaurado",
+      "category": "praça",
+      "group": "praça",
+      "layer": "object",
+      "solid": true,
+      "interaction": "sit",
+      "size": 2.1,
+      "path": "assets/expansion/banco-curvo.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 1,
+      "name": "Mesa de xadrez da praça · restaurada",
+      "category": "praça",
+      "group": "praça",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/mesa-xadrez.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 2,
+      "name": "Bateria completa",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 2.1,
+      "path": "assets/expansion/bateria.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 3,
+      "name": "Saxofone tenor",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 1.7,
+      "path": "assets/expansion/saxofone.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 4,
+      "name": "Guitarra elétrica",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 1.7,
+      "path": "assets/expansion/guitarra.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 5,
+      "name": "Violão acústico",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 1.7,
+      "path": "assets/expansion/violao.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 6,
+      "name": "Piano vertical",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 2.1,
+      "path": "assets/expansion/piano.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 7,
+      "name": "Teclado eletrônico",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 2.1,
+      "path": "assets/expansion/teclado.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 8,
+      "name": "Trompete",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 1.7,
+      "path": "assets/expansion/trompete.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 9,
+      "name": "Contrabaixo elétrico",
+      "category": "instrumentos",
+      "group": "instrumentos",
+      "layer": "object",
+      "solid": true,
+      "interaction": "music",
+      "size": 1.7,
+      "path": "assets/expansion/contrabaixo.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 10,
+      "name": "Carteira e cadeira escolar",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/carteira-escolar.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 11,
+      "name": "Mesa do professor",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.1,
+      "path": "assets/expansion/mesa-professor.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 12,
+      "name": "Lousa de sala de aula",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.1,
+      "path": "assets/expansion/lousa.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 13,
+      "name": "Armários escolares",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/armarios-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 14,
+      "name": "Estante de leitura escolar",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "shelf",
+      "size": 1.7,
+      "path": "assets/expansion/estante-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 15,
+      "name": "Modelo anatômico didático",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/modelo-anatomico.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 16,
+      "name": "Bancada de ciências com microscópio",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.1,
+      "path": "assets/expansion/bancada-ciencias.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 17,
+      "name": "Mural de trabalhos e avisos",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.1,
+      "path": "assets/expansion/mural-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 18,
+      "name": "Globo terrestre didático",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/globo-terrestre.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 19,
+      "name": "Cavalete de artes",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/cavalete-artes.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 20,
+      "name": "Organizador de mochilas",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/mochilas.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 21,
+      "name": "Carrinho de materiais esportivos",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/esportes.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 22,
+      "name": "Computador de aprendizagem",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.1,
+      "path": "assets/expansion/computador-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 23,
+      "name": "Cantinho da leitura",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": false,
+      "interaction": "sit",
+      "size": 2.1,
+      "path": "assets/expansion/cantinho-leitura.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 24,
+      "name": "Bebedouro escolar",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/bebedouro-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 25,
+      "name": "Planta da sala de aula",
+      "category": "escola",
+      "group": "escola",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 1.7,
+      "path": "assets/expansion/planta-escola.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 26,
+      "name": "Vitrine de cerâmica",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/vitrine-ceramica.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 27,
+      "name": "Vitrine de escultura",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/vitrine-escultura.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 28,
+      "name": "Cavalete de exposição",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/cavalete-museu.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 29,
+      "name": "Totem interativo do museu",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/totem-museu.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 30,
+      "name": "Escultura em pedestal",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/escultura-pedestal.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 31,
+      "name": "Painel para retratos educativos",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/painel-retratos.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 32,
+      "name": "Barreira de visitação",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/barreira-museu.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 33,
+      "name": "Mesa de conservação de documentos",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/mesa-conservacao.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 34,
+      "name": "Banco de galeria",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "sit",
+      "size": 2.2,
+      "path": "assets/expansion/banco-galeria.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 35,
+      "name": "Painel de linha do tempo",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/linha-do-tempo.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 36,
+      "name": "Balcão de recepção do museu",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/recepcao-museu.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "campus",
+      "index": 37,
+      "name": "Sinalização de galerias",
+      "category": "museu",
+      "group": "museu",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 2.2,
+      "path": "assets/expansion/sinalizacao-museu.png",
+      "solidFootprint": {
+        "x": 0.13,
+        "y": 0.57,
+        "width": 0.74,
+        "height": 0.33
+      }
+    },
+    {
+      "family": "fountain",
+      "index": 12,
+      "name": "Fonte de mármore · nova",
+      "category": "fontes",
+      "group": "fontes",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 3,
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "path": "assets/expansion/fonte-marmore.png"
+    },
+    {
+      "family": "fountain",
+      "index": 13,
+      "name": "Fonte de azulejos · nova",
+      "category": "fontes",
+      "group": "fontes",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 3,
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "path": "assets/expansion/fonte-azulejos.png"
+    },
+    {
+      "family": "fountain",
+      "index": 14,
+      "name": "Fonte de cascatas e lírios · nova",
+      "category": "fontes",
+      "group": "fontes",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 3,
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "path": "assets/expansion/fonte-cascatas.png"
+    },
+    {
+      "family": "fountain",
+      "index": 15,
+      "name": "Fonte art déco · nova",
+      "category": "fontes",
+      "group": "fontes",
+      "layer": "object",
+      "solid": true,
+      "interaction": "observe",
+      "size": 3,
+      "solidFootprint": {
+        "x": 0.1,
+        "y": 0.5,
+        "width": 0.8,
+        "height": 0.38
+      },
+      "path": "assets/expansion/fonte-art-deco.png"
+    }
+  ],
+  "portraits": [
+    {
+      "index": 136,
+      "name": "Zumbi dos Palmares",
+      "path": "assets/tilesets/voices-cultural-items/136_zumbi-dos-palmares.png"
+    },
+    {
+      "index": 137,
+      "name": "Dandara dos Palmares",
+      "path": "assets/tilesets/voices-cultural-items/137_dandara-dos-palmares.png"
+    },
+    {
+      "index": 138,
+      "name": "Machado de Assis",
+      "path": "assets/tilesets/voices-cultural-items/138_machado-de-assis.png"
+    },
+    {
+      "index": 139,
+      "name": "Carolina Maria de Jesus",
+      "path": "assets/tilesets/voices-cultural-items/139_carolina-maria-de-jesus.png"
+    },
+    {
+      "index": 140,
+      "name": "Luiz Gama",
+      "path": "assets/tilesets/voices-cultural-items/140_luiz-gama.png"
+    },
+    {
+      "index": 141,
+      "name": "Antonieta de Barros",
+      "path": "assets/tilesets/voices-cultural-items/141_antonieta-de-barros.png"
+    },
+    {
+      "index": 142,
+      "name": "Milton Santos",
+      "path": "assets/tilesets/voices-cultural-items/142_milton-santos.png"
+    },
+    {
+      "index": 143,
+      "name": "Lélia Gonzalez",
+      "path": "assets/tilesets/voices-cultural-items/143_lelia-gonzalez.png"
+    },
+    {
+      "index": 144,
+      "name": "Abdias do Nascimento",
+      "path": "assets/tilesets/voices-cultural-items/144_abdias-do-nascimento.png"
+    },
+    {
+      "index": 145,
+      "name": "Ruth de Souza",
+      "path": "assets/tilesets/voices-cultural-items/145_ruth-de-souza.png"
+    },
+    {
+      "index": 146,
+      "name": "Conceição Evaristo",
+      "path": "assets/tilesets/voices-cultural-items/146_conceicao-evaristo.png"
+    },
+    {
+      "index": 147,
+      "name": "Gilberto Gil",
+      "path": "assets/tilesets/voices-cultural-items/147_gilberto-gil.png"
+    },
+    {
+      "index": 148,
+      "name": "Elza Soares",
+      "path": "assets/tilesets/voices-cultural-items/148_elza-soares.png"
+    },
+    {
+      "index": 149,
+      "name": "Nina Simone",
+      "path": "assets/tilesets/voices-cultural-items/149_nina-simone.png"
+    },
+    {
+      "index": 150,
+      "name": "Katherine Johnson",
+      "path": "assets/tilesets/voices-cultural-items/150_katherine-johnson.png"
+    },
+    {
+      "index": 151,
+      "name": "Rosa Parks",
+      "path": "assets/tilesets/voices-cultural-items/151_rosa-parks.png"
+    },
+    {
+      "index": 152,
+      "name": "Harriet Tubman",
+      "path": "assets/tilesets/voices-cultural-items/152_harriet-tubman.png"
+    },
+    {
+      "index": 153,
+      "name": "Martin Luther King Jr.",
+      "path": "assets/tilesets/voices-cultural-items/153_martin-luther-king-jr.png"
+    },
+    {
+      "index": 154,
+      "name": "Nelson Mandela",
+      "path": "assets/tilesets/voices-cultural-items/154_nelson-mandela.png"
+    },
+    {
+      "index": 155,
+      "name": "Steve Biko",
+      "path": "assets/tilesets/voices-cultural-items/155_steve-biko.png"
+    },
+    {
+      "index": 156,
+      "name": "Angela Davis",
+      "path": "assets/tilesets/voices-cultural-items/156_angela-davis.png"
+    },
+    {
+      "index": 157,
+      "name": "Wangari Maathai",
+      "path": "assets/tilesets/voices-cultural-items/157_wangari-maathai.png"
+    },
+    {
+      "index": 158,
+      "name": "Marielle Franco",
+      "path": "assets/tilesets/voices-cultural-items/158_marielle-franco.png"
+    },
+    {
+      "index": 159,
+      "name": "Pelé",
+      "path": "assets/tilesets/voices-cultural-items/159_pele.png"
+    },
+    {
+      "index": 160,
+      "name": "Marta Vieira da Silva",
+      "path": "assets/tilesets/voices-cultural-items/160_marta-vieira-da-silva.png"
+    },
+    {
+      "index": 161,
+      "name": "Rebeca Andrade",
+      "path": "assets/tilesets/voices-cultural-items/161_rebeca-andrade.png"
+    },
+    {
+      "index": 162,
+      "name": "Serena Williams",
+      "path": "assets/tilesets/voices-cultural-items/162_serena-williams.png"
+    },
+    {
+      "index": 163,
+      "name": "Chimamanda Ngozi Adichie",
+      "path": "assets/tilesets/voices-cultural-items/163_chimamanda-ngozi-adichie.png"
+    },
+    {
+      "index": 164,
+      "name": "Maya Angelou",
+      "path": "assets/tilesets/voices-cultural-items/164_maya-angelou.png"
+    },
+    {
+      "index": 165,
+      "name": "James Baldwin",
+      "path": "assets/tilesets/voices-cultural-items/165_james-baldwin.png"
+    },
+    {
+      "index": 166,
+      "name": "Sueli Carneiro",
+      "path": "assets/tilesets/voices-cultural-items/166_sueli-carneiro.png"
+    },
+    {
+      "index": 167,
+      "name": "Cartola",
+      "path": "assets/tilesets/voices-cultural-items/167_cartola.png"
+    }
+  ]
+}

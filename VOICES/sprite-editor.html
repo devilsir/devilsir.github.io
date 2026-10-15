@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a101a">
+<title>VOICES // Pixel Lab · Editor de sprites</title>
+<link rel="icon" href="assets/ui/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/sprite-editor.css">
+</head>
+<body>
+<div class="studio">
+<header class="topbar">
+  <a href="index.html" class="back" title="Voltar ao jogo">← <span>Jogo</span></a>
+  <div class="logotype"><span class="brandmark">V<span>_</span></span><div><strong>PIXEL LAB</strong><small>VOICES · EDITOR DE SPRITES</small></div></div>
+  <span class="status" id="status" role="status">Selecione uma sprite para começar</span>
+  <div class="top-actions"><button id="open-folder" class="outline" title="Abrir pasta do VOICES para carregar e editar os arquivos locais">📁 Abrir pasta</button><button id="quick-save" class="outline" title="Salvar os PNGs editados diretamente nos arquivos originais">✓ Salvar na pasta</button><button id="export-zip" class="emphasis" title="Exportar os PNGs alterados com as pastas corretas">↓ ZIP das alterações</button></div>
+</header>
+<div class="workspace">
+ <aside class="library" aria-label="Biblioteca de sprites">
+  <div class="panel-head"><div><span class="kicker">01 / ARQUIVOS</span><h2>Biblioteca</h2></div><span class="counter" id="total-assets">0</span></div>
+  <label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar nome, sprite, caminho…" autocomplete="off" aria-label="Pesquisar sprites"></label>
+  <div id="categories" class="categories"></div>
+  <div class="library-meta"><span id="result-count"></span><span id="dirty-count">Nenhuma edição</span></div>
+  <div id="asset-list" class="asset-list" role="listbox" aria-label="Sprites disponíveis"></div>
+  <div class="library-bottom"><button id="import-png" class="outline full">↑ Substituir por imagem</button><small>423 imagens do projeto · PNG com transparência</small></div>
+ </aside>
+ <main class="editor-main">
+  <div class="canvas-header">
+    <div class="breadcrumb"><span id="category-label">SPRITE</span><span class="chevron">/</span><strong id="editing-name">Selecione um arquivo</strong><span id="dirty-marker" hidden>● NÃO SALVO</span></div>
+    <div class="zoom-control"><button id="zoom-out" title="Diminuir zoom">−</button><span id="zoom-label">—</span><button id="zoom-in" title="Aumentar zoom">+</button><button id="zoom-fit" class="fit">Ajustar</button></div>
+  </div>
+  <div class="toolbar" role="toolbar" aria-label="Ferramentas de edição">
+    <div class="tool-group" id="tool-buttons">
+      <button data-tool="pencil" class="tool active" title="Lápis · B"><span>✎</span><small>Lápis</small></button>
+      <button data-tool="eraser" class="tool" title="Borracha · E"><span>◪</span><small>Borracha</small></button>
+      <button data-tool="fill" class="tool" title="Preencher · G"><span>▣</span><small>Balde</small></button>
+      <button data-tool="picker" class="tool" title="Conta-gotas · I"><span>⌾</span><small>Conta-gotas</small></button>
+      <button data-tool="line" class="tool" title="Linha · L"><span>╱</span><small>Linha</small></button>
+      <button data-tool="rect" class="tool" title="Retângulo · R"><span>▢</span><small>Retângulo</small></button>
+    </div>
+    <div class="tool-options"><label>Cor <input id="paint-color" type="color" value="#e7ab75" title="Cor do lápis"></label><label class="brush-wrap">Pincel <input id="brush-size" type="range" min="1" max="16" value="1"><output id="brush-label">1 px</output></label></div>
+    <div class="tool-group end"><button id="undo" title="Desfazer · Ctrl+Z" disabled>↶</button><button id="redo" title="Refazer · Ctrl+Y" disabled>↷</button><label class="toggle"><input id="grid-check" type="checkbox" checked> Grade</label><label class="toggle"><input id="checker-check" type="checkbox" checked> Alfa</label></div>
+  </div>
+  <div class="canvas-stage" id="stage" tabindex="0" aria-label="Área de desenho; segure e arraste para pintar">
+   <div class="canvas-center"><div id="canvas-wrap" class="canvas-wrap checker">
+    <canvas id="paint-canvas" width="64" height="64" aria-label="Sprite editável"></canvas><canvas id="preview-canvas" width="64" height="64" aria-hidden="true"></canvas><div id="pixel-grid" class="pixel-grid" aria-hidden="true"></div><div id="frame-outline" class="frame-outline" aria-hidden="true"></div>
+   </div></div>
+  </div>
+  <div class="canvas-foot"><span id="cursor-coords">X — · Y —</span><span id="dimensions-foot">Selecione uma sprite</span><span>Scroll: navegar · Alt + scroll: zoom</span></div>
+  <section class="frames-section" aria-label="Quadros de animação">
+    <div class="frames-heading"><div><span class="kicker">02 / ANIMAÇÃO</span><h3>Frames <span id="frame-counter"></span></h3></div><div class="frames-actions"><label>Linha <select id="row-select"></select></label><span id="frame-size-label">—</span></div></div>
+    <div id="frame-strip" class="frame-strip"></div>
+    <div class="frame-ops"><button id="copy-frame">Copiar frame</button><button id="paste-frame">Colar frame</button><button id="flip-h">Espelhar ↔</button><button id="flip-v">Espelhar ↕</button><button id="clear-frame" class="danger-text">Apagar frame</button></div>
+  </section>
+ </main>
+ <aside class="inspector" aria-label="Detalhes e exportação">
+  <div class="panel-head"><div><span class="kicker">03 / PROPRIEDADES</span><h2>Inspector</h2></div></div>
+  <div class="preview-card"><div class="preview-eyebrow">PRÉVIA ANIMADA <button id="play-animation" aria-label="Pausar animação" title="Reproduzir ou pausar">❚❚</button></div><div class="animation-box"><canvas id="animation-canvas" width="176" height="176"></canvas></div><span class="hint" id="preview-hint">Frames da linha selecionada</span></div>
+  <div class="inspector-body">
+   <label class="field">Nome original no jogo <input id="game-name" readonly value="—" title="Nome encontrado no projeto (não modifica os diálogos)"></label>
+   <label class="field">Apelido neste editor <input id="display-name" type="text" maxlength="90" placeholder="Nome para localizar a sprite"></label>
+   <label class="field">Caminho no jogo <input id="file-path" readonly value="—"></label>
+   <div class="info-pair"><div><span>RESOLUÇÃO</span><b id="image-size">—</b></div><div><span>CELULA</span><b id="cell-size">—</b></div></div>
+   <div class="cell-settings"><strong>Divisão da spritesheet</strong><div class="cell-fields"><label>Largura <input id="cell-width" type="number" min="1" max="4096"></label><label>Altura <input id="cell-height" type="number" min="1" max="4096"></label></div><small>É somente uma guia visual. Não altera o tamanho do arquivo exportado.</small></div>
+   <div class="save-area"><span class="kicker">04 / SALVAR</span><button id="save-folder" class="emphasis full">Salvar alterações na pasta VOICES</button><button id="download-png" class="outline full">Baixar PNG selecionado</button><button id="download-copy" class="outline full">Salvar cópia com outro nome…</button><div class="save-tip" id="save-tip">Para usar a sprite no jogo, salve o PNG no caminho original. Fazer download não modifica os arquivos do PC automaticamente.</div></div>
+  </div>
+ </aside>
+</div>
+<footer class="footer"><span>VOICES — Reboot the Story / Pixel Lab</span><span>Sprites originais preservadas até você salvar · Ctrl+Z desfaz</span><span id="folder-status">Pasta não conectada</span></footer>
+</div>
+<input id="replace-input" type="file" accept="image/png,image/webp,image/jpeg" hidden>
+<input id="directory-input" type="file" webkitdirectory directory multiple hidden>
+<script src="js/sprite-editor-data.js"></script>
+<script src="js/sprite-editor.js"></script>
+</body>
+</html>

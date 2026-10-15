@@ -823,193 +823,321 @@
       "index": 136,
       "name": "Zumbi dos Palmares",
       "category": "personalidades negras",
-      "file": "136_zumbi-dos-palmares.png"
+      "file": "136_zumbi-dos-palmares.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 137,
       "name": "Dandara dos Palmares",
       "category": "personalidades negras",
-      "file": "137_dandara-dos-palmares.png"
+      "file": "137_dandara-dos-palmares.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 138,
       "name": "Machado de Assis",
       "category": "personalidades negras",
-      "file": "138_machado-de-assis.png"
+      "file": "138_machado-de-assis.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 139,
       "name": "Carolina Maria de Jesus",
       "category": "personalidades negras",
-      "file": "139_carolina-maria-de-jesus.png"
+      "file": "139_carolina-maria-de-jesus.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 140,
       "name": "Luiz Gama",
       "category": "personalidades negras",
-      "file": "140_luiz-gama.png"
+      "file": "140_luiz-gama.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 141,
       "name": "Antonieta de Barros",
       "category": "personalidades negras",
-      "file": "141_antonieta-de-barros.png"
+      "file": "141_antonieta-de-barros.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 142,
       "name": "Milton Santos",
       "category": "personalidades negras",
-      "file": "142_milton-santos.png"
+      "file": "142_milton-santos.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 143,
       "name": "Lélia Gonzalez",
       "category": "personalidades negras",
-      "file": "143_lelia-gonzalez.png"
+      "file": "143_lelia-gonzalez.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 144,
       "name": "Abdias do Nascimento",
       "category": "personalidades negras",
-      "file": "144_abdias-do-nascimento.png"
+      "file": "144_abdias-do-nascimento.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 145,
       "name": "Ruth de Souza",
       "category": "personalidades negras",
-      "file": "145_ruth-de-souza.png"
+      "file": "145_ruth-de-souza.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 146,
       "name": "Conceição Evaristo",
       "category": "personalidades negras",
-      "file": "146_conceicao-evaristo.png"
+      "file": "146_conceicao-evaristo.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 147,
       "name": "Gilberto Gil",
       "category": "personalidades negras",
-      "file": "147_gilberto-gil.png"
+      "file": "147_gilberto-gil.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 148,
       "name": "Elza Soares",
       "category": "personalidades negras",
-      "file": "148_elza-soares.png"
+      "file": "148_elza-soares.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 149,
       "name": "Nina Simone",
       "category": "personalidades negras",
-      "file": "149_nina-simone.png"
+      "file": "149_nina-simone.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 150,
       "name": "Katherine Johnson",
       "category": "personalidades negras",
-      "file": "150_katherine-johnson.png"
+      "file": "150_katherine-johnson.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 151,
       "name": "Rosa Parks",
       "category": "personalidades negras",
-      "file": "151_rosa-parks.png"
+      "file": "151_rosa-parks.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 152,
       "name": "Harriet Tubman",
       "category": "personalidades negras",
-      "file": "152_harriet-tubman.png"
+      "file": "152_harriet-tubman.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 153,
       "name": "Martin Luther King Jr.",
       "category": "personalidades negras",
-      "file": "153_martin-luther-king-jr.png"
+      "file": "153_martin-luther-king-jr.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 154,
       "name": "Nelson Mandela",
       "category": "personalidades negras",
-      "file": "154_nelson-mandela.png"
+      "file": "154_nelson-mandela.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 155,
       "name": "Steve Biko",
       "category": "personalidades negras",
-      "file": "155_steve-biko.png"
+      "file": "155_steve-biko.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 156,
       "name": "Angela Davis",
       "category": "personalidades negras",
-      "file": "156_angela-davis.png"
+      "file": "156_angela-davis.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 157,
       "name": "Wangari Maathai",
       "category": "personalidades negras",
-      "file": "157_wangari-maathai.png"
+      "file": "157_wangari-maathai.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 158,
       "name": "Marielle Franco",
       "category": "personalidades negras",
-      "file": "158_marielle-franco.png"
+      "file": "158_marielle-franco.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 159,
       "name": "Pelé",
       "category": "personalidades negras",
-      "file": "159_pele.png"
+      "file": "159_pele.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 160,
       "name": "Marta Vieira da Silva",
       "category": "personalidades negras",
-      "file": "160_marta-vieira-da-silva.png"
+      "file": "160_marta-vieira-da-silva.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 161,
       "name": "Rebeca Andrade",
       "category": "personalidades negras",
-      "file": "161_rebeca-andrade.png"
+      "file": "161_rebeca-andrade.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 162,
       "name": "Serena Williams",
       "category": "personalidades negras",
-      "file": "162_serena-williams.png"
+      "file": "162_serena-williams.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 163,
       "name": "Chimamanda Ngozi Adichie",
       "category": "personalidades negras",
-      "file": "163_chimamanda-ngozi-adichie.png"
+      "file": "163_chimamanda-ngozi-adichie.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 164,
       "name": "Maya Angelou",
       "category": "personalidades negras",
-      "file": "164_maya-angelou.png"
+      "file": "164_maya-angelou.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 165,
       "name": "James Baldwin",
       "category": "personalidades negras",
-      "file": "165_james-baldwin.png"
+      "file": "165_james-baldwin.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 166,
       "name": "Sueli Carneiro",
       "category": "personalidades negras",
-      "file": "166_sueli-carneiro.png"
+      "file": "166_sueli-carneiro.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     },
     {
       "index": 167,
       "name": "Cartola",
       "category": "personalidades negras",
-      "file": "167_cartola.png"
+      "file": "167_cartola.png",
+      "width": 96,
+      "height": 96,
+      "representation": "educational-portrait",
+      "alpha": true
     }
   ]
 }
