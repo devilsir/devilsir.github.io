@@ -86,12 +86,23 @@ for (const dimension of stages) {
  }
  break;
 }
+if(!chosen){
+ console.log('Testando compressão estrutural Meshopt lossless da geometria/animações...');
+ const meshout=path.join(folder,'meshopt.glb');
+ command(['meshopt',source,meshout,'--level','high']);
+ const compressed=parseGLB(meshout);
+ if(JSON.stringify(topology(compressed.json))!==JSON.stringify(baseline))
+   throw Error('A compressão Meshopt alterou a estrutura do modelo.');
+ tested.push({method:'meshopt',quality:'geometry-lossless',bytes:compressed.size});
+ console.log('Meshopt: '+(compressed.size/1e6).toFixed(2)+' MB');
+ if(compressed.size<=target)chosen={file:meshout,size:compressed.size,quality:'lossless',resolution:'original',method:'meshopt'};
+}
 const report={
   originalPath:source,
   originalBytes:original.size,
   limitBytes:target,
   strategy:'Compressão de texturas com possível redução controlada da resolução; preservados nós, malhas, skins e canais de animação.',
-  selected:chosen?{quality:chosen.quality,bytes:chosen.size,resolution:chosen.resolution}:null,
+  selected:chosen?{quality:chosen.quality,bytes:chosen.size,resolution:chosen.resolution,method:chosen.method||'webp'}:null,
   tested
 };
 fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
