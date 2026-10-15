@@ -1,0 +1,43 @@
+/* Bloqueio de interface para projetos estáticos; os arquivos do Pages continuam públicos. */
+html.access-locked { overflow: hidden !important; }
+html.access-locked body > :not(#access-gate) { visibility: hidden !important; pointer-events: none !important; }
+#access-gate, #access-gate * { box-sizing: border-box; }
+#access-gate {
+  position: fixed; inset: 0; z-index: 2147483647; display: grid; place-items: center;
+  overflow-y: auto; padding: 22px; color: #faf6ee;
+  background: radial-gradient(ellipse at 50% 0%, #5b1636 0%, #1b101f 43%, #090a12 100%);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  visibility: visible !important; pointer-events: auto !important;
+}
+#access-gate .access-panel {
+  width: min(100%, 450px); padding: clamp(27px, 6vw, 48px);
+  border: 1px solid rgba(231, 206, 145, .32); border-radius: 25px;
+  background: linear-gradient(145deg, rgba(34, 27, 39, .98), rgba(11, 11, 20, .98));
+  box-shadow: 0 35px 90px rgba(0,0,0,.5);
+}
+#access-gate .access-emblem {
+  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px;
+  color: #241b13; background: linear-gradient(135deg, #f5dfa1, #c89e5b); font-size: 24px;
+}
+#access-gate .access-eyebrow { margin-top: 27px; color: #dbb47c; font-size: 10px; letter-spacing: .23em; font-weight: 800; }
+#access-gate h1 {
+  margin: 11px 0 10px; color: #f8f2eb; font: 500 clamp(29px,6vw,43px)/1.12 Georgia, serif;
+  letter-spacing: -.035em;
+}
+#access-gate .access-description { margin: 0 0 29px; color: #b5adba; font-size: 14px; line-height: 1.55; }
+#access-gate form label { display: block; margin-bottom: 9px; color: #ddd2cf; font-size: 12px; font-weight: 700; }
+#access-gate .access-input-wrap { display: flex; align-items: center; border: 1px solid #6c5762; background: #15131c; border-radius: 13px; overflow: hidden; }
+#access-gate .access-input-wrap:focus-within { border-color: #edd394; box-shadow: 0 0 0 3px rgba(237,211,148,.14); }
+#access-gate input { width: 100%; min-width: 0; padding: 15px 12px 15px 16px; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 16px; }
+#access-gate #access-toggle { padding: 10px 13px; border: 0; background: transparent; color: #e3cc96; font-size: 12px; cursor: pointer; }
+#access-gate #access-error { min-height: 23px; margin: 7px 0 9px; color: #f5a7b1; font-size: 12px; }
+#access-gate .access-submit {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  padding: 15px 17px; border: 0; border-radius: 12px;
+  background: linear-gradient(135deg, #f2d69b, #c79b55);
+  color: #19141b; font-size: 14px; font-weight: 800; cursor: pointer;
+}
+#access-gate .access-submit:disabled { opacity: .68; cursor: wait; }
+#access-gate .access-back { display: inline-block; margin-top: 25px; color: #dec999; text-decoration: none; font-size: 13px; }
+#access-gate .access-back:hover { text-decoration: underline; }
+#access-gate .access-note { display: block; margin-top: 25px; color: #827e86; font-size: 10px; line-height: 1.5; }
