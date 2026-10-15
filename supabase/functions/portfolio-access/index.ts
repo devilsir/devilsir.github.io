@@ -3,7 +3,7 @@ const SUPABASE_API_URL=Deno.env.get("SUPABASE_URL")||"";
 const KEY=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
 const api=createClient(SUPABASE_API_URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 const allowedOrigin="https://devilsir.github.io";
-const scopeFor:Record<string,string>={"Album-Familia":"albums","Album-World-Stars":"albums","Timbo-Speaker":"timbo","silvinho":"timbo"};
+const scopeFor:Record<string,string>={"album-familia":"albums","album-world-stars":"albums","timbo-speaker":"timbo","silvinho":"timbo"};
 const cors={"Access-Control-Allow-Origin":allowedOrigin,"Access-Control-Allow-Headers":"Content-Type,apikey,Authorization,X-Portfolio-Token","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Vary":"Origin","Cache-Control":"no-store"};
 function json(v:unknown,status=200){return new Response(JSON.stringify(v),{status,headers:{...cors,"Content-Type":"application/json;charset=utf-8"}})}
 async function digest(s:string){const b=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)));return [...b].map(x=>x.toString(16).padStart(2,"0")).join("")}
