@@ -13,7 +13,7 @@
   function saveSession(token,expiresIn){try{sessionStorage.setItem(KEY,JSON.stringify({token,exp:Date.now()+expiresIn*1000}))}catch{}}
   async function installPrivateAssets(token){
     if(!('serviceWorker' in navigator))throw Error('Este navegador não suporta acesso privado aos arquivos.');
-    await navigator.serviceWorker.register('/private-assets-sw.js',{scope:'/'});
+    await navigator.serviceWorker.register('/private-assets-sw.js?v=private20261015c',{scope:'/',updateViaCache:'none'});
     await navigator.serviceWorker.ready;
     if(!navigator.serviceWorker.controller){
       location.reload();
@@ -82,14 +82,16 @@
         if(!data.token)throw Error('A sessão não foi criada');
         accessToken=data.token;
         saveSession(data.token,data.expiresIn);
-        input.value='';await unlock();
+        input.value='';await installPrivateAssets(accessToken);location.reload();return;
       }catch(error){
         input.value='';status.textContent=error.message||'Falha de autenticação';input.focus();
       }finally{busy=false;submit.disabled=false;submit.innerHTML='Desbloquear <span aria-hidden="true">↗</span>'}
     });
-    verifyStored().then(valid=>{if(!valid){input.focus({preventScroll:true})}});
+
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+  const restored=verifyStored();
+  const boot=()=>{restored.then(ok=>{if(!ok)mount()}).catch(()=>mount())};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.PortfolioAccess=Object.freeze({
     scope,
     session:()=>accessToken,

@@ -184,7 +184,7 @@
     }
     return result;
   };
-  const stickerSrc = (id) => `assets/stickers/sticker-${String(id).padStart(3, "0")}.webp`;
+  const stickerSrc = (id) => `/private-media/album-familia/assets/stickers/sticker-${String(id).padStart(3, "0")}.webp`;
   const stickerName = (id) => STICKER_NAMES[Number(id)] || `Figurinha ${String(id).padStart(2, "0")}`;
   const safeScore = (value) => {
     const score = Number(value);
@@ -1941,7 +1941,7 @@
       button.type = "button";
       button.dataset.page = String(page);
       button.setAttribute("aria-label", `Abrir ${PAGE_NAMES[page - 1]}`);
-      button.innerHTML = `<img src="assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy"><span>${page}</span>`;
+      button.innerHTML = `<img src="/private-media/album-familia/assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy"><span>${page}</span>`;
       button.addEventListener("click", () => setPage(page));
       elements.pageStrip.append(button);
     }
@@ -1960,7 +1960,7 @@
     elements.pageLoading.hidden = false;
     elements.albumPage.classList.remove("is-loaded");
     elements.albumPage.alt = PAGE_NAMES[page - 1];
-    elements.albumPage.src = `assets/album/page-${String(page).padStart(2, "0")}.webp`;
+    elements.albumPage.src = `/private-media/album-familia/assets/album/page-${String(page).padStart(2, "0")}.webp`;
     $$(".page-thumbnail", elements.pageStrip).forEach((button) => button.classList.toggle("is-active", Number(button.dataset.page) === page));
     renderInteractiveLayer();
   }

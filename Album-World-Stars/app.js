@@ -1621,7 +1621,7 @@
       button.dataset.page = String(page);
       button.setAttribute("aria-label", `Abrir ${pageLabels[page - 1]}`);
       button.innerHTML = `
-        <img class="page-thumbnail-page" src="assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy">
+        <img class="page-thumbnail-page" src="/private-media/album-world-stars/assets/album/page-${String(page).padStart(2, "0")}.webp" alt="" loading="lazy">
         <span class="page-thumbnail-stickers" aria-hidden="true"></span>
         <span class="page-thumbnail-number">${page}</span>`;
       button.addEventListener("click", () => setPage(page));
@@ -1668,7 +1668,7 @@
     elements.albumPage.onload = () => {
       elements.albumPage.classList.add("is-ready", direction === "backward" ? "turn-backward" : "turn-forward");
     };
-    elements.albumPage.src = `assets/album/page-${String(page).padStart(2, "0")}.webp`;
+    elements.albumPage.src = `/private-media/album-world-stars/assets/album/page-${String(page).padStart(2, "0")}.webp`;
 
     $$(".page-thumbnail", elements.pageStrip).forEach((thumb) => {
       const active = Number(thumb.dataset.page) === page;
@@ -1688,7 +1688,7 @@
   function preloadPage(page) {
     if (page < 1 || page > 12) return;
     const image = new Image();
-    image.src = `assets/album/page-${String(page).padStart(2, "0")}.webp`;
+    image.src = `/private-media/album-world-stars/assets/album/page-${String(page).padStart(2, "0")}.webp`;
   }
 
   function setPage(page) {

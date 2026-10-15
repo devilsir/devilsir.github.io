@@ -1,21 +1,21 @@
 window.SILVIO_CONFIG = {
-  modelPath: './assets/model/silvio.glb',
-  finalAudio: './assets/audio/parabens-final.wav',
+  modelPath: '/private-media/silvinho/assets/model/silvio.glb',
+  finalAudio: '/private-media/silvinho/assets/audio/parabens-final.wav',
   audioFiles: [
-    './assets/audio/silvio_santos_e_o_bambu_mp3cut.mp3',
-    './assets/audio/e-ta-bom.mp3',
-    './assets/audio/silvio_santos_diz_que_pena_1_.mp3',
-    './assets/audio/nao-consegue-ne-moises-meme_04Iqgj4.mp3',
-    './assets/audio/silvio-santos-sera-que-e-bom.mp3',
-    './assets/audio/silvio-santos-que-eu-faco.mp3',
-    './assets/audio/silvo-santos-erra-desgracado.mp3',
-    './assets/audio/e-mesmo-e-verdade-silvio-santos.mp3',
-    './assets/audio/silvio-santos-o-seu-tempo-acabou.mp3',
-    './assets/audio/tmp9ynyqwxm.mp3',
-    './assets/audio/como_ZQTTFwJ.mp3',
-    './assets/audio/silvio-santos-nao-naaaaao.mp3',
-    './assets/audio/silvio-santos-cala-a-boca.mp3',
-    './assets/audio/silvio-santos-erotismo.mp3'
+    '/private-media/silvinho/assets/audio/silvio_santos_e_o_bambu_mp3cut.mp3',
+    '/private-media/silvinho/assets/audio/e-ta-bom.mp3',
+    '/private-media/silvinho/assets/audio/silvio_santos_diz_que_pena_1_.mp3',
+    '/private-media/silvinho/assets/audio/nao-consegue-ne-moises-meme_04Iqgj4.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-sera-que-e-bom.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-que-eu-faco.mp3',
+    '/private-media/silvinho/assets/audio/silvo-santos-erra-desgracado.mp3',
+    '/private-media/silvinho/assets/audio/e-mesmo-e-verdade-silvio-santos.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-o-seu-tempo-acabou.mp3',
+    '/private-media/silvinho/assets/audio/tmp9ynyqwxm.mp3',
+    '/private-media/silvinho/assets/audio/como_ZQTTFwJ.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-nao-naaaaao.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-cala-a-boca.mp3',
+    '/private-media/silvinho/assets/audio/silvio-santos-erotismo.mp3'
   ],
   autoBlink: true,
   blinkMinSeconds: 2.8,
@@ -53,28 +53,28 @@ window.SILVIO_CONFIG = {
 
   accessories: {
     hat: [
-      { id: 'bone_azul', label: 'Boné Azul', path: './assets/accessories/chapeus/bone_azul.glb' },
-      { id: 'bone_preto', label: 'Boné Preto', path: './assets/accessories/chapeus/bone_preto.glb' },
-      { id: 'bucket_vermelho', label: 'Bucket Vermelho', path: './assets/accessories/chapeus/chapeu_bucket_vermelho.glb' },
-      { id: 'cowboy_marrom', label: 'Cowboy Marrom', path: './assets/accessories/chapeus/chapeu_cowboy_marrom.glb' },
-      { id: 'palha_dourado', label: 'Chapéu de Palha', path: './assets/accessories/chapeus/chapeu_palha_dourado.glb' },
-      { id: 'gorro_cinza', label: 'Gorro Cinza', path: './assets/accessories/chapeus/gorro_cinza.glb' }
+      { id: 'bone_azul', label: 'Boné Azul', path: '/private-media/silvinho/assets/accessories/chapeus/bone_azul.glb' },
+      { id: 'bone_preto', label: 'Boné Preto', path: '/private-media/silvinho/assets/accessories/chapeus/bone_preto.glb' },
+      { id: 'bucket_vermelho', label: 'Bucket Vermelho', path: '/private-media/silvinho/assets/accessories/chapeus/chapeu_bucket_vermelho.glb' },
+      { id: 'cowboy_marrom', label: 'Cowboy Marrom', path: '/private-media/silvinho/assets/accessories/chapeus/chapeu_cowboy_marrom.glb' },
+      { id: 'palha_dourado', label: 'Chapéu de Palha', path: '/private-media/silvinho/assets/accessories/chapeus/chapeu_palha_dourado.glb' },
+      { id: 'gorro_cinza', label: 'Gorro Cinza', path: '/private-media/silvinho/assets/accessories/chapeus/gorro_cinza.glb' }
     ],
     bra: [
-      { id: 'sutia_azul_renda', label: 'Sutiã Azul de Renda', path: './assets/accessories/sutias/sutia_azul_renda.glb' },
-      { id: 'sutia_bege', label: 'Sutiã Bege', path: './assets/accessories/sutias/sutia_bege.glb' },
-      { id: 'sutia_branco_renda', label: 'Sutiã Branco de Renda', path: './assets/accessories/sutias/sutia_branco_renda.glb' },
-      { id: 'sutia_preto', label: 'Sutiã Preto', path: './assets/accessories/sutias/sutia_preto.glb' },
-      { id: 'sutia_vermelho_renda', label: 'Sutiã Vermelho de Renda', path: './assets/accessories/sutias/sutia_vermelho_renda.glb' },
-      { id: 'top_esportivo_rosa', label: 'Top Esportivo Rosa', path: './assets/accessories/sutias/top_esportivo_rosa.glb' }
+      { id: 'sutia_azul_renda', label: 'Sutiã Azul de Renda', path: '/private-media/silvinho/assets/accessories/sutias/sutia_azul_renda.glb' },
+      { id: 'sutia_bege', label: 'Sutiã Bege', path: '/private-media/silvinho/assets/accessories/sutias/sutia_bege.glb' },
+      { id: 'sutia_branco_renda', label: 'Sutiã Branco de Renda', path: '/private-media/silvinho/assets/accessories/sutias/sutia_branco_renda.glb' },
+      { id: 'sutia_preto', label: 'Sutiã Preto', path: '/private-media/silvinho/assets/accessories/sutias/sutia_preto.glb' },
+      { id: 'sutia_vermelho_renda', label: 'Sutiã Vermelho de Renda', path: '/private-media/silvinho/assets/accessories/sutias/sutia_vermelho_renda.glb' },
+      { id: 'top_esportivo_rosa', label: 'Top Esportivo Rosa', path: '/private-media/silvinho/assets/accessories/sutias/top_esportivo_rosa.glb' }
     ],
     glasses: [
-      { id: 'aviador_dourado', label: 'Aviador Dourado', path: './assets/accessories/oculos/oculos_aviador_dourado.glb' },
-      { id: 'esportivo_preto', label: 'Esportivo Preto', path: './assets/accessories/oculos/oculos_esportivo_preto.glb' },
-      { id: 'quadrado_preto', label: 'Quadrado Preto', path: './assets/accessories/oculos/oculos_quadrado_preto.glb' },
-      { id: 'redondo_dourado', label: 'Redondo Dourado', path: './assets/accessories/oculos/oculos_redondo_dourado.glb' },
-      { id: 'tartaruga_marrom', label: 'Tartaruga Marrom', path: './assets/accessories/oculos/oculos_tartaruga_marrom.glb' },
-      { id: 'transparente_verde', label: 'Transparente Verde', path: './assets/accessories/oculos/oculos_transparente_verde.glb' }
+      { id: 'aviador_dourado', label: 'Aviador Dourado', path: '/private-media/silvinho/assets/accessories/oculos/oculos_aviador_dourado.glb' },
+      { id: 'esportivo_preto', label: 'Esportivo Preto', path: '/private-media/silvinho/assets/accessories/oculos/oculos_esportivo_preto.glb' },
+      { id: 'quadrado_preto', label: 'Quadrado Preto', path: '/private-media/silvinho/assets/accessories/oculos/oculos_quadrado_preto.glb' },
+      { id: 'redondo_dourado', label: 'Redondo Dourado', path: '/private-media/silvinho/assets/accessories/oculos/oculos_redondo_dourado.glb' },
+      { id: 'tartaruga_marrom', label: 'Tartaruga Marrom', path: '/private-media/silvinho/assets/accessories/oculos/oculos_tartaruga_marrom.glb' },
+      { id: 'transparente_verde', label: 'Transparente Verde', path: '/private-media/silvinho/assets/accessories/oculos/oculos_transparente_verde.glb' }
     ]
   },
   accessoryRemovalOrder: ['glasses', 'hat', 'bra'],

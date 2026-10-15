@@ -2601,7 +2601,7 @@ function startFinale({ remote = false } = {}) {
     if (bodyRoot) fitCamera(bodyRoot);
   }, 120);
 
-  finalAudio = new Audio(config.finalAudio || './assets/audio/parabens-final.wav');
+  finalAudio = new Audio(config.finalAudio || '/private-media/silvinho/assets/audio/parabens-final.wav');
   finalAudio.preload = 'auto';
   if (talkAction) talkAction.reset().play();
   finalAudio.play().catch((error) => {
@@ -2609,7 +2609,7 @@ function startFinale({ remote = false } = {}) {
   });
   finalAudio.addEventListener('ended', () => talkAction?.stop(), { once: true });
 }
-const modelUrl = new URL(config.modelPath || './assets/model/silvio.glb', window.location.href).href;
+const modelUrl = new URL(config.modelPath || '/private-media/silvinho/assets/model/silvio.glb', window.location.href).href;
 loader.load(
   modelUrl,
   (gltf) => {
