@@ -1,0 +1,39 @@
+name: Compress Silvinho GLB
+on:
+  push:
+    paths:
+      - '.github/workflows/compress-silvinho.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install glTF optimizer
+        run: npm install --no-save --no-package-lock @gltf-transform/cli@4.5.1
+      - name: Compress the GLB below 49 MB
+        run: node tools/compress-sensitive-glb.mjs
+      - name: Commit validated GLB if compressed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- silvinho/silvinho/assets/model/silvio.glb
+          if ! git diff --cached --quiet; then
+            git commit -m "Compress Silvinho GLB below 49MB without changing animations"
+            git push
+          fi
+      - name: Upload compression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: silvinho-compression-report
+          path: tools/silvio-compression-report.json
+          if-no-files-found: ignore
