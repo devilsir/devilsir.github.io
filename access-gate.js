@@ -11,7 +11,22 @@
   function loadSession(){try{return JSON.parse(sessionStorage.getItem(KEY)||'null')}catch{return null}}
   function clearSession(){try{sessionStorage.removeItem(KEY)}catch{}}
   function saveSession(token,expiresIn){try{sessionStorage.setItem(KEY,JSON.stringify({token,exp:Date.now()+expiresIn*1000}))}catch{}}
-  function unlock(){root.classList.remove('access-locked');document.getElementById('access-gate')?.remove()}
+  async function installPrivateAssets(token){
+    if(!('serviceWorker' in navigator))throw Error('Este navegador não suporta acesso privado aos arquivos.');
+    await navigator.serviceWorker.register('/private-assets-sw.js',{scope:'/'});
+    await navigator.serviceWorker.ready;
+    if(!navigator.serviceWorker.controller){
+      location.reload();
+      return false;
+    }
+    navigator.serviceWorker.controller.postMessage({type:'portfolio-session',scope,token});
+    return true;
+  }
+  async function unlock(){
+    if(!await installPrivateAssets(accessToken))return;
+    root.classList.remove('access-locked');
+    document.getElementById('access-gate')?.remove();
+  }
   async function request(route,data,token){
     const headers={'Content-Type':'application/json'};
     if(token)headers['X-Portfolio-Token']=token;
@@ -25,7 +40,7 @@
     if(!saved||!saved.token||saved.exp<Date.now()){clearSession();return false}
     try{
       const result=await request('/check',{scope},saved.token);
-      if(result.valid){accessToken=saved.token;unlock();return true}
+      if(result.valid){accessToken=saved.token;await unlock();return true}
     }catch(_){}
     clearSession();return false;
   }
@@ -67,7 +82,7 @@
         if(!data.token)throw Error('A sessão não foi criada');
         accessToken=data.token;
         saveSession(data.token,data.expiresIn);
-        input.value='';unlock();
+        input.value='';await unlock();
       }catch(error){
         input.value='';status.textContent=error.message||'Falha de autenticação';input.focus();
       }finally{busy=false;submit.disabled=false;submit.innerHTML='Desbloquear <span aria-hidden="true">↗</span>'}
