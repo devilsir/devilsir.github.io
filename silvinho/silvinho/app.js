@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
@@ -2333,7 +2334,9 @@ window.addEventListener('keydown', (event) => {
 });
 
 const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
 const accessoryLoader = new GLTFLoader();
+accessoryLoader.setMeshoptDecoder(MeshoptDecoder);
 const accessoryCache = new Map();
 const equippedAccessories = { hat: null, glasses: null, bra: null };
 let outfitApplyToken = 0;
