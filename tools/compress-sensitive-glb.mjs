@@ -54,7 +54,7 @@ const groups=[
 ];
 function attempt(group,quality) {
   const dst=path.join(folder, 'candidate-'+(group.slots?'color':'all')+'-'+quality+'.glb');
-  const args=['webp',source,dst,'--quality',String(quality),'--no-editorial'];
+  const args=['webp',source,dst,'--quality',String(quality)];
   if(group.slots)args.push('--slots',group.slots);
   console.log('Testando '+group.name+', qualidade '+quality+'...');
   const cmd=spawnSync(cli,args,{encoding:'utf8',timeout:240000,maxBuffer:3_000_000});
