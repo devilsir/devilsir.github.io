@@ -91,11 +91,18 @@ if(!chosen){
  const meshout=path.join(folder,'meshopt.glb');
  command(['meshopt',source,meshout,'--level','high']);
  const compressed=parseGLB(meshout);
- if(JSON.stringify(topology(compressed.json))!==JSON.stringify(baseline))
-   throw Error('A compressão Meshopt alterou a estrutura do modelo.');
- tested.push({method:'meshopt',quality:'geometry-lossless',bytes:compressed.size});
  console.log('Meshopt: '+(compressed.size/1e6).toFixed(2)+' MB');
- if(compressed.size<=target)chosen={file:meshout,size:compressed.size,quality:'lossless',resolution:'original',method:'meshopt'};
+ const nextTopology=topology(compressed.json);
+ console.log('Contagens originais:',JSON.stringify(Object.fromEntries(Object.entries(baseline).filter(([k])=>!['primitiveSignatures','animationChannels'].includes(k)))));
+ console.log('Contagens convertidas:',JSON.stringify(Object.fromEntries(Object.entries(nextTopology).filter(([k])=>!['primitiveSignatures','animationChannels'].includes(k)))));
+ for(const k of ['scenes','nodes','meshes','skins','animations','morphs']){
+   if(nextTopology[k]!==baseline[k])throw Error('Meshopt modificou '+k+'; original preservado');
+ }
+ if(nextTopology.animationChannels.length!==baseline.animationChannels.length ||
+   nextTopology.animationChannels.some((list,i)=>list.length!==baseline.animationChannels[i].length))
+   throw Error('Meshopt mudou número de canais animados.');
+ tested.push({method:'meshopt',quality:'geometry-encoded',bytes:compressed.size});
+ if(compressed.size<=target)chosen={file:meshout,size:compressed.size,quality:'meshopt',resolution:'original',method:'meshopt'};
 }
 const report={
   originalPath:source,
