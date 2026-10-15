@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/compress-silvinho.yml'
+      - 'tools/compress-sensitive-glb.mjs'
   workflow_dispatch:
 permissions:
   contents: write
