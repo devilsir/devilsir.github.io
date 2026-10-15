@@ -1,0 +1,32 @@
+name: Link private assets
+on:
+  push:
+    paths:
+      - '.github/workflows/link-private-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update all four projects to private media URLs
+        run: python3 tools/link-private-media.py
+      - name: Verify URLs and JS parseability
+        run: |
+          node --check access-gate.js
+          node --check private-assets-sw.js
+          node --check Album-Familia/app.js
+          node --check Album-World-Stars/app.js
+          node --check Album-World-Stars/references.js
+          node --check silvinho/silvinho/config.js
+      - name: Commit private asset URLs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add access-gate.js private-assets-sw.js Album-Familia Album-World-Stars Timbo-Speaker/index.html silvinho/silvinho
+          if ! git diff --cached --quiet; then
+            git commit -m "Load protected media through Supabase authenticated private-media routes"
+            git push
+          fi
