@@ -48,56 +48,55 @@ console.log('Texturas: '+(original.json.images||[]).length+
 const folder=fs.mkdtempSync(path.join(os.tmpdir(),'silvio-glb-'));
 const tested=[];
 let chosen=null;
-const groups=[
-  {name:'Somente texturas de cor',slots:'baseColor'},
-  {name:'Todas as texturas',slots:null}
-];
-function attempt(group,quality) {
-  const dst=path.join(folder, 'candidate-'+(group.slots?'color':'all')+'-'+quality+'.glb');
-  const args=['webp',source,dst,'--quality',String(quality)];
-  if(group.slots)args.push('--slots',group.slots);
-  console.log('Testando '+group.name+', qualidade '+quality+'...');
-  const cmd=spawnSync(cli,args,{encoding:'utf8',timeout:240000,maxBuffer:3_000_000});
-  if(cmd.status!==0){
-    console.error((cmd.stderr||cmd.stdout||cmd.error?.message||'Falha de conversão').slice(-1800));
-    throw Error('Falha ao recomprimir com glTF Transform.');
-  }
-  const next=parseGLB(dst);
-  if(JSON.stringify(topology(next.json))!==JSON.stringify(baseline)){
-    throw Error('A estrutura de meshes/nós/skins/animações mudou. Nenhum original será substituído.');
-  }
-  if(next.json.asset?.version!=='2.0')throw Error('Versão do arquivo mudou.');
-  tested.push({group:group.name,quality,bytes:next.size});
-  console.log('Resultado: '+(next.size/1e6).toFixed(2)+' MB');
-  candidates.push(dst);
-  return {file:dst,size:next.size,quality,group:group.name};
+function command(args) {
+ const proc=spawnSync(cli,args,{encoding:'utf8',timeout:240000,maxBuffer:3_000_000});
+ if(proc.status!==0) throw Error((proc.stderr||proc.stdout||'Conversion failed').slice(-1700));
 }
-for(const group of groups){
-  const first=attempt(group,100);
-  if(first.size<=target){chosen=first;break;}
-  const lowest=attempt(group,35);
-  if(lowest.size>target)continue;
-  let low=36,high=99;
-  chosen=lowest;
-  while(low<=high){
-    const q=Math.floor((low+high)/2);
-    const trial=attempt(group,q);
-    if(trial.size<=target){chosen=trial;low=q+1;}
-    else high=q-1;
-  }
-  break;
+function attempt(input,label,quality) {
+  const dst=path.join(folder,'candidate-'+label+'-'+quality+'.glb');
+  console.log('Testando resolução '+label+', WebP '+quality+'...');
+  command(['webp',input,dst,'--quality',String(quality)]);
+  const next=parseGLB(dst);
+  if(JSON.stringify(topology(next.json))!==JSON.stringify(baseline))throw Error('Estrutura, skins ou animações mudaram; abortado.');
+  if(next.json.asset?.version!=='2.0')throw Error('Formato alterado');
+  tested.push({resolution:label,quality,bytes:next.size});
+  candidates.push(dst);
+  console.log('Resultado: '+(next.size/1e6).toFixed(2)+' MB');
+  return {file:dst,size:next.size,quality,resolution:label};
+}
+const stages=[null,4096,3072,2048,1536,1024];
+for (const dimension of stages) {
+ let input=source;
+ const label=dimension?String(dimension):'original';
+ if(dimension) {
+   input=path.join(folder,'resized-'+dimension+'.glb');
+   console.log('Limitando texturas a '+dimension+' px');
+   command(['resize',source,input,'--width',String(dimension),'--height',String(dimension)]);
+ }
+ const first=attempt(input,label,95);
+ if(first.size<=target){chosen=first;break;}
+ const lowest=attempt(input,label,70);
+ if(lowest.size>target)continue;
+ chosen=lowest;
+ let low=71,high=94;
+ while(low<=high) {
+   const q=Math.floor((low+high)/2);
+   const trial=attempt(input,label,q);
+   if(trial.size<=target){chosen=trial;low=q+1;} else high=q-1;
+ }
+ break;
 }
 const report={
   originalPath:source,
   originalBytes:original.size,
   limitBytes:target,
-  strategy:'Somente imagens dentro do GLB, sem reduzir resolução ou malhas. Mantidos números de nós, materiais, meshes, skins e canais de animação.',
-  selected:chosen?{quality:chosen.quality,bytes:chosen.size,group:chosen.group}:null,
+  strategy:'Compressão de texturas com possível redução controlada da resolução; preservados nós, malhas, skins e canais de animação.',
+  selected:chosen?{quality:chosen.quality,bytes:chosen.size,resolution:chosen.resolution}:null,
   tested
 };
 fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 if(!chosen){
-  console.error('Não foi possível chegar a 49 MB mantendo texturas em WebP >= 35 de qualidade. Modelo original preservado.');
+  console.error('Não foi possível chegar a 49 MB sem exceder a redução para 1024px / WebP 70. Modelo original preservado.');
   process.exitCode=2;
 }else{
   fs.copyFileSync(chosen.file,source);
