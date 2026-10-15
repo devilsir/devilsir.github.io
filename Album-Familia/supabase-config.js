@@ -1,6 +1,4 @@
-window.ALBUM_SUPABASE = {
-  url: "https://bumybghgmlctqivssxgx.supabase.co",
-  anonKey: "sb_publishable_8qVp7FcGzKrjozCWKWG0dw_5EWQ6C9o",
-  scoreFunction: "submit-score",
-  dailyFunction: "daily-context"
-};
+// O backend antigo de ranking não está disponível. Evita chamadas de autenticação
+// para um projeto Supabase com DNS inválido; progresso local segue funcionando.
+// A autenticação dos assets privados ocorre separadamente via access-gate.js.
+window.ALBUM_SUPABASE = { url: "", anonKey: "", scoreFunction: "submit-score", dailyFunction: "daily-context" };
