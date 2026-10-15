@@ -13,7 +13,10 @@ Deno.serve(async req=>{
 try{
 if(req.method==="OPTIONS")return new Response(null,{status:204,headers:cors});
 const origin=req.headers.get("Origin");if(origin&&origin!==allowedOrigin)return json({error:"Origem não autorizada"},403);
-const route=new URL(req.url).pathname.split("/functions/v1/portfolio-access")[1]||"/";
+const incomingPath=new URL(req.url).pathname;
+const marker="/portfolio-access";
+const markerPos=incomingPath.indexOf(marker);
+const route=(markerPos>=0 ? incomingPath.slice(markerPos+marker.length) : incomingPath) || "/";
 if(route==="/login"&&req.method==="POST"){
  let body:any;try{body=await req.json()}catch{return json({error:"Dados inválidos"},400)}
  const scope=body?.scope,pw=body?.password;
