@@ -1,0 +1,40 @@
+name: Migrate private portfolio assets
+on:
+  push:
+    paths:
+      - '.github/workflows/migrate-portfolio-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Upload allowlisted GitHub assets to private Supabase bucket
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import concurrent.futures,json,time,urllib.request,urllib.error
+          url='https://uknijxfkmsuqpbiyllvc.supabase.co/functions/v1/portfolio-import'
+          def upload(i):
+              for attempt in range(3):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url+'?i='+str(i), data=b'{}',headers={'Content-Type':'application/json'},method='POST'),timeout=130) as r:
+                          data=json.loads(r.read())
+                      if data.get('ok'):return (i,data.get('n'),None)
+                      error=data.get('error','unknown')
+                  except Exception as e:error=str(e)
+                  time.sleep(2*(attempt+1))
+              return (i,0,error)
+          results=[]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+              for done in concurrent.futures.as_completed([pool.submit(upload,i) for i in range(283)]):
+                  i,size,error=done.result()
+                  results.append((i,size,error))
+                  print(f'{i}/283: '+(str(size)+' bytes' if error is None else 'FAILED '+error),flush=True)
+          failed=[x for x in results if x[2]]
+          print(f'Uploaded: {len(results)-len(failed)} / 283, bytes: {sum(x[1] for x in results):,}',flush=True)
+          if failed:raise SystemExit('Failed indices: '+str(failed))
+          PY
