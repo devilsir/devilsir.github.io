@@ -1,0 +1,2 @@
+[functions.private-projects]
+verify_jwt = false
