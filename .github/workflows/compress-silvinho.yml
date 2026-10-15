@@ -26,9 +26,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- silvinho/silvinho/assets/model/silvio.glb
+          git add -- silvinho/silvinho/assets/model/silvio-compressed.glb
           if ! git diff --cached --quiet; then
-            git commit -m "Compress Silvinho GLB below 49MB without changing animations"
+            git commit -m "Add compressed Silvinho candidate below 49MB for validation"
             git push
           fi
       - name: Upload compression report
