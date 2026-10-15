@@ -75,9 +75,9 @@ function attempt(group,quality) {
 for(const group of groups){
   const first=attempt(group,100);
   if(first.size<=target){chosen=first;break;}
-  const lowest=attempt(group,80);
+  const lowest=attempt(group,35);
   if(lowest.size>target)continue;
-  let low=81,high=99;
+  let low=36,high=99;
   chosen=lowest;
   while(low<=high){
     const q=Math.floor((low+high)/2);
@@ -97,7 +97,7 @@ const report={
 };
 fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 if(!chosen){
-  console.error('Não foi possível chegar a 49 MB mantendo texturas em WebP >= 80 de qualidade. Modelo original preservado.');
+  console.error('Não foi possível chegar a 49 MB mantendo texturas em WebP >= 35 de qualidade. Modelo original preservado.');
   process.exitCode=2;
 }else{
   fs.copyFileSync(chosen.file,source);
