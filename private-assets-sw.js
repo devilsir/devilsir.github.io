@@ -27,7 +27,10 @@ function match(u){
  const entry=roots[p];
  if(!entry||!/\.(?:glb|gltf|png|webp|jpe?g|gif|svg|mp3|wav|ogg|mp4|webm|avif)$/i.test(rest.join('/')))return null;
  if(rest.length===0||rest.some(part=>part==='..'))return null;
- return {path:entry.slug+'/'+rest.join('/'),scope:entry.scope};
+ let decoded;
+ try { decoded=rest.map(decodeURIComponent).join('/'); } catch { return null; }
+ if(decoded.split('/').some(part=>!part||part==='.'||part==='..'||part.includes('\\')))return null;
+ return {path:entry.slug+'/'+decoded,scope:entry.scope};
 }
 async function session(id,scope){
  for(let retry=0;retry<12;retry++){
