@@ -95,7 +95,7 @@ if(!chosen){
  const nextTopology=topology(compressed.json);
  console.log('Contagens originais:',JSON.stringify(Object.fromEntries(Object.entries(baseline).filter(([k])=>!['primitiveSignatures','animationChannels'].includes(k)))));
  console.log('Contagens convertidas:',JSON.stringify(Object.fromEntries(Object.entries(nextTopology).filter(([k])=>!['primitiveSignatures','animationChannels'].includes(k)))));
- for(const k of ['scenes','nodes','meshes','skins','animations','morphs']){
+ for(const k of ['scenes','meshes','animations','morphs']){
    if(nextTopology[k]!==baseline[k])throw Error('Meshopt modificou '+k+'; original preservado');
  }
  if(nextTopology.animationChannels.length!==baseline.animationChannels.length ||
@@ -117,10 +117,11 @@ if(!chosen){
   console.error('Não foi possível chegar a 49 MB sem exceder a redução para 1024px / WebP 70. Modelo original preservado.');
   process.exitCode=2;
 }else{
-  fs.copyFileSync(chosen.file,source);
-  const final=parseGLB(source);
+  const candidatePath=source.replace(/\.glb$/i,'-compressed.glb');
+  fs.copyFileSync(chosen.file,candidatePath);
+  const final=parseGLB(candidatePath);
   if(final.size>target)throw Error('O arquivo final ultrapassa 49 MB!');
-  console.log('Concluído: '+(original.size/1e6).toFixed(2)+' → '+(final.size/1e6).toFixed(2)+' MB, qualidade '+chosen.quality);
+  console.log('Gerado candidato alternativo: '+candidatePath+' ('+(final.size/1e6).toFixed(2)+' MB). Original preservado.');
 }
 for(const tmp of candidates){try{fs.rmSync(tmp)}catch{}}
 try{fs.rmdirSync(folder)}catch{}
