@@ -1,0 +1,47 @@
+name: Clean sensitive portfolio history
+on:
+  push:
+    paths: ['.github/workflows/clean-portfolio-history.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scrub:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install history rewrite tool
+        run: python3 -m pip install --user git-filter-repo
+      - name: Rewrite only historical sensitive assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain
+          OLD_HEAD="$(git rev-parse HEAD)"
+          OLD_TREE="$(git rev-parse HEAD^{tree})"
+          echo "Before history rewrite: $OLD_HEAD"
+          python3 tools/prepare-history-scrub.py
+          export PATH="$HOME/.local/bin:$PATH"
+          git filter-repo --force --refs refs/heads/main \
+            --path-regex '^(Album-Familia|Album-World-Stars|Timbo-Speaker|silvinho/silvinho)/.*\.(glb|gltf|png|webp|jpeg|jpg|gif|svg|mp3|wav|ogg|mp4|webm|avif)$' \
+            --invert-paths \
+            --replace-text .git/portfolio-sensitive-replacements.txt
+          NEW_TREE="$(git rev-parse HEAD^{tree})"
+          if [ "$NEW_TREE" != "$OLD_TREE" ]; then
+            echo 'ABORT: current site tree unexpectedly changed'; exit 1
+          fi
+          if git rev-list --objects HEAD | grep -Ei ' (Album-Familia|Album-World-Stars|Timbo-Speaker|silvinho/silvinho)/.*\.(glb|gltf|png|webp|jpe?g|gif|svg|mp3|wav|ogg|mp4|webm|avif)$'; then
+            echo 'ABORT: historical media references still reachable'; exit 1
+          fi
+          if git grep -I -E 'data:audio/mpeg;base64,[A-Za-z0-9+/=]{200}' HEAD -- Timbo-Speaker/index.html; then
+            echo 'ABORT: embedded Base64 audio still in head'; exit 1
+          fi
+          git remote add push-target "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force-with-lease=refs/heads/main:"$OLD_HEAD" push-target HEAD:refs/heads/main
+          echo "History rewritten; current site tree preserved: $NEW_TREE"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
