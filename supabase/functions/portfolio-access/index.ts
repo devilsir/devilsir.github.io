@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.0";
-const URL=Deno.env.get("SUPABASE_URL")||"";
+const SUPABASE_API_URL=Deno.env.get("SUPABASE_URL")||"";
 const KEY=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
-const api=createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const api=createClient(SUPABASE_API_URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
 const allowedOrigin="https://devilsir.github.io";
 const scopeFor:Record<string,string>={"Album-Familia":"albums","Album-World-Stars":"albums","Timbo-Speaker":"timbo","silvinho":"timbo"};
 const cors={"Access-Control-Allow-Origin":allowedOrigin,"Access-Control-Allow-Headers":"Content-Type,apikey,Authorization,X-Portfolio-Token","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Vary":"Origin","Cache-Control":"no-store"};
