@@ -25,7 +25,7 @@ function match(u){
  let p=pieces[0],rest=pieces.slice(1);
  if(p==='silvinho'){if(rest[0]!=='silvinho')return null;rest=rest.slice(1)}
  const entry=roots[p];
- if(!entry||!/\\.(?:glb|gltf|png|webp|jpe?g|gif|svg|mp3|wav|ogg|mp4|webm|avif)$/i.test(rest.join('/')))return null;
+ if(!entry||!/\.(?:glb|gltf|png|webp|jpe?g|gif|svg|mp3|wav|ogg|mp4|webm|avif)$/i.test(rest.join('/')))return null;
  if(rest.length===0||rest.some(part=>part==='..'))return null;
  return {path:entry.slug+'/'+rest.join('/'),scope:entry.scope};
 }
