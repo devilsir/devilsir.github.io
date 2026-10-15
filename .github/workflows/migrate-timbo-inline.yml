@@ -1,0 +1,14 @@
+name: Migrate embedded Timbó audio
+on:
+  push:
+    paths: ['.github/workflows/migrate-timbo-inline.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy inline audios to private bucket
+        run: |
+          curl --fail-with-body --retry 3 -X POST -H 'Content-Type: application/json' -d '{}' 'https://uknijxfkmsuqpbiyllvc.supabase.co/functions/v1/portfolio-inline-import'
