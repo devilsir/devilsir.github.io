@@ -1,0 +1,1327 @@
+{
+  "version": 1,
+  "origin": "Original VOICES artwork generated for this expansion. Technical grid extraction retains alpha.",
+  "sprites": [
+    {
+      "id": "zambeto-actions",
+      "name": "Zambeto · ações",
+      "image": "assets/city/zambeto-actions.png",
+      "width": 1536,
+      "height": 1344,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 56,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "walk": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 6,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "cde84b2168e3bafbda79b15d3585109661a97c2f2e4605819d8cd6302e414a15"
+    },
+    {
+      "id": "nia-actions",
+      "name": "Nia · ações",
+      "image": "assets/city/nia-actions.png",
+      "width": 1024,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "ready": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "attack": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "261e10fa8ba9e8a13046a3146fafb5f315076794313e197b899b75e39e43dd4e"
+    },
+    {
+      "id": "sol-actions",
+      "name": "Sol · ações",
+      "image": "assets/city/sol-actions.png",
+      "width": 1024,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "ready": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "attack": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "b4b803a216ce97948eef6e75122c6b397744f54027cd39cc9fab3c54a1455578"
+    },
+    {
+      "id": "taina-actions",
+      "name": "Tainá · ações",
+      "image": "assets/city/taina-actions.png",
+      "width": 1024,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "ready": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "attack": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "d8002de19dd06ae1e0b759e1144795af20c7f488f945c41e0c526003c5a70cdb"
+    },
+    {
+      "id": "leo-actions",
+      "name": "Leo · ações",
+      "image": "assets/city/leo-actions.png",
+      "width": 1024,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "ready": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "attack": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "b5c642c362cc2bd620d86592614843cb9dfd1c2a614cf0f85c4fa07af0dc59c9"
+    },
+    {
+      "id": "librarian-actions",
+      "name": "Parceiro da biblioteca · ações",
+      "image": "assets/city/librarian-actions.png",
+      "width": 1024,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 3.2,
+          "loop": true
+        },
+        "ready": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": true
+        },
+        "attack": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "cast": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "guard": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "ff270033e5407e226fb726ac9e43bba8b58e2468ecd174386598ab33e71ba180"
+    },
+    {
+      "id": "combat-fx",
+      "name": "Efeitos de batalha",
+      "image": "assets/city/combat-fx.png",
+      "width": 1280,
+      "height": 960,
+      "frameWidth": 160,
+      "frameHeight": 160,
+      "frameCount": 48,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "strike": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "knowledge": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "shield": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "heal": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "corruption": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "convergence": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "f4a95e0d2732be79449dcb10c2e33676f64d2c8ff59244f0a7b07ec950a0df60"
+    },
+    {
+      "id": "home-appliances",
+      "name": "Móveis e eletrodomésticos",
+      "image": "assets/city/home-appliances.png",
+      "width": 512,
+      "height": 768,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 24,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "alpha": true,
+      "actions": {
+        "tv": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "fridge": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "stove": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "shower": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "furnishings": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "storage": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "sha256": "c09ce2590cf333bcc26948d3b4a91fdfd0461bc84ae18bfc5acd09f8ff2fa606",
+      "sourceRows": [
+        0,
+        242,
+        494,
+        730,
+        1005,
+        1224,
+        1536
+      ]
+    },
+    {
+      "id": "nia-motion",
+      "name": "Nia · caminhada e expressões",
+      "image": "assets/city/nia-motion.png",
+      "width": 1024,
+      "height": 512,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 32,
+      "alpha": true,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.953125
+      },
+      "actions": {
+        "walk": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkBack": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        }
+      },
+      "sha256": "8200ddfa3c9e5fb1422c052a2dd66a6a25f97c68c19e98a1dc88ce13559afb1d"
+    },
+    {
+      "id": "leo-motion",
+      "name": "Leo · caminhada e expressões",
+      "image": "assets/city/leo-motion.png",
+      "width": 1024,
+      "height": 512,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 32,
+      "alpha": true,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.953125
+      },
+      "actions": {
+        "walk": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkBack": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        }
+      },
+      "sha256": "f8cd65f101f0369db8cfe55c88e07a62d73066c3522a7eb5975265cdd3ee861a"
+    },
+    {
+      "id": "taina-motion",
+      "name": "Tainá · caminhada e expressões",
+      "image": "assets/city/taina-motion.png",
+      "width": 1024,
+      "height": 512,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 32,
+      "alpha": true,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.953125
+      },
+      "actions": {
+        "walk": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkBack": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        }
+      },
+      "sha256": "d3e70038f8204e07519d170d433989ee598d428efece350beeb09e6c7b8ed5c7"
+    },
+    {
+      "id": "sol-motion",
+      "name": "Sol · caminhada e expressões",
+      "image": "assets/city/sol-motion.png",
+      "width": 1024,
+      "height": 512,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 32,
+      "alpha": true,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.953125
+      },
+      "actions": {
+        "walk": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkBack": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        }
+      },
+      "sha256": "06100adba2e6adaa25c4eb262325995bc8552449ec06be11a17e84d96dff2d30"
+    },
+    {
+      "id": "librarian-motion",
+      "name": "Parceiro da biblioteca · caminhada e expressões",
+      "image": "assets/city/librarian-motion.png",
+      "width": 1024,
+      "height": 512,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 32,
+      "alpha": true,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.953125
+      },
+      "actions": {
+        "walk": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkBack": {
+          "row": 1,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "dance": {
+          "row": 2,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "spin": {
+          "row": 3,
+          "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "fps": 8,
+          "loop": true
+        }
+      },
+      "sha256": "4d01fdb597e3a687213256264642e5c11e9511c88a9cd2e106052649230c4ad2"
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "battle-courtyard",
+      "image": "assets/city/battle-courtyard.png",
+      "width": 1672,
+      "height": 941,
+      "safeFloor": {
+        "left": 0.05,
+        "right": 0.95,
+        "top": 0.5,
+        "bottom": 0.9
+      },
+      "sha256": "db473b322517be0e4e8e668fd5283641718460aec61657b2a5b892694a03f3bc"
+    },
+    {
+      "id": "battle-studio",
+      "image": "assets/city/battle-studio.png",
+      "width": 1672,
+      "height": 941,
+      "safeFloor": {
+        "left": 0.05,
+        "right": 0.95,
+        "top": 0.5,
+        "bottom": 0.9
+      },
+      "sha256": "25315a9796d46a3a1a7e215934effdedf41e3507764b91473c06c6716ea00f3e"
+    },
+    {
+      "id": "battle-gallery",
+      "image": "assets/city/battle-gallery.png",
+      "width": 1672,
+      "height": 941,
+      "safeFloor": {
+        "left": 0.05,
+        "right": 0.95,
+        "top": 0.5,
+        "bottom": 0.9
+      },
+      "sha256": "79408d0947ebf0fcdcb470fb785f68647e22dbf842c1e2c5e1dbcad011510e2a"
+    },
+    {
+      "id": "battle-lab",
+      "image": "assets/city/battle-lab.png",
+      "width": 1672,
+      "height": 941,
+      "safeFloor": {
+        "left": 0.05,
+        "right": 0.95,
+        "top": 0.5,
+        "bottom": 0.9
+      },
+      "sha256": "482116c4f8b33196429709c03444c27a9a92591b536138477c0a8f2b09409d9c"
+    },
+    {
+      "id": "battle-city",
+      "image": "assets/city/battle-city.png",
+      "width": 1672,
+      "height": 941,
+      "safeFloor": {
+        "left": 0.05,
+        "right": 0.95,
+        "top": 0.5,
+        "bottom": 0.9
+      },
+      "sha256": "1274c95ff52732f154d1211c66fd1b851ff969cc00e1a37fe9dd2f86d689b885"
+    }
+  ]
+}

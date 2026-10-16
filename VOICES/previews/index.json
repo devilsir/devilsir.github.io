@@ -1,0 +1,60 @@
+{
+  "format": "voices-game-captures",
+  "captures": [
+    {
+      "image": "01-museu.png",
+      "caption": "Galeria do Museu das Vozes",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "02-atlas.png",
+      "caption": "Atlas de New Harmony com os 20 lugares",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "03-noite.png",
+      "caption": "Iluminação noturna e lanterna",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "04-chuva.png",
+      "caption": "Chuva no espaço externo",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "05-zambeto.png",
+      "caption": "Conversa com o guardião Zambeto",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "06-batalha.png",
+      "caption": "Confronto por turnos no Arquivo Central",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "07-batalha-mobile.png",
+      "caption": "Batalha em tela de 844 × 390",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "08-habilidades-mobile.png",
+      "caption": "Seleção de habilidades em tela pequena",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "09-editor.png",
+      "caption": "Editor de cenário e propriedades de iluminação",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "10-sprite-editor.png",
+      "caption": "Zambeto no editor de sprites",
+      "source": "actual game Canvas and DOM"
+    },
+    {
+      "image": "11-museu-completo.png",
+      "caption": "Renderização completa do museu reconstruído",
+      "source": "actual game Canvas and DOM"
+    }
+  ]
+}

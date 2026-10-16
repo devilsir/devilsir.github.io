@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "data": "js/campus-water-data.js",
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "frames": 8,
+  "frameDurationMs": 143,
+  "sources": [
+    {
+      "index": 12,
+      "image": "assets/expansion/fonte-marmore.png",
+      "sha256": "0bef5eba4cc0f02fb579a0eea2ac75a489106e5ad86a2300b8d44104abdcae7a",
+      "waterPixels": 1451
+    },
+    {
+      "index": 13,
+      "image": "assets/expansion/fonte-azulejos.png",
+      "sha256": "594230ee478046f67a27317eb354931217f94fecac855cd28409bf080a3cb525",
+      "waterPixels": 1948
+    },
+    {
+      "index": 14,
+      "image": "assets/expansion/fonte-cascatas.png",
+      "sha256": "5911cc90942e7d1ef33dc385004ede6b50583cd3c48feefb6cd95e24e3ef7e66",
+      "waterPixels": 1127
+    },
+    {
+      "index": 15,
+      "image": "assets/expansion/fonte-art-deco.png",
+      "sha256": "40d31d0d876eaee7bf1fe3317045ff8143ba679d5c062eeb551ce997aa8f99f3",
+      "waterPixels": 1157
+    }
+  ],
+  "pixelFormat": [
+    "index",
+    "red",
+    "green",
+    "blue",
+    "alpha"
+  ]
+}

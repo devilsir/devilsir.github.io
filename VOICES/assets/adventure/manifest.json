@@ -1,0 +1,2067 @@
+{
+  "version": 3,
+  "generation": "Original VOICES raster artwork generated with imagegen; technical sprite extraction preserves alpha; exact interface, fixture and architecture pixels authored for the game.",
+  "sprites": [
+    {
+      "id": "zambeto",
+      "name": "Zambeto · Guardião da Vigília",
+      "image": "assets/adventure/zambeto.png",
+      "width": 512,
+      "height": 864,
+      "frameWidth": 128,
+      "frameHeight": 144,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 0,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 900
+        },
+        "travel": {
+          "rows": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 200
+        },
+        "interaction": {
+          "row": 4,
+          "frames": [
+            0,
+            1
+          ],
+          "duration": 450
+        },
+        "protection": {
+          "row": 4,
+          "frames": [
+            1,
+            2
+          ],
+          "duration": 300
+        },
+        "support": {
+          "row": 4,
+          "frames": [
+            2,
+            3
+          ],
+          "duration": 300
+        },
+        "appearance": {
+          "row": 5,
+          "frames": [
+            0,
+            1
+          ],
+          "duration": 350,
+          "loop": false
+        },
+        "disappearance": {
+          "row": 5,
+          "frames": [
+            2,
+            3
+          ],
+          "duration": 350,
+          "loop": false
+        }
+      },
+      "directions": [
+        "south",
+        "west",
+        "east",
+        "north"
+      ],
+      "pivot": [
+        64.0,
+        135
+      ],
+      "footprint": [
+        0.16,
+        0.8,
+        0.68,
+        0.13
+      ],
+      "alpha": true,
+      "category": "personagens"
+    },
+    {
+      "id": "zambeto-illustration",
+      "name": "Zambeto · ilustração",
+      "image": "assets/adventure/zambeto-illustration.png",
+      "width": 256,
+      "height": 288,
+      "frameWidth": 256,
+      "frameHeight": 288,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "retratos"
+    },
+    {
+      "id": "zambeto-portrait",
+      "name": "Zambeto · diálogo",
+      "image": "assets/adventure/zambeto-portrait.png",
+      "width": 288,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 3,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "retratos"
+    },
+    {
+      "id": "rasura-enemies",
+      "name": "Manifestações da Ordem da Rasura",
+      "image": "assets/adventure/rasura-enemies.png",
+      "width": 512,
+      "height": 864,
+      "frameWidth": 128,
+      "frameHeight": 144,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "duration": 650
+        },
+        "intent": {
+          "frames": [
+            1
+          ],
+          "duration": 500
+        },
+        "action": {
+          "frames": [
+            2
+          ],
+          "duration": 350
+        },
+        "hit": {
+          "frames": [
+            3
+          ],
+          "duration": 300
+        }
+      },
+      "directions": [
+        "front"
+      ],
+      "pivot": [
+        64.0,
+        135
+      ],
+      "footprint": [
+        0.16,
+        0.8,
+        0.68,
+        0.13
+      ],
+      "alpha": true,
+      "category": "personagens"
+    },
+    {
+      "id": "historiograph",
+      "name": "Historiógrafo Ancestral",
+      "image": "assets/adventure/historiograph.png",
+      "width": 400,
+      "height": 340,
+      "frameWidth": 400,
+      "frameHeight": 340,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "item-device",
+      "name": "Historiógrafo · ícone",
+      "image": "assets/adventure/icons/device.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "historiograph-portrait",
+      "name": "Historiógrafo · diálogo",
+      "image": "assets/adventure/historiograph-portrait.png",
+      "width": 288,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 3,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "retratos"
+    },
+    {
+      "id": "icon-critical",
+      "name": "Leitura Crítica",
+      "image": "assets/adventure/icons/critical.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-timeline",
+      "name": "Linha do Tempo",
+      "image": "assets/adventure/icons/timeline.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-counter",
+      "name": "Contraprova",
+      "image": "assets/adventure/icons/counter.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-compare",
+      "name": "Comparar Fontes",
+      "image": "assets/adventure/icons/compare.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-chorus",
+      "name": "Vozes em Coro",
+      "image": "assets/adventure/icons/chorus.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-restore",
+      "name": "Restituir Memória",
+      "image": "assets/adventure/icons/restore.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-erase",
+      "name": "Quebra do Apagamento",
+      "image": "assets/adventure/icons/erase.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-links",
+      "name": "Mapa de Vínculos",
+      "image": "assets/adventure/icons/links.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-shield",
+      "name": "Escudo do Arquivo",
+      "image": "assets/adventure/icons/shield.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-credit",
+      "name": "Crédito Devido",
+      "image": "assets/adventure/icons/credit.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-seal",
+      "name": "Selo de Proveniência",
+      "image": "assets/adventure/icons/seal.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-convergence",
+      "name": "Convergência dos Séculos",
+      "image": "assets/adventure/icons/convergence.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-notes",
+      "name": "Anotações em Rede",
+      "image": "assets/adventure/icons/notes.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-method",
+      "name": "Método Cuidadoso",
+      "image": "assets/adventure/icons/method.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-focus",
+      "name": "Pausa para Pensar",
+      "image": "assets/adventure/icons/focus.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-listening",
+      "name": "Escuta Ativa",
+      "image": "assets/adventure/icons/listening.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-community",
+      "name": "Rede de Cuidado",
+      "image": "assets/adventure/icons/community.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-prepared",
+      "name": "Preparação Coletiva",
+      "image": "assets/adventure/icons/prepared.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-stance",
+      "name": "Base Firme",
+      "image": "assets/adventure/icons/stance.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-lantern",
+      "name": "Lanterna e Olhar da Vigília",
+      "image": "assets/adventure/icons/lantern.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-restraint",
+      "name": "Saber Partilhar",
+      "image": "assets/adventure/icons/restraint.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-notebook",
+      "name": "Caderno de campo",
+      "image": "assets/adventure/icons/notebook.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-coat",
+      "name": "Casaco de pesquisador",
+      "image": "assets/adventure/icons/coat.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-badge",
+      "name": "Broche das Muitas Vozes",
+      "image": "assets/adventure/icons/badge.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-lens",
+      "name": "Lente de proveniência",
+      "image": "assets/adventure/icons/lens.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-water",
+      "name": "Água e pausa",
+      "image": "assets/adventure/icons/water.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-tea",
+      "name": "Chá do intervalo",
+      "image": "assets/adventure/icons/tea.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-kit",
+      "name": "Kit de conservação",
+      "image": "assets/adventure/icons/kit.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-resonance",
+      "name": "Anotações cruzadas",
+      "image": "assets/adventure/icons/resonance.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "icon-letter",
+      "name": "Carta da mediação",
+      "image": "assets/adventure/icons/letter.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "interface"
+    },
+    {
+      "id": "fixture-street",
+      "name": "Poste",
+      "image": "assets/adventure/fixtures/street.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-wall",
+      "name": "Luz de parede",
+      "image": "assets/adventure/fixtures/wall.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-ceiling",
+      "name": "Luz de teto",
+      "image": "assets/adventure/fixtures/ceiling.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-spotlight",
+      "name": "Spot",
+      "image": "assets/adventure/fixtures/spotlight.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-desk",
+      "name": "Luz de mesa",
+      "image": "assets/adventure/fixtures/desk.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-lantern",
+      "name": "Lanterna",
+      "image": "assets/adventure/fixtures/lantern.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "fixture-emissive",
+      "name": "Objeto luminoso",
+      "image": "assets/adventure/fixtures/emissive.png",
+      "width": 48,
+      "height": 64,
+      "frameWidth": 48,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-wall",
+      "name": "Parede de galeria",
+      "image": "assets/adventure/architecture/wall.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-corner",
+      "name": "Canto de parede",
+      "image": "assets/adventure/architecture/corner.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-doorframe",
+      "name": "Moldura de porta",
+      "image": "assets/adventure/architecture/doorframe.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-partition",
+      "name": "Divisória de museu",
+      "image": "assets/adventure/architecture/partition.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-plaque",
+      "name": "Placa de legenda",
+      "image": "assets/adventure/architecture/plaque.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "architecture-frame",
+      "name": "Moldura de retrato",
+      "image": "assets/adventure/architecture/frame.png",
+      "width": 64,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "objetos"
+    },
+    {
+      "id": "historio-effects",
+      "name": "Historiógrafo · ativação e sobrecarga",
+      "image": "assets/adventure/historio-effects.png",
+      "width": 512,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 8,
+      "actions": {
+        "activation": {
+          "frames": [
+            0,
+            1
+          ],
+          "duration": 160
+        },
+        "investigation": {
+          "frames": [
+            2,
+            3
+          ],
+          "duration": 180
+        },
+        "resonance": {
+          "frames": [
+            3,
+            4,
+            5
+          ],
+          "duration": 160
+        },
+        "overload": {
+          "frames": [
+            6,
+            7
+          ],
+          "duration": 180
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": true,
+      "category": "efeitos"
+    },
+    {
+      "id": "atlas-paper",
+      "name": "Atlas · pergaminho",
+      "image": "assets/adventure/atlas-paper.png",
+      "width": 1536,
+      "height": 1024,
+      "frameWidth": 1536,
+      "frameHeight": 1024,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": false,
+      "category": "cenarios"
+    },
+    {
+      "id": "battle-archive",
+      "name": "Arquivo Central · fundo de batalha",
+      "image": "assets/adventure/battle-archive.png",
+      "width": 1672,
+      "height": 941,
+      "frameWidth": 1672,
+      "frameHeight": 941,
+      "frameCount": 1,
+      "actions": {
+        "still": {
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        }
+      },
+      "directions": [],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "footprint": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha": false,
+      "category": "cenarios"
+    },
+    {
+      "id": "battle-nia",
+      "image": "assets/characters/nia.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 2,
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        },
+        "action": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 160
+        },
+        "victory": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 240
+        }
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "footprint": [
+        20,
+        52,
+        24,
+        10
+      ],
+      "preservedOriginal": true
+    },
+    {
+      "id": "battle-leo",
+      "image": "assets/characters/leo.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 2,
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        },
+        "action": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 160
+        },
+        "victory": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 240
+        }
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "footprint": [
+        20,
+        52,
+        24,
+        10
+      ],
+      "preservedOriginal": true
+    },
+    {
+      "id": "battle-taina",
+      "image": "assets/characters/taina.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 2,
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        },
+        "action": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 160
+        },
+        "victory": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 240
+        }
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "footprint": [
+        20,
+        52,
+        24,
+        10
+      ],
+      "preservedOriginal": true
+    },
+    {
+      "id": "battle-sol",
+      "image": "assets/characters/sol.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 2,
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        },
+        "action": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 160
+        },
+        "victory": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 240
+        }
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "footprint": [
+        20,
+        52,
+        24,
+        10
+      ],
+      "preservedOriginal": true
+    },
+    {
+      "id": "battle-librarian",
+      "image": "assets/characters/librarian.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 24,
+      "actions": {
+        "idle": {
+          "row": 2,
+          "frames": [
+            0
+          ],
+          "duration": 1000
+        },
+        "action": {
+          "row": 4,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 160
+        },
+        "victory": {
+          "row": 5,
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "duration": 240
+        }
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "footprint": [
+        20,
+        52,
+        24,
+        10
+      ],
+      "preservedOriginal": true
+    }
+  ],
+  "audio": {
+    "type": "original synthesis",
+    "ceremonialRecording": false
+  },
+  "validation": {
+    "reports": {
+      "campaign": {
+        "checks": 36,
+        "passed": true,
+        "runtimeErrors": 0
+      },
+      "systems": {
+        "checks": 84,
+        "passed": true,
+        "runtimeErrors": 0
+      },
+      "interface": {
+        "checks": 8,
+        "passed": true,
+        "runtimeErrors": 0
+      },
+      "integration": {
+        "checks": 9,
+        "passed": true,
+        "runtimeErrors": 0
+      }
+    },
+    "scriptSyntaxChecks": 78,
+    "actualMaps": 20,
+    "mountedMuseumPortraits": 32,
+    "expansionImages": 53,
+    "isolatedImagesWithAlpha": 51,
+    "missingLocalReferences": 0,
+    "spritePaddingChecked": true,
+    "mobileLandscape": [
+      844,
+      390
+    ],
+    "localFileRegression": {
+      "checks": 10,
+      "passed": true,
+      "normalCanvasOriginRestrictions": true,
+      "mapsVisited": 20,
+      "runtimeErrors": 0
+    },
+    "httpRegression": {
+      "passed": true,
+      "runtimeErrors": 0
+    }
+  },
+  "attachments": {
+    "museumArtwork": {
+      "support": "wall id",
+      "position": "normalized u along wall",
+      "elevation": "pixels above wall base",
+      "orientation": [
+        "south",
+        "east",
+        "west"
+      ],
+      "defaultFramePixels": [
+        94,
+        96
+      ],
+      "defaultElevation": 134,
+      "wallHeight": 148,
+      "pictureLightMinimumFrameGapPixels": 4
+    },
+    "units": {
+      "worldTilePixels": 48
+    }
+  },
+  "waterAnimationManifest": "data/campus-water-manifest.json"
+}

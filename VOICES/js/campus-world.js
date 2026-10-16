@@ -30,10 +30,10 @@ addInstrument('room-1',9,18.5,13,1.8);
 addInstrument('park',5,21,21,1.8);
 D.defaults=copy(C.layouts);
 const shimmerCache=new Map();
-function fountainShimmer(index,img,frame){
+function fountainShimmer(index,frame){
  const key=index+':'+frame;if(shimmerCache.has(key))return shimmerCache.get(key);
- const c=document.createElement('canvas');c.width=c.height=96;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,96,96);const pixels=ctx.getImageData(0,0,96,96),p=pixels.data;
- for(let y=0;y<96;y++)for(let x=0;x<96;x++){const i=(y*96+x)*4,r=p[i],g=p[i+1],b=p[i+2];if(p[i+3]&&b>r*1.18&&g>r*1.12&&b>70&&(x*3+y+frame*2)%19<3){p[i]=Math.min(255,r+25);p[i+1]=Math.min(255,g+32);p[i+2]=Math.min(255,b+28);}else p[i+3]=0;}
+ const c=document.createElement('canvas');c.width=c.height=96;const ctx=c.getContext('2d'),pixels=ctx.createImageData(96,96),p=pixels.data;
+ for(const [at,r,g,b,a]of V.campusWaterPixels?.[index]||[]){const x=at%96,y=Math.floor(at/96);if((x*3+y+frame*2)%19>=3)continue;const i=at*4;p[i]=Math.min(255,r+25);p[i+1]=Math.min(255,g+32);p[i+2]=Math.min(255,b+28);p[i+3]=a;}
  ctx.putImageData(pixels,0,0);shimmerCache.set(key,c);return c;
 }
 V.Assets.load=async function(){
@@ -56,7 +56,7 @@ C.prop=function(ctx,family,index,x,y,size=T,materials=null){
  else if(family==='cultural-pack'&&index>=136)key='campus-portrait-'+index;
  if(!key)return prior.prop(ctx,family,index,x,y,size,materials);
  const img=V.Assets.images[key];if(!img)return;ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(x),Math.round(y),size,size);
- if(family==='fountain'&&!V.settings?.reducedMotion){const time=E.active?E.animationClock||0:V.Engine.time,frame=Math.floor(time*7)%8;ctx.drawImage(fountainShimmer(index,img,frame),Math.round(x),Math.round(y),size,size);}
+ if(family==='fountain'&&!V.settings?.reducedMotion){const time=E.active?E.animationClock||0:V.Engine.time,frame=Math.floor(time*7)%8;ctx.drawImage(fountainShimmer(index,frame),Math.round(x),Math.round(y),size,size);}
 };
 C.fountain=function(){};
 W.drawFountain=function(){};
