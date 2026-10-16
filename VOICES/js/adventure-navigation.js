@@ -45,7 +45,7 @@ clear(m,x,y,r=12){return!V.Living.blocked(m,x,y,r);},
 line(m,a,b,people=[]){const steps=Math.max(1,Math.ceil(V.dist(a,b)/7));for(let i=0;i<=steps;i++){const x=a.x+(b.x-a.x)*i/steps,y=a.y+(b.y-a.y)*i/steps;if(!this.clear(m,x,y)||people.some(o=>Math.hypot(x-o.x,y-o.y)<24))return false;}return true;},
 grid(m){const key=m.id+':'+(m.geometryRevision||0)+':'+(V.SceneDesign.revision||0),old=this.grids.get(key);if(old)return old;const step=24,width=Math.ceil(m.width*T/step),height=Math.ceil(m.height*T/step),cells=new Uint8Array(width*height);for(let y=0;y<height;y++)for(let x=0;x<width;x++)cells[y*width+x]=this.clear(m,x*step+12,y*step+12)?1:0;const g={step,width,height,cells};this.grids.set(key,g);return g;},
 interactionClear(m,p,o){
-const steps=Math.max(1,Math.ceil(V.dist(p,o)/8));for(let i=1;i<=steps;i++){const x=p.x+(o.x-p.x)*i/steps,y=p.y+(o.y-p.y)*i/steps;if(V.Architecture.blocked(m,x,y,1)||V.Rooms.blocked(m,x,y,1))return false;
+const endpoint=o.type==='room-door'?{x:o.x+o.door.normal.x*18,y:o.y+o.door.normal.y*18}:o;const steps=Math.max(1,Math.ceil(V.dist(p,endpoint)/8));for(let i=1;i<=steps;i++){const x=p.x+(endpoint.x-p.x)*i/steps,y=p.y+(endpoint.y-p.y)*i/steps;if(V.Architecture.blocked(m,x,y,1)||V.Rooms.blocked(m,x,y,1,o.type==='room-door'?o.door:null))return false;
 if(m.solids.some(s=>s.owner!=='host-'+o.id&&s.owner!==o.scene?.hostDecor&&x>s.x&&x<s.x+s.w&&y>s.y&&y<s.y+s.h))return false;}
 return true;
 },

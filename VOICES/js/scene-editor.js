@@ -72,10 +72,10 @@ V.SceneEditor={active:false,walk:false,tool:'select',snap:.5,grid:true,collision
  close(store=true){if(!this.active)return;if(store&&!this.applied)this.saveDraft();this.walk=false;this.active=false;this.applied=false;this.drag=null;V.$('#editor-root').hidden=true;V.$('#editor-root').innerHTML='';V.modal=false;V.Input.clear();if(this.returnFocus?.isConnected)this.returnFocus.focus();else if(V.Game.screen==='game')V.$('#world-canvas').focus();}
 };
 const E=V.SceneEditor;
-V.Game.bind=function(){original.bind();V.$('#scene-editor-button').onclick=()=>E.open();V.$('#title-editor-button').onclick=()=>E.open();};
-V.Game.onKey=function(k,e){if(E.active){E.key(k,e);return;}if(k==='f2'){e.preventDefault?.();E.open();return;}return original.key(k,e);};
+V.Game.bind=function(){original.bind();V.$('#title-editor-button').onclick=()=>E.open();};
+V.Game.onKey=function(k,e){if(E.active){E.key(k,e);return;}if(k==='f2'&&(this.screen==='title'||V.modal)){e.preventDefault?.();E.open();return;}return original.key(k,e);};
 V.Game.update=function(dt){if(E.active){E.tick(dt);return;}return original.update(dt);};
 V.Save.save=function(){if(E.active)return false;return original.save();};
-V.Game.pause=function(...args){original.pause(...args);if(this.mode==='explore'){const footer=V.$('.modal-footer'),button=document.createElement('button');button.id='pause-scene-editor';button.className='secondary';button.textContent='Editar cenário · F2';button.onclick=()=>E.open();footer?.appendChild(button);}};
+V.Game.pause=function(...args){original.pause(...args);if(this.mode==='explore'){const footer=V.$('.modal-footer'),button=document.createElement('button');button.id='pause-scene-editor';button.className='secondary';button.textContent='Editar cenário';button.onclick=()=>E.open();footer?.appendChild(button);}};
 window.addEventListener('resize',()=>E.resize());
 })();

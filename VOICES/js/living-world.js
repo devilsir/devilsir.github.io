@@ -322,7 +322,7 @@
       if(!qs.length){V.UI.toast('Nenhuma questão disponível para esta região.');return;}
       let index=0;
       const show=()=>{
-        const q=qs[index];V.UI.modal('Perguntar ao passado','HISTÓRIA E CONTEXTO · '+(index+1)+'/'+qs.length,`<div class="history-prompt"><span class="chip">${q.grade}º ano · interpretação</span><h3>${esc(q.prompt)}</h3></div><div class="stack">${q.options.map((label,i)=>`<button class="choice-button" data-history-answer="${i}">${String.fromCharCode(65+i)}. ${esc(label)}</button>`).join('')}</div><div id="history-feedback" aria-live="polite"></div>`,`<button id="history-source" class="secondary">Consultar leitura</button><button id="history-next" class="primary" disabled>Continuar →</button>`);
+        const q=qs[index];V.UI.modal('Perguntar ao passado','HISTÓRIA E CONTEXTO · '+(index+1)+'/'+qs.length,`<div class="history-prompt"><span class="chip">Interpretação de fontes</span><h3>${esc(q.prompt)}</h3></div><div class="stack">${q.options.map((label,i)=>`<button class="choice-button" data-history-answer="${i}">${String.fromCharCode(65+i)}. ${esc(label)}</button>`).join('')}</div><div id="history-feedback" aria-live="polite"></div>`,`<button id="history-source" class="secondary">Consultar leitura</button><button id="history-next" class="primary" disabled>Continuar →</button>`);
         V.$('#history-source').onclick=()=>{
           const r=V.learning.readings.find(x=>x.id===q.readingId||x.questionId===q.id);
           if(r)this.read(r.id,0,show);

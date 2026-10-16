@@ -203,7 +203,7 @@ const targets=this.targets(a.selectedAction),at=targets.findIndex(x=>x.id===a.se
 if(['arrowleft','arrowup','arrowright','arrowdown'].includes(k)){e.preventDefault?.();const direction=['arrowleft','arrowup'].includes(k)?-1:1;a.selectedTarget=targets[(at+direction+targets.length)%targets.length]?.id;this.ui();return true;}
 if(['enter','e'].includes(k)){e.preventDefault?.();this.commit(a.selectedAction,a.selectedTarget);return true;}
 }
-if(a.phase==='command'&&/^[1-6]$/.test(k)){const buttons=Array.from(V.$$('#battle-root .battle-commands button')).filter(b=>!b.disabled);buttons[+k-1]?.click();return true;}return false;
+if(a.phase==='command'&&/^[1-6]$/.test(k)){const buttons=Array.from(V.$$('#battle-root .battle-commands button'));buttons[+k-1]?.click();return true;}return false;
 },
 ui(){
 const a=this.active,root=V.$('#battle-root');if(!a||!root)return;const actor=this.get(a.actor),r=P.ensure();
