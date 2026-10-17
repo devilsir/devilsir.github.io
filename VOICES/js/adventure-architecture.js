@@ -2,8 +2,8 @@
 'use strict';
 const V=window.V,C=V.Cozy,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const A=V.Architecture={revision:1,
-design(d){return d.adventure||=( {version:3,architecture:{walls:[],mounts:[],signs:[]},lights:[],regions:[],encounters:[],triggers:[]} );},
-geometry(d){const a=this.design(d);return a.architecture||=( {walls:[],mounts:[],signs:[]} );},
+design(d){const adv=d.adventure||=( {version:3,architecture:{walls:[],mounts:[],signs:[],windows:[]},lights:[],regions:[],encounters:[],triggers:[]} );adv.architecture||={walls:[],mounts:[],signs:[],windows:[]};adv.architecture.windows||=[];return adv;},
+geometry(d){const a=this.design(d);const g=a.architecture||=( {walls:[],mounts:[],signs:[],windows:[]} );g.windows||=[];return g;},
 segments(w){
 const dx=w.b[0]-w.a[0],dy=w.b[1]-w.a[1],length=Math.hypot(dx,dy),out=[];
 const cuts=(w.openings||[]).map(o=>[Math.max(0,o.u-o.width/2/length),Math.min(1,o.u+o.width/2/length)]).sort((a,b)=>a[0]-b[0]);
@@ -29,11 +29,11 @@ else if(!m.objects.some(o=>o.id==='mounted-'+mount.id))m.objects.push({id:'mount
 m.geometryRevision=++this.revision;
 },
 approach(d,mount){const p=this.mountPosition(d,mount),w=p.wall,dx=w.b[0]-w.a[0],dy=w.b[1]-w.a[1];return Math.abs(dx)>=Math.abs(dy)?{x:p.x,y:p.y+42}:{x:p.x+(mount.orientation==='west'?-45:45),y:p.y+28};},
-blocked(m,x,y,r=11){return(m.archWalls||[]).some(s=>V.Rooms.distSeg({x,y},s.a,s.b).distance<r+(s.wall.thickness||12)/2);},
+blocked(m,x,y,r=11){return(m.archWalls||[]).some(s=>{const reach=r+(s.wall.thickness||12)/2;return x>=Math.min(s.a[0],s.b[0])-reach&&x<=Math.max(s.a[0],s.b[0])+reach&&y>=Math.min(s.a[1],s.b[1])-reach&&y<=Math.max(s.a[1],s.b[1])+reach&&V.Rooms.distSeg({x,y},s.a,s.b).distance<reach;});},
 drawWall(ctx,m,w,cam){
 const vertical=Math.abs(w.b[1]-w.a[1])>Math.abs(w.b[0]-w.a[0]),height=w.height||146,th=w.thickness||12,p=V.Player.data;
 const obstruct=p&&p.y<Math.max(w.a[1],w.b[1])&&p.y>Math.min(w.a[1],w.b[1])-height-45&&p.x>Math.min(w.a[0],w.b[0])-50&&p.x<Math.max(w.a[0],w.b[0])+50;
-ctx.save();ctx.globalAlpha=obstruct&&!V.SceneEditor?.active?.65:1;
+ctx.save();ctx.globalAlpha=obstruct&&!V.SceneEditor?.active?(w.id?.includes('home-divider')?.2:.65):1;
 for(const s of this.segments(w)){
 const x1=s.a[0]-cam.x,y1=s.a[1]-cam.y,x2=s.b[0]-cam.x,y2=s.b[1]-cam.y;
 ctx.fillStyle='#1b243229';ctx.beginPath();ctx.moveTo(x1+10,y1+12);ctx.lineTo(x2+10,y2+12);ctx.lineTo(x2+18,y2+32);ctx.lineTo(x1+18,y1+32);ctx.closePath();ctx.fill();
@@ -42,7 +42,23 @@ if(!vertical){ctx.fillRect(Math.min(x1,x2)-th/2,y1-height,Math.abs(x2-x1)+th,hei
 for(let y=y1-height+30;y<y1-16;y+=24){ctx.fillStyle='#e6dfc00b';ctx.fillRect(Math.min(x1,x2),y,Math.abs(x2-x1),1);}
 }else{ctx.beginPath();ctx.moveTo(x1-th/2,y1-height);ctx.lineTo(x2-th/2,y2-height);ctx.lineTo(x2+th/2,y2);ctx.lineTo(x1+th/2,y1);ctx.closePath();ctx.fill();ctx.strokeStyle='#d4c5a2';ctx.lineWidth=th;ctx.beginPath();ctx.moveTo(x1,y1-height);ctx.lineTo(x2,y2-height);ctx.stroke();ctx.strokeStyle='#544f55';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x1+th/2,y1);ctx.lineTo(x2+th/2,y2);ctx.stroke();}
 }
-for(const o of w.openings||[]){const x=w.a[0]+(w.b[0]-w.a[0])*o.u-cam.x,y=w.a[1]+(w.b[1]-w.a[1])*o.u-cam.y;ctx.fillStyle='#d5c4a3';if(!vertical){ctx.fillRect(x-o.width/2-7,y-height,7,height);ctx.fillRect(x+o.width/2,y-height,7,height);ctx.fillRect(x-o.width/2-7,y-height,o.width+14,12);}else{ctx.fillRect(x-9,y-o.width/2-height,18,12);ctx.fillRect(x-9,y+o.width/2-height,18,12);}}
+for(const o of w.openings||[]){
+const x=w.a[0]+(w.b[0]-w.a[0])*o.u-cam.x,y=w.a[1]+(w.b[1]-w.a[1])*o.u-cam.y;
+// The wall opening is full-height for collision, but the door itself isn't.
+// Paint the missing masonry ABOVE the frame; don't paint over the walkable gap.
+const matchedDoor=m.design?.construction?.doors?.find(d=>d.room===w.id?.split('-').slice(2,-1).join('-')&&Math.hypot(d.x-(x+cam.x),d.y-(y+cam.y))<10)
+ ||m.design?.construction?.doors?.find(d=>Math.hypot(d.x-(x+cam.x),d.y-(y+cam.y))<12);
+const doorHeight=matchedDoor?.height||64,topOfDoor=y-doorHeight+8;
+ctx.fillStyle='#d5c4a3';
+if(!vertical){
+const left=x-o.width/2-7,right=x+o.width/2;
+ctx.fillStyle=w.color||'#b8aa91';ctx.fillRect(left,y-height,o.width+14,Math.max(0,height-doorHeight-4));
+ctx.fillStyle='#dad0b7';ctx.fillRect(left,y-height,o.width+14,10);
+ctx.fillStyle='#b0a08b';ctx.fillRect(left,topOfDoor-10,o.width+14,6);
+ctx.fillStyle='#d5c4a3';ctx.fillRect(left,y-height,7,height);ctx.fillRect(right,y-height,7,height);
+ctx.fillRect(left,topOfDoor-7,o.width+14,8);
+}else{ctx.fillRect(x-9,y-o.width/2-height,18,12);ctx.fillRect(x-9,y+o.width/2-height,18,12);}
+}
 ctx.restore();
 for(const mount of m.mounts.filter(o=>o.wall===w.id))this.drawMount(ctx,m,mount,cam);
 },
@@ -101,9 +117,11 @@ normalise(input,d){
 if(!input)return;const a=copy(input);if(JSON.stringify(a).length>650000)throw Error('A expansão deste cenário excede o limite.');
 for(const key of ['lights','regions','encounters','triggers'])if(!Array.isArray(a[key]||[])||(a[key]||[]).length>250)throw Error('Dados de ambiente inválidos.');
 const bounds=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)&&p[0]>=24&&p[1]>=48&&p[0]<=d.width*T-24&&p[1]<=d.height*T-24;
-a.architecture||={walls:[],mounts:[],signs:[]};
-if(a.architecture.walls.length>180||a.architecture.mounts.length>160)throw Error('Há paredes ou quadros demais.');
+a.architecture||={walls:[],mounts:[],signs:[],windows:[]};
+a.architecture.windows||=[];
+if(a.architecture.walls.length>180||a.architecture.mounts.length>160||a.architecture.windows.length>40)throw Error('Há paredes, quadros ou janelas demais.');
 const wallIds=new Set();for(const w of a.architecture.walls){if(!bounds(w.a)||!bounds(w.b)||Math.hypot(w.a[0]-w.b[0],w.a[1]-w.b[1])<24||wallIds.has(w.id))throw Error('Parede inválida.');wallIds.add(w.id);w.height=V.clamp(Number(w.height)||148,30,220);w.thickness=V.clamp(Number(w.thickness)||12,6,32);for(const o of w.openings||[])if(!Number.isFinite(o.u)||o.u<0||o.u>1||!Number.isFinite(o.width)||o.width<35)throw Error('Abertura de parede inválida.');}
+for(const w of a.architecture.windows){if(!Number.isFinite(w.x)||!Number.isFinite(w.y)||!Number.isFinite(w.w)||!Number.isFinite(w.h))throw Error('Janela inválida.');w.x=V.clamp(Number(w.x),24,d.width*T-24);w.y=V.clamp(Number(w.y),24,d.height*T-24);w.w=V.clamp(Number(w.w)||94,36,Math.max(36,d.width*T-24));w.h=V.clamp(Number(w.h)||66,28,Math.max(28,d.height*T-24));}
 for(const l of a.lights){if(!Number.isFinite(l.x)||!Number.isFinite(l.y)||!/^#[0-9a-f]{6}$/i.test(l.color)||l.radius<20||l.radius>800||l.intensity<0||l.intensity>2)throw Error('Iluminação inválida.');}
 for(const r of a.regions){if(![r.x,r.y,r.w,r.h].every(Number.isFinite)||r.w<10||r.h<10)throw Error('Região de ambiente inválida.');}
 d.adventure=a;for(const mount of a.architecture.mounts)if(!this.validMount(d,mount))throw Error('Quadro sem apoio ou sobre uma abertura.');

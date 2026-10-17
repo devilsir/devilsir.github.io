@@ -9,7 +9,17 @@
   <link rel="stylesheet" href="css/interface.css">
   <link rel="stylesheet" href="css/culture.css"><link rel="stylesheet" href="css/scene-editor.css">
 <link rel="stylesheet" href="css/neighborhood.css"><link rel="stylesheet" href="css/coast.css">
-<link rel="stylesheet" href="css/room-editor.css"><link rel="stylesheet" href="css/adventure.css"><link rel="stylesheet" href="css/city.css">
+<link rel="stylesheet" href="css/room-editor.css"><link rel="stylesheet" href="css/adventure.css"><link rel="stylesheet" href="css/city.css"><link rel="stylesheet" href="css/homestead.css">
+<link rel="stylesheet" href="css/home-collection.css">
+<link rel="stylesheet" href="css/atlas-explorer.css">
+<link rel="stylesheet" href="css/pix-vocabulary.css">
+<link rel="stylesheet" href="css/mobile-controls.css"><link rel="stylesheet" href="css/city-menus.css">
+<link rel="stylesheet" href="css/achievements.css">
+<link rel="stylesheet" href="css/ancestral.css">
+<link rel="stylesheet" href="css/special-presences.css">
+<link rel="stylesheet" href="css/workshop-access.css">
+<link rel="stylesheet" href="css/historio-workbench.css">
+<link rel="stylesheet" href="css/neighborhood-homes.css">
 </head>
 <body>
 <div id="app">
@@ -38,7 +48,7 @@
       <div id="arcade-hud" class="arcade-hud" hidden></div>
       <div id="touch-controls" class="touch-controls"><div id="joystick" class="joystick" aria-label="Joystick virtual"><div id="stick" class="stick"></div></div><button id="touch-interact" class="touch-action" aria-label="Interagir ou ativar ferramenta">E</button><button id="touch-shield" class="touch-action shield" aria-label="Escudo">Espaço</button></div>
     </div>
-    <footer class="game-toolbar"><div class="player-chip"><img id="hud-portrait" alt="Seu personagem"><div><strong id="player-name">Nia</strong><small id="player-grade">Forasteiro · nível 1</small></div></div><nav class="tools"><button id="inventory-button"><span class="icon" data-icon="inventory"></span><span>Mochila</span><kbd>I</kbd></button><button id="journal-button"><span class="icon" data-icon="journal"></span><span>Diário</span><kbd>J</kbd></button><button id="notebook-button"><span class="icon" data-icon="journal"></span><span>Caderno</span><kbd>K</kbd></button><button id="heritage-button" class="heritage-shortcut" title="Vozes e objetos (V)"><img class="ui-art" src="assets/ui/interface/book.svg" width="28" height="28" alt=""><span>Vozes e objetos</span><kbd>V</kbd></button><button id="map-button"><span class="icon" data-icon="map"></span><span>Regiões</span><kbd>M</kbd></button><button id="glossary-button"><span class="icon" data-icon="translate"></span><span>PIX</span><kbd>T</kbd></button><button id="gallery-button"><span class="icon" data-icon="source"></span><span>Arquivo</span><kbd>G</kbd></button></nav><span id="save-status" class="save-status" aria-live="polite">Pronto</span></footer>
+    <footer class="game-toolbar"><div class="player-chip"><img id="hud-portrait" alt="Seu personagem"><div><strong id="player-name">Nia</strong><small id="player-grade">Forasteiro · nível 1</small></div></div><nav class="tools"><button id="inventory-button"><span class="icon" data-icon="inventory"></span><span>Mochila</span><kbd>I</kbd></button><button id="journal-button"><span class="icon" data-icon="journal"></span><span>Diário</span><kbd>J</kbd></button><button id="notebook-button"><span class="icon" data-icon="journal"></span><span>Caderno</span><kbd>K</kbd></button><button id="heritage-button" class="heritage-shortcut" title="Vozes e objetos (V)"><img class="ui-art" src="assets/ui/interface/book.svg" width="28" height="28" alt=""><span>Vozes e objetos</span><kbd>V</kbd></button><button id="map-button"><span class="icon" data-icon="map"></span><span>Atlas</span><kbd>M</kbd></button><button id="glossary-button"><span class="icon" data-icon="translate"></span><span>PIX</span><kbd>T</kbd></button><button id="gallery-button"><span class="icon" data-icon="source"></span><span>Arquivo</span><kbd>G</kbd></button></nav><span id="save-status" class="save-status" aria-live="polite">Pronto</span></footer>
   </section>
   <div id="editor-root" hidden></div><div id="modal-root"></div><div id="dialogue-root"></div><div id="toast-root" aria-live="polite"></div>
   <div id="loading" class="loading"><div class="loading-logo">V<span>_</span></div><p>Organizando as memórias…</p></div>
@@ -86,19 +96,63 @@
 <script src="js/room-editor.js"></script>
 <script src="js/adventure-data.js"></script>
 <script src="js/adventure-core.js"></script>
-<script src="js/adventure-architecture.js"></script>
+<script src="js/adventure-architecture.js?v=fix-20261017"></script>
 <script src="js/adventure-environment.js"></script>
 <script src="js/adventure-navigation.js"></script>
 <script src="js/adventure-story.js"></script>
 <script src="js/adventure-combat.js"></script>
 <script src="js/adventure-art.js"></script>
-<script src="js/adventure-editor.js"></script>
-<script src="js/adventure-boot.js"></script>
+<script src="js/adventure-editor.js?v=20261017b"></script>
+<script src="js/adventure-boot.js?v=fix-20261017"></script>
 <script src="js/city-single-mode.js"></script>
+<script src="js/sprite-frame-layouts.js"></script>
 <script src="js/city-animations.js"></script>
 <script src="js/city-motion.js"></script>
 <script src="js/city-world.js"></script>
 <script src="js/city-life.js"></script>
 <script src="js/city-atlas.js"></script>
 <script src="js/city-battle.js"></script>
+<script src="js/homestead-data.js"></script>
+<script src="js/homestead-world.js"></script>
+<script src="js/city-routing.js"></script>
+<script src="js/city-facades.js"></script>
+<script src="js/homestead-life.js"></script>
+<script src="js/homestead-activities.js"></script>
+<script src="js/pix-collection.js"></script>
+<script src="js/learning-arcade.js"></script>
+<script src="js/home-collection.js"></script>
+<script src="js/guardian-presence.js"></script>
+<script src="js/atlas-travel.js"></script>
+<script src="js/atlas-explorer.js"></script>
+<script src="js/english-vocabulary.js"></script>
+<script src="js/pix-vocabulary.js"></script>
+<script src="js/commute-routines.js"></script>
+<script src="js/house-window-lights.js"></script>
+<script src="js/mobile-controls.js"></script>
+<script src="js/culture-challenges-content.js"></script>
+<script src="js/culture-challenges.js"></script>
+<script src="js/culture-workshops.js"></script>
+<script src="js/culture-stage.js"></script>
+<script src="js/culture-oware.js"></script>
+<script src="js/city-menus.js"></script>
+<script src="js/achievement-progress.js"></script>
+<script src="js/ancestral-content.js"></script>
+<script src="js/ancestral-world.js"></script>
+<script src="js/ancestral-bounds.js"></script>
+<script src="js/ancestral-activities.js"></script>
+<script src="js/botica.js"></script>
+<script src="js/companions.js?v=fix-20261017"></script>
+<script src="js/home-variations.js"></script>
+<script src="js/ancestral-progress.js"></script>
+<script src="js/presence-frames.js?v=fix-20261017"></script>
+<script src="js/special-presences.js?v=20261017b"></script>
+<script src="js/workshop-access.js"></script>
+<script src="js/workshop-culture.js"></script>
+<script src="js/workshop-community.js"></script>
+<script src="js/workshop-classic.js"></script>
+<script src="js/workshop-neighborhood.js"></script>
+<script src="js/workshop-fishing.js"></script>
+<script src="js/historio-workbench.js"></script>
+<script src="js/neighborhood-homes.js?v=fix-20261017"></script>
+<script src="js/editor-window-repair.js?v=20261017b"></script>
 </body></html>

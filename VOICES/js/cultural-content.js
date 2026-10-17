@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   const V = window.V = window.V || {};
-  const author = 'Texto didático original de VOICES. Moradores, conversas, desenhos e situações de New Harmony são ficcionais; referências culturais reais são identificadas nas fontes.';
+  const author = 'Museu das Vozes · Cultura negra no cotidiano';
   const sources = [
     {id:'culture_ufu_trancas',name:'Letícia Ramos Ferreira — Tranças afro: identidade feminina negra e cultura visual no Ensino Fundamental, UFU (2021)',url:'https://repositorio.ufu.br/bitstream/123456789/33895/4/Tran%C3%A7asAfroIdentidade.pdf',note:'Referência técnica, p. 14. Síntese própria, sem reproduzir fotografias ou recomendações de saúde.'},
     {id:'culture_ufmg_nilma',name:'UFMG, Literafro — Nilma Lino Gomes',url:'https://www.letras.ufmg.br/literafro/autoras/368-nilma-',note:'Apresenta a pesquisa da educadora sobre corpo, cabelo e identidade negra. A leitura do jogo é uma síntese própria, não um trecho de seus livros.'},

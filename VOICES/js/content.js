@@ -1445,12 +1445,8 @@ V.content = {
         {
           "id": "c6_logic",
           "title": "Nota: sistemas podem reproduzir vieses",
-          "en": {
-            "6": "A system can repeat a biased pattern.",
-            "7": "An AI system can reproduce patterns from biased data and decisions.",
-            "8": "AI systems can reproduce or amplify biases through their data, design and use; a technical correction does not replace human accountability."
-          },
-          "pt": "Sistemas de IA podem reproduzir ou ampliar vieses pelos dados, projeto e uso. Uma correção técnica não substitui a responsabilidade humana.",
+          "en": "The archive repeats omissions when whole neighbourhoods are missing from its records.",
+          "pt": "O arquivo repete omissões quando bairros inteiros estão ausentes de seus registros.",
           "source": "ai_unesco",
           "word": "bias",
           "icon": "chip"

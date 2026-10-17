@@ -29,10 +29,7 @@ const literals={
 'Let’s listen and learn together.':'Vamos escutar e aprender juntos.'
 };
 for(const[en,pt]of Object.entries(literals))T.pairs.set(T.key(en),pt);
-const reviewed=new Set(),retainContext=o=>{if(!o||typeof o!=='object'||reviewed.has(o))return;reviewed.add(o);if(o.en&&o.pt){const literal=literals[V.lang(o.en)];if(literal&&V.lang(o.pt)!==literal){o.hint||=V.lang(o.pt);o.pt=literal;delete o.ptByGrade;}}for(const child of Object.values(o))retainContext(child);};
-for(const root of [V.content,V.learning,V.cozyContent,V.campusContent,V.neighborsContent])retainContext(root);
-
-const line=T.line.bind(T);T.line=function(input){const out=line(input),literal=this.text(input.en,input.pt,input.ptByGrade);if(input.pt&&literal!==V.lang(input.pt)&&literals[V.lang(input.en)]&&!input.hint)out.hint=V.lang(input.pt);out.pt=literal;out.ptByGrade=undefined;return out;};
+const line=T.line.bind(T);T.line=function(input){const out=line(input);out.pt=this.text(out.en,out.pt,out.ptByGrade);out.ptByGrade=undefined;return out;};
 const init=V.Living.initContent.bind(V.Living);V.Living.initContent=function(){init();const seen=new Set(),walk=o=>{if(!o||typeof o!=='object'||seen.has(o))return;seen.add(o);if(o.en&&o.pt)Object.assign(o,T.line(o));for(const v of Object.values(o))walk(v);};for(const root of [V.content,V.learning,V.cozyContent,V.campusContent,V.campus,V.neighborsContent])walk(root);};
 const start=V.Dialogue.start.bind(V.Dialogue);V.Dialogue.start=function(lines,...rest){return start(lines.map(l=>T.line(l)),...rest);};
 const show=V.Dialogue.show.bind(V.Dialogue);V.Dialogue.show=function(){show();const l=this.lines[this.index],root=V.$('.dialogue-en')?.parentElement;if(!l||!root)return;const pt=V.$('#dialogue-pt');if(pt&&l.hint){const hint=document.createElement('p');hint.className='dialogue-context';hint.innerHTML='<b>Contexto da missão</b> '+V.escape(l.hint);pt.after(hint);}const log=V.state.dialogueHistory?.at(-1);if(log)log.pt=T.text(l.en,l.pt);};

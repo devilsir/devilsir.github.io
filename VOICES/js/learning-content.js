@@ -9,7 +9,7 @@
       "title": "Quem aparece no programa?",
       "kind": "book",
       "chapter": 1,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Cultura e autoria",
       "paragraphs": [
         "Em New Harmony, Sol encontra um programa de festival que mostra instrumentos, horários e cores, mas nenhum nome. Lia pergunta quem tocou, compôs e organizou cada apresentação.",
@@ -28,7 +28,7 @@
       "title": "Uma roda não é só um movimento",
       "kind": "book",
       "chapter": 1,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Capoeira e aprendizagem",
       "paragraphs": [
         "Na cidade ficcional, PIX tenta explicar uma roda olhando apenas uma fotografia. Ivo avisa que um instante da imagem não mostra como participantes aprendem e se relacionam.",
@@ -47,7 +47,7 @@
       "title": "Rotas e cidades do Mali",
       "kind": "book",
       "chapter": 2,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Histórias africanas e intercâmbio",
       "paragraphs": [
         "Em New Harmony, Leo abre um mapa sem legenda. Todos os caminhos aparecem como uma única linha. Ele percebe que faltam lugares, produtos e pessoas.",
@@ -66,7 +66,7 @@
       "title": "Kongo antes da etiqueta",
       "kind": "book",
       "chapter": 2,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Contexto regional e representação",
       "paragraphs": [
         "No museu ficcional, Mara encontra uma etiqueta que descreve Kongo apenas pelo encontro com portugueses. Ísis pergunta o que existia antes daquela chegada.",
@@ -86,7 +86,7 @@
       "title": "Uma conta, uma equipe, dois nomes",
       "kind": "book",
       "chapter": 3,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Ciência e atribuição",
       "paragraphs": [
         "Em New Harmony, Caio encontra um relatório com o campo de autoria cortado. O título parece convincente, mas não permite saber quem escreveu o trabalho.",
@@ -105,7 +105,7 @@
       "title": "Um caderno também guarda conhecimento",
       "kind": "book",
       "chapter": 3,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Escrita e memória",
       "paragraphs": [
         "Na biblioteca de New Harmony, Luca prefere guardar só máquinas na vitrine de conhecimento. Davi lhe mostra um caderno ficcional com observações, escolhas de palavras e rasuras.",
@@ -124,7 +124,7 @@
       "title": "Quatro posts, quatro perguntas",
       "kind": "book",
       "chapter": 4,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Discriminação e contexto",
       "paragraphs": [
         "Na rede ficcional, uma mensagem nega acesso por cor da pele; outra generaliza um povo; uma terceira usa um aviso antigo; a quarta discute preferência musical.",
@@ -143,7 +143,7 @@
       "title": "Data ausente, história diferente",
       "kind": "book",
       "chapter": 4,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Fontes e informação",
       "paragraphs": [
         "Em New Harmony, Bia recebe um recorte que anuncia o fechamento da biblioteca. A data desapareceu, e o recorte circula como notícia atual.",
@@ -162,7 +162,7 @@
       "title": "A cidade escuta e responde",
       "kind": "book",
       "chapter": 5,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Participação de estudantes",
       "paragraphs": [
         "Em New Harmony, Joana organiza uma reunião sobre o centro comunitário. Luca participa, mas ninguém registra sua proposta de horários. Ele pergunta se ser ouvido é só falar.",
@@ -181,7 +181,7 @@
       "title": "Muitos povos, muitos presentes",
       "kind": "book",
       "chapter": 5,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Diversidade indígena contemporânea",
       "paragraphs": [
         "Na mostra ficcional, alguém pede que Tainá grave uma fala que explique todos os povos indígenas. Ela propõe mostrar relatos identificados, sem tratá-los como uma voz única.",
@@ -200,11 +200,11 @@
       "title": "Os dados que ficaram de fora",
       "kind": "book",
       "chapter": 6,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Amostras e transparência",
       "paragraphs": [
         "Em New Harmony, Nia descobre que o arquivo de avaliação ouviu só moradores perto da praça. BIAS.EXE usou essa amostra para afirmar que todos chegavam facilmente ao festival.",
-        "Conexão com tecnologia: os princípios da OCDE destacam informação compreensível sobre sistemas de IA e seus resultados.",
+        "A equipe desenha um mapa com os trajetos que entraram na amostra e aqueles que ficaram de fora. Nia liga cada conclusão aos bairros realmente ouvidos. Quem consulta o relatório pode conferir quais caminhos foram avaliados e quais ainda precisam de observação.",
         "No problema ficcional, a equipe mostra quem entrou na amostra e quem ficou de fora. A conclusão passa a indicar seu limite, enquanto uma nova consulta inclui outros trajetos e experiências."
       ],
       "en": "Show what the sample includes.",
@@ -219,11 +219,11 @@
       "title": "O arquivo que nunca fica pronto",
       "kind": "book",
       "chapter": 6,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Responsabilidade e revisão",
       "paragraphs": [
         "Depois do reboot ficcional, PIX quer trocar a placa da biblioteca por “sem erros para sempre”. Celina sugere uma placa com data da revisão e um jeito de enviar dúvidas.",
-        "Conexão com tecnologia: a OCDE aborda responsabilidade e gestão de riscos ao longo do ciclo de vida de sistemas de IA.",
+        "Davi mantém um histórico das alterações: cada nova ficha recebe origem, data, responsável e motivo da revisão. Se alguém encontrar uma divergência, a versão anterior continua disponível para comparação. Assim a equipe pode corrigir o catálogo sem esconder o caminho da mudança.",
         "Em New Harmony, novas contribuições podem trazer informação, dúvidas ou erros. A equipe mantém responsáveis, critérios e revisões, em vez de usar a vitória como motivo para fechar o arquivo."
       ],
       "en": "A restored archive still needs review.",
@@ -238,7 +238,7 @@
       "title": "Uma pista, uma conclusão",
       "kind": "note",
       "chapter": 0,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Investigação e museus",
       "paragraphs": [
         "Na biblioteca ficcional de New Harmony, Davi encontra uma chave e uma etiqueta. A chave mostra que existia um mecanismo; a etiqueta sozinha não prova quem o construiu.",
@@ -257,7 +257,7 @@
       "title": "Caderno de consentimento",
       "kind": "note",
       "chapter": 0,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Privacidade e memória",
       "paragraphs": [
         "Em New Harmony, Tainá quer gravar uma conversa na praça. Bia aceita falar, mas pede que um detalhe pessoal não entre na mostra.",
@@ -276,7 +276,7 @@
       "title": "Como se aprende uma tradição",
       "kind": "note",
       "chapter": 1,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Transmissão cultural",
       "paragraphs": [
         "Em New Harmony, Ivo tenta substituir uma oficina por uma lista de movimentos. Sol pergunta onde ficam a escuta, o canto e as relações entre participantes.",
@@ -295,7 +295,7 @@
       "title": "Batida original, referência clara",
       "kind": "note",
       "chapter": 1,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Patrimônio vivo e criação",
       "paragraphs": [
         "Na New Harmony ficcional, Sol cria uma faixa eletrônica e pensa em anunciar que ela representa uma tradição inteira. Lia pede uma descrição mais precisa.",
@@ -314,7 +314,7 @@
       "title": "Tombuctu: estudo e troca",
       "kind": "note",
       "chapter": 2,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Cidades e conhecimentos africanos",
       "paragraphs": [
         "No museu de New Harmony, Ísis encontra uma galeria que só fala de produtos. Ela abre um espaço para perguntar onde conhecimentos eram estudados e circulavam.",
@@ -333,7 +333,7 @@
       "title": "Songhai em seu contexto",
       "kind": "note",
       "chapter": 2,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Lugares, períodos e patrimônio",
       "paragraphs": [
         "Em New Harmony, Leo recebe um desenho de monumento sem legenda. O scanner tenta colocar qualquer governante famoso no lugar da informação ausente.",
@@ -352,7 +352,7 @@
       "title": "A engenharia e a cidade",
       "kind": "note",
       "chapter": 3,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Trabalho e reconhecimento",
       "paragraphs": [
         "Na New Harmony ficcional, Caio mostra uma oficina com nomes apagados dos projetos. Leo percebe que a cidade usa as obras todos os dias, mesmo sem conhecer quem contribuiu.",
@@ -371,7 +371,7 @@
       "title": "1888: ler a lei e ampliar a pergunta",
       "kind": "note",
       "chapter": 3,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Abolição e limites de uma fonte",
       "paragraphs": [
         "No arquivo ficcional de New Harmony, Joana mostra uma cópia resumida de uma lei. A turma pergunta se esse texto pode contar sozinho como eram as vidas das pessoas depois dele.",
@@ -391,7 +391,7 @@
       "title": "Um desacordo sobre uma canção",
       "kind": "note",
       "chapter": 4,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Opiniões e diversidade cultural",
       "paragraphs": [
         "Em New Harmony, Rosa prefere sintetizadores e Aisha gosta mais de guitarras. Os dois explicam suas escolhas sem descrever nenhum povo como inferior.",
@@ -410,7 +410,7 @@
       "title": "Mudar a regra, apoiar a pessoa",
       "kind": "note",
       "chapter": 4,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Direitos e responsabilidade institucional",
       "paragraphs": [
         "No clube ficcional de New Harmony, uma estudante foi excluída por cor da pele. Bia pede que a resposta não seja apenas apagar o post que anunciou a decisão.",
@@ -429,7 +429,7 @@
       "title": "Projeto aberto, caminho fechado",
       "kind": "note",
       "chapter": 5,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Acesso à vida cultural",
       "paragraphs": [
         "Em New Harmony, Jo inaugura uma sala cultural. O convite chega a todos, mas Celina mostra que um dos trajetos até a entrada continua bloqueado.",
@@ -448,11 +448,11 @@
       "title": "Relatório de revisão",
       "kind": "note",
       "chapter": 6,
-      "author": "Texto didático original de VOICES; pessoas e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Transparência e continuidade",
       "paragraphs": [
         "No fim da missão ficcional, Nia escreve que uma seleção de registros deixou um bairro de fora. Ela anota o que mudou e o que ainda não foi verificado.",
-        "Conexão com tecnologia: a OCDE trata a responsabilidade por sistemas de IA como um trabalho durante seu desenvolvimento e uso.",
+        "A nova revisão já tem responsáveis e uma pergunta concreta: os bairros ausentes conseguem consultar os registros e enviar suas contribuições? Jo vai reunir os relatos, e Nia vai comparar os resultados com o relatório anterior. As dúvidas que restarem ficarão visíveis na próxima ficha.",
         "Em New Harmony, o relatório identifica responsáveis, fontes, limites e o próximo encontro de revisão. Admitir uma lacuna permite trabalhar nela; escondê-la deixa o público sem informação para questionar a decisão."
       ],
       "en": "Record the change and the remaining limits.",

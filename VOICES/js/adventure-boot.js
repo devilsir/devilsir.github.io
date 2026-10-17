@@ -22,7 +22,7 @@ if(V.Neighborhood)V.Neighborhood.bubbleDrawn=false;m.protestChantVisible=false;
 if(!m.cache)C.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));E.sky(ctx,m,cam);C.pond(ctx,m,cam);
 if(!V.SceneEditor.active)N.draw(ctx,cam);
 m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));if(m.id==='hub')C.fountain(ctx,cam);
-const draws=m.decor.map(o=>({y:o.layer==='ground'?-10000:o.y+o.size*.9,kind:'decor',o})).concat(m.objects.map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
+const draws=m.decor.map(o=>({y:o.layer==='ground'?-10000:o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9,kind:'decor',o})).concat(m.objects.map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
 for(const d of draws){
 if(d.kind==='player')V.Player.render(ctx);
 else if(d.kind==='object')C.drawObject(ctx,d.o,cam,t);

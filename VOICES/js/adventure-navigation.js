@@ -51,7 +51,7 @@ return true;
 },
 calculate(m,start,target,dynamic=true){
 if(!target)return[];
-const g=this.grid(m),{step,width,height}=g,people=dynamic?m.objects.filter(o=>V.Cozy.person(o)&&o!==target):[],cells=g.cells.slice();
+const g=this.grid(m),{step,width,height}=g,people=dynamic&&!V.Homestead?.commuting?m.objects.filter(o=>V.Cozy.person(o)&&o!==target):[],cells=g.cells.slice();
 for(const o of people){const cx=Math.floor(o.x/step),cy=Math.floor(o.y/step);for(let y=cy-1;y<=cy+1;y++)for(let x=cx-1;x<=cx+1;x++)if(x>=0&&y>=0&&x<width&&y<height&&Math.hypot(x*step+12-o.x,y*step+12-o.y)<26)cells[y*width+x]=0;}
 const candidates=[];let origin=-1,nearest=Infinity;
 for(let y=Math.max(0,Math.floor(start.y/step)-2);y<=Math.min(height-1,Math.floor(start.y/step)+2);y++)for(let x=Math.max(0,Math.floor(start.x/step)-2);x<=Math.min(width-1,Math.floor(start.x/step)+2);x++){const i=y*width+x,p={x:x*step+12,y:y*step+12},d=V.dist(p,start);if(cells[i]&&d<nearest&&this.line(m,start,p,people)){origin=i;nearest=d;}}
@@ -76,7 +76,7 @@ if(!objective?.object){this.path=[];this.reason='Investigue os registros dispon�
 let target=objective.object,label=objective.label;this.crossMap=null;
 if(objective.map!==m.id){const route=this.mapRoute(m.id,objective.map);if(!route?.length){this.path=[];const locked=this.mapRoute(m.id,objective.map,true)?.find(e=>!e.allowed);this.reason=locked?.reason||'Não há uma conexão acessível. Confira as portas no atlas.';this.target=objective;return;}target=route[0].object;this.crossMap=route[0].to;label='Seguir para '+V.World.maps[this.crossMap].name.split(' · ')[0]+' · '+label;}
 const sig=[objective.key,m.id,m.geometryRevision,Math.floor(V.Player.data.x/24),Math.floor(V.Player.data.y/24),Math.floor(target.x/24),Math.floor(target.y/24)].join('|');
-if(sig!==this.signature||a.routeEnabled){this.path=this.calculate(m,V.Player.data,target);this.signature=sig;}
+const people=V.Homestead?.commuting?[]:m.objects.filter(o=>V.Cozy.person(o)&&o!==target),blocked=this.path.length>1&&!this.line(m,V.Player.data,this.path[1],people),retry=V.Engine.time>=(this.retryAt||0);if(sig!==this.signature||retry&&(!this.path.length||blocked)){this.path=this.calculate(m,V.Player.data,target);this.signature=sig;this.retryAt=V.Engine.time+(this.path.length?.45:1.2);}
 this.reason=this.path.length?label:V.dist(V.Player.data,target)<(target.interactionRange||80)?'Objetivo próximo · pressione E para interagir.':'O caminho está ocupado. A rota tenta novamente; confira o atlas.';
 this.target=objective;this.nextObject=target;
 let el=V.$('#adv-route-info');if(!el){el=document.createElement('button');el.id='adv-route-info';el.className='adv-route-info';el.onclick=()=>this.panel();V.$('#stage').appendChild(el);}el.textContent=(a.routeEnabled?'◇ ':'')+this.reason;el.hidden=V.Game.mode!=='explore';

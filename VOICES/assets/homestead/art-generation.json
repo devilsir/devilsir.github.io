@@ -1,0 +1,31 @@
+{
+  "assets": [
+    {
+      "path": "assets/homestead/home-collection.png",
+      "tool": "image_gen",
+      "prompt": "Create ONE production game sprite atlas, exactly 1536 by 1024 pixels, exactly SIX columns and FOUR rows of equal 256 by 256 cells, 24 isolated furniture sprites. The provided reference image is STYLE REFERENCE only: match its warm cozy hand-painted pixel art, crisp pixel edges, dark outlines, rich wooden materials, muted teal/ochre/cream colors, slightly elevated FRONT camera showing the top and front of each object, identical lighting from upper left. Real transparent alpha background, empty cell gutters, NO background or opaque colored strips, NO text, labels, numbers, grid lines, drop shadows outside each cell, people, or characters. Each furniture piece fits entirely inside its own 256x256 cell with at least 20 px padding on all sides. Center each object horizontally, bottom baseline at y=236 within each cell. All cells SAME scale, orthographic-like view, no dramatic perspective. Exact row-major contents: row 1: teal double bed with pillows and wooden headboard, rose single bed, oak bunk bed with ladder on right and visible lower mattress, terracotta two-seat sofa, sage green corner sectional sofa, navy upholstered reading armchair; row 2: teak writing desk with books, ivory study desk with laptop, round wooden dining table with two chairs, low oval coffee table with a cup and books, tall open bookcase with books and plant, walnut chest of drawers; row 3: cream wardrobe with rattan doors, oak bedside table with a small book, slim entrance console with shoe shelves, woven rattan floor lamp with warm shade, mint green closed refrigerator, white washing machine with round glass door; row 4: turquoise freestanding bathtub, porcelain toilet, rectangular blue geometric woven rug viewed from same camera, round ochre woven rug, large monstera in clay pot, tall cactus in ceramic pot. Do not repeat objects. Preserve the exact 6x4 cell structure.",
+      "packing": {
+        "columns": 6,
+        "rows": 4,
+        "cell": 256,
+        "transparent": true
+      }
+    },
+    {
+      "path": "assets/city/zambeto-actions.png",
+      "tool": "image_gen",
+      "prompt": "Precise repair of this existing Zambeto game sprite sheet. Keep the entire original image dimensions exactly 1536x1344, exactly EIGHT columns and SEVEN rows of 192x192 cells. Preserve every cell's position, character size, pose, straw texture, red cap, shading, body, feet anchor, transparency, magical particles, teal and gold effects. Change ONLY the missing horns: Zambeto must consistently have TWO curved ivory horns attached symmetrically to the red cap in EVERY frame, especially row 2 walking and row 4 spinning, where several frames currently have only one horn or none. Both horns remain visible throughout all motions, even side-facing poses; adapt their angle gently to the cap orientation but never hide or remove a horn. Match the shape, color and rendering of the complete horns in row 1. Make no other artistic changes, add no background, no labels, no frames, no padding changes. Keep genuine transparent alpha. All 56 sprites must stay fully within their original 192x192 cell without touching neighboring frames. This is a game asset repair, not a new illustration.",
+      "updatedRows": [
+        "Andar",
+        "Rodopiar"
+      ],
+      "preservedRows": [
+        "Repouso",
+        "Dançar",
+        "Proteção",
+        "Conhecimento",
+        "Apoio"
+      ]
+    }
+  ]
+}

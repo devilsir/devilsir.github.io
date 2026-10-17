@@ -66,7 +66,7 @@
       "kind": "book",
       "chapter": 3,
       "map": "room-3",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Ciência, pesquisa e autoria",
       "paragraphs": [
         "Em New Harmony, Tomás arruma uma mesa de observação enquanto Amara traz uma ficha de cientista. O espaço do nome está preenchido, mas o campo de pesquisa ficou em branco.",
@@ -86,7 +86,7 @@
       "kind": "book",
       "chapter": 6,
       "map": "room-6",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Ciência, colaboração e registros",
       "paragraphs": [
         "Na cidade ficcional, Otávio prepara um mural sobre colaboração. Uma manchete cortada mostra um único nome. Tomás abre a notícia completa para encontrar a equipe e as instituições.",
@@ -107,7 +107,7 @@
       "kind": "book",
       "chapter": 1,
       "map": "room-1",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Música e documentação",
       "paragraphs": [
         "André chega ao ensaio de New Harmony com um programa novo. Amara vê o nome de quem vai tocar, mas pergunta onde estão os créditos de composição e de arranjo.",
@@ -127,7 +127,7 @@
       "kind": "book",
       "chapter": 4,
       "map": "chapter-4",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Samba, mulheres e visibilidade",
       "paragraphs": [
         "Na rede de New Harmony, Elisa encontra um cartão de divulgação que mostra a voz de uma artista, mas omite sua criação. André propõe escrever uma legenda que apresente as funções documentadas.",
@@ -147,7 +147,7 @@
       "kind": "book",
       "chapter": 2,
       "map": "room-2",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Arte, memória e representação",
       "paragraphs": [
         "No pequeno museu de New Harmony, Jamila organiza retratos desenhados pelos moradores. Rui percebe que uma etiqueta chama todas as pessoas apenas de grupo, apagando suas histórias individuais.",
@@ -167,7 +167,7 @@
       "kind": "book",
       "chapter": 5,
       "map": "room-5",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Arte e vida comunitária",
       "paragraphs": [
         "Elisa desenha um banco, uma conversa e o movimento do mercado de New Harmony. Jamila sugere que ela anote quem estava presente e o que escolheu destacar no desenho.",
@@ -187,7 +187,7 @@
       "kind": "book",
       "chapter": 5,
       "map": "market",
-      "author": "Texto didático original de VOICES; moradores e situações de New Harmony são ficcionais.",
+      "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Patrimônio, trabalho e comunidade",
       "paragraphs": [
         "No mercado de New Harmony, Viviane arruma seu tabuleiro e conversa com Rui sobre uma ficha de exposição. Ela quer que a legenda mostre saberes e pessoas, além do nome de uma comida.",

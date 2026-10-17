@@ -1,0 +1,67 @@
+#game-screen.touch-game{height:100dvh;min-height:0;max-height:100dvh;overflow:hidden}
+.touch-game .game-top,.touch-game .game-toolbar{flex-shrink:0}
+.stage.touch-layout{min-height:0;isolation:isolate;--touch-zone:112px;--touch-side:14px;--touch-button:56px}
+.touch-layout #touch-controls{display:block;z-index:30;pointer-events:none}
+.touch-layout #touch-controls[hidden]{display:none!important}
+.touch-layout .joystick{z-index:1;left:max(var(--touch-side),env(safe-area-inset-left));bottom:max(15px,env(safe-area-inset-bottom));width:96px;height:96px;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.touch-layout .stick{width:42px;height:42px;left:25px;top:25px;pointer-events:none}
+.touch-layout .touch-action{z-index:1;right:max(var(--touch-side),env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));width:var(--touch-button);height:var(--touch-button);min-width:48px;min-height:48px;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 3px 9px #122f3780}
+.touch-layout .touch-action.shield{right:calc(max(var(--touch-side),env(safe-area-inset-right)) + var(--touch-button) + 12px);font-size:10px}
+.touch-layout .adv-clock{top:calc(var(--touch-mission-height,78px) + 18px);left:10px;transform:none}
+.touch-layout .adv-status{bottom:calc(var(--touch-zone) + 4px);left:10px;max-width:calc(50% - 14px);font-size:9px;gap:5px;padding:5px 7px;z-index:12}
+.touch-layout .life-hud{bottom:calc(var(--touch-zone) + 4px);right:10px;max-width:calc(50% - 14px);font-size:8px;gap:7px;padding:5px 7px;z-index:12}
+.touch-layout .life-hud span:first-child{font-size:10px}
+.touch-layout .life-hud b{font-size:9px}
+.touch-layout .interact-hint{bottom:calc(var(--touch-zone) + 42px);left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);min-width:0;width:max-content;font-size:10px;z-index:24;padding:6px 10px;pointer-events:none;text-align:center}
+.touch-layout .adv-route-info{bottom:calc(var(--touch-zone) + 79px);left:50%;transform:translateX(-50%);max-width:calc(100% - 24px);min-width:0;width:max-content;font-size:9px;line-height:1.5;padding:5px 9px;z-index:24}
+.touch-layout .community-hud{bottom:calc(var(--touch-zone) + 116px);left:10px;max-width:calc(100% - 20px);width:max-content;font-size:10px;padding:8px 10px;pointer-events:none}
+.touch-layout .community-hud span{display:none}
+.touch-layout .community-hud strong,.touch-layout .community-hud small{font-size:9px}
+.touch-layout .tutorial-hint{bottom:calc(var(--touch-zone) + 116px);left:10px;max-width:calc(100% - 20px);font-size:11px}
+.touch-layout .home-cart{z-index:34;left:calc(50% - 45px);right:auto;bottom:max(20px,env(safe-area-inset-bottom));top:auto;width:44px;height:44px;min-height:44px;padding:8px;justify-content:center;border-radius:10px}
+.touch-layout .home-cart>span{display:none}
+.touch-layout .home-cart>svg{width:25px;height:25px;flex:0 0 25px}
+.touch-layout #leave-water{z-index:26;bottom:calc(var(--touch-zone) + 42px);min-height:38px;font-size:11px;padding:8px 12px}
+.touch-layout.touch-input-paused .home-cart,.touch-layout.touch-input-paused #leave-water{visibility:hidden}
+.touch-game .game-toolbar{padding:6px max(8px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));gap:5px;min-height:58px;flex-wrap:nowrap}
+.touch-game .player-chip,.touch-game .save-status{display:none}
+.touch-game .tools{display:flex;justify-content:flex-start;min-width:0;width:100%;gap:4px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain}
+.touch-game .tools::-webkit-scrollbar{display:none}
+.touch-game .tools button{flex:0 0 49px;min-width:49px;min-height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:4px 3px;font-size:9px}
+.touch-game .tools button kbd{display:none}
+.touch-game .tools button .icon,.touch-game .tools button>.ui-art{width:22px;height:22px;flex:0 0 22px}
+@media (orientation:landscape) and (max-height:520px){
+.stage.touch-layout{--touch-zone:92px;--touch-side:12px;--touch-button:50px}
+.touch-layout .adv-clock{top:9px;left:50%;transform:translateX(-50%)}
+.touch-layout .mission-hud{top:9px;left:10px;max-width:min(270px,calc(50% - 90px));padding:8px 10px}
+.touch-layout .joystick{width:76px;height:76px;bottom:max(12px,env(safe-area-inset-bottom))}
+.touch-layout .stick{width:38px;height:38px;left:17px;top:17px}
+.touch-layout .touch-action{bottom:max(14px,env(safe-area-inset-bottom))}
+.touch-layout .interact-hint{bottom:12px;max-width:calc(100% - 270px);font-size:10px}
+.touch-layout .adv-route-info{bottom:49px;max-width:calc(100% - 270px);font-size:9px}
+.touch-layout .community-hud,.touch-layout .tutorial-hint{display:none}
+.touch-layout .home-cart{top:9px;bottom:auto;left:auto;right:142px}
+.touch-layout .mini-map{width:112px;right:10px;top:9px}
+.touch-layout .minimap-caption small{display:none}
+.touch-layout #leave-water{bottom:80px;max-width:230px;font-size:10px;padding:6px 10px}
+.touch-game .game-top{min-height:42px;padding:5px 12px;flex-wrap:nowrap}
+.touch-game .game-top .location-block{min-width:0}
+.touch-game .game-toolbar{min-height:53px;padding-top:4px;padding-bottom:max(4px,env(safe-area-inset-bottom))}
+.touch-game .tools button{flex:0 0 57px;font-size:9px}
+}
+@media(max-width:360px){.touch-layout .joystick{width:86px;height:86px}.touch-layout .stick{left:20px;top:20px}.stage.touch-layout{--touch-button:50px}.touch-layout .adv-status{font-size:8px}.touch-layout .life-hud{gap:4px;font-size:7px}.touch-layout .home-cart{left:calc(50% - 43px)}}
+
+@media (orientation:landscape) and (max-height:520px){
+.touch-layout .mission-progress{display:none}
+.touch-layout #mission-tracker strong{font-size:11px}
+.touch-layout #mission-tracker span{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-size:9px;line-height:1.5}
+.touch-layout .chapter-chip{font-size:7px}
+}
+@media (orientation:landscape) and (max-height:350px){
+.touch-layout .mini-map{width:92px;padding:4px}
+.touch-layout .minimap-label{font-size:7px;margin-bottom:2px;line-height:1.4}
+.touch-layout .minimap-label .ui-art,.touch-layout .minimap-caption{display:none}
+.touch-layout .minimap-open{min-height:44px}
+.touch-layout .minimap-open canvas{width:100%;height:44px;object-fit:contain}
+.touch-layout .home-cart{right:114px}
+}
