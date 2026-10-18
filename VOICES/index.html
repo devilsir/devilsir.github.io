@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="css/workshop-access.css">
 <link rel="stylesheet" href="css/historio-workbench.css">
 <link rel="stylesheet" href="css/neighborhood-homes.css">
+<link rel="stylesheet" href="css/professor-mode.css?v=20261017c"><link rel="stylesheet" href="css/professor-library-v2.css?v=20261017c">
 </head>
 <body>
 <div id="app">
@@ -33,7 +34,7 @@
       <p class="tagline">Every story deserves to be heard.</p>
       <p class="title-desc">As memórias da cidade estão desaparecendo.<br>Junte sua equipe. Encontre as pistas. Reescreva o sistema.</p>
       <div class="title-actions"><button id="new-game" class="primary large">Começar aventura <span>↗</span></button><button id="continue-game" class="secondary large" hidden>Continuar <span>→</span></button></div>
-      <div class="title-links"><button id="teacher-button" class="quiet">Sala do professor</button><button id="settings-button" class="quiet">Configurações</button><button id="title-editor-button" class="secondary title-editor-link">Editar cenários</button><a href="sprite-editor.html" class="secondary title-editor-link sprite-editor-link" style="display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;border-radius:9px;text-decoration:none">Editar sprites ↗</a><button id="credits-button" class="quiet">Créditos e fontes</button></div>
+      <div class="title-links"><button id="teacher-button" class="teacher-main-entry">✎ Modo Professor</button><button id="settings-button" class="quiet">Configurações</button><button id="credits-button" class="quiet">Créditos e fontes</button><button id="title-editor-button" hidden aria-hidden="true" tabindex="-1">Editor interno</button></div>
     </main>
     <footer class="title-footer"><span><b class="status-light"></b> AVENTURA HISTÓRICA · UM MUNDO, MUITAS VOZES</span><span>Explore. Escute. Investigue.</span></footer>
   </section>
@@ -155,4 +156,6 @@
 <script src="js/historio-workbench.js"></script>
 <script src="js/neighborhood-homes.js?v=fix-20261017"></script>
 <script src="js/editor-window-repair.js?v=20261017b"></script>
+<script src="js/professor-ui-catalog.js?v=20261017c"></script>
+<script src="js/professor-mode.js?v=20261017c"></script>
 </body></html>

@@ -48,7 +48,7 @@ function updateGrid(){const g=$('pixel-grid');g.style.display=state.grid&&state.
 function pos(e){const rect=refs.canvas.getBoundingClientRect();return {x:clamp(Math.floor((e.clientX-rect.left)*refs.canvas.width/rect.width),0,refs.canvas.width-1),y:clamp(Math.floor((e.clientY-rect.top)*refs.canvas.height/rect.height),0,refs.canvas.height-1)};}
 function history(){const r=current();if(!r)return;const data=r.ctx.getImageData(0,0,r.canvas.width,r.canvas.height);r.history.push(data);if(r.history.length>18)r.history.shift();r.redo=[];updateUndo();}
 function updateUndo(){const r=current();$('undo').disabled=!r||!r.history.length;$('redo').disabled=!r||!r.redo.length;}
-function dirty(){const r=current();if(!r)return;r.dirty=true;refreshCanvas();showDirty();setStatus(`Editando: ${r.asset.name} · alterações pendentes`);}
+function dirty(){const r=current();if(!r)return;r.dirty=true;refreshCanvas();showDirty();setStatus(`Editando: ${r.asset.name} · alterações pendentes`);scheduleProfessorSync();}
 function restore(from,to){const r=current();if(!r||!from.length)return;to.push(r.ctx.getImageData(0,0,r.canvas.width,r.canvas.height));r.ctx.putImageData(from.pop(),0,0);r.dirty=true;dirty();updateUndo();updateThumbs();updateAnim();}
 function colorRGBA(){const hex=state.color;return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16),255];}
 function paintDot(target,x,y,eraser=false){const w=Math.max(1,state.brush);const start=Math.floor((w-1)/2);const x0=x-start,y0=y-start;if(eraser)target.clearRect(x0,y0,w,w);else{target.globalCompositeOperation='source-over';target.fillStyle=state.color;target.fillRect(x0,y0,w,w);}}
@@ -113,5 +113,20 @@ $('import-png').onclick=()=>{$('replace-input').value='';$('replace-input').clic
 refs.stage.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});refs.stage.addEventListener('drop',e=>{if(!e.dataTransfer?.files.length)return;e.preventDefault();const file=e.dataTransfer.files[0];if(file.type.startsWith('image/'))handleImage(file);});
 window.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))return;if(e.ctrlKey||e.metaKey){if(e.key.toLowerCase()==='z'){e.preventDefault();const r=current();if(r)restore(e.shiftKey?r.redo:r.history,e.shiftKey?r.history:r.redo);}else if(e.key.toLowerCase()==='y'){e.preventDefault();const r=current();if(r)restore(r.redo,r.history);}else if(e.key.toLowerCase()==='s'){e.preventDefault();saveRecords();}return;}if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))return;const shortcuts={b:'pencil',e:'eraser',g:'fill',i:'picker',l:'line',r:'rect'};if(shortcuts[e.key.toLowerCase()])selectTool(shortcuts[e.key.toLowerCase()]);else if(e.key==='+'||e.key==='=')setZoom(state.zoom*1.4);else if(e.key==='-')setZoom(state.zoom/1.4);});
 window.addEventListener('resize',()=>{if(current())refreshFrameOutline();});
+
+// Two-way bridge to the professor workspace. The editor also works standalone.
+let professorSyncTimer=0;
+const parentProfessor=()=>window.parent!==window&&new URLSearchParams(location.search).get('professor')==='1';
+function scheduleProfessorSync(){if(!parentProfessor())return;clearTimeout(professorSyncTimer);professorSyncTimer=setTimeout(()=>sendProfessorChanges(),850);}
+async function sendProfessorChanges(token=null){if(!parentProfessor())return;try{const list=[];for(const r of state.records.values())if(r.dirty){const bytes=new Uint8Array(await blobFor(r).then(b=>b.arrayBuffer()));list.push({path:r.asset.path,bytes});}
+ window.parent.postMessage({source:'voices-pixel-lab',type:'changes',token,list},'*');if(token)setStatus(`${list.length} sprite(s) sincronizada(s) com o Modo Professor.`);
+ }catch(e){setStatus('Não foi possível enviar as sprites ao Modo Professor: '+e.message,true);window.parent.postMessage({source:'voices-pixel-lab',type:'changes',token,list:[]},'*');}}
+async function hydrateProfessor(list){const selected=state.selected;let ok=0;for(const item of list||[]){const asset=catalog.find(a=>a.path===item.path);if(!asset)continue;try{await selectAsset(asset);const r=current();if(!r)continue;const blob=new Blob([item.bytes],{type:'image/png'}),img=await createImageBitmap(blob);r.ctx.clearRect(0,0,r.canvas.width,r.canvas.height);r.ctx.imageSmoothingEnabled=false;r.ctx.drawImage(img,0,0,r.canvas.width,r.canvas.height);r.dirty=true;ok++;}catch(e){console.warn('Sprite não restaurada:',item.path,e);}}if(selected)await selectAsset(selected);showDirty();updateThumbs();updateAnim();if(ok)setStatus(ok+' alteração(ões) de sprites restaurada(s) do Modo Professor.');}
+window.addEventListener('message',async e=>{if(!parentProfessor()||e.source!==window.parent||e.data?.source!=='voices-professor')return;const d=e.data;
+ if(d.type==='collect'){clearTimeout(professorSyncTimer);await sendProfessorChanges(d.token);}
+ if(d.type==='hydrate'){await hydrateProfessor(d.list||[]);}
+});
+if(parentProfessor()){let announced=false;const ready=()=>{if(announced)return;announced=true;window.parent.postMessage({source:'voices-pixel-lab',type:'ready'},'*');};window.addEventListener('load',ready);setTimeout(ready,1100);}
+
 $('export-zip').disabled=true;categories();listAssets();if(catalog.length)selectAsset(catalog.find(a=>a.path==='assets/characters/nia.png')||catalog[0]);
 })();

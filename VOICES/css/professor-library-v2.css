@@ -1,0 +1,43 @@
+/* Modo Professor — biblioteca textual catalogada */
+.professor-library-v2{width:min(1340px,calc(100% - 48px));}
+.professor-library-sticky{position:sticky;top:0;z-index:4;background:#0a101bf5;backdrop-filter:blur(12px);padding:8px 0 14px;border-bottom:1px solid #71839445;margin-bottom:18px}
+.professor-library-v2 .professor-search{position:relative;top:auto;padding:6px 0 10px;gap:12px;flex-wrap:wrap}
+.professor-library-v2 .professor-search-field{flex:1;min-width:210px;display:block}
+.professor-library-v2 .professor-search-field input{width:100%;height:52px;min-width:0}
+.professor-library-v2 #professor-result-count{color:#eec789;font-size:12px;white-space:nowrap;font-weight:800;font-variant-numeric:tabular-nums}
+.professor-library-v2 .professor-quiet{padding:9px 12px;border:1px solid #566f84;border-radius:9px;background:#1b3040;color:#dce8f1;font-size:12px;white-space:nowrap;cursor:pointer}
+.professor-library-v2 .professor-quiet:hover{background:#294457;border-color:#f4cf93}
+.professor-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.professor-library-categories{display:flex;gap:7px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#506a7d transparent;padding:4px 0 11px}
+.professor-library-categories button{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:9px;border:1px solid #476378;background:#172736;color:#bfced8;border-radius:9px;padding:10px 12px;font-size:12px;font-weight:750;cursor:pointer}
+.professor-library-categories button span{min-width:24px;text-align:center;background:#ffffff14;color:#e6d0a7;border-radius:5px;padding:2px 5px;font:700 11px/1.4 ui-monospace,monospace}
+.professor-library-categories button.active{color:#221d16;background:#eac588;border-color:#f7daab;box-shadow:0 2px 9px #0004}
+.professor-library-categories button.active span{background:#4c39272e;color:#44321c}
+.professor-library-filters{display:flex;align-items:end;flex-wrap:wrap;gap:12px}
+.professor-library-filters>label{display:flex;flex-direction:column;gap:5px;color:#aabed0;font-size:11px;font-weight:800}
+.professor-library-filters select,.professor-library-summary select{background:#182a3b;color:#e8eced;border:1px solid #667c8b;border-radius:8px;padding:9px 11px;font-size:12px;max-width:min(290px,70vw)}
+.professor-library-filters .professor-only-edited{flex-direction:row;align-items:center;padding:0 5px 9px;color:#ebddc4;font-size:12px;gap:7px;cursor:pointer}
+.professor-only-edited input{accent-color:#dfb775;width:15px;height:15px}
+.professor-library-v2 .professor-library-summary{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;font-size:12px;color:#b7c8d5}
+.professor-library-summary label{display:flex;align-items:center;gap:8px}
+.professor-results article{align-items:center;gap:18px;background:linear-gradient(100deg,#172738,#182635);padding:16px 18px;transition:border-color .15s}
+.professor-results article:hover{border-color:#b28e5585}
+.professor-results article.professor-result-edited{border-left:3px solid #dfb875}
+.professor-result-main{flex:1;min-width:0}
+.professor-result-meta{display:flex;align-items:center;gap:6px 13px;flex-wrap:wrap;font-size:11px;color:#9eb0be}
+.professor-result-meta .professor-result-category{font-weight:850;color:#f1d19a}
+.professor-result-meta .professor-lang{font-size:10px;letter-spacing:.05em;font-weight:800;color:#a7dfc5}
+.professor-result-meta .professor-edited-tag{font-size:10px;border-radius:5px;border:1px solid #c1a06d69;padding:2px 5px;color:#f5dcb5}
+.professor-results article p{max-height:92px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:9px 0;font-size:14px;line-height:1.55}
+.professor-results .professor-technical-path{display:block;letter-spacing:0;font-weight:500;color:#708999;font-family:ui-monospace,monospace;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.professor-results article .professor-edit-action{font-size:12px;font-weight:800;padding:12px 17px;flex:none;border-color:#cbad795c}
+.professor-pagination{margin:18px 0 28px;display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;color:#bdcbd5;font-size:12px}
+.professor-pagination button{border:1px solid #506a7e;background:#1a2c3d;color:#f0dec4;padding:10px 13px;border-radius:8px;font-weight:700;cursor:pointer}
+.professor-pagination button:disabled{opacity:.38;cursor:not-allowed}
+.professor-pagination label{display:flex;align-items:center;gap:6px}
+.professor-pagination input{width:65px;padding:9px 5px;text-align:center;background:#17293b;color:#fff;border:1px solid #658198;border-radius:7px;font-variant-numeric:tabular-nums}
+.professor-empty{padding:32px;background:#1a293a;border:1px dashed #5e7586;border-radius:12px;text-align:center}
+.professor-empty strong{color:#f3d8ab}.professor-empty p{color:#aabbc8;margin:10px 0 0}
+.professor-library-v2 #professor-results{scroll-margin-top:245px}
+@media(max-width:850px){.professor-library-v2{width:calc(100% - 30px)}.professor-library-sticky{position:relative}.professor-library-v2 .professor-search-field{flex-basis:100%}.professor-library-v2 #professor-result-count{flex-basis:100%;text-align:right}.professor-library-filters>label:first-child{flex:1}.professor-library-filters>label:first-child select{max-width:100%}}
+@media(max-width:540px){.professor-library-v2 .professor-results article{align-items:stretch}.professor-library-v2 .professor-results article .professor-edit-action{width:100%}.professor-library-filters>label{flex:1 1 43%}.professor-library-filters select{max-width:100%}.professor-library-v2 .professor-search{gap:7px}.professor-pagination button{padding:9px 10px}}

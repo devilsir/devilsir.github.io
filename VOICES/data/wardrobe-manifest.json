@@ -1,15 +1,15 @@
 {
-  "version": "1.8",
-  "license": "CC0-1.0",
-  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
-  "creator": "Original pixel illustrations created for VOICES",
+  "version": "1.9",
+  "license": "Mixed: pre-existing original game artwork is CC0-1.0; user-supplied replacement and new images have no declared license.",
+  "licenseURL": "",
+  "creator": "VOICES game artworks and illustrations supplied for this revision",
   "generator": "tools/create_wardrobe_assets.py",
   "originalArt": true,
-  "referenceUse": "Context and original visual studies only. No copied images, traced photographs, authentic religious costume claims or reproduced commercial textile designs.",
+  "referenceUse": "Pre-existing references concern cultural context. User-provided illustrations are treated as visual interpretations, not authenticated historic objects or named community traditions.",
   "galleryDimensions": {
-    "width": 128,
-    "height": 128,
-    "nativePixelGrid": 64
+    "displayWidth": 128,
+    "displayHeight": 128,
+    "artworkSizes": "Variable; CSS object-fit: contain preserves proportions"
   },
   "spriteDimensions": {
     "width": 128,
@@ -47,7 +47,9 @@
     "hair-box-braids",
     "hair-twists",
     "hair-locs",
-    "hair-afro"
+    "hair-afro",
+    "wrap-high-fold",
+    "wrap-tied-back"
   ],
   "newGallery": [
     {
@@ -123,44 +125,262 @@
     {
       "id": "wrap-high-fold",
       "asset": "wrap-high-fold",
-      "title": "Turbante: dobras altas",
+      "title": "Turbante roxo com dobras altas",
       "category": "wrap",
-      "description": "Estudo cotidiano original com dobras altas e tecido sobreposto. A direção das pregas ajuda a ler o volume.",
-      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "description": "O tecido roxo foi acomodado em camadas altas, criando volume sobre a cabeça. Linhas claras acompanham as dobras e ajudam a identificar onde o pano se sobrepõe. O resultado é uma composição de tecido em que altura, direção e volume fazem diferença.",
+      "context": "Esta amarração foi desenhada para o jogo. Turbantes podem ter usos cotidianos, estéticos, culturais ou religiosos, dependendo de quem os usa e da situação. A imagem não determina esse significado.",
       "sourceIds": [
         "wardrobe_negra_jho"
       ],
       "readingIds": [
         "culture-book-03"
-      ]
+      ],
+      "question": "Quais dobras parecem estar por cima das outras?"
     },
     {
       "id": "wrap-tied-back",
       "asset": "wrap-tied-back",
-      "title": "Turbante: amarração atrás",
+      "title": "Turbante dourado amarrado atrás",
       "category": "wrap",
-      "description": "Estudo cotidiano original em que o tecido abraça a cabeça e termina em uma amarração atrás, com pontas curtas.",
-      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "description": "O pano dourado acompanha o formato da cabeça, enquanto uma parte é reunida e amarrada atrás. As faixas diagonais mostram como o tecido muda de direção e como o nó organiza o conjunto. É um exemplo de composição com volume menor na parte superior.",
+      "context": "O desenho destaca a construção visual da amarração; não apresenta uma instrução completa para executá-la nem a vincula a uma comunidade religiosa específica.",
       "sourceIds": [
         "wardrobe_negra_jho"
       ],
       "readingIds": [
         "culture-book-03"
-      ]
+      ],
+      "question": "Onde você percebe o encontro das faixas de tecido?"
     },
     {
-      "id": "accessories-earrings",
-      "asset": "accessories-earrings",
-      "title": "Brincos e pulseira de Dandara",
+      "id": "clothes-agbada-olive",
+      "asset": "clothes-agbada-olive",
+      "title": "Agbada verde-oliva com bordados",
       "category": "clothes",
-      "description": "Argolas, pequenos brincos geométricos e uma pulseira larga de desenho contemporâneo original. São escolhas pessoais da criadora.",
-      "context": "Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.",
+      "description": "O conjunto reúne uma peça exterior ampla, de mangas muito largas, com túnica e calça por baixo. O verde-oliva domina a composição; os bordados claros criam linhas verticais e desenhos próximos ao peito. O volume do tecido permite observar como a roupa se movimentaria ao caminhar.",
+      "context": "O agbada é uma forma de vestuário conhecida em regiões da África Ocidental, com versões e usos diferentes. Esta peça é uma interpretação ilustrada, sem identificação de uma pessoa, cerimônia ou povo específico.",
+      "question": "Como o bordado ajuda a destacar a parte central da roupa?",
       "sourceIds": [
         "wardrobe_mab"
       ],
       "readingIds": [
         "culture-book-06"
       ]
+    },
+    {
+      "id": "clothes-mens-yellow",
+      "asset": "clothes-mens-yellow",
+      "title": "Conjunto amarelo de túnica e calça",
+      "category": "clothes",
+      "description": "Uma túnica amarela de manga longa acompanha uma calça da mesma cor e um gorro coordenado. O detalhe bordado desce pela parte da frente e contrasta com o tecido liso. A composição une peças amplas, linhas retas e um acabamento de aparência cuidadosa.",
+      "context": "O manequim permite analisar forma, corte e acabamento sem atribuir a roupa a uma pessoa real. A proposta artística não representa um traje universal de homens africanos.",
+      "question": "O que se destaca primeiro: a cor, a forma da túnica ou os bordados?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-mens-black",
+      "asset": "clothes-mens-black",
+      "title": "Conjunto preto com bordado branco",
+      "category": "clothes",
+      "description": "A túnica preta de manga longa possui bordados brancos na abertura frontal, no peito e nos punhos. A calça repete o tom escuro e mantém uma silhueta simples. A diferença entre preto e branco torna os pequenos detalhes mais fáceis de perceber.",
+      "context": "Os elementos decorativos deste desenho não devem ser apresentados como símbolos de uma etnia ou tradição religiosa específica sem uma fonte que os identifique.",
+      "question": "De que maneira o contraste de cores chama atenção para as bordas da roupa?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-dress-red-green",
+      "asset": "clothes-dress-red-green",
+      "title": "Vestido estampado vermelho e verde",
+      "category": "clothes",
+      "description": "O vestido longo apresenta mangas curtas, saia ampla e repetição de formas em vermelho, verde e preto. O manequim traz um tecido amarrado na cabeça em cores coordenadas. As figuras grandes e os contrastes marcados dão ritmo à estampa.",
+      "context": "Esta padronagem foi apresentada como arte ilustrativa para o VOICES. Estampas semelhantes podem circular em lugares e mercados diversos; não é correto identificar uma nacionalidade apenas pelas cores.",
+      "question": "Você consegue localizar uma forma que se repete em várias partes do tecido?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-dress-yellow",
+      "asset": "clothes-dress-yellow",
+      "title": "Vestido amarelo longo com bordado",
+      "category": "clothes",
+      "description": "O vestido tem mangas largas, caimento solto e comprimento até os pés. Bordados claros aparecem no centro e nas bordas das mangas, enquanto o turbante amarelo acompanha o tom do tecido. A combinação valoriza a forma da peça e os detalhes do acabamento.",
+      "context": "Vestidos amplos e tecidos bordados aparecem em diferentes tradições de vestuário. Esta é uma criação ilustrada, não a reprodução documentada de um traje cerimonial.",
+      "question": "Onde o bordado aparece com mais intensidade e por quê?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-dress-black",
+      "asset": "clothes-dress-black",
+      "title": "Vestido preto longo com bordados claros",
+      "category": "clothes",
+      "description": "A roupa longa de cor preta apresenta mangas amplas e bordados claros em faixas verticais e horizontais. O tecido cai de forma contínua, e o pano na cabeça acompanha o conjunto. Os elementos claros criam pontos de atenção sem mudar a silhueta da peça.",
+      "context": "A imagem convida a comparar cor, textura e trabalho de ornamentação. Não é possível concluir origem, religião ou ocasião de uso apenas pela aparência do traje.",
+      "question": "Se os bordados fossem da mesma cor do tecido, o que seria mais difícil perceber?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-dress-teal",
+      "asset": "clothes-dress-teal",
+      "title": "Vestido turquesa com desenho geométrico",
+      "category": "clothes",
+      "description": "No vestido, tons de azul-turquesa, branco e preto formam linhas curvas, círculos e faixas que percorrem a frente da saia. As mangas são curtas e o tecido se amplia a partir da cintura. O pano na cabeça retoma o azul, criando unidade no conjunto.",
+      "context": "As formas decorativas são apresentadas como desenho artístico. A ficha descreve o que podemos ver, sem inventar um significado histórico para os padrões.",
+      "question": "Quais formas geométricas se repetem no vestido?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "clothes-dress-green",
+      "asset": "clothes-dress-green",
+      "title": "Vestido verde bordado com turbante",
+      "category": "clothes",
+      "description": "O vestido verde tem mangas curtas e largas, tecido de caimento leve e bordados brancos no centro, no contorno das mangas e na barra. O turbante combina tons de verde e apresenta voltas visíveis. O bordado central cria um eixo que acompanha a altura da roupa.",
+      "context": "O conjunto faz parte do acervo visual fictício do jogo. Roupas e amarrações precisam ser situadas em contextos reais antes de receber nomes ou sentidos culturais específicos.",
+      "question": "Qual detalhe liga visualmente o turbante ao vestido?",
+      "sourceIds": [
+        "wardrobe_mab"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "face-paint-shells",
+      "asset": "face-paint-shells",
+      "title": "Pintura facial em círculos e conchas",
+      "category": "faceart",
+      "description": "O busto ilustrado mostra uma composição de tinta branca em torno dos olhos, na testa e nas bochechas, com traços arredondados e repetição de pontos. Colares e elementos parecidos com conchas aparecem próximos ao pescoço. A repetição cria uma imagem muito simétrica.",
+      "context": "Esta pintura é uma criação visual para o jogo, apresentada em busto ilustrado. Não há identificação de comunidade, cerimônia ou autorização cultural específica; por isso, os traços não recebem significados rituais inventados.",
+      "question": "Quais elementos aparecem dos dois lados do rosto?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "face-paint-orange",
+      "asset": "face-paint-orange",
+      "title": "Pintura facial pontilhada e turbante laranja",
+      "category": "faceart",
+      "description": "A imagem combina um turbante laranja com linhas finas e pequenos pontos brancos distribuídos pela testa, pelo nariz, pelo queixo e pelos braços. Colares em cores quentes ajudam a compor o retrato. Pontos próximos uns dos outros criam ritmo sem formar uma linha contínua.",
+      "context": "É um retrato artístico de referência, não um registro etnográfico. Pinturas corporais existentes possuem histórias e sentidos próprios, que não podem ser deduzidos a partir desta ilustração.",
+      "question": "Onde os pontos estão mais concentrados?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "face-paint-yellow",
+      "asset": "face-paint-yellow",
+      "title": "Pintura facial branca e amarela com tranças",
+      "category": "faceart",
+      "description": "O busto tem tranças reunidas sobre a cabeça e grafismos em branco e amarelo ao redor dos olhos, da testa e das bochechas. Linhas, curvas e pequenos círculos se combinam com o desenho das tranças. Os detalhes formam uma composição visual de forte contraste.",
+      "context": "Os grafismos deste retrato não devem ser copiados ou apresentados como símbolos pertencentes a um grupo específico. Na ficha, são descritos apenas como elementos artísticos da imagem recebida.",
+      "question": "Quais formas foram criadas com linhas? Quais foram criadas com pontos?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "face-paint-beige",
+      "asset": "face-paint-beige",
+      "title": "Pintura facial geométrica e turbante bege",
+      "category": "faceart",
+      "description": "Um turbante bege envolve a cabeça, enquanto linhas brancas e pequenos triângulos aparecem na testa, ao redor dos olhos e no nariz. A composição alterna traços longos com detalhes menores, formando partes simétricas. O colar também utiliza formas e cores variadas.",
+      "context": "Esta imagem é uma ilustração artística, não uma fonte histórica sobre pintura corporal. O significado de pinturas tradicionais deve ser apresentado por pessoas e estudos ligados a seus contextos.",
+      "question": "Que desenhos você consegue encontrar repetidos à direita e à esquerda?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "masks-color",
+      "asset": "masks-color",
+      "title": "Coleção ilustrada de nove máscaras coloridas",
+      "category": "masks",
+      "description": "Nove máscaras diferentes aparecem organizadas em três fileiras. Algumas têm formas alongadas, outras são arredondadas; olhos, bocas e relevos variam de uma para outra. Verde, vermelho, amarelo e azul criam contrastes que ajudam a comparar cada desenho.",
+      "context": "A coleção é uma composição ilustrativa. Máscaras de comunidades reais podem ter funções artísticas, históricas, sociais ou espirituais específicas, e não se deve atribuir essas funções a estes desenhos sem documentação.",
+      "question": "Escolha duas máscaras: quais diferenças você encontra na forma dos olhos e da boca?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "masks-wood",
+      "asset": "masks-wood",
+      "title": "Coleção ilustrada de nove máscaras de madeira",
+      "category": "masks",
+      "description": "O conjunto reúne nove desenhos de máscaras com aparência de madeira entalhada. Há rostos ovais, compridos, angulosos e arredondados, com olhos e narizes trabalhados de maneiras diferentes. As linhas que lembram cortes na superfície ajudam a imaginar o trabalho de uma ferramenta de escultura.",
+      "context": "A aparência de madeira não indica de onde uma obra veio nem como era utilizada. Para conhecer uma máscara histórica, é preciso procurar autoria, origem, data e contexto em fontes confiáveis.",
+      "question": "Qual das máscaras usa mais linhas retas? E qual parece ter formas mais arredondadas?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "sculpture-pair",
+      "asset": "sculpture-pair",
+      "title": "Duas figuras esculpidas em madeira",
+      "category": "sculptures",
+      "description": "Duas esculturas de aparência amadeirada estão lado a lado. As cabeças são maiores que os corpos, e os olhos, os rostos e os suportes têm formas diferentes. A comparação permite perceber como um artista pode alterar proporções para chamar atenção para determinadas partes da figura.",
+      "context": "A imagem apresenta duas peças fictícias, sem identificação de artista ou coleção. Na história da arte, a interpretação de uma escultura depende também de sua origem, de seus materiais e de quem a produziu.",
+      "question": "Em qual das duas figuras a cabeça parece ocupar mais espaço?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "sculpture-kneeling",
+      "asset": "sculpture-kneeling",
+      "title": "Figura ajoelhada em madeira",
+      "category": "sculptures",
+      "description": "A escultura mostra uma figura humana em posição ajoelhada, com tronco ereto, braços junto ao corpo e base trabalhada. O tom da madeira varia entre áreas claras e sombreadas. A posição do corpo e o formato da base ajudam a perceber equilíbrio e sustentação.",
+      "context": "A postura da figura pode gerar diferentes interpretações, mas a ilustração não informa uma função ritual, histórica ou social precisa. Não atribuímos uma origem inventada à obra.",
+      "question": "Quais partes parecem apoiar o peso da figura?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "sculpture-bird",
+      "asset": "sculpture-bird",
+      "title": "Animal estilizado com pequeno pássaro",
+      "category": "sculptures",
+      "description": "A peça combina um animal de corpo curvado, formas alongadas e uma ave pequena sobre a parte superior. A madeira parece ter sido talhada em volumes que se encaixam. O corpo forma uma curva marcante, e o contraste entre animal maior e pássaro menor organiza o olhar.",
+      "context": "Trata-se de uma composição fantástica ilustrada. Sem informações de procedência e autoria, não é adequado atribuir ao animal ou à ave um significado cultural ou espiritual específico.",
+      "question": "Que linhas curvas ajudam a reconhecer o animal maior?",
+      "sourceIds": [],
+      "readingIds": []
+    },
+    {
+      "id": "sculpture-curved",
+      "asset": "sculpture-curved",
+      "title": "Figura humana curvada em madeira escura",
+      "category": "sculptures",
+      "description": "Uma figura humana de madeira muito escura apresenta corpo inclinado para a frente e braços alongados que acompanham uma curva. A cabeça de perfil e a base arredondada tornam a silhueta bem diferente da figura ajoelhada. A forma parece explorar o movimento mesmo em um material rígido.",
+      "context": "A escultura é uma imagem artística sem procedência documentada. Sua postura pode inspirar perguntas sobre movimento, mas não revela sozinha quem a produziu nem o que representava.",
+      "question": "Como o corpo cria a sensação de movimento sem sair do lugar?",
+      "sourceIds": [],
+      "readingIds": []
     }
   ],
   "characters": {
@@ -248,5 +468,7 @@
       "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
       "note": "Referência para distinguir peças do cotidiano e contextos cerimoniais. Os cortes, estampas e acessórios apresentados são desenhos originais do jogo."
     }
-  ]
+  ],
+  "artworkUpdate": "2026-10-17",
+  "uploadedArtwork": "User-supplied illustrations; no verified provenance for generic paintings, masks, and sculptures."
 }

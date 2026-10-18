@@ -38,5 +38,5 @@ const migrate=V.Progress.migrate.bind(V.Progress);V.Progress.migrate=function(s)
 const hud=V.Game.updateHUD.bind(V.Game);V.Game.updateHUD=function(){hud();if(V.state)V.$('#player-grade').textContent='Forasteiro · nível '+V.Progress.ensure().level;};
 const settings=V.Save.applySettings.bind(V.Save);V.Save.applySettings=function(){V.settings.grade=7;return settings();};
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){pause(...args);if(this.mode==='explore'&&!V.$('#pause-scene-editor')){const root=V.$('.modal-body .stack')||V.$('.modal-body'),button=document.createElement('button');button.id='pause-scene-editor';button.className='secondary';button.textContent='Editar cenários';button.onclick=()=>V.SceneEditor.open();root?.appendChild(button);}};
-const open=V.SceneEditor.open.bind(V.SceneEditor);V.SceneEditor.open=function(...args){if(V.Game.screen==='game'&&!V.modal){V.UI.toast('Abra o menu de pausa para editar os cenários.');return;}return open(...args);};
+const open=V.SceneEditor.open.bind(V.SceneEditor);V.SceneEditor.open=function(...args){if(V.Game.screen==='game'&&!V.modal&&!V.ProfessorStudio?.active){V.UI.toast('Abra o menu de pausa para editar os cenários.');return;}return open(...args);};
 })();

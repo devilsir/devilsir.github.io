@@ -24,7 +24,6 @@ NEW_GALLERY = [
     ('clothes-cropped-jacket', 'Jaqueta curta e calça', 'clothes', 'Jaqueta de corte curto, gola dobrada e punhos sobre uma calça de cintura alta. As peças têm costuras e bolsos visíveis.', 'culture-book-06', ['wardrobe_mab']),
     ('wrap-high-fold', 'Turbante: dobras altas', 'wrap', 'Estudo cotidiano original com dobras altas e tecido sobreposto. A direção das pregas ajuda a ler o volume.', 'culture-book-03', ['wardrobe_negra_jho']),
     ('wrap-tied-back', 'Turbante: amarração atrás', 'wrap', 'Estudo cotidiano original em que o tecido abraça a cabeça e termina em uma amarração atrás, com pontas curtas.', 'culture-book-03', ['wardrobe_negra_jho']),
-    ('accessories-earrings', 'Brincos e pulseira de Dandara', 'clothes', 'Argolas, pequenos brincos geométricos e uma pulseira larga de desenho contemporâneo original. São escolhas pessoais da criadora.', 'culture-book-06', ['wardrobe_mab'])
 ]
 
 PEOPLE = {
@@ -535,8 +534,15 @@ def main():
     for name in hairs:
         save(gallery_head(name), 'culture', name)
     for name, title, category, description, reading_id, source_ids in NEW_GALLERY:
-        art = gallery_head(name) if category == 'wrap' else garment(name)
-        save(art, 'culture', name)
+        # Preserve the two imported original illustrations. Regenerating them with
+        # gallery_head() would silently replace the user's provided pixel art.
+        if name in ('wrap-high-fold', 'wrap-tied-back'):
+            original_asset = OUT / 'culture' / (name + '.png')
+            if not original_asset.is_file():
+                raise FileNotFoundError('Original gallery artwork missing: ' + str(original_asset))
+        else:
+            art = gallery_head(name) if category == 'wrap' else garment(name)
+            save(art, 'culture', name)
         gallery.append({'id': name, 'asset': name, 'title': title, 'category': category, 'description': description, 'context': 'Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.', 'sourceIds': source_ids, 'readingIds': [reading_id]})
     chars = {}
     for key, p in PEOPLE.items():
