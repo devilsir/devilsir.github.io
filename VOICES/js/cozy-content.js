@@ -8,55 +8,64 @@
       "id": "cozy_sonia_columbia",
       "name": "Columbia University, ILAS — Dr. Sônia Guimarães on STEM, Equity, and Innovation",
       "url": "https://ilas.columbia.edu/events/dr-sonia-guimaraes-stem-equity-and-innovation",
-      "note": "Perfil apresentado em evento de 2025: pesquisa de Sônia Guimarães em semicondutores e sensores de calor. Resumo breve, sem reproduzir depoimentos."
+      "note": "Perfil apresentado em evento de 2025: pesquisa de Sônia Guimarães em semicondutores e sensores de calor.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_jaqueline_bahiana",
       "name": "Escola Bahiana de Medicina e Saúde Pública — Jaqueline Góes e a homenagem de 2021",
       "url": "https://www.bahiana.edu.br/noticia/37983/professora-da-bahiana-a-biomedica-jaqueline-goes-e-homenageada-com-boneca-barbie/",
-      "note": "Identifica Jaqueline Góes de Jesus como biomédica e integrante de uma equipe de sequenciamento do genoma viral. A notícia da FAPESP apresenta a colaboração e as instituições participantes."
+      "note": "Identifica Jaqueline Góes de Jesus como biomédica e integrante de uma equipe de sequenciamento do genoma viral. A notícia da FAPESP apresenta a colaboração e as instituições participantes.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_genoma_fapesp",
       "name": "Agência FAPESP — Tecnologia que sequenciou coronavírus em 48 horas permitirá monitorar epidemia em tempo real",
       "url": "https://agencia.fapesp.br/tecnologia-que-sequenciou-coronavirus-em-48-horas-permitira-monitorar-epidemia-em-tempo-real/32637",
-      "note": "Notícia de 2/3/2020: trabalho conjunto do Instituto Adolfo Lutz, USP e Oxford; equipe coordenada por Claudio Tavares Sacchi e Jaqueline Goes de Jesus."
+      "note": "Notícia de 2/3/2020: trabalho conjunto do Instituto Adolfo Lutz, USP e Oxford; equipe coordenada por Claudio Tavares Sacchi e Jaqueline Goes de Jesus.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_pixinguinha_ims",
       "name": "Instituto Moreira Salles — Acervo Pixinguinha",
       "url": "https://ims.com.br/titular-colecao/pixinguinha/",
-      "note": "Arquivo pessoal sob guarda do IMS desde 2000, com partituras e arranjos. Referência documental; não reproduzimos partituras nem gravações."
+      "note": "Arquivo pessoal sob guarda do IMS desde 2000, com partituras e arranjos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_ivone_itau",
       "name": "Itaú Cultural — Ocupação Dona Ivone Lara",
       "url": "https://www.itaucultural.org.br/ocupacao/dona-ivone-lara/",
-      "note": "Apresentação institucional de sua atuação como cantora, compositora e instrumentista. Sem letras, citações pessoais ou reprodução de obras."
+      "note": "Apresentação institucional de sua atuação como cantora, compositora e instrumentista.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_rosana_pinacoteca",
       "name": "Pinacoteca de São Paulo — Rosana Paulino: a costura da memória",
       "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/",
-      "note": "Exposição de 2018–2019: memória familiar, representação negra e trabalho com fotografias em Parede da memória. Desenhos do jogo são originais."
+      "note": "Exposição de 2018–2019: memória familiar, representação negra e trabalho com fotografias em Parede da memória. Desenhos do jogo são originais.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_auxiliadora_masp",
       "name": "MASP — Maria Auxiliadora: vida cotidiana, pintura e resistência",
       "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia",
-      "note": "Apresentação da exposição de 2018: vida cotidiana, cultura afro-brasileira e relevos na pintura. Não reproduzimos telas da artista."
+      "note": "Apresentação da exposição de 2018: vida cotidiana, cultura afro-brasileira e relevos na pintura. Não reproduzimos telas da artista.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_baianas_iphan",
       "name": "Iphan, Bem Brasileiro — Ofício das baianas de acarajé",
       "url": "https://bcr.iphan.gov.br/bens-culturais/oficio-das-baianas-de-acaraje/",
-      "note": "Registro nacional no Livro dos Saberes em 14/1/2005; conhecimentos culinários, religiosos e culturais. A prática é anterior ao reconhecimento institucional."
+      "note": "Registro nacional no Livro dos Saberes em 14/1/2005; conhecimentos culinários, religiosos e culturais. A prática é anterior ao reconhecimento institucional.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "cozy_baianas_ipac",
       "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
       "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
-      "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional."
+      "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional.",
+      "accessed": "2026-10-20"
     }
   ],
   "readings": [
@@ -69,12 +78,12 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Ciência, pesquisa e autoria",
       "paragraphs": [
-        "Em New Harmony, Tomás arruma uma mesa de observação enquanto Amara traz uma ficha de cientista. O espaço do nome está preenchido, mas o campo de pesquisa ficou em branco.",
-        "Conexão científica: a física brasileira Sônia Guimarães pesquisa semicondutores e o desenvolvimento de sensores de calor, conforme o perfil publicado pelo ILAS da Universidade Columbia.",
-        "Na cena ficcional, a dupla completa a ficha com a área estudada e a referência. Depois compara leituras de sensores imaginários, registrando as condições de cada observação."
+        "Tomás encontra um cartão de Sônia Guimarães na mesa do laboratório. O nome está legível; a área de pesquisa sumiu. Amara propõe completar a ficha com trabalho científico, em vez de deixá-la apenas como um retrato de homenagem.",
+        "Sônia Guimarães é física e pesquisa semicondutores e sensores de calor. Em seu perfil para a Universidade Columbia, ela descreve a atuação em física aplicada e sua trajetória no Instituto Tecnológico de Aeronáutica. A área estudada permite ligar uma biografia a perguntas sobre materiais e medidas.",
+        "Na bancada de New Harmony, Luma pede que as leituras do protótipo sejam comparadas nas mesmas condições. Caio registra o teste; Luca anota horário e resultado. O exemplo de uma cientista real não prova os resultados do aparelho ficcional: esses precisam dos registros da própria experiência."
       ],
-      "en": "A scientist’s work belongs in her story.",
-      "pt": "O trabalho de uma cientista faz parte de sua história.",
+      "en": "We name the scientist and describe her research.",
+      "pt": "Identificamos a cientista e descrevemos sua pesquisa.",
       "sourceIds": [
         "cozy_sonia_columbia"
       ],
@@ -89,15 +98,16 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Ciência, colaboração e registros",
       "paragraphs": [
-        "Na cidade ficcional, Otávio prepara um mural sobre colaboração. Uma manchete cortada mostra um único nome. Tomás abre a notícia completa para encontrar a equipe e as instituições.",
-        "Conexão científica: em fevereiro de 2020, Jaqueline Góes de Jesus participou da coordenação da equipe que sequenciou o genoma do SARS-CoV-2 do primeiro caso confirmado no Brasil. O trabalho reuniu Instituto Adolfo Lutz, USP e Oxford.",
-        "Em New Harmony, o mural reconhece a contribuição individual e a colaboração. A turma registra quem realizou cada etapa e deixa espaço para revisar a síntese quando encontrar novos documentos."
+        "Otávio traz uma manchete que atribui uma pesquisa inteira a uma pessoa. Amara abre a matéria completa; Tomás procura o artigo. A lista de autores e instituições revela uma colaboração que o recorte escondia.",
+        "Em fevereiro de 2020, Jaqueline Goes de Jesus participou da coordenação da equipe que sequenciou o genoma viral do primeiro caso confirmado de COVID-19 no Brasil. O trabalho reuniu Instituto Adolfo Lutz, USP e Universidade de Oxford. Sequenciar um genoma é determinar a ordem de suas unidades, não criar uma vacina.",
+        "A notícia da FAPESP e o artigo científico permitem cruzar a descrição pública com autoria e métodos. No mural de New Harmony, o nome da cientista continua em destaque e a colaboração fica visível. A mesma regra orienta a correção das assinaturas apagadas no caderno de Luma."
       ],
-      "en": "A shared result has many contributors.",
-      "pt": "Um resultado compartilhado tem muitas pessoas que contribuíram.",
+      "en": "A scientist can lead a contribution within a larger team.",
+      "pt": "Uma cientista pode liderar uma contribuição dentro de uma equipe maior.",
       "sourceIds": [
-        "cozy_jaqueline_bahiana",
-        "cozy_genoma_fapesp"
+        "cozy_genoma_fapesp",
+        "research-genomes",
+        "cozy_jaqueline_bahiana"
       ],
       "questionId": "cozy-history-02-6"
     },
@@ -110,12 +120,12 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Música e documentação",
       "paragraphs": [
-        "André chega ao ensaio de New Harmony com um programa novo. Amara vê o nome de quem vai tocar, mas pergunta onde estão os créditos de composição e de arranjo.",
-        "Conexão musical: Pixinguinha foi compositor, instrumentista, arranjador e maestro. Seu arquivo pessoal está sob a guarda do Instituto Moreira Salles desde 2000 e inclui partituras com arranjos feitos por ele.",
-        "No festival ficcional, cada função recebe seu crédito. A música criada para o jogo tem autoria própria; a leitura convida a conhecer um acervo real, sem apresentar nossa faixa como obra histórica."
+        "André espalha a partitura e o programa sobre a mesa. A melodia é de Lia, o arranjo é dele e Sol vai interpretar. O programa adulterado manteve só o nome de quem aparece no palco. O caderno de ensaio mostra por que a correção precisa de funções.",
+        "Pixinguinha foi compositor, instrumentista, arranjador e maestro. O Instituto Moreira Salles conserva seu arquivo pessoal desde 2000, incluindo numerosas partituras de arranjos. Esses documentos permitem estudar como ele distribuiu partes e organizou a escrita musical.",
+        "Compor, arranjar e interpretar podem ser atividades de uma pessoa ou de várias. A turma não escolhe os créditos por fama ou posição no palco: compara programa, partitura e relatos. Essa distinção será útil também quando o arquivo do laboratório confundir quem calculou, testou e registrou."
       ],
-      "en": "Music has names, roles and records.",
-      "pt": "A música tem nomes, funções e registros.",
+      "en": "The melody, the arrangement and the performance need their credits.",
+      "pt": "A melodia, o arranjo e a interpretação precisam de seus créditos.",
       "sourceIds": [
         "cozy_pixinguinha_ims"
       ],
@@ -130,12 +140,12 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Samba, mulheres e visibilidade",
       "paragraphs": [
-        "Na rede de New Harmony, Elisa encontra um cartão de divulgação que mostra a voz de uma artista, mas omite sua criação. André propõe escrever uma legenda que apresente as funções documentadas.",
-        "Conexão musical: Dona Ivone Lara cantava, compunha sambas e tocava cavaquinho. A apresentação da Ocupação do Itaú Cultural destaca sua atuação entre as mulheres que compuseram para escolas de samba cariocas.",
-        "Na situação ficcional, a nova legenda reconhece a artista sem inventar suas falas. A equipe pode escrever um resumo próprio e mostrar de onde vieram as informações."
+        "Lia recebe um cartão que apresenta Dona Ivone Lara apenas como cantora. Sol reconhece a falta: uma legenda que registra só a voz pode esconder a composição. A equipe volta ao material da Ocupação do Itaú Cultural antes de completar a ficha.",
+        "Dona Ivone Lara atuou como cantora, compositora e instrumentista. Sua trajetória está ligada ao samba e à criação em parceria. Identificar essas atividades permite compreender decisões musicais, trabalho e circulação das composições, além da imagem de uma artista no palco.",
+        "Na oficina, cada estudante cria uma pequena frase e combina com a equipe como ela será apresentada. A atividade é autoral, sem inventar versos ou falas de Dona Ivone Lara. O cartão restaurado dá espaço à criação que a legenda anterior deixava invisível."
       ],
-      "en": "A composer should appear in the credits.",
-      "pt": "Uma compositora deve aparecer nos créditos.",
+      "en": "She sang and composed. Both roles belong in the caption.",
+      "pt": "Ela cantava e compunha. As duas funções devem aparecer na legenda.",
       "sourceIds": [
         "cozy_ivone_itau"
       ],
@@ -150,12 +160,12 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Arte, memória e representação",
       "paragraphs": [
-        "No pequeno museu de New Harmony, Jamila organiza retratos desenhados pelos moradores. Rui percebe que uma etiqueta chama todas as pessoas apenas de grupo, apagando suas histórias individuais.",
-        "Conexão artística: na obra Parede da memória, Rosana Paulino trabalha com fotografias de família. A Pinacoteca relaciona esse trabalho à memória, à identidade e à invisibilidade de pessoas negras.",
-        "Na cena ficcional, cada retrato recebe o contexto que seu autor pode documentar. Quem visita compara imagens e legendas, respeita lacunas e pergunta quais histórias ainda precisam ser ouvidas."
+        "Amara trouxe fotografias de família para conversar com Rui. Antes de montar um painel, eles perguntam quem aparece, quem fez a imagem e quais lembranças podem ser compartilhadas. Algumas pessoas autorizam a exposição; outras preferem guardar o retrato no álbum.",
+        "Em Parede da memória, Rosana Paulino trabalha com retratos familiares e pequenos objetos de tecido que remetem a patuás. A obra aproxima memória, presença e representação de pessoas negras. A Pinacoteca documenta esse trabalho na exposição A costura da memória.",
+        "O painel dos moradores não reproduz a obra da artista. Ele parte de uma pergunta que a leitura abriu: o que muda quando uma imagem recebe nome, trajetória e autorização? Na assembleia, Tainá usará esse cuidado para organizar os relatos que cada pessoa decidir compartilhar."
       ],
-      "en": "A portrait can carry a person’s history.",
-      "pt": "Um retrato pode carregar a história de uma pessoa.",
+      "en": "A family photograph holds a particular story.",
+      "pt": "Uma fotografia de família guarda uma história particular.",
       "sourceIds": [
         "cozy_rosana_pinacoteca"
       ],
@@ -170,9 +180,9 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Arte e vida comunitária",
       "paragraphs": [
-        "Elisa desenha um banco, uma conversa e o movimento do mercado de New Harmony. Jamila sugere que ela anote quem estava presente e o que escolheu destacar no desenho.",
-        "Conexão artística: as pinturas de Maria Auxiliadora apresentam cenas do cotidiano e da cultura afro-brasileira. O MASP também destaca o uso de relevos em sua técnica de pintura.",
-        "No ateliê ficcional, o desenho de Elisa tem um estilo próprio. A turma compara escolhas de cor, pessoas e lugares e percebe que uma cena cotidiana também pode suscitar perguntas sobre a vida em comunidade."
+        "Elisa desenhou pessoas conversando no banco. Jamila escolheu uma cena do mercado. Nenhuma das duas quer transformar os moradores em figuras sem nome usadas apenas para preencher a paisagem. Seus cadernos registram lugar, escolhas de cor e a conversa que originou o desenho.",
+        "Maria Auxiliadora da Silva pintou cenas de trabalho, festa, religiosidade e convivência. Sua pintura também explora relevos e texturas. O MASP apresentou essa produção na exposição Vida cotidiana, pintura e resistência, em 2018.",
+        "O cotidiano pode ser assunto de arte e de investigação. O desenho mostra escolhas da artista, não uma fotografia neutra de todas as comunidades. No arquivo, a turma distingue o que observou, o que interpretou e o que criou; a cena continua ligada às pessoas que a tornaram possível."
       ],
       "en": "Everyday life can become a subject for art.",
       "pt": "A vida cotidiana pode se tornar um tema para a arte.",
@@ -190,12 +200,12 @@
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
       "theme": "Patrimônio, trabalho e comunidade",
       "paragraphs": [
-        "No mercado de New Harmony, Viviane arruma seu tabuleiro e conversa com Rui sobre uma ficha de exposição. Ela quer que a legenda mostre saberes e pessoas, além do nome de uma comida.",
-        "Conexão cultural: o Ofício das Baianas de Acarajé reúne saberes culinários, religiosos e culturais. Foi registrado pelo Iphan no Livro dos Saberes em 2005. O IPAC documenta também o reconhecimento estadual de 2012.",
-        "Na cena ficcional, a equipe consulta as detentoras dos saberes e distingue as datas dos registros da história mais longa da prática. Uma ficha ajuda a conhecer um ofício vivo, suas relações e seus contextos."
+        "Viviane organiza o tabuleiro do mercado. Há alimentos, utensílios, fichas de preparo e uma história de aprendizagem. Rosa percebe que a legenda antiga citava só o prato, sem reconhecer o ofício de quem prepara, vende e transmite conhecimentos.",
+        "O ofício das baianas de acarajé foi registrado pelo Iphan em 2005 e reconhecido em âmbito estadual na Bahia em 2012. Os registros têm âmbitos diferentes e não marcam o início da prática. O ofício reúne saberes culinários, trabalho, indumentária, relações comunitárias e referências religiosas. No acarajé, a massa de feijão-fradinho é frita no azeite de dendê; o abará tem outro modo de preparo, em folha e no vapor.",
+        "Uma ficha útil apresenta o alimento e a profissional, respeitando diferenças entre receitas e contextos de uso. No mercado de New Harmony, Viviane assina o próprio trabalho e explica o que escolheu compartilhar. Assim como no festival, reconhecer uma tradição não substitui dar crédito a quem trabalha hoje."
       ],
-      "en": "A cultural practice lives through people.",
-      "pt": "Uma prática cultural vive por meio das pessoas.",
+      "en": "The food has a recipe. The craft also has people and history.",
+      "pt": "O alimento tem uma receita. O ofício também tem pessoas e história.",
       "sourceIds": [
         "cozy_baianas_iphan",
         "cozy_baianas_ipac"
@@ -621,40 +631,60 @@
       "lines": [
         {
           "speaker": "amara",
+          "pt": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
           "en": {
-            "6": "I saved a place in the shade for our reading.",
-            "7": "I have saved a place in the shade for our reading.",
-            "8": "There is a place in the shade that I saved for our reading."
+            "6": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed.",
+            "7": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed.",
+            "8": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed."
           },
-          "pt": "Guardei um lugar na sombra para nossa leitura."
+          "ptByGrade": {
+            "6": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
+            "7": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
+            "8": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs."
+          }
         },
         {
           "speaker": "amara",
+          "pt": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
           "en": {
-            "6": "A portrait can raise questions about a person and their history.",
-            "7": "A portrait can help us ask about a person and their history.",
-            "8": "When we look at a portrait, we can ask about the person and their history."
+            "6": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition.",
+            "7": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition.",
+            "8": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition."
           },
-          "pt": "Um retrato pode abrir perguntas sobre uma pessoa e sua história."
+          "ptByGrade": {
+            "6": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
+            "7": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
+            "8": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra."
+          }
         },
         {
           "speaker": "amara",
+          "pt": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
           "en": {
-            "6": "Would you like to choose a book with me and look at the reference?",
-            "7": "Would you like to choose a book with me and check its reference?",
-            "8": "Shall we choose a book together and look at the reference it provides?"
+            "6": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking.",
+            "7": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking.",
+            "8": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking."
           },
-          "pt": "Quer escolher um livro comigo e observar a referência?"
+          "ptByGrade": {
+            "6": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
+            "7": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
+            "8": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida."
+          }
         }
       ],
       "repeat": {
         "speaker": "amara",
+        "pt": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
         "en": {
-          "6": "The bench is free; we can continue our reading.",
-          "7": "The bench is free, so we can continue our reading.",
-          "8": "Now that the bench is free, we can return to our reading."
+          "6": "The bench is free. We can continue reading and keep the question in the notebook.",
+          "7": "The bench is free. We can continue reading and keep the question in the notebook.",
+          "8": "The bench is free. We can continue reading and keep the question in the notebook."
         },
-        "pt": "O banco está livre; podemos retomar nossa leitura."
+        "ptByGrade": {
+          "6": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
+          "7": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
+          "8": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno."
+        }
       }
     },
     {
@@ -667,41 +697,65 @@
       "lines": [
         {
           "speaker": "tomas",
+          "pt": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
           "en": {
-            "6": "I arranged my notes before opening the observation table.",
-            "7": "I organized my notes before I opened the observation table.",
-            "8": "Before opening the observation table, I organized my notes."
+            "6": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass.",
+            "7": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass.",
+            "8": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass."
           },
-          "pt": "Organizei minhas anotações antes de abrir a mesa de observação."
+          "ptByGrade": {
+            "6": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
+            "7": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
+            "8": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro."
+          }
         },
         {
           "speaker": "tomas",
+          "pt": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
           "en": {
-            "6": "A scientist’s card should show her name and what she studies.",
-            "7": "A scientist’s card should include her name and what she researches.",
-            "8": "When we make a scientist’s card, we include her name and her research."
+            "6": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name.",
+            "7": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name.",
+            "8": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name."
           },
-          "pt": "Uma ficha de cientista deve mostrar seu nome e o que ela pesquisa."
+          "ptByGrade": {
+            "6": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
+            "7": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
+            "8": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome."
+          }
         },
         {
           "speaker": "tomas",
+          "pt": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
           "en": {
-            "6": "Come and compare the imaginary sensor readings with me.",
-            "7": "Would you like to compare the imaginary sensor readings with me?",
-            "8": "Let’s compare the imaginary sensor readings together."
+            "6": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference.",
+            "7": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference.",
+            "8": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference."
           },
-          "pt": "Venha comparar as leituras dos sensores imaginários comigo."
+          "ptByGrade": {
+            "6": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
+            "7": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
+            "8": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa."
+          }
         }
       ],
       "repeat": {
         "speaker": "tomas",
+        "pt": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
         "en": {
-          "6": "The notes are here so we can continue comparing.",
-          "7": "The notes are here for us to continue the comparison.",
-          "8": "We can continue our comparison with the notes we have here."
+          "6": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete.",
+          "7": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete.",
+          "8": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete."
         },
-        "pt": "As anotações estão aqui para continuarmos a comparação."
-      }
+        "ptByGrade": {
+          "6": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
+          "7": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
+          "8": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta."
+        }
+      },
+      "sourceIds": [
+        "cozy_sonia_columbia",
+        "research-water"
+      ]
     },
     {
       "id": "elisa",
@@ -713,40 +767,60 @@
       "lines": [
         {
           "speaker": "elisa",
+          "pt": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
           "en": {
-            "6": "I brought my notebook to draw the activity in the square.",
-            "7": "I have brought my notebook to sketch the activity in the square.",
-            "8": "I brought my notebook so I could sketch what is happening in the square."
+            "6": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage.",
+            "7": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage.",
+            "8": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage."
           },
-          "pt": "Trouxe meu caderno para desenhar o movimento da praça."
+          "ptByGrade": {
+            "6": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
+            "7": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
+            "8": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival."
+          }
         },
         {
           "speaker": "elisa",
+          "pt": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
           "en": {
-            "6": "My memory helps tell the scene; we can compare it with other records.",
-            "7": "My memory helps describe the scene, and we can compare it with other records.",
-            "8": "We can use my memory to describe the scene and compare it with other records."
+            "6": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices.",
+            "7": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices.",
+            "8": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices."
           },
-          "pt": "Minha lembrança ajuda a contar a cena; podemos compará-la com outros registros."
+          "ptByGrade": {
+            "6": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
+            "7": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
+            "8": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto."
+          }
         },
         {
           "speaker": "elisa",
+          "pt": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
           "en": {
-            "6": "Sit here and choose one detail to draw with me.",
-            "7": "Would you like to sit here and choose a detail to draw with me?",
-            "8": "Join me here and choose a detail for us to draw together."
+            "6": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened.",
+            "7": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened.",
+            "8": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened."
           },
-          "pt": "Sente aqui e escolha um detalhe para desenhar comigo."
+          "ptByGrade": {
+            "6": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
+            "7": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
+            "8": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu."
+          }
         }
       ],
       "repeat": {
         "speaker": "elisa",
+        "pt": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
         "en": {
-          "6": "I left a blank page for our next drawing.",
-          "7": "I have left a blank page for our next drawing.",
-          "8": "There is a blank page that I left for our next drawing."
+          "6": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space.",
+          "7": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space.",
+          "8": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space."
         },
-        "pt": "Deixei uma página livre para nosso próximo desenho."
+        "ptByGrade": {
+          "6": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
+          "7": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
+          "8": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço."
+        }
       }
     },
     {
@@ -759,40 +833,60 @@
       "lines": [
         {
           "speaker": "andre",
+          "pt": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
           "en": {
-            "6": "The rehearsal starts after I adjust this bench.",
-            "7": "The rehearsal will start after I have adjusted this bench.",
-            "8": "Once I have adjusted this bench, we can start the rehearsal."
+            "6": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles.",
+            "7": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles.",
+            "8": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles."
           },
-          "pt": "O ensaio começa depois que eu ajustar este banco."
+          "ptByGrade": {
+            "6": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
+            "7": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
+            "8": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções."
+          }
         },
         {
           "speaker": "andre",
+          "pt": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
           "en": {
-            "6": "Composing, arranging and playing are different contributions.",
-            "7": "Composing, arranging and performing are different contributions.",
-            "8": "Music brings together different contributions, including composing, arranging and performing."
+            "6": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage.",
+            "7": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage.",
+            "8": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage."
           },
-          "pt": "Compor, fazer um arranjo e tocar são contribuições diferentes."
+          "ptByGrade": {
+            "6": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
+            "7": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
+            "8": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco."
+          }
         },
         {
           "speaker": "andre",
+          "pt": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
           "en": {
-            "6": "Would you like to help me check our program credits?",
-            "7": "Would you like to help me check the credits in our program?",
-            "8": "Shall we check our program together to see whether the credits are clear?"
+            "6": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal.",
+            "7": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal.",
+            "8": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal."
           },
-          "pt": "Quer me ajudar a conferir os créditos do nosso programa?"
+          "ptByGrade": {
+            "6": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
+            "7": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
+            "8": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio."
+          }
         }
       ],
       "repeat": {
         "speaker": "andre",
+        "pt": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
         "en": {
-          "6": "The program is on the table; we can check one more name.",
-          "7": "The program is on the table, so we can check another name.",
-          "8": "We can check another name in the program that is on the table."
+          "6": "The rehearsal notebook and the programme stay together. That way we can check each person’s role.",
+          "7": "The rehearsal notebook and the programme stay together. That way we can check each person’s role.",
+          "8": "The rehearsal notebook and the programme stay together. That way we can check each person’s role."
         },
-        "pt": "O programa ficou na mesa; podemos conferir mais um nome."
+        "ptByGrade": {
+          "6": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
+          "7": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
+          "8": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa."
+        }
       }
     },
     {
@@ -805,40 +899,60 @@
       "lines": [
         {
           "speaker": "viviane",
+          "pt": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
           "en": {
-            "6": "I arranged the food tray so I can talk with people who arrive.",
-            "7": "I have arranged the food tray to talk with people as they arrive.",
-            "8": "With the food tray arranged, I can talk with the people arriving."
+            "6": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name.",
+            "7": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name.",
+            "8": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name."
           },
-          "pt": "Deixei o tabuleiro organizado para conversar com quem chega."
+          "ptByGrade": {
+            "6": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
+            "7": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
+            "8": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato."
+          }
         },
         {
           "speaker": "viviane",
+          "pt": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
           "en": {
-            "6": "This craft has knowledge passed between generations.",
-            "7": "This craft includes knowledge that is passed between generations.",
-            "8": "Knowledge passes between generations through this craft."
+            "6": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed.",
+            "7": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed.",
+            "8": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed."
           },
-          "pt": "Este ofício tem saberes que passam entre gerações."
+          "ptByGrade": {
+            "6": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
+            "7": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
+            "8": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor."
+          }
         },
         {
           "speaker": "viviane",
+          "pt": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
           "en": {
-            "6": "Shall we read the card together and think about what is missing?",
-            "7": "Would you like to read the card together and think about what remains to tell?",
-            "8": "Let’s read the card together and consider which parts still need to be told."
+            "6": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women.",
+            "7": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women.",
+            "8": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women."
           },
-          "pt": "Vamos ler a ficha juntas ou juntos e pensar no que falta contar?"
+          "ptByGrade": {
+            "6": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
+            "7": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
+            "8": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras."
+          }
         }
       ],
       "repeat": {
         "speaker": "viviane",
+        "pt": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
         "en": {
-          "6": "The card is beside the food tray; we can continue our conversation.",
-          "7": "The card is beside the food tray, so we can continue our conversation.",
-          "8": "We can continue our conversation with the card beside the food tray."
+          "6": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption.",
+          "7": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption.",
+          "8": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption."
         },
-        "pt": "A ficha está ao lado do tabuleiro; podemos continuar a conversa."
+        "ptByGrade": {
+          "6": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
+          "7": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
+          "8": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda."
+        }
       }
     },
     {
@@ -851,41 +965,64 @@
       "lines": [
         {
           "speaker": "rui",
+          "pt": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
           "en": {
-            "6": "Today I found the folder on the top shelf.",
-            "7": "Today I found the folder that was on the top shelf.",
-            "8": "I found the folder today; it was on the top shelf."
+            "6": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin.",
+            "7": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin.",
+            "8": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin."
           },
-          "pt": "Hoje encontrei a pasta que estava na prateleira de cima."
+          "ptByGrade": {
+            "6": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
+            "7": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
+            "8": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência."
+          }
         },
         {
           "speaker": "rui",
+          "pt": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
           "en": {
-            "6": "I keep the title, creator and source of each record.",
-            "7": "For each record, I keep its title, who made it and where it came from.",
-            "8": "When I organize a record, I keep its title, creator and source."
+            "6": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care.",
+            "7": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care.",
+            "8": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care."
           },
-          "pt": "Guardo o título, quem fez e de onde veio cada registro."
+          "ptByGrade": {
+            "6": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
+            "7": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
+            "8": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado."
+          }
         },
         {
           "speaker": "rui",
+          "pt": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
           "en": {
-            "6": "Would you like to open a card with me and find that information?",
-            "7": "Would you like to open a card with me and look for that information?",
-            "8": "Let’s open a card together and see where that information appears."
+            "6": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further.",
+            "7": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further.",
+            "8": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further."
           },
-          "pt": "Quer abrir uma ficha comigo e procurar essas informações?"
+          "ptByGrade": {
+            "6": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
+            "7": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
+            "8": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura."
+          }
         }
       ],
       "repeat": {
         "speaker": "rui",
+        "pt": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
         "en": {
-          "6": "The folder is still on the table for us to consult.",
-          "7": "The folder is still on the table for our consultation.",
-          "8": "We can consult the folder that is still on the table."
+          "6": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything.",
+          "7": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything.",
+          "8": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything."
         },
-        "pt": "A pasta continua na mesa para nossa consulta."
-      }
+        "ptByGrade": {
+          "6": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
+          "7": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
+          "8": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo."
+        }
+      },
+      "sourceIds": [
+        "research-paper"
+      ]
     },
     {
       "id": "jamila",
@@ -897,40 +1034,60 @@
       "lines": [
         {
           "speaker": "jamila",
+          "pt": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
           "en": {
-            "6": "I set aside pencils and paper for our drawing group.",
-            "7": "I have set aside pencils and paper for the drawing group.",
-            "8": "The pencils and paper are ready because I set them aside for our drawing group."
+            "6": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear.",
+            "7": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear.",
+            "8": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear."
           },
-          "pt": "Separei lápis e papel para a roda de desenhos."
+          "ptByGrade": {
+            "6": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
+            "7": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
+            "8": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem."
+          }
         },
         {
           "speaker": "jamila",
+          "pt": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
           "en": {
-            "6": "The colors and people we choose to show help us read an image.",
-            "7": "The colors and people we choose to show are part of how we read an image.",
-            "8": "We read an image by considering, among other things, its chosen colors and people."
+            "6": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context.",
+            "7": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context.",
+            "8": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context."
           },
-          "pt": "As cores e as pessoas que escolhemos mostrar fazem parte da leitura de uma imagem."
+          "ptByGrade": {
+            "6": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
+            "7": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
+            "8": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto."
+          }
         },
         {
           "speaker": "jamila",
+          "pt": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
           "en": {
-            "6": "Come and look at a drawing with me before we write the caption.",
-            "7": "Would you like to look at a drawing together before writing its caption?",
-            "8": "Before we write the caption, let’s observe the drawing together."
+            "6": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference.",
+            "7": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference.",
+            "8": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference."
           },
-          "pt": "Venha observar um desenho comigo antes de escrever a legenda."
+          "ptByGrade": {
+            "6": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
+            "7": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
+            "8": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência."
+          }
         }
       ],
       "repeat": {
         "speaker": "jamila",
+        "pt": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
         "en": {
-          "6": "There is still paper for another observation.",
-          "7": "There is still paper for us to make another observation.",
-          "8": "We have enough paper left to make another observation."
+          "6": "The date of Elisa’s drawing is still unknown. Its label says so until we can check.",
+          "7": "The date of Elisa’s drawing is still unknown. Its label says so until we can check.",
+          "8": "The date of Elisa’s drawing is still unknown. Its label says so until we can check."
         },
-        "pt": "Ainda há papel para fazermos outra observação."
+        "ptByGrade": {
+          "6": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
+          "7": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
+          "8": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir."
+        }
       }
     },
     {
@@ -943,40 +1100,60 @@
       "lines": [
         {
           "speaker": "otavio",
+          "pt": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
           "en": {
-            "6": "I pinned the notices so the wind will not take our notes.",
-            "7": "I have pinned the notices so the wind does not blow away our notes.",
-            "8": "To keep the wind from blowing away our notes, I pinned the notices."
+            "6": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step.",
+            "7": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step.",
+            "8": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step."
           },
-          "pt": "Prendi os avisos para o vento não levar nossas anotações."
+          "ptByGrade": {
+            "6": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
+            "7": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
+            "8": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa."
+          }
         },
         {
           "speaker": "otavio",
+          "pt": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
           "en": {
-            "6": "If a caption claims too much, I check the source and revise the text.",
-            "7": "When a caption claims too much, I return to the source and revise the text.",
-            "8": "If a caption goes beyond the evidence, I return to its source and revise it."
+            "6": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that.",
+            "7": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that.",
+            "8": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that."
           },
-          "pt": "Se uma legenda promete demais, volto à fonte e revejo o texto."
+          "ptByGrade": {
+            "6": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
+            "7": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
+            "8": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso."
+          }
         },
         {
           "speaker": "otavio",
+          "pt": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
           "en": {
-            "6": "Would you like to review a clipping and its full article with me?",
-            "7": "Would you like to compare a clipping with its complete article with me?",
-            "8": "Let’s review a clipping together with the full article it came from."
+            "6": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction.",
+            "7": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction.",
+            "8": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction."
           },
-          "pt": "Quer revisar comigo um recorte e sua notícia completa?"
+          "ptByGrade": {
+            "6": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
+            "7": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
+            "8": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção."
+          }
         }
       ],
       "repeat": {
         "speaker": "otavio",
+        "pt": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
         "en": {
-          "6": "The full article is here for us to check again.",
-          "7": "The full article is here for us to consult again.",
-          "8": "We can consult the complete article that is here again."
+          "6": "A useful correction shows what changed and the evidence used. Then readers can check our decision.",
+          "7": "A useful correction shows what changed and the evidence used. Then readers can check our decision.",
+          "8": "A useful correction shows what changed and the evidence used. Then readers can check our decision."
         },
-        "pt": "A notícia completa está aqui para consultarmos outra vez."
+        "ptByGrade": {
+          "6": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
+          "7": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
+          "8": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão."
+        }
       }
     }
   ],
@@ -1030,14 +1207,14 @@
       ],
       "topic": "Observação e registro",
       "lines": [
-        "Esses números são do sensor imaginário do jogo?",
-        "Sim. Cada linha informa o tempo e a distância da observação.",
-        "Ótimo, vou mostrar as condições junto dos resultados no mural."
+        "A tabela anota a distância e o tempo de cada leitura.",
+        "Quero comparar distâncias mantendo o mesmo tempo.",
+        "Vou mostrar essas condições junto dos resultados no mural."
       ],
       "enLines": [
-        "Are these numbers from the game’s imaginary sensor?",
-        "Yes. Each row gives the time and distance of the observation.",
-        "Great, I will show the conditions alongside the results on the noticeboard."
+        "The table records distance and time for each reading.",
+        "I want to compare distances while keeping the time the same.",
+        "I’ll show those conditions beside the results on the board."
       ],
       "sourceIds": []
     },
@@ -1072,14 +1249,14 @@
       ],
       "topic": "Partituras e créditos",
       "lines": [
-        "O acervo do IMS guarda partituras de Pixinguinha.",
-        "Uma partitura e o programa do nosso festival têm funções diferentes.",
-        "No nosso programa, vamos conferir composição, arranjo e interpretação."
+        "As partituras do IMS permitem estudar arranjos de Pixinguinha.",
+        "E nosso caderno registra o arranjo que você fez para Lia.",
+        "Vou conferir o programa com ela e com Sol antes de imprimir."
       ],
       "enLines": [
-        "The IMS collection holds musical scores by Pixinguinha.",
-        "A musical score and our festival program have different purposes.",
-        "In our program, let’s check composition, arrangement and performance."
+        "The IMS scores allow us to study Pixinguinha’s arrangements.",
+        "And our notebook records the arrangement you made for Lia.",
+        "I’ll check the programme with her and Sol before printing."
       ],
       "sourceIds": [
         "cozy_pixinguinha_ims"
@@ -1201,12 +1378,12 @@
       "map": "room-1",
       "chapter": 1,
       "character": "andre",
-      "prompt": "No nosso festival ficcional, Amara compôs, André fez o arranjo e Jamila tocou. Qual programa está correto?",
+      "prompt": "No festival, Lia compôs, André fez o arranjo e Sol interpreta. Qual programa corresponde ao caderno?",
       "context": "O acervo musical apresentado no livro convida a distinguir composição, arranjo e interpretação. Esta apresentação e sua música são originais de New Harmony.",
       "options": [
-        "Composição: André; arranjo: Amara; interpretação: Jamila.",
-        "Autoria completa: Jamila, porque tocou.",
-        "Composição: Amara; arranjo: André; interpretação: Jamila.",
+        "Composição: André; arranjo: Lia; interpretação: Sol.",
+        "Autoria completa: Sol, porque aparece no palco.",
+        "Composição: Lia; arranjo: André; interpretação: Sol.",
         "Sem nomes, apenas a cor do palco."
       ],
       "correct": 2,

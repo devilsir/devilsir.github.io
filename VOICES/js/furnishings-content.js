@@ -1,1 +1,11424 @@
-(function(){'use strict';const V=window.V=window.V||{};V.furnishingsAssets=[{"index":0,"id":"furnishings-curved-stone-bench","family":"furnishings","name":"Banco curvo de pedra da praça","category":"praça","mapTheme":"hub","description":"Banco curvo de pedra da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":0,"y":0,"width":32,"height":32}},{"index":1,"id":"furnishings-refreshment-pushcart","family":"furnishings","name":"Carrinho de refrescos com garrafa térmica","category":"praça","mapTheme":"hub","description":"Carrinho de refrescos com garrafa térmica. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":0,"width":32,"height":32}},{"index":2,"id":"furnishings-staggered-bicycle-rack","family":"furnishings","name":"Bicicletário com aros escalonados","category":"praça","mapTheme":"hub","description":"Bicicletário com aros escalonados. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":0,"width":32,"height":32}},{"index":3,"id":"furnishings-public-drinking-fountain","family":"furnishings","name":"Bebedouro público com torneira baixa","category":"praça","mapTheme":"hub","description":"Bebedouro público com torneira baixa. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":0,"width":32,"height":32}},{"index":4,"id":"furnishings-chess-stone-table","family":"furnishings","name":"Mesa de xadrez da praça","category":"praça","mapTheme":"hub","description":"Mesa de xadrez da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":0,"width":32,"height":32}},{"index":5,"id":"furnishings-charging-leaning-table","family":"furnishings","name":"Mesa alta com tomadas protegidas","category":"praça","mapTheme":"hub","description":"Mesa alta com tomadas protegidas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":0,"width":32,"height":32}},{"index":6,"id":"furnishings-community-coat-hooks","family":"furnishings","name":"Painel de ganchos para bolsas","category":"praça","mapTheme":"hub","description":"Painel de ganchos para bolsas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":0,"width":32,"height":32}},{"index":7,"id":"furnishings-flower-stone-trough","family":"furnishings","name":"Floreira de pedra com flores miúdas","category":"praça","mapTheme":"hub","description":"Floreira de pedra com flores miúdas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":224,"y":0,"width":32,"height":32}},{"index":8,"id":"furnishings-arched-tall-bookcase","family":"furnishings","name":"Estante alta de livros com arco","category":"biblioteca","mapTheme":"library","description":"Estante alta de livros com arco. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":32,"width":32,"height":32}},{"index":9,"id":"furnishings-reclining-reading-chair","family":"furnishings","name":"Poltrona inclinada de leitura","category":"biblioteca","mapTheme":"library","description":"Poltrona inclinada de leitura. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":32,"y":32,"width":32,"height":32}},{"index":10,"id":"furnishings-slanted-magazine-rack","family":"furnishings","name":"Expositor inclinado de revistas","category":"biblioteca","mapTheme":"library","description":"Expositor inclinado de revistas. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":32,"width":32,"height":32}},{"index":11,"id":"furnishings-bookbinding-press","family":"furnishings","name":"Prensa manual de encadernação","category":"biblioteca","mapTheme":"library","description":"Prensa manual de encadernação. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":32,"width":32,"height":32}},{"index":12,"id":"furnishings-rolling-library-ladder","family":"furnishings","name":"Escada de biblioteca com rodízios","category":"biblioteca","mapTheme":"library","description":"Escada de biblioteca com rodízios. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":32,"width":32,"height":32}},{"index":13,"id":"furnishings-study-carrel","family":"furnishings","name":"Mesa de estudo com divisórias","category":"biblioteca","mapTheme":"library","description":"Mesa de estudo com divisórias. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":32,"width":32,"height":32}},{"index":14,"id":"furnishings-dictionary-lectern","family":"furnishings","name":"Suporte de consulta para dicionário","category":"biblioteca","mapTheme":"library","description":"Suporte de consulta para dicionário. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":32,"width":32,"height":32}},{"index":15,"id":"furnishings-felt-room-divider","family":"furnishings","name":"Divisória de feltro para leitura silenciosa","category":"biblioteca","mapTheme":"library","description":"Divisória de feltro para leitura silenciosa. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":32,"width":32,"height":32}},{"index":16,"id":"furnishings-hexagonal-picnic-table","family":"furnishings","name":"Mesa hexagonal de piquenique","category":"parque","mapTheme":"park","description":"Mesa hexagonal de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":64,"width":32,"height":32}},{"index":17,"id":"furnishings-carved-log-bench","family":"furnishings","name":"Banco baixo de tronco trabalhado","category":"parque","mapTheme":"park","description":"Banco baixo de tronco trabalhado. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":32,"y":64,"width":32,"height":32}},{"index":18,"id":"furnishings-bird-observation-binoculars","family":"furnishings","name":"Binóculo fixo de observação de aves","category":"parque","mapTheme":"park","description":"Binóculo fixo de observação de aves. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":64,"width":32,"height":32}},{"index":19,"id":"furnishings-bird-hide-screen","family":"furnishings","name":"Painel de observação com aberturas","category":"parque","mapTheme":"park","description":"Painel de observação com aberturas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":64,"width":32,"height":32}},{"index":20,"id":"furnishings-trail-map-kiosk","family":"furnishings","name":"Quiosque de mapa das trilhas","category":"parque","mapTheme":"park","description":"Quiosque de mapa das trilhas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":64,"width":32,"height":32}},{"index":21,"id":"furnishings-dog-rinse-platform","family":"furnishings","name":"Plataforma baixa para limpeza das patas","category":"parque","mapTheme":"park","description":"Plataforma baixa para limpeza das patas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":64,"width":32,"height":32}},{"index":22,"id":"furnishings-picnic-basket-table","family":"furnishings","name":"Mesa pequena com cesta de piquenique","category":"parque","mapTheme":"park","description":"Mesa pequena com cesta de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":192,"y":64,"width":32,"height":32}},{"index":23,"id":"furnishings-nest-box-post","family":"furnishings","name":"Suporte de caixa-ninho protegida","category":"parque","mapTheme":"park","description":"Suporte de caixa-ninho protegida. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":224,"y":64,"width":32,"height":32}},{"index":24,"id":"furnishings-weighing-counter","family":"furnishings","name":"Balcão com balança de dois pratos","category":"feira","mapTheme":"market","description":"Balcão com balança de dois pratos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":96,"width":32,"height":32}},{"index":25,"id":"furnishings-ice-chest-cart","family":"furnishings","name":"Carrinho de caixa térmica","category":"feira","mapTheme":"market","description":"Carrinho de caixa térmica. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":96,"width":32,"height":32}},{"index":26,"id":"furnishings-vegetable-display-tier","family":"furnishings","name":"Expositor de verduras em três níveis","category":"feira","mapTheme":"market","description":"Expositor de verduras em três níveis. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":64,"y":96,"width":32,"height":32}},{"index":27,"id":"furnishings-flour-bin-cabinet","family":"furnishings","name":"Armário de farinhas com medidas","category":"feira","mapTheme":"market","description":"Armário de farinhas com medidas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":96,"width":32,"height":32}},{"index":28,"id":"furnishings-food-warming-cart","family":"furnishings","name":"Carrinho de comida com tampas térmicas","category":"feira","mapTheme":"market","description":"Carrinho de comida com tampas térmicas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":96,"width":32,"height":32}},{"index":29,"id":"furnishings-grain-hopper-rack","family":"furnishings","name":"Suporte de dispensadores de grãos","category":"feira","mapTheme":"market","description":"Suporte de dispensadores de grãos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":96,"width":32,"height":32}},{"index":30,"id":"furnishings-cloth-cutting-table","family":"furnishings","name":"Mesa de corte com rolo de tecido","category":"feira","mapTheme":"market","description":"Mesa de corte com rolo de tecido. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":96,"width":32,"height":32}},{"index":31,"id":"furnishings-crate-hand-truck","family":"furnishings","name":"Carrinho de carga com caixas empilhadas","category":"feira","mapTheme":"market","description":"Carrinho de carga com caixas empilhadas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":96,"width":32,"height":32}},{"index":32,"id":"furnishings-propagation-cold-frame","family":"furnishings","name":"Estufa baixa para mudas","category":"horta","mapTheme":"garden","description":"Estufa baixa para mudas. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":128,"width":32,"height":32}},{"index":33,"id":"furnishings-potting-workbench","family":"furnishings","name":"Bancada de transplante com vasos","category":"horta","mapTheme":"garden","description":"Bancada de transplante com vasos. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":128,"width":32,"height":32}},{"index":34,"id":"furnishings-outdoor-garden-sink","family":"furnishings","name":"Tanque da horta com torneira","category":"horta","mapTheme":"garden","description":"Tanque da horta com torneira. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":128,"width":32,"height":32}},{"index":35,"id":"furnishings-seed-library-cabinet","family":"furnishings","name":"Armário comunitário de sementes","category":"horta","mapTheme":"garden","description":"Armário comunitário de sementes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":128,"width":32,"height":32}},{"index":36,"id":"furnishings-waist-high-growing-bed","family":"furnishings","name":"Canteiro elevado para cuidado acessível","category":"horta","mapTheme":"garden","description":"Canteiro elevado para cuidado acessível. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":128,"width":32,"height":32}},{"index":37,"id":"furnishings-irrigation-hose-trolley","family":"furnishings","name":"Carrinho de mangueira de irrigação","category":"horta","mapTheme":"garden","description":"Carrinho de mangueira de irrigação. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":160,"y":128,"width":32,"height":32}},{"index":38,"id":"furnishings-compost-sieving-table","family":"furnishings","name":"Mesa com peneira de composto","category":"horta","mapTheme":"garden","description":"Mesa com peneira de composto. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":128,"width":32,"height":32}},{"index":39,"id":"furnishings-herb-drying-rack","family":"furnishings","name":"Varal de ervas com feixes pendentes","category":"horta","mapTheme":"garden","description":"Varal de ervas com feixes pendentes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":224,"y":128,"width":32,"height":32}},{"index":40,"id":"furnishings-striped-changing-booth","family":"furnishings","name":"Cabine listrada para trocar de roupa","category":"praia","mapTheme":"beach","description":"Cabine listrada para trocar de roupa. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":160,"width":32,"height":32}},{"index":41,"id":"furnishings-lifeguard-high-chair","family":"furnishings","name":"Cadeira elevada de observação da praia","category":"praia","mapTheme":"beach","description":"Cadeira elevada de observação da praia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":32,"y":160,"width":32,"height":32}},{"index":42,"id":"furnishings-beach-folding-lounger","family":"furnishings","name":"Espreguiçadeira dobrável de praia","category":"praia","mapTheme":"beach","description":"Espreguiçadeira dobrável de praia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":64,"y":160,"width":32,"height":32}},{"index":43,"id":"furnishings-rinsing-shower","family":"furnishings","name":"Chuveiro para retirar areia","category":"praia","mapTheme":"beach","description":"Chuveiro para retirar areia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":160,"width":32,"height":32}},{"index":44,"id":"furnishings-rescue-equipment-rack","family":"furnishings","name":"Suporte de boia e equipamento de resgate","category":"praia","mapTheme":"beach","description":"Suporte de boia e equipamento de resgate. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":160,"width":32,"height":32}},{"index":45,"id":"furnishings-parasol-side-table","family":"furnishings","name":"Mesa baixa com guarda-sol","category":"praia","mapTheme":"beach","description":"Mesa baixa com guarda-sol. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":160,"y":160,"width":32,"height":32}},{"index":46,"id":"furnishings-beach-towel-hook-post","family":"furnishings","name":"Poste de ganchos para cangas e toalhas","category":"praia","mapTheme":"beach","description":"Poste de ganchos para cangas e toalhas. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":160,"width":32,"height":32}},{"index":47,"id":"furnishings-shell-study-tray","family":"furnishings","name":"Bandeja de observação de conchas","category":"praia","mapTheme":"beach","description":"Bandeja de observação de conchas. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":160,"width":32,"height":32}},{"index":48,"id":"furnishings-public-outdoor-piano","family":"furnishings","name":"Piano comunitário com cobertura","category":"música","mapTheme":"chapter-1","description":"Piano comunitário com cobertura. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":192,"width":32,"height":32}},{"index":49,"id":"furnishings-small-stage-steps","family":"furnishings","name":"Degraus de tablado para apresentação","category":"música","mapTheme":"chapter-1","description":"Degraus de tablado para apresentação. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":false,"solidFootprint":null,"layer":"ground","interaction":null,"colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":32,"y":192,"width":32,"height":32}},{"index":50,"id":"furnishings-drum-rest-cradle","family":"furnishings","name":"Berço de apoio para tambor","category":"música","mapTheme":"chapter-1","description":"Berço de apoio para tambor. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":64,"y":192,"width":32,"height":32}},{"index":51,"id":"furnishings-concert-poster-frame","family":"furnishings","name":"Painel de programação dos ensaios","category":"música","mapTheme":"chapter-1","description":"Painel de programação dos ensaios. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":192,"width":32,"height":32}},{"index":52,"id":"furnishings-record-swap-crates","family":"furnishings","name":"Caixas de troca de discos","category":"música","mapTheme":"chapter-1","description":"Caixas de troca de discos. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":192,"width":32,"height":32}},{"index":53,"id":"furnishings-performer-fold-screen","family":"furnishings","name":"Biombo de preparação dos músicos","category":"música","mapTheme":"chapter-1","description":"Biombo de preparação dos músicos. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":192,"width":32,"height":32}},{"index":54,"id":"furnishings-wind-instrument-stand","family":"furnishings","name":"Suporte de instrumentos de sopro","category":"música","mapTheme":"chapter-1","description":"Suporte de instrumentos de sopro. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"music","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":192,"width":32,"height":32}},{"index":55,"id":"furnishings-rehearsal-banner-rail","family":"furnishings","name":"Suporte de faixas do ensaio aberto","category":"música","mapTheme":"chapter-1","description":"Suporte de faixas do ensaio aberto. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":224,"y":192,"width":32,"height":32}},{"index":56,"id":"furnishings-upright-studio-piano","family":"furnishings","name":"Piano vertical do estúdio","category":"estúdio","mapTheme":"room-1","description":"Piano vertical do estúdio. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":224,"width":32,"height":32}},{"index":57,"id":"furnishings-double-keyboard-stand","family":"furnishings","name":"Suporte duplo de teclados","category":"estúdio","mapTheme":"room-1","description":"Suporte duplo de teclados. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":224,"width":32,"height":32}},{"index":58,"id":"furnishings-microphone-pop-filter","family":"furnishings","name":"Microfone com filtro e tripé","category":"estúdio","mapTheme":"room-1","description":"Microfone com filtro e tripé. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"music","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":224,"width":32,"height":32}},{"index":59,"id":"furnishings-mixing-rack-console","family":"furnishings","name":"Console de mixagem com módulos","category":"estúdio","mapTheme":"room-1","description":"Console de mixagem com módulos. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":224,"width":32,"height":32}},{"index":60,"id":"furnishings-adjustable-drum-throne","family":"furnishings","name":"Banco giratório de bateria","category":"estúdio","mapTheme":"room-1","description":"Banco giratório de bateria. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":224,"width":32,"height":32}},{"index":61,"id":"furnishings-acoustic-gobo","family":"furnishings","name":"Painel acústico móvel","category":"estúdio","mapTheme":"room-1","description":"Painel acústico móvel. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":224,"width":32,"height":32}},{"index":62,"id":"furnishings-guitar-wall-rail","family":"furnishings","name":"Suporte de guitarras na parede","category":"estúdio","mapTheme":"room-1","description":"Suporte de guitarras na parede. Organiza gravação, instrumentos e trabalho no estúdio.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":224,"width":32,"height":32}},{"index":63,"id":"furnishings-cable-reel-cart","family":"furnishings","name":"Carrinho de enroladores de cabos","category":"estúdio","mapTheme":"room-1","description":"Carrinho de enroladores de cabos. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":224,"width":32,"height":32}},{"index":64,"id":"furnishings-courtyard-exhibit-plinth","family":"furnishings","name":"Pedestal do pátio com amostra didática","category":"museu","mapTheme":"chapter-2","description":"Pedestal do pátio com amostra didática. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":0,"y":256,"width":32,"height":32}},{"index":65,"id":"furnishings-exhibition-entry-ramp","family":"furnishings","name":"Rampa baixa para entrada da exposição","category":"museu","mapTheme":"chapter-2","description":"Rampa baixa para entrada da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":false,"solidFootprint":null,"layer":"ground","interaction":null,"colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":32,"y":256,"width":32,"height":32}},{"index":66,"id":"furnishings-guide-meeting-canopy","family":"furnishings","name":"Cobertura do ponto de encontro do guia","category":"museu","mapTheme":"chapter-2","description":"Cobertura do ponto de encontro do guia. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":256,"width":32,"height":32}},{"index":67,"id":"furnishings-museum-urn-planter","family":"furnishings","name":"Jardineira em vaso largo do pátio","category":"museu","mapTheme":"chapter-2","description":"Jardineira em vaso largo do pátio. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":256,"width":32,"height":32}},{"index":68,"id":"furnishings-outdoor-history-map","family":"furnishings","name":"Painel externo de mapa histórico","category":"museu","mapTheme":"chapter-2","description":"Painel externo de mapa histórico. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":256,"width":32,"height":32}},{"index":69,"id":"furnishings-reproduction-handling-table","family":"furnishings","name":"Mesa de réplicas didáticas para observar","category":"museu","mapTheme":"chapter-2","description":"Mesa de réplicas didáticas para observar. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":256,"width":32,"height":32}},{"index":70,"id":"furnishings-ticket-information-counter","family":"furnishings","name":"Balcão de informações da exposição","category":"museu","mapTheme":"chapter-2","description":"Balcão de informações da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":256,"width":32,"height":32}},{"index":71,"id":"furnishings-courtyard-exhibit-lamp","family":"furnishings","name":"Luminária de pátio voltada à exposição","category":"museu","mapTheme":"chapter-2","description":"Luminária de pátio voltada à exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":256,"width":32,"height":32}},{"index":72,"id":"furnishings-horizontal-flat-file","family":"furnishings","name":"Mapoteca de gavetas horizontais","category":"conservação","mapTheme":"room-2","description":"Mapoteca de gavetas horizontais. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":288,"width":32,"height":32}},{"index":73,"id":"furnishings-document-support-wedge","family":"furnishings","name":"Apoio inclinado para documento","category":"conservação","mapTheme":"room-2","description":"Apoio inclinado para documento. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":288,"width":32,"height":32}},{"index":74,"id":"furnishings-conservation-gloves-station","family":"furnishings","name":"Estação de materiais de conservação","category":"conservação","mapTheme":"room-2","description":"Estação de materiais de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":288,"width":32,"height":32}},{"index":75,"id":"furnishings-framed-art-storage-rack","family":"furnishings","name":"Suporte de armazenamento de quadros","category":"conservação","mapTheme":"room-2","description":"Suporte de armazenamento de quadros. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":288,"width":32,"height":32}},{"index":76,"id":"furnishings-artifact-foam-tray","family":"furnishings","name":"Bandeja com apoios de conservação","category":"conservação","mapTheme":"room-2","description":"Bandeja com apoios de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":288,"width":32,"height":32}},{"index":77,"id":"furnishings-magnifier-research-desk","family":"furnishings","name":"Mesa de consulta com lupa articulada","category":"conservação","mapTheme":"room-2","description":"Mesa de consulta com lupa articulada. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":288,"width":32,"height":32}},{"index":78,"id":"furnishings-humidity-monitor-cabinet","family":"furnishings","name":"Armário com indicador de umidade","category":"conservação","mapTheme":"room-2","description":"Armário com indicador de umidade. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":288,"width":32,"height":32}},{"index":79,"id":"furnishings-photo-sorting-rack","family":"furnishings","name":"Grade de organização de fotografias","category":"conservação","mapTheme":"room-2","description":"Grade de organização de fotografias. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":224,"y":288,"width":32,"height":32}},{"index":80,"id":"furnishings-solar-demonstration-panel","family":"furnishings","name":"Painel solar de demonstração","category":"ciência","mapTheme":"chapter-3","description":"Painel solar de demonstração. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":320,"width":32,"height":32}},{"index":81,"id":"furnishings-wind-demo-workbench","family":"furnishings","name":"Bancada de demonstração de vento","category":"ciência","mapTheme":"chapter-3","description":"Bancada de demonstração de vento. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":320,"width":32,"height":32}},{"index":82,"id":"furnishings-rain-observation-post","family":"furnishings","name":"Poste de observação da chuva","category":"ciência","mapTheme":"chapter-3","description":"Poste de observação da chuva. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":320,"width":32,"height":32}},{"index":83,"id":"furnishings-shadow-comparison-table","family":"furnishings","name":"Mesa de comparação de sombras","category":"ciência","mapTheme":"chapter-3","description":"Mesa de comparação de sombras. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":320,"width":32,"height":32}},{"index":84,"id":"furnishings-geology-touch-display","family":"furnishings","name":"Expositor didático de rochas","category":"ciência","mapTheme":"chapter-3","description":"Expositor didático de rochas. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":320,"width":32,"height":32}},{"index":85,"id":"furnishings-community-question-tree","family":"furnishings","name":"Suporte ramificado de perguntas da ciência","category":"ciência","mapTheme":"chapter-3","description":"Suporte ramificado de perguntas da ciência. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":320,"width":32,"height":32}},{"index":86,"id":"furnishings-magnifying-sample-table","family":"furnishings","name":"Mesa de amostras com lupa fixa","category":"ciência","mapTheme":"chapter-3","description":"Mesa de amostras com lupa fixa. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":192,"y":320,"width":32,"height":32}},{"index":87,"id":"furnishings-outdoor-results-board","family":"furnishings","name":"Painel de resultados de observação","category":"ciência","mapTheme":"chapter-3","description":"Painel de resultados de observação. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":320,"width":32,"height":32}},{"index":88,"id":"furnishings-optical-observation-bench","family":"furnishings","name":"Bancada de observação óptica","category":"laboratório","mapTheme":"room-3","description":"Bancada de observação óptica. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":352,"width":32,"height":32}},{"index":89,"id":"furnishings-safe-circuit-workstation","family":"furnishings","name":"Estação didática de circuitos de baixa tensão","category":"laboratório","mapTheme":"room-3","description":"Estação didática de circuitos de baixa tensão. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":352,"width":32,"height":32}},{"index":90,"id":"furnishings-sample-drawer-cabinet","family":"furnishings","name":"Gaveteiro de amostras com etiquetas","category":"laboratório","mapTheme":"room-3","description":"Gaveteiro de amostras com etiquetas. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":352,"width":32,"height":32}},{"index":91,"id":"furnishings-laboratory-task-lamp","family":"furnishings","name":"Luminária de tarefa do laboratório","category":"laboratório","mapTheme":"room-3","description":"Luminária de tarefa do laboratório. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":352,"width":32,"height":32}},{"index":92,"id":"furnishings-measuring-instrument-rack","family":"furnishings","name":"Suporte de instrumentos de medida","category":"laboratório","mapTheme":"room-3","description":"Suporte de instrumentos de medida. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":352,"width":32,"height":32}},{"index":93,"id":"furnishings-experiment-notebook-desk","family":"furnishings","name":"Mesa de registro de experimentos","category":"laboratório","mapTheme":"room-3","description":"Mesa de registro de experimentos. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":352,"width":32,"height":32}},{"index":94,"id":"furnishings-comparison-sample-turntable","family":"furnishings","name":"Base giratória de comparação de amostras","category":"laboratório","mapTheme":"room-3","description":"Base giratória de comparação de amostras. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":192,"y":352,"width":32,"height":32}},{"index":95,"id":"furnishings-laboratory-stool","family":"furnishings","name":"Banco de laboratório com apoio de pés","category":"laboratório","mapTheme":"room-3","description":"Banco de laboratório com apoio de pés. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":352,"width":32,"height":32}},{"index":96,"id":"furnishings-public-news-kiosk","family":"furnishings","name":"Quiosque público de notícias","category":"mídia","mapTheme":"chapter-4","description":"Quiosque público de notícias. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":384,"width":32,"height":32}},{"index":97,"id":"furnishings-community-paper-dispenser","family":"furnishings","name":"Expositor de jornal comunitário","category":"mídia","mapTheme":"chapter-4","description":"Expositor de jornal comunitário. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":384,"width":32,"height":32}},{"index":98,"id":"furnishings-media-listening-bench","family":"furnishings","name":"Banco com estação de escuta","category":"mídia","mapTheme":"chapter-4","description":"Banco com estação de escuta. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":384,"width":32,"height":32}},{"index":99,"id":"furnishings-phone-repair-counter","family":"furnishings","name":"Bancada de manutenção de aparelhos","category":"mídia","mapTheme":"chapter-4","description":"Bancada de manutenção de aparelhos. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":384,"width":32,"height":32}},{"index":100,"id":"furnishings-outdoor-correction-board","family":"furnishings","name":"Painel de correções do bairro","category":"mídia","mapTheme":"chapter-4","description":"Painel de correções do bairro. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":384,"width":32,"height":32}},{"index":101,"id":"furnishings-public-interview-chair","family":"furnishings","name":"Cadeira com apoio para entrevista","category":"mídia","mapTheme":"chapter-4","description":"Cadeira com apoio para entrevista. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":384,"width":32,"height":32}},{"index":102,"id":"furnishings-device-return-locker","family":"furnishings","name":"Armário de devolução de equipamentos","category":"mídia","mapTheme":"chapter-4","description":"Armário de devolução de equipamentos. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":384,"width":32,"height":32}},{"index":103,"id":"furnishings-portable-projection-cart","family":"furnishings","name":"Carrinho de projeção comunitária","category":"mídia","mapTheme":"chapter-4","description":"Carrinho de projeção comunitária. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":384,"width":32,"height":32}},{"index":104,"id":"furnishings-horseshoe-editorial-table","family":"furnishings","name":"Mesa editorial em ferradura","category":"redação","mapTheme":"room-4","description":"Mesa editorial em ferradura. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":416,"width":32,"height":32}},{"index":105,"id":"furnishings-caption-review-lightbox","family":"furnishings","name":"Mesa de luz para revisão de imagens","category":"redação","mapTheme":"room-4","description":"Mesa de luz para revisão de imagens. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":416,"width":32,"height":32}},{"index":106,"id":"furnishings-source-reference-cabinet","family":"furnishings","name":"Armário de referências e fontes","category":"redação","mapTheme":"room-4","description":"Armário de referências e fontes. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":416,"width":32,"height":32}},{"index":107,"id":"furnishings-interview-audio-desk","family":"furnishings","name":"Mesa de gravação de entrevista","category":"redação","mapTheme":"room-4","description":"Mesa de gravação de entrevista. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":416,"width":32,"height":32}},{"index":108,"id":"furnishings-proof-sheet-drying-rail","family":"furnishings","name":"Trilho de folhas de revisão","category":"redação","mapTheme":"room-4","description":"Trilho de folhas de revisão. Organiza entrevistas, fontes, legendas e correções na redação.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":416,"width":32,"height":32}},{"index":109,"id":"furnishings-correction-tray-tower","family":"furnishings","name":"Organizador de correções em bandejas","category":"redação","mapTheme":"room-4","description":"Organizador de correções em bandejas. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":416,"width":32,"height":32}},{"index":110,"id":"furnishings-community-newspaper-press","family":"furnishings","name":"Prensa didática do jornal comunitário","category":"redação","mapTheme":"room-4","description":"Prensa didática do jornal comunitário. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":416,"width":32,"height":32}},{"index":111,"id":"furnishings-editorial-rolling-chair","family":"furnishings","name":"Cadeira de trabalho com rodízios","category":"redação","mapTheme":"room-4","description":"Cadeira de trabalho com rodízios. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":416,"width":32,"height":32}},{"index":112,"id":"furnishings-accessible-public-table","family":"furnishings","name":"Mesa pública com espaço de aproximação","category":"comunidade","mapTheme":"chapter-5","description":"Mesa pública com espaço de aproximação. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":448,"width":32,"height":32}},{"index":113,"id":"furnishings-community-tool-lending-locker","family":"furnishings","name":"Armário de empréstimo de ferramentas","category":"comunidade","mapTheme":"chapter-5","description":"Armário de empréstimo de ferramentas. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":448,"width":32,"height":32}},{"index":114,"id":"furnishings-neighborhood-mural-easel","family":"furnishings","name":"Suporte de trabalho do mural coletivo","category":"comunidade","mapTheme":"chapter-5","description":"Suporte de trabalho do mural coletivo. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":448,"width":32,"height":32}},{"index":115,"id":"furnishings-low-community-planting-table","family":"furnishings","name":"Mesa baixa de plantio compartilhado","category":"comunidade","mapTheme":"chapter-5","description":"Mesa baixa de plantio compartilhado. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":448,"width":32,"height":32}},{"index":116,"id":"furnishings-covered-rest-seat","family":"furnishings","name":"Assento de descanso com cobertura","category":"comunidade","mapTheme":"chapter-5","description":"Assento de descanso com cobertura. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":128,"y":448,"width":32,"height":32}},{"index":117,"id":"furnishings-community-route-marker","family":"furnishings","name":"Totem de orientação das rotas do bairro","category":"comunidade","mapTheme":"chapter-5","description":"Totem de orientação das rotas do bairro. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":160,"y":448,"width":32,"height":32}},{"index":118,"id":"furnishings-shared-meal-counter","family":"furnishings","name":"Balcão de refeições compartilhadas","category":"comunidade","mapTheme":"chapter-5","description":"Balcão de refeições compartilhadas. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":448,"width":32,"height":32}},{"index":119,"id":"furnishings-children-art-storage","family":"furnishings","name":"Organizador de materiais de desenho","category":"comunidade","mapTheme":"chapter-5","description":"Organizador de materiais de desenho. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":448,"width":32,"height":32}},{"index":120,"id":"furnishings-semicircle-assembly-bench","family":"furnishings","name":"Banco semicircular da assembleia","category":"assembleia","mapTheme":"room-5","description":"Banco semicircular da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":480,"width":32,"height":32}},{"index":121,"id":"furnishings-height-adjustable-speaking-desk","family":"furnishings","name":"Mesa de fala com ajuste de altura","category":"assembleia","mapTheme":"room-5","description":"Mesa de fala com ajuste de altura. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":480,"width":32,"height":32}},{"index":122,"id":"furnishings-quiet-writing-nook","family":"furnishings","name":"Mesa de participação escrita com biombo","category":"assembleia","mapTheme":"room-5","description":"Mesa de participação escrita com biombo. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":480,"width":32,"height":32}},{"index":123,"id":"furnishings-turn-order-card-rail","family":"furnishings","name":"Suporte de cartões da ordem de fala","category":"assembleia","mapTheme":"room-5","description":"Suporte de cartões da ordem de fala. Organiza fala, escrita e escuta na assembleia comunitária.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":480,"width":32,"height":32}},{"index":124,"id":"furnishings-proposal-model-table","family":"furnishings","name":"Mesa da maquete de proposta do bairro","category":"assembleia","mapTheme":"room-5","description":"Mesa da maquete de proposta do bairro. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":480,"width":32,"height":32}},{"index":125,"id":"furnishings-meeting-notes-cabinet","family":"furnishings","name":"Arquivo de notas das reuniões","category":"assembleia","mapTheme":"room-5","description":"Arquivo de notas das reuniões. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":480,"width":32,"height":32}},{"index":126,"id":"furnishings-shared-water-carafe-station","family":"furnishings","name":"Estação de água e copos da assembleia","category":"assembleia","mapTheme":"room-5","description":"Estação de água e copos da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":192,"y":480,"width":32,"height":32}},{"index":127,"id":"furnishings-stackable-meeting-chairs","family":"furnishings","name":"Pilha organizada de cadeiras de reunião","category":"assembleia","mapTheme":"room-5","description":"Pilha organizada de cadeiras de reunião. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":480,"width":32,"height":32}},{"index":128,"id":"furnishings-public-catalog-island","family":"furnishings","name":"Ilha de consulta do catálogo público","category":"arquivo público","mapTheme":"chapter-6","description":"Ilha de consulta do catálogo público. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":512,"width":32,"height":32}},{"index":129,"id":"furnishings-restoration-window-display","family":"furnishings","name":"Expositor de etapas de conservação","category":"arquivo público","mapTheme":"chapter-6","description":"Expositor de etapas de conservação. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":512,"width":32,"height":32}},{"index":130,"id":"furnishings-community-record-dropbox","family":"furnishings","name":"Caixa de contribuições documentais","category":"arquivo público","mapTheme":"chapter-6","description":"Caixa de contribuições documentais. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":512,"width":32,"height":32}},{"index":131,"id":"furnishings-archive-welcome-settee","family":"furnishings","name":"Sofá de espera do arquivo","category":"arquivo público","mapTheme":"chapter-6","description":"Sofá de espera do arquivo. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":96,"y":512,"width":32,"height":32}},{"index":132,"id":"furnishings-record-connection-map","family":"furnishings","name":"Painel de conexões entre registros","category":"arquivo público","mapTheme":"chapter-6","description":"Painel de conexões entre registros. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":512,"width":32,"height":32}},{"index":133,"id":"furnishings-civic-index-sign","family":"furnishings","name":"Totem de índice do arquivo comunitário","category":"arquivo público","mapTheme":"chapter-6","description":"Totem de índice do arquivo comunitário. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":512,"width":32,"height":32}},{"index":134,"id":"furnishings-archive-return-cradle","family":"furnishings","name":"Suporte de devolução com caixas protegidas","category":"arquivo público","mapTheme":"chapter-6","description":"Suporte de devolução com caixas protegidas. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":512,"width":32,"height":32}},{"index":135,"id":"furnishings-restored-book-display","family":"furnishings","name":"Expositor de livros restaurados","category":"arquivo público","mapTheme":"chapter-6","description":"Expositor de livros restaurados. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":224,"y":512,"width":32,"height":32}},{"index":136,"id":"furnishings-backup-equipment-cabinet","family":"furnishings","name":"Armário de cópias de segurança","category":"catálogo","mapTheme":"room-6","description":"Armário de cópias de segurança. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":544,"width":32,"height":32}},{"index":137,"id":"furnishings-paired-review-workstations","family":"furnishings","name":"Estações de revisão lado a lado","category":"catálogo","mapTheme":"room-6","description":"Estações de revisão lado a lado. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":544,"width":32,"height":32}},{"index":138,"id":"furnishings-labeled-network-patch-rack","family":"furnishings","name":"Rack com conexões e etiquetas","category":"catálogo","mapTheme":"room-6","description":"Rack com conexões e etiquetas. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":64,"y":544,"width":32,"height":32}},{"index":139,"id":"furnishings-offline-record-storage-chest","family":"furnishings","name":"Baú de registros para consulta sem rede","category":"catálogo","mapTheme":"room-6","description":"Baú de registros para consulta sem rede. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":544,"width":32,"height":32}},{"index":140,"id":"furnishings-restoration-progress-console","family":"furnishings","name":"Mesa de acompanhamento da restauração","category":"catálogo","mapTheme":"room-6","description":"Mesa de acompanhamento da restauração. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":544,"width":32,"height":32}},{"index":141,"id":"furnishings-equipment-maintenance-station","family":"furnishings","name":"Bancada de manutenção do catálogo","category":"catálogo","mapTheme":"room-6","description":"Bancada de manutenção do catálogo. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":544,"width":32,"height":32}},{"index":142,"id":"furnishings-rolling-backup-media-case","family":"furnishings","name":"Maleta de mídias de backup com rodízios","category":"catálogo","mapTheme":"room-6","description":"Maleta de mídias de backup com rodízios. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":544,"width":32,"height":32}},{"index":143,"id":"furnishings-human-review-lamp-desk","family":"furnishings","name":"Mesa de revisão humana com luminária","category":"catálogo","mapTheme":"room-6","description":"Mesa de revisão humana com luminária. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":544,"width":32,"height":32}}];V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.furnishingsAssets);V.furnishingsMaterialSources={furnishings:'data:image/png;base64,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'};V.furnishingsContent={"version":"2.1","license":"CC0-1.0","groups":{"hub":[0,1,2,3,4,5,6,7],"library":[8,9,10,11,12,13,14,15],"park":[16,17,18,19,20,21,22,23],"market":[24,25,26,27,28,29,30,31],"garden":[32,33,34,35,36,37,38,39],"beach":[40,41,42,43,44,45,46,47],"chapter-1":[48,49,50,51,52,53,54,55],"room-1":[56,57,58,59,60,61,62,63],"chapter-2":[64,65,66,67,68,69,70,71],"room-2":[72,73,74,75,76,77,78,79],"chapter-3":[80,81,82,83,84,85,86,87],"room-3":[88,89,90,91,92,93,94,95],"chapter-4":[96,97,98,99,100,101,102,103],"room-4":[104,105,106,107,108,109,110,111],"chapter-5":[112,113,114,115,116,117,118,119],"room-5":[120,121,122,123,124,125,126,127],"chapter-6":[128,129,130,131,132,133,134,135],"room-6":[136,137,138,139,140,141,142,143]},"characters":{},"residents":[],"sources":[],"assetManifest":{"version":"2.1","license":"CC0-1.0","licenseURL":"https://creativecommons.org/publicdomain/zero/1.0/","attributionRequired":false,"creator":"Original VOICES pixel art","generator":"tools/create_furnishings_assets.py","atlas":"assets/tilesets/furnishings-props.png","tileSize":32,"columns":8,"rows":18,"coordinateUnits":"tile-fraction","sourceRectUnits":"pixel","colorRoleConvention":"Only exact RGB triples listed in colorRoles may be recolored. Outlines, contents and alpha remain unchanged.","groups":{"hub":[0,1,2,3,4,5,6,7],"library":[8,9,10,11,12,13,14,15],"park":[16,17,18,19,20,21,22,23],"market":[24,25,26,27,28,29,30,31],"garden":[32,33,34,35,36,37,38,39],"beach":[40,41,42,43,44,45,46,47],"chapter-1":[48,49,50,51,52,53,54,55],"room-1":[56,57,58,59,60,61,62,63],"chapter-2":[64,65,66,67,68,69,70,71],"room-2":[72,73,74,75,76,77,78,79],"chapter-3":[80,81,82,83,84,85,86,87],"room-3":[88,89,90,91,92,93,94,95],"chapter-4":[96,97,98,99,100,101,102,103],"room-4":[104,105,106,107,108,109,110,111],"chapter-5":[112,113,114,115,116,117,118,119],"room-5":[120,121,122,123,124,125,126,127],"chapter-6":[128,129,130,131,132,133,134,135],"room-6":[136,137,138,139,140,141,142,143]},"palette":{"ink":"#111729","outline":"#1b2039","navy":"#263250","navylight":"#465777","violetdark":"#463575","violet":"#7860be","violetlight":"#b498f0","cyan":"#59d9dd","cyandark":"#278c9d","cyanlight":"#b8f4ea","amber":"#efb74e","amberdark":"#a66c32","amberlight":"#ffdd88","coral":"#ed7978","coraldark":"#ab4d65","corallight":"#ffc0a0","white":"#eeeada","paper":"#d8dccf","green":"#58aa83","greendark":"#2f6b69","greenlight":"#9cd3a0","brown":"#805a49","brownlight":"#b99068","greylight":"#afb5ba","grey":"#768894","darkgrey":"#49576d","pink":"#dd9dc3"},"props":[{"index":0,"id":"furnishings-curved-stone-bench","family":"furnishings","name":"Banco curvo de pedra da praça","category":"praça","mapTheme":"hub","description":"Banco curvo de pedra da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":0,"y":0,"width":32,"height":32}},{"index":1,"id":"furnishings-refreshment-pushcart","family":"furnishings","name":"Carrinho de refrescos com garrafa térmica","category":"praça","mapTheme":"hub","description":"Carrinho de refrescos com garrafa térmica. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":0,"width":32,"height":32}},{"index":2,"id":"furnishings-staggered-bicycle-rack","family":"furnishings","name":"Bicicletário com aros escalonados","category":"praça","mapTheme":"hub","description":"Bicicletário com aros escalonados. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":0,"width":32,"height":32}},{"index":3,"id":"furnishings-public-drinking-fountain","family":"furnishings","name":"Bebedouro público com torneira baixa","category":"praça","mapTheme":"hub","description":"Bebedouro público com torneira baixa. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":0,"width":32,"height":32}},{"index":4,"id":"furnishings-chess-stone-table","family":"furnishings","name":"Mesa de xadrez da praça","category":"praça","mapTheme":"hub","description":"Mesa de xadrez da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":0,"width":32,"height":32}},{"index":5,"id":"furnishings-charging-leaning-table","family":"furnishings","name":"Mesa alta com tomadas protegidas","category":"praça","mapTheme":"hub","description":"Mesa alta com tomadas protegidas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":0,"width":32,"height":32}},{"index":6,"id":"furnishings-community-coat-hooks","family":"furnishings","name":"Painel de ganchos para bolsas","category":"praça","mapTheme":"hub","description":"Painel de ganchos para bolsas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":0,"width":32,"height":32}},{"index":7,"id":"furnishings-flower-stone-trough","family":"furnishings","name":"Floreira de pedra com flores miúdas","category":"praça","mapTheme":"hub","description":"Floreira de pedra com flores miúdas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":224,"y":0,"width":32,"height":32}},{"index":8,"id":"furnishings-arched-tall-bookcase","family":"furnishings","name":"Estante alta de livros com arco","category":"biblioteca","mapTheme":"library","description":"Estante alta de livros com arco. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":32,"width":32,"height":32}},{"index":9,"id":"furnishings-reclining-reading-chair","family":"furnishings","name":"Poltrona inclinada de leitura","category":"biblioteca","mapTheme":"library","description":"Poltrona inclinada de leitura. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":32,"y":32,"width":32,"height":32}},{"index":10,"id":"furnishings-slanted-magazine-rack","family":"furnishings","name":"Expositor inclinado de revistas","category":"biblioteca","mapTheme":"library","description":"Expositor inclinado de revistas. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":32,"width":32,"height":32}},{"index":11,"id":"furnishings-bookbinding-press","family":"furnishings","name":"Prensa manual de encadernação","category":"biblioteca","mapTheme":"library","description":"Prensa manual de encadernação. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":32,"width":32,"height":32}},{"index":12,"id":"furnishings-rolling-library-ladder","family":"furnishings","name":"Escada de biblioteca com rodízios","category":"biblioteca","mapTheme":"library","description":"Escada de biblioteca com rodízios. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":32,"width":32,"height":32}},{"index":13,"id":"furnishings-study-carrel","family":"furnishings","name":"Mesa de estudo com divisórias","category":"biblioteca","mapTheme":"library","description":"Mesa de estudo com divisórias. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":32,"width":32,"height":32}},{"index":14,"id":"furnishings-dictionary-lectern","family":"furnishings","name":"Suporte de consulta para dicionário","category":"biblioteca","mapTheme":"library","description":"Suporte de consulta para dicionário. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":32,"width":32,"height":32}},{"index":15,"id":"furnishings-felt-room-divider","family":"furnishings","name":"Divisória de feltro para leitura silenciosa","category":"biblioteca","mapTheme":"library","description":"Divisória de feltro para leitura silenciosa. Organiza consulta, conservação, leitura e silêncio na biblioteca.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":32,"width":32,"height":32}},{"index":16,"id":"furnishings-hexagonal-picnic-table","family":"furnishings","name":"Mesa hexagonal de piquenique","category":"parque","mapTheme":"park","description":"Mesa hexagonal de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":64,"width":32,"height":32}},{"index":17,"id":"furnishings-carved-log-bench","family":"furnishings","name":"Banco baixo de tronco trabalhado","category":"parque","mapTheme":"park","description":"Banco baixo de tronco trabalhado. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":32,"y":64,"width":32,"height":32}},{"index":18,"id":"furnishings-bird-observation-binoculars","family":"furnishings","name":"Binóculo fixo de observação de aves","category":"parque","mapTheme":"park","description":"Binóculo fixo de observação de aves. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":64,"width":32,"height":32}},{"index":19,"id":"furnishings-bird-hide-screen","family":"furnishings","name":"Painel de observação com aberturas","category":"parque","mapTheme":"park","description":"Painel de observação com aberturas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":64,"width":32,"height":32}},{"index":20,"id":"furnishings-trail-map-kiosk","family":"furnishings","name":"Quiosque de mapa das trilhas","category":"parque","mapTheme":"park","description":"Quiosque de mapa das trilhas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":64,"width":32,"height":32}},{"index":21,"id":"furnishings-dog-rinse-platform","family":"furnishings","name":"Plataforma baixa para limpeza das patas","category":"parque","mapTheme":"park","description":"Plataforma baixa para limpeza das patas. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":64,"width":32,"height":32}},{"index":22,"id":"furnishings-picnic-basket-table","family":"furnishings","name":"Mesa pequena com cesta de piquenique","category":"parque","mapTheme":"park","description":"Mesa pequena com cesta de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":192,"y":64,"width":32,"height":32}},{"index":23,"id":"furnishings-nest-box-post","family":"furnishings","name":"Suporte de caixa-ninho protegida","category":"parque","mapTheme":"park","description":"Suporte de caixa-ninho protegida. Apoia o passeio, a observação da natureza e o cuidado com os animais.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":224,"y":64,"width":32,"height":32}},{"index":24,"id":"furnishings-weighing-counter","family":"furnishings","name":"Balcão com balança de dois pratos","category":"feira","mapTheme":"market","description":"Balcão com balança de dois pratos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":96,"width":32,"height":32}},{"index":25,"id":"furnishings-ice-chest-cart","family":"furnishings","name":"Carrinho de caixa térmica","category":"feira","mapTheme":"market","description":"Carrinho de caixa térmica. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":96,"width":32,"height":32}},{"index":26,"id":"furnishings-vegetable-display-tier","family":"furnishings","name":"Expositor de verduras em três níveis","category":"feira","mapTheme":"market","description":"Expositor de verduras em três níveis. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":64,"y":96,"width":32,"height":32}},{"index":27,"id":"furnishings-flour-bin-cabinet","family":"furnishings","name":"Armário de farinhas com medidas","category":"feira","mapTheme":"market","description":"Armário de farinhas com medidas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":96,"width":32,"height":32}},{"index":28,"id":"furnishings-food-warming-cart","family":"furnishings","name":"Carrinho de comida com tampas térmicas","category":"feira","mapTheme":"market","description":"Carrinho de comida com tampas térmicas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":96,"width":32,"height":32}},{"index":29,"id":"furnishings-grain-hopper-rack","family":"furnishings","name":"Suporte de dispensadores de grãos","category":"feira","mapTheme":"market","description":"Suporte de dispensadores de grãos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":96,"width":32,"height":32}},{"index":30,"id":"furnishings-cloth-cutting-table","family":"furnishings","name":"Mesa de corte com rolo de tecido","category":"feira","mapTheme":"market","description":"Mesa de corte com rolo de tecido. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":96,"width":32,"height":32}},{"index":31,"id":"furnishings-crate-hand-truck","family":"furnishings","name":"Carrinho de carga com caixas empilhadas","category":"feira","mapTheme":"market","description":"Carrinho de carga com caixas empilhadas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":96,"width":32,"height":32}},{"index":32,"id":"furnishings-propagation-cold-frame","family":"furnishings","name":"Estufa baixa para mudas","category":"horta","mapTheme":"garden","description":"Estufa baixa para mudas. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":128,"width":32,"height":32}},{"index":33,"id":"furnishings-potting-workbench","family":"furnishings","name":"Bancada de transplante com vasos","category":"horta","mapTheme":"garden","description":"Bancada de transplante com vasos. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":128,"width":32,"height":32}},{"index":34,"id":"furnishings-outdoor-garden-sink","family":"furnishings","name":"Tanque da horta com torneira","category":"horta","mapTheme":"garden","description":"Tanque da horta com torneira. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":128,"width":32,"height":32}},{"index":35,"id":"furnishings-seed-library-cabinet","family":"furnishings","name":"Armário comunitário de sementes","category":"horta","mapTheme":"garden","description":"Armário comunitário de sementes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":128,"width":32,"height":32}},{"index":36,"id":"furnishings-waist-high-growing-bed","family":"furnishings","name":"Canteiro elevado para cuidado acessível","category":"horta","mapTheme":"garden","description":"Canteiro elevado para cuidado acessível. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":128,"width":32,"height":32}},{"index":37,"id":"furnishings-irrigation-hose-trolley","family":"furnishings","name":"Carrinho de mangueira de irrigação","category":"horta","mapTheme":"garden","description":"Carrinho de mangueira de irrigação. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":160,"y":128,"width":32,"height":32}},{"index":38,"id":"furnishings-compost-sieving-table","family":"furnishings","name":"Mesa com peneira de composto","category":"horta","mapTheme":"garden","description":"Mesa com peneira de composto. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":128,"width":32,"height":32}},{"index":39,"id":"furnishings-herb-drying-rack","family":"furnishings","name":"Varal de ervas com feixes pendentes","category":"horta","mapTheme":"garden","description":"Varal de ervas com feixes pendentes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":224,"y":128,"width":32,"height":32}},{"index":40,"id":"furnishings-striped-changing-booth","family":"furnishings","name":"Cabine listrada para trocar de roupa","category":"praia","mapTheme":"beach","description":"Cabine listrada para trocar de roupa. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":160,"width":32,"height":32}},{"index":41,"id":"furnishings-lifeguard-high-chair","family":"furnishings","name":"Cadeira elevada de observação da praia","category":"praia","mapTheme":"beach","description":"Cadeira elevada de observação da praia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":32,"y":160,"width":32,"height":32}},{"index":42,"id":"furnishings-beach-folding-lounger","family":"furnishings","name":"Espreguiçadeira dobrável de praia","category":"praia","mapTheme":"beach","description":"Espreguiçadeira dobrável de praia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":64,"y":160,"width":32,"height":32}},{"index":43,"id":"furnishings-rinsing-shower","family":"furnishings","name":"Chuveiro para retirar areia","category":"praia","mapTheme":"beach","description":"Chuveiro para retirar areia. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":160,"width":32,"height":32}},{"index":44,"id":"furnishings-rescue-equipment-rack","family":"furnishings","name":"Suporte de boia e equipamento de resgate","category":"praia","mapTheme":"beach","description":"Suporte de boia e equipamento de resgate. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":160,"width":32,"height":32}},{"index":45,"id":"furnishings-parasol-side-table","family":"furnishings","name":"Mesa baixa com guarda-sol","category":"praia","mapTheme":"beach","description":"Mesa baixa com guarda-sol. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":160,"y":160,"width":32,"height":32}},{"index":46,"id":"furnishings-beach-towel-hook-post","family":"furnishings","name":"Poste de ganchos para cangas e toalhas","category":"praia","mapTheme":"beach","description":"Poste de ganchos para cangas e toalhas. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":160,"width":32,"height":32}},{"index":47,"id":"furnishings-shell-study-tray","family":"furnishings","name":"Bandeja de observação de conchas","category":"praia","mapTheme":"beach","description":"Bandeja de observação de conchas. Apoia descanso, troca de roupa, cuidado e observação na praia.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":160,"width":32,"height":32}},{"index":48,"id":"furnishings-public-outdoor-piano","family":"furnishings","name":"Piano comunitário com cobertura","category":"música","mapTheme":"chapter-1","description":"Piano comunitário com cobertura. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":192,"width":32,"height":32}},{"index":49,"id":"furnishings-small-stage-steps","family":"furnishings","name":"Degraus de tablado para apresentação","category":"música","mapTheme":"chapter-1","description":"Degraus de tablado para apresentação. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":false,"solidFootprint":null,"layer":"ground","interaction":null,"colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":32,"y":192,"width":32,"height":32}},{"index":50,"id":"furnishings-drum-rest-cradle","family":"furnishings","name":"Berço de apoio para tambor","category":"música","mapTheme":"chapter-1","description":"Berço de apoio para tambor. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":64,"y":192,"width":32,"height":32}},{"index":51,"id":"furnishings-concert-poster-frame","family":"furnishings","name":"Painel de programação dos ensaios","category":"música","mapTheme":"chapter-1","description":"Painel de programação dos ensaios. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":192,"width":32,"height":32}},{"index":52,"id":"furnishings-record-swap-crates","family":"furnishings","name":"Caixas de troca de discos","category":"música","mapTheme":"chapter-1","description":"Caixas de troca de discos. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":192,"width":32,"height":32}},{"index":53,"id":"furnishings-performer-fold-screen","family":"furnishings","name":"Biombo de preparação dos músicos","category":"música","mapTheme":"chapter-1","description":"Biombo de preparação dos músicos. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":192,"width":32,"height":32}},{"index":54,"id":"furnishings-wind-instrument-stand","family":"furnishings","name":"Suporte de instrumentos de sopro","category":"música","mapTheme":"chapter-1","description":"Suporte de instrumentos de sopro. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"music","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":192,"width":32,"height":32}},{"index":55,"id":"furnishings-rehearsal-banner-rail","family":"furnishings","name":"Suporte de faixas do ensaio aberto","category":"música","mapTheme":"chapter-1","description":"Suporte de faixas do ensaio aberto. Compõe um ensaio aberto com espaço para músicos e ouvintes.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":224,"y":192,"width":32,"height":32}},{"index":56,"id":"furnishings-upright-studio-piano","family":"furnishings","name":"Piano vertical do estúdio","category":"estúdio","mapTheme":"room-1","description":"Piano vertical do estúdio. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":0,"y":224,"width":32,"height":32}},{"index":57,"id":"furnishings-double-keyboard-stand","family":"furnishings","name":"Suporte duplo de teclados","category":"estúdio","mapTheme":"room-1","description":"Suporte duplo de teclados. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"music","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":224,"width":32,"height":32}},{"index":58,"id":"furnishings-microphone-pop-filter","family":"furnishings","name":"Microfone com filtro e tripé","category":"estúdio","mapTheme":"room-1","description":"Microfone com filtro e tripé. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"music","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":224,"width":32,"height":32}},{"index":59,"id":"furnishings-mixing-rack-console","family":"furnishings","name":"Console de mixagem com módulos","category":"estúdio","mapTheme":"room-1","description":"Console de mixagem com módulos. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":224,"width":32,"height":32}},{"index":60,"id":"furnishings-adjustable-drum-throne","family":"furnishings","name":"Banco giratório de bateria","category":"estúdio","mapTheme":"room-1","description":"Banco giratório de bateria. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":224,"width":32,"height":32}},{"index":61,"id":"furnishings-acoustic-gobo","family":"furnishings","name":"Painel acústico móvel","category":"estúdio","mapTheme":"room-1","description":"Painel acústico móvel. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":224,"width":32,"height":32}},{"index":62,"id":"furnishings-guitar-wall-rail","family":"furnishings","name":"Suporte de guitarras na parede","category":"estúdio","mapTheme":"room-1","description":"Suporte de guitarras na parede. Organiza gravação, instrumentos e trabalho no estúdio.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"music","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":224,"width":32,"height":32}},{"index":63,"id":"furnishings-cable-reel-cart","family":"furnishings","name":"Carrinho de enroladores de cabos","category":"estúdio","mapTheme":"room-1","description":"Carrinho de enroladores de cabos. Organiza gravação, instrumentos e trabalho no estúdio.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":224,"width":32,"height":32}},{"index":64,"id":"furnishings-courtyard-exhibit-plinth","family":"furnishings","name":"Pedestal do pátio com amostra didática","category":"museu","mapTheme":"chapter-2","description":"Pedestal do pátio com amostra didática. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":0,"y":256,"width":32,"height":32}},{"index":65,"id":"furnishings-exhibition-entry-ramp","family":"furnishings","name":"Rampa baixa para entrada da exposição","category":"museu","mapTheme":"chapter-2","description":"Rampa baixa para entrada da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":false,"solidFootprint":null,"layer":"ground","interaction":null,"colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":32,"y":256,"width":32,"height":32}},{"index":66,"id":"furnishings-guide-meeting-canopy","family":"furnishings","name":"Cobertura do ponto de encontro do guia","category":"museu","mapTheme":"chapter-2","description":"Cobertura do ponto de encontro do guia. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":256,"width":32,"height":32}},{"index":67,"id":"furnishings-museum-urn-planter","family":"furnishings","name":"Jardineira em vaso largo do pátio","category":"museu","mapTheme":"chapter-2","description":"Jardineira em vaso largo do pátio. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":256,"width":32,"height":32}},{"index":68,"id":"furnishings-outdoor-history-map","family":"furnishings","name":"Painel externo de mapa histórico","category":"museu","mapTheme":"chapter-2","description":"Painel externo de mapa histórico. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":256,"width":32,"height":32}},{"index":69,"id":"furnishings-reproduction-handling-table","family":"furnishings","name":"Mesa de réplicas didáticas para observar","category":"museu","mapTheme":"chapter-2","description":"Mesa de réplicas didáticas para observar. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":256,"width":32,"height":32}},{"index":70,"id":"furnishings-ticket-information-counter","family":"furnishings","name":"Balcão de informações da exposição","category":"museu","mapTheme":"chapter-2","description":"Balcão de informações da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":256,"width":32,"height":32}},{"index":71,"id":"furnishings-courtyard-exhibit-lamp","family":"furnishings","name":"Luminária de pátio voltada à exposição","category":"museu","mapTheme":"chapter-2","description":"Luminária de pátio voltada à exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":256,"width":32,"height":32}},{"index":72,"id":"furnishings-horizontal-flat-file","family":"furnishings","name":"Mapoteca de gavetas horizontais","category":"conservação","mapTheme":"room-2","description":"Mapoteca de gavetas horizontais. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":288,"width":32,"height":32}},{"index":73,"id":"furnishings-document-support-wedge","family":"furnishings","name":"Apoio inclinado para documento","category":"conservação","mapTheme":"room-2","description":"Apoio inclinado para documento. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":288,"width":32,"height":32}},{"index":74,"id":"furnishings-conservation-gloves-station","family":"furnishings","name":"Estação de materiais de conservação","category":"conservação","mapTheme":"room-2","description":"Estação de materiais de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":288,"width":32,"height":32}},{"index":75,"id":"furnishings-framed-art-storage-rack","family":"furnishings","name":"Suporte de armazenamento de quadros","category":"conservação","mapTheme":"room-2","description":"Suporte de armazenamento de quadros. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":288,"width":32,"height":32}},{"index":76,"id":"furnishings-artifact-foam-tray","family":"furnishings","name":"Bandeja com apoios de conservação","category":"conservação","mapTheme":"room-2","description":"Bandeja com apoios de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":288,"width":32,"height":32}},{"index":77,"id":"furnishings-magnifier-research-desk","family":"furnishings","name":"Mesa de consulta com lupa articulada","category":"conservação","mapTheme":"room-2","description":"Mesa de consulta com lupa articulada. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":288,"width":32,"height":32}},{"index":78,"id":"furnishings-humidity-monitor-cabinet","family":"furnishings","name":"Armário com indicador de umidade","category":"conservação","mapTheme":"room-2","description":"Armário com indicador de umidade. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":288,"width":32,"height":32}},{"index":79,"id":"furnishings-photo-sorting-rack","family":"furnishings","name":"Grade de organização de fotografias","category":"conservação","mapTheme":"room-2","description":"Grade de organização de fotografias. Organiza documentos e manuseio cuidadoso na área de conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":224,"y":288,"width":32,"height":32}},{"index":80,"id":"furnishings-solar-demonstration-panel","family":"furnishings","name":"Painel solar de demonstração","category":"ciência","mapTheme":"chapter-3","description":"Painel solar de demonstração. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":320,"width":32,"height":32}},{"index":81,"id":"furnishings-wind-demo-workbench","family":"furnishings","name":"Bancada de demonstração de vento","category":"ciência","mapTheme":"chapter-3","description":"Bancada de demonstração de vento. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":320,"width":32,"height":32}},{"index":82,"id":"furnishings-rain-observation-post","family":"furnishings","name":"Poste de observação da chuva","category":"ciência","mapTheme":"chapter-3","description":"Poste de observação da chuva. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":320,"width":32,"height":32}},{"index":83,"id":"furnishings-shadow-comparison-table","family":"furnishings","name":"Mesa de comparação de sombras","category":"ciência","mapTheme":"chapter-3","description":"Mesa de comparação de sombras. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":96,"y":320,"width":32,"height":32}},{"index":84,"id":"furnishings-geology-touch-display","family":"furnishings","name":"Expositor didático de rochas","category":"ciência","mapTheme":"chapter-3","description":"Expositor didático de rochas. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":128,"y":320,"width":32,"height":32}},{"index":85,"id":"furnishings-community-question-tree","family":"furnishings","name":"Suporte ramificado de perguntas da ciência","category":"ciência","mapTheme":"chapter-3","description":"Suporte ramificado de perguntas da ciência. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":320,"width":32,"height":32}},{"index":86,"id":"furnishings-magnifying-sample-table","family":"furnishings","name":"Mesa de amostras com lupa fixa","category":"ciência","mapTheme":"chapter-3","description":"Mesa de amostras com lupa fixa. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":192,"y":320,"width":32,"height":32}},{"index":87,"id":"furnishings-outdoor-results-board","family":"furnishings","name":"Painel de resultados de observação","category":"ciência","mapTheme":"chapter-3","description":"Painel de resultados de observação. Convida a observar, perguntar e comparar no pátio de ciência.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":320,"width":32,"height":32}},{"index":88,"id":"furnishings-optical-observation-bench","family":"furnishings","name":"Bancada de observação óptica","category":"laboratório","mapTheme":"room-3","description":"Bancada de observação óptica. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":352,"width":32,"height":32}},{"index":89,"id":"furnishings-safe-circuit-workstation","family":"furnishings","name":"Estação didática de circuitos de baixa tensão","category":"laboratório","mapTheme":"room-3","description":"Estação didática de circuitos de baixa tensão. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":352,"width":32,"height":32}},{"index":90,"id":"furnishings-sample-drawer-cabinet","family":"furnishings","name":"Gaveteiro de amostras com etiquetas","category":"laboratório","mapTheme":"room-3","description":"Gaveteiro de amostras com etiquetas. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":352,"width":32,"height":32}},{"index":91,"id":"furnishings-laboratory-task-lamp","family":"furnishings","name":"Luminária de tarefa do laboratório","category":"laboratório","mapTheme":"room-3","description":"Luminária de tarefa do laboratório. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":352,"width":32,"height":32}},{"index":92,"id":"furnishings-measuring-instrument-rack","family":"furnishings","name":"Suporte de instrumentos de medida","category":"laboratório","mapTheme":"room-3","description":"Suporte de instrumentos de medida. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.06,"y":0.77,"width":0.88,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":352,"width":32,"height":32}},{"index":93,"id":"furnishings-experiment-notebook-desk","family":"furnishings","name":"Mesa de registro de experimentos","category":"laboratório","mapTheme":"room-3","description":"Mesa de registro de experimentos. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":352,"width":32,"height":32}},{"index":94,"id":"furnishings-comparison-sample-turntable","family":"furnishings","name":"Base giratória de comparação de amostras","category":"laboratório","mapTheme":"room-3","description":"Base giratória de comparação de amostras. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"stone":["#6d6c69","#a6a293","#d4cdb8"]},"sourceRect":{"x":192,"y":352,"width":32,"height":32}},{"index":95,"id":"furnishings-laboratory-stool","family":"furnishings","name":"Banco de laboratório com apoio de pés","category":"laboratório","mapTheme":"room-3","description":"Banco de laboratório com apoio de pés. Apoia demonstrações escolares, medidas e registro de resultados.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":352,"width":32,"height":32}},{"index":96,"id":"furnishings-public-news-kiosk","family":"furnishings","name":"Quiosque público de notícias","category":"mídia","mapTheme":"chapter-4","description":"Quiosque público de notícias. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":384,"width":32,"height":32}},{"index":97,"id":"furnishings-community-paper-dispenser","family":"furnishings","name":"Expositor de jornal comunitário","category":"mídia","mapTheme":"chapter-4","description":"Expositor de jornal comunitário. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":384,"width":32,"height":32}},{"index":98,"id":"furnishings-media-listening-bench","family":"furnishings","name":"Banco com estação de escuta","category":"mídia","mapTheme":"chapter-4","description":"Banco com estação de escuta. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":384,"width":32,"height":32}},{"index":99,"id":"furnishings-phone-repair-counter","family":"furnishings","name":"Bancada de manutenção de aparelhos","category":"mídia","mapTheme":"chapter-4","description":"Bancada de manutenção de aparelhos. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":384,"width":32,"height":32}},{"index":100,"id":"furnishings-outdoor-correction-board","family":"furnishings","name":"Painel de correções do bairro","category":"mídia","mapTheme":"chapter-4","description":"Painel de correções do bairro. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":384,"width":32,"height":32}},{"index":101,"id":"furnishings-public-interview-chair","family":"furnishings","name":"Cadeira com apoio para entrevista","category":"mídia","mapTheme":"chapter-4","description":"Cadeira com apoio para entrevista. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":384,"width":32,"height":32}},{"index":102,"id":"furnishings-device-return-locker","family":"furnishings","name":"Armário de devolução de equipamentos","category":"mídia","mapTheme":"chapter-4","description":"Armário de devolução de equipamentos. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":384,"width":32,"height":32}},{"index":103,"id":"furnishings-portable-projection-cart","family":"furnishings","name":"Carrinho de projeção comunitária","category":"mídia","mapTheme":"chapter-4","description":"Carrinho de projeção comunitária. Apoia informação pública, escuta e cuidado dos equipamentos.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":384,"width":32,"height":32}},{"index":104,"id":"furnishings-horseshoe-editorial-table","family":"furnishings","name":"Mesa editorial em ferradura","category":"redação","mapTheme":"room-4","description":"Mesa editorial em ferradura. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":416,"width":32,"height":32}},{"index":105,"id":"furnishings-caption-review-lightbox","family":"furnishings","name":"Mesa de luz para revisão de imagens","category":"redação","mapTheme":"room-4","description":"Mesa de luz para revisão de imagens. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":32,"y":416,"width":32,"height":32}},{"index":106,"id":"furnishings-source-reference-cabinet","family":"furnishings","name":"Armário de referências e fontes","category":"redação","mapTheme":"room-4","description":"Armário de referências e fontes. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":416,"width":32,"height":32}},{"index":107,"id":"furnishings-interview-audio-desk","family":"furnishings","name":"Mesa de gravação de entrevista","category":"redação","mapTheme":"room-4","description":"Mesa de gravação de entrevista. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":416,"width":32,"height":32}},{"index":108,"id":"furnishings-proof-sheet-drying-rail","family":"furnishings","name":"Trilho de folhas de revisão","category":"redação","mapTheme":"room-4","description":"Trilho de folhas de revisão. Organiza entrevistas, fontes, legendas e correções na redação.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":416,"width":32,"height":32}},{"index":109,"id":"furnishings-correction-tray-tower","family":"furnishings","name":"Organizador de correções em bandejas","category":"redação","mapTheme":"room-4","description":"Organizador de correções em bandejas. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":416,"width":32,"height":32}},{"index":110,"id":"furnishings-community-newspaper-press","family":"furnishings","name":"Prensa didática do jornal comunitário","category":"redação","mapTheme":"room-4","description":"Prensa didática do jornal comunitário. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":416,"width":32,"height":32}},{"index":111,"id":"furnishings-editorial-rolling-chair","family":"furnishings","name":"Cadeira de trabalho com rodízios","category":"redação","mapTheme":"room-4","description":"Cadeira de trabalho com rodízios. Organiza entrevistas, fontes, legendas e correções na redação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":416,"width":32,"height":32}},{"index":112,"id":"furnishings-accessible-public-table","family":"furnishings","name":"Mesa pública com espaço de aproximação","category":"comunidade","mapTheme":"chapter-5","description":"Mesa pública com espaço de aproximação. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":448,"width":32,"height":32}},{"index":113,"id":"furnishings-community-tool-lending-locker","family":"furnishings","name":"Armário de empréstimo de ferramentas","category":"comunidade","mapTheme":"chapter-5","description":"Armário de empréstimo de ferramentas. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":448,"width":32,"height":32}},{"index":114,"id":"furnishings-neighborhood-mural-easel","family":"furnishings","name":"Suporte de trabalho do mural coletivo","category":"comunidade","mapTheme":"chapter-5","description":"Suporte de trabalho do mural coletivo. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":448,"width":32,"height":32}},{"index":115,"id":"furnishings-low-community-planting-table","family":"furnishings","name":"Mesa baixa de plantio compartilhado","category":"comunidade","mapTheme":"chapter-5","description":"Mesa baixa de plantio compartilhado. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":96,"y":448,"width":32,"height":32}},{"index":116,"id":"furnishings-covered-rest-seat","family":"furnishings","name":"Assento de descanso com cobertura","category":"comunidade","mapTheme":"chapter-5","description":"Assento de descanso com cobertura. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":128,"y":448,"width":32,"height":32}},{"index":117,"id":"furnishings-community-route-marker","family":"furnishings","name":"Totem de orientação das rotas do bairro","category":"comunidade","mapTheme":"chapter-5","description":"Totem de orientação das rotas do bairro. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":160,"y":448,"width":32,"height":32}},{"index":118,"id":"furnishings-shared-meal-counter","family":"furnishings","name":"Balcão de refeições compartilhadas","category":"comunidade","mapTheme":"chapter-5","description":"Balcão de refeições compartilhadas. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":448,"width":32,"height":32}},{"index":119,"id":"furnishings-children-art-storage","family":"furnishings","name":"Organizador de materiais de desenho","category":"comunidade","mapTheme":"chapter-5","description":"Organizador de materiais de desenho. Apoia participação, orientação e projetos compartilhados no bairro.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":448,"width":32,"height":32}},{"index":120,"id":"furnishings-semicircle-assembly-bench","family":"furnishings","name":"Banco semicircular da assembleia","category":"assembleia","mapTheme":"room-5","description":"Banco semicircular da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":0,"y":480,"width":32,"height":32}},{"index":121,"id":"furnishings-height-adjustable-speaking-desk","family":"furnishings","name":"Mesa de fala com ajuste de altura","category":"assembleia","mapTheme":"room-5","description":"Mesa de fala com ajuste de altura. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":480,"width":32,"height":32}},{"index":122,"id":"furnishings-quiet-writing-nook","family":"furnishings","name":"Mesa de participação escrita com biombo","category":"assembleia","mapTheme":"room-5","description":"Mesa de participação escrita com biombo. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":480,"width":32,"height":32}},{"index":123,"id":"furnishings-turn-order-card-rail","family":"furnishings","name":"Suporte de cartões da ordem de fala","category":"assembleia","mapTheme":"room-5","description":"Suporte de cartões da ordem de fala. Organiza fala, escrita e escuta na assembleia comunitária.","solid":false,"solidFootprint":null,"layer":"wall","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":480,"width":32,"height":32}},{"index":124,"id":"furnishings-proposal-model-table","family":"furnishings","name":"Mesa da maquete de proposta do bairro","category":"assembleia","mapTheme":"room-5","description":"Mesa da maquete de proposta do bairro. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":128,"y":480,"width":32,"height":32}},{"index":125,"id":"furnishings-meeting-notes-cabinet","family":"furnishings","name":"Arquivo de notas das reuniões","category":"assembleia","mapTheme":"room-5","description":"Arquivo de notas das reuniões. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":480,"width":32,"height":32}},{"index":126,"id":"furnishings-shared-water-carafe-station","family":"furnishings","name":"Estação de água e copos da assembleia","category":"assembleia","mapTheme":"room-5","description":"Estação de água e copos da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":192,"y":480,"width":32,"height":32}},{"index":127,"id":"furnishings-stackable-meeting-chairs","family":"furnishings","name":"Pilha organizada de cadeiras de reunião","category":"assembleia","mapTheme":"room-5","description":"Pilha organizada de cadeiras de reunião. Organiza fala, escrita e escuta na assembleia comunitária.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":480,"width":32,"height":32}},{"index":128,"id":"furnishings-public-catalog-island","family":"furnishings","name":"Ilha de consulta do catálogo público","category":"arquivo público","mapTheme":"chapter-6","description":"Ilha de consulta do catálogo público. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":0,"y":512,"width":32,"height":32}},{"index":129,"id":"furnishings-restoration-window-display","family":"furnishings","name":"Expositor de etapas de conservação","category":"arquivo público","mapTheme":"chapter-6","description":"Expositor de etapas de conservação. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":512,"width":32,"height":32}},{"index":130,"id":"furnishings-community-record-dropbox","family":"furnishings","name":"Caixa de contribuições documentais","category":"arquivo público","mapTheme":"chapter-6","description":"Caixa de contribuições documentais. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":64,"y":512,"width":32,"height":32}},{"index":131,"id":"furnishings-archive-welcome-settee","family":"furnishings","name":"Sofá de espera do arquivo","category":"arquivo público","mapTheme":"chapter-6","description":"Sofá de espera do arquivo. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"sit","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"]},"sourceRect":{"x":96,"y":512,"width":32,"height":32}},{"index":132,"id":"furnishings-record-connection-map","family":"furnishings","name":"Painel de conexões entre registros","category":"arquivo público","mapTheme":"chapter-6","description":"Painel de conexões entre registros. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":512,"width":32,"height":32}},{"index":133,"id":"furnishings-civic-index-sign","family":"furnishings","name":"Totem de índice do arquivo comunitário","category":"arquivo público","mapTheme":"chapter-6","description":"Totem de índice do arquivo comunitário. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.27,"y":0.78,"width":0.46,"height":0.16}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":512,"width":32,"height":32}},{"index":134,"id":"furnishings-archive-return-cradle","family":"furnishings","name":"Suporte de devolução com caixas protegidas","category":"arquivo público","mapTheme":"chapter-6","description":"Suporte de devolução com caixas protegidas. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":512,"width":32,"height":32}},{"index":135,"id":"furnishings-restored-book-display","family":"furnishings","name":"Expositor de livros restaurados","category":"arquivo público","mapTheme":"chapter-6","description":"Expositor de livros restaurados. Aproxima visitantes de registros, contribuições e conservação.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"]},"sourceRect":{"x":224,"y":512,"width":32,"height":32}},{"index":136,"id":"furnishings-backup-equipment-cabinet","family":"furnishings","name":"Armário de cópias de segurança","category":"catálogo","mapTheme":"room-6","description":"Armário de cópias de segurança. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":0,"y":544,"width":32,"height":32}},{"index":137,"id":"furnishings-paired-review-workstations","family":"furnishings","name":"Estações de revisão lado a lado","category":"catálogo","mapTheme":"room-6","description":"Estações de revisão lado a lado. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":32,"y":544,"width":32,"height":32}},{"index":138,"id":"furnishings-labeled-network-patch-rack","family":"furnishings","name":"Rack com conexões e etiquetas","category":"catálogo","mapTheme":"room-6","description":"Rack com conexões e etiquetas. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"metal":["#49576d","#768894","#afb5ba"],"foliage":["#2f6b69","#58aa83","#9cd3a0"]},"sourceRect":{"x":64,"y":544,"width":32,"height":32}},{"index":139,"id":"furnishings-offline-record-storage-chest","family":"furnishings","name":"Baú de registros para consulta sem rede","category":"catálogo","mapTheme":"room-6","description":"Baú de registros para consulta sem rede. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":96,"y":544,"width":32,"height":32}},{"index":140,"id":"furnishings-restoration-progress-console","family":"furnishings","name":"Mesa de acompanhamento da restauração","category":"catálogo","mapTheme":"room-6","description":"Mesa de acompanhamento da restauração. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":128,"y":544,"width":32,"height":32}},{"index":141,"id":"furnishings-equipment-maintenance-station","family":"furnishings","name":"Bancada de manutenção do catálogo","category":"catálogo","mapTheme":"room-6","description":"Bancada de manutenção do catálogo. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":160,"y":544,"width":32,"height":32}},{"index":142,"id":"furnishings-rolling-backup-media-case","family":"furnishings","name":"Maleta de mídias de backup com rodízios","category":"catálogo","mapTheme":"room-6","description":"Maleta de mídias de backup com rodízios. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.1,"y":0.68,"width":0.8,"height":0.24}],"layer":"object","interaction":"observe","colorRoles":{"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":192,"y":544,"width":32,"height":32}},{"index":143,"id":"furnishings-human-review-lamp-desk","family":"furnishings","name":"Mesa de revisão humana com luminária","category":"catálogo","mapTheme":"room-6","description":"Mesa de revisão humana com luminária. Apoia revisão humana, manutenção e cópias de segurança do arquivo.","solid":true,"solidFootprint":[{"x":0.05,"y":0.62,"width":0.9,"height":0.27}],"layer":"object","interaction":"observe","colorRoles":{"wood":["#624535","#805a49","#b99068"],"fabric":["#2b5355","#588e7d","#9abfa5"],"metal":["#49576d","#768894","#afb5ba"]},"sourceRect":{"x":224,"y":544,"width":32,"height":32}}]}};})();
+(function(){'use strict';const V=window.V=window.V||{};V.furnishingsAssets=[
+  {
+    "index": 0,
+    "id": "furnishings-curved-stone-bench",
+    "family": "furnishings",
+    "name": "Banco curvo de pedra da praça",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Banco curvo de pedra da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 1,
+    "id": "furnishings-refreshment-pushcart",
+    "family": "furnishings",
+    "name": "Carrinho de refrescos com garrafa térmica",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Carrinho de refrescos com garrafa térmica. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 2,
+    "id": "furnishings-staggered-bicycle-rack",
+    "family": "furnishings",
+    "name": "Bicicletário com aros escalonados",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Bicicletário com aros escalonados. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 3,
+    "id": "furnishings-public-drinking-fountain",
+    "family": "furnishings",
+    "name": "Bebedouro público com torneira baixa",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Bebedouro público com torneira baixa. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 4,
+    "id": "furnishings-chess-stone-table",
+    "family": "furnishings",
+    "name": "Mesa de xadrez da praça",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Mesa de xadrez da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 5,
+    "id": "furnishings-charging-leaning-table",
+    "family": "furnishings",
+    "name": "Mesa alta com tomadas protegidas",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Mesa alta com tomadas protegidas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 6,
+    "id": "furnishings-community-coat-hooks",
+    "family": "furnishings",
+    "name": "Painel de ganchos para bolsas",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Painel de ganchos para bolsas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "wall",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 7,
+    "id": "furnishings-flower-stone-trough",
+    "family": "furnishings",
+    "name": "Floreira de pedra com flores miúdas",
+    "category": "praça",
+    "mapTheme": "hub",
+    "description": "Floreira de pedra com flores miúdas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 8,
+    "id": "furnishings-arched-tall-bookcase",
+    "family": "furnishings",
+    "name": "Estante alta de livros com arco",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Estante alta de livros com arco. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 9,
+    "id": "furnishings-reclining-reading-chair",
+    "family": "furnishings",
+    "name": "Poltrona inclinada de leitura",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Poltrona inclinada de leitura. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 10,
+    "id": "furnishings-slanted-magazine-rack",
+    "family": "furnishings",
+    "name": "Expositor inclinado de revistas",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Expositor inclinado de revistas. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 11,
+    "id": "furnishings-bookbinding-press",
+    "family": "furnishings",
+    "name": "Prensa manual de encadernação",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Prensa manual de encadernação. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 12,
+    "id": "furnishings-rolling-library-ladder",
+    "family": "furnishings",
+    "name": "Escada de biblioteca com rodízios",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Escada de biblioteca com rodízios. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 13,
+    "id": "furnishings-study-carrel",
+    "family": "furnishings",
+    "name": "Mesa de estudo com divisórias",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Mesa de estudo com divisórias. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 14,
+    "id": "furnishings-dictionary-lectern",
+    "family": "furnishings",
+    "name": "Suporte de consulta para dicionário",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Suporte de consulta para dicionário. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 15,
+    "id": "furnishings-felt-room-divider",
+    "family": "furnishings",
+    "name": "Divisória de feltro para leitura silenciosa",
+    "category": "biblioteca",
+    "mapTheme": "library",
+    "description": "Divisória de feltro para leitura silenciosa. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 16,
+    "id": "furnishings-hexagonal-picnic-table",
+    "family": "furnishings",
+    "name": "Mesa hexagonal de piquenique",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Mesa hexagonal de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 17,
+    "id": "furnishings-carved-log-bench",
+    "family": "furnishings",
+    "name": "Banco baixo de tronco trabalhado",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Banco baixo de tronco trabalhado. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 18,
+    "id": "furnishings-bird-observation-binoculars",
+    "family": "furnishings",
+    "name": "Binóculo fixo de observação de aves",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Binóculo fixo de observação de aves. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 19,
+    "id": "furnishings-bird-hide-screen",
+    "family": "furnishings",
+    "name": "Painel de observação com aberturas",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Painel de observação com aberturas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 20,
+    "id": "furnishings-trail-map-kiosk",
+    "family": "furnishings",
+    "name": "Quiosque de mapa das trilhas",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Quiosque de mapa das trilhas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 21,
+    "id": "furnishings-dog-rinse-platform",
+    "family": "furnishings",
+    "name": "Plataforma baixa para limpeza das patas",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Plataforma baixa para limpeza das patas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 22,
+    "id": "furnishings-picnic-basket-table",
+    "family": "furnishings",
+    "name": "Mesa pequena com cesta de piquenique",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Mesa pequena com cesta de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 23,
+    "id": "furnishings-nest-box-post",
+    "family": "furnishings",
+    "name": "Suporte de caixa-ninho protegida",
+    "category": "parque",
+    "mapTheme": "park",
+    "description": "Suporte de caixa-ninho protegida. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 24,
+    "id": "furnishings-weighing-counter",
+    "family": "furnishings",
+    "name": "Balcão com balança de dois pratos",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Balcão com balança de dois pratos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 25,
+    "id": "furnishings-ice-chest-cart",
+    "family": "furnishings",
+    "name": "Carrinho de caixa térmica",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Carrinho de caixa térmica. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 26,
+    "id": "furnishings-vegetable-display-tier",
+    "family": "furnishings",
+    "name": "Expositor de verduras em três níveis",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Expositor de verduras em três níveis. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 27,
+    "id": "furnishings-flour-bin-cabinet",
+    "family": "furnishings",
+    "name": "Armário de farinhas com medidas",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Armário de farinhas com medidas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 28,
+    "id": "furnishings-food-warming-cart",
+    "family": "furnishings",
+    "name": "Carrinho de comida com tampas térmicas",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Carrinho de comida com tampas térmicas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 29,
+    "id": "furnishings-grain-hopper-rack",
+    "family": "furnishings",
+    "name": "Suporte de dispensadores de grãos",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Suporte de dispensadores de grãos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 30,
+    "id": "furnishings-cloth-cutting-table",
+    "family": "furnishings",
+    "name": "Mesa de corte com rolo de tecido",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Mesa de corte com rolo de tecido. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 31,
+    "id": "furnishings-crate-hand-truck",
+    "family": "furnishings",
+    "name": "Carrinho de carga com caixas empilhadas",
+    "category": "feira",
+    "mapTheme": "market",
+    "description": "Carrinho de carga com caixas empilhadas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 96,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 32,
+    "id": "furnishings-propagation-cold-frame",
+    "family": "furnishings",
+    "name": "Estufa baixa para mudas",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Estufa baixa para mudas. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 33,
+    "id": "furnishings-potting-workbench",
+    "family": "furnishings",
+    "name": "Bancada de transplante com vasos",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Bancada de transplante com vasos. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 34,
+    "id": "furnishings-outdoor-garden-sink",
+    "family": "furnishings",
+    "name": "Tanque da horta com torneira",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Tanque da horta com torneira. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 35,
+    "id": "furnishings-seed-library-cabinet",
+    "family": "furnishings",
+    "name": "Armário comunitário de sementes",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Armário comunitário de sementes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 36,
+    "id": "furnishings-waist-high-growing-bed",
+    "family": "furnishings",
+    "name": "Canteiro elevado para cuidado acessível",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Canteiro elevado para cuidado acessível. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 37,
+    "id": "furnishings-irrigation-hose-trolley",
+    "family": "furnishings",
+    "name": "Carrinho de mangueira de irrigação",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Carrinho de mangueira de irrigação. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 38,
+    "id": "furnishings-compost-sieving-table",
+    "family": "furnishings",
+    "name": "Mesa com peneira de composto",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Mesa com peneira de composto. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 39,
+    "id": "furnishings-herb-drying-rack",
+    "family": "furnishings",
+    "name": "Varal de ervas com feixes pendentes",
+    "category": "horta",
+    "mapTheme": "garden",
+    "description": "Varal de ervas com feixes pendentes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 128,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 40,
+    "id": "furnishings-striped-changing-booth",
+    "family": "furnishings",
+    "name": "Cabine listrada para trocar de roupa",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Cabine listrada para trocar de roupa. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 41,
+    "id": "furnishings-lifeguard-high-chair",
+    "family": "furnishings",
+    "name": "Cadeira elevada de observação da praia",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Cadeira elevada de observação da praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 42,
+    "id": "furnishings-beach-folding-lounger",
+    "family": "furnishings",
+    "name": "Espreguiçadeira dobrável de praia",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Espreguiçadeira dobrável de praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 43,
+    "id": "furnishings-rinsing-shower",
+    "family": "furnishings",
+    "name": "Chuveiro para retirar areia",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Chuveiro para retirar areia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 44,
+    "id": "furnishings-rescue-equipment-rack",
+    "family": "furnishings",
+    "name": "Suporte de boia e equipamento de resgate",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Suporte de boia e equipamento de resgate. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 45,
+    "id": "furnishings-parasol-side-table",
+    "family": "furnishings",
+    "name": "Mesa baixa com guarda-sol",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Mesa baixa com guarda-sol. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 46,
+    "id": "furnishings-beach-towel-hook-post",
+    "family": "furnishings",
+    "name": "Poste de ganchos para cangas e toalhas",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Poste de ganchos para cangas e toalhas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 47,
+    "id": "furnishings-shell-study-tray",
+    "family": "furnishings",
+    "name": "Bandeja de observação de conchas",
+    "category": "praia",
+    "mapTheme": "beach",
+    "description": "Bandeja de observação de conchas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 160,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 48,
+    "id": "furnishings-public-outdoor-piano",
+    "family": "furnishings",
+    "name": "Piano comunitário com cobertura",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Piano comunitário com cobertura. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 49,
+    "id": "furnishings-small-stage-steps",
+    "family": "furnishings",
+    "name": "Degraus de tablado para apresentação",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Degraus de tablado para apresentação. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "ground",
+    "interaction": null,
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 50,
+    "id": "furnishings-drum-rest-cradle",
+    "family": "furnishings",
+    "name": "Berço de apoio para tambor",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Berço de apoio para tambor. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 51,
+    "id": "furnishings-concert-poster-frame",
+    "family": "furnishings",
+    "name": "Painel de programação dos ensaios",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Painel de programação dos ensaios. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 52,
+    "id": "furnishings-record-swap-crates",
+    "family": "furnishings",
+    "name": "Caixas de troca de discos",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Caixas de troca de discos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 53,
+    "id": "furnishings-performer-fold-screen",
+    "family": "furnishings",
+    "name": "Biombo de preparação dos músicos",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Biombo de preparação dos músicos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 54,
+    "id": "furnishings-wind-instrument-stand",
+    "family": "furnishings",
+    "name": "Suporte de instrumentos de sopro",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Suporte de instrumentos de sopro. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 55,
+    "id": "furnishings-rehearsal-banner-rail",
+    "family": "furnishings",
+    "name": "Suporte de faixas do ensaio aberto",
+    "category": "música",
+    "mapTheme": "chapter-1",
+    "description": "Suporte de faixas do ensaio aberto. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "wall",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 192,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 56,
+    "id": "furnishings-upright-studio-piano",
+    "family": "furnishings",
+    "name": "Piano vertical do estúdio",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Piano vertical do estúdio. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 57,
+    "id": "furnishings-double-keyboard-stand",
+    "family": "furnishings",
+    "name": "Suporte duplo de teclados",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Suporte duplo de teclados. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 58,
+    "id": "furnishings-microphone-pop-filter",
+    "family": "furnishings",
+    "name": "Microfone com filtro e tripé",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Microfone com filtro e tripé. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "music",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 59,
+    "id": "furnishings-mixing-rack-console",
+    "family": "furnishings",
+    "name": "Console de mixagem com módulos",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Console de mixagem com módulos. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 60,
+    "id": "furnishings-adjustable-drum-throne",
+    "family": "furnishings",
+    "name": "Banco giratório de bateria",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Banco giratório de bateria. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 61,
+    "id": "furnishings-acoustic-gobo",
+    "family": "furnishings",
+    "name": "Painel acústico móvel",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Painel acústico móvel. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 62,
+    "id": "furnishings-guitar-wall-rail",
+    "family": "furnishings",
+    "name": "Suporte de guitarras na parede",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Suporte de guitarras na parede. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "wall",
+    "interaction": "music",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 63,
+    "id": "furnishings-cable-reel-cart",
+    "family": "furnishings",
+    "name": "Carrinho de enroladores de cabos",
+    "category": "estúdio",
+    "mapTheme": "room-1",
+    "description": "Carrinho de enroladores de cabos. Organiza gravação, instrumentos e trabalho no estúdio.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 224,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 64,
+    "id": "furnishings-courtyard-exhibit-plinth",
+    "family": "furnishings",
+    "name": "Pedestal do pátio com amostra didática",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Pedestal do pátio com amostra didática. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 65,
+    "id": "furnishings-exhibition-entry-ramp",
+    "family": "furnishings",
+    "name": "Rampa baixa para entrada da exposição",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Rampa baixa para entrada da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "ground",
+    "interaction": null,
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 66,
+    "id": "furnishings-guide-meeting-canopy",
+    "family": "furnishings",
+    "name": "Cobertura do ponto de encontro do guia",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Cobertura do ponto de encontro do guia. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 67,
+    "id": "furnishings-museum-urn-planter",
+    "family": "furnishings",
+    "name": "Jardineira em vaso largo do pátio",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Jardineira em vaso largo do pátio. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 68,
+    "id": "furnishings-outdoor-history-map",
+    "family": "furnishings",
+    "name": "Painel externo de mapa histórico",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Painel externo de mapa histórico. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 69,
+    "id": "furnishings-reproduction-handling-table",
+    "family": "furnishings",
+    "name": "Mesa de réplicas didáticas para observar",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Mesa de réplicas didáticas para observar. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 70,
+    "id": "furnishings-ticket-information-counter",
+    "family": "furnishings",
+    "name": "Balcão de informações da exposição",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Balcão de informações da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 71,
+    "id": "furnishings-courtyard-exhibit-lamp",
+    "family": "furnishings",
+    "name": "Luminária de pátio voltada à exposição",
+    "category": "museu",
+    "mapTheme": "chapter-2",
+    "description": "Luminária de pátio voltada à exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 256,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 72,
+    "id": "furnishings-horizontal-flat-file",
+    "family": "furnishings",
+    "name": "Mapoteca de gavetas horizontais",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Mapoteca de gavetas horizontais. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 73,
+    "id": "furnishings-document-support-wedge",
+    "family": "furnishings",
+    "name": "Apoio inclinado para documento",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Apoio inclinado para documento. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 74,
+    "id": "furnishings-conservation-gloves-station",
+    "family": "furnishings",
+    "name": "Estação de materiais de conservação",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Estação de materiais de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 75,
+    "id": "furnishings-framed-art-storage-rack",
+    "family": "furnishings",
+    "name": "Suporte de armazenamento de quadros",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Suporte de armazenamento de quadros. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 76,
+    "id": "furnishings-artifact-foam-tray",
+    "family": "furnishings",
+    "name": "Bandeja com apoios de conservação",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Bandeja com apoios de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 77,
+    "id": "furnishings-magnifier-research-desk",
+    "family": "furnishings",
+    "name": "Mesa de consulta com lupa articulada",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Mesa de consulta com lupa articulada. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 78,
+    "id": "furnishings-humidity-monitor-cabinet",
+    "family": "furnishings",
+    "name": "Armário com indicador de umidade",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Armário com indicador de umidade. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 79,
+    "id": "furnishings-photo-sorting-rack",
+    "family": "furnishings",
+    "name": "Grade de organização de fotografias",
+    "category": "conservação",
+    "mapTheme": "room-2",
+    "description": "Grade de organização de fotografias. Organiza documentos e manuseio cuidadoso na área de conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 288,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 80,
+    "id": "furnishings-solar-demonstration-panel",
+    "family": "furnishings",
+    "name": "Painel solar de demonstração",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Painel solar de demonstração. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 81,
+    "id": "furnishings-wind-demo-workbench",
+    "family": "furnishings",
+    "name": "Bancada de demonstração de vento",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Bancada de demonstração de vento. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 82,
+    "id": "furnishings-rain-observation-post",
+    "family": "furnishings",
+    "name": "Poste de observação da chuva",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Poste de observação da chuva. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 83,
+    "id": "furnishings-shadow-comparison-table",
+    "family": "furnishings",
+    "name": "Mesa de comparação de sombras",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Mesa de comparação de sombras. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 84,
+    "id": "furnishings-geology-touch-display",
+    "family": "furnishings",
+    "name": "Expositor didático de rochas",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Expositor didático de rochas. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 85,
+    "id": "furnishings-community-question-tree",
+    "family": "furnishings",
+    "name": "Suporte ramificado de perguntas da ciência",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Suporte ramificado de perguntas da ciência. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 86,
+    "id": "furnishings-magnifying-sample-table",
+    "family": "furnishings",
+    "name": "Mesa de amostras com lupa fixa",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Mesa de amostras com lupa fixa. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 87,
+    "id": "furnishings-outdoor-results-board",
+    "family": "furnishings",
+    "name": "Painel de resultados de observação",
+    "category": "ciência",
+    "mapTheme": "chapter-3",
+    "description": "Painel de resultados de observação. Convida a observar, perguntar e comparar no pátio de ciência.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 320,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 88,
+    "id": "furnishings-optical-observation-bench",
+    "family": "furnishings",
+    "name": "Bancada de observação óptica",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Bancada de observação óptica. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 89,
+    "id": "furnishings-safe-circuit-workstation",
+    "family": "furnishings",
+    "name": "Estação didática de circuitos de baixa tensão",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Estação didática de circuitos de baixa tensão. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 90,
+    "id": "furnishings-sample-drawer-cabinet",
+    "family": "furnishings",
+    "name": "Gaveteiro de amostras com etiquetas",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Gaveteiro de amostras com etiquetas. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 91,
+    "id": "furnishings-laboratory-task-lamp",
+    "family": "furnishings",
+    "name": "Luminária de tarefa do laboratório",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Luminária de tarefa do laboratório. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 92,
+    "id": "furnishings-measuring-instrument-rack",
+    "family": "furnishings",
+    "name": "Suporte de instrumentos de medida",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Suporte de instrumentos de medida. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.06,
+        "y": 0.77,
+        "width": 0.88,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 93,
+    "id": "furnishings-experiment-notebook-desk",
+    "family": "furnishings",
+    "name": "Mesa de registro de experimentos",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Mesa de registro de experimentos. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 94,
+    "id": "furnishings-comparison-sample-turntable",
+    "family": "furnishings",
+    "name": "Base giratória de comparação de amostras",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Base giratória de comparação de amostras. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "stone": [
+        "#6d6c69",
+        "#a6a293",
+        "#d4cdb8"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 95,
+    "id": "furnishings-laboratory-stool",
+    "family": "furnishings",
+    "name": "Banco de laboratório com apoio de pés",
+    "category": "laboratório",
+    "mapTheme": "room-3",
+    "description": "Banco de laboratório com apoio de pés. Apoia demonstrações escolares, medidas e registro de resultados.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 352,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 96,
+    "id": "furnishings-public-news-kiosk",
+    "family": "furnishings",
+    "name": "Quiosque público de notícias",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Quiosque público de notícias. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 97,
+    "id": "furnishings-community-paper-dispenser",
+    "family": "furnishings",
+    "name": "Expositor de jornal comunitário",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Expositor de jornal comunitário. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 98,
+    "id": "furnishings-media-listening-bench",
+    "family": "furnishings",
+    "name": "Banco com estação de escuta",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Banco com estação de escuta. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 99,
+    "id": "furnishings-phone-repair-counter",
+    "family": "furnishings",
+    "name": "Bancada de manutenção de aparelhos",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Bancada de manutenção de aparelhos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 100,
+    "id": "furnishings-outdoor-correction-board",
+    "family": "furnishings",
+    "name": "Painel de correções do bairro",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Painel de correções do bairro. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 101,
+    "id": "furnishings-public-interview-chair",
+    "family": "furnishings",
+    "name": "Cadeira com apoio para entrevista",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Cadeira com apoio para entrevista. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 102,
+    "id": "furnishings-device-return-locker",
+    "family": "furnishings",
+    "name": "Armário de devolução de equipamentos",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Armário de devolução de equipamentos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 103,
+    "id": "furnishings-portable-projection-cart",
+    "family": "furnishings",
+    "name": "Carrinho de projeção comunitária",
+    "category": "mídia",
+    "mapTheme": "chapter-4",
+    "description": "Carrinho de projeção comunitária. Apoia informação pública, escuta e cuidado dos equipamentos.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 384,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 104,
+    "id": "furnishings-horseshoe-editorial-table",
+    "family": "furnishings",
+    "name": "Mesa editorial em ferradura",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Mesa editorial em ferradura. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 105,
+    "id": "furnishings-caption-review-lightbox",
+    "family": "furnishings",
+    "name": "Mesa de luz para revisão de imagens",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Mesa de luz para revisão de imagens. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 106,
+    "id": "furnishings-source-reference-cabinet",
+    "family": "furnishings",
+    "name": "Armário de referências e fontes",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Armário de referências e fontes. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 107,
+    "id": "furnishings-interview-audio-desk",
+    "family": "furnishings",
+    "name": "Mesa de gravação de entrevista",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Mesa de gravação de entrevista. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 108,
+    "id": "furnishings-proof-sheet-drying-rail",
+    "family": "furnishings",
+    "name": "Trilho de folhas de revisão",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Trilho de folhas de revisão. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "wall",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 109,
+    "id": "furnishings-correction-tray-tower",
+    "family": "furnishings",
+    "name": "Organizador de correções em bandejas",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Organizador de correções em bandejas. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 110,
+    "id": "furnishings-community-newspaper-press",
+    "family": "furnishings",
+    "name": "Prensa didática do jornal comunitário",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Prensa didática do jornal comunitário. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 111,
+    "id": "furnishings-editorial-rolling-chair",
+    "family": "furnishings",
+    "name": "Cadeira de trabalho com rodízios",
+    "category": "redação",
+    "mapTheme": "room-4",
+    "description": "Cadeira de trabalho com rodízios. Organiza entrevistas, fontes, legendas e correções na redação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 416,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 112,
+    "id": "furnishings-accessible-public-table",
+    "family": "furnishings",
+    "name": "Mesa pública com espaço de aproximação",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Mesa pública com espaço de aproximação. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 113,
+    "id": "furnishings-community-tool-lending-locker",
+    "family": "furnishings",
+    "name": "Armário de empréstimo de ferramentas",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Armário de empréstimo de ferramentas. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 114,
+    "id": "furnishings-neighborhood-mural-easel",
+    "family": "furnishings",
+    "name": "Suporte de trabalho do mural coletivo",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Suporte de trabalho do mural coletivo. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 115,
+    "id": "furnishings-low-community-planting-table",
+    "family": "furnishings",
+    "name": "Mesa baixa de plantio compartilhado",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Mesa baixa de plantio compartilhado. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 116,
+    "id": "furnishings-covered-rest-seat",
+    "family": "furnishings",
+    "name": "Assento de descanso com cobertura",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Assento de descanso com cobertura. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 117,
+    "id": "furnishings-community-route-marker",
+    "family": "furnishings",
+    "name": "Totem de orientação das rotas do bairro",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Totem de orientação das rotas do bairro. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 118,
+    "id": "furnishings-shared-meal-counter",
+    "family": "furnishings",
+    "name": "Balcão de refeições compartilhadas",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Balcão de refeições compartilhadas. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 119,
+    "id": "furnishings-children-art-storage",
+    "family": "furnishings",
+    "name": "Organizador de materiais de desenho",
+    "category": "comunidade",
+    "mapTheme": "chapter-5",
+    "description": "Organizador de materiais de desenho. Apoia participação, orientação e projetos compartilhados no bairro.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 448,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 120,
+    "id": "furnishings-semicircle-assembly-bench",
+    "family": "furnishings",
+    "name": "Banco semicircular da assembleia",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Banco semicircular da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 121,
+    "id": "furnishings-height-adjustable-speaking-desk",
+    "family": "furnishings",
+    "name": "Mesa de fala com ajuste de altura",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Mesa de fala com ajuste de altura. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 122,
+    "id": "furnishings-quiet-writing-nook",
+    "family": "furnishings",
+    "name": "Mesa de participação escrita com biombo",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Mesa de participação escrita com biombo. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 123,
+    "id": "furnishings-turn-order-card-rail",
+    "family": "furnishings",
+    "name": "Suporte de cartões da ordem de fala",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Suporte de cartões da ordem de fala. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": false,
+    "solidFootprint": null,
+    "layer": "wall",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 124,
+    "id": "furnishings-proposal-model-table",
+    "family": "furnishings",
+    "name": "Mesa da maquete de proposta do bairro",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Mesa da maquete de proposta do bairro. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 125,
+    "id": "furnishings-meeting-notes-cabinet",
+    "family": "furnishings",
+    "name": "Arquivo de notas das reuniões",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Arquivo de notas das reuniões. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 126,
+    "id": "furnishings-shared-water-carafe-station",
+    "family": "furnishings",
+    "name": "Estação de água e copos da assembleia",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Estação de água e copos da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 127,
+    "id": "furnishings-stackable-meeting-chairs",
+    "family": "furnishings",
+    "name": "Pilha organizada de cadeiras de reunião",
+    "category": "assembleia",
+    "mapTheme": "room-5",
+    "description": "Pilha organizada de cadeiras de reunião. Organiza fala, escrita e escuta na assembleia comunitária.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 480,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 128,
+    "id": "furnishings-public-catalog-island",
+    "family": "furnishings",
+    "name": "Ilha de consulta do catálogo público",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Ilha de consulta do catálogo público. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 129,
+    "id": "furnishings-restoration-window-display",
+    "family": "furnishings",
+    "name": "Expositor de etapas de conservação",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Expositor de etapas de conservação. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 130,
+    "id": "furnishings-community-record-dropbox",
+    "family": "furnishings",
+    "name": "Caixa de contribuições documentais",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Caixa de contribuições documentais. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 131,
+    "id": "furnishings-archive-welcome-settee",
+    "family": "furnishings",
+    "name": "Sofá de espera do arquivo",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Sofá de espera do arquivo. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "sit",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 132,
+    "id": "furnishings-record-connection-map",
+    "family": "furnishings",
+    "name": "Painel de conexões entre registros",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Painel de conexões entre registros. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 133,
+    "id": "furnishings-civic-index-sign",
+    "family": "furnishings",
+    "name": "Totem de índice do arquivo comunitário",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Totem de índice do arquivo comunitário. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.27,
+        "y": 0.78,
+        "width": 0.46,
+        "height": 0.16
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 134,
+    "id": "furnishings-archive-return-cradle",
+    "family": "furnishings",
+    "name": "Suporte de devolução com caixas protegidas",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Suporte de devolução com caixas protegidas. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 135,
+    "id": "furnishings-restored-book-display",
+    "family": "furnishings",
+    "name": "Expositor de livros restaurados",
+    "category": "arquivo público",
+    "mapTheme": "chapter-6",
+    "description": "Expositor de livros restaurados. Aproxima visitantes de registros, contribuições e conservação.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 512,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 136,
+    "id": "furnishings-backup-equipment-cabinet",
+    "family": "furnishings",
+    "name": "Armário de cópias de segurança",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Armário de cópias de segurança. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 0,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 137,
+    "id": "furnishings-paired-review-workstations",
+    "family": "furnishings",
+    "name": "Estações de revisão lado a lado",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Estações de revisão lado a lado. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 32,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 138,
+    "id": "furnishings-labeled-network-patch-rack",
+    "family": "furnishings",
+    "name": "Rack com conexões e etiquetas",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Rack com conexões e etiquetas. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ],
+      "foliage": [
+        "#2f6b69",
+        "#58aa83",
+        "#9cd3a0"
+      ]
+    },
+    "sourceRect": {
+      "x": 64,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 139,
+    "id": "furnishings-offline-record-storage-chest",
+    "family": "furnishings",
+    "name": "Baú de registros para consulta sem rede",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Baú de registros para consulta sem rede. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 96,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 140,
+    "id": "furnishings-restoration-progress-console",
+    "family": "furnishings",
+    "name": "Mesa de acompanhamento da restauração",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Mesa de acompanhamento da restauração. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 128,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 141,
+    "id": "furnishings-equipment-maintenance-station",
+    "family": "furnishings",
+    "name": "Bancada de manutenção do catálogo",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Bancada de manutenção do catálogo. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 160,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 142,
+    "id": "furnishings-rolling-backup-media-case",
+    "family": "furnishings",
+    "name": "Maleta de mídias de backup com rodízios",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Maleta de mídias de backup com rodízios. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.1,
+        "y": 0.68,
+        "width": 0.8,
+        "height": 0.24
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 192,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  },
+  {
+    "index": 143,
+    "id": "furnishings-human-review-lamp-desk",
+    "family": "furnishings",
+    "name": "Mesa de revisão humana com luminária",
+    "category": "catálogo",
+    "mapTheme": "room-6",
+    "description": "Mesa de revisão humana com luminária. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+    "solid": true,
+    "solidFootprint": [
+      {
+        "x": 0.05,
+        "y": 0.62,
+        "width": 0.9,
+        "height": 0.27
+      }
+    ],
+    "layer": "object",
+    "interaction": "observe",
+    "colorRoles": {
+      "wood": [
+        "#624535",
+        "#805a49",
+        "#b99068"
+      ],
+      "fabric": [
+        "#2b5355",
+        "#588e7d",
+        "#9abfa5"
+      ],
+      "metal": [
+        "#49576d",
+        "#768894",
+        "#afb5ba"
+      ]
+    },
+    "sourceRect": {
+      "x": 224,
+      "y": 544,
+      "width": 32,
+      "height": 32
+    }
+  }
+];V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.furnishingsAssets);V.furnishingsMaterialSources={furnishings:'data:image/png;base64,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'};V.furnishingsContent={
+  "version": "2.1",
+  "license": "CC0-1.0",
+  "groups": {
+    "hub": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "library": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "park": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "market": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "garden": [
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "beach": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+    ],
+    "chapter-1": [
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55
+    ],
+    "room-1": [
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63
+    ],
+    "chapter-2": [
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "room-2": [
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "chapter-3": [
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87
+    ],
+    "room-3": [
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95
+    ],
+    "chapter-4": [
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103
+    ],
+    "room-4": [
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111
+    ],
+    "chapter-5": [
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119
+    ],
+    "room-5": [
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127
+    ],
+    "chapter-6": [
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135
+    ],
+    "room-6": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143
+    ]
+  },
+  "characters": {},
+  "residents": [],
+  "sources": [],
+  "assetManifest": {
+    "version": "2.1",
+    "license": "CC0-1.0",
+    "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "attributionRequired": false,
+    "creator": "Original VOICES pixel art",
+    "generator": "tools/create_furnishings_assets.py",
+    "atlas": "assets/tilesets/furnishings-props.png",
+    "tileSize": 32,
+    "columns": 8,
+    "rows": 18,
+    "coordinateUnits": "tile-fraction",
+    "sourceRectUnits": "pixel",
+    "colorRoleConvention": "Only exact RGB triples listed in colorRoles may be recolored. Outlines, contents and alpha remain unchanged.",
+    "groups": {
+      "hub": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "library": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "park": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "market": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "garden": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "beach": [
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "chapter-1": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "room-1": [
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "chapter-2": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71
+      ],
+      "room-2": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "chapter-3": [
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87
+      ],
+      "room-3": [
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95
+      ],
+      "chapter-4": [
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103
+      ],
+      "room-4": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111
+      ],
+      "chapter-5": [
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119
+      ],
+      "room-5": [
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "chapter-6": [
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135
+      ],
+      "room-6": [
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143
+      ]
+    },
+    "palette": {
+      "ink": "#111729",
+      "outline": "#1b2039",
+      "navy": "#263250",
+      "navylight": "#465777",
+      "violetdark": "#463575",
+      "violet": "#7860be",
+      "violetlight": "#b498f0",
+      "cyan": "#59d9dd",
+      "cyandark": "#278c9d",
+      "cyanlight": "#b8f4ea",
+      "amber": "#efb74e",
+      "amberdark": "#a66c32",
+      "amberlight": "#ffdd88",
+      "coral": "#ed7978",
+      "coraldark": "#ab4d65",
+      "corallight": "#ffc0a0",
+      "white": "#eeeada",
+      "paper": "#d8dccf",
+      "green": "#58aa83",
+      "greendark": "#2f6b69",
+      "greenlight": "#9cd3a0",
+      "brown": "#805a49",
+      "brownlight": "#b99068",
+      "greylight": "#afb5ba",
+      "grey": "#768894",
+      "darkgrey": "#49576d",
+      "pink": "#dd9dc3"
+    },
+    "props": [
+      {
+        "index": 0,
+        "id": "furnishings-curved-stone-bench",
+        "family": "furnishings",
+        "name": "Banco curvo de pedra da praça",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Banco curvo de pedra da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 1,
+        "id": "furnishings-refreshment-pushcart",
+        "family": "furnishings",
+        "name": "Carrinho de refrescos com garrafa térmica",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Carrinho de refrescos com garrafa térmica. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 2,
+        "id": "furnishings-staggered-bicycle-rack",
+        "family": "furnishings",
+        "name": "Bicicletário com aros escalonados",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Bicicletário com aros escalonados. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 3,
+        "id": "furnishings-public-drinking-fountain",
+        "family": "furnishings",
+        "name": "Bebedouro público com torneira baixa",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Bebedouro público com torneira baixa. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 4,
+        "id": "furnishings-chess-stone-table",
+        "family": "furnishings",
+        "name": "Mesa de xadrez da praça",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Mesa de xadrez da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 5,
+        "id": "furnishings-charging-leaning-table",
+        "family": "furnishings",
+        "name": "Mesa alta com tomadas protegidas",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Mesa alta com tomadas protegidas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 6,
+        "id": "furnishings-community-coat-hooks",
+        "family": "furnishings",
+        "name": "Painel de ganchos para bolsas",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Painel de ganchos para bolsas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "wall",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 7,
+        "id": "furnishings-flower-stone-trough",
+        "family": "furnishings",
+        "name": "Floreira de pedra com flores miúdas",
+        "category": "praça",
+        "mapTheme": "hub",
+        "description": "Floreira de pedra com flores miúdas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 0,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 8,
+        "id": "furnishings-arched-tall-bookcase",
+        "family": "furnishings",
+        "name": "Estante alta de livros com arco",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Estante alta de livros com arco. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 9,
+        "id": "furnishings-reclining-reading-chair",
+        "family": "furnishings",
+        "name": "Poltrona inclinada de leitura",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Poltrona inclinada de leitura. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 10,
+        "id": "furnishings-slanted-magazine-rack",
+        "family": "furnishings",
+        "name": "Expositor inclinado de revistas",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Expositor inclinado de revistas. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 11,
+        "id": "furnishings-bookbinding-press",
+        "family": "furnishings",
+        "name": "Prensa manual de encadernação",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Prensa manual de encadernação. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 12,
+        "id": "furnishings-rolling-library-ladder",
+        "family": "furnishings",
+        "name": "Escada de biblioteca com rodízios",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Escada de biblioteca com rodízios. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 13,
+        "id": "furnishings-study-carrel",
+        "family": "furnishings",
+        "name": "Mesa de estudo com divisórias",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Mesa de estudo com divisórias. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 14,
+        "id": "furnishings-dictionary-lectern",
+        "family": "furnishings",
+        "name": "Suporte de consulta para dicionário",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Suporte de consulta para dicionário. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 15,
+        "id": "furnishings-felt-room-divider",
+        "family": "furnishings",
+        "name": "Divisória de feltro para leitura silenciosa",
+        "category": "biblioteca",
+        "mapTheme": "library",
+        "description": "Divisória de feltro para leitura silenciosa. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 32,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 16,
+        "id": "furnishings-hexagonal-picnic-table",
+        "family": "furnishings",
+        "name": "Mesa hexagonal de piquenique",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Mesa hexagonal de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 17,
+        "id": "furnishings-carved-log-bench",
+        "family": "furnishings",
+        "name": "Banco baixo de tronco trabalhado",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Banco baixo de tronco trabalhado. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 18,
+        "id": "furnishings-bird-observation-binoculars",
+        "family": "furnishings",
+        "name": "Binóculo fixo de observação de aves",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Binóculo fixo de observação de aves. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 19,
+        "id": "furnishings-bird-hide-screen",
+        "family": "furnishings",
+        "name": "Painel de observação com aberturas",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Painel de observação com aberturas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 20,
+        "id": "furnishings-trail-map-kiosk",
+        "family": "furnishings",
+        "name": "Quiosque de mapa das trilhas",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Quiosque de mapa das trilhas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 21,
+        "id": "furnishings-dog-rinse-platform",
+        "family": "furnishings",
+        "name": "Plataforma baixa para limpeza das patas",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Plataforma baixa para limpeza das patas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 22,
+        "id": "furnishings-picnic-basket-table",
+        "family": "furnishings",
+        "name": "Mesa pequena com cesta de piquenique",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Mesa pequena com cesta de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 23,
+        "id": "furnishings-nest-box-post",
+        "family": "furnishings",
+        "name": "Suporte de caixa-ninho protegida",
+        "category": "parque",
+        "mapTheme": "park",
+        "description": "Suporte de caixa-ninho protegida. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 64,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 24,
+        "id": "furnishings-weighing-counter",
+        "family": "furnishings",
+        "name": "Balcão com balança de dois pratos",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Balcão com balança de dois pratos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 25,
+        "id": "furnishings-ice-chest-cart",
+        "family": "furnishings",
+        "name": "Carrinho de caixa térmica",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Carrinho de caixa térmica. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 26,
+        "id": "furnishings-vegetable-display-tier",
+        "family": "furnishings",
+        "name": "Expositor de verduras em três níveis",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Expositor de verduras em três níveis. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 27,
+        "id": "furnishings-flour-bin-cabinet",
+        "family": "furnishings",
+        "name": "Armário de farinhas com medidas",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Armário de farinhas com medidas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 28,
+        "id": "furnishings-food-warming-cart",
+        "family": "furnishings",
+        "name": "Carrinho de comida com tampas térmicas",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Carrinho de comida com tampas térmicas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 29,
+        "id": "furnishings-grain-hopper-rack",
+        "family": "furnishings",
+        "name": "Suporte de dispensadores de grãos",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Suporte de dispensadores de grãos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 30,
+        "id": "furnishings-cloth-cutting-table",
+        "family": "furnishings",
+        "name": "Mesa de corte com rolo de tecido",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Mesa de corte com rolo de tecido. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 31,
+        "id": "furnishings-crate-hand-truck",
+        "family": "furnishings",
+        "name": "Carrinho de carga com caixas empilhadas",
+        "category": "feira",
+        "mapTheme": "market",
+        "description": "Carrinho de carga com caixas empilhadas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 96,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 32,
+        "id": "furnishings-propagation-cold-frame",
+        "family": "furnishings",
+        "name": "Estufa baixa para mudas",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Estufa baixa para mudas. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 33,
+        "id": "furnishings-potting-workbench",
+        "family": "furnishings",
+        "name": "Bancada de transplante com vasos",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Bancada de transplante com vasos. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 34,
+        "id": "furnishings-outdoor-garden-sink",
+        "family": "furnishings",
+        "name": "Tanque da horta com torneira",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Tanque da horta com torneira. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 35,
+        "id": "furnishings-seed-library-cabinet",
+        "family": "furnishings",
+        "name": "Armário comunitário de sementes",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Armário comunitário de sementes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 36,
+        "id": "furnishings-waist-high-growing-bed",
+        "family": "furnishings",
+        "name": "Canteiro elevado para cuidado acessível",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Canteiro elevado para cuidado acessível. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 37,
+        "id": "furnishings-irrigation-hose-trolley",
+        "family": "furnishings",
+        "name": "Carrinho de mangueira de irrigação",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Carrinho de mangueira de irrigação. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 38,
+        "id": "furnishings-compost-sieving-table",
+        "family": "furnishings",
+        "name": "Mesa com peneira de composto",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Mesa com peneira de composto. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 39,
+        "id": "furnishings-herb-drying-rack",
+        "family": "furnishings",
+        "name": "Varal de ervas com feixes pendentes",
+        "category": "horta",
+        "mapTheme": "garden",
+        "description": "Varal de ervas com feixes pendentes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 128,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 40,
+        "id": "furnishings-striped-changing-booth",
+        "family": "furnishings",
+        "name": "Cabine listrada para trocar de roupa",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Cabine listrada para trocar de roupa. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 41,
+        "id": "furnishings-lifeguard-high-chair",
+        "family": "furnishings",
+        "name": "Cadeira elevada de observação da praia",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Cadeira elevada de observação da praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 42,
+        "id": "furnishings-beach-folding-lounger",
+        "family": "furnishings",
+        "name": "Espreguiçadeira dobrável de praia",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Espreguiçadeira dobrável de praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 43,
+        "id": "furnishings-rinsing-shower",
+        "family": "furnishings",
+        "name": "Chuveiro para retirar areia",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Chuveiro para retirar areia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 44,
+        "id": "furnishings-rescue-equipment-rack",
+        "family": "furnishings",
+        "name": "Suporte de boia e equipamento de resgate",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Suporte de boia e equipamento de resgate. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 45,
+        "id": "furnishings-parasol-side-table",
+        "family": "furnishings",
+        "name": "Mesa baixa com guarda-sol",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Mesa baixa com guarda-sol. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 46,
+        "id": "furnishings-beach-towel-hook-post",
+        "family": "furnishings",
+        "name": "Poste de ganchos para cangas e toalhas",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Poste de ganchos para cangas e toalhas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 47,
+        "id": "furnishings-shell-study-tray",
+        "family": "furnishings",
+        "name": "Bandeja de observação de conchas",
+        "category": "praia",
+        "mapTheme": "beach",
+        "description": "Bandeja de observação de conchas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 160,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 48,
+        "id": "furnishings-public-outdoor-piano",
+        "family": "furnishings",
+        "name": "Piano comunitário com cobertura",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Piano comunitário com cobertura. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 49,
+        "id": "furnishings-small-stage-steps",
+        "family": "furnishings",
+        "name": "Degraus de tablado para apresentação",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Degraus de tablado para apresentação. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "ground",
+        "interaction": null,
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 50,
+        "id": "furnishings-drum-rest-cradle",
+        "family": "furnishings",
+        "name": "Berço de apoio para tambor",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Berço de apoio para tambor. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 51,
+        "id": "furnishings-concert-poster-frame",
+        "family": "furnishings",
+        "name": "Painel de programação dos ensaios",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Painel de programação dos ensaios. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 52,
+        "id": "furnishings-record-swap-crates",
+        "family": "furnishings",
+        "name": "Caixas de troca de discos",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Caixas de troca de discos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 53,
+        "id": "furnishings-performer-fold-screen",
+        "family": "furnishings",
+        "name": "Biombo de preparação dos músicos",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Biombo de preparação dos músicos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 54,
+        "id": "furnishings-wind-instrument-stand",
+        "family": "furnishings",
+        "name": "Suporte de instrumentos de sopro",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Suporte de instrumentos de sopro. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 55,
+        "id": "furnishings-rehearsal-banner-rail",
+        "family": "furnishings",
+        "name": "Suporte de faixas do ensaio aberto",
+        "category": "música",
+        "mapTheme": "chapter-1",
+        "description": "Suporte de faixas do ensaio aberto. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "wall",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 192,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 56,
+        "id": "furnishings-upright-studio-piano",
+        "family": "furnishings",
+        "name": "Piano vertical do estúdio",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Piano vertical do estúdio. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 57,
+        "id": "furnishings-double-keyboard-stand",
+        "family": "furnishings",
+        "name": "Suporte duplo de teclados",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Suporte duplo de teclados. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 58,
+        "id": "furnishings-microphone-pop-filter",
+        "family": "furnishings",
+        "name": "Microfone com filtro e tripé",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Microfone com filtro e tripé. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "music",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 59,
+        "id": "furnishings-mixing-rack-console",
+        "family": "furnishings",
+        "name": "Console de mixagem com módulos",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Console de mixagem com módulos. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 60,
+        "id": "furnishings-adjustable-drum-throne",
+        "family": "furnishings",
+        "name": "Banco giratório de bateria",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Banco giratório de bateria. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 61,
+        "id": "furnishings-acoustic-gobo",
+        "family": "furnishings",
+        "name": "Painel acústico móvel",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Painel acústico móvel. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 62,
+        "id": "furnishings-guitar-wall-rail",
+        "family": "furnishings",
+        "name": "Suporte de guitarras na parede",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Suporte de guitarras na parede. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "wall",
+        "interaction": "music",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 63,
+        "id": "furnishings-cable-reel-cart",
+        "family": "furnishings",
+        "name": "Carrinho de enroladores de cabos",
+        "category": "estúdio",
+        "mapTheme": "room-1",
+        "description": "Carrinho de enroladores de cabos. Organiza gravação, instrumentos e trabalho no estúdio.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 224,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 64,
+        "id": "furnishings-courtyard-exhibit-plinth",
+        "family": "furnishings",
+        "name": "Pedestal do pátio com amostra didática",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Pedestal do pátio com amostra didática. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 65,
+        "id": "furnishings-exhibition-entry-ramp",
+        "family": "furnishings",
+        "name": "Rampa baixa para entrada da exposição",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Rampa baixa para entrada da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "ground",
+        "interaction": null,
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 66,
+        "id": "furnishings-guide-meeting-canopy",
+        "family": "furnishings",
+        "name": "Cobertura do ponto de encontro do guia",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Cobertura do ponto de encontro do guia. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 67,
+        "id": "furnishings-museum-urn-planter",
+        "family": "furnishings",
+        "name": "Jardineira em vaso largo do pátio",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Jardineira em vaso largo do pátio. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 68,
+        "id": "furnishings-outdoor-history-map",
+        "family": "furnishings",
+        "name": "Painel externo de mapa histórico",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Painel externo de mapa histórico. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 69,
+        "id": "furnishings-reproduction-handling-table",
+        "family": "furnishings",
+        "name": "Mesa de réplicas didáticas para observar",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Mesa de réplicas didáticas para observar. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 70,
+        "id": "furnishings-ticket-information-counter",
+        "family": "furnishings",
+        "name": "Balcão de informações da exposição",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Balcão de informações da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 71,
+        "id": "furnishings-courtyard-exhibit-lamp",
+        "family": "furnishings",
+        "name": "Luminária de pátio voltada à exposição",
+        "category": "museu",
+        "mapTheme": "chapter-2",
+        "description": "Luminária de pátio voltada à exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 256,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 72,
+        "id": "furnishings-horizontal-flat-file",
+        "family": "furnishings",
+        "name": "Mapoteca de gavetas horizontais",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Mapoteca de gavetas horizontais. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 73,
+        "id": "furnishings-document-support-wedge",
+        "family": "furnishings",
+        "name": "Apoio inclinado para documento",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Apoio inclinado para documento. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 74,
+        "id": "furnishings-conservation-gloves-station",
+        "family": "furnishings",
+        "name": "Estação de materiais de conservação",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Estação de materiais de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 75,
+        "id": "furnishings-framed-art-storage-rack",
+        "family": "furnishings",
+        "name": "Suporte de armazenamento de quadros",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Suporte de armazenamento de quadros. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 76,
+        "id": "furnishings-artifact-foam-tray",
+        "family": "furnishings",
+        "name": "Bandeja com apoios de conservação",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Bandeja com apoios de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 77,
+        "id": "furnishings-magnifier-research-desk",
+        "family": "furnishings",
+        "name": "Mesa de consulta com lupa articulada",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Mesa de consulta com lupa articulada. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 78,
+        "id": "furnishings-humidity-monitor-cabinet",
+        "family": "furnishings",
+        "name": "Armário com indicador de umidade",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Armário com indicador de umidade. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 79,
+        "id": "furnishings-photo-sorting-rack",
+        "family": "furnishings",
+        "name": "Grade de organização de fotografias",
+        "category": "conservação",
+        "mapTheme": "room-2",
+        "description": "Grade de organização de fotografias. Organiza documentos e manuseio cuidadoso na área de conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 288,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 80,
+        "id": "furnishings-solar-demonstration-panel",
+        "family": "furnishings",
+        "name": "Painel solar de demonstração",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Painel solar de demonstração. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 81,
+        "id": "furnishings-wind-demo-workbench",
+        "family": "furnishings",
+        "name": "Bancada de demonstração de vento",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Bancada de demonstração de vento. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 82,
+        "id": "furnishings-rain-observation-post",
+        "family": "furnishings",
+        "name": "Poste de observação da chuva",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Poste de observação da chuva. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 83,
+        "id": "furnishings-shadow-comparison-table",
+        "family": "furnishings",
+        "name": "Mesa de comparação de sombras",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Mesa de comparação de sombras. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 84,
+        "id": "furnishings-geology-touch-display",
+        "family": "furnishings",
+        "name": "Expositor didático de rochas",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Expositor didático de rochas. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 85,
+        "id": "furnishings-community-question-tree",
+        "family": "furnishings",
+        "name": "Suporte ramificado de perguntas da ciência",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Suporte ramificado de perguntas da ciência. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 86,
+        "id": "furnishings-magnifying-sample-table",
+        "family": "furnishings",
+        "name": "Mesa de amostras com lupa fixa",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Mesa de amostras com lupa fixa. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 87,
+        "id": "furnishings-outdoor-results-board",
+        "family": "furnishings",
+        "name": "Painel de resultados de observação",
+        "category": "ciência",
+        "mapTheme": "chapter-3",
+        "description": "Painel de resultados de observação. Convida a observar, perguntar e comparar no pátio de ciência.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 320,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 88,
+        "id": "furnishings-optical-observation-bench",
+        "family": "furnishings",
+        "name": "Bancada de observação óptica",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Bancada de observação óptica. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 89,
+        "id": "furnishings-safe-circuit-workstation",
+        "family": "furnishings",
+        "name": "Estação didática de circuitos de baixa tensão",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Estação didática de circuitos de baixa tensão. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 90,
+        "id": "furnishings-sample-drawer-cabinet",
+        "family": "furnishings",
+        "name": "Gaveteiro de amostras com etiquetas",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Gaveteiro de amostras com etiquetas. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 91,
+        "id": "furnishings-laboratory-task-lamp",
+        "family": "furnishings",
+        "name": "Luminária de tarefa do laboratório",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Luminária de tarefa do laboratório. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 92,
+        "id": "furnishings-measuring-instrument-rack",
+        "family": "furnishings",
+        "name": "Suporte de instrumentos de medida",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Suporte de instrumentos de medida. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.06,
+            "y": 0.77,
+            "width": 0.88,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 93,
+        "id": "furnishings-experiment-notebook-desk",
+        "family": "furnishings",
+        "name": "Mesa de registro de experimentos",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Mesa de registro de experimentos. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 94,
+        "id": "furnishings-comparison-sample-turntable",
+        "family": "furnishings",
+        "name": "Base giratória de comparação de amostras",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Base giratória de comparação de amostras. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "stone": [
+            "#6d6c69",
+            "#a6a293",
+            "#d4cdb8"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 95,
+        "id": "furnishings-laboratory-stool",
+        "family": "furnishings",
+        "name": "Banco de laboratório com apoio de pés",
+        "category": "laboratório",
+        "mapTheme": "room-3",
+        "description": "Banco de laboratório com apoio de pés. Apoia demonstrações escolares, medidas e registro de resultados.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 352,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 96,
+        "id": "furnishings-public-news-kiosk",
+        "family": "furnishings",
+        "name": "Quiosque público de notícias",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Quiosque público de notícias. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 97,
+        "id": "furnishings-community-paper-dispenser",
+        "family": "furnishings",
+        "name": "Expositor de jornal comunitário",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Expositor de jornal comunitário. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 98,
+        "id": "furnishings-media-listening-bench",
+        "family": "furnishings",
+        "name": "Banco com estação de escuta",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Banco com estação de escuta. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 99,
+        "id": "furnishings-phone-repair-counter",
+        "family": "furnishings",
+        "name": "Bancada de manutenção de aparelhos",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Bancada de manutenção de aparelhos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 100,
+        "id": "furnishings-outdoor-correction-board",
+        "family": "furnishings",
+        "name": "Painel de correções do bairro",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Painel de correções do bairro. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 101,
+        "id": "furnishings-public-interview-chair",
+        "family": "furnishings",
+        "name": "Cadeira com apoio para entrevista",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Cadeira com apoio para entrevista. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 102,
+        "id": "furnishings-device-return-locker",
+        "family": "furnishings",
+        "name": "Armário de devolução de equipamentos",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Armário de devolução de equipamentos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 103,
+        "id": "furnishings-portable-projection-cart",
+        "family": "furnishings",
+        "name": "Carrinho de projeção comunitária",
+        "category": "mídia",
+        "mapTheme": "chapter-4",
+        "description": "Carrinho de projeção comunitária. Apoia informação pública, escuta e cuidado dos equipamentos.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 384,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 104,
+        "id": "furnishings-horseshoe-editorial-table",
+        "family": "furnishings",
+        "name": "Mesa editorial em ferradura",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Mesa editorial em ferradura. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 105,
+        "id": "furnishings-caption-review-lightbox",
+        "family": "furnishings",
+        "name": "Mesa de luz para revisão de imagens",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Mesa de luz para revisão de imagens. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 106,
+        "id": "furnishings-source-reference-cabinet",
+        "family": "furnishings",
+        "name": "Armário de referências e fontes",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Armário de referências e fontes. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 107,
+        "id": "furnishings-interview-audio-desk",
+        "family": "furnishings",
+        "name": "Mesa de gravação de entrevista",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Mesa de gravação de entrevista. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 108,
+        "id": "furnishings-proof-sheet-drying-rail",
+        "family": "furnishings",
+        "name": "Trilho de folhas de revisão",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Trilho de folhas de revisão. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "wall",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 109,
+        "id": "furnishings-correction-tray-tower",
+        "family": "furnishings",
+        "name": "Organizador de correções em bandejas",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Organizador de correções em bandejas. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 110,
+        "id": "furnishings-community-newspaper-press",
+        "family": "furnishings",
+        "name": "Prensa didática do jornal comunitário",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Prensa didática do jornal comunitário. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 111,
+        "id": "furnishings-editorial-rolling-chair",
+        "family": "furnishings",
+        "name": "Cadeira de trabalho com rodízios",
+        "category": "redação",
+        "mapTheme": "room-4",
+        "description": "Cadeira de trabalho com rodízios. Organiza entrevistas, fontes, legendas e correções na redação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 416,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 112,
+        "id": "furnishings-accessible-public-table",
+        "family": "furnishings",
+        "name": "Mesa pública com espaço de aproximação",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Mesa pública com espaço de aproximação. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 113,
+        "id": "furnishings-community-tool-lending-locker",
+        "family": "furnishings",
+        "name": "Armário de empréstimo de ferramentas",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Armário de empréstimo de ferramentas. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 114,
+        "id": "furnishings-neighborhood-mural-easel",
+        "family": "furnishings",
+        "name": "Suporte de trabalho do mural coletivo",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Suporte de trabalho do mural coletivo. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 115,
+        "id": "furnishings-low-community-planting-table",
+        "family": "furnishings",
+        "name": "Mesa baixa de plantio compartilhado",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Mesa baixa de plantio compartilhado. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 116,
+        "id": "furnishings-covered-rest-seat",
+        "family": "furnishings",
+        "name": "Assento de descanso com cobertura",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Assento de descanso com cobertura. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 117,
+        "id": "furnishings-community-route-marker",
+        "family": "furnishings",
+        "name": "Totem de orientação das rotas do bairro",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Totem de orientação das rotas do bairro. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 118,
+        "id": "furnishings-shared-meal-counter",
+        "family": "furnishings",
+        "name": "Balcão de refeições compartilhadas",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Balcão de refeições compartilhadas. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 119,
+        "id": "furnishings-children-art-storage",
+        "family": "furnishings",
+        "name": "Organizador de materiais de desenho",
+        "category": "comunidade",
+        "mapTheme": "chapter-5",
+        "description": "Organizador de materiais de desenho. Apoia participação, orientação e projetos compartilhados no bairro.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 448,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 120,
+        "id": "furnishings-semicircle-assembly-bench",
+        "family": "furnishings",
+        "name": "Banco semicircular da assembleia",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Banco semicircular da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 121,
+        "id": "furnishings-height-adjustable-speaking-desk",
+        "family": "furnishings",
+        "name": "Mesa de fala com ajuste de altura",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Mesa de fala com ajuste de altura. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 122,
+        "id": "furnishings-quiet-writing-nook",
+        "family": "furnishings",
+        "name": "Mesa de participação escrita com biombo",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Mesa de participação escrita com biombo. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 123,
+        "id": "furnishings-turn-order-card-rail",
+        "family": "furnishings",
+        "name": "Suporte de cartões da ordem de fala",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Suporte de cartões da ordem de fala. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": false,
+        "solidFootprint": null,
+        "layer": "wall",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 124,
+        "id": "furnishings-proposal-model-table",
+        "family": "furnishings",
+        "name": "Mesa da maquete de proposta do bairro",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Mesa da maquete de proposta do bairro. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 125,
+        "id": "furnishings-meeting-notes-cabinet",
+        "family": "furnishings",
+        "name": "Arquivo de notas das reuniões",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Arquivo de notas das reuniões. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 126,
+        "id": "furnishings-shared-water-carafe-station",
+        "family": "furnishings",
+        "name": "Estação de água e copos da assembleia",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Estação de água e copos da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 127,
+        "id": "furnishings-stackable-meeting-chairs",
+        "family": "furnishings",
+        "name": "Pilha organizada de cadeiras de reunião",
+        "category": "assembleia",
+        "mapTheme": "room-5",
+        "description": "Pilha organizada de cadeiras de reunião. Organiza fala, escrita e escuta na assembleia comunitária.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 480,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 128,
+        "id": "furnishings-public-catalog-island",
+        "family": "furnishings",
+        "name": "Ilha de consulta do catálogo público",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Ilha de consulta do catálogo público. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 129,
+        "id": "furnishings-restoration-window-display",
+        "family": "furnishings",
+        "name": "Expositor de etapas de conservação",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Expositor de etapas de conservação. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 130,
+        "id": "furnishings-community-record-dropbox",
+        "family": "furnishings",
+        "name": "Caixa de contribuições documentais",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Caixa de contribuições documentais. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 131,
+        "id": "furnishings-archive-welcome-settee",
+        "family": "furnishings",
+        "name": "Sofá de espera do arquivo",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Sofá de espera do arquivo. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "sit",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 132,
+        "id": "furnishings-record-connection-map",
+        "family": "furnishings",
+        "name": "Painel de conexões entre registros",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Painel de conexões entre registros. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 133,
+        "id": "furnishings-civic-index-sign",
+        "family": "furnishings",
+        "name": "Totem de índice do arquivo comunitário",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Totem de índice do arquivo comunitário. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.27,
+            "y": 0.78,
+            "width": 0.46,
+            "height": 0.16
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 134,
+        "id": "furnishings-archive-return-cradle",
+        "family": "furnishings",
+        "name": "Suporte de devolução com caixas protegidas",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Suporte de devolução com caixas protegidas. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 135,
+        "id": "furnishings-restored-book-display",
+        "family": "furnishings",
+        "name": "Expositor de livros restaurados",
+        "category": "arquivo público",
+        "mapTheme": "chapter-6",
+        "description": "Expositor de livros restaurados. Aproxima visitantes de registros, contribuições e conservação.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 512,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 136,
+        "id": "furnishings-backup-equipment-cabinet",
+        "family": "furnishings",
+        "name": "Armário de cópias de segurança",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Armário de cópias de segurança. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 0,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 137,
+        "id": "furnishings-paired-review-workstations",
+        "family": "furnishings",
+        "name": "Estações de revisão lado a lado",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Estações de revisão lado a lado. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 32,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 138,
+        "id": "furnishings-labeled-network-patch-rack",
+        "family": "furnishings",
+        "name": "Rack com conexões e etiquetas",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Rack com conexões e etiquetas. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ],
+          "foliage": [
+            "#2f6b69",
+            "#58aa83",
+            "#9cd3a0"
+          ]
+        },
+        "sourceRect": {
+          "x": 64,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 139,
+        "id": "furnishings-offline-record-storage-chest",
+        "family": "furnishings",
+        "name": "Baú de registros para consulta sem rede",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Baú de registros para consulta sem rede. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 96,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 140,
+        "id": "furnishings-restoration-progress-console",
+        "family": "furnishings",
+        "name": "Mesa de acompanhamento da restauração",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Mesa de acompanhamento da restauração. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 128,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 141,
+        "id": "furnishings-equipment-maintenance-station",
+        "family": "furnishings",
+        "name": "Bancada de manutenção do catálogo",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Bancada de manutenção do catálogo. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 160,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 142,
+        "id": "furnishings-rolling-backup-media-case",
+        "family": "furnishings",
+        "name": "Maleta de mídias de backup com rodízios",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Maleta de mídias de backup com rodízios. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.1,
+            "y": 0.68,
+            "width": 0.8,
+            "height": 0.24
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 192,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      },
+      {
+        "index": 143,
+        "id": "furnishings-human-review-lamp-desk",
+        "family": "furnishings",
+        "name": "Mesa de revisão humana com luminária",
+        "category": "catálogo",
+        "mapTheme": "room-6",
+        "description": "Mesa de revisão humana com luminária. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+        "solid": true,
+        "solidFootprint": [
+          {
+            "x": 0.05,
+            "y": 0.62,
+            "width": 0.9,
+            "height": 0.27
+          }
+        ],
+        "layer": "object",
+        "interaction": "observe",
+        "colorRoles": {
+          "wood": [
+            "#624535",
+            "#805a49",
+            "#b99068"
+          ],
+          "fabric": [
+            "#2b5355",
+            "#588e7d",
+            "#9abfa5"
+          ],
+          "metal": [
+            "#49576d",
+            "#768894",
+            "#afb5ba"
+          ]
+        },
+        "sourceRect": {
+          "x": 224,
+          "y": 544,
+          "width": 32,
+          "height": 32
+        }
+      }
+    ]
+  }
+};})();

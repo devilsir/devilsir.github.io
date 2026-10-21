@@ -1,1 +1,5605 @@
-(function(){'use strict';window.V.translationContent={"version":"2.0","records":[{"path":"content.chapters.0.intro.0","en":{"6":"The stage is ready. The names are missing.","7":"The festival poster lost the artists’ names last night.","8":"Although the stage is ready, the corrupted poster hides the people behind the music."},"pt":"Embora o palco esteja pronto, o cartaz corrompido esconde as pessoas por trás da música.","ptByGrade":{"6":"O palco está pronto. Os nomes estão faltando.","7":"O cartaz do festival perdeu os nomes dos artistas ontem à noite.","8":"Embora o palco esteja pronto, o cartaz corrompido esconde as pessoas por trás da música."}},{"path":"content.chapters.0.intro.1","en":{"6":"Let’s find the credits.","7":"Who made the music? Let’s follow the evidence.","8":"We need more than a catchy beat: we need evidence about its creators and context."},"pt":"Precisamos de mais do que uma batida marcante: precisamos de evidências sobre seus criadores e seu contexto.","ptByGrade":{"6":"Vamos encontrar os créditos.","7":"Quem fez a música? Vamos seguir as evidências.","8":"Precisamos de mais do que uma batida marcante: precisamos de evidências sobre seus criadores e seu contexto."}},{"path":"content.chapters.0.intro.2","en":{"6":"I hear a beat. I do not hear a beet.","7":"A beat is a rhythm. A beet is a vegetable.","8":"Translation complete: beat means a musical pulse here. My vegetable detector can rest."},"pt":"Tradução concluída: beat significa uma pulsação musical aqui. Meu detector de vegetais pode descansar.","ptByGrade":{"6":"Ouço uma batida. Não ouço uma beterraba.","7":"Uma batida é um ritmo. Uma beterraba é um vegetal.","8":"Tradução concluída: beat significa uma pulsação musical aqui. Meu detector de vegetais pode descansar."}},{"path":"content.chapters.0.resolution.0","en":{"6":"The names are back. Thank you!","7":"We restored the names and added cultural notes.","8":"The poster now identifies the creators and explains the cultural references, so audiences can learn more."},"pt":"O cartaz agora identifica os criadores e explica as referências culturais, para que o público possa aprender mais.","ptByGrade":{"6":"Os nomes voltaram. Obrigada!","7":"Restauramos os nomes e acrescentamos notas culturais.","8":"O cartaz agora identifica os criadores e explica as referências culturais, para que o público possa aprender mais."}},{"path":"content.chapters.0.resolution.1","en":{"6":"Our new music has clear credits.","7":"We made a new game track, not a traditional performance.","8":"Our original game track accompanies the festival; it does not claim to reproduce an authentic tradition."},"pt":"Nossa faixa original do jogo acompanha o festival; ela não pretende reproduzir uma tradição autêntica.","ptByGrade":{"6":"Nossa música nova tem créditos claros.","7":"Fizemos uma faixa nova para o jogo, não uma apresentação tradicional.","8":"Nossa faixa original do jogo acompanha o festival; ela não pretende reproduzir uma tradição autêntica."}},{"path":"content.chapters.0.resolution.2","en":{"6":"A strange file points to the museum.","7":"The missing credits came from the city archive.","8":"The same archive error affects the museum, so our next investigation begins there."},"pt":"O mesmo erro do arquivo afeta o museu, então nossa próxima investigação começa lá.","ptByGrade":{"6":"Um arquivo estranho aponta para o museu.","7":"Os créditos desaparecidos vieram do arquivo da cidade.","8":"O mesmo erro do arquivo afeta o museu, então nossa próxima investigação começa lá."}},{"path":"content.chapters.0.npcs.0.lines.0","en":{"6":"Music has people and stories.","7":"The poster kept the sound but removed the people.","8":"When a poster removes creators and context, listeners lose part of the story."},"pt":"Quando um cartaz remove criadores e contexto, os ouvintes perdem parte da história.","ptByGrade":{"6":"A música tem pessoas e histórias.","7":"O cartaz manteve o som, mas removeu as pessoas.","8":"Quando um cartaz remove criadores e contexto, os ouvintes perdem parte da história."}},{"path":"content.chapters.0.npcs.0.lines.1","en":{"6":"Look at the mural and the small archive.","7":"You can find three clues near the mural, the shop and the archive.","8":"Compare the three records near the mural, shop and archive before repairing the stage."},"pt":"Compare os três registros perto do mural, da loja e do arquivo antes de consertar o palco.","ptByGrade":{"6":"Olhe o mural e o pequeno arquivo.","7":"Você pode encontrar três pistas perto do mural, da loja e do arquivo.","8":"Compare os três registros perto do mural, da loja e do arquivo antes de consertar o palco."}},{"path":"content.chapters.0.npcs.0.choice.options.0.reply","en":{"6":"The panel explains the references.","7":"We will place the panel beside the stage.","8":"A panel beside the stage can explain the references without replacing the creators’ own voices."},"pt":"Um painel ao lado do palco pode explicar as referências sem substituir as próprias vozes dos criadores.","ptByGrade":{"6":"O painel explica as referências.","7":"Vamos colocar o painel ao lado do palco.","8":"Um painel ao lado do palco pode explicar as referências sem substituir as próprias vozes dos criadores."}},{"path":"content.chapters.0.npcs.0.choice.options.1.reply","en":{"6":"The program shows the creators.","7":"We will add the creators and their roles to the program.","8":"The program can make authorship visible; the cultural notes will accompany it."},"pt":"O programa pode tornar a autoria visível; as notas culturais vão acompanhá-lo.","ptByGrade":{"6":"O programa mostra os criadores.","7":"Vamos acrescentar os criadores e suas funções ao programa.","8":"O programa pode tornar a autoria visível; as notas culturais vão acompanhá-lo."}},{"path":"content.chapters.0.npcs.1.lines.0","en":{"6":"Different traditions have different stories.","7":"Samba de roda and capoeira have different histories and practices.","8":"Both connect to Afro-Brazilian histories, but we should not reduce them to one sound or one practice."},"pt":"Ambos se relacionam com histórias afro-brasileiras, mas não devemos reduzi-los a um único som ou a uma única prática.","ptByGrade":{"6":"Tradições diferentes têm histórias diferentes.","7":"Samba de roda e capoeira têm histórias e práticas diferentes.","8":"Ambos se relacionam com histórias afro-brasileiras, mas não devemos reduzi-los a um único som ou a uma única prática."}},{"path":"content.chapters.0.npcs.1.lines.1","en":{"6":"Help me repair the beat machine.","7":"Let’s use the repaired machine to make our own track.","8":"Once we repair the controller, we can compose an original track with clearly labelled references."},"pt":"Depois de consertarmos o controlador, poderemos compor uma faixa original com referências claramente identificadas.","ptByGrade":{"6":"Ajude-me a consertar a máquina de batidas.","7":"Vamos usar a máquina consertada para fazer nossa própria faixa.","8":"Depois de consertarmos o controlador, poderemos compor uma faixa original com referências claramente identificadas."}},{"path":"content.chapters.0.npcs.1.choice.options.0.reply","en":{"6":"Names, roles and thanks. Ready!","7":"I added every creator and their role.","8":"I added the creators and their roles because a team’s work deserves accurate attribution."},"pt":"Acrescentei os criadores e suas funções porque o trabalho de uma equipe merece uma atribuição precisa.","ptByGrade":{"6":"Nomes, funções e agradecimentos. Pronto!","7":"Acrescentei cada criador e sua função.","8":"Acrescentei os criadores e suas funções porque o trabalho de uma equipe merece uma atribuição precisa."}},{"path":"content.chapters.0.npcs.1.choice.options.1.reply","en":{"6":"New track. Clear label. Let’s go!","7":"I labelled the track as original game music.","8":"The label distinguishes our original game music from the cultural practices discussed in the archive."},"pt":"A identificação distingue nossa música original do jogo das práticas culturais discutidas no arquivo.","ptByGrade":{"6":"Faixa nova. Identificação clara. Vamos lá!","7":"Identifiquei a faixa como música original do jogo.","8":"A identificação distingue nossa música original do jogo das práticas culturais discutidas no arquivo."}},{"path":"content.chapters.0.clues.0","en":{"6":"Samba de roda brings music, dance and poetry together.","7":"Samba de roda developed in the Recôncavo of Bahia and brings music, dance and poetry together.","8":"Samba de roda connects music, dance and poetry in the Recôncavo of Bahia; its communities keep the practice alive."},"pt":"O samba de roda conecta música, dança e poesia no Recôncavo Baiano; suas comunidades mantêm a prática viva.","ptByGrade":{"6":"O samba de roda reúne música, dança e poesia.","7":"O samba de roda se desenvolveu no Recôncavo Baiano e reúne música, dança e poesia.","8":"O samba de roda conecta música, dança e poesia no Recôncavo Baiano; suas comunidades mantêm a prática viva."},"id":"c1_samba"},{"path":"content.chapters.0.clues.1","en":{"6":"Capoeira is an Afro-Brazilian cultural practice.","7":"Capoeira combines movement and music in an Afro-Brazilian cultural practice.","8":"Capoeira combines movement, music and shared learning; its cultural history is broader than a fighting move."},"pt":"A capoeira combina movimento, música e aprendizagem compartilhada; sua história cultural é mais ampla do que um movimento de luta.","ptByGrade":{"6":"A capoeira é uma prática cultural afro-brasileira.","7":"A capoeira combina movimento e música em uma prática cultural afro-brasileira.","8":"A capoeira combina movimento, música e aprendizagem compartilhada; sua história cultural é mais ampla do que um movimento de luta."},"id":"c1_capoeira"},{"path":"content.chapters.0.clues.2","en":{"6":"This festival card shows names and roles.","7":"The festival card listed the creators before the glitch removed their names.","8":"The restored fictional card identifies creators and cultural references, because a sound alone does not explain its history."},"pt":"O cartão fictício restaurado identifica criadores e referências culturais, porque um som sozinho não explica sua história.","ptByGrade":{"6":"Este cartão do festival mostra nomes e funções.","7":"O cartão do festival listava os criadores antes de a falha remover seus nomes.","8":"O cartão fictício restaurado identifica criadores e referências culturais, porque um som sozinho não explica sua história."},"id":"c1_credit"},{"path":"content.chapters.1.intro.0","en":{"6":"This museum has missing pages.","7":"The first gallery lost many African histories.","8":"The gallery now begins with enslavement, so it erases earlier societies and many other histories."},"pt":"A galeria agora começa pela escravização, apagando sociedades anteriores e muitas outras histórias.","ptByGrade":{"6":"Este museu tem páginas faltando.","7":"A primeira galeria perdeu muitas histórias africanas.","8":"A galeria agora começa pela escravização, apagando sociedades anteriores e muitas outras histórias."}},{"path":"content.chapters.1.intro.1","en":{"6":"Africa has many peoples and histories.","7":"Mali, Songhai and Kongo existed in different places and periods.","8":"Mali, Songhai and Kongo belong to different regional histories; one label cannot explain all of Africa."},"pt":"Mali, Songhai e Kongo pertencem a histórias regionais diferentes; uma etiqueta não explica toda a África.","ptByGrade":{"6":"A África tem muitos povos e histórias.","7":"Mali, Songhai e Kongo existiram em lugares e períodos diferentes.","8":"Mali, Songhai e Kongo pertencem a histórias regionais diferentes; uma etiqueta não explica toda a África."}},{"path":"content.chapters.1.intro.2","en":{"6":"Let’s check places and dates.","7":"We will compare dates and locations before repairing the timeline.","8":"A chronological list is useful, but we must also keep each event’s location and context visible."},"pt":"Uma lista cronológica é útil, mas também precisamos manter visíveis a localização e o contexto de cada evento.","ptByGrade":{"6":"Vamos conferir lugares e datas.","7":"Vamos comparar datas e localizações antes de consertar a linha do tempo.","8":"Uma lista cronológica é útil, mas também precisamos manter visíveis a localização e o contexto de cada evento."}},{"path":"content.chapters.1.resolution.0","en":{"6":"The panels are back. The story is wider.","7":"We restored three regional panels and repaired the dates.","8":"The repaired gallery presents specific African societies alongside later events, rather than treating them as one story."},"pt":"A galeria restaurada apresenta sociedades africanas específicas junto de eventos posteriores, em vez de tratá-los como uma história só.","ptByGrade":{"6":"Os painéis voltaram. A história está mais ampla.","7":"Restauramos três painéis regionais e corrigimos as datas.","8":"A galeria restaurada apresenta sociedades africanas específicas junto de eventos posteriores, em vez de tratá-los como uma história só."}},{"path":"content.chapters.1.resolution.1","en":{"6":"These dates are clues, not the whole story.","7":"Six events cannot show every history of Africa or Brazil.","8":"This small timeline is a selection for comparison; its gaps are a reason to investigate further."},"pt":"Esta pequena linha do tempo é uma seleção para comparação; suas lacunas são um motivo para investigar mais.","ptByGrade":{"6":"Essas datas são pistas, não a história inteira.","7":"Seis eventos não podem mostrar todas as histórias da África ou do Brasil.","8":"Esta pequena linha do tempo é uma seleção para comparação; suas lacunas são um motivo para investigar mais."}},{"path":"content.chapters.1.resolution.2","en":{"6":"New signal: the laboratory.","7":"The restored archive points to a laboratory with missing names.","8":"A second attribution error appears in the laboratory, so let’s follow that signal."},"pt":"Um segundo erro de atribuição aparece no laboratório, então vamos seguir esse sinal.","ptByGrade":{"6":"Novo sinal: o laboratório.","7":"O arquivo restaurado aponta para um laboratório com nomes faltando.","8":"Um segundo erro de atribuição aparece no laboratório, então vamos seguir esse sinal."}},{"path":"content.chapters.1.npcs.0.lines.0","en":{"6":"A museum chooses what to show.","7":"Someone removed the older panels and shortened the labels.","8":"An exhibition is a selection of records; we need to examine what it includes and what it leaves out."},"pt":"Uma exposição é uma seleção de registros; precisamos examinar o que ela inclui e o que deixa de fora.","ptByGrade":{"6":"Um museu escolhe o que mostrar.","7":"Alguém removeu os painéis mais antigos e encurtou as etiquetas.","8":"Uma exposição é uma seleção de registros; precisamos examinar o que ela inclui e o que deixa de fora."}},{"path":"content.chapters.1.npcs.0.lines.1","en":{"6":"Check the map with the timeline.","7":"Do not place Kongo in the same region as Mali.","8":"Keep the map beside the timeline: Kongo is in Central Africa, while Mali and Songhai are in West Africa."},"pt":"Mantenha o mapa ao lado da linha do tempo: Kongo fica na África Central, enquanto Mali e Songhai ficam na África Ocidental.","ptByGrade":{"6":"Confira o mapa junto da linha do tempo.","7":"Não coloque Kongo na mesma região que Mali.","8":"Mantenha o mapa ao lado da linha do tempo: Kongo fica na África Central, enquanto Mali e Songhai ficam na África Ocidental."}},{"path":"content.chapters.1.npcs.0.choice.options.0.reply","en":{"6":"The map shows different regions.","7":"I added regional labels to the gallery map.","8":"Regional labels prevent a single timeline from suggesting that every society occupied the same place."},"pt":"Etiquetas regionais impedem que uma única linha do tempo sugira que todas as sociedades ocupavam o mesmo lugar.","ptByGrade":{"6":"O mapa mostra regiões diferentes.","7":"Acrescentei etiquetas regionais ao mapa da galeria.","8":"Etiquetas regionais impedem que uma única linha do tempo sugira que todas as sociedades ocupavam o mesmo lugar."}},{"path":"content.chapters.1.npcs.0.choice.options.1.reply","en":{"6":"Every card has a date and a source.","7":"I added dates and source names to the panels.","8":"Readers can inspect dates and source names, then ask what other records might add."},"pt":"Os leitores podem conferir datas e nomes de fontes e perguntar o que outros registros poderiam acrescentar.","ptByGrade":{"6":"Cada cartão tem uma data e uma fonte.","7":"Acrescentei datas e nomes de fontes aos painéis.","8":"Os leitores podem conferir datas e nomes de fontes e perguntar o que outros registros poderiam acrescentar."}},{"path":"content.chapters.1.npcs.1.lines.0","en":{"6":"People keep memory in many ways.","7":"We found written records, art and oral traditions.","8":"Written documents, material objects and oral traditions can contribute different evidence; historians compare them."},"pt":"Documentos escritos, objetos materiais e tradições orais podem oferecer evidências diferentes; historiadores os comparam.","ptByGrade":{"6":"As pessoas preservam a memória de muitas maneiras.","7":"Encontramos registros escritos, arte e tradições orais.","8":"Documentos escritos, objetos materiais e tradições orais podem oferecer evidências diferentes; historiadores os comparam."}},{"path":"content.chapters.1.npcs.1.lines.1","en":{"6":"A small side record discusses abolition.","7":"You can read a short record about abolition or focus on the regional panels.","8":"The optional side record discusses legal abolition and continuing barriers without showing violence."},"pt":"O registro complementar opcional discute a abolição legal e barreiras que continuaram, sem mostrar violência.","ptByGrade":{"6":"Um pequeno registro complementar discute a abolição.","7":"Você pode ler um registro curto sobre a abolição ou se concentrar nos painéis regionais.","8":"O registro complementar opcional discute a abolição legal e barreiras que continuaram, sem mostrar violência."}},{"path":"content.chapters.1.npcs.1.choice.options.0.reply","en":{"6":"Let’s read the three regional records.","7":"Start with the Mali, Songhai and Kongo records.","8":"The regional records restore histories erased by the faulty exhibition; you can return to the side record later."},"pt":"Os registros regionais recuperam histórias apagadas pela exposição com falhas; você pode voltar ao registro complementar depois.","ptByGrade":{"6":"Vamos ler os três registros regionais.","7":"Comece pelos registros de Mali, Songhai e Kongo.","8":"Os registros regionais recuperam histórias apagadas pela exposição com falhas; você pode voltar ao registro complementar depois."}},{"path":"content.chapters.1.npcs.1.choice.options.1.reply","en":{"6":"The Atlantic trade forced African people to the Americas. This record also shows Brazil’s law of 1888.","7":"The Atlantic trade forced African people to the Americas. The 1888 law ended legal slavery in Brazil.","8":"The Atlantic trade forced African people to the Americas; although legal slavery ended in Brazil in 1888, social barriers remained."},"pt":"O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram.","ptByGrade":{"6":"O tráfico atlântico levou à força pessoas africanas para as Américas. Este registro também mostra a lei brasileira de 1888.","7":"O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.","8":"O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram."}},{"path":"content.chapters.1.clues.0","en":{"6":"This record shows Mali and Mansa Musa’s journey in 1324.","7":"Mansa Musa, ruler of Mali, made a pilgrimage to Mecca in 1324.","8":"Mansa Musa’s 1324 pilgrimage connected Mali to wider networks; Mali’s history also includes trade, cities and scholarship."},"pt":"A peregrinação de Mansa Musa em 1324 conectou Mali a redes mais amplas; a história de Mali também inclui comércio, cidades e estudos.","ptByGrade":{"6":"Este registro mostra Mali e a viagem de Mansa Musa em 1324.","7":"Mansa Musa, governante de Mali, fez uma peregrinação a Meca em 1324.","8":"A peregrinação de Mansa Musa em 1324 conectou Mali a redes mais amplas; a história de Mali também inclui comércio, cidades e estudos."},"id":"c2_mali"},{"path":"content.chapters.1.clues.1","en":{"6":"Sonni Ali’s reign starts in 1464 on this timeline.","7":"Sonni Ali began his reign in 1464 in the history of Songhai.","8":"The beginning of Sonni Ali’s reign in 1464 is one marker in Songhai’s political history, linked to regional trade networks."},"pt":"O início do reinado de Sonni Ali em 1464 é um marco da história política de Songhai, ligado a redes comerciais regionais.","ptByGrade":{"6":"O reinado de Sonni Ali começa em 1464 nesta linha do tempo.","7":"Sonni Ali começou seu reinado em 1464 na história de Songhai.","8":"O início do reinado de Sonni Ali em 1464 é um marco da história política de Songhai, ligado a redes comerciais regionais."},"id":"c2_songhai"},{"path":"content.chapters.1.clues.2","en":{"6":"Kongo has its own history. This card marks contact in 1483.","7":"In the museum’s chronology, Diogo Cão reached the Congo River’s mouth in 1483.","8":"The 1483 contact with Portugal concerns an existing Central African society; it does not mark the beginning of Kongo’s history."},"pt":"O contato com Portugal em 1483 diz respeito a uma sociedade já existente da África Central; ele não marca o começo da história de Kongo.","ptByGrade":{"6":"Kongo tem sua própria história. Este cartão marca o contato em 1483.","7":"Na cronologia do museu, Diogo Cão chegou à foz do rio Congo em 1483.","8":"O contato com Portugal em 1483 diz respeito a uma sociedade já existente da África Central; ele não marca o começo da história de Kongo."},"id":"c2_kongo"},{"path":"content.chapters.1.sensitiveRecord","en":{"6":"The Atlantic trade forced African people to the Americas. This record also shows Brazil’s law of 1888.","7":"The Atlantic trade forced African people to the Americas. The 1888 law ended legal slavery in Brazil.","8":"The Atlantic trade forced African people to the Americas; although legal slavery ended in Brazil in 1888, social barriers remained."},"pt":"O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram.","ptByGrade":{"6":"O tráfico atlântico levou à força pessoas africanas para as Américas. Este registro também mostra a lei brasileira de 1888.","7":"O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.","8":"O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram."},"id":"c2_optional_abolition"},{"path":"content.chapters.2.intro.0","en":{"6":"The labels mix up three people.","7":"The exhibition mixed up a mathematician, a writer and an engineer.","8":"The machines still work, but the corrupted labels confuse the people behind different contributions."},"pt":"As máquinas ainda funcionam, mas as etiquetas corrompidas confundem as pessoas por trás de contribuições diferentes.","ptByGrade":{"6":"As etiquetas confundem três pessoas.","7":"A exposição confundiu uma matemática, uma escritora e um engenheiro.","8":"As máquinas ainda funcionam, mas as etiquetas corrompidas confundem as pessoas por trás de contribuições diferentes."}},{"path":"content.chapters.2.intro.1","en":{"6":"Which clues support each name?","7":"Who checked the flight calculations? Who wrote the book?","8":"We should match documented contributions to names without inventing achievements or quotations."},"pt":"Devemos relacionar contribuições documentadas a nomes sem inventar feitos ou citações.","ptByGrade":{"6":"Quais pistas apoiam cada nome?","7":"Quem conferiu os cálculos de voo? Quem escreveu o livro?","8":"Devemos relacionar contribuições documentadas a nomes sem inventar feitos ou citações."}},{"path":"content.chapters.2.intro.2","en":{"6":"I am a robot. I do not invent biographies.","7":"I checked my scanner. It finds sources, not magical biographies.","8":"My scanner can organise records, but people must still evaluate what those records support."},"pt":"Meu scanner pode organizar registros, mas as pessoas ainda precisam avaliar o que esses registros sustentam.","ptByGrade":{"6":"Sou um robô. Não invento biografias.","7":"Conferi meu scanner. Ele encontra fontes, não biografias mágicas.","8":"Meu scanner pode organizar registros, mas as pessoas ainda precisam avaliar o que esses registros sustentam."}},{"path":"content.chapters.2.resolution.0","en":{"6":"Three names. Three clear records.","7":"We matched the contributions and restored the labels.","8":"The exhibition now credits different kinds of work accurately, from mathematics to writing and engineering."},"pt":"A exposição agora dá crédito preciso a diferentes tipos de trabalho, da matemática à escrita e à engenharia.","ptByGrade":{"6":"Três nomes. Três registros claros.","7":"Relacionamos as contribuições e restauramos as etiquetas.","8":"A exposição agora dá crédito preciso a diferentes tipos de trabalho, da matemática à escrita e à engenharia."}},{"path":"content.chapters.2.resolution.1","en":{"6":"A famous name is not the only voice.","7":"We can keep looking for people missing from other records.","8":"These profiles widen the exhibition, but a few celebrated people cannot represent every overlooked contribution."},"pt":"Estes perfis ampliam a exposição, mas algumas pessoas celebradas não podem representar todas as contribuições ignoradas.","ptByGrade":{"6":"Um nome famoso não é a única voz.","7":"Podemos continuar procurando pessoas ausentes de outros registros.","8":"Estes perfis ampliam a exposição, mas algumas pessoas celebradas não podem representar todas as contribuições ignoradas."}},{"path":"content.chapters.2.resolution.2","en":{"6":"The glitch now spreads through posts.","7":"The next signal comes from the city’s message network.","8":"The same error is spreading through the message network; we need to inspect how claims travel."},"pt":"O mesmo erro está se espalhando pela rede de mensagens; precisamos examinar como as afirmações circulam.","ptByGrade":{"6":"A falha agora se espalha pelos posts.","7":"O próximo sinal vem da rede de mensagens da cidade.","8":"O mesmo erro está se espalhando pela rede de mensagens; precisamos examinar como as afirmações circulam."}},{"path":"content.chapters.2.npcs.0.lines.0","en":{"6":"A clue supports a specific claim.","7":"A notebook about flight maths is not evidence about every invention.","8":"A record supports a particular conclusion; we must not turn a documented contribution into an unsupported invention."},"pt":"Um registro sustenta uma conclusão específica; não devemos transformar uma contribuição documentada em uma invenção sem apoio.","ptByGrade":{"6":"Uma pista sustenta uma afirmação específica.","7":"Um caderno sobre matemática de voos não é evidência sobre todas as invenções.","8":"Um registro sustenta uma conclusão específica; não devemos transformar uma contribuição documentada em uma invenção sem apoio."}},{"path":"content.chapters.2.npcs.0.lines.1","en":{"6":"Read all three documents in each folder.","7":"The correct name matches the whole folder, not one familiar word.","8":"Compare all three document summaries before choosing an attribution; a familiar word alone is weaker evidence."},"pt":"Compare os três resumos de documentos antes de escolher uma atribuição; uma palavra familiar sozinha é uma evidência mais fraca.","ptByGrade":{"6":"Leia os três documentos de cada pasta.","7":"O nome correto corresponde à pasta inteira, não a uma palavra familiar.","8":"Compare os três resumos de documentos antes de escolher uma atribuição; uma palavra familiar sozinha é uma evidência mais fraca."}},{"path":"content.chapters.2.npcs.0.choice.options.0.reply","en":{"6":"Three clues. One supported match.","7":"I grouped the three summaries for your comparison.","8":"Grouping the summaries helps you compare their support for a specific conclusion."},"pt":"Agrupar os resumos ajuda a comparar o apoio que oferecem a uma conclusão específica.","ptByGrade":{"6":"Três pistas. Uma correspondência sustentada.","7":"Agrupei os três resumos para sua comparação.","8":"Agrupar os resumos ajuda a comparar o apoio que oferecem a uma conclusão específica."}},{"path":"content.chapters.2.npcs.0.choice.options.1.reply","en":{"6":"A name needs a reason.","7":"We will add a short explanation beside each name.","8":"A short explanation makes the connection between record and attribution visible to other readers."},"pt":"Uma explicação curta torna visível aos outros leitores a ligação entre o registro e a atribuição.","ptByGrade":{"6":"Um nome precisa de um motivo.","7":"Vamos acrescentar uma explicação curta ao lado de cada nome.","8":"Uma explicação curta torna visível aos outros leitores a ligação entre o registro e a atribuição."}},{"path":"content.chapters.2.npcs.1.lines.0","en":{"6":"Not every important work is a machine.","7":"Writers, engineers and mathematicians contributed in different ways.","8":"A writer’s work is not less valuable because it is not a machine; an exhibition can recognise different contributions."},"pt":"O trabalho de uma escritora não vale menos por não ser uma máquina; uma exposição pode reconhecer contribuições diferentes.","ptByGrade":{"6":"Nem todo trabalho importante é uma máquina.","7":"Escritoras, engenheiros e matemáticas contribuíram de maneiras diferentes.","8":"O trabalho de uma escritora não vale menos por não ser uma máquina; uma exposição pode reconhecer contribuições diferentes."}},{"path":"content.chapters.2.npcs.1.lines.1","en":{"6":"These cards are summaries, not quotations.","7":"We wrote the cards from institutional sources.","8":"The cards summarise institutional sources; they do not put invented words into historical people’s mouths."},"pt":"Os cartões resumem fontes institucionais; não colocam palavras inventadas na boca de pessoas históricas.","ptByGrade":{"6":"Estes cartões são resumos, não citações.","7":"Escrevemos os cartões a partir de fontes institucionais.","8":"Os cartões resumem fontes institucionais; não colocam palavras inventadas na boca de pessoas históricas."}},{"path":"content.chapters.2.npcs.1.choice.options.0.reply","en":{"6":"Books and calculations both matter.","7":"We will connect books, calculations and engineering plans.","8":"The display will connect different forms of knowledge while keeping their contributions distinct."},"pt":"A exposição vai conectar formas diferentes de conhecimento, mantendo distintas suas contribuições.","ptByGrade":{"6":"Livros e cálculos são importantes.","7":"Vamos conectar livros, cálculos e projetos de engenharia.","8":"A exposição vai conectar formas diferentes de conhecimento, mantendo distintas suas contribuições."}},{"path":"content.chapters.2.npcs.1.choice.options.1.reply","en":{"6":"Every name has a source.","7":"We will show the source beside each profile.","8":"Readers can trace the attribution to a source instead of accepting a label simply because it looks official."},"pt":"Os leitores podem rastrear a atribuição até uma fonte, em vez de aceitar uma etiqueta só porque ela parece oficial.","ptByGrade":{"6":"Cada nome tem uma fonte.","7":"Vamos mostrar a fonte ao lado de cada perfil.","8":"Os leitores podem rastrear a atribuição até uma fonte, em vez de aceitar uma etiqueta só porque ela parece oficial."}},{"path":"content.chapters.2.clues.0","en":{"6":"This card is about Katherine Johnson and space maths.","7":"Katherine Johnson checked the flight calculations for John Glenn’s orbital mission in 1962.","8":"Although electronic computers calculated the orbit, Katherine Johnson checked their results before John Glenn’s 1962 flight."},"pt":"Embora computadores eletrônicos tenham calculado a órbita, Katherine Johnson conferiu seus resultados antes do voo de John Glenn em 1962.","ptByGrade":{"6":"Este cartão é sobre Katherine Johnson e matemática espacial.","7":"Katherine Johnson conferiu os cálculos de voo para a missão orbital de John Glenn em 1962.","8":"Embora computadores eletrônicos tenham calculado a órbita, Katherine Johnson conferiu seus resultados antes do voo de John Glenn em 1962."},"id":"c3_johnson"},{"path":"content.chapters.2.clues.1","en":{"6":"This card shows a writer and her book, published in 1960.","7":"Carolina Maria de Jesus wrote Quarto de despejo, published in 1960.","8":"Carolina Maria de Jesus’s Quarto de despejo was published in 1960; her literary work deserves accurate authorship."},"pt":"Quarto de despejo, de Carolina Maria de Jesus, foi publicado em 1960; seu trabalho literário merece atribuição precisa de autoria.","ptByGrade":{"6":"Este cartão mostra uma escritora e seu livro, publicado em 1960.","7":"Carolina Maria de Jesus escreveu Quarto de despejo, publicado em 1960.","8":"Quarto de despejo, de Carolina Maria de Jesus, foi publicado em 1960; seu trabalho literário merece atribuição precisa de autoria."},"id":"c3_carolina"},{"path":"content.chapters.2.clues.2","en":{"6":"This card shows an engineer and his public work.","7":"André Rebouças worked on port projects and took part in the abolitionist movement.","8":"André Rebouças combined engineering work with abolitionist activity and argued for conditions for life after freedom."},"pt":"André Rebouças combinou trabalho de engenharia com atuação abolicionista e defendeu condições para a vida depois da liberdade.","ptByGrade":{"6":"Este cartão mostra um engenheiro e seu trabalho público.","7":"André Rebouças trabalhou em projetos portuários e participou do movimento abolicionista.","8":"André Rebouças combinou trabalho de engenharia com atuação abolicionista e defendeu condições para a vida depois da liberdade."},"id":"c3_reboucas"},{"path":"content.chapters.3.intro.0","en":{"6":"The network spreads broken messages.","7":"Some posts lost dates. Others generalised whole communities.","8":"The network mixes inaccurate claims, stereotypes and discrimination; we need to distinguish their effects."},"pt":"A rede mistura afirmações incorretas, estereótipos e discriminação; precisamos distinguir seus efeitos.","ptByGrade":{"6":"A rede espalha mensagens com falhas.","7":"Alguns posts perderam datas. Outros generalizaram comunidades inteiras.","8":"A rede mistura afirmações incorretas, estereótipos e discriminação; precisamos distinguir seus efeitos."}},{"path":"content.chapters.3.intro.1","en":{"6":"Let’s check before we share.","7":"We should check the source before sharing a post.","8":"Before sharing, inspect the source, date and context; then consider what the claim does to people."},"pt":"Antes de compartilhar, examine a fonte, a data e o contexto; depois considere o que a afirmação causa às pessoas.","ptByGrade":{"6":"Vamos conferir antes de compartilhar.","7":"Devemos conferir a fonte antes de compartilhar um post.","8":"Antes de compartilhar, examine a fonte, a data e o contexto; depois considere o que a afirmação causa às pessoas."}},{"path":"content.chapters.3.intro.2","en":{"6":"A disagreement is not always discrimination.","7":"People can disagree about a song without denying anyone’s rights.","8":"A difference in musical taste is not equivalent to excluding someone because of race; context matters."},"pt":"Uma diferença de gosto musical não equivale a excluir alguém por causa da raça; o contexto importa.","ptByGrade":{"6":"Um desacordo nem sempre é discriminação.","7":"As pessoas podem discordar sobre uma música sem negar os direitos de ninguém.","8":"Uma diferença de gosto musical não equivale a excluir alguém por causa da raça; o contexto importa."}},{"path":"content.chapters.3.resolution.0","en":{"6":"The corrected posts show context.","7":"We restored dates, added sources and flagged discriminatory access rules.","8":"Each correction addresses the identified problem instead of calling every disagreement the same thing."},"pt":"Cada correção responde ao problema identificado, em vez de chamar todos os desacordos da mesma coisa.","ptByGrade":{"6":"Os posts corrigidos mostram o contexto.","7":"Restauramos datas, acrescentamos fontes e sinalizamos regras discriminatórias de acesso.","8":"Cada correção responde ao problema identificado, em vez de chamar todos os desacordos da mesma coisa."}},{"path":"content.chapters.3.resolution.1","en":{"6":"I can ask for help.","7":"I learned to save a record and ask a trusted adult for help.","8":"When a post targets someone, support and trusted adult involvement can matter more than winning an argument online."},"pt":"Quando um post ataca alguém, apoio e participação de um adulto de confiança podem importar mais do que vencer uma discussão online.","ptByGrade":{"6":"Posso pedir ajuda.","7":"Aprendi a guardar um registro e a pedir ajuda a um adulto de confiança.","8":"Quando um post ataca alguém, apoio e participação de um adulto de confiança podem importar mais do que vencer uma discussão online."}},{"path":"content.chapters.3.resolution.2","en":{"6":"New message: the community centre.","7":"The next mission comes from the community centre.","8":"Residents have sent invitations to discuss access, so our investigation moves from screens to the neighbourhood."},"pt":"Moradores enviaram convites para discutir o acesso, então nossa investigação passa das telas para o bairro.","ptByGrade":{"6":"Nova mensagem: o centro comunitário.","7":"A próxima missão vem do centro comunitário.","8":"Moradores enviaram convites para discutir o acesso, então nossa investigação passa das telas para o bairro."}},{"path":"content.chapters.3.npcs.0.lines.0","en":{"6":"A bright title is not a source.","7":"The loudest headline did not include its date.","8":"A headline can draw attention while hiding the information needed to assess its claim."},"pt":"Uma manchete pode atrair atenção enquanto esconde informações necessárias para avaliar sua afirmação.","ptByGrade":{"6":"Um título chamativo não é uma fonte.","7":"A manchete mais chamativa não incluía sua data.","8":"Uma manchete pode atrair atenção enquanto esconde informações necessárias para avaliar sua afirmação."}},{"path":"content.chapters.3.npcs.0.lines.1","en":{"6":"Ask: who, when, where and why?","7":"Who posted it? When? What was removed?","8":"Ask who produced the post, when it appeared, what context was removed and which evidence supports it."},"pt":"Pergunte quem produziu o post, quando ele apareceu, que contexto foi removido e quais evidências o sustentam.","ptByGrade":{"6":"Pergunte: quem, quando, onde e por quê?","7":"Quem publicou? Quando? O que foi removido?","8":"Pergunte quem produziu o post, quando ele apareceu, que contexto foi removido e quais evidências o sustentam."}},{"path":"content.chapters.3.npcs.0.choice.options.0.reply","en":{"6":"Sources and dates stay visible.","7":"I added source and date fields to the correction cards.","8":"Visible source and date fields help readers inspect the claim without depending on our authority alone."},"pt":"Campos visíveis de fonte e data ajudam os leitores a examinar a afirmação sem depender apenas de nossa autoridade.","ptByGrade":{"6":"Fontes e datas continuam visíveis.","7":"Acrescentei campos de fonte e data aos cartões de correção.","8":"Campos visíveis de fonte e data ajudam os leitores a examinar a afirmação sem depender apenas de nossa autoridade."}},{"path":"content.chapters.3.npcs.0.choice.options.1.reply","en":{"6":"The full context is here.","7":"I added a short note about the missing context.","8":"The note explains why the removed context changes the claim, while preserving the original record for review."},"pt":"A nota explica por que o contexto removido muda a afirmação, preservando o registro original para revisão.","ptByGrade":{"6":"O contexto completo está aqui.","7":"Acrescentei uma nota curta sobre o contexto ausente.","8":"A nota explica por que o contexto removido muda a afirmação, preservando o registro original para revisão."}},{"path":"content.chapters.3.npcs.1.lines.0","en":{"6":"We can support people and ask for help.","7":"One club rule excluded a student because of skin colour.","8":"The fictional club’s race-based exclusion is discriminatory; it needs support for the student and a change to the rule."},"pt":"A exclusão por raça no clube fictício é discriminatória; exige apoio à estudante e mudança na regra.","ptByGrade":{"6":"Podemos apoiar as pessoas e pedir ajuda.","7":"Uma regra do clube excluiu uma estudante por causa da cor da pele.","8":"A exclusão por raça no clube fictício é discriminatória; exige apoio à estudante e mudança na regra."}},{"path":"content.chapters.3.npcs.1.lines.1","en":{"6":"We do not need to share personal stories here.","7":"We can discuss the fictional cases without exposing classmates.","8":"We can analyse these fictional records without asking anyone to prove or recount a personal experience."},"pt":"Podemos analisar estes registros fictícios sem pedir a ninguém que prove ou conte uma experiência pessoal.","ptByGrade":{"6":"Não precisamos compartilhar histórias pessoais aqui.","7":"Podemos discutir os casos fictícios sem expor colegas.","8":"Podemos analisar estes registros fictícios sem pedir a ninguém que prove ou conte uma experiência pessoal."}},{"path":"content.chapters.3.npcs.1.choice.options.0.reply","en":{"6":"Support first. A trusted adult can help.","7":"We will support the student and involve a trusted school adult.","8":"Support and responsible adult involvement can help address the discriminatory rule without exposing the student online."},"pt":"Apoio e participação responsável de adultos podem ajudar a enfrentar a regra discriminatória sem expor a estudante online.","ptByGrade":{"6":"Apoio primeiro. Um adulto de confiança pode ajudar.","7":"Vamos apoiar a estudante e envolver um adulto de confiança da escola.","8":"Apoio e participação responsável de adultos podem ajudar a enfrentar a regra discriminatória sem expor a estudante online."}},{"path":"content.chapters.3.npcs.1.choice.options.1.reply","en":{"6":"We save the rule and ask for change.","7":"We will preserve the record and request a review with adult support.","8":"Preserving the record helps a supported request for review; responsibility should not fall only on the excluded student."},"pt":"Preservar o registro ajuda a pedir uma revisão com apoio; a responsabilidade não deve recair apenas sobre a estudante excluída.","ptByGrade":{"6":"Guardamos a regra e pedimos mudança.","7":"Vamos preservar o registro e pedir uma revisão com apoio de adultos.","8":"Preservar o registro ajuda a pedir uma revisão com apoio; a responsabilidade não deve recair apenas sobre a estudante excluída."}},{"path":"content.chapters.3.clues.0","en":{"6":"A race-based exclusion denies fair access.","7":"The fictional club excluded a student because of skin colour: this is racial discrimination.","8":"Race-based exclusion is discriminatory; it differs from a disagreement about taste and requires a response to denied access."},"pt":"A exclusão por raça é discriminatória; é diferente de uma divergência de gosto e exige resposta ao acesso negado.","ptByGrade":{"6":"Excluir por raça nega acesso justo.","7":"O clube fictício excluiu uma estudante por causa da cor da pele: isso é discriminação racial.","8":"A exclusão por raça é discriminatória; é diferente de uma divergência de gosto e exige resposta ao acesso negado."},"id":"c4_racism"},{"path":"content.chapters.3.clues.1","en":{"6":"One person is not a whole people.","7":"A post claimed that every Indigenous people lived in the same way.","8":"The post treats diverse peoples as identical; different voices and contemporary information challenge its stereotype."},"pt":"O post trata povos diversos como idênticos; diferentes vozes e informações atuais questionam seu estereótipo.","ptByGrade":{"6":"Uma pessoa não é um povo inteiro.","7":"Um post afirmou que todos os povos indígenas viviam da mesma maneira.","8":"O post trata povos diversos como idênticos; diferentes vozes e informações atuais questionam seu estereótipo."},"id":"c4_stereotype"},{"path":"content.chapters.3.clues.2","en":{"6":"Read the date and the full message.","7":"An old festival notice lost its date and looked current.","8":"The cropped fictional notice looks current, but restoring the date changes its meaning; we cannot infer the sender’s intention from this alone."},"pt":"O aviso fictício recortado parece atual, mas restaurar a data muda seu sentido; não podemos deduzir apenas disso a intenção de quem o enviou.","ptByGrade":{"6":"Leia a data e a mensagem completa.","7":"Um aviso antigo do festival perdeu a data e pareceu atual.","8":"O aviso fictício recortado parece atual, mas restaurar a data muda seu sentido; não podemos deduzir apenas disso a intenção de quem o enviou."},"id":"c4_context"},{"path":"content.chapters.4.intro.0","en":{"6":"Our centre needs better access.","7":"The centre had a festival, but some residents could not take part.","8":"A festival can welcome everyone in words while leaving practical barriers to participation."},"pt":"Um festival pode acolher todos em palavras enquanto mantém barreiras práticas à participação.","ptByGrade":{"6":"Nosso centro precisa de acesso melhor.","7":"O centro teve um festival, mas alguns moradores não puderam participar.","8":"Um festival pode acolher todos em palavras enquanto mantém barreiras práticas à participação."}},{"path":"content.chapters.4.intro.1","en":{"6":"Ask people what they need.","7":"Residents described different needs. We should listen before building.","8":"Community members can identify different barriers; we need their participation before choosing projects."},"pt":"Membros da comunidade podem identificar barreiras diferentes; precisamos de sua participação antes de escolher projetos.","ptByGrade":{"6":"Pergunte às pessoas do que precisam.","7":"Moradores descreveram necessidades diferentes. Devemos ouvir antes de construir.","8":"Membros da comunidade podem identificar barreiras diferentes; precisamos de sua participação antes de escolher projetos."}},{"path":"content.chapters.4.intro.2","en":{"6":"We have a budget and several projects.","7":"We cannot fund every project at once, so let’s compare priorities.","8":"A limited budget requires choices, but every first step also needs maintenance and a plan for unmet needs."},"pt":"Um orçamento limitado exige escolhas, mas cada primeiro passo também precisa de manutenção e de um plano para necessidades não atendidas.","ptByGrade":{"6":"Temos um orçamento e vários projetos.","7":"Não podemos financiar todos os projetos de uma vez, então vamos comparar prioridades.","8":"Um orçamento limitado exige escolhas, mas cada primeiro passo também precisa de manutenção e de um plano para necessidades não atendidas."}},{"path":"content.chapters.4.resolution.0","en":{"6":"The first projects are ready. We keep checking.","7":"We built the first projects and agreed to review them with residents.","8":"The first projects remove some barriers; residents will monitor results and identify what still needs work."},"pt":"Os primeiros projetos removem algumas barreiras; moradores acompanharão resultados e identificarão o que ainda precisa de trabalho.","ptByGrade":{"6":"Os primeiros projetos estão prontos. Continuamos conferindo.","7":"Construímos os primeiros projetos e combinamos revisá-los com os moradores.","8":"Os primeiros projetos removem algumas barreiras; moradores acompanharão resultados e identificarão o que ainda precisa de trabalho."}},{"path":"content.chapters.4.resolution.1","en":{"6":"Many peoples live in the present.","7":"Our exhibition includes contemporary Indigenous voices.","8":"Contemporary Indigenous voices belong in the city’s cultural life; they are not confined to an imagined past."},"pt":"Vozes indígenas contemporâneas fazem parte da vida cultural da cidade; elas não estão restritas a um passado imaginado.","ptByGrade":{"6":"Muitos povos vivem no presente.","7":"Nossa exposição inclui vozes indígenas contemporâneas.","8":"Vozes indígenas contemporâneas fazem parte da vida cultural da cidade; elas não estão restritas a um passado imaginado."}},{"path":"content.chapters.4.resolution.2","en":{"6":"Now we can inspect the main archive.","7":"Our access records unlock the city’s main archive.","8":"The restored records now reveal how BIAS.EXE selected its data, so we can inspect the system itself."},"pt":"Os registros restaurados agora revelam como BIAS.EXE selecionou seus dados, então podemos examinar o próprio sistema.","ptByGrade":{"6":"Agora podemos examinar o arquivo principal.","7":"Nossos registros de acesso liberam o arquivo principal da cidade.","8":"Os registros restaurados agora revelam como BIAS.EXE selecionou seus dados, então podemos examinar o próprio sistema."}},{"path":"content.chapters.4.npcs.0.lines.0","en":{"6":"A step and a long trip can block access.","7":"Residents reported barriers in the entrance and travel routes.","8":"In this fictional neighbourhood, the entrance and travel routes create different barriers; projects must respond to residents’ priorities."},"pt":"Neste bairro fictício, a entrada e os trajetos criam barreiras diferentes; os projetos devem responder às prioridades dos moradores.","ptByGrade":{"6":"Um degrau e um trajeto longo podem impedir o acesso.","7":"Moradores relataram barreiras na entrada e nos trajetos.","8":"Neste bairro fictício, a entrada e os trajetos criam barreiras diferentes; os projetos devem responder às prioridades dos moradores."}},{"path":"content.chapters.4.npcs.0.lines.1","en":{"6":"Ask us before choosing.","7":"We want to help choose and review the projects.","8":"Residents need a voice in priorities and review; the city should not treat them only as recipients of help."},"pt":"Moradores precisam participar das prioridades e da revisão; a cidade não deve tratá-los apenas como quem recebe ajuda.","ptByGrade":{"6":"Pergunte a nós antes de escolher.","7":"Queremos ajudar a escolher e revisar os projetos.","8":"Moradores precisam participar das prioridades e da revisão; a cidade não deve tratá-los apenas como quem recebe ajuda."}},{"path":"content.chapters.4.npcs.0.choice.options.0.reply","en":{"6":"We meet and share feedback.","7":"We will meet to discuss access after the first projects open.","8":"An accessible review meeting can show who benefited and which barriers remain."},"pt":"Uma reunião de avaliação acessível pode mostrar quem se beneficiou e quais barreiras permanecem.","ptByGrade":{"6":"Nós nos reunimos e compartilhamos opiniões.","7":"Vamos nos reunir para discutir o acesso depois que os primeiros projetos abrirem.","8":"Uma reunião de avaliação acessível pode mostrar quem se beneficiou e quais barreiras permanecem."}},{"path":"content.chapters.4.npcs.0.choice.options.1.reply","en":{"6":"We record needs and next steps.","7":"We will list needs, priorities and follow-up dates.","8":"A public record can make unfinished needs and follow-up dates visible, with personal information protected."},"pt":"Um registro público pode tornar visíveis as necessidades não atendidas e as datas de acompanhamento, com os dados pessoais protegidos.","ptByGrade":{"6":"Registramos necessidades e próximos passos.","7":"Vamos listar necessidades, prioridades e datas de acompanhamento.","8":"Um registro público pode tornar visíveis as necessidades não atendidas e as datas de acompanhamento, com os dados pessoais protegidos."}},{"path":"content.chapters.4.npcs.1.lines.0","en":{"6":"Indigenous people are here today.","7":"Different Indigenous peoples live in different settings today.","8":"Indigenous peoples have diverse contemporary lives, including within and outside Indigenous territories."},"pt":"Povos indígenas têm vidas contemporâneas diversas, dentro e fora de Terras Indígenas.","ptByGrade":{"6":"Pessoas indígenas estão aqui hoje.","7":"Diferentes povos indígenas vivem em contextos diferentes hoje.","8":"Povos indígenas têm vidas contemporâneas diversas, dentro e fora de Terras Indígenas."}},{"path":"content.chapters.4.npcs.1.lines.1","en":{"6":"My story is one story. Ask before recording.","7":"My story does not stand for every people. Ask permission before recording.","8":"I can share my experience, but it does not represent every people; recording and publication need consent."},"pt":"Posso compartilhar minha experiência, mas ela não representa todos os povos; gravação e publicação precisam de consentimento.","ptByGrade":{"6":"Minha história é uma história. Pergunte antes de gravar.","7":"Minha história não representa todos os povos. Peça autorização antes de gravar.","8":"Posso compartilhar minha experiência, mas ela não representa todos os povos; gravação e publicação precisam de consentimento."}},{"path":"content.chapters.4.npcs.1.choice.options.0.reply","en":{"6":"We choose the display together.","7":"Participants will help choose what the display includes.","8":"Participants can help decide the display and how they are represented rather than just supplying material."},"pt":"Participantes podem ajudar a decidir a exposição e como são representados, em vez de apenas fornecer material.","ptByGrade":{"6":"Escolhemos a exposição juntos.","7":"Participantes vão ajudar a escolher o que a exposição inclui.","8":"Participantes podem ajudar a decidir a exposição e como são representados, em vez de apenas fornecer material."}},{"path":"content.chapters.4.npcs.1.choice.options.1.reply","en":{"6":"Ask first. Credit each speaker.","7":"We will request permission and identify each account’s speaker.","8":"Permission and clear attribution preserve the distinction between a personal account and a claim about every community."},"pt":"Autorização e atribuição clara preservam a distinção entre um relato pessoal e uma afirmação sobre todas as comunidades.","ptByGrade":{"6":"Pergunte primeiro. Dê crédito a cada pessoa que fala.","7":"Vamos pedir autorização e identificar quem contou cada relato.","8":"Autorização e atribuição clara preservam a distinção entre um relato pessoal e uma afirmação sobre todas as comunidades."}},{"path":"content.chapters.4.clues.0","en":{"6":"Indigenous peoples have different languages and ways of life.","7":"The census shows Indigenous people living within and outside Indigenous territories.","8":"Contemporary census records show diverse Indigenous peoples, languages and settings; one fictional character cannot represent them all."},"pt":"Registros contemporâneos do censo mostram povos indígenas, línguas e contextos diversos; uma personagem fictícia não pode representar todos eles.","ptByGrade":{"6":"Povos indígenas têm línguas e modos de vida diferentes.","7":"O censo mostra pessoas indígenas vivendo dentro e fora de Terras Indígenas.","8":"Registros contemporâneos do censo mostram povos indígenas, línguas e contextos diversos; uma personagem fictícia não pode representar todos eles."},"id":"c5_indigenous"},{"path":"content.chapters.4.clues.1","en":{"6":"An invitation needs an accessible route.","7":"Residents marked barriers before the city selected projects.","8":"The fictional access map connects residents’ reports to projects; choosing a project is a first step, not proof that every barrier disappeared."},"pt":"O mapa fictício de acesso conecta relatos dos moradores a projetos; escolher um projeto é um primeiro passo, não prova de que toda barreira desapareceu.","ptByGrade":{"6":"Um convite precisa de um trajeto acessível.","7":"Moradores marcaram barreiras antes de a cidade escolher projetos.","8":"O mapa fictício de acesso conecta relatos dos moradores a projetos; escolher um projeto é um primeiro passo, não prova de que toda barreira desapareceu."},"id":"c5_access"},{"path":"content.chapters.4.clues.2","en":{"6":"People help decide and review the plan.","7":"Residents asked to take part in decisions and later reviews.","8":"Community participation helps identify priorities and review practices, while public institutions remain responsible for their actions."},"pt":"A participação comunitária ajuda a identificar prioridades e revisar práticas, enquanto as instituições públicas continuam responsáveis por suas ações.","ptByGrade":{"6":"As pessoas ajudam a decidir e revisar o plano.","7":"Moradores pediram para participar das decisões e das revisões posteriores.","8":"A participação comunitária ajuda a identificar prioridades e revisar práticas, enquanto as instituições públicas continuam responsáveis por suas ações."},"id":"c5_participation"},{"path":"content.chapters.5.intro.0","en":{"6":"The archive has missing voices.","7":"BIAS.EXE learned from records that already excluded people.","8":"BIAS.EXE reproduced patterns in incomplete records; the program did not create every exclusion on its own."},"pt":"BIAS.EXE reproduziu padrões de registros incompletos; o programa não criou sozinho todas as exclusões.","ptByGrade":{"6":"O arquivo tem vozes ausentes.","7":"BIAS.EXE aprendeu com registros que já excluíam pessoas.","8":"BIAS.EXE reproduziu padrões de registros incompletos; o programa não criou sozinho todas as exclusões."}},{"path":"content.chapters.5.intro.1","en":{"6":"We check the data and the rules.","7":"We need to repair the records and review the selection rules.","8":"More records can help, but we also need to inspect how people select data and evaluate the system’s effects."},"pt":"Mais registros podem ajudar, mas também precisamos examinar como as pessoas selecionam dados e avaliam os efeitos do sistema.","ptByGrade":{"6":"Conferimos os dados e as regras.","7":"Precisamos corrigir os registros e revisar as regras de seleção.","8":"Mais registros podem ajudar, mas também precisamos examinar como as pessoas selecionam dados e avaliam os efeitos do sistema."}},{"path":"content.chapters.5.intro.2","en":{"6":"People stay responsible.","7":"A reboot cannot replace ongoing human responsibility.","8":"A reboot is only a step: people must remain accountable, hear affected communities and review decisions."},"pt":"Um reboot é apenas um passo: as pessoas devem continuar responsáveis, ouvir as comunidades afetadas e revisar decisões.","ptByGrade":{"6":"As pessoas continuam responsáveis.","7":"Um reboot não pode substituir a responsabilidade humana contínua.","8":"Um reboot é apenas um passo: as pessoas devem continuar responsáveis, ouvir as comunidades afetadas e revisar decisões."}},{"path":"content.chapters.5.intro.3","en":{"6":"I am ready. So are our sources.","7":"My scanner is ready, and our evidence cards are organised.","8":"I can help organise the evidence, but our team will decide what the system needs to change."},"pt":"Posso ajudar a organizar as evidências, mas nossa equipe decidirá o que o sistema precisa mudar.","ptByGrade":{"6":"Estou pronto. Nossas fontes também.","7":"Meu scanner está pronto, e nossos cartões de evidências estão organizados.","8":"Posso ajudar a organizar as evidências, mas nossa equipe decidirá o que o sistema precisa mudar."}},{"path":"content.chapters.5.resolution.0","en":{"6":"The archive works again. The work continues.","7":"We repaired the archive and kept a review process active.","8":"We restored the archive, but a continuing review process matters as new records and decisions appear."},"pt":"Restauramos o arquivo, mas um processo contínuo de revisão importa à medida que surgem novos registros e decisões.","ptByGrade":{"6":"O arquivo funciona de novo. O trabalho continua.","7":"Corrigimos o arquivo e mantivemos um processo de revisão ativo.","8":"Restauramos o arquivo, mas um processo contínuo de revisão importa à medida que surgem novos registros e decisões."}},{"path":"content.chapters.5.resolution.1","en":{"6":"Clear credits. More voices. New music!","7":"The festival returned with credits and space for new artists.","8":"The festival now has clear credits and invites new contributors; the archive will keep learning from their work."},"pt":"O festival agora tem créditos claros e convida novos participantes; o arquivo continuará aprendendo com seu trabalho.","ptByGrade":{"6":"Créditos claros. Mais vozes. Música nova!","7":"O festival voltou com créditos e espaço para novos artistas.","8":"O festival agora tem créditos claros e convida novos participantes; o arquivo continuará aprendendo com seu trabalho."}},{"path":"content.chapters.5.resolution.2","en":{"6":"We check the city together.","7":"Residents will review access and send feedback.","8":"Residents and institutions will monitor access together; participation is part of the city’s continuing work."},"pt":"Moradores e instituições acompanharão o acesso juntos; participar faz parte do trabalho contínuo da cidade.","ptByGrade":{"6":"Conferimos a cidade juntos.","7":"Moradores vão revisar o acesso e enviar opiniões.","8":"Moradores e instituições acompanharão o acesso juntos; participar faz parte do trabalho contínuo da cidade."}},{"path":"content.chapters.5.resolution.3","en":{"6":"System restored. Curiosity stays on.","7":"System restored. The next good question is yours.","8":"System restored. A reliable archive is never finished, so the next careful question is yours."},"pt":"Sistema restaurado. Um arquivo confiável nunca está pronto, então a próxima pergunta cuidadosa é sua.","ptByGrade":{"6":"Sistema restaurado. A curiosidade continua ligada.","7":"Sistema restaurado. A próxima boa pergunta é sua.","8":"Sistema restaurado. Um arquivo confiável nunca está pronto, então a próxima pergunta cuidadosa é sua."}},{"path":"content.chapters.5.npcs.0.lines.0","en":{"6":"This sample hides part of the city.","7":"The fictional data sample included only a few districts.","8":"The fictional sample leaves districts out, so its conclusions cannot describe the whole city without further evidence."},"pt":"A amostra fictícia deixa bairros de fora, então suas conclusões não podem descrever toda a cidade sem novas evidências.","ptByGrade":{"6":"Esta amostra esconde parte da cidade.","7":"A amostra fictícia de dados incluiu apenas alguns bairros.","8":"A amostra fictícia deixa bairros de fora, então suas conclusões não podem descrever toda a cidade sem novas evidências."}},{"path":"content.chapters.5.npcs.0.lines.1","en":{"6":"We need sources and a review log.","7":"Our repair log records each source and each change.","8":"A traceable repair log lets people inspect the sources, reasons and effects of changes over time."},"pt":"Um registro rastreável de correções permite examinar fontes, motivos e efeitos das mudanças ao longo do tempo.","ptByGrade":{"6":"Precisamos de fontes e de um registro de revisão.","7":"Nosso registro de correções anota cada fonte e cada mudança.","8":"Um registro rastreável de correções permite examinar fontes, motivos e efeitos das mudanças ao longo do tempo."}},{"path":"content.chapters.5.npcs.0.choice.options.0.reply","en":{"6":"Sources and changes stay visible.","7":"We will keep sources and a dated change log.","8":"A dated change log supports review and makes our choices open to questions."},"pt":"Um registro datado de mudanças apoia a revisão e deixa nossas escolhas abertas a perguntas.","ptByGrade":{"6":"Fontes e mudanças continuam visíveis.","7":"Vamos manter fontes e um registro datado de mudanças.","8":"Um registro datado de mudanças apoia a revisão e deixa nossas escolhas abertas a perguntas."}},{"path":"content.chapters.5.npcs.0.choice.options.1.reply","en":{"6":"People can ask for a review.","7":"We will open an accessible review channel.","8":"An accessible review channel helps affected people question decisions, while the team remains responsible for responding."},"pt":"Um canal acessível de revisão ajuda as pessoas afetadas a questionar decisões, enquanto a equipe continua responsável por responder.","ptByGrade":{"6":"As pessoas podem pedir uma revisão.","7":"Vamos abrir um canal acessível de revisão.","8":"Um canal acessível de revisão ajuda as pessoas afetadas a questionar decisões, enquanto a equipe continua responsável por responder."}},{"path":"content.chapters.5.npcs.1.lines.0","en":{"6":"A record can miss a voice.","7":"Some people were missing before BIAS.EXE read the archive.","8":"An archive can already reflect exclusions; correcting an algorithm also requires examining how records were collected."},"pt":"Um arquivo já pode refletir exclusões; corrigir um algoritmo também exige examinar como os registros foram reunidos.","ptByGrade":{"6":"Um registro pode deixar uma voz de fora.","7":"Algumas pessoas já estavam ausentes antes de BIAS.EXE ler o arquivo.","8":"Um arquivo já pode refletir exclusões; corrigir um algoritmo também exige examinar como os registros foram reunidos."}},{"path":"content.chapters.5.npcs.1.lines.1","en":{"6":"Ask who is missing and who decides.","7":"Who was left out? Who chose the records?","8":"Ask who is absent, who selected the records and how communities can take part in the next review."},"pt":"Pergunte quem está ausente, quem selecionou os registros e como as comunidades podem participar da próxima revisão.","ptByGrade":{"6":"Pergunte quem está faltando e quem decide.","7":"Quem ficou de fora? Quem escolheu os registros?","8":"Pergunte quem está ausente, quem selecionou os registros e como as comunidades podem participar da próxima revisão."}},{"path":"content.chapters.5.npcs.1.choice.options.0.reply","en":{"6":"We review the archive together.","7":"We will schedule reviews with different participants.","8":"Scheduled reviews with different participants can identify gaps that one team overlooks."},"pt":"Revisões programadas com participantes diferentes podem identificar lacunas que uma equipe deixa passar.","ptByGrade":{"6":"Revisamos o arquivo juntos.","7":"Vamos programar revisões com participantes diferentes.","8":"Revisões programadas com participantes diferentes podem identificar lacunas que uma equipe deixa passar."}},{"path":"content.chapters.5.npcs.1.choice.options.1.reply","en":{"6":"We show limits and correct mistakes.","7":"We will state limits and correct new mistakes when evidence appears.","8":"Acknowledging limits and documenting corrections makes responsibility an ongoing practice instead of a final victory claim."},"pt":"Reconhecer limites e documentar correções torna a responsabilidade uma prática contínua, em vez de uma declaração de vitória final.","ptByGrade":{"6":"Mostramos limites e corrigimos erros.","7":"Vamos indicar limites e corrigir novos erros quando surgirem evidências.","8":"Reconhecer limites e documentar correções torna a responsabilidade uma prática contínua, em vez de uma declaração de vitória final."}},{"path":"content.chapters.5.clues.0","en":{"6":"This sample leaves people out.","7":"The fictional training sample omitted some communities and their records.","8":"The fictional sample contains exclusions; adding records helps only if people also examine selection rules and effects."},"pt":"A amostra fictícia contém exclusões; acrescentar registros ajuda apenas se as pessoas também examinarem regras de seleção e efeitos.","ptByGrade":{"6":"Esta amostra deixa pessoas de fora.","7":"A amostra fictícia de treinamento omitiu algumas comunidades e seus registros.","8":"A amostra fictícia contém exclusões; acrescentar registros ajuda apenas se as pessoas também examinarem regras de seleção e efeitos."},"id":"c6_dataset"},{"path":"content.chapters.5.clues.1","en":{"6":"A system can repeat a biased pattern.","7":"An AI system can reproduce patterns from biased data and decisions.","8":"AI systems can reproduce or amplify biases through their data, design and use; a technical correction does not replace human accountability."},"pt":"Sistemas de IA podem reproduzir ou ampliar vieses por meio de seus dados, projeto e uso; uma correção técnica não substitui a responsabilidade humana.","ptByGrade":{"6":"Um sistema pode repetir um padrão com viés.","7":"Um sistema de IA pode reproduzir padrões de dados e decisões com viés.","8":"Sistemas de IA podem reproduzir ou ampliar vieses por meio de seus dados, projeto e uso; uma correção técnica não substitui a responsabilidade humana."},"id":"c6_logic"},{"path":"content.chapters.5.clues.2","en":{"6":"People check sources and review decisions.","7":"The team created a source log and a way to request review.","8":"The fictional review plan combines sources, community participation and human responsibility as the archive changes."},"pt":"O plano fictício de revisão combina fontes, participação comunitária e responsabilidade humana à medida que o arquivo muda.","ptByGrade":{"6":"As pessoas conferem fontes e revisam decisões.","7":"A equipe criou um registro de fontes e um meio de pedir revisão.","8":"O plano fictício de revisão combina fontes, participação comunitária e responsabilidade humana à medida que o arquivo muda."},"id":"c6_review"},{"path":"content.glossary.0","en":"rhythm","pt":"ritmo"},{"path":"content.glossary.1","en":"credit","pt":"crédito de autoria"},{"path":"content.glossary.2","en":"heritage","pt":"patrimônio cultural"},{"path":"content.glossary.3","en":"history","pt":"história"},{"path":"content.glossary.4","en":"timeline","pt":"linha do tempo"},{"path":"content.glossary.5","en":"source","pt":"fonte"},{"path":"content.glossary.6","en":"mathematics","pt":"matemática"},{"path":"content.glossary.7","en":"writer","pt":"escritor ou escritora"},{"path":"content.glossary.8","en":"engineer","pt":"engenheiro ou engenheira"},{"path":"content.glossary.9","en":"evidence","pt":"evidência"},{"path":"content.glossary.10","en":"stereotype","pt":"estereótipo"},{"path":"content.glossary.11","en":"context","pt":"contexto"},{"path":"content.glossary.12","en":"community","pt":"comunidade"},{"path":"content.glossary.13","en":"access","pt":"acesso"},{"path":"content.glossary.14","en":"rights","pt":"direitos"},{"path":"content.glossary.15","en":"data","pt":"dados"},{"path":"content.glossary.16","en":"review","pt":"revisar ou revisão"},{"path":"content.glossary.17","en":"responsibility","pt":"responsabilidade"},{"path":"content.glossary.18","en":"listen","pt":"ouvir ou escutar"},{"path":"content.glossary.19","en":"because","pt":"porque"},{"path":"content.glossary.20","en":"however","pt":"porém ou no entanto"},{"path":"content.glossary.21","en":"before","pt":"antes ou antes de"},{"path":"content.glossary.22","en":"after","pt":"depois ou depois de"},{"path":"content.glossary.23","en":"share","pt":"compartilhar"},{"path":"content.glossary.24","en":"bias","pt":"viés ou tendência parcial"},{"path":"content.timeline.0","en":"Mansa Musa of Mali makes a pilgrimage to Mecca.","pt":"Mansa Musa, de Mali, faz uma peregrinação a Meca.","id":"t_mali"},{"path":"content.timeline.1","en":"Sonni Ali begins his reign in Songhai.","pt":"Sonni Ali começa seu reinado em Songhai.","id":"t_songhai"},{"path":"content.timeline.2","en":"Diogo Cão reaches the Congo River’s mouth, in this museum chronology.","pt":"Diogo Cão chega à foz do rio Congo, nesta cronologia do museu.","id":"t_kongo"},{"path":"content.timeline.3","en":"The law of 13 May ends legal slavery in Brazil.","pt":"A lei de 13 de maio extingue legalmente a escravidão no Brasil.","id":"t_abolition"},{"path":"content.timeline.4","en":"Carolina Maria de Jesus’s Quarto de despejo is published.","pt":"Quarto de despejo, de Carolina Maria de Jesus, é publicado.","id":"t_carolina"},{"path":"content.timeline.5","en":"Katherine Johnson checks calculations for John Glenn’s orbital mission.","pt":"Katherine Johnson confere cálculos para a missão orbital de John Glenn.","id":"t_johnson"},{"path":"learning.readings.0","en":"Every performance has people behind it.","pt":"Toda apresentação tem pessoas por trás dela.","kind":"book","id":"book-01"},{"path":"learning.readings.1","en":"One picture does not tell the whole story.","pt":"Uma imagem não conta a história inteira.","kind":"book","id":"book-02"},{"path":"learning.readings.2","en":"A map needs places and context.","pt":"Um mapa precisa de lugares e contexto.","kind":"book","id":"book-03"},{"path":"learning.readings.3","en":"A meeting does not begin a people’s history.","pt":"Um encontro não inicia a história de um povo.","kind":"book","id":"book-04"},{"path":"learning.readings.4","en":"Read the names, not just the title.","pt":"Leia os nomes, não apenas o título.","kind":"book","id":"book-05"},{"path":"learning.readings.5","en":"A notebook can preserve a voice.","pt":"Um caderno pode preservar uma voz.","kind":"book","id":"book-06"},{"path":"learning.readings.6","en":"Different problems need careful responses.","pt":"Problemas diferentes precisam de respostas cuidadosas.","kind":"book","id":"book-07"},{"path":"learning.readings.7","en":"Check the date before you share.","pt":"Confira a data antes de compartilhar.","kind":"book","id":"book-08"},{"path":"learning.readings.8","en":"Listening includes considering an opinion.","pt":"Ouvir inclui considerar uma opinião.","kind":"book","id":"book-09"},{"path":"learning.readings.9","en":"One voice is not every voice.","pt":"Uma voz não é todas as vozes.","kind":"book","id":"book-10"},{"path":"learning.readings.10","en":"Show what the sample includes.","pt":"Mostre o que a amostra inclui.","kind":"book","id":"book-11"},{"path":"learning.readings.11","en":"A restored archive still needs review.","pt":"Um arquivo restaurado ainda precisa de revisão.","kind":"book","id":"book-12"},{"path":"learning.readings.12","en":"A clue supports a particular claim.","pt":"Uma pista sustenta uma afirmação específica.","kind":"note","id":"note-01"},{"path":"learning.readings.13","en":"Ask before recording and sharing.","pt":"Pergunte antes de gravar e compartilhar.","kind":"note","id":"note-02"},{"path":"learning.readings.14","en":"A list is a tool, not the whole practice.","pt":"Uma lista é uma ferramenta, não a prática inteira.","kind":"note","id":"note-03"},{"path":"learning.readings.15","en":"Label an original track clearly.","pt":"Identifique uma faixa original com clareza.","kind":"note","id":"note-04"},{"path":"learning.readings.16","en":"Ideas can travel as well as goods.","pt":"Ideias podem circular assim como produtos.","kind":"note","id":"note-05"},{"path":"learning.readings.17","en":"Match the place and the record.","pt":"Relacione o lugar e o registro.","kind":"note","id":"note-06"},{"path":"learning.readings.18","en":"Accurate credit makes work visible.","pt":"O crédito preciso dá visibilidade ao trabalho.","kind":"note","id":"note-07"},{"path":"learning.readings.19","en":"A law is a source, not every story.","pt":"Uma lei é uma fonte, não todas as histórias.","kind":"note","id":"note-08"},{"path":"learning.readings.20","en":"Different tastes can share a stage.","pt":"Gostos diferentes podem compartilhar um palco.","kind":"note","id":"note-09"},{"path":"learning.readings.21","en":"Support the person and review the rule.","pt":"Apoie a pessoa e revise a regra.","kind":"note","id":"note-10"},{"path":"learning.readings.22","en":"An invitation needs a usable path.","pt":"Um convite precisa de um caminho que possa ser usado.","kind":"note","id":"note-11"},{"path":"learning.readings.23","en":"Record the change and the remaining limits.","pt":"Registre a mudança e os limites que permanecem.","kind":"note","id":"note-12"},{"path":"learning.readings.24","en":"A scientist’s work belongs in her story.","pt":"O trabalho de uma cientista faz parte de sua história.","kind":"book","id":"cozy-book-01"},{"path":"learning.readings.25","en":"A shared result has many contributors.","pt":"Um resultado compartilhado tem muitas pessoas que contribuíram.","kind":"book","id":"cozy-book-02"},{"path":"learning.readings.26","en":"Music has names, roles and records.","pt":"A música tem nomes, funções e registros.","kind":"book","id":"cozy-book-03"},{"path":"learning.readings.27","en":"A composer should appear in the credits.","pt":"Uma compositora deve aparecer nos créditos.","kind":"book","id":"cozy-book-04"},{"path":"learning.readings.28","en":"A portrait can carry a person’s history.","pt":"Um retrato pode carregar a história de uma pessoa.","kind":"book","id":"cozy-book-05"},{"path":"learning.readings.29","en":"Everyday life can become a subject for art.","pt":"A vida cotidiana pode se tornar um tema para a arte.","kind":"book","id":"cozy-book-06"},{"path":"learning.readings.30","en":"A cultural practice lives through people.","pt":"Uma prática cultural vive por meio das pessoas.","kind":"book","id":"cozy-book-07"},{"path":"learning.readings.31","en":"These braids follow different patterns.","pt":"Estas tranças seguem padrões diferentes.","kind":"book","id":"culture-book-01"},{"path":"learning.readings.32","en":"My hair is part of my story.","pt":"Meu cabelo faz parte da minha história.","kind":"book","id":"culture-book-02"},{"path":"learning.readings.33","en":"The maker and the context belong in the caption.","pt":"A autora ou o autor e o contexto fazem parte da legenda.","kind":"book","id":"culture-book-03"},{"path":"learning.readings.34","en":"A garment has a wearer and a context.","pt":"Uma peça de roupa tem quem a veste e um contexto.","kind":"book","id":"culture-book-04"},{"path":"learning.readings.35","en":"This food is steamed; that food is fried.","pt":"Esta comida é cozida no vapor; aquela é frita.","kind":"book","id":"culture-book-05"},{"path":"learning.readings.36","en":"We can design clothes for different bodies.","pt":"Podemos criar roupas para corpos diferentes.","kind":"book","id":"culture-book-06"},{"path":"learning.readings.37","en":"We can learn about a community without speaking for it.","pt":"Podemos conhecer uma comunidade sem falar por ela.","kind":"book","id":"culture-book-07"},{"path":"learning.readings.38","en":"Different beliefs deserve respect.","pt":"Crenças diferentes merecem respeito.","kind":"book","id":"culture-book-08"},{"path":"learning.readings.39","en":"She played the piano and sang.","pt":"Ela tocava piano e cantava.","kind":"book","id":"heritage-book-nina"},{"path":"learning.readings.40","en":"We can credit the singer and the composer.","pt":"Podemos creditar quem canta e quem compõe.","kind":"book","id":"heritage-book-tim"},{"path":"learning.readings.41","en":"People worked together for civil rights.","pt":"Pessoas trabalharam juntas pelos direitos civis.","kind":"book","id":"heritage-book-king"},{"path":"learning.readings.42","en":"The author creates a narrator.","pt":"O autor cria um narrador.","kind":"book","id":"heritage-book-machado"},{"path":"learning.readings.43","en":"She wrote books and composed songs.","pt":"Ela escreveu livros e compôs canções.","kind":"book","id":"heritage-book-carolina"},{"path":"learning.readings.44","en":"We check the results together.","pt":"Conferimos os resultados juntos.","kind":"book","id":"heritage-book-katherine"},{"path":"learning.readings.45","en":"Listen to the question and the answer.","pt":"Ouça a pergunta e a resposta.","kind":"book","id":"heritage-book-rock"},{"path":"learning.readings.46","en":"Different voices can tell different stories.","pt":"Vozes diferentes podem contar histórias diferentes.","kind":"book","id":"heritage-book-conceicao"},{"path":"learning.readings.47","en":"Compare how each sound begins.","pt":"Compare como cada som começa.","kind":"book","id":"heritage-book-instruments"},{"path":"learning.readings.48","en":"We describe the cloth and its context.","pt":"Descrevemos o tecido e seu contexto.","kind":"book","id":"heritage-book-textiles"},{"path":"learning.readings.49","en":"A label shows what we know and what we still ask.","pt":"Uma legenda mostra o que sabemos e o que ainda perguntamos.","kind":"book","id":"heritage-book-objects"},{"path":"learning.readings.50","en":"This is an original artistic depiction of Iemanjá.","pt":"Esta é uma representação artística original de Iemanjá.","kind":"book","id":"coast-book-iemanja"},{"path":"learning.readings.51","en":"We keep the path clear and care for the beach.","pt":"Mantemos o caminho livre e cuidamos da praia.","kind":"book","id":"coast-book-shared-care"},{"path":"learning.readings.52","en":"We observe animals from a distance.","pt":"Observamos os animais a distância.","kind":"note","id":"coast-note-observation"},{"path":"learning.residents.0.lines.0","en":{"6":"This path needs space.","7":"Residents asked for a clearer path.","8":"Residents pointed out barriers, so our fictional park plan includes a review of the paths."},"pt":"Moradores apontaram barreiras, então o plano do nosso parque fictício inclui uma revisão dos caminhos.","ptByGrade":{"6":"Este caminho precisa de espaço.","7":"Moradores pediram um caminho mais livre.","8":"Moradores apontaram barreiras, então o plano do nosso parque fictício inclui uma revisão dos caminhos."}},{"path":"learning.residents.0.lines.1","en":{"6":"We listen before we change it.","7":"We listened before moving the benches.","8":"Before moving the benches, we asked how different people use this space."},"pt":"Antes de mover os bancos, perguntamos como pessoas diferentes usam este espaço.","ptByGrade":{"6":"Ouvimos antes de mudar isso.","7":"Ouvimos antes de mover os bancos.","8":"Antes de mover os bancos, perguntamos como pessoas diferentes usam este espaço."}},{"path":"learning.residents.0.repeat","en":{"6":"Check the path, too.","7":"The invitation did not fix the path.","8":"A clear invitation helps, but the route still needs attention."},"pt":"Um convite claro ajuda, mas o trajeto ainda precisa de atenção.","ptByGrade":{"6":"Confira também o caminho.","7":"O convite não consertou o caminho.","8":"Um convite claro ajuda, mas o trajeto ainda precisa de atenção."}},{"path":"learning.residents.1.lines.0","en":{"6":"This poster needs names.","7":"The poster lost the creators’ names.","8":"A nice poster still needs accurate names and roles; I sent mine to the festival team."},"pt":"Um cartaz bonito ainda precisa de nomes e funções precisos; enviei o meu à equipe do festival.","ptByGrade":{"6":"Este cartaz precisa de nomes.","7":"O cartaz perdeu os nomes dos criadores.","8":"Um cartaz bonito ainda precisa de nomes e funções precisos; enviei o meu à equipe do festival."}},{"path":"learning.residents.1.lines.1","en":{"6":"My taste is my taste.","7":"My friend preferred a different song.","8":"My friend and I prefer different songs, but neither preference decides who belongs here."},"pt":"Meu amigo e eu preferimos músicas diferentes, mas nenhuma preferência decide quem pertence a este lugar.","ptByGrade":{"6":"Meu gosto é meu gosto.","7":"Meu amigo preferiu uma música diferente.","8":"Meu amigo e eu preferimos músicas diferentes, mas nenhuma preferência decide quem pertence a este lugar."}},{"path":"learning.residents.1.repeat","en":{"6":"Names belong on the poster.","7":"We put the names back on the poster.","8":"The updated poster shows who contributed instead of hiding the work behind the design."},"pt":"O cartaz atualizado mostra quem contribuiu, em vez de esconder o trabalho atrás do desenho.","ptByGrade":{"6":"Os nomes devem estar no cartaz.","7":"Colocamos os nomes de volta no cartaz.","8":"O cartaz atualizado mostra quem contribuiu, em vez de esconder o trabalho atrás do desenho."}},{"path":"learning.residents.2.lines.0","en":{"6":"Check the map and the date.","7":"The labels lost their places and dates.","8":"A timeline needs places and dates, otherwise different societies can look like one story."},"pt":"Uma linha do tempo precisa de lugares e datas; caso contrário, sociedades diferentes podem parecer uma história só.","ptByGrade":{"6":"Confira o mapa e a data.","7":"As etiquetas perderam lugares e datas.","8":"Uma linha do tempo precisa de lugares e datas; caso contrário, sociedades diferentes podem parecer uma história só."}},{"path":"learning.residents.2.lines.1","en":{"6":"One display is a selection.","7":"We selected a few records for this display.","8":"This fictional display uses a few records; its selection cannot stand for all African histories."},"pt":"Esta exposição fictícia usa alguns registros; sua seleção não pode representar todas as histórias africanas.","ptByGrade":{"6":"Uma exposição é uma seleção.","7":"Selecionamos alguns registros para esta exposição.","8":"Esta exposição fictícia usa alguns registros; sua seleção não pode representar todas as histórias africanas."}},{"path":"learning.residents.2.repeat","en":{"6":"Ask what is missing.","7":"You asked what the display left out.","8":"Asking what a display leaves out helps us plan the next investigation."},"pt":"Perguntar o que uma exposição deixa de fora nos ajuda a planejar a próxima investigação.","ptByGrade":{"6":"Pergunte o que está faltando.","7":"Você perguntou o que a exposição deixou de fora.","8":"Perguntar o que uma exposição deixa de fora nos ajuda a planejar a próxima investigação."}},{"path":"learning.residents.3.lines.0","en":{"6":"This summary is not a quotation.","7":"We wrote a summary from named sources.","8":"Our educational summary identifies its sources; it does not invent a historical person’s words."},"pt":"Nosso resumo educativo identifica suas fontes; ele não inventa palavras de uma pessoa histórica.","ptByGrade":{"6":"Este resumo não é uma citação.","7":"Escrevemos um resumo a partir de fontes identificadas.","8":"Nosso resumo educativo identifica suas fontes; ele não inventa palavras de uma pessoa histórica."}},{"path":"learning.residents.3.lines.1","en":{"6":"Keep the source with the record.","7":"The source label helped us check the claim.","8":"Keeping source, date and context together makes later questions easier to investigate."},"pt":"Manter fonte, data e contexto juntos facilita a investigação de perguntas posteriores.","ptByGrade":{"6":"Mantenha a fonte junto do registro.","7":"A identificação da fonte nos ajudou a conferir a afirmação.","8":"Manter fonte, data e contexto juntos facilita a investigação de perguntas posteriores."}},{"path":"learning.residents.3.repeat","en":{"6":"Read what the clue supports.","7":"The clue supported a specific claim.","8":"A clue can support a limited claim while leaving other questions open."},"pt":"Uma pista pode sustentar uma afirmação limitada e deixar outras perguntas abertas.","ptByGrade":{"6":"Leia o que a pista sustenta.","7":"A pista sustentou uma afirmação específica.","8":"Uma pista pode sustentar uma afirmação limitada e deixar outras perguntas abertas."}},{"path":"learning.residents.4.lines.0","en":{"6":"A machine does not work alone.","7":"Several people helped with our project.","8":"Several people helped our fictional project, so the new label identifies different roles."},"pt":"Várias pessoas ajudaram nosso projeto fictício, então a nova etiqueta identifica funções diferentes.","ptByGrade":{"6":"Uma máquina não trabalha sozinha.","7":"Várias pessoas ajudaram em nosso projeto.","8":"Várias pessoas ajudaram nosso projeto fictício, então a nova etiqueta identifica funções diferentes."}},{"path":"learning.residents.4.lines.1","en":{"6":"Do not guess the author.","7":"We checked the records before adding names.","8":"We checked the records before adding names because a familiar word does not establish authorship."},"pt":"Conferimos os registros antes de acrescentar nomes porque uma palavra familiar não estabelece autoria.","ptByGrade":{"6":"Não adivinhe quem é o autor.","7":"Conferimos os registros antes de acrescentar nomes.","8":"Conferimos os registros antes de acrescentar nomes porque uma palavra familiar não estabelece autoria."}},{"path":"learning.residents.4.repeat","en":{"6":"Find the record for the name.","7":"The record helped us restore the names.","8":"Accurate attribution requires a connection between the named person and the documented work."},"pt":"Atribuição precisa exige uma ligação entre a pessoa nomeada e o trabalho documentado.","ptByGrade":{"6":"Encontre o registro para o nome.","7":"O registro nos ajudou a restaurar os nomes.","8":"Atribuição precisa exige uma ligação entre a pessoa nomeada e o trabalho documentado."}},{"path":"learning.residents.5.lines.0","en":{"6":"Your question can open a door.","7":"Your question helped the class inspect a label.","8":"A good question can reveal a missing date, an unsupported claim or a voice left out."},"pt":"Uma boa pergunta pode revelar uma data ausente, uma afirmação sem apoio ou uma voz deixada de fora.","ptByGrade":{"6":"Sua pergunta pode abrir uma porta.","7":"Sua pergunta ajudou a turma a examinar uma etiqueta.","8":"Uma boa pergunta pode revelar uma data ausente, uma afirmação sem apoio ou uma voz deixada de fora."}},{"path":"learning.residents.5.lines.1","en":{"6":"We use fictional cases here.","7":"We discussed fictional cases without exposing classmates.","8":"We can discuss these fictional cases without asking classmates to reveal personal experiences."},"pt":"Podemos discutir estes casos fictícios sem pedir que colegas revelem experiências pessoais.","ptByGrade":{"6":"Usamos casos fictícios aqui.","7":"Discutimos casos fictícios sem expor colegas.","8":"Podemos discutir estes casos fictícios sem pedir que colegas revelem experiências pessoais."}},{"path":"learning.residents.5.repeat","en":{"6":"Ask why the answer fits.","7":"We explained why an answer matched the evidence.","8":"An explanation shows how the answer follows from the evidence instead of asking for trust alone."},"pt":"Uma explicação mostra como a resposta decorre das evidências, em vez de pedir apenas confiança.","ptByGrade":{"6":"Pergunte por que a resposta faz sentido.","7":"Explicamos por que uma resposta correspondia às evidências.","8":"Uma explicação mostra como a resposta decorre das evidências, em vez de pedir apenas confiança."}},{"path":"learning.residents.6.lines.0","en":{"6":"This message needs a date.","7":"I delivered an old notice without its date.","8":"An old notice looked current after its date was cut; I found the complete version."},"pt":"Um aviso antigo pareceu atual depois que sua data foi cortada; encontrei a versão completa.","ptByGrade":{"6":"Esta mensagem precisa de uma data.","7":"Entreguei um aviso antigo sem sua data.","8":"Um aviso antigo pareceu atual depois que sua data foi cortada; encontrei a versão completa."}},{"path":"learning.residents.6.lines.1","en":{"6":"I check before I share.","7":"I checked the current announcement before sharing.","8":"I compare the complete notice with the current announcement before sending a correction."},"pt":"Comparo o aviso completo com o anúncio atual antes de enviar uma correção.","ptByGrade":{"6":"Confiro antes de compartilhar.","7":"Conferi o anúncio atual antes de compartilhar.","8":"Comparo o aviso completo com o anúncio atual antes de enviar uma correção."}},{"path":"learning.residents.6.repeat","en":{"6":"Speed is not a source.","7":"The fastest post was not the clearest one.","8":"A fast post can still lack context, so speed alone does not support a claim."},"pt":"Um post rápido ainda pode não ter contexto, então velocidade sozinha não sustenta uma afirmação.","ptByGrade":{"6":"Velocidade não é uma fonte.","7":"O post mais rápido não era o mais claro.","8":"Um post rápido ainda pode não ter contexto, então velocidade sozinha não sustenta uma afirmação."}},{"path":"learning.residents.7.lines.0","en":{"6":"My memory is one account.","7":"I remembered this square in a different way.","8":"My memory gives one account of this fictional square; other records can add or question details."},"pt":"Minha memória oferece um relato desta praça fictícia; outros registros podem acrescentar ou questionar detalhes.","ptByGrade":{"6":"Minha memória é um relato.","7":"Lembrei desta praça de uma maneira diferente.","8":"Minha memória oferece um relato desta praça fictícia; outros registros podem acrescentar ou questionar detalhes."}},{"path":"learning.residents.7.lines.1","en":{"6":"Ask before recording my story.","7":"We agreed on what could be recorded.","8":"Before recording, we agreed on access and publication rather than assuming every detail was public."},"pt":"Antes de gravar, combinamos acesso e publicação, em vez de supor que todo detalhe era público.","ptByGrade":{"6":"Pergunte antes de gravar minha história.","7":"Combinamos o que poderia ser gravado.","8":"Antes de gravar, combinamos acesso e publicação, em vez de supor que todo detalhe era público."}},{"path":"learning.residents.7.repeat","en":{"6":"The first project needs review.","7":"The first project changed part of the route.","8":"The first project improved part of the route; our next review will check what still needs work."},"pt":"O primeiro projeto melhorou parte do trajeto; nossa próxima revisão vai conferir o que ainda precisa de trabalho.","ptByGrade":{"6":"O primeiro projeto precisa de revisão.","7":"O primeiro projeto mudou parte do trajeto.","8":"O primeiro projeto melhorou parte do trajeto; nossa próxima revisão vai conferir o que ainda precisa de trabalho."}},{"path":"learning.residents.8.lines.0","en":{"6":"I ask who and when.","7":"I asked who made the card and when.","8":"I ask who made a record and when because a polished card can still miss context."},"pt":"Pergunto quem fez um registro e quando, porque um cartão bem acabado ainda pode estar sem contexto.","ptByGrade":{"6":"Pergunto quem e quando.","7":"Perguntei quem fez o cartão e quando.","8":"Pergunto quem fez um registro e quando, porque um cartão bem acabado ainda pode estar sem contexto."}},{"path":"learning.residents.8.lines.1","en":{"6":"A book can be a clue.","7":"The notebook changed our exhibition plan.","8":"A notebook can contribute evidence about writing and experience, although it does not represent every voice."},"pt":"Um caderno pode contribuir com evidências sobre escrita e experiência, embora não represente todas as vozes.","ptByGrade":{"6":"Um livro pode ser uma pista.","7":"O caderno mudou o plano de nossa exposição.","8":"Um caderno pode contribuir com evidências sobre escrita e experiência, embora não represente todas as vozes."}},{"path":"learning.residents.8.repeat","en":{"6":"I can explain my answer.","7":"I explained which clue supported my answer.","8":"I can explain which clue supports my answer and which question still remains open."},"pt":"Posso explicar qual pista apoia minha resposta e qual pergunta ainda permanece aberta.","ptByGrade":{"6":"Posso explicar minha resposta.","7":"Expliquei qual pista apoiava minha resposta.","8":"Posso explicar qual pista apoia minha resposta e qual pergunta ainda permanece aberta."}},{"path":"learning.residents.9.lines.0","en":{"6":"Our track is original.","7":"Sol and I made a new game track.","8":"Sol and I made an original game track and labelled its references clearly."},"pt":"Sol e eu fizemos uma faixa original do jogo e identificamos suas referências com clareza.","ptByGrade":{"6":"Nossa faixa é original.","7":"Sol e eu fizemos uma faixa nova para o jogo.","8":"Sol e eu fizemos uma faixa original do jogo e identificamos suas referências com clareza."}},{"path":"learning.residents.9.lines.1","en":{"6":"A rhythm also has people.","7":"The programme added the musicians’ names.","8":"The programme identifies creators and roles so the audience can follow the work behind the sound."},"pt":"O programa identifica criadores e funções para que o público possa acompanhar o trabalho por trás do som.","ptByGrade":{"6":"Um ritmo também tem pessoas.","7":"O programa acrescentou os nomes dos músicos.","8":"O programa identifica criadores e funções para que o público possa acompanhar o trabalho por trás do som."}},{"path":"learning.residents.9.repeat","en":{"6":"Read the cultural note.","7":"We added context beside the credits.","8":"The credits and cultural note serve different purposes, and both help the audience investigate."},"pt":"Os créditos e a nota cultural têm propósitos diferentes, e ambos ajudam o público a investigar.","ptByGrade":{"6":"Leia a nota cultural.","7":"Acrescentamos contexto ao lado dos créditos.","8":"Os créditos e a nota cultural têm propósitos diferentes, e ambos ajudam o público a investigar."}},{"path":"learning.residents.10.lines.0","en":{"6":"I saved a place in the shade for our reading.","7":"I have saved a place in the shade for our reading.","8":"There is a place in the shade that I saved for our reading."},"pt":"Há um lugar na sombra que guardei para nossa leitura.","ptByGrade":{"6":"Guardei um lugar na sombra para nossa leitura.","7":"Guardei um lugar na sombra para nossa leitura.","8":"Há um lugar na sombra que guardei para nossa leitura."}},{"path":"learning.residents.10.lines.1","en":{"6":"A portrait can raise questions about a person and their history.","7":"A portrait can help us ask about a person and their history.","8":"When we look at a portrait, we can ask about the person and their history."},"pt":"Quando olhamos um retrato, podemos perguntar sobre a pessoa e sua história.","ptByGrade":{"6":"Um retrato pode suscitar perguntas sobre uma pessoa e sua história.","7":"Um retrato pode nos ajudar a perguntar sobre uma pessoa e sua história.","8":"Quando olhamos um retrato, podemos perguntar sobre a pessoa e sua história."}},{"path":"learning.residents.10.lines.2","en":{"6":"Would you like to choose a book with me and look at the reference?","7":"Would you like to choose a book with me and check its reference?","8":"Shall we choose a book together and look at the reference it provides?"},"pt":"Vamos escolher um livro juntos e olhar a referência que ele oferece?","ptByGrade":{"6":"Você gostaria de escolher um livro comigo e olhar a referência?","7":"Você gostaria de escolher um livro comigo e conferir sua referência?","8":"Vamos escolher um livro juntos e olhar a referência que ele oferece?"}},{"path":"learning.residents.10.repeat","en":{"6":"The bench is free; we can continue our reading.","7":"The bench is free, so we can continue our reading.","8":"Now that the bench is free, we can return to our reading."},"pt":"Agora que o banco está livre, podemos voltar à nossa leitura.","ptByGrade":{"6":"O banco está livre; podemos continuar nossa leitura.","7":"O banco está livre, então podemos continuar nossa leitura.","8":"Agora que o banco está livre, podemos voltar à nossa leitura."}},{"path":"learning.residents.11.lines.0","en":{"6":"I arranged my notes before opening the observation table.","7":"I organized my notes before I opened the observation table.","8":"Before opening the observation table, I organized my notes."},"pt":"Antes de abrir a mesa de observação, organizei minhas anotações.","ptByGrade":{"6":"Organizei minhas anotações antes de abrir a mesa de observação.","7":"Organizei minhas anotações antes de abrir a mesa de observação.","8":"Antes de abrir a mesa de observação, organizei minhas anotações."}},{"path":"learning.residents.11.lines.1","en":{"6":"A scientist’s card should show her name and what she studies.","7":"A scientist’s card should include her name and what she researches.","8":"When we make a scientist’s card, we include her name and her research."},"pt":"Quando fazemos uma ficha de cientista, incluímos seu nome e sua pesquisa.","ptByGrade":{"6":"Uma ficha de cientista deve mostrar seu nome e o que ela estuda.","7":"Uma ficha de cientista deve incluir seu nome e o que ela pesquisa.","8":"Quando fazemos uma ficha de cientista, incluímos seu nome e sua pesquisa."}},{"path":"learning.residents.11.lines.2","en":{"6":"Come and compare the imaginary sensor readings with me.","7":"Would you like to compare the imaginary sensor readings with me?","8":"Let’s compare the imaginary sensor readings together."},"pt":"Vamos comparar juntos as leituras dos sensores imaginários.","ptByGrade":{"6":"Venha comparar as leituras dos sensores imaginários comigo.","7":"Você gostaria de comparar as leituras dos sensores imaginários comigo?","8":"Vamos comparar juntos as leituras dos sensores imaginários."}},{"path":"learning.residents.11.repeat","en":{"6":"The notes are here so we can continue comparing.","7":"The notes are here for us to continue the comparison.","8":"We can continue our comparison with the notes we have here."},"pt":"Podemos continuar nossa comparação com as anotações que temos aqui.","ptByGrade":{"6":"As anotações estão aqui para que possamos continuar comparando.","7":"As anotações estão aqui para continuarmos a comparação.","8":"Podemos continuar nossa comparação com as anotações que temos aqui."}},{"path":"learning.residents.12.lines.0","en":{"6":"I brought my notebook to draw the activity in the square.","7":"I have brought my notebook to sketch the activity in the square.","8":"I brought my notebook so I could sketch what is happening in the square."},"pt":"Trouxe meu caderno para poder esboçar o que está acontecendo na praça.","ptByGrade":{"6":"Trouxe meu caderno para desenhar o movimento da praça.","7":"Trouxe meu caderno para esboçar o movimento da praça.","8":"Trouxe meu caderno para poder esboçar o que está acontecendo na praça."}},{"path":"learning.residents.12.lines.1","en":{"6":"My memory helps tell the scene; we can compare it with other records.","7":"My memory helps describe the scene, and we can compare it with other records.","8":"We can use my memory to describe the scene and compare it with other records."},"pt":"Podemos usar minha memória para descrever a cena e compará-la com outros registros.","ptByGrade":{"6":"Minha memória ajuda a contar a cena; podemos compará-la com outros registros.","7":"Minha memória ajuda a descrever a cena, e podemos compará-la com outros registros.","8":"Podemos usar minha memória para descrever a cena e compará-la com outros registros."}},{"path":"learning.residents.12.lines.2","en":{"6":"Sit here and choose one detail to draw with me.","7":"Would you like to sit here and choose a detail to draw with me?","8":"Join me here and choose a detail for us to draw together."},"pt":"Junte-se a mim aqui e escolha um detalhe para desenharmos juntos.","ptByGrade":{"6":"Sente aqui e escolha um detalhe para desenhar comigo.","7":"Você gostaria de sentar aqui e escolher um detalhe para desenhar comigo?","8":"Junte-se a mim aqui e escolha um detalhe para desenharmos juntos."}},{"path":"learning.residents.12.repeat","en":{"6":"I left a blank page for our next drawing.","7":"I have left a blank page for our next drawing.","8":"There is a blank page that I left for our next drawing."},"pt":"Há uma página em branco que deixei para nosso próximo desenho.","ptByGrade":{"6":"Deixei uma página em branco para nosso próximo desenho.","7":"Deixei uma página em branco para nosso próximo desenho.","8":"Há uma página em branco que deixei para nosso próximo desenho."}},{"path":"learning.residents.13.lines.0","en":{"6":"The rehearsal starts after I adjust this bench.","7":"The rehearsal will start after I have adjusted this bench.","8":"Once I have adjusted this bench, we can start the rehearsal."},"pt":"Assim que eu tiver ajustado este banco, poderemos começar o ensaio.","ptByGrade":{"6":"O ensaio começa depois que eu ajustar este banco.","7":"O ensaio vai começar depois que eu tiver ajustado este banco.","8":"Assim que eu tiver ajustado este banco, poderemos começar o ensaio."}},{"path":"learning.residents.13.lines.1","en":{"6":"Composing, arranging and playing are different contributions.","7":"Composing, arranging and performing are different contributions.","8":"Music brings together different contributions, including composing, arranging and performing."},"pt":"A música reúne contribuições diferentes, incluindo compor, fazer arranjos e interpretar.","ptByGrade":{"6":"Compor, fazer um arranjo e tocar são contribuições diferentes.","7":"Compor, fazer um arranjo e interpretar são contribuições diferentes.","8":"A música reúne contribuições diferentes, incluindo compor, fazer arranjos e interpretar."}},{"path":"learning.residents.13.lines.2","en":{"6":"Would you like to help me check our program credits?","7":"Would you like to help me check the credits in our program?","8":"Shall we check our program together to see whether the credits are clear?"},"pt":"Vamos conferir nosso programa juntos para ver se os créditos estão claros?","ptByGrade":{"6":"Você gostaria de me ajudar a conferir os créditos de nosso programa?","7":"Você gostaria de me ajudar a conferir os créditos no nosso programa?","8":"Vamos conferir nosso programa juntos para ver se os créditos estão claros?"}},{"path":"learning.residents.13.repeat","en":{"6":"The program is on the table; we can check one more name.","7":"The program is on the table, so we can check another name.","8":"We can check another name in the program that is on the table."},"pt":"Podemos conferir outro nome no programa que está na mesa.","ptByGrade":{"6":"O programa está na mesa; podemos conferir mais um nome.","7":"O programa está na mesa, então podemos conferir outro nome.","8":"Podemos conferir outro nome no programa que está na mesa."}},{"path":"learning.residents.14.lines.0","en":{"6":"I arranged the food tray so I can talk with people who arrive.","7":"I have arranged the food tray to talk with people as they arrive.","8":"With the food tray arranged, I can talk with the people arriving."},"pt":"Com o tabuleiro organizado, posso conversar com as pessoas que estão chegando.","ptByGrade":{"6":"Organizei o tabuleiro para poder conversar com quem chega.","7":"Organizei o tabuleiro para conversar com as pessoas quando elas chegam.","8":"Com o tabuleiro organizado, posso conversar com as pessoas que estão chegando."}},{"path":"learning.residents.14.lines.1","en":{"6":"This craft has knowledge passed between generations.","7":"This craft includes knowledge that is passed between generations.","8":"Knowledge passes between generations through this craft."},"pt":"Conhecimentos passam entre gerações por meio deste ofício.","ptByGrade":{"6":"Este ofício tem conhecimentos transmitidos entre gerações.","7":"Este ofício inclui conhecimentos que são transmitidos entre gerações.","8":"Conhecimentos passam entre gerações por meio deste ofício."}},{"path":"learning.residents.14.lines.2","en":{"6":"Shall we read the card together and think about what is missing?","7":"Would you like to read the card together and think about what remains to tell?","8":"Let’s read the card together and consider which parts still need to be told."},"pt":"Vamos ler a ficha juntos e considerar quais partes ainda precisam ser contadas.","ptByGrade":{"6":"Vamos ler a ficha juntos e pensar no que está faltando?","7":"Você gostaria de ler a ficha juntos e pensar no que ainda falta contar?","8":"Vamos ler a ficha juntos e considerar quais partes ainda precisam ser contadas."}},{"path":"learning.residents.14.repeat","en":{"6":"The card is beside the food tray; we can continue our conversation.","7":"The card is beside the food tray, so we can continue our conversation.","8":"We can continue our conversation with the card beside the food tray."},"pt":"Podemos continuar nossa conversa com a ficha ao lado do tabuleiro.","ptByGrade":{"6":"A ficha está ao lado do tabuleiro; podemos continuar nossa conversa.","7":"A ficha está ao lado do tabuleiro, então podemos continuar nossa conversa.","8":"Podemos continuar nossa conversa com a ficha ao lado do tabuleiro."}},{"path":"learning.residents.15.lines.0","en":{"6":"Today I found the folder on the top shelf.","7":"Today I found the folder that was on the top shelf.","8":"I found the folder today; it was on the top shelf."},"pt":"Encontrei a pasta hoje; ela estava na prateleira de cima.","ptByGrade":{"6":"Hoje encontrei a pasta na prateleira de cima.","7":"Hoje encontrei a pasta que estava na prateleira de cima.","8":"Encontrei a pasta hoje; ela estava na prateleira de cima."}},{"path":"learning.residents.15.lines.1","en":{"6":"I keep the title, creator and source of each record.","7":"For each record, I keep its title, who made it and where it came from.","8":"When I organize a record, I keep its title, creator and source."},"pt":"Quando organizo um registro, guardo seu título, seu criador e sua fonte.","ptByGrade":{"6":"Guardo o título, o criador e a fonte de cada registro.","7":"Para cada registro, guardo seu título, quem o fez e de onde veio.","8":"Quando organizo um registro, guardo seu título, seu criador e sua fonte."}},{"path":"learning.residents.15.lines.2","en":{"6":"Would you like to open a card with me and find that information?","7":"Would you like to open a card with me and look for that information?","8":"Let’s open a card together and see where that information appears."},"pt":"Vamos abrir uma ficha juntos e ver onde essa informação aparece.","ptByGrade":{"6":"Você gostaria de abrir uma ficha comigo e encontrar essa informação?","7":"Você gostaria de abrir uma ficha comigo e procurar essa informação?","8":"Vamos abrir uma ficha juntos e ver onde essa informação aparece."}},{"path":"learning.residents.15.repeat","en":{"6":"The folder is still on the table for us to consult.","7":"The folder is still on the table for our consultation.","8":"We can consult the folder that is still on the table."},"pt":"Podemos consultar a pasta que ainda está na mesa.","ptByGrade":{"6":"A pasta ainda está na mesa para consultarmos.","7":"A pasta ainda está na mesa para nossa consulta.","8":"Podemos consultar a pasta que ainda está na mesa."}},{"path":"learning.residents.16.lines.0","en":{"6":"I set aside pencils and paper for our drawing group.","7":"I have set aside pencils and paper for the drawing group.","8":"The pencils and paper are ready because I set them aside for our drawing group."},"pt":"Os lápis e o papel estão prontos porque os separei para nosso grupo de desenho.","ptByGrade":{"6":"Separei lápis e papel para nosso grupo de desenho.","7":"Separei lápis e papel para o grupo de desenho.","8":"Os lápis e o papel estão prontos porque os separei para nosso grupo de desenho."}},{"path":"learning.residents.16.lines.1","en":{"6":"The colors and people we choose to show help us read an image.","7":"The colors and people we choose to show are part of how we read an image.","8":"We read an image by considering, among other things, its chosen colors and people."},"pt":"Lemos uma imagem considerando, entre outras coisas, as cores e as pessoas escolhidas nela.","ptByGrade":{"6":"As cores e as pessoas que escolhemos mostrar ajudam a ler uma imagem.","7":"As cores e as pessoas que escolhemos mostrar fazem parte de como lemos uma imagem.","8":"Lemos uma imagem considerando, entre outras coisas, as cores e as pessoas escolhidas nela."}},{"path":"learning.residents.16.lines.2","en":{"6":"Come and look at a drawing with me before we write the caption.","7":"Would you like to look at a drawing together before writing its caption?","8":"Before we write the caption, let’s observe the drawing together."},"pt":"Antes de escrevermos a legenda, vamos observar o desenho juntos.","ptByGrade":{"6":"Venha olhar um desenho comigo antes de escrevermos a legenda.","7":"Você gostaria de olhar um desenho juntos antes de escrever sua legenda?","8":"Antes de escrevermos a legenda, vamos observar o desenho juntos."}},{"path":"learning.residents.16.repeat","en":{"6":"There is still paper for another observation.","7":"There is still paper for us to make another observation.","8":"We have enough paper left to make another observation."},"pt":"Temos papel suficiente para fazer outra observação.","ptByGrade":{"6":"Ainda há papel para outra observação.","7":"Ainda há papel para fazermos outra observação.","8":"Temos papel suficiente para fazer outra observação."}},{"path":"learning.residents.17.lines.0","en":{"6":"I pinned the notices so the wind will not take our notes.","7":"I have pinned the notices so the wind does not blow away our notes.","8":"To keep the wind from blowing away our notes, I pinned the notices."},"pt":"Para impedir que o vento leve nossas anotações, prendi os avisos.","ptByGrade":{"6":"Prendi os avisos para que o vento não leve nossas anotações.","7":"Prendi os avisos para que o vento não leve nossas anotações.","8":"Para impedir que o vento leve nossas anotações, prendi os avisos."}},{"path":"learning.residents.17.lines.1","en":{"6":"If a caption claims too much, I check the source and revise the text.","7":"When a caption claims too much, I return to the source and revise the text.","8":"If a caption goes beyond the evidence, I return to its source and revise it."},"pt":"Se uma legenda vai além das evidências, volto à sua fonte e reviso o texto.","ptByGrade":{"6":"Se uma legenda afirma demais, confiro a fonte e reviso o texto.","7":"Quando uma legenda afirma demais, volto à fonte e reviso o texto.","8":"Se uma legenda vai além das evidências, volto à sua fonte e reviso o texto."}},{"path":"learning.residents.17.lines.2","en":{"6":"Would you like to review a clipping and its full article with me?","7":"Would you like to compare a clipping with its complete article with me?","8":"Let’s review a clipping together with the full article it came from."},"pt":"Vamos revisar um recorte junto do artigo completo de onde ele veio.","ptByGrade":{"6":"Você gostaria de revisar um recorte e seu artigo completo comigo?","7":"Você gostaria de comparar um recorte com seu artigo completo comigo?","8":"Vamos revisar um recorte junto do artigo completo de onde ele veio."}},{"path":"learning.residents.17.repeat","en":{"6":"The full article is here for us to check again.","7":"The full article is here for us to consult again.","8":"We can consult the complete article that is here again."},"pt":"Podemos consultar novamente o artigo completo que está aqui.","ptByGrade":{"6":"O artigo completo está aqui para conferirmos de novo.","7":"O artigo completo está aqui para consultarmos de novo.","8":"Podemos consultar novamente o artigo completo que está aqui."}},{"path":"learning.residents.18.lines.0","en":"Let’s play a phrase and leave room for an answer.","pt":"Vamos tocar uma frase e deixar espaço para uma resposta."},{"path":"learning.residents.18.lines.1","en":"The reading introduces Sister Rosetta Tharpe and musical influences.","pt":"A leitura apresenta Sister Rosetta Tharpe e influências musicais."},{"path":"learning.residents.18.lines.2","en":"The records show different musical paths.","pt":"Os registros mostram caminhos musicais diferentes."},{"path":"learning.residents.18.lines.3","en":"This sound is our original exercise. The records credit the historical references.","pt":"Este som é nosso exercício original. Os registros dão crédito às referências históricas."},{"path":"learning.residents.19.lines.0","en":"I saved a place for slow reading. Which story caught your attention?","pt":"Guardei um lugar para uma leitura sem pressa. Qual história chamou sua atenção?"},{"path":"learning.residents.19.lines.1","en":"Machado worked as a proofreader. Who is telling this story?","pt":"Machado trabalhou como revisor. Quem está contando esta história?"},{"path":"learning.residents.19.lines.2","en":"Carolina also composed songs. One book does not show all of a person’s work.","pt":"Carolina também compôs canções. Um livro não mostra todo o trabalho de uma pessoa."},{"path":"learning.residents.19.lines.3","en":"The records point to sources so you can keep exploring.","pt":"Os registros apontam para fontes para que você possa continuar explorando."},{"path":"learning.residents.20.lines.0","en":{"6":"The sea changed colour with the light. I will draw these two bands in my notebook.","7":"The sea changed colour with the light. I will draw these two bands in my notebook.","8":"The sea changed colour with the light. I will draw these two bands in my notebook."},"pt":"O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno."},{"path":"learning.residents.20.lines.1","en":{"6":"This swimsuit has wide straps; I like the comfort when I swim.","7":"This swimsuit has wide straps; I like the comfort when I swim.","8":"This swimsuit has wide straps; I like the comfort when I swim."},"pt":"Este maiô tem alças largas; gosto do conforto para nadar."},{"path":"learning.residents.20.lines.2","en":{"6":"I saved a place in the shade for Teresa. Would you like to sit with us?","7":"I saved a place in the shade for Teresa. Would you like to sit with us?","8":"I saved a place in the shade for Teresa. Would you like to sit with us?"},"pt":"Guardei um lugar à sombra para a Teresa. Quer sentar com a gente?"},{"path":"learning.residents.20.repeat","en":{"6":"The sea changed colour with the light. I will draw these two bands in my notebook.","7":"The sea changed colour with the light. I will draw these two bands in my notebook.","8":"The sea changed colour with the light. I will draw these two bands in my notebook."},"pt":"O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno."},{"path":"learning.residents.21.lines.0","en":{"6":"The workshop is closed today. I came to listen to the waves.","7":"The workshop is closed today. I came to listen to the waves.","8":"The workshop is closed today. I came to listen to the waves."},"pt":"Hoje a oficina ficou fechada. Vim escutar as ondas."},{"path":"learning.residents.21.lines.1","en":{"6":"The wood on this bench needs to dry before it gets another coat of oil.","7":"The wood on this bench needs to dry before it gets another coat of oil.","8":"The wood on this bench needs to dry before it gets another coat of oil."},"pt":"A madeira desse banco precisa secar antes de receber outra camada de óleo."},{"path":"learning.residents.21.lines.2","en":{"6":"Beto brought his notebook. I will hold the ball while he draws.","7":"Beto brought his notebook. I will hold the ball while he draws.","8":"Beto brought his notebook. I will hold the ball while he draws."},"pt":"Beto trouxe o caderno. Vou guardar a bola enquanto ele desenha."},{"path":"learning.residents.21.repeat","en":{"6":"The workshop is closed today. I came to listen to the waves.","7":"The workshop is closed today. I came to listen to the waves.","8":"The workshop is closed today. I came to listen to the waves."},"pt":"Hoje a oficina ficou fechada. Vim escutar as ondas."},{"path":"learning.residents.22.lines.0","en":{"6":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","7":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","8":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand."},"pt":"Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada."},{"path":"learning.residents.22.lines.1","en":{"6":"I chose this headwrap for today. The folds and colours are my own composition.","7":"I chose this headwrap for today. The folds and colours are my own composition.","8":"I chose this headwrap for today. The folds and colours are my own composition."},"pt":"Escolhi esse turbante para hoje. As dobras e as cores são uma composição minha."},{"path":"learning.residents.22.lines.2","en":{"6":"I want to show the drawing to Dandara when I return to the market.","7":"I want to show the drawing to Dandara when I return to the market.","8":"I want to show the drawing to Dandara when I return to the market."},"pt":"Quero mostrar o desenho à Dandara quando voltar à feira."},{"path":"learning.residents.22.repeat","en":{"6":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","7":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","8":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand."},"pt":"Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada."},{"path":"learning.residents.23.lines.0","en":{"6":"The wind and the water make different sounds. I am writing down what I can distinguish.","7":"The wind and the water make different sounds. I am writing down what I can distinguish.","8":"The wind and the water make different sounds. I am writing down what I can distinguish."},"pt":"O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir."},{"path":"learning.residents.23.lines.1","en":{"6":"My swimming shirt has long sleeves. I chose this garment for the afternoon here.","7":"My swimming shirt has long sleeves. I chose this garment for the afternoon here.","8":"My swimming shirt has long sleeves. I chose this garment for the afternoon here."},"pt":"Minha camisa de banho tem mangas compridas. Escolhi essa peça para passar a tarde aqui."},{"path":"learning.residents.23.lines.2","en":{"6":"The book stays in my bag when I get near the water.","7":"The book stays in my bag when I get near the water.","8":"The book stays in my bag when I get near the water."},"pt":"O livro fica na bolsa quando chego perto da água."},{"path":"learning.residents.23.repeat","en":{"6":"The wind and the water make different sounds. I am writing down what I can distinguish.","7":"The wind and the water make different sounds. I am writing down what I can distinguish.","8":"The wind and the water make different sounds. I am writing down what I can distinguish."},"pt":"O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir."},{"path":"learning.residents.24.lines.0","en":{"6":"I made cashew fruit juice today. The ingredient list is beside the cups.","7":"I made cashew fruit juice today. The ingredient list is beside the cups.","8":"I made cashew fruit juice today. The ingredient list is beside the cups."},"pt":"Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos."},{"path":"learning.residents.24.lines.1","en":{"6":"The apron holds my pencil; I use it to update the menu.","7":"The apron holds my pencil; I use it to update the menu.","8":"The apron holds my pencil; I use it to update the menu."},"pt":"O avental guarda meu lápis; uso ele para atualizar o cardápio."},{"path":"learning.residents.24.lines.2","en":{"6":"I sorted the cups and collected the wrappers. The path to the kiosk is clear.","7":"I sorted the cups and collected the wrappers. The path to the kiosk is clear.","8":"I sorted the cups and collected the wrappers. The path to the kiosk is clear."},"pt":"Separei os copos e recolhi as embalagens. O caminho do quiosque ficou livre."},{"path":"learning.residents.24.repeat","en":{"6":"I made cashew fruit juice today. The ingredient list is beside the cups.","7":"I made cashew fruit juice today. The ingredient list is beside the cups.","8":"I made cashew fruit juice today. The ingredient list is beside the cups."},"pt":"Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos."},{"path":"learning.residents.25.lines.0","en":{"6":"I brought a short book to read between conversations.","7":"I brought a short book to read between conversations.","8":"I brought a short book to read between conversations."},"pt":"Trouxe um livro curto para ler entre uma conversa e outra."},{"path":"learning.residents.25.lines.1","en":{"6":"Lara saved my place. From here I can watch the birds without approaching them.","7":"Lara saved my place. From here I can watch the birds without approaching them.","8":"Lara saved my place. From here I can watch the birds without approaching them."},"pt":"A Lara guardou meu lugar. Daqui consigo observar as aves sem me aproximar delas."},{"path":"learning.residents.25.lines.2","en":{"6":"My hat fits in my bag, but I like wearing this wide brim here.","7":"My hat fits in my bag, but I like wearing this wide brim here.","8":"My hat fits in my bag, but I like wearing this wide brim here."},"pt":"Meu chapéu cabe na bolsa, mas gosto de usar essa aba larga aqui."},{"path":"learning.residents.25.repeat","en":{"6":"I brought a short book to read between conversations.","7":"I brought a short book to read between conversations.","8":"I brought a short book to read between conversations."},"pt":"Trouxe um livro curto para ler entre uma conversa e outra."},{"path":"learning.residents.26.lines.0","en":{"6":"Before you enter the water, check the station guidance and talk to the team.","7":"Before you enter the water, check the station guidance and talk to the team.","8":"Before you enter the water, check the station guidance and talk to the team."},"pt":"Antes de entrar na água, veja a orientação do posto e fale com a equipe."},{"path":"learning.residents.26.lines.1","en":{"6":"I am watching this area. Please keep the station entrance clear.","7":"I am watching this area. Please keep the station entrance clear.","8":"I am watching this area. Please keep the station entrance clear."},"pt":"Estou observando esta área. Deixe a passagem do posto livre, por favor."},{"path":"learning.residents.26.lines.2","en":{"6":"I can talk here at the station while I watch what is happening.","7":"I can talk here at the station while I watch what is happening.","8":"I can talk here at the station while I watch what is happening."},"pt":"Posso conversar aqui no posto enquanto acompanho o movimento."},{"path":"learning.residents.26.repeat","en":{"6":"Before you enter the water, check the station guidance and talk to the team.","7":"Before you enter the water, check the station guidance and talk to the team.","8":"Before you enter the water, check the station guidance and talk to the team."},"pt":"Antes de entrar na água, veja a orientação do posto e fale com a equipe."},{"path":"learning.residents.27.lines.0","en":{"6":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","7":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","8":"I did not touch the tracks. I drew their shape in my notebook to compare them later."},"pt":"Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois."},{"path":"learning.residents.27.lines.1","en":{"6":"Teresa found another book about birds. I want to look at the pictures with her.","7":"Teresa found another book about birds. I want to look at the pictures with her.","8":"Teresa found another book about birds. I want to look at the pictures with her."},"pt":"A Teresa encontrou outro livro sobre aves. Quero olhar as imagens com ela."},{"path":"learning.residents.27.lines.2","en":{"6":"My shirt stays open over my T-shirt. My shorts have a pocket for the key.","7":"My shirt stays open over my T-shirt. My shorts have a pocket for the key.","8":"My shirt stays open over my T-shirt. My shorts have a pocket for the key."},"pt":"Minha camisa fica aberta por cima da camiseta. A bermuda tem bolso para a chave."},{"path":"learning.residents.27.repeat","en":{"6":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","7":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","8":"I did not touch the tracks. I drew their shape in my notebook to compare them later."},"pt":"Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois."},{"path":"cozyContent.activities.0","en":"Keep one condition the same when you compare.","pt":"Mantenha uma condição igual quando fizer uma comparação.","id":"cozy-activity-heat"},{"path":"cozyContent.activities.1","en":"Show people and their contributions.","pt":"Mostre as pessoas e suas contribuições.","id":"cozy-activity-team"},{"path":"cozyContent.activities.2","en":"Check who composed, arranged and performed.","pt":"Confira quem compôs, fez o arranjo e interpretou.","id":"cozy-activity-music"},{"path":"cozyContent.activities.3","en":"Keep the information you know and show the gaps.","pt":"Guarde as informações que você conhece e mostre as lacunas.","id":"cozy-activity-caption"},{"path":"cozyContent.activities.4","en":"Look at the details before writing your interpretation.","pt":"Observe os detalhes antes de escrever sua interpretação.","id":"cozy-activity-sketch"},{"path":"cozyContent.activities.5","en":"Learn about a practice with the people who keep it alive.","pt":"Aprenda sobre uma prática com as pessoas que a mantêm viva.","id":"cozy-activity-craft"},{"path":"culturalContent.residents.0.lines.0","en":{"6":"I am Bisa. I braid hair. We can look at the drawings before choosing.","7":"I’m Bisa, a hair braider. We can discuss the drawings before choosing.","8":"I’m Bisa, a hair braider; the drawings help us discuss a choice before I start."},"pt":"Sou Bisa, trancista; os desenhos ajudam a conversar sobre uma escolha antes de eu começar.","ptByGrade":{"6":"Sou Bisa. Faço tranças. Podemos olhar os desenhos antes de escolher.","7":"Sou Bisa, trancista. Podemos conversar sobre os desenhos antes de escolher.","8":"Sou Bisa, trancista; os desenhos ajudam a conversar sobre uma escolha antes de eu começar."}},{"path":"culturalContent.residents.0.lines.1","en":{"6":"Would you like to observe a card? The book can help.","7":"The book on the table helps us compare the drawings.","8":"We can consult the book on the table while comparing the illustrated cards."},"pt":"Podemos consultar o livro na mesa enquanto comparamos os cartões ilustrados.","ptByGrade":{"6":"Você gostaria de observar um cartão? O livro pode ajudar.","7":"O livro na mesa nos ajuda a comparar os desenhos.","8":"Podemos consultar o livro na mesa enquanto comparamos os cartões ilustrados."}},{"path":"culturalContent.residents.0.lines.2","en":{"6":"I can show a drawing. You can choose.","7":"I can show you the drawing, but your preference matters.","8":"I can explain the drawing while leaving space for your own preference."},"pt":"Posso explicar o desenho, deixando espaço para sua própria preferência.","ptByGrade":{"6":"Posso mostrar um desenho. Você pode escolher.","7":"Posso mostrar o desenho, mas sua preferência importa.","8":"Posso explicar o desenho, deixando espaço para sua própria preferência."}},{"path":"culturalContent.residents.0.repeat","en":{"6":"Which card would you like to see?","7":"Which card would you like to observe? We can compare them slowly.","8":"We can take our time comparing whichever card you would like to observe."},"pt":"Podemos comparar sem pressa o cartão que você gostaria de observar.","ptByGrade":{"6":"Qual cartão você gostaria de ver?","7":"Qual cartão você gostaria de observar? Podemos compará-los devagar.","8":"Podemos comparar sem pressa o cartão que você gostaria de observar."}},{"path":"culturalContent.residents.1.lines.0","en":{"6":"I am Dandara. I design clothes for people and their daily activities.","7":"I’m Dandara. I design clothes with the wearer and their plans in mind.","8":"I’m Dandara; I think about the wearer’s preferences and activities when designing clothes."},"pt":"Sou Dandara; penso nas preferências e nas atividades de quem veste ao criar roupas.","ptByGrade":{"6":"Sou Dandara. Crio roupas para pessoas e suas atividades cotidianas.","7":"Sou Dandara. Crio roupas pensando em quem veste e em seus planos.","8":"Sou Dandara; penso nas preferências e nas atividades de quem veste ao criar roupas."}},{"path":"culturalContent.residents.1.lines.1","en":{"6":"This headwrap is my everyday choice. These drawings are my own.","7":"My headwrap is an everyday choice, and the drawings on the board are my original studies.","8":"The headwrap I chose for today is for everyday use; the board shows my original design studies."},"pt":"O turbante que escolhi para hoje é de uso cotidiano; o painel mostra meus estudos originais de criação.","ptByGrade":{"6":"Este turbante é minha escolha cotidiana. Estes desenhos são meus.","7":"Meu turbante é uma escolha cotidiana, e os desenhos no painel são meus estudos originais.","8":"O turbante que escolhi para hoje é de uso cotidiano; o painel mostra meus estudos originais de criação."}},{"path":"culturalContent.residents.1.lines.2","en":{"6":"The book presents designer Isa Silva. My designs have their own credits.","7":"The book introduces Isa Silva. I keep the reference separate from my own designs.","8":"The book introduces Isa Silva, while my notebook distinguishes the researched reference from my own designs."},"pt":"O livro apresenta Isa Silva, enquanto meu caderno distingue a referência pesquisada de meus próprios desenhos.","ptByGrade":{"6":"O livro apresenta a estilista Isa Silva. Meus desenhos têm seus próprios créditos.","7":"O livro apresenta Isa Silva. Mantenho a referência separada de meus próprios desenhos.","8":"O livro apresenta Isa Silva, enquanto meu caderno distingue a referência pesquisada de meus próprios desenhos."}},{"path":"culturalContent.residents.1.repeat","en":{"6":"Would you like to see the pocket or the folds?","7":"Would you like to examine the pocket or compare the folds?","8":"We can examine the pocket detail or compare the folds, whichever you prefer."},"pt":"Podemos examinar o detalhe do bolso ou comparar as dobras, como você preferir.","ptByGrade":{"6":"Você gostaria de ver o bolso ou as dobras?","7":"Você gostaria de examinar o bolso ou comparar as dobras?","8":"Podemos examinar o detalhe do bolso ou comparar as dobras, como você preferir."}},{"path":"culturalContent.residents.2.lines.0","en":{"6":"I am Jaci. I work at the museum and practise Candomblé. This is my own story.","7":"I’m Jaci, a museum educator and a Candomblé practitioner. I can share my own experience.","8":"I’m Jaci, a museum educator who practises Candomblé; my experience does not speak for every community."},"pt":"Sou Jaci, educadora de museu que pratica Candomblé; minha experiência não fala por todas as comunidades.","ptByGrade":{"6":"Sou Jaci. Trabalho no museu e pratico Candomblé. Esta é minha própria história.","7":"Sou Jaci, educadora de museu e praticante do Candomblé. Posso compartilhar minha própria experiência.","8":"Sou Jaci, educadora de museu que pratica Candomblé; minha experiência não fala por todas as comunidades."}},{"path":"culturalContent.residents.2.lines.1","en":{"6":"The readings present different religions and communities. We can read together.","7":"The readings distinguish Candomblé and Umbanda and recognise differences between communities.","8":"We can consult readings that distinguish Candomblé and Umbanda while recognising diversity within communities."},"pt":"Podemos consultar leituras que distinguem Candomblé e Umbanda, reconhecendo a diversidade dentro das comunidades.","ptByGrade":{"6":"As leituras apresentam religiões e comunidades diferentes. Podemos ler juntos.","7":"As leituras distinguem Candomblé e Umbanda e reconhecem diferenças entre comunidades.","8":"Podemos consultar leituras que distinguem Candomblé e Umbanda, reconhecendo a diversidade dentro das comunidades."}},{"path":"culturalContent.residents.2.lines.2","en":{"6":"We use public information. You do not need to share your religion.","7":"Our card uses what the community chose to share publicly. Participants need not reveal their religion.","8":"We respect what the community chose to make public without asking participants to disclose their own beliefs."},"pt":"Respeitamos o que a comunidade escolheu tornar público, sem pedir que participantes revelem suas próprias crenças.","ptByGrade":{"6":"Usamos informações públicas. Você não precisa compartilhar sua religião.","7":"Nossa ficha usa o que a comunidade escolheu compartilhar publicamente. Participantes não precisam revelar sua religião.","8":"Respeitamos o que a comunidade escolheu tornar público, sem pedir que participantes revelem suas próprias crenças."}},{"path":"culturalContent.residents.2.repeat","en":{"6":"We can write down a question first.","7":"If you have a question, we can record it before looking for an answer.","8":"We can record a question before seeking an answer and deciding which source to consult."},"pt":"Podemos registrar uma pergunta antes de buscar uma resposta e decidir qual fonte consultar.","ptByGrade":{"6":"Podemos escrever uma pergunta primeiro.","7":"Se você tiver uma pergunta, podemos registrá-la antes de procurar uma resposta.","8":"Podemos registrar uma pergunta antes de buscar uma resposta e decidir qual fonte consultar."}},{"path":"culturalContent.residentAdditions.0.lines.0","en":{"6":"Shall we compare the two cards?","7":"The cards describe the preparation. Shall we compare them?","8":"We can consult the preparation cards while comparing the two foods."},"pt":"Podemos consultar os cartões de preparo enquanto comparamos os dois alimentos.","ptByGrade":{"6":"Vamos comparar os dois cartões?","7":"Os cartões descrevem o preparo. Vamos compará-los?","8":"Podemos consultar os cartões de preparo enquanto comparamos os dois alimentos."}},{"path":"culturalContent.residentAdditions.0.lines.1","en":{"6":"Ask me about the ingredients. The colour is not enough.","7":"You can ask me about the ingredients in today’s cocadas; the colour alone is not enough.","8":"I can explain what I used in today’s cocadas, rather than having you infer the ingredients from colour alone."},"pt":"Posso explicar o que usei nas cocadas de hoje, em vez de deixar que você deduza os ingredientes apenas pela cor.","ptByGrade":{"6":"Pergunte a mim sobre os ingredientes. A cor não basta.","7":"Você pode perguntar a mim sobre os ingredientes das cocadas de hoje; a cor sozinha não basta.","8":"Posso explicar o que usei nas cocadas de hoje, em vez de deixar que você deduza os ingredientes apenas pela cor."}},{"path":"culturalContent.residentAdditions.1.lines.0","en":{"6":"My portrait is in the library album. I chose the caption.","7":"I chose the caption and agreed to add my portrait to the library album.","8":"The library album includes the portrait and caption that I chose to share."},"pt":"O álbum da biblioteca inclui o retrato e a legenda que escolhi compartilhar.","ptByGrade":{"6":"Meu retrato está no álbum da biblioteca. Escolhi a legenda.","7":"Escolhi a legenda e concordei em acrescentar meu retrato ao álbum da biblioteca.","8":"O álbum da biblioteca inclui o retrato e a legenda que escolhi compartilhar."}},{"path":"culturalContent.residentAdditions.2.lines.0","en":{"6":"This book presents Nilma Lino Gomes. Shall we find the reference?","7":"The book on hair presents Nilma Lino Gomes’s research. Shall we find the reference together?","8":"We can locate the reference to Nilma Lino Gomes’s research in the book on hair and identity."},"pt":"Podemos localizar a referência à pesquisa de Nilma Lino Gomes no livro sobre cabelo e identidade.","ptByGrade":{"6":"Este livro apresenta Nilma Lino Gomes. Vamos encontrar a referência?","7":"O livro sobre cabelo apresenta a pesquisa de Nilma Lino Gomes. Vamos encontrar a referência juntos?","8":"Podemos localizar a referência à pesquisa de Nilma Lino Gomes no livro sobre cabelo e identidade."}},{"path":"culturalContent.residentAdditions.3.lines.0","en":{"6":"We checked the caption and explained the correction.","7":"We revised a caption that inferred religion from clothing and explained the correction.","8":"The revised caption uses authorised information and explains why the earlier assumption based on clothing was corrected."},"pt":"A legenda revisada usa informações autorizadas e explica por que a suposição anterior baseada na roupa foi corrigida.","ptByGrade":{"6":"Conferimos a legenda e explicamos a correção.","7":"Revisamos uma legenda que deduzia a religião pela roupa e explicamos a correção.","8":"A legenda revisada usa informações autorizadas e explica por que a suposição anterior baseada na roupa foi corrigida."}},{"path":"culturalContent.residentAdditions.4.lines.0","en":{"6":"This drawing is Dandara’s. Each creator has a credit.","7":"This drawing is Dandara’s, and the real exhibition has a separate reference.","8":"We kept Dandara’s drawing and the reference to the real exhibition in separate fields so that each creator is credited."},"pt":"Mantivemos o desenho de Dandara e a referência à exposição real em campos separados para que cada criador receba crédito.","ptByGrade":{"6":"Este desenho é de Dandara. Cada criador tem um crédito.","7":"Este desenho é de Dandara, e a exposição real tem uma referência separada.","8":"Mantivemos o desenho de Dandara e a referência à exposição real em campos separados para que cada criador receba crédito."}},{"path":"culturalContent.residentAdditions.5.lines.0","en":{"6":"The public card is here. We agreed on what to share.","7":"This public card records the contributors and what they agreed to share.","8":"The public card identifies contributors and the conditions they agreed on for sharing their information."},"pt":"A ficha pública identifica os participantes e as condições que combinaram para compartilhar suas informações.","ptByGrade":{"6":"A ficha pública está aqui. Combinamos o que compartilhar.","7":"Esta ficha pública registra os participantes e o que concordaram em compartilhar.","8":"A ficha pública identifica os participantes e as condições que combinaram para compartilhar suas informações."}},{"path":"culturalContent.residentAdditions.6.lines.0","en":{"6":"I chose comfortable clothes for rehearsal.","7":"I put my instrument away and chose comfortable clothes for rehearsal.","8":"Before rehearsal, I put the instrument away and chose clothes suited to what I would be doing."},"pt":"Antes do ensaio, guardei o instrumento e escolhi roupas adequadas ao que eu iria fazer.","ptByGrade":{"6":"Escolhi roupas confortáveis para o ensaio.","7":"Guardei meu instrumento e escolhi roupas confortáveis para o ensaio.","8":"Antes do ensaio, guardei o instrumento e escolhi roupas adequadas ao que eu iria fazer."}},{"path":"coastContent.iemanja.lines.0","en":"This is an original artistic depiction of Iemanjá.","pt":"Esta é uma representação artística original de Iemanjá."},{"path":"coastContent.iemanja.lines.1","en":"The caption names the crown, the beaded veil and the abebé.","pt":"A legenda nomeia a coroa, o véu de contas e o abebé."},{"path":"coastContent.iemanja.lines.2","en":"One image does not represent every community.","pt":"Uma imagem não representa todas as comunidades."},{"path":"runtime.previous-review","en":"I organized the seeds. Would you like to check the labels with me?","pt":"Organizei as sementes. Quer conferir as etiquetas comigo?"},{"path":"runtime.previous-review","en":"Aisha does the watering, and I prepare the next shift.","pt":"Aisha cuida da rega, e eu preparo o próximo turno."},{"path":"runtime.previous-review","en":"After putting the tools away, we can rest.","pt":"Depois de guardar as ferramentas, a gente pode descansar."},{"path":"runtime.previous-review","en":"Shall we try this passage more slowly?","pt":"Vamos tentar esse trecho mais devagar?"},{"path":"runtime.previous-review","en":"Look at the little bird over there! I’ll write down where it landed.","pt":"Olha o passarinho ali! Vou anotar onde pousou."},{"path":"runtime.previous-review","en":"This record already has a source and a date. Shall we check the next one?","pt":"Esse registro já tem origem e data. Vamos conferir o próximo?"},{"path":"runtime.previous-review","en":"I’ll record my proposal. Shall we leave the passage clear?","pt":"Vou registrar minha proposta. Deixamos a passagem livre?"},{"path":"runtime.previous-review","en":"This book came back today. Would you like a recommendation?","pt":"Esse livro voltou hoje. Quer uma indicação?"},{"path":"runtime.previous-review","en":"I saved a place for you.","pt":"Guardei um lugar pra você."},{"path":"runtime.previous-review","en":"Later we can compare our ideas.","pt":"Depois podemos comparar nossas ideias."},{"path":"runtime.previous-review","en":"Good to see you again. We can continue from here.","pt":"Bom te ver de novo. A gente pode continuar daqui."},{"path":"runtime.previous-review","en":"I saved a place near the fountain.","pt":"Guardei um lugar perto da fonte."},{"path":"runtime.previous-review","en":"Later we can stop by the library.","pt":"Depois podemos passar na biblioteca."},{"path":"runtime.previous-review","en":"Agreed. I’ll finish this note.","pt":"Combinado. Vou terminar essa anotação."},{"path":"runtime.previous-review","en":"This book came back today.","pt":"Esse livro voltou hoje."},{"path":"runtime.previous-review","en":"Then I’ll leave a recommendation in the notebook.","pt":"Então vou deixar uma indicação no caderno."},{"path":"runtime.previous-review","en":"Tell me which part caught your attention.","pt":"Me conta qual parte chamou sua atenção."},{"path":"runtime.previous-review","en":"This garden bed has already been watered.","pt":"Esse canteiro já recebeu água."},{"path":"runtime.previous-review","en":"I organize the seeds for the next shift.","pt":"Eu organizo as sementes para o próximo turno."},{"path":"runtime.previous-review","en":"Later we can rest over there.","pt":"Depois a gente descansa ali."},{"path":"runtime.previous-review","en":"Shall we check this record together?","pt":"Vamos conferir este registro juntos?"},{"path":"runtime.previous-review","en":"Yes. I wrote down a question too.","pt":"Sim. Também anotei uma pergunta."},{"path":"runtime.previous-review","en":"Then we can compare it with the source.","pt":"Depois a gente compara com a fonte."},{"path":"runtime.previous-review","en":"The notebook is now on display with the techniques identified. Thank you for taking care of the descriptions.","pt":"O caderno já está exposto com as técnicas identificadas. Obrigada por cuidar das descrições."},{"path":"runtime.previous-review","en":"The pieces now have captions with context. Each choice now has a place in the exhibition.","pt":"As peças ganharam legendas com contexto. Agora cada escolha tem espaço na mostra."},{"path":"runtime.previous-review","en":"The interview is on the noticeboard, with the differences and the review we agreed on.","pt":"A entrevista está no mural, com as diferenças e a revisão que combinamos."},{"path":"runtime.previous-review","en":"The cards are clear now. Shall we listen to a phrase and leave room for an answer?","pt":"As fichas ficaram claras. Vamos ouvir uma frase e deixar espaço pra resposta?"},{"path":"runtime.previous-review","en":"We checked the authorship of the captions. I set aside more reading for you.","pt":"Conferimos a autoria das legendas. Separei mais leituras pra você."},{"path":"runtime.previous-review","en":{"6":"We keep our story alive.","7":"We kept the records together.","8":"Our records are stronger because we listen to different voices."},"pt":"Nosso trabalho continua. As pistas ficam no seu diário.","ptByGrade":{"6":"Mantemos nossa história viva.","7":"Mantivemos os registros juntos.","8":"Nossos registros são mais fortes porque ouvimos vozes diferentes."}},{"path":"glossary.example.rhythm","en":"Follow the rhythm.","pt":"Siga o ritmo."},{"path":"glossary.example.credit","en":"Give credit to the creators.","pt":"Dê crédito aos criadores."},{"path":"glossary.example.heritage","en":"Heritage connects generations.","pt":"O patrimônio cultural conecta gerações."},{"path":"glossary.example.history","en":"History has many sources.","pt":"A história tem muitas fontes."},{"path":"glossary.example.timeline","en":"Check the timeline and the map.","pt":"Confira a linha do tempo e o mapa."},{"path":"glossary.example.source","en":"Check the source.","pt":"Confira a fonte."},{"path":"glossary.example.mathematics","en":"Mathematics helps us check calculations.","pt":"A matemática ajuda a conferir cálculos."},{"path":"glossary.example.writer","en":"The writer creates a book.","pt":"A escritora cria um livro."},{"path":"glossary.example.engineer","en":"The engineer plans a project.","pt":"A engenheira planeja um projeto."},{"path":"glossary.example.evidence","en":"Evidence supports a claim.","pt":"A evidência sustenta uma afirmação."},{"path":"glossary.example.stereotype","en":"A stereotype can hide differences.","pt":"Um estereótipo pode esconder diferenças."},{"path":"glossary.example.context","en":"Read the full context.","pt":"Leia o contexto completo."},{"path":"glossary.example.community","en":"The community helps decide.","pt":"A comunidade ajuda a decidir."},{"path":"glossary.example.access","en":"Access needs more than an invitation.","pt":"O acesso exige mais que um convite."},{"path":"glossary.example.rights","en":"Everyone has rights.","pt":"Todas as pessoas têm direitos."},{"path":"glossary.example.data","en":"These data need careful review.","pt":"Estes dados precisam de revisão cuidadosa."},{"path":"glossary.example.review","en":"Review the decision.","pt":"Revise a decisão."},{"path":"glossary.example.responsibility","en":"People keep responsibility.","pt":"As pessoas continuam responsáveis."},{"path":"glossary.example.listen","en":"Listen to the residents.","pt":"Ouça os moradores."},{"path":"glossary.example.because","en":"Check it because the date is missing.","pt":"Confira porque a data está faltando."},{"path":"glossary.example.however","en":"The post is popular. However, it lacks a source.","pt":"O post é popular. Porém, não tem fonte."},{"path":"glossary.example.before","en":"Check before you share.","pt":"Confira antes de compartilhar."},{"path":"glossary.example.after","en":"Review access after the project opens.","pt":"Revise o acesso depois que o projeto abrir."},{"path":"glossary.example.share","en":"Share the corrected context.","pt":"Compartilhe o contexto corrigido."},{"path":"glossary.example.bias","en":"A biased sample can leave people out.","pt":"Uma amostra enviesada pode deixar pessoas de fora."},{"path":"figures.nina.0","en":"Nina Simone (1933–2003) was born Eunice Kathleen Waymon. She studied piano and developed a style that brought classical music, jazz and blues together.","pt":"Nina Simone (1933–2003) nasceu Eunice Kathleen Waymon. Estudou piano e desenvolveu uma linguagem que aproximava música clássica, jazz e blues."},{"path":"figures.nina.1","en":"Her work was also connected to the struggle for civil rights in the United States. Her musical education and public stance are distinct parts of her story.","pt":"Seu trabalho também se ligou à luta pelos direitos civis nos Estados Unidos. A formação musical e o posicionamento público são partes distintas de sua história."},{"path":"figures.tim.0","en":"Tim Maia (1942–1998), a singer and composer from Rio de Janeiro, is a reference in Brazilian soul. His career brought together singing, composition and work with a band.","pt":"Tim Maia (1942–1998), cantor e compositor do Rio de Janeiro, é uma referência do soul no Brasil. Sua carreira reuniu voz, composição e trabalho de banda."},{"path":"figures.tim.1","en":"He lived in the United States, studied English and sang with The Ideals. In 1970, he released his first LP and recorded with Elis Regina.","pt":"Ele viveu nos Estados Unidos, estudou inglês e cantou com The Ideals. Em 1970, lançou seu primeiro LP e gravou com Elis Regina."},{"path":"figures.king.0","en":"Martin Luther King Jr. (1929–1968) was a leader in the civil rights movement in the United States. He advocated nonviolent action against racial segregation.","pt":"Martin Luther King Jr. (1929–1968) foi uma liderança do movimento pelos direitos civis nos Estados Unidos. Defendeu a ação não violenta contra a segregação racial."},{"path":"figures.king.1","en":"In 1964, he received the Nobel Peace Prize. Campaigns, boycotts and marches were built by many people; one leader does not achieve a transformation alone.","pt":"Em 1964, recebeu o Nobel da Paz. Campanhas, boicotes e marchas foram construídos por muitas pessoas; uma liderança não realiza uma transformação sozinha."},{"path":"figures.machado.0","en":"Machado de Assis (1839–1908) wrote novels, short stories, chronicles, poetry and plays. He also worked as a typesetter, proofreader and journalist.","pt":"Machado de Assis (1839–1908) escreveu romances, contos, crônicas, poesia e teatro. Trabalhou também como tipógrafo, revisor e jornalista."},{"path":"figures.machado.1","en":"He was elected the first president of the Brazilian Academy of Letters in 1897. Memórias póstumas de Brás Cubas is one of his novels.","pt":"Foi eleito primeiro presidente da Academia Brasileira de Letras, em 1897. Memórias póstumas de Brás Cubas é um de seus romances."},{"path":"figures.carolina.0","en":"Carolina Maria de Jesus (1914–1977) was born in Sacramento, Minas Gerais. Her book Quarto de despejo, published in 1960, brings together diary writing.","pt":"Carolina Maria de Jesus (1914–1977) nasceu em Sacramento, Minas Gerais. Seu livro Quarto de despejo, publicado em 1960, reúne escrita de diário."},{"path":"figures.carolina.1","en":"Her work is not limited to that book: she wrote in different genres and also composed music. An album of her compositions was released in 1961.","pt":"Sua produção não se limita a esse livro: escreveu em diferentes gêneros e também compôs músicas. Um álbum com suas composições foi lançado em 1961."},{"path":"figures.katherine.0","en":"Katherine Johnson (1918–2020) was a mathematician at NASA. Her work involved calculating spaceflight trajectories with research teams.","pt":"Katherine Johnson (1918–2020) foi matemática da NASA. Seu trabalho envolveu cálculos de trajetórias de voos espaciais, junto a equipes de pesquisa."},{"path":"figures.katherine.1","en":"Before John Glenn’s orbital flight in 1962, she checked calculations made by electronic computers. This shows why human review and collaboration matter.","pt":"Antes do voo orbital de John Glenn em 1962, ela conferiu cálculos feitos por computadores eletrônicos. Isso mostra por que revisão humana e colaboração importam."},{"path":"readings.coast-book-iemanja.0","en":"In the seafront exhibition, an original VOICES creation depicts Iemanjá as a Black woman with a light-blue and white dress, a silver-colored crown, a beaded veil and an abebé. The drawing is an educational artistic interpretation. Its caption does not present the figure as a historical person or attribute sacred speech to her.","pt":"Na mostra da orla, uma criação original de VOICES representa Iemanjá como mulher negra, com vestido azul-claro e branco, coroa prateada, véu de contas e abebé. O desenho é uma interpretação artística educativa. Sua legenda não apresenta a figura como uma pessoa histórica nem lhe atribui falas sagradas."},{"path":"readings.coast-book-iemanja.1","en":"A Duke University catalog entry describes another figure of Iemanjá associated with a Candomblé context: dark skin, white clothing, silver-colored accessories, a crown, a beaded veil and an abebé. The entry identifies that piece as a tourist object. Our art is not a copy of that object or a demonstration of a ritual.","pt":"Uma ficha da Universidade Duke descreve outra figura de Iemanjá, ligada a um contexto de Candomblé: pele negra, roupa branca, acessórios prateados, coroa, véu de contas e abebé. A ficha identifica aquela peça como objeto turístico. Nossa arte não é uma cópia desse objeto nem uma demonstração de ritual."},{"path":"readings.coast-book-iemanja.2","en":"Samira, a fictional mediator, invites visitors to compare the drawing and the caption: what can be seen? What depends on the source? Candomblé and Umbanda should not be treated as interchangeable names. One depiction does not summarize every community; look for who, where and which context each image comes from. It is possible to learn respectfully without declaring a personal belief.","pt":"Samira, mediadora fictícia, convida a comparar desenho e legenda: o que pode ser visto? O que depende da fonte? Candomblé e Umbanda não devem ser tratados como nomes intercambiáveis. Uma representação não resume todas as comunidades; procure saber de quem, de onde e de qual contexto vem cada imagem. É possível aprender com respeito sem declarar uma crença pessoal."},{"path":"readings.coast-book-iemanja.3","en":"Another public record leads to Salvador: the Festa de Iemanjá takes place on February 2 in Rio Vermelho, with the participation of the fishing colony. Place, date and community help situate this reference. The fictional beach in the game has an educational exhibition; it does not reproduce a ceremony from that festival.","pt":"Outro registro público leva a Salvador: a Festa de Iemanjá acontece em 2 de fevereiro, no Rio Vermelho, com participação da Colônia de Pescadores. Lugar, data e comunidade ajudam a situar essa referência. A praia ficcional do jogo tem uma mostra educativa; não reproduz uma cerimônia dessa festa."},{"path":"readings.coast-book-shared-care.0","en":"Beto prepares a resting corner beside the path at Praia das Marés. The table is close to the benches; access to the sea remains clear. In the fictional scene, people agree to take their own rubbish away, return equipment to its place and leave space for people moving through.","pt":"Beto prepara um canto de descanso junto ao caminho da Praia das Marés. A mesa fica perto dos bancos; o acesso ao mar continua livre. Na cena ficcional, as pessoas combinam recolher o próprio lixo, guardar equipamentos no lugar e deixar espaço para quem circula."},{"path":"readings.coast-book-shared-care.1","en":"Care for animals and plants is also part of the agreement. ICMBio recommends observing animals from a distance, not offering food and not removing wild flowers and plants. This guidance informs the game activity; Praia das Marés is not a reconstruction of the Cairuçu protected area mentioned in the source.","pt":"O cuidado com animais e plantas também entra no combinado. O ICMBio recomenda observar animais a distância, não oferecer comida e não retirar flores e plantas silvestres. Essa orientação informa a atividade do jogo; a Praia das Marés não é uma reprodução da APA de Cairuçu, lugar citado na fonte."},{"path":"readings.coast-book-shared-care.2","en":"Beto suggests comparing two drawings: in one, a bench blocks the path; in the other, seated people share the space with a clear route. The group chooses an arrangement and explains its reason. The board records the proposal with authorship. A good solution serves people and the environment instead of using decoration to hide a problem.","pt":"Beto propõe comparar dois desenhos: um banco bloqueia o caminho; no outro, pessoas sentadas convivem com uma passagem livre. A turma escolhe uma organização e explica o motivo. O mural registra a proposta com autoria. Uma boa solução atende às pessoas e ao ambiente, em vez de usar decoração para esconder um problema."},{"path":"readings.coast-note-observation.0","en":"The fictional observer Lara chooses a bench before opening her notebook. First she records the place and the moment; then she describes what she can see. “A bird walked near the water” is an observation. “It is looking for its friend” is a hypothesis that the image alone does not confirm.","pt":"A observadora fictícia Lara escolhe um banco antes de abrir o caderno. Primeiro registra o lugar e o momento; depois descreve o que consegue ver. “Uma ave caminhou perto da água” é uma observação. “Ela está procurando o amigo” é uma hipótese que a imagem sozinha não confirma."},{"path":"readings.coast-note-observation.1","en":"ICMBio advises visitors to the Cairuçu protected area to observe animals from a distance, not offer them food and leave wild flowers and plants where they are. The beach activity follows that care: the player observes movement and compares notes without capturing or feeding animals.","pt":"O ICMBio orienta visitantes da APA de Cairuçu a observar animais a distância, não lhes oferecer comida e manter flores e plantas silvestres no local. A atividade da praia segue esse cuidado: o jogador observa movimentos e compara anotações, sem capturar ou alimentar animais."},{"path":"readings.coast-note-observation.2","en":"Lara adds a question beside the drawing: what would I need to observe to test my idea? She compares two notes without hiding their differences. The board keeps the group record with its date and authorship. Caring for the space includes keeping routes clear and taking your own rubbish away; getting to know a beach also means learning to share it.","pt":"Lara acrescenta uma dúvida ao lado do desenho: o que seria preciso observar para testar minha ideia? Ela compara duas notas sem esconder as diferenças. O mural guarda o registro do grupo com data e autoria. Cuidar do espaço inclui deixar caminho livre e recolher o próprio lixo; conhecer uma praia também é aprender a compartilhá-la."},{"path":"runtime.review-1.9","en":"Check the source. Ask a question.","pt":"Confira a fonte. Faça uma pergunta."},{"path":"runtime.review-1.9","en":"Who made this record? When was it written?","pt":"Quem fez este registro? Quando ele foi escrito?"},{"path":"runtime.review-1.9","en":"We should ask who selected these records and which perspectives are missing.","pt":"Devemos perguntar quem selecionou estes registros e quais perspectivas estão ausentes."},{"path":"runtime.review-1.9","en":"I can help at the festival!","pt":"Posso ajudar no festival!"},{"path":"runtime.review-1.9","en":"I helped at the library. There were more stories inside.","pt":"Ajudei na biblioteca. Havia mais histórias lá dentro."},{"path":"runtime.review-1.9","en":"I joined the archive group because there are still stories we have not documented.","pt":"Entrei no grupo do arquivo porque ainda há histórias que não documentamos."},{"path":"runtime.review-1.9","en":"Books keep stories. People keep them alive.","pt":"Livros guardam histórias. As pessoas as mantêm vivas."},{"path":"runtime.review-1.9","en":"We stored many records here. You can read the sources.","pt":"Guardamos muitos registros aqui. Você pode ler as fontes."},{"path":"runtime.review-1.9","en":"The archive needs sources, but it also needs people who can question and maintain its records.","pt":"O arquivo precisa de fontes, mas também precisa de pessoas que possam questionar e manter seus registros."},{"path":"runtime.review-1.9","en":"I saved a place for you.","pt":"Guardei um lugar para você."},{"path":"runtime.review-1.9","en":"I will put these things away first.","pt":"Vou guardar estas coisas primeiro."},{"path":"runtime.review-1.9","en":"I am observing before writing my notes.","pt":"Estou observando antes de escrever minhas anotações."},{"path":"runtime.review-1.9","en":"Let’s try this part slowly.","pt":"Vamos tentar esta parte devagar."},{"path":"runtime.review-1.9","en":"I wrote down a question.","pt":"Anotei uma pergunta."},{"path":"runtime.review-1.9","en":"We can take a break here.","pt":"Podemos fazer uma pausa aqui."},{"path":"runtime.review-1.9","en":"The beds have been watered. Thank you.","pt":"Os canteiros foram regados. Obrigada."},{"path":"runtime.review-1.9","en":"The records are restored. There is still more to learn.","pt":"Os registros estão restaurados. Ainda há mais para aprender."},{"path":"runtime.review-1.9","en":"The recorder is ready. Let’s check the music together.","pt":"O gravador está pronto. Vamos conferir a música juntos."},{"path":"runtime.review-1.9","en":"This label has no date. Let’s check the record.","pt":"Esta etiqueta não tem data. Vamos conferir o registro."},{"path":"runtime.review-1.9","en":"We can compare the conditions of our tests.","pt":"Podemos comparar as condições dos nossos testes."},{"path":"runtime.review-1.9","en":"This draft has two sources. We still need to check the caption.","pt":"Este rascunho tem duas fontes. Ainda precisamos conferir a legenda."},{"path":"runtime.review-1.9","en":"You can speak or write your idea.","pt":"Você pode falar ou escrever sua ideia."},{"path":"runtime.review-1.9","en":"The catalog is open. We are checking the origin of these records.","pt":"O catálogo está aberto. Estamos conferindo a origem destes registros."},{"path":"runtime.review-1.9","en":"Let’s check our notes together.","pt":"Vamos conferir nossas anotações juntos."},{"path":"runtime.review-1.9","en":"Hello! I am PIX. We have a problem.","pt":"Olá! Eu sou PIX. Temos um problema."},{"path":"runtime.review-1.9","en":"Hi! I found a strange signal in the city archive.","pt":"Oi! Encontrei um sinal estranho no arquivo da cidade."},{"path":"runtime.review-1.9","en":"Hello! Some records are corrupted, and the missing names are not random.","pt":"Olá! Alguns registros estão corrompidos, e os nomes ausentes não são aleatórios."},{"path":"runtime.review-1.9","en":"I can translate. A source is not a water fountain. Usually.","pt":"Posso traduzir. Uma fonte de informação não é uma fonte de água. Geralmente."},{"path":"runtime.review-1.9","en":"I translate source as fonte. Please do not drink the evidence.","pt":"Traduzo source como fonte. Por favor, não beba as evidências."},{"path":"runtime.review-1.9","en":"Source means fonte. My last translation involved a fountain. I have updated that setting.","pt":"Source significa fonte. Minha última tradução envolveu uma fonte de água. Atualizei essa configuração."},{"path":"runtime.review-1.9","en":"Let’s recover the words and follow the signal.","pt":"Vamos recuperar as palavras e seguir o sinal."},{"path":"runtime.review-1.9","en":"We should recover the words before we investigate the festival.","pt":"Devemos recuperar as palavras antes de investigar o festival."},{"path":"runtime.review-1.9","en":"Recovering the words is our first step. Then we can follow the evidence to the festival.","pt":"Recuperar as palavras é nosso primeiro passo. Depois podemos seguir as evidências até o festival."},{"path":"runtime.review-1.9","en":"Every story deserves to be heard.","pt":"Toda história merece ser ouvida."},{"path":"runtime.review-1.9","en":"The records showed many voices. Let’s keep listening.","pt":"Os registros mostraram muitas vozes. Vamos continuar ouvindo."},{"path":"runtime.review-1.9","en":"The archive gets stronger when its sources are checked and more voices participate.","pt":"O arquivo fica mais forte quando suas fontes são conferidas e mais vozes participam."},{"path":"runtime.review-1.9","en":"The festival needs us. Let’s go!","pt":"O festival precisa de nós. Vamos!"},{"path":"runtime.review-1.9","en":"The festival lost its credits. Let’s take the first portal!","pt":"O festival perdeu seus créditos. Vamos pegar o primeiro portal!"},{"path":"runtime.review-1.9","en":"The festival is our first investigation. We need the stories behind the music, as well as the sound.","pt":"O festival é nossa primeira investigação. Precisamos das histórias por trás da música, além do som."},{"path":"runtime.review-1.9","en":"We need more clues. Talk to people!","pt":"Precisamos de mais pistas. Converse com as pessoas!"},{"path":"runtime.review-1.9","en":"Did we find all the clues? We should talk to both people.","pt":"Encontramos todas as pistas? Devemos conversar com as duas pessoas."},{"path":"runtime.review-1.9","en":"Before rebuilding, we need all three records and both perspectives.","pt":"Antes de reconstruir, precisamos dos três registros e das duas perspectivas."},{"path":"runtime.review-1.9","en":"We need the clues and the repaired system.","pt":"Precisamos das pistas e do sistema consertado."},{"path":"runtime.review-1.9","en":"We collected clues, but did we repair the system?","pt":"Coletamos pistas, mas consertamos o sistema?"},{"path":"runtime.review-1.9","en":"We can confront the corrupted logic after investigating all records and repairing the system.","pt":"Podemos enfrentar a lógica corrompida depois de investigar todos os registros e consertar o sistema."},{"path":"runtime.review-1.9","en":"This fountain has water. Our sources have information.","pt":"Esta fonte tem água. Nossas fontes de informação têm informações."},{"path":"runtime.review-1.9","en":"This fountain was not a historical source. My translation is improving.","pt":"Esta fonte de água não era uma fonte histórica. Minha tradução está melhorando."},{"path":"runtime.review-1.9","en":"Different words can share a translation. Context helps us choose the meaning.","pt":"Palavras diferentes podem compartilhar uma tradução. O contexto nos ajuda a escolher o significado."},{"path":"runtime.review-1.9","en":"Good to see you again.","pt":"Bom te ver de novo."},{"path":"runtime.review-1.9","en":"Let’s listen to each other.","pt":"Vamos ouvir uns aos outros."},{"path":"runtime.review-1.9","en":"Check it because the date is missing.","pt":"Confira isso porque a data está faltando."},{"path":"runtime.review-1.9","en":"People keep responsibility.","pt":"As pessoas mantêm a responsabilidade."},{"path":"runtime.review-1.9","en":"Beto brought his notebook. I will hold the ball while he draws.","pt":"Beto trouxe o caderno. Vou segurar a bola enquanto ele desenha."},{"path":"runtime.review-1.9","en":"The workshop is closed today. I came to listen to the waves.","pt":"A oficina está fechada hoje. Vim escutar as ondas."},{"path":"runtime.review-1.9","en":"This swimsuit has wide straps; I like the comfort when I swim.","pt":"Este maiô tem alças largas; gosto do conforto quando nado."},{"path":"runtime.review-1.9","en":"My swimming shirt has long sleeves. I chose this garment for the afternoon here.","pt":"Minha camisa de banho tem mangas compridas. Escolhi essa peça para a tarde aqui."},{"path":"runtime.review-1.9","en":"My shirt stays open over my T-shirt. My shorts have a pocket for the key.","pt":"Minha camisa fica aberta por cima da camiseta. Minha bermuda tem bolso para a chave."},{"path":"runtime.greeting","en":"Hi! I’m Cora. Welcome.","pt":"Oi! Eu sou Cora. Boas-vindas."},{"path":"runtime.greeting","en":"Hi! I’m Bento. Welcome.","pt":"Oi! Eu sou Bento. Boas-vindas."},{"path":"runtime.greeting","en":"Hi! I’m Inês. Welcome.","pt":"Oi! Eu sou Inês. Boas-vindas."},{"path":"runtime.greeting","en":"Hi! I’m Celso. Welcome.","pt":"Oi! Eu sou Celso. Boas-vindas."},{"path":"runtime.greeting","en":"Hi! I’m Luzia. Welcome.","pt":"Oi! Eu sou Luzia. Boas-vindas."},{"path":"runtime.greeting","en":"Hi! I’m Denis. Welcome.","pt":"Oi! Eu sou Denis. Boas-vindas."},{"path":"conversation.review-1.9","en":"I saved a place near the fountain.","pt":"Guardei um lugar perto da fonte."},{"path":"conversation.review-1.9","en":"Later we can stop by the library.","pt":"Depois podemos passar na biblioteca."},{"path":"conversation.review-1.9","en":"Agreed. I’ll finish this note.","pt":"Combinado. Vou terminar essa anotação."},{"path":"conversation.review-1.9","en":"This garden bed has already been watered.","pt":"Esse canteiro já recebeu água."},{"path":"conversation.review-1.9","en":"I organize the seeds for the next shift.","pt":"Eu organizo as sementes para o próximo turno."},{"path":"conversation.review-1.9","en":"Later we can rest over there.","pt":"Depois a gente descansa ali."},{"path":"conversation.review-1.9","en":"Shall we check this record together?","pt":"Vamos conferir este registro juntos?"},{"path":"conversation.review-1.9","en":"Yes. I wrote down a question too.","pt":"Sim. Também anotei uma pergunta."},{"path":"conversation.review-1.9","en":"Then we can compare it with the source.","pt":"Depois a gente compara com a fonte."},{"path":"conversation.review-1.9","en":"This book came back today.","pt":"Esse livro voltou hoje."},{"path":"conversation.review-1.9","en":"Then I’ll leave a recommendation in the notebook.","pt":"Então vou deixar uma indicação no caderno."},{"path":"conversation.review-1.9","en":"Tell me which part caught your attention.","pt":"Me conta qual parte chamou sua atenção."},{"path":"conversation.review-1.9","en":"Look at the little bird over there!","pt":"Olha o passarinho ali!"},{"path":"conversation.review-1.9","en":"I’ll write down where it landed.","pt":"Vou anotar onde ele pousou."},{"path":"conversation.review-1.9","en":"Good. Then we can compare our observations.","pt":"Boa. Depois a gente compara as observações."},{"path":"conversation.review-1.9","en":"I left the labels near the food tray.","pt":"Deixei as etiquetas perto do tabuleiro."},{"path":"conversation.review-1.9","en":"This way, each food keeps its name and context.","pt":"Assim cada comida mantém seu nome e contexto."},{"path":"conversation.review-1.9","en":"Thank you! We can welcome the next group now.","pt":"Obrigada! Já dá para receber o próximo grupo."},{"path":"conversation.review-1.9","en":"I left the sarong near the shade.","pt":"Deixei a canga perto da sombra."},{"path":"conversation.review-1.9","en":"Then we watch the birds from there.","pt":"Depois a gente observa as aves dali."},{"path":"conversation.review-1.9","en":"Agreed. Without approaching the animals.","pt":"Combinado. Sem chegar perto dos animais."},{"path":"conversation.review-1.9","en":"I’ll make the change visible to people who have read the draft.","pt":"Vou deixar a mudança visível para quem leu o rascunho."},{"path":"conversation.review-1.9","en":"I want to write first. I am still thinking about what to propose.","pt":"Quero escrever primeiro. Ainda estou pensando no que propor."},{"path":"conversation.review-1.9","en":"I want to. Write that it was at the reading gathering; that day was special.","pt":"Quero. Escreve que foi no encontro de leitura; esse dia foi especial."},{"path":"conversation.review-1.9","en":"I want to! Today I need to tie my hair up to work with fabrics.","pt":"Quero! Hoje preciso prender o cabelo para trabalhar com os tecidos."},{"path":"conversation.review-1.9","en":"I did, Jo. Our mural can show creation, choices and context.","pt":"Deixei, Jo. Nosso mural pode mostrar criação, escolhas e contexto."},{"path":"conversation.review-1.9","en":"The IMS collection holds musical scores by Pixinguinha.","pt":"O acervo do IMS guarda partituras de Pixinguinha."},{"path":"conversation.review-1.9","en":"A musical score and our festival program have different purposes.","pt":"Uma partitura e o programa do nosso festival têm funções diferentes."},{"path":"conversation.review-1.9","en":"In our program, let’s check composition, arrangement and performance.","pt":"No nosso programa, vamos conferir composição, arranjo e interpretação."},{"path":"conversation.review-1.9","en":"The community approved this public card. The rest does not go into the exhibition.","pt":"A comunidade autorizou esta ficha pública. O resto não entra na mostra."},{"path":"conversation.review-1.9","en":"I’ll record who contributed and what we can consult.","pt":"Vou registrar quem contribuiu e o que podemos consultar."},{"path":"conversation.review-1.9","en":"Thank you, Ísis. A good visit also respects what remains private.","pt":"Obrigada, Ísis. Uma boa visita também respeita o que ficou reservado."},{"path":"conversation.review-1.9","en":"This label calls all the portraits just a group.","pt":"Esta etiqueta chama todos os retratos apenas de grupo."},{"path":"conversation.review-1.9","en":"Let’s look for names and stories supported by the records.","pt":"Vamos procurar nomes e histórias que os registros sustentem."},{"path":"conversation.review-1.9","en":"And show what we still need to learn, without filling the gap with a guess.","pt":"E indicar o que ainda falta conhecer, sem preencher a lacuna com um palpite."},{"path":"conversation.review-1.9","en":"The noticeboard has one name, but the reading presents a team.","pt":"O mural tem um nome, mas a leitura apresenta uma equipe."},{"path":"conversation.review-1.9","en":"I will restore the context before finishing the caption.","pt":"Vou recuperar o contexto antes de fechar a legenda."},{"path":"conversation.review-1.9","en":"Each person’s contribution can appear alongside the collective work.","pt":"A contribuição de cada pessoa pode aparecer junto do trabalho coletivo."},{"path":"conversation.review-1.9","en":"The caption mixed up two religions. Shall we show the correction?","pt":"A legenda misturava duas religiões. Vamos mostrar a correção?"},{"path":"conversation.review-1.9","en":"Yes. The reading helps explain why the names have their own contexts.","pt":"Sim. A leitura ajuda a explicar por que os nomes têm contextos próprios."},{"path":"conversation.review-1.9","en":"Dandara sent a new study for our exhibition. I have separated the caption fields.","pt":"Dandara enviou um estudo novo para nossa mostra. Já separei os campos da legenda."},{"path":"conversation.review-1.9","en":"Did you leave space for her name and the references?","pt":"Você deixou espaço para o nome dela e para as referências?"},{"path":"conversation.review-1.9","en":"Dora, would you like to leave your suggestion on the table? It can be a drawing or a question.","pt":"Dora, quer deixar sua sugestão na mesa? Pode ser um desenho ou uma pergunta."},{"path":"conversation.review-1.9","en":"Agreed. I will save space for your contribution before gathering the ideas.","pt":"Combinado. Vou guardar espaço para sua contribuição antes de reunir as ideias."},{"path":"conversation.review-1.9","en":"This portrait with my braids can go into the album.","pt":"Esse retrato com minhas tranças pode entrar no álbum."},{"path":"conversation.review-1.9","en":"Would you like to choose the caption before I add it?","pt":"Quer escolher a legenda antes de eu colocar?"},{"path":"conversation.review-1.9","en":"Today I chose to draw the bench and the people talking.","pt":"Hoje escolhi desenhar o banco e as pessoas conversando."},{"path":"conversation.review-1.9","en":"Let’s observe the gestures and colors before writing the caption.","pt":"Vamos observar gestos e cores antes de escrever a legenda."},{"path":"conversation.review-1.9","en":"My notebook can also hold a question about the scene.","pt":"Meu caderno também pode guardar uma pergunta sobre a cena."},{"path":"conversation.review-1.9","en":"Would you like to see the drawings before choosing? I left the mirror here.","pt":"Quer ver os desenhos antes de escolher? Deixei o espelho aqui."},{"path":"conversation.review-1.9","en":"Let’s think of a choice you like that fits your day.","pt":"Vamos pensar numa escolha que você goste e que caiba no seu dia."},{"path":"runtime.observation","en":"Look at the bird there.","pt":"Olhe o pássaro ali."},{"path":"history.legacy-displayed-English","en":"Let’s look together.","pt":"Vamos olhar juntos."},{"path":"history.legacy-displayed-English","en":"I have a question too.","pt":"Também tenho uma pergunta."},{"path":"history.legacy-displayed-English","en":"We can compare our notes.","pt":"Podemos comparar nossas anotações."},{"path":"history.legacy-displayed-English","en":"There is a place for you here.","pt":"Há um lugar para você aqui."},{"path":"history.legacy-displayed-English","en":"The seeds have labels.","pt":"As sementes têm etiquetas."},{"path":"history.legacy-displayed-English","en":"We take turns in the garden.","pt":"Nós nos revezamos na horta."},{"path":"history.legacy-displayed-English","en":"Let’s take a break.","pt":"Vamos fazer uma pausa."},{"path":"history.legacy-displayed-English","en":"We can share our ideas.","pt":"Podemos compartilhar nossas ideias."},{"path":"history.legacy-displayed-English","en":"Let’s continue together.","pt":"Vamos continuar juntos."},{"path":"history.legacy-displayed-English","en":"Our work is displayed with its context.","pt":"Nosso trabalho é exibido com seu contexto."},{"path":"history.legacy-displayed-English","en":"Our labels are ready. Let’s listen to a new phrase.","pt":"Nossas etiquetas estão prontas. Vamos ouvir uma nova frase."},{"path":"history.legacy-displayed-English","en":"We checked the captions. I saved more books for you.","pt":"Conferimos as legendas. Separei mais livros para você."}],"conversationEnglish":{"Guardei um lugar perto da fonte.":"I saved a place near the fountain.","Depois podemos passar na biblioteca.":"Later we can stop by the library.","Combinado. Vou terminar essa anotação.":"Agreed. I’ll finish this note.","Esse canteiro já recebeu água.":"This garden bed has already been watered.","Eu organizo as sementes para o próximo turno.":"I organize the seeds for the next shift.","Depois a gente descansa ali.":"Later we can rest over there.","Vamos conferir este registro juntos?":"Shall we check this record together?","Sim. Também anotei uma pergunta.":"Yes. I wrote down a question too.","Depois a gente compara com a fonte.":"Then we can compare it with the source.","Esse livro voltou hoje.":"This book came back today.","Então vou deixar uma indicação no caderno.":"Then I’ll leave a recommendation in the notebook.","Me conta qual parte chamou sua atenção.":"Tell me which part caught your attention.","Olha o passarinho ali!":"Look at the little bird over there!","Vou anotar onde ele pousou.":"I’ll write down where it landed.","Boa. Depois a gente compara as observações.":"Good. Then we can compare our observations.","Deixei as etiquetas perto do tabuleiro.":"I left the labels near the food tray.","Assim cada comida mantém seu nome e contexto.":"This way, each food keeps its name and context.","Obrigada! Já dá para receber o próximo grupo.":"Thank you! We can welcome the next group now.","Deixei a canga perto da sombra.":"I left the sarong near the shade.","Depois a gente observa as aves dali.":"Then we watch the birds from there.","Combinado. Sem chegar perto dos animais.":"Agreed. Without approaching the animals.","Vou deixar a mudança visível para quem leu o rascunho.":"I’ll make the change visible to people who have read the draft.","Quero escrever primeiro. Ainda estou pensando no que propor.":"I want to write first. I am still thinking about what to propose.","Quero. Escreve que foi no encontro de leitura; esse dia foi especial.":"I want to. Write that it was at the reading gathering; that day was special.","Quero! Hoje preciso prender o cabelo para trabalhar com os tecidos.":"I want to! Today I need to tie my hair up to work with fabrics.","Deixei, Jo. Nosso mural pode mostrar criação, escolhas e contexto.":"I did, Jo. Our mural can show creation, choices and context.","O acervo do IMS guarda partituras de Pixinguinha.":"The IMS collection holds musical scores by Pixinguinha.","Uma partitura e o programa do nosso festival têm funções diferentes.":"A musical score and our festival program have different purposes.","No nosso programa, vamos conferir composição, arranjo e interpretação.":"In our program, let’s check composition, arrangement and performance.","A comunidade autorizou esta ficha pública. O resto não entra na mostra.":"The community approved this public card. The rest does not go into the exhibition.","Vou registrar quem contribuiu e o que podemos consultar.":"I’ll record who contributed and what we can consult.","Obrigada, Ísis. Uma boa visita também respeita o que ficou reservado.":"Thank you, Ísis. A good visit also respects what remains private.","Esta etiqueta chama todos os retratos apenas de grupo.":"This label calls all the portraits just a group.","Vamos procurar nomes e histórias que os registros sustentem.":"Let’s look for names and stories supported by the records.","E indicar o que ainda falta conhecer, sem preencher a lacuna com um palpite.":"And show what we still need to learn, without filling the gap with a guess.","O mural tem um nome, mas a leitura apresenta uma equipe.":"The noticeboard has one name, but the reading presents a team.","Vou recuperar o contexto antes de fechar a legenda.":"I will restore the context before finishing the caption.","A contribuição de cada pessoa pode aparecer junto do trabalho coletivo.":"Each person’s contribution can appear alongside the collective work.","A legenda misturava duas religiões. Vamos mostrar a correção?":"The caption mixed up two religions. Shall we show the correction?","Sim. A leitura ajuda a explicar por que os nomes têm contextos próprios.":"Yes. The reading helps explain why the names have their own contexts.","Dandara enviou um estudo novo para nossa mostra. Já separei os campos da legenda.":"Dandara sent a new study for our exhibition. I have separated the caption fields.","Você deixou espaço para o nome dela e para as referências?":"Did you leave space for her name and the references?","Dora, quer deixar sua sugestão na mesa? Pode ser um desenho ou uma pergunta.":"Dora, would you like to leave your suggestion on the table? It can be a drawing or a question.","Combinado. Vou guardar espaço para sua contribuição antes de reunir as ideias.":"Agreed. I will save space for your contribution before gathering the ideas.","Esse retrato com minhas tranças pode entrar no álbum.":"This portrait with my braids can go into the album.","Quer escolher a legenda antes de eu colocar?":"Would you like to choose the caption before I add it?","Hoje escolhi desenhar o banco e as pessoas conversando.":"Today I chose to draw the bench and the people talking.","Vamos observar gestos e cores antes de escrever a legenda.":"Let’s observe the gestures and colors before writing the caption.","Meu caderno também pode guardar uma pergunta sobre a cena.":"My notebook can also hold a question about the scene.","Quer ver os desenhos antes de escolher? Deixei o espelho aqui.":"Would you like to see the drawings before choosing? I left the mirror here.","Vamos pensar numa escolha que você goste e que caiba no seu dia.":"Let’s think of a choice you like that fits your day."}};})();
+(function(){'use strict';window.V.translationContent={
+  "version": "3.0",
+  "records": [
+    {
+      "path": "content.chapters.0.intro.0",
+      "en": {
+        "6": "The programme lost its credits. I composed the melody, André wrote the arrangement and Sol will perform it. The Order signed all three parts.",
+        "7": "The programme lost its credits. I composed the melody, André wrote the arrangement and Sol will perform it. The Order signed all three parts.",
+        "8": "The programme lost its credits. I composed the melody, André wrote the arrangement and Sol will perform it. The Order signed all three parts."
+      },
+      "pt": "O programa sumiu com os créditos. Eu compus a melodia, André escreveu o arranjo e Sol vai interpretar. A Ordem assinou as três partes.",
+      "ptByGrade": {
+        "6": "O programa sumiu com os créditos. Eu compus a melodia, André escreveu o arranjo e Sol vai interpretar. A Ordem assinou as três partes.",
+        "7": "O programa sumiu com os créditos. Eu compus a melodia, André escreveu o arranjo e Sol vai interpretar. A Ordem assinou as três partes.",
+        "8": "O programa sumiu com os créditos. Eu compus a melodia, André escreveu o arranjo e Sol vai interpretar. A Ordem assinou as três partes."
+      }
+    },
+    {
+      "path": "content.chapters.0.intro.1",
+      "en": {
+        "6": "The rehearsal notebook still records the roles. Compare it with the programme and listen to the team before rebuilding the record.",
+        "7": "The rehearsal notebook still records the roles. Compare it with the programme and listen to the team before rebuilding the record.",
+        "8": "The rehearsal notebook still records the roles. Compare it with the programme and listen to the team before rebuilding the record."
+      },
+      "pt": "O caderno de ensaio ainda guarda as funções. Compare-o com o programa e escute a equipe antes de reconstruir a ficha.",
+      "ptByGrade": {
+        "6": "O caderno de ensaio ainda guarda as funções. Compare-o com o programa e escute a equipe antes de reconstruir a ficha.",
+        "7": "O caderno de ensaio ainda guarda as funções. Compare-o com o programa e escute a equipe antes de reconstruir a ficha.",
+        "8": "O caderno de ensaio ainda guarda as funções. Compare-o com o programa e escute a equipe antes de reconstruir a ficha."
+      }
+    },
+    {
+      "path": "content.chapters.0.intro.2",
+      "en": {
+        "6": "The cultural reference has a history; this performance has its creators. Make room for both.",
+        "7": "The cultural reference has a history; this performance has its creators. Make room for both.",
+        "8": "The cultural reference has a history; this performance has its creators. Make room for both."
+      },
+      "pt": "A referência cultural tem uma história; esta apresentação tem seus criadores. Devolva espaço às duas.",
+      "ptByGrade": {
+        "6": "A referência cultural tem uma história; esta apresentação tem seus criadores. Devolva espaço às duas.",
+        "7": "A referência cultural tem uma história; esta apresentação tem seus criadores. Devolva espaço às duas.",
+        "8": "A referência cultural tem uma história; esta apresentação tem seus criadores. Devolva espaço às duas."
+      }
+    },
+    {
+      "path": "content.chapters.0.resolution.0",
+      "en": {
+        "6": "The programme shows composition, arrangement and performance again. The team checked the credits and the samba de roda note.",
+        "7": "The programme shows composition, arrangement and performance again. The team checked the credits and the samba de roda note.",
+        "8": "The programme shows composition, arrangement and performance again. The team checked the credits and the samba de roda note."
+      },
+      "pt": "O programa voltou a mostrar composição, arranjo e interpretação. A equipe conferiu os créditos e a nota sobre o samba de roda.",
+      "ptByGrade": {
+        "6": "O programa voltou a mostrar composição, arranjo e interpretação. A equipe conferiu os créditos e a nota sobre o samba de roda.",
+        "7": "O programa voltou a mostrar composição, arranjo e interpretação. A equipe conferiu os créditos e a nota sobre o samba de roda.",
+        "8": "O programa voltou a mostrar composição, arranjo e interpretação. A equipe conferiu os créditos e a nota sobre o samba de roda."
+      }
+    },
+    {
+      "path": "content.chapters.0.resolution.1",
+      "en": {
+        "6": "Mara found the same erasure in the displays: place names changed positions. Take the notebook to the museum.",
+        "7": "Mara found the same erasure in the displays: place names changed positions. Take the notebook to the museum.",
+        "8": "Mara found the same erasure in the displays: place names changed positions. Take the notebook to the museum."
+      },
+      "pt": "Mara encontrou o mesmo apagamento nas vitrines: nomes de lugares trocaram de posição. Leve o caderno ao museu.",
+      "ptByGrade": {
+        "6": "Mara encontrou o mesmo apagamento nas vitrines: nomes de lugares trocaram de posição. Leve o caderno ao museu.",
+        "7": "Mara encontrou o mesmo apagamento nas vitrines: nomes de lugares trocaram de posição. Leve o caderno ao museu.",
+        "8": "Mara encontrou o mesmo apagamento nas vitrines: nomes de lugares trocaram de posição. Leve o caderno ao museu."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.0.lines.0",
+      "en": {
+        "6": "The notebook identifies my composition, André’s arrangement and Sol’s performance. I want to check the credits with both of them.",
+        "7": "The notebook identifies my composition, André’s arrangement and Sol’s performance. I want to check the credits with both of them.",
+        "8": "The notebook identifies my composition, André’s arrangement and Sol’s performance. I want to check the credits with both of them."
+      },
+      "pt": "O caderno identifica minha composição, o arranjo de André e a interpretação de Sol. Quero conferir os créditos com os dois.",
+      "ptByGrade": {
+        "6": "O caderno identifica minha composição, o arranjo de André e a interpretação de Sol. Quero conferir os créditos com os dois.",
+        "7": "O caderno identifica minha composição, o arranjo de André e a interpretação de Sol. Quero conferir os créditos com os dois.",
+        "8": "O caderno identifica minha composição, o arranjo de André e a interpretação de Sol. Quero conferir os créditos com os dois."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.0.lines.1",
+      "en": {
+        "6": "Look at the mural and the small archive.",
+        "7": "You can find three clues near the mural, the shop and the archive.",
+        "8": "Compare the three records near the mural, shop and archive before repairing the stage."
+      },
+      "pt": "Você pode encontrar três pistas perto do mural, da loja e do arquivo.",
+      "ptByGrade": {
+        "6": "Olhe o mural e o pequeno arquivo.",
+        "7": "Você pode encontrar três pistas perto do mural, da loja e do arquivo.",
+        "8": "Compare os três registros perto do mural, da loja e do arquivo antes de consertar o palco."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.0.lines.2",
+      "en": "I want the new programme to show performers, composers and organisers. Compare the three records before we print it.",
+      "pt": "Quero que o novo programa mostre intérpretes, compositores e organizadores. Compare os três registros antes de imprimirmos."
+    },
+    {
+      "path": "content.chapters.0.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "The panel explains the references.",
+        "7": "We will place the panel beside the stage.",
+        "8": "A panel beside the stage can explain the references without replacing the creators’ own voices."
+      },
+      "pt": "Vamos colocar o painel ao lado do palco.",
+      "ptByGrade": {
+        "6": "O painel explica as referências.",
+        "7": "Vamos colocar o painel ao lado do palco.",
+        "8": "Um painel ao lado do palco pode explicar as referências sem substituir as próprias vozes dos criadores."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "The program shows the creators.",
+        "7": "We will add the creators and their roles to the program.",
+        "8": "The program can make authorship visible; the cultural notes will accompany it."
+      },
+      "pt": "Vamos acrescentar os criadores e suas funções ao programa.",
+      "ptByGrade": {
+        "6": "O programa mostra os criadores.",
+        "7": "Vamos acrescentar os criadores e suas funções ao programa.",
+        "8": "O programa pode tornar a autoria visível; as notas culturais vão acompanhá-lo."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.0.repeat",
+      "en": "The missing credits are our priority. Have you checked the mural, the shop and the archive?",
+      "pt": "Nossa prioridade são os créditos apagados. Você já conferiu o mural, a loja e o arquivo?"
+    },
+    {
+      "path": "content.chapters.0.npcs.0.completedRepeat",
+      "en": "The programme now lists the whole team. I am keeping both versions so nobody can quietly erase those names again.",
+      "pt": "Agora o programa lista toda a equipe. Estou guardando as duas versões para que ninguém apague esses nomes de novo sem deixar rastro."
+    },
+    {
+      "path": "content.chapters.0.npcs.1.lines.0",
+      "en": {
+        "6": "Samba de roda and capoeira have their own practices and histories. Our track is original, with identified references.",
+        "7": "Samba de roda and capoeira have their own practices and histories. Our track is original, with identified references.",
+        "8": "Samba de roda and capoeira have their own practices and histories. Our track is original, with identified references."
+      },
+      "pt": "Samba de roda e capoeira têm práticas e histórias próprias. Nossa faixa é original, com referências identificadas.",
+      "ptByGrade": {
+        "6": "Samba de roda e capoeira têm práticas e histórias próprias. Nossa faixa é original, com referências identificadas.",
+        "7": "Samba de roda e capoeira têm práticas e histórias próprias. Nossa faixa é original, com referências identificadas.",
+        "8": "Samba de roda e capoeira têm práticas e histórias próprias. Nossa faixa é original, com referências identificadas."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.1.lines.1",
+      "en": {
+        "6": "Help me repair the beat machine.",
+        "7": "Let’s use the repaired machine to make our own track.",
+        "8": "Once we repair the controller, we can compose an original track with clearly labelled references."
+      },
+      "pt": "Vamos usar a máquina consertada para fazer nossa própria faixa.",
+      "ptByGrade": {
+        "6": "Ajude-me a consertar a máquina de batidas.",
+        "7": "Vamos usar a máquina consertada para fazer nossa própria faixa.",
+        "8": "Depois de consertarmos o controlador, poderemos compor uma faixa original com referências claramente identificadas."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.1.lines.2",
+      "en": "I will check the production notes. Use the Historiograph to compare the programme with Lia’s account.",
+      "pt": "Vou conferir as notas de produção. Use o Historiógrafo para comparar o programa com o relato de Lia."
+    },
+    {
+      "path": "content.chapters.0.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "Names, roles and thanks. Ready!",
+        "7": "I added every creator and their role.",
+        "8": "I added the creators and their roles because a team’s work deserves accurate attribution."
+      },
+      "pt": "Acrescentei cada criador e sua função.",
+      "ptByGrade": {
+        "6": "Nomes, funções e agradecimentos. Pronto!",
+        "7": "Acrescentei cada criador e sua função.",
+        "8": "Acrescentei os criadores e suas funções porque o trabalho de uma equipe merece uma atribuição precisa."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "New track. Clear label. Let’s go!",
+        "7": "I labelled the track as original game music.",
+        "8": "The label distinguishes our original game music from the cultural practices discussed in the archive."
+      },
+      "pt": "Identifiquei a faixa como música original do jogo.",
+      "ptByGrade": {
+        "6": "Faixa nova. Identificação clara. Vamos lá!",
+        "7": "Identifiquei a faixa como música original do jogo.",
+        "8": "A identificação distingue nossa música original do jogo das práticas culturais discutidas no arquivo."
+      }
+    },
+    {
+      "path": "content.chapters.0.npcs.1.repeat",
+      "en": "The controller needs repair before rehearsal. Collect the records and listen to both of us before using the terminal.",
+      "pt": "O controlador precisa de conserto antes do ensaio. Reúna os registros e escute nós dois antes de usar o terminal."
+    },
+    {
+      "path": "content.chapters.0.npcs.1.completedRepeat",
+      "en": "The rehearsal can begin. You can practise at the terminal again or explore the instruments in the gallery.",
+      "pt": "O ensaio pode começar. Você pode treinar no terminal outra vez ou explorar os instrumentos da galeria."
+    },
+    {
+      "path": "content.chapters.0.clues.0",
+      "en": {
+        "6": "Samba de roda brings music, dance and poetry together.",
+        "7": "Samba de roda developed in the Recôncavo of Bahia and brings music, dance and poetry together.",
+        "8": "Samba de roda connects music, dance and poetry in the Recôncavo of Bahia; its communities keep the practice alive."
+      },
+      "pt": "O samba de roda se desenvolveu no Recôncavo Baiano e reúne música, dança e poesia.",
+      "ptByGrade": {
+        "6": "O samba de roda reúne música, dança e poesia.",
+        "7": "O samba de roda se desenvolveu no Recôncavo Baiano e reúne música, dança e poesia.",
+        "8": "O samba de roda conecta música, dança e poesia no Recôncavo Baiano; suas comunidades mantêm a prática viva."
+      }
+    },
+    {
+      "path": "content.chapters.0.clues.1",
+      "en": {
+        "6": "Capoeira is an Afro-Brazilian cultural practice.",
+        "7": "Capoeira combines movement and music in an Afro-Brazilian cultural practice.",
+        "8": "Capoeira combines movement, music and shared learning; its cultural history is broader than a fighting move."
+      },
+      "pt": "A capoeira combina movimento e música em uma prática cultural afro-brasileira.",
+      "ptByGrade": {
+        "6": "A capoeira é uma prática cultural afro-brasileira.",
+        "7": "A capoeira combina movimento e música em uma prática cultural afro-brasileira.",
+        "8": "A capoeira combina movimento, música e aprendizagem compartilhada; sua história cultural é mais ampla do que um movimento de luta."
+      }
+    },
+    {
+      "path": "content.chapters.0.clues.2",
+      "en": {
+        "6": "The festival notebook records Lia as composer, André as arranger and Sol as performer. The team must check the credits before publishing.",
+        "7": "The festival notebook records Lia as composer, André as arranger and Sol as performer. The team must check the credits before publishing.",
+        "8": "The festival notebook records Lia as composer, André as arranger and Sol as performer. The team must check the credits before publishing."
+      },
+      "pt": "O caderno do festival registra Lia na composição, André no arranjo e Sol na interpretação. A equipe deve conferir os créditos antes de publicar.",
+      "ptByGrade": {
+        "6": "O caderno do festival registra Lia na composição, André no arranjo e Sol na interpretação. A equipe deve conferir os créditos antes de publicar.",
+        "7": "O caderno do festival registra Lia na composição, André no arranjo e Sol na interpretação. A equipe deve conferir os créditos antes de publicar.",
+        "8": "O caderno do festival registra Lia na composição, André no arranjo e Sol na interpretação. A equipe deve conferir os créditos antes de publicar."
+      }
+    },
+    {
+      "path": "content.chapters.1.intro.0",
+      "en": {
+        "6": "One label merged Mali, Songhai and Kongo. The image stayed, but its region, date and origin were moved.",
+        "7": "One label merged Mali, Songhai and Kongo. The image stayed, but its region, date and origin were moved.",
+        "8": "One label merged Mali, Songhai and Kongo. The image stayed, but its region, date and origin were moved."
+      },
+      "pt": "Uma etiqueta juntou Mali, Songhai e Kongo. O desenho permaneceu, mas região, data e procedência foram deslocadas.",
+      "ptByGrade": {
+        "6": "Uma etiqueta juntou Mali, Songhai e Kongo. O desenho permaneceu, mas região, data e procedência foram deslocadas.",
+        "7": "Uma etiqueta juntou Mali, Songhai e Kongo. O desenho permaneceu, mas região, data e procedência foram deslocadas.",
+        "8": "Uma etiqueta juntou Mali, Songhai e Kongo. O desenho permaneceu, mas região, data e procedência foram deslocadas."
+      }
+    },
+    {
+      "path": "content.chapters.1.intro.1",
+      "en": {
+        "6": "The revision record preserves another version. A familiar name is not enough: we need to connect the record to its place and period.",
+        "7": "The revision record preserves another version. A familiar name is not enough: we need to connect the record to its place and period.",
+        "8": "The revision record preserves another version. A familiar name is not enough: we need to connect the record to its place and period."
+      },
+      "pt": "A ficha de revisão preserva outra versão. Um nome conhecido não basta: precisamos ligar o registro ao lugar e ao período.",
+      "ptByGrade": {
+        "6": "A ficha de revisão preserva outra versão. Um nome conhecido não basta: precisamos ligar o registro ao lugar e ao período.",
+        "7": "A ficha de revisão preserva outra versão. Um nome conhecido não basta: precisamos ligar o registro ao lugar e ao período.",
+        "8": "A ficha de revisão preserva outra versão. Um nome conhecido não basta: precisamos ligar o registro ao lugar e ao período."
+      }
+    },
+    {
+      "path": "content.chapters.1.intro.2",
+      "en": {
+        "6": "The map and timeline preserve differences the Erasure tried to hide. Compare them before choosing the caption.",
+        "7": "The map and timeline preserve differences the Erasure tried to hide. Compare them before choosing the caption.",
+        "8": "The map and timeline preserve differences the Erasure tried to hide. Compare them before choosing the caption."
+      },
+      "pt": "O mapa e a linha do tempo guardam diferenças que a Rasura tentou esconder. Compare-os antes de escolher a legenda.",
+      "ptByGrade": {
+        "6": "O mapa e a linha do tempo guardam diferenças que a Rasura tentou esconder. Compare-os antes de escolher a legenda.",
+        "7": "O mapa e a linha do tempo guardam diferenças que a Rasura tentou esconder. Compare-os antes de escolher a legenda.",
+        "8": "O mapa e a linha do tempo guardam diferenças que a Rasura tentou esconder. Compare-os antes de escolher a legenda."
+      }
+    },
+    {
+      "path": "content.chapters.1.resolution.0",
+      "en": {
+        "6": "The captions are back in context. Gao and Mbanza Kongo remain in separate records; the open questions are recorded.",
+        "7": "The captions are back in context. Gao and Mbanza Kongo remain in separate records; the open questions are recorded.",
+        "8": "The captions are back in context. Gao and Mbanza Kongo remain in separate records; the open questions are recorded."
+      },
+      "pt": "As legendas voltaram aos seus contextos. Gao e Mbanza Kongo continuam em fichas distintas; as dúvidas ficam registradas.",
+      "ptByGrade": {
+        "6": "As legendas voltaram aos seus contextos. Gao e Mbanza Kongo continuam em fichas distintas; as dúvidas ficam registradas.",
+        "7": "As legendas voltaram aos seus contextos. Gao e Mbanza Kongo continuam em fichas distintas; as dúvidas ficam registradas.",
+        "8": "As legendas voltaram aos seus contextos. Gao e Mbanza Kongo continuam em fichas distintas; as dúvidas ficam registradas."
+      }
+    },
+    {
+      "path": "content.chapters.1.resolution.1",
+      "en": {
+        "6": "At the laboratory, a notebook copy lost two contributions. Luma needs the same care with attribution.",
+        "7": "At the laboratory, a notebook copy lost two contributions. Luma needs the same care with attribution.",
+        "8": "At the laboratory, a notebook copy lost two contributions. Luma needs the same care with attribution."
+      },
+      "pt": "No laboratório, a cópia de um caderno perdeu duas contribuições. Luma precisa da mesma atenção às atribuições.",
+      "ptByGrade": {
+        "6": "No laboratório, a cópia de um caderno perdeu duas contribuições. Luma precisa da mesma atenção às atribuições.",
+        "7": "No laboratório, a cópia de um caderno perdeu duas contribuições. Luma precisa da mesma atenção às atribuições.",
+        "8": "No laboratório, a cópia de um caderno perdeu duas contribuições. Luma precisa da mesma atenção às atribuições."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.0.lines.0",
+      "en": {
+        "6": "Gao and Mbanza Kongo appear in different regions and periods. Let’s restore context where the label left only a name.",
+        "7": "Gao and Mbanza Kongo appear in different regions and periods. Let’s restore context where the label left only a name.",
+        "8": "Gao and Mbanza Kongo appear in different regions and periods. Let’s restore context where the label left only a name."
+      },
+      "pt": "Gao e Mbanza Kongo aparecem em regiões e períodos distintos. Vamos recolocar contexto onde a etiqueta deixou apenas um nome.",
+      "ptByGrade": {
+        "6": "Gao e Mbanza Kongo aparecem em regiões e períodos distintos. Vamos recolocar contexto onde a etiqueta deixou apenas um nome.",
+        "7": "Gao e Mbanza Kongo aparecem em regiões e períodos distintos. Vamos recolocar contexto onde a etiqueta deixou apenas um nome.",
+        "8": "Gao e Mbanza Kongo aparecem em regiões e períodos distintos. Vamos recolocar contexto onde a etiqueta deixou apenas um nome."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.0.lines.1",
+      "en": {
+        "6": "Check the map with the timeline.",
+        "7": "Do not place Kongo in the same region as Mali.",
+        "8": "Keep the map beside the timeline: Kongo is in Central Africa, while Mali and Songhai are in West Africa."
+      },
+      "pt": "Não coloque Kongo na mesma região que Mali.",
+      "ptByGrade": {
+        "6": "Confira o mapa junto da linha do tempo.",
+        "7": "Não coloque Kongo na mesma região que Mali.",
+        "8": "Mantenha o mapa ao lado da linha do tempo: Kongo fica na África Central, enquanto Mali e Songhai ficam na África Ocidental."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.0.lines.2",
+      "en": "I will put the region and period beside each caption. Help me compare the provenance card with the altered version.",
+      "pt": "Vou colocar a região e o período ao lado de cada legenda. Ajude-me a comparar a ficha de procedência com a versão alterada."
+    },
+    {
+      "path": "content.chapters.1.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "The map shows different regions.",
+        "7": "I added regional labels to the gallery map.",
+        "8": "Regional labels prevent a single timeline from suggesting that every society occupied the same place."
+      },
+      "pt": "Acrescentei etiquetas regionais ao mapa da galeria.",
+      "ptByGrade": {
+        "6": "O mapa mostra regiões diferentes.",
+        "7": "Acrescentei etiquetas regionais ao mapa da galeria.",
+        "8": "Etiquetas regionais impedem que uma única linha do tempo sugira que todas as sociedades ocupavam o mesmo lugar."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "Every card has a date and a source.",
+        "7": "I added dates and source names to the panels.",
+        "8": "Readers can inspect dates and source names, then ask what other records might add."
+      },
+      "pt": "Acrescentei datas e nomes de fontes aos painéis.",
+      "ptByGrade": {
+        "6": "Cada cartão tem uma data e uma fonte.",
+        "7": "Acrescentei datas e nomes de fontes aos painéis.",
+        "8": "Os leitores podem conferir datas e nomes de fontes e perguntar o que outros registros poderiam acrescentar."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.0.repeat",
+      "en": "The provenance card is the next step. It can show which place and period the shortened caption left out.",
+      "pt": "O próximo passo é a ficha de procedência. Ela pode mostrar qual lugar e período a legenda abreviada deixou de fora."
+    },
+    {
+      "path": "content.chapters.1.npcs.0.completedRepeat",
+      "en": "The corrected captions are on the walls. I kept the earlier version in the archive so visitors can follow our review.",
+      "pt": "As legendas corrigidas estão nas paredes. Guardei a versão anterior no arquivo para que os visitantes acompanhem nossa revisão."
+    },
+    {
+      "path": "content.chapters.1.npcs.1.lines.0",
+      "en": {
+        "6": "The map locates places; the timeline locates events. A contact date does not begin a society’s history.",
+        "7": "The map locates places; the timeline locates events. A contact date does not begin a society’s history.",
+        "8": "The map locates places; the timeline locates events. A contact date does not begin a society’s history."
+      },
+      "pt": "O mapa situa lugares; a linha do tempo situa eventos. Uma data de contato não inicia a história de uma sociedade.",
+      "ptByGrade": {
+        "6": "O mapa situa lugares; a linha do tempo situa eventos. Uma data de contato não inicia a história de uma sociedade.",
+        "7": "O mapa situa lugares; a linha do tempo situa eventos. Uma data de contato não inicia a história de uma sociedade.",
+        "8": "O mapa situa lugares; a linha do tempo situa eventos. Uma data de contato não inicia a história de uma sociedade."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.1.lines.1",
+      "en": {
+        "6": "A small side record discusses abolition.",
+        "7": "You can read a short record about abolition or focus on the regional panels.",
+        "8": "The optional side record discusses legal abolition and continuing barriers without showing violence."
+      },
+      "pt": "Você pode ler um registro curto sobre a abolição ou se concentrar nos painéis regionais.",
+      "ptByGrade": {
+        "6": "Um pequeno registro complementar discute a abolição.",
+        "7": "Você pode ler um registro curto sobre a abolição ou se concentrar nos painéis regionais.",
+        "8": "O registro complementar opcional discute a abolição legal e barreiras que continuaram, sem mostrar violência."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.1.lines.2",
+      "en": "I will keep the documents available for visitors. Compare the map and the dates before arranging the timeline.",
+      "pt": "Vou manter os documentos disponíveis para os visitantes. Compare o mapa e as datas antes de organizar a linha do tempo."
+    },
+    {
+      "path": "content.chapters.1.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "Let’s read the three regional records.",
+        "7": "Start with the Mali, Songhai and Kongo records.",
+        "8": "The regional records restore histories erased by the faulty exhibition; you can return to the side record later."
+      },
+      "pt": "Comece pelos registros de Mali, Songhai e Kongo.",
+      "ptByGrade": {
+        "6": "Vamos ler os três registros regionais.",
+        "7": "Comece pelos registros de Mali, Songhai e Kongo.",
+        "8": "Os registros regionais recuperam histórias apagadas pela exposição com falhas; você pode voltar ao registro complementar depois."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "The Atlantic trade forced African people to the Americas. This record also shows Brazil’s law of 1888.",
+        "7": "The Atlantic trade forced African people to the Americas. The 1888 law ended legal slavery in Brazil.",
+        "8": "The Atlantic trade forced African people to the Americas; although legal slavery ended in Brazil in 1888, social barriers remained."
+      },
+      "pt": "O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.",
+      "ptByGrade": {
+        "6": "O tráfico atlântico levou à força pessoas africanas para as Américas. Este registro também mostra a lei brasileira de 1888.",
+        "7": "O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.",
+        "8": "O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram."
+      }
+    },
+    {
+      "path": "content.chapters.1.npcs.1.repeat",
+      "en": "The regional panels and the optional abolition record are separate readings. Choose one, then check its source.",
+      "pt": "Os painéis regionais e o registro opcional sobre abolição são leituras separadas. Escolha uma e depois confira sua fonte."
+    },
+    {
+      "path": "content.chapters.1.npcs.1.completedRepeat",
+      "en": "The timeline is ready for consultation. The library has more readings if you want to compare another part of this history.",
+      "pt": "A linha do tempo está pronta para consulta. A biblioteca tem outras leituras se você quiser comparar mais uma parte desta história."
+    },
+    {
+      "path": "content.chapters.1.clues.0",
+      "en": {
+        "6": "This record shows Mali and Mansa Musa’s journey in 1324.",
+        "7": "Mansa Musa, ruler of Mali, made a pilgrimage to Mecca in 1324.",
+        "8": "Mansa Musa’s 1324 pilgrimage connected Mali to wider networks; Mali’s history also includes trade, cities and scholarship."
+      },
+      "pt": "Mansa Musa, governante de Mali, fez uma peregrinação a Meca em 1324.",
+      "ptByGrade": {
+        "6": "Este registro mostra Mali e a viagem de Mansa Musa em 1324.",
+        "7": "Mansa Musa, governante de Mali, fez uma peregrinação a Meca em 1324.",
+        "8": "A peregrinação de Mansa Musa em 1324 conectou Mali a redes mais amplas; a história de Mali também inclui comércio, cidades e estudos."
+      }
+    },
+    {
+      "path": "content.chapters.1.clues.1",
+      "en": {
+        "6": "Sonni Ali’s reign starts in 1464 on this timeline.",
+        "7": "Sonni Ali began his reign in 1464 in the history of Songhai.",
+        "8": "The beginning of Sonni Ali’s reign in 1464 is one marker in Songhai’s political history, linked to regional trade networks."
+      },
+      "pt": "Sonni Ali começou seu reinado em 1464 na história de Songhai.",
+      "ptByGrade": {
+        "6": "O reinado de Sonni Ali começa em 1464 nesta linha do tempo.",
+        "7": "Sonni Ali começou seu reinado em 1464 na história de Songhai.",
+        "8": "O início do reinado de Sonni Ali em 1464 é um marco da história política de Songhai, ligado a redes comerciais regionais."
+      }
+    },
+    {
+      "path": "content.chapters.1.clues.2",
+      "en": {
+        "6": "Kongo has its own history. This card marks contact in 1483.",
+        "7": "In the museum’s chronology, Diogo Cão reached the Congo River’s mouth in 1483.",
+        "8": "The 1483 contact with Portugal concerns an existing Central African society; it does not mark the beginning of Kongo’s history."
+      },
+      "pt": "Na cronologia do museu, Diogo Cão chegou à foz do rio Congo em 1483.",
+      "ptByGrade": {
+        "6": "Kongo tem sua própria história. Este cartão marca o contato em 1483.",
+        "7": "Na cronologia do museu, Diogo Cão chegou à foz do rio Congo em 1483.",
+        "8": "O contato com Portugal em 1483 diz respeito a uma sociedade já existente da África Central; ele não marca o começo da história de Kongo."
+      }
+    },
+    {
+      "path": "content.chapters.1.sensitiveRecord",
+      "en": {
+        "6": "The Atlantic trade forced African people to the Americas. This record also shows Brazil’s law of 1888.",
+        "7": "The Atlantic trade forced African people to the Americas. The 1888 law ended legal slavery in Brazil.",
+        "8": "The Atlantic trade forced African people to the Americas; although legal slavery ended in Brazil in 1888, social barriers remained."
+      },
+      "pt": "O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.",
+      "ptByGrade": {
+        "6": "O tráfico atlântico levou à força pessoas africanas para as Américas. Este registro também mostra a lei brasileira de 1888.",
+        "7": "O tráfico atlântico levou à força pessoas africanas para as Américas. A lei de 1888 extinguiu legalmente a escravidão no Brasil.",
+        "8": "O tráfico atlântico levou à força pessoas africanas para as Américas; embora a escravidão legal tenha terminado no Brasil em 1888, barreiras sociais permaneceram."
+      }
+    },
+    {
+      "path": "content.chapters.2.intro.0",
+      "en": {
+        "6": "My calculations remain in the notebook, but the copy erased Caio’s tests and Luca’s notes. The result appears to have only one contributor.",
+        "7": "My calculations remain in the notebook, but the copy erased Caio’s tests and Luca’s notes. The result appears to have only one contributor.",
+        "8": "My calculations remain in the notebook, but the copy erased Caio’s tests and Luca’s notes. The result appears to have only one contributor."
+      },
+      "pt": "Meus cálculos continuam no caderno, mas a cópia apagou os testes de Caio e as anotações de Luca. O resultado parece ter uma única responsável.",
+      "ptByGrade": {
+        "6": "Meus cálculos continuam no caderno, mas a cópia apagou os testes de Caio e as anotações de Luca. O resultado parece ter uma única responsável.",
+        "7": "Meus cálculos continuam no caderno, mas a cópia apagou os testes de Caio e as anotações de Luca. O resultado parece ter uma única responsável.",
+        "8": "Meus cálculos continuam no caderno, mas a cópia apagou os testes de Caio e as anotações de Luca. O resultado parece ter uma única responsável."
+      }
+    },
+    {
+      "path": "content.chapters.2.intro.1",
+      "en": {
+        "6": "Compare the copy with the full record. The Johnson, Carolina and Rebouças cards help distinguish contributions without mixing their lives.",
+        "7": "Compare the copy with the full record. The Johnson, Carolina and Rebouças cards help distinguish contributions without mixing their lives.",
+        "8": "Compare the copy with the full record. The Johnson, Carolina and Rebouças cards help distinguish contributions without mixing their lives."
+      },
+      "pt": "Compare a cópia com o registro completo. As fichas de Katherine Johnson, Carolina e Rebouças ajudam a distinguir contribuições, sem misturar trajetórias.",
+      "ptByGrade": {
+        "6": "Compare a cópia com o registro completo. As fichas de Katherine Johnson, Carolina e Rebouças ajudam a distinguir contribuições, sem misturar trajetórias.",
+        "7": "Compare a cópia com o registro completo. As fichas de Katherine Johnson, Carolina e Rebouças ajudam a distinguir contribuições, sem misturar trajetórias.",
+        "8": "Compare a cópia com o registro completo. As fichas de Katherine Johnson, Carolina e Rebouças ajudam a distinguir contribuições, sem misturar trajetórias."
+      }
+    },
+    {
+      "path": "content.chapters.2.intro.2",
+      "en": {
+        "6": "A recovered name needs the work that goes with it. Saying who did what is also part of the repair.",
+        "7": "A recovered name needs the work that goes with it. Saying who did what is also part of the repair.",
+        "8": "A recovered name needs the work that goes with it. Saying who did what is also part of the repair."
+      },
+      "pt": "Um nome recuperado precisa do trabalho que o acompanha. Dizer quem fez o quê também é parte do reparo.",
+      "ptByGrade": {
+        "6": "Um nome recuperado precisa do trabalho que o acompanha. Dizer quem fez o quê também é parte do reparo.",
+        "7": "Um nome recuperado precisa do trabalho que o acompanha. Dizer quem fez o quê também é parte do reparo.",
+        "8": "Um nome recuperado precisa do trabalho que o acompanha. Dizer quem fez o quê também é parte do reparo."
+      }
+    },
+    {
+      "path": "content.chapters.2.resolution.0",
+      "en": {
+        "6": "The record shows calculations, tests and recorded attempts again. The team checked the roles, including the stages that failed.",
+        "7": "The record shows calculations, tests and recorded attempts again. The team checked the roles, including the stages that failed.",
+        "8": "The record shows calculations, tests and recorded attempts again. The team checked the roles, including the stages that failed."
+      },
+      "pt": "A ficha voltou a mostrar cálculo, teste e registro das tentativas. A equipe conferiu as funções, inclusive as etapas que não deram certo.",
+      "ptByGrade": {
+        "6": "A ficha voltou a mostrar cálculo, teste e registro das tentativas. A equipe conferiu as funções, inclusive as etapas que não deram certo.",
+        "7": "A ficha voltou a mostrar cálculo, teste e registro das tentativas. A equipe conferiu as funções, inclusive as etapas que não deram certo.",
+        "8": "A ficha voltou a mostrar cálculo, teste e registro das tentativas. A equipe conferiu as funções, inclusive as etapas que não deram certo."
+      }
+    },
+    {
+      "path": "content.chapters.2.resolution.1",
+      "en": {
+        "6": "Ravi received a cropped notice. The next clue is in what the image left out.",
+        "7": "Ravi received a cropped notice. The next clue is in what the image left out.",
+        "8": "Ravi received a cropped notice. The next clue is in what the image left out."
+      },
+      "pt": "Ravi recebeu um aviso recortado. A próxima pista está no que ficou fora da imagem.",
+      "ptByGrade": {
+        "6": "Ravi recebeu um aviso recortado. A próxima pista está no que ficou fora da imagem.",
+        "7": "Ravi recebeu um aviso recortado. A próxima pista está no que ficou fora da imagem.",
+        "8": "Ravi recebeu um aviso recortado. A próxima pista está no que ficou fora da imagem."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.0.lines.0",
+      "en": {
+        "6": "The copy kept my calculations and erased the other stages. We need to recover Caio’s and Luca’s specific work.",
+        "7": "The copy kept my calculations and erased the other stages. We need to recover Caio’s and Luca’s specific work.",
+        "8": "The copy kept my calculations and erased the other stages. We need to recover Caio’s and Luca’s specific work."
+      },
+      "pt": "A cópia preservou meus cálculos e apagou as outras etapas. Precisamos recuperar o trabalho específico de Caio e Luca.",
+      "ptByGrade": {
+        "6": "A cópia preservou meus cálculos e apagou as outras etapas. Precisamos recuperar o trabalho específico de Caio e Luca.",
+        "7": "A cópia preservou meus cálculos e apagou as outras etapas. Precisamos recuperar o trabalho específico de Caio e Luca.",
+        "8": "A cópia preservou meus cálculos e apagou as outras etapas. Precisamos recuperar o trabalho específico de Caio e Luca."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.0.lines.1",
+      "en": {
+        "6": "Read all three documents in each folder.",
+        "7": "The correct name matches the whole folder, not one familiar word.",
+        "8": "Compare all three document summaries before choosing an attribution; a familiar word alone is weaker evidence."
+      },
+      "pt": "O nome correto corresponde à pasta inteira, não a uma palavra familiar.",
+      "ptByGrade": {
+        "6": "Leia os três documentos de cada pasta.",
+        "7": "O nome correto corresponde à pasta inteira, não a uma palavra familiar.",
+        "8": "Compare os três resumos de documentos antes de escolher uma atribuição; uma palavra familiar sozinha é uma evidência mais fraca."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.0.lines.2",
+      "en": "I will rebuild the list of contributions from the notebook. Check which conclusion each document actually supports.",
+      "pt": "Vou reconstruir a lista de contribuições a partir do caderno. Confira qual conclusão cada documento realmente sustenta."
+    },
+    {
+      "path": "content.chapters.2.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "Three clues. One supported match.",
+        "7": "I grouped the three summaries for your comparison.",
+        "8": "Grouping the summaries helps you compare their support for a specific conclusion."
+      },
+      "pt": "Agrupei os três resumos para sua comparação.",
+      "ptByGrade": {
+        "6": "Três pistas. Uma correspondência sustentada.",
+        "7": "Agrupei os três resumos para sua comparação.",
+        "8": "Agrupar os resumos ajuda a comparar o apoio que oferecem a uma conclusão específica."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "A name needs a reason.",
+        "7": "We will add a short explanation beside each name.",
+        "8": "A short explanation makes the connection between record and attribution visible to other readers."
+      },
+      "pt": "Vamos acrescentar uma explicação curta ao lado de cada nome.",
+      "ptByGrade": {
+        "6": "Um nome precisa de um motivo.",
+        "7": "Vamos acrescentar uma explicação curta ao lado de cada nome.",
+        "8": "Uma explicação curta torna visível aos outros leitores a ligação entre o registro e a atribuição."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.0.repeat",
+      "en": "The notebook has three signatures. Compare all three summaries before assigning the work to anyone.",
+      "pt": "O caderno tem três assinaturas. Compare os três resumos antes de atribuir o trabalho a alguém."
+    },
+    {
+      "path": "content.chapters.2.npcs.0.completedRepeat",
+      "en": "The revised notebook keeps the team’s names and roles together. We can explain who calculated, tested and reviewed the project.",
+      "pt": "O caderno revisado mantém juntos os nomes e as funções da equipe. Podemos explicar quem calculou, testou e revisou o projeto."
+    },
+    {
+      "path": "content.chapters.2.npcs.1.lines.0",
+      "en": {
+        "6": "Carolina wrote literature; Johnson worked with mathematics; Rebouças worked with engineering. The clues need to preserve those differences.",
+        "7": "Carolina wrote literature; Johnson worked with mathematics; Rebouças worked with engineering. The clues need to preserve those differences.",
+        "8": "Carolina wrote literature; Johnson worked with mathematics; Rebouças worked with engineering. The clues need to preserve those differences."
+      },
+      "pt": "Carolina escreveu literatura; Johnson trabalhou com matemática; Rebouças, com engenharia. As pistas precisam conservar essas diferenças.",
+      "ptByGrade": {
+        "6": "Carolina escreveu literatura; Johnson trabalhou com matemática; Rebouças, com engenharia. As pistas precisam conservar essas diferenças.",
+        "7": "Carolina escreveu literatura; Johnson trabalhou com matemática; Rebouças, com engenharia. As pistas precisam conservar essas diferenças.",
+        "8": "Carolina escreveu literatura; Johnson trabalhou com matemática; Rebouças, com engenharia. As pistas precisam conservar essas diferenças."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.1.lines.1",
+      "en": {
+        "6": "These cards are summaries, not quotations.",
+        "7": "We wrote the cards from institutional sources.",
+        "8": "The cards summarise institutional sources; they do not put invented words into historical people’s mouths."
+      },
+      "pt": "Escrevemos os cartões a partir de fontes institucionais.",
+      "ptByGrade": {
+        "6": "Estes cartões são resumos, não citações.",
+        "7": "Escrevemos os cartões a partir de fontes institucionais.",
+        "8": "Os cartões resumem fontes institucionais; não colocam palavras inventadas na boca de pessoas históricas."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.1.lines.2",
+      "en": "I will compare the library cards with the institutional biographies. Use the whole folder to decide whose work is described.",
+      "pt": "Vou comparar as fichas da biblioteca com as biografias institucionais. Use a pasta inteira para decidir de quem é o trabalho descrito."
+    },
+    {
+      "path": "content.chapters.2.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "Books and calculations both matter.",
+        "7": "We will connect books, calculations and engineering plans.",
+        "8": "The display will connect different forms of knowledge while keeping their contributions distinct."
+      },
+      "pt": "Vamos conectar livros, cálculos e projetos de engenharia.",
+      "ptByGrade": {
+        "6": "Livros e cálculos são importantes.",
+        "7": "Vamos conectar livros, cálculos e projetos de engenharia.",
+        "8": "A exposição vai conectar formas diferentes de conhecimento, mantendo distintas suas contribuições."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "Every name has a source.",
+        "7": "We will show the source beside each profile.",
+        "8": "Readers can trace the attribution to a source instead of accepting a label simply because it looks official."
+      },
+      "pt": "Vamos mostrar a fonte ao lado de cada perfil.",
+      "ptByGrade": {
+        "6": "Cada nome tem uma fonte.",
+        "7": "Vamos mostrar a fonte ao lado de cada perfil.",
+        "8": "Os leitores podem rastrear a atribuição até uma fonte, em vez de aceitar uma etiqueta só porque ela parece oficial."
+      }
+    },
+    {
+      "path": "content.chapters.2.npcs.1.repeat",
+      "en": "A book, an engineering project and a flight calculation need different descriptions. Check the role on each card.",
+      "pt": "Um livro, um projeto de engenharia e um cálculo de voo precisam de descrições diferentes. Confira a função em cada ficha."
+    },
+    {
+      "path": "content.chapters.2.npcs.1.completedRepeat",
+      "en": "The corrected cards are available in the library. You can read about another writer or return to the authorship workshop.",
+      "pt": "As fichas corrigidas estão disponíveis na biblioteca. Você pode ler sobre outra escritora ou voltar à oficina de autoria."
+    },
+    {
+      "path": "content.chapters.2.clues.0",
+      "en": {
+        "6": "This card is about Katherine Johnson and space maths.",
+        "7": "Katherine Johnson checked the flight calculations for John Glenn’s orbital mission in 1962.",
+        "8": "Although electronic computers calculated the orbit, Katherine Johnson checked their results before John Glenn’s 1962 flight."
+      },
+      "pt": "Katherine Johnson conferiu os cálculos de voo para a missão orbital de John Glenn em 1962.",
+      "ptByGrade": {
+        "6": "Este cartão é sobre Katherine Johnson e matemática espacial.",
+        "7": "Katherine Johnson conferiu os cálculos de voo para a missão orbital de John Glenn em 1962.",
+        "8": "Embora computadores eletrônicos tenham calculado a órbita, Katherine Johnson conferiu seus resultados antes do voo de John Glenn em 1962."
+      }
+    },
+    {
+      "path": "content.chapters.2.clues.1",
+      "en": {
+        "6": "This card shows a writer and her book, published in 1960.",
+        "7": "Carolina Maria de Jesus wrote Quarto de despejo, published in 1960.",
+        "8": "Carolina Maria de Jesus’s Quarto de despejo was published in 1960; her literary work deserves accurate authorship."
+      },
+      "pt": "Carolina Maria de Jesus escreveu Quarto de despejo, publicado em 1960.",
+      "ptByGrade": {
+        "6": "Este cartão mostra uma escritora e seu livro, publicado em 1960.",
+        "7": "Carolina Maria de Jesus escreveu Quarto de despejo, publicado em 1960.",
+        "8": "Quarto de despejo, de Carolina Maria de Jesus, foi publicado em 1960; seu trabalho literário merece atribuição precisa de autoria."
+      }
+    },
+    {
+      "path": "content.chapters.2.clues.2",
+      "en": {
+        "6": "This card shows an engineer and his public work.",
+        "7": "André Rebouças worked on port projects and took part in the abolitionist movement.",
+        "8": "André Rebouças combined engineering work with abolitionist activity and argued for conditions for life after freedom."
+      },
+      "pt": "André Rebouças trabalhou em projetos portuários e participou do movimento abolicionista.",
+      "ptByGrade": {
+        "6": "Este cartão mostra um engenheiro e seu trabalho público.",
+        "7": "André Rebouças trabalhou em projetos portuários e participou do movimento abolicionista.",
+        "8": "André Rebouças combinou trabalho de engenharia com atuação abolicionista e defendeu condições para a vida depois da liberdade."
+      }
+    },
+    {
+      "path": "content.chapters.3.intro.0",
+      "en": {
+        "6": "The notice seems to say that the library is closed today. Bia found the full sheet: the closure was old and temporary.",
+        "7": "The notice seems to say that the library is closed today. Bia found the full sheet: the closure was old and temporary.",
+        "8": "The notice seems to say that the library is closed today. Bia found the full sheet: the closure was old and temporary."
+      },
+      "pt": "O aviso parece anunciar que a biblioteca está fechada hoje. Bia encontrou a folha completa: o fechamento era antigo e temporário.",
+      "ptByGrade": {
+        "6": "O aviso parece anunciar que a biblioteca está fechada hoje. Bia encontrou a folha completa: o fechamento era antigo e temporário.",
+        "7": "O aviso parece anunciar que a biblioteca está fechada hoje. Bia encontrou a folha completa: o fechamento era antigo e temporário.",
+        "8": "O aviso parece anunciar que a biblioteca está fechada hoje. Bia encontrou a folha completa: o fechamento era antigo e temporário."
+      }
+    },
+    {
+      "path": "content.chapters.3.intro.1",
+      "en": {
+        "6": "The cropped edge carried the date, place and author. Compare versions and look for the reopening before choosing the headline.",
+        "7": "The cropped edge carried the date, place and author. Compare versions and look for the reopening before choosing the headline.",
+        "8": "The cropped edge carried the date, place and author. Compare versions and look for the reopening before choosing the headline."
+      },
+      "pt": "A borda cortada levava data, lugar e autoria. Compare versões e procure a reabertura antes de escolher a manchete.",
+      "ptByGrade": {
+        "6": "A borda cortada levava data, lugar e autoria. Compare versões e procure a reabertura antes de escolher a manchete.",
+        "7": "A borda cortada levava data, lugar e autoria. Compare versões e procure a reabertura antes de escolher a manchete.",
+        "8": "A borda cortada levava data, lugar e autoria. Compare versões e procure a reabertura antes de escolher a manchete."
+      }
+    },
+    {
+      "path": "content.chapters.3.intro.2",
+      "en": {
+        "6": "Correcting the context does not reveal everyone’s intention. Responsibility needs its own evidence.",
+        "7": "Correcting the context does not reveal everyone’s intention. Responsibility needs its own evidence.",
+        "8": "Correcting the context does not reveal everyone’s intention. Responsibility needs its own evidence."
+      },
+      "pt": "Corrigir o contexto não permite adivinhar a intenção de cada pessoa. A responsabilidade precisa de suas próprias evidências.",
+      "ptByGrade": {
+        "6": "Corrigir o contexto não permite adivinhar a intenção de cada pessoa. A responsabilidade precisa de suas próprias evidências.",
+        "7": "Corrigir o contexto não permite adivinhar a intenção de cada pessoa. A responsabilidade precisa de suas próprias evidências.",
+        "8": "Corrigir o contexto não permite adivinhar a intenção de cada pessoa. A responsabilidade precisa de suas próprias evidências."
+      }
+    },
+    {
+      "path": "content.chapters.3.resolution.0",
+      "en": {
+        "6": "We published the original date, the reopening and an explanation of the crop. The earlier version remains available for comparison.",
+        "7": "We published the original date, the reopening and an explanation of the crop. The earlier version remains available for comparison.",
+        "8": "We published the original date, the reopening and an explanation of the crop. The earlier version remains available for comparison."
+      },
+      "pt": "Publicamos a data do original, a reabertura e a explicação do recorte. A versão anterior continua disponível para comparação.",
+      "ptByGrade": {
+        "6": "Publicamos a data do original, a reabertura e a explicação do recorte. A versão anterior continua disponível para comparação.",
+        "7": "Publicamos a data do original, a reabertura e a explicação do recorte. A versão anterior continua disponível para comparação.",
+        "8": "Publicamos a data do original, a reabertura e a explicação do recorte. A versão anterior continua disponível para comparação."
+      }
+    },
+    {
+      "path": "content.chapters.3.resolution.1",
+      "en": {
+        "6": "Jo and Tainá will gather the community. Minutes can also lose context when they erase proposals and keep only the result.",
+        "7": "Jo and Tainá will gather the community. Minutes can also lose context when they erase proposals and keep only the result.",
+        "8": "Jo and Tainá will gather the community. Minutes can also lose context when they erase proposals and keep only the result."
+      },
+      "pt": "Jo e Tainá vão reunir a comunidade. Uma ata também pode perder contexto quando apaga as propostas e guarda só o resultado.",
+      "ptByGrade": {
+        "6": "Jo e Tainá vão reunir a comunidade. Uma ata também pode perder contexto quando apaga as propostas e guarda só o resultado.",
+        "7": "Jo e Tainá vão reunir a comunidade. Uma ata também pode perder contexto quando apaga as propostas e guarda só o resultado.",
+        "8": "Jo e Tainá vão reunir a comunidade. Uma ata também pode perder contexto quando apaga as propostas e guarda só o resultado."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.0.lines.0",
+      "en": {
+        "6": "Bia found the date on the full sheet. The library has reopened; our headline must explain why the crop looked current.",
+        "7": "Bia found the date on the full sheet. The library has reopened; our headline must explain why the crop looked current.",
+        "8": "Bia found the date on the full sheet. The library has reopened; our headline must explain why the crop looked current."
+      },
+      "pt": "Bia encontrou a data na folha completa. A biblioteca já reabriu; nossa manchete deve explicar por que o recorte parecia atual.",
+      "ptByGrade": {
+        "6": "Bia encontrou a data na folha completa. A biblioteca já reabriu; nossa manchete deve explicar por que o recorte parecia atual.",
+        "7": "Bia encontrou a data na folha completa. A biblioteca já reabriu; nossa manchete deve explicar por que o recorte parecia atual.",
+        "8": "Bia encontrou a data na folha completa. A biblioteca já reabriu; nossa manchete deve explicar por que o recorte parecia atual."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.0.lines.1",
+      "en": {
+        "6": "Ask: who, when, where and why?",
+        "7": "Who posted it? When? What was removed?",
+        "8": "Ask who produced the post, when it appeared, what context was removed and which evidence supports it."
+      },
+      "pt": "Quem publicou? Quando? O que foi removido?",
+      "ptByGrade": {
+        "6": "Pergunte: quem, quando, onde e por quê?",
+        "7": "Quem publicou? Quando? O que foi removido?",
+        "8": "Pergunte quem produziu o post, quando ele apareceu, que contexto foi removido e quais evidências o sustentam."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.0.lines.2",
+      "en": "I will publish the full notice beside the correction. Help me check its author, date and context before it goes out.",
+      "pt": "Vou publicar o aviso completo ao lado da correção. Ajude-me a conferir autoria, data e contexto antes da publicação."
+    },
+    {
+      "path": "content.chapters.3.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "Sources and dates stay visible.",
+        "7": "I added source and date fields to the correction cards.",
+        "8": "Visible source and date fields help readers inspect the claim without depending on our authority alone."
+      },
+      "pt": "Acrescentei campos de fonte e data aos cartões de correção.",
+      "ptByGrade": {
+        "6": "Fontes e datas continuam visíveis.",
+        "7": "Acrescentei campos de fonte e data aos cartões de correção.",
+        "8": "Campos visíveis de fonte e data ajudam os leitores a examinar a afirmação sem depender apenas de nossa autoridade."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "The full context is here.",
+        "7": "I added a short note about the missing context.",
+        "8": "The note explains why the removed context changes the claim, while preserving the original record for review."
+      },
+      "pt": "Acrescentei uma nota curta sobre o contexto ausente.",
+      "ptByGrade": {
+        "6": "O contexto completo está aqui.",
+        "7": "Acrescentei uma nota curta sobre o contexto ausente.",
+        "8": "A nota explica por que o contexto removido muda a afirmação, preservando o registro original para revisão."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.0.repeat",
+      "en": "Look at the date on the complete notice. The cropped image hid it, so the headline cannot be checked on its own.",
+      "pt": "Veja a data no aviso completo. A imagem recortada a escondeu, por isso a manchete não pode ser conferida sozinha."
+    },
+    {
+      "path": "content.chapters.3.npcs.0.completedRepeat",
+      "en": "The correction is published with a visible review history. Readers can send a reply if they find another missing detail.",
+      "pt": "A correção está publicada com um histórico de revisão visível. Os leitores podem enviar uma resposta se encontrarem outro detalhe que falta."
+    },
+    {
+      "path": "content.chapters.3.npcs.1.lines.0",
+      "en": {
+        "6": "The club case has a rule of racial exclusion. The student needs support, and the school needs to change the practice as well as remove the notice.",
+        "7": "The club case has a rule of racial exclusion. The student needs support, and the school needs to change the practice as well as remove the notice.",
+        "8": "The club case has a rule of racial exclusion. The student needs support, and the school needs to change the practice as well as remove the notice."
+      },
+      "pt": "O caso do clube tem uma regra de exclusão racial. A estudante precisa de apoio, e a escola precisa mudar a prática, além de apagar o anúncio.",
+      "ptByGrade": {
+        "6": "O caso do clube tem uma regra de exclusão racial. A estudante precisa de apoio, e a escola precisa mudar a prática, além de apagar o anúncio.",
+        "7": "O caso do clube tem uma regra de exclusão racial. A estudante precisa de apoio, e a escola precisa mudar a prática, além de apagar o anúncio.",
+        "8": "O caso do clube tem uma regra de exclusão racial. A estudante precisa de apoio, e a escola precisa mudar a prática, além de apagar o anúncio."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.1.lines.1",
+      "en": {
+        "6": "We do not need to share personal stories here.",
+        "7": "We can discuss the fictional cases without exposing classmates.",
+        "8": "We can analyse these fictional records without asking anyone to prove or recount a personal experience."
+      },
+      "pt": "Podemos discutir os casos fictícios sem expor colegas.",
+      "ptByGrade": {
+        "6": "Não precisamos compartilhar histórias pessoais aqui.",
+        "7": "Podemos discutir os casos fictícios sem expor colegas.",
+        "8": "Podemos analisar estes registros fictícios sem pedir a ninguém que prove ou conte uma experiência pessoal."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.1.lines.2",
+      "en": "I will take the corrected club rule back to the students. We need support for the excluded student and a fair admission rule.",
+      "pt": "Vou levar a regra corrigida do clube de volta aos estudantes. Precisamos apoiar a estudante excluída e ter uma regra justa de admissão."
+    },
+    {
+      "path": "content.chapters.3.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "Support first. A trusted adult can help.",
+        "7": "We will support the student and involve a trusted school adult.",
+        "8": "Support and responsible adult involvement can help address the discriminatory rule without exposing the student online."
+      },
+      "pt": "Vamos apoiar a estudante e envolver um adulto de confiança da escola.",
+      "ptByGrade": {
+        "6": "Apoio primeiro. Um adulto de confiança pode ajudar.",
+        "7": "Vamos apoiar a estudante e envolver um adulto de confiança da escola.",
+        "8": "Apoio e participação responsável de adultos podem ajudar a enfrentar a regra discriminatória sem expor a estudante online."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "We save the rule and ask for change.",
+        "7": "We will preserve the record and request a review with adult support.",
+        "8": "Preserving the record helps a supported request for review; responsibility should not fall only on the excluded student."
+      },
+      "pt": "Vamos preservar o registro e pedir uma revisão com apoio de adultos.",
+      "ptByGrade": {
+        "6": "Guardamos a regra e pedimos mudança.",
+        "7": "Vamos preservar o registro e pedir uma revisão com apoio de adultos.",
+        "8": "Preservar o registro ajuda a pedir uma revisão com apoio; a responsabilidade não deve recair apenas sobre a estudante excluída."
+      }
+    },
+    {
+      "path": "content.chapters.3.npcs.1.repeat",
+      "en": "The full notice is our comparison copy. Keep personal details out of the public correction.",
+      "pt": "O aviso completo é nossa cópia de comparação. Mantenha os dados pessoais fora da correção pública."
+    },
+    {
+      "path": "content.chapters.3.npcs.1.completedRepeat",
+      "en": "The students have the revised rule. I kept the original notice so we can explain how the correction was made.",
+      "pt": "Os estudantes estão com a regra revisada. Guardei o aviso original para podermos explicar como a correção foi feita."
+    },
+    {
+      "path": "content.chapters.3.clues.0",
+      "en": {
+        "6": "A race-based exclusion denies fair access.",
+        "7": "The fictional club excluded a student because of skin colour: this is racial discrimination.",
+        "8": "Race-based exclusion is discriminatory; it differs from a disagreement about taste and requires a response to denied access."
+      },
+      "pt": "O clube fictício excluiu uma estudante por causa da cor da pele: isso é discriminação racial.",
+      "ptByGrade": {
+        "6": "Excluir por raça nega acesso justo.",
+        "7": "O clube fictício excluiu uma estudante por causa da cor da pele: isso é discriminação racial.",
+        "8": "A exclusão por raça é discriminatória; é diferente de uma divergência de gosto e exige resposta ao acesso negado."
+      }
+    },
+    {
+      "path": "content.chapters.3.clues.1",
+      "en": {
+        "6": "One person is not a whole people.",
+        "7": "A post claimed that every Indigenous people lived in the same way.",
+        "8": "The post treats diverse peoples as identical; different voices and contemporary information challenge its stereotype."
+      },
+      "pt": "Um post afirmou que todos os povos indígenas viviam da mesma maneira.",
+      "ptByGrade": {
+        "6": "Uma pessoa não é um povo inteiro.",
+        "7": "Um post afirmou que todos os povos indígenas viviam da mesma maneira.",
+        "8": "O post trata povos diversos como idênticos; diferentes vozes e informações atuais questionam seu estereótipo."
+      }
+    },
+    {
+      "path": "content.chapters.3.clues.2",
+      "en": {
+        "6": "The old library maintenance notice lost its date, place and author. The full sheet and reopening notice restore the context; they do not reveal the sender’s intention on their own.",
+        "7": "The old library maintenance notice lost its date, place and author. The full sheet and reopening notice restore the context; they do not reveal the sender’s intention on their own.",
+        "8": "The old library maintenance notice lost its date, place and author. The full sheet and reopening notice restore the context; they do not reveal the sender’s intention on their own."
+      },
+      "pt": "O aviso antigo de manutenção da biblioteca perdeu data, lugar e autoria. A folha completa e o comunicado de reabertura corrigem o contexto; não revelam sozinhos a intenção de quem compartilhou.",
+      "ptByGrade": {
+        "6": "O aviso antigo de manutenção da biblioteca perdeu data, lugar e autoria. A folha completa e o comunicado de reabertura corrigem o contexto; não revelam sozinhos a intenção de quem compartilhou.",
+        "7": "O aviso antigo de manutenção da biblioteca perdeu data, lugar e autoria. A folha completa e o comunicado de reabertura corrigem o contexto; não revelam sozinhos a intenção de quem compartilhou.",
+        "8": "O aviso antigo de manutenção da biblioteca perdeu data, lugar e autoria. A folha completa e o comunicado de reabertura corrigem o contexto; não revelam sozinhos a intenção de quem compartilhou."
+      }
+    },
+    {
+      "path": "content.chapters.4.intro.0",
+      "en": {
+        "6": "The copied minutes erased the requests. Dora needs an evening time, Luan needs time after class and Vitor needs a clear route. Let’s hear the priorities.",
+        "7": "The copied minutes erased the requests. Dora needs an evening time, Luan needs time after class and Vitor needs a clear route. Let’s hear the priorities.",
+        "8": "The copied minutes erased the requests. Dora needs an evening time, Luan needs time after class and Vitor needs a clear route. Let’s hear the priorities."
+      },
+      "pt": "A cópia da ata apagou os pedidos. Dora precisa de horário à noite; Luan, depois da aula; Vitor, de passagem livre. Vamos ouvir as prioridades.",
+      "ptByGrade": {
+        "6": "A cópia da ata apagou os pedidos. Dora precisa de horário à noite; Luan, depois da aula; Vitor, de passagem livre. Vamos ouvir as prioridades.",
+        "7": "A cópia da ata apagou os pedidos. Dora precisa de horário à noite; Luan, depois da aula; Vitor, de passagem livre. Vamos ouvir as prioridades.",
+        "8": "A cópia da ata apagou os pedidos. Dora precisa de horário à noite; Luan, depois da aula; Vitor, de passagem livre. Vamos ouvir as prioridades."
+      }
+    },
+    {
+      "path": "content.chapters.4.intro.1",
+      "en": {
+        "6": "The original record preserves all three proposals. A plan needs to explain what it addresses, what remains and who will follow up.",
+        "7": "The original record preserves all three proposals. A plan needs to explain what it addresses, what remains and who will follow up.",
+        "8": "The original record preserves all three proposals. A plan needs to explain what it addresses, what remains and who will follow up."
+      },
+      "pt": "O registro original preserva as três propostas. Um plano precisa explicar o que atende, o que ainda falta e quem vai acompanhar.",
+      "ptByGrade": {
+        "6": "O registro original preserva as três propostas. Um plano precisa explicar o que atende, o que ainda falta e quem vai acompanhar.",
+        "7": "O registro original preserva as três propostas. Um plano precisa explicar o que atende, o que ainda falta e quem vai acompanhar.",
+        "8": "O registro original preserva as três propostas. Um plano precisa explicar o que atende, o que ainda falta e quem vai acompanhar."
+      }
+    },
+    {
+      "path": "content.chapters.4.intro.2",
+      "en": {
+        "6": "Listening includes allowing different ways to contribute. No voice gains the right to replace every other voice.",
+        "7": "Listening includes allowing different ways to contribute. No voice gains the right to replace every other voice.",
+        "8": "Listening includes allowing different ways to contribute. No voice gains the right to replace every other voice."
+      },
+      "pt": "Escutar inclui permitir formas diferentes de contribuir. Nenhuma voz recebe o direito de substituir todas as outras.",
+      "ptByGrade": {
+        "6": "Escutar inclui permitir formas diferentes de contribuir. Nenhuma voz recebe o direito de substituir todas as outras.",
+        "7": "Escutar inclui permitir formas diferentes de contribuir. Nenhuma voz recebe o direito de substituir todas as outras.",
+        "8": "Escutar inclui permitir formas diferentes de contribuir. Nenhuma voz recebe o direito de substituir todas as outras."
+      }
+    },
+    {
+      "path": "content.chapters.4.resolution.0",
+      "en": {
+        "6": "The minutes preserve proposals, decisions and unresolved tasks. The school receives contributions, and the square has a consultation point.",
+        "7": "The minutes preserve proposals, decisions and unresolved tasks. The school receives contributions, and the square has a consultation point.",
+        "8": "The minutes preserve proposals, decisions and unresolved tasks. The school receives contributions, and the square has a consultation point."
+      },
+      "pt": "A ata preserva as propostas, a decisão e as pendências. A escola recebe contribuições, e a praça tem um ponto de consulta.",
+      "ptByGrade": {
+        "6": "A ata preserva as propostas, a decisão e as pendências. A escola recebe contribuições, e a praça tem um ponto de consulta.",
+        "7": "A ata preserva as propostas, a decisão e as pendências. A escola recebe contribuições, e a praça tem um ponto de consulta.",
+        "8": "A ata preserva as propostas, a decisão e as pendências. A escola recebe contribuições, e a praça tem um ponto de consulta."
+      }
+    },
+    {
+      "path": "content.chapters.4.resolution.1",
+      "en": {
+        "6": "The Curator of the Single Version wants to close the Central Archive to all review. Take the criteria the community built.",
+        "7": "The Curator of the Single Version wants to close the Central Archive to all review. Take the criteria the community built.",
+        "8": "The Curator of the Single Version wants to close the Central Archive to all review. Take the criteria the community built."
+      },
+      "pt": "O Curador da Versão Única quer fechar o Arquivo Central a qualquer revisão. Leve os critérios que a comunidade construiu.",
+      "ptByGrade": {
+        "6": "O Curador da Versão Única quer fechar o Arquivo Central a qualquer revisão. Leve os critérios que a comunidade construiu.",
+        "7": "O Curador da Versão Única quer fechar o Arquivo Central a qualquer revisão. Leve os critérios que a comunidade construiu.",
+        "8": "O Curador da Versão Única quer fechar o Arquivo Central a qualquer revisão. Leve os critérios que a comunidade construiu."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.0.lines.0",
+      "en": {
+        "6": "Dora, Luan and Vitor brought different priorities. The budget needs to respond to their requests, not only to the most attractive project.",
+        "7": "Dora, Luan and Vitor brought different priorities. The budget needs to respond to their requests, not only to the most attractive project.",
+        "8": "Dora, Luan and Vitor brought different priorities. The budget needs to respond to their requests, not only to the most attractive project."
+      },
+      "pt": "Dora, Luan e Vitor trouxeram prioridades diferentes. O orçamento precisa responder aos pedidos, não apenas ao projeto mais bonito.",
+      "ptByGrade": {
+        "6": "Dora, Luan e Vitor trouxeram prioridades diferentes. O orçamento precisa responder aos pedidos, não apenas ao projeto mais bonito.",
+        "7": "Dora, Luan e Vitor trouxeram prioridades diferentes. O orçamento precisa responder aos pedidos, não apenas ao projeto mais bonito.",
+        "8": "Dora, Luan e Vitor trouxeram prioridades diferentes. O orçamento precisa responder aos pedidos, não apenas ao projeto mais bonito."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.0.lines.1",
+      "en": {
+        "6": "Ask us before choosing.",
+        "7": "We want to help choose and review the projects.",
+        "8": "Residents need a voice in priorities and review; the city should not treat them only as recipients of help."
+      },
+      "pt": "Queremos ajudar a escolher e revisar os projetos.",
+      "ptByGrade": {
+        "6": "Pergunte a nós antes de escolher.",
+        "7": "Queremos ajudar a escolher e revisar os projetos.",
+        "8": "Moradores precisam participar das prioridades e da revisão; a cidade não deve tratá-los apenas como quem recebe ajuda."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.0.lines.2",
+      "en": "I want residents to choose the priorities and review the results. Compare their requests before spending the project budget.",
+      "pt": "Quero que os moradores escolham as prioridades e revisem os resultados. Compare seus pedidos antes de gastar o orçamento do projeto."
+    },
+    {
+      "path": "content.chapters.4.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "We meet and share feedback.",
+        "7": "We will meet to discuss access after the first projects open.",
+        "8": "An accessible review meeting can show who benefited and which barriers remain."
+      },
+      "pt": "Vamos nos reunir para discutir o acesso depois que os primeiros projetos abrirem.",
+      "ptByGrade": {
+        "6": "Nós nos reunimos e compartilhamos opiniões.",
+        "7": "Vamos nos reunir para discutir o acesso depois que os primeiros projetos abrirem.",
+        "8": "Uma reunião de avaliação acessível pode mostrar quem se beneficiou e quais barreiras permanecem."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "We record needs and next steps.",
+        "7": "We will list needs, priorities and follow-up dates.",
+        "8": "A public record can make unfinished needs and follow-up dates visible, with personal information protected."
+      },
+      "pt": "Vamos listar necessidades, prioridades e datas de acompanhamento.",
+      "ptByGrade": {
+        "6": "Registramos necessidades e próximos passos.",
+        "7": "Vamos listar necessidades, prioridades e datas de acompanhamento.",
+        "8": "Um registro público pode tornar visíveis as necessidades não atendidas e as datas de acompanhamento, com os dados pessoais protegidos."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.0.repeat",
+      "en": "Our proposals need to fit the budget. Check which barriers each project removes and who can use it.",
+      "pt": "Nossas propostas precisam caber no orçamento. Confira quais barreiras cada projeto remove e quem pode utilizá-lo."
+    },
+    {
+      "path": "content.chapters.4.npcs.0.completedRepeat",
+      "en": "The consultation point is open. Residents will compare the results at the next meeting and can change the priorities.",
+      "pt": "O ponto de consulta está aberto. Os moradores vão comparar os resultados na próxima reunião e podem mudar as prioridades."
+    },
+    {
+      "path": "content.chapters.4.npcs.1.lines.0",
+      "en": {
+        "6": "My experience can be included with context and permission. It is not a statement for all Indigenous peoples.",
+        "7": "My experience can be included with context and permission. It is not a statement for all Indigenous peoples.",
+        "8": "My experience can be included with context and permission. It is not a statement for all Indigenous peoples."
+      },
+      "pt": "Minha experiência pode entrar com contexto e autorização. Não é uma fala por todos os povos indígenas.",
+      "ptByGrade": {
+        "6": "Minha experiência pode entrar com contexto e autorização. Não é uma fala por todos os povos indígenas.",
+        "7": "Minha experiência pode entrar com contexto e autorização. Não é uma fala por todos os povos indígenas.",
+        "8": "Minha experiência pode entrar com contexto e autorização. Não é uma fala por todos os povos indígenas."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.1.lines.1",
+      "en": {
+        "6": "My story is one story. Ask before recording.",
+        "7": "My story does not stand for every people. Ask permission before recording.",
+        "8": "I can share my experience, but it does not represent every people; recording and publication need consent."
+      },
+      "pt": "Minha história não representa todos os povos. Peça autorização antes de gravar.",
+      "ptByGrade": {
+        "6": "Minha história é uma história. Pergunte antes de gravar.",
+        "7": "Minha história não representa todos os povos. Peça autorização antes de gravar.",
+        "8": "Posso compartilhar minha experiência, mas ela não representa todos os povos; gravação e publicação precisam de consentimento."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.1.lines.2",
+      "en": "I will prepare the interview agreements. Ask each person what they allow us to record and publish.",
+      "pt": "Vou preparar os acordos das entrevistas. Pergunte a cada pessoa o que ela nos permite registrar e publicar."
+    },
+    {
+      "path": "content.chapters.4.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "We choose the display together.",
+        "7": "Participants will help choose what the display includes.",
+        "8": "Participants can help decide the display and how they are represented rather than just supplying material."
+      },
+      "pt": "Participantes vão ajudar a escolher o que a exposição inclui.",
+      "ptByGrade": {
+        "6": "Escolhemos a exposição juntos.",
+        "7": "Participantes vão ajudar a escolher o que a exposição inclui.",
+        "8": "Participantes podem ajudar a decidir a exposição e como são representados, em vez de apenas fornecer material."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "Ask first. Credit each speaker.",
+        "7": "We will request permission and identify each account’s speaker.",
+        "8": "Permission and clear attribution preserve the distinction between a personal account and a claim about every community."
+      },
+      "pt": "Vamos pedir autorização e identificar quem contou cada relato.",
+      "ptByGrade": {
+        "6": "Pergunte primeiro. Dê crédito a cada pessoa que fala.",
+        "7": "Vamos pedir autorização e identificar quem contou cada relato.",
+        "8": "Autorização e atribuição clara preservam a distinção entre um relato pessoal e uma afirmação sobre todas as comunidades."
+      }
+    },
+    {
+      "path": "content.chapters.4.npcs.1.repeat",
+      "en": "Keep the interview agreement beside the recording. Permission to speak is not automatically permission to publish.",
+      "pt": "Mantenha o acordo da entrevista ao lado da gravação. Permitir uma conversa não significa permitir automaticamente sua publicação."
+    },
+    {
+      "path": "content.chapters.4.npcs.1.completedRepeat",
+      "en": "The approved stories are in the archive with their recording agreements. Each person can check how their contribution appears.",
+      "pt": "As histórias autorizadas estão no arquivo com seus acordos de registro. Cada pessoa pode conferir como sua contribuição aparece."
+    },
+    {
+      "path": "content.chapters.4.clues.0",
+      "en": {
+        "6": "Indigenous peoples have different languages and ways of life.",
+        "7": "The census shows Indigenous people living within and outside Indigenous territories.",
+        "8": "Contemporary census records show diverse Indigenous peoples, languages and settings; one fictional character cannot represent them all."
+      },
+      "pt": "O censo mostra pessoas indígenas vivendo dentro e fora de Terras Indígenas.",
+      "ptByGrade": {
+        "6": "Povos indígenas têm línguas e modos de vida diferentes.",
+        "7": "O censo mostra pessoas indígenas vivendo dentro e fora de Terras Indígenas.",
+        "8": "Registros contemporâneos do censo mostram povos indígenas, línguas e contextos diversos; uma personagem fictícia não pode representar todos eles."
+      }
+    },
+    {
+      "path": "content.chapters.4.clues.1",
+      "en": {
+        "6": "An invitation needs an accessible route.",
+        "7": "Residents marked barriers before the city selected projects.",
+        "8": "The fictional access map connects residents’ reports to projects; choosing a project is a first step, not proof that every barrier disappeared."
+      },
+      "pt": "Moradores marcaram barreiras antes de a cidade escolher projetos.",
+      "ptByGrade": {
+        "6": "Um convite precisa de um trajeto acessível.",
+        "7": "Moradores marcaram barreiras antes de a cidade escolher projetos.",
+        "8": "O mapa fictício de acesso conecta relatos dos moradores a projetos; escolher um projeto é um primeiro passo, não prova de que toda barreira desapareceu."
+      }
+    },
+    {
+      "path": "content.chapters.4.clues.2",
+      "en": {
+        "6": "People help decide and review the plan.",
+        "7": "Residents asked to take part in decisions and later reviews.",
+        "8": "Community participation helps identify priorities and review practices, while public institutions remain responsible for their actions."
+      },
+      "pt": "Moradores pediram para participar das decisões e das revisões posteriores.",
+      "ptByGrade": {
+        "6": "As pessoas ajudam a decidir e revisar o plano.",
+        "7": "Moradores pediram para participar das decisões e das revisões posteriores.",
+        "8": "A participação comunitária ajuda a identificar prioridades e revisar práticas, enquanto as instituições públicas continuam responsáveis por suas ações."
+      }
+    },
+    {
+      "path": "content.chapters.5.intro.0",
+      "en": {
+        "6": "The history shows who removed names, moved captions and cropped the notice. The Curator used BIAS.EXE to hide changes and exclude those who questioned them.",
+        "7": "The history shows who removed names, moved captions and cropped the notice. The Curator used BIAS.EXE to hide changes and exclude those who questioned them.",
+        "8": "The history shows who removed names, moved captions and cropped the notice. The Curator used BIAS.EXE to hide changes and exclude those who questioned them."
+      },
+      "pt": "O histórico mostra quem retirou nomes, deslocou legendas e cortou o aviso. O Curador usou BIAS.EXE para esconder as alterações e excluir quem questionava.",
+      "ptByGrade": {
+        "6": "O histórico mostra quem retirou nomes, deslocou legendas e cortou o aviso. O Curador usou BIAS.EXE para esconder as alterações e excluir quem questionava.",
+        "7": "O histórico mostra quem retirou nomes, deslocou legendas e cortou o aviso. O Curador usou BIAS.EXE para esconder as alterações e excluir quem questionava.",
+        "8": "O histórico mostra quem retirou nomes, deslocou legendas e cortou o aviso. O Curador usou BIAS.EXE para esconder as alterações e excluir quem questionava."
+      }
+    },
+    {
+      "path": "content.chapters.5.intro.1",
+      "en": {
+        "6": "I also found gaps that existed before the attack. Repairing the Erasure will not solve the incomplete selection of records on its own.",
+        "7": "I also found gaps that existed before the attack. Repairing the Erasure will not solve the incomplete selection of records on its own.",
+        "8": "I also found gaps that existed before the attack. Repairing the Erasure will not solve the incomplete selection of records on its own."
+      },
+      "pt": "Também encontrei ausências anteriores ao ataque. Reparar a Rasura não resolve sozinho a seleção incompleta de registros.",
+      "ptByGrade": {
+        "6": "Também encontrei ausências anteriores ao ataque. Reparar a Rasura não resolve sozinho a seleção incompleta de registros.",
+        "7": "Também encontrei ausências anteriores ao ataque. Reparar a Rasura não resolve sozinho a seleção incompleta de registros.",
+        "8": "Também encontrei ausências anteriores ao ataque. Reparar a Rasura não resolve sozinho a seleção incompleta de registros."
+      }
+    },
+    {
+      "path": "content.chapters.5.intro.2",
+      "en": {
+        "6": "The archive needs protection and people who can examine it. My echoes are fragments of this adventure; they do not replace documents.",
+        "7": "The archive needs protection and people who can examine it. My echoes are fragments of this adventure; they do not replace documents.",
+        "8": "The archive needs protection and people who can examine it. My echoes are fragments of this adventure; they do not replace documents."
+      },
+      "pt": "O arquivo precisa de proteção e de pessoas que possam examiná-lo. Meus ecos são fragmentos desta aventura; não substituem os documentos.",
+      "ptByGrade": {
+        "6": "O arquivo precisa de proteção e de pessoas que possam examiná-lo. Meus ecos são fragmentos desta aventura; não substituem os documentos.",
+        "7": "O arquivo precisa de proteção e de pessoas que possam examiná-lo. Meus ecos são fragmentos desta aventura; não substituem os documentos.",
+        "8": "O arquivo precisa de proteção e de pessoas que possam examiná-lo. Meus ecos são fragmentos desta aventura; não substituem os documentos."
+      }
+    },
+    {
+      "path": "content.chapters.5.resolution.0",
+      "en": {
+        "6": "The team preserved sources, versions and responsibilities. Open tasks remain visible, with ways to request review. The archive belongs to the city again.",
+        "7": "The team preserved sources, versions and responsibilities. Open tasks remain visible, with ways to request review. The archive belongs to the city again.",
+        "8": "The team preserved sources, versions and responsibilities. Open tasks remain visible, with ways to request review. The archive belongs to the city again."
+      },
+      "pt": "A equipe preservou fontes, versões e responsáveis. As pendências continuam visíveis, com caminhos para pedir revisão. O arquivo voltou para a cidade.",
+      "ptByGrade": {
+        "6": "A equipe preservou fontes, versões e responsáveis. As pendências continuam visíveis, com caminhos para pedir revisão. O arquivo voltou para a cidade.",
+        "7": "A equipe preservou fontes, versões e responsáveis. As pendências continuam visíveis, com caminhos para pedir revisão. O arquivo voltou para a cidade.",
+        "8": "A equipe preservou fontes, versões e responsáveis. As pendências continuam visíveis, com caminhos para pedir revisão. O arquivo voltou para a cidade."
+      }
+    },
+    {
+      "path": "content.chapters.5.resolution.1",
+      "en": {
+        "6": "The six cases now connect without losing their differences. There is work for tomorrow and room for another question.",
+        "7": "The six cases now connect without losing their differences. There is work for tomorrow and room for another question.",
+        "8": "The six cases now connect without losing their differences. There is work for tomorrow and room for another question."
+      },
+      "pt": "Os seis casos agora se ligam sem perder suas diferenças. Há trabalho para amanhã e lugar para outra pergunta.",
+      "ptByGrade": {
+        "6": "Os seis casos agora se ligam sem perder suas diferenças. Há trabalho para amanhã e lugar para outra pergunta.",
+        "7": "Os seis casos agora se ligam sem perder suas diferenças. Há trabalho para amanhã e lugar para outra pergunta.",
+        "8": "Os seis casos agora se ligam sem perder suas diferenças. Há trabalho para amanhã e lugar para outra pergunta."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.0.lines.0",
+      "en": {
+        "6": "The consultation heard only the streets near the square. That sample does not support a conclusion about routes across the whole city.",
+        "7": "The consultation heard only the streets near the square. That sample does not support a conclusion about routes across the whole city.",
+        "8": "The consultation heard only the streets near the square. That sample does not support a conclusion about routes across the whole city."
+      },
+      "pt": "A consulta ouviu só as ruas perto da praça. Essa amostra não sustenta uma conclusão sobre os trajetos de toda a cidade.",
+      "ptByGrade": {
+        "6": "A consulta ouviu só as ruas perto da praça. Essa amostra não sustenta uma conclusão sobre os trajetos de toda a cidade.",
+        "7": "A consulta ouviu só as ruas perto da praça. Essa amostra não sustenta uma conclusão sobre os trajetos de toda a cidade.",
+        "8": "A consulta ouviu só as ruas perto da praça. Essa amostra não sustenta uma conclusão sobre os trajetos de toda a cidade."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.0.lines.1",
+      "en": {
+        "6": "We need sources and a review log.",
+        "7": "Our repair log records each source and each change.",
+        "8": "A traceable repair log lets people inspect the sources, reasons and effects of changes over time."
+      },
+      "pt": "Nosso registro de correções anota cada fonte e cada mudança.",
+      "ptByGrade": {
+        "6": "Precisamos de fontes e de um registro de revisão.",
+        "7": "Nosso registro de correções anota cada fonte e cada mudança.",
+        "8": "Um registro rastreável de correções permite examinar fontes, motivos e efeitos das mudanças ao longo do tempo."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.0.lines.2",
+      "en": "I will publish the sources and the alteration log. Help me check which neighbourhoods the old collection left out.",
+      "pt": "Vou publicar as fontes e o registro de alterações. Ajude-me a conferir quais bairros a coleção antiga deixou de fora."
+    },
+    {
+      "path": "content.chapters.5.npcs.0.choice.options.0.reply",
+      "en": {
+        "6": "Sources and changes stay visible.",
+        "7": "We will keep sources and a dated change log.",
+        "8": "A dated change log supports review and makes our choices open to questions."
+      },
+      "pt": "Vamos manter fontes e um registro datado de mudanças.",
+      "ptByGrade": {
+        "6": "Fontes e mudanças continuam visíveis.",
+        "7": "Vamos manter fontes e um registro datado de mudanças.",
+        "8": "Um registro datado de mudanças apoia a revisão e deixa nossas escolhas abertas a perguntas."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.0.choice.options.1.reply",
+      "en": {
+        "6": "People can ask for a review.",
+        "7": "We will open an accessible review channel.",
+        "8": "An accessible review channel helps affected people question decisions, while the team remains responsible for responding."
+      },
+      "pt": "Vamos abrir um canal acessível de revisão.",
+      "ptByGrade": {
+        "6": "As pessoas podem pedir uma revisão.",
+        "7": "Vamos abrir um canal acessível de revisão.",
+        "8": "Um canal acessível de revisão ajuda as pessoas afetadas a questionar decisões, enquanto a equipe continua responsável por responder."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.0.repeat",
+      "en": "The alteration history links each edit to a record. Compare it with the council’s account before confronting the curator.",
+      "pt": "O histórico de alterações liga cada edição a um registro. Compare-o com o relato do conselho antes de confrontar o curador."
+    },
+    {
+      "path": "content.chapters.5.npcs.0.completedRepeat",
+      "en": "The alteration log is available for consultation. A new record can be added without deleting the source of the previous one.",
+      "pt": "O registro de alterações está disponível para consulta. Um novo registro pode ser acrescentado sem apagar a fonte do anterior."
+    },
+    {
+      "path": "content.chapters.5.npcs.1.lines.0",
+      "en": {
+        "6": "The archive’s gaps began before BIAS.EXE. Review needs to address selection criteria and who can participate.",
+        "7": "The archive’s gaps began before BIAS.EXE. Review needs to address selection criteria and who can participate.",
+        "8": "The archive’s gaps began before BIAS.EXE. Review needs to address selection criteria and who can participate."
+      },
+      "pt": "As ausências do arquivo começaram antes de BIAS.EXE. A revisão precisa alcançar os critérios de seleção e quem pode participar.",
+      "ptByGrade": {
+        "6": "As ausências do arquivo começaram antes de BIAS.EXE. A revisão precisa alcançar os critérios de seleção e quem pode participar.",
+        "7": "As ausências do arquivo começaram antes de BIAS.EXE. A revisão precisa alcançar os critérios de seleção e quem pode participar.",
+        "8": "As ausências do arquivo começaram antes de BIAS.EXE. A revisão precisa alcançar os critérios de seleção e quem pode participar."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.1.lines.1",
+      "en": {
+        "6": "Ask who is missing and who decides.",
+        "7": "Who was left out? Who chose the records?",
+        "8": "Ask who is absent, who selected the records and how communities can take part in the next review."
+      },
+      "pt": "Quem ficou de fora? Quem escolheu os registros?",
+      "ptByGrade": {
+        "6": "Pergunte quem está faltando e quem decide.",
+        "7": "Quem ficou de fora? Quem escolheu os registros?",
+        "8": "Pergunte quem está ausente, quem selecionou os registros e como as comunidades podem participar da próxima revisão."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.1.lines.2",
+      "en": "I will invite the people missing from the earlier review. We need a way to question the archive after today’s repair.",
+      "pt": "Vou convidar as pessoas ausentes da revisão anterior. Precisamos de um meio de questionar o arquivo depois do reparo de hoje."
+    },
+    {
+      "path": "content.chapters.5.npcs.1.choice.options.0.reply",
+      "en": {
+        "6": "We review the archive together.",
+        "7": "We will schedule reviews with different participants.",
+        "8": "Scheduled reviews with different participants can identify gaps that one team overlooks."
+      },
+      "pt": "Vamos programar revisões com participantes diferentes.",
+      "ptByGrade": {
+        "6": "Revisamos o arquivo juntos.",
+        "7": "Vamos programar revisões com participantes diferentes.",
+        "8": "Revisões programadas com participantes diferentes podem identificar lacunas que uma equipe deixa passar."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.1.choice.options.1.reply",
+      "en": {
+        "6": "We show limits and correct mistakes.",
+        "7": "We will state limits and correct new mistakes when evidence appears.",
+        "8": "Acknowledging limits and documenting corrections makes responsibility an ongoing practice instead of a final victory claim."
+      },
+      "pt": "Vamos indicar limites e corrigir novos erros quando surgirem evidências.",
+      "ptByGrade": {
+        "6": "Mostramos limites e corrigimos erros.",
+        "7": "Vamos indicar limites e corrigir novos erros quando surgirem evidências.",
+        "8": "Reconhecer limites e documentar correções torna a responsabilidade uma prática contínua, em vez de uma declaração de vitória final."
+      }
+    },
+    {
+      "path": "content.chapters.5.npcs.1.repeat",
+      "en": "Some voices were missing before the programme ran. Compare who was included with who can take part in the next review.",
+      "pt": "Algumas vozes já estavam ausentes antes de o programa funcionar. Compare quem foi incluído com quem pode participar da próxima revisão."
+    },
+    {
+      "path": "content.chapters.5.npcs.1.completedRepeat",
+      "en": "The next review will include people who were missing before. You can keep exploring and bring another source to the council.",
+      "pt": "A próxima revisão incluirá pessoas que antes estavam ausentes. Você pode continuar explorando e levar outra fonte ao conselho."
+    },
+    {
+      "path": "content.chapters.5.clues.0",
+      "en": {
+        "6": "This sample leaves people out.",
+        "7": "The fictional training sample omitted some communities and their records.",
+        "8": "The fictional sample contains exclusions; adding records helps only if people also examine selection rules and effects."
+      },
+      "pt": "A amostra fictícia de treinamento omitiu algumas comunidades e seus registros.",
+      "ptByGrade": {
+        "6": "Esta amostra deixa pessoas de fora.",
+        "7": "A amostra fictícia de treinamento omitiu algumas comunidades e seus registros.",
+        "8": "A amostra fictícia contém exclusões; acrescentar registros ajuda apenas se as pessoas também examinarem regras de seleção e efeitos."
+      }
+    },
+    {
+      "path": "content.chapters.5.clues.1",
+      "en": "The archive repeats omissions when whole neighbourhoods are missing from its records.",
+      "pt": "O arquivo repete omissões quando bairros inteiros estão ausentes de seus registros."
+    },
+    {
+      "path": "content.chapters.5.clues.2",
+      "en": {
+        "6": "People check sources and review decisions.",
+        "7": "The team created a source log and a way to request review.",
+        "8": "The fictional review plan combines sources, community participation and human responsibility as the archive changes."
+      },
+      "pt": "A equipe criou um registro de fontes e um meio de pedir revisão.",
+      "ptByGrade": {
+        "6": "As pessoas conferem fontes e revisam decisões.",
+        "7": "A equipe criou um registro de fontes e um meio de pedir revisão.",
+        "8": "O plano fictício de revisão combina fontes, participação comunitária e responsabilidade humana à medida que o arquivo muda."
+      }
+    },
+    {
+      "path": "content.glossary.0",
+      "en": "rhythm",
+      "pt": "ritmo"
+    },
+    {
+      "path": "content.glossary.1",
+      "en": "credit",
+      "pt": "crédito de autoria"
+    },
+    {
+      "path": "content.glossary.2",
+      "en": "heritage",
+      "pt": "patrimônio cultural"
+    },
+    {
+      "path": "content.glossary.3",
+      "en": "history",
+      "pt": "história"
+    },
+    {
+      "path": "content.glossary.4",
+      "en": "timeline",
+      "pt": "linha do tempo"
+    },
+    {
+      "path": "content.glossary.5",
+      "en": "source",
+      "pt": "fonte"
+    },
+    {
+      "path": "content.glossary.6",
+      "en": "mathematics",
+      "pt": "matemática"
+    },
+    {
+      "path": "content.glossary.7",
+      "en": "writer",
+      "pt": "escritor ou escritora"
+    },
+    {
+      "path": "content.glossary.8",
+      "en": "engineer",
+      "pt": "engenheiro ou engenheira"
+    },
+    {
+      "path": "content.glossary.9",
+      "en": "evidence",
+      "pt": "evidência"
+    },
+    {
+      "path": "content.glossary.10",
+      "en": "stereotype",
+      "pt": "estereótipo"
+    },
+    {
+      "path": "content.glossary.11",
+      "en": "context",
+      "pt": "contexto"
+    },
+    {
+      "path": "content.glossary.12",
+      "en": "community",
+      "pt": "comunidade"
+    },
+    {
+      "path": "content.glossary.13",
+      "en": "access",
+      "pt": "acesso"
+    },
+    {
+      "path": "content.glossary.14",
+      "en": "rights",
+      "pt": "direitos"
+    },
+    {
+      "path": "content.glossary.15",
+      "en": "data",
+      "pt": "dados"
+    },
+    {
+      "path": "content.glossary.16",
+      "en": "review",
+      "pt": "revisar ou revisão"
+    },
+    {
+      "path": "content.glossary.17",
+      "en": "responsibility",
+      "pt": "responsabilidade"
+    },
+    {
+      "path": "content.glossary.18",
+      "en": "listen",
+      "pt": "ouvir ou escutar"
+    },
+    {
+      "path": "content.glossary.19",
+      "en": "because",
+      "pt": "porque"
+    },
+    {
+      "path": "content.glossary.20",
+      "en": "however",
+      "pt": "porém ou no entanto"
+    },
+    {
+      "path": "content.glossary.21",
+      "en": "before",
+      "pt": "antes ou antes de"
+    },
+    {
+      "path": "content.glossary.22",
+      "en": "after",
+      "pt": "depois ou depois de"
+    },
+    {
+      "path": "content.glossary.23",
+      "en": "share",
+      "pt": "compartilhar"
+    },
+    {
+      "path": "content.glossary.24",
+      "en": "bias",
+      "pt": "viés ou tendência parcial"
+    },
+    {
+      "path": "content.glossary.25",
+      "en": "trace",
+      "pt": "vestígio"
+    },
+    {
+      "path": "content.glossary.26",
+      "en": "testimony",
+      "pt": "testemunho"
+    },
+    {
+      "path": "content.glossary.27",
+      "en": "authorship",
+      "pt": "autoria"
+    },
+    {
+      "path": "content.glossary.28",
+      "en": "uncertainty",
+      "pt": "incerteza"
+    },
+    {
+      "path": "content.glossary.29",
+      "en": "archive",
+      "pt": "arquivo"
+    },
+    {
+      "path": "content.glossary.30",
+      "en": "guard",
+      "pt": "guardar; vigiar"
+    },
+    {
+      "path": "content.timeline.0",
+      "en": "Mansa Musa of Mali began his pilgrimage to Mecca in 1324.",
+      "pt": "Mansa Musa, do Mali, iniciou sua peregrinação a Meca em 1324."
+    },
+    {
+      "path": "content.timeline.1",
+      "en": "Sonni Ali began his reign in Songhai in 1464.",
+      "pt": "Sonni Ali iniciou seu reinado em Songhai em 1464."
+    },
+    {
+      "path": "content.timeline.2",
+      "en": "This Met chronology dates Diogo Cão’s arrival at the Congo River’s mouth to 1483. Kongo already had its own history.",
+      "pt": "Esta cronologia do Met situa a chegada de Diogo Cão à foz do Congo em 1483. Kongo já tinha sua própria história."
+    },
+    {
+      "path": "content.timeline.3",
+      "en": "The law of 13 May 1888 abolished slavery in Brazil. This legal change did not end every inequality.",
+      "pt": "A lei de 13 de maio de 1888 aboliu a escravidão no Brasil. Essa mudança legal não encerrou todas as desigualdades."
+    },
+    {
+      "path": "content.timeline.4",
+      "en": "Carolina Maria de Jesus’s Quarto de despejo was published in 1960.",
+      "pt": "Quarto de despejo, de Carolina Maria de Jesus, foi publicado em 1960."
+    },
+    {
+      "path": "content.timeline.5",
+      "en": "Katherine Johnson checked calculations for John Glenn’s orbital mission in 1962.",
+      "pt": "Katherine Johnson conferiu cálculos para a missão orbital de John Glenn em 1962."
+    },
+    {
+      "path": "learning.readings.0",
+      "en": "We wrote the music together. Our names belong in the programme.",
+      "pt": "Fizemos a música juntos. Nossos nomes devem estar no programa."
+    },
+    {
+      "path": "learning.readings.1",
+      "en": "The photograph shows a moment. The roda holds more knowledge.",
+      "pt": "A fotografia mostra um instante. A roda reúne mais conhecimentos."
+    },
+    {
+      "path": "learning.readings.2",
+      "en": "Mali was part of trade networks across the Sahara.",
+      "pt": "Mali fazia parte de redes de comércio que atravessavam o Saara."
+    },
+    {
+      "path": "learning.readings.3",
+      "en": "Mbanza Kongo had a history before Portuguese contact.",
+      "pt": "Mbanza Kongo já tinha uma história antes do contato com portugueses."
+    },
+    {
+      "path": "learning.readings.4",
+      "en": "The report names two authors. The credits should name both.",
+      "pt": "O relatório identifica dois autores. Os créditos devem identificar os dois."
+    },
+    {
+      "path": "learning.readings.5",
+      "en": "A notebook can hold observation, memory and literary creation.",
+      "pt": "Um caderno pode guardar observação, memória e criação literária."
+    },
+    {
+      "path": "learning.readings.6",
+      "en": "Read the words and the situation before you choose a response.",
+      "pt": "Leia as palavras e a situação antes de escolher uma resposta."
+    },
+    {
+      "path": "learning.readings.7",
+      "en": "The date changes how we understand the notice.",
+      "pt": "A data muda a maneira como entendemos o aviso."
+    },
+    {
+      "path": "learning.readings.8",
+      "en": "We record the proposals and explain the decisions.",
+      "pt": "Registramos as propostas e explicamos as decisões."
+    },
+    {
+      "path": "learning.readings.9",
+      "en": "Indigenous peoples have different histories and live in the present.",
+      "pt": "Os povos indígenas têm histórias diferentes e vivem no presente."
+    },
+    {
+      "path": "learning.readings.10",
+      "en": "The sample leaves some residents out. The conclusion needs review.",
+      "pt": "A amostra deixa alguns moradores de fora. A conclusão precisa de revisão."
+    },
+    {
+      "path": "learning.readings.11",
+      "en": "We can restore the archive and keep asking questions.",
+      "pt": "Podemos restaurar o arquivo e continuar fazendo perguntas."
+    },
+    {
+      "path": "learning.readings.12",
+      "en": "A clue supports some conclusions, not every conclusion.",
+      "pt": "Uma pista sustenta algumas conclusões, não qualquer conclusão."
+    },
+    {
+      "path": "learning.readings.13",
+      "en": "Permission to talk is not permission to publish everything.",
+      "pt": "Permissão para conversar não é permissão para publicar tudo."
+    },
+    {
+      "path": "learning.readings.14",
+      "en": "We learn movements, music and ways of participating.",
+      "pt": "Aprendemos movimentos, música e formas de participar."
+    },
+    {
+      "path": "learning.readings.15",
+      "en": "A new song needs clear credits and clear references.",
+      "pt": "Uma canção nova precisa de créditos e referências claros."
+    },
+    {
+      "path": "learning.readings.16",
+      "en": "Books and ideas travelled as well as goods.",
+      "pt": "Livros e ideias circulavam, assim como mercadorias."
+    },
+    {
+      "path": "learning.readings.17",
+      "en": "Gao and the Tomb of Askia belong in the Songhai record.",
+      "pt": "Gao e o Túmulo dos Askia pertencem ao registro de Songhai."
+    },
+    {
+      "path": "learning.readings.18",
+      "en": "Give credit for the work that the records support.",
+      "pt": "Dê crédito ao trabalho que os registros sustentam."
+    },
+    {
+      "path": "learning.readings.19",
+      "en": "A law records a change. Its effects need further study.",
+      "pt": "Uma lei registra uma mudança. Seus efeitos precisam de mais estudo."
+    },
+    {
+      "path": "learning.readings.20",
+      "en": "Different musical tastes can share the same festival.",
+      "pt": "Gostos musicais diferentes podem compartilhar o mesmo festival."
+    },
+    {
+      "path": "learning.readings.21",
+      "en": "Support the student and change the discriminatory rule.",
+      "pt": "Apoie a estudante e mude a regra discriminatória."
+    },
+    {
+      "path": "learning.readings.22",
+      "en": "An open invitation still needs an accessible route.",
+      "pt": "Um convite aberto ainda precisa de um trajeto acessível."
+    },
+    {
+      "path": "learning.readings.23",
+      "en": "A useful report shows changes, evidence and open questions.",
+      "pt": "Um relatório útil mostra mudanças, evidências e perguntas em aberto."
+    },
+    {
+      "path": "learning.readings.24",
+      "en": "Zumbi was a leader of Palmares, communities that resisted enslavement in colonial Brazil.",
+      "pt": "Zumbi foi uma liderança de Palmares, comunidades que resistiram à escravização no Brasil colonial."
+    },
+    {
+      "path": "learning.readings.25",
+      "en": "Dandara is remembered as a symbol of resistance. Surviving records leave questions about her life.",
+      "pt": "Dandara é lembrada como símbolo de resistência. Os registros preservados deixam perguntas sobre sua vida."
+    },
+    {
+      "path": "learning.readings.26",
+      "en": "Machado de Assis wrote novels, short stories and chronicles.",
+      "pt": "Machado de Assis escreveu romances, contos e crônicas."
+    },
+    {
+      "path": "learning.readings.27",
+      "en": "Carolina Maria de Jesus created diaries, poetry, fiction and music.",
+      "pt": "Carolina Maria de Jesus criou diários, poesia, ficção e música."
+    },
+    {
+      "path": "learning.readings.28",
+      "en": "Luiz Gama used writing and legal arguments in the struggle against slavery.",
+      "pt": "Luiz Gama usou a escrita e argumentos jurídicos na luta contra a escravidão."
+    },
+    {
+      "path": "learning.readings.29",
+      "en": "Antonieta de Barros was a teacher, journalist and elected representative in Santa Catarina.",
+      "pt": "Antonieta de Barros foi professora, jornalista e representante eleita em Santa Catarina."
+    },
+    {
+      "path": "learning.readings.30",
+      "en": "Milton Santos studied geography, cities, territory and inequality.",
+      "pt": "Milton Santos estudou geografia, cidades, território e desigualdade."
+    },
+    {
+      "path": "learning.readings.31",
+      "en": "Lélia Gonzalez studied racism, sexism and culture in the Americas.",
+      "pt": "Lélia Gonzalez estudou racismo, sexismo e cultura nas Américas."
+    },
+    {
+      "path": "learning.readings.32",
+      "en": "Abdias do Nascimento founded the Black Experimental Theatre in 1944.",
+      "pt": "Abdias do Nascimento fundou o Teatro Experimental do Negro em 1944."
+    },
+    {
+      "path": "learning.readings.33",
+      "en": "Ruth de Souza worked in theatre, cinema and television.",
+      "pt": "Ruth de Souza trabalhou no teatro, no cinema e na televisão."
+    },
+    {
+      "path": "learning.readings.34",
+      "en": "Conceição Evaristo connects literary creation, memory and Black experiences.",
+      "pt": "Conceição Evaristo relaciona criação literária, memória e experiências negras."
+    },
+    {
+      "path": "learning.readings.35",
+      "en": "Gilberto Gil is a Brazilian singer, songwriter and instrumentalist.",
+      "pt": "Gilberto Gil é cantor, compositor e instrumentista brasileiro."
+    },
+    {
+      "path": "learning.readings.36",
+      "en": "Elza Soares was a Brazilian singer whose career crossed different repertoires.",
+      "pt": "Elza Soares foi uma cantora brasileira cuja carreira atravessou diferentes repertórios."
+    },
+    {
+      "path": "learning.readings.37",
+      "en": "Nina Simone was a pianist, singer and civil rights activist.",
+      "pt": "Nina Simone foi pianista, cantora e ativista pelos direitos civis."
+    },
+    {
+      "path": "learning.readings.38",
+      "en": "Katherine Johnson checked computer calculations for John Glenn’s orbital flight in 1962.",
+      "pt": "Katherine Johnson conferiu cálculos de computadores para o voo orbital de John Glenn em 1962."
+    },
+    {
+      "path": "learning.readings.39",
+      "en": "Rosa Parks was a civil rights activist involved in the Montgomery bus boycott.",
+      "pt": "Rosa Parks foi uma ativista pelos direitos civis envolvida no boicote aos ônibus de Montgomery."
+    },
+    {
+      "path": "learning.readings.40",
+      "en": "Harriet Tubman helped enslaved people reach freedom through networks of support.",
+      "pt": "Harriet Tubman ajudou pessoas escravizadas a alcançar a liberdade por redes de apoio."
+    },
+    {
+      "path": "learning.readings.41",
+      "en": "Martin Luther King Jr. was a civil rights leader who advocated nonviolent action.",
+      "pt": "Martin Luther King Jr. foi uma liderança pelos direitos civis que defendeu ações não violentas."
+    },
+    {
+      "path": "learning.readings.42",
+      "en": "Nelson Mandela opposed apartheid and became South Africa’s president in 1994.",
+      "pt": "Nelson Mandela enfrentou o apartheid e se tornou presidente da África do Sul em 1994."
+    },
+    {
+      "path": "learning.readings.43",
+      "en": "Steve Biko was a Black Consciousness leader in South Africa.",
+      "pt": "Steve Biko foi uma liderança da Consciência Negra na África do Sul."
+    },
+    {
+      "path": "learning.readings.44",
+      "en": "Angela Davis studies relationships between race, class, gender and institutions.",
+      "pt": "Angela Davis estuda relações entre raça, classe, gênero e instituições."
+    },
+    {
+      "path": "learning.readings.45",
+      "en": "Wangari Maathai connected tree planting, women’s participation and environmental care.",
+      "pt": "Wangari Maathai relacionou plantio de árvores, participação de mulheres e cuidado ambiental."
+    },
+    {
+      "path": "learning.readings.46",
+      "en": "Marielle Franco was a sociologist, city councillor and human rights advocate.",
+      "pt": "Marielle Franco foi socióloga, vereadora e defensora dos direitos humanos."
+    },
+    {
+      "path": "learning.readings.47",
+      "en": "Pelé won the men’s World Cup with Brazil in 1958, 1962 and 1970.",
+      "pt": "Pelé ganhou a Copa do Mundo masculina com o Brasil em 1958, 1962 e 1970."
+    },
+    {
+      "path": "learning.readings.48",
+      "en": "Marta received the Golden Ball and Golden Boot at the 2007 Women’s World Cup.",
+      "pt": "Marta recebeu a Bola de Ouro e a Chuteira de Ouro na Copa do Mundo feminina de 2007."
+    },
+    {
+      "path": "learning.readings.49",
+      "en": "Rebeca Andrade won Olympic gold in vault at Tokyo 2020 and floor exercise at Paris 2024.",
+      "pt": "Rebeca Andrade ganhou ouro olímpico no salto em Tóquio 2020 e no solo em Paris 2024."
+    },
+    {
+      "path": "learning.readings.50",
+      "en": "Serena Williams won 23 Grand Slam singles titles.",
+      "pt": "Serena Williams ganhou 23 títulos de simples em torneios de Grand Slam."
+    },
+    {
+      "path": "learning.readings.51",
+      "en": "Chimamanda Ngozi Adichie is a Nigerian writer and the author of Americanah.",
+      "pt": "Chimamanda Ngozi Adichie é escritora nigeriana e autora de Americanah."
+    },
+    {
+      "path": "learning.readings.52",
+      "en": "Maya Angelou was an American writer and artist who worked with autobiography and poetry.",
+      "pt": "Maya Angelou foi uma escritora e artista estadunidense que trabalhou com autobiografia e poesia."
+    },
+    {
+      "path": "learning.readings.53",
+      "en": "James Baldwin wrote novels, essays and plays about experiences including race and society.",
+      "pt": "James Baldwin escreveu romances, ensaios e peças sobre experiências que incluem raça e sociedade."
+    },
+    {
+      "path": "learning.readings.54",
+      "en": "Sueli Carneiro is a Brazilian philosopher who studies racism and the exclusion of knowledge.",
+      "pt": "Sueli Carneiro é uma filósofa brasileira que estuda racismo e exclusão de conhecimentos."
+    },
+    {
+      "path": "learning.readings.55",
+      "en": "Cartola was a Brazilian songwriter and singer linked to the founding of Mangueira.",
+      "pt": "Cartola foi um compositor e cantor brasileiro ligado à fundação da Mangueira."
+    },
+    {
+      "path": "learning.readings.56",
+      "en": "Water vapour in the air can condense on a cold surface.",
+      "pt": "O vapor de água do ar pode se condensar numa superfície fria."
+    },
+    {
+      "path": "learning.readings.57",
+      "en": "Some animals can carry pollen between flowers.",
+      "pt": "Alguns animais podem transportar pólen entre flores."
+    },
+    {
+      "path": "learning.readings.58",
+      "en": "Decomposition depends on organisms and environmental conditions.",
+      "pt": "A decomposição depende de organismos e de condições ambientais."
+    },
+    {
+      "path": "learning.readings.59",
+      "en": "Every flat world map involves some distortion.",
+      "pt": "Todo mapa plano do mundo envolve alguma distorção."
+    },
+    {
+      "path": "learning.readings.60",
+      "en": "An underground plant part is not always a root.",
+      "pt": "Uma parte subterrânea de uma planta nem sempre é uma raiz."
+    },
+    {
+      "path": "learning.readings.61",
+      "en": "Pitch, intensity and timbre describe different features of sound.",
+      "pt": "Altura, intensidade e timbre descrevem características diferentes do som."
+    },
+    {
+      "path": "learning.residents.0.lines.0",
+      "en": {
+        "6": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care.",
+        "7": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care.",
+        "8": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care."
+      },
+      "pt": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
+      "ptByGrade": {
+        "6": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
+        "7": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
+        "8": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado."
+      }
+    },
+    {
+      "path": "learning.residents.0.lines.1",
+      "en": {
+        "6": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden.",
+        "7": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden.",
+        "8": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden."
+      },
+      "pt": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
+      "ptByGrade": {
+        "6": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
+        "7": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
+        "8": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim."
+      }
+    },
+    {
+      "path": "learning.residents.0.repeat",
+      "en": {
+        "6": "The three beds are marked. After watering them, come back and we can discuss the garden’s care.",
+        "7": "The three beds are marked. After watering them, come back and we can discuss the garden’s care.",
+        "8": "The three beds are marked. After watering them, come back and we can discuss the garden’s care."
+      },
+      "pt": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
+      "ptByGrade": {
+        "6": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
+        "7": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
+        "8": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta."
+      }
+    },
+    {
+      "path": "learning.residents.1.lines.0",
+      "en": {
+        "6": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information.",
+        "7": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information.",
+        "8": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information."
+      },
+      "pt": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
+      "ptByGrade": {
+        "6": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
+        "7": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
+        "8": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele."
+      }
+    },
+    {
+      "path": "learning.residents.1.lines.1",
+      "en": {
+        "6": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it.",
+        "7": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it.",
+        "8": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it."
+      },
+      "pt": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
+      "ptByGrade": {
+        "6": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
+        "7": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
+        "8": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho."
+      }
+    },
+    {
+      "path": "learning.residents.1.repeat",
+      "en": {
+        "6": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster.",
+        "7": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster.",
+        "8": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster."
+      },
+      "pt": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
+      "ptByGrade": {
+        "6": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
+        "7": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
+        "8": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz."
+      }
+    },
+    {
+      "path": "learning.residents.2.lines.0",
+      "en": {
+        "6": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three.",
+        "7": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three.",
+        "8": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three."
+      },
+      "pt": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
+      "ptByGrade": {
+        "6": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
+        "7": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
+        "8": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três."
+      }
+    },
+    {
+      "path": "learning.residents.2.lines.1",
+      "en": {
+        "6": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola.",
+        "7": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola.",
+        "8": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola."
+      },
+      "pt": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
+      "ptByGrade": {
+        "6": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
+        "7": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
+        "8": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola."
+      }
+    },
+    {
+      "path": "learning.residents.2.repeat",
+      "en": {
+        "6": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent.",
+        "7": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent.",
+        "8": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent."
+      },
+      "pt": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
+      "ptByGrade": {
+        "6": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
+        "7": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
+        "8": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro."
+      }
+    },
+    {
+      "path": "learning.residents.3.lines.0",
+      "en": {
+        "6": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue.",
+        "7": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue.",
+        "8": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue."
+      },
+      "pt": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
+      "ptByGrade": {
+        "6": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
+        "7": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
+        "8": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo."
+      }
+    },
+    {
+      "path": "learning.residents.3.lines.1",
+      "en": {
+        "6": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible.",
+        "7": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible.",
+        "8": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible."
+      },
+      "pt": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
+      "ptByGrade": {
+        "6": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
+        "7": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
+        "8": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição."
+      }
+    },
+    {
+      "path": "learning.residents.3.repeat",
+      "en": {
+        "6": "At the cataloguing table, match documents with the information needed to find them and check their origin.",
+        "7": "At the cataloguing table, match documents with the information needed to find them and check their origin.",
+        "8": "At the cataloguing table, match documents with the information needed to find them and check their origin."
+      },
+      "pt": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
+      "ptByGrade": {
+        "6": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
+        "7": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
+        "8": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem."
+      }
+    },
+    {
+      "path": "learning.residents.4.lines.0",
+      "en": {
+        "6": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature.",
+        "7": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature.",
+        "8": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature."
+      },
+      "pt": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
+      "ptByGrade": {
+        "6": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
+        "7": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
+        "8": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura."
+      }
+    },
+    {
+      "path": "learning.residents.4.lines.1",
+      "en": {
+        "6": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result.",
+        "7": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result.",
+        "8": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result."
+      },
+      "pt": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
+      "ptByGrade": {
+        "6": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
+        "7": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
+        "8": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado."
+      }
+    },
+    {
+      "path": "learning.residents.4.repeat",
+      "en": {
+        "6": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error.",
+        "7": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error.",
+        "8": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error."
+      },
+      "pt": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
+      "ptByGrade": {
+        "6": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
+        "7": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
+        "8": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro."
+      }
+    },
+    {
+      "path": "learning.residents.5.lines.0",
+      "en": {
+        "6": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table.",
+        "7": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table.",
+        "8": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table."
+      },
+      "pt": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
+      "ptByGrade": {
+        "6": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
+        "7": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
+        "8": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa."
+      }
+    },
+    {
+      "path": "learning.residents.5.lines.1",
+      "en": {
+        "6": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice.",
+        "7": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice.",
+        "8": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice."
+      },
+      "pt": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
+      "ptByGrade": {
+        "6": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
+        "7": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
+        "8": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio."
+      }
+    },
+    {
+      "path": "learning.residents.5.repeat",
+      "en": {
+        "6": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes.",
+        "7": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes.",
+        "8": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes."
+      },
+      "pt": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
+      "ptByGrade": {
+        "6": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
+        "7": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
+        "8": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido."
+      }
+    },
+    {
+      "path": "learning.residents.6.lines.0",
+      "en": {
+        "6": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive.",
+        "7": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive.",
+        "8": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive."
+      },
+      "pt": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
+      "ptByGrade": {
+        "6": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
+        "7": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
+        "8": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo."
+      }
+    },
+    {
+      "path": "learning.residents.6.lines.1",
+      "en": {
+        "6": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions.",
+        "7": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions.",
+        "8": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions."
+      },
+      "pt": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
+      "ptByGrade": {
+        "6": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
+        "7": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
+        "8": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar."
+      }
+    },
+    {
+      "path": "learning.residents.6.repeat",
+      "en": {
+        "6": "A conversation can matter and still have private parts. Check what the person authorised before sharing it.",
+        "7": "A conversation can matter and still have private parts. Check what the person authorised before sharing it.",
+        "8": "A conversation can matter and still have private parts. Check what the person authorised before sharing it."
+      },
+      "pt": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
+      "ptByGrade": {
+        "6": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
+        "7": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
+        "8": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar."
+      }
+    },
+    {
+      "path": "learning.residents.7.lines.0",
+      "en": {
+        "6": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other.",
+        "7": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other.",
+        "8": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other."
+      },
+      "pt": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
+      "ptByGrade": {
+        "6": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
+        "7": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
+        "8": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro."
+      }
+    },
+    {
+      "path": "learning.residents.7.lines.1",
+      "en": {
+        "6": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing.",
+        "7": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing.",
+        "8": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing."
+      },
+      "pt": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
+      "ptByGrade": {
+        "6": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
+        "7": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
+        "8": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir."
+      }
+    },
+    {
+      "path": "learning.residents.7.repeat",
+      "en": {
+        "6": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably.",
+        "7": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably.",
+        "8": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably."
+      },
+      "pt": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
+      "ptByGrade": {
+        "6": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
+        "7": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
+        "8": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança."
+      }
+    },
+    {
+      "path": "learning.residents.8.lines.0",
+      "en": {
+        "6": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions.",
+        "7": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions.",
+        "8": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions."
+      },
+      "pt": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
+      "ptByGrade": {
+        "6": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
+        "7": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
+        "8": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições."
+      }
+    },
+    {
+      "path": "learning.residents.8.lines.1",
+      "en": {
+        "6": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it.",
+        "7": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it.",
+        "8": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it."
+      },
+      "pt": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
+      "ptByGrade": {
+        "6": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
+        "7": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
+        "8": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou."
+      }
+    },
+    {
+      "path": "learning.residents.8.repeat",
+      "en": {
+        "6": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline.",
+        "7": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline.",
+        "8": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline."
+      },
+      "pt": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
+      "ptByGrade": {
+        "6": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
+        "7": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
+        "8": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete."
+      }
+    },
+    {
+      "path": "learning.residents.9.lines.0",
+      "en": {
+        "6": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first.",
+        "7": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first.",
+        "8": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first."
+      },
+      "pt": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
+      "ptByGrade": {
+        "6": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
+        "7": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
+        "8": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência."
+      }
+    },
+    {
+      "path": "learning.residents.9.lines.1",
+      "en": {
+        "6": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research.",
+        "7": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research.",
+        "8": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research."
+      },
+      "pt": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
+      "ptByGrade": {
+        "6": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
+        "7": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
+        "8": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa."
+      }
+    },
+    {
+      "path": "learning.residents.9.repeat",
+      "en": {
+        "6": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle.",
+        "7": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle.",
+        "8": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle."
+      },
+      "pt": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
+      "ptByGrade": {
+        "6": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
+        "7": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
+        "8": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira."
+      }
+    },
+    {
+      "path": "heritageContent.readings.0",
+      "en": "Nina Simone was a pianist, a singer and a civil rights activist.",
+      "pt": "Nina Simone foi pianista, cantora e ativista pelos direitos civis."
+    },
+    {
+      "path": "heritageContent.readings.1",
+      "en": "A singer may perform their own songs and songs by other writers.",
+      "pt": "Um cantor pode interpretar canções próprias e de outros compositores."
+    },
+    {
+      "path": "heritageContent.readings.2",
+      "en": "A leader is part of a movement made by many people.",
+      "pt": "Uma liderança faz parte de um movimento construído por muitas pessoas."
+    },
+    {
+      "path": "heritageContent.readings.3",
+      "en": "The author writes the story; the narrator is a voice within the text.",
+      "pt": "O autor escreve a história; o narrador é uma voz construída no texto."
+    },
+    {
+      "path": "heritageContent.readings.4",
+      "en": "Carolina wrote diaries, other literary forms and music.",
+      "pt": "Carolina escreveu diários, outros gêneros literários e música."
+    },
+    {
+      "path": "heritageContent.readings.5",
+      "en": "Human checking and teamwork helped make the flight possible.",
+      "pt": "A conferência humana e o trabalho em equipe ajudaram a tornar o voo possível."
+    },
+    {
+      "path": "heritageContent.readings.6",
+      "en": "Musical traditions can influence each other without becoming identical.",
+      "pt": "Tradições musicais podem influenciar umas às outras sem se tornarem idênticas."
+    },
+    {
+      "path": "heritageContent.readings.7",
+      "en": "Memory can be part of literary creation.",
+      "pt": "A memória pode fazer parte da criação literária."
+    },
+    {
+      "path": "heritageContent.readings.8",
+      "en": "We compare the vibration and the history of each instrument.",
+      "pt": "Comparamos a vibração e a história de cada instrumento."
+    },
+    {
+      "path": "heritageContent.readings.9",
+      "en": "Kente uses woven strips; ankara is printed cotton.",
+      "pt": "O kente usa tiras tecidas; o ankara é algodão estampado."
+    },
+    {
+      "path": "heritageContent.readings.10",
+      "en": "A useful caption names what is known and marks what is uncertain.",
+      "pt": "Uma legenda útil apresenta o que é conhecido e delimita o que é incerto."
+    },
+    {
+      "path": "heritageContent.residents.0.lines.0",
+      "en": {
+        "6": "I’m Mila. This guitar has strings, but it does not produce the same timbre as a berimbau. Materials, shape and playing method contribute to sound.",
+        "7": "I’m Mila. This guitar has strings, but it does not produce the same timbre as a berimbau. Materials, shape and playing method contribute to sound.",
+        "8": "I’m Mila. This guitar has strings, but it does not produce the same timbre as a berimbau. Materials, shape and playing method contribute to sound."
+      },
+      "pt": "Sou Mila. Esta guitarra tem cordas, mas não produz o mesmo timbre do berimbau. Materiais, forma e modo de tocar participam do som.",
+      "ptByGrade": {
+        "6": "Sou Mila. Esta guitarra tem cordas, mas não produz o mesmo timbre do berimbau. Materiais, forma e modo de tocar participam do som.",
+        "7": "Sou Mila. Esta guitarra tem cordas, mas não produz o mesmo timbre do berimbau. Materiais, forma e modo de tocar participam do som.",
+        "8": "Sou Mila. Esta guitarra tem cordas, mas não produz o mesmo timbre do berimbau. Materiais, forma e modo de tocar participam do som."
+      }
+    },
+    {
+      "path": "heritageContent.residents.0.lines.1",
+      "en": {
+        "6": "The reading about Sister Rosetta Tharpe connects guitar, gospel and the paths of rock. Influence does not mean that all these styles are identical.",
+        "7": "The reading about Sister Rosetta Tharpe connects guitar, gospel and the paths of rock. Influence does not mean that all these styles are identical.",
+        "8": "The reading about Sister Rosetta Tharpe connects guitar, gospel and the paths of rock. Influence does not mean that all these styles are identical."
+      },
+      "pt": "A leitura sobre Sister Rosetta Tharpe liga guitarra, gospel e caminhos do rock. Influência não significa que todos esses estilos sejam iguais.",
+      "ptByGrade": {
+        "6": "A leitura sobre Sister Rosetta Tharpe liga guitarra, gospel e caminhos do rock. Influência não significa que todos esses estilos sejam iguais.",
+        "7": "A leitura sobre Sister Rosetta Tharpe liga guitarra, gospel e caminhos do rock. Influência não significa que todos esses estilos sejam iguais.",
+        "8": "A leitura sobre Sister Rosetta Tharpe liga guitarra, gospel e caminhos do rock. Influência não significa que todos esses estilos sejam iguais."
+      }
+    },
+    {
+      "path": "heritageContent.residents.0.lines.2",
+      "en": {
+        "6": "The exercises here are original. To learn about the named artists, the record points to identified collections and documents.",
+        "7": "The exercises here are original. To learn about the named artists, the record points to identified collections and documents.",
+        "8": "The exercises here are original. To learn about the named artists, the record points to identified collections and documents."
+      },
+      "pt": "Os exercícios daqui são originais. Para conhecer os artistas citados, a ficha aponta acervos e registros identificados.",
+      "ptByGrade": {
+        "6": "Os exercícios daqui são originais. Para conhecer os artistas citados, a ficha aponta acervos e registros identificados.",
+        "7": "Os exercícios daqui são originais. Para conhecer os artistas citados, a ficha aponta acervos e registros identificados.",
+        "8": "Os exercícios daqui são originais. Para conhecer os artistas citados, a ficha aponta acervos e registros identificados."
+      }
+    },
+    {
+      "path": "heritageContent.residents.1.lines.0",
+      "en": {
+        "6": "I’m Raul, the bookseller. Davi helps me organise these readings; Ravi follows the news at the radio station.",
+        "7": "I’m Raul, the bookseller. Davi helps me organise these readings; Ravi follows the news at the radio station.",
+        "8": "I’m Raul, the bookseller. Davi helps me organise these readings; Ravi follows the news at the radio station."
+      },
+      "pt": "Sou Raul, livreiro. Davi me ajuda a organizar estas leituras; Ravi acompanha as notícias na rádio.",
+      "ptByGrade": {
+        "6": "Sou Raul, livreiro. Davi me ajuda a organizar estas leituras; Ravi acompanha as notícias na rádio.",
+        "7": "Sou Raul, livreiro. Davi me ajuda a organizar estas leituras; Ravi acompanha as notícias na rádio.",
+        "8": "Sou Raul, livreiro. Davi me ajuda a organizar estas leituras; Ravi acompanha as notícias na rádio."
+      }
+    },
+    {
+      "path": "heritageContent.residents.1.lines.1",
+      "en": {
+        "6": "In Machado’s work, ask who narrates. In Carolina’s record, also look for poetry, fiction and compositions.",
+        "7": "In Machado’s work, ask who narrates. In Carolina’s record, also look for poetry, fiction and compositions.",
+        "8": "In Machado’s work, ask who narrates. In Carolina’s record, also look for poetry, fiction and compositions."
+      },
+      "pt": "Na obra de Machado, pergunte quem narra. Na ficha de Carolina, procure também poemas, narrativas e composições.",
+      "ptByGrade": {
+        "6": "Na obra de Machado, pergunte quem narra. Na ficha de Carolina, procure também poemas, narrativas e composições.",
+        "7": "Na obra de Machado, pergunte quem narra. Na ficha de Carolina, procure também poemas, narrativas e composições.",
+        "8": "Na obra de Machado, pergunte quem narra. Na ficha de Carolina, procure também poemas, narrativas e composições."
+      }
+    },
+    {
+      "path": "heritageContent.residents.1.lines.2",
+      "en": {
+        "6": "The reading about Conceição Evaristo connects memory and literary creation. This summary opens the research; the work has its own language.",
+        "7": "The reading about Conceição Evaristo connects memory and literary creation. This summary opens the research; the work has its own language.",
+        "8": "The reading about Conceição Evaristo connects memory and literary creation. This summary opens the research; the work has its own language."
+      },
+      "pt": "A leitura de Conceição Evaristo aproxima memória e criação literária. O resumo aqui abre a pesquisa; a obra tem sua própria linguagem.",
+      "ptByGrade": {
+        "6": "A leitura de Conceição Evaristo aproxima memória e criação literária. O resumo aqui abre a pesquisa; a obra tem sua própria linguagem.",
+        "7": "A leitura de Conceição Evaristo aproxima memória e criação literária. O resumo aqui abre a pesquisa; a obra tem sua própria linguagem.",
+        "8": "A leitura de Conceição Evaristo aproxima memória e criação literária. O resumo aqui abre a pesquisa; a obra tem sua própria linguagem."
+      }
+    },
+    {
+      "path": "cozyContent.readings.0",
+      "en": "We name the scientist and describe her research.",
+      "pt": "Identificamos a cientista e descrevemos sua pesquisa."
+    },
+    {
+      "path": "cozyContent.readings.1",
+      "en": "A scientist can lead a contribution within a larger team.",
+      "pt": "Uma cientista pode liderar uma contribuição dentro de uma equipe maior."
+    },
+    {
+      "path": "cozyContent.readings.2",
+      "en": "The melody, the arrangement and the performance need their credits.",
+      "pt": "A melodia, o arranjo e a interpretação precisam de seus créditos."
+    },
+    {
+      "path": "cozyContent.readings.3",
+      "en": "She sang and composed. Both roles belong in the caption.",
+      "pt": "Ela cantava e compunha. As duas funções devem aparecer na legenda."
+    },
+    {
+      "path": "cozyContent.readings.4",
+      "en": "A family photograph holds a particular story.",
+      "pt": "Uma fotografia de família guarda uma história particular."
+    },
+    {
+      "path": "cozyContent.readings.5",
+      "en": "Everyday life can become a subject for art.",
+      "pt": "A vida cotidiana pode se tornar um tema para a arte."
+    },
+    {
+      "path": "cozyContent.readings.6",
+      "en": "The food has a recipe. The craft also has people and history.",
+      "pt": "O alimento tem uma receita. O ofício também tem pessoas e história."
+    },
+    {
+      "path": "cozyContent.residents.0.lines.0",
+      "en": {
+        "6": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed.",
+        "7": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed.",
+        "8": "I saved a place to read. In Carolina’s portrait record, let’s look for the forms she wrote and the music she composed."
+      },
+      "pt": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
+      "ptByGrade": {
+        "6": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
+        "7": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs.",
+        "8": "Guardei um lugar para ler. No retrato de Carolina, vamos procurar também os gêneros que ela escreveu e as músicas que compôs."
+      }
+    },
+    {
+      "path": "cozyContent.residents.0.lines.1",
+      "en": {
+        "6": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition.",
+        "7": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition.",
+        "8": "Rosana Paulino’s work made me reconsider our album. Each photograph has a particular story; I want to ask which ones may enter the exhibition."
+      },
+      "pt": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
+      "ptByGrade": {
+        "6": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
+        "7": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra.",
+        "8": "O painel de Rosana Paulino me fez rever nosso álbum. Cada foto tem uma história particular; quero perguntar quais podem ir para a mostra."
+      }
+    },
+    {
+      "path": "cozyContent.residents.0.lines.2",
+      "en": {
+        "6": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking.",
+        "7": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking.",
+        "8": "Choose a book and compare its record with the museum portrait. If you find a difference, note which information needs checking."
+      },
+      "pt": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
+      "ptByGrade": {
+        "6": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
+        "7": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida.",
+        "8": "Escolha um livro e compare sua ficha com o retrato do museu. Se aparecer uma diferença, anote qual informação precisa ser conferida."
+      }
+    },
+    {
+      "path": "cozyContent.residents.0.repeat",
+      "en": {
+        "6": "The bench is free. We can continue reading and keep the question in the notebook.",
+        "7": "The bench is free. We can continue reading and keep the question in the notebook.",
+        "8": "The bench is free. We can continue reading and keep the question in the notebook."
+      },
+      "pt": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
+      "ptByGrade": {
+        "6": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
+        "7": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno.",
+        "8": "O banco está livre. Podemos continuar a leitura e guardar a pergunta no caderno."
+      }
+    },
+    {
+      "path": "cozyContent.residents.1.lines.0",
+      "en": {
+        "6": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass.",
+        "7": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass.",
+        "8": "Drops outside a cold glass can come from water vapour in the air condensing. They do not prove that water passed through the glass."
+      },
+      "pt": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
+      "ptByGrade": {
+        "6": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
+        "7": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro.",
+        "8": "As gotinhas por fora de um copo frio podem vir do vapor de água do ar que se condensa. Não são prova de que a água atravessou o vidro."
+      }
+    },
+    {
+      "path": "cozyContent.residents.1.lines.1",
+      "en": {
+        "6": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name.",
+        "7": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name.",
+        "8": "Sônia Guimarães researches semiconductors and heat sensors. I recorded her field of work beside her name."
+      },
+      "pt": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
+      "ptByGrade": {
+        "6": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
+        "7": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome.",
+        "8": "Sônia Guimarães pesquisa semicondutores e sensores de calor. Na ficha dela, registrei a área de trabalho junto ao nome."
+      }
+    },
+    {
+      "path": "cozyContent.residents.1.lines.2",
+      "en": {
+        "6": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference.",
+        "7": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference.",
+        "8": "Our game sensor has a table with time and distance. Compare equivalent conditions before assigning a cause to the difference."
+      },
+      "pt": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
+      "ptByGrade": {
+        "6": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
+        "7": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa.",
+        "8": "Nosso sensor do jogo tem uma tabela com tempo e distância. Compare condições equivalentes antes de atribuir a diferença a uma causa."
+      }
+    },
+    {
+      "path": "cozyContent.residents.1.repeat",
+      "en": {
+        "6": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete.",
+        "7": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete.",
+        "8": "The table is still on the bench. A number without a unit or measurement conditions leaves the comparison incomplete."
+      },
+      "pt": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
+      "ptByGrade": {
+        "6": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
+        "7": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta.",
+        "8": "A tabela continua na bancada. Número sem unidade ou condição de medida deixa a comparação incompleta."
+      }
+    },
+    {
+      "path": "cozyContent.residents.2.lines.0",
+      "en": {
+        "6": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage.",
+        "7": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage.",
+        "8": "I drew the bench and the people talking. An everyday scene interests me as much as the festival stage."
+      },
+      "pt": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
+      "ptByGrade": {
+        "6": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
+        "7": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival.",
+        "8": "Desenhei o banco e as pessoas conversando. A cena cotidiana me interessa tanto quanto o palco do festival."
+      }
+    },
+    {
+      "path": "cozyContent.residents.2.lines.1",
+      "en": {
+        "6": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices.",
+        "7": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices.",
+        "8": "Maria Auxiliadora painted work, celebrations and everyday life. The MASP reading gave me questions about texture and subject choices."
+      },
+      "pt": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
+      "ptByGrade": {
+        "6": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
+        "7": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto.",
+        "8": "Maria Auxiliadora pintou trabalho, festas e convivência. A leitura do MASP me deu perguntas sobre textura e escolha de assunto."
+      }
+    },
+    {
+      "path": "cozyContent.residents.2.lines.2",
+      "en": {
+        "6": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened.",
+        "7": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened.",
+        "8": "My drawing makes framing choices. I can explain what I showed, but I cannot say I recorded everything that happened."
+      },
+      "pt": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
+      "ptByGrade": {
+        "6": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
+        "7": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu.",
+        "8": "Meu desenho tem escolhas de enquadramento. Posso explicar o que mostrei, mas não dizer que registrei tudo o que aconteceu."
+      }
+    },
+    {
+      "path": "cozyContent.residents.2.repeat",
+      "en": {
+        "6": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space.",
+        "7": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space.",
+        "8": "Would you like to compare the drawing with its caption? The date still needs confirmation; I won’t invent one to fill the space."
+      },
+      "pt": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
+      "ptByGrade": {
+        "6": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
+        "7": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço.",
+        "8": "Quer comparar o desenho com a legenda? A data ainda precisa ser confirmada; não vou inventar uma para preencher o espaço."
+      }
+    },
+    {
+      "path": "cozyContent.residents.3.lines.0",
+      "en": {
+        "6": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles.",
+        "7": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles.",
+        "8": "Lia composed the melody, I wrote the arrangement and Sol will perform it. The programme needs to keep all three roles."
+      },
+      "pt": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
+      "ptByGrade": {
+        "6": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
+        "7": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções.",
+        "8": "Lia compôs a melodia, eu escrevi o arranjo e Sol vai interpretar. O programa precisa manter as três funções."
+      }
+    },
+    {
+      "path": "cozyContent.residents.3.lines.1",
+      "en": {
+        "6": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage.",
+        "7": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage.",
+        "8": "In Pixinguinha’s collection, scores allow us to study arrangements. The document reveals work that audiences may not identify on stage."
+      },
+      "pt": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
+      "ptByGrade": {
+        "6": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
+        "7": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco.",
+        "8": "No acervo de Pixinguinha, as partituras permitem estudar os arranjos. O documento ajuda a ver trabalho que o público nem sempre identifica no palco."
+      }
+    },
+    {
+      "path": "cozyContent.residents.3.lines.2",
+      "en": {
+        "6": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal.",
+        "7": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal.",
+        "8": "An arrangement change can distribute a response among instruments. Let’s try it with the performers before finishing rehearsal."
+      },
+      "pt": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
+      "ptByGrade": {
+        "6": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
+        "7": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio.",
+        "8": "Uma mudança de arranjo pode distribuir a resposta entre instrumentos. Vamos experimentar com quem vai tocar antes de fechar o ensaio."
+      }
+    },
+    {
+      "path": "cozyContent.residents.3.repeat",
+      "en": {
+        "6": "The rehearsal notebook and the programme stay together. That way we can check each person’s role.",
+        "7": "The rehearsal notebook and the programme stay together. That way we can check each person’s role.",
+        "8": "The rehearsal notebook and the programme stay together. That way we can check each person’s role."
+      },
+      "pt": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
+      "ptByGrade": {
+        "6": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
+        "7": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa.",
+        "8": "O caderno de ensaio e o programa ficam juntos. Assim podemos conferir a função de cada pessoa."
+      }
+    },
+    {
+      "path": "cozyContent.residents.4.lines.0",
+      "en": {
+        "6": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name.",
+        "7": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name.",
+        "8": "My stall brings together food and a craft I learned from other people. I want its record to show that work as well as the dish’s name."
+      },
+      "pt": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
+      "ptByGrade": {
+        "6": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
+        "7": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato.",
+        "8": "Meu tabuleiro reúne comida e um ofício que aprendi com outras pessoas. Quero que a ficha mostre esse trabalho, além do nome do prato."
+      }
+    },
+    {
+      "path": "cozyContent.residents.4.lines.1",
+      "en": {
+        "6": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed.",
+        "7": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed.",
+        "8": "Acarajé and abará use black-eyed peas, but their preparation differs: one is fried in palm oil; the other is wrapped in a leaf and steamed."
+      },
+      "pt": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
+      "ptByGrade": {
+        "6": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
+        "7": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor.",
+        "8": "Acarajé e abará levam feijão-fradinho, mas o preparo muda: um é frito no dendê; o outro vai em folha para o vapor."
+      }
+    },
+    {
+      "path": "cozyContent.residents.4.lines.2",
+      "en": {
+        "6": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women.",
+        "7": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women.",
+        "8": "The clothing record names the skirt, blouse, headwrap and pano da costa in the context of the craft. It is not a uniform for all Black women."
+      },
+      "pt": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
+      "ptByGrade": {
+        "6": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
+        "7": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras.",
+        "8": "A ficha da roupa nomeia saia, bata, torço e pano da costa no contexto do ofício. Não é um uniforme para todas as mulheres negras."
+      }
+    },
+    {
+      "path": "cozyContent.residents.4.repeat",
+      "en": {
+        "6": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption.",
+        "7": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption.",
+        "8": "Rosa keeps the labels and I check the descriptions of my stall. Makers also take part in writing the caption."
+      },
+      "pt": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
+      "ptByGrade": {
+        "6": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
+        "7": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda.",
+        "8": "Rosa guarda as etiquetas e eu confiro as descrições do meu tabuleiro. Quem faz também participa da legenda."
+      }
+    },
+    {
+      "path": "cozyContent.residents.5.lines.0",
+      "en": {
+        "6": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin.",
+        "7": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin.",
+        "8": "Dimas organises the catalogue; I help check document descriptions. A copy needs to remain linked to its origin."
+      },
+      "pt": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
+      "ptByGrade": {
+        "6": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
+        "7": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência.",
+        "8": "Dimas organiza o catálogo; eu ajudo a conferir a descrição dos documentos. Uma cópia precisa continuar ligada à sua procedência."
+      }
+    },
+    {
+      "path": "cozyContent.residents.5.lines.1",
+      "en": {
+        "6": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care.",
+        "7": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care.",
+        "8": "When storing a book, consider light and humidity. Preserving the material and recording its information are different parts of the same care."
+      },
+      "pt": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
+      "ptByGrade": {
+        "6": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
+        "7": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado.",
+        "8": "Ao guardar um livro, observe luz e umidade. Conservar o suporte e registrar a informação são partes diferentes do mesmo cuidado."
+      }
+    },
+    {
+      "path": "cozyContent.residents.5.lines.2",
+      "en": {
+        "6": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further.",
+        "7": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further.",
+        "8": "The sentence on the panel is our summary. The link leads to the source for anyone who wants to check the document and read further."
+      },
+      "pt": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
+      "ptByGrade": {
+        "6": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
+        "7": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura.",
+        "8": "A frase no painel é um resumo nosso. O link leva à fonte para quem quiser conferir o documento e ampliar a leitura."
+      }
+    },
+    {
+      "path": "cozyContent.residents.5.repeat",
+      "en": {
+        "6": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything.",
+        "7": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything.",
+        "8": "If the date is missing, mark the gap. The catalogue can be updated without pretending it always knew everything."
+      },
+      "pt": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
+      "ptByGrade": {
+        "6": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
+        "7": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo.",
+        "8": "Se a data ainda falta, marque a lacuna. O catálogo pode ser atualizado sem fingir que sempre soube de tudo."
+      }
+    },
+    {
+      "path": "cozyContent.residents.6.lines.0",
+      "en": {
+        "6": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear.",
+        "7": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear.",
+        "8": "This panel began with the idea of portraying our neighbours. Now I want each person to check how their name and story appear."
+      },
+      "pt": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
+      "ptByGrade": {
+        "6": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
+        "7": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem.",
+        "8": "Este painel começou com a ideia de retratar nossos vizinhos. Agora quero que cada pessoa confira como o nome e a história aparecem."
+      }
+    },
+    {
+      "path": "cozyContent.residents.6.lines.1",
+      "en": {
+        "6": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context.",
+        "7": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context.",
+        "8": "Rosana Paulino works with memory and family portraits. The reading raised questions for our panel, which has a different author and context."
+      },
+      "pt": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
+      "ptByGrade": {
+        "6": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
+        "7": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto.",
+        "8": "Rosana Paulino trabalha com memória e retratos familiares. A leitura abriu perguntas para o nosso painel, que tem outra autoria e outro contexto."
+      }
+    },
+    {
+      "path": "cozyContent.residents.6.lines.2",
+      "en": {
+        "6": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference.",
+        "7": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference.",
+        "8": "I can describe a fold or a colour. To explain what the clothing means, I need to listen to the person and know the reference."
+      },
+      "pt": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
+      "ptByGrade": {
+        "6": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
+        "7": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência.",
+        "8": "Posso descrever uma dobra ou uma cor. Para dizer o que a roupa significa, preciso ouvir a pessoa e conhecer a referência."
+      }
+    },
+    {
+      "path": "cozyContent.residents.6.repeat",
+      "en": {
+        "6": "The date of Elisa’s drawing is still unknown. Its label says so until we can check.",
+        "7": "The date of Elisa’s drawing is still unknown. Its label says so until we can check.",
+        "8": "The date of Elisa’s drawing is still unknown. Its label says so until we can check."
+      },
+      "pt": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
+      "ptByGrade": {
+        "6": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
+        "7": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir.",
+        "8": "A data do desenho de Elisa ficou pendente. A etiqueta registra isso até conseguirmos conferir."
+      }
+    },
+    {
+      "path": "cozyContent.residents.7.lines.0",
+      "en": {
+        "6": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step.",
+        "7": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step.",
+        "8": "The headline highlighted one name; the article showed a team. I’ll publish the contributions without hiding who did each step."
+      },
+      "pt": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
+      "ptByGrade": {
+        "6": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
+        "7": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa.",
+        "8": "A manchete destacava um nome; o artigo mostrava uma equipe. Vou publicar as contribuições sem esconder quem fez cada etapa."
+      }
+    },
+    {
+      "path": "cozyContent.residents.7.lines.1",
+      "en": {
+        "6": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that.",
+        "7": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that.",
+        "8": "In the 2020 viral genome research, institutions and methods help explain the result. The clipping alone did not show that."
+      },
+      "pt": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
+      "ptByGrade": {
+        "6": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
+        "7": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso.",
+        "8": "Na pesquisa de 2020 sobre o genoma viral, as instituições e os métodos ajudam a entender o resultado. O recorte sozinho não mostrava isso."
+      }
+    },
+    {
+      "path": "cozyContent.residents.7.lines.2",
+      "en": {
+        "6": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction.",
+        "7": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction.",
+        "8": "Ravi is following the cropped notice at the newsroom. Our board will keep the earlier version and explain the correction."
+      },
+      "pt": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
+      "ptByGrade": {
+        "6": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
+        "7": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção.",
+        "8": "Ravi acompanha o aviso recortado na redação. Nosso mural vai guardar a versão anterior e a explicação da correção."
+      }
+    },
+    {
+      "path": "cozyContent.residents.7.repeat",
+      "en": {
+        "6": "A useful correction shows what changed and the evidence used. Then readers can check our decision.",
+        "7": "A useful correction shows what changed and the evidence used. Then readers can check our decision.",
+        "8": "A useful correction shows what changed and the evidence used. Then readers can check our decision."
+      },
+      "pt": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
+      "ptByGrade": {
+        "6": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
+        "7": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão.",
+        "8": "Uma boa correção mostra o que mudou e a evidência usada. Assim o público pode conferir nossa decisão."
+      }
+    },
+    {
+      "path": "cozyContent.activities.0",
+      "en": "Keep one condition the same when you compare.",
+      "pt": "Mantenha uma condição igual quando fizer uma comparação."
+    },
+    {
+      "path": "cozyContent.activities.1",
+      "en": "Show people and their contributions.",
+      "pt": "Mostre as pessoas e suas contribuições."
+    },
+    {
+      "path": "cozyContent.activities.2",
+      "en": "Check who composed, arranged and performed.",
+      "pt": "Confira quem compôs, fez o arranjo e interpretou."
+    },
+    {
+      "path": "cozyContent.activities.3",
+      "en": "Keep the information you know and show the gaps.",
+      "pt": "Guarde as informações que você conhece e mostre as lacunas."
+    },
+    {
+      "path": "cozyContent.activities.4",
+      "en": "Look at the details before writing your interpretation.",
+      "pt": "Observe os detalhes antes de escrever sua interpretação."
+    },
+    {
+      "path": "cozyContent.activities.5",
+      "en": "Learn about a practice with the people who keep it alive.",
+      "pt": "Aprenda sobre uma prática com as pessoas que a mantêm viva."
+    },
+    {
+      "path": "culturalContent.readings.0",
+      "en": "Twists use two strands twisted around each other.",
+      "pt": "Twists usam duas mechas enroladas entre si."
+    },
+    {
+      "path": "culturalContent.readings.1",
+      "en": "My hairstyle does not tell you everything about me.",
+      "pt": "Meu penteado não conta tudo sobre mim."
+    },
+    {
+      "path": "culturalContent.readings.2",
+      "en": "A headwrap can have different uses and meanings.",
+      "pt": "Um turbante pode ter usos e sentidos diferentes."
+    },
+    {
+      "path": "culturalContent.readings.3",
+      "en": "Name the garment and explain the context in which it is used.",
+      "pt": "Identifique a peça e explique o contexto em que é usada."
+    },
+    {
+      "path": "culturalContent.readings.4",
+      "en": "Acarajé is fried; abará is steamed in a leaf wrapping.",
+      "pt": "O acarajé é frito; o abará é cozido no vapor, envolvido em folha."
+    },
+    {
+      "path": "culturalContent.readings.5",
+      "en": "Clothes have designers, materials and purposes.",
+      "pt": "Roupas têm criadores, materiais e finalidades."
+    },
+    {
+      "path": "culturalContent.readings.6",
+      "en": "Different Candomblé traditions have their own histories.",
+      "pt": "Diferentes tradições de Candomblé têm suas próprias histórias."
+    },
+    {
+      "path": "culturalContent.readings.7",
+      "en": "We can respect different beliefs without sharing the same belief.",
+      "pt": "Podemos respeitar crenças diferentes sem ter a mesma crença."
+    },
+    {
+      "path": "culturalContent.residents.0.lines.0",
+      "en": {
+        "6": "I’m Bisa, a hair braider. Before choosing a drawing, tell me what you want and how you plan to wear the style.",
+        "7": "I’m Bisa, a hair braider. Before choosing a drawing, tell me what you want and how you plan to wear the style.",
+        "8": "I’m Bisa, a hair braider. Before choosing a drawing, tell me what you want and how you plan to wear the style."
+      },
+      "pt": "Sou Bisa, trancista. Antes de escolher um desenho, me conte o que você quer e como pretende usar o penteado.",
+      "ptByGrade": {
+        "6": "Sou Bisa, trancista. Antes de escolher um desenho, me conte o que você quer e como pretende usar o penteado.",
+        "7": "Sou Bisa, trancista. Antes de escolher um desenho, me conte o que você quer e como pretende usar o penteado.",
+        "8": "Sou Bisa, trancista. Antes de escolher um desenho, me conte o que você quer e como pretende usar o penteado."
+      }
+    },
+    {
+      "path": "culturalContent.residents.0.lines.1",
+      "en": {
+        "6": "On the cornrow card, lines follow the scalp. In twists, two strands wrap around each other. Compare the technique as well as the outline.",
+        "7": "On the cornrow card, lines follow the scalp. In twists, two strands wrap around each other. Compare the technique as well as the outline.",
+        "8": "On the cornrow card, lines follow the scalp. In twists, two strands wrap around each other. Compare the technique as well as the outline."
+      },
+      "pt": "No cartão nagô, as linhas seguem junto à raiz. Nos twists, duas mechas se enrolam entre si. Compare a técnica, além da silhueta.",
+      "ptByGrade": {
+        "6": "No cartão nagô, as linhas seguem junto à raiz. Nos twists, duas mechas se enrolam entre si. Compare a técnica, além da silhueta.",
+        "7": "No cartão nagô, as linhas seguem junto à raiz. Nos twists, duas mechas se enrolam entre si. Compare a técnica, além da silhueta.",
+        "8": "No cartão nagô, as linhas seguem junto à raiz. Nos twists, duas mechas se enrolam entre si. Compare a técnica, além da silhueta."
+      }
+    },
+    {
+      "path": "culturalContent.residents.0.lines.2",
+      "en": {
+        "6": "The fair needs to credit the professionals’ work. My design and Dandara’s clothing take creativity and preparation time.",
+        "7": "The fair needs to credit the professionals’ work. My design and Dandara’s clothing take creativity and preparation time.",
+        "8": "The fair needs to credit the professionals’ work. My design and Dandara’s clothing take creativity and preparation time."
+      },
+      "pt": "A feira precisa creditar o trabalho das profissionais. Meu desenho e o figurino de Dandara têm criação e tempo de preparo.",
+      "ptByGrade": {
+        "6": "A feira precisa creditar o trabalho das profissionais. Meu desenho e o figurino de Dandara têm criação e tempo de preparo.",
+        "7": "A feira precisa creditar o trabalho das profissionais. Meu desenho e o figurino de Dandara têm criação e tempo de preparo.",
+        "8": "A feira precisa creditar o trabalho das profissionais. Meu desenho e o figurino de Dandara têm criação e tempo de preparo."
+      }
+    },
+    {
+      "path": "culturalContent.residents.0.repeat",
+      "en": {
+        "6": "Would you like to review the cards? I’ll explain the difference and you can choose what you prefer.",
+        "7": "Would you like to review the cards? I’ll explain the difference and you can choose what you prefer.",
+        "8": "Would you like to review the cards? I’ll explain the difference and you can choose what you prefer."
+      },
+      "pt": "Quer rever os cartões? Explico a diferença e você escolhe o que prefere.",
+      "ptByGrade": {
+        "6": "Quer rever os cartões? Explico a diferença e você escolhe o que prefere.",
+        "7": "Quer rever os cartões? Explico a diferença e você escolhe o que prefere.",
+        "8": "Quer rever os cartões? Explico a diferença e você escolhe o que prefere."
+      }
+    },
+    {
+      "path": "culturalContent.residents.1.lines.0",
+      "en": {
+        "6": "I’m Dandara, the market’s dressmaker. I design clothes around the wearer and their plans. The pocket is part of the design too.",
+        "7": "I’m Dandara, the market’s dressmaker. I design clothes around the wearer and their plans. The pocket is part of the design too.",
+        "8": "I’m Dandara, the market’s dressmaker. I design clothes around the wearer and their plans. The pocket is part of the design too."
+      },
+      "pt": "Sou Dandara, a costureira da feira. Desenho roupas pensando na pessoa e no que ela quer fazer. O bolso também faz parte do projeto.",
+      "ptByGrade": {
+        "6": "Sou Dandara, a costureira da feira. Desenho roupas pensando na pessoa e no que ela quer fazer. O bolso também faz parte do projeto.",
+        "7": "Sou Dandara, a costureira da feira. Desenho roupas pensando na pessoa e no que ela quer fazer. O bolso também faz parte do projeto.",
+        "8": "Sou Dandara, a costureira da feira. Desenho roupas pensando na pessoa e no que ela quer fazer. O bolso também faz parte do projeto."
+      }
+    },
+    {
+      "path": "culturalContent.residents.1.lines.1",
+      "en": {
+        "6": "Kente is made by weaving strips; ankara is printed cotton. Texture, construction and pattern are different information.",
+        "7": "Kente is made by weaving strips; ankara is printed cotton. Texture, construction and pattern are different information.",
+        "8": "Kente is made by weaving strips; ankara is printed cotton. Texture, construction and pattern are different information."
+      },
+      "pt": "Kente se forma na tecelagem de tiras; ankara recebe estampa no algodão. Textura, construção e desenho não são a mesma informação.",
+      "ptByGrade": {
+        "6": "Kente se forma na tecelagem de tiras; ankara recebe estampa no algodão. Textura, construção e desenho não são a mesma informação.",
+        "7": "Kente se forma na tecelagem de tiras; ankara recebe estampa no algodão. Textura, construção e desenho não são a mesma informação.",
+        "8": "Kente se forma na tecelagem de tiras; ankara recebe estampa no algodão. Textura, construção e desenho não são a mesma informação."
+      }
+    },
+    {
+      "path": "culturalContent.residents.1.lines.2",
+      "en": {
+        "6": "Can you help me with the festival costume? I want to know where the pockets are and how the wearer will move.",
+        "7": "Can you help me with the festival costume? I want to know where the pockets are and how the wearer will move.",
+        "8": "Can you help me with the festival costume? I want to know where the pockets are and how the wearer will move."
+      },
+      "pt": "Você pode me ajudar com o figurino do festival? Quero saber onde ficam os bolsos e como a pessoa vai se movimentar com a roupa.",
+      "ptByGrade": {
+        "6": "Você pode me ajudar com o figurino do festival? Quero saber onde ficam os bolsos e como a pessoa vai se movimentar com a roupa.",
+        "7": "Você pode me ajudar com o figurino do festival? Quero saber onde ficam os bolsos e como a pessoa vai se movimentar com a roupa.",
+        "8": "Você pode me ajudar com o figurino do festival? Quero saber onde ficam os bolsos e como a pessoa vai se movimentar com a roupa."
+      }
+    },
+    {
+      "path": "culturalContent.residents.1.repeat",
+      "en": {
+        "6": "The clothes we are comparing are on the table. Open the wrap dress and follow the front edge down to the waist tie.",
+        "7": "The clothes we are comparing are on the table. Open the wrap dress and follow the front edge down to the waist tie.",
+        "8": "The clothes we are comparing are on the table. Open the wrap dress and follow the front edge down to the waist tie."
+      },
+      "pt": "Na mesa estão as peças que vamos comparar. Abra o vestido transpassado e siga a linha da frente até a faixa da cintura.",
+      "ptByGrade": {
+        "6": "Na mesa estão as peças que vamos comparar. Abra o vestido transpassado e siga a linha da frente até a faixa da cintura.",
+        "7": "Na mesa estão as peças que vamos comparar. Abra o vestido transpassado e siga a linha da frente até a faixa da cintura.",
+        "8": "Na mesa estão as peças que vamos comparar. Abra o vestido transpassado e siga a linha da frente até a faixa da cintura."
+      }
+    },
+    {
+      "path": "culturalContent.residents.2.lines.0",
+      "en": {
+        "6": "I’m Jaci. The community authorised this public visit record; private areas remain outside the exhibition.",
+        "7": "I’m Jaci. The community authorised this public visit record; private areas remain outside the exhibition.",
+        "8": "I’m Jaci. The community authorised this public visit record; private areas remain outside the exhibition."
+      },
+      "pt": "Sou Jaci. A comunidade autorizou esta ficha pública da visita; as áreas reservadas continuam fora da mostra.",
+      "ptByGrade": {
+        "6": "Sou Jaci. A comunidade autorizou esta ficha pública da visita; as áreas reservadas continuam fora da mostra.",
+        "7": "Sou Jaci. A comunidade autorizou esta ficha pública da visita; as áreas reservadas continuam fora da mostra.",
+        "8": "Sou Jaci. A comunidade autorizou esta ficha pública da visita; as áreas reservadas continuam fora da mostra."
+      }
+    },
+    {
+      "path": "culturalContent.residents.2.lines.1",
+      "en": {
+        "6": "The reading distinguishes orixás, voduns and inquices in different traditions. I won’t replace those names with a generic label.",
+        "7": "The reading distinguishes orixás, voduns and inquices in different traditions. I won’t replace those names with a generic label.",
+        "8": "The reading distinguishes orixás, voduns and inquices in different traditions. I won’t replace those names with a generic label."
+      },
+      "pt": "A leitura distingue orixás, voduns e inquices em tradições diferentes. Não vou trocar esses nomes por uma legenda genérica.",
+      "ptByGrade": {
+        "6": "A leitura distingue orixás, voduns e inquices em tradições diferentes. Não vou trocar esses nomes por uma legenda genérica.",
+        "7": "A leitura distingue orixás, voduns e inquices em tradições diferentes. Não vou trocar esses nomes por uma legenda genérica.",
+        "8": "A leitura distingue orixás, voduns e inquices em tradições diferentes. Não vou trocar esses nomes por uma legenda genérica."
+      }
+    },
+    {
+      "path": "culturalContent.residents.2.lines.2",
+      "en": {
+        "6": "Mara is correcting origins in the museum. Here, the community’s name and permission limits must also accompany the record.",
+        "7": "Mara is correcting origins in the museum. Here, the community’s name and permission limits must also accompany the record.",
+        "8": "Mara is correcting origins in the museum. Here, the community’s name and permission limits must also accompany the record."
+      },
+      "pt": "Mara está corrigindo procedências no museu. Aqui, o nome da comunidade e o limite da autorização também precisam acompanhar o registro.",
+      "ptByGrade": {
+        "6": "Mara está corrigindo procedências no museu. Aqui, o nome da comunidade e o limite da autorização também precisam acompanhar o registro.",
+        "7": "Mara está corrigindo procedências no museu. Aqui, o nome da comunidade e o limite da autorização também precisam acompanhar o registro.",
+        "8": "Mara está corrigindo procedências no museu. Aqui, o nome da comunidade e o limite da autorização também precisam acompanhar o registro."
+      }
+    },
+    {
+      "path": "culturalContent.residents.2.repeat",
+      "en": {
+        "6": "We can learn in the shared space and respect what the community chose to keep private.",
+        "7": "We can learn in the shared space and respect what the community chose to keep private.",
+        "8": "We can learn in the shared space and respect what the community chose to keep private."
+      },
+      "pt": "Podemos aprender no espaço compartilhado e respeitar o que a casa escolheu preservar.",
+      "ptByGrade": {
+        "6": "Podemos aprender no espaço compartilhado e respeitar o que a casa escolheu preservar.",
+        "7": "Podemos aprender no espaço compartilhado e respeitar o que a casa escolheu preservar.",
+        "8": "Podemos aprender no espaço compartilhado e respeitar o que a casa escolheu preservar."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.0.lines.0",
+      "en": {
+        "6": "Shall we compare the two cards?",
+        "7": "The cards describe the preparation. Shall we compare them?",
+        "8": "We can consult the preparation cards while comparing the two foods."
+      },
+      "pt": "Os cartões descrevem o preparo. Vamos compará-los?",
+      "ptByGrade": {
+        "6": "Vamos comparar os dois cartões?",
+        "7": "Os cartões descrevem o preparo. Vamos compará-los?",
+        "8": "Podemos consultar os cartões de preparo enquanto comparamos os dois alimentos."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.0.lines.1",
+      "en": {
+        "6": "Ask me about the ingredients. The colour is not enough.",
+        "7": "You can ask me about the ingredients in today’s cocadas; the colour alone is not enough.",
+        "8": "I can explain what I used in today’s cocadas, rather than having you infer the ingredients from colour alone."
+      },
+      "pt": "Você pode perguntar a mim sobre os ingredientes das cocadas de hoje; a cor sozinha não basta.",
+      "ptByGrade": {
+        "6": "Pergunte a mim sobre os ingredientes. A cor não basta.",
+        "7": "Você pode perguntar a mim sobre os ingredientes das cocadas de hoje; a cor sozinha não basta.",
+        "8": "Posso explicar o que usei nas cocadas de hoje, em vez de deixar que você deduza os ingredientes apenas pela cor."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.1.lines.0",
+      "en": {
+        "6": "My portrait is in the library album. I chose the caption.",
+        "7": "I chose the caption and agreed to add my portrait to the library album.",
+        "8": "The library album includes the portrait and caption that I chose to share."
+      },
+      "pt": "Escolhi a legenda e concordei em acrescentar meu retrato ao álbum da biblioteca.",
+      "ptByGrade": {
+        "6": "Meu retrato está no álbum da biblioteca. Escolhi a legenda.",
+        "7": "Escolhi a legenda e concordei em acrescentar meu retrato ao álbum da biblioteca.",
+        "8": "O álbum da biblioteca inclui o retrato e a legenda que escolhi compartilhar."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.2.lines.0",
+      "en": {
+        "6": "This book presents Nilma Lino Gomes. Shall we find the reference?",
+        "7": "The book on hair presents Nilma Lino Gomes’s research. Shall we find the reference together?",
+        "8": "We can locate the reference to Nilma Lino Gomes’s research in the book on hair and identity."
+      },
+      "pt": "O livro sobre cabelo apresenta a pesquisa de Nilma Lino Gomes. Vamos encontrar a referência juntos?",
+      "ptByGrade": {
+        "6": "Este livro apresenta Nilma Lino Gomes. Vamos encontrar a referência?",
+        "7": "O livro sobre cabelo apresenta a pesquisa de Nilma Lino Gomes. Vamos encontrar a referência juntos?",
+        "8": "Podemos localizar a referência à pesquisa de Nilma Lino Gomes no livro sobre cabelo e identidade."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.3.lines.0",
+      "en": {
+        "6": "We checked the caption and explained the correction.",
+        "7": "We revised a caption that inferred religion from clothing and explained the correction.",
+        "8": "The revised caption uses authorised information and explains why the earlier assumption based on clothing was corrected."
+      },
+      "pt": "Revisamos uma legenda que deduzia a religião pela roupa e explicamos a correção.",
+      "ptByGrade": {
+        "6": "Conferimos a legenda e explicamos a correção.",
+        "7": "Revisamos uma legenda que deduzia a religião pela roupa e explicamos a correção.",
+        "8": "A legenda revisada usa informações autorizadas e explica por que a suposição anterior baseada na roupa foi corrigida."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.4.lines.0",
+      "en": {
+        "6": "This drawing is Dandara’s. Each creator has a credit.",
+        "7": "This drawing is Dandara’s, and the real exhibition has a separate reference.",
+        "8": "We kept Dandara’s drawing and the reference to the real exhibition in separate fields so that each creator is credited."
+      },
+      "pt": "Este desenho é de Dandara, e a exposição real tem uma referência separada.",
+      "ptByGrade": {
+        "6": "Este desenho é de Dandara. Cada criador tem um crédito.",
+        "7": "Este desenho é de Dandara, e a exposição real tem uma referência separada.",
+        "8": "Mantivemos o desenho de Dandara e a referência à exposição real em campos separados para que cada criador receba crédito."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.5.lines.0",
+      "en": {
+        "6": "The public card is here. We agreed on what to share.",
+        "7": "This public card records the contributors and what they agreed to share.",
+        "8": "The public card identifies contributors and the conditions they agreed on for sharing their information."
+      },
+      "pt": "Esta ficha pública registra os participantes e o que concordaram em compartilhar.",
+      "ptByGrade": {
+        "6": "A ficha pública está aqui. Combinamos o que compartilhar.",
+        "7": "Esta ficha pública registra os participantes e o que concordaram em compartilhar.",
+        "8": "A ficha pública identifica os participantes e as condições que combinaram para compartilhar suas informações."
+      }
+    },
+    {
+      "path": "culturalContent.residentAdditions.6.lines.0",
+      "en": {
+        "6": "I chose comfortable clothes for rehearsal.",
+        "7": "I put my instrument away and chose comfortable clothes for rehearsal.",
+        "8": "Before rehearsal, I put the instrument away and chose clothes suited to what I would be doing."
+      },
+      "pt": "Guardei meu instrumento e escolhi roupas confortáveis para o ensaio.",
+      "ptByGrade": {
+        "6": "Escolhi roupas confortáveis para o ensaio.",
+        "7": "Guardei meu instrumento e escolhi roupas confortáveis para o ensaio.",
+        "8": "Antes do ensaio, guardei o instrumento e escolhi roupas adequadas ao que eu iria fazer."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.0.lines.0",
+      "en": {
+        "6": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint.",
+        "7": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint.",
+        "8": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint."
+      },
+      "pt": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+      "ptByGrade": {
+        "6": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+        "7": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+        "8": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.0.lines.1",
+      "en": {
+        "6": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+        "7": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+        "8": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly."
+      },
+      "pt": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+      "ptByGrade": {
+        "6": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+        "7": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+        "8": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.0.repeat",
+      "en": {
+        "6": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+        "7": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+        "8": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly."
+      },
+      "pt": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+      "ptByGrade": {
+        "6": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+        "7": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+        "8": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.1.lines.0",
+      "en": {
+        "6": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book.",
+        "7": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book.",
+        "8": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book."
+      },
+      "pt": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+      "ptByGrade": {
+        "6": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+        "7": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+        "8": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.1.lines.1",
+      "en": {
+        "6": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+        "7": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+        "8": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer."
+      },
+      "pt": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+      "ptByGrade": {
+        "6": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+        "7": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+        "8": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.1.repeat",
+      "en": {
+        "6": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+        "7": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+        "8": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer."
+      },
+      "pt": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+      "ptByGrade": {
+        "6": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+        "7": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+        "8": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.2.lines.0",
+      "en": {
+        "6": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting.",
+        "7": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting.",
+        "8": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting."
+      },
+      "pt": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+      "ptByGrade": {
+        "6": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+        "7": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+        "8": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.2.lines.1",
+      "en": {
+        "6": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+        "7": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+        "8": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition."
+      },
+      "pt": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+      "ptByGrade": {
+        "6": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+        "7": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+        "8": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.2.repeat",
+      "en": {
+        "6": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+        "7": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+        "8": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition."
+      },
+      "pt": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+      "ptByGrade": {
+        "6": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+        "7": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+        "8": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.3.lines.0",
+      "en": {
+        "6": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival.",
+        "7": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival.",
+        "8": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival."
+      },
+      "pt": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+      "ptByGrade": {
+        "6": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+        "7": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+        "8": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.3.lines.1",
+      "en": {
+        "6": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+        "7": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+        "8": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature."
+      },
+      "pt": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+      "ptByGrade": {
+        "6": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+        "7": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+        "8": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.3.repeat",
+      "en": {
+        "6": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+        "7": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+        "8": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature."
+      },
+      "pt": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+      "ptByGrade": {
+        "6": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+        "7": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+        "8": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.4.lines.0",
+      "en": {
+        "6": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing.",
+        "7": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing.",
+        "8": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing."
+      },
+      "pt": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+      "ptByGrade": {
+        "6": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+        "7": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+        "8": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.4.lines.1",
+      "en": {
+        "6": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+        "7": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+        "8": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore."
+      },
+      "pt": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+      "ptByGrade": {
+        "6": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+        "7": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+        "8": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.4.repeat",
+      "en": {
+        "6": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+        "7": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+        "8": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore."
+      },
+      "pt": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+      "ptByGrade": {
+        "6": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+        "7": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+        "8": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.5.lines.0",
+      "en": {
+        "6": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture.",
+        "7": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture.",
+        "8": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture."
+      },
+      "pt": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+      "ptByGrade": {
+        "6": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+        "7": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+        "8": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.5.lines.1",
+      "en": {
+        "6": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+        "7": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+        "8": "A wet page can lose information too. Looking after the material helps preserve what someone else will read."
+      },
+      "pt": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+      "ptByGrade": {
+        "6": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+        "7": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+        "8": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.5.repeat",
+      "en": {
+        "6": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+        "7": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+        "8": "A wet page can lose information too. Looking after the material helps preserve what someone else will read."
+      },
+      "pt": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+      "ptByGrade": {
+        "6": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+        "7": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+        "8": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.6.lines.0",
+      "en": {
+        "6": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs.",
+        "7": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs.",
+        "8": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs."
+      },
+      "pt": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+      "ptByGrade": {
+        "6": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+        "7": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+        "8": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.6.lines.1",
+      "en": {
+        "6": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+        "7": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+        "8": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour."
+      },
+      "pt": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+      "ptByGrade": {
+        "6": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+        "7": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+        "8": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.6.repeat",
+      "en": {
+        "6": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+        "7": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+        "8": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour."
+      },
+      "pt": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+      "ptByGrade": {
+        "6": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+        "7": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+        "8": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.7.lines.0",
+      "en": {
+        "6": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook.",
+        "7": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook.",
+        "8": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook."
+      },
+      "pt": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+      "ptByGrade": {
+        "6": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+        "7": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+        "8": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.7.lines.1",
+      "en": {
+        "6": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+        "7": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+        "8": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal."
+      },
+      "pt": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+      "ptByGrade": {
+        "6": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+        "7": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+        "8": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal."
+      }
+    },
+    {
+      "path": "wardrobeContent.residents.7.repeat",
+      "en": {
+        "6": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+        "7": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+        "8": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal."
+      },
+      "pt": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+      "ptByGrade": {
+        "6": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+        "7": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+        "8": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal."
+      }
+    },
+    {
+      "path": "coastContent.readings.0",
+      "en": "The artwork shows Iemanjá holding an abebé.",
+      "pt": "A obra mostra Iemanjá segurando um abebé."
+    },
+    {
+      "path": "coastContent.readings.1",
+      "en": "We keep the path clear, take our rubbish away and observe wildlife from a distance.",
+      "pt": "Mantemos o caminho livre, recolhemos nosso lixo e observamos a fauna a distância."
+    },
+    {
+      "path": "coastContent.readings.2",
+      "en": "Write what you see before explaining why it happens.",
+      "pt": "Registre o que vê antes de explicar por que acontece."
+    },
+    {
+      "path": "coastContent.iemanja.lines.0",
+      "en": "This is an original artistic depiction of Iemanjá.",
+      "pt": "Esta é uma representação artística original de Iemanjá."
+    },
+    {
+      "path": "coastContent.iemanja.lines.1",
+      "en": "The caption names the crown, the beaded veil and the abebé.",
+      "pt": "A legenda nomeia a coroa, o véu de contas e o abebé."
+    },
+    {
+      "path": "coastContent.iemanja.lines.2",
+      "en": "One image does not represent every community.",
+      "pt": "Uma imagem não representa todas as comunidades."
+    },
+    {
+      "path": "neighborsContent.residents.0.lines.0",
+      "en": {
+        "6": "I checked the route to the reading table. A place can have a good bookcase and still make it difficult for readers to reach it.",
+        "7": "I checked the route to the reading table. A place can have a good bookcase and still make it difficult for readers to reach it.",
+        "8": "I checked the route to the reading table. A place can have a good bookcase and still make it difficult for readers to reach it."
+      },
+      "pt": "Conferi o caminho até a mesa de leitura. Um lugar pode ter uma boa estante e ainda dificultar a chegada de quem quer ler.",
+      "ptByGrade": {
+        "6": "Conferi o caminho até a mesa de leitura. Um lugar pode ter uma boa estante e ainda dificultar a chegada de quem quer ler.",
+        "7": "Conferi o caminho até a mesa de leitura. Um lugar pode ter uma boa estante e ainda dificultar a chegada de quem quer ler.",
+        "8": "Conferi o caminho até a mesa de leitura. Um lugar pode ter uma boa estante e ainda dificultar a chegada de quem quer ler."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.0.lines.1",
+      "en": {
+        "6": "Dimas organises the catalogue; I help visitors find the reading. A record needs to work for the person looking for the document.",
+        "7": "Dimas organises the catalogue; I help visitors find the reading. A record needs to work for the person looking for the document.",
+        "8": "Dimas organises the catalogue; I help visitors find the reading. A record needs to work for the person looking for the document."
+      },
+      "pt": "Dimas organiza o catálogo; eu ajudo os visitantes a encontrar a leitura. A ficha precisa funcionar para quem procura o documento.",
+      "ptByGrade": {
+        "6": "Dimas organiza o catálogo; eu ajudo os visitantes a encontrar a leitura. A ficha precisa funcionar para quem procura o documento.",
+        "7": "Dimas organiza o catálogo; eu ajudo os visitantes a encontrar a leitura. A ficha precisa funcionar para quem procura o documento.",
+        "8": "Dimas organiza o catálogo; eu ajudo os visitantes a encontrar a leitura. A ficha precisa funcionar para quem procura o documento."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.0.repeat",
+      "en": "I put the returned books on this cart.",
+      "pt": "Coloquei os livros devolvidos neste carrinho."
+    },
+    {
+      "path": "neighborsContent.residents.1.lines.0",
+      "en": {
+        "6": "Dandara designed the costume and I helped finish it. The workshop record can show both contributions.",
+        "7": "Dandara designed the costume and I helped finish it. The workshop record can show both contributions.",
+        "8": "Dandara designed the costume and I helped finish it. The workshop record can show both contributions."
+      },
+      "pt": "Dandara desenhou o figurino e eu ajudei no acabamento. A ficha da oficina pode mostrar as duas contribuições.",
+      "ptByGrade": {
+        "6": "Dandara desenhou o figurino e eu ajudei no acabamento. A ficha da oficina pode mostrar as duas contribuições.",
+        "7": "Dandara desenhou o figurino e eu ajudei no acabamento. A ficha da oficina pode mostrar as duas contribuições.",
+        "8": "Dandara desenhou o figurino e eu ajudei no acabamento. A ficha da oficina pode mostrar as duas contribuições."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.1.lines.1",
+      "en": {
+        "6": "The weave and the print give different information. Let’s compare the kente and ankara cards at the market.",
+        "7": "The weave and the print give different information. Let’s compare the kente and ankara cards at the market.",
+        "8": "The weave and the print give different information. Let’s compare the kente and ankara cards at the market."
+      },
+      "pt": "A trama do tecido e a estampa contam informações diferentes. Vamos comparar os cartões de kente e ankara na feira.",
+      "ptByGrade": {
+        "6": "A trama do tecido e a estampa contam informações diferentes. Vamos comparar os cartões de kente e ankara na feira.",
+        "7": "A trama do tecido e a estampa contam informações diferentes. Vamos comparar os cartões de kente e ankara na feira.",
+        "8": "A trama do tecido e a estampa contam informações diferentes. Vamos comparar os cartões de kente e ankara na feira."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.1.repeat",
+      "en": "I am sewing a pocket onto this apron.",
+      "pt": "Estou costurando um bolso neste avental."
+    },
+    {
+      "path": "neighborsContent.residents.2.lines.0",
+      "en": {
+        "6": "I repair bicycles in the park. Before replacing a part, I record the problem and check whether the change fixed it.",
+        "7": "I repair bicycles in the park. Before replacing a part, I record the problem and check whether the change fixed it.",
+        "8": "I repair bicycles in the park. Before replacing a part, I record the problem and check whether the change fixed it."
+      },
+      "pt": "Conserto bicicletas no parque. Antes de trocar uma peça, registro o problema e confiro se a mudança resolveu a falha.",
+      "ptByGrade": {
+        "6": "Conserto bicicletas no parque. Antes de trocar uma peça, registro o problema e confiro se a mudança resolveu a falha.",
+        "7": "Conserto bicicletas no parque. Antes de trocar uma peça, registro o problema e confiro se a mudança resolveu a falha.",
+        "8": "Conserto bicicletas no parque. Antes de trocar uma peça, registro o problema e confiro se a mudança resolveu a falha."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.2.lines.1",
+      "en": {
+        "6": "A spinning wheel helps us observe motion, but a drawing alone does not explain a noise. I need to test the hypothesis.",
+        "7": "A spinning wheel helps us observe motion, but a drawing alone does not explain a noise. I need to test the hypothesis.",
+        "8": "A spinning wheel helps us observe motion, but a drawing alone does not explain a noise. I need to test the hypothesis."
+      },
+      "pt": "Uma roda girando ajuda a observar movimento, mas o desenho sozinho não revela a causa de um ruído. Preciso testar a hipótese.",
+      "ptByGrade": {
+        "6": "Uma roda girando ajuda a observar movimento, mas o desenho sozinho não revela a causa de um ruído. Preciso testar a hipótese.",
+        "7": "Uma roda girando ajuda a observar movimento, mas o desenho sozinho não revela a causa de um ruído. Preciso testar a hipótese.",
+        "8": "Uma roda girando ajuda a observar movimento, mas o desenho sozinho não revela a causa de um ruído. Preciso testar a hipótese."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.2.repeat",
+      "en": "I am adjusting this bicycle wheel.",
+      "pt": "Estou ajustando esta roda da bicicleta."
+    },
+    {
+      "path": "neighborsContent.residents.3.lines.0",
+      "en": {
+        "6": "Aisha shared the care of the beds with me. Each visit goes into the notebook so we know when and where the team worked.",
+        "7": "Aisha shared the care of the beds with me. Each visit goes into the notebook so we know when and where the team worked.",
+        "8": "Aisha shared the care of the beds with me. Each visit goes into the notebook so we know when and where the team worked."
+      },
+      "pt": "Aisha dividiu o cuidado dos canteiros comigo. Cada visita entra no caderno para sabermos quando e onde a equipe trabalhou.",
+      "ptByGrade": {
+        "6": "Aisha dividiu o cuidado dos canteiros comigo. Cada visita entra no caderno para sabermos quando e onde a equipe trabalhou.",
+        "7": "Aisha dividiu o cuidado dos canteiros comigo. Cada visita entra no caderno para sabermos quando e onde a equipe trabalhou.",
+        "8": "Aisha dividiu o cuidado dos canteiros comigo. Cada visita entra no caderno para sabermos quando e onde a equipe trabalhou."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.3.lines.1",
+      "en": {
+        "6": "When a bee visits a flower, it can carry pollen. Not every plant depends on bees; observe before generalising.",
+        "7": "When a bee visits a flower, it can carry pollen. Not every plant depends on bees; observe before generalising.",
+        "8": "When a bee visits a flower, it can carry pollen. Not every plant depends on bees; observe before generalising."
+      },
+      "pt": "Quando uma abelha visita uma flor, ela pode transportar pólen. Nem toda planta depende de abelhas; observe antes de generalizar.",
+      "ptByGrade": {
+        "6": "Quando uma abelha visita uma flor, ela pode transportar pólen. Nem toda planta depende de abelhas; observe antes de generalizar.",
+        "7": "Quando uma abelha visita uma flor, ela pode transportar pólen. Nem toda planta depende de abelhas; observe antes de generalizar.",
+        "8": "Quando uma abelha visita uma flor, ela pode transportar pólen. Nem toda planta depende de abelhas; observe antes de generalizar."
+      }
+    },
+    {
+      "path": "neighborsContent.residents.3.repeat",
+      "en": "I am checking the seedlings.",
+      "pt": "Estou conferindo as mudas."
+    },
+    {
+      "path": "atelierContent.residents.0.lines.0",
+      "en": "Mara found a displaced label. I’ll check its region and period before putting it back.",
+      "pt": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+      "ptByGrade": {
+        "6": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+        "7": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+        "8": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la."
+      }
+    },
+    {
+      "path": "atelierContent.residents.0.lines.1",
+      "en": "Gao and Mbanza Kongo belong to different contexts. The map helps us compare them.",
+      "pt": "Gao e Mbanza Kongo pertencem a contextos diferentes. O mapa ajuda a comparar.",
+      "ptByGrade": {
+        "6": "Gao e Mbanza Kongo pertencem a contextos diferentes. O mapa ajuda a comparar.",
+        "7": "Gao e Mbanza Kongo pertencem a contextos diferentes. O mapa ajuda a comparar.",
+        "8": "Gao e Mbanza Kongo pertencem a contextos diferentes. O mapa ajuda a comparar."
+      }
+    },
+    {
+      "path": "atelierContent.residents.0.repeat",
+      "en": "Mara found a displaced label. I’ll check its region and period before putting it back.",
+      "pt": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+      "ptByGrade": {
+        "6": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+        "7": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la.",
+        "8": "Mara encontrou uma legenda deslocada. Vou conferir região e período antes de recolocá-la."
+      }
+    },
+    {
+      "path": "atelierContent.residents.1.lines.0",
+      "en": "Let’s hear the whole phrase before suggesting another attempt. The pause is part of rehearsal too.",
+      "pt": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+      "ptByGrade": {
+        "6": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+        "7": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+        "8": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio."
+      }
+    },
+    {
+      "path": "atelierContent.residents.1.lines.1",
+      "en": "Lia composed it, André arranged it and Sol performs it. The team checks those credits before the festival.",
+      "pt": "Lia compôs, André arranjou e Sol interpreta. A equipe confere esses créditos antes do festival.",
+      "ptByGrade": {
+        "6": "Lia compôs, André arranjou e Sol interpreta. A equipe confere esses créditos antes do festival.",
+        "7": "Lia compôs, André arranjou e Sol interpreta. A equipe confere esses créditos antes do festival.",
+        "8": "Lia compôs, André arranjou e Sol interpreta. A equipe confere esses créditos antes do festival."
+      }
+    },
+    {
+      "path": "atelierContent.residents.1.repeat",
+      "en": "Let’s hear the whole phrase before suggesting another attempt. The pause is part of rehearsal too.",
+      "pt": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+      "ptByGrade": {
+        "6": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+        "7": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio.",
+        "8": "Vamos ouvir a frase inteira antes de sugerir outra tentativa. A pausa também faz parte do ensaio."
+      }
+    },
+    {
+      "path": "atelierContent.residents.2.lines.0",
+      "en": "I’m checking the media labels. A copy needs to stay linked to its origin.",
+      "pt": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+      "ptByGrade": {
+        "6": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+        "7": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+        "8": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem."
+      }
+    },
+    {
+      "path": "atelierContent.residents.2.lines.1",
+      "en": "The restored records keep their history. The team’s review continues after recovery.",
+      "pt": "Os registros restaurados mantêm o histórico. A revisão da equipe continua depois da recuperação.",
+      "ptByGrade": {
+        "6": "Os registros restaurados mantêm o histórico. A revisão da equipe continua depois da recuperação.",
+        "7": "Os registros restaurados mantêm o histórico. A revisão da equipe continua depois da recuperação.",
+        "8": "Os registros restaurados mantêm o histórico. A revisão da equipe continua depois da recuperação."
+      }
+    },
+    {
+      "path": "atelierContent.residents.2.repeat",
+      "en": "I’m checking the media labels. A copy needs to stay linked to its origin.",
+      "pt": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+      "ptByGrade": {
+        "6": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+        "7": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem.",
+        "8": "Estou conferindo as etiquetas das mídias. Uma cópia precisa continuar ligada à sua origem."
+      }
+    },
+    {
+      "path": "atelierContent.residents.3.lines.0",
+      "en": "Bia found the full notice. I’ll compare the photograph’s caption with the document’s date.",
+      "pt": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+      "ptByGrade": {
+        "6": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+        "7": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+        "8": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento."
+      }
+    },
+    {
+      "path": "atelierContent.residents.3.lines.1",
+      "en": "Ravi will publish the correction with the change explained. I kept the earlier version for reference.",
+      "pt": "Ravi vai publicar a correção com a mudança explicada. Guardei a versão anterior para consulta.",
+      "ptByGrade": {
+        "6": "Ravi vai publicar a correção com a mudança explicada. Guardei a versão anterior para consulta.",
+        "7": "Ravi vai publicar a correção com a mudança explicada. Guardei a versão anterior para consulta.",
+        "8": "Ravi vai publicar a correção com a mudança explicada. Guardei a versão anterior para consulta."
+      }
+    },
+    {
+      "path": "atelierContent.residents.3.repeat",
+      "en": "Bia found the full notice. I’ll compare the photograph’s caption with the document’s date.",
+      "pt": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+      "ptByGrade": {
+        "6": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+        "7": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento.",
+        "8": "Bia encontrou o aviso completo. Vou comparar a legenda da foto com a data do documento."
+      }
+    },
+    {
+      "path": "protestContent.people.0.statement",
+      "en": "The speaking order has room for a written contribution. The minutes also need to keep requests the decision did not address.",
+      "pt": "A ordem de fala tem espaço para uma contribuição escrita. A ata também precisa guardar os pedidos que a decisão não atendeu."
+    },
+    {
+      "path": "protestContent.people.1.statement",
+      "en": "I’ll test whether speech reaches the reading table clearly without drowning out people nearby.",
+      "pt": "Vou testar se a fala chega com clareza à mesa de leitura, sem cobrir a voz de quem está ao lado."
+    },
+    {
+      "path": "protestContent.people.2.statement",
+      "en": "On the panel, 2013 marks the movement’s origin; 2014 marks Ferguson; 2020 brings another set of protests and records.",
+      "pt": "No painel, 2013 marca a origem do movimento; 2014, Ferguson; 2020 reúne outro conjunto de manifestações e registros."
+    },
+    {
+      "path": "protestContent.people.3.statement",
+      "en": "The meeting starts with listening turns. Anyone who prefers to pass can submit a written question.",
+      "pt": "O encontro começa com turnos de escuta. Quem prefere passar a vez pode entregar uma pergunta por escrito."
+    },
+    {
+      "path": "protestContent.people.4.statement",
+      "en": "Water, seats and a clear route help the meeting work. Helping organise it is participation too.",
+      "pt": "Água, assentos e uma rota livre ajudam o encontro a funcionar. Cuidar da organização também é participar."
+    },
+    {
+      "path": "protestContent.people.5.statement",
+      "en": "The sign’s letters need to be readable. Sources and dates stay in the history panel’s record.",
+      "pt": "As letras do cartaz precisam ser legíveis. A fonte e as datas ficam na ficha do painel histórico."
+    },
+    {
+      "path": "protestContent.people.6.statement",
+      "en": "My tambourine answers the group’s phrase. The pause lets the person at the microphone finish speaking.",
+      "pt": "Meu pandeiro responde à frase do grupo. A pausa deixa a pessoa do microfone concluir a fala."
+    },
+    {
+      "path": "protestContent.people.7.statement",
+      "en": "The drum’s membrane vibrates when I strike it. The instrument’s technique and history also belong in our workshop.",
+      "pt": "A pele do tambor vibra quando eu a toco. A técnica e a história do instrumento também entram na nossa oficina."
+    },
+    {
+      "path": "protestContent.people.8.statement",
+      "en": "The guitar has its own channel at rehearsal. Its volume needs to let us hear the other instruments.",
+      "pt": "A guitarra tem seu próprio canal no ensaio. O volume precisa permitir que a gente escute os outros instrumentos."
+    },
+    {
+      "path": "protestContent.people.9.statement",
+      "en": "On my agogô, I compare the bells’ pitches. Hearing the difference helps organise the group’s response.",
+      "pt": "No meu agogô, comparo as alturas das campânulas. Ouvir a diferença ajuda a organizar a resposta do grupo."
+    },
+    {
+      "path": "protestContent.people.10.statement",
+      "en": "I kept the cables out of the path. Now I’ll join with the shaker at the agreed part of rehearsal.",
+      "pt": "Guardei os cabos fora da passagem. Agora entro com o chocalho na parte combinada do ensaio."
+    },
+    {
+      "path": "protestContent.people.11.statement",
+      "en": "I wrote down where my tambourine enters and where it waits. A shared phrase needs both decisions.",
+      "pt": "Anotei onde meu pandeiro entra e onde espera. Uma frase em conjunto precisa dessas duas decisões."
+    },
+    {
+      "path": "protestContent.people.12.statement",
+      "en": "The sign needs to be visible without blocking the route. I checked the space between people and the table.",
+      "pt": "O cartaz precisa ser visto sem ocupar a rota de circulação. Conferi o espaço entre as pessoas e a mesa."
+    },
+    {
+      "path": "protestContent.people.13.statement",
+      "en": "At the market, the card shows who prepared the food. Here, the programme should also show the organising work.",
+      "pt": "No mercado, a ficha mostra quem preparou a comida. Aqui, o programa também deve mostrar o trabalho de organização."
+    },
+    {
+      "path": "protestContent.people.14.statement",
+      "en": "I kept the sign’s draft. The finished version can show why the group changed the wording and who helped.",
+      "pt": "Guardei o rascunho do cartaz. A versão pronta pode mostrar por que o grupo mudou a frase e quem ajudou."
+    },
+    {
+      "path": "protestContent.people.15.statement",
+      "en": "I brought a reading about Carolina. Her best-known book does not sum up the poetry, fiction and music she created.",
+      "pt": "Trouxe uma leitura de Carolina. O livro mais conhecido não resume os poemas, narrativas e músicas que ela criou."
+    },
+    {
+      "path": "protestContent.people.16.statement",
+      "en": "I reinforced the banner’s edge so it will last. I’ll record the repair beside the names of its writer and painter.",
+      "pt": "Reforcei a borda da faixa para ela durar. Vou registrar o reparo junto aos nomes de quem escreveu e pintou."
+    },
+    {
+      "path": "protestContent.people.17.statement",
+      "en": "The sign’s support has the workshop’s mark. Then we know where to return the material after the meeting.",
+      "pt": "O suporte do cartaz tem a marca da oficina. Assim sabemos a quem devolver o material depois do encontro."
+    },
+    {
+      "path": "protestContent.people.18.statement",
+      "en": "I stayed at the water point. When the team takes a break, I’ll hand over the materials and listen to the next speaker.",
+      "pt": "Fiquei no ponto de água. Quando a equipe fizer a pausa, vou passar os materiais e escutar a próxima fala."
+    },
+    {
+      "path": "protestContent.people.19.statement",
+      "en": "A screenshot without a date does not replace the document. I kept the source address to check the full version.",
+      "pt": "A captura sem data não substitui o documento. Guardei o endereço da fonte para conferir a versão completa."
+    },
+    {
+      "path": "protestContent.people.20.statement",
+      "en": "The table holds the timeline and readings. I can help find the reference for a name on the panel.",
+      "pt": "A mesa reúne a cronologia e as leituras. Posso ajudar a encontrar a referência de um nome no painel."
+    },
+    {
+      "path": "protestContent.people.21.statement",
+      "en": "I’m here with my family. The rest area lets us take part and take a break.",
+      "pt": "Estou acompanhando minha família. A área de descanso permite que a gente participe e faça uma pausa."
+    },
+    {
+      "path": "protestContent.people.22.statement",
+      "en": "I ask permission before taking a photograph. The caption records date, place and the publication limit the person agreed to.",
+      "pt": "Peço autorização antes da foto. A legenda registra data, lugar e o limite que a pessoa combinou para publicar."
+    },
+    {
+      "path": "protestContent.people.23.statement",
+      "en": "I came to listen. If I bring a memory to the archive, I want to check how it will be presented.",
+      "pt": "Vim para escutar. Se eu trouxer uma lembrança para o arquivo, quero conferir como ela será apresentada."
+    },
+    {
+      "path": "campusContent.portraits.0",
+      "en": "Zumbi was a leader of Palmares, communities that resisted enslavement in colonial Brazil.",
+      "pt": "Zumbi foi uma liderança de Palmares, comunidades que resistiram à escravização no Brasil colonial."
+    },
+    {
+      "path": "campusContent.portraits.1",
+      "en": "Dandara is remembered as a symbol of resistance. Surviving records leave questions about her life.",
+      "pt": "Dandara é lembrada como símbolo de resistência. Os registros preservados deixam perguntas sobre sua vida."
+    },
+    {
+      "path": "campusContent.portraits.2",
+      "en": "Machado de Assis wrote novels, short stories and chronicles.",
+      "pt": "Machado de Assis escreveu romances, contos e crônicas."
+    },
+    {
+      "path": "campusContent.portraits.3",
+      "en": "Carolina Maria de Jesus created diaries, poetry, fiction and music.",
+      "pt": "Carolina Maria de Jesus criou diários, poesia, ficção e música."
+    },
+    {
+      "path": "campusContent.portraits.4",
+      "en": "Luiz Gama used writing and legal arguments in the struggle against slavery.",
+      "pt": "Luiz Gama usou a escrita e argumentos jurídicos na luta contra a escravidão."
+    },
+    {
+      "path": "campusContent.portraits.5",
+      "en": "Antonieta de Barros was a teacher, journalist and elected representative in Santa Catarina.",
+      "pt": "Antonieta de Barros foi professora, jornalista e representante eleita em Santa Catarina."
+    },
+    {
+      "path": "campusContent.portraits.6",
+      "en": "Milton Santos studied geography, cities, territory and inequality.",
+      "pt": "Milton Santos estudou geografia, cidades, território e desigualdade."
+    },
+    {
+      "path": "campusContent.portraits.7",
+      "en": "Lélia Gonzalez studied racism, sexism and culture in the Americas.",
+      "pt": "Lélia Gonzalez estudou racismo, sexismo e cultura nas Américas."
+    },
+    {
+      "path": "campusContent.portraits.8",
+      "en": "Abdias do Nascimento founded the Black Experimental Theatre in 1944.",
+      "pt": "Abdias do Nascimento fundou o Teatro Experimental do Negro em 1944."
+    },
+    {
+      "path": "campusContent.portraits.9",
+      "en": "Ruth de Souza worked in theatre, cinema and television.",
+      "pt": "Ruth de Souza trabalhou no teatro, no cinema e na televisão."
+    },
+    {
+      "path": "campusContent.portraits.10",
+      "en": "Conceição Evaristo connects literary creation, memory and Black experiences.",
+      "pt": "Conceição Evaristo relaciona criação literária, memória e experiências negras."
+    },
+    {
+      "path": "campusContent.portraits.11",
+      "en": "Gilberto Gil is a Brazilian singer, songwriter and instrumentalist.",
+      "pt": "Gilberto Gil é cantor, compositor e instrumentista brasileiro."
+    },
+    {
+      "path": "campusContent.portraits.12",
+      "en": "Elza Soares was a Brazilian singer whose career crossed different repertoires.",
+      "pt": "Elza Soares foi uma cantora brasileira cuja carreira atravessou diferentes repertórios."
+    },
+    {
+      "path": "campusContent.portraits.13",
+      "en": "Nina Simone was a pianist, singer and civil rights activist.",
+      "pt": "Nina Simone foi pianista, cantora e ativista pelos direitos civis."
+    },
+    {
+      "path": "campusContent.portraits.14",
+      "en": "Katherine Johnson checked computer calculations for John Glenn’s orbital flight in 1962.",
+      "pt": "Katherine Johnson conferiu cálculos de computadores para o voo orbital de John Glenn em 1962."
+    },
+    {
+      "path": "campusContent.portraits.15",
+      "en": "Rosa Parks was a civil rights activist involved in the Montgomery bus boycott.",
+      "pt": "Rosa Parks foi uma ativista pelos direitos civis envolvida no boicote aos ônibus de Montgomery."
+    },
+    {
+      "path": "campusContent.portraits.16",
+      "en": "Harriet Tubman helped enslaved people reach freedom through networks of support.",
+      "pt": "Harriet Tubman ajudou pessoas escravizadas a alcançar a liberdade por redes de apoio."
+    },
+    {
+      "path": "campusContent.portraits.17",
+      "en": "Martin Luther King Jr. was a civil rights leader who advocated nonviolent action.",
+      "pt": "Martin Luther King Jr. foi uma liderança pelos direitos civis que defendeu ações não violentas."
+    },
+    {
+      "path": "campusContent.portraits.18",
+      "en": "Nelson Mandela opposed apartheid and became South Africa’s president in 1994.",
+      "pt": "Nelson Mandela enfrentou o apartheid e se tornou presidente da África do Sul em 1994."
+    },
+    {
+      "path": "campusContent.portraits.19",
+      "en": "Steve Biko was a Black Consciousness leader in South Africa.",
+      "pt": "Steve Biko foi uma liderança da Consciência Negra na África do Sul."
+    },
+    {
+      "path": "campusContent.portraits.20",
+      "en": "Angela Davis studies relationships between race, class, gender and institutions.",
+      "pt": "Angela Davis estuda relações entre raça, classe, gênero e instituições."
+    },
+    {
+      "path": "campusContent.portraits.21",
+      "en": "Wangari Maathai connected tree planting, women’s participation and environmental care.",
+      "pt": "Wangari Maathai relacionou plantio de árvores, participação de mulheres e cuidado ambiental."
+    },
+    {
+      "path": "campusContent.portraits.22",
+      "en": "Marielle Franco was a sociologist, city councillor and human rights advocate.",
+      "pt": "Marielle Franco foi socióloga, vereadora e defensora dos direitos humanos."
+    },
+    {
+      "path": "campusContent.portraits.23",
+      "en": "Pelé won the men’s World Cup with Brazil in 1958, 1962 and 1970.",
+      "pt": "Pelé ganhou a Copa do Mundo masculina com o Brasil em 1958, 1962 e 1970."
+    },
+    {
+      "path": "campusContent.portraits.24",
+      "en": "Marta received the Golden Ball and Golden Boot at the 2007 Women’s World Cup.",
+      "pt": "Marta recebeu a Bola de Ouro e a Chuteira de Ouro na Copa do Mundo feminina de 2007."
+    },
+    {
+      "path": "campusContent.portraits.25",
+      "en": "Rebeca Andrade won Olympic gold in vault at Tokyo 2020 and floor exercise at Paris 2024.",
+      "pt": "Rebeca Andrade ganhou ouro olímpico no salto em Tóquio 2020 e no solo em Paris 2024."
+    },
+    {
+      "path": "campusContent.portraits.26",
+      "en": "Serena Williams won 23 Grand Slam singles titles.",
+      "pt": "Serena Williams ganhou 23 títulos de simples em torneios de Grand Slam."
+    },
+    {
+      "path": "campusContent.portraits.27",
+      "en": "Chimamanda Ngozi Adichie is a Nigerian writer and the author of Americanah.",
+      "pt": "Chimamanda Ngozi Adichie é escritora nigeriana e autora de Americanah."
+    },
+    {
+      "path": "campusContent.portraits.28",
+      "en": "Maya Angelou was an American writer and artist who worked with autobiography and poetry.",
+      "pt": "Maya Angelou foi uma escritora e artista estadunidense que trabalhou com autobiografia e poesia."
+    },
+    {
+      "path": "campusContent.portraits.29",
+      "en": "James Baldwin wrote novels, essays and plays about experiences including race and society.",
+      "pt": "James Baldwin escreveu romances, ensaios e peças sobre experiências que incluem raça e sociedade."
+    },
+    {
+      "path": "campusContent.portraits.30",
+      "en": "Sueli Carneiro is a Brazilian philosopher who studies racism and the exclusion of knowledge.",
+      "pt": "Sueli Carneiro é uma filósofa brasileira que estuda racismo e exclusão de conhecimentos."
+    },
+    {
+      "path": "campusContent.portraits.31",
+      "en": "Cartola was a Brazilian songwriter and singer linked to the founding of Mangueira.",
+      "pt": "Cartola foi um compositor e cantor brasileiro ligado à fundação da Mangueira."
+    },
+    {
+      "path": "campusContent.residents.0.lines.0",
+      "en": {
+        "6": "I’m César. At the bench, our class observes, records conditions and compares results. A clear question helps us plan the test.",
+        "7": "I’m César. At the bench, our class observes, records conditions and compares results. A clear question helps us plan the test.",
+        "8": "I’m César. At the bench, our class observes, records conditions and compares results. A clear question helps us plan the test."
+      },
+      "pt": "Sou César. Na bancada, a turma observa, anota condições e compara resultados. Uma pergunta bem definida ajuda a planejar o teste.",
+      "ptByGrade": {
+        "6": "Sou César. Na bancada, a turma observa, anota condições e compara resultados. Uma pergunta bem definida ajuda a planejar o teste.",
+        "7": "Sou César. Na bancada, a turma observa, anota condições e compara resultados. Uma pergunta bem definida ajuda a planejar o teste.",
+        "8": "Sou César. Na bancada, a turma observa, anota condições e compara resultados. Uma pergunta bem definida ajuda a planejar o teste."
+      }
+    },
+    {
+      "path": "campusContent.residents.0.lines.1",
+      "en": {
+        "6": "The board keeps the plan; the notebook also keeps the attempts. Do not erase a result just because it differed from the prediction.",
+        "7": "The board keeps the plan; the notebook also keeps the attempts. Do not erase a result just because it differed from the prediction.",
+        "8": "The board keeps the plan; the notebook also keeps the attempts. Do not erase a result just because it differed from the prediction."
+      },
+      "pt": "A lousa guarda o plano; o caderno guarda também as tentativas. Não apaguem um resultado só porque ele contrariou a previsão.",
+      "ptByGrade": {
+        "6": "A lousa guarda o plano; o caderno guarda também as tentativas. Não apaguem um resultado só porque ele contrariou a previsão.",
+        "7": "A lousa guarda o plano; o caderno guarda também as tentativas. Não apaguem um resultado só porque ele contrariou a previsão.",
+        "8": "A lousa guarda o plano; o caderno guarda também as tentativas. Não apaguem um resultado só porque ele contrariou a previsão."
+      }
+    },
+    {
+      "path": "campusContent.residents.1.lines.0",
+      "en": {
+        "6": "I’m Bel. I want to create a story with our class’s soundtrack. We’ll separate the writing, composition and performance credits.",
+        "7": "I’m Bel. I want to create a story with our class’s soundtrack. We’ll separate the writing, composition and performance credits.",
+        "8": "I’m Bel. I want to create a story with our class’s soundtrack. We’ll separate the writing, composition and performance credits."
+      },
+      "pt": "Sou Bel. Quero criar uma história com a trilha da turma. Vamos separar os créditos de texto, composição e interpretação.",
+      "ptByGrade": {
+        "6": "Sou Bel. Quero criar uma história com a trilha da turma. Vamos separar os créditos de texto, composição e interpretação.",
+        "7": "Sou Bel. Quero criar uma história com a trilha da turma. Vamos separar os créditos de texto, composição e interpretação.",
+        "8": "Sou Bel. Quero criar uma história com a trilha da turma. Vamos separar os créditos de texto, composição e interpretação."
+      }
+    },
+    {
+      "path": "campusContent.residents.1.lines.1",
+      "en": {
+        "6": "The books are beside the music room. I can start with a reading and bring a question to rehearsal.",
+        "7": "The books are beside the music room. I can start with a reading and bring a question to rehearsal.",
+        "8": "The books are beside the music room. I can start with a reading and bring a question to rehearsal."
+      },
+      "pt": "Os livros ficam ao lado da sala de música. Posso começar por uma leitura e trazer uma pergunta para o ensaio.",
+      "ptByGrade": {
+        "6": "Os livros ficam ao lado da sala de música. Posso começar por uma leitura e trazer uma pergunta para o ensaio.",
+        "7": "Os livros ficam ao lado da sala de música. Posso começar por uma leitura e trazer uma pergunta para o ensaio.",
+        "8": "Os livros ficam ao lado da sala de música. Posso começar por uma leitura e trazer uma pergunta para o ensaio."
+      }
+    },
+    {
+      "path": "campusContent.residents.2.lines.0",
+      "en": {
+        "6": "I’m Irene. Each portrait has its own history and sources. Choose one to open the full record as well as view the image.",
+        "7": "I’m Irene. Each portrait has its own history and sources. Choose one to open the full record as well as view the image.",
+        "8": "I’m Irene. Each portrait has its own history and sources. Choose one to open the full record as well as view the image."
+      },
+      "pt": "Sou Irene. Cada retrato tem uma trajetória e fontes próprias. Escolha um para abrir a ficha completa, além de observar a imagem.",
+      "ptByGrade": {
+        "6": "Sou Irene. Cada retrato tem uma trajetória e fontes próprias. Escolha um para abrir a ficha completa, além de observar a imagem.",
+        "7": "Sou Irene. Cada retrato tem uma trajetória e fontes próprias. Escolha um para abrir a ficha completa, além de observar a imagem.",
+        "8": "Sou Irene. Cada retrato tem uma trajetória e fontes próprias. Escolha um para abrir a ficha completa, além de observar a imagem."
+      }
+    },
+    {
+      "path": "campusContent.residents.2.lines.1",
+      "en": {
+        "6": "When documents are missing, the record defines the uncertainty. An invented detail can turn a tribute into incorrect information.",
+        "7": "When documents are missing, the record defines the uncertainty. An invented detail can turn a tribute into incorrect information.",
+        "8": "When documents are missing, the record defines the uncertainty. An invented detail can turn a tribute into incorrect information."
+      },
+      "pt": "Quando faltam documentos, a ficha delimita a dúvida. Um detalhe inventado pode transformar uma homenagem numa informação errada.",
+      "ptByGrade": {
+        "6": "Quando faltam documentos, a ficha delimita a dúvida. Um detalhe inventado pode transformar uma homenagem numa informação errada.",
+        "7": "Quando faltam documentos, a ficha delimita a dúvida. Um detalhe inventado pode transformar uma homenagem numa informação errada.",
+        "8": "Quando faltam documentos, a ficha delimita a dúvida. Um detalhe inventado pode transformar uma homenagem numa informação errada."
+      }
+    },
+    {
+      "path": "campusContent.residents.3.lines.0",
+      "en": {
+        "6": "I’m Daniel. I’m comparing the captions with the library books. A difference becomes a research question, not a correction based on a guess.",
+        "7": "I’m Daniel. I’m comparing the captions with the library books. A difference becomes a research question, not a correction based on a guess.",
+        "8": "I’m Daniel. I’m comparing the captions with the library books. A difference becomes a research question, not a correction based on a guess."
+      },
+      "pt": "Sou Daniel. Estou comparando as legendas com os livros da biblioteca. Uma diferença vira pergunta de pesquisa, não uma correção por palpite.",
+      "ptByGrade": {
+        "6": "Sou Daniel. Estou comparando as legendas com os livros da biblioteca. Uma diferença vira pergunta de pesquisa, não uma correção por palpite.",
+        "7": "Sou Daniel. Estou comparando as legendas com os livros da biblioteca. Uma diferença vira pergunta de pesquisa, não uma correção por palpite.",
+        "8": "Sou Daniel. Estou comparando as legendas com os livros da biblioteca. Uma diferença vira pergunta de pesquisa, não uma correção por palpite."
+      }
+    },
+    {
+      "path": "campusContent.residents.3.lines.1",
+      "en": {
+        "6": "The timeline locates dates; the map locates places. We need both to avoid confusing Mali, Songhai and Kongo.",
+        "7": "The timeline locates dates; the map locates places. We need both to avoid confusing Mali, Songhai and Kongo.",
+        "8": "The timeline locates dates; the map locates places. We need both to avoid confusing Mali, Songhai and Kongo."
+      },
+      "pt": "A linha do tempo situa datas; o mapa situa lugares. Precisamos dos dois para não misturar Mali, Songhai e Kongo.",
+      "ptByGrade": {
+        "6": "A linha do tempo situa datas; o mapa situa lugares. Precisamos dos dois para não misturar Mali, Songhai e Kongo.",
+        "7": "A linha do tempo situa datas; o mapa situa lugares. Precisamos dos dois para não misturar Mali, Songhai e Kongo.",
+        "8": "A linha do tempo situa datas; o mapa situa lugares. Precisamos dos dois para não misturar Mali, Songhai e Kongo."
+      }
+    },
+    {
+      "path": "AncestralData.people.0.lines.0",
+      "en": "Sit with me for a moment. Which voice is missing from your notes?",
+      "pt": "Sente-se comigo por um momento. Qual voz está faltando nas suas anotações?"
+    },
+    {
+      "path": "AncestralData.people.0.lines.1",
+      "en": "Pretos-velhos honour ancestral wisdom, patience and care in many Umbanda houses. Their stories include resistance, work and knowledge.",
+      "pt": "Pretos-velhos valorizam sabedoria ancestral, paciência e cuidado em muitas casas de Umbanda. Suas histórias incluem resistência, trabalho e conhecimento."
+    },
+    {
+      "path": "AncestralData.people.1.lines.0",
+      "en": "An old notebook tells only part of a life. Listen to the person who kept it before writing the caption.",
+      "pt": "Um caderno antigo conta apenas parte de uma vida. Escute quem o guardou antes de escrever a legenda."
+    },
+    {
+      "path": "AncestralData.people.1.lines.1",
+      "en": "Many stories of pretos-velhos remember African ancestors and the experience of enslavement. These elders also carry teaching, dignity and resistance.",
+      "pt": "Muitas narrativas de pretos-velhos lembram ancestrais africanos e a experiência da escravização. Esses anciãos também carregam ensino, dignidade e resistência."
+    },
+    {
+      "path": "AncestralData.people.2.lines.0",
+      "en": "I set aside seeds for our shared garden. Raquel has the labelled box at the apothecary.",
+      "pt": "Separei sementes para nosso jardim compartilhado. Raquel está com a caixa etiquetada na botica."
+    },
+    {
+      "path": "AncestralData.people.2.lines.1",
+      "en": "The Baianos line brings memories associated with Bahia and the Northeast into Umbanda. It does not describe every person from those regions.",
+      "pt": "A linha dos Baianos traz à Umbanda memórias associadas à Bahia e ao Nordeste. Ela não descreve todas as pessoas dessas regiões."
+    },
+    {
+      "path": "AncestralData.people.3.lines.0",
+      "en": "A clear route helps the whole group. Read the signs and put our stops in order.",
+      "pt": "Um trajeto claro ajuda todo o grupo. Leia as placas e coloque nossas paradas em ordem."
+    },
+    {
+      "path": "AncestralData.people.3.lines.1",
+      "en": "Boiadeiros are associated with rural life, cattle-driving and firmness in many Umbanda traditions. Baianos and Boiadeiros are distinct lines.",
+      "pt": "Boiadeiros se associam à vida rural, às lidas do gado e à firmeza em muitas tradições de Umbanda. Baianos e Boiadeiros são linhas distintas."
+    },
+    {
+      "path": "AncestralData.people.4.lines.0",
+      "en": "Before repeating a message, ask who said it and in which context. A name can mean different things in different traditions.",
+      "pt": "Antes de repetir uma mensagem, pergunte quem a disse e em qual contexto. Um nome pode ter sentidos diferentes em tradições diferentes."
+    },
+    {
+      "path": "AncestralData.people.4.lines.1",
+      "en": "Here I represent an Exu entity of Umbanda. Exu as an orixá in Candomblé belongs to another religious category. Neither should be reduced to a demon.",
+      "pt": "Aqui represento uma entidade Exu da Umbanda. Exu como orixá no Candomblé pertence a outra categoria religiosa. Nenhum deles deve ser reduzido a um demônio."
+    },
+    {
+      "path": "AncestralData.people.5.lines.0",
+      "en": "Read the whole caption before you judge someone. Clothing cannot tell you everything about a person.",
+      "pt": "Leia a legenda inteira antes de julgar alguém. A roupa não conta tudo sobre uma pessoa."
+    },
+    {
+      "path": "AncestralData.people.5.lines.1",
+      "en": "Pombagiras are entities in many Umbanda houses. Their representations can discuss autonomy, communication and women’s experiences without reducing them to a stereotype.",
+      "pt": "Pombagiras são entidades em muitas casas de Umbanda. Suas representações podem tratar de autonomia, comunicação e experiências de mulheres sem reduzi-las a um estereótipo."
+    },
+    {
+      "path": "AncestralData.people.6.lines.0",
+      "en": "Look at the leaf and read its label. Respect for the forest begins with careful observation.",
+      "pt": "Observe a folha e leia sua etiqueta. O respeito à mata começa com uma observação cuidadosa."
+    },
+    {
+      "path": "AncestralData.people.6.lines.1",
+      "en": "Caboclos represent Indigenous ancestral presences in Umbanda. They are religious representations, not a description of all living Indigenous peoples.",
+      "pt": "Caboclos representam presenças ancestrais indígenas na Umbanda. São representações religiosas, não uma descrição de todos os povos indígenas vivos."
+    },
+    {
+      "path": "AncestralData.people.7.lines.0",
+      "en": "Welcome to our Umbanda house. You can learn, ask questions and take part in the public activities without sharing our faith.",
+      "pt": "Boas-vindas à nossa casa de Umbanda. Você pode aprender, fazer perguntas e participar das atividades públicas sem compartilhar nossa fé."
+    },
+    {
+      "path": "AncestralData.people.7.lines.1",
+      "en": "Our house has its own history. Ask how people wish to be represented, and let them explain their beliefs in their own words.",
+      "pt": "Nossa casa tem sua própria história. Pergunte como as pessoas desejam ser representadas e deixe que expliquem suas crenças com suas próprias palavras."
+    },
+    {
+      "path": "AncestralData.people.8.lines.0",
+      "en": "This public hall keeps our community’s memories. The people who care for the house decide what can be shared.",
+      "pt": "Este salão público guarda memórias da nossa comunidade. Quem cuida da casa decide o que pode ser compartilhado."
+    },
+    {
+      "path": "AncestralData.people.8.lines.1",
+      "en": "Candomblé has different nations and lineages. Ketu traditions honour orixás; Jeje traditions honour voduns, and Angola traditions honour inquices. These names have their own histories.",
+      "pt": "O Candomblé tem nações e linhagens diferentes. Tradições Ketu cultuam orixás; tradições Jeje, voduns; e tradições Angola, inquices. Esses nomes têm histórias próprias."
+    },
+    {
+      "path": "AncestralData.people.9.lines.0",
+      "en": "Our shelves connect plant knowledge, cultivation and careful records. I can show you the ingredients and our game recipes.",
+      "pt": "Nossas prateleiras conectam conhecimentos sobre plantas, cultivo e registros cuidadosos. Posso mostrar os ingredientes e nossas receitas do jogo."
+    },
+    {
+      "path": "AncestralData.people.9.lines.1",
+      "en": "A popular plant name may refer to different species. Traditional knowledge and research both need identification, context and care.",
+      "pt": "Um nome popular de planta pode indicar espécies diferentes. Saberes tradicionais e pesquisa precisam de identificação, contexto e cuidado."
+    },
+    {
+      "path": "AncestralData.people.10.lines.0",
+      "en": "I mixed up the shelf cards. Can you match each ingredient to its English name before I put the jars away?",
+      "pt": "Misturei as fichas da prateleira. Você pode ligar cada ingrediente ao nome em inglês antes de eu guardar os potes?"
+    },
+    {
+      "path": "AncestralData.people.10.lines.1",
+      "en": "A plant can be used as food, studied for medicinal use or have a religious meaning. One use does not automatically explain the others.",
+      "pt": "Uma planta pode ser usada como alimento, estudada para uso medicinal ou ter sentido religioso. Um uso não explica automaticamente os outros."
+    },
+    {
+      "path": "AncestralData.people.11.lines.0",
+      "en": "Iron can become a tool in skilled hands. What needs repair so the community can work together?",
+      "pt": "O ferro pode virar ferramenta em mãos habilidosas. O que precisa de reparo para a comunidade trabalhar junta?"
+    },
+    {
+      "path": "AncestralData.people.11.lines.1",
+      "en": "Ogum is associated with iron, metalworking, tools and warfare. Stories about courage and opening paths also appear in his traditions.",
+      "pt": "Ogum se associa ao ferro, à metalurgia, às ferramentas e à guerra. Narrativas de coragem e abertura de caminhos também aparecem em suas tradições."
+    },
+    {
+      "path": "AncestralData.people.12.lines.0",
+      "en": "The water connects this garden to the rest of the city. Help the group keep the shared basin clean.",
+      "pt": "A água conecta este jardim ao restante da cidade. Ajude o grupo a manter a bacia compartilhada limpa."
+    },
+    {
+      "path": "AncestralData.people.12.lines.1",
+      "en": "In Brazil, Iemanjá is widely associated with the sea, motherhood and care. Different traditions preserve different accounts of her waters and family relationships.",
+      "pt": "No Brasil, Iemanjá é amplamente associada ao mar, à maternidade e ao cuidado. Tradições diferentes guardam relatos distintos sobre suas águas e relações de parentesco."
+    },
+    {
+      "path": "AncestralData.people.13.lines.0",
+      "en": "A fair decision needs more than a confident voice. Match each claim to the record that supports it.",
+      "pt": "Uma decisão justa precisa de mais que uma voz confiante. Ligue cada afirmação ao registro que a sustenta."
+    },
+    {
+      "path": "AncestralData.people.13.lines.1",
+      "en": "Xangô is associated with justice, thunder and lightning. His stories connect authority with responsibility.",
+      "pt": "Xangô se associa à justiça, ao trovão e ao raio. Suas narrativas conectam autoridade e responsabilidade."
+    },
+    {
+      "path": "AncestralData.people.14.lines.0",
+      "en": "The wind changes what you hear and see. Observe the signs before choosing the next step.",
+      "pt": "O vento muda o que você ouve e vê. Observe os sinais antes de escolher o próximo passo."
+    },
+    {
+      "path": "AncestralData.people.14.lines.1",
+      "en": "Iansã, also called Oyá, is associated with winds, lightning and storms. Some traditions also relate her to the dead and to ancestral presences.",
+      "pt": "Iansã, também chamada Oyá, se associa a ventos, raios e tempestades. Algumas tradições também a relacionam aos mortos e às presenças ancestrais."
+    },
+    {
+      "path": "AncestralData.people.15.lines.0",
+      "en": "A good observer notices differences. Compare the garden records without taking more than the plants can replace.",
+      "pt": "Uma boa observação percebe diferenças. Compare os registros do jardim sem retirar mais do que as plantas podem repor."
+    },
+    {
+      "path": "AncestralData.people.15.lines.1",
+      "en": "Oxóssi is associated with forests and hunting. Many narratives also connect him to provision, knowledge and careful attention.",
+      "pt": "Oxóssi se associa às matas e à caça. Muitas narrativas também o conectam à fartura, ao conhecimento e à atenção cuidadosa."
+    },
+    {
+      "path": "AncestralData.activities.0.pairs.0",
+      "en": "Listen first",
+      "pt": "Escutar a pessoa antes de escrever sua história"
+    },
+    {
+      "path": "AncestralData.activities.0.pairs.1",
+      "en": "Ask permission",
+      "pt": "Combinar o que pode ser registrado"
+    },
+    {
+      "path": "AncestralData.activities.0.pairs.2",
+      "en": "Keep the context",
+      "pt": "Guardar o lugar, a data e a autoria"
+    },
+    {
+      "path": "AncestralData.activities.0.pairs.3",
+      "en": "Share the review",
+      "pt": "Permitir que a pessoa confira sua contribuição"
+    },
+    {
+      "path": "AncestralData.activities.1.pairs.0",
+      "en": "Collect the labelled box",
+      "pt": "1 · Retirar a caixa etiquetada na botica"
+    },
+    {
+      "path": "AncestralData.activities.1.pairs.1",
+      "en": "Read the garden sign",
+      "pt": "2 · Conferir a placa de identificação do jardim"
+    },
+    {
+      "path": "AncestralData.activities.1.pairs.2",
+      "en": "Deliver the seeds",
+      "pt": "3 · Entregar as sementes na casa de Umbanda"
+    },
+    {
+      "path": "AncestralData.activities.2.pairs.0",
+      "en": "Exu · orixá",
+      "pt": "Divindade: contexto do Candomblé"
+    },
+    {
+      "path": "AncestralData.activities.2.pairs.1",
+      "en": "Exu · entidade",
+      "pt": "Guia espiritual: contexto de muitas casas de Umbanda"
+    },
+    {
+      "path": "AncestralData.activities.2.pairs.2",
+      "en": "Communication",
+      "pt": "Comunicação: conferir quem fala e em qual contexto"
+    },
+    {
+      "path": "AncestralData.activities.2.pairs.3",
+      "en": "Diversity",
+      "pt": "Diversidade: reconhecer diferenças entre as tradições"
+    },
+    {
+      "path": "AncestralData.activities.3.pairs.0",
+      "en": "Ask her name",
+      "pt": "Perguntar como ela deseja ser chamada"
+    },
+    {
+      "path": "AncestralData.activities.3.pairs.1",
+      "en": "Read the whole caption",
+      "pt": "Ler o contexto antes de tirar uma conclusão"
+    },
+    {
+      "path": "AncestralData.activities.3.pairs.2",
+      "en": "Respect her choice",
+      "pt": "Respeitar a escolha sem sexualizar a personagem"
+    },
+    {
+      "path": "AncestralData.activities.3.pairs.3",
+      "en": "Listen to different voices",
+      "pt": "Escutar experiências diferentes sem criar um estereótipo"
+    },
+    {
+      "path": "AncestralData.activities.4.pairs.0",
+      "en": "Mint",
+      "pt": "Hortelã"
+    },
+    {
+      "path": "AncestralData.activities.4.pairs.1",
+      "en": "Rosemary",
+      "pt": "Alecrim"
+    },
+    {
+      "path": "AncestralData.activities.4.pairs.2",
+      "en": "Basil",
+      "pt": "Manjericão"
+    },
+    {
+      "path": "AncestralData.activities.4.pairs.3",
+      "en": "Lemongrass",
+      "pt": "Capim-limão"
+    },
+    {
+      "path": "AncestralData.activities.5.pairs.0",
+      "en": "Ogum",
+      "pt": "Ferro e ferramentas"
+    },
+    {
+      "path": "AncestralData.activities.5.pairs.1",
+      "en": "Iemanjá",
+      "pt": "Águas e maternidade"
+    },
+    {
+      "path": "AncestralData.activities.5.pairs.2",
+      "en": "Xangô",
+      "pt": "Justiça e trovão"
+    },
+    {
+      "path": "AncestralData.activities.5.pairs.3",
+      "en": "Iansã / Oyá",
+      "pt": "Ventos e tempestades"
+    },
+    {
+      "path": "AncestralData.activities.5.pairs.4",
+      "en": "Oxóssi",
+      "pt": "Matas e caça"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.0",
+      "en": "Chamomile",
+      "pt": "Camomila"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.1",
+      "en": "Ginger",
+      "pt": "Gengibre"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.2",
+      "en": "Leaf",
+      "pt": "Folha"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.3",
+      "en": "Root",
+      "pt": "Raiz"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.4",
+      "en": "Recipe",
+      "pt": "Receita"
+    },
+    {
+      "path": "AncestralData.activities.6.pairs.5",
+      "en": "Ingredient",
+      "pt": "Ingrediente"
+    },
+    {
+      "path": "AncestralData.activities.7.pairs.0",
+      "en": "Read the repair note",
+      "pt": "1 · Ler o registro do que está quebrado"
+    },
+    {
+      "path": "AncestralData.activities.7.pairs.1",
+      "en": "Choose the right tool",
+      "pt": "2 · Escolher a ferramenta adequada"
+    },
+    {
+      "path": "AncestralData.activities.7.pairs.2",
+      "en": "Check the repaired handle",
+      "pt": "3 · Conferir o cabo consertado"
+    },
+    {
+      "path": "AncestralData.activities.7.pairs.3",
+      "en": "Return the shared tool",
+      "pt": "4 · Devolver a ferramenta para uso da comunidade"
+    },
+    {
+      "path": "AncestralData.activities.8.pairs.0",
+      "en": "Observe the shared basin",
+      "pt": "1 · Observar a bacia compartilhada"
+    },
+    {
+      "path": "AncestralData.activities.8.pairs.1",
+      "en": "Remove discarded packaging",
+      "pt": "2 · Recolher embalagens descartadas"
+    },
+    {
+      "path": "AncestralData.activities.8.pairs.2",
+      "en": "Sort the collected waste",
+      "pt": "3 · Separar o material recolhido"
+    },
+    {
+      "path": "AncestralData.activities.8.pairs.3",
+      "en": "Record the care task",
+      "pt": "4 · Registrar a tarefa com a equipe"
+    },
+    {
+      "path": "AncestralData.activities.9.pairs.0",
+      "en": "Who made this object?",
+      "pt": "Ficha de autoria e contribuições"
+    },
+    {
+      "path": "AncestralData.activities.9.pairs.1",
+      "en": "When did the notice change?",
+      "pt": "Histórico de versões com datas"
+    },
+    {
+      "path": "AncestralData.activities.9.pairs.2",
+      "en": "Who was left out?",
+      "pt": "Lista de participantes da consulta"
+    },
+    {
+      "path": "AncestralData.activities.9.pairs.3",
+      "en": "What still needs review?",
+      "pt": "Registro de dúvidas e limites"
+    },
+    {
+      "path": "AncestralData.activities.10.pairs.0",
+      "en": "Wind",
+      "pt": "Vento: folhas em movimento"
+    },
+    {
+      "path": "AncestralData.activities.10.pairs.1",
+      "en": "Storm",
+      "pt": "Tempestade: mudança intensa do tempo"
+    },
+    {
+      "path": "AncestralData.activities.10.pairs.2",
+      "en": "Lightning",
+      "pt": "Relâmpago: clarão observado no céu"
+    },
+    {
+      "path": "AncestralData.activities.10.pairs.3",
+      "en": "Thunder",
+      "pt": "Trovão: som associado ao relâmpago"
+    },
+    {
+      "path": "AncestralData.activities.11.pairs.0",
+      "en": "Observe differences",
+      "pt": "Comparar folhas, formas e registros"
+    },
+    {
+      "path": "AncestralData.activities.11.pairs.1",
+      "en": "Keep the labels",
+      "pt": "Preservar a identificação dos canteiros"
+    },
+    {
+      "path": "AncestralData.activities.11.pairs.2",
+      "en": "Cultivate together",
+      "pt": "Dividir o cuidado e registrar quem participa"
+    },
+    {
+      "path": "AncestralData.activities.11.pairs.3",
+      "en": "Take only what is needed",
+      "pt": "Evitar desperdício e preservar o cultivo"
+    },
+    {
+      "path": "AncestralData.readings.0",
+      "en": "Listen to each story and keep its context.",
+      "pt": "Escute cada história e preserve seu contexto."
+    },
+    {
+      "path": "AncestralData.readings.1",
+      "en": "A community decides how to share its memory.",
+      "pt": "Uma comunidade decide como compartilhar sua memória."
+    },
+    {
+      "path": "AncestralData.readings.2",
+      "en": "An entity and an orixá are not the same category.",
+      "pt": "Uma entidade e um orixá não são a mesma categoria."
+    },
+    {
+      "path": "AncestralData.readings.3",
+      "en": "We describe the artistic reference and distinguish it from a scientific explanation.",
+      "pt": "Descrevemos a referência artística e a distinguimos de uma explicação científica."
+    },
+    {
+      "path": "AncestralData.readings.4",
+      "en": "Ginger is a rhizome, a modified stem.",
+      "pt": "O gengibre é um rizoma, um caule modificado."
+    },
+    {
+      "path": "AncestralData.readings.5",
+      "en": "Respect includes the freedom to believe differently.",
+      "pt": "O respeito inclui a liberdade de ter crenças diferentes."
+    },
+    {
+      "path": "AncestralData.words.0",
+      "en": "ancestry",
+      "pt": "ancestralidade"
+    },
+    {
+      "path": "AncestralData.words.1",
+      "en": "belief",
+      "pt": "crença"
+    },
+    {
+      "path": "AncestralData.words.2",
+      "en": "faith",
+      "pt": "fé"
+    },
+    {
+      "path": "AncestralData.words.3",
+      "en": "diversity",
+      "pt": "diversidade"
+    },
+    {
+      "path": "AncestralData.words.4",
+      "en": "herb",
+      "pt": "erva"
+    },
+    {
+      "path": "AncestralData.words.5",
+      "en": "potion",
+      "pt": "poção"
+    },
+    {
+      "path": "AncestralData.words.6",
+      "en": "recipe",
+      "pt": "receita"
+    },
+    {
+      "path": "AncestralData.words.7",
+      "en": "ingredient",
+      "pt": "ingrediente"
+    },
+    {
+      "path": "AncestralData.words.8",
+      "en": "mint",
+      "pt": "hortelã"
+    },
+    {
+      "path": "AncestralData.words.9",
+      "en": "rosemary",
+      "pt": "alecrim"
+    },
+    {
+      "path": "AncestralData.words.10",
+      "en": "basil",
+      "pt": "manjericão"
+    },
+    {
+      "path": "AncestralData.words.11",
+      "en": "lemongrass",
+      "pt": "capim-limão"
+    },
+    {
+      "path": "AncestralData.words.12",
+      "en": "chamomile",
+      "pt": "camomila"
+    },
+    {
+      "path": "AncestralData.words.13",
+      "en": "ginger",
+      "pt": "gengibre"
+    },
+    {
+      "path": "AncestralData.words.14",
+      "en": "jar",
+      "pt": "pote; frasco"
+    },
+    {
+      "path": "AncestralData.words.15",
+      "en": "mortar",
+      "pt": "almofariz"
+    },
+    {
+      "path": "AncestralData.words.16",
+      "en": "divinity",
+      "pt": "divindade"
+    },
+    {
+      "path": "AncestralData.words.17",
+      "en": "entity",
+      "pt": "entidade"
+    },
+    {
+      "path": "AncestralData.words.18",
+      "en": "apothecary",
+      "pt": "botica; estabelecimento de preparo"
+    },
+    {
+      "path": "AncestralData.words.19",
+      "en": "companion",
+      "pt": "companheiro; companheira"
+    },
+    {
+      "path": "AncestralData.words.20",
+      "en": "oral history",
+      "pt": "história oral"
+    },
+    {
+      "path": "AncestralData.words.21",
+      "en": "cultivate",
+      "pt": "cultivar"
+    },
+    {
+      "path": "AncestralData.words.22",
+      "en": "label",
+      "pt": "etiqueta; legendar"
+    },
+    {
+      "path": "AncestralData.words.23",
+      "en": "rhizome",
+      "pt": "rizoma"
+    },
+    {
+      "path": "runtime.previous-review",
+      "en": "Shall we try this passage more slowly?",
+      "pt": "Vamos tentar esse trecho mais devagar?"
+    },
+    {
+      "path": "glossary.example.rhythm",
+      "en": "Follow the rhythm.",
+      "pt": "Siga o ritmo."
+    },
+    {
+      "path": "glossary.example.credit",
+      "en": "Give credit to the creators.",
+      "pt": "Dê crédito aos criadores."
+    },
+    {
+      "path": "glossary.example.heritage",
+      "en": "Heritage connects generations.",
+      "pt": "O patrimônio cultural conecta gerações."
+    },
+    {
+      "path": "glossary.example.history",
+      "en": "History has many sources.",
+      "pt": "A história tem muitas fontes."
+    },
+    {
+      "path": "glossary.example.timeline",
+      "en": "Check the timeline and the map.",
+      "pt": "Confira a linha do tempo e o mapa."
+    },
+    {
+      "path": "glossary.example.source",
+      "en": "Check the source.",
+      "pt": "Confira a fonte."
+    },
+    {
+      "path": "glossary.example.mathematics",
+      "en": "Mathematics helps us check calculations.",
+      "pt": "A matemática ajuda a conferir cálculos."
+    },
+    {
+      "path": "glossary.example.writer",
+      "en": "The writer creates a book.",
+      "pt": "A escritora cria um livro."
+    },
+    {
+      "path": "glossary.example.engineer",
+      "en": "The engineer plans a project.",
+      "pt": "A engenheira planeja um projeto."
+    },
+    {
+      "path": "glossary.example.evidence",
+      "en": "Evidence supports a claim.",
+      "pt": "A evidência sustenta uma afirmação."
+    },
+    {
+      "path": "glossary.example.stereotype",
+      "en": "A stereotype can hide differences.",
+      "pt": "Um estereótipo pode esconder diferenças."
+    },
+    {
+      "path": "glossary.example.context",
+      "en": "Read the full context.",
+      "pt": "Leia o contexto completo."
+    },
+    {
+      "path": "glossary.example.community",
+      "en": "The community helps decide.",
+      "pt": "A comunidade ajuda a decidir."
+    },
+    {
+      "path": "glossary.example.access",
+      "en": "Access needs more than an invitation.",
+      "pt": "O acesso exige mais que um convite."
+    },
+    {
+      "path": "glossary.example.rights",
+      "en": "Everyone has rights.",
+      "pt": "Todas as pessoas têm direitos."
+    },
+    {
+      "path": "glossary.example.data",
+      "en": "These data need careful review.",
+      "pt": "Estes dados precisam de revisão cuidadosa."
+    },
+    {
+      "path": "glossary.example.review",
+      "en": "Review the decision.",
+      "pt": "Revise a decisão."
+    },
+    {
+      "path": "glossary.example.responsibility",
+      "en": "People keep responsibility.",
+      "pt": "As pessoas continuam responsáveis."
+    },
+    {
+      "path": "glossary.example.listen",
+      "en": "Listen to the residents.",
+      "pt": "Ouça os moradores."
+    },
+    {
+      "path": "glossary.example.because",
+      "en": "Check it because the date is missing.",
+      "pt": "Confira porque a data está faltando."
+    },
+    {
+      "path": "glossary.example.however",
+      "en": "The post is popular. However, it lacks a source.",
+      "pt": "O post é popular. Porém, não tem fonte."
+    },
+    {
+      "path": "glossary.example.before",
+      "en": "Check before you share.",
+      "pt": "Confira antes de compartilhar."
+    },
+    {
+      "path": "glossary.example.after",
+      "en": "Review access after the project opens.",
+      "pt": "Revise o acesso depois que o projeto abrir."
+    },
+    {
+      "path": "glossary.example.share",
+      "en": "Share the corrected context.",
+      "pt": "Compartilhe o contexto corrigido."
+    },
+    {
+      "path": "glossary.example.bias",
+      "en": "A biased sample can leave people out.",
+      "pt": "Uma amostra enviesada pode deixar pessoas de fora."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Check the source. Ask a question.",
+      "pt": "Confira a fonte. Faça uma pergunta."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Who made this record? When was it written?",
+      "pt": "Quem fez este registro? Quando ele foi escrito?"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We should ask who selected these records and which perspectives are missing.",
+      "pt": "Devemos perguntar quem selecionou estes registros e quais perspectivas estão ausentes."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "I can help at the festival!",
+      "pt": "Posso ajudar no festival!"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "I helped at the library. There were more stories inside.",
+      "pt": "Ajudei na biblioteca. Havia mais histórias lá dentro."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "I joined the archive group because there are still stories we have not documented.",
+      "pt": "Entrei no grupo do arquivo porque ainda há histórias que não documentamos."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Books keep stories. People keep them alive.",
+      "pt": "Livros guardam histórias. As pessoas as mantêm vivas."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We stored many records here. You can read the sources.",
+      "pt": "Guardamos muitos registros aqui. Você pode ler as fontes."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The archive needs sources, but it also needs people who can question and maintain its records.",
+      "pt": "O arquivo precisa de fontes, mas também precisa de pessoas que possam questionar e manter seus registros."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We can take a break here.",
+      "pt": "Podemos fazer uma pausa aqui."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The records are restored. There is still more to learn.",
+      "pt": "Os registros estão restaurados. Ainda há mais para aprender."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "This draft has two sources. We still need to check the caption.",
+      "pt": "Este rascunho tem duas fontes. Ainda precisamos conferir a legenda."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Let’s check our notes together.",
+      "pt": "Vamos conferir nossas anotações juntos."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Hello! I am PIX. We have a problem.",
+      "pt": "Olá! Eu sou PIX. Temos um problema."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Hi! I found a strange signal in the city archive.",
+      "pt": "Oi! Encontrei um sinal estranho no arquivo da cidade."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Hello! Some records are corrupted, and the missing names are not random.",
+      "pt": "Olá! Alguns registros estão corrompidos, e os nomes ausentes não são aleatórios."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "I can translate. A source is not a water fountain. Usually.",
+      "pt": "Posso traduzir. Uma fonte de informação não é uma fonte de água. Geralmente."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "I translate source as fonte. Please do not drink the evidence.",
+      "pt": "Traduzo source como fonte. Por favor, não beba as evidências."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Source means fonte. My last translation involved a fountain. I have updated that setting.",
+      "pt": "Source significa fonte. Minha última tradução envolveu uma fonte de água. Atualizei essa configuração."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Let’s recover the words and follow the signal.",
+      "pt": "Vamos recuperar as palavras e seguir o sinal."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We should recover the words before we investigate the festival.",
+      "pt": "Devemos recuperar as palavras antes de investigar o festival."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Recovering the words is our first step. Then we can follow the evidence to the festival.",
+      "pt": "Recuperar as palavras é nosso primeiro passo. Depois podemos seguir as evidências até o festival."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Every story deserves to be heard.",
+      "pt": "Toda história merece ser ouvida."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The records showed many voices. Let’s keep listening.",
+      "pt": "Os registros mostraram muitas vozes. Vamos continuar ouvindo."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The archive gets stronger when its sources are checked and more voices participate.",
+      "pt": "O arquivo fica mais forte quando suas fontes são conferidas e mais vozes participam."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The festival needs us. Let’s go!",
+      "pt": "O festival precisa de nós. Vamos!"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The festival lost its credits. Let’s take the first portal!",
+      "pt": "O festival perdeu seus créditos. Vamos pegar o primeiro portal!"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "The festival is our first investigation. We need the stories behind the music, as well as the sound.",
+      "pt": "O festival é nossa primeira investigação. Precisamos das histórias por trás da música, além do som."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We need more clues. Talk to people!",
+      "pt": "Precisamos de mais pistas. Converse com as pessoas!"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Did we find all the clues? We should talk to both people.",
+      "pt": "Encontramos todas as pistas? Devemos conversar com as duas pessoas."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Before rebuilding, we need all three records and both perspectives.",
+      "pt": "Antes de reconstruir, precisamos dos três registros e das duas perspectivas."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We need the clues and the repaired system.",
+      "pt": "Precisamos das pistas e do sistema consertado."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We collected clues, but did we repair the system?",
+      "pt": "Coletamos pistas, mas consertamos o sistema?"
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "We can confront the corrupted logic after investigating all records and repairing the system.",
+      "pt": "Podemos enfrentar a lógica corrompida depois de investigar todos os registros e consertar o sistema."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "This fountain has water. Our sources have information.",
+      "pt": "Esta fonte tem água. Nossas fontes de informação têm informações."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "This fountain was not a historical source. My translation is improving.",
+      "pt": "Esta fonte de água não era uma fonte histórica. Minha tradução está melhorando."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Different words can share a translation. Context helps us choose the meaning.",
+      "pt": "Palavras diferentes podem compartilhar uma tradução. O contexto nos ajuda a escolher o significado."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Good to see you again.",
+      "pt": "Bom te ver de novo."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Let’s listen to each other.",
+      "pt": "Vamos ouvir uns aos outros."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "Check it because the date is missing.",
+      "pt": "Confira isso porque a data está faltando."
+    },
+    {
+      "path": "runtime.review-1.9",
+      "en": "People keep responsibility.",
+      "pt": "As pessoas mantêm a responsabilidade."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "The community approved this public card. The rest does not go into the exhibition.",
+      "pt": "A comunidade autorizou esta ficha pública. O resto não entra na mostra."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "I’ll record who contributed and what we can consult.",
+      "pt": "Vou registrar quem contribuiu e o que podemos consultar."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Thank you, Ísis. A good visit also respects what remains private.",
+      "pt": "Obrigada, Ísis. Uma boa visita também respeita o que ficou reservado."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "This label calls all the portraits just a group.",
+      "pt": "Esta etiqueta chama todos os retratos apenas de grupo."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Let’s look for names and stories supported by the records.",
+      "pt": "Vamos procurar nomes e histórias que os registros sustentem."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "And show what we still need to learn, without filling the gap with a guess.",
+      "pt": "E indicar o que ainda falta conhecer, sem preencher a lacuna com um palpite."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "The noticeboard has one name, but the reading presents a team.",
+      "pt": "O mural tem um nome, mas a leitura apresenta uma equipe."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "I will restore the context before finishing the caption.",
+      "pt": "Vou recuperar o contexto antes de fechar a legenda."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Each person’s contribution can appear alongside the collective work.",
+      "pt": "A contribuição de cada pessoa pode aparecer junto do trabalho coletivo."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "The caption mixed up two religions. Shall we show the correction?",
+      "pt": "A legenda misturava duas religiões. Vamos mostrar a correção?"
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Yes. The reading helps explain why the names have their own contexts.",
+      "pt": "Sim. A leitura ajuda a explicar por que os nomes têm contextos próprios."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Dandara sent a new study for our exhibition. I have separated the caption fields.",
+      "pt": "Dandara enviou um estudo novo para nossa mostra. Já separei os campos da legenda."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Did you leave space for her name and the references?",
+      "pt": "Você deixou espaço para o nome dela e para as referências?"
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Dora, would you like to leave your suggestion on the table? It can be a drawing or a question.",
+      "pt": "Dora, quer deixar sua sugestão na mesa? Pode ser um desenho ou uma pergunta."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Agreed. I will save space for your contribution before gathering the ideas.",
+      "pt": "Combinado. Vou guardar espaço para sua contribuição antes de reunir as ideias."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "This portrait with my braids can go into the album.",
+      "pt": "Esse retrato com minhas tranças pode entrar no álbum."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Would you like to choose the caption before I add it?",
+      "pt": "Quer escolher a legenda antes de eu colocar?"
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Today I chose to draw the bench and the people talking.",
+      "pt": "Hoje escolhi desenhar o banco e as pessoas conversando."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Let’s observe the gestures and colors before writing the caption.",
+      "pt": "Vamos observar gestos e cores antes de escrever a legenda."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "My notebook can also hold a question about the scene.",
+      "pt": "Meu caderno também pode guardar uma pergunta sobre a cena."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Would you like to see the drawings before choosing? I left the mirror here.",
+      "pt": "Quer ver os desenhos antes de escolher? Deixei o espelho aqui."
+    },
+    {
+      "path": "conversation.review-1.9",
+      "en": "Let’s think of a choice you like that fits your day.",
+      "pt": "Vamos pensar numa escolha que você goste e que caiba no seu dia."
+    },
+    {
+      "path": "runtime.observation",
+      "en": "Look at the bird there.",
+      "pt": "Olhe o pássaro ali."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "Let’s look together.",
+      "pt": "Vamos olhar juntos."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "I have a question too.",
+      "pt": "Também tenho uma pergunta."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "We can compare our notes.",
+      "pt": "Podemos comparar nossas anotações."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "There is a place for you here.",
+      "pt": "Há um lugar para você aqui."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "We can share our ideas.",
+      "pt": "Podemos compartilhar nossas ideias."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "Let’s continue together.",
+      "pt": "Vamos continuar juntos."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "Our work is displayed with its context.",
+      "pt": "Nosso trabalho é exibido com seu contexto."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "Our labels are ready. Let’s listen to a new phrase.",
+      "pt": "Nossas etiquetas estão prontas. Vamos ouvir uma nova frase."
+    },
+    {
+      "path": "history.legacy-displayed-English",
+      "en": "We checked the captions. I saved more books for you.",
+      "pt": "Conferimos as legendas. Separei mais livros para você."
+    }
+  ],
+  "conversationEnglish": {
+    "Guardei um lugar perto da fonte.": "I saved a place near the fountain.",
+    "Depois podemos passar na biblioteca.": "Later we can stop by the library.",
+    "Combinado. Vou terminar essa anotação.": "Agreed. I’ll finish this note.",
+    "Esse canteiro já recebeu água.": "This garden bed has already been watered.",
+    "Eu organizo as sementes para o próximo turno.": "I organize the seeds for the next shift.",
+    "Depois a gente descansa ali.": "Later we can rest over there.",
+    "Vamos conferir este registro juntos?": "Shall we check this record together?",
+    "Sim. Também anotei uma pergunta.": "Yes. I wrote down a question too.",
+    "Depois a gente compara com a fonte.": "Then we can compare it with the source.",
+    "Esse livro voltou hoje.": "This book came back today.",
+    "Então vou deixar uma indicação no caderno.": "Then I’ll leave a recommendation in the notebook.",
+    "Me conta qual parte chamou sua atenção.": "Tell me which part caught your attention.",
+    "Olha o passarinho ali!": "Look at the little bird over there!",
+    "Vou anotar onde ele pousou.": "I’ll write down where it landed.",
+    "Boa. Depois a gente compara as observações.": "Good. Then we can compare our observations.",
+    "Deixei as etiquetas perto do tabuleiro.": "I left the labels near the food tray.",
+    "Assim cada comida mantém seu nome e contexto.": "This way, each food keeps its name and context.",
+    "Obrigada! Já dá para receber o próximo grupo.": "Thank you! We can welcome the next group now.",
+    "Deixei a canga perto da sombra.": "I left the sarong near the shade.",
+    "Depois a gente observa as aves dali.": "Then we watch the birds from there.",
+    "Combinado. Sem chegar perto dos animais.": "Agreed. Without approaching the animals.",
+    "Vou deixar a mudança visível para quem leu o rascunho.": "I’ll make the change visible to people who read the draft.",
+    "Quero escrever primeiro. Ainda estou pensando no que propor.": "I would like to write first. I am still thinking about my proposal.",
+    "Quero. Escreve que foi no encontro de leitura; esse dia foi especial.": "Yes. Write that it was at the reading gathering; that day was special.",
+    "Quero! Hoje preciso prender o cabelo para trabalhar com os tecidos.": "Yes! Today I need to tie my hair up to work with fabrics.",
+    "Deixei, Jo. Nosso mural pode mostrar criação, escolhas e contexto.": "Yes, Jo. Our mural can show creation, choices and context.",
+    "A comunidade autorizou esta ficha pública. O resto não entra na mostra.": "The community approved this public card. The rest does not go into the exhibition.",
+    "Vou registrar quem contribuiu e o que podemos consultar.": "I’ll record who contributed and what we can consult.",
+    "Obrigada, Ísis. Uma boa visita também respeita o que ficou reservado.": "Thank you, Ísis. A good visit also respects what remains private.",
+    "Esta etiqueta chama todos os retratos apenas de grupo.": "This label calls all the portraits just a group.",
+    "Vamos procurar nomes e histórias que os registros sustentem.": "Let’s look for names and stories supported by the records.",
+    "E indicar o que ainda falta conhecer, sem preencher a lacuna com um palpite.": "And show what we still need to learn, without filling the gap with a guess.",
+    "O mural tem um nome, mas a leitura apresenta uma equipe.": "The noticeboard has one name, but the reading presents a team.",
+    "Vou recuperar o contexto antes de fechar a legenda.": "I will restore the context before finishing the caption.",
+    "A contribuição de cada pessoa pode aparecer junto do trabalho coletivo.": "Each person’s contribution can appear alongside the collective work.",
+    "A legenda misturava duas religiões. Vamos mostrar a correção?": "The caption mixed up two religions. Shall we show the correction?",
+    "Sim. A leitura ajuda a explicar por que os nomes têm contextos próprios.": "Yes. The reading helps explain why the names have their own contexts.",
+    "Dandara enviou um estudo novo para nossa mostra. Já separei os campos da legenda.": "Dandara sent a new study for our exhibition. I have separated the caption fields.",
+    "Você deixou espaço para o nome dela e para as referências?": "Did you leave space for her name and the references?",
+    "Dora, quer deixar sua sugestão na mesa? Pode ser um desenho ou uma pergunta.": "Dora, would you like to leave your suggestion on the table? It can be a drawing or a question.",
+    "Combinado. Vou guardar espaço para sua contribuição antes de reunir as ideias.": "Agreed. I will save space for your contribution before gathering the ideas.",
+    "Esse retrato com minhas tranças pode entrar no álbum.": "This portrait with my braids can go into the album.",
+    "Quer escolher a legenda antes de eu colocar?": "Would you like to choose the caption before I add it?",
+    "Hoje escolhi desenhar o banco e as pessoas conversando.": "Today I chose to draw the bench and the people talking.",
+    "Vamos observar gestos e cores antes de escrever a legenda.": "Let’s observe the gestures and colors before writing the caption.",
+    "Meu caderno também pode guardar uma pergunta sobre a cena.": "My notebook can also hold a question about the scene.",
+    "Quer ver os desenhos antes de escolher? Deixei o espelho aqui.": "Would you like to see the drawings before choosing? I left the mirror here.",
+    "Vamos pensar numa escolha que você goste e que caiba no seu dia.": "Let’s think of a choice you like that fits your day.",
+    "Qual pergunta você trouxe hoje?": "What question did you bring today?",
+    "Quem fez essa ficha e por que a data sumiu?": "Who made this card, and why is the date missing?",
+    "Já temos duas pistas para uma investigação.": "We already have two clues for an investigation.",
+    "Esse aviso é sobre o festival de hoje?": "Is this notice about today’s festival?",
+    "Vou conferir. O recorte chegou sem a data.": "I will check. The clipping arrived without the date.",
+    "Me mande também a versão completa, então.": "Then send me the full version too.",
+    "Dimas, esta ficha é o documento completo?": "Dimas, is this record the complete document?",
+    "É nosso resumo. Mantive a procedência para chegar ao original.": "It is our summary. I kept the origin so readers can reach the original.",
+    "Vou deixar essa diferença visível na consulta.": "I’ll keep that distinction visible for readers.",
+    "A estante conta tudo sobre cada lugar?": "Does this shelf tell us everything about each place?",
+    "Ela reúne uma seleção de registros.": "It holds a selection of records.",
+    "Vou anotar também o que ainda precisamos procurar.": "I will also write down what we still need to look for.",
+    "O programa mostra quem desenhou os cartazes?": "Does the program show who designed the posters?",
+    "Agora mostra nomes e funções da equipe.": "It now shows the team’s names and roles.",
+    "Vou conferir o meu crédito antes de imprimir a cópia.": "I will check my credit before printing the copy.",
+    "A senhora lembra quando este banco mudou?": "Do you remember when this bench changed?",
+    "Tenho uma lembrança, mas quero comparar com a ata.": "I have a memory, but I want to compare it with the meeting record.",
+    "Eu busco o registro e a gente confere junto.": "I will get the record, and we can check it together.",
+    "Quem usa este caminho já comentou o projeto?": "Have the people who use this path commented on the project yet?",
+    "Trouxemos o mapa para ouvir os moradores.": "We brought the map to listen to the residents.",
+    "Vamos registrar prioridades e o que ainda não entrou no orçamento.": "Let’s record the priorities and what is still outside the budget.",
+    "Lia compôs; André arranjou; eu vou interpretar.": "Lia composed it; André arranged it; I’ll perform it.",
+    "As três funções precisam voltar ao programa.": "All three roles need to return to the programme.",
+    "E a referência ao samba de roda recebe sua própria nota.": "And the samba de roda reference gets its own note.",
+    "O público consegue ver quem fez cada parte?": "Can the audience see who made each part?",
+    "Nomes e funções estão no programa.": "Names and roles are in the program.",
+    "A nota cultural fica ao lado para abrir outras perguntas.": "The cultural note is beside it to invite more questions.",
+    "Esta etiqueta reuniu lugares diferentes como se fossem um só.": "This label grouped different places as if they were one.",
+    "Vou recolocar região, período e fonte de cada registro.": "I will put back the region, period and source for each record.",
+    "Comparar fica mais interessante quando as diferenças aparecem.": "Comparison becomes more interesting when differences are clear.",
+    "Pensei em Mansa Musa para a legenda desse monumento.": "I thought of Mansa Musa for this monument’s caption.",
+    "A ficha situa o Túmulo dos Askia em Gao, em 1495. Vamos conferir a associação.": "The record places the Tomb of Askia in Gao in 1495. Let’s check the association.",
+    "Então o nome conhecido era só um palpite, não a prova.": "Then the familiar name was only a guess, not proof.",
+    "Os cálculos estão no meu nome, mas a cópia apagou os testes de Caio e os registros de Luca.": "The calculations have my name, but the copy erased Caio’s tests and Luca’s records.",
+    "Vou comparar a cópia com o caderno completo.": "I’ll compare the copy with the full notebook.",
+    "Depois conferimos com a equipe o que cada pessoa fez.": "Then we’ll check with the team what each person did.",
+    "A data cortada mudou o sentido desse aviso.": "Cutting out the date changed the meaning of this notice.",
+    "Isso prova que quem enviou quis enganar?": "Does that prove the sender wanted to trick people?",
+    "Não por si só. Podemos corrigir o contexto sem inventar a intenção.": "Not by itself. We can correct the context without making up the sender’s intention.",
+    "Os novos relatos revelaram outra lacuna.": "The new accounts revealed another gap.",
+    "Quem participou da seleção vai ajudar a revisar?": "Will the people who helped select the records help review them?",
+    "Sim. Fontes, responsáveis e próxima data ficam no relatório.": "Yes. The sources, the people in charge and the next date will be in the report.",
+    "Encontrei o livro de retratos, mas perdi a ficha da referência.": "I found the book about portraits, but I lost the reference card.",
+    "Ela ficou entre as páginas; vou mostrar onde o texto indica a fonte.": "It is between the pages; I will show you where the text gives the source.",
+    "Assim podemos distinguir nossa história de New Harmony da conexão com uma obra real.": "That way, we can distinguish our New Harmony story from its connection with a real artwork.",
+    "A tabela anota a distância e o tempo de cada leitura.": "The table records distance and time for each reading.",
+    "Quero comparar distâncias mantendo o mesmo tempo.": "I want to compare distances while keeping the time the same.",
+    "Vou mostrar essas condições junto dos resultados no mural.": "I’ll show those conditions beside the results on the board.",
+    "A ficha mostra o nome da comida. Também quero conversar sobre os saberes do ofício.": "The card shows the food’s name. I also want to talk about the knowledge in the craft.",
+    "Podemos reunir suas observações e consultar a leitura sobre as baianas.": "We can gather your observations and consult the reading about the baianas.",
+    "E deixar claro quem contribuiu para escrever nossa ficha.": "And make clear who helped write our card.",
+    "As partituras do IMS permitem estudar arranjos de Pixinguinha.": "The IMS scores allow us to study Pixinguinha’s arrangements.",
+    "E nosso caderno registra o arranjo que você fez para Lia.": "And our notebook records the arrangement you made for Lia.",
+    "Vou conferir o programa com ela e com Sol antes de imprimir.": "I’ll check the programme with her and Sol before printing.",
+    "Vou fechar o tabuleiro e passar na praça.": "I will close the food tray and stop by the square.",
+    "Trouxe o desenho do mercado; podemos olhar juntas.": "I brought my drawing of the market; we can look at it together.",
+    "Quero ver quais detalhes você escolheu guardar.": "I want to see which details you chose to keep.",
+    "A ficha ficou pronta? Quero ver se minha participação aparece.": "Is the card ready? I want to see whether my contribution appears.",
+    "Ficou. Separei o desenho das peças e o campo das referências.": "Yes. I separated the drawing of the garments from the references.",
+    "Ótimo! Quem chegar pode perguntar sem depender só da imagem.": "Great! People arriving can ask instead of relying only on the image.",
+    "Terminei a demonstração. Vou guardar os materiais e fazer uma pausa.": "I finished the demonstration. I’ll put the materials away and take a break.",
+    "Guardei um lugar pra você no banco.": "I saved you a seat on the bench.",
+    "Já chego. Quero ouvir como ficou a ficha do seu tabuleiro.": "I’ll be there soon. I want to hear how the card for your food tray turned out.",
+    "A história da turma vai ter texto e música.": "Our class story will have writing and music.",
+    "Eu organizo os livros; a equipe do ensaio confere a trilha.": "I’ll organise the books; the rehearsal team will check the soundtrack.",
+    "Depois publicamos os nomes e as funções que cada pessoa confirmar.": "Then we’ll publish the names and roles that each person confirms.",
+    "O retrato mostra uma interpretação artística; a ficha descreve a trajetória.": "The portrait shows an artistic interpretation; the record describes the person’s life.",
+    "As fontes também ajudam a reconhecer o que ainda não sabemos.": "The sources also help us recognise what we still do not know.",
+    "Vou anotar a pergunta para comparar com a leitura da biblioteca.": "I’ll note the question to compare it with the library reading."
+  }
+};})();

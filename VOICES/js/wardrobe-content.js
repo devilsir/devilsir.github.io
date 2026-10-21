@@ -1,1 +1,1160 @@
-(function(){'use strict';const V=window.V=window.V||{};V.wardrobeContent={"gallery":[{"id":"clothes-wrap-dress","asset":"clothes-wrap-dress","title":"Vestido transpassado de Dandara","category":"clothes","description":"Decote transpassado, faixa na cintura e saia com caimento. A estampa geométrica foi criada para esta peça do jogo.","context":"Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-flowing-dress","asset":"clothes-flowing-dress","title":"Vestido leve de alças","category":"clothes","description":"Vestido cotidiano de alças largas, cintura suave e saia longa com pregas. A cor azul é uma escolha da personagem.","context":"Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-loose-shirt","asset":"clothes-loose-shirt","title":"Camisa de corte amplo","category":"clothes","description":"Camisa com mangas soltas e abertura curta no decote; as linhas coloridas são uma criação original de Dandara.","context":"Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-long-skirt","asset":"clothes-long-skirt","title":"Saia longa com bolsos","category":"clothes","description":"Cós, bolsos laterais e pregas dão forma à saia. O desenho autoral combina conforto e espaço para pequenos objetos.","context":"Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-cropped-jacket","asset":"clothes-cropped-jacket","title":"Jaqueta curta e calça","category":"clothes","description":"Jaqueta de corte curto, gola dobrada e punhos sobre uma calça de cintura alta. As peças têm costuras e bolsos visíveis.","context":"Ilustração original de VOICES. A autoria, a escolha de quem veste e o uso da peça têm contexto; aparência não informa religião ou nacionalidade.","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"wrap-high-fold","asset":"wrap-high-fold","title":"Turbante roxo com dobras altas","category":"wrap","description":"O tecido roxo foi acomodado em camadas altas, criando volume sobre a cabeça. Linhas claras acompanham as dobras e ajudam a identificar onde o pano se sobrepõe. O resultado é uma composição de tecido em que altura, direção e volume fazem diferença.","context":"Esta amarração foi desenhada para o jogo. Turbantes podem ter usos cotidianos, estéticos, culturais ou religiosos, dependendo de quem os usa e da situação. A imagem não determina esse significado.","sourceIds":["wardrobe_negra_jho"],"readingIds":["culture-book-03"],"question":"Quais dobras parecem estar por cima das outras?"},{"id":"wrap-tied-back","asset":"wrap-tied-back","title":"Turbante dourado amarrado atrás","category":"wrap","description":"O pano dourado acompanha o formato da cabeça, enquanto uma parte é reunida e amarrada atrás. As faixas diagonais mostram como o tecido muda de direção e como o nó organiza o conjunto. É um exemplo de composição com volume menor na parte superior.","context":"O desenho destaca a construção visual da amarração; não apresenta uma instrução completa para executá-la nem a vincula a uma comunidade religiosa específica.","sourceIds":["wardrobe_negra_jho"],"readingIds":["culture-book-03"],"question":"Onde você percebe o encontro das faixas de tecido?"},{"id":"clothes-agbada-olive","asset":"clothes-agbada-olive","title":"Agbada verde-oliva com bordados","category":"clothes","description":"O conjunto reúne uma peça exterior ampla, de mangas muito largas, com túnica e calça por baixo. O verde-oliva domina a composição; os bordados claros criam linhas verticais e desenhos próximos ao peito. O volume do tecido permite observar como a roupa se movimentaria ao caminhar.","context":"O agbada é uma forma de vestuário conhecida em regiões da África Ocidental, com versões e usos diferentes. Esta peça é uma interpretação ilustrada, sem identificação de uma pessoa, cerimônia ou povo específico.","question":"Como o bordado ajuda a destacar a parte central da roupa?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-mens-yellow","asset":"clothes-mens-yellow","title":"Conjunto amarelo de túnica e calça","category":"clothes","description":"Uma túnica amarela de manga longa acompanha uma calça da mesma cor e um gorro coordenado. O detalhe bordado desce pela parte da frente e contrasta com o tecido liso. A composição une peças amplas, linhas retas e um acabamento de aparência cuidadosa.","context":"O manequim permite analisar forma, corte e acabamento sem atribuir a roupa a uma pessoa real. A proposta artística não representa um traje universal de homens africanos.","question":"O que se destaca primeiro: a cor, a forma da túnica ou os bordados?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-mens-black","asset":"clothes-mens-black","title":"Conjunto preto com bordado branco","category":"clothes","description":"A túnica preta de manga longa possui bordados brancos na abertura frontal, no peito e nos punhos. A calça repete o tom escuro e mantém uma silhueta simples. A diferença entre preto e branco torna os pequenos detalhes mais fáceis de perceber.","context":"Os elementos decorativos deste desenho não devem ser apresentados como símbolos de uma etnia ou tradição religiosa específica sem uma fonte que os identifique.","question":"De que maneira o contraste de cores chama atenção para as bordas da roupa?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-dress-red-green","asset":"clothes-dress-red-green","title":"Vestido estampado vermelho e verde","category":"clothes","description":"O vestido longo apresenta mangas curtas, saia ampla e repetição de formas em vermelho, verde e preto. O manequim traz um tecido amarrado na cabeça em cores coordenadas. As figuras grandes e os contrastes marcados dão ritmo à estampa.","context":"Esta padronagem foi apresentada como arte ilustrativa para o VOICES. Estampas semelhantes podem circular em lugares e mercados diversos; não é correto identificar uma nacionalidade apenas pelas cores.","question":"Você consegue localizar uma forma que se repete em várias partes do tecido?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-dress-yellow","asset":"clothes-dress-yellow","title":"Vestido amarelo longo com bordado","category":"clothes","description":"O vestido tem mangas largas, caimento solto e comprimento até os pés. Bordados claros aparecem no centro e nas bordas das mangas, enquanto o turbante amarelo acompanha o tom do tecido. A combinação valoriza a forma da peça e os detalhes do acabamento.","context":"Vestidos amplos e tecidos bordados aparecem em diferentes tradições de vestuário. Esta é uma criação ilustrada, não a reprodução documentada de um traje cerimonial.","question":"Onde o bordado aparece com mais intensidade e por quê?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-dress-black","asset":"clothes-dress-black","title":"Vestido preto longo com bordados claros","category":"clothes","description":"A roupa longa de cor preta apresenta mangas amplas e bordados claros em faixas verticais e horizontais. O tecido cai de forma contínua, e o pano na cabeça acompanha o conjunto. Os elementos claros criam pontos de atenção sem mudar a silhueta da peça.","context":"A imagem convida a comparar cor, textura e trabalho de ornamentação. Não é possível concluir origem, religião ou ocasião de uso apenas pela aparência do traje.","question":"Se os bordados fossem da mesma cor do tecido, o que seria mais difícil perceber?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-dress-teal","asset":"clothes-dress-teal","title":"Vestido turquesa com desenho geométrico","category":"clothes","description":"No vestido, tons de azul-turquesa, branco e preto formam linhas curvas, círculos e faixas que percorrem a frente da saia. As mangas são curtas e o tecido se amplia a partir da cintura. O pano na cabeça retoma o azul, criando unidade no conjunto.","context":"As formas decorativas são apresentadas como desenho artístico. A ficha descreve o que podemos ver, sem inventar um significado histórico para os padrões.","question":"Quais formas geométricas se repetem no vestido?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"clothes-dress-green","asset":"clothes-dress-green","title":"Vestido verde bordado com turbante","category":"clothes","description":"O vestido verde tem mangas curtas e largas, tecido de caimento leve e bordados brancos no centro, no contorno das mangas e na barra. O turbante combina tons de verde e apresenta voltas visíveis. O bordado central cria um eixo que acompanha a altura da roupa.","context":"O conjunto faz parte do acervo visual fictício do jogo. Roupas e amarrações precisam ser situadas em contextos reais antes de receber nomes ou sentidos culturais específicos.","question":"Qual detalhe liga visualmente o turbante ao vestido?","sourceIds":["wardrobe_mab"],"readingIds":["culture-book-06"]},{"id":"face-paint-shells","asset":"face-paint-shells","title":"Pintura facial em círculos e conchas","category":"faceart","description":"O busto ilustrado mostra uma composição de tinta branca em torno dos olhos, na testa e nas bochechas, com traços arredondados e repetição de pontos. Colares e elementos parecidos com conchas aparecem próximos ao pescoço. A repetição cria uma imagem muito simétrica.","context":"Esta pintura é uma criação visual para o jogo, apresentada em busto ilustrado. Não há identificação de comunidade, cerimônia ou autorização cultural específica; por isso, os traços não recebem significados rituais inventados.","question":"Quais elementos aparecem dos dois lados do rosto?","sourceIds":[],"readingIds":[]},{"id":"face-paint-orange","asset":"face-paint-orange","title":"Pintura facial pontilhada e turbante laranja","category":"faceart","description":"A imagem combina um turbante laranja com linhas finas e pequenos pontos brancos distribuídos pela testa, pelo nariz, pelo queixo e pelos braços. Colares em cores quentes ajudam a compor o retrato. Pontos próximos uns dos outros criam ritmo sem formar uma linha contínua.","context":"É um retrato artístico de referência, não um registro etnográfico. Pinturas corporais existentes possuem histórias e sentidos próprios, que não podem ser deduzidos a partir desta ilustração.","question":"Onde os pontos estão mais concentrados?","sourceIds":[],"readingIds":[]},{"id":"face-paint-yellow","asset":"face-paint-yellow","title":"Pintura facial branca e amarela com tranças","category":"faceart","description":"O busto tem tranças reunidas sobre a cabeça e grafismos em branco e amarelo ao redor dos olhos, da testa e das bochechas. Linhas, curvas e pequenos círculos se combinam com o desenho das tranças. Os detalhes formam uma composição visual de forte contraste.","context":"Os grafismos deste retrato não devem ser copiados ou apresentados como símbolos pertencentes a um grupo específico. Na ficha, são descritos apenas como elementos artísticos da imagem recebida.","question":"Quais formas foram criadas com linhas? Quais foram criadas com pontos?","sourceIds":[],"readingIds":[]},{"id":"face-paint-beige","asset":"face-paint-beige","title":"Pintura facial geométrica e turbante bege","category":"faceart","description":"Um turbante bege envolve a cabeça, enquanto linhas brancas e pequenos triângulos aparecem na testa, ao redor dos olhos e no nariz. A composição alterna traços longos com detalhes menores, formando partes simétricas. O colar também utiliza formas e cores variadas.","context":"Esta imagem é uma ilustração artística, não uma fonte histórica sobre pintura corporal. O significado de pinturas tradicionais deve ser apresentado por pessoas e estudos ligados a seus contextos.","question":"Que desenhos você consegue encontrar repetidos à direita e à esquerda?","sourceIds":[],"readingIds":[]},{"id":"masks-color","asset":"masks-color","title":"Coleção ilustrada de nove máscaras coloridas","category":"masks","description":"Nove máscaras diferentes aparecem organizadas em três fileiras. Algumas têm formas alongadas, outras são arredondadas; olhos, bocas e relevos variam de uma para outra. Verde, vermelho, amarelo e azul criam contrastes que ajudam a comparar cada desenho.","context":"A coleção é uma composição ilustrativa. Máscaras de comunidades reais podem ter funções artísticas, históricas, sociais ou espirituais específicas, e não se deve atribuir essas funções a estes desenhos sem documentação.","question":"Escolha duas máscaras: quais diferenças você encontra na forma dos olhos e da boca?","sourceIds":[],"readingIds":[]},{"id":"masks-wood","asset":"masks-wood","title":"Coleção ilustrada de nove máscaras de madeira","category":"masks","description":"O conjunto reúne nove desenhos de máscaras com aparência de madeira entalhada. Há rostos ovais, compridos, angulosos e arredondados, com olhos e narizes trabalhados de maneiras diferentes. As linhas que lembram cortes na superfície ajudam a imaginar o trabalho de uma ferramenta de escultura.","context":"A aparência de madeira não indica de onde uma obra veio nem como era utilizada. Para conhecer uma máscara histórica, é preciso procurar autoria, origem, data e contexto em fontes confiáveis.","question":"Qual das máscaras usa mais linhas retas? E qual parece ter formas mais arredondadas?","sourceIds":[],"readingIds":[]},{"id":"sculpture-pair","asset":"sculpture-pair","title":"Duas figuras esculpidas em madeira","category":"sculptures","description":"Duas esculturas de aparência amadeirada estão lado a lado. As cabeças são maiores que os corpos, e os olhos, os rostos e os suportes têm formas diferentes. A comparação permite perceber como um artista pode alterar proporções para chamar atenção para determinadas partes da figura.","context":"A imagem apresenta duas peças fictícias, sem identificação de artista ou coleção. Na história da arte, a interpretação de uma escultura depende também de sua origem, de seus materiais e de quem a produziu.","question":"Em qual das duas figuras a cabeça parece ocupar mais espaço?","sourceIds":[],"readingIds":[]},{"id":"sculpture-kneeling","asset":"sculpture-kneeling","title":"Figura ajoelhada em madeira","category":"sculptures","description":"A escultura mostra uma figura humana em posição ajoelhada, com tronco ereto, braços junto ao corpo e base trabalhada. O tom da madeira varia entre áreas claras e sombreadas. A posição do corpo e o formato da base ajudam a perceber equilíbrio e sustentação.","context":"A postura da figura pode gerar diferentes interpretações, mas a ilustração não informa uma função ritual, histórica ou social precisa. Não atribuímos uma origem inventada à obra.","question":"Quais partes parecem apoiar o peso da figura?","sourceIds":[],"readingIds":[]},{"id":"sculpture-bird","asset":"sculpture-bird","title":"Animal estilizado com pequeno pássaro","category":"sculptures","description":"A peça combina um animal de corpo curvado, formas alongadas e uma ave pequena sobre a parte superior. A madeira parece ter sido talhada em volumes que se encaixam. O corpo forma uma curva marcante, e o contraste entre animal maior e pássaro menor organiza o olhar.","context":"Trata-se de uma composição fantástica ilustrada. Sem informações de procedência e autoria, não é adequado atribuir ao animal ou à ave um significado cultural ou espiritual específico.","question":"Que linhas curvas ajudam a reconhecer o animal maior?","sourceIds":[],"readingIds":[]},{"id":"sculpture-curved","asset":"sculpture-curved","title":"Figura humana curvada em madeira escura","category":"sculptures","description":"Uma figura humana de madeira muito escura apresenta corpo inclinado para a frente e braços alongados que acompanham uma curva. A cabeça de perfil e a base arredondada tornam a silhueta bem diferente da figura ajoelhada. A forma parece explorar o movimento mesmo em um material rígido.","context":"A escultura é uma imagem artística sem procedência documentada. Sua postura pode inspirar perguntas sobre movimento, mas não revela sozinha quem a produziu nem o que representava.","question":"Como o corpo cria a sensação de movimento sem sair do lugar?","sourceIds":[],"readingIds":[]}],"residents":[{"id":"beach-lara","name":"Lara","character":"beach-lara","role":"Nadadora e professora de artes","age":32,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra retinta, cachos crespos curtos, maiô verde-azulado de alças largas e sandálias.","personality":"Tranquila e observadora; prefere nadar acompanhada e desenhar depois.","relationships":["beach-celina","beach-rebeca"],"preferredActivities":["Observar o mar.","Conversar à sombra.","Desenhar no caderno."],"lines":[{"speaker":"beach-lara","pt":"O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno.","en":{"6":"The sea changed colour with the light. I will draw these two bands in my notebook.","7":"The sea changed colour with the light. I will draw these two bands in my notebook.","8":"The sea changed colour with the light. I will draw these two bands in my notebook."}},{"speaker":"beach-lara","pt":"Este maiô tem alças largas; gosto do conforto para nadar.","en":{"6":"This swimsuit has wide straps; I like the comfort when I swim.","7":"This swimsuit has wide straps; I like the comfort when I swim.","8":"This swimsuit has wide straps; I like the comfort when I swim."}},{"speaker":"beach-lara","pt":"Guardei um lugar à sombra para a Teresa. Quer sentar com a gente?","en":{"6":"I saved a place in the shade for Teresa. Would you like to sit with us?","7":"I saved a place in the shade for Teresa. Would you like to sit with us?","8":"I saved a place in the shade for Teresa. Would you like to sit with us?"}}],"repeat":{"speaker":"beach-lara","pt":"O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno.","en":{"6":"The sea changed colour with the light. I will draw these two bands in my notebook.","7":"The sea changed colour with the light. I will draw these two bands in my notebook.","8":"The sea changed colour with the light. I will draw these two bands in my notebook."}}},{"id":"beach-jorge","name":"Jorge","character":"beach-jorge","role":"Marceneiro em um dia de descanso","age":40,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra, cabelo natural baixo, bermuda de banho coral com cordão e chinelos.","personality":"Sociável e cuidadoso; gosta de reparar bancos e descansar ouvindo as ondas.","relationships":["beach-nalu","beach-beto"],"preferredActivities":["Observar o banco de madeira.","Descansar sob o guarda-sol.","Conversar perto do caminho."],"lines":[{"speaker":"beach-jorge","pt":"Hoje a oficina ficou fechada. Vim escutar as ondas.","en":{"6":"The workshop is closed today. I came to listen to the waves.","7":"The workshop is closed today. I came to listen to the waves.","8":"The workshop is closed today. I came to listen to the waves."}},{"speaker":"beach-jorge","pt":"A madeira desse banco precisa secar antes de receber outra camada de óleo.","en":{"6":"The wood on this bench needs to dry before it gets another coat of oil.","7":"The wood on this bench needs to dry before it gets another coat of oil.","8":"The wood on this bench needs to dry before it gets another coat of oil."}},{"speaker":"beach-jorge","pt":"Beto trouxe o caderno. Vou guardar a bola enquanto ele desenha.","en":{"6":"Beto brought his notebook. I will hold the ball while he draws.","7":"Beto brought his notebook. I will hold the ball while he draws.","8":"Beto brought his notebook. I will hold the ball while he draws."}}],"repeat":{"speaker":"beach-jorge","pt":"Hoje a oficina ficou fechada. Vim escutar as ondas.","en":{"6":"The workshop is closed today. I came to listen to the waves.","7":"The workshop is closed today. I came to listen to the waves.","8":"The workshop is closed today. I came to listen to the waves."}}},{"id":"beach-samira","name":"Samira","character":"beach-samira","role":"Costureira e visitante da praia","age":28,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra retinta, turbante cotidiano de dobras altas, roupa de banho violeta e canga rosa transpassada.","personality":"Criativa e bem-humorada; observa tecidos, nós e preferências individuais.","relationships":["beach-lara","beach-nalu"],"preferredActivities":["Ajustar a canga.","Comparar sombras no tecido.","Conversar sob o guarda-sol."],"lines":[{"speaker":"beach-samira","pt":"Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada.","en":{"6":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","7":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","8":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand."}},{"speaker":"beach-samira","pt":"Escolhi esse turbante para hoje. As dobras e as cores são uma composição minha.","en":{"6":"I chose this headwrap for today. The folds and colours are my own composition.","7":"I chose this headwrap for today. The folds and colours are my own composition.","8":"I chose this headwrap for today. The folds and colours are my own composition."}},{"speaker":"beach-samira","pt":"Quero mostrar o desenho à Dandara quando voltar à feira.","en":{"6":"I want to show the drawing to Dandara when I return to the market.","7":"I want to show the drawing to Dandara when I return to the market.","8":"I want to show the drawing to Dandara when I return to the market."}}],"repeat":{"speaker":"beach-samira","pt":"Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada.","en":{"6":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","7":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand.","8":"I tied my sarong at the side. The knot keeps the fabric away from the wet sand."}}},{"id":"beach-ivo","name":"Ivo","character":"beach-ivo","role":"Técnico de som e leitor na praia","age":25,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra, locs reunidos em coque, camisa de banho azul de manga comprida e bermuda escura.","personality":"Curioso e paciente; gosta de conversar sobre som sem interromper o descanso dos outros.","relationships":["beach-rebeca","beach-jorge"],"preferredActivities":["Ler à sombra.","Escutar o mar.","Guardar a garrafa na bolsa."],"lines":[{"speaker":"beach-ivo","pt":"O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir.","en":{"6":"The wind and the water make different sounds. I am writing down what I can distinguish.","7":"The wind and the water make different sounds. I am writing down what I can distinguish.","8":"The wind and the water make different sounds. I am writing down what I can distinguish."}},{"speaker":"beach-ivo","pt":"Minha camisa de banho tem mangas compridas. Escolhi essa peça para passar a tarde aqui.","en":{"6":"My swimming shirt has long sleeves. I chose this garment for the afternoon here.","7":"My swimming shirt has long sleeves. I chose this garment for the afternoon here.","8":"My swimming shirt has long sleeves. I chose this garment for the afternoon here."}},{"speaker":"beach-ivo","pt":"O livro fica na bolsa quando chego perto da água.","en":{"6":"The book stays in my bag when I get near the water.","7":"The book stays in my bag when I get near the water.","8":"The book stays in my bag when I get near the water."}}],"repeat":{"speaker":"beach-ivo","pt":"O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir.","en":{"6":"The wind and the water make different sounds. I am writing down what I can distinguish.","7":"The wind and the water make different sounds. I am writing down what I can distinguish.","8":"The wind and the water make different sounds. I am writing down what I can distinguish."}}},{"id":"beach-nalu","name":"Nalu","character":"beach-nalu","role":"Vendedora do quiosque e cozinheira","age":37,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra, twists curtos, camisa ampla de estampa autoral, avental verde e sandálias.","personality":"Acolhedora e organizada; apresenta o que preparou e combina o horário de descanso com a equipe.","relationships":["beach-samira","beach-jorge"],"preferredActivities":["Organizar copos e guardanapos.","Conferir a etiqueta dos ingredientes.","Conversar com clientes."],"lines":[{"speaker":"beach-nalu","pt":"Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos.","en":{"6":"I made cashew fruit juice today. The ingredient list is beside the cups.","7":"I made cashew fruit juice today. The ingredient list is beside the cups.","8":"I made cashew fruit juice today. The ingredient list is beside the cups."}},{"speaker":"beach-nalu","pt":"O avental guarda meu lápis; uso ele para atualizar o cardápio.","en":{"6":"The apron holds my pencil; I use it to update the menu.","7":"The apron holds my pencil; I use it to update the menu.","8":"The apron holds my pencil; I use it to update the menu."}},{"speaker":"beach-nalu","pt":"Separei os copos e recolhi as embalagens. O caminho do quiosque ficou livre.","en":{"6":"I sorted the cups and collected the wrappers. The path to the kiosk is clear.","7":"I sorted the cups and collected the wrappers. The path to the kiosk is clear.","8":"I sorted the cups and collected the wrappers. The path to the kiosk is clear."}}],"repeat":{"speaker":"beach-nalu","pt":"Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos.","en":{"6":"I made cashew fruit juice today. The ingredient list is beside the cups.","7":"I made cashew fruit juice today. The ingredient list is beside the cups.","8":"I made cashew fruit juice today. The ingredient list is beside the cups."}}},{"id":"beach-celina","name":"Teresa","character":"beach-celina","role":"Bibliotecária aposentada e frequentadora da praia","age":68,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra, cachos grisalhos sob um chapéu de abas, vestido leve verde e sandálias.","personality":"Serena e espirituosa; gosta de ler, conversar e reconhecer mudanças na paisagem.","relationships":["beach-lara","beach-beto"],"preferredActivities":["Ler no banco.","Conversar com Lara.","Observar as aves ao longe."],"lines":[{"speaker":"beach-celina","pt":"Trouxe um livro curto para ler entre uma conversa e outra.","en":{"6":"I brought a short book to read between conversations.","7":"I brought a short book to read between conversations.","8":"I brought a short book to read between conversations."}},{"speaker":"beach-celina","pt":"A Lara guardou meu lugar. Daqui consigo observar as aves sem me aproximar delas.","en":{"6":"Lara saved my place. From here I can watch the birds without approaching them.","7":"Lara saved my place. From here I can watch the birds without approaching them.","8":"Lara saved my place. From here I can watch the birds without approaching them."}},{"speaker":"beach-celina","pt":"Meu chapéu cabe na bolsa, mas gosto de usar essa aba larga aqui.","en":{"6":"My hat fits in my bag, but I like wearing this wide brim here.","7":"My hat fits in my bag, but I like wearing this wide brim here.","8":"My hat fits in my bag, but I like wearing this wide brim here."}}],"repeat":{"speaker":"beach-celina","pt":"Trouxe um livro curto para ler entre uma conversa e outra.","en":{"6":"I brought a short book to read between conversations.","7":"I brought a short book to read between conversations.","8":"I brought a short book to read between conversations."}}},{"id":"beach-rebeca","name":"Rebeca","character":"beach-rebeca","role":"Guarda-vidas","age":34,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Pele negra retinta, tranças em coque, camisa de banho laranja de manga longa, bermuda escura e apito.","personality":"Atenta e direta; orienta visitantes com calma e acompanha as condições do mar.","relationships":["beach-lara","beach-ivo"],"preferredActivities":["Observar a área de banho.","Conferir a placa de orientação.","Conversar com visitantes no posto."],"lines":[{"speaker":"beach-rebeca","pt":"Antes de entrar na água, veja a orientação do posto e fale com a equipe.","en":{"6":"Before you enter the water, check the station guidance and talk to the team.","7":"Before you enter the water, check the station guidance and talk to the team.","8":"Before you enter the water, check the station guidance and talk to the team."}},{"speaker":"beach-rebeca","pt":"Estou observando esta área. Deixe a passagem do posto livre, por favor.","en":{"6":"I am watching this area. Please keep the station entrance clear.","7":"I am watching this area. Please keep the station entrance clear.","8":"I am watching this area. Please keep the station entrance clear."}},{"speaker":"beach-rebeca","pt":"Posso conversar aqui no posto enquanto acompanho o movimento.","en":{"6":"I can talk here at the station while I watch what is happening.","7":"I can talk here at the station while I watch what is happening.","8":"I can talk here at the station while I watch what is happening."}}],"repeat":{"speaker":"beach-rebeca","pt":"Antes de entrar na água, veja a orientação do posto e fale com a equipe.","en":{"6":"Before you enter the water, check the station guidance and talk to the team.","7":"Before you enter the water, check the station guidance and talk to the team.","8":"Before you enter the water, check the station guidance and talk to the team."}}},{"id":"beach-beto","name":"Beto","character":"beach-beto","role":"Estudante e desenhista","age":17,"chapter":5,"map":"beach","identity":"Pessoa negra brasileira original e fictícia. Adolescente negro, afro arredondado, camisa leve aberta sobre camiseta e bermuda de banho azul.","personality":"Animado e observador; prefere desenhar os animais de longe e compartilhar o caderno.","relationships":["beach-celina","beach-jorge"],"preferredActivities":["Desenhar pegadas no caderno.","Conversar com Teresa.","Guardar a bola perto do banco."],"lines":[{"speaker":"beach-beto","pt":"Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois.","en":{"6":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","7":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","8":"I did not touch the tracks. I drew their shape in my notebook to compare them later."}},{"speaker":"beach-beto","pt":"A Teresa encontrou outro livro sobre aves. Quero olhar as imagens com ela.","en":{"6":"Teresa found another book about birds. I want to look at the pictures with her.","7":"Teresa found another book about birds. I want to look at the pictures with her.","8":"Teresa found another book about birds. I want to look at the pictures with her."}},{"speaker":"beach-beto","pt":"Minha camisa fica aberta por cima da camiseta. A bermuda tem bolso para a chave.","en":{"6":"My shirt stays open over my T-shirt. My shorts have a pocket for the key.","7":"My shirt stays open over my T-shirt. My shorts have a pocket for the key.","8":"My shirt stays open over my T-shirt. My shorts have a pocket for the key."}}],"repeat":{"speaker":"beach-beto","pt":"Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois.","en":{"6":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","7":"I did not touch the tracks. I drew their shape in my notebook to compare them later.","8":"I did not touch the tracks. I drew their shape in my notebook to compare them later."}}}],"characters":{"beach-lara":{"name":"Lara","role":"Nadadora e professora de artes","quote":"O mar mudou de cor com a luz. Vou desenhar essas duas faixas no caderno.","accent":"#7ed0ce","sprite":"assets/characters/beach-lara.png","portrait":"assets/characters/beach-lara-portrait.png"},"beach-jorge":{"name":"Jorge","role":"Marceneiro em um dia de descanso","quote":"Hoje a oficina ficou fechada. Vim escutar as ondas.","accent":"#f0ae6d","sprite":"assets/characters/beach-jorge.png","portrait":"assets/characters/beach-jorge-portrait.png"},"beach-samira":{"name":"Samira","role":"Costureira e visitante da praia","quote":"Amarrei minha canga de lado. O nó deixa o tecido longe da areia molhada.","accent":"#e19caf","sprite":"assets/characters/beach-samira.png","portrait":"assets/characters/beach-samira-portrait.png"},"beach-ivo":{"name":"Ivo","role":"Técnico de som e leitor na praia","quote":"O vento e a água fazem sons diferentes. Estou anotando o que consigo distinguir.","accent":"#8cb4d8","sprite":"assets/characters/beach-ivo.png","portrait":"assets/characters/beach-ivo-portrait.png"},"beach-nalu":{"name":"Nalu","role":"Vendedora do quiosque e cozinheira","quote":"Fiz suco de caju hoje. A lista de ingredientes está ao lado dos copos.","accent":"#f3d087","sprite":"assets/characters/beach-nalu.png","portrait":"assets/characters/beach-nalu-portrait.png"},"beach-celina":{"name":"Teresa","role":"Bibliotecária aposentada e frequentadora da praia","quote":"Trouxe um livro curto para ler entre uma conversa e outra.","accent":"#9bd4b4","sprite":"assets/characters/beach-celina.png","portrait":"assets/characters/beach-celina-portrait.png"},"beach-rebeca":{"name":"Rebeca","role":"Guarda-vidas","quote":"Antes de entrar na água, veja a orientação do posto e fale com a equipe.","accent":"#ffd286","sprite":"assets/characters/beach-rebeca.png","portrait":"assets/characters/beach-rebeca-portrait.png"},"beach-beto":{"name":"Beto","role":"Estudante e desenhista","quote":"Não mexi nas pegadas. Desenhei o formato no caderno para comparar depois.","accent":"#c3b6df","sprite":"assets/characters/beach-beto.png","portrait":"assets/characters/beach-beto-portrait.png"}},"sources":[{"id":"wardrobe_ipac","name":"IPAC Bahia — Ofício das Baianas do Acarajé","url":"https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje","note":"Referência para saia rodada, bata, torço e pano da costa no contexto do ofício. Não copiamos fotografias, tecidos ou adereços rituais."},{"id":"wardrobe_negra_jho","name":"SECOM Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff","url":"https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff","note":"Referência de autoria e variedade de composições. As amarrações de VOICES são desenhos cotidianos originais; não reproduzem peças da exposição nem lhes atribuem significado ritual."},{"id":"wardrobe_mab","name":"Museu Afro Brasil Emanoel Araujo — Indumentária","url":"https://museuafrobrasil.org.br/classificacao/indumentaria/","note":"Referência para distinguir peças do cotidiano e contextos cerimoniais. Os cortes, estampas e acessórios apresentados são desenhos originais do jogo."}]};})();
+(function(){'use strict';window.V.wardrobeContent={
+  "gallery": [
+    {
+      "id": "clothes-wrap-dress",
+      "asset": "clothes-wrap-dress",
+      "title": "Vestido transpassado",
+      "category": "clothes",
+      "description": "As duas partes da frente se cruzam no decote. A faixa acompanha a cintura, e a saia amplia a peça abaixo dessa linha.",
+      "context": "O transpasse é o cruzamento das partes dianteiras. Siga a diagonal do ombro à cintura e compare com o decote contínuo do vestido de alças.",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "O encontro das partes",
+      "question": "Onde as partes da frente se cruzam?",
+      "en": "The front panels overlap.",
+      "pt": "As partes da frente se sobrepõem.",
+      "relatedIds": [
+        "clothes-flowing-dress",
+        "clothes-printed-blouse"
+      ]
+    },
+    {
+      "id": "clothes-flowing-dress",
+      "asset": "clothes-flowing-dress",
+      "title": "Vestido azul de alças",
+      "category": "clothes",
+      "description": "Alças sustentam o vestido azul. A saia se abre a partir da cintura, com pequenos motivos claros na superfície.",
+      "context": "As pregas e a largura da saia mudam o contorno abaixo da cintura. Compare com o vestido amarelo, cuja linha desce de maneira mais contínua desde os ombros.",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Corte e caimento",
+      "question": "Em que altura a saia começa a se abrir?",
+      "en": "The skirt widens below the waist.",
+      "pt": "A saia se alarga abaixo da cintura.",
+      "relatedIds": [
+        "clothes-wrap-dress",
+        "clothes-dress-yellow"
+      ]
+    },
+    {
+      "id": "clothes-loose-shirt",
+      "asset": "clothes-loose-shirt",
+      "title": "Camisa de corte amplo",
+      "category": "clothes",
+      "description": "A camisa clara tem mangas curtas e largas, abertura curta no decote e barra reta. Pequenos detalhes verdes aparecem na parte inferior.",
+      "context": "Compare o contorno largo desta camisa com o da blusa laranja. Observe a posição do decote e a distância entre manga e barra.",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Largura e comprimento",
+      "question": "Que partes têm largura maior que as da blusa laranja?",
+      "en": "The shirt has wide sleeves.",
+      "pt": "A camisa tem mangas largas.",
+      "relatedIds": [
+        "clothes-printed-blouse",
+        "clothes-cardigan"
+      ]
+    },
+    {
+      "id": "clothes-long-skirt",
+      "asset": "clothes-long-skirt",
+      "title": "Saia verde com pregas",
+      "category": "clothes",
+      "description": "A saia tem cós escuro e motivos claros sobre o tecido verde. A largura aumenta da cintura em direção à barra.",
+      "context": "Cós é a parte superior que acompanha a cintura; barra é o acabamento da borda inferior. As pregas ajudam a distribuir o tecido entre essas partes.",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Do cós à barra",
+      "question": "Como a largura muda entre o cós e a barra?",
+      "en": "The skirt has a dark waistband.",
+      "pt": "A saia tem um cós escuro.",
+      "relatedIds": [
+        "clothes-flowing-dress",
+        "clothes-overalls"
+      ]
+    },
+    {
+      "id": "clothes-cropped-jacket",
+      "asset": "clothes-cropped-jacket",
+      "title": "Jaqueta curta e calça",
+      "category": "clothes",
+      "description": "A jaqueta roxa termina perto da cintura e tem gola dobrada. A calça clara é uma peça separada, com duas pernas abaixo da barra da jaqueta.",
+      "context": "O contraste de cor ajuda a localizar a passagem da jaqueta para a calça. Compare esse conjunto com a jardineira, que reúne peito e pernas numa só peça.",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Um conjunto de duas peças",
+      "question": "Qual linha separa a jaqueta da calça?",
+      "en": "The jacket ends near the waist.",
+      "pt": "A jaqueta termina perto da cintura.",
+      "relatedIds": [
+        "clothes-cardigan",
+        "clothes-overalls"
+      ]
+    },
+    {
+      "id": "wrap-high-fold",
+      "asset": "wrap-high-fold",
+      "title": "Turbante roxo de dobras altas",
+      "category": "wrap",
+      "description": "As faixas se sobrepõem acima da cabeça e formam camadas altas. Linhas claras destacam as bordas de algumas dobras.",
+      "context": "A faixa mais alta encobre parte das que ficam abaixo. Compare com a amarração dourada, em que o pano acompanha mais de perto o formato da cabeça.",
+      "sourceIds": [
+        "culture_negra_jho"
+      ],
+      "readingIds": [
+        "culture-book-03"
+      ],
+      "question": "Qual dobra passa por cima das outras na parte mais alta?",
+      "contextTitle": "Altura e sobreposição",
+      "en": "The folds rise above the head.",
+      "pt": "As dobras se elevam acima da cabeça.",
+      "relatedIds": [
+        "wrap-tied-back",
+        "wrap-side-fold"
+      ]
+    },
+    {
+      "id": "wrap-tied-back",
+      "asset": "wrap-tied-back",
+      "title": "Turbante dourado com nó lateral",
+      "category": "wrap",
+      "description": "O tecido dourado acompanha a cabeça em voltas diagonais. O nó e uma ponta solta ficam visíveis ao lado do rosto.",
+      "context": "Siga as voltas desde a testa até o nó. Ali o tecido se reúne, enquanto a ponta continua para baixo. Compare com a amarração frontal.",
+      "sourceIds": [
+        "culture_negra_jho"
+      ],
+      "readingIds": [
+        "culture-book-03"
+      ],
+      "question": "Onde as faixas se encontram e a ponta começa a descer?",
+      "contextTitle": "Nó, ponta e direção",
+      "en": "The knot is beside the face.",
+      "pt": "O nó fica ao lado do rosto.",
+      "relatedIds": [
+        "wrap-front-knot",
+        "wrap-high-fold"
+      ]
+    },
+    {
+      "id": "clothes-agbada-olive",
+      "asset": "clothes-agbada-olive",
+      "title": "Agbada verde-oliva",
+      "category": "clothes",
+      "description": "A veste externa tem mangas muito largas e cai sobre túnica e calça. Bordados claros acompanham o centro e a abertura do peito.",
+      "context": "O Metropolitan Museum documenta essas denominações em contextos iorubá, hauçá e wolof. Sua ficha de um agbada cerimonial apresenta procedência e materiais registrados.",
+      "question": "Que parte cria o maior volume nas laterais?",
+      "sourceIds": [
+        "culture_met_agbada"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Agbada, riga e boubou",
+      "en": "The outer robe has very wide sleeves.",
+      "pt": "A veste externa tem mangas muito largas.",
+      "relatedIds": [
+        "clothes-mens-yellow",
+        "clothes-mens-black"
+      ]
+    },
+    {
+      "id": "clothes-mens-yellow",
+      "asset": "clothes-mens-yellow",
+      "title": "Túnica amarela e calça",
+      "category": "clothes",
+      "description": "A túnica amarela tem mangas compridas, bordado vertical e calça da mesma cor. O gorro completa o conjunto.",
+      "context": "A linha do ombro acompanha o braço mais de perto. Compare com a veste externa do agbada, que acrescenta uma camada de mangas muito largas.",
+      "question": "Onde o bordado acompanha a abertura da túnica?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Peça exterior e túnica",
+      "en": "The tunic and trousers are yellow.",
+      "pt": "A túnica e a calça são amarelas.",
+      "relatedIds": [
+        "clothes-agbada-olive",
+        "clothes-mens-black"
+      ]
+    },
+    {
+      "id": "clothes-mens-black",
+      "asset": "clothes-mens-black",
+      "title": "Túnica preta com bordado claro",
+      "category": "clothes",
+      "description": "Linhas brancas aparecem no peito, no decote e nos punhos. A calça repete a cor escura da túnica.",
+      "context": "Os fios do bordado acrescentam desenhos à superfície. As áreas claras destacam abertura e punhos, mesmo com a roupa vista de longe.",
+      "question": "Que bordas ficam mais visíveis por causa das linhas brancas?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "O bordado na roupa",
+      "en": "White embroidery stands out on black fabric.",
+      "pt": "O bordado branco se destaca no tecido preto.",
+      "relatedIds": [
+        "clothes-mens-yellow",
+        "clothes-dress-black"
+      ]
+    },
+    {
+      "id": "clothes-dress-red-green",
+      "asset": "clothes-dress-red-green",
+      "title": "Vestido vermelho e verde",
+      "category": "clothes",
+      "description": "Formas vermelhas e verdes se repetem pelo vestido e pelo tecido da cabeça. As mangas são curtas, e a saia desce até os pés.",
+      "context": "Um motivo reaparece em diferentes pontos da superfície. Compare a repetição de formas grandes com os pequenos motivos claros da blusa laranja.",
+      "question": "Você consegue localizar o mesmo motivo em duas partes da saia?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Padrão repetido",
+      "en": "Red and green shapes repeat on the dress.",
+      "pt": "Formas vermelhas e verdes se repetem no vestido.",
+      "relatedIds": [
+        "clothes-printed-blouse",
+        "clothes-dress-teal"
+      ]
+    },
+    {
+      "id": "clothes-dress-yellow",
+      "asset": "clothes-dress-yellow",
+      "title": "Vestido amarelo de mangas amplas",
+      "category": "clothes",
+      "description": "O tecido amarelo desce do alto do corpo até a barra. As mangas são largas, e o bordado claro se concentra perto do peito.",
+      "context": "A linha lateral desce desde os ombros sem uma faixa marcada na cintura. No vestido transpassado, a faixa divide visualmente tronco e saia.",
+      "question": "O contorno muda mais nos ombros ou na cintura?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Duas silhuetas",
+      "en": "The sleeves are wide and loose.",
+      "pt": "As mangas são largas e soltas.",
+      "relatedIds": [
+        "clothes-wrap-dress",
+        "clothes-dress-black"
+      ]
+    },
+    {
+      "id": "clothes-dress-black",
+      "asset": "clothes-dress-black",
+      "title": "Vestido preto com bordados claros",
+      "category": "clothes",
+      "description": "As linhas claras marcam peito, mangas e frente do vestido preto. O contraste deixa o percurso do bordado visível sobre a superfície escura.",
+      "context": "A túnica preta também concentra bordados na abertura e nos punhos. Compare onde os desenhos se repetem e onde cada peça mantém tecido sem ornamentação.",
+      "question": "Por onde você seguiria o bordado do alto até a saia?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Repetição em outra peça",
+      "en": "Light embroidery marks the front of the dress.",
+      "pt": "O bordado claro marca a frente do vestido.",
+      "relatedIds": [
+        "clothes-mens-black",
+        "clothes-dress-yellow"
+      ]
+    },
+    {
+      "id": "clothes-dress-teal",
+      "asset": "clothes-dress-teal",
+      "title": "Vestido turquesa de estampa geométrica",
+      "category": "clothes",
+      "description": "Linhas curvas e formas claras se repetem sobre o fundo turquesa. O desenho da estampa acompanha a frente da saia e reaparece na parte superior.",
+      "context": "Estampa é o padrão da superfície. Tecelagem é a construção pelo cruzamento de fios. A leitura sobre kente e ankara ajuda a separar essas informações.",
+      "question": "Qual forma da saia reaparece na parte superior?",
+      "sourceIds": [
+        "culture_vam_archives"
+      ],
+      "readingIds": [
+        "culture-book-06",
+        "culture-book-09"
+      ],
+      "contextTitle": "Desenho e construção",
+      "en": "Curved lines repeat across the fabric.",
+      "pt": "Linhas curvas se repetem pelo tecido.",
+      "relatedIds": [
+        "clothes-dress-red-green",
+        "cloth-pano-da-costa"
+      ]
+    },
+    {
+      "id": "clothes-dress-green",
+      "asset": "clothes-dress-green",
+      "title": "Vestido verde com bordado central",
+      "category": "clothes",
+      "description": "O bordado claro desce pelo centro. Detalhes semelhantes aparecem nas mangas e perto da barra; o tecido da cabeça retoma o verde.",
+      "context": "O eixo central divide o vestido em duas partes visualmente próximas. Pequenas diferenças nas dobras mostram que equilíbrio não exige cópia perfeita dos dois lados.",
+      "question": "Que detalhes aparecem dos dois lados da linha central?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-06"
+      ],
+      "contextTitle": "Centro e bordas",
+      "en": "The embroidery runs down the centre.",
+      "pt": "O bordado desce pelo centro.",
+      "relatedIds": [
+        "clothes-dress-black",
+        "clothes-dress-teal"
+      ]
+    },
+    {
+      "id": "face-paint-shells",
+      "asset": "face-paint-shells",
+      "title": "Pintura facial: curvas e conchas",
+      "category": "faceart",
+      "description": "Traços brancos contornam os olhos e continuam pela testa. Pontos e curvas aparecem dos dois lados do rosto; conchas se repetem nos colares.",
+      "context": "Imagine uma linha vertical passando pelo nariz. Compare as marcas dos dois lados: a semelhança cria simetria, enquanto pequenos desvios mantêm diferenças entre as metades.",
+      "question": "Que marcas ocupariam posições semelhantes nas duas metades?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Um eixo de simetria",
+      "en": "White curves surround the eyes.",
+      "pt": "Curvas brancas contornam os olhos.",
+      "relatedIds": [
+        "face-paint-beige",
+        "face-paint-yellow"
+      ]
+    },
+    {
+      "id": "face-paint-orange",
+      "asset": "face-paint-orange",
+      "title": "Pintura facial: pontos e tecido laranja",
+      "category": "faceart",
+      "description": "Pontos brancos atravessam o rosto e reaparecem nos braços. O tecido laranja cria áreas de cor maiores ao redor dos detalhes pequenos.",
+      "context": "Os intervalos entre pontos guiam o olhar. Compare a sequência pontilhada com as linhas contínuas em torno dos olhos na ficha de curvas e conchas.",
+      "question": "Os pontos formam uma linha contínua ou uma sequência com intervalos?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Ritmo visual",
+      "en": "Small white dots form a pattern.",
+      "pt": "Pequenos pontos brancos formam um padrão.",
+      "relatedIds": [
+        "face-paint-shells",
+        "face-paint-beige"
+      ]
+    },
+    {
+      "id": "face-paint-yellow",
+      "asset": "face-paint-yellow",
+      "title": "Pintura facial: branco e amarelo",
+      "category": "faceart",
+      "description": "Linhas brancas e amarelas destacam testa, olhos e bochechas. As tranças se reúnem no alto e caem junto aos ombros.",
+      "context": "Localize primeiro as marcas amarelas e depois as brancas. Veja onde as cores se aproximam e onde ocupam áreas próprias do rosto.",
+      "question": "Que partes têm marcas amarelas ao lado de marcas brancas?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Duas cores em diálogo",
+      "en": "Yellow and white marks highlight the face.",
+      "pt": "Marcas amarelas e brancas destacam o rosto.",
+      "relatedIds": [
+        "face-paint-shells",
+        "hair-box-braids"
+      ]
+    },
+    {
+      "id": "face-paint-beige",
+      "asset": "face-paint-beige",
+      "title": "Pintura facial: triângulos e linhas",
+      "category": "faceart",
+      "description": "O tecido bege envolve a cabeça. Traços brancos e pequenos triângulos marcam testa, bochechas e nariz; contas coloridas ocupam a base do retrato.",
+      "context": "Triângulos têm três lados. Pontos e linhas organizam os espaços entre eles. Compare as posições com os motivos arredondados do retrato de curvas e conchas.",
+      "question": "Onde aparecem triângulos e onde predominam pontos?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Formas geométricas",
+      "en": "White triangles appear on the cheeks.",
+      "pt": "Triângulos brancos aparecem nas bochechas.",
+      "relatedIds": [
+        "face-paint-shells",
+        "face-paint-orange"
+      ]
+    },
+    {
+      "id": "masks-color",
+      "asset": "masks-color",
+      "title": "Nove desenhos de máscaras coloridas",
+      "category": "masks",
+      "description": "As máscaras estão em três fileiras. Formas alongadas, circulares e angulosas recebem cores e relevos diferentes nos olhos, na boca e no alto da cabeça.",
+      "context": "Entre comunidades iorubá-nagô do Benim, Nigéria e Togo, o Gèlèdé reúne máscaras esculpidas, dança e canto. A leitura apresenta essa tradição documentada para aprofundar o estudo.",
+      "question": "Que máscara possui o maior contraste entre olhos e rosto?",
+      "sourceIds": [
+        "culture_unesco_gelede"
+      ],
+      "readingIds": [
+        "culture-book-10",
+        "culture-book-11"
+      ],
+      "contextTitle": "Para conhecer: Gèlèdé",
+      "en": "Nine masks are arranged in three rows.",
+      "pt": "Nove máscaras estão organizadas em três fileiras.",
+      "relatedIds": [
+        "masks-wood",
+        "sculpture-pair"
+      ]
+    },
+    {
+      "id": "masks-wood",
+      "asset": "masks-wood",
+      "title": "Máscaras: relevos e superfícies",
+      "category": "masks",
+      "description": "Nove rostos apresentam narizes projetados, olhos recortados e contornos variados. Áreas claras e escuras ajudam a comparar os relevos.",
+      "context": "Partes salientes interceptam a luz de maneira diferente das cavidades. Observe narizes, sobrancelhas e bocas; depois compare as mesmas regiões na prancha colorida.",
+      "question": "Quais partes parecem avançar e quais parecem recuadas?",
+      "sourceIds": [
+        "culture_getty_elements"
+      ],
+      "readingIds": [
+        "culture-book-10",
+        "culture-book-11"
+      ],
+      "contextTitle": "O que o relevo mostra",
+      "en": "Raised features create light and shadow.",
+      "pt": "As partes em relevo criam luz e sombra.",
+      "relatedIds": [
+        "masks-color",
+        "sculpture-kneeling"
+      ]
+    },
+    {
+      "id": "sculpture-pair",
+      "asset": "sculpture-pair",
+      "title": "Duas figuras: proporção e escala",
+      "category": "sculptures",
+      "description": "As figuras têm cabeças grandes, pescoços estreitos e bases alongadas. Uma é mais alta; os desenhos do rosto e da cabeça também diferem.",
+      "context": "Proporção é a relação de tamanho entre partes. Compare cabeça e corpo em cada figura e veja como a figura ajoelhada distribui o comprimento entre cabeça, tronco e pernas.",
+      "question": "Em qual figura a cabeça ocupa uma parte maior da altura?",
+      "sourceIds": [
+        "culture_getty_vocabulary"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Comparar proporções",
+      "en": "The two figures have different heights.",
+      "pt": "As duas figuras têm alturas diferentes.",
+      "relatedIds": [
+        "sculpture-kneeling",
+        "sculpture-curved"
+      ]
+    },
+    {
+      "id": "sculpture-kneeling",
+      "asset": "sculpture-kneeling",
+      "title": "Figura ajoelhada: base e postura",
+      "category": "sculptures",
+      "description": "A figura mantém o tronco ereto e as pernas dobradas sobre uma base. Os braços acompanham o corpo, formando uma silhueta estreita.",
+      "context": "O MASP inclui Figura com criança, de Agnaldo Manoel dos Santos, em seu material de estudo da arte brasileira. A referência apresenta um artista pelo nome e outra solução de figura humana.",
+      "question": "Quais partes ligam a figura à base?",
+      "sourceIds": [
+        "culture_masp_agnaldo"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Para conhecer: Agnaldo dos Santos",
+      "en": "The figure kneels on a base.",
+      "pt": "A figura está ajoelhada sobre uma base.",
+      "relatedIds": [
+        "sculpture-pair",
+        "sculpture-curved"
+      ]
+    },
+    {
+      "id": "sculpture-bird",
+      "asset": "sculpture-bird",
+      "title": "Animal e pássaro: volumes combinados",
+      "category": "sculptures",
+      "description": "Um animal volumoso sustenta uma pequena ave. O focinho curvo desce diante das pernas; o contraste de tamanhos destaca o pássaro na parte superior.",
+      "context": "O espaço entre pernas e focinho também faz parte da composição. Compare com a abertura formada pelo corpo e pelos braços da figura humana curvada.",
+      "question": "Que aberturas você vê entre as partes do corpo?",
+      "sourceIds": [
+        "culture_getty_design"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Contorno e espaço vazio",
+      "en": "A small bird rests above the animal.",
+      "pt": "Uma pequena ave repousa sobre o animal.",
+      "relatedIds": [
+        "sculpture-curved",
+        "sculpture-pair"
+      ]
+    },
+    {
+      "id": "sculpture-curved",
+      "asset": "sculpture-curved",
+      "title": "Figura curvada: corpo e espaço",
+      "category": "sculptures",
+      "description": "Corpo e braços alongados formam uma abertura oval. A cabeça se projeta para a frente, e a base arredondada sustenta a composição escura.",
+      "context": "A curva leva o olhar da cabeça aos braços e à base. Compare esse percurso com a linha vertical da figura ajoelhada e com os vazios da escultura do animal.",
+      "question": "Que caminho seu olhar segue ao redor da abertura?",
+      "sourceIds": [
+        "culture_getty_design"
+      ],
+      "readingIds": [
+        "culture-book-11"
+      ],
+      "contextTitle": "Movimento numa forma imóvel",
+      "en": "The curved body forms an oval opening.",
+      "pt": "O corpo curvado forma uma abertura oval.",
+      "relatedIds": [
+        "sculpture-kneeling",
+        "sculpture-bird"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "beach-lara",
+      "name": "Lara",
+      "character": "beach-lara",
+      "role": "Nadadora e professora de artes",
+      "age": 32,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra retinta, cachos crespos curtos, maiô verde-azulado de alças largas e sandálias.",
+      "personality": "Tranquila e observadora; prefere nadar acompanhada e desenhar depois.",
+      "relationships": [
+        "beach-celina",
+        "beach-rebeca"
+      ],
+      "preferredActivities": [
+        "Observar o mar.",
+        "Conversar à sombra.",
+        "Desenhar no caderno."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-lara",
+          "pt": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+          "en": {
+            "6": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint.",
+            "7": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint.",
+            "8": "I brought my sketchbook to observe light on the water. The same scene changes with the time and viewpoint."
+          },
+          "ptByGrade": {
+            "6": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+            "7": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+            "8": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação."
+          }
+        },
+        {
+          "speaker": "beach-lara",
+          "pt": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+          "en": {
+            "6": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+            "7": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+            "8": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly."
+          },
+          "ptByGrade": {
+            "6": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+            "7": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+            "8": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-lara",
+        "pt": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+        "en": {
+          "6": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+          "7": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly.",
+          "8": "The drawing can record a colour choice; the note records date and place. Together, they explain what I observed more clearly."
+        },
+        "ptByGrade": {
+          "6": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+          "7": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei.",
+          "8": "O desenho pode guardar uma escolha de cor; a nota registra data e lugar. Juntos, eles explicam melhor o que observei."
+        }
+      }
+    },
+    {
+      "id": "beach-jorge",
+      "name": "Jorge",
+      "character": "beach-jorge",
+      "role": "Marceneiro em um dia de descanso",
+      "age": 40,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra, cabelo natural baixo, bermuda de banho coral com cordão e chinelos.",
+      "personality": "Sociável e cuidadoso; gosta de reparar bancos e descansar ouvindo as ondas.",
+      "relationships": [
+        "beach-nalu",
+        "beach-beto"
+      ],
+      "preferredActivities": [
+        "Observar o banco de madeira.",
+        "Descansar sob o guarda-sol.",
+        "Conversar perto do caminho."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-jorge",
+          "pt": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+          "en": {
+            "6": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book.",
+            "7": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book.",
+            "8": "I left the workshop to rest today. I checked that the bench leaves the path clear before opening my book."
+          },
+          "ptByGrade": {
+            "6": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+            "7": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+            "8": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro."
+          }
+        },
+        {
+          "speaker": "beach-jorge",
+          "pt": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+          "en": {
+            "6": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+            "7": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+            "8": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer."
+          },
+          "ptByGrade": {
+            "6": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+            "7": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+            "8": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-jorge",
+        "pt": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+        "en": {
+          "6": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+          "7": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer.",
+          "8": "My workshop marked the sign’s wooden support. The banner also needs to credit its designer and writer."
+        },
+        "ptByGrade": {
+          "6": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+          "7": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu.",
+          "8": "Na madeira do cartaz, minha oficina deixou identificação. A faixa também precisa dos créditos de quem desenhou e escreveu."
+        }
+      }
+    },
+    {
+      "id": "beach-samira",
+      "name": "Samira",
+      "character": "beach-samira",
+      "role": "Costureira e visitante da praia",
+      "age": 28,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra retinta, turbante cotidiano de dobras altas, roupa de banho violeta e canga rosa transpassada.",
+      "personality": "Criativa e bem-humorada; observa tecidos, nós e preferências individuais.",
+      "relationships": [
+        "beach-lara",
+        "beach-nalu"
+      ],
+      "preferredActivities": [
+        "Ajustar a canga.",
+        "Comparar sombras no tecido.",
+        "Conversar sob o guarda-sol."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-samira",
+          "pt": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+          "en": {
+            "6": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting.",
+            "7": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting.",
+            "8": "In sewing, a fold can change the shape without changing the fabric. I’ll draw two options to compare before cutting."
+          },
+          "ptByGrade": {
+            "6": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+            "7": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+            "8": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar."
+          }
+        },
+        {
+          "speaker": "beach-samira",
+          "pt": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+          "en": {
+            "6": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+            "7": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+            "8": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition."
+          },
+          "ptByGrade": {
+            "6": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+            "7": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+            "8": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-samira",
+        "pt": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+        "en": {
+          "6": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+          "7": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition.",
+          "8": "The Iemanjá exhibition has a caption beside the artwork. The abebé, crown and veil connect to the stated reference; they do not define every tradition."
+        },
+        "ptByGrade": {
+          "6": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+          "7": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição.",
+          "8": "A mostra de Iemanjá tem uma legenda ao lado da arte. O abebé, a coroa e o véu se ligam à referência indicada; não identificam toda tradição."
+        }
+      }
+    },
+    {
+      "id": "beach-ivo",
+      "name": "Ivo",
+      "character": "beach-ivo",
+      "role": "Técnico de som e leitor na praia",
+      "age": 25,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra, locs reunidos em coque, camisa de banho azul de manga comprida e bermuda escura.",
+      "personality": "Curioso e paciente; gosta de conversar sobre som sem interromper o descanso dos outros.",
+      "relationships": [
+        "beach-rebeca",
+        "beach-jorge"
+      ],
+      "preferredActivities": [
+        "Ler à sombra.",
+        "Escutar o mar.",
+        "Guardar a garrafa na bolsa."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-ivo",
+          "pt": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+          "en": {
+            "6": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival.",
+            "7": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival.",
+            "8": "At the beach, I came to listen before working on the sound. The waves do not have a rehearsal schedule like our festival."
+          },
+          "ptByGrade": {
+            "6": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+            "7": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+            "8": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival."
+          }
+        },
+        {
+          "speaker": "beach-ivo",
+          "pt": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+          "en": {
+            "6": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+            "7": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+            "8": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature."
+          },
+          "ptByGrade": {
+            "6": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+            "7": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+            "8": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-ivo",
+        "pt": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+        "en": {
+          "6": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+          "7": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature.",
+          "8": "In my notebook, I separate duration, intensity and timbre. In acoustics, pitch relates to frequency; loudness is a different feature."
+        },
+        "ptByGrade": {
+          "6": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+          "7": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência.",
+          "8": "No meu caderno, separo duração, intensidade e timbre. Alto pode significar volume numa conversa; em acústica, altura tem relação com frequência."
+        }
+      }
+    },
+    {
+      "id": "beach-nalu",
+      "name": "Nalu",
+      "character": "beach-nalu",
+      "role": "Vendedora do quiosque e cozinheira",
+      "age": 37,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra, twists curtos, camisa ampla de estampa autoral, avental verde e sandálias.",
+      "personality": "Acolhedora e organizada; apresenta o que preparou e combina o horário de descanso com a equipe.",
+      "relationships": [
+        "beach-samira",
+        "beach-jorge"
+      ],
+      "preferredActivities": [
+        "Organizar copos e guardanapos.",
+        "Conferir a etiqueta dos ingredientes.",
+        "Conversar com clientes."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-nalu",
+          "pt": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+          "en": {
+            "6": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing.",
+            "7": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing.",
+            "8": "I’m Nalu from the kiosk. The ingredient list is here; ask about preparation instead of judging only by the drawing."
+          },
+          "ptByGrade": {
+            "6": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+            "7": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+            "8": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho."
+          }
+        },
+        {
+          "speaker": "beach-nalu",
+          "pt": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+          "en": {
+            "6": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+            "7": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+            "8": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore."
+          },
+          "ptByGrade": {
+            "6": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+            "7": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+            "8": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-nalu",
+        "pt": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+        "en": {
+          "6": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+          "7": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore.",
+          "8": "After our break, we take the packaging off the sand with us. Keeping rubbish contained prevents the wind from spreading it along the shore."
+        },
+        "ptByGrade": {
+          "6": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+          "7": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla.",
+          "8": "Depois da pausa, as embalagens saem da areia com a gente. Guardar o lixo evita que o vento o espalhe pela orla."
+        }
+      }
+    },
+    {
+      "id": "beach-celina",
+      "name": "Teresa",
+      "character": "beach-celina",
+      "role": "Bibliotecária aposentada e frequentadora da praia",
+      "age": 68,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra, cachos grisalhos sob um chapéu de abas, vestido leve verde e sandálias.",
+      "personality": "Serena e espirituosa; gosta de ler, conversar e reconhecer mudanças na paisagem.",
+      "relationships": [
+        "beach-lara",
+        "beach-beto"
+      ],
+      "preferredActivities": [
+        "Ler no banco.",
+        "Conversar com Lara.",
+        "Observar as aves ao longe."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-celina",
+          "pt": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+          "en": {
+            "6": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture.",
+            "7": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture.",
+            "8": "I’m Teresa. I worked in a library and still enjoy reading near the water, with the book protected from sand and moisture."
+          },
+          "ptByGrade": {
+            "6": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+            "7": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+            "8": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade."
+          }
+        },
+        {
+          "speaker": "beach-celina",
+          "pt": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+          "en": {
+            "6": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+            "7": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+            "8": "A wet page can lose information too. Looking after the material helps preserve what someone else will read."
+          },
+          "ptByGrade": {
+            "6": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+            "7": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+            "8": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-celina",
+        "pt": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+        "en": {
+          "6": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+          "7": "A wet page can lose information too. Looking after the material helps preserve what someone else will read.",
+          "8": "A wet page can lose information too. Looking after the material helps preserve what someone else will read."
+        },
+        "ptByGrade": {
+          "6": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+          "7": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar.",
+          "8": "Uma página molhada também pode perder informação. Cuidar do suporte ajuda a preservar o que outra pessoa vai consultar."
+        }
+      }
+    },
+    {
+      "id": "beach-rebeca",
+      "name": "Rebeca",
+      "character": "beach-rebeca",
+      "role": "Guarda-vidas",
+      "age": 34,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Pele negra retinta, tranças em coque, camisa de banho laranja de manga longa, bermuda escura e apito.",
+      "personality": "Atenta e direta; orienta visitantes com calma e acompanha as condições do mar.",
+      "relationships": [
+        "beach-lara",
+        "beach-ivo"
+      ],
+      "preferredActivities": [
+        "Observar a área de banho.",
+        "Conferir a placa de orientação.",
+        "Conversar com visitantes no posto."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-rebeca",
+          "pt": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+          "en": {
+            "6": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs.",
+            "7": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs.",
+            "8": "I’m Rebeca, the beach lifeguard. We keep the response route clear and guide visitors using local signs."
+          },
+          "ptByGrade": {
+            "6": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+            "7": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+            "8": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local."
+          }
+        },
+        {
+          "speaker": "beach-rebeca",
+          "pt": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+          "en": {
+            "6": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+            "7": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+            "8": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour."
+          },
+          "ptByGrade": {
+            "6": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+            "7": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+            "8": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-rebeca",
+        "pt": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+        "en": {
+          "6": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+          "7": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour.",
+          "8": "Beto can draw the bird from a distance. Offering food to get a photograph interferes with the animal’s behaviour."
+        },
+        "ptByGrade": {
+          "6": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+          "7": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal.",
+          "8": "Beto pode desenhar a ave de longe. Aproximar comida para conseguir uma foto interfere no comportamento do animal."
+        }
+      }
+    },
+    {
+      "id": "beach-beto",
+      "name": "Beto",
+      "character": "beach-beto",
+      "role": "Estudante e desenhista",
+      "age": 17,
+      "chapter": 5,
+      "map": "beach",
+      "identity": "Pessoa negra brasileira original e fictícia. Adolescente negro, afro arredondado, camisa leve aberta sobre camiseta e bermuda de banho azul.",
+      "personality": "Animado e observador; prefere desenhar os animais de longe e compartilhar o caderno.",
+      "relationships": [
+        "beach-celina",
+        "beach-jorge"
+      ],
+      "preferredActivities": [
+        "Desenhar pegadas no caderno.",
+        "Conversar com Teresa.",
+        "Guardar a bola perto do banco."
+      ],
+      "lines": [
+        {
+          "speaker": "beach-beto",
+          "pt": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+          "en": {
+            "6": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook.",
+            "7": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook.",
+            "8": "I wrote that the bird walked beside the water. I do not know why yet, so I left that part as a question in my notebook."
+          },
+          "ptByGrade": {
+            "6": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+            "7": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+            "8": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno."
+          }
+        },
+        {
+          "speaker": "beach-beto",
+          "pt": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+          "en": {
+            "6": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+            "7": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+            "8": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal."
+          },
+          "ptByGrade": {
+            "6": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+            "7": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+            "8": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal."
+          }
+        }
+      ],
+      "repeat": {
+        "speaker": "beach-beto",
+        "pt": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+        "en": {
+          "6": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+          "7": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal.",
+          "8": "I’ll record the date and place before drawing again. The record lets me compare scenes without capturing the animal."
+        },
+        "ptByGrade": {
+          "6": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+          "7": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal.",
+          "8": "Vou marcar data e lugar antes de desenhar de novo. O registro permite comparar a cena sem capturar o animal."
+        }
+      }
+    }
+  ],
+  "characters": {
+    "beach-lara": {
+      "name": "Lara",
+      "role": "Nadadora e professora de artes",
+      "quote": "Trouxe o caderno de desenho para observar a luz na água. Uma mesma cena muda com o horário e com o ponto de observação.",
+      "accent": "#7ed0ce",
+      "sprite": "assets/characters/beach-lara.png",
+      "portrait": "assets/characters/beach-lara-portrait.png"
+    },
+    "beach-jorge": {
+      "name": "Jorge",
+      "role": "Marceneiro em um dia de descanso",
+      "quote": "Hoje deixei a oficina e vim descansar. Conferi se o banco mantém o caminho livre antes de abrir meu livro.",
+      "accent": "#f0ae6d",
+      "sprite": "assets/characters/beach-jorge.png",
+      "portrait": "assets/characters/beach-jorge-portrait.png"
+    },
+    "beach-samira": {
+      "name": "Samira",
+      "role": "Costureira e visitante da praia",
+      "quote": "Na costura, uma dobra pode mudar a forma sem mudar o tecido. Vou desenhar duas opções para comparar antes de cortar.",
+      "accent": "#e19caf",
+      "sprite": "assets/characters/beach-samira.png",
+      "portrait": "assets/characters/beach-samira-portrait.png"
+    },
+    "beach-ivo": {
+      "name": "Ivo",
+      "role": "Técnico de som e leitor na praia",
+      "quote": "Na praia, vim escutar antes de trabalhar no som. O ritmo das ondas não tem um programa de ensaio como o nosso festival.",
+      "accent": "#8cb4d8",
+      "sprite": "assets/characters/beach-ivo.png",
+      "portrait": "assets/characters/beach-ivo-portrait.png"
+    },
+    "beach-nalu": {
+      "name": "Nalu",
+      "role": "Vendedora do quiosque e cozinheira",
+      "quote": "Sou Nalu, do quiosque. A ficha dos ingredientes fica aqui; pergunte sobre o preparo em vez de decidir só pelo desenho.",
+      "accent": "#f3d087",
+      "sprite": "assets/characters/beach-nalu.png",
+      "portrait": "assets/characters/beach-nalu-portrait.png"
+    },
+    "beach-celina": {
+      "name": "Teresa",
+      "role": "Bibliotecária aposentada e frequentadora da praia",
+      "quote": "Sou Teresa. Trabalhei em biblioteca e ainda gosto de ler perto da água, com o livro protegido da areia e da umidade.",
+      "accent": "#9bd4b4",
+      "sprite": "assets/characters/beach-celina.png",
+      "portrait": "assets/characters/beach-celina-portrait.png"
+    },
+    "beach-rebeca": {
+      "name": "Rebeca",
+      "role": "Guarda-vidas",
+      "quote": "Sou Rebeca, guarda-vidas da praia. Deixamos o trajeto de atendimento livre e orientamos visitantes pelas sinalizações do local.",
+      "accent": "#ffd286",
+      "sprite": "assets/characters/beach-rebeca.png",
+      "portrait": "assets/characters/beach-rebeca-portrait.png"
+    },
+    "beach-beto": {
+      "name": "Beto",
+      "role": "Estudante e desenhista",
+      "quote": "Escrevi que a ave caminhou junto à água. Ainda não sei por quê; deixei essa parte como pergunta no caderno.",
+      "accent": "#c3b6df",
+      "sprite": "assets/characters/beach-beto.png",
+      "portrait": "assets/characters/beach-beto-portrait.png"
+    }
+  },
+  "sources": [
+    {
+      "id": "wardrobe_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Referência para saia rodada, bata, torço e pano da costa no contexto do ofício. Não copiamos fotografias, tecidos ou adereços rituais.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "wardrobe_negra_jho",
+      "name": "SECOM Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff",
+      "url": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
+      "note": "Referência de autoria e variedade de composições. As amarrações de VOICES são desenhos cotidianos originais; não reproduzem peças da exposição nem lhes atribuem significado ritual.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "wardrobe_mab",
+      "name": "Museu Afro Brasil Emanoel Araujo — Indumentária",
+      "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
+      "note": "Referência para distinguir peças do cotidiano e contextos cerimoniais. Os cortes, estampas e acessórios apresentados são desenhos originais do jogo.",
+      "accessed": "2026-10-20"
+    }
+  ]
+};})();

@@ -1,33 +1,42 @@
 {
-  "version": "1.7",
-  "readingsReviewed": 50,
-  "paragraphs": 148,
-  "bilingualRecordsReviewed": 201,
-  "gradeSpecificPairs": 561,
-  "dynamicDialoguePairs": 29,
-  "historicalPortraitPairs": 12,
-  "preserved": [
-    "IDs",
-    "fontes",
-    "autoria",
-    "fatos necessários às 108 questões",
-    "campanha",
-    "ramificações e flags",
-    "inglês por ano escolar"
+  "version": "3.0",
+  "reviewed": "2026-10-20",
+  "readingsRewritten": 59,
+  "newPortraitNotes": 32,
+  "newScienceNotes": 6,
+  "sourceIndex": "research-catalog.json",
+  "scope": [
+    "dialogues",
+    "missions",
+    "books",
+    "notes",
+    "captions",
+    "descriptions",
+    "questions",
+    "translations",
+    "interface"
   ],
-  "editorialRules": [
-    "Abertura situada, explicação conectada e consequência compreensível",
-    "Ficção e referência histórica identificadas",
-    "EN e PT exprimem o mesmo conteúdo",
-    "Contexto adicional separado de tradução",
-    "Sem citações históricas inventadas"
+  "integration": [
+    "Canonical text replaces old editorial patches.",
+    "Explicit translations take precedence over cached translations.",
+    "Exact previous default captions are migrated; custom teacher wording is preserved.",
+    "New catalogue notes are reached from exhibits without extra overlapping map pickups."
   ],
-  "integration": {
-    "load": "Load after heritage-content.js, before initialization; apply after Living.initContent has merged the 50 readings.",
-    "readings": "Match by id and copy paragraphs, en, pt without changing remaining metadata.",
-    "translations": "Resolve scope content -> V.content, resident -> V.learning.residents by id, culturalContent -> V.culturalContent; validate expectedEn, then copy pt and ptByGrade. contextPt is separate educational context.",
-    "dialogue": "Before original Dialogue.start, clone each line and resolve ptByGrade with V.lang; match dialogueTranslations by existing en and pt, replace correctedEn/correctedPt or ptByGrade while preserving speaker, choices and callbacks.",
-    "figures": "Match V.heritageContent.figures by id, validate expectedFacts, then copy enFacts."
+  "verification": {
+    "dataScriptsLoaded": 22,
+    "sourceReferences": 172,
+    "readings": 98,
+    "questions": 132,
+    "connectedChapters": 6,
+    "ancestralMissionsPreserved": 8,
+    "skillsPreserved": 12,
+    "gradeTranslations": 648,
+    "portraitsWithSourcesAndNavigation": 32,
+    "readerPagesAndNotes": 193,
+    "catalogueNotesDoNotOverlapMaps": true,
+    "savedDefaultMigration": true,
+    "teacherTextPreserved": true,
+    "scienceReadingNavigation": true
   },
-  "verificationLimits": "Text and schema reviewed locally; browser interaction and visual typography belong to the main integration checks."
+  "verificationEnvironment": "JavaScript VM, actual data/modules and rendered modal HTML; not a browser"
 }

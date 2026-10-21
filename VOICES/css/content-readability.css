@@ -1,0 +1,48 @@
+/* Cada superfície define texto, fundo e contraste em conjunto. */
+.culture-modal{background:#f5ecd7;color:#203e32;--white:#203e32;--muted:#465b50;--panel:#e6ddc4;--paper:#f5ecd7;--cyan:#1d5c55}
+.culture-modal .modal-head,.culture-modal .modal-footer{background:#28483d;color:#fff1d0}
+.culture-modal .modal-head h2,.culture-modal .modal-head p,.culture-modal .modal-head button{color:#fff1d0}
+.culture-modal .modal-body{background:#f5ecd7;color:#203e32;font-family:"VOICES Sans","Segoe UI",system-ui,sans-serif}
+.culture-modal .modal-body p,.culture-modal .modal-body li,.culture-modal .modal-body h3{font-family:"VOICES Sans","Segoe UI",system-ui,sans-serif;letter-spacing:normal;text-shadow:none}
+.culture-modal .culture-intro{display:block;max-width:76ch;color:#203e32}
+.culture-modal .culture-detail{align-items:start;gap:28px}
+.culture-modal .culture-detail>div{min-width:0}
+.culture-modal .culture-detail p,.culture-modal .culture-intro p,.culture-modal .culture-caption p,.culture-modal .culture-design figcaption{color:#203e32;font-size:1rem;line-height:1.75;overflow-wrap:break-word;max-width:74ch}
+.culture-modal .culture-detail h3{color:#28483d;font-size:1.05rem;line-height:1.5;margin:22px 0 8px}
+.culture-modal .culture-context{border-left:3px solid #58806c;background:#e3ecda;color:#203e32;padding:14px 18px;border-radius:0 6px 6px 0}
+.culture-modal .culture-context h3{margin:0 0 7px}
+.culture-modal .culture-context p{margin:0}
+.culture-modal .culture-detail .culture-observation{background:#e2ead6;color:#214b3e;border:1px solid #8da28c;border-left:4px solid #456e57;padding:14px 18px;font-size:1rem;line-height:1.7}
+.culture-modal .culture-observation strong{color:#214b3e}
+.culture-modal .culture-english{background:#28483d;color:#fff1d0;padding:14px 18px;border-radius:6px;margin:20px 0}
+.culture-modal .culture-english h3{margin:0 0 8px;color:#fff1d0}
+.culture-modal .culture-english p,.culture-modal .culture-english p[lang]{margin:5px 0;color:#fff1d0;font-size:1rem;line-height:1.65}
+.culture-modal .culture-english p[lang="pt-BR"]{font-size:.95rem}
+.culture-modal .culture-references{margin-top:20px;border:1px solid #a8b39b;border-radius:6px;padding:12px 16px;background:#eee5d0;color:#203e32}
+.culture-modal .culture-references summary{color:#203e32;font-weight:700;cursor:pointer;line-height:1.65;min-height:32px;font-size:1rem}
+.culture-modal .culture-references .reader-origin{margin-top:12px;padding:0;border:0}
+.culture-modal .reader-origin a,.culture-modal .reader-origin a:visited{display:block;max-width:100%;color:#1d5c55;text-decoration:underline;text-underline-offset:3px;font-size:.95rem;line-height:1.7;overflow-wrap:anywhere;padding:5px 0}
+.culture-modal .reader-origin a:hover{color:#143f39}
+.culture-modal .culture-detail small,.culture-modal .culture-interview small,.culture-modal .note{color:#374f42;font-size:.95rem;line-height:1.7}
+.culture-modal .note{background:#e3ecda;border-color:#8da28c}
+.culture-modal .culture-related{margin:24px 0}
+.culture-modal .culture-related h3{font-size:1.1rem;color:#203e32}
+.culture-modal .culture-related .row{display:flex;flex-wrap:wrap;gap:10px}
+.culture-modal .culture-related button{white-space:normal;text-align:left;min-height:44px;line-height:1.5;font-size:1rem}
+.culture-modal .culture-match-item,.culture-modal .culture-caption,.culture-modal .culture-design-options{color:#203e32}
+.culture-modal .culture-match-item p,.culture-modal .culture-match-item h3,.culture-modal .culture-design-options legend{color:#203e32}
+.culture-modal .culture-card small{color:#465645;font-size:.9rem;letter-spacing:.03em}
+.culture-modal .culture-card strong{color:#203e32}
+.culture-modal .modal-body .secondary,.culture-modal .modal-body .choice-button,.culture-modal .modal-body .filter-chip{background:#28483d;color:#fff1d0;border-color:#58806c;min-height:44px;line-height:1.5;white-space:normal}
+.culture-modal .modal-body .filter-chip.active,.culture-modal .modal-body .choice-button.selected{background:#d4e2ca;color:#203e32;border:2px solid #315c48}
+.culture-modal .book-card{background:#eee1c2;color:#203e32}
+.culture-modal .book-card small,.culture-modal .book-card span{color:#374f42;font-size:.95rem;line-height:1.6}
+.culture-modal .book-card strong{color:#203e32;font-size:1rem;line-height:1.6}
+.culture-modal .culture-art{height:auto;min-height:0;padding:16px}
+.culture-modal .culture-detail>.culture-art{height:300px;object-fit:contain;max-width:100%}
+.culture-modal .culture-detail--clothes>.culture-art,.culture-modal .culture-detail--sculptures>.culture-art,.culture-modal .culture-detail--faceart>.culture-art{height:360px}
+.culture-modal a:focus-visible,.culture-modal summary:focus-visible,.culture-modal button:focus-visible{outline:3px solid #94621e;outline-offset:4px}
+.high-contrast .culture-modal .modal-body{background:#fff;color:#102e21}
+.high-contrast .culture-modal .culture-context,.high-contrast .culture-modal .culture-observation,.high-contrast .culture-modal .culture-references{background:#fff;color:#102e21;border-color:#102e21}
+.high-contrast .culture-modal .culture-context p,.high-contrast .culture-modal .culture-observation,.high-contrast .culture-modal .culture-observation strong,.high-contrast .culture-modal .culture-references summary{color:#102e21}
+@media(max-width:700px){.culture-modal .culture-detail{grid-template-columns:minmax(0,1fr);gap:20px}.culture-modal .culture-detail>.culture-art{width:min(100%,260px);height:230px;margin:auto}.culture-modal .culture-detail--clothes>.culture-art,.culture-modal .culture-detail--sculptures>.culture-art,.culture-modal .culture-detail--faceart>.culture-art{height:300px}.culture-modal .culture-detail p{font-size:1rem}.culture-modal .culture-related .row{display:grid;grid-template-columns:minmax(0,1fr)}.culture-modal .culture-context,.culture-modal .culture-observation,.culture-modal .culture-english{padding:12px 14px}}

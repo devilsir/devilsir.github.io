@@ -11,7 +11,9 @@ hydrate(m){
 const add=(type,id,x,y,label,extra={})=>{if(m.objects.some(o=>o.id===id))return;const p=V.Rooms.safe(m,{x,y},11)||{x,y};m.objects.push({id,type,x:p.x,y:p.y,label,interactionRange:82,...extra});};
 if(m.id==='museum'){add('story','historiograph-awakening',22*T,30*T,'Examinar: nomes apagados',{event:'awakening'});add('story','archive-epilogue',22*T,19*T,'Consultar o arquivo compartilhado',{event:'epilogue'});}
 if(m.id==='chapter-2'){
-const door=m.objects.find(o=>o.to==='museum'),p=door?{x:door.x+100,y:door.y+120}:{x:m.width*T/2,y:m.height*T*.65};add('zambeto','zambeto-first',p.x,p.y,'Encontrar Zambeto na primeira noite',{first:true});
+const door=m.objects.find(o=>o.id==='campus-travel-chapter-2-museum')||m.objects.find(o=>o.to==='museum'||o.door?.to?.map==='museum');
+const p=door?.door?V.Rooms.approach(m,door.door,125):door?V.Rooms.safe(m,{x:door.x+100,y:door.y+120},15):V.Rooms.safe(m,{x:m.width*T/2,y:m.height*T*.65},15);
+if(p)add('zambeto','zambeto-first',p.x,p.y,'Conversar com Zambeto no pátio',{first:true});
 }
 for(const c of D.cases.filter(c=>c.map===m.id)){
 const config=V.Architecture.design(m.design);config.triggers||=[];
@@ -27,10 +29,18 @@ for(const e of m.design.adventure?.encounters||[])add('encounter',e.id,e.x,e.y,e
 for(const trigger of m.design.adventure?.triggers||[])if(trigger.type==='notice')add('custom-trigger',trigger.id,trigger.x,trigger.y,trigger.title,{title:trigger.title,text:trigger.text,flag:trigger.flag});
 if(!m.objects.some(o=>o.id==='zambeto-companion-'+m.id)){const point=V.Rooms.safe(m,{x:m.width*T/2,y:m.height*T*.65},15)||{x:m.width*T/2,y:m.height*T*.65};m.objects.push({id:'zambeto-companion-'+m.id,type:'zambeto',...point,label:'Conversar com Zambeto',companion:true,interactionRange:100,hidden:true});}
 },
+guardianTarget(){
+const s=this.ensure();if(!s)return null;
+if(s.stage==='museum'&&!s.met){const m=V.World.maps.museum,o=m?.objects.find(o=>o.id==='historiograph-awakening');return o?{map:m.id,object:o}:null;}
+const roster=V.Companions?.ensure?.(),following=s.met&&roster?.selected==='zambeto'&&roster.follow;
+const m=following?V.World.current:V.World.maps['chapter-2'];
+const o=m?.objects.find(o=>o.type==='zambeto'&&(following?o.companion:o.first));
+return o?{map:m.id,object:o}:null;
+},
 objective(){
 const s=this.ensure();if(!s)return null;
 if(s.stage==='museum'){const o=V.ObjectiveGuide.find('historiograph-awakening','museum');return o?{...o,key:'awakening',label:'Examinar os nomes apagados no museu'}:null;}
-if(s.stage==='night'||s.stage==='firstbattle'){const o=V.ObjectiveGuide.find('zambeto-first','chapter-2');return o?{...o,key:'first-watch',label:'Encontrar Zambeto no pátio · aguarde as 19h se necessário'}:null;}
+if(s.stage==='night'||s.stage==='firstbattle'){const o=V.ObjectiveGuide.find('zambeto-first','chapter-2');return o?{...o,key:'first-watch',label:'Encontrar Zambeto no pátio · aguarde até as 19h se necessário'}:null;}
 return null;
 },
 awakening(){
@@ -110,16 +120,23 @@ V.UI.modal('O arquivo continua vivo','EPÍLOGO · '+({shared:'MUITAS CHAVES',rev
 V.$('#epilogue-choice').onclick=()=>{s.ending=null;this.finale();};V.$('#epilogue-explore').onclick=()=>{V.UI.close();V.World.load('museum');V.ObjectiveGuide.track();};
 },
 interact(o){if(o.type==='rasura'){this.trace(o);return true;}if(o.type==='zambeto'){o.first?this.firstNight():this.guide();return true;}if(o.type==='story'){if(o.event==='awakening')this.awakening();else this.ensure().ending?this.epilogue():this.ensure().stage==='epilogue'?this.finale():this.device();return true;}if(o.type==='encounter'){V.Combat.begin(o.encounter.chapter||1,false,{custom:o.encounter});return true;}return false;},
-visible(o){const s=this.ensure();if(o.type==='zambeto')return o.first?s.stage==='night'||s.stage==='firstbattle':!!s.met;if(o.id==='historiograph-awakening')return s.stage==='museum'||s.awakened;if(o.id==='archive-epilogue')return !!s.met;return true;},
+visible(o){const s=this.ensure();if(o.type==='zambeto')return o.first?s.stage==='night'||s.stage==='firstbattle'||!!s.met&&!(V.Companions?.ensure?.()?.selected==='zambeto'&&V.Companions.ensure().follow):!!s.met;if(o.id==='historiograph-awakening')return s.stage==='museum'||s.awakened;if(o.id==='archive-epilogue')return !!s.met;return true;},
 update(dt){
 const a=V.Progress.ensure();if(!a||!V.World.current)return;this.clock+=dt;this.pulseTime=Math.max(0,this.pulseTime-dt);
 const m=V.World.current,o=m.objects.find(o=>o.companion&&o.type==='zambeto');
 const first=m.objects.find(o=>o.first&&o.type==='zambeto');if(first&&this.visible(first)&&!first.appeared){first.appeared=true;first.appearTime=.8;}if(first?.appearTime>0)first.appearTime=Math.max(0,first.appearTime-dt);
-if(o&&a.story.met){const p=V.Player.data;if(!this.companion||this.companion.map!==m.id){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+52},14)||{x:p.x,y:p.y};Object.assign(o,at);o.appearTime=.8;this.companion={map:m.id};}
-o.appearTime=Math.max(0,(o.appearTime||0)-dt);if(o.vanishTime>0){o.vanishTime-=dt;if(o.vanishTime<=0){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+55},15);if(at)Object.assign(o,at);o.appearTime=.8;}return;}
-const desired={x:p.x-64,y:p.y+55},len=V.dist(o,desired),dx=desired.x-o.x,dy=desired.y-o.y,step=Math.min(len,120*dt);o.walking=len>18;
-if(o.walking&&len>0){const x=o.x+dx/len*step,y=o.y+dy/len*step;if(!V.Living.blocked(m,x,y,15)){o.x=x;o.y=y;}else if(len>210)o.vanishTime=.75;}
-o.dir=Math.abs(dx)>Math.abs(dy)?dx<0?1:2:dy<0?3:0;o.frame=V.settings.reducedMotion?0:o.walking?Math.floor(this.clock*5)%4:Math.floor(this.clock*1.1)%4;
+if(o&&a.story.met){const p=V.Player.data;if(!this.companion||this.companion.map!==m.id){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+52},14)||{x:p.x,y:p.y};Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;this.companion={map:m.id};}
+o.appearTime=Math.max(0,(o.appearTime||0)-dt);if(o.vanishTime>0){o.walking=false;o.vanishTime-=dt;if(o.vanishTime<=0){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+55},15);if(at)Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;}return;}
+if(o.animationUntil>V.Engine.time){o.walking=false;return;}
+const desired={x:p.x-64,y:p.y+55},len=V.dist(o,desired),dx=desired.x-o.x,dy=desired.y-o.y;
+if(len>330){o.walking=false;o.vanishTime=.75;return;}
+const maxSpeed=Math.max(155,180*(V.settings.speed||1)*(V.Life?.movementMultiplier()??1));
+const step=len<.5?0:Math.min(len,maxSpeed*dt,len*(1-Math.exp(-6*dt)));
+if(step>0){const x=o.x+dx/len*step,y=o.y+dy/len*step;if(!V.Living.blocked(m,x,y,15)){
+ o.walking=step/Math.max(dt,.001)>(o.walking?6:12);
+ if(o.walking){if(Math.abs(dx)>len*.12)o.dir=dx<0?1:2;o.walkDistance=(o.walkDistance||0)+step;}o.x=x;o.y=y;
+}else{o.walking=false;if(len>210)o.vanishTime=.75;}}else o.walking=false;
+o.frame=V.settings.reducedMotion?0:o.walking?Math.floor((o.walkDistance||0)/96*4)%4:Math.floor(this.clock*1.1)%4;
 }
 },
 draw(ctx,o,cam){

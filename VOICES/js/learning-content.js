@@ -12,14 +12,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Cultura e autoria",
       "paragraphs": [
-        "Em New Harmony, Sol encontra um programa de festival que mostra instrumentos, horários e cores, mas nenhum nome. Lia pergunta quem tocou, compôs e organizou cada apresentação.",
-        "Conexão cultural: no Recôncavo Baiano, o samba de roda reúne música, dança e poesia, com protagonismo de comunidades negras.",
-        "No festival ficcional, a equipe refaz o programa com nomes, funções e uma nota de contexto. O público pode conhecer pessoas e referências, além de ouvir a faixa."
+        "Sol abre o programa do festival. Os horários continuam lá, mas a linha de créditos desapareceu. No caderno de ensaio, Lia assina a composição, André registra o arranjo e Sol aparece como intérprete. As três funções se encontram na mesma apresentação, sem serem a mesma coisa.",
+        "O samba de roda do Recôncavo Baiano reúne canto, instrumentos, dança e poesia. Sua história está ligada a comunidades negras da Bahia e à transmissão de conhecimentos entre gerações. O dossiê patrimonial descreve práticas vivas e diversas, não uma receita para qualquer música brasileira.",
+        "A investigação precisa fazer duas ligações: devolver os nomes à produção local e explicar a referência cultural do festival. A ficha do Iphan informa sobre o samba de roda; o caderno e a conversa com a equipe sustentam os créditos da apresentação de New Harmony. Um documento não pode responder pela função do outro."
       ],
-      "en": "Every performance has people behind it.",
-      "pt": "Toda apresentação tem pessoas por trás dela.",
+      "en": "We wrote the music together. Our names belong in the programme.",
+      "pt": "Fizemos a música juntos. Nossos nomes devem estar no programa.",
       "sourceIds": [
-        "samba_iphan"
+        "samba_iphan",
+        "research-samba"
       ],
       "questionId": "history-01"
     },
@@ -31,14 +32,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Capoeira e aprendizagem",
       "paragraphs": [
-        "Na cidade ficcional, PIX tenta explicar uma roda olhando apenas uma fotografia. Ivo avisa que um instante da imagem não mostra como participantes aprendem e se relacionam.",
-        "Conexão cultural: a capoeira articula canto, instrumentos, movimento e jogo; mestres e mestras guardam e transmitem conhecimentos dessa prática.",
-        "Em New Harmony, a fotografia recebe uma legenda cuidadosa e um convite para ampliar a pesquisa. A equipe não apresenta o desafio arcade como aula autêntica de capoeira."
+        "PIX guardou uma fotografia de uma roda de capoeira. A imagem mostra um movimento, mas não permite ouvir a cantoria nem acompanhar o diálogo entre os jogadores. Ivo pede que a turma observe também os instrumentos e procure saber quem conduz a roda.",
+        "Na capoeira, jogo corporal, música e relações de aprendizagem se articulam. Mestres e mestras transmitem toques, cantos, movimentos, histórias e modos de participar. O Iphan registra a roda de capoeira e o ofício dos mestres como bens relacionados, com processos de formação e experiências diferentes.",
+        "Na ficha do festival, a equipe escreve o que a fotografia mostra e o que ainda precisa perguntar. O desafio de ritmo de VOICES treina a escuta de sinais do jogo; aprender uma prática cultural exige o convívio com quem a conhece. A legenda recuperada não deve apagar essas pessoas."
       ],
-      "en": "One picture does not tell the whole story.",
-      "pt": "Uma imagem não conta a história inteira.",
+      "en": "The photograph shows a moment. The roda holds more knowledge.",
+      "pt": "A fotografia mostra um instante. A roda reúne mais conhecimentos.",
       "sourceIds": [
-        "learning_capoeira_iphan"
+        "research-capoeira",
+        "capoeira_unesco"
       ],
       "questionId": "history-02"
     },
@@ -50,14 +52,16 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Histórias africanas e intercâmbio",
       "paragraphs": [
-        "Em New Harmony, Leo abre um mapa sem legenda. Todos os caminhos aparecem como uma única linha. Ele percebe que faltam lugares, produtos e pessoas.",
-        "Conexão histórica: o Mali participou de redes de comércio transaariano, nas quais circulavam produtos como ouro e sal.",
-        "No exercício ficcional, a equipe separa os caminhos e registra o que cada fonte permite dizer. Uma rota selecionada ajuda a estudar trocas; não resume a história inteira da África."
+        "Mara encontrou uma legenda que chama três sociedades de um único reino. Antes de recolocá-la na vitrine, a equipe marca lugares no mapa. Mali e Songhai tiveram centros na África Ocidental; Kongo se desenvolveu na África Central. Proximidade entre duas histórias não transforma seus nomes em sinônimos.",
+        "O Império do Mali participou das redes transaarianas de comércio. Ouro, sal e outros produtos circulavam entre regiões ao sul e ao norte do Saara. A viagem de Mansa Musa a Meca, em 1324–1325, passou pelo Cairo e deixou registros de sua riqueza e de suas relações políticas.",
+        "No museu, a pista útil é o conjunto: nome, região, período e fonte. A rota comercial ajuda a explicar encontros e trocas, mas não descreve sozinha a vida de todos os habitantes. Compare este mapa com as notas sobre Tombuctu e Gao antes de organizar as fichas."
       ],
-      "en": "A map needs places and context.",
-      "pt": "Um mapa precisa de lugares e contexto.",
+      "en": "Mali was part of trade networks across the Sahara.",
+      "pt": "Mali fazia parte de redes de comércio que atravessavam o Saara.",
       "sourceIds": [
-        "learning_mali_trade"
+        "mali_met",
+        "research-transsahara",
+        "research-timbuktu"
       ],
       "questionId": "history-03"
     },
@@ -69,14 +73,14 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Contexto regional e representação",
       "paragraphs": [
-        "No museu ficcional, Mara encontra uma etiqueta que descreve Kongo apenas pelo encontro com portugueses. Ísis pergunta o que existia antes daquela chegada.",
-        "Conexão histórica: Mbanza Kongo foi capital política e espiritual do Reino do Kongo; o sítio está no atual território de Angola.",
-        "Em New Harmony, a etiqueta passa a distinguir a história da sociedade e o registro de um contato. A equipe procura mais fontes para além da perspectiva de um visitante."
+        "Ísis separa uma ficha de Mbanza Kongo. A etiqueta danificada começa com a chegada de portugueses, como se ninguém vivesse ali antes. A capital e sua organização política permitem formular outra pergunta: com que sociedade os visitantes entraram em contato?",
+        "Mbanza Kongo, na atual Angola, foi capital do Reino do Kongo. A cidade preserva vestígios de sua história política, religiosa e urbana. O reino manteve relações regionais e, depois dos contatos com portugueses no fim do século XV, relações atlânticas que também envolveram conflito e escravização.",
+        "A ficha corrigida distingue o reino histórico dos países atuais que usam Congo no nome. Ela situa a capital, mostra o período estudado e identifica a documentação. O início de um contato registrado por europeus não é o início da história das populações africanas."
       ],
-      "en": "A meeting does not begin a people’s history.",
-      "pt": "Um encontro não inicia a história de um povo.",
+      "en": "Mbanza Kongo had a history before Portuguese contact.",
+      "pt": "Mbanza Kongo já tinha uma história antes do contato com portugueses.",
       "sourceIds": [
-        "learning_kongo_capital",
+        "research-kongo",
         "kongo_met"
       ],
       "questionId": "history-04"
@@ -89,14 +93,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Ciência e atribuição",
       "paragraphs": [
-        "Em New Harmony, Caio encontra um relatório com o campo de autoria cortado. O título parece convincente, mas não permite saber quem escreveu o trabalho.",
-        "Conexão documental: um relatório técnico da NASA publicado em 1960 identifica T. H. Skopinski e Katherine G. Johnson como autores.",
-        "No laboratório ficcional, os dois nomes voltam ao registro. A equipe distingue autoria documentada de uma afirmação exagerada sobre alguém ter inventado sozinho toda uma tecnologia."
+        "Na bancada de Luma, o caderno guarda cálculos, testes e resultados. A cópia pública preservou a assinatura da pesquisadora, mas apagou o trabalho de Caio no protótipo e o registro das tentativas feito por Luca. Recuperar a equipe exige descrever contribuições, além de acrescentar nomes.",
+        "Em 1960, Katherine G. Johnson e Ted H. Skopinski assinaram um relatório técnico sobre cálculos para posicionar a órbita de um satélite em relação a um ponto escolhido na Terra. A NASA identifica esse trabalho na trajetória de Johnson. Um relatório com dois autores é evidência de uma colaboração específica.",
+        "A turma usa o exemplo para revisar sua própria ficha: quem calculou, quem realizou os testes e quem registrou as condições? A autoria de um documento não equivale à invenção de todos os equipamentos de uma missão. A investigação reconhece o trabalho que os registros efetivamente sustentam."
       ],
-      "en": "Read the names, not just the title.",
-      "pt": "Leia os nomes, não apenas o título.",
+      "en": "The report names two authors. The credits should name both.",
+      "pt": "O relatório identifica dois autores. Os créditos devem identificar os dois.",
       "sourceIds": [
-        "learning_nasa_report"
+        "johnson_nasa",
+        "research-johnson-report"
       ],
       "questionId": "history-05"
     },
@@ -108,14 +113,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Escrita e memória",
       "paragraphs": [
-        "Na biblioteca de New Harmony, Luca prefere guardar só máquinas na vitrine de conhecimento. Davi lhe mostra um caderno ficcional com observações, escolhas de palavras e rasuras.",
-        "Conexão documental: a Biblioteca Nacional registra cadernos originais de Carolina de Jesus entre os documentos de sua Divisão de Manuscritos.",
-        "Nesse cenário ficcional, a equipe acrescenta textos à exposição e identifica quem os escreveu. Ler um relato também exige perguntar quando, onde e para que foi produzido."
+        "Davi coloca um caderno ao lado dos registros do laboratório. Sol pergunta se ele também guarda conhecimento. A turma encontra observações, escolhas de palavras, versões e datas: pistas de um trabalho de escrita que não cabe numa vitrine composta apenas de máquinas.",
+        "Carolina Maria de Jesus publicou Quarto de despejo em 1960. Sua produção inclui diários, poemas, narrativas e composições musicais. Manuscritos conservados em acervos permitem estudar tanto as experiências que ela registrou quanto seu processo de criação literária.",
+        "Uma passagem de diário apresenta a perspectiva de quem escreve, em determinada situação. Não fala automaticamente por todas as pessoas de uma comunidade. No arquivo restaurado, a ficha mostra autora, obra e gênero; o caderno de criação dos estudantes recebe seus próprios créditos."
       ],
-      "en": "A notebook can preserve a voice.",
-      "pt": "Um caderno pode preservar uma voz.",
+      "en": "A notebook can hold observation, memory and literary creation.",
+      "pt": "Um caderno pode guardar observação, memória e criação literária.",
       "sourceIds": [
-        "learning_bn_manuscripts"
+        "carolina_an",
+        "bio-carolina"
       ],
       "questionId": "history-06"
     },
@@ -127,14 +133,16 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Discriminação e contexto",
       "paragraphs": [
-        "Na rede ficcional, uma mensagem nega acesso por cor da pele; outra generaliza um povo; uma terceira usa um aviso antigo; a quarta discute preferência musical.",
-        "Conexão com direitos: a Convenção sobre os Direitos da Criança reconhece direitos sem discriminação por raça, cor ou origem étnica.",
-        "Em New Harmony, a equipe investiga cada caso. Exclusão racial exige apoio e mudança no acesso. Generalização, informação incorreta e gosto pessoal pedem análises que respeitem seus contextos."
+        "Ravi separou quatro mensagens. A primeira proíbe a entrada de uma estudante no clube por causa da cor da pele. A segunda diz que todas as pessoas de um grupo têm a mesma habilidade. A terceira anuncia uma manutenção antiga como se fosse de hoje. A quarta registra a preferência de Rosa por outra banda.",
+        "A primeira mensagem apresenta discriminação racial explícita: a exclusão usa um critério racial. A segunda reproduz um estereótipo ao atribuir a todas as pessoas uma característica fixa. A terceira perdeu contexto de data. Na quarta, o desacordo sobre uma canção não envolve, por si só, exclusão racial.",
+        "Os quatro casos pedem respostas diferentes: acolher a estudante e envolver a escola; questionar a generalização; recuperar a data; ou conversar sobre gosto musical. A equipe não ganha clareza chamando todo problema pelo mesmo nome. Leia a frase e a situação antes de escolher uma resposta."
       ],
-      "en": "Different problems need careful responses.",
-      "pt": "Problemas diferentes precisam de respostas cuidadosas.",
+      "en": "Read the words and the situation before you choose a response.",
+      "pt": "Leia as palavras e a situação antes de escolher uma resposta.",
       "sourceIds": [
-        "learning_child_rights"
+        "racism_unicef",
+        "school_unicef",
+        "media_unesco"
       ],
       "questionId": "history-07"
     },
@@ -146,12 +154,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Fontes e informação",
       "paragraphs": [
-        "Em New Harmony, Bia recebe um recorte que anuncia o fechamento da biblioteca. A data desapareceu, e o recorte circula como notícia atual.",
-        "Conexão com pesquisa: a UNESCO destaca a importância de verificar fonte, credibilidade, precisão e finalidade das informações.",
-        "No episódio ficcional, o aviso completo revela que a biblioteca fechou para manutenção no ano anterior. O anúncio atual confirma a reabertura. Isso corrige a informação, mas não revela sozinho a intenção de quem compartilhou."
+        "Um recorte diz: “Biblioteca fechada para manutenção”. Sem a borda da folha, parece um aviso atual. Bia encontra o original no arquivo da escola: o fechamento era temporário e já terminou. O comunicado de reabertura aparece na sequência dos documentos.",
+        "Data, local, autoria e publicação de origem ajudam a interpretar uma mensagem. Um enunciado que descreveu corretamente um momento pode induzir a erro quando circula como notícia de outro. Contar compartilhamentos não recupera o contexto que foi cortado.",
+        "Ravi publica o aviso completo e explica a diferença entre as versões. O recorte, sozinho, não prova que toda pessoa que o compartilhou pretendia enganar. No caso principal, a intenção da Ordem da Rasura precisa de outras pistas. Corrigir a informação e investigar responsabilidade são perguntas relacionadas, mas distintas."
       ],
-      "en": "Check the date before you share.",
-      "pt": "Confira a data antes de compartilhar.",
+      "en": "The date changes how we understand the notice.",
+      "pt": "A data muda a maneira como entendemos o aviso.",
       "sourceIds": [
         "media_unesco"
       ],
@@ -165,14 +173,14 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Participação de estudantes",
       "paragraphs": [
-        "Em New Harmony, Joana organiza uma reunião sobre o centro comunitário. Luca participa, mas ninguém registra sua proposta de horários. Ele pergunta se ser ouvido é só falar.",
-        "Conexão com direitos: a Convenção sobre os Direitos da Criança prevê que opiniões de crianças sobre assuntos que as afetam sejam consideradas.",
-        "No cenário ficcional, a ata inclui propostas, responsáveis e uma data de resposta. Nenhuma sugestão é automaticamente aprovada, mas as pessoas podem acompanhar por que uma decisão foi tomada."
+        "Jo abre a ata da assembleia. Dora pediu um encontro à noite; Luan, uma consulta depois da aula; Vitor, uma entrada com passagem livre. A cópia pública guardou apenas a decisão final. Sem as propostas, parece que ninguém tinha necessidades diferentes.",
+        "Uma reunião participativa precisa oferecer meios de falar, escutar e compreender o que foi decidido. Registrar uma proposta permite dar uma resposta: o que será feito, quem acompanhará e por que alguma ideia ainda não pode ser atendida. Participar não significa que toda sugestão será aprovada.",
+        "Tainá propõe guardar também as divergências autorizadas, sem transformar os moradores em uma voz única. A turma confere horários, acesso e devolutiva antes de chamar o plano de coletivo. Essas condições conectam a assembleia ao trabalho que Aisha já começou nos caminhos do jardim."
       ],
-      "en": "Listening includes considering an opinion.",
-      "pt": "Ouvir inclui considerar uma opinião.",
+      "en": "We record the proposals and explain the decisions.",
+      "pt": "Registramos as propostas e explicamos as decisões.",
       "sourceIds": [
-        "learning_child_rights"
+        "school_unicef"
       ],
       "questionId": "history-09"
     },
@@ -184,14 +192,14 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Diversidade indígena contemporânea",
       "paragraphs": [
-        "Na mostra ficcional, alguém pede que Tainá grave uma fala que explique todos os povos indígenas. Ela propõe mostrar relatos identificados, sem tratá-los como uma voz única.",
-        "Conexão com pesquisa: a Funai apresenta povos indígenas com línguas, características culturais e formas de organização diversas.",
-        "Em New Harmony, cada participante decide se quer contribuir e como seu relato será apresentado. Uma experiência pessoal pode ser valiosa sem virar descrição de todos os povos."
+        "Uma vitrine antiga usava a mesma frase para todos os povos indígenas. Tainá pede que a equipe devolva os nomes às experiências e mostre também o presente. Ela é uma documentarista da cidade, com escolhas próprias; uma personagem não pode representar sozinha tantos povos.",
+        "O Censo 2022 do IBGE registra populações indígenas em diferentes regiões e situações de moradia, inclusive em cidades. Povos, línguas, territórios e trajetórias são diversos. Viver em área urbana ou usar uma tecnologia não apaga por si só uma identidade indígena.",
+        "Na mostra de New Harmony, cada relato tem identificação e contexto de publicação. O consentimento de Tainá para uma entrevista não autoriza divulgar a história de outra pessoa. Compare vozes atuais e fontes identificadas antes de aceitar uma descrição que comece com “todos vivem do mesmo jeito”."
       ],
-      "en": "One voice is not every voice.",
-      "pt": "Uma voz não é todas as vozes.",
+      "en": "Indigenous peoples have different histories and live in the present.",
+      "pt": "Os povos indígenas têm histórias diferentes e vivem no presente.",
       "sourceIds": [
-        "learning_funai_diversity"
+        "indigenous_ibge"
       ],
       "questionId": "history-10"
     },
@@ -203,14 +211,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Amostras e transparência",
       "paragraphs": [
-        "Em New Harmony, Nia descobre que o arquivo de avaliação ouviu só moradores perto da praça. BIAS.EXE usou essa amostra para afirmar que todos chegavam facilmente ao festival.",
-        "A equipe desenha um mapa com os trajetos que entraram na amostra e aqueles que ficaram de fora. Nia liga cada conclusão aos bairros realmente ouvidos. Quem consulta o relatório pode conferir quais caminhos foram avaliados e quais ainda precisam de observação.",
-        "No problema ficcional, a equipe mostra quem entrou na amostra e quem ficou de fora. A conclusão passa a indicar seu limite, enquanto uma nova consulta inclui outros trajetos e experiências."
+        "BIAS.EXE concluiu que todos chegam facilmente à praça. Nia examina os registros: o sistema consultou apenas moradores das ruas próximas. Pessoas de trajetos mais longos e quem encontrou barreiras ficaram fora da amostra. A conclusão fala de uma cidade que a consulta não alcançou.",
+        "Uma amostra é uma seleção de observações. Para avaliar uma conclusão, precisamos saber quem entrou nela, quem ficou de fora, como as perguntas foram feitas e qual população se pretende descrever. Mais respostas do mesmo grupo não resolvem automaticamente uma ausência relevante.",
+        "A equipe conserva os dados originais, torna o limite visível e planeja uma consulta mais ampla com Jo e Aisha. O sistema ajuda a organizar registros, mas as pessoas continuam responsáveis pelos critérios, pela interpretação e pelos efeitos da decisão."
       ],
-      "en": "Show what the sample includes.",
-      "pt": "Mostre o que a amostra inclui.",
+      "en": "The sample leaves some residents out. The conclusion needs review.",
+      "pt": "A amostra deixa alguns moradores de fora. A conclusão precisa de revisão.",
       "sourceIds": [
-        "learning_oecd_transparency"
+        "ai_unesco",
+        "school_unicef"
       ],
       "questionId": "history-11"
     },
@@ -222,14 +231,15 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Responsabilidade e revisão",
       "paragraphs": [
-        "Depois do reboot ficcional, PIX quer trocar a placa da biblioteca por “sem erros para sempre”. Celina sugere uma placa com data da revisão e um jeito de enviar dúvidas.",
-        "Davi mantém um histórico das alterações: cada nova ficha recebe origem, data, responsável e motivo da revisão. Se alguém encontrar uma divergência, a versão anterior continua disponível para comparação. Assim a equipe pode corrigir o catálogo sem esconder o caminho da mudança.",
-        "Em New Harmony, novas contribuições podem trazer informação, dúvidas ou erros. A equipe mantém responsáveis, critérios e revisões, em vez de usar a vitória como motivo para fechar o arquivo."
+        "O Arquivo Central voltou a mostrar os nomes. Ainda há uma legenda sem data, uma entrevista com limite de publicação e uma rota que precisa ser conferida. Nia recusa o botão “versão definitiva”: corrigir o apagamento não encerrou a pesquisa.",
+        "Um arquivo reúne escolhas de seleção, descrição, acesso e preservação. Registrar versões permite saber o que mudou, por qual motivo e com qual evidência. Proteger uma informação contra falsificação não impede que uma interpretação seja revista diante de novos documentos.",
+        "O acordo final retoma as seis investigações: créditos do festival, contexto das vitrines, contribuições do laboratório, correções da redação, participação da assembleia e responsabilidade pelo sistema. O Historiógrafo guarda fragmentos de fantasia; os fatos históricos continuam dependendo das fontes identificadas."
       ],
-      "en": "A restored archive still needs review.",
-      "pt": "Um arquivo restaurado ainda precisa de revisão.",
+      "en": "We can restore the archive and keep asking questions.",
+      "pt": "Podemos restaurar o arquivo e continuar fazendo perguntas.",
       "sourceIds": [
-        "learning_oecd_accountability"
+        "ai_unesco",
+        "media_unesco"
       ],
       "questionId": "history-12"
     },
@@ -241,12 +251,10 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Investigação e museus",
       "paragraphs": [
-        "Na biblioteca ficcional de New Harmony, Davi encontra uma chave e uma etiqueta. A chave mostra que existia um mecanismo; a etiqueta sozinha não prova quem o construiu.",
-        "Conexão institucional: na definição do ICOM, museus pesquisam e interpretam patrimônio, além de conservar e expor.",
-        "Nesse exercício, a equipe escreve duas colunas: o que o registro mostra e o que ainda precisa ser investigado. Uma dúvida bem formulada pode abrir a próxima missão."
+        "Encontrei uma chave ao lado do mecanismo. Ela ajuda a investigar como ele se abre. Não revela, sozinha, quem o construiu. No caderno, separe observação (“há uma marca no metal”), hipótese (“pode indicar uma oficina”) e conclusão sustentada por outros registros. — Nia"
       ],
-      "en": "A clue supports a particular claim.",
-      "pt": "Uma pista sustenta uma afirmação específica.",
+      "en": "A clue supports some conclusions, not every conclusion.",
+      "pt": "Uma pista sustenta algumas conclusões, não qualquer conclusão.",
       "sourceIds": [
         "learning_icom"
       ],
@@ -260,12 +268,10 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Privacidade e memória",
       "paragraphs": [
-        "Em New Harmony, Tainá quer gravar uma conversa na praça. Bia aceita falar, mas pede que um detalhe pessoal não entre na mostra.",
-        "Conexão com direitos: a Convenção sobre os Direitos da Criança também protege a privacidade, além de reconhecer o direito de expressão.",
-        "No cenário ficcional, a equipe combina o que será gravado, quem poderá acessar e o que será publicado. Ter uma história interessante não elimina os limites escolhidos por quem a conta."
+        "Bia concordou em conversar, mas pediu que uma parte ficasse fora da exposição. Anote finalidade, trecho autorizado e forma de identificação combinada. Antes de publicar, confirme o que será compartilhado. Guardar o áudio e expô-lo ao público são decisões diferentes. — Tainá"
       ],
-      "en": "Ask before recording and sharing.",
-      "pt": "Pergunte antes de gravar e compartilhar.",
+      "en": "Permission to talk is not permission to publish everything.",
+      "pt": "Permissão para conversar não é permissão para publicar tudo.",
       "sourceIds": [
         "learning_child_rights"
       ],
@@ -279,14 +285,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Transmissão cultural",
       "paragraphs": [
-        "Em New Harmony, Ivo tenta substituir uma oficina por uma lista de movimentos. Sol pergunta onde ficam a escuta, o canto e as relações entre participantes.",
-        "Conexão cultural: o Iphan reconhece o Ofício dos Mestres de Capoeira como um saber ligado a detentores de conhecimentos da prática.",
-        "Na oficina ficcional, a lista passa a ser apoio de estudo. Ela não se anuncia como equivalente a aprender com praticantes e conhecer os contextos da tradição."
+        "Na roda de capoeira, uma lista de movimentos é apenas um apoio. Mestres, mestras e participantes ensinam também canto, escuta, histórias e modos de se relacionar. Ao rever a foto do festival, procure essas dimensões que a imagem de um instante não mostra. — Ivo"
       ],
-      "en": "A list is a tool, not the whole practice.",
-      "pt": "Uma lista é uma ferramenta, não a prática inteira.",
+      "en": "We learn movements, music and ways of participating.",
+      "pt": "Aprendemos movimentos, música e formas de participar.",
       "sourceIds": [
-        "learning_capoeira_iphan"
+        "research-capoeira"
       ],
       "questionId": "history-15"
     },
@@ -298,14 +302,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Patrimônio vivo e criação",
       "paragraphs": [
-        "Na New Harmony ficcional, Sol cria uma faixa eletrônica e pensa em anunciar que ela representa uma tradição inteira. Lia pede uma descrição mais precisa.",
-        "Conexão cultural: a UNESCO descreve o patrimônio imaterial como transmitido e continuamente recriado por comunidades e grupos.",
-        "No festival do jogo, a faixa é anunciada como produção original de Sol e de sua equipe. A referência cultural recebe uma nota, sem alegar que o jogo reproduz uma apresentação tradicional autêntica."
+        "Ficha do ensaio: composição de Lia; arranjo de André; interpretação de Sol. As frases sonoras de VOICES são criações do jogo. A referência ao samba de roda merece sua própria explicação, sem apresentar uma batida eletrônica como reprodução de qualquer roda do Recôncavo. — Sol"
       ],
-      "en": "Label an original track clearly.",
-      "pt": "Identifique uma faixa original com clareza.",
+      "en": "A new song needs clear credits and clear references.",
+      "pt": "Uma canção nova precisa de créditos e referências claros.",
       "sourceIds": [
-        "learning_living_heritage"
+        "research-samba"
       ],
       "questionId": "history-16"
     },
@@ -317,14 +319,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Cidades e conhecimentos africanos",
       "paragraphs": [
-        "No museu de New Harmony, Ísis encontra uma galeria que só fala de produtos. Ela abre um espaço para perguntar onde conhecimentos eram estudados e circulavam.",
-        "Conexão histórica: Tombuctu foi um importante centro intelectual e de circulação de manuscritos na África Ocidental, especialmente nos séculos XV e XVI.",
-        "No painel ficcional, textos, práticas e trocas aparecem junto aos produtos. A cidade é estudada em seu contexto, sem transformar um único lugar em retrato de todo o continente."
+        "Tombuctu, na atual República do Mali, foi um importante centro intelectual nos séculos XV e XVI. Seus manuscritos tratam de temas que incluem religião, astronomia, matemática e medicina. Ao olhar o mapa de comércio, acrescente também a circulação de ideias. A cidade não é uma legenda para toda a África. — Ísis"
       ],
-      "en": "Ideas can travel as well as goods.",
-      "pt": "Ideias podem circular assim como produtos.",
+      "en": "Books and ideas travelled as well as goods.",
+      "pt": "Livros e ideias circulavam, assim como mercadorias.",
       "sourceIds": [
-        "learning_timbuktu"
+        "research-timbuktu"
       ],
       "questionId": "history-17"
     },
@@ -336,14 +336,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Lugares, períodos e patrimônio",
       "paragraphs": [
-        "Em New Harmony, Leo recebe um desenho de monumento sem legenda. O scanner tenta colocar qualquer governante famoso no lugar da informação ausente.",
-        "Conexão histórica: o túmulo de Askia, em Gao, está ligado ao Império Songhai e a Askia Mohamed; sua construção data de 1495.",
-        "No exercício ficcional, a legenda volta a indicar lugar, período e associação documentada. Um nome conhecido não substitui a conferência de qual sociedade e qual registro estão em estudo."
+        "O Túmulo dos Askia fica em Gao, no atual Mali. A UNESCO o relaciona a Askia Mohamed e à construção de 1495, no contexto de Songhai. A arquitetura de terra exige manutenção periódica. Não troque essa associação por Mansa Musa só porque seu nome aparece em outra vitrine. — Mara"
       ],
-      "en": "Match the place and the record.",
-      "pt": "Relacione o lugar e o registro.",
+      "en": "Gao and the Tomb of Askia belong in the Songhai record.",
+      "pt": "Gao e o Túmulo dos Askia pertencem ao registro de Songhai.",
       "sourceIds": [
-        "learning_songhai_site"
+        "research-askia"
       ],
       "questionId": "history-18"
     },
@@ -355,14 +353,12 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Trabalho e reconhecimento",
       "paragraphs": [
-        "Na New Harmony ficcional, Caio mostra uma oficina com nomes apagados dos projetos. Leo percebe que a cidade usa as obras todos os dias, mesmo sem conhecer quem contribuiu.",
-        "Conexão histórica: o Iphan relaciona a homenagem a André Rebouças à atuação de um engenheiro e abolicionista negro.",
-        "Nesse cenário, a equipe pesquisa atribuições antes de refazer as etiquetas. Reconhecer uma contribuição não exige inventar outra: precisão pode dar visibilidade sem exagerar um feito."
+        "André Rebouças atuou como engenheiro e abolicionista no Brasil do século XIX. O Arquivo Nacional conserva registros sobre seus trabalhos e ideias. Na ficha da exposição, descreva uma contribuição documentada e mostre de onde veio a informação. Um feito inventado não valoriza uma trajetória real. — Davi"
       ],
-      "en": "Accurate credit makes work visible.",
-      "pt": "O crédito preciso dá visibilidade ao trabalho.",
+      "en": "Give credit for the work that the records support.",
+      "pt": "Dê crédito ao trabalho que os registros sustentam.",
       "sourceIds": [
-        "learning_reboucas_iphan"
+        "reboucas_an"
       ],
       "questionId": "history-19"
     },
@@ -374,15 +370,13 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Abolição e limites de uma fonte",
       "paragraphs": [
-        "No arquivo ficcional de New Harmony, Joana mostra uma cópia resumida de uma lei. A turma pergunta se esse texto pode contar sozinho como eram as vidas das pessoas depois dele.",
-        "Conexão histórica: a Lei nº 3.353, de 13 de maio de 1888, extinguiu legalmente a escravidão no Brasil.",
-        "No exercício, a equipe separa o que a lei determina de outras perguntas sobre direitos, trabalho e desigualdades posteriores. Novas questões precisam de outras fontes; o jogo não transforma sofrimento em desafio."
+        "A Lei nº 3.353, de 13 de maio de 1888, declarou extinta a escravidão no Brasil. O texto registra essa mudança legal. Para investigar condições de moradia, trabalho, terra e direitos depois da abolição, precisamos de outras fontes e das experiências de pessoas libertas. O fim legal da escravidão não prova o fim das desigualdades. — Prof. Joana"
       ],
-      "en": "A law is a source, not every story.",
-      "pt": "Uma lei é uma fonte, não todas as histórias.",
+      "en": "A law records a change. Its effects need further study.",
+      "pt": "Uma lei registra uma mudança. Seus efeitos precisam de mais estudo.",
       "sourceIds": [
         "abolition_law",
-        "routes_unesco"
+        "reboucas_an"
       ],
       "questionId": "history-20"
     },
@@ -394,12 +388,10 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Opiniões e diversidade cultural",
       "paragraphs": [
-        "Em New Harmony, Rosa prefere sintetizadores e Aisha gosta mais de guitarras. Os dois explicam suas escolhas sem descrever nenhum povo como inferior.",
-        "Conexão cultural: a Declaração da UNESCO sobre Diversidade Cultural relaciona diversidade, expressão e respeito aos direitos humanos.",
-        "No episódio ficcional, o palco abre espaço para escolhas musicais diferentes. A equipe distingue opinião de gosto de uma regra que negue direitos por raça ou origem."
+        "Rosa prefere o violão no refrão; Aisha gosta mais da percussão. Elas explicam suas escolhas e continuam organizando o festival juntas. Neste diálogo, há opiniões sobre uma música. Procure um critério de exclusão ou uma generalização antes de classificar uma conversa como discriminação. — Ravi"
       ],
-      "en": "Different tastes can share a stage.",
-      "pt": "Gostos diferentes podem compartilhar um palco.",
+      "en": "Different musical tastes can share the same festival.",
+      "pt": "Gostos musicais diferentes podem compartilhar o mesmo festival.",
       "sourceIds": [
         "learning_diversity_unesco"
       ],
@@ -413,14 +405,13 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Direitos e responsabilidade institucional",
       "paragraphs": [
-        "No clube ficcional de New Harmony, uma estudante foi excluída por cor da pele. Bia pede que a resposta não seja apenas apagar o post que anunciou a decisão.",
-        "Conexão com educação: os Indicadores de Relações Raciais na Escola convidam a comunidade escolar a avaliar práticas e enfrentar o racismo.",
-        "No cenário, um adulto de confiança ajuda a acolher a estudante, registrar o ocorrido e revisar o critério de acesso. A responsabilidade de mudar a regra não é colocada apenas sobre a pessoa excluída."
+        "Uma estudante foi impedida de entrar no clube por causa da cor da pele. A equipe preservou o anúncio, acolheu a estudante e chamou a escola para rever a regra e acompanhar o acesso. Apagar o cartaz ofensivo sem mudar o critério deixa o problema funcionando. Ninguém precisa enfrentar isso sem apoio. — Prof. Joana"
       ],
-      "en": "Support the person and review the rule.",
-      "pt": "Apoie a pessoa e revise a regra.",
+      "en": "Support the student and change the discriminatory rule.",
+      "pt": "Apoie a estudante e mude a regra discriminatória.",
       "sourceIds": [
-        "school_unicef"
+        "school_unicef",
+        "racism_unicef"
       ],
       "questionId": "history-22"
     },
@@ -432,12 +423,10 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Acesso à vida cultural",
       "paragraphs": [
-        "Em New Harmony, Jo inaugura uma sala cultural. O convite chega a todos, mas Celina mostra que um dos trajetos até a entrada continua bloqueado.",
-        "Conexão com direitos: o artigo 27 da Declaração Universal dos Direitos Humanos reconhece o direito à participação na vida cultural.",
-        "No projeto ficcional, a cidade consulta moradores, ajusta caminhos e marca uma revisão. A inauguração melhora uma parte do problema; outras barreiras e a manutenção continuam no plano de trabalho."
+        "O convite diz “atividade aberta”, mas um banco bloqueia o trajeto até a mesa. Aisha quer percorrer o caminho com os moradores, ouvir as dificuldades e reorganizar a passagem. Depois será preciso conferir o resultado. A intenção de receber bem precisa aparecer também nas condições de acesso. — Aisha"
       ],
-      "en": "An invitation needs a usable path.",
-      "pt": "Um convite precisa de um caminho que possa ser usado.",
+      "en": "An open invitation still needs an accessible route.",
+      "pt": "Um convite aberto ainda precisa de um trajeto acessível.",
       "sourceIds": [
         "learning_cultural_rights"
       ],
@@ -451,16 +440,706 @@
       "author": "Biblioteca de New Harmony · Cadernos da investigação",
       "theme": "Transparência e continuidade",
       "paragraphs": [
-        "No fim da missão ficcional, Nia escreve que uma seleção de registros deixou um bairro de fora. Ela anota o que mudou e o que ainda não foi verificado.",
-        "A nova revisão já tem responsáveis e uma pergunta concreta: os bairros ausentes conseguem consultar os registros e enviar suas contribuições? Jo vai reunir os relatos, e Nia vai comparar os resultados com o relatório anterior. As dúvidas que restarem ficarão visíveis na próxima ficha.",
-        "Em New Harmony, o relatório identifica responsáveis, fontes, limites e o próximo encontro de revisão. Admitir uma lacuna permite trabalhar nela; escondê-la deixa o público sem informação para questionar a decisão."
+        "Relatório de Nia: devolvemos os créditos com a equipe; corrigimos as legendas com fontes; recuperamos contribuições; explicamos o aviso recortado; preservamos propostas da assembleia. Ainda faltam uma data e uma autorização. Cada pendência tem uma pessoa responsável. A próxima revisão começa por elas, sem apagar o histórico."
       ],
-      "en": "Record the change and the remaining limits.",
-      "pt": "Registre a mudança e os limites que permanecem.",
+      "en": "A useful report shows changes, evidence and open questions.",
+      "pt": "Um relatório útil mostra mudanças, evidências e perguntas em aberto.",
       "sourceIds": [
         "learning_oecd_accountability"
       ],
       "questionId": "history-24"
+    },
+    {
+      "id": "portrait-note-136",
+      "title": "Zumbi dos Palmares · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Zumbi foi uma liderança de Palmares, conjunto de comunidades que resistiram à escravização no período colonial. Foi morto em 20 de novembro de 1695.",
+        "Compare documentos de diferentes procedências para investigar Palmares. A resistência envolveu muitas pessoas; um retrato não substitui essa história coletiva."
+      ],
+      "en": "Zumbi was a leader of Palmares, communities that resisted enslavement in colonial Brazil.",
+      "pt": "Zumbi foi uma liderança de Palmares, comunidades que resistiram à escravização no Brasil colonial.",
+      "sourceIds": [
+        "research-palmares"
+      ]
+    },
+    {
+      "id": "portrait-note-137",
+      "title": "Dandara dos Palmares · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Dandara é lembrada como símbolo da resistência de Palmares e das mulheres negras. A documentação disponível é limitada e não permite afirmar com a mesma segurança todos os detalhes repetidos sobre sua vida.",
+        "O arquivo distingue memória pública de detalhes biográficos comprovados. Reconhecer uma lacuna é mais preciso do que inventar uma data, uma fala ou uma cena."
+      ],
+      "en": "Dandara is remembered as a symbol of resistance. Surviving records leave questions about her life.",
+      "pt": "Dandara é lembrada como símbolo de resistência. Os registros preservados deixam perguntas sobre sua vida.",
+      "sourceIds": [
+        "research-palmares"
+      ]
+    },
+    {
+      "id": "portrait-note-138",
+      "title": "Machado de Assis · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Machado de Assis foi escritor brasileiro, autor de romances, contos e crônicas. Memórias póstumas de Brás Cubas foi publicado em 1881.",
+        "Na estante, a leitura sobre autor e narrador ajuda a investigar quem fala em cada texto. Uma voz construída na ficção não é automaticamente uma declaração do escritor."
+      ],
+      "en": "Machado de Assis wrote novels, short stories and chronicles.",
+      "pt": "Machado de Assis escreveu romances, contos e crônicas.",
+      "sourceIds": [
+        "bio-machado"
+      ]
+    },
+    {
+      "id": "portrait-note-139",
+      "title": "Carolina Maria de Jesus · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Carolina Maria de Jesus escreveu diários, poemas, narrativas e composições musicais. Quarto de despejo foi publicado em 1960.",
+        "O caderno de Carolina se liga ao caso das assinaturas: registrar a obra e sua autoria revela uma produção que uma legenda genérica esconderia."
+      ],
+      "en": "Carolina Maria de Jesus created diaries, poetry, fiction and music.",
+      "pt": "Carolina Maria de Jesus criou diários, poesia, ficção e música.",
+      "sourceIds": [
+        "bio-carolina",
+        "carolina_an"
+      ]
+    },
+    {
+      "id": "portrait-note-140",
+      "title": "Luiz Gama · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Luiz Gama foi poeta, jornalista e abolicionista. Sua atuação jurídica ajudou pessoas escravizadas a reivindicar a liberdade, enfrentando a escravidão também por meio de documentos e argumentos.",
+        "As cartas permitem investigar uma atuação concreta. No arquivo, pergunte o que o documento sustenta e quem ficou de fora de sua narrativa."
+      ],
+      "en": "Luiz Gama used writing and legal arguments in the struggle against slavery.",
+      "pt": "Luiz Gama usou a escrita e argumentos jurídicos na luta contra a escravidão.",
+      "sourceIds": [
+        "bio-luizgama"
+      ]
+    },
+    {
+      "id": "portrait-note-141",
+      "title": "Antonieta de Barros · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Antonieta de Barros foi professora, jornalista e parlamentar. Eleita em Santa Catarina em 1934, foi a primeira mulher negra a ocupar um mandato de deputada no Brasil.",
+        "Sua trajetória aproxima escrita, escola e participação política. No campus, essa relação ajuda a pensar quem tem condições de falar e de influenciar uma decisão."
+      ],
+      "en": "Antonieta de Barros was a teacher, journalist and elected representative in Santa Catarina.",
+      "pt": "Antonieta de Barros foi professora, jornalista e representante eleita em Santa Catarina.",
+      "sourceIds": [
+        "bio-antonieta"
+      ]
+    },
+    {
+      "id": "portrait-note-142",
+      "title": "Milton Santos · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 6,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Milton Santos foi geógrafo brasileiro. Estudou cidades, território e desigualdades e recebeu o prêmio Vautrin Lud em 1994.",
+        "O mapa da cidade mostra ruas, mas a investigação pergunta também quem consegue percorrê-las. Compare a amostra de BIAS.EXE com os trajetos relatados pelos moradores."
+      ],
+      "en": "Milton Santos studied geography, cities, territory and inequality.",
+      "pt": "Milton Santos estudou geografia, cidades, território e desigualdade.",
+      "sourceIds": [
+        "bio-milton"
+      ]
+    },
+    {
+      "id": "portrait-note-143",
+      "title": "Lélia Gonzalez · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Lélia Gonzalez foi intelectual e ativista brasileira. Seus trabalhos discutem relações entre racismo, sexismo e cultura; o conceito de amefricanidade valoriza histórias e experiências negras e indígenas nas Américas.",
+        "Perguntar quais experiências uma categoria torna visíveis ajuda a rever as legendas. O conceito é uma ferramenta de interpretação, não uma descrição única de todas as pessoas."
+      ],
+      "en": "Lélia Gonzalez studied racism, sexism and culture in the Americas.",
+      "pt": "Lélia Gonzalez estudou racismo, sexismo e cultura nas Américas.",
+      "sourceIds": [
+        "bio-lelia"
+      ]
+    },
+    {
+      "id": "portrait-note-144",
+      "title": "Abdias do Nascimento · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Abdias do Nascimento foi artista, escritor e ativista. Em 1944, fundou o Teatro Experimental do Negro, que reuniu criação teatral, formação e enfrentamento do racismo.",
+        "Os créditos do palco podem revelar quem criou e quem teve oportunidades para atuar. Consulte o acervo do TEN para conhecer participantes e trabalhos."
+      ],
+      "en": "Abdias do Nascimento founded the Black Experimental Theatre in 1944.",
+      "pt": "Abdias do Nascimento fundou o Teatro Experimental do Negro em 1944.",
+      "sourceIds": [
+        "bio-abdias"
+      ]
+    },
+    {
+      "id": "portrait-note-145",
+      "title": "Ruth de Souza · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Ruth de Souza atuou no teatro, no cinema e na televisão. Sua trajetória passou pelo Teatro Experimental do Negro e ajudou a ampliar a presença de atrizes negras nessas linguagens.",
+        "Um programa de espetáculo registra mais do que um título: guarda elencos, funções e condições de produção. Esse é um dos caminhos para corrigir o cartaz do festival."
+      ],
+      "en": "Ruth de Souza worked in theatre, cinema and television.",
+      "pt": "Ruth de Souza trabalhou no teatro, no cinema e na televisão.",
+      "sourceIds": [
+        "bio-ruth",
+        "bio-abdias"
+      ]
+    },
+    {
+      "id": "portrait-note-146",
+      "title": "Conceição Evaristo · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Conceição Evaristo é escritora de romances, contos, poemas e ensaios. Sua reflexão sobre escrevivência aproxima criação literária, memória e experiências negras.",
+        "Na biblioteca, leia sobre Ponciá Vicêncio e compare criação literária com relato documental. Os textos produzidos pelos estudantes recebem seus próprios nomes."
+      ],
+      "en": "Conceição Evaristo connects literary creation, memory and Black experiences.",
+      "pt": "Conceição Evaristo relaciona criação literária, memória e experiências negras.",
+      "sourceIds": [
+        "bio-conceicao",
+        "heritage_conceicao"
+      ]
+    },
+    {
+      "id": "portrait-note-147",
+      "title": "Gilberto Gil · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Gilberto Gil é cantor, compositor e instrumentista brasileiro. Seu álbum Louvação foi lançado em 1967; sua trajetória inclui a participação na Tropicália.",
+        "Uma trajetória pode atravessar estilos, encontros e épocas. Ao revisar os créditos, identifique a função em cada trabalho, em vez de usar uma única etiqueta para toda a carreira."
+      ],
+      "en": "Gilberto Gil is a Brazilian singer, songwriter and instrumentalist.",
+      "pt": "Gilberto Gil é cantor, compositor e instrumentista brasileiro.",
+      "sourceIds": [
+        "bio-gil"
+      ]
+    },
+    {
+      "id": "portrait-note-148",
+      "title": "Elza Soares · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Elza Soares foi cantora brasileira, com uma carreira de diferentes repertórios e experimentações. Sua estreia em disco ocorreu em 1959.",
+        "Interpretar uma canção é uma contribuição artística específica; compor é outra. As fichas musicais ajudam a reconhecer ambas sem trocar seus créditos."
+      ],
+      "en": "Elza Soares was a Brazilian singer whose career crossed different repertoires.",
+      "pt": "Elza Soares foi uma cantora brasileira cuja carreira atravessou diferentes repertórios.",
+      "sourceIds": [
+        "bio-elza"
+      ]
+    },
+    {
+      "id": "portrait-note-149",
+      "title": "Nina Simone · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Nina Simone foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação e seu repertório atravessaram diferentes tradições musicais.",
+        "A leitura da instrumentoteca liga sua trajetória ao contexto histórico, enquanto a estação de escuta apresenta exercícios sonoros originais do jogo."
+      ],
+      "en": "Nina Simone was a pianist, singer and civil rights activist.",
+      "pt": "Nina Simone foi pianista, cantora e ativista pelos direitos civis.",
+      "sourceIds": [
+        "bio-nina"
+      ]
+    },
+    {
+      "id": "portrait-note-150",
+      "title": "Katherine Johnson · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Katherine Johnson foi matemática da NASA. Em 1962, conferiu cálculos de computadores eletrônicos para o voo orbital de John Glenn.",
+        "Conferência e colaboração também são trabalho científico. No laboratório, compare esta trajetória com o caderno que registra as funções de Luma, Caio e Luca."
+      ],
+      "en": "Katherine Johnson checked computer calculations for John Glenn’s orbital flight in 1962.",
+      "pt": "Katherine Johnson conferiu cálculos de computadores para o voo orbital de John Glenn em 1962.",
+      "sourceIds": [
+        "bio-katherine"
+      ]
+    },
+    {
+      "id": "portrait-note-151",
+      "title": "Rosa Parks · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Rosa Parks foi ativista pelos direitos civis. Sua prisão em Montgomery, em 1º de dezembro de 1955, se ligou ao boicote coletivo contra a segregação nos ônibus.",
+        "A história envolve organização e ação coletiva, além de um gesto individual. A ata da assembleia deve preservar também o trabalho das pessoas que não aparecem no cartaz."
+      ],
+      "en": "Rosa Parks was a civil rights activist involved in the Montgomery bus boycott.",
+      "pt": "Rosa Parks foi uma ativista pelos direitos civis envolvida no boicote aos ônibus de Montgomery.",
+      "sourceIds": [
+        "bio-rosa"
+      ]
+    },
+    {
+      "id": "portrait-note-152",
+      "title": "Harriet Tubman · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Harriet Tubman foi uma abolicionista que ajudou pessoas escravizadas a buscar a liberdade por redes de apoio e rotas de fuga nos Estados Unidos. Também atuou durante a Guerra Civil.",
+        "A expressão Underground Railroad nomeia uma rede de fuga e auxílio, não uma ferrovia subterrânea literal. Contexto histórico é necessário também ao traduzir expressões."
+      ],
+      "en": "Harriet Tubman helped enslaved people reach freedom through networks of support.",
+      "pt": "Harriet Tubman ajudou pessoas escravizadas a alcançar a liberdade por redes de apoio.",
+      "sourceIds": [
+        "bio-harriet"
+      ]
+    },
+    {
+      "id": "portrait-note-153",
+      "title": "Martin Luther King Jr. · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Martin Luther King Jr. foi uma liderança do movimento por direitos civis nos Estados Unidos. Defendeu ações não violentas e recebeu o Nobel da Paz em 1964.",
+        "Sua trajetória faz parte de um movimento com muitas organizações e pessoas. Leia a ficha relacionada antes de atribuir a uma liderança todas as conquistas coletivas."
+      ],
+      "en": "Martin Luther King Jr. was a civil rights leader who advocated nonviolent action.",
+      "pt": "Martin Luther King Jr. foi uma liderança pelos direitos civis que defendeu ações não violentas.",
+      "sourceIds": [
+        "bio-king",
+        "heritage_king"
+      ]
+    },
+    {
+      "id": "portrait-note-154",
+      "title": "Nelson Mandela · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Nelson Mandela lutou contra o apartheid na África do Sul. Passou 27 anos preso e, em 1994, tornou-se presidente após as primeiras eleições nacionais democráticas com sufrágio universal adulto do país.",
+        "Apartheid designa um sistema histórico de segregação e dominação racial. Compare contextos e fontes, sem tratar toda forma de discriminação como o mesmo episódio histórico."
+      ],
+      "en": "Nelson Mandela opposed apartheid and became South Africa’s president in 1994.",
+      "pt": "Nelson Mandela enfrentou o apartheid e se tornou presidente da África do Sul em 1994.",
+      "sourceIds": [
+        "bio-mandela"
+      ]
+    },
+    {
+      "id": "portrait-note-155",
+      "title": "Steve Biko · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Steve Biko foi uma liderança da Consciência Negra na África do Sul. Sua atuação enfrentou o apartheid; ele morreu sob custódia policial em 1977.",
+        "Reconhecer um movimento exige conhecer suas condições históricas e suas ideias. O nome de uma pessoa abre uma pesquisa, sem substituir as demais vozes."
+      ],
+      "en": "Steve Biko was a Black Consciousness leader in South Africa.",
+      "pt": "Steve Biko foi uma liderança da Consciência Negra na África do Sul.",
+      "sourceIds": [
+        "bio-biko"
+      ]
+    },
+    {
+      "id": "portrait-note-156",
+      "title": "Angela Davis · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Angela Davis é intelectual e ativista estadunidense. Seus trabalhos relacionam raça, classe, gênero e instituições de punição; sua atuação acadêmica inclui a Universidade da Califórnia em Santa Cruz.",
+        "No arquivo, ideias precisam de autoria e contexto. Um resumo apresenta uma questão para leitura; não é uma citação nem substitui o trabalho completo da autora."
+      ],
+      "en": "Angela Davis studies relationships between race, class, gender and institutions.",
+      "pt": "Angela Davis estuda relações entre raça, classe, gênero e instituições.",
+      "sourceIds": [
+        "bio-angela"
+      ]
+    },
+    {
+      "id": "portrait-note-157",
+      "title": "Wangari Maathai · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Wangari Maathai fundou o Green Belt Movement no Quênia em 1977. O movimento liga plantio de árvores, participação de mulheres e cuidado ambiental. Ela recebeu o Nobel da Paz em 2004.",
+        "O cuidado da horta de Aisha é uma atividade local de fantasia. A trajetória de Maathai ajuda a perguntar como ambiente, participação e condições de vida se relacionam."
+      ],
+      "en": "Wangari Maathai connected tree planting, women’s participation and environmental care.",
+      "pt": "Wangari Maathai relacionou plantio de árvores, participação de mulheres e cuidado ambiental.",
+      "sourceIds": [
+        "bio-wangari",
+        "bio-greenbelt"
+      ]
+    },
+    {
+      "id": "portrait-note-158",
+      "title": "Marielle Franco · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 5,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Marielle Franco foi socióloga, vereadora do Rio de Janeiro e defensora dos direitos humanos. Sua atuação política se ligou às experiências de mulheres negras e de moradores de favelas.",
+        "Na assembleia, pergunte quem consegue participar e quais experiências entram na decisão. Uma homenagem precisa apresentar trabalho e trajetória, além de uma imagem."
+      ],
+      "en": "Marielle Franco was a sociologist, city councillor and human rights advocate.",
+      "pt": "Marielle Franco foi socióloga, vereadora e defensora dos direitos humanos.",
+      "sourceIds": [
+        "bio-marielle"
+      ]
+    },
+    {
+      "id": "portrait-note-159",
+      "title": "Pelé · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Pelé foi jogador de futebol brasileiro e campeão mundial com a seleção masculina em 1958, 1962 e 1970. Sua trajetória se liga também ao Santos Futebol Clube.",
+        "Um resultado tem data, modalidade e equipe. Identificar esses elementos evita confundir categorias e permite reconhecer contribuições individuais dentro de um trabalho coletivo."
+      ],
+      "en": "Pelé won the men’s World Cup with Brazil in 1958, 1962 and 1970.",
+      "pt": "Pelé ganhou a Copa do Mundo masculina com o Brasil em 1958, 1962 e 1970.",
+      "sourceIds": [
+        "bio-pele"
+      ]
+    },
+    {
+      "id": "portrait-note-160",
+      "title": "Marta Vieira da Silva · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Marta é jogadora de futebol brasileira. Na Copa do Mundo feminina de 2007, recebeu a Bola de Ouro e a Chuteira de Ouro; o Brasil foi finalista.",
+        "As conquistas de uma modalidade precisam ser nomeadas por seus próprios registros. Compare autoria de uma ficha, data do resultado e categoria antes de atualizar o mural."
+      ],
+      "en": "Marta received the Golden Ball and Golden Boot at the 2007 Women’s World Cup.",
+      "pt": "Marta recebeu a Bola de Ouro e a Chuteira de Ouro na Copa do Mundo feminina de 2007.",
+      "sourceIds": [
+        "bio-marta"
+      ]
+    },
+    {
+      "id": "portrait-note-161",
+      "title": "Rebeca Andrade · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Rebeca Andrade é ginasta brasileira. Conquistou ouro no salto nos Jogos de Tóquio 2020 e no solo nos Jogos de Paris 2024.",
+        "Solo e salto são provas diferentes. Uma ficha esportiva identifica evento e edição, como uma ficha científica identifica condições e data do resultado."
+      ],
+      "en": "Rebeca Andrade won Olympic gold in vault at Tokyo 2020 and floor exercise at Paris 2024.",
+      "pt": "Rebeca Andrade ganhou ouro olímpico no salto em Tóquio 2020 e no solo em Paris 2024.",
+      "sourceIds": [
+        "bio-rebeca"
+      ]
+    },
+    {
+      "id": "portrait-note-162",
+      "title": "Serena Williams · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Serena Williams foi uma das grandes tenistas do circuito profissional. Conquistou 23 títulos de simples em torneios de Grand Slam ao longo de sua carreira.",
+        "Simples e duplas são categorias distintas. O registro precisa dizer o que está contando, para que um número não pareça representar toda forma de participação."
+      ],
+      "en": "Serena Williams won 23 Grand Slam singles titles.",
+      "pt": "Serena Williams ganhou 23 títulos de simples em torneios de Grand Slam.",
+      "sourceIds": [
+        "bio-serena"
+      ]
+    },
+    {
+      "id": "portrait-note-163",
+      "title": "Chimamanda Ngozi Adichie · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 2,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Chimamanda Ngozi Adichie é escritora nigeriana, autora de Meio sol amarelo, de 2006, e Americanah, de 2013. Seus romances apresentam personagens e experiências diversas.",
+        "A biblioteca aproxima obras de diferentes países sem tratar uma autora como representante de todo um continente. Autora, obra e contexto formam o ponto de partida da leitura."
+      ],
+      "en": "Chimamanda Ngozi Adichie is a Nigerian writer and the author of Americanah.",
+      "pt": "Chimamanda Ngozi Adichie é escritora nigeriana e autora de Americanah.",
+      "sourceIds": [
+        "bio-chimamanda"
+      ]
+    },
+    {
+      "id": "portrait-note-164",
+      "title": "Maya Angelou · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 3,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Maya Angelou foi escritora e artista estadunidense. Sua obra autobiográfica I Know Why the Caged Bird Sings foi publicada em 1969.",
+        "Uma autobiografia apresenta uma perspectiva e escolhas de escrita. Na roda de memória, identifique quem narra e respeite a forma como a pessoa escolhe compartilhar sua experiência."
+      ],
+      "en": "Maya Angelou was an American writer and artist who worked with autobiography and poetry.",
+      "pt": "Maya Angelou foi uma escritora e artista estadunidense que trabalhou com autobiografia e poesia.",
+      "sourceIds": [
+        "bio-maya"
+      ]
+    },
+    {
+      "id": "portrait-note-165",
+      "title": "James Baldwin · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 4,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "James Baldwin foi escritor estadunidense de romances, ensaios e peças. The Fire Next Time, publicado em 1963, participa de seus debates sobre raça e sociedade.",
+        "Ensaio e notícia não são o mesmo gênero. Ravi propõe identificar o tipo de texto e seus argumentos antes de transformar um trecho em uma manchete."
+      ],
+      "en": "James Baldwin wrote novels, essays and plays about experiences including race and society.",
+      "pt": "James Baldwin escreveu romances, ensaios e peças sobre experiências que incluem raça e sociedade.",
+      "sourceIds": [
+        "bio-baldwin"
+      ]
+    },
+    {
+      "id": "portrait-note-166",
+      "title": "Sueli Carneiro · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 6,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Sueli Carneiro é filósofa e ativista brasileira. Sua produção discute relações raciais, feminismo negro e os processos que desvalorizam conhecimentos de determinados grupos.",
+        "Sua tese de 2005 investiga a construção do outro como não-ser. No arquivo de New Harmony, a pergunta prática é quais produções foram excluídas e por quais critérios."
+      ],
+      "en": "Sueli Carneiro is a Brazilian philosopher who studies racism and the exclusion of knowledge.",
+      "pt": "Sueli Carneiro é uma filósofa brasileira que estuda racismo e exclusão de conhecimentos.",
+      "sourceIds": [
+        "bio-sueli"
+      ]
+    },
+    {
+      "id": "portrait-note-167",
+      "title": "Cartola · trajetória e contexto",
+      "kind": "note",
+      "collectionOnly": true,
+      "chapter": 1,
+      "author": "Museu das Vozes · Fichas de trajetórias",
+      "theme": "Biografia, fontes e interpretação",
+      "paragraphs": [
+        "Cartola, nome artístico de Angenor de Oliveira, foi compositor e cantor brasileiro. Participou da fundação da Estação Primeira de Mangueira em 1928.",
+        "As fichas de acervo identificam pessoas, obras e encontros musicais. No festival, um nome conhecido deve abrir a escuta, sem apagar parceiros e demais funções da produção."
+      ],
+      "en": "Cartola was a Brazilian songwriter and singer linked to the founding of Mangueira.",
+      "pt": "Cartola foi um compositor e cantor brasileiro ligado à fundação da Mangueira.",
+      "sourceIds": [
+        "bio-cartola"
+      ]
+    },
+    {
+      "id": "science-note-water",
+      "title": "De onde vêm as gotas?",
+      "theme": "Condensação e observação",
+      "chapter": 3,
+      "sourceIds": [
+        "research-water"
+      ],
+      "paragraphs": [
+        "Tomás observa gotas na parte externa de um copo frio. O ar pode conter vapor de água; ao encontrar uma superfície fria o suficiente, parte desse vapor se condensa em líquido. A presença de gotas por fora não prova que a água de dentro atravessou o vidro.",
+        "No laboratório, registre o que está dentro e fora do recipiente e as condições da observação. Uma explicação precisa considerar a origem da água, não apenas a forma das gotas. A tabela de testes de Luma usa o mesmo cuidado para separar observação e conclusão."
+      ],
+      "en": "Water vapour in the air can condense on a cold surface.",
+      "pt": "O vapor de água do ar pode se condensar numa superfície fria.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
+    },
+    {
+      "id": "science-note-pollination",
+      "title": "Uma visita à flor",
+      "theme": "Polinização e diversidade",
+      "chapter": 5,
+      "sourceIds": [
+        "research-pollination"
+      ],
+      "paragraphs": [
+        "Polinização é a transferência de pólen até a parte receptiva da flor. Ela participa da reprodução de muitas plantas e pode ocorrer com a ajuda de animais ou por outros agentes, como o vento. Abelhas são polinizadoras importantes, mas não são o único caminho de reprodução das plantas.",
+        "Rute anota a visita de um inseto sem concluir que todo movimento perto de uma flor teve a mesma função. Observe sem capturar e compare outras visitas. Um ícone de borboleta no jogo permite reconhecer um tipo de animal; não basta para identificar uma espécie."
+      ],
+      "en": "Some animals can carry pollen between flowers.",
+      "pt": "Alguns animais podem transportar pólen entre flores.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
+    },
+    {
+      "id": "science-note-compost",
+      "title": "O que acontece na composteira?",
+      "theme": "Decomposição e condições",
+      "chapter": 5,
+      "sourceIds": [
+        "research-compost"
+      ],
+      "paragraphs": [
+        "Na compostagem, resíduos orgânicos se decompõem pela atividade de organismos, incluindo fungos e bactérias. Umidade, aeração, materiais e temperatura influenciam o processo. Colocar restos num recipiente fechado não garante que exista um composto pronto.",
+        "Aisha e Rute registram os materiais e o acompanhamento da horta. O caderno ajuda a comparar condições e a dividir o cuidado. A atividade de regar os canteiros é uma tarefa do jogo; a decomposição segue processos biológicos que não acontecem instantaneamente."
+      ],
+      "en": "Decomposition depends on organisms and environmental conditions.",
+      "pt": "A decomposição depende de organismos e de condições ambientais.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
+    },
+    {
+      "id": "science-note-maps",
+      "title": "O globo e o mapa",
+      "theme": "Projeções e representação",
+      "chapter": 2,
+      "sourceIds": [
+        "research-projections"
+      ],
+      "paragraphs": [
+        "Um globo representa a Terra numa superfície aproximadamente esférica. Um mapa plano transforma essa superfície por uma projeção. Toda projeção altera alguma propriedade: não é possível manter todas as áreas, formas e distâncias ao mesmo tempo numa representação plana do mundo inteiro.",
+        "No museu, mapa e linha do tempo respondem a perguntas diferentes. Localizar Gao não informa sozinho quando o monumento foi construído. Para corrigir a legenda de Mara, una localização, período e procedência em vez de escolher pelo desenho mais conhecido."
+      ],
+      "en": "Every flat world map involves some distortion.",
+      "pt": "Todo mapa plano do mundo envolve alguma distorção.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
+    },
+    {
+      "id": "science-note-plants",
+      "title": "Raiz, folha e rizoma",
+      "theme": "Identificação botânica",
+      "chapter": 5,
+      "sourceIds": [
+        "research-botany",
+        "research-ginger"
+      ],
+      "paragraphs": [
+        "Rizoma é um tipo de caule modificado, geralmente subterrâneo. O gengibre usado na culinária é um rizoma. Sua posição no solo não transforma o órgão em raiz: a classificação considera estrutura e desenvolvimento da planta.",
+        "Elias organiza palavras e fichas; Raquel confere origem e data dos lotes. Nomes populares podem abranger espécies diferentes. As ilustrações da botica apoiam o vocabulário do jogo, sem funcionar como guia para coletar ou consumir plantas reais."
+      ],
+      "en": "An underground plant part is not always a root.",
+      "pt": "Uma parte subterrânea de uma planta nem sempre é uma raiz.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
+    },
+    {
+      "id": "science-note-sound",
+      "title": "O que vibra neste som?",
+      "theme": "Acústica e instrumentos",
+      "chapter": 1,
+      "sourceIds": [
+        "research-sound",
+        "research-saxophone",
+        "research-guitar"
+      ],
+      "paragraphs": [
+        "Sons podem ser comparados por frequência, intensidade e timbre. A altura se relaciona à frequência: maior frequência corresponde a som mais agudo. A amplitude da vibração se relaciona à intensidade, enquanto a combinação de componentes e sua evolução no tempo participa do timbre.",
+        "Na escola, a bateria põe peles e pratos em vibração; o saxofone usa uma palheta; a guitarra transforma vibração de cordas em sinal elétrico por captadores. Compare o mecanismo antes de escolher uma palavra. Sons do jogo são exercícios de síntese e não reproduzem todas as características desses instrumentos."
+      ],
+      "en": "Pitch, intensity and timbre describe different features of sound.",
+      "pt": "Altura, intensidade e timbre descrevem características diferentes do som.",
+      "kind": "note",
+      "collectionOnly": true,
+      "author": "Caderno de Campo · Ciência e representações"
     }
   ],
   "questions": [
@@ -1046,31 +1725,46 @@
       "lines": [
         {
           "speaker": "gardener",
+          "pt": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
           "en": {
-            "6": "This path needs space.",
-            "7": "Residents asked for a clearer path.",
-            "8": "Residents pointed out barriers, so our fictional park plan includes a review of the paths."
+            "6": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care.",
+            "7": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care.",
+            "8": "I’m Aisha. These three beds share water, but they do not get the same sunlight. Record what you observe before changing their care."
           },
-          "pt": "Aqui em New Harmony, moradores apontaram barreiras. O plano do parque inclui revisar os caminhos."
+          "ptByGrade": {
+            "6": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
+            "7": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado.",
+            "8": "Sou Aisha. Os três canteiros dividem a mesma água, mas não recebem sol do mesmo jeito. Anote o que observar antes de mudar o cuidado."
+          }
         },
         {
           "speaker": "gardener",
+          "pt": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
           "en": {
-            "6": "We listen before we change it.",
-            "7": "We listened before moving the benches.",
-            "8": "Before moving the benches, we asked how different people use this space."
+            "6": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden.",
+            "7": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden.",
+            "8": "Vitor pointed out a bench in the way. I’ll walk the route with residents before rearranging the garden."
           },
-          "pt": "Antes de mudar os bancos, perguntamos como diferentes pessoas usam o espaço."
+          "ptByGrade": {
+            "6": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
+            "7": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim.",
+            "8": "Vitor apontou um banco no caminho. Vou percorrer o trajeto com os moradores antes de reorganizar o jardim."
+          }
         }
       ],
       "repeat": {
         "speaker": "gardener",
+        "pt": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
         "en": {
-          "6": "Check the path, too.",
-          "7": "The invitation did not fix the path.",
-          "8": "A clear invitation helps, but the route still needs attention."
+          "6": "The three beds are marked. After watering them, come back and we can discuss the garden’s care.",
+          "7": "The three beds are marked. After watering them, come back and we can discuss the garden’s care.",
+          "8": "The three beds are marked. After watering them, come back and we can discuss the garden’s care."
         },
-        "pt": "Confira também o trajeto. Um convite não remove uma barreira do caminho."
+        "ptByGrade": {
+          "6": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
+          "7": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta.",
+          "8": "Os canteiros estão sinalizados. Depois de regar os três, volte para conversarmos sobre o cuidado da horta."
+        }
       }
     },
     {
@@ -1082,31 +1776,46 @@
       "lines": [
         {
           "speaker": "vendor",
+          "pt": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
           "en": {
-            "6": "This poster needs names.",
-            "7": "The poster lost the creators’ names.",
-            "8": "A nice poster still needs accurate names and roles; I sent mine to the festival team."
+            "6": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information.",
+            "7": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information.",
+            "8": "I’m Rosa. Three labels fell off at the market. I need to separate each object’s name, origin and known information."
           },
-          "pt": "Meu cartaz do festival perdeu nomes e funções. Mandei a ficha para a equipe revisar."
+          "ptByGrade": {
+            "6": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
+            "7": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele.",
+            "8": "Sou Rosa. Três etiquetas caíram na feira. Preciso separar o nome do objeto, sua procedência e o que sabemos sobre ele."
+          }
         },
         {
           "speaker": "vendor",
+          "pt": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
           "en": {
-            "6": "My taste is my taste.",
-            "7": "My friend preferred a different song.",
-            "8": "My friend and I prefer different songs, but neither preference decides who belongs here."
+            "6": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it.",
+            "7": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it.",
+            "8": "The food card stays with its maker. Viviane’s card also records the craft and the people who taught it."
           },
-          "pt": "Meu amigo prefere outra música. Gostos diferentes não decidem quem pertence à cidade."
+          "ptByGrade": {
+            "6": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
+            "7": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho.",
+            "8": "A ficha da comida fica com quem preparou. A de Viviane reúne também o ofício e as pessoas que ensinaram esse trabalho."
+          }
         }
       ],
       "repeat": {
         "speaker": "vendor",
+        "pt": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
         "en": {
-          "6": "Names belong on the poster.",
-          "7": "We put the names back on the poster.",
-          "8": "The updated poster shows who contributed instead of hiding the work behind the design."
+          "6": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster.",
+          "7": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster.",
+          "8": "My favourite song does not change who wrote it. The composer’s credit must stay on the poster."
         },
-        "pt": "O cartaz revisado mostra quem contribuiu para a produção."
+        "ptByGrade": {
+          "6": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
+          "7": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz.",
+          "8": "Minha preferência por uma canção não muda o crédito de quem a compôs. Isso precisa continuar no cartaz."
+        }
       }
     },
     {
@@ -1118,67 +1827,97 @@
       "lines": [
         {
           "speaker": "guide",
+          "pt": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
           "en": {
-            "6": "Check the map and the date.",
-            "7": "The labels lost their places and dates.",
-            "8": "A timeline needs places and dates, otherwise different societies can look like one story."
+            "6": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three.",
+            "7": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three.",
+            "8": "I’m Ísis. This table separates Mali, Songhai and Kongo by region and period. The damaged label had merged all three."
           },
-          "pt": "As etiquetas perderam lugares e datas. Sem isso, sociedades diferentes podem parecer uma história só."
+          "ptByGrade": {
+            "6": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
+            "7": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três.",
+            "8": "Sou Ísis. Esta mesa separa Mali, Songhai e Kongo por região e período. A legenda corrompida tinha juntado os três."
+          }
         },
         {
           "speaker": "guide",
+          "pt": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
           "en": {
-            "6": "One display is a selection.",
-            "7": "We selected a few records for this display.",
-            "8": "This fictional display uses a few records; its selection cannot stand for all African histories."
+            "6": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola.",
+            "7": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola.",
+            "8": "Find Timbuktu in the manuscript note and Gao in the Tomb of Askia note. Then compare them with Mbanza Kongo in present-day Angola."
           },
-          "pt": "Esta exposição ficcional seleciona poucos registros. Ela não representa todas as histórias africanas."
+          "ptByGrade": {
+            "6": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
+            "7": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola.",
+            "8": "Procure Tombuctu na nota dos manuscritos e Gao na do Túmulo dos Askia. Depois compare com Mbanza Kongo, na atual Angola."
+          }
         }
       ],
       "repeat": {
         "speaker": "guide",
+        "pt": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
         "en": {
-          "6": "Ask what is missing.",
-          "7": "You asked what the display left out.",
-          "8": "Asking what a display leaves out helps us plan the next investigation."
+          "6": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent.",
+          "7": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent.",
+          "8": "At the curating table, connect description, origin and interpretation. One object can raise questions without representing a whole continent."
         },
-        "pt": "Pergunte o que a exposição deixou de fora. Isso pode abrir outra investigação."
+        "ptByGrade": {
+          "6": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
+          "7": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro.",
+          "8": "Na mesa de curadoria, una descrição, procedência e interpretação. Uma peça pode abrir perguntas sem representar um continente inteiro."
+        }
       }
     },
     {
       "id": "archivist",
-      "name": "Davi",
+      "name": "Dimas",
       "character": "archivist",
       "role": "Organizador de registros",
       "chapter": 0,
       "lines": [
         {
           "speaker": "archivist",
+          "pt": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
           "en": {
-            "6": "This summary is not a quotation.",
-            "7": "We wrote a summary from named sources.",
-            "8": "Our educational summary identifies its sources; it does not invent a historical person’s words."
+            "6": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue.",
+            "7": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue.",
+            "8": "I’m Dimas, the cataloguer. Davi looks after the library; I check how documents enter the catalogue."
           },
-          "pt": "Este resumo didático identifica fontes. Ele não inventa palavras de uma pessoa histórica."
+          "ptByGrade": {
+            "6": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
+            "7": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo.",
+            "8": "Sou Dimas, responsável pela catalogação. Davi cuida da biblioteca; eu confiro como os documentos entram no catálogo."
+          }
         },
         {
           "speaker": "archivist",
+          "pt": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
           "en": {
-            "6": "Keep the source with the record.",
-            "7": "The source label helped us check the claim.",
-            "8": "Keeping source, date and context together makes later questions easier to investigate."
+            "6": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible.",
+            "7": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible.",
+            "8": "Each record needs an identity linked to its source. A reading copy must keep the date and the description’s author visible."
           },
-          "pt": "Guardar fonte, data e contexto juntos ajuda a investigar perguntas futuras."
+          "ptByGrade": {
+            "6": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
+            "7": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição.",
+            "8": "Cada registro precisa de uma identificação que continue ligada à fonte. A cópia de consulta não deve esconder a data nem quem fez a descrição."
+          }
         }
       ],
       "repeat": {
         "speaker": "archivist",
+        "pt": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
         "en": {
-          "6": "Read what the clue supports.",
-          "7": "The clue supported a specific claim.",
-          "8": "A clue can support a limited claim while leaving other questions open."
+          "6": "At the cataloguing table, match documents with the information needed to find them and check their origin.",
+          "7": "At the cataloguing table, match documents with the information needed to find them and check their origin.",
+          "8": "At the cataloguing table, match documents with the information needed to find them and check their origin."
         },
-        "pt": "Uma pista pode sustentar uma afirmação limitada e deixar outras perguntas abertas."
+        "ptByGrade": {
+          "6": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
+          "7": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem.",
+          "8": "Na mesa de catalogação, associe os documentos às informações que permitem encontrá-los e conferir sua origem."
+        }
       }
     },
     {
@@ -1190,31 +1929,46 @@
       "lines": [
         {
           "speaker": "technician",
+          "pt": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
           "en": {
-            "6": "A machine does not work alone.",
-            "7": "Several people helped with our project.",
-            "8": "Several people helped our fictional project, so the new label identifies different roles."
+            "6": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature.",
+            "7": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature.",
+            "8": "I’m Caio. Luma did the calculations, I tested the prototype and Luca recorded the attempts. The public copy kept only the first signature."
           },
-          "pt": "Muita gente ajudou no projeto ficcional do laboratório. A etiqueta identifica as funções."
+          "ptByGrade": {
+            "6": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
+            "7": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura.",
+            "8": "Sou Caio. Luma fez os cálculos, eu testei o protótipo e Luca registrou as tentativas. A cópia pública deixou só a primeira assinatura."
+          }
         },
         {
           "speaker": "technician",
+          "pt": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
           "en": {
-            "6": "Do not guess the author.",
-            "7": "We checked the records before adding names.",
-            "8": "We checked the records before adding names because a familiar word does not establish authorship."
+            "6": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result.",
+            "7": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result.",
+            "8": "To compare the lamps, keep the distance and conditions the same. If everything changes at once, we cannot tell what explains the result."
           },
-          "pt": "Conferimos os registros antes de incluir nomes. Uma palavra familiar não prova autoria."
+          "ptByGrade": {
+            "6": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
+            "7": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado.",
+            "8": "Para comparar as luminárias, mantenha a mesma distância e as mesmas condições. Se tudo muda junto, não sabemos o que explica o resultado."
+          }
         }
       ],
       "repeat": {
         "speaker": "technician",
+        "pt": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
         "en": {
-          "6": "Find the record for the name.",
-          "7": "The record helped us restore the names.",
-          "8": "Accurate attribution requires a connection between the named person and the documented work."
+          "6": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error.",
+          "7": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error.",
+          "8": "The failed attempts stay in the notebook. They help the team check the method and avoid repeating an error."
         },
-        "pt": "Ligue o nome ao trabalho que os registros documentam."
+        "ptByGrade": {
+          "6": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
+          "7": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro.",
+          "8": "As tentativas que falharam continuam no caderno. Elas ajudam a equipe a conferir o método e a evitar repetir um erro."
+        }
       }
     },
     {
@@ -1226,31 +1980,46 @@
       "lines": [
         {
           "speaker": "teacher",
+          "pt": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
           "en": {
-            "6": "Your question can open a door.",
-            "7": "Your question helped the class inspect a label.",
-            "8": "A good question can reveal a missing date, an unsupported claim or a voice left out."
+            "6": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table.",
+            "7": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table.",
+            "8": "I’m teacher Joana. Celina and I have different proposals for the reading circle. Listen to both before arranging the table."
           },
-          "pt": "Uma boa pergunta pode revelar uma data ausente, uma afirmação sem apoio ou uma voz deixada de fora."
+          "ptByGrade": {
+            "6": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
+            "7": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa.",
+            "8": "Sou a professora Joana. Celina e eu temos propostas diferentes para a roda de leitura. Escute as duas antes de organizar a mesa."
+          }
         },
         {
           "speaker": "teacher",
+          "pt": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
           "en": {
-            "6": "We use fictional cases here.",
-            "7": "We discussed fictional cases without exposing classmates.",
-            "8": "We can discuss these fictional cases without asking classmates to reveal personal experiences."
+            "6": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice.",
+            "7": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice.",
+            "8": "A student was excluded from the club because of her skin colour. The school needs to support her and change the access rule as well as remove the notice."
           },
-          "pt": "Analisamos casos ficcionais sem pedir que colegas exponham experiências pessoais."
+          "ptByGrade": {
+            "6": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
+            "7": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio.",
+            "8": "Uma estudante ficou fora do clube por causa da cor da pele. A escola precisa acolhê-la e mudar o critério de acesso, além de retirar o anúncio."
+          }
         }
       ],
       "repeat": {
         "speaker": "teacher",
+        "pt": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
         "en": {
-          "6": "Ask why the answer fits.",
-          "7": "We explained why an answer matched the evidence.",
-          "8": "An explanation shows how the answer follows from the evidence instead of asking for trust alone."
+          "6": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes.",
+          "7": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes.",
+          "8": "Participation includes receiving a response to a proposal. Keep decisions and unresolved questions visible in the minutes."
         },
-        "pt": "Explique como a resposta se apoia nas evidências."
+        "ptByGrade": {
+          "6": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
+          "7": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido.",
+          "8": "Participar inclui receber uma resposta à proposta. Na ata, deixe visível o que foi decidido e o que ainda precisa ser resolvido."
+        }
       }
     },
     {
@@ -1262,31 +2031,46 @@
       "lines": [
         {
           "speaker": "courier",
+          "pt": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
           "en": {
-            "6": "This message needs a date.",
-            "7": "I delivered an old notice without its date.",
-            "8": "An old notice looked current after its date was cut; I found the complete version."
+            "6": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive.",
+            "7": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive.",
+            "8": "I’m Bia. This sealed box goes to the library’s receiving desk. Its contents will be identified before entering the archive."
           },
-          "pt": "Um aviso antigo pareceu atual depois que a data foi cortada. Encontrei a versão completa."
+          "ptByGrade": {
+            "6": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
+            "7": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo.",
+            "8": "Sou Bia. Esta caixa vai fechada para a mesa de recebimento da biblioteca. O conteúdo terá identificação antes de entrar no arquivo."
+          }
         },
         {
           "speaker": "courier",
+          "pt": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
           "en": {
-            "6": "I check before I share.",
-            "7": "I checked the current announcement before sharing.",
-            "8": "I compare the complete notice with the current announcement before sending a correction."
+            "6": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions.",
+            "7": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions.",
+            "8": "I found the full notice at school. The clipping at the newsroom had lost its date, place and author. Compare both versions."
           },
-          "pt": "Comparo o aviso completo com o anúncio atual antes de enviar a correção."
+          "ptByGrade": {
+            "6": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
+            "7": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar.",
+            "8": "Encontrei o aviso inteiro na escola. O recorte que chegou à redação tinha perdido data, lugar e autoria. Leve as duas versões para comparar."
+          }
         }
       ],
       "repeat": {
         "speaker": "courier",
+        "pt": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
         "en": {
-          "6": "Speed is not a source.",
-          "7": "The fastest post was not the clearest one.",
-          "8": "A fast post can still lack context, so speed alone does not support a claim."
+          "6": "A conversation can matter and still have private parts. Check what the person authorised before sharing it.",
+          "7": "A conversation can matter and still have private parts. Check what the person authorised before sharing it.",
+          "8": "A conversation can matter and still have private parts. Check what the person authorised before sharing it."
         },
-        "pt": "Um post rápido ainda pode perder contexto. Velocidade não sustenta uma afirmação."
+        "ptByGrade": {
+          "6": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
+          "7": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar.",
+          "8": "Uma conversa pode ser importante e ainda ter partes reservadas. Confirme o que a pessoa autorizou antes de compartilhar."
+        }
       }
     },
     {
@@ -1298,31 +2082,46 @@
       "lines": [
         {
           "speaker": "elder",
+          "pt": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
           "en": {
-            "6": "My memory is one account.",
-            "7": "I remembered this square in a different way.",
-            "8": "My memory gives one account of this fictional square; other records can add or question details."
+            "6": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other.",
+            "7": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other.",
+            "8": "I’m Celina. I remember when that bench moved, but I want to compare my memory with the minutes. Each record can raise questions about the other."
           },
-          "pt": "Minha memória conta uma experiência desta praça ficcional. Outros registros podem acrescentar ou questionar detalhes."
+          "ptByGrade": {
+            "6": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
+            "7": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro.",
+            "8": "Sou Celina. Lembro de quando esse banco mudou, mas quero comparar a lembrança com a ata. Os dois registros podem fazer perguntas um ao outro."
+          }
         },
         {
           "speaker": "elder",
+          "pt": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
           "en": {
-            "6": "Ask before recording my story.",
-            "7": "We agreed on what could be recorded.",
-            "8": "Before recording, we agreed on access and publication rather than assuming every detail was public."
+            "6": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing.",
+            "7": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing.",
+            "8": "In the field notebook, start with what the animal did. The reason you imagine comes later, as a hypothesis. Observe without chasing."
           },
-          "pt": "Antes de gravar, combinamos acesso e publicação. Nem todo detalhe pode ser tratado como público."
+          "ptByGrade": {
+            "6": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
+            "7": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir.",
+            "8": "No caderno de campo, comece pelo que o animal fez. A razão que você imagina vem depois, como hipótese. Observe sem perseguir."
+          }
         }
       ],
       "repeat": {
         "speaker": "elder",
+        "pt": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
         "en": {
-          "6": "The first project needs review.",
-          "7": "The first project changed part of the route.",
-          "8": "The first project improved part of the route; our next review will check what still needs work."
+          "6": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably.",
+          "7": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably.",
+          "8": "Observe three types of animals and return to the table. A small drawing is not enough to identify a species reliably."
         },
-        "pt": "O primeiro projeto melhorou uma parte do trajeto. A próxima revisão examina o que ainda falta."
+        "ptByGrade": {
+          "6": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
+          "7": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança.",
+          "8": "Observe três tipos de animais e volte à mesa. Um desenho pequeno não basta para identificar uma espécie com segurança."
+        }
       }
     },
     {
@@ -1334,31 +2133,46 @@
       "lines": [
         {
           "speaker": "student2",
+          "pt": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
           "en": {
-            "6": "I ask who and when.",
-            "7": "I asked who made the card and when.",
-            "8": "I ask who made a record and when because a polished card can still miss context."
+            "6": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions.",
+            "7": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions.",
+            "8": "I’m Luca. I recorded the laboratory tests, including those that failed. Now the newsroom wants to understand how the copy lost those contributions."
           },
-          "pt": "Pergunto quem fez um registro e quando. Uma ficha bonita também pode perder contexto."
+          "ptByGrade": {
+            "6": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
+            "7": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições.",
+            "8": "Sou Luca. Anotei os testes do laboratório, inclusive os que não funcionaram. Agora a redação quer entender como a cópia perdeu essas contribuições."
+          }
         },
         {
           "speaker": "student2",
+          "pt": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
           "en": {
-            "6": "A book can be a clue.",
-            "7": "The notebook changed our exhibition plan.",
-            "8": "A notebook can contribute evidence about writing and experience, although it does not represent every voice."
+            "6": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it.",
+            "7": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it.",
+            "8": "My headline will say what the documents show. A misleading clipping does not reveal the intention of everyone who shared it."
           },
-          "pt": "Um caderno pode oferecer evidência sobre escrita e experiência. Ele não representa todas as vozes."
+          "ptByGrade": {
+            "6": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
+            "7": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou.",
+            "8": "Na manchete, vou dizer o que os documentos mostram. Um recorte errado não permite adivinhar a intenção de cada pessoa que o compartilhou."
+          }
         }
       ],
       "repeat": {
         "speaker": "student2",
+        "pt": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
         "en": {
-          "6": "I can explain my answer.",
-          "7": "I explained which clue supported my answer.",
-          "8": "I can explain which clue supports my answer and which question still remains open."
+          "6": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline.",
+          "7": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline.",
+          "8": "The newsroom table has the story to review. Check its origin, date and context before choosing a headline."
         },
-        "pt": "Posso explicar qual pista apoia minha resposta e qual pergunta ainda está aberta."
+        "ptByGrade": {
+          "6": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
+          "7": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete.",
+          "8": "A mesa da redação tem a notícia para revisar. Confira origem, data e contexto antes de escolher a manchete."
+        }
       }
     },
     {
@@ -1370,31 +2184,46 @@
       "lines": [
         {
           "speaker": "percussionist",
+          "pt": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
           "en": {
-            "6": "Our track is original.",
-            "7": "Sol and I made a new game track.",
-            "8": "Sol and I made an original game track and labelled its references clearly."
+            "6": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first.",
+            "7": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first.",
+            "8": "I’m Ivo. In our workshop, the pulse organises when to play and when to leave space for a response. Listen to the sequence first."
           },
-          "pt": "Sol e eu criamos uma faixa original do jogo e identificamos suas referências."
+          "ptByGrade": {
+            "6": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
+            "7": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência.",
+            "8": "Sou Ivo. Na nossa oficina, o pulso organiza quando tocar e quando deixar espaço para a resposta. Primeiro escute a sequência."
+          }
         },
         {
           "speaker": "percussionist",
+          "pt": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
           "en": {
-            "6": "A rhythm also has people.",
-            "7": "The programme added the musicians’ names.",
-            "8": "The programme identifies creators and roles so the audience can follow the work behind the sound."
+            "6": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research.",
+            "7": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research.",
+            "8": "In the berimbau, a string vibrates; in the atabaque, a membrane does. Comparing sound is one question. Learning how each community plays is another part of the research."
           },
-          "pt": "O programa identifica criadores e funções para o público conhecer o trabalho por trás do som."
+          "ptByGrade": {
+            "6": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
+            "7": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa.",
+            "8": "No berimbau, a corda vibra; no atabaque, a pele. Comparar o som é uma pergunta. Conhecer como cada comunidade toca é outra parte da pesquisa."
+          }
         }
       ],
       "repeat": {
         "speaker": "percussionist",
+        "pt": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
         "en": {
-          "6": "Read the cultural note.",
-          "7": "We added context beside the credits.",
-          "8": "The credits and cultural note serve different purposes, and both help the audience investigate."
+          "6": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle.",
+          "7": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle.",
+          "8": "The light sequence is a VOICES exercise. The reading beside it presents the history and knowledge of the capoeira circle."
         },
-        "pt": "Créditos e nota cultural têm funções diferentes. Os dois ajudam o público a investigar."
+        "ptByGrade": {
+          "6": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
+          "7": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira.",
+          "8": "A sequência de luzes é um exercício de VOICES. A leitura ao lado apresenta a história e os saberes da roda de capoeira."
+        }
       }
     }
   ],
@@ -1446,14 +2275,14 @@
       ],
       "topic": "Resumo e fonte",
       "lines": [
-        "Essa ficha é uma transcrição?",
-        "É um resumo didático nosso, com a fonte indicada.",
-        "Ótimo. O leitor consegue distinguir nosso texto do documento."
+        "Dimas, esta ficha é o documento completo?",
+        "É nosso resumo. Mantive a procedência para chegar ao original.",
+        "Vou deixar essa diferença visível na consulta."
       ],
       "enLines": [
-        "Is this card a transcript?",
-        "It is our educational summary, with the source shown.",
-        "Great. The reader can see the difference between our text and the document."
+        "Dimas, is this record the complete document?",
+        "It is our summary. I kept the origin so readers can reach the original.",
+        "I’ll keep that distinction visible for readers."
       ]
     },
     {
@@ -1541,14 +2370,14 @@
       ],
       "topic": "Trilha original",
       "lines": [
-        "Nossa faixa ficou pronta.",
-        "E a descrição diz que é produção original do jogo?",
-        "Sim. Referências claras, equipe creditada."
+        "Lia compôs; André arranjou; eu vou interpretar.",
+        "As três funções precisam voltar ao programa.",
+        "E a referência ao samba de roda recebe sua própria nota."
       ],
       "enLines": [
-        "Our track is ready.",
-        "Does the description say it is original game music?",
-        "Yes. Clear references, and credit for the team."
+        "Lia composed it; André arranged it; I’ll perform it.",
+        "All three roles need to return to the programme.",
+        "And the samba de roda reference gets its own note."
       ]
     },
     {
@@ -1598,14 +2427,14 @@
       ],
       "topic": "O que a pista sustenta",
       "lines": [
-        "O nome famoso combina com esse monumento?",
-        "Primeiro precisamos conferir lugar e registro.",
-        "Vou guardar o palpite como pergunta, sem colocá-lo como fato."
+        "Pensei em Mansa Musa para a legenda desse monumento.",
+        "A ficha situa o Túmulo dos Askia em Gao, em 1495. Vamos conferir a associação.",
+        "Então o nome conhecido era só um palpite, não a prova."
       ],
       "enLines": [
-        "Does the famous name fit this monument?",
-        "First, we need to check the place and the record.",
-        "I will keep my guess as a question, without presenting it as a fact."
+        "I thought of Mansa Musa for this monument’s caption.",
+        "The record places the Tomb of Askia in Gao in 1495. Let’s check the association.",
+        "Then the familiar name was only a guess, not proof."
       ]
     },
     {
@@ -1617,14 +2446,14 @@
       ],
       "topic": "Conhecimento e equipes",
       "lines": [
-        "A etiqueta mostra só uma pessoa, mas a pasta tem dois autores.",
-        "Vou restituir os nomes conforme o registro.",
-        "E separar o trabalho documentado das afirmações que ainda não têm apoio."
+        "Os cálculos estão no meu nome, mas a cópia apagou os testes de Caio e os registros de Luca.",
+        "Vou comparar a cópia com o caderno completo.",
+        "Depois conferimos com a equipe o que cada pessoa fez."
       ],
       "enLines": [
-        "The label shows only one person, but the folder has two authors.",
-        "I will restore the names as shown in the record.",
-        "And separate the documented work from claims that are still unsupported."
+        "The calculations have my name, but the copy erased Caio’s tests and Luca’s records.",
+        "I’ll compare the copy with the full notebook.",
+        "Then we’ll check with the team what each person did."
       ]
     },
     {
@@ -1671,142 +2500,165 @@
       "id": "abolition_law",
       "name": "Presidência da República — Lei nº 3.353, de 13 de maio de 1888",
       "url": "https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "johnson_nasa",
       "name": "NASA — Katherine Johnson Biography",
       "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "kongo_met",
       "name": "The Met — Kongo: Power and Majesty, Exhibition Galleries",
       "url": "https://www.metmuseum.org/exhibitions/listings/2015/kongo/exhibition-galleries",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_bn_manuscripts",
       "name": "Fundação Biblioteca Nacional — Manuscritos",
       "url": "https://www.gov.br/bn/pt-br/atuacao/colecoes-e-servicos-aos-leitores/manuscritos",
-      "note": "Conexão breve: a Divisão de Manuscritos conserva documentos variados e inclui cadernos originais de Carolina de Jesus. Não reproduzimos os cadernos ou falas da autora."
+      "note": "Conexão breve: a Divisão de Manuscritos conserva documentos variados e inclui cadernos originais de Carolina de Jesus. Não reproduzimos os cadernos ou falas da autora.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_capoeira_iphan",
       "name": "Iphan — Detentores da capoeira no RJ e salvaguarda",
       "url": "https://www.gov.br/iphan/pt-br/assuntos/noticias/mestres-e-mestras-da-capoeira-no-rj-promovem-encontro-estadual-da-salvaguarda",
-      "note": "Conexão breve: conhecimentos dos mestres e mestras; a roda combina diferentes elementos culturais. Registro indexado verificado; a abertura integral encontrou erro."
+      "note": "Conexão breve: conhecimentos dos mestres e mestras; a roda combina diferentes elementos culturais. Registro indexado verificado; a abertura integral encontrou erro.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_child_rights",
       "name": "UNICEF — Convenção sobre os Direitos da Criança",
       "url": "https://www.unicef.org/brazil/convencao-sobre-os-direitos-da-crianca",
-      "note": "Referência breve aos direitos de não discriminação, opinião e privacidade. As escolhas locais são exemplos educativos ficcionais, não aconselhamento jurídico."
+      "note": "Referência breve aos direitos de não discriminação, opinião e privacidade. As escolhas locais são exemplos educativos ficcionais, não aconselhamento jurídico.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_cultural_rights",
       "name": "Nações Unidas no Brasil — Artigo 27: vida cultural, artística e científica",
       "url": "https://brasil.un.org/pt-br/81985-artigo-27-direito-%C3%A0-vida-cultural-art%C3%ADstica-e-cient%C3%ADfica",
-      "note": "Conexão breve: participação na vida cultural. O projeto fictício da cidade ilustra uma barreira prática, sem prometer solucionar desigualdades com uma escolha."
+      "note": "Conexão breve: participação na vida cultural. O projeto fictício da cidade ilustra uma barreira prática, sem prometer solucionar desigualdades com uma escolha.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_diversity_unesco",
       "name": "UNESCO — Universal Declaration on Cultural Diversity",
       "url": "https://www.unesco.org/en/legal-affairs/unesco-universal-declaration-cultural-diversity",
-      "note": "Conexão breve: diversidade cultural, expressão e direitos humanos. A escolha de canções em New Harmony é um exemplo original."
+      "note": "Conexão breve: diversidade cultural, expressão e direitos humanos. A escolha de canções em New Harmony é um exemplo original.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_funai_diversity",
       "name": "Funai — Visão de povos indígenas",
       "url": "https://sii.funai.gov.br/funai_sii/informacoes_indigenas/visao/visao_povos_indigenas.wsp",
-      "note": "Conexão breve: diversidade sociocultural, línguas e formas de organização de povos indígenas. Não trata Tainá como representante de todos os povos."
+      "note": "Conexão breve: diversidade sociocultural, línguas e formas de organização de povos indígenas. Não trata Tainá como representante de todos os povos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_icom",
       "name": "ICOM — Museum Definition",
       "url": "https://icom.museum/en/resources/standards-guidelines/museum-definition/",
-      "note": "Conexão breve: pesquisa, interpretação, acessibilidade e participação comunitária na definição de museu aprovada em 2022. Não reproduzimos o texto integral."
+      "note": "Conexão breve: pesquisa, interpretação, acessibilidade e participação comunitária na definição de museu aprovada em 2022. Não reproduzimos o texto integral.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_kongo_capital",
       "name": "UNESCO — Mbanza Kongo",
       "url": "https://whc.unesco.org/en/list/1511/",
-      "note": "Conexão breve: Mbanza Kongo foi capital política e espiritual do Reino do Kongo; sítio atualmente em Angola."
+      "note": "Conexão breve: Mbanza Kongo foi capital política e espiritual do Reino do Kongo; sítio atualmente em Angola.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_living_heritage",
       "name": "UNESCO — Intangible cultural heritage, glossary",
       "url": "https://whc.unesco.org/en/glossary/40",
-      "note": "Conexão breve: patrimônio imaterial transmitido e recriado pelas comunidades. A produção sonora do jogo é original."
+      "note": "Conexão breve: patrimônio imaterial transmitido e recriado pelas comunidades. A produção sonora do jogo é original.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_mali_trade",
       "name": "The Met — The Trans-Saharan Gold Trade",
       "url": "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
-      "note": "Conexão breve: Mali e redes transaarianas de comércio. O trajeto fictício de New Harmony não é reconstrução de uma rota histórica."
+      "note": "Conexão breve: Mali e redes transaarianas de comércio. O trajeto fictício de New Harmony não é reconstrução de uma rota histórica.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_nasa_report",
       "name": "NASA NTRS — Technical Note D-233",
       "url": "https://ntrs.nasa.gov/citations/19980227091",
-      "note": "Documento institucional original de 1960 identifica T. H. Skopinski e Katherine G. Johnson como autores; usado somente para ler autoria e escopo, sem reproduzir fórmulas."
+      "note": "Documento institucional original de 1960 identifica T. H. Skopinski e Katherine G. Johnson como autores; usado somente para ler autoria e escopo, sem reproduzir fórmulas.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_oecd_accountability",
       "name": "OCDE — Advancing accountability in AI",
       "url": "https://www.oecd.org/en/publications/advancing-accountability-in-ai_2448f04b-en.html",
-      "note": "Conexão breve: responsabilidade e gestão de riscos durante o ciclo de vida de sistemas de IA. O calendário de revisão da narrativa é um exercício original."
+      "note": "Conexão breve: responsabilidade e gestão de riscos durante o ciclo de vida de sistemas de IA. O calendário de revisão da narrativa é um exercício original.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_oecd_transparency",
       "name": "OCDE — Transparency and explainability",
       "url": "https://oecd.ai/en/dashboards/ai-principles/P7",
-      "note": "Conexão breve: informação compreensível sobre sistemas e resultados. Os dados e os botões de New Harmony são ficção, não descrição de todos os sistemas de IA."
+      "note": "Conexão breve: informação compreensível sobre sistemas e resultados. Os dados e os botões de New Harmony são ficção, não descrição de todos os sistemas de IA.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_reboucas_iphan",
       "name": "Iphan — Armazém Docas André Rebouças",
       "url": "https://www.gov.br/iphan/pt-br/sala-de-imprensa/notas-e-avisos-de-pauta/antigo-edificio-docas-dom-pedro-ii-no-rio-passara-a-se-chamar-armazem-docas-andre-reboucas",
-      "note": "Conexão breve: homenagem ao engenheiro e abolicionista André Rebouças e à contribuição negra na história brasileira. Informação verificada no registro institucional indexado; a abertura integral encontrou erro."
+      "note": "Conexão breve: homenagem ao engenheiro e abolicionista André Rebouças e à contribuição negra na história brasileira. Informação verificada no registro institucional indexado; a abertura integral encontrou erro.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_songhai_site",
       "name": "UNESCO — Tomb of Askia",
       "url": "https://whc.unesco.org/en/list/1139/",
-      "note": "Conexão breve: o monumento em Gao se relaciona a Songhai e ao reinado de Askia Mohamed. A leitura não o atribui a Mansa Musa."
+      "note": "Conexão breve: o monumento em Gao se relaciona a Songhai e ao reinado de Askia Mohamed. A leitura não o atribui a Mansa Musa.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "learning_timbuktu",
       "name": "UNESCO — Timbuktu",
       "url": "https://whc.unesco.org/en/list/119/",
-      "note": "Conexão breve: Tombuctu como centro de estudo e circulação de manuscritos nos séculos XV e XVI, em seu contexto da África Ocidental."
+      "note": "Conexão breve: Tombuctu como centro de estudo e circulação de manuscritos nos séculos XV e XVI, em seu contexto da África Ocidental.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "media_unesco",
       "name": "UNESCO — Do you trust what you watch or read?",
       "url": "https://www.unesco.org/en/articles/do-you-trust-what-you-watch-or-read",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "routes_unesco",
       "name": "UNESCO Courier — From political recognition to demands for justice",
       "url": "https://courier.unesco.org/en/articles/political-recognition-demands-justice",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "samba_iphan",
       "name": "Iphan — Samba de Roda e reconhecimento pela UNESCO",
       "url": "https://bcr.iphan.gov.br/acoes-de-salvaguarda/reconhecimento-do-samba-de-roda-do-estado-da-bahia-pela-unesco-como-obra-prima-do-patrimonio-oral-e-imaterial-da-humanidade-e-posterior-incorporacao-a-lista-representativa/",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "school_unicef",
       "name": "UNICEF e parceiros — Indicadores da Qualidade na Educação: Relações Raciais na Escola",
       "url": "https://www.unicef.org/brazil/relatorios/indicadores-da-qualidade-na-educacao-relacoes-raciais-na-escola",
-      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento."
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento.",
+      "accessed": "2026-10-20"
     }
   ],
   "note": "Leituras e conversas usam cenas ficcionais de New Harmony. Apenas as conexões identificadas e os registros citados apresentam fatos históricos ou institucionais. Não há falas atribuídas a figuras históricas reais.",
-  "sourcePolicy": "Resumos curtos, sem citações longas ou reprodução de imagens/documentos. Perguntas priorizam interpretação, evidência, autoria e contexto. Nenhum código curricular específico é atribuído."
+  "sourcePolicy": "As leituras apresentam sínteses autorais com referências identificadas. A aventura e seus poderes são ficção; fatos históricos, conceitos científicos e referências culturais têm contexto e fontes. Perguntas e traduções conservam o sentido dos registros."
 };
 })();

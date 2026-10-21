@@ -1,167 +1,194 @@
 {
-  "version": "1.6",
+  "version": "3.0",
   "author": "Pesquisa e redação original de VOICES",
   "sources": [
     {
       "id": "heritage_nina",
       "name": "Nina Simone — biografia oficial",
       "url": "https://www.ninasimone.com/biography/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_tim",
       "name": "Instituto Cultural Cravo Albin — Tim Maia",
       "url": "https://dicionariompb.com.br/artista/tim-maia/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_king",
       "name": "Nobel Prize Museum — A right to freedom: Martin Luther King Jr.",
       "url": "https://www.nobelprizemuseum.se/en/exhibition/a-right-to-freedom-martin-luther-king-jr/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_machado",
       "name": "Academia Brasileira de Letras — Machado de Assis: biografia",
       "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_carolina",
       "name": "Instituto Moreira Salles — Carolina Maria de Jesus: um Brasil para os brasileiros",
       "url": "https://ims.com.br/exposicao/carolina-maria-de-jesus-um-brasil-para-os-brasileiros_museudeartedorio/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_katherine",
       "name": "NASA Science — Katherine Johnson (1918–2020)",
       "url": "https://science.nasa.gov/people/katherine-johnson/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_rock",
       "name": "Rock & Roll Hall of Fame — Roots of Rock",
       "url": "https://rockhall.com/exhibitions/roots-of-rock/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_rosetta",
       "name": "Rock & Roll Hall of Fame — Sister Rosetta Tharpe",
       "url": "https://rockhall.com/inductees/sister-rosetta-tharpe/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_conceicao",
       "name": "UFMG, Literafro — Conceição Evaristo",
       "url": "https://www.letras.ufmg.br/literafro/Autors/188-conceicao-evaristo",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_capoeira",
       "name": "IPHAN — Roda de capoeira e ofício dos mestres de capoeira",
       "url": "https://bibliotecadigital.iphan.gov.br/items/11bba387-1a54-4cd9-9a47-f74b38ee3212",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_atabaque",
       "name": "IBRAM, Museu Regional do Caeté — Atabaque",
       "url": "https://brasiliana.museus.gov.br/acervos/5348249-2/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_xequere",
       "name": "Secretaria da Cultura do Ceará — Oficina de Xequerê",
       "url": "https://www.ce.gov.br/secult/2022/04/12/vila-da-musica-realiza-oficina-de-xequere-neste-mes-de-abril/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_cuica",
       "name": "Musica Brasilis — Cuíca",
       "url": "https://musicabrasilis.org.br/pt-br/instrumentos/cuica/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_djembe",
       "name": "Metropolitan Museum — Jembe, pesquisa de Althea SullyCole",
       "url": "https://www.metmuseum.org/art/collection/search/503722",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_ilu",
       "name": "Prefeitura do Recife — Oficina de Ilú",
       "url": "https://www2.recife.pe.gov.br/noticias/04/03/2016/nucleo-de-cultura-afro-oferece-oficina-de-ilu",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_oja",
       "name": "UNILAB — pesquisa de Ananda Átila Pereira Santana sobre ojá e turbante (2022)",
       "url": "https://repositorio.unilab.edu.br/xmlui/handle/123456789/2637",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_contas",
       "name": "Museu Afro Brasil — Fio de contas de Orixá",
       "url": "https://museuafrobrasil.org.br/acervo/fio-de-contas-de-orixa-2/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_pano",
       "name": "UFBA — dissertação de Ana Nascimento, pano da costa",
       "url": "https://ppgav.ufba.br/sites/ppgav.ufba.br/files/dissertacao_ana_nascimento_final.pdf",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_tecidos",
       "name": "Victoria and Albert Museum — Africa fashion: cloth of a continent",
       "url": "https://www.vam.ac.uk/articles/cloth-of-a-continent-africa-fashion",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_balangandas",
       "name": "Museu Histórico Nacional — Penca de balangandãs",
       "url": "https://brasiliana3.museus.gov.br/brasiliana/penca-de-balangandas-3/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_mascaras",
       "name": "Museu Afro Brasil — Animais nas máscaras africanas",
       "url": "https://museuafrobrasil.org.br/wp-content/uploads/2026/02/Animais-nas-mascaras-africanas_final.pdf",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_metal",
       "name": "Smithsonian National Museum of African Art — Face mask, liga de cobre",
       "url": "https://africa.si.edu/collection/object/nmafa_86-12-5",
-      "note": "O material foi confirmado na ficha indexada; a página completa não respondeu. A arte do jogo não é réplica da peça."
+      "note": "O material foi confirmado na ficha indexada; a página completa não respondeu. A arte do jogo não é réplica da peça.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_ancestral",
       "name": "Metropolitan Museum — Seated Figure: Female, figura em madeira",
       "url": "https://www.metmuseum.org/art/collection/search/311004",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_ferro",
       "name": "Museu Afro Brasil — Ferramenta de orixá (Ogum), José Adário, ferro",
       "url": "https://museuafrobrasil.org.br/acervo/ferramenta-de-orixa-ogum/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_sankofa",
       "name": "Metropolitan Museum — Sankofa bird gold weight, povos Akan, Gana",
       "url": "https://www.metmuseum.org/art/collection/search/317688",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "heritage_patua",
       "name": "Museu Afro Brasil — Ateliê Aberto: Patuá, Amuleto Ancestral",
       "url": "https://museuafrobrasil.org.br/agenda/atelie-aberto-patua-amuleto-ancestral/",
-      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos."
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20"
     }
   ],
   "editorialNotes": [
     "Ibi como categoria de ferramentas e Patachas como amuletos não foram confirmados. Ibá, ibiri e patuá são termos distintos, sem correção presumida.",
     "Retratos históricos são representações educativas originais. Diálogos de moradores são ficcionais; não há falas em primeira pessoa atribuídas a figuras reais.",
     "Música sintetizada original, sem gravações comerciais ou toques cerimoniais."
-  ]
+  ],
+  "consulted": "2026-10-20"
 }

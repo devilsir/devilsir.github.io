@@ -4,25 +4,29 @@
       "id": "coast_duke_iemanja",
       "name": "Duke University — Sacred Arts of the Black Atlantic: figure of the Goddess Iemanjá (C018)",
       "url": "https://sacredart.caaar.duke.edu/artifacts/figure-of-the-goddess-iemanja/",
-      "note": "Ficha de uma figura turística de um contexto de Candomblé, com pele negra, vestido branco, metal prateado, coroa, véu de contas e abebé. Referência contextual; nenhuma fotografia, objeto ou ornamento do acervo foi copiado. Não se trata de uma descrição universal."
+      "note": "Ficha de uma figura turística de um contexto de Candomblé, com pele negra, vestido branco, metal prateado, coroa, véu de contas e abebé. Referência contextual; nenhuma fotografia, objeto ou ornamento do acervo foi copiado. Não se trata de uma descrição universal.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "coast_salvador_festa",
       "name": "Prefeitura de Salvador, portal Salvador da Bahia — Festa de Iemanjá",
       "url": "https://www.salvadordabahia.com/festa-de-iemanja/",
-      "note": "Consultados a data de 2 de fevereiro, o bairro do Rio Vermelho e o papel da Colônia de Pescadores. Não usamos recomendações de rituais, horários atuais ou descrições de personalidades atribuídas a adeptos."
+      "note": "Consultados a data de 2 de fevereiro, o bairro do Rio Vermelho e o papel da Colônia de Pescadores. Não usamos recomendações de rituais, horários atuais ou descrições de personalidades atribuídas a adeptos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "coast_iphan_bembe",
       "name": "Iphan, Bem Brasileiro — Bembé do Mercado",
       "url": "https://bcr.iphan.gov.br/bens-culturais/bembe-do-mercado/",
-      "note": "Celebração específica de Santo Amaro, Bahia, conduzida por casas de Candomblé, que relaciona liberdade, memória e homenagens a Iemanjá e Oxum. Não é apresentada como a Festa do Rio Vermelho nem como celebração de todas as religiões."
+      "note": "Celebração específica de Santo Amaro, Bahia, conduzida por casas de Candomblé, que relaciona liberdade, memória e homenagens a Iemanjá e Oxum. Não é apresentada como a Festa do Rio Vermelho nem como celebração de todas as religiões.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "coast_icmbio_fauna",
       "name": "ICMBio, APA de Cairuçu — Respeite os animais e as plantas",
       "url": "https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/marinho/lista-de-ucs/apa-de-cairucu/informacoes-sobre-visitacao-apa-de-cairucu/respeite-os-animais-e-as-plantas",
-      "note": "Orientações públicas para observar animais a distância, não oferecer alimento e manter flores e plantas silvestres no local. A praia de VOICES é ficcional e não reproduz esta unidade de conservação."
+      "note": "Orientações públicas para observar animais a distância, não oferecer alimento e manter flores e plantas silvestres no local. A praia de VOICES é ficcional e não reproduz esta unidade de conservação.",
+      "accessed": "2026-10-20"
     }
   ],
   "readings": [
@@ -32,26 +36,20 @@
       "kind": "book",
       "chapter": 5,
       "map": "beach",
-      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "author": "Caderno da Orla · Imagens, observação e convivência",
       "theme": "Representação, arte e religiosidade",
       "artTheme": "coast",
       "paragraphs": [
-        "Na mostra da orla, uma criação original de VOICES representa Iemanjá como mulher negra, com vestido azul-claro e branco, coroa prateada, véu de contas e abebé. O desenho é uma interpretação artística educativa. Sua legenda não apresenta a figura como uma pessoa histórica nem lhe atribui falas sagradas.",
-        "Uma ficha da Universidade Duke descreve outra figura de Iemanjá, ligada a um contexto de Candomblé: pele negra, roupa branca, acessórios prateados, coroa, véu de contas e abebé. A ficha identifica aquela peça como objeto turístico. Nossa arte não é uma cópia desse objeto nem uma demonstração de ritual.",
-        "Samira, mediadora fictícia, convida a comparar desenho e legenda: o que pode ser visto? O que depende da fonte? Candomblé e Umbanda não devem ser tratados como nomes intercambiáveis. Uma representação não resume todas as comunidades; procure saber de quem, de onde e de qual contexto vem cada imagem. É possível aprender com respeito sem declarar uma crença pessoal.",
-        "Outro registro público leva a Salvador: a Festa de Iemanjá acontece em 2 de fevereiro, no Rio Vermelho, com participação da Colônia de Pescadores. Lugar, data e comunidade ajudam a situar essa referência. A praia ficcional do jogo tem uma mostra educativa; não reproduz uma cerimônia dessa festa."
+        "Na mostra da Praia das Marés, a arte de Iemanjá apresenta vestido azul-claro e branco, coroa prateada, véu de contas e abebé. Esses elementos visíveis podem ser descritos sem transformar a imagem em uma pessoa histórica. É uma interpretação artística criada para VOICES.",
+        "Um objeto catalogado pela Universidade Duke como peça turística apresenta outra representação de Iemanjá em contexto de Candomblé, com coroa, véu e abebé. Comparar as fichas mostra escolhas de representação; não demonstra que todas as comunidades usem imagens iguais. Umbanda e Candomblé têm histórias e práticas próprias.",
+        "Em Salvador, a Festa de Iemanjá acontece em 2 de fevereiro, no Rio Vermelho, ligada à comunidade de pescadores. Lugar, data e participantes situam essa referência. Na praia ficcional, a leitura conecta cuidado com as águas, arte e respeito religioso; os desafios do jogo pertencem à fantasia."
       ],
-      "paragraphsEn": [
-        "In the seafront exhibition, an original VOICES creation depicts Iemanjá as a Black woman with a light-blue and white dress, a silver-colored crown, a beaded veil and an abebé. The drawing is an educational artistic interpretation. Its caption does not present the figure as a historical person or attribute sacred speech to her.",
-        "A Duke University catalog entry describes another figure of Iemanjá associated with a Candomblé context: dark skin, white clothing, silver-colored accessories, a crown, a beaded veil and an abebé. The entry identifies that piece as a tourist object. Our art is not a copy of that object or a demonstration of a ritual.",
-        "Samira, a fictional mediator, invites visitors to compare the drawing and the caption: what can be seen? What depends on the source? Candomblé and Umbanda should not be treated as interchangeable names. One depiction does not summarize every community; look for who, where and which context each image comes from. It is possible to learn respectfully without declaring a personal belief.",
-        "Another public record leads to Salvador: the Festa de Iemanjá takes place on February 2 in Rio Vermelho, with the participation of the fishing colony. Place, date and community help situate this reference. The fictional beach in the game has an educational exhibition; it does not reproduce a ceremony from that festival."
-      ],
-      "en": "This is an original artistic depiction of Iemanjá.",
-      "pt": "Esta é uma representação artística original de Iemanjá.",
+      "en": "The artwork shows Iemanjá holding an abebé.",
+      "pt": "A obra mostra Iemanjá segurando um abebé.",
       "sourceIds": [
         "coast_duke_iemanja",
-        "coast_salvador_festa"
+        "coast_salvador_festa",
+        "roots-iemanja"
       ],
       "questionId": "coast-history-01-6"
     },
@@ -61,21 +59,16 @@
       "kind": "book",
       "chapter": 5,
       "map": "beach",
-      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "author": "Caderno da Orla · Imagens, observação e convivência",
       "theme": "Convivência, ambiente e autoria",
       "artTheme": "coast",
       "paragraphs": [
-        "Beto prepara um canto de descanso junto ao caminho da Praia das Marés. A mesa fica perto dos bancos; o acesso ao mar continua livre. Na cena ficcional, as pessoas combinam recolher o próprio lixo, guardar equipamentos no lugar e deixar espaço para quem circula.",
-        "O cuidado com animais e plantas também entra no combinado. O ICMBio recomenda observar animais a distância, não oferecer comida e não retirar flores e plantas silvestres. Essa orientação informa a atividade do jogo; a Praia das Marés não é uma reprodução da APA de Cairuçu, lugar citado na fonte.",
-        "Beto propõe comparar dois desenhos: um banco bloqueia o caminho; no outro, pessoas sentadas convivem com uma passagem livre. A turma escolhe uma organização e explica o motivo. O mural registra a proposta com autoria. Uma boa solução atende às pessoas e ao ambiente, em vez de usar decoração para esconder um problema."
+        "Beto quer desenhar a orla sem bloquear o caminho. Teresa escolhe um banco perto da sombra; Samira guarda o material fora da passagem. O acordo da praia reúne descanso, circulação e recolhimento do próprio lixo. Beto compara dois desenhos: um banco bloqueia o caminho no primeiro; no segundo, os bancos deixam uma passagem livre.",
+        "O ICMBio orienta observar animais silvestres a distância, sem oferecer comida, capturá-los ou retirar plantas. Alimento oferecido por visitantes pode alterar comportamentos e a aproximação com pessoas. Observar sem interferir protege o ambiente e melhora o registro do que o animal fazia.",
+        "A praia conecta o arquivo às águas que a cidade compartilha. O cuidado continua no jardim e na bacia comunitária: usar o necessário, deixar o espaço limpo e considerar quem chega depois. Uma proposta só fica pronta quando funciona para as pessoas e para o lugar."
       ],
-      "paragraphsEn": [
-        "Beto prepares a resting corner beside the path at Praia das Marés. The table is close to the benches; access to the sea remains clear. In the fictional scene, people agree to take their own rubbish away, return equipment to its place and leave space for people moving through.",
-        "Care for animals and plants is also part of the agreement. ICMBio recommends observing animals from a distance, not offering food and not removing wild flowers and plants. This guidance informs the game activity; Praia das Marés is not a reconstruction of the Cairuçu protected area mentioned in the source.",
-        "Beto suggests comparing two drawings: in one, a bench blocks the path; in the other, seated people share the space with a clear route. The group chooses an arrangement and explains its reason. The board records the proposal with authorship. A good solution serves people and the environment instead of using decoration to hide a problem."
-      ],
-      "en": "We keep the path clear and care for the beach.",
-      "pt": "Mantemos o caminho livre e cuidamos da praia.",
+      "en": "We keep the path clear, take our rubbish away and observe wildlife from a distance.",
+      "pt": "Mantemos o caminho livre, recolhemos nosso lixo e observamos a fauna a distância.",
       "sourceIds": [
         "coast_icmbio_fauna"
       ],
@@ -87,21 +80,14 @@
       "kind": "note",
       "chapter": 5,
       "map": "beach",
-      "author": "Texto didático e ilustrações originais de VOICES. A praia e seus moradores são ficcionais; referências reais têm fonte e contexto.",
+      "author": "Caderno da Orla · Imagens, observação e convivência",
       "theme": "Observação, evidência e cuidado compartilhado",
       "artTheme": "nature",
       "paragraphs": [
-        "A observadora fictícia Lara escolhe um banco antes de abrir o caderno. Primeiro registra o lugar e o momento; depois descreve o que consegue ver. “Uma ave caminhou perto da água” é uma observação. “Ela está procurando o amigo” é uma hipótese que a imagem sozinha não confirma.",
-        "O ICMBio orienta visitantes da APA de Cairuçu a observar animais a distância, não lhes oferecer comida e manter flores e plantas silvestres no local. A atividade da praia segue esse cuidado: o jogador observa movimentos e compara anotações, sem capturar ou alimentar animais.",
-        "Lara acrescenta uma dúvida ao lado do desenho: o que seria preciso observar para testar minha ideia? Ela compara duas notas sem esconder as diferenças. O mural guarda o registro do grupo com data e autoria. Cuidar do espaço inclui deixar caminho livre e recolher o próprio lixo; conhecer uma praia também é aprender a compartilhá-la."
+        "Registro de Beto: anote data, lugar e comportamento observado. “A ave caminhou junto à água” descreve uma observação; “ela está procurando comida” é uma interpretação que precisa de apoio. Não se aproxime para provocar uma reação. No jogo, desenhos pequenos permitem reconhecer tipos de animais; não comprovam uma espécie biológica."
       ],
-      "paragraphsEn": [
-        "The fictional observer Lara chooses a bench before opening her notebook. First she records the place and the moment; then she describes what she can see. “A bird walked near the water” is an observation. “It is looking for its friend” is a hypothesis that the image alone does not confirm.",
-        "ICMBio advises visitors to the Cairuçu protected area to observe animals from a distance, not offer them food and leave wild flowers and plants where they are. The beach activity follows that care: the player observes movement and compares notes without capturing or feeding animals.",
-        "Lara adds a question beside the drawing: what would I need to observe to test my idea? She compares two notes without hiding their differences. The board keeps the group record with its date and authorship. Caring for the space includes keeping routes clear and taking your own rubbish away; getting to know a beach also means learning to share it."
-      ],
-      "en": "We observe animals from a distance.",
-      "pt": "Observamos os animais a distância.",
+      "en": "Write what you see before explaining why it happens.",
+      "pt": "Registre o que vê antes de explicar por que acontece.",
       "sourceIds": [
         "coast_icmbio_fauna"
       ],

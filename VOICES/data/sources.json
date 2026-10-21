@@ -1,115 +1,540 @@
 {
   "project": "VOICES: REBOOT THE STORY",
-  "consulted": "2026-10-10",
+  "consulted": "2026-10-20",
   "notes": "New Harmony, a equipe VOICES, os NPCs, posts, projetos e chefes são ficção. Fichas históricas resumem fontes identificadas. Nenhuma fala de NPC é citação de pessoa histórica.",
   "sources": [
     {
       "id": "samba_iphan",
       "name": "Iphan — Samba de Roda e reconhecimento pela UNESCO",
       "url": "https://bcr.iphan.gov.br/acoes-de-salvaguarda/reconhecimento-do-samba-de-roda-do-estado-da-bahia-pela-unesco-como-obra-prima-do-patrimonio-oral-e-imaterial-da-humanidade-e-posterior-incorporacao-a-lista-representativa/",
-      "note": "Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica."
+      "note": "Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "capoeira_unesco",
       "name": "UNESCO — Capoeira circle",
       "url": "https://ich.unesco.org/en/RL/capoeira-circle-00892",
-      "note": "Cap. 1: prática cultural afro-brasileira com luta, dança, música e transmissão entre participantes. Inscrita na Lista Representativa em 2014. Página consultada também por seu registro indexado."
+      "note": "Cap. 1: prática cultural afro-brasileira com luta, dança, música e transmissão entre participantes. Inscrita na Lista Representativa em 2014. Página consultada também por seu registro indexado.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "mali_met",
       "name": "The Met — Sahel: Art and Empires on the Shores of the Sahara",
       "url": "https://www.metmuseum.org/exhibitions/sahel-art-empire-sahara/inside-the-exhibition",
-      "note": "Cap. 2: Mali na África Ocidental; peregrinação de Mansa Musa em 1324; comércio, estudos e pluralidade de registros. Não equivale à história de todo o continente."
+      "note": "Cap. 2: Mali na África Ocidental; peregrinação de Mansa Musa em 1324; comércio, estudos e pluralidade de registros. Não equivale à história de todo o continente.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "songhai_unesco",
       "name": "UNESCO / ICOMOS — Tomb of Askia, avaliação patrimonial",
       "url": "https://whc.unesco.org/document/151848",
-      "note": "Cap. 2: início do reinado de Sonni Ali em 1464; Songhai e rotas comerciais. Usamos somente a data do reinado e o contexto comercial, sem reproduzir genealogias discutíveis do documento."
+      "note": "Cap. 2: início do reinado de Sonni Ali em 1464; Songhai e rotas comerciais. Usamos somente a data do reinado e o contexto comercial, sem reproduzir genealogias discutíveis do documento.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "kongo_met",
       "name": "The Met — Kongo: Power and Majesty, Exhibition Galleries",
       "url": "https://www.metmuseum.org/exhibitions/listings/2015/kongo/exhibition-galleries",
-      "note": "Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento."
+      "note": "Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "abolition_law",
       "name": "Presidência da República — Lei nº 3.353, de 13 de maio de 1888",
       "url": "https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm",
-      "note": "Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou."
+      "note": "Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "johnson_nasa",
       "name": "NASA — Katherine Johnson Biography",
       "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
-      "note": "Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha."
+      "note": "Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "carolina_an",
       "name": "Arquivo Nacional — Série Mulheres e o Arquivo: Carolina de Jesus",
       "url": "https://www.gov.br/arquivonacional/pt-br/canais_atendimento/imprensa/noticias/serie-mulheres-e-o-arquivo-carolina-de-jesus",
-      "note": "Cap. 3: Carolina Maria de Jesus, escritora, poeta e compositora; publicação de Quarto de despejo em 1960. Não reproduzimos trechos de seu diário."
+      "note": "Cap. 3: Carolina Maria de Jesus, escritora, poeta e compositora; publicação de Quarto de despejo em 1960. Não reproduzimos trechos de seu diário.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "reboucas_an",
       "name": "Arquivo Nacional — André Pinto Rebouças",
       "url": "https://www.gov.br/arquivonacional/pt-br/sites_eventos/sites-tematicos-1/brasil-oitocentista/conheca-o-acervo/andre-pinto-reboucas-ow",
-      "note": "Cap. 3: engenheiro negro, atuação nas docas do Rio de Janeiro e participação abolicionista. Defendia condições de subsistência e acesso à terra após a abolição; não lhe atribuímos invenções sem comprovação."
+      "note": "Cap. 3: engenheiro negro, atuação nas docas do Rio de Janeiro e participação abolicionista. Defendia condições de subsistência e acesso à terra após a abolição; não lhe atribuímos invenções sem comprovação.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "racism_unicef",
       "name": "UNICEF Brasil — O impacto do racismo na infância",
       "url": "https://www.unicef.org/brazil/relatorios/o-impacto-do-racismo-na-infancia",
-      "note": "Caps. 4 e 5: racismo e discriminação racial violam direitos e afetam crianças. Os casos do jogo são ficcionais e não pedem exposição pessoal."
+      "note": "Caps. 4 e 5: racismo e discriminação racial violam direitos e afetam crianças. Os casos do jogo são ficcionais e não pedem exposição pessoal.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "school_unicef",
       "name": "UNICEF e parceiros — Indicadores da Qualidade na Educação: Relações Raciais na Escola",
       "url": "https://www.unicef.org/brazil/relatorios/indicadores-da-qualidade-na-educacao-relacoes-raciais-na-escola",
-      "note": "Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento."
+      "note": "Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "media_unesco",
       "name": "UNESCO — Do you trust what you watch or read?",
       "url": "https://www.unesco.org/en/articles/do-you-trust-what-you-watch-or-read",
-      "note": "Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta."
+      "note": "Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "indigenous_ibge",
       "name": "IBGE Educa — Os indígenas no Censo 2022",
       "url": "https://educa.ibge.gov.br/criancas/brasil/2848-nosso-povo/22324-os-indigenas-no-censo-2022.html",
-      "note": "Cap. 5: povos indígenas contemporâneos, diversidade de línguas e modos de vida, residências dentro e fora de Terras Indígenas. O jogo evita cifras porque não são necessárias à missão."
+      "note": "Cap. 5: povos indígenas contemporâneos, diversidade de línguas e modos de vida, residências dentro e fora de Terras Indígenas. O jogo evita cifras porque não são necessárias à missão.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "ai_unesco",
       "name": "UNESCO — Ethics of Artificial Intelligence",
       "url": "https://www.unesco.org/en/artificial-intelligence/recommendation-ethics",
-      "note": "Cap. 6: sistemas podem reproduzir e ampliar vieses; responsabilidade humana, participação, transparência e revisão. BIAS.EXE e os dados de New Harmony são ficção, não modelo técnico de todas as IAs."
+      "note": "Cap. 6: sistemas podem reproduzir e ampliar vieses; responsabilidade humana, participação, transparência e revisão. BIAS.EXE e os dados de New Harmony são ficção, não modelo técnico de todas as IAs.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "bncc_mec",
       "name": "MEC — Base Nacional Comum Curricular, Educação Infantil e Ensino Fundamental",
       "url": "https://basenacionalcomum.mec.gov.br/images/BNCC_EI_EF_110518_versaofinal_site.pdf",
-      "note": "Referência temática: leitura e interação em inglês, dimensão intercultural, diversidade e investigação histórica. Perfis do jogo são escolhas didáticas; não prometem cobertura integral nem atribuem códigos específicos."
+      "note": "Referência temática: leitura e interação em inglês, dimensão intercultural, diversidade e investigação histórica. Perfis do jogo são escolhas didáticas; não prometem cobertura integral nem atribuem códigos específicos.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "crmg_see",
       "name": "SEE/MG — Currículo Referência de Minas Gerais e Planos de Curso",
       "url": "https://curriculoreferencia.educacao.mg.gov.br/index.php/plano-de-cursos-crmg",
-      "note": "Portal institucional para o professor relacionar a atividade ao planejamento local. Não afirmamos existir uma edição exclusiva CRMG 2026 nem uma correspondência automática por trimestre."
+      "note": "Portal institucional para o professor relacionar a atividade ao planejamento local. Não afirmamos existir uma edição exclusiva CRMG 2026 nem uma correspondência automática por trimestre.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "law11645",
       "name": "Presidência da República — Lei nº 11.645, de 10 de março de 2008",
       "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11645.htm",
-      "note": "Referência curricular: inclusão de História e Cultura Afro-Brasileira e Indígena no currículo. O jogo é um recurso complementar interdisciplinar."
+      "note": "Referência curricular: inclusão de História e Cultura Afro-Brasileira e Indígena no currículo. O jogo é um recurso complementar interdisciplinar.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "routes_unesco",
       "name": "UNESCO Courier — From political recognition to demands for justice",
       "url": "https://courier.unesco.org/en/articles/political-recognition-demands-justice",
-      "note": "Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio."
+      "note": "Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "zangbeto_museum",
+      "name": "Château Vodou — Zangbeto",
+      "url": "https://www.chateau-vodou.com/zangbeto/",
+      "note": "Instituição museal: contexto e forma de estruturas cobertas de ráfia. Aventura e poderes de VOICES são ficcionais.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "zangbeto_benin",
+      "name": "Governo do Benim — Zangbéto em Ouidah",
+      "url": "https://www.gouv.bj/article/2945/vodun-days-2025-zangbeto-demonstration-esplanade-fort-francais-lieu-charge-histoire/",
+      "note": "Contexto contemporâneo no Benim, associado à vigília noturna. Não se trata de uma divindade universal africana.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-timbuktu",
+      "name": "UNESCO · Tombuctu",
+      "url": "https://whc.unesco.org/en/list/119/",
+      "note": "Centro de estudos e de circulação de manuscritos nos séculos XV e XVI; localização na atual República do Mali.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-askia",
+      "name": "UNESCO · Túmulo dos Askia, Gao",
+      "url": "https://whc.unesco.org/en/list/1139/",
+      "note": "Monumento de arquitetura de terra associado a Askia Mohamed, construído em 1495; patrimônio de Songhai.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-kongo",
+      "name": "UNESCO · Mbanza Kongo",
+      "url": "https://whc.unesco.org/en/list/1511/",
+      "note": "Capital do Reino do Kongo e seus vestígios históricos na atual Angola.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-transsahara",
+      "name": "The Metropolitan Museum of Art · O comércio de ouro transaariano",
+      "url": "https://www.metmuseum.org/es/essays/the-trans-saharan-gold-trade-7th-14th-century",
+      "note": "Redes de ouro e sal; viagem de Mansa Musa em 1324–1325.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-samba",
+      "name": "IPAC Bahia · Samba de roda do Recôncavo",
+      "url": "https://www.ba.gov.br/ipac/samba-de-roda-do-reconcavo",
+      "note": "Canto, dança, poesia e instrumentos; diferentes formas de samba de roda e protagonismo comunitário.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-capoeira",
+      "name": "Iphan · Roda de capoeira e ofício dos mestres de capoeira",
+      "url": "https://bibliotecadigital.iphan.gov.br/items/11bba387-1a54-4cd9-9a47-f74b38ee3212",
+      "note": "Dossiê sobre transmissão de saberes, instrumentos, roda e trabalho de mestres e mestras.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-genomes",
+      "name": "de Jesus e colaboradores · Importation and early local transmission of COVID-19 in Brazil, 2020",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7232955/",
+      "note": "Artigo científico original, com autores, métodos e instituições. Permite conferir a colaboração descrita na notícia da FAPESP.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-sound",
+      "name": "OpenStax · Sound intensity and sound level",
+      "url": "https://openstax.org/books/physics/pages/14-2-sound-intensity-and-sound-level",
+      "note": "Frequência e altura, amplitude e intensidade; conceitos para a instrumentoteca.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-water",
+      "name": "USGS · Condensation and the Water Cycle",
+      "url": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle",
+      "note": "Condensação: mudança da água do estado gasoso para o líquido.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-pollination",
+      "name": "Embrapa · Polinização",
+      "url": "https://www.atermaisdigital.cnptia.embrapa.br/web/apicultura/privado/polinizacao",
+      "note": "Transferência de pólen e participação de polinizadores na reprodução de plantas.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-mangroves",
+      "name": "MMA · ProManguezal",
+      "url": "https://www.gov.br/mma/pt-br/composicao/smc/programa-nacional-de-conservacao-e-uso-sustentavel-dos-manguezais-do-brasil-promanguezal",
+      "note": "Conservação dos manguezais, comunidades e relações socioambientais.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-kente",
+      "name": "UNESCO · Craftsmanship of traditional woven textile Kente",
+      "url": "https://ich.unesco.org/en/RL/craftsmanship-of-traditional-woven-textile-kente-02130",
+      "note": "Tecelagem em tiras, materiais, transmissão e comunidades de Gana.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-ankara",
+      "name": "Victoria and Albert Museum · Cloth of a continent: Africa Fashion",
+      "url": "https://www.vam.ac.uk/articles/cloth-of-a-continent-africa-fashion",
+      "note": "Circulação de tecidos estampados e criação africana; distingue construção têxtil, estampa e uso.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-paper",
+      "name": "INPE · Dicas de preservação do acervo",
+      "url": "https://www.gov.br/inpe/pt-br/area-conhecimento/biblioteca/servicos/dicas-de-preservacao-do-acervo",
+      "note": "Manuseio e proteção dos livros contra luz, calor e umidade.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-palmares",
+      "name": "Unicamp · Palmares: fontes e história",
+      "url": "https://palmares.ifch.unicamp.br/sobre-fontes",
+      "note": "Projeto de pesquisa com documentação dos séculos XVI a XIX. Explica possibilidades e limites das fontes sobre Palmares.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-machado",
+      "name": "Academia Brasileira de Letras · Machado de Assis",
+      "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia",
+      "note": "Biografia e trajetória literária; consultar também a bibliografia vinculada.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-carolina",
+      "name": "Instituto Moreira Salles · Carolina Maria de Jesus",
+      "url": "https://carolinamariadejesus.ims.com.br/biografia/",
+      "note": "Escrita de diários, poemas, ficção e composições; percurso de criação e publicação.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-luizgama",
+      "name": "Biblioteca Pública do Paraná · Cartas de Luiz Gama",
+      "url": "https://www.bpp.pr.gov.br/Candido/Noticia/No-coracao-liberdade-cartas-exemplares-de-Luiz-Gama",
+      "note": "Entrevista com a pesquisadora Lígia Fonseca Ferreira sobre cartas, atuação jurídica e abolicionismo.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-antonieta",
+      "name": "Assembleia Legislativa de Santa Catarina · 1ª Legislatura",
+      "url": "https://memoriapolitica.alesc.sc.gov.br/legislativo/deputado-estadual/legislaturas/110-1a_Legislatura",
+      "note": "Registro institucional da atuação parlamentar de Antonieta de Barros, eleita em 1934.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-milton",
+      "name": "FFLCH/USP · Milton Santos",
+      "url": "https://www.fflch.usp.br/962",
+      "note": "Geógrafo brasileiro e prêmio Vautrin Lud de 1994.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-lelia",
+      "name": "Lélia Gonzalez · A categoria político-cultural de amefricanidade",
+      "url": "https://www.periodicos.unb.br/index.php/repam/article/view/40454",
+      "note": "Texto de 1988, republicado com tradução e notas na Revista de Estudos e Pesquisas sobre as Américas em 2021.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-abdias",
+      "name": "Ipeafro · Seção Teatro Experimental do Negro",
+      "url": "https://ipeafro.org.br/acoes/acervo-ipeafro/secao-ten/",
+      "note": "Fundação do TEN em 1944 e seus trabalhos de teatro, formação e enfrentamento ao racismo.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-ruth",
+      "name": "Funarte · Coleção Ruth de Souza",
+      "url": "https://atom.funarte.gov.br/index.php/colecao-ruth-de-souza",
+      "note": "Fundo documental sobre a trajetória de Ruth de Souza no teatro, cinema e televisão.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-conceicao",
+      "name": "UFMG · Título de doutora honoris causa a Conceição Evaristo",
+      "url": "https://www.ufmg.br/comunicacao/assessoria-de-imprensa/releases/pessoas/ufmg-concede-titulo-de-doutora-honoris-causa-a-escritora-conceicao-evaristo/",
+      "note": "Trajetória literária e obras, incluindo Ponciá Vicêncio (2003).",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-gil",
+      "name": "Gilberto Gil · Linha do tempo, 1967",
+      "url": "https://gilbertogil.com.br/linha-do-tempo/1967/",
+      "note": "Discografia e participação artística; Louvação, de 1967.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-elza",
+      "name": "Instituto Moreira Salles · As vidas de Elza",
+      "url": "https://radiobatuta.ims.com.br/especiais/as-vidas-de-elza",
+      "note": "Pesquisa e documentos sonoros sobre Elza Soares; estreia em disco em 1959.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-nina",
+      "name": "Nina Simone · Biography",
+      "url": "https://www.ninasimone.com/biography/",
+      "note": "Formação pianística, canto, repertórios e atuação pelos direitos civis.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-katherine",
+      "name": "NASA · Katherine Johnson biography",
+      "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
+      "note": "Coautoria de relatório em 1960 e conferência dos cálculos da missão de John Glenn em 1962.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-rosa",
+      "name": "National Park Service · Rosa Parks",
+      "url": "https://www.nps.gov/people/rosa-parks.htm",
+      "note": "Ativismo, prisão em 1º de dezembro de 1955 e boicote coletivo aos ônibus de Montgomery.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-harriet",
+      "name": "National Park Service · Harriet Tubman and the 54th Massachusetts",
+      "url": "https://www.nps.gov/articles/harriet-tubman-and-the-54th-massachusetts.htm",
+      "note": "Atuação abolicionista, redes de fuga e participação na Guerra Civil dos Estados Unidos.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-king",
+      "name": "Stanford · Cronologia de Martin Luther King Jr.",
+      "url": "https://kinginstitute.stanford.edu/king-resources/king-encyclopedia/chronology",
+      "note": "Cronologia documental: Marcha sobre Washington de 1963 e Nobel da Paz de 1964.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-mandela",
+      "name": "Nelson Mandela Foundation · Biography",
+      "url": "https://www.nelsonmandela.org/biography",
+      "note": "Luta contra o apartheid, prisão, libertação e presidência da África do Sul.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-biko",
+      "name": "South African History Archive · Steve Biko",
+      "url": "https://www.sahistory.org.za/people/stephen-bantu-biko",
+      "note": "Consciência Negra na África do Sul e morte sob custódia policial em 1977.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-angela",
+      "name": "University of California, Santa Cruz · Angela Y. Davis",
+      "url": "https://directory.ucsc.edu/cd_detail?guid=G000122719",
+      "note": "Formação e atuação em história da consciência e estudos feministas.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-wangari",
+      "name": "Nobel Prize · Wangari Maathai: facts",
+      "url": "https://www.nobelprize.org/prizes/peace/2004/maathai/facts/",
+      "note": "Nobel da Paz em 2004 e vínculo entre conservação, democracia e paz.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-greenbelt",
+      "name": "Green Belt Movement · Wangari Maathai",
+      "url": "https://www.greenbeltmovement.org/wangari-maathai/",
+      "note": "Fundação do movimento em 1977, plantio de árvores e participação de mulheres.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-marielle",
+      "name": "Instituto Marielle Franco · Quem é Marielle",
+      "url": "https://www.institutomariellefranco.org/quem-e-marielle",
+      "note": "Trajetória como socióloga, vereadora e defensora de direitos humanos.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-pele",
+      "name": "FIFA · Pelé e as três Copas do Mundo",
+      "url": "https://www.fifa.com/en/tournaments/mens/worldcup/articles/pele-three-world-cup-titles-only-player",
+      "note": "Títulos mundiais masculinos com o Brasil em 1958, 1962 e 1970.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-marta",
+      "name": "FIFA · Marta provides a masterclass",
+      "url": "https://inside.fifa.com/tournaments/womens/womensworldcup/china2007/news/marta-provides-a-masterclass-2860869",
+      "note": "Bola de Ouro e Chuteira de Ouro na Copa do Mundo feminina de 2007.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-rebeca",
+      "name": "Comitê Olímpico do Brasil · Medalhas de Rebeca Andrade",
+      "url": "https://www.cob.org.br/comunicacao/noticias/relembre-todas-as-medalhas-olimpicas-de-rebeca-andrade-2",
+      "note": "Modalidades e resultados olímpicos, incluindo o ouro no solo em Paris 2024.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-serena",
+      "name": "WTA · Serena Williams: legend bio",
+      "url": "https://www.wtatennis.com/news/4487583/legend-bio-serena-williams",
+      "note": "Trajetória e 23 títulos de simples em torneios de Grand Slam.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-chimamanda",
+      "name": "Chimamanda Ngozi Adichie · About",
+      "url": "https://www.chimamanda.com/about/",
+      "note": "Biografia e livros, incluindo Meio sol amarelo (2006) e Americanah (2013).",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-maya",
+      "name": "Maya Angelou · Site oficial",
+      "url": "https://www.mayaangelou.com/",
+      "note": "Trajetória como escritora e artista; I Know Why the Caged Bird Sings (1969).",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-baldwin",
+      "name": "Library of Congress · The Civil Rights Era",
+      "url": "https://www.loc.gov/exhibits/civil-rights-act/civil-rights-era.html",
+      "note": "James Baldwin e The Fire Next Time (1963) no contexto dos direitos civis.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-sueli",
+      "name": "USP · A construção do outro como não-ser como fundamento do ser",
+      "url": "https://repositorio.usp.br/item/001465832",
+      "note": "Tese de doutorado de Sueli Carneiro, defendida em 2005; produção de conhecimento e relações raciais.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "bio-cartola",
+      "name": "IMS · Cartola ao microfone com o violão",
+      "url": "https://acervos.ims.com.br/index.php/Detail/objects/59378?lang=pt_BR",
+      "note": "Registro de acervo com identificação de Cartola e sua participação na fundação da Mangueira, em 1928.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-zangbeto",
+      "name": "Smithsonian · Zangbeto masquerade costume, Benin",
+      "url": "https://www.si.edu/object/archives/components/sova-eepa-2020-001-ref528",
+      "note": "Fotografia catalogada de 2004, com traje e lugar identificados. A companhia Zambeto é personagem de fantasia de VOICES.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-grammar",
+      "name": "British Council · Present simple",
+      "url": "https://learnenglish.britishcouncil.org/free-resources/grammar/a1-a2/present-simple",
+      "note": "Formas afirmativas, perguntas e negativas; referência para revisão dos exemplos de língua inglesa.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-botany",
+      "name": "Embrapa · Introdução à botânica",
+      "url": "https://www.alice.cnptia.embrapa.br/bitstream/doc/992543/1/LivroIdentificacaoBotanica.pdf",
+      "note": "Morfologia de plantas, caules modificados e definição de rizoma.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-ginger",
+      "name": "Embrapa · Avaliação de rizomas de gengibre",
+      "url": "https://www.alice.cnptia.embrapa.br/handle/doc/1190534",
+      "note": "Estudo de propagação de Zingiber officinale por rizomas e mudas micropropagadas.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-compost",
+      "name": "Embrapa · Uso da compostagem em sistemas agrícolas orgânicos",
+      "url": "https://www.infoteca.cnptia.embrapa.br/handle/doc/418734",
+      "note": "Oliveira, Lima e Cajazeira, 2004. Decomposição, condições de produção e manejo do composto.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-saxophone",
+      "name": "Yamaha · Uses of the saxophone",
+      "url": "https://www.yamaha.com/en/musical_instrument_guide/saxophone/structure/structure003.html",
+      "note": "Palheta simples e classificação do saxofone como instrumento de madeira, apesar do corpo metálico.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-guitar",
+      "name": "Fender · Electric guitar pickup types",
+      "url": "https://www.fender.com/articles/instruments/electric-guitar-pickup-types-how-to-choose-your-pickup",
+      "note": "Captadores, vibração das cordas e transformação em sinal elétrico para amplificação.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-projections",
+      "name": "USGS · How are different map projections used?",
+      "url": "https://www.usgs.gov/faqs/how-are-different-map-projections-used",
+      "note": "Representação plana da superfície terrestre e diferentes distorções de projeção.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-johnson-report",
+      "name": "Skopinski e Johnson · Relatório técnico NASA TN D-233, 1960",
+      "url": "https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19980227091.pdf",
+      "note": "Documento original para cruzar coautoria e tema do relatório com a biografia institucional.",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "research-tim",
+      "name": "IMS · Nelson Motta sobre Tim Maia",
+      "url": "https://radiobatuta.ims.com.br/entrevistas/nelson-motta-sobre-tim-maia",
+      "note": "Entrevista sobre trajetória e o primeiro disco de Tim Maia, lançado em 1970.",
+      "accessed": "2026-10-20"
     }
-  ]
+  ],
+  "version": "3.0"
 }

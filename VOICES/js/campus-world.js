@@ -18,7 +18,7 @@ function upgradeSquare(d){
   const p=d.positions?.fountain||[18.5,14],size=4,x=p[0]+.5-size/2,y=p[1]+.5-size*.88;
   const sid='square-fountain-water';
   d.decor.push(['fountain',12,x,y,size,true,{id:'square-fountain-furniture',layer:'object',sceneIds:[sid]}]);
-  d.scenes.push({id:sid,kind:'notice',family:'fountain',prop:12,x:x+size/2-.5,y:y+size*.93-.5,size:3,title:'Fonte da Praça das Vozes',text:'Fountain é uma fonte de água. Source é uma fonte de informação. O contexto ajuda a escolher o sentido. A fonte da praça pode ser movida e organizada como as outras mobílias.',hostDecor:'square-fountain-furniture'});
+  d.scenes.push({id:sid,kind:'notice',family:'fountain',prop:12,x:x+size/2-.5,y:y+size*.93-.5,size:3,title:'Fonte da Praça das Vozes',text:"Fountain é uma fonte de água; source é uma fonte de informação. O contexto distingue os sentidos de “fonte”. Na praça, deixe livre a passagem até os bancos e o bebedouro.",hostDecor:'square-fountain-furniture'});
  }
 }
 upgradeSquare(C.layouts.hub);
@@ -118,7 +118,12 @@ C.music=function(o){
  V.$('#campus-keep').onclick=()=>{C.ensure();V.state.cozy.music[o.id]={timbre:wave,notes};V.Save.save();V.UI.close();V.UI.toast('Experiência guardada no caderno.');};
 };
 V.Campus={
- profile(index){const p=data.portraits.find(p=>p.index===index);if(!p)return;const bio=V.culturalPackBios[p.name]||'Consulte os registros da coleção para conhecer esta trajetória.';const names={'Machado de Assis':'machado','Carolina Maria de Jesus':'carolina','Nina Simone':'nina','Katherine Johnson':'katherine','Martin Luther King Jr.':'king'},f=V.heritageContent.figures.find(f=>f.id===names[p.name]);V.UI.modal(p.name,'RETRATO EDUCATIVO · PESSOAS E TRAJETÓRIAS',`<figure class="culture-piece"><img src="${p.path}" width="192" height="192" style="image-rendering:pixelated" alt="Retrato educativo de ${V.escape(p.name)}"></figure><p>${V.escape(bio)}</p><p class="note">Interpretação artística em pixel art. A legenda e as fontes ajudam a conhecer a trajetória além da imagem.</p>${f?`<button id="campus-full-profile" class="secondary">Ler ficha documentada</button>`:''}`);if(f)V.$('#campus-full-profile').onclick=()=>V.Heritage.profile(f.id);}
+ profile(index){
+ const p=data.portraits.find(p=>p.index===index);if(!p)return;
+ const esc=V.escape,refs=(p.sourceIds||[]).map(id=>V.content.sources.find(s=>s.id===id)).filter(Boolean);
+ V.UI.modal(p.name,'RETRATO EDUCATIVO · TRAJETÓRIA E CONTEXTO',`<figure class="culture-piece"><img src="${esc(p.path)}" width="192" height="192" style="image-rendering:pixelated" alt="Interpretação artística de ${esc(p.name)}"></figure><p>${esc(p.biography)}</p><p>${esc(p.context)}</p><aside class="reader-english"><strong>English connection</strong><p>${esc(p.en)}</p>${V.settings.translation?'<'+'small>'+esc(p.pt)+'</small>':''}</aside><details open><summary>Fontes desta trajetória</summary>${refs.map(s=>'<p class="reader-origin"><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a></p>').join('')}</details>`, '<button id="campus-full-profile" class="primary">Ler e registrar no caderno</button>');
+ V.$('#campus-full-profile').onclick=()=>L.read(p.readingId,0,()=>this.profile(index));
+}
 };
 C.interact=function(o){if(['cultural-pack','portrait-display'].includes(o?.scene?.family)&&o.scene.prop>=136){V.Campus.profile(o.scene.prop);return true;}return prior.interact(o);};
 E.place=function(x,y){

@@ -274,7 +274,7 @@
         "family": "furnishings",
         "prop": 6,
         "title": "Avisos da Praça",
-        "text": "Roda de leitura no parque; ensaio no estúdio; turnos de cuidado da horta. Os horários do bairro são ficcionais. Na feira: caderno de Bisa, tecidos de Dandara e fichas do tabuleiro de Viviane. A biblioteca reúne as referências.",
+        "text": "Avisos do bairro: o festival confere os créditos de Lia, André e Sol; a biblioteca recebe a caixa de Bia; Aisha organiza os três canteiros. Na feira, Bisa, Dandara e Viviane apresentam técnica, criação e ofício. As fichas e leituras ajudam a ligar essas tarefas.",
         "dir": 0,
         "size": 1.65,
         "hostDecor": "region-hub-0"
@@ -426,11 +426,11 @@
         20.6
       ],
       "door-library": [
-        8.0,
+        8,
         6.1
       ],
       "door-room-6": [
-        29.0,
+        29,
         7.1
       ]
     },
@@ -968,7 +968,7 @@
         "family": "furnishings",
         "prop": 8,
         "title": "Indicações da biblioteca",
-        "text": "Música, ciência, pintura e histórias africanas: consulte os livros do acervo e suas fontes.",
+        "text": "Comece por uma pergunta: quem fez a música? Onde fica Gao? O que um caderno registra? As estantes ligam essas questões às pistas do festival, do museu e do laboratório.",
         "dir": 0,
         "size": 2.3,
         "hostDecor": "region-library-1"
@@ -981,7 +981,7 @@
         "family": "furnishings",
         "prop": 10,
         "title": "Balcão de devoluções",
-        "text": "Separe o livro, confira o título e coloque-o no carrinho. Davi registra as informações de origem.",
+        "text": "Confira o título e deixe o livro no carrinho. Davi organiza a consulta; Dimas cuida da catalogação. A origem e a identificação precisam acompanhar cada documento.",
         "dir": 0,
         "size": 1.8,
         "hostDecor": "region-library-0"
@@ -994,7 +994,7 @@
         "family": "furnishings",
         "prop": 13,
         "title": "Catálogo público",
-        "text": "As leituras encontradas ficam no seu caderno.",
+        "text": "O catálogo liga título, autoria e procedência. As leituras que você registra continuam no Caderno para comparar uma pista nova com o que já encontrou.",
         "dir": 0,
         "size": 2.3,
         "hostDecor": "region-library-2"
@@ -1022,7 +1022,7 @@
         "prop": 8,
         "size": 2.3,
         "title": "Estante de música",
-        "text": "Composição, arranjo, canto e circulação de conhecimentos. Escolha uma leitura.",
+        "text": "Composição, arranjo e interpretação: procure Pixinguinha, Dona Ivone Lara, Nina Simone e Tim Maia. Depois confira se o programa do festival reconhece cada função da equipe local.",
         "readingIds": [
           "book-01",
           "book-02",
@@ -1039,7 +1039,7 @@
         "prop": 8,
         "size": 2.3,
         "title": "Estante de ciência e escrita",
-        "text": "Descobertas, registros e trabalho em equipe. Consulte as fontes de cada texto.",
+        "text": "Katherine Johnson, Sônia Guimarães e Jaqueline Goes de Jesus ajudam a conhecer trabalhos científicos diferentes. A estante de escrita apresenta Carolina e Conceição Evaristo: pesquisa e criação têm registros e autorias próprias.",
         "readingIds": [
           "book-05",
           "book-06",
@@ -1056,13 +1056,18 @@
         "prop": 8,
         "size": 2.3,
         "title": "Estante de história e memória",
-        "text": "Compare contextos documentados. Mali, Songhai e Kongo mantêm suas histórias distintas.",
+        "text": "Mali e Songhai têm referências na África Ocidental; Kongo, na África Central. Use mapa e linha do tempo para comparar lugares e períodos. Tombuctu e Gao aparecem nas notas da exposição.",
         "readingIds": [
           "book-03",
           "book-04",
           "cozy-book-05"
         ],
-        "hostDecor": "region-library-6"
+        "hostDecor": "region-library-6",
+        "sourceIds": [
+          "research-transsahara",
+          "research-askia",
+          "research-kongo"
+        ]
       },
       {
         "id": "heritage-reading-desk",
@@ -1086,10 +1091,13 @@
         "y": 6.6,
         "size": 1.1,
         "title": "Quadro: Machado de Assis",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Machado de Assis foi escritor brasileiro, autor de romances, contos e crônicas. Memórias póstumas de Brás Cubas foi publicado em 1881.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-machado",
-        "hostPortrait": "portrait-machado"
+        "hostPortrait": "portrait-machado",
+        "sourceIds": [
+          "bio-machado"
+        ]
       },
       {
         "id": "neighborhood-exhibit-51",
@@ -1100,10 +1108,14 @@
         "y": 14.6,
         "size": 1.1,
         "title": "Quadro: Carolina Maria de Jesus",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Carolina Maria de Jesus escreveu diários, poemas, narrativas e composições musicais. Quarto de despejo foi publicado em 1960.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-carolina",
-        "hostPortrait": "portrait-carolina"
+        "hostPortrait": "portrait-carolina",
+        "sourceIds": [
+          "bio-carolina",
+          "carolina_an"
+        ]
       },
       {
         "id": "furnishings-discovery-library",
@@ -1913,7 +1925,7 @@
         "family": "furnishings",
         "prop": 17,
         "title": "Sentar e observar",
-        "text": "Lugar de encontro perto da mesa de picnic.",
+        "text": "Uma mesa de piquenique perto dos bancos. Ao sair, recolha o que trouxe e mantenha livre o trajeto para o lago.",
         "dir": 2,
         "size": 1.7,
         "rotation": 0
@@ -1926,7 +1938,7 @@
         "family": "furnishings",
         "prop": 19,
         "title": "Caderno de observação",
-        "text": "Escolha uma cena do parque e registre o que realmente observa.",
+        "text": "Anote lugar, momento e comportamento. “O pássaro pousou no galho” é uma observação; a razão que você atribui ao pouso precisa ser investigada.",
         "dir": 0,
         "size": 1.9,
         "hostDecor": "region-park-0"
@@ -3297,9 +3309,14 @@
         "family": "furnishings",
         "prop": 35,
         "title": "Sementes e etiquetas",
-        "text": "Observe as etiquetas, combine o turno de cuidado e acompanhe os canteiros.",
+        "text": "Cada lote precisa de identificação e origem. Compare a etiqueta antes de plantar: um nome popular pode indicar plantas diferentes. A botica usa o mesmo cuidado na caixa de sementes de Jacira.",
         "dir": 0,
-        "size": 1.8
+        "size": 1.8,
+        "sourceIds": [
+          "research-botany",
+          "research-ginger"
+        ],
+        "readingId": "science-note-plants"
       },
       {
         "id": "garden-compost",
@@ -3309,9 +3326,13 @@
         "family": "furnishings",
         "prop": 38,
         "title": "Cuidado compartilhado",
-        "text": "Ferramentas retornam ao mesmo lugar. A horta melhora quando o grupo divide tarefas.",
+        "text": "A compostagem depende da decomposição da matéria orgânica por organismos, incluindo microrganismos. No trabalho da horta, o grupo registra materiais e condições; o adubo não aparece apenas porque o recipiente foi fechado.",
         "dir": 0,
-        "size": 1.75
+        "size": 1.75,
+        "sourceIds": [
+          "research-compost"
+        ],
+        "readingId": "science-note-compost"
       },
       {
         "id": "garden-rest",
@@ -3334,9 +3355,13 @@
         "family": "neighbors",
         "prop": 27,
         "title": "Quem cuida hoje?",
-        "text": "Aisha confere a rega; Maitê organiza sementes. Cada pessoa pode pedir ajuda.",
+        "text": "Aisha confere a rega; Maitê organiza sementes; Rute registra as visitas aos canteiros. Os turnos mostram quem cuidou de cada área e ajudam a perceber o que ainda falta.",
         "dir": 0,
-        "size": 1.2
+        "size": 1.2,
+        "readingId": "science-note-pollination",
+        "sourceIds": [
+          "research-pollination"
+        ]
       },
       {
         "id": "furnishings-discovery-garden",
@@ -3810,7 +3835,7 @@
         "family": "furnishings",
         "prop": 51,
         "title": "Quem faz a música?",
-        "text": "Veja a autoria, os instrumentos, os arranjos e as pessoas que organizaram a apresentação.",
+        "text": "Ficha do festival: Lia — composição; André — arranjo; Sol — interpretação. Compare o programa com o caderno de ensaio. A referência ao samba de roda recebe uma nota própria.",
         "dir": 0,
         "size": 1.5,
         "hostDecor": "region-chapter-1-0"
@@ -3848,7 +3873,7 @@
         "prop": 41,
         "size": 1.3,
         "title": "Atabaque",
-        "text": "Tambor alongado, com pele e corpo de madeira. Participa de manifestações diversas; a ficha precisa identificar cada contexto.",
+        "text": "Tambor alongado com membrana esticada e corpo de madeira. A membrana vibra quando é percutida. Os nomes, toques e usos do atabaque variam conforme o contexto musical e religioso.",
         "heritageItem": "heritage-item-41"
       },
       {
@@ -3872,9 +3897,12 @@
         "y": 18.3,
         "size": 1.3,
         "title": "Quadro: Nina Simone",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Nina Simone foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação e seu repertório atravessaram diferentes tradições musicais.",
         "neighborhoodExhibit": true,
-        "readingId": "heritage-book-nina"
+        "readingId": "heritage-book-nina",
+        "sourceIds": [
+          "bio-nina"
+        ]
       },
       {
         "id": "neighborhood-exhibit-57",
@@ -3885,9 +3913,12 @@
         "y": 19.5,
         "size": 1.3,
         "title": "Quadro: Dona Ivone Lara",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Dona Ivone Lara foi cantora, compositora e instrumentista. Sua criação em parceria e sua atuação no samba ajudam a distinguir composição e interpretação.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-04"
+        "readingId": "cozy-book-04",
+        "sourceIds": [
+          "cozy_ivone_itau"
+        ]
       },
       {
         "id": "furnishings-discovery-chapter-1",
@@ -3992,7 +4023,7 @@
         6.5
       ],
       "door-room-1-0": [
-        8.0,
+        8,
         7.1
       ],
       "door-room-1-1": [
@@ -4383,7 +4414,7 @@
         "family": "furnishings",
         "prop": 61,
         "title": "Ficha de ensaio",
-        "text": "Composição, arranjo, interpretação: atividades diferentes podem colaborar na mesma música.",
+        "text": "O caderno registra o que Lia compôs, como André distribuiu as partes e o que Sol interpreta. Uma mesma apresentação reúne contribuições diferentes; o programa deve mostrá-las.",
         "dir": 0,
         "size": 1.55,
         "hostDecor": "region-room-1-1"
@@ -4433,7 +4464,7 @@
         "prop": 45,
         "size": 1.2,
         "title": "Cuíca",
-        "text": "A haste fica por dentro, ligada à pele. Sua fricção produz o som; ela não é uma baqueta externa.",
+        "text": "Uma haste interna está ligada à pele da cuíca. Ao friccioná-la, o movimento se transmite à membrana; a pressão sobre a pele participa da mudança de altura. Não se trata de bater uma vareta por fora.",
         "heritageItem": "heritage-item-45"
       },
       {
@@ -4458,9 +4489,12 @@
         "y": 3.5,
         "size": 1.2,
         "title": "Quadro: Pixinguinha",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Pixinguinha foi compositor, instrumentista, arranjador e maestro. As partituras de seu acervo ajudam a estudar escolhas de arranjo.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-03"
+        "readingId": "cozy-book-03",
+        "sourceIds": [
+          "cozy_pixinguinha_ims"
+        ]
       },
       {
         "id": "furnishings-discovery-room-1",
@@ -4914,10 +4948,14 @@
         "family": "furnishings",
         "prop": 69,
         "title": "Legendas com contexto",
-        "text": "Mali, Songhai e Kongo têm histórias e regiões distintas. Um objeto não resume um continente.",
+        "text": "Mali e Songhai: África Ocidental. Kongo: África Central. Gao se liga ao registro do Túmulo dos Askia; Mbanza Kongo, à capital do Reino do Kongo. Confira região, período e procedência antes de trocar uma ficha.",
         "dir": 0,
         "size": 1.8,
-        "hostDecor": "region-chapter-2-0"
+        "hostDecor": "region-chapter-2-0",
+        "sourceIds": [
+          "research-askia",
+          "research-kongo"
+        ]
       },
       {
         "id": "museum-visit",
@@ -4980,7 +5018,7 @@
         "prop": 54,
         "size": 1.4,
         "title": "Máscara: estudo em madeira",
-        "text": "Esta é uma ilustração original. Máscaras podem integrar traje, música e movimento; uma forma não representa um continente inteiro.",
+        "text": "Estudo original em madeira, com formas estilizadas. Máscaras podem fazer parte de conjuntos com traje, som e movimento. Esta imagem não recebeu procedência étnica ou função ritual que a pesquisa não possa sustentar.",
         "heritageItem": "heritage-item-54"
       },
       {
@@ -5103,11 +5141,11 @@
         13
       ],
       "door-room-2-0": [
-        16.0,
+        16,
         7.1
       ],
       "door-room-2-1": [
-        5.0,
+        5,
         13.1
       ]
     },
@@ -5507,12 +5545,12 @@
       {
         "id": "archive-work",
         "kind": "shelf",
-        "x": 5.0,
+        "x": 5,
         "y": 8.780000000000001,
         "family": "furnishings",
         "prop": 77,
         "title": "Mesa de pesquisa",
-        "text": "Registrar uma dúvida também faz parte de uma pesquisa.",
+        "text": "Descrição: o que o registro apresenta. Procedência: de onde ele veio. Interpretação: que conclusão as informações sustentam. Uma hipótese permanece identificada até que existam elementos para avaliá-la.",
         "dir": 0,
         "size": 2,
         "hostDecor": "region-room-2-1"
@@ -5601,7 +5639,7 @@
         "prop": 57,
         "size": 1.15,
         "title": "Criação artística: referência a Ogum",
-        "text": "Figura artística original, identificada como estudo. Não é peça consagrada nem cópia de escultura. A referência documental próxima apresenta ferramenta de Ogum em ferro.",
+        "text": "Interpretação artística de uma referência a Ogum. O catálogo do Museu Afro Brasil apresenta, em outra peça, uma ferramenta de Ogum em ferro. Compare material e autoria antes de aproximar objetos.",
         "heritageItem": "heritage-item-57"
       },
       {
@@ -5613,7 +5651,7 @@
         "prop": 59,
         "size": 1.15,
         "title": "Ferramentas de ferro e autoria",
-        "text": "José Adário assina uma ferramenta de Ogum em ferro no Museu Afro Brasil. “Ibi” não foi confirmado como nome dessa categoria.",
+        "text": "No acervo do Museu Afro Brasil, José Adário assina uma ferramenta de orixá ligada a Ogum, feita em ferro. A ficha relaciona trabalho artístico, material e referência religiosa.",
         "heritageItem": "heritage-item-59"
       },
       {
@@ -5625,7 +5663,7 @@
         "prop": 60,
         "size": 1.15,
         "title": "Amuletos e patuás",
-        "text": "Fé, memória e intenção podem integrar um amuleto. Patuá é documentado; “Patachas” não foi confirmado. A mostra não atribui poderes ou bônus de jogo.",
+        "text": "Patuás são objetos de proteção e pertencimento em diferentes experiências culturais e religiosas. Seu sentido depende de quem faz, guarda e usa. A mostra apresenta uma referência cultural; os atributos de batalha pertencem aos itens de fantasia do RPG.",
         "heritageItem": "heritage-item-60"
       },
       {
@@ -5637,9 +5675,12 @@
         "y": 17,
         "size": 1.15,
         "title": "Quadro: Rosana Paulino",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Rosana Paulino é artista visual. Em Parede da memória, retratos familiares e objetos de tecido aproximam memória e representação negra.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-05"
+        "readingId": "cozy-book-05",
+        "sourceIds": [
+          "cozy_rosana_pinacoteca"
+        ]
       },
       {
         "id": "neighborhood-exhibit-59",
@@ -5650,9 +5691,12 @@
         "y": 15.5,
         "size": 1.15,
         "title": "Quadro: Maria Auxiliadora da Silva",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Maria Auxiliadora da Silva pintou cenas de trabalho, convivência e cultura afro-brasileira, explorando texturas e relevos.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-06"
+        "readingId": "cozy-book-06",
+        "sourceIds": [
+          "cozy_auxiliadora_masp"
+        ]
       },
       {
         "id": "neighborhood-exhibit-47",
@@ -6095,10 +6139,14 @@
         "family": "furnishings",
         "prop": 81,
         "title": "Observar, comparar, registrar",
-        "text": "Uma observação cuidadosa ajuda a formular uma pergunta. Confira também quem participou da pesquisa.",
+        "text": "Pergunta da oficina: qual condição mudou entre os testes? Compare medidas feitas do mesmo modo e registre a contribuição de Luma, Caio e Luca. Um resultado sem método ou autoria deixa pistas importantes de fora.",
         "dir": 0,
         "size": 2.6,
-        "hostDecor": "region-chapter-3-0"
+        "hostDecor": "region-chapter-3-0",
+        "readingId": "science-note-water",
+        "sourceIds": [
+          "research-water"
+        ]
       },
       {
         "id": "science-pause",
@@ -6121,7 +6169,7 @@
         "family": "furnishings",
         "prop": 83,
         "title": "Caderno de resultados",
-        "text": "Os resultados fictícios do jogo precisam de condições registradas, assim como qualquer comparação.",
+        "text": "Luma fez os cálculos; Caio testou o protótipo; Luca anotou as tentativas. A cópia pública perdeu duas contribuições. O caderno completo permite reconstruir a equipe e as condições da comparação.",
         "dir": 0,
         "size": 2.1,
         "hostDecor": "region-chapter-3-1"
@@ -6135,9 +6183,12 @@
         "y": 22.5,
         "size": 1.25,
         "title": "Quadro: Katherine Johnson",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Katherine Johnson foi matemática da NASA. Em 1962, conferiu cálculos de computadores eletrônicos para o voo orbital de John Glenn.",
         "neighborhoodExhibit": true,
-        "readingId": "heritage-book-katherine"
+        "readingId": "heritage-book-katherine",
+        "sourceIds": [
+          "bio-katherine"
+        ]
       },
       {
         "id": "furnishings-discovery-chapter-3",
@@ -6597,10 +6648,14 @@
         "family": "furnishings",
         "prop": 93,
         "title": "Registro da equipe",
-        "text": "Registre o que foi observado e o que ainda precisa ser conferido.",
+        "text": "Registre pergunta, condição alterada, condições mantidas, unidade e resultado. Se a observação contrariar a previsão, mantenha o registro para investigar a diferença.",
         "dir": 0,
         "size": 2.2,
-        "hostDecor": "region-room-3-1"
+        "hostDecor": "region-room-3-1",
+        "readingId": "science-note-water",
+        "sourceIds": [
+          "research-water"
+        ]
       },
       {
         "id": "lab-pause",
@@ -6618,15 +6673,19 @@
       {
         "id": "lab-team",
         "kind": "notice",
-        "x": 14.0,
+        "x": 14,
         "y": 11.78,
         "family": "furnishings",
         "prop": 94,
         "title": "Ciência em colaboração",
-        "text": "Conheça Sônia Guimarães e Jaqueline Góes de Jesus nas leituras e consulte as fontes.",
+        "text": "Sônia Guimarães pesquisa materiais e sensores; Jaqueline Goes de Jesus participou de uma equipe de sequenciamento viral. Os livros descrevem os trabalhos e suas instituições, sem apresentar toda a ciência como uma única descoberta.",
         "dir": 0,
         "size": 2,
-        "hostDecor": "region-room-3-2"
+        "hostDecor": "region-room-3-2",
+        "sourceIds": [
+          "cozy_sonia_columbia",
+          "research-genomes"
+        ]
       },
       {
         "id": "neighborhood-exhibit-54",
@@ -6637,9 +6696,12 @@
         "y": 4.5,
         "size": 1.3,
         "title": "Quadro: Sônia Guimarães",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Sônia Guimarães é física e pesquisadora de semicondutores e sensores de calor. Sua trajetória conecta estudo de materiais, medidas e formação científica.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-01"
+        "readingId": "cozy-book-01",
+        "sourceIds": [
+          "cozy_sonia_columbia"
+        ]
       },
       {
         "id": "neighborhood-exhibit-55",
@@ -6650,9 +6712,13 @@
         "y": 4.5,
         "size": 1.3,
         "title": "Quadro: Jaqueline Góes de Jesus",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Jaqueline Goes de Jesus é biomédica. Participou da coordenação do sequenciamento do genoma viral do primeiro caso confirmado de COVID-19 no Brasil, em 2020, num trabalho entre instituições.",
         "neighborhoodExhibit": true,
-        "readingId": "cozy-book-02"
+        "readingId": "cozy-book-02",
+        "sourceIds": [
+          "research-genomes",
+          "cozy_genoma_fapesp"
+        ]
       },
       {
         "id": "furnishings-discovery-room-3",
@@ -7083,7 +7149,7 @@
         "family": "furnishings",
         "prop": 96,
         "title": "Notícias do bairro",
-        "text": "Confira quem publicou, quando e em quais condições. As correções também fazem parte do jornal.",
+        "text": "Aviso em revisão: Bia encontrou a versão com data, lugar e autoria. Ravi compara o recorte e o original antes de publicar. A correção precisa mostrar qual contexto foi perdido.",
         "dir": 0,
         "size": 2.3,
         "hostDecor": "region-chapter-4-0"
@@ -7109,7 +7175,7 @@
         "family": "furnishings",
         "prop": 100,
         "title": "Quadro de correções",
-        "text": "A equipe explica as alterações e preserva o contexto, sem expor dados pessoais.",
+        "text": "O recorte antigo não prova que a biblioteca está fechada hoje. A equipe exibe a data do aviso original e o comunicado de reabertura, preservando dados pessoais que não são necessários à correção.",
         "dir": 0,
         "size": 1.8,
         "hostDecor": "region-chapter-4-1"
@@ -7197,7 +7263,7 @@
         13.3
       ],
       "door-room-4-0": [
-        7.0,
+        7,
         6.1
       ],
       "door-room-4-1": [
@@ -7537,7 +7603,7 @@
         "family": "furnishings",
         "prop": 104,
         "title": "Rascunho da próxima edição",
-        "text": "Escute a pessoa entrevistada e compare o rascunho com os registros.",
+        "text": "Separe a mensagem publicada, o documento completo e a correção proposta. Dizer o que foi alterado permite conferir o trabalho da redação sem apagar o histórico.",
         "dir": 0,
         "size": 3,
         "hostDecor": "region-room-4-0"
@@ -7576,7 +7642,7 @@
         "family": "furnishings",
         "prop": 106,
         "title": "Mesa de referências",
-        "text": "Um texto informativo distingue fatos, opiniões e dúvidas.",
+        "text": "Uma afirmação verificável pede evidência; uma opinião pede identificação de quem a expressa; uma dúvida pede investigação. O contexto permite distinguir esses usos no mesmo texto.",
         "dir": 0,
         "size": 2,
         "hostDecor": "region-room-4-2"
@@ -8061,7 +8127,7 @@
         "family": "furnishings",
         "prop": 112,
         "title": "Propostas e devolutivas",
-        "text": "A comunidade pode perguntar, sugerir e revisar os projetos.",
+        "text": "Dora pediu reunião à noite; Luan, consulta depois da aula; Vitor, passagem livre. A ata registra os três pedidos, a decisão e uma resposta para o que ainda precisa ser resolvido.",
         "dir": 0,
         "size": 2.4,
         "hostDecor": "region-chapter-5-0"
@@ -8074,7 +8140,7 @@
         "family": "furnishings",
         "prop": 117,
         "title": "Passagem livre",
-        "text": "A participação depende de caminhos, informação e formas diferentes de contribuir.",
+        "text": "Confira o trajeto, o horário e a informação disponível. Participar pode incluir falar, escrever, desenhar, ouvir ou encaminhar uma proposta depois da reunião.",
         "dir": 0,
         "size": 1.5,
         "hostDecor": "region-chapter-5-1"
@@ -8129,8 +8195,13 @@
         "prop": 21,
         "size": 1,
         "title": "Black Lives Matter · vozes na praça",
-        "text": "Vidas negras importam. Uma manifestação ficcional do bairro contra o racismo.",
-        "dir": 0
+        "text": "O movimento Black Lives Matter começou em 2013, nos Estados Unidos. A roda de New Harmony é uma mobilização ficcional contra o racismo. O painel histórico distingue as datas de 2013, 2014 e 2020.",
+        "dir": 0,
+        "sourceIds": [
+          "protest-origin",
+          "protest-ferguson",
+          "protest-museum-plaza"
+        ]
       },
       {
         "id": "furnishings-discovery-chapter-5",
@@ -9026,7 +9097,7 @@
         "family": "furnishings",
         "prop": 122,
         "title": "Registrar uma proposta",
-        "text": "Reúna sombra, leitura e passagem livre em uma proposta que possa ser revisada.",
+        "text": "Sua proposta precisa dizer o que muda, quem acompanha e como a equipe vai conferir o resultado. Considere sombra, leitura e passagem livre; as prioridades dos moradores podem ser diferentes.",
         "dir": 0,
         "size": 2.3,
         "hostDecor": "region-room-5-0"
@@ -9039,7 +9110,7 @@
         "family": "furnishings",
         "prop": 121,
         "title": "Ordem de fala",
-        "text": "Cada pessoa tem tempo para falar, perguntar ou optar por uma contribuição escrita.",
+        "text": "Você pode falar na sua vez ou registrar uma contribuição escrita. A ata mantém propostas e divergências autorizadas, além da decisão final.",
         "dir": 0,
         "size": 2,
         "hostDecor": "region-room-5-1"
@@ -9068,9 +9139,13 @@
         "y": 6,
         "size": 1.25,
         "title": "Quadro: Conceição Evaristo",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Conceição Evaristo é escritora de romances, contos, poemas e ensaios. Sua reflexão sobre escrevivência aproxima criação literária, memória e experiências negras.",
         "neighborhoodExhibit": true,
-        "readingId": "heritage-book-conceicao"
+        "readingId": "heritage-book-conceicao",
+        "sourceIds": [
+          "bio-conceicao",
+          "heritage_conceicao"
+        ]
       },
       {
         "id": "furnishings-discovery-room-5",
@@ -9518,7 +9593,7 @@
         "family": "furnishings",
         "prop": 132,
         "title": "Revisão humana",
-        "text": "Fontes, perspectivas e correções permanecem abertas à consulta.",
+        "text": "O histórico reúne o que mudou, por qual motivo, com que evidência e sob responsabilidade de quem. A conclusão pode ser revista sem esconder a versão anterior.",
         "dir": 0,
         "size": 2.1,
         "hostDecor": "region-chapter-6-1"
@@ -9611,7 +9686,7 @@
         30
       ],
       "door-room-6-0": [
-        13.0,
+        13,
         7.1
       ],
       "door-room-6-1": [
@@ -10012,7 +10087,7 @@
         "family": "furnishings",
         "prop": 136,
         "title": "Conferir o backup",
-        "text": "Uma cópia precisa de origem, data e revisão. Guardar não encerra o trabalho.",
+        "text": "Uma cópia de segurança ajuda a recuperar documentos perdidos. Ela também copia os erros que já existiam: conferir o conteúdo e testar a recuperação são tarefas diferentes.",
         "dir": 0,
         "size": 2.1,
         "hostDecor": "region-room-6-1"

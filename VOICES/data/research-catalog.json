@@ -1,0 +1,2355 @@
+{
+  "revision": "20261021-community1",
+  "reviewed": "2026-10-21",
+  "scope": "Narrative, historical and scientific reading, captions, dialogue and bilingual learning text",
+  "sources": [
+    {
+      "id": "samba_iphan",
+      "name": "Iphan — Samba de Roda e reconhecimento pela UNESCO",
+      "url": "https://bcr.iphan.gov.br/acoes-de-salvaguarda/reconhecimento-do-samba-de-roda-do-estado-da-bahia-pela-unesco-como-obra-prima-do-patrimonio-oral-e-imaterial-da-humanidade-e-posterior-incorporacao-a-lista-representativa/",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 1: expressão do Recôncavo que reúne música, dança e poesia; protagonismo de comunidades negras e transmissão pela participação. Referência cultural, sem reprodução musical ou coreográfica.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-01",
+        "history-01",
+        "history-25"
+      ]
+    },
+    {
+      "id": "capoeira_unesco",
+      "name": "UNESCO — Capoeira circle",
+      "url": "https://ich.unesco.org/en/RL/capoeira-circle-00892",
+      "note": "Cap. 1: prática cultural afro-brasileira com luta, dança, música e transmissão entre participantes. Inscrita na Lista Representativa em 2014. Página consultada também por seu registro indexado.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-02"
+      ]
+    },
+    {
+      "id": "mali_met",
+      "name": "The Met — Sahel: Art and Empires on the Shores of the Sahara",
+      "url": "https://www.metmuseum.org/exhibitions/sahel-art-empire-sahara/inside-the-exhibition",
+      "note": "Cap. 2: Mali na África Ocidental; peregrinação de Mansa Musa em 1324; comércio, estudos e pluralidade de registros. Não equivale à história de todo o continente.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-03"
+      ]
+    },
+    {
+      "id": "songhai_unesco",
+      "name": "UNESCO / ICOMOS — Tomb of Askia, avaliação patrimonial",
+      "url": "https://whc.unesco.org/document/151848",
+      "note": "Cap. 2: início do reinado de Sonni Ali em 1464; Songhai e rotas comerciais. Usamos somente a data do reinado e o contexto comercial, sem reproduzir genealogias discutíveis do documento.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "kongo_met",
+      "name": "The Met — Kongo: Power and Majesty, Exhibition Galleries",
+      "url": "https://www.metmuseum.org/exhibitions/listings/2015/kongo/exhibition-galleries",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 2: sociedades da África Central e chegada de Diogo Cão à foz do Congo em 1483 na cronologia desta exposição. O jogo apresenta contato entre sociedades já existentes, sem linguagem de descobrimento.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-04",
+        "history-04"
+      ]
+    },
+    {
+      "id": "abolition_law",
+      "name": "Presidência da República — Lei nº 3.353, de 13 de maio de 1888",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/lim/lim3353.htm",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: extinção legal da escravidão no Brasil. A lei é lida junto ao perfil de Rebouças para não sugerir que o texto legal resolveu desigualdades ou que a luta coletiva não importou.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-08",
+        "history-20"
+      ]
+    },
+    {
+      "id": "johnson_nasa",
+      "name": "NASA — Katherine Johnson Biography",
+      "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 3: matemática que verificou cálculos da missão orbital de John Glenn em 1962. Não inventamos falas nem afirmamos que ela inventou um foguete ou trabalhou sozinha.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-05",
+        "history-27",
+        "heritage-book-katherine"
+      ]
+    },
+    {
+      "id": "carolina_an",
+      "name": "Arquivo Nacional — Série Mulheres e o Arquivo: Carolina de Jesus",
+      "url": "https://www.gov.br/arquivonacional/pt-br/canais_atendimento/imprensa/noticias/serie-mulheres-e-o-arquivo-carolina-de-jesus",
+      "note": "Cap. 3: Carolina Maria de Jesus, escritora, poeta e compositora; publicação de Quarto de despejo em 1960. Não reproduzimos trechos de seu diário.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-06",
+        "portrait-note-139",
+        "carolina",
+        "neighborhood-exhibit-51",
+        "campus-museum-3-read"
+      ]
+    },
+    {
+      "id": "reboucas_an",
+      "name": "Arquivo Nacional — André Pinto Rebouças",
+      "url": "https://www.gov.br/arquivonacional/pt-br/sites_eventos/sites-tematicos-1/brasil-oitocentista/conheca-o-acervo/andre-pinto-reboucas-ow",
+      "note": "Cap. 3: engenheiro negro, atuação nas docas do Rio de Janeiro e participação abolicionista. Defendia condições de subsistência e acesso à terra após a abolição; não lhe atribuímos invenções sem comprovação.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-07",
+        "note-08"
+      ]
+    },
+    {
+      "id": "racism_unicef",
+      "name": "UNICEF Brasil — O impacto do racismo na infância",
+      "url": "https://www.unicef.org/brazil/relatorios/o-impacto-do-racismo-na-infancia",
+      "note": "Caps. 4 e 5: racismo e discriminação racial violam direitos e afetam crianças. Os casos do jogo são ficcionais e não pedem exposição pessoal.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-07",
+        "note-10"
+      ]
+    },
+    {
+      "id": "school_unicef",
+      "name": "UNICEF e parceiros — Indicadores da Qualidade na Educação: Relações Raciais na Escola",
+      "url": "https://www.unicef.org/brazil/relatorios/indicadores-da-qualidade-na-educacao-relacoes-raciais-na-escola",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Caps. 4 e 5: participação da comunidade escolar e avaliação de práticas para enfrentar o racismo. Inspirou os exercícios ficcionais de escuta e acompanhamento.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-07",
+        "book-09",
+        "book-11",
+        "note-10",
+        "history-22",
+        "history-28"
+      ]
+    },
+    {
+      "id": "media_unesco",
+      "name": "UNESCO — Do you trust what you watch or read?",
+      "url": "https://www.unesco.org/en/articles/do-you-trust-what-you-watch-or-read",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Cap. 4: verificar fonte, credibilidade, precisão e finalidade de informações. Não presumimos intenção deliberada de enganar quando só identificamos uma informação incorreta.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-07",
+        "book-08",
+        "book-12",
+        "history-08"
+      ]
+    },
+    {
+      "id": "indigenous_ibge",
+      "name": "IBGE Educa — Os indígenas no Censo 2022",
+      "url": "https://educa.ibge.gov.br/criancas/brasil/2848-nosso-povo/22324-os-indigenas-no-censo-2022.html",
+      "note": "Cap. 5: povos indígenas contemporâneos, diversidade de línguas e modos de vida, residências dentro e fora de Terras Indígenas. O jogo evita cifras porque não são necessárias à missão.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-10"
+      ]
+    },
+    {
+      "id": "ai_unesco",
+      "name": "UNESCO — Ethics of Artificial Intelligence",
+      "url": "https://www.unesco.org/en/artificial-intelligence/recommendation-ethics",
+      "note": "Cap. 6: sistemas podem reproduzir e ampliar vieses; responsabilidade humana, participação, transparência e revisão. BIAS.EXE e os dados de New Harmony são ficção, não modelo técnico de todas as IAs.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-11",
+        "book-12"
+      ]
+    },
+    {
+      "id": "bncc_mec",
+      "name": "MEC — Base Nacional Comum Curricular, Educação Infantil e Ensino Fundamental",
+      "url": "https://basenacionalcomum.mec.gov.br/images/BNCC_EI_EF_110518_versaofinal_site.pdf",
+      "note": "Referência temática: leitura e interação em inglês, dimensão intercultural, diversidade e investigação histórica. Perfis do jogo são escolhas didáticas; não prometem cobertura integral nem atribuem códigos específicos.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "crmg_see",
+      "name": "SEE/MG — Currículo Referência de Minas Gerais e Planos de Curso",
+      "url": "https://curriculoreferencia.educacao.mg.gov.br/index.php/plano-de-cursos-crmg",
+      "note": "Portal institucional para o professor relacionar a atividade ao planejamento local. Não afirmamos existir uma edição exclusiva CRMG 2026 nem uma correspondência automática por trimestre.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "law11645",
+      "name": "Presidência da República — Lei nº 11.645, de 10 de março de 2008",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11645.htm",
+      "note": "Referência curricular: inclusão de História e Cultura Afro-Brasileira e Indígena no currículo. O jogo é um recurso complementar interdisciplinar.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "routes_unesco",
+      "name": "UNESCO Courier — From political recognition to demands for justice",
+      "url": "https://courier.unesco.org/en/articles/political-recognition-demands-justice",
+      "note": "Referência também usada na campanha principal. Conexões adicionais breves; as cenas e perguntas de New Harmony são criação didática original. Registro contextual do cap. 2: memória do tráfico atlântico, escravização, resistência e liberdade. O jogo usa explicação breve, sem sofrimento como espetáculo ou desafio.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-20"
+      ]
+    },
+    {
+      "id": "zangbeto_museum",
+      "name": "Château Vodou — Zangbeto",
+      "url": "https://www.chateau-vodou.com/zangbeto/",
+      "note": "Instituição museal: contexto e forma de estruturas cobertas de ráfia. Aventura e poderes de VOICES são ficcionais.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "zangbeto_benin",
+      "name": "Governo do Benim — Zangbéto em Ouidah",
+      "url": "https://www.gouv.bj/article/2945/vodun-days-2025-zangbeto-demonstration-esplanade-fort-francais-lieu-charge-histoire/",
+      "note": "Contexto contemporâneo no Benim, associado à vigília noturna. Não se trata de uma divindade universal africana.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "research-timbuktu",
+      "name": "UNESCO · Tombuctu",
+      "url": "https://whc.unesco.org/en/list/119/",
+      "note": "Centro de estudos e de circulação de manuscritos nos séculos XV e XVI; localização na atual República do Mali.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-03",
+        "note-05"
+      ]
+    },
+    {
+      "id": "research-askia",
+      "name": "UNESCO · Túmulo dos Askia, Gao",
+      "url": "https://whc.unesco.org/en/list/1139/",
+      "note": "Monumento de arquitetura de terra associado a Askia Mohamed, construído em 1495; patrimônio de Songhai.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-06",
+        "library-history-section",
+        "museum-label"
+      ]
+    },
+    {
+      "id": "research-kongo",
+      "name": "UNESCO · Mbanza Kongo",
+      "url": "https://whc.unesco.org/en/list/1511/",
+      "note": "Capital do Reino do Kongo e seus vestígios históricos na atual Angola.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-04",
+        "library-history-section",
+        "museum-label"
+      ]
+    },
+    {
+      "id": "research-transsahara",
+      "name": "The Metropolitan Museum of Art · O comércio de ouro transaariano",
+      "url": "https://www.metmuseum.org/es/essays/the-trans-saharan-gold-trade-7th-14th-century",
+      "note": "Redes de ouro e sal; viagem de Mansa Musa em 1324–1325.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-03",
+        "library-history-section"
+      ]
+    },
+    {
+      "id": "research-samba",
+      "name": "IPAC Bahia · Samba de roda do Recôncavo",
+      "url": "https://www.ba.gov.br/ipac/samba-de-roda-do-reconcavo",
+      "note": "Canto, dança, poesia e instrumentos; diferentes formas de samba de roda e protagonismo comunitário.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-01",
+        "note-04"
+      ]
+    },
+    {
+      "id": "research-capoeira",
+      "name": "Iphan · Roda de capoeira e ofício dos mestres de capoeira",
+      "url": "https://bibliotecadigital.iphan.gov.br/items/11bba387-1a54-4cd9-9a47-f74b38ee3212",
+      "note": "Dossiê sobre transmissão de saberes, instrumentos, roda e trabalho de mestres e mestras.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-02",
+        "note-03"
+      ]
+    },
+    {
+      "id": "research-genomes",
+      "name": "de Jesus e colaboradores · Importation and early local transmission of COVID-19 in Brazil, 2020",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7232955/",
+      "note": "Artigo científico original, com autores, métodos e instituições. Permite conferir a colaboração descrita na notícia da FAPESP.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-02",
+        "lab-team",
+        "neighborhood-exhibit-55"
+      ]
+    },
+    {
+      "id": "research-sound",
+      "name": "OpenStax · Sound intensity and sound level",
+      "url": "https://openstax.org/books/physics/pages/14-2-sound-intensity-and-sound-level",
+      "note": "Frequência e altura, amplitude e intensidade; conceitos para a instrumentoteca.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-sound",
+        "heritage-book-instruments",
+        "heritage-item-40",
+        "heritage-item-41",
+        "heritage-item-42",
+        "heritage-item-43",
+        "heritage-item-44",
+        "heritage-item-45",
+        "heritage-item-46",
+        "heritage-item-47",
+        "campus-school-17-read",
+        "campus-school-18-read",
+        "campus-school-19-read",
+        "campus-school-20-read"
+      ]
+    },
+    {
+      "id": "research-water",
+      "name": "USGS · Condensation and the Water Cycle",
+      "url": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle",
+      "note": "Condensação: mudança da água do estado gasoso para o líquido.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-water",
+        "tomas",
+        "science-observe",
+        "lab-notes"
+      ]
+    },
+    {
+      "id": "research-pollination",
+      "name": "Embrapa · Polinização",
+      "url": "https://www.atermaisdigital.cnptia.embrapa.br/web/apicultura/privado/polinizacao",
+      "note": "Transferência de pólen e participação de polinizadores na reprodução de plantas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-pollination",
+        "neighbors-rute",
+        "garden-turns"
+      ]
+    },
+    {
+      "id": "research-mangroves",
+      "name": "MMA · ProManguezal",
+      "url": "https://www.gov.br/mma/pt-br/composicao/smc/programa-nacional-de-conservacao-e-uso-sustentavel-dos-manguezais-do-brasil-promanguezal",
+      "note": "Conservação dos manguezais, comunidades e relações socioambientais.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "research-kente",
+      "name": "UNESCO · Craftsmanship of traditional woven textile Kente",
+      "url": "https://ich.unesco.org/en/RL/craftsmanship-of-traditional-woven-textile-kente-02130",
+      "note": "Tecelagem em tiras, materiais, transmissão e comunidades de Gana.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-item-51"
+      ]
+    },
+    {
+      "id": "research-ankara",
+      "name": "Victoria and Albert Museum · Cloth of a continent: Africa Fashion",
+      "url": "https://www.vam.ac.uk/articles/cloth-of-a-continent-africa-fashion",
+      "note": "Circulação de tecidos estampados e criação africana; distingue construção têxtil, estampa e uso.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-item-52"
+      ]
+    },
+    {
+      "id": "research-paper",
+      "name": "INPE · Dicas de preservação do acervo",
+      "url": "https://www.gov.br/inpe/pt-br/area-conhecimento/biblioteca/servicos/dicas-de-preservacao-do-acervo",
+      "note": "Manuseio e proteção dos livros contra luz, calor e umidade.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "rui"
+      ]
+    },
+    {
+      "id": "research-palmares",
+      "name": "Unicamp · Palmares: fontes e história",
+      "url": "https://palmares.ifch.unicamp.br/sobre-fontes",
+      "note": "Projeto de pesquisa com documentação dos séculos XVI a XIX. Explica possibilidades e limites das fontes sobre Palmares.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-136",
+        "portrait-note-137",
+        "campus-museum-0-read",
+        "campus-museum-1-read"
+      ]
+    },
+    {
+      "id": "bio-machado",
+      "name": "Academia Brasileira de Letras · Machado de Assis",
+      "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia",
+      "note": "Biografia e trajetória literária; consultar também a bibliografia vinculada.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-138",
+        "heritage-book-machado",
+        "machado",
+        "neighborhood-exhibit-50",
+        "campus-museum-2-read"
+      ]
+    },
+    {
+      "id": "bio-carolina",
+      "name": "Instituto Moreira Salles · Carolina Maria de Jesus",
+      "url": "https://carolinamariadejesus.ims.com.br/biografia/",
+      "note": "Escrita de diários, poemas, ficção e composições; percurso de criação e publicação.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-06",
+        "portrait-note-139",
+        "heritage-book-carolina",
+        "carolina",
+        "neighborhood-exhibit-51",
+        "campus-museum-3-read"
+      ]
+    },
+    {
+      "id": "bio-luizgama",
+      "name": "Biblioteca Pública do Paraná · Cartas de Luiz Gama",
+      "url": "https://www.bpp.pr.gov.br/Candido/Noticia/No-coracao-liberdade-cartas-exemplares-de-Luiz-Gama",
+      "note": "Entrevista com a pesquisadora Lígia Fonseca Ferreira sobre cartas, atuação jurídica e abolicionismo.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-140",
+        "campus-museum-4-read"
+      ]
+    },
+    {
+      "id": "bio-antonieta",
+      "name": "Assembleia Legislativa de Santa Catarina · 1ª Legislatura",
+      "url": "https://memoriapolitica.alesc.sc.gov.br/legislativo/deputado-estadual/legislaturas/110-1a_Legislatura",
+      "note": "Registro institucional da atuação parlamentar de Antonieta de Barros, eleita em 1934.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-141",
+        "campus-museum-5-read"
+      ]
+    },
+    {
+      "id": "bio-milton",
+      "name": "FFLCH/USP · Milton Santos",
+      "url": "https://www.fflch.usp.br/962",
+      "note": "Geógrafo brasileiro e prêmio Vautrin Lud de 1994.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-142",
+        "campus-museum-6-read"
+      ]
+    },
+    {
+      "id": "bio-lelia",
+      "name": "Lélia Gonzalez · A categoria político-cultural de amefricanidade",
+      "url": "https://www.periodicos.unb.br/index.php/repam/article/view/40454",
+      "note": "Texto de 1988, republicado com tradução e notas na Revista de Estudos e Pesquisas sobre as Américas em 2021.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-143",
+        "campus-museum-7-read"
+      ]
+    },
+    {
+      "id": "bio-abdias",
+      "name": "Ipeafro · Seção Teatro Experimental do Negro",
+      "url": "https://ipeafro.org.br/acoes/acervo-ipeafro/secao-ten/",
+      "note": "Fundação do TEN em 1944 e seus trabalhos de teatro, formação e enfrentamento ao racismo.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-144",
+        "portrait-note-145",
+        "campus-museum-8-read",
+        "campus-museum-9-read"
+      ]
+    },
+    {
+      "id": "bio-ruth",
+      "name": "Funarte · Coleção Ruth de Souza",
+      "url": "https://atom.funarte.gov.br/index.php/colecao-ruth-de-souza",
+      "note": "Fundo documental sobre a trajetória de Ruth de Souza no teatro, cinema e televisão.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-145",
+        "campus-museum-9-read"
+      ]
+    },
+    {
+      "id": "bio-conceicao",
+      "name": "UFMG · Título de doutora honoris causa a Conceição Evaristo",
+      "url": "https://www.ufmg.br/comunicacao/assessoria-de-imprensa/releases/pessoas/ufmg-concede-titulo-de-doutora-honoris-causa-a-escritora-conceicao-evaristo/",
+      "note": "Trajetória literária e obras, incluindo Ponciá Vicêncio (2003).",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-146",
+        "heritage-book-conceicao",
+        "neighborhood-exhibit-53",
+        "campus-museum-10-read"
+      ]
+    },
+    {
+      "id": "bio-gil",
+      "name": "Gilberto Gil · Linha do tempo, 1967",
+      "url": "https://gilbertogil.com.br/linha-do-tempo/1967/",
+      "note": "Discografia e participação artística; Louvação, de 1967.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-147",
+        "campus-museum-11-read"
+      ]
+    },
+    {
+      "id": "bio-elza",
+      "name": "Instituto Moreira Salles · As vidas de Elza",
+      "url": "https://radiobatuta.ims.com.br/especiais/as-vidas-de-elza",
+      "note": "Pesquisa e documentos sonoros sobre Elza Soares; estreia em disco em 1959.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-148",
+        "campus-museum-12-read"
+      ]
+    },
+    {
+      "id": "bio-nina",
+      "name": "Nina Simone · Biography",
+      "url": "https://www.ninasimone.com/biography/",
+      "note": "Formação pianística, canto, repertórios e atuação pelos direitos civis.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-149",
+        "heritage-book-nina",
+        "nina",
+        "neighborhood-exhibit-48",
+        "campus-museum-13-read"
+      ]
+    },
+    {
+      "id": "bio-katherine",
+      "name": "NASA · Katherine Johnson biography",
+      "url": "https://www.nasa.gov/centers-and-facilities/langley/katherine-johnson-biography/",
+      "note": "Coautoria de relatório em 1960 e conferência dos cálculos da missão de John Glenn em 1962.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-150",
+        "katherine",
+        "neighborhood-exhibit-52",
+        "campus-museum-14-read"
+      ]
+    },
+    {
+      "id": "bio-rosa",
+      "name": "National Park Service · Rosa Parks",
+      "url": "https://www.nps.gov/people/rosa-parks.htm",
+      "note": "Ativismo, prisão em 1º de dezembro de 1955 e boicote coletivo aos ônibus de Montgomery.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-151",
+        "campus-museum-15-read"
+      ]
+    },
+    {
+      "id": "bio-harriet",
+      "name": "National Park Service · Harriet Tubman and the 54th Massachusetts",
+      "url": "https://www.nps.gov/articles/harriet-tubman-and-the-54th-massachusetts.htm",
+      "note": "Atuação abolicionista, redes de fuga e participação na Guerra Civil dos Estados Unidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-152",
+        "campus-museum-16-read"
+      ]
+    },
+    {
+      "id": "bio-king",
+      "name": "Stanford · Cronologia de Martin Luther King Jr.",
+      "url": "https://kinginstitute.stanford.edu/king-resources/king-encyclopedia/chronology",
+      "note": "Cronologia documental: Marcha sobre Washington de 1963 e Nobel da Paz de 1964.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-153",
+        "heritage-book-king",
+        "king",
+        "campus-museum-17-read"
+      ]
+    },
+    {
+      "id": "bio-mandela",
+      "name": "Nelson Mandela Foundation · Biography",
+      "url": "https://www.nelsonmandela.org/biography",
+      "note": "Luta contra o apartheid, prisão, libertação e presidência da África do Sul.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-154",
+        "campus-museum-18-read"
+      ]
+    },
+    {
+      "id": "bio-biko",
+      "name": "South African History Archive · Steve Biko",
+      "url": "https://www.sahistory.org.za/people/stephen-bantu-biko",
+      "note": "Consciência Negra na África do Sul e morte sob custódia policial em 1977.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-155",
+        "campus-museum-19-read"
+      ]
+    },
+    {
+      "id": "bio-angela",
+      "name": "University of California, Santa Cruz · Angela Y. Davis",
+      "url": "https://directory.ucsc.edu/cd_detail?guid=G000122719",
+      "note": "Formação e atuação em história da consciência e estudos feministas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-156",
+        "campus-museum-20-read"
+      ]
+    },
+    {
+      "id": "bio-wangari",
+      "name": "Nobel Prize · Wangari Maathai: facts",
+      "url": "https://www.nobelprize.org/prizes/peace/2004/maathai/facts/",
+      "note": "Nobel da Paz em 2004 e vínculo entre conservação, democracia e paz.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-157",
+        "campus-museum-21-read"
+      ]
+    },
+    {
+      "id": "bio-greenbelt",
+      "name": "Green Belt Movement · Wangari Maathai",
+      "url": "https://www.greenbeltmovement.org/wangari-maathai/",
+      "note": "Fundação do movimento em 1977, plantio de árvores e participação de mulheres.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-157",
+        "campus-museum-21-read"
+      ]
+    },
+    {
+      "id": "bio-marielle",
+      "name": "Instituto Marielle Franco · Quem é Marielle",
+      "url": "https://www.institutomariellefranco.org/quem-e-marielle",
+      "note": "Trajetória como socióloga, vereadora e defensora de direitos humanos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-158",
+        "campus-museum-22-read"
+      ]
+    },
+    {
+      "id": "bio-pele",
+      "name": "FIFA · Pelé e as três Copas do Mundo",
+      "url": "https://www.fifa.com/en/tournaments/mens/worldcup/articles/pele-three-world-cup-titles-only-player",
+      "note": "Títulos mundiais masculinos com o Brasil em 1958, 1962 e 1970.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-159",
+        "campus-museum-23-read"
+      ]
+    },
+    {
+      "id": "bio-marta",
+      "name": "FIFA · Marta provides a masterclass",
+      "url": "https://inside.fifa.com/tournaments/womens/womensworldcup/china2007/news/marta-provides-a-masterclass-2860869",
+      "note": "Bola de Ouro e Chuteira de Ouro na Copa do Mundo feminina de 2007.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-160",
+        "campus-museum-24-read"
+      ]
+    },
+    {
+      "id": "bio-rebeca",
+      "name": "Comitê Olímpico do Brasil · Medalhas de Rebeca Andrade",
+      "url": "https://www.cob.org.br/comunicacao/noticias/relembre-todas-as-medalhas-olimpicas-de-rebeca-andrade-2",
+      "note": "Modalidades e resultados olímpicos, incluindo o ouro no solo em Paris 2024.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-161",
+        "campus-museum-25-read"
+      ]
+    },
+    {
+      "id": "bio-serena",
+      "name": "WTA · Serena Williams: legend bio",
+      "url": "https://www.wtatennis.com/news/4487583/legend-bio-serena-williams",
+      "note": "Trajetória e 23 títulos de simples em torneios de Grand Slam.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-162",
+        "campus-museum-26-read"
+      ]
+    },
+    {
+      "id": "bio-chimamanda",
+      "name": "Chimamanda Ngozi Adichie · About",
+      "url": "https://www.chimamanda.com/about/",
+      "note": "Biografia e livros, incluindo Meio sol amarelo (2006) e Americanah (2013).",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-163",
+        "campus-museum-27-read"
+      ]
+    },
+    {
+      "id": "bio-maya",
+      "name": "Maya Angelou · Site oficial",
+      "url": "https://www.mayaangelou.com/",
+      "note": "Trajetória como escritora e artista; I Know Why the Caged Bird Sings (1969).",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-164",
+        "campus-museum-28-read"
+      ]
+    },
+    {
+      "id": "bio-baldwin",
+      "name": "Library of Congress · The Civil Rights Era",
+      "url": "https://www.loc.gov/exhibits/civil-rights-act/civil-rights-era.html",
+      "note": "James Baldwin e The Fire Next Time (1963) no contexto dos direitos civis.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-165",
+        "campus-museum-29-read"
+      ]
+    },
+    {
+      "id": "bio-sueli",
+      "name": "USP · A construção do outro como não-ser como fundamento do ser",
+      "url": "https://repositorio.usp.br/item/001465832",
+      "note": "Tese de doutorado de Sueli Carneiro, defendida em 2005; produção de conhecimento e relações raciais.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-166",
+        "campus-museum-30-read"
+      ]
+    },
+    {
+      "id": "bio-cartola",
+      "name": "IMS · Cartola ao microfone com o violão",
+      "url": "https://acervos.ims.com.br/index.php/Detail/objects/59378?lang=pt_BR",
+      "note": "Registro de acervo com identificação de Cartola e sua participação na fundação da Mangueira, em 1928.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-167",
+        "campus-museum-31-read"
+      ]
+    },
+    {
+      "id": "research-zangbeto",
+      "name": "Smithsonian · Zangbeto masquerade costume, Benin",
+      "url": "https://www.si.edu/object/archives/components/sova-eepa-2020-001-ref528",
+      "note": "Fotografia catalogada de 2004, com traje e lugar identificados. A companhia Zambeto é personagem de fantasia de VOICES.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "research-grammar",
+      "name": "British Council · Present simple",
+      "url": "https://learnenglish.britishcouncil.org/free-resources/grammar/a1-a2/present-simple",
+      "note": "Formas afirmativas, perguntas e negativas; referência para revisão dos exemplos de língua inglesa.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "research-botany",
+      "name": "Embrapa · Introdução à botânica",
+      "url": "https://www.alice.cnptia.embrapa.br/bitstream/doc/992543/1/LivroIdentificacaoBotanica.pdf",
+      "note": "Morfologia de plantas, caules modificados e definição de rizoma.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-plants",
+        "garden-seeds",
+        "roots-herbs"
+      ]
+    },
+    {
+      "id": "research-ginger",
+      "name": "Embrapa · Avaliação de rizomas de gengibre",
+      "url": "https://www.alice.cnptia.embrapa.br/handle/doc/1190534",
+      "note": "Estudo de propagação de Zingiber officinale por rizomas e mudas micropropagadas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-plants",
+        "garden-seeds",
+        "roots-herbs"
+      ]
+    },
+    {
+      "id": "research-compost",
+      "name": "Embrapa · Uso da compostagem em sistemas agrícolas orgânicos",
+      "url": "https://www.infoteca.cnptia.embrapa.br/handle/doc/418734",
+      "note": "Oliveira, Lima e Cajazeira, 2004. Decomposição, condições de produção e manejo do composto.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-compost",
+        "garden-compost"
+      ]
+    },
+    {
+      "id": "research-saxophone",
+      "name": "Yamaha · Uses of the saxophone",
+      "url": "https://www.yamaha.com/en/musical_instrument_guide/saxophone/structure/structure003.html",
+      "note": "Palheta simples e classificação do saxofone como instrumento de madeira, apesar do corpo metálico.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-sound",
+        "campus-school-17-read",
+        "campus-school-18-read",
+        "campus-school-19-read",
+        "campus-school-20-read"
+      ]
+    },
+    {
+      "id": "research-guitar",
+      "name": "Fender · Electric guitar pickup types",
+      "url": "https://www.fender.com/articles/instruments/electric-guitar-pickup-types-how-to-choose-your-pickup",
+      "note": "Captadores, vibração das cordas e transformação em sinal elétrico para amplificação.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-sound",
+        "campus-school-17-read",
+        "campus-school-18-read",
+        "campus-school-19-read",
+        "campus-school-20-read"
+      ]
+    },
+    {
+      "id": "research-projections",
+      "name": "USGS · How are different map projections used?",
+      "url": "https://www.usgs.gov/faqs/how-are-different-map-projections-used",
+      "note": "Representação plana da superfície terrestre e diferentes distorções de projeção.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "science-note-maps",
+        "campus-school-13-read"
+      ]
+    },
+    {
+      "id": "research-johnson-report",
+      "name": "Skopinski e Johnson · Relatório técnico NASA TN D-233, 1960",
+      "url": "https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19980227091.pdf",
+      "note": "Documento original para cruzar coautoria e tema do relatório com a biografia institucional.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "book-05"
+      ]
+    },
+    {
+      "id": "research-tim",
+      "name": "IMS · Nelson Motta sobre Tim Maia",
+      "url": "https://radiobatuta.ims.com.br/entrevistas/nelson-motta-sobre-tim-maia",
+      "note": "Entrevista sobre trajetória e o primeiro disco de Tim Maia, lançado em 1970.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-tim"
+      ]
+    },
+    {
+      "id": "learning_bn_manuscripts",
+      "name": "Fundação Biblioteca Nacional — Manuscritos",
+      "url": "https://www.gov.br/bn/pt-br/atuacao/colecoes-e-servicos-aos-leitores/manuscritos",
+      "note": "Conexão breve: a Divisão de Manuscritos conserva documentos variados e inclui cadernos originais de Carolina de Jesus. Não reproduzimos os cadernos ou falas da autora.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-06"
+      ]
+    },
+    {
+      "id": "learning_capoeira_iphan",
+      "name": "Iphan — Detentores da capoeira no RJ e salvaguarda",
+      "url": "https://www.gov.br/iphan/pt-br/assuntos/noticias/mestres-e-mestras-da-capoeira-no-rj-promovem-encontro-estadual-da-salvaguarda",
+      "note": "Conexão breve: conhecimentos dos mestres e mestras; a roda combina diferentes elementos culturais. Registro indexado verificado; a abertura integral encontrou erro.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-02",
+        "history-15",
+        "history-25"
+      ]
+    },
+    {
+      "id": "learning_child_rights",
+      "name": "UNICEF — Convenção sobre os Direitos da Criança",
+      "url": "https://www.unicef.org/brazil/convencao-sobre-os-direitos-da-crianca",
+      "note": "Referência breve aos direitos de não discriminação, opinião e privacidade. As escolhas locais são exemplos educativos ficcionais, não aconselhamento jurídico.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-02",
+        "history-07",
+        "history-09",
+        "history-14",
+        "history-28"
+      ]
+    },
+    {
+      "id": "learning_cultural_rights",
+      "name": "Nações Unidas no Brasil — Artigo 27: vida cultural, artística e científica",
+      "url": "https://brasil.un.org/pt-br/81985-artigo-27-direito-%C3%A0-vida-cultural-art%C3%ADstica-e-cient%C3%ADfica",
+      "note": "Conexão breve: participação na vida cultural. O projeto fictício da cidade ilustra uma barreira prática, sem prometer solucionar desigualdades com uma escolha.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-11",
+        "history-23"
+      ]
+    },
+    {
+      "id": "learning_diversity_unesco",
+      "name": "UNESCO — Universal Declaration on Cultural Diversity",
+      "url": "https://www.unesco.org/en/legal-affairs/unesco-universal-declaration-cultural-diversity",
+      "note": "Conexão breve: diversidade cultural, expressão e direitos humanos. A escolha de canções em New Harmony é um exemplo original.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-09",
+        "history-21"
+      ]
+    },
+    {
+      "id": "learning_funai_diversity",
+      "name": "Funai — Visão de povos indígenas",
+      "url": "https://sii.funai.gov.br/funai_sii/informacoes_indigenas/visao/visao_povos_indigenas.wsp",
+      "note": "Conexão breve: diversidade sociocultural, línguas e formas de organização de povos indígenas. Não trata Tainá como representante de todos os povos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-10",
+        "history-29"
+      ]
+    },
+    {
+      "id": "learning_icom",
+      "name": "ICOM — Museum Definition",
+      "url": "https://icom.museum/en/resources/standards-guidelines/museum-definition/",
+      "note": "Conexão breve: pesquisa, interpretação, acessibilidade e participação comunitária na definição de museu aprovada em 2022. Não reproduzimos o texto integral.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-01",
+        "history-13"
+      ]
+    },
+    {
+      "id": "learning_kongo_capital",
+      "name": "UNESCO — Mbanza Kongo",
+      "url": "https://whc.unesco.org/en/list/1511/",
+      "note": "Conexão breve: Mbanza Kongo foi capital política e espiritual do Reino do Kongo; sítio atualmente em Angola.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-04",
+        "history-26"
+      ]
+    },
+    {
+      "id": "learning_living_heritage",
+      "name": "UNESCO — Intangible cultural heritage, glossary",
+      "url": "https://whc.unesco.org/en/glossary/40",
+      "note": "Conexão breve: patrimônio imaterial transmitido e recriado pelas comunidades. A produção sonora do jogo é original.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-16"
+      ]
+    },
+    {
+      "id": "learning_mali_trade",
+      "name": "The Met — The Trans-Saharan Gold Trade",
+      "url": "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
+      "note": "Conexão breve: Mali e redes transaarianas de comércio. O trajeto fictício de New Harmony não é reconstrução de uma rota histórica.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-03",
+        "history-26"
+      ]
+    },
+    {
+      "id": "learning_nasa_report",
+      "name": "NASA NTRS — Technical Note D-233",
+      "url": "https://ntrs.nasa.gov/citations/19980227091",
+      "note": "Documento institucional original de 1960 identifica T. H. Skopinski e Katherine G. Johnson como autores; usado somente para ler autoria e escopo, sem reproduzir fórmulas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-05"
+      ]
+    },
+    {
+      "id": "learning_oecd_accountability",
+      "name": "OCDE — Advancing accountability in AI",
+      "url": "https://www.oecd.org/en/publications/advancing-accountability-in-ai_2448f04b-en.html",
+      "note": "Conexão breve: responsabilidade e gestão de riscos durante o ciclo de vida de sistemas de IA. O calendário de revisão da narrativa é um exercício original.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "note-12",
+        "history-12",
+        "history-24",
+        "history-30"
+      ]
+    },
+    {
+      "id": "learning_oecd_transparency",
+      "name": "OCDE — Transparency and explainability",
+      "url": "https://oecd.ai/en/dashboards/ai-principles/P7",
+      "note": "Conexão breve: informação compreensível sobre sistemas e resultados. Os dados e os botões de New Harmony são ficção, não descrição de todos os sistemas de IA.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-11",
+        "history-30"
+      ]
+    },
+    {
+      "id": "learning_reboucas_iphan",
+      "name": "Iphan — Armazém Docas André Rebouças",
+      "url": "https://www.gov.br/iphan/pt-br/sala-de-imprensa/notas-e-avisos-de-pauta/antigo-edificio-docas-dom-pedro-ii-no-rio-passara-a-se-chamar-armazem-docas-andre-reboucas",
+      "note": "Conexão breve: homenagem ao engenheiro e abolicionista André Rebouças e à contribuição negra na história brasileira. Informação verificada no registro institucional indexado; a abertura integral encontrou erro.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-19"
+      ]
+    },
+    {
+      "id": "learning_songhai_site",
+      "name": "UNESCO — Tomb of Askia",
+      "url": "https://whc.unesco.org/en/list/1139/",
+      "note": "Conexão breve: o monumento em Gao se relaciona a Songhai e ao reinado de Askia Mohamed. A leitura não o atribui a Mansa Musa.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-18",
+        "history-26"
+      ]
+    },
+    {
+      "id": "learning_timbuktu",
+      "name": "UNESCO — Timbuktu",
+      "url": "https://whc.unesco.org/en/list/119/",
+      "note": "Conexão breve: Tombuctu como centro de estudo e circulação de manuscritos nos séculos XV e XVI, em seu contexto da África Ocidental.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "history-17"
+      ]
+    },
+    {
+      "id": "heritage_nina",
+      "name": "Nina Simone — biografia oficial",
+      "url": "https://www.ninasimone.com/biography/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-nina",
+        "heritage-history-nina-6",
+        "heritage-history-nina-7",
+        "heritage-history-nina-8",
+        "nina"
+      ]
+    },
+    {
+      "id": "heritage_tim",
+      "name": "Instituto Cultural Cravo Albin — Tim Maia",
+      "url": "https://dicionariompb.com.br/artista/tim-maia/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-tim",
+        "heritage-history-tim-6",
+        "heritage-history-tim-7",
+        "heritage-history-tim-8",
+        "tim"
+      ]
+    },
+    {
+      "id": "heritage_king",
+      "name": "Nobel Prize Museum — A right to freedom: Martin Luther King Jr.",
+      "url": "https://www.nobelprizemuseum.se/en/exhibition/a-right-to-freedom-martin-luther-king-jr/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-153",
+        "heritage-book-king",
+        "heritage-history-king-6",
+        "heritage-history-king-7",
+        "heritage-history-king-8",
+        "king",
+        "campus-museum-17-read"
+      ]
+    },
+    {
+      "id": "heritage_machado",
+      "name": "Academia Brasileira de Letras — Machado de Assis: biografia",
+      "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-machado",
+        "heritage-history-machado-6",
+        "heritage-history-machado-7",
+        "heritage-history-machado-8",
+        "machado"
+      ]
+    },
+    {
+      "id": "heritage_carolina",
+      "name": "Instituto Moreira Salles — Carolina Maria de Jesus: um Brasil para os brasileiros",
+      "url": "https://ims.com.br/exposicao/carolina-maria-de-jesus-um-brasil-para-os-brasileiros_museudeartedorio/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-carolina",
+        "heritage-history-carolina-6",
+        "heritage-history-carolina-7",
+        "heritage-history-carolina-8",
+        "carolina"
+      ]
+    },
+    {
+      "id": "heritage_katherine",
+      "name": "NASA Science — Katherine Johnson (1918–2020)",
+      "url": "https://science.nasa.gov/people/katherine-johnson/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-katherine",
+        "heritage-history-katherine-6",
+        "heritage-history-katherine-7",
+        "heritage-history-katherine-8",
+        "katherine"
+      ]
+    },
+    {
+      "id": "heritage_rock",
+      "name": "Rock & Roll Hall of Fame — Roots of Rock",
+      "url": "https://rockhall.com/exhibitions/roots-of-rock/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-rock",
+        "heritage-history-tim-6",
+        "heritage-history-tim-7",
+        "heritage-history-tim-8",
+        "heritage-history-rock-6",
+        "heritage-history-rock-7",
+        "heritage-history-rock-8",
+        "tim"
+      ]
+    },
+    {
+      "id": "heritage_rosetta",
+      "name": "Rock & Roll Hall of Fame — Sister Rosetta Tharpe",
+      "url": "https://rockhall.com/inductees/sister-rosetta-tharpe/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-rock",
+        "heritage-history-rock-6",
+        "heritage-history-rock-7",
+        "heritage-history-rock-8"
+      ]
+    },
+    {
+      "id": "heritage_conceicao",
+      "name": "UFMG, Literafro — Conceição Evaristo",
+      "url": "https://www.letras.ufmg.br/literafro/Autors/188-conceicao-evaristo",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "portrait-note-146",
+        "heritage-book-conceicao",
+        "heritage-history-conceicao-6",
+        "heritage-history-conceicao-7",
+        "heritage-history-conceicao-8",
+        "neighborhood-exhibit-53",
+        "campus-museum-10-read"
+      ]
+    },
+    {
+      "id": "heritage_capoeira",
+      "name": "IPHAN — Roda de capoeira e ofício dos mestres de capoeira",
+      "url": "https://bibliotecadigital.iphan.gov.br/items/11bba387-1a54-4cd9-9a47-f74b38ee3212",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-40",
+        "heritage-item-42",
+        "heritage-item-43"
+      ]
+    },
+    {
+      "id": "heritage_atabaque",
+      "name": "IBRAM, Museu Regional do Caeté — Atabaque",
+      "url": "https://brasiliana.museus.gov.br/acervos/5348249-2/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-41"
+      ]
+    },
+    {
+      "id": "heritage_xequere",
+      "name": "Secretaria da Cultura do Ceará — Oficina de Xequerê",
+      "url": "https://www.ce.gov.br/secult/2022/04/12/vila-da-musica-realiza-oficina-de-xequere-neste-mes-de-abril/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-44"
+      ]
+    },
+    {
+      "id": "heritage_cuica",
+      "name": "Musica Brasilis — Cuíca",
+      "url": "https://musicabrasilis.org.br/pt-br/instrumentos/cuica/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-45"
+      ]
+    },
+    {
+      "id": "heritage_djembe",
+      "name": "Metropolitan Museum — Jembe, pesquisa de Althea SullyCole",
+      "url": "https://www.metmuseum.org/art/collection/search/503722",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-46"
+      ]
+    },
+    {
+      "id": "heritage_ilu",
+      "name": "Prefeitura do Recife — Oficina de Ilú",
+      "url": "https://www2.recife.pe.gov.br/noticias/04/03/2016/nucleo-de-cultura-afro-oferece-oficina-de-ilu",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-instruments",
+        "heritage-history-instruments-6",
+        "heritage-history-instruments-7",
+        "heritage-history-instruments-8",
+        "heritage-item-47"
+      ]
+    },
+    {
+      "id": "heritage_oja",
+      "name": "UNILAB — pesquisa de Ananda Átila Pereira Santana sobre ojá e turbante (2022)",
+      "url": "https://repositorio.unilab.edu.br/xmlui/handle/123456789/2637",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-history-textiles-6",
+        "heritage-history-textiles-7",
+        "heritage-history-textiles-8",
+        "heritage-item-48"
+      ]
+    },
+    {
+      "id": "heritage_contas",
+      "name": "Museu Afro Brasil — Fio de contas de Orixá",
+      "url": "https://museuafrobrasil.org.br/acervo/fio-de-contas-de-orixa-2/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-history-textiles-6",
+        "heritage-history-textiles-7",
+        "heritage-history-textiles-8",
+        "heritage-item-49"
+      ]
+    },
+    {
+      "id": "heritage_pano",
+      "name": "UFBA — dissertação de Ana Nascimento, pano da costa",
+      "url": "https://ppgav.ufba.br/sites/ppgav.ufba.br/files/dissertacao_ana_nascimento_final.pdf",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-history-textiles-6",
+        "heritage-history-textiles-7",
+        "heritage-history-textiles-8",
+        "heritage-item-50"
+      ]
+    },
+    {
+      "id": "heritage_tecidos",
+      "name": "Victoria and Albert Museum — Africa fashion: cloth of a continent",
+      "url": "https://www.vam.ac.uk/articles/cloth-of-a-continent-africa-fashion",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-history-textiles-6",
+        "heritage-history-textiles-7",
+        "heritage-history-textiles-8",
+        "heritage-item-51",
+        "heritage-item-52"
+      ]
+    },
+    {
+      "id": "heritage_balangandas",
+      "name": "Museu Histórico Nacional — Penca de balangandãs",
+      "url": "https://brasiliana3.museus.gov.br/brasiliana/penca-de-balangandas-3/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-textiles",
+        "heritage-history-textiles-6",
+        "heritage-history-textiles-7",
+        "heritage-history-textiles-8",
+        "heritage-item-53"
+      ]
+    },
+    {
+      "id": "heritage_mascaras",
+      "name": "Museu Afro Brasil — Animais nas máscaras africanas",
+      "url": "https://museuafrobrasil.org.br/wp-content/uploads/2026/02/Animais-nas-mascaras-africanas_final.pdf",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-objects",
+        "heritage-history-objects-6",
+        "heritage-history-objects-7",
+        "heritage-history-objects-8",
+        "heritage-item-54"
+      ]
+    },
+    {
+      "id": "heritage_metal",
+      "name": "Smithsonian National Museum of African Art — Face mask, liga de cobre",
+      "url": "https://africa.si.edu/collection/object/nmafa_86-12-5",
+      "note": "O material foi confirmado na ficha indexada; a página completa não respondeu. A arte do jogo não é réplica da peça.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-objects",
+        "heritage-history-objects-6",
+        "heritage-history-objects-7",
+        "heritage-history-objects-8",
+        "heritage-item-55"
+      ]
+    },
+    {
+      "id": "heritage_ancestral",
+      "name": "Metropolitan Museum — Seated Figure: Female, figura em madeira",
+      "url": "https://www.metmuseum.org/art/collection/search/311004",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-item-56"
+      ]
+    },
+    {
+      "id": "heritage_ferro",
+      "name": "Museu Afro Brasil — Ferramenta de orixá (Ogum), José Adário, ferro",
+      "url": "https://museuafrobrasil.org.br/acervo/ferramenta-de-orixa-ogum/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-objects",
+        "heritage-history-objects-6",
+        "heritage-history-objects-7",
+        "heritage-history-objects-8",
+        "heritage-item-57",
+        "heritage-item-59"
+      ]
+    },
+    {
+      "id": "heritage_sankofa",
+      "name": "Metropolitan Museum — Sankofa bird gold weight, povos Akan, Gana",
+      "url": "https://www.metmuseum.org/art/collection/search/317688",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-objects",
+        "heritage-history-objects-6",
+        "heritage-history-objects-7",
+        "heritage-history-objects-8",
+        "heritage-item-58"
+      ]
+    },
+    {
+      "id": "heritage_patua",
+      "name": "Museu Afro Brasil — Ateliê Aberto: Patuá, Amuleto Ancestral",
+      "url": "https://museuafrobrasil.org.br/agenda/atelie-aberto-patua-amuleto-ancestral/",
+      "note": "Referência para síntese didática original; imagens e textos do acervo não foram reproduzidos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "heritage-book-objects",
+        "heritage-history-objects-6",
+        "heritage-history-objects-7",
+        "heritage-history-objects-8",
+        "heritage-item-60"
+      ]
+    },
+    {
+      "id": "cozy_sonia_columbia",
+      "name": "Columbia University, ILAS — Dr. Sônia Guimarães on STEM, Equity, and Innovation",
+      "url": "https://ilas.columbia.edu/events/dr-sonia-guimaraes-stem-equity-and-innovation",
+      "note": "Perfil apresentado em evento de 2025: pesquisa de Sônia Guimarães em semicondutores e sensores de calor.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-01",
+        "cozy-history-01-6",
+        "cozy-history-01-7",
+        "cozy-history-01-8",
+        "tomas",
+        "cozy-activity-heat",
+        "lab-team",
+        "neighborhood-exhibit-54"
+      ]
+    },
+    {
+      "id": "cozy_jaqueline_bahiana",
+      "name": "Escola Bahiana de Medicina e Saúde Pública — Jaqueline Góes e a homenagem de 2021",
+      "url": "https://www.bahiana.edu.br/noticia/37983/professora-da-bahiana-a-biomedica-jaqueline-goes-e-homenageada-com-boneca-barbie/",
+      "note": "Identifica Jaqueline Góes de Jesus como biomédica e integrante de uma equipe de sequenciamento do genoma viral. A notícia da FAPESP apresenta a colaboração e as instituições participantes.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-02",
+        "cozy-history-02-6",
+        "cozy-history-02-7",
+        "cozy-history-02-8"
+      ]
+    },
+    {
+      "id": "cozy_genoma_fapesp",
+      "name": "Agência FAPESP — Tecnologia que sequenciou coronavírus em 48 horas permitirá monitorar epidemia em tempo real",
+      "url": "https://agencia.fapesp.br/tecnologia-que-sequenciou-coronavirus-em-48-horas-permitira-monitorar-epidemia-em-tempo-real/32637",
+      "note": "Notícia de 2/3/2020: trabalho conjunto do Instituto Adolfo Lutz, USP e Oxford; equipe coordenada por Claudio Tavares Sacchi e Jaqueline Goes de Jesus.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-02",
+        "cozy-history-02-6",
+        "cozy-history-02-7",
+        "cozy-history-02-8",
+        "cozy-chat-06",
+        "cozy-activity-team",
+        "neighborhood-exhibit-55"
+      ]
+    },
+    {
+      "id": "cozy_pixinguinha_ims",
+      "name": "Instituto Moreira Salles — Acervo Pixinguinha",
+      "url": "https://ims.com.br/titular-colecao/pixinguinha/",
+      "note": "Arquivo pessoal sob guarda do IMS desde 2000, com partituras e arranjos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-03",
+        "cozy-history-03-6",
+        "cozy-history-03-7",
+        "cozy-history-03-8",
+        "cozy-chat-05",
+        "cozy-activity-music",
+        "neighborhood-exhibit-56"
+      ]
+    },
+    {
+      "id": "cozy_ivone_itau",
+      "name": "Itaú Cultural — Ocupação Dona Ivone Lara",
+      "url": "https://www.itaucultural.org.br/ocupacao/dona-ivone-lara/",
+      "note": "Apresentação institucional de sua atuação como cantora, compositora e instrumentista.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-04",
+        "cozy-history-04-6",
+        "cozy-history-04-7",
+        "cozy-history-04-8",
+        "neighborhood-exhibit-57"
+      ]
+    },
+    {
+      "id": "cozy_rosana_pinacoteca",
+      "name": "Pinacoteca de São Paulo — Rosana Paulino: a costura da memória",
+      "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/",
+      "note": "Exposição de 2018–2019: memória familiar, representação negra e trabalho com fotografias em Parede da memória. Desenhos do jogo são originais.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-05",
+        "cozy-history-05-6",
+        "cozy-history-05-7",
+        "cozy-history-05-8",
+        "cozy-activity-caption",
+        "neighborhood-exhibit-58"
+      ]
+    },
+    {
+      "id": "cozy_auxiliadora_masp",
+      "name": "MASP — Maria Auxiliadora: vida cotidiana, pintura e resistência",
+      "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia",
+      "note": "Apresentação da exposição de 2018: vida cotidiana, cultura afro-brasileira e relevos na pintura. Não reproduzimos telas da artista.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-06",
+        "cozy-history-06-6",
+        "cozy-history-06-7",
+        "cozy-history-06-8",
+        "cozy-activity-sketch",
+        "neighborhood-exhibit-59"
+      ]
+    },
+    {
+      "id": "cozy_baianas_iphan",
+      "name": "Iphan, Bem Brasileiro — Ofício das baianas de acarajé",
+      "url": "https://bcr.iphan.gov.br/bens-culturais/oficio-das-baianas-de-acaraje/",
+      "note": "Registro nacional no Livro dos Saberes em 14/1/2005; conhecimentos culinários, religiosos e culturais. A prática é anterior ao reconhecimento institucional.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-07",
+        "cozy-history-07-6",
+        "cozy-history-07-7",
+        "cozy-history-07-8",
+        "cozy-chat-04",
+        "cozy-activity-craft"
+      ]
+    },
+    {
+      "id": "cozy_baianas_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "cozy-book-07",
+        "cozy-history-07-6",
+        "cozy-history-07-7",
+        "cozy-history-07-8",
+        "cozy-activity-craft"
+      ]
+    },
+    {
+      "id": "culture_ufu_trancas",
+      "name": "Letícia Ramos Ferreira — Tranças afro: identidade feminina negra e cultura visual no Ensino Fundamental, UFU (2021)",
+      "url": "https://repositorio.ufu.br/bitstream/123456789/33895/4/Tran%C3%A7asAfroIdentidade.pdf",
+      "note": "Referência técnica, p. 14. Síntese própria, sem reproduzir fotografias ou recomendações de saúde.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-01",
+        "culture-history-01-6",
+        "culture-history-01-7",
+        "culture-history-01-8",
+        "hair-nago",
+        "hair-box-braids",
+        "hair-twists"
+      ]
+    },
+    {
+      "id": "culture_ufmg_nilma",
+      "name": "UFMG, Literafro — Nilma Lino Gomes",
+      "url": "https://www.letras.ufmg.br/literafro/autoras/368-nilma-",
+      "note": "Apresenta a pesquisa da educadora sobre corpo, cabelo e identidade negra. A leitura do jogo é uma síntese própria, não um trecho de seus livros.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-02",
+        "culture-history-02-6",
+        "culture-history-02-7",
+        "culture-history-02-8",
+        "amara",
+        "hair-afro"
+      ]
+    },
+    {
+      "id": "culture_smithsonian_hair",
+      "name": "Smithsonian Center for Folklife and Cultural Heritage — It’s More Than “Just” Hair: Revitalization of Black Identity",
+      "url": "https://folklife.si.edu/magazine/black-hair-identity",
+      "note": "Referência situada nos Estados Unidos, sobre experiências pessoais, penteados naturais, tranças e locs. Seu contexto não é apresentado como história única de todas as culturas negras.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-02",
+        "culture-history-02-6",
+        "culture-history-02-7",
+        "culture-history-02-8",
+        "hair-locs",
+        "hair-afro"
+      ]
+    },
+    {
+      "id": "culture_negra_jho",
+      "name": "Secretaria de Comunicação da Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff (2011)",
+      "url": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
+      "note": "Documenta autoria e variedade na exposição Coroa de Ouro. Os turbantes desenhados para o jogo são composições originais, sem copiar peças da exposição ou atribuir-lhes funções rituais.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-03",
+        "culture-history-03-6",
+        "culture-history-03-7",
+        "culture-history-03-8",
+        "wrap-front-knot",
+        "wrap-side-fold",
+        "wrap-band"
+      ]
+    },
+    {
+      "id": "culture_baianas_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Referência para indumentária contextualizada, tabuleiro e trabalho das baianas. As referências a adereços religiosos não autorizam seu uso como ornamentação genérica.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-04",
+        "culture-book-05",
+        "culture-history-04-6",
+        "culture-history-04-7",
+        "culture-history-04-8",
+        "culture-history-05-6",
+        "culture-history-05-7",
+        "culture-history-05-8",
+        "clothes-baiana",
+        "cloth-pano-da-costa"
+      ]
+    },
+    {
+      "id": "culture_pano_cnfcp",
+      "name": "Iphan, Centro Nacional de Folclore e Cultura Popular — Pano-da-costa",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000770.htm",
+      "note": "Verbete institucional sobre a peça retangular de tecido e suas relações com a indumentária da baiana e contextos religiosos. Cores e usos pedem contexto.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-04",
+        "culture-history-04-6",
+        "culture-history-04-7",
+        "culture-history-04-8",
+        "clothes-baiana",
+        "cloth-pano-da-costa"
+      ]
+    },
+    {
+      "id": "culture_mab_roupa",
+      "name": "Museu Afro Brasil Emanoel Araujo — Indumentária",
+      "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
+      "note": "Classificação museológica que distingue contextos cotidianos e cerimoniais. As ilustrações de VOICES são originais e não reproduzem objetos ou fotografias do acervo.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-03",
+        "culture-book-06",
+        "culture-history-03-6",
+        "culture-history-03-7",
+        "culture-history-03-8",
+        "culture-history-06-6",
+        "culture-history-06-7",
+        "culture-history-06-8",
+        "wrap-band"
+      ]
+    },
+    {
+      "id": "culture_consea_comidas",
+      "name": "Ascom/Consea, Secretaria-Geral — No tabuleiro da baiana tem... (2016)",
+      "url": "https://www.gov.br/secretariageral/pt-br/consea/noticias/2016/no-tabuleiro-da-baiana-tem",
+      "note": "Consultados apenas os modos de preparo de acarajé e abará. O jogo não utiliza as narrativas de origem de outros pratos presentes na notícia.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-05",
+        "culture-history-05-6",
+        "culture-history-05-7",
+        "culture-history-05-8",
+        "viviane",
+        "food-acaraje",
+        "food-abara",
+        "ingredients-beans-dende"
+      ]
+    },
+    {
+      "id": "culture_fundaj_cocada",
+      "name": "Fundação Joaquim Nabuco, Pesquisa Escolar — Cocada",
+      "url": "https://pesquisaescolar.fundaj.gov.br/pt-br/artigo/cocada/",
+      "note": "Referência para coco, açúcar e variedade de receitas. Não se atribui uma origem única ao doce nem uma receita única a todas as famílias.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-05",
+        "culture-history-05-6",
+        "culture-history-05-7",
+        "culture-history-05-8",
+        "viviane",
+        "food-cocada"
+      ]
+    },
+    {
+      "id": "culture_senac_isa",
+      "name": "Senac São Paulo — Moda autoral no Brasil: Isaac Silva (2025)",
+      "url": "https://www.eventos.sp.senac.br/atividade/bate-papo-com-isaac-silva/",
+      "note": "Apresenta Isa Silva, estilista baiana e fundadora da marca Isaac Silva, e sua criação para corpos diversos. As roupas de VOICES não são reproduções de coleções ou endossos da marca.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-06",
+        "culture-history-06-6",
+        "culture-history-06-7",
+        "culture-history-06-8",
+        "clothes-cardigan",
+        "clothes-printed-blouse",
+        "clothes-overalls"
+      ]
+    },
+    {
+      "id": "culture_mab_candomble",
+      "name": "Museu Afro Brasil Emanoel Araujo — Saberes Ancestrais e Caminhos de Resistência: o Candomblé e seus sentidos (2025)",
+      "url": "https://museuafrobrasil.org.br/agenda/jornada-do-patrimonio-2025-palestra-saberes-ancestrais-e-caminhos-de-resistencia-o-candomble-e-seus-sentidos/",
+      "note": "Atividade educativa conduzida por liderança religiosa, com diferenças entre nações e saberes de comunidade. Não reproduzimos cantigas, rituais ou falas da participante.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-07",
+        "culture-history-07-6",
+        "culture-history-07-7",
+        "culture-history-07-8"
+      ]
+    },
+    {
+      "id": "culture_camara_umbanda",
+      "name": "Agência Câmara — Dia Nacional da Umbanda é aprovado pela Câmara (2008)",
+      "url": "https://www.camara.leg.br/noticias/115041-dia-nacional-da-umbanda-e-aprovado-pela-camara",
+      "note": "Consultados a apresentação da Umbanda e a diversidade de vertentes. O estado de tramitação do projeto de 2008 não é usado como informação jurídica atual.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-08",
+        "culture-history-08-6",
+        "culture-history-08-7",
+        "culture-history-08-8"
+      ]
+    },
+    {
+      "id": "culture_mir_respeito",
+      "name": "Ministério da Igualdade Racial — Política Nacional para Povos e Comunidades Tradicionais de Terreiro e Matriz Africana",
+      "url": "https://www.gov.br/igualdaderacial/pt-br/assuntos/programas-e-projetos/politica-nacional-para-povos-e-comunidades-tradicionais-de-terreiro-e-matriz-africana/politica-nacional-para-povos-e-comunidades-tradicionais-de-terreiro-e-matriz-africana",
+      "note": "Base para autodeterminação, respeito aos saberes comunitários e enfrentamento do racismo religioso. A atividade é educativa e não exige revelar crenças pessoais.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-08",
+        "culture-history-07-6",
+        "culture-history-07-7",
+        "culture-history-07-8",
+        "culture-history-08-6",
+        "culture-history-08-7",
+        "culture-history-08-8",
+        "roots-diversity"
+      ]
+    },
+    {
+      "id": "culture_mafro_religioes",
+      "name": "Museu Afro-Brasileiro da UFBA, Centro de Estudos Afro-Orientais — Material do professor: Religiosidade Afro-Brasileira",
+      "url": "https://mafro.ceao.ufba.br/sites/mafro.ceao.ufba.br/files/material_do_professor_-_afro-brasileiro.pdf",
+      "note": "Material institucional sobre tradições e divindades do Candomblé. Síntese própria; sem reprodução de imagens, cantigas, rituais ou descrições de procedimentos religiosos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-07",
+        "culture-history-07-6",
+        "culture-history-07-7",
+        "culture-history-07-8",
+        "roots-candomble"
+      ]
+    },
+    {
+      "id": "culture_curitiba_umbanda",
+      "name": "Prefeitura de Curitiba — Em Curitiba, terreiros pregam respeito e tolerância no Dia Nacional da Umbanda (2023)",
+      "url": "https://www.curitiba.pr.gov.br/noticias/em-curitiba-terreiros-pregam-respeito-e-tolerancia-no-dia-nacional-da-umbanda/71185",
+      "note": "Registro de um encontro público, com participação de seis terreiros e curimbas. A leitura distingue esse evento de uma descrição de todas as comunidades umbandistas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-08",
+        "culture-history-08-6",
+        "culture-history-08-7",
+        "culture-history-08-8"
+      ]
+    },
+    {
+      "id": "wardrobe_ipac",
+      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
+      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
+      "note": "Referência para saia rodada, bata, torço e pano da costa no contexto do ofício. Não copiamos fotografias, tecidos ou adereços rituais.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "wardrobe_negra_jho",
+      "name": "SECOM Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff",
+      "url": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
+      "note": "Referência de autoria e variedade de composições. As amarrações de VOICES são desenhos cotidianos originais; não reproduzem peças da exposição nem lhes atribuem significado ritual.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "wrap-high-fold",
+        "wrap-tied-back"
+      ]
+    },
+    {
+      "id": "wardrobe_mab",
+      "name": "Museu Afro Brasil Emanoel Araujo — Indumentária",
+      "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
+      "note": "Referência para distinguir peças do cotidiano e contextos cerimoniais. Os cortes, estampas e acessórios apresentados são desenhos originais do jogo.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-wrap-dress",
+        "clothes-flowing-dress",
+        "clothes-loose-shirt",
+        "clothes-long-skirt",
+        "clothes-cropped-jacket",
+        "clothes-agbada-olive",
+        "clothes-mens-yellow",
+        "clothes-mens-black",
+        "clothes-dress-red-green",
+        "clothes-dress-yellow",
+        "clothes-dress-black",
+        "clothes-dress-teal",
+        "clothes-dress-green"
+      ]
+    },
+    {
+      "id": "coast_duke_iemanja",
+      "name": "Duke University — Sacred Arts of the Black Atlantic: figure of the Goddess Iemanjá (C018)",
+      "url": "https://sacredart.caaar.duke.edu/artifacts/figure-of-the-goddess-iemanja/",
+      "note": "Ficha de uma figura turística de um contexto de Candomblé, com pele negra, vestido branco, metal prateado, coroa, véu de contas e abebé. Referência contextual; nenhuma fotografia, objeto ou ornamento do acervo foi copiado. Não se trata de uma descrição universal.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "coast-book-iemanja",
+        "coast-history-01-6",
+        "coast-history-01-7",
+        "coast-history-01-8",
+        "iemanja"
+      ]
+    },
+    {
+      "id": "coast_salvador_festa",
+      "name": "Prefeitura de Salvador, portal Salvador da Bahia — Festa de Iemanjá",
+      "url": "https://www.salvadordabahia.com/festa-de-iemanja/",
+      "note": "Consultados a data de 2 de fevereiro, o bairro do Rio Vermelho e o papel da Colônia de Pescadores. Não usamos recomendações de rituais, horários atuais ou descrições de personalidades atribuídas a adeptos.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "coast-book-iemanja",
+        "coast-history-01-6",
+        "coast-history-01-7",
+        "coast-history-01-8"
+      ]
+    },
+    {
+      "id": "coast_iphan_bembe",
+      "name": "Iphan, Bem Brasileiro — Bembé do Mercado",
+      "url": "https://bcr.iphan.gov.br/bens-culturais/bembe-do-mercado/",
+      "note": "Celebração específica de Santo Amaro, Bahia, conduzida por casas de Candomblé, que relaciona liberdade, memória e homenagens a Iemanjá e Oxum. Não é apresentada como a Festa do Rio Vermelho nem como celebração de todas as religiões.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "coast_icmbio_fauna",
+      "name": "ICMBio, APA de Cairuçu — Respeite os animais e as plantas",
+      "url": "https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/marinho/lista-de-ucs/apa-de-cairucu/informacoes-sobre-visitacao-apa-de-cairucu/respeite-os-animais-e-as-plantas",
+      "note": "Orientações públicas para observar animais a distância, não oferecer alimento e manter flores e plantas silvestres no local. A praia de VOICES é ficcional e não reproduz esta unidade de conservação.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "coast-book-shared-care",
+        "coast-note-observation",
+        "coast-history-02-6",
+        "coast-history-02-7",
+        "coast-history-02-8",
+        "coast-history-03-6",
+        "coast-history-03-7",
+        "coast-history-03-8"
+      ]
+    },
+    {
+      "id": "neighbors_breed_poodle",
+      "name": "American Kennel Club — Poodle",
+      "url": "https://www.akc.org/dog-breeds/poodle-standard/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "neighbors_breed_dachshund",
+      "name": "American Kennel Club — Dachshund",
+      "url": "https://www.akc.org/dog-breeds/dachshund/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "neighbors_breed_beagle",
+      "name": "American Kennel Club — Beagle",
+      "url": "https://www.akc.org/dog-breeds/beagle/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "neighbors_breed_siberian-husky",
+      "name": "American Kennel Club — Husky siberiano",
+      "url": "https://www.akc.org/dog-breeds/siberian-husky/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "neighbors_breed_boxer",
+      "name": "American Kennel Club — Boxer",
+      "url": "https://www.akc.org/dog-breeds/boxer/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "neighbors_breed_shih-tzu",
+      "name": "American Kennel Club — Shih-tzu",
+      "url": "https://www.akc.org/dog-breeds/shih-tzu/",
+      "note": "Referência para nome e características visuais da raça; pixels originais. Nenhuma fotografia ou descrição de temperamento foi reproduzida.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "protest-origin",
+      "name": "Black Lives Matter · origem e princípios",
+      "url": "https://blacklivesmatter.com/about/",
+      "note": "Fonte do movimento para sua origem em 2013 e o reconhecimento de vidas, cultura e contribuições negras.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "community-protest"
+      ]
+    },
+    {
+      "id": "protest-museum-plaza",
+      "name": "Smithsonian NMAAHC · placa de Black Lives Matter Plaza",
+      "url": "https://nmaahc.si.edu/object/nmaahc_2025.32",
+      "note": "Registro de uma placa de 2020 e contexto das manifestações em Washington, D.C. A cena do jogo não reproduz esse lugar.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "community-protest"
+      ]
+    },
+    {
+      "id": "roots-orixa",
+      "name": "CNFCP/Iphan · Orixá",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000467.htm",
+      "note": "Divindades, ancestralidade e relações com a natureza; os significados variam entre tradições.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-entities"
+      ]
+    },
+    {
+      "id": "roots-umbanda",
+      "name": "CNFCP/Iphan · Umbanda",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000054.htm",
+      "note": "Referência introdutória. As casas de Umbanda têm histórias e formas de organização diversas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-08",
+        "roots-umbanda"
+      ]
+    },
+    {
+      "id": "roots-candomble",
+      "name": "CNFCP/Iphan · Candomblé",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000567.htm",
+      "note": "Introdução ao sistema religioso e aos terreiros. A leitura do jogo também distingue nações e comunidades.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-07",
+        "roots-candomble"
+      ]
+    },
+    {
+      "id": "roots-exu",
+      "name": "CNFCP/Iphan · Exu",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000599.htm",
+      "note": "Exu como orixá ligado à comunicação e à guarda dos caminhos; a entidade Exu da Umbanda exige outro contexto.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-entities"
+      ]
+    },
+    {
+      "id": "roots-entities",
+      "name": "USP · Entidades e diversidade na Umbanda",
+      "url": "https://revistas.usp.br/rieb/pt_BR/article/view/107220",
+      "note": "Pesquisa de campo sobre Pombagira, relações de gênero e diversidade das experiências nos terreiros.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-umbanda",
+        "roots-entities",
+        "roots-diversity"
+      ]
+    },
+    {
+      "id": "roots-baianos",
+      "name": "USP/Paideia · Os baianos na Umbanda",
+      "url": "https://www.scielo.br/j/paideia/a/8NHPxgxXCGcQrNcdpcnXMFD/?lang=pt",
+      "note": "Estudo sobre baianos, memória e referências nordestinas, sem equivaler uma entidade a toda uma população.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-umbanda"
+      ]
+    },
+    {
+      "id": "roots-ogum",
+      "name": "CNFCP/Iphan · Ogum",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000619.htm",
+      "note": "Ferro, ferramentas, trabalho e guerra nos contextos do orixá.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-orixas"
+      ]
+    },
+    {
+      "id": "roots-iemanja",
+      "name": "CNFCP/Iphan · Iemanjá",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000613.htm",
+      "note": "Águas e maternidade; associações e narrativas têm diferenças entre tradições.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "coast-book-iemanja",
+        "roots-orixas"
+      ]
+    },
+    {
+      "id": "roots-xango",
+      "name": "CNFCP/Iphan · Xangô",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000706.htm",
+      "note": "Justiça, raio e trovão.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-orixas"
+      ]
+    },
+    {
+      "id": "roots-iansa",
+      "name": "CNFCP/Iphan · Iansã/Oyá",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000600.htm",
+      "note": "Ventos, raios e tempestades.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-orixas"
+      ]
+    },
+    {
+      "id": "roots-oxossi",
+      "name": "CNFCP/Iphan · Oxóssi",
+      "url": "https://antigo.cnfcp.gov.br/tesauro/00000687.htm",
+      "note": "Matas, caça e relações com a natureza.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-orixas"
+      ]
+    },
+    {
+      "id": "roots-health",
+      "name": "Fiocruz/ENSP · Plantas medicinais e fitoterápicos",
+      "url": "https://naf.ensp.fiocruz.br/pt-br/plantas-medicinais-e-fitoterapicos-como-usar-com-seguranca",
+      "note": "Saberes tradicionais, identificação, uso seguro e cuidados. Os efeitos das poções de VOICES são mecânicas de fantasia.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-herbs"
+      ]
+    },
+    {
+      "id": "roots-memory",
+      "name": "Ibram/MuseusBr · Templo do Orixá Exu",
+      "url": "https://cadastro.museus.gov.br/pontos-de-memoria/templo-do-orixa-exu/",
+      "note": "Memória social, participação comunitária e enfrentamento da intolerância religiosa.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "roots-candomble",
+        "roots-diversity"
+      ]
+    },
+    {
+      "id": "protest-ferguson",
+      "name": "Black Lives Matter · Herstory",
+      "url": "https://blacklivesmatter.com/herstory/",
+      "note": "Relato histórico do movimento sobre a atuação coletiva em Ferguson em 2014 e a participação de mulheres e pessoas LGBTQ+.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "community-protest"
+      ]
+    },
+    {
+      "id": "protest-museum-signs",
+      "name": "Smithsonian NMAAHC · manifestações e cartazes de 2020",
+      "url": "https://nmaahc.si.edu/object/nmaahc_2021.31.70",
+      "note": "Registro de uma fotografia de Tommy Oliver em Los Angeles em 2020. A fotografia não foi copiada; os sprites e cartazes do jogo são originais.",
+      "accessed": "2026-10-20",
+      "usedBy": []
+    },
+    {
+      "id": "culture_getty_elements",
+      "name": "Getty — Elementos da arte",
+      "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html",
+      "note": "Linha, forma, espaço, cor e textura; apoio à observação das imagens.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-cardigan",
+        "clothes-overalls",
+        "clothes-wrap-dress",
+        "clothes-flowing-dress",
+        "clothes-loose-shirt",
+        "clothes-long-skirt",
+        "clothes-cropped-jacket",
+        "clothes-mens-yellow",
+        "clothes-mens-black",
+        "clothes-dress-red-green",
+        "clothes-dress-yellow",
+        "clothes-dress-black",
+        "masks-wood",
+        "culture-book-11"
+      ]
+    },
+    {
+      "id": "culture_getty_design",
+      "name": "Getty — Princípios de composição",
+      "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis2.html",
+      "note": "Equilíbrio, destaque e percurso do olhar.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "sculpture-bird",
+        "sculpture-curved"
+      ]
+    },
+    {
+      "id": "culture_getty_vocabulary",
+      "name": "Getty — Vocabulário para descrever uma obra",
+      "url": "https://www.getty.edu/education/k-12-learning/describe-listen-draw/vocabulary-for-describing-an-artwork/",
+      "note": "Simetria, ritmo, padrão e proporção.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-dress-green",
+        "face-paint-shells",
+        "face-paint-orange",
+        "face-paint-yellow",
+        "face-paint-beige",
+        "sculpture-pair",
+        "culture-book-11"
+      ]
+    },
+    {
+      "id": "culture_vam_archives",
+      "name": "V&A — Archives of knowledge",
+      "url": "https://lookup.vam.ac.uk/east-storehouse/storagedisplays/USE2146/",
+      "note": "Kente de tiras tecidas e ankara de algodão estampado.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-printed-blouse",
+        "clothes-dress-teal",
+        "culture-book-06",
+        "culture-book-09"
+      ]
+    },
+    {
+      "id": "culture_vam_weaving",
+      "name": "V&A — Como se tece uma tapeçaria",
+      "url": "https://www.vam.ac.uk/articles/what-is-tapestry",
+      "note": "Urdume, trama e função do tear.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-09"
+      ]
+    },
+    {
+      "id": "culture_met_agbada",
+      "name": "Metropolitan Museum — Agbádá, veste cerimonial",
+      "url": "https://www.metmuseum.org/art/collection/search/650308",
+      "note": "Peça documentada e denominações agbada, riga e boubou; referência de comparação, não identificação do desenho.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-agbada-olive"
+      ]
+    },
+    {
+      "id": "culture_unesco_gelede",
+      "name": "UNESCO — Patrimônio oral Gèlèdé",
+      "url": "https://ich.unesco.org/en/RL/oral-heritage-of-gelede-00002",
+      "note": "Comunidades iorubá-nagô do Benim, Nigéria e Togo; máscaras, canto e dança.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "masks-color",
+        "culture-book-10"
+      ]
+    },
+    {
+      "id": "culture_masp_agnaldo",
+      "name": "MASP — Figura com criança, de Agnaldo Manoel dos Santos",
+      "url": "https://www.masp.org.br/masp-escola/um-panorama-da-arte-no-brasil-a-partir-do-acervo-do-masp-2a-edicao",
+      "note": "Artista e obra indicados no programa de estudos do acervo; referência para conhecer outra obra.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "sculpture-kneeling",
+        "culture-book-11"
+      ]
+    },
+    {
+      "id": "culture_nmaahc_afro",
+      "name": "Smithsonian NMAAHC — Black is Beautiful",
+      "url": "https://nmaahc.si.edu/explore/stories/black-beautiful-emergence-black-culture-and-identity-60s-and-70s",
+      "note": "Afro e valorização da beleza negra nos anos 1960 e 1970.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "hair-afro"
+      ]
+    },
+    {
+      "id": "culture_nmaahc_hair",
+      "name": "Smithsonian NMAAHC — Strands of Inspiration",
+      "url": "https://nmaahc.si.edu/explore/stories/strands-of-inspiration",
+      "note": "Relatos, cabelo e construção da identidade negra.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "hair-locs"
+      ]
+    },
+    {
+      "id": "culture_minc_baianas",
+      "name": "Ministério da Cultura — Ofício das Baianas de Acarajé",
+      "url": "https://www.gov.br/cultura/pt-br/assuntos/noticias-defeso-eleitoral/oficio-das-baianas-de-acaraje-mantem-vivos-saberes-de-matriz-africana-transmitidos-entre-geracoes",
+      "note": "Registro em 2005, preparo, indumentária e transmissão de saberes.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "clothes-baiana",
+        "food-acaraje",
+        "ingredients-beans-dende",
+        "culture-book-04"
+      ]
+    },
+    {
+      "id": "culture_smithsonian_adorn",
+      "name": "Smithsonian — The Will to Adorn, Festival de 2013",
+      "url": "https://folklife.si.edu/will-to-adorn/our-research/folklife-festival",
+      "note": "Pesquisa e demonstrações sobre vestuário e identidades afro-americanas.",
+      "accessed": "2026-10-20",
+      "usedBy": [
+        "culture-book-06"
+      ]
+    },
+    {
+      "id": "field-dog-smell",
+      "name": "American Kennel Club · Como os cães exploram cheiros",
+      "url": "https://www.akc.org/expert-advice/training/why-does-my-dog-sniff-everything/",
+      "note": "Olfato e exploração do ambiente por cães.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-dog"
+      ]
+    },
+    {
+      "id": "field-cat-whiskers",
+      "name": "VCA Animal Hospitals · Bigodes dos gatos",
+      "url": "https://vcahospitals.com/know-your-pet/why-do-cats-have-whiskers",
+      "note": "Função sensorial das vibrissas.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-cat"
+      ]
+    },
+    {
+      "id": "field-pigeon",
+      "name": "Cornell Lab of Ornithology · Pombo-doméstico",
+      "url": "https://www.allaboutbirds.org/guide/Rock_Pigeon/lifehistory",
+      "note": "Alimentação no solo, sementes, frutos e uso de construções.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-pigeon"
+      ]
+    },
+    {
+      "id": "field-birds",
+      "name": "Natural History Museum · A evolução do voo das aves",
+      "url": "https://www.nhm.ac.uk/discover/how-did-birds-and-other-dinosaurs-learn-to-fly.html",
+      "note": "Penas, asas e aves que não voam.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-bird"
+      ]
+    },
+    {
+      "id": "field-duck",
+      "name": "Cornell Lab of Ornithology · Pato-real",
+      "url": "https://www.allaboutbirds.org/guide/Mallard/lifehistory",
+      "note": "Lagos, alimentação na superfície e vegetação aquática.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-duck"
+      ]
+    },
+    {
+      "id": "field-butterfly",
+      "name": "American Museum of Natural History · Borboletas",
+      "url": "https://www.amnh.org/exhibitions/butterflies/butterfly-behavior",
+      "note": "Néctar, probóscide e transporte de pólen.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-butterfly"
+      ]
+    },
+    {
+      "id": "field-crab",
+      "name": "Smithsonian Ocean · Brânquias dos caranguejos",
+      "url": "https://ocean.si.edu/ocean-life/invertebrates/green-crabs-super-power-eating-through-its-gills",
+      "note": "Exoesqueleto e trocas de oxigênio pelas brânquias.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-crab",
+        "field-turtle",
+        "field-fish"
+      ]
+    },
+    {
+      "id": "field-gull",
+      "name": "Cornell Lab of Ornithology · Gaivota-prateada americana",
+      "url": "https://www.allaboutbirds.org/guide/Herring_Gull/lifehistory",
+      "note": "Exemplo de gaivota: litoral, alimentação variada e repouso em áreas abertas.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-gull"
+      ]
+    },
+    {
+      "id": "field-turtle",
+      "name": "Smithsonian Ocean · Tartarugas marinhas",
+      "url": "https://ocean.si.edu/ocean-life/reptiles/sea-turtles",
+      "note": "Répteis marinhos que respiram ar e precisam alcançar a superfície.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "field-turtle",
+        "field-fish"
+      ]
+    },
+    {
+      "id": "community-kew-labels",
+      "name": "Royal Botanic Gardens, Kew · Why are the Plants Labeled?",
+      "url": "https://apps.kew.org/herbcat/gotoWhyPlantsLabeled.do",
+      "note": "Referência de identificação e registro botânico; as cenas e os objetos de New Harmony são ilustrações originais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "community-herbarium-cabinet"
+      ]
+    },
+    {
+      "id": "community-ms-plant-records",
+      "name": "Ministério da Saúde · Monografias de plantas medicinais",
+      "url": "https://www.gov.br/saude/pt-br/composicao/sectics/plantas-medicinais-e-fitoterapicos/plantas-medicinais-e-fitoterapicos-no-sus/monografias/monografias",
+      "note": "Referência de identificação e registro botânico; as cenas e os objetos de New Harmony são ilustrações originais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "community-jar-cart"
+      ]
+    }
+  ]
+}

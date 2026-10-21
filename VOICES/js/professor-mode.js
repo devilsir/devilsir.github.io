@@ -7,7 +7,7 @@ const validPath=path=>/^(?:assets\/[a-zA-Z0-9_./-]+\.png)$/.test(path)&&!path.in
 const stringOK=s=>typeof s==='string'&&s.length<=maxText&&!/[\u0000-\u0008\u000e-\u001f]/.test(s);
 const strMap=new Map(),baselineFields=new Map();let project={version:1,text:{},fields:{}};
 const slices=s=>s.split('|');
-function targetFor(key){const bits=slices(key);const allowed=new Set(['content','learning','cozyContent','culturalContent','wardrobeContent','heritageContent','editorialContent','neighborsContent','regionalContent','translationContent','protestContent','coastContent','campusContent','AncestralData','CultureChallengeData']);if(bits.length<2||!allowed.has(bits[0])||bits.some(b=>['__proto__','prototype','constructor'].includes(b)))return null;let parent=V[bits[0]];for(let i=1;i<bits.length-1;i++){if(!parent||typeof parent!=='object'||!Object.prototype.hasOwnProperty.call(parent,bits[i]))return null;parent=parent[bits[i]];}const name=bits.at(-1);return parent&&Object.prototype.hasOwnProperty.call(parent,name)&&typeof parent[name]==='string'?{parent,name}:null;}
+function targetFor(key){const bits=slices(key);const allowed=new Set(['content','learning','cozyContent','culturalContent','wardrobeContent','heritageContent','editorialContent','neighborsContent','regionalContent','translationContent','protestContent','coastContent','campusContent','fieldGuideContent','AncestralData','CultureChallengeData']);if(bits.length<2||!allowed.has(bits[0])||bits.some(b=>['__proto__','prototype','constructor'].includes(b)))return null;let parent=V[bits[0]];for(let i=1;i<bits.length-1;i++){if(!parent||typeof parent!=='object'||!Object.prototype.hasOwnProperty.call(parent,bits[i]))return null;parent=parent[bits[i]];}const name=bits.at(-1);return parent&&Object.prototype.hasOwnProperty.call(parent,name)&&typeof parent[name]==='string'?{parent,name}:null;}
 function substitute(s){if(typeof s!=='string')return s;return strMap.has(s)?strMap.get(s):s;}
 function persist(){V.Save.write(KEY,project);}
 function loadProject(){const d=V.Save.read(KEY,null);if(d&&d.version===1&&d.text&&typeof d.text==='object'&&d.fields&&typeof d.fields==='object'){
@@ -89,7 +89,7 @@ const LIBRARY_ROOTS=[
  ['heritageContent','Memória e patrimônio'],['editorialContent','Biblioteca e jornal'],
  ['neighborsContent','Vizinhança'],['regionalContent','Regiões'],['translationContent','Idiomas'],
  ['protestContent','Manifestações'],['coastContent','Litoral'],['campusContent','Escola'],
- ['AncestralData','Historiográfo'],['CultureChallengeData','Desafios culturais']
+ ['fieldGuideContent','Caderno de campo'],['AncestralData','Historiográfo'],['CultureChallengeData','Desafios culturais']
 ];
 const libraryRootSet=new Set(LIBRARY_ROOTS.map(r=>r[0]));
 const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
@@ -97,6 +97,7 @@ const libraryGroupKey=k=>/^(id|key|sprite|asset|assets|path|image|images|url|uri
 const libraryTextEligible=(k,v)=>typeof v==='string'&&v.trim().length>=2&&v.length<=maxText&&!/^(?:assets\/|https?:\/\/|data:|#[0-9a-f]{3,8}$)/i.test(v)&&!/^[-_.\w/]+\.(?:png|webp|svg|mp3|wav|jpg|json)$/i.test(v)&&!libraryGroupKey(k);
 function categoryFor(root,parts,field){
  const path=parts.map(v=>String(v).toLowerCase());const k=String(field).toLowerCase();
+ if(root==='fieldGuideContent')return path.includes('sources')?'sources':['en','pt','word'].includes(k)?'translations':'descriptions';
  if(root==='translationContent')return 'translations';
  if(root==='CultureChallengeData')return 'questions';
  if(path.some(v=>/^(resolution|resolutions|introduction|intro|epilogue|prologue|script|scripts|narration|dialogues|dialogue|responses|reply|replies|monologue|talk|speeches|repeat|conversation|conversations|lines|say|speech|talks|chats|greetings|farewell)$/.test(v)))return 'npc';

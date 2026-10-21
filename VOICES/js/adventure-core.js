@@ -37,7 +37,18 @@ a.clock.cycleMinutes=V.clamp(Number(a.clock.cycleMinutes)||24,2,240);
 this.migrated.add(s);
 return a;
 },
-ensure(){return V.state?this.migrate(V.state):null;},
+ensure(){
+if(!V.state)return null;
+const a=this.migrate(V.state),s=a.story,flags=V.state.flags||={};
+// Older saves and the teacher's free exploration may already have chapters
+// completed even though the opening story was created in its initial state.
+if((V.state.completed?.length||V.state.finished)&&['museum','night','firstbattle'].includes(s.stage)){s.met=true;s.stage=V.state.finished?'epilogue':'awake';}
+if(s.met&&['museum','night','firstbattle'].includes(s.stage))s.stage=V.state.finished?'epilogue':'awake';
+if(['awake','epilogue'].includes(s.stage))s.met=true;
+if(s.met||s.awakened||['night','firstbattle','awake','epilogue'].includes(s.stage))flags.prologueStarted=true;
+if(s.met){s.awakened=true;flags.prologueDone=true;}
+return a;
+},
 bonus(stat,a=this.ensure()){return D.passives.reduce((n,p)=>n+(p.stat===stat?(a.passives[p.id]||0)*p.value:0),0);},
 stats(a=this.ensure()){
 if(!a)return{};

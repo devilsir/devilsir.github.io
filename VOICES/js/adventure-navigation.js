@@ -21,7 +21,7 @@ return out;
 mapRoute(from,to,includeLocked=false){
 const queue=[{id:from,path:[]}],seen=new Set([from]);for(let i=0;i<queue.length;i++){const n=queue[i];if(n.id===to)return n.path;for(const e of this.edges(n.id,includeLocked)){if(!seen.has(e.to)){seen.add(e.to);queue.push({id:e.to,path:n.path.concat(e)});}}}return null;
 },
-find(id,map){const maps=map?[V.World.maps[map]]:Object.values(V.World.maps);for(const m of maps){const o=m?.objects.find(o=>o.id===id);if(o)return{map:m.id,object:o};}return null;},
+find(id,map){if(id==='zambeto-first'||id?.startsWith('zambeto-companion-'))return V.Story.guardianTarget();const maps=map?[V.World.maps[map]]:Object.values(V.World.maps);for(const m of maps){const o=m?.objects.find(o=>o.id===id);if(o)return{map:m.id,object:o};}return null;},
 main(chapter=null){
 const a=V.Progress.ensure();if(!a)return null;
 const opening=V.Story?.objective();if(opening)return opening;
@@ -39,7 +39,7 @@ const next=V.content.chapters.find(c=>!V.state.completed.includes(c.id)&&V.Quest
 if(next&&next.id!==id)return this.main(next.id);
 return{map:'museum',object:V.World.maps.museum.objects.find(o=>o.id==='archive-epilogue'),key:'epilogue',label:'Revisitar o arquivo e conversar sobre o futuro'};
 },
-objective(){const a=V.Progress.ensure();if(a?.tracked?.destination){const map=V.World.maps[a.tracked.destination];if(map){if(map===V.World.current){a.tracked=null;return this.main();}const object=map.objects.find(o=>['exit','travel','door','portal'].includes(o.type))||{id:'destination',x:map.width*24,y:map.height*24};return{map:map.id,object,key:'destination-'+map.id,label:'Seguir até '+map.name.split(' · ')[0]};}}if(a?.tracked?.object){const found=this.find(a.tracked.object,a.tracked.map);if(found)return{...found,key:'custom-'+a.tracked.object,label:a.tracked.label||found.object.label};}return this.main();},
+objective(){const a=V.Progress.ensure();if(a?.tracked?.destination){const map=V.World.maps[a.tracked.destination];if(map){if(map===V.World.current){a.tracked=null;return this.main();}const object=map.objects.find(o=>['exit','travel','door','portal'].includes(o.type))||{id:'destination',x:map.width*24,y:map.height*24};return{map:map.id,object,key:'destination-'+map.id,label:'Seguir até '+map.name.split(' · ')[0]};}}if(a?.tracked?.object){const found=this.find(a.tracked.object,a.tracked.map);if(found)return{...found,key:'custom-'+a.tracked.object,label:(a.tracked.object==='zambeto-first'||a.tracked.object.startsWith('zambeto-companion-'))?(found.object.id==='historiograph-awakening'?'Examinar os nomes apagados antes do encontro com Zambeto':a.story.met?'Conversar com Zambeto'+(found.object.first?' no pátio':''):'Encontrar Zambeto no pátio · aguarde até as 19h se necessário'):a.tracked.label||found.object.label};}return this.main();},
 track(chapter=null,object=null,map=null){const a=V.Progress.ensure();if(!a)return;a.tracked=object?{object,map}:chapter?{chapter}:null;this.signature='';this.timer=0;V.Save.save();V.UI.toast('Objetivo rastreado. O caminho segue passagens acessíveis.');},
 clear(m,x,y,r=12){return!V.Living.blocked(m,x,y,r);},
 line(m,a,b,people=[]){const steps=Math.max(1,Math.ceil(V.dist(a,b)/7));for(let i=0;i<=steps;i++){const x=a.x+(b.x-a.x)*i/steps,y=a.y+(b.y-a.y)*i/steps;if(!this.clear(m,x,y)||people.some(o=>Math.hypot(x-o.x,y-o.y)<24))return false;}return true;},

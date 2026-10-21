@@ -31,7 +31,7 @@ else if(d.kind==='light')E.drawFixture(ctx,d.o,cam,m);
 else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-o.size&&x<ctx.canvas.width+80&&y>-o.size&&y<ctx.canvas.height+100){if(m.id==='garden'&&o.family==='world'&&o.prop===1)C.gardenBed(ctx,o,cam);else D.drawDecor(ctx,o,cam);}}
 }
 A.drawSigns(ctx,m,cam);E.drawWindows(ctx,m,cam);C.progressDetails(ctx,m,cam);const p=V.Player.data;
-if(V.state.flags.prologueStarted)V.Assets.sprite(ctx,'pix',p.x-cam.x-38,p.y-cam.y-37+(V.settings.reducedMotion?0:Math.sin(V.Engine.time*2)*2),0,0,34);
+if(V.PixPresence.following())V.PixPresence.draw(ctx,p,cam);
 const icon=V.Assets.images['item-device'];if(icon&&P.ensure().story.awakened)ctx.drawImage(icon,p.x-cam.x+11,p.y-cam.y-29,16,16);
 V.Engine.drawParticles(ctx,cam);S.drawPulse(ctx,cam);
 if(!V.SceneEditor.active||E.preview?.enabled){E.lighting(ctx,m,cam);E.weatherDraw(ctx,m,cam);}

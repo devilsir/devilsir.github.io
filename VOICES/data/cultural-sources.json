@@ -1,95 +1,72 @@
 {
-  "version": "1.4",
+  "version": "3.0",
   "readings": [
     {
-      "id": "culture_ufu_trancas",
-      "name": "Letícia Ramos Ferreira — Tranças afro: identidade feminina negra e cultura visual no Ensino Fundamental, UFU (2021)",
-      "url": "https://repositorio.ufu.br/bitstream/123456789/33895/4/Tran%C3%A7asAfroIdentidade.pdf",
-      "note": "Referência técnica, p. 14. Síntese própria, sem reproduzir fotografias ou recomendações de saúde."
+      "id": "culture-book-01",
+      "title": "Trançar também é projetar",
+      "sourceIds": [
+        "culture_ufu_trancas"
+      ]
     },
     {
-      "id": "culture_ufmg_nilma",
-      "name": "UFMG, Literafro — Nilma Lino Gomes",
-      "url": "https://www.letras.ufmg.br/literafro/autoras/368-nilma-",
-      "note": "Apresenta a pesquisa da educadora sobre corpo, cabelo e identidade negra. A leitura do jogo é uma síntese própria, não um trecho de seus livros."
+      "id": "culture-book-02",
+      "title": "Meu cabelo, minhas escolhas",
+      "sourceIds": [
+        "culture_ufmg_nilma",
+        "culture_smithsonian_hair"
+      ]
     },
     {
-      "id": "culture_smithsonian_hair",
-      "name": "Smithsonian Center for Folklife and Cultural Heritage — It’s More Than “Just” Hair: Revitalization of Black Identity",
-      "url": "https://folklife.si.edu/magazine/black-hair-identity",
-      "note": "Referência situada nos Estados Unidos, sobre experiências pessoais, penteados naturais, tranças e locs. Seu contexto não é apresentado como história única de todas as culturas negras."
+      "id": "culture-book-03",
+      "title": "Um tecido, muitas escolhas",
+      "sourceIds": [
+        "culture_negra_jho",
+        "culture_mab_roupa"
+      ]
     },
     {
-      "id": "culture_negra_jho",
-      "name": "Secretaria de Comunicação da Bahia — Negra Jhô expõe turbantes no Museu Udo Knoff (2011)",
-      "url": "https://www.ba.gov.br/comunicacao/2011/11/noticias/negra-jho-expoe-turbantes-no-museu-udo-knoff",
-      "note": "Documenta autoria e variedade na exposição Coroa de Ouro. Os turbantes desenhados para o jogo são composições originais, sem copiar peças da exposição ou atribuir-lhes funções rituais."
+      "id": "culture-book-04",
+      "title": "Cada peça tem contexto",
+      "sourceIds": [
+        "culture_baianas_ipac",
+        "culture_pano_cnfcp"
+      ]
     },
     {
-      "id": "culture_baianas_ipac",
-      "name": "IPAC Bahia — Ofício das Baianas do Acarajé",
-      "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
-      "note": "Referência para indumentária contextualizada, tabuleiro e trabalho das baianas. As referências a adereços religiosos não autorizam seu uso como ornamentação genérica."
+      "id": "culture-book-05",
+      "title": "Três fichas no tabuleiro",
+      "sourceIds": [
+        "culture_consea_comidas",
+        "culture_fundaj_cocada",
+        "culture_baianas_ipac"
+      ]
     },
     {
-      "id": "culture_pano_cnfcp",
-      "name": "Iphan, Centro Nacional de Folclore e Cultura Popular — Pano-da-costa",
-      "url": "https://antigo.cnfcp.gov.br/tesauro/00000770.htm",
-      "note": "Verbete institucional sobre a peça retangular de tecido e suas relações com a indumentária da baiana e contextos religiosos. Cores e usos pedem contexto."
+      "id": "culture-book-06",
+      "title": "Roupa também tem autoria",
+      "sourceIds": [
+        "culture_senac_isa",
+        "culture_mab_roupa"
+      ]
     },
     {
-      "id": "culture_mab_roupa",
-      "name": "Museu Afro Brasil Emanoel Araujo — Indumentária",
-      "url": "https://museuafrobrasil.org.br/classificacao/indumentaria/",
-      "note": "Classificação museológica que distingue contextos cotidianos e cerimoniais. As ilustrações de VOICES são originais e não reproduzem objetos ou fotografias do acervo."
+      "id": "culture-book-07",
+      "title": "Conhecer uma comunidade de terreiro",
+      "sourceIds": [
+        "culture_mafro_religioes",
+        "culture_mab_candomble",
+        "roots-candomble"
+      ]
     },
     {
-      "id": "culture_consea_comidas",
-      "name": "Ascom/Consea, Secretaria-Geral — No tabuleiro da baiana tem... (2016)",
-      "url": "https://www.gov.br/secretariageral/pt-br/consea/noticias/2016/no-tabuleiro-da-baiana-tem",
-      "note": "Consultados apenas os modos de preparo de acarajé e abará. O jogo não utiliza as narrativas de origem de outros pratos presentes na notícia."
-    },
-    {
-      "id": "culture_fundaj_cocada",
-      "name": "Fundação Joaquim Nabuco, Pesquisa Escolar — Cocada",
-      "url": "https://pesquisaescolar.fundaj.gov.br/pt-br/artigo/cocada/",
-      "note": "Referência para coco, açúcar e variedade de receitas. Não se atribui uma origem única ao doce nem uma receita única a todas as famílias."
-    },
-    {
-      "id": "culture_senac_isa",
-      "name": "Senac São Paulo — Moda autoral no Brasil: Isaac Silva (2025)",
-      "url": "https://www.eventos.sp.senac.br/atividade/bate-papo-com-isaac-silva/",
-      "note": "Apresenta Isa Silva, estilista baiana e fundadora da marca Isaac Silva, e sua criação para corpos diversos. As roupas de VOICES não são reproduções de coleções ou endossos da marca."
-    },
-    {
-      "id": "culture_mab_candomble",
-      "name": "Museu Afro Brasil Emanoel Araujo — Saberes Ancestrais e Caminhos de Resistência: o Candomblé e seus sentidos (2025)",
-      "url": "https://museuafrobrasil.org.br/agenda/jornada-do-patrimonio-2025-palestra-saberes-ancestrais-e-caminhos-de-resistencia-o-candomble-e-seus-sentidos/",
-      "note": "Atividade educativa conduzida por liderança religiosa, com diferenças entre nações e saberes de comunidade. Não reproduzimos cantigas, rituais ou falas da participante."
-    },
-    {
-      "id": "culture_camara_umbanda",
-      "name": "Agência Câmara — Dia Nacional da Umbanda é aprovado pela Câmara (2008)",
-      "url": "https://www.camara.leg.br/noticias/115041-dia-nacional-da-umbanda-e-aprovado-pela-camara",
-      "note": "Consultados a apresentação da Umbanda e a diversidade de vertentes. O estado de tramitação do projeto de 2008 não é usado como informação jurídica atual."
-    },
-    {
-      "id": "culture_mir_respeito",
-      "name": "Ministério da Igualdade Racial — Política Nacional para Povos e Comunidades Tradicionais de Terreiro e Matriz Africana",
-      "url": "https://www.gov.br/igualdaderacial/pt-br/assuntos/programas-e-projetos/politica-nacional-para-povos-e-comunidades-tradicionais-de-terreiro-e-matriz-africana/politica-nacional-para-povos-e-comunidades-tradicionais-de-terreiro-e-matriz-africana",
-      "note": "Base para autodeterminação, respeito aos saberes comunitários e enfrentamento do racismo religioso. A atividade é educativa e não exige revelar crenças pessoais."
-    },
-    {
-      "id": "culture_mafro_religioes",
-      "name": "Museu Afro-Brasileiro da UFBA, Centro de Estudos Afro-Orientais — Material do professor: Religiosidade Afro-Brasileira",
-      "url": "https://mafro.ceao.ufba.br/sites/mafro.ceao.ufba.br/files/material_do_professor_-_afro-brasileiro.pdf",
-      "note": "Material institucional sobre tradições e divindades do Candomblé. Síntese própria; sem reprodução de imagens, cantigas, rituais ou descrições de procedimentos religiosos."
-    },
-    {
-      "id": "culture_curitiba_umbanda",
-      "name": "Prefeitura de Curitiba — Em Curitiba, terreiros pregam respeito e tolerância no Dia Nacional da Umbanda (2023)",
-      "url": "https://www.curitiba.pr.gov.br/noticias/em-curitiba-terreiros-pregam-respeito-e-tolerancia-no-dia-nacional-da-umbanda/71185",
-      "note": "Registro de um encontro público, com participação de seis terreiros e curimbas. A leitura distingue esse evento de uma descrição de todas as comunidades umbandistas."
+      "id": "culture-book-08",
+      "title": "Crenças diferentes, respeito compartilhado",
+      "sourceIds": [
+        "culture_camara_umbanda",
+        "culture_curitiba_umbanda",
+        "culture_mir_respeito",
+        "roots-umbanda"
+      ]
     }
   ],
   "art": [

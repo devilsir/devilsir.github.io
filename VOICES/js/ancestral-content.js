@@ -5,79 +5,92 @@
       "id": "roots-orixa",
       "name": "CNFCP/Iphan · Orixá",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000467.htm",
-      "note": "Divindades, ancestralidade e relações com a natureza; os significados variam entre tradições."
+      "note": "Divindades, ancestralidade e relações com a natureza; os significados variam entre tradições.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-umbanda",
       "name": "CNFCP/Iphan · Umbanda",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000054.htm",
-      "note": "Referência introdutória. As casas de Umbanda têm histórias e formas de organização diversas."
+      "note": "Referência introdutória. As casas de Umbanda têm histórias e formas de organização diversas.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-candomble",
       "name": "CNFCP/Iphan · Candomblé",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000567.htm",
-      "note": "Introdução ao sistema religioso e aos terreiros. A leitura do jogo também distingue nações e comunidades."
+      "note": "Introdução ao sistema religioso e aos terreiros. A leitura do jogo também distingue nações e comunidades.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-exu",
       "name": "CNFCP/Iphan · Exu",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000599.htm",
-      "note": "Exu como orixá ligado à comunicação e à guarda dos caminhos; a entidade Exu da Umbanda exige outro contexto."
+      "note": "Exu como orixá ligado à comunicação e à guarda dos caminhos; a entidade Exu da Umbanda exige outro contexto.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-entities",
       "name": "USP · Entidades e diversidade na Umbanda",
       "url": "https://revistas.usp.br/rieb/pt_BR/article/view/107220",
-      "note": "Pesquisa de campo sobre Pombagira, relações de gênero e diversidade das experiências nos terreiros."
+      "note": "Pesquisa de campo sobre Pombagira, relações de gênero e diversidade das experiências nos terreiros.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-baianos",
       "name": "USP/Paideia · Os baianos na Umbanda",
       "url": "https://www.scielo.br/j/paideia/a/8NHPxgxXCGcQrNcdpcnXMFD/?lang=pt",
-      "note": "Estudo sobre baianos, memória e referências nordestinas, sem equivaler uma entidade a toda uma população."
+      "note": "Estudo sobre baianos, memória e referências nordestinas, sem equivaler uma entidade a toda uma população.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-ogum",
       "name": "CNFCP/Iphan · Ogum",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000619.htm",
-      "note": "Ferro, ferramentas, trabalho e guerra nos contextos do orixá."
+      "note": "Ferro, ferramentas, trabalho e guerra nos contextos do orixá.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-iemanja",
       "name": "CNFCP/Iphan · Iemanjá",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000613.htm",
-      "note": "Águas e maternidade; associações e narrativas têm diferenças entre tradições."
+      "note": "Águas e maternidade; associações e narrativas têm diferenças entre tradições.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-xango",
       "name": "CNFCP/Iphan · Xangô",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000706.htm",
-      "note": "Justiça, raio e trovão."
+      "note": "Justiça, raio e trovão.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-iansa",
       "name": "CNFCP/Iphan · Iansã/Oyá",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000600.htm",
-      "note": "Ventos, raios e tempestades."
+      "note": "Ventos, raios e tempestades.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-oxossi",
       "name": "CNFCP/Iphan · Oxóssi",
       "url": "https://antigo.cnfcp.gov.br/tesauro/00000687.htm",
-      "note": "Matas, caça e relações com a natureza."
+      "note": "Matas, caça e relações com a natureza.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-health",
       "name": "Fiocruz/ENSP · Plantas medicinais e fitoterápicos",
       "url": "https://naf.ensp.fiocruz.br/pt-br/plantas-medicinais-e-fitoterapicos-como-usar-com-seguranca",
-      "note": "Saberes tradicionais, identificação, uso seguro e cuidados. Os efeitos das poções de VOICES são mecânicas de fantasia."
+      "note": "Saberes tradicionais, identificação, uso seguro e cuidados. Os efeitos das poções de VOICES são mecânicas de fantasia.",
+      "accessed": "2026-10-20"
     },
     {
       "id": "roots-memory",
       "name": "Ibram/MuseusBr · Templo do Orixá Exu",
       "url": "https://cadastro.museus.gov.br/pontos-de-memoria/templo-do-orixa-exu/",
-      "note": "Memória social, participação comunitária e enfrentamento da intolerância religiosa."
+      "note": "Memória social, participação comunitária e enfrentamento da intolerância religiosa.",
+      "accessed": "2026-10-20"
     }
   ],
   "people": [
@@ -970,12 +983,12 @@
       "theme": "Umbanda, ancestralidade e respeito",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "Mãe Lúcia abre a Casa das Águas Claras para uma roda pública. A Umbanda reúne tradições africanas, indígenas, espíritas e outras influências, com diferenças entre suas casas. Conhecer uma delas não permite concluir como todas funcionam.",
-        "Na roda, Vó Alzira e Pai Bento são personagens que representam pretos-velhos: a memória dos anciãos inclui saber, dignidade, resistência e cuidado. A experiência da escravização aparece em muitas narrativas, mas não resume toda a vida e todo o conhecimento ancestral.",
-        "Baianos e Boiadeiros têm referências distintas. Caboclos evocam presenças ancestrais indígenas em contextos religiosos; povos indígenas contemporâneos possuem histórias e identidades próprias. Perguntar e escutar ajuda a não transformar uma tradição em caricatura."
+        "Mãe Lúcia recebe a roda pública da Casa das Águas Claras. A Umbanda se formou no Brasil com relações entre matrizes africanas, indígenas, espíritas e outras influências. As casas têm vertentes, histórias e formas de organização diversas.",
+        "Vó Alzira e Pai Bento são personagens que representam pretos-velhos. Em narrativas de muitas casas, a memória ancestral inclui a experiência da escravização, mas também saber, dignidade, resistência e cuidado. Reduzir essas presenças ao sofrimento apaga o conhecimento que carregam.",
+        "Jacira e Miguel apresentam referências de baianos e boiadeiros, diferentes entre si. Caboclos evocam presenças ancestrais indígenas em contextos religiosos; isso não substitui conhecer os povos indígenas contemporâneos. A roda de memórias registra essas distinções antes de compartilhar os relatos."
       ],
-      "en": "Listen to the people who keep the tradition alive.",
-      "pt": "Escute as pessoas que mantêm a tradição viva.",
+      "en": "Listen to each story and keep its context.",
+      "pt": "Escute cada história e preserve seu contexto.",
       "sourceIds": [
         "roots-umbanda",
         "roots-baianos",
@@ -990,14 +1003,15 @@
       "theme": "Candomblé, nações e memória",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "No Ilê da Memória Viva, Mãe Dandara mostra um caderno de contribuições: quem ensinou uma palavra, cuidou do jardim, preparou uma reunião ou preservou uma história. A ancestralidade liga gerações, trabalho, pertencimento e aprendizagem.",
-        "O Candomblé se formou no Brasil a partir de matrizes africanas e tem nações e linhagens diversas. Em tradições Ketu, falamos de orixás; em Jeje, de voduns; em Angola, de inquices. Esses nomes não devem ser tratados como peças idênticas de um único sistema.",
-        "A visita acontece nos espaços de convivência que a casa decidiu compartilhar. Perguntar antes de fotografar, respeitar a palavra dos responsáveis e reconhecer a liberdade de crença são formas concretas de convivência."
+        "No Ilê da Memória Viva, Mãe Dandara abre o caderno de contribuições. Há quem ensinou uma palavra, cuidou do jardim ou organizou uma reunião. Ancestralidade envolve gerações, pertencimento e aprendizagem numa comunidade viva.",
+        "O Candomblé tem matrizes africanas e diferentes nações e linhagens no Brasil. O material do Museu Afro-Brasileiro da UFBA distingue orixás em referências Nagô e Ketu, voduns em Jeje e inquices em Congo e Angola. Esses termos não são peças idênticas de um único sistema.",
+        "A visita ocorre nos espaços que a casa decidiu abrir. Perguntar antes de fotografar e respeitar orientações dos responsáveis preserva a autonomia da comunidade. O caderno coletivo se liga ao acordo da assembleia: compartilhar memória não significa abrir toda experiência sem limites."
       ],
-      "en": "Different traditions have their own histories.",
-      "pt": "Tradições diferentes têm suas próprias histórias.",
+      "en": "A community decides how to share its memory.",
+      "pt": "Uma comunidade decide como compartilhar sua memória.",
       "sourceIds": [
         "roots-candomble",
+        "culture_mafro_religioes",
         "roots-memory"
       ]
     },
@@ -1009,12 +1023,12 @@
       "theme": "Crenças, categorias e diversidade",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "Em muitas casas de Umbanda, pretos-velhos, caboclos, baianos, boiadeiros, Exus e Pombagiras são entidades ou guias espirituais. As formas de nomear, organizar e compreender essas presenças variam entre as tradições.",
-        "Orixás são divindades relacionadas à natureza, a histórias ancestrais e à vida em comunidade. Não são uma categoria de espíritos de pessoas falecidas. Chamar todos de “divindades supremas” também apaga diferenças: tradições iorubás, por exemplo, distinguem os orixás de Olorum/Olodumare.",
-        "Exu orixá e as entidades Exus da Umbanda precisam ser apresentados em seus respectivos contextos. Pombagira não é uma versão feminina universal de Exu orixá. A leitura e a escuta dos praticantes ajudam a enfrentar caricaturas e demonização."
+        "Na mesa de legendas, Elias encontrou cartões que misturam entidades e orixás. Em muitas casas de Umbanda, pretos-velhos, caboclos, baianos, boiadeiros, Exus e Pombagiras são referências de entidades espirituais. Orixás pertencem a outra categoria religiosa.",
+        "Exu como orixá e as entidades conhecidas como Exus na Umbanda precisam de contextos distintos. Pombagira não deve ser definida como “a versão feminina universal do orixá Exu”. Estudos de campo mostram diversidade nas experiências, narrativas e relações de gênero nos terreiros.",
+        "As personagens de VOICES participam de uma aventura educativa de fantasia. Suas falas e poderes não são ensinamentos recebidos de uma entidade nem descrições de um ritual. O desafio de Elias usa comparação de fichas para reconhecer diferenças que a Ordem da Rasura tentou apagar."
       ],
-      "en": "A name needs context before it becomes a caption.",
-      "pt": "Um nome precisa de contexto antes de virar legenda.",
+      "en": "An entity and an orixá are not the same category.",
+      "pt": "Uma entidade e um orixá não são a mesma categoria.",
       "sourceIds": [
         "roots-orixa",
         "roots-exu",
@@ -1029,12 +1043,12 @@
       "theme": "Orixás e referências da natureza",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "Ogum se associa ao ferro, à metalurgia, às ferramentas e à guerra. Na mostra, uma ferramenta consertada abre a conversa sobre trabalho, técnica e responsabilidade. Xangô se associa à justiça, ao trovão e ao raio; o exercício do caderno pede decisões sustentadas por evidências.",
-        "Iemanjá é amplamente associada ao mar, à maternidade e ao acolhimento no Brasil. Narrativas sobre suas águas e seus vínculos familiares variam; não existe uma única genealogia obrigatória para todas as casas. Iansã/Oyá se associa aos ventos e às tempestades e, em algumas tradições, aos mortos e à ancestralidade.",
-        "Oxóssi se associa às matas e à caça, com narrativas de fartura e conhecimento. Estas são referências introdutórias: cores, símbolos e interpretações variam. Os personagens da aventura são representações artísticas que convidam à pesquisa e à escuta."
+        "As fichas religiosas apresentam associações documentadas: Ogum com ferro, ferramentas e trabalho; Iemanjá com águas e maternidade; Xangô com justiça, raio e trovão; Oyá, também chamada Iansã, com ventos e tempestades; Oxóssi com matas e caça. Narrativas e sentidos variam entre tradições.",
+        "Na arte do jogo, o arco ajuda a identificar a referência a Oxóssi, e os elementos em movimento participam da representação de Oyá. Um acessório isolado não comprova a tradição de uma imagem desconhecida. A legenda une o desenho à referência que o orientou.",
+        "Associações religiosas não são explicações físicas do tempo ou da floresta. A ciência estuda vento, água e relações ecológicas por observações e modelos; a leitura cultural aborda significados religiosos. Os desafios de companhia de VOICES combinam fantasia e aprendizagem sem confundir essas formas de conhecimento."
       ],
-      "en": "Nature, memory and community connect these stories.",
-      "pt": "Natureza, memória e comunidade conectam essas histórias.",
+      "en": "We describe the artistic reference and distinguish it from a scientific explanation.",
+      "pt": "Descrevemos a referência artística e a distinguimos de uma explicação científica.",
       "sourceIds": [
         "roots-ogum",
         "roots-iemanja",
@@ -1051,14 +1065,16 @@
       "theme": "Ervas, pesquisa e conhecimentos tradicionais",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "Raquel registra o nome popular, a origem do cultivo e quem compartilhou cada conhecimento. Saberes sobre plantas circulam em famílias, comunidades, terreiros, cozinhas e espaços de pesquisa. Reconhecer essas pessoas também é dar crédito à produção de conhecimento.",
-        "Uma mesma planta pode ter usos alimentares, religiosos e medicinais em contextos diferentes. Um nome popular pode se referir a espécies distintas. A presença de uma erva numa receita culinária não prova que qualquer uso medicinal seja seguro ou adequado.",
-        "A Fiocruz trata de identificação, preparo, armazenamento e cuidados com plantas medicinais e fitoterápicos. Na botica de VOICES, as poções têm efeitos de fantasia sobre atributos do jogo. Suas combinações não são instruções de tratamento ou doses para uso fora da aventura."
+        "Folha e Raquel organizam os potes da Botica Raízes com nome, origem e data. Um nome popular pode designar plantas diferentes; cheiro e aparência não bastam para uma identificação segura. A caixa de sementes de Jacira precisa chegar etiquetada ao jardim.",
+        "O gengibre é um rizoma: um caule modificado, não uma raiz. Identificar a parte da planta usada é uma pergunta botânica diferente de afirmar um efeito medicinal. Saber tradicional, pesquisa e identificação cuidadosa podem dialogar sem transformar qualquer receita em tratamento comprovado.",
+        "As poções da bancada recuperam atributos do RPG por uma regra de fantasia. Seus valores não representam doses, propriedades clínicas ou instruções de uso real. Na missão, o conhecimento útil é conferir rótulos, reconhecer diferenças e preservar a informação durante o transporte e o cultivo."
       ],
-      "en": "Read the label and record where the knowledge came from.",
-      "pt": "Leia a etiqueta e registre de onde veio o conhecimento.",
+      "en": "Ginger is a rhizome, a modified stem.",
+      "pt": "O gengibre é um rizoma, um caule modificado.",
       "sourceIds": [
-        "roots-health"
+        "roots-health",
+        "research-botany",
+        "research-ginger"
       ]
     },
     {
@@ -1069,15 +1085,16 @@
       "theme": "Diversidade e liberdade de crença",
       "author": "Cadernos da Ancestralidade · New Harmony",
       "paragraphs": [
-        "Na recepção, uma visitante diz que tem outra religião; um estudante conta que não segue nenhuma. Ambos são recebidos para conhecer o acervo público. Respeito não depende de concordar com uma crença nem de participar de suas práticas.",
-        "A equipe prepara legendas com nomes corretos, fontes e a participação de quem vive a tradição. Se uma foto depende de autorização, ela só entra no arquivo depois do combinado. Uma roupa, uma cor ou um cabelo não permitem adivinhar a religião de alguém.",
-        "Diante de uma fala discriminatória, o grupo corrige a informação e apoia quem foi atingido. Ninguém precisa expor sua crença para ser tratado com dignidade. O arquivo permanece aberto a perguntas e correções dos participantes."
+        "Na roda, uma pessoa acredita, outra tem uma crença diferente e outra prefere apenas aprender. Mãe Lúcia combina que ninguém será pressionado a declarar filiação religiosa. Respeitar uma comunidade não exige adotar sua fé.",
+        "Discriminação contra religiões de matriz africana atinge pessoas, espaços e patrimônios. Reconhecer a diversidade entre casas ajuda a enfrentar generalizações, mas não substitui acolher quem sofreu uma ofensa e buscar apoio. A pessoa afetada não tem obrigação de transformar sua experiência em exposição pública.",
+        "O arquivo comunitário só recebe o que foi autorizado e conserva a procedência dos relatos. A regra vale na biblioteca, na assembleia e nos espaços de terreiro: escutar com cuidado, responder pelo que se publica e permitir revisão sem apagar diferenças."
       ],
-      "en": "We can respect different beliefs and learn together.",
-      "pt": "Podemos respeitar crenças diferentes e aprender juntos.",
+      "en": "Respect includes the freedom to believe differently.",
+      "pt": "O respeito inclui a liberdade de ter crenças diferentes.",
       "sourceIds": [
         "roots-memory",
-        "roots-entities"
+        "roots-entities",
+        "culture_mir_respeito"
       ]
     }
   ],
