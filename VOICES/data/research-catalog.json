@@ -1,5 +1,5 @@
 {
-  "revision": "20261021-community1",
+  "revision": "20261021-expansion1",
   "reviewed": "2026-10-21",
   "scope": "Narrative, historical and scientific reading, captions, dialogue and bilingual learning text",
   "sources": [
@@ -2349,6 +2349,74 @@
       "accessed": "2026-10-21",
       "usedBy": [
         "community-jar-cart"
+      ]
+    },
+    {
+      "id": "expansion-mafro",
+      "name": "MAFRO / UFBA · Material do professor: acervo afro-brasileiro",
+      "url": "https://mafro.ceao.ufba.br/sites/mafro.ceao.ufba.br/files/material_do_professor_-_afro-brasileiro.pdf",
+      "note": "Objetos ilustrados originais, com referências para nomes e contexto; sem reprodução de rituais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "expansion-candomble-gold-abebe",
+        "expansion-candomble-silver-abebe",
+        "expansion-candomble-oxe",
+        "expansion-candomble-ofa",
+        "expansion-candomble-ogum-sword",
+        "expansion-candomble-eruexim",
+        "expansion-candomble-opaxoro",
+        "expansion-candomble-xaxara"
+      ]
+    },
+    {
+      "id": "expansion-ibram",
+      "name": "Ibram / Brasiliana Museus · Religião e cotidiano",
+      "url": "https://brasiliana3.museus.gov.br/curadorias/religiao-cotidiano/",
+      "note": "Objetos ilustrados originais, com referências para nomes e contexto; sem reprodução de rituais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "expansion-umbanda-white-atabaque",
+        "expansion-candomble-rum",
+        "expansion-candomble-rumpi",
+        "expansion-candomble-le"
+      ]
+    },
+    {
+      "id": "expansion-jbrj",
+      "name": "Jardim Botânico do Rio de Janeiro · Herbário RB",
+      "url": "https://www.gov.br/jbrj/pt-br/assuntos/colecoes/biologicas/herbario-rb",
+      "note": "Objetos ilustrados originais, com referências para nomes e contexto; sem reprodução de rituais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "expansion-botica-specimen-press",
+        "expansion-botica-herbarium-sheet",
+        "expansion-botica-flat-drawers",
+        "expansion-botica-botany-books"
+      ]
+    },
+    {
+      "id": "expansion-usp",
+      "name": "Herbário SPF / USP · O que é um herbário?",
+      "url": "https://herbariospf.ib.usp.br/o-que-%C3%A9-um-herb%C3%A1rio",
+      "note": "Objetos ilustrados originais, com referências para nomes e contexto; sem reprodução de rituais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "expansion-botica-specimen-press",
+        "expansion-botica-herbarium-sheet",
+        "expansion-botica-flat-drawers",
+        "expansion-botica-botany-books"
+      ]
+    },
+    {
+      "id": "expansion-drums",
+      "name": "A União / Governo da Paraíba · No batuque da Jurema",
+      "url": "https://auniao.pb.gov.br/noticias/almanaque/no-batuque-da-jurema",
+      "note": "Objetos ilustrados originais, com referências para nomes e contexto; sem reprodução de rituais.",
+      "accessed": "2026-10-21",
+      "usedBy": [
+        "expansion-candomble-rum",
+        "expansion-candomble-rumpi",
+        "expansion-candomble-le"
       ]
     }
   ]
