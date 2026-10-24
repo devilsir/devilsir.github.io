@@ -27,7 +27,7 @@ const entries=[
 ['plant-monstera','Costela-de-adão em vaso','Decoração',14,'plant','plant',1.8],
 ['plant-cactus','Cacto em vaso cerâmico','Decoração',12,'plant','plant',1.7]
 ];
-const actions={bed:'Dormir até a manhã',seat:'Sentar e descansar',study:'Abrir o caderno de leituras',food:'Consultar alimentação',storage:'Abrir os móveis guardados',light:'Ligar ou apagar a luminária',fridge:'Consultar os alimentos',wash:'Usar por alguns segundos',rug:'Decorar o piso sem bloquear caminhos',plant:'Cuidar da planta'};
+const actions={bed:'Dormir até a manhã',seat:'Sentar e descansar',study:'Abrir o caderno de leituras',food:'Consultar alimentação',storage:'Guardar, escolher e reorganizar sua mobília',light:'Ligar ou apagar a luminária',fridge:'Consultar os alimentos',wash:'Usar por alguns segundos',rug:'Tapete leve para compor o ambiente',plant:'Um toque de verde no ambiente'};
 const newItems=entries.map(([id,name,category,price,word,action,size],prop)=>({id,name,category,price,word,action,size,family:'home-plus',prop,solid:action!=='rug',description:actions[action]}));
 H.catalog.push(...newItems);
 for(const item of H.catalog)if(!item.category)item.category=item.id.startsWith('music-')?'Instrumentos':['bed','wardrobe'].includes(item.id)?'Quarto':['fridge','stove','sink','pantry'].includes(item.id)?'Cozinha':['shower','basin'].includes(item.id)?'Banheiro':item.id==='plant'?'Decoração':'Sala';

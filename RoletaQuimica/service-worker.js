@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'roleta-quimica-cafe-v15-separated-question-hint-images';
+const CACHE_NAME = 'roleta-quimica-cafe-v17-questoes-validadas';
 const APP_SHELL = [
   './assets/embedded/adicionar-perguntas-c315fc0b.png',
   './assets/embedded/adicionar-perguntas_hover-eaef1d34.png',

@@ -121,7 +121,7 @@ V.Campus={
  profile(index){
  const p=data.portraits.find(p=>p.index===index);if(!p)return;
  const esc=V.escape,refs=(p.sourceIds||[]).map(id=>V.content.sources.find(s=>s.id===id)).filter(Boolean);
- V.UI.modal(p.name,'RETRATO EDUCATIVO · TRAJETÓRIA E CONTEXTO',`<figure class="culture-piece"><img src="${esc(p.path)}" width="192" height="192" style="image-rendering:pixelated" alt="Interpretação artística de ${esc(p.name)}"></figure><p>${esc(p.biography)}</p><p>${esc(p.context)}</p><aside class="reader-english"><strong>English connection</strong><p>${esc(p.en)}</p>${V.settings.translation?'<'+'small>'+esc(p.pt)+'</small>':''}</aside><details open><summary>Fontes desta trajetória</summary>${refs.map(s=>'<p class="reader-origin"><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a></p>').join('')}</details>`, '<button id="campus-full-profile" class="primary">Ler e registrar no caderno</button>');
+ V.UI.modal(p.name,'RETRATO EDUCATIVO · TRAJETÓRIA E CONTEXTO',`<figure class="culture-piece"><img src="${esc(p.path)}" width="192" height="192" style="image-rendering:pixelated" alt="Interpretação artística de ${esc(p.name)}"></figure><p>${esc(p.biography)}</p><p>${esc(p.context)}</p><details open><summary>Fontes desta trajetória</summary>${refs.map(s=>'<p class="reader-origin"><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a></p>').join('')}</details>`, '<button id="campus-full-profile" class="primary">Ler e registrar no caderno</button>');
  V.$('#campus-full-profile').onclick=()=>L.read(p.readingId,0,()=>this.profile(index));
 }
 };

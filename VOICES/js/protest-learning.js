@@ -28,7 +28,7 @@ window.V.protestLearning={
  ['I leave a pause between the musical phrases.','Deixo uma pausa entre as frases musicais.'],
  ['I chose this instrument for our rehearsal.','Escolhi este instrumento para nosso ensaio.'],
  ['I am listening to the other musicians before playing.','Estou escutando os outros músicos antes de tocar.'],
- ['We made this musical exercise together. It is not a historical recording.','Fizemos este exercício musical juntos. Ele não é uma gravação histórica.'],
+ ['We created this rhythm together. Listen to the next group response.','Criamos este ritmo juntos. Agora escute a resposta do outro grupo.'],
  ['I put my instrument away when I take a break.','Guardo meu instrumento quando faço uma pausa.'],
  ['I made this sign. I chose large letters so people can read it.','Fiz este cartaz. Escolhi letras grandes para as pessoas poderem ler.'],
  ['My sign has a short message. Its context is in the notebook.','Meu cartaz tem uma mensagem curta. Seu contexto está no caderno.'],

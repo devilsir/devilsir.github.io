@@ -458,8 +458,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Zumbi foi uma liderança de Palmares, conjunto de comunidades que resistiram à escravização no período colonial. Foi morto em 20 de novembro de 1695.",
-        "Compare documentos de diferentes procedências para investigar Palmares. A resistência envolveu muitas pessoas; um retrato não substitui essa história coletiva."
+        "Em Palmares, na atual região de Alagoas, Zumbi tornou-se uma das principais lideranças da resistência à escravização. O quilombo reuniu comunidades com organização política, produção de alimentos e estratégias de defesa. Zumbi foi morto em 20 de novembro de 1695.",
+        "Palmares não foi obra de uma pessoa só: sua história também é feita de famílias, trabalhadores e outras lideranças que construíram alternativas à ordem escravista."
       ],
       "en": "Zumbi was a leader of Palmares, communities that resisted enslavement in colonial Brazil.",
       "pt": "Zumbi foi uma liderança de Palmares, comunidades que resistiram à escravização no Brasil colonial.",
@@ -476,8 +476,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Dandara é lembrada como símbolo da resistência de Palmares e das mulheres negras. A documentação disponível é limitada e não permite afirmar com a mesma segurança todos os detalhes repetidos sobre sua vida.",
-        "O arquivo distingue memória pública de detalhes biográficos comprovados. Reconhecer uma lacuna é mais preciso do que inventar uma data, uma fala ou uma cena."
+        "Dandara dos Palmares ocupa um lugar importante na memória da resistência negra e das mulheres que viveram em Palmares. Embora sua figura seja amplamente celebrada, os documentos históricos disponíveis são escassos e muitos detalhes de sua vida não podem ser confirmados.",
+        "Sua presença na memória brasileira evidencia tanto a participação feminina na resistência quanto as lacunas deixadas por arquivos que registraram pouco sobre essas mulheres."
       ],
       "en": "Dandara is remembered as a symbol of resistance. Surviving records leave questions about her life.",
       "pt": "Dandara é lembrada como símbolo de resistência. Os registros preservados deixam perguntas sobre sua vida.",
@@ -494,8 +494,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Machado de Assis foi escritor brasileiro, autor de romances, contos e crônicas. Memórias póstumas de Brás Cubas foi publicado em 1881.",
-        "Na estante, a leitura sobre autor e narrador ajuda a investigar quem fala em cada texto. Uma voz construída na ficção não é automaticamente uma declaração do escritor."
+        "Nascido no Rio de Janeiro, Machado de Assis destacou-se como romancista, contista, cronista e crítico. Foi um dos fundadores da Academia Brasileira de Letras. Em Memórias póstumas de Brás Cubas (1881), criou um narrador que conta a própria história depois de morto.",
+        "A ironia, as mudanças de ponto de vista e os narradores pouco confiáveis de seus livros continuam provocando leitores. Em sua ficção, a voz do personagem não deve ser confundida com a do autor."
       ],
       "en": "Machado de Assis wrote novels, short stories and chronicles.",
       "pt": "Machado de Assis escreveu romances, contos e crônicas.",
@@ -512,8 +512,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Carolina Maria de Jesus escreveu diários, poemas, narrativas e composições musicais. Quarto de despejo foi publicado em 1960.",
-        "O caderno de Carolina se liga ao caso das assinaturas: registrar a obra e sua autoria revela uma produção que uma legenda genérica esconderia."
+        "Carolina Maria de Jesus registrou em diários o cotidiano, a fome, o trabalho e seus projetos de escrita. Publicado em 1960, Quarto de despejo levou sua voz a leitores de todo o país. Ela também escreveu poemas, narrativas e compôs músicas.",
+        "Seus cadernos revelam uma autora atenta à linguagem e à sociedade. A obra vai muito além do rótulo de testemunho da pobreza: é também literatura feita com escolhas e estilo próprios."
       ],
       "en": "Carolina Maria de Jesus created diaries, poetry, fiction and music.",
       "pt": "Carolina Maria de Jesus criou diários, poesia, ficção e música.",
@@ -531,8 +531,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Luiz Gama foi poeta, jornalista e abolicionista. Sua atuação jurídica ajudou pessoas escravizadas a reivindicar a liberdade, enfrentando a escravidão também por meio de documentos e argumentos.",
-        "As cartas permitem investigar uma atuação concreta. No arquivo, pergunte o que o documento sustenta e quem ficou de fora de sua narrativa."
+        "Luiz Gama foi poeta, jornalista e um dos grandes nomes do abolicionismo brasileiro no século XIX. Mesmo sem diploma de direito, estudou leis e atuou em defesa da liberdade de pessoas escravizadas, contestando a violência do sistema escravista.",
+        "Sua trajetória mostra como jornais, tribunais, petições e debates públicos também foram espaços de luta contra a escravidão."
       ],
       "en": "Luiz Gama used writing and legal arguments in the struggle against slavery.",
       "pt": "Luiz Gama usou a escrita e argumentos jurídicos na luta contra a escravidão.",
@@ -549,8 +549,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Antonieta de Barros foi professora, jornalista e parlamentar. Eleita em Santa Catarina em 1934, foi a primeira mulher negra a ocupar um mandato de deputada no Brasil.",
-        "Sua trajetória aproxima escrita, escola e participação política. No campus, essa relação ajuda a pensar quem tem condições de falar e de influenciar uma decisão."
+        "Professora, escritora e jornalista, Antonieta de Barros nasceu em Florianópolis. Em 1934, tornou-se a primeira mulher negra eleita deputada no Brasil. Defendeu a educação e levou ao debate político temas ligados ao ensino e à participação social.",
+        "Seu trabalho na escola, na imprensa e na política conecta três espaços em que ela atuou para ampliar oportunidades de formação e representação."
       ],
       "en": "Antonieta de Barros was a teacher, journalist and elected representative in Santa Catarina.",
       "pt": "Antonieta de Barros foi professora, jornalista e representante eleita em Santa Catarina.",
@@ -567,8 +567,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Milton Santos foi geógrafo brasileiro. Estudou cidades, território e desigualdades e recebeu o prêmio Vautrin Lud em 1994.",
-        "O mapa da cidade mostra ruas, mas a investigação pergunta também quem consegue percorrê-las. Compare a amostra de BIAS.EXE com os trajetos relatados pelos moradores."
+        "O geógrafo brasileiro Milton Santos investigou como o espaço urbano é organizado e como a economia transforma os territórios. Em 1994, recebeu o prêmio internacional Vautrin Lud por suas contribuições à geografia.",
+        "Para Milton Santos, entender uma cidade exige observar não apenas ruas e edifícios, mas as relações sociais e as desigualdades que definem como as pessoas vivem e circulam."
       ],
       "en": "Milton Santos studied geography, cities, territory and inequality.",
       "pt": "Milton Santos estudou geografia, cidades, território e desigualdade.",
@@ -585,8 +585,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Lélia Gonzalez foi intelectual e ativista brasileira. Seus trabalhos discutem relações entre racismo, sexismo e cultura; o conceito de amefricanidade valoriza histórias e experiências negras e indígenas nas Américas.",
-        "Perguntar quais experiências uma categoria torna visíveis ajuda a rever as legendas. O conceito é uma ferramenta de interpretação, não uma descrição única de todas as pessoas."
+        "Intelectual, professora e ativista, Lélia Gonzalez ajudou a transformar os debates sobre racismo, gênero e cultura no Brasil. Desenvolveu o conceito de amefricanidade para valorizar experiências históricas e culturais negras e indígenas nas Américas.",
+        "Suas reflexões aproximam língua, cotidiano e política, mostrando como expressões culturais carregam histórias muitas vezes ausentes dos relatos oficiais."
       ],
       "en": "Lélia Gonzalez studied racism, sexism and culture in the Americas.",
       "pt": "Lélia Gonzalez estudou racismo, sexismo e cultura nas Américas.",
@@ -603,8 +603,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Abdias do Nascimento foi artista, escritor e ativista. Em 1944, fundou o Teatro Experimental do Negro, que reuniu criação teatral, formação e enfrentamento do racismo.",
-        "Os créditos do palco podem revelar quem criou e quem teve oportunidades para atuar. Consulte o acervo do TEN para conhecer participantes e trabalhos."
+        "Artista, escritor e ativista, Abdias do Nascimento fundou o Teatro Experimental do Negro em 1944. A iniciativa abriu espaço para atores negros, formação artística e discussão pública do racismo no teatro e na sociedade brasileira.",
+        "O Teatro Experimental do Negro mostrou que a transformação cultural envolve quem escreve, dirige, atua, produz e pode ocupar os palcos."
       ],
       "en": "Abdias do Nascimento founded the Black Experimental Theatre in 1944.",
       "pt": "Abdias do Nascimento fundou o Teatro Experimental do Negro em 1944.",
@@ -621,8 +621,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Ruth de Souza atuou no teatro, no cinema e na televisão. Sua trajetória passou pelo Teatro Experimental do Negro e ajudou a ampliar a presença de atrizes negras nessas linguagens.",
-        "Um programa de espetáculo registra mais do que um título: guarda elencos, funções e condições de produção. Esse é um dos caminhos para corrigir o cartaz do festival."
+        "Ruth de Souza construiu uma carreira marcante no teatro, no cinema e na televisão brasileira. Integrante do Teatro Experimental do Negro, enfrentou barreiras impostas a artistas negras e conquistou reconhecimento por personagens de diferentes gêneros.",
+        "Seus trabalhos ajudam a contar a história de atrizes negras que ampliaram a presença e as possibilidades de representação nas artes cênicas."
       ],
       "en": "Ruth de Souza worked in theatre, cinema and television.",
       "pt": "Ruth de Souza trabalhou no teatro, no cinema e na televisão.",
@@ -640,8 +640,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Conceição Evaristo é escritora de romances, contos, poemas e ensaios. Sua reflexão sobre escrevivência aproxima criação literária, memória e experiências negras.",
-        "Na biblioteca, leia sobre Ponciá Vicêncio e compare criação literária com relato documental. Os textos produzidos pelos estudantes recebem seus próprios nomes."
+        "Conceição Evaristo é autora de romances, contos, poemas e ensaios. Sua escrita aborda memória, vínculos familiares, desigualdade e experiências de mulheres negras. Com a ideia de escrevivência, propõe uma reflexão sobre vida, lembrança e criação literária.",
+        "Em obras como Ponciá Vicêncio, as personagens têm desejos, contradições e histórias próprias: não são simples exemplos de um tema social."
       ],
       "en": "Conceição Evaristo connects literary creation, memory and Black experiences.",
       "pt": "Conceição Evaristo relaciona criação literária, memória e experiências negras.",
@@ -659,8 +659,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Gilberto Gil é cantor, compositor e instrumentista brasileiro. Seu álbum Louvação foi lançado em 1967; sua trajetória inclui a participação na Tropicália.",
-        "Uma trajetória pode atravessar estilos, encontros e épocas. Ao revisar os créditos, identifique a função em cada trabalho, em vez de usar uma única etiqueta para toda a carreira."
+        "Cantor, compositor e instrumentista, Gilberto Gil desenvolveu uma obra que cruza ritmos brasileiros, experimentação musical e diálogos internacionais. Participou do movimento tropicalista e lançou o álbum Louvação em 1967.",
+        "Em sua discografia, estilos musicais se encontram sem apagar suas diferenças; parcerias e arranjos também fazem parte dessa trajetória criativa."
       ],
       "en": "Gilberto Gil is a Brazilian singer, songwriter and instrumentalist.",
       "pt": "Gilberto Gil é cantor, compositor e instrumentista brasileiro.",
@@ -677,8 +677,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Elza Soares foi cantora brasileira, com uma carreira de diferentes repertórios e experimentações. Sua estreia em disco ocorreu em 1959.",
-        "Interpretar uma canção é uma contribuição artística específica; compor é outra. As fichas musicais ajudam a reconhecer ambas sem trocar seus créditos."
+        "A cantora Elza Soares construiu uma longa trajetória de interpretações intensas e renovação artística. Desde sua estreia em disco, em 1959, atravessou samba e outras sonoridades, trabalhando com diferentes compositores e gerações de músicos.",
+        "Sua voz, sua interpretação e suas escolhas de repertório marcaram a música brasileira. Interpretar e compor são trabalhos distintos e igualmente importantes."
       ],
       "en": "Elza Soares was a Brazilian singer whose career crossed different repertoires.",
       "pt": "Elza Soares foi uma cantora brasileira cuja carreira atravessou diferentes repertórios.",
@@ -695,8 +695,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Nina Simone foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação e seu repertório atravessaram diferentes tradições musicais.",
-        "A leitura da instrumentoteca liga sua trajetória ao contexto histórico, enquanto a estação de escuta apresenta exercícios sonoros originais do jogo."
+        "Nina Simone foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação ao piano e sua voz singular fizeram dialogar música clássica, jazz, blues e canção popular. Parte de seu repertório enfrentou diretamente o racismo.",
+        "Em sua música, escolhas de interpretação, ritmo e repertório se relacionam à experiência artística e aos conflitos históricos de sua época."
       ],
       "en": "Nina Simone was a pianist, singer and civil rights activist.",
       "pt": "Nina Simone foi pianista, cantora e ativista pelos direitos civis.",
@@ -713,8 +713,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Katherine Johnson foi matemática da NASA. Em 1962, conferiu cálculos de computadores eletrônicos para o voo orbital de John Glenn.",
-        "Conferência e colaboração também são trabalho científico. No laboratório, compare esta trajetória com o caderno que registra as funções de Luma, Caio e Luca."
+        "Katherine Johnson foi matemática da NASA e trabalhou com cálculos fundamentais para a exploração espacial. Em 1962, verificou resultados de computadores eletrônicos usados na preparação do voo orbital de John Glenn.",
+        "A precisão de seu trabalho foi decisiva em uma equipe de engenheiros e cientistas. A história da ciência também é feita de quem confere, testa e corrige cálculos."
       ],
       "en": "Katherine Johnson checked computer calculations for John Glenn’s orbital flight in 1962.",
       "pt": "Katherine Johnson conferiu cálculos de computadores para o voo orbital de John Glenn em 1962.",
@@ -731,8 +731,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Rosa Parks foi ativista pelos direitos civis. Sua prisão em Montgomery, em 1º de dezembro de 1955, se ligou ao boicote coletivo contra a segregação nos ônibus.",
-        "A história envolve organização e ação coletiva, além de um gesto individual. A ata da assembleia deve preservar também o trabalho das pessoas que não aparecem no cartaz."
+        "Rosa Parks foi uma ativista do movimento por direitos civis nos Estados Unidos. Sua prisão em Montgomery, em 1º de dezembro de 1955, após se recusar a ceder o assento no ônibus, tornou-se um marco na mobilização contra a segregação racial.",
+        "O boicote aos ônibus de Montgomery envolveu milhares de pessoas, organizações e lideranças. Parks já participava de ações políticas antes daquele dia."
       ],
       "en": "Rosa Parks was a civil rights activist involved in the Montgomery bus boycott.",
       "pt": "Rosa Parks foi uma ativista pelos direitos civis envolvida no boicote aos ônibus de Montgomery.",
@@ -749,8 +749,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Harriet Tubman foi uma abolicionista que ajudou pessoas escravizadas a buscar a liberdade por redes de apoio e rotas de fuga nos Estados Unidos. Também atuou durante a Guerra Civil.",
-        "A expressão Underground Railroad nomeia uma rede de fuga e auxílio, não uma ferrovia subterrânea literal. Contexto histórico é necessário também ao traduzir expressões."
+        "Harriet Tubman escapou da escravização e passou a ajudar outras pessoas a buscar a liberdade nos Estados Unidos. Atuou em redes clandestinas de apoio e orientação conhecidas como Underground Railroad e participou de esforços durante a Guerra Civil.",
+        "A Underground Railroad não era uma ferrovia subterrânea: era uma rede de pessoas, abrigos e caminhos. A expressão guarda a memória dessa colaboração arriscada."
       ],
       "en": "Harriet Tubman helped enslaved people reach freedom through networks of support.",
       "pt": "Harriet Tubman ajudou pessoas escravizadas a alcançar a liberdade por redes de apoio.",
@@ -767,8 +767,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Martin Luther King Jr. foi uma liderança do movimento por direitos civis nos Estados Unidos. Defendeu ações não violentas e recebeu o Nobel da Paz em 1964.",
-        "Sua trajetória faz parte de um movimento com muitas organizações e pessoas. Leia a ficha relacionada antes de atribuir a uma liderança todas as conquistas coletivas."
+        "Martin Luther King Jr. foi pastor e uma das lideranças do movimento por direitos civis nos Estados Unidos. Defendeu mobilizações não violentas contra a segregação e recebeu o Prêmio Nobel da Paz em 1964.",
+        "Marchas, boicotes e campanhas dependiam de redes comunitárias e muitas lideranças. Sua história ganha sentido quando é vista dentro desse movimento coletivo."
       ],
       "en": "Martin Luther King Jr. was a civil rights leader who advocated nonviolent action.",
       "pt": "Martin Luther King Jr. foi uma liderança pelos direitos civis que defendeu ações não violentas.",
@@ -786,8 +786,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Nelson Mandela lutou contra o apartheid na África do Sul. Passou 27 anos preso e, em 1994, tornou-se presidente após as primeiras eleições nacionais democráticas com sufrágio universal adulto do país.",
-        "Apartheid designa um sistema histórico de segregação e dominação racial. Compare contextos e fontes, sem tratar toda forma de discriminação como o mesmo episódio histórico."
+        "Nelson Mandela participou da luta contra o apartheid, sistema de segregação racial imposto na África do Sul. Passou 27 anos preso e, em 1994, foi eleito presidente nas primeiras eleições nacionais democráticas com sufrágio universal adulto do país.",
+        "A transição democrática resultou de décadas de resistência política e mobilização social. Sua presidência não apagou imediatamente as desigualdades herdadas do apartheid."
       ],
       "en": "Nelson Mandela opposed apartheid and became South Africa’s president in 1994.",
       "pt": "Nelson Mandela enfrentou o apartheid e se tornou presidente da África do Sul em 1994.",
@@ -804,8 +804,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Steve Biko foi uma liderança da Consciência Negra na África do Sul. Sua atuação enfrentou o apartheid; ele morreu sob custódia policial em 1977.",
-        "Reconhecer um movimento exige conhecer suas condições históricas e suas ideias. O nome de uma pessoa abre uma pesquisa, sem substituir as demais vozes."
+        "Steve Biko foi uma das vozes centrais do Movimento de Consciência Negra na África do Sul. Sua atuação estimulou organização e afirmação política da população negra durante o apartheid. Morreu em 1977 após permanecer sob custódia policial.",
+        "Suas ideias defendiam que a resistência envolvesse também autonomia, autoestima e participação na transformação social."
       ],
       "en": "Steve Biko was a Black Consciousness leader in South Africa.",
       "pt": "Steve Biko foi uma liderança da Consciência Negra na África do Sul.",
@@ -822,8 +822,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Angela Davis é intelectual e ativista estadunidense. Seus trabalhos relacionam raça, classe, gênero e instituições de punição; sua atuação acadêmica inclui a Universidade da Califórnia em Santa Cruz.",
-        "No arquivo, ideias precisam de autoria e contexto. Um resumo apresenta uma questão para leitura; não é uma citação nem substitui o trabalho completo da autora."
+        "Angela Davis é filósofa, professora e ativista estadunidense. Sua produção intelectual discute racismo, gênero, classe, justiça e instituições de encarceramento. Também participou de movimentos políticos e de campanhas por direitos civis.",
+        "Seus livros relacionam experiências individuais a estruturas sociais, convidando a examinar como as instituições afetam grupos de maneiras diferentes."
       ],
       "en": "Angela Davis studies relationships between race, class, gender and institutions.",
       "pt": "Angela Davis estuda relações entre raça, classe, gênero e instituições.",
@@ -840,8 +840,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Wangari Maathai fundou o Green Belt Movement no Quênia em 1977. O movimento liga plantio de árvores, participação de mulheres e cuidado ambiental. Ela recebeu o Nobel da Paz em 2004.",
-        "O cuidado da horta de Aisha é uma atividade local de fantasia. A trajetória de Maathai ajuda a perguntar como ambiente, participação e condições de vida se relacionam."
+        "A ambientalista queniana Wangari Maathai fundou, em 1977, o Green Belt Movement, que associou plantio de árvores à participação de mulheres e ao fortalecimento de comunidades. Em 2004, recebeu o Prêmio Nobel da Paz.",
+        "Sua atuação mostrou que cuidar do ambiente também pode significar defender recursos, trabalho, participação pública e qualidade de vida."
       ],
       "en": "Wangari Maathai connected tree planting, women’s participation and environmental care.",
       "pt": "Wangari Maathai relacionou plantio de árvores, participação de mulheres e cuidado ambiental.",
@@ -859,8 +859,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Marielle Franco foi socióloga, vereadora do Rio de Janeiro e defensora dos direitos humanos. Sua atuação política se ligou às experiências de mulheres negras e de moradores de favelas.",
-        "Na assembleia, pergunte quem consegue participar e quais experiências entram na decisão. Uma homenagem precisa apresentar trabalho e trajetória, além de uma imagem."
+        "Socióloga, defensora dos direitos humanos e vereadora do Rio de Janeiro, Marielle Franco atuou em pautas ligadas a mulheres, população negra, moradores de favelas e direitos civis. Foi assassinada em março de 2018.",
+        "Sua trajetória reúne formação acadêmica, trabalho comunitário e atuação legislativa. Lembrar Marielle é também conhecer os projetos e as pessoas que orientavam seu trabalho."
       ],
       "en": "Marielle Franco was a sociologist, city councillor and human rights advocate.",
       "pt": "Marielle Franco foi socióloga, vereadora e defensora dos direitos humanos.",
@@ -877,8 +877,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Pelé foi jogador de futebol brasileiro e campeão mundial com a seleção masculina em 1958, 1962 e 1970. Sua trajetória se liga também ao Santos Futebol Clube.",
-        "Um resultado tem data, modalidade e equipe. Identificar esses elementos evita confundir categorias e permite reconhecer contribuições individuais dentro de um trabalho coletivo."
+        "Pelé foi um dos maiores nomes do futebol brasileiro. Atuou por muitos anos no Santos Futebol Clube e integrou a seleção masculina campeã das Copas do Mundo de 1958, 1962 e 1970.",
+        "Além dos títulos, sua habilidade e popularidade ajudaram a projetar o futebol brasileiro internacionalmente. Sua carreira fez parte de diferentes gerações e equipes."
       ],
       "en": "Pelé won the men’s World Cup with Brazil in 1958, 1962 and 1970.",
       "pt": "Pelé ganhou a Copa do Mundo masculina com o Brasil em 1958, 1962 e 1970.",
@@ -895,8 +895,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Marta é jogadora de futebol brasileira. Na Copa do Mundo feminina de 2007, recebeu a Bola de Ouro e a Chuteira de Ouro; o Brasil foi finalista.",
-        "As conquistas de uma modalidade precisam ser nomeadas por seus próprios registros. Compare autoria de uma ficha, data do resultado e categoria antes de atualizar o mural."
+        "Marta Vieira da Silva tornou-se uma das principais referências do futebol feminino. Na Copa do Mundo de 2007, foi artilheira e eleita a melhor jogadora do torneio, quando a seleção brasileira chegou à final.",
+        "Sua trajetória é inseparável da história do futebol feminino brasileiro e da luta de atletas por melhores condições de treinamento, investimento e visibilidade."
       ],
       "en": "Marta received the Golden Ball and Golden Boot at the 2007 Women’s World Cup.",
       "pt": "Marta recebeu a Bola de Ouro e a Chuteira de Ouro na Copa do Mundo feminina de 2007.",
@@ -913,8 +913,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Rebeca Andrade é ginasta brasileira. Conquistou ouro no salto nos Jogos de Tóquio 2020 e no solo nos Jogos de Paris 2024.",
-        "Solo e salto são provas diferentes. Uma ficha esportiva identifica evento e edição, como uma ficha científica identifica condições e data do resultado."
+        "Rebeca Andrade se destacou na ginástica artística brasileira com conquistas em diferentes aparelhos. Foi campeã olímpica no salto em Tóquio 2020 e no solo em Paris 2024.",
+        "Sua carreira reúne técnica, consistência e retorno após lesões. Solo, salto e individual geral exigem combinações diferentes de habilidades e são disputas distintas."
       ],
       "en": "Rebeca Andrade won Olympic gold in vault at Tokyo 2020 and floor exercise at Paris 2024.",
       "pt": "Rebeca Andrade ganhou ouro olímpico no salto em Tóquio 2020 e no solo em Paris 2024.",
@@ -931,8 +931,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Serena Williams foi uma das grandes tenistas do circuito profissional. Conquistou 23 títulos de simples em torneios de Grand Slam ao longo de sua carreira.",
-        "Simples e duplas são categorias distintas. O registro precisa dizer o que está contando, para que um número não pareça representar toda forma de participação."
+        "Serena Williams marcou a história do tênis profissional com 23 títulos de simples em torneios de Grand Slam. Reconhecida pela potência de seu jogo e pela longevidade da carreira, também conquistou títulos importantes em duplas.",
+        "Seus resultados transformaram referências dentro e fora das quadras, em um esporte cuja visibilidade nem sempre foi distribuída igualmente."
       ],
       "en": "Serena Williams won 23 Grand Slam singles titles.",
       "pt": "Serena Williams ganhou 23 títulos de simples em torneios de Grand Slam.",
@@ -949,8 +949,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Chimamanda Ngozi Adichie é escritora nigeriana, autora de Meio sol amarelo, de 2006, e Americanah, de 2013. Seus romances apresentam personagens e experiências diversas.",
-        "A biblioteca aproxima obras de diferentes países sem tratar uma autora como representante de todo um continente. Autora, obra e contexto formam o ponto de partida da leitura."
+        "Chimamanda Ngozi Adichie é escritora nigeriana, autora dos romances Meio sol amarelo (2006) e Americanah (2013). Sua ficção acompanha personagens que vivem conflitos familiares, políticos, culturais e de pertencimento.",
+        "Ao construir histórias muito diferentes entre si, suas obras questionam a ideia de que uma pessoa ou um país possa ser resumido a uma única narrativa."
       ],
       "en": "Chimamanda Ngozi Adichie is a Nigerian writer and the author of Americanah.",
       "pt": "Chimamanda Ngozi Adichie é escritora nigeriana e autora de Americanah.",
@@ -967,8 +967,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Maya Angelou foi escritora e artista estadunidense. Sua obra autobiográfica I Know Why the Caged Bird Sings foi publicada em 1969.",
-        "Uma autobiografia apresenta uma perspectiva e escolhas de escrita. Na roda de memória, identifique quem narra e respeite a forma como a pessoa escolhe compartilhar sua experiência."
+        "Maya Angelou foi escritora, poeta, atriz e ativista estadunidense. Seu livro Eu sei por que o pássaro canta na gaiola (I Know Why the Caged Bird Sings), publicado em 1969, narra episódios de sua infância e juventude com uma voz literária marcante.",
+        "Sua obra entrelaça memória, racismo, amadurecimento e busca por liberdade. Angelou também escreveu poesia e participou da vida cultural e política dos Estados Unidos."
       ],
       "en": "Maya Angelou was an American writer and artist who worked with autobiography and poetry.",
       "pt": "Maya Angelou foi uma escritora e artista estadunidense que trabalhou com autobiografia e poesia.",
@@ -985,8 +985,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "James Baldwin foi escritor estadunidense de romances, ensaios e peças. The Fire Next Time, publicado em 1963, participa de seus debates sobre raça e sociedade.",
-        "Ensaio e notícia não são o mesmo gênero. Ravi propõe identificar o tipo de texto e seus argumentos antes de transformar um trecho em uma manchete."
+        "James Baldwin foi romancista, ensaísta e dramaturgo estadunidense. Em obras como The Fire Next Time (1963), examinou racismo, relações sociais, religião e identidade com uma escrita pessoal e crítica.",
+        "Seus ensaios articulam experiências vividas e análise política. Seus romances exploram personagens que enfrentam expectativas e conflitos em suas relações."
       ],
       "en": "James Baldwin wrote novels, essays and plays about experiences including race and society.",
       "pt": "James Baldwin escreveu romances, ensaios e peças sobre experiências que incluem raça e sociedade.",
@@ -1003,8 +1003,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Sueli Carneiro é filósofa e ativista brasileira. Sua produção discute relações raciais, feminismo negro e os processos que desvalorizam conhecimentos de determinados grupos.",
-        "Sua tese de 2005 investiga a construção do outro como não-ser. No arquivo de New Harmony, a pergunta prática é quais produções foram excluídas e por quais critérios."
+        "A filósofa e ativista brasileira Sueli Carneiro é uma importante referência do feminismo negro. Sua produção discute racismo, desigualdade e o apagamento de conhecimentos; em 2005, concluiu uma tese sobre a construção do outro como não-ser.",
+        "Seu trabalho ajuda a compreender como certas experiências são silenciadas e por que a produção de conhecimento depende também de quem é ouvido e reconhecido."
       ],
       "en": "Sueli Carneiro is a Brazilian philosopher who studies racism and the exclusion of knowledge.",
       "pt": "Sueli Carneiro é uma filósofa brasileira que estuda racismo e exclusão de conhecimentos.",
@@ -1021,8 +1021,8 @@
       "author": "Museu das Vozes · Fichas de trajetórias",
       "theme": "Biografia, fontes e interpretação",
       "paragraphs": [
-        "Cartola, nome artístico de Angenor de Oliveira, foi compositor e cantor brasileiro. Participou da fundação da Estação Primeira de Mangueira em 1928.",
-        "As fichas de acervo identificam pessoas, obras e encontros musicais. No festival, um nome conhecido deve abrir a escuta, sem apagar parceiros e demais funções da produção."
+        "Cartola, nome artístico de Angenor de Oliveira, foi cantor e compositor brasileiro. Participou da fundação da Estação Primeira de Mangueira, em 1928, e deixou sambas conhecidos por suas melodias e letras poéticas.",
+        "A música de Cartola se desenvolveu em diálogo com parceiros, rodas de samba e a vida cultural do Rio de Janeiro. Sua obra continua sendo reinterpretada."
       ],
       "en": "Cartola was a Brazilian songwriter and singer linked to the founding of Mangueira.",
       "pt": "Cartola foi um compositor e cantor brasileiro ligado à fundação da Mangueira.",

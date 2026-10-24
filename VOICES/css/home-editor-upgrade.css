@@ -1,0 +1,23 @@
+/* Planta da casa: controles confortáveis no desktop e no toque. */
+.home-arrange-v2{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,1fr);gap:18px;align-items:start}
+.home-arrange-v2 .home-plan-column{min-width:0}
+.home-arrange-v2 #home-floorplan{display:block;width:100%;height:auto;aspect-ratio:4/3;cursor:crosshair;touch-action:none;border:2px solid #73907b;border-radius:12px;background:#172e28;box-shadow:0 12px 30px #13231e33}
+.home-arrange-help{margin:0 0 14px;line-height:1.5;opacity:.9}
+.home-arrange-toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap;margin:0 0 10px}
+.home-arrange-toolbar .field{flex:1;min-width:180px;margin:0}
+.home-grid-toggle{display:inline-flex;align-items:center;gap:6px;padding:9px;white-space:nowrap}
+.home-arrange-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+.home-arrange-controls button{min-height:41px}
+.home-arrange-controls #home-angle{background:#213e35;border:1px solid #73907b;border-radius:7px;padding:9px 12px;font-variant-numeric:tabular-nums}
+.home-arrange-status{margin-top:10px;padding:10px 12px;border-left:3px solid #c39c6b;background:#223b33;border-radius:5px;font-size:.9rem}
+.home-arrange-status[data-valid="true"]{border-left-color:#78cfa5}
+.home-arrange-sidebar{display:flex;flex-direction:column;gap:8px;min-width:0}
+.home-arrange-sidebar h3{margin:10px 0 4px}
+.home-arranged-item{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #82968344}
+.home-arranged-item span{min-width:120px;flex:1}
+.home-arranged-item strong,.home-arranged-item small{display:block}
+.home-arranged-item small{opacity:.75;margin-top:4px}
+.home-arranged-item button{font-size:.8rem}
+.home-storage-summary{display:flex;flex-wrap:wrap;gap:7px;max-height:220px;overflow:auto}
+.home-storage-pick{display:flex;gap:10px;justify-content:space-between;border:1px solid #71957c;background:#233f35;color:inherit;padding:9px;border-radius:7px;font-size:.85rem}
+@media(max-width:850px){.home-arrange-v2{grid-template-columns:minmax(0,1fr)}.home-arrange-v2 .home-arrange-sidebar{max-height:none}.home-arrange-controls{gap:5px}.home-arrange-controls button{flex:1}}

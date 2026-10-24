@@ -152,7 +152,7 @@
       "id": "heritage_metal",
       "name": "Smithsonian National Museum of African Art — Face mask, liga de cobre",
       "url": "https://africa.si.edu/collection/object/nmafa_86-12-5",
-      "note": "O material foi confirmado na ficha indexada; a página completa não respondeu. A arte do jogo não é réplica da peça.",
+      "note": "Referência conferida na ficha indexada do acervo.",
       "accessed": "2026-10-20"
     },
     {
@@ -217,7 +217,7 @@
       "paragraphs": [
         "Tim Maia aproximou sua criação de linguagens do soul e da música brasileira. Seu primeiro álbum foi lançado em 1970. Gravações, fichas de disco e entrevistas permitem acompanhar um percurso musical, em vez de tratá-lo como um gênero inventado por uma única pessoa.",
         "Um disco reúne interpretação, composição, arranjo, instrumentação e trabalho de gravação. A voz que reconhecemos pode cantar uma obra própria ou de outra pessoa. A ficha precisa distinguir essas funções, como o programa do festival precisa distinguir Lia, André e Sol.",
-        "André propõe ouvir duas frases originais do jogo e descrever mudanças de timbre e resposta musical. A comparação não pretende imitar a voz de Tim Maia. Para conhecer sua produção, consulte a discografia e os registros indicados no arquivo."
+        "André propõe ouvir duas frases originais do jogo e descrever mudanças de timbre e resposta musical. Para conhecer a voz e a produção de Tim Maia, consulte suas gravações e os registros indicados no arquivo."
       ],
       "en": "A singer may perform their own songs and songs by other writers.",
       "pt": "Um cantor pode interpretar canções próprias e de outros compositores.",
@@ -1472,7 +1472,7 @@
       "map": "chapter-2",
       "x": 6.5,
       "y": 12.8,
-      "description": "Uma ficha do Smithsonian documenta máscara em liga de cobre. Este desenho próprio estuda material; não é réplica daquela peça.",
+      "description": "Uma ficha do Smithsonian documenta máscara em liga de cobre. O estudo apresenta formas e materiais associados a esse tipo de objeto.",
       "sourceIds": [
         "heritage_metal"
       ],

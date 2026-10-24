@@ -45,6 +45,100 @@ function mergeDefaultModes(db){
   });
   return db;
 }
+// Atualiza o gabarito dos bancos químicos já salvos no navegador.
+// Altera apenas questões originais ainda na disposição antiga; mantém perguntas editadas/criadas pelo usuário.
+function migrateChemistryAnswerKeys(db){
+  const oldNames={
+    '3º ano':{
+      "Qual opção é um exemplo de sal 'do bem' em pequena quantidade na água do café, por contribuir com extração?":
+        'Qual íon, além do cálcio (Ca²⁺), contribui significativamente para a dureza da água utilizada no preparo do café?'
+    },
+    'Coffee Lovers':{
+      'Um composto indesejado que pode aumentar com torra alta (em alguns casos) é:':
+        'Qual substância indesejada pode se formar nas etapas iniciais da torra do café a partir de açúcares e asparagina?'
+    }
+  };
+  const legacyAlts={
+    '3º ano':{
+      "Qual opção é um exemplo de sal 'do bem' em pequena quantidade na água do café, por contribuir com extração?":
+        ['Magnésio (Mg²⁺)','Cálcio (Ca²⁺)','Bicarbonato (HCO₃⁻)','Sódio (Na⁺)']
+    },
+    'Coffee Lovers':{
+      'Um composto indesejado que pode aumentar com torra alta (em alguns casos) é:':
+        ['Acrilamida','Sacarose intacta','Água destilada','Oxigênio puro']
+    }
+  };
+  const altSig=(arr)=>JSON.stringify((arr||[]).map(x=>String(x)).sort());
+  ['1º ano','2º ano','3º ano','Coffee Lovers'].forEach(mode=>{
+    const saved=db?.[mode]?.perguntas,builtin=DEFAULT_DBS?.[mode]?.perguntas;
+    if(!Array.isArray(saved)||!Array.isArray(builtin))return;
+    const byKey=new Map(builtin.map(q=>[String(q.area||'')+'||'+String(q.pergunta||''),q]));
+    for(const q of saved){
+      if(!q||!Array.isArray(q.alternativas)||Number(q.correta)!==0)continue;
+      const originalText=String(q.pergunta||'');
+      const mappedText=oldNames[mode]?.[originalText]||originalText;
+      const ref=byKey.get(String(q.area||'')+'||'+mappedText);
+      if(!ref||!Array.isArray(ref.alternativas))continue;
+      const oldLegacy=legacyAlts[mode]?.[originalText];
+      const unmodified=oldLegacy
+        ? JSON.stringify(q.alternativas)===JSON.stringify(oldLegacy)
+        : altSig(q.alternativas)===altSig(ref.alternativas)
+          && String(q.alternativas[0])===String(ref.alternativas[ref.correta]);
+      if(!unmodified)continue;
+      q.alternativas=ref.alternativas.slice();
+      q.correta=ref.correta;
+      if(oldLegacy){
+        q.pergunta=ref.pergunta;
+        q.dica_texto=ref.dica_texto;
+      }
+    }
+  });
+  return db;
+}
+// Atualiza perguntas de Química incorporadas em versões antigas sem apagar
+// questões adicionadas pelo usuário nem alterar aquelas cujas alternativas foram editadas.
+function migrateChemistryRevision(db){
+  const legacy=P?.chemistry_revision?.legacy;
+  if(!legacy||!db)return db;
+  const altSig=(arr)=>{
+    const string=JSON.stringify((arr||[]).map(x=>String(x)).sort());
+    let hash=2166136261;
+    for(let i=0;i<string.length;i++)hash=Math.imul(hash^string.charCodeAt(i),16777619)>>>0;
+    return hash.toString(36);
+  };
+  Object.entries(legacy).forEach(([mode,rows])=>{
+    const saved=db?.[mode]?.perguntas,builtin=DEFAULT_DBS?.[mode]?.perguntas;
+    if(!Array.isArray(saved)||!Array.isArray(builtin)||!Array.isArray(rows))return;
+    const byOld=new Map(rows.map(entry=>[entry[0]+'||'+entry[1],entry]));
+    saved.forEach(q=>{
+      if(!q||!Array.isArray(q.alternativas))return;
+      const old=byOld.get(String(q.area||'')+'||'+String(q.pergunta||''));
+      if(!old||altSig(q.alternativas)!==old[2])return;
+      const updated=builtin[old[3]];
+      if(!updated||updated.area!==old[0])return;
+      const customHint=String(q.dica_texto||'')!==String(old[4]||'');
+      q.pergunta=updated.pergunta;
+      q.alternativas=updated.alternativas.slice();
+      q.correta=updated.correta;
+      if(!customHint)q.dica_texto=updated.dica_texto;
+    });
+  });
+  return db;
+}
+// Também corrige cópias antigas de perguntas químicas dentro de predefinições salvas.
+function migrateChemistryPresets(pre){
+  const modes=new Set(['1º ano','2º ano','3º ano','Coffee Lovers']);
+  const grouped={};
+  Object.values(pre||{}).forEach(p=>{
+    (Array.isArray(p?.perguntas)?p.perguntas:[]).forEach(q=>{
+      const mode=modes.has(q?._mode)?q._mode:p?.modo;
+      if(!modes.has(mode))return;
+      (grouped[mode]??={perguntas:[]}).perguntas.push(q);
+    });
+  });
+  migrateChemistryAnswerKeys(migrateChemistryRevision(grouped));
+  return pre;
+}
 function applyBuiltInContentFixes(db){
   const mode8=db&&db['8º ano'];
   if(mode8&&Array.isArray(mode8.perguntas)){
@@ -115,7 +209,7 @@ function cleanRuntimePredefs(pre){
   });
   return pre||{};
 }
-let DB=cleanRuntimeDB(applyBuiltInContentFixes(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS)))),PRE=cleanRuntimePredefs({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS});
+let DB=cleanRuntimeDB(applyBuiltInContentFixes(migrateChemistryAnswerKeys(migrateChemistryRevision(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS)))))),PRE=cleanRuntimePredefs(migrateChemistryPresets({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS}));
 save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function resolveImageSource(value){const raw=String(value||'').trim();if(!raw)return'';if(/^data:|^blob:|^https?:|^\.\//i.test(raw))return raw;if(raw.startsWith('/'))return raw;if(A[raw])return A[raw];return raw}function hasQuestionHint(q){return !!(String(q?.dica_texto||'').trim()||String(q?.dica_imagem||'').trim())}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;

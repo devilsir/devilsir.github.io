@@ -1,0 +1,62 @@
+(function voicesMemoryMuseum(){
+'use strict';
+const V=window.V,P=V.Playground,C=P.controllers,clamp=V.clamp;
+const routes=[
+ [{item:'book',at:[3,5],to:'library'},{item:'letter',at:[5,1],to:'museum'}],
+ [{item:'photo',at:[3,1],to:'museum'},{item:'book',at:[8,5],to:'library'}],
+ [{item:'record',at:[6,1],to:'square'},{item:'letter',at:[8,5],to:'library'},{item:'photo',at:[3,5],to:'museum'}],
+ [{item:'letter',at:[8,1],to:'square'},{item:'book',at:[3,5],to:'museum'},{item:'record',at:[6,5],to:'library'}],
+ [{item:'photo',at:[6,5],to:'museum'},{item:'book',at:[8,1],to:'library'},{item:'letter',at:[3,1],to:'square'}],
+ [{item:'record',at:[8,1],to:'museum'},{item:'photo',at:[3,5],to:'square'},{item:'letter',at:[6,1],to:'library'},{item:'book',at:[8,5],to:'museum'}]
+];
+const destinations={library:{x:10,y:1,name:'Library',en:'library',color:'#80afa9'},museum:{x:10,y:5,name:'Museum',en:'museum',color:'#d9ac77'},square:{x:1,y:1,name:'Town Square',en:'town square',color:'#aa9ccc'}};
+const gx=x=>154+x*60,gy=y=>150+y*43;
+function walls(stage){const w=new Set();if(stage<0)return w;for(let y=1;y<=5;y++){if(y!==1+stage%3&&y!==5-stage%2)w.add('4,'+y);if(stage>1&&y!==2+stage%3&&y!==4)w.add('7,'+y);}return w;}
+const key=(x,y)=>x+','+y;
+function bfs(from,to,blocked){const queue=[[...from]],seen=new Set([key(...from)]),parent=new Map();for(let i=0;i<queue.length;i++){const at=queue[i],k=key(...at);if(k===key(...to)){const result=[];let n=k;while(n!==key(...from)){const v=n.split(',').map(Number);result.unshift(v);n=parent.get(n);}return result;}for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=at[0]+dx,y=at[1]+dy,n=key(x,y);if(x<0||x>11||y<0||y>6||blocked.has(n)||seen.has(n))continue;seen.add(n);parent.set(n,k);queue.push([x,y]);}}return null;}
+function makeMemory(training,stage){const n=training?-1:stage,tasks=training?[{item:'book',at:[3,5],to:'library'}]:routes[stage];return{stage,player:{x:1,y:5},start:[1,5],route:[],carried:false,done:0,tasks:tasks.map(t=>({...t})),guards:n<0?[]:[{x:5,y:1+stage%4,base:1+stage%4,phase:0},...(stage>1?[{x:8,y:3,base:3,phase:1.5}]:[])],blocked:[...walls(n)],invuln:0,steps:0,coins:0};}
+function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pointArray(p){return Array.isArray(p)?p:[p.x,p.y];}
+C.memory={
+ create(training,start=0){return makeMemory(training,start);},
+ model(r){const d=r.data,t=d.tasks[Math.min(d.done,d.tasks.length-1)],dest=destinations[t?.to],near=d.carried?dest:{x:t?.at[0],y:t?.at[1]};return{request:`Fase ${d.stage+1} · ${d.carried?'Deliver the '+t.item+' to the '+dest.en:'Find the '+t.item}`,support:`${d.done}/${d.tasks.length} entregas · ${d.coins} moedas coletadas · ${d.invuln>0?'Proteção temporária':'Evite as patrulhas'}`,progress:d.done,total:d.tasks.length,action:distance(d.player,near)<1.3?(d.carried?'Entregar · E':'Recolher · E'):'Aproxime-se para interagir',disabled:distance(d.player,near)>=1.3,hint:'Toque numa casa do mapa para planejar um trajeto; as patrulhas exigem atenção.'};},
+ controls(r,host){const pad=document.createElement('div');pad.className='pg-pad';for(const [id,label,x,y]of[['up','↑',0,-1],['left','←',-1,0],['down','↓',0,1],['right','→',1,0]]){const b=P.button('pg-'+id,label,()=>this.action(r,'step',[x,y]));pad.append(b);}host.append(pad,P.button('pg-action','Interagir · E',()=>P.action('use'),'primary'));},
+ key(r,k){const dir={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]}[k];if(dir){this.action(r,'step',dir);return true;}if(['e','enter',' '].includes(k)){P.action('use');return true;}return false;},
+ action(r,name,arg){const d=r.data;if(name==='step'){const x=Math.round(d.player.x+arg[0]),y=Math.round(d.player.y+arg[1]);if(x>=0&&x<=11&&y>=0&&y<=6&&!new Set(d.blocked).has(key(x,y))){d.player={x,y};d.route=[];d.steps++;r.moves++;P.event('memory-walk');}return;}if(name!=='use')return;const t=d.tasks[Math.min(d.done,d.tasks.length-1)],p=d.carried?destinations[t.to]:{x:t.at[0],y:t.at[1]};if(distance(d.player,p)>=1.3)return;if(!d.carried){d.carried=true;r.moves++;P.hit(40);P.event('memory-pick');P.feedback('Pacote na mochila. Procure '+destinations[t.to].name+'.');return;}d.carried=false;d.done++;r.moves++;P.hit(160);P.event('memory-deliver');if(r.training){P.feedback('✓ Entrega concluída no treino.');return;}if(d.done>=d.tasks.length){P.stageClear(r,d.stage);if(d.stage>=5){P.finish();return;}r.data=makeMemory(false,d.stage+1);P.feedback('✓ Rota concluída! O próximo bairro já está aberto.');}else P.feedback('✓ Entrega feita! Siga para o próximo registro.');},
+ pointer(r,type,p){if(type!=='down')return;const to=[Math.round((p.x-154)/60),Math.round((p.y-150)/43)],d=r.data,blocked=new Set(d.blocked);if(to[0]<0||to[0]>11||to[1]<0||to[1]>6)return;const path=bfs([Math.round(d.player.x),Math.round(d.player.y)],to,blocked);if(path)d.route=path;},
+ update(r,dt){const d=r.data;d.invuln=Math.max(0,d.invuln-dt);if(d.route.length){d.clock=(d.clock||0)+dt;const interval=P.difficulty(r)===2?.18:.24;if(d.clock>interval){d.clock=0;const next=d.route.shift(),remaining=d.route.slice();if(next){this.action(r,'step',[next[0]-d.player.x,next[1]-d.player.y]);d.route=remaining;}}}
+ if(r.training)return;const diff=P.difficulty(r),speed=[.55,.85,1.15][diff];for(const [i,g]of d.guards.entries()){g.phase+=dt*speed;g.y=clamp(g.base+Math.sin(g.phase+i)*1.6,0,6);if(d.invuln<=0&&distance(d.player,g)<.75){d.invuln=2.5;d.player={x:1,y:5};d.route=[];d.carried=false;r.mistakes++;r.combo=0;P.feedback('Patrulha avistada! Volte pelo desvio; o pacote retornou ao ponto de coleta.',true);}}},
+ hint(r){const d=r.data,t=d.tasks[Math.min(d.done,d.tasks.length-1)],goal=d.carried?destinations[t.to]:{x:t.at[0],y:t.at[1]},path=bfs([Math.round(d.player.x),Math.round(d.player.y)],[goal.x,goal.y],new Set(d.blocked));if(path)d.route=path;P.feedback('Rota segura desenhada até '+(d.carried?destinations[t.to].name:'o registro')+'. Observe as patrulhas.');},
+ spot(r){const d=r.data,t=d.tasks[Math.min(d.done,d.tasks.length-1)],p=r.step===0?d.player:r.step===1?{x:t.at[0],y:t.at[1]}:destinations[t.to];return{x:gx(p.x),y:gy(p.y),w:110,h:100};},
+ draw(c,r){const d=r.data;P.box(c,0,0,960,540,'#6c988d');P.box(c,112,116,730,354,'#cfbf9e','#f0d6a1');for(let y=0;y<=6;y++)for(let x=0;x<=11;x++){const px=gx(x),py=gy(y),wall=d.blocked.includes(key(x,y));P.box(c,px-28,py-20,56,40,wall?'#6d8d70':(x+y)%2?'#d7c6a5':'#cdbb96',wall?'#385d4b':'#bdac89');if(wall){P.box(c,px-20,py-26,40,26,'#486d5e');P.text(c,'▧',px,py-16,20,'#d1d6a7');}}
+ for(const site of Object.values(destinations)){const px=gx(site.x),py=gy(site.y);P.box(c,px-34,py-29,68,54,site.color,'#f5deb4');P.text(c,site.name,px,py-39,14,'#1f453d');P.text(c,'⌂',px,py,22,'#213d35');}
+ if(d.route.length){c.strokeStyle='#f7cf77';c.lineWidth=4;c.beginPath();c.moveTo(gx(d.player.x),gy(d.player.y));for(const q of d.route)c.lineTo(gx(q[0]),gy(q[1]));c.stroke();}
+ const t=d.tasks[Math.min(d.done,d.tasks.length-1)];if(t&&!d.carried){const x=gx(t.at[0]),y=gy(t.at[1]);P.box(c,x-17,y-22,34,30,'#e5bf75','#624a32');P.text(c,t.item.slice(0,3).toUpperCase(),x,y-7,12,'#29463e');}for(const g of d.guards){const x=gx(g.x),y=gy(g.y);P.person(c,x,y+10,true,0,44);P.text(c,'!',x,y-35,22,'#813f35');}P.person(c,gx(d.player.x),gy(d.player.y)+8,true,0,50);if(d.carried){P.box(c,gx(d.player.x)+9,gy(d.player.y)-25,19,16,'#f1c779');}P.text(c,'ARQUIVO DO BAIRRO · ENTREGAS FICTÍCIAS',480,503,13,'#edf3d4');}
+};
+
+// Handcrafted Sokoban rooms. A breadth-first solver is run during QA to
+// validate the authored crate layouts; no random, potentially insoluble maps.
+const rooms=[
+ ['#######','#.....#','#..G..#','#..B..#','#..P..#','#.....#','#######'],
+ ['#######','#.....#','#.G.G.#','#.B.B.#','#..P..#','#.....#','#######'],
+ ['#######','#.....#','#.G..G#','#.B..B#','#.....#','#..P..#','#######'],
+ ['########','#......#','#.G.#G.#','#.B.#B.#','#......#','#..P...#','#......#','########'],
+ ['########','#......#','#..G.G.#','#..B.B.#','#..#...#','#...P..#','#......#','########'],
+ ['########','#......#','#.G.G.G#','#.B.B.B#','#......#','#..P...#','#......#','########']
+];
+function parseRoom(stage,training){const map=(training?rooms[1]:rooms[stage]).map(row=>row.split('')),walls=[],boxes=[],goals=[];let player=[3,4];map.forEach((row,y)=>row.forEach((tile,x)=>{if(tile==='#')walls.push(key(x,y));if(tile==='B'||tile==='*')boxes.push([x,y]);if(tile==='G'||tile==='*')goals.push([x,y]);if(tile==='P')player=[x,y];}));return{stage,w:map[0].length,h:map.length,walls,boxes,goals,player,moves:0,history:[],solved:false};}
+function isSolved(d){const b=new Set(d.boxes.map(p=>key(...p)));return d.goals.every(p=>b.has(key(...p)));}
+C.museum={
+ create(training,start=0){return parseRoom(start,training);},
+ model(r){const d=r.data,count=d.goals.filter(p=>d.boxes.some(b=>key(...b)===key(...p))).length;return{request:`Sala ${d.stage+1} · Empurre as vitrines para os losangos`,support:`${count}/${d.goals.length} posições restauradas · ${d.moves} movimentos · Z desfaz`,progress:count,total:d.goals.length,action:'Reiniciar sala · R',hint:'Cuidado com cantos: uma vitrine não pode ser puxada. Use Z para desfazer.'};},
+ controls(r,host){const pad=document.createElement('div');pad.className='pg-pad';for(const [id,label,x,y]of[['up','↑',0,-1],['left','←',-1,0],['down','↓',0,1],['right','→',1,0]])pad.append(P.button('pg-'+id,label,()=>P.action('move',[x,y])));host.append(pad,P.button('pg-undo','↶ Desfazer',()=>P.action('undo')),P.button('pg-action','Reiniciar',()=>P.action('reset')));},
+ key(r,k){const dir={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]}[k];if(dir){P.action('move',dir);return true;}if(k==='z'){P.action('undo');return true;}if(k==='r'){P.action('reset');return true;}return false;},
+ action(r,name,arg){const d=r.data;if(name==='reset'){r.data=parseRoom(d.stage,r.training);P.feedback('Sala reorganizada. Tente uma rota diferente.');return;}if(name==='undo'){const last=d.history.pop();if(last){d.player=last.player;d.boxes=last.boxes;d.solved=false;P.feedback('Último passo desfeito.');}return;}if(name!=='move'||d.solved)return;const [dx,dy]=arg,n=[d.player[0]+dx,d.player[1]+dy],k=key(...n),wall=new Set(d.walls),index=d.boxes.findIndex(b=>key(...b)===k);if(wall.has(k))return;if(index!==-1){const beyond=[n[0]+dx,n[1]+dy],next=key(...beyond);if(wall.has(next)||d.boxes.some(b=>key(...b)===next))return;d.history.push({player:[...d.player],boxes:d.boxes.map(b=>[...b])});d.history=d.history.slice(-100);d.boxes[index]=beyond;P.hit(25);P.event('museum-push');}else d.history.push({player:[...d.player],boxes:d.boxes.map(b=>[...b])});d.player=n;d.moves++;r.moves++;P.event('museum-walk');if(isSolved(d)){d.solved=true;P.event('museum-complete');if(r.training)return;if(!r.training){P.stageClear(r,d.stage);P.hit(260);if(d.stage>=5)P.finish();else{r.data=parseRoom(d.stage+1,false);P.feedback('✓ Galeria restaurada! Uma nova sala foi aberta.');}}}},
+ pointer(r,type,p){if(type!=='down')return;const d=r.data,size=d.w===8?54:63,x=Math.round((p.x-(480-(d.w-1)*size/2))/size),y=Math.round((p.y-(312-(d.h-1)*size/2))/size),dx=x-d.player[0],dy=y-d.player[1];if(Math.abs(dx)+Math.abs(dy)===1)this.action(r,'move',[dx,dy]);},
+ hint(r){const d=r.data;P.feedback('Comece pela vitrine com passagem livre atrás. Evite empurrá-la contra a parede fora de uma marca. Z desfaz.');},
+ spot(r){const d=r.data,p=r.step===0?d.player:r.step===1?d.boxes[0]:d.goals[0],size=d.w===8?54:63;return{x:480+(p[0]-(d.w-1)/2)*size,y:312+(p[1]-(d.h-1)/2)*size,w:100,h:100};},
+ draw(c,r){const d=r.data,size=d.w===8?54:63,ox=480-(d.w-1)*size/2,oy=312-(d.h-1)*size/2;P.box(c,0,0,960,540,'#4f6967');P.box(c,215,127,530,375,'#e8d2ab','#dec18f');for(let y=0;y<d.h;y++)for(let x=0;x<d.w;x++){const px=ox+x*size,py=oy+y*size;P.box(c,px-size/2+2,py-size/2+2,size-4,size-4,d.walls.includes(key(x,y))?'#5e806f':'#d9c39f');if(d.walls.includes(key(x,y))){P.box(c,px-size/2+8,py-size/2+8,size-16,9,'#789782');}}
+ for(const [x,y]of d.goals){const px=ox+x*size,py=oy+y*size;c.strokeStyle='#486f75';c.lineWidth=5;c.save();c.translate(px,py);c.rotate(Math.PI/4);c.strokeRect(-13,-13,26,26);c.restore();P.text(c,'◆',px,py,13,'#355e61');}
+ for(const [x,y]of d.boxes){const px=ox+x*size,py=oy+y*size;P.box(c,px-21,py-21,42,42,d.goals.some(g=>g[0]===x&&g[1]===y)?'#7aae9b':'#c88b62','#f2e2b7');P.text(c,'▣',px,py,26,'#394f46');}P.person(c,ox+d.player[0]*size,oy+d.player[1]*size+10,false,0,45);}
+};
+})();

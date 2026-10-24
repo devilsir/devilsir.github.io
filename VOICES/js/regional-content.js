@@ -5030,7 +5030,7 @@
         "prop": 55,
         "size": 1.4,
         "title": "Máscara: estudo em metal",
-        "text": "Uma ficha do Smithsonian documenta máscara em liga de cobre. Este desenho próprio estuda material; não é réplica daquela peça.",
+        "text": "Uma ficha do Smithsonian documenta máscara em liga de cobre. O estudo apresenta formas e materiais associados a esse tipo de objeto.",
         "heritageItem": "heritage-item-55"
       },
       {

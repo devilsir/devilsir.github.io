@@ -129,7 +129,7 @@ window.V.TerreirosCollectionPlans={
       "y": 17,
       "size": 1.9,
       "title": "Pilão pequeno de madeira",
-      "text": "Recipiente e mão de pilão formam um conjunto. Jacira usa esta bancada para explicar ferramentas e materiais; a ilustração não identifica uma planta pelo uso.",
+      "text": "Recipiente e mão de pilão formam um conjunto. Jacira usa esta bancada para explicar ferramentas e materiais; as fichas registram a procedência de cada planta.",
       "dir": 0
     },
     {
@@ -383,7 +383,7 @@ window.V.TerreirosCollectionPlans={
       "y": 4.5,
       "size": 1.7,
       "title": "Abebê prateado · referência de Iemanjá",
-      "text": "O material educativo do MAFRO apresenta um abebê prateado na referência de Iemanjá. A ficha acompanha esta representação artística do objeto.",
+      "text": "O material educativo do MAFRO apresenta um abebê prateado na referência de Iemanjá. A ficha explica o uso e a iconografia desse objeto.",
       "dir": 0
     },
     {
@@ -455,7 +455,7 @@ window.V.TerreirosCollectionPlans={
       "y": 7,
       "size": 1.7,
       "title": "Xaxará · referência de Omolu",
-      "text": "O material do MAFRO relaciona o xaxará à referência de Omolu. A ilustração permite observar as fibras e os adornos sem reproduzir uma cerimônia.",
+      "text": "O material do MAFRO relaciona o xaxará à referência de Omolu. Observe as fibras, a estrutura e os adornos desse objeto.",
       "dir": 0
     },
     {
@@ -865,7 +865,7 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 2.2,
       "title": "Caixotes de materiais vegetais",
-      "text": "Raízes, folhas e flores ficam em caixotes separados nesta ilustração. A ficha do lote permite identificar a amostra; o desenho sozinho não confirma a espécie.",
+      "text": "Raízes, folhas e flores ficam em caixotes separados na bancada de Jacira. As fichas dos lotes apresentam os nomes e a procedência das amostras.",
       "dir": 0
     }
   ]

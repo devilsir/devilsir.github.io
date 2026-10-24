@@ -72,16 +72,85 @@ update(dt){
 if(!V.state||!V.World.current||V.Game.mode!=='explore'||V.SceneEditor.active)return;
 this.timer-=dt;if(this.timer>0)return;this.timer=1.2;
 const a=V.Progress.ensure(),objective=this.objective(),m=V.World.current;
-if(!objective?.object){this.path=[];this.reason='Investigue os registros disponíveis no diário.';return;}
+if(!objective?.object){this.path=[];this.nextObject=null;this.reason='Investigue os registros disponíveis no diário.';return;}
 let target=objective.object,label=objective.label;this.crossMap=null;
-if(objective.map!==m.id){const route=this.mapRoute(m.id,objective.map);if(!route?.length){this.path=[];const locked=this.mapRoute(m.id,objective.map,true)?.find(e=>!e.allowed);this.reason=locked?.reason||'Não há uma conexão acessível. Confira as portas no atlas.';this.target=objective;return;}target=route[0].object;this.crossMap=route[0].to;label='Seguir para '+V.World.maps[this.crossMap].name.split(' · ')[0]+' · '+label;}
+if(objective.map!==m.id){const route=this.mapRoute(m.id,objective.map);if(!route?.length){this.path=[];this.nextObject=null;const locked=this.mapRoute(m.id,objective.map,true)?.find(e=>!e.allowed);this.reason=locked?.reason||'Não há uma conexão acessível. Confira as portas no atlas.';this.target=objective;return;}target=route[0].object;this.crossMap=route[0].to;label='Seguir para '+V.World.maps[this.crossMap].name.split(' · ')[0]+' · '+label;}
 const sig=[objective.key,m.id,m.geometryRevision,Math.floor(V.Player.data.x/24),Math.floor(V.Player.data.y/24),Math.floor(target.x/24),Math.floor(target.y/24)].join('|');
 const people=V.Homestead?.commuting?[]:m.objects.filter(o=>V.Cozy.person(o)&&o!==target),blocked=this.path.length>1&&!this.line(m,V.Player.data,this.path[1],people),retry=V.Engine.time>=(this.retryAt||0);if(sig!==this.signature||retry&&(!this.path.length||blocked)){this.path=this.calculate(m,V.Player.data,target);this.signature=sig;this.retryAt=V.Engine.time+(this.path.length?.45:1.2);}
 this.reason=this.path.length?label:V.dist(V.Player.data,target)<(target.interactionRange||80)?'Objetivo próximo · pressione E para interagir.':'O caminho está ocupado. A rota tenta novamente; confira o atlas.';
 this.target=objective;this.nextObject=target;
 let el=V.$('#adv-route-info');if(!el){el=document.createElement('button');el.id='adv-route-info';el.className='adv-route-info';el.onclick=()=>this.panel();V.$('#stage').appendChild(el);}el.textContent=(a.routeEnabled?'◇ ':'')+this.reason;el.hidden=V.Game.mode!=='explore';
 },
-draw(ctx,cam){const a=V.Progress.ensure();if(!a?.routeEnabled||this.path.length<2)return;ctx.save();ctx.strokeStyle='#56d891';ctx.globalAlpha=a.routeOpacity;ctx.lineWidth=5;ctx.lineCap='round';ctx.setLineDash(a.routePattern?[12,12]:[5,12]);ctx.beginPath();this.path.forEach((p,i)=>i?ctx.lineTo(p.x-cam.x,p.y-cam.y):ctx.moveTo(p.x-cam.x,p.y-cam.y));ctx.stroke();ctx.setLineDash([]);for(let i=1;i<this.path.length;i++){const a=this.path[i-1],b=this.path[i],len=V.dist(a,b);for(let d=42;d<len;d+=86){const x=a.x+(b.x-a.x)*d/len-cam.x,y=a.y+(b.y-a.y)*d/len-cam.y,angle=Math.atan2(b.y-a.y,b.x-a.x);ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.beginPath();ctx.moveTo(-5,-5);ctx.lineTo(2,0);ctx.lineTo(-5,5);ctx.stroke();ctx.restore();}}ctx.restore();},
+targetRenderer(o,m){
+const people=V.Cozy?.person?.(o),scene=!!o.scene;
+if(['npc','portal','boss','clue','station','side','terminal','sign','bonus','exit'].includes(o.type)&&!scene&&!people)return V.World.drawObject?.bind(V.World);
+return V.Cozy.drawObject?.bind(V.Cozy)||V.World.drawObject?.bind(V.World);
+},
+targetSignature(o,m){return[m?.id||'',o.id||'',o.type||'',o.character||'',o.prop??'',o.scene?.family||'',o.scene?.prop??'',o.scene?.size??'',o.visualScale??'',o.visualRotation??'',o.coastAnimal??'',o.species??'',o.faithRepresentation??'',o.household?1:0,o.dir||0,o.walking?o.frame||0:0,o.action||'',V.settings.reducedMotion?0:Math.floor((V.Engine.time||0)*4)%4].join('|');},
+// Composite an outer alpha ring. No pixel readback is needed, including file://
+// and images that make a canvas origin-unclean. Transparent margins stay empty.
+targetOutline(o,m){
+ this._targetOutlines||=new Map();
+ const signature=this.targetSignature(o,m),cached=this._targetOutlines.get(signature);if(cached)return cached;
+ const draw=this.targetRenderer(o,m);if(!draw)return null;
+ const size=Math.max(256,Math.min(768,Math.ceil((o.scene?.size||1)*96+192))),anchorX=Math.floor(size/2),anchorY=Math.floor(size*.7);
+ const sprite=document.createElement('canvas');sprite.width=sprite.height=size;
+ const actual=sprite.getContext('2d');actual.imageSmoothingEnabled=false;
+ let images=0;
+ const geometry=new Set(['fill','stroke','fillRect','strokeRect','fillText','strokeText']);
+ const context=new Proxy(actual,{
+  get(target,key){if(geometry.has(key))return()=>{};if(key==='drawImage')return(...args)=>{images++;target.drawImage(...args);};const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;},
+  set(target,key,value){return Reflect.set(target,key,value,target);}
+ });
+ const clone=Object.assign(Object.create(Object.getPrototypeOf(o)||Object.prototype),o,{x:anchorX,y:anchorY,chatSpeaking:false,iconTime:0});
+ const previousNearest=V.World.nearest,previousPlayer=V.Player?.data?{...V.Player.data}:null,originalMarker=V.Living?.marker;
+ const paint=ctx=>draw(ctx,clone,{x:0,y:0},{accent:'#d8c286'});
+ try{
+  V.World.nearest=null;if(V.Player?.data){V.Player.data.x=-9999;V.Player.data.y=-9999;}if(originalMarker)V.Living.marker=()=>{};
+  paint(context);
+  if(!images){
+   // Geometric objects (for example an untextured door) still have a silhouette.
+   actual.clearRect(0,0,size,size);
+   const plain=new Proxy(actual,{get(target,key){if(key==='fillText'||key==='strokeText')return()=>{};const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;},set(target,key,value){return Reflect.set(target,key,value,target);}});
+   paint(plain);
+  }
+ }catch(_error){return null;}
+ finally{if(originalMarker)V.Living.marker=originalMarker;if(previousPlayer&&V.Player?.data)Object.assign(V.Player.data,previousPlayer);V.World.nearest=previousNearest;}
+ const ring=document.createElement('canvas');ring.width=ring.height=size;const ctx=ring.getContext('2d');ctx.imageSmoothingEnabled=false;
+ const radius=3;
+ for(let y=-radius;y<=radius;y++)for(let x=-radius;x<=radius;x++)if(x*x+y*y<=radius*radius)ctx.drawImage(sprite,x,y);
+ ctx.globalCompositeOperation='destination-out';ctx.drawImage(sprite,0,0);ctx.drawImage(sprite,0,0);ctx.drawImage(sprite,0,0);ctx.globalCompositeOperation='source-over';
+ const outline={mask:ring,x:-anchorX,y:-anchorY,size};
+ this._targetOutlines.set(signature,outline);if(this._targetOutlines.size>32)this._targetOutlines.delete(this._targetOutlines.keys().next().value);
+ return outline;
+},
+drawTarget(ctx,cam){
+ const progress=V.Progress.ensure(),o=this.nextObject,m=V.World.current;
+ if(!progress?.routeEnabled||!o||!m||!m.objects.includes(o)||V.SceneEditor.active||V.Game.mode!=='explore'||V.Story?.visible?.(o)===false)return;
+ const outline=this.targetOutline(o,m);if(!outline)return;
+ const {size}=outline,x=Math.round(o.x-cam.x+outline.x),y=Math.round(o.y-cam.y+outline.y);
+ if(x+size<0||x>ctx.canvas.width||y+size<0||y>ctx.canvas.height)return;
+ const layer=this._outlineColorCanvas||=document.createElement('canvas');
+ if(layer.width!==size||layer.height!==size){layer.width=layer.height=size;}
+ const color=layer.getContext('2d');color.clearRect(0,0,size,size);color.globalCompositeOperation='source-over';color.drawImage(outline.mask,0,0);color.globalCompositeOperation='source-in';
+ const speed=V.settings.reducedMotion?0:(V.Engine.time||0)*Math.PI*.8,colors=['#ff305f','#ffdc42','#48ff8a','#39d9ff','#7258ff','#ff4fe1','#ff305f'];
+ const gradient=color.createConicGradient?.(speed,size/2,size*.6)||color.createLinearGradient(0,0,size,size);colors.forEach((value,i)=>gradient.addColorStop(i/(colors.length-1),value));color.fillStyle=gradient;color.fillRect(0,0,size,size);color.globalCompositeOperation='source-over';
+ ctx.save();ctx.shadowBlur=0;ctx.globalAlpha=1;ctx.drawImage(layer,x,y);ctx.restore();
+},
+draw(ctx,cam){
+ const a=V.Progress.ensure();if(!a?.routeEnabled||this.path.length<2)return;
+ ctx.save();ctx.globalAlpha=Math.max(.68,Math.min(1,(a.routeOpacity||.8)+.08));ctx.lineCap='round';ctx.lineJoin='round';ctx.setLineDash(a.routePattern?[14,12]:[10,12]);ctx.beginPath();this.path.forEach((p,i)=>i?ctx.lineTo(p.x-cam.x,p.y-cam.y):ctx.moveTo(p.x-cam.x,p.y-cam.y));
+ ctx.lineWidth=9;ctx.strokeStyle='#153b34';ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle='#e2fff2';ctx.shadowColor='#8affcb';ctx.shadowBlur=V.settings.reducedMotion?4:8;ctx.stroke();ctx.shadowBlur=0;ctx.lineWidth=3;ctx.strokeStyle='#51f4a7';ctx.stroke();ctx.setLineDash([]);
+ // Place compact arrowheads at global spacing, keeping clear of corners.
+ // Their silhouette is separate from the dashed body; arrows never stack.
+ let travelled=0,nextArrow=90;for(let i=1;i<this.path.length;i++){
+  const from=this.path[i-1],to=this.path[i],len=V.dist(from,to);if(len<.01)continue;
+  while(nextArrow<=travelled+len){const offset=nextArrow-travelled;nextArrow+=125;if(offset<30||offset>len-30)continue;
+   const t=offset/len,x=from.x+(to.x-from.x)*t-cam.x,y=from.y+(to.y-from.y)*t-cam.y,angle=Math.atan2(to.y-from.y,to.x-from.x);
+   ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-8);ctx.lineTo(-4,0);ctx.lineTo(-7,8);ctx.closePath();ctx.lineWidth=3;ctx.strokeStyle='#17423a';ctx.fillStyle='#e8fff2';ctx.stroke();ctx.fill();ctx.restore();
+  }travelled+=len;
+ }ctx.restore();
+},
 panel(){const a=V.Progress.ensure(),o=this.objective();V.UI.modal('Rastrear objetivo',o?.label||'Escolha uma missão',`<p>${esc(this.reason||'O guia calcula caminhos pelas entradas reais do mundo.')}</p><label class="toggle"><input id="guide-toggle" type="checkbox" ${a.routeEnabled?'checked':''}>Mostrar caminho no chão</label><label class="toggle"><input id="guide-pattern" type="checkbox" ${a.routePattern?'checked':''}>Traços e setas · alternativa à cor verde</label><label class="field">Visibilidade<input id="guide-opacity" type="range" min=".3" max="1" step=".1" value="${a.routeOpacity}"></label><div class="row"><button id="guide-default" class="secondary">Retomar missão principal</button><button id="guide-atlas" class="secondary">Ver no atlas</button>${o?.openDevice?'<button id="guide-device" class="primary">Comparar evidências</button>':''}</div>`,`<button id="guide-save" class="primary">Aplicar</button>`);V.$('#guide-save').onclick=()=>{a.routeEnabled=V.$('#guide-toggle').checked;a.routePattern=V.$('#guide-pattern').checked;a.routeOpacity=+V.$('#guide-opacity').value;V.Save.save();V.UI.close();};V.$('#guide-default').onclick=()=>{this.track();V.UI.close();};V.$('#guide-atlas').onclick=()=>V.WorldAtlas.open();V.$('#guide-device')?.addEventListener('click',()=>V.Story.case(o.chapter));}
 };
 const Atlas=V.WorldAtlas={zoom:.68,pan:{x:0,y:0},view:'world',selected:null,cache:new Map(),

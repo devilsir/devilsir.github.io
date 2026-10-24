@@ -99,7 +99,7 @@
       "id": "coast-history-01-6",
       "chapter": 5,
       "grade": 6,
-      "prompt": "Qual objeto aparece na mão da representação artística de Iemanjá?",
+      "prompt": "Qual objeto Iemanjá segura na imagem?",
       "options": [
         "Um telescópio.",
         "Um abebé.",
@@ -127,7 +127,7 @@
         "Uma roupa obrigatória para todos os moradores."
       ],
       "correct": 2,
-      "explanation": "A ficha identifica o contexto e o tipo daquela peça. Nossa ilustração é outra criação, feita para o jogo.",
+      "explanation": "A ficha do acervo identifica a origem, o material e o contexto da peça.",
       "subject": "history",
       "readingId": "coast-book-iemanja",
       "sourceIds": [
@@ -272,8 +272,8 @@
   ],
   "iemanja": {
     "id": "iemanja",
-    "title": "Iemanjá — representação artística",
-    "description": "Ilustração educativa original: mulher negra de vestido azul-claro e branco, coroa prateada, véu de contas e abebé. A legenda contextualiza a imagem; não atribui falas sagradas nem reproduz uma cerimônia.",
+    "title": "Iemanjá — símbolos e tradições",
+    "description": "Iemanjá é reverenciada em religiões afro-brasileiras. Nesta obra, veste azul e branco, usa uma coroa prateada e segura um abebé, leque associado a suas representações.",
     "sourceIds": [
       "coast_duke_iemanja"
     ],
@@ -281,8 +281,8 @@
     "lines": [
       {
         "speaker": "Legenda da obra",
-        "en": "This is an original artistic depiction of Iemanjá.",
-        "pt": "Esta é uma representação artística original de Iemanjá."
+        "en": "Iemanjá is honoured in Afro-Brazilian traditions.",
+        "pt": "Iemanjá é reverenciada em tradições afro-brasileiras."
       },
       {
         "speaker": "Legenda da obra",
@@ -291,8 +291,8 @@
       },
       {
         "speaker": "Legenda da obra",
-        "en": "One image does not represent every community.",
-        "pt": "Uma imagem não representa todas as comunidades."
+        "en": "Communities preserve different histories, symbols and celebrations.",
+        "pt": "Cada comunidade preserva histórias, símbolos e celebrações próprias."
       }
     ]
   },
