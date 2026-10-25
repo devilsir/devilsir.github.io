@@ -1091,7 +1091,7 @@
         "y": 6.6,
         "size": 1.1,
         "title": "Quadro: Machado de Assis",
-        "text": "Machado de Assis foi escritor brasileiro, autor de romances, contos e crônicas. Memórias póstumas de Brás Cubas foi publicado em 1881.",
+        "text": "Machado de Assis (1839–1908) escreveu romances, contos, crônicas, poesia e teatro. Autor de Memórias póstumas de Brás Cubas e Dom Casmurro, explorou narradores que convidam o leitor a examinar lembranças, interesses e contradições. Foi o primeiro presidente da Academia Brasileira de Letras.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-machado",
         "hostPortrait": "portrait-machado",
@@ -1108,7 +1108,7 @@
         "y": 14.6,
         "size": 1.1,
         "title": "Quadro: Carolina Maria de Jesus",
-        "text": "Carolina Maria de Jesus escreveu diários, poemas, narrativas e composições musicais. Quarto de despejo foi publicado em 1960.",
+        "text": "Carolina Maria de Jesus (1914–1977) foi escritora e compositora. Quarto de despejo, publicado em 1960, tornou conhecidos seus diários da favela do Canindé, em São Paulo. Seus cadernos também guardam poemas, romances e outras formas de criação literária.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-carolina",
         "hostPortrait": "portrait-carolina",
@@ -2647,9 +2647,13 @@
         "family": "expanded",
         "prop": 48,
         "size": 1.25,
-        "title": "Turbante e ojá: contexto importa",
-        "text": "Turbantes têm usos diversos. Ojá tem sentidos específicos nos candomblés. Esta amarração original não identifica a religião de ninguém.",
-        "heritageItem": "heritage-item-48"
+        "title": "Turbante e ojá",
+        "text": "Dobras, voltas e nós transformam uma faixa de tecido em diferentes formas de vestir. Turbantes participam de escolhas estéticas, afirmações de identidade e práticas religiosas. Nos candomblés, o ojá também envolve e adorna objetos e instrumentos, como os panos colocados nos atabaques em celebrações.",
+        "heritageItem": "heritage-item-48",
+        "description": "Dobras, voltas e nós transformam uma faixa de tecido em diferentes formas de vestir. Turbantes participam de escolhas estéticas, afirmações de identidade e práticas religiosas. Nos candomblés, o ojá também envolve e adorna objetos e instrumentos, como os panos colocados nos atabaques em celebrações.",
+        "sourceIds": [
+          "review-terreiro-materials"
+        ]
       },
       {
         "id": "heritage-item-50",
@@ -2660,8 +2664,13 @@
         "prop": 50,
         "size": 1.25,
         "title": "Pano da costa",
-        "text": "Pano retangular com variedades de tecelagem e formas de vestir. Conhecer a peça envolve reconhecer quem faz, usa e transmite saberes.",
-        "heritageItem": "heritage-item-50"
+        "text": "Pano retangular usado em diferentes arranjos sobre o corpo, incluindo a indumentária de baianas de acarajé. Pode acompanhar os ombros, o tronco ou a cintura. Trama, faixas e franjas revelam decisões da tecelagem e aproximam histórias de trabalho, vestuário e circulação de saberes.",
+        "heritageItem": "heritage-item-50",
+        "description": "Pano retangular usado em diferentes arranjos sobre o corpo, incluindo a indumentária de baianas de acarajé. Pode acompanhar os ombros, o tronco ou a cintura. Trama, faixas e franjas revelam decisões da tecelagem e aproximam histórias de trabalho, vestuário e circulação de saberes.",
+        "sourceIds": [
+          "review-pano",
+          "culture_baianas_ipac"
+        ]
       },
       {
         "id": "heritage-item-51",
@@ -2671,9 +2680,13 @@
         "family": "expanded",
         "prop": 51,
         "size": 1.25,
-        "title": "Kente: tiras tecidas",
-        "text": "Tradições Asante e Ewe, especialmente em Gana. Tiras estreitas são tecidas e unidas; o desenho se forma na tecelagem.",
-        "heritageItem": "heritage-item-51"
+        "title": "Kente: tecelagem em tiras",
+        "text": "Tiras estreitas são tecidas e depois costuradas lado a lado para formar o pano. O kente se relaciona especialmente às tradições Asante e Ewe de Gana. Combinações de fios, cores e motivos podem receber nomes ligados a provérbios, acontecimentos e escolhas de seus tecelões.",
+        "heritageItem": "heritage-item-51",
+        "description": "Tiras estreitas são tecidas e depois costuradas lado a lado para formar o pano. O kente se relaciona especialmente às tradições Asante e Ewe de Gana. Combinações de fios, cores e motivos podem receber nomes ligados a provérbios, acontecimentos e escolhas de seus tecelões.",
+        "sourceIds": [
+          "heritage_tecidos"
+        ]
       },
       {
         "id": "heritage-item-52",
@@ -2683,9 +2696,13 @@
         "family": "expanded",
         "prop": 52,
         "size": 1.25,
-        "title": "Ankara: algodão estampado",
-        "text": "O algodão recebe motivos estampados. A história envolve circulação, comércio e escolhas criativas africanas; não é Kente impresso.",
-        "heritageItem": "heritage-item-52"
+        "title": "Ankara: histórias do algodão estampado",
+        "text": "No ankara, motivos coloridos são estampados sobre o algodão. Esses tecidos integram uma história de comércio entre continentes e de criação por produtores e consumidores africanos. Desenhos podem ganhar nomes e sentidos sociais a partir das escolhas de quem compra, veste e transforma o pano.",
+        "heritageItem": "heritage-item-52",
+        "description": "No ankara, motivos coloridos são estampados sobre o algodão. Esses tecidos integram uma história de comércio entre continentes e de criação por produtores e consumidores africanos. Desenhos podem ganhar nomes e sentidos sociais a partir das escolhas de quem compra, veste e transforma o pano.",
+        "sourceIds": [
+          "heritage_tecidos"
+        ]
       },
       {
         "id": "furnishings-discovery-market",
@@ -3861,8 +3878,12 @@
         "prop": 40,
         "size": 1.3,
         "title": "Berimbau",
-        "text": "Arco, arame e cabaça. A corda vibra; a cabaça ajuda a ressoar. Na capoeira, toques e escuta participam do jogo.",
-        "heritageItem": "heritage-item-40"
+        "text": "Um arame tensionado sobre uma vara de madeira forma o arco musical. A baqueta faz o arame vibrar, enquanto a cabaça funciona como ressonador. O dobrão modifica o contato com a corda. Na roda de capoeira, os toques do berimbau orientam o jogo e dialogam com canto e movimento.",
+        "heritageItem": "heritage-item-40",
+        "description": "Um arame tensionado sobre uma vara de madeira forma o arco musical. A baqueta faz o arame vibrar, enquanto a cabaça funciona como ressonador. O dobrão modifica o contato com a corda. Na roda de capoeira, os toques do berimbau orientam o jogo e dialogam com canto e movimento.",
+        "sourceIds": [
+          "review-berimbau"
+        ]
       },
       {
         "id": "heritage-item-41",
@@ -3873,8 +3894,12 @@
         "prop": 41,
         "size": 1.3,
         "title": "Atabaque",
-        "text": "Tambor alongado com membrana esticada e corpo de madeira. A membrana vibra quando é percutida. Os nomes, toques e usos do atabaque variam conforme o contexto musical e religioso.",
-        "heritageItem": "heritage-item-41"
+        "text": "Tambor de corpo alongado, geralmente de madeira, com uma pele tensionada sobre a abertura. A vibração da membrana produz o som. Em práticas afro-brasileiras, os atabaques acompanham cantos, movimentos e celebrações; técnicas de execução incluem mãos e, em determinadas tradições, varetas.",
+        "heritageItem": "heritage-item-41",
+        "description": "Tambor de corpo alongado, geralmente de madeira, com uma pele tensionada sobre a abertura. A vibração da membrana produz o som. Em práticas afro-brasileiras, os atabaques acompanham cantos, movimentos e celebrações; técnicas de execução incluem mãos e, em determinadas tradições, varetas.",
+        "sourceIds": [
+          "review-terreiro-materials"
+        ]
       },
       {
         "id": "heritage-rock-station",
@@ -3897,7 +3922,7 @@
         "y": 18.3,
         "size": 1.3,
         "title": "Quadro: Nina Simone",
-        "text": "Nina Simone foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação e seu repertório atravessaram diferentes tradições musicais.",
+        "text": "Nina Simone (1933–2003) foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação clássica dialogou com jazz, blues e gospel. Em Mississippi Goddam, de 1964, transformou a denúncia da violência racista em criação musical.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-nina",
         "sourceIds": [
@@ -3913,7 +3938,7 @@
         "y": 19.5,
         "size": 1.3,
         "title": "Quadro: Dona Ivone Lara",
-        "text": "Dona Ivone Lara foi cantora, compositora e instrumentista. Sua criação em parceria e sua atuação no samba ajudam a distinguir composição e interpretação.",
+        "text": "Dona Ivone Lara (1922–2018) foi cantora e compositora de samba. Entre suas parcerias com Délcio Carvalho está Sonho meu. Sua carreira aproxima o trabalho de criação musical, os grupos de samba e a presença das mulheres na composição.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-04",
         "sourceIds": [
@@ -4428,8 +4453,12 @@
         "prop": 42,
         "size": 1.2,
         "title": "Agogô",
-        "text": "Este estudo tem duas campânulas metálicas e uma baqueta. Compare as duas alturas: existem outras configurações do instrumento.",
-        "heritageItem": "heritage-item-42"
+        "text": "Campânulas de metal são percutidas com uma baqueta. Neste conjunto, dois tamanhos produzem alturas diferentes e permitem construir uma sequência rítmica. O agogô participa de práticas musicais afro-brasileiras, incluindo manifestações religiosas, rodas e conjuntos de samba.",
+        "heritageItem": "heritage-item-42",
+        "description": "Campânulas de metal são percutidas com uma baqueta. Neste conjunto, dois tamanhos produzem alturas diferentes e permitem construir uma sequência rítmica. O agogô participa de práticas musicais afro-brasileiras, incluindo manifestações religiosas, rodas e conjuntos de samba.",
+        "sourceIds": [
+          "review-agogo"
+        ]
       },
       {
         "id": "heritage-item-43",
@@ -4440,8 +4469,12 @@
         "prop": 43,
         "size": 1.2,
         "title": "Reco-reco",
-        "text": "A vareta percorre sulcos no corpo de bambu. O som vem do atrito e da sequência de pequenos contatos.",
-        "heritageItem": "heritage-item-43"
+        "text": "Uma vareta percorre sulcos feitos no corpo do instrumento. Cada contato ajuda a produzir o som raspado, e a velocidade do gesto transforma a sequência rítmica. Há reco-recos de bambu e de outros materiais; a textura da superfície faz parte de sua construção sonora.",
+        "heritageItem": "heritage-item-43",
+        "description": "Uma vareta percorre sulcos feitos no corpo do instrumento. Cada contato ajuda a produzir o som raspado, e a velocidade do gesto transforma a sequência rítmica. Há reco-recos de bambu e de outros materiais; a textura da superfície faz parte de sua construção sonora.",
+        "sourceIds": [
+          "review-recoreco"
+        ]
       },
       {
         "id": "heritage-item-44",
@@ -4452,8 +4485,12 @@
         "prop": 44,
         "size": 1.2,
         "title": "Xequerê",
-        "text": "Uma rede de contas envolve a cabaça. Ao mover o instrumento, as contas encontram sua superfície. Os usos variam conforme o contexto.",
-        "heritageItem": "heritage-item-44"
+        "text": "Uma rede de contas envolve uma cabaça seca. Ao agitar ou girar o instrumento, as contas batem contra sua superfície e produzem o chocalho. Também chamado agbê em determinados contextos, o xequerê participa de tradições musicais e religiosas e de ritmos como coco e maracatu.",
+        "heritageItem": "heritage-item-44",
+        "description": "Uma rede de contas envolve uma cabaça seca. Ao agitar ou girar o instrumento, as contas batem contra sua superfície e produzem o chocalho. Também chamado agbê em determinados contextos, o xequerê participa de tradições musicais e religiosas e de ritmos como coco e maracatu.",
+        "sourceIds": [
+          "heritage_xequere"
+        ]
       },
       {
         "id": "heritage-item-45",
@@ -4464,8 +4501,12 @@
         "prop": 45,
         "size": 1.2,
         "title": "Cuíca",
-        "text": "Uma haste interna está ligada à pele da cuíca. Ao friccioná-la, o movimento se transmite à membrana; a pressão sobre a pele participa da mudança de altura. Não se trata de bater uma vareta por fora.",
-        "heritageItem": "heritage-item-45"
+        "text": "A cuíca é um tambor de fricção. Uma haste de madeira presa à parte interna da pele é esfregada com um pano úmido, transmitindo vibração à membrana. A pressão dos dedos sobre a pele modifica a altura do som. Seu timbre marcante integra baterias de escolas de samba.",
+        "heritageItem": "heritage-item-45",
+        "description": "A cuíca é um tambor de fricção. Uma haste de madeira presa à parte interna da pele é esfregada com um pano úmido, transmitindo vibração à membrana. A pressão dos dedos sobre a pele modifica a altura do som. Seu timbre marcante integra baterias de escolas de samba.",
+        "sourceIds": [
+          "heritage_cuica"
+        ]
       },
       {
         "id": "neighborhood-exhibit-49",
@@ -4476,7 +4517,7 @@
         "y": 3.5,
         "size": 1.2,
         "title": "Quadro: Tim Maia",
-        "text": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+        "text": "Tim Maia (1942–1998) foi cantor e compositor e uma referência do soul brasileiro. Seu primeiro LP, lançado em 1970, reuniu Azul da cor do mar, de sua autoria, e canções de outros compositores, como Primavera, de Cassiano.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-tim"
       },
@@ -4489,7 +4530,7 @@
         "y": 3.5,
         "size": 1.2,
         "title": "Quadro: Pixinguinha",
-        "text": "Pixinguinha foi compositor, instrumentista, arranjador e maestro. As partituras de seu acervo ajudam a estudar escolhas de arranjo.",
+        "text": "Pixinguinha (1897–1973) foi compositor, flautista, saxofonista e arranjador. Sua obra ocupa um lugar central no choro e na música popular brasileira. Carinhoso, com letra de João de Barro, é uma de suas composições mais conhecidas.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-03",
         "sourceIds": [
@@ -4993,9 +5034,13 @@
         "family": "expanded",
         "prop": 46,
         "size": 1.4,
-        "title": "Djembe",
-        "text": "Tambor em cálice, com pele e cordas de tensão. A referência situa o instrumento na região Mandé, na África Ocidental.",
-        "heritageItem": "heritage-item-46"
+        "title": "Djembê",
+        "text": "O corpo de madeira em forma de cálice sustenta uma pele tensionada por cordas. O instrumento é tocado com as mãos, e diferentes pontos de contato produzem timbres distintos. O djembê se difundiu a partir de tradições da região Mandé, na África Ocidental, incluindo áreas dos atuais Mali e Guiné.",
+        "heritageItem": "heritage-item-46",
+        "description": "O corpo de madeira em forma de cálice sustenta uma pele tensionada por cordas. O instrumento é tocado com as mãos, e diferentes pontos de contato produzem timbres distintos. O djembê se difundiu a partir de tradições da região Mandé, na África Ocidental, incluindo áreas dos atuais Mali e Guiné.",
+        "sourceIds": [
+          "heritage_djembe"
+        ]
       },
       {
         "id": "heritage-item-47",
@@ -5006,8 +5051,12 @@
         "prop": 47,
         "size": 1.4,
         "title": "Ilú",
-        "text": "O estudo mostra tambor e apoio. Oficinas no Recife ensinam o instrumento e discutem respeito às tradições afro-brasileiras.",
-        "heritageItem": "heritage-item-47"
+        "text": "Tambor tocado com as mãos, presente em tradições afro-brasileiras de Pernambuco. No Recife, o ensino do ilú reúne confecção, toques e histórias transmitidas por praticantes. O apoio sustenta o instrumento durante a execução; em cortejos documentados, uma faixa também pode prendê-lo ao corpo do músico.",
+        "heritageItem": "heritage-item-47",
+        "description": "Tambor tocado com as mãos, presente em tradições afro-brasileiras de Pernambuco. No Recife, o ensino do ilú reúne confecção, toques e histórias transmitidas por praticantes. O apoio sustenta o instrumento durante a execução; em cortejos documentados, uma faixa também pode prendê-lo ao corpo do músico.",
+        "sourceIds": [
+          "heritage_ilu"
+        ]
       },
       {
         "id": "heritage-item-54",
@@ -5017,9 +5066,14 @@
         "family": "expanded",
         "prop": 54,
         "size": 1.4,
-        "title": "Máscara: estudo em madeira",
-        "text": "Estudo original em madeira, com formas estilizadas. Máscaras podem fazer parte de conjuntos com traje, som e movimento. Esta imagem não recebeu procedência étnica ou função ritual que a pesquisa não possa sustentar.",
-        "heritageItem": "heritage-item-54"
+        "title": "Máscara de madeira: rosto e relevo",
+        "text": "O entalhe retira partes da madeira e cria olhos, nariz, boca e volumes que projetam sombras. Em diferentes tradições africanas, a máscara participa de apresentações com traje, canto e movimento. Sua relação com o corpo em ação amplia a experiência para além do rosto esculpido.",
+        "heritageItem": "heritage-item-54",
+        "description": "O entalhe retira partes da madeira e cria olhos, nariz, boca e volumes que projetam sombras. Em diferentes tradições africanas, a máscara participa de apresentações com traje, canto e movimento. Sua relação com o corpo em ação amplia a experiência para além do rosto esculpido.",
+        "sourceIds": [
+          "review-mask-performance",
+          "review-form"
+        ]
       },
       {
         "id": "heritage-item-55",
@@ -5029,9 +5083,14 @@
         "family": "expanded",
         "prop": 55,
         "size": 1.4,
-        "title": "Máscara: estudo em metal",
-        "text": "Uma ficha do Smithsonian documenta máscara em liga de cobre. O estudo apresenta formas e materiais associados a esse tipo de objeto.",
-        "heritageItem": "heritage-item-55"
+        "title": "Máscara de metal: planos e reflexos",
+        "text": "O rosto é organizado em relevos e superfícies que refletem a luz. Metais também participam da produção de máscaras em acervos africanos, com técnicas e histórias próprias. O contraste entre partes salientes e cavidades ajuda a perceber o desenho da peça.",
+        "heritageItem": "heritage-item-55",
+        "description": "O rosto é organizado em relevos e superfícies que refletem a luz. Metais também participam da produção de máscaras em acervos africanos, com técnicas e histórias próprias. O contraste entre partes salientes e cavidades ajuda a perceber o desenho da peça.",
+        "sourceIds": [
+          "review-form",
+          "review-mask-performance"
+        ]
       },
       {
         "id": "neighborhood-exhibit-40",
@@ -5042,7 +5101,7 @@
         "y": 21.5,
         "size": 1.4,
         "title": "Escultura: mulher de corpo amplo",
-        "text": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original.",
+        "text": "A figura em pé reúne curvas amplas no tronco e nas pernas. O volume do corpo e a distribuição do peso definem sua presença no espaço; os detalhes do rosto e dos braços conduzem o olhar pela escultura.",
         "neighborhoodExhibit": true,
         "readingId": null
       },
@@ -5602,9 +5661,13 @@
         "family": "expanded",
         "prop": 49,
         "size": 1.15,
-        "title": "Fio de contas / guias",
-        "text": "Colares podem expressar vínculos religiosos e pertencimento. Configurações e significados variam; a cor sozinha não basta para interpretar.",
-        "heritageItem": "heritage-item-49"
+        "title": "Fios de contas e guias",
+        "text": "Contas atravessadas por um fio compõem colares ligados à devoção e ao pertencimento em religiões afro-brasileiras. Materiais, sequência e quantidade de voltas participam da composição de cada peça. O vínculo religioso é transmitido e explicado pelas pessoas e comunidades que a utilizam.",
+        "heritageItem": "heritage-item-49",
+        "description": "Contas atravessadas por um fio compõem colares ligados à devoção e ao pertencimento em religiões afro-brasileiras. Materiais, sequência e quantidade de voltas participam da composição de cada peça. O vínculo religioso é transmitido e explicado pelas pessoas e comunidades que a utilizam.",
+        "sourceIds": [
+          "heritage_contas"
+        ]
       },
       {
         "id": "heritage-item-53",
@@ -5615,8 +5678,13 @@
         "prop": 53,
         "size": 1.15,
         "title": "Penca de balangandãs",
-        "text": "Suporte metálico com diferentes pingentes. O conjunto tem autoria, trajetória e sentidos sociais e simbólicos situados.",
-        "heritageItem": "heritage-item-53"
+        "text": "Um suporte reúne pingentes de formas variadas, compondo um adorno associado sobretudo à história de mulheres negras na Bahia. Exemplares preservados em museus revelam trabalho de fundição, incisão e montagem. A peça aproxima ourivesaria, indumentária, memória e objetos de proteção.",
+        "heritageItem": "heritage-item-53",
+        "description": "Um suporte reúne pingentes de formas variadas, compondo um adorno associado sobretudo à história de mulheres negras na Bahia. Exemplares preservados em museus revelam trabalho de fundição, incisão e montagem. A peça aproxima ourivesaria, indumentária, memória e objetos de proteção.",
+        "sourceIds": [
+          "review-balangandas",
+          "heritage_balangandas"
+        ]
       },
       {
         "id": "heritage-item-56",
@@ -5626,9 +5694,14 @@
         "family": "expanded",
         "prop": 56,
         "size": 1.15,
-        "title": "Memória e ancestralidade",
-        "text": "Escultura educativa original sobre memória. Não corresponde a um povo ou objeto ritual específico; ancestralidade e orixás são categorias distintas.",
-        "heritageItem": "heritage-item-56"
+        "title": "Escultura, memória e ancestralidade",
+        "text": "A figura humana esculpida concentra informações na postura, no rosto e nas proporções do corpo. Esculturas ancestrais documentadas na África Central, como exemplares Bembe-Kongo preservados no Metropolitan Museum, se relacionam à memória e aos vínculos com antepassados em contextos específicos de suas comunidades.",
+        "heritageItem": "heritage-item-56",
+        "description": "A figura humana esculpida concentra informações na postura, no rosto e nas proporções do corpo. Esculturas ancestrais documentadas na África Central, como exemplares Bembe-Kongo preservados no Metropolitan Museum, se relacionam à memória e aos vínculos com antepassados em contextos específicos de suas comunidades.",
+        "sourceIds": [
+          "review-bembe",
+          "review-form"
+        ]
       },
       {
         "id": "heritage-item-57",
@@ -5638,9 +5711,14 @@
         "family": "expanded",
         "prop": 57,
         "size": 1.15,
-        "title": "Criação artística: referência a Ogum",
-        "text": "Interpretação artística de uma referência a Ogum. O catálogo do Museu Afro Brasil apresenta, em outra peça, uma ferramenta de Ogum em ferro. Compare material e autoria antes de aproximar objetos.",
-        "heritageItem": "heritage-item-57"
+        "title": "Ogum e o trabalho do ferro",
+        "text": "Ogum é associado ao ferro, aos ferreiros e às ferramentas nas tradições registradas pelo CNFCP. Essa relação aproxima trabalho e religiosidade. O artista baiano José Adário produz esculturas e ferramentas sagradas em ferro, reunindo conhecimentos do ofício e referências dos orixás.",
+        "heritageItem": "heritage-item-57",
+        "description": "Ogum é associado ao ferro, aos ferreiros e às ferramentas nas tradições registradas pelo CNFCP. Essa relação aproxima trabalho e religiosidade. O artista baiano José Adário produz esculturas e ferramentas sagradas em ferro, reunindo conhecimentos do ofício e referências dos orixás.",
+        "sourceIds": [
+          "roots-ogum",
+          "review-ferreiro"
+        ]
       },
       {
         "id": "heritage-item-59",
@@ -5650,9 +5728,14 @@
         "family": "expanded",
         "prop": 59,
         "size": 1.15,
-        "title": "Ferramentas de ferro e autoria",
-        "text": "No acervo do Museu Afro Brasil, José Adário assina uma ferramenta de orixá ligada a Ogum, feita em ferro. A ficha relaciona trabalho artístico, material e referência religiosa.",
-        "heritageItem": "heritage-item-59"
+        "title": "José Adário: arte de ferreiro",
+        "text": "O escultor-ferreiro José Adário dos Santos, também conhecido como Zé Diabo, nasceu em Salvador e aprendeu o ofício ainda criança. Seu trabalho inclui ferramentas de orixás em ferro. O Museu Afro Brasil conserva uma peça ligada a Ogum, reconhecendo artista, técnica e referência religiosa na mesma ficha.",
+        "heritageItem": "heritage-item-59",
+        "description": "O escultor-ferreiro José Adário dos Santos, também conhecido como Zé Diabo, nasceu em Salvador e aprendeu o ofício ainda criança. Seu trabalho inclui ferramentas de orixás em ferro. O Museu Afro Brasil conserva uma peça ligada a Ogum, reconhecendo artista, técnica e referência religiosa na mesma ficha.",
+        "sourceIds": [
+          "heritage_ferro",
+          "review-ferreiro"
+        ]
       },
       {
         "id": "heritage-item-60",
@@ -5662,9 +5745,13 @@
         "family": "expanded",
         "prop": 60,
         "size": 1.15,
-        "title": "Amuletos e patuás",
-        "text": "Patuás são objetos de proteção e pertencimento em diferentes experiências culturais e religiosas. Seu sentido depende de quem faz, guarda e usa. A mostra apresenta uma referência cultural; os atributos de batalha pertencem aos itens de fantasia do RPG.",
-        "heritageItem": "heritage-item-60"
+        "title": "Patuás: proteção e pertencimento",
+        "text": "Pequenos amuletos podem reunir tecidos e elementos escolhidos por quem os prepara. Patuás expressam vínculos com proteção, fé e ancestralidade em experiências afro-brasileiras. Sua criação envolve tanto a escolha dos materiais quanto os sentidos compartilhados por quem produz, oferece e guarda a peça.",
+        "heritageItem": "heritage-item-60",
+        "description": "Pequenos amuletos podem reunir tecidos e elementos escolhidos por quem os prepara. Patuás expressam vínculos com proteção, fé e ancestralidade em experiências afro-brasileiras. Sua criação envolve tanto a escolha dos materiais quanto os sentidos compartilhados por quem produz, oferece e guarda a peça.",
+        "sourceIds": [
+          "heritage_patua"
+        ]
       },
       {
         "id": "neighborhood-exhibit-58",
@@ -5675,7 +5762,7 @@
         "y": 17,
         "size": 1.15,
         "title": "Quadro: Rosana Paulino",
-        "text": "Rosana Paulino é artista visual. Em Parede da memória, retratos familiares e objetos de tecido aproximam memória e representação negra.",
+        "text": "Rosana Paulino é artista visual e pesquisadora. Em obras como Bastidores e Parede da memória, reúne fotografia, tecido e costura para discutir memória, racismo e a experiência de mulheres negras. As técnicas e os materiais fazem parte das perguntas que sua arte apresenta.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-05",
         "sourceIds": [
@@ -5691,7 +5778,7 @@
         "y": 15.5,
         "size": 1.15,
         "title": "Quadro: Maria Auxiliadora da Silva",
-        "text": "Maria Auxiliadora da Silva pintou cenas de trabalho, convivência e cultura afro-brasileira, explorando texturas e relevos.",
+        "text": "Maria Auxiliadora da Silva (1935–1974) pintou cenas de trabalho, festas, relações familiares e religiosidades afro-brasileiras. Seus quadros aproximam vida cotidiana, cor e relevo. A capoeira, o samba, a Umbanda e o Candomblé participam de seu universo de imagens.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-06",
         "sourceIds": [
@@ -5706,8 +5793,8 @@
         "x": 11.2,
         "y": 22.7,
         "size": 1.15,
-        "title": "Painel de três máscaras originais",
-        "text": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original.",
+        "title": "Tríptico de máscaras",
+        "text": "Três máscaras formam um tríptico, uma composição dividida em três partes. A aproximação permite comparar proporções dos rostos, posição dos olhos, contornos e ritmos de repetição entre os painéis.",
         "neighborhoodExhibit": true,
         "readingId": null
       },
@@ -6183,7 +6270,7 @@
         "y": 22.5,
         "size": 1.25,
         "title": "Quadro: Katherine Johnson",
-        "text": "Katherine Johnson foi matemática da NASA. Em 1962, conferiu cálculos de computadores eletrônicos para o voo orbital de John Glenn.",
+        "text": "Katherine Johnson (1918–2020) foi matemática da NASA e calculou trajetórias de missões espaciais. Em 1962, conferiu os resultados dos computadores eletrônicos antes do voo orbital de John Glenn. Sua trajetória aproxima matemática, revisão e trabalho de equipe.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-katherine",
         "sourceIds": [
@@ -6696,7 +6783,7 @@
         "y": 4.5,
         "size": 1.3,
         "title": "Quadro: Sônia Guimarães",
-        "text": "Sônia Guimarães é física e pesquisadora de semicondutores e sensores de calor. Sua trajetória conecta estudo de materiais, medidas e formação científica.",
+        "text": "Sônia Guimarães é física e foi a primeira mulher negra brasileira a obter um doutorado na área, em 1989. Ingressou como professora no Instituto Tecnológico de Aeronáutica em 1993. Sua pesquisa envolve semicondutores e sensores, materiais presentes em tecnologias eletrônicas.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-01",
         "sourceIds": [
@@ -6712,7 +6799,7 @@
         "y": 4.5,
         "size": 1.3,
         "title": "Quadro: Jaqueline Góes de Jesus",
-        "text": "Jaqueline Goes de Jesus é biomédica. Participou da coordenação do sequenciamento do genoma viral do primeiro caso confirmado de COVID-19 no Brasil, em 2020, num trabalho entre instituições.",
+        "text": "Jaqueline Góes de Jesus é biomédica e doutora em Patologia Humana. Participou da equipe que sequenciou os primeiros genomas do SARS-CoV-2 identificados no Brasil em 2020. O trabalho ajudou a estudar a circulação do vírus e tornou visível a contribuição de pesquisadoras negras à ciência.",
         "neighborhoodExhibit": true,
         "readingId": "cozy-book-02",
         "sourceIds": [
@@ -7656,7 +7743,7 @@
         "y": 7.5,
         "size": 1.3,
         "title": "Quadro: nosso bairro",
-        "text": "Criação visual original do bairro.",
+        "text": "Casas, ruas e pontos de encontro transformam o bairro em tema de pintura. A posição dos edifícios e os intervalos entre eles permitem acompanhar os percursos e reconhecer as áreas de convivência.",
         "neighborhoodExhibit": true,
         "readingId": null
       },
@@ -8168,9 +8255,13 @@
         "family": "expanded",
         "prop": 58,
         "size": 1.4,
-        "title": "Sankofa: aprender com o passado",
-        "text": "O pássaro olha para trás e mantém os pés adiante. Em tradições Akan, Sankofa relaciona memória e aprendizagem para seguir.",
-        "heritageItem": "heritage-item-58"
+        "title": "Sankofa: memória para seguir",
+        "text": "O pássaro volta a cabeça para trás e transforma o gesto de retornar em imagem de aprendizagem. Em tradições Akan, o Sankofa se relaciona à importância de aprender com o passado. Um exemplar de latão preservado no Metropolitan Museum pertence a um conjunto de pesos usados na pesagem de ouro.",
+        "heritageItem": "heritage-item-58",
+        "description": "O pássaro volta a cabeça para trás e transforma o gesto de retornar em imagem de aprendizagem. Em tradições Akan, o Sankofa se relaciona à importância de aprender com o passado. Um exemplar de latão preservado no Metropolitan Museum pertence a um conjunto de pesos usados na pesagem de ouro.",
+        "sourceIds": [
+          "heritage_sankofa"
+        ]
       },
       {
         "id": "neighborhood-exhibit-41",
@@ -8181,7 +8272,7 @@
         "y": 22.7,
         "size": 1.4,
         "title": "Escultura: mulher sentada",
-        "text": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original.",
+        "text": "A postura sentada aproxima o corpo da base e cria uma composição mais baixa e compacta. Joelhos, braços e tronco organizam os volumes, enquanto os espaços entre eles também participam da forma.",
         "neighborhoodExhibit": true,
         "readingId": null
       },
@@ -9139,7 +9230,7 @@
         "y": 6,
         "size": 1.25,
         "title": "Quadro: Conceição Evaristo",
-        "text": "Conceição Evaristo é escritora de romances, contos, poemas e ensaios. Sua reflexão sobre escrevivência aproxima criação literária, memória e experiências negras.",
+        "text": "Conceição Evaristo escreve romances, contos, poemas e ensaios. Em sua obra, experiências de mulheres negras, memória e invenção literária se encontram. Ponciá Vicêncio, de 2003, e sua reflexão sobre a escrevivência são caminhos para conhecer essa produção.",
         "neighborhoodExhibit": true,
         "readingId": "heritage-book-conceicao",
         "sourceIds": [
@@ -10127,7 +10218,7 @@
         "y": 4.5,
         "size": 1.3,
         "title": "Quadro: caminhos e cores",
-        "text": "Criação visual original do bairro.",
+        "text": "Linhas e áreas de cor formam caminhos numa composição geométrica. Repetições aproximam partes do quadro, enquanto mudanças de direção e contraste criam pontos de atenção.",
         "neighborhoodExhibit": true,
         "readingId": null
       },

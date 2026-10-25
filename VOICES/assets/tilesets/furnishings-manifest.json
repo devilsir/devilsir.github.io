@@ -231,7 +231,7 @@
       "name": "Banco curvo de pedra da praça",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Banco curvo de pedra da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "O assento de pedra acompanha a curva da praça e aproxima as pessoas voltadas para o centro. O encosto baixo mantém a vista aberta para o jardim e para quem chega à roda.",
       "solid": true,
       "solidFootprint": [
         {
@@ -255,7 +255,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 1,
@@ -264,7 +267,7 @@
       "name": "Carrinho de refrescos com garrafa térmica",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Carrinho de refrescos com garrafa térmica. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "O carrinho reúne garrafa térmica, copos e uma pequena superfície de atendimento. A garrafa reduz a troca de calor com o ambiente, ajudando a conservar a temperatura da bebida durante o passeio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -293,7 +296,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-thermal"
+      ]
     },
     {
       "index": 2,
@@ -302,7 +308,7 @@
       "name": "Bicicletário com aros escalonados",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Bicicletário com aros escalonados. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "Os aros oferecem pontos para apoiar e prender bicicletas. A disposição escalonada separa os guidões e organiza o estacionamento ao lado da praça.",
       "solid": true,
       "solidFootprint": [
         {
@@ -326,7 +332,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 3,
@@ -335,7 +344,7 @@
       "name": "Bebedouro público com torneira baixa",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Bebedouro público com torneira baixa. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "A torneira baixa aproxima o ponto de água de pessoas com diferentes alturas. O espaço diante do bebedouro permite chegar até a bica sem atravessar os bancos.",
       "solid": true,
       "solidFootprint": [
         {
@@ -364,7 +373,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 4,
@@ -373,7 +385,7 @@
       "name": "Mesa de xadrez da praça",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Mesa de xadrez da praça. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "O tabuleiro reúne 64 casas claras e escuras. Integrado à mesa, transforma um canto da praça em lugar de partidas, observação e conversa entre quem joga e quem acompanha.",
       "solid": true,
       "solidFootprint": [
         {
@@ -407,7 +419,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-chess"
+      ]
     },
     {
       "index": 5,
@@ -416,7 +431,7 @@
       "name": "Mesa alta com tomadas protegidas",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Mesa alta com tomadas protegidas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "A mesa alta oferece apoio rápido para cadernos e aparelhos. As tomadas ficam reunidas no próprio móvel, deixando a superfície de consulta próxima ao ponto de energia.",
       "solid": true,
       "solidFootprint": [
         {
@@ -445,7 +460,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 6,
@@ -454,7 +472,7 @@
       "name": "Painel de ganchos para bolsas",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Painel de ganchos para bolsas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "Ganchos individuais mantêm bolsas e casacos suspensos. Cada pessoa pode reconhecer seus pertences e liberar o assento para a próxima conversa.",
       "solid": false,
       "solidFootprint": null,
       "layer": "wall",
@@ -481,7 +499,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 7,
@@ -490,7 +511,7 @@
       "name": "Floreira de pedra com flores miúdas",
       "category": "praça",
       "mapTheme": "hub",
-      "description": "Floreira de pedra com flores miúdas. Compõe pontos de descanso, cuidado e encontro ao redor da praça.",
+      "description": "O recipiente comprido concentra várias plantas numa mesma faixa de pedra. Folhas e flores formam uma borda baixa que acompanha o desenho da praça.",
       "solid": true,
       "solidFootprint": [
         {
@@ -524,7 +545,10 @@
         "y": 0,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 8,
@@ -533,7 +557,7 @@
       "name": "Estante alta de livros com arco",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Estante alta de livros com arco. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "Prateleiras sobrepostas aproveitam a altura da parede para reunir livros. O arco superior destaca o conjunto, enquanto as lombadas ficam voltadas para a consulta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -557,7 +581,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 9,
@@ -566,7 +593,7 @@
       "name": "Poltrona inclinada de leitura",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Poltrona inclinada de leitura. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "O encosto inclinado e o assento acolchoado oferecem apoio durante leituras demoradas. A posição da poltrona cria um canto de pausa junto ao acervo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -595,7 +622,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 10,
@@ -604,7 +634,7 @@
       "name": "Expositor inclinado de revistas",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Expositor inclinado de revistas. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "Os planos inclinados deixam capas e títulos visíveis de frente. Revistas recentes podem ser apresentadas abertas à escolha, em vez de ficarem escondidas atrás das lombadas.",
       "solid": true,
       "solidFootprint": [
         {
@@ -633,7 +663,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 11,
@@ -642,7 +675,7 @@
       "name": "Prensa manual de encadernação",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Prensa manual de encadernação. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "O parafuso aproxima duas superfícies e aplica pressão ao conjunto colocado entre elas. Na encadernação, uma prensa pode manter partes do livro alinhadas durante etapas do trabalho.",
       "solid": true,
       "solidFootprint": [
         {
@@ -671,7 +704,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 12,
@@ -680,7 +716,7 @@
       "name": "Escada de biblioteca com rodízios",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Escada de biblioteca com rodízios. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "A escada oferece acesso às prateleiras altas e pode ser deslocada ao longo da estante. Degraus, apoios e rodízios pertencem ao mesmo equipamento de consulta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -709,7 +745,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 13,
@@ -718,7 +757,7 @@
       "name": "Mesa de estudo com divisórias",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Mesa de estudo com divisórias. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "As divisórias separam pequenas áreas de trabalho sobre um tampo compartilhado. Livros abertos, anotações e materiais de cada leitor ficam reunidos em seu próprio lugar.",
       "solid": true,
       "solidFootprint": [
         {
@@ -752,7 +791,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 14,
@@ -761,7 +803,7 @@
       "name": "Suporte de consulta para dicionário",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Suporte de consulta para dicionário. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "O apoio inclinado sustenta um volume aberto e facilita a leitura das páginas. Um dicionário grande permanece disponível para diferentes consultas sem precisar ser carregado entre as mesas.",
       "solid": true,
       "solidFootprint": [
         {
@@ -790,7 +832,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 15,
@@ -799,7 +844,7 @@
       "name": "Divisória de feltro para leitura silenciosa",
       "category": "biblioteca",
       "mapTheme": "library",
-      "description": "Divisória de feltro para leitura silenciosa. Organiza consulta, conservação, leitura e silêncio na biblioteca.",
+      "description": "O painel de feltro delimita um canto de leitura e modifica a passagem do som pelo espaço. Sua superfície macia contrasta com mesas, paredes e pisos rígidos.",
       "solid": true,
       "solidFootprint": [
         {
@@ -828,7 +873,10 @@
         "y": 32,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 16,
@@ -837,7 +885,7 @@
       "name": "Mesa hexagonal de piquenique",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Mesa hexagonal de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "O tampo de seis lados distribui os assentos ao redor de um centro comum. Cestas, pratos e cadernos podem ocupar a mesa durante o encontro no parque.",
       "solid": true,
       "solidFootprint": [
         {
@@ -861,7 +909,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 17,
@@ -870,7 +921,7 @@
       "name": "Banco baixo de tronco trabalhado",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Banco baixo de tronco trabalhado. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "O tronco trabalhado conserva um contorno irregular na base e apresenta uma superfície de assento. A peça aproxima a área de descanso das formas de madeira encontradas no jardim.",
       "solid": true,
       "solidFootprint": [
         {
@@ -894,7 +945,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 18,
@@ -903,7 +957,7 @@
       "name": "Binóculo fixo de observação de aves",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Binóculo fixo de observação de aves. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "O binóculo reúne lentes para ampliar a imagem de objetos distantes. O suporte fixo permite acompanhar aves e detalhes da paisagem a partir do mesmo ponto de observação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -927,7 +981,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 19,
@@ -936,7 +993,7 @@
       "name": "Painel de observação com aberturas",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Painel de observação com aberturas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "Aberturas em diferentes posições enquadram pequenos trechos da paisagem. O painel cria um lugar de observação onde visitantes podem acompanhar os animais à distância.",
       "solid": true,
       "solidFootprint": [
         {
@@ -965,7 +1022,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 20,
@@ -974,7 +1034,7 @@
       "name": "Quiosque de mapa das trilhas",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Quiosque de mapa das trilhas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "O mapa mostra caminhos, cruzamentos e pontos de referência do parque. Comparar o desenho com o lugar onde você está ajuda a escolher a próxima parte do passeio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1008,7 +1068,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 21,
@@ -1017,7 +1080,7 @@
       "name": "Plataforma baixa para limpeza das patas",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Plataforma baixa para limpeza das patas. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "A plataforma baixa aproxima a área de lavagem do chão. A água e a superfície de apoio permitem retirar terra das patas antes de o animal voltar ao caminho.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1046,7 +1109,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 22,
@@ -1055,7 +1121,7 @@
       "name": "Mesa pequena com cesta de piquenique",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Mesa pequena com cesta de piquenique. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "A cesta guarda os materiais do piquenique junto à pequena mesa. O tampo fica disponível para abrir os recipientes e dividir a refeição durante a pausa.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1084,7 +1150,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 23,
@@ -1093,7 +1162,7 @@
       "name": "Suporte de caixa-ninho protegida",
       "category": "parque",
       "mapTheme": "park",
-      "description": "Suporte de caixa-ninho protegida. Apoia o passeio, a observação da natureza e o cuidado com os animais.",
+      "description": "A caixa oferece uma cavidade protegida para aves que utilizam esse tipo de abrigo. Sua abertura e seu suporte permitem observar a estrutura pelo caminho do parque.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1117,7 +1186,10 @@
         "y": 64,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 24,
@@ -1126,7 +1198,7 @@
       "name": "Balcão com balança de dois pratos",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Balcão com balança de dois pratos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "Dois pratos se equilibram em torno de um apoio central. Ao comparar um produto com massas conhecidas, a balança permite medir a quantidade que será vendida na banca.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1155,7 +1227,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 25,
@@ -1164,7 +1239,7 @@
       "name": "Carrinho de caixa térmica",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Carrinho de caixa térmica. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "A caixa com isolamento térmico reduz a troca de calor com o ambiente. O carrinho permite transportar os recipientes entre a área de armazenamento e a feira.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1193,7 +1268,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-thermal"
+      ]
     },
     {
       "index": 26,
@@ -1202,7 +1280,7 @@
       "name": "Expositor de verduras em três níveis",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Expositor de verduras em três níveis. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "Três prateleiras apresentam as verduras em alturas diferentes. O arranjo torna os produtos visíveis e separa os lotes sem ocupar toda a passagem da banca.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1231,7 +1309,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 27,
@@ -1240,7 +1321,7 @@
       "name": "Armário de farinhas com medidas",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Armário de farinhas com medidas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "Compartimentos mantêm as farinhas separadas, enquanto medidas ficam junto ao ponto de retirada. A identificação de cada recipiente acompanha o produto durante o atendimento.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1274,7 +1355,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 28,
@@ -1283,7 +1367,7 @@
       "name": "Carrinho de comida com tampas térmicas",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Carrinho de comida com tampas térmicas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "As tampas cobrem os recipientes e reduzem a exposição dos alimentos ao ambiente. O carrinho reúne o serviço de distribuição num único móvel de apoio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1312,7 +1396,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 29,
@@ -1321,7 +1408,7 @@
       "name": "Suporte de dispensadores de grãos",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Suporte de dispensadores de grãos. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "Os reservatórios apresentam os grãos por cima e os liberam pela parte inferior. Cada saída atende a um recipiente próprio, permitindo comparar tipos e quantidades na banca.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1350,7 +1437,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 30,
@@ -1359,7 +1449,7 @@
       "name": "Mesa de corte com rolo de tecido",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Mesa de corte com rolo de tecido. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "O tampo amplo oferece espaço para desenrolar, alinhar e medir o tecido. O rolo fica próximo à área de corte, acompanhando o trabalho de preparação da peça.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1393,7 +1483,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 31,
@@ -1402,7 +1495,7 @@
       "name": "Carrinho de carga com caixas empilhadas",
       "category": "feira",
       "mapTheme": "market",
-      "description": "Carrinho de carga com caixas empilhadas. Pertence a uma área de trabalho, armazenamento ou exposição da feira.",
+      "description": "A base recebe as caixas, e a alça permite inclinar o conjunto sobre as rodas. O carrinho ajuda a deslocar vários volumes numa mesma viagem pela feira.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1431,7 +1524,10 @@
         "y": 96,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 32,
@@ -1440,7 +1536,7 @@
       "name": "Estufa baixa para mudas",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Estufa baixa para mudas. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "A cobertura transparente protege a área de produção de mudas e deixa a luz entrar. Abertura, ventilação e acompanhamento da umidade fazem parte do cuidado com esse pequeno viveiro.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1469,7 +1565,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 33,
@@ -1478,7 +1577,7 @@
       "name": "Bancada de transplante com vasos",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Bancada de transplante com vasos. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "Vasos, substrato e ferramentas ficam próximos da superfície de trabalho. A bancada reúne os materiais usados para transferir uma muda para outro recipiente.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1512,7 +1611,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 34,
@@ -1521,7 +1623,7 @@
       "name": "Tanque da horta com torneira",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Tanque da horta com torneira. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "O tanque concentra a lavagem de utensílios da horta num ponto com torneira. Sua borda oferece apoio aos recipientes durante a organização do material de cultivo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1545,7 +1647,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 35,
@@ -1554,7 +1659,7 @@
       "name": "Armário comunitário de sementes",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Armário comunitário de sementes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "Os lotes de sementes ficam separados e identificados. Nome da planta, procedência e data ajudam a acompanhar as trocas entre quem cultiva os canteiros.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1588,7 +1693,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 36,
@@ -1597,7 +1705,7 @@
       "name": "Canteiro elevado para cuidado acessível",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Canteiro elevado para cuidado acessível. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "O solo de cultivo fica acima do nível do caminho. Essa altura aproxima as plantas de quem cuida delas e permite trabalhar junto à borda do canteiro.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1626,7 +1734,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 37,
@@ -1635,7 +1746,7 @@
       "name": "Carrinho de mangueira de irrigação",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Carrinho de mangueira de irrigação. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "O carretel enrola a mangueira num suporte com rodas. O conjunto pode ser levado até os canteiros e guardado ao fim da rega, liberando o trajeto da horta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1664,7 +1775,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 38,
@@ -1673,7 +1787,7 @@
       "name": "Mesa com peneira de composto",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Mesa com peneira de composto. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "A malha separa fragmentos maiores da parte fina do composto. O material peneirado pode entrar no preparo de substratos para vasos e mudas.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1702,7 +1816,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 39,
@@ -1711,7 +1828,7 @@
       "name": "Varal de ervas com feixes pendentes",
       "category": "horta",
       "mapTheme": "garden",
-      "description": "Varal de ervas com feixes pendentes. Integra o preparo, a observação e o cuidado dos canteiros comunitários.",
+      "description": "Feixes de ervas ficam suspensos com espaço entre eles. A circulação de ar participa da secagem, enquanto os rótulos mantêm cada lote ligado ao seu nome e à data de colheita.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1750,7 +1867,10 @@
         "y": 128,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 40,
@@ -1759,7 +1879,7 @@
       "name": "Cabine listrada para trocar de roupa",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Cabine listrada para trocar de roupa. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "As paredes e a abertura da cabine criam um pequeno espaço de troca de roupa. As faixas coloridas ajudam a reconhecer o ponto de apoio na paisagem da praia.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1788,7 +1908,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 41,
@@ -1797,7 +1920,7 @@
       "name": "Cadeira elevada de observação da praia",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Cadeira elevada de observação da praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "O assento elevado amplia a visão sobre a faixa de areia e a água. A escada faz parte do posto de observação usado pela equipe da praia.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1826,7 +1949,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 42,
@@ -1835,7 +1961,7 @@
       "name": "Espreguiçadeira dobrável de praia",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Espreguiçadeira dobrável de praia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "O encosto inclinado sustenta o corpo numa posição de descanso. A estrutura articulada permite fechar a espreguiçadeira quando ela precisa ser guardada ou transportada.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1864,7 +1990,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 43,
@@ -1873,7 +2002,7 @@
       "name": "Chuveiro para retirar areia",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Chuveiro para retirar areia. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "A água cai sobre uma pequena área de piso junto ao caminho. O chuveiro permite retirar areia do corpo antes de sair da faixa de praia.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1907,7 +2036,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 44,
@@ -1916,7 +2048,7 @@
       "name": "Suporte de boia e equipamento de resgate",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Suporte de boia e equipamento de resgate. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "O suporte mantém boia, cordas e outros equipamentos reunidos no ponto de atendimento. Cada peça tem um lugar visível para a equipe localizar o material.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1950,7 +2082,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 45,
@@ -1959,7 +2094,7 @@
       "name": "Mesa baixa com guarda-sol",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Mesa baixa com guarda-sol. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "O guarda-sol sombreia a mesa e parte da área de descanso. O tampo baixo recebe objetos pequenos ao alcance de quem está sentado.",
       "solid": true,
       "solidFootprint": [
         {
@@ -1988,7 +2123,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 46,
@@ -1997,7 +2135,7 @@
       "name": "Poste de ganchos para cangas e toalhas",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Poste de ganchos para cangas e toalhas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "Ganchos separados suspendem cangas e toalhas acima do piso. As peças podem ficar abertas durante a pausa, deixando os assentos livres.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2031,7 +2169,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 47,
@@ -2040,7 +2181,7 @@
       "name": "Bandeja de observação de conchas",
       "category": "praia",
       "mapTheme": "beach",
-      "description": "Bandeja de observação de conchas. Apoia descanso, troca de roupa, cuidado e observação na praia.",
+      "description": "A bandeja apresenta conchas para comparar contornos, aberturas e texturas. As amostras da coleção ficam reunidas para estudo na mesa da orla.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2074,7 +2215,10 @@
         "y": 160,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 48,
@@ -2083,7 +2227,7 @@
       "name": "Piano comunitário com cobertura",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Piano comunitário com cobertura. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "O teclado de uso comunitário fica sob uma cobertura. Ao pressionar uma tecla do piano, um mecanismo aciona o martelo que faz as cordas vibrarem.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2112,7 +2256,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-piano"
+      ]
     },
     {
       "index": 49,
@@ -2121,7 +2268,7 @@
       "name": "Degraus de tablado para apresentação",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Degraus de tablado para apresentação. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "Os degraus ligam o caminho ao tablado mais alto. A diferença de nível destaca a área de apresentação e organiza a chegada dos músicos.",
       "solid": false,
       "solidFootprint": null,
       "layer": "ground",
@@ -2138,7 +2285,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 50,
@@ -2147,7 +2297,7 @@
       "name": "Berço de apoio para tambor",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Berço de apoio para tambor. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "O apoio acomoda o corpo arredondado do tambor. A peça mantém o instrumento próximo ao lugar do ensaio quando ele não está sendo tocado.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2176,7 +2326,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 51,
@@ -2185,7 +2338,7 @@
       "name": "Painel de programação dos ensaios",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Painel de programação dos ensaios. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "O quadro reúne horários, grupos e atividades do espaço musical. Ler a programação permite descobrir quem ensaia, quem apresenta e quando acontece cada encontro.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2214,7 +2367,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 52,
@@ -2223,7 +2379,7 @@
       "name": "Caixas de troca de discos",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Caixas de troca de discos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "As caixas mantêm discos em posição de consulta pelas capas. As trocas aproximam repertórios, intérpretes e histórias guardadas nas coleções dos moradores.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2252,7 +2408,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 53,
@@ -2261,7 +2420,7 @@
       "name": "Biombo de preparação dos músicos",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Biombo de preparação dos músicos. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "O biombo delimita uma área de preparação ao lado do palco. Bolsas, roupas e materiais dos músicos ficam separados do trajeto do público.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2290,7 +2449,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 54,
@@ -2299,7 +2461,7 @@
       "name": "Suporte de instrumentos de sopro",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Suporte de instrumentos de sopro. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "A base e os apoios sustentam os instrumentos entre uma execução e outra. Cada encaixe oferece um lugar de descanso próximo ao músico.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2323,7 +2485,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 55,
@@ -2332,7 +2497,7 @@
       "name": "Suporte de faixas do ensaio aberto",
       "category": "música",
       "mapTheme": "chapter-1",
-      "description": "Suporte de faixas do ensaio aberto. Compõe um ensaio aberto com espaço para músicos e ouvintes.",
+      "description": "A barra mantém a faixa estendida durante o ensaio aberto. O suporte apresenta o nome da atividade e ajuda a identificar a área de encontro.",
       "solid": false,
       "solidFootprint": null,
       "layer": "wall",
@@ -2354,7 +2519,10 @@
         "y": 192,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 56,
@@ -2363,7 +2531,7 @@
       "name": "Piano vertical do estúdio",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Piano vertical do estúdio. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "No piano vertical, as cordas e a estrutura sonora ficam organizadas em altura. O mecanismo interno transforma o movimento das teclas em impactos de martelos sobre as cordas.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2387,7 +2555,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-piano"
+      ]
     },
     {
       "index": 57,
@@ -2396,7 +2567,7 @@
       "name": "Suporte duplo de teclados",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Suporte duplo de teclados. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "Dois níveis acomodam teclados no mesmo ponto de trabalho. A disposição aproxima diferentes timbres e controles sem exigir uma segunda mesa de estúdio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2420,7 +2591,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 58,
@@ -2429,7 +2603,7 @@
       "name": "Microfone com filtro e tripé",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Microfone com filtro e tripé. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "A tela colocada diante do microfone atenua o impacto de sopros de fala, como os produzidos em palavras com P e B. O tripé mantém o conjunto posicionado durante a gravação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2458,7 +2632,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-microphone"
+      ]
     },
     {
       "index": 59,
@@ -2467,7 +2644,7 @@
       "name": "Console de mixagem com módulos",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Console de mixagem com módulos. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "Canais separados recebem sinais de microfones e instrumentos. Os controles permitem ajustar níveis e combinar essas entradas na saída do estúdio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2491,7 +2668,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-microphone"
+      ]
     },
     {
       "index": 60,
@@ -2500,7 +2680,7 @@
       "name": "Banco giratório de bateria",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Banco giratório de bateria. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "O assento giratório permite ajustar a posição diante da bateria. A altura do banco organiza o alcance das mãos aos tambores e dos pés aos pedais.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2529,7 +2709,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 61,
@@ -2538,7 +2721,7 @@
       "name": "Painel acústico móvel",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Painel acústico móvel. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "O painel móvel absorve parte do som que chega à sua superfície. Sua posição ajuda a modificar as reflexões dentro do estúdio e a separar áreas de gravação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2567,7 +2750,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-microphone"
+      ]
     },
     {
       "index": 62,
@@ -2576,7 +2762,7 @@
       "name": "Suporte de guitarras na parede",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Suporte de guitarras na parede. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "Os apoios mantêm as guitarras suspensas pela região do braço. Os corpos ficam afastados do chão e o músico consegue reconhecer cada instrumento pela frente.",
       "solid": false,
       "solidFootprint": null,
       "layer": "wall",
@@ -2598,7 +2784,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 63,
@@ -2607,7 +2796,7 @@
       "name": "Carrinho de enroladores de cabos",
       "category": "estúdio",
       "mapTheme": "room-1",
-      "description": "Carrinho de enroladores de cabos. Organiza gravação, instrumentos e trabalho no estúdio.",
+      "description": "Carretéis individuais mantêm os cabos enrolados e separados. O carrinho reúne diferentes comprimentos para montagem e desmontagem do estúdio.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2636,7 +2825,10 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 64,
@@ -2645,7 +2837,7 @@
       "name": "Pedestal do pátio com amostra didática",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Pedestal do pátio com amostra didática. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "A base elevada destaca uma amostra na área externa do museu. O pedestal separa a peça do piso e aproxima a leitura de seus detalhes.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2674,7 +2866,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 65,
@@ -2683,7 +2878,7 @@
       "name": "Rampa baixa para entrada da exposição",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Rampa baixa para entrada da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "A superfície inclinada liga dois níveis da entrada. Sua posição faz parte do trajeto de chegada à exposição e da circulação entre as áreas do pátio.",
       "solid": false,
       "solidFootprint": null,
       "layer": "ground",
@@ -2705,7 +2900,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 66,
@@ -2714,7 +2912,7 @@
       "name": "Cobertura do ponto de encontro do guia",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Cobertura do ponto de encontro do guia. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "A cobertura marca o lugar onde o grupo encontra a pessoa responsável pela visita. O ponto de espera reúne os participantes antes de seguir para as salas.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2748,7 +2946,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 67,
@@ -2757,7 +2958,7 @@
       "name": "Jardineira em vaso largo do pátio",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Jardineira em vaso largo do pátio. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "O vaso largo acomoda as plantas do pátio numa base única. A borda e o volume do recipiente contrastam com as folhas que crescem para fora dele.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2791,7 +2992,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 68,
@@ -2800,7 +3004,7 @@
       "name": "Painel externo de mapa histórico",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Painel externo de mapa histórico. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "O mapa aproxima os caminhos atuais de informações históricas do bairro. Legenda, nomes e datas ajudam a acompanhar as mudanças registradas na paisagem.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2824,7 +3028,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 69,
@@ -2833,7 +3040,7 @@
       "name": "Mesa de réplicas didáticas para observar",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Mesa de réplicas didáticas para observar. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "As réplicas didáticas permitem examinar formas e detalhes durante a visita mediada. A mesa reúne as peças usadas nas atividades de comparação do museu.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2862,7 +3069,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 70,
@@ -2871,7 +3081,7 @@
       "name": "Balcão de informações da exposição",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Balcão de informações da exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "O balcão reúne informações de chegada, salas e programação. O visitante pode localizar a exposição e organizar seu percurso antes de entrar.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2905,7 +3115,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 71,
@@ -2914,7 +3127,7 @@
       "name": "Luminária de pátio voltada à exposição",
       "category": "museu",
       "mapTheme": "chapter-2",
-      "description": "Luminária de pátio voltada à exposição. Apoia a orientação e o encontro de visitantes no pátio do museu.",
+      "description": "A luminária orienta o facho para a área de exposição. Sua direção destaca o ponto de consulta e modifica as sombras ao redor do suporte.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2938,7 +3151,10 @@
         "y": 256,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 72,
@@ -2947,7 +3163,7 @@
       "name": "Mapoteca de gavetas horizontais",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Mapoteca de gavetas horizontais. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "Gavetas largas e rasas recebem documentos que precisam permanecer planos. A mapoteca acomoda mapas, gravuras e folhas de grandes dimensões sem dobrá-los.",
       "solid": true,
       "solidFootprint": [
         {
@@ -2976,7 +3192,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 73,
@@ -2985,7 +3204,7 @@
       "name": "Apoio inclinado para documento",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Apoio inclinado para documento. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "A inclinação sustenta o documento durante a consulta. Em livros e volumes frágeis, apoios adequados reduzem a abertura forçada da encadernação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3019,7 +3238,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 74,
@@ -3028,7 +3250,7 @@
       "name": "Estação de materiais de conservação",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Estação de materiais de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "Materiais de proteção e apoio ficam separados para cada etapa de conservação. O procedimento é escolhido conforme o suporte e o estado da peça examinada.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3057,7 +3279,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 75,
@@ -3066,7 +3291,7 @@
       "name": "Suporte de armazenamento de quadros",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Suporte de armazenamento de quadros. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "Compartimentos verticais separam quadros e molduras. O suporte organiza o armazenamento e reduz o contato entre as superfícies das obras.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3095,7 +3320,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 76,
@@ -3104,7 +3332,7 @@
       "name": "Bandeja com apoios de conservação",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Bandeja com apoios de conservação. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "Os apoios de conservação se adaptam à forma da peça. Dentro da bandeja, eles distribuem o suporte e limitam deslocamentos durante o estudo do objeto.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3143,7 +3371,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 77,
@@ -3152,7 +3383,7 @@
       "name": "Mesa de consulta com lupa articulada",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Mesa de consulta com lupa articulada. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "A lupa articulada aproxima detalhes pequenos sem ocupar as mãos do pesquisador. O tampo recebe o documento e o caderno usados para registrar a observação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3181,7 +3412,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 78,
@@ -3190,7 +3424,7 @@
       "name": "Armário com indicador de umidade",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Armário com indicador de umidade. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "O indicador acompanha a umidade do ambiente de guarda. Variações nessa condição podem afetar papéis, madeira e outros materiais da coleção.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3214,7 +3448,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 79,
@@ -3223,7 +3460,7 @@
       "name": "Grade de organização de fotografias",
       "category": "conservação",
       "mapTheme": "room-2",
-      "description": "Grade de organização de fotografias. Organiza documentos e manuseio cuidadoso na área de conservação.",
+      "description": "Divisões mantêm fotografias separadas durante a organização do acervo. O verso e a ficha de cada imagem permanecem ligados ao seu registro de consulta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3252,7 +3489,10 @@
         "y": 288,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 80,
@@ -3261,7 +3501,7 @@
       "name": "Painel solar de demonstração",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Painel solar de demonstração. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "As células fotovoltaicas convertem energia da luz em energia elétrica. O painel didático permite relacionar a iluminação recebida à resposta do circuito de demonstração.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3290,7 +3530,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-pv"
+      ]
     },
     {
       "index": 81,
@@ -3299,7 +3542,7 @@
       "name": "Bancada de demonstração de vento",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Bancada de demonstração de vento. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "O fluxo de ar movimenta as pás do modelo. A bancada permite acompanhar como direção e intensidade do vento alteram o movimento observado.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3328,7 +3571,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 82,
@@ -3337,7 +3583,7 @@
       "name": "Poste de observação da chuva",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Poste de observação da chuva. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "O ponto de observação reúne um recipiente de coleta e marcas de leitura da chuva. Registros feitos em horários combinados permitem comparar diferentes dias.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3366,7 +3612,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-rain"
+      ]
     },
     {
       "index": 83,
@@ -3375,7 +3624,7 @@
       "name": "Mesa de comparação de sombras",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Mesa de comparação de sombras. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "Uma fonte de luz projeta sombras dos objetos colocados sobre o tampo. Ao mudar a posição relativa entre luz, objeto e superfície, o contorno da sombra também muda.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3404,7 +3653,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-optics"
+      ]
     },
     {
       "index": 84,
@@ -3413,7 +3665,7 @@
       "name": "Expositor didático de rochas",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Expositor didático de rochas. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "As amostras aproximam diferentes cores, grãos e texturas de rochas. A identificação de cada exemplar permite comparar o que se vê com sua ficha geológica.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3442,7 +3694,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 85,
@@ -3451,7 +3706,7 @@
       "name": "Suporte ramificado de perguntas da ciência",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Suporte ramificado de perguntas da ciência. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "Os ramos recebem cartões com perguntas de quem visita a praça da ciência. As dúvidas podem ser agrupadas por assunto antes de virarem uma investigação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3480,7 +3735,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 86,
@@ -3489,7 +3747,7 @@
       "name": "Mesa de amostras com lupa fixa",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Mesa de amostras com lupa fixa. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "A lupa fixa amplia detalhes de sementes, folhas e outras amostras sobre a mesa. Trocar o exemplar permite comparar estruturas mantendo o mesmo ponto de observação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3523,7 +3781,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-optics"
+      ]
     },
     {
       "index": 87,
@@ -3532,7 +3793,7 @@
       "name": "Painel de resultados de observação",
       "category": "ciência",
       "mapTheme": "chapter-3",
-      "description": "Painel de resultados de observação. Convida a observar, perguntar e comparar no pátio de ciência.",
+      "description": "O painel apresenta resultados junto às condições em que foram observados. Tabelas, datas e anotações ajudam a comparar as tentativas da turma.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3561,7 +3822,10 @@
         "y": 320,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 88,
@@ -3570,7 +3834,7 @@
       "name": "Bancada de observação óptica",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Bancada de observação óptica. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "Lentes e suportes ficam alinhados numa bancada de observação. Mudar a posição da amostra e do foco permite acompanhar diferenças entre a imagem ampliada e a visão direta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3594,7 +3858,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-optics"
+      ]
     },
     {
       "index": 89,
@@ -3603,7 +3870,7 @@
       "name": "Estação didática de circuitos de baixa tensão",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Estação didática de circuitos de baixa tensão. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "Fios e componentes formam caminhos para a corrente elétrica numa demonstração de baixa tensão. Abrir ou fechar uma ligação modifica o funcionamento do circuito.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3642,7 +3909,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-circuit"
+      ]
     },
     {
       "index": 90,
@@ -3651,7 +3921,7 @@
       "name": "Gaveteiro de amostras com etiquetas",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Gaveteiro de amostras com etiquetas. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "Gavetas identificadas separam as amostras por conjunto de estudo. Cada etiqueta liga o exemplar às informações do caderno de laboratório.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3680,7 +3950,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 91,
@@ -3689,7 +3962,7 @@
       "name": "Luminária de tarefa do laboratório",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Luminária de tarefa do laboratório. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "O braço direcionável aproxima a luz da área de trabalho. Mudar o ângulo de iluminação ajuda a examinar detalhes e sombras na superfície da amostra.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3718,7 +3991,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-optics"
+      ]
     },
     {
       "index": 92,
@@ -3727,7 +4003,7 @@
       "name": "Suporte de instrumentos de medida",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Suporte de instrumentos de medida. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "Os instrumentos ficam separados por sua função de medida. Escala e unidade acompanham a leitura: comprimento, massa e volume são grandezas diferentes.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3756,7 +4032,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 93,
@@ -3765,7 +4044,7 @@
       "name": "Mesa de registro de experimentos",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Mesa de registro de experimentos. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "O caderno reúne pergunta, materiais, procedimento e resultados do experimento. Anotações feitas durante o trabalho permitem reconstruir as etapas depois da atividade.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3794,7 +4073,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 94,
@@ -3803,7 +4085,7 @@
       "name": "Base giratória de comparação de amostras",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Base giratória de comparação de amostras. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "A base giratória apresenta diferentes lados da mesma amostra. É possível comparar contornos e detalhes enquanto o exemplar permanece apoiado no suporte.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3837,7 +4119,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 95,
@@ -3846,7 +4131,7 @@
       "name": "Banco de laboratório com apoio de pés",
       "category": "laboratório",
       "mapTheme": "room-3",
-      "description": "Banco de laboratório com apoio de pés. Apoia demonstrações escolares, medidas e registro de resultados.",
+      "description": "O banco oferece assento e apoio para os pés diante da bancada. A posição do corpo pode ser ajustada à altura dos materiais de observação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3875,7 +4160,10 @@
         "y": 352,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 96,
@@ -3884,7 +4172,7 @@
       "name": "Quiosque público de notícias",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Quiosque público de notícias. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O quiosque reúne notícias e comunicados para consulta na rua. Data, autoria e veículo ajudam o leitor a situar cada publicação.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3913,7 +4201,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 97,
@@ -3922,7 +4213,7 @@
       "name": "Expositor de jornal comunitário",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Expositor de jornal comunitário. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O expositor mantém exemplares do jornal voltados para quem passa. A edição traz diferentes trabalhos: reportagem, fotografia, ilustração e revisão.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3951,7 +4242,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 98,
@@ -3960,7 +4254,7 @@
       "name": "Banco com estação de escuta",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Banco com estação de escuta. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O assento fica junto a um ponto de reprodução de áudio. Entrevistas e registros sonoros podem ser consultados durante uma pausa no percurso.",
       "solid": true,
       "solidFootprint": [
         {
@@ -3994,7 +4288,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 99,
@@ -4003,7 +4300,7 @@
       "name": "Bancada de manutenção de aparelhos",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Bancada de manutenção de aparelhos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "Ferramentas pequenas e aparelhos em manutenção ocupam uma superfície de trabalho comum. Separar peças e registrar o que foi feito ajuda a acompanhar cada reparo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4032,7 +4329,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 100,
@@ -4041,7 +4341,7 @@
       "name": "Painel de correções do bairro",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Painel de correções do bairro. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O painel torna visíveis as correções de informações já publicadas. Cada aviso pode reunir o trecho corrigido, a nova versão e a data da atualização.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4075,7 +4375,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 101,
@@ -4084,7 +4387,7 @@
       "name": "Cadeira com apoio para entrevista",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Cadeira com apoio para entrevista. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O assento com apoio recebe quem participa de uma entrevista. O lugar reservado permite conversar e tomar notas durante o encontro.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4118,7 +4421,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 102,
@@ -4127,7 +4433,7 @@
       "name": "Armário de devolução de equipamentos",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Armário de devolução de equipamentos. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "Compartimentos identificados recebem equipamentos devolvidos. A organização permite conferir cada item e sua condição antes do próximo empréstimo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4156,7 +4462,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 103,
@@ -4165,7 +4474,7 @@
       "name": "Carrinho de projeção comunitária",
       "category": "mídia",
       "mapTheme": "chapter-4",
-      "description": "Carrinho de projeção comunitária. Apoia informação pública, escuta e cuidado dos equipamentos.",
+      "description": "O carrinho reúne projetor, acessórios e materiais da apresentação. O equipamento pode ser levado ao espaço onde o grupo se reúne para assistir.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4189,7 +4498,10 @@
         "y": 384,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 104,
@@ -4198,7 +4510,7 @@
       "name": "Mesa editorial em ferradura",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Mesa editorial em ferradura. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "O formato em ferradura aproxima os participantes de um centro de discussão. Textos, imagens e provas de página ficam ao alcance da equipe editorial.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4227,7 +4539,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 105,
@@ -4236,7 +4551,7 @@
       "name": "Mesa de luz para revisão de imagens",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Mesa de luz para revisão de imagens. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "Uma superfície iluminada por baixo evidencia transparências e contornos. A mesa de luz ajuda a examinar imagens e a comparar posições durante a revisão gráfica.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4265,7 +4580,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 106,
@@ -4274,7 +4592,7 @@
       "name": "Armário de referências e fontes",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Armário de referências e fontes. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "O armário reúne documentos e referências usados na redação. Separar os materiais por assunto permite recuperar a origem de uma informação durante a revisão.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4303,7 +4621,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 107,
@@ -4312,7 +4633,7 @@
       "name": "Mesa de gravação de entrevista",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Mesa de gravação de entrevista. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "Microfone, gravação e anotações ocupam o mesmo ponto de trabalho. O áudio preserva a entrevista, enquanto o caderno localiza assuntos e momentos importantes.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4346,7 +4667,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 108,
@@ -4355,7 +4679,7 @@
       "name": "Trilho de folhas de revisão",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Trilho de folhas de revisão. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "Folhas de revisão ficam suspensas lado a lado no trilho. A equipe consegue comparar versões e acompanhar a sequência das páginas em preparação.",
       "solid": false,
       "solidFootprint": null,
       "layer": "wall",
@@ -4372,7 +4696,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 109,
@@ -4381,7 +4708,7 @@
       "name": "Organizador de correções em bandejas",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Organizador de correções em bandejas. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "Bandejas separam materiais recebidos, em revisão e já conferidos. A posição de cada folha mostra em que etapa do trabalho ela se encontra.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4410,7 +4737,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 110,
@@ -4419,7 +4749,7 @@
       "name": "Prensa didática do jornal comunitário",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Prensa didática do jornal comunitário. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "A prensa aproxima a matriz entintada do papel por pressão. O modelo didático apresenta uma etapa da impressão usada para multiplicar páginas do jornal.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4448,7 +4778,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 111,
@@ -4457,7 +4790,7 @@
       "name": "Cadeira de trabalho com rodízios",
       "category": "redação",
       "mapTheme": "room-4",
-      "description": "Cadeira de trabalho com rodízios. Organiza entrevistas, fontes, legendas e correções na redação.",
+      "description": "Os rodízios permitem reposicionar a cadeira entre mesa e arquivo. O encosto acompanha o assento usado no trabalho de leitura e revisão.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4486,7 +4819,10 @@
         "y": 416,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 112,
@@ -4495,7 +4831,7 @@
       "name": "Mesa pública com espaço de aproximação",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Mesa pública com espaço de aproximação. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "O espaço sob o tampo permite aproximar o corpo e diferentes formas de assento. A mesa integra o local de trabalho compartilhado na praça.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4524,7 +4860,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 113,
@@ -4533,7 +4872,7 @@
       "name": "Armário de empréstimo de ferramentas",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Armário de empréstimo de ferramentas. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "Compartimentos mantêm ferramentas disponíveis para empréstimo no bairro. O registro de retirada e devolução ajuda a acompanhar o uso coletivo de cada peça.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4562,7 +4901,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 114,
@@ -4571,7 +4913,7 @@
       "name": "Suporte de trabalho do mural coletivo",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Suporte de trabalho do mural coletivo. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "O suporte sustenta o painel enquanto a pintura está em preparação. Tintas, desenhos e materiais podem ser organizados ao redor do mural coletivo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4600,7 +4942,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 115,
@@ -4609,7 +4954,7 @@
       "name": "Mesa baixa de plantio compartilhado",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Mesa baixa de plantio compartilhado. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "A altura baixa aproxima vasos, sementes e substrato de quem participa do plantio. O tampo reúne os materiais de trabalho sem exigir acesso aos canteiros mais altos.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4643,7 +4988,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-hortas"
+      ]
     },
     {
       "index": 116,
@@ -4652,7 +5000,7 @@
       "name": "Assento de descanso com cobertura",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Assento de descanso com cobertura. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "A cobertura oferece sombra ao assento do caminho. O conjunto cria um ponto de pausa que pode ser reconhecido de longe durante o percurso.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4681,7 +5029,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 117,
@@ -4690,7 +5041,7 @@
       "name": "Totem de orientação das rotas do bairro",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Totem de orientação das rotas do bairro. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "Setas e nomes indicam direções a partir de um ponto fixo. O totem liga o lugar onde o visitante está aos destinos do bairro.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4719,7 +5070,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 118,
@@ -4728,7 +5082,7 @@
       "name": "Balcão de refeições compartilhadas",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Balcão de refeições compartilhadas. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "O tampo reúne travessas e utensílios para servir uma refeição coletiva. A disposição dos recipientes organiza a chegada das pessoas ao balcão.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4762,7 +5116,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 119,
@@ -4771,7 +5128,7 @@
       "name": "Organizador de materiais de desenho",
       "category": "comunidade",
       "mapTheme": "chapter-5",
-      "description": "Organizador de materiais de desenho. Apoia participação, orientação e projetos compartilhados no bairro.",
+      "description": "Nichos mantêm papéis, lápis e pincéis separados. O organizador ajuda cada participante a encontrar os materiais e a devolvê-los depois da atividade.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4805,7 +5162,10 @@
         "y": 448,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 120,
@@ -4814,7 +5174,7 @@
       "name": "Banco semicircular da assembleia",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Banco semicircular da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "O semicírculo aproxima os participantes do centro da assembleia. Quem ocupa os assentos consegue acompanhar a pessoa que está com a palavra.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4843,7 +5203,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 121,
@@ -4852,7 +5215,7 @@
       "name": "Mesa de fala com ajuste de altura",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Mesa de fala com ajuste de altura. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "O tampo pode acompanhar diferentes alturas de uso. O apoio aproxima cadernos e notas de quem apresenta uma proposta à assembleia.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4881,7 +5244,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 122,
@@ -4890,7 +5256,7 @@
       "name": "Mesa de participação escrita com biombo",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Mesa de participação escrita com biombo. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "O biombo delimita um lugar para escrever durante a reunião. Contribuições em papel podem ser reunidas às falas registradas pelo grupo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4924,7 +5290,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 123,
@@ -4933,7 +5302,7 @@
       "name": "Suporte de cartões da ordem de fala",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Suporte de cartões da ordem de fala. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "Cartões colocados em sequência mostram a ordem de participação. O suporte torna visível quem está falando e quem aguarda a próxima vez.",
       "solid": false,
       "solidFootprint": null,
       "layer": "wall",
@@ -4955,7 +5324,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 124,
@@ -4964,7 +5336,7 @@
       "name": "Mesa da maquete de proposta do bairro",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Mesa da maquete de proposta do bairro. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "A maquete apresenta ruas e espaços do bairro em escala reduzida. Reposicionar seus elementos ajuda o grupo a discutir uma proposta antes da decisão.",
       "solid": true,
       "solidFootprint": [
         {
@@ -4993,7 +5365,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 125,
@@ -5002,7 +5377,7 @@
       "name": "Arquivo de notas das reuniões",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Arquivo de notas das reuniões. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "O arquivo reúne datas, participantes, propostas e encaminhamentos das reuniões. Esses registros permitem consultar o que foi combinado em encontros anteriores.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5031,7 +5406,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 126,
@@ -5040,7 +5418,7 @@
       "name": "Estação de água e copos da assembleia",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Estação de água e copos da assembleia. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "Jarra e copos ficam reunidos num ponto de apoio da assembleia. A mesa lateral aproxima a água dos participantes durante a reunião.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5069,7 +5447,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 127,
@@ -5078,7 +5459,7 @@
       "name": "Pilha organizada de cadeiras de reunião",
       "category": "assembleia",
       "mapTheme": "room-5",
-      "description": "Pilha organizada de cadeiras de reunião. Organiza fala, escrita e escuta na assembleia comunitária.",
+      "description": "As cadeiras se encaixam numa pilha quando o salão precisa de espaço livre. O conjunto pode ser redistribuído conforme o número de participantes da atividade.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5107,7 +5488,10 @@
         "y": 480,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 128,
@@ -5116,7 +5500,7 @@
       "name": "Ilha de consulta do catálogo público",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Ilha de consulta do catálogo público. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "O ponto de consulta apresenta o catálogo e seus caminhos de busca. Autoria, título e assunto ajudam o visitante a localizar um registro no acervo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5150,7 +5534,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 129,
@@ -5159,7 +5546,7 @@
       "name": "Expositor de etapas de conservação",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Expositor de etapas de conservação. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "A exposição apresenta etapas do cuidado com uma peça: exame, registro e acompanhamento do trabalho. O visitante consegue relacionar a intervenção à condição do material.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5188,7 +5575,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 130,
@@ -5197,7 +5587,7 @@
       "name": "Caixa de contribuições documentais",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Caixa de contribuições documentais. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "A caixa recebe contribuições para o arquivo comunitário. Nome de quem entrega, data e informações de origem acompanham o registro antes de sua organização no acervo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5231,7 +5621,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 131,
@@ -5240,7 +5633,7 @@
       "name": "Sofá de espera do arquivo",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Sofá de espera do arquivo. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "O sofá oferece um lugar de espera próximo à entrada do arquivo. O espaço permite organizar a consulta enquanto os materiais são localizados pela equipe.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5269,7 +5662,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 132,
@@ -5278,7 +5674,7 @@
       "name": "Painel de conexões entre registros",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Painel de conexões entre registros. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "Linhas aproximam documentos que compartilham pessoas, lugares ou acontecimentos. O painel ajuda a navegar entre registros e a formular perguntas sobre essas relações.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5302,7 +5698,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 133,
@@ -5311,7 +5710,7 @@
       "name": "Totem de índice do arquivo comunitário",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Totem de índice do arquivo comunitário. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "O índice indica conjuntos e temas presentes no arquivo. Os nomes orientam a busca antes de o visitante chegar às caixas e às mesas de consulta.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5335,7 +5734,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-form"
+      ]
     },
     {
       "index": 134,
@@ -5344,7 +5746,7 @@
       "name": "Suporte de devolução com caixas protegidas",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Suporte de devolução com caixas protegidas. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "Caixas e apoios recebem os documentos ao fim da consulta. O ponto de devolução permite conferir cada registro antes de recolocá-lo no local de guarda.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5378,7 +5780,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 135,
@@ -5387,7 +5792,7 @@
       "name": "Expositor de livros restaurados",
       "category": "arquivo público",
       "mapTheme": "chapter-6",
-      "description": "Expositor de livros restaurados. Aproxima visitantes de registros, contribuições e conservação.",
+      "description": "O expositor apresenta livros acompanhados pelo registro de conservação. Encadernação, páginas e suportes podem ser comparados às etapas de cuidado documentadas no acervo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5411,7 +5816,10 @@
         "y": 512,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-conservation"
+      ]
     },
     {
       "index": 136,
@@ -5420,7 +5828,7 @@
       "name": "Armário de cópias de segurança",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Armário de cópias de segurança. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "O armário reúne mídias com cópias dos registros digitais. Cópias de segurança permitem recuperar informações quando um arquivo se perde ou deixa de funcionar.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5454,7 +5862,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 137,
@@ -5463,7 +5875,7 @@
       "name": "Estações de revisão lado a lado",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Estações de revisão lado a lado. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "Duas estações próximas permitem revisar o mesmo conjunto de registros. Uma pessoa pode conferir imagens enquanto outra compara textos e informações do catálogo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5492,7 +5904,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 138,
@@ -5501,7 +5917,7 @@
       "name": "Rack com conexões e etiquetas",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Rack com conexões e etiquetas. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "Cabos e conexões ficam organizados num suporte com etiquetas. A identificação ajuda a acompanhar o caminho entre os equipamentos durante a manutenção.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5530,7 +5946,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 139,
@@ -5539,7 +5959,7 @@
       "name": "Baú de registros para consulta sem rede",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Baú de registros para consulta sem rede. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "O baú reúne cópias de consulta disponíveis mesmo quando a rede está fora do ar. A organização por conjuntos mantém o percurso de leitura acessível no espaço do arquivo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5568,7 +5988,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 140,
@@ -5577,7 +6001,7 @@
       "name": "Mesa de acompanhamento da restauração",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Mesa de acompanhamento da restauração. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "A mesa apresenta as etapas e o andamento dos trabalhos de restauração. Registros de entrada, observação e conclusão ajudam a acompanhar cada peça da coleção.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5606,7 +6030,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 141,
@@ -5615,7 +6043,7 @@
       "name": "Bancada de manutenção do catálogo",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Bancada de manutenção do catálogo. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "Ferramentas e equipamentos de consulta compartilham uma bancada de manutenção. O histórico dos reparos acompanha as peças que voltam a atender o público.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5644,7 +6072,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 142,
@@ -5653,7 +6085,7 @@
       "name": "Maleta de mídias de backup com rodízios",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Maleta de mídias de backup com rodízios. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "Compartimentos separam mídias e acessórios de cópia de segurança. Os rodízios permitem levar o conjunto até o local de trabalho do arquivo.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5682,7 +6114,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     },
     {
       "index": 143,
@@ -5691,7 +6127,7 @@
       "name": "Mesa de revisão humana com luminária",
       "category": "catálogo",
       "mapTheme": "room-6",
-      "description": "Mesa de revisão humana com luminária. Apoia revisão humana, manutenção e cópias de segurança do arquivo.",
+      "description": "A luminária concentra luz sobre o documento em revisão. Ao lado do registro digital, a pessoa responsável confere detalhes, transcrições e possíveis diferenças de leitura.",
       "solid": true,
       "solidFootprint": [
         {
@@ -5725,7 +6161,11 @@
         "y": 544,
         "width": 32,
         "height": 32
-      }
+      },
+      "sourceIds": [
+        "review-backup",
+        "review-conservation"
+      ]
     }
   ]
 }

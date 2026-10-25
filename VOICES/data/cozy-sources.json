@@ -66,6 +66,69 @@
       "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
       "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional.",
       "accessed": "2026-10-20"
+    },
+    {
+      "id": "review-sonia",
+      "name": "Ministério da Ciência, Tecnologia e Inovação, CETENE · Sônia Guimarães",
+      "url": "https://www.gov.br/cetene/pt-br/assuntos/noticias/futuras-cientistas-recebe-gleide-angelo-em-manha-de-palestra-no-cetene",
+      "note": "Docência no ITA e pesquisa em propriedades eletrônicas de materiais.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-sonia-history",
+      "name": "Prefeitura de São José dos Campos · Sônia Guimarães",
+      "url": "https://www.sjc.sp.gov.br/noticias/2026/agosto/02/sonia-guimaraes-a-cientista-que-ensina-geracoes-a-acreditar/",
+      "note": "Doutorado em Física em 1989 e trajetória na educação científica.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-sonia-sensors",
+      "name": "Prefeitura de São Paulo · Prêmio Luiza Mahin: Sônia Guimarães",
+      "url": "https://prefeitura.sp.gov.br/web/direitos_humanos/w/pr%C3%AAmio-luiza-mahin-2024",
+      "note": "Física da matéria condensada, semicondutores e sensores de radiação infravermelha.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-jaqueline",
+      "name": "UFBA, Edgardigital · Jaqueline Góes de Jesus",
+      "url": "https://www.edgardigital.ufba.br/?p=18478",
+      "note": "Formação em pesquisa e participação no sequenciamento do SARS-CoV-2.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-pixinguinha",
+      "name": "Instituto Moreira Salles · Pixinguinha",
+      "url": "https://ims.com.br/titular-colecao/pixinguinha/",
+      "note": "Acervo, partituras e trajetória do músico.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-pixinguinha-credits",
+      "name": "Instituto Moreira Salles · Pixinguinha 120 anos",
+      "url": "https://ims.com.br/eventos/pixinguinha-120-anos/",
+      "note": "Repertório e créditos de composição de Carinhoso.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-ivone",
+      "name": "Instituto Cultural Cravo Albin · Dona Ivone Lara",
+      "url": "https://dicionariompb.com.br/artista/dona-ivone-lara/",
+      "note": "Trajetória, obras e parcerias da cantora e compositora.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-rosana",
+      "name": "Pinacoteca · Rosana Paulino: a costura da memória",
+      "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/",
+      "note": "Obras, materiais e questões de memória na produção da artista.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-auxiliadora",
+      "name": "MASP · Maria Auxiliadora: vida cotidiana, pintura e resistência",
+      "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia",
+      "note": "Pintura, vida cotidiana e temas afro-brasileiros.",
+      "accessed": "2026-10-24"
     }
   ],
   "version": "3.0"

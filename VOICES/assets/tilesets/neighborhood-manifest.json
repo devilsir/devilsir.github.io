@@ -1663,7 +1663,16 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "A figura em pé reúne curvas amplas no tronco e nas pernas. O volume do corpo e a distribuição do peso definem sua presença no espaço; os detalhes do rosto e dos braços conduzem o olhar pela escultura.",
+      "references": [
+        {
+          "indices": [
+            40
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 41,
@@ -1700,7 +1709,16 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "A postura sentada aproxima o corpo da base e cria uma composição mais baixa e compacta. Joelhos, braços e tronco organizam os volumes, enquanto os espaços entre eles também participam da forma.",
+      "references": [
+        {
+          "indices": [
+            41
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 42,
@@ -1737,7 +1755,16 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "Duas mãos se aproximam e transformam o gesto de encontro no centro da composição. Dedos, palmas e os intervalos entre eles criam linhas que podem ser acompanhadas de diferentes lados da peça.",
+      "references": [
+        {
+          "indices": [
+            42
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 43,
@@ -1774,12 +1801,21 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "A faixa de metal descreve uma espiral: o olhar acompanha a curva do lado de fora em direção ao centro. As aberturas deixam a paisagem aparecer entre as voltas e fazem o espaço vazio participar da escultura.",
+      "references": [
+        {
+          "indices": [
+            43
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 44,
       "id": "round-wood-mask",
-      "name": "Máscara circular original",
+      "name": "Máscara circular de madeira",
       "category": "esculturas",
       "solidFootprint": {
         "x": 0.22,
@@ -1811,12 +1847,21 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "O contorno circular enquadra olhos, nariz e boca num rosto compacto. A madeira entalhada permite criar partes salientes e cavidades; luz e sombra tornam essas diferenças de profundidade mais visíveis.",
+      "references": [
+        {
+          "indices": [
+            44
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 45,
       "id": "long-wood-mask",
-      "name": "Máscara alongada original",
+      "name": "Máscara alongada de madeira",
       "category": "esculturas",
       "solidFootprint": {
         "x": 0.22,
@@ -1848,7 +1893,16 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "O rosto alongado distribui olhos, nariz e boca ao longo de um eixo vertical. O relevo da madeira projeta sombras sobre as cavidades e destaca a diferença entre a superfície do rosto e seu contorno.",
+      "references": [
+        {
+          "indices": [
+            45
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 46,
@@ -1885,12 +1939,21 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "Planos angulosos organizam o rosto em formas geométricas. As áreas de metal refletem a luz de maneira diferente conforme a inclinação, fazendo bordas e relevos ganharem destaque.",
+      "references": [
+        {
+          "indices": [
+            46
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 47,
       "id": "mask-triptych",
-      "name": "Painel de três máscaras originais",
+      "name": "Tríptico de máscaras",
       "category": "esculturas",
       "solidFootprint": null,
       "anchors": {
@@ -1917,7 +1980,16 @@
         "height": 32
       },
       "illustrationStatus": "Escultura original criada para o jogo. Não é réplica, objeto ritual autêntico ou representação atribuída a uma cultura específica.",
-      "description": "Formas, volumes e materiais podem contar uma história. Observe o gesto e o equilíbrio desta escultura original."
+      "description": "Três máscaras formam um tríptico, uma composição dividida em três partes. A aproximação permite comparar proporções dos rostos, posição dos olhos, contornos e ritmos de repetição entre os painéis.",
+      "references": [
+        {
+          "indices": [
+            47
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 48,
@@ -1950,16 +2022,17 @@
       },
       "historicalName": "Nina Simone",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Nina Simone (1933–2003) foi pianista, cantora e ativista pelos direitos civis nos Estados Unidos. Sua formação clássica dialogou com jazz, blues e gospel. Em Mississippi Goddam, de 1964, transformou a denúncia da violência racista em criação musical.",
       "references": [
         {
           "indices": [
             48
           ],
-          "institution": "Nina Simone official archive",
+          "institution": "Nina Simone — biografia oficial",
           "url": "https://www.ninasimone.com/biography/"
         }
-      ]
+      ],
+      "readingId": "heritage-book-nina"
     },
     {
       "index": 49,
@@ -1992,16 +2065,17 @@
       },
       "historicalName": "Tim Maia",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Tim Maia (1942–1998) foi cantor e compositor e uma referência do soul brasileiro. Seu primeiro LP, lançado em 1970, reuniu Azul da cor do mar, de sua autoria, e canções de outros compositores, como Primavera, de Cassiano.",
       "references": [
         {
           "indices": [
             49
           ],
-          "institution": "Instituto Cultural Cravo Albin",
+          "institution": "Instituto Cultural Cravo Albin — Tim Maia",
           "url": "https://dicionariompb.com.br/artista/tim-maia/"
         }
-      ]
+      ],
+      "readingId": "heritage-book-tim"
     },
     {
       "index": 50,
@@ -2034,16 +2108,17 @@
       },
       "historicalName": "Machado de Assis",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Machado de Assis (1839–1908) escreveu romances, contos, crônicas, poesia e teatro. Autor de Memórias póstumas de Brás Cubas e Dom Casmurro, explorou narradores que convidam o leitor a examinar lembranças, interesses e contradições. Foi o primeiro presidente da Academia Brasileira de Letras.",
       "references": [
         {
           "indices": [
             50
           ],
-          "institution": "Academia Brasileira de Letras",
+          "institution": "Academia Brasileira de Letras — Machado de Assis: biografia",
           "url": "https://www.academia.org.br/academicos/machado-de-assis/biografia"
         }
-      ]
+      ],
+      "readingId": "heritage-book-machado"
     },
     {
       "index": 51,
@@ -2076,16 +2151,17 @@
       },
       "historicalName": "Carolina Maria de Jesus",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Carolina Maria de Jesus (1914–1977) foi escritora e compositora. Quarto de despejo, publicado em 1960, tornou conhecidos seus diários da favela do Canindé, em São Paulo. Seus cadernos também guardam poemas, romances e outras formas de criação literária.",
       "references": [
         {
           "indices": [
             51
           ],
-          "institution": "Instituto Moreira Salles",
-          "url": "https://ims.com.br/titular-colecao/carolina-maria-de-jesus/"
+          "institution": "Instituto Moreira Salles — Carolina Maria de Jesus: um Brasil para os brasileiros",
+          "url": "https://ims.com.br/exposicao/carolina-maria-de-jesus-um-brasil-para-os-brasileiros_museudeartedorio/"
         }
-      ]
+      ],
+      "readingId": "heritage-book-carolina"
     },
     {
       "index": 52,
@@ -2118,16 +2194,17 @@
       },
       "historicalName": "Katherine Johnson",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Katherine Johnson (1918–2020) foi matemática da NASA e calculou trajetórias de missões espaciais. Em 1962, conferiu os resultados dos computadores eletrônicos antes do voo orbital de John Glenn. Sua trajetória aproxima matemática, revisão e trabalho de equipe.",
       "references": [
         {
           "indices": [
             52
           ],
-          "institution": "NASA",
-          "url": "https://www.nasa.gov/image-article/katherine-johnson-portrait/"
+          "institution": "NASA Science — Katherine Johnson (1918–2020)",
+          "url": "https://science.nasa.gov/people/katherine-johnson/"
         }
-      ]
+      ],
+      "readingId": "heritage-book-katherine"
     },
     {
       "index": 53,
@@ -2160,16 +2237,17 @@
       },
       "historicalName": "Conceição Evaristo",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Conceição Evaristo escreve romances, contos, poemas e ensaios. Em sua obra, experiências de mulheres negras, memória e invenção literária se encontram. Ponciá Vicêncio, de 2003, e sua reflexão sobre a escrevivência são caminhos para conhecer essa produção.",
       "references": [
         {
           "indices": [
             53
           ],
-          "institution": "UFMG / Literafro",
-          "url": "https://www.letras.ufmg.br/literafro/autoras/188-conceicao-evaristo"
+          "institution": "UFMG, Literafro — Conceição Evaristo",
+          "url": "https://www.letras.ufmg.br/literafro/Autors/188-conceicao-evaristo"
         }
-      ]
+      ],
+      "readingId": "heritage-book-conceicao"
     },
     {
       "index": 54,
@@ -2202,16 +2280,17 @@
       },
       "historicalName": "Sônia Guimarães",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Sônia Guimarães é física e foi a primeira mulher negra brasileira a obter um doutorado na área, em 1989. Ingressou como professora no Instituto Tecnológico de Aeronáutica em 1993. Sua pesquisa envolve semicondutores e sensores, materiais presentes em tecnologias eletrônicas.",
       "references": [
         {
           "indices": [
             54
           ],
-          "institution": "CNEN",
-          "url": "https://www.gov.br/cnen/pt-br/assunto/ultimas-noticias/cnen-sedia-encontro-ancestralidade-e-ciencia"
+          "institution": "Ministério da Ciência, Tecnologia e Inovação, CETENE · Sônia Guimarães",
+          "url": "https://www.gov.br/cetene/pt-br/assuntos/noticias/futuras-cientistas-recebe-gleide-angelo-em-manha-de-palestra-no-cetene"
         }
-      ]
+      ],
+      "readingId": "cozy-book-01"
     },
     {
       "index": 55,
@@ -2244,16 +2323,17 @@
       },
       "historicalName": "Jaqueline Góes de Jesus",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Jaqueline Góes de Jesus é biomédica e doutora em Patologia Humana. Participou da equipe que sequenciou os primeiros genomas do SARS-CoV-2 identificados no Brasil em 2020. O trabalho ajudou a estudar a circulação do vírus e tornou visível a contribuição de pesquisadoras negras à ciência.",
       "references": [
         {
           "indices": [
             55
           ],
-          "institution": "Museu Catavento",
-          "url": "https://museucatavento.org.br/mulheres-na-ciencia/jaqueline-goes/FOLDER.pdf"
+          "institution": "UFBA, Edgardigital · Jaqueline Góes de Jesus",
+          "url": "https://www.edgardigital.ufba.br/?p=18478"
         }
-      ]
+      ],
+      "readingId": "cozy-book-02"
     },
     {
       "index": 56,
@@ -2286,16 +2366,17 @@
       },
       "historicalName": "Pixinguinha",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Pixinguinha (1897–1973) foi compositor, flautista, saxofonista e arranjador. Sua obra ocupa um lugar central no choro e na música popular brasileira. Carinhoso, com letra de João de Barro, é uma de suas composições mais conhecidas.",
       "references": [
         {
           "indices": [
             56
           ],
-          "institution": "Instituto Moreira Salles",
+          "institution": "Instituto Moreira Salles · Pixinguinha",
           "url": "https://ims.com.br/titular-colecao/pixinguinha/"
         }
-      ]
+      ],
+      "readingId": "cozy-book-03"
     },
     {
       "index": 57,
@@ -2328,16 +2409,17 @@
       },
       "historicalName": "Dona Ivone Lara",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Dona Ivone Lara (1922–2018) foi cantora e compositora de samba. Entre suas parcerias com Délcio Carvalho está Sonho meu. Sua carreira aproxima o trabalho de criação musical, os grupos de samba e a presença das mulheres na composição.",
       "references": [
         {
           "indices": [
             57
           ],
-          "institution": "Instituto Moreira Salles",
-          "url": "https://acervos.ims.com.br/index.php/Detail/objects/60260"
+          "institution": "Instituto Cultural Cravo Albin · Dona Ivone Lara",
+          "url": "https://dicionariompb.com.br/artista/dona-ivone-lara/"
         }
-      ]
+      ],
+      "readingId": "cozy-book-04"
     },
     {
       "index": 58,
@@ -2370,16 +2452,17 @@
       },
       "historicalName": "Rosana Paulino",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Rosana Paulino é artista visual e pesquisadora. Em obras como Bastidores e Parede da memória, reúne fotografia, tecido e costura para discutir memória, racismo e a experiência de mulheres negras. As técnicas e os materiais fazem parte das perguntas que sua arte apresenta.",
       "references": [
         {
           "indices": [
             58
           ],
-          "institution": "Pinacoteca",
+          "institution": "Pinacoteca · Rosana Paulino: a costura da memória",
           "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/"
         }
-      ]
+      ],
+      "readingId": "cozy-book-05"
     },
     {
       "index": 59,
@@ -2412,16 +2495,17 @@
       },
       "historicalName": "Maria Auxiliadora da Silva",
       "illustrationStatus": "Retrato didático original em pixel art; interpretação estilizada, sem copiar fotografias ou obras.",
-      "description": "Conheça a trajetória desta pessoa no arquivo cultural do bairro. Este quadro foi desenhado para o VOICES.",
+      "description": "Maria Auxiliadora da Silva (1935–1974) pintou cenas de trabalho, festas, relações familiares e religiosidades afro-brasileiras. Seus quadros aproximam vida cotidiana, cor e relevo. A capoeira, o samba, a Umbanda e o Candomblé participam de seu universo de imagens.",
       "references": [
         {
           "indices": [
             59
           ],
-          "institution": "MASP",
-          "url": "https://masp.org.br/exposicoes/maria-auxiliadora-vida-cotidiana-pintura-e-resistencia"
+          "institution": "MASP · Maria Auxiliadora: vida cotidiana, pintura e resistência",
+          "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia"
         }
-      ]
+      ],
+      "readingId": "cozy-book-06"
     },
     {
       "index": 60,
@@ -2451,7 +2535,17 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "description": "Árvores, água e caminhos organizam diferentes distâncias na paisagem do parque. Elementos próximos ocupam mais espaço no quadro, enquanto os planos ao fundo ajudam a sugerir profundidade.",
+      "references": [
+        {
+          "indices": [
+            60
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 61,
@@ -2481,7 +2575,17 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "description": "Casas, ruas e pontos de encontro transformam o bairro em tema de pintura. A posição dos edifícios e os intervalos entre eles permitem acompanhar os percursos e reconhecer as áreas de convivência.",
+      "references": [
+        {
+          "indices": [
+            61
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 62,
@@ -2511,7 +2615,17 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "description": "Linhas e áreas de cor formam caminhos numa composição geométrica. Repetições aproximam partes do quadro, enquanto mudanças de direção e contraste criam pontos de atenção.",
+      "references": [
+        {
+          "indices": [
+            62
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     },
     {
       "index": 63,
@@ -2541,7 +2655,17 @@
         "y": 224,
         "width": 32,
         "height": 32
-      }
+      },
+      "description": "Pequenas pinturas dividem uma mesma parede de exposição. A disposição aproxima temas, cores e formatos, permitindo perceber tanto as relações entre as obras quanto as escolhas de cada composição.",
+      "references": [
+        {
+          "indices": [
+            63
+          ],
+          "institution": "Getty · Elementos da arte",
+          "url": "https://www.getty.edu/education/teachers/building_lessons/formal_analysis.html"
+        }
+      ]
     }
   ]
 }

@@ -66,45 +66,112 @@
       "url": "https://www.ba.gov.br/ipac/oficio-das-baianas-do-acaraje",
       "note": "Saberes tradicionais, vínculos comunitários e reconhecimento estadual pelo Decreto 14.191/2012. Distinguir esse registro do registro nacional.",
       "accessed": "2026-10-20"
+    },
+    {
+      "id": "review-sonia",
+      "name": "Ministério da Ciência, Tecnologia e Inovação, CETENE · Sônia Guimarães",
+      "url": "https://www.gov.br/cetene/pt-br/assuntos/noticias/futuras-cientistas-recebe-gleide-angelo-em-manha-de-palestra-no-cetene",
+      "note": "Docência no ITA e pesquisa em propriedades eletrônicas de materiais.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-sonia-history",
+      "name": "Prefeitura de São José dos Campos · Sônia Guimarães",
+      "url": "https://www.sjc.sp.gov.br/noticias/2026/agosto/02/sonia-guimaraes-a-cientista-que-ensina-geracoes-a-acreditar/",
+      "note": "Doutorado em Física em 1989 e trajetória na educação científica.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-sonia-sensors",
+      "name": "Prefeitura de São Paulo · Prêmio Luiza Mahin: Sônia Guimarães",
+      "url": "https://prefeitura.sp.gov.br/web/direitos_humanos/w/pr%C3%AAmio-luiza-mahin-2024",
+      "note": "Física da matéria condensada, semicondutores e sensores de radiação infravermelha.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-jaqueline",
+      "name": "UFBA, Edgardigital · Jaqueline Góes de Jesus",
+      "url": "https://www.edgardigital.ufba.br/?p=18478",
+      "note": "Formação em pesquisa e participação no sequenciamento do SARS-CoV-2.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-pixinguinha",
+      "name": "Instituto Moreira Salles · Pixinguinha",
+      "url": "https://ims.com.br/titular-colecao/pixinguinha/",
+      "note": "Acervo, partituras e trajetória do músico.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-pixinguinha-credits",
+      "name": "Instituto Moreira Salles · Pixinguinha 120 anos",
+      "url": "https://ims.com.br/eventos/pixinguinha-120-anos/",
+      "note": "Repertório e créditos de composição de Carinhoso.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-ivone",
+      "name": "Instituto Cultural Cravo Albin · Dona Ivone Lara",
+      "url": "https://dicionariompb.com.br/artista/dona-ivone-lara/",
+      "note": "Trajetória, obras e parcerias da cantora e compositora.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-rosana",
+      "name": "Pinacoteca · Rosana Paulino: a costura da memória",
+      "url": "https://pinacoteca.org.br/programacao/exposicoes/rosana-paulino-a-costura-da-memoria/",
+      "note": "Obras, materiais e questões de memória na produção da artista.",
+      "accessed": "2026-10-24"
+    },
+    {
+      "id": "review-auxiliadora",
+      "name": "MASP · Maria Auxiliadora: vida cotidiana, pintura e resistência",
+      "url": "https://masp.org.br/exposicoes/maria-auxiliadora-da-silva-vida-cotidiana-pintura-e-resistencia",
+      "note": "Pintura, vida cotidiana e temas afro-brasileiros.",
+      "accessed": "2026-10-24"
     }
   ],
   "readings": [
     {
       "id": "cozy-book-01",
-      "title": "A mesa dos sensores",
+      "title": "Sônia Guimarães: física e caminhos na ciência",
       "kind": "book",
       "chapter": 3,
       "map": "room-3",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Ciência, pesquisa e autoria",
+      "theme": "Pesquisa em física e acesso à ciência",
       "paragraphs": [
-        "Tomás encontra um cartão de Sônia Guimarães na mesa do laboratório. O nome está legível; a área de pesquisa sumiu. Amara propõe completar a ficha com trabalho científico, em vez de deixá-la apenas como um retrato de homenagem.",
-        "Sônia Guimarães é física e pesquisa semicondutores e sensores de calor. Em seu perfil para a Universidade Columbia, ela descreve a atuação em física aplicada e sua trajetória no Instituto Tecnológico de Aeronáutica. A área estudada permite ligar uma biografia a perguntas sobre materiais e medidas.",
-        "Na bancada de New Harmony, Luma pede que as leituras do protótipo sejam comparadas nas mesmas condições. Caio registra o teste; Luca anota horário e resultado. O exemplo de uma cientista real não prova os resultados do aparelho ficcional: esses precisam dos registros da própria experiência."
+        "Sônia Guimarães é física brasileira. Em 1989, tornou-se a primeira mulher negra do país a obter um doutorado em Física. Sua trajetória acadêmica se relaciona ao estudo de materiais e de suas propriedades eletrônicas.",
+        "Em 1993, ingressou como professora no Instituto Tecnológico de Aeronáutica. Sua pesquisa envolve semicondutores e sensores de radiação infravermelha, aproximando o estudo das propriedades dos materiais de aplicações em detecção e eletrônica.",
+        "Sua atuação também tornou públicas as barreiras enfrentadas por mulheres negras no acesso à formação e ao trabalho científico. Conhecer sua carreira permite relacionar pesquisa, docência e oportunidades de participação na ciência."
       ],
       "en": "We name the scientist and describe her research.",
       "pt": "Identificamos a cientista e descrevemos sua pesquisa.",
       "sourceIds": [
+        "review-sonia",
+        "review-sonia-history",
+        "review-sonia-sensors",
         "cozy_sonia_columbia"
       ],
       "questionId": "cozy-history-01-6"
     },
     {
       "id": "cozy-book-02",
-      "title": "Um resultado, muitas mãos",
+      "title": "Jaqueline Góes: investigar a informação genética",
       "kind": "book",
       "chapter": 6,
       "map": "room-6",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Ciência, colaboração e registros",
+      "theme": "Biomedicina e pesquisa em equipe",
       "paragraphs": [
-        "Otávio traz uma manchete que atribui uma pesquisa inteira a uma pessoa. Amara abre a matéria completa; Tomás procura o artigo. A lista de autores e instituições revela uma colaboração que o recorte escondia.",
-        "Em fevereiro de 2020, Jaqueline Goes de Jesus participou da coordenação da equipe que sequenciou o genoma viral do primeiro caso confirmado de COVID-19 no Brasil. O trabalho reuniu Instituto Adolfo Lutz, USP e Universidade de Oxford. Sequenciar um genoma é determinar a ordem de suas unidades, não criar uma vacina.",
-        "A notícia da FAPESP e o artigo científico permitem cruzar a descrição pública com autoria e métodos. No mural de New Harmony, o nome da cientista continua em destaque e a colaboração fica visível. A mesma regra orienta a correção das assinaturas apagadas no caderno de Luma."
+        "Jaqueline Góes de Jesus é biomédica e doutora em Patologia Humana. Sua formação e sua pesquisa se relacionam ao estudo de vírus e à análise de informação genética.",
+        "Em 2020, participou da equipe que sequenciou os primeiros genomas do SARS-CoV-2 identificados no Brasil. O sequenciamento registra a ordem do material genético e permite comparar amostras investigadas pelos pesquisadores.",
+        "Essa contribuição faz parte de um trabalho coletivo que reúne profissionais, laboratórios e diferentes etapas de análise. A trajetória de Jaqueline aproxima a pesquisa brasileira da participação de mulheres negras na produção de conhecimento científico."
       ],
       "en": "A scientist can lead a contribution within a larger team.",
       "pt": "Uma cientista pode liderar uma contribuição dentro de uma equipe maior.",
       "sourceIds": [
+        "review-jaqueline",
         "cozy_genoma_fapesp",
         "research-genomes",
         "cozy_jaqueline_bahiana"
@@ -113,80 +180,85 @@
     },
     {
       "id": "cozy-book-03",
-      "title": "A partitura e o programa",
+      "title": "Pixinguinha: choro, sopros e arranjos",
       "kind": "book",
       "chapter": 1,
       "map": "room-1",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Música e documentação",
+      "theme": "Composição e música instrumental",
       "paragraphs": [
-        "André espalha a partitura e o programa sobre a mesa. A melodia é de Lia, o arranjo é dele e Sol vai interpretar. O programa adulterado manteve só o nome de quem aparece no palco. O caderno de ensaio mostra por que a correção precisa de funções.",
-        "Pixinguinha foi compositor, instrumentista, arranjador e maestro. O Instituto Moreira Salles conserva seu arquivo pessoal desde 2000, incluindo numerosas partituras de arranjos. Esses documentos permitem estudar como ele distribuiu partes e organizou a escrita musical.",
-        "Compor, arranjar e interpretar podem ser atividades de uma pessoa ou de várias. A turma não escolhe os créditos por fama ou posição no palco: compara programa, partitura e relatos. Essa distinção será útil também quando o arquivo do laboratório confundir quem calculou, testou e registrou."
+        "Pixinguinha foi compositor, flautista, saxofonista, regente e arranjador. Sua trajetória ocupa um lugar central no choro e na história da música popular brasileira.",
+        "Carinhoso, com letra de João de Barro, é uma de suas obras mais conhecidas. Sua produção também inclui música instrumental e arranjos que distribuem melodias e acompanhamentos entre diferentes instrumentos.",
+        "O Instituto Moreira Salles preserva partituras, fotografias, gravações e objetos ligados ao músico. Esses registros permitem acompanhar tanto a criação das composições quanto o trabalho cotidiano de apresentações e gravações."
       ],
       "en": "The melody, the arrangement and the performance need their credits.",
       "pt": "A melodia, o arranjo e a interpretação precisam de seus créditos.",
       "sourceIds": [
+        "review-pixinguinha",
+        "review-pixinguinha-credits",
         "cozy_pixinguinha_ims"
       ],
       "questionId": "cozy-history-03-6"
     },
     {
       "id": "cozy-book-04",
-      "title": "Quem compôs também aparece",
+      "title": "Dona Ivone Lara: compor e cantar o samba",
       "kind": "book",
       "chapter": 4,
       "map": "chapter-4",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Samba, mulheres e visibilidade",
+      "theme": "Autoria e participação das mulheres",
       "paragraphs": [
-        "Lia recebe um cartão que apresenta Dona Ivone Lara apenas como cantora. Sol reconhece a falta: uma legenda que registra só a voz pode esconder a composição. A equipe volta ao material da Ocupação do Itaú Cultural antes de completar a ficha.",
-        "Dona Ivone Lara atuou como cantora, compositora e instrumentista. Sua trajetória está ligada ao samba e à criação em parceria. Identificar essas atividades permite compreender decisões musicais, trabalho e circulação das composições, além da imagem de uma artista no palco.",
-        "Na oficina, cada estudante cria uma pequena frase e combina com a equipe como ela será apresentada. A atividade é autoral, sem inventar versos ou falas de Dona Ivone Lara. O cartão restaurado dá espaço à criação que a legenda anterior deixava invisível."
+        "Dona Ivone Lara foi cantora e compositora. Seu trabalho atravessou rodas, grupos de samba, apresentações e gravações, ampliando a presença das mulheres na autoria musical.",
+        "Entre suas parcerias com Délcio Carvalho estão Sonho meu, Acreditar e Alvorecer. As canções foram interpretadas por diferentes artistas, aproximando o trabalho de quem compõe das escolhas de quem canta.",
+        "Consultar créditos e discografias permite acompanhar essa circulação. Uma mesma composição pode receber novos arranjos, timbres e interpretações e continuar ligada aos nomes de seus compositores."
       ],
       "en": "She sang and composed. Both roles belong in the caption.",
       "pt": "Ela cantava e compunha. As duas funções devem aparecer na legenda.",
       "sourceIds": [
+        "review-ivone",
         "cozy_ivone_itau"
       ],
       "questionId": "cozy-history-04-6"
     },
     {
       "id": "cozy-book-05",
-      "title": "Retratos que recebem nomes",
+      "title": "Rosana Paulino: imagem, costura e memória",
       "kind": "book",
       "chapter": 2,
       "map": "room-2",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Arte, memória e representação",
+      "theme": "Artes visuais e experiências negras",
       "paragraphs": [
-        "Amara trouxe fotografias de família para conversar com Rui. Antes de montar um painel, eles perguntam quem aparece, quem fez a imagem e quais lembranças podem ser compartilhadas. Algumas pessoas autorizam a exposição; outras preferem guardar o retrato no álbum.",
-        "Em Parede da memória, Rosana Paulino trabalha com retratos familiares e pequenos objetos de tecido que remetem a patuás. A obra aproxima memória, presença e representação de pessoas negras. A Pinacoteca documenta esse trabalho na exposição A costura da memória.",
-        "O painel dos moradores não reproduz a obra da artista. Ele parte de uma pergunta que a leitura abriu: o que muda quando uma imagem recebe nome, trajetória e autorização? Na assembleia, Tainá usará esse cuidado para organizar os relatos que cada pessoa decidir compartilhar."
+        "Rosana Paulino é artista visual e pesquisadora. Sua obra articula fotografia, desenho, gravura, tecido e costura para investigar memória, racismo e a experiência de mulheres negras.",
+        "Em Parede da memória, retratos familiares aparecem em pequenos objetos de tecido que evocam patuás. A obra e Bastidores integram a exposição A costura da memória, da Pinacoteca, aproximando a experiência pessoal da presença de pessoas negras na história.",
+        "Na obra, o suporte também produz sentido: um fio, uma superfície de tecido ou uma imagem repetida participam da leitura. A escolha técnica integra aquilo que o trabalho faz perceber e perguntar."
       ],
       "en": "A family photograph holds a particular story.",
       "pt": "Uma fotografia de família guarda uma história particular.",
       "sourceIds": [
+        "review-rosana",
         "cozy_rosana_pinacoteca"
       ],
       "questionId": "cozy-history-05-6"
     },
     {
       "id": "cozy-book-06",
-      "title": "O cotidiano entra no quadro",
+      "title": "Maria Auxiliadora: pintar a vida cotidiana",
       "kind": "book",
       "chapter": 5,
       "map": "room-5",
       "author": "Biblioteca de New Harmony · Oficinas e vida do bairro",
-      "theme": "Arte e vida comunitária",
+      "theme": "Pintura e cultura afro-brasileira",
       "paragraphs": [
-        "Elisa desenhou pessoas conversando no banco. Jamila escolheu uma cena do mercado. Nenhuma das duas quer transformar os moradores em figuras sem nome usadas apenas para preencher a paisagem. Seus cadernos registram lugar, escolhas de cor e a conversa que originou o desenho.",
-        "Maria Auxiliadora da Silva pintou cenas de trabalho, festa, religiosidade e convivência. Sua pintura também explora relevos e texturas. O MASP apresentou essa produção na exposição Vida cotidiana, pintura e resistência, em 2018.",
-        "O cotidiano pode ser assunto de arte e de investigação. O desenho mostra escolhas da artista, não uma fotografia neutra de todas as comunidades. No arquivo, a turma distingue o que observou, o que interpretou e o que criou; a cena continua ligada às pessoas que a tornaram possível."
+        "Maria Auxiliadora da Silva nasceu em 1935 e morreu em 1974. Sua pintura reuniu cenas de trabalho, festas, relações familiares e experiências da cultura afro-brasileira.",
+        "Capoeira, samba, Umbanda, Candomblé e orixás participam de seu universo visual. Cores, detalhes e superfícies em relevo ajudam a construir cenas cheias de personagens e acontecimentos.",
+        "O MASP apresentou sua produção na exposição Vida cotidiana, pintura e resistência. O conjunto permite reconhecer a artista pelo nome e acompanhar as escolhas com que transformou experiências e referências culturais em pintura."
       ],
       "en": "Everyday life can become a subject for art.",
       "pt": "A vida cotidiana pode se tornar um tema para a arte.",
       "sourceIds": [
+        "review-auxiliadora",
         "cozy_auxiliadora_masp"
       ],
       "questionId": "cozy-history-06-6"
@@ -221,7 +293,7 @@
       "prompt": "Que área de pesquisa é apresentada na conexão sobre Sônia Guimarães?",
       "options": [
         "Composição de samba-enredo.",
-        "Semicondutores e sensores de calor.",
+        "Semicondutores e sensores de radiação infravermelha.",
         "Conservação de partituras.",
         "Produção de retratos em tecido."
       ],
@@ -230,7 +302,8 @@
       "subject": "history",
       "readingId": "cozy-book-01",
       "sourceIds": [
-        "cozy_sonia_columbia"
+        "cozy_sonia_columbia",
+        "review-sonia-sensors"
       ]
     },
     {
@@ -241,7 +314,7 @@
       "options": [
         "Porque toda pessoa com o mesmo título faz o mesmo trabalho.",
         "Porque um nome dispensa qualquer documento.",
-        "Porque a área estudada ajuda a entender uma contribuição específica.",
+        "Semicondutores e sensores de radiação infravermelha.",
         "Porque o título da ficha deve substituir o conteúdo."
       ],
       "correct": 2,
@@ -249,7 +322,8 @@
       "subject": "history",
       "readingId": "cozy-book-01",
       "sourceIds": [
-        "cozy_sonia_columbia"
+        "cozy_sonia_columbia",
+        "review-sonia-sensors"
       ]
     },
     {
@@ -258,7 +332,7 @@
       "grade": 8,
       "prompt": "Um cartão fictício passa a dizer: “Esta cientista criou todos os sensores existentes”. Qual revisão tem apoio na leitura?",
       "options": [
-        "Indicar a área de pesquisa descrita e sua fonte, sem ampliar a afirmação para toda uma tecnologia.",
+        "Semicondutores e sensores de radiação infravermelha.",
         "Manter a frase porque homenagens dispensam precisão.",
         "Trocar todos os sensores por todos os aparelhos, sem buscar documentos.",
         "Usar a frase como uma citação pessoal da cientista."
@@ -268,7 +342,8 @@
       "subject": "history",
       "readingId": "cozy-book-01",
       "sourceIds": [
-        "cozy_sonia_columbia"
+        "cozy_sonia_columbia",
+        "review-sonia-sensors"
       ]
     },
     {
@@ -392,15 +467,15 @@
       "id": "cozy-history-04-6",
       "chapter": 4,
       "grade": 6,
-      "prompt": "Que aspecto o cartão fictício deve acrescentar para representar melhor a atuação de Dona Ivone Lara?",
+      "prompt": "Qual descrição apresenta a atuação de Dona Ivone Lara?",
       "options": [
-        "Um depoimento inventado entre aspas.",
-        "Um prêmio escolhido sem referência.",
-        "Sua atuação como compositora, além do canto.",
-        "O nome de todas as artistas do mundo como se fossem uma pessoa."
+        "Flautista e responsável pelos arranjos de Carinhoso.",
+        "Matemática que trabalhou com trajetórias espaciais.",
+        "Cantora e compositora de samba, com parcerias como Sonho meu.",
+        "Pintora de cenas cotidianas em superfícies com relevo."
       ],
       "correct": 2,
-      "explanation": "A leitura apresenta mais de uma função artística. A legenda pode reconhecer essa diversidade de atuação.",
+      "explanation": "Dona Ivone Lara cantou e compôs sambas. Sonho meu é uma de suas parcerias com Délcio Carvalho.",
       "subject": "history",
       "readingId": "cozy-book-04",
       "sourceIds": [
@@ -411,15 +486,15 @@
       "id": "cozy-history-04-7",
       "chapter": 4,
       "grade": 7,
-      "prompt": "A turma escreveu um resumo próprio com informações do Itaú Cultural. Como deve apresentá-lo?",
+      "prompt": "Qual descrição apresenta a atuação de Dona Ivone Lara?",
       "options": [
-        "Como texto da turma, com a instituição e a referência indicadas.",
-        "Como frase dita pela artista, mesmo sem registro dessa fala.",
-        "Como reprodução literal de uma carta que a turma não leu.",
-        "Como informação sem autoria para parecer neutra."
+        "Flautista e responsável pelos arranjos de Carinhoso.",
+        "Matemática que trabalhou com trajetórias espaciais.",
+        "Cantora e compositora de samba, com parcerias como Sonho meu.",
+        "Pintora de cenas cotidianas em superfícies com relevo."
       ],
-      "correct": 0,
-      "explanation": "Identificar o resumo e a fonte distingue a redação da turma de uma fala ou documento original.",
+      "correct": 2,
+      "explanation": "Dona Ivone Lara cantou e compôs sambas. Sonho meu é uma de suas parcerias com Délcio Carvalho.",
       "subject": "history",
       "readingId": "cozy-book-04",
       "sourceIds": [
@@ -430,15 +505,15 @@
       "id": "cozy-history-04-8",
       "chapter": 4,
       "grade": 8,
-      "prompt": "Um cartão sobre a artista mostra só sua fotografia. Qual pergunta ajuda a investigar a omissão de suas funções?",
+      "prompt": "Qual descrição apresenta a atuação de Dona Ivone Lara?",
       "options": [
-        "Qual filtro deixaria a fotografia mais popular?",
-        "Quantas curtidas bastam para provar a composição?",
-        "Qual função seria mais fácil de inventar?",
-        "Quais registros documentam sua atuação e quais funções o cartão deixa de apresentar?"
+        "Flautista e responsável pelos arranjos de Carinhoso.",
+        "Matemática que trabalhou com trajetórias espaciais.",
+        "Cantora e compositora de samba, com parcerias como Sonho meu.",
+        "Pintora de cenas cotidianas em superfícies com relevo."
       ],
-      "correct": 3,
-      "explanation": "A comparação entre cartão e registros permite investigar a representação com evidências.",
+      "correct": 2,
+      "explanation": "Dona Ivone Lara cantou e compôs sambas. Sonho meu é uma de suas parcerias com Délcio Carvalho.",
       "subject": "history",
       "readingId": "cozy-book-04",
       "sourceIds": [

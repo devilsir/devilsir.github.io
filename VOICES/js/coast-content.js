@@ -32,7 +32,7 @@
   "readings": [
     {
       "id": "coast-book-iemanja",
-      "title": "Iemanjá: imagem, contexto e respeito",
+      "title": "Iemanjá: águas, arte e celebração",
       "kind": "book",
       "chapter": 5,
       "map": "beach",
@@ -40,9 +40,9 @@
       "theme": "Representação, arte e religiosidade",
       "artTheme": "coast",
       "paragraphs": [
-        "Na mostra da Praia das Marés, a arte de Iemanjá apresenta vestido azul-claro e branco, coroa prateada, véu de contas e abebé. Esses elementos visíveis podem ser descritos sem transformar a imagem em uma pessoa histórica. É uma interpretação artística criada para VOICES.",
-        "Um objeto catalogado pela Universidade Duke como peça turística apresenta outra representação de Iemanjá em contexto de Candomblé, com coroa, véu e abebé. Comparar as fichas mostra escolhas de representação; não demonstra que todas as comunidades usem imagens iguais. Umbanda e Candomblé têm histórias e práticas próprias.",
-        "Em Salvador, a Festa de Iemanjá acontece em 2 de fevereiro, no Rio Vermelho, ligada à comunidade de pescadores. Lugar, data e participantes situam essa referência. Na praia ficcional, a leitura conecta cuidado com as águas, arte e respeito religioso; os desafios do jogo pertencem à fantasia."
+        "Iemanjá é uma orixá reverenciada em religiões afro-brasileiras e associada às águas e à maternidade. Em suas representações, vestimentas, gestos e objetos aproximam devoção, trabalho artístico e histórias transmitidas nas comunidades.",
+        "Coroa, véu de contas e abebé participam de representações documentadas em acervos como o da Universidade Duke. O abebé é um objeto em forma de leque. Na imagem da orla, ele aparece junto ao vestido azul e branco e à coroa prateada.",
+        "Em Salvador, a Festa de Iemanjá reúne a comunidade de pescadores do Rio Vermelho em 2 de fevereiro. A celebração faz parte da vida cultural da cidade e aproxima a relação com o mar das práticas de devoção de quem participa."
       ],
       "en": "The artwork shows Iemanjá holding an abebé.",
       "pt": "A obra mostra Iemanjá segurando um abebé.",
@@ -107,7 +107,7 @@
         "Um violão."
       ],
       "correct": 1,
-      "explanation": "A leitura e a legenda nomeiam o abebé. Identificar o objeto não substitui conhecer o contexto da imagem.",
+      "explanation": "O abebé é um atributo em forma de leque documentado em representações de Iemanjá.",
       "subject": "history",
       "readingId": "coast-book-iemanja",
       "sourceIds": [
@@ -127,7 +127,7 @@
         "Uma roupa obrigatória para todos os moradores."
       ],
       "correct": 2,
-      "explanation": "A ficha do acervo identifica a origem, o material e o contexto da peça.",
+      "explanation": "O abebé é um atributo em forma de leque documentado em representações de Iemanjá.",
       "subject": "history",
       "readingId": "coast-book-iemanja",
       "sourceIds": [
@@ -147,7 +147,7 @@
         "Criação original de VOICES; veja a referência e o contexto da representação."
       ],
       "correct": 3,
-      "explanation": "Autoria e contexto ajudam a apreciar a imagem sem afirmar que ela representa todas as tradições.",
+      "explanation": "O abebé é um atributo em forma de leque documentado em representações de Iemanjá.",
       "subject": "history",
       "readingId": "coast-book-iemanja",
       "sourceIds": [
@@ -273,7 +273,7 @@
   "iemanja": {
     "id": "iemanja",
     "title": "Iemanjá — símbolos e tradições",
-    "description": "Iemanjá é reverenciada em religiões afro-brasileiras. Nesta obra, veste azul e branco, usa uma coroa prateada e segura um abebé, leque associado a suas representações.",
+    "description": "Iemanjá é uma orixá associada às águas e à maternidade em religiões afro-brasileiras. O vestido azul e branco, a coroa, o véu de contas e o abebé aproximam a imagem da orla de formas de representação documentadas em acervos culturais.",
     "sourceIds": [
       "coast_duke_iemanja"
     ],

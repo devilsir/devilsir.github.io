@@ -9,8 +9,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5.5,
       "size": 2.6,
       "title": "Congá de referência",
-      "text": "Lúcia apresenta este espaço de referência da Casa das Águas Claras. As imagens, os objetos e as formas de acolher são organizados por quem cuida desta casa.",
-      "dir": 0
+      "text": "O congá reúne imagens e objetos de devoção no espaço do altar. Na Casa das Águas Claras, esse ponto organiza a roda de cantos e a recepção conduzida por Lúcia.",
+      "dir": 0,
+      "textEn": "The congá brings devotional images and objects together in the altar area. In Casa das Águas Claras, it is a meeting point for songs and the welcome led by Lúcia."
     },
     {
       "id": "custom-expansion-umbanda-bead-cabinet",
@@ -21,8 +22,9 @@ window.V.TerreirosCollectionPlans={
       "y": 12,
       "size": 1.9,
       "title": "Mostruário de guias",
-      "text": "Os colares de contas ficam em um mostruário de tecido. Lúcia acompanha a leitura das fichas; a cor de um desenho, sozinha, não identifica uma tradição inteira.",
-      "dir": 0
+      "text": "Guias são colares de contas que expressam vínculos com a vida religiosa. Materiais, sequências e modos de preparar a peça fazem parte dos conhecimentos transmitidos entre praticantes.",
+      "dir": 0,
+      "textEn": "Guias are bead necklaces connected with religious life. Materials, patterns and ways of preparing them belong to knowledge shared among practitioners."
     },
     {
       "id": "custom-expansion-umbanda-quartinhas",
@@ -33,8 +35,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14,
       "size": 1.9,
       "title": "Quartinhas de cerâmica",
-      "text": "Os dois recipientes têm tampa, alças e acabamento de barro. A ficha da casa registra quem fez as peças e em qual contexto foram compartilhadas.",
-      "dir": 0
+      "text": "Os recipientes de cerâmica têm corpo arredondado, tampa e abertura estreita. Quartinhas integram a cultura material de terreiros e podem estar ligadas à presença da água nas práticas da casa.",
+      "dir": 0,
+      "textEn": "These ceramic vessels have rounded bodies, lids and narrow openings. Quartinhas are part of the material culture of terreiros and may hold water in the practices of a house."
     },
     {
       "id": "custom-expansion-umbanda-incense-vessel",
@@ -45,8 +48,9 @@ window.V.TerreirosCollectionPlans={
       "y": 20,
       "size": 1.9,
       "title": "Defumador de cerâmica",
-      "text": "A tampa perfurada e a alça distinguem este recipiente dos potes de armazenamento. A peça está apagada na área de apresentação de Lúcia.",
-      "dir": 0
+      "text": "O recipiente reúne tampa perfurada, base e alça de transporte. Os furos permitem a passagem da fumaça durante a defumação, prática presente em diferentes espaços de religiosidade afro-brasileira.",
+      "dir": 0,
+      "textEn": "The vessel has a pierced lid, a base and a carrying handle. Its openings let smoke pass during defumação, a practice found in Afro-Brazilian religious settings."
     },
     {
       "id": "custom-expansion-umbanda-candle-shelf",
@@ -57,8 +61,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 1.9,
       "title": "Suporte de velas da casa",
-      "text": "As velas estão apagadas e separadas em suportes. Lúcia organiza a apresentação antes de receber o grupo; os visitantes consultam a ficha sem manusear as peças.",
-      "dir": 0
+      "text": "Cada vela ocupa um suporte próprio na prateleira. Luz, duração da chama e organização do espaço participam de usos devocionais das velas; aqui, o conjunto acompanha o altar da casa.",
+      "dir": 0,
+      "textEn": "Each candle has its own holder on the shelf. Light, burning time and arrangement are part of devotional candle use; here the set stands beside the house altar."
     },
     {
       "id": "custom-expansion-umbanda-hand-bell",
@@ -69,8 +74,9 @@ window.V.TerreirosCollectionPlans={
       "y": 9.5,
       "size": 1.9,
       "title": "Sineta de latão",
-      "text": "O metal, a forma e o modo de percutir participam do som de um instrumento. Nesta peça, a alça permite observar como a sineta é sustentada.",
-      "dir": 0
+      "text": "Uma pequena campânula de latão é sustentada pela alça. O movimento faz soar o metal, produzindo um sinal breve que se distingue da vibração contínua dos tambores.",
+      "dir": 0,
+      "textEn": "A small brass bell is held by its handle. Movement makes the metal ring, producing a brief sound different from the sustained vibration of drums."
     },
     {
       "id": "custom-expansion-umbanda-white-atabaque",
@@ -81,8 +87,9 @@ window.V.TerreirosCollectionPlans={
       "y": 11,
       "size": 1.9,
       "title": "Atabaque com faixa de tecido",
-      "text": "Os atabaques integram práticas musicais de religiões afro-brasileiras. A ficha desta casa identifica o instrumento; participação e manuseio seguem as orientações da comunidade.",
-      "dir": 0
+      "text": "O corpo de madeira sustenta uma pele tensionada e uma faixa de tecido. O atabaque acompanha cantos e movimentos em práticas afro-brasileiras, reunindo ritmo, aprendizagem e participação coletiva.",
+      "dir": 0,
+      "textEn": "The wooden body supports a stretched drumhead and a cloth band. The atabaque accompanies songs and movement in Afro-Brazilian practices, bringing rhythm and shared learning together."
     },
     {
       "id": "custom-expansion-umbanda-iron-agogo",
@@ -93,8 +100,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14,
       "size": 1.9,
       "title": "Agogô de ferro no suporte",
-      "text": "As duas campânulas têm tamanhos diferentes. Observe material e construção antes de comparar esta peça com os instrumentos do Distrito do Ritmo.",
-      "dir": 0
+      "text": "Duas campânulas de ferro produzem sons de alturas diferentes quando percutidas. A sequência alternada dos golpes cria desenhos rítmicos que podem dialogar com canto e tambores.",
+      "dir": 0,
+      "textEn": "Two iron bells produce different pitches when struck. Alternating strokes create rhythmic patterns that can interact with singing and drums."
     },
     {
       "id": "custom-expansion-umbanda-caxixis",
@@ -105,8 +113,9 @@ window.V.TerreirosCollectionPlans={
       "y": 13,
       "size": 1.9,
       "title": "Par de caxixis",
-      "text": "Trama, alça e base formam estes chocalhos. O caderno de instrumentos registra a origem de cada peça, sem tratar todo instrumento de percussão como se fosse igual.",
-      "dir": 0
+      "text": "Os chocalhos combinam um corpo trançado, alça e pequenos elementos soltos no interior. Ao agitá-los, o choque desses elementos contra a estrutura produz o som.",
+      "dir": 0,
+      "textEn": "The rattles combine woven bodies, handles and small loose pieces inside. Shaking them makes the pieces strike the structure and produce sound."
     },
     {
       "id": "custom-expansion-umbanda-woven-sieve",
@@ -117,8 +126,9 @@ window.V.TerreirosCollectionPlans={
       "y": 23,
       "size": 1.9,
       "title": "Peneira de fibra natural",
-      "text": "Jacira separa os materiais do jardim nesta peneira. A trama deixa pequenos fragmentos passar; o registro de cada lote permanece ao lado do material.",
-      "dir": 0
+      "text": "A malha trançada separa materiais conforme o tamanho dos fragmentos. Na mesa de Jacira, a peneira deixa passar as partes menores e retém as maiores durante a organização do jardim.",
+      "dir": 0,
+      "textEn": "The woven mesh separates material by particle size. On Jacira’s table, smaller pieces pass through while larger ones remain above it."
     },
     {
       "id": "custom-expansion-umbanda-small-mortar",
@@ -129,8 +139,9 @@ window.V.TerreirosCollectionPlans={
       "y": 17,
       "size": 1.9,
       "title": "Pilão pequeno de madeira",
-      "text": "Recipiente e mão de pilão formam um conjunto. Jacira usa esta bancada para explicar ferramentas e materiais; as fichas registram a procedência de cada planta.",
-      "dir": 0
+      "text": "O pilão reúne um recipiente de madeira e uma peça alongada para bater ou pressionar. O movimento quebra e reduz materiais em porções menores na bancada de demonstração de Jacira.",
+      "dir": 0,
+      "textEn": "The mortar combines a wooden bowl and a long pestle for pounding or pressing. The movement breaks material into smaller pieces at Jacira’s demonstration table."
     },
     {
       "id": "custom-expansion-umbanda-flower-vase",
@@ -141,8 +152,9 @@ window.V.TerreirosCollectionPlans={
       "y": 8,
       "size": 1.9,
       "title": "Vaso azul com flores brancas",
-      "text": "O vaso marca a mesa de acolhimento. Lúcia mantém espaço para água e cadernos ao lado das flores, sem bloquear a entrada do salão.",
-      "dir": 0
+      "text": "As flores brancas se destacam sobre a cerâmica azul. O vaso aproxima cor, perfume e cuidado cotidiano da mesa de acolhimento, onde Lúcia recebe perguntas e prepara as conversas.",
+      "dir": 0,
+      "textEn": "White flowers stand out against the blue ceramic vase. The arrangement brings colour and everyday care to the welcome table where Lúcia receives visitors."
     },
     {
       "id": "custom-expansion-umbanda-blue-stool",
@@ -153,8 +165,9 @@ window.V.TerreirosCollectionPlans={
       "y": 16,
       "size": 1.9,
       "title": "Banquinho azul de conversa",
-      "text": "Alzira reservou este assento para uma conversa breve. Há bancos e espaço livre para que cada pessoa encontre uma forma confortável de participar.",
-      "dir": 0
+      "text": "O assento baixo de madeira pintada oferece um lugar próximo à roda. Alzira o utiliza nas conversas do salão, junto aos demais bancos e aos cadernos de lembranças.",
+      "dir": 0,
+      "textEn": "The low painted wooden stool offers a place close to the circle. Alzira uses it for conversations beside the other seats and memory notebooks."
     },
     {
       "id": "custom-expansion-umbanda-boiadeiro-display",
@@ -165,8 +178,9 @@ window.V.TerreirosCollectionPlans={
       "y": 9,
       "size": 1.9,
       "title": "Chapéu e laço de Miguel",
-      "text": "Miguel apresenta o chapéu e o laço usados na criação visual de seu personagem. As peças ajudam a reconhecer esta presença da aventura, sem representar todas as casas.",
-      "dir": 0
+      "text": "O chapéu de aba e o laço aproximam Miguel do universo de trabalho e deslocamento dos boiadeiros. No salão, esses elementos acompanham suas histórias de caminhos, encontros e cooperação.",
+      "dir": 0,
+      "textEn": "The brimmed hat and lasso connect Miguel with the world of cattle drivers. In the hall, these objects accompany his stories of journeys, encounters and cooperation."
     },
     {
       "id": "custom-expansion-umbanda-cane-shawl",
@@ -177,8 +191,9 @@ window.V.TerreirosCollectionPlans={
       "y": 16.5,
       "size": 1.9,
       "title": "Bengala e tecido de memória",
-      "text": "Alzira guarda estes objetos junto ao caderno de relatos. A conversa registra quem compartilhou a lembrança e qual parte pode ser consultada por visitantes.",
-      "dir": 0
+      "text": "A bengala oferece apoio para caminhar; o tecido pode envolver os ombros. Guardados por Alzira, os dois objetos acompanham lembranças de pessoas, lugares e encontros compartilhados na roda.",
+      "dir": 0,
+      "textEn": "The cane supports walking and the cloth can wrap around the shoulders. Alzira keeps both objects with memories of people, places and shared gatherings."
     },
     {
       "id": "custom-expansion-umbanda-red-fan",
@@ -189,8 +204,9 @@ window.V.TerreirosCollectionPlans={
       "y": 8,
       "size": 1.9,
       "title": "Leque e rosas da Rosa",
-      "text": "O leque e as rosas fazem parte da criação visual de Rosa nesta aventura. Ela apresenta suas próprias ideias ao conversar; a roupa não substitui a escuta.",
-      "dir": 0
+      "text": "As varetas do leque abrem uma superfície em forma de arco. Rosas e tecido vermelho compõem o conjunto de Rosa e acompanham seus gestos de conversa no salão.",
+      "dir": 0,
+      "textEn": "The fan’s ribs open an arched surface. Roses and red fabric form Rosa’s display and accompany her gestures during conversations in the hall."
     },
     {
       "id": "custom-expansion-umbanda-song-notebook",
@@ -201,8 +217,9 @@ window.V.TerreirosCollectionPlans={
       "y": 10.5,
       "size": 1.9,
       "title": "Caderno da roda de escuta",
-      "text": "A roda pública registra a ordem de escuta e os créditos das apresentações. O caderno distingue composição, interpretação e autorização de compartilhamento.",
-      "dir": 0
+      "text": "O caderno reúne títulos, ordem dos cantos e créditos das apresentações. Anotações aproximam composição, interpretação e memória das pessoas que ensinam e aprendem na roda de escuta.",
+      "dir": 0,
+      "textEn": "The notebook keeps song titles, performance order and credits. Its notes connect composition, interpretation and the memory of people who teach and learn in the listening circle."
     },
     {
       "id": "custom-expansion-umbanda-memory-display",
@@ -213,8 +230,9 @@ window.V.TerreirosCollectionPlans={
       "y": 20,
       "size": 2.2,
       "title": "Mesa de fotografias e memórias",
-      "text": "As pequenas imagens mostram paisagens do bairro. Bento confere lugar, data e quem cedeu cada fotografia antes de ligá-la a um relato.",
-      "dir": 0
+      "text": "Fotografias de paisagens e encontros ficam reunidas para consulta. Data, lugar e autoria ligam cada imagem aos relatos apresentados por Bento na mesa de memórias.",
+      "dir": 0,
+      "textEn": "Photographs of places and gatherings are displayed together. Date, location and authorship connect each image with the stories Bento shares at the memory table."
     },
     {
       "id": "custom-expansion-umbanda-foliage-pot",
@@ -225,8 +243,9 @@ window.V.TerreirosCollectionPlans={
       "y": 19.5,
       "size": 2.2,
       "title": "Folhagem do pátio",
-      "text": "Folha acompanha a observação deste vaso. Cor e formato ajudam a descrever o que vemos, mas a identificação da planta precisa de sua ficha.",
-      "dir": 0
+      "text": "O vaso reúne folhas de diferentes posições em torno de um mesmo caule. Na observação com Folha, nervuras, bordas e crescimento oferecem detalhes para comparar os registros do pátio.",
+      "dir": 0,
+      "textEn": "The pot shows leaves arranged around a stem. With Folha, visitors compare veins, edges and growth in the courtyard’s observation records."
     },
     {
       "id": "custom-expansion-umbanda-clay-filter",
@@ -237,8 +256,9 @@ window.V.TerreirosCollectionPlans={
       "y": 23.5,
       "size": 2.2,
       "title": "Filtro de barro da convivência",
-      "text": "O filtro fica na área de convivência. A equipe cuida da limpeza, do abastecimento e do registro de manutenção antes de receber os visitantes.",
-      "dir": 0
+      "text": "Dois compartimentos separam a água antes e depois da passagem pelo elemento filtrante. A gravidade conduz o escoamento até o reservatório de baixo, onde fica a torneira de servir.",
+      "dir": 0,
+      "textEn": "Two compartments separate water before and after it passes through the filter element. Gravity carries it to the lower reservoir, where the serving tap is placed."
     },
     {
       "id": "custom-expansion-umbanda-linen-hamper",
@@ -249,8 +269,9 @@ window.V.TerreirosCollectionPlans={
       "y": 23.5,
       "size": 1.9,
       "title": "Cesto de tecidos da casa",
-      "text": "O cesto separa os tecidos que serão organizados pela equipe. Materiais de recepção e de limpeza têm lugares próprios no salão.",
-      "dir": 0
+      "text": "Fibras entrelaçadas formam um recipiente leve para reunir tecidos. O cesto mantém as peças próximas da equipe que prepara mesas, assentos e materiais de acolhimento.",
+      "dir": 0,
+      "textEn": "Interwoven fibres form a light container for fabrics. The basket keeps the cloths close to the team preparing tables, seats and welcome materials."
     },
     {
       "id": "custom-expansion-umbanda-reception-desk",
@@ -261,8 +282,9 @@ window.V.TerreirosCollectionPlans={
       "y": 7.5,
       "size": 2.2,
       "title": "Balcão de acolhimento da Lúcia",
-      "text": "Lúcia recebe os visitantes neste balcão. O caderno reúne perguntas para a roda de conversa e indica onde encontrar as leituras públicas da casa.",
-      "dir": 0
+      "text": "O balcão reúne caderno de perguntas, leituras e informações de chegada. Lúcia organiza a recepção por aqui e apresenta os caminhos entre o pátio e a roda de conversa.",
+      "dir": 0,
+      "textEn": "The desk holds questions, readings and arrival information. Lúcia welcomes visitors here and explains the route between the courtyard and the conversation circle."
     },
     {
       "id": "custom-expansion-umbanda-folded-cloths",
@@ -273,8 +295,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14,
       "size": 1.9,
       "title": "Cesto de panos dobrados",
-      "text": "A equipe organiza os panos antes das atividades. Deixar os materiais no lugar ajuda a preparar o salão para quem chega depois.",
-      "dir": 0
+      "text": "Dobras regulares deixam os panos empilhados e fáceis de distribuir. As peças atendem à preparação das mesas e retornam ao cesto quando a equipe reorganiza o salão.",
+      "dir": 0,
+      "textEn": "Regular folds keep the cloths stacked and easy to distribute. They are used to prepare the tables and return to the basket when the hall is rearranged."
     },
     {
       "id": "custom-expansion-umbanda-blue-mat",
@@ -285,8 +308,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24.5,
       "size": 2.2,
       "title": "Esteira de entrada azul",
-      "text": "A esteira marca a recepção sem criar um obstáculo. Miguel confere o trajeto entre a entrada, os assentos e as atividades do salão.",
-      "dir": 0
+      "text": "A trama azul demarca o ponto de chegada ao salão. Sua superfície baixa acompanha o piso, perto do trajeto que liga a porta aos assentos da roda.",
+      "dir": 0,
+      "textEn": "The blue weave marks the arrival point in the hall. Its low surface follows the floor beside the route from the door to the circle’s seats."
     }
   ],
   "interior-candomble": [
@@ -299,8 +323,9 @@ window.V.TerreirosCollectionPlans={
       "y": 12,
       "size": 2.5,
       "title": "Atabaque rum",
-      "text": "Rum é o nome do maior atabaque no conjunto rum, rumpi e lé apresentado nesta coleção. Compare o tamanho dos três instrumentos na mesma escala.",
-      "dir": 0
+      "text": "O rum é o maior dos três atabaques deste conjunto. O corpo de madeira e a pele tensionada formam um instrumento ligado ao canto, à dança e às celebrações dos terreiros.",
+      "dir": 0,
+      "textEn": "The rum is the largest of the three atabaques in this set. Its wooden body and stretched drumhead form an instrument connected with songs, dance and terreiro celebrations."
     },
     {
       "id": "custom-expansion-candomble-rumpi",
@@ -311,8 +336,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14,
       "size": 2.1,
       "title": "Atabaque rumpi",
-      "text": "O rumpi tem tamanho intermediário neste conjunto. A ficha registra o nome específico do instrumento e o contexto da casa que o apresenta.",
-      "dir": 0
+      "text": "O rumpi ocupa o tamanho intermediário entre rum e lé. Sua membrana participa da conversa rítmica do conjunto, articulando a execução com os demais tambores.",
+      "dir": 0,
+      "textEn": "The rumpi is between the rum and lé in size. Its drumhead contributes to the set’s rhythmic exchange alongside the other drums."
     },
     {
       "id": "custom-expansion-candomble-le",
@@ -323,8 +349,9 @@ window.V.TerreirosCollectionPlans={
       "y": 12,
       "size": 1.7,
       "title": "Atabaque lé",
-      "text": "O lé é o menor destes três atabaques. Instrumentos semelhantes podem receber nomes diferentes conforme a região e a tradição.",
-      "dir": 0
+      "text": "O lé é o menor atabaque do conjunto. Comparar as dimensões e os sons dos três instrumentos permite perceber como diferentes vozes de tambor participam da mesma execução.",
+      "dir": 0,
+      "textEn": "The lé is the smallest atabaque in the set. Comparing the three instruments’ sizes and sounds shows how different drum voices contribute to one performance."
     },
     {
       "id": "custom-expansion-candomble-adja",
@@ -335,8 +362,9 @@ window.V.TerreirosCollectionPlans={
       "y": 12,
       "size": 1.7,
       "title": "Adjá de três campânulas",
-      "text": "Três campânulas de metal se prendem a uma alça. O mostruário permite observar construção e materiais antes de consultar o contexto registrado pela casa.",
-      "dir": 0
+      "text": "O adjá reúne pequenas campânulas metálicas ligadas a uma alça. Usado em cerimônias afro-brasileiras, pode apresentar até três sinetas, como o conjunto exibido nesta coleção.",
+      "dir": 0,
+      "textEn": "The adjá combines small metal bells on one handle. Used in Afro-Brazilian ceremonies, it can have up to three bells, as in this display."
     },
     {
       "id": "custom-expansion-candomble-shekere",
@@ -347,8 +375,9 @@ window.V.TerreirosCollectionPlans={
       "y": 16,
       "size": 1.7,
       "title": "Xequerê de cabaça e contas",
-      "text": "A rede de contas envolve a cabaça deste instrumento. Compare sua construção com o agogô e com a membrana dos atabaques.",
-      "dir": 0
+      "text": "Uma rede de contas recobre a cabaça seca. Movimentos de agitar, girar e tocar fazem as contas encontrar a superfície, produzindo o ritmo característico desse chocalho.",
+      "dir": 0,
+      "textEn": "A bead net covers the dried gourd. Shaking, turning and touching make the beads strike its surface, producing the rattle’s characteristic rhythm."
     },
     {
       "id": "custom-expansion-candomble-agogo",
@@ -359,8 +388,9 @@ window.V.TerreirosCollectionPlans={
       "y": 19,
       "size": 1.7,
       "title": "Agogô de duas campânulas",
-      "text": "A peça reúne duas campânulas de ferro em uma haste. Dandara mantém a ficha junto ao suporte para que nome, origem e contexto acompanhem a imagem.",
-      "dir": 0
+      "text": "Duas campânulas unidas por uma haste são percutidas com baqueta. O som nasce da vibração do metal, distinguindo o agogô dos instrumentos que utilizam pele ou corda.",
+      "dir": 0,
+      "textEn": "Two bells joined by a stem are struck with a beater. The sound comes from vibrating metal, unlike instruments that use a drumhead or a string."
     },
     {
       "id": "custom-expansion-candomble-gold-abebe",
@@ -371,8 +401,9 @@ window.V.TerreirosCollectionPlans={
       "y": 4.5,
       "size": 1.7,
       "title": "Abebê dourado · referência de Oxum",
-      "text": "O abebê aparece entre as ferramentas de orixás apresentadas pelo MAFRO. Nesta referência de Oxum, observe a forma de leque e o acabamento dourado.",
-      "dir": 0
+      "text": "O abebé de Oxum tem forma de leque e é documentado em latão, metal de aparência dourada. A superfície pode receber desenhos vazados ou gravados, aproximando trabalho em metal e devoção.",
+      "dir": 0,
+      "textEn": "Oxum’s abebé is fan-shaped and documented in brass, a golden-coloured metal. Cut-out or engraved designs connect metalwork and devotion."
     },
     {
       "id": "custom-expansion-candomble-silver-abebe",
@@ -383,8 +414,9 @@ window.V.TerreirosCollectionPlans={
       "y": 4.5,
       "size": 1.7,
       "title": "Abebê prateado · referência de Iemanjá",
-      "text": "O material educativo do MAFRO apresenta um abebê prateado na referência de Iemanjá. A ficha explica o uso e a iconografia desse objeto.",
-      "dir": 0
+      "text": "O abebé é um atributo associado a Iemanjá. Exemplares de metal prateado aparecem em formas circulares ou de peixe; o cabo prolonga a superfície que lembra um leque.",
+      "dir": 0,
+      "textEn": "The abebé is an attribute associated with Iemanjá. Silver-coloured examples can be round or fish-shaped, with a handle extending the fan-like surface."
     },
     {
       "id": "custom-expansion-candomble-oxe",
@@ -395,8 +427,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5,
       "size": 1.7,
       "title": "Oxê · referência de Xangô",
-      "text": "O oxê de duas lâminas aparece na referência de Xangô em acervos afro-brasileiros. Compare a forma do emblema com a ficha cultural da casa.",
-      "dir": 0
+      "text": "O oxê é o emblema de Xangô em forma de machado de duas lâminas. O desenho simétrico destaca os dois lados da peça e acompanha referências ao orixá ligado ao trovão e à justiça.",
+      "dir": 0,
+      "textEn": "The oxê is Xangô’s double-bladed axe emblem. Its symmetrical shape highlights both sides and accompanies references to the orixá associated with thunder and justice."
     },
     {
       "id": "custom-expansion-candomble-ofa",
@@ -407,8 +440,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5,
       "size": 1.7,
       "title": "Ofá · referência de Oxóssi",
-      "text": "O arco e a flecha compõem o ofá apresentado na referência de Oxóssi pelo MAFRO. Aqui, a peça integra uma mostra de leitura e comparação de imagens.",
-      "dir": 0
+      "text": "O ofá reúne arco e flecha numa mesma representação. Associado a Oxóssi, aproxima a imagem do caçador das matas e dos conhecimentos ligados à busca do alimento.",
+      "dir": 0,
+      "textEn": "The ofá combines bow and arrow in one representation. Associated with Oxóssi, it connects the hunter’s image with forests and knowledge about finding food."
     },
     {
       "id": "custom-expansion-candomble-ogum-sword",
@@ -419,8 +453,9 @@ window.V.TerreirosCollectionPlans={
       "y": 7,
       "size": 1.7,
       "title": "Espada · referência de Ogum",
-      "text": "A espada aparece na referência de Ogum no material educativo do MAFRO. Nesta mostra, o objeto é observado como expressão material e simbólica.",
-      "dir": 0
+      "text": "A espada é uma das formas de representar Ogum, orixá ligado ao ferro e aos ferreiros. Lâmina, cabo e trabalho do metal aproximam o emblema das ferramentas de transformação dos materiais.",
+      "dir": 0,
+      "textEn": "The sword is one way of representing Ogum, the orixá connected with iron and blacksmiths. Blade, handle and metalwork link the emblem to tools that transform materials."
     },
     {
       "id": "custom-expansion-candomble-eruexim",
@@ -431,8 +466,9 @@ window.V.TerreirosCollectionPlans={
       "y": 7,
       "size": 1.7,
       "title": "Eruexim · referência de Oyá",
-      "text": "O eruexim aparece na referência de Iansã, também chamada Oyá, no acervo educativo consultado. Observe a diferença entre a haste e as fibras.",
-      "dir": 0
+      "text": "O eruexim, também chamado iruexim, é um atributo de Iansã ou Oyá. Fibras longas se prendem a um cabo, criando um objeto de movimento fluido nas representações da orixá.",
+      "dir": 0,
+      "textEn": "The eruexim, also called iruexim, is an attribute of Iansã or Oyá. Long fibres attach to a handle, creating a flowing form in representations of the orixá."
     },
     {
       "id": "custom-expansion-candomble-opaxoro",
@@ -443,8 +479,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5,
       "size": 1.7,
       "title": "Opaxorô · referência de Oxalufã",
-      "text": "O opaxorô é apresentado na referência de Oxalufã pelo material do MAFRO. Seus elementos suspensos e a haste distinguem sua forma nesta coleção.",
-      "dir": 0
+      "text": "O opaxorô é o cajado associado a Oxalufã. A haste alta e os elementos suspensos compõem um emblema de apoio, cujo desenho ocupa o espaço acima e ao redor das mãos.",
+      "dir": 0,
+      "textEn": "The opaxorô is the staff associated with Oxalufã. Its tall shaft and hanging elements form an emblem of support, extending above and around the hands."
     },
     {
       "id": "custom-expansion-candomble-xaxara",
@@ -455,8 +492,9 @@ window.V.TerreirosCollectionPlans={
       "y": 7,
       "size": 1.7,
       "title": "Xaxará · referência de Omolu",
-      "text": "O material do MAFRO relaciona o xaxará à referência de Omolu. Observe as fibras, a estrutura e os adornos desse objeto.",
-      "dir": 0
+      "text": "O xaxará é um atributo de Omolu formado por um feixe de fibras, como piaçava ou palha-da-costa. Trançados, búzios e contas podem reunir e ornamentar a estrutura.",
+      "dir": 0,
+      "textEn": "The xaxará is an attribute of Omolu made from a bundle of fibres such as piassava or palha-da-costa. Braiding, cowries and beads can hold and decorate it."
     },
     {
       "id": "custom-expansion-candomble-clay-vessels",
@@ -467,8 +505,9 @@ window.V.TerreirosCollectionPlans={
       "y": 22,
       "size": 1.9,
       "title": "Quartinhas de barro do acervo",
-      "text": "Tampas e alças mudam a maneira de observar estes recipientes. Dandara mantém cada peça ligada à sua ficha, sem deduzir seu uso apenas pelo formato.",
-      "dir": 0
+      "text": "O barro modelado e queimado forma recipientes com corpo, abertura e tampa. As quartinhas integram a cultura material dos terreiros e permitem comparar técnicas de cerâmica e formas de guardar água.",
+      "dir": 0,
+      "textEn": "Shaped and fired clay forms vessels with bodies, openings and lids. Quartinhas are part of terreiro material culture and allow comparisons of ceramics and ways of holding water."
     },
     {
       "id": "custom-expansion-candomble-white-vessels",
@@ -479,8 +518,9 @@ window.V.TerreirosCollectionPlans={
       "y": 20,
       "size": 1.9,
       "title": "Mesa de louças brancas",
-      "text": "As louças ficam separadas no suporte de consulta. Nome, procedência e contexto são lidos antes de relacionar um recipiente a uma prática da comunidade.",
-      "dir": 0
+      "text": "A superfície clara destaca as bordas, alças e aberturas das louças. Os recipientes aproximam o trabalho de produzir e cuidar dos utensílios da vida cotidiana do Ilê.",
+      "dir": 0,
+      "textEn": "The pale surface highlights rims, handles and openings. These vessels connect the making and care of utensils with everyday life in the Ilê."
     },
     {
       "id": "custom-expansion-candomble-straw-mat",
@@ -491,8 +531,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 1.9,
       "title": "Esteira de palha da sala pública",
-      "text": "A esteira integra a área pública de convivência. Bancos e espaço de circulação continuam disponíveis para acolher diferentes formas de participar.",
-      "dir": 0
+      "text": "Tiras de fibra vegetal se cruzam para formar uma superfície flexível. A esteira pode ser enrolada para guardar e estendida no espaço de convivência junto aos bancos.",
+      "dir": 0,
+      "textEn": "Strips of plant fibre cross to form a flexible surface. The mat can be rolled for storage and spread in the shared area beside the benches."
     },
     {
       "id": "custom-expansion-candomble-dark-bench",
@@ -503,8 +544,9 @@ window.V.TerreirosCollectionPlans={
       "y": 18,
       "size": 2.2,
       "title": "Banco de madeira da roda",
-      "text": "Dandara organiza os assentos para a roda de leitura. A posição do banco deixa livre a passagem entre a entrada e as fichas culturais.",
-      "dir": 0
+      "text": "O assento comprido acomoda mais de uma pessoa na mesma fileira. A madeira escura destaca o banco no salão e acompanha a roda de leitura organizada por Dandara.",
+      "dir": 0,
+      "textEn": "The long seat holds more than one person in a row. Dark wood sets the bench apart in the hall beside Dandara’s reading circle."
     },
     {
       "id": "custom-expansion-candomble-document-case",
@@ -515,8 +557,9 @@ window.V.TerreirosCollectionPlans={
       "y": 10,
       "size": 2.2,
       "title": "Vitrine dos registros públicos",
-      "text": "A vitrine reúne um caderno e uma ilustração de consulta. Dandara indica quais registros foram autorizados para a apresentação pública e quem os compartilhou.",
-      "dir": 0
+      "text": "O vidro permite consultar visualmente o caderno e a ilustração protegidos no interior. A vitrine reúne registros públicos sobre o trabalho, os encontros e a memória da casa.",
+      "dir": 0,
+      "textEn": "Glass allows visitors to view the notebook and illustration protected inside. The case presents public records of the house’s work, gatherings and memory."
     },
     {
       "id": "custom-expansion-candomble-cloth-cupboard",
@@ -527,8 +570,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14,
       "size": 2.2,
       "title": "Armário de tecidos e cestos",
-      "text": "Tecidos e cestos ficam organizados por uso. A equipe prepara o salão e confere o que precisa retornar ao depósito depois da atividade.",
-      "dir": 0
+      "text": "Prateleiras separam tecidos dobrados de cestos e recipientes. O armário aproxima os materiais usados na preparação do salão e organiza o retorno de cada conjunto depois dos encontros.",
+      "dir": 0,
+      "textEn": "Shelves separate folded fabrics from baskets and vessels. The cupboard keeps materials for the hall together and organises their return after gatherings."
     },
     {
       "id": "custom-expansion-candomble-calabash-bowls",
@@ -539,8 +583,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24.5,
       "size": 1.9,
       "title": "Cuias de cabaça",
-      "text": "As duas cuias apresentam tamanhos diferentes. Compare a superfície vegetal com a cerâmica das quartinhas e registre o que consegue observar.",
-      "dir": 0
+      "text": "A cabaça seca pode ser cortada para formar cuias leves. O interior côncavo e a casca vegetal distinguem esses recipientes dos potes de barro e das louças do salão.",
+      "dir": 0,
+      "textEn": "A dried gourd can be cut into light bowls. Their hollow interiors and plant shells distinguish them from the hall’s clay pots and ceramic vessels."
     },
     {
       "id": "custom-expansion-candomble-textile-frame",
@@ -551,8 +596,9 @@ window.V.TerreirosCollectionPlans={
       "y": 9,
       "size": 2.2,
       "title": "Suporte de tecidos da convivência",
-      "text": "O suporte mantém os tecidos separados e permite comparar trama, dobra e acabamento. A ficha identifica esta composição do salão de New Harmony.",
-      "dir": 0
+      "text": "O suporte mantém os panos abertos para apresentar trama, faixas e acabamento. A posição vertical permite acompanhar o desenho do tecido e as diferenças de comprimento entre as peças.",
+      "dir": 0,
+      "textEn": "The frame holds fabrics open to show their weave, stripes and finish. The upright position reveals patterns and differences in length between the cloths."
     },
     {
       "id": "custom-expansion-candomble-foliage",
@@ -563,8 +609,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 1.9,
       "title": "Vaso de folhagem do Ilê",
-      "text": "Oxóssi convida a observar diferenças entre folhas, sem retirar material do vaso. O nome da planta deve ser conferido na ficha, além da aparência do desenho.",
-      "dir": 0
+      "text": "Folhas em diferentes alturas ampliam o contorno verde do vaso. Nervuras, formato da borda e disposição no caule compõem a observação compartilhada no pátio do Ilê.",
+      "dir": 0,
+      "textEn": "Leaves at different heights widen the pot’s green outline. Veins, edge shape and stem arrangement are features for shared observation in the Ilê courtyard."
     },
     {
       "id": "custom-expansion-candomble-reception-cupboard",
@@ -575,8 +622,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24.5,
       "size": 2.2,
       "title": "Armário da recepção do Ilê",
-      "text": "Jarras, copos e cestos ficam prontos para a equipe de recepção. O espaço de convivência conecta a chegada ao salão e às leituras públicas.",
-      "dir": 0
+      "text": "Jarras, copos e cestos ocupam nichos separados. O móvel reúne os utensílios de recepção perto da entrada e do caminho para as leituras do salão.",
+      "dir": 0,
+      "textEn": "Jugs, cups and baskets occupy separate shelves. The cupboard brings welcome utensils together near the entrance and the hall’s reading area."
     }
   ],
   "interior-botica": [
@@ -589,8 +637,9 @@ window.V.TerreirosCollectionPlans={
       "y": 10.5,
       "size": 1.9,
       "title": "Prensa de amostras botânicas",
-      "text": "A prensagem participa da preparação de amostras para herbários. Raquel mantém os dados de coleta junto ao material durante as etapas de registro.",
-      "dir": 0
+      "text": "Duas placas mantêm a amostra vegetal comprimida entre camadas de papel. A prensa participa da secagem e preparação de exemplares que serão identificados e conservados em coleções botânicas.",
+      "dir": 0,
+      "textEn": "Two boards press the plant sample between paper layers. The press helps dry and prepare specimens that will be identified and preserved in botanical collections."
     },
     {
       "id": "custom-expansion-botica-herbarium-sheet",
@@ -601,8 +650,9 @@ window.V.TerreirosCollectionPlans={
       "y": 10.5,
       "size": 1.9,
       "title": "Exsicata no suporte de consulta",
-      "text": "Exsicatas são amostras vegetais preparadas, identificadas e preservadas. A etiqueta registra dados que permitem ligar a amostra à coleta e à identificação.",
-      "dir": 0
+      "text": "Uma exsicata reúne material vegetal desidratado e uma etiqueta de identificação. Nome, local e data de coleta ligam a amostra aos registros usados na pesquisa botânica.",
+      "dir": 0,
+      "textEn": "A herbarium sheet combines a dried plant specimen with an identification label. Name, collection place and date connect the sample with botanical research records."
     },
     {
       "id": "custom-expansion-botica-microscope",
@@ -613,8 +663,9 @@ window.V.TerreirosCollectionPlans={
       "y": 15,
       "size": 1.9,
       "title": "Microscópio da bancada",
-      "text": "Elias compara a observação a olho nu com a observação ampliada. O caderno informa qual amostra foi examinada e quais estruturas puderam ser descritas.",
-      "dir": 0
+      "text": "Lentes e iluminação permitem examinar estruturas pequenas da amostra. Ajustar o foco torna os detalhes mais nítidos e ajuda a comparar o que foi observado em diferentes ampliações.",
+      "dir": 0,
+      "textEn": "Lenses and lighting reveal small sample structures. Adjusting focus makes details clearer and helps compare observations at different magnifications."
     },
     {
       "id": "custom-expansion-botica-balance",
@@ -625,8 +676,9 @@ window.V.TerreirosCollectionPlans={
       "y": 13,
       "size": 1.9,
       "title": "Balança de dois pratos",
-      "text": "A balança compara as massas colocadas nos pratos. Raquel registra a unidade e as condições da medida antes de comparar duas anotações.",
-      "dir": 0
+      "text": "Os dois pratos se equilibram em torno de um apoio. Comparar a amostra com massas conhecidas permite registrar sua massa e acompanhar diferenças entre lotes de material.",
+      "dir": 0,
+      "textEn": "The two pans balance around a support. Comparing a sample with known masses makes it possible to record its mass and differences between batches."
     },
     {
       "id": "custom-expansion-botica-magnifier",
@@ -637,8 +689,9 @@ window.V.TerreirosCollectionPlans={
       "y": 12.5,
       "size": 1.9,
       "title": "Lupa da mesa de folhas",
-      "text": "A lupa ajuda a examinar detalhes maiores da folha. Elias descreve margem, nervuras e superfície antes de consultar a ficha de identificação.",
-      "dir": 0
+      "text": "A lente amplia detalhes da superfície da folha. Bordas, nervuras e textura ficam mais fáceis de comparar na mesa de observação de Elias.",
+      "dir": 0,
+      "textEn": "The lens enlarges details on a leaf’s surface. Edges, veins and texture become easier to compare at Elias’s observation table."
     },
     {
       "id": "custom-expansion-botica-flat-drawers",
@@ -649,8 +702,9 @@ window.V.TerreirosCollectionPlans={
       "y": 8,
       "size": 1.9,
       "title": "Gaveteiro de exsicatas",
-      "text": "Coleções de herbário conservam amostras acompanhadas de registros. Este gaveteiro mantém as pastas separadas para consulta e comparação na botica.",
-      "dir": 0
+      "text": "Gavetas rasas mantêm as pastas de exsicatas organizadas em posição plana. Separar os exemplares e preservar suas etiquetas mantém a ligação entre a planta e o registro de coleta.",
+      "dir": 0,
+      "textEn": "Shallow drawers keep herbarium folders flat and organised. Separating specimens and keeping their labels preserves the connection between each plant and its collection record."
     },
     {
       "id": "custom-expansion-botica-stone-mortar",
@@ -661,8 +715,9 @@ window.V.TerreirosCollectionPlans={
       "y": 17,
       "size": 1.9,
       "title": "Almofariz de pedra",
-      "text": "A superfície de pedra distingue este conjunto do pilão de madeira. Raquel compara materiais e ferramentas sem transformar a observação em uma receita de uso medicinal.",
-      "dir": 0
+      "text": "O almofariz e o pistilo trabalham juntos por pressão e atrito. Na demonstração de materiais, a superfície de pedra permite reduzir fragmentos e comparar a textura antes e depois do trabalho.",
+      "dir": 0,
+      "textEn": "Mortar and pestle work through pressure and friction. In the materials demonstration, the stone surface helps reduce fragments and compare their texture before and after grinding."
     },
     {
       "id": "custom-expansion-botica-wood-mortar",
@@ -673,8 +728,9 @@ window.V.TerreirosCollectionPlans={
       "y": 20.5,
       "size": 1.9,
       "title": "Pilão alto de madeira",
-      "text": "A mão de pilão fica apoiada no recipiente alto. Elias relaciona cada ferramenta à ficha de materiais antes de guardar as peças na bancada.",
-      "dir": 0
+      "text": "O recipiente alto recebe a mão de pilão para movimentos de bater e pressionar. O conjunto de madeira apresenta outra escala de trabalho em relação ao pequeno almofariz da bancada.",
+      "dir": 0,
+      "textEn": "The tall bowl receives a wooden pestle for pounding and pressing. Its size offers a different working scale from the small mortar on the table."
     },
     {
       "id": "custom-expansion-botica-distillation-model",
@@ -685,8 +741,9 @@ window.V.TerreirosCollectionPlans={
       "y": 19,
       "size": 1.9,
       "title": "Modelo de destilação de água",
-      "text": "O modelo mostra um recipiente, um caminho de condensação e um frasco coletor. Raquel usa a peça para comparar mudanças de estado no estudo da água.",
-      "dir": 0
+      "text": "A água passa ao estado de vapor e depois é resfriada no caminho de condensação. O líquido recolhido no frasco permite acompanhar essas mudanças de estado no modelo didático.",
+      "dir": 0,
+      "textEn": "Water becomes vapour and is then cooled along the condensation path. Liquid collected in the flask shows these changes of state in the teaching model."
     },
     {
       "id": "custom-expansion-botica-drying-cabinet",
@@ -697,8 +754,9 @@ window.V.TerreirosCollectionPlans={
       "y": 21,
       "size": 1.9,
       "title": "Armário ventilado de amostras",
-      "text": "As bandejas mantêm as amostras separadas. A origem de cada lote acompanha o material durante a organização da coleção de observação.",
-      "dir": 0
+      "text": "Bandejas mantêm amostras separadas, e as aberturas permitem circulação de ar. A disposição facilita acompanhar a secagem e conservar os rótulos ligados a cada lote.",
+      "dir": 0,
+      "textEn": "Trays keep samples apart and openings allow air circulation. This arrangement helps follow drying while keeping labels connected with each batch."
     },
     {
       "id": "custom-expansion-botica-seedling-rack",
@@ -709,8 +767,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 1.9,
       "title": "Estante de mudas da botica",
-      "text": "Cada vaso tem espaço próprio na estante. Elias anota o desenvolvimento das mudas para comparar observações feitas em dias diferentes.",
-      "dir": 0
+      "text": "Prateleiras reúnem vasos com plantas em diferentes etapas de crescimento. A posição de cada lote e as anotações de Elias permitem comparar mudanças nas folhas e na altura das mudas.",
+      "dir": 0,
+      "textEn": "Shelves hold pots at different growth stages. Batch positions and Elias’s notes help compare changes in leaves and seedling height."
     },
     {
       "id": "custom-expansion-botica-germination-tray",
@@ -721,8 +780,9 @@ window.V.TerreirosCollectionPlans={
       "y": 21.5,
       "size": 1.9,
       "title": "Bandeja de germinação",
-      "text": "As células da bandeja separam as mudas. O caderno liga cada observação ao lote e à data, mantendo as condições de cultivo registradas.",
-      "dir": 0
+      "text": "As pequenas células separam o substrato e as mudas em formação. Cada lote acompanha sua data de semeadura, permitindo observar quando surgem os primeiros sinais de crescimento.",
+      "dir": 0,
+      "textEn": "Small cells separate growing medium and developing seedlings. Each batch has a sowing date so the first signs of growth can be followed."
     },
     {
       "id": "custom-expansion-botica-watering-can",
@@ -733,8 +793,9 @@ window.V.TerreirosCollectionPlans={
       "y": 17,
       "size": 1.9,
       "title": "Regador de bico longo",
-      "text": "O regador fica junto à área de cultivo. Raquel confere o registro de cuidado antes de decidir qual vaso precisa de atenção.",
-      "dir": 0
+      "text": "O bico longo direciona a água para o vaso escolhido. A alça permite controlar a inclinação do recipiente e acompanhar a rega de uma muda por vez.",
+      "dir": 0,
+      "textEn": "The long spout directs water to a selected pot. The handle helps control the tilt and water one seedling at a time."
     },
     {
       "id": "custom-expansion-botica-water-barrel",
@@ -745,8 +806,9 @@ window.V.TerreirosCollectionPlans={
       "y": 9.5,
       "size": 1.9,
       "title": "Reservatório fechado com torneira",
-      "text": "O reservatório integra a área de serviço e permanece tampado. A equipe registra a origem da água e mantém este recipiente separado da água de beber.",
-      "dir": 0
+      "text": "A tampa cobre o reservatório, e a torneira permite retirar pequenas quantidades sem mergulhar recipientes. A água de serviço fica próxima à área de cultivo da botica.",
+      "dir": 0,
+      "textEn": "A lid covers the reservoir and a tap dispenses small amounts without dipping containers. Service water is kept beside the apothecary’s growing area."
     },
     {
       "id": "custom-expansion-botica-compost-bin",
@@ -757,8 +819,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5,
       "size": 1.9,
       "title": "Composteira da área de cultivo",
-      "text": "A composteira tem tampa e aberturas de ventilação. Elias registra os materiais e acompanha as mudanças, em vez de identificar o conteúdo apenas pela imagem.",
-      "dir": 0
+      "text": "Restos vegetais passam por decomposição e podem formar composto usado no cultivo. A composteira reúne os materiais e permite acompanhar mudanças de aspecto ao longo do processo.",
+      "dir": 0,
+      "textEn": "Plant remains decompose and can become compost for growing plants. The bin holds the material and allows changes in its appearance to be followed over time."
     },
     {
       "id": "custom-expansion-botica-batch-board",
@@ -769,8 +832,9 @@ window.V.TerreirosCollectionPlans={
       "y": 5,
       "size": 1.9,
       "title": "Painel de lotes e observações",
-      "text": "O painel liga amostras, lotes e anotações. Raquel confere se uma troca de lugar no depósito também foi registrada no caderno.",
-      "dir": 0
+      "text": "Linhas e etiquetas relacionam lotes, datas e observações. O painel permite acompanhar qual amostra foi examinada e onde seus materiais ficaram guardados.",
+      "dir": 0,
+      "textEn": "Lines and labels connect batches, dates and observations. The board shows which sample was examined and where its materials are stored."
     },
     {
       "id": "custom-expansion-botica-botany-books",
@@ -781,8 +845,9 @@ window.V.TerreirosCollectionPlans={
       "y": 7.5,
       "size": 1.9,
       "title": "Estante de botânica e cultivo",
-      "text": "As leituras ficam ao lado das amostras de consulta. Raquel compara nomes e registros com coleções botânicas, mantendo a referência de cada informação.",
-      "dir": 0
+      "text": "A estante aproxima guias de cultivo, referências de plantas e cadernos de campo. Textos e imagens ajudam a comparar a observação da amostra com descrições botânicas documentadas.",
+      "dir": 0,
+      "textEn": "The shelf brings growing guides, plant references and field notebooks together. Text and images help compare sample observations with documented botanical descriptions."
     },
     {
       "id": "custom-expansion-botica-seed-archive",
@@ -793,8 +858,9 @@ window.V.TerreirosCollectionPlans={
       "y": 23,
       "size": 2.2,
       "title": "Arquivo de sementes e envelopes",
-      "text": "Os envelopes separam os lotes. A identificação fica ligada à procedência e ao registro de coleta antes de qualquer entrega para o jardim.",
-      "dir": 0
+      "text": "Envelopes mantêm sementes de diferentes lotes separadas. Etiquetas com nome, origem e data permitem relacionar o material guardado à história de coleta e ao planejamento do cultivo.",
+      "dir": 0,
+      "textEn": "Envelopes separate seeds from different batches. Labels with name, origin and date connect the stored material with collection history and growing plans."
     },
     {
       "id": "custom-expansion-botica-vial-rack",
@@ -805,8 +871,9 @@ window.V.TerreirosCollectionPlans={
       "y": 23,
       "size": 2.2,
       "title": "Suporte de frascos de amostra",
-      "text": "Os pequenos frascos estão vazios e limpos na estante. Elias prepara recipientes separados para que as amostras de observação não se misturem.",
-      "dir": 0
+      "text": "Orifícios no suporte mantêm os frascos pequenos na posição vertical. A separação facilita organizar amostras e acompanhar a identificação de cada recipiente na bancada.",
+      "dir": 0,
+      "textEn": "Openings in the rack keep small vials upright. Separation helps organise samples and follow the identification of each container on the workbench."
     },
     {
       "id": "custom-expansion-botica-amber-bottles",
@@ -817,8 +884,9 @@ window.V.TerreirosCollectionPlans={
       "y": 11,
       "size": 2.2,
       "title": "Frascos âmbar do depósito",
-      "text": "Os frascos aguardam identificação antes de entrar no depósito. A equipe registra conteúdo e origem; a cor do recipiente não informa o que está dentro.",
-      "dir": 0
+      "text": "O vidro âmbar deixa passar menos luz que um vidro transparente. Frascos identificados ficam reunidos no depósito para organizar as amostras da coleção.",
+      "dir": 0,
+      "textEn": "Amber glass lets less light pass than clear glass. Labelled bottles are kept together to organise samples in the collection store."
     },
     {
       "id": "custom-expansion-botica-ceramic-jars",
@@ -829,8 +897,9 @@ window.V.TerreirosCollectionPlans={
       "y": 16.5,
       "size": 1.9,
       "title": "Potes de cerâmica com tampa",
-      "text": "Os potes têm tampas e acabamentos diferentes. Raquel mantém as fichas junto dos recipientes quando reorganiza as prateleiras.",
-      "dir": 0
+      "text": "Corpos de cerâmica e tampas formam recipientes de armazenamento. Bordas, alças e acabamentos permitem comparar o trabalho de modelagem e a forma de abrir cada pote.",
+      "dir": 0,
+      "textEn": "Ceramic bodies and lids form storage vessels. Rims, handles and finishes show differences in shaping and in how each jar opens."
     },
     {
       "id": "custom-expansion-botica-clean-worktable",
@@ -841,8 +910,9 @@ window.V.TerreirosCollectionPlans={
       "y": 18,
       "size": 2.2,
       "title": "Mesa de materiais limpos",
-      "text": "A superfície recebe recipientes limpos e tecidos separados. A equipe confere os utensílios antes da próxima atividade de observação.",
-      "dir": 0
+      "text": "O tampo livre recebe os materiais preparados para a próxima observação. Recipientes e tecidos ficam separados dos exemplares que ainda aguardam lavagem ou organização.",
+      "dir": 0,
+      "textEn": "The clear surface receives materials ready for the next observation. Containers and cloths are kept apart from items still awaiting washing or sorting."
     },
     {
       "id": "custom-expansion-botica-washing-workbench",
@@ -853,8 +923,9 @@ window.V.TerreirosCollectionPlans={
       "y": 14.5,
       "size": 1.9,
       "title": "Bancada com pia e escorredor",
-      "text": "A bancada separa a área de lavagem da área de registro. Elias devolve cada recipiente ao lugar indicado depois da limpeza.",
-      "dir": 0
+      "text": "A pia concentra a lavagem, enquanto o escorredor oferece espaço para apoiar os utensílios depois do enxágue. A bancada organiza o caminho entre uso, limpeza e retorno ao depósito.",
+      "dir": 0,
+      "textEn": "The sink handles washing and the draining rack supports rinsed utensils. The workbench connects use, cleaning and return to storage."
     },
     {
       "id": "custom-expansion-botica-harvest-crates",
@@ -865,8 +936,9 @@ window.V.TerreirosCollectionPlans={
       "y": 24,
       "size": 2.2,
       "title": "Caixotes de materiais vegetais",
-      "text": "Raízes, folhas e flores ficam em caixotes separados na bancada de Jacira. As fichas dos lotes apresentam os nomes e a procedência das amostras.",
-      "dir": 0
+      "text": "Os caixotes separam partes vegetais recebidas para estudo. Folhas, flores, caules e raízes são comparados junto às etiquetas que identificam o lote e sua procedência.",
+      "dir": 0,
+      "textEn": "The crates separate plant parts received for study. Leaves, flowers, stems and roots are compared beside labels identifying each batch and its origin."
     }
   ]
 };
