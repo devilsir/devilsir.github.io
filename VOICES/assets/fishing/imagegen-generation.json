@@ -1,0 +1,64 @@
+[
+  {
+    "id": "fishing-underwater",
+    "file": "assets/fishing/fishing-underwater.png",
+    "prompt": "Use case: stylized-concept. Asset type: wide pixel-art background for a side-view fishing game inside the cozy 16-bit VOICES RPG. Primary request: quiet underwater cutaway, no fish or animals, no boat or people. Landscape composition about 16:9. Uppermost 20 percent pale warm blue empty sky and very distant soft low coastal hills; a calm horizontal ocean waterline at exactly 24 percent height. Below, transparent-looking turquoise water grading deeper petrol blue at bottom; most middle area plain open swim space, faint soft diagonal sun rays underwater. Bottommost 12 percent sandy seabed with a few low smooth stones and tiny sea grasses confined to lower corners. Crisp chunky pixel clusters and stepped edges, detailed hand-dithered texture, warm cozy coastal RPG palette. No text, no icons, no logo, no UI, no rods, no lines. Flat side view, not top-down. Background opaque.",
+    "tool": "built-in image_gen",
+    "sha256": "af2fec0d1df8ae5db5f0b95fa1daf2907736c88d8735978d770d0524177c26b8",
+    "size": [
+      959,
+      540
+    ],
+    "source_library_id": "libfile_d3bf76c09be48191a909fbd99c9f474e"
+  },
+  {
+    "id": "fishing-boat-side",
+    "file": "assets/fishing/fishing-boat-side.png",
+    "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art game sprite for VOICES, a cozy 2D educational RPG. Primary request: ONE empty small wooden fishing rowboat, strict side profile facing right, broad horizontal hull with a slightly raised bow, two interior bench tops visible just above its near gunwale, warm honey wood planks, weathered teal painted outer rim, dark pixel outlines and crisp stepped edges, hand-dithered pixel shading matching a detailed 16-bit coastal RPG. Composition: centered isolated complete boat, horizontal about 3:1, plenty of clear margin, no perspective top view, no fisherman, no fishing rod, no oars, no fish, no text, no water, no scenery, no shadow outside hull. Real transparent alpha background. Designed for an existing animated character to be composited sitting inside.",
+    "tool": "built-in image_gen",
+    "sha256": "07bf794d47e5a7a0fc00aead02fbec98485d109d576e1575175fd80257ae79df",
+    "size": [
+      448,
+      114
+    ],
+    "source_library_id": "libfile_8a6368dca7648191b91a9f384bd31dcc"
+  },
+  {
+    "id": "fish-catfish",
+    "file": "assets/fishing/fish-catfish.png",
+    "prompt": "Use case: scientific-educational. Asset type: transparent pixel-art fish sprite in a cozy 16-bit RPG. Primary request: ONE African sharptooth catfish Clarias gariepinus, complete fish swimming horizontally facing RIGHT, strict side profile, elongated smooth charcoal olive grey body, broad flattened head, clearly visible long thin mouth barbels, long low dorsal and anal fins extending toward rounded tail, no scales, small eyes. Crisp stepped pixel edges, dark thin pixel outline, detailed clustered shading, recognizable anatomy but friendly game-art style. Centered whole specimen fills 85% width with clear margin. No water, no scenery, no text, no label, no ground shadow. Genuine transparent background. Used swimming in an educational African food fishing game.",
+    "tool": "built-in image_gen",
+    "sha256": "155b369fe7214353238614a3ed352f3941ce2ae1ecfe28ff84d611ae464200d7",
+    "size": [
+      448,
+      136
+    ],
+    "source_library_id": "libfile_e3221c364244819191fa011e6b679296"
+  },
+  {
+    "id": "fish-tilapia",
+    "file": "assets/fishing/fish-tilapia.png",
+    "prompt": "Use case: scientific-educational. Asset type: transparent pixel-art fish sprite in a cozy 16-bit RPG. Primary request: ONE Nile tilapia Oreochromis niloticus, complete fish swimming horizontally facing RIGHT, side profile, robust laterally compressed oval body, small mouth, long spiny dorsal fin, grey olive silver scales and darker narrow vertical bars on rounded fan tail. Crisp stepped pixel edges, dark thin pixel outline, detailed clustered shading, natural recognizable anatomy but friendly game-art style. Centered whole specimen fills 85% width with clear margin. No water, no scenery, no text, no label, no ground shadow. Genuine transparent background. Used swimming in an educational African food fishing game.",
+    "tool": "built-in image_gen",
+    "sha256": "3b5e8d72913f6ab711e3b5731029e84978f5acbd440815a14faf83f108d5e219",
+    "size": [
+      349,
+      200
+    ],
+    "source_library_id": "libfile_dc3dd79582d4819180560f3cd48c06b3"
+  },
+  {
+    "id": "fish-snoek-game",
+    "source": "assets/maritime/fish-snoek.png",
+    "file": "assets/fishing/fish-snoek-game.png",
+    "transformation": "Crop transparent padding from existing project sprite; preserve painted pixels.",
+    "sha256": "e14117e0024852a745cd5acb4b60b8f5ae2646f4d956c8fdce434e39e417703b"
+  },
+  {
+    "id": "fish-yellowtail-game",
+    "source": "assets/maritime/fish-yellowtail.png",
+    "file": "assets/fishing/fish-yellowtail-game.png",
+    "transformation": "Crop transparent padding from existing project sprite; preserve painted pixels.",
+    "sha256": "4483f80b6b50fcd7ca8d410ccee14c7d60e4b596a0a40e044879313f360cbb87"
+  }
+]
