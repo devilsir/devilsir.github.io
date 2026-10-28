@@ -1,0 +1,993 @@
+{
+  "tool": "built-in image_gen",
+  "processing": "Registro de quadros; recorte das margens; máscaras para cores e decalques. Os desenhos foram criados pela geração de imagem.",
+  "sources": [
+    {
+      "id": "avatar-cardigan",
+      "type": "outfit",
+      "label": "Cardigã",
+      "catalog": "clothes-cardigan",
+      "top": "#406d69",
+      "bottom": "#526d82",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Cardigã sprite atlas. Catalog reference item: clothes-cardigan. Clothing: An open long cardigan with two front pockets, a neutral white undershirt and trousers. Main cardigan material MAGENTA, trousers CYAN; light grey seam details. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-printed-blouse",
+      "type": "outfit",
+      "label": "Blusa estampada",
+      "catalog": "clothes-printed-blouse",
+      "top": "#c9743e",
+      "bottom": "#3c4c60",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Blusa estampada sprite atlas. Catalog reference item: clothes-printed-blouse. Clothing: A short-sleeved blouse with small repeated neutral-white flower/star prints, notch collar, and separate straight trousers. Blouse MAGENTA, trousers CYAN. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-baiana",
+      "type": "outfit",
+      "label": "Bata e saia rodada",
+      "catalog": "clothes-baiana",
+      "top": "#f2e6ce",
+      "bottom": "#d6c8ac",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Bata e saia rodada sprite atlas. Catalog reference item: clothes-baiana. Clothing: A loose blouse (bata), elbow sleeves and a full round ankle-length skirt with fine neutral white lace edging. Main fabric MAGENTA, tiny inset trims CYAN; closed dark shoes. No headcloth, sash, necklaces or other accessories because those are separate game layers. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-wrap-dress",
+      "type": "outfit",
+      "label": "Vestido transpassado",
+      "catalog": "clothes-wrap-dress",
+      "top": "#c9743e",
+      "bottom": "#3e4d61",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido transpassado sprite atlas. Catalog reference item: clothes-wrap-dress. Clothing: A short-sleeved wrap dress, overlapping V-neck front panels, tied waist and knee-length flared skirt, tiny neutral white flower motifs; opaque CYAN leggings and dark closed shoes. Main dress fabric MAGENTA. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-flowing-dress",
+      "type": "outfit",
+      "label": "Vestido de alças",
+      "catalog": "clothes-flowing-dress",
+      "top": "#2c8196",
+      "bottom": "#283d56",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido de alças sprite atlas. Catalog reference item: clothes-flowing-dress. Clothing: A sleeveless square-neck dress with two broad shoulder straps, fitted waist and flared calf-length skirt, tiny neutral-white dotted stitch motifs. Main dress MAGENTA; narrow opaque CYAN leggings. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-loose-shirt",
+      "type": "outfit",
+      "label": "Camisa ampla",
+      "catalog": "clothes-loose-shirt",
+      "top": "#d1ad64",
+      "bottom": "#3c5664",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Camisa ampla sprite atlas. Catalog reference item: clothes-loose-shirt. Clothing: A boxy loose short-sleeve shirt with a short open notch neckline and straight hem, neutral-white stitched edge detailing, separate CYAN trousers. Main shirt MAGENTA. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-long-skirt",
+      "type": "outfit",
+      "label": "Saia longa com pregas",
+      "catalog": "clothes-long-skirt",
+      "top": "#407a58",
+      "bottom": "#e4d8c4",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Saia longa com pregas sprite atlas. Catalog reference item: clothes-long-skirt. Clothing: A simple short-sleeved CYAN blouse, broad waistband, flowing pleated ankle-length MAGENTA skirt with small neutral-white diamond motifs and visible side pockets. Closed shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-cropped-jacket",
+      "type": "outfit",
+      "label": "Jaqueta curta",
+      "catalog": "clothes-cropped-jacket",
+      "top": "#82639b",
+      "bottom": "#c8b892",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Jaqueta curta sprite atlas. Catalog reference item: clothes-cropped-jacket. Clothing: A cropped MAGENTA jacket with folded lapels, two front patch pockets and cuffs, neutral-white undershirt, separate straight CYAN trousers. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-agbada",
+      "type": "outfit",
+      "label": "Agbada bordado",
+      "catalog": "clothes-agbada-olive",
+      "top": "#7d873d",
+      "bottom": "#666f36",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Agbada bordado sprite atlas. Catalog reference item: clothes-agbada-olive. Clothing: An agbada-like very wide draped outer gown with large folded sleeves over an inner tunic and trousers, neutral-white vertical embroidered chest panel and edging. Gown and tunic main material MAGENTA; trousers CYAN. Bare bald head, no cap, no accessories. The wide fabric stays fully within each frame. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-tunic-yellow",
+      "type": "outfit",
+      "label": "Túnica e calça",
+      "catalog": "clothes-mens-yellow",
+      "top": "#e0b33f",
+      "bottom": "#c99a35",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Túnica e calça sprite atlas. Catalog reference item: clothes-mens-yellow. Clothing: A long-sleeved knee-length straight tunic with elegant neutral-white embroidery down the center neckline and around cuffs, straight separate trousers. Tunic MAGENTA, trousers CYAN, closed dark shoes. No cap or headwear. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-tunic-black",
+      "type": "outfit",
+      "label": "Túnica de bordado claro",
+      "catalog": "clothes-mens-black",
+      "top": "#31313f",
+      "bottom": "#30313b",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Túnica de bordado claro sprite atlas. Catalog reference item: clothes-mens-black. Clothing: A long-sleeved knee-length straight tunic with a dense neutral-white embroidered vertical strip down front and cuffs, straight trousers. Tunic MAGENTA, trousers CYAN. Closed shoes, no cap. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-dress-redgreen",
+      "type": "outfit",
+      "label": "Vestido de estampa bicolor",
+      "catalog": "clothes-dress-red-green",
+      "top": "#b8444a",
+      "bottom": "#24765b",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido de estampa bicolor sprite atlas. Catalog reference item: clothes-dress-red-green. Clothing: A short-sleeved fitted-waist ankle-length flared dress, large repeated fan/leaf geometric fabric print. Base cloth MAGENTA with bold CYAN pattern shapes and thin neutral dark outlines. No headwear or accessories, dark closed shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-dress-yellow",
+      "type": "outfit",
+      "label": "Vestido de mangas amplas",
+      "catalog": "clothes-dress-yellow",
+      "top": "#dfb23d",
+      "bottom": "#c89a35",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido de mangas amplas sprite atlas. Catalog reference item: clothes-dress-yellow. Clothing: A relaxed ankle-length gown with wide elbow-length sleeves, flowing continuous fabric from shoulders and a fine neutral-white embroidered chest/neckline vertical panel. Main fabric MAGENTA, narrow CYAN inset seams. Bare head, dark closed shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-dress-black",
+      "type": "outfit",
+      "label": "Vestido com bordados claros",
+      "catalog": "clothes-dress-black",
+      "top": "#31313f",
+      "bottom": "#43434d",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido com bordados claros sprite atlas. Catalog reference item: clothes-dress-black. Clothing: A full ankle-length gown with wide elbow sleeves, central white embroidered vertical rows, white embroidered cuffs and hem, broad continuous drape. Main material MAGENTA, very small CYAN inset trim. No headwear. Dark closed shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-dress-teal",
+      "type": "outfit",
+      "label": "Vestido geométrico",
+      "catalog": "clothes-dress-teal",
+      "top": "#267b85",
+      "bottom": "#1d5666",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido geométrico sprite atlas. Catalog reference item: clothes-dress-teal. Clothing: A short-sleeved long flared dress with fitted waist and a dense geometric pattern of neutral-white arcs, circles, vertical panels and repeated bands; main fabric MAGENTA and CYAN secondary panel shapes. No headwear, dark closed shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "avatar-dress-green",
+      "type": "outfit",
+      "label": "Vestido de bordado central",
+      "catalog": "clothes-dress-green",
+      "top": "#348058",
+      "bottom": "#285e48",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: a new wearable Vestido de bordado central sprite atlas. Catalog reference item: clothes-dress-green. Clothing: An ankle-length dress with wide short sleeves, gentle flared skirt, neutral-white central curling embroidered panel, white sleeve borders and white dotted hem. Main fabric MAGENTA with small CYAN trim panels. No headwear. Dark shoes. Layout EXACTLY FOUR COLUMNS by SIX ROWS, twenty-four equal rectangular cells. One complete full-body avatar centered in each cell with equal scale, equal baseline and generous transparent separation. Head always BALD with warm brown skin; no hair, hat, face paint, glasses or jewelry. Row 1: front-facing four successive walk steps. Row 2: facing screen LEFT four walk steps. Row 3: facing screen RIGHT four walk steps. Row 4: back-facing four walk steps. Row 5: front-facing expressive hand gestures with hands away from face, four frames. Row 6: front-facing happy arms-up celebration, four frames. Natural readable limb motion; preserve outfit in all views. Use saturated MAGENTA (#ed27d1) solely for the main recolorable fabric, saturated CYAN (#16cbea) solely for the secondary fabric. Neutral white/grey embroidery and near-black outlines may remain. Warm browns ONLY on skin, never fabric. No stray colored marks on the face. Do not include the illustrated catalog portraits."
+    },
+    {
+      "id": "hair-nago",
+      "type": "hair",
+      "label": "Tranças nagô",
+      "catalog": "hair-nago",
+      "ratio": 1.23,
+      "lift": 2,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular hair overlay ONLY, no head, no face, no body. Catalog item hair-nago. Close-to-scalp cornrow braids forming clear curved lines, collected into a small low braided bun behind the crown, no loose front fringe. Render the hair entirely in neutral GRAYSCALE (dark charcoal shadows and pale grey highlights), for runtime recoloring. EXACT 2x2 grid with four equal square cells: upper-left FRONT, upper-right LEFT PROFILE, lower-left RIGHT PROFILE, lower-right BACK. Same hairstyle and scale in all views, centered with clear transparent margins. Any areas occupied by a face or ears are transparent holes, never filled, never skin. Keep the face aperture large and clean. No mannequin, skin or accessories."
+    },
+    {
+      "id": "hair-twists",
+      "type": "hair",
+      "label": "Twists",
+      "catalog": "hair-twists",
+      "ratio": 1.45,
+      "lift": 5,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular hair overlay ONLY, no head, no face, no body. Catalog item hair-twists. Medium-short two-strand rope twists, individual thick twisted strands ending near the ears/jaw, center part, forehead and eyes opening left entirely transparent. Render the hair entirely in neutral GRAYSCALE (dark charcoal shadows and pale grey highlights), for runtime recoloring. EXACT 2x2 grid with four equal square cells: upper-left FRONT, upper-right LEFT PROFILE, lower-left RIGHT PROFILE, lower-right BACK. Same hairstyle and scale in all views, centered with clear transparent margins. Any areas occupied by a face or ears are transparent holes, never filled, never skin. Keep the face aperture large and clean. No mannequin, skin or accessories."
+    },
+    {
+      "id": "headwear-front-knot",
+      "type": "headwear",
+      "label": "Turbante com nó frontal",
+      "catalog": "wrap-front-knot",
+      "ratio": 1.35,
+      "lift": 12,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular wearable headwear ONLY, no head/face/body/hair. Catalog reference wrap-front-knot. A cloth wrap with a prominent rounded knot centered high above the forehead and interleaved folded bands circling the head. All fabric entirely neutral GRAYSCALE with crisp pixel folds for recoloring, not purple or yellow. EXACT 2x2 grid with four equal cells: FRONT, LEFT PROFILE, RIGHT PROFILE, BACK (reading order). Front and side face areas are empty transparent negative space. Same scale and object in four views. No skin, facial features, bust or mannequin."
+    },
+    {
+      "id": "headwear-side-fold",
+      "type": "headwear",
+      "label": "Turbante com dobra lateral",
+      "catalog": "wrap-side-fold",
+      "ratio": 1.32,
+      "lift": 4,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular wearable headwear ONLY, no head/face/body/hair. Catalog reference wrap-side-fold. A low cloth headwrap with crossed folded bands, a folded fan/knot at one side and a short tied tail. All fabric entirely neutral GRAYSCALE with crisp pixel folds for recoloring, not purple or yellow. EXACT 2x2 grid with four equal cells: FRONT, LEFT PROFILE, RIGHT PROFILE, BACK (reading order). Front and side face areas are empty transparent negative space. Same scale and object in four views. No skin, facial features, bust or mannequin."
+    },
+    {
+      "id": "headwear-high-fold",
+      "type": "headwear",
+      "label": "Turbante de dobras altas",
+      "catalog": "wrap-high-fold",
+      "ratio": 1.3,
+      "lift": 20,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular wearable headwear ONLY, no head/face/body/hair. Catalog reference wrap-high-fold. A tall sculptural headwrap with stacked curved folds and visibly overlapping fabric, tapering gently above the forehead. All fabric entirely neutral GRAYSCALE with crisp pixel folds for recoloring, not purple or yellow. EXACT 2x2 grid with four equal cells: FRONT, LEFT PROFILE, RIGHT PROFILE, BACK (reading order). Front and side face areas are empty transparent negative space. Same scale and object in four views. No skin, facial features, bust or mannequin."
+    },
+    {
+      "id": "headwear-tied-back",
+      "type": "headwear",
+      "label": "Turbante com nó lateral",
+      "catalog": "wrap-tied-back",
+      "ratio": 1.32,
+      "lift": 4,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular wearable headwear ONLY, no head/face/body/hair. Catalog reference wrap-tied-back. A low headcloth wrapped smoothly around crown with layered diagonal folds and a compact tied knot on the wearer's right side. All fabric entirely neutral GRAYSCALE with crisp pixel folds for recoloring, not purple or yellow. EXACT 2x2 grid with four equal cells: FRONT, LEFT PROFILE, RIGHT PROFILE, BACK (reading order). Front and side face areas are empty transparent negative space. Same scale and object in four views. No skin, facial features, bust or mannequin."
+    },
+    {
+      "id": "headwear-embroidered-cap",
+      "type": "headwear",
+      "label": "Gorro bordado",
+      "catalog": "clothes-mens-yellow",
+      "ratio": 1.1,
+      "lift": 4,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular wearable headwear ONLY, no head/face/body/hair. Catalog reference clothes-mens-yellow. A close-fitting short cylindrical fabric cap, rounded flat top, embroidered neutral-white narrow geometric edging, leaves the forehead and ears visible. All fabric entirely neutral GRAYSCALE with crisp pixel folds for recoloring, not purple or yellow. EXACT 2x2 grid with four equal cells: FRONT, LEFT PROFILE, RIGHT PROFILE, BACK (reading order). Front and side face areas are empty transparent negative space. Same scale and object in four views. No skin, facial features, bust or mannequin."
+    },
+    {
+      "id": "paint-shells",
+      "type": "paint",
+      "label": "Curvas e conchas",
+      "catalog": "face-paint-shells",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: FACIAL PAINT DECAL OVERLAY ONLY. Use the catalog painting face-paint-shells as line/pattern reference, translate to clean simple readable pixel-art marks fitting the avatar face. Symmetric rounded loops and dotted curves outlining the eye areas and upper cheeks, two short vertical marks on the forehead and small dots by the temples. The shapes evoke the curves in the catalog portrait, no actual shells or jewelry. Paint marks in saturated MAGENTA for primary color and CYAN for secondary accent color; no white base paint block. NO face, skin, eyes, eyebrows, lips, nose, hair, head outline, necklace or headcloth. Keep all those regions empty alpha. EXACT 2x2 grid: front view marks, LEFT profile cheek/temple marks, RIGHT profile cheek/temple marks, bottom-right EMPTY TRANSPARENT (back of head has no face paint). Front pattern is a compact oval shape footprint around the face, eye regions are large transparent gaps. Discrete short marks, avoid a solid mask shape. Sufficient pixel thickness to survive small game rendering. Genuine alpha, no background."
+    },
+    {
+      "id": "paint-orange",
+      "type": "paint",
+      "label": "Pontos e linhas",
+      "catalog": "face-paint-orange",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: FACIAL PAINT DECAL OVERLAY ONLY. Use the catalog painting face-paint-orange as line/pattern reference, translate to clean simple readable pixel-art marks fitting the avatar face. Fine dotted arcs over both brows, a short vertical row of dots on the bridge of the nose, two dotted cheek rows, and three small chin dots. Paint marks in saturated MAGENTA for primary color and CYAN for secondary accent color; no white base paint block. NO face, skin, eyes, eyebrows, lips, nose, hair, head outline, necklace or headcloth. Keep all those regions empty alpha. EXACT 2x2 grid: front view marks, LEFT profile cheek/temple marks, RIGHT profile cheek/temple marks, bottom-right EMPTY TRANSPARENT (back of head has no face paint). Front pattern is a compact oval shape footprint around the face, eye regions are large transparent gaps. Discrete short marks, avoid a solid mask shape. Sufficient pixel thickness to survive small game rendering. Genuine alpha, no background."
+    },
+    {
+      "id": "paint-yellow",
+      "type": "paint",
+      "label": "Traços bicolores",
+      "catalog": "face-paint-yellow",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: FACIAL PAINT DECAL OVERLAY ONLY. Use the catalog painting face-paint-yellow as line/pattern reference, translate to clean simple readable pixel-art marks fitting the avatar face. Sweeping curved arcs above and beside the eyes with fine dotted cheek curves. Primary lines MAGENTA on the left side and accent CYAN lines on the right side, with smaller alternating dots. Clear transparent eye holes. Paint marks in saturated MAGENTA for primary color and CYAN for secondary accent color; no white base paint block. NO face, skin, eyes, eyebrows, lips, nose, hair, head outline, necklace or headcloth. Keep all those regions empty alpha. EXACT 2x2 grid: front view marks, LEFT profile cheek/temple marks, RIGHT profile cheek/temple marks, bottom-right EMPTY TRANSPARENT (back of head has no face paint). Front pattern is a compact oval shape footprint around the face, eye regions are large transparent gaps. Discrete short marks, avoid a solid mask shape. Sufficient pixel thickness to survive small game rendering. Genuine alpha, no background."
+    },
+    {
+      "id": "paint-beige",
+      "type": "paint",
+      "label": "Triângulos e linhas",
+      "catalog": "face-paint-beige",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: FACIAL PAINT DECAL OVERLAY ONLY. Use the catalog painting face-paint-beige as line/pattern reference, translate to clean simple readable pixel-art marks fitting the avatar face. Symmetric small triangles across the forehead with a vertical center row of dots, short chevrons on the cheeks and thin branching curves around the eye sockets, matching the geometric composition in the catalog. Paint marks in saturated MAGENTA for primary color and CYAN for secondary accent color; no white base paint block. NO face, skin, eyes, eyebrows, lips, nose, hair, head outline, necklace or headcloth. Keep all those regions empty alpha. EXACT 2x2 grid: front view marks, LEFT profile cheek/temple marks, RIGHT profile cheek/temple marks, bottom-right EMPTY TRANSPARENT (back of head has no face paint). Front pattern is a compact oval shape footprint around the face, eye regions are large transparent gaps. Discrete short marks, avoid a solid mask shape. Sufficient pixel thickness to survive small game rendering. Genuine alpha, no background."
+    },
+    {
+      "id": "accessory-pano",
+      "type": "accessory",
+      "label": "Pano da costa",
+      "catalog": "cloth-pano-da-costa",
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular accessory overlay only. An isolated soft rectangular cloth draped diagonally from one shoulder across the torso down to the opposite hip, with broad woven stripe bands and a short fringed lower edge. No person, limbs, neck, head, hangers or stand. Four views account for cloth wrapping over shoulder and back. Entire object in neutral GRAYSCALE (no hue) for runtime recoloring. EXACT 2x2 grid FRONT, LEFT PROFILE, RIGHT PROFILE, BACK, same scale, clearly separated, transparent face/body zones. Minimal pixel-art detail matching the avatar, genuine alpha."
+    },
+    {
+      "id": "accessory-earrings",
+      "type": "accessory",
+      "label": "Brincos de argola",
+      "catalog": null,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular accessory overlay only. One pair of small simple round hoop earrings with dark outlines and bright highlights. Front and back view: two hoops separated horizontally by a large transparent gap matching the avatar face width. Left and right profile views: ONLY ONE hoop each. No ears, skin, face, display board or stand. Entire object in neutral GRAYSCALE (no hue) for runtime recoloring. EXACT 2x2 grid FRONT, LEFT PROFILE, RIGHT PROFILE, BACK, same scale, clearly separated, transparent face/body zones. Minimal pixel-art detail matching the avatar, genuine alpha."
+    },
+    {
+      "id": "accessory-necklace",
+      "type": "accessory",
+      "label": "Colar de contas",
+      "catalog": null,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular accessory overlay only. A short three-row beaded necklace/collar with individually readable round beads and a small centered drop bead, sitting at collarbone height. Four views including profile and back string. No neck, skin, bust or stand. Entire object in neutral GRAYSCALE (no hue) for runtime recoloring. EXACT 2x2 grid FRONT, LEFT PROFILE, RIGHT PROFILE, BACK, same scale, clearly separated, transparent face/body zones. Minimal pixel-art detail matching the avatar, genuine alpha."
+    },
+    {
+      "id": "accessory-bracelets",
+      "type": "accessory",
+      "label": "Pulseiras",
+      "catalog": null,
+      "prompt": "Use case: stylized-concept. Asset type: production 2D pixel-art RPG sprite sheet, transparent background. Reference image 1 is the established bald VOICES player avatar, preserve its chibi proportions (large round head, short body), friendly face, dark pixel outline, crisp stepped pixel edges and soft clusters of pixel shading. Reference image 2 is the existing Culture Notebook catalog; use only the named item as clothing design reference, adapt to the avatar style. No text, no labels, no grid lines, no card backgrounds, no ground or shadows. Full isolated sprites on genuine alpha. Primary request: modular accessory overlay only. One small wrist cuff made of two stacked rounded bangles with simple ribbed bead-like texture, one compact cuff per view, never a pair. Four views: front, left, right, back. Empty inside opening, no arm, hand, body or stand. Entire object in neutral GRAYSCALE (no hue) for runtime recoloring. EXACT 2x2 grid FRONT, LEFT PROFILE, RIGHT PROFILE, BACK, same scale, clearly separated, transparent face/body zones. Minimal pixel-art detail matching the avatar, genuine alpha."
+    }
+  ],
+  "assets": [
+    {
+      "id": "avatar-cardigan",
+      "file": "assets/salon/culture/avatar-cardigan.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "fe724e1cc0db0675ebe7dd84faf891ef180c8cc4dafa4e9a8e2241bc02ef6066"
+    },
+    {
+      "id": "avatar-cardigan-skin",
+      "file": "assets/salon/culture/avatar-cardigan-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "b93171e3f42372e99f34a2a58f17c5e29f7dfd184efac58029dc4bfb50d937f7"
+    },
+    {
+      "id": "avatar-cardigan-top",
+      "file": "assets/salon/culture/avatar-cardigan-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "164545ea5264b4cc03cb9059f02db4411a51562ad5ed1a7576852571054748b3"
+    },
+    {
+      "id": "avatar-cardigan-bottom",
+      "file": "assets/salon/culture/avatar-cardigan-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "72c8880d68bfb7740ee17f51d0a0852b083e8618d255cbaa3568a685a406970b"
+    },
+    {
+      "id": "avatar-cardigan-base",
+      "file": "assets/salon/culture/avatar-cardigan-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "3cdc0a28f1c3ac8259bb448fcc08e6d8dfe43c561b3da4a515e452d9f011cd54"
+    },
+    {
+      "id": "avatar-printed-blouse",
+      "file": "assets/salon/culture/avatar-printed-blouse.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "36d02add6f69fce662671ab536be555d26d1ea9d54241fbc1cf674c6c621b7b0"
+    },
+    {
+      "id": "avatar-printed-blouse-skin",
+      "file": "assets/salon/culture/avatar-printed-blouse-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "91ce691caeb700c1405910559ae5b07536ec5df00be1ba40d29c6acab9086b8a"
+    },
+    {
+      "id": "avatar-printed-blouse-top",
+      "file": "assets/salon/culture/avatar-printed-blouse-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2e629a04a666b51e27c9c2e5d8ef0bf789d21bc03de7c83bb066c4d07b234bc1"
+    },
+    {
+      "id": "avatar-printed-blouse-bottom",
+      "file": "assets/salon/culture/avatar-printed-blouse-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "64d794bf6c67a4748ceef7f144910caa6d5179cd3f206971fd7e661919de90d4"
+    },
+    {
+      "id": "avatar-printed-blouse-base",
+      "file": "assets/salon/culture/avatar-printed-blouse-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "66375e9fae03605a5c139d2546c0ff6a70dea9c44d7e8b3b829c4d32f80a906c"
+    },
+    {
+      "id": "avatar-baiana",
+      "file": "assets/salon/culture/avatar-baiana.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "baf68e8911f016f3f8873a854a815d345ffc0c920336ae7f6bf3736e3736291f"
+    },
+    {
+      "id": "avatar-baiana-skin",
+      "file": "assets/salon/culture/avatar-baiana-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "e7c15448770854c5f46729765ff91df88dbfc9667f59cc718d9ce94937330f14"
+    },
+    {
+      "id": "avatar-baiana-top",
+      "file": "assets/salon/culture/avatar-baiana-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "350377aded86ed1a4f39ef43b20991b4e9a51c07b9a1447e7433bdf7bf4b87b5"
+    },
+    {
+      "id": "avatar-baiana-bottom",
+      "file": "assets/salon/culture/avatar-baiana-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "55f696b147bbd299dfd0a6ce42076be3f82e7b55d5438d22ee0275044af1c61e"
+    },
+    {
+      "id": "avatar-baiana-base",
+      "file": "assets/salon/culture/avatar-baiana-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "af8f2ba8359ad3056be6d17d42c5439a890b69cf8aa9ccc2028ad989789fb135"
+    },
+    {
+      "id": "avatar-wrap-dress",
+      "file": "assets/salon/culture/avatar-wrap-dress.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "19617d9006a8229f576168813c5434837de57fc698efdcda3e554803248ee5f4"
+    },
+    {
+      "id": "avatar-wrap-dress-skin",
+      "file": "assets/salon/culture/avatar-wrap-dress-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "62270ddd9b51ec971dcd7d2288ef9aa3515a8bf9d23847ef1855e26ca0385776"
+    },
+    {
+      "id": "avatar-wrap-dress-top",
+      "file": "assets/salon/culture/avatar-wrap-dress-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "b4a10ef0f33ecb296782dd8130d04929170df54401fc26d91c2cfa095abb1d24"
+    },
+    {
+      "id": "avatar-wrap-dress-bottom",
+      "file": "assets/salon/culture/avatar-wrap-dress-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "0374430eceedfcff842d796c379acc1a5c83820f3a7cf711c19d7b674ccd19c1"
+    },
+    {
+      "id": "avatar-wrap-dress-base",
+      "file": "assets/salon/culture/avatar-wrap-dress-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "d5e4b484b0592e31cadc00454e69f8c63e16c0d81f3e9ed8880282d89cf85b45"
+    },
+    {
+      "id": "avatar-flowing-dress",
+      "file": "assets/salon/culture/avatar-flowing-dress.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "e6044b9a2f5442a69ca70cbe2fc7be980aa0cd9de6ae679d435432c861457840"
+    },
+    {
+      "id": "avatar-flowing-dress-skin",
+      "file": "assets/salon/culture/avatar-flowing-dress-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "bf0ba50c3085876bb44de7f653aefbf06ca8d35ed40c84755bb5e074956f5f4d"
+    },
+    {
+      "id": "avatar-flowing-dress-top",
+      "file": "assets/salon/culture/avatar-flowing-dress-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "7d10af31714844d7e9cbc075997fe89bcee207ba4c68751ae9cb64ac8967ee76"
+    },
+    {
+      "id": "avatar-flowing-dress-bottom",
+      "file": "assets/salon/culture/avatar-flowing-dress-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "beee18bc57b8e1956b1469069a8586fb67cf245f2f4708418c97322efc5a3955"
+    },
+    {
+      "id": "avatar-flowing-dress-base",
+      "file": "assets/salon/culture/avatar-flowing-dress-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "3470033974396cb741f8ba09cedc153d26ccc94e08281833646454e6198c9a5a"
+    },
+    {
+      "id": "avatar-loose-shirt",
+      "file": "assets/salon/culture/avatar-loose-shirt.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "8886bf56159568012c7be44069261b7a41c7ce2478ab295f6ffcda943407b646"
+    },
+    {
+      "id": "avatar-loose-shirt-skin",
+      "file": "assets/salon/culture/avatar-loose-shirt-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "0f745b755475dae814d07ccc9085dd0ab4ffb4927a6d953c0d39be045988be52"
+    },
+    {
+      "id": "avatar-loose-shirt-top",
+      "file": "assets/salon/culture/avatar-loose-shirt-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ec9d1fe81fadce7c6a5a5b2d8d15909c5ba208a9831fcfebd628d71f4f2bda95"
+    },
+    {
+      "id": "avatar-loose-shirt-bottom",
+      "file": "assets/salon/culture/avatar-loose-shirt-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "fc5d5bea0085a786dfbfc990874883dd109e8e2f03037a1a5640a715515021ad"
+    },
+    {
+      "id": "avatar-loose-shirt-base",
+      "file": "assets/salon/culture/avatar-loose-shirt-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "9ddec6fdeec970d519df490fe83333b7cfaccbe82598627ef06fc44d198d9f01"
+    },
+    {
+      "id": "avatar-long-skirt",
+      "file": "assets/salon/culture/avatar-long-skirt.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "8f031e824969e67f8f36a15cf58f05a3f9185fff84cc564d563dc4516fd95f8e"
+    },
+    {
+      "id": "avatar-long-skirt-skin",
+      "file": "assets/salon/culture/avatar-long-skirt-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "b289878a31b06a8c188bfb52ceed0e74745b98a238d094f05346a69c11175afd"
+    },
+    {
+      "id": "avatar-long-skirt-top",
+      "file": "assets/salon/culture/avatar-long-skirt-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "65e0031e60efb803f442e4b1027bf26f888bbf6a1366665e57bdeb632225432e"
+    },
+    {
+      "id": "avatar-long-skirt-bottom",
+      "file": "assets/salon/culture/avatar-long-skirt-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "c9011ef29e936f815e82f6e664ce3d0442f0010a0d2255614510a5f1503e05ec"
+    },
+    {
+      "id": "avatar-long-skirt-base",
+      "file": "assets/salon/culture/avatar-long-skirt-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "a42bfdc816e4ccfc1677f83909ea67d52c24c5eb94eb026a65f9aa921896f14e"
+    },
+    {
+      "id": "avatar-cropped-jacket",
+      "file": "assets/salon/culture/avatar-cropped-jacket.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "aa0eae926ad59fa0547f759f6660f2cd8c105395332262e4dcff9e535b9766a5"
+    },
+    {
+      "id": "avatar-cropped-jacket-skin",
+      "file": "assets/salon/culture/avatar-cropped-jacket-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "f72007f8ff69e9f11d1716a06090c58d60441f810b21c62a77a64e610ca88774"
+    },
+    {
+      "id": "avatar-cropped-jacket-top",
+      "file": "assets/salon/culture/avatar-cropped-jacket-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ebf1b49750241d59063e17d6e31e35f7800dd8715be1d47a93d4f349205eb28a"
+    },
+    {
+      "id": "avatar-cropped-jacket-bottom",
+      "file": "assets/salon/culture/avatar-cropped-jacket-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "cd29302356db8d0fb2f69b1002bb58472d16cc797b0ac8cd7305deb0773ec28f"
+    },
+    {
+      "id": "avatar-cropped-jacket-base",
+      "file": "assets/salon/culture/avatar-cropped-jacket-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "fbd70fc602d1f89cf672ef9ed043ee4bfc0b3abb24a24c4660f00ee2f7e6a3d8"
+    },
+    {
+      "id": "avatar-agbada",
+      "file": "assets/salon/culture/avatar-agbada.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "88bf0305be0dbe0669619cd19a9b240c6e5a8618f7b22ef3db901fba46c4eab2"
+    },
+    {
+      "id": "avatar-agbada-skin",
+      "file": "assets/salon/culture/avatar-agbada-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "70d2f6bb1f5420cf51732aeced2844cd7737a5e01d7056c6762d0fd198499a2a"
+    },
+    {
+      "id": "avatar-agbada-top",
+      "file": "assets/salon/culture/avatar-agbada-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "48921272251b275bdf087a9042362764d20efec624a97b988cde84a96384a60b"
+    },
+    {
+      "id": "avatar-agbada-bottom",
+      "file": "assets/salon/culture/avatar-agbada-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "520979710b7a6e7ab5a48f3ebc88add3b674354e1c561a042a4396d22eb656e9"
+    },
+    {
+      "id": "avatar-agbada-base",
+      "file": "assets/salon/culture/avatar-agbada-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "fa7b02868da44f9eed2d368cd6d60c60543f588e2ef33438f91e6d5426e36c9e"
+    },
+    {
+      "id": "avatar-tunic-yellow",
+      "file": "assets/salon/culture/avatar-tunic-yellow.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ab87c8b5f99294457a1831d4f96eefa298a438dbf09409d0067380c5b66747a9"
+    },
+    {
+      "id": "avatar-tunic-yellow-skin",
+      "file": "assets/salon/culture/avatar-tunic-yellow-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "29eff6777de0486f8242332e27d2074ed4ff947c176c26cacdc2ef5a67a7a371"
+    },
+    {
+      "id": "avatar-tunic-yellow-top",
+      "file": "assets/salon/culture/avatar-tunic-yellow-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ec20e51f48646854c3183b2cc214711f5d1a6888ca999219e62640221d881bbd"
+    },
+    {
+      "id": "avatar-tunic-yellow-bottom",
+      "file": "assets/salon/culture/avatar-tunic-yellow-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "a489a7cc804e4476dcb645ade615287c7e3addbd5af16ce6257f8721382297fe"
+    },
+    {
+      "id": "avatar-tunic-yellow-base",
+      "file": "assets/salon/culture/avatar-tunic-yellow-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "e43d0546f50d1372d6e423b4771dd37e069cd11c834dbd44e2730ec9138f3c5b"
+    },
+    {
+      "id": "avatar-tunic-black",
+      "file": "assets/salon/culture/avatar-tunic-black.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ebb270f1e0c9d74084844141723104ccaaee51fb99099382f59e517717f29b1d"
+    },
+    {
+      "id": "avatar-tunic-black-skin",
+      "file": "assets/salon/culture/avatar-tunic-black-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "03edf91c24aada69e6bc40ceaa042e96769d530205faf373363583d8d36f7871"
+    },
+    {
+      "id": "avatar-tunic-black-top",
+      "file": "assets/salon/culture/avatar-tunic-black-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "e885bd7fa0f6044b67857dd4f8f2fb5032f6c6d3698d01c72e81b3a529761f1e"
+    },
+    {
+      "id": "avatar-tunic-black-bottom",
+      "file": "assets/salon/culture/avatar-tunic-black-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "30e7cb48a9cfde0e6aca45358e1cb1959bad951649a4bea13cad2af1247e8840"
+    },
+    {
+      "id": "avatar-tunic-black-base",
+      "file": "assets/salon/culture/avatar-tunic-black-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "6d96be12a1280f84ac512ed6cae7e95f2ca922cb31ec3505a60c08475dc76d4e"
+    },
+    {
+      "id": "avatar-dress-redgreen",
+      "file": "assets/salon/culture/avatar-dress-redgreen.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "ab5e671a8be28db44ba5edddcabddb765d911916253fd326fa72cc41d01cc69f"
+    },
+    {
+      "id": "avatar-dress-redgreen-skin",
+      "file": "assets/salon/culture/avatar-dress-redgreen-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "0dbb5c0ec22d095dfde79abc817f6eb2539f9b4e22d5897ad8376954e4349fc7"
+    },
+    {
+      "id": "avatar-dress-redgreen-top",
+      "file": "assets/salon/culture/avatar-dress-redgreen-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "370edc5b93d65387169e9b5dbc1b7367e0c1c752f6705460c473cfb35ca749fc"
+    },
+    {
+      "id": "avatar-dress-redgreen-bottom",
+      "file": "assets/salon/culture/avatar-dress-redgreen-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "58d4a5da3c83b9034f9833f63dda7c798daea76daf6d6b496208c560a9f60470"
+    },
+    {
+      "id": "avatar-dress-redgreen-base",
+      "file": "assets/salon/culture/avatar-dress-redgreen-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "f88964724d917b440ba0f88f0296692abf5e8f83828b18cb1f847971720e8ac2"
+    },
+    {
+      "id": "avatar-dress-yellow",
+      "file": "assets/salon/culture/avatar-dress-yellow.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "110ed86db2723f2a8a5f4a32a23e75286ae689230529264de2ede5c581836870"
+    },
+    {
+      "id": "avatar-dress-yellow-skin",
+      "file": "assets/salon/culture/avatar-dress-yellow-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "89e8eb8dcbbebd412a60add87e48b9650cb886a74d7ac0dcdc414f3e11b31d26"
+    },
+    {
+      "id": "avatar-dress-yellow-top",
+      "file": "assets/salon/culture/avatar-dress-yellow-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "c51c9ac0546cca7dbda0300c8ae9d139759c2d96e95608be3cf5a00c132ffb1c"
+    },
+    {
+      "id": "avatar-dress-yellow-bottom",
+      "file": "assets/salon/culture/avatar-dress-yellow-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "4a34f43026c37fa12c01e3ea92704493ffbaae09eb79feb68646039b05b26d82"
+    },
+    {
+      "id": "avatar-dress-yellow-base",
+      "file": "assets/salon/culture/avatar-dress-yellow-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "c6bceb9309612f5538cf3300fdb9f2c61c637cdfb402d5cbee4089b21ab51b23"
+    },
+    {
+      "id": "avatar-dress-black",
+      "file": "assets/salon/culture/avatar-dress-black.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "d6106d530006c3eaec0c09169ffb7c3bc5755f26beb1f85c1ac382b923e58ce4"
+    },
+    {
+      "id": "avatar-dress-black-skin",
+      "file": "assets/salon/culture/avatar-dress-black-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "6d03110629e972672547ecbcf7e9e0b210e14242af23c832f3a82b59c3c70020"
+    },
+    {
+      "id": "avatar-dress-black-top",
+      "file": "assets/salon/culture/avatar-dress-black-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "b0537752bf8e0db2a1b5ec8bd58482fde76d8a80067dba1b01642d4822eb6168"
+    },
+    {
+      "id": "avatar-dress-black-bottom",
+      "file": "assets/salon/culture/avatar-dress-black-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "8d3ed4864c0f4e3b25263cd43874a184d6972b735561330595f53d708c3ae2ad"
+    },
+    {
+      "id": "avatar-dress-black-base",
+      "file": "assets/salon/culture/avatar-dress-black-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "044e5710f23e5d405988f9103537d66af63c4651ab31f0c3ed6d82fd0a932d0a"
+    },
+    {
+      "id": "avatar-dress-teal",
+      "file": "assets/salon/culture/avatar-dress-teal.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "a833bd4271de5477db1a330b96df21d6a01de65e0a89fd72bca40940eb501607"
+    },
+    {
+      "id": "avatar-dress-teal-skin",
+      "file": "assets/salon/culture/avatar-dress-teal-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "de726ca7864081d4170cc471381f0116ec7d6913e3b6693c0a3641917aea998b"
+    },
+    {
+      "id": "avatar-dress-teal-top",
+      "file": "assets/salon/culture/avatar-dress-teal-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "cc13f47d2e7dcd0e8ffdb440d11161c808a72b4429fc3cf2ed00517f4b35fda1"
+    },
+    {
+      "id": "avatar-dress-teal-bottom",
+      "file": "assets/salon/culture/avatar-dress-teal-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "0370da0589b274c91f88d7753534a521023ce24690585ed4f9b221831990bdae"
+    },
+    {
+      "id": "avatar-dress-teal-base",
+      "file": "assets/salon/culture/avatar-dress-teal-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2ed7df05a3ed3e1a9fa19076548694c6d0703a60196db982996422199ecd92d9"
+    },
+    {
+      "id": "avatar-dress-green",
+      "file": "assets/salon/culture/avatar-dress-green.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2721850214e841efb7ceb9a99e1fb0bc9408296db5f74717f231f668c7f31c17"
+    },
+    {
+      "id": "avatar-dress-green-skin",
+      "file": "assets/salon/culture/avatar-dress-green-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "79df1777acfdf236e84cba41a0a4b753d225e2e8ffb08f519e5f667c3d99055b"
+    },
+    {
+      "id": "avatar-dress-green-top",
+      "file": "assets/salon/culture/avatar-dress-green-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "184ab7f79332f1e83b7cf359d1643b8de096ada47f44147452dc7c6c885814fe"
+    },
+    {
+      "id": "avatar-dress-green-bottom",
+      "file": "assets/salon/culture/avatar-dress-green-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "12a6603ba200a9ae41206d63096d732619572c84792b21b38eda10154d9066af"
+    },
+    {
+      "id": "avatar-dress-green-base",
+      "file": "assets/salon/culture/avatar-dress-green-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "4529ce971e6ae42695f9c6cd46c3c5f69889cbf4ab9f0033a995f2a4a1db5eba"
+    },
+    {
+      "id": "hair-nago",
+      "file": "assets/salon/culture/hair-nago.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "f6bc3c4038655d7467579ab602f637c56467a49223284d13031ee3119da5c2fe"
+    },
+    {
+      "id": "hair-twists",
+      "file": "assets/salon/culture/hair-twists.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "f852152c02510949966791f393b07c3ac055f5c34f0035f8ccde1f4455b73455"
+    },
+    {
+      "id": "headwear-front-knot",
+      "file": "assets/salon/culture/headwear-front-knot.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "92b96943ef22748f0a86bdecc55c2bb8ce72f01199d1d3f57997b6f2d25d79bd"
+    },
+    {
+      "id": "headwear-side-fold",
+      "file": "assets/salon/culture/headwear-side-fold.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "c43bbb3a2ae5aa9beb87d63505f52586d086842670cb7192b45f4e6cd6425c64"
+    },
+    {
+      "id": "headwear-high-fold",
+      "file": "assets/salon/culture/headwear-high-fold.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "a52ed3ace2958b79ce8b3e9d61c2f5b04f790caf32b05e52ef5f9e56e2c1ea6f"
+    },
+    {
+      "id": "headwear-tied-back",
+      "file": "assets/salon/culture/headwear-tied-back.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "8572f95de055f98adf27ece49f0c01fa1d5a9d81347b5cdb6bbeba66f82286db"
+    },
+    {
+      "id": "headwear-embroidered-cap",
+      "file": "assets/salon/culture/headwear-embroidered-cap.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "e96d83b29115ce99f2a330ea525cc10da0a2914c29c08c6c7d69e28cb3d7c267"
+    },
+    {
+      "id": "paint-shells-primary",
+      "file": "assets/salon/culture/paint-shells-primary.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "65c7fe23d110e67bf37bb941df14d413a4a751cceba04a176bb4ebef93cd5a5f"
+    },
+    {
+      "id": "paint-shells-accent",
+      "file": "assets/salon/culture/paint-shells-accent.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "1e30b491fce597e81c21de1e51a8171be3d62b5f7aad49216d06014229fe282e"
+    },
+    {
+      "id": "paint-shells",
+      "file": "assets/salon/culture/paint-shells.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "ada053fdac9f4e91ac5c1d6646da10c301ea521190476645b79536cd1ff8179e"
+    },
+    {
+      "id": "paint-orange-primary",
+      "file": "assets/salon/culture/paint-orange-primary.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "77202fa2e46532c8e41a30f5cd6b293ef7ec047814fe219f60aac164a29bfa11"
+    },
+    {
+      "id": "paint-orange-accent",
+      "file": "assets/salon/culture/paint-orange-accent.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "3ee8dd04b892aa9377fa5b0d5465a61bdf6718cdc11dac1324b4b66ddf63c1f7"
+    },
+    {
+      "id": "paint-orange",
+      "file": "assets/salon/culture/paint-orange.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "b6c956ceb9db846279f1665f5c8b06ba24a2a8a532dbf254960273e4873b00d8"
+    },
+    {
+      "id": "paint-yellow-primary",
+      "file": "assets/salon/culture/paint-yellow-primary.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "a20c25b9cb68aa318d804d0577570f0fc25c025b8a70340b8a06e7f543c2f083"
+    },
+    {
+      "id": "paint-yellow-accent",
+      "file": "assets/salon/culture/paint-yellow-accent.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "79173fca605e8af8830ded1b33f18b0ce8913dcbd8d07ec052a22deb3eb76bb6"
+    },
+    {
+      "id": "paint-yellow",
+      "file": "assets/salon/culture/paint-yellow.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "87d6262f3b9309332574c682203826a49ccb708b3a37db9c4fa76cf51c9bc26d"
+    },
+    {
+      "id": "paint-beige-primary",
+      "file": "assets/salon/culture/paint-beige-primary.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "3a320eebe9d271fc425ef89e32349eed45531b519b29f540cbaeb991b6e4cf7d"
+    },
+    {
+      "id": "paint-beige-accent",
+      "file": "assets/salon/culture/paint-beige-accent.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "f2dc29501e0f677eeead3f9fd758420e03d17e503e8e3acbd42131f886f14a7e"
+    },
+    {
+      "id": "paint-beige",
+      "file": "assets/salon/culture/paint-beige.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "a9a9438f2ef370a0b0b2f0e6150d5316e36b73b032207a2dbc513a4284d4dbbe"
+    },
+    {
+      "id": "accessory-pano",
+      "file": "assets/salon/culture/accessory-pano.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "2bddb38e6c776f8b98d9857bb5fa7534d1d2dfd07dbb8a6aa513222b17dd796c"
+    },
+    {
+      "id": "accessory-earrings",
+      "file": "assets/salon/culture/accessory-earrings.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "9de82abeca5243a165beb49872fb30e6757f94dd92bb5521a2b62c04a9ba58f7"
+    },
+    {
+      "id": "accessory-necklace",
+      "file": "assets/salon/culture/accessory-necklace.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "bf504fda8e94322bf36209236170cb2b8400fc3a650498376c17c397fe7a4224"
+    },
+    {
+      "id": "accessory-bracelets",
+      "file": "assets/salon/culture/accessory-bracelets.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "34b49528dc57844ff64474f4bf49868827b02235f565e130306d5d29b1ed9bae"
+    }
+  ],
+  "catalogEntries": 32
+}

@@ -1,0 +1,382 @@
+{
+  "version": 2,
+  "words": [
+    {
+      "id": "moqueca",
+      "asset": "words/moqueca.png"
+    },
+    {
+      "id": "canjica",
+      "asset": "words/canjica.png"
+    },
+    {
+      "id": "dende",
+      "asset": "words/dende.png"
+    },
+    {
+      "id": "quindim",
+      "asset": "words/quindim.png"
+    },
+    {
+      "id": "fuba",
+      "asset": "words/fuba.png"
+    },
+    {
+      "id": "quitute",
+      "asset": "words/quitute.png"
+    },
+    {
+      "id": "cafune",
+      "asset": "words/cafune.png"
+    },
+    {
+      "id": "dengo",
+      "asset": "words/dengo.png"
+    },
+    {
+      "id": "xodo",
+      "asset": "words/xodo.png"
+    },
+    {
+      "id": "cacula",
+      "asset": "words/cacula.png"
+    },
+    {
+      "id": "moleque",
+      "asset": "words/moleque.png"
+    },
+    {
+      "id": "muvuca",
+      "asset": "words/muvuca.png"
+    },
+    {
+      "id": "banjo",
+      "asset": "words/banjo.png"
+    },
+    {
+      "id": "berimbau",
+      "asset": "words/berimbau.png"
+    },
+    {
+      "id": "cuica",
+      "asset": "words/cuica.png"
+    },
+    {
+      "id": "samba",
+      "asset": "words/samba.png"
+    },
+    {
+      "id": "maracatu",
+      "asset": "words/maracatu.png"
+    },
+    {
+      "id": "zabumba",
+      "asset": "words/zabumba.png"
+    },
+    {
+      "id": "abada",
+      "asset": "words/abada.png"
+    },
+    {
+      "id": "canga",
+      "asset": "words/canga.png"
+    },
+    {
+      "id": "cacamba",
+      "asset": "words/cacamba.png"
+    },
+    {
+      "id": "cachimbo",
+      "asset": "words/cachimbo.png"
+    },
+    {
+      "id": "quitanda",
+      "asset": "words/quitanda.png"
+    },
+    {
+      "id": "cafofo",
+      "asset": "words/cafofo.png"
+    },
+    {
+      "id": "banguela",
+      "asset": "words/banguela.png"
+    },
+    {
+      "id": "beleleu",
+      "asset": "words/beleleu.png"
+    },
+    {
+      "id": "borocoxo",
+      "asset": "words/borocoxo.png"
+    },
+    {
+      "id": "engambelar",
+      "asset": "words/engambelar.png"
+    },
+    {
+      "id": "xingar",
+      "asset": "words/xingar.png"
+    },
+    {
+      "id": "muamba",
+      "asset": "words/muamba.png"
+    },
+    {
+      "id": "axe",
+      "asset": "words/axe.png"
+    },
+    {
+      "id": "quilombo",
+      "asset": "words/quilombo.png"
+    },
+    {
+      "id": "senzala",
+      "asset": "words/senzala.png"
+    },
+    {
+      "id": "ginga",
+      "asset": "words/ginga.png"
+    },
+    {
+      "id": "cachaca",
+      "asset": "words/cachaca.png"
+    },
+    {
+      "id": "jaba",
+      "asset": "words/jaba.png"
+    },
+    {
+      "id": "ebo",
+      "asset": "words/ebo.png"
+    }
+  ],
+  "instruments": [
+    {
+      "id": "tambor",
+      "asset": "instruments/tambor.png"
+    },
+    {
+      "id": "agogo",
+      "asset": "instruments/agogo.png"
+    },
+    {
+      "id": "chocalho",
+      "asset": "instruments/chocalho.png"
+    },
+    {
+      "id": "balafon",
+      "asset": "instruments/balafon.png"
+    },
+    {
+      "id": "kora",
+      "asset": "instruments/kora.png"
+    },
+    {
+      "id": "atabaque",
+      "asset": "instruments/atabaque.png"
+    },
+    {
+      "id": "djembe",
+      "asset": "instruments/djembe.png"
+    },
+    {
+      "id": "kalimba",
+      "asset": "instruments/kalimba.png"
+    },
+    {
+      "id": "xequere",
+      "asset": "instruments/xequere.png"
+    },
+    {
+      "id": "mbira",
+      "asset": "instruments/mbira.png"
+    },
+    {
+      "id": "berimbau",
+      "asset": "instruments/berimbau.png"
+    },
+    {
+      "id": "pandeiro",
+      "asset": "instruments/pandeiro.png"
+    },
+    {
+      "id": "caxixi",
+      "asset": "instruments/caxixi.png"
+    },
+    {
+      "id": "dobrao",
+      "asset": "instruments/dobrao.png"
+    },
+    {
+      "id": "baqueta",
+      "asset": "instruments/baqueta.png"
+    },
+    {
+      "id": "cuica",
+      "asset": "instruments/cuica.png"
+    },
+    {
+      "id": "afoxe",
+      "asset": "instruments/afoxe.png"
+    },
+    {
+      "id": "reco-reco",
+      "asset": "instruments/reco-reco.png"
+    },
+    {
+      "id": "ganza",
+      "asset": "instruments/ganza.png"
+    },
+    {
+      "id": "banjo",
+      "asset": "instruments/banjo.png"
+    },
+    {
+      "id": "zabumba",
+      "asset": "instruments/zabumba.png"
+    },
+    {
+      "id": "ilu",
+      "asset": "instruments/ilu.png"
+    }
+  ],
+  "style": "Imagegen-generated pixel-art PNG illustrations and animated character sheets matching the existing VOICES artwork",
+  "license": "CC0-1.0",
+  "referenceImages": [
+    "image(20261027-145224).png",
+    "image(20261027-145230).png",
+    "image(20261027-145235).png",
+    "image(20261027-145243).png"
+  ],
+  "capoeiristas": {
+    "frameWidth": 160,
+    "frameHeight": 176,
+    "columns": 8,
+    "rows": [
+      "ginga",
+      "esquiva",
+      "meia-lua",
+      "au",
+      "negativa",
+      "role",
+      "palmas",
+      "tocar"
+    ],
+    "people": [
+      {
+        "id": "jurema",
+        "name": "Mestra Jurema",
+        "rope": [
+          "#f4ead0"
+        ],
+        "asset": "capoeiristas/jurema.png"
+      },
+      {
+        "id": "bento-roda",
+        "name": "Mestre Bento",
+        "rope": [
+          "#b3df94",
+          "#f3d27a"
+        ],
+        "asset": "capoeiristas/bento-roda.png"
+      },
+      {
+        "id": "dara",
+        "name": "Dara",
+        "rope": [
+          "#439dab"
+        ],
+        "asset": "capoeiristas/dara.png"
+      },
+      {
+        "id": "caue",
+        "name": "Cauê",
+        "rope": [
+          "#dc914f"
+        ],
+        "asset": "capoeiristas/caue.png"
+      },
+      {
+        "id": "lua",
+        "name": "Lua",
+        "rope": [
+          "#e6c85e"
+        ],
+        "asset": "capoeiristas/lua.png"
+      },
+      {
+        "id": "tobias",
+        "name": "Tobias",
+        "rope": [
+          "#9a76bc"
+        ],
+        "asset": "capoeiristas/tobias.png"
+      },
+      {
+        "id": "raiz",
+        "name": "Raiz",
+        "rope": [
+          "#6aa47b"
+        ],
+        "asset": "capoeiristas/raiz.png"
+      },
+      {
+        "id": "nina-roda",
+        "name": "Nina",
+        "rope": [
+          "#eee3c5",
+          "#d6bb62"
+        ],
+        "asset": "capoeiristas/nina-roda.png"
+      },
+      {
+        "id": "sol-roda",
+        "name": "Sol",
+        "rope": [
+          "#b7a285"
+        ],
+        "asset": "capoeiristas/sol-roda.png"
+      },
+      {
+        "id": "nando",
+        "name": "Nando",
+        "rope": [
+          "#c45f55",
+          "#ece4cd"
+        ],
+        "asset": "capoeiristas/nando.png"
+      },
+      {
+        "id": "taina-roda",
+        "name": "Tainá",
+        "rope": [
+          "#7297bd",
+          "#eadbba"
+        ],
+        "asset": "capoeiristas/taina-roda.png"
+      },
+      {
+        "id": "zeca",
+        "name": "Zeca",
+        "rope": [
+          "#a87550",
+          "#e4c17b"
+        ],
+        "asset": "capoeiristas/zeca.png"
+      }
+    ],
+    "sourceFrames": 4,
+    "runtimeFrames": 8,
+    "frameTiming": "Each generated pose is held for two runtime frames"
+  },
+  "generator": "image_gen built-in",
+  "provenance": "imagegen-generation.json",
+  "scenery": [
+    "museum-facade.png",
+    "capoeira-background.png"
+  ],
+  "challengeAssets": [
+    "../challenges/capoeira-preview.png",
+    "../challenges/capoeira-icon.png"
+  ]
+}

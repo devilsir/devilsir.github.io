@@ -1,0 +1,431 @@
+{
+  "generator": "OpenAI built-in image_gen",
+  "date": "2026-10-27",
+  "style": "Detailed cozy pixel art matching the existing VOICES artwork",
+  "processing": "Alpha-preserving trimming, atlas extraction and resizing; no artwork redrawn programmatically",
+  "generations": [
+    {
+      "id": "harbor-terminal",
+      "sourceName": "Terminal de balsa brasileiro em pixel art.png",
+      "sourceLibraryId": "libfile_fdfe829ab7048191b408fb964a6842bc",
+      "productionBrief": "A Brazilian coastal ferry terminal for a cozy detailed pixel-art RPG. Elevated front view, orange clay roof, pale warm walls, blue-green shutters, shaded porch, pier fittings. Entire standalone structure visible, transparent background, no writing.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-warehouse",
+      "sourceName": "Armazém vitoriano da Cidade do Cabo.png",
+      "sourceLibraryId": "libfile_3d689990495c81919d6523cba50f2ed6",
+      "productionBrief": "A Cape Town working waterfront warehouse with Victorian industrial character: warm brick, pale trim, pitched roof, arched openings, harbor doors. Elevated front game view, whole structure, transparent background, no text.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-houses",
+      "sourceName": "Três casas coloridas de Bo-Kaap.png",
+      "sourceLibraryId": "libfile_67e52c5cbe5081919c83c50f0c418c11",
+      "productionBrief": "Three adjoining Bo-Kaap-inspired houses in distinct muted jewel colors. Flat roofs with parapets, sash windows, wooden doors, front stoeps and modest planting. Detailed pixel art, elevated frontal RPG view, full structures, transparent background, no writing.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-heritage",
+      "sourceName": "Casa de leitura do Cabo.png",
+      "sourceLibraryId": "libfile_faec4da48a4881918bfc602b079ad67d",
+      "productionBrief": "A small Cape heritage reading house with white plaster, decorative Cape Dutch-influenced gables, dark roof, green shutters, sash windows, entrance stoep and plants. Cozy pixel-art RPG structure, full silhouette, transparent background.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-market",
+      "sourceName": "Pavilhão artesanal à beira-mar.png",
+      "sourceLibraryId": "libfile_6aa0cb40995081918544adc22f45cf3b",
+      "productionBrief": "A contemporary waterfront artisan market pavilion with a warm tiled roof, timber posts, shaded tables, woven goods, pots and plants. Detailed cozy pixel art matching the existing game architecture, full building, transparent background, no labels.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "harbor-lighthouse",
+      "sourceName": "Farol costeiro com cúpula de cobre.png",
+      "sourceLibraryId": "libfile_71d5bcbb62a08191aa78c06634941f2b",
+      "productionBrief": "A compact coastal lighthouse with pale stone shaft, copper lantern dome, glazed light room, low base and weathering. Detailed pixel-art RPG structure seen from an elevated front angle, complete silhouette, transparent background.",
+      "styleReferences": [
+        "assets/african-museum/museum-facade.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "boat-row",
+      "sourceName": "Barco a remo vazio visto de cima.png",
+      "sourceLibraryId": "libfile_b6f5f83d0f188191bf742f6a8fb1dfaa",
+      "productionBrief": "An EMPTY wooden rowboat seen directly overhead with its bow pointing UP. Warm planks, two oars, modest seating with clear space for the player, complete boat and oars separated from the edges. Crisp cozy game pixel art, transparent background, no occupant or water.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "boat-dinghy",
+      "sourceName": "Bote de resgate visto de cima.png",
+      "sourceLibraryId": "libfile_8c56975090a88191bac818e60e72cdda",
+      "productionBrief": "An EMPTY practical motor dinghy seen directly overhead, bow pointing UP. Muted rubber tubes, modest outboard and clear center seat for the player. Complete silhouette, cozy detailed game pixel art, transparent background, no occupant or water.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "boat-ferry",
+      "sourceName": "Navio explorador visto de cima.png",
+      "sourceLibraryId": "libfile_a82d4fa3b280819183d7c84d3810b829",
+      "productionBrief": "An ocean-going expedition passenger ship seen directly overhead with its bow pointing UP. Warm timber decks, pale cabin, teal details, life rafts and compact working fittings. Cozy detailed game pixel art, complete silhouette, transparent background, no water or text.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-fynbos",
+      "sourceName": "Jardim fynbos com protea e erica.png",
+      "sourceLibraryId": "libfile_74c03475c94c8191957026995f3145cd",
+      "productionBrief": "A compact Cape fynbos garden cluster with recognizable pink protea flower heads, small erica flowers, restio-like reeds, rocks and low foliage. Elevated front RPG prop, detailed cozy pixel art, complete standalone cluster, transparent background.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-mountain",
+      "sourceName": "Montanha da Mesa em pixel art.png",
+      "sourceLibraryId": "libfile_7a6ad964779c8191a1a5433c5f714a06",
+      "productionBrief": "A wide distant Table Mountain silhouette, recognizable flat summit and adjacent slopes, warm rocky faces and restrained vegetation in detailed cozy pixel art. Standalone landscape backdrop with transparent sky, no buildings or writing.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "coastal-water",
+      "sourceName": "Oceano verde-azulado sereno em pixel art.png",
+      "sourceLibraryId": "libfile_2204826fe98c8191acc889a4ca43ae28",
+      "productionBrief": "A seamless square top-down coastal seawater tile, calm deep teal and turquoise water, small pale wavelets and restrained highlights. Detailed cozy pixel art, opaque edge-to-edge texture, no shore, fish, objects, writing or perspective.",
+      "styleReferences": [],
+      "transparentBackground": false
+    },
+    {
+      "id": "fish-snoek",
+      "sourceName": "Snoek prateado em perfil lateral.png",
+      "sourceLibraryId": "libfile_4d54dc5b6c6081918cdb4f9c8cc8dfb4",
+      "productionBrief": "A complete South African snoek, Thyrsites atun, in side profile. Long narrow silvery body, pointed head, dark upper back and forked tail. Detailed cozy pixel-art inventory illustration, transparent background, no labels.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "fish-yellowtail",
+      "sourceName": "Peixe yellowtail dourado em pixel art.png",
+      "sourceLibraryId": "libfile_3ef63ed957cc81919ccbc8dfe0103f78",
+      "productionBrief": "A complete yellowtail, Seriola lalandi, in side profile. Streamlined silvery body, dark blue-green back, golden-yellow lateral accents and forked yellow tail. Cozy detailed pixel-art inventory illustration, transparent background, no labels.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "fish-sardine",
+      "sourceName": "Sardinha sul-africana prateada em pixel art.png",
+      "sourceLibraryId": "libfile_8b966a9cdcdc81919463b8b0f913e263",
+      "productionBrief": "A complete South African sardine, Sardinops sagax, in side profile with slender silver body, blue-green back, subtle flank markings and forked tail. Detailed cozy pixel-art inventory illustration, transparent background, no writing.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "harbor-props",
+      "sourceName": "Atlas de seis acessórios portuários.png",
+      "sourceLibraryId": "libfile_d025d227ad58819195fb504587dab335",
+      "productionBrief": "A transparent pixel-art atlas of six separate complete harbor props, 3 columns by 2 rows with generous empty gutters. Top row: mooring bollard, lifebuoy, course buoy cluster. Bottom row: fishing tackle and rod stand, cargo crates, harbor lantern. Consistent elevated RPG perspective, no text or shared shadows.",
+      "styleReferences": [],
+      "transparentBackground": true
+    },
+    {
+      "id": "cape-citizens",
+      "sourceName": "Atlas pixelado de seis personagens.png",
+      "sourceLibraryId": "libfile_24be3b6e59488191bb7634bef08c003b",
+      "productionBrief": "A transparent pixel-art atlas of six distinct complete adult characters in a 3 by 2 grid, matching the existing Dara game art. Top row: Captain Joana in a teal maritime uniform; Lindiwe, harbor commander with blue jacket and braided hair; Zola, history mediator with glasses and warm shirt. Bottom row: Ayesha, contemporary artisan with headscarf and practical apron; Thandi, environmental educator in green outdoor clothes; Sipho, fishing and navigation instructor with a life vest. Separate full-body front-facing poses, varied hair, faces and skin tones, generous gutters, no text.",
+      "styleReferences": [
+        "assets/african-museum/capoeiristas/dara.png"
+      ],
+      "transparentBackground": true
+    },
+    {
+      "id": "quay-stone",
+      "prompt": "Use case: stylized-concept. Production ground texture tile for VOICES, a cozy detailed 2D pixel-art RPG. A perfectly seamless repeating square TOP-DOWN texture of modest irregular worn sandstone and grey-beige cobblestones for a coastal harbour quay. Small stones of different sizes, soft warm neutral earth tones, restrained mortar and subtle weathering, low contrast. Crisp hand-pixelled shading that remains readable at small scale. No large grid, perspective, borders, plants, buildings, objects, writing, symbols or water. The entire opaque square is filled with the tileable texture; all four edges match.",
+      "transparentBackground": false
+    },
+    {
+      "id": "dock-wood",
+      "prompt": "Use case: stylized-concept. Production ground texture tile for VOICES, a cozy detailed 2D pixel-art RPG. A perfectly seamless repeating square TOP-DOWN texture of weathered wooden harbour pier decking. Narrow horizontal warm muted honey-brown timber planks, subdued wood grain, tiny dark nail heads, restrained plank gaps and gentle wear. Crisp detailed pixel-art shading, low contrast to keep characters readable. No perspective, frame, objects, rope, text, water or strong highlights. Entire opaque square filled by texture; all four edges tile seamlessly.",
+      "transparentBackground": false
+    }
+  ],
+  "assets": [
+    {
+      "id": "boat-dinghy",
+      "path": "assets/maritime/boat-dinghy.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "boat-dinghy",
+      "sha256": "1a6c1317aa8355da7e956e19d3529c6c14bcfc06ba82151344b3098c8fad3bcd"
+    },
+    {
+      "id": "boat-ferry",
+      "path": "assets/maritime/boat-ferry.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "boat-ferry",
+      "sha256": "df425eccad5c7b163275e8197b846571e081ebb02bf3a2cb7820bc86f42da39c"
+    },
+    {
+      "id": "boat-row",
+      "path": "assets/maritime/boat-row.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "boat-row",
+      "sha256": "8d9d88ea0bcc3ca8fc8f09a1c3e88bdf2c7a81fe43601fa593bd2dbba3d004d8"
+    },
+    {
+      "id": "cape-fynbos",
+      "path": "assets/maritime/cape-fynbos.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-fynbos",
+      "sha256": "28ffaf7a31130c1b61dde77a1d49e41a7bf0e7f217cb09d826943cdb0aff2c8d"
+    },
+    {
+      "id": "cape-heritage",
+      "path": "assets/maritime/cape-heritage.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "cape-heritage",
+      "sha256": "28aa3be9e9a8766b6ac072bc45406022d34df6a839f802b1acd46f829c256f01"
+    },
+    {
+      "id": "cape-houses",
+      "path": "assets/maritime/cape-houses.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "cape-houses",
+      "sha256": "29de62e443a32698a235075e7eb29f442ba6daefcea5d1ce55a3fe3a2948e150"
+    },
+    {
+      "id": "cape-market",
+      "path": "assets/maritime/cape-market.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "cape-market",
+      "sha256": "b6aa678c20bb429f2a3b6478a279d46ef36617d3e493b81a392715353f3c4d86"
+    },
+    {
+      "id": "cape-mountain",
+      "path": "assets/maritime/cape-mountain.png",
+      "width": 1024,
+      "height": 384,
+      "alpha": true,
+      "generation": "cape-mountain",
+      "sha256": "6a3bd71413e76fcb5647d059fed1cd482d3a32f908de80b64bd474818f7d397a"
+    },
+    {
+      "id": "cape-warehouse",
+      "path": "assets/maritime/cape-warehouse.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "cape-warehouse",
+      "sha256": "908c3fe488b27e89d0ab632f1c49b93f9f75fa1a524be49839cffb45b124a93f"
+    },
+    {
+      "id": "coastal-water",
+      "path": "assets/maritime/coastal-water.png",
+      "width": 256,
+      "height": 256,
+      "alpha": false,
+      "generation": "coastal-water",
+      "sha256": "c77144f0f19d2205639035e1468b5daa1e77391837a4a307b78e81d718705d96"
+    },
+    {
+      "id": "dock-wood",
+      "path": "assets/maritime/dock-wood.png",
+      "width": 192,
+      "height": 192,
+      "alpha": false,
+      "generation": "dock-wood",
+      "sha256": "f71b65e1c6394ee6696417b4fc3a7bc26d2ba9c8a5939cdf1b3062422e367dc9"
+    },
+    {
+      "id": "fish-sardine",
+      "path": "assets/maritime/fish-sardine.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "fish-sardine",
+      "sha256": "f6ed04c58aa1de65608d83718a557f3acc6fa897a3b29ab9e81fc36bd15b70bc"
+    },
+    {
+      "id": "fish-snoek",
+      "path": "assets/maritime/fish-snoek.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "fish-snoek",
+      "sha256": "888413f35bfd894b68966ce317ec923dcdbbde2b236b8d2341687ebc0231f47e"
+    },
+    {
+      "id": "fish-yellowtail",
+      "path": "assets/maritime/fish-yellowtail.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "fish-yellowtail",
+      "sha256": "67c815a117bd6fb113b133832254ec8c6c0a697fb307c66796bd6ecae65cda50"
+    },
+    {
+      "id": "harbor-lighthouse",
+      "path": "assets/maritime/harbor-lighthouse.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "harbor-lighthouse",
+      "sha256": "9cb71fe59ca263f4ff8c9a1d1867fc6ed4e8e75dd070b1693560788a1890e160"
+    },
+    {
+      "id": "harbor-terminal",
+      "path": "assets/maritime/harbor-terminal.png",
+      "width": 512,
+      "height": 384,
+      "alpha": true,
+      "generation": "harbor-terminal",
+      "sha256": "d32f91db06d4ce080ac51e0dbac4bc9455b8c576b0573a46bb6551e4c8f99afc"
+    },
+    {
+      "id": "npc-ayesha",
+      "path": "assets/maritime/npc-ayesha.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "cbe6045613ee029f2d1827008c5e770ab3c1d596fe0b1dc2c5bbed82e238e0a6"
+    },
+    {
+      "id": "npc-joana",
+      "path": "assets/maritime/npc-joana.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "fef80c7d3f678b53a5d80be3ad07794318106e3efe1855e857d708e84f75eee8"
+    },
+    {
+      "id": "npc-lindiwe",
+      "path": "assets/maritime/npc-lindiwe.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "bab6ec6dc05b54173b91b64a89c38a2a79e2d9d6638d6505ef5899ab4f64394b"
+    },
+    {
+      "id": "npc-sipho",
+      "path": "assets/maritime/npc-sipho.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "7b5f0e179337483e38e23731002c04da1badd01f1323f64a5977d3a26a233885"
+    },
+    {
+      "id": "npc-thandi",
+      "path": "assets/maritime/npc-thandi.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "2adff961ecd6c41b45a8d43a75bda0a2c029557ee704dcfad93cb092088925bf"
+    },
+    {
+      "id": "npc-zola",
+      "path": "assets/maritime/npc-zola.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "cape-citizens",
+      "sha256": "53721e0c53c88d96f012992ce497460dfd0a098e0b54d93789d1a01f36b7c7fe"
+    },
+    {
+      "id": "prop-bollard",
+      "path": "assets/maritime/prop-bollard.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "754dbd1dd5566bd6532777bdca43e3f555e5be6939e6a1ec60e085068f57b1b5"
+    },
+    {
+      "id": "prop-buoys",
+      "path": "assets/maritime/prop-buoys.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "15268b2f67f8c1e44099862cb5ac2041b34f355999ca582e2b41210019808fb9"
+    },
+    {
+      "id": "prop-cargo",
+      "path": "assets/maritime/prop-cargo.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "76ee52417ce81ac348c6dd9fccc38fb1c074ceb762395e67d07fbfe29899c3f0"
+    },
+    {
+      "id": "prop-lantern",
+      "path": "assets/maritime/prop-lantern.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "34b6cf78d04b1d8a2a7b784b0faf4747d3044cb6bd8c0f28138c95b1096defeb"
+    },
+    {
+      "id": "prop-lifebuoy",
+      "path": "assets/maritime/prop-lifebuoy.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "2f628e61600fcc21eb76f7943adb3a1ac710efb28392f4ceb5d974d868bc1aaa"
+    },
+    {
+      "id": "prop-tackle",
+      "path": "assets/maritime/prop-tackle.png",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "generation": "harbor-props",
+      "sha256": "b2b19fdeec82ea2f898afceb5627e4e9f2b64ed7618f402c203f2b3e15f488d5"
+    },
+    {
+      "id": "quay-stone",
+      "path": "assets/maritime/quay-stone.png",
+      "width": 192,
+      "height": 192,
+      "alpha": false,
+      "generation": "quay-stone",
+      "sha256": "e0435df53c1147398ef87258b104e274aeedc45f5967c4e82756ff16372e197d"
+    }
+  ]
+}

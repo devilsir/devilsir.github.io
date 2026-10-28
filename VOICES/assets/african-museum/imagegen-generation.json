@@ -1,0 +1,337 @@
+{
+  "generator": "image_gen built-in",
+  "date": "2026-10-27",
+  "description": "Production PNG artwork generated with imagegen; mechanical cell extraction and animation-sheet packing only.",
+  "assets": [
+    {
+      "key": "museum-facade",
+      "sourceImage": "exec-fa421326-6bc1-4d3e-afe0-fbfd1dad0735.png",
+      "prompt": "Use case: stylized-concept. Production map-prop asset for VOICES, a welcoming Brazilian African-word museum building, matching detailed cozy 16-bit JRPG pixel art with dark warm outlines and softly hand-painted pixel-cluster texture. FULL complete building isolated, front three-quarter orthographic view at a low top-down angle. Elegant modest two-story museum, pale warm cream stucco, emerald doors and shutters, terracotta roof, ochre geometric trim inspired by woven strips, brass wall lamps, small tropical plants in clay pots, a wide inviting central archway with the doors open onto a warmly lit interior. Several framed illustrative panels visible through side windows but no readable images required. One blank dark-emerald horizontal signboard above the doorway, leave empty for the game to draw its own title. Architectural richness and material texture, grounded silhouette, no fantasy temple or exotic stereotypes. No people, no text, no labels, no watermark, no surrounding scene. True transparent background with generous clear margins, full roof and all steps contained. Landscape 3:2.",
+      "transparent": true
+    },
+    {
+      "key": "capoeira-background",
+      "sourceImage": "exec-42d71152-a1f8-444f-af3c-8a9a2dcaae2f.png",
+      "prompt": "Use case: stylized-concept. ONE empty production background plate for the VOICES capoeira minigame. Detailed warm hand-painted pixel art, cozy Brazilian JRPG environment, crisp pixel-cluster textures, rich sunlight, ochre stone and emerald plants. Wide landscape view of the open courtyard of a neighborhood cultural museum, low tiled roofs, cream stucco arcade, warm wooden pillars, potted broad-leaf tropical plants, hanging warm lanterns and a few woven decorative strips. Camera front three-quarter slightly top-down, matching chibi RPG sprites that will be composited later. Main usable playing area must remain uncluttered: a large open warm sandy circular capoeira floor centered horizontally at about 62 percent of image height, bounded by a thin cream circular line. Place architecture around the TOP and side edges; leave the central 70 percent of the image free of foreground obstacles. Painted cobblestone border in the lower corners. Absolutely NO PEOPLE, no NPCs, no instruments, no signs or lettering, no UI, no watermark. The game will add all animated participants and feedback. Landscape 16:9.",
+      "transparent": false
+    },
+    {
+      "key": "capoeira-cover",
+      "sourceImage": "exec-78f2d47d-fc74-4240-873e-bc0b4e1c5b53.png",
+      "prompt": "Use case: illustration-story. A polished illustrated game-challenge cover for VOICES, matching rich painterly pixel-art JRPG covers, warm Brazilian cultural courtyard in late afternoon. In the foreground TWO distinct Afro-Brazilian adult capoeiristas play respectfully inside a roda: one woman with round afro and blue cord in flowing ginga, one man with short curly hair and orange cord responding with a low esquiva. Both in white short-sleeve shirts and loose white capoeira trousers, barefoot. In the midground, a circle of distinct black and brown neighbors clap and smile; a dark-skinned woman with long locs and cream waist cord leads with a berimbau, others play pandeiro and atabaque. Expressive friendly chibi game proportions, anatomically plausible movement, beautiful white fabric folds, crisp warm dark outlines and pixel textures. Museum courtyard with emerald doors, terracotta roof, golden lanterns and potted tropical plants frames the roda. Dynamic inviting composition, characters occupy the central horizontal band so the artwork works as a 16:7 thumbnail crop. NO TEXT, logos, letters, watermarks, interface or title. Landscape 16:9.",
+      "transparent": false
+    },
+    {
+      "key": "npc-jurema",
+      "sourceImage": "exec-ddbacf1f-cab4-41fd-a811-f6ea8d47cbc7.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production ANIMATED SPRITE ATLAS for VOICES, matching polished hand-painted 16-bit JRPG/chibi pixel art: friendly expressive face, large head about one third of full height, dark warm outlines, crisp clustered pixel shading, detailed fabric folds. ONE character only: Mestra Jurema, an adult Afro-Brazilian woman with dark brown skin, long thick black locs gathered behind the head, friendly confident face, white short-sleeve capoeira shirt, loose white trousers, a distinctive cream-white braided cord around waist, barefoot. Her face, hair, outfit, proportions and cord remain IDENTICAL in all cells. Atlas layout EXACTLY 4 columns and 8 rows, evenly spaced rectangular cells, no labels or frames, each full body entirely inside its cell with generous empty margin. 32 full-body sprites, camera front three-quarter view, static camera, same physical character size in every frame. Each row contains four consecutive frames: row 1 GINGA, alternating bent-leg triangular capoeira base with guarded arms; row 2 ESQUIVA, progressively lower sidelong crouch and recover; row 3 MEIA-LUA, controlled circular high kick and return; row 4 AÚ, capoeira cartwheel with hands supporting body, four stages including inverted legs; row 5 NEGATIVA, low supported defensive position with one leg extended then recover; row 6 ROLÊ, low circular turn, crouch and recover; row 7 CLAPPING, hands separated, approaching, touching, separated; row 8 PLAYING BERIMBAU, holding one slender wooden musical bow with string and gourd at hip and four subtle playing motions. Do not replace actions with identical standing figures. Depict anatomically readable hands and feet, no extra limbs. No text, no grid, no captions, no background scene, no floor, no watermark. Genuine transparent background, preserve full alpha. Tall portrait sheet, aspect ratio 1:2.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        222,
+        418,
+        648,
+        887,
+        1079,
+        1256,
+        1501,
+        1774
+      ]
+    },
+    {
+      "key": "npc-bento-roda",
+      "sourceImage": "exec-7d62eed8-a3db-455c-816a-a89fbec1599b.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Mestre Bento: elderly Afro-Brazilian man, very dark brown skin, close curly silver-gray hair and a short white beard, sturdy kindly face, WHITE capoeira shirt and trousers, barefoot, braided green-and-yellow two-color waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with a medium-register berimbau musical bow with a gourd resonator. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        227,
+        421,
+        658,
+        891,
+        1084,
+        1254,
+        1508,
+        1774
+      ]
+    },
+    {
+      "key": "npc-dara",
+      "sourceImage": "exec-af9ea025-cad4-4f6e-acb8-ee3d1d248ccf.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Dara: young adult Afro-Brazilian woman, very dark brown skin, a large round natural black afro, lively expressive face, WHITE capoeira shirt and trousers, barefoot, distinct bright BLUE waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with NO instrument at all, just empty hands tapping the rhythm near the chest. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        221,
+        410,
+        650,
+        889,
+        1076,
+        1254,
+        1496,
+        1774
+      ]
+    },
+    {
+      "key": "npc-caue",
+      "sourceImage": "exec-123bf28c-1591-4e21-97fd-4b8d84d6911d.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Cauê: young adult Afro-Brazilian man, medium brown skin, short tightly curled black hair, athletic friendly face, WHITE capoeira shirt and loose trousers, barefoot, distinct ORANGE waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with NO instrument, empty hands tapping rhythm at the chest. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        228,
+        421,
+        656,
+        892,
+        1084,
+        1256,
+        1501,
+        1774
+      ]
+    },
+    {
+      "key": "npc-lua",
+      "sourceImage": "exec-a2629e7d-0c54-4e09-bdfe-dbe5336d9c24.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Lua: Afro-Brazilian young adult woman, warm brown skin, long neat black braids, confident smiling face, WHITE capoeira shirt and trousers, barefoot, YELLOW waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with one small round PANDEIRO frame drum with metal jingles, held naturally in one hand and tapped with the other. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        223,
+        418,
+        652,
+        888,
+        1079,
+        1257,
+        1502,
+        1774
+      ]
+    },
+    {
+      "key": "npc-tobias",
+      "sourceImage": "exec-51ffbe27-3fc8-4781-81af-57025ad654c0.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Tobias: adult Afro-Brazilian man, deep dark brown skin, short black textured hair, a neatly trimmed short black beard, round kind eyes, WHITE capoeira shirt and trousers, barefoot, PURPLE waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with one tall ATABAQUE wooden drum in front of him, played with hands. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        227,
+        415,
+        648,
+        885,
+        1064,
+        1230,
+        1473,
+        1774
+      ]
+    },
+    {
+      "key": "npc-raiz",
+      "sourceImage": "exec-ee830691-9732-4cab-8fb7-b2c03da02ab6.png",
+      "prompt": "Use case: style-transfer. Edit the REFERENCE SPRITE SHEET into a sibling character sheet for the same VOICES RPG. Preserve the reference's high-quality chibi pixel-art rendering, dark outlines, cloth texture, warm lighting, fixed-camera view, transparent alpha, exact FOUR-COLUMN by EIGHT-ROW layout, 32 full-body cells, action row ordering and readable action variations. REPLACE the character in EVERY cell consistently with Raiz: Afro-Brazilian adult woman, medium-dark brown skin, black hair tied in a high round bun, bright attentive face, WHITE capoeira shirt and trousers, barefoot, GREEN waist cord. One named character only throughout the sheet. Row 1 four consecutive ginga frames; row 2 four esquiva frames; row 3 four circular meia-lua kick frames; row 4 four aú/cartwheel frames including inversion; row 5 four low negativa frames; row 6 four low rolê turn frames; row 7 four clapping frames; row 8 four instrument-playing frames with one metal AGOGÔ double bell in one hand, with a short wooden striker in the other. In rows 1–7 remove all musical instruments, as the person is moving or clapping. The waist cord color specified above must stay visible and identical in every cell. Keep character scale uniform, generous transparent gutters, no figures crossing cells, no face/skin/hair/outfit swapping between frames. Anatomy must remain sound, no extra limbs. No lettering, labels, border, watermark, background scene, floor, halos or opaque background. Full transparent background. This is a production game animation sheet, not a character lineup.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        226,
+        417,
+        648,
+        889,
+        1082,
+        1272,
+        1511,
+        1773
+      ]
+    },
+    {
+      "key": "npc-nina-roda",
+      "sourceImage": "exec-d177f7a4-ab0d-4fa6-9503-8fb7461a8cbd.png",
+      "prompt": "Use case: style-transfer. Produce a sibling character ANIMATION SHEET by editing the reference's character identity. Preserve its detailed chibi pixel-art style, dark warm outlines, material textures, friendly expressive face, fixed-camera view, real alpha, EXACT 4 columns and 8 rows, 32 equal full-body cells. Replace the character in every cell with Nina: young Afro-Brazilian woman, deep warm brown skin, small rounded black natural afro, friendly round face, WHITE capoeira shirt and loose trousers, barefoot, braided CREAM-AND-YELLOW two-color waist cord. Consistent face, hair, skin, clothes, proportions and cord in all 32 cells. Rows each contain four consecutive motion frames in this exact order: 1 GINGA; 2 ESQUIVA; 3 MEIA-LUA circular high kick; 4 AÚ cartwheel with clear inverted pose; 5 NEGATIVA supported low stance; 6 ROLÊ low turn; 7 CLAPPING, hands separated, approaching, together, separated; 8 PLAYING MUSIC with empty hands keeping rhythm near the chest, NO instrument. All rows 1 through 7 have NO instruments. Row 8 must use ONLY the specified prop, never leave the reference woman's berimbau unless that is the requested prop. Keep every sprite fully contained inside its own cell, with matching body scale and lots of clear separation between rows AND columns. Do not use varying row heights. Do not let long instruments cross the cell boundary. No text, labels, frames, grid lines, watermark, backgrounds, shadows, halos. True transparent background.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        225,
+        420,
+        653,
+        889,
+        1085,
+        1264,
+        1507,
+        1774
+      ]
+    },
+    {
+      "key": "npc-sol-roda",
+      "sourceImage": "exec-e376215e-b74b-47b5-af4e-c01c69e133eb.png",
+      "prompt": "Use case: style-transfer. Produce a sibling character ANIMATION SHEET by editing the reference's character identity. Preserve its detailed chibi pixel-art style, dark warm outlines, material textures, friendly expressive face, fixed-camera view, real alpha, EXACT 4 columns and 8 rows, 32 equal full-body cells. Replace the character in every cell with Sol: young adult person with light warm tan skin, short soft dark-brown curly hair, gentle slightly freckled face, WHITE capoeira shirt and trousers, barefoot, natural unbleached BEIGE waist cord. Consistent face, hair, skin, clothes, proportions and cord in all 32 cells. Rows each contain four consecutive motion frames in this exact order: 1 GINGA; 2 ESQUIVA; 3 MEIA-LUA circular high kick; 4 AÚ cartwheel with clear inverted pose; 5 NEGATIVA supported low stance; 6 ROLÊ low turn; 7 CLAPPING, hands separated, approaching, together, separated; 8 PLAYING MUSIC with empty hands keeping rhythm, NO instrument. All rows 1 through 7 have NO instruments. Row 8 must use ONLY the specified prop, never leave the reference woman's berimbau unless that is the requested prop. Keep every sprite fully contained inside its own cell, with matching body scale and lots of clear separation between rows AND columns. Do not use varying row heights. Do not let long instruments cross the cell boundary. No text, labels, frames, grid lines, watermark, backgrounds, shadows, halos. True transparent background.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        228,
+        417,
+        656,
+        890,
+        1087,
+        1263,
+        1507,
+        1774
+      ]
+    },
+    {
+      "key": "npc-nando",
+      "sourceImage": "exec-5ff87047-e95f-4331-82b7-d8fbd4a90684.png",
+      "prompt": "Use case: style-transfer. Produce a sibling character ANIMATION SHEET by editing the reference's character identity. Preserve its detailed chibi pixel-art style, dark warm outlines, material textures, friendly expressive face, fixed-camera view, real alpha, EXACT 4 columns and 8 rows, 32 equal full-body cells. Replace the character in every cell with Nando: Afro-Brazilian adult man, dark brown skin, black shoulder-length locs tied back loosely, neat short goatee, WHITE capoeira shirt and trousers, barefoot, RED-AND-CREAM braided waist cord. Consistent face, hair, skin, clothes, proportions and cord in all 32 cells. Rows each contain four consecutive motion frames in this exact order: 1 GINGA; 2 ESQUIVA; 3 MEIA-LUA circular high kick; 4 AÚ cartwheel with clear inverted pose; 5 NEGATIVA supported low stance; 6 ROLÊ low turn; 7 CLAPPING, hands separated, approaching, together, separated; 8 PLAYING MUSIC with one slender berimbau musical bow with a small gourd resonator, high-register style. All rows 1 through 7 have NO instruments. Row 8 must use ONLY the specified prop, never leave the reference woman's berimbau unless that is the requested prop. Keep every sprite fully contained inside its own cell, with matching body scale and lots of clear separation between rows AND columns. Do not use varying row heights. Do not let long instruments cross the cell boundary. No text, labels, frames, grid lines, watermark, backgrounds, shadows, halos. True transparent background.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        229,
+        425,
+        676,
+        915,
+        1107,
+        1284,
+        1526,
+        1774
+      ]
+    },
+    {
+      "key": "npc-taina-roda",
+      "sourceImage": "exec-8d5d64d1-6971-473c-984f-4c2da1337372.png",
+      "prompt": "Use case: style-transfer. Produce a sibling character ANIMATION SHEET by editing the reference's character identity. Preserve its detailed chibi pixel-art style, dark warm outlines, material textures, friendly expressive face, fixed-camera view, real alpha, EXACT 4 columns and 8 rows, 32 equal full-body cells. Replace the character in every cell with Tainá: young adult Afro-Brazilian woman, medium warm brown skin, black hair in a neat high round bun, friendly confident face, WHITE capoeira shirt and trousers, barefoot, braided BLUE-AND-CREAM waist cord. Consistent face, hair, skin, clothes, proportions and cord in all 32 cells. Rows each contain four consecutive motion frames in this exact order: 1 GINGA; 2 ESQUIVA; 3 MEIA-LUA circular high kick; 4 AÚ cartwheel with clear inverted pose; 5 NEGATIVA supported low stance; 6 ROLÊ low turn; 7 CLAPPING, hands separated, approaching, together, separated; 8 PLAYING MUSIC with empty hands tapping rhythm near the chest, NO instrument. All rows 1 through 7 have NO instruments. Row 8 must use ONLY the specified prop, never leave the reference woman's berimbau unless that is the requested prop. Keep every sprite fully contained inside its own cell, with matching body scale and lots of clear separation between rows AND columns. Do not use varying row heights. Do not let long instruments cross the cell boundary. No text, labels, frames, grid lines, watermark, backgrounds, shadows, halos. True transparent background.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        231,
+        422,
+        668,
+        893,
+        1087,
+        1278,
+        1519,
+        1774
+      ]
+    },
+    {
+      "key": "npc-zeca",
+      "sourceImage": "exec-2e843be8-1d44-42a5-84ad-ce0d3dca8772.png",
+      "prompt": "Use case: style-transfer. Produce a sibling character ANIMATION SHEET by editing the reference's character identity. Preserve its detailed chibi pixel-art style, dark warm outlines, material textures, friendly expressive face, fixed-camera view, real alpha, EXACT 4 columns and 8 rows, 32 equal full-body cells. Replace the character in every cell with Zeca: elderly Afro-Brazilian man, very dark brown skin, curly silver-gray hair, silver eyebrows and a short silver beard, warm wise face, WHITE capoeira shirt and trousers, barefoot, BROWN-AND-GOLD braided waist cord. Consistent face, hair, skin, clothes, proportions and cord in all 32 cells. Rows each contain four consecutive motion frames in this exact order: 1 GINGA; 2 ESQUIVA; 3 MEIA-LUA circular high kick; 4 AÚ cartwheel with clear inverted pose; 5 NEGATIVA supported low stance; 6 ROLÊ low turn; 7 CLAPPING, hands separated, approaching, together, separated; 8 PLAYING MUSIC with one grooved bamboo RECO-RECO scraper held in one hand with a slim scraping stick in the other. All rows 1 through 7 have NO instruments. Row 8 must use ONLY the specified prop, never leave the reference woman's berimbau unless that is the requested prop. Keep every sprite fully contained inside its own cell, with matching body scale and lots of clear separation between rows AND columns. Do not use varying row heights. Do not let long instruments cross the cell boundary. No text, labels, frames, grid lines, watermark, backgrounds, shadows, halos. True transparent background.",
+      "transparent": true,
+      "frameSize": [
+        160,
+        176
+      ],
+      "rowCuts": [
+        0,
+        225,
+        416,
+        654,
+        895,
+        1083,
+        1265,
+        1509,
+        1774
+      ]
+    },
+    {
+      "key": "words-sabores",
+      "sourceImage": "exec-bbc580cb-e49e-436a-bd23-81df1fabacec.png",
+      "prompt": "Use case: scientific-educational. Production game asset, replacement illustration atlas for the VOICES 2D Brazilian educational RPG. Create ONE finished rectangular contact sheet, precisely 3 columns by 2 rows of six equally sized square illustration tiles, with absolutely no visible grid, lettering, numbers, captions or watermark. Read tiles in row-major order: (1) moqueca, rich Brazilian fish-and-vegetable stew with tomatoes, cilantro and peppers in a dark clay serving pot; (2) canjica, a bowl of creamy WHITE whole corn kernels with cinnamon, clearly different from the orange moqueca; (3) dendê, a cluster of red-orange oil palm fruits beside a little clear glass bottle of orange palm oil; (4) quindim, glossy yellow coconut-and-egg custard on a small ceramic saucer; (5) fubá, fine pale yellow cornmeal spilling from a small open cloth sack with an ear of corn; (6) quitute, a tray of assorted small Brazilian savory snacks and home-made cakes. Style: polished hand-painted pixel art, 1990s 16-bit JRPG inventory illustrations with a modern detailed chibi-game finish, dark warm umber outlines, chunky crisp clusters, nuanced pixel shading and texture, appealing shapes, warm natural colors, ochre and emerald highlights, same coherent art direction across all six tiles. No flat vector, no stick drawings, no photorealism. Every item is a standalone illustration, centered inside its exact sixth of the sheet with at least 12% clear margin from each cell edge; never cross into another tile. Transparent background, real alpha, no ground, no frame, no shadow touching cell edges. The sheet is intended to be split into six game illustrations. Landscape aspect ratio 3:2.",
+      "transparent": true
+    },
+    {
+      "key": "words-cotidiano",
+      "sourceImage": "exec-539eb391-8645-4c09-8b9f-3e8f63104a1a.png",
+      "prompt": "Use case: illustration-story. Production illustration atlas for VOICES, a 2D Brazilian 16-bit JRPG with detailed friendly chibi characters and hand-painted pixel art. Create ONE 3-column by 2-row atlas, six identical square cells. Exact row-major subjects: 1 a neatly arranged white CAPOEIRA UNIFORM, short sleeve white shirt and loose white trousers with a green waist cord, no person; 2 a folded TEAL BEACH WRAP with golden woven stripe and textile fringe, no religious symbols; 3 a yellow open metal construction debris container, recognizable Brazilian caçamba with a few stones; 4 an old wooden smoking PIPE as an empty museum artifact, no smoke and no person using it; 5 a small charming neighborhood PRODUCE STALL with colorful fruit baskets, striped emerald-and-cream awning and wooden counter, no writing; 6 an inviting tiny Brazilian HOME with terracotta tile roof, wooden door, pale stucco, potted plant and warmly lit window. Beautiful polished pixel art with warm brown outlines, painterly pixel texture, amber highlights, deep emerald details, readable inventory silhouettes and consistent perspective. Clearly rendered materials: woven fabric, ceramic and wood. Not vector or minimal icons. Isolate each subject centered within its own cell, at least 12% free margins, fully contained, do not let any artwork straddle a cell boundary. No text, no watermarks, no numbers, no grid lines, no borders. Real transparent alpha background. Landscape 3:2 composition suitable for splitting into six tiles.",
+      "transparent": true
+    },
+    {
+      "key": "words-afetos",
+      "sourceImage": "exec-2551d223-eda2-4b4d-b294-488f1d174ce7.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE 3-column by 2-row sheet, exact row-major subjects: 1 CAFUNÉ, a loving Afro-Brazilian grandmother gently stroking the afro hair of a smiling child, comfortable consent and affection; 2 DENGO, a person tenderly cuddling a small sleepy puppy against their chest; 3 XODÓ, a cherished old tabletop wooden radio lovingly held by two hands, a tiny embroidered cloth beside it; 4 CAÇULA, three smiling Black siblings standing together with the youngest noticeably smaller, equal dignity and individual faces; 5 MOLEQUE, a happy Black boy in a teal T-shirt flying a yellow kite, respectful playful depiction; 6 MUVUCA, a lively friendly group of diverse neighbors gathered at a Brazilian street celebration, showing crowd and shared motion. All figures friendly chibi proportions consistent with VOICES sprite characters. One self-contained scene per cell. Landscape 3:2 sheet.",
+      "transparent": true
+    },
+    {
+      "key": "words-musica",
+      "sourceImage": "exec-9b6345d6-f9fc-4891-a964-d556e64db017.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE 3-column by 2-row sheet of SIX standalone subjects, exact row-major order: 1 BANJO, detailed five-string banjo with round skin head, long wooden neck and metal tuning pegs; 2 BERIMBAU, one tall curved wooden bow, straight taut string, a gourd resonator attached near the lower third, accompanying slim stick and tiny caxixi; 3 CUÍCA, metal cylindrical friction drum with skin head and a central wooden friction rod, scientifically recognizable; 4 SAMBA, a smiling adult Afro-Brazilian dancer with natural curly hair in a flowing teal-and-amber casual dance outfit, rhythmic pose, with a small acoustic cavaquinho nearby; 5 MARACATU, dignified Afro-Brazilian queen of a Pernambuco maracatu-nação procession in a colorful voluminous embroidered dress and crown, small ceremonial parasol, not a generic tribal costume; 6 ZABUMBA, wide low Brazilian bass drum with two hide faces, carrying strap and two distinct beaters. Distinct instruments and textures in all four instrument tiles. Landscape aspect ratio 3:2.",
+      "transparent": true
+    },
+    {
+      "key": "words-fala",
+      "sourceImage": "exec-6bf9749f-44da-4fe9-b6c9-0c963fabf9bb.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE precisely 3 columns by 2 rows sheet, SIX educational illustration scenes in exact row-major order: 1 BANGUELA, joyful brown-skinned child close-up showing a natural missing MILK TOOTH, affectionate respectful portrait, not a caricature; 2 BELELÉU, an empty open picnic basket and a colorful balloon drifting out of reach to symbolize plans lost, no person chasing it; 3 BOROCOXÔ, a thoughtful slightly downcast Afro-Brazilian teenager with curly hair sitting on a bench, gentle empathetic expression, no mockery; 4 ENGAMBELAR, a small three-cup shell game on a wooden table with one yellow ball partly revealed and two mysterious hands, clear visual metaphor for trickery; 5 XINGAR, two children disagreeing while one pauses and gestures to stop, empty angular speech shapes with no text, no hateful symbols, scene about words and respect; 6 MUAMBA, open worn leather suitcase filled with miscellaneous everyday merchandise like cloth, books and a small radio, no weapons or counterfeit brands. All figures chibi JRPG style. Transparent independent scenes, landscape 3:2.",
+      "transparent": true
+    },
+    {
+      "key": "words-memoria",
+      "sourceImage": "exec-85718c05-b8e8-486d-8f83-4b9c51575455.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE precisely 3 columns by 3 rows atlas, NINE equal square cells. SEVEN subjects, read row-major. Cell 1 AXÉ: two dark-skinned open hands cupping a warm golden glimmer as a visual metaphor for vital force, dignified, no invented religious insignia. Cell 2 QUILOMBO: a thriving present-day Brazilian quilombola community scene with Black neighbors, a small community library, a garden and colorful simple homes, avoid depicting the community as primitive. Cell 3 SENZALA: a museum's open historical document folio with a carefully drawn plan of a historical building and a small broken iron shackle beside the document, respectful archival memory of slavery and resistance, no enslaved caricatures. Cell 4 GINGA: an adult Afro-Brazilian woman with a round afro, white capoeira outfit, bright blue cord and a balanced flowing ginga stance. Cell 5 CACHAÇA: a vintage clear glass bottle of sugarcane spirit beside a small sugarcane stalk, empty label, presented as museum history, no drinking person. Cell 6 JABÁ: pieces of dried salted beef on a plain wooden kitchen board, culinary meaning. Cell 7 EBÓ: a modest clay offering bowl with pale grains and leaves beside a blank museum research notebook, presented respectfully as material culture, not instructions for a ritual. Cells 8 and 9 MUST BE COMPLETELY EMPTY TRANSPARENT. No text. Square overall composition, exact aligned cells.",
+      "transparent": true
+    },
+    {
+      "key": "instruments-a",
+      "sourceImage": "exec-e8f6a7d9-e7d7-44e7-b3f7-923bdfeb1f33.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE 4-column by 2-row sheet of EIGHT isolated musical instrument cutouts, FULL instruments, exact row-major: 1 generic barrel-shaped wooden HAND DRUM with a single stretched skin head and rope tension; 2 AGOGÔ, two dark metal cone bells of different sizes joined at their handles, thin wooden striker beside them; 3 CHOCALHO, a simple wooden-handled natural seed rattle, recognizable shaker; 4 BALAFON, West African wooden-key xylophone, about ten gradually sized wooden bars above individual gourd resonators, two padded mallets; 5 KORA, West African harp-lute with large round calabash body covered with pale skin, tall long neck, TWO planes of many fine strings and projecting bridge, not a guitar; 6 ATABAQUE, tall tapered stave drum, skin head and crisscross rope tension; 7 DJEMBÊ, distinct goblet-shaped carved wooden hand drum with wide head, narrow waist and flaring foot, rope lacing; 8 KALIMBA, small wooden resonator box with a clear row of staggered metal thumb tines and round soundhole. No square artwork backgrounds or museum frames; genuine transparent cutouts ready to be held by game characters. The thin strings and stick details must survive at small scale. Landscape 2:1, evenly aligned four columns by two rows.",
+      "transparent": true
+    },
+    {
+      "key": "instruments-b",
+      "sourceImage": "exec-bbbcecb5-7c74-41dc-9d2d-d397fe260432.png",
+      "prompt": "Production asset atlas for VOICES, matching detailed hand-painted 16-bit JRPG/chibi pixel art, warm dark outlines, expressive readable silhouettes, rich pixel-cluster shading, amber highlights and emerald details. Crisp artistic pixel texture, no flat vector look, no photorealism. No lettering, numbers, captions, watermark, drawn grid or panel borders. Every subject fully contained in its own equal-sized cell, with generous 12% cell margins. True transparent alpha background, no opaque or translucent vignette or colored background. Sheet will be mechanically split into independent illustrations. ONE 4-column by 2-row atlas of EIGHT fully isolated musical instrument or accessory cutouts, exact row-major order: 1 XEQUERÊ, large natural bottle gourd completely wrapped in a loose net of multicolored beads; 2 MBIRA, a traditional wooden soundboard with many staggered metal thumb tines arranged in multiple overlapping rows, small loose metal buzzers, distinct from a modern kalimba box; 3 BERIMBAU, curved slender wooden bow with taut single wire and one resonating gourd tied near the hip end; 4 PANDEIRO, round wooden hand-held frame drum with natural skin head and pairs of metal jingles around its rim, three-quarter view; 5 CAXIXI, small woven basket seed rattle, closed rounded body, flat gourd bottom and loop handle; 6 DOBRÃO, one textured bronze metal disk used against the berimbau wire, authentic plain coin-like accessory; 7 BAQUETA, a single slender straight pale wooden berimbau beater stick, diagonal composition, no other object; 8 CUÍCA, polished cylindrical metal friction drum with natural skin head and a slim internal friction rod visible near the opening, not a conga. No opaque or semi-transparent backgrounds, no decorative tiles, no frames. Fully transparent independent cutouts, 4 columns by 2 rows, landscape 2:1.",
+      "transparent": true
+    },
+    {
+      "key": "instruments-c",
+      "sourceImage": "exec-f486477e-17c4-48fa-9261-8579edfde7be.png",
+      "prompt": "Use case: scientific-educational. ONE production 3-column by 2-row atlas of SIX full instrument cutouts for VOICES. Consistent polished hand-painted pixel-art inventory style, detailed warm timber, dark outlines, crisp clusters, amber and emerald touches, readable at small scale. Exact row-major: 1 AFOXÉ shaker, a SMALL handled round gourd with a tight beaded surface, clearly smaller and differently shaped from a large xequerê; 2 RECO-RECO, a ridged carved bamboo tube held diagonally with a plain thin scraping stick beside it; 3 GANZÁ, one closed metal cylindrical shaker with end caps, warm brass bands, not a drum; 4 BANJO, round pale skin head in metal-and-wood rim, long fretted wooden neck and tuning pegs, string bridge; 5 ZABUMBA, wide shallow Brazilian bass drum with two hide heads, carrying strap, thick soft-headed beater plus slender counter-stick; 6 ILÚ, a squat Pernambuco Afro-Brazilian hand drum with wooden body, wide skin head and rope tension, distinct from the tall atabaque and goblet djembe. Each asset centered in its exact cell, at least 12% transparent margin, no crossing edges. No text, labels, grid, cards, halos, gradient backdrops, floor or watermark. GENUINE transparent background. Landscape 3:2.",
+      "transparent": true
+    },
+    {
+      "key": "cuica-corrected",
+      "sourceImage": "exec-28f9161f-47d9-42e2-91b5-c733cd52bb3d.png",
+      "prompt": "Use case: scientific-educational. Asset: ONE accurate CUÍCA friction drum illustration for a Brazilian educational RPG. Detailed hand-painted 16-bit pixel-art inventory illustration with crisp dark warm outlines, polished metal cylindrical shell, tension lugs, ONE stretched hide head. Show a three-quarter UNDERSIDE view with the open bottom facing partly toward the viewer, so that the short thin friction rod is visible INSIDE the shell, attached to the CENTRE OF THE UNDERSIDE OF THE SKIN. The rod is a thin unpadded wooden stick hanging down into the drum body. The cuíca is rubbed internally, so do NOT show an external drum beater, padded mallet, rod poking through the outside/top of the skin, or a stick being struck against the drum. The top skin remains unbroken. This must read as a cuíca, not a snare drum, tom or conga. Museum specimen only, no hands, no person, no text, labels or cutaway arrows. Small emerald shoulder strap beside shell. Object fills 75 percent of square composition, centered with margins. Warm timber and silver-metal colors with subtle amber highlights. Real transparent alpha background, absolutely no colored background or vignette.",
+      "transparent": true
+    }
+  ]
+}

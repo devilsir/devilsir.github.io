@@ -14,6 +14,14 @@ if(TOUCH_PERF_PROFILE){
   });
 }
 const DB_KEY='qc1_db_clean_questions_v2',PRE_KEY='qc1_predefs',HIST_KEY='qc1_history_clean_v1';
+const SKIP_QUESTION_PASSWORD_SHA256='7cadab457ad8d811f134612436daaa5e5914b20dc2502865f714035b0f267680';
+async function isSkipQuestionPasswordValid(value){
+  if(!globalThis.crypto?.subtle||!globalThis.TextEncoder)throw new Error('SHA-256 indisponível neste contexto.');
+  const bytes=new TextEncoder().encode(String(value));
+  const digest=await crypto.subtle.digest('SHA-256',bytes);
+  const hex=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+  return hex===SKIP_QUESTION_PASSWORD_SHA256;
+}
 function isTestAreaName(n){let s=String(n||'').trim().toLowerCase();return s==='teste'||s==='test'||s==='área teste'||s==='area teste'||s.startsWith('teste ')}
 function inferSubject(q,mode=''){
   if(q&&String(q.materia||'').trim())return String(q.materia).trim();
@@ -27,6 +35,14 @@ function inferSubject(q,mode=''){
 function mergeDefaultModes(db){
   db=db||{};
   Object.entries(DEFAULT_DBS||{}).forEach(([mode,builtin])=>{
+    if(mode==='9º ano'&&db[mode]&&db[mode]._metadata?.chatReplacementVersion!==builtin._metadata?.chatReplacementVersion){
+      const saved=db[mode];
+      const preserved=(saved.perguntas||[]).filter(q=>inferSubject(q,mode)!=='Inglês');
+      const preservedAreas=new Set(preserved.map(q=>String(q.area||'')));
+      const extraAreas=Object.fromEntries(Object.entries(saved.areas||{}).filter(([area])=>preservedAreas.has(area)));
+      db[mode]={...saved,areas:{...extraAreas,...JSON.parse(JSON.stringify(builtin.areas))},perguntas:[...preserved,...JSON.parse(JSON.stringify(builtin.perguntas))],_metadata:JSON.parse(JSON.stringify(builtin._metadata))};
+      return;
+    }
     if(!db[mode]){db[mode]=JSON.parse(JSON.stringify(builtin));return}
     db[mode].areas=db[mode].areas||{};
     Object.entries(builtin.areas||{}).forEach(([a,c])=>{if(!(a in db[mode].areas))db[mode].areas[a]=JSON.parse(JSON.stringify(c))});
@@ -202,10 +218,24 @@ function cleanRuntimeDB(db){
   return db;
 }
 function cleanRuntimePredefs(pre){
+  const oldAreas=new Set(['Zero Conditional','First Conditional','Second Conditional','Facts & Opinions','Modal Verbs','Prefixes: Review']);
+  const newNinthQuestions=DEFAULT_DBS['9º ano']?.perguntas||[];
+  const newNinthAreas=Object.keys(DEFAULT_DBS['9º ano']?.areas||{});
   Object.values(pre||{}).forEach(p=>{
     if(!p)return;
     if(Array.isArray(p.areas))p.areas=p.areas.filter(a=>!isTestAreaName(a));
     if(Array.isArray(p.areas_selected))p.areas_selected=p.areas_selected.filter(a=>!isTestAreaName(a));
+    if(Array.isArray(p.perguntas)){
+      const legacy=p.perguntas.filter(q=>q&&inferSubject(q,p.modo||'')==='Inglês'&&oldAreas.has(String(q.area||'')));
+      if(legacy.length){
+        p.perguntas=p.perguntas.filter(q=>!legacy.includes(q));
+        if(p.modo==='9º ano')p.perguntas.push(...JSON.parse(JSON.stringify(newNinthQuestions)));
+        if(Array.isArray(p.areas_selected)){
+          p.areas_selected=p.areas_selected.filter(area=>!oldAreas.has(area));
+          if(p.modo==='9º ano')p.areas_selected=[...new Set([...p.areas_selected,...newNinthAreas])];
+        }
+      }
+    }
   });
   return pre||{};
 }
@@ -1067,9 +1097,59 @@ function questionPopup(area,q){
   }
   const questionImageSrc=resolveImageSource(q.imagem_pergunta||q.question_image||'');
   const questionImageHtml=questionImageSrc?`<div class="questionPromptImageWrap"><img class="questionPromptImage" src="${esc(questionImageSrc)}" alt="Imagem da pergunta" onerror="this.closest('div').style.display='none'"></div>`:'';
-  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div id="timerLabel" class="label" style="height:48px;text-align:center;font-size:18px">Tempo restante: ${rem}s</div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${meta}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${questionImageHtml}${controls}</div></div></div>`;
+  let html=`<div style="height:100%;display:flex;flex-direction:column;padding:15px 40px 25px;gap:15px"><div class="questionToolbar"><div id="timerLabel" class="label" style="font-size:18px">Tempo restante: ${rem}s</div><button id="skipQuestionBtn" class="skipQuestionBtn" type="button" title="Anular pergunta com senha" aria-label="Anular pergunta com senha">&gt;&gt;&gt;&gt;</button></div><div class="scroll kvScroll" style="flex:1"><div style="padding:0 40px 10px;display:flex;flex-direction:column;gap:10px"><div class="questionMeta">${meta}</div><div class="label" style="font-size:20px;text-align:center;white-space:pre-wrap">[Equipe ${game.current_team+1}] ${esc(q.pergunta||'Pergunta não encontrada.')}</div>${questionImageHtml}${controls}</div></div></div>`;
   popup(html,1093,494,'popup genérico HD.png').parentElement.style.backgroundColor=rgba(color,.3);
   let hintUsed=false;
+  let skipAuthOpen=false;
+  $('#skipQuestionBtn').onclick=e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(skipAuthOpen)return;
+    skipAuthOpen=true;
+    const host=$('#popupHost');
+    const layer=document.createElement('div');
+    layer.className='hintLayer skipAuthLayer';
+    layer.innerHTML=`<form class="hintCard skipAuthCard" autocomplete="off">
+      <h2>Anular pergunta</h2>
+      <p>Somente o professor pode anular. A equipe mantém os pontos e joga novamente.</p>
+      <label for="skipAuthPassword">Senha de autorização</label>
+      <input id="skipAuthPassword" class="skipAuthInput" type="password" autocomplete="off" spellcheck="false" required aria-required="true" placeholder="••••••">
+      <div id="skipAuthError" class="skipAuthError" aria-live="polite"></div>
+      <div class="skipAuthActions"><button class="hintOk skipAuthConfirm" type="submit">Confirmar</button><button class="hintOk skipAuthCancel" type="button">Voltar</button></div>
+    </form>`;
+    host.appendChild(layer);
+    const input=layer.querySelector('#skipAuthPassword');
+    const feedback=layer.querySelector('#skipAuthError');
+    const confirm=layer.querySelector('.skipAuthConfirm');
+    const cancel=()=>{layer.remove();skipAuthOpen=false};
+    layer.querySelector('.skipAuthCancel').onclick=cancel;
+    layer.querySelector('form').onsubmit=async event=>{
+      event.preventDefault();
+      if(confirm.disabled)return;
+      confirm.disabled=true;
+      try{
+        const authorized=await isSkipQuestionPasswordValid(input.value);
+        if(!authorized){
+          feedback.textContent='Senha incorreta. A pergunta continua valendo.';
+          input.value='';
+          input.focus();
+          return;
+        }
+        skipAuthOpen=false;
+        closePopup();
+        markQuestionUsed(q);
+        rebuildWheelAfterQuestion(area);
+        if(game&&game.areas_selected.some(a=>!SPECIAL.has(a))){
+          msg('Pergunta anulada',`Nenhum ponto foi alterado. A Equipe ${game.current_team+1} pode girar novamente.`);
+        }
+      }catch(error){
+        feedback.textContent='Não foi possível validar a senha neste navegador.';
+      }finally{
+        confirm.disabled=false;
+      }
+    };
+    input.focus();
+  };
   const finishQuestion=(correct,answerMarked=null)=>{
     const marked=type==='discursiva'
       ? String(answerMarked??'')
@@ -1105,6 +1185,7 @@ function questionPopup(area,q){
     }
   };
   timer=setInterval(()=>{
+    if(skipAuthOpen)return;
     if(rem<=0){
       const expected=type==='discursiva'
         ? (q.resposta_esperada||'')

@@ -1,0 +1,319 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-10-28",
+  "processing": "Registro de quadros, recorte das margens transparentes e separação dos materiais em máscaras para cores ajustáveis. Desenhos criados por geração de imagem.",
+  "sources": [
+    {
+      "id": "avatar-casual",
+      "prompt": "Use case: stylized-concept. Asset type: production animation sprite sheet for VOICES 2D pixel art game. Input reference is STYLE only, same cute chunky chibi proportions, big round head, tiny body, strong crisp dark outline, broad readable pixel clusters, not realistic, not smooth 3D. Create ONE BALD friendly androgynous young adult avatar wearing a plain short sleeved T shirt and long trousers. Warm brown skin, no hair, no hat, no eyewear, no other accessories. Clothes use saturated MAGENTA #e000c8 for the top garment and bright CYAN #00bdd2 for lower garment, with darker shades of the same hues; these two material colors must never appear on skin. Shoes and outlines dark neutral. Bald head and face consistent in every frame, no background. Exact grid FOUR columns by SIX rows, equal square cells, all full body sprites centered and feet aligned on same baseline in each cell, empty gutters, no text, no labels, no guides, no effects. Row 1: facing camera, four successive WALK cycle frames. Row 2: facing LEFT profile, four walk frames. Row 3: facing RIGHT profile, four walk frames. Row 4: facing AWAY back view, four walk frames. Row 5: facing camera, four simple arm gesture/action poses with head staying upright at the same height. Row 6: facing camera, four happy celebration poses arms raised, head stays at same height. Every sprite exactly same height and scale, no frames cropped. Square cell registration is essential. All figures bald, no shadows on the ground. Transparent background. Overall canvas portrait 2:3 ratio, 4 by 6 cells."
+    },
+    {
+      "id": "avatar-jacket",
+      "prompt": "Use case: stylized-concept. Asset type: production animation sprite sheet for VOICES 2D pixel art game. Input reference is STYLE only, same cute chunky chibi proportions, big round head, tiny body, strong crisp dark outline, broad readable pixel clusters, not realistic, not smooth 3D. Create ONE BALD friendly androgynous young adult avatar wearing an open casual jacket over a plain shirt and long trousers. Warm brown skin, no hair, no hat, no eyewear, no other accessories. Clothes use saturated MAGENTA #e000c8 for the top garment and bright CYAN #00bdd2 for lower garment, with darker shades of the same hues; these two material colors must never appear on skin. Shoes and outlines dark neutral. Bald head and face consistent in every frame, no background. Exact grid FOUR columns by SIX rows, equal square cells, all full body sprites centered and feet aligned on same baseline in each cell, empty gutters, no text, no labels, no guides, no effects. Row 1: facing camera, four successive WALK cycle frames. Row 2: facing LEFT profile, four walk frames. Row 3: facing RIGHT profile, four walk frames. Row 4: facing AWAY back view, four walk frames. Row 5: facing camera, four simple arm gesture/action poses with head staying upright at the same height. Row 6: facing camera, four happy celebration poses arms raised, head stays at same height. Every sprite exactly same height and scale, no frames cropped. Square cell registration is essential. All figures bald, no shadows on the ground. Transparent background. Overall canvas portrait 2:3 ratio, 4 by 6 cells."
+    },
+    {
+      "id": "avatar-overalls",
+      "prompt": "Use case: stylized-concept. Asset type: production animation sprite sheet for VOICES 2D pixel art game. Input reference is STYLE only, same cute chunky chibi proportions, big round head, tiny body, strong crisp dark outline, broad readable pixel clusters, not realistic, not smooth 3D. Create ONE BALD friendly androgynous young adult avatar wearing gardening dungaree overalls over a plain short sleeve shirt. Warm brown skin, no hair, no hat, no eyewear, no other accessories. Clothes use saturated MAGENTA #e000c8 for the top garment and bright CYAN #00bdd2 for lower garment, with darker shades of the same hues; these two material colors must never appear on skin. Shoes and outlines dark neutral. Bald head and face consistent in every frame, no background. Exact grid FOUR columns by SIX rows, equal square cells, all full body sprites centered and feet aligned on same baseline in each cell, empty gutters, no text, no labels, no guides, no effects. Row 1: facing camera, four successive WALK cycle frames. Row 2: facing LEFT profile, four walk frames. Row 3: facing RIGHT profile, four walk frames. Row 4: facing AWAY back view, four walk frames. Row 5: facing camera, four simple arm gesture/action poses with head staying upright at the same height. Row 6: facing camera, four happy celebration poses arms raised, head stays at same height. Every sprite exactly same height and scale, no frames cropped. Square cell registration is essential. All figures bald, no shadows on the ground. Transparent background. Overall canvas portrait 2:3 ratio, 4 by 6 cells."
+    },
+    {
+      "id": "avatar-dress",
+      "prompt": "Use case: stylized-concept. Asset type: production animation sprite sheet for VOICES 2D pixel art game. Input reference is STYLE only, same cute chunky chibi proportions, big round head, tiny body, strong crisp dark outline, broad readable pixel clusters, not realistic, not smooth 3D. Create ONE BALD friendly androgynous young adult avatar wearing a simple knee length everyday dress with leggings and flat sneakers. Warm brown skin, no hair, no hat, no eyewear, no other accessories. Clothes use saturated MAGENTA #e000c8 for the top garment and bright CYAN #00bdd2 for lower garment, with darker shades of the same hues; these two material colors must never appear on skin. Shoes and outlines dark neutral. Bald head and face consistent in every frame, no background. Exact grid FOUR columns by SIX rows, equal square cells, all full body sprites centered and feet aligned on same baseline in each cell, empty gutters, no text, no labels, no guides, no effects. Row 1: facing camera, four successive WALK cycle frames. Row 2: facing LEFT profile, four walk frames. Row 3: facing RIGHT profile, four walk frames. Row 4: facing AWAY back view, four walk frames. Row 5: facing camera, four simple arm gesture/action poses with head staying upright at the same height. Row 6: facing camera, four happy celebration poses arms raised, head stays at same height. Every sprite exactly same height and scale, no frames cropped. Square cell registration is essential. All figures bald, no shadows on the ground. Transparent background. Overall canvas portrait 2:3 ratio, 4 by 6 cells."
+    },
+    {
+      "id": "hair-afro",
+      "prompt": "Use case: stylized-concept. Asset type: modular HAIR ONLY overlay sheet for VOICES pixel art character customization. Reference is style only. Render exactly one hairstyle: a rounded natural coily AFRO with a compact cloud silhouette. Hair is a wearable hollow wig sprite, with no person, no face, no eyes, no skin, no mannequin, no neck, no clothing, no head outline unrelated to hair. The forehead/face area is fully TRANSPARENT so the game can put a separate bald character face underneath. Chibi proportions to fit the large round head of the reference, chunky crisp dark contours and compact pixel clusters. All hair is neutral silver GREYSCALE, light grey highlights, mid grey fill, dark grey outlines, so it can be tinted in the game. Exact TWO by TWO square grid with four equal cells: TOP LEFT frontal view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view. Entire wig visible in each cell, consistent scale. Back view can be a full hair mass covering the back of the head. Front view has a central transparent face opening, side views leave the face clear. One isolated wig per cell, generous transparent gutters, NO labels or text, no ground, no shadow, no gradients beyond pixel shading, transparent background."
+    },
+    {
+      "id": "hair-short",
+      "prompt": "Use case: stylized-concept. Asset type: modular HAIR ONLY overlay sheet for VOICES pixel art character customization. Reference is style only. Render exactly one hairstyle: a close cropped curly haircut with a neat softly textured top. Hair is a wearable hollow wig sprite, with no person, no face, no eyes, no skin, no mannequin, no neck, no clothing, no head outline unrelated to hair. The forehead/face area is fully TRANSPARENT so the game can put a separate bald character face underneath. Chibi proportions to fit the large round head of the reference, chunky crisp dark contours and compact pixel clusters. All hair is neutral silver GREYSCALE, light grey highlights, mid grey fill, dark grey outlines, so it can be tinted in the game. Exact TWO by TWO square grid with four equal cells: TOP LEFT frontal view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view. Entire wig visible in each cell, consistent scale. Back view can be a full hair mass covering the back of the head. Front view has a central transparent face opening, side views leave the face clear. One isolated wig per cell, generous transparent gutters, NO labels or text, no ground, no shadow, no gradients beyond pixel shading, transparent background."
+    },
+    {
+      "id": "hair-braids",
+      "prompt": "Use case: stylized-concept. Asset type: modular HAIR ONLY overlay sheet for VOICES pixel art character customization. Reference is style only. Render exactly one hairstyle: shoulder length BOX BRAIDS with a clear central face opening. Hair is a wearable hollow wig sprite, with no person, no face, no eyes, no skin, no mannequin, no neck, no clothing, no head outline unrelated to hair. The forehead/face area is fully TRANSPARENT so the game can put a separate bald character face underneath. Chibi proportions to fit the large round head of the reference, chunky crisp dark contours and compact pixel clusters. All hair is neutral silver GREYSCALE, light grey highlights, mid grey fill, dark grey outlines, so it can be tinted in the game. Exact TWO by TWO square grid with four equal cells: TOP LEFT frontal view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view. Entire wig visible in each cell, consistent scale. Back view can be a full hair mass covering the back of the head. Front view has a central transparent face opening, side views leave the face clear. One isolated wig per cell, generous transparent gutters, NO labels or text, no ground, no shadow, no gradients beyond pixel shading, transparent background."
+    },
+    {
+      "id": "hair-locs",
+      "prompt": "Use case: stylized-concept. Asset type: modular HAIR ONLY overlay sheet for VOICES pixel art character customization. Reference is style only. Render exactly one hairstyle: shoulder length LOCS with clear individual thick strands and a central face opening. Hair is a wearable hollow wig sprite, with no person, no face, no eyes, no skin, no mannequin, no neck, no clothing, no head outline unrelated to hair. The forehead/face area is fully TRANSPARENT so the game can put a separate bald character face underneath. Chibi proportions to fit the large round head of the reference, chunky crisp dark contours and compact pixel clusters. All hair is neutral silver GREYSCALE, light grey highlights, mid grey fill, dark grey outlines, so it can be tinted in the game. Exact TWO by TWO square grid with four equal cells: TOP LEFT frontal view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view. Entire wig visible in each cell, consistent scale. Back view can be a full hair mass covering the back of the head. Front view has a central transparent face opening, side views leave the face clear. One isolated wig per cell, generous transparent gutters, NO labels or text, no ground, no shadow, no gradients beyond pixel shading, transparent background."
+    },
+    {
+      "id": "hair-bun",
+      "prompt": "Use case: stylized-concept. Asset type: modular HAIR ONLY overlay sheet for VOICES pixel art character customization. Reference is style only. Render exactly one hairstyle: a high curly BUN with a close fitted hair cap and a small puff on top. Hair is a wearable hollow wig sprite, with no person, no face, no eyes, no skin, no mannequin, no neck, no clothing, no head outline unrelated to hair. The forehead/face area is fully TRANSPARENT so the game can put a separate bald character face underneath. Chibi proportions to fit the large round head of the reference, chunky crisp dark contours and compact pixel clusters. All hair is neutral silver GREYSCALE, light grey highlights, mid grey fill, dark grey outlines, so it can be tinted in the game. Exact TWO by TWO square grid with four equal cells: TOP LEFT frontal view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view. Entire wig visible in each cell, consistent scale. Back view can be a full hair mass covering the back of the head. Front view has a central transparent face opening, side views leave the face clear. One isolated wig per cell, generous transparent gutters, NO labels or text, no ground, no shadow, no gradients beyond pixel shading, transparent background."
+    },
+    {
+      "id": "accessory-band",
+      "prompt": "Use case: stylized-concept. Asset type: tintable modular character accessory overlay for VOICES pixel art RPG. Input reference is style only. Primary request: a simple wide fabric HEADBAND, curved to fit the scalp, no hair or face. Greyscale fabric or metal with pale grey body, dark grey contour and white pixel highlights, not any other colors. Chunky 2D chibi pixel art, readable simple small scale, precise crisp pixels. EXACT 2 by 2 grid with four square equal cells, isolated one accessory per cell, TOP LEFT front view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view (rear part only). Consistent size in all views, whole object within each cell with generous transparent gutters. Do not draw a person, mannequin, skin, hair, head or background. No text, no shadows, transparent background."
+    },
+    {
+      "id": "accessory-glasses",
+      "prompt": "Use case: stylized-concept. Asset type: tintable modular character accessory overlay for VOICES pixel art RPG. Input reference is style only. Primary request: a pair of small ROUND EYEGLASSES, frames and thin side temples, clear fully transparent lenses. Greyscale fabric or metal with pale grey body, dark grey contour and white pixel highlights, not any other colors. Chunky 2D chibi pixel art, readable simple small scale, precise crisp pixels. EXACT 2 by 2 grid with four square equal cells, isolated one accessory per cell, TOP LEFT front view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view (rear part only). Consistent size in all views, whole object within each cell with generous transparent gutters. Do not draw a person, mannequin, skin, hair, head or background. No text, no shadows, transparent background."
+    },
+    {
+      "id": "accessory-scarf",
+      "prompt": "Use case: stylized-concept. Asset type: tintable modular character accessory overlay for VOICES pixel art RPG. Input reference is style only. Primary request: a short neatly tied NECK SCARF with a small knot, no head, neck, body or clothing. Greyscale fabric or metal with pale grey body, dark grey contour and white pixel highlights, not any other colors. Chunky 2D chibi pixel art, readable simple small scale, precise crisp pixels. EXACT 2 by 2 grid with four square equal cells, isolated one accessory per cell, TOP LEFT front view; TOP RIGHT left profile; BOTTOM LEFT right profile; BOTTOM RIGHT back view (rear part only). Consistent size in all views, whole object within each cell with generous transparent gutters. Do not draw a person, mannequin, skin, hair, head or background. No text, no shadows, transparent background."
+    },
+    {
+      "id": "salon-facade",
+      "prompt": "Use case: stylized-concept. Asset type: isolated exterior building sprite for VOICES warm pixel art RPG. Style reference only: same elevated frontal three quarter camera and warm crisp pixels. Create a welcoming small neighbourhood BEAUTY SALON, cream plaster facade, muted dusty rose and sage green doors and shutters, broad front display windows with small mirrors visible inside, warm clay roof, restrained brass details, a blank dark sage sign board above the central accessible doorway, small potted plants on either side. Complete whole building centered, no people, no surrounding street, no text, no ground cast shadow. Transparent background. Hand crafted pixel art, not photo or smooth vector."
+    },
+    {
+      "id": "salon-vanity",
+      "prompt": "Use case: stylized-concept. Asset type: isolated beauty salon furniture sprite for VOICES 2D pixel art RPG. One styling vanity unit with tall rounded rectangular MIRROR above a low warm walnut cabinet with brass handles, cream marble worktop, a hair dryer and comb on the counter, small neatly arranged jars. Mirror surface pale cool grey with subtle diagonal pixel highlights, no reflected room or person. Elevated frontal three quarter game camera, entire piece centered fully visible, crisp warm detailed pixel art matching reference. No words, no person, no floor, no ground cast shadow, transparent background."
+    },
+    {
+      "id": "salon-chair",
+      "prompt": "Use case: stylized-concept. Asset type: isolated beauty salon styling chair sprite for VOICES 2D pixel art RPG. One sturdy swivel hairdresser CHAIR, dusty rose padded leather seat and back, curved brass armrests, dark metal round pedestal foot and small footrest, warm cosy palette. Elevated frontal three quarter game view, whole chair including base centered, crisp pixel art matching reference, readable small sprite. No people, no mirror or other objects, no ground plane, no ground cast shadow, transparent background."
+    },
+    {
+      "id": "salon-wash",
+      "prompt": "Use case: stylized-concept. Asset type: isolated hair wash station sprite for VOICES 2D pixel art RPG. One compact integrated salon shampoo unit: ivory ceramic wash basin with chrome tap and neck recess attached to a deep sage reclining padded chair, small supporting walnut cabinet. The coherent connected unit fully visible, elevated frontal three quarter game camera, warm crisp pixel art matching reference. No people, no other objects, no words, no background or ground cast shadow, transparent background."
+    },
+    {
+      "id": "salon-display",
+      "prompt": "Use case: stylized-concept. Asset type: isolated salon accessory and wardrobe display furniture sprite for VOICES 2D pixel art RPG. One compact warm walnut freestanding cabinet, open upper hanging rail holding two plain jackets and a scarf, lower shelves neatly arranged with hairbrushes, hair bands, small jars and folded towels, restrained brass frame. Full unit centered, elevated frontal three quarter camera, warm crisp detailed pixel art matching reference. No person, no labels, no text, no ground plane, no ground cast shadow, transparent background."
+    },
+    {
+      "id": "stylist-iris",
+      "prompt": "Use case: stylized-concept. Asset type: NPC animation sprite sheet for VOICES 2D pixel art RPG. Input image is STYLE only, exact chunky chibi proportions, oversized round head, tiny body, big expressive eyes, broad crisp pixel clusters, not realistic. Íris is a friendly Black woman hairdresser with dark brown skin, short natural coily hair, small gold earrings, cream shirt under a sage green salon apron, plum trousers and flat shoes; comb in apron pocket. EXACT FOUR columns by SIX rows of equal square cells: row1 front walk four frames; row2 left walk four frames; row3 right walk four frames; row4 back walk four frames; row5 front small hairstyling hand gestures four frames; row6 friendly front waving/greeting four frames. Uniform size and aligned feet in every cell. Full body in every frame no clipping, no text or guides, generous transparent gutters, no ground cast shadows, true transparent background. Overall portrait 2:3 canvas."
+    }
+  ],
+  "assets": [
+    {
+      "id": "avatar-casual",
+      "file": "assets/salon/avatar-casual.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "18916595cdb1380233afe0af3d14b3630a71c10f9f51ef62e6084b9c6dd77733"
+    },
+    {
+      "id": "avatar-casual-skin",
+      "file": "assets/salon/avatar-casual-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "8db51f25a53c0f71b9a14108289efa23447f1b3b28e76a932f9fb82abb6dab72"
+    },
+    {
+      "id": "avatar-casual-top",
+      "file": "assets/salon/avatar-casual-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "95329569f35333aa4826b93d6545f8d1f4da89411089084a51fadb16b316a6a7"
+    },
+    {
+      "id": "avatar-casual-bottom",
+      "file": "assets/salon/avatar-casual-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "6b06b03b800d45042290bfe0a30326c0dbad01bb0da87b010900dc82ec378ccf"
+    },
+    {
+      "id": "avatar-casual-base",
+      "file": "assets/salon/avatar-casual-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2f5e2bf337e0e0e01345b7ce75aee81d29b6599612d2eb8e45d137fb6a79b360"
+    },
+    {
+      "id": "avatar-jacket",
+      "file": "assets/salon/avatar-jacket.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "971bfdb00c4ca9f40f768015ed4b9e2beeabfc05861e7279599001e2eb676f33"
+    },
+    {
+      "id": "avatar-jacket-skin",
+      "file": "assets/salon/avatar-jacket-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "8e48f26873d7ca6357882df0d6f4c0ab79fe646b98b84f2435a73957c6ae416a"
+    },
+    {
+      "id": "avatar-jacket-top",
+      "file": "assets/salon/avatar-jacket-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "55f18b23997a764e36c9e32a7d57830782aad8b68f3daef4ad2486dbfad7a0f2"
+    },
+    {
+      "id": "avatar-jacket-bottom",
+      "file": "assets/salon/avatar-jacket-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "886483c39536671fe7657e6666db998d5b6eb325ba191ba615c3d06e3e758041"
+    },
+    {
+      "id": "avatar-jacket-base",
+      "file": "assets/salon/avatar-jacket-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "e8a4556ea1821a9b987633b96c9df773a7d1535ee1489022a9e1680d75cde454"
+    },
+    {
+      "id": "avatar-overalls",
+      "file": "assets/salon/avatar-overalls.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "befa3cbe8d44afb33ba3f66eb150de049c6b404fe80c50bc4113c474b62ddd40"
+    },
+    {
+      "id": "avatar-overalls-skin",
+      "file": "assets/salon/avatar-overalls-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "7041c624cc1e48667b5f67259ee659c45e5ef14eafb4b3f2019923f10fbfe52a"
+    },
+    {
+      "id": "avatar-overalls-top",
+      "file": "assets/salon/avatar-overalls-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "616a8bf95a4fdbe5591882227399e1d3aefd1bf75abc27ce853953787e1216d1"
+    },
+    {
+      "id": "avatar-overalls-bottom",
+      "file": "assets/salon/avatar-overalls-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "5d0c794aef0a5af1e40e00b420dcb5e8a05477db1fa1bb11bf7eaa81676f2b9d"
+    },
+    {
+      "id": "avatar-overalls-base",
+      "file": "assets/salon/avatar-overalls-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2452c9149e1f8e12471cf4b88fcbb2bb5e5465a8f43fc553a468f56e9ec9e012"
+    },
+    {
+      "id": "avatar-dress",
+      "file": "assets/salon/avatar-dress.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "04fffc23f568429e88697db78de2a4f0d3a5c3cbd81172a209d1806b4b889f51"
+    },
+    {
+      "id": "avatar-dress-skin",
+      "file": "assets/salon/avatar-dress-skin.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "d614c7c49013c3defa29e7177ae041a916b1462d371a71e1b09256f6b143d720"
+    },
+    {
+      "id": "avatar-dress-top",
+      "file": "assets/salon/avatar-dress-top.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "1345d32f02912908ee1367abe1b6d501fa4066b2b9150beebfc3228b5011b863"
+    },
+    {
+      "id": "avatar-dress-bottom",
+      "file": "assets/salon/avatar-dress-bottom.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "24dcd82fad65ceb336df270e96c43234b9245e4f1eb023dde3cb47f6d4697390"
+    },
+    {
+      "id": "avatar-dress-base",
+      "file": "assets/salon/avatar-dress-base.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "2b5aac88ac4201f0ede56f539d15b64ecc7066104f0c066e7d8cc82715eea74f"
+    },
+    {
+      "id": "hair-afro",
+      "file": "assets/salon/hair-afro.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "f0945aaa85abf84e1bc3ec2dfe2f6ab47c7fe0d68808dae4b0b139b84c639feb"
+    },
+    {
+      "id": "hair-short",
+      "file": "assets/salon/hair-short.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "6e80bedffccd1d3c3aa9f025287e4c33782f5d10fe5b8e7e098dc52ed94c7d9f"
+    },
+    {
+      "id": "hair-braids",
+      "file": "assets/salon/hair-braids.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "21e5939d8395b386b582d25bf0fabf926c78e162a40523fb71504cb2caa203cb"
+    },
+    {
+      "id": "hair-locs",
+      "file": "assets/salon/hair-locs.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "078ed441900b2b389c931106588469aae45865b565ab4e9f7256104df74aad47"
+    },
+    {
+      "id": "hair-bun",
+      "file": "assets/salon/hair-bun.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "5e19cd834dc609d105d1ed8963e42da012a309580b0e125b5ee394a10e2d82e4"
+    },
+    {
+      "id": "accessory-band",
+      "file": "assets/salon/accessory-band.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "7d6d45ee643a8e73a11d73b18f5d2b5cc1cd5ee0c38677a23baf30a2beca58ab"
+    },
+    {
+      "id": "accessory-glasses",
+      "file": "assets/salon/accessory-glasses.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "fc5f2b446c9fe73a9680843734e11eaaf502f825fb4dd6a9ab33487c966bc476"
+    },
+    {
+      "id": "accessory-scarf",
+      "file": "assets/salon/accessory-scarf.png",
+      "width": 256,
+      "height": 64,
+      "sha256": "b9d186765a956b26a3d2e568dc1dbbd22e68dedd469377e8ac69845eab77f71d"
+    },
+    {
+      "id": "salon-facade",
+      "file": "assets/salon/salon-facade.png",
+      "width": 512,
+      "height": 352,
+      "sha256": "57cfe15bec6299b692e6f661ab6a09e57ceb02a02f67de3f8d51cc0c67d67d5d"
+    },
+    {
+      "id": "salon-vanity",
+      "file": "assets/salon/salon-vanity.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "8718ae1bc656f4be9eb62e0e7a8a5d04e5869af5815a7bf65b29765fb225cc4e"
+    },
+    {
+      "id": "salon-chair",
+      "file": "assets/salon/salon-chair.png",
+      "width": 160,
+      "height": 192,
+      "sha256": "3c9d004eeedbac1a21d6caedb931cc7c2e98bae2aafa5ac47ec37611d8485d5e"
+    },
+    {
+      "id": "salon-wash",
+      "file": "assets/salon/salon-wash.png",
+      "width": 256,
+      "height": 224,
+      "sha256": "5324a1df291422d939d2ecb086a08566074bd6cdcee10e67a8970886db9f1a93"
+    },
+    {
+      "id": "salon-display",
+      "file": "assets/salon/salon-display.png",
+      "width": 224,
+      "height": 256,
+      "sha256": "dcc7146665b40650407b4a25eb53cf2ad2e277b77b5eda279213d6b7a988962e"
+    },
+    {
+      "id": "stylist-iris",
+      "file": "assets/salon/stylist-iris.png",
+      "width": 256,
+      "height": 384,
+      "sha256": "75e2bc4ec4dcb2c412cdad1c068a9f2f98835b9e9d96b0db3000ca26a041b5ae"
+    }
+  ]
+}

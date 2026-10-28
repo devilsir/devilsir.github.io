@@ -1,0 +1,61 @@
+{
+  "reviewed": "2026-10-27",
+  "location": "Cape Town, South Africa",
+  "sources": [
+    {
+      "id": "sea-iziko",
+      "name": "Iziko Museums · Bo-Kaap",
+      "url": "https://www.iziko.org.za/museums/bo-kaap-museum/",
+      "note": "Arquitetura, stoeps e história comunitária."
+    },
+    {
+      "id": "sea-waterfront",
+      "name": "V&A Waterfront",
+      "url": "https://www.waterfront.co.za/our-story",
+      "note": "Porto de trabalho e criação contemporânea."
+    },
+    {
+      "id": "sea-languages",
+      "name": "Governo da África do Sul",
+      "url": "https://www.gov.za/about-sa/south-africa-glance",
+      "note": "Doze línguas oficiais."
+    },
+    {
+      "id": "sea-fynbos",
+      "name": "SANParks · Table Mountain",
+      "url": "https://www.sanparks.org/parks/table-mountain/explore/fauna-flora/vegetation",
+      "note": "Proteas, ericas, restios e fynbos."
+    },
+    {
+      "id": "sea-memory",
+      "name": "District Six Museum",
+      "url": "https://www.districtsix.co.za/",
+      "note": "Memória, remoções forçadas e reconstrução cultural."
+    },
+    {
+      "id": "sea-snoek",
+      "name": "WWF-SASSI · Snoek",
+      "url": "https://wwfsassi.co.za/sassi-list/fish/?id=98",
+      "note": "Thyrsites atun e formas de pesca."
+    },
+    {
+      "id": "sea-yellowtail",
+      "name": "WWF-SASSI · Yellowtail",
+      "url": "https://wwfsassi.co.za/sassi-list/fish/?id=113",
+      "note": "Seriola lalandi e a pesca no Cabo."
+    },
+    {
+      "id": "sea-fisheries",
+      "name": "WWF South Africa · Fisheries",
+      "url": "https://wwfsassi.co.za/wp-content/uploads/Fisheries-Facts-and-Trends-South-Africa.pdf",
+      "note": "Peixes e ecossistemas."
+    },
+    {
+      "id": "sea-cartography",
+      "name": "Natural Earth · domínio público",
+      "url": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "note": "Contornos geográficos da travessia."
+    }
+  ],
+  "notes": "Fictional layout, characters and voyage; architecture, cultural notes and vegetation based on the cited primary sources."
+}

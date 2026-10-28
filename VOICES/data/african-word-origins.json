@@ -1,0 +1,1164 @@
+{
+  "version": 2,
+  "reviewed": "2026-10-27",
+  "scope": "36 entries from the source list plus the complementary entry ebó",
+  "method": "Original curatorial texts; dictionary proposals are attributed and uncertainty retained; circulation is distinguished from an exact first attestation.",
+  "words": [
+    {
+      "id": "moqueca",
+      "name": "Moqueca",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "mukeka / mu’keka",
+        "originalMeaning": "Preparação culinária",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "Priberam e Infopédia relacionam moqueca ao quimbundo mukeka. A forma escrita varia entre as referências. A história de uma receita e a origem de seu nome precisam ser investigadas separadamente.",
+        "incorporation": "O vocabulário da alimentação circulou no contato entre falantes de línguas africanas e de português. No Brasil, moqueca passou a nomear preparos locais, transmitidos em cozinhas, famílias e comunidades.",
+        "change": "Hoje o nome acompanha receitas regionais distintas; não existe uma única composição obrigatória em todos os lugares.",
+        "sourceIds": [
+          "lex-moqueca",
+          "info-moqueca"
+        ]
+      }
+    },
+    {
+      "id": "canjica",
+      "name": "Canjica",
+      "origin": {
+        "language": "Propostas bantas e derivação de canja",
+        "group": "debate",
+        "region": "África centro-ocidental e outras hipóteses",
+        "form": "kanjika / kandjica; canja + sufixo",
+        "originalMeaning": "Papa, na hipótese banta",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "Há mais de uma explicação: a Infopédia remete ao quicongo kanjika; estudos discutidos pela UFS defendem formas do quimbundo e do umbundo. O Michaelis propõe derivação de canja, enquanto o Priberam registra dúvida.",
+        "incorporation": "A palavra se espalhou com preparos de milho e suas tradições de consumo. O caminho linguístico exato continua discutido; a presença de uma receita no Brasil não resolve, sozinha, a origem de seu nome.",
+        "change": "Em parte do país, canjica nomeia grãos cozidos; em outras regiões, uma preparação cremosa de milho verde.",
+        "sourceIds": [
+          "ufs-canjica",
+          "info-canjica",
+          "mich-canjica",
+          "lex-canjica"
+        ]
+      }
+    },
+    {
+      "id": "dende",
+      "name": "Dendê",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "ndende",
+        "originalMeaning": "Palmeira",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam registra ndende, do quimbundo, como origem de dendê. Compare a forma africana com a palavra portuguesa: as duas pertencem à história do nome de uma palmeira e de seus produtos.",
+        "incorporation": "O nome passou ao português nos contatos luso-africanos e permaneceu no Brasil junto ao uso do fruto e do óleo. A transmissão de saberes culinários ajudou a manter a palavra em circulação.",
+        "change": "Dendê pode designar a planta, seu fruto e o óleo. O uso amplia a referência inicial sem apagar sua ligação com a palmeira.",
+        "sourceIds": [
+          "lex-dende"
+        ]
+      }
+    },
+    {
+      "id": "quindim",
+      "name": "Quindim",
+      "origin": {
+        "language": "Quicongo, na proposta do MLP",
+        "group": "quicongo",
+        "region": "África centro-ocidental · região do Congo",
+        "form": "kintinti",
+        "originalMeaning": "Delicadeza, na referência do MLP",
+        "status": "proposal",
+        "statusLabel": "Proposta identificada",
+        "etymology": "O Museu da Língua Portuguesa aproxima quindim de kintinti, do quicongo. Priberam e Infopédia indicam origem africana sem especificar essa mesma forma. Esta ficha apresenta a proposta identificando sua fonte.",
+        "incorporation": "No português brasileiro, a palavra circula tanto no campo do carinho quanto no da culinária. O nome do doce guarda essa aproximação entre algo delicado e algo apreciado.",
+        "change": "Uma palavra pode nomear um gesto meigo e um doce. A origem do nome não determina, por si só, a origem de todos os ingredientes da receita.",
+        "sourceIds": [
+          "mlp-quindim",
+          "lex-quindim",
+          "info-quindim"
+        ]
+      }
+    },
+    {
+      "id": "fuba",
+      "name": "Fubá",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "fuba",
+        "originalMeaning": "Farinha, fécula",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "Fubá vem do quimbundo fuba, segundo o Priberam. O sentido de farinha ajuda a compreender por que a palavra se ajustou ao vocabulário de moagem e preparo de alimentos.",
+        "incorporation": "No contato cotidiano com o português, nomes de produtos e técnicas alimentares foram incorporados à fala. No Brasil, fubá se tornou especialmente associado à farinha fina de milho.",
+        "change": "Um sentido mais amplo de farinha ganhou uma associação muito frequente com o milho; bolos, broas e angu mantêm esse uso vivo.",
+        "sourceIds": [
+          "lex-fuba"
+        ]
+      }
+    },
+    {
+      "id": "quitute",
+      "name": "Quitute",
+      "origin": {
+        "language": "Quimbundo, segundo o Priberam",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "kitutu",
+        "originalMeaning": "Indigestão, na etimologia registrada",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam remete quitute ao quimbundo kitutu e registra o sentido de indigestão. Essa indicação etimológica não é a definição atual de quitute: as palavras podem mudar bastante de sentido.",
+        "incorporation": "O termo se incorporou ao vocabulário português da alimentação e aparece em usos de Angola e do Brasil. No Brasil, receitas, festas e o trabalho de quem prepara comida sustentam sua circulação.",
+        "change": "Hoje costuma valorizar uma comida saborosa. A relação entre o sentido atribuído ao étimo e o uso moderno mostra uma mudança semântica.",
+        "sourceIds": [
+          "lex-quitute"
+        ]
+      }
+    },
+    {
+      "id": "cafune",
+      "name": "Cafuné",
+      "origin": {
+        "language": "Quicongo ou quimbundo, conforme a fonte",
+        "group": "debate",
+        "region": "África centro-ocidental · região do Congo e Angola",
+        "form": "kafunile, na referência do MLP",
+        "originalMeaning": "Gesto com os dedos; carinho no uso brasileiro",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O MLP relaciona cafuné a kafunile, no conjunto do quicongo. O Priberam apresenta, com ressalva, uma possível origem quimbunda. As referências não atribuem a mesma precisão à filiação do termo.",
+        "incorporation": "A palavra se manteve na oralidade dos cuidados e dos vínculos afetivos. A convivência entre falantes de línguas africanas e de português levou esse vocabulário íntimo à fala brasileira.",
+        "change": "No uso atual, o gesto com os dedos sobre os cabelos ou a cabeça se associa especialmente ao carinho e ao acolhimento.",
+        "sourceIds": [
+          "mlp-cafune",
+          "lex-cafune"
+        ]
+      }
+    },
+    {
+      "id": "dengo",
+      "name": "Dengo",
+      "origin": {
+        "language": "Proposta banta ou mediação do espanhol",
+        "group": "debate",
+        "region": "África centro-ocidental; outra via proposta pelo espanhol",
+        "form": "ndenge / dengue",
+        "originalMeaning": "Manha e expressões de afeto, conforme o uso",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O MLP associa dengo a ndenge no conjunto das línguas bantas. Priberam e Michaelis remetem ao espanhol dengue, em sentido de manha. Não há uma única explicação compartilhada por essas fontes.",
+        "incorporation": "No Brasil, o termo se difundiu nas relações de afeto e na linguagem familiar. Essa circulação atual é observável mesmo quando a rota etimológica anterior recebe explicações diferentes.",
+        "change": "Dengo pode ser carinho, mas também uma maneira manhosa de pedir atenção. Dengoso mostra como a palavra participa da formação de novas palavras em português.",
+        "sourceIds": [
+          "mlp-dengo",
+          "lex-dengo",
+          "mich-dengo"
+        ]
+      }
+    },
+    {
+      "id": "xodo",
+      "name": "Xodó",
+      "origin": {
+        "language": "Formação expressiva; étimo não estabelecido",
+        "group": "debate",
+        "region": "Uso brasileiro · sem língua de origem consensual",
+        "form": "Sem forma anterior comprovada nas fontes",
+        "originalMeaning": "Expressão de afeto no português",
+        "status": "uncertain",
+        "statusLabel": "Origem não esclarecida",
+        "etymology": "Priberam e Infopédia classificam xodó como formação expressiva, ligada ao efeito sonoro da palavra. O Michaelis registra origem desconhecida. Essas referências não confirmam um étimo africano específico.",
+        "incorporation": "Xodó se consolidou na fala afetiva brasileira, em conversas e expressões de carinho. As fontes consultadas não identificam uma pessoa, data ou episódio preciso de entrada no português.",
+        "change": "O uso pode nomear a relação de afeto e também quem ou aquilo que recebe esse carinho especial.",
+        "sourceIds": [
+          "lex-xodo",
+          "info-xodo",
+          "mich-xodo"
+        ]
+      }
+    },
+    {
+      "id": "cacula",
+      "name": "Caçula",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "kasule",
+        "originalMeaning": "Último filho; último de uma série",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "A palavra que nomeia o irmão mais novo é relacionada a kasule, do quimbundo. O Priberam distingue esse nome de outra palavra caçula, associada a malhar ou bater: formas iguais podem ter histórias diferentes.",
+        "incorporation": "O nome de uma posição na família se incorporou à convivência e à oralidade brasileiras. Sua transmissão acontece no uso familiar, muito além de contextos de estudo da língua.",
+        "change": "Além do filho mais novo, caçula pode ser o integrante mais novo de uma equipe ou grupo. O sentido se amplia por comparação.",
+        "sourceIds": [
+          "lex-cacula"
+        ]
+      }
+    },
+    {
+      "id": "moleque",
+      "name": "Moleque",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "muleke",
+        "originalMeaning": "Menino, rapaz jovem",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam registra muleke, do quimbundo. A forma portuguesa se integrou à língua e gerou palavras como molecada. A proximidade formal acompanha uma história de contatos e de desigualdades sociais.",
+        "incorporation": "No Brasil escravista, o uso se ligou também à maneira de designar crianças negras. A palavra atravessou a fala cotidiana e ganhou sentidos diversos, inclusive pejorativos.",
+        "change": "Pode indicar menino ou brincalhão, mas também ser usada para ofender. O valor da palavra depende de quem fala, de quem a recebe e do contexto.",
+        "sourceIds": [
+          "lex-moleque",
+          "mlp-bantu"
+        ]
+      }
+    },
+    {
+      "id": "muvuca",
+      "name": "Muvuca",
+      "origin": {
+        "language": "Quicongo, em hipótese etimológica",
+        "group": "quicongo",
+        "region": "África centro-ocidental · hipótese quicongo",
+        "form": "mvúka, na proposta da Infopédia",
+        "originalMeaning": "Febre intermitente, no étimo proposto",
+        "status": "proposal",
+        "statusLabel": "Proposta identificada",
+        "etymology": "A Infopédia propõe, com ressalva, uma relação com mvúka, do quicongo. O Priberam considera a etimologia duvidosa. A diferença entre o sentido proposto na origem e o brasileiro exige investigação.",
+        "incorporation": "O termo circula no português brasileiro informal para falar de lugares cheios e movimentados. As fontes resumidas não estabelecem uma sequência documental completa entre o étimo proposto e esse uso.",
+        "change": "Pode sugerir festa e animação ou confusão e tumulto. A situação altera o tom de chamar um encontro de muvuca.",
+        "sourceIds": [
+          "info-muvuca",
+          "lex-muvuca"
+        ]
+      }
+    },
+    {
+      "id": "banjo",
+      "name": "Banjo",
+      "origin": {
+        "language": "Mediação do inglês",
+        "group": "outras",
+        "region": "Circulação transatlântica · Américas e Europa",
+        "form": "banjo; o Priberam remete a bandore",
+        "originalMeaning": "Nome de instrumento de cordas",
+        "status": "mediated",
+        "statusLabel": "Mediação de outra língua",
+        "etymology": "O Priberam identifica mediação inglesa e remete a bandore, relacionado ao espanhol bandurria. A história mais remota do nome recebe propostas diferentes. Não se trata aqui de um empréstimo africano direto demonstrado.",
+        "incorporation": "O nome se difundiu com a circulação internacional do instrumento e de suas práticas musicais. As raízes africanas da construção e da execução do banjo são uma questão distinta da rota do nome até o português.",
+        "change": "Em português, o nome se ajusta ao sistema da língua, como no plural banjos. Uma história cultural africana pode conviver com mediação lexical de outra língua.",
+        "sourceIds": [
+          "lex-banjo",
+          "banjo-met"
+        ]
+      }
+    },
+    {
+      "id": "berimbau",
+      "name": "Berimbau",
+      "origin": {
+        "language": "Quimbundo, nas fontes lexicográficas",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "mbirimbau",
+        "originalMeaning": "Nome de instrumento musical",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "Priberam e Infopédia relacionam berimbau a mbirimbau, do quimbundo. O português também empregou o nome para a guimbarda, instrumento de boca diferente do arco musical da capoeira.",
+        "incorporation": "No Brasil, o nome se vinculou fortemente ao arco com arame e cabaça. Rodas, mestres, mestras, aprendizes e músicos mantêm sua circulação como parte de uma prática transmitida entre pessoas.",
+        "change": "A palavra pode aparecer em registros de instrumentos diferentes. Nesta exposição, a ilustração representa o arco musical usado na capoeira.",
+        "sourceIds": [
+          "lex-berimbau",
+          "info-berimbau",
+          "capoeira-unesco"
+        ]
+      }
+    },
+    {
+      "id": "cuica",
+      "name": "Cuíca",
+      "origin": {
+        "language": "Tupi no Priberam; outra associação no MLP",
+        "group": "debate",
+        "region": "Brasil indígena; conexões musicais africanas",
+        "form": "Forma tupi; pwita na associação do MLP",
+        "originalMeaning": "Nome de animal e de instrumento",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O Priberam atribui cuíca ao tupi. O MLP aproxima o instrumento de pwita no conjunto das línguas bantas. Essas duas informações exigem distinguir a história do nome português e a tradição instrumental.",
+        "incorporation": "O nome português circula tanto na zoologia quanto na música. A atuação de comunidades negras na história do tambor de fricção não obriga que o nome cuíca tenha uma origem lexical africana única.",
+        "change": "A mesma palavra nomeia marsupiais e um instrumento. A comparação de sentidos não basta, sozinha, para comprovar quando e como ocorreu a transferência do nome.",
+        "sourceIds": [
+          "lex-cuica",
+          "mlp-bantu"
+        ]
+      }
+    },
+    {
+      "id": "samba",
+      "name": "Samba",
+      "origin": {
+        "language": "Quimbundo, em proposta discutida",
+        "group": "debate",
+        "region": "África centro-ocidental; desenvolvimento brasileiro",
+        "form": "semba, na proposta da Infopédia",
+        "originalMeaning": "Umbigada, no étimo proposto",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "A Infopédia relaciona samba a semba, do quimbundo; o Priberam considera a etimologia duvidosa. A proposta é apresentada como uma explicação identificada, sem reduzir a história do samba a uma tradução.",
+        "incorporation": "O nome circulou com encontros de música e dança e com a atuação de comunidades negras. As diferentes tradições de samba, suas rodas e seus grupos ampliaram seu uso no Brasil.",
+        "change": "Samba pode nomear uma prática, uma composição ou um encontro. Samba de roda e samba-enredo apontam desenvolvimentos com histórias próprias.",
+        "sourceIds": [
+          "info-samba",
+          "lex-samba",
+          "iphan-samba"
+        ]
+      }
+    },
+    {
+      "id": "maracatu",
+      "name": "Maracatu",
+      "origin": {
+        "language": "Origem africana indicada; étimo específico em debate",
+        "group": "debate",
+        "region": "Pernambuco · conexões africanas",
+        "form": "Sem étimo único estabelecido nesta ficha",
+        "originalMeaning": "Nome de prática cultural",
+        "status": "proposal",
+        "statusLabel": "Proposta identificada",
+        "etymology": "O Priberam indica etimologia africana, sem fixar uma forma de origem. A fonte consultada não permite atribuir com segurança o nome a uma palavra específica de uma única língua.",
+        "incorporation": "A palavra se espalhou com cortejos, músicas e grupos pernambucanos. As pessoas que organizam, tocam e transmitem essas práticas participam da circulação de seu nome.",
+        "change": "O nome abrange práticas distintas, como maracatu-nação e maracatu de baque solto. Uma designação em comum não apaga diferenças entre elas.",
+        "sourceIds": [
+          "lex-maracatu",
+          "iphan-maracatu"
+        ]
+      }
+    },
+    {
+      "id": "zabumba",
+      "name": "Zabumba",
+      "origin": {
+        "language": "Hipótese de formação onomatopeica",
+        "group": "debate",
+        "region": "Uso musical no português · étimo discutido",
+        "form": "Imitação de um som, na hipótese proposta",
+        "originalMeaning": "Som grave de tambor",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "A Infopédia propõe uma origem onomatopeica: a palavra evocaria o som. O Priberam registra dúvida etimológica. As fontes não estabelecem um empréstimo direto de uma língua africana específica.",
+        "incorporation": "O nome se mantém com a circulação do tambor e de conjuntos musicais brasileiros. O uso em práticas de forte presença negra não basta para determinar, sozinho, a língua de origem do nome.",
+        "change": "Além de nomear o tambor, zabumba pode designar o conjunto em que ele se destaca e, em certos usos, a pessoa que o toca.",
+        "sourceIds": [
+          "info-zabumba",
+          "lex-zabumba"
+        ]
+      }
+    },
+    {
+      "id": "abada",
+      "name": "Abadá",
+      "origin": {
+        "language": "Iorubá",
+        "group": "ioruba",
+        "region": "África Ocidental · região iorubá",
+        "form": "Origem iorubá; forma anterior não fixada nesta ficha",
+        "originalMeaning": "Vestimenta",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "Priberam e Infopédia indicam origem iorubá. O Priberam registra vestes históricas, roupa de capoeira e camisetas de bloco como usos diferentes do nome em português.",
+        "incorporation": "O nome entrou no repertório brasileiro de vestimentas em contextos de presença africana. Depois passou a circular em práticas distintas, incluindo capoeira e carnaval.",
+        "change": "Uma palavra ligada à roupa passa a nomear peças com formas e funções diferentes. O abadá de um bloco não é a mesma peça da prática de capoeira.",
+        "sourceIds": [
+          "info-abada",
+          "lex-abada"
+        ]
+      }
+    },
+    {
+      "id": "canga",
+      "name": "Canga",
+      "origin": {
+        "language": "Origem do sentido de praia não esclarecida",
+        "group": "debate",
+        "region": "Uso brasileiro · história lexical discutida",
+        "form": "Sem étimo definido para o tecido de praia",
+        "originalMeaning": "Peça de tecido no uso desta galeria",
+        "status": "uncertain",
+        "statusLabel": "Origem não esclarecida",
+        "etymology": "A Infopédia separa diferentes palavras canga e considera obscura a origem do tecido de praia. O Priberam também registra etimologia obscura. A associação africana de outra acepção não resolve automaticamente esta.",
+        "incorporation": "No português brasileiro, o nome circula no vestuário de praia. As referências consultadas registram o uso, mas não uma rota comprovada de incorporação desse sentido.",
+        "change": "Canga também pode nomear uma peça que une bois ou um minério. Identificar o sentido em contexto é essencial antes de pesquisar sua origem.",
+        "sourceIds": [
+          "info-canga",
+          "lex-canga"
+        ]
+      }
+    },
+    {
+      "id": "cacamba",
+      "name": "Caçamba",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "kisambu",
+        "originalMeaning": "Cesta, cesto",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam remete caçamba ao quimbundo kisambu. A ideia de um recipiente que contém ou transporta materiais aproxima o sentido de origem de vários usos portugueses.",
+        "incorporation": "O nome de um utensílio foi incorporado ao vocabulário cotidiano e técnico. Em português brasileiro, passou a acompanhar diferentes recipientes e equipamentos para transporte de materiais.",
+        "change": "O sentido abrange baldes, recipientes de veículos e peças de escavadeiras. A tecnologia muda os objetos aos quais o nome pode se aplicar.",
+        "sourceIds": [
+          "lex-cacamba"
+        ]
+      }
+    },
+    {
+      "id": "cachimbo",
+      "name": "Cachimbo",
+      "origin": {
+        "language": "Proposta banta; origem discutida",
+        "group": "debate",
+        "region": "África centro-ocidental e circulação luso-africana",
+        "form": "kamzimu, na associação do MLP",
+        "originalMeaning": "Nome associado a utensílio",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O MLP apresenta kamzimu junto a cachimbo na exposição de línguas bantas. Priberam e Infopédia consideram sua origem obscura ou duvidosa. A ficha mantém visíveis essas diferenças.",
+        "incorporation": "A palavra se difundiu no português para nomear um utensílio presente em diferentes contextos históricos. A circulação de um objeto não comprova uma única origem para todos os seus nomes e modelos.",
+        "change": "O nome também se estende a objetos de formato semelhante. A peça do museu é um registro de cultura material acompanhado de contexto.",
+        "sourceIds": [
+          "mlp-bantu",
+          "lex-cachimbo",
+          "info-cachimbo"
+        ]
+      }
+    },
+    {
+      "id": "quitanda",
+      "name": "Quitanda",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "kitanda / quitanda",
+        "originalMeaning": "Feira, venda",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam relaciona quitanda ao quimbundo, com sentido de feira ou venda. A grafia kitanda torna mais visível a correspondência com a escrita portuguesa quitanda.",
+        "incorporation": "O nome se incorporou ao português no vocabulário do comércio e da alimentação. No Brasil, o uso cotidiano de bancas e pequenas lojas manteve a palavra em circulação.",
+        "change": "Em regiões como Minas Gerais, quitanda também designa preparos caseiros. O nome do espaço de venda pode se ligar aos alimentos vendidos ou servidos.",
+        "sourceIds": [
+          "lex-quitanda"
+        ]
+      }
+    },
+    {
+      "id": "cafofo",
+      "name": "Cafofo",
+      "origin": {
+        "language": "Origem banta indicada; língua não especificada",
+        "group": "bantu",
+        "region": "África centro-ocidental · filiação precisa não fixada",
+        "form": "Étimo específico não indicado no Priberam",
+        "originalMeaning": "Casa ou lugar, no uso brasileiro",
+        "status": "proposal",
+        "statusLabel": "Proposta identificada",
+        "etymology": "O Priberam indica etimologia banta sem especificar uma língua e uma forma de partida. Banto é um grupo de línguas aparentadas: não é o nome de uma única língua africana.",
+        "incorporation": "No Brasil, cafofo circula na fala informal para nomear casa, quarto ou um canto próprio. A fonte não fornece uma sequência documental que permita datar cada etapa dessa incorporação.",
+        "change": "A palavra pode sugerir um espaço pequeno ou modesto e também transmitir afeto e intimidade, como em meu cafofo.",
+        "sourceIds": [
+          "lex-cafofo"
+        ]
+      }
+    },
+    {
+      "id": "banguela",
+      "name": "Banguela",
+      "origin": {
+        "language": "Topônimo angolano ou proposta quicongo",
+        "group": "debate",
+        "region": "Angola · Benguela; região de língua quicongo",
+        "form": "Benguela / bangala",
+        "originalMeaning": "Lugar; fenda nos dentes, conforme a proposta",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O Priberam remete ao nome de Benguela, em Angola. O MLP registra bangala, do quicongo, com sentido de fenda nos dentes. As duas referências apresentam caminhos etimológicos diferentes.",
+        "incorporation": "A forma se incorporou ao uso brasileiro para descrever a ausência de dentes. A existência de diferentes hipóteses recomenda não transformar uma narrativa popular em explicação única.",
+        "change": "O termo também aparece na expressão de automóvel em ponto morto. Um uso como apelido pode constranger e depende do consentimento de quem é chamado.",
+        "sourceIds": [
+          "mlp-banguela",
+          "lex-banguela"
+        ]
+      }
+    },
+    {
+      "id": "beleleu",
+      "name": "Beleléu",
+      "origin": {
+        "language": "Proposta banta; etimologia obscura em dicionário",
+        "group": "debate",
+        "region": "África centro-ocidental · proposta em discussão",
+        "form": "mbelele, na associação do MLP",
+        "originalMeaning": "Forma associada ao termo; sentido anterior não fixado aqui",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O MLP aproxima beleléu de mbelele na exposição de línguas bantas. O Priberam considera a etimologia obscura. A forma de uma hipótese não deve ser apresentada como prova de um percurso completo.",
+        "incorporation": "No português brasileiro informal, a palavra se fixou especialmente em expressões como ir para o beleléu. As referências consultadas não estabelecem a data exata de entrada dessa expressão.",
+        "change": "O uso pode indicar morte, perda ou fracasso. Em um plano que foi para o beleléu, a expressão tem valor figurado.",
+        "sourceIds": [
+          "mlp-bantu",
+          "lex-beleleu"
+        ]
+      }
+    },
+    {
+      "id": "borocoxo",
+      "name": "Borocoxô",
+      "origin": {
+        "language": "Origem não esclarecida nas fontes comparadas",
+        "group": "debate",
+        "region": "Uso brasileiro · sem atribuição geográfica segura",
+        "form": "Sem étimo consensual nesta ficha",
+        "originalMeaning": "Pessoa abatida, no uso atual",
+        "status": "uncertain",
+        "statusLabel": "Origem não esclarecida",
+        "etymology": "O Priberam registra etimologia duvidosa e a Infopédia, origem obscura. A presença em listas de palavras africanas não fornece, por si só, uma forma de origem comprovada.",
+        "incorporation": "A palavra circula no português informal e em usos regionais para falar de disposição e estado de ânimo. As fontes consultadas não demonstram um episódio ou uma rota única de incorporação.",
+        "change": "Pode significar desanimado; existem outros usos regionais. Nesta galeria, interessa perceber como uma expressão descreve um estado, sem reduzir a pessoa a ele.",
+        "sourceIds": [
+          "lex-borocoxo",
+          "info-borocoxo"
+        ]
+      }
+    },
+    {
+      "id": "engambelar",
+      "name": "Engambelar",
+      "origin": {
+        "language": "Etimologia discutida",
+        "group": "debate",
+        "region": "Uso brasileiro · língua de origem não fixada",
+        "form": "Sem étimo comprovado na fonte consultada",
+        "originalMeaning": "Enganar pela conversa, no uso atual",
+        "status": "uncertain",
+        "statusLabel": "Origem não esclarecida",
+        "etymology": "O Priberam considera a etimologia duvidosa e aproxima engambelar de engabelar. A referência não permite afirmar, como certeza, uma forma de origem de uma língua africana específica.",
+        "incorporation": "O verbo se incorporou à fala informal brasileira ligada a engano e persuasão. Sua conjugação e derivados seguem padrões do português, mesmo sem uma origem remota resolvida.",
+        "change": "Engambelar, engambelou e engambelação mostram a integração ao sistema da língua. Conhecer a família de palavras é diferente de conhecer seu étimo.",
+        "sourceIds": [
+          "lex-engambelar"
+        ]
+      }
+    },
+    {
+      "id": "xingar",
+      "name": "Xingar",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "[ku]xinga + -ar",
+        "originalMeaning": "Injuriar; ofender",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam relaciona xingar a [ku]xinga, do quimbundo, mais a terminação portuguesa -ar. A forma permite observar uma adaptação gramatical, além da aproximação de sons e sentidos.",
+        "incorporation": "A base de origem africana foi incorporada como verbo da primeira conjugação do português. Por isso, aparece em construções como eu xingo, nós xingamos e não xingar.",
+        "change": "Xingamento e xingador são novas formações em português. A palavra emprestada se torna produtiva e participa de outras construções da língua.",
+        "sourceIds": [
+          "lex-xingar"
+        ]
+      }
+    },
+    {
+      "id": "muamba",
+      "name": "Muamba",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "muhamba",
+        "originalMeaning": "Cesto, carga, transporte",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam remete muamba a muhamba, do quimbundo, ligado a um recipiente para viagens e à carga transportada. A história do nome conecta objetos, deslocamento e comércio.",
+        "incorporation": "O termo passou ao português e ganhou usos diferentes em Angola e no Brasil. Na fala brasileira, relaciona-se a mercadorias e pode carregar a ideia de comércio irregular.",
+        "change": "Na Angola contemporânea, muamba também nomeia um preparo culinário. A mesma palavra não tem necessariamente o mesmo sentido em todos os países.",
+        "sourceIds": [
+          "lex-muamba"
+        ]
+      }
+    },
+    {
+      "id": "axe",
+      "name": "Axé",
+      "origin": {
+        "language": "Iorubá",
+        "group": "ioruba",
+        "region": "África Ocidental · região iorubá, Nigéria e Benim",
+        "form": "àṣẹ",
+        "originalMeaning": "Força ou potência de realização, conforme o contexto",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O acervo do MLP registra a forma iorubá àṣẹ, relacionada a axé no português. A palavra reúne sentidos religiosos que precisam ser compreendidos nas tradições e comunidades que a utilizam.",
+        "incorporation": "Falantes de iorubá e seus descendentes preservaram saberes e vocabulário em comunidades afro-brasileiras. O termo passou também a circular como saudação e em contextos musicais.",
+        "change": "Uma saudação, uma referência religiosa e o nome de um gênero musical não são sentidos intercambiáveis. O contexto orienta a leitura de axé.",
+        "sourceIds": [
+          "mlp-axe",
+          "lex-axe",
+          "mlp-ioruba"
+        ]
+      }
+    },
+    {
+      "id": "quilombo",
+      "name": "Quilombo",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "kilombo",
+        "originalMeaning": "Acampamento, reunião, organização de pessoas",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam registra kilombo, do quimbundo, associado a acampamentos e lugares de reunião. Traduzir o étimo apenas como refúgio de fugitivos apagaria sentidos anteriores à experiência brasileira.",
+        "incorporation": "No Brasil escravista, o termo se ligou a comunidades e formas de resistência à escravização. A palavra foi sendo ressignificada nas experiências históricas de seus habitantes e descendentes.",
+        "change": "Comunidades quilombolas atuais possuem territórios, memórias e trajetórias próprias. Quilombo não é apenas um nome de um passado encerrado.",
+        "sourceIds": [
+          "lex-quilombo",
+          "mlp-quilombo"
+        ]
+      }
+    },
+    {
+      "id": "senzala",
+      "name": "Senzala",
+      "origin": {
+        "language": "Quimbundo",
+        "group": "quimbundo",
+        "region": "África centro-ocidental · Angola",
+        "form": "sanzala",
+        "originalMeaning": "Povoação",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O Priberam relaciona senzala ao quimbundo sanzala, com sentido de povoação. O significado que se tornou conhecido no Brasil resulta de uma transformação ligada ao sistema escravista.",
+        "incorporation": "No português do Brasil escravista, passou a designar alojamentos impostos a pessoas escravizadas. A incorporação do nome acompanha uma história de violência, trabalho forçado e resistência.",
+        "change": "A passagem de povoação a alojamento de pessoas escravizadas mostra por que mudanças de sentido devem ser estudadas junto às relações de poder.",
+        "sourceIds": [
+          "lex-senzala"
+        ]
+      }
+    },
+    {
+      "id": "ginga",
+      "name": "Ginga",
+      "origin": {
+        "language": "Derivação de gingar; raiz remota discutida",
+        "group": "debate",
+        "region": "Português; proposta de ligação banta",
+        "form": "gingar → ginga; zinga na associação do MLP",
+        "originalMeaning": "Movimento de um lado para outro",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "Priberam e Infopédia apresentam ginga como formação a partir de gingar. O Priberam considera obscura a origem remota do verbo; o MLP associa zinga à palavra em sua exposição de línguas bantas.",
+        "incorporation": "No Brasil, o termo circula para descrever movimento corporal e se vincula à capoeira, à dança e ao esporte. Essas práticas ampliaram sua presença no cotidiano e na expressão artística.",
+        "change": "Do movimento físico, o uso pode se estender à ideia de desenvoltura. A ginga da capoeira é uma prática específica dentro desse campo de sentidos.",
+        "sourceIds": [
+          "lex-ginga",
+          "info-ginga",
+          "mlp-bantu"
+        ]
+      }
+    },
+    {
+      "id": "cachaca",
+      "name": "Cachaça",
+      "origin": {
+        "language": "Propostas diferentes; origem não resolvida",
+        "group": "debate",
+        "region": "Circulação histórica luso-africana e brasileira",
+        "form": "kisasa no MLP; cacho em outra hipótese",
+        "originalMeaning": "Étimos propostos, sem equivalência única",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "O MLP apresenta kisasa associado a cachaça em sua exposição banta. A Infopédia aventa uma relação com cacho, acompanhada de dúvida. Não há uma origem africana única demonstrada por essas referências.",
+        "incorporation": "O nome circulou no vocabulário da produção de açúcar e de bebidas de cana. Essa história envolve o mundo colonial e o trabalho de pessoas escravizadas, sem resolver automaticamente a origem do nome.",
+        "change": "As fontes registram sentidos ligados à espuma do caldo, à bebida e a usos figurados. A ficha trata da história lexical e do trabalho.",
+        "sourceIds": [
+          "mlp-bantu",
+          "info-cachaca",
+          "lex-cachaca"
+        ]
+      }
+    },
+    {
+      "id": "jaba",
+      "name": "Jabá",
+      "origin": {
+        "language": "Proposta tupi; etimologia duvidosa em outra fonte",
+        "group": "outras",
+        "region": "Brasil · contato com línguas indígenas",
+        "form": "yabá, na proposta da Infopédia",
+        "originalMeaning": "Forma relacionada à designação de carne seca",
+        "status": "debated",
+        "statusLabel": "Etimologia em debate",
+        "etymology": "A Infopédia atribui jabá ao tupi yabá. O Priberam considera a etimologia duvidosa. A inclusão na lista de referência não torna a palavra um empréstimo africano confirmado.",
+        "incorporation": "No português brasileiro, o nome circula na alimentação e também em linguagem informal sobre pagamentos e favores. As fontes não demonstram uma única sequência histórica que explique todos esses usos.",
+        "change": "Carne seca e pagamento para promoção são sentidos diferentes. O contexto, e não apenas a origem proposta, permite entender qual está em jogo.",
+        "sourceIds": [
+          "info-jaba",
+          "lex-jaba"
+        ]
+      }
+    },
+    {
+      "id": "ebo",
+      "name": "Ebó",
+      "origin": {
+        "language": "Iorubá",
+        "group": "ioruba",
+        "region": "África Ocidental · região iorubá, Nigéria e Benim",
+        "form": "ẹbọ",
+        "originalMeaning": "Oferenda, em contexto religioso",
+        "status": "registered",
+        "statusLabel": "Origem registrada",
+        "etymology": "O MLP registra ẹbọ como palavra iorubá ligada a oferendas. No português, ebó conserva a referência a práticas religiosas, com significados situados em cada tradição e comunidade.",
+        "incorporation": "A oralidade e a continuidade de comunidades afro-brasileiras preservaram o nome e os saberes a ele ligados. O termo integra o português em contato com o repertório religioso iorubá.",
+        "change": "A grafia portuguesa se adapta ao seu sistema de escrita. A palavra não fornece uma receita ritual universal: seus usos pertencem a contextos comunitários específicos.",
+        "sourceIds": [
+          "ebo-mlp",
+          "lex-ebo"
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "ebo-mlp",
+      "name": "Museu da Língua Portuguesa · Ebọ",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/10054/ebo",
+      "note": "Registro do léxico iorubá e seu contexto religioso no português brasileiro."
+    },
+    {
+      "id": "capoeira-unesco",
+      "name": "UNESCO · Roda de capoeira",
+      "url": "https://ich.unesco.org/en/RL/capoeira-circle-00892",
+      "note": "Contexto da roda, aprendizagem, música e participação coletiva."
+    },
+    {
+      "id": "banjo-met",
+      "name": "The Met · história do banjo",
+      "url": "https://www.metmuseum.org/art/collection/search/501214",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "iphan-maracatu",
+      "name": "Iphan · patrimônio imaterial de Pernambuco",
+      "url": "https://www.gov.br/iphan/pt-br/superintendencias/pernambuco/patrimonio-imaterial",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-bantu",
+      "name": "Museu da Língua Portuguesa · línguas bantas",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/exposicoes/2486/quicongo-quimbundo-e-umbundo",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-ioruba",
+      "name": "Museu da Língua Portuguesa · iorubá e eve-fon",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/exposicoes/2485/ioruba-e-eve-fon",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-quindim",
+      "name": "Museu da Língua Portuguesa · Kintinti",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/10975/kintinti",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-cafune",
+      "name": "Museu da Língua Portuguesa · Cafuné",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/10554/cafune",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-dengo",
+      "name": "Museu da Língua Portuguesa · Dengo",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/museologico/10700/dengo",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-banguela",
+      "name": "Museu da Língua Portuguesa · Bangala",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/10297/bangala",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-axe",
+      "name": "Museu da Língua Portuguesa · Àṣẹ",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/9776/ase",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "mlp-quilombo",
+      "name": "Museu da Língua Portuguesa · Quilombo",
+      "url": "https://acervo.museudalinguaportuguesa.org.br/acervos/10972/quilombo",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "ufs-canjica",
+      "name": "Universidade Federal de Sergipe · O enigma da canjica",
+      "url": "https://www.ufs.br/conteudo/3139-o-enigma-da-canjica",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "iphan-samba",
+      "name": "Iphan · Samba de Roda do Recôncavo Baiano",
+      "url": "https://bibliotecadigital.iphan.gov.br/items/efd42d18-87ad-4e31-b3bb-c3082f893014",
+      "note": "Referência de etimologia, circulação ou contexto histórico desta exposição."
+    },
+    {
+      "id": "lex-moqueca",
+      "name": "Priberam · Moqueca",
+      "url": "https://dicionario.priberam.org/moqueca",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-canjica",
+      "name": "Priberam · Canjica",
+      "url": "https://dicionario.priberam.org/canjica",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-dende",
+      "name": "Priberam · Dendê",
+      "url": "https://dicionario.priberam.org/dend%C3%AA",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-quindim",
+      "name": "Priberam · Quindim",
+      "url": "https://dicionario.priberam.org/quindim",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-fuba",
+      "name": "Priberam · Fubá",
+      "url": "https://dicionario.priberam.org/fub%C3%A1",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-quitute",
+      "name": "Priberam · Quitute",
+      "url": "https://dicionario.priberam.org/quitute",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cafune",
+      "name": "Priberam · Cafuné",
+      "url": "https://dicionario.priberam.org/cafun%C3%A9",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-dengo",
+      "name": "Priberam · Dengo",
+      "url": "https://dicionario.priberam.org/dengo",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-xodo",
+      "name": "Priberam · Xodó",
+      "url": "https://dicionario.priberam.org/xod%C3%B3",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cacula",
+      "name": "Priberam · Caçula",
+      "url": "https://dicionario.priberam.org/ca%C3%A7ula",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-moleque",
+      "name": "Priberam · Moleque",
+      "url": "https://dicionario.priberam.org/moleque",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-muvuca",
+      "name": "Priberam · Muvuca",
+      "url": "https://dicionario.priberam.org/muvuca",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-banjo",
+      "name": "Priberam · Banjo",
+      "url": "https://dicionario.priberam.org/banjo",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-berimbau",
+      "name": "Priberam · Berimbau",
+      "url": "https://dicionario.priberam.org/berimbau",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cuica",
+      "name": "Priberam · Cuíca",
+      "url": "https://dicionario.priberam.org/cu%C3%ADca",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-samba",
+      "name": "Priberam · Samba",
+      "url": "https://dicionario.priberam.org/samba",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-maracatu",
+      "name": "Priberam · Maracatu",
+      "url": "https://dicionario.priberam.org/maracatu",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-zabumba",
+      "name": "Priberam · Zabumba",
+      "url": "https://dicionario.priberam.org/zabumba",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-abada",
+      "name": "Priberam · Abadá",
+      "url": "https://dicionario.priberam.org/abad%C3%A1",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-canga",
+      "name": "Priberam · Canga",
+      "url": "https://dicionario.priberam.org/canga",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cacamba",
+      "name": "Priberam · Caçamba",
+      "url": "https://dicionario.priberam.org/ca%C3%A7amba",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cachimbo",
+      "name": "Priberam · Cachimbo",
+      "url": "https://dicionario.priberam.org/cachimbo",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-quitanda",
+      "name": "Priberam · Quitanda",
+      "url": "https://dicionario.priberam.org/quitanda",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cafofo",
+      "name": "Priberam · Cafofo",
+      "url": "https://dicionario.priberam.org/cafofo",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-banguela",
+      "name": "Priberam · Banguela",
+      "url": "https://dicionario.priberam.org/banguela",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-beleleu",
+      "name": "Priberam · Beleléu",
+      "url": "https://dicionario.priberam.org/belel%C3%A9u",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-borocoxo",
+      "name": "Priberam · Borocoxô",
+      "url": "https://dicionario.priberam.org/borocox%C3%B4",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-engambelar",
+      "name": "Priberam · Engambelar",
+      "url": "https://dicionario.priberam.org/engambelar",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-xingar",
+      "name": "Priberam · Xingar",
+      "url": "https://dicionario.priberam.org/xingar",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-muamba",
+      "name": "Priberam · Muamba",
+      "url": "https://dicionario.priberam.org/muamba",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-axe",
+      "name": "Priberam · Axé",
+      "url": "https://dicionario.priberam.org/ax%C3%A9",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-quilombo",
+      "name": "Priberam · Quilombo",
+      "url": "https://dicionario.priberam.org/quilombo",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-senzala",
+      "name": "Priberam · Senzala",
+      "url": "https://dicionario.priberam.org/senzala",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-ginga",
+      "name": "Priberam · Ginga",
+      "url": "https://dicionario.priberam.org/ginga",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-cachaca",
+      "name": "Priberam · Cachaça",
+      "url": "https://dicionario.priberam.org/cacha%C3%A7a",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-jaba",
+      "name": "Priberam · Jabá",
+      "url": "https://dicionario.priberam.org/jab%C3%A1",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "lex-ebo",
+      "name": "Priberam · Ebó",
+      "url": "https://dicionario.priberam.org/eb%C3%B3",
+      "note": "Verbete consultado em 27/10/2026. As qualificações de dúvida da fonte são preservadas nas fichas."
+    },
+    {
+      "id": "info-moqueca",
+      "name": "Infopédia · Moqueca",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/moqueca",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-canjica",
+      "name": "Infopédia · Canjica",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/canjica",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-muvuca",
+      "name": "Infopédia · Muvuca",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/muvuca",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-berimbau",
+      "name": "Infopédia · Berimbau",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/berimbau",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-samba",
+      "name": "Infopédia · Samba",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/samba",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-zabumba",
+      "name": "Infopédia · Zabumba",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/zabumba",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-canga",
+      "name": "Infopédia · Canga",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/canga",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-cachimbo",
+      "name": "Infopédia · Cachimbo",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/cachimbo",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-ginga",
+      "name": "Infopédia · Ginga",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/ginga",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-quindim",
+      "name": "Infopédia · Quindim",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/quindim",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-cachaca",
+      "name": "Infopédia · Cachaça",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/cacha%C3%A7a",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-jaba",
+      "name": "Infopédia · Jabá",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/jab%C3%A1",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-xodo",
+      "name": "Infopédia · Xodó",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/xod%C3%B3",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-borocoxo",
+      "name": "Infopédia · Borocoxô",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/borocox%C3%B4",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "info-abada",
+      "name": "Infopédia · Abadá",
+      "url": "https://www.infopedia.pt/dicionarios/lingua-portuguesa/abad%C3%A1",
+      "note": "Dicionário da Porto Editora; usado também para comparar propostas etimológicas."
+    },
+    {
+      "id": "mich-canjica",
+      "name": "Michaelis · Canjica",
+      "url": "https://michaelis.uol.com.br/moderno-portugues/busca/portugues-brasileiro/canjica/",
+      "note": "Dicionário Brasileiro da Língua Portuguesa; comparação de etimologias."
+    },
+    {
+      "id": "mich-dengo",
+      "name": "Michaelis · Dengo",
+      "url": "https://michaelis.uol.com.br/moderno-portugues/busca/portugues-brasileiro/dengo/",
+      "note": "Dicionário Brasileiro da Língua Portuguesa; comparação de etimologias."
+    },
+    {
+      "id": "mich-xodo",
+      "name": "Michaelis · Xodó",
+      "url": "https://michaelis.uol.com.br/moderno-portugues/busca/portugues-brasileiro/xod%C3%B3/",
+      "note": "Dicionário Brasileiro da Língua Portuguesa; comparação de etimologias."
+    }
+  ]
+}

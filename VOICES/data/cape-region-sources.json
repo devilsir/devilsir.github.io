@@ -1,0 +1,531 @@
+{
+  "reviewed": "2026-10-27",
+  "interpretation": "Mapas, personagens e conexões ficcionais inspirados na região do Cabo, África do Sul. Não são plantas de visitação nem uma reconstrução das obras atuais.",
+  "maps": {
+    "bo-kaap": {
+      "name": "Bo-Kaap · ruas e memórias",
+      "short": "Bo-Kaap",
+      "theme": "street",
+      "width": 46,
+      "height": 36,
+      "spawn": [
+        23,
+        30.6
+      ],
+      "color": "#cf895c",
+      "art": "bo-kaap-terrace",
+      "purpose": "Conheça as casas, os stoeps e as vozes de um bairro vivo.",
+      "buildings": [
+        [
+          "cape-houses",
+          11,
+          16,
+          13.5,
+          6.3
+        ],
+        [
+          "bo-kaap-terrace",
+          33,
+          16,
+          13.5,
+          6.3
+        ],
+        [
+          "bo-kaap-terrace",
+          10.7,
+          27,
+          13.5,
+          6.3
+        ],
+        [
+          "cape-heritage",
+          33,
+          27,
+          10.2,
+          6.5
+        ]
+      ],
+      "decor": [
+        [
+          "cape-fynbos",
+          3,
+          16,
+          2.4,
+          2
+        ],
+        [
+          "cape-fynbos",
+          42,
+          12.4,
+          2.4,
+          2
+        ],
+        [
+          "prop-lantern",
+          19.2,
+          12,
+          1.2,
+          1.6
+        ],
+        [
+          "prop-lantern",
+          27,
+          25.5,
+          1.2,
+          1.6
+        ],
+        [
+          "cape-fynbos",
+          38.8,
+          30,
+          3,
+          2.1
+        ],
+        [
+          "cape-fynbos",
+          18.7,
+          23,
+          2.4,
+          2
+        ],
+        [
+          "cape-fynbos",
+          28.2,
+          20.7,
+          2.4,
+          2
+        ]
+      ],
+      "benches": [
+        [
+          18.2,
+          18.8
+        ],
+        [
+          28.6,
+          29.2
+        ]
+      ],
+      "links": [
+        [
+          "cape-town",
+          23,
+          33
+        ],
+        [
+          "kirstenbosch",
+          42,
+          18
+        ]
+      ]
+    },
+    "kirstenbosch": {
+      "name": "Kirstenbosch · jardim do Cabo",
+      "short": "Kirstenbosch",
+      "theme": "garden",
+      "width": 48,
+      "height": 38,
+      "spawn": [
+        24,
+        33
+      ],
+      "color": "#76905d",
+      "art": "garden-pavilion",
+      "purpose": "Siga os caminhos e observe a diversidade do fynbos.",
+      "buildings": [
+        [
+          "garden-pavilion",
+          24,
+          17.2,
+          10,
+          5.5
+        ]
+      ],
+      "decor": [
+        [
+          "protea-bed",
+          16,
+          20,
+          5,
+          3.1
+        ],
+        [
+          "protea-bed",
+          32,
+          20,
+          5,
+          3.1
+        ],
+        [
+          "protea-bed",
+          16,
+          28.1,
+          5,
+          3.1
+        ],
+        [
+          "cape-fynbos",
+          32,
+          27.1,
+          5,
+          3.5
+        ],
+        [
+          "cape-rocks",
+          7,
+          12.5,
+          4,
+          3
+        ],
+        [
+          "cape-rocks",
+          41.5,
+          12.2,
+          4.5,
+          3.2
+        ]
+      ],
+      "benches": [
+        [
+          8.5,
+          25.8
+        ],
+        [
+          39.8,
+          25.8
+        ]
+      ],
+      "links": [
+        [
+          "cape-town",
+          22.3,
+          35.3
+        ],
+        [
+          "bo-kaap",
+          5,
+          32
+        ],
+        [
+          "muizenberg",
+          43,
+          32
+        ]
+      ]
+    },
+    "muizenberg": {
+      "name": "Muizenberg · costa das cores",
+      "short": "Muizenberg",
+      "theme": "coast",
+      "width": 50,
+      "height": 38,
+      "spawn": [
+        25,
+        15.8
+      ],
+      "color": "#4c9a9a",
+      "art": "muizenberg-huts",
+      "purpose": "Explore o passeio, as cabanas e as histórias da vida costeira.",
+      "buildings": [
+        [
+          "muizenberg-huts",
+          18,
+          15,
+          13,
+          6.2
+        ],
+        [
+          "garden-pavilion",
+          35,
+          14,
+          8,
+          4.2
+        ]
+      ],
+      "decor": [
+        [
+          "cape-rocks",
+          41,
+          22,
+          5.4,
+          3.6
+        ],
+        [
+          "cape-rocks",
+          8,
+          29,
+          4.2,
+          3
+        ],
+        [
+          "cape-fynbos",
+          4,
+          17,
+          3,
+          2.4
+        ],
+        [
+          "cape-fynbos",
+          44,
+          13,
+          3,
+          2.4
+        ],
+        [
+          "muizenberg-huts",
+          17,
+          27,
+          12,
+          5
+        ]
+      ],
+      "benches": [
+        [
+          20,
+          12.5
+        ],
+        [
+          40.5,
+          16.5
+        ]
+      ],
+      "links": [
+        [
+          "cape-town",
+          24,
+          4.2
+        ],
+        [
+          "kirstenbosch",
+          45,
+          17
+        ]
+      ]
+    }
+  },
+  "notes": [
+    {
+      "id": "bo-stoep",
+      "map": "bo-kaap",
+      "title": "O encontro no stoep",
+      "en": "A place to meet",
+      "text": "O stoep é uma varanda de entrada. Nas casas do Bo-Kaap, esse espaço liga a vida doméstica à rua e pode receber conversas entre vizinhos.",
+      "sentence": "Neighbours share stories on the stoep.",
+      "translation": "Vizinhos compartilham histórias na varanda.",
+      "source": "sea-iziko",
+      "art": "bo-kaap-terrace",
+      "at": [
+        12,
+        18.2
+      ]
+    },
+    {
+      "id": "bo-homes",
+      "map": "bo-kaap",
+      "title": "Casas que guardam histórias",
+      "en": "Homes and memories",
+      "text": "Janelas verticais, cornijas e platibandas marcam construções do bairro. Observar a arquitetura também é perguntar quem vive, cuida e transforma esses espaços.",
+      "sentence": "A house can hold many memories.",
+      "translation": "Uma casa pode guardar muitas memórias.",
+      "source": "sea-iziko",
+      "art": "cape-houses",
+      "at": [
+        33,
+        18.2
+      ]
+    },
+    {
+      "id": "bo-voices",
+      "map": "bo-kaap",
+      "title": "Um bairro vivo",
+      "en": "A living neighbourhood",
+      "text": "A história muçulmana do Cabo faz parte do Bo-Kaap. Seu patrimônio envolve pessoas e práticas cotidianas, além das fachadas: escutar moradores ajuda a conhecer o lugar.",
+      "sentence": "Listen to the people who live here.",
+      "translation": "Escute as pessoas que vivem aqui.",
+      "source": "sea-iziko",
+      "art": "cape-heritage",
+      "at": [
+        32,
+        29.2
+      ]
+    },
+    {
+      "id": "garden-mountain",
+      "map": "kirstenbosch",
+      "title": "Um jardim junto à montanha",
+      "en": "A garden by the mountain",
+      "text": "Kirstenbosch fica junto às encostas orientais da Table Mountain. Este jardim do jogo inspira-se nessa relação entre caminhos, paisagem e coleções de plantas.",
+      "sentence": "The mountain rises above the garden.",
+      "translation": "A montanha se ergue acima do jardim.",
+      "source": "cape-kirstenbosch",
+      "art": "garden-pavilion",
+      "at": [
+        24,
+        18.8
+      ]
+    },
+    {
+      "id": "garden-proteas",
+      "map": "kirstenbosch",
+      "title": "Uma família, muitas formas",
+      "en": "Many shapes, one family",
+      "text": "Proteas e as flores em forma de alfineteiro de Leucospermum pertencem à família Proteaceae. Compare suas formas no canteiro: diversidade também aparece nos detalhes.",
+      "sentence": "These flowers have different shapes.",
+      "translation": "Estas flores têm formas diferentes.",
+      "source": "cape-proteas",
+      "art": "protea-bed",
+      "at": [
+        16,
+        22.2
+      ]
+    },
+    {
+      "id": "garden-walk",
+      "map": "kirstenbosch",
+      "title": "Caminhos do fynbos",
+      "en": "Following the fynbos",
+      "text": "O Fynbos Walk de Kirstenbosch conecta diferentes coleções, como restios, proteas e ericas. No percurso, observe plantas e mantenha os canteiros livres para crescer.",
+      "sentence": "Follow the path and look closely.",
+      "translation": "Siga o caminho e observe de perto.",
+      "source": "cape-fynbos-walk",
+      "art": "cape-fynbos",
+      "at": [
+        31,
+        29
+      ]
+    },
+    {
+      "id": "coast-huts",
+      "map": "muizenberg",
+      "title": "Cores junto ao mar",
+      "en": "Colours by the sea",
+      "text": "As cabanas de madeira coloridas fazem parte da identidade visual de Muizenberg. Seus telhados e portas simples inspiram as construções deste cenário.",
+      "sentence": "Colourful huts stand beside the beach.",
+      "translation": "Cabanas coloridas ficam junto à praia.",
+      "source": "cape-huts",
+      "art": "muizenberg-huts",
+      "at": [
+        18,
+        17
+      ]
+    },
+    {
+      "id": "coast-people",
+      "map": "muizenberg",
+      "title": "Uma costa compartilhada",
+      "en": "Sharing the coast",
+      "text": "Muizenberg reúne vida de bairro, atividades ligadas ao mar e cultura do surfe. A praia é também um espaço de encontro e aprendizagem coletiva.",
+      "sentence": "People learn and play by the sea.",
+      "translation": "As pessoas aprendem e brincam junto ao mar.",
+      "source": "cape-muizenberg",
+      "art": "npc-kabelo",
+      "at": [
+        31,
+        21.5
+      ]
+    },
+    {
+      "id": "coast-change",
+      "map": "muizenberg",
+      "title": "Uma paisagem se transforma",
+      "en": "A changing coastline",
+      "text": "A prefeitura anunciou obras na orla e a substituição de cabanas por outras de desenho semelhante. Este mapa é uma interpretação ficcional do patrimônio costeiro, sem reproduzir um momento das obras.",
+      "sentence": "Places can change and keep their memories.",
+      "translation": "Os lugares podem mudar e guardar suas memórias.",
+      "source": "cape-coast-update",
+      "art": "cape-rocks",
+      "at": [
+        34,
+        29
+      ]
+    }
+  ],
+  "people": [
+    {
+      "id": "samira",
+      "name": "Samira",
+      "role": "Moradora e pesquisadora de histórias",
+      "map": "bo-kaap",
+      "at": [
+        25.5,
+        18
+      ],
+      "art": "npc-samira",
+      "en": "A neighbourhood is made of people. Take time to listen.",
+      "pt": "Um bairro é feito de pessoas. Reserve um tempo para escutar.",
+      "note": "bo-voices"
+    },
+    {
+      "id": "naledi",
+      "name": "Naledi",
+      "role": "Educadora do jardim",
+      "map": "kirstenbosch",
+      "at": [
+        27.1,
+        19.2
+      ],
+      "art": "npc-naledi",
+      "en": "Look at the leaves as well as the flowers. Each detail tells a story.",
+      "pt": "Observe as folhas e também as flores. Cada detalhe conta uma história.",
+      "note": "garden-proteas"
+    },
+    {
+      "id": "kabelo",
+      "name": "Kabelo",
+      "role": "Educador costeiro e surfista",
+      "map": "muizenberg",
+      "at": [
+        27,
+        23
+      ],
+      "art": "npc-kabelo",
+      "en": "We share this coast. Care for the beach and for one another.",
+      "pt": "Esta costa é compartilhada. Cuide da praia e das outras pessoas.",
+      "note": "coast-people"
+    }
+  ],
+  "sources": [
+    {
+      "id": "cape-kirstenbosch",
+      "name": "SANBI · Kirstenbosch",
+      "url": "https://www.sanbi.org/gardens/kirstenbosch/",
+      "note": "Jardim botânico junto às encostas orientais da Table Mountain."
+    },
+    {
+      "id": "cape-proteas",
+      "name": "SANBI · Protea Garden",
+      "url": "https://www.sanbi.org/gardens/kirstenboch/seasons/spring-flowering-plants-at-kirstenbosch/kirstenbosch-protea-garden/",
+      "note": "Diversidade da família Proteaceae."
+    },
+    {
+      "id": "cape-fynbos-walk",
+      "name": "SANBI · Fynbos Walk",
+      "url": "https://www.sanbi.org/gardens/kirstenboch/seasons/winter-flowering-plants-at-kirstenbosch/kirstenbosch-fynbos-walk/",
+      "note": "Percursos por coleções de plantas."
+    },
+    {
+      "id": "cape-muizenberg",
+      "name": "Cape Town Tourism · Muizenberg",
+      "url": "https://www.capetown.travel/neighbourhoods/muizenberg/",
+      "note": "Vida costeira, surfe e arquitetura."
+    },
+    {
+      "id": "cape-huts",
+      "name": "City of Cape Town · cabanas e patrimônio",
+      "url": "https://www.capetown.gov.za/media-and-news/we-love-our-muizenberg-beach-huts/",
+      "note": "Desenho tradicional das cabanas."
+    },
+    {
+      "id": "cape-coast-update",
+      "name": "City of Cape Town · orla em transformação",
+      "url": "https://www.capetown.gov.za/media-and-news/city-to-dismantle-remainder-of-muizenberg-beach-huts/",
+      "note": "Comunicado de 23/07/2026 sobre as obras e reconstrução das cabanas."
+    },
+    {
+      "id": "sea-iziko",
+      "name": "Iziko Museums · Bo-Kaap",
+      "url": "https://www.iziko.org.za/museums/bo-kaap-museum/",
+      "note": "Arquitetura, stoeps e história comunitária."
+    }
+  ]
+}

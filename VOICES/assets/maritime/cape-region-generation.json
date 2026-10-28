@@ -1,0 +1,147 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-10-27",
+  "processing": "Recorte de margem transparente, escala por vizinho mais próximo e preservação do alfa.",
+  "assets": [
+    {
+      "id": "npc-samira",
+      "file": "assets/maritime/npc-samira.png",
+      "width": 160,
+      "height": 224,
+      "sha256": "3af0845d8e03716d7f2b9ac5e44b875520a62b9239ea6aabbc6ab427c14cacc0",
+      "source_library_file_id": "libfile_6858382ca8248191a9e4ed59a89f825b",
+      "brief": "Samira, historiadora comunitária em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "garden-path",
+      "file": "assets/maritime/garden-path.png",
+      "width": 192,
+      "height": 192,
+      "sha256": "3cea0c7d95fcfede8ee65b3e3e10b61c7da66d252282d0d19b7f62b41e62c818",
+      "source_library_file_id": "libfile_45ad95fee9108191a44c086fc5ad202d",
+      "brief": "Caminho ocre de arenito pixelado",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "npc-naledi",
+      "file": "assets/maritime/npc-naledi.png",
+      "width": 160,
+      "height": 224,
+      "sha256": "1eb20f79528f07f0569506624d450f259586a016741149a7a2211979135c9df8",
+      "source_library_file_id": "libfile_8ca38974c50c8191b022b5fe5761a2c6",
+      "brief": "Naledi, horticultora em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "cape-sand",
+      "file": "assets/maritime/cape-sand.png",
+      "width": 192,
+      "height": 192,
+      "sha256": "8a8e4b1f1b1bb65d5b12cbe35142c417d1f1ebab5d425b58cf58216cb85128b8",
+      "source_library_file_id": "libfile_c9351ca7981c8191a710eb1b0ed0fca8",
+      "brief": "Areia dourada de praia pixelada",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "muizenberg-huts",
+      "file": "assets/maritime/muizenberg-huts.png",
+      "width": 512,
+      "height": 320,
+      "sha256": "46c96b77b371a8e528ab90f50591c716a1590386df45f311532c4699bcf94c71",
+      "source_library_file_id": "libfile_0e537578be3081918052e6348a87bd6f",
+      "brief": "Quatro cabanas de banho coloridas",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "protea-bed",
+      "file": "assets/maritime/protea-bed.png",
+      "width": 256,
+      "height": 192,
+      "sha256": "9feee880bdb920a1604f62f908c2764d4d5aa8ee417fb647a1f2ee3e2f72b8fa",
+      "source_library_file_id": "libfile_fae5a45c78a08191a14752ce70193771",
+      "brief": "Canteiro elevado de proteas pixeladas",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "npc-kabelo",
+      "file": "assets/maritime/npc-kabelo.png",
+      "width": 160,
+      "height": 224,
+      "sha256": "ccae10aeafbee0959e12008675f1f9175070fd36b7a86f6639bb012d58bff2f2",
+      "source_library_file_id": "libfile_d204afccec888191b4372aafc90bce9c",
+      "brief": "Kabelo, surfista educador com prancha",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "cape-rocks",
+      "file": "assets/maritime/cape-rocks.png",
+      "width": 256,
+      "height": 192,
+      "sha256": "d2221e201fd4b13dd77d63a623d519227480683a62061ae3c05f0fa49ac6c1dc",
+      "source_library_file_id": "libfile_26763d6b745c819186364e634fba8047",
+      "brief": "Trio de rochas costeiras em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "garden-pavilion",
+      "file": "assets/maritime/garden-pavilion.png",
+      "width": 512,
+      "height": 352,
+      "sha256": "ded13edcb6b8838d729ca1b0796c52d07b5a98d1bf4ff8d19ea0e5b6c342c92c",
+      "source_library_file_id": "libfile_98903af5c07c81919b3a279d275d323d",
+      "brief": "Pavilhão botânico de pedra e madeira",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "port-crane",
+      "file": "assets/maritime/port-crane.png",
+      "width": 256,
+      "height": 352,
+      "sha256": "275a98c036c8fd908dd289291f3fd8c56a0d2c53b86e11546a4d6d144bdb90ce",
+      "source_library_file_id": "libfile_fb91182465708191967122575d00fae2",
+      "brief": "Guindaste portuário vintage em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "bo-kaap-terrace",
+      "file": "assets/maritime/bo-kaap-terrace.png",
+      "width": 512,
+      "height": 320,
+      "sha256": "9120d038bf539bcb323e6fcd2add71fc8e4186e8149a31dc55f55dca1d7acbcf",
+      "source_library_file_id": "libfile_2732f7d85dc88191ab86da38bfe614ba",
+      "brief": "Casas coloridas do Bo-Kaap",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "dock-timber-v2",
+      "file": "assets/maritime/dock-timber-v2.png",
+      "width": 192,
+      "height": 192,
+      "sha256": "7b52619c4adf66309c43a4888eb308f382eed3052ff951a9b0c07d4e86b64aa8",
+      "source_library_file_id": "libfile_6f5eb9e6588c81918a87f0a57a2b2746",
+      "brief": "Tábuas envelhecidas de píer em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "quay-limestone-v2",
+      "file": "assets/maritime/quay-limestone-v2.png",
+      "width": 192,
+      "height": 192,
+      "sha256": "20f6e293b1ba2971c99e887fddbb341b3575b979c76ccf903bc2fbe0cbec4398",
+      "source_library_file_id": "libfile_9aea2702446c8191a681df31167acc67",
+      "brief": "Calçamento de cais em pedra",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    },
+    {
+      "id": "port-terminal-v2",
+      "file": "assets/maritime/port-terminal-v2.png",
+      "width": 512,
+      "height": 352,
+      "sha256": "b84e98fce2ec2d6d7ae2e43398c04a7fad452652ceac7376b88f59c12f3b6168",
+      "source_library_file_id": "libfile_974df8adcc848191a58d9d930ad55da4",
+      "brief": "Terminal portuário em pixel art",
+      "style": "Pixel art no estilo de VOICES; arquitetura e personagens em visão frontal elevada; texturas de piso vistas de cima."
+    }
+  ]
+}
