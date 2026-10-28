@@ -1,4 +1,4 @@
-/* PWA install affordance. Hidden until the browser reports the app as installable. */
+/* O acesso à instalação permanece disponível, mesmo sem beforeinstallprompt. */
 #pwaInstallBtn{
   position:absolute;
   left:1071px;
@@ -6,23 +6,100 @@
   width:190px;
   height:58px;
   z-index:145;
-  display:none;
+  display:flex;
   align-items:center;
   justify-content:center;
   padding:0 18px;
-  border:0;
-  border-radius:7px;
-  background:rgba(118,43,0,.88);
-  color:#fff5da;
+  border:2px solid rgba(255,211,142,.54);
+  border-radius:9px;
+  background:rgba(105,39,4,.94);
+  color:#fff2d0;
   font-size:18px;
-  font-weight:700;
+  font-weight:800;
   letter-spacing:.2px;
   text-align:center;
-  text-shadow:0 2px 3px rgba(0,0,0,.8);
+  text-shadow:0 2px 3px rgba(0,0,0,.65);
   cursor:pointer;
-  box-shadow:inset 0 0 0 2px rgba(255,196,105,.28),0 4px 12px rgba(0,0,0,.22);
+  box-shadow:0 5px 15px rgba(0,0,0,.32);
 }
-#pwaInstallBtn:hover{background:rgba(142,55,2,.94)}
+#pwaInstallBtn[data-screen="intro"]{
+  left:32px;
+  top:30px;
+  width:185px;
+  height:53px;
+  background:rgba(71,30,7,.88);
+}
+#pwaInstallBtn:hover{background:#8b3f12}
 #pwaInstallBtn:active{transform:translateY(1px)}
-#pwaInstallBtn.is-visible{display:flex}
+#pwaInstallBtn:focus-visible{outline:4px solid #ffe2a7;outline-offset:3px}
+#pwaInstallBtn[hidden],#pwaInstallHelp[hidden]{display:none!important}
 @media (display-mode:standalone){#pwaInstallBtn{display:none!important}}
+
+#pwaInstallHelp{
+  position:absolute;
+  inset:0;
+  z-index:600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(15,8,4,.78);
+}
+.pwaHelpPanel{
+  position:relative;
+  width:630px;
+  max-width:calc(100% - 70px);
+  padding:46px 48px 38px;
+  border:3px solid #d49b55;
+  border-radius:20px;
+  background:linear-gradient(145deg,#4b250e,#241105);
+  color:#fff4dd;
+  box-shadow:0 18px 65px rgba(0,0,0,.55);
+  font-family:Arial,sans-serif;
+  text-align:left;
+}
+.pwaHelpEyebrow{
+  color:#eec58b;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:3px;
+}
+.pwaHelpPanel h2{
+  margin:15px 0 18px;
+  color:#ffe5ac;
+  font-size:38px;
+  line-height:1.1;
+}
+.pwaHelpPanel p{
+  margin:0 0 18px;
+  font-size:23px;
+  line-height:1.4;
+}
+.pwaHelpPanel .pwaHelpNote{
+  color:#dabb98;
+  font-size:18px;
+}
+.pwaHelpClose{
+  position:absolute;
+  top:12px;
+  right:18px;
+  border:0;
+  background:transparent;
+  color:#ffe5ac;
+  font-size:36px;
+  cursor:pointer;
+}
+.pwaHelpDone{
+  margin-top:8px;
+  padding:13px 30px;
+  border:0;
+  border-radius:8px;
+  background:#edbd78;
+  color:#351606;
+  font-size:22px;
+  font-weight:800;
+  cursor:pointer;
+}
+.pwaHelpClose:focus-visible,.pwaHelpDone:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:3px;
+}

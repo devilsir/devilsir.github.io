@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="./index.css?v=35">
 
 <link rel="stylesheet" href="./editmode-v3-style.css?v=25" id="editmode-v3-style">
-<link rel="stylesheet" href="./pwa.css?v=1">
+<link rel="stylesheet" href="./pwa.css?v=2">
 
 </head>
 <body>
@@ -25,7 +25,7 @@
     <img class="bg" id="introBg"><video id="introVideo" class="videoFull" autoplay playsinline></video>
     <div id="introContent" class="modalArea" style="opacity:0;transition:opacity .2s"></div>
   </section>
-  <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div><button id="pwaInstallBtn" type="button" hidden aria-label="Instalar Roleta Química como aplicativo">Instalar app</button></section>
+  <section id="home" class="screen"><img class="bg" data-a="telainicial.png"><div id="homeControls" class="modalArea"></div></section>
   <section id="transition" class="screen"><video id="transitionVideo" class="videoFull" playsinline></video></section>
   <section id="game" class="screen"><img class="bg contain" data-a="xicara de cima.png"><div id="scoreboard" class="gameScore"></div><div class="wheelArea"><div id="wheelWrap" class="wheelWrap"><img id="wheelFallback" alt="" aria-hidden="true"><canvas id="wheelCanvas" width="1040" height="1040"></canvas><button id="spinBtn" class="kbtn" style="left:210px;top:210px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div><button id="gameBack" class="kbtn" style="right:22px;top:0;width:180px;height:80px"><img data-a="setavoltar.png"></button></div><div id="instruction" class="instruction"><img data-a="setadica.png" style="position:absolute;left:728px;top:304px;width:100px;height:100px"><div class="outlinedText">Clique para girar</div><button id="spinBtn2" class="kbtn" style="left:670px;top:385px;width:100px;height:100px"><img data-a="botao_girar.png"></button></div></section>
   <section id="addedit" class="screen"><img class="bg" data-a="fundo generico.jpg"><div id="addEditContent" class="scroll kvScroll" style="position:absolute;inset:0;padding:10px"></div></section>
@@ -71,12 +71,13 @@
 
   <div id="mobileScrollSpacer" class="mobileScrollSpacer"></div>
   <div id="toast" class="toast"></div>
+  <button id="pwaInstallBtn" type="button" hidden aria-label="Instalar Roleta Química como aplicativo">↓ Instalar app</button>
 </main></div>
 <script src="./payload.js?v=27"></script>
 <script src="./english-banks.js?v=36"></script>
 <script src="./english-presets.js?v=33"></script>
 <script src="./xlsx-lite.js?v=1"></script>
 <script src="./index.js?v=38"></script>
-<script src="./pwa.js?v=1"></script>
+<script src="./pwa.js?v=2"></script>
 </body>
 </html>
