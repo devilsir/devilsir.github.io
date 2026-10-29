@@ -162,13 +162,13 @@ function applyBuiltInContentFixes(db){
     mode8.perguntas.forEach(q=>{
       if(!isBuiltin(q))return;
       const text=String(q.pergunta||'');
-      const addAccepted=(items)=>{q.respostas_aceitas=[...new Set([...(Array.isArray(q.respostas_aceitas)?q.respostas_aceitas:[]),...items])]};
       if(text==='Complete com o verbo to be no futuro: Tomorrow, I ___ at school early.'){
         q.pergunta='Complete com o verbo to be no futuro simples usando will: Tomorrow, I ___ at school early.';
         q.dica_texto='Nesta questão, use o futuro simples com will: will + be.';
-      }else if(text==='Passe para o futuro usando o verbo to be: “She is tired today.” Use “tomorrow” na nova frase.'){
-        addAccepted(['she is going to be tired tomorrow',"she's going to be tired tomorrow",'ela vai estar cansada amanhã','ela estará cansada amanhã']);
-        q.dica_texto='Você pode formar a frase com will be ou com am/is/are going to be. Mantenha “tired” e use “tomorrow”.';
+      }else if(text==='Passe para o futuro usando o verbo to be: “She is tired today.” Use “tomorrow” na nova frase.'||text==='Reescreva em inglês: “She is tired today.” Use “tomorrow” e uma das formas de futuro: will be ou be going to.'){
+        q.pergunta='Reescreva em inglês: “She is tired today.” Use “tomorrow” e uma das formas de futuro: will be ou be going to.';
+        q.respostas_aceitas=["she'll be tired tomorrow",'she is going to be tired tomorrow',"she's going to be tired tomorrow"];
+        q.dica_texto='Escolha uma das duas estruturas indicadas no enunciado e mantenha o adjetivo “tired”.';
       }else if(text==='Complete na forma negativa: They ___ at home tonight.'){
         q.pergunta='Complete no futuro simples com will, na forma negativa: They ___ at home tonight.';
         q.dica_texto="Nesta questão, use will na negativa: will not / won't + be.";
@@ -178,9 +178,24 @@ function applyBuiltInContentFixes(db){
       }else if(text==='“Will you be at the party tomorrow?” está correta para perguntar se alguém estará em uma festa no futuro.'){
         q.pergunta='“Will you be at the party tomorrow?” está correta como pergunta no futuro simples com will.';
         q.dica_texto='Observe a estrutura do futuro simples: Will + sujeito + be + complemento.';
-      }else if(text==='Traduza usando o verbo to be no futuro: “Nós estaremos felizes amanhã.”'){
-        addAccepted(['we are going to be happy tomorrow',"we're going to be happy tomorrow",'nós vamos estar felizes amanhã','nos vamos estar felizes amanha']);
-        q.dica_texto='Você pode usar we will be ou we are going to be para expressar a ideia no futuro.';
+      }else if(text==='Traduza usando o verbo to be no futuro: “Nós estaremos felizes amanhã.”'||text==='Traduza para o inglês usando will be ou be going to: “Nós estaremos felizes amanhã.”'){
+        q.pergunta='Traduza para o inglês usando will be ou be going to: “Nós estaremos felizes amanhã.”';
+        q.respostas_aceitas=["we'll be happy tomorrow",'we are going to be happy tomorrow',"we're going to be happy tomorrow"];
+        q.dica_texto='A frase pode ser formada com will be ou com are going to be. “Amanhã” indica o tempo.';
+      }
+      if(text==='Qual é o superlativo de “interesting”?'||text==='Qual é o superlativo de “interesting” em inglês?'){
+        q.pergunta='Qual é o superlativo de “interesting” em inglês?';
+        q.respostas_aceitas=['most interesting'];
+      }else if(text==='Complete com o superlativo de “fast”: Leo is ___ of the three runners.'){
+        q.respostas_aceitas=['fastest'];
+      }else if(text==='Traduza usando comparativo de igualdade: “Ana é tão organizada quanto Bia.”'||text==='Traduza para o inglês usando comparativo de igualdade: “Ana é tão organizada quanto Bia.”'){
+        q.pergunta='Traduza para o inglês usando comparativo de igualdade: “Ana é tão organizada quanto Bia.”';
+        q.respostas_aceitas=['ana is as organised as bia'];
+      }else if(text==='Una as ideias usando comparativo de superioridade: “A car is fast. A bicycle is slower.”'){
+        q.respostas_aceitas=['a car is faster than the bicycle'];
+      }else if(text==='Traduza usando comparativo de inferioridade: “Este livro é menos interessante que aquele.”'||text==='Traduza para o inglês usando comparativo de inferioridade: “Este livro é menos interessante que aquele.”'){
+        q.pergunta='Traduza para o inglês usando comparativo de inferioridade: “Este livro é menos interessante que aquele.”';
+        q.respostas_aceitas=['this book is less interesting than that book'];
       }
     });
   }
@@ -489,6 +504,12 @@ function normalizeDiscursiveAnswer(value){
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g,'')
     .toLocaleLowerCase('pt-BR')
+    .replace(/\bwon['’]t\b/g,'will not')
+    .replace(/\bcan['’]t\b/g,'cannot')
+    .replace(/\b(isn|aren|wasn|weren|don|doesn|didn|couldn|wouldn|shouldn)['’]t\b/g,(_,verb)=>({isn:'is not',aren:'are not',wasn:'was not',weren:'were not',don:'do not',doesn:'does not',didn:'did not',couldn:'could not',wouldn:'would not',shouldn:'should not'}[verb]))
+    .replace(/\b([a-z]+)['’]ll\b/g,'$1 will')
+    .replace(/\b([a-z]+)['’]re\b/g,'$1 are')
+    .replace(/\b(she|he|it|there|that)['’]s\b/g,'$1 is')
     .replace(/[^a-z0-9]+/g,'');
 }
 
@@ -496,7 +517,8 @@ function normalizeDiscursiveAnswer(value){
 // A ideia é aceitar o nome do conceito nos dois idiomas sem transformar
 // exercícios que exigem uma frase específica em respostas livres demais.
 const DISC_EQUIV_GROUPS=[
-  ['simple future','future simple','futuro simples'],
+  ['simple future','future simple','futuro simples','will','future with will','futuro com will'],
+  ['be going to','going to','future with going to','futuro com going to','futuro com be going to'],
   ['immediate future','futuro imediato'],
   ['future continuous','continuous future','futuro continuo'],
   ['future perfect','perfect future','futuro perfeito'],
@@ -521,6 +543,8 @@ const DISC_EQUIV_GROUPS=[
   ['true','verdadeiro'],
   ['false','falso'],
   ['to be','ser ou estar','ser e estar','verbo ser ou estar','verbo ser e estar'],
+  ['stove','cooker'],
+  ['refrigerator','fridge'],
   ['in','inside','dentro','dentro de'],
   ['on','sobre','em cima','em cima de'],
   ['out','outside','fora'],
@@ -558,8 +582,9 @@ function normalizedDiscursiveText(value){
 function splitDiscursiveList(value){
   let text=normalizedDiscursiveText(value);
   if(!text)return null;
-  // Aceita, entre outras: in e on / in ou on / in,on / in/on / in;on / in & on.
+  // Também reconhece itens numerados: a) is b) are; a: is, b: are.
   text=text
+    .replace(/(?:^|\s)[a-e]\s*[).:]\s*/g,'§')
     .replace(/[\/,;|&+]+/g,'§')
     .replace(/\b(?:e|ou|and|or)\b/g,'§');
   const parts=text.split('§').map(v=>v.trim()).filter(Boolean);
@@ -1078,7 +1103,7 @@ function questionPopup(area,q){
     controls=`<div class="discursiveControls">
       <label class="discursiveAnswerLabel" for="discursiveAnswerInput">Digite a resposta:</label>
       <input id="discursiveAnswerInput" class="discursiveAnswerInput" type="text" autocomplete="off" spellcheck="false" placeholder="Escreva sua resposta aqui">
-      <div class="discursiveToleranceNote">Maiúsculas/minúsculas, acentos e pontuação não alteram a correção. Conceitos equivalentes em português/inglês e listas com e/ou, / ou vírgula também são aceitos.</div>
+      <div class="discursiveToleranceNote">A correção ignora maiúsculas, acentos e pontuação. Em conceitos, termos equivalentes podem valer; nas traduções e lacunas, use o idioma solicitado. Respostas em lista aceitam diferentes separadores e itens a), b), c).</div>
       <div class="discursiveAnswerActions">
         <button id="submitDiscursiveAnswer" class="stdBtn discursiveSubmit" style="background-image:url('${A['botao generico popup generico.png']}')">Responder</button>
         ${hasQuestionHint(q)?`<button class="stdBtn discursiveHint" data-result="hint" style="background-image:url('${A['botao generico popup generico.png']}')">Dica</button>`:''}
@@ -1352,7 +1377,7 @@ function renderAddEdit(){
     </div>
     <div id="discursiveFields" hidden>
       <div class="fieldRow"><label for="expectedAnswerInput">Resposta esperada:</label><textarea id="expectedAnswerInput" rows="2" placeholder="Ex.: Guarda-roupa"></textarea></div>
-      <div class="discursiveEditHelp">A correção ignora maiúsculas/minúsculas, acentos, espaços, hífens e pontuação; aceita equivalentes PT/EN cadastrados e variações de listas com e/ou, and/or, /, vírgula, ponto e vírgula, & ou +.</div>
+      <div class="discursiveEditHelp">A correção ignora maiúsculas/minúsculas, acentos, espaços, hífens e pontuação; aceita equivalentes PT/EN cadastrados somente quando fazem sentido no enunciado. Em tradução e lacunas, cadastre respostas no idioma pedido. Listas podem usar a), b), c) ou separadores variados.</div>
       <div class="fieldRow"><label for="acceptedAnswersInput">Outras respostas aceitas:</label><textarea id="acceptedAnswersInput" rows="3" placeholder="Opcional. Uma por linha. Ex.: Roupeiro&#10;Armário"></textarea></div>
     </div>
     <div id="trueFalseFields" hidden>

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "fish-bagrus",
+    "file": "fish-bagrus.png",
+    "size": [
+      448,
+      200
+    ],
+    "sha256": "c8e9c4fbc50cee9c5bb7475d7e38e05effc875f35b54dc44b9fb79c3a9202156",
+    "prompt": "Use case: scientific-educational. Asset type: production transparent 16-bit pixel-art RPG fish sprite for VOICES. ONE Bayad catfish Bagrus bayad, silver grey elongated scaleless fish, long slender barbels, tall triangular dorsal fin, distinct small adipose fin and deeply forked tail. Whole animal facing RIGHT in strict side profile, centered isolated sprite, fills 80 percent of width, generous transparent margin around fins and barbels. Crisp stepped pixel outlines and clustered naturalistic shading, friendly detailed game art matching cozy coastal RPG. No water, no scenery, no text, no label, no shadow. Genuine transparent alpha. This will be animated swimming using runtime mesh deformation.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "fish-synodontis",
+    "file": "fish-synodontis.png",
+    "size": [
+      418,
+      240
+    ],
+    "sha256": "6c7174d293cc34b1c76b751caf2dc3cee3c744a89238ab3e88927d1b61e7db97",
+    "prompt": "Use case: scientific-educational. Asset type: production transparent 16-bit pixel-art RPG fish sprite for VOICES. ONE Synodontis schall catfish, grey olive body covered in small dark spots, high triangular spiny dorsal fin, forked tail, short branched barbels. Whole animal facing RIGHT in strict side profile, centered isolated sprite, fills 80 percent of width, generous transparent margin around fins and barbels. Crisp stepped pixel outlines and clustered naturalistic shading, friendly detailed game art matching cozy coastal RPG. No water, no scenery, no text, no label, no shadow. Genuine transparent alpha. This will be animated swimming using runtime mesh deformation.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "fish-mullet",
+    "file": "fish-mullet.png",
+    "size": [
+      448,
+      161
+    ],
+    "sha256": "132c6887678bd6cde9ee25bd16aca3c81a77df55c64cdbf7f3f70d59513ee841",
+    "prompt": "Use case: scientific-educational. Asset type: production transparent 16-bit pixel-art RPG fish sprite for VOICES. ONE Southern mullet Chelon richardsonii, elongated torpedo silver body, blunt rounded small head, dark horizontal stripes, two separate dorsal fins, forked tail. Whole animal facing RIGHT in strict side profile, centered isolated sprite, fills 80 percent of width, generous transparent margin around fins and barbels. Crisp stepped pixel outlines and clustered naturalistic shading, friendly detailed game art matching cozy coastal RPG. No water, no scenery, no text, no label, no shadow. Genuine transparent alpha. This will be animated swimming using runtime mesh deformation.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "delivery-motorbike",
+    "file": "delivery-motorbike.png",
+    "size": [
+      400,
+      251
+    ],
+    "sha256": "ebcf96917625887c14fa619cf03b7991e8a71c4966777783e24d8fd7b70e0842",
+    "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art RPG sprite. ONE compact delivery MOTORCYCLE with a warm golden yellow fuel tank, teal accents, black wheels, dark seat and a small orange insulated parcel box mounted on rear rack. Strict SIDE PROFILE facing RIGHT, no rider, no person, no helmet floating above bike, no background, no ground shadow, no text, genuine transparent alpha. Full isolated motorcycle, clear margin. Detailed cozy 16-bit pixel clusters, dark stepped outlines, same style as a story-rich 2D RPG. Seat clearly available to composite a preexisting chibi player character. Motorbike, engine and exhaust pipe clearly visible; not a bicycle.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "delivery-panorama",
+    "file": "delivery-panorama.png",
+    "size": [
+      1280,
+      480
+    ],
+    "sha256": "64fcdaf407383a1d725e0f83dedb91e7d6572140bd01b12655448aa671890250",
+    "prompt": "Use case: stylized-concept. Asset type: wide seamless-feeling parallax backdrop for a cozy detailed 16-bit pixel art side-scrolling motorcycle delivery game. Brazilian coastal hillside town viewed from a street: far blue-green mountains, bay, tiny distant colourful houses, layered palm crowns, warm clouded sunny sky. No large foreground buildings, no street or road, no people, no vehicles, no text, no UI. The lowest 18 percent is simple flat muted green vegetation so that foreground houses can be composited above it. Wide landscape, crisp pixel clusters and hand dithered shading, warm blue sea, terracotta and leafy palette. Distant details only; keep foreground empty.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "fish-nile-perch",
+    "file": "fish-nile-perch.png",
+    "size": [
+      445,
+      240
+    ],
+    "sha256": "65c3e7965ed4334bc2623dd5a702cfefd5d9cf4ac6422918000eeacf6aeb1a20",
+    "prompt": "Use case: scientific-educational. Asset type: production transparent 16-bit pixel-art RPG fish sprite for VOICES. ONE Nile perch Lates niloticus, large robust silver greenish fish, prominent big mouth, deep thick body, spiny dorsal fin, rounded tail. Whole animal facing RIGHT in strict side profile, centered isolated sprite, fills 80 percent of width, generous transparent margin around fins and barbels. Crisp stepped pixel outlines and clustered naturalistic shading, friendly detailed game art matching cozy coastal RPG. No water, no scenery, no text, no label, no shadow. Genuine transparent alpha. This will be animated swimming using runtime mesh deformation.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "fish-hake",
+    "file": "fish-hake.png",
+    "size": [
+      448,
+      156
+    ],
+    "sha256": "3b6f9c87b28d51ba730ce219cedef6922b1ce73089a7691d7ddc3539cbbdb79d",
+    "prompt": "Use case: scientific-educational. Asset type: production transparent 16-bit pixel-art RPG fish sprite for VOICES. ONE Cape hake Merluccius capensis, elongated silver grey fish, two dorsal fins, large mouth, slender tail. Whole animal facing RIGHT in strict side profile, centered isolated sprite, fills 80 percent of width, generous transparent margin around fins and barbels. Crisp stepped pixel outlines and clustered naturalistic shading, friendly detailed game art matching cozy coastal RPG. No water, no scenery, no text, no label, no shadow. Genuine transparent alpha. This will be animated swimming using runtime mesh deformation.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "house-red",
+    "file": "house-red.png",
+    "size": [
+      345,
+      310
+    ],
+    "sha256": "05979af2bc0eb15bb064e2d23a1b2be5e50e128f6e0902e9f3c71a5dca5dab25",
+    "prompt": "Use case: stylized-concept. Asset type: transparent sprite atlas for a cozy 16-bit pixel-art side scrolling delivery game. EXACTLY THREE equal-width cells in one horizontal row. Each cell contains one complete small front-facing Brazilian coastal neighbourhood house, isolated, full silhouette including tiled roof, short stoop and front door at center. Left cell RED stucco house, center cell BLUE stucco house, right cell GOLDEN YELLOW stucco house. Similar dimensions, detailed warm terracotta roof tiles, window shutters, small flowers and mailbox. Doors unobstructed and clearly readable. No people, no pavement connecting cells, no scenery, no writing, no numbers, no UI, no shadows beyond house silhouette. Genuine transparent background. Crisp stepped pixel outlines and lush clustered shading, production game sprites.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "house-blue",
+    "file": "house-blue.png",
+    "size": [
+      344,
+      310
+    ],
+    "sha256": "e83109511132495943ff2ccf6a170aa4719d8ff133cd55b0dad08a8058be45a9",
+    "prompt": "Use case: stylized-concept. Asset type: transparent sprite atlas for a cozy 16-bit pixel-art side scrolling delivery game. EXACTLY THREE equal-width cells in one horizontal row. Each cell contains one complete small front-facing Brazilian coastal neighbourhood house, isolated, full silhouette including tiled roof, short stoop and front door at center. Left cell RED stucco house, center cell BLUE stucco house, right cell GOLDEN YELLOW stucco house. Similar dimensions, detailed warm terracotta roof tiles, window shutters, small flowers and mailbox. Doors unobstructed and clearly readable. No people, no pavement connecting cells, no scenery, no writing, no numbers, no UI, no shadows beyond house silhouette. Genuine transparent background. Crisp stepped pixel outlines and lush clustered shading, production game sprites.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "house-yellow",
+    "file": "house-yellow.png",
+    "size": [
+      345,
+      310
+    ],
+    "sha256": "eebb796d33e053dea606586cc09236e9cdb9387ce9178f6eea48b8c57fad877d",
+    "prompt": "Use case: stylized-concept. Asset type: transparent sprite atlas for a cozy 16-bit pixel-art side scrolling delivery game. EXACTLY THREE equal-width cells in one horizontal row. Each cell contains one complete small front-facing Brazilian coastal neighbourhood house, isolated, full silhouette including tiled roof, short stoop and front door at center. Left cell RED stucco house, center cell BLUE stucco house, right cell GOLDEN YELLOW stucco house. Similar dimensions, detailed warm terracotta roof tiles, window shutters, small flowers and mailbox. Doors unobstructed and clearly readable. No people, no pavement connecting cells, no scenery, no writing, no numbers, no UI, no shadows beyond house silhouette. Genuine transparent background. Crisp stepped pixel outlines and lush clustered shading, production game sprites.",
+    "tool": "built-in image_gen"
+  }
+]

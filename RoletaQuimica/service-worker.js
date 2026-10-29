@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'roleta-quimica-cafe-';
-const CACHE_NAME = CACHE_PREFIX + 'v26-reliable-install';
+const CACHE_NAME = CACHE_PREFIX + 'v27-english-answers';
 const APP_SHELL = [
   './index.html',
   './manifest.webmanifest',

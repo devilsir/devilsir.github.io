@@ -1,0 +1,26 @@
+{
+  "fish_added": [
+    "Merluccius capensis",
+    "Chelon richardsonii",
+    "Lates niloticus",
+    "Bagrus bayad",
+    "Synodontis schall"
+  ],
+  "sources": [
+    {
+      "id": "fish-food-cape",
+      "institution": "Department of Cultural Affairs and Sport, Museum Service",
+      "title": "Food from the Ocean",
+      "url": "https://artsandculture.google.com/story/FgVBtbmokm-8Jg",
+      "scope": "Consumo de hake e mullet; bokkoms e peixe em conserva do Cabo. A identificação dos sprites é ilustrativa."
+    },
+    {
+      "id": "fish-food-volta",
+      "institution": "FAO / Department of Fisheries, Ghana",
+      "title": "Processing for export of traditional fishery products along the Volta Lake in Ghana",
+      "url": "https://www.fao.org/4/a0103e/a0103e03.htm",
+      "scope": "Tabela 3: Lates niloticus, Bagrus bayad, Synodontis schall/ocellifer; métodos de preservação documentados na pesquisa."
+    }
+  ],
+  "art_prompts": "assets/arcade-expansion/imagegen-generation.json"
+}
