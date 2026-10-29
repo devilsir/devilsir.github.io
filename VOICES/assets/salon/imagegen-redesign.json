@@ -1,0 +1,41 @@
+{
+  "generator": "built-in imagegen",
+  "styleReference": "VOICES market environment",
+  "assets": [
+    {
+      "file": "assets/salon/salon-facade.png",
+      "width": 128,
+      "height": 77,
+      "sha256": "4f92bd32f259045fac5623b1588f426382919b29691059e09e486e6c9265dd21",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art RPG building sprite for VOICES. The attached screenshot is STYLE AND CAMERA REFERENCE ONLY: its small, simple outlined pixel props and muted greens, sand, dark blue outlines. Generate a NEW Salão Íris shop exterior as a SINGLE isolated object with actual transparent background. Replace the ornate high-detail house visible in screenshot with a modest neighborhood beauty salon that belongs to the screenshot's simple top-down game. Elevated orthographic 3/4 FRONT view, axis-aligned, see a little roof and front, NO isometric diamond, NO diagonal footprint. Shape: small single story storefront, low terracotta roof, pale warm plaster, muted sage-green window frames, wide centered wooden door with glass, two small windows, a small dusty-rose striped awning, blank small signboard above door (NO lettering, the game draws the sign), one tiny plant each side. Crisp chunky pixel blocks suggesting 96x96 native sprite, restrained 18-24 color palette, 1-2 pixel dark blue outline, minimal flat stepped shading, no gradients or tiny ornate details. Bottom threshold must be at the bottom of sprite with no floor tile, no platform, no cast shadow, no ambient ground. Shape fits roughly 1.3:1 width:height within square transparent canvas. Clean alpha silhouette. No people, no extra props, no text, no watermark. Large coherent pixels, as simple as the carts and workbenches in reference."
+    },
+    {
+      "file": "assets/salon/salon-chair.png",
+      "width": 46,
+      "height": 70,
+      "sha256": "1746df7aa4c46d6caee41416e8663d509b11570436e93149e3fe2d286d201d1a",
+      "prompt": "Use case: stylized-concept. Asset type: transparent standalone salon chair sprite for VOICES pixel RPG. Screenshot is STYLE REFERENCE ONLY: match simple chunky pixel objects, sand/green/dark navy outlines; ignore ornate salon visible there. A SINGLE modest beauty salon chair in elevated orthographic three-quarter front view, axis aligned for top-down RPG, not isometric diamond. Dusty rose upholstered seat and low back, dark wooden or dark metal armrests, visible short pedestal and wide dark metal round base, small footrest. Crisp chunky pixel blocks suggesting 48x56 native pixels, limited 18 colors, dark blue 1-2px outline, minimal flat stepped shading, no gradient, no tiny stitches or ornate gold. Actual transparent background, no floor, no tile, NO shadow. Whole base rests at bottom of silhouette with no padding underneath. No people, no text, one isolated object only, centered."
+    },
+    {
+      "file": "assets/salon/salon-vanity.png",
+      "width": 56,
+      "height": 79,
+      "sha256": "fa2a8f92d55b3c0ef39d5ac53a0cd41680c71f7a6aa0f1a45a5b34e080e187eb",
+      "prompt": "Use case: stylized-concept. Asset type: transparent single salon vanity workstation sprite for VOICES pixel RPG. Attached screenshot is STYLE AND CAMERA REFERENCE ONLY: simple chunky pixel props, muted sand, sage and dark blue outlines; ignore ornate salon in reference. One small upright rectangular mirror attached securely to a low muted sage-green and warm wood cabinet, two drawers, short thick visible feet. A comb, one bottle and folded cream towel clearly REST ON the cabinet counter, nothing airborne. Elevated orthographic front 3/4 top-down RPG viewpoint, axis aligned, not isometric diamond. Coarse readable pixel art suggesting native 64x72 pixels, 18-24 colors, 1-2 px dark navy outline, flat stepped shading, no gradients, no ornate gold or carving, no highly detailed reflections. Actual transparent background. Mirror and cabinet form ONE connected object. No people, no floor/platform/tile, NO cast shadow, no text, no logos. Feet at bottom, clean silhouette."
+    },
+    {
+      "file": "assets/salon/salon-wash.png",
+      "width": 71,
+      "height": 72,
+      "sha256": "85c6fe51f4d31f38a97d2fbf4cfc6eabd995f72caebd961dd02d133f08c5b28f",
+      "prompt": "Use case: stylized-concept. Asset type: transparent single shampoo wash chair unit sprite for VOICES pixel RPG. Attached screenshot is STYLE REFERENCE ONLY: chunky simple pixel props, muted sand, sage, dark blue outlines. ONE connected shampoo unit: compact sage-green reclining salon chair, a small cream ceramic basin securely attached at back/top with a tiny dark faucet, warm wood support, chair foot section slopes down and connects to short base. Elevated orthographic 3/4 front view, axis-aligned top-down game perspective, NOT isometric. Coarse pixel art suggesting native 64x64px, limited 18-24 colors, strong dark navy 1-2px outline, simple flat stepped shading with large coherent pixel clusters. Actual transparent background; no floor, no tile, no room, NO shadow. Whole base at bottom of silhouette, no floating component. No people, no text, no ornate details."
+    },
+    {
+      "file": "assets/salon/salon-display.png",
+      "width": 56,
+      "height": 63,
+      "sha256": "59db0436407406d6cd9cf337421eea94f7afe3465ee17b07b39e22b8e01f7f50",
+      "prompt": "Use case: stylized-concept. Asset type: transparent single small clothes display rack for VOICES pixel RPG. Screenshot is STYLE REFERENCE ONLY: simple chunky pixel props, muted sand, sage, dark blue outlines. One compact sturdy wooden open wardrobe/display rack with TWO thick visible feet, vertical uprights connected to top rail, two hanging garments (cream shirt and muted terracotta jacket) on hangers actually attached to rail, bottom shelf with two stacked folded fabrics in dusty rose and sage. Tiny plant pot sits on shelf, not on air. Elevated orthographic 3/4 front view, axis-aligned top-down game perspective, NOT isometric diamond. Chunky coarse pixel blocks suggesting 48x64 native sprite, 18-24 colors, strong dark navy outline, minimal flat stepped shading, no gradient, no ornate gold or detailed fabric. Actual transparent background, no floor tile, no platform, NO cast shadow, no people, no text, no watermark. Object cleanly connected, feet touching bottom of silhouette."
+    }
+  ]
+}

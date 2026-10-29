@@ -1,0 +1,54 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "file": "assets/arcade-expansion/delivery-rider.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent pixel-art spritesheet for a side-scrolling educational delivery game. Create one sheet with EXACTLY TWO equal-width cells side by side, no gutters or labels. In each cell show the SAME compact teal and ochre delivery scooter WITH a seated Black teenage courier, all fully visible, both wheels on the same baseline, side view facing RIGHT. Cell 1: riding, both hands on handlebar. Cell 2: same motorcycle, same body position, courier's near arm extended up and forward as if having just thrown a small parcel; no parcel itself. IMPORTANT anatomy: hips firmly on seat, bent knee, boot rests on footpeg, arms reach handlebars, no extra limbs. Courier wears cream open-face helmet with face visible, teal short sleeve jacket, navy trousers, ochre small luggage box behind seat. Warm brown skin. Consistent scale, exact wheel positions and head position across both cells. Style is chunky low-resolution 16-bit game pixel art, strong dark navy outlines, simple large readable pixel clusters, muted sage/ochre/cream colors. Each cell designed to reduce to 160x128 pixels. Crisp blocky pixel edges, flat 2-3 shade palette per material. Avoid photo realism, overly fine motorcycle detail, 3D rendering, text, labels, logos, scenery, baked shadows, motion blur. Genuine transparent background.",
+      "width": 320,
+      "height": 128,
+      "sha256": "0eed815c9efb56cc25b0c6441a931b2e663ad29f6d461299105f59d45b8b689a"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-light.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single household table lamp with ochre conical lampshade, cream stem and circular base, turned on. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "f29db7089ceab048d7facddda645cf5a04a18cab33c5ce06e555f43e4db98d45"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-book.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single closed sage green hardcover book with cream page block, ochre spine and a plain cover. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "a6afc0d8995f8c4f17233ab6879d94162ff03605ec89ea4ef9d3c54a1cb85215"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-water.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single clear blue reusable drinking water bottle, visible blue water and teal screw cap. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "6ae7ad32b52a10de90746d06526a00f7ef39694ba5ec9daeef2b8b02b3349f63"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-plant.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single small lush green leafy houseplant in a terracotta flowerpot. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "9b1ab67a1d279ecba99decbc950ba3d933359454c0f8ebe681b017a9635866d2"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-clock.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single round cream and ochre analog alarm clock, two bells on top, readable dark hands. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "2b06c5b0382365cf1247436ab517d61031563512f0d7ea51f135f8d6b7302e22"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-bread.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory item icon for a cozy pixel-art side-scrolling game. Primary request: a single golden brown loaf of bread with three scored cuts and one cut end showing pale crumb. One item only, centered, fully visible, genuine transparent background, no shadow. Style: chunky 16-bit pixel art, strong dark navy outlines, simple large pixel clusters, warm cream highlights, muted sage/ochre/terracotta palette, flat 2-3 shade palette per material, readable at 48x48 pixels. Front or slight three-quarter view. No text, letters, digits, labels, UI, frames, gradients, scenery, watermark or extra unrelated props. Match a cozy educational RPG, clean silhouette and generous padding.",
+      "width": 64,
+      "height": 64,
+      "sha256": "ae1a8eadffa0542a8945ea64ee15210fac35ffe4b9fa72ae9a70f5c592a2f86e"
+    }
+  ]
+}

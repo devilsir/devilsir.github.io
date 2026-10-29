@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "file": "assets/arcade-expansion/delivery-rider-animated.png",
+      "prompt": "Use case: precise-object-edit. Edit target: the supplied two-pose side-view pixel-art scooter courier. Produce an expanded animation sprite sheet of the SAME courier and scooter, EXACTLY FOUR equal-width cells in ONE horizontal row. Preserve the cream helmet, brown face, teal shirt, navy trousers, ochre luggage box, teal/cream scooter and right-facing side view. Each cell contains the complete bike and rider, with generous 10% transparent padding on both sides, consistent scale, identical wheel centers and ground baseline. Change only the courier's near-side arm across frames: 1 riding with hands on the handlebars, 2 preparing a throw with near elbow bent and EMPTY hand near the shoulder, 3 releasing a throw with near arm extended diagonally up and forward and EMPTY open hand, 4 following through with near arm lowered halfway toward the handlebar. The far hand stays on the handlebar in all frames. The head, torso, legs, bike and luggage remain aligned. Clean chunky 16-bit pixel art with dark navy outlines, readable when each frame is reduced to 160x128. No item in hands, no parcel, no effects, no text, no scenery, no baked shadow. Genuine transparent background.",
+      "columns": 4,
+      "rows": 1,
+      "frameWidth": 160,
+      "frameHeight": 128,
+      "width": 640,
+      "height": 128,
+      "sha256": "d929cc8aff8f05170544da42f1ed2ec847d30ccaac64e85c344e26318915571a",
+      "poses": [
+        "ride",
+        "prepare",
+        "release",
+        "recover"
+      ]
+    }
+  ]
+}

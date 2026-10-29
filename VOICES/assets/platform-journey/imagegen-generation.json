@@ -1,0 +1,38 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "file": "assets/platform-journey/ayo.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: A sprite sheet of the SAME original friendly fantasy antelope mount in EXACTLY FOUR equal-width cells in one horizontal row. Full side view, all facing RIGHT. A small stocky blue-green antelope with warm cream muzzle and belly, two short curled horns, expressive eyes, long teal tail and a small simple ochre saddle with no rider. Short sturdy legs. A friendly rideable companion for a Black-culture educational adventure, named Ayo but NO lettering. The four cells depict successive frames of an easy trot, consistent head and saddle location and ground baseline. Both pairs of legs animate naturally. All four antelopes fully visible with matching scale and space between cells. Each cell should read at 96x80 pixels. An original creature, not a dinosaur and not a copy of an existing game character. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "refinementPrompt": "Use case: precise-object-edit. Edit target: the supplied four-frame Ayo antelope mount sprite sheet. Keep exactly the same character design, blue-green and cream colors, ochre saddle, four trotting poses, side view facing RIGHT, pixel-art style and transparent background. Reframe ONLY: reduce each animal to fit fully inside its own equal-width cell with at least 10% transparent padding on BOTH left and right, and 8% padding top and bottom. The current animals crowd the cell edges. Make all four animals fully visible including muzzle, horns, hooves and tail, with no overlap between neighboring cells. Exact same size, saddle position and ground baseline in every frame. One horizontal row, four equal cells. No labels, no scenery, no shadow.",
+      "width": 384,
+      "height": 80,
+      "sha256": "cf1b2233c1b0e86923232dd2bd9d24e50744b0cd80ed97d5b0cc2a9ce46ffc4c",
+      "columns": 4,
+      "rows": 1,
+      "frameWidth": 96,
+      "frameHeight": 80
+    },
+    {
+      "file": "assets/platform-journey/ember-flower.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE collectible magical ember flower for a platform adventure: a small orange-red hibiscus-like flower with five broad petals, a softly glowing amber flame-shaped stamen, two sage green leaves and short stem. Fully visible. Simple recognizable silhouette. No face, no pot, no extra items. Original design, not a copy of another game's flower. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "c0ca2b61d39eac5ccd0d6879f76c0a547561481d02384fb273c41a881f5835c0"
+    },
+    {
+      "file": "assets/platform-journey/wind-feather.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE collectible magical wind feather for a platform adventure: a broad gently curved teal feather with cream tip, ochre quill and two small curved mint wind strokes around it. Fully visible. Simple recognizable silhouette. No extra items, no costume or headpiece. Original design. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "fa46a0e856737426b8218a36f4f5d8ff563027df1f38ba18ad85cc8c40051e07"
+    },
+    {
+      "file": "assets/platform-journey/echo-cannon.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE small stylized game cannon prop, full side view facing LEFT: short dark navy barrel with brass rim mounted on a compact ochre-and-teal two-wheel carriage. Simple toy-like silhouette, warm highlights, little wooden details. Fully visible. No cannonball, smoke, text or characters. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 96,
+      "height": 64,
+      "sha256": "5a509298724966ef4a5b82f1724b0697a44f22b12fdb17b00bce9fb02506f8f5"
+    }
+  ]
+}

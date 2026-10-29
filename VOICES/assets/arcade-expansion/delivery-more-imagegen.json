@@ -1,0 +1,47 @@
+{
+  "tool": "built-in image_gen",
+  "assets": [
+    {
+      "file": "assets/arcade-expansion/delivery-ball.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE spherical soccer ball, cream panels and dark navy pentagons. Centered and fully visible, recognizable as an everyday delivery object. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "73e44c538f4e4b6371830dbbb941f9589d5a4f6f3bbe7f997caa02731079879b"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-key.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE single golden house key with a round bow, straight shaft and two square teeth. Centered and fully visible, recognizable as an everyday delivery object. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "248828d20cb1d95bcd39f7aa545e20fdb5737a5931aa1c79c2a414648f8215fc"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-apple.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE ripe red apple with one green leaf and short brown stem. Centered and fully visible, recognizable as an everyday delivery object. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "2e2053683e32a4a46cb1b0ab1e2591b8bfc0fca22effcf5eb476cd3dd9de72ea"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-umbrella.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE open teal and ochre umbrella with curved cream handle. Centered and fully visible, recognizable as an everyday delivery object. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "8ffa39feabd6e0f6a174e0bc93dd5d0a66024d323c5b113c47ca546341a774eb"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-cup.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE simple cream ceramic mug with sage green band and a clear loop handle. Centered and fully visible, recognizable as an everyday delivery object. No writing, no steam. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "39189d898b8da35d1fc2ab367f5ee47000e7abc19a83c317fb000171893ef81b"
+    },
+    {
+      "file": "assets/arcade-expansion/delivery-backpack.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent bitmap asset for a cozy 16-bit educational pixel-art RPG. Primary request: ONE ochre canvas school backpack with a teal front pocket, dark straps and small top handle. Front three-quarter view, centered and fully visible, recognizable as an everyday delivery object. Style: crisp chunky pixel art, dark navy outlines, simple readable pixel clusters, flat two-to-three shades per material, muted mint, teal, ochre, warm cream palette. Transparent background, no baked shadow, no labels, no watermarks, no scenery, no gradients, no photo realism, no 3D rendering. Keep details legible when reduced for gameplay.",
+      "width": 64,
+      "height": 64,
+      "sha256": "19f5de216a50762a9f276f5ed268d95b416b6efd8ea0ec74e5798017e8fd4d4e"
+    }
+  ]
+}
