@@ -2,7 +2,7 @@
 'use strict';
 const V=window.V,D=V.AfricanMuseumData;
 const A=V.CapoeiraArt={cache:new Map(),images:new Map(),actions:['ginga','esquiva','meia-lua','au','negativa','role','palmas','tocar'],
-load(){const paths=[...D.words.map(w=>w.illustration),...D.instruments.map(i=>i.illustration),...D.people.map(p=>'assets/african-museum/capoeiristas/'+p.id+'.png'),'assets/african-museum/museum-facade.png','assets/african-museum/capoeira-background.png'];return Promise.all([...new Set(paths)].map(key=>new Promise(resolve=>{const img=new Image();img.onload=()=>{this.images.set(key,img);resolve();};img.onerror=()=>{V.Assets.errors.push(key);resolve();};img.src=key+'?v=20261027-imagegen2';})));},
+load(){const paths=[...D.words.map(w=>w.illustration),...D.instruments.map(i=>i.illustration),...D.people.map(p=>'assets/african-museum/capoeiristas/'+p.id+'.png'),'assets/african-museum/museum-facade.png','assets/african-museum/capoeira-background.png'];return Promise.all([...new Set(paths)].map(key=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images.set(key,img);resolve();};img.onerror=()=>{V.Assets.errors.push(key);resolve();};img.src=key+'?v=20261027-imagegen2';})));},
 image(c,path,x,y,w,h=w){const img=this.images.get(path);if(img)c.drawImage(img,Math.round(x),Math.round(y),w,h);},
 frame(p,action,frame){const key=p.id+':'+action+':'+frame;if(this.cache.has(key))return this.cache.get(key);const c=document.createElement('canvas');c.width=80;c.height=88;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.translate(40,78);this.body(ctx,p,action,frame/8*Math.PI*2);this.cache.set(key,c);return c;},
 body(c,p,action,t){

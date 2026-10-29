@@ -13,7 +13,7 @@ const scenes=[
 ];
 const art={};
 for(const name of [...scenes.map(s=>s.art),'sentry','wisp','boss','book','coin']){
- const img=new Image();img.src='assets/challenges/platform/'+name+'.svg?v=20261024-platform2';art[name]=img;
+ const img=V.Assets.image();img.src='assets/challenges/platform/'+name+'.svg?v=20261024-platform2';art[name]=img;
 }
 function box(c,x,y,w,h,fill,outline){
  c.fillStyle=fill;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));

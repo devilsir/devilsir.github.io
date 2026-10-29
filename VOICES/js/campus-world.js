@@ -38,7 +38,7 @@ function fountainShimmer(index,frame){
 }
 V.Assets.load=async function(){
  const entries=[...data.assets.map(a=>['campus-'+a.index,a.path]),...data.fountains.map(a=>['campus-fountain-'+a.index,a.path]),...data.portraits.map(a=>['campus-portrait-'+a.index,a.path])];
- await Promise.all([prior.load(),...entries.map(([key,path])=>new Promise(resolve=>{const img=new Image();img.onload=()=>{this.images[key]=img;resolve();};img.onerror=()=>{this.errors.push(path);resolve();};img.src=path;}))]);
+ await Promise.all([prior.load(),...entries.map(([key,path])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[key]=img;resolve();};img.onerror=()=>{this.errors.push(path);resolve();};img.src=path;}))]);
  for(const r of data.residents){this.images[r.character]=this.images[r.sourceCharacter];this.images[r.character+'-portrait']=this.images[r.sourceCharacter+'-portrait'];}
  shimmerCache.clear();return this.errors;
 };
