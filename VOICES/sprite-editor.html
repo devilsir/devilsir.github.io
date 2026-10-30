@@ -14,7 +14,7 @@
   <a href="index.html" class="back" title="Voltar ao jogo">← <span>Jogo</span></a>
   <div class="logotype"><span class="brandmark">V<span>_</span></span><div><strong>PIXEL LAB</strong><small>VOICES · EDITOR DE SPRITES</small></div></div>
   <span class="status" id="status" role="status">Selecione uma sprite para começar</span>
-  <div class="top-actions"><button id="open-folder" class="outline" title="Abrir pasta do VOICES para carregar e editar os arquivos locais">📁 Abrir pasta</button><button id="quick-save" class="outline" title="Salvar os PNGs editados diretamente nos arquivos originais">✓ Salvar na pasta</button><button id="export-zip" class="emphasis" title="Exportar os PNGs alterados com as pastas corretas">↓ ZIP das alterações</button></div>
+  <div class="top-actions"><button id="open-folder" class="outline" title="Abrir pasta do VOICES para carregar e editar os arquivos locais">📁 Abrir pasta</button><button id="quick-save" class="outline" title="Salvar as imagens editadas diretamente nos arquivos originais">✓ Salvar na pasta</button><button id="export-zip" class="emphasis" title="Exportar as imagens alteradas com as pastas corretas">↓ ZIP das alterações</button></div>
 </header>
 <div class="workspace">
  <aside class="library" aria-label="Biblioteca de sprites">
@@ -23,7 +23,7 @@
   <div id="categories" class="categories"></div>
   <div class="library-meta"><span id="result-count"></span><span id="dirty-count">Nenhuma edição</span></div>
   <div id="asset-list" class="asset-list" role="listbox" aria-label="Sprites disponíveis"></div>
-  <div class="library-bottom"><button id="import-png" class="outline full">↑ Substituir por imagem</button><small>Imagens do projeto · PNG com transparência</small></div>
+  <div class="library-bottom"><button id="import-png" class="outline full">↑ Substituir por imagem</button><small>Imagens do projeto · PNG / WebP com transparência</small></div>
  </aside>
  <main class="editor-main">
   <div class="canvas-header">
@@ -63,7 +63,7 @@
    <label class="field">Caminho no jogo <input id="file-path" readonly value="—"></label>
    <div class="info-pair"><div><span>RESOLUÇÃO</span><b id="image-size">—</b></div><div><span>CELULA</span><b id="cell-size">—</b></div></div>
    <div class="cell-settings"><strong>Divisão da spritesheet</strong><div class="cell-fields"><label>Largura <input id="cell-width" type="number" min="1" max="4096"></label><label>Altura <input id="cell-height" type="number" min="1" max="4096"></label></div><small>É somente uma guia visual. Não altera o tamanho do arquivo exportado.</small></div>
-   <div class="save-area"><span class="kicker">04 / SALVAR</span><button id="save-folder" class="emphasis full">Salvar alterações na pasta VOICES</button><button id="download-png" class="outline full">Baixar PNG selecionado</button><button id="download-copy" class="outline full">Salvar cópia com outro nome…</button><div class="save-tip" id="save-tip">Para usar a sprite no jogo, salve o PNG no caminho original. Fazer download não modifica os arquivos do PC automaticamente.</div></div>
+   <div class="save-area"><span class="kicker">04 / SALVAR</span><button id="save-folder" class="emphasis full">Salvar alterações na pasta VOICES</button><button id="download-png" class="outline full">Baixar imagem selecionada</button><button id="download-copy" class="outline full">Salvar cópia com outro nome…</button><div class="save-tip" id="save-tip">Para usar a sprite no jogo, salve a imagem no caminho original. Fazer download não modifica os arquivos do PC automaticamente.</div></div>
   </div>
  </aside>
 </div>
@@ -71,11 +71,12 @@
 </div>
 <input id="replace-input" type="file" accept="image/png,image/webp,image/jpeg" hidden>
 <input id="directory-input" type="file" webkitdirectory directory multiple hidden>
-<script src="js/sprite-editor-data.js?v=20261020"></script>
-<script src="js/adventure-sprite-data.js"></script><script src="js/city-sprite-data.js"></script><script src="js/homestead-sprite-data.js"></script><script src="js/home-collection-sprite-data.js"></script>
-<script src="js/presence-sprite-data.js?v=20261020-hd2"></script>
-<script src="js/community-sprite-data.js"></script>
-<script src="js/terreiros-sprite-data.js?v=20261021-expansion1"></script>
-<script src="js/sprite-editor.js?v=20261021-community1"></script>
+<script src="js/optimized-images.js?v=20261030-imageopt1"></script>
+<script src="js/sprite-editor-data.js?v=20261030-imageopt1"></script>
+<script src="js/adventure-sprite-data.js?v=20261030-imageopt1"></script><script src="js/city-sprite-data.js?v=20261030-imageopt1"></script><script src="js/homestead-sprite-data.js?v=20261030-imageopt1"></script><script src="js/home-collection-sprite-data.js?v=20261030-imageopt1"></script>
+<script src="js/presence-sprite-data.js?v=20261030-imageopt1"></script>
+<script src="js/community-sprite-data.js?v=20261030-imageopt1"></script>
+<script src="js/terreiros-sprite-data.js?v=20261030-imageopt1"></script>
+<script src="js/sprite-editor.js?v=20261030-imageopt1"></script>
 </body>
 </html>

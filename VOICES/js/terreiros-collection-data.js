@@ -415,7 +415,7 @@ window.V.TerreirosCollectionData={
   "groups": {
     "umbanda": {
       "key": "collection-umbanda",
-      "path": "assets/community/umbanda-collection-v2.png",
+      "path": "assets/community/umbanda-collection-v2.webp",
       "width": 1536,
       "height": 1024,
       "cols": 6,
@@ -996,7 +996,7 @@ window.V.TerreirosCollectionData={
     },
     "candomble": {
       "key": "collection-candomble",
-      "path": "assets/community/candomble-collection-v2.png",
+      "path": "assets/community/candomble-collection-v2.webp",
       "width": 1536,
       "height": 1024,
       "cols": 6,
@@ -1574,7 +1574,7 @@ window.V.TerreirosCollectionData={
     },
     "botica": {
       "key": "collection-botica",
-      "path": "assets/community/botica-collection-v2.png",
+      "path": "assets/community/botica-collection-v2.webp",
       "width": 1536,
       "height": 1024,
       "cols": 6,

@@ -3,7 +3,7 @@
 const V=window.V;
 for(const id of ['nia','leo','taina','sol','librarian','zambeto'])V.AdventureArt['actions-'+id]='assets/city/'+id+'-actions.png';
 for(const id of ['courtyard','studio','gallery','lab','city'])V.AdventureArt['battle-'+id]='assets/city/battle-'+id+'.png';
-V.AdventureArt['combat-fx']='assets/city/combat-fx.png';V.AdventureArt['home-appliances']='assets/city/home-appliances.png';
+V.AdventureArt['combat-fx']='assets/city/combat-fx.webp';V.AdventureArt['home-appliances']='assets/city/home-appliances.webp';
 const A=V.Animations={
 clips:{idle:0,ready:1,attack:2,cast:3,guard:4,heal:5},guardian:{idle:0,walk:1,dance:2,spin:3,guard:4,cast:5,heal:6},
 frame(id,action,time=0,loop=!['attack','guard','cast','heal'].includes(action)){

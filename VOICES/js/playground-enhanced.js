@@ -74,7 +74,7 @@ P.menu=function() {
   V.$$('.pg-game-card').forEach((card,i)=>{
     const game=D.games[i],cover=card.querySelector('.pg-cover');
     cover.replaceChildren();
-    const img=document.createElement('img');img.src='assets/challenges/'+game.id+'-preview.svg?v=20261024';
+    const img=document.createElement('img');img.src='assets/challenges/'+game.id+'-preview.svg?v=20261030-imageopt1';
     img.alt='Preview de '+game.title;img.width=640;img.height=288;img.decoding='async';
     const badge=document.createElement('small');badge.className='pg-cover-index';badge.textContent=String(i+1).padStart(2,'0')+' / '+game.stages+' FASES';
     cover.append(img,badge);

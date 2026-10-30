@@ -1,0 +1,1062 @@
+{
+  "format": "voices-image-optimization",
+  "version": 1,
+  "images": [
+    {
+      "source": "assets/challenges/capoeira-preview.png",
+      "file": "assets/challenges/capoeira-preview.webp",
+      "before": 1982831,
+      "after": 374002,
+      "sourceSha256": "18ab4f5891f390be412f953332695e746ac2f35eb1408e13af69dd98ba0023a0",
+      "sha256": "5589ae833ddb9a39c90d07a5b998eaa6249cd2a5804489e14099e8412fcc146a",
+      "width": 1280,
+      "height": 568,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.996422,
+      "psnr": 32.464
+    },
+    {
+      "source": "assets/ancestral/places.png",
+      "file": "assets/ancestral/places.webp",
+      "before": 2488327,
+      "after": 1934932,
+      "sourceSha256": "87f079f2e928020e7e7aba4144f40edb7b642d32559846020048be7eafbf89f7",
+      "sha256": "fc2f7e439af395e06a8243a5b9fcbe42a61bac1345120146582045c6ccb8ae8b",
+      "width": 1268,
+      "height": 1241,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/home-variations.png",
+      "file": "assets/ancestral/home-variations.webp",
+      "before": 2277555,
+      "after": 1678722,
+      "sourceSha256": "3cab0fd4a316752d11a4461966a0d48348eee02fd219225d5054ec89a3beb49c",
+      "sha256": "35874242cee23f9056954541207fbddbde82fbeb012ed35c758dc310b15093b3",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/items.png",
+      "file": "assets/ancestral/items.webp",
+      "before": 1703495,
+      "after": 1396490,
+      "sourceSha256": "b00a47acab6d891e5f13114e13c11dd9533376b72b428f23d033dc54ddce5d1f",
+      "sha256": "7690d38472abeadf33dee1bec433e03d32ad4ab3f013c10418fd3fc870b835eb",
+      "width": 1448,
+      "height": 1086,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/characters.png",
+      "file": "assets/ancestral/characters.webp",
+      "before": 1411924,
+      "after": 1135290,
+      "sourceSha256": "7f4e40c446c378ed468fc7adc4f83f2736daed29d125c935d05bae5a6487ea83",
+      "sha256": "295ba06c1ccac14da16434bf2d7f431103b678bd73c22c9a1d0d06c7f369d95c",
+      "width": 1240,
+      "height": 1269,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/african-museum/capoeira-background.png",
+      "file": "assets/african-museum/capoeira-background.webp",
+      "before": 2404904,
+      "after": 464738,
+      "sourceSha256": "0292a2eb3fdd206ce9513c321b199add9285f8b121a1e7fd372f739801118474",
+      "sha256": "8b612ad2df01648f63a975490847f9e0650a4d63ad360d43bfc6809baaa9a600",
+      "width": 1280,
+      "height": 720,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.994466,
+      "psnr": 33.882
+    },
+    {
+      "source": "assets/community/candomble-collection-v2.png",
+      "file": "assets/community/candomble-collection-v2.webp",
+      "before": 2414270,
+      "after": 1736480,
+      "sourceSha256": "03992e5e7f5a0f0944cae1d0fe545283d8c7d9e1bd3fa5689daca71bbf55fca6",
+      "sha256": "76f01b7f950041f98be9501c1106aad8bf4b264c4dedbd7c1c1afb67ddaca8d6",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/community/apartment-furnishings.png",
+      "file": "assets/community/apartment-furnishings.webp",
+      "before": 2388229,
+      "after": 1754384,
+      "sourceSha256": "b29482d3a1a0a4fee3804b573e3048170003ead915555b6c74edeba5995b971e",
+      "sha256": "f8f182aa0b94a20406a0d29df0d31d4fe25a69db9115c23b166ee9e797160d88",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/community/community-furnishings.png",
+      "file": "assets/community/community-furnishings.webp",
+      "before": 2084662,
+      "after": 1606430,
+      "sourceSha256": "05794ff54e08b0561e232bc2635565a364a42dc01d141fac9ac5d1a5e40cb389",
+      "sha256": "a5e2b8a306725e2e053a1b781b003b172ca9bee92f85c21b959e7a4eb01c266c",
+      "width": 1254,
+      "height": 1254,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/community/botica-collection-v2.png",
+      "file": "assets/community/botica-collection-v2.webp",
+      "before": 2544216,
+      "after": 1883456,
+      "sourceSha256": "85344d59b3d21796d7c8e6efc85e4e596f0bd97c8f66cf34fc192e789cfbe27f",
+      "sha256": "95375739b5d0699af4d348e491eadcd5098fbe0f9baa3722e5184c509dc0deca",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/community/umbanda-collection-v2.png",
+      "file": "assets/community/umbanda-collection-v2.webp",
+      "before": 2629895,
+      "after": 1941208,
+      "sourceSha256": "e2678ed533f0bef3768254d5253353c7e483d7ec27376bc6fad3aa0ec3214c2d",
+      "sha256": "10890bd123fe3094052fbbb89e469deb374d2cd47c06b03f4f6d4b3e8f4797ee",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/backgrounds/new-harmony.png",
+      "file": "assets/backgrounds/new-harmony.webp",
+      "before": 2749599,
+      "after": 649886,
+      "sourceSha256": "ded03389d3f8f8e2c47b3fb662127bb9e35eb859cedc79212097ecc83d83bcd0",
+      "sha256": "f6cb5e39bd3869460ca50d263f67db28d56b38973653ca73649c8258a223ac9f",
+      "width": 1536,
+      "height": 1024,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.994327,
+      "psnr": 33.087
+    },
+    {
+      "source": "assets/homestead/taina-daily.png",
+      "file": "assets/homestead/taina-daily.webp",
+      "before": 620620,
+      "after": 501620,
+      "sourceSha256": "69f07a650f05f3f5b32daf6e5225a64a5b59a31d55064e57d4d770ec8ccd6a61",
+      "sha256": "a6b877d3191f416b3859dba35d78168b1ce525b2d46a88c1a1d754356f094475",
+      "width": 768,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/sol-daily.png",
+      "file": "assets/homestead/sol-daily.webp",
+      "before": 589769,
+      "after": 511038,
+      "sourceSha256": "6a168a15379b81c0a5e1180b05eb45d53714393688d684f739e9e4dae74a282f",
+      "sha256": "06fda79d954075ca31dcab92a53984b03bef4f3ef530a0ceb7c61ebedcae83e3",
+      "width": 768,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/leo-percussion.png",
+      "file": "assets/homestead/leo-percussion.webp",
+      "before": 201564,
+      "after": 162804,
+      "sourceSha256": "98bb9b8ad764c111168b900321fc8807a5e90ad08105825bd41507d74a42e03b",
+      "sha256": "7e2aca1f7f4e3dca6e145b609713dffeb8bb3d1e54a65ea623e6825bd7728667",
+      "width": 768,
+      "height": 256,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/sol-music.png",
+      "file": "assets/homestead/sol-music.webp",
+      "before": 1320926,
+      "after": 1117416,
+      "sourceSha256": "fde626aa508b8c5933ae7cb7b61cb97058de041d4bd4dcf5709dde7f7b765172",
+      "sha256": "ec69ff62194ad6d717bdbf501291d397ac126ac2fac8188aa581fd17faa01090",
+      "width": 768,
+      "height": 1792,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/sol-percussion.png",
+      "file": "assets/homestead/sol-percussion.webp",
+      "before": 200100,
+      "after": 161874,
+      "sourceSha256": "48929acf46978a66fe591e2b902d18cd213adca3ffd87313b4ac5951b240c1c9",
+      "sha256": "278c0d46154b8ab69799af8a2ac0b6ec53f9159335fa9410006ea136bf82805e",
+      "width": 768,
+      "height": 256,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/nia-music.png",
+      "file": "assets/homestead/nia-music.webp",
+      "before": 1374560,
+      "after": 1127182,
+      "sourceSha256": "48202fd0c1eed225daf0a7cb653b0ec8b2b98c17c1b28f2cba7bdef13e7ea54f",
+      "sha256": "9ba6f5bb0fc5def5c0d627e38e19c22605081be7c0d550f9fa1d4c2696f360a2",
+      "width": 768,
+      "height": 1792,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/taina-percussion.png",
+      "file": "assets/homestead/taina-percussion.webp",
+      "before": 204362,
+      "after": 159766,
+      "sourceSha256": "382ff73dafed2e33168ff96fa3a4f81b5391a1d8f5cbafe37451cf4d405c9a61",
+      "sha256": "35d23f469f60acc1bdd893b700148e8acfc151b10a3e3bf0e43232c1a3c59d08",
+      "width": 768,
+      "height": 256,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/taina-music.png",
+      "file": "assets/homestead/taina-music.webp",
+      "before": 1366832,
+      "after": 1116782,
+      "sourceSha256": "dbba831fd0b976704b98d9973ea1c75bb2b8a73c46ad670f5afbd2da7e99bb08",
+      "sha256": "79f4deeca42b7950b29d03cbb4a38ae397741b115df185d291e4915fcdac9a2f",
+      "width": 768,
+      "height": 1792,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/leo-daily.png",
+      "file": "assets/homestead/leo-daily.webp",
+      "before": 668937,
+      "after": 559534,
+      "sourceSha256": "b0f854dff04040938722c96f02f6621119b8db60bfde49a55f21008ff58e07d7",
+      "sha256": "20142e6fbf03b8c38efde017b13586beeffdf8f8968b5961dce378b07164f1d7",
+      "width": 768,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/leo-music.png",
+      "file": "assets/homestead/leo-music.webp",
+      "before": 1385736,
+      "after": 1163424,
+      "sourceSha256": "be911cb956fda7b7698bbe4d5d7785c0e96f4030592963585eec967323a22d24",
+      "sha256": "25500de3e3c45753f14eb17a2861a215162ddcbe9e5028355ecbd7b496cc6d5a",
+      "width": 768,
+      "height": 1792,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/home-collection.png",
+      "file": "assets/homestead/home-collection.webp",
+      "before": 1687209,
+      "after": 1038486,
+      "sourceSha256": "20c86df3ab687ea837b842ebf3731b4c1bef49cdd46ecc3fbf237764241ce774",
+      "sha256": "cdf79e8bc04c0926d609af40df889873eb97364de4324f026012172dd4056e0f",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/nia-percussion.png",
+      "file": "assets/homestead/nia-percussion.webp",
+      "before": 202005,
+      "after": 159038,
+      "sourceSha256": "db9f0292fa4ce044cbf868ae8fa827fa2c190db49abacce30957aa3c4afa526a",
+      "sha256": "5d9a7874470f842d35120a936f02d350b78dbc8e4349a8c2fb96cdd3ceef44cf",
+      "width": 768,
+      "height": 256,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/homestead/nia-daily.png",
+      "file": "assets/homestead/nia-daily.webp",
+      "before": 632043,
+      "after": 509082,
+      "sourceSha256": "52defed45fffc3caa672184801d151bf03793c4b7bbf9aa763003335dee6969b",
+      "sha256": "3114ace92d6c8fdae12c03834f2d07fb24f537848b0403805c92309f0052bab4",
+      "width": 768,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/nia-motion.png",
+      "file": "assets/city/nia-motion.webp",
+      "before": 471320,
+      "after": 375342,
+      "sourceSha256": "d90fdcf88ae9742396550057f6bf7d69a08f541c288b19fed3f067f26afad1c0",
+      "sha256": "fec6266ae8e60dbd5b2db5ef4df4829982834fdd52bd04ef40d550dca224bdea",
+      "width": 1024,
+      "height": 512,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/librarian-actions.png",
+      "file": "assets/city/librarian-actions.webp",
+      "before": 574054,
+      "after": 486620,
+      "sourceSha256": "9add1c3583934b65b27636843fbabfdb1dd4dcb7a76579096fc40b3ddece9c0c",
+      "sha256": "8d0b7a5758a7a590d5dc58e384a3b37c63a596a6c20d224c5eff3ebad5606cd2",
+      "width": 1024,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/battle-studio.png",
+      "file": "assets/city/battle-studio.webp",
+      "before": 2239520,
+      "after": 560258,
+      "sourceSha256": "25315a9796d46a3a1a7e215934effdedf41e3507764b91473c06c6716ea00f3e",
+      "sha256": "06f08c7d991ef212190e722d0a87a21533a044622fd9aa24d850708c2b137899",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.993826,
+      "psnr": 35.455
+    },
+    {
+      "source": "assets/city/sol-motion.png",
+      "file": "assets/city/sol-motion.webp",
+      "before": 484304,
+      "after": 396840,
+      "sourceSha256": "07d41d2f7eeef4b2ad6c1a35a2aa48f95b5cea457d94d931e2ce769c527594d7",
+      "sha256": "820ebf5345f174dfdb888e4ad85c5646d67965da2f6114de254f61d28f24d249",
+      "width": 1024,
+      "height": 512,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/taina-motion.png",
+      "file": "assets/city/taina-motion.webp",
+      "before": 434032,
+      "after": 346464,
+      "sourceSha256": "b956ae310f726332fefba8e1d53f98a7a1997b2cf462417200f23678e8b5a285",
+      "sha256": "8e82af70b2db61234ad6ee927ec2ba0ede7fafe7b957812ff0dcce3886da6b92",
+      "width": 1024,
+      "height": 512,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/zambeto-actions.png",
+      "file": "assets/city/zambeto-actions.webp",
+      "before": 2175126,
+      "after": 1611104,
+      "sourceSha256": "c048991bd964e527f5bac9f5daa8a73e1f06427c977ffaaa358438fbe8fe7e64",
+      "sha256": "237e08cb719aec64f46cf307677f3e297392a949bc408013b09e717294f5dfd8",
+      "width": 1536,
+      "height": 1344,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/sol-actions.png",
+      "file": "assets/city/sol-actions.webp",
+      "before": 533268,
+      "after": 465978,
+      "sourceSha256": "5529de670ea7c0e094d39a846a153780e92de510915ea81d0e8972bd24c88a62",
+      "sha256": "2036b2de85f8cd3cc87f0e6a312651afdea10e251a74402609b0c014786c019a",
+      "width": 1024,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/home-appliances.png",
+      "file": "assets/city/home-appliances.webp",
+      "before": 333123,
+      "after": 260238,
+      "sourceSha256": "c09ce2590cf333bcc26948d3b4a91fdfd0461bc84ae18bfc5acd09f8ff2fa606",
+      "sha256": "e0e1a252d28b4cd3ac3565f38300391fae611657359d908d2a827c27c03ddf14",
+      "width": 512,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/librarian-motion.png",
+      "file": "assets/city/librarian-motion.webp",
+      "before": 428035,
+      "after": 347500,
+      "sourceSha256": "ab685d9c447314ba08d5bfe3eead1bbd615e6a66eb0be72f760abacecd901913",
+      "sha256": "d8fa8c7a2a0ac2fc6a460edc97e9ce30a3656daa5f1274e76f090134dae942a4",
+      "width": 1024,
+      "height": 512,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/battle-gallery.png",
+      "file": "assets/city/battle-gallery.webp",
+      "before": 2340912,
+      "after": 571272,
+      "sourceSha256": "79408d0947ebf0fcdcb470fb785f68647e22dbf842c1e2c5e1dbcad011510e2a",
+      "sha256": "3710c0760dde8d0f436c459f126619842c9464f48d5a4e9a60669e214b0664d1",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.993531,
+      "psnr": 36.171
+    },
+    {
+      "source": "assets/city/battle-lab.png",
+      "file": "assets/city/battle-lab.webp",
+      "before": 2343452,
+      "after": 561624,
+      "sourceSha256": "482116c4f8b33196429709c03444c27a9a92591b536138477c0a8f2b09409d9c",
+      "sha256": "4318c30a701d63490755d43a12c48367e382b942aa9f2e0cee40c5a211501ae1",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.9943,
+      "psnr": 36.931
+    },
+    {
+      "source": "assets/city/leo-actions.png",
+      "file": "assets/city/leo-actions.webp",
+      "before": 481949,
+      "after": 421668,
+      "sourceSha256": "a2b39a903995024bb1f443940d3e2b7df1f1509a517d06ee162024394e8eabbc",
+      "sha256": "2e38ac5d0373a97b1aca78d70ac6d78970329471f14791e4f8343cbbae2308a2",
+      "width": 1024,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/nia-actions.png",
+      "file": "assets/city/nia-actions.webp",
+      "before": 590364,
+      "after": 497210,
+      "sourceSha256": "9dbed0637d741c10a0c9d358d471ecd20e74a22507813c1243fbfd9adbdc0c2d",
+      "sha256": "8bcffe696e4943fcbb3a40419c1dcfc16585f181f6817687deba97e8b36638e9",
+      "width": 1024,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/leo-motion.png",
+      "file": "assets/city/leo-motion.webp",
+      "before": 461267,
+      "after": 381548,
+      "sourceSha256": "60d7346bfe0eb7c80101afa925dc5be282b29be1cfddb67c924e2bfb472b9e28",
+      "sha256": "a7bc2222176e30fe546a0bd8b440ad3908f5b47110768fdf34dd16583447aba8",
+      "width": 1024,
+      "height": 512,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/battle-courtyard.png",
+      "file": "assets/city/battle-courtyard.webp",
+      "before": 2309810,
+      "after": 544192,
+      "sourceSha256": "db473b322517be0e4e8e668fd5283641718460aec61657b2a5b892694a03f3bc",
+      "sha256": "e6b7c2d343c147973e0efe46ae55692ad9b5581108a33545c525b029e36762a2",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.99315,
+      "psnr": 37.183
+    },
+    {
+      "source": "assets/city/battle-city.png",
+      "file": "assets/city/battle-city.webp",
+      "before": 2657944,
+      "after": 696448,
+      "sourceSha256": "1274c95ff52732f154d1211c66fd1b851ff969cc00e1a37fe9dd2f86d689b885",
+      "sha256": "198a1186e8a6ba3a3029643678ea380562226f00abac0e913e2a003bb9c0c1a5",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.994932,
+      "psnr": 36.27
+    },
+    {
+      "source": "assets/city/taina-actions.png",
+      "file": "assets/city/taina-actions.webp",
+      "before": 767755,
+      "after": 646206,
+      "sourceSha256": "0a9b022f0ebee694b14d5507febce25db7da284ba63dd4f6b92dc4ec00c107d0",
+      "sha256": "eb7e11afe1778fb7a1bddbce55277ae2b160e122b22154dc5e776cd2582ee76f",
+      "width": 1024,
+      "height": 768,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/city/combat-fx.png",
+      "file": "assets/city/combat-fx.webp",
+      "before": 1584351,
+      "after": 1434164,
+      "sourceSha256": "f4a95e0d2732be79449dcb10c2e33676f64d2c8ff59244f0a7b07ec950a0df60",
+      "sha256": "809972cac70bc8fc8b527d68a7ce71fc67fa6aa867abe41e273e6fa22b30cfd6",
+      "width": 1280,
+      "height": 960,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/adventure/historiograph-v2.png",
+      "file": "assets/adventure/historiograph-v2.webp",
+      "before": 1604693,
+      "after": 1300736,
+      "sourceSha256": "fef6df080f58fa40c93a1ac116159281b5d023917de0f6d6af29d6a47e8aceae",
+      "sha256": "3731c4bfb714f52d2d5437610851e90aafc85f3487e3da30710efa35a4b22d27",
+      "width": 1254,
+      "height": 1254,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/adventure/rasura-enemies.png",
+      "file": "assets/adventure/rasura-enemies.webp",
+      "before": 437910,
+      "after": 360492,
+      "sourceSha256": "5d9c4c9a9bc46dcc674427ea81147668a9caaf57fab4ad01afaa4f3989be0598",
+      "sha256": "6a5c9dd9ee94466882a586fecb256caa58ced892b50a1e8d1a8c0a7fe000792f",
+      "width": 512,
+      "height": 864,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/adventure/battle-archive.png",
+      "file": "assets/adventure/battle-archive.webp",
+      "before": 2258834,
+      "after": 530044,
+      "sourceSha256": "5e52540a350ef347577adf4ea1b1a4da2b8884c243f15ce3ace4d4653ca12758",
+      "sha256": "3f24b37b9b07bbbd081bb222d7f65d1a09f020aa162995ea1c346006db902862",
+      "width": 1672,
+      "height": 941,
+      "lossless": false,
+      "quality": 96,
+      "ssim": 0.993372,
+      "psnr": 37.343
+    },
+    {
+      "source": "assets/adventure/historiograph.png",
+      "file": "assets/adventure/historiograph.webp",
+      "before": 155027,
+      "after": 116966,
+      "sourceSha256": "0f8d81e8656db788970a7d95c27109f3e2fe53dcce1721f9a0586fa6808379ec",
+      "sha256": "83c2079bf1055ec4576f18291e8217946c3e41de4f3d8551e27fc516adcbd7c0",
+      "width": 400,
+      "height": 340,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/adventure/atlas-paper.png",
+      "file": "assets/adventure/atlas-paper.webp",
+      "before": 2272798,
+      "after": 1692836,
+      "sourceSha256": "29c0b26be988b9b108b4ffca7b03df8803d3d4ad918ad5ba86fb7aefb9f68c9b",
+      "sha256": "e992fa21bab7c4ff101ec7294197e7d73c6a45683cb65ae1dc0f9ffaeec47fc2",
+      "width": 1536,
+      "height": 1024,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/adventure/zambeto.png",
+      "file": "assets/adventure/zambeto.webp",
+      "before": 406607,
+      "after": 316068,
+      "sourceSha256": "14f55026ec1f80dc50fd9dd972a257f28852227dfe7f3141119902cb2c4245a4",
+      "sha256": "195a5d15603ba7b724c047bdca77e997c00f64a51f54549d6b15820b4b24b4c5",
+      "width": 512,
+      "height": 864,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/miguel-actions.png",
+      "file": "assets/ancestral/presences/miguel-actions.webp",
+      "before": 1993577,
+      "after": 1588548,
+      "sourceSha256": "0f762df22de23800121dace52b6d3b6c5ffe8af2a7bf9ad98b53dd832ddcb1b0",
+      "sha256": "67e9f6daa737cb3df948a2dc2dd217327c515babfe04704be8795bc113bd246d",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/alzira-actions.png",
+      "file": "assets/ancestral/presences/alzira-actions.webp",
+      "before": 1915736,
+      "after": 1437600,
+      "sourceSha256": "fa5c7cdeec91e0c00dfecde1bcc55f3eb2787d8b999207408f5ea0c8d31a9acf",
+      "sha256": "3a2a43d9d44b6e582acc81d508ddb9264f653ad31996ebbd32dcd8bfd2eedd2c",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/lucia-actions.png",
+      "file": "assets/ancestral/presences/lucia-actions.webp",
+      "before": 2191508,
+      "after": 1608560,
+      "sourceSha256": "9c869aae037993d0346acdef35f05751db38a3283c5731b58111bcbae086fd8a",
+      "sha256": "a913ed786c99cd4e72359de2344213417177b43f8008bccb9c628eb4f05a937e",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/iansa-actions.png",
+      "file": "assets/ancestral/presences/iansa-actions.webp",
+      "before": 2471415,
+      "after": 2053228,
+      "sourceSha256": "badffa08fc3cb7c4c21ef745a2ec059cf6bd66fbd899466960ed28c2899326a9",
+      "sha256": "2dd97f8e2a9185c61c2eaf281ce528b22d45f97f7dff4f05ade9497f2a6dcfcf",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/folha-actions.png",
+      "file": "assets/ancestral/presences/folha-actions.webp",
+      "before": 1669911,
+      "after": 1329474,
+      "sourceSha256": "7e1a82af232f637348bfb68107f435dcf1b7fa59a5cc65f36c9cd1468a42ceb6",
+      "sha256": "33c5de1277ec03467e28341a87a1b961fa7414ba8f7be304dc526a9231c25569",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/jacira-actions.png",
+      "file": "assets/ancestral/presences/jacira-actions.webp",
+      "before": 1956254,
+      "after": 1597800,
+      "sourceSha256": "bf00017a2daca511c36fa9323d1f86b394c2245e4ee7e497594c6e875e4691af",
+      "sha256": "fc661b10dd0b74d69f388adc42719db064d5ebe9ee531ecc0eb895a29833a78e",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/dandara-actions.png",
+      "file": "assets/ancestral/presences/dandara-actions.webp",
+      "before": 2330539,
+      "after": 1748544,
+      "sourceSha256": "c01a056a3081fc61ea92990f383b7bbb513e2b481b7cb23871df90c2e1377e0e",
+      "sha256": "8d20944d3d7022dacd52944e20ecf5d6d2832c7f9370b743299008e4b3e4de94",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/raquel-actions.png",
+      "file": "assets/ancestral/presences/raquel-actions.webp",
+      "before": 1914877,
+      "after": 1559708,
+      "sourceSha256": "71ce37055d07c471a98fe6deacb4231383307e607fc5a1079a3c5571f84c0a32",
+      "sha256": "4cd620b35940c8439370da8d78441ef7e35cacdf1cafa3d0897f217e77ccdf40",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/xango-actions.png",
+      "file": "assets/ancestral/presences/xango-actions.webp",
+      "before": 2059035,
+      "after": 1691126,
+      "sourceSha256": "d6b426db285ba81a259b86846ecc6151bb2a9287d792e163aa6d82668c2b4899",
+      "sha256": "eca6197d7dabfd929f9db8bee9e57e7e7f7024b058b6909220a9fd572abc91d6",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/rosa-actions.png",
+      "file": "assets/ancestral/presences/rosa-actions.webp",
+      "before": 1961683,
+      "after": 1602062,
+      "sourceSha256": "dea344095b7ef78bec0510da51b5b2de57da70fba62d7602bcd523d6b9530657",
+      "sha256": "4044af9c9076e4db7d3d7a2ca75e35ebfda7ddcbd1b6ec448cf756449c34beea",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/bento-ready.png",
+      "file": "assets/ancestral/presences/bento-ready.webp",
+      "before": 850204,
+      "after": 643590,
+      "sourceSha256": "5fb9b842eb956212fa778a2c20fa4952112aeaf717e10f1b0a66db1f29ced3d7",
+      "sha256": "e9e09850c54b689d8578ef984a4eef7504c1a5b428c2044b4c0b6033040f2b05",
+      "width": 1254,
+      "height": 1254,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/bento-actions.png",
+      "file": "assets/ancestral/presences/bento-actions.webp",
+      "before": 1949167,
+      "after": 1424474,
+      "sourceSha256": "5d78140f549a1e934739ce539a8f2ec0e9539ff3a85df39b8ca3548b25abbb9c",
+      "sha256": "ffcfe2797299253db77f9745f2d28132392fd662782941cb0af2fc10fab6700e",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/iemanja-actions.png",
+      "file": "assets/ancestral/presences/iemanja-actions.webp",
+      "before": 2396660,
+      "after": 1883962,
+      "sourceSha256": "0e3ad78b68d66c21a174acc8fe92dbad8762e55f06222d0c5ac63a8c67a5043a",
+      "sha256": "65005dd40cbb32c509d413414c8a4b9fab96701fe9073bae907f7afbcaf20f74",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/oxossi-actions.png",
+      "file": "assets/ancestral/presences/oxossi-actions.webp",
+      "before": 2095381,
+      "after": 1753436,
+      "sourceSha256": "c2f9b53f3c4bd4d1ff92bebd190e02c5f48fe079030b5bc14f1cfbd8791e3137",
+      "sha256": "1b90728bc0c333c2aa432f221fb478e5050b3135d3acf75cc7a79b00cceecea8",
+      "width": 836,
+      "height": 1882,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/ogum-actions.png",
+      "file": "assets/ancestral/presences/ogum-actions.webp",
+      "before": 1897492,
+      "after": 1515906,
+      "sourceSha256": "7382d697ad36a795739edc95ee56c99969bbe6e1a7518adeb08f68346fcabca3",
+      "sha256": "24d1433a539797409847b2eae8229db88d3f20bb1f71f9ae65e06bfeb51acc27",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/exu-actions.png",
+      "file": "assets/ancestral/presences/exu-actions.webp",
+      "before": 1661151,
+      "after": 1394658,
+      "sourceSha256": "7e7f7d2a2256318a94d3f595ddf7b95bdfaeb6aa308941eeb58cdf545cf9046c",
+      "sha256": "24215d1367c9720f7f77e1d84d73b0d690f1c05f02019211486463dc9c12b917",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/elias-actions.png",
+      "file": "assets/ancestral/presences/elias-actions.webp",
+      "before": 1815925,
+      "after": 1436564,
+      "sourceSha256": "06514a1cab5d49de562f305adb22e26ca41b9d37b8a382a520c163182cce19c1",
+      "sha256": "299f4941867dd020aad2894a86f5b18fa575003bfcf5f37c3311fb372c49de2a",
+      "width": 836,
+      "height": 1881,
+      "lossless": true,
+      "pixelExact": true
+    },
+    {
+      "source": "assets/ancestral/presences/ogum-ready.png",
+      "file": "assets/ancestral/presences/ogum-ready.webp",
+      "before": 788677,
+      "after": 629832,
+      "sourceSha256": "e1d9f89cde030224c60949fb057b8243401505e53c7f970840ef6fd59f3db45a",
+      "sha256": "60c8803eb4232ca74ac5d494cdde1d7d32fa5fdd145d0f41898ac2b49fcad39e",
+      "width": 1254,
+      "height": 1254,
+      "lossless": true,
+      "pixelExact": true
+    }
+  ],
+  "embedded": [
+    {
+      "file": "assets/challenges/bridges-preview.svg",
+      "before": 4478161,
+      "after": 1234446,
+      "images": [
+        {
+          "before": 3356936,
+          "after": 924148,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.996425,
+          "psnr": 30.454
+        }
+      ],
+      "sourceSha256": "bfd2cc93f04316c3e700fa99c4375b7073824a6dddda022828ff1fd263866215",
+      "sha256": "5afb13c7f40b26a4eabe28e965b78650d79779a4d530383b4804d59593def920"
+    },
+    {
+      "file": "assets/challenges/capoeira-preview.svg",
+      "before": 2643909,
+      "after": 498806,
+      "images": [
+        {
+          "before": 1982831,
+          "after": 374002,
+          "width": 1280,
+          "height": 568,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.996422,
+          "psnr": 32.464
+        }
+      ],
+      "sourceSha256": "24905032b3c21dde50d8727f46e2dd9afe3deccaa3d652cc0ba55fc9c28d3e39",
+      "sha256": "f470be6d44d1c92d883ba92764c51c521ba36cc2ebf86c4b0310dab6abfd54cc"
+    },
+    {
+      "file": "assets/challenges/courier-preview.svg",
+      "before": 3889195,
+      "after": 1034188,
+      "images": [
+        {
+          "before": 2915171,
+          "after": 773914,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.996346,
+          "psnr": 32.001
+        }
+      ],
+      "sourceSha256": "6f6d4310a074a50e78f56fe62bf747f4d5dace7f6f437c1c70e5666e8c6a1d26",
+      "sha256": "e36c9ff120594d6680e7978bfa023233e7e85175df291b9a81123b3868a67735"
+    },
+    {
+      "file": "assets/challenges/garden-preview.svg",
+      "before": 4319697,
+      "after": 1184082,
+      "images": [
+        {
+          "before": 3238096,
+          "after": 886384,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.996557,
+          "psnr": 31.741
+        }
+      ],
+      "sourceSha256": "3525775a5ee3299bebad4f2e777dc911904c9ce607c6b680c7e9f1fe61728152",
+      "sha256": "b25f8e71bc20009c4f24a4d3e06960edb437edb0f45f143e781cd80ceb74936c"
+    },
+    {
+      "file": "assets/challenges/memory-preview.svg",
+      "before": 3875254,
+      "after": 1016715,
+      "images": [
+        {
+          "before": 2904747,
+          "after": 760840,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.995402,
+          "psnr": 31.816
+        }
+      ],
+      "sourceSha256": "90be5d95fc26414bc744b95278c2ce541a21ce7503f80385678c9f779a32b29b",
+      "sha256": "04aa499caa122d171dfa37bc00bba063f6ed0d1e715ea7344795480f11cd6551"
+    },
+    {
+      "file": "assets/challenges/moto-icon.svg",
+      "before": 74403,
+      "after": 62820,
+      "images": [
+        {
+          "before": 55546,
+          "after": 46858,
+          "width": 320,
+          "height": 128,
+          "lossless": true,
+          "pixelExact": true
+        }
+      ],
+      "sourceSha256": "abc092cdbdd157436dda39a2717b2c43a2532d46fe7e8043c19284e2f7c16c6c",
+      "sha256": "b5d35deff67d2faae7da05993b4d1c2c7efd78e6132c79407768b73045515bfc"
+    },
+    {
+      "file": "assets/challenges/moto-preview.svg",
+      "before": 358315,
+      "after": 294357,
+      "images": [
+        {
+          "before": 176670,
+          "after": 140280,
+          "width": 480,
+          "height": 180,
+          "lossless": true,
+          "pixelExact": true
+        },
+        {
+          "before": 58054,
+          "after": 46474,
+          "width": 172,
+          "height": 155,
+          "lossless": true,
+          "pixelExact": true
+        }
+      ],
+      "sourceSha256": "62bfed58a53155500b6407c140310c6d808a7dad998da7f2a994078c02f8eeec",
+      "sha256": "a28bd3d0d145a6ab13955069ab57a031950710ea26ce5bf51a17ca7809b791e8"
+    },
+    {
+      "file": "assets/challenges/museum-preview.svg",
+      "before": 3687069,
+      "after": 918854,
+      "images": [
+        {
+          "before": 2763609,
+          "after": 687446,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.994986,
+          "psnr": 32.594
+        }
+      ],
+      "sourceSha256": "ab8e59340a2861d046f54bd0311d5df787e8f77256c1ff8617d1240961af0569",
+      "sha256": "1a41e0f42ee8df25220d07da8b549ebf0a218a8a5a0a03dc28cc8bdb2ff63c77"
+    },
+    {
+      "file": "assets/challenges/radio-preview.svg",
+      "before": 3382623,
+      "after": 819388,
+      "images": [
+        {
+          "before": 2535209,
+          "after": 612782,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.994819,
+          "psnr": 32.663
+        }
+      ],
+      "sourceSha256": "7d6027c71aeecee78d7c88576bb6e38e4ea5e3af7d69bae24cb13a7743a660dd",
+      "sha256": "04d6c9476d7775077d23600f1b0d1df0b8aaa80b1ef493281f7be273462f0d6a"
+    },
+    {
+      "file": "assets/challenges/rhythm-preview.svg",
+      "before": 3617826,
+      "after": 930991,
+      "images": [
+        {
+          "before": 2711716,
+          "after": 696590,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.994817,
+          "psnr": 31.106
+        }
+      ],
+      "sourceSha256": "e995048ac22da243500959d0c8781f9e0c1560b6f8a8544090deacaead379248",
+      "sha256": "b04581e5ad30a5e758133d9c8c33fa7ea18dfd3b7402aae2ef8b1f71bf89edb7"
+    },
+    {
+      "file": "assets/challenges/room-preview.svg",
+      "before": 3723359,
+      "after": 886592,
+      "images": [
+        {
+          "before": 2790804,
+          "after": 663228,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.995148,
+          "psnr": 34.348
+        }
+      ],
+      "sourceSha256": "fb065b38f346cae3a6d86c79eb2adb22848d3d9c9189721784028f2f94319f40",
+      "sha256": "01bec921c361793c56851802dde814a08505546090558709ab3e5f9d891e8ec7"
+    },
+    {
+      "file": "assets/challenges/runner-preview.svg",
+      "before": 3953703,
+      "after": 1043600,
+      "images": [
+        {
+          "before": 2963586,
+          "after": 781008,
+          "width": 1870,
+          "height": 841,
+          "lossless": false,
+          "quality": 96,
+          "ssim": 0.996424,
+          "psnr": 32.548
+        }
+      ],
+      "sourceSha256": "09bf87a89d4c7aadb8517e64d89852760cd26c9730b56003fa69c82a2c3d4d07",
+      "sha256": "e7c3cc75d7e3fcd54e6c6fe06b829893cdecfacf2b43438bd4032a5748840cba"
+    }
+  ]
+}

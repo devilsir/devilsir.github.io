@@ -31,7 +31,7 @@ const actions={bed:'Dormir até a manhã',seat:'Sentar e descansar',study:'Abrir
 const newItems=entries.map(([id,name,category,price,word,action,size],prop)=>({id,name,category,price,word,action,size,family:'home-plus',prop,solid:action!=='rug',description:actions[action]}));
 H.catalog.push(...newItems);
 for(const item of H.catalog)if(!item.category)item.category=item.id.startsWith('music-')?'Instrumentos':['bed','wardrobe'].includes(item.id)?'Quarto':['fridge','stove','sink','pantry'].includes(item.id)?'Cozinha':['shower','basin'].includes(item.id)?'Banheiro':item.id==='plant'?'Decoração':'Sala';
-V.AdventureArt['home-collection']='assets/homestead/home-collection.png';
+V.AdventureArt['home-collection']='assets/homestead/home-collection.webp';
 V.sceneAssets.push(...newItems.map(i=>({family:i.family,index:i.prop,id:i.id,name:i.name,description:i.description,category:'moradia',layer:i.solid?'object':'ground',solid:i.solid,size:i.size,interaction:i.action,solidFootprint:i.solid?{x:.16,y:.73,width:.68,height:.19}:[]})));
 const G=V.HomeLiving={items:newItems,cartMap:null,
  item(o){return o?.scene?.family==='home-plus'?newItems[o.scene.prop]:o?.furnitureItem?H.catalog.find(i=>i.id===o.furnitureItem):o?.scene?.family==='home'?H.catalog.find(i=>i.family==='home'&&i.prop===(o.scene.prop<16?Math.floor(o.scene.prop/4)*4:o.scene.prop)):H.catalog.find(i=>i.family===o?.scene?.family&&i.prop===o?.scene?.prop)||null;},

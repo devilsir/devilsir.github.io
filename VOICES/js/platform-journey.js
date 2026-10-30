@@ -19,7 +19,7 @@ const scripts=[
 const stages=scripts.map(([title,phrase,pt,length,route,story],i)=>({title,phrase:phrase.split(' '),pt,length,route:route.split(','),story,theme:Math.floor(i/2),boss:[5,7,11].includes(i),...{art:themes[Math.floor(i/2)][1],soil:themes[Math.floor(i/2)][2],edge:themes[Math.floor(i/2)][3]}}));
 const art=new Map(),assetPath=id=>id==='ayo'||id==='ember-flower'||id==='wind-feather'||id==='echo-cannon'?'assets/platform-journey/'+id+'.png':'assets/challenges/platform/'+id+'.svg';
 const assetIds=[...themes.map(t=>t[1]),'book','coin','sentry','wisp','boss','ayo','ember-flower','wind-feather','echo-cannon'];
-const loading=Promise.all(assetIds.map(id=>new Promise(resolve=>{const im=V.Assets.image();im.onload=()=>{art.set(id,im);resolve();};im.onerror=()=>{V.Assets.errors.push(assetPath(id));resolve();};im.src=assetPath(id)+'?v=20261029-journey1';})));
+const loading=Promise.all(assetIds.map(id=>new Promise(resolve=>{const im=V.Assets.image();im.onload=()=>{art.set(id,im);resolve();};im.onerror=()=>{V.Assets.errors.push(assetPath(id));resolve();};im.src=assetPath(id)+'?v=20261029-journey1';V.AssetLoader.register(im,resolve);})));
 const baseLoad=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([baseLoad(),loading]);return this.errors;};
 function ground(d,x){return d.gaps.some(g=>x>g.x&&x<g.x+g.w)?650:455;}
 function create(training,stage=0,carry={}){

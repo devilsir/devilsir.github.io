@@ -168,7 +168,7 @@ const P=V.Presences={
   if(f){V.$('#presence-frame').value=f.index;V.$('#presence-frame-number').textContent=`${f.index+1} / ${f.rig.columns}`;}
  }
 };
-V.AdventureArt['ancestral-characters']='assets/ancestral/characters.png?v=20261020';
+V.AdventureArt['ancestral-characters']='assets/ancestral/characters.webp?v=20261020';
 for(const [id] of definitions)if(P.rig(id))V.AdventureArt['presence-'+id]='assets/ancestral/presences/'+id+'-actions.png?v=20261020-hd2';
 for(const id of ['bento','ogum'])V.AdventureArt['presence-'+id+'-ready']='assets/ancestral/presences/'+id+'-ready.png?v=20261020-hd2';
 const drawAnimation=V.Animations.draw.bind(V.Animations);
