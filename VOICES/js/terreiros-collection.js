@@ -18,7 +18,7 @@ B.upgrade(C.layouts);for(const id of Object.keys(B.plans)){D.defaults[id]=copy(C
 const prop=C.prop.bind(C);C.prop=function(ctx,family,index,x,y,size,...args){if(byFamily.has(family))return V.AncestralArt.tile(ctx,family,index,x,y,size);return prop(ctx,family,index,x,y,size,...args);};
 const compose=C.compose.bind(C);C.compose=function(m){compose(m);B.hydrate(m);};
 const hydrate=V.City.hydrate.bind(V.City);V.City.hydrate=function(m){hydrate(m);B.hydrate(m);};
-const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects){const i=B.item(o);if(i&&!i.solid){const z=(o.scene.size||i.size)*T;C.prop(ctx,i.family,i.prop,o.x-z/2,o.y-z*.99,z);}}};
+const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects){const i=B.item(o);if(i&&!i.solid){const z=(o.scene.size||i.size)*T;V.ObjectEditing.scene(ctx,o,{x:0,y:0},()=>C.prop(ctx,i.family,i.prop,o.x-z/2,o.y-z*.99,z));}}};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){const i=B.item(o);if(!i)return draw(ctx,o,cam,t);const x=o.x-cam.x,y=o.y-cam.y,z=(o.scene.size||i.size)*T;if(i.solid)C.prop(ctx,i.family,i.prop,x-z/2,y-z*.99,z);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y,'E','#d6c38e');};
 const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(!B.item(o)||V.modal||V.Dialogue.active)return interact(o);return B.inspect(o);};
 const normalise=D.normalise.bind(D),doc=D.document.bind(D);D.normalise=function(input){if(input?.maps&&(input.terreirosAssetsVersion||0)<1){input=copy(input);B.upgrade(input.maps);}return normalise(input);};D.document=function(...args){return{...doc(...args),terreirosAssetsVersion:1};};

@@ -187,7 +187,7 @@ V.Cozy={ready:false,clock:0,seated:null,layouts:V.cozyLayouts,
   if(action==='playing'){this.prop(ctx,o.character==='percussionist'?'base':'cozy',o.character==='percussionist'?25:12,x-14,y-38,31);}
   if(action==='sitting'){ctx.fillStyle='#2d3c47';ctx.fillRect(x-12,y-10,24,5);ctx.fillRect(x-10,y-6,7,5);ctx.fillRect(x+3,y-6,7,5);}
  },
- drawObject(ctx,o,cam,t){const x=o.x-cam.x,y=o.y-cam.y,near=W.nearest?.id===o.id;if(x<-130||x>(V.Engine.canvas?.width||960)+130||y<-140||y>(V.Engine.canvas?.height||540)+130)return;
+ drawObject(ctx,o,cam,t){const x=o.x-cam.x,y=o.y-cam.y,near=W.nearest?.id===o.id;if(!o.editorDrawing&&(x<-130||x>(V.Engine.canvas?.width||960)+130||y<-140||y>(V.Engine.canvas?.height||540)+130))return;
   if(this.person(o)){
    const active=['working','watering','writing','drawing','playing','reading','conversing'].includes(o.action);const seated=['sitting','reading'].includes(o.action)&&o.destination?.object?.scene.kind==='seat';
    ctx.fillStyle='#182e2845';ctx.fillRect(x-13,y+4,26,4);const greeting=o.greeting>0||o.action==='greeting',row=greeting?5:active&&o.dir!==3?4:o.dir||0,phase=hash(o.character||o.id),rate=active?1.5+(phase%5)*.18:3.5,frame=V.settings.reducedMotion?0:o.walking?o.frame:greeting||active?Math.floor((this.clock+(phase%17)*.29)*rate)%4:0,img=V.Assets.images[o.character];if(seated&&o.character!=='vitor'&&img){V.Assets.spritePart(ctx,o.character,frame,row,.75,x-28,y-51,56,42);this.actionOverlay(ctx,{action:'sitting'},x,y);}else V.Assets.sprite(ctx,o.character,x,y,row,frame,56);this.actionOverlay(ctx,o,x,y);

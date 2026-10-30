@@ -46,7 +46,7 @@ const isBed=H.isBed;H.isBed=o=>o?.scene?.family==='apartment-details'&&item(o)?.
 const hydrate=V.City.hydrate.bind(V.City);V.City.hydrate=function(m){hydrate(m);F.hydrate(m);};
 const compose=C.compose.bind(C);C.compose=function(m){compose(m);F.hydrate(m);};
 const apply=H.applyFurniture.bind(H);H.applyFurniture=function(...args){const result=apply(...args);for(const m of Object.values(W.maps))F.hydrate(m);return result;};
-const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects){const i=item(o);if(i?.solid===false){const z=(o.scene.size||i.size)*T;C.prop(ctx,i.family,i.prop,o.x-z/2,o.y-z*.99,z);}}};
+const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects){const i=item(o);if(i?.solid===false){const z=(o.scene.size||i.size)*T;V.ObjectEditing.scene(ctx,o,{x:0,y:0},()=>C.prop(ctx,i.family,i.prop,o.x-z/2,o.y-z*.99,z));}}};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){const i=item(o);if(!i)return draw(ctx,o,cam,t);const z=(o.scene.size||i.size)*T,x=o.x-cam.x,y=o.y-cam.y;if(i.solid)C.prop(ctx,i.family,i.prop,x-z/2,y-z*.99,z);
  if(i.action==='light'&&H.ensure()?.lamps[o.id]){ctx.save();const g=ctx.createRadialGradient(x,y-z*.6,4,x,y-z*.6,z*.5);g.addColorStop(0,'#ffdf9470');g.addColorStop(1,'#ffdf9400');ctx.fillStyle=g;ctx.fillRect(x-z/2,y-z,z,z);ctx.restore();}
  if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y,'E','#e7cb8e');

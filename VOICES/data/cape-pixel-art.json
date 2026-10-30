@@ -1,0 +1,747 @@
+{
+  "version": 1,
+  "generator": "image_gen.imagegen",
+  "style": "Pixel art 16-bit, contornos verde-escuros, cores em 3 a 4 tons, perspectiva frontal com vista parcial dos telhados, personagens chibi na proporção de Nia.",
+  "processing": "Recorte das células, redução por vizinho mais próximo para a grade do jogo, transparência e WebP sem perdas.",
+  "atlases": [
+    {
+      "library_file_id": "libfile_e0644127503481918af4f5a653292d1a",
+      "subjects": "Bo-Kaap coral/turquesa/ocre e azul/rosa/sálvia; museu de empena Cape Dutch; armazém; mercado; pavilhão; cabanas de Muizenberg; farol."
+    },
+    {
+      "library_file_id": "libfile_5230d43d281c8191be5190c4d404644c",
+      "subjects": "Proteas, Leucospermum, restios e ericas, árvore prateada do Cabo, arenito, dunas, poste, banco, vaso, carga, pranchas e painel."
+    },
+    {
+      "library_file_id": "libfile_a42b856c11008191b3c13c9f5692e6ff",
+      "subjects": "Samira, Naledi, Kabelo, Lindiwe, Zola, Ayesha, Thandi, Sipho e Joana. Roupas contemporâneas e identidade individual."
+    },
+    {
+      "library_file_id": "libfile_f87660c4e2c481918aef8a958f1f2b8f",
+      "subjects": "Table Mountain vista do porto; Signal Hill; encostas orientais de Kirstenbosch; costa de False Bay."
+    },
+    {
+      "source": "image_gen.imagegen · exec-fc0866d9-5f9b-4eb1-9eb3-2f9cb6d07b88.png",
+      "subjects": "Balsa, barco a remo, bote, cabeço de amarração e boia salva-vidas, boias náuticas, material de pesca, guindaste, terminal e carrinho."
+    }
+  ],
+  "sources": [
+    {
+      "name": "Cape Town Tourism · Bo-Kaap",
+      "url": "https://www.capetown.travel/neighbourhood/bo-kaap/"
+    },
+    {
+      "name": "SANBI · Kirstenbosch",
+      "url": "https://www.sanbi.org/gardens/kirstenbosch/"
+    },
+    {
+      "name": "SANBI · Protea Garden",
+      "url": "https://www.sanbi.org/gardens/kirstenboch/seasons/spring-flowering-plants-at-kirstenbosch/kirstenbosch-protea-garden/"
+    },
+    {
+      "name": "Cape Town Tourism · Muizenberg",
+      "url": "https://www.capetown.travel/neighbourhoods/muizenberg/"
+    }
+  ],
+  "images": [
+    {
+      "id": "cape-houses",
+      "file": "assets/maritime/pixel/cape-houses.webp",
+      "size": [
+        238,
+        160
+      ],
+      "bytes": 43062,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        0,
+        0
+      ],
+      "sha256": "5d822d332f09bfa2f9860d270e5251edeedf53b201b7805e04cfe61a1e5fe20b"
+    },
+    {
+      "id": "bo-kaap-terrace",
+      "file": "assets/maritime/pixel/bo-kaap-terrace.webp",
+      "size": [
+        243,
+        160
+      ],
+      "bytes": 42450,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        1,
+        0
+      ],
+      "sha256": "363707a5c719ade8e44a42f0da927079723f4b840f6c7d4fad176a9c61e63deb"
+    },
+    {
+      "id": "cape-heritage",
+      "file": "assets/maritime/pixel/cape-heritage.webp",
+      "size": [
+        230,
+        160
+      ],
+      "bytes": 37688,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        2,
+        0
+      ],
+      "sha256": "8e50341ede9bf886831f99d7ce3b926b208685c497aa993e11c1ca58bc41ff57"
+    },
+    {
+      "id": "cape-warehouse",
+      "file": "assets/maritime/pixel/cape-warehouse.webp",
+      "size": [
+        239,
+        160
+      ],
+      "bytes": 36028,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        3,
+        0
+      ],
+      "sha256": "4de2f91cb46c2f44912ebb6a4cc4504f13adf2e85cc3232f38467b53c574aa30"
+    },
+    {
+      "id": "cape-market",
+      "file": "assets/maritime/pixel/cape-market.webp",
+      "size": [
+        233,
+        160
+      ],
+      "bytes": 35888,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        0,
+        1
+      ],
+      "sha256": "6c05d6434a3a37ee3efa85e2fe2e48e07824c12e70198cee75bb5b99fae15f61"
+    },
+    {
+      "id": "garden-pavilion",
+      "file": "assets/maritime/pixel/garden-pavilion.webp",
+      "size": [
+        226,
+        160
+      ],
+      "bytes": 35418,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        1,
+        1
+      ],
+      "sha256": "cd343e6e7df52fa23cc57bf17593bafaf4d8518a6a224fb2fe82289175fc3c5e"
+    },
+    {
+      "id": "muizenberg-huts",
+      "file": "assets/maritime/pixel/muizenberg-huts.webp",
+      "size": [
+        256,
+        125
+      ],
+      "bytes": 44620,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        2,
+        1
+      ],
+      "sha256": "aa78691af1c355753047f70ddf63a87d5e8e525db6d9a25f65ac87cf3e7abb24"
+    },
+    {
+      "id": "harbor-lighthouse",
+      "file": "assets/maritime/pixel/harbor-lighthouse.webp",
+      "size": [
+        196,
+        160
+      ],
+      "bytes": 18146,
+      "lossless": true,
+      "sourceAtlas": "Vilarejo do Cabo em pixel art.png",
+      "cell": [
+        3,
+        1
+      ],
+      "sha256": "7f8eef1370181263cdbc536de1e35216811f509bf53ba1bbe85e19ac173b584b"
+    },
+    {
+      "id": "cape-fynbos",
+      "file": "assets/maritime/pixel/cape-fynbos.webp",
+      "size": [
+        96,
+        92
+      ],
+      "bytes": 13920,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        0,
+        0
+      ],
+      "sha256": "dabe146bfbbcab16902bb0bc7baf3c690072eea2643723ac26197f5607674c55"
+    },
+    {
+      "id": "protea-bed",
+      "file": "assets/maritime/pixel/protea-bed.webp",
+      "size": [
+        96,
+        81
+      ],
+      "bytes": 13700,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        1,
+        0
+      ],
+      "sha256": "c4ecd6d9079ff978147f87fe633dad70c575f1b3bb30e367f23294b5d18b35ee"
+    },
+    {
+      "id": "cape-restios",
+      "file": "assets/maritime/pixel/cape-restios.webp",
+      "size": [
+        96,
+        97
+      ],
+      "bytes": 16346,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        2,
+        0
+      ],
+      "sha256": "4d4ad1de94f9203c5eecb5a331ec2aa26d510b786c01723a57ca95a112250130"
+    },
+    {
+      "id": "cape-silver-tree",
+      "file": "assets/maritime/pixel/cape-silver-tree.webp",
+      "size": [
+        96,
+        97
+      ],
+      "bytes": 13266,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        3,
+        0
+      ],
+      "sha256": "75337165e6fc322fc92d1d8d58d229a87374928caaea4a8b5db27a74ff8c0b51"
+    },
+    {
+      "id": "cape-rocks",
+      "file": "assets/maritime/pixel/cape-rocks.webp",
+      "size": [
+        96,
+        97
+      ],
+      "bytes": 9570,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        0,
+        1
+      ],
+      "sha256": "52a672b2a4a07204a259c338254a272a45e045302df3010941bcdcf4fe9b1625"
+    },
+    {
+      "id": "cape-dune-grass",
+      "file": "assets/maritime/pixel/cape-dune-grass.webp",
+      "size": [
+        96,
+        75
+      ],
+      "bytes": 12138,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        1,
+        1
+      ],
+      "sha256": "b64a68b03f304584aabd26b79d68f315b3a9c090db9573b05b7daaa8cc241389"
+    },
+    {
+      "id": "prop-lantern",
+      "file": "assets/maritime/pixel/prop-lantern.webp",
+      "size": [
+        45,
+        112
+      ],
+      "bytes": 4604,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        2,
+        1
+      ],
+      "sha256": "bbb60a9634681c5f4d82d981bc86410c936289e91283b3707d569e7aa8dbb388"
+    },
+    {
+      "id": "cape-bench",
+      "file": "assets/maritime/pixel/cape-bench.webp",
+      "size": [
+        96,
+        99
+      ],
+      "bytes": 6328,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        3,
+        1
+      ],
+      "sha256": "550ae893982e7344fe8796b2e5cc354b12b2f12aca5356004bf5042c40da499c"
+    },
+    {
+      "id": "cape-planter",
+      "file": "assets/maritime/pixel/cape-planter.webp",
+      "size": [
+        96,
+        108
+      ],
+      "bytes": 14710,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        0,
+        2
+      ],
+      "sha256": "b1c762f7af59c20d5ffc31d74c4f40fbd31734c5c0cf39d2a701b04afb0d13f5"
+    },
+    {
+      "id": "prop-cargo",
+      "file": "assets/maritime/pixel/prop-cargo.webp",
+      "size": [
+        96,
+        73
+      ],
+      "bytes": 10248,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        1,
+        2
+      ],
+      "sha256": "0466dc921b2ce4886ab7c178f1879888683dd22d5f6e86e3275771d523c542b6"
+    },
+    {
+      "id": "cape-surfboards",
+      "file": "assets/maritime/pixel/cape-surfboards.webp",
+      "size": [
+        96,
+        100
+      ],
+      "bytes": 11746,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        2,
+        2
+      ],
+      "sha256": "519be3893de2b9a4f76c59cee6be65524f3171579a18732811a552f79d341c1a"
+    },
+    {
+      "id": "cape-lectern",
+      "file": "assets/maritime/pixel/cape-lectern.webp",
+      "size": [
+        96,
+        93
+      ],
+      "bytes": 10338,
+      "lossless": true,
+      "sourceAtlas": "Sprites do Cabo: flora e mobiliário.png",
+      "cell": [
+        3,
+        2
+      ],
+      "sha256": "72aa540d958ba89b850d96ad93a3fccafabf3d05f880fd8a844c8201cffbd272"
+    },
+    {
+      "id": "npc-samira",
+      "file": "assets/maritime/pixel/npc-samira.webp",
+      "size": [
+        31,
+        56
+      ],
+      "bytes": 3424,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        0,
+        0
+      ],
+      "sha256": "13496ddb098e70eb5b9e86208ae411b5ff13be2c69baa6d73c48f5d794460277"
+    },
+    {
+      "id": "npc-naledi",
+      "file": "assets/maritime/pixel/npc-naledi.webp",
+      "size": [
+        34,
+        56
+      ],
+      "bytes": 3458,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        1,
+        0
+      ],
+      "sha256": "009f9b98ef0fec8047ffac5089b5e76f7e6334a6fa2748f2c956a5c2278982fa"
+    },
+    {
+      "id": "npc-kabelo",
+      "file": "assets/maritime/pixel/npc-kabelo.webp",
+      "size": [
+        32,
+        56
+      ],
+      "bytes": 3216,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        2,
+        0
+      ],
+      "sha256": "2bd76bfc981e4b4d9a7e75e02c2eac25f94bc9919f64a60cd1f93008691ae820"
+    },
+    {
+      "id": "npc-lindiwe",
+      "file": "assets/maritime/pixel/npc-lindiwe.webp",
+      "size": [
+        27,
+        56
+      ],
+      "bytes": 2728,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        0,
+        1
+      ],
+      "sha256": "f1b7b5d044bc49add1afbc9a4d06aeedc7f48c4c3142fe8a1236c6279516ce3f"
+    },
+    {
+      "id": "npc-zola",
+      "file": "assets/maritime/pixel/npc-zola.webp",
+      "size": [
+        26,
+        56
+      ],
+      "bytes": 2522,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        1,
+        1
+      ],
+      "sha256": "ba3282ba9b71c7ca6034c082a2e953658e295b4c5d8ac0f8b6ab0a01343abbef"
+    },
+    {
+      "id": "npc-ayesha",
+      "file": "assets/maritime/pixel/npc-ayesha.webp",
+      "size": [
+        29,
+        56
+      ],
+      "bytes": 2648,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        2,
+        1
+      ],
+      "sha256": "4ec463ab86e98c4a5aaa142ae6d3a6c34b192271b0b15cd9bbc03ca226958a3c"
+    },
+    {
+      "id": "npc-thandi",
+      "file": "assets/maritime/pixel/npc-thandi.webp",
+      "size": [
+        35,
+        56
+      ],
+      "bytes": 3462,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        0,
+        2
+      ],
+      "sha256": "066ec52f9d03151fc2cb8c9dff6aa6f27993aa5fa67021d5b590088acc3c20e3"
+    },
+    {
+      "id": "npc-sipho",
+      "file": "assets/maritime/pixel/npc-sipho.webp",
+      "size": [
+        29,
+        56
+      ],
+      "bytes": 3184,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        1,
+        2
+      ],
+      "sha256": "ab8cfd28f77fd16420af580a15dae9b774c3ad30ebd11d1a626c1202be437189"
+    },
+    {
+      "id": "npc-joana",
+      "file": "assets/maritime/pixel/npc-joana.webp",
+      "size": [
+        38,
+        56
+      ],
+      "bytes": 3660,
+      "lossless": true,
+      "sourceAtlas": "Nove sprites chibi do Cabo.png",
+      "cell": [
+        2,
+        2
+      ],
+      "sha256": "351aa2c423f39369dc16be105c2da0e4648478d886d6d324fb83b2fedf576a2c"
+    },
+    {
+      "id": "cape-panorama-port",
+      "file": "assets/maritime/pixel/cape-panorama-port.webp",
+      "size": [
+        888,
+        130
+      ],
+      "bytes": 132366,
+      "lossless": true,
+      "sourceAtlas": "Quatro panoramas pixelados do Cabo.png",
+      "cell": [
+        0,
+        0
+      ],
+      "sha256": "eb5427a0965ff7c9adf9d52447a47c40e84822c9278520d843f2f0b523990e54"
+    },
+    {
+      "id": "cape-panorama-street",
+      "file": "assets/maritime/pixel/cape-panorama-street.webp",
+      "size": [
+        888,
+        110
+      ],
+      "bytes": 125188,
+      "lossless": true,
+      "sourceAtlas": "Quatro panoramas pixelados do Cabo.png",
+      "cell": [
+        0,
+        1
+      ],
+      "sha256": "fcafb326677d433dfc767b08f88f8a7c7b98a2037562ab77ed04f888e02634d7"
+    },
+    {
+      "id": "cape-panorama-garden",
+      "file": "assets/maritime/pixel/cape-panorama-garden.webp",
+      "size": [
+        888,
+        111
+      ],
+      "bytes": 140672,
+      "lossless": true,
+      "sourceAtlas": "Quatro panoramas pixelados do Cabo.png",
+      "cell": [
+        0,
+        2
+      ],
+      "sha256": "44c36e5b5095fa17fc228da3088ee21dab55a544d8cacea31784aeeb003230b4"
+    },
+    {
+      "id": "cape-panorama-coast",
+      "file": "assets/maritime/pixel/cape-panorama-coast.webp",
+      "size": [
+        888,
+        93
+      ],
+      "bytes": 101792,
+      "lossless": true,
+      "sourceAtlas": "Quatro panoramas pixelados do Cabo.png",
+      "cell": [
+        0,
+        3
+      ],
+      "sha256": "90e3b689b5a2e39855a86a4800e3db8ffd96b2c963ee977cbd5200cf37bb5385"
+    },
+    {
+      "id": "boat-ferry",
+      "file": "assets/maritime/pixel/boat-ferry.webp",
+      "size": [
+        86,
+        160
+      ],
+      "bytes": 19316,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        0,
+        0
+      ],
+      "sha256": "d31fd7b33ba2d48cf80685483f9abfdc1d75a09faec24e8a99228cdda3257844"
+    },
+    {
+      "id": "boat-row",
+      "file": "assets/maritime/pixel/boat-row.webp",
+      "size": [
+        80,
+        160
+      ],
+      "bytes": 16002,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        1,
+        0
+      ],
+      "sha256": "195f4b347f7b4726e727e2a34456b070fd1cf042e79aee154570798dd3f2d658"
+    },
+    {
+      "id": "boat-dinghy",
+      "file": "assets/maritime/pixel/boat-dinghy.webp",
+      "size": [
+        90,
+        160
+      ],
+      "bytes": 16002,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        2,
+        0
+      ],
+      "sha256": "08f4070a76200491df915ffca6f0594f788b63cfc04775aac48808be41278744"
+    },
+    {
+      "id": "prop-bollard",
+      "file": "assets/maritime/pixel/prop-bollard.webp",
+      "size": [
+        160,
+        98
+      ],
+      "bytes": 18926,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        0,
+        1
+      ],
+      "sha256": "1775622c6112e69031b92a84b8e538e025c956e507865151334a3e9ec6c79296"
+    },
+    {
+      "id": "prop-buoys",
+      "file": "assets/maritime/pixel/prop-buoys.webp",
+      "size": [
+        149,
+        160
+      ],
+      "bytes": 20468,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        1,
+        1
+      ],
+      "sha256": "674001931de0746d07afad3a26d3e07b189c9cd398408ea3d3bbc57b660f8af9"
+    },
+    {
+      "id": "prop-tackle",
+      "file": "assets/maritime/pixel/prop-tackle.webp",
+      "size": [
+        160,
+        124
+      ],
+      "bytes": 19604,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        2,
+        1
+      ],
+      "sha256": "617ff4627727bf27f3c7fa7b70f20f379825295cc8d84cf0b729aba7447a548e"
+    },
+    {
+      "id": "port-crane",
+      "file": "assets/maritime/pixel/port-crane.webp",
+      "size": [
+        160,
+        148
+      ],
+      "bytes": 23454,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        0,
+        2
+      ],
+      "sha256": "93e1fa04acc533a33e018129cddafb2b3e376942d4b322ec2c0baae99194bf29"
+    },
+    {
+      "id": "port-terminal-v2",
+      "file": "assets/maritime/pixel/port-terminal-v2.webp",
+      "size": [
+        160,
+        142
+      ],
+      "bytes": 26472,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        1,
+        2
+      ],
+      "sha256": "2e9103faa704656e9549d2951ef8eac116c698d6d7e65261dd3a7508b6e51185"
+    },
+    {
+      "id": "cape-dock-cart",
+      "file": "assets/maritime/pixel/cape-dock-cart.webp",
+      "size": [
+        160,
+        99
+      ],
+      "bytes": 17758,
+      "lossless": true,
+      "sourceAtlas": "nautical.png",
+      "cell": [
+        2,
+        2
+      ],
+      "sha256": "28cfa47c2b5c82b22777bd132eca8ef47feee468299eee929e2a480e43069b4c"
+    }
+  ],
+  "reviewed": "2026-10-30",
+  "referenceImages": [
+    "assets/tilesets/scene-props.png",
+    "assets/characters/nia.png"
+  ],
+  "promptSet": [
+    {
+      "atlas": "architecture",
+      "prompt": "Production 4-column by 2-row transparent architecture atlas for VOICES. Match scene-props: genuinely low-resolution 16-bit pixel clusters, dark green-brown outlines, flat restrained palettes, frontal facades and slightly visible roofs, nearest-neighbor hard square pixels. Bo-Kaap flat-roof house rows in coral/turquoise/ochre and indigo/rose/sage, Cape Dutch heritage museum, harbour warehouse, neighbourhood market, timber garden pavilion, Muizenberg changing huts and coastal lighthouse. Isolated objects, clear gutters, no labels, scenery or baked shadows; no gradients, photorealism or painterly textures."
+    },
+    {
+      "atlas": "flora-and-furniture",
+      "prompt": "Transparent 4-column by 3-row Cape-region game sprite atlas. Match the simple 16-bit low-resolution furniture reference. King protea fynbos shrub, planted Leucospermum/protea bed, restios and ericas, silver tree, sandstone boulders, dune grasses, street lamp, public bench, leafy terracotta planter, dock crates and rope, two surfboards in a rack, sandstone information lectern. Restrained sage/forest/ochre/coral/teal palette, crisp pixel clusters, 3-tone shading, no labels or baked shadows."
+    },
+    {
+      "atlas": "residents",
+      "prompt": "Transparent 3 by 3 NPC atlas for VOICES. EXACT Nia overworld proportions: oversized heads, small compact bodies, hard dark pixel outlines, flat 3-shade blocks, neutral front standing pose. Samira in rust-coral hijab and cream/blue; Naledi in sage/ochre work clothes; Kabelo in teal surf T-shirt; Lindiwe in navy harbour uniform; Zola with gray hair and green cardigan; Ayesha in lilac hijab and sage tunic; Thandi in olive field vest; Sipho in ochre fishing shirt; Joana in teal captain coat. Contemporary everyday clothes, distinct individual looks, no generic tribal motifs, no portrait illustration, no gradients or text."
+    },
+    {
+      "atlas": "panoramas",
+      "prompt": "Four edge-to-edge horizontal 16-bit pixel-art panorama strips. Simple hard square pixel clusters and limited atmospheric solid color masses. Table Mountain plateau from the harbour; rounded Signal Hill above Bo-Kaap; eastern sandstone slopes and indigenous tree masses behind Kirstenbosch; Muizenberg mountains toward False Bay with turquoise sea and dunes. Ivory block clouds, sage ridges, ochre sandstone, pale blue sky, low fynbos foreground. No characters, foreground buildings, text, photographic texture or gradients."
+    },
+    {
+      "atlas": "nautical",
+      "prompt": "Transparent 3 by 3 nautical atlas for a top-down VOICES pixel RPG. Simple genuine low-resolution square clusters, dark green-brown outlines, flat 3-shade ochre/teal/cream. Ferry, empty rowboat and motor dinghy seen directly from above pointing up; mooring bollard with rope and red/cream lifebuoy; navigation buoys; fishing tackle box, bucket and rod; frontal gantry crane; sage-roof harbour terminal; dock cargo handcart. Clear gutters, contained sprites, no water/ground backgrounds, labels, gradients, realistic textures or baked shadows."
+    }
+  ]
+}
