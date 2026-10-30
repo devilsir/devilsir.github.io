@@ -21,3 +21,9 @@
 .home-storage-summary{display:flex;flex-wrap:wrap;gap:7px;max-height:220px;overflow:auto}
 .home-storage-pick{display:flex;gap:10px;justify-content:space-between;border:1px solid #71957c;background:#233f35;color:inherit;padding:9px;border-radius:7px;font-size:.85rem}
 @media(max-width:850px){.home-arrange-v2{grid-template-columns:minmax(0,1fr)}.home-arrange-v2 .home-arrange-sidebar{max-height:none}.home-arrange-controls{gap:5px}.home-arrange-controls button{flex:1}}
+
+.home-editor-dialog .home-plan-column{display:flex;flex-direction:column;align-items:stretch;position:relative}
+.home-editor-dialog .home-plan-column #home-floorplan{align-self:center;width:auto;max-width:100%;height:min(52dvh,430px);aspect-ratio:4/3}
+.home-editor-dialog .home-arrange-controls{position:sticky;bottom:0;z-index:5;background:#214b3f;border:1px solid #81947b;border-radius:9px;padding:9px;box-shadow:0 -5px 18px #16362f30}
+.home-editor-dialog #home-place-status{margin:8px 0;min-height:1.5em}
+@media(max-height:500px){.home-editor-dialog .home-plan-column #home-floorplan{height:min(48dvh,220px)}.home-editor-dialog .modal-head{padding-block:8px}.home-editor-dialog .modal-body{padding-block:10px}.home-editor-dialog .home-arrange-controls{padding:5px;gap:5px}.home-editor-dialog .home-arrange-controls button{min-height:34px;padding:6px 9px}}

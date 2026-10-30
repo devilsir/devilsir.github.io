@@ -47,7 +47,7 @@ H.commitArrangement=function(id,itemId,x,y,rotation=0,existingId=null){const h=t
  if(!this.canArrange(id,item,x,y,rotation,existingId))return false;
  h.placed[id]||=[];const backup=h.placed[id].map(p=>({...p})),serial=h.serial;
  if(old){Object.assign(old,{x,y,rotation:normalize(rotation)});}else{h.placed[id].push({id:'furniture-'+(++h.serial),item:itemId,x,y,rotation:normalize(rotation)});}
- try{this.applyFurniture(id);if(!remainsAccessible(id))throw Error('passagem');if(!old)h.furniture[itemId]--;L.achieve('home-decorator');V.Save.save();return true;}
+ try{this.applyFurniture(id);if(!remainsAccessible(id))throw Error('passagem');if(!old)h.furniture[itemId]--;L.achieve('home-decorator');V.Save.save();V.Events.emit('home-furniture-committed',{home:id,item:itemId,placed:!old});return true;}
  catch(e){h.placed[id]=backup;h.serial=serial;this.applyFurniture(id);V.UI.toast('Não é possível bloquear a passagem até os cômodos.');return false;}
 };
 // Compatibilidade com gravações antigas e com qualquer atalho do tutorial.
@@ -97,6 +97,6 @@ H.organize=function(id){if(!this.owned(id))return this.property(id);const h=this
  let drag=false;canvas.addEventListener('pointerdown',e=>{if(!item()){const p=pointer(e),near=allPlaced(id).map(a=>({...a,d:Math.hypot(a.x-p.x,a.y-p.y)})).sort((a,b)=>a.d-b.d)[0];if(near&&near.d<65){selectInstalled(near.id);return;}}if(!item())return;drag=true;canvas.setPointerCapture?.(e.pointerId);choosePosition(e);});
  canvas.addEventListener('pointermove',e=>{if(drag)choosePosition(e);});canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
  canvas.addEventListener('keydown',e=>{const d={ArrowLeft:[-T,0],ArrowRight:[T,0],ArrowUp:[0,-T],ArrowDown:[0,T]}[e.key];if(d&&item()){e.preventDefault();if(!cursor)cursor={x:snap(bound.x+bound.w/2),y:snap(bound.y+bound.h/2)};cursor={x:cursor.x+d[0],y:cursor.y+d[1]};setStatus(valid()?'Posição disponível.':'Passagem bloqueada ou fora da casa.',valid());paint();}else if(e.key.toLowerCase()==='r'){e.preventDefault();rotate(90);}else if(e.key.toLowerCase()==='q'){e.preventDefault();rotate(-90);}else if(e.key==='Enter'){e.preventDefault();submit();}else if(e.key==='Escape'){e.preventDefault();cancel();}});
- paint();
+ paint();V.$('.modal')?.classList.add('home-editor-dialog');V.Events.emit('home-editor-opened',{home:id});
 };
 })();

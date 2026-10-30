@@ -27,3 +27,6 @@ body .guided-lesson-hidden{display:none!important}.guided-lesson-space{padding-b
 @media(prefers-reduced-motion:reduce){.guided-current,.guided-spot,.guided-spot::before{animation:none!important;transition:none!important}}
 
 @media(forced-colors:active){.guided-spot{border:4px solid Highlight;box-shadow:none}.guided-spot::before{display:none}.guided-current{outline:2px solid Highlight!important}}
+
+.guided-pointer.guided-world-pointer{font-size:13px;line-height:30px;white-space:nowrap;background:#254d40;color:#f3d79b;border:1px solid #d1b26e;border-radius:6px;padding:2px 8px;min-height:30px;text-shadow:none}
+@media(max-height:500px){.guided-card{width:min(300px,calc(100vw - 24px))}.guided-card header{padding:8px 10px;gap:7px}.guided-card header img{width:34px;height:34px}.guided-card header strong{font-size:14px}.guided-card #guided-content{padding:9px 11px}.guided-card p{font-size:13px;line-height:1.35;margin-bottom:8px}#guided-instruction{font-size:12px;line-height:1.35;padding:7px 8px}.guided-card footer{margin-top:4px}.guided-actions{margin-top:8px}}
