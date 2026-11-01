@@ -20,10 +20,11 @@ C.render=function(ctx){
 const m=W.current;if(!m||!V.state)return;C.ensure();const cam=W.camera,t={accent:m.chapter?V.content.chapters[m.chapter-1].color:'#d1be93'};
 if(V.Neighborhood)V.Neighborhood.bubbleDrawn=false;m.protestChantVisible=false;
 if(!m.cache)C.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));E.sky(ctx,m,cam);C.pond(ctx,m,cam);
-if(!V.SceneEditor.active)N.draw(ctx,cam);
-m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));if(m.id==='hub')C.fountain(ctx,cam);
+if(!V.SceneEditor.active&&m.id!=='hub')N.draw(ctx,cam);
+if(m.id!=='hub')m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));
 const draws=m.decor.map(o=>({y:o.layer==='ground'?-10000:o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9,kind:'decor',o})).concat(m.objects.map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
-for(const d of draws){
+let plazaSurface=false;for(const d of draws){
+if(m.id==='hub'&&!plazaSurface&&d.y>-10000){V.PlazaArt?.surface(ctx,m,cam);if(!V.SceneEditor.active)N.draw(ctx,cam);m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));C.fountain(ctx,cam);plazaSurface=true;}
 if(d.kind==='player')V.Player.render(ctx);
 else if(d.kind==='object')C.drawObject(ctx,d.o,cam,t);
 else if(d.kind==='wall')A.drawWall(ctx,m,d.o,cam);

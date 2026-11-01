@@ -1,0 +1,33 @@
+.duo-guide-card{position:absolute;z-index:6;right:12px;bottom:62px;width:min(355px,calc(100% - 24px));max-height:65%;overflow-y:auto;border:1px solid #b3c59a;border-top:3px solid #e1c179;border-radius:10px;background:#f5edda;color:#254c3c;box-shadow:0 8px 28px #10271f66;font-size:12px;line-height:1.5;pointer-events:auto;scrollbar-width:thin}
+.duo-guide-card[hidden]{display:none!important}
+.duo-guide-card>header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#254d3e;color:#f8edca}
+.duo-guide-card>header small{display:block;font-size:9px;letter-spacing:.09em;color:#d9d8ad}
+.duo-guide-card>header strong{display:block;font-size:13px;line-height:1.35}
+.duo-guide-card>header button{color:#f8edca;min-width:30px;padding:3px;font-size:20px}
+.duo-guide-body{padding:12px}
+.duo-guide-body p{margin:8px 0;font-size:12px;line-height:1.55}
+.duo-guide-body progress{display:block;width:100%;height:5px;margin-bottom:7px;accent-color:#4e9775}
+.duo-guide-body>small{font-size:9px;font-weight:700;color:#56705a}
+.duo-guide-instruction{padding:9px;background:#e3e5c8;border-left:3px solid #7b9c68;border-radius:3px}
+.duo-guide-body button{min-height:34px;padding:6px 9px;font-size:11px;border:1px solid #8ca782;border-radius:6px}
+.duo-guide-body .primary{background:#315d47;color:#fff0c7}
+.duo-guide-body .secondary{background:#e3dbc4;color:#294e3e}
+.duo-guide-body .quiet{color:#456249;background:transparent}
+.duo-guide-body button:disabled{opacity:.45;cursor:default}
+.duo-guide-body button:focus-visible{outline:3px solid #b88b32;outline-offset:2px}
+.duo-guide-body footer{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;border-top:1px solid #b9c2a0;padding-top:10px}
+.duo-guide-body details{margin:8px 0}
+.duo-guide-body summary{cursor:pointer;font-weight:700}
+.duo-guide-conversation{padding:10px;margin-top:10px;background:#e6e0cb;border:1px solid #aab69a;border-radius:7px}
+.duo-guide-conversation>strong{font-size:11px}
+.duo-guide-conversation [lang=en]{color:#214e43;font-weight:600}
+.duo-guide-conversation [lang=pt-BR]{color:#54674d}
+.duo-guide-body button.duo-guide-word{display:inline;min-height:0;padding:0 3px;border:0;border-bottom:2px solid #6a9568;background:#eae8bd;color:#27583c;border-radius:0;font:inherit}
+.duo-world-menu .duo-guide-target{outline:3px solid #f0d07b;outline-offset:2px;background:#547b4e}
+.duo-guide-training{position:absolute;inset:0;z-index:8;background:#173b31;display:grid;grid-template-rows:auto minmax(0,1fr);color:#fae9bc}
+.duo-guide-training>header{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;background:#254d3e;font-size:11px}
+.duo-guide-training>header button{font-size:10px;min-height:30px;padding:4px 7px}
+.duo-guide-training>iframe{width:100%;height:100%;min-height:0;border:0;grid-row:2}
+.duo-guide-training>p{position:absolute;inset:45px 0 0;margin:0;padding:30px;display:grid;place-content:center;text-align:center;background:#173b31}
+.duo-guide-training>p[hidden]{display:none}
+@media(max-width:760px){.duo-guide-card{right:6px;bottom:50px;width:calc(100% - 12px);max-height:68%}.duo-guide-card>header{padding:7px 8px}.duo-guide-card>header strong{font-size:11px}.duo-guide-body{padding:8px}.duo-guide-body p{font-size:11px}.duo-guide-body button{font-size:10px}.duo-guide-training>header{flex-wrap:wrap}}

@@ -1,0 +1,2672 @@
+{
+  "images": 296,
+  "before_bytes": 47907581,
+  "after_bytes": 33692452,
+  "saved_percent": 29.7,
+  "files": [
+    {
+      "source": "assets/adventure/atlas-paper.webp",
+      "target": "assets/optimized/adventure/atlas-paper.webp",
+      "before": 1692836,
+      "after": 1184690,
+      "width": 1536,
+      "height": 1024,
+      "max_channel_rmse": 1.934
+    },
+    {
+      "source": "assets/adventure/historiograph-v2.webp",
+      "target": "assets/optimized/adventure/historiograph-v2.webp",
+      "before": 1300736,
+      "after": 1011808,
+      "width": 1254,
+      "height": 1254,
+      "max_channel_rmse": 5.149
+    },
+    {
+      "source": "assets/adventure/historiograph.webp",
+      "target": "assets/optimized/adventure/historiograph.webp",
+      "before": 116966,
+      "after": 104646,
+      "width": 400,
+      "height": 340,
+      "max_channel_rmse": 4.36
+    },
+    {
+      "source": "assets/african-museum/museum-facade.png",
+      "target": "assets/optimized/african-museum/museum-facade.webp",
+      "before": 592698,
+      "after": 287486,
+      "width": 640,
+      "height": 427,
+      "max_channel_rmse": 5.464
+    },
+    {
+      "source": "assets/arcade-expansion/delivery-motorbike.png",
+      "target": "assets/optimized/arcade-expansion/delivery-motorbike.webp",
+      "before": 175735,
+      "after": 128426,
+      "width": 400,
+      "height": 251,
+      "max_channel_rmse": 5.655
+    },
+    {
+      "source": "assets/arcade-expansion/delivery-panorama.png",
+      "target": "assets/optimized/arcade-expansion/delivery-panorama.webp",
+      "before": 1013757,
+      "after": 793256,
+      "width": 1280,
+      "height": 480,
+      "max_channel_rmse": 6.179
+    },
+    {
+      "source": "assets/arcade-expansion/delivery-rider-animated.png",
+      "target": "assets/optimized/arcade-expansion/delivery-rider-animated.webp",
+      "before": 119003,
+      "after": 95510,
+      "width": 640,
+      "height": 128,
+      "max_channel_rmse": 5.921
+    },
+    {
+      "source": "assets/arcade-expansion/delivery-rider.png",
+      "target": "assets/optimized/arcade-expansion/delivery-rider.webp",
+      "before": 55546,
+      "after": 40978,
+      "width": 320,
+      "height": 128,
+      "max_channel_rmse": 4.874
+    },
+    {
+      "source": "assets/arcade-expansion/fish-bagrus.png",
+      "target": "assets/optimized/arcade-expansion/fish-bagrus.webp",
+      "before": 89379,
+      "after": 54700,
+      "width": 448,
+      "height": 200,
+      "max_channel_rmse": 2.659
+    },
+    {
+      "source": "assets/arcade-expansion/fish-hake.png",
+      "target": "assets/optimized/arcade-expansion/fish-hake.webp",
+      "before": 89413,
+      "after": 56878,
+      "width": 448,
+      "height": 156,
+      "max_channel_rmse": 2.97
+    },
+    {
+      "source": "assets/arcade-expansion/fish-mullet.png",
+      "target": "assets/optimized/arcade-expansion/fish-mullet.webp",
+      "before": 94940,
+      "after": 63502,
+      "width": 448,
+      "height": 161,
+      "max_channel_rmse": 3.239
+    },
+    {
+      "source": "assets/arcade-expansion/fish-nile-perch.png",
+      "target": "assets/optimized/arcade-expansion/fish-nile-perch.webp",
+      "before": 214339,
+      "after": 135622,
+      "width": 445,
+      "height": 240,
+      "max_channel_rmse": 5.301
+    },
+    {
+      "source": "assets/arcade-expansion/fish-synodontis.png",
+      "target": "assets/optimized/arcade-expansion/fish-synodontis.webp",
+      "before": 160926,
+      "after": 102420,
+      "width": 418,
+      "height": 240,
+      "max_channel_rmse": 3.462
+    },
+    {
+      "source": "assets/arcade-expansion/house-blue.png",
+      "target": "assets/optimized/arcade-expansion/house-blue.webp",
+      "before": 202770,
+      "after": 152008,
+      "width": 344,
+      "height": 310,
+      "max_channel_rmse": 6.007
+    },
+    {
+      "source": "assets/arcade-expansion/house-red.png",
+      "target": "assets/optimized/arcade-expansion/house-red.webp",
+      "before": 201112,
+      "after": 157452,
+      "width": 345,
+      "height": 310,
+      "max_channel_rmse": 6.326
+    },
+    {
+      "source": "assets/arcade-expansion/house-yellow.png",
+      "target": "assets/optimized/arcade-expansion/house-yellow.webp",
+      "before": 199475,
+      "after": 150708,
+      "width": 345,
+      "height": 310,
+      "max_channel_rmse": 6.475
+    },
+    {
+      "source": "assets/characters/aline.png",
+      "target": "assets/optimized/characters/aline.webp",
+      "before": 152089,
+      "after": 82786,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.463
+    },
+    {
+      "source": "assets/characters/amara.png",
+      "target": "assets/optimized/characters/amara.webp",
+      "before": 119648,
+      "after": 94342,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.927
+    },
+    {
+      "source": "assets/characters/andre.png",
+      "target": "assets/optimized/characters/andre.webp",
+      "before": 136213,
+      "after": 99298,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.284
+    },
+    {
+      "source": "assets/characters/archivist.png",
+      "target": "assets/optimized/characters/archivist.webp",
+      "before": 126432,
+      "after": 88456,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.427
+    },
+    {
+      "source": "assets/characters/atelier-cecilia.png",
+      "target": "assets/optimized/characters/atelier-cecilia.webp",
+      "before": 123564,
+      "after": 71436,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.805
+    },
+    {
+      "source": "assets/characters/atelier-gilberto.png",
+      "target": "assets/optimized/characters/atelier-gilberto.webp",
+      "before": 132688,
+      "after": 101336,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.528
+    },
+    {
+      "source": "assets/characters/atelier-ivana.png",
+      "target": "assets/optimized/characters/atelier-ivana.webp",
+      "before": 130614,
+      "after": 91494,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.67
+    },
+    {
+      "source": "assets/characters/atelier-joel.png",
+      "target": "assets/optimized/characters/atelier-joel.webp",
+      "before": 122995,
+      "after": 87778,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.803
+    },
+    {
+      "source": "assets/characters/beach-beto.png",
+      "target": "assets/optimized/characters/beach-beto.webp",
+      "before": 107842,
+      "after": 81224,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.72
+    },
+    {
+      "source": "assets/characters/beach-celina.png",
+      "target": "assets/optimized/characters/beach-celina.webp",
+      "before": 138608,
+      "after": 99672,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.943
+    },
+    {
+      "source": "assets/characters/beach-ivo.png",
+      "target": "assets/optimized/characters/beach-ivo.webp",
+      "before": 109642,
+      "after": 84340,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.762
+    },
+    {
+      "source": "assets/characters/beach-jorge.png",
+      "target": "assets/optimized/characters/beach-jorge.webp",
+      "before": 117103,
+      "after": 83850,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.264
+    },
+    {
+      "source": "assets/characters/beach-lara.png",
+      "target": "assets/optimized/characters/beach-lara.webp",
+      "before": 115415,
+      "after": 89320,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.867
+    },
+    {
+      "source": "assets/characters/beach-nalu.png",
+      "target": "assets/optimized/characters/beach-nalu.webp",
+      "before": 122972,
+      "after": 97040,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.902
+    },
+    {
+      "source": "assets/characters/beach-rebeca.png",
+      "target": "assets/optimized/characters/beach-rebeca.webp",
+      "before": 117662,
+      "after": 92466,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.739
+    },
+    {
+      "source": "assets/characters/beach-samira.png",
+      "target": "assets/optimized/characters/beach-samira.webp",
+      "before": 120698,
+      "after": 87818,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.331
+    },
+    {
+      "source": "assets/characters/bento.png",
+      "target": "assets/optimized/characters/bento.webp",
+      "before": 122647,
+      "after": 85724,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.327
+    },
+    {
+      "source": "assets/characters/bisa.png",
+      "target": "assets/optimized/characters/bisa.webp",
+      "before": 131223,
+      "after": 103040,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.68
+    },
+    {
+      "source": "assets/characters/celso.png",
+      "target": "assets/optimized/characters/celso.webp",
+      "before": 124300,
+      "after": 97344,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.433
+    },
+    {
+      "source": "assets/characters/cora.png",
+      "target": "assets/optimized/characters/cora.webp",
+      "before": 133234,
+      "after": 75990,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.363
+    },
+    {
+      "source": "assets/characters/courier.png",
+      "target": "assets/optimized/characters/courier.webp",
+      "before": 128952,
+      "after": 106894,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.314
+    },
+    {
+      "source": "assets/characters/curator.png",
+      "target": "assets/optimized/characters/curator.webp",
+      "before": 127914,
+      "after": 97884,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.297
+    },
+    {
+      "source": "assets/characters/dandara.png",
+      "target": "assets/optimized/characters/dandara.webp",
+      "before": 120542,
+      "after": 99822,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.539
+    },
+    {
+      "source": "assets/characters/denis.png",
+      "target": "assets/optimized/characters/denis.webp",
+      "before": 114356,
+      "after": 88738,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.209
+    },
+    {
+      "source": "assets/characters/dora.png",
+      "target": "assets/optimized/characters/dora.webp",
+      "before": 140340,
+      "after": 99112,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.866
+    },
+    {
+      "source": "assets/characters/elder.png",
+      "target": "assets/optimized/characters/elder.webp",
+      "before": 132911,
+      "after": 93780,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.148
+    },
+    {
+      "source": "assets/characters/elisa.png",
+      "target": "assets/optimized/characters/elisa.webp",
+      "before": 143378,
+      "after": 113566,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.07
+    },
+    {
+      "source": "assets/characters/enzo.png",
+      "target": "assets/optimized/characters/enzo.webp",
+      "before": 118617,
+      "after": 85090,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.637
+    },
+    {
+      "source": "assets/characters/gardener.png",
+      "target": "assets/optimized/characters/gardener.webp",
+      "before": 141601,
+      "after": 114008,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.249
+    },
+    {
+      "source": "assets/characters/guide.png",
+      "target": "assets/optimized/characters/guide.webp",
+      "before": 125187,
+      "after": 97388,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.723
+    },
+    {
+      "source": "assets/characters/history-carolina.png",
+      "target": "assets/optimized/characters/history-carolina.webp",
+      "before": 127844,
+      "after": 100178,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.614
+    },
+    {
+      "source": "assets/characters/history-katherine.png",
+      "target": "assets/optimized/characters/history-katherine.webp",
+      "before": 128529,
+      "after": 91582,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.792
+    },
+    {
+      "source": "assets/characters/history-king.png",
+      "target": "assets/optimized/characters/history-king.webp",
+      "before": 119661,
+      "after": 85626,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.612
+    },
+    {
+      "source": "assets/characters/history-machado.png",
+      "target": "assets/optimized/characters/history-machado.webp",
+      "before": 120371,
+      "after": 82592,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.17
+    },
+    {
+      "source": "assets/characters/history-nina.png",
+      "target": "assets/optimized/characters/history-nina.webp",
+      "before": 130810,
+      "after": 93818,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.012
+    },
+    {
+      "source": "assets/characters/history-tim.png",
+      "target": "assets/optimized/characters/history-tim.webp",
+      "before": 126376,
+      "after": 96806,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 8.644
+    },
+    {
+      "source": "assets/characters/iemanja.png",
+      "target": "assets/optimized/characters/iemanja.webp",
+      "before": 161291,
+      "after": 93274,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.66
+    },
+    {
+      "source": "assets/characters/ines.png",
+      "target": "assets/optimized/characters/ines.webp",
+      "before": 121661,
+      "after": 88100,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.598
+    },
+    {
+      "source": "assets/characters/jaci.png",
+      "target": "assets/optimized/characters/jaci.webp",
+      "before": 125954,
+      "after": 89998,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.35
+    },
+    {
+      "source": "assets/characters/jamila.png",
+      "target": "assets/optimized/characters/jamila.webp",
+      "before": 131810,
+      "after": 101558,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.918
+    },
+    {
+      "source": "assets/characters/journalist.png",
+      "target": "assets/optimized/characters/journalist.webp",
+      "before": 128518,
+      "after": 97430,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.299
+    },
+    {
+      "source": "assets/characters/leo.png",
+      "target": "assets/optimized/characters/leo.webp",
+      "before": 121240,
+      "after": 97312,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.077
+    },
+    {
+      "source": "assets/characters/librarian.png",
+      "target": "assets/optimized/characters/librarian.webp",
+      "before": 122043,
+      "after": 94466,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.775
+    },
+    {
+      "source": "assets/characters/luan.png",
+      "target": "assets/optimized/characters/luan.webp",
+      "before": 127607,
+      "after": 98756,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.649
+    },
+    {
+      "source": "assets/characters/luzia.png",
+      "target": "assets/optimized/characters/luzia.webp",
+      "before": 136448,
+      "after": 104702,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.892
+    },
+    {
+      "source": "assets/characters/maite.png",
+      "target": "assets/optimized/characters/maite.webp",
+      "before": 130575,
+      "after": 105534,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.039
+    },
+    {
+      "source": "assets/characters/mila.png",
+      "target": "assets/optimized/characters/mila.webp",
+      "before": 140025,
+      "after": 103660,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.896
+    },
+    {
+      "source": "assets/characters/musician.png",
+      "target": "assets/optimized/characters/musician.webp",
+      "before": 137581,
+      "after": 106738,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.692
+    },
+    {
+      "source": "assets/characters/nara.png",
+      "target": "assets/optimized/characters/nara.webp",
+      "before": 117479,
+      "after": 85024,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.069
+    },
+    {
+      "source": "assets/characters/neighbors-abel.png",
+      "target": "assets/optimized/characters/neighbors-abel.webp",
+      "before": 133280,
+      "after": 94270,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.072
+    },
+    {
+      "source": "assets/characters/neighbors-nilo.png",
+      "target": "assets/optimized/characters/neighbors-nilo.webp",
+      "before": 129040,
+      "after": 91886,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.768
+    },
+    {
+      "source": "assets/characters/neighbors-rute.png",
+      "target": "assets/optimized/characters/neighbors-rute.webp",
+      "before": 126810,
+      "after": 99762,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.738
+    },
+    {
+      "source": "assets/characters/neighbors-yara.png",
+      "target": "assets/optimized/characters/neighbors-yara.webp",
+      "before": 118696,
+      "after": 93144,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.649
+    },
+    {
+      "source": "assets/characters/nia.png",
+      "target": "assets/optimized/characters/nia.webp",
+      "before": 131298,
+      "after": 99804,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.173
+    },
+    {
+      "source": "assets/characters/otavio.png",
+      "target": "assets/optimized/characters/otavio.webp",
+      "before": 136457,
+      "after": 108640,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.716
+    },
+    {
+      "source": "assets/characters/paulo.png",
+      "target": "assets/optimized/characters/paulo.webp",
+      "before": 125228,
+      "after": 94408,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.048
+    },
+    {
+      "source": "assets/characters/percussionist.png",
+      "target": "assets/optimized/characters/percussionist.webp",
+      "before": 140366,
+      "after": 112022,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.487
+    },
+    {
+      "source": "assets/characters/pix.png",
+      "target": "assets/optimized/characters/pix.webp",
+      "before": 130977,
+      "after": 90186,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.076
+    },
+    {
+      "source": "assets/characters/protest-aldo.png",
+      "target": "assets/optimized/characters/protest-aldo.webp",
+      "before": 123449,
+      "after": 87870,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.465
+    },
+    {
+      "source": "assets/characters/protest-ariane.png",
+      "target": "assets/optimized/characters/protest-ariane.webp",
+      "before": 120343,
+      "after": 86608,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.539
+    },
+    {
+      "source": "assets/characters/protest-avelina.png",
+      "target": "assets/optimized/characters/protest-avelina.webp",
+      "before": 130942,
+      "after": 101170,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.995
+    },
+    {
+      "source": "assets/characters/protest-cassio.png",
+      "target": "assets/optimized/characters/protest-cassio.webp",
+      "before": 136729,
+      "after": 80260,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.349
+    },
+    {
+      "source": "assets/characters/protest-clarissa.png",
+      "target": "assets/optimized/characters/protest-clarissa.webp",
+      "before": 131078,
+      "after": 95584,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.992
+    },
+    {
+      "source": "assets/characters/protest-dario.png",
+      "target": "assets/optimized/characters/protest-dario.webp",
+      "before": 136032,
+      "after": 93948,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.85
+    },
+    {
+      "source": "assets/characters/protest-debora.png",
+      "target": "assets/optimized/characters/protest-debora.webp",
+      "before": 138160,
+      "after": 108922,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.979
+    },
+    {
+      "source": "assets/characters/protest-edivaldo.png",
+      "target": "assets/optimized/characters/protest-edivaldo.webp",
+      "before": 114353,
+      "after": 82724,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.586
+    },
+    {
+      "source": "assets/characters/protest-ezequiel.png",
+      "target": "assets/optimized/characters/protest-ezequiel.webp",
+      "before": 138385,
+      "after": 95720,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.242
+    },
+    {
+      "source": "assets/characters/protest-fabiola.png",
+      "target": "assets/optimized/characters/protest-fabiola.webp",
+      "before": 138394,
+      "after": 101436,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.761
+    },
+    {
+      "source": "assets/characters/protest-jeferson.png",
+      "target": "assets/optimized/characters/protest-jeferson.webp",
+      "before": 131778,
+      "after": 93808,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.552
+    },
+    {
+      "source": "assets/characters/protest-josias.png",
+      "target": "assets/optimized/characters/protest-josias.webp",
+      "before": 136776,
+      "after": 96060,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.096
+    },
+    {
+      "source": "assets/characters/protest-juliete.png",
+      "target": "assets/optimized/characters/protest-juliete.webp",
+      "before": 116785,
+      "after": 83526,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.352
+    },
+    {
+      "source": "assets/characters/protest-livia.png",
+      "target": "assets/optimized/characters/protest-livia.webp",
+      "before": 120647,
+      "after": 93860,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.767
+    },
+    {
+      "source": "assets/characters/protest-marlene.png",
+      "target": "assets/optimized/characters/protest-marlene.webp",
+      "before": 129512,
+      "after": 85838,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 2.623
+    },
+    {
+      "source": "assets/characters/protest-moises.png",
+      "target": "assets/optimized/characters/protest-moises.webp",
+      "before": 117102,
+      "after": 83690,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.093
+    },
+    {
+      "source": "assets/characters/protest-priscila.png",
+      "target": "assets/optimized/characters/protest-priscila.webp",
+      "before": 143606,
+      "after": 110322,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.068
+    },
+    {
+      "source": "assets/characters/protest-raissa.png",
+      "target": "assets/optimized/characters/protest-raissa.webp",
+      "before": 136730,
+      "after": 76162,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.48
+    },
+    {
+      "source": "assets/characters/protest-samuel.png",
+      "target": "assets/optimized/characters/protest-samuel.webp",
+      "before": 125337,
+      "after": 89448,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.089
+    },
+    {
+      "source": "assets/characters/protest-sebastiao.png",
+      "target": "assets/optimized/characters/protest-sebastiao.webp",
+      "before": 131992,
+      "after": 72548,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.029
+    },
+    {
+      "source": "assets/characters/protest-silas.png",
+      "target": "assets/optimized/characters/protest-silas.webp",
+      "before": 134486,
+      "after": 96190,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.484
+    },
+    {
+      "source": "assets/characters/protest-soraia.png",
+      "target": "assets/optimized/characters/protest-soraia.webp",
+      "before": 139966,
+      "after": 76470,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.759
+    },
+    {
+      "source": "assets/characters/protest-tais.png",
+      "target": "assets/optimized/characters/protest-tais.webp",
+      "before": 128123,
+      "after": 97982,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.785
+    },
+    {
+      "source": "assets/characters/protest-wellington.png",
+      "target": "assets/optimized/characters/protest-wellington.webp",
+      "before": 133675,
+      "after": 77598,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.131
+    },
+    {
+      "source": "assets/characters/ravi.png",
+      "target": "assets/optimized/characters/ravi.webp",
+      "before": 118107,
+      "after": 84528,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.244
+    },
+    {
+      "source": "assets/characters/resident.png",
+      "target": "assets/optimized/characters/resident.webp",
+      "before": 131509,
+      "after": 92252,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.376
+    },
+    {
+      "source": "assets/characters/rui.png",
+      "target": "assets/optimized/characters/rui.webp",
+      "before": 126391,
+      "after": 98184,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.779
+    },
+    {
+      "source": "assets/characters/scientist.png",
+      "target": "assets/optimized/characters/scientist.webp",
+      "before": 146899,
+      "after": 101708,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.335
+    },
+    {
+      "source": "assets/characters/selma.png",
+      "target": "assets/optimized/characters/selma.webp",
+      "before": 141762,
+      "after": 79152,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.667
+    },
+    {
+      "source": "assets/characters/sol.png",
+      "target": "assets/optimized/characters/sol.webp",
+      "before": 136689,
+      "after": 107248,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.509
+    },
+    {
+      "source": "assets/characters/student.png",
+      "target": "assets/optimized/characters/student.webp",
+      "before": 125399,
+      "after": 90176,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.36
+    },
+    {
+      "source": "assets/characters/student2.png",
+      "target": "assets/optimized/characters/student2.webp",
+      "before": 126848,
+      "after": 97456,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.245
+    },
+    {
+      "source": "assets/characters/taina.png",
+      "target": "assets/optimized/characters/taina.webp",
+      "before": 122012,
+      "after": 87402,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.355
+    },
+    {
+      "source": "assets/characters/teacher.png",
+      "target": "assets/optimized/characters/teacher.webp",
+      "before": 137802,
+      "after": 105600,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.41
+    },
+    {
+      "source": "assets/characters/technician.png",
+      "target": "assets/optimized/characters/technician.webp",
+      "before": 125041,
+      "after": 90418,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.487
+    },
+    {
+      "source": "assets/characters/tomas.png",
+      "target": "assets/optimized/characters/tomas.webp",
+      "before": 126281,
+      "after": 91426,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.192
+    },
+    {
+      "source": "assets/characters/vendor.png",
+      "target": "assets/optimized/characters/vendor.webp",
+      "before": 123156,
+      "after": 94962,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.894
+    },
+    {
+      "source": "assets/characters/vitor.png",
+      "target": "assets/optimized/characters/vitor.webp",
+      "before": 146101,
+      "after": 103516,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 3.378
+    },
+    {
+      "source": "assets/characters/viviane.png",
+      "target": "assets/optimized/characters/viviane.webp",
+      "before": 129689,
+      "after": 91650,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.104
+    },
+    {
+      "source": "assets/city/librarian-motion.webp",
+      "target": "assets/optimized/city/librarian-motion.webp",
+      "before": 347500,
+      "after": 317036,
+      "width": 1024,
+      "height": 512,
+      "max_channel_rmse": 5.105
+    },
+    {
+      "source": "assets/city/nia-motion.webp",
+      "target": "assets/optimized/city/nia-motion.webp",
+      "before": 375342,
+      "after": 342960,
+      "width": 1024,
+      "height": 512,
+      "max_channel_rmse": 4.936
+    },
+    {
+      "source": "assets/city/sol-motion.webp",
+      "target": "assets/optimized/city/sol-motion.webp",
+      "before": 396840,
+      "after": 362482,
+      "width": 1024,
+      "height": 512,
+      "max_channel_rmse": 4.274
+    },
+    {
+      "source": "assets/city/taina-motion.webp",
+      "target": "assets/optimized/city/taina-motion.webp",
+      "before": 346464,
+      "after": 313098,
+      "width": 1024,
+      "height": 512,
+      "max_channel_rmse": 4.348
+    },
+    {
+      "source": "assets/culture/clothes-agbada-olive.png",
+      "target": "assets/optimized/culture/clothes-agbada-olive.webp",
+      "before": 458935,
+      "after": 334002,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 6.671
+    },
+    {
+      "source": "assets/culture/clothes-dress-black.png",
+      "target": "assets/optimized/culture/clothes-dress-black.webp",
+      "before": 285449,
+      "after": 176954,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 2.624
+    },
+    {
+      "source": "assets/culture/clothes-dress-green.png",
+      "target": "assets/optimized/culture/clothes-dress-green.webp",
+      "before": 481518,
+      "after": 363052,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 5.542
+    },
+    {
+      "source": "assets/culture/clothes-dress-red-green.png",
+      "target": "assets/optimized/culture/clothes-dress-red-green.webp",
+      "before": 424157,
+      "after": 292798,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 5.128
+    },
+    {
+      "source": "assets/culture/clothes-dress-teal.png",
+      "target": "assets/optimized/culture/clothes-dress-teal.webp",
+      "before": 545401,
+      "after": 359984,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 4.623
+    },
+    {
+      "source": "assets/culture/clothes-dress-yellow.png",
+      "target": "assets/optimized/culture/clothes-dress-yellow.webp",
+      "before": 331451,
+      "after": 227288,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 5.242
+    },
+    {
+      "source": "assets/culture/clothes-mens-black.png",
+      "target": "assets/optimized/culture/clothes-mens-black.webp",
+      "before": 303612,
+      "after": 175398,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 2.565
+    },
+    {
+      "source": "assets/culture/clothes-mens-yellow.png",
+      "target": "assets/optimized/culture/clothes-mens-yellow.webp",
+      "before": 316230,
+      "after": 214592,
+      "width": 675,
+      "height": 900,
+      "max_channel_rmse": 4.206
+    },
+    {
+      "source": "assets/culture/face-paint-beige.png",
+      "target": "assets/optimized/culture/face-paint-beige.webp",
+      "before": 723795,
+      "after": 562282,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 7.322
+    },
+    {
+      "source": "assets/culture/face-paint-orange.png",
+      "target": "assets/optimized/culture/face-paint-orange.webp",
+      "before": 598771,
+      "after": 407402,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 5.063
+    },
+    {
+      "source": "assets/culture/face-paint-shells.png",
+      "target": "assets/optimized/culture/face-paint-shells.webp",
+      "before": 613731,
+      "after": 397260,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 4.443
+    },
+    {
+      "source": "assets/culture/face-paint-yellow.png",
+      "target": "assets/optimized/culture/face-paint-yellow.webp",
+      "before": 577263,
+      "after": 349366,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 3.975
+    },
+    {
+      "source": "assets/culture/hair-afro.png",
+      "target": "assets/optimized/culture/hair-afro.webp",
+      "before": 304372,
+      "after": 212890,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 1.824
+    },
+    {
+      "source": "assets/culture/hair-box-braids.png",
+      "target": "assets/optimized/culture/hair-box-braids.webp",
+      "before": 312845,
+      "after": 217890,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 2.215
+    },
+    {
+      "source": "assets/culture/hair-locs.png",
+      "target": "assets/optimized/culture/hair-locs.webp",
+      "before": 308386,
+      "after": 211606,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 2.564
+    },
+    {
+      "source": "assets/culture/hair-nago.png",
+      "target": "assets/optimized/culture/hair-nago.webp",
+      "before": 301255,
+      "after": 206000,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 1.415
+    },
+    {
+      "source": "assets/culture/hair-twists.png",
+      "target": "assets/optimized/culture/hair-twists.webp",
+      "before": 308587,
+      "after": 216196,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 1.707
+    },
+    {
+      "source": "assets/culture/masks-color.png",
+      "target": "assets/optimized/culture/masks-color.webp",
+      "before": 432359,
+      "after": 372238,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 9.267
+    },
+    {
+      "source": "assets/culture/masks-wood.png",
+      "target": "assets/optimized/culture/masks-wood.webp",
+      "before": 431525,
+      "after": 348618,
+      "width": 640,
+      "height": 640,
+      "max_channel_rmse": 6.399
+    },
+    {
+      "source": "assets/culture/sculpture-bird.png",
+      "target": "assets/optimized/culture/sculpture-bird.webp",
+      "before": 471140,
+      "after": 311542,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 3.296
+    },
+    {
+      "source": "assets/culture/sculpture-curved.png",
+      "target": "assets/optimized/culture/sculpture-curved.webp",
+      "before": 362504,
+      "after": 235694,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 3.103
+    },
+    {
+      "source": "assets/culture/sculpture-kneeling.png",
+      "target": "assets/optimized/culture/sculpture-kneeling.webp",
+      "before": 278321,
+      "after": 182572,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 4.22
+    },
+    {
+      "source": "assets/culture/sculpture-pair.png",
+      "target": "assets/optimized/culture/sculpture-pair.webp",
+      "before": 498396,
+      "after": 325700,
+      "width": 600,
+      "height": 900,
+      "max_channel_rmse": 3.34
+    },
+    {
+      "source": "assets/fishing/fish-catfish.png",
+      "target": "assets/optimized/fishing/fish-catfish.webp",
+      "before": 69202,
+      "after": 48082,
+      "width": 448,
+      "height": 136,
+      "max_channel_rmse": 2.358
+    },
+    {
+      "source": "assets/fishing/fish-tilapia.png",
+      "target": "assets/optimized/fishing/fish-tilapia.webp",
+      "before": 147093,
+      "after": 92034,
+      "width": 349,
+      "height": 200,
+      "max_channel_rmse": 3.838
+    },
+    {
+      "source": "assets/fishing/fishing-boat-side.png",
+      "target": "assets/optimized/fishing/fishing-boat-side.webp",
+      "before": 73992,
+      "after": 47672,
+      "width": 448,
+      "height": 114,
+      "max_channel_rmse": 3.431
+    },
+    {
+      "source": "assets/fishing/fishing-underwater.png",
+      "target": "assets/optimized/fishing/fishing-underwater.webp",
+      "before": 691394,
+      "after": 540640,
+      "width": 959,
+      "height": 540,
+      "max_channel_rmse": 6.393
+    },
+    {
+      "source": "assets/homestead/leo-percussion.webp",
+      "target": "assets/optimized/homestead/leo-percussion.webp",
+      "before": 162804,
+      "after": 141986,
+      "width": 768,
+      "height": 256,
+      "max_channel_rmse": 5.216
+    },
+    {
+      "source": "assets/homestead/nia-percussion.webp",
+      "target": "assets/optimized/homestead/nia-percussion.webp",
+      "before": 159038,
+      "after": 141076,
+      "width": 768,
+      "height": 256,
+      "max_channel_rmse": 5.423
+    },
+    {
+      "source": "assets/homestead/sol-percussion.webp",
+      "target": "assets/optimized/homestead/sol-percussion.webp",
+      "before": 161874,
+      "after": 141578,
+      "width": 768,
+      "height": 256,
+      "max_channel_rmse": 5.229
+    },
+    {
+      "source": "assets/homestead/taina-daily.webp",
+      "target": "assets/optimized/homestead/taina-daily.webp",
+      "before": 501620,
+      "after": 440140,
+      "width": 768,
+      "height": 1024,
+      "max_channel_rmse": 5.36
+    },
+    {
+      "source": "assets/homestead/taina-music.webp",
+      "target": "assets/optimized/homestead/taina-music.webp",
+      "before": 1116782,
+      "after": 983008,
+      "width": 768,
+      "height": 1792,
+      "max_channel_rmse": 5.119
+    },
+    {
+      "source": "assets/homestead/taina-percussion.webp",
+      "target": "assets/optimized/homestead/taina-percussion.webp",
+      "before": 159766,
+      "after": 137598,
+      "width": 768,
+      "height": 256,
+      "max_channel_rmse": 4.839
+    },
+    {
+      "source": "assets/maritime/bo-kaap-terrace.png",
+      "target": "assets/optimized/maritime/bo-kaap-terrace.webp",
+      "before": 245264,
+      "after": 196882,
+      "width": 512,
+      "height": 320,
+      "max_channel_rmse": 8.559
+    },
+    {
+      "source": "assets/maritime/boat-dinghy.png",
+      "target": "assets/optimized/maritime/boat-dinghy.webp",
+      "before": 66884,
+      "after": 33074,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.571
+    },
+    {
+      "source": "assets/maritime/boat-ferry.png",
+      "target": "assets/optimized/maritime/boat-ferry.webp",
+      "before": 53363,
+      "after": 20938,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 4.412
+    },
+    {
+      "source": "assets/maritime/boat-row.png",
+      "target": "assets/optimized/maritime/boat-row.webp",
+      "before": 61296,
+      "after": 25306,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.52
+    },
+    {
+      "source": "assets/maritime/cape-fynbos.png",
+      "target": "assets/optimized/maritime/cape-fynbos.webp",
+      "before": 98033,
+      "after": 75540,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 6.66
+    },
+    {
+      "source": "assets/maritime/cape-heritage.png",
+      "target": "assets/optimized/maritime/cape-heritage.webp",
+      "before": 321064,
+      "after": 198132,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 5.832
+    },
+    {
+      "source": "assets/maritime/cape-houses.png",
+      "target": "assets/optimized/maritime/cape-houses.webp",
+      "before": 307892,
+      "after": 189782,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 6.426
+    },
+    {
+      "source": "assets/maritime/cape-market.png",
+      "target": "assets/optimized/maritime/cape-market.webp",
+      "before": 371582,
+      "after": 243636,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 6.927
+    },
+    {
+      "source": "assets/maritime/cape-mountain.png",
+      "target": "assets/optimized/maritime/cape-mountain.webp",
+      "before": 550764,
+      "after": 340788,
+      "width": 1024,
+      "height": 384,
+      "max_channel_rmse": 5.504
+    },
+    {
+      "source": "assets/maritime/cape-rocks.png",
+      "target": "assets/optimized/maritime/cape-rocks.webp",
+      "before": 75636,
+      "after": 52560,
+      "width": 256,
+      "height": 192,
+      "max_channel_rmse": 3.766
+    },
+    {
+      "source": "assets/maritime/cape-sand.png",
+      "target": "assets/optimized/maritime/cape-sand.webp",
+      "before": 64401,
+      "after": 34584,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 1.312
+    },
+    {
+      "source": "assets/maritime/cape-warehouse.png",
+      "target": "assets/optimized/maritime/cape-warehouse.webp",
+      "before": 370565,
+      "after": 205274,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 5.21
+    },
+    {
+      "source": "assets/maritime/coastal-water.png",
+      "target": "assets/optimized/maritime/coastal-water.webp",
+      "before": 134457,
+      "after": 63020,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 1.405
+    },
+    {
+      "source": "assets/maritime/dock-timber-v2.png",
+      "target": "assets/optimized/maritime/dock-timber-v2.webp",
+      "before": 74986,
+      "after": 35116,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 2.394
+    },
+    {
+      "source": "assets/maritime/dock-wood.png",
+      "target": "assets/optimized/maritime/dock-wood.webp",
+      "before": 86165,
+      "after": 35316,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 2.078
+    },
+    {
+      "source": "assets/maritime/garden-path.png",
+      "target": "assets/optimized/maritime/garden-path.webp",
+      "before": 78729,
+      "after": 37142,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 1.86
+    },
+    {
+      "source": "assets/maritime/garden-pavilion.png",
+      "target": "assets/optimized/maritime/garden-pavilion.webp",
+      "before": 222094,
+      "after": 174046,
+      "width": 512,
+      "height": 352,
+      "max_channel_rmse": 6.657
+    },
+    {
+      "source": "assets/maritime/harbor-lighthouse.png",
+      "target": "assets/optimized/maritime/harbor-lighthouse.webp",
+      "before": 185902,
+      "after": 115222,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 5.815
+    },
+    {
+      "source": "assets/maritime/harbor-terminal.png",
+      "target": "assets/optimized/maritime/harbor-terminal.webp",
+      "before": 307527,
+      "after": 169170,
+      "width": 512,
+      "height": 384,
+      "max_channel_rmse": 5.174
+    },
+    {
+      "source": "assets/maritime/muizenberg-huts.png",
+      "target": "assets/optimized/maritime/muizenberg-huts.webp",
+      "before": 202056,
+      "after": 121812,
+      "width": 512,
+      "height": 320,
+      "max_channel_rmse": 4.852
+    },
+    {
+      "source": "assets/maritime/npc-ayesha.png",
+      "target": "assets/optimized/maritime/npc-ayesha.webp",
+      "before": 64653,
+      "after": 37992,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 4.453
+    },
+    {
+      "source": "assets/maritime/npc-joana.png",
+      "target": "assets/optimized/maritime/npc-joana.webp",
+      "before": 60267,
+      "after": 35818,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.531
+    },
+    {
+      "source": "assets/maritime/npc-lindiwe.png",
+      "target": "assets/optimized/maritime/npc-lindiwe.webp",
+      "before": 57384,
+      "after": 33808,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.333
+    },
+    {
+      "source": "assets/maritime/npc-sipho.png",
+      "target": "assets/optimized/maritime/npc-sipho.webp",
+      "before": 63729,
+      "after": 37076,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.506
+    },
+    {
+      "source": "assets/maritime/npc-thandi.png",
+      "target": "assets/optimized/maritime/npc-thandi.webp",
+      "before": 53275,
+      "after": 31688,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.341
+    },
+    {
+      "source": "assets/maritime/npc-zola.png",
+      "target": "assets/optimized/maritime/npc-zola.webp",
+      "before": 56431,
+      "after": 33096,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.231
+    },
+    {
+      "source": "assets/maritime/port-crane.png",
+      "target": "assets/optimized/maritime/port-crane.webp",
+      "before": 101917,
+      "after": 80880,
+      "width": 256,
+      "height": 352,
+      "max_channel_rmse": 6.133
+    },
+    {
+      "source": "assets/maritime/port-terminal-v2.png",
+      "target": "assets/optimized/maritime/port-terminal-v2.webp",
+      "before": 251127,
+      "after": 201366,
+      "width": 512,
+      "height": 352,
+      "max_channel_rmse": 5.926
+    },
+    {
+      "source": "assets/maritime/prop-bollard.png",
+      "target": "assets/optimized/maritime/prop-bollard.webp",
+      "before": 103356,
+      "after": 56516,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.39
+    },
+    {
+      "source": "assets/maritime/prop-buoys.png",
+      "target": "assets/optimized/maritime/prop-buoys.webp",
+      "before": 96873,
+      "after": 65182,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 6.085
+    },
+    {
+      "source": "assets/maritime/prop-cargo.png",
+      "target": "assets/optimized/maritime/prop-cargo.webp",
+      "before": 133256,
+      "after": 74986,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.414
+    },
+    {
+      "source": "assets/maritime/prop-lantern.png",
+      "target": "assets/optimized/maritime/prop-lantern.webp",
+      "before": 49624,
+      "after": 29952,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 4.612
+    },
+    {
+      "source": "assets/maritime/prop-lifebuoy.png",
+      "target": "assets/optimized/maritime/prop-lifebuoy.webp",
+      "before": 94096,
+      "after": 52590,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 3.563
+    },
+    {
+      "source": "assets/maritime/prop-tackle.png",
+      "target": "assets/optimized/maritime/prop-tackle.webp",
+      "before": 69655,
+      "after": 42730,
+      "width": 256,
+      "height": 256,
+      "max_channel_rmse": 4.338
+    },
+    {
+      "source": "assets/maritime/protea-bed.png",
+      "target": "assets/optimized/maritime/protea-bed.webp",
+      "before": 76104,
+      "after": 64224,
+      "width": 256,
+      "height": 192,
+      "max_channel_rmse": 7.069
+    },
+    {
+      "source": "assets/maritime/quay-limestone-v2.png",
+      "target": "assets/optimized/maritime/quay-limestone-v2.webp",
+      "before": 94601,
+      "after": 36626,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 2.507
+    },
+    {
+      "source": "assets/maritime/quay-stone.png",
+      "target": "assets/optimized/maritime/quay-stone.webp",
+      "before": 103122,
+      "after": 36374,
+      "width": 192,
+      "height": 192,
+      "max_channel_rmse": 2.197
+    },
+    {
+      "source": "assets/salon/avatar-casual-base.png",
+      "target": "assets/optimized/salon/avatar-casual-base.webp",
+      "before": 69686,
+      "after": 55092,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.33
+    },
+    {
+      "source": "assets/salon/avatar-casual-bottom.png",
+      "target": "assets/optimized/salon/avatar-casual-bottom.webp",
+      "before": 57367,
+      "after": 24498,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-casual-skin.png",
+      "target": "assets/optimized/salon/avatar-casual-skin.webp",
+      "before": 49597,
+      "after": 21676,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-casual-top.png",
+      "target": "assets/optimized/salon/avatar-casual-top.webp",
+      "before": 63660,
+      "after": 28314,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-casual.png",
+      "target": "assets/optimized/salon/avatar-casual.webp",
+      "before": 71417,
+      "after": 40620,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.341
+    },
+    {
+      "source": "assets/salon/avatar-dress-base.png",
+      "target": "assets/optimized/salon/avatar-dress-base.webp",
+      "before": 66889,
+      "after": 53554,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.958
+    },
+    {
+      "source": "assets/salon/avatar-dress-bottom.png",
+      "target": "assets/optimized/salon/avatar-dress-bottom.webp",
+      "before": 57019,
+      "after": 23386,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-dress-top.png",
+      "target": "assets/optimized/salon/avatar-dress-top.webp",
+      "before": 63017,
+      "after": 27068,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-dress.png",
+      "target": "assets/optimized/salon/avatar-dress.webp",
+      "before": 69008,
+      "after": 39522,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.429
+    },
+    {
+      "source": "assets/salon/avatar-jacket-base.png",
+      "target": "assets/optimized/salon/avatar-jacket-base.webp",
+      "before": 76275,
+      "after": 35928,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.145
+    },
+    {
+      "source": "assets/salon/avatar-jacket-bottom.png",
+      "target": "assets/optimized/salon/avatar-jacket-bottom.webp",
+      "before": 63173,
+      "after": 26060,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-jacket-top.png",
+      "target": "assets/optimized/salon/avatar-jacket-top.webp",
+      "before": 69739,
+      "after": 29538,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-jacket.png",
+      "target": "assets/optimized/salon/avatar-jacket.webp",
+      "before": 77606,
+      "after": 42946,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.056
+    },
+    {
+      "source": "assets/salon/avatar-overalls-base.png",
+      "target": "assets/optimized/salon/avatar-overalls-base.webp",
+      "before": 76268,
+      "after": 61168,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.619
+    },
+    {
+      "source": "assets/salon/avatar-overalls-bottom.png",
+      "target": "assets/optimized/salon/avatar-overalls-bottom.webp",
+      "before": 63021,
+      "after": 25666,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-overalls-top.png",
+      "target": "assets/optimized/salon/avatar-overalls-top.webp",
+      "before": 71334,
+      "after": 30334,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/avatar-overalls.png",
+      "target": "assets/optimized/salon/avatar-overalls.webp",
+      "before": 77660,
+      "after": 42304,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.072
+    },
+    {
+      "source": "assets/salon/stylist-iris.png",
+      "target": "assets/optimized/salon/stylist-iris.webp",
+      "before": 85926,
+      "after": 46154,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.169
+    },
+    {
+      "source": "assets/tilesets/voices-cultural-pack.png",
+      "target": "assets/optimized/tilesets/voices-cultural-pack.webp",
+      "before": 89198,
+      "after": 34820,
+      "width": 256,
+      "height": 672,
+      "max_channel_rmse": 5.13
+    },
+    {
+      "source": "assets/ui/art-preview.png",
+      "target": "assets/optimized/ui/art-preview.webp",
+      "before": 51158,
+      "after": 19560,
+      "width": 960,
+      "height": 810,
+      "max_channel_rmse": 0.004
+    },
+    {
+      "source": "assets/ui/cozy-preview.png",
+      "target": "assets/optimized/ui/cozy-preview.webp",
+      "before": 83796,
+      "after": 28346,
+      "width": 1100,
+      "height": 1040,
+      "max_channel_rmse": 0.068
+    },
+    {
+      "source": "assets/ui/world-preview.png",
+      "target": "assets/optimized/ui/world-preview.webp",
+      "before": 61670,
+      "after": 20988,
+      "width": 1000,
+      "height": 800,
+      "max_channel_rmse": 0.026
+    },
+    {
+      "source": "assets/salon/culture/avatar-agbada-base.png",
+      "target": "assets/optimized/salon/culture/avatar-agbada-base.webp",
+      "before": 82393,
+      "after": 66216,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 8.166
+    },
+    {
+      "source": "assets/salon/culture/avatar-agbada-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-agbada-bottom.webp",
+      "before": 69552,
+      "after": 27116,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-agbada-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-agbada-skin.webp",
+      "before": 53828,
+      "after": 23400,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-agbada-top.png",
+      "target": "assets/optimized/salon/culture/avatar-agbada-top.webp",
+      "before": 73924,
+      "after": 31292,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-agbada.png",
+      "target": "assets/optimized/salon/culture/avatar-agbada.webp",
+      "before": 84457,
+      "after": 47202,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.128
+    },
+    {
+      "source": "assets/salon/culture/avatar-baiana-base.png",
+      "target": "assets/optimized/salon/culture/avatar-baiana-base.webp",
+      "before": 80439,
+      "after": 64006,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.037
+    },
+    {
+      "source": "assets/salon/culture/avatar-baiana-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-baiana-bottom.webp",
+      "before": 59103,
+      "after": 25180,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-baiana-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-baiana-skin.webp",
+      "before": 54809,
+      "after": 23840,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-baiana-top.png",
+      "target": "assets/optimized/salon/culture/avatar-baiana-top.webp",
+      "before": 65541,
+      "after": 28140,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-baiana.png",
+      "target": "assets/optimized/salon/culture/avatar-baiana.webp",
+      "before": 81644,
+      "after": 65476,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.525
+    },
+    {
+      "source": "assets/salon/culture/avatar-cardigan-base.png",
+      "target": "assets/optimized/salon/culture/avatar-cardigan-base.webp",
+      "before": 77747,
+      "after": 62538,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.805
+    },
+    {
+      "source": "assets/salon/culture/avatar-cardigan-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-cardigan-bottom.webp",
+      "before": 59549,
+      "after": 24018,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-cardigan-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-cardigan-skin.webp",
+      "before": 49365,
+      "after": 21960,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-cardigan-top.png",
+      "target": "assets/optimized/salon/culture/avatar-cardigan-top.webp",
+      "before": 64968,
+      "after": 28140,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-cardigan.png",
+      "target": "assets/optimized/salon/culture/avatar-cardigan.webp",
+      "before": 78483,
+      "after": 43790,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.95
+    },
+    {
+      "source": "assets/salon/culture/avatar-cropped-jacket-base.png",
+      "target": "assets/optimized/salon/culture/avatar-cropped-jacket-base.webp",
+      "before": 66173,
+      "after": 52530,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.318
+    },
+    {
+      "source": "assets/salon/culture/avatar-cropped-jacket-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-cropped-jacket-bottom.webp",
+      "before": 51924,
+      "after": 20890,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-cropped-jacket-top.png",
+      "target": "assets/optimized/salon/culture/avatar-cropped-jacket-top.webp",
+      "before": 55593,
+      "after": 22694,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-cropped-jacket.png",
+      "target": "assets/optimized/salon/culture/avatar-cropped-jacket.webp",
+      "before": 66984,
+      "after": 37190,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.611
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-black-base.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-black-base.webp",
+      "before": 68172,
+      "after": 58588,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.767
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-black-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-black-bottom.webp",
+      "before": 52013,
+      "after": 21078,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-black-top.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-black-top.webp",
+      "before": 51573,
+      "after": 21728,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-black.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-black.webp",
+      "before": 69235,
+      "after": 58516,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.977
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-green-base.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-green-base.webp",
+      "before": 62571,
+      "after": 53450,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.73
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-green.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-green.webp",
+      "before": 63145,
+      "after": 52858,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.086
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-redgreen-base.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-redgreen-base.webp",
+      "before": 77187,
+      "after": 63750,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.543
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-redgreen-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-redgreen-bottom.webp",
+      "before": 64010,
+      "after": 24796,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-redgreen-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-redgreen-skin.webp",
+      "before": 59410,
+      "after": 24298,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-redgreen-top.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-redgreen-top.webp",
+      "before": 69134,
+      "after": 26982,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-redgreen.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-redgreen.webp",
+      "before": 78139,
+      "after": 66476,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.676
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-teal-base.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-teal-base.webp",
+      "before": 83564,
+      "after": 70628,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.392
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-teal-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-teal-bottom.webp",
+      "before": 65687,
+      "after": 25370,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-teal-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-teal-skin.webp",
+      "before": 55685,
+      "after": 23970,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-teal-top.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-teal-top.webp",
+      "before": 67626,
+      "after": 26940,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-teal.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-teal.webp",
+      "before": 84282,
+      "after": 70266,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.239
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-yellow-base.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-yellow-base.webp",
+      "before": 75526,
+      "after": 62046,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 9.296
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-yellow-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-yellow-bottom.webp",
+      "before": 59096,
+      "after": 24626,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-yellow-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-yellow-skin.webp",
+      "before": 50672,
+      "after": 21932,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-yellow-top.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-yellow-top.webp",
+      "before": 61946,
+      "after": 26532,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-dress-yellow.png",
+      "target": "assets/optimized/salon/culture/avatar-dress-yellow.webp",
+      "before": 77143,
+      "after": 64294,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.615
+    },
+    {
+      "source": "assets/salon/culture/avatar-flowing-dress-base.png",
+      "target": "assets/optimized/salon/culture/avatar-flowing-dress-base.webp",
+      "before": 74608,
+      "after": 62044,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.572
+    },
+    {
+      "source": "assets/salon/culture/avatar-flowing-dress-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-flowing-dress-bottom.webp",
+      "before": 58594,
+      "after": 24120,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-flowing-dress-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-flowing-dress-skin.webp",
+      "before": 49537,
+      "after": 21276,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-flowing-dress-top.png",
+      "target": "assets/optimized/salon/culture/avatar-flowing-dress-top.webp",
+      "before": 58214,
+      "after": 24146,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-flowing-dress.png",
+      "target": "assets/optimized/salon/culture/avatar-flowing-dress.webp",
+      "before": 75930,
+      "after": 42848,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.339
+    },
+    {
+      "source": "assets/salon/culture/avatar-long-skirt-base.png",
+      "target": "assets/optimized/salon/culture/avatar-long-skirt-base.webp",
+      "before": 75221,
+      "after": 60824,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.861
+    },
+    {
+      "source": "assets/salon/culture/avatar-long-skirt-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-long-skirt-bottom.webp",
+      "before": 59934,
+      "after": 24420,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-long-skirt-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-long-skirt-skin.webp",
+      "before": 50324,
+      "after": 22098,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-long-skirt-top.png",
+      "target": "assets/optimized/salon/culture/avatar-long-skirt-top.webp",
+      "before": 58639,
+      "after": 25742,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-long-skirt.png",
+      "target": "assets/optimized/salon/culture/avatar-long-skirt.webp",
+      "before": 76448,
+      "after": 42260,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.639
+    },
+    {
+      "source": "assets/salon/culture/avatar-loose-shirt-base.png",
+      "target": "assets/optimized/salon/culture/avatar-loose-shirt-base.webp",
+      "before": 72479,
+      "after": 57890,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.527
+    },
+    {
+      "source": "assets/salon/culture/avatar-loose-shirt-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-loose-shirt-bottom.webp",
+      "before": 54738,
+      "after": 22478,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-loose-shirt-top.png",
+      "target": "assets/optimized/salon/culture/avatar-loose-shirt-top.webp",
+      "before": 52602,
+      "after": 22764,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-loose-shirt.png",
+      "target": "assets/optimized/salon/culture/avatar-loose-shirt.webp",
+      "before": 73694,
+      "after": 59428,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.578
+    },
+    {
+      "source": "assets/salon/culture/avatar-printed-blouse-base.png",
+      "target": "assets/optimized/salon/culture/avatar-printed-blouse-base.webp",
+      "before": 75612,
+      "after": 60590,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 5.82
+    },
+    {
+      "source": "assets/salon/culture/avatar-printed-blouse-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-printed-blouse-bottom.webp",
+      "before": 57527,
+      "after": 24072,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-printed-blouse-top.png",
+      "target": "assets/optimized/salon/culture/avatar-printed-blouse-top.webp",
+      "before": 59246,
+      "after": 26938,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-printed-blouse.png",
+      "target": "assets/optimized/salon/culture/avatar-printed-blouse.webp",
+      "before": 76126,
+      "after": 42442,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.503
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-black-base.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-black-base.webp",
+      "before": 75768,
+      "after": 61286,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 6.45
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-black-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-black-bottom.webp",
+      "before": 60563,
+      "after": 24120,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-black-top.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-black-top.webp",
+      "before": 62303,
+      "after": 26076,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-black.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-black.webp",
+      "before": 76813,
+      "after": 43214,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.896
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-yellow-base.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-yellow-base.webp",
+      "before": 73861,
+      "after": 58828,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.46
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-yellow-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-yellow-bottom.webp",
+      "before": 57089,
+      "after": 23822,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-yellow-top.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-yellow-top.webp",
+      "before": 55882,
+      "after": 23770,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-tunic-yellow.png",
+      "target": "assets/optimized/salon/culture/avatar-tunic-yellow.webp",
+      "before": 74695,
+      "after": 40940,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.786
+    },
+    {
+      "source": "assets/salon/culture/avatar-wrap-dress-base.png",
+      "target": "assets/optimized/salon/culture/avatar-wrap-dress-base.webp",
+      "before": 76538,
+      "after": 63642,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 7.203
+    },
+    {
+      "source": "assets/salon/culture/avatar-wrap-dress-bottom.png",
+      "target": "assets/optimized/salon/culture/avatar-wrap-dress-bottom.webp",
+      "before": 64361,
+      "after": 25358,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-wrap-dress-skin.png",
+      "target": "assets/optimized/salon/culture/avatar-wrap-dress-skin.webp",
+      "before": 53995,
+      "after": 23244,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-wrap-dress-top.png",
+      "target": "assets/optimized/salon/culture/avatar-wrap-dress-top.webp",
+      "before": 62240,
+      "after": 26094,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/salon/culture/avatar-wrap-dress.png",
+      "target": "assets/optimized/salon/culture/avatar-wrap-dress.webp",
+      "before": 77941,
+      "after": 42826,
+      "width": 256,
+      "height": 384,
+      "max_channel_rmse": 4.987
+    },
+    {
+      "source": "assets/maritime/pixel/cape-panorama-coast.webp",
+      "target": "assets/optimized/maritime/pixel/cape-panorama-coast.webp",
+      "before": 101792,
+      "after": 35446,
+      "width": 888,
+      "height": 93,
+      "max_channel_rmse": 4.879
+    },
+    {
+      "source": "assets/maritime/pixel/cape-panorama-garden.webp",
+      "target": "assets/optimized/maritime/pixel/cape-panorama-garden.webp",
+      "before": 140672,
+      "after": 56022,
+      "width": 888,
+      "height": 111,
+      "max_channel_rmse": 5.306
+    },
+    {
+      "source": "assets/maritime/pixel/cape-panorama-port.webp",
+      "target": "assets/optimized/maritime/pixel/cape-panorama-port.webp",
+      "before": 132366,
+      "after": 54390,
+      "width": 888,
+      "height": 130,
+      "max_channel_rmse": 5.328
+    },
+    {
+      "source": "assets/maritime/pixel/cape-panorama-street.webp",
+      "target": "assets/optimized/maritime/pixel/cape-panorama-street.webp",
+      "before": 125188,
+      "after": 55626,
+      "width": 888,
+      "height": 110,
+      "max_channel_rmse": 5.066
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/bento-roda.png",
+      "target": "assets/optimized/african-museum/capoeiristas/bento-roda.webp",
+      "before": 203658,
+      "after": 185636,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/caue.png",
+      "target": "assets/optimized/african-museum/capoeiristas/caue.webp",
+      "before": 190793,
+      "after": 175074,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/dara.png",
+      "target": "assets/optimized/african-museum/capoeiristas/dara.webp",
+      "before": 228720,
+      "after": 205882,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/jurema.png",
+      "target": "assets/optimized/african-museum/capoeiristas/jurema.webp",
+      "before": 197578,
+      "after": 177626,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/lua.png",
+      "target": "assets/optimized/african-museum/capoeiristas/lua.webp",
+      "before": 234951,
+      "after": 209920,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/nando.png",
+      "target": "assets/optimized/african-museum/capoeiristas/nando.webp",
+      "before": 218654,
+      "after": 198318,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/nina-roda.png",
+      "target": "assets/optimized/african-museum/capoeiristas/nina-roda.webp",
+      "before": 232208,
+      "after": 209468,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/raiz.png",
+      "target": "assets/optimized/african-museum/capoeiristas/raiz.webp",
+      "before": 206347,
+      "after": 185990,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/sol-roda.png",
+      "target": "assets/optimized/african-museum/capoeiristas/sol-roda.webp",
+      "before": 217462,
+      "after": 197166,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/taina-roda.png",
+      "target": "assets/optimized/african-museum/capoeiristas/taina-roda.webp",
+      "before": 210030,
+      "after": 189098,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/tobias.png",
+      "target": "assets/optimized/african-museum/capoeiristas/tobias.webp",
+      "before": 195222,
+      "after": 176484,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    },
+    {
+      "source": "assets/african-museum/capoeiristas/zeca.png",
+      "target": "assets/optimized/african-museum/capoeiristas/zeca.webp",
+      "before": 220739,
+      "after": 203640,
+      "width": 1280,
+      "height": 1408,
+      "max_channel_rmse": 0.0
+    }
+  ]
+}

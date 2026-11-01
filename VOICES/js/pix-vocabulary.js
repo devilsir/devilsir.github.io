@@ -100,12 +100,13 @@ P.exampleHTML=function(entry){
 };
 V.Dialogue.translate=function(){
  const root=V.$('#dialogue-pt');if(!root)return;
- root.innerHTML=V.settings.translation&&V.settings.subtitles?P.wordsHTML(this.currentText||this.lines[this.index]?.en,'PIX · palavras desta fala'):'';
+ const line=this.lines[this.index],phrase=V.lang(line?.pt||'');
+ root.innerHTML=V.settings.translation&&V.settings.subtitles?((V.settings.phraseTranslation!==false&&phrase?'<section class="pix-phrase-support" lang="pt-BR"><strong>PIX · frase completa</strong><p>'+esc(phrase)+'</p></section>':'')+P.wordsHTML(this.currentText||line?.en,'PIX · palavras desta fala')):'';
  root.hidden=!V.settings.translation||!V.settings.subtitles;
 };
 V.Dialogue.history=function(){
  const rows=(V.state.dialogueHistory||[]).slice().reverse();
- V.UI.modal('Histórico de conversas','FALAS EM INGLÊS · APOIO COM AS PALAVRAS QUE VOCÊ DESCOBRIU',`<div class="dialogue-history pix-dialogue-history">${rows.map(d=>`<article><strong>${esc(d.speaker)}</strong><p lang="en">${esc(d.en)}</p>${V.settings.translation?P.wordsHTML(d.en):''}</article>`).join('')||'<p>Nenhuma conversa registrada nesta aventura. Converse com Mara no museu para começar.</p>'}`);
+ V.UI.modal('Histórico de conversas','FALAS EM INGLÊS · TRADUÇÃO E PALAVRAS DO PIX',`<div class="dialogue-history pix-dialogue-history">${rows.map(d=>`<article><strong>${esc(d.speaker)}</strong><p lang="en">${esc(d.en)}</p>${V.settings.translation&&V.settings.subtitles?(V.settings.phraseTranslation!==false&&d.pt?'<p class="pix-history-phrase" lang="pt-BR">'+esc(d.pt)+'</p>':'')+P.wordsHTML(d.en):''}</article>`).join('')||'<p>Nenhuma conversa registrada nesta aventura. Converse com Mara no museu para começar.</p>'}`);
 };
 
 const word=V.Quests.word.bind(V.Quests);V.Quests.word=function(value){if(!value)return;const data=X.ensure(),entry=X.entry(value),k=key(entry?.en||value),fresh=!X.known(k);if(data&&fresh&&!data.sources[k])data.sources[k]={label:'Investigação em '+(W.current?.name||'New Harmony'),kind:'discovery',map:W.current?.id||null,day:V.Progress.ensure().clock.day};const result=word(k);if(fresh){const a=V.Progress.ensure(),tracked=a?.tracked,found=tracked?.object&&N.find(tracked.object,tracked.map);if(found?.object.type==='pix-word'&&key(found.object.word)===k){a.tracked=null;N.invalidate();}}return result;};

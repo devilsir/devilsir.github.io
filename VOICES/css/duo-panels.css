@@ -1,0 +1,24 @@
+.duo-world-view{position:relative;isolation:isolate}
+.duo-modal-root{position:absolute;inset:0;z-index:30;pointer-events:none}
+.duo-modal-root:empty{display:none}
+.duo-pane-loading{position:absolute;inset:0;z-index:43;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:25px;background:#193d32f5;color:#f5ebc9;text-align:center;pointer-events:auto}.duo-pane-loading strong{font-size:15px}.duo-pane-loading p{font-size:12px}.duo-pane-loading progress{width:80%;accent-color:#c8c593}
+.duo-modal-root>.modal-backdrop{position:absolute;inset:0;padding:10px;pointer-events:auto;backdrop-filter:blur(3px);overflow:hidden;align-items:center}
+.duo-modal-root .modal{width:100%;max-width:100%;max-height:100%;min-height:0;margin:0;border-radius:10px;overflow:hidden}
+.duo-modal-root .modal-head{padding:12px;gap:8px;flex:none}
+.duo-modal-root .modal-head h2{font-size:1.12rem;overflow-wrap:anywhere}
+.duo-modal-root .modal-head p{font-size:.65rem}
+.duo-modal-root .modal-heading{gap:8px;min-width:0}
+.duo-modal-root .modal-heading>.ui-art{width:28px;height:28px;flex:none}
+.duo-modal-root .modal-body{padding:12px;overflow:auto;min-height:0;overscroll-behavior:contain;font-size:.8rem}
+.duo-modal-root .modal-footer{flex:none;padding:10px;gap:6px;flex-wrap:wrap;margin:0}
+.duo-modal-root .modal-footer button{font-size:.73rem;padding:8px 10px;min-width:0}
+.duo-modal-root .two-cols,.duo-modal-root .three-cols,.duo-modal-root .atlas-overview,.duo-modal-root .challenge-detail,.duo-modal-root .home-build-layout{grid-template-columns:minmax(0,1fr)}
+.duo-modal-root .challenge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.duo-modal-root .challenge-card h3{font-size:.87rem}.duo-modal-root .challenge-card p{font-size:.73rem}
+.duo-modal-root .challenge-detail-art{max-height:160px;overflow:hidden}
+.duo-modal-root .challenge-filters{flex-wrap:wrap}.duo-modal-root .challenge-tools{display:block}
+.duo-modal-root .challenge-filters button{font-size:.66rem;padding:6px}
+.duo-modal-root .adv-atlas{min-height:200px}.duo-modal-root .adv-atlas canvas{width:100%;height:auto}
+.duo-modal-root .character-grid,.duo-modal-root .atlas-neighbors{grid-template-columns:repeat(2,minmax(0,1fr))}
+.duo-modal-root .duo-choice{padding:10px;margin:10px 0}.duo-modal-root .duo-choice .row{gap:8px}
+@media(max-width:760px){.duo-modal-root>.modal-backdrop{padding:4px}.duo-modal-root .modal-head{padding:9px}.duo-modal-root .modal-head h2{font-size:.9rem}.duo-modal-root .modal-body{padding:8px}.duo-modal-root .challenge-grid{grid-template-columns:minmax(0,1fr)}.duo-modal-root .modal-heading>.ui-art{display:none}.duo-modal-root .modal-footer{padding:7px}.duo-modal-root .character-grid,.duo-modal-root .atlas-neighbors{grid-template-columns:minmax(0,1fr)}}

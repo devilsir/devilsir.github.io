@@ -1,5 +1,5 @@
 (function(){'use strict';const V=window.V;const PREFIX='voices.v1.';
-V.defaultSettings={translation:true,subtitles:true,muted:true,music:.35,effects:.65,ambience:.55,npcChats:true,npcMovement:true,fontSize:17,highContrast:false,reducedMotion:false,speed:1,assist:false,timeLimits:true,difficulty:1,presentation:false,teacherPin:'',mode:'solo',teamNames:['Equipe Aurora','Equipe Horizonte'],unlockAll:false};
+V.defaultSettings={translation:true,phraseTranslation:true,subtitles:true,muted:true,music:.35,effects:.65,ambience:.55,npcChats:true,npcMovement:true,fontSize:17,highContrast:false,reducedMotion:false,speed:1,assist:false,timeLimits:true,difficulty:1,presentation:false,teacherPin:'',mode:'solo',teamNames:['Equipe Aurora','Equipe Horizonte'],unlockAll:false};
 V.Save={available:true,memory:{},
  read(key,fallback){try{const raw=localStorage.getItem(PREFIX+key);return raw?JSON.parse(raw):fallback;}catch(e){this.available=false;return this.memory[key]??fallback;}},
  write(key,value){this.memory[key]=value;try{localStorage.setItem(PREFIX+key,JSON.stringify(value));return true;}catch(e){this.available=false;return false;}},

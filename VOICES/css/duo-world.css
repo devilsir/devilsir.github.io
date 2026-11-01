@@ -1,0 +1,24 @@
+/* World overlays stay inside the stage; menus and dialogues live above it. */
+#game-screen .stage{isolation:isolate}
+#duo-world-root{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:#18392f;color:#f6e8bf;overflow:hidden}
+#duo-world-root[hidden]{display:none!important}
+.duo-world-view{display:grid;grid-template-columns:58px minmax(0,1fr);grid-template-rows:48px minmax(0,1fr);min-width:0;min-height:0;overflow:hidden}
+.duo-world-view+.duo-world-view{border-left:3px solid #c9b276}
+.duo-world-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 12px;background:#244d40;border-bottom:1px solid #91a17a;min-width:0}
+.duo-world-head strong{display:block;font-size:14px;line-height:1.25}
+.duo-world-head small{display:block;font-size:11px;color:#c7d9b4;margin-top:3px}
+.duo-world-head>span{font-size:11px;max-width:48%;text-align:right;line-height:1.3}
+.duo-world-menu{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 4px;background:#193d30;overflow-y:auto;min-height:0;scrollbar-width:thin}
+.duo-world-menu button{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;min-height:40px;padding:0;border-radius:50%;border:1px solid #92aa85;background:#315a43;color:#fae4b3}
+.duo-world-menu button:hover{background:#477253;border-color:#efd48b}
+.duo-world-menu button:focus-visible{outline:3px solid #f0d283;outline-offset:2px}
+.duo-world-menu button:disabled{opacity:.42}
+.duo-world-menu .ui-art{width:25px;height:25px}
+.duo-world-menu canvas{width:36px;height:36px;border-radius:50%;image-rendering:pixelated}
+.duo-world-scene{position:relative;min-width:0;min-height:0;overflow:hidden;background:#1c3c32}
+.duo-world-scene>canvas{display:block;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;outline:none;touch-action:none}
+.duo-world-hint{position:absolute;left:12px;right:12px;bottom:12px;padding:8px 10px;margin:0;background:#193e32e8;color:#fff0c7;border:1px solid #b7b580;border-radius:7px;font-size:12px;line-height:1.35;pointer-events:none;text-align:center}
+body.duo-world-active #world-canvas{visibility:hidden;pointer-events:none}
+body.duo-world-active .game-toolbar{display:none!important}
+body.duo-world-active .mission-hud,body.duo-world-active .mini-map,body.duo-world-active #interact-hint,body.duo-world-active #tutorial-hint,body.duo-world-active #community-hud,body.duo-world-active #adv-clock,body.duo-world-active #adv-status,body.duo-world-active #adv-route-info,body.duo-world-active #life-hud,body.duo-world-active #touch-controls,body.duo-world-active .af-toolbar{display:none!important}
+@media(max-width:760px){.duo-world-view{grid-template-columns:43px minmax(0,1fr);grid-template-rows:58px minmax(0,1fr)}.duo-world-head{padding:4px 6px;gap:4px}.duo-world-head strong{font-size:11px}.duo-world-head small,.duo-world-head>span{font-size:9px}.duo-world-menu{padding:7px 2px;gap:7px}.duo-world-menu button{width:34px;height:34px;min-height:34px;flex-basis:34px}.duo-world-menu canvas{width:30px;height:30px}.duo-world-menu .ui-art{width:22px;height:22px}.duo-world-hint{font-size:10px;left:5px;right:5px;bottom:7px;padding:6px}}
