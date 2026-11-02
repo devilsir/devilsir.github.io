@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('fs'),path=require('path'),{environment}=require('./runtime-upgrade-test.cjs');
+(async()=>{const {V,dom}=await environment();await V.Game.init();V.settings.playerCharacters=['nia'];V.settings.challengePlayers=1;const directory=path.resolve(__dirname,'../.qa/review');
+ async function fresh(name,map,position){V.Game.toTitle();V.Game.newState({name,character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});V.Game.startGame();await V.MapAssets.whenReady();V.UI.close();V.Onboarding.finish(true);V.World.load(map,position);await V.MapAssets.whenReady();V.Onboarding.active=false;V.GuideOverlay.hide();V.Progress.ensure().clock.hour=12;V.Life.ensure().coins=200;V.Save.save();}
+ function write(file){V.Save.save();const state=JSON.parse(JSON.stringify(V.state));delete state.profileId;fs.writeFileSync(path.join(directory,file),JSON.stringify({format:'voices-save',version:1,state,settings:{...V.settings,playerCharacters:['nia'],challengePlayers:1}}));console.log('Wrote',file,state.map);}
+ await fresh('Museu da Comida · revisão','food-museum',{x:365,y:432});write('preview-food-museum.json');
+ const m=V.World.maps['nature-savanna'],animal=m.objects.find(o=>o.type==='nature-animal'&&o.species==='elephant')||m.objects.find(o=>o.type==='nature-animal'),point=V.Rooms.safe(m,{x:animal.x,y:animal.y+95},16);await fresh('Savana · revisão','nature-savanna',point);write('preview-nature.json');
+ V.Playground.ensure().guides['guarda-biodiversidade']={status:'complete'};V.Playground.launch('guarda-biodiversidade',null,{kind:'stage',id:'nature-review',stage:0});await V.MapAssets.whenReady();V.UI.close();write('preview-nature-challenge.json');V.MapAssets.cancel();dom.window.close();process.exit(0);
+})().catch(error=>{console.error(error.stack);process.exit(1);});

@@ -1,0 +1,28 @@
+/* A night advances only after both local players agree by staying in bed. */
+(function(){
+'use strict';
+const V=window.V,K=V.JourneyCare,L=V.Life,P=V.Progress,H=V.Homestead;
+const S=V.DuoSleep={bound:null,elapsed:0,
+ enabled(){return K.duo()&&V.Game.screen==='game'&&V.Game.mode==='explore';},
+ plan(i){return V.state?.adventure?.life?.carePlayers?.[i]?.sleepPlan;},
+ sleepers(){return [0,1].filter(i=>this.plan(i)?.duoSleeping&&this.plan(i).map===V.DuoWorld.actors[i]?.map);},
+ sync(){if(this.bound!==V.state){this.bound=V.state;this.elapsed=0;}},
+ text(count){return count+'/2 jogadores dormindo';},
+ enter(o){const map=V.World.current.id;if(!H.owned(map)&&map!=='interior-horizonte-1'){V.UI.toast('Use sua cama ou a pousada comunitária gratuita.');return false;}this.sync();const l=L.ensure();l.sleepPlan={duoSleeping:true,map,owner:K.owner(),bed:o?.id};Object.assign(V.Player.data,{pose:'sleep',poseStart:V.Engine.time,poseUntil:V.Engine.time+86400,moving:false});V.Save.save();this.panel();return true;},
+ panel(){const l=L.ensure(),plan=l.sleepPlan;if(!plan)return;this.sync();plan.duoSleeping=true;this.refresh();V.UI.modal('Dormindo','DESCANSO EM DUPLA',`<div class="home-sleep"><span class="home-moon">☾</span><canvas data-activity-preview="sleep" width="240" height="160" aria-label="Seu personagem dormindo"></canvas><strong class="duo-sleep-modal-status" role="status" aria-live="polite"></strong><p class="duo-sleep-modal-note"></p><p>Descanso: <strong data-duo-sleep-energy>${Math.round(l.energy)}%</strong></p><small>Você recupera energia enquanto espera. Os dois precisam continuar dormindo por 3 segundos para avançar até as 8h.</small></div>`,'<button id="duo-sleep-cancel" class="secondary">Levantar e continuar jogando</button>');V.$('#duo-sleep-cancel').onclick=()=>this.wake(K.owner());const i=K.owner(),state=V.state;V.UI.onClose=()=>{if(V.state===state&&this.plan(i)===plan&&this.plan(i)?.duoSleeping)this.wake(i,false);};K.bind();this.refresh();},
+ wake(i,close=true){const run=()=>{const l=L.ensure();if(!l.sleepPlan?.duoSleeping)return false;l.sleepPlan=null;V.Player.data.poseUntil=0;if(close)V.UI.close();V.Save.save();return true;};const result=V.DuoPanels.withOwner(i,run);this.elapsed=0;this.refresh();return result;},
+ refresh(){this.sync();const count=this.enabled()?this.sleepers().length:0;if(count!==2)this.elapsed=0;const note=count===2?'Avançando até as 8h em '+Math.max(1,Math.ceil(3-this.elapsed))+'…':'Aguardando o outro jogador. O relógio segue normalmente.';
+ for(let i=0;i<2;i++){const scene=V.DuoWorld?.root?.querySelectorAll('.duo-world-scene')[i];if(!scene)continue;let el=scene.querySelector('.duo-sleep-status');if(!count){el?.remove();continue;}if(!el){el=document.createElement('aside');el.className='duo-sleep-status';el.setAttribute('role','status');el.setAttribute('aria-live','polite');scene.append(el);}const message=this.text(count)+' · '+note;if(el.textContent!==message)el.textContent=message;const root=V.DuoPanels.root(i),status=root?.querySelector('.duo-sleep-modal-status'),detail=root?.querySelector('.duo-sleep-modal-note'),energy=root?.querySelector('[data-duo-sleep-energy]');if(status&&status.textContent!==this.text(count))status.textContent=this.text(count);if(detail&&detail.textContent!==note)detail.textContent=note;if(energy)energy.textContent=Math.round(V.state.adventure.life.carePlayers[i].energy)+'%';}
+ },
+ finish(){if(!this.enabled()||this.sleepers().length!==2)return;const c=P.ensure().clock,hours=K.hoursUntilMorning(),target={day:c.day+Math.floor((c.hour+hours)/24),hour:8};
+ for(let i=0;i<2;i++)V.DuoPanels.withOwner(i,()=>{const l=L.ensure(),a=P.ensure(),stats=P.stats();l.sleepPlan=null;l.energy=100;l.food=Math.max(0,l.food-hours*1.2);l.water=Math.max(0,l.water-hours*1.8);l.satiety=0;V.Player.data.poseUntil=0;a.health=stats.health;a.focus=stats.focus;a.overload=Math.max(0,a.overload-hours*5);V.UI.close();});
+ c.day=target.day;c.hour=target.hour;c.daylight=false;this.elapsed=0;H.reconcile(true);V.Environment.cache.clear();V.Environment.hud();V.Save.save();K.hud();this.refresh();V.UI.toast('A dupla acordou! São 8h.');
+ },
+ update(dt){this.sync();if(!this.enabled()){this.elapsed=0;return;}for(let i=0;i<2;i++)if(this.plan(i)?.duoSleeping&&this.plan(i).map!==V.DuoWorld.actors[i]?.map)this.wake(i);const sleeping=this.sleepers(),t=Math.min(.25,Math.max(0,dt));for(const i of sleeping)V.DuoWorld.withActor(i,()=>{const l=L.ensure();l.energy=Math.min(100,l.energy+t*3);l.food=Math.max(0,l.food-t*.02);l.water=Math.max(0,l.water-t*.03);l.activeSeconds+=t;});if(sleeping.length===2&&!V.Dialogue.active&&!V.SceneEditor.active&&!V.MapAssets.tasks.size)this.elapsed+=t;else this.elapsed=0;if(this.elapsed>=3-1e-8)this.finish();else this.refresh();}
+};
+const choose=K.chooseBed.bind(K),panel=K.sleepPanel.bind(K),wake=K.wake.bind(K);
+K.chooseBed=function(o){return K.duo()?S.enter(o):choose(o);};K.sleepPanel=function(){return K.duo()?S.panel():panel();};K.wake=function(){return K.duo()&&L.ensure().sleepPlan?.duoSleeping?S.wake(K.owner()):wake();};
+// A sleeping player's private window must not pause the awake player's day.
+const environment=V.Environment.update.bind(V.Environment);V.Environment.update=function(dt,paused=false){if(S.enabled()){const sleeping=S.sleepers();if(sleeping.length===2)paused=true;else if(sleeping.includes(0)&&!V.Dialogue.active&&!V.SceneEditor.active&&!V.DuoPanels.has(1)&&!V.DuoSessions?.playing(1)&&!V.MapAssets.tasks.size)paused=false;}return environment(dt,paused);};
+const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const out=update(dt);if(V.DuoWorld?.context<0)S.update(dt);return out;};
+})();

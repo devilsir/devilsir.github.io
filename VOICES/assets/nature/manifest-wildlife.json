@@ -1,0 +1,55 @@
+{
+  "generator": "Built-in image_gen (transparent pixel-art atlases, style reference assets/nature/south-africa-a.webp)",
+  "packing": "Separate alpha silhouettes, row-scale preservation and beak alignment for flight animation.",
+  "sheets": [
+    {
+      "file": "assets/nature/africa-extra.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 76764
+    },
+    {
+      "file": "assets/nature/brazil-extra.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 62964
+    },
+    {
+      "file": "assets/nature/flight.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 70526
+    },
+    {
+      "file": "assets/nature/swim-africa.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 54966
+    },
+    {
+      "file": "assets/nature/swim-brazil.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 54838
+    },
+    {
+      "file": "assets/nature/swim-extra.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 51944
+    },
+    {
+      "file": "assets/nature/museum-fauna.webp",
+      "rows": 2,
+      "cols": 4,
+      "cell": 192,
+      "bytes": 114736
+    }
+  ]
+}

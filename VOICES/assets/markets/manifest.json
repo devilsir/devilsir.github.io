@@ -1,0 +1,33 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Isolated connected sprite silhouettes prevent neighbouring-frame bleed. Nearest-neighbour packing; alpha preserved.",
+  "sheets": [
+    {
+      "file": "assets/markets/items-brazil.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 64,
+      "bytes": 36188
+    },
+    {
+      "file": "assets/markets/items-south-africa.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 64,
+      "bytes": 34448
+    },
+    {
+      "file": "assets/markets/market-stalls.webp",
+      "cols": 4,
+      "rows": 2,
+      "cell": 144,
+      "bytes": 118208
+    }
+  ],
+  "reused": [
+    {
+      "file": "assets/markets/cape-facades.webp",
+      "source": "assets/maritime/pixel/cape-houses.webp"
+    }
+  ]
+}

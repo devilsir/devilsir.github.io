@@ -1,0 +1,69 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Connected silhouette isolation and nearest-neighbour WebP packing; walking rows share scale and baseline; originals preserved.",
+  "sheets": [
+    {
+      "file": "assets/nature/south-africa-a.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 128,
+      "bytes": 72972
+    },
+    {
+      "file": "assets/nature/south-africa-b.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 128,
+      "bytes": 85512
+    },
+    {
+      "file": "assets/nature/brazil-a.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 128,
+      "bytes": 81130
+    },
+    {
+      "file": "assets/nature/brazil-b.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 128,
+      "bytes": 62870
+    },
+    {
+      "file": "assets/nature/fruits.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 64,
+      "bytes": 31910
+    },
+    {
+      "file": "assets/nature/new-dishes.webp",
+      "cols": 4,
+      "rows": 2,
+      "cell": 96,
+      "bytes": 35752
+    },
+    {
+      "file": "assets/nature/new-prep.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 192,
+      "bytes": 185422
+    },
+    {
+      "file": "assets/nature/habitats.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 192,
+      "bytes": 310026
+    },
+    {
+      "file": "assets/nature/people.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 128,
+      "bytes": 90196
+    }
+  ]
+}

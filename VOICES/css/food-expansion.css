@@ -1,0 +1,2 @@
+.food-expansion-art{display:inline-block;flex:0 0 var(--food-size,48px);width:var(--food-size,48px);height:var(--food-size,48px);background-repeat:no-repeat;background-size:400% calc(var(--food-rows)*100%);background-position:calc(var(--food-x)*100%/3) calc(var(--food-y)*100%/(var(--food-rows) - 1));image-rendering:pixelated;vertical-align:middle}
+.market-product .food-expansion-art{max-width:100%;object-fit:contain}.cooking-recipe .food-expansion-art{margin-top:9px;max-width:76px}.pg-result>.food-expansion-art{display:block;margin:0 auto 8px}

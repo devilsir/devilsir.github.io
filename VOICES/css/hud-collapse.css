@@ -1,0 +1,18 @@
+/* Each corner panel can be tucked away without losing its reopen button. */
+.mission-hud{padding-right:49px}
+.mission-hud #adv-route-info{position:static;transform:none;display:block;max-width:100%;width:100%;margin-top:8px;padding:6px 8px;box-shadow:none;font-size:.69rem;line-height:1.45;pointer-events:auto;overflow-wrap:anywhere}
+.mission-hud #adv-route-info[hidden]{display:none}
+.hud-panel-toggle{position:absolute;right:5px;top:5px;display:flex;align-items:center;justify-content:center;gap:7px;min-width:32px;min-height:32px;padding:5px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;pointer-events:auto;font-size:.72rem}
+.mission-hud .hud-panel-toggle{color:#e6d8ab}
+.mini-map .hud-panel-toggle span{color:inherit;margin:0;font:inherit}
+.hud-panel-toggle .ui-art{width:20px;height:20px}
+.hud-panel-toggle:focus-visible{outline:3px solid #92c9b4;outline-offset:2px}
+.hud-panel-toggle .hud-panel-name{display:none}
+.minimap-label{padding-right:34px;min-height:28px}
+#stage.hud-compact .mission-hud{padding:0;max-width:none;border-left-width:1px}
+#stage.hud-compact .mission-hud>:not(.hud-panel-toggle){display:none}
+#stage.hud-compact .mission-hud .hud-panel-toggle,.mini-map.minimap-collapsed .hud-panel-toggle{position:static;padding:7px 10px;border:0;min-height:36px}
+#stage.hud-compact .mission-hud .hud-panel-name,.minimap-collapsed .hud-panel-name{display:inline}
+.mini-map.minimap-collapsed{width:auto;padding:0}
+.mini-map.minimap-collapsed>:not(.hud-panel-toggle){display:none}
+@media(pointer:coarse){.hud-panel-toggle{min-height:38px;min-width:38px}.minimap-label{min-height:34px;padding-right:40px}.mission-hud{padding-right:51px}}

@@ -1,0 +1,61 @@
+{
+  "generator": "Built-in image_gen",
+  "sheets": [
+    {
+      "file": "assets/nature/water-full-africa.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 57692
+    },
+    {
+      "file": "assets/nature/water-full-brazil.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 67136
+    },
+    {
+      "file": "assets/nature/water-full-extra.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 57048
+    },
+    {
+      "file": "assets/nature/bones-africa.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 158930
+    },
+    {
+      "file": "assets/nature/bones-brazil.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 160508
+    },
+    {
+      "file": "assets/nature/bones-community.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 167094
+    },
+    {
+      "file": "assets/nature/sanctuary-staff.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 128,
+      "bytes": 84414
+    },
+    {
+      "file": "assets/nature/sanctuary-homes.webp",
+      "rows": 2,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 106106
+    }
+  ]
+}

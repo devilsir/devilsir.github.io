@@ -79,7 +79,7 @@ const sig=[objective.key,m.id,m.geometryRevision,Math.floor(V.Player.data.x/24),
 const people=V.Homestead?.commuting?[]:m.objects.filter(o=>V.Cozy.person(o)&&o!==target),blocked=this.path.length>1&&!this.line(m,V.Player.data,this.path[1],people),retry=V.Engine.time>=(this.retryAt||0);if(sig!==this.signature||retry&&(!this.path.length||blocked)){this.path=this.calculate(m,V.Player.data,target);this.signature=sig;this.retryAt=V.Engine.time+(this.path.length?.45:1.2);}
 this.reason=this.path.length?label:V.dist(V.Player.data,target)<(target.interactionRange||80)?'Objetivo próximo · pressione E para interagir.':'O caminho está ocupado. A rota tenta novamente; confira o atlas.';
 this.target=objective;this.nextObject=target;
-let el=V.$('#adv-route-info');if(!el){el=document.createElement('button');el.id='adv-route-info';el.className='adv-route-info';el.onclick=()=>this.panel();V.$('#stage').appendChild(el);}el.textContent=(a.routeEnabled?'◇ ':'')+this.reason;el.hidden=V.Game.mode!=='explore';
+let el=V.$('#adv-route-info');if(!el){el=document.createElement('button');el.id='adv-route-info';el.className='adv-route-info';el.onclick=()=>this.panel();}const hud=V.$('.mission-hud');if(hud&&el.parentElement!==hud)hud.appendChild(el);el.textContent=(a.routeEnabled?'◇ ':'')+this.reason;el.hidden=V.Game.mode!=='explore'||this.reason===V.$('#mission-objective')?.textContent;
 },
 targetRenderer(o,m){
 const people=V.Cozy?.person?.(o),scene=!!o.scene;

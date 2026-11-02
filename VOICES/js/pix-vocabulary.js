@@ -89,10 +89,10 @@ P.contextMeaning=function(entry,text){
  if(en==='right')return /\b(right|equal rights)\b/.test(sentence)&&/\bon (your|the) right\b/.test(sentence)?'direita':entry.pt;
  return entry.pt;
 };
-P.wordsHTML=function(text,label='Palavras do PIX'){
+P.wordsHTML=function(text,label='Palavras do PIX',compact=false){
  const words=P.matches(text);
  if(!words.length)return '<p class="pix-words-empty">Toque nas palavras sublinhadas para descobrir seus significados com o PIX.</p>';
- return '<section class="pix-word-support" aria-label="'+esc(label)+'"><div class="pix-word-heading"><strong>'+esc(label)+'</strong><span>INGLÊS → PORTUGUÊS</span></div><dl class="pix-word-grid">'+words.map(w=>'<div class="pix-word-pair"><dt lang="en">'+esc(w.en)+'</dt><dd lang="pt-BR">'+esc(P.contextMeaning(w,text))+'</dd></div>').join('')+'</dl></section>';
+ return '<section class="pix-word-support'+(compact?' pix-word-compact':'')+'" aria-label="'+esc(label)+'"><div class="pix-word-heading"><strong>'+esc(label)+'</strong><span>'+(compact?words.length+' '+(words.length===1?'palavra':'palavras')+' · EN → PT':'INGLÊS → PORTUGUÊS')+'</span></div><dl class="pix-word-grid"'+(compact?' tabindex="0" aria-label="Palavras e significados desta fala"':'')+'>'+words.map(w=>'<div class="pix-word-pair"><dt lang="en">'+esc(w.en)+'</dt><dd lang="pt-BR">'+esc(P.contextMeaning(w,text))+'</dd></div>').join('')+'</dl></section>';
 };
 P.exampleHTML=function(entry){
  if(!entry.example)return '';
@@ -101,7 +101,7 @@ P.exampleHTML=function(entry){
 V.Dialogue.translate=function(){
  const root=V.$('#dialogue-pt');if(!root)return;
  const line=this.lines[this.index],phrase=V.lang(line?.pt||'');
- root.innerHTML=V.settings.translation&&V.settings.subtitles?((V.settings.phraseTranslation!==false&&phrase?'<section class="pix-phrase-support" lang="pt-BR"><strong>PIX · frase completa</strong><p>'+esc(phrase)+'</p></section>':'')+P.wordsHTML(this.currentText||line?.en,'PIX · palavras desta fala')):'';
+ root.innerHTML=V.settings.translation&&V.settings.subtitles?((V.settings.phraseTranslation!==false&&phrase?'<section class="pix-phrase-support" lang="pt-BR"><strong>Tradução</strong><p>'+esc(phrase)+'</p></section>':'')+P.wordsHTML(this.currentText||line?.en,'PIX · palavras desta fala',true)):'';
  root.hidden=!V.settings.translation||!V.settings.subtitles;
 };
 V.Dialogue.history=function(){
@@ -118,7 +118,7 @@ const load=W.load.bind(W);W.load=function(id,pos){const result=load(id,pos);X.va
 const interactables=W.interactables.bind(W);W.interactables=function(){return interactables().filter(o=>o.type!=='pix-word'||!X.known(o.word));};
 const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'&&o.type!=='fast-travel')X.contextual(o);return interact(o);};
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type==='pix-word')return X.draw(ctx,o,cam);return draw(ctx,o,cam,t);};
-V.Dialogue.addWords=function(){X.decorate(V.$('#dialogue-en'),this.currentText,'Conversa em '+W.current.name,()=>this.translate());};
+V.Dialogue.addWords=function(){return this.run(()=>{const root=V.$('#dialogue-en');X.decorate(root,this.currentText,'Conversa em '+W.current.name,()=>this.translate());if(this.viewer!==null&&V.DuoPanels?.enabled())V.DuoPanels.bind(root,this.viewer);});};
 const read=V.Living.read.bind(V.Living);V.Living.read=function(id,...args){const result=read(id,...args),r=V.learning.readings.find(r=>r.id===id);if(r){const el=V.$('.reader-english p'),update=()=>{const section=V.$('.reader-english');if(!section)return;const small=section.querySelector('small');if(small){small.textContent='';small.hidden=true;}let support=section.querySelector('.pix-reader-words');if(!support){support=document.createElement('div');support.className='pix-reader-words';section.append(support);}support.innerHTML=V.settings.translation?P.wordsHTML(r.en,'PIX · palavras da leitura'):'';};X.decorate(el,r.en,'Leitura · '+r.title,update);update();}return result;};
 const award=V.Life.award.bind(V.Life);V.Life.award=function(k,...args){const result=award(k,...args);if(result&&V.state){const pool=k.startsWith('side-')?['quest','task','help','reward','complete']:k.startsWith('reading-')?['chapter','page','title','story']:k.startsWith('arcade-')?['play','goal','choose','learn']:[];const word=pool.find(w=>!X.known(w));if(word)X.collect(word,'Conclusão de '+(k.startsWith('side-')?'missão':k.startsWith('reading-')?'leitura':'minijogo'));}return result;};
 const paint=V.Atlas.paint.bind(V.Atlas);V.Atlas.paint=function(canvas,m,options){paint(canvas,m,options);if(!canvas||!m)return;const p=this.projection(canvas,m),ctx=canvas.getContext('2d');for(const o of m.objects)if(o.type==='pix-word'&&!X.known(o.word)){ctx.fillStyle='#90e0d6';ctx.strokeStyle='#194b60';ctx.lineWidth=1;ctx.fillRect(p.x+o.x*p.scale-2,p.y+o.y*p.scale-2,4,4);ctx.strokeRect(p.x+o.x*p.scale-2,p.y+o.y*p.scale-2,4,4);}};

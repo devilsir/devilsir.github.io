@@ -1,0 +1,87 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Nearest-neighbour packing; world silhouettes isolated to prevent adjacent facade bleed. Fountain frames share a fixed scale and baseline. Alpha preserved.",
+  "sheets": [
+    {
+      "key": "prep",
+      "file": "assets/cooking/prep.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 211012
+    },
+    {
+      "key": "batter",
+      "file": "assets/cooking/batter.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 233452
+    },
+    {
+      "key": "heat",
+      "file": "assets/cooking/heat.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 219026
+    },
+    {
+      "key": "extras",
+      "file": "assets/cooking/extras.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 220114
+    },
+    {
+      "key": "sweets",
+      "file": "assets/cooking/sweets.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 237134
+    },
+    {
+      "key": "dishes",
+      "file": "assets/cooking/dishes.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 264876
+    },
+    {
+      "key": "world",
+      "file": "assets/cooking/world.webp",
+      "cols": 4,
+      "rows": 2,
+      "width": 1024,
+      "height": 512,
+      "bytes": 172870
+    },
+    {
+      "key": "cover",
+      "file": "assets/cooking/cover.webp",
+      "cols": 1,
+      "rows": 1,
+      "width": 960,
+      "height": 540,
+      "bytes": 232838
+    },
+    {
+      "key": "additional",
+      "file": "assets/cooking/additional.webp",
+      "cols": 4,
+      "rows": 4,
+      "width": 768,
+      "height": 576,
+      "bytes": 212286
+    }
+  ]
+}

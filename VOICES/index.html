@@ -46,7 +46,11 @@
 <link rel="stylesheet" href="css/duo-tutorial.css?v=20261101-duo5">
 <link rel="stylesheet" href="css/duo-panels.css?v=20261101-invite4">
 <link rel="stylesheet" href="css/duo-sessions.css?v=20261101-invite4">
-<link rel="stylesheet" href="css/duo-navigation.css?v=20261101-shore5">
+<link rel="stylesheet" href="css/duo-navigation.css?v=20261101-harbor6">
+<link rel="stylesheet" href="css/dialogue-compact.css?v=20261101-solo-wide1">
+<link rel="stylesheet" href="css/hud-collapse.css?v=20261101-objectives1">
+<link rel="stylesheet" href="css/markets.css?v=20261101-market3">
+<link rel="stylesheet" href="css/duo-sleep.css?v=20261101-sleep2">
 </head>
 <body>
 <div id="app">
@@ -68,8 +72,8 @@
     <header class="game-top"><button id="home-button" class="wordmark" aria-label="Pausar e abrir menu">VOICES<span>_</span></button><div class="location-block"><small>NEW HARMONY · ARQUIVO VIVO</small><strong id="location-name">Praça das vozes</strong></div><div id="team-role" class="role-label"></div><div class="viewer-controls"><button id="hud-toggle" class="viewer-icon" aria-label="Recolher objetivos sobre o cenário" aria-pressed="false" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="24" height="24" alt=""></button><button id="viewer-fullscreen" class="viewer-icon" aria-label="Expandir jogo para tela cheia" title="Tela cheia"><img class="ui-art" src="assets/ui/interface/expand.svg" width="24" height="24" alt=""></button></div><button id="pause-button" class="quiet">Pausar <kbd>Esc</kbd></button></header>
     <div id="stage" class="stage">
       <canvas id="world-canvas" width="960" height="540" tabindex="0" aria-label="Mundo do jogo. Mova com WASD ou setas. Interaja com E. Abra o diário com J."></canvas>
-      <div class="mission-hud"><div class="chapter-chip" id="chapter-chip">PRÓLOGO</div><button id="mission-tracker"><strong id="mission-name">Uma falha no arquivo</strong><span id="mission-objective">Encontre PIX na praça.</span></button><div class="mission-progress" id="mission-progress"></div></div>
-      <div id="community-hud" class="community-hud" hidden></div><div class="mini-map" id="minimap-box"><div class="minimap-label"><strong id="minimap-location">Praça das vozes</strong><img class="ui-art" src="assets/ui/interface/compass.svg" alt="" width="20" height="20"></div><button id="minimap-open" class="minimap-open" aria-label="Abrir mapa detalhado deste lugar" title="Examinar este lugar"><canvas id="minimap" width="288" height="198" aria-label="Minimapa do cenário"></canvas></button><div class="minimap-caption"><span id="evidence-count">0 registros</span><small>Clique para ampliar</small></div></div>
+      <div class="mission-hud"><button id="mission-collapse" class="hud-panel-toggle" aria-controls="mission-tracker chapter-chip mission-progress" aria-label="Recolher objetivos" aria-expanded="true" title="Recolher objetivos"><img class="ui-art" src="assets/ui/interface/journal.svg" width="20" height="20" alt=""><span class="hud-panel-name">Objetivos</span><span aria-hidden="true">−</span></button><div class="chapter-chip" id="chapter-chip">PRÓLOGO</div><button id="mission-tracker"><strong id="mission-name">Uma falha no arquivo</strong><span id="mission-objective">Encontre PIX na praça.</span></button><div class="mission-progress" id="mission-progress"></div></div>
+      <div id="community-hud" class="community-hud" hidden></div><div class="mini-map" id="minimap-box"><button id="minimap-collapse" class="hud-panel-toggle" aria-controls="minimap-open" aria-label="Recolher minimapa" aria-expanded="true" title="Recolher minimapa"><img class="ui-art" src="assets/ui/interface/compass.svg" width="20" height="20" alt=""><span class="hud-panel-name">Mapa</span><span aria-hidden="true">−</span></button><div class="minimap-label"><strong id="minimap-location">Praça das vozes</strong></div><button id="minimap-open" class="minimap-open" aria-label="Abrir mapa detalhado deste lugar" title="Examinar este lugar"><canvas id="minimap" width="288" height="198" aria-label="Minimapa do cenário"></canvas></button><div class="minimap-caption"><span id="evidence-count">0 registros</span><small>Clique para ampliar</small></div></div>
       <div id="interact-hint" class="interact-hint" hidden><kbd>E</kbd><span></span></div>
       <div id="tutorial-hint" class="tutorial-hint" hidden></div>
       <div id="arcade-hud" class="arcade-hud" hidden></div>
@@ -81,8 +85,8 @@
   <div id="loading" class="loading"><div class="loading-logo">V<span>_</span></div><p>Organizando as memórias…</p></div>
 </div>
 <noscript>Este jogo precisa de JavaScript ativado no navegador.</noscript>
-<script src="js/content.js"></script><script src="js/learning-content.js"></script><script src="js/cozy-content.js?v=20261025-textos-acervo2"></script><script src="js/cultural-content.js?v=20261020-text4"></script><script src="js/engine.js?v=20261101-invite4"></script><script src="js/optimized-images.js?v=20261030-imageopt1"></script><script src="js/asset-loader.js?v=20261030-play1"></script><script src="js/audio.js"></script><script src="js/save.js?v=20261101-duo1"></script><script src="js/player.js"></script><script src="js/world.js?v=20261030-stream1"></script><script src="js/dialogue.js"></script><script src="js/quests.js"></script><script src="js/minigames.js"></script><script src="js/combat.js"></script><script src="js/teacher.js"></script><script src="js/field-guide.js?v=20261021-world1"></script><script src="js/living-world.js?v=20261022-rgb-pix"></script><script src="js/cozy-layouts.js"></script><script src="js/pix-presence.js"></script>
-<script src="js/cozy-world.js?v=20261101-plaza4"></script><script src="js/game.js?v=20261029-load2"></script><script src="js/ui-shell.js"></script><script src="js/cultural-world.js?v=20261029-load2"></script><script src="js/scene-assets.js"></script>
+<script src="js/content.js"></script><script src="js/learning-content.js"></script><script src="js/cozy-content.js?v=20261025-textos-acervo2"></script><script src="js/cultural-content.js?v=20261020-text4"></script><script src="js/engine.js?v=20261101-invite4"></script><script src="js/optimized-images.js?v=20261030-imageopt1"></script><script src="js/asset-loader.js?v=20261030-play1"></script><script src="js/audio.js"></script><script src="js/save.js?v=20261101-duo1"></script><script src="js/player.js"></script><script src="js/world.js?v=20261030-stream1"></script><script src="js/dialogue.js?v=20261101-dialogue3"></script><script src="js/quests.js"></script><script src="js/minigames.js"></script><script src="js/combat.js"></script><script src="js/teacher.js"></script><script src="js/field-guide.js?v=20261021-world1"></script><script src="js/living-world.js?v=20261022-rgb-pix"></script><script src="js/cozy-layouts.js"></script><script src="js/pix-presence.js"></script>
+<script src="js/cozy-world.js?v=20261101-plaza4"></script><script src="js/game.js?v=20261029-load2"></script><script src="js/ui-shell.js?v=20261101-collapse1"></script><script src="js/cultural-world.js?v=20261029-load2"></script><script src="js/scene-assets.js"></script>
 <script src="js/heritage-content.js?v=20261025-textos-acervo2"></script><script src="js/neighborhood-design.js?v=20261030-cape3"></script><script src="js/scene-editor.js?v=20261030-cape3"></script>
 <script src="js/editor-actions.js?v=20261030-cape3"></script>
 <script src="js/heritage-world.js?v=20261029-load2"></script>
@@ -126,7 +130,7 @@
 <script src="js/adventure-core.js?v=20261021-presence1"></script>
 <script src="js/adventure-architecture.js?v=fix-20261017"></script>
 <script src="js/adventure-environment.js"></script>
-<script src="js/adventure-navigation.js?v=20261023-layout-alpha1"></script>
+<script src="js/adventure-navigation.js?v=20261101-objectives1"></script>
 <script src="js/adventure-story.js?v=20261030-imageopt1"></script>
 <script src="js/adventure-combat.js"></script>
 <script src="js/adventure-art.js?v=20261030-imageopt1"></script>
@@ -146,14 +150,14 @@
 <script src="js/city-facades.js?v=20261021-expansion1"></script>
 <script src="js/homestead-life.js?v=20261022-guide1"></script>
 <script src="js/homestead-activities.js?v=20261020-anim2"></script>
-<script src="js/pix-collection.js"></script>
+<script src="js/pix-collection.js?v=20261101-dialogue3"></script>
 <script src="js/learning-arcade.js"></script>
 <script src="js/home-collection.js?v=20261030-cape3"></script>
 <script src="js/guardian-presence.js?v=20261021-presence1"></script>
 <script src="js/atlas-travel.js"></script>
 <script src="js/atlas-explorer.js"></script>
 <script src="js/english-vocabulary.js"></script>
-<script src="js/pix-vocabulary.js?v=20261101-duo1"></script>
+<script src="js/pix-vocabulary.js?v=20261101-dialogue3"></script>
 <script src="js/commute-routines.js"></script>
 <script src="js/house-window-lights.js"></script>
 <script src="js/mobile-controls.js"></script>
@@ -193,14 +197,14 @@
 <script src="js/terreiros-collection-plans.js?v=20261025-textos-acervo2"></script>
 <script src="js/terreiros-collection.js?v=20261030-cape3"></script>
 <script src="js/editorial-links.js?v=20261025-textos-acervo2"></script>
-<script src="js/onboarding-data.js?v=20261030-play1"></script>
+<script src="js/onboarding-data.js?v=20261101-objectives1"></script>
 <script src="js/playground-data.js?v=20261023-overhaul1"></script>
 <script src="js/professor-ui-catalog.js?v=20261017c"></script>
 <script src="js/professor-mode.js?v=20261030-imageopt1"></script>
 <script src="js/guided-overlay.js?v=20261101-invite4"></script>
 <script src="js/onboarding.js?v=20261030-play1"></script>
 <script src="js/onboarding-lessons.js?v=20261030-play1"></script>
-<script src="js/world-preferences.js?v=20261022-games2"></script>
+<script src="js/world-preferences.js?v=20261102-sanctuary2"></script>
 <script src="js/playground-engine.js?v=20261029-arcade1"></script>
 <script src="js/playground-games.js?v=20261023-layout-alpha1"></script>
 <script src="js/playground-garden-upgrade.js?v=20261023-layout-alpha1"></script>
@@ -219,7 +223,7 @@
 <script src="js/african-museum-data.js?v=20261027-imagegen2"></script>
 <script src="js/african-word-origins.js?v=20261027-curation1"></script>
 <script src="js/capoeira-art.js?v=20261030-imageopt1"></script>
-<script src="js/african-museum.js?v=20261101-shore2"></script>
+<script src="js/african-museum.js?v=20261101-entrance1"></script>
 <script src="js/african-museum-curation.js?v=20261027-cape2"></script>
 <script src="js/capoeira-game.js?v=20261030-imageopt1"></script>
 <script src="js/minigame-praise.js?v=20261027-praise1"></script>
@@ -228,7 +232,7 @@
 <script src="js/cape-art-data.js?v=20261030-cape3"></script>
 <script src="js/maritime-geography.js?v=20261027-sea1"></script>
 <script src="js/maritime-world.js?v=20261030-docks1"></script>
-<script src="js/maritime-navigation.js?v=20261101-shore2"></script>
+<script src="js/maritime-navigation.js?v=20261101-harbor6"></script>
 <script src="js/maritime-fishing.js?v=20261027-sea1"></script>
 <script src="js/maritime-voyage.js?v=20261027-cape2"></script>
 <script src="js/cape-region-world.js?v=20261030-cape3"></script>
@@ -265,12 +269,40 @@
 <script src="js/play-culture-upgrade.js?v=20261101-duo1"></script>
 <script src="js/play-museum-expansion.js?v=20261101-duo1"></script>
 <script src="js/asset-demand-upgrade.js?v=20261101-duo1"></script>
+<script src="js/market-data.js?v=20261101-market3"></script>
+<script src="js/market-world.js?v=20261101-market3"></script>
 <script src="js/duo-challenges.js?v=20261101-shore2"></script>
 <script src="js/duo-world.js?v=20261101-shore2"></script>
 <script src="js/duo-tutorial.js?v=20261101-places2"></script>
 <script src="js/duo-panels.js?v=20261101-invite4"></script>
 <script src="js/duo-sessions.js?v=20261101-invite4"></script>
 <script src="js/plaza-visuals.js?v=20261101-plaza5"></script>
-<script src="js/duo-navigation.js?v=20261101-shore3"></script>
+<script src="js/duo-navigation.js?v=20261101-harbor6"></script>
 <script src="js/portal-spacing.js?v=20261101-spacing2"></script>
+<script src="js/care-upgrade.js?v=20261101-market3"></script>
+<script src="js/duo-sleep.js?v=20261101-sleep2"></script>
+<link rel="stylesheet" href="css/cooking.css?v=20261101-cook1">
+<script src="js/cooking-data.js?v=20261101-cook1"></script>
+<script src="js/cooking-art.js?v=20261101-cook1"></script>
+<script src="js/cooking-game.js?v=20261102-nature2"></script>
+<script src="js/cooking-world.js?v=20261102-nature2"></script>
+<script src="js/cooking-hud.js?v=20261101-cook1"></script>
+<link rel="stylesheet" href="css/nature.css?v=20261102-nature2">
+<link rel="stylesheet" href="css/nature-challenge.css?v=20261102-nature2">
+<link rel="stylesheet" href="css/food-expansion.css?v=20261102-nature2">
+<link rel="stylesheet" href="css/food-museum.css?v=20261102-nature2">
+<script src="js/nature-art.js?v=20261102-fauna1"></script>
+<script src="js/food-expansion.js?v=20261102-nature2"></script>
+<script src="js/nature-data.js?v=20261102-nature2"></script>
+<script src="js/wildlife-data.js?v=20261102-sanctuary2"></script>
+<script src="js/nature-world.js?v=20261102-fauna1"></script>
+<script src="js/wildlife-motion.js?v=20261102-sanctuary2"></script>
+<script src="js/nature-challenge.js?v=20261102-sanctuary2"></script>
+<script src="js/food-museum-data.js?v=20261102-nature2"></script>
+<script src="js/food-museum.js?v=20261102-fauna1"></script>
+<link rel="stylesheet" href="css/animal-museum.css?v=20261102-fauna1">
+<script src="js/animal-museum.js?v=20261102-sanctuary2"></script>
+<script src="js/sanctuary-data.js?v=20261102-sanctuary2"></script>
+<script src="js/animal-sanctuary.js?v=20261102-sanctuary2"></script>
+<script src="js/sanctuary-neighbors.js?v=20261102-sanctuary3"></script>
 </body></html>

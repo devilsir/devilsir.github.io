@@ -37,7 +37,8 @@ async function environment(options={}){
 }
 async function run(){
  const {dom,w,V,canvases}=await environment();
- const results=[],check=(name,test)=>{try{test();results.push({name,pass:true});}catch(error){results.push({name,pass:false,error:error.stack});console.error(name,error.stack);}};
+ // Menus in duo mode must be queried from the viewer that owns their DOM.
+ const results=[],check=(name,test)=>{try{if(V.DuoPanels?.enabled())V.DuoPanels.withOwner(0,test);else test();results.push({name,pass:true});}catch(error){results.push({name,pass:false,error:error.stack});console.error(name,error.stack);}};
  const surface=()=>{const el=w.document.createElement('canvas');el.width=960;el.height=540;const c=el.getContext('2d');return{c,canvas:canvases.get(el).canvas};};
  await V.Game.init();
  console.log('Runtime initialized',JSON.stringify({maps:Object.keys(V.World.maps).length,assets:V.AssetLoader.records.size,deferred:[...V.AssetLoader.records].filter(r=>r.state==='deferred').length}));
