@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const root=path.resolve(__dirname,'..'),meta=require('../assets/cooking/generation-professional.json');
+const text=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8'),body=text.slice(text.indexOf('function pack('),text.indexOf('(async()=>'));
+const props=new Function('createCanvas',body+';return pack;')(createCanvas),people=new Function('createCanvas',body.replace('cell-12','cell-6').replace('cell-6-dh','cell-3-dh')+';return pack;')(createCanvas);
+(async()=>{const sheets=[],contact=createCanvas(1440,1100),c=contact.getContext('2d');c.fillStyle='#345549';c.fillRect(0,0,1440,1100);let n=0;
+ for(const[key,source]of Object.entries(meta.sources)){const human=key.startsWith('chef-')||key.endsWith('-game'),rows=key.startsWith('chef-')?6:key==='industrial-utilities'?2:4,cell=human?64:160,im=await loadImage(source),canvas=(human?people:props)(im,rows,cell,human),file='assets/'+(key.endsWith('-game')?'nature/':'cooking/')+key+'.webp',bytes=canvas.toBuffer('image/webp',human?98:94);fs.writeFileSync(path.join(root,file),bytes);sheets.push({key,file,rows,cols:4,cell,bytes:bytes.length});c.imageSmoothingEnabled=false;c.drawImage(canvas,n%4*360,Math.floor(n/4)*550,360,Math.min(480,rows/4*360));c.fillStyle='#ffe8b9';c.font='18px sans-serif';c.fillText(key,n%4*360+12,Math.floor(n/4)*550+510);n++;}
+ fs.writeFileSync(path.join(root,'assets/cooking/manifest-professional.json'),JSON.stringify({generator:meta.generator,packing:'Transparent connected silhouettes, compact game-scale human sprites, shared scale and baseline for walking rows; originals preserved.',sheets},null,2));fs.writeFileSync(path.join(root,'.qa/review/professional-assets.png'),contact.toBuffer('image/png'));console.log(JSON.stringify(sheets));
+})().catch(e=>{console.error(e.stack);process.exit(1);});

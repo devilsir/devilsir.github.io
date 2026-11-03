@@ -1,0 +1,34 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Connected alpha silhouettes, aspect ratio preserved, transparent WebP; originals retained.",
+  "sheets": [
+    {
+      "key": "gallery-furniture",
+      "file": "assets/food-museum/gallery-furniture.webp",
+      "columns": 4,
+      "rows": 4,
+      "cell": 160,
+      "bytes": 128318
+    },
+    {
+      "key": "gallery-collection",
+      "file": "assets/food-museum/gallery-collection.webp",
+      "columns": 4,
+      "rows": 2,
+      "cell": 160,
+      "bytes": 96644
+    },
+    {
+      "key": "gallery-dishes",
+      "file": "assets/food-museum/gallery-dishes.webp",
+      "columns": 4,
+      "rows": 6,
+      "cell": 64,
+      "bytes": 48756,
+      "derivedFrom": [
+        "assets/cooking/dishes.webp",
+        "assets/nature/new-dishes.webp"
+      ]
+    }
+  ]
+}

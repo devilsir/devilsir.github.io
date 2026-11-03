@@ -108,6 +108,7 @@ targetOutline(o,m){
  try{
   V.World.nearest=null;if(V.Player?.data){V.Player.data.x=-9999;V.Player.data.y=-9999;}if(originalMarker)V.Living.marker=()=>{};
   paint(context);
+  if(!images&&(V.Cozy.person(o)||['cooking-npc','nature-ranger','place-life','campus-spectator'].includes(o.type)))return null;
   if(!images){
    // Geometric objects (for example an untextured door) still have a silhouette.
    actual.clearRect(0,0,size,size);
@@ -116,6 +117,12 @@ targetOutline(o,m){
   }
  }catch(_error){return null;}
  finally{if(originalMarker)V.Living.marker=originalMarker;if(previousPlayer&&V.Player?.data)Object.assign(V.Player.data,previousPlayer);V.World.nearest=previousNearest;}
+ // Saturate the silhouette before subtraction: old partially transparent art
+ // otherwise leaves a colored fill across the NPC or sign. Self-compositing
+ // doubles alpha coverage each pass and requires no origin-sensitive readback.
+ actual.save();actual.globalAlpha=1;actual.globalCompositeOperation='source-over';actual.shadowBlur=0;actual.filter='none';
+ for(let i=0;i<11;i++)actual.drawImage(sprite,0,0);
+ actual.restore();
  const ring=document.createElement('canvas');ring.width=ring.height=size;const ctx=ring.getContext('2d');ctx.imageSmoothingEnabled=false;
  const radius=3;
  for(let y=-radius;y<=radius;y++)for(let x=-radius;x<=radius;x++)if(x*x+y*y<=radius*radius)ctx.drawImage(sprite,x,y);

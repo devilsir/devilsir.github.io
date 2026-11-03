@@ -1,0 +1,28 @@
+{
+  "file": "assets/adventure/historiograph-mask-atlas.webp",
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "cell": 192,
+  "frames": 32,
+  "portrait": "assets/adventure/historiograph-mask.webp",
+  "expressions": "assets/adventure/historiograph-mask-portrait.webp",
+  "portraitExpressions": [
+    "neutral",
+    "speaking",
+    "curious",
+    "happy"
+  ],
+  "icon": "assets/ui/illustrated/historio-mask.webp",
+  "source": "historiograph-mask-source.png",
+  "reference": "User-provided feathered fantasy mask; original fictional game companion",
+  "generation": "assets/adventure/historiograph-mask-generation.json"
+}

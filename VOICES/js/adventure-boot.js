@@ -33,7 +33,7 @@ else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-o.size&&x<ctx.canvas.width+80&&y>
 }
 A.drawSigns(ctx,m,cam);E.drawWindows(ctx,m,cam);C.progressDetails(ctx,m,cam);if(!V.SceneEditor.active)N.drawTarget(ctx,cam);const p=V.Player.data;
 if(V.PixPresence.following())V.PixPresence.draw(ctx,p,cam);
-const icon=V.Assets.images['item-device'];if(icon&&P.ensure().story.awakened)ctx.drawImage(icon,p.x-cam.x+11,p.y-cam.y-29,16,16);
+// The ancestral mask is rendered with the player, using its own depth.
 V.Engine.drawParticles(ctx,cam);S.drawPulse(ctx,cam);
 if(!V.SceneEditor.active||E.preview?.enabled){E.lighting(ctx,m,cam);E.weatherDraw(ctx,m,cam);}
 const visible=m.objects.filter(o=>o.x-cam.x>-20&&o.x-cam.x<ctx.canvas.width+20&&o.y-cam.y>40&&o.y-cam.y<ctx.canvas.height+60);
@@ -81,7 +81,7 @@ V.Game.pause=function(reason=''){old.pause(reason);if(V.Combat.active){const abo
 V.Game.toTitle=function(){V.$('#battle-root')?.remove();V.Access.authorized=false;S.companion=null;return old.toTitle();};
 V.Game.credits=function(){old.credits();const body=V.$('.modal-body');if(body){const info=document.createElement('section');info.innerHTML=`<div class="separator"></div><h3>Historiógrafo e Guardião da Vigília</h3><p>${V.escape(V.AdventureData.culture)}</p><p>Novas ilustrações em pixel art criadas para o projeto com geração de imagens. Animações, interfaces, fontes e recortes do acervo respeitam seus manifestos locais. Áudios ambientais da expansão são sínteses originais.</p><button id="credits-zambeto" class="secondary">Ficha cultural e referências</button>`;body.prepend(info);V.$('#credits-zambeto').onclick=()=>S.culture(()=>this.credits());}};
 V.Game.settings=function(){old.settings();const panel=V.$('.modal-body .two-cols');if(panel){const button=document.createElement('button');button.className='secondary';button.textContent='Iluminação, clima e relógio';button.onclick=()=>V.state?E.panel():V.UI.toast('Estas opções ficam disponíveis dentro da aventura.');panel.appendChild(button);}};
-const init=V.Game.init.bind(V.Game);V.Game.init=async function(){await init();const tools=V.$('.game-toolbar .tools');if(tools){for(const[id,label,key,action]of [['historio-button','Historiógrafo','H',()=>S.device()],['character-button','Personagem','C',()=>P.character()]]){const b=document.createElement('button');b.id=id;b.innerHTML=`<img src="assets/adventure/icons/${id==='historio-button'?'device':'badge'}.png" width="28" height="28" alt=""><span>${label}</span><kbd>${key}</kbd>`;b.onclick=action;tools.appendChild(b);}}
+const init=V.Game.init.bind(V.Game);V.Game.init=async function(){await init();const tools=V.$('.game-toolbar .tools');if(tools){for(const[id,label,key,action]of [['historio-button','Historiógrafo','H',()=>S.device()],['character-button','Personagem','C',()=>P.character()]]){const b=document.createElement('button');b.id=id;b.setAttribute('aria-label',label);b.setAttribute('aria-keyshortcuts',key);b.title=label;b.innerHTML=`<img src="assets/adventure/icons/${id==='historio-button'?'device':'badge'}.png" width="28" height="28" alt=""><span>${label}</span><kbd>${key}</kbd>`;b.onclick=action;tools.appendChild(b);}}
 const mini=V.$('#minimap-open');if(mini)mini.onclick=()=>V.WorldAtlas.open('local');
 const tracker=V.$('#mission-tracker');if(tracker)tracker.onclick=()=>V.Quests.journal();
 };

@@ -1,0 +1,17 @@
+.food-gallery-modal{background:#eee6d1;color:#2b4738;border:1px solid #b3985d;box-shadow:0 20px 65px #071a16b3,inset 0 0 0 5px #e0d4b8}
+.food-gallery-modal .modal-head{background:#204b3c;color:#f3e3b8;border-bottom:3px double #b49a5e;padding-bottom:19px}
+.food-gallery-modal .modal-head h2{color:#f5e5bd}.food-gallery-modal .modal-head p{color:#d3c6a3}
+.food-gallery-modal .modal-body{background:#eee6d1;line-height:1.6}.food-gallery-modal .modal-footer{background:#e5dbc3;border-top:1px solid #bba675}
+.food-gallery-modal .secondary{background:#faf5e7;color:#35513e;border:1px solid #bda878}.food-gallery-modal .secondary:hover{background:#e0d9bc;border-color:#8e784c}
+.food-gallery-modal .primary{background:#28563f;color:#fff0c9;border-color:#9a8351}.food-gallery-modal .primary:hover{background:#376d50}
+.food-gallery-modal .market-filters{padding:12px 0;border-block:1px solid #c5b58b}.food-gallery-modal .market-filters [aria-pressed=true]{background:#254e3b;color:#f9e8b6}
+.food-gallery-modal .food-museum-progress{background:#e1dcc2;color:#36503c;border-left:3px solid #a18a50;border-radius:0}
+.food-gallery-modal .food-museum-catalog{gap:14px}.food-gallery-modal .food-museum-card{padding:17px 13px;border-radius:3px;box-shadow:0 3px 0 #b5a58124}.food-gallery-modal .food-museum-card strong{color:#284a36;font-size:17px}.food-gallery-modal .food-museum-card small{color:#666b50}
+.food-gallery-modal .food-museum-card .adv-icon{background-color:#e7dfc7;border-radius:50%;box-shadow:0 0 0 1px #c4b27f}
+.food-gallery-modal .food-museum-dish{padding:22px 13px 10px;border:1px solid #c7b58c;background:#f7f0dd;align-self:start;border-radius:60px 60px 4px 4px}.food-gallery-modal .food-museum-dish p{color:#5a644d}
+.food-gallery-modal .food-museum-fiche h3{color:#2b523b;font-size:18px}.food-gallery-modal .food-museum-fiche section{border-bottom:1px solid #c3b389}.food-gallery-modal .food-museum-evidence{background:#d9dfc3;color:#35553b}
+.food-gallery-modal .food-museum-sources a{color:#5f613d}.food-gallery-modal .food-museum-question{background:#e1d9ba;color:#324d36;border-left-color:#9c8248;border-radius:0}
+.food-gallery-directory{list-style:none;padding:0;display:grid;gap:0;border-top:1px solid #c5b58b}.food-gallery-directory li{display:flex;align-items:center;gap:18px;border-bottom:1px solid #c5b58b;padding:15px 6px}.food-gallery-directory li>span{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;background:#28533f;color:#efdfb2;border:1px solid #a18a50}.food-gallery-directory strong,.food-gallery-directory small{display:block}.food-gallery-directory small{color:#637058;font-size:12px}
+@media(max-width:600px){.food-gallery-modal .food-museum-card{padding:12px}.food-gallery-modal .food-museum-dish{padding:12px;border-radius:4px}.food-gallery-modal .food-museum-fiche h3{font-size:16px}.food-gallery-directory li{gap:12px}}
+.high-contrast .food-gallery-modal{color:#102719}.high-contrast .food-gallery-modal small,.high-contrast .food-gallery-modal .food-museum-card small{color:#2a422b}.high-contrast .food-gallery-modal .modal-head p{color:#fff0ca}.high-contrast .food-gallery-modal a{color:#203a1f}
+.food-gallery-modal .close-modal{background:#285541;color:#f4e4bd;border-color:#a18a54}

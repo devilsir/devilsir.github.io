@@ -1,0 +1,4 @@
+.challenge-presentation{position:absolute;pointer-events:none;display:block;z-index:0;image-rendering:auto!important;max-width:none!important;max-height:none!important;touch-action:none}
+.challenge-presentation[hidden]{display:none!important}
+.challenge-presentation-source{opacity:0}
+#playground-root,#playground-root button,#fishing-panel{font-family:"VOICES Sans","Segoe UI",system-ui,sans-serif;text-rendering:optimizeLegibility}

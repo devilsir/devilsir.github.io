@@ -1,0 +1,22 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Isolated transparent silhouettes in 160px cells; original alpha and source files preserved.",
+  "sheets": [
+    {
+      "key": "kitchen-interiors",
+      "file": "assets/cooking/kitchen-interiors.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 160,
+      "bytes": 158766
+    },
+    {
+      "key": "campus-interiors",
+      "file": "assets/cooking/campus-interiors.webp",
+      "cols": 4,
+      "rows": 4,
+      "cell": 160,
+      "bytes": 157608
+    }
+  ]
+}

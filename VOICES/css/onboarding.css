@@ -2,7 +2,8 @@
 #guided-overlay[hidden],#guided-overlay [hidden]{display:none!important}
 .guided-shade{position:fixed;background:#102d246b;pointer-events:none}
 .guided-spot{position:fixed;box-sizing:border-box;border:4px solid transparent;border-radius:9px;background:transparent!important;box-shadow:0 0 0 2px #15392dbb,0 0 12px #38d9ffcc,0 0 20px #ff49c366;pointer-events:none;animation:guidedRainbowGlow .9s ease-in-out infinite alternate}
-.guided-spot::before{--guided-rainbow-angle:0deg;content:"";position:absolute;inset:-4px;box-sizing:border-box;border:4px solid transparent;border-radius:inherit;background:conic-gradient(from var(--guided-rainbow-angle),#ff305f,#ffdc42,#48ff8a,#39d9ff,#7258ff,#ff4fe1,#ff305f) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0) border-box;-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0) border-box;mask-composite:exclude;pointer-events:none;animation:guidedRainbowSpin 1.25s linear infinite}
+.guided-spot::before{content:"";position:absolute;inset:-4px;box-sizing:border-box;border:4px solid #48ff8a;border-radius:inherit;background:transparent!important;pointer-events:none;animation:guidedRainbowBorder 2.4s linear infinite}
+@keyframes guidedRainbowBorder{0%,100%{border-color:#ff305f}17%{border-color:#ffdc42}34%{border-color:#48ff8a}51%{border-color:#39d9ff}68%{border-color:#7258ff}85%{border-color:#ff4fe1}}
 @property --guided-rainbow-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
 @keyframes guidedRainbowSpin{to{--guided-rainbow-angle:360deg}}
 @keyframes guidedRainbowGlow{from{filter:brightness(.85)}to{filter:brightness(1.35)}}

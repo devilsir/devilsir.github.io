@@ -1,0 +1,44 @@
+{
+  "cerrado-fauna": {
+    "path": "assets/nature/cerrado-fauna.webp",
+    "source": "exec-e0801a9e-3e89-452e-828d-73bfdf944ad8.png",
+    "columns": 4,
+    "rows": 4,
+    "cell": 160
+  },
+  "savanna-fauna": {
+    "path": "assets/nature/savanna-fauna.webp",
+    "source": "exec-89d87124-66ed-472e-a7b3-5326fbdd6b79.png",
+    "columns": 4,
+    "rows": 4,
+    "cell": 160
+  },
+  "savanna-landscape": {
+    "path": "assets/expansion/savanna-landscape.webp",
+    "source": "exec-24039cca-dc13-488c-aac2-cf5fd99efad5.png",
+    "columns": 4,
+    "rows": 3,
+    "cell": 192
+  },
+  "cerrado-understory": {
+    "path": "assets/expansion/cerrado-understory.webp",
+    "source": "exec-31e35f2d-216c-4b4f-95fb-a44b3fbb0be6.png",
+    "columns": 4,
+    "rows": 3,
+    "cell": 192
+  },
+  "place-npcs": {
+    "path": "assets/expansion/place-npcs.webp",
+    "source": "exec-b32d3384-ab55-4acd-a9b2-971d52c567ed.png",
+    "columns": 4,
+    "rows": 8,
+    "cell": 160
+  },
+  "town-animals": {
+    "path": "assets/expansion/town-animals.webp",
+    "source": "exec-08eb6cbc-d80a-4116-8454-35f46b68c5db.png",
+    "columns": 4,
+    "rows": 6,
+    "cell": 128
+  }
+}

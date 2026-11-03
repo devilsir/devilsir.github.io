@@ -1,0 +1,62 @@
+{
+  "generator": "Built-in image_gen",
+  "packing": "Transparent connected silhouettes, compact game-scale human sprites, shared scale and baseline for walking rows; originals preserved.",
+  "sheets": [
+    {
+      "key": "industrial-kitchen",
+      "file": "assets/cooking/industrial-kitchen.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 153400
+    },
+    {
+      "key": "industrial-utilities",
+      "file": "assets/cooking/industrial-utilities.webp",
+      "rows": 2,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 75616
+    },
+    {
+      "key": "chef-dandara",
+      "file": "assets/cooking/chef-dandara.webp",
+      "rows": 6,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 50422
+    },
+    {
+      "key": "chef-bento",
+      "file": "assets/cooking/chef-bento.webp",
+      "rows": 6,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 48500
+    },
+    {
+      "key": "chef-lia",
+      "file": "assets/cooking/chef-lia.webp",
+      "rows": 6,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 49426
+    },
+    {
+      "key": "people-game",
+      "file": "assets/nature/people-game.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 34074
+    },
+    {
+      "key": "sanctuary-team-game",
+      "file": "assets/nature/sanctuary-team-game.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 34854
+    }
+  ]
+}

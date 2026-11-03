@@ -82,7 +82,7 @@ V.content = {
     },
     "historiograph": {
       "name": "Historiógrafo Ancestral",
-      "role": "Dispositivo ficcional · vestígios e perguntas",
+      "role": "Máscara ancestral ficcional · vestígios e perguntas",
       "accent": "#83cfbf",
       "quote": "Mais um nome. Outra lembrança. Quanto ainda falta conhecer?"
     }

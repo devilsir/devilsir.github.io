@@ -1,0 +1,17 @@
+(function(){
+'use strict';const V=window.V,F=V.FastTravel,W=V.World;
+V.defaultSettings.fastTravelRequirements=false;
+const R=V.TransitRouting={
+ owner(){return V.DuoWorld?.enabled()?V.DuoWorld.context>=0?V.DuoWorld.context:Math.max(0,V.DuoPanels.owner(true)):null;},
+ pending(owner=this.owner()){const f=F.ensure();return owner===null?f.pendingSea:f.pendingSeaByPlayer?.[owner]||null;},
+ store(route,owner=this.owner()){const f=F.ensure();if(owner===null)f.pendingSea=route;else(f.pendingSeaByPlayer||={})[owner]=route;},
+ request(id,travel){if(!V.state||V.Game.mode!=='explore'||V.Dialogue.active||V.SceneEditor.active)return false;if(V.SeaNavigation.boat){V.UI.toast('Atraque antes de seguir para o embarque.');return false;}const fromAfrica=V.CapeRegion.africa(W.current.id),toAfrica=V.CapeRegion.africa(id);if(fromAfrica===toAfrica)return travel(id);const port=fromAfrica?'cape-town':'harbor',destination=fromAfrica?'harbor':'cape-town';
+  if(!travel(port))return false;const ferry=W.maps[port].objects.find(o=>o.seaFerry);if(ferry){const p=V.Rooms.safe(W.maps[port],{x:ferry.x-60,y:ferry.y+75,dir:3},14);if(p){W.load(port,p);W.camera=V.Viewport.target(W.current,V.Player.data);}V.ObjectiveGuide.track(null,ferry.id,port);}
+  const owner=this.owner();this.store({requested:id,port,destination},owner);V.Save.save();V.UI.modal('Continue a viagem pelo porto',fromAfrica?'ÁFRICA → BRASIL':'BRASIL → ÁFRICA','<p>Você chegou ao '+V.escape(F.name(port))+'.</p><p>Siga até o embarque do <strong>Horizonte</strong>, indicado no caminho. Aproxime-se e pressione <kbd>E</kbd> para pegar o barco para '+V.escape(F.name(destination))+'.</p><p>Depois da travessia, a viagem continua para '+V.escape(F.name(id))+'.</p>','<button id="transit-walk" class="primary">Ir até o barco</button><button id="transit-cancel" class="secondary">Ficar no porto</button>');V.$('#transit-walk').onclick=()=>V.UI.close();V.$('#transit-cancel').onclick=()=>{this.store(null,owner);V.Save.save();V.UI.close();};return true;
+ }
+};
+const status=F.status.bind(F);F.status=function(id){if(V.CapeRegion.africa(id)&&W.maps[id])return{allowed:true,label:V.settings.fastTravelRequirements===true&&!V.CapeRegion.africa(W.current?.id)?'Via Porto das Vozes':'Viagem disponível',reason:'',button:'Viajar'};return status(id);};
+const ticket=V.SeaVoyage.ticket.bind(V.SeaVoyage);V.SeaVoyage.ticket=function(to=null,onward=null){const route=R.pending();if(route&&route.port===W.current?.id){to=route.destination;onward=route.requested===to?null:route.requested;}return ticket(to,onward);};
+const begin=V.SeaVoyage.begin.bind(V.SeaVoyage);V.SeaVoyage.begin=function(...args){const owner=R.owner(),result=begin(...args);if(result&&V.state){R.store(null,owner);V.Save.save();}return result;};
+const settings=V.Game.settings.bind(V.Game);V.Game.settings=function(...args){const out=settings(...args),host=V.$('.modal-body');if(host){const section=document.createElement('section');section.className='card transit-preferences';section.innerHTML='<h3>Viagens e travessias</h3><label class="toggle"><input id="s-travel-requirements" type="checkbox" '+(V.settings.fastTravelRequirements===true?'checked':'')+'> Exigir a travessia de barco entre Brasil e África</label><p>Desativado por padrão. Ativado: a viagem rápida leva ao porto; você embarca no Horizonte e continua até o lugar escolhido.</p>';host.append(section);const save=V.$('#settings-apply'),apply=save.onclick;save.onclick=()=>{V.settings.fastTravelRequirements=V.$('#s-travel-requirements').checked;apply();};}return out;};
+})();

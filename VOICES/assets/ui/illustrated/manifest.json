@@ -1,0 +1,207 @@
+{
+  "generator": "imagegen built-in",
+  "size": 128,
+  "icons": {
+    "inventory": {
+      "path": "assets/ui/illustrated/inventory.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 0
+    },
+    "journal": {
+      "path": "assets/ui/illustrated/journal.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 1
+    },
+    "objectives": {
+      "path": "assets/ui/illustrated/objectives.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 2
+    },
+    "notebook": {
+      "path": "assets/ui/illustrated/notebook.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 3
+    },
+    "heritage": {
+      "path": "assets/ui/illustrated/heritage.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 4
+    },
+    "map": {
+      "path": "assets/ui/illustrated/map.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 5
+    },
+    "homes": {
+      "path": "assets/ui/illustrated/homes.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 6
+    },
+    "challenges": {
+      "path": "assets/ui/illustrated/challenges.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 7
+    },
+    "pix": {
+      "path": "assets/ui/illustrated/pix.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 8
+    },
+    "archive": {
+      "path": "assets/ui/illustrated/archive.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 9
+    },
+    "community": {
+      "path": "assets/ui/illustrated/community.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 10
+    },
+    "leaf": {
+      "path": "assets/ui/illustrated/leaf.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 11
+    },
+    "compass": {
+      "path": "assets/ui/illustrated/compass.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 12
+    },
+    "scene": {
+      "path": "assets/ui/illustrated/scene.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 13
+    },
+    "teacher": {
+      "path": "assets/ui/illustrated/teacher.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 14
+    },
+    "voice": {
+      "path": "assets/ui/illustrated/voice.webp",
+      "source": "exec-df77eade-f558-4174-9a23-a4008bae8222.png",
+      "cell": 15
+    },
+    "settings": {
+      "path": "assets/ui/illustrated/settings.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 0
+    },
+    "sound": {
+      "path": "assets/ui/illustrated/sound.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 1
+    },
+    "pause": {
+      "path": "assets/ui/illustrated/pause.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 2
+    },
+    "resume": {
+      "path": "assets/ui/illustrated/resume.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 3
+    },
+    "save": {
+      "path": "assets/ui/illustrated/save.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 4
+    },
+    "export": {
+      "path": "assets/ui/illustrated/export.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 5
+    },
+    "import": {
+      "path": "assets/ui/illustrated/import.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 6
+    },
+    "exit": {
+      "path": "assets/ui/illustrated/exit.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 7
+    },
+    "help": {
+      "path": "assets/ui/illustrated/help.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 8
+    },
+    "expand": {
+      "path": "assets/ui/illustrated/expand.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 9
+    },
+    "search": {
+      "path": "assets/ui/illustrated/search.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 10
+    },
+    "history": {
+      "path": "assets/ui/illustrated/history.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 11
+    },
+    "science": {
+      "path": "assets/ui/illustrated/science.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 12
+    },
+    "biology": {
+      "path": "assets/ui/illustrated/biology.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 13
+    },
+    "music": {
+      "path": "assets/ui/illustrated/music.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 14
+    },
+    "profile": {
+      "path": "assets/ui/illustrated/profile.webp",
+      "source": "exec-4343dc32-8fa4-490d-84a2-83b1645dcc66.png",
+      "cell": 15
+    },
+    "coins": {
+      "path": "assets/ui/illustrated/coins.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 0
+    },
+    "historio": {
+      "path": "assets/ui/illustrated/historio.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 1
+    },
+    "care-meat": {
+      "path": "assets/ui/illustrated/care-meat.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 2
+    },
+    "care-water": {
+      "path": "assets/ui/illustrated/care-water.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 3
+    },
+    "care-sleep": {
+      "path": "assets/ui/illustrated/care-sleep.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 4
+    },
+    "market": {
+      "path": "assets/ui/illustrated/market.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 5
+    },
+    "pin": {
+      "path": "assets/ui/illustrated/pin.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 6
+    },
+    "paper": {
+      "path": "assets/ui/illustrated/paper.webp",
+      "source": "exec-cedba2f0-38c4-40b9-aefb-d34a9f264c5c.png",
+      "cell": 7
+    }
+  },
+  "pauseIllustration": "assets/ui/illustrated/pause-vignette.webp"
+}

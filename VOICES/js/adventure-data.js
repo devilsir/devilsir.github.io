@@ -282,7 +282,7 @@ V.AdventureData={
       "slot": "device",
       "unique": true,
       "icon": "device",
-      "description": "Um arquivo portátil de latão e vidro turquesa. Revela vestígios incompletos; exige fontes, contexto e escuta.",
+      "description": "Máscara ancestral de origem africana na ficção de VOICES, com penas coloridas, pintura geométrica e olhos turquesa. Revela vestígios incompletos; exige fontes, contexto e escuta.",
       "stats": {
         "knowledge": 5
       }
@@ -834,6 +834,6 @@ V.AdventureData={
 };
 for(const s of V.AdventureData.sources)if(!V.content.sources.some(x=>x.id===s.id))V.content.sources.push(s);
 V.content.characters.zambeto={name:'Zambeto',role:'Guardião da Vigília · personagem ficcional',accent:'#d8b165',quote:'Uma memória precisa de quem a escute. E de espaço para outra voz.'};
-V.content.characters.historiograph={name:'Historiógrafo Ancestral',role:'Dispositivo ficcional · vestígios e perguntas',accent:'#83cfbf',quote:'Mais um nome. Outra lembrança. Quanto ainda falta conhecer?'};
+V.content.characters.historiograph={name:'Historiógrafo Ancestral',role:'Máscara ancestral ficcional · vestígios e perguntas',accent:'#83cfbf',quote:'Mais um nome. Outra lembrança. Quanto ainda falta conhecer?'};
 for(const [en,pt,example,examplePt]of [['trace','vestígio','A trace can lead to a question.','Um vestígio pode levar a uma pergunta.'],['testimony','testemunho','This testimony offers one perspective.','Este testemunho apresenta uma perspectiva.'],['authorship','autoria','We check authorship and context.','Conferimos autoria e contexto.'],['credit','crédito; reconhecimento da contribuição','The programme gives credit to the team.','O programa reconhece a contribuição da equipe.'],['uncertainty','incerteza','We explain uncertainty in the record.','Explicamos a incerteza no registro.'],['archive','arquivo','The archive preserves sources and versions.','O arquivo preserva fontes e versões.'],['guard','guardar; vigiar','We guard the records together.','Vigiamos os registros juntos.']])if(!V.content.glossary.some(w=>w.en===en))V.content.glossary.push({en,pt,example,examplePt});
 })();
