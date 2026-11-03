@@ -1,6 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script>
+(function () {
+  if (typeof CanvasRenderingContext2D === "undefined" || typeof CanvasRenderingContext2D.prototype.roundRect === "function") return;
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radii) {
+    var values = Array.isArray(radii) ? radii.slice() : [radii === undefined ? 0 : radii];
+    if (values.length < 1 || values.length > 4) throw new RangeError("Invalid number of radii");
+    values = values.map(function (radius) {
+      var value = typeof radius === "number" ? radius : radius && typeof radius.x === "number" && typeof radius.y === "number" ? radius : null;
+      if (value === null || (typeof value === "number" ? value < 0 : value.x < 0 || value.y < 0)) throw new RangeError("Invalid corner radius");
+      return typeof value === "number" ? { x: value, y: value } : { x: value.x, y: value.y };
+    });
+    var corners = values.length === 1 ? [values[0], values[0], values[0], values[0]] : values.length === 2 ? [values[0], values[1], values[0], values[1]] : values.length === 3 ? [values[0], values[1], values[2], values[1]] : values;
+    corners = corners.map(function (r) { return { x: r.x, y: r.y }; });
+    if (width < 0) corners = [corners[1], corners[0], corners[3], corners[2]];
+    if (height < 0) corners = [corners[3], corners[2], corners[1], corners[0]];
+    var left = Math.min(x, x + width), right = Math.max(x, x + width);
+    var top = Math.min(y, y + height), bottom = Math.max(y, y + height);
+    var scale = Math.min(1, (right - left) / (corners[0].x + corners[1].x || 1), (right - left) / (corners[3].x + corners[2].x || 1), (bottom - top) / (corners[0].y + corners[3].y || 1), (bottom - top) / (corners[1].y + corners[2].y || 1));
+    corners.forEach(function (r) { r.x *= scale; r.y *= scale; });
+    var a = corners[0], b = corners[1], c = corners[2], d = corners[3];
+    this.moveTo(left + a.x, top);
+    this.lineTo(right - b.x, top);
+    this.bezierCurveTo(right - b.x * (1 - 0.5522847498), top, right, top + b.y * (1 - 0.5522847498), right, top + b.y);
+    this.lineTo(right, bottom - c.y);
+    this.bezierCurveTo(right, bottom - c.y * (1 - 0.5522847498), right - c.x * (1 - 0.5522847498), bottom, right - c.x, bottom);
+    this.lineTo(left + d.x, bottom);
+    this.bezierCurveTo(left + d.x * (1 - 0.5522847498), bottom, left, bottom - d.y * (1 - 0.5522847498), left, bottom - d.y);
+    this.lineTo(left, top + a.y);
+    this.bezierCurveTo(left, top + a.y * (1 - 0.5522847498), left + a.x * (1 - 0.5522847498), top, left + a.x, top);
+    this.closePath();
+  };
+})();
+</script>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171827"><meta name="description" content="Uma aventura sobre as histórias que merecem ser ouvidas. RPG educativo offline de exploração, memória e conhecimento.">
   <title>VOICES — Reboot the Story</title>
