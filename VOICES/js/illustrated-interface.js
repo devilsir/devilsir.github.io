@@ -43,7 +43,7 @@ V.CityMenus.icon=id=>I.canonical(id)?I.icon(id):icon(id);
 const enhance=V.Interface.enhanceToolbar.bind(V.Interface);V.Interface.enhanceToolbar=function(...args){const out=enhance(...args);I.toolbar();return out;};
 const cityToolbar=V.CityMenus.toolbar.bind(V.CityMenus);V.CityMenus.toolbar=function(...args){const out=cityToolbar(...args);I.toolbar();return out;};
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){const run=()=>{const out=pause(...args);I.pause();return out;},p=V.DuoPanels;if(p?.enabled())return p.withOwner(Math.max(0,p.owner(true)),run);return run();};
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await I.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),I.load()]);};
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const out=await init(...args);I.refresh();return out;};
 // Late menus insert their own markup; use the same illustrated set there too.
 let queued=false;new MutationObserver(changes=>{if(!changes.some(c=>c.addedNodes.length))return;if(queued)return;queued=true;queueMicrotask(()=>{queued=false;I.refresh();});}).observe(document.body,{childList:true,subtree:true});

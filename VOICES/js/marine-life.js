@@ -118,7 +118,7 @@
     record(i){if(i.recorded||i.state!==V.state||!i.can||i.time<2.4||!i.button.isConnected||!this.images[i.s.sheet]?.naturalWidth)return false;const s=this.ensure(),list=s.wildlifeReaders[i.owner];if(!list.includes(i.s.id))list.push(i.s.id);i.recorded=true;V.Living.event('story-marine',i.s.id);V.PixWorldVocabulary.learn(this.words(i.s),'Mirante · '+W.maps[i.map].name+' · '+i.s.name);V.Save.log('observação marinha',i.s.name);V.Save.save();V.Audio.sfx('observe');return true;}
   };
   B.vocabulary();
-  const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await assets(...args);await B.load();return this.errors;};
+  const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([assets(...args),B.load()]);return this.errors;};
   const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){const name=/assets\/marine-life\/(marine-(?:brazil|cape|fish))\./.exec(key);return name?name[1]:group(key);};
   const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m),region=B.region(m);if(region)out.push('marine-brazil','marine-fish');if(region==='sa')out.push('marine-cape');return[...new Set(out)];};
   const init=W.init.bind(W);W.init=function(...args){const out=init(...args);B.seed();return out;};

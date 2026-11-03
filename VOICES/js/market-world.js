@@ -46,7 +46,7 @@ const landmark=V.Atlas.landmark.bind(V.Atlas);V.Atlas.landmark=function(c,o,m){i
 const icons=P.icon.bind(P);P.icon=function(id,size=40){return M.icon(id,size)||icons(id,size);};
 for(const[id,d]of Object.entries(D.items))if(d.marketDecor)V.Homestead.catalog.push({id,name:d.name,family:'market-items',prop:(d.region==='sa'?16:0)+d.frame,price:d.price,word:d.region==='sa'?'market':'basket',size:1.4});
 const prop=C.prop.bind(C);C.prop=function(c,family,index,x,y,size,...rest){if(family==='market-items')return M.drawItem(c,index>=16?'sa':'br',index%16,x,y,size);return prop(c,family,index,x,y,size,...rest);};
-const loadAssets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await loadAssets(...args);await M.load();};
+const loadAssets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([loadAssets(...args),M.load()]);};
 const assetGroup=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){if(key.startsWith('assets/markets/'))return'markets';return assetGroup(key);};
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.marketRegion||m?.objects.some(o=>o.scene?.family==='market-items')||m?.decor.some(o=>o.family==='market-items'))out.push('markets');return out;};
 const preview=S.preview.bind(S);S.preview=function(id,design){if(id==='cape-market'){const m=M.buildCape(design);M.install(m);return m;}const m=preview(id,design);if(id==='market')M.install(m);return m;};

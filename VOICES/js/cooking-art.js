@@ -22,6 +22,6 @@ const A=V.CookingArt={images:{},names:['prep','batter','heat','extras','sweets',
  dish(id,size=48){const item=V.AdventureData.items[id];if(!item?.cookingItem)return null;const frame=item.cookingFrame??item.frame;return `<span class="cooking-dish-art adv-icon" aria-hidden="true" style="--dish-size:${size}px;--dish-x:${frame%4};--dish-y:${Math.floor(frame/4)};background-image:url('assets/cooking/dishes.webp?v=20261101-cook1')"></span>`;}
 };
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){if(key.startsWith('assets/cooking/'))return /\/world\./.test(key)?'cooking-world':'cooking';return group(key);};
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await A.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),A.load()]);};
 const icon=V.Progress.icon.bind(V.Progress);V.Progress.icon=function(id,size){return A.dish(id,size)||icon(id,size);};
 })();

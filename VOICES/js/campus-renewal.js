@@ -54,7 +54,7 @@ const A=V.CampusRenewal={definitions,images:{},
  render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.fillStyle='#385846';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,-cam.x,-cam.y);for(const row of [...m.objects.map(o=>({y:o.y,o})),{y:V.Player.data.y,player:true}].sort((a,b)=>a.y-b.y)){if(row.player)V.Player.render(c);else if(!this.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}V.WorldSigns?.draw(c,m.name.replace('Universidade · ',''),m.width*T/2-cam.x,69-cam.y,{maxWidth:480});c.restore();W.drawMiniMap();}
 };
 A.setup();
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await A.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),A.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>/assets\/expansion\/campus-(props|activities)\./.test(key)?'campus-renewal':group(key);
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.campusRenewal||m?.id==='university')out.push('campus-renewal');if(m?.campusRenewal)out.push('culinary-campus');return[...new Set(out)];};
 const init=W.init.bind(W);W.init=function(...args){const out=init(...args);for(const id of Object.keys(definitions))W.maps[id]=A.build(id);if(W.maps.university)A.university(W.maps.university);V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();return out;};

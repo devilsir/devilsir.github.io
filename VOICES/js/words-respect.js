@@ -53,7 +53,7 @@ const R=V.WordsRespect={id:ID,data:D,clock:0,image:null,
  },
  render(c){const m=W.current,cam=W.camera;if(!m.cache)this.floor(m);c.save();c.imageSmoothingEnabled=false;c.fillStyle='#34503e';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));const rows=m.objects.map(o=>({kind:'object',y:o.y,o})).concat(A.geometry(m.design).walls.map(o=>({kind:'wall',y:Math.max(o.a[1],o.b[1]),o})),[{kind:'player',y:V.Player.data.y}]).sort((a,b)=>a.y-b.y);for(const row of rows){if(row.kind==='wall')A.drawWall(c,m,row.o,cam);else if(row.kind==='player')V.Player.render(c);else if(!this.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}if(V.PixPresence?.following())V.PixPresence.draw(c,V.Player.data,cam);if(W.transition>0){c.globalAlpha=W.transition;c.fillStyle='#254c3b';c.fillRect(0,0,c.canvas.width,c.canvas.height);}c.restore();W.drawMiniMap();}
 };
-const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await assets(...args);await R.load();};
+const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([assets(...args),R.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key.startsWith('assets/words-respect/')?'words-respect':group(key);
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=m=>[...new Set([...groups(m),...(m?.wordsRespect?['words-respect']:[])])];
 const init=W.init.bind(W);W.init=function(...args){const r=init(...args);R.seed();return r;};

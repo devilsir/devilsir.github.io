@@ -94,7 +94,7 @@ const setup=N.setup.bind(N);N.setup=function(...args){const saved=S.saved?.[SAV]
 const build=N.build.bind(N);N.build=function(...args){return B.build(build(...args));};
 const ground=N.ground.bind(N);N.ground=m=>m.livingBiome?B.ground(m):ground(m);
 const draw=N.draw.bind(N);N.draw=(c,o,cam)=>B.draw(c,o,cam)||draw(c,o,cam);
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await B.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),B.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>/\/(cerrado-fauna|savanna-fauna|cerrado-understory|savanna-landscape)\./.test(key)?'living-biomes':group(key);
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.livingBiome||m?.animalMuseum)out.push('living-biomes');return [...new Set(out)];};
 // The animated atlas is also used in the field guide, not only on the map.

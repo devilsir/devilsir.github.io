@@ -8,5 +8,5 @@ const A=V.NatureArt={images:{},names:['south-africa-a','south-africa-b','brazil-
  ensure(group='world'){return V.MapAssets.ensure([group==='food'?'nature-food':'nature'],'Preparando os novos cenários');}
 };
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){if(key.startsWith('assets/nature/'))return /\/(?:fruits|new-dishes|new-prep)\./.test(key)?'nature-food':'nature';return group(key);};
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await A.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),A.load()]);};
 })();

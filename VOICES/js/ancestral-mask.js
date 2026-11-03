@@ -16,10 +16,15 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:
  },
  image(kind,variant=0){return this.images[kind+(variant===1?'2':'')];},
  path(kind,variant=this.variant()){return variants[variant===1?1:0][kind]+'?v='+version;},
+ publish(kind,index){
+  const im=this.image(kind,index);if(!im?.naturalWidth)return;
+  if(kind==='icon'){V.IllustratedInterface.images[index?'historio-p2':'historio']=im;V.Assets.images[index?'item-device-p2':'item-device']=im;}
+  if(kind==='portrait'){V.Assets.images[index?'historiograph-p2':'historiograph']=im;if(!index)V.Assets.images['historiograph-v2']=im;}
+ },
  load(){
   return Promise.all(variants.flatMap((skin,index)=>['atlas','portrait','icon'].map(kind=>[kind,index])).map(([kind,index])=>new Promise(resolve=>{
    const im=V.Assets.image();this.images[kind+(index?'2':'')]=im;
-   im.onload=()=>{if(kind==='icon'){V.IllustratedInterface.images[index?'historio-p2':'historio']=im;V.Assets.images[index?'item-device-p2':'item-device']=im;}if(kind==='portrait'){V.Assets.images[index?'historiograph-p2':'historiograph']=im;if(!index)V.Assets.images['historiograph-v2']=im;}resolve();};
+   im.onload=()=>{this.publish(kind,index);resolve();};
    im.onerror=resolve;im.src=this.path(kind,index);V.AssetLoader.register(im,resolve);
   })));
  },
@@ -153,7 +158,7 @@ Object.assign(V.AdventureData.items.historiograph,{description:'Máscara ancestr
 const progressIcon=V.Progress.icon.bind(V.Progress);V.Progress.icon=(id,size=40)=>id==='historiograph'?'<img class="adv-icon" src="'+M.path('portrait')+'" alt="Máscara do Historiógrafo Ancestral" width="'+size+'" height="'+size+'">':progressIcon(id,size);
 const path=V.IllustratedInterface.path.bind(V.IllustratedInterface);V.IllustratedInterface.path=id=>V.IllustratedInterface.canonical(id)==='historio'?M.path('icon'):path(id);
 const refresh=V.IllustratedInterface.refresh.bind(V.IllustratedInterface);V.IllustratedInterface.refresh=function(...args){const out=refresh(...args);M.retrofit();return out;};M.retrofit();
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await M.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),M.load()]);for(let index=0;index<variants.length;index++)for(const kind of ['portrait','icon'])M.publish(kind,index);};
 // Shared player scope preserves depth and each companion's own state in duo.
 const render=V.Player.render.bind(V.Player);V.Player.render=function(c){if(!M.visible()||!this.data)return render(c);const p=M.point(this.data),cam=W.camera;if(p.back)M.draw(c,p,cam);const out=render(c);if(!p.back)M.draw(c,p,cam);return out;};
 const pulse=V.Story.pulse.bind(V.Story);V.Story.pulse=function(...args){const out=pulse(...args);if(V.Story.pulseTime>0)M.activate();return out;};

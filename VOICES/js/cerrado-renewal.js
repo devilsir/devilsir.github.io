@@ -33,6 +33,6 @@ D.sources.cerradoFauna={title:'Embrapa · Mamíferos do Cerrado',url:'https://ww
 const build=N.build.bind(N);N.build=function(...args){const m=build(...args);return m.id===ID?R.build(m):m;};
 const ground=N.ground.bind(N);N.ground=m=>m.id===ID?R.ground(m):ground(m);
 const draw=N.draw.bind(N);N.draw=(c,o,cam)=>R.draw(c,o,cam)||draw(c,o,cam);
-const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await load(...args);await R.load();};
+const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),R.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key.includes('/cerrado-landscape.')?'nature':group(key);
 })();

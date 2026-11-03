@@ -70,7 +70,7 @@ const draw=M.draw.bind(M);M.draw=(c,o,cam)=>G.draw(c,o,cam)||draw(c,o,cam);
 const dish=M.dish.bind(M);M.dish=function(c,entry,x,y,w=50,h=37.5){const index=V.CookingData.recipes.indexOf(entry.recipe);return index>=0&&index<21&&G.artData['gallery-dishes'].frames[index]&&G.art(c,'gallery-dishes',index,x,y,w,h)||dish(c,entry,x,y,w,h);};
 for(const key of ['catalog','exhibit','about']){const method=M[key].bind(M);M[key]=function(...args){const result=method(...args);G.skin();return result;};}
 const seed=M.seed.bind(M);M.seed=function(...args){const result=seed(...args);G.anchor();return result;};
-const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await assets(...args);await G.load();};
+const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([assets(...args),G.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key.startsWith('assets/food-museum/')?'food-gallery':group(key);
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);return[...new Set(m?.foodGallery?[...out.filter(g=>!['nature','nature-food','cooking'].includes(g)),'food-gallery']:out)];};
 const interactables=W.interactables.bind(W);W.interactables=(...args)=>interactables(...args).filter(o=>!o.galleryDecor);

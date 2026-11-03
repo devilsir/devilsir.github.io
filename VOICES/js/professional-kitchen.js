@@ -49,6 +49,7 @@ const P=V.ProfessionalKitchen={images:{},uniforms,washing:new Map(),
 // The existing interior loader is requested by Assets.load. Keep its public
 // aliases while replacing the retired domestic kitchen sheet with steel assets.
 I.load=()=>P.load();
+const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){const out=await assets(...args);for(const[key,meta]of Object.entries(uniforms))V.Assets.images[key+'-portrait']=V.Assets.images[meta.base+'-portrait'];return out;};
 const build=U.build.bind(U);U.build=function(...args){return P.decorate(build(...args));};
 const draw=U.draw.bind(U);U.draw=function(c,o,cam){if(P.drawUniform(c,o,cam)||P.drawDoor(c,o,cam))return true;const out=draw(c,o,cam);P.drawWater(c,o,cam);return out;};
 const shop=U.shop.bind(U);U.shop=function(...args){return{...shop(...args),sprite:'chef-lia'};};

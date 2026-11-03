@@ -61,7 +61,7 @@ const build=U.build.bind(U);U.build=(id,d=C.layouts[id])=>I.ids.includes(id)?I.b
 const ground=U.ground.bind(U);U.ground=m=>m.culinaryInteriors?I.ground(m):ground(m);
 const draw=U.draw.bind(U);U.draw=(c,o,cam)=>I.draw(c,o,cam)||draw(c,o,cam);
 const render=U.render.bind(U);U.render=c=>W.current?.culinaryInteriors?I.render(c):render(c);
-const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await assets(...args);await I.load();};
+const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([assets(...args),I.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){return /assets\/cooking\/kitchen-interiors\./.test(key)?'culinary-kitchen':/assets\/cooking\/campus-interiors\./.test(key)?'culinary-campus':group(key);};
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.culinaryInteriors)out.push(m.id==='kitchen'?'culinary-kitchen':'culinary-campus');return[...new Set(out)];};
 const interactables=W.interactables.bind(W);W.interactables=(...args)=>interactables(...args).filter(o=>!o.interiorDecor);
