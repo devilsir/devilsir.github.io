@@ -1,0 +1,30 @@
+{
+  "file": "assets/adventure/historiograph-mask-p2-atlas.webp",
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "cell": 192,
+  "frames": 32,
+  "player": 2,
+  "style": "pixel art",
+  "portrait": "assets/adventure/historiograph-mask-p2.webp",
+  "expressions": "assets/adventure/historiograph-mask-p2-portrait.webp",
+  "portraitExpressions": [
+    "neutral",
+    "speaking",
+    "curious",
+    "happy"
+  ],
+  "icon": "assets/ui/illustrated/historio-mask-p2.webp",
+  "source": "historiograph-mask-p2-source.png",
+  "reference": "Original fictional feathered memory-mask companion",
+  "generation": "assets/adventure/historiograph-mask-p2-generation.json"
+}

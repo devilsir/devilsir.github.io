@@ -1,0 +1,265 @@
+{
+  "mode": "imagegen built-in",
+  "date": "2026-11-03",
+  "jobs": [
+    {
+      "id": "nia",
+      "kind": "base",
+      "prompt": "Use case: style-transfer. Production RGBA game sprite atlas for VOICES. Image 1 is the exact EXISTING pose-layout / identity target. Image 2 is the STYLE reference: Mateus, the worker NPC. Redraw the target in Mateus's polished hand-painted 2D adventure chibi style: larger expressive almond eyes, round friendly face, detailed coily hair, warm skin shading, substantial shoes and clothes, clean dark illustrated contour, softly shaded clean color clusters, high-resolution crisp edges. Avoid the tiny old pixel art aesthetic. Keep the same character identity, outfit and color palette, no job uniform or high-visibility vest from Mateus. No new background, no floor, no cast shadow, no frame, no text, no labels, no black or green tiles. TRUE transparent alpha background and gutters. Every pose must be fully inside its own cell with 10% empty padding. Keep body scale and foot baseline consistent throughout, don't change character between cells. Nia: dark brown skin, round rich dark coily afro, purple open jacket over pale shirt with a small yellow star, dark purple trousers, purple/white sneakers, no glasses. EXACTLY FOUR equal COLUMNS and SIX equal ROWS, 24 full-body frames. Preserve the target sheet's layout: row1 four walking-down/front frames, row2 walking left, row3 walking right, row4 walking away/back, row5 four attentive/reading/interaction gestures, row6 four happy greeting/celebration gestures. Genuine left-facing and right-facing drawings, back row has back of hair with no face. Front/side neutral mouth between frames, friendly adventure character, no props except the original little notebook in interaction row. Use a tall 2:3 sheet, ideally 1024x1536.",
+      "refs": [
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/assets/characters/nia.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-7ebea252-0953-4ad1-9184-7ab3c3301cca.png"
+    },
+    {
+      "id": "leo",
+      "kind": "base",
+      "prompt": "Use case: style-transfer. Production RGBA game sprite atlas for VOICES. Image 1 is the exact EXISTING pose-layout / identity target. Image 2 is the STYLE reference: Mateus, the worker NPC. Redraw the target in Mateus's polished hand-painted 2D adventure chibi style: larger expressive almond eyes, round friendly face, detailed coily hair, warm skin shading, substantial shoes and clothes, clean dark illustrated contour, softly shaded clean color clusters, high-resolution crisp edges. Avoid the tiny old pixel art aesthetic. Keep the same character identity, outfit and color palette, no job uniform or high-visibility vest from Mateus. No new background, no floor, no cast shadow, no frame, no text, no labels, no black or green tiles. TRUE transparent alpha background and gutters. Every pose must be fully inside its own cell with 10% empty padding. Keep body scale and foot baseline consistent throughout, don't change character between cells. Leo: warm medium-brown skin, short brown hair, rectangular black glasses, yellow open jacket over cream shirt, muted navy trousers, white sneakers. EXACTLY FOUR equal COLUMNS and SIX equal ROWS, 24 full-body frames. Preserve the target sheet's layout: row1 four walking-down/front frames, row2 walking left, row3 walking right, row4 walking away/back, row5 four attentive/reading/interaction gestures, row6 four happy greeting/celebration gestures. Genuine left-facing and right-facing drawings, back row has back of hair with no face. Front/side neutral mouth between frames, friendly adventure character, no props except the original little notebook in interaction row. Use a tall 2:3 sheet, ideally 1024x1536.",
+      "refs": [
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/assets/characters/leo.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dc1bd090-c163-41c8-83fb-30a2d98eccb6.png"
+    },
+    {
+      "id": "taina",
+      "kind": "base",
+      "prompt": "Use case: style-transfer. Production RGBA game sprite atlas for VOICES. Image 1 is the exact EXISTING pose-layout / identity target. Image 2 is the STYLE reference: Mateus, the worker NPC. Redraw the target in Mateus's polished hand-painted 2D adventure chibi style: larger expressive almond eyes, round friendly face, detailed coily hair, warm skin shading, substantial shoes and clothes, clean dark illustrated contour, softly shaded clean color clusters, high-resolution crisp edges. Avoid the tiny old pixel art aesthetic. Keep the same character identity, outfit and color palette, no job uniform or high-visibility vest from Mateus. No new background, no floor, no cast shadow, no frame, no text, no labels, no black or green tiles. TRUE transparent alpha background and gutters. Every pose must be fully inside its own cell with 10% empty padding. Keep body scale and foot baseline consistent throughout, don't change character between cells. Tainá: deep warm brown skin, long dark locs with a side part, teal/turquoise jacket over dark shirt, dark blue trousers, teal/white sneakers. EXACTLY FOUR equal COLUMNS and SIX equal ROWS, 24 full-body frames. Preserve the target sheet's layout: row1 four walking-down/front frames, row2 walking left, row3 walking right, row4 walking away/back, row5 four attentive/reading/interaction gestures, row6 four happy greeting/celebration gestures. Genuine left-facing and right-facing drawings, back row has back of hair with no face. Front/side neutral mouth between frames, friendly adventure character, no props except the original little notebook in interaction row. Use a tall 2:3 sheet, ideally 1024x1536.",
+      "refs": [
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/assets/characters/taina.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dd29c40b-056c-4fbd-8b08-d270236c8ea9.png"
+    },
+    {
+      "id": "sol",
+      "kind": "base",
+      "prompt": "Use case: style-transfer. Production RGBA game sprite atlas for VOICES. Image 1 is the exact EXISTING pose-layout / identity target. Image 2 is the STYLE reference: Mateus, the worker NPC. Redraw the target in Mateus's polished hand-painted 2D adventure chibi style: larger expressive almond eyes, round friendly face, detailed coily hair, warm skin shading, substantial shoes and clothes, clean dark illustrated contour, softly shaded clean color clusters, high-resolution crisp edges. Avoid the tiny old pixel art aesthetic. Keep the same character identity, outfit and color palette, no job uniform or high-visibility vest from Mateus. No new background, no floor, no cast shadow, no frame, no text, no labels, no black or green tiles. TRUE transparent alpha background and gutters. Every pose must be fully inside its own cell with 10% empty padding. Keep body scale and foot baseline consistent throughout, don't change character between cells. Sol: dark brown skin, short dark hair, vivid pink over-ear headphones, pink open jacket over pale shirt, dark charcoal trousers, pink/white sneakers. EXACTLY FOUR equal COLUMNS and SIX equal ROWS, 24 full-body frames. Preserve the target sheet's layout: row1 four walking-down/front frames, row2 walking left, row3 walking right, row4 walking away/back, row5 four attentive/reading/interaction gestures, row6 four happy greeting/celebration gestures. Genuine left-facing and right-facing drawings, back row has back of hair with no face. Front/side neutral mouth between frames, friendly adventure character, no props except the original little notebook in interaction row. Use a tall 2:3 sheet, ideally 1024x1536.",
+      "refs": [
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/assets/characters/sol.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-a536c1ed-3d40-4b70-8381-6cedcd91954a.png"
+    },
+    {
+      "id": "historiograph",
+      "kind": "mask",
+      "prompt": "Use case: style-transfer. Edit and expand the attached pixel-art mask reference into a production transparent RGBA companion atlas. Match the EXACT pixel-art look, carved face design and saturated colors of input: red/orange tapered wooden face, turquoise almond eyes, black outlines, red lips, green/yellow triangular cheek paint, white bead dots, gold hoop earrings, red/gold forehead band with turquoise jewel, FIVE stepped pixel feathers in purple/gold/yellow/orange/magenta. Pixel art with deliberate visible square clusters, stepped outlines, NO smooth gradients, NO blurred edges, NO painterly shading. Keep the same face proportions. This is a fictional fantasy companion. Replace the BLACK backdrop with true transparent alpha. EXACTLY FOUR COLUMNS and EIGHT ROWS, 32 equal square cells, tall 1:2 sheet: row1 FRONT idle blink open/half/closed/reopening; row2 LEFT three-quarter same blink; row3 RIGHT three-quarter same blink; row4 FRONT magical pulse normal/brighter eyes/brightest/settle, no large external glow; row5 FRONT talking lips apart/open/rounded/settle; row6 FRONT curious raised brow/look left/look right/relaxed; row7 FRONT surprised eyes widen/small O mouth/recovery/settle; row8 FRONT happy smile/bigger smile/happy closed eyes/settle. Stable center and identical scale in all cells. Fully show all feathers and earrings with transparent margins in every cell, no overlap. NO new objects, text, floor, shadow or tile. The final game will downscale with nearest-neighbor pixels.",
+      "refs": [
+        "C:/Users/PICHAU/AppData/Local/Temp/codex-clipboard-10655840-7252-4f3e-8b23-7b963b01287d.png"
+      ],
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-c35f1d7d-2c89-4af8-ba08-d2c0c9c6b805.png"
+    },
+    {
+      "id": "nia",
+      "kind": "actions",
+      "cols": 8,
+      "rows": 6,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Nia: dark brown skin, round rich dark coily afro, purple open jacket over pale shirt with a small yellow star, dark purple trousers, purple/white sneakers, no glasses. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 6 ROWS (48 square cells). Row1 idle breathing and blink; row2 ready stance; row3 short notebook/energy swipe attack windup/contact/recovery; row4 casting small turquoise/amber knowledge magic; row5 guarding behind small turquoise shield; row6 healing/celebrating with restrained golden sparkles. Eight coherent animation stages per row. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-7ebea252-0953-4ad1-9184-7ab3c3301cca.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/nia-actions.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-6c6bd7d6-7ea0-4f3b-bf9e-a0ec03ec8d42.png"
+    },
+    {
+      "id": "nia",
+      "kind": "motion",
+      "cols": 8,
+      "rows": 4,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Nia: dark brown skin, round rich dark coily afro, purple open jacket over pale shirt with a small yellow star, dark purple trousers, purple/white sneakers, no glasses. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 4 ROWS (32 square cells). Row1 a complete 8-step walk cycle toward screen-right in three-quarter view, not front; row2 8-step walking AWAY back view, no face; row3 8-stage friendly dancing loop; row4 8-stage turning around/spinning loop with front, side, back, side and front poses. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-7ebea252-0953-4ad1-9184-7ab3c3301cca.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/nia-motion.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-f88bc645-6f6d-48f1-b5b8-4af135d40fc9.png"
+    },
+    {
+      "id": "nia",
+      "kind": "daily",
+      "cols": 6,
+      "rows": 8,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Nia: dark brown skin, round rich dark coily afro, purple open jacket over pale shirt with a small yellow star, dark purple trousers, purple/white sneakers, no glasses. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 8 ROWS (48 square cells). Row1 reading an open book; row2 lying horizontally asleep, WITHOUT bed; row3 thinking with hand by chin; row4 swimming breast stroke horizontally, fully clothed game sprite with tiny blue water swirls; row5 sitting upright WITHOUT a chair, feet and bent knees visible; row6 singing into small handheld microphone; row7 fishing with fishing rod and red float; row8 dancing. SIX coherent stages per activity. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-7ebea252-0953-4ad1-9184-7ab3c3301cca.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/nia-daily.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-2e8b7e83-45e4-484b-9911-295bf62ff20e.png"
+    },
+    {
+      "id": "nia",
+      "kind": "music",
+      "cols": 6,
+      "rows": 16,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Nia: dark brown skin, round rich dark coily afro, purple open jacket over pale shirt with a small yellow star, dark purple trousers, purple/white sneakers, no glasses. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 16 ROWS (96 square cells). SIX animation stages per row. The same character plays ONE instrument each row: 1 drum kit, 2 saxophone, 3 electric guitar, 4 acoustic guitar, 5 upright piano with visible hands/keys, 6 portable keyboard, 7 trumpet, 8 bass guitar, 9 berimbau with gourd and thin bow, 10 atabaque tall hand drum, 11 agogo double bells with beater, 12 shekere beaded gourd, 13 djembe goblet drum, 14 ilu hand drum, 15 reco-reco scraper, 16 cuica friction drum. Proper playing posture and hands touching the instrument, visible face/outfit, small readable instruments inside cell, no stage. Keep exactly these 16 rows. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-7ebea252-0953-4ad1-9184-7ab3c3301cca.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/nia-music.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-115c64c0-2b05-49e5-9706-cd5d12781b4c.png"
+    },
+    {
+      "id": "leo",
+      "kind": "actions",
+      "cols": 8,
+      "rows": 6,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Leo: warm medium-brown skin, short brown hair, rectangular black glasses, yellow open jacket over cream shirt, muted navy trousers, white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 6 ROWS (48 square cells). Row1 idle breathing and blink; row2 ready stance; row3 short notebook/energy swipe attack windup/contact/recovery; row4 casting small turquoise/amber knowledge magic; row5 guarding behind small turquoise shield; row6 healing/celebrating with restrained golden sparkles. Eight coherent animation stages per row. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dc1bd090-c163-41c8-83fb-30a2d98eccb6.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/leo-actions.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-4057aac1-b4d2-4d71-900b-6916bf3e8577.png"
+    },
+    {
+      "id": "leo",
+      "kind": "motion",
+      "cols": 8,
+      "rows": 4,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Leo: warm medium-brown skin, short brown hair, rectangular black glasses, yellow open jacket over cream shirt, muted navy trousers, white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 4 ROWS (32 square cells). Row1 a complete 8-step walk cycle toward screen-right in three-quarter view, not front; row2 8-step walking AWAY back view, no face; row3 8-stage friendly dancing loop; row4 8-stage turning around/spinning loop with front, side, back, side and front poses. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dc1bd090-c163-41c8-83fb-30a2d98eccb6.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/leo-motion.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-80c8fac7-6621-499e-bbd6-319fe94db351.png"
+    },
+    {
+      "id": "leo",
+      "kind": "daily",
+      "cols": 6,
+      "rows": 8,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Leo: warm medium-brown skin, short brown hair, rectangular black glasses, yellow open jacket over cream shirt, muted navy trousers, white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 8 ROWS (48 square cells). Row1 reading an open book; row2 lying horizontally asleep, WITHOUT bed; row3 thinking with hand by chin; row4 swimming breast stroke horizontally, fully clothed game sprite with tiny blue water swirls; row5 sitting upright WITHOUT a chair, feet and bent knees visible; row6 singing into small handheld microphone; row7 fishing with fishing rod and red float; row8 dancing. SIX coherent stages per activity. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dc1bd090-c163-41c8-83fb-30a2d98eccb6.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/leo-daily.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-e4d31a1b-855f-46a9-939d-09263f5ea6b0.png"
+    },
+    {
+      "id": "leo",
+      "kind": "music",
+      "cols": 6,
+      "rows": 16,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Leo: warm medium-brown skin, short brown hair, rectangular black glasses, yellow open jacket over cream shirt, muted navy trousers, white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 16 ROWS (96 square cells). SIX animation stages per row. The same character plays ONE instrument each row: 1 drum kit, 2 saxophone, 3 electric guitar, 4 acoustic guitar, 5 upright piano with visible hands/keys, 6 portable keyboard, 7 trumpet, 8 bass guitar, 9 berimbau with gourd and thin bow, 10 atabaque tall hand drum, 11 agogo double bells with beater, 12 shekere beaded gourd, 13 djembe goblet drum, 14 ilu hand drum, 15 reco-reco scraper, 16 cuica friction drum. Proper playing posture and hands touching the instrument, visible face/outfit, small readable instruments inside cell, no stage. Keep exactly these 16 rows. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dc1bd090-c163-41c8-83fb-30a2d98eccb6.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/leo-music.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-e87aaa7f-9271-4baf-a405-2cebf62e66c9.png"
+    },
+    {
+      "id": "taina",
+      "kind": "actions",
+      "cols": 8,
+      "rows": 6,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Tainá: deep warm brown skin, long dark locs with a side part, teal/turquoise jacket over dark shirt, dark blue trousers, teal/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 6 ROWS (48 square cells). Row1 idle breathing and blink; row2 ready stance; row3 short notebook/energy swipe attack windup/contact/recovery; row4 casting small turquoise/amber knowledge magic; row5 guarding behind small turquoise shield; row6 healing/celebrating with restrained golden sparkles. Eight coherent animation stages per row. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dd29c40b-056c-4fbd-8b08-d270236c8ea9.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/taina-actions.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-93dfd3d8-916d-417f-9218-9f07a501642a.png"
+    },
+    {
+      "id": "taina",
+      "kind": "motion",
+      "cols": 8,
+      "rows": 4,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Tainá: deep warm brown skin, long dark locs with a side part, teal/turquoise jacket over dark shirt, dark blue trousers, teal/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 4 ROWS (32 square cells). Row1 a complete 8-step walk cycle toward screen-right in three-quarter view, not front; row2 8-step walking AWAY back view, no face; row3 8-stage friendly dancing loop; row4 8-stage turning around/spinning loop with front, side, back, side and front poses. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dd29c40b-056c-4fbd-8b08-d270236c8ea9.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/taina-motion.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-47dc6451-5e7f-4195-bc0c-0863b6389b5f.png"
+    },
+    {
+      "id": "taina",
+      "kind": "daily",
+      "cols": 6,
+      "rows": 8,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Tainá: deep warm brown skin, long dark locs with a side part, teal/turquoise jacket over dark shirt, dark blue trousers, teal/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 8 ROWS (48 square cells). Row1 reading an open book; row2 lying horizontally asleep, WITHOUT bed; row3 thinking with hand by chin; row4 swimming breast stroke horizontally, fully clothed game sprite with tiny blue water swirls; row5 sitting upright WITHOUT a chair, feet and bent knees visible; row6 singing into small handheld microphone; row7 fishing with fishing rod and red float; row8 dancing. SIX coherent stages per activity. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dd29c40b-056c-4fbd-8b08-d270236c8ea9.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/taina-daily.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-5b2a7b40-095c-4d84-a192-42600d064dba.png"
+    },
+    {
+      "id": "taina",
+      "kind": "music",
+      "cols": 6,
+      "rows": 16,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Tainá: deep warm brown skin, long dark locs with a side part, teal/turquoise jacket over dark shirt, dark blue trousers, teal/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 16 ROWS (96 square cells). SIX animation stages per row. The same character plays ONE instrument each row: 1 drum kit, 2 saxophone, 3 electric guitar, 4 acoustic guitar, 5 upright piano with visible hands/keys, 6 portable keyboard, 7 trumpet, 8 bass guitar, 9 berimbau with gourd and thin bow, 10 atabaque tall hand drum, 11 agogo double bells with beater, 12 shekere beaded gourd, 13 djembe goblet drum, 14 ilu hand drum, 15 reco-reco scraper, 16 cuica friction drum. Proper playing posture and hands touching the instrument, visible face/outfit, small readable instruments inside cell, no stage. Keep exactly these 16 rows. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-dd29c40b-056c-4fbd-8b08-d270236c8ea9.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/taina-music.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-6fd2eca4-beb8-44bf-a62f-1084ccd6403d.png"
+    },
+    {
+      "id": "sol",
+      "kind": "actions",
+      "cols": 8,
+      "rows": 6,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Sol: dark brown skin, short dark hair, vivid pink over-ear headphones, pink open jacket over pale shirt, dark charcoal trousers, pink/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 6 ROWS (48 square cells). Row1 idle breathing and blink; row2 ready stance; row3 short notebook/energy swipe attack windup/contact/recovery; row4 casting small turquoise/amber knowledge magic; row5 guarding behind small turquoise shield; row6 healing/celebrating with restrained golden sparkles. Eight coherent animation stages per row. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-a536c1ed-3d40-4b70-8381-6cedcd91954a.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/sol-actions.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-2c90c622-e8e2-4f69-ad7d-c1dec0791939.png"
+    },
+    {
+      "id": "sol",
+      "kind": "motion",
+      "cols": 8,
+      "rows": 4,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Sol: dark brown skin, short dark hair, vivid pink over-ear headphones, pink open jacket over pale shirt, dark charcoal trousers, pink/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 8 COLUMNS x 4 ROWS (32 square cells). Row1 a complete 8-step walk cycle toward screen-right in three-quarter view, not front; row2 8-step walking AWAY back view, no face; row3 8-stage friendly dancing loop; row4 8-stage turning around/spinning loop with front, side, back, side and front poses. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-a536c1ed-3d40-4b70-8381-6cedcd91954a.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/city/sol-motion.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-81e02144-c1d3-44d2-9991-846a8ceceb66.png",
+      "cleanupSource": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-497f9b28-9bcd-4fc7-824a-caff49226ac9.png",
+      "cleanupPrompt": "Use case: background-extraction. The input is a finished production sprite atlas, EXACTLY 8 columns by 4 rows (32 Sol frames). REMOVE ONLY the entire white/gray backdrop and every floor shadow/halo, making genuine transparent RGBA alpha=0 between the sprites, including all cell margins. Preserve all 32 character drawings EXACTLY in their positions, same scale, grid registration, face, dark brown skin, coily hair, pink headphones, pink jacket, charcoal trousers, pink/white sneakers. Preserve every pose and outfit pixel; no new text, no new objects, no redesign, no extra cells. The transparent regions must be empty, not a checkerboard or white image. Keep 2:1 atlas aspect and all 32 separate cells. This background cleanup will be used directly in a game; no semitransparent white rectangle around any figure."
+    },
+    {
+      "id": "sol",
+      "kind": "daily",
+      "cols": 6,
+      "rows": 8,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Sol: dark brown skin, short dark hair, vivid pink over-ear headphones, pink open jacket over pale shirt, dark charcoal trousers, pink/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 8 ROWS (48 square cells). Row1 reading an open book; row2 lying horizontally asleep, WITHOUT bed; row3 thinking with hand by chin; row4 swimming breast stroke horizontally, fully clothed game sprite with tiny blue water swirls; row5 sitting upright WITHOUT a chair, feet and bent knees visible; row6 singing into small handheld microphone; row7 fishing with fishing rod and red float; row8 dancing. SIX coherent stages per activity. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-a536c1ed-3d40-4b70-8381-6cedcd91954a.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/sol-daily.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-d1f2e4c7-e906-4601-bd34-e946da43d9bf.png"
+    },
+    {
+      "id": "sol",
+      "kind": "music",
+      "cols": 6,
+      "rows": 16,
+      "prompt": "Use case: style-transfer. Expand the SAME character from image1 (new polished playable sprite) into an additional animation atlas. Image2 Mateus is supporting style reference. Sol: dark brown skin, short dark hair, vivid pink over-ear headphones, pink open jacket over pale shirt, dark charcoal trousers, pink/white sneakers. Match image1's face, proportions, skin, hairstyle and outfit EXACTLY in every frame. Same polished hand-painted 2D chibi adventure art as Mateus, soft clean color shading and dark thin outlines, NO coarse old pixel art. EXACTLY 6 COLUMNS x 16 ROWS (96 square cells). SIX animation stages per row. The same character plays ONE instrument each row: 1 drum kit, 2 saxophone, 3 electric guitar, 4 acoustic guitar, 5 upright piano with visible hands/keys, 6 portable keyboard, 7 trumpet, 8 bass guitar, 9 berimbau with gourd and thin bow, 10 atabaque tall hand drum, 11 agogo double bells with beater, 12 shekere beaded gourd, 13 djembe goblet drum, 14 ilu hand drum, 15 reco-reco scraper, 16 cuica friction drum. Proper playing posture and hands touching the instrument, visible face/outfit, small readable instruments inside cell, no stage. Keep exactly these 16 rows. EVERY cell is square; consistent character body scale, center and foot baseline across cells. Leave 10 percent transparent padding, keep every body, instrument, effect inside its own cell with no overlap. No labels, no text, no layout lines, no shadow, no floor, no backdrop, no opaque or semitransparent color tiles. TRUE transparent RGBA alpha=0 gutters. This is a production sprite sheet, no poster composition.",
+      "refs": [
+        "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-a536c1ed-3d40-4b70-8381-6cedcd91954a.png",
+        "C:/Users/PICHAU/Desktop/devilsir.github.io/VOICES/.qa/references/mateus-style.png"
+      ],
+      "target": "assets/homestead/sol-music.webp",
+      "source": "C:/Users/PICHAU/.codex/generated_images/01a19e75-9150-74c3-abc1-4e8376c85e90/exec-9126600a-2db9-4e5f-8fbe-88d1a154a57b.png"
+    }
+  ]
+}
