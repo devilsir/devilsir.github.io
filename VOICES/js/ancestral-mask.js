@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const V=window.V,W=V.World,version='20261104-mask-access1';
+const V=window.V,W=V.World,version='20261104-mask-both1';
 const portrait='assets/adventure/historiograph-mask.webp',icon='assets/ui/illustrated/historio-mask.webp';
 const variants=[
  {atlas:'assets/adventure/historiograph-mask-atlas.webp',portrait,icon,glow:'#a1d5b9'},
@@ -10,8 +10,8 @@ const rows={front:0,left:1,right:2,pulse:3,speaking:4,curious:5,surprised:6,happ
 const models=[['plumagem','Plumagem'],['coroa-solar','Coroa solar'],['totem','Totem'],['sol-e-lua','Sol e lua'],['felino','Felino'],['leque','Leque'],['chifres','Chifres'],['hibisco','Hibisco'],['mosaico','Mosaico'],['caveira','Caveira']].map(([id,name],index)=>({id,name,index}));
 const palettes=[{id:'original',name:'Original',hue:0,color:'#e8ac37'},{id:'turquesa',name:'Turquesa',hue:140,color:'#4ddcc9'},{id:'violeta',name:'Violeta',hue:250,color:'#b59afa'},{id:'rubi',name:'Rubi',hue:325,color:'#ed657f'}];
 const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),textures:new Map(),animationTextures:new Map(),animationLoads:new Map(),animationCacheLimit:3,uiTime:0,rows,variants,models,palettes,
- appearance(){
-  const saved=V.state?.maskAppearance?.player2;
+ appearance(owner=this.variant()){
+  const saved=V.state?.maskAppearance?.[owner===1?'player2':'player1'];
   return{model:models.some(m=>m.id===saved?.model)?saved.model:'default',palette:palettes.some(p=>p.id===saved?.palette)?saved.palette:'original'};
  },
  texture(model,palette='original'){
@@ -36,21 +36,21 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
    c.putImageData(pixels,0,0);
   }
  },
- ensureAnimation(model=this.appearance().model){
+ ensureAnimation(model=this.appearance().model,owner=this.variant()){
   const entry=models.find(m=>m.id===model),image=this.images['animation:'+model];
   if(!entry||!image)return Promise.resolve(false);
   if(V.Assets.ready(image))return Promise.resolve(true);
   if(this.animationLoads.has(model))return this.animationLoads.get(model);
   const state=V.state,prepare=()=>V.MapAssets.ensure(['mask-style:'+model],'Preparando animações · '+entry.name);
-  const pending=(V.DuoPanels?.enabled()?V.DuoPanels.withOwner(1,prepare):prepare()).then(ok=>{
+  const pending=(V.DuoPanels?.enabled()?V.DuoPanels.withOwner(owner,prepare):prepare()).then(ok=>{
    if(ok&&V.state===state){this.paintPanels();this.paintPortrait();}return ok;
   }).finally(()=>{if(this.animationLoads.get(model)===pending)this.animationLoads.delete(model);});
   this.animationLoads.set(model,pending);return pending;
  },
- animationTexture(model,palette='original'){
+ animationTexture(model,palette='original',owner=this.variant()){
   const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],image=this.images['animation:'+model];
   if(!entry||!image)return null;
-  if(!V.Assets.ready(image)){this.ensureAnimation(model);return null;}
+  if(!V.Assets.ready(image)){this.ensureAnimation(model,owner);return null;}
   const key=model+':'+color.id;
   if(this.animationTextures.has(key)){const texture=this.animationTextures.get(key);this.animationTextures.delete(key);this.animationTextures.set(key,texture);return texture;}
   let canvas=image;
@@ -61,14 +61,15 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   while(this.animationTextures.size>this.animationCacheLimit)this.animationTextures.delete(this.animationTextures.keys().next().value);
   return texture;
  },
- selectedAnimation(variant){const style=this.appearance();return variant===1?this.animationTexture(style.model,style.palette):null;},
- selectedTexture(variant){const style=this.appearance();return variant===1?this.texture(style.model,style.palette):null;},
- label(variant){const style=this.appearance(),model=variant===1&&models.find(m=>m.id===style.model);return model?'Máscara '+model.name+' · '+palettes.find(p=>p.id===style.palette).name+' · jogador 2':variant?'Máscara ancestral azul e turquesa do jogador 2, com olhos âmbar':'Máscara ancestral colorida com penas, pintura geométrica e olhos turquesa';},
+ selectedAnimation(variant){const style=this.appearance(variant);return this.animationTexture(style.model,style.palette,variant);},
+ selectedTexture(variant){const style=this.appearance(variant);return this.texture(style.model,style.palette);},
+ label(variant){const style=this.appearance(variant),model=models.find(m=>m.id===style.model);return model?'Máscara '+model.name+' · '+palettes.find(p=>p.id===style.palette).name+' · jogador '+(variant+1):variant?'Máscara ancestral azul e turquesa do jogador 2, com olhos âmbar':'Máscara ancestral colorida com penas, pintura geométrica e olhos turquesa';},
  choose(model,palette=this.appearance().palette){
-  if(!V.state||this.variant()!==1||!['default',...models.map(m=>m.id)].includes(model)||!palettes.some(p=>p.id===palette))return false;
+  if(!V.state||!['default',...models.map(m=>m.id)].includes(model)||!palettes.some(p=>p.id===palette))return false;
   if(model!=='default'&&!this.texture(model,palette))return false;
   // Keep cosmetics outside the shared investigation/tutorial state.
-  V.state.maskAppearance={...V.state.maskAppearance,player2:{model,palette}};V.Save.save();this.ensureAnimation(model);this.refreshWardrobe();this.retrofit();this.paintPanels();this.paintPortrait();return true;
+  const owner=this.variant(),key=owner===1?'player2':'player1';
+  V.state.maskAppearance={...V.state.maskAppearance,[key]:{model,palette}};V.Save.save();this.ensureAnimation(model,owner);this.refreshWardrobe();this.retrofit();this.paintPanels();this.paintPortrait();return true;
  },
  variant(player=V.Player.data,owner=-1){
   const d=V.DuoWorld;if(!d?.enabled())return 0;
@@ -187,31 +188,37 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   const variant=this.variant();fallback.dataset.maskKind='portrait';fallback.src=this.path('portrait',variant);fallback.alt=this.label(variant);
   let canvas=box.querySelector('.historio-mask-canvas');
   if(!canvas){canvas=document.createElement('canvas');canvas.width=240;canvas.height=240;canvas.className='historio-mask-canvas';canvas.dataset.maskVariant=variant;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',this.label(variant));fallback.insertAdjacentElement('afterend',canvas);this.panels.add({canvas,fallback,player:V.Player.data,variant,curious:V.Historio.tab==='compare'});}
-  if(variant===1)this.mountWardrobe(box.closest('.historio-shell'));
+  const heading=box.closest('.modal')?.querySelector('.modal-heading>.ui-art');if(heading&&heading.dataset.menuIcon!=='historio')heading.replaceWith(V.IllustratedInterface.element('historio'));
+  let actions=box.querySelector('.historio-mask-actions');
+  if(!actions){actions=document.createElement('div');actions.className='historio-mask-actions';actions.innerHTML='<button type="button" class="primary historio-change-mask" data-historio-change-mask></button><small class="historio-mask-availability"></small>';box.append(actions);}
+  const change=actions.querySelector('button');change.disabled=false;change.textContent='Trocar máscara';change.onclick=()=>this.openWardrobe(variant);
+  actions.querySelector('small').textContent='Visual do jogador '+(variant+1)+' · escolha de modelo e cores';
+  this.mountWardrobe(box.closest('.historio-shell'),variant);
   this.paintPanels();
  },
- openWardrobe(){
-  if(!V.state||this.variant()!==1)return false;
-  V.Historio.panel();const details=V.$('.historio-wardrobe');if(!details)return false;
-  details.open=true;details.querySelector('summary').focus({preventScroll:true});details.scrollIntoView({block:'nearest'});return true;
+ openWardrobe(owner=this.variant()){
+  if(!V.state)return false;
+  const open=()=>{V.Historio.panel();const details=V.$('.historio-wardrobe');if(!details)return false;
+   details.open=true;details.querySelector('summary').focus({preventScroll:true});details.scrollIntoView({block:'nearest'});return true;};
+  return V.DuoPanels?.enabled()?V.DuoPanels.withOwner(owner,open):open();
  },
- mountWardrobe(shell){
+ mountWardrobe(shell,owner=this.variant()){
   if(!shell||shell.querySelector('.historio-wardrobe'))return;
-  const details=document.createElement('details');details.className='historio-wardrobe';
-  details.innerHTML='<summary><span>Escolher visual da máscara</span><small data-mask-current></small></summary><div class="historio-wardrobe-body"><p>Jogador 2 · escolha um modelo e uma paleta. O visual acompanha você no mapa e nas conversas.</p><div class="historio-mask-models" role="group" aria-label="Modelos da máscara do jogador 2">'+[{id:'default',name:'Ancestral azul'},...models].map(model=>'<button type="button" data-mask-model="'+model.id+'" aria-pressed="false"><img width="72" height="72" alt=""><span>'+model.name+'</span><b aria-hidden="true">✓</b></button>').join('')+'</div><fieldset class="historio-mask-palettes"><legend>Cores do modelo</legend>'+palettes.map(p=>'<button type="button" data-mask-palette="'+p.id+'" aria-pressed="false"><i style="--mask-swatch:'+p.color+'" aria-hidden="true"></i>'+p.name+'</button>').join('')+'</fieldset><p class="historio-mask-selection" role="status" aria-live="polite"></p></div>';
+  const details=document.createElement('details');details.className='historio-wardrobe';details.dataset.maskPlayer=owner;
+  details.innerHTML='<summary><span>Escolher visual da máscara</span><small data-mask-current></small></summary><div class="historio-wardrobe-body"><p>Jogador '+(owner+1)+' · escolha um modelo e uma paleta. O visual acompanha você no mapa e nas conversas.</p><div class="historio-mask-models" role="group" aria-label="Modelos da máscara do jogador '+(owner+1)+'">'+[{id:'default',name:owner===1?'Ancestral azul':'Ancestral original'},...models].map(model=>'<button type="button" data-mask-model="'+model.id+'" aria-pressed="false"><img width="72" height="72" alt=""><span>'+model.name+'</span><b aria-hidden="true">✓</b></button>').join('')+'</div><fieldset class="historio-mask-palettes"><legend>Cores do modelo</legend>'+palettes.map(p=>'<button type="button" data-mask-palette="'+p.id+'" aria-pressed="false"><i style="--mask-swatch:'+p.color+'" aria-hidden="true"></i>'+p.name+'</button>').join('')+'</fieldset><p class="historio-mask-selection" role="status" aria-live="polite"></p></div>';
   shell.querySelector('.historio-device').after(details);
   // Capture ownership explicitly, including clicks before modal binding runs.
-  for(const button of details.querySelectorAll('[data-mask-model]'))button.onclick=()=>V.DuoPanels.withOwner(1,()=>this.choose(button.dataset.maskModel));
-  for(const button of details.querySelectorAll('[data-mask-palette]'))button.onclick=()=>V.DuoPanels.withOwner(1,()=>this.choose(this.appearance().model,button.dataset.maskPalette));
+  for(const button of details.querySelectorAll('[data-mask-model]'))button.onclick=()=>V.DuoPanels.withOwner(owner,()=>this.choose(button.dataset.maskModel));
+  for(const button of details.querySelectorAll('[data-mask-palette]'))button.onclick=()=>V.DuoPanels.withOwner(owner,()=>this.choose(this.appearance(owner).model,button.dataset.maskPalette));
   this.refreshWardrobe();
  },
  refreshWardrobe(){
-  const style=this.appearance(),name=models.find(m=>m.id===style.model)?.name||'Ancestral azul',palette=palettes.find(p=>p.id===style.palette);
   for(const details of document.querySelectorAll('.historio-wardrobe')){
+   const owner=+details.dataset.maskPlayer===1?1:0,style=this.appearance(owner),name=models.find(m=>m.id===style.model)?.name||(owner?'Ancestral azul':'Ancestral original'),palette=palettes.find(p=>p.id===style.palette);
    details.querySelector('[data-mask-current]').textContent=name+(style.model==='default'?'':' · '+palette.name);
-   for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'?null:this.texture(id,style.palette),im=button.querySelector('img'),src=texture?.url||variants[1].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;button.disabled=id!=='default'&&!texture;button.setAttribute('aria-pressed',String(id===style.model));}
+   for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'?null:this.texture(id,style.palette),im=button.querySelector('img'),src=texture?.url||variants[owner].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;button.disabled=id!=='default'&&!texture;button.setAttribute('aria-pressed',String(id===style.model));}
    for(const button of details.querySelectorAll('[data-mask-palette]')){button.disabled=style.model==='default';button.setAttribute('aria-pressed',String(button.dataset.maskPalette===(style.model==='default'?'original':style.palette)));}
-   details.querySelector('.historio-mask-selection').textContent='Visual equipado: '+name+(style.model==='default'?'':' · '+palette.name)+'. Escolha salva para o jogador 2.';
+   details.querySelector('.historio-mask-selection').textContent='Visual equipado: '+name+(style.model==='default'?'':' · '+palette.name)+'. Escolha salva para o jogador '+(owner+1)+'.';
   }
   for(const panel of this.panels)if(panel.canvas.isConnected){panel.canvas.setAttribute('aria-label',this.label(panel.variant));panel.fallback.src=this.path('portrait',panel.variant);}
  },
@@ -253,7 +260,7 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  }
 };
 const assetGroup=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){const match=/^assets\/adventure\/mask-styles\/([\w-]+)-atlas\.webp$/.exec(key);return match?'mask-style:'+match[1]:assetGroup(key);};
-const startGame=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const out=startGame(...args);if(V.DuoWorld?.enabled())M.ensureAnimation();return out;};
+const startGame=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const out=startGame(...args);if(V.DuoWorld?.enabled())for(let owner=0;owner<2;owner++)V.DuoWorld.withActor(owner,()=>M.ensureAnimation());else M.ensureAnimation();return out;};
 V.AdventureArt.historiograph=portrait+'?v='+version;V.AdventureArt['historiograph-v2']=portrait+'?v='+version;V.AdventureArt['historiograph-portrait']='assets/adventure/historiograph-mask-portrait.webp?v='+version;
 V.AdventureArt['historiograph-p2-portrait']='assets/adventure/historiograph-mask-p2-portrait.webp?v='+version;
 V.content.characters.historiograph.role='Máscara ancestral ficcional · vestígios e perguntas';

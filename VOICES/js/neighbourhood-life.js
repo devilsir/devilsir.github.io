@@ -77,7 +77,8 @@
       const character=V.Assets.images[o.uniformSprite]?.naturalWidth?o.uniformSprite:o.character;
       if(!V.Assets.images[character]?.naturalWidth)return true;
       V.SceneShadows.character(c,character,x,y,64,row,frame,true);V.Assets.sprite(c,character,x,y,row,frame,64);
-      if(['reading','working'].includes(o.action)&&!o.walking){c.fillStyle=o.action==='reading'?'#efe0b1':'#9fc9ba';c.fillRect(Math.round(x-11),Math.round(y-29),21,9);c.fillStyle='#6a6751';c.fillRect(Math.round(x),Math.round(y-29),2,9);}
+      // The animation already contains held objects. Never draw generic task
+      // rectangles over NPCs: at this scale they cover their faces and bodies.
       if(W.nearest?.id===o.id)V.Maritime.label(c,S.describe(o).name,x,y-76,true);
       return true;
     },

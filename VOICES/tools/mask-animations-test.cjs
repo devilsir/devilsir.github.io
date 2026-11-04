@@ -72,7 +72,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
  });
  await check('saved cosmetics restore their animated sheet and both original companions remain unchanged',async()=>{
   V.Save.save();const state=V.Save.load();Q.closeAll();V.Game.toTitle();V.state=state;V.Game.startGame();await V.MapAssets.whenReady();
-  assert.equal(M.appearance().model,'caveira');assert.equal(M.appearance().palette,'turquesa');assert(M.selectedAnimation(1));
+  assert.equal(M.appearance(1).model,'caveira');assert.equal(M.appearance(1).palette,'turquesa');assert(M.selectedAnimation(1));
   const first=surface();M.frame(first.c,0,0,96,96,192,0);assert(pixels(first.canvas).equals(pixels(crop(M.images.atlas,0,0).canvas)));
   Q.withOwner(1,()=>M.choose('default'));assert.equal(M.selectedAnimation(1),null);const second=surface();M.frame(second.c,0,0,96,96,192,1);assert(pixels(second.canvas).equals(pixels(crop(M.images.atlas2,0,0).canvas)));
  });
