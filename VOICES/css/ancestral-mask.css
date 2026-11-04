@@ -2,6 +2,7 @@
 .historio-mask-canvas{display:block;width:min(200px,100%);height:auto;aspect-ratio:1;object-fit:contain;image-rendering:pixelated;margin:0 auto;filter:drop-shadow(0 4px 5px #0b201c55)}.historio-object.active .historio-mask-canvas{filter:drop-shadow(0 0 8px #8ecbbb66)}.historio-object img[hidden]{display:none!important}
 
 .illustrated-icon[data-menu-icon="historio"]{image-rendering:pixelated!important}
+.duo-world-menu button.duo-mask-shortcut{height:54px;min-height:54px;flex-basis:54px;display:flex;flex-direction:column;gap:2px;padding:4px 2px;border-color:#e1c67f;background:#374c36}.duo-mask-shortcut span{display:block;font-size:9px;line-height:1.2;color:#fff0c7}.duo-mask-shortcut .ui-art{width:26px;height:26px}
 .historio-wardrobe{margin:16px 0;border:1px solid #637565;border-radius:12px;background:#142b25;color:#f4ead3;overflow:hidden}
 .historio-wardrobe summary{padding:14px 16px;cursor:pointer;font-weight:700;line-height:1.5}
 .historio-wardrobe summary small{display:block;margin-left:18px;font-weight:400;color:#d9be80}

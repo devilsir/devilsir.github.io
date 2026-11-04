@@ -11,6 +11,13 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
  V.Game.newState({name:'Galeria de máscaras',character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});V.Game.startGame();
  await V.MapAssets.whenReady();V.Onboarding.active=false;V.Onboarding.suspended=true;V.GuideOverlay.hide();
  const M=V.AncestralMask,D=V.DuoWorld,Q=V.DuoPanels;V.DuoTutorial.finish(0,true);V.DuoTutorial.finish(1,true);Q.closeAll();
+ await check('the visible player-two Mask shortcut opens the model picker expanded in the correct screen',()=>{
+  const button=D.root.querySelector('[data-world-menu="mask"][data-world-player="1"]');assert(button);assert.equal(button.textContent.trim(),'Máscara');
+  assert(!D.root.querySelector('[data-world-menu="mask"][data-world-player="0"]'));
+  button.click();assert(Q.has(1));assert(!Q.has(0));
+  const details=Q.root(1).querySelector('.historio-wardrobe');assert(details.open);assert.equal(w.document.activeElement,details.querySelector('summary'));
+  assert.equal(details.querySelectorAll('[data-mask-model]').length,11);Q.closeAll();
+ });
  await check('all ten models have four distinct cached palettes with identical transparent silhouettes',()=>{
   assert.equal(M.models.length,10);assert.equal(M.palettes.length,4);assert(V.Assets.ready(M.images.gallery));
   const sheet=surface(192*10,192*4);sheet.c.fillStyle='#243a32';sheet.c.fillRect(0,0,1920,768);
@@ -44,6 +51,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
   assert.match(root.querySelector('.historio-mask-canvas').getAttribute('aria-label'),/Sol e lua/);
   assert(pixels(first).equals(before));assert(!pixels(root.querySelector('.historio-mask-canvas')).equals(before));
   assert.equal(JSON.stringify(V.Story.ensure().traces),traces);
+  assert.equal(D.root.querySelector('[data-world-menu="mask"] img').getAttribute('src'),M.selectedTexture(1).url);
   save(root.querySelector('.historio-mask-canvas'),'mask-styles-panel-player-two');
   // A static copy of the real DOM lets browser layout QA skip unrelated map art.
   const snapshot=w.document.documentElement.cloneNode(true),base=w.document.createElement('base');base.href='../../';snapshot.querySelector('head').prepend(base);
@@ -74,7 +82,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
  await check('cosmetic selection survives a save, a restored duo and reopening the gallery',async()=>{
   const chosen=JSON.stringify(M.appearance());V.Save.save();const state=V.Save.load();assert.equal(JSON.stringify(state.maskAppearance.player2),chosen);
   V.Game.toTitle();V.state=state;V.Game.startGame();await V.MapAssets.whenReady();Q.closeAll();
-  assert.equal(JSON.stringify(M.appearance()),chosen);Q.withOwner(1,()=>V.Historio.panel());
+  assert.equal(JSON.stringify(M.appearance()),chosen);D.root.querySelector('[data-world-menu="mask"]').click();assert(Q.root(1).querySelector('.historio-wardrobe').open);
   assert.equal(Q.root(1).querySelector('[data-mask-model="sol-e-lua"]').getAttribute('aria-pressed'),'true');
   assert.equal(Q.root(1).querySelector('[data-mask-palette="violeta"]').getAttribute('aria-pressed'),'true');
  });

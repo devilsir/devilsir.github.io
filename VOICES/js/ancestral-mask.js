@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const V=window.V,W=V.World,version='20261104-mask-registration1';
+const V=window.V,W=V.World,version='20261104-mask-access1';
 const portrait='assets/adventure/historiograph-mask.webp',icon='assets/ui/illustrated/historio-mask.webp';
 const variants=[
  {atlas:'assets/adventure/historiograph-mask-atlas.webp',portrait,icon,glow:'#a1d5b9'},
@@ -190,6 +190,11 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   if(variant===1)this.mountWardrobe(box.closest('.historio-shell'));
   this.paintPanels();
  },
+ openWardrobe(){
+  if(!V.state||this.variant()!==1)return false;
+  V.Historio.panel();const details=V.$('.historio-wardrobe');if(!details)return false;
+  details.open=true;details.querySelector('summary').focus({preventScroll:true});details.scrollIntoView({block:'nearest'});return true;
+ },
  mountWardrobe(shell){
   if(!shell||shell.querySelector('.historio-wardrobe'))return;
   const details=document.createElement('details');details.className='historio-wardrobe';
@@ -241,7 +246,7 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  retrofit(root=document){
   for(const im of root.querySelectorAll('img[data-menu-icon="historio"],img[data-mask-kind],.historio-object>img,.adv-device-banner>img,.adv-story-intro>img,img.adv-icon[src*="/historiograph-mask"]')){
    if(!im.dataset.maskKind&&im.dataset.menuIcon!=='historio'&&!/\/historiograph-mask(?:-p2)?\.webp(?:[?#]|$)/.test(im.getAttribute('src')||''))continue;
-   const owner=im.closest('[data-duo-panel-player]'),variant=V.DuoWorld?.enabled()&&owner?.dataset.duoPanelPlayer==='1'?1:0;
+   const owner=im.closest('[data-duo-panel-player],[data-world-player]'),variant=V.DuoWorld?.enabled()&&(owner?.dataset.duoPanelPlayer??owner?.dataset.worldPlayer)==='1'?1:0;
    const kind=im.dataset.menuIcon==='historio'?'icon':'portrait',path=this.path(kind,variant);im.dataset.maskKind=kind;if(kind==='portrait')im.alt=this.label(variant);
    if(im.getAttribute('src')!==path)im.src=path;
   }
