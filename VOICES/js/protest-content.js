@@ -1,6 +1,6 @@
 (function(){'use strict';const V=window.V=window.V||{};V.protestContent={
   "version": "2.1",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "people": [
     {
       "id": "protest-livia",
@@ -912,7 +912,7 @@
       "sprite": "assets/characters/protest-livia.png",
       "portrait": "assets/characters/protest-livia-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -947,7 +947,7 @@
       "sprite": "assets/characters/protest-samuel.png",
       "portrait": "assets/characters/protest-samuel-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -982,7 +982,7 @@
       "sprite": "assets/characters/protest-juliete.png",
       "portrait": "assets/characters/protest-juliete-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1017,7 +1017,7 @@
       "sprite": "assets/characters/protest-ezequiel.png",
       "portrait": "assets/characters/protest-ezequiel-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1052,7 +1052,7 @@
       "sprite": "assets/characters/protest-priscila.png",
       "portrait": "assets/characters/protest-priscila-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1087,7 +1087,7 @@
       "sprite": "assets/characters/protest-wellington.png",
       "portrait": "assets/characters/protest-wellington-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1122,7 +1122,7 @@
       "sprite": "assets/characters/protest-debora.png",
       "portrait": "assets/characters/protest-debora-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1157,7 +1157,7 @@
       "sprite": "assets/characters/protest-moises.png",
       "portrait": "assets/characters/protest-moises-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1192,7 +1192,7 @@
       "sprite": "assets/characters/protest-cassio.png",
       "portrait": "assets/characters/protest-cassio-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1227,7 +1227,7 @@
       "sprite": "assets/characters/protest-soraia.png",
       "portrait": "assets/characters/protest-soraia-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1262,7 +1262,7 @@
       "sprite": "assets/characters/protest-silas.png",
       "portrait": "assets/characters/protest-silas-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1297,7 +1297,7 @@
       "sprite": "assets/characters/protest-tais.png",
       "portrait": "assets/characters/protest-tais-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1332,7 +1332,7 @@
       "sprite": "assets/characters/protest-ariane.png",
       "portrait": "assets/characters/protest-ariane-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1367,7 +1367,7 @@
       "sprite": "assets/characters/protest-jeferson.png",
       "portrait": "assets/characters/protest-jeferson-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1402,7 +1402,7 @@
       "sprite": "assets/characters/protest-clarissa.png",
       "portrait": "assets/characters/protest-clarissa-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1437,7 +1437,7 @@
       "sprite": "assets/characters/protest-dario.png",
       "portrait": "assets/characters/protest-dario-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1472,7 +1472,7 @@
       "sprite": "assets/characters/protest-avelina.png",
       "portrait": "assets/characters/protest-avelina-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1507,7 +1507,7 @@
       "sprite": "assets/characters/protest-edivaldo.png",
       "portrait": "assets/characters/protest-edivaldo-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1542,7 +1542,7 @@
       "sprite": "assets/characters/protest-raissa.png",
       "portrait": "assets/characters/protest-raissa-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1577,7 +1577,7 @@
       "sprite": "assets/characters/protest-aldo.png",
       "portrait": "assets/characters/protest-aldo-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1612,7 +1612,7 @@
       "sprite": "assets/characters/protest-marlene.png",
       "portrait": "assets/characters/protest-marlene-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1647,7 +1647,7 @@
       "sprite": "assets/characters/protest-josias.png",
       "portrait": "assets/characters/protest-josias-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1682,7 +1682,7 @@
       "sprite": "assets/characters/protest-fabiola.png",
       "portrait": "assets/characters/protest-fabiola-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1717,7 +1717,7 @@
       "sprite": "assets/characters/protest-sebastiao.png",
       "portrait": "assets/characters/protest-sebastiao-portrait.png",
       "originalArt": true,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "spriteDimensions": {
         "width": 128,
         "height": 192,
@@ -1761,8 +1761,8 @@
   ],
   "assetManifest": {
     "version": "2.1",
-    "license": "CC0-1.0",
-    "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license": "MIT",
+    "licenseURL": "https://opensource.org/license/mit",
     "creator": "Original VOICES pixel art",
     "generator": "tools/create_protest_assets.py",
     "attributionRequired": false,
@@ -2582,7 +2582,7 @@
         "sprite": "assets/characters/protest-livia.png",
         "portrait": "assets/characters/protest-livia-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2617,7 +2617,7 @@
         "sprite": "assets/characters/protest-samuel.png",
         "portrait": "assets/characters/protest-samuel-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2652,7 +2652,7 @@
         "sprite": "assets/characters/protest-juliete.png",
         "portrait": "assets/characters/protest-juliete-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2687,7 +2687,7 @@
         "sprite": "assets/characters/protest-ezequiel.png",
         "portrait": "assets/characters/protest-ezequiel-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2722,7 +2722,7 @@
         "sprite": "assets/characters/protest-priscila.png",
         "portrait": "assets/characters/protest-priscila-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2757,7 +2757,7 @@
         "sprite": "assets/characters/protest-wellington.png",
         "portrait": "assets/characters/protest-wellington-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2792,7 +2792,7 @@
         "sprite": "assets/characters/protest-debora.png",
         "portrait": "assets/characters/protest-debora-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2827,7 +2827,7 @@
         "sprite": "assets/characters/protest-moises.png",
         "portrait": "assets/characters/protest-moises-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2862,7 +2862,7 @@
         "sprite": "assets/characters/protest-cassio.png",
         "portrait": "assets/characters/protest-cassio-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2897,7 +2897,7 @@
         "sprite": "assets/characters/protest-soraia.png",
         "portrait": "assets/characters/protest-soraia-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2932,7 +2932,7 @@
         "sprite": "assets/characters/protest-silas.png",
         "portrait": "assets/characters/protest-silas-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -2967,7 +2967,7 @@
         "sprite": "assets/characters/protest-tais.png",
         "portrait": "assets/characters/protest-tais-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3002,7 +3002,7 @@
         "sprite": "assets/characters/protest-ariane.png",
         "portrait": "assets/characters/protest-ariane-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3037,7 +3037,7 @@
         "sprite": "assets/characters/protest-jeferson.png",
         "portrait": "assets/characters/protest-jeferson-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3072,7 +3072,7 @@
         "sprite": "assets/characters/protest-clarissa.png",
         "portrait": "assets/characters/protest-clarissa-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3107,7 +3107,7 @@
         "sprite": "assets/characters/protest-dario.png",
         "portrait": "assets/characters/protest-dario-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3142,7 +3142,7 @@
         "sprite": "assets/characters/protest-avelina.png",
         "portrait": "assets/characters/protest-avelina-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3177,7 +3177,7 @@
         "sprite": "assets/characters/protest-edivaldo.png",
         "portrait": "assets/characters/protest-edivaldo-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3212,7 +3212,7 @@
         "sprite": "assets/characters/protest-raissa.png",
         "portrait": "assets/characters/protest-raissa-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3247,7 +3247,7 @@
         "sprite": "assets/characters/protest-aldo.png",
         "portrait": "assets/characters/protest-aldo-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3282,7 +3282,7 @@
         "sprite": "assets/characters/protest-marlene.png",
         "portrait": "assets/characters/protest-marlene-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3317,7 +3317,7 @@
         "sprite": "assets/characters/protest-josias.png",
         "portrait": "assets/characters/protest-josias-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3352,7 +3352,7 @@
         "sprite": "assets/characters/protest-fabiola.png",
         "portrait": "assets/characters/protest-fabiola-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,
@@ -3387,7 +3387,7 @@
         "sprite": "assets/characters/protest-sebastiao.png",
         "portrait": "assets/characters/protest-sebastiao-portrait.png",
         "originalArt": true,
-        "license": "CC0-1.0",
+        "license": "MIT",
         "spriteDimensions": {
           "width": 128,
           "height": 192,

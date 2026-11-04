@@ -1273,10 +1273,10 @@ def main():
             groups[map_id].append(i)
     out = ROOT / 'assets' / 'tilesets'
     atlas.save(out / 'furnishings-props.png', optimize=True)
-    manifest = {'version': '2.1', 'license': 'CC0-1.0', 'licenseURL': 'https://creativecommons.org/publicdomain/zero/1.0/', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_furnishings_assets.py', 'atlas': 'assets/tilesets/furnishings-props.png', 'tileSize': 32, 'columns': 8, 'rows': 18, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Only exact RGB triples listed in colorRoles may be recolored. Outlines, contents and alpha remain unchanged.', 'groups': groups, 'palette': P, 'props': records}
+    manifest = {'version': '2.1', 'license': 'MIT', 'licenseURL': 'https://opensource.org/license/mit', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_furnishings_assets.py', 'atlas': 'assets/tilesets/furnishings-props.png', 'tileSize': 32, 'columns': 8, 'rows': 18, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Only exact RGB triples listed in colorRoles may be recolored. Outlines, contents and alpha remain unchanged.', 'groups': groups, 'palette': P, 'props': records}
     (out / 'furnishings-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     encoded = base64.b64encode((out / 'furnishings-props.png').read_bytes()).decode('ascii')
-    content = {'version': '2.1', 'license': 'CC0-1.0', 'groups': groups, 'characters': {}, 'residents': [], 'sources': [], 'assetManifest': manifest}
+    content = {'version': '2.1', 'license': 'MIT', 'groups': groups, 'characters': {}, 'residents': [], 'sources': [], 'assetManifest': manifest}
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.furnishingsAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.furnishingsAssets);V.furnishingsMaterialSources={furnishings:'data:image/png;base64,"+encoded+"'};V.furnishingsContent="+json.dumps(content, ensure_ascii=False, separators=(',', ':'))+";})();\n"
     (ROOT / 'js' / 'furnishings-content.js').write_text(registry, encoding='utf-8')
     preview(records, props)

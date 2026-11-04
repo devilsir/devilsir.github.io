@@ -1,6 +1,6 @@
 {
   "version": "1.6",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "attributionRequired": false,
   "author": "Original VOICES pixel art",
   "atlas": "assets/tilesets/expanded-props.png",
@@ -2151,5 +2151,11 @@
         "height": 32
       }
     }
+  ],
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

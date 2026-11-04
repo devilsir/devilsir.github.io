@@ -30,6 +30,6 @@ with wave.open(str(out), 'wb') as audio:
 manifest_file = root / 'assets/audio/manifest.json'
 manifest = json.loads(manifest_file.read_text())
 manifest['loops'] = [x for x in manifest['loops'] if x['file'] != 'beach.wav']
-manifest['loops'].append(dict(file='beach.wav', duration=seconds, sampleRate=rate, channels=1, bits=16, peak=round(float(np.max(np.abs(track))), 4), original=True, seed=seed, license='CC0-1.0', description='Ondas e uma chamada discreta de ave; síntese original, sem amostras externas.'))
+manifest['loops'].append(dict(file='beach.wav', duration=seconds, sampleRate=rate, channels=1, bits=16, peak=round(float(np.max(np.abs(track))), 4), original=True, seed=seed, license='MIT', description='Ondas e uma chamada discreta de ave; síntese original, sem amostras externas.'))
 manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
 print(out)

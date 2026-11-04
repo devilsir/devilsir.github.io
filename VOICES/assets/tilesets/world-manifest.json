@@ -106,5 +106,12 @@
   },
   "preview": "assets/ui/world-preview.png",
   "source": "tools/create_world_assets.py",
-  "authoring": "Original deterministic Pillow pixel drawing. Base sprite helper import only; old sheets are never regenerated or overwritten. Real alpha. Contemporary respectful appearance and occupations."
+  "authoring": "Original deterministic Pillow pixel drawing. Base sprite helper import only; old sheets are never regenerated or overwritten. Real alpha. Contemporary respectful appearance and occupations.",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

@@ -586,7 +586,7 @@ def main():
         sheet.save(ROOT/sprite_path,optimize=True)
         faces.save(ROOT/face_path,optimize=True)
         sprites[key],portraits[key] = sheet,faces
-        characters[key] = {'name':p['name'],'role':p['occupation'],'quote':'Pessoa original e fictícia da comunidade.','accent':p['coat'],'sprite':sprite_path,'portrait':face_path,'originalArt':True,'license':'CC0-1.0','spriteDimensions':{'width':128,'height':192,'cellWidth':32,'cellHeight':32,'columns':4,'rows':['down','left','right','up','activity','greeting']},'portraitDimensions':{'width':288,'height':96,'nativePixelGrid':48,'columns':['neutral','happy','concerned']}}
+        characters[key] = {'name':p['name'],'role':p['occupation'],'quote':'Pessoa original e fictícia da comunidade.','accent':p['coat'],'sprite':sprite_path,'portrait':face_path,'originalArt':True,'license':'MIT','spriteDimensions':{'width':128,'height':192,'cellWidth':32,'cellHeight':32,'columns':4,'rows':['down','left','right','up','activity','greeting']},'portraitDimensions':{'width':288,'height':96,'nativePixelGrid':48,'columns':['neutral','happy','concerned']}}
         item = {k:p.get(k) for k in ('id','name','occupation','age','appearance','group','action','signText','instrument','instrumentName','shirtSymbol','hairStyle','body','outfit','accessory','heldObject')}
         item.update(index=index,character=key,skinTone=p['skin'],clothingColor=p['coat'],pantsColor=p['pants'],headwrapColor=p.get('wrap'),fictional=True,personalStyle=True)
         if p['signText']:
@@ -597,9 +597,9 @@ def main():
     assert len(set(im.tobytes() for im in portraits.values())) == 24
     assert sum(bool(p['signText']) for p in PEOPLE) == 10
     assert sum(p['hairStyle'].startswith('wrap-') for p in PEOPLE) == 5
-    manifest = {'version':'2.1','license':'CC0-1.0','licenseURL':'https://creativecommons.org/publicdomain/zero/1.0/','creator':'Original VOICES pixel art','generator':'tools/create_protest_assets.py','attributionRequired':False,'historicalPortraits':False,'people':manifest_people,'characters':characters,'groups':{'organizers':6,'musicians':6,'signHolders':6,'listenersCaregiversVolunteers':6},'signs':{'withSigns':10,'withoutSigns':14,'nativePose':'pole-and-hand','boardIsRuntimeOverlay':True,'fullTextField':'signText'},'palette':P,'sources':[]}
+    manifest = {'version':'2.1','license':'MIT','licenseURL':'https://opensource.org/license/mit','creator':'Original VOICES pixel art','generator':'tools/create_protest_assets.py','attributionRequired':False,'historicalPortraits':False,'people':manifest_people,'characters':characters,'groups':{'organizers':6,'musicians':6,'signHolders':6,'listenersCaregiversVolunteers':6},'signs':{'withSigns':10,'withoutSigns':14,'nativePose':'pole-and-hand','boardIsRuntimeOverlay':True,'fullTextField':'signText'},'palette':P,'sources':[]}
     (dest/'protest-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-    content = {'version':'2.1','license':'CC0-1.0','people':manifest_people,'characters':characters,'sources':[],'assetManifest':manifest}
+    content = {'version':'2.1','license':'MIT','people':manifest_people,'characters':characters,'sources':[],'assetManifest':manifest}
     js = "(function(){'use strict';const V=window.V=window.V||{};V.protestContent="+json.dumps(content,ensure_ascii=False,separators=(',',':'))+";})();\n"
     (ROOT/'js'/'protest-content.js').write_text(js,encoding='utf-8')
     preview(sprites,portraits)

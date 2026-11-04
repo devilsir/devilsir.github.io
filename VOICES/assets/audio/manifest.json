@@ -1,5 +1,5 @@
 {
-  "license": "CC0-1.0",
+  "license": "MIT",
   "method": "Original synthetic sonification; no recordings or external samples.",
   "loops": [
     {
@@ -101,8 +101,14 @@
       "peak": 0.0668,
       "original": true,
       "seed": 1828,
-      "license": "CC0-1.0",
+      "license": "MIT",
       "description": "Ondas e uma chamada discreta de ave; síntese original, sem amostras externas."
     }
+  ],
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

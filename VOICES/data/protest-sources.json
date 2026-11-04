@@ -27,7 +27,7 @@
     }
   ],
   "notes": "Moradores e diálogos fictícios; história apresentada em terceira pessoa. Sem citações atribuídas, imagens de museu copiadas ou gravações históricas. Artes e exercícios sonoros originais.",
-  "artLicense": "CC0-1.0",
+  "artLicense": "MIT",
   "assetIndex": "assets/characters/protest-manifest.json",
   "furnitureIndex": "assets/tilesets/furnishings-manifest.json"
 }

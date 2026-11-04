@@ -10071,5 +10071,12 @@
     "generation": "assets/adventure/historiograph-mask-generation.json",
     "player2Manifest": "assets/adventure/historiograph-mask-p2-manifest.json",
     "player2Generation": "assets/adventure/historiograph-mask-p2-generation.json"
-  }
+  },
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

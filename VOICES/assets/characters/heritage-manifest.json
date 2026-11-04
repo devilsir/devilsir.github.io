@@ -1,8 +1,8 @@
 {
   "name": "VOICES — Pessoas, memória e criação",
-  "license": "CC0-1.0",
-  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
-  "creator": "Original pixel illustrations created for VOICES",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "creator": "Lucas Xavier Nardelli e Claudilene Alves Lopes",
   "created": "2026-10-11",
   "source": "tools/create_heritage_characters.py",
   "art": "Original simplified educational pixel illustrations; no photographs, traced artwork, external textures, logos or copied portraits.",
@@ -105,5 +105,10 @@
       "sprite": "assets/characters/ravi.png",
       "portrait": "assets/characters/ravi-portrait.png"
     }
-  }
+  },
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

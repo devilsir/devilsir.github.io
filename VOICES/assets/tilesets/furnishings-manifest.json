@@ -1,9 +1,9 @@
 {
   "version": "2.1",
-  "license": "CC0-1.0",
-  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
   "attributionRequired": false,
-  "creator": "Original VOICES pixel art",
+  "creator": "Lucas Xavier Nardelli e Claudilene Alves Lopes",
   "generator": "tools/create_furnishings_assets.py",
   "atlas": "assets/tilesets/furnishings-props.png",
   "tileSize": 32,
@@ -6167,5 +6167,10 @@
         "review-conservation"
       ]
     }
+  ],
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

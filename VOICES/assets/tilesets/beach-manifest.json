@@ -1,6 +1,6 @@
 {
   "version": "1.8",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "attributionRequired": false,
   "author": "Original VOICES pixel art",
   "atlas": "assets/tilesets/beach-props.png",
@@ -2109,5 +2109,11 @@
       "description": "Peça contemporânea de uso cotidiano. A roupa e o acessório são escolhas pessoais; não indicam religião ou identidade por si só.",
       "artStatus": "Desenho original em pixel art, sem reprodução de uma estampa existente."
     }
+  ],
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

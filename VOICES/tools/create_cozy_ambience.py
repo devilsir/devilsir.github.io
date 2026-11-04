@@ -53,4 +53,4 @@ if __name__ == '__main__':
     manifest['loops'] = [e for e in manifest['loops'] if e['file'] not in [n + '.wav' for n in names]]
     manifest['loops'] += [build(name, 907 + i) for i, name in enumerate(names)]
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
-    print('Nine original local CC0 soundscapes available.')
+    print('Nine original local MIT-licensed soundscapes available.')

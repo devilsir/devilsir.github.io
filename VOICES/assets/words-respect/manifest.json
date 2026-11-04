@@ -54,5 +54,12 @@
     }
   ],
   "bytes": 177788,
-  "generator": "Built-in image_gen.imagegen"
+  "generator": "Built-in image_gen.imagegen",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

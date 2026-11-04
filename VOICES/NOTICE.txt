@@ -1,0 +1,27 @@
+VOICES — Reboot the Story
+
+Autoria do projeto
+Lucas Xavier Nardelli
+Claudilene Alves Lopes
+
+Licença dos materiais originais
+O código, os textos autorais, as ilustrações, a interface, as animações e o
+áudio original do projeto são disponibilizados sob a licença MIT.
+O texto integral e o aviso de direitos autorais constam de LICENSE.txt.
+
+Tipografia de terceiros
+As fontes VOICES Sans e VOICES Print são derivadas de fontes DejaVu.
+Seus avisos e condições de uso estão preservados em assets/fonts/LICENSE.txt.
+A fonte VOICES Pencil utiliza Patrick Hand, sob a SIL Open Font License 1.1.
+Seu aviso integral está em assets/fonts/PATRICK-HAND-OFL.txt.
+Esses arquivos tipográficos mantêm suas licenças de origem.
+
+Dados geográficos
+O contorno geográfico de Natural Earth é disponibilizado em domínio público.
+A procedência dos dados está identificada nos registros da navegação marítima.
+
+Referências e conteúdos externos
+As referências históricas, culturais, educativas e ambientais identificam as
+fontes de pesquisa utilizadas no jogo. Publicações, páginas e outros materiais
+externos mantêm suas próprias condições de uso. As instituições e os autores
+dessas referências não integram os créditos de autoria do projeto.

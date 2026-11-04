@@ -825,7 +825,7 @@ def main():
     out = ROOT / "assets" / "tilesets"
     out.mkdir(parents=True, exist_ok=True)
     atlas.save(out / "expanded-props.png", optimize=True)
-    manifest = {"version": "1.6", "license": "CC0-1.0", "attributionRequired": False, "author": "Original VOICES pixel art", "atlas": "assets/tilesets/expanded-props.png", "generator": "tools/create_expanded_assets.py", "tileSize": 32, "columns": 8, "rows": 8, "coordinateUnits": "tile-fraction", "sourceRectUnits": "pixel", "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.", "visualReferences": SOURCES, "palette": scene.base.P, "props": records}
+    manifest = {"version": "1.6", "license": "MIT", "attributionRequired": False, "author": "Original VOICES pixel art", "atlas": "assets/tilesets/expanded-props.png", "generator": "tools/create_expanded_assets.py", "tileSize": 32, "columns": 8, "rows": 8, "coordinateUnits": "tile-fraction", "sourceRectUnits": "pixel", "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.", "visualReferences": SOURCES, "palette": scene.base.P, "props": records}
     (out / "expanded-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     preview = Image.new("RGB", (1280, 1232), "#e7dfcc")
     d = ImageDraw.Draw(preview)

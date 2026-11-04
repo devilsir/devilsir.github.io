@@ -1,8 +1,8 @@
 {
   "name": "VOICES — Saberes do bairro",
-  "license": "CC0-1.0",
-  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
-  "creator": "Original artwork created for the VOICES project",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "creator": "Lucas Xavier Nardelli e Claudilene Alves Lopes",
   "created": "2026-10-11",
   "source": "tools/create_cultural_assets.py",
   "art": "Original code-native pixel illustrations. No downloaded photographs, traced artworks or external textures. All character identities and geometric garment prints are fictional original designs.",
@@ -454,5 +454,10 @@
       "nativePixelGrid": 64,
       "original": true
     }
-  }
+  },
+  "licenseFile": "../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

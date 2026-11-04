@@ -333,7 +333,7 @@
     }
   ],
   "assetLicense": {
-    "license": "CC0-1.0",
+    "license": "MIT",
     "creator": "Original educational pixel art created for VOICES",
     "source": "tools/create_iemanja_assets.py",
     "sprite": {

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   const V=window.V;
-  // Original score, effects and local CC0 soundscapes.
+  // Original score, effects and local MIT-licensed soundscapes.
   const themes={menu:[57,60,64,67,64,60,55,60],hub:[60,64,67,72,67,64,62,67],rhythm:[48,55,60,63,55,60,67,63],museum:[50,57,62,65,62,57,53,60],lab:[60,67,74,72,69,67,64,62],network:[45,52,57,60,57,52,48,55],community:[60,65,69,72,69,65,67,64],final:[45,48,52,57,55,52,48,45],boss:[45,45,52,48,45,55,52,48],victory:[60,64,67,72,76,72,79,84]};
   const files={beach:'beach',plaza:'plaza',library:'library',park:'park',market:'market',garden:'garden',studio:'studio',lab:'lab',archive:'archive',newsroom:'newsroom'};
   V.Audio={

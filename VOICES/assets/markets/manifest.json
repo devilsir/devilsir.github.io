@@ -29,5 +29,12 @@
       "file": "assets/markets/cape-facades.webp",
       "source": "assets/maritime/pixel/cape-houses.webp"
     }
+  ],
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

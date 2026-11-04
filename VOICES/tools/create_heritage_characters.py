@@ -367,8 +367,8 @@ def main():
         assert len({sheet.crop((i*32, j*32, i*32+32, j*32+32)).tobytes() for j in range(6) for i in range(4)}) >= 12
     manifest = {
         "name": "VOICES — Pessoas, memória e criação",
-        "license": "CC0-1.0",
-        "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "license": "MIT",
+        "licenseURL": "https://opensource.org/license/mit",
         "creator": "Original pixel illustrations created for VOICES",
         "created": "2026-10-11",
         "source": "tools/create_heritage_characters.py",

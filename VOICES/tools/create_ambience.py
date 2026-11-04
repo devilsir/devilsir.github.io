@@ -56,6 +56,6 @@ def build(name,seed):
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     entries=[build(name,901+i) for i,name in enumerate(['plaza','library','park','market','studio','lab'])]
-    (OUT/'manifest.json').write_text(json.dumps({'license':'CC0-1.0','method':'Original synthetic sonification; no recordings or external samples.','loops':entries},indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps({'license':'MIT','method':'Original synthetic sonification; no recordings or external samples.','loops':entries},indent=2)+'\n')
     print(json.dumps({'loops':len(entries),'seconds':sum(e['duration'] for e in entries)},indent=2))
 if __name__=='__main__':main()

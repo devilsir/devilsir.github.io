@@ -762,8 +762,8 @@ def main():
         save(illustration(name), f"culture/{name}.png")
     manifest = {
         "name": "VOICES — Saberes do bairro",
-        "license": "CC0-1.0",
-        "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "license": "MIT",
+        "licenseURL": "https://opensource.org/license/mit",
         "creator": "Original artwork created for the VOICES project",
         "created": "2026-10-11",
         "source": "tools/create_cultural_assets.py",

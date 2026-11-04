@@ -795,7 +795,7 @@ def main():
             raise ValueError((id, alpha))
     if len({im.tobytes() for im in sprites}) != 64: raise ValueError('Sprites duplicados')
     atlas.save(out / 'beach-props.png', optimize=True)
-    manifest = {'version': '1.8', 'license': 'CC0-1.0', 'attributionRequired': False, 'author': 'Original VOICES pixel art', 'atlas': 'assets/tilesets/beach-props.png', 'generator': 'tools/create_beach_assets.py', 'tileSize': 32, 'columns': 8, 'rows': 8, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Exact RGB shadow, body and highlight. Preserve outlines, alpha and unlisted colors.', 'artStatus': 'All pixels, clothing prints and floor motifs are original artwork for VOICES. No sacred object or copied clothing pattern is used as generic decoration.', 'palette': P, 'props': records}
+    manifest = {'version': '1.8', 'license': 'MIT', 'attributionRequired': False, 'author': 'Original VOICES pixel art', 'atlas': 'assets/tilesets/beach-props.png', 'generator': 'tools/create_beach_assets.py', 'tileSize': 32, 'columns': 8, 'rows': 8, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Exact RGB shadow, body and highlight. Preserve outlines, alpha and unlisted colors.', 'artStatus': 'All pixels, clothing prints and floor motifs are original artwork for VOICES. No sacred object or copied clothing pattern is used as generic decoration.', 'palette': P, 'props': records}
     (out / 'beach-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     animals = empty(128, 256)
     animal_sprites, animal_records = [], []
@@ -808,7 +808,7 @@ def main():
         animal_records.append({'index': row, 'row': row, 'id': id, 'name': name, 'kind': kind, 'habitat': habitat, 'frameCount': 4, 'frameWidth': 32, 'frameHeight': 32, 'frameDuration': .2, 'sourceRect': {'x': 0, 'y': row*32, 'width': 32, 'height': 32}, 'artStatus': 'Original pixel art; stylized species silhouette, not scientific species identification.'})
     char = ROOT / 'assets' / 'characters'
     animals.save(char / 'coast-animals.png', optimize=True)
-    animal_manifest = {'version': '1.8', 'license': 'CC0-1.0', 'attributionRequired': False, 'author': 'Original VOICES pixel art', 'atlas': 'assets/characters/coast-animals.png', 'generator': 'tools/create_beach_assets.py', 'tileSize': 32, 'columns': 4, 'rows': 8, 'animals': animal_records, 'wildlifeNote': 'Observe wildlife without touching, feeding or collecting it. Sea turtles are wildlife and are not pets.'}
+    animal_manifest = {'version': '1.8', 'license': 'MIT', 'attributionRequired': False, 'author': 'Original VOICES pixel art', 'atlas': 'assets/characters/coast-animals.png', 'generator': 'tools/create_beach_assets.py', 'tileSize': 32, 'columns': 4, 'rows': 8, 'animals': animal_records, 'wildlifeNote': 'Observe wildlife without touching, feeding or collecting it. Sea turtles are wildlife and are not pets.'}
     (char / 'coast-animals-manifest.json').write_text(json.dumps(animal_manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     jsrecords = [{**r, 'family': 'beach', 'solid': bool(r['solidFootprint'])} for r in records]
     source = 'data:image/png;base64,'+base64.b64encode((out / 'beach-props.png').read_bytes()).decode('ascii')

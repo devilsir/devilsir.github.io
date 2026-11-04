@@ -24,5 +24,12 @@
   "icon": "assets/ui/illustrated/historio-mask.webp",
   "source": "historiograph-mask-source.png",
   "reference": "User-provided feathered fantasy mask; original fictional game companion",
-  "generation": "assets/adventure/historiograph-mask-generation.json"
+  "generation": "assets/adventure/historiograph-mask-generation.json",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

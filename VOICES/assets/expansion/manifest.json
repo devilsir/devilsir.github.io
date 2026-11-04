@@ -920,5 +920,12 @@
       "name": "Cartola",
       "path": "assets/tilesets/voices-cultural-items/167_cartola.png"
     }
+  ],
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }

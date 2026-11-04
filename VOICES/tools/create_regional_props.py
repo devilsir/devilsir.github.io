@@ -357,7 +357,7 @@ def main():
         records.append(record)
     target = ROOT / 'assets' / 'tilesets'
     atlas.save(target / 'regional-props.png', optimize=True)
-    manifest = {'version': '2.2', 'license': 'CC0-1.0', 'licenseURL': 'https://creativecommons.org/publicdomain/zero/1.0/', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_regional_props.py', 'atlas': 'assets/tilesets/regional-props.png', 'tileSize': 32, 'columns': 8, 'rows': 3, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'palette': P, 'props': records}
+    manifest = {'version': '2.2', 'license': 'MIT', 'licenseURL': 'https://opensource.org/license/mit', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_regional_props.py', 'atlas': 'assets/tilesets/regional-props.png', 'tileSize': 32, 'columns': 8, 'rows': 3, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'palette': P, 'props': records}
     (target / 'regional-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     encoded = base64.b64encode((target / 'regional-props.png').read_bytes()).decode('ascii')
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.regionalAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.regionalAssets);V.regionalMaterialSources={regional:'data:image/png;base64,"+encoded+"'};})();\n"

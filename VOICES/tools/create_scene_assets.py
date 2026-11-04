@@ -558,7 +558,7 @@ def main():
     output = ROOT / "assets" / "tilesets"
     output.mkdir(parents=True, exist_ok=True)
     atlas.save(output / "scene-props.png", optimize=True)
-    manifest = {"version": "1.5", "license": "CC0-1.0", "attributionRequired": False, "author": "Original VOICES pixel art", "atlas": "assets/tilesets/scene-props.png", "generator": "tools/create_scene_assets.py", "tileSize": 32, "columns": 8, "rows": 4, "coordinateUnits": "tile-fraction", "sourceRectUnits": "pixel", "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.", "palette": {key: base.P[key] for key in ("ink", "navy", "navylight", "brown", "brownlight", "amberlight", "paper", "white", "grey", "greylight", "green", "greendark", "coral", "violet", "cyandark")}, "props": records}
+    manifest = {"version": "1.5", "license": "MIT", "attributionRequired": False, "author": "Original VOICES pixel art", "atlas": "assets/tilesets/scene-props.png", "generator": "tools/create_scene_assets.py", "tileSize": 32, "columns": 8, "rows": 4, "coordinateUnits": "tile-fraction", "sourceRectUnits": "pixel", "anchorConvention": "Anchor positions are relative to the sprite top-left; positions beyond the cell indicate an adjacent activity or approach point.", "palette": {key: base.P[key] for key in ("ink", "navy", "navylight", "brown", "brownlight", "amberlight", "paper", "white", "grey", "greylight", "green", "greendark", "coral", "violet", "cyandark")}, "props": records}
     (output / "scene-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     preview = Image.new("RGB", (1280, 616), "#e7dfcc")
     d = ImageDraw.Draw(preview)

@@ -31,7 +31,7 @@
     "animalTypes": 8,
     "iemanjaOriginalArt": true,
     "historicalNotebookPortraitRenderingRepaired": true,
-    "newArtLicense": "CC0-1.0"
+    "newArtLicense": "MIT"
   },
   "sources": {
     "sources": [
@@ -382,7 +382,7 @@
       }
     ],
     "assetLicense": {
-      "license": "CC0-1.0",
+      "license": "MIT",
       "creator": "Original educational pixel art created for VOICES",
       "source": "tools/create_iemanja_assets.py",
       "sprite": {

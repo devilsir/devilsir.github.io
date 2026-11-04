@@ -16,5 +16,5 @@ for name,(image,fill) in items.items():
 manifest=json.loads((out/'manifest.json').read_text())
 manifest['version']='1.4'
 manifest['culture_covers']=list(items)
-manifest['culture_covers_license']='CC0-1.0'
+manifest['culture_covers_license']='MIT'
 (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')

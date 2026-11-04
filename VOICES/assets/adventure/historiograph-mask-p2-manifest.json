@@ -26,5 +26,12 @@
   "icon": "assets/ui/illustrated/historio-mask-p2.webp",
   "source": "historiograph-mask-p2-source.png",
   "reference": "Original fictional feathered memory-mask companion",
-  "generation": "assets/adventure/historiograph-mask-p2-generation.json"
+  "generation": "assets/adventure/historiograph-mask-p2-generation.json",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

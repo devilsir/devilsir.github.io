@@ -40,5 +40,12 @@
     "columns": 4,
     "rows": 6,
     "cell": 128
-  }
+  },
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

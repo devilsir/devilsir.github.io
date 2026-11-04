@@ -1,8 +1,8 @@
 {
   "version": "1.9",
-  "license": "Mixed: pre-existing original game artwork is CC0-1.0; user-supplied replacement and new images have no declared license.",
-  "licenseURL": "",
-  "creator": "VOICES game artworks and illustrations supplied for this revision",
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "creator": "Lucas Xavier Nardelli e Claudilene Alves Lopes",
   "generator": "tools/create_wardrobe_assets.py",
   "originalArt": true,
   "referenceUse": "Pre-existing references concern cultural context. User-provided illustrations are treated as visual interpretations, not authenticated historic objects or named community traditions.",
@@ -470,5 +470,10 @@
     }
   ],
   "artworkUpdate": "2026-10-17",
-  "uploadedArtwork": "User-supplied illustrations; no verified provenance for generic paintings, masks, and sculptures."
+  "uploadedArtwork": "User-supplied illustrations; no verified provenance for generic paintings, masks, and sculptures.",
+  "licenseFile": "../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

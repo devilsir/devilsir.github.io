@@ -6369,5 +6369,12 @@
         "prompt": "Use case: identity-preserve. Asset type: transparent RPG pixel-art character animation. Reference is Tainá's exact identity/style: keep the same long dark hair, teal jacket, camera necklace, dark jeans, cyan shoes, skin tone, chibi proportions and pixel outlines. Create exactly EIGHT distinct consecutive ATTACK animation frames in FOUR columns by TWO rows, read left to right then next row. One Tainá per cell, standing full body at identical scale and foot baseline, facing right. She wields a small glowing cyan tablet as a knowledge attack. Sequence: 1 battle ready tablet held low, 2 raise tablet near torso, 3 draw arm back, 4 thrust tablet to right with a small cyan crescent arc close to the hand, 5 peak thrust with a slightly larger compact cyan arc, 6 pull back with a few contained sparks, 7 settle tablet down, 8 return ready. Real pose changes and anticipation follow-through. Each tablet, character, hair and every effect must fit entirely within central 65 percent of its cell; leave very wide fully transparent gutters separating ALL frames, at least 30 pixels. Effects must remain close to her hand and never touch a neighboring character. No trails connecting cells, no text, no labels, no grid, no borders, no backdrop. Genuinely transparent RGBA with clean pixel edges. Match the supplied sprite's existing style."
       }
     ]
-  }
+  },
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

@@ -41,7 +41,7 @@
       "conversing"
     ],
     "audioLoops": 9,
-    "audioLicense": "CC0-1.0",
+    "audioLicense": "MIT",
     "saveMigration": "Version 1 campaign and optional neighborhood data preserved"
   },
   "limits": [

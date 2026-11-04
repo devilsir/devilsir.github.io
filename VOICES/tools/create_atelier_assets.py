@@ -528,7 +528,7 @@ def main():
         atlas.alpha_composite(image, (i%8*32, i//8*32))
         records.append(metadata(i, identifier, name, category))
     atlas.save(out / 'tilesets' / 'atelier-props.png', optimize=True)
-    manifest = {'version': '2.0', 'license': 'CC0-1.0', 'licenseURL': 'https://creativecommons.org/publicdomain/zero/1.0/', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_atelier_assets.py', 'atlas': 'assets/tilesets/atelier-props.png', 'tileSize': 32, 'columns': 8, 'rows': 3, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Only these exact RGB triples may be recolored: shadow, body, highlight. Skin, outlines, contents and alpha remain unchanged.', 'palette': P, 'props': records}
+    manifest = {'version': '2.0', 'license': 'MIT', 'licenseURL': 'https://opensource.org/license/mit', 'attributionRequired': False, 'creator': 'Original VOICES pixel art', 'generator': 'tools/create_atelier_assets.py', 'atlas': 'assets/tilesets/atelier-props.png', 'tileSize': 32, 'columns': 8, 'rows': 3, 'coordinateUnits': 'tile-fraction', 'sourceRectUnits': 'pixel', 'colorRoleConvention': 'Only these exact RGB triples may be recolored: shadow, body, highlight. Skin, outlines, contents and alpha remain unchanged.', 'palette': P, 'props': records}
     (out / 'tilesets' / 'atelier-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     characters, sprite_images, portrait_images = {}, {}, {}
     for key, p in PEOPLE.items():
@@ -546,9 +546,9 @@ def main():
         assert portrait.getchannel('A').getextrema() == (0, 255)
         sheet.save(out / 'characters' / (key+'.png'), optimize=True)
         portrait.save(out / 'characters' / (key+'-portrait.png'), optimize=True)
-        characters[key] = {'name': p['name'], 'role': p['role'], 'quote': p['lines'][0][1], 'accent': p['shirt'], 'sprite': 'assets/characters/'+key+'.png', 'portrait': 'assets/characters/'+key+'-portrait.png', 'originalArt': True, 'license': 'CC0-1.0', 'spriteDimensions': {'width': 128, 'height': 192, 'cellWidth': 32, 'cellHeight': 32, 'columns': 4, 'rows': ['down', 'left', 'right', 'up', 'activity', 'greeting']}, 'portraitDimensions': {'width': 288, 'height': 96, 'nativePixelGrid': 48, 'columns': ['neutral', 'happy', 'concerned']}}
+        characters[key] = {'name': p['name'], 'role': p['role'], 'quote': p['lines'][0][1], 'accent': p['shirt'], 'sprite': 'assets/characters/'+key+'.png', 'portrait': 'assets/characters/'+key+'-portrait.png', 'originalArt': True, 'license': 'MIT', 'spriteDimensions': {'width': 128, 'height': 192, 'cellWidth': 32, 'cellHeight': 32, 'columns': 4, 'rows': ['down', 'left', 'right', 'up', 'activity', 'greeting']}, 'portraitDimensions': {'width': 288, 'height': 96, 'nativePixelGrid': 48, 'columns': ['neutral', 'happy', 'concerned']}}
         sprite_images[key], portrait_images[key] = sheet, portrait
-    content = {'version': '2.0', 'license': 'CC0-1.0', 'creator': 'Original VOICES residents and pixel art', 'residents': [resident(k, p) for k, p in PEOPLE.items()], 'characters': characters, 'sources': [], 'assetManifest': manifest}
+    content = {'version': '2.0', 'license': 'MIT', 'creator': 'Original VOICES residents and pixel art', 'residents': [resident(k, p) for k, p in PEOPLE.items()], 'characters': characters, 'sources': [], 'assetManifest': manifest}
     encoded = base64.b64encode((out / 'tilesets' / 'atelier-props.png').read_bytes()).decode('ascii')
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.atelierAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.atelierAssets);V.atelierMaterialSources={atelier:'data:image/png;base64,"+encoded+"'};V.atelierContent="+json.dumps(content, ensure_ascii=False, separators=(',', ':'))+";})();\n"
     (ROOT / 'js' / 'atelier-content.js').write_text(registry, encoding='utf-8')

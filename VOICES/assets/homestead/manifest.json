@@ -8025,5 +8025,12 @@
         "prompt": "Use case: identity-preserve. Asset type: transparent game sprite animation sheet replacing overlapping frames. First reference is Tainá's exact character identity: preserve the same long navy hair, medium brown skin, teal jacket, camera necklace, jeans, cyan shoes, chibi proportions and pixel-art outlines. Second reference shows the two instruments and existing game style. Create exactly TWELVE isolated full-body sprites in THREE columns and FOUR rows with huge empty transparent gutters. Read left to right, top to bottom. Top TWO rows (six frames): Tainá performs a small handheld cylindrical golden wooden reco-reco; left hand holds it diagonally close to torso, right hand scrapes a small stick back and forth along its ridged side, small rhythmic hand and elbow changes and a blink, a complete six-frame loop. Bottom TWO rows (six frames): she plays a small silver cuíca held close to torso, friction drum technique one hand at the skin near the rim and the other operating the internal stick; gentle distinct hand, elbow, mouth and eyelid changes form a loop. Same full character size and feet baseline throughout. Hair stays close behind her back and instruments small close to torso. Entire character plus instrument fits central 65% of EVERY cell; leave at least 40 completely transparent pixels between adjacent figures. No overlapping hair, no touching neighboring instruments, no detached parts. Genuine transparent RGBA background. No text, labels, letters, grid lines, scenery, floor or shadow. Match existing pixel-art RPG style."
       }
     ]
-  }
+  },
+  "license": "MIT",
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "version": "1.9",
-  "license": "CC0-1.0",
-  "creator": "Original VOICES pixel art",
+  "license": "MIT",
+  "creator": "Lucas Xavier Nardelli e Claudilene Alves Lopes",
   "generator": "tools/create_neighbors_assets.py",
   "atlas": "assets/characters/neighbors-animals.png",
   "width": 128,
@@ -108,5 +108,11 @@
       },
       "illustrationStatus": "Animal ficcional de desenho original. A raça orienta a silhueta; aparência em pixel art não comprova genealogia nem define temperamento."
     }
+  ],
+  "licenseURL": "https://opensource.org/license/mit",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
   ]
 }
