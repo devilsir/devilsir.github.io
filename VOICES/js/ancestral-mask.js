@@ -1,13 +1,75 @@
 (function(){
 'use strict';
-const V=window.V,W=V.World,version='20261103-mask-duo2';
+const V=window.V,W=V.World,version='20261104-mask-registration1';
 const portrait='assets/adventure/historiograph-mask.webp',icon='assets/ui/illustrated/historio-mask.webp';
 const variants=[
  {atlas:'assets/adventure/historiograph-mask-atlas.webp',portrait,icon,glow:'#a1d5b9'},
  {atlas:'assets/adventure/historiograph-mask-p2-atlas.webp',portrait:'assets/adventure/historiograph-mask-p2.webp',icon:'assets/ui/illustrated/historio-mask-p2.webp',glow:'#e6bd72'}
 ];
 const rows={front:0,left:1,right:2,pulse:3,speaking:4,curious:5,surprised:6,happy:7};
-const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:0,rows,variants,
+const models=[['plumagem','Plumagem'],['coroa-solar','Coroa solar'],['totem','Totem'],['sol-e-lua','Sol e lua'],['felino','Felino'],['leque','Leque'],['chifres','Chifres'],['hibisco','Hibisco'],['mosaico','Mosaico'],['caveira','Caveira']].map(([id,name],index)=>({id,name,index}));
+const palettes=[{id:'original',name:'Original',hue:0,color:'#e8ac37'},{id:'turquesa',name:'Turquesa',hue:140,color:'#4ddcc9'},{id:'violeta',name:'Violeta',hue:250,color:'#b59afa'},{id:'rubi',name:'Rubi',hue:325,color:'#ed657f'}];
+const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),textures:new Map(),animationTextures:new Map(),animationLoads:new Map(),animationCacheLimit:3,uiTime:0,rows,variants,models,palettes,
+ appearance(){
+  const saved=V.state?.maskAppearance?.player2;
+  return{model:models.some(m=>m.id===saved?.model)?saved.model:'default',palette:palettes.some(p=>p.id===saved?.palette)?saved.palette:'original'};
+ },
+ texture(model,palette='original'){
+  const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0];
+  if(!entry||!V.Assets.ready(this.images.gallery))return null;
+  const key=entry.id+':'+color.id;if(this.textures.has(key))return this.textures.get(key);
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=192;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;
+  c.drawImage(this.images.gallery,entry.index%5*192,Math.floor(entry.index/5)*192,192,192,0,0,192,192);
+  this.recolor(canvas,color);
+  const texture={canvas,url:canvas.toDataURL('image/png')};this.textures.set(key,texture);return texture;
+ },
+ recolor(canvas,color){
+  if(color.hue){
+   // The same hue rotation covers every painted pose and preserves its alpha.
+   const c=canvas.getContext('2d'),pixels=c.getImageData(0,0,canvas.width,canvas.height),a=pixels.data,shift=color.hue/60;
+   for(let i=0;i<a.length;i+=4){
+    if(!a[i+3])continue;const r=a[i]/255,g=a[i+1]/255,b=a[i+2]/255,max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;if(delta<.025)continue;
+    let hue=(max===r?(g-b)/delta+(g<b?6:0):max===g?(b-r)/delta+2:(r-g)/delta+4);hue=(hue+shift)%6;
+    const x=delta*(1-Math.abs(hue%2-1)),rgb=hue<1?[delta,x,0]:hue<2?[x,delta,0]:hue<3?[0,delta,x]:hue<4?[0,x,delta]:hue<5?[x,0,delta]:[delta,0,x];
+    for(let channel=0;channel<3;channel++)a[i+channel]=Math.round((rgb[channel]+min)*255);
+   }
+   c.putImageData(pixels,0,0);
+  }
+ },
+ ensureAnimation(model=this.appearance().model){
+  const entry=models.find(m=>m.id===model),image=this.images['animation:'+model];
+  if(!entry||!image)return Promise.resolve(false);
+  if(V.Assets.ready(image))return Promise.resolve(true);
+  if(this.animationLoads.has(model))return this.animationLoads.get(model);
+  const state=V.state,prepare=()=>V.MapAssets.ensure(['mask-style:'+model],'Preparando animações · '+entry.name);
+  const pending=(V.DuoPanels?.enabled()?V.DuoPanels.withOwner(1,prepare):prepare()).then(ok=>{
+   if(ok&&V.state===state){this.paintPanels();this.paintPortrait();}return ok;
+  }).finally(()=>{if(this.animationLoads.get(model)===pending)this.animationLoads.delete(model);});
+  this.animationLoads.set(model,pending);return pending;
+ },
+ animationTexture(model,palette='original'){
+  const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],image=this.images['animation:'+model];
+  if(!entry||!image)return null;
+  if(!V.Assets.ready(image)){this.ensureAnimation(model);return null;}
+  const key=model+':'+color.id;
+  if(this.animationTextures.has(key)){const texture=this.animationTextures.get(key);this.animationTextures.delete(key);this.animationTextures.set(key,texture);return texture;}
+  let canvas=image;
+  if(color.hue){canvas=document.createElement('canvas');canvas.width=768;canvas.height=1536;canvas.getContext('2d').drawImage(image,0,0);this.recolor(canvas,color);}
+  const texture={canvas,cell:192};this.animationTextures.set(key,texture);
+  // Forty full recolored atlases would consume roughly 180 MB. Keep only the
+  // three most recently used sheets; small gallery thumbnails have their own cache.
+  while(this.animationTextures.size>this.animationCacheLimit)this.animationTextures.delete(this.animationTextures.keys().next().value);
+  return texture;
+ },
+ selectedAnimation(variant){const style=this.appearance();return variant===1?this.animationTexture(style.model,style.palette):null;},
+ selectedTexture(variant){const style=this.appearance();return variant===1?this.texture(style.model,style.palette):null;},
+ label(variant){const style=this.appearance(),model=variant===1&&models.find(m=>m.id===style.model);return model?'Máscara '+model.name+' · '+palettes.find(p=>p.id===style.palette).name+' · jogador 2':variant?'Máscara ancestral azul e turquesa do jogador 2, com olhos âmbar':'Máscara ancestral colorida com penas, pintura geométrica e olhos turquesa';},
+ choose(model,palette=this.appearance().palette){
+  if(!V.state||this.variant()!==1||!['default',...models.map(m=>m.id)].includes(model)||!palettes.some(p=>p.id===palette))return false;
+  if(model!=='default'&&!this.texture(model,palette))return false;
+  // Keep cosmetics outside the shared investigation/tutorial state.
+  V.state.maskAppearance={...V.state.maskAppearance,player2:{model,palette}};V.Save.save();this.ensureAnimation(model);this.refreshWardrobe();this.retrofit();this.paintPanels();this.paintPortrait();return true;
+ },
  variant(player=V.Player.data,owner=-1){
   const d=V.DuoWorld;if(!d?.enabled())return 0;
   if(owner>=0)return owner===1?1:0;
@@ -15,18 +77,21 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:
   return (d.context>=0?d.context:V.DuoPanels?.owner())===1?1:0;
  },
  image(kind,variant=0){return this.images[kind+(variant===1?'2':'')];},
- path(kind,variant=this.variant()){return variants[variant===1?1:0][kind]+'?v='+version;},
+ path(kind,variant=this.variant()){return kind!=='atlas'&&this.selectedTexture(variant)?.url||variants[variant===1?1:0][kind]+'?v='+version;},
  publish(kind,index){
   const im=this.image(kind,index);if(!im?.naturalWidth)return;
   if(kind==='icon'){V.IllustratedInterface.images[index?'historio-p2':'historio']=im;V.Assets.images[index?'item-device-p2':'item-device']=im;}
   if(kind==='portrait'){V.Assets.images[index?'historiograph-p2':'historiograph']=im;if(!index)V.Assets.images['historiograph-v2']=im;}
  },
  load(){
-  return Promise.all(variants.flatMap((skin,index)=>['atlas','portrait','icon'].map(kind=>[kind,index])).map(([kind,index])=>new Promise(resolve=>{
+  this.animationTextures.clear();this.animationLoads.clear();
+  for(const model of models){const im=this.images['animation:'+model.id]=V.Assets.image();im.src='assets/adventure/mask-styles/'+model.id+'-atlas.webp?v='+version;}
+  const gallery=new Promise(resolve=>{const im=this.images.gallery=V.Assets.image();im.onload=()=>{this.textures.clear();this.retrofit();resolve();};im.onerror=resolve;im.src='assets/adventure/mask-styles/gallery.webp?v='+version;V.AssetLoader.register(im,resolve);});
+  return Promise.all([gallery,...variants.flatMap((skin,index)=>['atlas','portrait','icon'].map(kind=>[kind,index])).map(([kind,index])=>new Promise(resolve=>{
    const im=V.Assets.image();this.images[kind+(index?'2':'')]=im;
    im.onload=()=>{this.publish(kind,index);resolve();};
-   im.onerror=resolve;im.src=this.path(kind,index);V.AssetLoader.register(im,resolve);
-  })));
+   im.onerror=resolve;im.src=variants[index][kind]+'?v='+version;V.AssetLoader.register(im,resolve);
+  }))]);
  },
  visible(){return !!(V.state&&V.Game.screen==='game'&&V.Game.mode==='explore'&&!V.SceneEditor.active&&V.Progress.ensure().questItems.historiograph);},
  track(player=V.Player.data,map=W.current){
@@ -83,6 +148,16 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:
   return{x,y,groundY:y+31,back:!reduced&&sin<0,size,angle,variant:actor,...pose};
  },
  frame(c,row,col,x,y,size,variant=0){
+  const animation=this.selectedAnimation(variant);
+  if(animation){
+   if(V.settings.reducedMotion){row=0;col=0;}
+   const cell=animation.cell;c.drawImage(animation.canvas,col*cell,row*cell,cell,cell,Math.round(x-size/2),Math.round(y-size/2),size,size);return;
+  }
+  const texture=this.selectedTexture(variant);
+  if(texture){
+   // Show the selected neutral art while its deferred sheet is being decoded.
+   c.drawImage(texture.canvas,Math.round(x-size/2),Math.round(y-size/2),size,size);return;
+  }
   const image=this.image('atlas',variant);if(!V.Assets.ready(image))return;
   const cell=image.naturalWidth/4;
   c.drawImage(image,col*cell,row*cell,cell,cell,Math.round(x-size/2),Math.round(y-size/2),size,size);
@@ -109,10 +184,31 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:
  },
  mountPanel(){
   const box=V.$('.historio-object'),fallback=box?.querySelector('img');if(!fallback)return;
-  const variant=this.variant();fallback.src=this.path('portrait',variant);
+  const variant=this.variant();fallback.dataset.maskKind='portrait';fallback.src=this.path('portrait',variant);fallback.alt=this.label(variant);
   let canvas=box.querySelector('.historio-mask-canvas');
-  if(!canvas){canvas=document.createElement('canvas');canvas.width=240;canvas.height=240;canvas.className='historio-mask-canvas';canvas.dataset.maskVariant=variant;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',variant?'Máscara ancestral azul e turquesa do jogador 2, com olhos âmbar':'Máscara ancestral colorida com penas, pintura geométrica e olhos turquesa');fallback.insertAdjacentElement('afterend',canvas);this.panels.add({canvas,fallback,player:V.Player.data,variant,curious:V.Historio.tab==='compare'});}
+  if(!canvas){canvas=document.createElement('canvas');canvas.width=240;canvas.height=240;canvas.className='historio-mask-canvas';canvas.dataset.maskVariant=variant;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',this.label(variant));fallback.insertAdjacentElement('afterend',canvas);this.panels.add({canvas,fallback,player:V.Player.data,variant,curious:V.Historio.tab==='compare'});}
+  if(variant===1)this.mountWardrobe(box.closest('.historio-shell'));
   this.paintPanels();
+ },
+ mountWardrobe(shell){
+  if(!shell||shell.querySelector('.historio-wardrobe'))return;
+  const details=document.createElement('details');details.className='historio-wardrobe';
+  details.innerHTML='<summary><span>Escolher visual da máscara</span><small data-mask-current></small></summary><div class="historio-wardrobe-body"><p>Jogador 2 · escolha um modelo e uma paleta. O visual acompanha você no mapa e nas conversas.</p><div class="historio-mask-models" role="group" aria-label="Modelos da máscara do jogador 2">'+[{id:'default',name:'Ancestral azul'},...models].map(model=>'<button type="button" data-mask-model="'+model.id+'" aria-pressed="false"><img width="72" height="72" alt=""><span>'+model.name+'</span><b aria-hidden="true">✓</b></button>').join('')+'</div><fieldset class="historio-mask-palettes"><legend>Cores do modelo</legend>'+palettes.map(p=>'<button type="button" data-mask-palette="'+p.id+'" aria-pressed="false"><i style="--mask-swatch:'+p.color+'" aria-hidden="true"></i>'+p.name+'</button>').join('')+'</fieldset><p class="historio-mask-selection" role="status" aria-live="polite"></p></div>';
+  shell.querySelector('.historio-device').after(details);
+  // Capture ownership explicitly, including clicks before modal binding runs.
+  for(const button of details.querySelectorAll('[data-mask-model]'))button.onclick=()=>V.DuoPanels.withOwner(1,()=>this.choose(button.dataset.maskModel));
+  for(const button of details.querySelectorAll('[data-mask-palette]'))button.onclick=()=>V.DuoPanels.withOwner(1,()=>this.choose(this.appearance().model,button.dataset.maskPalette));
+  this.refreshWardrobe();
+ },
+ refreshWardrobe(){
+  const style=this.appearance(),name=models.find(m=>m.id===style.model)?.name||'Ancestral azul',palette=palettes.find(p=>p.id===style.palette);
+  for(const details of document.querySelectorAll('.historio-wardrobe')){
+   details.querySelector('[data-mask-current]').textContent=name+(style.model==='default'?'':' · '+palette.name);
+   for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'?null:this.texture(id,style.palette),im=button.querySelector('img'),src=texture?.url||variants[1].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;button.disabled=id!=='default'&&!texture;button.setAttribute('aria-pressed',String(id===style.model));}
+   for(const button of details.querySelectorAll('[data-mask-palette]')){button.disabled=style.model==='default';button.setAttribute('aria-pressed',String(button.dataset.maskPalette===(style.model==='default'?'original':style.palette)));}
+   details.querySelector('.historio-mask-selection').textContent='Visual equipado: '+name+(style.model==='default'?'':' · '+palette.name)+'. Escolha salva para o jogador 2.';
+  }
+  for(const panel of this.panels)if(panel.canvas.isConnected){panel.canvas.setAttribute('aria-label',this.label(panel.variant));panel.fallback.src=this.path('portrait',panel.variant);}
  },
  paintPanels(){
   for(const panel of this.panels){
@@ -143,19 +239,21 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),uiTime:
   this.uiTime+=V.clamp(dt,0,.1);this.paintPortrait();this.paintPanels();
  },
  retrofit(root=document){
-  for(const im of root.querySelectorAll('img[data-menu-icon="historio"],.historio-object>img,.adv-device-banner>img,.adv-story-intro>img,img.adv-icon[src*="/historiograph-mask"]')){
-   if(im.dataset.menuIcon!=='historio'&&!/\/historiograph-mask(?:-p2)?\.webp(?:[?#]|$)/.test(im.getAttribute('src')||''))continue;
+  for(const im of root.querySelectorAll('img[data-menu-icon="historio"],img[data-mask-kind],.historio-object>img,.adv-device-banner>img,.adv-story-intro>img,img.adv-icon[src*="/historiograph-mask"]')){
+   if(!im.dataset.maskKind&&im.dataset.menuIcon!=='historio'&&!/\/historiograph-mask(?:-p2)?\.webp(?:[?#]|$)/.test(im.getAttribute('src')||''))continue;
    const owner=im.closest('[data-duo-panel-player]'),variant=V.DuoWorld?.enabled()&&owner?.dataset.duoPanelPlayer==='1'?1:0;
-   const kind=im.dataset.menuIcon==='historio'?'icon':'portrait',path=this.path(kind,variant);
+   const kind=im.dataset.menuIcon==='historio'?'icon':'portrait',path=this.path(kind,variant);im.dataset.maskKind=kind;if(kind==='portrait')im.alt=this.label(variant);
    if(im.getAttribute('src')!==path)im.src=path;
   }
  }
 };
+const assetGroup=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){const match=/^assets\/adventure\/mask-styles\/([\w-]+)-atlas\.webp$/.exec(key);return match?'mask-style:'+match[1]:assetGroup(key);};
+const startGame=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const out=startGame(...args);if(V.DuoWorld?.enabled())M.ensureAnimation();return out;};
 V.AdventureArt.historiograph=portrait+'?v='+version;V.AdventureArt['historiograph-v2']=portrait+'?v='+version;V.AdventureArt['historiograph-portrait']='assets/adventure/historiograph-mask-portrait.webp?v='+version;
 V.AdventureArt['historiograph-p2-portrait']='assets/adventure/historiograph-mask-p2-portrait.webp?v='+version;
 V.content.characters.historiograph.role='Máscara ancestral ficcional · vestígios e perguntas';
 Object.assign(V.AdventureData.items.historiograph,{description:'Máscara ancestral africana na ficção de VOICES, com penas coloridas, pintura geométrica e olhos turquesa. Flutua ao redor do portador e ajuda a relacionar vestígios, fontes e contextos.'});
-const progressIcon=V.Progress.icon.bind(V.Progress);V.Progress.icon=(id,size=40)=>id==='historiograph'?'<img class="adv-icon" src="'+M.path('portrait')+'" alt="Máscara do Historiógrafo Ancestral" width="'+size+'" height="'+size+'">':progressIcon(id,size);
+const progressIcon=V.Progress.icon.bind(V.Progress);V.Progress.icon=(id,size=40)=>id==='historiograph'?'<img class="adv-icon" data-mask-kind="portrait" src="'+M.path('portrait')+'" alt="'+M.label(M.variant())+'" width="'+size+'" height="'+size+'">':progressIcon(id,size);
 const path=V.IllustratedInterface.path.bind(V.IllustratedInterface);V.IllustratedInterface.path=id=>V.IllustratedInterface.canonical(id)==='historio'?M.path('icon'):path(id);
 const refresh=V.IllustratedInterface.refresh.bind(V.IllustratedInterface);V.IllustratedInterface.refresh=function(...args){const out=refresh(...args);M.retrofit();return out;};M.retrofit();
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),M.load()]);for(let index=0;index<variants.length;index++)for(const kind of ['portrait','icon'])M.publish(kind,index);};

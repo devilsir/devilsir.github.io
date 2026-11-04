@@ -1,0 +1,23 @@
+{
+  "tool": "image_gen built-in",
+  "source": "totem-animation-source.png",
+  "model": "totem",
+  "frames": 32,
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "references": [
+    ".qa/references/mask-styles/totem.png",
+    "assets/adventure/historiograph-mask-atlas.webp",
+    "assets/adventure/historiograph-mask-p2-atlas.webp"
+  ],
+  "prompt": "Use case: identity-preserve. Asset type: production pixel-art animation sprite sheet for the VOICES floating memory-mask companion. Image 1 is the exact NEW MODEL to animate: preserve its unique silhouette, carved face, colors, ornaments, feathers and identity. Images 2 and 3 are the EXISTING PLAYER 1 and PLAYER 2 ANIMATION ATLASES: follow their deliberate pixel-art finish, expressive faces, timing phases and 4-column / 8-row layout, but do NOT replace image 1's model with them. Crisp stepped pixel clusters and dark outlines, carved wood facets, no smoothing or 3D.\nCreate exactly FOUR equal COLUMNS by EIGHT equal ROWS = 32 complete independent sprites, portrait 1:2 canvas. Stable centered registration and scale, full silhouette including all feathers/earrings/leaves visible with >=12% clear transparent padding INSIDE EVERY cell. No sprite crosses its cell. Each row has the following actual DRAWN FACIAL CHANGES, not merely moving/scaling a static portrait:\nRow 1 FRONT idle blink: eyes open, half closed, completely closed lids, reopening.\nRow 2 LEFT three-quarter turn: open, half closed, closed, reopening; draw changed face perspective.\nRow 3 RIGHT three-quarter turn: open, half closed, closed, reopening; opposite face perspective.\nRow 4 FRONT investigation activation: neutral, brighter jewel and eyes, brightest restrained inner eye/jewel glow, settle. No surrounding glow cloud.\nRow 5 FRONT speaking: lips apart, small open mouth, rounded O mouth, nearly closed. Distinct mouth shapes.\nRow 6 FRONT curious: eyebrow raised, gaze left, gaze right, relaxed.\nRow 7 FRONT surprised: eyes widen, small O mouth, recovery, settle.\nRow 8 FRONT happy: gentle smile, bigger smile, happy closed eyes, relaxed smile.\nGenuine transparent RGBA background, alpha=0 between all sprites and at cell corners. Preserve opaque dark eye sockets/interior carved details. No backdrop, checkerboard, tiles, shadows, grid lines, labels, words, numbers, watermark or scene. Only this ONE mask design repeated with expressive drawn variations. Fictional fantasy masks, no specific real ceremonial attribution.\n\nMODEL: Totem — narrow rectangular wooden face, bright ivory/gold rectangular eyes, broad red forehead band, exactly four tall feathers (purple, yellow, orange, magenta), long angular gold nose, square red-rimmed mouth with ivory block teeth and small green leaf beard. Animate wooden eyelids over the rectangular eyes, and actually open/change the red-rimmed toothed mouth when speaking; preserve the square face.\nCRITICAL: keep all 32 frames and rows evenly spaced, especially row 5 mouths must clearly alternate apart/open/rounded/closed."
+}

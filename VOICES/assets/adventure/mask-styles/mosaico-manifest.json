@@ -1,0 +1,34 @@
+{
+  "file": "assets/adventure/mask-styles/mosaico-atlas.webp",
+  "model": "mosaico",
+  "player": 2,
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "cell": 192,
+  "frames": 32,
+  "source": "mosaico-animation-source.png",
+  "generation": "mosaico-generation.json",
+  "style": "pixel art",
+  "animation": "drawn frame by frame",
+  "registration": "fixed facial landmark; common scale; integer translation only",
+  "registrationFile": "registration.json",
+  "anchor": [
+    96,
+    74.0
+  ],
+  "palettes": [
+    "original",
+    "turquesa",
+    "violeta",
+    "rubi"
+  ]
+}

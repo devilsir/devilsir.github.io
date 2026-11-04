@@ -1,0 +1,34 @@
+{
+  "file": "assets/adventure/mask-styles/felino-atlas.webp",
+  "model": "felino",
+  "player": 2,
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "cell": 192,
+  "frames": 32,
+  "source": "felino-animation-source.png",
+  "generation": "felino-generation.json",
+  "style": "pixel art",
+  "animation": "drawn frame by frame",
+  "registration": "fixed facial landmark; common scale; integer translation only",
+  "registrationFile": "registration.json",
+  "anchor": [
+    96,
+    46.0
+  ],
+  "palettes": [
+    "original",
+    "turquesa",
+    "violeta",
+    "rubi"
+  ]
+}

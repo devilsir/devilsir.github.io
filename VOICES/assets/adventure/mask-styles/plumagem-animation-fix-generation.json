@@ -1,0 +1,6 @@
+{
+  "tool": "image_gen built-in",
+  "source": "plumagem-animation-source-v2.png",
+  "reference": "plumagem-animation-source.png",
+  "prompt": "Use case: precise-object-edit. This is an existing 4 COLUMN x 8 ROW animation atlas. Preserve the exact same Plumagem mask identity, pixel-art style, all feather/jewel/earring colors, all 32 sprites, grid, stable registration and transparent background. SINGLE TARGETED FIX: only ROW FIVE (counting rows from top starting with one) — the SPEAKING row, directly below the glowing-eye activation row and directly above the curious row — needs visibly articulated MOUTHS. In row 5 column 1, make red lips apart with a small dark opening; row 5 column 2, draw a CLEARLY OPEN mouth with dark inner cavity and a little ivory upper tooth edge; row 5 column 3, draw a clearly ROUND O mouth with red ring lips and dark central hole; row 5 column 4, draw lips almost closed. These must be four clearly different drawn mouth shapes, not translations or scaling of the same mouth. Do not edit other rows or change the mask silhouette. Keep eyes, geometric face paint, forehead jewel, feather crown and turquoise drop earrings unchanged. Real transparent RGBA alpha=0 between sprites; no text/grid/background."
+}

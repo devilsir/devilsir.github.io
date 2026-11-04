@@ -2,3 +2,17 @@
 .historio-mask-canvas{display:block;width:min(200px,100%);height:auto;aspect-ratio:1;object-fit:contain;image-rendering:pixelated;margin:0 auto;filter:drop-shadow(0 4px 5px #0b201c55)}.historio-object.active .historio-mask-canvas{filter:drop-shadow(0 0 8px #8ecbbb66)}.historio-object img[hidden]{display:none!important}
 
 .illustrated-icon[data-menu-icon="historio"]{image-rendering:pixelated!important}
+.historio-wardrobe{margin:16px 0;border:1px solid #637565;border-radius:12px;background:#142b25;color:#f4ead3;overflow:hidden}
+.historio-wardrobe summary{padding:14px 16px;cursor:pointer;font-weight:700;line-height:1.5}
+.historio-wardrobe summary small{display:block;margin-left:18px;font-weight:400;color:#d9be80}
+.historio-wardrobe-body{padding:0 16px 12px}.historio-wardrobe-body>p{font-size:13px;line-height:1.6}
+.historio-mask-models{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.historio-mask-models button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:116px;padding:8px 4px;border:2px solid #52665b;border-radius:9px;background:#0b201c;color:#f4ead3;font-size:12px;line-height:1.35}
+.historio-mask-models img{display:block;max-width:100%;width:72px;height:72px;object-fit:contain;image-rendering:pixelated}
+.historio-mask-models button[aria-pressed="true"],.historio-mask-palettes button[aria-pressed="true"]{border-color:#f2cc7e;background:#354a35;box-shadow:inset 0 0 0 1px #f2cc7e}
+.historio-mask-models b{display:none;position:absolute;right:6px;top:3px;color:#f2cc7e}.historio-mask-models button[aria-pressed="true"] b{display:block}
+.historio-mask-palettes{display:flex;flex-wrap:wrap;gap:8px;min-width:0;margin:16px 0 0;padding:12px;border:1px solid #637565;border-radius:8px}
+.historio-mask-palettes legend{padding:0 6px;font-size:13px;color:#f2cc7e}.historio-mask-palettes button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;border:2px solid #52665b;border-radius:8px;background:#0b201c;color:#f4ead3;font-size:13px}
+.historio-mask-palettes i{width:16px;height:16px;border-radius:50%;background:var(--mask-swatch);border:1px solid #fff6}
+.historio-mask-selection{color:#d9be80;font-size:12px!important}.historio-wardrobe button:focus-visible{outline:3px solid #91e1d4;outline-offset:2px}.historio-wardrobe button:disabled{opacity:.5;cursor:default}
+@media(max-width:480px){.historio-wardrobe-body{padding:0 10px 10px}.historio-mask-models{grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:6px}.historio-mask-models span{overflow-wrap:anywhere}.historio-mask-palettes{padding:10px 6px}.historio-mask-palettes button{flex:1 1 40%;padding:8px 6px}}

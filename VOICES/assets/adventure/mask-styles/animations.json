@@ -1,0 +1,61 @@
+{
+  "models": [
+    "plumagem",
+    "coroa-solar",
+    "totem",
+    "sol-e-lua",
+    "felino",
+    "leque",
+    "chifres",
+    "hibisco",
+    "mosaico",
+    "caveira"
+  ],
+  "columns": 4,
+  "rows": [
+    "front",
+    "left",
+    "right",
+    "pulse",
+    "speaking",
+    "curious",
+    "surprised",
+    "happy"
+  ],
+  "cell": 192,
+  "framesPerModel": 32,
+  "totalFrames": 320,
+  "player": 2,
+  "palettes": [
+    "original",
+    "turquesa",
+    "violeta",
+    "rubi"
+  ],
+  "tool": "image_gen built-in",
+  "atlases": [
+    "assets/adventure/mask-styles/plumagem-atlas.webp",
+    "assets/adventure/mask-styles/coroa-solar-atlas.webp",
+    "assets/adventure/mask-styles/totem-atlas.webp",
+    "assets/adventure/mask-styles/sol-e-lua-atlas.webp",
+    "assets/adventure/mask-styles/felino-atlas.webp",
+    "assets/adventure/mask-styles/leque-atlas.webp",
+    "assets/adventure/mask-styles/chifres-atlas.webp",
+    "assets/adventure/mask-styles/hibisco-atlas.webp",
+    "assets/adventure/mask-styles/mosaico-atlas.webp",
+    "assets/adventure/mask-styles/caveira-atlas.webp"
+  ],
+  "prompts": [
+    "assets/adventure/mask-styles/plumagem-generation.json",
+    "assets/adventure/mask-styles/coroa-solar-generation.json",
+    "assets/adventure/mask-styles/totem-generation.json",
+    "assets/adventure/mask-styles/sol-e-lua-generation.json",
+    "assets/adventure/mask-styles/felino-generation.json",
+    "assets/adventure/mask-styles/leque-generation.json",
+    "assets/adventure/mask-styles/chifres-generation.json",
+    "assets/adventure/mask-styles/hibisco-generation.json",
+    "assets/adventure/mask-styles/mosaico-generation.json",
+    "assets/adventure/mask-styles/caveira-generation.json",
+    "assets/adventure/mask-styles/plumagem-animation-fix-generation.json"
+  ]
+}
