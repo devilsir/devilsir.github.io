@@ -5,7 +5,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
  fs.mkdirSync(out,{recursive:true});
  const check=async(name,fn)=>{try{await fn();results.push({name,pass:true});console.log('PASS',name);}catch(error){results.push({name,pass:false,error:error.stack});console.error('FAIL',name,error.stack);}};
  const surface=(width=192,height=192)=>{const canvas=w.document.createElement('canvas');canvas.width=width;canvas.height=height;return{canvas,c:canvas.getContext('2d')};};
- const pixels=canvas=>Buffer.from(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
+ const pixels=image=>{let canvas=image;if(image.tagName!=='CANVAS'){const s=surface(image.naturalWidth,image.naturalHeight);s.c.drawImage(image,0,0);canvas=s.canvas;}return Buffer.from(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);};
  const save=(canvas,name)=>fs.writeFileSync(path.join(out,name+'.png'),canvases.get(canvas).canvas.toBuffer('image/png'));
  const snapshot=name=>{
   const doc=w.document.documentElement.cloneNode(true),base=w.document.createElement('base');base.href='../../';doc.querySelector('head').prepend(base);
@@ -16,6 +16,22 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
  V.Game.newState({name:'Galeria de máscaras',character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});V.Game.startGame();
  await V.MapAssets.whenReady();V.Onboarding.active=false;V.Onboarding.suspended=true;V.GuideOverlay.hide();
  const M=V.AncestralMask,D=V.DuoWorld,Q=V.DuoPanels;V.DuoTutorial.finish(0,true);V.DuoTutorial.finish(1,true);Q.closeAll();
+ await check('opening and choosing masks never exports or reads a canvas, including recolored animations',async()=>{
+  const proto=w.HTMLCanvasElement.prototype,exportImage=proto.toDataURL;
+  const context=surface().c,contextProto=Object.getPrototypeOf(context),readPixels=contextProto.getImageData;
+  let blocked=0;const deny=()=>{blocked++;throw new w.DOMException('Tainted canvases may not be exported.','SecurityError');};
+  proto.toDataURL=deny;contextProto.getImageData=deny;
+  try{
+   for(const owner of [0,1]){
+    D.root.querySelector('[data-world-menu="historio"][data-world-player="'+owner+'"]').click();
+    const root=Q.root(owner);root.querySelector('[data-historio-change-mask]').click();assert(root.querySelector('.historio-wardrobe').open);
+    root.querySelector('[data-mask-model="plumagem"]').click();root.querySelector('[data-mask-palette="turquesa"]').click();
+    assert(await M.ensureAnimation('plumagem',owner,'turquesa'));assert(M.selectedAnimation(owner));assert.match(M.selectedTexture(owner).url,/plumagem-turquesa\.webp/);
+    Q.withOwner(owner,()=>M.choose('default','original'));Q.closeAll();
+   }
+   assert.equal(blocked,0);
+  }finally{proto.toDataURL=exportImage;contextProto.getImageData=readPixels;}
+ });
  await check('both duo menus and headers open the wardrobe belonging to that player',async()=>{
   for(const i of [0,1]){
    const button=D.root.querySelector('[data-world-menu="historio"][data-world-player="'+i+'"]');assert(button);assert(button.querySelector('img[data-menu-icon="historio"]'));

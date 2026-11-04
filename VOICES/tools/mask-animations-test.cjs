@@ -34,10 +34,11 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{env
    assert(new Set(signatures).size>=24,model.id+' varied painted frames');assert.notEqual(signatures[4],signatures[8],model.id+' left/right perspectives');
   }
  });
- await check('all four palettes retain every painted pose and alpha, with a bounded recolor cache',()=>{
+ await check('all four prebuilt palettes retain every painted pose and alpha',async()=>{
   for(const model of M.models){
    const image=M.images['animation:'+model.id],base=surface(768,1536);base.c.drawImage(image,0,0);const rgba=pixels(base.canvas),seen=new Set();
    for(const palette of M.palettes){
+    assert(await M.ensureAnimation(model.id,0,palette.id));
     const texture=M.animationTexture(model.id,palette.id),s=surface(768,1536);s.c.drawImage(texture.canvas,0,0);const recolored=pixels(s.canvas);seen.add(recolored.toString('base64'));
     for(let index=3;index<rgba.length;index+=4)assert.equal(recolored[index],rgba[index],model.id+' '+palette.id+' alpha');
     assert(!pixels(crop(texture.canvas,0,0).canvas).equals(pixels(crop(texture.canvas,0,2).canvas)));

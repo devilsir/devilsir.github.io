@@ -4,6 +4,8 @@ from PIL import Image
 import argparse
 import json
 import hashlib
+import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / 'assets/adventure/mask-styles'
@@ -135,3 +137,4 @@ if __name__ == '__main__':
                     'prompts': [f'assets/adventure/mask-styles/{m}-generation.json' for m in MODELS] + ['assets/adventure/mask-styles/plumagem-animation-fix-generation.json']}
         (TARGET / 'animations.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf8')
         previews(atlases)
+    subprocess.run([sys.executable, str(ROOT / 'tools/prepare-mask-palettes.py')], check=True)

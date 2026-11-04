@@ -1,0 +1,253 @@
+{
+  "cell": 192,
+  "frames": 32,
+  "palettes": {
+    "original": 0,
+    "turquesa": 140,
+    "violeta": 250,
+    "rubi": 325
+  },
+  "runtimePixelAccess": false,
+  "files": [
+    {
+      "model": "plumagem",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/plumagem-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/plumagem-original.webp"
+    },
+    {
+      "model": "plumagem",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/plumagem-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/plumagem-turquesa.webp"
+    },
+    {
+      "model": "plumagem",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/plumagem-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/plumagem-violeta.webp"
+    },
+    {
+      "model": "plumagem",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/plumagem-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/plumagem-rubi.webp"
+    },
+    {
+      "model": "coroa-solar",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/coroa-solar-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/coroa-solar-original.webp"
+    },
+    {
+      "model": "coroa-solar",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/coroa-solar-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/coroa-solar-turquesa.webp"
+    },
+    {
+      "model": "coroa-solar",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/coroa-solar-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/coroa-solar-violeta.webp"
+    },
+    {
+      "model": "coroa-solar",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/coroa-solar-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/coroa-solar-rubi.webp"
+    },
+    {
+      "model": "totem",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/totem-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/totem-original.webp"
+    },
+    {
+      "model": "totem",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/totem-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/totem-turquesa.webp"
+    },
+    {
+      "model": "totem",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/totem-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/totem-violeta.webp"
+    },
+    {
+      "model": "totem",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/totem-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/totem-rubi.webp"
+    },
+    {
+      "model": "sol-e-lua",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/sol-e-lua-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/sol-e-lua-original.webp"
+    },
+    {
+      "model": "sol-e-lua",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/sol-e-lua-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/sol-e-lua-turquesa.webp"
+    },
+    {
+      "model": "sol-e-lua",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/sol-e-lua-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/sol-e-lua-violeta.webp"
+    },
+    {
+      "model": "sol-e-lua",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/sol-e-lua-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/sol-e-lua-rubi.webp"
+    },
+    {
+      "model": "felino",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/felino-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/felino-original.webp"
+    },
+    {
+      "model": "felino",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/felino-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/felino-turquesa.webp"
+    },
+    {
+      "model": "felino",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/felino-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/felino-violeta.webp"
+    },
+    {
+      "model": "felino",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/felino-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/felino-rubi.webp"
+    },
+    {
+      "model": "leque",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/leque-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/leque-original.webp"
+    },
+    {
+      "model": "leque",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/leque-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/leque-turquesa.webp"
+    },
+    {
+      "model": "leque",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/leque-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/leque-violeta.webp"
+    },
+    {
+      "model": "leque",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/leque-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/leque-rubi.webp"
+    },
+    {
+      "model": "chifres",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/chifres-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/chifres-original.webp"
+    },
+    {
+      "model": "chifres",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/chifres-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/chifres-turquesa.webp"
+    },
+    {
+      "model": "chifres",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/chifres-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/chifres-violeta.webp"
+    },
+    {
+      "model": "chifres",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/chifres-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/chifres-rubi.webp"
+    },
+    {
+      "model": "hibisco",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/hibisco-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/hibisco-original.webp"
+    },
+    {
+      "model": "hibisco",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/hibisco-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/hibisco-turquesa.webp"
+    },
+    {
+      "model": "hibisco",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/hibisco-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/hibisco-violeta.webp"
+    },
+    {
+      "model": "hibisco",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/hibisco-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/hibisco-rubi.webp"
+    },
+    {
+      "model": "mosaico",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/mosaico-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/mosaico-original.webp"
+    },
+    {
+      "model": "mosaico",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/mosaico-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/mosaico-turquesa.webp"
+    },
+    {
+      "model": "mosaico",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/mosaico-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/mosaico-violeta.webp"
+    },
+    {
+      "model": "mosaico",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/mosaico-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/mosaico-rubi.webp"
+    },
+    {
+      "model": "caveira",
+      "palette": "original",
+      "atlas": "assets/adventure/mask-styles/caveira-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/caveira-original.webp"
+    },
+    {
+      "model": "caveira",
+      "palette": "turquesa",
+      "atlas": "assets/adventure/mask-styles/caveira-turquesa-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/caveira-turquesa.webp"
+    },
+    {
+      "model": "caveira",
+      "palette": "violeta",
+      "atlas": "assets/adventure/mask-styles/caveira-violeta-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/caveira-violeta.webp"
+    },
+    {
+      "model": "caveira",
+      "palette": "rubi",
+      "atlas": "assets/adventure/mask-styles/caveira-rubi-atlas.webp",
+      "portrait": "assets/adventure/mask-styles/portraits/caveira-rubi.webp"
+    }
+  ]
+}

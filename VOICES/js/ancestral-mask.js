@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const V=window.V,W=V.World,version='20261104-mask-both1';
+const V=window.V,W=V.World,version='20261104-mask-files1';
 const portrait='assets/adventure/historiograph-mask.webp',icon='assets/ui/illustrated/historio-mask.webp';
 const variants=[
  {atlas:'assets/adventure/historiograph-mask-atlas.webp',portrait,icon,glow:'#a1d5b9'},
@@ -16,48 +16,31 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  },
  texture(model,palette='original'){
   const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0];
-  if(!entry||!V.Assets.ready(this.images.gallery))return null;
+  if(!entry)return null;
+  const image=this.images['portrait:'+entry.id+'-'+color.id];if(!V.Assets.ready(image))return null;
   const key=entry.id+':'+color.id;if(this.textures.has(key))return this.textures.get(key);
-  const canvas=document.createElement('canvas');canvas.width=canvas.height=192;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;
-  c.drawImage(this.images.gallery,entry.index%5*192,Math.floor(entry.index/5)*192,192,192,0,0,192,192);
-  this.recolor(canvas,color);
-  const texture={canvas,url:canvas.toDataURL('image/png')};this.textures.set(key,texture);return texture;
+  // Static images also work on file://, where drawing a local image taints a canvas.
+  const texture={canvas:image,url:'assets/adventure/mask-styles/portraits/'+entry.id+'-'+color.id+'.webp?v='+version};this.textures.set(key,texture);return texture;
  },
- recolor(canvas,color){
-  if(color.hue){
-   // The same hue rotation covers every painted pose and preserves its alpha.
-   const c=canvas.getContext('2d'),pixels=c.getImageData(0,0,canvas.width,canvas.height),a=pixels.data,shift=color.hue/60;
-   for(let i=0;i<a.length;i+=4){
-    if(!a[i+3])continue;const r=a[i]/255,g=a[i+1]/255,b=a[i+2]/255,max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;if(delta<.025)continue;
-    let hue=(max===r?(g-b)/delta+(g<b?6:0):max===g?(b-r)/delta+2:(r-g)/delta+4);hue=(hue+shift)%6;
-    const x=delta*(1-Math.abs(hue%2-1)),rgb=hue<1?[delta,x,0]:hue<2?[x,delta,0]:hue<3?[0,delta,x]:hue<4?[0,x,delta]:hue<5?[x,0,delta]:[delta,0,x];
-    for(let channel=0;channel<3;channel++)a[i+channel]=Math.round((rgb[channel]+min)*255);
-   }
-   c.putImageData(pixels,0,0);
-  }
- },
- ensureAnimation(model=this.appearance().model,owner=this.variant()){
-  const entry=models.find(m=>m.id===model),image=this.images['animation:'+model];
+ ensureAnimation(model=this.appearance().model,owner=this.variant(),palette=this.appearance(owner).palette){
+  const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],asset=model+(color.id==='original'?'':'-'+color.id),image=this.images['animation:'+asset];
   if(!entry||!image)return Promise.resolve(false);
   if(V.Assets.ready(image))return Promise.resolve(true);
-  if(this.animationLoads.has(model))return this.animationLoads.get(model);
-  const state=V.state,prepare=()=>V.MapAssets.ensure(['mask-style:'+model],'Preparando animações · '+entry.name);
+  if(this.animationLoads.has(asset))return this.animationLoads.get(asset);
+  const state=V.state,prepare=()=>V.MapAssets.ensure(['mask-style:'+asset],'Preparando animações · '+entry.name);
   const pending=(V.DuoPanels?.enabled()?V.DuoPanels.withOwner(owner,prepare):prepare()).then(ok=>{
    if(ok&&V.state===state){this.paintPanels();this.paintPortrait();}return ok;
-  }).finally(()=>{if(this.animationLoads.get(model)===pending)this.animationLoads.delete(model);});
-  this.animationLoads.set(model,pending);return pending;
+  }).finally(()=>{if(this.animationLoads.get(asset)===pending)this.animationLoads.delete(asset);});
+  this.animationLoads.set(asset,pending);return pending;
  },
  animationTexture(model,palette='original',owner=this.variant()){
-  const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],image=this.images['animation:'+model];
+  const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],asset=model+(color.id==='original'?'':'-'+color.id),image=this.images['animation:'+asset];
   if(!entry||!image)return null;
-  if(!V.Assets.ready(image)){this.ensureAnimation(model,owner);return null;}
+  if(!V.Assets.ready(image)){this.ensureAnimation(model,owner,color.id);return null;}
   const key=model+':'+color.id;
   if(this.animationTextures.has(key)){const texture=this.animationTextures.get(key);this.animationTextures.delete(key);this.animationTextures.set(key,texture);return texture;}
-  let canvas=image;
-  if(color.hue){canvas=document.createElement('canvas');canvas.width=768;canvas.height=1536;canvas.getContext('2d').drawImage(image,0,0);this.recolor(canvas,color);}
-  const texture={canvas,cell:192};this.animationTextures.set(key,texture);
-  // Forty full recolored atlases would consume roughly 180 MB. Keep only the
-  // three most recently used sheets; small gallery thumbnails have their own cache.
+  const texture={canvas:image,cell:192};this.animationTextures.set(key,texture);
+  // Sheets load only when selected; no generated canvas or pixel readback is needed.
   while(this.animationTextures.size>this.animationCacheLimit)this.animationTextures.delete(this.animationTextures.keys().next().value);
   return texture;
  },
@@ -85,10 +68,14 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   if(kind==='portrait'){V.Assets.images[index?'historiograph-p2':'historiograph']=im;if(!index)V.Assets.images['historiograph-v2']=im;}
  },
  load(){
-  this.animationTextures.clear();this.animationLoads.clear();
-  for(const model of models){const im=this.images['animation:'+model.id]=V.Assets.image();im.src='assets/adventure/mask-styles/'+model.id+'-atlas.webp?v='+version;}
+  this.textures.clear();this.animationTextures.clear();this.animationLoads.clear();
+  const portraits=[];
+  for(const model of models)for(const palette of palettes){
+   const asset=model.id+(palette.id==='original'?'':'-'+palette.id),im=this.images['animation:'+asset]=V.Assets.image();im.src='assets/adventure/mask-styles/'+asset+'-atlas.webp?v='+version;
+   portraits.push(new Promise(resolve=>{const thumbnail=this.images['portrait:'+model.id+'-'+palette.id]=V.Assets.image();thumbnail.onload=resolve;thumbnail.onerror=resolve;thumbnail.src='assets/adventure/mask-styles/portraits/'+model.id+'-'+palette.id+'.webp?v='+version;V.AssetLoader.register(thumbnail,resolve);}));
+  }
   const gallery=new Promise(resolve=>{const im=this.images.gallery=V.Assets.image();im.onload=()=>{this.textures.clear();this.retrofit();resolve();};im.onerror=resolve;im.src='assets/adventure/mask-styles/gallery.webp?v='+version;V.AssetLoader.register(im,resolve);});
-  return Promise.all([gallery,...variants.flatMap((skin,index)=>['atlas','portrait','icon'].map(kind=>[kind,index])).map(([kind,index])=>new Promise(resolve=>{
+  return Promise.all([gallery,...portraits,...variants.flatMap((skin,index)=>['atlas','portrait','icon'].map(kind=>[kind,index])).map(([kind,index])=>new Promise(resolve=>{
    const im=V.Assets.image();this.images[kind+(index?'2':'')]=im;
    im.onload=()=>{this.publish(kind,index);resolve();};
    im.onerror=resolve;im.src=variants[index][kind]+'?v='+version;V.AssetLoader.register(im,resolve);
