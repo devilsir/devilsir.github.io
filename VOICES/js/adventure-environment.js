@@ -63,7 +63,7 @@ this.movingCache||=new Map();if(moving){const old=this.movingCache.get(m.id+':'+
 const key=m.id+':'+(m.geometryRevision||0)+':'+l.id+':'+l.radius+':'+l.x.toFixed(0)+','+l.y.toFixed(0)+(moving?':'+Math.floor(this.clock*7):'');
 if(this.cache.has(key))return this.cache.get(key);
 const segs=this.occluders(m).filter(s=>Math.min(s.a[0],s.b[0])<l.x+l.radius&&Math.max(s.a[0],s.b[0])>l.x-l.radius&&Math.min(s.a[1],s.b[1])<l.y+l.radius&&Math.max(s.a[1],s.b[1])>l.y-l.radius);
-const count=V.settings.lightingQuality==='high'?80:V.settings.lightingQuality==='low'?32:48,angles=Array.from({length:count},(_,i)=>i*Math.PI*2/count);
+const count=Math.min(V.Performance?.lightRays??80,V.settings.lightingQuality==='high'?80:V.settings.lightingQuality==='low'?32:48),angles=Array.from({length:count},(_,i)=>i*Math.PI*2/count);
 for(const s of segs.slice(0,90))for(const p of [s.a,s.b])if(Math.hypot(p[0]-l.x,p[1]-l.y)<l.radius+30){const angle=Math.atan2(p[1]-l.y,p[0]-l.x);angles.push(angle-.0005,angle+.0005);}
 const result=angles.sort((a,b)=>a-b).map(angle=>{const dx=Math.cos(angle),dy=Math.sin(angle);let nearest=l.radius;for(const s of segs){const sx=s.b[0]-s.a[0],sy=s.b[1]-s.a[1],den=dx*sy-dy*sx;if(Math.abs(den)<.00001)continue;const ox=s.a[0]-l.x,oy=s.a[1]-l.y,t=(ox*sy-oy*sx)/den,u=(ox*dy-oy*dx)/den;if(t>.7&&t<nearest&&u>=0&&u<=1)nearest=t;}return[l.x+dx*nearest,l.y+dy*nearest];});
 if(moving)this.movingCache.set(m.id+':'+l.id,{time:this.clock,x:l.x,y:l.y,polygon:result});else this.cache.set(key,result);return result;
@@ -95,13 +95,13 @@ const w=this.weather();if(['cloudy','rain','storm'].includes(w.type))darkness+=w
 darkness=Math.min(darkness,1-(V.settings.minimumBrightness||.28));if(V.settings.fullVisibility)darkness=0;
 if(darkness<.01)return;
 if(!this.mask){this.mask=document.createElement('canvas');this.maskCtx=this.mask.getContext('2d');}
-if(this.mask.width!==ctx.canvas.width||this.mask.height!==ctx.canvas.height){this.mask.width=ctx.canvas.width;this.mask.height=ctx.canvas.height;}
-const mask=this.maskCtx;mask.globalCompositeOperation='source-over';mask.clearRect(0,0,this.mask.width,this.mask.height);const tint=/^#[a-f0-9]{6}$/i.test(profile.ambient||'')?[1,3,5].map(i=>Math.round(parseInt(profile.ambient.slice(i,i+2),16)*.13)):[9,16,39];mask.fillStyle='rgba('+tint.join(',')+','+darkness+')';mask.fillRect(0,0,this.mask.width,this.mask.height);
-const visible=this.lights(m).filter(l=>l.x+l.radius>cam.x&&l.y+l.radius>cam.y&&l.x-l.radius<cam.x+ctx.canvas.width&&l.y-l.radius<cam.y+ctx.canvas.height).sort((a,b)=>Number(b.moving)-Number(a.moving)).slice(0,V.settings.lightingQuality==='low'?9:22);
+const resolution=V.Performance?.lightingScale??1,viewWidth=ctx.canvas.width,viewHeight=ctx.canvas.height,maskWidth=Math.ceil(viewWidth*resolution),maskHeight=Math.ceil(viewHeight*resolution);if(this.mask.width!==maskWidth||this.mask.height!==maskHeight){this.mask.width=maskWidth;this.mask.height=maskHeight;}this.maskCtx.setTransform(resolution,0,0,resolution,0,0);
+const mask=this.maskCtx;mask.globalCompositeOperation='source-over';mask.clearRect(0,0,viewWidth,viewHeight);const tint=/^#[a-f0-9]{6}$/i.test(profile.ambient||'')?[1,3,5].map(i=>Math.round(parseInt(profile.ambient.slice(i,i+2),16)*.13)):[9,16,39];mask.fillStyle='rgba('+tint.join(',')+','+darkness+')';mask.fillRect(0,0,viewWidth,viewHeight);
+const visible=this.lights(m).filter(l=>l.x+l.radius>cam.x&&l.y+l.radius>cam.y&&l.x-l.radius<cam.x+ctx.canvas.width&&l.y-l.radius<cam.y+ctx.canvas.height).sort((a,b)=>Number(b.moving)-Number(a.moving)).slice(0,Math.min(V.Performance?.lightLimit??22,V.settings.lightingQuality==='low'?9:22));
 for(const l of visible){mask.save();const poly=this.visibility(m,l,l.moving);mask.beginPath();poly.forEach(([x,y],i)=>i?mask.lineTo(x-cam.x,y-cam.y):mask.moveTo(x-cam.x,y-cam.y));mask.closePath();mask.clip();const x=l.x-cam.x,y=l.y-cam.y,g=mask.createRadialGradient(x,y,6,x,y,l.radius);g.addColorStop(0,'rgba(0,0,0,'+Math.min(1,l.intensity)+')');g.addColorStop(l.softness?Math.max(.05,1-l.softness):.2,'rgba(0,0,0,'+Math.min(.85,l.intensity*.8)+')');g.addColorStop(1,'rgba(0,0,0,0)');mask.globalCompositeOperation='destination-out';mask.fillStyle=g;mask.fillRect(x-l.radius,y-l.radius,l.radius*2,l.radius*2);mask.restore();
 ctx.save();ctx.globalCompositeOperation='screen';ctx.globalAlpha=Math.min(.10,darkness*.15)*l.intensity;ctx.beginPath();poly.forEach(([px,py],i)=>i?ctx.lineTo(px-cam.x,py-cam.y):ctx.moveTo(px-cam.x,py-cam.y));ctx.closePath();ctx.clip();ctx.fillStyle=l.color;ctx.beginPath();ctx.arc(x,y,l.radius*.68,0,Math.PI*2);ctx.fill();ctx.restore();}
 for(const l of visible.filter(l=>l.mount)){const mount=m.mounts?.find(m=>m.id===l.mount);if(!mount)continue;const pos=V.Architecture.mountPosition(m.design,mount),x=pos.x-cam.x,y=pos.y-cam.y-mount.elevation;mask.save();mask.globalCompositeOperation='destination-out';const glow=mask.createRadialGradient(x,y+mount.height*.5,2,x,y+mount.height*.5,95);glow.addColorStop(0,'rgba(0,0,0,.85)');glow.addColorStop(1,'rgba(0,0,0,0)');mask.fillStyle=glow;mask.fillRect(x-mount.width*.7,y-10,mount.width*1.4,mount.height+45);mask.restore();}
-ctx.drawImage(this.mask,0,0);
+ctx.drawImage(this.mask,0,0,viewWidth,viewHeight);
 },
 drawWindows(ctx,m,cam){
 if(!m.design.adventure?.environment?.indoor)return;const list=m.design.adventure.architecture.windows||[{x:m.width*24,y:m.id==='museum'?90:35,w:94,h:66}],colors=this.colors(),sky='rgb('+colors.sky.join(',')+')',weather=this.weather();
@@ -112,7 +112,7 @@ const w=this.weather(),p=this.profile(m),base=m.design.adventure?.environment||{
 if(!allowed||!['rain','storm','snow'].includes(w.type)||w.type==='snow'&&!base.snowAllowed&&!w.demonstration&&!(m.design.adventure?.regions||[]).some(r=>r.snowAllowed))return;
 const intensity=(w.intensity||.5)*(V.settings.weatherIntensity??.7)*(w.transition??1),reduced=V.settings.reducedMotion;
 if(intensity<=0)return;
-const n=Math.round((w.type==='storm'?160:w.type==='snow'?90:120)*intensity*(reduced?.35:1));ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#ccdeea';ctx.fillStyle='#e6e8eb';ctx.globalAlpha=.28+intensity*.15;
+const n=Math.round((w.type==='storm'?160:w.type==='snow'?90:120)*intensity*(reduced?.35:1)*(V.Performance?.weatherDensity??1));ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#ccdeea';ctx.fillStyle='#e6e8eb';ctx.globalAlpha=.28+intensity*.15;
 for(let i=0;i<n;i++){
 const pt=this.particles[i],x=(pt.x+Math.sin(this.clock*.2+pt.phase)*(w.type==='snow'?15:0))%(ctx.canvas.width+50)-25,y=w.type==='snow'?(pt.y*.16+this.clock*pt.snow)%(ctx.canvas.height+40)-20:pt.y%(ctx.canvas.height+40)-20;
 const region=this.profile(m,x+cam.x,y+cam.y);if(region.indoor||region.weather===false||w.type==='snow'&&!region.snowAllowed&&!w.demonstration)continue;

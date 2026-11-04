@@ -12,10 +12,10 @@ const I=V.IllustratedInterface={names,images:{},
  retrofit(root=document){const selector='img.ui-art,img[src*="assets/ui/interface/"],img[src*="assets/ui/renewed/"]',images=[...(root.matches?.(selector)?[root]:[]),...(root.querySelectorAll?.(selector)||[])];for(const img of images){const src=img.getAttribute('src')||'',match=src.match(/assets\/ui\/(?:interface|renewed)\/([\w-]+)\.svg/),id=match&&this.canonical(match[1]);if(!id)continue;img.classList.add('ui-art','illustrated-icon');img.dataset.menuIcon=id;img.src=this.path(id);img.removeAttribute('style');} },
  toolbar(){const nav=document.querySelector('.game-toolbar .tools');if(!nav)return;for(const button of nav.querySelectorAll('button')){
   const id=toolbar[button.id];if(!id)continue;
+  if(button.children.length===1&&button.firstElementChild?.dataset.menuIcon===id)continue;
   const clone=button.cloneNode(true),key=button.getAttribute('aria-keyshortcuts')||button.querySelector('kbd')?.textContent.trim();clone.querySelectorAll('kbd').forEach(el=>el.remove());
   const label=({'historio-button':'Historiógrafo','character-button':'Personagem'})[button.id]||button.getAttribute('aria-label')||button.title||clone.textContent.trim();
   button.setAttribute('aria-label',label);button.title=label;if(key)button.setAttribute('aria-keyshortcuts',key);
-  if(button.children.length===1&&button.firstElementChild?.dataset.menuIcon===id)continue;
   button.innerHTML=this.icon(id);button.dataset.illustratedIcon=id;button.classList.add('icon-menu-button');
  } },
  action(button,icon,title,description='',cls=''){if(!button)return;button.classList.add('pause-art-action');if(cls)button.classList.add(cls);button.innerHTML=this.icon(icon)+'<span class="pause-action-copy"><strong>'+esc(title)+'</strong>'+(description?'<small>'+esc(description)+'</small>':'')+'</span>';button.setAttribute('aria-label',title+(description?' · '+description:''));},
@@ -46,6 +46,6 @@ const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){const run=(
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),I.load()]);};
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const out=await init(...args);I.refresh();return out;};
 // Late menus insert their own markup; use the same illustrated set there too.
-let queued=false;new MutationObserver(changes=>{if(!changes.some(c=>c.addedNodes.length))return;if(queued)return;queued=true;queueMicrotask(()=>{queued=false;I.refresh();});}).observe(document.body,{childList:true,subtree:true});
+let queued=false;new MutationObserver(changes=>{if(!changes.some(c=>[...c.addedNodes].some(n=>n.nodeType===1&&(n.matches('img,button,canvas')||n.querySelector('img,button,canvas')))))return;if(queued)return;queued=true;queueMicrotask(()=>{queued=false;I.refresh();});}).observe(document.body,{childList:true,subtree:true});
 I.refresh();
 })();

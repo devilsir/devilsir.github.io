@@ -51,7 +51,7 @@ const A=V.CampusRenewal={definitions,images:{},
    else{if(!cheer){px+=Math.sin(phase*.55)*110;py+=Math.cos(phase*.8)*40;}V.SceneShadows.contact(c,px,py+3,20,6,.19);this.art(c,'campus-activities',o.row*4+frame,px-size/2,py-size+8,size);}return true;}
   return false;
  },
- render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.fillStyle='#385846';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,-cam.x,-cam.y);for(const row of [...m.objects.map(o=>({y:o.y,o})),{y:V.Player.data.y,player:true}].sort((a,b)=>a.y-b.y)){if(row.player)V.Player.render(c);else if(!this.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}V.WorldSigns?.draw(c,m.name.replace('Universidade · ',''),m.width*T/2-cam.x,69-cam.y,{maxWidth:480});c.restore();W.drawMiniMap();}
+ render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.fillStyle='#385846';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,-cam.x,-cam.y);for(const row of [...V.RenderView.objects(c,m,cam).map(o=>({y:o.y,o})),{y:V.Player.data.y,player:true}].sort((a,b)=>a.y-b.y)){if(row.player)V.Player.render(c);else if(!this.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}V.WorldSigns?.draw(c,m.name.replace('Universidade · ',''),m.width*T/2-cam.x,69-cam.y,{maxWidth:480});c.restore();W.drawMiniMap();}
 };
 A.setup();
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),A.load()]);};
