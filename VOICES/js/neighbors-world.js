@@ -1,3 +1,9 @@
+/* Registered module: neighbors-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("neighbors-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const prev={districts:L.newDistricts.bind(L),residents:L.residents.bind(L),assets:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),animal:C.prepareAnimal.bind(C),draw:C.drawObject.bind(C),interact:C.interact.bind(C),ensure:C.ensure.bind(C),journal:C.journal.bind(C),normalise:D.normalise.bind(D),document:D.document.bind(D)};
@@ -29,3 +35,5 @@ D.document=function(maps){return{...prev.document(maps),revision:5};};
 D.normalise=function(doc){const clean=prev.normalise(doc);if((doc.revision||0)<5)for(const[map,d]of Object.entries(clean)){for(const p of placed.filter(p=>p.map===map))if(!d.decor.some(r=>r[6]?.id===p.row[6].id))d.decor.push(copy(p.row));for(const r of V.neighborsContent.residents.filter(r=>r.map===map)){const def=D.defaults[map],id='resident-'+r.id;d.positions[id]??=copy(def.positions[id]);d.routines[id]??=copy(def.routines[id]);for(const a of def.anchors.filter(a=>a[0].startsWith(r.id)))if(!d.anchors.some(b=>b[0]===a[0]))d.anchors.push(copy(a));}}return clean;};
 V.Assets.load=async function(){const entries=[['neighbors-props','assets/tilesets/neighbors-props.png'],['neighbors-animals','assets/characters/neighbors-animals.png'],...V.neighborsContent.residents.flatMap(r=>[[r.character,'assets/characters/'+r.character+'.png'],[r.character+'-portrait','assets/characters/'+r.character+'-portrait.png']])];await Promise.all([prev.assets(),...entries.map(([id,url])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[id]=img;resolve();};img.onerror=()=>{this.errors.push(url);resolve();};img.src=url;})),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{V.EditorMaterials.images.neighbors=img;resolve();};img.onerror=()=>{this.errors.push('Cores dos novos móveis');resolve();};img.src=V.neighborsMaterialSources.neighbors;})]);return this.errors;};
 })();
+
+});

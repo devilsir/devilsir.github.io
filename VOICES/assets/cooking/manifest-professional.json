@@ -58,5 +58,11 @@
       "cell": 64,
       "bytes": 34854
     }
-  ]
+  ],
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../LICENSE.txt"
 }

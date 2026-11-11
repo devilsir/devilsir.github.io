@@ -1,3 +1,9 @@
+/* Registered module: editor-actions */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editor-actions", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,D=V.SceneDesign,E=V.SceneEditor,C=V.Cozy,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const prior={normalise:D.normalise.bind(D),document:D.document.bind(D),finalize:D.finalize.bind(D),drawScene:D.drawScene.bind(D),drawObject:C.drawObject.bind(C),inspector:E.inspector.bind(E),key:E.key.bind(E),hit:E.hit.bind(E)};
@@ -27,3 +33,5 @@ E.inspector=function(){prior.inspector();const ref=this.find();if(!ref)return;co
 E.key=function(k,e){if(k==='escape'&&this.active&&!this.walk&&V.$('#editor-help').hidden&&this.selection){e.preventDefault?.();this.deselect();return;}if(k==='r'&&this.active&&!this.walk&&!e.ctrlKey&&!e.metaKey){e.preventDefault?.();this.rotate(e.shiftKey?-90:90);return;}return prior.key(k,e);};
 const priorFountain=C.fountain.bind(C);C.fountain=function(ctx,cam){const o=V.World.current?.objects.find(o=>o.type==='fountain');if(!o)return;const cx=16*T-cam.x,cy=10.8*T-cam.y;ctx.save();ctx.translate(o.x-16*T,o.y-12.7*T);ctx.translate(cx,cy);ctx.rotate((o.visualRotation||0)*Math.PI/180);ctx.translate(-cx,-cy);priorFountain(ctx,cam);ctx.restore();};
 })();
+
+});

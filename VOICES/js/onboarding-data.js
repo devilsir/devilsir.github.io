@@ -1,3 +1,9 @@
+/* Registered module: onboarding-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("onboarding-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function onboardingData(){
 'use strict';
 window.V.OnboardingData={
@@ -51,3 +57,5 @@ window.V.OnboardingData={
   {id:'save',title:'Salvar, exportar e acessibilidade',text:'Esc abre a pausa. Exportar progresso guarda o perfil atual em JSON; Importar cria outro perfil com o progresso do arquivo. Salvar e trocar perfil permite continuar a aventura de outra pessoa. Nas configurações você ajusta som, movimento reduzido, velocidade e apoio de tradução. No projetor, combinem quem navega, quem lê e quem registra as pistas.'}
  ]};
 })();
+
+});

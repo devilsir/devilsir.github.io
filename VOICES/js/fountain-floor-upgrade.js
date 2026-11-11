@@ -1,3 +1,9 @@
+/* Registered module: fountain-floor-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("fountain-floor-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,E=V.SceneEditor,D=V.SceneDesign,C=V.Cozy,T=48,copy=v=>JSON.parse(JSON.stringify(v));
 const fountainNames=['Fonte circular de mármore','Fonte de três níveis','Fonte colonial de azulejos','Fonte de pedras e musgo','Fonte luminosa da praça','Fonte de terracota','Fonte das flores e lírios','Fonte dos peixinhos','Fonte geométrica moderna','Fonte de conchas','Fonte japonesa de bambu','Fonte cascata de pedras'];
@@ -47,3 +53,5 @@ E.place=function(x,y){const asset=V.sceneAssets[this.asset];if(asset?.family==='
 E.paint=function(){prevPaint();if(this.tool==='floor'&&this.drag?.kind==='floor'){const point=this.drag.lastFloorPoint;if(point){const ctx=V.$('#editor-canvas').getContext('2d'),width=(this.floorBrush||1)*T*this.zoom;ctx.save();ctx.strokeStyle='#e9f1bd';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.strokeRect(this.pan.x+(Math.floor(point.x/T)-Math.floor(this.floorBrush/2))*T*this.zoom,this.pan.y+(Math.floor(point.y/T)-Math.floor(this.floorBrush/2))*T*this.zoom,width,width);ctx.restore();}}};
 E.tick=function(dt){prevTick(dt);if(!this.active)return;this.animationClock=(this.animationClock||0)+dt;if(!this.preview||V.settings?.reducedMotion)return;const frame=Math.floor(this.animationClock*8.5)%8;if(this.lastFountainFrame!==frame){this.lastFountainFrame=frame;for(const button of V.$$('[data-editor-asset]')){const asset=V.sceneAssets[+button.dataset.editorAsset];if(asset?.family==='fountain'&&!button.hidden){const canvas=button.querySelector('canvas');if(!canvas)continue;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,64,64);C.prop(ctx,'fountain',asset.index,4,4,56);}}if(this.preview.decor.some(o=>o.family==='fountain')){this.image=this.renderWorld();this.paint();}}};
 })();
+
+});

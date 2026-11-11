@@ -1,3 +1,9 @@
+/* Registered module: atelier-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("atelier-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const prior={districts:L.newDistricts.bind(L),residents:L.residents.bind(L),assets:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),normalise:D.normalise.bind(D),document:D.document.bind(D),resident:C.resident.bind(C)};
@@ -19,3 +25,5 @@ D.document=function(maps){return{...prior.document(maps),revision:6};};
 D.normalise=function(doc){const clean=prior.normalise(doc);if((doc.revision||0)<6)for(const[map,d]of Object.entries(clean))for(const r of V.atelierContent.residents.filter(r=>r.map===map)){const def=D.defaults[map],id='resident-'+r.id;d.anchors??=[];d.positions??={};d.routines??={};d.positions[id]??=copy(def.positions[id]);d.routines[id]??=copy(def.routines[id]);d.anchors??=[];for(const a of def.anchors.filter(a=>a[0].startsWith(r.id)))if(!d.anchors.some(b=>b[0]===a[0]))d.anchors.push(copy(a));}return clean;};
 V.Assets.load=async function(){const entries=[['atelier-props','assets/tilesets/atelier-props.png'],...V.atelierContent.residents.flatMap(r=>[[r.character,'assets/characters/'+r.character+'.png'],[r.character+'-portrait','assets/characters/'+r.character+'-portrait.png']])];await Promise.all([prior.assets(),...entries.map(([id,url])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[id]=img;resolve();};img.onerror=()=>{this.errors.push(url);resolve();};img.src=url;})),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{V.EditorMaterials.images.atelier=img;resolve();};img.onerror=()=>{this.errors.push('Cores dos móveis do ateliê');resolve();};img.src=V.atelierMaterialSources.atelier;})]);return this.errors;};
 })();
+
+});

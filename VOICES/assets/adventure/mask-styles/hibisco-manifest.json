@@ -30,5 +30,11 @@
     "turquesa",
     "violeta",
     "rubi"
-  ]
+  ],
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../../LICENSE.txt"
 }

@@ -1,3 +1,9 @@
+/* Registered module: city-life */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-life", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Progress,D=V.AdventureData,esc=V.escape;
@@ -39,8 +45,10 @@ update(dt){if(!V.state||V.Game.screen!=='game')return;const l=this.ensure(),acti
 const consume=P.consume.bind(P);P.consume=function(id){const d=D.items[id],ok=consume(id);if(ok&&d&&(d.nutrition||d.hydration)){Life.diet(d);V.Save.save();}return ok;};
 const icon=P.icon.bind(P);P.icon=function(id,size=40){if(['fruit','sandwich','meal','ingredients'].includes(id))return `<img class="adv-icon" src="assets/city/icons/${id}.svg" alt="" width="${size}" height="${size}">`;return icon(id,size);};
 V.Events.on('adventure:reward',e=>{if(V.state)Life.award(e.key,Life.coinValue(e.key));});
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.household)return Life.furniture(o);return interact(o);};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){update(dt);Life.update(dt);};
+V.Hooks.around(V.Game, 'interact', 'city-life:interact:1', nextHook => function(o){if(o?.household)return Life.furniture(o);return nextHook(o);});
+V.Hooks.around(V.Game, 'update', 'city-life:update:1', nextHook => function(dt){nextHook(dt);Life.update(dt);});
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(){start();Life.ensure();Life.observe();Life.hud();if(V.Game.mode==='explore')V.$('#guide-toggle-button')?.removeAttribute('disabled');};
 V.Game.practice=()=>Life.games();
 })();
+
+});

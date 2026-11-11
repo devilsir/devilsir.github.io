@@ -1,3 +1,9 @@
+/* Registered module: neighborhood-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("neighborhood-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,D=V.SceneDesign,L=V.Living,W=V.World,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const previous={compose:C.compose.bind(C),draw:C.drawObject.bind(C),interact:C.interact.bind(C),update:C.update.bind(C),load:C.onLoad.bind(C),landmark:V.Atlas.landmark.bind(V.Atlas),render:C.render.bind(C)};
@@ -38,3 +44,5 @@ C.onLoad=function(){P.clock=4;P.audioCountdown=12;previous.load();};
 V.Atlas.landmark=function(ctx,o,m){if(o.scene?.communityProtest)return P.draw(ctx,o,{x:0,y:0,noBubbles:true});return previous.landmark(ctx,o,m);};
 C.bubble=function(ctx,o,cam={x:0,y:0}){if(V.settings.npcChats===false)return;const spoken=o.chatSpeaking&&o.bubble&&V.settings.subtitles,icon=!spoken&&o.iconTime>0&&o.icon!==null;if(!spoken&&!icon)return;ctx.save();ctx.font='600 13px "VOICES Sans", sans-serif';const lines=[];if(spoken){let line='';for(const word of o.bubble.split(/\s+/)){const next=line?line+' '+word:word;if(ctx.measureText(next).width>214&&line){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);}const shown=lines.slice(0,3),width=spoken?Math.max(80,Math.min(238,Math.max(...shown.map(s=>ctx.measureText(s).width))+24)):44,height=spoken?shown.length*18+20:39,cw=ctx.canvas.width,footX=o.x-cam.x,x=V.clamp(footX-width/2,8,Math.max(8,cw-width-8)),bottom=Math.max(height+10,o.y-cam.y-70),y=bottom-height,tail=V.clamp(footX,x+14,x+width-14);ctx.globalAlpha=V.settings.reducedMotion||spoken?1:Math.min(1,o.iconTime/.25);const shape=(dx,dy)=>{ctx.beginPath();ctx.moveTo(x+6+dx,y+dy);ctx.lineTo(x+width-6+dx,y+dy);ctx.lineTo(x+width+dx,y+6+dy);ctx.lineTo(x+width+dx,bottom-6+dy);ctx.lineTo(x+width-6+dx,bottom+dy);ctx.lineTo(tail+7+dx,bottom+dy);ctx.lineTo(tail+dx,bottom+10+dy);ctx.lineTo(tail-5+dx,bottom+dy);ctx.lineTo(x+6+dx,bottom+dy);ctx.lineTo(x+dx,bottom-6+dy);ctx.lineTo(x+dx,y+6+dy);ctx.closePath();};ctx.fillStyle='#172e354d';shape(3,4);ctx.fill();shape(0,0);ctx.fillStyle='#fff6df';ctx.fill();ctx.strokeStyle='#57715b';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#e6d5ae';ctx.fillRect(x+7,y+3,width-14,2);if(spoken){shown.forEach((s,i)=>V.Engine.text(ctx,s,x+12,y+24+i*18,'#293e35',13));}else{const img=V.Assets.images['cozy-icons'];if(img)ctx.drawImage(img,o.icon*32,0,32,32,x+10,y+6,24,24);else V.Engine.text(ctx,'♥',x+22,y+26,'#aa705e',17,'center');}ctx.restore();};
 })();
+
+});

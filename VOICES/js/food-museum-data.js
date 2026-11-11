@@ -1,3 +1,9 @@
+/* Registered module: food-museum-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("food-museum-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const source=(title,url)=>({title,url});
@@ -52,3 +58,5 @@ window.V.FoodMuseumData={sources,intro:'Comida também é patrimônio: pessoas t
  entry('muamba','A Embaixada de Angola apresenta a muamba de galinha como parte da culinária angolana. Na oficina, a galinha cozinha com óleo de palma, quiabo e temperos.','O Priberam registra muamba como palavra de origem quimbunda e reúne sentidos diferentes, inclusive o guisado angolano. Os sentidos brasileiros da palavra não definem o prato, nem provam sua história culinária.','registro parcial',[sources.muamba],[lex('muamba')],'Uma mesma forma pode ganhar sentidos diferentes em lugares distintos.')
 ]};
 })();
+
+});

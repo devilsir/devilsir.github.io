@@ -1,3 +1,9 @@
+/* Registered module: duo-navigation */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-navigation", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Shore and boat commands belong to the person using them. */
 (function(){
 'use strict';
@@ -67,7 +73,7 @@ const help=N.help.bind(N);N.help=function(...args){const out=help(...args),i=D.c
   if(paragraphs[2])paragraphs[2].textContent='Use o botão Âncora para parar e pescar. Aproxime-se de uma borda livre do cais e use Atracar ou '+(i?'Enter':'E')+'. Os comandos deste painel controlam apenas o seu barco.';
  }return out;
 };
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const result=update(dt);B.refresh();return result;};
+V.Hooks.around(V.Game, 'update', 'duo-navigation:update:1', nextHook => function(dt){const result=nextHook(dt);B.refresh();return result;});
 const persist=D.persist.bind(D);D.persist=function(...args){const result=persist(...args);if(this.enabled()&&this.owner===V.state&&this.actors.length===2&&V.state.duoWorld?.players)for(let i=0;i<2;i++)V.state.duoWorld.players[i].boat=B.snapshot(i);return result;};
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){
  const source=V.state,records=copy(source?.duoWorld?.players)||[],sea=source&&M.ensure(),legacy=sea?.boat?{...copy(sea.boat),course:copy(sea.course)}:null;
@@ -76,3 +82,5 @@ const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){
  return result;
 };
 })();
+
+});

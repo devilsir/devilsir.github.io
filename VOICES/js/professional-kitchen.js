@@ -1,3 +1,9 @@
+/* Registered module: professional-kitchen */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("professional-kitchen", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,I=V.CulinaryInteriors,U=V.CulinaryWorld,W=V.World,T=48;
@@ -53,7 +59,7 @@ const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){
 const build=U.build.bind(U);U.build=function(...args){return P.decorate(build(...args));};
 const draw=U.draw.bind(U);U.draw=function(c,o,cam){if(P.drawUniform(c,o,cam)||P.drawDoor(c,o,cam))return true;const out=draw(c,o,cam);P.drawWater(c,o,cam);return out;};
 const shop=U.shop.bind(U);U.shop=function(...args){return{...shop(...args),sprite:'chef-lia'};};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.role==='wash')return P.wash(o);if(o.role==='uniforms')return P.uniformPanel();}return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'professional-kitchen:interact:1', nextHook => function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.role==='wash')return P.wash(o);if(o.role==='uniforms')return P.uniformPanel();}return nextHook(o);});
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function(key){const uniform=/assets\/cooking\/(chef-(?:dandara|bento|lia))\./.exec(key);if(uniform)return'culinary-uniform:'+uniform[1];if(/assets\/cooking\/(?:industrial-(?:kitchen|utilities)|kitchen-fittings)\./.test(key))return'industrial-kitchen';if(/assets\/nature\/sanctuary-team-game\./.test(key))return'sanctuary';return group(key);};
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=m=>P.groups(m,groups(m));
 const A=V.NatureArt;A.names=[...new Set(A.names.map(name=>aliases[name]||name))];
@@ -63,3 +69,5 @@ const frame=A.frame.bind(A);A.frame=function(c,sheet,row,col,x,y,w,h){if((sheet=
 // New human sheets use a front-facing idle pose and three side-walking poses.
 const staff=V.SanctuaryNeighbors,staffDraw=staff.draw.bind(staff);staff.draw=function(c,o,cam){if(!o.sanctuaryStaff)return staffDraw(c,o,cam);const s=this.staff.find(s=>s.id===o.sanctuaryStaff),x=o.x-cam.x,y=o.y-cam.y,walking=o.walking&&!V.settings.reducedMotion,col=walking?1+Math.floor((o.walkClock||V.Engine.time)*6)%3:0;c.save();if(walking&&o.dir===1){c.translate(x*2,0);c.scale(-1,1);}A.frame(c,s.row===null?'people':'sanctuary-staff',s.row===null?(s.id==='lindiwe'?1:0):s.row,col,x-32,y-64,64,64);c.restore();if(o.action==='sleeping')V.Engine.text(c,'Z z z',x,y-73,'#dfe9cb',12,'center');if(W.nearest?.id===o.id)V.Maritime.label(c,s.name+' · '+s.role,x,y-78,true);return true;};
 })();
+
+});

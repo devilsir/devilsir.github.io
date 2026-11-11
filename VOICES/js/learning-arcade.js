@@ -1,3 +1,9 @@
+/* Registered module: learning-arcade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("learning-arcade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,esc=V.escape,L=V.Life,P=V.Progress,C=V.Cozy;
@@ -42,3 +48,5 @@ const Arcade=V.LearningArcade={records,games,selected:null,
 const classicGames=L.games.bind(L);L.games=()=>Arcade.menu();V.Game.practice=()=>Arcade.menu();
 const render=V.Game.render.bind(V.Game);V.Game.render=function(ctx){render(ctx);Arcade.paint();};
 })();
+
+});

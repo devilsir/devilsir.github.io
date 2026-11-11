@@ -1,3 +1,9 @@
+/* Registered module: ancestral-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("ancestral-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function ancestralWorld(){
 'use strict';
 const V=window.V,D=V.AncestralData,C=V.Cozy,W=V.World,R=V.Rooms,S=V.SceneDesign,T=48,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x));
@@ -73,9 +79,11 @@ const normalise=S.normalise.bind(S);S.normalise=function(doc){if(doc?.maps&&(doc
 const documentDesign=S.document.bind(S);S.document=function(...args){return{...documentDesign(...args),ancestralVersion:1};};
 const building=C.drawBuilding.bind(C);C.drawBuilding=function(ctx,b,cam){if(b.culture==null)return building(ctx,b,cam);const x=b.x-cam.x+b.w/2,y=b.y-cam.y+b.h;art.draw(ctx,'places',b.culture,x,y,b.w);V.Engine.text(ctx,b.label,x,y+23,'#f6e9c5',12,'center');};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){if(o.ancestral){const x=o.x-cam.x,y=o.y-cam.y;ctx.fillStyle='#18362c35';ctx.beginPath();ctx.ellipse(x,y+2,15,5,0,0,Math.PI*2);ctx.fill();if(!V.Presences?.drawObject(ctx,o,cam))art.draw(ctx,'characters',o.ancestralSprite,x,y+2,88*(o.visualScale||1),o.dir===1);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y-(V.Presences?.has(o.ancestral)?85:25),'E','#e1ca91');return;}if(o.rootsAction||o.ancestralActivity){const x=o.x-cam.x,y=o.y-cam.y;const activityProps={memory:7,routes:3,paths:3,captions:7,plants:10,orixas:5,labels:10,tools:12,water:15,evidence:7,winds:9,forest:13};art.draw(ctx,'places',o.rootsAction==='shop'?11:o.rootsAction==='craft'?12:o.rootsAction==='pickup'||o.rootsAction==='deliver'?13:activityProps[o.ancestralActivity]??10,x,y,74);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y+12,'E','#e1ca91');return;}return draw(ctx,o,cam,t);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(!o||V.modal||V.Dialogue.active)return interact(o);if(o.ancestral)return A.talk(o.ancestral);if(o.ancestralActivity){const q=D.missions.find(q=>q.id===o.mission);if(q)A.startMission(q);return V.AncestralActivities.open(o.ancestralActivity);}if(o.rootsAction){if(o.rootsAction==='shop')return V.Botica.shop();if(o.rootsAction==='craft')return V.Botica.recipes();return A.delivery(o.rootsAction);}return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'ancestral-world:interact:1', nextHook => function(o){if(!o||V.modal||V.Dialogue.active)return nextHook(o);if(o.ancestral)return A.talk(o.ancestral);if(o.ancestralActivity){const q=D.missions.find(q=>q.id===o.mission);if(q)A.startMission(q);return V.AncestralActivities.open(o.ancestralActivity);}if(o.rootsAction){if(o.rootsAction==='shop')return V.Botica.shop();if(o.rootsAction==='craft')return V.Botica.recipes();return A.delivery(o.rootsAction);}return nextHook(o);});
 const show=V.Dialogue.show.bind(V.Dialogue);V.Dialogue.show=function(){const result=show();const p=A.person(this.lines[this.index]?.speaker);const canvas=V.$('#dialogue-portrait');if(p&&canvas){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);art.draw(ctx,'characters',p.sprite,canvas.width/2,canvas.height,canvas.height);}return result;};
 const rootOf=V.FastTravel.root.bind(V.FastTravel);V.FastTravel.root=function(id){return maps.includes(id)?'ancestral-quarter':rootOf(id);};V.FastTravel.roots.push('ancestral-quarter');V.FastTravel.names['ancestral-quarter']=root.name;
 const category=V.FastTravel.category.bind(V.FastTravel);V.FastTravel.category=function(id){return id==='interior-botica'?'shop':maps.includes(id)?'culture':category(id);};
 const hours=V.Homestead.hours.bind(V.Homestead);V.Homestead.hours=function(id){return id==='interior-botica'?[8,20]:hours(id);};
 })();
+
+});

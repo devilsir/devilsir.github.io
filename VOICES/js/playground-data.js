@@ -1,3 +1,9 @@
+/* Registered module: playground-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function playgroundData(){
 'use strict';const V=window.V;
 V.PlaygroundData={
@@ -60,3 +66,5 @@ V.PlaygroundData={
  ]}
 };
 })();
+
+});

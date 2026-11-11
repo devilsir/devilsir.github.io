@@ -1,3 +1,9 @@
+/* Registered module: editorial-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editorial-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,data=V.editorialContent,original=V.Living.initContent.bind(V.Living),start=V.Dialogue.start.bind(V.Dialogue),show=V.Dialogue.show.bind(V.Dialogue);
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -7,3 +13,5 @@ V.Living.initContent=function(){original();V.Editorial.apply();};
 V.Dialogue.start=function(lines,...args){return start(lines.map(line=>V.Editorial.line(line)),...args);};
 V.Dialogue.show=function(){if(this.lines[this.index])this.lines[this.index]=V.Editorial.line(this.lines[this.index]);return show();};
 })();
+
+});

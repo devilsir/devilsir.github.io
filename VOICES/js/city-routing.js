@@ -1,3 +1,9 @@
+/* Registered module: city-routing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-routing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,N=V.ObjectiveGuide,H=V.Homestead,R=V.Rooms,W=V.World;
@@ -20,3 +26,5 @@ const register=H.register.bind(H);H.register=function(){register();this.routeGra
 H.route=function(from,to,actor){const revision=V.SceneDesign.revision||0;if(!this.routeGraph||this.routeGraphRevision!==revision){const graph=R.graph();for(const m of Object.values(W.maps))for(const o of m.objects)if(o.type==='portal'&&W.maps['chapter-'+o.chapter])(graph[m.id]||=[]).push({map:'chapter-'+o.chapter,legacy:o.id});this.routeGraph=graph;this.routeGraphRevision=revision;}const queue=[[from,[]]],seen=new Set([from]);for(let i=0;i<queue.length;i++){const[id,path]=queue[i];if(id===to)return path;for(const edge of this.routeGraph[id]||[]){if(seen.has(edge.map))continue;const door=V.Cozy.layouts[id]?.construction?.doors.find(d=>d.id===edge.door);if(door&&!R.allowed(door,true,actor))continue;seen.add(edge.map);queue.push([edge.map,path.concat({from:id,...edge})]);}}return null;};
 H.update=function(dt){if(!V.state||V.Game.screen!=='game'||V.Game.mode!=='explore'||V.modal||V.Dialogue.active||V.SceneEditor.active)return;this.tick+=Math.min(dt,.25);if(this.tick<.1)return;const elapsed=this.tick;this.tick=0;this.reconcile();this.planningLeft=4;this.planningDeadline=performance.now()+3;const actors=[...this.actors.values()],start=this.scheduleCursor%Math.max(1,actors.length);this.scheduleCursor=(start+7)%Math.max(1,actors.length);try{for(let i=0;i<actors.length;i++)this.step(actors[(start+i)%actors.length],elapsed);}finally{this.planningLeft=null;this.planningDeadline=null;}};
 })();
+
+});

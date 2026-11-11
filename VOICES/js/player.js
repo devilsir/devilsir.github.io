@@ -1,3 +1,9 @@
+/* Registered module: player */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("player", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V;
 V.Player={data:null,walkTime:0,moved:0,
  create(x=768,y=760){this.data={x,y,dir:0,frame:0,moving:false,radius:11};this.walkTime=0;},
@@ -5,3 +11,5 @@ V.Player={data:null,walkTime:0,moved:0,
  render(ctx){const p=this.data,cam=V.World.camera;if(!p)return;const x=p.x-cam.x,y=p.y-cam.y;ctx.fillStyle='#060d1a70';ctx.beginPath();ctx.ellipse(x,y+5,15,5,0,0,Math.PI*2);ctx.fill();if(V.state.cosmetic){ctx.strokeStyle=V.state.cosmetic;ctx.globalAlpha=.65;ctx.beginPath();ctx.ellipse(x,y+4,19,8,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}V.Assets.sprite(ctx,V.state.character,x,y,p.celebrateTime?5:p.actionTime?4:p.dir,p.celebrateTime||p.actionTime?Math.floor(V.Engine.time*7)%4:p.frame,56);},
  nearest(){if(!this.data||!V.World.current)return null;let closest=null,range=80;V.World.interactables().forEach(o=>{const d=V.dist(this.data,o);if(d<range){range=d;closest=o;}});return closest;}
 };})();
+
+});

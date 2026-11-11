@@ -1,3 +1,9 @@
+/* Registered module: cape-visuals */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cape-visuals", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,R=V.CapeRegion,M=V.Maritime,A=V.MaritimeArt,D=V.CapeRegionData,T=48;
@@ -61,7 +67,7 @@ artBox(o){const im=A.images.get(o.art);if(!im)return null;const maxW=o.w||76,max
 person(o){if(o.type==='sea-person'){const p=V.MaritimeData.people.find(p=>p.id===o.person);return p&&!p.sprite?{im:A.images.get('npc-'+p.id),name:p.name}:null;}if(o.type==='cape-person'){const p=D.people.find(p=>p.id===o.person);return p?{im:A.images.get(p.art),name:p.name}:null;}return null;},
 draw(owner,original,c,o,cam){
  const b=['sea-building','sea-decor','cape-building','cape-decor'].includes(o.type)?this.artBox(o):null;
- if(b){if(o.seaSite){const x=o.x-cam.x,y=o.y-cam.y,r=o.siteRadius;c.fillStyle='#165367';c.beginPath();c.ellipse(x+8,y+8,r+18,r*.55+12,0,0,Math.PI*2);c.fill();c.fillStyle='#b5ad86';c.beginPath();c.ellipse(x,y,r,r*.5,0,0,Math.PI*2);c.fill();c.fillStyle='#ddca9d';c.beginPath();c.ellipse(x-5,y-5,r*.9,r*.43,0,0,Math.PI*2);c.fill();}c.drawImage(b.im,Math.round(b.x-cam.x),Math.round(b.y-cam.y),b.w,b.h);return;}
+ if(b){if(o.seaSite){const x=o.x-cam.x,y=o.y-cam.y,r=o.siteRadius;c.fillStyle='#165367';c.beginPath();c.ellipse(x+8,y+8,r+18,r*.55+12,0,0,Math.PI*2);c.fill();c.fillStyle='#b5ad86';c.beginPath();c.ellipse(x,y,r,r*.5,0,0,Math.PI*2);c.fill();c.fillStyle='#ddca9d';c.beginPath();c.ellipse(x-5,y-5,r*.9,r*.43,0,0,Math.PI*2);c.fill();}const image=V.SeasonVisuals?.raster(c,o)||b.im;c.drawImage(image,Math.round(b.x-cam.x),Math.round(b.y-cam.y),b.w,b.h);return;}
  const p=this.person(o);if(p?.im){const h=64,w=h*p.im.width/p.im.height;c.drawImage(p.im,Math.round(o.x-cam.x-w/2),Math.round(o.y-cam.y-h),w,h);if(V.World.nearest?.id===o.id)M.label(c,p.name,o.x-cam.x,o.y-cam.y-77,true);return;}
  return original.call(owner,c,o,cam);
 },
@@ -90,3 +96,5 @@ for(const d of [V.Cozy.layouts.beach,V.SceneDesign.defaults.beach,V.SceneDesign.
 const build=R.build;R.build=function(...args){const m=build.apply(this,args);m.solids.push({x:T,y:T,w:(m.width-2)*T,h:5*T,owner:'cape-background'});return m;};
 for(const owner of [R,M]){const draw=owner.drawObject;owner.drawObject=function(c,o,cam){if(o.scene?.kind==='seat'&&!o.scene.family){const im=A.images.get('cape-bench');if(im){const w=90,h=w*im.height/im.width;c.drawImage(im,o.x-cam.x-w/2,o.y-cam.y-h,w,h);return;}}return draw.call(this,c,o,cam);};}
 })();
+
+});

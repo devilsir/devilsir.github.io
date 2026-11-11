@@ -1,3 +1,9 @@
+/* Registered module: maritime-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("maritime-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -19,3 +25,5 @@ maps.harbor.seaSites=[{id:'pedras-horizonte',name:'Pedras do Horizonte',at:[57.5
 const assets=['quay-stone','dock-wood','harbor-terminal','cape-warehouse','cape-houses','cape-heritage','cape-market','harbor-lighthouse','boat-row','boat-dinghy','boat-ferry','cape-fynbos','cape-mountain','coastal-water',...fish.map(f=>f.art),...people.filter(p=>!p.sprite).map(p=>'npc-'+p.id),...['bollard','lifebuoy','buoys','tackle','cargo','lantern'].map(id=>'prop-'+id)];
 V.MaritimeData={sources,notes,people,fish,maps,assets,asset:id=>'assets/maritime/'+id+'.png',boats:{row:{name:'Barco a remo',en:'Rowboat',speed:125,acceleration:2.6,description:'Leve, estável e fácil de controlar.'},dinghy:{name:'Bote a motor',en:'Dinghy',speed:210,acceleration:1.7,description:'Mais veloz e com mais inércia. Diminua a velocidade para atracar.'}},route:[[-38.5,-12.9],[-33,-18],[-24,-25],[-11,-32],[3,-35.6],[13.5,-36.5],[17.6,-34.1],[18.42,-33.92]]};
 })();
+
+});

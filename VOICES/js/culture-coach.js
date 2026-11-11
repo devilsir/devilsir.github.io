@@ -1,3 +1,9 @@
+/* Registered module: culture-coach */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-coach", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureCoach(){
 'use strict';const V=window.V,K=V.CultureChallenges;
 const original=K.frame.bind(K);
@@ -6,3 +12,5 @@ K.frame=function(body,footer){original(body,footer);const r=this.run(),s=this.en
  const second=r.game==='press'&&r.data.inspected?.length||r.game==='stage'&&r.data.programs?.some(p=>p.length)||r.game==='oware'&&r.data.selected!==null;const selector={loom:second?'#loom-weave':'#loom-pattern',press:second?'[data-press-cell]':'[data-press-piece]',stage:second?'#stage-play':'[data-stage-add]',oware:second?'#oware-sow':'[data-oware-pit]:not([disabled])'}[r.game];const target=V.$(selector);if(!target)return;
  target.classList.add('culture-rgb-focus');const message=document.createElement('p');message.className='culture-coach-line';message.textContent='PIX · '+hints[r.game][second?1:0];V.$('.culture-progress')?.after(message);};
 })();
+
+});

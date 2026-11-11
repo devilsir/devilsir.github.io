@@ -1,3 +1,9 @@
+/* Registered module: challenge-presentation */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("challenge-presentation", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -20,3 +26,5 @@ const H=V.ChallengePresentation={
 const render=V.Game.render.bind(V.Game);V.Game.render=function(c){return H.render(render,c);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){H.hide();return title(...args);};
 })();
+
+});

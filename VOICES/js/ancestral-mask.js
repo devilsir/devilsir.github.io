@@ -1,3 +1,9 @@
+/* Registered module: ancestral-mask */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("ancestral-mask", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,W=V.World,version='20261104-mask-files1';
@@ -176,17 +182,28 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   let canvas=box.querySelector('.historio-mask-canvas');
   if(!canvas){canvas=document.createElement('canvas');canvas.width=240;canvas.height=240;canvas.className='historio-mask-canvas';canvas.dataset.maskVariant=variant;canvas.setAttribute('role','img');canvas.setAttribute('aria-label',this.label(variant));fallback.insertAdjacentElement('afterend',canvas);this.panels.add({canvas,fallback,player:V.Player.data,variant,curious:V.Historio.tab==='compare'});}
   const heading=box.closest('.modal')?.querySelector('.modal-heading>.ui-art');if(heading&&heading.dataset.menuIcon!=='historio')heading.replaceWith(V.IllustratedInterface.element('historio'));
-  let actions=box.querySelector('.historio-mask-actions');
+  let actions=box.closest('.historio-device')?.querySelector('.historio-mask-actions');
   if(!actions){actions=document.createElement('div');actions.className='historio-mask-actions';actions.innerHTML='<button type="button" class="primary historio-change-mask" data-historio-change-mask></button><small class="historio-mask-availability"></small>';box.append(actions);}
-  const change=actions.querySelector('button');change.disabled=false;change.textContent='Trocar máscara';change.onclick=()=>this.openWardrobe(variant);
-  actions.querySelector('small').textContent='Visual do jogador '+(variant+1)+' · escolha de modelo e cores';
+  const quick=box.closest('.historio-device')?.querySelector('.mask-quick');
+  if(quick)quick.append(actions);
+  const change=actions.querySelector('button');change.disabled=false;
+  change.innerHTML=V.TurnArt.icon('style')+'<span>Trocar máscara</span>';
+  change.onclick=()=>this.openWardrobe(variant);
+  actions.querySelector('small').textContent='';
   this.mountWardrobe(box.closest('.historio-shell'),variant);
   this.paintPanels();
  },
  openWardrobe(owner=this.variant()){
   if(!V.state)return false;
-  const open=()=>{V.Historio.panel();const details=V.$('.historio-wardrobe');if(!details)return false;
-   details.open=true;details.querySelector('summary').focus({preventScroll:true});details.scrollIntoView({block:'nearest'});return true;};
+  const open=()=>{
+   let details=V.$('.historio-wardrobe');
+   if(!details){V.Historio.panel();details=V.$('.historio-wardrobe');}
+   if(!details)return false;
+   details.open=true;
+   details.querySelector('summary').focus({preventScroll:true});
+   details.scrollIntoView({block:'nearest'});
+   return true;
+  };
   return V.DuoPanels?.enabled()?V.DuoPanels.withOwner(owner,open):open();
  },
  mountWardrobe(shell,owner=this.variant()){
@@ -206,6 +223,8 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
    for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'?null:this.texture(id,style.palette),im=button.querySelector('img'),src=texture?.url||variants[owner].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;button.disabled=id!=='default'&&!texture;button.setAttribute('aria-pressed',String(id===style.model));}
    for(const button of details.querySelectorAll('[data-mask-palette]')){button.disabled=style.model==='default';button.setAttribute('aria-pressed',String(button.dataset.maskPalette===(style.model==='default'?'original':style.palette)));}
    details.querySelector('.historio-mask-selection').textContent='Visual equipado: '+name+(style.model==='default'?'':' · '+palette.name)+'. Escolha salva para o jogador '+(owner+1)+'.';
+   const label=details.closest('.historio-shell')?.querySelector('[data-mask-equipped]');
+   if(label)label.textContent=name+(style.model==='default'?'':' · '+palette.name);
   }
   for(const panel of this.panels)if(panel.canvas.isConnected){panel.canvas.setAttribute('aria-label',this.label(panel.variant));panel.fallback.src=this.path('portrait',panel.variant);}
  },
@@ -258,10 +277,12 @@ const refresh=V.IllustratedInterface.refresh.bind(V.IllustratedInterface);V.Illu
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),M.load()]);for(let index=0;index<variants.length;index++)for(const kind of ['portrait','icon'])M.publish(kind,index);};
 // Shared player scope preserves depth and each companion's own state in duo.
 const render=V.Player.render.bind(V.Player);V.Player.render=function(c){if(!M.visible()||!this.data)return render(c);const p=M.point(this.data),cam=W.camera;if(p.back)M.draw(c,p,cam);const out=render(c);if(!p.back)M.draw(c,p,cam);return out;};
-const pulse=V.Story.pulse.bind(V.Story);V.Story.pulse=function(...args){const out=pulse(...args);if(V.Story.pulseTime>0)M.activate();return out;};
+const pulse=V.Story.pulse.bind(V.Story);V.Story.pulse=function(...args){const out=pulse(...args);if(out)M.activate();return out;};
 const reward=V.Progress.reward.bind(V.Progress);V.Progress.reward=function(key,...args){const ok=reward(key,...args);if(ok&&/^trace-/.test(key))M.react('surprised',1.5);else if(ok&&/^(interpret|choice|chapter)-/.test(key))M.react('happy',2);return ok;};
 const panel=V.Historio.panel.bind(V.Historio);V.Historio.panel=function(...args){const out=panel(...args);M.mountPanel();const button=V.$('#historio-activate');if(button){const activate=button.onclick;button.onclick=function(...values){M.activate();const out=activate?.apply(this,values);M.paintPanels();return out;};}return out;};
 const dialogue=V.Dialogue.show.bind(V.Dialogue);V.Dialogue.show=function(...args){const out=dialogue(...args);M.paintPortrait();return out;};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const out=update(dt);M.update(dt);return out;};
+V.Hooks.around(V.Game, 'update', 'ancestral-mask:update:1', nextHook => function(dt){const out=nextHook(dt);M.update(dt);return out;});
 const lights=V.Environment.lights?.bind(V.Environment);if(lights)V.Environment.lights=function(...args){const list=lights(...args),point=M.visible()?M.point():null;for(const light of list)if(light.id==='historiograph-glow'&&point){light.x=point.x;light.y=point.y;light.radius=65;light.intensity=V.settings.reducedFlash ? .12 : .26;}return list;};
 })();
+
+});

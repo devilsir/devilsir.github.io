@@ -1,6 +1,6 @@
 'use strict';
 // Production packing only: generated sheets stay intact; sample their regular cells.
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 function packIcons(img,cols,rows,cell){
  const source=createCanvas(img.width,img.height),ctx=source.getContext('2d');ctx.drawImage(img,0,0);const pixels=ctx.getImageData(0,0,img.width,img.height),data=pixels.data,labels=new Int32Array(img.width*img.height),queue=new Int32Array(labels.length),components=[];let serial=0;
  for(let start=0;start<labels.length;start++){if(labels[start]||data[start*4+3]<30)continue;const id=++serial;let head=0,tail=1,minX=img.width,minY=img.height,maxX=0,maxY=0,sumX=0,sumY=0;queue[0]=start;labels[start]=id;while(head<tail){const at=queue[head++],x=at%img.width,y=Math.floor(at/img.width);minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);sumX+=x;sumY+=y;for(const dy of [-1,0,1])for(const dx of [-1,0,1]){const nx=x+dx,ny=y+dy;if(nx<0||nx>=img.width||ny<0||ny>=img.height)continue;const n=ny*img.width+nx;if(!labels[n]&&data[n*4+3]>=30){labels[n]=id;queue[tail++]=n;}}}components.push({id,area:tail,minX,minY,maxX,maxY,x:sumX/tail,y:sumY/tail});}

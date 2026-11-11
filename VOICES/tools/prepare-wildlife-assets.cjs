@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/nature'),meta=require('../assets/nature/generation-wildlife.json');
 // Reuse the established silhouette isolation; originals remain untouched.
 const source=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8'),start=source.indexOf('function pack('),end=source.indexOf('\n(async()=>');

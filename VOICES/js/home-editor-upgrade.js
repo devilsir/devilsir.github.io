@@ -1,3 +1,9 @@
+/* Registered module: home-editor-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("home-editor-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* VOICES · edição de interiores: rotação, reposicionamento e prévia persistente. */
 (function(){
 'use strict';
@@ -41,7 +47,7 @@ H.canArrange=function(id,item,x,y,rotation=0,ignoreId=null){const m=W.maps[id],r
  }
  return true;
 };
-function remainsAccessible(id){const m=W.maps[id],door=m?.design?.construction?.doors?.find(d=>d.to),start=door&&R.approach(m,door,48);if(!start)return true;const essential=m.objects.filter(o=>o.household&&(H.isBed(o)||o.scene.family==='home'&&[19,8,4].includes(o.scene.prop)));return essential.every(o=>R.navigation(m,start,{x:o.x,y:o.y+12},9).length>0);}
+function remainsAccessible(id){const m=W.maps[id],door=m?.design?.construction?.doors?.find(d=>d.to),start=door&&R.approach(m,door,48);if(!start)return true;const essential=m.objects.filter(o=>o.household&&(H.isBed(o)||o.scene.family==='home'&&[19,8,4].includes(o.scene.prop)));return essential.every(o=>[[0,50],[50,0],[-50,0],[0,-50]].some(([dx,dy])=>R.navigation(m,start,{x:o.x+dx,y:o.y+dy},9).length>0));}
 // Mesma operação para inserir, reposicionar ou girar: no erro, o save anterior é restaurado.
 H.commitArrangement=function(id,itemId,x,y,rotation=0,existingId=null){const h=this.ensure(),item=itemBy(itemId);if(!this.owned(id)||!item)return false;const old=existingId?allPlaced(id).find(p=>p.id===existingId):null;if(existingId&&!old)return false;if(!old&&!(h.furniture[itemId]>0))return false;
  if(!this.canArrange(id,item,x,y,rotation,existingId))return false;
@@ -100,3 +106,5 @@ H.organize=function(id){if(!this.owned(id))return this.property(id);const h=this
  paint();V.$('.modal')?.classList.add('home-editor-dialog');V.Events.emit('home-editor-opened',{home:id});
 };
 })();
+
+});

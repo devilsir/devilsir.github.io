@@ -1,3 +1,9 @@
+/* Registered module: city-single-mode */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-single-mode", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,T=V.Translation;
@@ -40,3 +46,5 @@ const settings=V.Save.applySettings.bind(V.Save);V.Save.applySettings=function()
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){pause(...args);if(this.mode==='explore'&&!V.$('#pause-scene-editor')){const root=V.$('.modal-body .stack')||V.$('.modal-body'),button=document.createElement('button');button.id='pause-scene-editor';button.className='secondary';button.textContent='Editar cenários';button.onclick=()=>V.SceneEditor.open();root?.appendChild(button);}};
 const open=V.SceneEditor.open.bind(V.SceneEditor);V.SceneEditor.open=function(...args){if(V.Game.screen==='game'&&!V.modal&&!V.ProfessorStudio?.active){V.UI.toast('Abra o menu de pausa para editar os cenários.');return;}return open(...args);};
 })();
+
+});

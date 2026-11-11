@@ -1,3 +1,9 @@
+/* Registered module: food-museum-gallery */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("food-museum-gallery", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,M=V.FoodMuseum,W=V.World,C=V.Cozy,A=V.Architecture,T=48,ID='food-museum';
@@ -55,7 +61,7 @@ const G=V.FoodGallery={
   if(o.galleryRole==='directory'){if(o.id!=='food-gallery-title'){this.text(c,'GALERIAS',x,y-o.h+57,o.w-24,9,'#f3e3ac',1);this.text(c,'01 – 04',x,y-o.h+79,o.w-24,10,'#f3e3ac',1);this.text(c,'ACERVO',x,y-o.h+104,o.w-24,8,'#d3c69d',1);}}
   if(W.nearest?.id===o.id&&o.galleryRole)V.Maritime.label(c,o.label,x,y-o.h-12,true);return true;
  },
- render(c){const m=W.current,cam=W.camera;if(!m.cache)this.floor(m);c.save();c.imageSmoothingEnabled=false;c.fillStyle='#243f34';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));const geometry=A.geometry(m.design),rows=m.objects.map(o=>{const wall=o.onWall&&geometry.walls.find(w=>w.id===o.onWall);return{kind:'object',y:wall?Math.max(wall.a[1],wall.b[1])+.3:o.y,o};}).concat(geometry.walls.map(o=>({kind:'wall',y:Math.max(o.a[1],o.b[1]),o})),geometry.windows.map(o=>({kind:'window',y:o.y+o.h+.1,o})),[{kind:'player',y:V.Player.data.y}]).sort((a,b)=>a.y-b.y);
+ render(c){const m=W.current,cam=W.camera;if(!m.cache)this.floor(m);c.save();c.imageSmoothingEnabled=false;c.fillStyle='#243f34';c.fillRect(0,0,c.canvas.width,c.canvas.height);V.GroundCache.draw(c, m.cache, Math.round(-cam.x), Math.round(-cam.y));const geometry=A.geometry(m.design),rows=m.objects.map(o=>{const wall=o.onWall&&geometry.walls.find(w=>w.id===o.onWall);return{kind:'object',y:wall?Math.max(wall.a[1],wall.b[1])+.3:o.y,o};}).concat(geometry.walls.map(o=>({kind:'wall',y:Math.max(o.a[1],o.b[1]),o})),geometry.windows.map(o=>({kind:'window',y:o.y+o.h+.1,o})),[{kind:'player',y:V.Player.data.y}]).sort((a,b)=>a.y-b.y);
   for(const row of rows){if(row.kind==='wall')this.wall(c,m,row.o,cam);else if(row.kind==='window'){if(row.o.foodGalleryWindow)this.art(c,'gallery-collection',5,row.o.x-cam.x,row.o.y-cam.y,row.o.w,row.o.h);else A.drawWindow?.(c,m,row.o,cam);}else if(row.kind==='player')V.Player.render(c);else if(!M.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}
   if(V.PixPresence.following())V.PixPresence.draw(c,V.Player.data,cam);if(W.transition>0){c.globalAlpha=W.transition;c.fillStyle='#294b3e';c.fillRect(0,0,c.canvas.width,c.canvas.height);}c.restore();W.drawMiniMap();
  },
@@ -75,5 +81,7 @@ const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);return[...new Set(m?.foodGallery?[...out.filter(g=>!['nature','nature-food','cooking'].includes(g)),'food-gallery']:out)];};
 const interactables=W.interactables.bind(W);W.interactables=(...args)=>interactables(...args).filter(o=>!o.galleryDecor);
 const load=W.load.bind(W);W.load=function(id,pos){if(id===ID){const m=this.maps[id],spawn=m.design.spawn;pos=V.Rooms.safe(m,pos||{x:spawn[0]*T,y:spawn[1]*T},14);}return load(id,pos);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.galleryRole&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.galleryRole==='directory')return G.directory();if(o.galleryRole==='catalog')return M.catalog();if(o.galleryRole==='about')return M.about();if(o.galleryRole==='rest'){return V.Progress.rest();}}return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'food-museum-gallery:interact:1', nextHook => function(o){if(o?.galleryRole&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.galleryRole==='directory')return G.directory();if(o.galleryRole==='catalog')return M.catalog();if(o.galleryRole==='about')return M.about();if(o.galleryRole==='rest'){return V.Progress.rest();}}return nextHook(o);});
 })();
+
+});

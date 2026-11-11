@@ -1,3 +1,9 @@
+/* Registered module: editor-tools */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editor-tools", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,E=V.SceneEditor,D=V.SceneDesign,C=V.Cozy,W=V.World,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const old={load:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),compose:C.compose.bind(C),draw:C.drawObject.bind(C),fountain:C.fountain.bind(C),document:D.document.bind(D),normalise:D.normalise.bind(D),validate:D.validate.bind(D),mount:E.mount.bind(E),inspector:E.inspector.bind(E),key:E.key.bind(E),refs:E.refs.bind(E),bounds:E.bounds.bind(E),hit:E.hit.bind(E),place:E.place.bind(E),setTool:E.setTool.bind(E),duplicate:E.duplicate.bind(E),pointerDown:E.pointerDown.bind(E),pointerMove:E.pointerMove.bind(E),pointerUp:E.pointerUp.bind(E),pointerCancel:E.pointerCancel.bind(E),landmark:V.Atlas.landmark.bind(V.Atlas)};
@@ -43,3 +49,5 @@ E.pointerCancel=function(e){if(this.drag?.kind!=='floor')return old.pointerCance
 E.key=function(k,e){if(!this.walk&&k==='f'&&!e.ctrlKey&&!e.metaKey){V.$('[data-editor-tool="floor"]').onclick();return;}if(!this.walk&&k==='r'&&this.tool==='floor'&&!this.selection){this.floorRotation=(this.floorRotation+(e.shiftKey?270:90))%360;this.inspector();e.preventDefault?.();return;}if(!this.walk&&['[',']'].includes(k)&&this.selection){e.preventDefault?.();this.scale(k===']'?1.1:.9,true);return;}return old.key(k,e);};
 E.duplicate=function(){const ref=this.find(),materials=ref?.kind==='decor'?copy(this.design().decor[ref.index][6]?.materials||{}):null;old.duplicate();const placed=this.find();if(materials&&placed?.kind==='decor'){this.design().decor[placed.index][6].materials=materials;if(ref?.kind==='decor'&&this.design().decor[ref.index][6]?.floorShape)this.design().decor[placed.index][6].floorShape='half';if(this.history.at(-1))this.history.at(-1).after=this.capture();this.saveDraft();this.refresh();}};
 })();
+
+});

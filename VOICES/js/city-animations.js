@@ -1,3 +1,9 @@
+/* Registered module: city-animations */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-animations", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -18,3 +24,5 @@ const draw=V.Story.draw.bind(V.Story);V.Story.draw=function(ctx,o,cam){if(o.type
 V.Story.perform=function(action){const o=V.World.current.objects.find(o=>o.type==='zambeto'&&o.companion);if(!o)return;o.animation=action;o.animationStart=V.Engine.time;o.animationUntil=V.Engine.time+3.2;V.UI.close();V.Audio.sfx('observe');};
 const guide=V.Story.guide.bind(V.Story);V.Story.guide=function(){guide();const root=V.$('.modal-footer');if(root){const div=document.createElement('div');div.className='row';div.innerHTML='<button id="guardian-dance" class="secondary">Dançar</button><button id="guardian-spin" class="secondary">Rodopiar</button>';root.prepend(div);V.$('#guardian-dance').onclick=()=>this.perform('dance');V.$('#guardian-spin').onclick=()=>this.perform('spin');}};
 })();
+
+});

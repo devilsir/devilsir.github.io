@@ -1,3 +1,9 @@
+/* Registered module: onboarding */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("onboarding", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function onboarding(){
 'use strict';const V=window.V,O=V.GuideOverlay,T=V.Tutorials,W=V.World,N=V.ObjectiveGuide,H=V.Homestead,esc=V.escape,data=V.OnboardingData,HOME='interior-player-cottage',copy=x=>JSON.parse(JSON.stringify(x));
 const G=V.Onboarding={active:false,suspended:false,bound:null,tick:0,preparing:false,
@@ -62,14 +68,14 @@ function observe(obj,key,event,test){const original=obj[key].bind(obj);obj[key]=
 observe(V.CityMenus,'board','missions');observe(V.CityMenus,'challenges','challenges');observe(V.CityMenus,'homes','homes');observe(V.Game,'glossary','pix');observe(V.Living,'journal','notebook');observe(V.WorldAtlas,'open','atlas');observe(V.Quests,'inventory','backpack');observe(V.Dialogue,'toggle','translation');observe(V.PixVocabulary,'collect','word');observe(H,'wake','wake',result=>!!result);
 V.Events.on('home-editor-opened',e=>{if(e.home===HOME)G.ack('arrange');});V.Events.on('home-furniture-committed',e=>{if(e.home===HOME&&e.placed)G.ack('place-furniture');});
 const objective=N.objective.bind(N);N.objective=function(){const r=G.active&&G.record(),o=r?.practice?.tracked&&!r.practice.delivered&&G.noteObject();if(G.active&&!G.suspended){if(G.step().id==='sleep'){const bed=W.current.objects.find(H.isBed);return bed?{map:W.current.id,object:bed,key:'onboarding-bed',label:'Aproxime-se da cama · dormir e acordar'}:null;}return o&&['track','route','interact'].includes(G.step().id)?{map:W.current.id,object:o,key:'onboarding-note',label:'Ler o bilhete de acolhida · treino'}:null;}return objective();};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='onboarding-note'&&G.active&&!V.modal&&!V.Dialogue.active)return G.inspect();return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'onboarding:interact:1', nextHook => function(o){if(o?.type==='onboarding-note'&&G.active&&!V.modal&&!V.Dialogue.active)return G.inspect();return nextHook(o);});
 const nearest=V.Player.nearest.bind(V.Player);V.Player.nearest=function(...args){if(G.active&&!G.suspended&&!V.modal&&['interact','sleep'].includes(G.step().id)){const o=G.step().id==='sleep'?W.current.objects.find(H.isBed):G.noteObject();return o&&V.dist(this.data,o)<(o.interactionRange||82)&&N.interactionClear(W.current,this.data,o)?o:null;}return nearest(...args);};
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type!=='onboarding-note')return draw(ctx,o,cam,t);V.Assets.prop(ctx,9,o.x-cam.x-22,o.y-cam.y-38,44);V.Living.marker(ctx,o.x-cam.x,o.y-cam.y-58,'E','#f5ce7e');};
 const load=W.load.bind(W);W.load=function(...args){const result=load(...args);if(G.active){W.transition=0;if(['route','interact'].includes(G.step().id))G.note();if(W.current.id===HOME){G.record().practice.homeVisited=true;G.ack('visit-home');}}return result;};
 const create=V.Game.newState.bind(V.Game);V.Game.newState=function(...args){G.active=false;G.suspended=false;O.hide();const result=create(...args);G.record();G.grantHome();return result;};
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){G.active=false;G.suspended=false;O.hide();G.bound=V.state;G.grantHome();const result=start(...args);H.applyFurniture(HOME);const r=G.record(),state=V.state;setTimeout(()=>{if(V.state!==state||V.Game.screen!=='game'||V.Game.mode!=='explore'||H.ensure()?.sleep||V.modal)return;if(r.waitingLesson&&T.record(r.waitingLesson)?.running){G.active=true;G.suspended=true;T.open(r.waitingLesson);return;}if(['pending','running'].includes(r.status))G.start();},100);G.toolbar();return result;};
 V.Game.intro=()=>['pending','running'].includes(G.record()?.status)?G.start():false;
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){if(!G.paused())update(dt);else if(V.Dialogue.active)V.Dialogue.update(dt);G.update(dt);};
+V.Hooks.around(V.Game, 'update', 'onboarding:update:1', nextHook => function(dt){if(!G.paused())nextHook(dt);else if(V.Dialogue.active)V.Dialogue.update(dt);G.update(dt);});
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(k==='f1'&&this.screen==='game'){e.preventDefault?.();G.help();return;}if(G.active&&!G.suspended&&!T.active&&V.Dialogue.onboarding&&['enter','e',' '].includes(k)&&['word','translation'].includes(G.step().id)&&!G.record().ack){V.Input.pressed.delete(k);e.preventDefault?.();return;}return key(k,e);};
 const dialogueNext=V.Dialogue.next.bind(V.Dialogue);V.Dialogue.next=function(...args){if(G.active&&!G.suspended&&this.onboarding&&['word','translation'].includes(G.step().id)&&!G.record().ack)return;return dialogueNext(...args);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){G.active=false;G.suspended=false;O.hide();return title(...args);};
@@ -77,3 +83,5 @@ const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){const resul
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const result=await init(...args);G.toolbar();return result;};
 document.addEventListener('change',e=>{if(e.target?.id==='home-place-item'&&e.target.value){if(G.active)G.record().practice.furnitureItem=e.target.value;G.ack('select-furniture');}});
 })();
+
+});

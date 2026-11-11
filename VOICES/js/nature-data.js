@@ -1,3 +1,9 @@
+/* Registered module: nature-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("nature-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const sources={
@@ -43,3 +49,5 @@ const species=[
 ].map(([id,name,scientific,sheet,row,habitats,source,description,size,motion])=>({id,name,scientific,sheet,row,maps:habitats,source,description,size,motion}));
 window.V.NatureData={sources,maps,species,challengeId:'guarda-biodiversidade'};
 })();
+
+});

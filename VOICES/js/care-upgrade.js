@@ -1,3 +1,9 @@
+/* Registered module: care-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("care-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,L=V.Life,P=V.Progress,H=V.Homestead,M=V.Markets,items=V.AdventureData.items,esc=V.escape,proxies=new WeakMap();
@@ -37,5 +43,7 @@ for(const[id,satiety]of [['fruit',40],['sandwich',90],['meal',180]])items[id].sa
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const result=start(...args),state=V.state;queueMicrotask(()=>{if(V.state!==state||V.Game.screen!=='game')return;if(K.duo()){for(let i=0;i<2;i++)V.DuoPanels.withOwner(i,()=>{if(L.ensure().sleepPlan)H.sleepPanel();});}else if(L.ensure().sleepPlan)H.sleepPanel();});return result;};
 // Run after both world updates commit their cameras and entry fades. Switching
 // actors inside the native update would restore an earlier transition value.
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const result=update(dt);if(V.state&&V.Game.screen==='game'&&K.duo()&&V.DuoWorld.context<0){for(let i=0;i<2;i++)V.DuoWorld.withActor(i,()=>K.step(dt));K.tick+=dt;if(K.tick>=1){K.tick=0;L.observe();K.hud();}}return result;};
+V.Hooks.around(V.Game, 'update', 'care-upgrade:update:1', nextHook => function(dt){const result=nextHook(dt);if(V.state&&V.Game.screen==='game'&&K.duo()&&V.DuoWorld.context<0){for(let i=0;i<2;i++)V.DuoWorld.withActor(i,()=>K.step(dt));K.tick+=dt;if(K.tick>=1){K.tick=0;L.observe();K.hud();}}return result;});
 })();
+
+});

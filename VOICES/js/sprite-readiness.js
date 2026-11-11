@@ -1,3 +1,9 @@
+/* Registered module: sprite-readiness */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("sprite-readiness", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,L=V.AssetLoader;
 // Late arrivals and retried images must invalidate silhouettes generated from
@@ -21,3 +27,5 @@ const loaded=L.loaded.bind(L);L.loaded=function(record,...args){
 };
 const frame=V.SpriteFrames.draw.bind(V.SpriteFrames);V.SpriteFrames.draw=function(c,image,...args){return V.Assets.ready(image)?frame(c,image,...args):false;};
 })();
+
+});

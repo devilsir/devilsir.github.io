@@ -43,6 +43,12 @@ async function run(){
    }finally{A.cache.clear();V.Cozy.ground=ground;V.World.maps=maps;V.World.current=originalMap;V.MapAssets.groundBudget=budget;}
   });
 
+  await check('two active large grounds fit the mobile budget without changing world coordinates',()=>{
+   const W=V.World,D=V.DuoWorld,saved={maps:W.maps,current:W.current,actors:D.actors,enabled:D.enabled};
+   try{const a={id:'budget-a'},b={id:'budget-b'},old={id:'budget-old'};for(const m of [a,b,old])m.cache=V.GroundCache.create(m,4000,4000);assert.equal(V.GroundCache.width(a.cache),4000);assert.equal(V.GroundCache.height(a.cache),4000);assert(a.cache.width<4000);D.enabled=()=>true;D.actors=[{map:a.id},{map:b.id}];W.maps={a,b,old};W.current=a;V.MapAssets.trim();assert(a.cache&&b.cache);assert.equal(old.cache,null);assert(V.MapAssets.groundBytes<=V.MapAssets.groundBudget);}
+   finally{W.maps=saved.maps;W.current=saved.current;D.actors=saved.actors;D.enabled=saved.enabled;}
+  });
+
   const E=V.Engine,update=V.Game.update,render=V.Game.render,poll=V.Input.pollGamepad,screen=V.Game.screen,mode=V.Game.mode;
   let updates=0,renders=0,elapsed=0;
   const reset=()=>{P.invalidate();P.lastFPS=0;E.last=0;updates=renders=elapsed=0;V.modal=false;V.Dialogue.active=false;V.Game.screen='game';V.Game.mode='explore';};

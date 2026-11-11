@@ -1,3 +1,9 @@
+/* Registered module: performance */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("performance", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,MiB=1024*1024;
@@ -69,3 +75,5 @@ V.RenderView={
 P.detect();
 document.addEventListener('visibilitychange',()=>{P.invalidate();if(V.Engine)V.Engine.last=0;});
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: workshop-neighborhood */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-neighborhood", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopNeighborhood(){
 'use strict';const V=window.V,U=V.WorkshopUI,T=V.Tutorials,L=V.Living,esc=V.escape,on=(id,fn)=>{const e=V.$('#'+id);if(e)e.onclick=fn;};
 const exercises={
@@ -37,3 +43,5 @@ Life.quiz=function(){if(this.creatingTutorial)return;const qz=this.ensure().quiz
 Life.finishQuiz=function(){if(T.definitions[T.active]?.family==='quiz'){T.event('finish');return true;}return finish();};
 for(const subject of ['language','history'])T.define('quiz:'+subject,{family:'quiz',id:subject,create(){const q=V.Teacher.questions.find(q=>(q.subject==='history')===(subject==='history'));return{id:'practice-quiz',subject,deck:[q.id],index:0,score:0,attempts:{},cleared:{}};},render(){Life.quiz();},resume(){Life.quiz();},steps:[{title:'Leia antes de responder',text:'Escolha uma resposta. A explicação aparece na própria questão; uma tentativa incorreta pode ser revista.',target:'[data-life-answer]',allow:'[data-life-answer]',event:'quiz-answer',after:'A explicação ficou visível. A próxima pergunta só aparece quando você continuar.'},{title:'Avance depois da revisão',text:'Toque em Continuar. O exemplo de treino não concede moedas nem altera sua pontuação.',target:'#life-quiz-next',allow:'#life-quiz-next',event:'finish'}]});
 })();
+
+});

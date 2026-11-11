@@ -1,3 +1,9 @@
+/* Registered module: wildlife-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("wildlife-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const D=window.V.NatureData;
@@ -66,3 +72,5 @@ window.V.AnimalMuseumData={intro:'Animais conectam territórios, água, floresta
  {id:'lystrosaurus',name:'Lystrosaurus',scientific:'Lystrosaurus sp.',region:'África do Sul · Bacia do Karoo; também conhecido em outras regiões do mundo',period:'Permiano e Triássico · depende da espécie',row:0,col:3,description:'Dicinodonte extinto, do grupo dos sinapsídeos. O crânio reconstruído tem bico e presas; ele não era um dinossauro.',curiosity:'As coleções do Karoo permitem estudar a vida antes e depois da extinção do fim do Permiano.',sources:['lystrosaurus','lystroStudy']}
 ]};
 })();
+
+});

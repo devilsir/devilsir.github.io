@@ -1,3 +1,9 @@
+/* Registered module: quests */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("quests", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V;
 const achievements=[{id:'first',title:'Primeiro sinal',desc:'Encontrou uma evidência.',index:0},{id:'rhythm',title:'Créditos no palco',desc:'Restaurou o distrito musical.',index:1},{id:'museum',title:'Memória em camadas',desc:'Reabriu as galerias do museu.',index:2},{id:'authors',title:'Assinatura recuperada',desc:'Conectou obras e trajetórias.',index:3},{id:'source',title:'Além da manchete',desc:'Investigou a rede digital.',index:4},{id:'community',title:'Projeto em conjunto',desc:'Planejou com a comunidade.',index:5},{id:'reboot',title:'O arquivo vive',desc:'Concluiu a aventura.',index:6},{id:'vocab',title:'Uma palavra de cada vez',desc:'Colecionou 8 palavras.',index:7},{id:'hidden',title:'Olhar curioso',desc:'Encontrou 3 registros opcionais.',index:8},{id:'listener',title:'Escuta ativa',desc:'Conversou com 12 moradores.',index:9}];
 V.Quests={achievements,
@@ -19,3 +25,5 @@ V.Quests={achievements,
  inventory(){const records=V.content.chapters.flatMap(c=>c.clues).filter(c=>V.state.evidence.includes(c.id));const body=`<div class="section-label">FERRAMENTAS</div><div class="three-cols" style="margin-top:12px">${V.state.tools.map((t,i)=>`<div class="inventory-item"><span class="icon" style="background-position:-${(i%8)*24}px 0"></span><strong>${V.escape(t)}</strong><p>${['Traduções e vocabulário durante a aventura.','Verifique autoria, origem e contexto.','Relacione registros de diferentes tempos e lugares.','Compare a documentação antes de atribuir uma obra.','Descubra o que ficou de fora de uma mensagem.','Acompanhe as prioridades escolhidas pela comunidade.'][i]||'Uma ferramenta construída ao longo da investigação.'}</p><button class="secondary" data-use-tool="${i}">Usar ferramenta</button></div>`).join('')}</div><div class="separator"></div><div class="section-label">REGISTROS (${records.length})</div><div class="two-cols" style="margin-top:12px">${records.map(c=>`<div class="inventory-item"><strong>✓ ${V.escape(c.title)}</strong><p>${V.escape(c.ptByGrade?V.lang(c.ptByGrade):c.pt)}</p></div>`).join('')||'<p class="muted">Os registros marcados com ? aparecem aqui após serem investigados.</p>'}</div>`;V.UI.modal('Mochila','Suas ferramentas e registros sustentam os confrontos digitais.',body);V.$$('[data-use-tool]').forEach(b=>b.onclick=()=>V.Game.useTool(+b.dataset.useTool));},
  badges(){V.UI.modal('Conquistas','Recompensas por explorar, escutar e investigar.',`<div class="two-cols">${achievements.map(a=>`<div class="badge ${V.state.achievements.includes(a.id)?'':'locked'}"><div class="badge-art" style="background-position:-${a.index%8*44}px -${Math.floor(a.index/8)*44}px"></div><div><strong>${V.state.achievements.includes(a.id)?'✓ ':''}${V.escape(a.title)}</strong><small>${V.escape(a.desc)}</small></div></div>`).join('')}</div>`);}
 };})();
+
+});

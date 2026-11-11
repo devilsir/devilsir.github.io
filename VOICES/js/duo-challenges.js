@@ -1,3 +1,9 @@
+/* Registered module: duo-challenges */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-challenges", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Each viewer owns a game runtime, input state and camera. The profile owns saves. */
 (function(){
 'use strict';
@@ -17,7 +23,7 @@ const D=V.DuoChallenges={isChild,active:false,frames:[],paused:[false,false],rea
   if(game==='terra-mar')return(index?'← terra · → mar':'A terra · D mar')+' · '+primary+': mesmo lado';
   if(game==='roda-jo')return(index?'← voltar · → passar':'A voltar · D passar')+' · '+primary+': segurar';
   if(game==='platform')return move+' · '+primary+': pular · '+(index?'Shift direito: atacar · /: impulso · .: montar':'F: atacar · Q: impulso · R: montar');
-  if(game==='moto')return move+' · '+primary+': mirar/lançar · '+(index?'1–3 numéricos: encomenda · /: frear':'1–3: encomenda · Q: frear');
+  if(game==='moto')return(index?'→ acelerar · ← frear · ↑/↓ ângulo':'D acelerar · A frear · W/S ângulo')+' · segure '+primary+' para carregar e solte para lançar · '+(index?'1–3 numéricos: encomenda':'1–3: encomenda');
   return move+' · '+primary+': ação · '+use+': interagir/confirmar. Também é possível clicar nos controles de cada tela.';
  },
  choice(key){
@@ -99,7 +105,7 @@ if(!isChild){
  const paintProfiles=V.PlayerProfiles.paint.bind(V.PlayerProfiles);V.PlayerProfiles.paint=function(...args){const out=paintProfiles(...args);for(const b of V.$$('[data-profile-enter]')){const profile=this.items.find(p=>p.id===b.dataset.profileEnter);if(profile?.playerCharacters?.length>1){const label=b.closest('.profile-card').querySelector('p');if(label)label.textContent=profile.playerCharacters.map(id=>V.content.characters[id]?.name||id).join(' + ')+' · dupla · nível '+(profile.level||1);}}return out;};
  const detail=V.ChallengeCatalog.detail.bind(V.ChallengeCatalog);V.ChallengeCatalog.detail=function(key,...args){const out=detail(key,...args);D.choice(key);return out;};
  const fishOpen=V.FishingChallenge.open.bind(V.FishingChallenge);V.FishingChallenge.open=function(...args){const out=fishOpen(...args);const host=V.$('.modal-body');if(host&&!V.$('#duo-fishing')){const section=document.createElement('section');section.className='duo-choice';section.innerHTML='<strong>Pescaria em dupla · duas telas</strong><div class="row"><label class="field">Onde pescar<select id="duo-fishing-habitat"><option value="cape">Costa do Cabo · África do Sul</option><option value="volta">Lago Volta · Gana</option></select></label><button id="duo-fishing" class="secondary">Jogar em dupla</button></div>';host.prepend(section);V.$('#duo-fishing').onclick=()=>D.launch('fish:fishing',{habitat:V.$('#duo-fishing-habitat').value});}return out;};
- const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){if(!D.active)return update(dt);};
+ const update=V.Game.update.bind(V.Game);V.Hooks.around(V.Game, 'update', 'duo-challenges:update:1', nextHook => function(dt){if(!D.active)return nextHook(dt);});
  document.addEventListener('keydown',e=>{if(!D.active||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(D.physical(e.code,true,e.repeat)){e.preventDefault();e.stopImmediatePropagation();}},true);
  document.addEventListener('keyup',e=>{if(D.physical(e.code,false)){e.preventDefault();e.stopImmediatePropagation();}},true);
  window.addEventListener('message',e=>D.receive(e));
@@ -155,8 +161,8 @@ async function launch(resume=false,checkpoint=null){
 }
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){try{await init(...args);resizeViewer();post({type:'ready'});}catch(e){post({type:'error',message:e.message});throw e;}};
 // Moving focus between viewers must not open the original lost-focus pause dialog.
-V.Game.pause=function(){V.Input.clear();};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){if(!clocked&&!localPause)return update(dt);};
+V.Game.pause=function(){clearLocalInput();};
+const update=V.Game.update.bind(V.Game);V.Hooks.around(V.Game, 'update', 'duo-challenges:update:2', nextHook => function(dt){if(!clocked&&!localPause)return nextHook(dt);});
 const toTitle=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){if(booted){snapshot();post({type:'exit'});return;}return toTitle(...args);};
 V.ChallengeCatalog.open=()=>{snapshot();post({type:'exit'});};
 function canonical(code){
@@ -190,10 +196,11 @@ const fishingHud=V.FishingChallenge.hud.bind(V.FishingChallenge);V.FishingChalle
 };
 function input(message){
  if(!booted||localPause||V.MapAssets.busy)return;const key=canonical(message.code);if(!key)return;
- if(message.down){if(!message.repeat)V.Input.pressed.add(key);V.Input.keys.add(key);}else V.Input.keys.delete(key);
+ if(message.down){if(!message.repeat)V.Input.pressed.add(key);V.Input.keys.add(key);}else{V.Input.keys.delete(key);const r=V.Playground.active;if(r)V.Playground.controllers[r.game]?.keyUp?.(r,key);}
  if(V.modal){if(V.FishingChallenge.run)V.Game.onKey(key,{preventDefault(){},repeat:message.repeat});else if(!message.repeat)boardInput(key,message.down);return;}
  if(message.down)V.Game.onKey(key,{preventDefault(){},repeat:message.repeat});
 }
+function clearLocalInput(){V.Input.clear();const r=V.Playground.active;if(r)V.Playground.controllers[r.game]?.cancelInput?.(r);}
 window.addEventListener('message',async e=>{
  const m=e.data;if(e.source!==window.parent||m?.voicesDuo!==token)return;
  if(m.type==='boot'&&!booted){
@@ -205,9 +212,9 @@ window.addEventListener('message',async e=>{
  else if(m.type==='tick'&&clocked&&booted&&!localPause&&Number.isFinite(m.dt)&&m.dt>=0&&m.dt<=.1){if(Number.isFinite(m.time))V.Engine.time=m.time;update(m.dt);}
  else if(m.type==='input')input(m);
  else if(m.type==='command'){
-  if(m.command==='clear'){V.Input.clear();return;}
+  if(m.command==='clear'){clearLocalInput();return;}
   if(m.command==='save'){V.Save.save();snapshot();return;}
-  if(m.command==='pause'){localPause=m.value;V.Input.clear();snapshot();return;}
+  if(m.command==='pause'){localPause=m.value;clearLocalInput();snapshot();return;}
   if(m.command==='translation'){V.settings.translation=m.value;if(V.Playground.active)V.Playground.active.translations=m.value;V.Playground.hud();V.Dialogue.translate();return;}
   if(m.command==='hint'){const r=V.Playground.active;if(r){r.hints++;V.Playground.controllers[r.game].hint?.(r);V.Playground.hud();}else V.$('#oware-hint')?.click();return;}
   if(m.command==='restart'){
@@ -217,6 +224,8 @@ window.addEventListener('message',async e=>{
  }
 });
 for(const type of ['keydown','keyup'])document.addEventListener(type,e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(['Tab'].includes(e.code))return;const ownPrimary=index===0?e.code==='Space':['Enter','Numpad0'].includes(e.code);if(ownPrimary&&e.target.closest?.('#guided-overlay button')){e.preventDefault();e.stopImmediatePropagation();if(type==='keydown'&&!e.repeat)e.target.click();return;}if(canonical(e.code)||e.code==='Escape'){e.preventDefault();e.stopImmediatePropagation();post({type:'physical',code:e.code,down:type==='keydown',repeat:e.repeat});}},true);
-window.addEventListener('blur',()=>V.Input.clear());
+window.addEventListener('blur',()=>clearLocalInput());
 window.addEventListener('beforeunload',snapshot);
 })();
+
+});

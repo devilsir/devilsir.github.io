@@ -1,3 +1,9 @@
+/* Registered module: playground-overhaul */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-overhaul", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function voicesChallengeOverhaul(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,esc=V.escape;
@@ -51,3 +57,5 @@ const oldKey=P.key.bind(P);P.key=function(k,e){if(this.active&&this.controllers[
 const oldPause=P.pause.bind(P);P.pause=function(){const r=this.active;if(!r)return;oldPause();const calm=V.$('#pg-calm');if(!calm)return;const label=document.createElement('label');label.className='field';label.innerHTML='<span>Dificuldade desta partida</span><select id="pg-pause-difficulty"><option value="0">Explorador</option><option value="1">Aventureiro</option><option value="2">Mestre</option></select>';calm.closest('label')?.after(label);const pick=V.$('#pg-pause-difficulty');pick.value=String(r.difficulty);pick.onchange=()=>{r.difficulty=+pick.value;this.selectDifficulty(+pick.value);this.save();};};
 const oldUpdate=P.update.bind(P);P.update=function(dt){const r=this.active;oldUpdate(dt);if(!r||r!==this.active||r.training||r.finished)return;if(r.mistakes>=3&&!r.adaptiveHelp){r.adaptiveHelp=true;r.feedback='PIX: tente usar Dica para visualizar a próxima ação. Você não perde o progresso salvo.';this.save();}if(r.mistakes>=7&&!r.adaptiveCalm){r.adaptiveCalm=true;r.calm=true;r.feedback='PIX ativou o ritmo tranquilo após várias tentativas. É possível desativá-lo na pausa.';this.save();}};
 })();
+
+});

@@ -1,13 +1,47 @@
+/* Registered module: city-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,C=V.Cozy,W=V.World,D=V.SceneDesign,R=V.Rooms,A=V.Architecture,T=48,copy=x=>JSON.parse(JSON.stringify(x));
+const residentialRooms=new Set(V.ResidentialPlans.plans.map(([id])=>'city-room-'+id));
 const names=['TV desligada','TV · programa diurno','TV · programa noturno','TV · transmissão','Geladeira fechada','Geladeira entreaberta','Geladeira aberta','Geladeira fechando','Fogão desligado','Fogão acendendo','Fogão aquecendo','Fogão com vapor','Chuveiro desligado','Chuveiro · água A','Chuveiro · água B','Chuveiro · gotas','Cama de casal','Sofá','Mesa de jantar','Pia de cozinha','Guarda-roupa','Despensa','Pia e espelho','Planta de interior'];
 V.sceneAssets.push(...names.map((name,index)=>({family:'home',index,name,category:'moradia',layer:'object',solid:true,size:2,solidFootprint:{x:.18,y:.76,width:.65,height:.18}})));
 const prop=C.prop.bind(C);C.prop=function(ctx,family,index,x,y,size,materials){if(family!=='home')return prop(ctx,family,index,x,y,size,materials);const img=V.Assets.images['home-appliances'];if(img)ctx.drawImage(img,index%4*128,Math.floor(index/4)*128,128,128,Math.round(x),Math.round(y),size,size);};
 const City=V.City={revision:1,maps:[],appliances:new Map(),
 room(id,name,w,h,shape='rectangle',floor=3,building=name,level=0){const room=R.makeRoom({name,building,width:w*T,height:h*T,x:96,y:192,shape,floor:level,floorStyle:floor===3?2:floor});room.id='city-room-'+id;const d=R.makeDesign(room);d.floor=/Casa|andar/.test(name)?'wood':'stone';d.purpose=level?'Moradia · '+level+'º andar · cozinha, descanso e estudo':'Um espaço aberto à comunidade, com móveis interativos.';d.spawn=[w/2+1.5,h+2.6];d.cityVersion=1;d.adventure={version:3,architecture:{walls:[],mounts:[],signs:[]},lights:[],regions:[],encounters:[],triggers:[]};C.layouts[id]=d;this.maps.push(id);return d;},
 furnish(d,id,prop,x,y,title=names[prop],size=2){d.scenes.push({id:'custom-city-'+id,kind:'notice',family:'home',prop,x,y,size,title,text:title});},
-architecture(d){if(!d.builderMap||!this.maps.some(id=>C.layouts[id]===d)&&!d.construction?.rooms.some(r=>r.id.startsWith('city-room-')))return;const g=A.geometry(d);g.walls=g.walls.filter(w=>!w.id.startsWith('city-shell-'));for(const room of d.construction.rooms)for(const s of R.segments(room)){const openings=d.construction.doors.filter(o=>o.room===room.id&&o.wall===s.key).map(o=>({u:o.u,width:o.width+12}));g.walls.push({id:'city-shell-'+room.id+'-'+s.key,a:s.a,b:s.b,height:s.key==='edge-0'?172:s.key==='edge-2'?70:104,thickness:10,color:'#b8aa91',openings});}if(!g.windows?.length){const box=R.box(d.construction.rooms[0].polygon);g.windows=[{x:box.x+90,y:box.y-137,w:86,h:82},{x:box.x+box.w-170,y:box.y-137,w:86,h:82}];}if(!d.adventure.lights.length){d.adventure.lights=[{id:'city-lamp-'+roomId(d),type:'ceiling',x:d.width*T/2,y:d.height*T/2,elevation:145,radius:230,intensity:.4,color:'#ffe3ab',enabled:true}];}},
+privateHome(d){return !!d?.homeInterior||residentialRooms.has(d?.construction?.rooms?.[0]?.id);},
+architecture(d){
+ if(!d.builderMap||!this.maps.some(id=>C.layouts[id]===d)&&!d.construction?.rooms.some(r=>r.id.startsWith('city-room-')))return;
+ const g=A.geometry(d),home=V.ResidentialPlans.palettes[d.homeInterior?.palette],residential=this.privateHome(d);
+ const hasWindows=residential&&d.homeWindows?.length;
+ if(hasWindows)g.windows=[];
+ g.walls=g.walls.filter(w=>!w.id.startsWith('city-shell-'));
+ for(const room of d.construction.rooms)for(const segment of R.segments(room)){
+  const {a,b,key}=segment,back=key==='edge-0',outer=key.startsWith('edge-');
+  const doors=d.construction.doors.filter(o=>o.room===room.id&&o.wall===key);
+  const openings=doors.map(o=>({u:o.u,width:o.width+(residential?0:12),height:o.height,door:o.id}));
+  const lateral=Math.abs(b[1]-a[1])>Math.abs(b[0]-a[0]);
+  const windows=hasWindows?d.homeWindows.filter(w=>w.room===room.id&&w.wall===key):[];
+  const side=residential&&lateral&&(windows.length>0||doors.length>0);
+  const baseHeight=back?172:side?(outer?158:123):residential?(outer?(lateral?26:86):(lateral?38:68)):key==='edge-2'?70:104;
+  const height=residential?Math.max(baseHeight,...doors.map(o=>(o.height||72)+24)):baseHeight;
+  const color=home?.walls[back?0:outer?1:2]||'#b8aa91';
+  const midX=(a[0]+b[0])/2,midY=(a[1]+b[1])/2;
+  const direction=outer&&R.pointIn(midX+9,midY,room.polygon)?-1:1;
+  const slope=side?direction*.48:0;
+  g.walls.push({id:'city-shell-'+room.id+'-'+key,a,b,height,thickness:10,color,openings,windows,sideSlope:slope,sideDirection:direction,residential,roomId:room.id,segment:key});
+ }
+ if(!home&&!hasWindows&&!g.windows.length){
+  const box=R.box(d.construction.rooms[0].polygon);
+  g.windows=[{x:box.x+90,y:box.y-137,w:86,h:82},{x:box.x+box.w-170,y:box.y-137,w:86,h:82}];
+ }
+ if(!d.adventure.lights.length)d.adventure.lights=[{id:'city-lamp-'+roomId(d),type:'ceiling',x:d.width*T/2,y:d.height*T/2,elevation:145,radius:230,intensity:.4,color:'#ffe3ab',enabled:true}];
+},
 hydrate(m){if(!m.design)return;const d=m.design;if(m.id==='neighborhood'){m.buildings=d.buildings.map(b=>({...b,x:b.x*T,y:b.y*T,w:b.w*T,h:b.h*T}));m.solids=m.solids.filter(s=>!s.owner?.startsWith('city-building-'));m.buildings.forEach((b,i)=>m.solids.push({x:b.x,y:b.y,w:b.w,h:b.h,owner:'city-building-'+i}));m.theme='community';m.name=d.name;m.cityExterior=true;}
 for(const o of m.objects.filter(o=>o.scene?.family==='home')){o.household=true;o.interactionRange=92;o.scene.hostDecor='solid-'+o.id;if(!m.solids.some(s=>s.owner===o.scene.hostDecor)){const size=(o.scene.size||2)*T;m.solids.push({x:o.x-size*.31,y:o.y-33,w:size*.62,h:18,owner:o.scene.hostDecor});}}
 if(d.builderMap&&d.construction.rooms.some(r=>r.id.startsWith('city-room-'))){this.architecture(d);A.hydrate(m);m.cityInterior=true;}
@@ -50,3 +84,5 @@ if(['shopfront','mall'].includes(b.style)){ctx.fillStyle='#3e6e67';ctx.fillRect(
 ctx.fillStyle='#2b4b40';const label=b.label?.split(' / ')[0]||'';const lw=Math.min(w-35,Math.max(118,label.length*8+20));ctx.fillRect(x+w/2-lw/2,top+7,lw,23);ctx.strokeStyle='#c7ae72';ctx.lineWidth=1;ctx.strokeRect(x+w/2-lw/2+2,top+9,lw-4,19);V.Engine.text(ctx,label,x+w/2,top+24,'#f1e3bf',Math.min(12,lw/(label.length*.62||1)),'center');ctx.restore();};
 const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');if(m.cityInterior){ctx.save();for(const r of m.design.construction.rooms){R.trace(ctx,r.polygon);ctx.clip();if(m.design.floor==='wood'&&r.floorStyle===2){const b=R.box(r.polygon);ctx.fillStyle='#b79c73';ctx.fillRect(b.x,b.y,b.w,b.h);for(let yy=b.y;yy<b.y+b.h;yy+=24){ctx.fillStyle=Math.floor(yy/24)%3?'#bca17b':'#b59a73';ctx.fillRect(b.x,yy,b.w,24);ctx.fillStyle='#8a765c';ctx.fillRect(b.x,yy,b.w,1);ctx.fillStyle='#d4ba8c';ctx.fillRect(b.x,yy+2,b.w,1);for(let xx=b.x+(Math.floor(yy/24)%2)*88;xx<b.x+b.w;xx+=176){ctx.fillStyle='#938064';ctx.fillRect(xx,yy,1,24);ctx.fillStyle='#d1b98e66';ctx.fillRect(xx+9,yy+12,100,1);}}}}for(const [x,y,w,h,color] of m.design.rugs||[]){ctx.fillStyle='#524d3d33';ctx.fillRect(x*T+5,y*T+5,w*T,h*T);ctx.fillStyle=color;ctx.fillRect(x*T,y*T,w*T,h*T);ctx.strokeStyle='#e4d1a088';ctx.lineWidth=3;ctx.strokeRect(x*T+7,y*T+7,w*T-14,h*T-14);for(let xx=x*T+14;xx<(x+w)*T-10;xx+=18){ctx.fillStyle='#ead3a044';ctx.fillRect(xx,y*T+14,8,2);ctx.fillRect(xx,(y+h)*T-16,8,2);}}ctx.restore();}if(m.id!=='neighborhood')return;for(const p of m.design.paths){ctx.fillStyle='#c5b796';ctx.fillRect(p[0]*T,p[1]*T,p[2]*T,p[3]*T);ctx.strokeStyle='#a99d7e';for(let x=p[0]*T;x<(p[0]+p[2])*T;x+=T/2){ctx.beginPath();ctx.moveTo(x,p[1]*T);ctx.lineTo(x,(p[1]+p[3])*T);ctx.stroke();}for(let y=p[1]*T;y<(p[1]+p[3])*T;y+=T/2){ctx.beginPath();ctx.moveTo(p[0]*T,y);ctx.lineTo((p[0]+p[2])*T,y);ctx.stroke();}}};
 })();
+
+});

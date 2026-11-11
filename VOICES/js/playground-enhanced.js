@@ -1,3 +1,9 @@
+/* Registered module: playground-enhanced */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-enhanced", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Challenge-only improvements. Authored SVG previews and Canvas artwork are local. */
 (function voicesChallengeEdition() {
 'use strict';
@@ -885,3 +891,5 @@ P.make=function(id,key,context={}) {
   return r;
 };
 })();
+
+});

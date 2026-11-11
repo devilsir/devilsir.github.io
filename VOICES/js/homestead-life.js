@@ -1,3 +1,9 @@
+/* Registered module: homestead-life */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("homestead-life", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,H=V.Homestead,L=V.Life,R=V.Rooms,C=V.Cozy,W=V.World,esc=V.escape,T=48;
@@ -23,5 +29,7 @@ const furniture=L.furniture.bind(L);L.furniture=function(o){const p=o.scene.prop
 const shop=L.shop.bind(L);L.shop=function(...args){if(H.hours(W.current?.id)&&!H.isOpen(W.current.id)){V.UI.toast('O atendimento encerrou. Voltamos pela manhã.');return false;}return shop(...args);};
 const panel=L.panel.bind(L);L.panel=function(...args){panel(...args);const root=V.$('.modal-footer');if(!root)return;const b=document.createElement('button');b.id='life-housing';b.className='secondary';b.textContent='Minha casa';b.onclick=()=>H.panel();root.append(b);};
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){pause(...args);const root=V.$('.modal-body .stack')||V.$('.modal-body');if(!root||this.mode!=='explore')return;const b=document.createElement('button');b.id='pause-housing';b.className='secondary';b.textContent='Minha casa e vizinhança';b.onclick=()=>H.panel();root.prepend(b);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(V.World.current?.id==='interior-shopping'&&o?.household&&o.scene.prop===21&&!V.modal&&!V.Dialogue.active){H.store();return;}return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'homestead-life:interact:1', nextHook => function(o){if(V.World.current?.id==='interior-shopping'&&o?.household&&o.scene.prop===21&&!V.modal&&!V.Dialogue.active){H.store();return;}return nextHook(o);});
 })();
+
+});

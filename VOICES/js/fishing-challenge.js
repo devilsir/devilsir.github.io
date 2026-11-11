@@ -1,3 +1,9 @@
+/* Registered module: fishing-challenge */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("fishing-challenge", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,M=V.Maritime,D=V.MaritimeData,N=V.SeaNavigation,A=V.MaritimeArt,esc=V.escape;
@@ -42,10 +48,12 @@ cancel(){this.run=null;this.bound=null;V.Input.clear();V.MinigamePraise.clear();
 const assets=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([assets(),F.load()]);return this.errors;};
 const quietFishing=V.SeaFishing.start.bind(V.SeaFishing);V.SeaFishing.start=()=>F.open();
 const startFishing=V.Activities.startFishing.bind(V.Activities);V.Activities.startFishing=function(...a){return (V.World.current?.maritime||V.CoastalExploration.isCoast())&&F.available()?F.open():startFishing(...a);};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){if(F.run)F.update(dt);return update(dt);};
+V.Hooks.around(V.Game, 'update', 'fishing-challenge:update:1', nextHook => function(dt){if(F.run)F.update(dt);return nextHook(dt);});
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(F.run&&V.Game.screen==='game'){if([' ','enter','x','p'].includes(k)){e.preventDefault?.();if(!e.repeat){if(k==='p')F.pause();else if(k==='x')F.loosen();else F.action();}return;}if(['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d'].includes(k)){e.preventDefault?.();return;}}return key(k,e);};
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...a){F.cancel();return start(...a);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...a){F.cancel();return title(...a);};
 const menu=V.Playground.menu.bind(V.Playground);V.Playground.menu=function(...args){const result=menu(...args),grid=V.$('.pg-menu-grid');if(grid&&!V.$('#fish-arcade-play')){const card=document.createElement('article');card.className='pg-game-card';card.style.setProperty('--pg-color','#80c9c4');card.innerHTML='<div class="pg-cover fish-arcade-cover"><img src="'+art('fishing-underwater')+'" alt=""><small>BARCO · ANZOL · SABORES</small></div><div class="pg-card-body"><h3>Pescaria no barco</h3><p>Leve seu personagem para um desafio de pesca na costa do Cabo ou no Lago Volta.</p><p class="pg-goal">Faça 6 capturas, controle a linha e conheça os peixes e seus contextos alimentares.</p><div class="row"><button id="fish-arcade-play" class="primary">Jogar</button><button id="fish-arcade-book" class="secondary">Conhecer os peixes</button></div></div>';grid.append(card);V.$('#fish-arcade-play').onclick=()=>F.open();V.$('#fish-arcade-book').onclick=()=>F.book();}return result;};
 const entry=M.fishEntry.bind(M);M.fishEntry=function(id){const f=fish.find(f=>f.id===id);if(!f)return entry(id);const r=M.ensure().catches[id];V.UI.modal(f.name,f.en+' · '+f.scientific,`<article class="sea-entry"><img src="${F.asset(f)}" alt="${esc(f.name)}"><div><h3>${esc(f.dish)}</h3><p>${esc(f.note)}</p><p>${r?r.count+' registro(s) · maior exemplar do jogo: '+r.best+' cm':'Jogue o desafio para registrar este peixe.'}</p>${M.source(f.source)}</div></article>`,`<button id="fish-food-back" class="primary">Ver peixes</button>`);V.$('#fish-food-back').onclick=()=>M.book(true);};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: wildlife-motion */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("wildlife-motion", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.NatureData,N=V.NatureWorld,A=V.NatureArt,W=V.World,T=48;
@@ -39,3 +45,5 @@ const draw=N.draw.bind(N);N.draw=function(c,o,cam){if(o.type==='nature-animal'){
 const field=N.fieldGuide.bind(N);N.fieldGuide=function(...args){const out=field(...args);for(const el of V.$$('[data-nature-species]')){const s=byId(el.dataset.natureSpecies),country=el.parentElement.querySelector('small');if(country)country.textContent=s.country;}return out;};
 const panel=N.speciesPanel.bind(N);N.speciesPanel=function(id,...args){const out=panel(id,...args),s=byId(id),body=V.$('.modal-body');if(body&&!body.querySelector('.wildlife-facts')){const box=document.createElement('div');box.className='nature-notice wildlife-facts';box.innerHTML='<strong>Localização</strong><p>'+V.escape(s.location)+'</p><strong>Curiosidade</strong><p>'+V.escape(s.curiosity)+'</p>';body.append(box);}return out;};
 })();
+
+});

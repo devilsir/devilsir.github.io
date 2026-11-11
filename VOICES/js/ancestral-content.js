@@ -1,3 +1,9 @@
+/* Registered module: ancestral-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("ancestral-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){"use strict";window.V.AncestralData={
   "version": 1,
   "sources": [
@@ -1476,3 +1482,5 @@
     }
   ]
 };})();
+
+});

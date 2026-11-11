@@ -1,3 +1,9 @@
+/* Registered module: african-play-games */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("african-play-games", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,A=V.AfricanPlayArt,B=V.AfricanPlayData;
@@ -108,3 +114,5 @@ const attach=P.attach.bind(P);P.attach=function(r){if(AP.has(r.game)){const stag
 const guide=P.guide.bind(P);P.guide=function(){const r=this.active;if(!r?.training||!AP.has(r.game))return guide();const s=D.guides[r.game][r.step],targets={'terra-mar':['#af-land','#af-sea','#af-same'],'fogo-montanha':['#af-fire-jump','#af-fire-still','#af-fire-turn'],matacuzana:['#af-stone-main','#af-stone-pick','#af-stone-main'],'roda-jo':['#af-jo-pass','#af-jo-hold','#pg-controls'],ampe:['#af-ampe-clap','#af-ampe-left','#pg-controls']};V.GuideOverlay.show('playground',{...s,key:'af-play:'+r.game+':'+r.step,counter:'PIX · TREINO '+(r.step+1)+'/'+D.guides[r.game].length,index:r.step,total:D.guides[r.game].length,ack:r.ack,finish:r.step===D.guides[r.game].length-1,target:targets[r.game][r.step],next:()=>this.nextGuide(),skip:()=>this.endGuide(true),skipLabel:r.onboarding?'Voltar à introdução':'Pular treino',recover:()=>this.hud()});};
 const finish=P.finish.bind(P);P.finish=function(...args){const r=this.active,result=finish(...args);if(r&&AP.has(r.game)&&(r.finished||r.arcade?.break))V.PlayMuseum?.recordPlay(r.game);return result;};
 })();
+
+});

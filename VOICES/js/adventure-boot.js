@@ -1,3 +1,9 @@
+/* Registered module: adventure-boot */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-boot", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,C=V.Cozy,W=V.World,D=V.SceneDesign,P=V.Progress,A=V.Architecture,E=V.Environment,N=V.ObjectiveGuide,S=V.Story,copy=x=>JSON.parse(JSON.stringify(x));
@@ -14,22 +20,22 @@ W.collides=function(x,y,r=11){return!this.current||V.Living.blocked(this.current
 W.init=function(){old.init();for(const m of Object.values(this.maps)){if(!m.archWalls){A.hydrate(m);E.hydrate(m);S.hydrate(m);}}N.invalidate();};
 W.load=function(id,pos){const result=old.load(id,pos);if(!V.state)return result;const a=P.ensure();if(!a.story.visited.includes(this.current.id))a.story.visited.push(this.current.id);N.signature='';N.timer=0;E.ambientBlend=E.profile().indoor?1:0;S.companion=null;P.hud();E.hud();return result;};
 W.interactables=function(){return old.interactables().filter(o=>S.visible(o));};
-V.Game.interact=function(o){if(!o||V.modal||V.Dialogue.active||V.Game.mode!=='explore')return;if(S.interact(o))return;if(o.type==='mounted-art'){V.Campus.profile(o.mounted.portrait);return;}if(o.type==='custom-trigger'){V.UI.modal(o.title,'ENCONTRO DO CENÁRIO',`<p>${V.escape(o.text)}</p>`);if(o.flag)V.state.flags[o.flag]=true;V.Save.save();return;}return old.interact(o);};
+V.Hooks.around(V.Game, 'interact', 'adventure-boot:interact:1', nextHook => function(o){if(!o||V.modal||V.Dialogue.active||V.Game.mode!=='explore')return;if(S.interact(o))return;if(o.type==='mounted-art'){V.Campus.profile(o.mounted.portrait);return;}if(o.type==='custom-trigger'){V.UI.modal(o.title,'ENCONTRO DO CENÁRIO',`<p>${V.escape(o.text)}</p>`);if(o.flag)V.state.flags[o.flag]=true;V.Save.save();return;}return nextHook(o);});
 C.drawObject=function(ctx,o,cam,t){if(o.mounted||!S.visible(o))return;if(S.draw(ctx,o,cam))return;if(o.type==='boss'){V.Combat.drawManifestation(ctx,o,cam);return;}return old.draw(ctx,o,cam,t);};
 C.render=function(ctx){
 const m=W.current;if(!m||!V.state)return;C.ensure();const cam=W.camera,t={accent:m.chapter?V.content.chapters[m.chapter-1].color:'#d1be93'};
 if(V.Neighborhood)V.Neighborhood.bubbleDrawn=false;m.protestChantVisible=false;
-if(!m.cache)C.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));E.sky(ctx,m,cam);C.pond(ctx,m,cam);
+if(!m.cache)C.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);V.GroundCache.draw(ctx, m.cache, Math.round(-cam.x), Math.round(-cam.y));E.sky(ctx,m,cam);C.pond(ctx,m,cam);
 if(!V.SceneEditor.active&&m.id!=='hub')N.draw(ctx,cam);
 if(m.id!=='hub')m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));
-const draws=V.RenderView.decor(ctx,m,cam).map(o=>({y:o.layer==='ground'?-10000:o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9,kind:'decor',o})).concat(V.RenderView.objects(ctx,m,cam).map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
+const draws=V.RenderView.decor(ctx,m,cam).filter(o=>o.family!=='room-wall'||!V.City.privateHome(m.design)).map(o=>({y:o.layer==='ground'?-10000:o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9,kind:'decor',o})).concat(V.RenderView.objects(ctx,m,cam).map(o=>({y:o.door?A.residentialOpening?.(m,o.door,cam)?.depth??o.y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
 let plazaSurface=false;for(const d of draws){
 if(m.id==='hub'&&!plazaSurface&&d.y>-10000){V.PlazaArt?.surface(ctx,m,cam);if(!V.SceneEditor.active)N.draw(ctx,cam);m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));C.fountain(ctx,cam);plazaSurface=true;}
 if(d.kind==='player')V.Player.render(ctx);
-else if(d.kind==='object')C.drawObject(ctx,d.o,cam,t);
+else if(d.kind==='object'){V.ResidentialArt?.shadow(ctx,m,d.o,cam);C.drawObject(ctx,d.o,cam,t);}
 else if(d.kind==='wall')A.drawWall(ctx,m,d.o,cam);
 else if(d.kind==='light')E.drawFixture(ctx,d.o,cam,m);
-else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-o.size&&x<ctx.canvas.width+80&&y>-o.size&&y<ctx.canvas.height+100){if(m.id==='garden'&&o.family==='world'&&o.prop===1)C.gardenBed(ctx,o,cam);else D.drawDecor(ctx,o,cam);}}
+else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-o.size&&x<ctx.canvas.width+80&&y>-o.size&&y<ctx.canvas.height+100){V.ResidentialArt?.shadow(ctx,m,o,cam,true);if(m.id==='garden'&&o.family==='world'&&o.prop===1)C.gardenBed(ctx,o,cam);else D.drawDecor(ctx,o,cam);}}
 }
 A.drawSigns(ctx,m,cam);E.drawWindows(ctx,m,cam);C.progressDetails(ctx,m,cam);if(!V.SceneEditor.active)N.drawTarget(ctx,cam);const p=V.Player.data;
 if(V.PixPresence.following())V.PixPresence.draw(ctx,p,cam);
@@ -49,14 +55,14 @@ if(a.battle){const battle=copy(a.battle);if(V.Combat.resume(battle))V.UI.toast('
 };
 V.Game.intro=()=>S.intro();
 V.Game.ending=()=>S.finale();
-V.Game.update=function(dt){
-old.update(dt);if(this.screen!=='game'||!V.state)return;
+V.Hooks.around(V.Game, 'update', 'adventure-boot:update:1', nextHook => function(dt){
+nextHook(dt);if(this.screen!=='game'||!V.state)return;
 const paused=V.modal||V.Dialogue.active||this.mode!=='explore'||V.SceneEditor.active;
 E.update(dt,paused);if(!paused){S.update(dt);N.update(dt);}
 if(['museum','night','firstbattle'].includes(P.ensure().story.stage))V.$('#tutorial-hint').hidden=true;
 if(Math.floor(V.Engine.time*2)!==this.adventureTick){this.adventureTick=Math.floor(V.Engine.time*2);P.observe();P.hud();const objective=N.objective();if(this.lastAdventureObjective!==objective?.key){this.lastAdventureObjective=objective?.key;this.updateHUD();}}
 if(V.Combat.active&&this.mode!=='combat'){V.Combat.active=null;V.$('#battle-root')?.remove();P.ensure().battle=null;}
-};
+});
 V.Game.onKey=function(k,e){
 if(this.screen==='game'&&!V.SceneEditor.active&&V.Combat.active&&V.Combat.key(k,e))return;
 if(this.screen==='game'&&!V.modal&&!V.Dialogue.active&&!V.SceneEditor.active&&this.mode==='explore'){
@@ -86,3 +92,5 @@ const tracker=V.$('#mission-tracker');if(tracker)tracker.onclick=()=>V.Quests.jo
 };
 const render=V.Game.render.bind(V.Game);V.Game.render=function(ctx){if(this.screen==='game'&&this.mode==='combat'){V.Combat.render(ctx);return;}return render(ctx);};
 })();
+
+});

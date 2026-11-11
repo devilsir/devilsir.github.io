@@ -1,3 +1,9 @@
+/* Registered module: world-signs */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("world-signs", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,W=V.World;
 const S=V.WorldSigns={
@@ -10,3 +16,5 @@ V.Maritime.label=(c,text,x,y,active=false)=>S.label(c,text,x,y,active);
 const painting=V.CityFacades.paint.bind(V.CityFacades);V.CityFacades.paint=function(c,b,p,...args){const out=painting(c,b,p,...args);if(p.number===null||p.shop){const roof=p.roof==='terrace'||p.roof==='deco'?25:p.roof==='skillion'?44:49;S.draw(c,(b.label||'').split(' / ')[0],b.x+b.w/2,b.y+roof+16,{maxWidth:Math.max(110,b.w-28)});}return out;};
 const draw=V.NatureWorld.draw.bind(V.NatureWorld);V.NatureWorld.draw=function(c,o,cam){if(o.natureLink||o.type==='nature-board'){const x=o.x-cam.x,y=o.y-cam.y;V.SceneShadows.contact(c,x,y+3,23,6,.17);c.save();c.fillStyle='#846743';c.fillRect(x-3,y-48,6,48);c.restore();const name=o.type==='nature-board'?'Patrulha da biodiversidade':V.NatureData.maps.find(m=>m.id===o.to)?.name||V.FastTravel.name(o.to);S.draw(c,name,x,y-55,{maxWidth:220,active:W.nearest?.id===o.id});return true;}return draw(c,o,cam);};
 })();
+
+});

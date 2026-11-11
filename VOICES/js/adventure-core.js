@@ -1,3 +1,9 @@
+/* Registered module: adventure-core */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-core", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.AdventureData,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x));
@@ -103,21 +109,27 @@ a.skillPoints+=Math.max(0,spent);a.skills={critical:1,restore:1,shield:1};a.pass
 },
 icon(id,size=40){const name=D.items[id]?.icon||id;return `<img class="adv-icon" src="assets/adventure/icons/${esc(name)}.png" alt="" width="${size}" height="${size}">`;},
 character(tab='stats'){
+if(tab==='party'&&V.Team)return V.Team.panel();
 const a=this.ensure();if(!a)return;const stats=this.stats();
-let body=`<nav class="tabs">${[['stats','Atributos'],['skills','Habilidades'],['party','Equipe']].map(([t,n])=>`<button data-character-tab="${t}" class="${t===tab?'active':''}">${n}</button>`).join('')}</nav>`;
-if(tab==='stats')body+=`<div class="adv-profile"><div>${V.UI.portrait(V.state.character,0,96)}<strong>${esc(V.state.name)} · o Forasteiro</strong><span>Nível ${a.level} / 20</span></div><div><progress max="${a.level===20?1:this.threshold(a.level+1)-this.threshold(a.level)}" value="${a.level===20?1:a.xp-this.threshold(a.level)}"></progress><p>${a.xp} XP ${a.level<20?'· próximo nível em '+(this.threshold(a.level+1)-a.xp)+' XP':'· nível máximo'}</p><p>${a.attributePoints} ponto(s) de atributo · ${a.skillPoints} ponto(s) de habilidade</p></div></div><div class="adv-stat-grid">${Object.entries(stats).map(([k,n])=>`<article><small>${labels[k]}</small><b>${n}</b><p class="stat-explainer" id="stat-help-${k}">${statHelp[k]}</p><span>Investidos: ${a.attributes[k]||0}</span><button class="secondary" data-stat="${k}" aria-describedby="stat-help-${k}" title="Investir um ponto em ${labels[k]}" ${!a.attributePoints||V.Game.mode==='combat'?'disabled':''}>+ ${k==='health'?10:k==='focus'?6:k==='attack'||k==='knowledge'?3:2}</button></article>`).join('')}</div><div class="note">Dano = poder + 0,9 × atributo ofensivo − 0,55 × defesa − 0,12 × determinação; mínimo 2. Defesa reduz o próximo impacto em 55%. Cura = poder + 0,8 × conhecimento. Iniciativa: agilidade, sem sorteio. Conhecimento é um atributo de RPG; o seu registro educativo está no Arquivo.</div>`;
-if(tab==='skills')body+=`<div class="row between"><p>${a.skillPoints} ponto(s) disponíveis · graus 1 a 3</p><button id="adv-respec" class="secondary" ${V.Game.mode==='combat'?'disabled':''}>Redistribuir pontos</button></div><div class="adv-skill-columns">${['Pesquisa','Memória','Vigília'].map(branch=>`<section><h3>${branch}</h3>${D.skills.filter(s=>s.branch===branch).map(s=>this.skillCard(s,a,false)).join('')}<h4>Passivas</h4>${D.passives.filter(s=>s.branch===branch).map(s=>this.skillCard(s,a,true)).join('')}</section>`).join('')}</div>`;
-if(tab==='party')body+=`<p>Até três participantes: você e dois parceiros. Zambeto oferece apoios limitados; não ocupa uma vaga e não recebe dano.</p><div class="three-cols">${a.companions.map(id=>`<article class="card">${V.UI.portrait(id,0,80)}<h3>${esc(V.content.characters[id]?.name||id)}</h3><p>${esc(V.content.characters[id]?.role||'Parceiro de investigação')}</p><button data-party="${id}" class="secondary" ${V.Game.mode==='combat'?'disabled':''}>${a.party.includes(id)?'Retirar da equipe':'Incluir na equipe'}</button></article>`).join('')||'<div class="note">Os parceiros entram ao longo da investigação. Encontre o guardião na primeira noite.</div>'}</div>`;
-V.UI.modal('Personagem e habilidades','FORASTEIRO · AVENTURA ÚNICA',body,'',true);V.UI.paintPortraits();
+const inBattle=V.Game.mode==='combat',icon=key=>V.TurnArt?.icon(key)||'';
+const points=(n,singular,plural)=>`${n} ${n===1?singular:plural}`;
+const statIcons={health:'health',focus:'focus',attack:'attack',defense:'defend',knowledge:'records',agility:'speed',resolve:'context'};
+let body=`<nav class="character-tabs" aria-label="Ficha do personagem">${[['stats','Atributos','health'],['skills','Habilidades','skills'],['party','Equipe','support']].map(([t,n,i])=>`<button data-character-tab="${t}" aria-pressed="${t===tab}">${icon(i)}${n}</button>`).join('')}</nav>`;
+if(tab==='stats'){
+ const max=a.level===20,levelXP=max?1:this.threshold(a.level+1)-this.threshold(a.level),earned=max?1:a.xp-this.threshold(a.level);
+ body+=`<section class="adv-profile character-profile"><div class="character-identity">${V.UI.portrait(V.state.character,0,112)}<div><span>Nível ${a.level}</span><h3>${esc(V.state.name)}</h3></div></div><div class="character-progress"><div><strong>${a.xp} XP</strong><span>${max?'Nível máximo':this.threshold(a.level+1)-a.xp+' XP para o próximo nível'}</span></div><progress max="${levelXP}" value="${earned}" aria-label="Experiência até o próximo nível"></progress><div class="character-points"><b>${points(a.attributePoints,'ponto de atributo','pontos de atributo')}</b><b>${points(a.skillPoints,'ponto de habilidade','pontos de habilidade')}</b></div></div></section><div class="character-shortcuts" aria-label="Atividades e aparência"></div><div class="adv-stat-grid">${Object.entries(stats).map(([k,n])=>`<article><header>${icon(statIcons[k])}<h3>${labels[k]}</h3><b>${n}</b></header><p class="stat-explainer" id="stat-help-${k}">${statHelp[k]}</p><footer><span>${points(a.attributes[k]||0,'ponto investido','pontos investidos')}</span><button class="secondary" data-stat="${k}" aria-describedby="stat-help-${k}" aria-label="Investir um ponto em ${labels[k]}" ${!a.attributePoints||inBattle?'disabled':''}>+${k==='health'?10:k==='focus'?6:k==='attack'||k==='knowledge'?3:2}</button></footer></article>`).join('')}</div><details class="character-rules"><summary>Como os atributos funcionam no combate</summary><p>Dano = poder + 0,9 × atributo ofensivo − 0,55 × defesa − 0,12 × determinação. O mínimo é 2. Defender reduz o próximo impacto em 55%. Cura = poder + 0,8 × conhecimento. A agilidade determina a iniciativa.</p></details>`;
+}
+if(tab==='skills')body+=`<header class="character-skill-balance">${icon('skills')}<div><strong>${points(a.skillPoints,'ponto disponível','pontos disponíveis')}</strong><p>Aprender ou melhorar custa 1 ponto. Cada habilidade tem até 3 graus.</p></div><button id="adv-respec" class="secondary" ${inBattle?'disabled':''}>Redistribuir pontos</button></header><div class="adv-skill-columns">${[['Pesquisa','records'],['Memória','context'],['Vigília','defend']].map(([branch,i])=>`<section><h3>${icon(i)}${branch}</h3>${D.skills.filter(s=>s.branch===branch).map(s=>this.skillCard(s,a,false)).join('')}<h4>Passivas</h4>${D.passives.filter(s=>s.branch===branch).map(s=>this.skillCard(s,a,true)).join('')}</section>`).join('')}</div>`;
+V.UI.modal('Personagem e habilidades','',body,'',true);V.$('.modal').classList.add('character-modal');V.UI.paintPortraits();
 V.$$('[data-character-tab]').forEach(b=>b.onclick=()=>this.character(b.dataset.characterTab));
-V.$$('[data-stat]').forEach(b=>b.onclick=()=>{if(a.attributePoints>0){a.attributes[b.dataset.stat]=(a.attributes[b.dataset.stat]||0)+1;a.attributePoints--;V.Save.save();this.character();}});
+V.$$('[data-stat]').forEach(b=>b.onclick=()=>{if(a.attributePoints>0&&V.Game.mode!=='combat'){const stat=b.dataset.stat;a.attributes[stat]=(a.attributes[stat]||0)+1;a.attributePoints--;V.Save.save();this.character();V.$(`[data-stat="${stat}"]`)?.focus();}});
 V.$$('[data-learn-skill]').forEach(b=>b.onclick=()=>{this.learn(b.dataset.learnSkill,b.dataset.passive==='true');this.character('skills');});
 V.$('#adv-respec')?.addEventListener('click',()=>V.UI.confirm('Redistribuir habilidades?','Todos os pontos investidos retornam. As três habilidades iniciais permanecem disponíveis.',()=>{this.respec();this.character('skills');}));
-V.$$('[data-party]').forEach(b=>b.onclick=()=>{const id=b.dataset.party;if(a.party.includes(id))a.party=a.party.filter(x=>x!==id);else if(a.party.length<2)a.party.push(id);else V.UI.toast('A equipe já tem três participantes. Retire alguém primeiro.');V.Save.save();this.character('party');});
 },
 skillCard(s,a,passive){
 const bag=passive?a.passives:a.skills,rank=bag[s.id]||0,req=s.requires&&(passive?D.passives:D.skills).find(x=>x.id===s.requires),can=a.skillPoints>0&&a.level>=s.level&&(!s.requires||bag[s.requires])&&rank<3&&V.Game.mode!=='combat';
-return `<article class="adv-skill ${rank?'learned':''}">${this.icon(s.id,32)}<div><strong>${s.name}</strong><small>${passive?'Passiva':s.cost+' foco · recarga '+s.cooldown+' · duração '+s.duration} · grau ${rank}/3</small><p>${esc(s.description)}</p><small>Nível ${s.level}${req?' · requer '+req.name:''}. ${rank<3?'Próximo grau: '+(passive?'bônus acumulativo.':'poder +20%, duração +1 no grau 3; custo +2.'):''}</small><button class="secondary" data-learn-skill="${s.id}" data-passive="${passive}" ${can?'':'disabled'}>${rank===3?'Máximo':rank?'Melhorar · 1 ponto':'Aprender · 1 ponto'}</button></div></article>`;
+const reason=rank===3?'Grau máximo':a.level<s.level?'Disponível no nível '+s.level:req&&!bag[s.requires]?'Requer '+req.name:!a.skillPoints?'Sem pontos disponíveis':V.Game.mode==='combat'?'Após o combate':'';
+return `<article class="adv-skill ${rank?'learned':''}"><header>${this.icon(s.id,38)}<h4>${esc(s.name)}</h4><span class="character-rank" aria-label="Grau ${rank} de 3">${[1,2,3].map(n=>`<i class="${n<=rank?'filled':''}"></i>`).join('')}</span></header><p>${esc(s.description)}</p>${passive?'':`<ul class="skill-costs"><li>${s.cost} foco</li>${s.cooldown?`<li>Recarga ${s.cooldown}</li>`:''}${s.duration?`<li>Duração ${s.duration}</li>`:''}</ul>`}<footer><small>${esc(reason||('Nível '+s.level+(req?' · '+req.name:'')))}</small>${rank<3?`<button class="${can?'primary':'secondary'}" data-learn-skill="${s.id}" data-passive="${passive}" ${can?'':'disabled'}>${rank?'Melhorar':'Aprender'}</button>`:''}</footer></article>`;
 },
 inventory(category='all'){
 const a=this.ensure();if(!a)return;
@@ -149,3 +161,5 @@ for(const q of Object.values(V.state.sideQuests||{}))if(q.done&&q.id&&!a.ledger[
 };
 Object.assign(V.defaultSettings,{minimumBrightness:.28,reducedFlash:true,weatherIntensity:.7,lightingQuality:'medium',battleSpeed:1,routePattern:false});
 })();
+
+});

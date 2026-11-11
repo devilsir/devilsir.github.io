@@ -1,21 +1,79 @@
-.pg-card-body .row{flex-wrap:wrap}.arcade-circuits{margin-top:24px;padding:18px;background:#31565166;border:1px solid #98b09988;border-radius:12px}.arcade-circuits h3{color:#f5d18e;margin-top:0}.arcade-circuits p{font-size:13px}.arcade-circuits .pg-stage-grid{margin-bottom:16px}.arcade-circuits>button{margin-top:12px}.moto-controls{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}.moto-controls button{min-width:105px;min-height:42px;border:2px solid var(--parcel-color,#b5d7bf);border-radius:9px}.moto-controls button[aria-pressed=true]{background:#183d49!important;color:var(--parcel-color)!important;box-shadow:0 0 12px color-mix(in srgb,var(--parcel-color) 45%,transparent);transform:translateY(-2px)}.moto-controls #moto-throw{min-width:190px}.moto-controls button:disabled{opacity:.6}.fishing-challenge-modal .modal-footer{flex-wrap:wrap}.fish-habitat-grid article>small{line-height:1.6}.fish-habitat-art img{filter:drop-shadow(0 3px 2px #0a283755)}
-@media(max-height:520px){.moto-controls{gap:5px}.moto-controls button{min-width:90px;min-height:33px;padding:5px 9px;font-size:11px}.moto-controls #moto-throw{min-width:155px}.fishing-challenge-modal #fish-finish-session{font-size:10px;padding:6px 8px;min-height:31px}.arcade-circuits{padding:12px}}
-@media(max-width:600px){.moto-controls{gap:5px}.moto-controls button{min-width:84px;font-size:11px;padding:7px}.moto-controls #moto-throw{min-width:170px}.arcade-circuits{padding:12px}}
-@media(prefers-reduced-motion:reduce){.moto-controls button[aria-pressed=true]{box-shadow:none;transform:none}}
-#playground-root.moto-playing #pg-controls.moto-controls{display:grid;grid-template-columns:repeat(3,minmax(78px,115px)) minmax(85px,110px) minmax(140px,210px);align-items:stretch;gap:8px}.moto-playing #pg-controls.moto-controls button{min-width:0;min-height:46px;max-width:none;white-space:normal;line-height:1.25;font-size:13px}.moto-playing #pg-controls #moto-throw{background:#f3d58c;color:#1c463e;border-color:#ead39b;box-shadow:none}.moto-playing #pg-controls #moto-throw[data-ready=true]:not(:disabled){background:#b2efd2;border-color:#d4f9de;box-shadow:0 0 15px #9ee9b34d}.moto-playing #pg-controls #moto-brake[aria-pressed=true]{background:#b2efd2!important;color:#214d42!important;border-color:#dcf7da}.moto-playing #pg-support{min-height:1.35em}.moto-playing .pg-bottom{padding-top:5px}.moto-playing #pg-feedback{min-height:22px}
-@media(max-height:520px) and (min-width:601px){#playground-root.moto-playing #pg-controls.moto-controls{grid-template-columns:repeat(3,minmax(66px,100px)) minmax(80px,100px) minmax(130px,190px);gap:6px}.moto-playing #pg-controls.moto-controls button{min-height:36px;font-size:11px;padding:5px 7px}.moto-playing #pg-feedback{min-height:18px;font-size:10px}.moto-playing .pg-mission>span{font-size:10px}.moto-playing .pg-bottom{gap:3px}}
-@media(max-width:600px){#playground-root.moto-playing #pg-controls.moto-controls{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.moto-playing #pg-controls.moto-controls button{min-height:44px;font-size:11px;grid-column:span 2;padding:7px 5px}.moto-playing #pg-controls.moto-controls #moto-brake,.moto-playing #pg-controls.moto-controls #moto-throw{grid-column:span 3}.moto-playing #pg-feedback{font-size:11px}.moto-playing #pg-support{font-size:11px;line-height:1.35}.moto-playing .pg-mission{padding-block:7px}}
-#moto-timing{display:none;align-items:center;gap:12px;max-width:480px;margin:7px auto 2px;color:#d9e8ce;font-size:10px}#moto-timing>span{flex-shrink:0}.moto-timing-track{position:relative;flex:1;height:8px;min-width:120px;border-radius:4px;background:#658a83}.moto-timing-track i{position:absolute;top:0;height:100%}.moto-timing-zone{left:var(--zone-left);width:var(--zone-width);background:#a9e9c8}.moto-timing-perfect{left:var(--perfect-left);width:var(--perfect-width);background:#f3d484}.moto-timing-door{position:absolute;left:var(--door);top:-4px;width:3px;height:16px;background:#fff5d5;transform:translateX(-50%);box-shadow:0 0 3px #233f37}
-@media(max-height:520px),(max-width:600px){#moto-timing{display:flex;margin-top:4px;font-size:9px;gap:8px}.moto-playing .pg-progress{flex-wrap:wrap;row-gap:2px}.moto-playing #pg-score{font-size:10px}}
-#playground-root.moto-playing #pg-controls .moto-object{position:relative;display:grid;grid-template-rows:58px 16px;place-items:center;align-content:center;padding:6px 12px;background:#f7edcf;color:#214b43;border:2px solid #a8bca4;min-height:92px}.moto-playing .moto-object img{width:58px;height:58px;object-fit:contain;image-rendering:pixelated;pointer-events:none}.moto-playing .moto-object kbd{position:absolute;top:5px;left:6px;min-width:17px;padding:2px;border-radius:4px;background:#24483f;color:#fff0c8;font-size:10px;line-height:1}.moto-playing .moto-object-action{font-size:11px;font-weight:700}.moto-playing #pg-controls .moto-object[aria-pressed=true]{background:#d6f1d7!important;color:#214b43!important;border-color:#c5e8aa;box-shadow:0 0 0 2px #79b99a}.moto-playing #pg-controls .moto-object:disabled{opacity:.72}.moto-playing #pg-controls #moto-throw,.moto-playing #pg-controls #moto-brake{align-self:stretch}.moto-playing #pg-controls .moto-object:focus-visible{outline:3px solid #ffe1a2;outline-offset:3px}
-@media(max-height:520px){#playground-root.moto-playing #pg-controls .moto-object{grid-template-rows:36px;min-height:49px;padding:4px 8px}.moto-playing .moto-object img{width:38px;height:38px}.moto-playing .moto-object-action{display:none}.moto-playing .moto-object kbd{top:4px;left:4px;font-size:9px;min-width:14px}.moto-playing #pg-controls #moto-throw,.moto-playing #pg-controls #moto-brake{font-size:10px}}
-@media(max-width:600px) and (min-height:521px){#playground-root.moto-playing #pg-controls .moto-object{grid-template-rows:48px 14px;min-height:76px;padding:4px 8px}.moto-playing .moto-object img{width:48px;height:48px}.moto-playing .moto-object-action{font-size:10px}}
-#playground-root.moto-aim-playing #pg-controls.moto-controls{display:grid;grid-template-columns:repeat(3,minmax(62px,92px)) 120px 105px minmax(165px,205px);gap:8px;align-items:stretch}.moto-aim-playing #pg-controls .moto-drive{display:flex;gap:5px}.moto-aim-playing #pg-controls .moto-drive button{min-width:0;width:50%;font-size:24px;touch-action:none}.moto-aim-playing #pg-controls #moto-throw,.moto-aim-playing #pg-controls .moto-object{touch-action:none;user-select:none}.moto-aim-playing #pg-controls .moto-object img{pointer-events:none}.moto-aim-playing #pg-controls .moto-object kbd{pointer-events:none}.moto-aim-playing #pg-controls #moto-throw{font-size:13px;padding:9px}.moto-aim-playing #pg-controls .moto-object{min-height:80px;grid-template-rows:48px 14px}.moto-aim-playing .moto-object img{width:48px;height:48px}.moto-aim-playing #pg-controls #moto-brake{font-size:12px}#moto-drive-status{display:flex;align-items:center;justify-content:center;gap:18px;margin:5px auto 0;font-size:11px;color:#e5e9cf}#moto-speed{color:#f8db9c;min-width:58px;font-variant-numeric:tabular-nums}#moto-aim-state{min-width:220px}.moto-aim-playing .pg-mission>span{line-height:1.4}.moto-aim-playing #pg-controls button:focus-visible{outline:3px solid #f3d793;outline-offset:3px}
-@media(max-height:520px) and (min-width:601px){#playground-root.moto-aim-playing #pg-controls.moto-controls{grid-template-columns:repeat(3,minmax(58px,80px)) 96px 80px minmax(143px,175px);gap:6px}.moto-aim-playing #pg-controls .moto-object{grid-template-rows:36px;min-height:48px;padding:3px 6px}.moto-aim-playing .moto-object img{width:36px;height:36px}.moto-aim-playing #pg-controls #moto-throw,.moto-aim-playing #pg-controls #moto-brake{font-size:10px}.moto-aim-playing #pg-controls .moto-drive button{font-size:20px}.moto-aim-playing .pg-mission{padding-block:4px}#moto-drive-status{font-size:9px;margin-top:3px;gap:9px}}
-@media(max-width:600px){#playground-root.moto-aim-playing #pg-controls.moto-controls{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.moto-aim-playing #pg-controls .moto-object{grid-column:span 2;min-height:68px;grid-template-rows:42px 14px}.moto-aim-playing .moto-object img{width:42px;height:42px}.moto-aim-playing #pg-controls .moto-drive{grid-column:span 2;min-height:43px}.moto-aim-playing #pg-controls .moto-drive button{grid-column:auto;min-height:43px;padding:3px}.moto-aim-playing #pg-controls.moto-controls #moto-brake{grid-column:span 2;font-size:10px}.moto-aim-playing #pg-controls.moto-controls #moto-throw{grid-column:span 2;font-size:10px;padding:5px}.moto-aim-playing #pg-support{font-size:10px}#moto-drive-status{font-size:9px;gap:9px}#moto-aim-state{min-width:0;text-align:left}}
-#moto-pointer-aim{position:fixed;left:0;top:0;width:30px;height:30px;box-sizing:border-box;border:2px solid #fff0b6;border-radius:50%;transform:translate(-50%,-50%);background:transparent;box-shadow:0 0 0 1px #17363dc9,0 0 9px #ffe2a055;pointer-events:none;z-index:10080}
-#moto-pointer-aim[hidden]{display:none}
-#moto-pointer-aim::before,#moto-pointer-aim::after{content:"";position:absolute;left:50%;top:50%;background:#fff0b6;box-shadow:0 0 1px #17363d;transform:translate(-50%,-50%)}
-#moto-pointer-aim::before{width:16px;height:2px}
-#moto-pointer-aim::after{width:2px;height:16px}
-.moto-pointer-aiming,.moto-pointer-aiming *{cursor:none!important}
+.pg-card-body .row{flex-wrap:wrap}.arcade-circuits{margin-top:24px;padding:18px;background:#31565166;border:1px solid #98b09988;border-radius:12px}.arcade-circuits h3{color:#f5d18e;margin-top:0}.arcade-circuits p{font-size:13px}.arcade-circuits .pg-stage-grid{margin-bottom:16px}.arcade-circuits>button{margin-top:12px}.fishing-challenge-modal .modal-footer{flex-wrap:wrap}.fish-habitat-grid article>small{line-height:1.6}.fish-habitat-art img{filter:drop-shadow(0 3px 2px #0a283755)}
+@media(max-height:520px){.arcade-circuits{padding:12px}.fishing-challenge-modal #fish-finish-session{font-size:10px;padding:6px 8px;min-height:31px}}
+@media(max-width:600px){.arcade-circuits{padding:12px}}
+
+/* A delivery ticket, a speed dial and three deliberate actions. */
+#playground-root.moto-redesign{container:moto / inline-size;color:#f9efd9;--moto-ink:#193b47;--moto-paper:#fff1d9;--moto-mint:#b8e9d4;--moto-coral:#e7a87c}
+#playground-root.moto-redesign .pg-top{background:#193b47;padding-block:10px 8px;border-bottom:1px solid #ffffff13}
+#playground-root.moto-redesign .pg-top strong{font-size:18px;letter-spacing:-.025em}#playground-root.moto-redesign .pg-top small{color:#c3d8d3;letter-spacing:.15em;font-size:8px}
+#playground-root.moto-redesign .pg-top .secondary{background:transparent!important;border:1px solid #93b7b266!important;color:#f9efd9!important;border-radius:50px!important;min-height:38px!important}
+#playground-root.moto-redesign .pg-mission{display:grid;grid-template-columns:minmax(0,1fr) 170px;grid-template-areas:'request speed' 'support speed' 'progress speed';gap:2px 20px;padding:13px 24px 12px;text-align:left;background:#fcf0d9;color:#1e4249;border-block:0;box-shadow:0 3px 0 #193b4720}
+#playground-root.moto-redesign #pg-request{display:none}
+#playground-root.moto-redesign #moto-order{grid-area:request;display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 11px;min-width:0;color:#1e4249;line-height:1.15}
+.moto-order-label{font-size:clamp(14px,2cqi,20px);font-weight:650;color:#4b6b61}
+#playground-root.moto-redesign #moto-order-name{font-size:clamp(30px,5cqi,44px);font-weight:800;letter-spacing:-.035em;text-transform:none;color:#123d49;border-bottom:2px solid #cfa376;padding-bottom:1px;overflow-wrap:anywhere}
+#playground-root.moto-redesign #pg-support{grid-area:support;color:#647d75;font-size:11px;letter-spacing:.025em;margin-top:3px}
+#playground-root.moto-redesign .pg-progress{grid-area:progress;justify-content:flex-start;gap:8px;margin-top:5px;color:#496c64;font-size:10px}
+#playground-root.moto-redesign .pg-progress progress{width:70px;height:4px;accent-color:#458977}
+#moto-drive-status{grid-area:speed;display:grid;grid-template-columns:1fr;align-content:center;border-left:1px dashed #b9c8b2;padding-left:20px;min-width:0}
+.moto-eyebrow{font-size:8px;font-weight:700;letter-spacing:.17em;color:#617c72}
+.moto-speed-value{display:flex;gap:6px;align-items:baseline;line-height:1.1}
+#moto-speed{font-size:34px;font-weight:750;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.moto-speed-value small{font-size:10px;color:#59776e}
+#moto-speed-meter{width:100%;max-width:115px;height:5px;appearance:none;background:#d4dfca;border:0;border-radius:10px;margin-top:5px;overflow:hidden}
+#moto-speed-meter::-webkit-meter-bar{background:#d4dfca;border:0;border-radius:10px;height:5px}
+#moto-speed-meter::-webkit-meter-optimum-value{background:#3c8375;border-radius:10px}
+#moto-speed-meter::-moz-meter-bar{background:#3c8375}
+#moto-drive-state{font-size:9px;color:#54786b;margin-top:5px;white-space:nowrap}
+#playground-root.moto-redesign .pg-bottom{background:#193b47;border-top:1px solid #a5c8ba44;padding:7px 14px 12px;gap:7px}
+#playground-root.moto-redesign #pg-feedback{background:transparent;color:#dce7d5;font-size:11px;padding:0;min-height:16px}
+#playground-root.moto-redesign #pg-controls.moto-controls{display:grid;grid-template-columns:minmax(195px,246px) 140px minmax(200px,270px);align-items:stretch;justify-content:center;gap:14px;pointer-events:none}
+.moto-parcels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#playground-root.moto-redesign #pg-controls button{min-width:0;max-width:none;min-height:44px;box-sizing:border-box;white-space:normal;touch-action:none;user-select:none;line-height:1.2}
+#playground-root.moto-redesign #pg-controls .moto-object{position:relative;display:grid;grid-template-rows:48px 10px;align-content:center;justify-items:center;border:1px solid #a5c9ba70;border-radius:12px;padding:10px 4px 7px;background:#f6ecd8;color:#28544f;box-shadow:0 3px 0 #0a2632;transition:background .16s,border-color .16s}
+.moto-object img{width:48px;height:48px;object-fit:contain;image-rendering:pixelated;pointer-events:none}
+.moto-object kbd{position:absolute;left:5px;top:5px;min-width:13px;padding:2px 3px;border-radius:4px;font:600 8px system-ui;background:#e0e4cf;color:#436b5f}
+.moto-object-action{font-size:7px;font-weight:750;letter-spacing:.08em;line-height:1.3}
+#playground-root.moto-redesign #pg-controls .moto-object[aria-pressed=true]{background:#c6ebd4;border-color:#dfffe7;box-shadow:0 0 0 1px #7bbb9e,0 3px 0 #0a2632;color:#214f48}
+.moto-object[aria-pressed=true]::after{content:'✓';position:absolute;right:5px;top:3px;font-size:11px;color:#245e52}
+.moto-drive{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#playground-root.moto-redesign #pg-controls .moto-drive button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 4px;border:1px solid #85b0a36b;border-radius:12px;background:#264f59;color:#d7ead9;box-shadow:0 3px 0 #0a2632}
+.moto-pedal-icon{font-size:27px;font-weight:400;line-height:1}.moto-drive strong{font-size:9px;letter-spacing:.01em}.moto-drive kbd{font:600 8px system-ui;opacity:.6}
+#playground-root.moto-redesign #pg-controls #moto-forward{background:#315f60;border-color:#9bbfa477}
+.moto-drive button:active{background:#598977!important}
+.moto-launch{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0}
+.moto-launch-readout{display:flex;align-items:center;justify-content:space-between;gap:5px;color:#d8dfcc;font-size:9px;min-height:12px}
+#moto-aim-state[data-ready=true]{color:#b8f4d5}#moto-angle{flex-shrink:0;font-variant-numeric:tabular-nums;color:#e6bf95}
+#moto-power{appearance:none;display:block;width:100%;height:5px;border:0;border-radius:8px;background:#436671;accent-color:#ecc99a;overflow:hidden}
+#moto-power::-webkit-progress-bar{background:#436671;border-radius:8px}#moto-power::-webkit-progress-value{background:#ecc99a;border-radius:8px}#moto-power::-moz-progress-bar{background:#ecc99a}
+#playground-root.moto-redesign #pg-controls #moto-throw{background:#efbe93;color:#233e43;border:1px solid #ffe1ba;border-radius:11px;padding:9px 12px;font-size:12px;box-shadow:0 3px 0 #865e49;min-height:43px}
+#playground-root.moto-redesign #pg-controls #moto-throw[data-ready=true]{background:#b6ebd2;border-color:#ddf9df;box-shadow:0 3px 0 #568c79}
+#playground-root.moto-redesign #pg-controls button:disabled{opacity:.48;box-shadow:none}
+#playground-root.moto-redesign button:focus-visible{outline:3px solid #f4ca98;outline-offset:3px}
+#playground-root.moto-redesign[data-moto-phase=aim] #pg-scene{cursor:crosshair}
+@container moto (max-width:620px){
+ #playground-root.moto-redesign .pg-mission{grid-template-columns:minmax(0,1fr) 115px;gap:2px 10px;padding:10px 13px}
+ #playground-root.moto-redesign #pg-request{font-size:27px}#playground-root.moto-redesign #pg-support{font-size:9px}#playground-root.moto-redesign .pg-progress{font-size:9px}#playground-root.moto-redesign .pg-progress progress{width:42px}
+ #moto-drive-status{padding-left:12px}#moto-speed{font-size:29px}#moto-drive-state{font-size:8px}
+ #playground-root.moto-redesign #pg-controls.moto-controls{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:8px}
+ .moto-parcels{grid-column:1;grid-row:1 / 3}.moto-drive{grid-column:2;grid-row:1}
+ .moto-launch{grid-column:2;grid-row:2}#playground-root.moto-redesign .pg-bottom{padding:7px 10px 10px}
+ #playground-root.moto-redesign #pg-controls .moto-object{grid-template-rows:50px 12px;padding:10px 2px}
+ .moto-object img{width:50px;height:50px}.moto-object-action{font-size:6px}.moto-object kbd{font-size:7px}
+ #playground-root.moto-redesign #pg-controls .moto-drive button{flex-direction:row;gap:5px;min-height:39px;padding:3px}.moto-pedal-icon{font-size:20px}.moto-drive kbd{display:none}.moto-drive strong{font-size:8px}
+ .moto-launch-readout{font-size:8px}#playground-root.moto-redesign #pg-controls #moto-throw{font-size:10px;padding:5px;min-height:39px}
+ #playground-root.moto-redesign #pg-feedback{font-size:9px;line-height:1.4}
+}
+@media(max-height:520px){
+ #playground-root.moto-redesign .pg-top{padding-block:5px}#playground-root.moto-redesign .pg-top strong{font-size:13px}#playground-root.moto-redesign .pg-top small{font-size:7px}#playground-root.moto-redesign .pg-top .secondary{min-height:31px!important;font-size:10px!important}
+ #playground-root.moto-redesign .pg-mission{padding-block:6px}#playground-root.moto-redesign #pg-request{font-size:22px}#playground-root.moto-redesign #pg-request::before{font-size:7px;margin-bottom:2px}#playground-root.moto-redesign #pg-support{font-size:9px}#playground-root.moto-redesign .pg-progress{font-size:8px;margin-top:2px}
+ #moto-speed{font-size:26px}.moto-speed-value small{font-size:8px}#moto-drive-state{font-size:8px;margin-top:2px}.moto-eyebrow{font-size:7px}
+ #playground-root.moto-redesign .pg-bottom{gap:4px;padding:4px 10px 7px}#playground-root.moto-redesign #pg-feedback{font-size:9px;min-height:12px}
+ #playground-root.moto-redesign #pg-controls.moto-controls{gap:9px;grid-template-columns:190px 120px minmax(180px,240px)}
+ #playground-root.moto-redesign #pg-controls .moto-object{grid-template-rows:35px 8px;min-height:57px;padding:5px 2px}.moto-object img{width:35px;height:35px}.moto-object-action{font-size:6px}
+ .moto-pedal-icon{font-size:21px}.moto-drive strong{font-size:8px}.moto-drive kbd{display:none}.moto-launch-readout{font-size:8px}
+ #playground-root.moto-redesign #pg-controls #moto-throw{min-height:35px;padding:6px;font-size:10px}
+}
+@media(max-height:520px){@container moto (max-width:620px){#playground-root.moto-redesign #pg-controls.moto-controls{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:6px}#playground-root.moto-redesign .pg-bottom{padding:4px 8px 6px}.moto-object img{width:36px;height:36px}#playground-root.moto-redesign #pg-controls .moto-object{grid-template-rows:36px 8px}#playground-root.moto-redesign .pg-mission{padding-inline:10px}}}
+@media(prefers-reduced-motion:reduce){.moto-object{transition:none!important}}
+.reduced-motion .moto-object{transition:none!important}

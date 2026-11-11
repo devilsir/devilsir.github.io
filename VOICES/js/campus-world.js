@@ -1,3 +1,9 @@
+/* Registered module: campus-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("campus-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,E=V.SceneEditor,T=48,data=V.campusContent,copy=x=>JSON.parse(JSON.stringify(x));
 const prior={load:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C),districts:L.newDistricts.bind(L),compose:C.compose.bind(C),ground:C.ground.bind(C),interact:C.interact.bind(C),music:C.music.bind(C),regions:V.Atlas.regions.bind(V.Atlas),document:D.document.bind(D),normalise:D.normalise.bind(D),place:E.place.bind(E),scale:E.scale.bind(E),tick:E.tick.bind(E)};
@@ -121,7 +127,9 @@ V.Campus={
  profile(index){
  const p=data.portraits.find(p=>p.index===index);if(!p)return;
  const esc=V.escape,refs=(p.sourceIds||[]).map(id=>V.content.sources.find(s=>s.id===id)).filter(Boolean);
- V.UI.modal(p.name,'RETRATO EDUCATIVO · TRAJETÓRIA E CONTEXTO',`<figure class="culture-piece"><img src="${esc(p.path)}" width="192" height="192" style="image-rendering:pixelated" alt="Interpretação artística de ${esc(p.name)}"></figure><p>${esc(p.biography)}</p><p>${esc(p.context)}</p><details open><summary>Fontes desta trajetória</summary>${refs.map(s=>'<p class="reader-origin"><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a></p>').join('')}</details>`, '<button id="campus-full-profile" class="primary">Ler e registrar no caderno</button>');
+ const biography=V.MuseumBiographies.forReading(p.readingId);
+ V.UI.modal(p.name,'RETRATO EDUCATIVO · TRAJETÓRIA E CONTEXTO',`<figure class="culture-piece"><img src="${esc(p.path)}" width="192" height="192" style="image-rendering:pixelated" alt="Interpretação artística de ${esc(p.name)}"></figure><p>${esc(p.biography)}</p><p>${esc(p.context)}</p><details open><summary>Fontes desta trajetória</summary>${refs.map(s=>'<p class="reader-origin"><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a></p>').join('')}</details>`, `<button id="campus-full-profile" class="${biography?'secondary':'primary'}">Ler e registrar no caderno</button>${biography?'<button id="campus-biography" class="primary">Ler biografia</button>':''}`);
+ if(biography)V.$('#campus-biography').onclick=()=>V.MuseumBiographies.open(biography,()=>this.profile(index));
  V.$('#campus-full-profile').onclick=()=>L.read(p.readingId,0,()=>this.profile(index));
 }
 };
@@ -158,3 +166,5 @@ D.normalise=function(doc){
  return prior.normalise(input);
 };
 })();
+
+});

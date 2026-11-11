@@ -1,3 +1,9 @@
+/* Registered module: playground-garden-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-garden-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function voicesGardenUpgrade(){
 'use strict';const V=window.V,P=V.Playground,g=P.controllers.garden;
 const oldCreate=g.create.bind(g),oldModel=g.model.bind(g),oldAction=g.action.bind(g),oldUpdate=g.update.bind(g),oldDraw=g.draw.bind(g);
@@ -13,3 +19,5 @@ g.action=function(r,name){if(r.training||name!=='use')return oldAction(r,name);c
 g.update=function(r,dt){oldUpdate(r,dt);};
 g.draw=function(c,r){oldDraw(c,r);if(r.training)return;const d=r.data,season=seasons[d.cycle]||seasons[0];if(season.weed)for(let i=0;i<3;i++){if(d.beds[i].status==='ready'&&!d.care[i].clean){const x=90+[3,7,9][i]*60,y=197+[2,3,4][i]*38;P.text(c,'CLEAR WEEDS',x,y-38,14,'#814c39');}}};
 })();
+
+});

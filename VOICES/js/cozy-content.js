@@ -1,3 +1,9 @@
+/* Registered module: cozy-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cozy-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Leituras e cenas originais de New Harmony; conexões documentadas indicam as fontes. */
 (function () {
   "use strict";
@@ -1543,3 +1549,5 @@
   ]
 };
 })();
+
+});

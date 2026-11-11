@@ -1,3 +1,9 @@
+/* Registered module: culinary-interiors */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culinary-interiors", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,U=V.CulinaryWorld,C=V.Cozy,W=V.World,S=V.SceneDesign,Arch=V.Architecture,T=48,copy=x=>JSON.parse(JSON.stringify(x));
@@ -41,7 +47,7 @@ const I=V.CulinaryInteriors={ids:['kitchen','university'],images:{},
   Arch.hydrate(m);V.Environment.hydrate(m);return m;
  },
  floor(c,b,kind){const x=b.x*T,y=b.y*T,w=b.w*T,h=b.h*T;c.fillStyle=kind==='wood'?'#b19267':kind==='tile'?'#b8c8bb':'#c9b991';c.fillRect(x,y,w,h);c.save();c.beginPath();c.rect(x,y,w,h);c.clip();const step=kind==='wood'?18:32;for(let yy=y;yy<y+h;yy+=step)for(let xx=x;xx<x+w;xx+=kind==='wood'?112:48){c.fillStyle=kind==='wood'?(xx+yy)%3?'#bda071':'#c5a97b':kind==='tile'?(xx+yy)%3?'#d9dfcd':'#cbd7c5':(xx+yy)%3?'#e0d1ae':'#d4c49e';c.fillRect(xx+(yy%2?12:0)+2,yy+2,(kind==='wood'?112:48)-3,step-3);}c.restore();},
- ground(m){const canvas=document.createElement('canvas');canvas.width=m.width*T;canvas.height=m.height*T;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.fillStyle='#355747';c.fillRect(0,0,canvas.width,canvas.height);this.floor(c,{x:1.3,y:3.5,w:m.width-2.6,h:m.height-5.1},'stone');for(const z of m.design.interiorZones)this.floor(c,z,z.floor);
+ ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.fillStyle='#355747';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));this.floor(c,{x:1.3,y:3.5,w:m.width-2.6,h:m.height-5.1},'stone');for(const z of m.design.interiorZones)this.floor(c,z,z.floor);
   if(m.id==='university'){c.fillStyle='#638b77';c.fillRect(18.5*T,3.6*T,3.3*T,21.5*T);c.fillStyle='#b9c29d';c.fillRect(18.5*T+9,3.6*T,3.3*T-18,21.5*T);for(let y=4*T;y<24*T;y+=T){c.fillStyle='#7e9c80';c.fillRect(19.3*T,y,1.7*T,5);c.fillRect(20*T,y+14,12,12);}}
   else{for(const[x,y,w,h]of [[4,11.7,4.8,2.8],[13,11.7,4.8,2.8],[22,5.6,4,2.7],[25.4,10.4,4,2.7]]){c.fillStyle='#7c8e78';c.fillRect(x*T,y*T,w*T,h*T);c.strokeStyle='#d9d7b0';c.lineWidth=3;c.strokeRect(x*T+5,y*T+5,w*T-10,h*T-10);}}
   m.cache=canvas;
@@ -49,7 +55,7 @@ const I=V.CulinaryInteriors={ids:['kitchen','university'],images:{},
  draw(c,o,cam){const x=o.x-cam.x,y=o.y-cam.y;if((o.culinaryLink||o.interiorDoor)&&W.current?.culinaryInteriors){const college=W.current.id==='university';this.art(c,college?'campus-interiors':'kitchen-interiors',college?9:12,x-64,y-121,128);V.Maritime.label(c,V.FastTravel.name(o.to),x,y+17,W.nearest?.id===o.id);return true;}if(o.interiorArt===undefined)return false;if(x< -220||x>c.canvas.width+220||y< -60||y>c.canvas.height+250)return true;const size=o.size;if(o.solid!==false){c.fillStyle='#193e3326';c.beginPath();c.ellipse(x,y+3,size*.33,10,0,0,Math.PI*2);c.fill();}this.art(c,o.interiorSheet,o.interiorArt,x-size/2,y-size+8,size);if(o.role==='water'&&!V.settings.reducedMotion){c.fillStyle='#a5d9d5';const t=V.Engine.time*6%1;c.fillRect(x+2,y-size*.4+t*11,2,4);}if(W.nearest?.id===o.id&&o.role)V.Maritime.label(c,o.label,x,y-size-12,true);return true;},
  window(c,o,cam){this.art(c,o.interiorSheet,o.interiorFrame,o.x-cam.x,o.y-cam.y,o.w,o.h);},
  anchors(){for(const id of this.ids){const m=W.maps[id];if(!m)continue;for(const o of m.objects.filter(o=>o.culinaryLink)){o.interiorDoor=true;o.onWall=id+'-interior-south';}if(id==='university'){const o=m.objects.find(o=>o.id==='food-museum-university-entry');if(o)Object.assign(o,{x:28*T,y:27.4*T,interiorDoor:true,onWall:id+'-interior-south'});}const point=V.FastTravel.point(id),at=id==='kitchen'?{x:12*T,y:10.8*T}:{x:20*T,y:18.5*T};if(point&&V.FastTravel.clear(m,at,14))Object.assign(point,at);}V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();},
- render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.imageSmoothingEnabled=false;c.fillStyle='#355747';c.fillRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));const g=Arch.geometry(m.design),rows=m.objects.map(o=>{const wall=o.onWall&&g.walls.find(w=>w.id===o.onWall);return{y:wall?Math.max(wall.a[1],wall.b[1])+.2:o.y,kind:'object',o};}).concat(g.walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),g.windows.map(o=>({y:3.5*T+.1,kind:'window',o})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);
+ render(c){const m=W.current,cam=W.camera;if(!m.cache)this.ground(m);c.save();c.imageSmoothingEnabled=false;c.fillStyle='#355747';c.fillRect(0,0,c.canvas.width,c.canvas.height);V.GroundCache.draw(c, m.cache, Math.round(-cam.x), Math.round(-cam.y));const g=Arch.geometry(m.design),rows=m.objects.map(o=>{const wall=o.onWall&&g.walls.find(w=>w.id===o.onWall);return{y:wall?Math.max(wall.a[1],wall.b[1])+.2:o.y,kind:'object',o};}).concat(g.walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),g.windows.map(o=>({y:3.5*T+.1,kind:'window',o})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);
   for(const row of rows){if(row.kind==='wall')Arch.drawWall(c,m,row.o,cam);else if(row.kind==='window')this.window(c,row.o,cam);else if(row.kind==='player')V.Player.render(c);else if(!U.draw(c,row.o,cam))C.drawObject(c,row.o,cam);}Arch.drawSigns(c,m,cam);if(V.PixPresence.following())V.PixPresence.draw(c,V.Player.data,cam);if(W.transition>0){c.globalAlpha=W.transition;c.fillStyle='#284a41';c.fillRect(0,0,c.canvas.width,c.canvas.height);}c.restore();W.drawMiniMap();
  }
 };
@@ -67,3 +73,5 @@ const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m)
 const interactables=W.interactables.bind(W);W.interactables=(...args)=>interactables(...args).filter(o=>!o.interiorDecor);
 const load=W.load.bind(W);W.load=function(id,pos){if(I.ids.includes(id)){const m=W.maps[id],spawn=C.layouts[id].spawn;pos=V.Rooms.safe(m,pos||{x:spawn[0]*T,y:spawn[1]*T},14)||{x:spawn[0]*T,y:spawn[1]*T};}return load(id,pos);};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: scene-editor */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("scene-editor", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,D=V.SceneDesign,C=V.Cozy,W=V.World,L=V.Living,T=48,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x));
 const order=['hub','library','park','market','garden','beach','school','museum',...Array.from({length:6},(_,i)=>['chapter-'+(i+1),'room-'+(i+1)]).flat()];
@@ -74,8 +80,10 @@ V.SceneEditor={active:false,walk:false,tool:'select',snap:.5,grid:true,collision
 const E=V.SceneEditor;
 V.Game.bind=function(){original.bind();V.$('#title-editor-button').onclick=()=>E.open();};
 V.Game.onKey=function(k,e){if(E.active){E.key(k,e);return;}if(k==='f2'&&(this.screen==='title'||V.modal)){e.preventDefault?.();E.open();return;}return original.key(k,e);};
-V.Game.update=function(dt){if(E.active){E.tick(dt);return;}return original.update(dt);};
+V.Hooks.around(V.Game, 'update', 'scene-editor:update:1', nextHook => function(dt){if(E.active){E.tick(dt);return;}return nextHook(dt);});
 V.Save.save=function(){if(E.active)return false;return original.save();};
 V.Game.pause=function(...args){original.pause(...args);if(this.mode==='explore'){const footer=V.$('.modal-footer'),button=document.createElement('button');button.id='pause-scene-editor';button.className='secondary';button.textContent='Editar cenário';button.onclick=()=>E.open();footer?.appendChild(button);}};
 window.addEventListener('resize',()=>E.resize());
 })();
+
+});

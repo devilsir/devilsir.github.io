@@ -48,6 +48,7 @@ async function start(duo){
   const target=await send('Target.createTarget',{url:'about:blank'},null);session=(await send('Target.attachToTarget',{targetId:target.targetId,flatten:true},null)).sessionId;
   await send('Runtime.enable');await send('Page.enable');await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   await send('Page.navigate',{url:pathToFileURL(path.join(root,'index.html')).href});
+  await until('!!window.VoicesApp');await evaluate('window.VoicesApp.ready()');
   await until('!!(window.V?.Engine?.canvas&&V.World?.maps?.hub&&document.querySelector("#loading").hidden&&V.Game.screen==="title")');
   await check('local images really taint canvases under normal file URL restrictions',async()=>{
    const blocked=await evaluate(`(()=>{const c=document.createElement('canvas');c.getContext('2d').drawImage(V.AncestralMask.images.gallery,0,0);try{c.toDataURL();return false;}catch(error){return error.name==='SecurityError';}})()`);assert.equal(blocked,true);
@@ -78,7 +79,8 @@ async function start(duo){
   });
   await check('saved styles restore after a full local-page reload',async()=>{
    await evaluate('V.Save.save()');await send('Page.reload');
-   await until('!!(window.V?.Engine?.canvas&&V.World?.maps?.hub&&document.querySelector("#loading").hidden&&V.Game.screen==="title")');
+   await until('!!window.VoicesApp');await evaluate('window.VoicesApp.ready()');
+  await until('!!(window.V?.Engine?.canvas&&V.World?.maps?.hub&&document.querySelector("#loading").hidden&&V.Game.screen==="title")');
    await evaluate('(async()=>{V.Game.loadState(V.Save.load());await V.MapAssets.whenReady();await Promise.all([V.AncestralMask.ensureAnimation("plumagem",0,"turquesa"),V.AncestralMask.ensureAnimation("caveira",1,"violeta")]);return true;})()');
    for(const [owner,model,palette] of [[0,'plumagem','turquesa'],[1,'caveira','violeta']]){
     assert.deepEqual(await evaluate(`V.AncestralMask.appearance(${owner})`),{model,palette});assert(await evaluate(`!!V.AncestralMask.selectedAnimation(${owner})`));

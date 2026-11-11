@@ -1,3 +1,9 @@
+/* Registered module: workshop-community */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-community", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopCommunity(){
 'use strict';const V=window.V,A=V.LearningArcade,R=V.AncestralActivities,U=V.WorkshopUI,T=V.Tutorials,esc=V.escape,on=(id,fn)=>{const b=V.$('#'+id);if(b)b.onclick=fn;};
 const originalEnsure=A.ensure.bind(A);A.ensure=function(){const a=originalEnsure();if(!a)return a;a.runs||={};if(a.run&&!a.run.finished)a.runs[a.run.game]=a.run;const definition=T.definitions[T.active];return definition?.family==='arcade'?{...a,run:T.record(T.active).practice}:a;};
@@ -27,3 +33,5 @@ R.open=function(id){const g=this.game(id);if(!g||!V.state)return false;this.acti
 const rootPair=R.pair.bind(R),rootMove=R.move.bind(R),rootFinish=R.finish.bind(R);R.pair=function(index){const r=this.run(),g=this.game(this.active),selected=r?.selected,ok=rootPair(index);if(ok)T.event('roots-pair');else if(selected!==null&&selected!==undefined&&g.pairs[index]&&g.pairs[selected]&&V.$('#roots-activity-feedback')){r.feedback='Você ligou “'+g.pairs[selected].en+'” a “'+g.pairs[index].pt+'”. Essa explicação se refere a outra ação; compare o contexto e tente outra ligação.';V.$('#roots-activity-feedback').textContent=r.feedback;}return ok;};R.move=function(...args){const ok=rootMove(...args);if(ok)T.event('roots-move');return ok;};R.finish=function(){if(T.practice('roots',this.active)){T.event('finish');return true;}return rootFinish();};
 for(const g of V.AncestralData.activities)T.define('roots:'+g.id,{family:'roots',id:g.id,create(){const n=g.pairs.length;return{version:1,matches:[],selected:null,order:g.mode==='order'?[1,0,...Array.from({length:n-2},(_,i)=>i+2)]:Array.from({length:n},(_,i)=>n-1-i),moves:0,finished:false,feedback:''};},render(){R.active=g.id;R.show(g.id);},resume(){R.active=g.id;R.show(g.id);},steps:g.mode==='order'?[{title:'Mude uma etapa de posição',text:'Neste treino, as duas primeiras etapas estão invertidas. Use uma seta para colocar “'+g.pairs[0].en+'” antes de “'+g.pairs[1].en+'”.',target:'[data-roots-move]',allow:'[data-roots-move]',event:'roots-move',test:(d,r)=>r.order[0]===0},{title:'Confira a sequência',text:'Leia a sequência resultante e toque em Conferir. A ordem correta prepara a ação e termina com revisão ou registro.',target:'#roots-order-check',allow:'#roots-order-check',event:'finish'}]:[{title:'Escolha um cartão em inglês',text:'Selecione “'+g.pairs[0].en+'”. Depois você vai procurar a explicação da mesma ideia.',target:'[data-roots-left="0"]',allow:'[data-roots-left="0"]',event:'roots-left',test:d=>d.index===0},{title:'Ligue a ideia ao seu sentido',text:'Toque em “'+g.pairs[0].pt+'”. Compare o contexto completo; uma tentativa diferente pode ser corrigida.',target:'[data-roots-right="0"]',allow:'[data-roots-right="0"]',event:'roots-pair',after:'O par foi marcado sem apagar os cartões. Agora sua partida original continua com todos os pares guardados.'}]});
 })();
+
+});

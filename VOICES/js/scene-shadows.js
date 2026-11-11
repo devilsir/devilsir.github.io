@@ -1,3 +1,9 @@
+/* Registered module: scene-shadows */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("scene-shadows", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 V.SceneShadows={cache:new Map(),bytes:0,budget:32*1024*1024,identities:new WeakMap(),sources:new WeakMap(),serial:0,
@@ -23,3 +29,5 @@ V.SceneShadows={cache:new Map(),bytes:0,budget:32*1024*1024,identities:new WeakM
  character(c,id,x,y,size=60,row=0,frame=0,indoor=false){if(!V.Assets.ready(V.Assets.images[id]))return;this.contact(c,x,y+6,size*.24,Math.max(3,size*.065),indoor?.16:.22);}
 };
 })();
+
+});

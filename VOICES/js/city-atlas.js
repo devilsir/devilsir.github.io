@@ -1,3 +1,9 @@
+/* Registered module: city-atlas */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-atlas", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,A=V.WorldAtlas,N=V.ObjectiveGuide,esc=V.escape;
@@ -31,3 +37,5 @@ const update=N.update.bind(N);N.update=function(dt){const a=V.Progress.ensure();
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(){await init();const parent=V.$('.viewer-controls'),b=document.createElement('button');b.id='guide-toggle-button';b.className='viewer-icon active';b.title='Ligar ou desligar guia (L)';b.setAttribute('aria-label','Ligar ou desligar guia de caminho');b.setAttribute('aria-pressed','true');b.innerHTML='<svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M4 25 27 4l-7 24-5-11Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>';b.onclick=()=>N.toggle();parent.prepend(b);};
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e){if(k==='l'&&this.screen==='game'&&this.mode==='explore'&&!V.modal&&!V.Dialogue.active&&!V.SceneEditor.active){e.preventDefault?.();N.toggle();return;}return key(k,e);};
 })();
+
+});

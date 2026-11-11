@@ -1,3 +1,9 @@
+/* Registered module: guided-overlay */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("guided-overlay", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function guidedOverlay(){
 'use strict';const V=window.V;
 const O=V.GuideOverlay={owner:null,frame:0,lastTarget:null,
@@ -30,3 +36,5 @@ const O=V.GuideOverlay={owner:null,frame:0,lastTarget:null,
  hide(owner){if(owner&&this.owner!==owner)return;if(this.owner==='lesson'){V.$('#workshop-guide-slot')?.remove();V.$('.modal.workshop-guided')?.classList.remove('workshop-guided');}if(this.owner==='playground'){const slot=V.$('#pg-guide-slot');if(slot)slot.hidden=true;}this.owner=null;this.model=null;this.lastTarget?.classList.remove('guided-current');this.lastTarget=null;const root=V.$('#guided-overlay');if(root)root.hidden=true;document.body.classList.remove('guided-visible');if(this.frame)cancelAnimationFrame(this.frame);this.frame=0;}
 };
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: guardian-presence */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("guardian-presence", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function guardianPresenceModule(){
 'use strict';
 const V=window.V,A=V.Animations,clamp=n=>V.clamp(n,0,1);
@@ -10,3 +16,5 @@ const G=V.GuardianPresence={masks:new WeakMap(),playback:new WeakMap(),
 const draw=V.Story.draw.bind(V.Story);
 V.Story.draw=function(ctx,o,cam){if(o.type!=='zambeto')return draw(ctx,o,cam);if(!this.visible(o))return true;const x=o.x-cam.x,y=o.y-cam.y,motion=G.motion(o),{action,time}=motion,state=G.state(o);ctx.save();ctx.globalAlpha=state.alpha;ctx.fillStyle='#15262a44';ctx.beginPath();ctx.ellipse(x,y+4,36,10,0,0,Math.PI*2);ctx.fill();ctx.restore();G.rim(ctx,o,action,x,y+10,150,time,state);ctx.save();ctx.globalAlpha=state.alpha;if(!A.draw(ctx,'zambeto',action,x,y+10,150,time,o.dir===1)){const img=V.Assets.images.zambeto;if(img)ctx.drawImage(img,(o.frame||0)%4*128,(o.dir||0)*144,128,144,Math.round(x-59),Math.round(y-123),118,133);}if(V.World.nearest?.id===o.id)V.Living.marker(ctx,x,y-139,'E','#e8cc82');ctx.restore();return true;};
 })();
+
+});

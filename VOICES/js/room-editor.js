@@ -1,3 +1,9 @@
+/* Registered module: room-editor */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("room-editor", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,E=V.SceneEditor,D=V.SceneDesign,R=V.Rooms,C=V.Cozy,T=48,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x));
 const prev={mount:E.mount.bind(E),refresh:E.refresh.bind(E),inspector:E.inspector.bind(E),paint:E.paint.bind(E),down:E.pointerDown.bind(E),move:E.pointerMove.bind(E),up:E.pointerUp.bind(E),cancel:E.pointerCancel.bind(E),key:E.key.bind(E),tool:E.setTool.bind(E),tick:E.tick.bind(E),walk:E.toggleWalk.bind(E),remove:E.remove.bind(E),duplicate:E.duplicate.bind(E),reset:E.reset.bind(E),apply:E.apply.bind(E)};
@@ -92,3 +98,5 @@ const tickRooms=E.tick.bind(E);E.tick=function(dt){if(this.rbSheet)return;if(!th
 const paintRooms=E.paint.bind(E);E.paint=function(){paintRooms();if(!this.active||!this.preview)return;const ctx=V.$('#editor-canvas').getContext('2d');ctx.save();ctx.translate(this.pan.x,this.pan.y);ctx.scale(this.zoom,this.zoom);if(this.collisions&&!this.walk){ctx.strokeStyle='#efa18399';ctx.lineWidth=10;for(const s of this.preview.roomWalls||[]){ctx.beginPath();ctx.moveTo(...s.a);ctx.lineTo(...s.b);ctx.stroke();}}if(this.rbPanel&&!this.walk){for(const p of this.construction().navigation){ctx.fillStyle='#a8d8cc';ctx.beginPath();ctx.arc(p.x,p.y,5/this.zoom,0,Math.PI*2);ctx.fill();}}ctx.restore();};
 const keyRooms=E.key.bind(E);E.key=function(k,e){if(this.walk&&k==='e'&&!this.rbSheet){const near=this.preview.objects.filter(o=>o.type==='room-door').sort((a,b)=>V.dist(a,this.visitor)-V.dist(b,this.visitor)).find(o=>V.dist(o,this.visitor)<86);if(near){e.preventDefault?.();R.transition(near.door,true);return;}}return keyRooms(k,e);};
 })();
+
+});

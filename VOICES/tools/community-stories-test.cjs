@@ -2,7 +2,11 @@
 const fs=require('fs'),path=require('path'),assert=require('assert/strict'),{environment}=require('./runtime-upgrade-test.cjs');
 const root=path.resolve(__dirname,'..');
 (async()=>{const e=await environment(),{V,w,dom,canvases}=e,results=[],check=async(name,fn)=>{try{await fn();results.push({name,pass:true});console.log('PASS',name);}catch(error){results.push({name,pass:false,error:error.stack});console.error('FAIL',name,error.stack);}finally{if(V.Dialogue.active)V.Dialogue.finish();V.UI.close();}};
- await V.Game.init();V.settings.playerCharacters=['nia'];V.settings.challengePlayers=1;V.settings.worldHours=false;V.settings.npcHomeRoutines=false;V.Game.newState({name:'Histórias da comunidade',character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});V.Game.startGame();await V.MapAssets.whenReady();V.UI.close();V.Onboarding.active=false;V.Onboarding.suspended=true;V.GuideOverlay.hide();
+ await V.Game.init();V.settings.playerCharacters=['nia'];V.settings.challengePlayers=1;V.settings.worldHours=false;V.settings.npcHomeRoutines=false;V.Game.newState({name:'Histórias da comunidade',character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});
+ V.Onboarding.record().status='complete';
+ // Keep the authored meeting on the same schedule while the daily-world suite exercises weather changes.
+ V.Environment.preview={hour:10,weather:{type:'clear'}};
+ V.Game.startGame();await V.MapAssets.whenReady();V.UI.close();V.Onboarding.active=false;V.Onboarding.suspended=true;V.GuideOverlay.hide();
  const S=V.CommunityStories,D=S.data,N=V.NeighbourhoodLife,M=V.MarineLife;
  const at=async(map,id)=>{V.World.load(map);await V.MapAssets.whenReady();const o=V.World.current.objects.find(o=>o.id===id);assert(o,map+': '+id);Object.assign(V.Player.data,{x:o.x,y:o.y+55});return o;};
  await check('ten cultural stories have real targets, short plots and a return conversation',()=>{assert.equal(D.missions.length,10);for(const image of Object.values(M.images))assert.equal(image.naturalWidth,0,'marine art deferred at startup');for(const q of D.missions){assert(q.context&&q.brief&&q.steps.length>=3);assert(S.located(q.owner),q.owner);for(const step of q.steps){if(step.kind==='story-marine'){assert(S.located(step.guideTarget));for(const id of step.targets)assert(M.species(id));}else for(const id of step.targets)assert(S.located(id),q.id+': '+id);}assert.equal(q.steps.at(-1).kind,'story-report');}assert(V.Living.missions.includes(D.missions[0]));});

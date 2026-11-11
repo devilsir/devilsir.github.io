@@ -1,3 +1,9 @@
+/* Registered module: city-motion */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-motion", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,A=V.Animations;
@@ -8,3 +14,5 @@ V.Player.perform=function(pose){if(V.Game.mode!=='explore'||V.SceneEditor.active
 const character=V.Progress.character.bind(V.Progress);V.Progress.character=function(tab='stats'){character(tab);const profile=V.$('.adv-profile');if(!profile)return;const row=document.createElement('div');row.className='row city-emotes';row.innerHTML='<span>Expressões</span><button id="player-dance" class="secondary">Dançar</button><button id="player-spin" class="secondary">Rodopiar</button>';if(V.Game.mode!=='explore')row.querySelectorAll('button').forEach(b=>b.disabled=true);profile.after(row);V.$('#player-dance').onclick=()=>V.Player.perform('dance');V.$('#player-spin').onclick=()=>V.Player.perform('spin');};
 const update=V.Story.update.bind(V.Story);V.Story.update=function(dt){const poses=(V.World.current?.objects||[]).filter(o=>o.type==='zambeto').map(o=>({o,x:o.x,y:o.y,performing:o.animationUntil>V.Engine.time}));update(dt);for(const p of poses){if(p.performing){p.o.x=p.x;p.o.y=p.y;}if(p.performing||p.o.x===p.x&&p.o.y===p.y)p.o.walking=false;}};
 })();
+
+});

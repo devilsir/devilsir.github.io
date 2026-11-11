@@ -1,3 +1,9 @@
+/* Registered module: salon-culture */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("salon-culture", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,A=V.Appearance,X=V.SalonCultureData,S=V.Salon;
@@ -15,3 +21,5 @@ const load=V.World.load.bind(V.World);V.World.load=function(...args){const r=loa
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,...args){if(k==='escape'&&B.pending&&V.$('#sea-voyage-cancel'))B.pending=null;return key(k,...args);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){B.pending=null;return title(...args);};
 })();
+
+});

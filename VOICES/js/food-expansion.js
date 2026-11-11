@@ -1,3 +1,9 @@
+/* Registered module: food-expansion */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("food-expansion", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.CookingData,A=V.CookingArt,P=V.Progress,M=V.Markets,T=48;
@@ -74,3 +80,5 @@ const shop=M.shop.bind(M);M.shop=function(id,filter='all',quantity=1){
 };
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.marketRegion)out.push(X.worldGroup);return [...new Set(out)];};
 })();
+
+});

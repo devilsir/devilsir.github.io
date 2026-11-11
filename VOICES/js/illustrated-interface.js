@@ -1,3 +1,9 @@
+/* Registered module: illustrated-interface */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("illustrated-interface", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,esc=V.escape,version='20261103-menu1';
@@ -6,9 +12,9 @@ const aliases={book:'notebook',art:'scene',binding:'journal',check:'objectives',
 const toolbar={'inventory-button':'inventory','journal-button':'journal','objectives-button':'objectives','notebook-button':'notebook','heritage-button':'heritage','map-button':'map','houses-button':'homes','challenges-button':'challenges','glossary-button':'pix','gallery-button':'archive','companions-button':'community','historio-button':'historio','character-button':'profile','help-button':'help'};
 const I=V.IllustratedInterface={names,images:{},
  canonical(id){id=aliases[id]||id;return names.includes(id)?id:null;},
- path(id){return 'assets/ui/illustrated/'+this.canonical(id)+'.webp?v='+version;},
+ path(id){const key=this.canonical(id);if(key==='care-water')return 'assets/ui/status-bottle.svg?v=20261111-status1';if(key==='care-sleep')return 'assets/ui/status-sleep.svg?v=20261111-status1';return 'assets/ui/illustrated/'+key+'.webp?v='+version;},
  icon(id,cls=''){return '<img class="ui-art illustrated-icon '+esc(cls)+'" data-menu-icon="'+esc(this.canonical(id))+'" src="'+this.path(id)+'" alt="" aria-hidden="true" width="48" height="48">';},
- load(){return Promise.all([...names,'pause-vignette'].map(id=>new Promise(resolve=>{const img=V.Assets.image();this.images[id]=img;img.onload=img.onerror=resolve;img.src='assets/ui/illustrated/'+id+'.webp?v='+version;V.AssetLoader.register(img,resolve);})));},
+ load(){return Promise.all([...names,'pause-vignette'].map(id=>new Promise(resolve=>{const img=V.Assets.image();this.images[id]=img;img.onload=img.onerror=resolve;img.src=id==='pause-vignette'?'assets/ui/illustrated/'+id+'.webp?v='+version:this.path(id);V.AssetLoader.register(img,resolve);})));},
  retrofit(root=document){const selector='img.ui-art,img[src*="assets/ui/interface/"],img[src*="assets/ui/renewed/"]',images=[...(root.matches?.(selector)?[root]:[]),...(root.querySelectorAll?.(selector)||[])];for(const img of images){const src=img.getAttribute('src')||'',match=src.match(/assets\/ui\/(?:interface|renewed)\/([\w-]+)\.svg/),id=match&&this.canonical(match[1]);if(!id)continue;img.classList.add('ui-art','illustrated-icon');img.dataset.menuIcon=id;img.src=this.path(id);img.removeAttribute('style');} },
  toolbar(){const nav=document.querySelector('.game-toolbar .tools');if(!nav)return;for(const button of nav.querySelectorAll('button')){
   const id=toolbar[button.id];if(!id)continue;
@@ -49,3 +55,5 @@ const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const ou
 let queued=false;new MutationObserver(changes=>{if(!changes.some(c=>[...c.addedNodes].some(n=>n.nodeType===1&&(n.matches('img,button,canvas')||n.querySelector('img,button,canvas')))))return;if(queued)return;queued=true;queueMicrotask(()=>{queued=false;I.refresh();});}).observe(document.body,{childList:true,subtree:true});
 I.refresh();
 })();
+
+});

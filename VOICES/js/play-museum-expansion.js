@@ -1,3 +1,9 @@
+/* Registered module: play-museum-expansion */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("play-museum-expansion", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,PM=V.PlayMuseum,A=V.AfricanPlayArt,M=V.AfricanMuseum,C=V.Cozy,W=V.World,T=48,esc=V.escape;
@@ -34,7 +40,7 @@ const build=PM.build.bind(PM);PM.build=function(d=C.layouts[this.id]){
  }
  for(const o of m.objects)if(o.playHistory||o.caseExhibit)V.SceneDesign.objectRegistry[PM.id][o.id]={...o};return m;
 };
-const ground=PM.ground.bind(PM);PM.ground=function(m){ground(m);const old=m.cache,canvas=document.createElement('canvas');canvas.width=44*T;canvas.height=44*T;const c=canvas.getContext('2d');c.drawImage(old,0,0);V.CapeVisuals.fill(c,'stone',T,32.5*T,42*T,10.5*T);V.CapeVisuals.fill(c,'path',1.5*T,38.5*T,41*T,3.8*T);c.fillStyle='#536e58';c.fillRect(0,33*T,T,11*T);c.fillRect(43*T,33*T,T,11*T);c.fillRect(0,43*T,44*T,T);M.text(c,'MAIS MEMÓRIAS DO BRINCAR · GALERIA DE QUADROS',22*T,32.6*T,17,'#405d46');M.text(c,'QUATRO HISTÓRIAS PARA CONHECER · DESAFIOS FUTUROS',22*T,39.9*T,14,'#5b7455');m.cache=canvas;};
+const ground=PM.ground.bind(PM);PM.ground=function(m){ground(m);const old=m.cache,canvas=V.GroundCache.create(m, 44*T, 44*T);;;const c=canvas.getContext('2d');V.GroundCache.draw(c, old, 0, 0);V.CapeVisuals.fill(c,'stone',T,32.5*T,42*T,10.5*T);V.CapeVisuals.fill(c,'path',1.5*T,38.5*T,41*T,3.8*T);c.fillStyle='#536e58';c.fillRect(0,33*T,T,11*T);c.fillRect(43*T,33*T,T,11*T);c.fillRect(0,43*T,44*T,T);M.text(c,'MAIS MEMÓRIAS DO BRINCAR · GALERIA DE QUADROS',22*T,32.6*T,17,'#405d46');M.text(c,'QUATRO HISTÓRIAS PARA CONHECER · DESAFIOS FUTUROS',22*T,39.9*T,14,'#5b7455');m.cache=canvas;};
 const draw=PM.draw.bind(PM);PM.draw=function(c,o,cam){const x=o.x-cam.x,y=o.y-cam.y;
  if(o.playExhibit||o.playHistory){
   const e=o.playExhibit?V.AfricanPlayData.exhibits.find(e=>e.id===o.playExhibit):panels.find(e=>e.id===o.playHistory);if(!e)return true;
@@ -49,6 +55,8 @@ const draw=PM.draw.bind(PM);PM.draw=function(c,o,cam){const x=o.x-cam.x,y=o.y-ca
   const prop={'terra-mar':3,'fogo-montanha':7,mancala:0,matacuzana:4,'roda-jo':2,ampe:3}[o.caseExhibit];A.prop(c,prop,x,y-40,70,53,false);if(o.caseExhibit==='mancala')A.board(c,x-49,y-61,98,25);if(o.caseExhibit==='matacuzana')A.prop(c,1,x-45,y-42,25,20,false);M.text(c,'MOSTRUÁRIO',x,y-12,10,'#f4e0b8');return true;
  }return draw(c,o,cam);
 };
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o,...args){if(o?.playHistory&&!V.modal&&!V.Dialogue.active)return PM.historyExhibit(o.playHistory);return interact(o,...args);};
+V.Hooks.around(V.Game, 'interact', 'play-museum-expansion:interact:1', nextHook => function(o,...args){if(o?.playHistory&&!V.modal&&!V.Dialogue.active)return PM.historyExhibit(o.playHistory);return nextHook(o,...args);});
 const catalog=PM.catalog.bind(PM);PM.catalog=function(...args){const out=catalog(...args),section=document.createElement('section');section.className='play-gallery-info';section.innerHTML='<h3>Novos quadros · memórias do brincar</h3><p>Quatro histórias para visitar na galeria. Somente exposição, sem novas partidas.</p><div class="play-museum-grid">'+panels.map(e=>'<button class="play-museum-card" data-play-history="'+e.id+'"><canvas class="play-new-art" data-history-art="'+e.id+'" width="480" height="270" aria-hidden="true"></canvas><strong>'+esc(e.title)+'</strong><small>Conhecer a história · quadro informativo</small></button>').join('')+'</div>';V.$('.modal-body').append(section);V.$$('[data-history-art]').forEach(c=>art(c.getContext('2d'),c.dataset.historyArt));V.$$('[data-play-history]').forEach(b=>b.onclick=()=>PM.historyExhibit(b.dataset.playHistory));return out;};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: cooking-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -25,3 +31,5 @@ const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=function
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),A.load()]);};
 const icon=V.Progress.icon.bind(V.Progress);V.Progress.icon=function(id,size){return A.dish(id,size)||icon(id,size);};
 })();
+
+});

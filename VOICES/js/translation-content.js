@@ -1,3 +1,9 @@
+/* Registered module: translation-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("translation-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';window.V.translationContent={
   "version": "3.0",
   "records": [
@@ -5603,3 +5609,5 @@
     "Vou anotar a pergunta para comparar com a leitura da biblioteca.": "I’ll note the question to compare it with the library reading."
   }
 };})();
+
+});

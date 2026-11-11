@@ -1,3 +1,9 @@
+/* Registered module: dialogue */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("dialogue", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V;
 V.Dialogue={active:false,lines:[],index:0,typing:0,done:null,currentText:'',rendered:-1,choice:null,viewer:null,viewObserver:null,
  run(fn){return this.viewer!==null&&V.DuoPanels?.enabled()?V.DuoPanels.withOwner(this.viewer,fn):fn();},
@@ -32,3 +38,5 @@ document.addEventListener('keydown',e=>{
  if(e.key in steps||e.key==='Home'||e.key==='End'){e.preventDefault();e.stopImmediatePropagation();list.scrollTop=e.key==='Home'?0:e.key==='End'?list.scrollHeight:list.scrollTop+steps[e.key];}
 },true);
 })();
+
+});

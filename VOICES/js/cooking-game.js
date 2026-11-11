@@ -1,3 +1,9 @@
+/* Registered module: cooking-game */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-game", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.CookingData,A=V.CookingArt,ID=D.id,clamp=V.clamp;
@@ -32,10 +38,10 @@ const K=V.Cooking={
  recipe(r){return D.recipes[clamp(r.data.stage||0,0,D.recipes.length-1)];},
  steps(r){return r.training?tutorial:this.recipe(r).steps;},
  step(r){return this.steps(r)[r.training?r.step:r.data.step]||this.steps(r).at(-1);},
- reset(r){const d=r.data;Object.assign(d,{progress:0,phase:'work',t:0,fill:0,pouring:false,heat:.51,cooked:0,flipped:false,overheat:0,angle:null,turns:0,pattern:0,lastDirection:-1,strokes:0,selected:0,placed:[],zones:[false,false,false,false,false,false],tool:{x:480,y:260},animation:0,stroke:null,particles:[],warningUntil:0,stepMistakes:r.mistakes||0});},
+ reset(r){const d=r.data;Object.assign(d,{progress:0,phase:'work',transitionLeft:.8,t:0,fill:0,pouring:false,heat:.51,cooked:0,flipped:false,overheat:0,angle:null,turns:0,pattern:0,lastDirection:-1,strokes:0,selected:0,placed:[],zones:[false,false,false,false,false,false],tool:{x:480,y:260},animation:0,stroke:null,particles:[],warningUntil:0,stepMistakes:r.mistakes||0});},
  point(r){const d=r.data,s=this.step(r);if(s.kind==='scale'){const n=Math.max(0,d.zones.indexOf(false));return{x:335+n%3*105,y:240+Math.floor(n/3)*62};}if(s.kind==='cut')return{x:345+Math.floor(d.progress*5)*57,y:255};if(s.kind==='fold')return[{x:285,y:180},{x:675,y:180},{x:675,y:370},{x:285,y:370}][d.placed.length%4];if(s.kind==='season')return[{x:365,y:260},{x:480,y:225},{x:595,y:280}][d.placed.length%3];return{x:480,y:270};},
- advance(r){const d=r.data;if(d.phase!=='done')return;if(r.training)return;d.results.push({step:d.step,points:Math.max(30,100-(r.mistakes-d.stepMistakes)*15)});if(d.step+1>=this.steps(r).length){d.done=true;P.stageClear(r,d.stage);P.finish();return;}d.step++;this.reset(r);r.feedback=instruction(this.step(r).kind);P.controls();P.hud();P.save();},
- complete(r){const d=r.data;if(d.phase!=='work')return;d.progress=1;d.phase='done';d.pouring=false;d.stroke=null;P.hit(Math.max(40,140-(r.mistakes-d.stepMistakes)*20));P.feedback('✓ '+this.step(r).title+' concluído. Continue para a próxima etapa.');if(r.training)P.event(['cook-cut','cook-stir','cook-heat'][r.step]);else P.controls();P.save();},
+ advance(r){const d=r.data;if(d.phase!=='done'||d.done||r.finished)return;if(r.training)return;V.Input.clear();P.held={x:0,y:0};P.drag=null;d.results.push({step:d.step,points:Math.max(30,100-(r.mistakes-d.stepMistakes)*15)});if(d.step+1>=this.steps(r).length){d.done=true;P.stageClear(r,d.stage);P.finish();return;}d.step++;this.reset(r);r.feedback=instruction(this.step(r).kind);P.controls();P.hud();P.save();},
+ complete(r){const d=r.data;if(d.phase!=='work')return;d.progress=1;d.phase='done';d.transitionLeft=.8;d.pouring=false;d.stroke=null;P.hit(Math.max(40,140-(r.mistakes-d.stepMistakes)*20));P.feedback('✓ '+this.step(r).title+' concluído.'+(r.training?'':' '+(d.step+1>=this.steps(r).length?'Servindo a receita…':'Preparando a próxima etapa…')));if(r.training)P.event(['cook-cut','cook-stir','cook-heat'][r.step]);else P.controls();P.save();},
  gain(r,n){const d=r.data;if(d.phase!=='work')return;d.progress=clamp(d.progress+n,0,1);d.animation=.35;r.moves++;if(d.progress>=.999)this.complete(r);},
  mistake(r,text){const d=r.data;if(d.warningUntil>d.t)return;d.warningUntil=d.t+1.2;P.feedback(text,true);},
  spark(r,x,y,color='#f6e5b8'){if(V.settings.reducedMotion)return;for(let i=0;i<6;i++)r.data.particles.push({x,y,vx:(i-2.5)*24,vy:-35-i*10,life:.65,color});r.data.particles=r.data.particles.slice(-48);},
@@ -59,7 +65,7 @@ const ctrl=P.controllers[ID]={
  model(r){const d=r.data,recipe=K.recipe(r),s=K.step(r);return{request:(r.training?'Treino':recipe.name)+' · '+s.title,support:(r.training?'Gestos de cozinha':recipe.region)+' · etapa '+((r.training?r.step:d.step)+1)+'/'+K.steps(r).length,progress:r.training?r.step:d.step,total:K.steps(r).length,hint:instruction(s.kind)};},
  controls(r,h){const s=K.step(r),d=r.data,right=V.DuoChallenges.isChild&&+new URLSearchParams(location.search).get('player')===1,confirm=right?'Enter':'E',leftKey=right?'←':'A',rightKey=right?'→':'D';
   const button=(id,label,action,arg)=>h.append(P.button(id,label,()=>P.action(action,arg)));
-  if(d.phase==='done'){button('cook-next',(d.step+1>=K.steps(r).length?'Servir e concluir':'Próxima etapa')+' · '+confirm,'next');return;}
+  if(d.phase==='done'){const status=document.createElement('p');status.className='cook-transition';status.setAttribute('role','status');status.textContent=d.step+1>=K.steps(r).length?'✓ Servindo sua receita…':'✓ Próxima etapa em instantes…';h.append(status);return;}
   if(heatKinds.has(s.kind)){button('cook-less','− Fogo · '+leftKey,'heat',-.07);if(s.kind==='fry')button('cook-flip','Virar · '+confirm,'flip');button('cook-more','+ Fogo · '+rightKey,'heat',.07);}
   else if(s.kind==='pour')button('cook-pour','Iniciar / parar fluxo · '+confirm,'pour');
   else if(s.kind==='scale')button('cook-scrape',right?'Raspar faixa · →':'Raspar faixa → · D','dir','d');
@@ -96,7 +102,7 @@ const ctrl=P.controllers[ID]={
   if(s.kind==='fold'){const target=K.point(r);if(Math.hypot(start.x-target.x,start.y-target.y)<70&&Math.hypot(p.x-480,p.y-275)<90){d.placed.push(d.placed.length);K.gain(r,1/4);}}
   if(['shape','layer','plate'].includes(s.kind)){const i=Math.round((start.x-340)/140);if(i>=0&&i<3&&start.y>365&&Math.hypot(p.x-480,p.y-270)<170)K.place(r,i);}
  },
- update(r,dt){const d=r.data;if(d.done||r.training&&r.ack)return;d.t+=dt;d.animation=Math.max(0,d.animation-dt);for(const p of d.particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=130*dt;}d.particles=d.particles.filter(p=>p.life>0);if(d.phase!=='work')return;const s=K.step(r);
+ update(r,dt){const d=r.data;if(d.done||r.training&&r.ack)return;d.t+=dt;d.animation=Math.max(0,d.animation-dt);for(const p of d.particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=130*dt;}d.particles=d.particles.filter(p=>p.life>0);if(d.phase==='done'){if(!r.training){d.transitionLeft=Math.max(0,(d.transitionLeft??.8)-dt);if(d.transitionLeft<=0)K.advance(r);}return;}if(d.phase!=='work')return;const s=K.step(r);
   if(s.kind==='pour'&&d.pouring){d.fill+=dt*.22;if(d.fill>.96){d.pouring=false;d.fill=0;K.mistake(r,'A tigela transbordou. Tente parar dentro da faixa verde.');}}
   if(heatKinds.has(s.kind)){const level=P.difficulty(r),drift=r.calm?0:[.05,.075,.1][level]+Math.sin(d.t*.85)*.035;d.heat=clamp(d.heat+drift*dt,0,1);const good=d.heat>=.37&&d.heat<=.68;if(good)d.cooked+=dt/(r.training?3.5:r.calm?6:7+level);d.overheat=d.heat>.85?d.overheat+dt:0;if(d.overheat>1.5){d.overheat=0;d.cooked=Math.max(0,d.cooked-.15);K.mistake(r,'Fogo alto demais. Abaixe para a faixa verde e continue.');}if(s.kind==='fry'&&!d.flipped)d.cooked=Math.min(d.cooked,.6);d.progress=clamp(d.cooked,0,1);if(d.cooked>=1)K.complete(r);}
  },
@@ -125,7 +131,7 @@ const ctrl=P.controllers[ID]={
   }
   const tool=d.tool;if(d.phase==='work'&&(d.stroke||d.animation>0)&&!heatKinds.has(s.kind)){c.save();c.translate(tool.x,tool.y);const rotate=['stir','grind','wash'].includes(s.kind)?Math.atan2(tool.y-270,tool.x-480):-.3;c.rotate(rotate);P.box(c,-6,-12,12,65,'#875d32','#2c3e30');if(s.kind==='cut'||s.kind==='scale'){P.box(c,-6,-44,36,35,'#d5ddd0','#324e43');P.box(c,20,-43,8,33,'#f8ead0');}else{c.fillStyle=s.kind==='wash'?'#99ccdc':'#cfab6c';c.beginPath();c.ellipse(0,-20,16,24,0,0,Math.PI*2);c.fill();}c.restore();}
   for(const p of d.particles){c.fillStyle=p.color;c.globalAlpha=p.life/.65;c.fillRect(p.x,p.y,5,3);}c.globalAlpha=1;
-  const progress=s.kind==='pour'?d.fill:d.progress;P.box(c,240,486,480,13,'#2c4b3e');P.box(c,240,486,480*clamp(progress,0,1),13,d.phase==='done'?'#a6d3a7':'#e4bf72');P.text(c,d.phase==='done'?'✓ ETAPA PRONTA · E PARA CONTINUAR':Math.round(progress*100)+'% · '+(s.kind==='pour'?(d.pouring?'despejando':'medindo'):s.kind==='fry'?(d.flipped?'outro lado':'primeiro lado'):'preparando'),480,518,14,'#f9e5ba');
+  const progress=s.kind==='pour'?d.fill:d.progress;P.box(c,240,486,480,13,'#2c4b3e');P.box(c,240,486,480*clamp(progress,0,1),13,d.phase==='done'?'#a6d3a7':'#e4bf72');P.text(c,d.phase==='done'?'✓ ETAPA PRONTA · PREPARANDO A PRÓXIMA':Math.round(progress*100)+'% · '+(s.kind==='pour'?(d.pouring?'despejando':'medindo'):s.kind==='fry'?(d.flipped?'outro lado':'primeiro lado'):'preparando'),480,518,14,'#f9e5ba');
  }
 };
 const result=P.result.bind(P);P.result=function(r){const out=result(r);if(r.game===ID){const recipe=K.recipe(r),box=V.$('.pg-result');V.$('.modal h2').textContent='Prato pronto · '+recipe.name;if(box){box.insertAdjacentHTML('afterbegin',A.dish(recipe.output,150));const line=document.createElement('p');line.textContent=recipe.region+' · '+r.data.results.length+' etapas preparadas.';box.append(line);}}return out;};
@@ -136,3 +142,5 @@ const art=V.ChallengeCatalog.art.bind(V.ChallengeCatalog);V.ChallengeCatalog.art
 const items=V.ChallengeCatalog.items.bind(V.ChallengeCatalog);V.ChallengeCatalog.items=function(){return items().map(g=>g.id===ID?{...g,group:'workshops'}:g);};
 const controls=V.DuoChallenges.controls.bind(V.DuoChallenges);V.DuoChallenges.controls=function(game,i){if(game===ID)return (i?'Setas':'WASD')+' para os gestos e o fogo · '+(i?'Enter':'E')+' confirma / vira / despeja · mouse ou toque segue os gestos na sua bancada.';return controls(game,i);};
 })();
+
+});

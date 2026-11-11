@@ -1,3 +1,9 @@
+/* Registered module: salon-access */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("salon-access", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,W=V.World,S=V.Salon,A=V.Appearance,B=V.SalonCollection,id=S.id;
@@ -29,6 +35,8 @@ const travel=V.FastTravel.travel.bind(V.FastTravel);V.FastTravel.travel=function
 const status=V.FastTravel.status.bind(V.FastTravel);V.FastTravel.status=function(map){const result=status(map);return map===id&&!Gate.unlocked()?{...result,label:'Acesso secreto · senha necessária',button:'Desbloquear salão',reason:'Informe a senha de entrada para liberar o salão e a personalização neste perfil.'}:result;};
 for(const [target,key]of [[A,'open'],[A,'emblem'],[S,'overview'],[S,'greet'],[S,'wash'],[B,'visit']]){const action=target[key].bind(target);target[key]=function(...args){return Gate.request(()=>action(...args));};}
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const state=V.state,locked=state?.map===id&&!Gate.unlocked(),position=state?.position;if(locked){state.map='market';state.position=null;}const result=start(...args);if(locked){Gate.afterStart={state,readyAt:performance.now()+240,resume:()=>W.load(id,position)};queueMicrotask(()=>Gate.checkStart());}return result;};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(...args){const result=update(...args);Gate.checkStart();return result;};
+V.Hooks.around(V.Game, 'update', 'salon-access:update:1', nextHook => function(...args){const result=nextHook(...args);Gate.checkStart();return result;});
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){Gate.pending=null;Gate.afterStart=null;return title(...args);};
 })();
+
+});

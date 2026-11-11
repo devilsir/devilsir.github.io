@@ -7,7 +7,7 @@
 .touch-layout .stick{width:42px;height:42px;left:25px;top:25px;pointer-events:none}
 .touch-layout .touch-action{z-index:1;right:max(var(--touch-side),env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));width:var(--touch-button);height:var(--touch-button);min-width:48px;min-height:48px;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 3px 9px #122f3780}
 .touch-layout .touch-action.shield{right:calc(max(var(--touch-side),env(safe-area-inset-right)) + var(--touch-button) + 12px);font-size:10px}
-.touch-layout .adv-clock{top:calc(var(--touch-mission-height,78px) + 18px);left:10px;transform:none}
+.touch-layout .adv-clock{top:calc(var(--touch-mission-height,78px) + 18px);left:10px;translate:none}
 .touch-layout .adv-status{bottom:calc(var(--touch-zone) + 4px);left:10px;max-width:calc(50% - 14px);font-size:9px;gap:5px;padding:5px 7px;z-index:12}
 .touch-layout .life-hud{bottom:calc(var(--touch-zone) + 4px);right:10px;max-width:calc(50% - 14px);font-size:8px;gap:7px;padding:5px 7px;z-index:12}
 .touch-layout .life-hud span:first-child{font-size:10px}
@@ -32,7 +32,7 @@
 .touch-game .tools button .icon,.touch-game .tools button>.ui-art{width:22px;height:22px;flex:0 0 22px}
 @media (orientation:landscape) and (max-height:520px){
 .stage.touch-layout{--touch-zone:92px;--touch-side:12px;--touch-button:50px}
-.touch-layout .adv-clock{top:9px;left:50%;transform:translateX(-50%)}
+.touch-layout .adv-clock{top:9px;left:50%;translate:-50% 0;width:125px}
 .touch-layout .mission-hud{top:9px;left:10px;max-width:min(270px,calc(50% - 90px));padding:8px 10px}
 .touch-layout .joystick{width:76px;height:76px;bottom:max(12px,env(safe-area-inset-bottom))}
 .touch-layout .stick{width:38px;height:38px;left:17px;top:17px}

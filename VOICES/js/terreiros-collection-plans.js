@@ -1,3 +1,9 @@
+/* Registered module: terreiros-collection-plans */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("terreiros-collection-plans", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 window.V.TerreirosCollectionPlans={
   "interior-umbanda": [
     {
@@ -942,3 +948,5 @@ window.V.TerreirosCollectionPlans={
     }
   ]
 };
+
+});

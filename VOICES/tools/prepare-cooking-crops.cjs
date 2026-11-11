@@ -3,7 +3,7 @@
 // All pixel inspection stays in this build tool: local file:// canvases can be
 // drawn and cleared in the browser, but their pixels cannot safely be read.
 const fs=require('fs'),path=require('path');
-const {createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const {createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..');
 function removalRectangles(pixels,stride,box,seeds){
  const[x,y,w,h]=box,alpha=new Uint8Array(w*h),mask=new Uint8Array(w*h),queue=new Int32Array(w*h);let head=0,tail=0;

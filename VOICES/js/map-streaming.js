@@ -1,3 +1,9 @@
+/* Registered module: map-streaming */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("map-streaming", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,L=V.AssetLoader,W=V.World,nextFrame=()=>new Promise(resolve=>requestAnimationFrame(()=>resolve()));
@@ -21,7 +27,7 @@ async whenReady(){await Promise.resolve();return new Promise(resolve=>{const che
 };
 const loaded=L.loaded.bind(L),errored=L.errored.bind(L);L.loaded=function(...args){const r=loaded(...args);M.progress();return r;};L.errored=function(...args){const r=errored(...args);M.progress();return r;};
 
-const update=V.Game.update.bind(V.Game),render=V.Game.render.bind(V.Game);V.Game.update=function(dt){if(!M.busy)return update(dt);};V.Game.render=function(ctx){if(!M.busy)return render(ctx);};
+const render=V.Game.render.bind(V.Game);V.Hooks.around(V.Game, 'update', 'map-streaming:update:1', nextHook => function(dt){if(!M.busy)return nextHook(dt);});V.Game.render=function(ctx){if(!M.busy)return render(ctx);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){M.cancel();return title(...args);};
 const attach=V.Playground.attach.bind(V.Playground);V.Playground.attach=function(r){const out=attach(r),groups={moto:['moto'],platform:['platform'],capoeira:['museum','capoeira','instruments']};if(V.AfricanPlay?.has(r.game))groups[r.game]=['african-play'];if(groups[r.game])M.ensure(groups[r.game],V.PlaygroundData.games.find(g=>g.id===r.game)?.title||'Preparando o desafio');return out;};
 const fish=V.FishingChallenge.start.bind(V.FishingChallenge);V.FishingChallenge.start=function(...args){const out=fish(...args);if(this.run)M.ensure(['fishing','maritime'],'Preparando a pescaria');return out;};
@@ -32,3 +38,5 @@ const controls=V.Appearance.controls.bind(V.Appearance);V.Appearance.controls=fu
 document.addEventListener('keydown',e=>{if(!M.busy)return;e.stopImmediatePropagation();if(e.key==='Tab'){e.preventDefault();const actions=V.$('#map-loading-actions'),buttons=actions&&!actions.hidden?[...actions.querySelectorAll('button')]:[];if(buttons.length){const i=buttons.indexOf(document.activeElement);buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}else M.root().focus();return;}if(!e.target.closest?.('#map-loading-actions button')||!['Enter',' '].includes(e.key))e.preventDefault();},true);
 document.addEventListener('pointerdown',e=>{if(M.busy&&!e.target.closest?.('#map-loading')){e.preventDefault();e.stopImmediatePropagation();}},true);
 })();
+
+});

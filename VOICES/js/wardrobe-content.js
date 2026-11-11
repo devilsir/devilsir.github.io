@@ -1,3 +1,9 @@
+/* Registered module: wardrobe-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("wardrobe-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';window.V.wardrobeContent={
   "gallery": [
     {
@@ -1158,3 +1164,5 @@
     }
   ]
 };})();
+
+});

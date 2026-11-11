@@ -1,3 +1,9 @@
+/* Registered module: culture-challenges-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-challenges-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureContent(){
 'use strict';const V=window.V;
 V.CultureChallengeData={
@@ -28,3 +34,5 @@ V.CultureChallengeData={
  {title:'Manter o jogo vivo',context:'O lado de Bia está vazio. Quando há uma jogada que o alimenta, você precisa escolhê-la. Descubra qual casa atravessa a borda.',board:[1,2,0,0,0,1,0,0,0,0,0,0],scores:[22,22],pit:5},
  {title:'Uma partida completa',context:'Jogue contra Bia. Planeje capturas e mantenha as 48 sementes em circulação. Termine a partida; vencer é opcional.'}]}]};
 })();
+
+});

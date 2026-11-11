@@ -1,0 +1,25 @@
+{
+  "name": "voices-reboot-the-story",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aventura educativa VOICES — Reboot the Story",
+  "license": "MIT",
+  "engines": { "node": ">=22.12" },
+  "scripts": {
+    "start": "node tools/serve.cjs",
+    "build": "node tools/build.cjs",
+    "modules:sync": "node tools/sync-module-graph.cjs",
+    "check": "node tools/check-project.cjs",
+    "test": "node tools/test.cjs",
+    "test:all": "node tools/test.cjs --all",
+    "test:failed": "node tools/test.cjs --failed",
+    "test:build": "npm run build && node tools/test.cjs --bundle runtime-upgrade",
+    "audit:world": "node tools/audit-world.js"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.1.0",
+    "acorn": "8.15.0",
+    "esbuild": "0.25.12",
+    "jsdom": "30.1.3"
+  }
+}

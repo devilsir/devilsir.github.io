@@ -1,3 +1,9 @@
+/* Registered module: city-facades */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-facades", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,C=V.Cozy,W=V.World,D=V.SceneDesign,H=V.Homestead,T=48,copy=x=>JSON.parse(JSON.stringify(x));
@@ -33,3 +39,5 @@ const drawBuilding=C.drawBuilding.bind(C);C.drawBuilding=(ctx,b,cam)=>b.facade?F
 const signature=V.Atlas.signature.bind(V.Atlas);V.Atlas.signature=function(m){return signature(m)+'|'+(m.geometryRevision||0)+'|facades-4|'+(V.Environment.time()<6.5||V.Environment.time()>=19)+'|'+(H.ensure()?.owned.join(',')||'');};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){if(o.type==='room-door'&&W.current?.cityExterior){const b=W.current.buildings.find(b=>b.door===o.id);if(b?.facade){const p=F.profile(b),roofH=p.roof==='terrace'||p.roof==='deco'?25:p.roof==='skillion'?44:49,doorH=Math.max(53,Math.min(76,(b.h-roofH)/p.stories-17));F.door(ctx,o.x-cam.x,o.y-cam.y,doorH,p,palettes[p.palette],o.door.openUntil>V.Rooms.clock);if(W.nearest?.id===o.id)V.Living.marker(ctx,o.x-cam.x,o.y-cam.y,'E','#e3c78e');return;}}return draw(ctx,o,cam,t);};
 })();
+
+});

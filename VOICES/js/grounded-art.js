@@ -1,3 +1,9 @@
+/* Registered module: grounded-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("grounded-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,D=V.GroundedArtData;
 const G=V.GroundedArt={
@@ -10,3 +16,5 @@ shadow(c,img,x,y,w,h,options={}){if(!img)return;const f=this.geometry(img,x-w/2,
 iris(c,img,x,y,row,frame,shadow=false){if(!img)return;const b=D.iris[row*4+frame],w=b[2]-b[0],h=b[3]-b[1],source=[frame*64+b[0],row*64+b[1],w,h];if(shadow)V.SceneShadows.cast(c,img,x-32+(b[0]+b[2])/2,y,w,h,{frame:source,indoor:true,alpha:.14});else c.drawImage(img,...source,Math.round(x-32+b[0]),Math.round(y-h),w,h);}
 };
 })();
+
+});

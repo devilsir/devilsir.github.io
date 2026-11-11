@@ -1,3 +1,9 @@
+/* Registered module: home-variations */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("home-variations", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function homeVariations(){
 'use strict';const V=window.V,H=V.Homestead,C=V.Cozy,G=V.HomeLiving,L=V.Life,T=48;
 const rows=[
@@ -20,5 +26,7 @@ const hydrate=V.City.hydrate.bind(V.City);V.City.hydrate=function(m){hydrate(m);
 const apply=H.applyFurniture.bind(H);H.applyFurniture=function(...args){const result=apply(...args);for(const m of Object.values(V.World.maps))variants.hydrate(m);return result;};
 const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects.filter(o=>o.scene?.family==='home-variants'&&variants.items[o.scene.prop]?.solid===false)){const z=(o.scene.size||variants.items[o.scene.prop].size)*T;C.prop(ctx,'home-variants',o.scene.prop,o.x-z/2,o.y-z*.99,z);}};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){if(o.scene?.family!=='home-variants')return draw(ctx,o,cam,t);const item=variants.items[o.scene.prop],z=(o.scene.size||item.size)*T,x=o.x-cam.x,y=o.y-cam.y;if(item.solid)C.prop(ctx,item.family,item.prop,x-z/2,y-z*.99,z);if(item.action==='light'&&H.ensure()?.lamps[o.id]){ctx.save();const g=ctx.createRadialGradient(x,y-z*.6,4,x,y-z*.6,z*.55);g.addColorStop(0,'#ffdf9470');g.addColorStop(1,'#ffdf9400');ctx.fillStyle=g;ctx.fillRect(x-z/2,y-z,z,z);ctx.restore();}if(V.World.nearest?.id===o.id)V.Living.marker(ctx,x,y,'E','#e7cb8e');};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.scene?.family!=='home-variants'||V.modal||V.Dialogue.active)return interact(o);const item=G.item(o);V.PixCollection.collect(item.word,'Casa · '+item.name);switch(item.action){case'bed':return H.sleep(o);case'seat':return V.Activities.perform('sit');case'storage':return H.homeShop('stored',G.room());case'study':V.Living.journal('readings');return V.Activities.perform('read',{close:false});case'cook':return V.Botica.recipes('food');case'food':case'fridge':return L.panel('food');case'light':H.ensure().lamps[o.id]=!H.ensure().lamps[o.id];V.Save.save();V.UI.toast('Luminária '+(H.ensure().lamps[o.id]?'acesa.':'apagada.'));return;default:V.UI.toast(item.description);}};
+V.Hooks.around(V.Game, 'interact', 'home-variations:interact:1', nextHook => function(o){if(o?.scene?.family!=='home-variants'||V.modal||V.Dialogue.active)return nextHook(o);const item=G.item(o);V.PixCollection.collect(item.word,'Casa · '+item.name);switch(item.action){case'bed':return H.sleep(o);case'seat':return V.Activities.perform('sit');case'storage':return H.homeShop('stored',G.room());case'study':V.Living.journal('readings');return V.Activities.perform('read',{close:false});case'cook':return V.Botica.recipes('food');case'food':case'fridge':return L.panel('food');case'light':H.ensure().lamps[o.id]=!H.ensure().lamps[o.id];V.Save.save();V.UI.toast('Luminária '+(H.ensure().lamps[o.id]?'acesa.':'apagada.'));return;default:V.UI.toast(item.description);}});
 })();
+
+});

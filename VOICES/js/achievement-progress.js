@@ -1,3 +1,9 @@
+/* Registered module: achievement-progress */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("achievement-progress", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function achievementProgress(){
 'use strict';
 const V=window.V,esc=V.escape;
@@ -114,3 +120,5 @@ const achieve=V.Quests.achieve.bind(V.Quests);V.Quests.achieve=function(id){cons
 V.Quests.badges=()=>M.open();
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(...args){const result=pause(...args);const body=V.$('.modal-body .stack')||V.$('.modal-body');if(body&&!V.$('#pause-achievements')){const button=document.createElement('button');button.id='pause-achievements';button.className='secondary';button.textContent='Conquistas e progresso';button.onclick=()=>M.open();body.append(button);}return result;};
 })();
+
+});

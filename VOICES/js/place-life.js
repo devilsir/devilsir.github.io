@@ -1,3 +1,9 @@
+/* Registered module: place-life */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("place-life", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,W=V.World,C=V.Cozy,T=48,esc=V.escape;
@@ -33,7 +39,10 @@ const P=V.PlaceLife={people,image:null,
  },
  populate(m){if(!m)return m;for(const p of people.filter(p=>p.map===m.id))this.add(m,p);for(const[map,id,name,character,fx,fy,action]of visitors.filter(p=>p[0]===m.id))this.add(m,{id,name,character,role:'Visitante',at:[m.width*fx,m.height*fy],en:'There is always something new to discover here.',pt:'Sempre há algo novo para descobrir por aqui.',words:['discover','place','story'],action});return m;},
  update(m,dt){if(!m||m.placeLifeTick===V.Engine.time)return;m.placeLifeTick=V.Engine.time;dt=V.clamp(dt,0,.08);for(const o of m.objects.filter(o=>o.type==='place-life')){o.walking=false;if(V.settings.reducedMotion||V.settings.npcMovement===false){o.frame=0;continue;}o.walkClock+=dt;if(V.World.nearest?.id===o.id&&V.Player.data&&V.dist(o,V.Player.data)<100){o.wait=Math.max(o.wait,1.2);o.frame=0;continue;}if(o.wait>0){o.wait-=dt;o.frame=0;continue;}const target=o.patrol[o.routeIndex%o.patrol.length],dx=target.x-o.x,dy=target.y-o.y,d=Math.hypot(dx,dy);if(d<2){o.routeIndex=(o.routeIndex+1)%o.patrol.length;o.wait=2+(o.routeIndex+o.walkClock)%4;o.frame=0;continue;}const step=Math.min(d,25*dt),x=o.x+dx/d*step,y=o.y+dy/d*step;if(!this.clear(m,x,y)){o.routeIndex=0;o.wait=1.5;continue;}const player=V.Player.data;if(player&&V.dist({x,y},player)<29){o.wait=.6;continue;}o.x=x;o.y=y;o.dir=dx<-.1?-1:dx>.1?1:o.dir;o.walking=true;o.frame=Math.floor(o.walkClock*6)%4;o.spriteRow=Math.abs(dy)>Math.abs(dx)?dy<0?3:0:dx<0?1:2; }},
- figure(c,o,x,y,size=64){const p=o.profile;if(p.character){V.Assets.sprite(c,p.character,x,y,o.walking?o.spriteRow||0:0,o.frame||0,size-2);}else if(V.Assets.ready(this.image)){const cell=this.image.naturalWidth/4;c.save();c.imageSmoothingEnabled=true;c.translate(x,y);if(o.dir<0)c.scale(-1,1);c.drawImage(this.image,(o.frame||0)*cell,p.row*cell,cell,cell,-size/2,-size+4,size,size);c.restore();}},
+ figure(c,o,x,y,size=64){const p=o.profile;if(p.character){V.Assets.sprite(c,p.character,x,y,o.walking?o.spriteRow||0:0,o.frame||0,size-2);}else if(p.sheet){
+   c.save();c.translate(x,y);if(o.dir<0)c.scale(-1,1);
+   V.NatureArt.frame(c,p.sheet,p.row,o.frame||0,-size/2,-size+4,size,size);c.restore();
+  }else if(V.Assets.ready(this.image)){const cell=this.image.naturalWidth/4;c.save();c.imageSmoothingEnabled=true;c.translate(x,y);if(o.dir<0)c.scale(-1,1);c.drawImage(this.image,(o.frame||0)*cell,p.row*cell,cell,cell,-size/2,-size+4,size,size);c.restore();}},
  portrait(c,o){const {width,height}=c.canvas;c.clearRect(0,0,width,height);const size=Math.min(width,height)-8;V.SceneShadows.contact(c,width/2,height-5,size*.23,4,.15);this.figure(c,{...o,frame:0,walking:false,dir:1},width/2,height-8,size);},
  draw(c,o,cam){if(o.type!=='place-life')return false;const x=o.x-cam.x,y=o.y-cam.y;if(Math.abs(c.getTransform().a)>=.99&&(x<-80||x>c.canvas.width+80||y<-20||y>c.canvas.height+90))return true;const p=o.profile;V.SceneShadows.contact(c,x,y+2,17,5,.2);this.figure(c,o,x,y);
   if(o.id&&W.nearest?.id===o.id)V.WorldSigns.draw(c,p.name+' · '+p.role,x,y-77,{active:true,maxWidth:235});else if(!o.walking&&!V.settings.reducedMotion){const t=o.walkClock%12;if(t<2.2){c.save();c.fillStyle='#f2e8cc';c.strokeStyle='#607457';c.lineWidth=1.2;c.beginPath();c.roundRect(x+13,y-72,24,20,6);c.fill();c.stroke();c.fillStyle='#49624e';c.font='12px Georgia';c.textAlign='center';c.fillText(p.row===6?'…':p.row===0||p.row===4?'✎':'•',x+25,y-58);c.restore();}}return true;
@@ -50,5 +59,7 @@ const preview=V.SceneDesign.preview.bind(V.SceneDesign);V.SceneDesign.preview=fu
 const update=C.update.bind(C);C.update=function(dt){const out=update(dt);if(V.Game.screen==='game'&&V.Game.mode==='explore'&&!V.modal&&!V.Dialogue.active)P.update(W.current,dt);return out;};
 for(const[owner,key]of [[C,'drawObject'],[V.NatureWorld,'draw'],[V.Maritime,'drawObject'],[V.CapeRegion,'drawObject'],[V.CulinaryWorld,'draw']]){const draw=owner[key].bind(owner);owner[key]=function(c,o,cam,...args){if(P.draw(c,o,cam))return true;return draw(c,o,cam,...args);};}
 const landmark=V.Atlas.landmark.bind(V.Atlas);V.Atlas.landmark=function(c,o,m){return P.draw(c,o,{x:0,y:0})||landmark(c,o,m);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='place-life'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore')return P.talk(o);return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'place-life:interact:1', nextHook => function(o){if(o?.type==='place-life'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore')return P.talk(o);return nextHook(o);});
 })();
+
+});

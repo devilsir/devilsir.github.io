@@ -1,3 +1,9 @@
+/* Registered module: duo-sessions */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-sessions", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Invitations and private game viewers share one start barrier and simulation clock. */
 (function(){
 'use strict';
@@ -64,9 +70,11 @@ const R=V.DuoSessions={sessions:new Map(),pending:null,party:null,serial:0,
 const choice=V.DuoChallenges.choice.bind(V.DuoChallenges);V.DuoChallenges.choice=function(key){return R.enabled()?R.choice(key):choice(key);};
 const fishing=V.FishingChallenge.open.bind(V.FishingChallenge);V.FishingChallenge.open=function(...args){if(!R.enabled())return fishing(...args);return P.withOwner(R.owner(),()=>{const out=fishing(...args);R.fishing();return out;});};
 for(const[obj,method,key,options]of [[V.Playground,'launch',id=>'play:'+id,()=>({mode:'normal'})],[V.Playground,'train',id=>'play:'+id,()=>({mode:'training'})],[V.CultureChallenges,'start',id=>'culture:'+id,()=>({mode:'normal'})],[V.LearningArcade,'start',id=>'legacy:'+id,()=>({mode:'normal'})],[V.FishingChallenge,'start',()=> 'fish:fishing',habitat=>({mode:'normal',habitat})]]){const original=obj[method].bind(obj);obj[method]=function(id,...args){return R.enabled()?R.solo(R.owner(),key(id),options(id)):original(id,...args);};}
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const out=update(dt);R.tick(dt);return out;};
+V.Hooks.around(V.Game, 'update', 'duo-sessions:update:1', nextHook => function(dt){const out=nextHook(dt);R.tick(dt);return out;});
 const pause=V.Game.pause.bind(V.Game);V.Game.pause=function(reason,...args){const inViewer=[...R.sessions.values()].some(s=>s.frame===document.activeElement);if(R.enabled()&&inViewer&&document.hasFocus()&&/foco|janela/i.test(String(reason)))return;return pause(reason,...args);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){R.reset();return title(...args);};
 window.addEventListener('message',e=>R.receive(e));
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&R.enabled())for(const s of R.sessions.values())if(!s.paired||s.player===0)R.pause(s.player,true);});
 })();
+
+});

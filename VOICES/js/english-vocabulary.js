@@ -1,3 +1,9 @@
+/* Registered module: english-vocabulary */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("english-vocabulary", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function englishVocabulary(){
 'use strict';
 const V=window.V;
@@ -1080,3 +1086,5 @@ listen:'Listen to someone/something: ouvir com atenção. Hear pode indicar perc
 for(const entry of entries)if(notes[entry.en.toLowerCase()])entry.note=notes[entry.en.toLowerCase()];
 V.EnglishVocabulary={version:2,entries,categories:Object.fromEntries(Object.entries(groups).map(([key,[label]])=>[key,label])),starter:entries.filter(e=>e.starter).map(e=>e.en.toLowerCase())};
 })();
+
+});

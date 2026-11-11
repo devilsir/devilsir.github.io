@@ -1,3 +1,9 @@
+/* Registered module: terreiros-collection-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("terreiros-collection-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 window.V.TerreirosCollectionData={
   "revision": "20261025-textos-acervo2",
   "sources": [
@@ -2139,3 +2145,5 @@ window.V.TerreirosCollectionData={
     }
   }
 };
+
+});

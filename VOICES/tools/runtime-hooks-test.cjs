@@ -1,0 +1,16 @@
+'use strict';
+const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
+const window = { V: {} };
+vm.runInNewContext(fs.readFileSync(require.resolve('../js/runtime-hooks.js'), 'utf8'), { window });
+const hooks = window.V.Hooks, calls = [], game = { value: 4, update(n) { calls.push('base'); return this.value + n; } };
+hooks.around(game, 'update', 'world', next => function(n) { calls.push('world:before'); const value = next(n); calls.push('world:after'); return value * 2; });
+hooks.around(game, 'update', 'duo', next => function(n) { if (n < 0) return 0; return next(n) + 1; });
+assert.equal(game.update(3), 15);
+assert.deepEqual(calls, ['world:before', 'base', 'world:after']);
+assert.deepEqual(Array.from(hooks.list(game, 'update')), ['world', 'duo']);
+calls.length = 0; assert.equal(game.update(-1), 0); assert.deepEqual(calls, []);
+assert.throws(() => hooks.around(game, 'update', 'duo', next => next), /Duplicate hook/);
+assert.throws(() => hooks.around(game, 'unknown', 'bad', next => next), /Unknown hook/);
+assert.throws(() => hooks.around(game, 'update', 'invalid', () => null), /Invalid hook/);
+assert.equal(hooks.list(game, 'update').length, 2);
+console.log('PASS named extensions preserve order, context, results and pause gates; invalid registrations are rejected');

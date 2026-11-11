@@ -1,3 +1,9 @@
+/* Registered module: engine */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("engine", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V=window.V||{};
 V.$=(q)=>document.querySelector(q); V.$$=(q)=>Array.from(document.querySelectorAll(q));
@@ -9,7 +15,20 @@ V.UI={onClose:null,previousFocus:null,
  modal(title,subtitle,body,footer='',wide=false){this.close(false);this.previousFocus=document.activeElement;const theme=V.Interface?.theme(title,body)||'community';V.modal=true;V.$('#modal-root').innerHTML=`<div class="modal-backdrop"><section class="modal ui-${theme} ${wide?'wide':''}" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-subtitle"><header class="modal-head"><div class="modal-heading">${V.Interface?.icon(V.Interface.emblem(theme))||''}<div><h2 id="modal-title">${V.escape(title)}</h2><p id="modal-subtitle">${V.escape(subtitle||'')}</p></div></div><button class="close-modal" aria-label="Fechar e voltar ao jogo">×</button></header><div class="modal-body">${body}</div>${footer?`<footer class="modal-footer">${footer}</footer>`:''}</section></div>`;
  const modalRoot=V.$('#modal-root');modalRoot.querySelector('.close-modal').onclick=()=>this.close();setTimeout(()=>modalRoot.querySelector('.modal-body button,.modal-body input,.modal-body select,.modal-footer button,.close-modal')?.focus(),30); V.Input.clear();},
  close(focus=true){const cb=this.onClose;this.onClose=null;V.$('#modal-root').innerHTML='';V.modal=false;if(cb)cb();if(focus&&this.previousFocus?.isConnected)this.previousFocus.focus();V.Input?.clear();},
- toast(message,type=''){const el=document.createElement('div');el.className='toast '+type;el.textContent=message;V.$('#toast-root').appendChild(el);setTimeout(()=>el.remove(),3800);},
+ toast(message,type='',action=null){
+  const el=document.createElement('div');
+  el.className='toast '+type;
+  el.textContent=message;
+  if(action){
+   const button=document.createElement('button');
+   button.type='button';
+   button.textContent=action.label;
+   button.onclick=()=>{el.remove();action.run();};
+   el.append(button);
+  }
+  V.$('#toast-root').appendChild(el);
+  setTimeout(()=>el.remove(),action?7500:3800);
+ },
  confirm(title,text,fn){this.modal(title,'',`<p>${V.escape(text)}</p>`,`<button id="confirm-no" class="secondary">Cancelar</button><button id="confirm-yes" class="primary">Confirmar</button>`);V.$('#confirm-no').onclick=()=>this.close();V.$('#confirm-yes').onclick=()=>{this.close();fn();};},
  portrait(id,expression=0,size=96){return `<canvas class="portrait" data-portrait="${V.escape(id)}" data-expression="${expression}" width="96" height="96" style="width:${size}px;height:${size}px"></canvas>`;},
  paintPortraits(){V.$$('[data-portrait]').forEach(c=>{const img=V.Assets.images[c.dataset.portrait+'-portrait'];const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;if(img)ctx.drawImage(img,Number(c.dataset.expression||0)*96,0,96,96,0,0,96,96);});},
@@ -40,3 +59,5 @@ V.Engine={canvas:null,ctx:null,time:0,frames:0,last:0,particles:[],
  text(ctx,text,x,y,color='#f5f1e8',size=16,align='left'){ctx.font=`600 ${size}px "VOICES Sans","Segoe UI",system-ui,sans-serif`;ctx.textAlign=align;ctx.fillStyle=color;ctx.fillText(text,x,y);ctx.textAlign='left';}
 };
 })();
+
+});

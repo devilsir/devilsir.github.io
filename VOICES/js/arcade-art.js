@@ -1,5 +1,13 @@
+/* Registered module: arcade-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("arcade-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 const A=V.ArcadeArt={images:new Map(),asset:id=>'assets/arcade-expansion/'+id+'.png',ids:['fish-hake','fish-mullet','fish-nile-perch','fish-bagrus','fish-synodontis','delivery-motorbike','delivery-panorama','house-blue','house-red','house-yellow','delivery-rider','delivery-light','delivery-book','delivery-water','delivery-plant','delivery-clock','delivery-bread','delivery-ball','delivery-key','delivery-apple','delivery-umbrella','delivery-cup','delivery-backpack','delivery-rider-animated'],load(){return Promise.all(this.ids.map(id=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images.set(id,img);if(id.startsWith('fish-'))V.FishingChallenge.images.set(id,img);resolve();};img.onerror=()=>{V.Assets.errors.push(this.asset(id));resolve();};img.src=this.asset(id)+(id.startsWith('delivery-')&&id!=='delivery-panorama'&&id!=='delivery-motorbike'?'?v=20261029-aim1':'');V.AssetLoader.register(img,resolve);})));},draw(c,id,x,y,w,h){const img=this.images.get(id);if(img)c.drawImage(img,x,y,w,h);}};
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([load(),A.load()]);return this.errors;};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: duo-tutorial */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-tutorial", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Each person owns their introduction, practice actions and optional game training. */
 (function(){
 'use strict';
@@ -170,18 +176,18 @@ const C=V.DuoTutorial={bound:null,currentOwner:-1,eventOwner:-1,menuOwner:0,sess
  }
 };
 
-const start=G.start.bind(G),help=G.help.bind(G),ack=G.ack.bind(G),render=G.render.bind(G),update=G.update.bind(G),paused=G.paused.bind(G);
+const start=G.start.bind(G),help=G.help.bind(G),ack=G.ack.bind(G),render=G.render.bind(G),paused=G.paused.bind(G);
 G.start=function(replay=false){return C.enabled()?C.start(replay,C.currentOwner>=0||C.eventOwner>=0?C.owner():null):start(replay);};
 G.help=function(...args){return C.enabled()?C.open(C.owner()):help(...args);};
 G.ack=function(event,detail){return C.enabled()?C.ack(C.owner(),event,detail):ack(event,detail);};
 G.render=function(...args){return C.enabled()?C.render():render(...args);};
-G.update=function(dt){return C.enabled()?C.update(dt):update(dt);};
+V.Hooks.around(G, 'update', 'duo-tutorial:update:1', nextHook => function(dt){return C.enabled()?C.update(dt):nextHook(dt);});
 G.paused=function(){return C.enabled()?false:paused();};
 const gameStart=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){const out=gameStart(...args);if(C.enabled()){C.ensure();C.stopCollective();for(let i=0;i<2;i++)if(C.record(i).status==='running')C.prepare(i);C.render();}return out;};
 const menu=D.menu.bind(D);D.menu=function(i,key){return C.withOwner(i,()=>{C.menuOwner=i;const out=menu(i,key),event={journal:'missions',pix:'pix',notebook:'notebook',challenges:'challenges',home:'homes',inventory:'backpack'}[key];if(event)C.ack(i,event);return out;});};
 const modal=V.UI.modal.bind(V.UI);V.UI.modal=function(...args){const i=C.enabled()?C.owner():null,out=modal(...args);if(i!==null){C.menuOwner=i;V.$('#modal-root').dataset.duoOwner=i;}return out;};
 const ensureAssets=V.MapAssets.ensure.bind(V.MapAssets);V.MapAssets.ensure=function(groups,label,after,...args){const owner=C.enabled()?C.owner():null,state=V.state,guarded=after&&owner!==null?(...values)=>V.state===state&&C.enabled()?C.withOwner(owner,()=>D.withActor(owner,()=>after(...values))):after(...values):after;return ensureAssets(groups,label,guarded,...args);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o,...args){if(C.enabled()&&o?.type==='duo-tutorial-note'){const i=C.owner();if(i!==o.duoGuide||V.modal||V.Dialogue.active)return;C.record(i).practice.read=true;C.record(i).practice.noteText='Mara: uma cidade se conhece ouvindo suas pessoas. Leia registros, escute PIX e compare as fontes.';C.ack(i,'inspect');C.render(i);return;}return interact(o,...args);};
+V.Hooks.around(V.Game, 'interact', 'duo-tutorial:interact:1', nextHook => function(o,...args){if(C.enabled()&&o?.type==='duo-tutorial-note'){const i=C.owner();if(i!==o.duoGuide||V.modal||V.Dialogue.active)return;C.record(i).practice.read=true;C.record(i).practice.noteText='Mara: uma cidade se conhece ouvindo suas pessoas. Leia registros, escute PIX e compare as fontes.';C.ack(i,'inspect');C.render(i);return;}return nextHook(o,...args);});
 const interactables=W.interactables.bind(W);W.interactables=function(...args){const list=interactables(...args);return C.enabled()?list.filter(o=>o.type!=='duo-tutorial-note'||o.duoGuide===(D.context>=0?D.context:0)):list;};
 const load=W.load.bind(W);W.load=function(...args){const out=load(...args);if(C.enabled()){const i=D.context>=0?D.context:0;if(C.record(i).practice.visitPending&&D.actors[i]?.map===HOME){C.record(i).practice.visitPending=false;C.record(i).practice.homeVisited=true;C.ack(i,'visit-home');}C.render();}return out;};
 const travel=V.FastTravel.travel.bind(V.FastTravel);V.FastTravel.travel=function(id,...args){if(C.enabled()&&id===HOME&&C.step(C.owner()).id==='visit-home')C.record(C.owner()).practice.visitPending=true;return travel(id,...args);};
@@ -200,3 +206,5 @@ V.Events.on('home-furniture-committed',e=>{if(C.enabled()&&e.home===HOME)C.ack(C
 for(const key of ['prepare','practiceHTML','action','ensureNote']){const original=C[key].bind(C);C[key]=function(i,...args){return D.actors[i]?D.withActor(i,()=>original(i,...args)):original(i,...args);};}
 window.addEventListener('message',e=>C.receive(e));
 })();
+
+});

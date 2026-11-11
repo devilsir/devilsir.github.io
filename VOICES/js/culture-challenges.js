@@ -1,3 +1,9 @@
+/* Registered module: culture-challenges */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-challenges", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureChallenges(){
 'use strict';const V=window.V,D=V.CultureChallengeData,esc=V.escape;
 const K=V.CultureChallenges={
@@ -32,3 +38,5 @@ const K=V.CultureChallenges={
 for(const g of K.games)V.Quests.achievements.push({id:'culture-'+g.id,title:g.title,desc:'Concluiu a oficina cultural '+g.title+'.',index:8});
 V.Quests.achievements.push({id:'culture-all',title:'Saberes em movimento',desc:'Concluiu os quatro novos desafios de cultura negra.',index:13});
 })();
+
+});

@@ -1,9 +1,15 @@
+/* Registered module: adventure-environment */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-environment", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
-const V=window.V,clamp=V.clamp;
-const types={clear:'Céu limpo',cloudy:'Nublado',rain:'Chuva',snow:'Neve · demonstração/anomalia',storm:'Tempestade'};
+const V=window.V,clamp=V.clamp,Seasons=V.Seasons;
+const types=Object.fromEntries(Object.entries(Seasons.conditions).map(([id,condition])=>[id,condition.label]));
 const keys=[{h:0,c:[19,28,55],dark:.68},{h:5,c:[76,73,101],dark:.48},{h:6.5,c:[211,159,130],dark:.18},{h:9,c:[156,197,210],dark:0},{h:15,c:[158,199,214],dark:0},{h:18,c:[204,128,112],dark:.2},{h:19.5,c:[68,68,106],dark:.53},{h:21,c:[24,32,62],dark:.68},{h:24,c:[19,28,55],dark:.68}];
-const E=V.Environment={particles:[],clock:0,cache:new Map(),preview:null,flash:0,sound:null,
+const E=V.Environment={clock:0,weatherClock:0,cache:new Map(),preview:null,sound:null,
 state(){return V.Progress.ensure();},
 time(){return this.preview?.hour??this.state()?.clock.hour??12;},
 phase(h=this.time()){return h<5?'Madrugada':h<7?'Amanhecer':h<12?'Manhã':h<17?'Tarde':h<19?'Pôr do sol':h<21?'Anoitecer':'Noite';},
@@ -14,41 +20,93 @@ const regions=(d.regions||[]).filter(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h).
 for(const r of regions)Object.assign(base,Object.fromEntries(Object.entries(r).filter(([k,v])=>['indoor','weather','sky','wind','clouds','ambient','snowAllowed','climate'].includes(k)&&v!==undefined)));
 return base;
 },
-weather(){const a=this.state();if(!a)return{type:'clear',intensity:.5};if(this.preview)return{...a.weather,...this.preview.weather,type:this.preview.weather?.type||a.weather.type};const profile=this.profile();return ['overcast','storm'].includes(profile.sky)?{...a.weather,type:profile.sky==='storm'?'storm':'cloudy'}:a.weather;},
+weather(m){return Seasons.weather(this,m);},
 setHour(h){const a=this.state();if(!a)return;a.clock.hour=((Number(h)||0)%24+24)%24;this.cache.clear();this.hud();V.Save.save();},
 setWeather(type,opts={}){const a=this.state();if(!a||!types[type])return;Object.assign(a.weather,{target:type,type,transition:0,remaining:opts.duration||300,manual:!!opts.manual,intensity:clamp(opts.intensity??a.weather.intensity,0,1),demonstration:type==='snow'&&!!opts.force});V.Save.save();},
 hydrate(m){const d=V.Architecture.design(m.design);d.environment||={indoor:m.theme==='room',sky:'automatic',climate:'temperate-warm',weather:m.theme!=='room',snowAllowed:false};d.lights||=[];d.regions||=[];},
 update(dt,paused=false){
 if(!V.state||V.Game.screen!=='game')return;
-this.clock+=dt;this.flash=Math.max(0,this.flash-dt*.6);
+this.clock+=dt;
 const a=this.state(),c=a.clock;
-if(!paused){if(!c.paused&&!c.daylight){c.hour+=dt*24/(c.cycleMinutes*60)*c.speed;while(c.hour>=24){c.hour-=24;c.day++;}}
-const w=a.weather;w.transition=Math.min(1,(w.transition??1)+dt/5);
-if(!w.manual){w.remaining-=dt;if(w.remaining<=0){const seed=w.seed=(Math.imul(w.seed||971,1664525)+1013904223)>>>0;const type=['clear','clear','cloudy','rain','clear','cloudy','storm'][seed%7];Object.assign(w,{type,target:type,transition:0,remaining:180+seed%300});}}
-if(a.overload>0)a.overload=Math.max(0,a.overload-dt*.35);
+if(!paused){
+  this.weatherClock+=dt;
+  if(!c.paused&&!c.daylight){
+    c.hour+=dt*24/(c.cycleMinutes*60)*c.speed;
+    if(c.hour>=24){c.day+=Math.floor(c.hour/24);c.hour%=24;}
+  }
+  if(a.overload>0)a.overload=Math.max(0,a.overload-dt*.35);
 }
-const w=this.weather(),profile=this.profile();
+Seasons.update(a,dt,this,paused);
+const profile=this.profile();
 this.ambientBlend=this.ambientBlend??(profile.indoor?1:0);this.ambientBlend+=(Number(profile.indoor)-this.ambientBlend)*Math.min(1,dt*3);
-if(!paused){const wind=profile.wind??w.wind??.2;for(const p of this.particles){p.x+=dt*(p.vx+Math.cos(wind)*(w.type==='snow'?9:35));p.y+=dt*(p.vy+Math.sin(wind)*12);if(p.y>700||p.x>1800||p.x<0){p.y=-40;p.x=(p.x+677)%1600+40;}}}
-if(!this.particles.length){let seed=187;const rand=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};for(let i=0;i<180;i++)this.particles.push({x:rand()*1600,y:rand()*700,vx:(rand()-.5)*20,vy:270+rand()*230,snow:16+rand()*31,size:1+rand()*2,phase:rand()*6.28});}
-if(w.type==='storm'&&!paused&&Math.floor(this.clock/17)!==this.lastStorm){this.lastStorm=Math.floor(this.clock/17);this.flash=V.settings.reducedFlash||V.settings.reducedMotion?0:.10;this.thunder();}
 if(Math.floor(this.clock*2)!==this.hudTick){this.hudTick=Math.floor(this.clock*2);this.hud();this.audio();}
 },
-hud(){const a=this.state();if(!a)return;let el=V.$('#adv-clock');if(!el){el=document.createElement('button');el.id='adv-clock';el.className='adv-clock';el.onclick=()=>this.panel();V.$('#stage').appendChild(el);}const h=this.time(),hour=Math.floor(h),min=Math.floor((h-hour)*60),weather=this.weather();el.innerHTML=`<span aria-hidden="true">${h>=6&&h<19?'☀':'☾'}</span><b>${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}</b><small>Dia ${a.clock.day} · ${weather.type==='snow'?'Neve · '+(weather.demonstration?'demonstração':'anomalia'):this.phase()}</small>`;el.hidden=V.Game.mode!=='explore';},
+hud(){
+  const a=this.state();
+  if(!a)return;
+  let el=V.$('#adv-clock');
+  if(!el){
+    el=document.createElement('button');
+    el.id='adv-clock';el.className='adv-clock';el.type='button';el.onclick=()=>this.panel();
+    el.setAttribute('aria-haspopup','dialog');
+    el.onkeydown=event=>{if(event.key===' '||event.key==='Enter')event.stopPropagation();};
+    el.append(...['span','b','small'].map(tag=>document.createElement(tag)));
+    el.firstElementChild.setAttribute('aria-hidden','true');
+    V.$('#stage').appendChild(el);
+  }
+  const h=this.time(),hour=Math.floor(h),min=Math.floor((h-hour)*60),w=this.weather(),season=Seasons.calendar(a);
+  const time=String(hour).padStart(2,'0')+':'+String(min).padStart(2,'0');
+  const icon=w.type==='clear'&&(h<6||h>=19)?'☾':Seasons.conditions[w.type]?.icon||'☀';
+  const conditions=season.label+' · '+(types[w.type]||types.clear);
+  [icon,time,conditions].forEach((label,index)=>{
+    if(el.children[index].textContent!==label)el.children[index].textContent=label;
+  });
+  el.setAttribute('aria-label','Calendário e previsão, '+time+', '+conditions);
+  el.title='Dia '+a.clock.day+' · Calendário e previsão';
+  el.hidden=V.Game.mode!=='explore';
+},
 panel(){
 const a=this.state();if(!a)return;
-V.UI.modal('O ritmo da cidade',this.phase()+' · '+types[this.weather().type],`<p>O dia dura ${a.clock.cycleMinutes} minutos reais. Leituras, menus e decisões de batalha pausam o relógio.</p><div class="row"><button id="env-wait" class="primary">Aguardar o anoitecer · 19h</button><button id="env-dawn" class="secondary">Descansar até a manhã · 8h</button><button id="env-rest" class="secondary">Pausa e recuperação</button></div><div class="separator"></div><label class="toggle"><input id="env-lantern" type="checkbox" ${a.lanternOn?'checked':''}>Lanterna de exploração</label><label class="field">Brilho mínimo<input id="env-bright" type="range" min=".2" max=".8" step=".05" value="${V.settings.minimumBrightness}"></label><label class="field">Intensidade visual do clima<input id="env-weather" type="range" min="0" max="1" step=".1" value="${V.settings.weatherIntensity}"></label><label class="toggle"><input id="env-flash" type="checkbox" ${V.settings.reducedFlash?'checked':''}>Reduzir relâmpagos</label><label class="field">Qualidade de iluminação<select id="env-quality"><option value="low">Econômica</option><option value="medium">Equilibrada</option><option value="high">Detalhada</option></select></label><p class="note">A neve aparece apenas em demonstrações do professor ou em anomalias indicadas. Galerias e áreas cobertas permanecem secas.</p>`,`<button id="env-apply" class="primary">Aplicar preferências</button>`);
+const panels=V.DuoPanels;
+if(panels?.enabled()&&panels.context<0)return panels.withOwner(Math.max(0,panels.owner()),()=>this.panel());
+const season=Seasons.calendar(a),climate=Seasons.ensure(a),weather=this.weather();
+const options=entries=>Object.entries(entries).map(([id,label])=>`<option value="${id}">${label}</option>`).join('');
+const forecast=Seasons.forecast().map(p=>`<li><small>Dia ${p.day} · ${String(p.hour).padStart(2,'0')}h</small><strong><span aria-hidden="true">${Seasons.conditions[p.type].icon}</span> ${types[p.type]}</strong><span>${Math.round(p.temp)} °C</span></li>`).join('');
+V.UI.modal('Calendário e previsão',`${weather.climate.name} · Dia ${a.clock.day}, ano ${season.year}`,
+`<div class="season-now"><div><small>${this.phase()} · Dia ${season.day} de ${Seasons.duration} da estação</small><h3>${season.label}</h3></div><strong>${types[weather.type]||types.clear} · ${Math.round(weather.temp)} °C</strong></div>
+<h3 class="season-forecast-title">${a.weather.manual?'Previsão ao voltar ao automático':'Próximos períodos'}</h3><ol class="season-forecast">${forecast}</ol>
+<div class="season-controls"><label class="field">Estação<select id="env-season">${options({auto:'Automática',...Seasons.labels})}</select></label><label class="field">Condição do tempo<select id="env-condition">${options({auto:'Automática',...types,snow:'Neve · demonstração onde é incomum'})}</select></label></div>
+<div class="row"><button id="env-wait" class="secondary">Aguardar o anoitecer · 19h</button><button id="env-dawn" class="secondary">Descansar até a manhã · 8h</button><button id="env-rest" class="secondary">Pausa e recuperação</button></div>
+<details class="season-preferences"><summary>Iluminação e efeitos</summary><label class="toggle"><input id="env-lantern" type="checkbox" ${a.lanternOn?'checked':''}>Lanterna de exploração</label><label class="field">Brilho mínimo<input id="env-bright" type="range" min=".2" max=".8" step=".05" value="${V.settings.minimumBrightness}"></label><label class="field">Intensidade visual do clima<input id="env-weather" type="range" min="0" max="1" step=".1" value="${V.settings.weatherIntensity}"></label><label class="toggle"><input id="env-flash" type="checkbox" ${V.settings.reducedFlash?'checked':''}>Reduzir relâmpagos</label><label class="field">Qualidade de iluminação<select id="env-quality"><option value="low">Econômica</option><option value="medium">Equilibrada</option><option value="high">Detalhada</option></select></label></details>`,
+`<button id="env-apply" class="primary">Aplicar</button>`);
 V.$('#env-quality').value=V.settings.lightingQuality;
+V.$('#env-season').value=climate.season;
+V.$('#env-condition').value=a.weather.manual&&types[a.weather.type]?a.weather.type:'auto';
 V.$('#env-wait').onclick=()=>{this.setHour(19);V.UI.close();};V.$('#env-dawn').onclick=()=>{a.clock.day++;this.setHour(8);V.Progress.rest();V.UI.close();};V.$('#env-rest').onclick=()=>{V.Progress.rest();V.UI.close();};
-V.$('#env-apply').onclick=()=>{a.lanternOn=V.$('#env-lantern').checked;V.settings.minimumBrightness=+V.$('#env-bright').value;V.settings.weatherIntensity=+V.$('#env-weather').value;V.settings.reducedFlash=V.$('#env-flash').checked;V.settings.lightingQuality=V.$('#env-quality').value;this.cache.clear();V.Save.applySettings();V.Save.save();V.UI.close();};
+V.$('#env-apply').onclick=()=>{
+  a.lanternOn=V.$('#env-lantern').checked;
+  V.settings.minimumBrightness=+V.$('#env-bright').value;
+  V.settings.weatherIntensity=+V.$('#env-weather').value;
+  V.settings.reducedFlash=V.$('#env-flash').checked;
+  V.settings.lightingQuality=V.$('#env-quality').value;
+  const season=V.$('#env-season').value,type=V.$('#env-condition').value;
+  this.cache.clear();
+  V.Save.applySettings();
+  if(season!==climate.season||type!==(a.weather.manual?a.weather.type:'auto'))Seasons.select(season,type);
+  else V.Save.save();
+  V.UI.close();
+};
 },
 sky(ctx,m,cam){
 const profile=this.profile(m),height=68-cam.y;if(profile.indoor||height<=0)return;
-const visual=this.preview?.hour??({dawn:6.3,day:12,sunset:18,night:22}[profile.sky])??(this.state()?.clock.daylight?12:this.time()),c=this.colors(visual),sky='rgb('+c.sky.join(',')+')',g=ctx.createLinearGradient(0,0,0,Math.max(1,height));g.addColorStop(0,sky);g.addColorStop(1,'#ccd4bd');ctx.fillStyle=g;ctx.fillRect(0,0,ctx.canvas.width,Math.min(height,ctx.canvas.height));
+const visual=this.preview?.hour??({dawn:6.3,day:12,sunset:18,night:22}[profile.sky])??(this.state()?.clock.daylight?12:this.time()),c=this.colors(visual),w=this.weather(m);
+const storm=w.type==='storm',shade=w.cloud*(storm?.90:.43),target=storm?[49,55,64]:[87,108,128],sky='rgb('+c.sky.map((n,i)=>Math.round(n+(target[i]-n)*shade)).join(',')+')',g=ctx.createLinearGradient(0,0,0,Math.max(1,height));g.addColorStop(0,sky);g.addColorStop(1,storm?'#747f87':w.cloud>.65?'#afc0c7':'#ccd4bd');ctx.fillStyle=g;ctx.fillRect(0,0,ctx.canvas.width,Math.min(height,ctx.canvas.height));
 ctx.save();ctx.beginPath();ctx.rect(0,0,ctx.canvas.width,Math.max(0,height));ctx.clip();
+ctx.globalAlpha=1-w.cloud*.92;
 const h=visual;if(h<6||h>19){ctx.fillStyle='#f0e6c7';for(let i=0;i<34;i++){const x=(i*173+37)%ctx.canvas.width,y=(i*47+7)%52-cam.y;ctx.fillRect(x,y,2,2);}ctx.beginPath();ctx.arc(ctx.canvas.width*.77,26-cam.y,13,0,Math.PI*2);ctx.fill();ctx.fillStyle=sky;ctx.beginPath();ctx.arc(ctx.canvas.width*.77+6,21-cam.y,12,0,Math.PI*2);ctx.fill();}
 else{ctx.fillStyle='#f9e6ad';ctx.beginPath();ctx.arc(ctx.canvas.width*.72,26-cam.y,14,0,Math.PI*2);ctx.fill();}
-const w=this.weather(),clouds=['storm','cloudy','rain'].includes(w.type)?8:Math.ceil((profile.clouds??.25)*8);ctx.fillStyle=w.type==='storm'?'#626b8066':'#eff0e349';for(let i=0;i<clouds;i++){const x=(i*260-this.clock*(V.settings.reducedMotion?0:5*Math.cos(profile.wind??.2))-cam.x*.05+2200)%(ctx.canvas.width+240)-120;ctx.fillRect(x,17+i%3*14-cam.y,110+i%2*60,9);ctx.fillRect(x+20,10+i%3*14-cam.y,65,8);}
+ctx.globalAlpha=1;
+const clouds=Math.ceil(Math.max(profile.clouds??.25,w.cloud)*8);ctx.fillStyle=w.type==='storm'?'#53637792':'#eff0e349';for(let i=0;i<clouds;i++){const x=((i*260-this.weatherClock*(V.settings.reducedMotion?0:8*Math.cos(w.wind)*w.speed)-cam.x*.05)%(ctx.canvas.width+240)+ctx.canvas.width+240)%(ctx.canvas.width+240)-120;ctx.fillRect(x,17+i%3*14-cam.y,110+i%2*60,9);ctx.fillRect(x+20,10+i%3*14-cam.y,65,8);}
 ctx.fillStyle='#778d8e55';for(let i=0;i<16;i++){const x=i*97-cam.x*.05;ctx.beginPath();ctx.moveTo(x,height);ctx.lineTo(x+60,height-16-i%3*8);ctx.lineTo(x+125,height);ctx.fill();}ctx.restore();
 },
 occluders(m){
@@ -84,14 +142,17 @@ const profile=this.profile(m,l.x,l.y),h=this.preview?.hour??({dawn:6.3,day:12,su
 if(l.type==='spotlight'&&position.mount){ctx.fillStyle='#4b4943';ctx.fillRect(x-3,y-2,6,3);ctx.fillStyle='#30383b';ctx.fillRect(x-17,y,34,5);ctx.fillStyle='#9d8c64';ctx.fillRect(x-16,y,32,1);ctx.fillStyle=on?'#dfce9a':'#777764';ctx.fillRect(x-14,y+4,28,1);ctx.restore();return;}
 if(l.type==='street'){ctx.fillStyle='#343c3f';ctx.fillRect(x-3,y+13,6,Math.max(3,baseY-y-10));ctx.fillRect(x-11,y+12,22,4);ctx.fillStyle='#bca777';ctx.fillRect(x-11,y-4,22,18);ctx.fillStyle=on?'#fbe3a0':'#6f766d';ctx.fillRect(x-7,y-1,14,12);ctx.fillStyle='#343c3f';ctx.fillRect(x-15,y-6,30,4);ctx.fillRect(x-8,baseY-2,16,5);}
 else if(l.type==='spotlight'){ctx.translate(x,y);ctx.rotate(l.angle||0);ctx.fillStyle='#515555';ctx.fillRect(-4,-9,8,7);ctx.fillStyle='#30393d';ctx.fillRect(-9,-3,18,8);ctx.fillStyle=on?'#e7d49f':'#87846a';ctx.fillRect(-6,5,12,2);}
-else{const icon=V.Assets.images['fixture-'+l.type];if(icon)ctx.drawImage(icon,x-18,y,36,40);else{ctx.fillStyle='#596363';ctx.fillRect(x-3,y+4,6,30);ctx.fillStyle=on?l.color:'#727d73';ctx.fillRect(x-12,y,24,10);}}
+else{const icon=V.Assets.images['fixture-'+l.type];if(icon?.naturalWidth){
+  const width=l.type==='ceiling'?48:36,height=Math.round(width*icon.naturalHeight/icon.naturalWidth);
+  ctx.drawImage(icon,x-width/2,y,width,height);
+}else{ctx.fillStyle='#596363';ctx.fillRect(x-3,y+4,6,30);ctx.fillStyle=on?l.color:'#727d73';ctx.fillRect(x-12,y,24,10);}}
 ctx.restore();
 },
 lighting(ctx,m,cam){
 if(!V.state)return;
 const a=this.state(),profile=this.profile(m),visual=this.preview?.hour??({dawn:6.3,day:12,sunset:18,night:22}[profile.sky])??(a.clock.daylight?12:this.time()),c=this.colors(visual),mix=this.preview?Number(profile.indoor):(this.ambientBlend??Number(profile.indoor));
 let darkness=c.dark*(1-mix)+.19*mix;
-const w=this.weather();if(['cloudy','rain','storm'].includes(w.type))darkness+=w.type==='storm'?.13:.055;
+const w=this.weather(m);darkness+=w.cloud*.13*(1-mix);
 darkness=Math.min(darkness,1-(V.settings.minimumBrightness||.28));if(V.settings.fullVisibility)darkness=0;
 if(darkness<.01)return;
 if(!this.mask){this.mask=document.createElement('canvas');this.maskCtx=this.mask.getContext('2d');}
@@ -104,29 +165,36 @@ for(const l of visible.filter(l=>l.mount)){const mount=m.mounts?.find(m=>m.id===
 ctx.drawImage(this.mask,0,0,viewWidth,viewHeight);
 },
 drawWindows(ctx,m,cam){
-if(!m.design.adventure?.environment?.indoor)return;const list=m.design.adventure.architecture.windows||[{x:m.width*24,y:m.id==='museum'?90:35,w:94,h:66}],colors=this.colors(),sky='rgb('+colors.sky.join(',')+')',weather=this.weather();
+if(!m.design.adventure?.environment?.indoor)return;const list=m.design.adventure.architecture.windows||[{x:m.width*24,y:m.id==='museum'?90:35,w:94,h:66}],colors=this.colors(),sky='rgb('+colors.sky.join(',')+')',weather=this.weather(m);
 for(const window of list){const x=window.x-cam.x,y=window.y-cam.y,w=window.w,h=window.h;if(x+w<0||x>ctx.canvas.width||y+h<0||y>ctx.canvas.height)continue;ctx.save();ctx.fillStyle='#b5a586';ctx.fillRect(x-6,y-6,w+12,h+12);ctx.fillStyle=sky;ctx.fillRect(x,y,w,h);ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();if(this.time()>19||this.time()<6){ctx.fillStyle='#f0e6c4';for(let i=0;i<8;i++)ctx.fillRect(x+(i*17)%w,y+(i*23)%h,2,2);}ctx.fillStyle='#667e7355';ctx.fillRect(x,y+h-15,w,15);if(['rain','storm','snow'].includes(weather.type)){ctx.strokeStyle='#e0e7e8';ctx.globalAlpha=.45;for(let i=0;i<10;i++){const px=x+(i*19)%w,py=y+(i*11+this.clock*(weather.type==='snow'?8:45))%h;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-2,py+(weather.type==='snow'?2:7));ctx.stroke();}}ctx.restore();ctx.fillStyle='#756e5a';ctx.fillRect(x+w/2-2,y,4,h);ctx.fillRect(x,y+h/2-2,w,4);}
 },
-weatherDraw(ctx,m,cam){
-const w=this.weather(),p=this.profile(m),base=m.design.adventure?.environment||{},allowed=!base.indoor&&base.weather!==false||(m.design.adventure?.regions||[]).some(r=>r.indoor===false&&r.weather!==false);
-if(!allowed||!['rain','storm','snow'].includes(w.type)||w.type==='snow'&&!base.snowAllowed&&!w.demonstration&&!(m.design.adventure?.regions||[]).some(r=>r.snowAllowed))return;
-const intensity=(w.intensity||.5)*(V.settings.weatherIntensity??.7)*(w.transition??1),reduced=V.settings.reducedMotion;
-if(intensity<=0)return;
-const n=Math.round((w.type==='storm'?160:w.type==='snow'?90:120)*intensity*(reduced?.35:1)*(V.Performance?.weatherDensity??1));ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#ccdeea';ctx.fillStyle='#e6e8eb';ctx.globalAlpha=.28+intensity*.15;
-for(let i=0;i<n;i++){
-const pt=this.particles[i],x=(pt.x+Math.sin(this.clock*.2+pt.phase)*(w.type==='snow'?15:0))%(ctx.canvas.width+50)-25,y=w.type==='snow'?(pt.y*.16+this.clock*pt.snow)%(ctx.canvas.height+40)-20:pt.y%(ctx.canvas.height+40)-20;
-const region=this.profile(m,x+cam.x,y+cam.y);if(region.indoor||region.weather===false||w.type==='snow'&&!region.snowAllowed&&!w.demonstration)continue;
-if(w.type==='snow')ctx.fillRect(Math.round(x),Math.round(y),pt.size,pt.size);else{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-3,y+(w.type==='storm'?15:10));ctx.stroke();if(i%7===0&&y>ctx.canvas.height*.5){ctx.beginPath();ctx.ellipse(x,y+10,3+(i%3),1.3,0,0,Math.PI*2);ctx.stroke();}}
-}
-if(w.type==='rain'||w.type==='storm'){ctx.globalAlpha=.025*intensity;ctx.fillStyle='#b8d5e1';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);}
-if(w.type==='snow'){ctx.globalAlpha=.12*intensity;ctx.fillStyle='#e5e7e3';for(let i=0;i<25;i++){const x=(i*177)%ctx.canvas.width,y=(i*83)%ctx.canvas.height;ctx.fillRect(x,y,7,2);}}
-ctx.restore();if(this.flash&&!V.settings.reducedFlash){ctx.fillStyle='rgba(217,223,240,'+this.flash+')';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);}
-},
+weatherDraw(ctx,m,cam){return V.SeasonVisuals?.atmosphere(ctx,m,cam);},
 audio(){
 const ctx=V.Audio.ctx;if(!ctx||!V.Audio.unlocked)return;
 if(!this.sound){const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),p=b.getChannelData(0);let seed=17,last=0;for(let i=0;i<p.length;i++){seed=Math.imul(seed,1664525)+1013904223|0;last=.97*last+.03*((seed>>>0)/2147483648-1);p[i]=last*.8;}const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();source.buffer=b;source.loop=true;filter.type='lowpass';filter.frequency.value=1900;source.connect(filter);filter.connect(gain);gain.connect(ctx.destination);gain.gain.value=0;source.start();this.sound={source,filter,gain};}
-const w=this.weather(),p=this.profile(),on=!V.settings.muted&&!document.hidden&&V.Game.screen==='game';const volume=on&&['rain','storm','snow'].includes(w.type)?(w.type==='storm'?.28:.17)*(w.intensity||.5)*(V.settings.ambience??.5)*(p.indoor?.18:1):0;this.sound.gain.gain.setTargetAtTime(volume,ctx.currentTime,.7);
+const w=this.weather(),p=this.profile(),on=!V.settings.muted&&!document.hidden&&V.Game.screen==='game';
+const sound={rain:.22,storm:.34,snow:.052},volume=on?(sound[w.type]||0)*w.intensity*w.transition*(V.settings.ambience??.5)*(p.indoor||p.weather===false?.18:1):0;
+this.sound.filter.frequency.setTargetAtTime(w.type==='snow'?570:p.indoor?680:2200,ctx.currentTime,.6);
+this.sound.gain.gain.setTargetAtTime(volume,ctx.currentTime,.7);
 },
-thunder(){const ctx=V.Audio.ctx;if(!ctx||V.settings.muted||V.settings.reducedFlash||V.Game.screen!=='game')return;const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(45,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(24,ctx.currentTime+1);gain.gain.setValueAtTime(0,ctx.currentTime);gain.gain.linearRampToValueAtTime(.025*(V.settings.ambience??.5),ctx.currentTime+.3);gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+1.8);osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+2);}
+thunder(){
+  const ctx=V.Audio.ctx;
+  if(!ctx||!V.Audio.unlocked||V.settings.muted||V.settings.reducedFlash||document.hidden||V.Game.screen!=='game')return;
+  const volume=.026*(V.settings.ambience??.5)*(this.profile().indoor?.42:1);
+  if(volume<=0)return;
+  const osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime;
+  osc.type='triangle';
+  osc.frequency.setValueAtTime(45,now);
+  osc.frequency.exponentialRampToValueAtTime(24,now+1);
+  gain.gain.setValueAtTime(0,now);
+  gain.gain.linearRampToValueAtTime(volume,now+.3);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+1.8);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(now+2);
+}
 };
 })();
+
+});

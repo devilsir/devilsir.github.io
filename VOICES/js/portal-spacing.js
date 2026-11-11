@@ -1,9 +1,15 @@
+/* Registered module: portal-spacing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("portal-spacing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Freestanding entrances need room for their art and for choosing a destination. */
 (function(){
 'use strict';
 const V=window.V,W=V.World,T=48;
 const S=V.PortalSpacing={gap:216,
- target(o){return ['travel','portal','fast-travel'].includes(o.type);},
+ target(o){return ['travel','portal','fast-travel'].includes(o.type)&&!o.interiorDoor&&!o.onWall&&!o.door;},
  movable(o){return o.type!=='fast-travel'&&!o.seaFerry&&!o.door&&!o.mounted;},
  bounds(m,o,p=o){
   let half=94,top=100,bottom=34;
@@ -37,9 +43,9 @@ const S=V.PortalSpacing={gap:216,
   if(!V.ObjectiveGuide.interactionClear(m,{x:p.x,y:p.y+40},p))return false;
   return !m.objects.some(other=>other!==o&&!targets.has(other)&&!V.Cozy.person(other)&&Math.hypot(other.x-p.x,other.y-p.y)<72);
  },
- arrange(m){
+ arrange(m,relayout=false){
   if(!m)return 0;const targets=m.objects.filter(o=>this.target(o));if(targets.length<2)return 0;
-  const set=new Set(targets),obstacles=this.obstacles(m),reserved=targets.filter(o=>!this.movable(o)||targets.every(other=>o===other||this.separated(m,o,o,other)));
+  const set=new Set(targets),obstacles=this.obstacles(m),reserved=targets.filter(o=>!this.movable(o)||!relayout&&targets.every(other=>o===other||this.separated(m,o,o,other)));
   const area=o=>{const b=this.bounds(m,o);return(b.right-b.left)*(b.bottom-b.top);};
   const moving=targets.filter(o=>!reserved.includes(o)).sort((a,b)=>area(b)-area(a)||a.id.localeCompare(b.id));
   let changed=0;
@@ -59,6 +65,9 @@ const S=V.PortalSpacing={gap:216,
    reserved.push(o);
   }
   if(changed){m.geometryRevision=(m.geometryRevision||0)+1;V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();}
+  // Late expansions can fill the remaining gaps. If the local repair cannot
+  // place a facade, allow the other movable signs to make room as a whole.
+  if(!relayout&&targets.some((o,i)=>targets.slice(i+1).some(other=>!this.separated(m,o,o,other))))changed+=this.arrange(m,true);
   return changed;
  },
  all(){let changed=0;for(const m of Object.values(W.maps))changed+=this.arrange(m);return changed;}
@@ -67,3 +76,5 @@ const init=W.init.bind(W);W.init=function(...args){const result=init(...args);S.
 const load=W.load.bind(W);W.load=function(id,...args){S.arrange(this.maps[id]);return load(id,...args);};
 if(Object.keys(W.maps).length)S.all();
 })();
+
+});

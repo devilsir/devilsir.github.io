@@ -1,3 +1,9 @@
+/* Registered module: content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* VOICES: content original. Historical records have named sources. */
 window.V = window.V || {};
 V.content = {
@@ -3139,3 +3145,5 @@ V.content = {
   "timelineNote": "Seleção de eventos de lugares e períodos diferentes para comparação. Não é uma linha completa da história da África, do Brasil ou da ciência.",
   "curriculumNote": "Recurso complementar com aproximações temáticas à BNCC e às referências da SEE/MG: interação e leitura em inglês, dimensão intercultural, investigação histórica e cidadania. Perfis linguísticos são escolhas didáticas, não equivalem a cobertura completa do currículo ou a um trimestre específico."
 };
+
+});

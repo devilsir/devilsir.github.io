@@ -1,3 +1,9 @@
+/* Registered module: neighborhood-design */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("neighborhood-design", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,W=V.World,L=V.Living,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const p=(family,prop,x,y,size=1,solid=false,meta={})=>[family,prop,x,y,size,solid,meta];
@@ -73,3 +79,5 @@ W.interactables=function(){return this.current.objects.filter(o=>!o.collectionOn
 V.Atlas.signature=function(m){return originals.atlas(m)+'|layout:'+D.revision+':'+(m.layoutRevision||0);};
 const atlasLandmark=V.Atlas.landmark.bind(V.Atlas);V.Atlas.landmark=function(ctx,o,m){if(o.hiddenVisual||o.type==='reading'||o.type==='workbench')return;if(o.type==='cozy'&&o.scene?.kind!=='conversation'){D.drawScene(ctx,o);return;}return atlasLandmark(ctx,o,m);};
 })();
+
+});

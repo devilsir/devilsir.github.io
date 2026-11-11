@@ -1,3 +1,9 @@
+/* Registered module: player-profiles */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("player-profiles", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function playerProfiles(){
 'use strict';const V=window.V,S=V.Save,esc=V.escape,copy=x=>x==null?x:JSON.parse(JSON.stringify(x));
 const raw={read:S.read.bind(S),write:S.write.bind(S),remove:S.remove.bind(S)},scoped=new Set(['save','log','settings']),characters=['nia','leo','taina','sol'];
@@ -47,3 +53,5 @@ const creation=V.Game.creation.bind(V.Game);V.Game.creation=function(){return V.
 window.addEventListener('beforeunload',()=>{if(P.activeId&&V.state&&!V.ProfessorStudio?.freePlay){S.save();P.flush().catch(()=>{});}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&P.activeId)P.flush().catch(e=>P.failed(e));});
 })();
+
+});

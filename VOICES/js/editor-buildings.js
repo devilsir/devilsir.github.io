@@ -1,3 +1,9 @@
+/* Registered module: editor-buildings */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editor-buildings", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,E=V.SceneEditor,D=V.SceneDesign,C=V.Cozy,W=V.World,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const B=V.EditorBuildings={
@@ -21,3 +27,5 @@ const normalise=D.normalise.bind(D);D.normalise=function(doc){const clean=normal
 const transition=V.Rooms.transition.bind(V.Rooms);V.Rooms.transition=function(door,editor=false){if(door.to?.door){const maps=editor?E.drafts:C.layouts,d=maps[door.to.map],target=d?.construction?.doors?.find(o=>o.id===door.to.door);if(target){const m=editor?D.preview(door.to.map,d):W.maps[door.to.map],arrival=V.Rooms.approach(m,target,50);if(arrival)door.to.arrival={...door.to.arrival,...arrival};}}return transition(door,editor);};
 const load=W.load.bind(W);W.load=function(id,pos){const source=this.current?.id,m=this.maps[id];if(source&&source!==id&&m?.design?.buildings){const b=m.design.buildings.find(b=>{const door=B.door(m,b);return door&&(door.to===source||door.door?.to?.map===source);});if(b){const door=B.door(m,b),arrival=V.Rooms.safe(m,{x:door.x,y:door.y+60,dir:0},14);if(arrival)pos=arrival;}}return load(id,pos);};
 })();
+
+});

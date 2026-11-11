@@ -1,3 +1,9 @@
+/* Registered module: market-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("market-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -67,3 +73,5 @@ V.MarketData={items,vendors,sources,recipes:[
 ]};
 Object.assign(V.AdventureData.items,items);
 })();
+
+});

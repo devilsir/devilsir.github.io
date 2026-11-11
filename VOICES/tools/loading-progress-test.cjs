@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const root=path.resolve(__dirname,'..');
-const {JSDOM}=require(path.join(root,'.qa/node_modules/jsdom'));
+const {JSDOM}=require('jsdom');
 const {environment}=require('./runtime-upgrade-test.cjs');
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 

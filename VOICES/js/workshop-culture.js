@@ -1,3 +1,9 @@
+/* Registered module: workshop-culture */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-culture", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopCulture(){
 'use strict';const V=window.V,K=V.CultureChallenges,U=V.WorkshopUI,T=V.Tutorials,D=V.CultureChallengeData,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x)),on=(id,fn)=>{const b=V.$('#'+id);if(b)b.onclick=fn;},patterns=['AB','AABB','ABCD','ABBA','CDDC','AACC'];
 const actualRun=K.run.bind(K);K.run=function(id=this.active){return T.practice('culture',id)||actualRun(id);};
@@ -65,3 +71,5 @@ T.define('culture:oware',{...common('oware'),create:()=>run('oware'),steps:[
  {title:'Pratique a alimentação',text:'Semeie F. Depois do treino, a oficina oferece uma partida completa com 48 sementes; o objetivo é terminá-la, e vencer é opcional.',target:'#oware-sow',allow:'#oware-sow,#oware-seed-step,#oware-seed-resume,#oware-seed-finish',event:'sow',after:'Você viu semeadura, última casa, captura e alimentação. Rever esse treino não substitui nem apaga a partida completa.'}
 ]});
 })();
+
+});

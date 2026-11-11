@@ -31,5 +31,11 @@
     "violeta",
     "rubi"
   ],
-  "revision": "plumagem-animation-fix-generation.json"
+  "revision": "plumagem-animation-fix-generation.json",
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../../LICENSE.txt"
 }

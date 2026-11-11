@@ -1,3 +1,9 @@
+/* Registered module: culture-stage */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-stage", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureStage(){
 'use strict';const V=window.V,K=V.CultureChallenges,esc=V.escape,dirs={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0],W:[0,0]},sym={U:'↑',D:'↓',L:'←',R:'→',W:'·'},names={U:'Subir',D:'Descer',L:'Esquerda',R:'Direita',W:'Esperar'};
 K.simulateStage=function(r){const s=this.game('stage').stages[r.stage],programs=r.data.programs,blocked=(x,y)=>x<0||x>=7||y<0||y>=5||s.blocks.some(p=>p[0]===x&&p[1]===y);let positions=s.actors.map(a=>a.start.slice());const frames=[positions.map(p=>p.slice())],length=Math.max(0,...programs.map(p=>p.length));if(!length)return{success:false,frames,reason:'Programe pelo menos um passo para iniciar o ensaio.'};
@@ -24,3 +30,5 @@ K.paintStage=function(){const canvas=V.$('#culture-stage'),r=this.run();if(!canv
 };
 const render=V.Game.render.bind(V.Game);V.Game.render=function(ctx){render(ctx);if(V.modal&&V.$('#culture-stage'))K.paintStage();};
 })();
+
+});

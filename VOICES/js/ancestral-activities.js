@@ -1,3 +1,9 @@
+/* Registered module: ancestral-activities */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("ancestral-activities", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function ancestralActivities(){
 'use strict';const V=window.V,D=V.AncestralData,esc=V.escape;
 const K=V.AncestralActivities={active:null,syncBusy:false,
@@ -23,3 +29,5 @@ const event=V.Living.event.bind(V.Living);V.Living.event=function(...args){const
 const reconcile=V.Living.reconcile.bind(V.Living);V.Living.reconcile=function(...args){const result=reconcile(...args);K.syncMissions();return result;};
 const workshop=V.Living.workshop.bind(V.Living);V.Living.workshop=function(id,...args){const q=D.missions.find(q=>q.id===id);return q?.activity?K.open(q.activity):workshop(id,...args);};
 })();
+
+});

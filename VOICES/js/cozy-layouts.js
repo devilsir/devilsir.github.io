@@ -1,3 +1,9 @@
+/* Registered module: cozy-layouts */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cozy-layouts", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Seventeen authored places. Coordinates are tiles, never random placement. */
 (function(){'use strict';
 const V=window.V;
@@ -99,3 +105,5 @@ const rugs={hub:[[20,13,5,3,'#775966']],library:[[3,10,6,4,'#655b68'],[15,10,6,4
 const meetings={hub:[12,13],library:[10,10],park:[14,12],market:[11,13],garden:[14,11],'chapter-1':[10,12],'room-1':[10,9],'chapter-2':[14,12],'room-2':[12,10],'chapter-3':[14,13],'room-3':[12,11],'chapter-4':[14,13],'room-4':[12,10],'chapter-5':[14,13],'room-5':[12,11],'chapter-6':[14,13],'room-6':[12,11]};
 for(const[id,d]of Object.entries(V.cozyLayouts)){d.decor=d.decor.filter(p=>!(p[0]==='world'&&p[1]===9));d.decor.push(...(details[id]||[]));d.rugs=rugs[id]||[];d.meeting=meetings[id];}
 })();
+
+});

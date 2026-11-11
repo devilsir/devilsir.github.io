@@ -1,3 +1,9 @@
+/* Registered module: coastal-exploration */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("coastal-exploration", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,W=V.World,N=V.SeaNavigation,M=V.Maritime,A=V.MaritimeArt,D=V.MaritimeData,C=V.Cozy,T=48;
@@ -25,6 +31,8 @@ const capeGround=V.CapeRegion.ground.bind(V.CapeRegion);V.CapeRegion.ground=func
 const render=C.render.bind(C);C.render=function(c){const r=render(c);X.draw(c);return r;};
 const chart=N.chart.bind(N);N.chart=function(){return X.isCoast()?X.chart():chart();};
 const update=N.update.bind(N);N.update=function(dt){const r=update(dt);X.discover();return r;};
-const gameUpdate=V.Game.update.bind(V.Game);V.Game.update=function(dt){const r=gameUpdate(dt);X.toolbar();return r;};
+V.Hooks.around(V.Game, 'update', 'coastal-exploration:update:1', nextHook => function(dt){const r=nextHook(dt);X.toolbar();return r;});
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...a){const r=title(...a);X.toolbar();return r;};
 })();
+
+});

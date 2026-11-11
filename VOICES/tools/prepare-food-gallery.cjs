@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/food-museum'),meta=require('../assets/food-museum/generation-gallery.json');
 const source=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8'),body=source.slice(source.indexOf('function pack('),source.indexOf('(async()=>')),pack=new Function('createCanvas',body+';return pack;')(createCanvas);
 // Old dish silhouettes touch across a few authored cell edges. Restrict the

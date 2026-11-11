@@ -1,3 +1,9 @@
+/* Registered module: protest-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("protest-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V=window.V||{};V.protestContent={
   "version": "2.1",
   "license": "MIT",
@@ -3473,3 +3479,5 @@
     ]
   }
 };})();
+
+});

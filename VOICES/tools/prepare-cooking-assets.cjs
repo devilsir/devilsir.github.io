@@ -1,7 +1,7 @@
 'use strict';
 // Production atlas packing. Artwork is generated with image_gen; originals are preserved.
 const fs=require('fs'),path=require('path');
-const {createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const {createCanvas,loadImage}=require('@napi-rs/canvas');
 const dir=path.resolve(__dirname,'../assets/cooking'),meta=require('../assets/cooking/generation.json');
 function packWorld(img){
  const src=createCanvas(img.width,img.height),sc=src.getContext('2d');sc.drawImage(img,0,0);const rgba=sc.getImageData(0,0,img.width,img.height).data,labels=new Int32Array(img.width*img.height),queue=new Int32Array(labels.length),parts=[];let serial=0;

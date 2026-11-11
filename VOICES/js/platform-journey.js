@@ -1,3 +1,9 @@
+/* Registered module: platform-journey */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("platform-journey", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,C=P.controllers.platform,clamp=V.clamp;
@@ -200,3 +206,5 @@ const pause=P.pause.bind(P);P.pause=function(...args){if(this.active?.game==='pl
 const detach=P.detach.bind(P);P.detach=function(){if(this.active?.game==='platform')reset();return detach();};
 const result=P.result.bind(P);P.result=function(r){const value=result(r);if(r.game==='platform'&&r.data.stage===11){const p=document.createElement('p');p.className='journey-epilogue';p.textContent='O Farol voltou a brilhar. Ayo e PIX ouviram a cidade contar histórias novas: Together we tell stories. Sua travessia continua nos caminhos e segredos que você quiser revisitar.';V.$('.pg-result')?.append(p);}return value;};
 })();
+
+});

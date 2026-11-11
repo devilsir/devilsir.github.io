@@ -1,3 +1,9 @@
+/* Registered module: pix-collection */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("pix-collection", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,esc=V.escape;
@@ -26,7 +32,9 @@ V.Dialogue.history=function(){V.UI.modal('Histórico de conversas','PIX · SOMEN
 const show=V.Dialogue.show.bind(V.Dialogue);V.Dialogue.show=function(){show();const b=V.$('#dialogue-translate');if(b)b.innerHTML=(V.settings.translation?'Ocultar':'Mostrar')+' traduções <kbd>T</kbd>';this.translate();};
 V.Dialogue.toggle=function(){if(this.viewer!==null&&V.DuoPanels?.enabled()&&V.DuoPanels.context!==this.viewer)return this.run(()=>this.toggle());V.settings.translation=!V.settings.translation;V.Save.applySettings();if(this.active){this.translate();const b=V.$('#dialogue-translate');if(b)b.innerHTML=(V.settings.translation?'Ocultar':'Mostrar')+' traduções <kbd>T</kbd>';}V.UI.toast(V.settings.translation?'Traduções do PIX ativadas.':'Traduções do PIX ocultas.');};
 const read=V.Living.read.bind(V.Living);V.Living.read=function(id,...args){const result=read(id,...args),r=V.learning.readings.find(r=>r.id===id),small=V.$('.reader-english small');if(small&&r)small.textContent=Pix.label(r.en);if(r)Pix.collect('read','Livro · '+r.title);return result;};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(!o||V.modal||V.Dialogue.active||this.mode!=='explore')return;if(o.type==='pix-word'){Pix.object(o);return;}Pix.object(o);return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'pix-collection:interact:1', nextHook => function(o){if(!o||V.modal||V.Dialogue.active||this.mode!=='explore')return;if(o.type==='pix-word'){Pix.object(o);return;}Pix.object(o);return nextHook(o);});
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type!=='pix-word')return draw(ctx,o,cam,t);if(Pix.known(o.word))return;const x=o.x-cam.x,y=o.y-cam.y-(V.settings.reducedMotion?0:Math.sin(t*2)*3);ctx.fillStyle='#235966';ctx.fillRect(x-22,y-29,44,27);ctx.strokeStyle='#8de1d0';ctx.lineWidth=2;ctx.strokeRect(x-22,y-29,44,27);V.Engine.text(ctx,'Aa',x,y-10,'#fff0bb',17,'center');if(V.World.nearest===o)V.Living.marker(ctx,x,y+7,'E','#91dfd1');};
 const init=V.World.init.bind(V.World);V.World.init=function(){init();Pix.seed();};
 })();
+
+});

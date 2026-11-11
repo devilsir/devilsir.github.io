@@ -27,5 +27,11 @@
   "tool": "Built-in image_gen; transparent background extraction",
   "prompt": "Use case: background-extraction. Asset type: transparent pixel-art game sprite sheet for VOICES. Edit target: the supplied image of TEN masks arranged in TWO rows of FIVE. Remove ONLY the flat black background surrounding all ten separate masks, making it truly transparent alpha. Preserve all ten designs, colors, pixel-art shading, small earrings, feathers, leaves, teeth and dark interior facial features. Keep the same order, full shapes with no cropping, and a regular two-row five-column grid, each mask centered in its own equal-size cell with ample transparent margins and gaps; do not let any shapes cross cell boundaries. Do not add text, borders, new masks or decorations. The existing black eye sockets and internal dark details must remain dark and opaque; only outside background becomes transparent. Exact reference artwork preservation is the priority.",
   "thumbnailSource": "front/open frame of each animated atlas",
-  "animationManifest": "assets/adventure/mask-styles/animations.json"
+  "animationManifest": "assets/adventure/mask-styles/animations.json",
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../../LICENSE.txt"
 }

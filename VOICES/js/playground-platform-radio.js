@@ -1,3 +1,9 @@
+/* Registered module: playground-platform-radio */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-platform-radio", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function voicesPlatformRadio(){
 'use strict';
 const V=window.V,P=V.Playground,C=P.controllers,clamp=V.clamp;
@@ -55,3 +61,5 @@ C.radio={
  P.box(c,178,448,604,9,'#4c605c');P.box(c,178,448,604*d.energy/100,9,'#91c49c');}
 };
 })();
+
+});

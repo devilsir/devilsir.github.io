@@ -1,3 +1,9 @@
+/* Registered module: companions */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("companions", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function companionMenu(){
 'use strict';const V=window.V,D=V.AncestralData,esc=V.escape,W=V.World;
 const roster=[{id:'zambeto',name:'Zambeto',role:'Guardião da Vigília',category:'guardian',map:'chapter-2',requirement:'Conclua o encontro da primeira vigília com Zambeto.',sprite:null},...D.people.map(p=>({...p,category:p.sprite<7?'entity':p.sprite>=11?'orixa':'people'}))];
@@ -53,11 +59,13 @@ function Rsafe(m,p){return V.Rooms.safe(m,{x:p.x-58,y:p.y+45},10)||{x:p.x,y:p.y}
 for(const[id,title,desc]of [['roots-companions-3','Primeiros vínculos','Libere três companhias diferentes.'],['roots-companions-10','Muitas formas de caminhar','Libere dez companhias diferentes.'],['roots-companions-all','Encontros da ancestralidade','Libere as dezessete companhias.']])V.Quests.achievements.push({id,title,desc,index:9,category:'city'});
 const visible=V.Story.visible.bind(V.Story);V.Story.visible=function(o){if(o.type==='zambeto'&&o.companion){const s=M.ensure();return visible(o)&&s?.selected==='zambeto'&&s.follow;}return visible(o);};
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type!=='roots-companion')return draw(ctx,o,cam,t);const p=roster.find(p=>p.id===o.companionId),s=M.ensure();if(!p||s.selected!==p.id||!s.follow)return;const x=o.x-cam.x,y=o.y-cam.y,bob=V.settings.reducedMotion?0:o.walking?Math.sin(o.age*12)*2:Math.sin(o.age*2)*.6;ctx.save();ctx.globalAlpha=Math.min(1,o.age*3);ctx.fillStyle='#17372c30';ctx.beginPath();ctx.ellipse(x,y+4,15,5,0,0,Math.PI*2);ctx.fill();if(!V.Presences?.drawObject(ctx,o,cam,p))V.AncestralArt.draw(ctx,'characters',p.sprite,x,y+bob,82,o.dir===1);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y-(V.Presences?.has(p.id)?54:20),'E','#b8d7b1');ctx.restore();};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='roots-companion'&&!V.modal&&!V.Dialogue.active)return V.Ancestral.talk(o.companionId);return interact(o);};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const result=update(dt);M.update(dt);return result;};
+V.Hooks.around(V.Game, 'interact', 'companions:interact:1', nextHook => function(o){if(o?.type==='roots-companion'&&!V.modal&&!V.Dialogue.active)return V.Ancestral.talk(o.companionId);return nextHook(o);});
+V.Hooks.around(V.Game, 'update', 'companions:update:1', nextHook => function(dt){const result=nextHook(dt);M.update(dt);return result;});
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e){if(k==='u'&&this.screen==='game'&&!V.modal&&!V.Dialogue.active&&!V.SceneEditor.active){e?.preventDefault?.();M.open();return;}return key(k,e);};
 const bind=V.Game.bind.bind(V.Game);V.Game.bind=function(...args){const result=bind(...args);M.toolbar();return result;};
 const save=V.Save.save.bind(V.Save);V.Save.save=function(...args){if(V.state)M.check();return save(...args);};
 const load=W.load.bind(W);W.load=function(...args){M.position=null;M.clearFollowers();const result=load(...args);if(V.state){M.check();const id=W.current?.id;if(['interior-umbanda','interior-candomble','interior-botica'].includes(id))V.Quests.achieve('roots-visit-'+id);}return result;};
 for(const[id,title]of [['interior-umbanda','Águas Claras'],['interior-candomble','Memória Viva'],['interior-botica','Raízes no caderno']])V.Quests.achievements.push({id:'roots-visit-'+id,title,desc:'Visite '+({ 'interior-umbanda':'a casa de Umbanda','interior-candomble':'o terreiro de Candomblé','interior-botica':'a Botica Raízes'}[id])+'.',index:8,category:'city'});
 })();
+
+});

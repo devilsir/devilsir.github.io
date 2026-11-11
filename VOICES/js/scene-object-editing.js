@@ -1,3 +1,9 @@
+/* Registered module: scene-object-editing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("scene-object-editing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.SceneDesign,C=V.Cozy,W=V.World,E=V.SceneEditor,T=48;
@@ -99,3 +105,5 @@ const refs=E.refs;E.refs=function(){return refs.call(this).map(r=>r.kind==='obje
 const bounds=E.bounds;E.bounds=function(ref){if(ref.kind!=='object')return bounds.call(this,ref);const o=ref.object,b=O.baseBounds(o,this.preview);if(b)return O.bounds(b,o);const old=bounds.call(this,ref),s=o.visualScale||1;return O.bounds({x:o.x+(old.x-o.x)/s,y:o.y+(old.y-o.y)/s,w:old.w/s,h:old.h/s},o);};
 const inspector=E.inspector;E.inspector=function(){const result=inspector.call(this),ref=this.find();if(!ref||!['decor','scene','object'].includes(ref.kind))return result;const input=V.$('#editor-size');if(input){input.max='12';input.step='0.25';const initial=Number(input.value),commit=()=>{if(input.isConnected&&Number(input.value)!==initial)this.scale(Number(input.value));};input.onchange=commit;input.onblur=commit;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();commit();}};input.setAttribute('aria-label',ref.kind==='object'?'Tamanho do objeto · escala de 0,5 a 12':'Tamanho em blocos · de 0,5 a 12');const label=input.closest('label');if(ref.kind==='object'&&label?.firstChild?.nodeType===Node.TEXT_NODE)label.firstChild.textContent='Tamanho · escala ';}const slider=V.$('#editor-scale-slider');if(slider){slider.max='12';slider.step='0.25';const out=slider.parentElement.querySelector('output'),show=value=>{out.textContent=Number(value).toLocaleString('pt-BR')+(ref.kind==='object'?'×':' blocos');};show(input.value);slider.oninput=e=>show(e.target.value);}return result;};
 })();
+
+});

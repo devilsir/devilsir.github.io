@@ -1,0 +1,15 @@
+{
+  "license": "MIT",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "path": "assets/homestead/home-daily.webp",
+  "generatedWith": "image_gen (built-in)",
+  "styleReference": "assets/homestead/home-design.webp",
+  "columns": 4,
+  "rows": 4,
+  "transparent": true,
+  "prompt": "Transparent 4 × 4 game sprite atlas matching home-design.webp: warm hand-painted oak/walnut, teal and cream, frontal elevated view, crisp outlines, no backdrop or people. Row 1: breakfast nook, prep counter, tea trolley, floor loom. Row 2: potting bench, painting desk, chess table with floor stools, teal reading bench. Row 3: entry wardrobe, laundry folding counter, glass plant cabinet, aquarium on walnut and cream cabinet. Row 4: reading cushions and books, cane room divider, typewriter desk, woodcraft workbench with birdhouse."
+}

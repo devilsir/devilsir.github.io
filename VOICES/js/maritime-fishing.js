@@ -1,3 +1,9 @@
+/* Registered module: maritime-fishing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("maritime-fishing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.MaritimeData,M=V.Maritime,A=V.MaritimeArt,N=V.SeaNavigation,esc=V.escape;
@@ -13,6 +19,8 @@ complete(){const r=this.run;if(!r||r.phase==='caught'||r.progress<1)return false
 decide(keep,close=true){const r=this.run;if(!r||r.phase!=='caught'||r.claimed)return false;r.claimed=true;if(keep)V.Progress.add('freshFish');V.UI.onClose=null;this.cancel();V.Save.save();if(close)V.UI.close();return true;},
 cancel(){if(this.bound===V.state&&V.Player.data)V.Player.data.poseUntil=0;this.run=null;this.bound=null;}
 };
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){if(F.run)F.update(dt);return update(dt);};const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(F.run&&[' ','enter'].includes(k)){e.preventDefault?.();if(!e.repeat)F.action();return;}return key(k,e);};const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...a){F.cancel();return start(...a);};const fishing=V.Activities.startFishing.bind(V.Activities);V.Activities.startFishing=function(...a){return V.World.current?.maritime?F.start():fishing(...a);};
+V.Hooks.around(V.Game, 'update', 'maritime-fishing:update:1', nextHook => function(dt){if(F.run)F.update(dt);return nextHook(dt);});const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(F.run&&[' ','enter'].includes(k)){e.preventDefault?.();if(!e.repeat)F.action();return;}return key(k,e);};const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...a){F.cancel();return start(...a);};const fishing=V.Activities.startFishing.bind(V.Activities);V.Activities.startFishing=function(...a){return V.World.current?.maritime?F.start():fishing(...a);};
 V.AchievementProgress.add('sea-first-catch','Primeira captura','Registre uma captura no caderno de bordo.','challenges',()=>Number((M.ensure()?.catchSerial||0)>0),1,{unit:'captura',index:1});
 })();
+
+});

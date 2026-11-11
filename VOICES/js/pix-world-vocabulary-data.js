@@ -1,3 +1,9 @@
+/* Registered module: pix-world-vocabulary-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("pix-world-vocabulary-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 const groups={
@@ -142,3 +148,5 @@ const recipes={acaraje:['black-eyed peas','palm oil','fry'],abara:['black-eyed p
 const actions={scale:'scale a fish',wash:'wash',cut:'chop',grind:'grind',stir:'stir',shape:'shape',fry:'fry',plate:'serve',fold:'fold',steam:'steam',season:'season',layer:'layer',pour:'pour',simmer:'simmer',grate:'grate',knead:'knead',bake:'bake'};
 V.PixWorldVocabularyData={entries,animals,recipes,actions,categories:Object.fromEntries(Object.entries(groups).map(([id,[label]])=>[id,label])),aliases:{utensils:'utensil',ladles:'ladle',whisks:'whisk',knives:'knife',recipes:'recipe',ingredients:'ingredient',chefs:'chef',aprons:'apron',ovens:'oven',forests:'forest',habitats:'habitat',rangers:'ranger',fossils:'fossil',bones:'bone',lions:'lion',elephants:'elephant',hyenas:'hyena',snakes:'snake',birds:'bird',wings:'wing',feathers:'feather',paws:'paw',nests:'nest',hippo:'hippopotamus',rhino:'rhinoceros',corn:'maize'}};
 })();
+
+});

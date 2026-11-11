@@ -1,3 +1,9 @@
+/* Registered module: learning-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("learning-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Conteúdo educativo original: referências e ficção identificadas. */
 (function () {
   "use strict";
@@ -2662,3 +2668,5 @@
   "sourcePolicy": "As leituras apresentam sínteses autorais com referências identificadas. A aventura e seus poderes são ficção; fatos históricos, conceitos científicos e referências culturais têm contexto e fontes. Perguntas e traduções conservam o sentido dos registros."
 };
 })();
+
+});

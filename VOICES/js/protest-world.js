@@ -1,3 +1,9 @@
+/* Registered module: protest-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("protest-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,L=V.Living,W=V.World,D=V.SceneDesign,E=V.SceneEditor,T=48,copy=x=>JSON.parse(JSON.stringify(x)),esc=V.escape,data=V.protestContent,learning=V.protestLearning;
 const prior={districts:L.newDistricts.bind(L),residents:L.residents.bind(L),assets:V.Assets.load.bind(V.Assets),compose:C.compose.bind(C),chat:C.setupChat.bind(C),prepare:C.preparePerson.bind(C),draw:C.drawObject.bind(C),interact:C.interact.bind(C),update:C.update.bind(C),load:C.onLoad.bind(C),ensure:C.ensure.bind(C),document:D.document.bind(D),normalise:D.normalise.bind(D),landmark:V.Atlas.landmark.bind(V.Atlas),workshop:L.workshop.bind(L),reconcile:L.reconcile.bind(L)};
@@ -53,3 +59,5 @@ D.document=function(maps){return{...prior.document(maps),revision:7};};
 D.normalise=function(doc){const clean=prior.normalise(doc);if((doc.revision||0)<7&&clean['chapter-5']){const d=clean['chapter-5'];for(const r of residents){const id='resident-'+r.id;d.positions[id]??=copy(D.defaults['chapter-5'].positions[id]);d.routines[id]??=copy(D.defaults['chapter-5'].routines[id]);for(const a of D.defaults['chapter-5'].anchors.filter(a=>a[0].startsWith(r.id)))if(!d.anchors.some(b=>b[0]===a[0]))d.anchors.push(copy(a));}d.positions[learning.reading.id]??=copy(layout.positions[learning.reading.id]);d.positions['work-protest-records']??=copy(layout.positions['work-protest-records']);}return clean;};
 V.Assets.load=async function(){await Promise.all([prior.assets(),...residents.flatMap(r=>[[r.character,'assets/characters/'+r.character+'.png'],[r.character+'-portrait','assets/characters/'+r.character+'-portrait.png']]).map(([id,url])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[id]=img;resolve();};img.onerror=()=>{this.errors.push(url);resolve();};img.src=url;}))]);return this.errors;};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: african-museum-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("african-museum-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -104,3 +110,5 @@ const sources=[
 ];
 V.AfricanMuseumData={version:1,galleries,words,instruments,people,sources,referenceCount:36,referenceDate:'2026-10-27'};
 })();
+
+});

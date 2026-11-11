@@ -71,12 +71,15 @@
 </div>
 <input id="replace-input" type="file" accept="image/png,image/webp,image/jpeg" hidden>
 <input id="directory-input" type="file" webkitdirectory directory multiple hidden>
-<script src="js/optimized-images.js?v=20261030-imageopt1"></script>
-<script src="js/sprite-editor-data.js?v=20261103-playable2"></script>
-<script src="js/adventure-sprite-data.js?v=20261030-imageopt1"></script><script src="js/city-sprite-data.js?v=20261103-playable2"></script><script src="js/homestead-sprite-data.js?v=20261103-playable2"></script><script src="js/home-collection-sprite-data.js?v=20261030-imageopt1"></script>
-<script src="js/presence-sprite-data.js?v=20261030-imageopt1"></script>
-<script src="js/community-sprite-data.js?v=20261030-imageopt1"></script>
-<script src="js/terreiros-sprite-data.js?v=20261030-imageopt1"></script>
-<script src="js/sprite-editor.js?v=20261030-imageopt1"></script>
+
+
+
+
+
+
+
+<script type="application/json" id="voices-editor-modules">[{"id":"adventure-sprite-data","src":"js/adventure-sprite-data.js?v=20261030-imageopt1","requires":["sprite-editor-data"]},{"id":"city-sprite-data","src":"js/city-sprite-data.js?v=20261103-playable2","requires":["adventure-sprite-data"]},{"id":"community-sprite-data","src":"js/community-sprite-data.js?v=20261030-imageopt1","requires":["presence-sprite-data"]},{"id":"home-collection-sprite-data","src":"js/home-collection-sprite-data.js?v=20261030-imageopt1","requires":["homestead-sprite-data"]},{"id":"homestead-sprite-data","src":"js/homestead-sprite-data.js?v=20261103-playable2","requires":["city-sprite-data"]},{"id":"optimized-images","src":"js/optimized-images.js?v=20261030-imageopt1","requires":[]},{"id":"presence-sprite-data","src":"js/presence-sprite-data.js?v=20261030-imageopt1","requires":["home-collection-sprite-data"]},{"id":"sprite-editor","src":"js/sprite-editor.js?v=20261030-imageopt1","requires":["optimized-images","terreiros-sprite-data"]},{"id":"sprite-editor-data","src":"js/sprite-editor-data.js?v=20261103-playable2","requires":[]},{"id":"terreiros-sprite-data","src":"js/terreiros-sprite-data.js?v=20261030-imageopt1","requires":["community-sprite-data"]}]</script>
+<script src="js/module-loader.js"></script>
+<script src="js/editor-loader.js"></script>
 </body>
 </html>

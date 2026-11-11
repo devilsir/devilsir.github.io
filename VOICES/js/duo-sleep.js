@@ -1,3 +1,9 @@
+/* Registered module: duo-sleep */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-sleep", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* A night advances only after both local players agree by staying in bed. */
 (function(){
 'use strict';
@@ -24,5 +30,7 @@ const choose=K.chooseBed.bind(K),panel=K.sleepPanel.bind(K),wake=K.wake.bind(K);
 K.chooseBed=function(o){return K.duo()?S.enter(o):choose(o);};K.sleepPanel=function(){return K.duo()?S.panel():panel();};K.wake=function(){return K.duo()&&L.ensure().sleepPlan?.duoSleeping?S.wake(K.owner()):wake();};
 // A sleeping player's private window must not pause the awake player's day.
 const environment=V.Environment.update.bind(V.Environment);V.Environment.update=function(dt,paused=false){if(S.enabled()){const sleeping=S.sleepers();if(sleeping.length===2)paused=true;else if(sleeping.includes(0)&&!V.Dialogue.active&&!V.SceneEditor.active&&!V.DuoPanels.has(1)&&!V.DuoSessions?.playing(1)&&!V.MapAssets.tasks.size)paused=false;}return environment(dt,paused);};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){const out=update(dt);if(V.DuoWorld?.context<0)S.update(dt);return out;};
+V.Hooks.around(V.Game, 'update', 'duo-sleep:update:1', nextHook => function(dt){const out=nextHook(dt);if(V.DuoWorld?.context<0)S.update(dt);return out;});
 })();
+
+});

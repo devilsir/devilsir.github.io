@@ -1,3 +1,9 @@
+/* Registered module: play-culture-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("play-culture-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,A=V.AfricanPlayArt,AP=V.AfricanPlay;
@@ -70,3 +76,5 @@ stones.draw=function(c,r){
  AP.bar(c,d.phase==='air'?ratio:0,catchable?'ANEL VERDE · PEDRA NA ALTURA DA MÃO':d.phase==='air'?'Retire uma pedra enquanto a outra está no ar':'Lançar → recolher uma → apanhar');
 };
 })();
+
+});

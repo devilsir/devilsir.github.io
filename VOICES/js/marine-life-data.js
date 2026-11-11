@@ -1,3 +1,9 @@
+/* Registered module: marine-life-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("marine-life-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V=window.V;
@@ -30,3 +36,5 @@
   ].map(([id,name,en,scientific,regions,sheet,row,size,location,note,source,word])=>({id,name,en,scientific,regions,sheet,row,size,location,note,source,word}));
   V.MarineLifeData={sources,species,regions:{harbor:'br',beach:'br','cape-town':'sa',muizenberg:'sa'},watchSites:{harbor:[28,32.5],beach:[21,15.5],'cape-town':[34,35.5],muizenberg:[26,29.4]}};
 })();
+
+});

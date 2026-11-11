@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),meta=require('../assets/cooking/generation-professional.json');
 const text=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8'),body=text.slice(text.indexOf('function pack('),text.indexOf('(async()=>'));
 const props=new Function('createCanvas',body+';return pack;')(createCanvas),people=new Function('createCanvas',body.replace('cell-12','cell-6').replace('cell-6-dh','cell-3-dh')+';return pack;')(createCanvas);

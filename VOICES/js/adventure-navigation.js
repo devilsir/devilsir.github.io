@@ -1,3 +1,9 @@
+/* Registered module: adventure-navigation */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-navigation", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,T=48,esc=V.escape;
@@ -210,3 +216,5 @@ hit(e){if(this.view==='local')return;const c=V.$('#adv-atlas-canvas'),r=c.getBou
 details(){const m=V.World.maps[this.selected],root=V.$('#adv-atlas-detail');if(!m||!root)return;const edges=N.edges(m.id,true),fast=V.state.completed.includes(m.chapter)&&N.mapRoute(V.World.current.id,m.id);root.innerHTML=`<div><h3>${esc(m.name)}</h3><p>${esc(m.design.purpose||'Um lugar da cidade ficcional de New Harmony.')}</p><small>Conexões: ${edges.map(e=>esc(V.World.maps[e.to].name.split(' · ')[0])+(e.allowed?'':' · acesso pendente')).join(' / ')||'Nenhuma passagem configurada'}</small></div><div class="row"><button id="atlas-examine" class="secondary">Mapa local</button><button id="atlas-follow" class="primary">Rastrear caminho até aqui</button>${fast?'<button id="atlas-fast" class="secondary">Viagem rápida desbloqueada</button>':''}</div>`;V.$('#atlas-examine').onclick=()=>this.open('local',m.id);V.$('#atlas-follow').onclick=()=>{const route=N.mapRoute(V.World.current.id,m.id);if(m.id===V.World.current.id)N.track();else if(route?.length){V.Progress.ensure().tracked={destination:m.id};N.signature='';N.timer=0;V.Save.save();}else V.UI.toast('O acesso ainda depende das condições indicadas.');V.UI.close();};V.$('#atlas-fast')?.addEventListener('click',()=>{if(N.mapRoute(V.World.current.id,m.id)&&V.state.completed.includes(m.chapter)){V.UI.close();V.World.load(m.id);}});}
 };
 })();
+
+});

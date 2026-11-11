@@ -1,3 +1,9 @@
+/* Registered module: playground-classics-polish */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-classics-polish", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function voicesClassicChallengesPolish(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,C=P.controllers,clamp=V.clamp;
@@ -36,3 +42,5 @@ for(const id of ['courier','bridges']){const ctrl=C[id],field='stage',oldAction=
   ctrl.action=function(r,...args){const before=r.data[field];const result=oldAction(r,...args);if(!r.training&&r.data[field]>before)P.stageClear(r,before);return result;};
  }}
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: room-system */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("room-system", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,D=V.SceneDesign,C=V.Cozy,W=V.World,L=V.Living,T=48,copy=x=>JSON.parse(JSON.stringify(x));
 const prior={compose:C.compose.bind(C),ground:C.ground.bind(C),draw:D.drawDecor.bind(D),object:C.drawObject.bind(C),blocked:L.blocked.bind(L),normalise:D.normalise.bind(D),document:D.document.bind(D),preview:D.preview.bind(D),validate:D.validate.bind(D),load:W.load.bind(W),init:W.init.bind(W),update:V.Game.update.bind(V.Game),interact:V.Game.interact.bind(V.Game),progress:C.progressDetails.bind(C)};
@@ -41,7 +47,7 @@ const RB=V.Rooms={shapes,pointIn,distSeg,area,box,validPolygon,structure,trace,c
  raw(id,d){return{id,theme:'room',width:d.width,height:d.height,name:d.name,objects:[],buildings:[],solids:[],decor:[],floor:[],trees:[],cache:null};},
  sync(maps){for(const [id,d]of Object.entries(maps))if(d.builderMap){D.defaults[id]=this.makeBlank(d);D.raw[id]=this.raw(id,d);D.objectRegistry[id]||={};for(const a of structure(d).actors)D.objectRegistry[id][a.id]={id:a.id,type:a.species!=null?'animal':'resident',character:a.character};}},
  makeBlank(d){return{...copy(d),decor:[],scenes:[],positions:{},objectEdits:{},removedObjects:[]};},
- drawGround(m){if(!m.roomBuilder)prior.ground(m);else{m.cache=document.createElement('canvas');m.cache.width=m.width*T;m.cache.height=m.height*T;const c=m.cache.getContext('2d');c.fillStyle='#1b2d28';c.fillRect(0,0,m.cache.width,m.cache.height);}
+ drawGround(m){if(!m.roomBuilder)prior.ground(m);else{m.cache=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=m.cache.getContext('2d');c.fillStyle='#1b2d28';c.fillRect(0,0,V.GroundCache.width(m.cache),V.GroundCache.height(m.cache));}
  const ctx=m.cache.getContext('2d');ctx.imageSmoothingEnabled=false;for(const r of structure(m.design).rooms){const b=box(r.polygon);ctx.save();trace(ctx,r.polygon);ctx.clip();for(let y=Math.floor(b.y/T)*T;y<b.y+b.h;y+=T)for(let x=Math.floor(b.x/T)*T;x<b.x+b.w;x+=T)C.prop(ctx,'floor',r.floorStyle,x,y,T);ctx.restore();}return m.cache;},
  graph(maps=C.layouts){const g={};for(const [id,d]of Object.entries(maps)){g[id]=structure(d).doors.filter(o=>o.to&&maps[o.to.map]).map(o=>({map:o.to.map,door:o.id,room:o.to.room}));const m=W.maps[id];if(m)for(const o of m.objects)if(['door','exit','travel'].includes(o.type)&&maps[o.to||(o.type==='exit'?'hub':null)])g[id].push({map:o.to||'hub',legacy:o.id});}return g;},
  route(from,to,actor=null,targetRoom=null){const first=actor&&structure(C.layouts[from]).rooms.find(r=>pointIn(actor.x,actor.y,r.polygon))?.id||null,queue=[[from,first,[]]],seen=new Set([from+'|'+(first||'')]);while(queue.length){const [id,room,path]=queue.shift();if(id===to&&(!targetRoom||room===targetRoom))return path;for(const e of this.graph()[id]||[]){const door=structure(C.layouts[id]).doors.find(d=>d.id===e.door);if(door&&(!this.allowed(door,true,actor)||room&&door.room&&door.room!==room))continue;const nextRoom=e.room||null,k=e.map+'|'+(nextRoom||'');if(!seen.has(k)){seen.add(k);queue.push([e.map,nextRoom,path.concat({from:id,...e})]);}}}return null;},
@@ -79,13 +85,15 @@ D.normalise=function(doc){if(!doc||!doc.maps)return prior.normalise(doc);const i
 D.validate=function(m){const base=m.roomBuilder?{ok:true,cells:0,issues:[]}:prior.validate(m),issues=RB.validation(m);base.issues.push(...issues);base.ok=!base.issues.length;if(m.roomBuilder)base.cells=Math.floor(structure(m.design).rooms.reduce((n,r)=>n+Math.abs(area(r.polygon)),0)/(T*T));return base;};
 W.init=function(){prior.init();RB.sync(C.layouts);for(const [id,d]of Object.entries(C.layouts))if(d.builderMap)this.maps[id]=RB.composeDynamic(RB.raw(id,d),d);for(const id of Object.keys(this.maps))if(id.startsWith('interior-')&&!C.layouts[id])delete this.maps[id];};
 W.load=function(id,pos){const d=C.layouts[id];if(d?.builderMap){const m=this.maps[id];pos=RB.safe(m,pos||{x:d.spawn[0]*T+24,y:d.spawn[1]*T+24});}const result=prior.load(id,pos);if(pos&&[0,1,2,3].includes(pos.dir))V.Player.data.dir=pos.dir;if(d?.builderMap&&pos){V.Player.data.x=pos.x;V.Player.data.y=pos.y;V.Player.data.dir=pos.dir||0;}return result;};
-V.Game.interact=function(o){if(o?.type==='room-door'){if(!V.modal&&!V.Dialogue.active)return RB.transition(o.door);return;}return prior.interact(o);};
+V.Hooks.around(V.Game, 'interact', 'room-system:interact:1', nextHook => function(o){if(o?.type==='room-door'){if(!V.modal&&!V.Dialogue.active)return RB.transition(o.door);return;}return nextHook(o);});
 const oldPath=C.path.bind(C);C.path=function(m,o,a){if(m.design?.construction)return RB.navigation(m,o,a,9*(o.visualScale||1),o);return oldPath(m,o,a);};
 const updateCozy=C.update.bind(C);C.update=function(dt){const actors=W.current?.objects.filter(o=>o.worldPlan?.length)||[];for(const o of actors){o._worldStationary=o.stationary;o.stationary=true;o._worldRoute=o.route;o.route=[];o._worldAction=o.action;o.action='waiting';o.taskTime=30;}updateCozy(dt);for(const o of actors){o.stationary=o._worldStationary;o.route=o._worldRoute;o.action=o._worldAction;}RB.travelNPC(Math.min(dt,.08));};
-V.Game.update=function(dt){RB.clock+=dt;RB.cooldown=Math.max(0,(RB.cooldown||0)-dt);const result=prior.update(dt);if(!V.SceneEditor.active&&this.screen==='game'&&this.mode==='explore'&&!V.modal&&!V.Dialogue.active&&W.current&&V.Player.data)RB.auto(W.current,V.Player.data);return result;};
+V.Hooks.around(V.Game, 'update', 'room-system:update:1', nextHook => function(dt){RB.clock+=dt;RB.cooldown=Math.max(0,(RB.cooldown||0)-dt);const result=nextHook(dt);if(!V.SceneEditor.active&&this.screen==='game'&&this.mode==='explore'&&!V.modal&&!V.Dialogue.active&&W.current&&V.Player.data)RB.auto(W.current,V.Player.data);return result;});
 })();
-(function(){'use strict';const V=window.V,R=V.Rooms,transition=R.transition.bind(R),render=V.Game.render.bind(V.Game),update=V.Game.update.bind(V.Game);
+(function(){'use strict';const V=window.V,R=V.Rooms,transition=R.transition.bind(R),render=V.Game.render.bind(V.Game);
 R.transition=function(door,editor=false){let snapshot;if(!editor&&door.transition==='slide'&&V.Engine.canvas){snapshot=document.createElement('canvas');snapshot.width=V.Engine.canvas.width;snapshot.height=V.Engine.canvas.height;snapshot.getContext('2d').drawImage(V.Engine.canvas,0,0);}const ok=transition(door,editor);if(ok&&snapshot){this.slideFrame=snapshot;this.slideTime=.45;V.World.transition=0;}return ok;};
-V.Game.update=function(dt){R.slideTime=Math.max(0,(R.slideTime||0)-dt);return update(dt);};
+V.Hooks.around(V.Game, 'update', 'room-system:update:2', nextHook => function(dt){R.slideTime=Math.max(0,(R.slideTime||0)-dt);return nextHook(dt);});
 V.Game.render=function(ctx){render(ctx);if(this.screen==='game'&&this.mode==='explore'&&R.slideTime>0&&R.slideFrame&&!V.SceneEditor.active)ctx.drawImage(R.slideFrame,-ctx.canvas.width*(1-R.slideTime/.45),0,ctx.canvas.width,ctx.canvas.height);};
 })();
+
+});

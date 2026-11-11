@@ -2,17 +2,20 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const root=path.resolve(__dirname,'..');
-const {JSDOM}=require(path.join(root,'.qa/node_modules/jsdom'));
-const native=require(path.join(root,'.qa/node_modules/@napi-rs/canvas'));
+const {JSDOM}=require('jsdom');
+const native=require('@napi-rs/canvas');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-const scripts=[...html.matchAll(/<script src="([^"?]+)(?:\?[^\"]*)?"><\/script>/g)].map(m=>m[1]);
+const scripts=require('./runtime-files.cjs').manifest(html).scripts.map(url=>url.split('?')[0]);
 const timers=new Set();
 async function environment(options={}){
  if(typeof options==='boolean')options={child:options};const child=options.child;
  const dom=new JSDOM(html,{url:'http://voices.local/'+(child?'?voices-duo='+options.token+'&player='+(options.index||0):''),runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,images=new WeakMap(),canvases=new WeakMap();
+ if(options.ready)Object.defineProperty(w.document,'readyState',{configurable:true,value:'complete'});
+ // This harness starts at runtime preparation; cold-title behavior has its own suite.
+ w.document.querySelector('#loading').hidden=false;
  if(child)Object.defineProperty(w,'parent',{configurable:true,value:options.parent});
- w.requestAnimationFrame=callback=>callback.name==='frame'?1:w.setTimeout(()=>callback(w.performance.now()),0);w.cancelAnimationFrame=id=>w.clearTimeout(id);
+ w.requestAnimationFrame=callback=>callback.name==='frame'||/\.tick\(/.test(String(callback))?1:w.setTimeout(()=>callback(w.performance.now()),0);w.cancelAnimationFrame=id=>w.clearTimeout(id);
  w.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){}});
  w.ResizeObserver=class{observe(){}disconnect(){}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
@@ -32,16 +35,23 @@ async function environment(options={}){
  for(const dim of ['width','height'])Object.defineProperty(w.HTMLCanvasElement.prototype,dim,{configurable:true,get(){return canvasSize[dim].get.call(this);},set(n){canvasSize[dim].set.call(this,n);const entry=canvases.get(this);if(entry)entry.canvas[dim]=n;}});
  w.HTMLCanvasElement.prototype.getContext=function(){if(!canvases.has(this)){const canvas=native.createCanvas(this.width||300,this.height||150),context=canvas.getContext('2d'),element=this;const proxy=new Proxy(context,{get(target,key){if(key==='canvas')return element;if(key==='drawImage'||key==='createPattern')return(img,...args)=>{const source=canvases.get(img)?.canvas||images.get(img)||img;if(!source)return;return target[key](source,...args);};const value=target[key];return typeof value==='function'?value.bind(target):value;},set(target,key,value){target[key]=value;return true;}});canvases.set(this,{canvas,context:proxy});}return canvases.get(this).context;};
  w.HTMLCanvasElement.prototype.toDataURL=function(){this.getContext('2d');return canvases.get(this).canvas.toDataURL('image/png');};
- for(const file of scripts){try{w.eval(fs.readFileSync(path.join(root,file),'utf8')+'\n//# sourceURL='+file);}catch(e){throw Error(file+': '+e.stack);}}
+ const definition=require('./runtime-files.cjs').manifest(options.bundle?fs.readFileSync(path.join(root,'dist/index.html'),'utf8'):html);
+ if(!options.bundle)w.eval(fs.readFileSync(path.join(root,definition.bootstrap),'utf8'));
+ const entries=options.bundle?definition.scripts.map(url=>'dist/'+url.split('?')[0]):[...scripts];
+ if(options.moduleOrder==='reverse')entries.reverse();
+ for(const file of entries){try{w.eval(fs.readFileSync(path.join(root,file),'utf8')+'\n//# sourceURL='+file);}catch(e){throw Error(file+': '+e.stack);}}
+ w.VoicesModules.start(options.moduleOrder==='reverse'?[...definition.modules].reverse():definition.modules);
  return{dom,w,V:w.V,canvases};
 }
 async function run(){
- const {dom,w,V,canvases}=await environment();
+ const bundled=process.argv.includes('--bundle');
+ const {dom,w,V,canvases}=await environment({bundle:bundled,ready:bundled});
  // Menus in duo mode must be queried from the viewer that owns their DOM.
  const results=[],check=(name,test)=>{try{if(V.DuoPanels?.enabled())V.DuoPanels.withOwner(0,test);else test();results.push({name,pass:true});}catch(error){results.push({name,pass:false,error:error.stack});console.error(name,error.stack);}};
  const surface=()=>{const el=w.document.createElement('canvas');el.width=960;el.height=540;const c=el.getContext('2d');return{c,canvas:canvases.get(el).canvas};};
  await V.Game.init();
  console.log('Runtime initialized',JSON.stringify({maps:Object.keys(V.World.maps).length,assets:V.AssetLoader.records.size,deferred:[...V.AssetLoader.records].filter(r=>r.state==='deferred').length}));
+ if(bundled){const studio=V.ProfessorStudio,walk=studio.walkNodes;let observed=0;studio.walkNodes=function(...args){observed++;return walk.apply(this,args);};studio.editing=true;const marker=w.document.createElement('span');marker.textContent='Verificação de inicialização tardia';V.$('#app').append(marker);await Promise.resolve();check('professor tools observe content when scripts load after the document is ready',()=>{assert(V.$('#professor-studio'));assert(observed>0);});studio.walkNodes=walk;studio.editing=false;marker.remove();}
  check('new profiles offer two characters',()=>{V.PlayerProfiles.form();assert(w.document.querySelector('#profile-player-count'));const count=V.$('#profile-player-count');count.value='2';count.onchange();V.$('[data-profile-character="leo"]').click();assert.match(V.$('[data-profile-slot="leo"]').textContent,/Jogador 2/);});
  V.UI.close();V.settings.playerCharacters=['nia','leo'];V.settings.challengePlayers=2;V.Game.newState({name:'Teste da dupla',character:'nia'});V.state.flags.prologueDone=true;V.state.flags.prologueStarted=true;V.Game.startGame();
  const guard=setTimeout(()=>{console.error('MAP_TIMEOUT',JSON.stringify([...V.MapAssets.tasks].map(t=>({label:t.label,rows:t.rows.filter(r=>r.state!=='loaded').map(r=>({key:r.key,state:r.state,attempt:r.attempt}))}))));process.exit(1);},20000);

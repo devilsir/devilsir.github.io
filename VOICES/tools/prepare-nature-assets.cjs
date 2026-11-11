@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/nature'),meta=require('../assets/nature/generation.json');
 function pack(img,rows,cell,walk){const base=createCanvas(img.width,img.height),bc=base.getContext('2d');bc.drawImage(img,0,0);const pixels=bc.getImageData(0,0,img.width,img.height).data,labels=new Int32Array(img.width*img.height),q=new Int32Array(labels.length),parts=[];let serial=0;
  for(let start=0;start<labels.length;start++){if(labels[start]||pixels[start*4+3]<128)continue;const id=++serial;let head=0,tail=1,minX=img.width,minY=img.height,maxX=0,maxY=0,sx=0,sy=0;q[0]=start;labels[start]=id;while(head<tail){const at=q[head++],x=at%img.width,y=Math.floor(at/img.width);sx+=x;sy+=y;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=x+dx,ny=y+dy;if(nx<0||nx>=img.width||ny<0||ny>=img.height)continue;const n=ny*img.width+nx;if(!labels[n]&&pixels[n*4+3]>=128){labels[n]=id;q[tail++]=n;}}}parts.push({id,area:tail,minX,minY,maxX,maxY,x:sx/tail,y:sy/tail});}

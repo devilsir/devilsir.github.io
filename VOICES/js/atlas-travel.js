@@ -1,3 +1,9 @@
+/* Registered module: atlas-travel */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("atlas-travel", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function atlasTravel(){
 'use strict';
 const V=window.V,W=V.World,H=V.Homestead,R=V.Rooms,N=V.ObjectiveGuide,T=48;
@@ -33,7 +39,9 @@ const F=V.FastTravel={
  draw(ctx,o,cam,t=0){const x=o.x-cam.x,y=o.y-cam.y;if(x< -60||y< -80||x>ctx.canvas.width+60||y>ctx.canvas.height+80)return;const pulse=V.settings.reducedMotion?0:Math.sin(V.Engine.time*2+o.x)*2;ctx.save();ctx.fillStyle='#14364150';ctx.beginPath();ctx.ellipse(x,y+3,23,8,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#516b71';ctx.strokeStyle='#c0d9ca';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y-1,19,7,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#263e49';ctx.fillRect(x-7,y-26,14,24);ctx.fillStyle='#91d9dc';ctx.fillRect(x-2,y-22,4,19);this.diamond(ctx,x,y-37+pulse,12);ctx.strokeStyle='#8ce5df70';ctx.beginPath();ctx.ellipse(x,y-1,24+pulse,9+pulse*.25,0,0,Math.PI*2);ctx.stroke();ctx.restore();if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y-35,'E','#b6f3ec');}
 };
 const init=W.init.bind(W);W.init=function(){const result=init();F.seed();return result;};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='fast-travel'){if(!V.modal&&!V.Dialogue.active&&this.mode==='explore')V.WorldAtlas.open('world',W.current.id);return;}return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'atlas-travel:interact:1', nextHook => function(o){if(o?.type==='fast-travel'){if(!V.modal&&!V.Dialogue.active&&this.mode==='explore')V.WorldAtlas.open('world',W.current.id);return;}return nextHook(o);});
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type==='fast-travel')return F.draw(ctx,o,cam,t);return draw(ctx,o,cam,t);};
 const paint=V.Atlas.paint.bind(V.Atlas);V.Atlas.paint=function(canvas,m,options){paint(canvas,m,options);if(!canvas||!m)return;const o=F.point(m.id),p=this.projection(canvas,m);if(o)F.diamond(canvas.getContext('2d'),p.x+o.x*p.scale,p.y+o.y*p.scale,options?.details?7:4);};
 })();
+
+});

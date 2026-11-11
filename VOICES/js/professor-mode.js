@@ -1,3 +1,9 @@
+/* Registered module: professor-mode */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("professor-mode", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* VOICES — Estúdio do professor. Edição e pacote de autoria offline. */
 (()=>{'use strict';
 const V=window.V, $=s=>document.querySelector(s), esc=s=>V.escape(s), te=new TextEncoder(), td=new TextDecoder();
@@ -249,7 +255,8 @@ window.addEventListener('message',async e=>{const data=e.data;if(!data||data.sou
 document.addEventListener('pointermove',e=>{if(!Studio.active||!Studio.editing||Studio.view!=='game'||$('#professor-studio:not([hidden])'))return;if(e.target.closest('#professor-pencil,.professor-edit-dialog')){Studio.clearPencilHide();return;}const t=Studio.textTarget(e.target);if(t)Studio.setHover(t);else Studio.hidePencilSoon();},{passive:true});
 document.addEventListener('dblclick',e=>{if(!Studio.active||!Studio.editing||Studio.view!=='game'||$('#professor-studio:not([hidden])'))return;if(e.target.closest('#professor-pencil,.professor-edit-dialog'))return;const t=Studio.textTarget(e.target);if(!t)return;e.preventDefault();e.stopPropagation();Studio.setHover(t);Studio.editText(t);},true);
 Studio.observer=new MutationObserver(()=>{const root=$('#app');if(!root)return;if(Studio.editing&&!$('#professor-studio:not([hidden])'))Studio.walkNodes(root);else if(Object.keys(project.text).length)Studio.walkNodes(root);if(Studio.patches.size)Studio.applyDomImages(root);});
-document.addEventListener('DOMContentLoaded',()=>{Studio.root();Studio.banner(false);Studio.observer.observe($('#app'),{childList:true,subtree:true,characterData:true});});
+const mountStudio=()=>{Studio.root();Studio.banner(false);Studio.observer.observe($('#app'),{childList:true,subtree:true,characterData:true});};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountStudio,{once:true});else mountStudio();
 // Route the existing PIN-gated teacher entrance into the dedicated authoring dashboard.
 const previousShow=V.Teacher.show.bind(V.Teacher);
 V.Teacher.show=function(tab){if(!Studio.active){Studio.enter();return;}Studio.view='curriculum';Studio.root().hidden=true;Studio.banner(true);return previousShow(tab);};
@@ -261,3 +268,5 @@ if(V.Rooms?.allowed){const originalDoorAllowed=V.Rooms.allowed.bind(V.Rooms);V.R
 // Text content loaded at startup before Game.init: restore immediately, then sprites asynchronously.
 Studio.startPromise=Studio.setup();
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: capoeira-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("capoeira-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.AfricanMuseumData;
@@ -26,3 +32,5 @@ instrument(c,id,x,y,size=48){const item=D.instruments.find(i=>i.id===id);if(item
 };
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([load(),A.load()]);return this.errors;};
 })();
+
+});

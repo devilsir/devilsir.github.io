@@ -1,0 +1,39 @@
+.season-now {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #a9c0a950;
+  border-radius: 14px;
+  background: linear-gradient(125deg, #264438, #1b3536);
+}
+.season-now h3 { margin: .2rem 0 0; font-size: clamp(1.4rem, 4vw, 2.3rem); }
+.season-now small, .season-forecast small { color: #cadacb; }
+.season-now strong { color: #f1dfb7; }
+.season-forecast-title { margin: 1.2rem 0 .65rem; font-size: 1rem; }
+.season-forecast {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .55rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+.season-forecast li {
+  display: grid;
+  gap: .32rem;
+  padding: .65rem .75rem;
+  border: 1px solid #a9c0a944;
+  border-radius: 10px;
+  background: #172f29;
+}
+.season-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+.season-controls select { min-width: 0; width: 100%; }
+.season-preferences { margin-top: 1rem; padding-top: .85rem; border-top: 1px solid #a9c0a944; }
+.season-preferences summary { cursor: pointer; color: #f1dfb7; }
+@media (max-width: 560px) {
+  .season-controls { grid-template-columns: 1fr; }
+  .season-forecast li { padding: .6rem .45rem; font-size: .8rem; }
+}

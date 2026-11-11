@@ -1,3 +1,9 @@
+/* Registered module: capoeira-game */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("capoeira-game", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,A=V.CapoeiraArt,M=V.AfricanMuseum,B=V.AfricanMuseumData;
@@ -37,3 +43,5 @@ const complete=P.completeContext.bind(P);P.completeContext=function(r){complete(
 if(V.LearningArcade&&!V.LearningArcade.games.some(g=>g.id==='capoeira'))V.LearningArcade.games.push({id:'capoeira',title:game.title,tag:game.tag,text:game.goal,subject:'language'});
 const menu=P.menu.bind(P);P.menu=function(...args){const result=menu(...args);const label=V.$('#modal-subtitle');if(label&&label.textContent.includes('SEIS JOGOS'))label.textContent=D.games.length+' JOGOS · UMA AÇÃO POR VEZ';return result;};
 })();
+
+});

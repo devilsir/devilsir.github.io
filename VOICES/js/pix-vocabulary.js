@@ -1,3 +1,9 @@
+/* Registered module: pix-vocabulary */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("pix-vocabulary", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function pixVocabulary(){
 'use strict';
 const V=window.V,P=V.PixCollection,D=V.EnglishVocabulary,W=V.World,N=V.ObjectiveGuide,R=V.Rooms,esc=V.escape;
@@ -117,7 +123,7 @@ const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){X.e
 const apply=V.Teacher.apply.bind(V.Teacher);V.Teacher.apply=function(...args){const result=apply(...args);X.register();if(Object.keys(W.maps).length)P.seed();return result;};
 const load=W.load.bind(W);W.load=function(id,pos){const result=load(id,pos);X.validateMap(W.current);return result;};
 const interactables=W.interactables.bind(W);W.interactables=function(){return interactables().filter(o=>o.type!=='pix-word'||!X.known(o.word));};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'&&o.type!=='fast-travel')X.contextual(o);return interact(o);};
+V.Hooks.around(V.Game, 'interact', 'pix-vocabulary:interact:1', nextHook => function(o){if(o&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'&&o.type!=='fast-travel')X.contextual(o);return nextHook(o);});
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type==='pix-word')return X.draw(ctx,o,cam);return draw(ctx,o,cam,t);};
 V.Dialogue.addWords=function(){return this.run(()=>{const root=V.$('#dialogue-en');X.decorate(root,this.currentText,'Conversa em '+W.current.name,()=>this.translate());if(this.viewer!==null&&V.DuoPanels?.enabled())V.DuoPanels.bind(root,this.viewer);});};
 const read=V.Living.read.bind(V.Living);V.Living.read=function(id,...args){const result=read(id,...args),r=V.learning.readings.find(r=>r.id===id);if(r){const el=V.$('.reader-english p'),update=()=>{const section=V.$('.reader-english');if(!section)return;const small=section.querySelector('small');if(small){small.textContent='';small.hidden=true;}let support=section.querySelector('.pix-reader-words');if(!support){support=document.createElement('div');support.className='pix-reader-words';section.append(support);}support.innerHTML=V.settings.translation?P.wordsHTML(r.en,'PIX · palavras da leitura'):'';};X.decorate(el,r.en,'Leitura · '+r.title,update);update();}return result;};
@@ -127,3 +133,5 @@ const local=V.WorldAtlas.local.bind(V.WorldAtlas);V.WorldAtlas.local=function(ct
 const open=V.WorldAtlas.open.bind(V.WorldAtlas);V.WorldAtlas.open=function(...args){const result=open(...args),legend=V.$('.atlas3-legend');if(legend&&!legend.querySelector('.pix2-map-key')){const item=document.createElement('span');item.className='pix2-map-key';item.innerHTML='<b>Aa</b> Palavra do PIX';legend.append(item);}return result;};
 X.register();
 })();
+
+});

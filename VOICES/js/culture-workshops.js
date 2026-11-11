@@ -1,3 +1,9 @@
+/* Registered module: culture-workshops */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-workshops", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureWorkshops(){
 'use strict';const V=window.V,K=V.CultureChallenges,D=V.CultureChallengeData,esc=V.escape;
 const patterns=['AB','AABB','ABCD','ABBA','CDDC','AACC'],cells=(letters,cls='')=>`<div class="loom-row ${cls}">${letters.map(v=>`<span class="thread-${v}" aria-label="Fio ${v}">${v}</span>`).join('')}</div>`;
@@ -27,3 +33,5 @@ K.press=function(){const r=this.run(),d=r.data,s=this.game('press').stages[r.sta
 K.placePress=function(x,y){const r=this.run();if(r?.game!=='press'||r.data.printed||!Number.isInteger(x)||!Number.isInteger(y))return false;const d=r.data,p=this.pressPieces(r).find(p=>p.id===d.selected),rot=d.rotations[p.id]||0,shape=this.rotateShape(p.shape,rot),occupied=this.pressOccupied(r,p.id);r.moves++;if(!d.inspected.includes(p.id))return this.feedback('Abra a ficha do bloco '+p.id+' na bandeja antes de diagramá-lo.',true);if(shape.some(([a,b])=>x+a<0||x+a>=6||y+b<0||y+b>=4||occupied.has((y+b)*6+x+a)))return this.feedback('O bloco ultrapassa a margem ou cobre outra peça. Gire, escolha outro lugar ou use Desfazer.',true);d.history.push(JSON.stringify(d.placements));d.history=d.history.slice(-80);d.placements[p.id]={x,y,rot};r.feedback='✓ Bloco '+p.id+' diagramado. As fichas e os créditos foram preservados.';V.Audio.sfx('correct');this.commit();return true;};
 K.printPress=function(){const r=this.run();if(r?.game!=='press'||r.data.printed||!this.pressValid(r))return false;r.data.printed=true;r.moves++;r.feedback='✓ Edição impressa: todas as vozes couberam e as fontes foram preservadas.';V.Audio.sfx('collect');this.commit();return true;};
 })();
+
+});

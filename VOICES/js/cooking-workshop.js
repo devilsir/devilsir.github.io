@@ -1,3 +1,9 @@
+/* Registered module: cooking-workshop */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-workshop", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,K=V.Cooking,A=V.CookingArt,D=V.CookingWorkshopData,Art=V.CookingWorkshopArtData,C=P.controllers[V.CookingData.id],heat=new Set(['fry','simmer','steam','bake']);
@@ -54,7 +60,7 @@ const W=V.CookingWorkshop={
   for(const motion of d.platingMotion){if(motion.age>=.32)continue;const t=V.settings.reducedMotion?1:Math.min(1,motion.age/.32),ease=1-(1-t)**3,part=this.plan(r).parts[motion.index],x=motion.from.x+(motion.to.x-motion.from.x)*ease,y=motion.from.y+(motion.to.y-motion.from.y)*ease-Math.sin(t*Math.PI)*28;if(!part.sauce)this.art(c,'prepared-sweets-tools',15,x-65,y-10,154,48);this.food(c,part.food,x,y,part.size*this.plateScale);}
   if(d.returnServing&&!V.settings.reducedMotion){const m=d.returnServing,g=this.sources(r).find(g=>g.indices.includes(m.index));if(g){const t=Math.min(1,m.age/.24);this.food(c,this.plan(r).parts[m.index].food,m.x+(g.x+g.w/2-m.x)*t,m.y+(g.y+g.h/2-m.y)*t,96*this.plateScale);}}
   for(const particle of d.particles){c.save();c.globalAlpha=Math.max(0,particle.life/.65);c.fillStyle=particle.color;c.fillRect(particle.x,particle.y,4,3);c.restore();}
-  const total=this.plan(r).parts.length;P.box(c,234,485,492,12,'#31594b');P.box(c,234,485,492*d.placed.length/total,12,'#a3cfa5');this.text(c,d.phase==='done'?'✓ PRATO MONTADO · CONTINUE PARA SERVIR':d.placed.length+' de '+total+' porções servidas',480,518,14);
+  const total=this.plan(r).parts.length;P.box(c,234,485,492,12,'#31594b');P.box(c,234,485,492*d.placed.length/total,12,'#a3cfa5');this.text(c,d.phase==='done'?'✓ PRATO MONTADO · SERVINDO SUA RECEITA':d.placed.length+' de '+total+' porções servidas',480,518,14);
  },
  prepFrame(r,s,progress){
   const kind=s.kind,title=s.title.toLowerCase(),done=progress>=.52;
@@ -74,17 +80,25 @@ const W=V.CookingWorkshop={
   else{const f=/funge/.test(title)?'savory-15':this.plan(r).parts[0].food;this.food(c,f,cx,cy,Math.min(170,rect.w*.59));}
   return rect;
  },
+ burner(c,rect,heat,time){
+  const level=V.clamp(heat,0,1),cx=rect.x+rect.w/2,y=rect.y+rect.h+4,width=rect.w*.62,t=V.settings.reducedMotion?0:time;
+  c.save();const glow=c.createRadialGradient(cx,y-2,3,cx,y-2,width*.67);glow.addColorStop(0,'rgba(239,164,64,'+(.09+level*.16)+')');glow.addColorStop(1,'#eeb04b00');c.fillStyle=glow;c.fillRect(cx-width,y-width*.6,width*2,width*1.1);
+  c.fillStyle='#263c36';c.beginPath();c.ellipse(cx,y+4,width*.61,9,0,0,Math.PI*2);c.fill();c.strokeStyle='#91a39a';c.lineWidth=2;c.stroke();
+  const tongue=(x,base,w,h,lean,color)=>{c.fillStyle=color;c.beginPath();c.moveTo(x-w/2,base);c.bezierCurveTo(x-w*.65,base-h*.4,x+lean-w*.25,base-h*.72,x+lean,base-h);c.bezierCurveTo(x+lean+w*.2,base-h*.55,x+w*.6,base-h*.24,x+w/2,base);c.closePath();c.fill();};
+  for(let n=0;n<9;n++){const x=cx-width/2+n*width/8,sway=Math.sin(t*3.6+n*1.7),h=7+level*(12+Math.sin(t*4+n)*3);tongue(x,y,9,h,sway*2.5,'#e3a04e');tongue(x,y,6,h*.68,sway*1.4,'#f8d386');tongue(x,y+1,8,5+level*3,0,'#6abbd0');tongue(x,y+1,3,4,0,'#ccedf0');}
+  c.strokeStyle='#364e44';c.lineWidth=4;for(const dx of [-width*.38,width*.38]){c.beginPath();c.moveTo(cx+dx,y+9);c.lineTo(cx+dx*.7,y-3);c.stroke();}c.restore();
+ },
  stage(c,s,progress,x,y,w,h){
   const r=this.run;if(!r)return false;const d=r.data,kind=s.kind,t=V.settings.reducedMotion?0:d.t;
   this.rounded(c,190,82,580,386,'#adb9af','#dfe5ce');c.fillStyle='#879d93';c.fillRect(203,452,554,5);this.rounded(c,224,122,512,282,heat.has(kind)?'#596e65':'#e8dfc5','#7b8c72',9);
   [x,y,w,h]=this.stageRect(x,y,w,h);let rect;
   if(heat.has(kind)||kind==='pour'||kind==='layer'){
    const row=this.cookware(r,s),frame=Math.min(3,Math.floor(Math.min(.999,progress)*4)),actual=kind==='layer'?0:kind==='pour'?Math.max(0,Math.min(2,frame)):frame;
-   if(kind==='bake'){this.rounded(c,302,135,356,260,'#4a6059','#d5dfd0',10);this.rounded(c,319,151,322,225,'#253d35','#90a393',5);}
+   if(kind==='bake'){this.rounded(c,302,135,356,260,'#4a6059','#d5dfd0',10);this.rounded(c,319,151,322,225,'#253d35','#90a393',5);const glow=c.createRadialGradient(480,295,12,480,295,160);glow.addColorStop(0,'rgba(232,145,61,'+(.2+d.heat*.3)+')');glow.addColorStop(1,'#e39a3c00');c.fillStyle=glow;c.fillRect(320,152,320,222);c.strokeStyle='#d39a59';c.lineWidth=3;for(const yy of [351,359]){c.beginPath();c.moveTo(341,yy);c.lineTo(619,yy);c.stroke();}}
    
    const dedicated=(id=>id==='calulu'&&!/funge|farinha/.test(s.title.toLowerCase())||id==='moqueca'||id==='umngqusho'||['pap','angu'].includes(id)&&/pap|angu|milho/.test(s.title.toLowerCase()))(K.recipe(r).id);
    rect=dedicated?this.art(c,'complete-cookware',row*4+actual,x,y,w,h):this.vessel(c,r,s,progress,x,y,w,h);
-   if(heat.has(kind)&&kind!=='bake'){const fy=rect.y+rect.h-3,fw=rect.w*.6;c.fillStyle='#34473f';c.beginPath();c.ellipse(480,fy+5,fw*.55,7,0,0,Math.PI*2);c.fill();if(!V.settings.reducedMotion)for(let n=0;n<7;n++){c.fillStyle=n%2?'#f2c16a':'#d98349';c.beginPath();c.ellipse(480-fw/2+n*fw/6,fy-Math.sin(t*9+n)*2,4,4+d.heat*4,0,0,Math.PI*2);c.fill();}}
+   if(heat.has(kind)&&kind!=='bake')this.burner(c,rect,d.heat,t);
    if(heat.has(kind)&&!V.settings.reducedMotion&&d.phase==='work'){for(let n=0;n<5;n++){const phase=(t*.35+n*.2)%1,px=rect.x+rect.w*(.32+n*.09),py=rect.y+rect.h*.21-phase*52;c.save();c.globalAlpha=(1-phase)*.7;c.strokeStyle='#f0edda';c.lineWidth=3;c.beginPath();c.moveTo(px,py+15);c.quadraticCurveTo(px-8,py+7,px,py);c.stroke();c.restore();}for(let n=0;n<6;n++){const phase=(t*.9+n*.17)%1;c.strokeStyle='#eddec0';c.lineWidth=1.4;c.beginPath();c.ellipse(rect.x+rect.w*(.3+n*.075),rect.y+rect.h*(.31+Math.sin(n)*.055),2+phase*3,1+phase*1.5,0,0,Math.PI*2);c.stroke();}}
   }else{
    const frame=this.prepFrame(r,s,progress),bounce=V.settings.reducedMotion?0:d.animation>0?Math.sin((.35-d.animation)*24)*2:0;
@@ -115,3 +129,5 @@ const action=C.action.bind(C);C.action=function(r,name,arg){if(name==='plate-und
 const model=C.model.bind(C);C.model=function(r){const m=model(r);if(K.step(r).kind!=='plate')return m;W.ensure(r);const right=V.DuoChallenges.isChild&&+new URLSearchParams(location.search).get('player')===1;return{...m,progress:r.data.step+(r.data.phase==='done'?1:0),support:m.support+' · '+r.data.placed.length+'/'+W.plan(r).parts.length+' porções',hint:'Arraste uma porção preparada até o contorno dourado do prato. '+(right?'←/→ escolhe; Enter serve.':'A/D escolhe; E serve.')};};
 const result=P.result.bind(P);P.result=function(r){const out=result(r);if(r.game===V.CookingData.id){const box=V.$('.pg-result');if(box){box.querySelector(':scope > .cooking-dish-art, :scope > .nature-art')?.remove();const canvas=document.createElement('canvas');canvas.width=400;canvas.height=220;canvas.className='cooking-finished-plate';canvas.setAttribute('aria-label',K.recipe(r).name+' montado com os ingredientes preparados');box.prepend(canvas);W.plate(canvas.getContext('2d'),r,200,113,.8,true);}}return out;};
 })();
+
+});

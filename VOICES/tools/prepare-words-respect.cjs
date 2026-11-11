@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/words-respect');
 (async()=>{
  const generation=JSON.parse(fs.readFileSync(path.join(dir,'generation.json'))),image=await loadImage(path.join(dir,'source.png')),cols=4,rows=2,cell=240;

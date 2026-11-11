@@ -1,3 +1,9 @@
+/* Registered module: cerrado-renewal */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cerrado-renewal", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,N=V.NatureWorld,D=V.NatureData,C=V.Cozy,S=V.SceneDesign,W=V.World,T=48,ID='nature-cerrado';
 const labels=['Pequizeiro','Ipê-amarelo-do-cerrado','Baru','Buriti','Lobeira','Canela-de-ema','Gramíneas nativas','Flores do campo','Afloramento rochoso','Cupinzeiro','Centro de visitantes','Posto de observação'];
@@ -19,11 +25,11 @@ const R=V.CerradoRenewal={image:null,
   for(const[id,x,y]of animals){const at=V.Rooms.safe(m,{x:x*T,y:y*T},16)||{x:x*T,y:y*T},o=N.animal(m,id,at.x/T,at.y/T,[at.x/T-2,at.y/T-1.5,4,3]);o.wait=.5+(x%3);o.walking=true;}
   const place=D.maps.find(p=>p.id===ID);place.species=[...new Set([...place.species,'tapir','armadillo'])];place.source='cerradoFlora';V.Wildlife.enrich(m);for(const o of m.objects){const p=m.design.positions?.[o.id];if(p){o.x=(p[0]+.5)*T;o.y=(p[1]+.5)*T;}}return m;
  },
- ground(m){const canvas=document.createElement('canvas');canvas.width=m.width*T;canvas.height=m.height*T;const c=canvas.getContext('2d');c.fillStyle='#adb47c';c.fillRect(0,0,canvas.width,canvas.height);for(let y=0;y<canvas.height;y+=32)for(let x=0;x<canvas.width;x+=32){const n=(x*3+y*11)%37;c.fillStyle=['#a4ad71','#afb982','#b8bc84','#9fa96c'][n%4];c.globalAlpha=.35;c.fillRect(x,y,32,32);c.globalAlpha=1;if(n%3===0){c.strokeStyle='#818e52';c.lineWidth=1;c.beginPath();c.moveTo(x+10,y+22);c.lineTo(x+8,y+14);c.moveTo(x+11,y+22);c.lineTo(x+15,y+12);c.stroke();}}
+ ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=canvas.getContext('2d');c.fillStyle='#adb47c';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));for(let y=0;y<V.GroundCache.height(canvas);y+=32)for(let x=0;x<V.GroundCache.width(canvas);x+=32){const n=(x*3+y*11)%37;c.fillStyle=['#a4ad71','#afb982','#b8bc84','#9fa96c'][n%4];c.globalAlpha=.35;c.fillRect(x,y,32,32);c.globalAlpha=1;if(n%3===0){c.strokeStyle='#818e52';c.lineWidth=1;c.beginPath();c.moveTo(x+10,y+22);c.lineTo(x+8,y+14);c.moveTo(x+11,y+22);c.lineTo(x+15,y+12);c.stroke();}}
   c.lineJoin=c.lineCap='round';for(const width of [100,82]){c.strokeStyle=width===100?'#a59865':'#d1be8b';c.lineWidth=width;for(const[ax,ay,bx,by]of m.cerradoTrails){c.beginPath();c.moveTo(ax*T,ay*T);c.lineTo(bx*T,by*T);c.stroke();}}
   for(const b of m.natureWater){c.fillStyle='#7eaa87';c.fillRect(b.x-20,b.y-18,b.w+40,b.h+36);c.fillStyle='#619f9a';c.fillRect(b.x,b.y,b.w,b.h);c.strokeStyle='#b5d4b9';for(let y=b.y+20;y<b.y+b.h;y+=35){c.beginPath();c.moveTo(b.x+20,y);c.lineTo(b.x+b.w-25,y);c.stroke();}}
   for(const b of m.natureBridges){c.fillStyle='#72523b';c.fillRect(b.x,b.y,b.w,b.h);c.fillStyle='#d2b17a';for(let x=b.x+3;x<b.x+b.w;x+=16)c.fillRect(x,b.y+5,12,b.h-10);}
-  c.fillStyle='#607a4c';c.fillRect(0,0,canvas.width,48);c.fillRect(0,canvas.height-48,canvas.width,48);c.fillRect(0,0,48,canvas.height);c.fillRect(canvas.width-48,0,48,canvas.height);m.cache=canvas;
+  c.fillStyle='#607a4c';c.fillRect(0,0,V.GroundCache.width(canvas),48);c.fillRect(0,V.GroundCache.height(canvas)-48,V.GroundCache.width(canvas),48);c.fillRect(0,0,48,V.GroundCache.height(canvas));c.fillRect(V.GroundCache.width(canvas)-48,0,48,V.GroundCache.height(canvas));m.cache=canvas;
  },
  draw(c,o,cam){if(o.cerradoArt===undefined)return false;const image=this.image;if(!image?.naturalWidth)return true;const x=o.x-cam.x,y=o.y-cam.y,size=o.w,cell=image.naturalWidth/4;if(Math.abs(c.getTransform().a)>=.99&&(x<-size||x>c.canvas.width+size||y<-40||y>c.canvas.height+size))return true;V.SceneShadows.cast(c,image,x,y+6,size,size,{frame:[o.cerradoArt%4*cell,Math.floor(o.cerradoArt/4)*cell,cell,cell],alpha:o.cerradoArt<4?.16:.12});c.save();c.imageSmoothingEnabled=true;c.drawImage(image,o.cerradoArt%4*cell,Math.floor(o.cerradoArt/4)*cell,cell,cell,x-size/2,y-size+12,size,size);c.restore();return true;}
 };
@@ -36,3 +42,5 @@ const draw=N.draw.bind(N);N.draw=(c,o,cam)=>R.draw(c,o,cam)||draw(c,o,cam);
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),R.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key.includes('/cerrado-landscape.')?'nature':group(key);
 })();
+
+});

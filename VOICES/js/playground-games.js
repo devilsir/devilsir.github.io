@@ -1,3 +1,9 @@
+/* Registered module: playground-games */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-games", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function playgroundGames(){
 'use strict';const V=window.V,P=V.Playground,D=V.PlaygroundData,C=P.controllers,clamp=V.clamp;
 const roomPoint=([x,y])=>({x:345+x*76,y:232+y*57});
@@ -116,3 +122,5 @@ C.bridges={
  draw(c,r){const d=r.data,link=connected(d);P.box(c,0,0,960,540,'#a9bd97');P.box(c,366,169,402,294,'#659a9b');for(let n=0;n<9;n++){const y=183+n*31,x=381+(n%3)*10;line(c,[{x,y},{x:x+350,y}],'#a4d0bb55',2);}d.cells.forEach((cell,i)=>{const p=bridgePoint(i),lit=link.seen.includes(i);P.box(c,p.x-29,p.y-20,58,40,lit?'#e7cb97':'#a7a782','#3f6960');const pts=ports(cell);c.strokeStyle=lit?'#6b714f':'#4f6755';c.lineWidth=13;c.lineCap='square';c.beginPath();for(const n of pts){const [dx,dy]=directions[n];c.moveTo(p.x,p.y);c.lineTo(p.x+dx*29,p.y+dy*20);}c.stroke();if(i===d.cursor[1]*5+d.cursor[0]||d.hint===i){c.strokeStyle=d.hint===i?'#f4e07e':'#fff3d0';c.lineWidth=3;c.strokeRect(p.x-31,p.y-22,62,44);}});marker(c,350,301,'→');marker(c,781,301,'→');P.text(c,'ENTRADA',339,343,12,'#294e3d');P.text(c,'SAÍDA',794,343,12,'#294e3d');let pos={x:348,y:301};if(d.crossing){const a=[{x:348,y:301},...d.crossing.path.map(bridgePoint),{x:790,y:301}],index=Math.min(a.length-2,Math.floor(d.crossing.t)),f=d.crossing.t-index;pos={x:a[index].x+(a[index+1].x-a[index].x)*f,y:a[index].y+(a[index+1].y-a[index].y)*f};}P.person(c,pos.x,pos.y+9,!!d.crossing,2,58);prop(c,'plant',293,441,76);prop(c,'plant',840,441,76);}
 };
 })();
+
+});

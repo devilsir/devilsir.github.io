@@ -1,3 +1,9 @@
+/* Registered module: botica */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("botica", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function boticaRaizes(){
 'use strict';const V=window.V,D=V.AncestralData,P=V.Progress,L=V.Life,H=V.Homestead,items=V.AdventureData.items,esc=V.escape;
 for(const h of D.ingredients)items['herb-'+h.id]={name:h.name,description:h.description,category:'material',stack:20,price:h.price,rootsSprite:h.sprite};
@@ -17,3 +23,5 @@ const baseMeal=L.cook.bind(L);L.cook=function(){B.recipes('food');return true;};
 const panel=L.panel.bind(L);L.panel=function(tab,...args){const result=panel(tab,...args);if(tab==='food'&&V.$('.modal-body')){const b=document.createElement('button');b.id='roots-food-recipes';b.className='secondary';b.textContent='Caderno de receitas com ervas';b.onclick=()=>B.recipes('food');V.$('.modal-body').append(b);}return result;};
 for(const[id,title,desc]of [['roots-first-potion','Primeira mistura','Prepare uma poção de fantasia na Botica Raízes.'],['roots-first-food','Da horta à mesa','Prepare uma comida com ervas.'],['roots-all-recipes','Caderno completo','Prepare as seis receitas da botica pelo menos uma vez.']])V.Quests.achievements.push({id,title,desc,index:8,category:'city'});
 })();
+
+});

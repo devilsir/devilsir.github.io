@@ -56,6 +56,42 @@
       "cols": 4,
       "cell": 160,
       "bytes": 106106
+    },
+    {
+      "file": "assets/nature/sanctuary-village-props.webp",
+      "rows": 2,
+      "cols": 4,
+      "cell": 160,
+      "bytes": 165056,
+      "source": "Six original props generated for the village, plus the acacia and sandstone sprites from habitats.webp."
+    },
+    {
+      "file": "assets/nature/sanctuary-village-people.webp",
+      "rows": 4,
+      "cols": 4,
+      "cell": 64,
+      "bytes": 55604,
+      "source": "Four adapted palettes and existing walk cycles from sanctuary-team-game.webp."
+    }
+  ],
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../LICENSE.txt",
+  "facades": [
+    {
+      "file": "assets/nature/sanctuary-village-bongani-home.webp",
+      "width": 1024,
+      "height": 816,
+      "bytes": 965708
+    },
+    {
+      "file": "assets/nature/sanctuary-village-lindiwe-home.webp",
+      "width": 1024,
+      "height": 705,
+      "bytes": 821388
     }
   ]
 }

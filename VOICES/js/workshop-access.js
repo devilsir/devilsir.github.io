@@ -1,3 +1,9 @@
+/* Registered module: workshop-access */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-access", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopAccess(){
 'use strict';const V=window.V,esc=V.escape;
 const key=n=>n.nodeType===1?(n.id?'#'+n.id:n.getAttribute('data-key')||[...n.attributes].filter(a=>a.name.startsWith('data-')&&!/^data-(lesson|hint|pulse)/.test(a.name)).map(a=>a.name+'='+a.value).join('|')):'';
@@ -45,3 +51,5 @@ const T=V.Tutorials={active:null,definitions:{},
 const close=V.UI.close.bind(V.UI);V.UI.close=function(...args){if(T.active&&!UI.context)T.pause();return close(...args);};
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){T.active=null;const out=start(...args);T.ensure();return out;};
 })();
+
+});

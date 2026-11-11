@@ -1,3 +1,9 @@
+/* Registered module: coast-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("coast-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V=window.V||{};V.coastContent={
   "sources": [
     {
@@ -363,3 +369,5 @@
     "referencePolicy": "Original interpretation of publicly documented features, not copied or traced from the uploaded photograph or a museum object. No authentic religious performance or recording is presented."
   }
 };})();
+
+});

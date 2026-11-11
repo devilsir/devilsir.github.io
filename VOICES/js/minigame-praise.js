@@ -1,3 +1,9 @@
+/* Registered module: minigame-praise */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("minigame-praise", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,now=()=>performance.now();
@@ -47,3 +53,5 @@ F.wrap(fishing,'reel',function(args,result){if(result===true)F.emit('hit',{detai
 F.wrap(V.Game,'toTitle',()=>F.clear());
 window.addEventListener('resize',()=>{const el=document.getElementById('minigame-praise');if(el&&!el.hidden)F.position(el);});document.addEventListener('visibilitychange',()=>{if(document.hidden)F.clear();});
 })();
+
+});

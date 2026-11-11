@@ -1,3 +1,9 @@
+/* Registered module: cape-region-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cape-region-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -24,3 +30,5 @@ V.CapeRegionData={sources,notes,people,maps,assets,reviewed:'2026-10-27',interpr
 V.MaritimeData.people.find(p=>p.id==='inacio-port').at=[13,21.7];V.MaritimeData.people.find(p=>p.id==='clara-port').at=[14.5,33.7];
 V.MaritimeData.maps.harbor.buildings=[['port-terminal-v2',11.5,10,8.5,5.5],['cape-warehouse',8,20.2,8,5.8],['cape-market',10,32,7,4.6],['port-crane',20.7,17.4,4.5,6],['harbor-lighthouse',48,36.8,4,7]];
 })();
+
+});

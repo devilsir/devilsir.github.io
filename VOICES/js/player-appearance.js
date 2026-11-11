@@ -1,3 +1,9 @@
+/* Registered module: player-appearance */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("player-appearance", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.SalonArtData,X=V.SalonCultureData,esc=V.escape,copy=x=>JSON.parse(JSON.stringify(x)),characters=['nia','leo','taina','sol'];
@@ -101,3 +107,5 @@ const npcDraw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(c,o,...a
 const character=V.Progress.character.bind(V.Progress);V.Progress.character=function(...args){character(...args);const profile=V.$('.adv-profile');if(profile){const button=document.createElement('button');button.id='player-appearance';button.className='secondary';button.textContent='Visual e acessórios';button.onclick=()=>V.Salon.overview();profile.after(button);}};
 const customize=V.Game.customize.bind(V.Game);V.Game.customize=function(back=null){return V.Salon?.overview(back);};A.emblem=customize;
 })();
+
+});

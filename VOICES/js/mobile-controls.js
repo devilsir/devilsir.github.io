@@ -1,3 +1,9 @@
+/* Registered module: mobile-controls */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("mobile-controls", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function mobileControls(){
 'use strict';
 const V=window.V;
@@ -13,3 +19,5 @@ const M=V.MobileControls={ready:false,wasPaused:false,
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const result=await init(...args);M.init();return result;};
 const render=V.Game.render.bind(V.Game);V.Game.render=function(...args){const result=render(...args);M.sync();return result;};
 })();
+
+});

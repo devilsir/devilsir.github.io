@@ -1,3 +1,9 @@
+/* Registered module: playground-memory-museum */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-memory-museum", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function voicesMemoryMuseum(){
 'use strict';
 const V=window.V,P=V.Playground,C=P.controllers,clamp=V.clamp;
@@ -60,3 +66,5 @@ C.museum={
  for(const [x,y]of d.boxes){const px=ox+x*size,py=oy+y*size;P.box(c,px-21,py-21,42,42,d.goals.some(g=>g[0]===x&&g[1]===y)?'#7aae9b':'#c88b62','#f2e2b7');P.text(c,'▣',px,py,26,'#394f46');}P.person(c,ox+d.player[0]*size,oy+d.player[1]*size+10,false,0,45);}
 };
 })();
+
+});

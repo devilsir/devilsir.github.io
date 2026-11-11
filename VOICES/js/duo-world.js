@@ -1,3 +1,9 @@
+/* Registered module: duo-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Shared story, independent places, positions and cameras. */
 (function(){
 'use strict';
@@ -109,17 +115,17 @@ const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){D.s
 const save=V.Save.save.bind(V.Save);V.Save.save=function(...args){if(D.loading)return true;D.persist();if(D.enabled()&&D.owner===V.state&&D.actors.length===2)return D.withActor(0,()=>save(...args));return save(...args);};
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){D.persist();D.unmount();D.owner=null;D.actors=[];return title(...args);};
 
-const update=V.Game.update.bind(V.Game),originalRender=V.Game.render.bind(V.Game);
-V.Game.update=function(dt){
- const visible=D.sync();if(!visible)return update(dt);
+const originalRender=V.Game.render.bind(V.Game);
+V.Hooks.around(V.Game, 'update', 'duo-world:update:1', nextHook => function(dt){
+ const visible=D.sync();if(!visible)return nextHook(dt);
  const canMove=!V.modal&&!V.Dialogue.active&&!V.MapAssets.busy;
- D.withActor(0,()=>update(dt));
+ D.withActor(0,()=>nextHook(dt));
  if(canMove&&D.exploring()&&!V.modal&&!V.Dialogue.active&&!V.MapAssets.busy){
   if(!V.DuoPanels?.has(1)&&!V.DuoSessions?.playing(1))D.withActor(1,()=>{if(V.MapAssets.busy)return;V.Rooms.cooldown=Math.max(0,(V.Rooms.cooldown||0)-dt);V.Rooms.slideTime=Math.max(0,(V.Rooms.slideTime||0)-dt);P.update(dt);if(D.actors[0].map!==D.actors[1].map||V.DuoPanels?.has(0))W.update(dt);else W.transition=Math.max(0,W.transition-dt*2);V.Rooms.auto(W.current,P.data);V.Activities?.crossings?.(dt);});
   if(tap('enter')||tap('shiftright'))D.use(1);
  }
  D.hud();D.persist();
-};
+});
 V.Game.render=function(c){if(D.sync()){D.render();return;}return originalRender(c);};
 
 // Arriving in an occupied place must preserve the visit already in progress.
@@ -140,3 +146,5 @@ document.addEventListener('keydown',e=>{
 },true);
 document.addEventListener('keyup',e=>{if(V.DuoSessions?.handleKey(e,false)||V.DuoPanels?.handleKey(e,false)||V.DuoTutorial?.handleKey(e,false)){e.preventDefault();e.stopImmediatePropagation();return;}if(D.visible&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter','ShiftRight'].includes(e.code))V.Input.keys.delete(e.code==='ShiftRight'?'shiftright':e.key.toLowerCase());},true);
 })();
+
+});

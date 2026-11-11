@@ -1,3 +1,9 @@
+/* Registered module: sanctuary-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("sanctuary-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.NatureData,B=V.AnimalMuseumData;
@@ -48,3 +54,5 @@ V.SanctuaryData={common,related,africa,brazil,staff:[
  {id:'lindiwe',name:'Lindiwe',role:'Guarda-parque',work:'nature-savanna',object:'nature-savanna-ranger',character:'andre',row:null,home:'interior-sanctuary-ranger-lindiwe',point:[21,25],line:['The night team continues the patrol. My home is in the village, and I return to the park in the morning.','A equipe noturna continua a patrulha. Minha casa fica na vila e volto ao parque pela manhã.']}
 ]};
 })();
+
+});

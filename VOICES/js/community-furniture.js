@@ -1,3 +1,9 @@
+/* Registered module: community-furniture */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("community-furniture", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function communityFurniture(){
 'use strict';
 const V=window.V,C=V.Cozy,W=V.World,H=V.Homestead,G=V.HomeLiving,D=V.SceneDesign,data=V.CommunityFurnitureData,T=48,copy=x=>JSON.parse(JSON.stringify(x));
@@ -52,7 +58,7 @@ const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){const i=item(
  if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y,'E','#e7cb8e');
 };
 const instrument=V.Activities.instrument.bind(V.Activities);V.Activities.instrument=function(o){return o?.scene?.family==='apartment-details'&&item(o)?.action==='instrument'?'piano':instrument(o);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){const i=item(o);if(!i||V.modal||V.Dialogue.active)return interact(o);V.PixCollection.collect(i.word,'Ambiente · '+i.name);
+V.Hooks.around(V.Game, 'interact', 'community-furniture:interact:1', nextHook => function(o){const i=item(o);if(!i||V.modal||V.Dialogue.active)return nextHook(o);V.PixCollection.collect(i.word,'Ambiente · '+i.name);
  if(i.family==='community-details'){V.UI.modal(i.name,'CONVIVÊNCIA · '+W.current.name,`<p>${V.escape(i.description)}</p><p lang="en">${V.escape(i.en)}</p>${C.sourceLinks(i.sourceIds)}`);return;}
  switch(i.action){
  case'bed':return H.sleep(o);
@@ -69,6 +75,8 @@ const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){const i=
  case'paint':V.Activities.perform('think',{close:false});break;
  }
  V.UI.modal(i.name,'MÓVEL DO APARTAMENTO',`<p>${V.escape(i.description)}</p>`);
-};
+});
 const initContent=V.Living.initContent.bind(V.Living);V.Living.initContent=function(...args){const result=initContent(...args);for(const source of data.sources)if(!V.content.sources.some(s=>s.id===source.id))V.content.sources.push(copy(source));return result;};
 })();
+
+});

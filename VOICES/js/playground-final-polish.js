@@ -1,3 +1,9 @@
+/* Registered module: playground-final-polish */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-final-polish", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* VOICES challenge refinements: scene rendering, encounters and accessibility. */
 (function voicesChallengeFinalPolish(){
 'use strict';
@@ -208,3 +214,5 @@ K.loom=function(){loom();const button=V.$('#loom-preview'),preview=V.$('.loom-li
  };
 };
 })();
+
+});

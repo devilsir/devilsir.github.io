@@ -1,3 +1,9 @@
+/* Registered module: african-word-origins */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("african-word-origins", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const D=window.V.AfricanMuseumData;
@@ -63,3 +69,5 @@ for(const[id,language,group,region,form,originalMeaning,status,etymology,incorpo
 D.originGroups=[{id:'all',name:'Todas as origens'},{id:'quimbundo',name:'Quimbundo'},{id:'quicongo',name:'Quicongo'},{id:'ioruba',name:'Iorubá'},{id:'bantu',name:'Grupo banto'},{id:'outras',name:'Outras conexões'},{id:'debate',name:'Origens em debate'}];
 D.curationVersion=2;D.etymologyReviewed='2026-10-27';
 })();
+
+});

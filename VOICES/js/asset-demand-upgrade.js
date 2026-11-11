@@ -1,3 +1,9 @@
+/* Registered module: asset-demand-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("asset-demand-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,L=V.AssetLoader,M=V.MapAssets;
@@ -20,10 +26,24 @@ const groups=M.groups.bind(M);M.groups=function(m){
  return [...new Set(out)];
 };
 const attach=V.Playground.attach.bind(V.Playground);V.Playground.attach=function(r){const out=attach(r);M.ensure(['actor:'+V.state.character],this.game(r.game)?.title||'Preparando o desafio');return out;};
-// Open heavy battle art and parchment only when their interfaces are requested.
-for(const owner of [V.Combat,V.AdventureCombat])if(owner?.start){const start=owner.start.bind(owner);owner.start=function(...args){const result=start(...args);M.ensure(['combat','actor:'+V.state.character],'Preparando o confronto');return result;};}
+// All encounter entry points share activation, including practice and saved battles.
+const activate=V.Combat.activate.bind(V.Combat);V.Combat.activate=function(){
+ const result=activate();
+ const actors=this.active.allies.map(actor=>'actor:'+actor.character);
+ M.ensure(['combat',...new Set(actors)],'Preparando o confronto');
+ return result;
+};
+if(V.AdventureCombat?.start&&V.AdventureCombat!==V.Combat){
+ const start=V.AdventureCombat.start.bind(V.AdventureCombat);V.AdventureCombat.start=function(...args){
+  const result=start(...args);
+  M.ensure(['combat','actor:'+V.state.character],'Preparando o confronto');
+  return result;
+ };
+}
 const atlas=V.WorldAtlas?.open?.bind(V.WorldAtlas);if(atlas)V.WorldAtlas.open=function(...args){return M.ensure(['atlas-paper'],'Preparando o atlas',()=>atlas(...args));};
 // Browser-created thumbnails are also lazy; images in the active dialogue stay eager.
 const lazy=root=>{for(const img of root.querySelectorAll?.('img')||[]){if(img.closest('.dialogue-box,.player-chip,.duo-sidebar'))continue;img.loading='lazy';img.decoding='async';const original=img.getAttribute('src');if(original&&!img.dataset.deliveryResolved){img.dataset.deliveryResolved='true';const optimized=V.ImageFormats.resolve(original);if(optimized!==img.src){img.addEventListener('error',()=>{img.src=original;},{once:true});img.src=optimized;}}}};
 new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)lazy(node);}).observe(V.$('#modal-root'),{childList:true,subtree:true});
 })();
+
+});

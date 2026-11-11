@@ -1,3 +1,9 @@
+/* Registered module: duo-panels */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("duo-panels", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Native menus keep their existing actions, scoped to the person who opened them. */
 (function(){
 'use strict';
@@ -6,7 +12,7 @@ if(!D||V.DuoChallenges.isChild)return;
 const query=V.$,queryAll=V.$$;
 const P=V.DuoPanels={context:-1,eventOwner:-1,lastOwner:0,states:[{},{}],bound:null,
  enabled(){return D.enabled()&&V.Game.screen==='game'&&V.Game.mode==='explore'&&!V.SceneEditor?.active;},
- owner(focus=false){if(this.context>=0)return this.context;if(C?.currentOwner>=0)return C.currentOwner;if(this.eventOwner>=0)return this.eventOwner;if(C?.eventOwner>=0)return C.eventOwner;if(D.context>=0)return D.context;const root=focus&&document.activeElement?.closest?.('[data-duo-panel-player]');return root?+root.dataset.duoPanelPlayer:-1;},
+ owner(focus=false){if(this.context>=0)return this.context;if(C?.currentOwner>=0)return C.currentOwner;if(D.context>=0)return D.context;if(this.eventOwner>=0)return this.eventOwner;if(C?.eventOwner>=0)return C.eventOwner;const root=focus&&document.activeElement?.closest?.('[data-duo-panel-player]');return root?+root.dataset.duoPanelPlayer:-1;},
  root(i){this.mount();return this.states[i]?.root;},
  has(i){return !!this.states[i]?.root?.querySelector('.modal');},
  loading(i){return this.enabled()&&[...V.MapAssets.tasks].some(t=>t.duoPanelOwner===i);},
@@ -61,7 +67,7 @@ M.whenReady=async function(){await Promise.resolve();return new Promise(resolve=
 const add=EventTarget.prototype.addEventListener,remove=EventTarget.prototype.removeEventListener,listeners=new WeakMap();
 EventTarget.prototype.addEventListener=function(type,fn,options){const root=this.closest?.('[data-duo-panel-player]');if(!root||typeof fn!=='function')return add.call(this,type,fn,options);let map=listeners.get(this);if(!map)listeners.set(this,map=new Map());const capture=typeof options==='boolean'?options:!!options?.capture,key=type+':'+capture;let byType=map.get(key);if(!byType)map.set(key,byType=new WeakMap());let wrapped=byType.get(fn);if(!wrapped){const i=+root.dataset.duoPanelPlayer;wrapped=function(...args){return P.withOwner(i,()=>fn.apply(this,args));};byType.set(fn,wrapped);}return add.call(this,type,wrapped,options);};
 EventTarget.prototype.removeEventListener=function(type,fn,options){const capture=typeof options==='boolean'?options:!!options?.capture;return remove.call(this,type,listeners.get(this)?.get(type+':'+capture)?.get(fn)||fn,options);};
-for(const type of ['click','input','change','keydown','pointerdown','pointermove','pointerup','wheel'])document.addEventListener(type,e=>{const root=e.target.closest?.('[data-duo-panel-player]');if(!root||!P.enabled())return;const before=P.eventOwner;P.eventOwner=+root.dataset.duoPanelPlayer;queueMicrotask(()=>P.eventOwner=before);},true);
+for(const type of ['click','input','change','keydown','pointerdown','pointermove','pointerup','wheel'])document.addEventListener(type,e=>{const root=e.target.closest?.('[data-duo-panel-player]');if(!root||!P.enabled())return;const stamp=P.eventStamp=(P.eventStamp||0)+1;P.eventOwner=+root.dataset.duoPanelPlayer;queueMicrotask(()=>{if(stamp===P.eventStamp)P.eventOwner=-1;});},true);
 document.addEventListener('focusin',e=>{const root=e.target.closest?.('[data-duo-panel-player]');if(root)P.states[+root.dataset.duoPanelPlayer].focused=e.target;});
 for(const key of ['setTimeout','requestAnimationFrame']){const schedule=window[key];window[key]=function(fn,...args){const i=P.enabled()?P.owner():-1,state=V.state;return schedule.call(this,typeof fn==='function'&&i>=0&&P.has(i)?(...values)=>{if(V.state===state)P.withOwner(i,()=>fn(...values));}:fn,...args);};}
 const Observer=window.ResizeObserver;window.ResizeObserver=class extends Observer{constructor(fn){const i=P.enabled()?P.owner():-1,state=V.state;super(i>=0?(...args)=>{if(V.state===state&&P.enabled())P.withOwner(i,()=>fn(...args));}:fn);}};
@@ -70,3 +76,5 @@ const Observer=window.ResizeObserver;window.ResizeObserver=class extends Observe
 for(const[obj,keys]of [[V.Game,['onKey','interact','pause','settings','map','glossary','gallery']],[V.Quests,['inventory','journal','badges']],[V.ChallengeCatalog,['open','detail','render']],[V.WorldAtlas,['open']],[V.Living,['journal']],[V.Homestead,['panel','organize']],[V.Progress,['character']],[V.FishingChallenge,['open']]])for(const key of keys){if(typeof obj?.[key]!=='function')continue;const original=obj[key].bind(obj);obj[key]=function(...args){if(!P.enabled())return original(...args);const i=P.owner()>=0?P.owner():0;return P.context===i?original(...args):P.withOwner(i,()=>original(...args));};}
 const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){P.closeAll();const out=title(...args);P.reset();globalModal=false;return out;};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: challenge-catalog */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("challenge-catalog", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,K=V.CultureChallenges,A=V.LearningArcade,esc=V.escape;
@@ -19,3 +25,5 @@ P.stageMenu=id=>H.detail('play:'+id);
 A.menu=()=>H.open();
 A.legacyMenu=()=>H.open('workshops');
 })();
+
+});

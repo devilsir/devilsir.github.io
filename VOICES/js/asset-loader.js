@@ -1,3 +1,9 @@
+/* Registered module: asset-loader */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("asset-loader", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,source=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
@@ -26,3 +32,5 @@ V.Assets.image=()=>L.image();
 document.addEventListener('keydown',event=>{if(L.waiting&&event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();V.$('#asset-load-retry')?.focus();}},true);
 window.addEventListener('online',()=>{for(const r of L.records)if(r.state==='waiting')L.enqueue(r);});
 })();
+
+});

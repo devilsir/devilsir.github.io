@@ -1,3 +1,9 @@
+/* Registered module: menu-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("menu-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 const M=V.MenuArt={image:null,props:null,townAnimals:null,
@@ -12,3 +18,5 @@ const panel=V.FieldGuide.panel.bind(V.FieldGuide);V.FieldGuide.panel=function(o,
 // Keep original IDs and collision footprints; editor thumbnails use the HD crop.
 for(const a of V.sceneAssets||[]){if(a.path==='assets/tilesets/cozy-props.png'){a.path='assets/tilesets/cozy-props-polished.webp';a.width=1024;a.height=768;a.frameWidth=128;a.frameHeight=128;}}
 })();
+
+});

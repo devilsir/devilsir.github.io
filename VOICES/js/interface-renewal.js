@@ -1,3 +1,9 @@
+/* Registered module: interface-renewal */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("interface-renewal", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 const names=new Set(['inventory','journal','notebook','book','map','compass','pix','archive','settings','sound','teacher','scene','voice','challenges','leaf','profile','pin','science','music']);
@@ -15,3 +21,5 @@ const building=V.World.drawBuilding.bind(V.World);V.World.drawBuilding=function(
 const draw=V.NatureWorld.draw.bind(V.NatureWorld);V.NatureWorld.draw=function(c,o,cam){if(o.type==='nature-ranger')V.SceneShadows.contact(c,o.x-cam.x,o.y-cam.y,19,6,.2);if(o.type==='nature-prop'&&o.cerradoArt===undefined){const f=V.NatureArt.cell('habitats',o.row,o.col),image=V.NatureArt.images[f.sheet],cell=image?.naturalWidth/4;if(cell)V.SceneShadows.cast(c,image,o.x-cam.x,o.y-cam.y+10,o.w,o.h,{frame:[f.col*cell,f.row*cell,cell,cell],alpha:.15});}return draw(c,o,cam);};
 const natureFrame=V.NatureArt.frame.bind(V.NatureArt);V.NatureArt.frame=function(c,sheet,row,col,x,y,w,h){if((/^people(?:-game)?$/.test(sheet)&&row<3||/sanctuary-(?:staff|team-game)/.test(sheet))&&V.Game.screen==='game'&&!V.modal)V.SceneShadows.contact(c,x+w/2,y+h-3,w*.28,Math.max(3,h*.07),.17);return natureFrame(c,sheet,row,col,x,y,w,h);};
 })();
+
+});

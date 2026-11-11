@@ -1,3 +1,9 @@
+/* Registered module: editor-window-repair */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editor-window-repair", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function repairArchitecturalWindowSelection(){
 'use strict';
 const V=window.V,E=V.SceneEditor,A=V.Architecture,D=V.SceneDesign,T=48;
@@ -52,3 +58,5 @@ E.pointerCancel=function(e){if(this.drag?.kind==='architectural-window'){if(this
 // above the normal interior floor region (where the original hit test failed).
 E.paint=function(){prev.paint();if(!this.active||this.walk||this.selection?.kind!=='adv-window')return;const w=list(this).find(w=>w.id===this.selection.id);if(!w)return;const canvas=V.$('#editor-canvas');if(!canvas)return;const ctx=canvas.getContext('2d');ctx.save();ctx.translate(this.pan.x,this.pan.y);ctx.scale(this.zoom,this.zoom);ctx.setLineDash([6/this.zoom,4/this.zoom]);ctx.lineWidth=3/this.zoom;ctx.strokeStyle='#ffe4a2';ctx.strokeRect(w.x-3/this.zoom,w.y-3/this.zoom,w.w+6/this.zoom,w.h+6/this.zoom);ctx.setLineDash([]);ctx.fillStyle='#ffe4a2';for(const [x,y] of [[w.x,w.y],[w.x+w.w,w.y],[w.x,w.y+w.h],[w.x+w.w,w.y+w.h]])ctx.fillRect(x-4/this.zoom,y-4/this.zoom,8/this.zoom,8/this.zoom);ctx.restore();};
 })();
+
+});

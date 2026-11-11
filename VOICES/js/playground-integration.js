@@ -1,3 +1,9 @@
+/* Registered module: playground-integration */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-integration", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function playgroundIntegration(){
 'use strict';const V=window.V,P=V.Playground,D=V.PlaygroundData,G=V.Onboarding,T=V.Tutorials,M=V.Minigames,A=V.LearningArcade,K=V.CultureChallenges,R=V.AncestralActivities,W=V.NeighborhoodWorkshops;
 const classic={beat:'rhythm',timeline:'courier',evidence:'courier',bias:'runner',city:'bridges',runner:'runner',wires:'bridges'},culture={loom:'bridges',press:'courier',stage:'rhythm',oware:'bridges'},arcade={furniture:'room',courier:'courier',restoration:'courier',timeline:'courier'};
@@ -39,3 +45,5 @@ const title=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){P.detac
 // Old tutorial links in scenery open the corresponding new hands-on training.
 const tutorial=T.open.bind(T);T.open=function(key,replay){const [family,id]=key.split(':');if(['culture','arcade','roots'].includes(family)&&T.definitions[key])return tutorial(key,replay);let game=family==='classic'?classic[id]:family==='culture'?culture[id]:family==='arcade'?arcade[id]||id:family==='workbench'?id==='sequence'?'rhythm':id==='experiment'?'garden':'courier':null;if(game&&P.game(game)){P.train(game,{restart:!!replay,returnHelp:true});return true;}if(family==='roots'){P.train('courier',{restart:!!replay,returnHelp:true});return true;}return tutorial(key,replay);};
 })();
+
+});

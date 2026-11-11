@@ -1,3 +1,9 @@
+/* Registered module: translation-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("translation-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,data=V.translationContent,C=V.Cozy;
 const key=s=>String(s||'').normalize('NFC').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g,' ').trim();
@@ -22,3 +28,5 @@ C.compose=function(m){compose(m);V.Translation.chats(m);};
 C.ensure=function(){ensure();V.Translation.history();};
 V.Dialogue.history=function(){V.Translation.history();return history();};
 })();
+
+});

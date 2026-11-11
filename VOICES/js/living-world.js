@@ -1,3 +1,9 @@
+/* Registered module: living-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("living-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V = window.V;
@@ -5,6 +11,19 @@
   const esc = s => V.escape(s);
   const animalNames = ['Cão da praça', 'Gato da biblioteca', 'Pombo', 'Passarinho', 'Pato', 'Borboleta'];
   const animalBehaviors = ['fareja o caminho e descansa à sombra', 'observa o movimento e se espreguiça', 'caminha perto dos bancos', 'pousa nas árvores do parque', 'passeia perto do lago', 'voa sobre os canteiros'];
+  const townMotion={file:'assets/characters/town-animal-motion.webp',rows:[0,1,2,4,6,7],sizes:[49,43,36,36,44,29]};
+  const loadAssets=V.Assets.load.bind(V.Assets);
+  V.Assets.load=async function(...args){
+    const sprite=new Promise(resolve=>{
+      const img=V.Assets.image();
+      img.onload=()=>{this.images.townAnimals=img;resolve();};
+      img.onerror=()=>{this.errors.push(townMotion.file);resolve();};
+      img.src=townMotion.file;
+      V.AssetLoader.register(img,resolve);
+    });
+    const [result]=await Promise.all([loadAssets(...args),sprite]);
+    return result;
+  };
   const locations = {hub:'Praça das Vozes',library:'Biblioteca',park:'Parque das Pontes',market:'Feira das Histórias',garden:'Horta Comunitária'};
   const mainJournal = V.Quests.journal.bind(V.Quests);
   const baseInit = V.World.init.bind(V.World);
@@ -30,6 +49,48 @@
 
   V.Living = {
     missions, ready:false, uiTab:'missions', walkingTime:0,
+    townAnimalPose(o){
+      const reduced=V.settings.reducedMotion||V.settings.npcMovement===false;
+      const time=(o.walkClock??this.walkingTime??0)+(o.x%83)*.021;
+      const birds=o.species===2||o.species===3;
+      const butterfly=o.species===5,swimming=o.species===4&&!!V.World.current?.pond;
+      const flight=reduced?0:o.townFlight||0;
+      let frame=0,lift=0;
+      if(!reduced){
+        if(butterfly){
+          frame=Math.floor(time*(o.walking?12:5))%4;
+          lift=o.walking?8+Math.sin(time*5)*3:2;
+        }else if(flight>.025){
+          frame=flight<.42?5:6+Math.floor(time*9)%2;
+          lift=flight*(o.species===3?15:11);
+        }else if(o.walking&&!swimming){
+          frame=[1,0,2,0][Math.floor(time*(birds?8:6))%4];
+        }else{
+          const beat=time%5.6;
+          frame=beat>3.75&&beat<4.65?(birds&&Math.floor(beat*9)%2?4:3):birds&&beat>2.3&&beat<2.7?4:0;
+          if(swimming)lift=Math.sin(time*2.6)*1.25;
+        }
+      }
+      return {frame,lift,swimming};
+    },
+    drawTownAnimal(ctx,o,x,y){
+      const row=townMotion.rows[o.species];
+      if(row===undefined)return;
+      const img=V.Assets.images.townAnimals,size=townMotion.sizes[o.species],{frame,lift,swimming}=this.townAnimalPose(o);
+      if(swimming){
+        ctx.save();ctx.strokeStyle='#d3ece190';ctx.lineWidth=1;ctx.beginPath();
+        ctx.ellipse(x,y+2,13+lift,3.2,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+      }else V.SceneShadows?.contact(ctx,x,y+3,size*.24,3.3,.22-lift*.008);
+      ctx.save();ctx.translate(Math.round(x),Math.round(y-lift));ctx.imageSmoothingEnabled=false;
+      if(V.FieldGuide.flip(o))ctx.scale(-1,1);
+      if(V.Assets.ready(img)){
+        const visible=swimming?49:64;
+        ctx.drawImage(img,frame%4*64,(row+Math.floor(frame/4))*64,64,visible,-size/2,-size*(swimming?.765:.89),size,size*visible/64);
+      }else if(V.Assets.ready(V.Assets.images.animals)){
+        ctx.drawImage(V.Assets.images.animals,(o.walking?o.frame%4:0)*32,o.species*32,32,32,-size/2,9-size,size,size);
+      }
+      ctx.restore();
+    },
     initContent() {
       if (this.ready) return;
       this.ready = true;
@@ -196,7 +257,7 @@
         const m=V.World.maps[chat.map];if(!m)return;
         const p=this.safe(m,m.theme==='room'?15:10+i%4,m.theme==='room'?13:12+i%5);
         const group={id:chat.id,chat,clock:i*1.9,meet:{x:p.x*T+24,y:p.y*T+24},members:[]};
-        chat.speakers.forEach((character,j)=>{const o=this.add(m,'ambient','chat-'+chat.id+'-'+j,p.x+j*2,p.y,'Ouvir conversa: '+(V.content.characters[character]?.name||'morador'),{character,group:chat.id,chat,member:j});group.members.push(o);});
+        chat.speakers.forEach((character,j)=>{const o=this.add(m,'ambient','chat-'+chat.id+'-'+j,p.x+j*2,p.y,V.content.characters[character]?.name||'Morador',{character,group:chat.id,chat,member:j});group.members.push(o);});
         m.chats.push(group);
       });
     },
@@ -240,6 +301,10 @@
     nav(tab) {return `<nav class="tabs living-tabs">${[['quests','Investigação'],['missions','Comunidade'],['readings','Livros e notas'],['field','Caderno de campo']].map(([id,label])=>`<button data-notebook-tab="${id}" class="${tab===id?'active':''}">${label}</button>`).join('')}</nav>`;},
     bindNav() {V.$$('[data-notebook-tab]').forEach(b=>b.onclick=()=>this.journal(b.dataset.notebookTab));},
     journal(tab='quests') {
+      if(tab==='chronicles'){
+        const previous=V.$('.living-tabs .active')?.dataset.notebookTab||'readings';
+        return V.CityChronicle.open(V.World.current?.id,()=>this.journal(previous));
+      }
       this.ensure();this.uiTab=tab;
       if(tab==='quests'){mainJournal();const body=V.$('.modal-body');body.innerHTML=this.nav(tab)+body.innerHTML;this.bindNav();return;}
       let body='';
@@ -305,9 +370,11 @@
       const texts=isNote?r.paragraphs:[r.paragraphs[page]];
       const sources=r.sourceIds.map(sid=>V.content.sources.find(s=>s.id===sid)).filter(Boolean);
       const cover=V.Interface?.cover(r)||'history';
-      V.UI.modal(r.title,(isNote?'NOTA ENCONTRADA':'LIVRO · PÁGINA '+(page+1)+'/'+r.paragraphs.length)+' / '+r.theme,`<div class="reader-spread"><aside class="reader-cover"><img class="book-cover-art" src="assets/ui/interface/${isNote?'note':'cover'}-${cover}.svg" alt="" aria-hidden="true" width="128" height="160"><small>${isNote?'NOTA DO BAIRRO':'ACERVO DE NEW HARMONY'} · ${esc(r.theme)}</small><h3>${esc(r.title)}</h3><p>${V.state.readings.includes(r.id)?'✓ Leitura registrada no seu caderno.':'Leia e guarde esta descoberta para consultar depois.'}</p>${!isNote?`<nav class="reader-index" aria-label="Páginas desta leitura">${r.paragraphs.map((t,i)=>`<button data-reader-page="${i}" aria-current="${i===page?'page':'false'}">${String(i+1).padStart(2,'0')} · ${esc(t.split(/[.!?]/)[0].slice(0,46))}${t.split(/[.!?]/)[0].length>46?'…':''}</button>`).join('')}</nav>`:''}<div class="reader-origin"><small>${esc(r.author)}</small>${sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a>`).join('')}</div></aside><article class="reader-paper"><div class="reader-mark">VOICES · HISTÓRIAS PARA CONHECER E CONFERIR</div>${texts.map(t=>`<p>${esc(t)}</p>`).join('')}<div class="reader-page-number"><span>${isNote?'NOTA ENCONTRADA':'LEITURA DO ARQUIVO VIVO'}</span><span>${isNote?'REGISTRO ÚNICO':(page+1)+' / '+r.paragraphs.length}</span></div></article></div>`,`<button id="reader-back" class="secondary">${page>0&&!isNote?'← Página anterior':'Voltar ao mundo'}</button>${last?'<button id="reader-save" class="primary">Registrar no caderno ✓</button>':'<button id="reader-next" class="primary">Próxima página →</button>'}`,true);
+      const biography=V.MuseumBiographies.forReading(id);
+      V.UI.modal(r.title,(isNote?'NOTA ENCONTRADA':'LIVRO · PÁGINA '+(page+1)+'/'+r.paragraphs.length)+' / '+r.theme,`<div class="reader-spread"><aside class="reader-cover"><img class="book-cover-art" src="assets/ui/interface/${isNote?'note':'cover'}-${cover}.svg" alt="" aria-hidden="true" width="128" height="160"><small>${isNote?'NOTA DO BAIRRO':'ACERVO DE NEW HARMONY'} · ${esc(r.theme)}</small><h3>${esc(r.title)}</h3><p>${V.state.readings.includes(r.id)?'✓ Leitura registrada no seu caderno.':'Leia e guarde esta descoberta para consultar depois.'}</p>${!isNote?`<nav class="reader-index" aria-label="Páginas desta leitura">${r.paragraphs.map((t,i)=>`<button data-reader-page="${i}" aria-current="${i===page?'page':'false'}">${String(i+1).padStart(2,'0')} · ${esc(t.split(/[.!?]/)[0].slice(0,46))}${t.split(/[.!?]/)[0].length>46?'…':''}</button>`).join('')}</nav>`:''}<div class="reader-origin"><small>${esc(r.author)}</small>${sources.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a>`).join('')}</div></aside><article class="reader-paper"><div class="reader-mark">VOICES · HISTÓRIAS PARA CONHECER E CONFERIR</div>${texts.map(t=>`<p>${esc(t)}</p>`).join('')}<div class="reader-page-number"><span>${isNote?'NOTA ENCONTRADA':'LEITURA DO ARQUIVO VIVO'}</span><span>${isNote?'REGISTRO ÚNICO':(page+1)+' / '+r.paragraphs.length}</span></div></article></div>`,`<button id="reader-back" class="secondary">${page>0&&!isNote?'← Página anterior':'Voltar ao mundo'}</button>${biography?'<button id="reader-biography" class="secondary">Ler biografia</button>':''}${last?'<button id="reader-save" class="primary">Registrar no caderno ✓</button>':'<button id="reader-next" class="primary">Próxima página →</button>'}`,true);
       V.$('.modal').dataset.readerKind=isNote?'note':'book';
       V.$$('[data-reader-page]').forEach(b=>b.onclick=()=>this.read(id,+b.dataset.readerPage,returnTo));
+      if(biography)V.$('#reader-biography').onclick=()=>V.MuseumBiographies.open(biography,()=>this.read(id,page,returnTo));
       V.$('#reader-back').onclick=()=>page>0&&!isNote?this.read(id,page-1,returnTo):returnTo?returnTo():V.UI.close();
       if(V.$('#reader-next'))V.$('#reader-next').onclick=()=>this.read(id,page+1,returnTo);
       if(V.$('#reader-save'))V.$('#reader-save').onclick=()=>{
@@ -454,8 +521,7 @@
         if(marker&&(near||o.type!=='ambient'))this.marker(ctx,x,y,marker,o.type==='resident'?'#a0dfa1':t.accent);
         if(o.bubble&&V.settings.npcChats!==false&&V.settings.subtitles)this.bubble(ctx,o.bubble,x,y-79);
       } else if(o.type==='animal') {
-        const img=V.Assets.images.animals;const size=o.species===5?34:o.species===2||o.species===3?38:46;
-        if(img){ctx.save();if(V.FieldGuide.flip(o)){ctx.translate(x,y);ctx.scale(-1,1);ctx.drawImage(img,o.frame*32,o.species*32,32,32,-size/2,-size+9,size,size);}else ctx.drawImage(img,o.frame*32,o.species*32,32,32,x-size/2,y-size+9,size,size);ctx.restore();}
+        this.drawTownAnimal(ctx,o,x,y);
         if(near)this.marker(ctx,x,y,'◎','#f4b85a');
       } else if(o.type==='reading') {
         V.Assets.prop(ctx,o.prop,x-24,y-36,48);this.marker(ctx,x,y,V.state.readings.includes(o.id)?'✓':o.reading.kind==='book'?'L':'N','#f4b85a');
@@ -475,7 +541,7 @@
     },
     render(ctx) {
       const W=V.World,m=W.current;if(!m)return;this.ensure();const cam=W.camera,t={accent:m.chapter?V.content.chapters[m.chapter-1].color:'#59d9dd'};
-      if(!m.cache)this.ground(m);ctx.fillStyle='#19293b';ctx.fillRect(0,0,960,540);ctx.drawImage(m.cache,Math.round(-cam.x),Math.round(-cam.y));
+      if(!m.cache)this.ground(m);ctx.fillStyle='#19293b';ctx.fillRect(0,0,960,540);V.GroundCache.draw(ctx, m.cache, Math.round(-cam.x), Math.round(-cam.y));
       m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));if(m.id==='hub')W.drawFountain(ctx,cam);
       if(m.pond){const p=m.pond;ctx.strokeStyle='#8dc9d477';ctx.lineWidth=2;for(let i=0;i<7;i++){const x=(p.x+.8+(i%3)*1.5)*T-cam.x,y=(p.y+.7+Math.floor(i/3)*1.3)*T-cam.y;ctx.beginPath();ctx.ellipse(x,y,12+Math.sin(V.Engine.time+i)*4,4,0,0,Math.PI*2);ctx.stroke();}}
       const draws=m.decor.map(o=>({y:o.y+T,kind:'decor',o})).concat(m.objects.map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);
@@ -502,3 +568,5 @@
   V.World.drawMiniMap=function(){baseMini();const m=this.current,ctx=V.$('#minimap').getContext('2d'),sx=128/(m.width*T),sy=88/(m.height*T);m.objects.filter(o=>['reading','resident','workbench','travel'].includes(o.type)).forEach(o=>{ctx.fillStyle=o.type==='reading'?'#f4b85a':o.type==='travel'?'#b18aff':'#a0dfa1';ctx.fillRect(o.x*sx-1,o.y*sy-1,3,3);});};
   V.Quests.journal=()=>V.Living.journal('quests');
 })();
+
+});

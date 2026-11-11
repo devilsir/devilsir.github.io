@@ -1,3 +1,9 @@
+/* Registered module: transit-routing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("transit-routing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,F=V.FastTravel,W=V.World;
 V.defaultSettings.fastTravelRequirements=false;
@@ -15,3 +21,5 @@ const ticket=V.SeaVoyage.ticket.bind(V.SeaVoyage);V.SeaVoyage.ticket=function(to
 const begin=V.SeaVoyage.begin.bind(V.SeaVoyage);V.SeaVoyage.begin=function(...args){const owner=R.owner(),result=begin(...args);if(result&&V.state){R.store(null,owner);V.Save.save();}return result;};
 const settings=V.Game.settings.bind(V.Game);V.Game.settings=function(...args){const out=settings(...args),host=V.$('.modal-body');if(host){const section=document.createElement('section');section.className='card transit-preferences';section.innerHTML='<h3>Viagens e travessias</h3><label class="toggle"><input id="s-travel-requirements" type="checkbox" '+(V.settings.fastTravelRequirements===true?'checked':'')+'> Exigir a travessia de barco entre Brasil e África</label><p>Desativado por padrão. Ativado: a viagem rápida leva ao porto; você embarca no Horizonte e continua até o lugar escolhido.</p>';host.append(section);const save=V.$('#settings-apply'),apply=save.onclick;save.onclick=()=>{V.settings.fastTravelRequirements=V.$('#s-travel-requirements').checked;apply();};}return out;};
 })();
+
+});

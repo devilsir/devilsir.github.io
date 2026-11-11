@@ -1,3 +1,9 @@
+/* Registered module: furnishings-world */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("furnishings-world", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x)),previous={load:V.Assets.load.bind(V.Assets),prop:C.prop.bind(C)};
 for(const a of V.furnishingsAssets)if(Array.isArray(a.solidFootprint)&&typeof a.solidFootprint[0]==='number'){const[x,y,width,height]=a.solidFootprint;a.solidFootprint=[{x,y,width,height}];}
@@ -30,3 +36,5 @@ V.Furnishings={plans,placements:records};D.defaults=copy(C.layouts);
 C.prop=function(ctx,family,index,x,y,size=T,materials=null){if(family!=='furnishings')return previous.prop(ctx,family,index,x,y,size,materials);const colored=V.EditorMaterials.tinted(family,index,materials),img=V.Assets.images['furnishings-props'];if(colored)ctx.drawImage(colored,Math.round(x),Math.round(y),size,size);else if(img)ctx.drawImage(img,index%8*32,Math.floor(index/8)*32,32,32,Math.round(x),Math.round(y),size,size);};
 V.Assets.load=async function(){await Promise.all([previous.load(),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images['furnishings-props']=img;resolve();};img.onerror=()=>{this.errors.push('assets/tilesets/furnishings-props.png');resolve();};img.src='assets/tilesets/furnishings-props.png';}),new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{V.EditorMaterials.images.furnishings=img;resolve();};img.onerror=()=>{this.errors.push('Cores dos móveis do bairro');resolve();};img.src=V.furnishingsMaterialSources.furnishings;})]);return this.errors;};
 })();
+
+});

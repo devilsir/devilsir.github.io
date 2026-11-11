@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),meta=require('../assets/cooking/generation-interiors.json');
 // Reuse the production silhouette packer; originals stay in generated_images.
 const source=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8');

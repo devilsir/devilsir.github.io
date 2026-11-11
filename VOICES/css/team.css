@@ -1,0 +1,68 @@
+.team-icon {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+  background: url("../assets/adventure/turn-interface/team-icons.webp") var(--team-x) var(--team-y) / 400% 400% no-repeat;
+  image-rendering: pixelated;
+}
+.team-modal { width: min(1140px,100%); }
+.team-modal .modal-body { color: #f5e8cc; background: #213d34; }
+.team-modal .character-tabs { margin-bottom: 14px; }
+.team-modal h3 { margin: 0; }
+.team-formation-head { display: flex; justify-content: space-between; align-items: center; margin: 4px 0 10px; }
+.team-formation-head b { color: #f1d191; }
+.team-slots { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; }
+.team-slot { min-width: 0; min-height: 124px; display: grid; grid-template-rows: 1fr auto; text-align: center; background: #172f29; border: 1px solid #6d8a77; border-radius: 9px; overflow: hidden; }
+.team-slot.is-selected { border-color: #f0ce8a; box-shadow: inset 0 0 0 1px #f0ce8a; }
+.team-slot-unit { display: grid; width: 100%; min-width: 0; justify-items: center; padding: 7px 5px; gap: 2px; color: #f9ebcd; background: none; border: 0; }
+.team-slot-unit b,.team-roster b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.team-slot-unit small,.team-roster small { color: #c8ddbd; font-size: .72rem; }
+.team-slot-empty { align-content: center; grid-template-rows: auto auto; gap: 6px; border-style: dashed; color: #c6d6c5; }
+.team-slot-empty span { color: #f0d098; font: 600 1.45rem Georgia,serif; }
+.team-order { display: flex; justify-content: center; gap: 6px; padding-bottom: 5px; }
+.team-order button { min-width: 36px; min-height: 32px; padding: 2px; color: #f6e5be; background: #2f5246; border: 1px solid #799284; border-radius: 5px; }
+.team-workbench { display: grid; grid-template-columns: minmax(190px,.84fr) minmax(0,1.16fr); gap: 16px; margin-top: 16px; }
+.team-roster { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(165px,100%),1fr)); gap: 6px; margin-top: 8px; }
+.team-roster button { display: grid; grid-template-columns: 44px minmax(0,1fr); align-items: center; gap: 6px; text-align: left; min-height: 56px; color: #f6e6c5; background: #2b493d; border: 1px solid #71917a; border-radius: 7px; padding: 5px; }
+.team-roster button > span { display: grid; min-width: 0; gap: 3px; }
+.team-roster button[aria-pressed="true"],.team-roster button:hover { background: #3d5e4e; border-color: #f0cc86; }
+.team-member-profile { min-width: 0; display: grid; gap: 8px; align-content: start; padding: 12px; border-radius: 9px; color: #263f33; background: #f2e7cb; }
+.team-member-profile header,.team-brief { display: flex; align-items: center; gap: 12px; }
+.team-member-profile .portrait { flex: 0 0 64px; width: 64px !important; height: 64px !important; }
+.team-member-profile header small { font-weight: 700; color: #386054; }
+.team-skill { display: grid; grid-template-columns: 31px minmax(0,1fr); gap: 9px; padding: 8px 0; border-top: 1px solid #b7ad8c; }
+.team-skill p,.team-caption { margin: 3px 0; line-height: 1.45; }
+.team-skill small { color: #496050; }
+.team-member-profile #team-toggle-member { justify-self: start; min-height: 42px; color: #fff3d7; background: #2d6352; border-color: #245241; }
+.team-recruit-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(240px,100%),1fr)); gap: 10px; }
+.team-recruit-card { display: grid; grid-template-columns: 68px minmax(0,1fr); gap: 10px; align-items: start; padding: 11px; background: #2b4a3e; border: 1px solid #8ca48b; border-radius: 9px; }
+.team-recruit-card small { color: #e6d5a2; }
+.team-recruit-card h3 { margin: 4px 0; }
+.team-recruit-card p { margin: 2px 0 9px; }
+.team-recruit-card .secondary { min-height: 40px; color: #223e32; background: #f0e3bd; border-color: #c0b493; }
+.team-feedback { margin: 10px 0; font-weight: 700; }
+.team-brief .portrait { flex: 0 0 auto; }
+.turn-team.turn-team-expanded { grid-template-columns: repeat(2,minmax(0,1fr)); grid-auto-flow: row; }
+.turn-team-expanded .turn-member { gap: 4px; padding: 2px 4px; }
+.turn-team-expanded .turn-face { width: 29px; height: 29px; }
+.turn-team-expanded .turn-meter > b small { display: none; }
+.turn-team-expanded .turn-meter { grid-template-columns: 9px minmax(0,1fr) auto; }
+.turn-tray-list .team-icon { width: 30px; height: 30px; }
+@media (max-width: 860px) {
+  .team-slots { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .duo-modal-root .team-workbench { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 590px) {
+  .team-workbench { grid-template-columns: minmax(0,1fr); }
+  .team-slot { min-height: 109px; }
+  .team-slot-unit .portrait { width: 46px !important; height: 46px !important; }
+  .battle-console:has(.turn-team-expanded) { --turn-dock: clamp(217px,46%,268px); }
+  .turn-dock:has(.turn-team-expanded) { grid-template-rows: 72px minmax(0,1fr) 39px; }
+  .turn-team.turn-team-expanded { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .turn-team-expanded .turn-face { width: 23px; height: 23px; }
+}
+@media (max-height: 530px) and (min-width: 591px) {
+  .turn-team.turn-team-expanded { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}

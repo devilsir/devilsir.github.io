@@ -14,6 +14,19 @@
 .culture-interview{display:flex;gap:20px;align-items:center;margin:12px 0 24px}.culture-interview p{font-size:.92rem;line-height:1.6}.culture-interview small{color:#716b55}
 .culture-reading-art{display:flex;align-items:center;gap:16px;margin:20px 0;padding:14px;background:#d4ba821a;border:1px solid #b9a47755;border-radius:8px}.culture-reading-art .culture-art{width:112px;height:112px;flex:0 0 112px}.culture-reading-art figcaption{font-size:.82rem;line-height:1.55;color:#605c48}
 .culture-reading-button{min-height:120px}
+.culture-detail:has(.culture-dossier){align-items:start}
+.culture-studies{margin:1.75rem 0 2rem}
+.culture-study-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:12px}
+.culture-study.secondary{display:grid;gap:6px;align-content:start;min-height:116px;text-align:left;padding:15px;background:#29463e;color:#f8ebcd;border:1px solid #90a58c;border-radius:9px}
+.culture-study.secondary:is(:hover,:focus-visible){background:#37594c;color:#fff2d3;border-color:#efd09a}
+.culture-study small{color:#d0dfc5;line-height:1.35}
+.culture-study strong{font-size:1rem;line-height:1.35}
+.culture-study span{color:#ecdfc4;font-size:.86rem;line-height:1.5}
+.culture-dossier{max-width:78ch;margin:1.2rem 0 1.6rem}
+.culture-dossier section{padding:.65rem 0;border-top:1px solid #a0936d65}
+.culture-dossier section h3{margin:.25rem 0;font-size:1.05rem}
+.culture-dossier section p{margin:.25rem 0 .55rem;font-size:1rem;line-height:1.68}
+.culture-study-lead{font-size:1.12rem;line-height:1.6}
 .high-contrast .culture-card,.high-contrast .culture-topic,.high-contrast .culture-match-tab,.high-contrast .culture-match-item{background:#fff2ca;color:#162e25;border-color:#244b3b}.high-contrast .culture-card small,.high-contrast .culture-detail small,.high-contrast .culture-reading-art figcaption{color:#344b38}
 .reduced-motion .culture-card:hover,.reduced-motion .culture-card:focus-visible{transform:none}
 @media(max-width:900px){.culture-topics{grid-template-columns:repeat(3,1fr)}.culture-design{grid-template-columns:minmax(200px,280px) 1fr}}

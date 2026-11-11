@@ -1,3 +1,9 @@
+/* Registered module: cooking-hud */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-hud", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,K=V.JourneyCare;
@@ -7,3 +13,5 @@ function paint(root,list){if(!root)return;root.classList.add('care-icons');const
 const hud=K.hud.bind(K);K.hud=function(){hud();if(!V.state)return;const life=V.state.adventure?.life;if(!life)return;if(K.duo()){V.DuoWorld.root?.querySelectorAll('.care-player-hud').forEach((root,i)=>{const own=life.carePlayers?.[i]||life;paint(root,values(life.coins,Math.ceil(own.food??100),Math.ceil(own.water??100),Math.ceil(own.energy??100)));});}else paint(V.$('#life-hud'),values(life.coins,Math.ceil(life.food),Math.ceil(life.water),Math.ceil(life.energy)));};
 const shop=V.Markets.shop.bind(V.Markets);V.Markets.shop=function(...args){const out=shop(...args),wallet=V.$('[data-market-wallet]');if(wallet){wallet.classList.add('cooking-wallet');wallet.insertAdjacentHTML('afterbegin',icon('coin'));}return out;};
 })();
+
+});

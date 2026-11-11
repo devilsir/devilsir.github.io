@@ -1,3 +1,9 @@
+/* Registered module: sprite-editor */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("sprite-editor", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const catalog=window.VOICES_SPRITES||[];
@@ -131,3 +137,5 @@ if(parentProfessor()){let announced=false;const ready=()=>{if(announced)return;a
 
 $('export-zip').disabled=true;categories();listAssets();if(catalog.length)selectAsset(catalog.find(a=>a.path==='assets/characters/nia.png')||catalog[0]);
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: field-guide */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("field-guide", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function fieldGuide(){
 'use strict';
 const V=window.V,esc=V.escape;
@@ -46,3 +52,5 @@ V.FieldGuide={
 };
 for(const source of sources)if(!V.content.sources.some(s=>s.id===source.id))V.content.sources.push(source);
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: cultural-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cultural-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';window.V.culturalContent={
   "sources": [
     {
@@ -1862,4 +1868,207 @@
       ]
     }
   ]
-};})();
+};
+
+const data=window.V.culturalContent;
+data.sources.push(
+  {id:'notebook-kente',name:'UNESCO · Saberes da tecelagem do kente',url:'https://ich.unesco.org/en/RL/craftsmanship-of-traditional-woven-textile-kente-02130'},
+  {id:'notebook-asante',name:'The Met · Kente real Asante-Akan',url:'https://www.metmuseum.org/art/collection/search/894795'},
+  {id:'notebook-ewe',name:'The Met · Tecidos africanos e kente Ewe',url:'https://resources.metmuseum.org/resources/metpublications/pdf/The_Essential_Art_of_African_Textiles_Design_Without_End.pdf'},
+  {id:'notebook-bogolan',name:'The Met · Bògòlanfini Bamana',url:'https://www.metmuseum.org/art/collection/search/312395'},
+  {id:'notebook-prints',name:'Smithsonian · Panos comemorativos e o fotógrafo S. O. Alonge',url:'https://africa.si.edu/exhibitions/chief-so-alonge-photographer-royal-court-benin-nigeria'},
+  {id:'notebook-tabuleiro',name:'Iphan · Ofício das Baianas de Acarajé',url:'https://bcr.iphan.gov.br/bens-culturais/oficio-das-baianas-de-acaraje/'},
+  {id:'notebook-bahia',name:'Iphan · Patrimônio imaterial na Bahia',url:'https://www.gov.br/iphan/pt-br/superintendencias/bahia/patrimonio-imaterial'},
+  {id:'notebook-ceebu',name:'UNESCO · Ceebu Jën, arte culinária do Senegal',url:'https://ich.unesco.org/en/RL/ceebu-jen-a-culinary-art-of-senegal-01748'},
+  {id:'notebook-attieke',name:'UNESCO · Saberes do attiéké na Costa do Marfim',url:'https://ich.unesco.org/en/RL/skills-related-to-attieke-production-in-cote-d-ivoire-02086'},
+  {id:'notebook-samba',name:'UNESCO · Samba de roda do Recôncavo Baiano',url:'https://ich.unesco.org/en/RL/samba-de-roda-of-the-reconcavo-of-bahia-00101'},
+  {id:'notebook-salon',name:'Smithsonian · Entrevista com Wanda Henderson',url:'https://folklife.si.edu/talkstory/the-politics-of-hair-expressing-identity-strengthening-community'}
+);
+
+data.notes={
+  'hair-nago': [
+    ['Técnica e circulação','No Brasil, nagô também aparece no vocabulário histórico ligado a povos iorubás e a comunidades afro-brasileiras. O nome popular da trança não identifica a origem de cada desenho. Técnicas rente ao couro cabeludo circulam em diferentes comunidades africanas e da diáspora. Em fontes em inglês, procure também por cornrows.'],
+    ['Variações','Fileiras podem seguir retas, curvas ou combinar espessuras. A profissional decide onde dividir e adicionar cabelo para mudar a direção do desenho. Observe como a trança chega até a nuca ou se une a um coque.']
+  ],
+  'hair-box-braids': [
+    ['Do salão à rua','O nome em inglês costuma remeter às divisões quadradas na raiz. Trançar o cabelo em mechas individuais tem histórias em várias comunidades africanas e afro-diaspóricas. O nome usado hoje em salões descreve uma técnica e um desenho.'],
+    ['Variações','As bases podem ser triangulares ou arredondadas. Comprimento, espessura, cor e uso de fibras variam de acordo com a pessoa e o trabalho da trancista. Divisões menores costumam criar mais unidades e prolongar o tempo de execução.']
+  ],
+  'hair-twists': [
+    ['Técnica','Um twist de duas mechas mantém uma torção visível como a de uma corda. Pode ficar solto, começar rente ao couro cabeludo ou ser desfeito depois para deixar ondas. Comprimento e acabamento mudam com o cabelo, a divisão das mechas e a intenção de quem usa.'],
+    ['Aprendizagem','Em salões, oficinas e entre familiares, a técnica é aprendida vendo onde a mão prende a mecha e como a tensão é distribuída. O nome em inglês circula entre comunidades e profissionais de vários países.']
+  ],
+  'hair-locs': [
+    ['Formação e cuidado','As mechas se consolidam gradualmente. Podem ser iniciadas com torções ou outras técnicas, e variar de espessura, comprimento e divisão. O profissional Kelo Williams, entrevistado pelo Smithsonian, transformou o conhecimento de cuidar de locs em trabalho de salão e ensino.'],
+    ['Usos','Pessoas escolhem locs por estética, praticidade, identidade ou por vínculos culturais e espirituais. O relato de Williams sobre discriminação no trabalho ajuda a entender por que a liberdade de usar o próprio cabelo é também uma questão social.']
+  ],
+  'hair-afro': [
+    ['Um símbolo em seu tempo','Durante as lutas por direitos civis e afirmação negra nos Estados Unidos, o volume natural ganhou espaço em fotografias, manifestações e na moda. Usar o afro podia tornar pública uma recusa a padrões que desvalorizavam os cabelos crespos.'],
+    ['Variações e objetos','O contorno pode ser redondo, alongado, assimétrico ou desenhado com o corte. O pente de dentes longos permite levantar a raiz sem desfazer toda a textura. Cada pessoa escolhe o acabamento e a maneira de usar seu cabelo.']
+  ],
+  'wrap-front-knot': [
+    ['Autoria em Salvador','Na mostra de Negra Jhô, o pano ganha volume, movimento e autoria. Um nó na frente concentra o tecido acima da testa e altera a silhueta. Uma artista pode variar o volume usando a largura do pano, a firmeza da fibra e o número de voltas.'],
+    ['Onde aparece','Em Salvador, amarrações de cabeça aparecem em contextos variados, da indumentária de baianas a salões, passarelas e festas. Uma peça pode proteger o cabelo, completar um traje ou ter um sentido religioso que a própria comunidade explica.']
+  ],
+  'wrap-side-fold': [
+    ['Como o desenho muda','Ao concentrar o volume perto da orelha, a dobra lateral muda o equilíbrio visual do traje. O mesmo pano rende uma silhueta mais baixa ou alta conforme a largura das dobras e a posição das pontas. Tecidos leves caem, enquanto tecidos encorpados sustentam vincos.'],
+    ['Histórias próprias','Compare a criação de Negra Jhô com o torso usado por baianas tradicionais. O primeiro caso permite estudar uma artista e uma exposição. O segundo faz parte de um ofício com histórias de trabalho, devoção e transmissão em família.']
+  ],
+  'wrap-band': [
+    ['Variações do cotidiano','A faixa pode ser uma tira costurada ou um pano maior dobrado até virar uma banda estreita. Dependendo da largura, cobre a linha do cabelo, prende as mechas ou deixa o volume todo à vista. A posição do fecho muda o efeito sem mudar o material.'],
+    ['Como descrever','Em uma legenda, registre as cores, o tamanho e a maneira como o pano se apoia na cabeça. A história do material e o significado de usar a faixa podem ser completados pela pessoa que a escolheu ou produziu.']
+  ],
+  'clothes-cardigan': [
+    ['Construção','Neste desenho, a abertura frontal facilita combinar camadas e usar os bolsos sem levantar a barra. Cardigãs podem ser tricotados em malha grossa ou leve, levar botões ou ficar abertos. A peça da ficha foi criada para vestir personagens no cotidiano de New Harmony.'],
+    ['Autoria','Uma roupa de uso comum também carrega escolhas de quem a fez e de quem a usa. Observe os bolsos, os punhos e as cores. A ficha de uma roupa real pode indicar ateliê, data, material e ocasião para recuperar essas decisões.']
+  ],
+  'clothes-printed-blouse': [
+    ['Tecer e estampar','Uma estampa repete a imagem na superfície do pano. No kente, parte do desenho é construída no tear, com fios de cores diferentes. Olhar o verso, a costura e a trama é uma forma de descobrir qual processo está diante de você.'],
+    ['Circulação e criação','Os tecidos industriais conhecidos como wax prints se popularizaram em partes da África Ocidental. Sua história inclui o batik indonésio, a fabricação europeia no século XIX e escolhas locais de comerciantes e clientes. O motivo desta blusa foi criado para o jogo.']
+  ],
+  'clothes-overalls': [
+    ['Forma e função','A jardineira junta calça, peitilho e alças. O bolso alto deixa ferramentas ou um caderno à mão. As alças podem ter fivelas ajustáveis e a peça pode ser feita em lona resistente ou tecido mais leve para o dia a dia.'],
+    ['Uma peça de ateliê','Nesta ficha, a jardineira serve para discutir como peças associadas ao trabalho passam a integrar guarda-roupas e coleções de moda. Compare o lugar dos bolsos com a peça de tricô ou com o avental de uma cozinha.']
+  ],
+  'clothes-baiana': [
+    ['Bahia e circulação pelo Brasil','O traje documentado pelo IPAC combina saia rodada, bata, torso e pano da costa. As baianas de tabuleiro são fortemente associadas a Salvador, mas o ofício também se estabeleceu em outras localidades brasileiras. Mulheres negras sustentaram a circulação desses saberes, do preparo à venda.'],
+    ['Diferenças entre ocasiões','Tecidos, bordados, colares e arranjos do pano variam. Em contextos religiosos, o uso de uma peça pode seguir orientações da casa e da ocasião. A trajetória pública do traje inclui festas, fotografias e bancas de rua. Conhecer uma baiana pelo nome recupera também sua experiência de trabalho.']
+  ],
+  'food-acaraje': [
+    ['Do Golfo do Benim à Bahia','O Iphan situa o antecedente da massa frita no Golfo do Benim, região da África Ocidental. Conhecimentos levados por pessoas africanas escravizadas foram recriados no Brasil. Em Salvador, a venda nas ruas tornou-se uma atividade de trabalho e sustento associada a mulheres negras.'],
+    ['Preparo, tabuleiro e terreiro','A massa batida é frita em dendê. Em tabuleiros, pode ser aberta para receber vatapá, caruru, camarão e pimenta conforme a banca. Quando é preparado como oferenda, há modos de fazer ligados à comunidade e ao culto. A ficha do ofício no Iphan reúne as dimensões de rua e de terreiro.']
+  ],
+  'food-abara': [
+    ['Uma técnica em folha','Feijão-fradinho e dendê ligam o abará ao repertório afro-baiano. A folha de bananeira forma um invólucro que mantém a porção reunida durante o cozimento e ajuda a identificar o quitute no tabuleiro.'],
+    ['Da banca para casa','Em versões salgadas pode entrar camarão seco. Quem prepara escolhe a quantidade de dendê, o tamanho da porção e o modo de dobrar a folha. O registro do ofício documenta o abará entre outros preparos vendidos por baianas em Salvador.']
+  ],
+  'food-cocada': [
+    ['Rotas do coco e do açúcar','A cocada entrou no repertório do tabuleiro ao lado de mingaus, lelê e outros doces. A combinação de coco e açúcar circulou por diferentes regiões e não cabe numa data única de invenção. A história das cozinhas e da venda de rua ajuda a situar as versões afro-brasileiras.'],
+    ['Branca, escura e cremosa','O coco pode ser ralado fino ou em tiras. Há cocadas claras, escuras pela calda ou pelo açúcar usado, e versões moles servidas de colher. O ponto da calda e o tempo de fogo mudam tanto a textura quanto o modo de vender ou servir.']
+  ],
+  'cloth-pano-da-costa': [
+    ['Um pano com história atlântica','O nome remete aos tecidos que circularam entre a costa ocidental da África e o Brasil. A peça passou a integrar a roupa de mulheres negras na Bahia. Em acervos, observe quando o pano é feito de tiras unidas, onde ficam as costuras e de que maneira acabam as pontas.'],
+    ['Uso e movimento','Pode passar sobre o ombro, cruzar o tronco ou ser dobrado para mudar a largura aparente. Há usos em trajes de trabalho e em contextos de terreiro, onde a forma de vestir pode seguir orientações específicas. Compare a peça estendida com a ficha da baiana.']
+  ],
+  'ingredients-beans-dende': [
+    ['Do grão à massa','Tirar as cascas, triturar e bater o feijão muda a textura. No tabuleiro, o mesmo ingrediente dá preparos diferentes conforme o cozimento e a consistência buscada. A massa da fritura precisa manter sua forma ao entrar no azeite.'],
+    ['O papel do azeite','O dendê, extraído do fruto do dendezeiro, dá cor e sabor a preparos de matriz africana na Bahia. No acarajé ele envolve a massa na fritura; no abará pode integrar a massa que cozinha na folha. Compare também o que muda no aroma e na superfície.']
+  ]
+};
+
+data.studies=[
+  {
+    id:'kente',topic:'wrap',title:'Kente e as tiras tecidas',place:'Gana e Togo · comunidades Asante e Ewe',
+    summary:'Do tear estreito a tecidos usados em cerimônias, festas e formaturas.',
+    sections:[
+      ['Tiras que formam um pano','O tear horizontal produz faixas estreitas. Costuradas lado a lado, elas viram um pano largo que pode ser envolvido no corpo. Algodão e seda aparecem em peças históricas, e o dossiê de Gana também registra o uso atual de raiom.'],
+      ['Histórias entre comunidades','O kente de prestígio da corte Asante tem registros no atual Gana desde pelo menos o século XVII. Entre tecelões Ewe do sudeste de Gana e do oeste do Togo, também há tradições de tecidos de prestígio. As coleções preservam escolhas diferentes de cor, fibra e organização dos motivos.'],
+      ['Como se aprende','O saber passa por famílias, aprendizes, oficinas e escolas. Alguns tecidos têm nomes ligados a provérbios ou acontecimentos. O registro de Gana na UNESCO, em 2024, reconhece o saber de tecer e transmitir essa técnica.']
+    ],sources:['notebook-kente','notebook-asante','notebook-ewe']
+  },
+  {
+    id:'bogolan',topic:'wrap',title:'Bògòlanfini e a tintura com terra',place:'Mali · tradição Bamana',
+    summary:'Tiras de algodão, plantas e barro compõem uma linguagem visual.',
+    sections:[
+      ['Tecelagem e tingimento','Um pano Bamana da primeira metade do século XX, no acervo do Met, começa com tiras tecidas de algodão. Na técnica descrita para a peça, o tecido é preparado com extratos vegetais e recebe desenhos com lama em etapas de tintura.'],
+      ['Motivos em contexto','Os desenhos podem evocar objetos cotidianos, provérbios, canções e acontecimentos quando combinados. O exemplar do Met foi feito para ser envolvido no corpo. Algumas bordas do desenho ficam parcialmente escondidas quando a peça é vestida.'],
+      ['Uma prática em transformação','O museu registra uma revitalização a partir da década de 1970, com presença na moda do Mali e em criações internacionais. Compare autoria, data e técnica quando encontrar uma estampa contemporânea inspirada nesses panos.']
+    ],sources:['notebook-bogolan']
+  },
+  {
+    id:'prints',topic:'clothes',title:'Ankara e estampas que registram acontecimentos',place:'África Ocidental · circulação atlântica e asiática',
+    summary:'Tecidos estampados também guardam retratos, datas e memórias públicas.',
+    sections:[
+      ['De onde veio a técnica industrial','Fabricantes europeus do século XIX adaptaram processos inspirados no batik indonésio. Tecidos estampados circularam pela África Ocidental e foram apropriados por mercados locais. Designers, comerciantes, costureiras e clientes passaram a escolher e ressignificar motivos.'],
+      ['Variações','Wax print e estampas industriais de efeito parecido podem ter processos distintos. As estampas comemorativas permitem imprimir retratos e inscrições para casamentos, funerais, coroações e datas políticas. Observe se o motivo foi tecido, tingido por reserva ou impresso.'],
+      ['Uma fotografia que virou pano','No acervo do Smithsonian, o trabalho do fotógrafo nigeriano S. O. Alonge aparece em um tecido que comemora o reinado de um oba de Benin. A cidade de Benin, no caso da coleção, fica na Nigéria.']
+    ],sources:['notebook-prints','culture_vam_archives']
+  },
+  {
+    id:'agbada',topic:'clothes',title:'Agbádá, riga e boubou',place:'Nigéria e África Ocidental',
+    summary:'Mangas amplas, bordado e circulação entre regiões e famílias.',
+    sections:[
+      ['Uma roupa em camadas','O agbádá é uma veste ampla, usada por cima de outras peças. O Met conserva um exemplo de algodão e seda do século XX, associado a um governante de Ondo, na Nigéria. A peça tem mangas largas e trabalho de bordado.'],
+      ['Nomes e comunidades','Agbádá é um nome iorubá. A fonte registra riga no contexto hauçá e relaciona boubou ao wolof mbubb. Veste ampla, modo de vestir e acabamento variam entre regiões e ocasiões. O acervo atribui sua peça a possíveis artistas hauçás, nupes e/ou iorubás.'],
+      ['Herança e autoria','Vestes de prestígio podiam viajar pelo comércio e passar de uma geração a outra. O estilista Duro Olowu doou a veste que havia pertencido ao avô. O percurso da peça permite seguir uma família e um território pela roupa.']
+    ],sources:['culture_met_agbada']
+  },
+  {
+    id:'ceebu',topic:'food',title:'Ceebu jën, arroz e peixe de Saint-Louis',place:'Senegal · comunidades pesqueiras',
+    summary:'Um prato de acolhimento que muda com o pescado, a estação e os convidados.',
+    sections:[
+      ['Origem e ingredientes','O dossiê senegalês situa a origem nas comunidades pesqueiras da ilha de Saint-Louis. Em versões documentadas, arroz quebrado cozinha com peixe, condimentos e legumes da estação. Peixe seco, mandioca, repolho e quiabo estão entre os ingredientes possíveis.'],
+      ['Receitas e hospitalidade','Os ingredientes variam conforme a região, os recursos disponíveis e a ocasião. A escolha do peixe e dos acompanhamentos pode expressar cuidado com a visita. A refeição pode ser compartilhada em uma tigela, com costumes próprios de convivência à mesa.'],
+      ['Como o saber circula','O preparo foi transmitido entre gerações em famílias senegalesas. Restaurantes também o servem, por vezes com talheres. A UNESCO inscreveu esse saber em 2021, reconhecendo a culinária e os modos de conviver que a acompanham.']
+    ],sources:['notebook-ceebu']
+  },
+  {
+    id:'attieke',topic:'food',title:'Attiéké e a mandioca na Costa do Marfim',place:'Costa do Marfim · povos das lagoas',
+    summary:'Grãos de mandioca fermentada e cozida no vapor, da casa aos mercados.',
+    sections:[
+      ['Da raiz aos grãos','O dossiê da Costa do Marfim documenta o preparo entre povos das lagoas. A mandioca é moída e misturada à mandioca fermentada, granulada e cozida no vapor. O resultado lembra sêmola na aparência, com textura e sabor próprios da raiz.'],
+      ['Saberes de família e de trabalho','O processo reúne cultivo, moagem, fermentação, cozimento e venda. Mulheres têm papel importante no preparo e no comércio. A aprendizagem por observação e prática transmite detalhes de textura, ponto e manuseio que a lista de ingredientes não descreve.'],
+      ['Modos de servir','O alimento aparece em refeições familiares, restaurantes e cerimônias. Compare seu preparo ao abará para identificar o que o vapor transforma em cada receita. Cada prato tem seus próprios ingredientes, comunidades e história.']
+    ],sources:['notebook-attieke']
+  },
+  {
+    id:'saloes',topic:'hair',title:'Trancistas e salões como lugares de memória',place:'Brasil e Estados Unidos · histórias de profissionais',
+    summary:'Aprendizado entre gerações, trabalho remunerado, criação e convivência.',
+    sections:[
+      ['Aprender com as mãos','Dividir as mechas, manter tensão uniforme e inventar um percurso para o trançado são conhecimentos de ofício. Oficinas e salões permitem observar os gestos de perto e dão espaço para que profissionais registrem a autoria de estilos próprios.'],
+      ['Uma história em Washington','Wanda Henderson, entrevistada pelo Smithsonian, conta como seu salão no bairro de Shaw se tornou um espaço de relações e criação. O relato situa a estética negra no cotidiano do bairro e liga trabalho, memória e transformações urbanas.'],
+      ['Conexão com New Harmony','A personagem Bisa ensina a reconhecer o desenho da raiz e a estrutura das mechas. Use a oficina para comparar técnicas e o caderno para seguir a história de quem as ensina.']
+    ],sources:['notebook-salon','culture_ufu_trancas','culture_art_rio_trancas']
+  },
+  {
+    id:'retratos',topic:'faceart',title:'Retrato, cor e autoria',place:'Estudos visuais de New Harmony',
+    summary:'Observe como pontos, linhas e cores criam ritmo em quatro retratos originais.',
+    sections:[
+      ['Onde começa a leitura','Siga as linhas em volta dos olhos e do nariz. Localize o ponto de maior contraste e compare se o desenho se repete dos dois lados ou muda perto da boca. A repetição orienta o olhar mesmo quando as formas são pequenas.'],
+      ['Como legendar com cuidado','Essas imagens são exercícios do acervo do jogo. Para estudar uma pintura corporal documentada, registre quem a produziu, a comunidade, os materiais e a ocasião. Relatos de participantes e catálogos ajudam a verificar como uma forma é nomeada e interpretada.']
+    ],sources:['culture_getty_elements','culture_getty_design']
+  },
+  {
+    id:'gelede',topic:'masks',title:'Gèlèdé, escultura em movimento',place:'Benim, Nigéria e Togo · comunidades iorubá-nagô',
+    summary:'Máscaras, canto em iorubá, dança e homenagem às mulheres.',
+    sections:[
+      ['A cerimônia','O dossiê da UNESCO documenta o Gèlèdé entre comunidades iorubá-nagô. A prática homenageia Iyà Nlà e reconhece o papel das mulheres na organização social. Celebrações podem ocorrer depois das colheitas e em outros momentos importantes para a comunidade.'],
+      ['Uma máscara em uso','Uma máscara esculpida participa da apresentação junto aos passos, cantos, roupas e histórias. O movimento muda o que o público vê. As ilustrações do jogo permitem comparar formas. O registro da cerimônia fornece o contexto de uso.']
+    ],sources:['culture_unesco_gelede']
+  },
+  {
+    id:'agnaldo',topic:'sculptures',title:'Agnaldo Manoel dos Santos e a figura esculpida',place:'Brasil · escultura no acervo do MASP',
+    summary:'Compare volume, gesto e relação entre figuras em obras identificadas.',
+    sections:[
+      ['Uma obra com autoria','O MASP inclui Figura com criança, de Agnaldo Manoel dos Santos, em seu panorama de arte brasileira. O nome do artista permite pesquisar a obra e situá-la em sua trajetória. Um catálogo também ajuda a verificar material, data e procedência.'],
+      ['Aprender a olhar','Compare a distância entre as figuras, as superfícies e os pontos de apoio. Observe de lado como o contorno muda. Uma reprodução plana pode revelar o gesto, enquanto a escultura em vista lateral mostra relações de profundidade e peso.']
+    ],sources:['culture_masp_agnaldo','culture_getty_vocabulary']
+  },
+  {
+    id:'terreiros',topic:'faith',title:'Terreiros, vizinhança e memória',place:'Brasil · comunidades de matriz africana',
+    summary:'Casas de culto, organização comunitária, transmissão de saberes e respeito à autonomia.',
+    sections:[
+      ['Histórias no Brasil','Casas de Candomblé guardam saberes de diferentes matrizes africanas, desenvolvidos no Brasil por linhagens e comunidades. A Umbanda também se constituiu no Brasil e reúne casas com histórias e práticas próprias. As trajetórias podem se cruzar na cidade e na luta contra o racismo religioso.'],
+      ['O que é público','Uma comunidade pode organizar ações culturais, festas públicas ou atividades de apoio à vizinhança. Em outros momentos, há conhecimentos reservados à casa. O convite de Jaci no jogo propõe começar pelas experiências que ela decidiu compartilhar.']
+    ],sources:['culture_mafro_religioes','culture_mir_respeito','culture_camara_umbanda','culture_curitiba_umbanda']
+  },
+  {
+    id:'samba-roda',topic:'music',title:'Samba de roda do Recôncavo',place:'Brasil · Recôncavo Baiano',
+    summary:'Palmas, canto e dança organizam o encontro em comunidades do Recôncavo.',
+    sections:[
+      ['História e território','O samba de roda se desenvolveu no Recôncavo Baiano com contribuições de africanos escravizados e seus descendentes. A UNESCO aponta registros do século XVII e intercâmbios com formas poéticas e instrumentos de circulação portuguesa. A prática segue viva em várias localidades do Recôncavo.'],
+      ['O que muda de uma roda para outra','Canto responsorial, palmas, instrumentos e entradas na roda podem variar. O samba chula e o samba corrido são exemplos de formas com relações diferentes entre canto e dança. Preste atenção a quem inicia um verso, quem responde e quando as pessoas entram para dançar.']
+    ],sources:['notebook-samba','notebook-bahia']
+  },
+  {
+    id:'capoeira-roda',topic:'music',title:'Capoeira, jogo, canto e mestria',place:'Brasil · comunidades capoeiristas',
+    summary:'Uma roda organiza o diálogo entre movimento, berimbau e canto.',
+    sections:[
+      ['Formação no Brasil','A capoeira reúne heranças africanas recriadas no Brasil. O Iphan destaca contribuições de povos bantos para a formação da prática. A roda inclui quem joga no centro, quem toca, canta e observa, sob a condução de mestres ou pessoas reconhecidas pelo grupo.'],
+      ['Variações e transmissão','As tradições Angola e Regional são referências importantes na história da capoeira baiana. Hoje, grupos têm linhagens e formas de ensinar diversas. A escuta do toque e o cuidado com o parceiro fazem parte do aprendizado junto aos movimentos.']
+    ],sources:['notebook-bahia']
+  }
+];
+})();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: capoeira-rhythm */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("capoeira-rhythm", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,C=P.controllers.capoeira,A=V.CapoeiraArt,B=V.AfricanMuseumData;
@@ -38,3 +44,5 @@ const layout=P.layout.bind(P);P.layout=function(){if(this.active?.game!=='capoei
 const g=P.game('capoeira');Object.assign(g,{tag:'SETAS · RITMO · GINGA',description:'Acompanhe as setas que descem e aperte a direção quando elas atravessarem os círculos. A roda responde a cada acerto.',goal:'Jogue 24 sinais em 3 rodas. Acerte pelo menos 12 para concluir; o centro do círculo rende Perfect!'});
 V.PlaygroundData.guides.capoeira=moves.map((m,i)=>({title:m[2]+' · '+m[1],text:'A seta desce na coluna '+(i+1)+'. No treino ela espera no círculo.',instruction:'Quando '+m[2]+' chegar ao círculo, aperte '+m[3]+' ou toque no botão '+m[2]+'.',event:'capoeira-'+m[0],focus:'game',after:'Boa resposta! Na partida, acompanhe a sequência de setas.'}));
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: regional-content */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("regional-content", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';window.V.regionalContent={
   "hub": {
     "purpose": "Uma praça octogonal: a fonte organiza quatro largos ligados por alamedas, com biblioteca ao noroeste e música no lado oposto.",
@@ -10472,3 +10478,5 @@
     ]
   }
 };})();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: pix-world-vocabulary */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("pix-world-vocabulary", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.PixWorldVocabularyData,X=V.PixVocabulary,P=V.PixCollection,W=V.World,esc=V.escape,key=value=>String(value||'').trim().replace(/[’‘]/g,"'").toLowerCase(),unique=words=>[...new Set(words.filter(Boolean).map(key))];
@@ -55,7 +61,7 @@ const contextual=X.contextual.bind(X);X.contextual=o=>o?.pixContext?undefined:co
 const source=X.source.bind(X);X.source=word=>B.source(word)||source(word);
 const render=X.render.bind(X);X.render=function(...args){const result=render(...args);B.clues();return result;};
 const collect=X.collect.bind(X);X.collect=function(word,...args){const tracked=V.state&&V.Progress.ensure().tracked,result=collect(word,...args),canonical=key(this.entry(word)?.en||word);if(result&&tracked?.pixWord===canonical&&B.locations.get(canonical)?.some(s=>s.map===tracked.map&&s.object===tracked.object)){V.Progress.ensure().tracked=null;V.ObjectiveGuide.invalidate();V.Save.save();}return result;};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(!o||V.modal||V.Dialogue.active||this.mode!=='explore')return interact(o);B.bindMap(W.current);const d=o.pixContext;if(!d)return interact(o);const source='Exploração · '+W.current.name+' · '+d.label;if(o.pixVocabularyOnly){B.learn(d.words,source);return B.open(d.words,d.label);}const result=interact(o);B.learn(d.words,source);if(V.modal&&!V.Dialogue.active)B.strip(d.words,source);return result;};
+V.Hooks.around(V.Game, 'interact', 'pix-world-vocabulary:interact:1', nextHook => function(o){if(!o||V.modal||V.Dialogue.active||this.mode!=='explore')return nextHook(o);B.bindMap(W.current);const d=o.pixContext;if(!d)return nextHook(o);const source='Exploração · '+W.current.name+' · '+d.label;if(o.pixVocabularyOnly){B.learn(d.words,source);return B.open(d.words,d.label);}const result=nextHook(o);B.learn(d.words,source);if(V.modal&&!V.Dialogue.active)B.strip(d.words,source);return result;});
 function panel(owner,name,words,label){const original=owner[name].bind(owner);owner[name]=function(...args){const result=original(...args),list=words(...args);if(V.modal&&!V.Dialogue.active)B.strip(list,label(...args));return result;};}
 panel(V.Cooking,'book',()=>['recipe','ingredient','cook','portion'],()=> 'Livro de receitas');
 panel(V.Cooking,'entry',index=>B.recipeWords(V.CookingData.recipes[index]),index=>'Receita · '+(V.CookingData.recipes[index]?.name||'Cozinha'));
@@ -73,3 +79,5 @@ const natureController=V.Playground.controllers[V.NatureData.challengeId],nature
 // Preserve the corresponding discovery locations from that same frame too.
 if(V.DuoSessions){const receive=V.DuoSessions.receive.bind(V.DuoSessions);V.DuoSessions.receive=function(event){const message=event.data,session=message?.type==='snapshot'&&[...this.sessions.values()].find(s=>s.token===message.voicesDuo&&s.frame.contentWindow===event.source&&s.state===V.state),result=receive(event);if(session&&message.state?.adventure?.vocabulary?.sources){const sources=X.ensure().sources,known=new Set((message.state.words||[]).map(key));let changed=false;for(const[word,source]of Object.entries(message.state.adventure.vocabulary.sources)){const canonical=key(X.entry(word)?.en||word);if((!B.contextWords.has(canonical)&&!B.locations.has(canonical))||!known.has(canonical)||sources[canonical]||typeof source?.label!=='string')continue;sources[canonical]={label:source.label.slice(0,220),kind:'discovery',map:W.maps[source.map]?source.map:V.DuoWorld.actors[session.player].map,day:V.Progress.ensure().clock.day};changed=true;}if(changed)V.Save.save();}return result;};}
 })();
+
+});

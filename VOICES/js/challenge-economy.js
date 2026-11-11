@@ -1,3 +1,9 @@
+/* Registered module: challenge-economy */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("challenge-economy", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,esc=V.escape;
@@ -18,7 +24,7 @@ const E=V.ChallengeEconomy={
   V.UI.modal('Fase concluída',P.game(r.game).title+' · '+q.label,'<div class="pg-result phase-result">'+this.body(q.reward,r.rewards)+'</div>','<button id="phase-continue" class="primary">Continuar para a próxima fase</button><button id="phase-exit" class="secondary">Guardar e sair</button>');
   const leave=()=>{r.phaseReward=null;P.save();this.stop(r);};V.UI.onClose=leave;V.$('#phase-exit').onclick=leave;V.$('#phase-continue').onclick=()=>{r.phaseReward=null;V.UI.onClose=null;V.UI.close();P.banner=null;P.save();if(r.game==='platform'&&r.data.storyStatus==='intro')V.PlatformJourney.story(r);V.$('#world-canvas')?.focus();};
  },
- flush(){const r=P.active;if(r?.phaseReward&&!r.finished&&!V.modal)this.checkpoint(r);}
+ flush(){const r=P.active;if(r?.game===V.CookingData.id&&r.phaseReward){r.phaseReward=null;P.save();return;}if(r?.phaseReward&&!r.finished&&!V.modal)this.checkpoint(r);}
 };
 P.stageClear=function(r,stage){if(!r||r.training||r.finished)return;const s=this.ensure(),list=s.stageRecords[r.game]||={},old=list[stage];r.phaseReceipts||={};const key=(r.arcade?.leg||0)+':'+stage;if(r.phaseReceipts[key])return;r.phaseReceipts[key]=true;
  const mistakes=Math.max(0,r.mistakes-(r.stageMistakes||0)),hints=Math.max(0,r.hints-(r.stageHints||0)),stars=mistakes===0&&hints===0?3:mistakes<=3?2:1;r.stageMistakes=r.mistakes;r.stageHints=r.hints;list[stage]={stars:Math.max(stars,old?.stars||0),score:Math.max(r.score,old?.score||0),completed:true};
@@ -45,10 +51,10 @@ const hit=P.hit.bind(P);P.hit=function(...args){const r=this.active,a=r?.arcade,
 const result=P.result.bind(P);P.result=function(r){const out=result(r),box=V.$('.pg-result');if(box){const line=document.createElement('p');line.textContent='As recompensas foram pagas por fase. Não há cobrança nem perda ao sair.';box.append(line);}return out;};
 
 // Cooking rewards its actual preparation steps instead of paying only at plating.
-const advance=V.Cooking.advance.bind(V.Cooking);V.Cooking.advance=function(r){if(!r||r.training||r.data.phase!=='done')return advance(r);const recipe=r.data.stage,step=r.data.step,reward=E.pay(r,recipe+'-step-'+step,'cooking',[6,5]);
+const advance=V.Cooking.advance.bind(V.Cooking);V.Cooking.advance=function(r){if(!r||r.training||r.finished||r.data.done||r.data.phase!=='done')return advance(r);const recipe=r.data.stage,step=r.data.step;E.pay(r,recipe+'-step-'+step,'cooking',[6,5]);r.phaseReward=null;
  const clear=P.stageClear;P.stageClear=(run,stage)=>{const s=P.ensure(),list=s.stageRecords[run.game]||={};list[stage]={completed:true,stars:3,score:run.score};};
  try{advance(r);}finally{P.stageClear=clear;}
- if(!r.finished)r.phaseReward={stage:recipe,label:'Etapa '+(step+1)+' da receita',reward};E.flush();P.save();};
+ P.save();};
 
 // Cultural workshops share the same phase economy and a saved interval.
 const K=V.CultureChallenges;
@@ -82,3 +88,5 @@ F.finish=function(){const r=this.run;if(!r||r.finished)return;if(r.catches.lengt
 // Keep first-discovery bonuses consistent when returning from private viewers.
 for(const owner of [V.DuoSessions,V.DuoChallenges])if(owner?.receive){const receive=owner.receive.bind(owner);owner.receive=function(event){const m=event.data,session=m?.type==='snapshot'&&(owner===V.DuoSessions?owner.enabled()&&[...owner.sessions.values()].some(s=>s.token===m.voicesDuo&&s.frame.contentWindow===event.source&&s.state===V.state):owner.active&&m.voicesDuo===owner.session?.id&&owner.frames?.some(f=>f?.contentWindow===event.source));const out=receive(event);if(session&&m.state?.adventure?.challengeEconomy?.discoveries){const discoveries=E.ensure().discoveries;let changed=false;for(const key of Object.keys(m.state.adventure.challengeEconomy.discoveries))if(!discoveries[key]){discoveries[key]=true;changed=true;}if(changed)V.Save.save();}return out;};}
 })();
+
+});

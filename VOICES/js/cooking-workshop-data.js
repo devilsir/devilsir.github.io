@@ -1,3 +1,9 @@
+/* Registered module: cooking-workshop-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-workshop-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V;
 const food=(sheet,frame,label)=>({sheet,frame,label});
@@ -22,3 +28,5 @@ const plans={
 };
 V.CookingWorkshopData={foods,plans,revision:2};
 })();
+
+});

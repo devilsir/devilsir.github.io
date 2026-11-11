@@ -1,7 +1,34 @@
+/* Registered module: adventure-story */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-story", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.AdventureData,esc=V.escape,T=48;
-const S=V.Story={pulseTime:0,companion:null,clock:0,
+const S=V.Story={pulses:new WeakMap(),companion:null,clock:0,
+ pulseRecord(player=V.Player.data){
+  if(!player)return null;
+  if(!this.pulses.has(player))this.pulses.set(player,{last:-Infinity,until:0,map:null,target:null});
+  return this.pulses.get(player);
+ },
+ get pulseTime(){return Math.max(0,(this.pulseRecord()?.until??0)-(V.Engine.time||0));},
+ set pulseTime(value){const pulse=this.pulseRecord();if(pulse)pulse.until=(V.Engine.time||0)+Math.max(0,Number(value)||0);},
+ get pulseTarget(){return this.echo();},
+ pulseDelay(){return Math.max(0,8+(this.pulseRecord()?.last??-Infinity)-(V.Engine.time||0));},
+ echo(){
+  const pulse=this.pulseRecord(),m=V.World.current;
+  if(!pulse?.target||pulse.map!==m?.id||!m.objects.includes(pulse.target))return null;
+  const found=V.Progress.ensure()?.story?.traces||{};
+  return (found[pulse.target.caseId]||[]).includes(pulse.target.index)?null:pulse.target;
+ },
+ trackEcho(){
+  const target=this.echo();
+  if(!target||V.Game.mode!=='explore')return false;
+  V.ObjectiveGuide.track(null,target.id,V.World.current.id);
+  return true;
+ },
 ensure(){return V.Progress.ensure()?.story;},
 intro(){
 const slides=[['Nomes que desaparecem','No Museu das Vozes, retratos perdem nomes e documentos discordam de suas próprias datas. Você continua sendo '+V.state.name+', mas a cidade logo conhecerá outro nome: o Forasteiro.'],['O último portador','Uma máscara ancestral de madeira, de origem marfinense, desperta entre as fichas: o Historiógrafo Ancestral. Ela guarda vestígios de séculos, incompletos e contraditórios. Você será seu último portador.'],['Escutar antes de concluir','A equipe do museu pede ajuda para investigar. Converse, leia, compare fontes e proteja o trabalho de quem vive aqui. A noite trará uma presença que reconhece a máscara.']];let i=0;
@@ -45,10 +72,11 @@ return null;
 },
 awakening(){
 const s=this.ensure();if(s.stage!=='museum'){this.device();return;}
-V.UI.modal('A primeira rasura','MUSEU · DOCUMENTOS DA FICÇÃO',`<div class="adv-device-banner"><img src="assets/adventure/historiograph-mask.webp?v=20261103-mask-duo2" width="140" height="140" alt="Historiógrafo Ancestral"><div><h3>Um nome deixa de existir.</h3><p>A legenda perdeu a autoria; a ficha do arquivo ainda a preserva. Mara pede que você guarde as duas versões para investigar a alteração.</p></div></div><div class="two-cols"><article class="card"><small>DOCUMENTO FICCIONAL</small><h3>Ficha integral</h3><p>Cadernos da Praça · registro NH-014. Autoria: oficina de Cecília e grupo de leitura. Revisão assinada por Mara; caderno de origem disponível na biblioteca.</p></article><article class="card"><small>VERSÃO ADULTERADA · FICÇÃO</small><h3>Legenda exposta</h3><p>Cadernos da Praça · registro NH-014. Autoria: “Ordem da Rasura”. O nome da oficina, o grupo de leitura e o caderno de origem foram retirados.</p></article></div><p class="note">A máscara pulsa. O vestígio que você sente é uma experiência sobrenatural da aventura; as fichas são as evidências desta alteração ficcional.</p>`,`<button id="story-awaken" class="primary">Guardar versões e examinar a máscara</button>`);
+V.UI.modal('A primeira rasura','MUSEU · DOCUMENTOS DA FICÇÃO',`<div class="adv-device-banner"><img src="assets/adventure/historiograph-mask.webp?v=20261103-mask-duo2" width="140" height="140" alt="Historiógrafo Ancestral"><div><h3>O mesmo número em duas fichas</h3><p>Mara prepara uma mostra de cadernos escritos nos bairros. Na manhã da abertura, encontra uma legenda com o selo da Ordem da Rasura. A cópia que Cecília trouxe da oficina tem o mesmo número e guarda outros nomes.</p></div></div><div class="two-cols"><article class="card"><small>CÓPIA DA OFICINA · FICÇÃO</small><h3>Ficha integral</h3><p>Cadernos da Praça · NH-014. O grupo de leitura e a oficina de Cecília assinam o trabalho. Mara registrou a revisão. A biblioteca guarda o caderno emprestado.</p></article><article class="card"><small>VERSÃO ADULTERADA · FICÇÃO</small><h3>Legenda exposta</h3><p>Cadernos da Praça · NH-014. Assinatura da Ordem da Rasura. O espaço para indicar quem escreveu e onde consultar o caderno ficou vazio.</p></article></div><p class="note">Ao aproximar as fichas, o Historiógrafo pulsa. O sinal aponta para o pátio, onde a equipe pode procurar outro vestígio.</p>`,`<button id="story-chronicle" class="secondary">Ler a crônica do museu</button><button id="story-awaken" class="primary">Guardar versões e examinar a máscara</button>`);
+V.$('#story-chronicle').onclick=()=>V.CityChronicle.open('museum',()=>this.awakening());
 V.$('#story-awaken').onclick=()=>{
 s.stage='night';s.awakened=true;V.state.flags.prologueStarted=true;V.Progress.reward('awakening',100,{water:2,tea:1});V.Save.save();V.UI.close();
-V.Dialogue.start([{speaker:'curator',en:"Keep both versions. I will check the cards with the team. Follow the signal to the courtyard and compare what you find.",pt:"Guarde as duas versões. Vou conferir as fichas com a equipe. Siga o sinal até o pátio e compare o que encontrar."},{speaker:'pix',en:"The mask detects a trace near the museum entrance. We can wait until seven in the evening if it is still light outside.",pt:"A máscara detecta um vestígio perto da entrada do museu. Podemos esperar até as sete da noite se ainda estiver claro lá fora."}],()=>{V.ObjectiveGuide.invalidate();this.device();});
+V.Dialogue.start([{speaker:'curator',en:"Cecília and the reading group kept a copy. I’ll ask them to check the names with us. Take both versions to the courtyard.",pt:"Cecília e o grupo de leitura guardaram uma cópia. Vou convidá-los a conferir os nomes com a gente. Leve as duas versões ao pátio."},{speaker:'pix',en:"The mask detects a trace in the courtyard. If we get there before dark, we can wait until seven.",pt:"A máscara detecta um vestígio no pátio. Se chegarmos antes de escurecer, podemos esperar até as sete."}],()=>{V.ObjectiveGuide.invalidate();this.device();});
 };
 },
 firstNight(){
@@ -65,7 +93,7 @@ V.state.flags.prologueStarted=true;V.state.flags.prologueDone=true;
 for(const id of ['sol','leo'])if(id!==V.state.character&&!a.companions.includes(id))a.companions.push(id);
 if(a.companions.length<2&&V.state.character!=='nia'&&!a.companions.includes('nia'))a.companions.push('nia');
 a.party=a.companions.slice(0,2);V.Quests.word('trace');V.Quests.word('source');V.Progress.reward('vigilia',140,{kit:2});V.Save.save();
-V.Dialogue.start([{speaker:'zambeto',en:"You felt a fragment of the past, Forasteiro. The Order of Erasure wants to control which names remain visible. We must find out what it changed.",pt:"Você sentiu um fragmento do passado, Forasteiro. A Ordem da Rasura quer controlar quais nomes continuam visíveis. Precisamos descobrir o que ela alterou."},{speaker:'musician',en:"Sol and I are checking the festival credits. Bring the versions you found to the Rhythm District.",pt:"Sol e eu estamos conferindo os créditos do festival. Leve as versões que encontrou ao Distrito do Ritmo."},{speaker:'zambeto',en:"I will watch the path while you investigate. Speak to the people who live and work in each district; they know things the mask cannot show you.",pt:"Vou vigiar o caminho enquanto você investiga. Converse com as pessoas que vivem e trabalham em cada distrito; elas sabem coisas que a máscara não pode mostrar."}],()=>{V.ObjectiveGuide.track(1);V.Game.updateHUD();});
+V.Dialogue.start([{speaker:'zambeto',en:"The same seal can appear on many papers. Carry the copies with you and ask who kept the originals.",pt:"O mesmo selo pode aparecer em muitos papéis. Leve as cópias com você e pergunte quem guardou os originais."},{speaker:'musician',en:"That seal is on our festival programme. Sol has the rehearsal list. Come to the Rhythm District and we’ll check what changed.",pt:"Esse selo está no programa do festival. Sol tem a lista de ensaio. Venha ao Distrito do Ritmo conferir com a gente o que mudou."},{speaker:'pix',en:"I’ll add a section for local stories to your notebook. We can follow a record from the person who kept it to the place where it was published.",pt:"Vou abrir uma seção de crônicas no caderno. Dá para seguir cada registro de quem o guardou até o lugar onde foi publicado."}],()=>{V.ObjectiveGuide.track(1);V.Game.updateHUD();});
 },
 trace(o){
 const c=D.cases[o.caseId-1],s=this.ensure(),seen=(s.traces[c.id]||[]).includes(o.index),r=c.traces[o.index],source=V.content.sources.find(x=>x.id===c.source);
@@ -97,10 +125,32 @@ V.$$('[data-device-tab]').forEach(b=>b.onclick=()=>this.device(b.dataset.deviceT
 V.$('#device-pulse')?.addEventListener('click',()=>{V.UI.close();this.pulse();});V.$('#device-rest')?.addEventListener('click',()=>{V.Progress.rest();this.device('resonance');});
 },
 pulse(){
-const a=V.Progress.ensure();if(V.Game.mode!=='explore'||!a.story.awakened&&!a.story.met)return;const now=V.Engine.time;if((this.lastPulse??-99)+8>now){V.UI.toast('A máscara precisa de alguns segundos para estabilizar.');return;}
-this.lastPulse=now;this.pulseTime=2;const range=230+V.Progress.bonus('investigation')*4,near=V.World.current.objects.filter(o=>o.type==='rasura'&&!(a.story.traces[o.caseId]||[]).includes(o.index)&&V.dist(o,V.Player.data)<range).sort((a,b)=>V.dist(a,V.Player.data)-V.dist(b,V.Player.data));
-a.overload=V.clamp(a.overload+Math.max(0,6-V.Progress.bonus('overload')),0,100);
-if(near.length){this.pulseTarget=near[0];if(!a.story.pulseClues.includes(near[0].id))a.story.pulseClues.push(near[0].id);V.UI.toast('Há uma alteração próxima: '+near[0].label+'. Observe o registro e seu contexto.');}else{this.pulseTarget=null;V.UI.toast('Nenhuma rasura inédita ao alcance. O pulso não substitui a exploração.');}V.Audio.sfx('observe');V.Save.save();
+ const a=V.Progress.ensure(),m=V.World.current,pulse=this.pulseRecord();
+ if(!a||!m||!pulse||V.Game.mode!=='explore'||!a.story.awakened&&!a.story.met)return false;
+ if(this.pulseDelay()>0){V.UI.toast('A máscara precisa de alguns segundos para estabilizar.');return false;}
+ const now=V.Engine.time,range=230+V.Progress.bonus('investigation')*4;
+ const nearby=m.objects.filter(o=>o.type==='rasura'&&!(a.story.traces[o.caseId]||[]).includes(o.index)&&V.dist(o,V.Player.data)<range);
+ nearby.sort((left,right)=>V.dist(left,V.Player.data)-V.dist(right,V.Player.data));
+ const target=nearby[0]||null;
+ Object.assign(pulse,{last:now,until:now+2,map:m.id,target});
+ a.overload=V.clamp(a.overload+Math.max(0,6-V.Progress.bonus('overload')),0,100);
+ if(target){
+  a.story.pulseClues||=[];
+  if(!a.story.pulseClues.includes(target.id))a.story.pulseClues.push(target.id);
+  const owner=V.DuoWorld?.context??-1,state=V.state;
+  V.UI.toast('Sinal próximo · '+target.label,'mask-signal-toast',{
+   label:'Rastrear sinal',
+   run:()=>{
+    if(V.state!==state||V.modal||V.Dialogue.active)return;
+    const track=()=>{if(this.echo()===target&&this.trackEcho())V.UI.toast('Rota marcada pela máscara.');};
+    if(owner>=0&&V.DuoWorld?.exploring())V.DuoWorld.withActor(owner,track);
+    else track();
+   }
+  });
+ }else V.UI.toast('Nenhuma rasura inédita ao alcance.');
+ V.Audio.sfx('observe');
+ V.Save.save();
+ return true;
 },
 guide(){
 const s=this.ensure(),o=V.ObjectiveGuide.main();V.UI.modal('A vigília continua','ZAMBETO · CONVERSA FICCIONAL',`<div class="adv-guardian-small"><img src="assets/adventure/zambeto-illustration.png" width="130" height="130" alt="Zambeto"><p>“${s.stage==='epilogue'?'O arquivo tem mais caminhos agora. Escutar continua sendo trabalho de todos.':s.interpreted.length?'Você reuniu fragmentos. Pergunte também o que eles ainda não mostram.':'Não transforme o primeiro sinal na última palavra. Há moradores que já estão investigando.'}”</p></div><p>${esc(o?.label||'A cidade ainda tem leituras, criações e encontros para conhecer.')}</p>`,`<button id="guardian-culture" class="secondary">Contexto cultural</button><button id="guardian-track" class="primary">Rastrear próximo passo</button>`);V.$('#guardian-culture').onclick=()=>this.culture(()=>this.guide());V.$('#guardian-track').onclick=()=>{V.ObjectiveGuide.track();V.UI.close();};
@@ -110,19 +160,19 @@ onVictory(id){const a=V.Progress.ensure();if(id===0){this.completeVigilia();retu
 finale(){
 const a=V.Progress.ensure(),s=a.story;if(s.ending){this.epilogue();return;}
 const shared=Object.values(s.choices).filter(x=>x===0).length,strong=shared>=4&&s.interpreted.length===6;
-V.UI.modal('Quem segura a chave?', 'O HISTORIÓGRAFO · DECISÃO FINAL',`<div class="adv-device-banner"><img src="assets/adventure/historiograph-mask.webp?v=20261103-mask-duo2" alt="Historiógrafo" width="150" height="150"><p>O Curador foi contido. O Historiógrafo oferece uma última tentação: “Posso guardar tudo. Ninguém mais precisará perguntar.”<br><br>Zambeto responde: “E quem poderá discordar de você?”</p></div><p>Você continua sendo o último portador. Pode decidir como o conhecimento permanece disponível, sem entregar às próximas gerações uma única versão incontestável.</p><div class="stack"><button data-ending="shared" class="choice-button" ${strong?'':'disabled'}>Abrir o arquivo com governança compartilhada, versões, acesso e responsabilidades. ${strong?'':'· Converse novamente sobre pelo menos 4 decisões de partilha.'}</button><button data-ending="review" class="choice-button">Criar um conselho provisório, publicar os limites do acervo e combinar uma revisão.</button><button data-ending="sealed" class="choice-button">Guardar a chave apenas comigo, prometendo reavaliar minha decisão.</button></div>`,`<button id="ending-revisit" class="secondary">Rever as decisões com a comunidade</button>`,true);
+V.UI.modal('Quem segura a chave?', 'O HISTORIÓGRAFO · DECISÃO FINAL',`<div class="adv-device-banner"><img src="assets/adventure/historiograph-mask.webp?v=20261103-mask-duo2" alt="Historiógrafo" width="150" height="150"><p>Com o Curador contido, Mara abre a caixa de cópias dos bairros. O programa, a ficha do museu e as outras versões mostram quem fez cada trabalho e onde a Rasura agiu. Sobre a mesa, o Historiógrafo ainda pode concentrar o acesso às fichas centrais.</p></div><p>Zambeto olha a caixa e pergunta quem poderá corrigir o próximo erro. Cecília quer que sua oficina continue decidindo o que torna público. A cidade espera sua resposta sobre quem vai guardar as chaves do catálogo.</p><div class="stack"><button data-ending="shared" class="choice-button" ${strong?'':'disabled'}>Compartilhar a guarda do catálogo com a comunidade e publicar as regras de acesso. ${strong?'':'· Converse novamente sobre pelo menos 4 decisões de partilha.'}</button><button data-ending="review" class="choice-button">Criar um conselho provisório, publicar os limites do acervo e combinar uma revisão.</button><button data-ending="sealed" class="choice-button">Guardar a chave apenas comigo, prometendo reavaliar minha decisão.</button></div>`,`<button id="ending-revisit" class="secondary">Rever as decisões com a comunidade</button>`,true);
 V.$$('[data-ending]').forEach(b=>b.onclick=()=>{s.ending=b.dataset.ending;s.stage='epilogue';V.state.finished=true;V.Progress.reward('main-ending',500,{badge:1});V.Save.save();this.epilogue();});V.$('#ending-revisit').onclick=()=>this.device();
 },
 epilogue(){
 const s=this.ensure();if(!s.ending){this.finale();return;}
-const text=s.ending==='shared'?'A máscara deixa de ser a única passagem para as memórias. Cópias, fontes e versões ficam em pontos de consulta. Um conselho com moradores, educadores, artistas e pesquisadores decide critérios públicos e permite correções. Você permanece portador, mas reconhece os limites de carregar o passado sozinho.':s.ending==='review'?'O conselho provisório começa a abrir as fichas. Critérios, responsabilidades e dúvidas são publicados. Nem todas as decisões de acesso foram resolvidas; uma revisão já tem data e espaço para participação.':'A chave permanece com você. As obras e as pessoas recuperam seus créditos, mas a cidade pede acesso. O Historiógrafo está forte; a confiança está em construção. Zambeto lembra que esta escolha ainda pode ser revista.';
-V.UI.modal('O arquivo continua vivo','EPÍLOGO · '+({shared:'MUITAS CHAVES',review:'UMA PORTA EM CONSTRUÇÃO',sealed:'A CHAVE E A PERGUNTA'}[s.ending]),`<p>${esc(text)}</p><div class="two-cols">${D.cases.map(c=>`<article class="card"><h3>${esc(V.content.chapters[c.id-1].name)}</h3><p>${esc(c.restored)}</p></article>`).join('')}</div>`,`<button id="epilogue-choice" class="secondary">Rever a decisão final</button><button id="epilogue-explore" class="primary">Explorar a cidade restaurada</button>`,true);
-V.$('#epilogue-choice').onclick=()=>{s.ending=null;this.finale();};V.$('#epilogue-explore').onclick=()=>{V.UI.close();V.World.load('museum');V.ObjectiveGuide.track();};
+const text=s.ending==='shared'?'A biblioteca recebe a primeira cópia pública do índice. No festival, Lia lê os créditos recuperados antes da música. Na escola, estudantes aprendem a pedir uma correção, e o conselho de moradores, educadores, artistas e pesquisadores registra o que pode circular e o que depende de permissão.':s.ending==='review'?'Na praça, o conselho provisório afixa o primeiro índice. A escola recebe dúvidas por escrito e a biblioteca guarda as versões anteriores. A oficina de Cecília ainda discute o uso de suas gravações. A próxima reunião já tem data e um espaço reservado para essas respostas.':'Você guarda a chave do catálogo central. As cópias emprestadas voltam aos bairros, e os moradores continuam a cuidar de seus cadernos. A assembleia envia uma carta pedindo um modo de conferir a próxima edição. A pergunta fica com você até a próxima reunião.';
+V.UI.modal('O arquivo continua vivo','EPÍLOGO · '+({shared:'MUITAS CHAVES',review:'UMA PORTA EM CONSTRUÇÃO',sealed:'A CHAVE E A PERGUNTA'}[s.ending]),`<p>${esc(text)}</p><div class="two-cols">${D.cases.map(c=>`<article class="card"><h3>${esc(V.content.chapters[c.id-1].name)}</h3><p>${esc(c.restored)}</p></article>`).join('')}</div>`,`<button id="epilogue-choice" class="quiet">Rever a decisão final</button><button id="epilogue-chronicles" class="secondary">Ler as crônicas da cidade</button><button id="epilogue-explore" class="primary">Explorar a cidade restaurada</button>`,true);
+V.$('#epilogue-choice').onclick=()=>{s.ending=null;this.finale();};V.$('#epilogue-chronicles').onclick=()=>V.CityChronicle.index(()=>this.epilogue());V.$('#epilogue-explore').onclick=()=>{V.UI.close();V.World.load('museum');V.ObjectiveGuide.track();};
 },
 interact(o){if(o.type==='rasura'){this.trace(o);return true;}if(o.type==='zambeto'){o.first?this.firstNight():this.guide();return true;}if(o.type==='story'){if(o.event==='awakening')this.awakening();else this.ensure().ending?this.epilogue():this.ensure().stage==='epilogue'?this.finale():this.device();return true;}if(o.type==='encounter'){V.Combat.begin(o.encounter.chapter||1,false,{custom:o.encounter});return true;}return false;},
 visible(o){const s=this.ensure();if(o.type==='zambeto')return o.first?s.stage==='night'||s.stage==='firstbattle'||!!s.met&&!(V.Companions?.ensure?.()?.selected==='zambeto'&&V.Companions.ensure().follow):!!s.met;if(o.id==='historiograph-awakening')return s.stage==='museum'||s.awakened;if(o.id==='archive-epilogue')return !!s.met;return true;},
 update(dt){
-const a=V.Progress.ensure();if(!a||!V.World.current)return;this.clock+=dt;this.pulseTime=Math.max(0,this.pulseTime-dt);
+const a=V.Progress.ensure();if(!a||!V.World.current)return;this.clock+=dt;
 const m=V.World.current,o=m.objects.find(o=>o.companion&&o.type==='zambeto');
 const first=m.objects.find(o=>o.first&&o.type==='zambeto');if(first&&this.visible(first)&&!first.appeared){first.appeared=true;first.appearTime=.8;}if(first?.appearTime>0)first.appearTime=Math.max(0,first.appearTime-dt);
 if(o&&a.story.met){const p=V.Player.data;if(!this.companion||this.companion.map!==m.id){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+52},14)||{x:p.x,y:p.y};Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;this.companion={map:m.id};}
@@ -150,8 +200,22 @@ const done=o.type==='rasura'&&(this.ensure().traces[o.caseId]||[]).includes(o.in
 if(o.type==='encounter'){V.Combat.drawManifestation(ctx,o,cam);return true;}return false;
 },
 drawPulse(ctx,cam){
-if(this.pulseTime<=0)return;const p=V.Player.data,r=(2-this.pulseTime)*125;ctx.save();ctx.globalAlpha=this.pulseTime*.3;ctx.strokeStyle='#8ce5d7';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x-cam.x,p.y-cam.y,r,0,Math.PI*2);ctx.stroke();if(this.pulseTarget){const o=this.pulseTarget;ctx.strokeRect(o.x-cam.x-21,o.y-cam.y-33,42,44);}ctx.restore();
-const fx=V.Assets.images['historio-effects'];if(fx){const frame=Math.min(4,Math.floor((2-this.pulseTime)*3));ctx.drawImage(fx,frame*64,0,64,64,p.x-cam.x-48,p.y-cam.y-60,96,96);}
+ const time=this.pulseTime,record=this.pulseRecord();
+ if(time<=0||record?.map!==V.World.current?.id)return;
+ const p=V.Player.data,target=this.echo(),still=V.settings.reducedFlash||V.settings.reducedMotion;
+ ctx.save();
+ ctx.globalAlpha=still?.66:time*.34;
+ ctx.strokeStyle='#8ce5d7';ctx.lineWidth=3;
+ if(!still){ctx.beginPath();ctx.arc(p.x-cam.x,p.y-cam.y,(2-time)*125,0,Math.PI*2);ctx.stroke();}
+ if(target)ctx.strokeRect(target.x-cam.x-21,target.y-cam.y-33,42,44);
+ ctx.restore();
+ const fx=V.Assets.images['historio-effects'];
+ if(fx&&!still){
+  const frame=Math.min(4,Math.floor((2-time)*3));
+  ctx.drawImage(fx,frame*64,0,64,64,p.x-cam.x-48,p.y-cam.y-60,96,96);
+ }
 }
 };
 })();
+
+});

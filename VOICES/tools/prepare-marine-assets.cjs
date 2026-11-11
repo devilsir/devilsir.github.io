@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/marine-life'),meta=require('../assets/marine-life/generation.json');
 const source=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8');
 const pack=new Function('createCanvas',source.slice(source.indexOf('function pack('),source.indexOf('(async()=>'))+';return pack;')(createCanvas);

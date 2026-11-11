@@ -1,3 +1,9 @@
+/* Registered module: home-collection */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("home-collection", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function homeCollectionModule(){
 'use strict';
 const V=window.V,H=V.Homestead,C=V.Cozy,W=V.World,R=V.Rooms,P=V.Player,A=V.Animations,L=V.Life,T=48,esc=V.escape;
@@ -66,7 +72,9 @@ const wake=H.wake.bind(H);H.wake=function(){const s=this.ensure()?.sleep;if(!s)r
 const render=P.render.bind(P);P.render=function(ctx){const s=H.ensure()?.sleep,bed=s&&W.current?.id===s.map&&W.current.objects.find(o=>o.id===s.bed);if(bed){G.drawSleeper(ctx,V.state.character,bed,W.camera);return;}return render(ctx);};
 const save=V.Save.save.bind(V.Save);V.Save.save=function(...args){const s=H.ensure()?.sleep;if(!s?.returnAt||!P.data)return save(...args);const point={x:P.data.x,y:P.data.y,dir:P.data.dir};Object.assign(P.data,s.returnAt);try{return save(...args);}finally{Object.assign(P.data,point);}};
 const furniture=L.furniture.bind(L);L.furniture=function(o){if(H.isBed(o))return H.sleep(o);return furniture(o);};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.scene?.family!=='home-plus'||V.modal||V.Dialogue.active)return interact(o);const item=G.item(o);V.PixCollection.collect(item.word,'Casa · '+item.name);switch(item.action){case'bed':return H.sleep(o);case'seat':return V.Activities.perform('sit');case'storage':return H.homeShop('stored',G.room());case'study':V.Living.journal('readings');return V.Activities.perform('read',{close:false});case'food':case'fridge':if(item.action==='fridge')V.City.appliances.set(o.id,{startedAt:performance.now()/1000,duration:2.6});return L.panel('food');case'wash':V.City.appliances.set(o.id,{startedAt:performance.now()/1000,duration:3.2});V.UI.toast('Usando '+item.name.toLowerCase()+'. A animação termina sozinha.');return;case'light':H.ensure().lamps[o.id]=!H.ensure().lamps[o.id];V.Save.save();V.UI.toast('Luminária '+(H.ensure().lamps[o.id]?'acesa.':'apagada.'));return;default:V.UI.toast(item.description);return;}};
+V.Hooks.around(V.Game, 'interact', 'home-collection:interact:1', nextHook => function(o){if(o?.scene?.family!=='home-plus'||V.modal||V.Dialogue.active)return nextHook(o);const item=G.item(o);V.PixCollection.collect(item.word,'Casa · '+item.name);switch(item.action){case'bed':return H.sleep(o);case'seat':return V.Activities.perform('sit');case'storage':return H.homeShop('stored',G.room());case'study':V.Living.journal('readings');return V.Activities.perform('read',{close:false});case'food':case'fridge':if(item.action==='fridge')V.City.appliances.set(o.id,{startedAt:performance.now()/1000,duration:2.6});return L.panel('food');case'wash':V.City.appliances.set(o.id,{startedAt:performance.now()/1000,duration:3.2});V.UI.toast('Usando '+item.name.toLowerCase()+'. A animação termina sozinha.');return;case'light':H.ensure().lamps[o.id]=!H.ensure().lamps[o.id];V.Save.save();V.UI.toast('Luminária '+(H.ensure().lamps[o.id]?'acesa.':'apagada.'));return;default:V.UI.toast(item.description);return;}});
 const gameRender=V.Game.render.bind(V.Game);V.Game.render=function(ctx){gameRender(ctx);if(V.state)G.paint();};
 for(const[id,prop]of [['interior-player-cottage',1],['interior-player-loft',0],['interior-player-villa',2]]){const d=C.layouts[id];if(!d)continue;for(const s of d.scenes)if(s.family==='home'&&s.prop===16){s.family='home-plus';s.prop=prop;s.title=newItems[prop].name;s.size=newItems[prop].size;}V.SceneDesign.defaults[id]=JSON.parse(JSON.stringify(d));if(H.defaults[id])H.defaults[id]=JSON.parse(JSON.stringify(d));}
 })();
+
+});

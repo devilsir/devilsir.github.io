@@ -1,3 +1,9 @@
+/* Registered module: playground-engine */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-engine", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function playgroundEngine(){
 'use strict';
 const V=window.V,D=V.PlaygroundData,esc=V.escape,clone=x=>JSON.parse(JSON.stringify(x));
@@ -58,9 +64,11 @@ const P=V.Playground={active:null,controllers:{},callbacks:new Map(),clock:0,hud
  house(c,x,y,w,h,label,color){this.box(c,x,y,w,h,color);this.box(c,x-5,y-10,w+10,16,'#566353');this.box(c,x+w*.42,y+h-28,18,28,'#34504a');this.box(c,x+9,y+16,17,20,'#d8e5ce');this.text(c,label,x+w/2,y-22,14,'#183f36');},
  person(c,x,y,walking=false,dir=0,size=56){c.fillStyle='#183f3533';c.beginPath();c.ellipse(x,y+8,size*.23,5,0,0,Math.PI*2);c.fill();V.Assets.sprite(c,V.state.character,x,y,dir,walking&&!V.settings.reducedMotion?Math.floor(this.active.elapsed*8)%4:0,size);}
 };
-const update=V.Game.update.bind(V.Game),render=V.Game.render.bind(V.Game),key=V.Game.onKey.bind(V.Game),pause=V.Game.pause.bind(V.Game);
-V.Game.update=function(dt){if(P.active){P.update(dt);return;}return update(dt);};V.Game.render=function(c){if(P.active){P.render(c);return;}return render(c);};V.Game.onKey=function(k,e){if(P.active&&V.Game.screen==='game')return P.key(k,e);return key(k,e);};V.Game.pause=function(...args){return P.active?P.pause():pause(...args);};
+const render=V.Game.render.bind(V.Game),key=V.Game.onKey.bind(V.Game),pause=V.Game.pause.bind(V.Game);
+V.Hooks.around(V.Game, 'update', 'playground-engine:update:1', nextHook => function(dt){if(P.active){P.update(dt);return;}return nextHook(dt);});V.Game.render=function(c){if(P.active){P.render(c);return;}return render(c);};V.Game.onKey=function(k,e){if(P.active&&V.Game.screen==='game')return P.key(k,e);return key(k,e);};V.Game.pause=function(...args){return P.active?P.pause():pause(...args);};
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const result=await init(...args);const c=V.Engine.canvas;for(const[type,event]of[['down','pointerdown'],['move','pointermove'],['up','pointerup'],['cancel','pointercancel']])c.addEventListener(event,e=>{if(!P.active)return;e.preventDefault();e.stopImmediatePropagation();P.pointer(type,e);},{capture:true});return result;};
 const start=V.Game.startGame.bind(V.Game);V.Game.startGame=function(...args){P.detach();const result=start(...args),state=V.state;setTimeout(()=>{if(V.state!==state||V.ProfessorStudio?.active||V.Game.screen!=='game')return;const s=P.ensure(),current=s.current;if(current?.training&&s.guides[current.training]?.status==='running')P.attach(s.guides[current.training].run);else if(current?.key&&s.runs[current.key]){const r=s.runs[current.key];if(!r.finished||!r.returned)P.attach(r);}},160);return result;};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&P.active)P.save();});
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: sprite-frame-layouts */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("sprite-frame-layouts", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -5,3 +11,5 @@ V.SpriteFrames={layouts:{"actions-zambeto":{"cell":192,"normalHeight":0.73958333
 draw(ctx,img,key,row,frame,x,y,size,flip=false,fit=false){const rig=this.layouts[key],cell=rig.cell,pose=rig.rows[row],anchor=pose.anchors[frame];let scale=size*rig.normalHeight/pose.unitHeight;if(fit){const bounds=pose.bounds[frame],left=flip?bounds[2]-anchor[0]:anchor[0]-bounds[0],right=flip?anchor[0]-bounds[0]:bounds[2]-anchor[0],top=anchor[1]-bounds[1],bottom=bounds[3]-anchor[1];scale=Math.min(scale,(x-2)/Math.max(1,left),(ctx.canvas.width-x-2)/Math.max(1,right),(y-2)/Math.max(1,top),(ctx.canvas.height-y-2)/Math.max(1,bottom));}ctx.save();ctx.translate(Math.round(x),Math.round(y));if(flip)ctx.scale(-1,1);ctx.drawImage(img,frame*cell,row*cell,cell,cell,-anchor[0]*scale,-anchor[1]*scale,cell*scale,cell*scale);ctx.restore();return true;}
 };
 })();
+
+});

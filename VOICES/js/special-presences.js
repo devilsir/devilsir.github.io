@@ -1,3 +1,9 @@
+/* Registered module: special-presences */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("special-presences", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function specialPresences(){
 'use strict';
 const V=window.V,esc=V.escape;
@@ -192,3 +198,5 @@ V.Companions.render=function(...args){
 const gameRender=V.Game.render.bind(V.Game);V.Game.render=function(ctx){gameRender(ctx);P.paint();};
 const storyPerform=V.Story.perform.bind(V.Story);V.Story.perform=function(action){const p=V.Companions.selected();return p&&P.has(p.id)?P.perform(p.id,action):storyPerform(action);};
 })();
+
+});

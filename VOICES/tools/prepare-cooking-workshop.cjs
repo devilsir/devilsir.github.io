@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/cooking/workshop'),meta=require('../assets/cooking/workshop/generation.json');
 (async()=>{const sheets={},contact=createCanvas(1080,1660),cc=contact.getContext('2d');cc.fillStyle='#31534a';cc.fillRect(0,0,1080,1660);let serial=0;
  for(const[id,file]of Object.entries(meta.sources)){

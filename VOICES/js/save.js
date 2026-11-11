@@ -1,3 +1,9 @@
+/* Registered module: save */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("save", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V;const PREFIX='voices.v1.';
 V.defaultSettings={translation:true,phraseTranslation:true,subtitles:true,muted:true,music:.35,effects:.65,ambience:.55,npcChats:true,npcMovement:true,fontSize:17,highContrast:false,reducedMotion:false,speed:1,assist:false,timeLimits:true,difficulty:1,presentation:false,teacherPin:'',mode:'solo',teamNames:['Equipe Aurora','Equipe Horizonte'],unlockAll:false};
 V.Save={available:true,memory:{},
@@ -14,3 +20,5 @@ V.Save={available:true,memory:{},
  exportSave(){this.save();this.download('voices-progresso.json',{format:'voices-save',version:1,state:V.state,settings:V.settings});},
  importSave(file){file.text().then(text=>{const obj=JSON.parse(text);if(obj.format!=='voices-save'||!this.stateValid(obj.state))throw Error('Backup incompatível.');V.Game.loadState(obj.state);V.UI.toast('Progresso importado.');}).catch(e=>V.UI.toast('Não foi possível importar: '+e.message));}
 };})();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: editor-layout */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("editor-layout", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,E=V.SceneEditor;
@@ -31,3 +37,5 @@ E.key=function(k,e){if(ui?.open){if(k==='escape'){e.preventDefault?.();dismiss(t
 E.close=function(...args){dismiss();observer?.disconnect();observer=null;ui=null;document.body.classList.remove('editor-ui-open');return prior.close(...args);};
 document.addEventListener('pointerdown',e=>{if(ui?.open&&!ui.open.panel.contains(e.target)&&!ui.open.trigger.contains(e.target))dismiss();},true);
 })();
+
+});

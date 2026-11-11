@@ -1,3 +1,9 @@
+/* Registered module: house-window-lights */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("house-window-lights", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function houseWindowLights(){
 'use strict';
 const V=window.V,F=V.CityFacades,E=V.Environment,W=V.World;
@@ -12,3 +18,5 @@ const lights=E.lights.bind(E);E.lights=function(m){const list=lights(m);if(L.ban
 const lighting=E.lighting.bind(E);E.lighting=function(ctx,m,cam){const result=lighting(ctx,m,cam);L.draw(ctx,m,cam);return result;};
 const signature=V.Atlas.signature.bind(V.Atlas);V.Atlas.signature=function(m){return signature(m)+'|windows-'+L.band(m);};
 })();
+
+});

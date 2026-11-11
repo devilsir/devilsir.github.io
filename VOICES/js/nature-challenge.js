@@ -1,3 +1,9 @@
+/* Registered module: nature-challenge */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("nature-challenge", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,P=V.Playground,A=V.NatureArt,ID='guarda-biodiversidade',clamp=V.clamp;
 const names=['Caça ilegal','Pesca ilegal','Corte ilegal de árvores','Mineração ilegal'],actions=['Desarmar armadilha','Recolher rede abandonada','Proteger a área de regeneração','Isolar a área de mineração'];
@@ -58,3 +64,5 @@ const art=V.ChallengeCatalog.art.bind(V.ChallengeCatalog);V.ChallengeCatalog.art
 const detail=V.ChallengeCatalog.detail.bind(V.ChallengeCatalog);V.ChallengeCatalog.detail=function(key){const out=detail(key);if(key==='play:'+ID){A.ensure();const select=V.$('#challenge-level');const rename=()=>{for(const opt of select?.options||[])if(V.NatureData.maps[+opt.value])opt.textContent=(+opt.value+1)+' · '+V.NatureData.maps[+opt.value].name;};rename();V.$$('input[name="challenge-mode"]').forEach(i=>i.addEventListener('change',rename));const goal=V.$('.challenge-goal');if(goal)goal.insertAdjacentHTML('beforeend','<p>Uma aventura fictícia com apoio dos guardas. Na vida real, mantenha distância e comunique infrações às autoridades ambientais.</p>');}return out;};
 G.sources=sources;
 })();
+
+});

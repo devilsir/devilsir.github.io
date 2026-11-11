@@ -1,3 +1,9 @@
+/* Registered module: audio */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("audio", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V=window.V;
@@ -55,3 +61,5 @@
     sfx(type){if(type==='step')return;const cues={menu:[67],talk:[74],collect:[72,76,79],correct:[67,72,76],wrong:[50,47],shield:[65,77],hit:[43,39],portal:[60,67,72,79],victory:[60,64,67,72,79],glitch:[45,46,40],beat:[60],observe:[72,79],water:[67,71,74]};(cues[type]||[67]).forEach((n,i)=>this.note(n,type==='talk'?.05:.22,'triangle',type==='talk'?.07:.38,'sfx',i*.07));}
   };
 })();
+
+});

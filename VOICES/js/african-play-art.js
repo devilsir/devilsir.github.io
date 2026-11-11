@@ -1,3 +1,9 @@
+/* Registered module: african-play-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("african-play-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,D=V.AfricanPlayArtData,ids=['terra-mar','fogo-montanha','mancala','matacuzana','jogos-jo','ampe','play-props'];
@@ -16,3 +22,5 @@ paintCovers(){for(const el of V.$$('[data-af-play-cover]'))this.cover(el.getCont
 };
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(){await Promise.all([load(),A.load()]);return this.errors;};
 })();
+
+});

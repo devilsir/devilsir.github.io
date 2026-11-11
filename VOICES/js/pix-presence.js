@@ -1,3 +1,9 @@
+/* Registered module: pix-presence */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("pix-presence", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -6,3 +12,5 @@ V.PixPresence={
  draw(ctx,p,cam){ctx.save();ctx.globalAlpha=1;ctx.imageSmoothingEnabled=false;V.Assets.sprite(ctx,'pix',p.x-cam.x-38,p.y-cam.y-37+(V.settings.reducedMotion?0:Math.sin(V.Engine.time*2)*2),0,0,34);ctx.restore();}
 };
 })();
+
+});

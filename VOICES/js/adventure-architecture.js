@@ -1,3 +1,9 @@
+/* Registered module: adventure-architecture */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("adventure-architecture", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,C=V.Cozy,D=V.SceneDesign,T=48,copy=x=>JSON.parse(JSON.stringify(x));
@@ -31,6 +37,7 @@ m.geometryRevision=++this.revision;
 approach(d,mount){const p=this.mountPosition(d,mount),w=p.wall,dx=w.b[0]-w.a[0],dy=w.b[1]-w.a[1];return Math.abs(dx)>=Math.abs(dy)?{x:p.x,y:p.y+42}:{x:p.x+(mount.orientation==='west'?-45:45),y:p.y+28};},
 blocked(m,x,y,r=11){return(m.archWalls||[]).some(s=>{const reach=r+(s.wall.thickness||12)/2;return x>=Math.min(s.a[0],s.b[0])-reach&&x<=Math.max(s.a[0],s.b[0])+reach&&y>=Math.min(s.a[1],s.b[1])-reach&&y<=Math.max(s.a[1],s.b[1])+reach&&V.Rooms.distSeg({x,y},s.a,s.b).distance<reach;});},
 drawWall(ctx,m,w,cam){
+if(w.residential&&this.residentialWall)return this.residentialWall(ctx,m,w,cam);
 const vertical=Math.abs(w.b[1]-w.a[1])>Math.abs(w.b[0]-w.a[0]),height=w.height||146,th=w.thickness||12,p=V.Player.data;
 const obstruct=p&&p.y<Math.max(w.a[1],w.b[1])&&p.y>Math.min(w.a[1],w.b[1])-height-45&&p.x>Math.min(w.a[0],w.b[0])-50&&p.x<Math.max(w.a[0],w.b[0])+50;
 ctx.save();ctx.globalAlpha=obstruct&&!V.SceneEditor?.active?(w.id?.includes('home-divider')?.2:.65):1;
@@ -46,8 +53,7 @@ for(const o of w.openings||[]){
 const x=w.a[0]+(w.b[0]-w.a[0])*o.u-cam.x,y=w.a[1]+(w.b[1]-w.a[1])*o.u-cam.y;
 // The wall opening is full-height for collision, but the door itself isn't.
 // Paint the missing masonry ABOVE the frame; don't paint over the walkable gap.
-const matchedDoor=m.design?.construction?.doors?.find(d=>d.room===w.id?.split('-').slice(2,-1).join('-')&&Math.hypot(d.x-(x+cam.x),d.y-(y+cam.y))<10)
- ||m.design?.construction?.doors?.find(d=>Math.hypot(d.x-(x+cam.x),d.y-(y+cam.y))<12);
+const matchedDoor=m.design?.construction?.doors?.find(d=>d.id===o.door||Math.hypot(d.x-(x+cam.x),d.y-(y+cam.y))<12);
 const doorHeight=matchedDoor?.height||64,topOfDoor=y-doorHeight+8;
 ctx.fillStyle='#d5c4a3';
 if(!vertical){
@@ -60,6 +66,7 @@ ctx.fillRect(left,topOfDoor-7,o.width+14,8);
 }else{ctx.fillRect(x-9,y-o.width/2-height,18,12);ctx.fillRect(x-9,y+o.width/2-height,18,12);}
 }
 ctx.restore();
+if(w.windows?.length)this.residentialWindows?.(ctx,m,w,cam);
 for(const mount of m.mounts.filter(o=>o.wall===w.id))this.drawMount(ctx,m,mount,cam);
 },
 drawMount(ctx,m,mount,cam){
@@ -129,3 +136,5 @@ d.adventure=a;for(const mount of a.architecture.mounts)if(!this.validMount(d,mou
 };
 A.prepare();
 })();
+
+});

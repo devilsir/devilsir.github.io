@@ -1,3 +1,9 @@
+/* Registered module: playground-platform-upgrade */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playground-platform-upgrade", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Palavras em Movimento: authored routes, responsive camera and input parity. */
 (function wordsInMotionEdition() {
 'use strict';
@@ -342,3 +348,5 @@ C.spot=function(r){
  return{x:clamp((target?.x??d.x)-d.cam,50,w-50),y:target?.y??d.y-28,w:135,h:130};
 };
 })();
+
+});

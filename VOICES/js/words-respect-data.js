@@ -1,3 +1,9 @@
+/* Registered module: words-respect-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("words-respect-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -57,3 +63,5 @@ V.WordsRespectData={
  ]
 };
 })();
+
+});

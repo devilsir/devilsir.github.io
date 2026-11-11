@@ -1,3 +1,9 @@
+/* Registered module: culture-oware */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("culture-oware", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cultureOware(){
 'use strict';const V=window.V,K=V.CultureChallenges,esc=V.escape;
 const O=K.Oware={
@@ -20,3 +26,5 @@ K.oware=function(){const r=this.run(),d=r.data,training=r.stage<3,legal=O.legal(
 K.sowOware=function(pit=null,computer=false){const r=this.run();if(r?.game!=='oware')return false;const d=r.data,training=r.stage<3;if(d.over||d.done||(!computer&&d.turn!==0)||(computer&&(training||d.turn!==1)))return false;pit=pit===null?d.selected:pit;if(!Number.isInteger(pit)||!O.legal(d.board,d.turn).includes(pit))return this.feedback('Escolha uma casa permitida. Se o outro lado estiver vazio, a semeadura precisa alimentá-lo.');if(training&&pit!==this.game('oware').stages[r.stage].pit)return this.feedback('Este exercício pede a casa '+String.fromCharCode(65+this.game('oware').stages[r.stage].pit)+'. Compare a prévia com o objetivo do treino.',true);const next=O.apply(d,pit);if(!next)return false;d.board=next.board;d.scores=next.scores;d.turn=next.turn;d.selected=null;d.turns++;d.last={pit,path:next.path,captured:next.captured,gain:next.gain};r.moves++;r.feedback=(computer?'Bia':'Você')+' semeou '+String.fromCharCode(65+pit)+': '+next.path.length+' sementes distribuídas. '+(next.grand?'A captura foi cancelada para manter sementes do outro lado.':next.gain?next.gain+' sementes capturadas.':'Nenhuma captura nesta jogada.');if(training){d.done=true;d.turn=0;}else O.checkEnd(d);V.Audio.sfx(next.gain?'collect':'menu');this.commit();return true;};
 K.scheduleOware=function(){const r=this.run(),token=++this.token;setTimeout(()=>{if(this.token!==token||this.run()!==r||!V.$('#oware-board')||r.data.turn!==1||r.data.over)return;const pit=O.choose(r.data);if(pit===null){O.checkEnd(r.data);this.commit();return;}this.sowOware(pit,true);},V.settings.reducedMotion?100:650);};
 })();
+
+});

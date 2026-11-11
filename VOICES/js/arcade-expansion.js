@@ -1,3 +1,9 @@
+/* Registered module: arcade-expansion */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("arcade-expansion", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';const V=window.V,P=V.Playground,D=V.PlaygroundData,copy=x=>JSON.parse(JSON.stringify(x));
 const extraWords=[['rio','river',['road','roof']],['peixe','fish',['dish','tree']],['barco','boat',['coat','bridge']],['capacete','helmet',['basket','parcel']],['encomenda','parcel',['window','garden']],['ponte','bridge',['fish','street']],['mercado','market',['helmet','school']],['árvore','tree',['boat','mailbox']],['caixa de correio','mailbox',['roof','river']],['motocicleta','motorcycle',['bicycle','basket']],['rede de pesca','fishing net',['helmet','letter']],['cesto','basket',['boat','house']]].map(([pt,en,wrong])=>({pt,en,wrong}));D.words.push(...extraWords.filter(w=>!D.words.some(old=>old.en===w.en)));
@@ -27,3 +33,5 @@ const menu=P.menu.bind(P);P.menu=function(...args){const result=menu(...args);V.
 const pause=P.pause.bind(P);P.pause=function(...args){const result=pause(...args),r=this.active;if(r?.arcade){const footer=V.$('.modal-footer'),b=document.createElement('button');b.className='secondary';b.id='arcade-stop-free';b.textContent='Encerrar sessão e guardar moedas';b.onclick=()=>X.close(r);footer?.append(b);}return result;};
 for(const id of ['runner','rhythm','platform','capoeira']){const c=P.controllers[id];if(!c?.update)continue;const update=c.update.bind(c);c.update=function(r,dt){const multiplier=!r.training&&!r.calm&&r.arcade?1+Math.min(5,r.arcade.variant||0)*.035:1;return update(r,dt*multiplier);};}
 })();
+
+});

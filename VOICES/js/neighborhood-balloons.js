@@ -1,3 +1,9 @@
+/* Registered module: neighborhood-balloons */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("neighborhood-balloons", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 const V=window.V,C=V.Cozy,W=V.World;
 const types=['greeting','question','attention','reply','surprise','thought','shout','practical','conversation'];
@@ -56,3 +62,5 @@ C.update=function(dt){dt=V.clamp(dt,0,.08);previous.update(dt);const m=W.current
 C.onLoad=function(){if(B.currentMap&&B.currentMap!==W.current)for(const o of B.currentMap.objects){o.bubbleRemark=null;o.remarkTime=0;}previous.load();B.currentMap=W.current;for(const o of W.current?.objects||[]){o.bubbleRemark=null;o.remarkTime=0;}};
 C.interact=function(o){if(o){o.bubbleRemark=null;o.remarkTime=0;}return previous.interact(o);};
 })();
+
+});

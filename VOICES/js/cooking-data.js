@@ -1,3 +1,9 @@
+/* Registered module: cooking-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("cooking-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V;
@@ -53,3 +59,5 @@ for(const[id,frame]of [['market-acaraje',0],['market-abara',1],['market-moqueca'
 for(const[id,stock]of [['dandara',['cooking-caruru','cooking-vatapa']],['thandi',['cooking-bobotie']]]){const v=V.MarketData.vendors.find(v=>v.id===id);v.stock.push(...stock);}
 const luiz=V.MarketData.vendors.find(v=>v.id==='luiz');luiz.text='Os ingredientes vão para a mochila. Na barraquinha central, experimente as receitas e os gestos da oficina. O restaurante da cidade serve outros pratos.';
 })();
+
+});

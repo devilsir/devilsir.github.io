@@ -1,3 +1,9 @@
+/* Registered module: world-preferences */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("world-preferences", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function worldPreferences(){
 'use strict';const V=window.V,H=V.Homestead,Q=V.CityCommutes,F=V.FastTravel;
 V.defaultSettings.npcHomeRoutines=false;V.defaultSettings.worldHours=false;
@@ -11,3 +17,5 @@ const hours=F.hours.bind(F);F.hours=function(...args){return V.settings?.worldHo
 const apply=V.Save.applySettings.bind(V.Save);V.Save.applySettings=function(...args){const result=apply(...args);if(V.state&&H.actors.size){R.sync();V.ObjectiveGuide.invalidate();}return result;};
 const settings=V.Game.settings.bind(V.Game);V.Game.settings=function(...args){const result=settings(...args),host=V.$('.modal-body .two-cols');if(host){const group=document.createElement('section');group.className='card world-preferences';group.innerHTML=`<h3>Rotinas e horários da cidade</h3><label class="toggle"><input id="s-npc-home-routines" type="checkbox" ${V.settings.npcHomeRoutines===true?'checked':''}> NPCs voltam para casa à noite</label><p>Quando as duas opções estão desligadas, moradores continuam disponíveis nos locais de atividade.</p><label class="toggle"><input id="s-world-hours" type="checkbox" ${V.settings.worldHours===true?'checked':''}> Horários da cidade: lojas, casas e retorno dos NPCs</label><p>Ativado: os NPCs voltam para casa às 19h e saem às 6h30. Desligado: visitas a qualquer hora; a rotina noturna ainda pode ser ativada na opção acima.</p>`;host.appendChild(group);const button=V.$('#settings-apply'),save=button.onclick;button.onclick=()=>{V.settings.npcHomeRoutines=V.$('#s-npc-home-routines').checked;V.settings.worldHours=V.$('#s-world-hours').checked;save();};}return result;};
 })();
+
+});

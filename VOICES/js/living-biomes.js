@@ -1,3 +1,9 @@
+/* Registered module: living-biomes */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("living-biomes", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,N=V.NatureWorld,D=V.NatureData,W=V.World,C=V.Cozy,S=V.SceneDesign,A=V.NatureArt,T=48;
@@ -79,14 +85,14 @@ const B=V.LivingBiomes={images:{},
  positions(m){for(const o of m.objects){const p=m.design.positions?.[o.id];if(!p)continue;const dx=(p[0]+.5)*T-o.x,dy=(p[1]+.5)*T-o.y;o.x+=dx;o.y+=dy;const solid=m.solids.find(b=>b.owner===o.id);if(solid){solid.x+=dx;solid.y+=dy;}if(o.home)o.home={x:o.x,y:o.y};if(o.bounds){o.bounds.x+=dx;o.bounds.y+=dy;}}},
  build(m){if(![CER,SAV].includes(m.id))return m;m.livingBiome=true;m.biomePaths=this.paths(m);this.water(m);if(m.id===SAV)this.savanna(m);else this.cerrado(m);this.vegetation(m);this.positions(m);m.cache=null;return m;},
  trace(c,path){c.beginPath();c.moveTo(path[0][0]*T,path[0][1]*T);for(let i=1;i<path.length-1;i++){const a=path[i],b=path[i+1];c.quadraticCurveTo(a[0]*T,a[1]*T,(a[0]+b[0])*T/2,(a[1]+b[1])*T/2);}const last=path[path.length-1];c.lineTo(last[0]*T,last[1]*T);},
- ground(m){const canvas=document.createElement('canvas');canvas.width=m.width*T;canvas.height=m.height*T;const c=canvas.getContext('2d'),cer=m.id===CER,rng=this.random(cer?1652:9856);c.fillStyle=cer?'#a9b17b':'#bdaf70';c.fillRect(0,0,canvas.width,canvas.height);
+ ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=canvas.getContext('2d'),cer=m.id===CER,rng=this.random(cer?1652:9856);c.fillStyle=cer?'#a9b17b':'#bdaf70';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));
   // Low-contrast irregular patches replace the old chessboard ground.
-  for(let i=0;i<660;i++){c.fillStyle=(cer?['#8a9a59','#c3bc83','#a2ab71','#bac48a']:['#c8ba7e','#a4a364','#d3be84','#b2a668'])[i%4];c.globalAlpha=.12+rng()*.15;c.beginPath();c.ellipse(rng()*canvas.width,rng()*canvas.height,35+rng()*140,25+rng()*85,rng()*3,0,Math.PI*2);c.fill();}c.globalAlpha=1;
-  for(let i=0;i<5000;i++){const x=rng()*canvas.width,y=rng()*canvas.height;c.strokeStyle=cer?'#6f884744':'#897a4240';c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x-2,y-3-rng()*5);c.moveTo(x,y);c.lineTo(x+3,y-4-rng()*4);c.stroke();}
+  for(let i=0;i<660;i++){c.fillStyle=(cer?['#8a9a59','#c3bc83','#a2ab71','#bac48a']:['#c8ba7e','#a4a364','#d3be84','#b2a668'])[i%4];c.globalAlpha=.12+rng()*.15;c.beginPath();c.ellipse(rng()*V.GroundCache.width(canvas),rng()*V.GroundCache.height(canvas),35+rng()*140,25+rng()*85,rng()*3,0,Math.PI*2);c.fill();}c.globalAlpha=1;
+  for(let i=0;i<5000;i++){const x=rng()*V.GroundCache.width(canvas),y=rng()*V.GroundCache.height(canvas);c.strokeStyle=cer?'#6f884744':'#897a4240';c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x-2,y-3-rng()*5);c.moveTo(x,y);c.lineTo(x+3,y-4-rng()*4);c.stroke();}
   c.lineJoin=c.lineCap='round';for(const width of [93,77]){c.lineWidth=width;c.strokeStyle=width===93?(cer?'#9e9869':'#aa9460'):(cer?'#d0bf8f':'#dcc28d');for(const path of m.biomePaths){this.trace(c,path);c.stroke();}}
   for(const shape of m.biomeWaterShapes){c.beginPath();c.moveTo((shape.at(-1)[0]+shape[0][0])/2,(shape.at(-1)[1]+shape[0][1])/2);for(let i=0;i<shape.length;i++){const p=shape[i],q=shape[(i+1)%shape.length];c.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);}c.closePath();c.fillStyle=cer?'#609d98':'#719c94';c.strokeStyle=cer?'#7b9f76':'#94a170';c.lineWidth=30;c.stroke();c.fill();c.save();c.clip();c.strokeStyle='#c8e2c247';c.lineWidth=1.5;for(let i=0;i<85;i++){const x=(cer?42:20)*T+rng()*34*T,y=6*T+rng()*31*T;c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+20,y+3,x+40+rng()*30,y);c.stroke();}c.restore();}
   for(const b of m.natureBridges){c.fillStyle='#76543b';c.fillRect(b.x,b.y,b.w,b.h);for(let x=b.x+4;x<b.x+b.w;x+=17){c.fillStyle='#d8b782';c.fillRect(x,b.y+5,13,b.h-10);}c.fillStyle='#594c35';c.fillRect(b.x,b.y, b.w,5);c.fillRect(b.x,b.y+b.h-5,b.w,5);}
-  c.fillStyle=cer?'#657e4e':'#8a8c53';c.fillRect(0,0,canvas.width,T);c.fillRect(0,canvas.height-T,canvas.width,T);c.fillRect(0,0,T,canvas.height);c.fillRect(canvas.width-T,0,T,canvas.height);m.cache=canvas;
+  c.fillStyle=cer?'#657e4e':'#8a8c53';c.fillRect(0,0,V.GroundCache.width(canvas),T);c.fillRect(0,V.GroundCache.height(canvas)-T,V.GroundCache.width(canvas),T);c.fillRect(0,0,T,V.GroundCache.height(canvas));c.fillRect(V.GroundCache.width(canvas)-T,0,T,V.GroundCache.height(canvas));m.cache=canvas;
  },
  draw(c,o,cam){if(!o.biomeAtlas)return false;const im=this.images[o.biomeAtlas];if(!im?.naturalWidth)return true;const size=o.w,x=o.x-cam.x,y=o.y-cam.y,cell=im.naturalWidth/4;if(Math.abs(c.getTransform().a)>=.99&&(x<-size||x>c.canvas.width+size||y<-20||y>c.canvas.height+size))return true;V.SceneShadows.cast(c,im,x,y+4,size,size,{frame:[o.biomeCell%4*cell,Math.floor(o.biomeCell/4)*cell,cell,cell],alpha:size>100?.16:.1});c.save();c.imageSmoothingEnabled=true;c.drawImage(im,o.biomeCell%4*cell,Math.floor(o.biomeCell/4)*cell,cell,cell,x-size/2,y-size+10,size,size);c.restore();return true;}
 };
@@ -97,6 +103,11 @@ const draw=N.draw.bind(N);N.draw=(c,o,cam)=>B.draw(c,o,cam)||draw(c,o,cam);
 const load=V.Assets.load.bind(V.Assets);V.Assets.load=async function(...args){await Promise.all([load(...args),B.load()]);};
 const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>/\/(cerrado-fauna|savanna-fauna|cerrado-understory|savanna-landscape)\./.test(key)?'living-biomes':group(key);
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.livingBiome||m?.animalMuseum)out.push('living-biomes');return [...new Set(out)];};
+// Museum fiches may open from the plaza before either biome has been visited.
+const exhibit=V.AnimalMuseum.exhibit.bind(V.AnimalMuseum);V.AnimalMuseum.exhibit=function(id,...args){const entry=this.entry(id);if(entry&&['cerrado-fauna','savanna-fauna'].includes(entry.sheet))V.MapAssets.ensure(['living-biomes'],'Preparando a ficha do animal').then(()=>this.paintModels());return exhibit(id,...args);};
+const catalog=V.AnimalMuseum.catalog.bind(V.AnimalMuseum);V.AnimalMuseum.catalog=function(...args){V.MapAssets.ensure(['living-biomes'],'Preparando a coleção');return catalog(...args);};
 // The animated atlas is also used in the field guide, not only on the map.
 const wildlifeDraw=V.Wildlife.drawAnimal.bind(V.Wildlife);V.Wildlife.drawAnimal=function(c,s,...args){if(s.sheet==='cerrado-fauna'||s.sheet==='savanna-fauna'){c.save();c.imageSmoothingEnabled=true;const out=wildlifeDraw(c,s,...args);c.restore();return out;}return wildlifeDraw(c,s,...args);};
 })();
+
+});

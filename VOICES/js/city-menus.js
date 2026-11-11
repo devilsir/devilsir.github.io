@@ -1,3 +1,9 @@
+/* Registered module: city-menus */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-menus", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function cityMenus(){
 'use strict';const V=window.V,W=V.World,H=V.Homestead,N=V.ObjectiveGuide,K=V.CultureChallenges,F=V.FastTravel,esc=V.escape,normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const M=V.CityMenus={
@@ -52,10 +58,12 @@ const objective=N.objective.bind(N);N.objective=function(){const t=V.Progress.en
 const hud=V.Game.updateHUD.bind(V.Game);V.Game.updateHUD=function(){hud();const t=V.Progress.ensure()?.tracked?.task;if(!t)return;const o=M.resolve(t);if(!o)return;V.$('#chapter-chip').textContent=t.kind==='house'?'MORADIA':t.kind==='community'?'MISSÃO DA COMUNIDADE':t.kind==='chapter'?'CAPÍTULO '+t.id:'DESAFIO ACOMPANHADO';V.$('#mission-name').textContent=o.title||'Objetivo selecionado';V.$('#mission-objective').textContent=o.label;V.$('#mission-progress').innerHTML=Array.from({length:o.total||1},(_,i)=>`<i class="${i<(o.progress||0)?'done':''}"></i>`).join('');};
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){const r=await init(...args);M.toolbar();return r;};const worldInit=W.init.bind(W);W.init=function(...args){const r=worldInit(...args);M.seed();return r;};
 const key=V.Game.onKey.bind(V.Game);V.Game.onKey=function(k,e={}){if(this.screen==='game'&&this.mode==='explore'&&!V.modal&&!V.Dialogue.active&&!V.SceneEditor.active&&!e.repeat){const actions={o:()=>M.homes(),b:()=>M.challenges(),q:()=>M.board()};if(actions[k]){e.preventDefault?.();actions[k]();return;}}return key(k,e);};
-const update=V.Game.update.bind(V.Game);V.Game.update=function(dt){update(dt);M.lastSync+=dt;if(M.lastSync>.35){M.lastSync=0;M.sync();if(V.Progress.ensure()?.tracked?.task)this.updateHUD();}};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='culture-kiosk'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.game!=='community')return K.open(o.game);const t=V.Progress.ensure().tracked?.task;if(t?.kind==='arcade')return V.LearningArcade.start(t.id);return M.challenges('community');}return interact(o);};
+V.Hooks.around(V.Game, 'update', 'city-menus:update:1', nextHook => function(dt){nextHook(dt);M.lastSync+=dt;if(M.lastSync>.35){M.lastSync=0;M.sync();if(V.Progress.ensure()?.tracked?.task)this.updateHUD();}});
+V.Hooks.around(V.Game, 'interact', 'city-menus:interact:1', nextHook => function(o){if(o?.type==='culture-kiosk'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore'){if(o.game!=='community')return K.open(o.game);const t=V.Progress.ensure().tracked?.task;if(t?.kind==='arcade')return V.LearningArcade.start(t.id);return M.challenges('community');}return nextHook(o);});
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(c,o,cam,t){if(o.type!=='culture-kiosk')return draw(c,o,cam,t);const x=Math.round(o.x-cam.x),y=Math.round(o.y-cam.y),color=K.game(o.game)?.color||'#84b6a3';if(x< -60||y< -80||x>c.canvas.width+60||y>c.canvas.height+80)return;c.fillStyle='#25423540';c.fillRect(x-24,y-1,48,8);c.fillStyle='#765b40';c.fillRect(x-23,y-58,46,56);c.fillStyle='#bdab7f';c.fillRect(x-18,y-53,36,37);c.fillStyle='#25443f';c.fillRect(x-13,y-48,26,25);c.fillStyle=color;if(o.game==='loom'){for(let yy=0;yy<3;yy++)for(let xx=0;xx<4;xx++)if((xx+yy)%2)c.fillRect(x-10+xx*6,y-45+yy*7,5,6);}else if(o.game==='oware'){for(let yy=0;yy<2;yy++)for(let xx=0;xx<4;xx++){c.beginPath();c.arc(x-8+xx*5,y-41+yy*9,2,0,Math.PI*2);c.fill();}}else if(o.game==='stage'){c.beginPath();c.moveTo(x,y-46);c.lineTo(x+9,y-31);c.lineTo(x-9,y-31);c.closePath();c.fill();}else for(let i=0;i<3;i++)c.fillRect(x-9,y-44+i*7,18-i*3,3);c.fillStyle='#e7d4a9';c.fillRect(x-27,y-62,54,5);c.fillRect(x-27,y-15,54,5);if(W.nearest?.id===o.id)V.Living.marker(c,x,y-78,'E',color);};
 const landmark=V.Atlas.landmark.bind(V.Atlas);V.Atlas.landmark=function(c,o,m){return o.type==='culture-kiosk'?V.Cozy.drawObject(c,o,{x:0,y:0},0):landmark(c,o,m);};
 H.panel=()=>M.homes();H.addresses=()=>M.homes('community');
 const mission=V.Living.showMission.bind(V.Living);V.Living.showMission=function(id){mission(id);const start=V.$('#mission-start'),back=V.$('#mission-back');if(start)start.onclick=()=>M.track('community',id);if(back){back.textContent='Missões e objetivos';back.onclick=()=>M.board('community');}};
 })();
+
+});

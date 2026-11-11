@@ -1,0 +1,60 @@
+{
+  "license": "MIT",
+  "licenseFile": "../../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "generatedWith": "image_gen (built-in)",
+  "assets": [
+    {
+      "id": "icons",
+      "file": "assets/adventure/turn-interface/icons.webp",
+      "bytes": 59002,
+      "reference": [
+        "assets/adventure/icons/shield.png",
+        "assets/adventure/historiograph-mask.webp"
+      ],
+      "prompt": "Produce one square 4-column by 4-row truly transparent game interface sprite atlas, one distinct centered icon per cell in a perfectly regular grid, with at least 12% alpha gutter on every side. No words, numbers, lettering, plaque background or grid. Design 16 very legible chunky pixel-art symbols for VOICES. Use solid contrasting silhouettes, restrained antique gold rims, dark charcoal-green outline, cream highlights, jade/teal for protection or study, amber for action, blue for focus, coral for warnings. Match the existing pixel art references, readable at 28 px. Exact order left-to-right. Row 1: golden impact starburst with angled action streak; teal shield with gold rim; turquoise spell crystal with orbit spark; warm brown open first-aid satchel with a small teal glass bottle. Row 2: golden lantern with jade light for ally support; two overlapping cream archival pages with turquoise linking seal for context; amber circular arrow around a teal play triangle for automatic turns; single gold eye with a jade pupil for enemy intention. Row 3: green-gold pulse rings around a turquoise center; antique gold compass pointing up-right; simple folded rust and jade feather fan for mask appearance; open ivory book with an amber clasp for records. Row 4: coral heart; faceted royal-blue focus diamond; gold double-chevron for animation speed; narrow ivory pennant on a gold pole for retreat. All silhouettes fully isolated with true alpha, no dense detail, clear enough for touch buttons.",
+      "columns": 4,
+      "rows": 4,
+      "order": [
+        "attack",
+        "defend",
+        "skills",
+        "items",
+        "support",
+        "context",
+        "auto",
+        "intents",
+        "pulse",
+        "track",
+        "style",
+        "records",
+        "health",
+        "focus",
+        "speed",
+        "retreat"
+      ]
+    },
+    {
+      "id": "mask-display",
+      "file": "assets/adventure/turn-interface/mask-display.webp",
+      "bytes": 34844,
+      "reference": [
+        "assets/adventure/historiograph-mask.webp",
+        "assets/city/battle-gallery.webp"
+      ],
+      "prompt": "Generate a decorative mask display backplate asset for a compact museum-interface in VOICES. Landscape roughly 3:2. A deep dark ink-green field, subtle fine pixel-art concentric brass circles around a quiet empty oval in the exact center where a real mask sprite will be composited. Low terracotta, patinated jade, soft copper, and tiny dim teal light at the ring edges. Fine perspective metal steps beneath the empty center like an archive display, shallow amber geometric inlay and beautifully restrained artifact lighting. Image should work behind colorful art and small white accessible text without overpowering it. No actual mask, no people, no texts, no letters, no rune-like writing, no UI controls, no frame around the perimeter. Large dark breathing room on the left and right. Style matches the game's engraved illustrated museum and pixel mask asset, hand-drawn and crisp."
+    },
+    {
+      "id": "arena",
+      "file": "assets/adventure/turn-interface/arena.webp",
+      "bytes": 178540,
+      "reference": [
+        "assets/city/battle-gallery.webp"
+      ],
+      "prompt": "Design one new wide 16:9 game arena for the VOICES opening encounter in its fictional Museum of Voices. Match the warm painted pixel-art adventure-game reference. Low camera, centered symmetry, with open patterned dark green stone floor filling the lower 70% so character sprites placed near the middle height have clear contrasting silhouettes. Narrow background upper third shows amber museum lamps, archive shelves behind glass and tall teal arched windows. Subtle brass inlay in the floor, pools of warm light near the edges, clean deep forest and patinated copper palette. The central vertical 40% must also work as a mobile portrait crop, keep central area uncluttered. No person, enemies, writing, brands, banners, interface, borders or text. Clean coherent perspective, quiet atmosphere, legible arena at all screen sizes."
+    }
+  ]
+}

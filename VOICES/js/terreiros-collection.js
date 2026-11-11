@@ -1,3 +1,9 @@
+/* Registered module: terreiros-collection */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("terreiros-collection", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function terreirosCollection(){
 'use strict';
 const V=window.V,C=V.Cozy,W=V.World,D=V.SceneDesign,T=48,data=V.TerreirosCollectionData,copy=x=>JSON.parse(JSON.stringify(x));
@@ -20,8 +26,10 @@ const compose=C.compose.bind(C);C.compose=function(m){compose(m);B.hydrate(m);};
 const hydrate=V.City.hydrate.bind(V.City);V.City.hydrate=function(m){hydrate(m);B.hydrate(m);};
 const ground=C.ground.bind(C);C.ground=function(m){ground(m);const ctx=m.cache.getContext('2d');for(const o of m.objects){const i=B.item(o);if(i&&!i.solid){const z=(o.scene.size||i.size)*T;V.ObjectEditing.scene(ctx,o,{x:0,y:0},()=>C.prop(ctx,i.family,i.prop,o.x-z/2,o.y-z*.99,z));}}};
 const draw=C.drawObject.bind(C);C.drawObject=function(ctx,o,cam,t){const i=B.item(o);if(!i)return draw(ctx,o,cam,t);const x=o.x-cam.x,y=o.y-cam.y,z=(o.scene.size||i.size)*T;if(i.solid)C.prop(ctx,i.family,i.prop,x-z/2,y-z*.99,z);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y,'E','#d6c38e');};
-const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(!B.item(o)||V.modal||V.Dialogue.active)return interact(o);return B.inspect(o);};
+V.Hooks.around(V.Game, 'interact', 'terreiros-collection:interact:1', nextHook => function(o){if(!B.item(o)||V.modal||V.Dialogue.active)return nextHook(o);return B.inspect(o);});
 const normalise=D.normalise.bind(D),doc=D.document.bind(D);D.normalise=function(input){if(input?.maps&&(input.terreirosAssetsVersion||0)<1){input=copy(input);B.upgrade(input.maps);}return normalise(input);};D.document=function(...args){return{...doc(...args),terreirosAssetsVersion:1};};
 const init=V.Living.initContent.bind(V.Living);V.Living.initContent=function(...args){const result=init(...args);for(const s of data.sources)if(!V.content.sources.some(x=>x.id===s.id))V.content.sources.push(copy(s));return result;};
 const mount=V.SceneEditor.mount.bind(V.SceneEditor);V.SceneEditor.mount=function(...args){const result=mount(...args),select=V.$('#editor-category');for(const[value,label]of [['umbanda','Umbanda · objetos'],['candomble','Candomblé · objetos'],['botica','Botica · cultivo e ciência']])if(select&&![...select.options].some(o=>o.value===value)){const option=document.createElement('option');option.value=value;option.textContent=label;select.appendChild(option);}return result;};
 })();
+
+});

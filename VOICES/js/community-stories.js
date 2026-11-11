@@ -1,3 +1,9 @@
+/* Registered module: community-stories */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("community-stories", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V = window.V, D = V.CommunityStoriesData, W = V.World, C = V.Cozy, L = V.Living, esc = V.escape;
@@ -136,15 +142,17 @@
   };
   const register = V.FoodMuseum.register.bind(V.FoodMuseum); V.FoodMuseum.register = function (id) { const out = register(id); L.event('story-inspect','food-panel-'+id); return out; };
   const deliver = V.Cooking.deliver.bind(V.Cooking); V.Cooking.deliver = function (...args) { const out = deliver(...args); if(out) L.event('story-cook','kitchen-welcome'); return out; };
-  V.Game.interact = function (o) {
-    if (!o || V.modal || V.Dialogue.active || this.mode!=='explore') return originalInteract(o);
+  V.Hooks.around(V.Game, 'interact', 'community-stories:interact:1', nextHook => function (o) {
+    if (!o || V.modal || V.Dialogue.active || this.mode!=='explore') return nextHook(o);
     if (o.type==='story-plaque') { V.UI.modal(o.title,'SABERES DA COMUNIDADE',`<p>${esc(o.text)}</p>`); S.inspect(o); return; }
     if (special.has(o.type) || o.sanctuaryStaff || S.quests(o).length) return S.offer(o);
-    const out = originalInteract(o); S.inspect(o); return out;
-  };
+    const out = nextHook(o); S.inspect(o); return out;
+  });
   const draw = C.drawObject.bind(C); C.drawObject = function (c,o,cam,...args) {
     if (o.type==='story-plaque') { const x=o.x-cam.x,y=o.y-cam.y; c.fillStyle='#796246';c.fillRect(x-3,y-43,6,45);c.fillStyle='#b69b64';c.fillRect(x-30,y-76,60,38);c.fillStyle='#efe4c6';c.fillRect(x-26,y-72,52,30);V.Engine.text(c,'i',x,y-50,'#247aab',20,'center'); return; }
     return draw(c,o,cam,...args);
   };
   const render = C.render.bind(C); C.render = function (c) { const out = render(c); if(W.current) S.markers(c,W.current,W.camera); return out; };
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: protest-learning */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("protest-learning", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';
 window.V.protestLearning={
  sources:[
@@ -47,3 +53,5 @@ window.V.protestLearning={
  {id:'protest-history-7',chapter:5,grade:7,subject:'history',readingId:'protest-book-history',sourceIds:['protest-origin','protest-ferguson','protest-museum-plaza'],prompt:'Que sequência corresponde aos registros apresentados?',options:['2020, criação; 2013, Ferguson; 2014, placa.','2013, criação; 2014, Ferguson; 2020, novas manifestações e registros.','2014, criação; 2020, Ferguson; 2013, placa.'],correct:1,explanation:'Compare as datas do texto: 2013, 2014 e 2020 identificam momentos diferentes, sem dizer que toda a história cabe nesses três registros.'},
  {id:'protest-history-8',chapter:5,grade:8,subject:'history',readingId:'protest-book-history',sourceIds:['protest-museum-signs'],prompt:'Qual legenda distingue uma criação do jogo de um registro histórico?',options:['Este sprite é uma fotografia autêntica de 2020.','Toda pessoa do movimento usa a mesma roupa.','Este cartaz é uma criação de VOICES; o catálogo do museu documenta outros cartazes, com data, lugar e autoria.'],correct:2,explanation:'Uma referência inspira o estudo sem transformar a criação em documento autêntico. Data, lugar e autoria ajudam a manter essa distinção.'}]
 };})();
+
+});

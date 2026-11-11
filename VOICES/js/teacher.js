@@ -1,3 +1,9 @@
+/* Registered module: teacher */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("teacher", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';const V=window.V;
 const clone=o=>JSON.parse(JSON.stringify(o));
 V.Teacher={custom:{questions:[],glossary:[]},tab:'config',
@@ -19,3 +25,5 @@ V.Teacher={custom:{questions:[],glossary:[]},tab:'config',
  guide(){V.$('#teacher-content').innerHTML=`<div class="note">Recurso complementar: aproximação temática à BNCC, ao CRMG e à Lei 11.645/2008. O professor faz a articulação com a turma e seu planejamento. Não há promessa de cobertura integral nem códigos inventados.</div><div class="stack" style="margin-top:18px">${V.content.chapters.map(c=>`<article class="card"><h3>${c.id}. ${V.escape(c.name)}</h3><p style="font-size:.82rem">${V.escape(c.objective)}</p><p style="font-size:.8rem;color:var(--cyan)">${V.escape(c.takeaway)}</p></article>`).join('')}</div><div class="separator"></div><h3>Respostas de Inglês e História</h3>${this.questions.map(q=>`<div class="source-row"><strong style="font-size:.8rem">${V.escape(q.prompt)}</strong><p>✓ ${V.escape(q.options[q.correct])}<br>${V.escape(q.explanation)}</p></div>`).join('')}<div class="separator"></div><h3>Desafios</h3><p style="font-size:.8rem">Cronologia: 1324, 1464, 1483, 1888, 1960, 1962. Autoria: matemática orbital → Katherine Johnson; Quarto de despejo → Carolina Maria de Jesus; engenharia e abolicionismo → André Rebouças. Na rede, consulte o contexto antes da ação. No bairro, combine acesso, participação e representação com 8 unidades e revisão posterior.</p><div class="row"><button id="guide-sources" class="secondary">Consultar fontes offline</button><button id="guide-discuss" class="primary">Pausa para discussão</button></div>`;V.$('#guide-sources').onclick=()=>V.Game.credits();V.$('#guide-discuss').onclick=()=>this.discussion();},
  discussion(){V.UI.modal('Pausa para conversa','O mundo, os minigames e os confrontos estão pausados.',`<div class="note">Ninguém precisa contar experiências pessoais nem representar situações de opressão. Trabalhem com os registros e personagens ficcionais.</div><div class="stack" style="margin-top:20px"><div class="card"><h3>O que o registro mostra?</h3><p>Que evidência sustenta nossa conclusão? Que fonte ainda precisamos consultar?</p></div><div class="card"><h3>Quem participou das decisões?</h3><p>Quais histórias aparecem e quais continuam ausentes? Como revisar o sistema?</p></div><div class="card"><h3>Como agir em conjunto?</h3><p>Que apoio e mudanças concretas ajudam a ampliar direitos e participação?</p></div></div>`,`<button id="discussion-back" class="primary">Retomar a aventura</button>`);V.$('#discussion-back').onclick=()=>V.UI.close();}
 };})();
+
+});

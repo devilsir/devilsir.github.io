@@ -1,3 +1,9 @@
+/* Registered module: challenge-vocabulary */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("challenge-vocabulary", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,D=V.PlaygroundData,X=V.PixVocabulary;
@@ -33,3 +39,5 @@ const B=V.ChallengeVocabulary={topics,
 const attach=P.attach.bind(P);P.attach=function(r){if(r.game==='platform'&&!r.training&&phrases[r.data.stage]){const words=V.PlatformJourney.stages[r.data.stage].phrase;if(r.data.notes?.length===words.length)r.data.notes.forEach((note,i)=>note.word=words[i]);}const out=attach(r);B.install(r);if(r.game==='runner')this.hud();return out;};
 for(const method of ['model','draw','update','hint']){const c=P.controllers.runner,run=c[method].bind(c);c[method]=function(first,...args){const r=method==='draw'?args[0]:first;B.install(r);const out=run(first,...args);if(method==='draw'&&!r.training){const topic=topics[Math.min(5,Math.floor(r.data.round/4))];P.box(first,20,201,174,31,'#214c43','#e5d29f');P.text(first,topic.name,107,216,12,'#fff0cf');}if(method==='model'&&!r.training){const stage=Math.min(5,Math.floor(r.data.round/4));out.request=topics[stage].name+' · Fase '+(stage+1)+'/6 · Encontre: '+B.word(r).pt;out.support=out.support.replace(/\d+ moedas/g,'$& na pista (pontos)');}return out;};}
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: neighbourhood-life */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("neighbourhood-life", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V=window.V, W=V.World, C=V.Cozy, S=V.CommunityStories, T=48;
@@ -43,7 +49,6 @@
       if(!spot)return;
       const id='community-chat-'+a.id+'-'+b.id,g={id,members:[a,b],lines,enLines,clock:0,wait:10+this.hash(id)%10,phase:'rest',talking:false,line:-1,approachLimit:36};
       [a,b].forEach((o,i)=>{g['anchor'+i]=C.addAnchor(m,id+'-'+i,spot[i].x,spot[i].y,'conversing',22,i?1:2);o.group=id;o.member=i;});m.chats.push(g);
-      m.objects.push({id:'listen-'+id,type:'community-conversation',x:p.x,y:p.y,conversation:id,label:'Ouvir a conversa entre '+S.describe(a).name+' e '+S.describe(b).name,interactionRange:110});
     },
     seed(){
       this.visitor(W.maps.market,'community-rute','Rute','ines',[12,9],'I am helping prepare the neighbourhood fair. We want the makers to choose the words on their labels.','Estou ajudando a preparar a feira do bairro. Queremos que as criadoras escolham as palavras de suas etiquetas.');
@@ -97,6 +102,8 @@
   for(const owner of [V.Maritime,V.CapeRegion]){const shadow=owner.shadow.bind(owner);owner.shadow=function(c,o,cam){if(!o.livingRoutine)return shadow(c,o,cam);};}
   const render=C.render.bind(C);C.render=function(c){const out=render(c);N.bubbles(c);return out;};
   const chats=C.updateChats.bind(C);C.updateChats=function(m,dt){if(V.settings.npcChats===false){for(const o of m.objects){o.chatSpeaking=false;o.bubble='';}return;}return chats(m,dt);};
-  const interact=V.Game.interact.bind(V.Game);V.Game.interact=function(o){if(o?.type==='community-conversation'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore')return N.listen(o);return interact(o);};
+  V.Hooks.around(V.Game, 'interact', 'neighbourhood-life:interact:1', nextHook => function(o){if(o?.type==='community-conversation'&&!V.modal&&!V.Dialogue.active&&this.mode==='explore')return N.listen(o);return nextHook(o);});
   const all=W.interactables.bind(W);W.interactables=function(...args){const out=all(...args),seen=new Set(out);for(const o of this.current?.objects||[])if((o.storyPerson||o.type==='story-plaque'||o.type==='community-conversation')&&!seen.has(o))out.push(o);return out;};
 })();
+
+});

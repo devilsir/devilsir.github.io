@@ -1,3 +1,9 @@
+/* Registered module: plaza-visuals */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("plaza-visuals", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Small, crisp shapes use the same three-pixel rhythm as the world sprites. */
 (function(){
 'use strict';
@@ -122,3 +128,5 @@ V.Cozy.prop=function(c,family,index,x,y,size=T,...rest){
 };
 if(V.World.maps.hub)V.World.maps.hub.cache=null;
 })();
+
+});

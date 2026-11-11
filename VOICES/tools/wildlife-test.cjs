@@ -1,9 +1,26 @@
 'use strict';
-const fs=require('fs'),path=require('path'),assert=require('assert/strict'),crypto=require('crypto'),{environment}=require('./runtime-upgrade-test.cjs'),{loadImage,createCanvas}=require('../.qa/node_modules/@napi-rs/canvas');
+const fs=require('fs'),path=require('path'),assert=require('assert/strict'),crypto=require('crypto'),{environment}=require('./runtime-upgrade-test.cjs'),{loadImage,createCanvas}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'.qa/review');
-(async()=>{const env=await environment(),{V,w,dom,canvases}=env,results=[],check=async(name,fn)=>{try{await fn();results.push({name,pass:true});console.log('PASS',name);}catch(e){results.push({name,pass:false,error:e.stack});console.error('FAIL',name,e.stack);}};
+(async()=>{const env=await environment({bundle:process.argv.includes('--bundle')}),{V,w,dom,canvases}=env,results=[],check=async(name,fn)=>{try{await fn();results.push({name,pass:true});console.log('PASS',name);}catch(e){results.push({name,pass:false,error:e.stack});console.error('FAIL',name,e.stack);}};
  await V.Game.init();V.settings.playerCharacters=['nia'];V.settings.challengePlayers=1;V.Game.newState({name:'Fauna · revisão',character:'nia'});Object.assign(V.state.flags,{prologueDone:true,prologueStarted:true});V.Game.startGame();await V.MapAssets.whenReady();V.UI.close();V.Onboarding.active=false;V.Onboarding.suspended=true;V.GuideOverlay.hide();const M=V.AnimalMuseum,D=V.NatureData,L=V.Wildlife;
  await check('34 species have real locations, short explanations, curiosities and research',()=>{assert.equal(D.species.length,34);for(const s of D.species){assert(s.location?.length>20,s.id);assert(s.curiosity?.length>20,s.id);assert(s.description?.length>35,s.id);assert(D.sources[s.source]?.url.startsWith('https:'));}assert(D.species.some(s=>s.id==='spotted-hyena'));assert.equal(D.species.filter(s=>/adder|anaconda/.test(s.id)).length,2);});
+ await check('urban animal sprites select different poses for rest, activity, and flight',async()=>{
+   V.World.load('park');await V.MapAssets.whenReady();
+   V.settings.reducedMotion=false;V.settings.npcMovement=true;
+   const L=V.Living,img=V.Assets.images.townAnimals;
+   assert.equal(img.naturalWidth,256);assert.equal(img.naturalHeight,512);
+   const pige=V.World.current.objects.find(o=>o.type==='animal'&&o.species===2);
+   assert(pige);
+   const c=w.document.createElement('canvas').getContext('2d');
+   const draw=state=>{c.clearRect(0,0,100,100);L.drawTownAnimal(c,{...pige,x:83,...state},48,62);return c.getImageData(0,0,100,100).data;};
+   const still=draw({walking:false,walkClock:0,townFlight:0});
+   for(const state of [{walking:true,walkClock:.04,townFlight:0},{walking:false,walkClock:4,townFlight:0},{walking:true,walkClock:.05,townFlight:.9}]){
+     assert.notDeepEqual(draw(state),still);
+   }
+   V.settings.reducedMotion=true;
+   assert.deepEqual(draw({walking:true,walkClock:4,townFlight:1}),still);
+   V.settings.reducedMotion=false;
+ });
  await check('every flying species and twelve aquatic modes have distinct sprite frames',async()=>{const manifest=require('../assets/nature/manifest-wildlife.json');assert.equal(manifest.sheets.length,7);for(const sheet of manifest.sheets){const img=await loadImage(path.join(root,sheet.file)),c=createCanvas(img.width,img.height),g=c.getContext('2d');g.drawImage(img,0,0);assert.equal(img.width,sheet.cell*4);for(let row=0;row<sheet.rows;row++){const hashes=[];for(let col=0;col<4;col++){const data=g.getImageData(col*sheet.cell,row*sheet.cell,sheet.cell,sheet.cell).data;assert([...data].some((v,i)=>i%4===3&&v>100));hashes.push(crypto.createHash('sha1').update(data).digest('hex'));}if(sheet.rows===4)assert(new Set(hashes).size>=3,sheet.file+' row '+row);}}assert.equal(D.species.filter(s=>s.flightArt).length,4);assert.equal(D.species.filter(s=>s.waterArt).length,12);});
  await check('locomotion selects flight and intact water artwork using the actual terrain',()=>{const river=V.World.maps['nature-wetlands'],hippo=D.species.find(s=>s.id==='hippo'),capy=D.species.find(s=>s.id==='capybara'),bird=D.species.find(s=>s.id==='macaw');assert.equal(L.mode(bird,{x:500,y:500},river),'fly');assert.equal(L.mode(capy,{x:19*48,y:8*48},river),'water');assert.equal(L.mode(capy,{x:8*48,y:10*48},river),'land');assert.equal(L.frame(hippo,'water',.3).sheet,'water-full-africa');assert.notEqual(L.frame(bird,'fly',.1).col,L.frame(bird,'fly',.3).col);V.settings.reducedMotion=true;assert.equal(L.frame(bird,'fly',.9).col,0);V.settings.reducedMotion=false;});
  await check('museum has an enclosure for every species and a separate expanded fossil hall',()=>{const m=V.World.maps['animal-museum'];assert(m?.animalMuseum);assert.equal(m.objects.filter(o=>o.type==='animal-museum-pen').length,D.species.length);const hall=V.World.maps['animal-fossil-hall'];assert.equal(hall.objects.filter(o=>o.type==='animal-museum-fossil').length,V.AnimalMuseumData.fossils.length+V.AnimalMuseumData.anatomy.length);const door=V.World.maps.hub.objects.find(o=>o.animalFacade);assert(door);assert(!V.World.maps.hub.objects.some(o=>o!==door&&o.to&&Math.hypot(o.x-door.x,o.y-door.y)<180));});

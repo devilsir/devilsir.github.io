@@ -1,3 +1,9 @@
+/* Registered module: community-stories-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("community-stories-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function () {
   'use strict';
   const V = window.V;
@@ -83,3 +89,5 @@
   }
   V.CommunityStoriesData = {sources, missions};
 })();
+
+});

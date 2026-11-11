@@ -1,3 +1,9 @@
+/* Registered module: commute-routines */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("commute-routines", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function commuteRoutines(){
 'use strict';
 const V=window.V,H=V.Homestead,W=V.World,C=V.Cozy,R=V.Rooms,N=V.ObjectiveGuide,T=48;
@@ -15,7 +21,7 @@ const Q=V.CityCommutes={boundState:null,key:null,phase:null,pending:new Set(),ta
  this.ghost(this.pending.size>0);for(const a of H.actors.values()){if(this.pending.has(a.key)){a.o.responding=0;a.o.route=[];a.o.destination=null;a.route=[];a.routeSig=null;}else if(a.map===this.destination(a)){a.commuteArrived=this.key;if(this.phase==='home')this.hold(a);}}
  },
  endpoint(a){const id=this.destination(a),m=W.maps[id];if(!m)return null;const signature=(m.geometryRevision||0)+':'+(V.SceneDesign.revision||0),old=this.targets.get(a);if(old?.map===m&&old.signature===signature)return old.point;let wanted;
- if(this.phase==='home'){const beds=m.objects.filter(o=>o.household&&o.scene?.prop===16),bed=beds[a.slot%beds.length];wanted=bed?{x:bed.x,y:bed.y+44}:{x:220+a.slot*100,y:450};}else wanted=a.workPoint;
+ if(this.phase==='home'){const beds=m.objects.filter(o=>o.household&&H.isBed(o)),bed=beds[a.slot%beds.length];wanted=bed?{x:bed.x,y:bed.y+44}:{x:220+a.slot*100,y:450};}else wanted=a.workPoint;
  const point=R.safe(m,wanted,9,a.o);this.targets.set(a,{map:m,signature,point});return point;
  },
  hold(a){a.o.scheduleManaged=true;a.o.walking=false;a.o.frame=0;a.o.action=V.Environment.time()>=22||V.Environment.time()<6.5?'sleeping':'sitting';a.o.bubble='';a.o.chatSpeaking=false;a.o.responding=0;},
@@ -32,3 +38,5 @@ const update=H.update.bind(H);H.update=function(dt){const result=update(dt);Q.ch
 const snapshot=H.snapshot.bind(H);H.snapshot=function(...args){const result=snapshot(...args);Q.snapshot();return result;};
 const restore=H.restore.bind(H);H.restore=function(...args){const saved=this.ensure()?.commute;if(saved?.active&&saved.key===Q.clock().key)H.commuting=true;return restore(...args);};
 })();
+
+});

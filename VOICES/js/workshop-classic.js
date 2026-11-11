@@ -1,3 +1,9 @@
+/* Registered module: workshop-classic */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-classic", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopClassic(){
 'use strict';const V=window.V,M=V.Minigames,U=V.WorkshopUI,T=V.Tutorials,esc=V.escape,on=(id,fn)=>{const b=V.$('#'+id);if(b)b.onclick=fn;},clone=x=>JSON.parse(JSON.stringify(x));
 const names={beat:'Beat Builder',timeline:'Timeline Repair',evidence:'Evidence Hunter',bias:'Spot the Bias',city:'City Builder',runner:'Word Runner',wires:'Mesa de som'};
@@ -30,3 +36,5 @@ T.define('classic:runner',{...common('runner'),steps:[{title:'Escolha uma faixa'
 T.define('classic:beat',{...common('beat'),steps:[{title:'Reconheça o sinal',text:'A faixa atual tem um marcador. Toque em Ouvir sinal atual para ouvir uma prévia discreta; o som não é necessário para jogar.',target:'#beat-listen',allow:'#beat-listen',event:'beat-listen'},{title:'Acione a mesma faixa',text:'Toque na faixa marcada ou pressione sua letra. O sinal espera pela ação; tocar outra faixa não apaga o programa.',target:'.beat-key-lanes .target',allow:'[data-beat-lane]',event:'beat-hit',after:'A conexão foi registrada e o marcador passou ao próximo sinal.'},{title:'Pratique a sequência',text:'Complete os dois sinais restantes. Na partida, você também pode escolher o modo com notas em movimento.',allow:'[data-beat-lane],#beat-listen',event:'finish',after:'O arranjo de treino foi concluído sem moedas ou alterações no festival.'}]});
 T.define('classic:wires',{...common('wires'),steps:[{title:'Uma porta por etapa',text:'Toque numa porta para alternar sua conexão. O nome acompanha o número para que a cor não seja a única pista.',target:'[data-wire-port]',allow:'[data-wire-port]',event:'wire-port'},{title:'Teste o percurso',text:'Reconecte instrumentos → mesa → alto-falantes e teste o circuito. As dicas começam pelo percurso, sem entregar as três portas.',allow:'[data-wire-port],#wire-check,#classic-hint',event:'finish',after:'O circuito de treino ficou pronto. A restauração da mesa da sua aventura continua separadamente.'}]});
 })();
+
+});

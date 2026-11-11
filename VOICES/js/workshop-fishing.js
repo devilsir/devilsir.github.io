@@ -1,3 +1,9 @@
+/* Registered module: workshop-fishing */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("workshop-fishing", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function workshopFishing(){
 'use strict';const V=window.V,F=V.Activities,U=V.WorkshopUI,T=V.Tutorials,on=(id,fn)=>{const b=V.$('#'+id);if(b)b.onclick=fn;};
 F.fishingRun=function(){return T.practice('fishing','shore')||this.fishing;};
@@ -8,3 +14,5 @@ F.reel=function(){if(T.active==='fishing:shore'&&V.$('#fishing-reel')?.disabled)
 T.define('fishing:shore',{family:'fishing',id:'shore',create:()=>({id:'practice-fishing',start:V.Engine.time,catches:0,attempts:0,assist:true,done:false}),render(){F.fishingPanel();},resume(){if(!F.fishing)F.fishing=T.ensure().sessions.fishing;F.fishingPanel();},steps:[{title:'Observe antes de recolher',text:'Toque em Observar a faixa verde. O modo tranquilo mantém o marcador dentro dela para que o resultado dependa da sua decisão.',target:'#fishing-observe',allow:'#fishing-observe',event:'fish-observe'},{title:'Faça uma puxada',text:'Toque em Recolher linha. Uma puxada correta avança o progresso; um erro permite tentar outra vez.',target:'#fishing-reel',allow:'#fishing-reel',event:'fish-reel',after:'Uma das três puxadas ficou registrada apenas no treino.'},{title:'Pratique o controle da linha',text:'Complete mais duas puxadas. O peixe só será adicionado à mochila numa pescaria real; repetir este treino não gera itens.',target:'#fishing-reel',allow:'#fishing-reel,#fishing-observe',event:'finish',after:'O treino terminou. A sua pescaria real continua com as puxadas que já estavam guardadas.'}]});
 const oldClose=V.UI.close.bind(V.UI);V.UI.close=function(...args){if(F.fishing&&!F.fishing.done)T.ensure().sessions.fishing=F.fishing;return oldClose(...args);};
 })();
+
+});

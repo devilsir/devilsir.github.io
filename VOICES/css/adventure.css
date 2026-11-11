@@ -2,8 +2,12 @@
 .game-screen{grid-template-columns:minmax(0,1fr)}.stage,.game-toolbar,.game-toolbar .tools{min-width:0}
 .adv-icon{image-rendering:pixelated;object-fit:contain;flex-shrink:0}
 .adv-clock,.adv-status,.adv-route-info{position:absolute;z-index:12;color:#f4e6c8;background:#1b3034ed;border:1px solid #b6a67988;border-radius:7px;box-shadow:0 3px 0 #10222755;font-family:inherit}
-.adv-clock{top:16px;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:22px auto;gap:1px 8px;padding:7px 12px;min-width:122px;text-align:left}
-.adv-clock>span{grid-row:span 2;font-size:24px;color:#e4c78d;align-self:center}.adv-clock b{font-size:14px;letter-spacing:.04em}.adv-clock small{font-size:9px;opacity:.85}
+.adv-clock{top:16px;left:50%;translate:-50% 0;display:grid;grid-template-columns:22px minmax(0,1fr);gap:1px 8px;padding:7px 12px;min-height:44px;width:166px;text-align:left;touch-action:manipulation}
+#adv-clock:is(:hover,:active,:focus-visible){transform:none}
+#adv-clock:hover{background:#263f44;border-color:#e0c794}
+#adv-clock[hidden]{display:none}
+#adv-clock>*{pointer-events:none}
+.adv-clock>span{grid-row:span 2;font-size:24px;color:#e4c78d;align-self:center}.adv-clock b{font-size:14px;letter-spacing:.04em;font-variant-numeric:tabular-nums}.adv-clock small{font-size:9px;opacity:.85}
 .adv-status{bottom:14px;left:18px;display:flex;gap:10px;padding:8px 12px;font-size:11px}.adv-status b{color:#f1cf8e}.adv-status span{color:#d3dfce}
 .adv-route-info{bottom:14px;left:50%;transform:translateX(-50%);max-width:53%;padding:8px 12px;font-size:11px;line-height:1.4;text-align:left;border-color:#6dba92}
 .community-hud{bottom:61px}.game-toolbar .tools{overflow-x:auto;justify-content:flex-start;flex:1;flex-wrap:nowrap;scrollbar-width:thin}.game-toolbar .tools button{flex-shrink:0}.game-toolbar .tools img{image-rendering:pixelated}

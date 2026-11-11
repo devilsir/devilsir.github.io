@@ -1,3 +1,9 @@
+/* Registered module: playable-art */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("playable-art", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){
 'use strict';
 const V=window.V,art=V.PlayableArtData,players=new Set(['nia','leo','taina','sol']);
@@ -18,3 +24,5 @@ for(const name of ['sprite','spritePart']){
 }
 const draw=V.SpriteFrames.draw.bind(V.SpriteFrames);V.SpriteFrames.draw=function(c,img,key,...args){if(!Object.hasOwn(art.layouts,key))return draw(c,img,key,...args);c.save();c.imageSmoothingEnabled=true;try{return draw(c,img,key,...args);}finally{c.restore();}};
 })();
+
+});

@@ -1,3 +1,9 @@
+/* Registered module: home-construction */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("home-construction", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 /* Personal house construction. Drafts only reach the world after validation. */
 (function(){
 'use strict';
@@ -30,6 +36,7 @@ const HC=V.HomeConstruction={
   m.objects=m.objects.filter(o=>o.type!=='room-door'&&o.type!=='home-window');
   m.decor=m.decor.filter(o=>o.family!=='room-wall');
   R.hydrate(m,d);
+  if(V.City.privateHome(d)){V.City.architecture(d);V.Architecture.hydrate(m);}
   for(const win of this.windows(d))m.objects.push({id:win.id,type:'home-window',x:win.x,y:win.y,homeWindow:win,label:'Janela',interactionRange:0});
   m.cache=null;m.geometryRevision=(m.geometryRevision||0)+1;
  },
@@ -90,7 +97,9 @@ const HC=V.HomeConstruction={
   const remove=()=>{const o=selected();if(!o||protectedItem(o))return;mark();if(selection.kind==='wall'){const room=d.construction.rooms.find(r=>r.id===o.room);room.walls=room.walls.filter(w=>w.id!==o.id);d.construction.doors=d.construction.doors.filter(p=>p.wall!==o.id);d.homeWindows=d.homeWindows.filter(p=>p.wall!==o.id);}else if(selection.kind==='door')d.construction.doors=d.construction.doors.filter(p=>p.id!==o.id);else d.homeWindows=d.homeWindows.filter(p=>p.id!==o.id);selection=null;inspector();paint();};
   const inspector=()=>{
    const o=selected(),host=V.$('#build-inspector');if(!o){host.innerHTML='<h3>Sua planta</h3><p>▱ Paredes internas<br>▯ Portas e passagens<br>⊞ Janelas</p><p>Clique em uma peça para editar. As paredes do contorno mostram os limites dos cômodos.</p><p>Uma porta interna abre com E. As janelas deixam a parede sólida.</p>';return;}
-   const protectedValue=protectedItem(o);host.innerHTML='<h3>'+({wall:'Parede interna',door:'Porta',window:'Janela'}[selection.kind])+'</h3>'+(protectedValue?'<p>Esta entrada liga a casa à cidade.</p>':selection.kind==='wall'?'<label class="field">Comprimento (px)<input id="build-size" type="number" min="48" max="1200" step="8" value="'+Math.round(Math.hypot(o.b[0]-o.a[0],o.b[1]-o.a[1]))+'"></label>':'<label class="field">Largura (px)<input id="build-size" type="number" min="'+(selection.kind==='door'?40:36)+'" max="160" step="8" value="'+o.width+'"></label>')+(!protectedValue?'<div class="row">'+[[0,-T,'↑'],[-T,0,'←'],[T,0,'→'],[0,T,'↓']].map(([x,y,label])=>'<button class="secondary" data-build-nudge="'+x+','+y+'" aria-label="Mover '+label+'">'+label+'</button>').join('')+'</div><button id="build-remove" class="quiet">Remover '+({wall:'parede',door:'porta',window:'janela'}[selection.kind])+'</button>':'');
+   const protectedValue=protectedItem(o);host.innerHTML='<h3>'+({wall:'Parede interna',door:'Porta',window:'Janela'}[selection.kind])+'</h3>'+(protectedValue?(o.internalHome?'<p>Esta porta dá acesso ao cômodo.</p>':'<p>Esta entrada liga a moradia à rua ou ao corredor.</p>'):selection.kind==='wall'?'<label class="field">Comprimento (px)<input id="build-size" type="number" min="48" max="1200" step="8" value="'+Math.round(Math.hypot(o.b[0]-o.a[0],o.b[1]-o.a[1]))+'"></label>':'<label class="field">Largura (px)<input id="build-size" type="number" min="'+(selection.kind==='door'?40:36)+'" max="160" step="8" value="'+o.width+'"></label>')+(selection.kind==='door'&&R.residentialDoorStyles?'<label class="field">Modelo da porta<select id="build-door-style">'+[[4,'Madeira tradicional'],...R.residentialDoorStyles].map(([id,name])=>'<option value="'+id+'" '+(id===o.appearance?'selected':'')+'>'+esc(name)+'</option>').join('')+'</select></label>':'')+(selection.kind==='window'&&V.ResidentialArt?'<label class="field">Modelo da janela<select id="build-window-style">'+[[-1,'Moldura do ateliê'],...V.ResidentialArt.windows.map((name,index)=>[index,name])].map(([id,name])=>'<option value="'+id+'" '+(id===(o.look??-1)?'selected':'')+'>'+esc(name)+'</option>').join('')+'</select></label>':'')+(!protectedValue?'<div class="row">'+[[0,-T,'↑'],[-T,0,'←'],[T,0,'→'],[0,T,'↓']].map(([x,y,label])=>'<button class="secondary" data-build-nudge="'+x+','+y+'" aria-label="Mover '+label+'">'+label+'</button>').join('')+'</div><button id="build-remove" class="quiet">Remover '+({wall:'parede',door:'porta',window:'janela'}[selection.kind])+'</button>':'');
+   V.$('#build-door-style')?.addEventListener('change',e=>{mark();o.appearance=Number(e.target.value);paint();});
+   V.$('#build-window-style')?.addEventListener('change',e=>{mark();o.look=Number(e.target.value);paint();});
    V.$('#build-size')?.addEventListener('change',e=>{const n=Number(e.target.value);if(!Number.isFinite(n)||n<36)return;mark();if(selection.kind==='wall'){const room=d.construction.rooms.find(r=>r.id===o.room),w=room.walls.find(w=>w.id===o.id),angle=Math.atan2(w.b[1]-w.a[1],w.b[0]-w.a[0]);w.b=[snap(w.a[0]+Math.cos(angle)*V.clamp(n,48,1200)),snap(w.a[1]+Math.sin(angle)*V.clamp(n,48,1200))];reanchor(w,room.id);}else{o.width=V.clamp(n,selection.kind==='door'?40:36,160);}paint();});
    V.$$('[data-build-nudge]').forEach(b=>b.onclick=()=>moveSelected(...b.dataset.buildNudge.split(',').map(Number)));V.$('#build-remove')?.addEventListener('click',remove);
   };
@@ -108,7 +117,7 @@ const HC=V.HomeConstruction={
    }
    const wall=R.nearestWall(d,p);if(!wall||wall.distance>36){setStatus('Clique sobre uma parede para encaixar '+(tool==='door'?'a porta.':'a janela.'));return;}
    try{
-    const opening=R.doorAt(d,p,{width:64});
+    const opening=R.doorAt(d,p,{width:tool==='door'?60:64,height:108});
     if([...d.construction.doors,...d.homeWindows].some(o=>o.room===opening.room&&o.wall===opening.wall&&Math.hypot(o.x-opening.x,o.y-opening.y)<(o.width+opening.width)/2+16))throw Error('Deixe um espaço entre portas e janelas.');
     mark();if(tool==='door'){opening.name='Porta interna';opening.homeInternal=true;d.construction.doors.push(opening);selection={kind:'door',id:opening.id};}else{const window={id:R.id('home-window'),room:opening.room,wall:opening.wall,u:opening.u,x:opening.x,y:opening.y,width:64};d.homeWindows.push(window);selection={kind:'window',id:window.id};}inspector();paint();
    }catch(e){setStatus(e.message);}
@@ -132,3 +141,5 @@ const draw=C.drawObject.bind(C);C.drawObject=function(c,o,cam,t){
  c.save();c.translate(x,y);if(vertical)c.transform(.4,.35,0,1,0,0);c.fillStyle='#695540';c.fillRect(-w.width/2-4,-61,w.width+8,49);c.fillStyle='#91c8d2';c.fillRect(-w.width/2,-57,w.width,41);c.fillStyle='#e9d8a4';c.fillRect(-2,-57,4,41);c.fillRect(-w.width/2,-38,w.width,3);c.fillStyle='#fff4cb66';c.fillRect(-w.width/2+5,-53,8,29);c.restore();
 };
 })();
+
+});

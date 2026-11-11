@@ -1,3 +1,9 @@
+/* Registered module: homestead-data */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("homestead-data", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function(){'use strict';window.V.HomesteadData={
   "version": 1,
   "actors": [
@@ -1405,3 +1411,5 @@
     }
   ]
 };})();
+
+});

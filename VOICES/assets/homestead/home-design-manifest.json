@@ -1,0 +1,47 @@
+{
+  "license": "MIT",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "generatedWith": "image_gen",
+  "styleReference": "assets/homestead/home-collection.webp",
+  "assets": [
+    {
+      "id": "home-design",
+      "path": "assets/homestead/home-design.webp",
+      "columns": 6,
+      "rows": 4,
+      "transparent": true
+    },
+    {
+      "id": "home-decor",
+      "path": "assets/homestead/home-decor.webp",
+      "columns": 6,
+      "rows": 4,
+      "transparent": true
+    },
+    {
+      "id": "cape-design",
+      "path": "assets/markets/cape-design.webp",
+      "columns": 3,
+      "rows": 2,
+      "transparent": true
+    }
+  ],
+  "prompts": [
+    {
+      "asset": "home-design",
+      "prompt": "Create a transparent 6 by 4 atlas of 24 isolated warm hand-painted furniture sprites matching home-collection.webp: ivory canopy bed; rounded teal upholstered bed; oak drawer daybed; walnut rust platform bed; carved cream bed; loft bed with desk; walnut vanity and stool; glass-front cabinet; cream kitchen island with two stools; asymmetrical bookcase; rattan chair; record sideboard; curved teal sofa; terracotta armchair; oval dining table with four chairs; nursery crib; storage bench; cream tiled fireplace; arched brass mirror; woven walnut wardrobe; cream secretary desk; botanical hallway console; lamp side table; linen ottoman. Crisp dark contours, upper-left light, square cells, alpha gutters, no text or people."
+    },
+    {
+      "asset": "home-decor",
+      "prompt": "Create a transparent 6 by 4 atlas matching home-collection.webp. Row-major: arched Cape coastline window; cottage garden window; rainy forest window; night city window; mountain sunrise shuttered window; meadow window; oval jute rug; teal cream kilim; round ivory rug; faded terracotta rug; navy ochre runner; sage semicircle rug; three botanical framed prints; Cape harbor painting; walnut clock; wall bookshelf; hanging fern; double brass sconce; woven baskets; pottery vases; oak shoe bench; coat stand; pottery glass cupboard; tea tray. Warm wood cream teal ochre, dark crisp contours, no labels, isolated cells, transparent background."
+    },
+    {
+      "asset": "cape-design",
+      "prompt": "Create a transparent 3 by 2 atlas matching home-collection.webp: wood hot-food stall with cream teal canopy; walnut rooibos tea and spice stall with cream ochre canopy; textile and woven basket stall with terracotta canopy and blue geometric cloth; sage Cape grocery kiosk with cream canopy produce and jars; compact row of three Bo-Kaap facades teal cream terracotta; wood community water and tea counter with ceramic dispenser brass tap sink mugs plant. Warm hand-painted cozy game sprites, crisp dark outlines, consistent front slightly elevated camera, isolated square cells, no people, no text, no red lanterns."
+    }
+  ]
+}

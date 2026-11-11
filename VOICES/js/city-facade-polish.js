@@ -1,3 +1,9 @@
+/* Registered module: city-facade-polish */
+(function (initialize) {
+  if (window.VoicesModules) window.VoicesModules.define("city-facade-polish", initialize);
+  else if (window.VOICES_MODULE_MODE) throw new Error('Module loader is missing');
+  else initialize();
+})(function () {
 (function facadePolish(){
 'use strict';
 const V=window.V,F=V.CityFacades,C=V.Cozy,W=V.World;
@@ -23,3 +29,5 @@ const profile=F.profile.bind(F);F.profile=function(b){if(b.facade)return profile
 const draw=C.drawBuilding.bind(C);C.drawBuilding=function(ctx,b,cam){if(b.culture!=null||W.current?.cityInterior)return draw(ctx,b,cam);return F.draw(ctx,b,cam);};
 F.cache=new WeakMap();
 })();
+
+});

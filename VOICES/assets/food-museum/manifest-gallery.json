@@ -30,5 +30,11 @@
         "assets/nature/new-dishes.webp"
       ]
     }
-  ]
+  ],
+  "license": "MIT",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "licenseFile": "../../LICENSE.txt"
 }

@@ -1,0 +1,308 @@
+{
+  "license": "MIT",
+  "licenseFile": "../../LICENSE.txt",
+  "authors": [
+    "Lucas Xavier Nardelli",
+    "Claudilene Alves Lopes"
+  ],
+  "generatedWith": "image_gen (built-in)",
+  "transparent": true,
+  "sheets": [
+    {
+      "id": "surfaces",
+      "file": "assets/seasons/surfaces.webp",
+      "frames": [
+        {
+          "x": 6,
+          "y": 34,
+          "w": 116,
+          "h": 61
+        },
+        {
+          "x": 134,
+          "y": 48,
+          "w": 116,
+          "h": 33
+        },
+        {
+          "x": 262,
+          "y": 48,
+          "w": 116,
+          "h": 33
+        },
+        {
+          "x": 390,
+          "y": 26,
+          "w": 116,
+          "h": 77
+        },
+        {
+          "x": 6,
+          "y": 159,
+          "w": 116,
+          "h": 66
+        },
+        {
+          "x": 134,
+          "y": 176,
+          "w": 116,
+          "h": 32
+        },
+        {
+          "x": 262,
+          "y": 164,
+          "w": 116,
+          "h": 57
+        },
+        {
+          "x": 390,
+          "y": 172,
+          "w": 116,
+          "h": 40
+        },
+        {
+          "x": 6,
+          "y": 301,
+          "w": 116,
+          "h": 38
+        },
+        {
+          "x": 134,
+          "y": 293,
+          "w": 116,
+          "h": 55
+        },
+        {
+          "x": 262,
+          "y": 278,
+          "w": 116,
+          "h": 84
+        },
+        {
+          "x": 390,
+          "y": 302,
+          "w": 116,
+          "h": 36
+        },
+        {
+          "x": 6,
+          "y": 412,
+          "w": 116,
+          "h": 73
+        },
+        {
+          "x": 134,
+          "y": 404,
+          "w": 116,
+          "h": 88
+        },
+        {
+          "x": 262,
+          "y": 408,
+          "w": 116,
+          "h": 80
+        },
+        {
+          "x": 390,
+          "y": 409,
+          "w": 116,
+          "h": 79
+        }
+      ],
+      "bytes": 89902,
+      "frameOrder": [
+        "beiral nevado",
+        "franja de neve",
+        "peitoril gelado",
+        "neve sobre telhas",
+        "neve no gramado",
+        "neve levada pelo vento",
+        "neve junto ao muro",
+        "gelo raso",
+        "poça pequena",
+        "poça larga",
+        "respingo",
+        "ondulações",
+        "folhas de carvalho",
+        "folhas de bordo",
+        "flores violetas",
+        "flores amarelas"
+      ],
+      "reference": [
+        ".qa/review/plaza-native.png",
+        "assets/maritime/pixel/cape-houses.webp"
+      ],
+      "prompt": "Game sprite atlas with TRUE transparent alpha, exactly 4 columns by 4 rows of equally sized invisible cells on a square canvas. Put one complete isolated sprite at the center of each cell, 12 percent clear margin on all sides. All sprites must fit within their own cell. No text, outlines around cells, visible grid, frames, ground planes, or scenery. Match the clean top-down/front-oblique cozy 2D pixel art in the VOICES references: restrained natural palette, warm and cool shading, sharp low resolution clusters, no blurred painterly shading. Soft organic shapes are built from intentionally crisp pixel clusters. Make transparent roof, surface, and ground overlays. Row 1 snowy architectural parts: 1 thick horizontal flat-roof snow cap with 3 short icicles, 2 thinner windblown snow eave strip, 3 narrow frosted stone sill with snow, 4 snow patch for pitched terracotta roof plane, irregular layered slope, broad enough to clip to a polygon. Row 2 ground snow: 1 irregular broad oval wind-swept snow patch with a few grass tips, 2 small wispy powder bank, 3 snow mound at base of wall, 4 frosty ice patch with very faint crystalline streaks. Row 3 wet weather: 1 narrow shallow cool silver puddle viewed from above, 2 irregular wider asphalt puddle, 3 tiny bright splash crown with droplets, 4 subtle two concentric horizontal ripple rings on alpha. Row 4 seasonal ground cover: 1 sparse pile of rusty oak leaves, 2 small cluster of amber maple leaves, 3 purple and ivory spring flowers in a short grass tuft, 4 butter yellow and white meadow flowers in a short grass tuft. Everything isolated. Snow ranges from off-white to icy blue-grey. Transparent space between leaves, flower clumps, and around all elements."
+    },
+    {
+      "id": "foliage",
+      "file": "assets/seasons/foliage.webp",
+      "frames": [
+        {
+          "x": 10,
+          "y": 6,
+          "w": 108,
+          "h": 116
+        },
+        {
+          "x": 137,
+          "y": 6,
+          "w": 110,
+          "h": 116
+        },
+        {
+          "x": 264,
+          "y": 6,
+          "w": 113,
+          "h": 116
+        },
+        {
+          "x": 392,
+          "y": 6,
+          "w": 112,
+          "h": 116
+        },
+        {
+          "x": 6,
+          "y": 157,
+          "w": 116,
+          "h": 71
+        },
+        {
+          "x": 134,
+          "y": 156,
+          "w": 116,
+          "h": 72
+        },
+        {
+          "x": 262,
+          "y": 156,
+          "w": 116,
+          "h": 73
+        },
+        {
+          "x": 390,
+          "y": 158,
+          "w": 116,
+          "h": 69
+        },
+        {
+          "x": 6,
+          "y": 271,
+          "w": 116,
+          "h": 98
+        },
+        {
+          "x": 134,
+          "y": 266,
+          "w": 116,
+          "h": 108
+        },
+        {
+          "x": 262,
+          "y": 266,
+          "w": 116,
+          "h": 108
+        },
+        {
+          "x": 390,
+          "y": 267,
+          "w": 116,
+          "h": 107
+        },
+        {
+          "x": 10,
+          "y": 390,
+          "w": 109,
+          "h": 116
+        },
+        {
+          "x": 135,
+          "y": 390,
+          "w": 114,
+          "h": 116
+        },
+        {
+          "x": 266,
+          "y": 390,
+          "w": 109,
+          "h": 116
+        },
+        {
+          "x": 391,
+          "y": 390,
+          "w": 114,
+          "h": 116
+        }
+      ],
+      "bytes": 157398,
+      "frameOrder": [
+        "árvore de primavera",
+        "árvore de verão",
+        "árvore de outono",
+        "árvore de inverno",
+        "arbusto de primavera",
+        "arbusto de verão",
+        "arbusto de outono",
+        "arbusto de inverno",
+        "folha âmbar",
+        "folha laranja",
+        "folha vermelha",
+        "folha dourada",
+        "floco 1",
+        "floco 2",
+        "floco 3",
+        "floco 4"
+      ],
+      "reference": [
+        "assets/maritime/pixel/cape-silver-tree.webp",
+        ".qa/review/plaza-native.png"
+      ],
+      "prompt": "Game sprite atlas with TRUE transparent alpha, exactly 4 columns by 4 rows of equally sized invisible cells on a square canvas. Put one complete isolated sprite at the center of each cell, 12 percent clear margin on all sides. All sprites must fit within their own cell. No text, outlines around cells, visible grid, frames, ground planes, or scenery. Match the clean top-down/front-oblique cozy 2D pixel art in the VOICES references: restrained natural palette, warm and cool shading, sharp low resolution clusters, no blurred painterly shading. Soft organic shapes are built from intentionally crisp pixel clusters. Seasonal variations of a single broad deciduous park tree: same knotty brown trunk, raised roots and footprint in all four poses, front oblique viewpoint. Row 1 left to right: spring tree with sage green leaves and ivory/pink blossom, rich green summer tree, burnt orange and warm ochre fall tree with a little foliage remaining, winter tree with clearly visible bare branching silhouette and elegant white snow resting on the upper branches. Row 2 left to right: low round spring flowering shrub, green summer shrub, russet sparse autumn shrub, small dormant shrub capped with snow. Row 3: four isolated individual falling oak/maple leaves from different angles in amber, burnt orange, burgundy and pale honey. Row 4: four different sparse snowflake and small snow powder particle shapes, soft ivory and icy white, airy and separated, no ground or circles around them. Full silhouettes aligned consistently. Dark thin outlines like the reference, top-left light, detailed but legible at 64 px. No wide snow ground under trees."
+    },
+    {
+      "id": "buildings",
+      "file": "assets/seasons/buildings.webp",
+      "frames": [
+        {
+          "x": 6,
+          "y": 47,
+          "w": 244,
+          "h": 162
+        },
+        {
+          "x": 262,
+          "y": 45,
+          "w": 244,
+          "h": 167
+        },
+        {
+          "x": 6,
+          "y": 299,
+          "w": 244,
+          "h": 170
+        },
+        {
+          "x": 266,
+          "y": 262,
+          "w": 236,
+          "h": 244
+        }
+      ],
+      "bytes": 80698,
+      "frameOrder": [
+        "casas coral, turquesa e ocre",
+        "casas azul, rosa e sálvia",
+        "armazém do cais",
+        "farol e anexo"
+      ],
+      "reference": [
+        "assets/maritime/pixel/cape-houses.webp",
+        "assets/maritime/pixel/bo-kaap-terrace.webp",
+        "assets/maritime/pixel/cape-warehouse.webp",
+        "assets/maritime/pixel/harbor-lighthouse.webp"
+      ],
+      "prompt": "Create a winter sprite atlas with 2 columns and 2 rows on a square truly transparent canvas for the existing VOICES pixel exploration game. Precisely edit the four provided building sprite references for snow, laid out in the order given: upper left coral/turquoise/ochre Bo-Kaap row houses; upper right blue/pink/sage Bo-Kaap row houses; lower left terracotta warehouse with black roof and green double door; lower right off-white lighthouse with dark red lantern and its short outbuilding. Keep each original footprint, height/width proportions, pixel art angle, facade colors, position of all doors, stairs and windows exactly like its reference. Add white and pale blue snow resting on roofs and the tops of cornices and windowsills, tiny icicles in a few shaded spots, and very small ground drifts only at the edges. Doors and central stairs are accessible and visible. Lighthouse retains its dark red cap visible below the snow, warehouse roof visibly pitched. Each cell contains the entire separate full building silhouette centered, with generous transparent padding and all silhouettes inside their cells. Same restrained palette, crisp chunky stair-step pixel outlines, same original buildings in winter, no environment, no signs, no lettering, no border, no rectangular background and no shadows outside the existing ground footprint."
+    }
+  ]
+}
