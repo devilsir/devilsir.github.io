@@ -102,8 +102,18 @@ V.$('#teach-respec').onclick=()=>{V.Progress.respec();V.Progress.character('skil
 }
 };
 function Dcases(){return V.AdventureData.cases.map(c=>[c.id,c.id+' · '+c.title]);}
-V.Access={authorized:false,run(fn){if(!V.settings.teacherPin||this.authorized){fn();return;}V.UI.modal('Acesso ao editor','Use o mesmo código local da Sala do professor.',input('adv-teacher-pin','Código local','','password')+'<p id="adv-access-feedback" role="status"></p>','<button id="adv-teacher-enter" class="primary">Entrar</button>');const go=()=>{if(value('adv-teacher-pin')===V.settings.teacherPin){this.authorized=true;V.UI.close();fn();}else V.$('#adv-access-feedback').textContent='Código diferente do configurado.';};V.$('#adv-teacher-enter').onclick=go;V.$('#adv-teacher-pin').onkeydown=e=>{if(e.key==='Enter')go();};}};
-E.open=function(){V.Access.run(()=>prior.open());};
+let session=false;
+V.Access={
+  get authorized(){return session;},
+  lock(){session=false;},
+  run(fn){
+    if(session)return fn();
+    V.UI.modal('Acesso ao Modo Professor','Digite a senha para abrir as ferramentas.',
+      '<form id="atelier-entry"><label class="field">Senha<input type="password" maxlength="100" autocomplete="current-password" required></label><p>Dica: senha do habbo</p><p class="form-feedback" role="status"></p><button type="submit" class="primary">Entrar</button></form>');
+    V.AtelierAccess.bind(V.$('#atelier-entry'),()=>{session=true;V.UI.close();fn();});
+  }
+};
+E.open=function(){return V.Access.run(()=>prior.open());};
 E.mount=function(){prior.mount();const group=V.$('.editor-tools');const bar=document.createElement('div');bar.className='editor-tool-group adventure-editor-tools';bar.innerHTML='<button id="adv-ed-environment">Céu e clima</button><button id="adv-ed-lights">Luzes</button><button id="adv-ed-architecture">Paredes e quadros</button><button id="adv-ed-encounter">Manifestação</button><button id="adv-ed-trigger">Encontro narrativo</button>';group.appendChild(bar);V.$('#adv-ed-environment').onclick=()=>Adv.environment();V.$('#adv-ed-lights').onclick=()=>Adv.lightPanel();V.$('#adv-ed-architecture').onclick=()=>Adv.mountPanel();V.$('#adv-ed-encounter').onclick=()=>this.setTool('adv-encounter');V.$('#adv-ed-trigger').onclick=()=>this.setTool('adv-trigger');};
 E.refs=function(){const refs=prior.refs(),d=this.design();if(!d)return refs;const a=A.design(d);return refs.concat(a.architecture.walls.map(w=>({kind:'adv-wall',id:w.id,x:Math.min(w.a[0],w.b[0])/T,y:Math.min(w.a[1],w.b[1])/T,w:Math.max(16,Math.abs(w.b[0]-w.a[0]))/T,h:Math.max(16,Math.abs(w.b[1]-w.a[1]))/T,name:'Parede de galeria'})),a.architecture.mounts.map(m=>{const p=A.mountPosition(d,m);return{kind:'adv-mount',id:m.id,x:p.x/T,y:p.y/T,w:m.width/T,h:m.height/T,name:m.caption};}),((a.architecture.windows)||[]).map((win,index)=>{win.id||=('window-'+index);return{kind:'adv-window',id:win.id,x:win.x/T,y:win.y/T,w:win.w/T,h:win.h/T,name:'Janela de ambiente'};}),a.lights.map(l=>({kind:'adv-light',id:l.id,x:l.x/T,y:l.y/T,w:1,h:2,name:defs[l.type]||'Luz'})),a.regions.map(r=>({kind:'adv-region',id:r.id,x:r.x/T,y:r.y/T,w:r.w/T,h:r.h/T,name:r.name||'Região de ambiente'})),a.encounters.map(r=>({kind:'adv-encounter',id:r.id,x:r.x/T,y:r.y/T,w:2,h:2,name:r.name||'Manifestação'})),a.triggers.map(r=>({kind:'adv-trigger',id:r.id,x:r.x/T,y:r.y/T,w:1,h:1,name:r.title||'Vestígio narrativo'})));};
 E.bounds=function(ref){if(!ref.kind.startsWith('adv-'))return prior.bounds(ref);if(ref.kind==='adv-wall')return{x:ref.x*T-10,y:ref.y*T-148,w:Math.max(20,ref.w*T),h:ref.h*T+148};if(ref.kind==='adv-mount'){const m=A.geometry(this.design()).mounts.find(m=>m.id===ref.id);return{x:ref.x*T-ref.w*T/2,y:ref.y*T-m.elevation,w:ref.w*T,h:ref.h*T+30};}if(ref.kind==='adv-window'){const o=Adv.selected()&&ref.id===Adv.ref()?.id?Adv.selected():A.geometry(this.design()).windows.find(w=>w.id===ref.id)||A.geometry(this.design()).windows.find((_,i)=>('window-'+i)===ref.id);if(o)return{x:o.x-o.w/2,y:o.y-o.h/2,w:o.w,h:o.h};}if(ref.kind==='adv-light'){const l=Adv.data().lights.find(l=>l.id===ref.id),p=V.Environment.fixturePosition(l,this.preview);return{x:p.x-24,y:p.y-10,w:48,h:l.type==='street'?l.y-p.y+17:l.type==='spotlight'?24:50};}if(ref.kind==='adv-region')return{x:ref.x*T,y:ref.y*T,w:ref.w*T,h:ref.h*T};return{x:ref.x*T-25,y:ref.y*T-65,w:50,h:75};};
@@ -125,8 +135,8 @@ E.paint=function(){prior.paint();if(!this.active||!this.preview)return;const ctx
 E.key=function(k,e){if(k==='escape'&&(Adv.regionDrag||Adv.wallStart)){Adv.regionDrag=null;Adv.wallStart=null;this.paint();e.preventDefault?.();return;}return prior.key(k,e);};
 E.tick=function(dt){prior.tick(dt);if(this.active&&V.Environment.preview&&Math.floor(V.Engine.frames/30)!==Adv.lastFrame){Adv.lastFrame=Math.floor(V.Engine.frames/30);this.image=this.renderWorld();this.paint();}};
 E.close=function(){V.Environment.preview=null;Adv.regionDrag=null;Adv.wallStart=null;V.ObjectiveGuide.invalidate();return prior.close();};
-V.Teacher.adventure=()=>Adv.teacher();
-V.Teacher.show=function(tab=this.tab){V.Access.authorized=true;prior.teacher(tab);const tabs=V.$('.modal nav.tabs');if(tabs){const b=document.createElement('button');b.textContent='Mundo e RPG';b.classList.toggle('active',tab==='adventure');b.onclick=()=>this.show('adventure');tabs.appendChild(b);}};
+V.Teacher.adventure=()=>V.Access.run(()=>Adv.teacher());
+V.Teacher.show=function(tab=this.tab){if(!V.Access.authorized)return V.Access.run(()=>this.show(tab));prior.teacher(tab);const tabs=V.$('.modal nav.tabs');if(tabs){const b=document.createElement('button');b.textContent='Mundo e RPG';b.classList.toggle('active',tab==='adventure');b.onclick=()=>this.show('adventure');tabs.appendChild(b);}};
 })();
 
 });

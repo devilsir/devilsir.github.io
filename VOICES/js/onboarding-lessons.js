@@ -46,7 +46,7 @@ const B=V.BattleCoach={active:false,
  },
  render(){
    const a=C.active,r=this.record();
-   if(!a||a.practice||a.auto||!r||r.completed||r.skipped||V.Game.screen!=='game'||V.modal||T.active||G.active||V.ProfessorStudio?.active){
+   if(!a||a.practice||a.expedition||a.auto||!r||r.completed||r.skipped||V.Game.screen!=='game'||V.modal||T.active||G.active||V.ProfessorStudio?.active){
      this.active=false;
      O.hide('battle');
      return;

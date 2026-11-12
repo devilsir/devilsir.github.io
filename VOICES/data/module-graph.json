@@ -21,7 +21,7 @@
     },
     {
       "id": "adventure-boot",
-      "src": "js/adventure-boot.js?v=20261111-atlas-homes2",
+      "src": "js/adventure-boot.js?v=20261112-trilhas2",
       "requires": [
         "adventure-art",
         "adventure-editor"
@@ -29,7 +29,7 @@
     },
     {
       "id": "adventure-combat",
-      "src": "js/adventure-combat.js?v=20261111-team1",
+      "src": "js/adventure-combat.js?v=20261112-infinity1",
       "requires": [
         "adventure-story"
       ]
@@ -50,10 +50,11 @@
     },
     {
       "id": "adventure-editor",
-      "src": "js/adventure-editor.js?v=20261111-seasons1",
+      "src": "js/adventure-editor.js?v=20261112-trilhas2",
       "requires": [
         "adventure-combat",
-        "room-editor"
+        "room-editor",
+        "atelier-access"
       ]
     },
     {
@@ -67,7 +68,7 @@
     },
     {
       "id": "adventure-navigation",
-      "src": "js/adventure-navigation.js?v=20261103-mask-duo2",
+      "src": "js/adventure-navigation.js?v=20261112-infinity1",
       "requires": [
         "adventure-architecture",
         "adventure-core",
@@ -76,7 +77,7 @@
     },
     {
       "id": "adventure-story",
-      "src": "js/adventure-story.js?v=20261111-chronicles1",
+      "src": "js/adventure-story.js?v=20261112-equip1",
       "requires": [
         "adventure-environment",
         "adventure-navigation",
@@ -85,7 +86,7 @@
     },
     {
       "id": "african-museum",
-      "src": "js/african-museum.js?v=20261111-museums1",
+      "src": "js/african-museum.js?v=20261112-equip1",
       "requires": [
         "african-word-origins",
         "capoeira-art",
@@ -96,7 +97,7 @@
     },
     {
       "id": "african-museum-curation",
-      "src": "js/african-museum-curation.js?v=20261111-museums1",
+      "src": "js/african-museum-curation.js?v=20261112-trilhas2",
       "requires": [
         "african-museum",
         "museum-studies"
@@ -170,7 +171,7 @@
     },
     {
       "id": "ancestral-mask",
-      "src": "js/ancestral-mask.js?v=20261111-turns1",
+      "src": "js/ancestral-mask.js?v=20261112-fragment1",
       "requires": [
         "house-window-lights",
         "illustrated-interface",
@@ -240,6 +241,11 @@
       ]
     },
     {
+      "id": "atelier-access",
+      "src": "js/atelier-access.js?v=20261112-trilhas2",
+      "requires": []
+    },
+    {
       "id": "atelier-content",
       "src": "js/atelier-content.js?v=20261103-credits1",
       "requires": [
@@ -278,7 +284,7 @@
     },
     {
       "id": "battle-automation",
-      "src": "js/battle-automation.js?v=20261111-team2",
+      "src": "js/battle-automation.js?v=20261112-fragment1",
       "requires": [
         "adventure-combat"
       ]
@@ -434,7 +440,7 @@
     },
     {
       "id": "city-animations",
-      "src": "js/city-animations.js?v=20261030-imageopt1",
+      "src": "js/city-animations.js?v=20261112-trilhas2",
       "requires": [
         "adventure-art",
         "adventure-story",
@@ -451,7 +457,7 @@
     },
     {
       "id": "city-battle",
-      "src": "js/city-battle.js?v=20261111-team2",
+      "src": "js/city-battle.js?v=20261112-infinity1",
       "requires": [
         "city-life",
         "city-motion",
@@ -505,7 +511,7 @@
     },
     {
       "id": "city-motion",
-      "src": "js/city-motion.js?v=20261020-anim2",
+      "src": "js/city-motion.js?v=20261112-trilhas2",
       "requires": [
         "city-animations"
       ]
@@ -561,6 +567,23 @@
       ]
     },
     {
+      "id": "combat-gear",
+      "src": "js/combat-gear.js?v=20261112-equip1",
+      "requires": [
+        "trail-companions",
+        "duo-navigation"
+      ]
+    },
+    {
+      "id": "combat-loadout",
+      "src": "js/combat-loadout.js?v=20261112-maskcolor1",
+      "requires": [
+        "combat-gear",
+        "companion-formation",
+        "mask-original-palette"
+      ]
+    },
+    {
       "id": "community-furniture",
       "src": "js/community-furniture.js?v=20261030-cape3",
       "requires": [
@@ -596,8 +619,16 @@
       ]
     },
     {
+      "id": "companion-formation",
+      "src": "js/companion-formation.js?v=20261112-equip1",
+      "requires": [
+        "ancestral-mask",
+        "pix-presence"
+      ]
+    },
+    {
       "id": "companions",
-      "src": "js/companions.js?v=20261021-expansion1",
+      "src": "js/companions.js?v=20261112-equip1",
       "requires": [
         "botica"
       ]
@@ -851,7 +882,7 @@
     },
     {
       "id": "duo-world",
-      "src": "js/duo-world.js?v=20261104-mask-both1",
+      "src": "js/duo-world.js?v=20261112-pause1",
       "requires": [
         "duo-challenges",
         "market-world"
@@ -1001,6 +1032,38 @@
       ]
     },
     {
+      "id": "fragment-art",
+      "src": "js/fragment-art.js?v=20261112-infinity-scenery1",
+      "requires": [
+        "asset-loader",
+        "fragment-data"
+      ]
+    },
+    {
+      "id": "fragment-combat",
+      "src": "js/fragment-combat.js?v=20261112-infinity1",
+      "requires": [
+        "ancestral-mask",
+        "team-world"
+      ]
+    },
+    {
+      "id": "fragment-data",
+      "src": "js/fragment-data.js?v=20261112-fragment1",
+      "requires": [
+        "content",
+        "team-data"
+      ]
+    },
+    {
+      "id": "fragment-forest",
+      "src": "js/fragment-forest.js?v=20261112-infinity1",
+      "requires": [
+        "fragment-combat",
+        "harmony-atlas"
+      ]
+    },
+    {
       "id": "furnishings-content",
       "src": "js/furnishings-content.js?v=20261103-credits1",
       "requires": [
@@ -1030,7 +1093,7 @@
     },
     {
       "id": "game",
-      "src": "js/game.js?v=20261111-museums1",
+      "src": "js/game.js?v=20261112-pause1",
       "requires": [
         "combat",
         "cozy-world",
@@ -1084,7 +1147,7 @@
     },
     {
       "id": "harmony-atlas",
-      "src": "js/harmony-atlas.js?v=20261111-atlas-homes2",
+      "src": "js/harmony-atlas.js?v=20261112-fragment1",
       "requires": [
         "asset-demand-upgrade",
         "atlas-explorer",
@@ -1231,6 +1294,21 @@
       ]
     },
     {
+      "id": "infinity-trail-rooms",
+      "src": "js/infinity-trail-rooms.js?v=20261112-infinity-scenery1",
+      "requires": [
+        "fragment-art"
+      ]
+    },
+    {
+      "id": "infinity-trails",
+      "src": "js/infinity-trails.js?v=20261112-trilhas2",
+      "requires": [
+        "fragment-forest",
+        "infinity-trail-rooms"
+      ]
+    },
+    {
       "id": "interface-polish",
       "src": "js/interface-polish.js?v=20261111-polish1",
       "requires": [
@@ -1278,7 +1356,7 @@
     },
     {
       "id": "living-world",
-      "src": "js/living-world.js?v=20261111-vida1",
+      "src": "js/living-world.js?v=20261112-equip1",
       "requires": [
         "city-chronicle",
         "field-guide",
@@ -1382,6 +1460,13 @@
         "home-construction",
         "market-data",
         "play-museum-expansion"
+      ]
+    },
+    {
+      "id": "mask-original-palette",
+      "src": "js/mask-original-palette.js?v=20261112-maskcolor1",
+      "requires": [
+        "ancestral-mask"
       ]
     },
     {
@@ -1567,7 +1652,7 @@
     },
     {
       "id": "onboarding-lessons",
-      "src": "js/onboarding-lessons.js?v=20261111-turns2",
+      "src": "js/onboarding-lessons.js?v=20261112-fragment1",
       "requires": [
         "city-battle",
         "onboarding"
@@ -1594,7 +1679,7 @@
     },
     {
       "id": "pix-presence",
-      "src": "js/pix-presence.js",
+      "src": "js/pix-presence.js?v=20261112-equip1",
       "requires": [
         "engine"
       ]
@@ -1681,7 +1766,7 @@
     },
     {
       "id": "player-profiles",
-      "src": "js/player-profiles.js?v=20261101-duo2",
+      "src": "js/player-profiles.js?v=20261112-trilhas2",
       "requires": [
         "playground-integration",
         "world-preferences"
@@ -1810,7 +1895,7 @@
     },
     {
       "id": "professor-mode",
-      "src": "js/professor-mode.js?v=20261030-imageopt1",
+      "src": "js/professor-mode.js?v=20261112-trilhas2",
       "requires": [
         "editorial-links",
         "professor-ui-catalog"
@@ -1991,7 +2076,7 @@
     },
     {
       "id": "save",
-      "src": "js/save.js?v=20261101-duo1",
+      "src": "js/save.js?v=20261112-trilhas2",
       "requires": [
         "audio"
       ]
@@ -2076,7 +2161,7 @@
     },
     {
       "id": "teacher",
-      "src": "js/teacher.js",
+      "src": "js/teacher.js?v=20261112-trilhas2",
       "requires": [
         "content",
         "save"
@@ -2089,12 +2174,13 @@
     },
     {
       "id": "team-world",
-      "src": "js/team-world.js?v=20261111-team1",
+      "src": "js/team-world.js?v=20261112-fragment1",
       "requires": [
         "battle-automation",
         "city-battle",
         "team-data",
-        "world-finalize"
+        "world-finalize",
+        "fragment-art"
       ]
     },
     {
@@ -2116,6 +2202,14 @@
       "id": "terreiros-collection-plans",
       "src": "js/terreiros-collection-plans.js?v=20261025-textos-acervo2",
       "requires": []
+    },
+    {
+      "id": "trail-companions",
+      "src": "js/trail-companions.js?v=20261112-equip1",
+      "requires": [
+        "infinity-trails",
+        "team-world"
+      ]
     },
     {
       "id": "transit-routing",
@@ -2239,7 +2333,7 @@
     },
     {
       "id": "world",
-      "src": "js/world.js?v=20261103-mobile1",
+      "src": "js/world.js?v=20261112-equip1",
       "requires": [
         "content",
         "ground-cache",

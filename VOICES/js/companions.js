@@ -33,12 +33,15 @@ const M=V.Companions={roster,category:'all',query:'',checking:false,position:nul
   if(!p||!s.follow||p.id==='zambeto'){m.objects=m.objects.filter(o=>o.type!=='roots-companion');this.position=null;return;}
   let o=m.objects.find(o=>o.type==='roots-companion');const player=V.Player.data;
   if(!o||o.companionId!==p.id){
-   m.objects=m.objects.filter(o=>o.type!=='roots-companion');const at=Rsafe(m,player);
+   m.objects=m.objects.filter(o=>o.type!=='roots-companion');const at=Rsafe(m,player);if(!at)return;
    o={id:'roots-companion-'+m.id,type:'roots-companion',companionId:p.id,x:at.x,y:at.y,dir:0,label:'Conversar com '+p.name,interactionRange:82,age:0,walkDistance:0};m.objects.push(o);
   }
   o.age+=dt;if(o.presenceUntil>V.Engine.time){o.walking=false;return;}
-  const target={x:player.x-58,y:player.y+45},distance=V.dist(o,target);
-  const relocate=()=>{Object.assign(o,Rsafe(m,player));o.age=0;o.walking=false;o.walkDistance=0;};
+  const target=Rsafe(m,player);
+  if(!target){if(V.dist(o,player)<55)m.objects=m.objects.filter(item=>item!==o);o.walking=false;return;}
+  const distance=V.dist(o,target);
+  const relocate=()=>{Object.assign(o,target);o.age=0;o.walking=false;o.walkDistance=0;};
+  if(V.dist(o,player)<52){relocate();return;}
   if(distance>330){relocate();return;}
   if(distance<.5){o.walking=false;return;}
   // Approach continuously, instead of repeatedly crossing a chase/stop threshold.
@@ -55,9 +58,9 @@ const M=V.Companions={roster,category:'all',query:'',checking:false,position:nul
  },
  toolbar(){const nav=V.$('.game-toolbar .tools');if(!nav)return;let b=V.$('#companions-button');if(!b){b=document.createElement('button');b.id='companions-button';b.className='icon-menu-button';b.innerHTML='<svg class="ui-art" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="11" cy="10" r="5" fill="#c5b182" stroke="#315f53" stroke-width="2"/><circle cx="24" cy="12" r="4" fill="#87b8a2" stroke="#315f53" stroke-width="2"/><path d="M2 29v-6a9 9 0 0 1 18 0v6Z" fill="#c5b182" stroke="#315f53" stroke-width="2"/><path d="M20 29h10v-6a6 6 0 0 0-10-4" fill="#87b8a2" stroke="#315f53" stroke-width="2"/></svg>';nav.append(b);}b.setAttribute('aria-label','Companheiros');b.setAttribute('aria-keyshortcuts','U');b.title='Companheiros (U)';b.onclick=()=>this.open();}
 };
-function Rsafe(m,p){return V.Rooms.safe(m,{x:p.x-58,y:p.y+45},10)||{x:p.x,y:p.y};}
+function Rsafe(m,p){return V.FollowerPositions.ground('companion',p,m,10);}
 for(const[id,title,desc]of [['roots-companions-3','Primeiros vínculos','Libere três companhias diferentes.'],['roots-companions-10','Muitas formas de caminhar','Libere dez companhias diferentes.'],['roots-companions-all','Encontros da ancestralidade','Libere as dezessete companhias.']])V.Quests.achievements.push({id,title,desc,index:9,category:'city'});
-const visible=V.Story.visible.bind(V.Story);V.Story.visible=function(o){if(o.type==='zambeto'&&o.companion){const s=M.ensure();return visible(o)&&s?.selected==='zambeto'&&s.follow;}return visible(o);};
+const visible=V.Story.visible.bind(V.Story);V.Story.visible=function(o){if(o.type==='zambeto'&&o.companion){const s=M.ensure();return visible(o)&&!o.formationHidden&&s?.selected==='zambeto'&&s.follow;}return visible(o);};
 const draw=V.Cozy.drawObject.bind(V.Cozy);V.Cozy.drawObject=function(ctx,o,cam,t){if(o.type!=='roots-companion')return draw(ctx,o,cam,t);const p=roster.find(p=>p.id===o.companionId),s=M.ensure();if(!p||s.selected!==p.id||!s.follow)return;const x=o.x-cam.x,y=o.y-cam.y,bob=V.settings.reducedMotion?0:o.walking?Math.sin(o.age*12)*2:Math.sin(o.age*2)*.6;ctx.save();ctx.globalAlpha=Math.min(1,o.age*3);ctx.fillStyle='#17372c30';ctx.beginPath();ctx.ellipse(x,y+4,15,5,0,0,Math.PI*2);ctx.fill();if(!V.Presences?.drawObject(ctx,o,cam,p))V.AncestralArt.draw(ctx,'characters',p.sprite,x,y+bob,82,o.dir===1);if(W.nearest?.id===o.id)V.Living.marker(ctx,x,y-(V.Presences?.has(p.id)?54:20),'E','#b8d7b1');ctx.restore();};
 V.Hooks.around(V.Game, 'interact', 'companions:interact:1', nextHook => function(o){if(o?.type==='roots-companion'&&!V.modal&&!V.Dialogue.active)return V.Ancestral.talk(o.companionId);return nextHook(o);});
 V.Hooks.around(V.Game, 'update', 'companions:update:1', nextHook => function(dt){const result=nextHook(dt);M.update(dt);return result;});

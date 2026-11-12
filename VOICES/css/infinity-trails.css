@@ -1,0 +1,26 @@
+.infinity-trail-modal .modal-body { background: #172e2a; color: #edf1dc; }
+.infinity-banner {
+  min-height: clamp(105px, 23vw, 190px);
+  background: linear-gradient(0deg, #152d24a6, transparent 62%), url('../assets/adventure/fragment/trail-arena.webp') center 47% / cover;
+  border: 1px solid #6e967a;
+  border-radius: 9px;
+}
+.infinity-tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.infinity-tier {
+  display: grid; align-content: start; gap: 5px; min-height: 116px; padding: 10px;
+  text-align: left; color: #f5f3d8; background: #25463b; border: 1px solid #719181; border-radius: 7px;
+}
+.infinity-tier:hover, .infinity-tier:focus-visible { background: #31554a; border-color: #ffe59b; }
+.infinity-tier strong { font-size: 1.04rem; }
+.infinity-tier span { line-height: 1.35; }
+.infinity-tier small { color: #d2e2b6; }
+.infinity-tier[data-infinity-tier="hard"] { border-color: #ba9579; }
+.infinity-tier[data-infinity-tier="hard"]:hover, .infinity-tier[data-infinity-tier="hard"]:focus-visible { border-color: #ffe59b; }
+.infinity-resume {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 9px 11px;
+  color: #f8e9b7; background: #2d4a3f; border: 1px solid #8e9f75; border-radius: 6px;
+}
+@media (max-width: 530px) {
+  .infinity-tiers { grid-template-columns: 1fr; }
+  .infinity-tier { min-height: auto; }
+}

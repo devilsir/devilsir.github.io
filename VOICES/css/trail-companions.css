@@ -1,0 +1,33 @@
+.team-modal :is(.fragment-squad, .fragment-squad-detail) {
+  --white: #f1faff;
+  --muted: #c7dfe9;
+}
+.team-modal:has(.fragment-squad) :is(.team-member-profile h3, .fragment-roster-label h3, .fragment-slot-name b, .fragment-roster b) { color: #f1faff; }
+.team-modal:has(.fragment-squad) :is(.team-member-profile > header small, .team-skill p) { color: #d1e6ee; }
+.team-modal:has(.fragment-squad) .team-skill b { color: #f8f4db; }
+.team-modal:has(.fragment-squad) .team-skill :is(b,p) { font-size: max(.85rem, 14px); line-height: 1.4; }
+.team-modal:has(.fragment-squad) .team-skill small { font-size: max(.73rem, 12px); }
+.trail-animal-modal { width: min(980px, 100%); }
+.trail-animal-modal .modal-body { background: #10232f; color: #e7f5fa; }
+.trail-animal-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 6px; }
+.trail-animal-cards button { min-width: 0; padding: 6px 9px; }
+.trail-animal-cards button > span { display: flex; align-items: center; gap: 5px; }
+.trail-animal-cards .fragment-spirit-art { width: 42px; }
+.trail-animal-detail {
+  display: grid; grid-template-columns: minmax(0, 235px) 1fr; gap: 16px;
+  padding: 12px; margin-top: 12px; background: #172f3e; border: 1px solid #42677f; border-radius: 8px;
+}
+.trail-animal-detail :is(h3, h4, b) { color: #fff1c2; }
+.trail-animal-detail :is(p, small) { color: #d7edf5; }
+.trail-animal-detail p { margin: 7px 0 12px; line-height: 1.46; }
+#trail-animal-preview { width: 100%; height: auto; border-radius: 6px; background: radial-gradient(at 50% 90%, #3e7166, #0c1f2c 78%); }
+.trail-animal-actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 4px; }
+.trail-animal-actions button { padding: 7px 2px; font-size: .76rem; }
+.trail-animal-actions [aria-pressed="true"] { border-color: #f5dd9b; color: #fff1c2; }
+.infinity-guide-content { font: max(.92rem, 15px)/1.55 "VOICES Sans", system-ui, sans-serif; color: #f2f4e5; }
+.infinity-guide-content li + li { margin-top: .45em; }
+.infinity-guide-step { color: #f5df9e; font-weight: 700; }
+@media (max-width: 570px) {
+  .trail-animal-detail { grid-template-columns: 1fr; }
+  .trail-animal-detail > div:first-child { width: min(100%, 235px); margin-inline: auto; }
+}

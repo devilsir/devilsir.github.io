@@ -45,14 +45,14 @@
     const type=kinds[a.menu],list={
       skills:B.skillList(actor),
       items:Object.keys(r.inventory).filter(id=>r.inventory[id]>0&&D.items[id]?.category==='consumable').map(id=>({id,...D.items[id]})),
-      support:D.support
+      support:D.support.filter(entry=>entry.art==null||a.spirit===entry.id)
     }[a.menu];
     const title={skills:'Habilidades',items:'Itens',support:'Apoio'}[a.menu];
     return `<div class="turn-tray"><div class="turn-tray-head"><strong>${title}</strong><button type="button" id="battle-back" data-turn-focus="back">Voltar <kbd>Esc</kbd></button></div>
       <div class="turn-tray-list">${list.map(entry=>{
         const reason=B.availability({type,id:entry.id},actor);
         const cost=type==='skill'?B.skillCost(entry,B.skillRank(entry,actor))+' foco · Recarga '+entry.cooldown:type==='item'?'×'+r.inventory[entry.id]:entry.cost+' carga(s)';
-        const art=type==='supportAction'?icon('support'):Number.isInteger(entry.icon)&&V.Team?.skills.has(entry.id)?V.TeamArt.icon(entry.icon):P.icon(entry.id,29);
+        const art=entry.spell!=null&&V.FragmentArt?V.FragmentArt.tile('spells',entry.spell,'fragment-icon'):type==='supportAction'?icon('support'):Number.isInteger(entry.icon)&&V.Team?.skills.has(entry.id)?V.TeamArt.icon(entry.icon):P.icon(entry.id,29);
         return `<button type="button" data-turn-kind="${type}" data-turn-id="${entry.id}" data-turn-focus="tray-${entry.id}" title="${esc(entry.description||'')}" ${reason?'disabled':''}>
           ${art}<span><b>${esc(entry.name)}</b><small>${esc(reason||cost)}</small></span>
         </button>`;
@@ -73,7 +73,7 @@
     </div></div>`;
     if(terminal.has(a.phase)){
       const title=a.phase==='victory'?(a.contextualized?'As fontes desfizeram a rasura.':'A manifestação perdeu sua força.'):a.phase==='defeat'?'A equipe recuou.':'A equipe está em segurança.';
-      const xp=a.phase==='victory'&&a.rewardXP>0?' · +'+a.rewardXP+' XP':'';
+      const xp=a.phase==='victory'&&a.rewardXP>0?' · +'+a.rewardXP+' XP'+(a.rewardShards?' · +'+a.rewardShards+' fragmento(s)':''):'';
       return `<div class="turn-prompt"><p><strong>${title}</strong>${xp}</p><div>
         ${a.phase==='defeat'?button('battle-retry','health','Tentar novamente','class="turn-primary" data-turn-focus="retry"'):''}
         ${button('battle-finish','track',a.phase==='victory'?'Continuar investigação':'Voltar à exploração','data-turn-focus="finish"')}
@@ -85,7 +85,7 @@
   }
 
   function portrait(actor){
-    return `<canvas class="turn-face" width="48" height="48" data-turn-portrait="${esc(actor.character)}" aria-hidden="true"></canvas>`;
+    return V.FragmentArt?.portrait(actor.character)||`<canvas class="turn-face" width="48" height="48" data-turn-portrait="${esc(actor.character)}" aria-hidden="true"></canvas>`;
   }
 
   function team(a){
@@ -96,7 +96,7 @@
       const role=V.Team?.kits[actor.character]?.role;
       return `<div class="turn-member ${actor.id===a.actor?'is-current':''}" title="${esc([actor.name,role,statuses].filter(Boolean).join(' · '))}">
         ${portrait(actor)}<div><b>${esc(actor.name)}${actor.shield?` <small title="Escudo">${icon('defend')}${actor.shield}</small>`:''}</b>
-        ${meter('health',actor.health,actor.stats.health,'health','Vida')}${meter('focus',actor.focus,actor.stats.focus,'focus','Foco')}</div>
+        ${meter('health',actor.health,actor.stats.health,'health','Vida')}${meter('focus',actor.focus,actor.stats.focus,'focus','Foco')}${V.FragmentArt?.conditions(actor)||''}</div>
         ${targetable?`<button type="button" class="turn-ally-pick" data-battle-target="${actor.id}" data-turn-focus="ally-${actor.id}" aria-pressed="${picked}" aria-label="Escolher ${esc(actor.name)}"></button>`:''}
       </div>`;
     }).join('')}</div>`;
@@ -118,7 +118,7 @@
       return `<button class="turn-hit ${enemy?'enemy':'ally'}" type="button" data-turn-hit="${actor.id}" data-turn-focus="field-${actor.id}"
         aria-label="${esc(actor.name)}, ${actor.health} de ${actor.stats.health} de vida" aria-pressed="${picked}" ${canPick?'':'disabled'}>
         ${enemy?`<span class="turn-enemy-name"><b>${esc(actor.name)}</b><span class="turn-enemy-track"><i style="width:${percent(actor.health,actor.stats.health)}%"></i></span>
-          <small>${actor.health}/${actor.stats.health}${actor.shield?` · ${icon('defend')}${actor.shield}`:''}</small></span>`:''}
+          <small>${actor.health}/${actor.stats.health}${actor.shield?` · ${icon('defend')}${actor.shield}`:''}</small>${V.FragmentArt?.conditions(actor)||''}</span>`:''}
       </button>`;
     }).join('')}</div>`;
   }
@@ -153,7 +153,7 @@
     root.dataset.phase=a.phase;
     root.dataset.auto=a.auto?'on':'off';
     root.innerHTML=`<header class="turn-top">
-      <div class="turn-heading"><small>${a.intro?'Primeira Vigília':'Confronto · Capítulo '+a.id}${a.round?' · Rodada '+a.round:''}</small><strong title="${esc(label)}">${esc(label)}</strong></div>
+      <div class="turn-heading"><small>${a.intro?'Primeira Vigília':a.expedition?esc(a.expedition.title):'Confronto · Capítulo '+a.id}${a.round?' · Rodada '+a.round:''}</small><strong title="${esc(label)}">${esc(label)}</strong></div>
       <div class="turn-tools">
         ${canAuto?button('battle-auto','auto',a.auto?'Auto ligado':'Automático',`aria-pressed="${!!a.auto}" title="Alternar automático (A)" data-turn-focus="auto"`):''}
         ${button('battle-intents','intents','Intenções','data-turn-focus="intents"')}
@@ -293,16 +293,26 @@
       V.Life.hud();
     }
   };
+  const martialEffects=new Set(['strike','strikeMark','break','poison']);
+  function recruitHealth(battle){
+    return (battle?.allies||[]).filter(ally=>ally.health>0&&V.Team?.kits[ally.character]?.fragmentArt!=null)
+      .map(ally=>[ally,ally.health]);
+  }
+  const injuredRecruits=before=>before.filter(([ally,health])=>ally.health<health).map(([ally])=>ally.id);
+
   const commit=B.commit.bind(B);
   B.commit=function(action,target){
     const a=this.active,actor=a?.actor,definition=this.definition(action);
+    const before=recruitHealth(a);
     const ok=commit(action,target);
     if(!ok||!this.active||action.type==='retreat')return ok;
-    const clip=action.type==='attack'?'attack':action.type==='defend'?'guard':action.type==='item'||['heal','cleanse'].includes(definition?.effect)?'heal':'cast';
+    const recruit=V.Team?.kits[this.get(actor)?.character]?.fragmentArt!=null;
+    const martial=action.type==='skill'&&recruit&&martialEffects.has(definition?.effect);
+    const clip=action.type==='attack'||martial?'attack':action.type==='defend'?'guard':action.type==='item'||['heal','cleanse'].includes(definition?.effect)?'heal':'cast';
     const fx=clip==='attack'?0:clip==='heal'?3:clip==='guard'||definition?.effect==='shield'?2:definition?.effect==='ultimate'?5:1;
     const hit=definition?.target==='allies'?a.allies:definition?.target==='enemies'?a.enemies:null;
     const duration=V.settings.reducedMotion?.28:.68;
-    a.visual={actor,targets:hit?hit.map(actor=>actor.id):[target||actor],clip,fx,teamFx:V.Team?.skills.has(definition?.id)?definition.fx:null,age:0,duration,guardian:action.type==='supportAction'};
+    a.visual={actor,targets:hit?hit.map(actor=>actor.id):[target||actor],clip,fx,spell:definition?.spell,teamFx:V.Team?.skills.has(definition?.id)?definition.fx:null,age:0,duration,guardian:action.type==='supportAction',recruitHits:injuredRecruits(before)};
     if(action.type==='item')V.Life.diet(definition);
     if(a.phase==='resolving')a.timer=duration;
     return true;
@@ -310,11 +320,12 @@
   const enemy=B.enemyAction.bind(B);
   B.enemyAction=function(){
     const a=this.active,actor=this.get(a?.actor),plan=actor?.plan;
+    const before=recruitHealth(a);
     enemy();
     if(!a||!actor||this.active!==a)return;
-    const targets=plan?.type==='wave'?a.allies.map(ally=>ally.id):[plan?.target||a.allies[0].id];
+    const targets=a.enemyHit||[plan?.target||a.allies[0].id];
     const duration=V.settings.reducedMotion?.28:.68;
-    a.visual={actor:actor.id,targets,clip:'attack',fx:4,age:0,duration};
+    a.visual={actor:actor.id,targets,clip:'attack',fx:4,spell:plan?.type==='attack'?null:actor.spell,age:0,duration,recruitHits:injuredRecruits(before)};
     if(a.phase==='resolving')a.timer=duration;
   };
   const update=B.update.bind(B);
@@ -390,7 +401,7 @@
     const g=this.geometry(ctx.canvas),root=V.$('#battle-root');
     const key=[g.width,g.height,g.top,g.depth].join(':');
     if(root&&root.dataset.arenaGeometry!==key){root.dataset.arenaGeometry=key;this.syncHitboxes(root,g);}
-    const {width,height}=g,art=a.intro&&V.TurnArt.arena?.naturalWidth?V.TurnArt.arena:V.Assets.images[backgrounds[a.id]||'battle-city'];
+    const {width,height}=g,art=a.expedition?V.FragmentArt.images[a.expedition.arena||'clearing']:a.intro&&V.TurnArt.arena?.naturalWidth?V.TurnArt.arena:V.Assets.images[backgrounds[a.id]||'battle-city'];
     ctx.save();
     ctx.scale(ctx.canvas.width/width,ctx.canvas.height/height);
     ctx.imageSmoothingEnabled=false;
@@ -399,8 +410,10 @@
     if(art?.naturalWidth){
       const scale=Math.max(width/art.naturalWidth,height/art.naturalHeight);
       const w=art.naturalWidth*scale,h=art.naturalHeight*scale;
-      ctx.drawImage(art,(width-w)/2,(height-h)*.42,w,h);
+      const horizon=a.expedition?Math.min(0,g.top+g.depth*.64-h*.56):(height-h)*.42;
+      ctx.drawImage(art,(width-w)/2,horizon,w,h);
     }
+    if(a.expedition?.tint){ctx.fillStyle=a.expedition.tint;ctx.fillRect(0,0,width,height);}
     const shade=ctx.createLinearGradient(0,0,0,height);
     shade.addColorStop(0,'#081a19a8');shade.addColorStop(.39,'#11252209');shade.addColorStop(1,'#091e1beb');
     ctx.fillStyle=shade;ctx.fillRect(0,0,width,height);
@@ -410,15 +423,23 @@
       const {x,y,size}=this.position(actor,g),active=visual?.actor===actor.id,enemy=actor.side==='enemy';
       V.SceneShadows.contact(ctx,x,y+4,size*.29,size*.073,.31);
       ctx.globalAlpha=actor.health<=0?.36:1;
-      if(enemy){
-        const image=V.Assets.images['rasura-enemies'];
-        const frame=still?0:active?2:Math.floor(clock*2)%2;
-        if(image?.naturalWidth)ctx.drawImage(image,frame*128,actor.row*144,128,144,x-size*.58,y-size*1.10,size*1.16,size*1.16);
-      }else{
-        const clip=still?'ready':active?visual.clip:a.phase==='victory'?'dance':'ready';
-        if(!A.draw(ctx,actor.character,clip,x,y+6,size,still?0:active?visual.age:clock,false)){
-          const t=active&&!still?Math.sin(Math.PI*V.clamp(visual.age/visual.duration,0,1)):0;
-          V.Assets.sprite(ctx,actor.character,x+(clip==='attack'?t*size*.23:0),y+7-t*size*.07,2,t>.1?Math.floor(visual.age*10)%4:0,size*.88);
+      const hit=!!visual?.recruitHits?.includes(actor.id);
+      const progress=(active||hit)&&visual?visual.age/visual.duration:0;
+      const animation={
+        clip:active?visual.clip:!visual&&a.phase==='victory'?'victory':'ready',
+        progress,clock,hit,guarded:!!this.has(actor,'guard'),still
+      };
+      if(!V.FragmentArt?.drawActor(ctx,actor,x,y+4,size,animation)){
+        if(enemy){
+          const image=V.Assets.images['rasura-enemies'];
+          const frame=still?0:active?2:Math.floor(clock*2)%2;
+          if(image?.naturalWidth)ctx.drawImage(image,frame*128,actor.row*144,128,144,x-size*.58,y-size*1.10,size*1.16,size*1.16);
+        }else{
+          const clip=still?'ready':active?visual.clip:a.phase==='victory'?'dance':'ready';
+          if(!A.draw(ctx,actor.character,clip,x,y+6,size,still?0:active?visual.age:clock,false)){
+            const t=active&&!still?Math.sin(Math.PI*V.clamp(progress,0,1)):0;
+            V.Assets.sprite(ctx,actor.character,x+(clip==='attack'?t*size*.23:0),y+7-t*size*.07,2,t>.1?Math.floor(visual.age*10)%4:0,size*.88);
+          }
         }
       }
       ctx.globalAlpha=1;
@@ -431,35 +452,40 @@
         const mask=V.AncestralMask,row=active&&visual.clip==='cast'&&!V.settings.reducedFlash&&!still?mask.rows.pulse:0;
         mask.frame(ctx,row,still?0:Math.floor(clock*3)%4,x+size*.54,y-size*.80,size*(g.narrow?.64:.74),mask.variant());
       }
-      if(!still&&visual?.targets.includes(actor.id)){
-        let drawn=false;
-        if(visual.teamFx!=null&&V.TeamArt){
+      if(visual?.targets.includes(actor.id)&&(!still||visual.spell!=null)){
+        let drawn=V.FragmentArt?.spell(ctx,visual.spell,x,y-size*.53,size*1.42,still?visual.duration*.45:visual.age,visual.duration);
+        if(!drawn&&visual.teamFx!=null&&V.TeamArt){
           ctx.save();if(V.settings.reducedFlash)ctx.globalAlpha=.58;
           drawn=V.TeamArt.draw(ctx,visual.teamFx,x,y-size*.50,size*1.46,visual.age,visual.duration);ctx.restore();
         }
-        if(!drawn)A.fx(ctx,visual.fx,x,y-size*.54,size*(visual.fx===5?1.72:1.23),visual.age);
+        if(!drawn&&!still)A.fx(ctx,visual.fx,x,y-size*.54,size*(visual.fx===5?1.72:1.23),visual.age);
       }
     }
     this.drawBattleCompanion(ctx,g);
-    for(const effect of a.effects){
+    const floating=new Map();
+    for(const effect of [...a.effects].reverse()){
       const actor=this.get(effect.target);
       if(!actor)continue;
-      const p=this.position(actor,g);
+      const count=floating.get(actor.id)||0;
+      if(count>=3)continue;
+      floating.set(actor.id,count+1);
+      const p=this.position(actor,g),step=g.narrow?14:18;
       const rise=still?0:(1.3-effect.life)*14;
-      V.Engine.text(ctx,effect.text,p.x,p.y-p.size*.88-rise,effect.color,g.narrow?14:19,'center');
+      V.Engine.text(ctx,effect.text,p.x,p.y-p.size*.9-rise-count*step,effect.color,step-1,'center');
     }
     ctx.restore();
   };
 
   B.drawBattleCompanion=function(ctx,g){
     const a=this.active,r=P.ensure();
-    const companion=a.id===0?null:V.Companions?.selected();
-    if(!r.story.met&&a.id!==0&&!companion)return;
+    const companion=a.id===0?null:V.Companions?.selected(),spirit=V.FragmentData?.spirits.find(item=>item.id===a.spirit);
+    if(!r.story.met&&a.id!==0&&!companion&&!spirit)return;
     const hero=this.position(a.allies[0],g),size=g.size*(g.narrow?.63:.81);
     const x=Math.max(size*.32,hero.x-g.size*.75),y=hero.y-g.size*.20;
     const active=a.visual?.guardian,clock=V.settings.reducedMotion?0:active?a.visual.age:a.clock;
     const clip=active?'cast':'ready';
     V.SceneShadows.contact(ctx,x,y+3,size*.29,size*.08,.20);
+    if(spirit&&V.FragmentArt.draw(ctx,'creatures',spirit.art,x,y+3,size*(active?1.28:1.1)))return;
     if(companion&&companion.id!=='zambeto'){
       if(!V.Presences?.draw(ctx,companion.id,clip,x,y,size,clock,false,true,!active)){
         V.AncestralArt.draw(ctx,'characters',companion.sprite,x,y,size);

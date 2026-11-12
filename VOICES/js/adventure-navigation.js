@@ -15,6 +15,8 @@ for(const o of m.objects){
 let to=null,allowed=true,reason='';
 if(o.type==='room-door'){to=o.door.to?.map;allowed=V.Rooms.allowed(o.door)&&!!to;reason='Porta trancada ou condição narrativa pendente.';}
 else if(o.type==='portal'){to='chapter-'+o.chapter;allowed=!!V.state?.flags.prologueDone&&V.Quests.isUnlocked(o.chapter);reason='Conclua a investigação anterior e a primeira vigília.';}
+else if(o.type==='fragment-site'&&o.to){to=o.to;allowed=o.site!=='entry'||!!V.state?.flags?.prologueDone;reason='Conclua a Primeira Vigília.';}
+else if(o.type==='infinity-trail'&&o.to){to=o.to;allowed=!!V.state?.flags?.prologueDone;reason='Conclua a Primeira Vigília.';}
 else if(['door','travel','exit'].includes(o.type))to=o.to||'hub';
 if(!to||!V.World.maps[to])continue;
 const cfg=m.design.life?.connections?.[o.id];if(cfg?.disabled)continue;if(cfg?.locked){allowed=false;reason='A conexão está trancada.';}

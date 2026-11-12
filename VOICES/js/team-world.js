@@ -5,6 +5,8 @@
   const {kits,recruits}=V.TeamData;
   const limit=6,questId=id=>'recruit-'+id,siteId=id=>'team-contact-'+id;
   const names={cora:'Cora',bento:'Bento',ines:'Inês',luzia:'Luzia',denis:'Denis',dandara:'Dandara',jaci:'Jaci',jamila:'Jamila'};
+  const portrait=(id,size,full=false)=>V.FragmentArt.portrait(id,full)||V.UI.portrait(id,0,size);
+  const skillIcon=skill=>skill.spell==null?art.icon(skill.icon):V.FragmentArt.tile('spells',skill.spell,'fragment-icon');
   const name=id=>id===V.state?.character?V.state.name:(V.content.characters[id]?.name||names[id]||id);
   const quests=new Map(),recruitById=new Map(recruits.map(r=>[r.id,r]));
   const skills=new Map(Object.values(kits).flatMap(kit=>kit.skills.map(skill=>[skill.id,skill])));
@@ -47,7 +49,7 @@
       const available=new Set(this.unlocked(a));
       return [...new Set(Array.isArray(a?.party)?a.party:[])].filter(id=>available.has(id)).slice(0,limit-1);
     },
-    enabled(r){return !!V.state?.flags?.prologueDone&&unlocked(quests.get(questId(r.id)));},
+    enabled(r){return !!(r&&V.state?.flags?.prologueDone&&unlocked(quests.get(questId(r.id)))&&(!r.unlock||V.FragmentForest?.has(r.unlock)));},
     edit(id,offset=0){
       if(!V.state||V.Game.mode!=='explore'||V.Combat.active||!this.unlocked().includes(id))return false;
       const a=P.ensure(),party=this.lineup(a),index=party.indexOf(id);
@@ -60,6 +62,16 @@
         if(party.length>=limit-1)return false;
         party.push(id);
       }
+      a.party=party;V.Save.save();return true;
+    },
+    place(id,slot){
+      if(!V.state||V.Game.mode!=='explore'||V.Combat.active||!this.unlocked().includes(id)||!Number.isInteger(slot)||slot<1||slot>=limit)return false;
+      const a=P.ensure(),party=this.lineup(),index=party.indexOf(id),destination=Math.min(slot-1,party.length);
+      if(index===destination)return false;
+      if(index>=0){
+        if(destination===party.length){party.splice(index,1);party.push(id);}
+        else [party[index],party[destination]]=[party[destination],id];
+      }else party[destination]=id;
       a.party=party;V.Save.save();return true;
     },
     combatSkills(actor,battle){
@@ -75,11 +87,11 @@
       for(const r of recruits){
         const m=W.maps[r.map];
         if(!m||m.objects.some(o=>o.id===siteId(r.id)))continue;
-        const [tx,ty]=m.design.spawn||[m.width/2,m.height-5];
+        const [tx,ty]=m.design?.spawn||[m.width/2,m.height-5];
         const contact=m.objects.find(o=>o.character===r.id||o.resident?.id===r.id);
-        const origin=contact||{x:(tx+.5)*48,y:(ty+.5)*48};
+        const origin=V.FragmentForest?.contact(r.id)||contact||{x:(tx+.5)*48,y:(ty+.5)*48};
         const spots=[[72,45],[-72,45],[54,-56],[-54,-56],[0,94]].map(([dx,dy])=>({x:origin.x+dx,y:origin.y+dy}));
-        const point=spots.find(p=>V.FastTravel.clear(m,p,15)&&!m.objects.some(o=>V.dist(o,p)<48))
+        const point=(V.FragmentForest?.contact(r.id)&&V.FastTravel.clear(m,origin,15)?origin:null)||spots.find(p=>V.FastTravel.clear(m,p,15)&&!m.objects.some(o=>V.dist(o,p)<48))
           ||V.Rooms.safe(m,{x:origin.x+80,y:origin.y+55},15);
         if(!point)continue;
         m.objects.push({...point,id:siteId(r.id),type:'team-contact',recruit:r.id,label:'Recrutamento · '+name(r.id),interactionRange:83});
@@ -99,8 +111,8 @@
     mission(r){
       const member=kits[r.id],s=this.progress(r),enabled=this.enabled(r);
       V.UI.modal(r.title,name(r.id)+' · '+V.FastTravel.name(r.map),
-        `<div class="team-brief">${V.UI.portrait(r.id,0,84)}<div><p>${esc(r.brief)}</p><b>${art.icon(member.icon)} ${esc(member.role)}</b></div></div>
-        <ol class="mission-steps"><li>${s?.step?'✓ ':''}Conhecer a proposta no ponto de encontro.</li><li>${s?.done?'✓ ':''}Resolver a proposta para convidar ${esc(name(r.id))}.</li></ol>${enabled?'':'<p class="note">Disponível após a primeira vigília e a abertura do distrito.</p>'}`,
+        `<div class="team-brief">${portrait(r.id,84)}<div><p>${esc(r.brief)}</p><b>${art.icon(member.icon)} ${esc(member.role)}</b></div></div>
+        <ol class="mission-steps"><li>${s?.step?'✓ ':''}Conhecer a proposta no ponto de encontro.</li><li>${s?.done?'✓ ':''}Resolver a proposta para convidar ${esc(name(r.id))}.</li></ol>${enabled?'':'<p class="note">'+(r.unlock?'Descoberta necessária na floresta · '+esc(V.FragmentForest.marks[r.unlock]):'Disponível após a primeira vigília e a abertura do distrito.')+'</p>'}`,
         `<button type="button" id="team-mission-back" class="secondary">Voltar à equipe</button><button type="button" id="team-mission-map" class="secondary">Ver local no atlas</button>${s?.done?'':`<button type="button" id="team-mission-track" class="primary" ${enabled?'':'disabled'}>${s?.started?'Rastrear missão':'Aceitar e rastrear'}</button>`}`);
       V.UI.paintPortraits();
       V.$('#team-mission-back').onclick=()=>this.panel('recruit',r.id);
@@ -112,52 +124,94 @@
       if(!this.enabled(r)||W.current?.id!==r.map)return;
       if(this.progress(r)?.done)return this.panel('lineup',r.id);
       this.track(r);
-      const id=questId(r.id),step=this.progress(r).step;
+      const id=questId(r.id),step=this.progress(r).step,field=!!r.unlock,provision=r.id==='vicente-muralha';
+      const question=field?'Mostre o registro que você encontrou na trilha.':r.question;
+      const alternative=provision?'<button type="button" class="choice-button" id="team-deliver-water" '+(P.ensure().inventory.water?'':'disabled')+'>Entregar 1 garrafa de água a Vicente</button>':'';
+      const answers=field?'<button type="button" class="choice-button" id="team-share-record">Compartilhar o registro · '+esc(V.FragmentForest.marks[r.unlock])+'</button>':
+        alternative+r.answers.map((answer,i)=>`<button type="button" class="choice-button" data-team-answer="${i}">${esc(answer)}</button>`).join('');
       V.UI.modal(r.title,name(r.id),
-        `<div class="team-brief">${V.UI.portrait(r.id,0,88)}<p>${esc(step?r.question:r.brief)}</p></div>${step?`<div class="stack">${r.answers.map((answer,i)=>`<button type="button" class="choice-button" data-team-answer="${i}">${esc(answer)}</button>`).join('')}</div><div class="team-feedback" aria-live="polite"></div>`:''}`,
+        `<div class="team-brief">${portrait(r.id,88)}<p>${esc(step?question:r.brief)}</p></div>${step?`<div class="stack">${answers}</div><div class="team-feedback" aria-live="polite"></div>`:''}`,
         step?'':`<button type="button" id="team-start-trial" class="primary">Ajudar ${esc(name(r.id))}</button>`);
       V.UI.paintPortraits();
       if(!step){V.$('#team-start-trial').onclick=()=>{L.event('recruit',id+':meet');this.meet(r);};return;}
-      for(const button of V.$$('[data-team-answer]'))button.onclick=()=>{
-        if(Number(button.dataset.teamAnswer)!==r.right){V.$('.team-feedback').textContent='Releia a situação e tente outra resposta.';return;}
+      const recruit=()=>{
         if(this.progress(r)?.done)return;
         L.event('recruit',id+':trial');
         if(P.ensure().tracked?.recruit===r.id)P.ensure().tracked=null;
         V.ObjectiveGuide.invalidate();V.Save.save();
-        V.UI.modal(name(r.id)+' entrou para o elenco',kits[r.id].role,`<div class="team-brief">${V.UI.portrait(r.id,0,88)}<p>${esc(r.feedback)}</p></div>`,
+        V.UI.modal(name(r.id)+' entrou para o elenco',kits[r.id].role,`<div class="team-brief">${portrait(r.id,88)}<p>${esc(r.feedback)}</p></div>`,
           '<button type="button" id="team-recruited" class="primary">Editar formação</button>');
         V.UI.paintPortraits();V.$('#team-recruited').onclick=()=>this.panel('lineup',r.id);
       };
+      if(field)V.$('#team-share-record').onclick=recruit;
+      if(provision)V.$('#team-deliver-water').onclick=()=>{if(!this.progress(r)?.done&&P.remove('water',1))recruit();};
+      for(const button of V.$$('[data-team-answer]'))button.onclick=()=>{
+        if(Number(button.dataset.teamAnswer)===r.right)recruit();
+        else V.$('.team-feedback').textContent='Releia a situação e tente outra resposta.';
+      };
     },
-    panel(tab='lineup',selected=V.state?.character){
+    panel(tab='lineup',selected=V.state?.character,battle=null){
       if(!V.state)return;
       L.ensure();
       const hero=V.state.character,unlocked=new Set(this.unlocked()),party=this.lineup(),member=kits[selected]||kits[hero]||kits.nia;
       const editing=V.Game.mode==='explore'&&!V.Combat.active;
       const lineup=[hero,...party];
-      const slot=(id,index)=>id?`<article class="team-slot ${id===selected?'is-selected':''}"><button type="button" class="team-slot-unit" data-team-profile="${esc(id)}" aria-label="Ver ${esc(name(id))}">${V.UI.portrait(id,0,64)}<b>${esc(name(id))}</b><small>${index===0?'Portador da máscara':esc(kits[id]?.role||'Aliado')}</small></button>
-        ${index>0?`<div class="team-order"><button type="button" data-team-move="${esc(id)}" data-offset="-1" aria-label="Mover ${esc(name(id))} para a vaga anterior" ${!editing||index===1?'disabled':''}>‹</button><button type="button" data-team-move="${esc(id)}" data-offset="1" aria-label="Mover ${esc(name(id))} para a próxima vaga" ${!editing||index===party.length?'disabled':''}>›</button></div>`:''}</article>`:
-        `<div class="team-slot team-slot-empty"><span>${index+1}</span><small>Vaga livre</small></div>`;
+      const base=P.stats(),score=id=>{
+        const stats=id===hero?base:this.stats(id,base);
+        return Math.round(stats.health+stats.focus*.5+stats.attack*4+stats.knowledge*4+stats.defense*4+stats.agility*3+stats.resolve*2);
+      };
+      const placing=editing&&unlocked.has(selected);
+      const formatter=new Intl.NumberFormat('pt-BR');
+      const slot=(id,index)=>{
+        const place=placing&&index>0&&id!==selected;
+        const action=place?`data-team-place="${index}"`:id?`data-team-profile="${esc(id)}"`:'disabled';
+        const label=place?(id?'Trocar '+name(id)+' por ':'Adicionar ')+name(selected):id?'Ver '+name(id):'Vaga livre';
+        return `<article class="team-slot ${id===selected?'is-selected':''} ${id?'':'team-slot-empty'}">
+          <button type="button" class="team-slot-unit" ${action} aria-label="${esc(label)}" title="${esc(label)}">
+            ${id?`<span class="fragment-slot-top"><b>${formatter.format(score(id))}</b><small>Nv. ${P.ensure().level}</small></span>${portrait(id,112,true)}<span class="fragment-slot-name"><b>${esc(name(id))}</b><small>${index===0?'Líder · Portador da máscara':esc(kits[id]?.role||'Aliado')}</small></span>`:'<span class="fragment-empty-plus">+</span><small>Vaga livre</small>'}
+          </button>
+          ${id&&index>0?`<div class="team-order"><button type="button" data-team-move="${esc(id)}" data-offset="-1" aria-label="Mover ${esc(name(id))} para a vaga anterior" ${!editing||index===1?'disabled':''}>‹</button><button type="button" data-team-move="${esc(id)}" data-offset="1" aria-label="Mover ${esc(name(id))} para a próxima vaga" ${!editing||index===party.length?'disabled':''}>›</button></div>`:''}
+        </article>`;
+      };
       const tabs=`<nav class="character-tabs" aria-label="Ficha e equipe"><button type="button" data-team-character="stats">${V.TurnArt.icon('health')}Atributos</button><button type="button" data-team-character="skills">${V.TurnArt.icon('skills')}Habilidades</button>
         <button type="button" data-team-tab="lineup" aria-pressed="${tab==='lineup'}">${art.icon(12)}Formação</button><button type="button" data-team-tab="recruit" aria-pressed="${tab==='recruit'}">${art.icon(14)}Recrutamento</button></nav>`;
       const recruitsBody=`<div class="team-recruit-grid">${recruits.map(r=>{
         const s=this.progress(r),status=s?.done?'Recrutado':s?.started?'Em andamento':this.enabled(r)?'Disponível':'Bloqueado';
-        return `<article class="team-recruit-card">${V.UI.portrait(r.id,0,68)}<div><small>${esc(status)} · ${esc(kits[r.id].role)}</small><h3>${esc(name(r.id))}</h3><p>${esc(r.title)}</p><button class="secondary" type="button" data-team-mission="${r.id}">${s?.done?'Rever missão':'Ver missão'}</button></div></article>`;
+        return `<article class="team-recruit-card">${portrait(r.id,68)}<div><small>${esc(status)} · ${esc(kits[r.id].role)}</small><h3>${esc(name(r.id))}</h3><p>${esc(r.title)}</p><button class="secondary" type="button" data-team-mission="${r.id}">${s?.done?'Rever missão':'Ver missão'}</button></div></article>`;
       }).join('')}</div>`;
-      const lineupBody=`<header class="team-formation-head"><h3>Formação de combate</h3><b>${lineup.length} / ${limit}</b></header><div class="team-slots">${Array.from({length:limit},(_,i)=>slot(lineup[i],i)).join('')}</div>
-        <div class="team-workbench"><section><h3>Elenco disponível</h3><div class="team-roster">${[hero,...unlocked].map(id=>`<button type="button" data-team-profile="${esc(id)}" aria-pressed="${id===selected}">${V.UI.portrait(id,0,48)}<span><b>${esc(name(id))}</b><small>${esc(kits[id]?.role||'Investigação')}${party.includes(id)?' · Na equipe':''}</small></span></button>`).join('')}</div></section>
-        <section class="team-member-profile"><header>${V.UI.portrait(selected,0,72)}<div><small>${art.icon(member.icon)} ${esc(member.role)}</small><h3>${esc(name(selected))}</h3></div></header>
-        ${member.skills.map(s=>`<article class="team-skill">${art.icon(s.icon)}<div><b>${esc(s.name)}</b><p>${esc(s.description)}</p><small>${s.cost} foco · Recarga de ${s.cooldown} turnos</small></div></article>`).join('')}
-        ${selected===hero?'<p class="team-caption">O portador também usa as habilidades aprendidas da máscara.</p>':unlocked.has(selected)?`<button id="team-toggle-member" type="button" class="primary" ${!editing||!party.includes(selected)&&party.length>=limit-1?'disabled':''}>${party.includes(selected)?'Retirar da formação':'Adicionar à formação'}</button>`:''}</section></div>`;
+      const mask=V.FragmentCombat.mask(),forest=V.FragmentForest,spirit=forest.spirit();
+      const lineupBody=`<div class="fragment-squad">
+        <aside class="fragment-roster-panel"><header><span>Poder da equipe</span><strong>${formatter.format(lineup.reduce((sum,id)=>sum+score(id),0))}</strong></header>
+          <div class="fragment-roster-label"><h3>Elenco</h3><small>${unlocked.size+1} disponíveis</small></div>
+          <div class="team-roster fragment-roster">${[hero,...unlocked].map(id=>`<button type="button" data-team-profile="${esc(id)}" aria-pressed="${id===selected}" title="${esc(kits[id]?.role||'Portador')}">${portrait(id,52)}<b>${esc(name(id))}</b><small>${formatter.format(score(id))}${lineup.includes(id)?' · ✓':''}</small></button>`).join('')}</div>
+        </aside>
+        <main class="fragment-formation"><header class="team-formation-head"><div><h3>Formação de combate</h3><p>${placing?'Escolha uma vaga para adicionar ou trocar '+esc(name(selected))+'.':'Selecione alguém no elenco para montar a equipe.'}</p></div><b>${lineup.length} / ${limit}</b></header>
+          <div class="team-slots">${Array.from({length:limit},(_,i)=>slot(lineup[i],i)).join('')}</div>
+          <button type="button" id="fragment-battle-cta" class="fragment-battle-cta" ${editing?'':'disabled'}>${V.TurnArt.icon('attack')}${battle?'Voltar ao confronto':'Batalha · Floresta do Fragmento'}</button>
+        </main>
+      </div>
+      <div class="fragment-squad-detail">
+        <section class="team-member-profile"><header>${portrait(selected,62)}<div><small>${esc(member.role)}</small><h3>${esc(name(selected))}</h3></div></header>
+          <div class="fragment-kit">${member.skills.map(s=>`<article class="team-skill">${skillIcon(s)}<div><b>${esc(s.name)}</b><p>${esc(s.description)}</p><small>${s.cost} foco · Recarga de ${s.cooldown} turnos</small></div></article>`).join('')}</div>
+          ${selected!==hero&&unlocked.has(selected)?`<button id="team-toggle-member" type="button" class="secondary" ${!editing||!party.includes(selected)&&party.length>=limit-1?'disabled':''}>${party.includes(selected)?'Retirar da formação':'Adicionar à formação'}</button>`:''}
+        </section>
+        <section class="fragment-loadout"><h3>Máscara e companhia</h3><p><strong>${esc(mask[0])} · ${esc(mask[1])}</strong><small>${esc(mask[2])}</small></p>
+          <p><strong>${spirit?esc(spirit.name):'Companhia da floresta'}</strong><small>${spirit?esc(spirit.description):'Descubra companhias durante a expedição.'}</small></p>
+          <div class="fragment-loadout-actions"><button type="button" class="secondary" id="fragment-mask-style">Trocar máscara</button><button type="button" class="secondary" id="fragment-companions">Companhias</button></div></section>
+      </div>`;
       V.UI.modal('Equipe','',tabs+(tab==='recruit'?recruitsBody:lineupBody),'',true);
       V.$('.modal')?.classList.add('team-modal');V.UI.paintPortraits();
       for(const button of V.$$('[data-team-character]'))button.onclick=()=>P.character(button.dataset.teamCharacter);
-      for(const button of V.$$('[data-team-tab]'))button.onclick=()=>this.panel(button.dataset.teamTab,selected);
-      for(const button of V.$$('[data-team-profile]'))button.onclick=()=>this.panel(tab,button.dataset.teamProfile);
-      for(const button of V.$$('[data-team-move]'))button.onclick=()=>{if(this.edit(button.dataset.teamMove,Number(button.dataset.offset)))this.panel(tab,button.dataset.teamMove);};
+      for(const button of V.$$('[data-team-tab]'))button.onclick=()=>this.panel(button.dataset.teamTab,selected,battle);
+      for(const button of V.$$('[data-team-profile]'))button.onclick=()=>this.panel(tab,button.dataset.teamProfile,battle);
+      for(const button of V.$$('[data-team-move]'))button.onclick=()=>{if(this.edit(button.dataset.teamMove,Number(button.dataset.offset)))this.panel(tab,button.dataset.teamMove,battle);};
       for(const button of V.$$('[data-team-mission]'))button.onclick=()=>this.mission(recruitById.get(button.dataset.teamMission));
+      for(const button of V.$$('[data-team-place]'))button.onclick=()=>{if(this.place(selected,Number(button.dataset.teamPlace)))this.panel(tab,selected,battle);};
+      if(V.$('#fragment-battle-cta'))V.$('#fragment-battle-cta').onclick=battle||(()=>forest.board());
+      if(V.$('#fragment-mask-style'))V.$('#fragment-mask-style').onclick=()=>V.AncestralMask.openWardrobe();
+      if(V.$('#fragment-companions'))V.$('#fragment-companions').onclick=()=>forest.board();
       const toggle=V.$('#team-toggle-member');
-      if(toggle)toggle.onclick=()=>{if(this.edit(selected))this.panel(tab,selected);};
+      if(toggle)toggle.onclick=()=>{if(this.edit(selected))this.panel(tab,selected,battle);};
     }
   };
 
@@ -173,13 +227,19 @@
     if(o.type!=='team-contact')return draw(c,o,cam,...args);
     if(!team.enabled(recruitById.get(o.recruit)))return;
     const x=o.x-cam.x,y=o.y-cam.y,active=V.state.trackedQuest===questId(o.recruit),done=team.progress(recruitById.get(o.recruit))?.done;
-    if(done&&!active)return;
+    const index=kits[o.recruit]?.fragmentArt;
+    if(done&&!active&&index==null)return;
     V.SceneShadows.contact(c,x,y+4,12,4);
+    if(index!=null){
+      V.FragmentArt.draw(c,'allies',index,x,y,79);
+      if(!done&&(active||W.nearest?.id===o.id))L.marker(c,x,y-74,'!','#f1d29a');
+      return;
+    }
     V.FastTravel.diamond(c,x,y-16,active?11:8,active?'#ffe2a2':'#b8d7b5');
     if(W.nearest?.id===o.id)L.marker(c,x,y-22,'E','#f1d29a');
   };
   const interactables=W.interactables.bind(W);
-  W.interactables=function(...args){return interactables(...args).filter(o=>o.type!=='team-contact'||team.enabled(recruitById.get(o.recruit))&&!team.progress(recruitById.get(o.recruit))?.done);};
+  W.interactables=function(...args){return interactables(...args).filter(o=>o.type!=='team-contact'||team.enabled(recruitById.get(o.recruit))&&(kits[o.recruit]?.fragmentArt!=null||!team.progress(recruitById.get(o.recruit))?.done));};
   V.Hooks.around(V.Game,'interact','team-world:recruitment:1',next=>function(o){
     if(o?.type!=='team-contact')return next(o);
     if(!V.modal&&!V.Dialogue.active&&this.mode==='explore')team.meet(recruitById.get(o.recruit));

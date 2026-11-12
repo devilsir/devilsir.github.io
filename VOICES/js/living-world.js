@@ -547,7 +547,7 @@
       const draws=m.decor.map(o=>({y:o.y+T,kind:'decor',o})).concat(m.objects.map(o=>({y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}]).sort((a,b)=>a.y-b.y);
       draws.forEach(d=>{if(d.kind==='player')V.Player.render(ctx);else if(d.kind==='object')this.drawObject(ctx,d.o,cam,t);else{const o=d.o,x=o.x-cam.x,y=o.y-cam.y;if(x>-80&&x<1040&&y>-80&&y<620){if(o.rich)this.richProp(ctx,o.prop,x,y,T);else V.Assets.prop(ctx,o.prop,x,y,T);}}});
       if(m.chapter===5&&V.state.projects.length)W.drawProjects(ctx,cam);
-      const p=V.Player.data,float=V.settings.reducedMotion?0:Math.sin(V.Engine.time*3)*3;if(V.state.flags.prologueStarted)V.Assets.sprite(ctx,'pix',p.x-cam.x-38,p.y-cam.y-37+float,0,0,34);
+      if(V.PixPresence?.following())V.PixPresence.draw(ctx,V.Player.data,cam);
       if(V.Game.scanTarget){const o=V.Game.scanTarget;ctx.strokeStyle='#f4b85a';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(p.x-cam.x,p.y-cam.y);ctx.lineTo(o.x-cam.x,o.y-cam.y);ctx.stroke();ctx.setLineDash([]);}
       V.Engine.drawParticles(ctx,cam);
       if(!V.settings.highContrast){const g=ctx.createRadialGradient(480,270,190,480,270,600);g.addColorStop(0,'#060e1a00');g.addColorStop(1,'#050a1840');ctx.fillStyle=g;ctx.fillRect(0,0,960,540);}

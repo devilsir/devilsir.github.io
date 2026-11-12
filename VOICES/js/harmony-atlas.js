@@ -12,6 +12,7 @@
     ['african-words','Museus e pátios',88,33,'context'],
     ['library','Biblioteca',53,34,'records'],
     ['park','Parque',18,37,'support',true],
+    ['fragment-forest','Floresta do Fragmento',10,10,'skills'],
     ['hub','Praça das Vozes',46,46,'track',true],
     ['chapter-1','Distrito do Ritmo',30,46,'skills'],
     ['chapter-2','Memórias',69,31,'records'],

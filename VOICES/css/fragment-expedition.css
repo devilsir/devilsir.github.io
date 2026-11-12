@@ -1,0 +1,128 @@
+.fragment-tile {
+  display: inline-block; flex: 0 0 auto; width: 36px; aspect-ratio: 1;
+  background-repeat: no-repeat; image-rendering: pixelated; vertical-align: middle;
+}
+.fragment-portrait { width: 68px; }
+.fragment-icon { width: 34px; }
+.fragment-statuses { display: flex; gap: 3px; flex-wrap: wrap; }
+.fragment-statuses > span { display: inline-flex; align-items: center; border-radius: 3px; background: #101d24; padding: 0 3px; }
+.fragment-condition { width: 16px; }
+.fragment-statuses b { font-size: .63rem; color: #e1f0f5; }
+.turn-member > .fragment-portrait { width: clamp(30px, 5vw, 50px); }
+.team-modal:has(.fragment-squad) { width: min(1160px, 100%); }
+.team-modal:has(.fragment-squad) .modal-body { background: #091821; color: #e4f4f8; }
+.fragment-squad { display: grid; grid-template-columns: minmax(150px, 23%) minmax(0, 1fr); gap: 12px; }
+.fragment-roster-panel, .fragment-formation, .fragment-squad-detail > section {
+  border: 1px solid #315268; border-radius: 8px; min-width: 0;
+  background: linear-gradient(155deg, #192e3b, #0d1e29 62%);
+}
+.fragment-roster-panel { display: flex; flex-direction: column; gap: 10px; padding: 8px; }
+.fragment-roster-panel > header {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px; padding: 7px 8px;
+  color: #e8faff; background: #175177; border: 1px solid #52a8d3; border-radius: 4px; font-size: .77rem;
+}
+.fragment-roster-panel > header strong { font-size: 1rem; color: #fff0ad; }
+.fragment-roster-label { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+.fragment-roster-label small { color: #acd2df; font-size: .64rem; }
+.fragment-squad .fragment-roster { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; overflow: auto; max-height: 330px; padding: 2px; }
+.fragment-squad .fragment-roster button {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; min-width: 0; min-height: 84px;
+  padding: 4px 2px; text-align: center; border-radius: 5px; border-color: #274357; background: #142837;
+}
+.fragment-roster button .portrait, .fragment-roster button .fragment-portrait {
+  display: block; width: 44px; height: 44px; border: 2px solid #63bad3; border-radius: 50%;
+  background-color: #143652; box-shadow: inset 0 0 8px #5e93d474; overflow: hidden;
+}
+.fragment-squad .fragment-roster b { font-size: .72rem; }
+.fragment-squad .fragment-roster small { color: #e5d495; font-size: .67rem; }
+.fragment-squad .fragment-roster button[aria-pressed="true"] { border-color: #9fe9fd; background: #204d63; }
+.fragment-formation { padding: 9px; }
+.fragment-formation .team-formation-head { margin-bottom: 7px; }
+.fragment-formation .team-formation-head h3 { color: #f2fbff; }
+.fragment-formation .team-formation-head p { margin: 2px 0 0; color: #b1d9e9; font-size: .74rem; }
+.fragment-formation .team-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.fragment-formation .team-slot {
+  position: relative; display: flex; border: 1px solid #4a6b86; min-height: 0;
+  background: radial-gradient(ellipse at 50% 80%, #2b668a 0%, #162b3f 57%, #0b1722 100%);
+}
+.fragment-formation .team-slot.is-selected { border-color: #9ae7fa; box-shadow: inset 0 0 0 1px #69a8d4; }
+.fragment-formation .team-slot-unit {
+  position: relative; min-height: clamp(116px, 18vw, 182px); padding: 13px 2px 4px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+.fragment-formation .team-slot-unit[data-team-place]:hover { background: #6cbfe729; }
+.fragment-formation .team-slot-unit:focus-visible, .fragment-battle-cta:focus-visible { outline: 2px solid #ffeb9b; outline-offset: -3px; }
+.fragment-formation .team-slot-unit .portrait, .fragment-formation .team-slot-unit .fragment-portrait {
+  width: min(86%, 135px) !important; height: auto !important; max-height: 132px;
+  object-fit: contain; margin-bottom: 0; aspect-ratio: 1; image-rendering: pixelated;
+}
+.fragment-slot-top {
+  position: absolute; top: 5px; left: 6px; right: 6px; display: flex; justify-content: space-between;
+  color: #ffdb78; font-size: .70rem; gap: 4px;
+}
+.fragment-slot-top small { color: #cfeafb; font-size: inherit; }
+.fragment-slot-name {
+  display: flex; flex-direction: column; line-height: 1.15; width: 100%; padding: 2px 1px;
+  background: linear-gradient(90deg, transparent, #0b182bd9 20%, #0b182bd9 80%, transparent);
+}
+.fragment-slot-name small { color: #c7e6f2; font-size: clamp(.55rem, 1.4vw, .74rem); }
+.fragment-formation .team-order { position: absolute; right: 3px; top: 24px; flex-direction: column; padding: 0; gap: 2px; }
+.fragment-formation .team-order button { width: 24px; height: 24px; min-width: 0; min-height: 0; background: #102537; border-color: #385b71; }
+.fragment-formation .team-slot-empty { border-style: dashed; background: #101d28; }
+.fragment-formation .team-slot-empty button { justify-content: center; opacity: 1; }
+.fragment-formation .fragment-empty-plus { color: #87b9cb; font: 1.5rem system-ui; }
+.fragment-battle-cta {
+  display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; margin-top: 8px;
+  padding: 8px 6px; border: 1px solid #d6ffc1; border-radius: 5px;
+  background: linear-gradient(#d6ffb3, #77cc56 40%, #408339 49%, #76b74b); color: #102510;
+  font-weight: 900; font-size: clamp(.74rem, 2vw, 1.03rem); text-transform: uppercase; box-shadow: 0 0 12px #9ee07751;
+}
+.fragment-battle-cta:hover { filter: brightness(1.12); }
+.fragment-squad-detail { display: grid; grid-template-columns: 1.55fr 1fr; gap: 12px; margin-top: 12px; }
+.fragment-squad-detail .team-member-profile, .fragment-loadout { padding: 10px; }
+.fragment-squad-detail .team-member-profile > header { display: flex; align-items: center; gap: 9px; }
+.fragment-kit { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 5px; }
+.fragment-squad-detail .team-skill { background: #193244; border-color: #335b71; }
+.fragment-squad-detail .team-skill small { color: #bfdee9; }
+.fragment-loadout p { margin: 8px 0; }
+.fragment-loadout p small, .fragment-choices small { display: block; color: #b4d6db; }
+.fragment-loadout-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.fragment-field-modal .modal-body { background: #152c28; color: #e9f2dc; }
+.fragment-banner {
+  background: linear-gradient(90deg,#102927ee 0%,#10292769 70%),url('../assets/adventure/fragment/clearing.webp') center 55%/cover;
+  min-height: 117px; display: flex; align-items: end; border: 1px solid #6f947c; border-radius: 8px; padding: 11px;
+}
+.fragment-banner p { margin: 0; }
+.fragment-banner strong { display: block; color: #fbdb9b; }
+.fragment-board-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
+.fragment-board-grid h3 { margin-bottom: 4px; }
+.fragment-spirit-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.fragment-spirit-card { display: grid; justify-items: start; text-align: left; gap: 3px; background: #1e4037; border: 1px solid #5e8a76; color: #eff3dc; padding: 6px; }
+.fragment-spirit-card[aria-pressed="true"] { background: #315e43; border-color: #fbe093; box-shadow: inset 0 0 0 1px #fbe093; }
+.fragment-spirit-card:disabled { opacity: .66; }
+.fragment-spirit-card small, .fragment-records small { display: block; color: #c3e1c9; }
+.fragment-spirit-art { width: 55px; }
+.fragment-records { padding-inline-start: 20px; margin-top: 6px; }
+.fragment-records li { padding-bottom: 8px; }
+.fragment-choices, .fragment-foe-list { display: grid; gap: 7px; }
+.fragment-choices button { text-align: left; }
+.fragment-foe-list { grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); }
+.fragment-foe-list article { display: grid; justify-items: center; text-align: center; padding: 5px; border: 1px solid #668777; border-radius: 6px; background: #233e39; }
+.fragment-foe-art { width: clamp(74px, 16vw, 130px); }
+.fragment-gain { color: #ffdd91; font-weight: 700; }
+@media(max-width: 650px) {
+  .fragment-squad { grid-template-columns: minmax(77px,24%) minmax(0,1fr); gap: 5px; }
+  .fragment-roster-panel, .fragment-formation { padding: 4px; }
+  .fragment-squad .fragment-roster { max-height: 260px; }
+  .fragment-roster-label small { display: none; }
+  .fragment-formation .team-slot-unit { min-height: 105px; }
+  .fragment-formation .team-slot-unit .portrait, .fragment-formation .team-slot-unit .fragment-portrait { width: min(94%,76px) !important; }
+  .fragment-slot-name b { font-size: .69rem; }
+  .fragment-slot-top { font-size: .57rem; left: 3px; right: 3px; }
+  .fragment-formation .team-order button { width: 17px; height: 19px; }
+  .fragment-squad-detail, .fragment-board-grid { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 480px) {
+  .fragment-squad .fragment-roster { grid-template-columns: 1fr; }
+}

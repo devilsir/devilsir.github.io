@@ -7,7 +7,7 @@
   'use strict';
   const V=window.V,B=V.Combat;
   const terminal=new Set(['victory','defeat','retreat','returned']);
-  const impairment=new Set(['confused','corruption','obscured','delay']);
+  const impairment=new Set(['confused','corruption','obscured','delay','poison','shock','stun','freeze','burn','weak','slow']);
   const life=actor=>actor.health/actor.stats.health;
   const wounded=actor=>actor.stats.health-actor.health;
   const impaired=actor=>actor.statuses.some(status=>impairment.has(status.id));
@@ -45,7 +45,8 @@
     };
     const skill=(id,target,why)=>option('skill',id,target,why);
     const support=(id,target,why)=>option('supportAction',id,target,why);
-    const skills=this.skillList(actor);
+    const skills=this.skillList(actor),spirit=this.definition({type:'supportAction',id:a.spirit});
+    const spiritSkill=(effects,target,why)=>spirit&&effects.includes(spirit.effect)?support(spirit.id,target,why):null;
     const roleSkill=(effects,target,why)=>{
       if(!target)return null;
       for(const entry of skills)if(effects.includes(entry.effect)){
@@ -57,15 +58,16 @@
     const standing=allies.filter(ally=>ally.health>0),weak=standing[0];
 
     if(wounded(frail)>=22&&(life(frail)<.35||danger&&life(frail)<.49)){
-      const recovery=skill('restore',frail,'Recuperar vida')||(weak&&wounded(weak)>16&&roleSkill(['heal','healAll','cleanse'],weak,'Recuperar vida'))||support('safe',frail,'Recuperar a equipe');
+      const recovery=skill('restore',frail,'Recuperar vida')||(weak&&wounded(weak)>16&&roleSkill(['heal','healAll','cleanse','renew','cleanseAll'],weak,'Recuperar vida'))||spiritSkill(['cleanseAll'],weak,'Recuperar a equipe')||support('safe',frail,'Recuperar a equipe');
       if(recovery)return recovery;
       if(frail.shield===0&&frail.health>0){
-        const protection=roleSkill(['shield','shieldAll'],frail,'Proteger quem está em risco')||support('watch',frail,'Proteger quem está em risco');
+        const protection=roleSkill(['shield','shieldAll','bulwark','fortify','wardShield'],frail,'Proteger quem está em risco')||support('watch',frail,'Proteger quem está em risco');
         if(protection)return protection;
       }
     }
     if(trouble.length){
-      const removal=(trouble.length>1&&support('safe',frail,'Remover efeitos da equipe'))||roleSkill(['cleanse'],trouble.find(o=>o.health>0),'Remover efeito');
+      const afflicted=trouble.find(o=>o.health>0);
+      const removal=afflicted&&(roleSkill(['cleanse','cleanseAll'],afflicted,'Remover efeito')||spiritSkill(['cleanseAll'],afflicted,'Remover efeitos da equipe')||(trouble.length>1&&support('safe',frail,'Remover efeitos da equipe')));
       if(removal)return removal;
     }
     if(shielded){
@@ -82,20 +84,30 @@
       return option('defend',null,null,'Proteger e recuperar foco');
     }
     const enemy=enemies[0];
+    const needsFocus=standing.filter(ally=>ally.focus<ally.stats.focus*.5);
+    if(needsFocus.length>=2){
+      const boost=roleSkill(['focusAll'],actor,'Recuperar o foco da equipe')||spiritSkill(['focusAll'],actor,'Recuperar o foco da equipe');
+      if(boost)return boost;
+    }
+    const dangerWave=enemies.find(unit=>unit.plan?.type==='wave'&&!this.has(unit,'stun')&&!this.has(unit,'freeze'));
+    if(dangerWave){
+      const interrupt=roleSkill(['stun','freeze'],dangerWave,'Interromper a onda inimiga')||roleSkill(['ward','wardShield'],actor,'Proteger a equipe da descarga');
+      if(interrupt)return interrupt;
+    }
     const threatened=standing.find(ally=>!ally.shield&&life(ally)<.69&&enemies.some(e=>e.plan?.target===ally.id||e.plan?.type==='wave'));
     if(threatened){
-      const protection=roleSkill(['shield','shieldAll'],threatened,'Proteger a formação');
+      const protection=roleSkill(['shield','shieldAll','bulwark','fortify','wardShield'],threatened,'Proteger a formação');
       if(protection)return protection;
     }
     if(standing.length>1&&!standing.some(ally=>this.has(ally,'chorus'))){
-      const boost=roleSkill(['chorus'],actor,'Fortalecer a equipe');
+      const boost=roleSkill(['chorus','haste'],actor,'Fortalecer a equipe');
       if(boost)return boost;
     }
     return (enemy.health>19&&skill('compare',enemy,'Atacar com as fontes'))
       || (enemy.mechanic==='credito'&&this.has(enemy,'power')&&skill('credit',enemy,'Reduzir a força inimiga'))
       || (enemy.health>18&&skill('timeline',enemy,'Atacar e atrasar o inimigo'))
-      || (enemies.length>1&&roleSkill(['strikeAll','link'],enemy,'Atingir a formação adversária'))
-      || (enemy.health>20&&roleSkill(['strike','knowledgeStrike','strikeMark','delay','credit'],enemy,'Usar a técnica do integrante'))
+      || (enemies.length>1&&roleSkill(['strikeAll','link','slow'],enemy,'Atingir a formação adversária')||enemies.length>1&&spiritSkill(['burn','shock'],enemy,'Atingir a formação adversária'))
+      || (enemy.health>20&&roleSkill(['strike','knowledgeStrike','strikeMark','delay','credit','poison','burn','shock','stun','freeze','weaken'],enemy,'Usar a técnica do integrante'))
       || (standing.length>1&&enemy.health>30&&!this.has(enemy,'marked')&&roleSkill(['mark'],enemy,'Expor uma fraqueza'))
       || option('attack',null,enemy,'Atacar e recuperar foco');
   };

@@ -36,7 +36,7 @@ const {environment}=require('./runtime-upgrade-test.cjs');
         assert(wall,id+' · '+d.id);assert(wall.height>=d.height+24);
         const mount=V.Architecture.residentialOpening(m,d,{x:0,y:0});
         assert(Number.isFinite(mount.x)&&Number.isFinite(mount.y));
-        if(Math.abs(d.normal.x)>.5){assert(mount.slope);sideDoors++;}
+        if(Math.abs(d.normal.x)>.5){assert.notEqual(mount.matrix[2],0);sideDoors++;}
         doors++;
       }
       for(const win of m.design.homeWindows){
@@ -50,7 +50,7 @@ const {environment}=require('./runtime-upgrade-test.cjs');
     P.character('party');
     assert.equal(V.$$('.team-slot').length,6);
     V.$('[data-team-tab="recruit"]').click();
-    assert.equal(V.$$('[data-team-mission]').length,8);
+    assert.equal(V.$$('[data-team-mission]').length,T.recruits.length);
     V.$('[data-team-mission="ines"]').click();
     assert(V.$('#team-mission-track').disabled);
     V.$('#team-mission-back').click();
@@ -58,7 +58,7 @@ const {environment}=require('./runtime-upgrade-test.cjs');
     V.$('#team-mission-track').click();
     assert.equal(V.ObjectiveGuide.objective().object.id,T.siteId('jaci'));
     V.state.unlocked=6;
-    for(const r of T.recruits){
+    for(const r of T.recruits.filter(r=>!V.FragmentData.people.some(([id])=>id===r.id))){
       W.load(r.map);await V.MapAssets.whenReady();V.UI.close();
       const m=W.current,site=m.objects.find(o=>o.id===T.siteId(r.id));
       assert(site,r.id);

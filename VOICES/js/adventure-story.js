@@ -169,16 +169,19 @@ const text=s.ending==='shared'?'A biblioteca recebe a primeira cópia pública d
 V.UI.modal('O arquivo continua vivo','EPÍLOGO · '+({shared:'MUITAS CHAVES',review:'UMA PORTA EM CONSTRUÇÃO',sealed:'A CHAVE E A PERGUNTA'}[s.ending]),`<p>${esc(text)}</p><div class="two-cols">${D.cases.map(c=>`<article class="card"><h3>${esc(V.content.chapters[c.id-1].name)}</h3><p>${esc(c.restored)}</p></article>`).join('')}</div>`,`<button id="epilogue-choice" class="quiet">Rever a decisão final</button><button id="epilogue-chronicles" class="secondary">Ler as crônicas da cidade</button><button id="epilogue-explore" class="primary">Explorar a cidade restaurada</button>`,true);
 V.$('#epilogue-choice').onclick=()=>{s.ending=null;this.finale();};V.$('#epilogue-chronicles').onclick=()=>V.CityChronicle.index(()=>this.epilogue());V.$('#epilogue-explore').onclick=()=>{V.UI.close();V.World.load('museum');V.ObjectiveGuide.track();};
 },
-interact(o){if(o.type==='rasura'){this.trace(o);return true;}if(o.type==='zambeto'){o.first?this.firstNight():this.guide();return true;}if(o.type==='story'){if(o.event==='awakening')this.awakening();else this.ensure().ending?this.epilogue():this.ensure().stage==='epilogue'?this.finale():this.device();return true;}if(o.type==='encounter'){V.Combat.begin(o.encounter.chapter||1,false,{custom:o.encounter});return true;}return false;},
+interact(o){if(o.type==='rasura'){this.trace(o);return true;}if(o.type==='zambeto'){o.first&&!this.ensure().met?this.firstNight():this.guide(o);return true;}if(o.type==='story'){if(o.event==='awakening')this.awakening();else this.ensure().ending?this.epilogue():this.ensure().stage==='epilogue'?this.finale():this.device();return true;}if(o.type==='encounter'){V.Combat.begin(o.encounter.chapter||1,false,{custom:o.encounter});return true;}return false;},
 visible(o){const s=this.ensure();if(o.type==='zambeto')return o.first?s.stage==='night'||s.stage==='firstbattle'||!!s.met&&!(V.Companions?.ensure?.()?.selected==='zambeto'&&V.Companions.ensure().follow):!!s.met;if(o.id==='historiograph-awakening')return s.stage==='museum'||s.awakened;if(o.id==='archive-epilogue')return !!s.met;return true;},
 update(dt){
 const a=V.Progress.ensure();if(!a||!V.World.current)return;this.clock+=dt;
 const m=V.World.current,o=m.objects.find(o=>o.companion&&o.type==='zambeto');
 const first=m.objects.find(o=>o.first&&o.type==='zambeto');if(first&&this.visible(first)&&!first.appeared){first.appeared=true;first.appearTime=.8;}if(first?.appearTime>0)first.appearTime=Math.max(0,first.appearTime-dt);
-if(o&&a.story.met){const p=V.Player.data;if(!this.companion||this.companion.map!==m.id){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+52},14)||{x:p.x,y:p.y};Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;this.companion={map:m.id};}
-o.appearTime=Math.max(0,(o.appearTime||0)-dt);if(o.vanishTime>0){o.walking=false;o.vanishTime-=dt;if(o.vanishTime<=0){const at=V.Rooms.safe(m,{x:p.x-64,y:p.y+55},15);if(at)Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;}return;}
+if(o&&a.story.met){const p=V.Player.data;if(!this.companion||this.companion.map!==m.id||o.formationHidden){const at=V.FollowerPositions.ground('companion',p,m,14);if(!at){o.formationHidden=true;return;}o.formationHidden=false;Object.assign(o,at);o.appearTime=.8;o.walkDistance=0;this.companion={map:m.id};}
+o.appearTime=Math.max(0,(o.appearTime||0)-dt);if(o.vanishTime>0){o.walking=false;o.vanishTime-=dt;if(o.vanishTime<=0){const at=V.FollowerPositions.ground('companion',p,m,15);if(at)Object.assign(o,at);else o.formationHidden=true;o.appearTime=.8;o.walkDistance=0;}return;}
 if(o.animationUntil>V.Engine.time){o.walking=false;return;}
-const desired={x:p.x-64,y:p.y+55},len=V.dist(o,desired),dx=desired.x-o.x,dy=desired.y-o.y;
+const desired=V.FollowerPositions.ground('companion',p,m,14);
+if(!desired){o.walking=false;if(V.dist(o,p)<72)o.formationHidden=true;return;}
+if(V.dist(o,p)<68)Object.assign(o,desired);
+const len=V.dist(o,desired),dx=desired.x-o.x,dy=desired.y-o.y;
 if(len>330){o.walking=false;o.vanishTime=.75;return;}
 const maxSpeed=Math.max(155,180*(V.settings.speed||1)*(V.Life?.movementMultiplier()??1));
 const step=len<.5?0:Math.min(len,maxSpeed*dt,len*(1-Math.exp(-6*dt)));
