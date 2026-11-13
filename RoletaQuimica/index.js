@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const P=window.ROULETTE_PAYLOAD,A=P.assets,EXTRA_DBS=window.ROULETTE_ENGLISH_BANKS||{},BUILTIN_PRESETS=window.ROULETTE_BUILTIN_PRESETS||{},DEFAULT_DBS={...(P.dbs||{}),...EXTRA_DBS},POS=P.positions,CREDITS=P.credits;
+const P=window.ROULETTE_PAYLOAD,A=P.assets,EXTRA_DBS=window.ROULETTE_ENGLISH_BANKS||{},CAFE_DBS=window.ROULETTE_CAFE_CIENCIA_BANK||{},BUILTIN_PRESETS=window.ROULETTE_BUILTIN_PRESETS||{},DEFAULT_DBS={...(P.dbs||{}),...EXTRA_DBS,...CAFE_DBS},POS=P.positions,CREDITS=P.credits;
 const TOUCH_PERF_PROFILE=matchMedia('(pointer: coarse)').matches||'ontouchstart'in window;
 if(TOUCH_PERF_PROFILE){
   // Assets equivalentes em resolução adequada para tablets/celulares.
@@ -255,7 +255,7 @@ function cleanRuntimePredefs(pre){
   return pre||{};
 }
 let DB=cleanRuntimeDB(applyBuiltInContentFixes(migrateChemistryAnswerKeys(migrateChemistryRevision(mergeDefaultModes(load(DB_KEY,DEFAULT_DBS)))))),PRE=cleanRuntimePredefs(migrateChemistryPresets({...load(PRE_KEY,P.predefs||{}),...BUILTIN_PRESETS}));
-save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
+save(DB_KEY,DB);save(PRE_KEY,PRE);const MODES=['6º ano','7º ano','8º ano','9º ano','1º ano','2º ano','3º ano','Coffee Lovers','Café com Ciência'],SUBJECTS=['Química','Biologia','Inglês'],TIMES=['1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00'],SPECIAL=new Set(['+5 pontos 1','+5 pontos 2','-5 pontos 1','-5 pontos 2']);const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));let current='intro',game=null,wheel={segments:[],angle:0,speed:0,anim:false,raf:null,spinAnimation:null},firstGame=true,timer=null,editingIndex=null,addEditDraftMode='Coffee Lovers';const bgm=new Audio(A['musicadefundo extendida (Remix).mp3']||''),okSound=new Audio(A['copoenchendo.mp3']||''),errSound=new Audio(A['copo quebrando.mp3']||'');bgm.loop=true;bgm.volume=.45;okSound.volume=.8;errSound.volume=.8;
 function load(k,d){try{return JSON.parse(localStorage.getItem(k))||JSON.parse(JSON.stringify(d))}catch(e){return JSON.parse(JSON.stringify(d))}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function resolveImageSource(value){const raw=String(value||'').trim();if(!raw)return'';if(/^data:|^blob:|^https?:|^\.\//i.test(raw))return raw;if(raw.startsWith('/'))return raw;if(A[raw])return A[raw];return raw}function hasQuestionHint(q){return !!(String(q?.dica_texto||'').trim()||String(q?.dica_imagem||'').trim())}function setAssets(root=document){$$('[data-a]',root).forEach(el=>{let n=el.dataset.a;if(el.tagName==='IMG'||el.tagName==='VIDEO')el.src=A[n]||'';else el.style.backgroundImage=`url("${A[n]||''}")`})}function viewportSize(){
   const vv=window.visualViewport;
   return {w:vv?vv.width:innerWidth,h:vv?vv.height:innerHeight};
@@ -1221,7 +1221,8 @@ function questionPopup(area,q){
       closePopup();
       markQuestionUsed(q);
       rebuildWheelAfterQuestion(area);
-      msg('Tempo Esgotado','Infelizmente o tempo se esgotou!',nextTeam);
+      if(game?.game_mode==='Café com Ciência')showRoundFeedback('Tempo esgotado!',q,nextTeam);
+      else msg('Tempo Esgotado','Infelizmente o tempo se esgotou!',nextTeam);
       return
     }
     rem--;
@@ -1275,14 +1276,32 @@ function questionPopup(area,q){
       renderScore();
       closePopup();
       rebuildWheelAfterQuestion(area);
-      msg('Pontos',hintUsed?`+${awardedPoints} pontos adicionados! (com dica = 85%)`:`+${awardedPoints} pontos adicionados!`,nextTeam)
+      showRoundFeedback(hintUsed?`+${awardedPoints} pontos adicionados! (com dica = 85%)`:`+${awardedPoints} pontos adicionados!`,q,nextTeam)
     }else{
       errSound.play().catch(()=>{});
       closePopup();
       rebuildWheelAfterQuestion(area);
-      msg('Pontos','Que pena, você errou!',nextTeam)
+      showRoundFeedback('Que pena, você errou!',q,nextTeam)
     }
   })
+}
+function showRoundFeedback(message,q,after){
+  if(game?.game_mode!=='Café com Ciência'){msg('Pontos',message,after);return}
+  const correctIndex=Number(q?.correta);
+  const alternatives=Array.isArray(q?.alternativas)?q.alternativas:[];
+  const correctAnswer=Number.isInteger(correctIndex)&&correctIndex>=0&&correctIndex<alternatives.length
+    ?String.fromCharCode(65+correctIndex)+') '+alternatives[correctIndex]:'';
+  const explanation=String(q?.explicacao||'').trim();
+  const html=`<div style="display:flex;flex-direction:column;gap:14px;height:100%;padding:24px 30px;box-sizing:border-box">
+    <div style="font-size:25px;color:#fff;text-align:center;text-shadow:0 2px 4px #000;font-weight:700">${esc(message)}</div>
+    <div style="flex:1;min-height:0;overflow-y:auto;background:rgba(29,13,5,.82);color:#fff;border:1px solid rgba(255,226,179,.55);border-radius:14px;padding:18px 22px;font-size:21px;line-height:1.35;text-align:left">
+      ${correctAnswer?`<div style="font-weight:700;color:#ffdfa0;margin-bottom:12px">Resposta correta: ${esc(correctAnswer)}</div>`:''}
+      ${explanation?`<div>${esc(explanation)}</div>`:''}
+    </div>
+    <button id="cafeContinueBtn" class="stdBtn" type="button" style="width:240px;min-height:52px;align-self:center;text-align:center;background-image:url('${A['botao generico popup generico.png']||''}')">Continuar</button>
+  </div>`;
+  popup(html,900,440,'popup genérico HD.png');
+  $('#cafeContinueBtn').onclick=()=>{closePopup();after&&after()};
 }
 function showHint(q){
   const host=$('#popupHost');
