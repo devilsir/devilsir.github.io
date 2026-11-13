@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'roleta-quimica-cafe-';
-const CACHE_NAME = CACHE_PREFIX + 'v27-english-answers';
+const CACHE_NAME = CACHE_PREFIX + 'v28-cafe-com-ciencia';
 const APP_SHELL = [
   './index.html',
   './manifest.webmanifest',
@@ -11,6 +11,7 @@ const APP_SHELL = [
   './payload.js',
   './english-banks.js',
   './english-presets.js',
+  './cafe-com-ciencia.js',
   './xlsx-lite.js',
   './index.js',
   './pwa.js',
