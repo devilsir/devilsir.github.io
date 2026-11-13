@@ -4,7 +4,7 @@ const SHELL = VERSION + '-shell';
 const FILES = VERSION + '-files';
 const IMAGES = VERSION + '-images';
 const LIMIT = 96;
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'js/app-loader.js', 'js/pwa.js?v=20261113a', 'css/styles.css?v=20261030-imageopt1', 'css/interface.css?v=20261112-pause1', 'assets/ui/favicon.svg', 'assets/ui/pwa-192.png', 'assets/ui/pwa-512.png'];
+const CORE = ['./', 'index.html', 'manifest.webmanifest', 'js/app-loader.js', 'js/pwa.js?v=20261113a', 'css/styles.css?v=20261030-imageopt1', 'css/interface.css?v=20261112-pause1', 'assets/ui/favicon.svg', 'assets/ui/pwa-icon.svg', 'assets/ui/pwa-icon.svg'];
 const allowed = url => url.origin === APP.origin && url.pathname.startsWith(APP.pathname);
 async function remember(cacheName, key, response, limit = 0) {
   if (!response.ok || response.type !== 'basic') return;
