@@ -14,11 +14,12 @@
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=14">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=14">
 <link rel="stylesheet" href="./index.css?v=35">
+<link rel="stylesheet" href="./startup-loader.css?v=1">
 
 <link rel="stylesheet" href="./editmode-v3-style.css?v=25" id="editmode-v3-style">
 
 </head>
-<body>
+<body class="startupLoading">
 <div class="viewport"><main id="stage" class="stage">
   <section id="intro" class="screen active">
     <img class="bg" id="introBg"><video id="introVideo" class="videoFull" autoplay playsinline></video>
@@ -70,13 +71,34 @@
 
   <div id="mobileScrollSpacer" class="mobileScrollSpacer"></div>
   <div id="toast" class="toast"></div>
+  <div id="startupLoader" class="startupLoader" role="status" aria-live="polite" aria-label="Preparando a Roleta Química">
+    <div class="startupPanel">
+      <div class="startupEmblem" aria-hidden="true">☕</div>
+      <p class="startupEyebrow">CIÊNCIA EM CADA GIRO</p>
+      <h1>Roleta Química do Café</h1>
+      <p class="startupSubheading">Preparando uma experiência cheia de descobertas</p>
+      <p id="startupStatus" class="startupStatus">Preparando as perguntas e os recursos do jogo...</p>
+      <div id="startupProgress" class="startupProgress" role="progressbar" aria-label="Progresso do carregamento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="startupProgressFill" class="startupProgressFill"></div>
+      </div>
+      <div class="startupProgressMeta">
+        <span id="startupDetails">Iniciando...</span>
+        <strong id="startupPercent">0%</strong>
+      </div>
+      <div class="startupActions">
+        <button id="startupContinue" type="button" hidden>Continuar sem esperar</button>
+        <button id="startupRetry" type="button" hidden>Tentar novamente</button>
+      </div>
+    </div>
+  </div>
 </main></div>
 <script src="./payload.js?v=27"></script>
 <script src="./english-banks.js?v=37"></script>
 <script src="./english-presets.js?v=34"></script>
 <script src="./cafe-com-ciencia.js?v=2"></script>
 <script src="./xlsx-lite.js?v=1"></script>
-<script src="./index.js?v=41"></script>
+<script src="./preloader.js?v=1"></script>
+<script src="./index.js?v=42"></script>
 <script src="./pwa.js?v=3"></script>
 </body>
 </html>

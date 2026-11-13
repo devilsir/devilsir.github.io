@@ -1,11 +1,12 @@
 'use strict';
 
 const CACHE_PREFIX = 'roleta-quimica-cafe-';
-const CACHE_NAME = CACHE_PREFIX + 'v30-cafe-difficulty-bank';
+const CACHE_NAME = CACHE_PREFIX + 'v31-startup-preload';
 const APP_SHELL = [
   './index.html',
   './manifest.webmanifest',
   './index.css',
+  './startup-loader.css',
   './editmode-v3-style.css',
   './payload.js',
   './english-banks.js',
@@ -13,6 +14,7 @@ const APP_SHELL = [
   './cafe-com-ciencia.js',
   './xlsx-lite.js',
   './index.js',
+  './preloader.js',
   './pwa.js',
   './icons/apple-touch-icon.png',
   './icons/icon-192.png',
