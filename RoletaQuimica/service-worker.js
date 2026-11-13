@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'roleta-quimica-cafe-';
-const CACHE_NAME = CACHE_PREFIX + 'v29-clean-pwa-ui';
+const CACHE_NAME = CACHE_PREFIX + 'v30-cafe-difficulty-bank';
 const APP_SHELL = [
   './index.html',
   './manifest.webmanifest',
