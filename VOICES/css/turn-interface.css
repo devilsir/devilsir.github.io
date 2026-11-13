@@ -192,6 +192,7 @@ body:has(.battle-console, .historio-modal) #professor-return { display: none; }
   position: absolute;
   z-index: 1;
   display: block;
+  min-height: 0;
   transform: translate(-50%, -100%);
   border: 1px solid transparent;
   background: transparent;
@@ -207,7 +208,7 @@ body:has(.battle-console, .historio-modal) #professor-return { display: none; }
   transform: translateX(-50%);
   display: grid;
   gap: 3px;
-  width: max(100%, 86px);
+  width: var(--turn-label-width, 86px);
   max-width: 124px;
   padding: 4px 6px;
   border: 1px solid #c5a07577;
@@ -317,7 +318,7 @@ body:has(.battle-console, .historio-modal) #professor-return { display: none; }
   .turn-action b { font-size: .72rem; }
   .turn-actions .turn-art-icon { width: 23px; height: 23px; }
   .turn-tray-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .turn-enemy-name { min-width: 82px; max-width: 108px; }
+  .turn-enemy-name { max-width: 108px; }
   .turn-foot button { min-height: 39px; padding: 4px 6px; font-size: .7rem; }
   .turn-foot .turn-art-icon { width: 16px; height: 16px; }
   .turn-foot:has(#battle-suggest) .turn-log-line, .turn-foot:has(.turn-auto-note) .turn-log-line { display: none; }

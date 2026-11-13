@@ -66,6 +66,16 @@
       </button>`).join('')}</div></div>`;
   }
 
+  function battleLoot(a){
+    // Older saved victories recorded only their additional gear rolls.
+    const loot=(a.loot||a.gearLoot||[]).filter(item=>Object.hasOwn(D.items,item.id)&&item.count>0);
+    if(!loot.length)return '';
+    return `<section class="gear-drops" aria-label="Itens recebidos"><h3>Itens recebidos</h3><ul tabindex="0">${loot.map(({id,count,stored})=>{
+      const destination=D.items[id].unique?'No arquivo':stored===count?'No depósito':stored?(count-stored)+' na mochila · '+stored+' no depósito':'Na mochila';
+      return `<li data-battle-loot="${esc(id)}">${P.icon(id,32)}<span><b>${esc(D.items[id].name)}</b><small>${destination}</small></span><strong aria-label="Quantidade: ${count}">×${count}</strong></li>`;
+    }).join('')}</ul></section>`;
+  }
+
   function prompt(a,actor){
     if(a.phase==='intro')return `<div class="turn-prompt"><p>${esc(a.enemies[0].tip)}</p><div>
       ${button('battle-start','attack','Iniciar confronto','class="turn-primary" data-turn-focus="start"')}
@@ -73,11 +83,18 @@
     </div></div>`;
     if(terminal.has(a.phase)){
       const title=a.phase==='victory'?(a.contextualized?'As fontes desfizeram a rasura.':'A manifestação perdeu sua força.'):a.phase==='defeat'?'A equipe recuou.':'A equipe está em segurança.';
-      const xp=a.phase==='victory'&&a.rewardXP>0?' · +'+a.rewardXP+' XP'+(a.rewardShards?' · +'+a.rewardShards+' fragmento(s)':''):'';
-      return `<div class="turn-prompt"><p><strong>${title}</strong>${xp}</p><div>
-        ${a.phase==='defeat'?button('battle-retry','health','Tentar novamente','class="turn-primary" data-turn-focus="retry"'):''}
-        ${button('battle-finish','track',a.phase==='victory'?'Continuar investigação':'Voltar à exploração','data-turn-focus="finish"')}
-      </div></div>`;
+      const won=a.phase==='victory';
+      const xp=won&&a.rewardXP>0?' · +'+a.rewardXP+' XP':'';
+      const legacyFragments=won&&!a.loot&&a.rewardShards?' · +'+a.rewardShards+' fragmento(s)':'';
+      const loot=won?battleLoot(a):'';
+      return `<div class="turn-prompt turn-result${loot?' has-loot':''}">
+        <p><strong>${title}</strong>${xp}${legacyFragments}</p>
+        ${loot|| (won&&a.practice?'<p>Treino concluído.</p>':'')}
+        <div class="turn-result-actions">
+          ${a.phase==='defeat'?button('battle-retry','health','Tentar novamente','class="turn-primary" data-turn-focus="retry"'):''}
+          ${button('battle-finish','track',won?'Continuar investigação':'Voltar à exploração','data-turn-focus="finish"')}
+        </div>
+      </div>`;
     }
     if(a.phase==='target')return targetTray(a);
     if(a.phase==='command'&&a.menu!=='main')return tray(a,actor);
@@ -161,7 +178,7 @@
       ${hitboxes(a)}
     </section>
     <section class="turn-dock">
-      ${team(a)}
+      ${terminal.has(a.phase)?'':team(a)}
       <div class="turn-work">${prompt(a,actor)}</div>
       <div class="turn-foot">
         ${a.auto&&canAuto?`<span class="turn-auto-note">${icon('auto')}<span>${shown&&suggested?'Automático · '+esc(suggested.why):'Automático ligado'}</span></span>`:shown&&suggested?`<button type="button" id="battle-suggest" data-turn-focus="suggest" title="${esc(suggested.why)}">${icon('skills')}<span>Sugestão <b>${suggestedLabel}</b></span></button>`:''}
@@ -343,22 +360,46 @@
     return {width,height,top,depth,narrow,short,size};
   };
 
+  function formation(group,g,enemy){
+    const left=g.width*(enemy?.64:.10),span=g.width*(enemy?.345:.525);
+    const topInset=Math.min(enemy?70:78,g.depth*.31),bottomInset=Math.min(enemy?45:12,g.depth*.20);
+    const height=Math.max(1,g.depth-topInset-bottomInset),count=group.length;
+    const maxSize=Math.min(g.size,enemy?112:106);
+    let best=null;
+    for(let columns=1;columns<=count;columns++){
+      const rows=Math.ceil(count/columns),stepX=span/columns,stepY=height/rows;
+      const size=Math.min(maxSize,stepX/(enemy?1.40:1.60),stepY/(enemy?1.52:1.70));
+      if(!best||size>best.size||size===best.size&&rows<best.rows){
+        best={columns,rows,stepX,stepY,size};
+      }
+    }
+    if(!best)return [];
+    const {columns,stepX,stepY,size}=best;
+    return group.map((actor,index)=>{
+      const row=Math.floor(index/columns),col=index%columns,inRow=Math.min(columns,count-row*columns);
+      const margin=(span-inRow*stepX)/2;
+      const sizeInCell=size*(enemy&&actor.boss?1.08:1);
+      return {
+        x:left+margin+(col+.5)*stepX,
+        y:g.top+topInset+(row+.90)*stepY,
+        size:sizeInCell,
+        hitWidth:Math.min(stepX-2,Math.max(34,sizeInCell*1.15)),
+        hitHeight:Math.min(stepY-2,Math.max(34,sizeInCell*1.10)),
+        labelWidth:Math.min(124,stepX-5)
+      };
+    });
+  }
+
   B.position=function(actor,g=this.geometry()){
-    const enemies=actor.side==='enemy',group=enemies?this.active.enemies:this.active.allies,index=group.indexOf(actor);
-    if(!enemies&&group.length>3){
-      const front=index<3,slot=index%3,rows=Math.min(3,front?group.length:group.length-3);
-      return {x:g.width*(front?.345:.14),y:g.top+g.depth*(.73+(slot-(rows-1)/2)*.12+(front?.02:-.025)),
-        size:Math.max(23,Math.min(g.size,g.depth*(g.narrow?.18:.205),g.width*.17))};
-    }
-    if(g.narrow){
-      const x=g.width*(enemies?.74:.26)+(index%2===1?(enemies?-.032:.032)*g.width:0);
-      const step=Math.min(.23,Math.max(.10,(g.depth-g.size*1.26)/Math.max(1,group.length)/g.depth));
-      const level=group.length===1?.67:.68+(index-(group.length-1)/2)*step;
-      return {x,y:g.top+g.depth*level,size:g.size*(actor.boss?1.12:1)};
-    }
-    const step=Math.min(.115,.26/Math.max(1,group.length-1));
-    const x=g.width*((enemies?.74:.26)+(index-(group.length-1)/2)*step);
-    return {x,y:g.top+g.depth*(.68+(index%2===1?.084:-.02)),size:g.size*(actor.boss?1.16:1)};
+    const enemy=actor.side==='enemy',group=enemy?this.active.enemies:this.active.allies;
+    return formation(group,g,enemy)[group.indexOf(actor)];
+  };
+
+  B.supportPosition=function(g){
+    const hero=this.position(this.active.allies[0],g);
+    const size=Math.min(hero.size*.78,g.width*.081);
+    const y=Math.max(g.top+g.depth*.59,hero.y);
+    return {x:g.width*.048,y,size};
   };
 
   B.syncHitboxes=function(root=V.$('#battle-root'),g=this.geometry()){
@@ -370,8 +411,9 @@
       const p=this.position(actor,g);
       hit.style.left=p.x+'px';
       hit.style.top=p.y-(field?.clientHeight?g.top:0)+'px';
-      hit.style.width=Math.max(44,p.size*.93)+'px';
-      hit.style.height=Math.max(44,p.size*.93)+'px';
+      hit.style.width=p.hitWidth+'px';
+      hit.style.height=p.hitHeight+'px';
+      hit.style.setProperty('--turn-label-width',p.labelWidth+'px');
     }
   };
 
@@ -384,7 +426,7 @@
     const targets=a.phase==='target'?this.targets(a.selectedAction):a.enemies.filter(actor=>actor.health>0);
     const match=targets.find(actor=>{
       const p=this.position(actor,g);
-      return Math.abs(sx-p.x)<=p.size*.46&&sy<=p.y+12&&sy>=p.y-p.size;
+      return Math.abs(sx-p.x)<=p.hitWidth/2&&sy<=p.y&&sy>=p.y-p.hitHeight;
     });
     return match?this.pick(match.id):false;
   };
@@ -412,9 +454,11 @@
     shade.addColorStop(0,'#081a19a8');shade.addColorStop(.39,'#11252209');shade.addColorStop(1,'#091e1beb');
     ctx.fillStyle=shade;ctx.fillRect(0,0,width,height);
     const visual=a.visual,still=V.settings.reducedMotion,clock=still?0:a.clock;
-    for(const actor of this.all().sort((left,right)=>this.position(left,g).y-this.position(right,g).y)){
+    const actors=[...formation(a.allies,g,false).map((p,i)=>[a.allies[i],p]),
+      ...formation(a.enemies,g,true).map((p,i)=>[a.enemies[i],p])];
+    for(const [actor,p] of actors.sort((left,right)=>left[1].y-right[1].y)){
       if(actor.side==='enemy'&&actor.health<=0)continue;
-      const {x,y,size}=this.position(actor,g),active=visual?.actor===actor.id,enemy=actor.side==='enemy';
+      const {x,y,size}=p,active=visual?.actor===actor.id,enemy=actor.side==='enemy';
       V.SceneShadows.contact(ctx,x,y+4,size*.29,size*.073,.31);
       ctx.globalAlpha=actor.health<=0?.36:1;
       const hit=!!visual?.recruitHits?.includes(actor.id);
@@ -444,7 +488,9 @@
       }
       if(actor.id==='player'&&V.AncestralMask&&P.ensure().story.awakened){
         const mask=V.AncestralMask,row=active&&visual.clip==='cast'&&!V.settings.reducedFlash&&!still?mask.rows.pulse:0;
-        mask.frame(ctx,row,still?0:Math.floor(clock*3)%4,x+size*.54,y-size*.80,size*(g.narrow?.64:.74),mask.variant());
+        const support=this.supportPosition(g);
+        const maskSize=Math.min(size*.74,g.width*.083);
+        mask.frame(ctx,row,still?0:Math.floor(clock*3)%4,support.x,support.y-support.size*.86-maskSize*.53,maskSize,mask.variant());
       }
       if(visual?.targets.includes(actor.id)&&(!still||visual.spell!=null)){
         let drawn=V.FragmentArt?.spell(ctx,visual.spell,x,y-size*.53,size*1.42,still?visual.duration*.45:visual.age,visual.duration);
@@ -474,8 +520,7 @@
     const a=this.active,r=P.ensure();
     const companion=a.id===0?null:V.Companions?.selected(),spirit=V.FragmentData?.spirits.find(item=>item.id===a.spirit);
     if(!r.story.met&&a.id!==0&&!companion&&!spirit)return;
-    const hero=this.position(a.allies[0],g),size=g.size*(g.narrow?.63:.81);
-    const x=Math.max(size*.32,hero.x-g.size*.75),y=hero.y-g.size*.20;
+    const {x,y,size}=this.supportPosition(g);
     const active=a.visual?.guardian,clock=V.settings.reducedMotion?0:active?a.visual.age:a.clock;
     const clip=active?'cast':'ready';
     V.SceneShadows.contact(ctx,x,y+3,size*.29,size*.08,.20);

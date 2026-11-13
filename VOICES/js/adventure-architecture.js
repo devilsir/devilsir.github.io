@@ -74,7 +74,7 @@ const p=this.mountPosition(m.design,mount);if(!p)return;
 const img=V.Assets.images['campus-portrait-'+mount.portrait],horizontal=Math.abs(p.wall.b[0]-p.wall.a[0])>=Math.abs(p.wall.b[1]-p.wall.a[1]);
 const width=mount.width||92,height=mount.height||98,x=p.x-cam.x-width/2+(horizontal?0:mount.orientation==='west'?-30:30),y=p.y-cam.y-(mount.elevation||130);
 if(x<-150||y<-160||x>ctx.canvas.width+150||y>ctx.canvas.height+100)return;
-ctx.save();ctx.fillStyle='#302638';ctx.fillRect(x-5,y-5,width+10,height+10);ctx.fillStyle='#b29353';ctx.fillRect(x-3,y-3,width+6,height+6);ctx.fillStyle='#ead8aa';ctx.fillRect(x+2,y+2,width-4,height-4);if(img)ctx.drawImage(img,x+7,y+6,width-14,height-13);ctx.strokeStyle='#66533c';ctx.lineWidth=3;ctx.strokeRect(x+4,y+3,width-8,height-7);
+ctx.save();ctx.fillStyle='#302638';ctx.fillRect(x-5,y-5,width+10,height+10);ctx.fillStyle='#b29353';ctx.fillRect(x-3,y-3,width+6,height+6);ctx.fillStyle='#ead8aa';ctx.fillRect(x+2,y+2,width-4,height-4);if(V.Assets.ready(img))ctx.drawImage(img,x+7,y+6,width-14,height-13);ctx.strokeStyle='#66533c';ctx.lineWidth=3;ctx.strokeRect(x+4,y+3,width-8,height-7);
 const plaqueWidth=Math.max(width,136);ctx.fillStyle='#dfd3b9';ctx.fillRect(p.x-cam.x-plaqueWidth/2,y+height+12,plaqueWidth,24);ctx.fillStyle='#493d37';ctx.font='600 10px "VOICES Sans",sans-serif';ctx.textAlign='center';let text=mount.caption;while(ctx.measureText(text).width>plaqueWidth-10&&text.length>5)text=text.slice(0,-2)+'…';ctx.fillText(text,p.x-cam.x,y+height+28);ctx.textAlign='left';
 if(V.World.nearest?.mounted?.id===mount.id){ctx.strokeStyle='#6ee4ac';ctx.lineWidth=3;ctx.strokeRect(x-7,y-7,width+14,height+14);}
 ctx.restore();

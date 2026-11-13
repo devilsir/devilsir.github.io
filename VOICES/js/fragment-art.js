@@ -19,7 +19,7 @@
       if(!trailDecor.has(key))images[key]=img;
       img.onload=()=>{images[key]=img;resolve();};
       img.onerror=resolve;
-      img.src=directory+key+'.webp';
+      img.src=directory+key+'.webp'+(key==='ally-battle'?'?v=20261113-recorte1':'');
       V.AssetLoader.register(img,resolve);
     }));
     const [result]=await Promise.all([load(...args),...pictures]);
@@ -94,7 +94,7 @@
         if(impact>0&&impact<1){
           const recoil=Math.sin(Math.PI*impact);
           if(guarded)pose=2;
-          dx=-.15*recoil;
+          dx=-.10*recoil;
           tilt=-.24*recoil;
           sy=1-.10*recoil;
         }else if(clip==='attack'){

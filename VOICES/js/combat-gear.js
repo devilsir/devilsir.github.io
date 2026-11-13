@@ -209,16 +209,20 @@
   };
   P.reward=function(key,xp,original={}){
     const battle=resultBattle;
-    if(!battle||battle.gearLoot||key!==rewardKey(battle))return reward(key,xp,original);
+    if(!battle||battle.loot||key!==rewardKey(battle))return reward(key,xp,original);
     const a=P.ensure(),g=data(a),extra=drops(battle,a,g.wins);
     const merged={...original};
     for(const [id,count] of Object.entries(extra))merged[id]=(merged[id]||0)+count;
-    const saved=Object.fromEntries(Object.keys(extra).map(id=>[id,amount(a.inventory,id)]));
+    const before=Object.fromEntries(Object.keys(merged).map(id=>[id,{
+      bag:amount(a.inventory,id),storage:amount(a.storage,id),quest:amount(a.questItems,id)
+    }]));
     if(!reward(key,xp,merged))return false;
     g.wins++;
-    battle.gearLoot=Object.entries(extra).map(([id,count])=>({
-      id,count,stored:Math.min(count,Math.max(0,count-(amount(a.inventory,id)-saved[id])))
-    }));
+    battle.loot=Object.keys(merged).flatMap(id=>{
+      const previous=before[id],stored=amount(a.storage,id)-previous.storage;
+      const count=stored+amount(a.inventory,id)-previous.bag+amount(a.questItems,id)-previous.quest;
+      return count>0?[{id,count,stored}]:[];
+    });
     return true;
   };
 

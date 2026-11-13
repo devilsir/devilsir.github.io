@@ -12,16 +12,15 @@
   const animalNames = ['Cão da praça', 'Gato da biblioteca', 'Pombo', 'Passarinho', 'Pato', 'Borboleta'];
   const animalBehaviors = ['fareja o caminho e descansa à sombra', 'observa o movimento e se espreguiça', 'caminha perto dos bancos', 'pousa nas árvores do parque', 'passeia perto do lago', 'voa sobre os canteiros'];
   const townMotion={file:'assets/characters/town-animal-motion.webp',rows:[0,1,2,4,6,7],sizes:[49,43,36,36,44,29]};
+  const localAnimalSize=[49,43,49,52,43,43,40,45,47,40,44,46,45,48,46,45];
+  const movingFrames=[1,0,2,0], breathingFrames=[4,5,6,7,6,5];
   const loadAssets=V.Assets.load.bind(V.Assets);
   V.Assets.load=async function(...args){
-    const sprite=new Promise(resolve=>{
-      const img=V.Assets.image();
-      img.onload=()=>{this.images.townAnimals=img;resolve();};
-      img.onerror=()=>{this.errors.push(townMotion.file);resolve();};
-      img.src=townMotion.file;
-      V.AssetLoader.register(img,resolve);
-    });
-    const [result]=await Promise.all([loadAssets(...args),sprite]);
+    const entries=[
+      ['townAnimals',townMotion.file],
+      ['localAnimals','assets/characters/neighborhood-animal-motion.webp']
+    ];
+    const [result]=await Promise.all([loadAssets(...args),this.loadEntries(entries)]);
     return result;
   };
   const locations = {hub:'Praça das Vozes',library:'Biblioteca',park:'Parque das Pontes',market:'Feira das Histórias',garden:'Horta Comunitária'};
@@ -73,21 +72,66 @@
       }
       return {frame,lift,swimming};
     },
-    drawTownAnimal(ctx,o,x,y){
-      const row=townMotion.rows[o.species];
-      if(row===undefined)return;
-      const img=V.Assets.images.townAnimals,size=townMotion.sizes[o.species],{frame,lift,swimming}=this.townAnimalPose(o);
-      if(swimming){
-        ctx.save();ctx.strokeStyle='#d3ece190';ctx.lineWidth=1;ctx.beginPath();
-        ctx.ellipse(x,y+2,13+lift,3.2,0,0,Math.PI*2);ctx.stroke();ctx.restore();
-      }else V.SceneShadows?.contact(ctx,x,y+3,size*.24,3.3,.22-lift*.008);
+    localAnimalRow(o){
+      if(Number.isInteger(o.neighborAnimal)&&o.neighborAnimal>=0&&o.neighborAnimal<6)return 10+o.neighborAnimal;
+      if(Number.isInteger(o.coastAnimal)&&o.coastAnimal>=0&&o.coastAnimal<8)return 2+o.coastAnimal;
+      return o.species===0||o.species===1?o.species:-1;
+    },
+    localAnimalPose(o,row){
+      const motion=!V.settings.reducedMotion&&V.settings.npcMovement!==false;
+      const time=(o.walkClock??this.walkingTime)+(Math.abs(o.x||0)%83)*.021;
+      const cat=row===1||row===4||row===5,dog=row===0||row===2||row===3;
+      const swimming=row===8||row===9,fly=row===7&&o.walking;
+      if(!motion)return {frame:cat&&o.action==='sleeping'?6:0,lift:0,swimming};
+      let frame=0,lift=0;
+      if(swimming||fly||o.walking){
+        frame=dog||cat?movingFrames[Math.floor(time*8)%4]:Math.floor(time*(fly?9:6))%4;
+        if(fly)lift=6+Math.sin(time*5)*2;
+        if(swimming)lift=Math.sin(time*3)*1.5;
+      }else if(cat){
+        frame=o.action==='sleeping'?6+Math.floor(time*2.2)%2:[3,3,4,4,3,5][Math.floor(time*1.8)%6];
+      }else if(dog){
+        frame=(o.action==='resting'&&time%9<2)?7:[0,5,0,6,0,4,0,3][Math.floor(time*3)%8];
+      }else{
+        frame=breathingFrames[Math.floor(time*5)%breathingFrames.length];
+      }
+      return {frame,lift,swimming};
+    },
+    drawTownAnimal(ctx,o,x,y,portraitSize=0){
+      const row=this.localAnimalRow(o),portrait=portraitSize>0;
+      const local=V.Assets.images.localAnimals,town=V.Assets.images.townAnimals;
+      const townRow=townMotion.rows[o.species],size=portraitSize||(row>=0?localAnimalSize[row]:townMotion.sizes[o.species])*(o.visualScale||1);
+      if(!size)return;
+      const useLocal=row>=0&&V.Assets.ready(local);
+      if(row>=0&&!useLocal&&(portrait||V.AssetLoader.byImage.get(local)?.state==='deferred')){
+        const canvas=ctx.canvas;
+        V.AssetLoader.request(local).then(ready=>{
+          if(ready&&portrait&&canvas.isConnected){ctx.clearRect(0,0,canvas.width,canvas.height);this.drawTownAnimal(ctx,o,x,y,portraitSize);}
+        });
+      }
+      const pose=portrait?{frame:0,lift:0,swimming:false}:row>=0?this.localAnimalPose(o,row):this.townAnimalPose(o);
+      const {lift,swimming}=pose;
+      if(!portrait){
+        if(swimming){
+          ctx.save();ctx.strokeStyle='#d3ece190';ctx.lineWidth=1;ctx.beginPath();
+          ctx.ellipse(x,y+2,13+lift,3.2,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+        }else V.SceneShadows?.contact(ctx,x,y+3,size*.24,3.3,.22-lift*.008);
+      }
       ctx.save();ctx.translate(Math.round(x),Math.round(y-lift));ctx.imageSmoothingEnabled=false;
-      if(V.FieldGuide.flip(o))ctx.scale(-1,1);
-      if(V.Assets.ready(img)){
+      if(!portrait&&o.visualRotation)ctx.rotate(o.visualRotation*Math.PI/180);
+      if(!portrait&&(o.lifeFacing!==undefined?o.lifeFacing===1:V.FieldGuide.flip(o)))ctx.scale(-1,1);
+      if(useLocal){
+        ctx.drawImage(local,pose.frame*64,row*64,64,64,-size/2,-size*.875,size,size);
+      }else if(row<0&&townRow!==undefined&&V.Assets.ready(town)){
         const visible=swimming?49:64;
-        ctx.drawImage(img,frame%4*64,(row+Math.floor(frame/4))*64,64,visible,-size/2,-size*(swimming?.765:.89),size,size*visible/64);
-      }else if(V.Assets.ready(V.Assets.images.animals)){
-        ctx.drawImage(V.Assets.images.animals,(o.walking?o.frame%4:0)*32,o.species*32,32,32,-size/2,9-size,size,size);
+        ctx.drawImage(town,pose.frame%4*64,(townRow+Math.floor(pose.frame/4))*64,64,visible,-size/2,-size*(swimming?.765:.89),size,size*visible/64);
+      }else{
+        const key=o.neighborAnimal!==undefined?'neighbors-animals':o.coastAnimal!==undefined?'coast-animals':'animals';
+        const fallback=V.Assets.images[key],fallbackRow=o.neighborAnimal??o.coastAnimal??o.species;
+        if(V.Assets.ready(fallback)){
+          if(key==='neighbors-animals')ctx.scale(-1,1);
+          ctx.drawImage(fallback,0,fallbackRow*32,32,32,-size/2,-size*.875,size,size);
+        }
       }
       ctx.restore();
     },

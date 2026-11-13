@@ -192,13 +192,4 @@
     return result;
   };
 
-  const battle=V.Combat,ui=battle.ui.bind(battle);
-  battle.ui=function(...args){
-    const result=ui(...args),a=this.active,box=V.$('#battle-root .turn-prompt');
-    if(a?.phase==='victory'&&a.gearLoot?.length&&box&&!box.querySelector('.gear-drops')){
-      const loot=a.gearLoot.filter(item=>Object.hasOwn(D.items,item.id));
-      if(loot.length)add(box,`<section class="gear-drops" aria-label="Drops da batalha"><h3>Drops</h3><ul>${loot.map(({id,count,stored})=>`<li>${G.icon(id)}<span><b>${esc(D.items[id].name)}</b><small>×${count}${stored?' · '+stored+' no depósito':''}</small></span></li>`).join('')}</ul></section>`);
-    }
-    return result;
-  };
 });

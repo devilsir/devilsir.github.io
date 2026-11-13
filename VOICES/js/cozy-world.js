@@ -122,7 +122,13 @@ V.Cozy={ready:false,clock:0,seated:null,layouts:V.cozyLayouts,
  },
  arrive(m,o){const a=o.destination;o.action=a?.state||'waiting';o.taskTime=(a?.duration||10)+(hash(o.id)%5);o.dir=a?.dir??o.dir;o.walking=false;o.frame=0;
   if(['amara','aline'].includes(o.character)&&a?.object?.scene?.kind==='seat')o.action='reading';
-  if(o.type==='animal'){o.action=o.species===4?'swimming':o.species===1?'sleeping':o.species===3?'perching':'resting';}
+  if(o.type==='animal'){
+   const row=L.localAnimalRow(o);
+   if(row===1||row===4||row===5)o.action='sleeping';
+   else if(row===8||row===9||o.species===4)o.action='swimming';
+   else if(row===7||o.species===3)o.action='perching';
+   else o.action='resting';
+  }
   this.expression(m,o);
  },
  blocked(m,o,x,y){if(o.type==='animal'&&o.species===4&&m.pond){const p=m.pond;return x<(p.x+.6)*T||x>(p.x+p.w-.6)*T||y<(p.y+.6)*T||y>(p.y+p.h-.6)*T;}return L.blocked(m,x,y,9*(o.visualScale||1));},

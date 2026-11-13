@@ -13,6 +13,7 @@ const campusGroups=new Map([
  ...V.campusContent.fountains.map(a=>[a.path,'campus-fountain:'+a.index]),
  ...V.campusContent.portraits.map(a=>[a.path,'campus-portrait:'+a.index])
 ]);
+const campusPortraits=new Set(V.campusContent.portraits.map(p=>p.index));
 const characterGroup=id=>'character:'+id;
 const characterArt=key=>key.match(/^assets\/characters\/([a-z0-9-]+?)\.(?:png|webp)$/)?.[1];
 const sharedCharacters=new Set(['animals','coast-animals','neighbors-animals','town-animal-motion','character-previews','pix','pix-portrait']);
@@ -30,12 +31,14 @@ L.group=function(key){
  if(key==='assets/adventure/fragment/trail-companion-motion.webp')return'trail-companion';
  if(/^assets\/adventure\/mask-styles\/(?:gallery\.|portraits\/)/.test(key))return'mask-previews';
  if(/^assets\/city\/home-appliances\./.test(key))return'home-appliances';
+ if(key==='assets/characters/neighborhood-animal-motion.webp')return'local-animals';
  if(key.endsWith('/museum-facade.png')||key.endsWith('/salon-facade.png'))return'world-art';
  const character=characterArt(key);
  if(combatGroup(key))return'combat';
  if(character&&!sharedCharacters.has(character))return characterGroup(character);
  if(key.startsWith('assets/culture/'))return'culture-design';
- if(/^assets\/adventure\/fragment\/(?:clearing|trail-arena|ally-battle|spells)\./.test(key))return'fragment-combat';
+ if(/^assets\/adventure\/fragment\/(?:clearing|trail-arena|spells)\./.test(key))return'fragment-combat';
+ if(key==='assets/adventure/fragment/ally-battle.webp')return'fragment-ally-actions';
  if(key==='assets/adventure/fragment/allies.webp')return'fragment-allies';
  if(/^assets\/adventure\/fragment\/(?:woods|ground|creatures|trail-props|trail-mobs)\./.test(key))return'fragment-world';
  const actor=key.match(/^assets\/(?:city|homestead)\/([a-z]+)-(?:motion|actions|daily|music|percussion)\.(?:png|webp)$/);
@@ -49,6 +52,7 @@ L.group=function(key){
 const groups=M.groups.bind(M);M.groups=function(m){
  const out=groups(m),objects=m?.objects||[],actors=new Set();
  if(m)out.push('world-art');
+ if(objects.some(o=>o.type==='animal'))out.push('local-animals');
  for(const o of objects)for(const id of [o.character,o.profile?.character,o.recruit,o.figure?.character])if(id)actors.add(id);
  const player=V.state?.character;
  if(player)actors.add(player);
@@ -71,9 +75,12 @@ const groups=M.groups.bind(M);M.groups=function(m){
  for(const item of [...(m?.decor||[]),...objects.flatMap(o=>o.scene?[o.scene]:[])]){
   const index=item.index??item.prop;
   if(item.family==='campus')out.push('campus-prop:'+index);
+  if(item.family==='furnishings'&&(index===0||index===4))out.push('campus-prop:'+(index===0?0:1));
   if(item.family==='home')out.push('home-appliances');
+  if(item.family==='home-plus')out.push('home-collection');
   if(item.family==='fountain'&&index>=12)out.push('campus-fountain:'+index);
-  if(item.family==='portrait-display'||item.family==='cultural-pack'&&index>=136)out.push('campus-portrait:'+index,'campus-prop:31');
+  if(item.family==='portrait-display')out.push('campus-portrait:'+index,'campus-prop:31');
+  if(item.family==='cultural-pack'&&campusPortraits.has(index))out.push('campus-portrait:'+index);
   if(item.family==='history'){
    const history=V.heritageContent?.figures?.[index]?.character;
    if(history)out.push(characterGroup(history));
@@ -91,7 +98,13 @@ const attach=V.Playground.attach.bind(V.Playground);V.Playground.attach=function
 const activate=V.Combat.activate.bind(V.Combat);V.Combat.activate=function(){
  const result=activate();
  const actors=this.active.allies.flatMap(({character})=>['actor:'+character,characterGroup(character),characterGroup(character+'-portrait')]);
- const extra=this.active.expedition?['fragment-world','fragment-combat','fragment-allies']:[];
+ const extra=this.active.expedition?['fragment-world','fragment-combat']:[];
+ if(this.active.allies.some(({character})=>V.Team?.kits[character]?.fragmentArt!=null))
+  extra.push('fragment-allies','fragment-ally-actions','fragment-combat');
+ const companion=this.active.id===0?null:V.Companions?.selected();
+ if(companion&&companion.id!=='zambeto'){
+  extra.push('roots','presence:'+companion.id);
+ }else if(this.active.id===0||V.Progress.ensure().story.met||companion)extra.push('actor:zambeto');
  if(V.FragmentForest?.spirit())extra.push('fragment-world','trail-companion','fragment-combat');
  M.ensure(['combat',...new Set([...actors,...extra])],'Preparando o confronto');
  return result;

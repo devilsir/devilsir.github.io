@@ -84,12 +84,18 @@ const {environment}=require('./runtime-upgrade-test.cjs');
     console.log('PASS each in-world recruitment mission unlocks its own ally and five slots persist around the player');
 
     assert(B.begin(1,false,{practice:true}));
+    await V.MapAssets.whenReady();
     assert.equal(B.active.allies.length,6);
     assert.equal(V.$$('.turn-member').length,6);
     const a=B.active,positions=a.allies.map(actor=>B.position(actor,{width:460,depth:218,top:54,size:45,narrow:true}));
     assert.equal(new Set(positions.map(p=>p.x+':'+p.y)).size,6);
-    assert.equal(new Set(positions.map(p=>p.x)).size,2);
-    assert(positions.every(p=>p.y>54+218*.55));
+    for(const [i,p] of positions.entries()){
+      assert(p.x>0&&p.x<460&&p.y>54&&p.y<272);
+      for(const other of positions.slice(i+1)){
+        const gapX=(p.hitWidth+other.hitWidth)/2;
+        assert(Math.abs(p.x-other.x)>=gapX||Math.abs(p.y-other.y)>=Math.min(p.hitHeight,other.hitHeight));
+      }
+    }
     const actor=a.allies.find(o=>o.character==='jaci'),target=a.allies[0];
     a.actor=actor.id;a.phase='command';actor.focus=actor.stats.focus;
     const skill=T.kits.jaci.skills[0];

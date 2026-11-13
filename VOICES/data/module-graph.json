@@ -9,7 +9,7 @@
     },
     {
       "id": "adventure-architecture",
-      "src": "js/adventure-architecture.js?v=20261111-atlas-homes2",
+      "src": "js/adventure-architecture.js?v=20261113-arteclima1",
       "requires": [
         "room-system"
       ]
@@ -21,7 +21,7 @@
     },
     {
       "id": "adventure-boot",
-      "src": "js/adventure-boot.js?v=20261113-carga1",
+      "src": "js/adventure-boot.js?v=20261113-arteclima1",
       "requires": [
         "adventure-art",
         "adventure-editor"
@@ -59,7 +59,7 @@
     },
     {
       "id": "adventure-environment",
-      "src": "js/adventure-environment.js?v=20261111-atlas-homes2",
+      "src": "js/adventure-environment.js?v=20261113-arteclima1",
       "requires": [
         "adventure-architecture",
         "adventure-core",
@@ -226,7 +226,7 @@
     },
     {
       "id": "asset-demand-upgrade",
-      "src": "js/asset-demand-upgrade.js?v=20261113-carga1",
+      "src": "js/asset-demand-upgrade.js?v=20261113-combate1",
       "requires": [
         "adventure-combat",
         "map-streaming",
@@ -325,7 +325,7 @@
     },
     {
       "id": "campus-world",
-      "src": "js/campus-world.js?v=20261113-carga1",
+      "src": "js/campus-world.js?v=20261113-arteclima1",
       "requires": [
         "campus-content",
         "campus-water-data",
@@ -459,7 +459,7 @@
     },
     {
       "id": "city-battle",
-      "src": "js/city-battle.js?v=20261113-carga1",
+      "src": "js/city-battle.js?v=20261113-combate1",
       "requires": [
         "city-life",
         "city-motion",
@@ -547,7 +547,7 @@
     },
     {
       "id": "coast-world",
-      "src": "js/coast-world.js?v=20261113-carga1",
+      "src": "js/coast-world.js?v=20261113-arteclima1",
       "requires": [
         "beach-assets",
         "coast-content",
@@ -570,7 +570,7 @@
     },
     {
       "id": "combat-gear",
-      "src": "js/combat-gear.js?v=20261112-equip1",
+      "src": "js/combat-gear.js?v=20261113-combate1",
       "requires": [
         "trail-companions",
         "duo-navigation"
@@ -578,7 +578,7 @@
     },
     {
       "id": "combat-loadout",
-      "src": "js/combat-loadout.js?v=20261113-carga1",
+      "src": "js/combat-loadout.js?v=20261113-combate1",
       "requires": [
         "combat-gear",
         "companion-formation",
@@ -717,7 +717,7 @@
     },
     {
       "id": "cozy-world",
-      "src": "js/cozy-world.js?v=20261113-carga1",
+      "src": "js/cozy-world.js?v=20261113-arteclima1",
       "requires": [
         "cozy-content",
         "cozy-layouts",
@@ -961,7 +961,7 @@
     },
     {
       "id": "field-guide",
-      "src": "js/field-guide.js?v=20261021-world1",
+      "src": "js/field-guide.js?v=20261113-arteclima1",
       "requires": [
         "quests"
       ]
@@ -1037,7 +1037,7 @@
     },
     {
       "id": "fragment-art",
-      "src": "js/fragment-art.js?v=20261113-carga1",
+      "src": "js/fragment-art.js?v=20261113-combate1",
       "requires": [
         "asset-loader",
         "fragment-data"
@@ -1170,7 +1170,7 @@
     },
     {
       "id": "heritage-world",
-      "src": "js/heritage-world.js?v=20261113-carga1",
+      "src": "js/heritage-world.js?v=20261113-arteclima1",
       "requires": [
         "editor-actions",
         "museum-biographies"
@@ -1362,7 +1362,7 @@
     },
     {
       "id": "living-world",
-      "src": "js/living-world.js?v=20261112-equip1",
+      "src": "js/living-world.js?v=20261113-arteclima1",
       "requires": [
         "city-chronicle",
         "field-guide",
@@ -1477,7 +1477,7 @@
     },
     {
       "id": "menu-art",
-      "src": "js/menu-art.js?v=20261103-loading1",
+      "src": "js/menu-art.js?v=20261113-arteclima1",
       "requires": [
         "place-life"
       ]
@@ -1615,7 +1615,7 @@
     },
     {
       "id": "neighbors-world",
-      "src": "js/neighbors-world.js?v=20261113-carga1",
+      "src": "js/neighbors-world.js?v=20261113-arteclima1",
       "requires": [
         "coast-world",
         "neighbors-content"
@@ -2137,14 +2137,14 @@
     },
     {
       "id": "season-cycle",
-      "src": "js/season-cycle.js?v=20261111-seasons2",
+      "src": "js/season-cycle.js?v=20261113-arteclima1",
       "requires": [
         "adventure-core"
       ]
     },
     {
       "id": "season-visuals",
-      "src": "js/season-visuals.js?v=20261111-vida1",
+      "src": "js/season-visuals.js?v=20261113-arteclima1",
       "requires": [
         "season-art-data",
         "adventure-environment",

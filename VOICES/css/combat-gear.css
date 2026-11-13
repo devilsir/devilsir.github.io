@@ -66,14 +66,40 @@
 }
 .gear-art[data-gear-sheet="1"] { background-image:url('../assets/adventure/gear/gear-1.webp'); }
 .gear-art[data-gear-sheet="2"] { background-image:url('../assets/adventure/gear/gear-2.webp'); }
-.turn-prompt:has(.gear-drops) { align-content:start; }
-.gear-drops { min-width:0; }
-.gear-drops h3 { margin:3px 0 4px; font-size:.82rem; color:#f8e4aa; }
-.gear-drops ul { display:flex; flex-wrap:wrap; gap:5px; list-style:none; margin:0; padding:0; }
-.gear-drops li { display:flex; gap:4px; align-items:center; background:#132c35; border:1px solid #4b7180; border-radius:5px; padding:2px 6px; }
-.gear-drops li :is(.gear-art,.adv-icon) { width:26px; height:26px; }
-.gear-drops li b,.gear-drops li small { display:block; font-size:.71rem; color:#ecf6ed; }
-.gear-drops li small { color:#b8d6d6; }
+/* Keep the result and its action in view while the item list can scroll. */
+.battle-console[data-phase="victory"] { --turn-dock: clamp(190px, 31dvh, 248px); }
+.battle-console[data-phase="defeat"], .battle-console[data-phase="retreat"] { --turn-dock: 136px; }
+.battle-console:is([data-phase="victory"],[data-phase="defeat"],[data-phase="retreat"]) .turn-dock {
+  grid-template-columns: minmax(0,1fr);
+  grid-template-rows: minmax(0,1fr) auto;
+}
+.turn-prompt.turn-result { align-content: stretch; grid-template-rows: auto minmax(0,1fr) auto; overflow: hidden; }
+.turn-result:not(.has-loot) { grid-template-rows: auto auto; align-content: center; }
+.turn-result > p { align-self: start; }
+.turn-result > .turn-result-actions { grid-row: -2; justify-content: flex-end; align-self: end; }
+.battle-console .turn-result-actions button { min-height: 36px; }
+.gear-drops { display: grid; grid-template-rows: auto minmax(0,1fr); min-width: 0; min-height: 0; }
+.gear-drops h3 { margin: 0 0 4px; font-size: .82rem; color: #f8e4aa; }
+.gear-drops ul {
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,174px),1fr));
+  align-content: start; gap: 5px; list-style: none; margin: 0; padding: 0 2px 2px 0;
+  min-height: 0; overflow: auto; scrollbar-width: thin; pointer-events: auto;
+}
+.gear-drops li {
+  display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 6px; align-items: center;
+  background: #132c35; border: 1px solid #4b7180; border-radius: 5px; padding: 4px 6px;
+}
+.gear-drops li :is(.gear-art,.adv-icon) { width: 26px; height: 26px; }
+.gear-drops li b,.gear-drops li small { display: block; font-size: .73rem; color: #ecf6ed; }
+.gear-drops li small { color: #b8d6d6; line-height: 1.25; }
+.gear-drops li > strong { color: #f8e4aa; font-size: .76rem; }
+@media (max-width:590px) {
+  .battle-console[data-phase="victory"] { --turn-dock: clamp(202px, 40dvh, 285px); }
+  .gear-drops ul { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-height:460px) {
+  .battle-console[data-phase="victory"] { --turn-dock: min(170px, 58dvh); }
+}
 @media (max-width:670px) {
   .gear-layout { grid-template-columns:1fr; }
   .gear-header { grid-template-columns:auto minmax(0,1fr); }

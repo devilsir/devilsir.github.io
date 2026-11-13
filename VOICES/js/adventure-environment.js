@@ -9,15 +9,20 @@
 const V=window.V,clamp=V.clamp,Seasons=V.Seasons;
 const types=Object.fromEntries(Object.entries(Seasons.conditions).map(([id,condition])=>[id,condition.label]));
 const keys=[{h:0,c:[19,28,55],dark:.68},{h:5,c:[76,73,101],dark:.48},{h:6.5,c:[211,159,130],dark:.18},{h:9,c:[156,197,210],dark:0},{h:15,c:[158,199,214],dark:0},{h:18,c:[204,128,112],dark:.2},{h:19.5,c:[68,68,106],dark:.53},{h:21,c:[24,32,62],dark:.68},{h:24,c:[19,28,55],dark:.68}];
+const indoorPlaces=new Set(['museum','school','library','university','restaurant','kitchen','salon-iris','african-words','play-museum','food-museum','animal-museum','animal-fossil-hall']);
 const E=V.Environment={clock:0,weatherClock:0,cache:new Map(),preview:null,sound:null,
 state(){return V.Progress.ensure();},
 time(){return this.preview?.hour??this.state()?.clock.hour??12;},
 phase(h=this.time()){return h<5?'Madrugada':h<7?'Amanhecer':h<12?'Manhã':h<17?'Tarde':h<19?'Pôr do sol':h<21?'Anoitecer':'Noite';},
 colors(h=this.time()){let i=0;while(i<keys.length-2&&h>keys[i+1].h)i++;const a=keys[i],b=keys[i+1],t=clamp((h-a.h)/(b.h-a.h),0,1);return{sky:a.c.map((c,j)=>Math.round(c+(b.c[j]-c)*t)),dark:a.dark+(b.dark-a.dark)*t};},
+isInterior(m=V.World.current){
+return !!(m&&(m.theme==='room'||m.cityInterior||m.roomBuilder||m.id?.startsWith('interior-')||indoorPlaces.has(m.id)||m.design?.adventure?.environment?.indoor===true));
+},
 profile(m=V.World.current,x=V.Player.data?.x||0,y=V.Player.data?.y||0){
 const d=m?.design?.adventure||{},base={indoor:m?.theme==='room',sky:'automatic',weather:true,climate:'temperate-warm',wind:.2,clouds:.25,snowAllowed:false,...d.environment};
 const regions=(d.regions||[]).filter(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h).sort((a,b)=>(a.priority||0)-(b.priority||0));
 for(const r of regions)Object.assign(base,Object.fromEntries(Object.entries(r).filter(([k,v])=>['indoor','weather','sky','wind','clouds','ambient','snowAllowed','climate'].includes(k)&&v!==undefined)));
+if(this.isInterior(m)||base.indoor)Object.assign(base,{indoor:true,weather:false});
 return base;
 },
 weather(m){return Seasons.weather(this,m);},
@@ -165,22 +170,29 @@ for(const l of visible.filter(l=>l.mount)){const mount=m.mounts?.find(m=>m.id===
 ctx.drawImage(this.mask,0,0,viewWidth,viewHeight);
 },
 drawWindows(ctx,m,cam){
-if(!m.design.adventure?.environment?.indoor)return;const list=m.design.adventure.architecture.windows||[{x:m.width*24,y:m.id==='museum'?90:35,w:94,h:66}],colors=this.colors(),sky='rgb('+colors.sky.join(',')+')',weather=this.weather(m);
-for(const window of list){const x=window.x-cam.x,y=window.y-cam.y,w=window.w,h=window.h;if(x+w<0||x>ctx.canvas.width||y+h<0||y>ctx.canvas.height)continue;ctx.save();ctx.fillStyle='#b5a586';ctx.fillRect(x-6,y-6,w+12,h+12);ctx.fillStyle=sky;ctx.fillRect(x,y,w,h);ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();if(this.time()>19||this.time()<6){ctx.fillStyle='#f0e6c4';for(let i=0;i<8;i++)ctx.fillRect(x+(i*17)%w,y+(i*23)%h,2,2);}ctx.fillStyle='#667e7355';ctx.fillRect(x,y+h-15,w,15);if(['rain','storm','snow'].includes(weather.type)){ctx.strokeStyle='#e0e7e8';ctx.globalAlpha=.45;for(let i=0;i<10;i++){const px=x+(i*19)%w,py=y+(i*11+this.clock*(weather.type==='snow'?8:45))%h;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-2,py+(weather.type==='snow'?2:7));ctx.stroke();}}ctx.restore();ctx.fillStyle='#756e5a';ctx.fillRect(x+w/2-2,y,4,h);ctx.fillRect(x,y+h/2-2,w,4);}
+if(!this.profile(m).indoor)return;const list=m.design?.adventure?.architecture?.windows||[{x:m.width*24,y:m.id==='museum'?90:35,w:94,h:66}],colors=this.colors(),sky='rgb('+colors.sky.join(',')+')';
+for(const window of list){const x=window.x-cam.x,y=window.y-cam.y,w=window.w,h=window.h;if(x+w<0||x>ctx.canvas.width||y+h<0||y>ctx.canvas.height)continue;ctx.save();ctx.fillStyle='#b5a586';ctx.fillRect(x-6,y-6,w+12,h+12);ctx.fillStyle=sky;ctx.fillRect(x,y,w,h);ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();if(this.time()>19||this.time()<6){ctx.fillStyle='#f0e6c4';for(let i=0;i<8;i++)ctx.fillRect(x+(i*17)%w,y+(i*23)%h,2,2);}ctx.fillStyle='#667e7355';ctx.fillRect(x,y+h-15,w,15);ctx.restore();ctx.fillStyle='#756e5a';ctx.fillRect(x+w/2-2,y,4,h);ctx.fillRect(x,y+h/2-2,w,4);}
 },
 weatherDraw(ctx,m,cam){return V.SeasonVisuals?.atmosphere(ctx,m,cam);},
 audio(){
 const ctx=V.Audio.ctx;if(!ctx||!V.Audio.unlocked)return;
 if(!this.sound){const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),p=b.getChannelData(0);let seed=17,last=0;for(let i=0;i<p.length;i++){seed=Math.imul(seed,1664525)+1013904223|0;last=.97*last+.03*((seed>>>0)/2147483648-1);p[i]=last*.8;}const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();source.buffer=b;source.loop=true;filter.type='lowpass';filter.frequency.value=1900;source.connect(filter);filter.connect(gain);gain.connect(ctx.destination);gain.gain.value=0;source.start();this.sound={source,filter,gain};}
 const w=this.weather(),p=this.profile(),on=!V.settings.muted&&!document.hidden&&V.Game.screen==='game';
-const sound={rain:.22,storm:.34,snow:.052},volume=on?(sound[w.type]||0)*w.intensity*w.transition*(V.settings.ambience??.5)*(p.indoor||p.weather===false?.18:1):0;
+const sound={rain:.22,storm:.34,snow:.052},volume=on&&p.weather!==false?(sound[w.type]||0)*w.intensity*w.transition*(V.settings.ambience??.5):0;
 this.sound.filter.frequency.setTargetAtTime(w.type==='snow'?570:p.indoor?680:2200,ctx.currentTime,.6);
-this.sound.gain.gain.setTargetAtTime(volume,ctx.currentTime,.7);
+if(p.weather===false){
+ this.sound.gain.gain.cancelScheduledValues(ctx.currentTime);
+ this.sound.gain.gain.setValueAtTime(0,ctx.currentTime);
+ if(this.thunderGain){
+  this.thunderGain.cancelScheduledValues(ctx.currentTime);
+  this.thunderGain.setValueAtTime(0,ctx.currentTime);
+ }
+}else this.sound.gain.gain.setTargetAtTime(volume,ctx.currentTime,.7);
 },
 thunder(){
   const ctx=V.Audio.ctx;
-  if(!ctx||!V.Audio.unlocked||V.settings.muted||V.settings.reducedFlash||document.hidden||V.Game.screen!=='game')return;
-  const volume=.026*(V.settings.ambience??.5)*(this.profile().indoor?.42:1);
+  if(!ctx||!V.Audio.unlocked||V.settings.muted||V.settings.reducedFlash||document.hidden||V.Game.screen!=='game'||this.profile().weather===false)return;
+  const volume=.026*(V.settings.ambience??.5);
   if(volume<=0)return;
   const osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime;
   osc.type='triangle';
@@ -191,6 +203,8 @@ thunder(){
   gain.gain.exponentialRampToValueAtTime(.0001,now+1.8);
   osc.connect(gain);
   gain.connect(ctx.destination);
+  this.thunderGain=gain.gain;
+  osc.onended=()=>{if(this.thunderGain===gain.gain)this.thunderGain=null;};
   osc.start();
   osc.stop(now+2);
 }

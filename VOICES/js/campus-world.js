@@ -60,7 +60,7 @@ C.prop=function(ctx,family,index,x,y,size=T,materials=null){
  let key;
  if(family==='campus')key='campus-'+index;
  else if(family==='fountain'&&index>=12)key='campus-fountain-'+index;
- else if(family==='cultural-pack'&&index>=136)key='campus-portrait-'+index;
+ else if(family==='cultural-pack'&&index>=136&&V.Assets.images['campus-portrait-'+index])key='campus-portrait-'+index;
  if(!key)return prior.prop(ctx,family,index,x,y,size,materials);
  const img=V.Assets.images[key];if(!V.Assets.ready(img))return;ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(x),Math.round(y),size,size);
  if(family==='fountain'&&!V.settings?.reducedMotion){const time=E.active?E.animationClock||0:V.Engine.time,frame=Math.floor(time*7)%8;ctx.drawImage(fountainShimmer(index,frame),Math.round(x),Math.round(y),size,size);}
@@ -134,7 +134,7 @@ V.Campus={
  V.$('#campus-full-profile').onclick=()=>L.read(p.readingId,0,()=>this.profile(index));
 }
 };
-C.interact=function(o){if(['cultural-pack','portrait-display'].includes(o?.scene?.family)&&o.scene.prop>=136){V.Campus.profile(o.scene.prop);return true;}return prior.interact(o);};
+C.interact=function(o){if(['cultural-pack','portrait-display'].includes(o?.scene?.family)&&data.portraits.some(p=>p.index===o.scene.prop)){V.Campus.profile(o.scene.prop);return true;}return prior.interact(o);};
 E.place=function(x,y){
  const a=V.sceneAssets[this.asset];prior.place(x,y);
  if(!a||!['campus','portrait-display'].includes(a.family)&&!(a.family==='fountain'&&a.index>=12)&&!(a.family==='cultural-pack'&&a.index>=136))return;

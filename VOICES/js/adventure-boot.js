@@ -18,7 +18,7 @@ for(const o of m.objects.filter(C.person.bind(C)))if(V.Living.blocked(m,o.x,o.y,
 V.Living.blocked=function(m,x,y,r=11){return old.blocked(m,x,y,r)||A.blocked(m,x,y,r);};
 W.collides=function(x,y,r=11){return!this.current||V.Living.blocked(this.current,x,y,r);};
 W.init=function(){old.init();for(const m of Object.values(this.maps)){if(!m.archWalls){A.hydrate(m);E.hydrate(m);S.hydrate(m);}}N.invalidate();};
-W.load=function(id,pos){const result=old.load(id,pos);if(!V.state)return result;const a=P.ensure();if(!a.story.visited.includes(this.current.id))a.story.visited.push(this.current.id);N.signature='';N.timer=0;E.ambientBlend=E.profile().indoor?1:0;S.companion=null;P.hud();E.hud();return result;};
+W.load=function(id,pos){const result=old.load(id,pos);if(!V.state)return result;const a=P.ensure();if(!a.story.visited.includes(this.current.id))a.story.visited.push(this.current.id);N.signature='';N.timer=0;E.ambientBlend=E.profile().indoor?1:0;S.companion=null;P.hud();E.hud();E.audio();return result;};
 W.interactables=function(){return old.interactables().filter(o=>S.visible(o));};
 V.Hooks.around(V.Game, 'interact', 'adventure-boot:interact:1', nextHook => function(o){if(!o||V.modal||V.Dialogue.active||V.Game.mode!=='explore')return;if(S.interact(o))return;if(o.type==='mounted-art'){V.Campus.profile(o.mounted.portrait);return;}if(o.type==='custom-trigger'){V.UI.modal(o.title,'ENCONTRO DO CENÁRIO',`<p>${V.escape(o.text)}</p>`);if(o.flag)V.state.flags[o.flag]=true;V.Save.save();return;}return nextHook(o);});
 C.drawObject=function(ctx,o,cam,t){if(o.mounted||!S.visible(o))return;if(S.draw(ctx,o,cam))return;if(o.type==='boss'){V.Combat.drawManifestation(ctx,o,cam);return;}return old.draw(ctx,o,cam,t);};

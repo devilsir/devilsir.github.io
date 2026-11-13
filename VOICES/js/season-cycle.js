@@ -107,6 +107,8 @@
       const at=phase(a),hour=environment.preview?.hour??a.clock.hour;
       const currentAt=Math.floor(at/24)*24+hour;
       const present=this.forecastAt(a,zone,currentAt);
+      if(environment.isInterior(m))
+        return {...present,type:'clear',intensity:0,cloud:0,speed:0,transition:1,zone,climate,snowAllowed:false,interior:true};
       const previous=this.forecastAt(a,zone,Math.max(0,currentAt-interval));
       const actor=m===V.World.current?V.Player.data:V.DuoWorld?.actors?.find(actor=>actor.map===m?.id)?.data;
       const profile=environment.profile(m,actor?.x??0,actor?.y??0);
@@ -130,6 +132,7 @@
       const a=environment.state();
       if(!a)return {snow:0,wet:0};
       const w=this.weather(environment,m),calendar=this.calendar(a),saved=this.ensure(a).cover[w.zone];
+      if(w.interior)return {snow:0,wet:0};
       if(environment.preview?.weather){
         return {snow:w.type==='snow'&&w.snowAllowed?.82:0,wet:['rain','storm'].includes(w.type)?.72:0};
       }
@@ -206,7 +209,7 @@
       for(const m of active){
         const w=this.weather(environment,m);
         this.storm(m,w,dt,environment);
-        if(zones.has(w.zone))continue;
+        if(w.interior||zones.has(w.zone))continue;
         zones.add(w.zone);
         const cover=state.cover[w.zone]||={snow:0,wet:0};
         const falling=w.type==='snow'&&w.snowAllowed?w.intensity*w.transition:0;

@@ -89,12 +89,12 @@
 
     exposure(m){
       const adventure=m?.design?.adventure||{},env=adventure.environment||{};
-      const indoor=env.indoor??(m?.theme==='room'||m?.cityInterior||m?.id?.startsWith('interior-'));
-      const allowed=!indoor&&env.weather!==false;
+      if(E.isInterior(m))return {allowed:false,areas:[],open:false,bounds:()=>false};
+      const allowed=env.weather!==false;
       const areas=(adventure.regions||[]).filter(r=>r.indoor!==undefined||r.weather!==undefined||r.snowAllowed!==undefined)
         .slice().sort((a,b)=>(a.priority||0)-(b.priority||0));
       const bounds=(x,y,needsSnow,w)=>{
-        let covered=indoor,dry=env.weather===false,snow=w.snowAllowed;
+        let covered=false,dry=env.weather===false,snow=w.snowAllowed;
         for(const r of areas){
           if(!inside(x,y,r))continue;
           covered=r.indoor??covered;
@@ -123,8 +123,7 @@
     },
 
     weatherFrame(m,cam,ctx){
-      const weather=E.weather(m),calendar=S.calendar(E.state()),cover=S.cover(m,E);
-      const exposure=this.exposure(m);
+      const exposure=this.exposure(m),weather=E.weather(m),calendar=S.calendar(E.state()),cover=S.cover(m,E);
       return {ctx,m,cam,weather,calendar,cover,exposure,seed:seedOf(m.id),groundDrawn:false,weatherDrawn:false,styled:new Set()};
     },
 
