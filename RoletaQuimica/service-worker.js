@@ -1,18 +1,20 @@
 'use strict';
 
 const CACHE_PREFIX = 'roleta-quimica-cafe-';
-const CACHE_NAME = CACHE_PREFIX + 'v27-english-answers';
+const CACHE_NAME = CACHE_PREFIX + 'v31-startup-preload';
 const APP_SHELL = [
   './index.html',
   './manifest.webmanifest',
   './index.css',
+  './startup-loader.css',
   './editmode-v3-style.css',
-  './pwa.css',
   './payload.js',
   './english-banks.js',
   './english-presets.js',
+  './cafe-com-ciencia.js',
   './xlsx-lite.js',
   './index.js',
+  './preloader.js',
   './pwa.js',
   './icons/apple-touch-icon.png',
   './icons/icon-192.png',
