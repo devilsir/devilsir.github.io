@@ -46,7 +46,8 @@ function mergeDefaultModes(db){
     if(!db[mode]){db[mode]=JSON.parse(JSON.stringify(builtin));return}
     db[mode].areas=db[mode].areas||{};
     Object.entries(builtin.areas||{}).forEach(([a,c])=>{if(!(a in db[mode].areas))db[mode].areas[a]=JSON.parse(JSON.stringify(c))});
-    if(!Array.isArray(db[mode].dificuldades)||!db[mode].dificuldades.length)db[mode].dificuldades=JSON.parse(JSON.stringify(builtin.dificuldades||['Fácil','Médio','Difícil']));
+    if(mode==='Café com Ciência')db[mode].dificuldades=[...new Set([...(Array.isArray(db[mode].dificuldades)?db[mode].dificuldades:[]),...(builtin.dificuldades||[])])];
+    else if(!Array.isArray(db[mode].dificuldades)||!db[mode].dificuldades.length)db[mode].dificuldades=JSON.parse(JSON.stringify(builtin.dificuldades||['Fácil','Médio','Difícil']));
     if(!Array.isArray(db[mode].perguntas))db[mode].perguntas=[];
     // Content patches are appended once to existing local databases, so updates add
     // new built-in questions without resetting questions created or edited by the user.
