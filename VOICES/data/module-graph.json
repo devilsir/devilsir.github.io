@@ -21,7 +21,7 @@
     },
     {
       "id": "adventure-boot",
-      "src": "js/adventure-boot.js?v=20261112-trilhas2",
+      "src": "js/adventure-boot.js?v=20261113-carga1",
       "requires": [
         "adventure-art",
         "adventure-editor"
@@ -29,7 +29,7 @@
     },
     {
       "id": "adventure-combat",
-      "src": "js/adventure-combat.js?v=20261112-infinity1",
+      "src": "js/adventure-combat.js?v=20261113-carga1",
       "requires": [
         "adventure-story"
       ]
@@ -171,7 +171,7 @@
     },
     {
       "id": "ancestral-mask",
-      "src": "js/ancestral-mask.js?v=20261112-fragment1",
+      "src": "js/ancestral-mask.js?v=20261113-carga1",
       "requires": [
         "house-window-lights",
         "illustrated-interface",
@@ -187,7 +187,7 @@
     },
     {
       "id": "ancestral-world",
-      "src": "js/ancestral-world.js?v=20261030-imageopt1",
+      "src": "js/ancestral-world.js?v=20261113-carga1",
       "requires": [
         "achievement-progress",
         "ancestral-content"
@@ -226,15 +226,17 @@
     },
     {
       "id": "asset-demand-upgrade",
-      "src": "js/asset-demand-upgrade.js?v=20261111-turns2",
+      "src": "js/asset-demand-upgrade.js?v=20261113-carga1",
       "requires": [
         "adventure-combat",
-        "map-streaming"
+        "map-streaming",
+        "content",
+        "campus-content"
       ]
     },
     {
       "id": "asset-loader",
-      "src": "js/asset-loader.js?v=20261103-loading1",
+      "src": "js/asset-loader.js?v=20261113-carga1",
       "requires": [
         "engine",
         "optimized-images"
@@ -254,7 +256,7 @@
     },
     {
       "id": "atelier-world",
-      "src": "js/atelier-world.js?v=20261029-load2",
+      "src": "js/atelier-world.js?v=20261113-carga1",
       "requires": [
         "atelier-content",
         "translation-world"
@@ -305,7 +307,7 @@
     },
     {
       "id": "campus-content",
-      "src": "js/campus-content.js",
+      "src": "js/campus-content.js?v=20261113-elenco1",
       "requires": []
     },
     {
@@ -323,7 +325,7 @@
     },
     {
       "id": "campus-world",
-      "src": "js/campus-world.js?v=20261111-museums1",
+      "src": "js/campus-world.js?v=20261113-carga1",
       "requires": [
         "campus-content",
         "campus-water-data",
@@ -364,7 +366,7 @@
     },
     {
       "id": "cape-visuals",
-      "src": "js/cape-visuals.js?v=20261111-seasons1",
+      "src": "js/cape-visuals.js?v=20261113-elenco2",
       "requires": [
         "african-play-museum"
       ]
@@ -440,7 +442,7 @@
     },
     {
       "id": "city-animations",
-      "src": "js/city-animations.js?v=20261112-trilhas2",
+      "src": "js/city-animations.js?v=20261113-carga1",
       "requires": [
         "adventure-art",
         "adventure-story",
@@ -457,7 +459,7 @@
     },
     {
       "id": "city-battle",
-      "src": "js/city-battle.js?v=20261112-infinity1",
+      "src": "js/city-battle.js?v=20261113-carga1",
       "requires": [
         "city-life",
         "city-motion",
@@ -511,7 +513,7 @@
     },
     {
       "id": "city-motion",
-      "src": "js/city-motion.js?v=20261112-trilhas2",
+      "src": "js/city-motion.js?v=20261113-carga1",
       "requires": [
         "city-animations"
       ]
@@ -532,7 +534,7 @@
     },
     {
       "id": "city-world",
-      "src": "js/city-world.js?v=20261111-atlas-homes2",
+      "src": "js/city-world.js?v=20261113-carga1",
       "requires": [
         "adventure-boot",
         "residential-plans"
@@ -545,7 +547,7 @@
     },
     {
       "id": "coast-world",
-      "src": "js/coast-world.js?v=20261029-load2",
+      "src": "js/coast-world.js?v=20261113-carga1",
       "requires": [
         "beach-assets",
         "coast-content",
@@ -576,7 +578,7 @@
     },
     {
       "id": "combat-loadout",
-      "src": "js/combat-loadout.js?v=20261112-maskcolor1",
+      "src": "js/combat-loadout.js?v=20261113-carga1",
       "requires": [
         "combat-gear",
         "companion-formation",
@@ -635,7 +637,7 @@
     },
     {
       "id": "content",
-      "src": "js/content.js?v=20261103-mask-duo2",
+      "src": "js/content.js?v=20261113-perfis1",
       "requires": []
     },
     {
@@ -715,7 +717,7 @@
     },
     {
       "id": "cozy-world",
-      "src": "js/cozy-world.js?v=20261111-atlas-homes2",
+      "src": "js/cozy-world.js?v=20261113-carga1",
       "requires": [
         "cozy-content",
         "cozy-layouts",
@@ -744,7 +746,7 @@
     },
     {
       "id": "cultural-pack",
-      "src": "js/cultural-pack.js?v=20261029-load2",
+      "src": "js/cultural-pack.js?v=20261113-carga1",
       "requires": [
         "cultural-pack-content"
       ]
@@ -758,7 +760,7 @@
     },
     {
       "id": "cultural-world",
-      "src": "js/cultural-world.js?v=20261111-vida1",
+      "src": "js/cultural-world.js?v=20261113-carga1",
       "requires": [
         "cultural-content",
         "ui-shell"
@@ -830,7 +832,7 @@
     },
     {
       "id": "dialogue",
-      "src": "js/dialogue.js?v=20261101-dialogue3",
+      "src": "js/dialogue.js?v=20261113-carga1",
       "requires": [
         "asset-loader",
         "content",
@@ -839,10 +841,11 @@
     },
     {
       "id": "duo-challenges",
-      "src": "js/duo-challenges.js?v=20261110-moto3",
+      "src": "js/duo-challenges.js?v=20261113-carga1",
       "requires": [
         "home-construction",
-        "map-streaming"
+        "map-streaming",
+        "content"
       ]
     },
     {
@@ -882,10 +885,11 @@
     },
     {
       "id": "duo-world",
-      "src": "js/duo-world.js?v=20261112-pause1",
+      "src": "js/duo-world.js?v=20261113-carga1",
       "requires": [
         "duo-challenges",
-        "market-world"
+        "market-world",
+        "content"
       ]
     },
     {
@@ -911,7 +915,7 @@
     },
     {
       "id": "editor-tools",
-      "src": "js/editor-tools.js?v=20261030-cape3",
+      "src": "js/editor-tools.js?v=20261113-carga1",
       "requires": [
         "neighborhood-world"
       ]
@@ -947,7 +951,7 @@
     },
     {
       "id": "engine",
-      "src": "js/engine.js?v=20261111-turns1",
+      "src": "js/engine.js?v=20261113-carga1",
       "requires": []
     },
     {
@@ -1025,7 +1029,7 @@
     },
     {
       "id": "fountain-floor-upgrade",
-      "src": "js/fountain-floor-upgrade.js?v=20261029-load2",
+      "src": "js/fountain-floor-upgrade.js?v=20261113-carga1",
       "requires": [
         "regional-furniture",
         "regional-world"
@@ -1033,7 +1037,7 @@
     },
     {
       "id": "fragment-art",
-      "src": "js/fragment-art.js?v=20261112-infinity-scenery1",
+      "src": "js/fragment-art.js?v=20261113-carga1",
       "requires": [
         "asset-loader",
         "fragment-data"
@@ -1072,14 +1076,14 @@
     },
     {
       "id": "furnishings-world",
-      "src": "js/furnishings-world.js?v=20261029-load2",
+      "src": "js/furnishings-world.js?v=20261113-carga1",
       "requires": [
         "furnishings-content"
       ]
     },
     {
       "id": "furniture-plus",
-      "src": "js/furniture-plus.js?v=20261029-load2",
+      "src": "js/furniture-plus.js?v=20261113-carga1",
       "requires": [
         "furniture-plus-content"
       ]
@@ -1093,13 +1097,14 @@
     },
     {
       "id": "game",
-      "src": "js/game.js?v=20261112-pause1",
+      "src": "js/game.js?v=20261113-perfis1",
       "requires": [
         "combat",
         "cozy-world",
         "minigames",
         "museum-biographies",
-        "museum-studies"
+        "museum-studies",
+        "content"
       ]
     },
     {
@@ -1133,7 +1138,7 @@
     },
     {
       "id": "guardian-presence",
-      "src": "js/guardian-presence.js?v=20261021-presence1",
+      "src": "js/guardian-presence.js?v=20261113-carga1",
       "requires": [
         "homestead-activities"
       ]
@@ -1165,7 +1170,7 @@
     },
     {
       "id": "heritage-world",
-      "src": "js/heritage-world.js?v=20261111-museums1",
+      "src": "js/heritage-world.js?v=20261113-carga1",
       "requires": [
         "editor-actions",
         "museum-biographies"
@@ -1182,7 +1187,7 @@
     },
     {
       "id": "home-collection",
-      "src": "js/home-collection.js?v=20261030-cape3",
+      "src": "js/home-collection.js?v=20261113-carga1",
       "requires": [
         "learning-arcade"
       ]
@@ -1244,10 +1249,11 @@
     },
     {
       "id": "homestead-activities",
-      "src": "js/homestead-activities.js?v=20261111-polish2",
+      "src": "js/homestead-activities.js?v=20261113-carga1",
       "requires": [
         "homestead-life",
-        "campus-content"
+        "campus-content",
+        "content"
       ]
     },
     {
@@ -1281,7 +1287,7 @@
     },
     {
       "id": "illustrated-interface",
-      "src": "js/illustrated-interface.js?v=20261111-polish1",
+      "src": "js/illustrated-interface.js?v=20261113-carga1",
       "requires": [
         "menu-art"
       ]
@@ -1341,7 +1347,7 @@
     },
     {
       "id": "legacy-art-polish",
-      "src": "js/legacy-art-polish.js?v=20261103-loading1",
+      "src": "js/legacy-art-polish.js?v=20261113-carga1",
       "requires": [
         "words-respect"
       ]
@@ -1568,7 +1574,7 @@
     },
     {
       "id": "neighborhood-design",
-      "src": "js/neighborhood-design.js?v=20261030-cape3",
+      "src": "js/neighborhood-design.js?v=20261113-carga1",
       "requires": [
         "cultural-world",
         "heritage-content"
@@ -1609,7 +1615,7 @@
     },
     {
       "id": "neighbors-world",
-      "src": "js/neighbors-world.js?v=20261029-load2",
+      "src": "js/neighbors-world.js?v=20261113-carga1",
       "requires": [
         "coast-world",
         "neighbors-content"
@@ -1620,6 +1626,15 @@
       "src": "js/neighbourhood-life.js?v=20261111-polish1",
       "requires": [
         "community-stories"
+      ]
+    },
+    {
+      "id": "npc-art",
+      "src": "js/npc-art.js?v=20261113-elenco2",
+      "requires": [
+        "cape-art-data",
+        "guard-village",
+        "professional-kitchen"
       ]
     },
     {
@@ -1708,7 +1723,7 @@
     },
     {
       "id": "place-life",
-      "src": "js/place-life.js?v=20261111-guard-village1",
+      "src": "js/place-life.js?v=20261113-elenco2",
       "requires": [
         "editor-buildings",
         "living-biomes"
@@ -1737,15 +1752,17 @@
     },
     {
       "id": "playable-art",
-      "src": "js/playable-art.js?v=20261103-playable2",
+      "src": "js/playable-art.js?v=20261113-elenco2",
       "requires": [
         "playable-art-data",
-        "sprite-readiness"
+        "sprite-readiness",
+        "content",
+        "npc-art"
       ]
     },
     {
       "id": "playable-art-data",
-      "src": "js/playable-art-data.js?v=20261103-playable2",
+      "src": "js/playable-art-data.js?v=20261113-elenco2",
       "requires": []
     },
     {
@@ -1757,19 +1774,21 @@
     },
     {
       "id": "player-appearance",
-      "src": "js/player-appearance.js?v=20261030-stream1",
+      "src": "js/player-appearance.js?v=20261113-elenco1",
       "requires": [
         "cape-region-world",
         "salon-culture-data",
-        "salon-fit-data"
+        "salon-fit-data",
+        "content"
       ]
     },
     {
       "id": "player-profiles",
-      "src": "js/player-profiles.js?v=20261112-trilhas2",
+      "src": "js/player-profiles.js?v=20261113-perfis1",
       "requires": [
         "playground-integration",
-        "world-preferences"
+        "world-preferences",
+        "content"
       ]
     },
     {
@@ -1895,7 +1914,7 @@
     },
     {
       "id": "professor-mode",
-      "src": "js/professor-mode.js?v=20261112-trilhas2",
+      "src": "js/professor-mode.js?v=20261113-carga1",
       "requires": [
         "editorial-links",
         "professor-ui-catalog"
@@ -1918,7 +1937,7 @@
     },
     {
       "id": "protest-world",
-      "src": "js/protest-world.js?v=20261029-load2",
+      "src": "js/protest-world.js?v=20261113-carga1",
       "requires": [
         "atelier-world",
         "neighborhood-balloons",
@@ -1948,7 +1967,7 @@
     },
     {
       "id": "regional-furniture",
-      "src": "js/regional-furniture.js?v=20261029-load2",
+      "src": "js/regional-furniture.js?v=20261113-carga1",
       "requires": [
         "furnishings-world",
         "regional-assets"
@@ -2052,10 +2071,11 @@
     },
     {
       "id": "salon-world",
-      "src": "js/salon-world.js?v=20261103-mobile1",
+      "src": "js/salon-world.js?v=20261113-elenco1",
       "requires": [
         "grounded-art",
-        "player-appearance"
+        "player-appearance",
+        "content"
       ]
     },
     {
@@ -2076,9 +2096,10 @@
     },
     {
       "id": "save",
-      "src": "js/save.js?v=20261112-trilhas2",
+      "src": "js/save.js?v=20261113-elenco1",
       "requires": [
-        "audio"
+        "audio",
+        "content"
       ]
     },
     {
@@ -2154,7 +2175,7 @@
     },
     {
       "id": "sprite-readiness",
-      "src": "js/sprite-readiness.js?v=20261103-sprite5",
+      "src": "js/sprite-readiness.js?v=20261113-carga1",
       "requires": [
         "interface-renewal"
       ]
@@ -2169,7 +2190,7 @@
     },
     {
       "id": "team-data",
-      "src": "js/team-data.js?v=20261111-team1",
+      "src": "js/team-data.js?v=20261113-elenco2",
       "requires": []
     },
     {
@@ -2205,7 +2226,7 @@
     },
     {
       "id": "trail-companions",
-      "src": "js/trail-companions.js?v=20261112-equip1",
+      "src": "js/trail-companions.js?v=20261113-carga1",
       "requires": [
         "infinity-trails",
         "team-world"
@@ -2377,7 +2398,7 @@
     },
     {
       "id": "city-sprite-data",
-      "src": "js/city-sprite-data.js?v=20261103-playable2",
+      "src": "js/city-sprite-data.js?v=20261113-elenco2",
       "requires": [
         "adventure-sprite-data"
       ]
@@ -2425,7 +2446,7 @@
     },
     {
       "id": "sprite-editor-data",
-      "src": "js/sprite-editor-data.js?v=20261103-playable2",
+      "src": "js/sprite-editor-data.js?v=20261113-elenco2",
       "requires": []
     },
     {

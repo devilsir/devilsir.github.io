@@ -8,7 +8,16 @@
 'use strict';
 const V=window.V,A=V.Animations;
 for(const id of ['nia','leo','taina','sol','librarian'])V.AdventureArt['motion-'+id]='assets/city/'+id+'-motion.png';
-const draw=A.draw.bind(A);A.draw=function(ctx,id,action,x,y,size=96,time=V.Engine.time,flip=false,fit=false,loop){const rows={walk:0,walkBack:1,dance:2,spin:3},key='motion-'+id,img=V.Assets.images[key];if(!img||!Object.hasOwn(rows,action))return draw(ctx,id,action,x,y,size,time,flip,fit,loop);const frame=V.settings.reducedMotion?0:Math.floor(Math.max(0,time)*8)%8;return V.SpriteFrames.draw(ctx,img,key,rows[action],frame,x,y,size,flip&&action!=='spin',fit);};
+const draw=A.draw.bind(A);A.draw=function(ctx,id,action,x,y,size=96,time=V.Engine.time,flip=false,fit=false,loop){const rows={walk:0,walkBack:1,dance:2,spin:3},key='motion-'+id,img=V.Assets.images[key];if(!img||!Object.hasOwn(rows,action))return draw(ctx,id,action,x,y,size,time,flip,fit,loop);
+ if(!V.Assets.ready(img)){
+  if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);
+  if(V.Assets.ready(V.Assets.images[id])){
+   const direction=action==='walkBack'?3:flip?1:2,frame=V.settings.reducedMotion?0:Math.floor(Math.max(0,time)*8)%4;
+   V.Assets.sprite(ctx,id,x,y-6,direction,frame,size);
+   return true;
+  }
+  return false;
+ }const frame=V.settings.reducedMotion?0:Math.floor(Math.max(0,time)*8)%8;return V.SpriteFrames.draw(ctx,img,key,rows[action],frame,x,y,size,flip&&action!=='spin',fit);};
 const render=V.Player.render.bind(V.Player);V.Player.render=function(ctx){const p=this.data;if(!p)return;if(p.seated)return render(ctx);const pose=p.poseUntil>V.Engine.time&&!p.moving?p.pose:null;if(!p.moving&&!pose)return render(ctx);if(p.moving)p.poseUntil=0;const x=p.x-V.World.camera.x,y=p.y-V.World.camera.y;ctx.fillStyle='#10241d55';ctx.beginPath();ctx.ellipse(x,y+4,16,5,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle=V.state.cosmetic;ctx.globalAlpha=.55;ctx.beginPath();ctx.ellipse(x,y+4,19,7,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;A.draw(ctx,V.state.character,pose|| (p.dir===3?'walkBack':'walk'),x,y+5,64,pose?V.Engine.time-p.poseStart:this.walkTime,p.dir===1);};
 V.Player.perform=function(pose){if(V.Game.mode!=='explore'||V.SceneEditor.active)return;V.UI.close();this.data.pose=pose;this.data.poseStart=V.Engine.time;this.data.poseUntil=V.Engine.time+4;V.Audio.sfx('menu');};
 const character=V.Progress.character.bind(V.Progress);

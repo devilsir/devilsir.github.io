@@ -44,14 +44,15 @@ function fountainShimmer(index,frame){
 }
 V.Assets.load=async function(){
  const entries=[...data.assets.map(a=>['campus-'+a.index,a.path]),...data.fountains.map(a=>['campus-fountain-'+a.index,a.path]),...data.portraits.map(a=>['campus-portrait-'+a.index,a.path])];
- await Promise.all([prior.load(),...entries.map(([key,path])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[key]=img;resolve();};img.onerror=()=>{this.errors.push(path);resolve();};img.src=path;}))]);
- for(const r of data.residents){this.images[r.character]=this.images[r.sourceCharacter];this.images[r.character+'-portrait']=this.images[r.sourceCharacter+'-portrait'];}
+ for(const r of data.residents)if(r.sprite)entries.push([r.character,r.sprite],[r.character+'-portrait',r.portrait]);
+ await Promise.all([prior.load(),this.loadEntries(entries)]);
+ for(const r of data.residents)if(r.sourceCharacter){this.images[r.character]=this.images[r.sourceCharacter];this.images[r.character+'-portrait']=this.images[r.sourceCharacter+'-portrait'];}
  shimmerCache.clear();return this.errors;
 };
 C.prop=function(ctx,family,index,x,y,size=T,materials=null){
  if(family==='portrait-display'){
   const img=V.Assets.images['campus-portrait-'+index],frame=V.Assets.images['campus-31'],p=data.portraits.find(p=>p.index===index);
-  if(!img||!frame)return;ctx.imageSmoothingEnabled=false;ctx.drawImage(frame,6,37,84,53,x+size*.03,y+size*.03,size*.94,size*.94);
+  if(!V.Assets.ready(img)||!V.Assets.ready(frame))return;ctx.imageSmoothingEnabled=false;ctx.drawImage(frame,6,37,84,53,x+size*.03,y+size*.03,size*.94,size*.94);
   ctx.fillStyle='#e4d6b5';ctx.fillRect(x+size*.14,y+size*.12,size*.72,size*.69);ctx.drawImage(img,x+size*.15,y+size*.10,size*.70,size*.70);
   if(p){let label=p.name;ctx.font='600 '+Math.max(7,size*.065)+'px "VOICES Sans",sans-serif';while(ctx.measureText(label).width>size*.80&&label.length>6)label=label.slice(0,-2)+'…';ctx.fillStyle='#f2e3bc';ctx.textAlign='center';ctx.fillText(label,x+size/2,y+size*.91);ctx.textAlign='left';}return;
  }
@@ -61,7 +62,7 @@ C.prop=function(ctx,family,index,x,y,size=T,materials=null){
  else if(family==='fountain'&&index>=12)key='campus-fountain-'+index;
  else if(family==='cultural-pack'&&index>=136)key='campus-portrait-'+index;
  if(!key)return prior.prop(ctx,family,index,x,y,size,materials);
- const img=V.Assets.images[key];if(!img)return;ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(x),Math.round(y),size,size);
+ const img=V.Assets.images[key];if(!V.Assets.ready(img))return;ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(x),Math.round(y),size,size);
  if(family==='fountain'&&!V.settings?.reducedMotion){const time=E.active?E.animationClock||0:V.Engine.time,frame=Math.floor(time*7)%8;ctx.drawImage(fountainShimmer(index,frame),Math.round(x),Math.round(y),size,size);}
 };
 C.fountain=function(){};

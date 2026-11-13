@@ -20,13 +20,22 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   const saved=V.state?.maskAppearance?.[owner===1?'player2':'player1'];
   return{model:models.some(m=>m.id===saved?.model)?saved.model:'default',palette:palettes.some(p=>p.id===saved?.palette)?saved.palette:'original'};
  },
+ portraitPath(model,palette='original'){
+  return 'assets/adventure/mask-styles/portraits/'+model+'-'+palette+'.webp?v='+version;
+ },
  texture(model,palette='original'){
   const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0];
   if(!entry)return null;
-  const image=this.images['portrait:'+entry.id+'-'+color.id];if(!V.Assets.ready(image))return null;
+  const image=this.images['portrait:'+entry.id+'-'+color.id];
+  if(!V.Assets.ready(image)){
+   if(V.AssetLoader.byImage.get(image)?.state==='deferred')V.AssetLoader.request(image).then(ok=>{
+    if(ok){this.refreshWardrobe();this.retrofit();this.paintPanels();}
+   });
+   return null;
+  }
   const key=entry.id+':'+color.id;if(this.textures.has(key))return this.textures.get(key);
   // Static images also work on file://, where drawing a local image taints a canvas.
-  const texture={canvas:image,url:'assets/adventure/mask-styles/portraits/'+entry.id+'-'+color.id+'.webp?v='+version};this.textures.set(key,texture);return texture;
+  const texture={canvas:image,url:this.portraitPath(entry.id,color.id)};this.textures.set(key,texture);return texture;
  },
  ensureAnimation(model=this.appearance().model,owner=this.variant(),palette=this.appearance(owner).palette){
   const entry=models.find(m=>m.id===model),color=palettes.find(p=>p.id===palette)||palettes[0],asset=model+(color.id==='original'?'':'-'+color.id),image=this.images['animation:'+asset];
@@ -55,7 +64,6 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  label(variant){const style=this.appearance(variant),model=models.find(m=>m.id===style.model);return model?'Máscara '+model.name+' · '+palettes.find(p=>p.id===style.palette).name+' · jogador '+(variant+1):variant?'Máscara ancestral azul e turquesa do jogador 2, com olhos âmbar':'Máscara ancestral colorida com penas, pintura geométrica e olhos turquesa';},
  choose(model,palette=this.appearance().palette){
   if(!V.state||!['default',...models.map(m=>m.id)].includes(model)||!palettes.some(p=>p.id===palette))return false;
-  if(model!=='default'&&!this.texture(model,palette))return false;
   // Keep cosmetics outside the shared investigation/tutorial state.
   const owner=this.variant(),key=owner===1?'player2':'player1';
   V.state.maskAppearance={...V.state.maskAppearance,[key]:{model,palette}};V.Save.save();this.ensureAnimation(model,owner);this.refreshWardrobe();this.retrofit();this.paintPanels();this.paintPortrait();return true;
@@ -157,7 +165,9 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   c.drawImage(image,col*cell,row*cell,cell,cell,Math.round(x-size/2),Math.round(y-size/2),size,size);
  },
  draw(c,point,cam=W.camera){
-  if(!point||!V.Assets.ready(this.image('atlas',point.variant)))return;
+  if(!point)return;
+  const image=this.image('atlas',point.variant);
+  if(!V.Assets.ready(image)){if(V.AssetLoader.byImage.get(image)?.state==='deferred')V.AssetLoader.request(image);return;}
   const {x,y,size,row,col,tilt,scale,variant=0}=point,px=x-cam.x,py=y-cam.y;
   c.save();c.imageSmoothingEnabled=false;
   V.SceneShadows.contact(c,px,point.groundY-cam.y+3,8,3,.12);
@@ -214,13 +224,14 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
   // Capture ownership explicitly, including clicks before modal binding runs.
   for(const button of details.querySelectorAll('[data-mask-model]'))button.onclick=()=>V.DuoPanels.withOwner(owner,()=>this.choose(button.dataset.maskModel));
   for(const button of details.querySelectorAll('[data-mask-palette]'))button.onclick=()=>V.DuoPanels.withOwner(owner,()=>this.choose(this.appearance(owner).model,button.dataset.maskPalette));
+  details.addEventListener('toggle',()=>{if(details.open)this.refreshWardrobe();});
   this.refreshWardrobe();
  },
  refreshWardrobe(){
   for(const details of document.querySelectorAll('.historio-wardrobe')){
    const owner=+details.dataset.maskPlayer===1?1:0,style=this.appearance(owner),name=models.find(m=>m.id===style.model)?.name||(owner?'Ancestral azul':'Ancestral original'),palette=palettes.find(p=>p.id===style.palette);
    details.querySelector('[data-mask-current]').textContent=name+(style.model==='default'?'':' · '+palette.name);
-   for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'?null:this.texture(id,style.palette),im=button.querySelector('img'),src=texture?.url||variants[owner].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;const bonus=V.FragmentData?.masks[id];if(bonus){button.title=bonus[1]+' · '+bonus[2];button.querySelector('span').textContent=(id==='default'?(owner?'Ancestral azul':'Ancestral original'):bonus[0])+' · '+bonus[1];}button.disabled=id!=='default'&&!texture;button.setAttribute('aria-pressed',String(id===style.model));}
+   for(const button of details.querySelectorAll('[data-mask-model]')){const id=button.dataset.maskModel,texture=id==='default'||!details.open?null:this.texture(id,style.palette),im=button.querySelector('img'),src=details.open&&id!=='default'?(texture?.url||this.portraitPath(id,style.palette)):variants[owner].portrait+'?v='+version;if(im.getAttribute('src')!==src)im.src=src;const bonus=V.FragmentData?.masks[id];if(bonus){button.title=bonus[1]+' · '+bonus[2];button.querySelector('span').textContent=(id==='default'?(owner?'Ancestral azul':'Ancestral original'):bonus[0])+' · '+bonus[1];}button.disabled=false;button.setAttribute('aria-pressed',String(id===style.model));}
    for(const button of details.querySelectorAll('[data-mask-palette]')){button.disabled=style.model==='default';button.setAttribute('aria-pressed',String(button.dataset.maskPalette===(style.model==='default'?'original':style.palette)));}
    details.querySelector('.historio-mask-selection').textContent='Visual equipado: '+name+(style.model==='default'?'':' · '+palette.name)+'. '+(V.FragmentData?.masks[style.model]?.[2]||'');
    const label=details.closest('.historio-shell')?.querySelector('[data-mask-equipped]');
@@ -231,7 +242,8 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  paintPanels(){
   for(const panel of this.panels){
    const {canvas,fallback,player,curious,variant}=panel;if(!canvas.isConnected){this.panels.delete(panel);continue;}
-   if(!V.Assets.ready(this.image('atlas',variant)))continue;
+   const image=this.image('atlas',variant);
+   if(!V.Assets.ready(image)){if(V.AssetLoader.byImage.get(image)?.state==='deferred')V.AssetLoader.request(image);continue;}
    fallback.hidden=true;
    const track=this.tracks.get(player),motion=!V.settings.reducedMotion&&V.Historio.ensure().motion!==false;
    let row=0,col=motion?this.blink(this.uiTime):0;
@@ -244,7 +256,9 @@ const M=V.AncestralMask={images:{},tracks:new WeakMap(),panels:new Set(),texture
  },
  paintPortrait(){
   if(!V.Dialogue.active||V.Dialogue.lines[V.Dialogue.index]?.speaker!=='historiograph')return;
-  const variant=this.variant(V.Player.data,V.Dialogue.viewer??-1),canvas=V.$('#dialogue-portrait');if(!canvas||!V.Assets.ready(this.image('atlas',variant)))return;
+  const variant=this.variant(V.Player.data,V.Dialogue.viewer??-1),canvas=V.$('#dialogue-portrait');if(!canvas)return;
+  const atlas=this.image('atlas',variant);
+  if(!V.Assets.ready(atlas)){if(V.AssetLoader.byImage.get(atlas)?.state==='deferred')V.AssetLoader.request(atlas);return;}
   const line=V.Dialogue.lines[V.Dialogue.index],talking=V.Dialogue.typing<V.Dialogue.currentText.length,reduced=V.settings.reducedMotion;
   const row=reduced?0:talking?rows.speaking:[0,rows.speaking,rows.curious,rows.happy][line.expression||0]||0;
   const col=reduced?0:row===0?this.blink(this.uiTime):Math.floor(this.uiTime*(talking?8:3))%4;

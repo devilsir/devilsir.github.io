@@ -26,6 +26,42 @@
       support('taina-breath','Pausa para respirar',24,'Recupera vida de um aliado de pé.'),
       skill('taina-signal','Sinal de confiança','chorus','allies',.16,12,3,2,6,2,'Aumenta ataque e conhecimento da equipe por 2 turnos.')
     ]),
+    iris:kit('Investigação',3,{},[
+      mark('iris-panel','Quadro a quadro','Revela a intenção e expõe uma fraqueza por 3 turnos.'),
+      skill('iris-storyboard','Sequência ilustrada','link','enemy',12,13,3,2,6,3,'Causa dano de conhecimento e vincula os inimigos por 2 turnos.')
+    ]),
+    joca:kit('Apoio',5,{},[
+      support('joca-side-b','Lado B',24,'Recupera vida de um aliado.'),
+      skill('joca-sample','Batida compartilhada','chorus','allies',.16,12,3,2,5,0,'Aumenta ataque e conhecimento da equipe por 2 turnos.')
+    ]),
+    malu:kit('Controle',7,{},[
+      mark('malu-listen','Escuta de campo','Revela a intenção e expõe uma fraqueza por 3 turnos.'),
+      delay('malu-loop','Som em repetição',14,'Causa dano de conhecimento e reduz a agilidade do alvo por 2 turnos.')
+    ]),
+    luiza:kit('Investigação',3,{},[
+      mark('luiza-question','Pergunta ao vivo','Revela a intenção e expõe uma fraqueza por 3 turnos.'),
+      skill('luiza-report','Reportagem de campo','knowledgeStrike','enemy',21,11,2,1,11,3,'Concentra dano de conhecimento em um inimigo.')
+    ]),
+    breno:kit('Proteção',1,{},[
+      guard('breno-brace','Reforço da oficina',24,'Concede um escudo a um aliado por 2 turnos.'),
+      skill('breno-repair','Conserto de campo','cleanse','ally',17,10,2,1,10,2,'Remove efeitos negativos e recupera vida de um aliado.')
+    ]),
+    caue:kit('Atacante',0,{},[
+      strike('caue-cut','Corte de cena',21,'Causa dano físico concentrado em um inimigo.'),
+      skill('caue-credits','Créditos em destaque','credit','enemy',14,13,3,2,13,3,'Causa dano, reduz o ataque do inimigo e remove seu acúmulo de poder.')
+    ]),
+    ayla:kit('Proteção',8,{},[
+      guard('ayla-watch','Vigília em grupo',24,'Concede um escudo a um aliado por 2 turnos.'),
+      skill('ayla-constellation','Constelação de histórias','seal','allies',0,15,4,2,7,3,'Protege a equipe contra confusão, corrupção e obscurecimento por 2 turnos.')
+    ]),
+    tadeu:kit('Apoio',6,{},[
+      support('tadeu-verse','Verso de resposta',24,'Recupera vida de um aliado.'),
+      skill('tadeu-chorus','Refrão coletivo','chorus','allies',.16,12,3,2,6,2,'Aumenta ataque e conhecimento da equipe por 2 turnos.')
+    ]),
+    davia:kit('Apoio',8,{},[
+      support('davia-color','Cores da roda',24,'Recupera vida de um aliado.'),
+      skill('davia-poster','Cartaz coletivo','chorus','allies',.16,12,3,2,6,2,'Aumenta ataque e conhecimento da equipe por 2 turnos.')
+    ]),
     librarian:kit('Controle',7,{knowledge:1.12,attack:.66,agility:.84},[
       delay('library-margin','Nota à margem',12,'Causa dano de conhecimento e reduz a agilidade do alvo por 2 turnos.'),
       skill('library-source','Fonte rastreada','seal','allies',0,15,4,2,7,3,'Protege a equipe contra confusão, corrupção e obscurecimento por 2 turnos.')

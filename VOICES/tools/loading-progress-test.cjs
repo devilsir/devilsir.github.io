@@ -50,13 +50,18 @@ async function run(){
   const init=V.Game.init();
   await check('saved artwork settings finish before any startup images are registered',async()=>{await pause(160);assert.deepEqual(counts(L),{done:0,total:0});assert([...L.records].every(r=>r.state==='deferred'));assert.equal(firstBitmap,false);release();await init;});
   await check('real startup registers every group before any image completes and keeps a fixed total',async()=>{
-   assert.deepEqual(late,[]);assert(samples.length>0);const eager=[...L.records].filter(r=>r.state!=='deferred'),total=new Set(eager.map(r=>r.key)).size;assert(eager.length>total,'the game must exercise duplicate requests');assert.equal(new Set(samples.map(s=>s.total)).size,1);assert.equal(samples[0].total,total);for(let i=1;i<samples.length;i++)assert(samples[i].done>=samples[i-1].done);assert.deepEqual(samples.at(-1),{done:total,total});
+   assert.deepEqual(late,[]);assert(samples.length>0);const eager=[...L.records].filter(r=>r.state!=='deferred'),total=new Set(eager.map(r=>r.key)).size;assert(total<100,'the title should register fewer than 100 eager images');assert.equal(new Set(samples.map(s=>s.total)).size,1);assert.equal(samples[0].total,total);for(let i=1;i<samples.length;i++)assert(samples[i].done>=samples[i-1].done);assert.deepEqual(samples.at(-1),{done:total,total});
   });
   await check('the final complete counter and full bar are visible before the world is built',async()=>{
    assert(worldSnapshot);assert.equal(worldSnapshot.hidden,false);assert.equal(worldSnapshot.done,worldSnapshot.total);assert.equal(worldSnapshot.bar,worldSnapshot.max);assert.equal(worldSnapshot.text,'Imagens carregadas: '+worldSnapshot.total+' / '+worldSnapshot.total);assert(V.$('#loading').hidden);assert.equal(V.Game.screen,'title');
   });
   await check('parallel registration preserves polished props, both mask variants and kitchen portraits',async()=>{
-   assert.match(V.Assets.images.props.src,/\/props-polished\.webp/);assert.match(V.Assets.images['world-props'].src,/\/world-props-polished\.webp/);for(const index of [0,1]){assert.strictEqual(V.Assets.images[index?'historiograph-p2':'historiograph'],V.AncestralMask.image('portrait',index));assert.strictEqual(V.IllustratedInterface.images[index?'historio-p2':'historio'],V.AncestralMask.image('icon',index));assert.strictEqual(V.Assets.images[index?'item-device-p2':'item-device'],V.AncestralMask.image('icon',index));}for(const [key,meta]of Object.entries(V.ProfessionalKitchen.uniforms))assert.strictEqual(V.Assets.images[key+'-portrait'],V.Assets.images[meta.base+'-portrait']);assert.strictEqual(V.CulinaryInteriors.images['kitchen-interiors'],V.ProfessionalKitchen.images['industrial-kitchen']);
+   assert.equal(L.byImage.get(V.Assets.images.props).state,'deferred');
+   assert.match(L.byImage.get(V.Assets.images.props).url,/\/props-polished\.webp/);
+   assert.match(L.byImage.get(V.Assets.images['world-props']).url,/\/world-props-polished\.webp/);
+   assert.equal(L.byImage.get(V.Assets.images['campus-researcher']).state,'deferred');
+   assert.equal(L.byImage.get(V.Assets.images['davia']).state,'deferred');
+   assert(V.Assets.ready(V.Assets.images['character-previews']));for(const index of [0,1]){assert.strictEqual(V.Assets.images[index?'historiograph-p2':'historiograph'],V.AncestralMask.image('portrait',index));assert.strictEqual(V.IllustratedInterface.images[index?'historio-p2':'historio'],V.AncestralMask.image('icon',index));assert.strictEqual(V.Assets.images[index?'item-device-p2':'item-device'],V.AncestralMask.image('icon',index));}for(const [key,meta]of Object.entries(V.ProfessionalKitchen.uniforms))assert.strictEqual(V.Assets.images[key+'-portrait'],V.Assets.images[meta.base+'-portrait']);assert.strictEqual(V.CulinaryInteriors.images['kitchen-interiors'],V.ProfessionalKitchen.images['industrial-kitchen']);
   });
  }finally{dom.window.close();}
  console.log(passed+' loading checks passed');

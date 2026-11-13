@@ -64,17 +64,26 @@ portGround(m){
  m.cache=c;
 },
 artBox(o){const im=A.images.get(o.art);if(!im)return null;const maxW=o.w||76,maxH=o.h||76,k=Math.min(maxW/im.width,maxH/im.height),w=im.width*k,h=im.height*k;return{im,x:o.x-w/2,y:o.y-h,w,h};},
-person(o){if(o.type==='sea-person'){const p=V.MaritimeData.people.find(p=>p.id===o.person);return p&&!p.sprite?{im:A.images.get('npc-'+p.id),name:p.name}:null;}if(o.type==='cape-person'){const p=D.people.find(p=>p.id===o.person);return p?{im:A.images.get(p.art),name:p.name}:null;}return null;},
+person(o){if(o.type==='sea-person'){const p=V.MaritimeData.people.find(p=>p.id===o.person);return p&&!p.sprite?{key:'npc-'+p.id,im:A.images.get('npc-'+p.id),name:p.name}:null;}if(o.type==='cape-person'){const p=D.people.find(p=>p.id===o.person);return p?{key:p.art,im:A.images.get(p.art),name:p.name}:null;}return null;},
 draw(owner,original,c,o,cam){
  const b=['sea-building','sea-decor','cape-building','cape-decor'].includes(o.type)?this.artBox(o):null;
  if(b){if(o.seaSite){const x=o.x-cam.x,y=o.y-cam.y,r=o.siteRadius;c.fillStyle='#165367';c.beginPath();c.ellipse(x+8,y+8,r+18,r*.55+12,0,0,Math.PI*2);c.fill();c.fillStyle='#b5ad86';c.beginPath();c.ellipse(x,y,r,r*.5,0,0,Math.PI*2);c.fill();c.fillStyle='#ddca9d';c.beginPath();c.ellipse(x-5,y-5,r*.9,r*.43,0,0,Math.PI*2);c.fill();}const image=V.SeasonVisuals?.raster(c,o)||b.im;c.drawImage(image,Math.round(b.x-cam.x),Math.round(b.y-cam.y),b.w,b.h);return;}
- const p=this.person(o);if(p?.im){const h=64,w=h*p.im.width/p.im.height;c.drawImage(p.im,Math.round(o.x-cam.x-w/2),Math.round(o.y-cam.y-h),w,h);if(V.World.nearest?.id===o.id)M.label(c,p.name,o.x-cam.x,o.y-cam.y-77,true);return;}
+ const p=this.person(o);
+ if(p?.im){
+  const x=o.x-cam.x,y=o.y-cam.y;
+  if(!V.NpcArt?.coastalFrame(c,p.key,x,y,74,owner.clock+(o.x%9)*.13)){
+   const h=64,w=h*p.im.width/p.im.height;
+   c.drawImage(p.im,Math.round(x-w/2),Math.round(y-h),w,h);
+  }
+  if(V.World.nearest?.id===o.id)M.label(c,p.name,x,y-77,true);
+  return;
+ }
  return original.call(owner,c,o,cam);
 },
 shadow(owner,original,c,o,cam){
  const b=['sea-building','sea-decor','cape-building','cape-decor'].includes(o.type)?this.artBox(o):null;
  if(b)return V.GroundedArt.shadow(c,b.im,o.x-cam.x,o.y-cam.y,b.w,b.h,{indoor:false,alpha:o.type.endsWith('building')?.18:.21});
- const p=this.person(o);if(p?.im){const h=64,w=h*p.im.width/p.im.height;return V.GroundedArt.shadow(c,p.im,o.x-cam.x,o.y-cam.y,w,h,{indoor:false,alpha:.2});}
+ const p=this.person(o);if(p?.im)return V.SceneShadows.contact(c,o.x-cam.x,o.y-cam.y+3,16,5,.2);
  return original.call(owner,c,o,cam);
 }
 };

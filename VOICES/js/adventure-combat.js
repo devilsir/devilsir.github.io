@@ -278,7 +278,10 @@ resume(snapshot){if(!snapshot||snapshot.schema!==3||!Array.isArray(snapshot.alli
 update(dt){const a=this.active;if(!a)return;a.clock+=dt;const speed=V.settings.battleSpeed||1;a.effects=a.effects.filter(e=>{e.life-=dt*speed;return e.life>0;});a.guardianEffect=Math.max(0,(a.guardianEffect||0)-dt);a.ultimateEffect=Math.max(0,(a.ultimateEffect||0)-dt);if(['next','resolving','enemy'].includes(a.phase)){a.timer-=dt*speed;if(a.timer<=0){if(a.phase==='enemy')this.enemyAction();else this.advance();}}},
 back(){const a=this.active;if(!a)return;if(a.phase==='target'){a.phase='command';a.selectedAction=null;a.selectedTarget=null;}else if(a.phase==='command')a.menu='main';this.ui();},
 statusText(actor){return actor.statuses.map(status=>(V.FragmentData?.conditions[status.id]?.[0]||statusNames[status.id]||status.id)+' · '+status.turns).join(', ');},
-drawManifestation(ctx,o,cam){const id=o.chapter||o.encounter?.chapter||1,definition=D.cases[id-1],enemy=D.enemies.find(e=>e.id===definition.enemy),img=V.Assets.images['rasura-enemies'];if(!img)return;const won=V.state.completed.includes(id)&&o.type==='boss';ctx.save();ctx.globalAlpha=won?.5:1;ctx.drawImage(img,0,enemy.row*144,128,144,Math.round(o.x-cam.x-48),Math.round(o.y-cam.y-94),96,108);if(V.World.nearest?.id===o.id||!won)V.Living.marker(ctx,o.x-cam.x,o.y-cam.y,won?'✓':V.Quests.ready(id)?'!':'◇','#d5a882');ctx.restore();},
+drawManifestation(ctx,o,cam){const id=o.chapter||o.encounter?.chapter||1,definition=D.cases[id-1],enemy=D.enemies.find(e=>e.id===definition.enemy),img=V.Assets.images['rasura-enemies'];if(!V.Assets.ready(img)){
+ if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);
+ return;
+ }const won=V.state.completed.includes(id)&&o.type==='boss';ctx.save();ctx.globalAlpha=won?.5:1;ctx.drawImage(img,0,enemy.row*144,128,144,Math.round(o.x-cam.x-48),Math.round(o.y-cam.y-94),96,108);if(V.World.nearest?.id===o.id||!won)V.Living.marker(ctx,o.x-cam.x,o.y-cam.y,won?'✓':V.Quests.ready(id)?'!':'◇','#d5a882');ctx.restore();},
 pointer(){return false;}
 };
 })();

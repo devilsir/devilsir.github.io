@@ -51,7 +51,11 @@
     },
     draw(ctx,key,index,x,y,size,flip=false){
       const img=images[key],cell=cells[key];
-      if(index==null||!img?.naturalWidth)return false;
+      if(index==null)return false;
+      if(!V.Assets.ready(img)){
+        if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);
+        return false;
+      }
       ctx.save();
       ctx.imageSmoothingEnabled=false;
       if(flip){ctx.translate(x*2,0);ctx.scale(-1,1);}

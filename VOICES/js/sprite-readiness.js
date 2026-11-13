@@ -17,7 +17,7 @@ const loaded=L.loaded.bind(L);L.loaded=function(record,...args){
   record.decodeAttempt=attempt;
   record.decodePromise=record.img.decode().then(()=>{
    if(record.state!=='loading'||record.attempt!==attempt)return;
-   record.decodeComplete=true;record.decodePromise=null;L.loaded(record,...args);
+   record.decodeComplete=true;record.decoded=true;record.decodePromise=null;L.loaded(record,...args);
   },()=>{if(record.state!=='loading'||record.attempt!==attempt)return;record.decodePromise=null;L.errored(record,args[0]);});
   return record.decodePromise;
  }

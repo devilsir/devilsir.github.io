@@ -16,7 +16,8 @@ frame(id,action,time=0,loop=!['attack','guard','cast','heal'].includes(action)){
  const row=(id==='zambeto'?this.guardian:this.clips)[action]??0,tick=Math.floor(Math.max(0,time)*(action==='idle'?3.2:action==='ready'?5:10));
  return {row,index:V.settings.reducedMotion?0:loop?tick%8:Math.min(7,tick)};
 },
-draw(ctx,id,action,x,y,size=96,time=V.Engine.time,flip=false,fit=false,loop){const key='actions-'+id,img=V.Assets.images[key];if(!img)return false;const f=this.frame(id,action,time,loop);return V.SpriteFrames.draw(ctx,img,key,f.row,f.index,x,y,size,flip,fit);},
+draw(ctx,id,action,x,y,size=96,time=V.Engine.time,flip=false,fit=false,loop){const key='actions-'+id,img=V.Assets.images[key];if(!img)return false;
+  if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);const f=this.frame(id,action,time,loop);return V.SpriteFrames.draw(ctx,img,key,f.row,f.index,x,y,size,flip,fit);},
 fx(ctx,row,x,y,size,time){const img=V.Assets.images['combat-fx'];if(!img)return;const f=V.settings.reducedMotion?4:Math.min(7,Math.floor(Math.max(0,time)*10));ctx.save();ctx.globalAlpha=V.settings.reducedMotion?.5:1;ctx.drawImage(img,f*160,row*160,160,160,x-size/2,y-size/2,size,size);ctx.restore();}
 };
 const render=V.Player.render.bind(V.Player);V.Player.render=function(ctx){const p=this.data;if(!p||p.moving||p.seated)return render(ctx);const x=p.x-V.World.camera.x,y=p.y-V.World.camera.y;ctx.fillStyle='#172c2848';ctx.beginPath();ctx.ellipse(x,y+4,17,5,0,0,Math.PI*2);ctx.fill();if(!A.draw(ctx,V.state.character,p.celebrateTime?'heal':p.actionTime?'cast':'idle',x,y+5,64,p.celebrateTime?Math.max(0,2-p.celebrateTime):p.actionTime?Math.max(0,.8-p.actionTime):V.Engine.time,p.dir===1))render(ctx);};

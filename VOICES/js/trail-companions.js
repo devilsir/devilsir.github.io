@@ -35,7 +35,7 @@
   V.Assets.load=async function(...args){
     const ready=new Promise(resolve=>{
       const img=V.Assets.image();
-      img.onload=()=>{sheet=img;resolve();};img.onerror=resolve;img.src=atlas;
+      sheet=img;img.onload=resolve;img.onerror=resolve;img.src=atlas;
       V.AssetLoader.register(img,resolve);
     });
     const [result]=await Promise.all([load(...args),ready]);
@@ -62,6 +62,7 @@
       if(state.bonds[id]===3)V.UI.toast('Vínculo fortalecido · +1 carga de Apoio por combate.');
     },
     draw(c,item,x,y,size,clip='idle',t=0,flip=false){
+      if(V.AssetLoader.byImage.get(sheet)?.state==='deferred')V.AssetLoader.request(sheet);
       const still=V.settings.reducedMotion,flying=item.art===2||item.art===5;
       let pose=-1,lift=0,dx=0,scale=1;
       if(clip==='walk'&&!still){

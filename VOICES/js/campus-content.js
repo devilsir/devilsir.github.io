@@ -3798,7 +3798,8 @@
           }
         }
       ],
-      "sourceCharacter": "archivist"
+      "sprite": "assets/characters/campus-researcher.png",
+      "portrait": "assets/characters/campus-researcher-portrait.png"
     }
   ],
   "conversations": [

@@ -124,13 +124,7 @@
   }
 
   function paintPortraits(root){
-    for(const canvas of root.querySelectorAll('[data-turn-portrait]')){
-      const image=V.Assets.images[canvas.dataset.turnPortrait+'-portrait'];
-      if(!image?.naturalWidth)continue;
-      const c=canvas.getContext('2d');
-      c.imageSmoothingEnabled=false;
-      c.drawImage(image,0,0,96,96,0,0,48,48);
-    }
+    for(const canvas of root.querySelectorAll('[data-turn-portrait]'))V.UI.drawPortrait(canvas,canvas.dataset.turnPortrait);
   }
 
   B.ui=function(){

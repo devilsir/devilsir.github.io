@@ -6,6 +6,8 @@
 })(function () {
 /* VOICES: content original. Historical records have named sources. */
 window.V = window.V || {};
+V.NewPlayableCharacters = Object.freeze(['iris','joca','malu','luiza','breno','caue','ayla','tadeu','davia']);
+V.PlayableCharacters = Object.freeze(['nia','leo','taina','sol', ...V.NewPlayableCharacters]);
 V.content = {
   "characters": {
     "nia": {
@@ -31,6 +33,60 @@ V.content = {
       "role": "Produtora musical e artista",
       "quote": "Meu beat tem grave. Meu cartaz tem crédito.",
       "accent": "#E96687"
+    },
+    "iris": {
+      "name": "Íris",
+      "role": "Ilustradora de zines",
+      "quote": "Se a história cabe num zine, cabe na mochila de todo mundo.",
+      "accent": "#ab6398"
+    },
+    "joca": {
+      "name": "Joca",
+      "role": "DJ e colecionador de discos",
+      "quote": "Quem gravou esse batuque? Vou procurar o nome na contracapa.",
+      "accent": "#e5824e"
+    },
+    "malu": {
+      "name": "Malu",
+      "role": "Gravadora de paisagens sonoras",
+      "quote": "Espera um segundo. O mercado fica com outro som quando começa a chover.",
+      "accent": "#cc765d"
+    },
+    "luiza": {
+      "name": "Luiza",
+      "role": "Repórter da rádio comunitária",
+      "quote": "Cheguei com o gravador. A primeira pergunta é sua.",
+      "accent": "#52b3a8"
+    },
+    "breno": {
+      "name": "Breno",
+      "role": "Inventor da horta comunitária",
+      "quote": "Se der pra consertar junto, eu trago a caixa de ferramentas.",
+      "accent": "#d5a74f"
+    },
+    "caue": {
+      "name": "Cauê",
+      "role": "Videomaker de rua",
+      "quote": "Bora gravar a roda. Depois cada pessoa escolhe como quer aparecer nos créditos.",
+      "accent": "#dc6255"
+    },
+    "ayla": {
+      "name": "Ayla",
+      "role": "Coletora de histórias orais",
+      "quote": "Qual foi a primeira história que você ouviu sobre essa estrela?",
+      "accent": "#8c85ca"
+    },
+    "tadeu": {
+      "name": "Tadeu",
+      "role": "Poeta de slam",
+      "quote": "Me empresta a palavra por três minutos? Depois o microfone é seu.",
+      "accent": "#70ac7b"
+    },
+    "davia": {
+      "name": "Daviã",
+      "role": "Artista gráfico",
+      "quote": "O cartaz precisa ter o nome de quem faz a roda acontecer.",
+      "accent": "#deaa48"
     },
     "pix": {
       "name": "PIX",

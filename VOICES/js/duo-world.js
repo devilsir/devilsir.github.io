@@ -11,7 +11,7 @@ const V=window.V;
 if(V.DuoChallenges?.isChild)return;
 const W=V.World,P=V.Player,copy=value=>JSON.parse(JSON.stringify(value));
 const D=V.DuoWorld={owner:null,actors:[],context:-1,loading:false,starting:false,visible:false,root:null,
- characters(){const selected=V.state?.playerCharacters||V.settings?.playerCharacters||[];return selected.filter(id=>['nia','leo','taina','sol'].includes(id)).slice(0,2);},
+ characters(){const selected=V.state?.playerCharacters||V.settings?.playerCharacters||[];return selected.filter(id=>V.PlayableCharacters.includes(id)).slice(0,2);},
  enabled(){return !!V.state&&this.characters().length===2&&!V.ProfessorStudio?.freePlay;},
  exploring(){return this.enabled()&&V.Game.screen==='game'&&V.Game.mode==='explore'&&!V.SceneEditor?.active&&!V.DuoChallenges?.active;},
  usable(point){return point&&Number.isFinite(point.x)&&Number.isFinite(point.y);},
@@ -33,7 +33,7 @@ const D=V.DuoWorld={owner:null,actors:[],context:-1,loading:false,starting:false
   P.data=this.actors[0].data;W.current=W.maps[this.actors[0].map];W.camera=this.actors[0].camera;V.state.map=W.current.id;if(this.context<0)V.state.character=characters[0];
   this.mount();this.resize();this.center();this.prepareAssets();for(let i=0;i<2;i++)this.withActor(i,()=>V.MapAssets.schedule(W.current));
  },
- prepareAssets(){const groups=this.characters().map(id=>'actor:'+id),missing=V.MapAssets.rows(groups).some(r=>r.state!=='loaded');if(missing)V.MapAssets.ensure(groups,'Preparando os dois personagens');},
+ prepareAssets(){const groups=this.characters().flatMap(id=>['character:'+id,'character:'+id+'-portrait']),missing=V.MapAssets.rows(groups).some(r=>r.state!=='loaded');if(missing)V.MapAssets.ensure(groups,'Preparando os dois personagens');},
  center(){for(let i=0;i<this.actors.length;i++)this.withActor(i,()=>Object.assign(W.camera,V.Viewport.target(W.current,P.data)));},
  withActor(index,fn,{camera=true,viewport=true}={}){
   const actor=this.actors[index];if(!actor)return;
@@ -62,7 +62,7 @@ const D=V.DuoWorld={owner:null,actors:[],context:-1,loading:false,starting:false
  },
  labels(){
   if(!this.root)return;
-  this.characters().forEach((id,i)=>{const name=this.root.querySelector('[data-world-name="'+i+'"]');if(name)name.textContent='J'+(i+1)+' · '+V.content.characters[id].name;const canvas=this.root.querySelector('[data-world-portrait="'+i+'"]'),im=V.Assets.images[id+'-portrait'];if(canvas&&im){const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,36,36);c.drawImage(im,0,0,96,96,0,0,36,36);}});
+  this.characters().forEach((id,i)=>{const name=this.root.querySelector('[data-world-name="'+i+'"]');if(name)name.textContent='J'+(i+1)+' · '+V.content.characters[id].name;const canvas=this.root.querySelector('[data-world-portrait="'+i+'"]');V.UI.drawPortrait(canvas,id);});
  },
  resize(){if(!this.root)return;for(const canvas of this.root.querySelectorAll('[data-world-canvas]')){const box=canvas.parentElement.getBoundingClientRect(),w=Math.max(240,Math.round(box.width||480)),h=Math.max(240,Math.round(box.height||540)),{width,height}=V.Performance?V.Performance.canvasSize(w,h,true):{width:w,height:h};if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;canvas.getContext('2d').imageSmoothingEnabled=false;}}},
  sync(){

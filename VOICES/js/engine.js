@@ -31,7 +31,33 @@ V.UI={onClose:null,previousFocus:null,
  },
  confirm(title,text,fn){this.modal(title,'',`<p>${V.escape(text)}</p>`,`<button id="confirm-no" class="secondary">Cancelar</button><button id="confirm-yes" class="primary">Confirmar</button>`);V.$('#confirm-no').onclick=()=>this.close();V.$('#confirm-yes').onclick=()=>{this.close();fn();};},
  portrait(id,expression=0,size=96){return `<canvas class="portrait" data-portrait="${V.escape(id)}" data-expression="${expression}" width="96" height="96" style="width:${size}px;height:${size}px"></canvas>`;},
- paintPortraits(){V.$$('[data-portrait]').forEach(c=>{const img=V.Assets.images[c.dataset.portrait+'-portrait'];const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;if(img)ctx.drawImage(img,Number(c.dataset.expression||0)*96,0,96,96,0,0,96,96);});},
+ fullBody(id){return `<canvas class="character-full-body" data-character-preview="${V.escape(id)}" width="128" height="128" aria-hidden="true"></canvas>`;},
+ paintCharacterPreviews(){for(const canvas of V.$$('[data-character-preview]')){
+  const c=canvas.getContext('2d');c.clearRect(0,0,128,128);
+  const id=canvas.dataset.characterPreview,image=V.Assets.images['character-previews'];
+  const index=V.PlayableCharacters.indexOf(id);
+  if(V.Assets.ready(image)&&index>=0){
+   c.drawImage(image,index%5*112,Math.floor(index/5)*112,112,112,4,4,120,120);
+  }else V.Assets.sprite(c,id,64,116,0,0,122);
+ }},
+ drawPortrait(canvas,id,expression=0,fallback=null){
+  if(!canvas)return;
+  const image=V.Assets.images[id+'-portrait'];
+  const draw=portrait=>{
+   if(!V.Assets.ready(portrait))return;
+   const ctx=canvas.getContext('2d');
+   const frame=V.clamp(Math.trunc(Number(expression)||0),0,Math.max(0,Math.floor(portrait.naturalWidth/96)-1));
+   ctx.clearRect(0,0,canvas.width,canvas.height);
+   ctx.imageSmoothingEnabled=false;
+   ctx.drawImage(portrait,frame*96,0,96,96,0,0,canvas.width,canvas.height);
+  };
+  if(V.Assets.ready(image))draw(image);
+  else{
+   draw(V.Assets.images[fallback+'-portrait']);
+   V.AssetLoader.request(image).then(loaded=>{if(loaded&&canvas.isConnected)draw(image);});
+  }
+ },
+ paintPortraits(){for(const canvas of V.$$('[data-portrait]'))this.drawPortrait(canvas,canvas.dataset.portrait,canvas.dataset.expression);},
  focusTrap(e){if(e.key!=='Tab')return;const root=V.$('.modal')||V.$('.dialogue-box');if(!root)return;const els=Array.from(root.querySelectorAll('button,input,select,textarea,a[href]')).filter(x=>!x.disabled&&!x.hidden&&(!x.getClientRects||x.getClientRects().length));if(!els.length)return;if(!els.includes(document.activeElement)){e.preventDefault();(e.shiftKey?els.at(-1):els[0]).focus();}else if(e.shiftKey&&document.activeElement===els[0]){e.preventDefault();els.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===els.at(-1)){e.preventDefault();els[0].focus();}}
 };
 V.Input={keys:new Set(),pressed:new Set(),touch:{x:0,y:0},gamepad:{x:0,y:0},padOld:[],
@@ -41,12 +67,28 @@ V.Input={keys:new Set(),pressed:new Set(),touch:{x:0,y:0},gamepad:{x:0,y:0},padO
  const joy=V.$('#joystick'),stick=V.$('#stick');const update=(e)=>{const b=joy.getBoundingClientRect();const x=V.clamp((e.clientX-b.left-b.width/2)/(b.width*.35),-1,1),y=V.clamp((e.clientY-b.top-b.height/2)/(b.height*.35),-1,1);this.touch={x,y};stick.style.transform=`translate(${x*26}px,${y*26}px)`;};joy.onpointerdown=e=>{joy.setPointerCapture(e.pointerId);update(e);};joy.onpointermove=e=>{if(joy.hasPointerCapture(e.pointerId))update(e);};const end=()=>{this.touch={x:0,y:0};stick.style.transform='';};joy.onpointerup=end;joy.onpointercancel=end;V.$('#touch-interact').onpointerdown=e=>{e.preventDefault();this.pressed.add('e');};V.$('#touch-shield').onpointerdown=e=>{e.preventDefault();this.pressed.add(' ');};},
  pollGamepad(){const pad=navigator.getGamepads?.()[0];if(!pad){this.gamepad={x:0,y:0};return;}this.gamepad={x:Math.abs(pad.axes[0]||0)>.18?pad.axes[0]:0,y:Math.abs(pad.axes[1]||0)>.18?pad.axes[1]:0};[0,1,9].forEach((n,i)=>{const on=pad.buttons[n]?.pressed;if(on&&!this.padOld[n]){const key=['e',' ','escape'][i];this.pressed.add(key);if(key==='escape')V.Game.onKey(key,{});}this.padOld[n]=on;});}
 };
-V.Assets={images:{},errors:[],async load(){const ids=['nia','leo','taina','sol','pix','curator','librarian','scientist','journalist','resident','student','musician','gardener','vendor','guide','archivist','technician','teacher','courier','elder','student2','percussionist'];const entries=ids.flatMap(id=>[[id,`assets/characters/${id}.png`],[id+'-portrait',`assets/characters/${id}-portrait.png`]]);['djglitch','eraser','copycat','clickbait','wall','bias'].forEach(id=>entries.push(['boss-'+id,`assets/characters/boss-${id}.png`]));entries.push(['animals','assets/characters/animals.png'],['world-props','assets/tilesets/world-props.png'],['props','assets/tilesets/props.png'],['tiles','assets/tilesets/tiles.png'],['icons','assets/ui/icons.png'],['badges','assets/ui/badges.png'],['effects','assets/effects/effects.png'],['title','assets/backgrounds/new-harmony.webp']);await Promise.all(entries.map(([key,path])=>new Promise(resolve=>{const img=V.Assets.image();img.onload=()=>{this.images[key]=img;resolve();};img.onerror=()=>{this.errors.push(path);resolve();};img.src=path;})));return this.errors;},
+V.Assets={images:{},errors:[],
+ loadEntries(entries){return Promise.all(entries.map(([key,path])=>{
+  const existing=this.images[key],record=V.AssetLoader.byImage.get(existing);
+  const url=V.ImageFormats?.resolve(path)||path;
+  if(record?.url===url&&record.state!=='failed')
+   return record.state==='deferred'?Promise.resolve():record.promise;
+  if(record?.url===url&&record.state==='failed')V.AssetLoader.cancel(record);
+  return new Promise(resolve=>{
+   const image=V.Assets.image();
+   this.images[key]=image;
+   image.onload=resolve;
+   image.onerror=()=>{this.errors.push(path);resolve();};
+   image.src=path;
+   V.AssetLoader.register(image,resolve);
+  });
+ }));},
+ async load(){const ids=[...V.PlayableCharacters,'pix','curator','librarian','scientist','journalist','resident','student','musician','gardener','vendor','guide','archivist','technician','teacher','courier','elder','student2','percussionist'];const entries=ids.flatMap(id=>[[id,`assets/characters/${id}.png`],[id+'-portrait',`assets/characters/${id}-portrait.png`]]);['djglitch','eraser','copycat','clickbait','wall','bias'].forEach(id=>entries.push(['boss-'+id,`assets/characters/boss-${id}.png`]));entries.push(['animals','assets/characters/animals.png'],['tiles','assets/tilesets/tiles.png'],['icons','assets/ui/icons.png'],['badges','assets/ui/badges.png'],['effects','assets/effects/effects.png']);entries.push(['character-previews','assets/characters/character-previews.webp']);await this.loadEntries(entries);return this.errors;},
  ready(img){if(!img)return false;const record=V.AssetLoader?.byImage.get(img);if(record&&record.state!=='loaded'&&record.state!=='cancelled')return false;if(typeof img.naturalWidth==='number')return img.complete!==false&&img.naturalWidth>0&&img.naturalHeight>0;return img.width>0&&img.height>0;},
  characterCell(id){const img=this.images[id];return this.ready(img)?(img.naturalWidth||img.width)/4:32;},
- sprite(ctx,id,x,y,row=0,frame=0,size=48){const img=this.images[id];if(!this.ready(img))return;const cell=this.characterCell(id),r=V.clamp(Math.floor(row)||0,0,Math.floor((img.naturalHeight||img.height)/cell)-1),f=(((Math.floor(frame)||0)%4)+4)%4;ctx.drawImage(img,f*cell,r*cell,cell,cell,Math.round(x-size/2),Math.round(y-size+10),size,size);},
+ sprite(ctx,id,x,y,row=0,frame=0,size=48){const img=this.images[id];if(!this.ready(img)){if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);return;}const cell=this.characterCell(id),r=V.clamp(Math.floor(row)||0,0,Math.floor((img.naturalHeight||img.height)/cell)-1),f=(((Math.floor(frame)||0)%4)+4)%4;ctx.drawImage(img,f*cell,r*cell,cell,cell,Math.round(x-size/2),Math.round(y-size+10),size,size);},
  spritePart(ctx,id,frame,row,height,x,y,width,drawHeight){const img=this.images[id];if(!this.ready(img))return;const cell=this.characterCell(id),r=V.clamp(Math.floor(row)||0,0,Math.floor((img.naturalHeight||img.height)/cell)-1),f=(((Math.floor(frame)||0)%4)+4)%4;ctx.drawImage(img,f*cell,r*cell,cell,cell*V.clamp(height,0,1),Math.round(x),Math.round(y),width,drawHeight);},
- boss(ctx,id,x,y,frame=0,size=144){const img=this.images['boss-'+id];if(img)ctx.drawImage(img,(frame%4)*96,0,96,96,Math.round(x-size/2),Math.round(y-size/2),size,size);},
+ boss(ctx,id,x,y,frame=0,size=144){const img=this.images['boss-'+id];if(!this.ready(img)){if(V.AssetLoader.byImage.get(img)?.state==='deferred')V.AssetLoader.request(img);return;}ctx.drawImage(img,(frame%4)*96,0,96,96,Math.round(x-size/2),Math.round(y-size/2),size,size);},
  prop(ctx,index,x,y,size=48){const img=this.images.props;if(img)ctx.drawImage(img,(index%12)*32,Math.floor(index/12)*32,32,32,Math.round(x),Math.round(y),size,size);},
  effect(ctx,index,x,y,size=48){const img=this.images.effects;if(img)ctx.drawImage(img,(index%8)*32,Math.floor(index/8)*32,32,32,x-size/2,y-size/2,size,size);}
 };

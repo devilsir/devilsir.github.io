@@ -90,7 +90,7 @@
     const paint=()=>{
       list.innerHTML=[{id:'default'},...mask.models].map(model=>{
         const id=model.id,currentModel=id===current.model&&palette===current.palette,base=id==='default';
-        const image=base?mask.image('portrait',owner)?.src:mask.texture(id,palette)?.url;
+        const image=base?mask.image('portrait',owner)?.src:mask.portraitPath(id,palette);
         const effect=V.FragmentData.masks?.[id]||V.FragmentData.masks?.default;
         return `<button type="button" class="loadout-choice" data-gear-mask="${id}" aria-pressed="${currentModel}" ${image&&G.active()?'':'disabled'}>${image?`<img src="${esc(image)}" alt="">`:''}<strong>${esc(modelName(id,owner))}</strong><small>${esc(effect?.[2]||'')}${currentModel?' · Em uso':''}</small></button>`;
       }).join('');
