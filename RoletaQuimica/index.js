@@ -2434,5 +2434,29 @@ if(fullscreenMobileBtn){
     setTimeout(fit,350);
   };
 }
-document.addEventListener('pointerdown',()=>{}, {once:true});bootIntro();
+document.addEventListener('pointerdown',()=>{}, {once:true});
+const startup=window.ROULETTE_PRELOADER;
+if(startup?.start){
+  startup.start({
+    assets:A,
+    db:DB,
+    presets:PRE,
+    audioBindings:[
+      {key:'musicadefundo extendida (Remix).mp3',audio:bgm},
+      {key:'copoenchendo.mp3',audio:okSound},
+      {key:'copo quebrando.mp3',audio:errSound}
+    ],
+    onReady:()=>{setAssets();bootIntro()}
+  }).catch(error=>{
+    console.warn('Não foi possível concluir o carregamento inicial:',error);
+    document.body.classList.remove('startupLoading');
+    $('#startupLoader')?.remove();
+    setAssets();
+    bootIntro();
+  });
+}else{
+  document.body.classList.remove('startupLoading');
+  $('#startupLoader')?.remove();
+  bootIntro();
+}
 })();
