@@ -143,7 +143,6 @@
     c.save();c.imageSmoothingEnabled=false;
     c.drawImage(image,x-entrance*scale,y-height*scale,width*scale,height*scale);
     c.restore();
-    V.Engine.text(c,b.label,x,y+23,'#315642',12,'center');
   };
 
   const ground=C.ground.bind(C),tiles=V.CapeVisuals;

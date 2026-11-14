@@ -18,6 +18,8 @@ const S=V.PortalSpacing={gap:216,
   else if(o.afLink&&!m.africanMuseum){half=86;top=140;bottom=18;}
   else if(o.salonLink){half=130;top=160;bottom=24;}
   else if(o.seaLink){half=110;top=55;bottom=46;}
+  const exterior=V.BuildingSigns?.spec(m,o);
+  if(exterior){const size=V.BuildingSigns.dimensions(o,exterior);half=size.w/2;top=size.h*.87;bottom=30;}
   const scale=o.visualScale||1,a=(o.visualRotation||0)*Math.PI/180;
   const corners=[[-half,-top],[half,-top],[half,bottom],[-half,bottom]].map(([x,y])=>({x:p.x+(x*Math.cos(a)-y*Math.sin(a))*scale,y:p.y+(x*Math.sin(a)+y*Math.cos(a))*scale}));
   return{left:Math.min(...corners.map(p=>p.x)),right:Math.max(...corners.map(p=>p.x)),top:Math.min(...corners.map(p=>p.y)),bottom:Math.max(...corners.map(p=>p.y))};
@@ -30,22 +32,30 @@ const S=V.PortalSpacing={gap:216,
  obstacles(m){
   const rects=(m.decor||[]).filter(o=>o.layer!=='ground'&&o.family!=='floor').map(o=>({left:o.x,right:o.x+o.size,top:o.y,bottom:o.y+o.size}));
   for(const b of m.buildings||[])rects.push({left:b.x-12,right:b.x+b.w+12,top:b.y-30,bottom:b.y+b.h});
-  for(const o of m.objects)if(!this.target(o)&&o.w&&o.h)rects.push({left:o.x-o.w/2,right:o.x+o.w/2,top:o.y-o.h,bottom:o.y});
+  for(const o of m.objects)if(!this.target(o)&&!o.collectionOnly&&o.w&&o.h)rects.push({left:o.x-o.w/2,right:o.x+o.w/2,top:o.y-o.h,bottom:o.y});
   return rects;
  },
  clear(m,o,p,targets,reserved,obstacles){
   const b=this.bounds(m,o,p);
   if(b.left<36||b.right>m.width*T-36||b.top<48||b.bottom>m.height*T-36)return false;
   if(reserved.some(other=>!this.separated(m,o,p,other)))return false;
+  const exterior=V.BuildingSigns?.spec(m,o);
   const facade=o.afLink&&!m.africanMuseum||o.salonLink||o.seaLink;
+  if(exterior){
+   const a=V.BuildingSigns.footprint(o,exterior,p);
+   if(m.solids.some(s=>s.owner!==o.id&&s.owner!=='host-'+o.id&&a.x<s.x+s.w&&a.x+a.w>s.x&&a.y<s.y+s.h&&a.y+a.h>s.y))return false;
+   if(m.objects.some(q=>q!==o&&!this.target(q)&&!q.collectionOnly&&q.x>a.x-14&&q.x<a.x+a.w+14&&q.y>a.y-12&&q.y<a.y+a.h+18))return false;
+  }
   if(facade&&obstacles.some(a=>b.left<a.right+12&&b.right>a.left-12&&b.top<a.bottom+12&&b.bottom>a.top-12))return false;
   if(!V.FastTravel.clear(m,p,18)||!V.FastTravel.clear(m,{x:p.x,y:p.y+40},14))return false;
   if(!V.ObjectiveGuide.interactionClear(m,{x:p.x,y:p.y+40},p))return false;
-  return !m.objects.some(other=>other!==o&&!targets.has(other)&&!V.Cozy.person(other)&&Math.hypot(other.x-p.x,other.y-p.y)<72);
+  return !m.objects.some(other=>other!==o&&!targets.has(other)&&!other.collectionOnly&&!V.Cozy.person(other)&&Math.hypot(other.x-p.x,other.y-p.y)<72);
  },
  arrange(m,relayout=false){
   if(!m)return 0;const targets=m.objects.filter(o=>this.target(o));if(targets.length<2)return 0;
-  const set=new Set(targets),obstacles=this.obstacles(m),reserved=targets.filter(o=>!this.movable(o)||!relayout&&targets.every(other=>o===other||this.separated(m,o,o,other)));
+  const set=new Set(targets),obstacles=this.obstacles(m),reserved=targets.filter(o=>!this.movable(o)||!relayout&&
+   targets.every(other=>o===other||this.separated(m,o,o,other))&&
+   (!V.BuildingSigns?.spec(m,o)||this.clear(m,o,o,set,[],obstacles)));
   const area=o=>{const b=this.bounds(m,o);return(b.right-b.left)*(b.bottom-b.top);};
   const moving=targets.filter(o=>!reserved.includes(o)).sort((a,b)=>area(b)-area(a)||a.id.localeCompare(b.id));
   let changed=0;
@@ -73,7 +83,7 @@ const S=V.PortalSpacing={gap:216,
  all(){let changed=0;for(const m of Object.values(W.maps))changed+=this.arrange(m);return changed;}
 };
 const init=W.init.bind(W);W.init=function(...args){const result=init(...args);S.all();return result;};
-const load=W.load.bind(W);W.load=function(id,...args){S.arrange(this.maps[id]);return load(id,...args);};
+const load=W.load.bind(W);W.load=function(id,...args){const m=this.maps[id];if(S.arrange(m))V.BuildingSigns?.install(m);return load(id,...args);};
 if(Object.keys(W.maps).length)S.all();
 })();
 

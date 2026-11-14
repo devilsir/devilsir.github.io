@@ -36,6 +36,10 @@ body{background:var(--ink)}h2{letter-spacing:-.035em}button,a,input,select,texta
   display: flex; gap: 5px; margin: 0;
 }
 #stage > .viewer-controls .viewer-icon { background: #122726e8; border-color: #aecaba; color: #f5f6dc; }
+#viewer-fullscreen {
+  display: grid; place-items: center; box-sizing: border-box; min-width: 0; min-height: 0; padding: 0;
+}
+#viewer-fullscreen > .ui-art { display: block; margin: 0; flex: none; transform: none; }
 #stage > .viewer-controls .viewer-icon[aria-pressed="true"] { background: #355c4d; border-color: #e7e7b0; }
 #stage > .viewer-controls .viewer-icon:focus-visible { outline: 2px solid #fff2a5; outline-offset: 2px; }
 #stage > #minimap-box { top: max(54px, calc(env(safe-area-inset-top) + 46px)); }

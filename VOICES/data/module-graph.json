@@ -187,7 +187,7 @@
     },
     {
       "id": "ancestral-world",
-      "src": "js/ancestral-world.js?v=20261113-carga1",
+      "src": "js/ancestral-world.js?v=20261113-fachadas1",
       "requires": [
         "achievement-progress",
         "ancestral-content"
@@ -195,7 +195,7 @@
     },
     {
       "id": "animal-museum",
-      "src": "js/animal-museum.js?v=20261111-museums1",
+      "src": "js/animal-museum.js?v=20261113-fachadas1",
       "requires": [
         "duo-sleep",
         "food-museum",
@@ -342,7 +342,7 @@
     },
     {
       "id": "cape-market-design",
-      "src": "js/cape-market-design.js?v=20261110-design2",
+      "src": "js/cape-market-design.js?v=20261113-fachadas1",
       "requires": [
         "home-design-collection",
         "food-expansion",
@@ -490,7 +490,7 @@
     },
     {
       "id": "city-facades",
-      "src": "js/city-facades.js?v=20261021-expansion1",
+      "src": "js/city-facades.js?v=20261113-fachadas1",
       "requires": [
         "homestead-world"
       ]
@@ -534,7 +534,7 @@
     },
     {
       "id": "city-world",
-      "src": "js/city-world.js?v=20261113-carga1",
+      "src": "js/city-world.js?v=20261113-fachadas1",
       "requires": [
         "adventure-boot",
         "residential-plans"
@@ -697,7 +697,7 @@
     },
     {
       "id": "cooking-world",
-      "src": "js/cooking-world.js?v=20261103-mobile1",
+      "src": "js/cooking-world.js?v=20261113-fachadas1",
       "requires": [
         "cooking-game",
         "duo-sessions",
@@ -717,7 +717,7 @@
     },
     {
       "id": "cozy-world",
-      "src": "js/cozy-world.js?v=20261113-arteclima1",
+      "src": "js/cozy-world.js?v=20261113-fachadas1",
       "requires": [
         "cozy-content",
         "cozy-layouts",
@@ -997,7 +997,7 @@
     },
     {
       "id": "food-museum",
-      "src": "js/food-museum.js?v=20261111-museums1",
+      "src": "js/food-museum.js?v=20261113-fachadas1",
       "requires": [
         "food-museum-data",
         "museum-studies",
@@ -1129,7 +1129,7 @@
     },
     {
       "id": "guard-village",
-      "src": "js/guard-village.js?v=20261111-guard-homes1",
+      "src": "js/guard-village.js?v=20261113-fachadas1",
       "requires": [
         "cape-visuals",
         "place-life",
@@ -1460,7 +1460,7 @@
     },
     {
       "id": "market-world",
-      "src": "js/market-world.js?v=20261103-loading1",
+      "src": "js/market-world.js?v=20261113-fachadas1",
       "requires": [
         "asset-demand-upgrade",
         "home-construction",
@@ -1895,7 +1895,7 @@
     },
     {
       "id": "portal-spacing",
-      "src": "js/portal-spacing.js?v=20261101-spacing2",
+      "src": "js/portal-spacing.js?v=20261113-fachadas1",
       "requires": [
         "duo-tutorial"
       ]
@@ -1975,7 +1975,7 @@
     },
     {
       "id": "regional-world",
-      "src": "js/regional-world.js",
+      "src": "js/regional-world.js?v=20261113-fachadas1",
       "requires": [
         "furnishings-world",
         "regional-content"
@@ -2071,7 +2071,7 @@
     },
     {
       "id": "salon-world",
-      "src": "js/salon-world.js?v=20261113-elenco1",
+      "src": "js/salon-world.js?v=20261113-fachadas1",
       "requires": [
         "grounded-art",
         "player-appearance",
@@ -2088,7 +2088,7 @@
     },
     {
       "id": "sanctuary-neighbors",
-      "src": "js/sanctuary-neighbors.js?v=20261102-sanctuary3",
+      "src": "js/sanctuary-neighbors.js?v=20261113-fachadas1",
       "requires": [
         "animal-sanctuary",
         "city-facade-polish"
@@ -2354,7 +2354,7 @@
     },
     {
       "id": "world",
-      "src": "js/world.js?v=20261112-equip1",
+      "src": "js/world.js?v=20261113-fachadas1",
       "requires": [
         "content",
         "ground-cache",
@@ -2364,13 +2364,15 @@
     },
     {
       "id": "world-finalize",
-      "src": "js/world-finalize.js?v=20261111-polish1",
+      "src": "js/world-finalize.js?v=20261113-placas2",
       "requires": [
         "place-life",
         "residential-interiors",
         "harmony-atlas",
         "interface-polish",
-        "residential-studio"
+        "residential-studio",
+        "guard-village",
+        "ancestral-bounds"
       ]
     },
     {
@@ -2382,7 +2384,7 @@
     },
     {
       "id": "world-signs",
-      "src": "js/world-signs.js?v=20261102-campus2",
+      "src": "js/world-signs.js?v=20261113-fachadas1",
       "requires": [
         "neighbourhood-life"
       ]

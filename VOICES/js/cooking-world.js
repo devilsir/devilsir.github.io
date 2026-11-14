@@ -26,6 +26,9 @@ const places={
  university:{name:'Universidade',width:40,height:29,spawn:[20,23],floor:'stone',purpose:'Universidade das Vozes · memória alimentar, pesquisa e aulas abertas.'}
 };
 const U=V.CulinaryWorld={places,
+ // Opaque sprite bounds inside the cooking atlas. Fit against the bottom of the entrance.
+ facadeFrames:{1:[264,24,240,224],2:[520,59,240,189]},
+ facadeSize(prop){const [,,sw,sh]=this.facadeFrames[prop];const scale=Math.min(224/sw,186/sh);return {w:Math.round(sw*scale),h:Math.round(sh*scale)};},
  setup(){for(const[id,data]of Object.entries(places)){const d={...data,palette:['#d5c39c','#785d3f','#376756'],paths:[],decor:[],scenes:[],positions:{},routines:{},anchors:[],meeting:[data.width/2,12],adventure:{version:3,architecture:{walls:[],windows:[],mounts:[],signs:[]},environment:{indoor:true,sky:'automatic',weather:false,ambient:'#e6d7b5'},lights:[],regions:[],encounters:[],triggers:[]}};C.layouts[id]=copy(d);S.defaults[id]=copy(d);S.objectRegistry[id]||={};S.raw[id]||=W.base(id,'community',d.width,d.height);F.names[id]=data.name;}},
  link(m,id,x,y,to,label,prop){const o={id,type:'travel',x:x*T,y:y*T,to,label,culinaryLink:true,culinaryProp:prop,interactionRange:110};m.objects.push(o);return o;},
  npc(m,id,name,sprite,x,y,role){const o={id,type:'cooking-npc',name,character:sprite,x:x*T,y:y*T,role,label:'Conversar com '+name,interactionRange:105,stationary:true};C.preparePerson(m,o);o.stationary=true;m.objects.push(o);},
@@ -50,7 +53,7 @@ const U=V.CulinaryWorld={places,
   if(id==='kitchen')for(const x of [4,10,22,28])m.objects.push({id:'kitchen-pantry-'+x,type:'cooking-pantry',x:x*T,y:4.6*T});return m;
  },
  free(m,x,y){const box={x:x-105,y:y-145,w:210,h:145};return !V.Living.blocked(m,x,y+25,16)&&!m.solids.some(s=>box.x<s.x+s.w&&box.x+box.w>s.x&&box.y<s.y+s.h&&box.y+box.h>s.y)&&!m.objects.some(o=>Math.hypot(o.x-x,o.y-y)<190);},
- entrance(m,id,to,fx,fy,prop){if(m.objects.some(o=>o.id===id))return;let p=null;const x=m.width*T*fx,y=m.height*T*fy;for(let ring=0;ring<12&&!p;ring++)for(let dy=-ring;dy<=ring&&!p;dy++)for(let dx=-ring;dx<=ring;dx++){if(ring&&Math.max(Math.abs(dx),Math.abs(dy))!==ring)continue;const tx=x+dx*T,ty=y+dy*T;if(tx<T*3||ty<T*5||tx>(m.width-3)*T||ty>(m.height-3)*T)continue;if(this.free(m,tx,ty)){p={x:tx,y:ty};break;}}if(!p){const safe=V.Rooms.safe(m,{x,y},16);p={x:safe.x,y:safe.y};prop=undefined;}const o=this.link(m,id,p.x/T,p.y/T,to,'Entrar: '+places[to].name,prop);if(prop!==undefined)m.solids.push({x:p.x-74,y:p.y-90,w:148,h:67,owner:id});return o;},
+ entrance(m,id,to,fx,fy,prop){if(m.objects.some(o=>o.id===id))return;let p=null;const x=m.width*T*fx,y=m.height*T*fy;for(let ring=0;ring<12&&!p;ring++)for(let dy=-ring;dy<=ring&&!p;dy++)for(let dx=-ring;dx<=ring;dx++){if(ring&&Math.max(Math.abs(dx),Math.abs(dy))!==ring)continue;const tx=x+dx*T,ty=y+dy*T;if(tx<T*3||ty<T*5||tx>(m.width-3)*T||ty>(m.height-3)*T)continue;if(this.free(m,tx,ty)){p={x:tx,y:ty};break;}}if(!p){const safe=V.Rooms.safe(m,{x,y},16);p={x:safe.x,y:safe.y};}return this.link(m,id,p.x/T,p.y/T,to,'Entrar: '+places[to].name,prop);},
  seed(){this.setup();for(const id of Object.keys(places))W.maps[id]=this.build(id);this.entrance(W.maps.hub,'city-restaurant','restaurant',.25,.78,1);this.entrance(W.maps.hub,'city-university','university',.78,.78,2);const market=W.maps.market;if(market)this.entrance(market,'market-restaurant','restaurant',.82,.85,1);for(const id of Object.keys(places))F.point(id);V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();},
  ground(m){const canvas=V.GroundCache.create(m, m.width*T, m.height*T);;;const c=canvas.getContext('2d'),college=m.id==='university';c.imageSmoothingEnabled=false;c.fillStyle=college?'#cdbb91':m.id==='kitchen'?'#b7bca5':'#b88d63';c.fillRect(0,0,V.GroundCache.width(canvas),V.GroundCache.height(canvas));
   for(let y=3*T;y<(m.height-1)*T;y+=T/2)for(let x=T;x<(m.width-1)*T;x+=T){c.fillStyle=(x/T+y/T*2)%3===0?(college?'#ddd0ad':m.id==='kitchen'?'#d3d7bb':'#cca97a'):(college?'#d4c59e':m.id==='kitchen'?'#c4c9b0':'#bf9a6e');c.fillRect(x+(y%T?T/2:0),y,T-3,T/2-3);}
@@ -63,7 +66,18 @@ const U=V.CulinaryWorld={places,
  draw(c,o,cam){const x=o.x-cam.x,y=o.y-cam.y;
   if(o.marketKitchen){A.frame(c,'world',0,0,x-77,y-136,154,154);return true;}
   if(o.marketWater||o.type==='cooking-station'&&o.role==='water'){const f=V.settings.reducedMotion?1:1+Math.floor(V.Engine.time*5)%3;A.frame(c,'world',1,f,x-40,y-112,80,112);return true;}
-  if(o.culinaryLink){if(o.culinaryProp!==undefined)A.frame(c,'world',0,o.culinaryProp,x-112,y-185,224,190);else{c.fillStyle='#7a6043';c.fillRect(x-44,y-25,88,25);c.fillStyle='#a9c1a1';c.fillRect(x-40,y-21,80,3);}V.Maritime.label(c,places[o.to]?.name||'Praça das Vozes',x,y-13,W.nearest?.id===o.id);return true;}
+  if(o.culinaryLink){if(o.culinaryProp!==undefined&&!o.interiorDoor&&!W.current?.culinary){
+   const im=A.images.world;
+   if(im?.naturalWidth&&this.facadeFrames[o.culinaryProp]){
+    const {w,h}=this.facadeSize(o.culinaryProp);
+    c.save();c.imageSmoothingEnabled=false;
+    c.drawImage(im,...this.facadeFrames[o.culinaryProp],Math.round(x-w/2),Math.round(y-h),w,h);
+    c.restore();
+   }
+   if(W.nearest?.id===o.id)V.Living.marker(c,x,y+16,'E','#ead8aa');
+   return true;
+  }
+  if(o.culinaryProp!==undefined)A.frame(c,'world',0,o.culinaryProp,x-112,y-185,224,190);else{c.fillStyle='#7a6043';c.fillRect(x-44,y-25,88,25);c.fillStyle='#a9c1a1';c.fillRect(x-40,y-21,80,3);}V.Maritime.label(c,places[o.to]?.name||'Praça das Vozes',x,y-13,W.nearest?.id===o.id);return true;}
   if(o.type==='cooking-station'){A.frame(c,'world',0,3,x-110,y-118,220,130);return true;}
   if(o.type==='cooking-npc'){V.SceneShadows?.character(c,o.character,x,y,66,0,0,true);V.Assets.sprite(c,o.character,x,y,0,0,66);if(W.nearest?.id===o.id)V.Maritime.label(c,o.name,x,y-77,true);return true;}
   if(o.type==='cooking-table'){C.prop(c,'home',18,x-80,y-106,160);if(!o.desk)A.frame(c,'dishes',0,0,x+16,y-48,43,32);else{c.fillStyle='#3b6d60';c.fillRect(x+12,y-43,35,22);c.fillStyle='#e9dbb9';c.fillRect(x+17,y-40,25,16);}return true;}
