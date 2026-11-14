@@ -28,9 +28,11 @@ if(V.Neighborhood)V.Neighborhood.bubbleDrawn=false;m.protestChantVisible=false;
 if(!m.cache)C.ground(m);ctx.imageSmoothingEnabled=false;ctx.fillStyle=m.design.palette[0];ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);V.GroundCache.draw(ctx, m.cache, Math.round(-cam.x), Math.round(-cam.y));E.sky(ctx,m,cam);C.pond(ctx,m,cam);
 if(!V.SceneEditor.active&&m.id!=='hub')N.draw(ctx,cam);
 if(m.id!=='hub')m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));
-const draws=V.RenderView.decor(ctx,m,cam).filter(o=>o.family!=='room-wall'||!V.City.privateHome(m.design)).map(o=>({y:o.layer==='ground'?-10000:o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9,kind:'decor',o})).concat(V.RenderView.objects(ctx,m,cam).map(o=>({y:o.door?A.residentialOpening?.(m,o.door,cam)?.depth??o.y:o.y,kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
+if(m.id==='hub')V.PlazaArt?.surface(ctx,m,cam);
+const view=V.RenderView;
+const draws=view.decor(ctx,m,cam).filter(o=>o.family!=='room-wall'||!V.City.privateHome(m.design)).map(o=>({y:view.depth(o,o.family==='room-wall'?Math.max(o.wall.a[1],o.wall.b[1])-1:o.y+o.size*.9),kind:'decor',o})).concat(V.RenderView.objects(ctx,m,cam).map(o=>({y:view.depth(o,o.door?A.residentialOpening?.(m,o.door,cam)?.depth??o.y:o.y),kind:'object',o})),[{y:V.Player.data.y,kind:'player'}],A.geometry(m.design).walls.map(o=>({y:Math.max(o.a[1],o.b[1]),kind:'wall',o})),(m.design.adventure.lights||[]).map(o=>({y:o.y,kind:'light',o}))).sort((a,b)=>a.y-b.y);
 let plazaSurface=false;for(const d of draws){
-if(m.id==='hub'&&!plazaSurface&&d.y>-10000){V.PlazaArt?.surface(ctx,m,cam);if(!V.SceneEditor.active)N.draw(ctx,cam);m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));C.fountain(ctx,cam);plazaSurface=true;}
+if(m.id==='hub'&&!plazaSurface&&d.y>=0){if(!V.SceneEditor.active)N.draw(ctx,cam);m.buildings.forEach(b=>W.drawBuilding(ctx,b,cam));C.fountain(ctx,cam);plazaSurface=true;}
 if(d.kind==='player')V.Player.render(ctx);
 else if(d.kind==='object'){V.ResidentialArt?.shadow(ctx,m,d.o,cam);C.drawObject(ctx,d.o,cam,t);}
 else if(d.kind==='wall')A.drawWall(ctx,m,d.o,cam);
@@ -49,7 +51,7 @@ if(W.transition>0&&!V.SceneEditor.active){ctx.globalAlpha=W.transition;ctx.fillS
 V.Game.newState=function(opts){old.newState(opts);const a=P.ensure();a.health=P.stats().health;a.focus=P.stats().focus;V.state.map='museum';V.state.position={x:22*48,y:32*48};};
 V.Game.startGame=function(){
 const a=P.ensure();
-if(a.scenarios&&!this.adventureScenariosLoaded){this.adventureScenariosLoaded=true;try{const maps=D.normalise(a.scenarios);Object.assign(C.layouts,maps);D.saved=copy(maps);W.init();}catch(e){V.UI.toast('O cenário do backup precisa de revisão: '+e.message);}}
+if(a.scenarios&&!this.adventureScenariosLoaded){this.adventureScenariosLoaded=true;try{const maps=D.restoreLayouts(a.scenarios);Object.assign(C.layouts,maps);D.saved=copy(maps);W.init();}catch(e){V.UI.toast('O cenário do backup precisa de revisão: '+e.message);}}
 old.start();P.observe();P.hud();E.hud();
 if(a.battle){const battle=copy(a.battle);if(V.Combat.resume(battle))V.UI.toast('Confronto retomado no último turno confirmado.');else{a.battle=null;V.UI.toast('O confronto foi encerrado com segurança. Você pode iniciá-lo novamente.');}}
 };
@@ -80,7 +82,7 @@ V.Game.map=()=>V.WorldAtlas.open();V.Atlas.regions=()=>V.WorldAtlas.open();
 const snapshot=V.Atlas.snapshot.bind(V.Atlas);V.Atlas.snapshot=function(m){const canvas=snapshot(m),signature=m.id+':'+(m.geometryRevision||0);if(canvas.adventureSignature!==signature){const ctx=canvas.getContext('2d');ctx.save();ctx.scale(canvas.width/(m.width*48),canvas.height/(m.height*48));for(const wall of A.geometry(m.design).walls)A.drawWall(ctx,m,wall,{x:0,y:0});for(const light of m.design.adventure?.lights||[])E.drawFixture(ctx,light,{x:0,y:0},m);ctx.restore();canvas.adventureSignature=signature;}return canvas;};
 D.document=function(maps){return{...old.document(maps),adventureVersion:3};};
 D.normalise=function(doc){const clean=old.normalise(doc);for(const[id,d]of Object.entries(clean)){if(doc.maps[id]?.adventure)A.normalise(doc.maps[id].adventure,d);else if(id==='museum')A.rebuildMuseum(d);}return clean;};
-D.apply=function(maps,persist=true){const result=old.apply(maps,persist);if(result.ok){N.invalidate();E.cache.clear();if(V.state)P.ensure().scenarios=D.document(this.saved);V.Save.save();}return result;};
+D.apply=function(maps,persist=true,baseline=null){const result=old.apply(maps,persist,baseline);if(result.ok){N.invalidate();E.cache.clear();if(V.state)P.ensure().scenarios=D.document(this.saved);V.Save.save();}return result;};
 V.Save.load=function(){const state=old.loadSave();if(state)P.migrate(state);return state;};
 V.Save.save=function(){if(V.state){const a=P.ensure();if(V.Combat.active){const snap=copy(V.Combat.active);snap.effects=[];if(snap.phase==='resolving'){snap.phase='next';snap.timer=.05;}a.battle=snap;}if(Object.keys(D.saved||{}).length&&(!a.scenarios||this.adventureSceneRevision!==D.revision)){a.scenarios=D.document(D.saved);this.adventureSceneRevision=D.revision;}V.state.adventureSchema=3;}return old.save();};
 V.Game.pause=function(reason=''){old.pause(reason);if(V.Combat.active){const abort=V.$('#pause-abort');if(abort){abort.textContent='Recuar deste confronto';abort.disabled=!V.Combat.active.canRetreat;abort.onclick=()=>{V.UI.close();V.Combat.cancel();};}}};

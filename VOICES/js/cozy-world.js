@@ -60,7 +60,9 @@ V.Cozy={ready:false,clock:0,seated:null,layouts:V.cozyLayouts,
  person(o){return['npc','resident','service','ambient'].includes(o.type);},
  addAnchor(m,id,x,y,state='observing',duration=12,dir=0,object=null){const p=this.safe(m,x/T-.5,y/T-.5),clear=!L.blocked(m,x,y,10);const a={id,x:clear?x:p.x*T+24,y:clear?y:p.y*T+24,state,duration,dir,object};m.anchors.set(id,a);return a;},
  addScene(m,s){const o={type:'cozy',id:'cozy-'+m.id+'-'+s.id,x:s.x*T+24,y:s.y*T+24,label:s.title,scene:s};m.objects.push(o);
-  if(!s.hostDecor&&['seat','shelf','catalog','food','instrument','test','sketch','editorial','backup','proposal','labels'].includes(s.kind)||!s.hostDecor&&s.kind==='exhibit'&&(s.family==='expanded'||s.family==='neighborhood'&&V.SceneDesign?.asset(s.family,s.prop)?.solidFootprint)){const z=T*(s.size||1);if(V.SceneDesign)V.SceneDesign.footprints(s.family,s.prop,o.x-z/2,o.y-z*.79,z,true,o.id).forEach(f=>m.solids.push(s.rotation||s.flip?V.SceneDesign.rotateBox(f,o.x,o.y-z*.29,s.rotation||0,s.flip):f));else m.solids.push({x:o.x-16,y:o.y-22,w:32,h:25});}
+  const builtInSolid=['seat','shelf','catalog','food','instrument','test','sketch','editorial','backup','proposal','labels'].includes(s.kind)||
+   s.kind==='exhibit'&&(s.family==='expanded'||s.family==='neighborhood'&&V.SceneDesign?.asset(s.family,s.prop)?.solidFootprint);
+  if(!V.SceneDesign?.hostDecor(m.design,s)&&(s.solid??(!s.hostDecor&&builtInSolid))){const z=T*(s.size||1);if(V.SceneDesign)V.SceneDesign.footprints(s.family,s.prop,o.x-z/2,o.y-z*.79,z,true,o.id).forEach(f=>m.solids.push(s.rotation||s.flip?V.SceneDesign.rotateBox(f,o.x,o.y-z*.29,s.rotation||0,s.flip):f));else m.solids.push({x:o.x-16,y:o.y-22,w:32,h:25});}
   const states={seat:'sitting',shelf:'reading',notice:'observing',instrument:'playing',listening:'listening',food:'working',plant:'working',test:'working',sketch:'drawing',editorial:'writing',exhibit:'observing',proposal:'writing',backup:'working',catalog:'writing',labels:'working'};
   this.addAnchor(m,s.id,o.x,o.y+(s.kind==='seat'?26:T),states[s.kind]||'observing',s.kind==='seat'?18:12,s.kind==='seat'?s.dir:3,o);
  },

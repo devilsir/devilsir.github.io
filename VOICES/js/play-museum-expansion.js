@@ -26,6 +26,7 @@ function art(c,id,w=c.canvas.width,h=c.canvas.height){
 PM.historyArt=art;
 PM.historyExhibit=function(id){const e=panels.find(e=>e.id===id);if(!e)return;V.UI.modal(e.title,e.region.toUpperCase(),'<article class="play-exhibit"><div class="play-exhibit-hero"><canvas class="play-new-art" id="play-history-art" width="640" height="360" aria-label="Ilustração de '+esc(e.title)+'"></canvas><span>QUADRO DO ACERVO</span></div><div><p class="play-lead">'+esc(e.text)+'</p><h3>Uma forma de brincar</h3><ol>'+e.rules.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol><p>'+esc(e.context)+'</p><p class="note">Esta brincadeira está presente somente na exposição. Ainda não há um desafio jogável.</p><a href="'+esc(e.source)+'" target="_blank" rel="noopener noreferrer">'+esc(e.sourceTitle)+'</a></div></article>','<button id="history-back" class="primary">Voltar ao acervo</button>',true);PM.paper();art(V.$('#play-history-art').getContext('2d'),id);V.$('#history-back').onclick=()=>PM.catalog();};
 for(const layout of [C.layouts[PM.id],M.defaults[PM.id],V.SceneDesign.defaults[PM.id]]){layout.height=44;layout.spawn=[21.5,41];layout.purpose='Seis brincadeiras jogáveis e quatro novos quadros de memórias do brincar.';}
+V.SceneDesign.raw[PM.id].height=44;
 const build=PM.build.bind(PM);PM.build=function(d=C.layouts[this.id]){
  d.height=44;const m=build(d);m.height=44;
  m.solids=m.solids.filter(s=>!(s.x===0&&s.y===33*T));for(const s of m.solids)if(s.y===0&&s.h===34*T)s.h=44*T;m.solids.push({x:0,y:43*T,w:44*T,h:T});

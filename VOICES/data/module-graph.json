@@ -21,7 +21,7 @@
     },
     {
       "id": "adventure-boot",
-      "src": "js/adventure-boot.js?v=20261113-arteclima1",
+      "src": "js/adventure-boot.js?v=20261114-editor-praca1",
       "requires": [
         "adventure-art",
         "adventure-editor"
@@ -50,7 +50,7 @@
     },
     {
       "id": "adventure-editor",
-      "src": "js/adventure-editor.js?v=20261112-trilhas2",
+      "src": "js/adventure-editor.js?v=20261114-museu1",
       "requires": [
         "adventure-combat",
         "room-editor",
@@ -86,7 +86,7 @@
     },
     {
       "id": "african-museum",
-      "src": "js/african-museum.js?v=20261112-equip1",
+      "src": "js/african-museum.js?v=20261114-editor-praca1",
       "requires": [
         "african-word-origins",
         "capoeira-art",
@@ -97,7 +97,7 @@
     },
     {
       "id": "african-museum-curation",
-      "src": "js/african-museum-curation.js?v=20261112-trilhas2",
+      "src": "js/african-museum-curation.js?v=20261114-editor-praca1",
       "requires": [
         "african-museum",
         "museum-studies"
@@ -137,7 +137,7 @@
     },
     {
       "id": "african-play-museum",
-      "src": "js/african-play-museum.js?v=20261111-museums1",
+      "src": "js/african-play-museum.js?v=20261114-editor-praca1",
       "requires": [
         "african-play-games",
         "museum-studies"
@@ -195,7 +195,7 @@
     },
     {
       "id": "animal-museum",
-      "src": "js/animal-museum.js?v=20261113-praca1",
+      "src": "js/animal-museum.js?v=20261114-editor-praca1",
       "requires": [
         "duo-sleep",
         "food-museum",
@@ -204,7 +204,7 @@
     },
     {
       "id": "animal-sanctuary",
-      "src": "js/animal-sanctuary.js?v=20261103-mobile1",
+      "src": "js/animal-sanctuary.js?v=20261114-editor-praca1",
       "requires": [
         "animal-museum",
         "sanctuary-data"
@@ -312,7 +312,7 @@
     },
     {
       "id": "campus-renewal",
-      "src": "js/campus-renewal.js?v=20261103-mobile1",
+      "src": "js/campus-renewal.js?v=20261114-portas-internas1",
       "requires": [
         "legacy-art-polish",
         "world-signs"
@@ -359,7 +359,7 @@
     },
     {
       "id": "cape-region-world",
-      "src": "js/cape-region-world.js?v=20261113-praca1",
+      "src": "js/cape-region-world.js?v=20261114-editor-praca1",
       "requires": [
         "maritime-voyage"
       ]
@@ -697,7 +697,7 @@
     },
     {
       "id": "cooking-world",
-      "src": "js/cooking-world.js?v=20261113-praca1",
+      "src": "js/cooking-world.js?v=20261114-portas-internas1",
       "requires": [
         "cooking-game",
         "duo-sessions",
@@ -717,7 +717,7 @@
     },
     {
       "id": "cozy-world",
-      "src": "js/cozy-world.js?v=20261113-fachadas1",
+      "src": "js/cozy-world.js?v=20261114-editor-praca1",
       "requires": [
         "cozy-content",
         "cozy-layouts",
@@ -734,7 +734,7 @@
     },
     {
       "id": "culinary-interiors",
-      "src": "js/culinary-interiors.js?v=20261113-praca1",
+      "src": "js/culinary-interiors.js?v=20261114-portas-internas1",
       "requires": [
         "sanctuary-neighbors"
       ]
@@ -894,7 +894,7 @@
     },
     {
       "id": "editor-actions",
-      "src": "js/editor-actions.js?v=20261030-cape3",
+      "src": "js/editor-actions.js?v=20261114-editor-praca1",
       "requires": [
         "scene-editor"
       ]
@@ -908,21 +908,21 @@
     },
     {
       "id": "editor-layout",
-      "src": "js/editor-layout.js?v=20261029-layout1",
+      "src": "js/editor-layout.js?v=20261114-museu1",
       "requires": [
         "scene-object-editing"
       ]
     },
     {
       "id": "editor-tools",
-      "src": "js/editor-tools.js?v=20261113-carga1",
+      "src": "js/editor-tools.js?v=20261114-editor-praca1",
       "requires": [
         "neighborhood-world"
       ]
     },
     {
       "id": "editor-window-repair",
-      "src": "js/editor-window-repair.js?v=20261017b",
+      "src": "js/editor-window-repair.js?v=20261114-museu1",
       "requires": [
         "ancestral-world"
       ]
@@ -997,7 +997,7 @@
     },
     {
       "id": "food-museum",
-      "src": "js/food-museum.js?v=20261113-praca1",
+      "src": "js/food-museum.js?v=20261114-editor-praca1",
       "requires": [
         "food-museum-data",
         "museum-studies",
@@ -1011,7 +1011,7 @@
     },
     {
       "id": "food-museum-gallery",
-      "src": "js/food-museum-gallery.js?v=20261103-loading1",
+      "src": "js/food-museum-gallery.js?v=20261114-portas-internas1",
       "requires": [
         "food-gallery-art-data",
         "professional-kitchen"
@@ -1019,7 +1019,7 @@
     },
     {
       "id": "fossil-gallery-design",
-      "src": "js/fossil-gallery-design.js?v=20261110-design1",
+      "src": "js/fossil-gallery-design.js?v=20261114-editor-praca1",
       "requires": [
         "animal-sanctuary",
         "sanctuary-neighbors",
@@ -1029,7 +1029,7 @@
     },
     {
       "id": "fountain-floor-upgrade",
-      "src": "js/fountain-floor-upgrade.js?v=20261113-carga1",
+      "src": "js/fountain-floor-upgrade.js?v=20261114-museu1",
       "requires": [
         "regional-furniture",
         "regional-world"
@@ -1061,7 +1061,7 @@
     },
     {
       "id": "fragment-forest",
-      "src": "js/fragment-forest.js?v=20261112-infinity1",
+      "src": "js/fragment-forest.js?v=20261114-placas1",
       "requires": [
         "fragment-combat",
         "harmony-atlas"
@@ -1097,7 +1097,7 @@
     },
     {
       "id": "game",
-      "src": "js/game.js?v=20261113-praca1",
+      "src": "js/game.js?v=20261114-editor-praca1",
       "requires": [
         "combat",
         "cozy-world",
@@ -1170,7 +1170,7 @@
     },
     {
       "id": "heritage-world",
-      "src": "js/heritage-world.js?v=20261113-arteclima1",
+      "src": "js/heritage-world.js?v=20261114-museu1",
       "requires": [
         "editor-actions",
         "museum-biographies"
@@ -1287,7 +1287,7 @@
     },
     {
       "id": "illustrated-interface",
-      "src": "js/illustrated-interface.js?v=20261113-carga1",
+      "src": "js/illustrated-interface.js?v=20261114-professor-atalho",
       "requires": [
         "menu-art"
       ]
@@ -1308,7 +1308,7 @@
     },
     {
       "id": "infinity-trails",
-      "src": "js/infinity-trails.js?v=20261112-trilhas2",
+      "src": "js/infinity-trails.js?v=20261114-placas1",
       "requires": [
         "fragment-forest",
         "infinity-trail-rooms"
@@ -1373,7 +1373,7 @@
     },
     {
       "id": "map-streaming",
-      "src": "js/map-streaming.js?v=20261103-mobile1",
+      "src": "js/map-streaming.js?v=20261114-museu1",
       "requires": [
         "editor-layout"
       ]
@@ -1445,7 +1445,7 @@
     },
     {
       "id": "maritime-world",
-      "src": "js/maritime-world.js?v=20261111-guard-village1",
+      "src": "js/maritime-world.js?v=20261114-editor-praca1",
       "requires": [
         "african-museum-curation",
         "cape-art-data"
@@ -1552,7 +1552,7 @@
     },
     {
       "id": "nature-world",
-      "src": "js/nature-world.js?v=20261113-praca1",
+      "src": "js/nature-world.js?v=20261114-editor-praca1",
       "requires": [
         "food-expansion",
         "wildlife-data"
@@ -1574,7 +1574,7 @@
     },
     {
       "id": "neighborhood-design",
-      "src": "js/neighborhood-design.js?v=20261113-carga1",
+      "src": "js/neighborhood-design.js?v=20261114-editor-praca1",
       "requires": [
         "cultural-world",
         "heritage-content"
@@ -1680,7 +1680,7 @@
     },
     {
       "id": "performance",
-      "src": "js/performance.js?v=20261103-mobile1",
+      "src": "js/performance.js?v=20261114-portas-internas1",
       "requires": [
         "engine"
       ]
@@ -1745,7 +1745,7 @@
     },
     {
       "id": "play-museum-expansion",
-      "src": "js/play-museum-expansion.js?v=20261101-duo1",
+      "src": "js/play-museum-expansion.js?v=20261114-placas1",
       "requires": [
         "cape-visuals"
       ]
@@ -1888,7 +1888,7 @@
     },
     {
       "id": "plaza-visuals",
-      "src": "js/plaza-visuals.js?v=20261113-praca1",
+      "src": "js/plaza-visuals.js?v=20261114-professor1",
       "requires": [
         "duo-tutorial"
       ]
@@ -1914,7 +1914,7 @@
     },
     {
       "id": "professor-mode",
-      "src": "js/professor-mode.js?v=20261113-carga1",
+      "src": "js/professor-mode.js?v=20261114-professor-atalho",
       "requires": [
         "editorial-links",
         "professor-ui-catalog"
@@ -1983,7 +1983,7 @@
     },
     {
       "id": "residential-art",
-      "src": "js/residential-art.js?v=20261111-atlas-homes2",
+      "src": "js/residential-art.js?v=20261114-portas-internas1",
       "requires": [
         "home-daily-collection",
         "residential-plans"
@@ -2014,14 +2014,14 @@
     },
     {
       "id": "room-editor",
-      "src": "js/room-editor.js",
+      "src": "js/room-editor.js?v=20261114-museu1",
       "requires": [
         "room-system"
       ]
     },
     {
       "id": "room-system",
-      "src": "js/room-system.js",
+      "src": "js/room-system.js?v=20261114-portas-internas1",
       "requires": [
         "campus-world"
       ]
@@ -2071,7 +2071,7 @@
     },
     {
       "id": "salon-world",
-      "src": "js/salon-world.js?v=20261113-fachadas1",
+      "src": "js/salon-world.js?v=20261114-editor-praca1",
       "requires": [
         "grounded-art",
         "player-appearance",
@@ -2109,7 +2109,7 @@
     },
     {
       "id": "scene-editor",
-      "src": "js/scene-editor.js?v=20261030-cape3",
+      "src": "js/scene-editor.js?v=20261114-editor-praca1",
       "requires": [
         "neighborhood-design",
         "runtime-hooks"
@@ -2117,7 +2117,7 @@
     },
     {
       "id": "scene-object-editing",
-      "src": "js/scene-object-editing.js?v=20261030-cape3",
+      "src": "js/scene-object-editing.js?v=20261114-portas-internas1",
       "requires": [
         "cape-visuals",
         "editor-window-repair"
@@ -2195,7 +2195,7 @@
     },
     {
       "id": "team-world",
-      "src": "js/team-world.js?v=20261112-fragment1",
+      "src": "js/team-world.js?v=20261114-editor-praca1",
       "requires": [
         "battle-automation",
         "city-battle",
@@ -2262,7 +2262,7 @@
     },
     {
       "id": "ui-shell",
-      "src": "js/ui-shell.js?v=20261111-atlas-homes2",
+      "src": "js/ui-shell.js?v=20261114-editor-praca1",
       "requires": [
         "game"
       ]
@@ -2288,7 +2288,7 @@
     },
     {
       "id": "words-respect",
-      "src": "js/words-respect.js?v=20261111-museums1",
+      "src": "js/words-respect.js?v=20261114-editor-praca1",
       "requires": [
         "cooking-workshop",
         "museum-studies",
@@ -2364,7 +2364,7 @@
     },
     {
       "id": "world-finalize",
-      "src": "js/world-finalize.js?v=20261113-praca1",
+      "src": "js/world-finalize.js?v=20261114-portas-internas1",
       "requires": [
         "place-life",
         "residential-interiors",
@@ -2384,7 +2384,7 @@
     },
     {
       "id": "world-signs",
-      "src": "js/world-signs.js?v=20261113-fachadas1",
+      "src": "js/world-signs.js?v=20261114-portas-internas1",
       "requires": [
         "neighbourhood-life"
       ]

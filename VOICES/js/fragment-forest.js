@@ -260,7 +260,7 @@
   };
   const draw=C.drawObject.bind(C);
   C.drawObject=function(ctx,o,cam,...args){
-    if(o.type!=='fragment-site')return draw(ctx,o,cam,...args);
+    if(o.type!=='fragment-site'||o.travelSign)return draw(ctx,o,cam,...args);
     const x=o.x-cam.x,y=o.y-cam.y;
     if(x< -150||y< -60||x>ctx.canvas.width+150||y>ctx.canvas.height+150)return;
     const s=V.state?.fragmentForest,outcome=s?.outcomes[o.site],pending=s?.rolls[o.site],e=byId(D.encounters,outcome?.pending||pending?.id);

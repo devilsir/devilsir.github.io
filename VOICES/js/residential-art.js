@@ -72,10 +72,12 @@
   const models=new Map(doors.map(([id,,kind,color,trim])=>[id,{kind,color,trim}]));
   const glass=(c,x,y,w,h)=>{c.fillStyle='#aac8c1';c.fillRect(x,y,w,h);c.fillStyle='#e3f1db70';c.fillRect(x+3,y+2,Math.max(2,w*.18),h-4);};
 
-  function door(c,o,cam){
-    const d=o.door,model=models.get(d.appearance),{kind,color,trim}=model;
+  function door(c,o,cam,d=o.door,m=V.World.current){
+    const model=models.get(d.appearance);
+    if(!model)return false;
+    const {kind,color,trim}=model;
     const open=d.type==='arch'||d.type==='passage'||d.openUntil>R.clock;
-    const mount=V.Architecture.residentialOpening(V.World.current,d,cam);
+    const mount=V.Architecture.residentialOpening(m,d,cam);
     const x=mount?.x??o.x-cam.x,y=mount?.y??o.y-cam.y,w=d.width,h=d.height,top=-h+7;
     c.save();c.translate(x,y);
     if(mount)c.transform(...mount.matrix);
@@ -118,6 +120,7 @@
     }
     c.restore();
     if(V.World.nearest?.id===o.id)V.Living.marker(c,x,y,d.locked?'×':d.mode==='auto'?'→':'E','#ecd099');
+    return true;
   }
 
   const windows=['Arco de madeira','Veneziana de jardim','Caixilho de ferro','Janela de sacada','Vidro alto fosco','Janela panorâmica'];
@@ -231,9 +234,9 @@
 
   const draw=C.drawObject.bind(C);
   C.drawObject=function(c,o,cam,t){
-    if(o.type==='room-door'&&models.has(o.door.appearance))return door(c,o,cam);
+    if(o.type==='room-door'&&door(c,o,cam))return;
     if(o.type==='home-window'&&V.City.privateHome(V.World.current?.design))return;
     return draw(c,o,cam,t);
   };
-  V.ResidentialArt={items,windows,shadow};
+  V.ResidentialArt={items,windows,shadow,door};
 });

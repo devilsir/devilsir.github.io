@@ -6,17 +6,25 @@
 })(function () {
 (function repairArchitecturalWindowSelection(){
 'use strict';
-const V=window.V,E=V.SceneEditor,A=V.Architecture,D=V.SceneDesign,T=48;
+const V=window.V,E=V.SceneEditor,A=V.Architecture,T=48;
 const prev={refs:E.refs.bind(E),bounds:E.bounds.bind(E),hit:E.hit.bind(E),down:E.pointerDown.bind(E),move:E.pointerMove.bind(E),up:E.pointerUp.bind(E),cancel:E.pointerCancel.bind(E),paint:E.paint.bind(E)};
 function list(editor){
  const design=editor.design();if(!design)return [];
- const geometry=A.geometry(design);
- // The renderer creates a default window if none is authored. Turn it into an
- // editable real window with identical coordinates when editing an interior.
- if(!geometry.windows.length&&design.adventure?.environment?.indoor){geometry.windows.push({id:'editor-default-window',x:design.width*T/2,y:editor.mapId==='museum'?90:35,w:94,h:66});}
- geometry.windows.forEach((w,i)=>{if(!w.id)w.id='editor-window-'+editor.mapId+'-'+i;});
- return geometry.windows;
+ const windows=design.adventure?.architecture?.windows||[];
+ if(windows.length)return windows.map((w,i)=>w.id?w:{...w,id:'window-'+i});
+ if(!design.adventure?.environment?.indoor)return [];
+ return [{id:'editor-default-window',x:design.width*T/2,y:editor.mapId==='museum'?90:35,w:94,h:66}];
 }
+// The renderer's default is only made explicit when the user edits it.
+E.architecturalWindow=function(id,write=false){
+ const win=list(this).find(w=>w.id===id);
+ if(!win||!write)return win;
+ const windows=A.geometry(this.design()).windows;
+ if(!windows.length){windows.push(win);return win;}
+ const original=windows.find((w,i)=>(w.id||'window-'+i)===id);
+ original.id=id;
+ return original;
+};
 function windowRef(w){return{kind:'adv-window',id:w.id,name:'Janela',x:w.x/T,y:w.y/T,w:w.w/T,h:w.h/T};}
 function windowAt(editor,p){const refs=list(editor).map(windowRef);for(let i=refs.length-1;i>=0;i--){const b=editor.bounds(refs[i]);if(p.x>=b.x-5&&p.x<=b.x+b.w+5&&p.y>=b.y-5&&p.y<=b.y+b.h+5)return refs[i];}return null;}
 function clamp(v,min,max){return Math.min(max,Math.max(min,v));}
@@ -34,11 +42,11 @@ E.pointerMove=function(e){
  const drag=this.drag;
  if(drag?.kind==='architectural-window'){
   if(drag.pointerId!==e.pointerId)return;
-  const point=this.worldPoint(e),w=list(this).find(w=>w.id===drag.ref.id);if(!w)return;
+  const point=this.worldPoint(e);let w=this.architecturalWindow(drag.ref.id);if(!w)return;
   const snap=this.snap*T,round=n=>snap?Math.round(n/snap)*snap:Math.round(n);
   const nx=clamp(round(drag.x*T+point.x-drag.start.x),0,this.preview.width*T-w.w);
   const ny=clamp(round(drag.y*T+point.y-drag.start.y),0,this.preview.height*T-w.h);
-  if(w.x!==nx||w.y!==ny){w.x=nx;w.y=ny;drag.moved=true;this.preview=D.preview(this.mapId,this.design());this.image=this.renderWorld();this.paint();}
+  if(w.x!==nx||w.y!==ny){w=this.architecturalWindow(drag.ref.id,true);w.x=nx;w.y=ny;drag.moved=true;this.preview=this.buildPreview();this.image=this.renderWorld();this.paint();}
   const coord=V.$('#editor-coordinates');if(coord)coord.textContent=(w.x/T).toFixed(2)+' · '+(w.y/T).toFixed(2);
   return;
  }

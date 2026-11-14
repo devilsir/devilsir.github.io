@@ -33,53 +33,211 @@ const landmarks={
   'pix-discovery-hub-0':[16.3,25.45], 'pix-discovery-hub-1':[25.6,22.3],
   'pix-discovery-hub-2':[33.8,24.1],
   'pix-vocabulary-city-b5yik':[4.6,16.5], 'pix-vocabulary-shop-bg5fr':[6,23.4],
-  'pix-vocabulary-now-d739':[18.6,9.75], 'pix-vocabulary-new-d6un':[13.7,9.1],
+  'pix-vocabulary-now-d739':[19.2,10.7], 'pix-vocabulary-new-d6un':[13.7,9.1],
   'pix-vocabulary-quest-9u16y9':[22.3,8.9], 'pix-vocabulary-missing-agjos5':[19.4,23.7],
   'pix-vocabulary-both-b5fyq':[29.2,22.2], 'pix-vocabulary-prepare-1mjdxw6':[9.1,23.1]
 };
-const furnishings=[
-  [4.4,7.6],[11.7,6.8],[5.7,21.3],[4.1,14.7],[29.9,24.8],[30.7,25.8],
-  [18,15.4],[28,17.8],[36.2,14.6],[4.3,17.4],[42.8,15.5],[30,3],
-  [6.3,18.6],[35.7,14.25]
-];
-const scenePositions={
-  'square-water-left':[19.3,17.6],'square-water-right':[28.7,17.6],
-  'square-tea':[10.5,23.1],'square-news':[5.25,8.95],
-  'square-guitar':[37.5,17],'furnishings-discovery-hub':[12.35,7.9],
-  'square-fountain-water':[24,19.1]
+const authoredLayout = {
+  paths: [
+    [6.5,7.45,35,2.4],
+    [16.8,8.5,3.1,5.9],
+    [24.4,8.5,3.1,5.9],
+    [4.3,13.4,39.4,2.1],
+    [22.45,9.6,3.1,18.4],
+    [6,17.5,36,2.2],
+    [4.2,21.2,39.5,2.1],
+    [7.5,23.2,3.1,4.7],
+    [30.6,22.4,3.1,5.5],
+    [4.8,26.4,38.1,1.8],
+    [6.9,30.65,34.2,2],
+    [22.45,27.2,3.1,4.5],
+    [7.08,28.1,1.44,2.7],
+    [13.53,28.1,1.44,2.7],
+    [20.03,28.1,1.44,2.7],
+    [26.53,28.1,1.44,2.7],
+    [33.03,28.1,1.44,2.7],
+    [39.480000000000004,28.1,1.44,2.7]
+  ],
+  positions: {
+    "fountain": [18.5,14],
+    "hub-pix": [23.5,20.4],
+    "hub-nia": [21.4,20.5],
+    "hub-student": [35.5,15.600000000000001],
+    "portal-1": [7.3,30.1],
+    "portal-2": [13.75,30.1],
+    "portal-3": [20.25,30.1],
+    "portal-4": [26.75,30.1],
+    "portal-5": [33.25,30.1],
+    "portal-6": [39.7,30.1],
+    "guide": [21.4,25.65],
+    "terminal-hub": [20.700000000000003,11.7],
+    "word-runner": [12.1,24.7],
+    "hub-record": [12.3,16.2],
+    "travel-park": [5,12.8],
+    "travel-market": [4.8,24.7],
+    "travel-garden": [43,12.8],
+    "travel-beach": [42.1,24.7],
+    "community-board": [32.5,15.7],
+    "parcel": [19.7,5.85],
+    "note-01": [11.6,7.85],
+    "note-02": [33.5,8.75],
+    "history-hub": [30.9,15.85],
+    "resident-courier": [8.6,9.9],
+    "neighbor-paulo": [39.5,23.7],
+    "neighbors-pet-4": [38.7,23.6],
+    "animal-hub-0": [11.7,22.7],
+    "animal-hub-1": [25.4,19.5],
+    "animal-hub-2": [39.5,7],
+    "coast-hub-cat": [10,9.3],
+    "door-library": [10,6.6],
+    "door-room-6": [38.2,7.1],
+    "campus-travel-hub-school": [31,12.3],
+    "campus-travel-hub-museum": [38.5,12.3],
+    "animal-museum-entry": [17.1,6.1],
+    "travel-african-words-hub": [26.4,6.6],
+    "nature-brasil-entry": [11,12.8],
+    "travel-play-museum-hub": [17,12.8],
+    "city-restaurant": [9.1,20.5],
+    "food-museum-entry": [15.3,20.5],
+    "city-university": [31.700000000000003,20.5],
+    "salon-entry-hub": [38.1,20.5],
+    "travel-harbor-hub": [43.6,18.8],
+    "waypoint-hub": [23.5,23.7],
+    "zambeto-companion-hub": [22.3,19.4],
+    "place-life-visitante-praca": [19,19.7],
+    "community-arcade-kiosk": [18.1,24.6],
+    "city-door-hub-neighborhood": [41.8,21.2],
+    "pix-discovery-hub-0": [15.8,24.95],
+    "pix-discovery-hub-1": [25.1,21.8],
+    "pix-discovery-hub-2": [33.3,23.6],
+    "pix-vocabulary-city-b5yik": [4.1,16],
+    "pix-vocabulary-shop-bg5fr": [5.5,22.9],
+    "pix-vocabulary-now-d739": [24.7,11.2],
+    "pix-vocabulary-new-d6un": [13.2,8.6],
+    "pix-vocabulary-quest-9u16y9": [21.8,8.4],
+    "pix-vocabulary-missing-agjos5": [18.9,23.2],
+    "pix-vocabulary-both-b5fyq": [28.7,21.7],
+    "pix-vocabulary-prepare-1mjdxw6": [8.6,22.6],
+    "building-sign-travel-play-museum-hub": [13.054166666666667,12.604761904761904],
+    "building-sign-campus-travel-hub-school": [28.59,12.865873015873019],
+    "building-sign-campus-travel-hub-museum": [36.11083333333333,12.865873015873019],
+    "building-sign-door-room-6": [40.97620730270907,6.623809523809523],
+    "building-sign-travel-african-words-hub": [23.419179166666662,6.937698412698412],
+    "building-sign-animal-museum-entry": [15.035666666666668,6.592325396825396],
+    "building-sign-door-library": [7.054166666666667,6.5658730158730165],
+    "team-contact-dalva-escudo": [18,26.9375],
+    "travel-sign-portal-3": [1.8541666666666679,19.100000000000005],
+    "travel-sign-portal-6": [42.325,31.100000000000005],
+    "travel-sign-travel-beach": [44.6,23.2],
+    "travel-sign-city-door-hub-neighborhood": [44.52916666666666,21.2],
+    "travel-sign-travel-harbor-hub": [44.6,19.3],
+    "building-sign-city-university": [28.36666666666667,20.538690476190478],
+    "building-sign-salon-entry-hub": [35.583333333333336,20.42857142857143],
+    "building-sign-city-restaurant": [6.454166666666666,20.666666666666668],
+    "travel-sign-portal-1": [4.841666666666667,30.100000000000005],
+    "travel-sign-travel-market": [2.3,24.7],
+    "travel-sign-portal-2": [2.125,22.100000000000005],
+    "travel-sign-portal-4": [28.333333333333332,33.10000000000001],
+    "travel-sign-portal-5": [36.041666666666664,33.10000000000001]
+  },
+  decor: [
+    ["furnishings",3,11.7,6.3,1.3,true,{"sceneIds": ["furnishings-discovery-hub"],"id": "region-hub-1","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["furnishings",2,4.1,14.7,1.8,true,{"sceneIds": [],"id": "region-hub-3","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["furnishings",4,26.9,22.8,2.25,true,{"sceneIds": [],"id": "region-hub-4","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["furnishings",7,25.5,22.9,1,true,{"sceneIds": [],"id": "region-hub-6","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["furnishings",7,29.5,25.3,1,true,{"sceneIds": [],"id": "region-hub-7","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["scene",8,36.2,15.1,3,false,{"sceneIds": [],"id": "region-hub-8","rotation": 0,"flip": false,"layer": "ground","anchorIds": [],"objectIds": []}],
+    ["neighborhood",25,3.3,17.4,2.6,true,{"sceneIds": [],"id": "region-hub-9","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["neighborhood",25,42.8,15.5,2.5,true,{"sceneIds": [],"id": "region-hub-10","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["neighborhood",25,30,3,2.3,true,{"sceneIds": [],"id": "region-hub-11","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["regional",5,36.2,13.25,3.3,true,{"sceneIds": [],"id": "region-hub-13","rotation": 0,"flip": false,"layer": "canopy","anchorIds": [],"objectIds": []}],
+    ["fountain",12,22,15.1,4,true,{"sceneIds": ["square-fountain-water"],"id": "square-fountain-furniture","rotation": 0,"flip": false,"layer": "object","anchorIds": [],"objectIds": []}],
+    ["furnishings",104,20.5,12,1.25,true,{"sceneIds": [],"id": "custom-mwgwacm8-1","rotation": 0,"flip": false,"layer": "ground","anchorIds": [],"objectIds": []}]
+  ],
+  scenes: [
+    {"id": "square-water-left","kind": "seat","x": 19.8,"y": 16.1,"family": "furnishings","prop": 0,"title": "Sentar e observar","text": "O som da água chega até este banco.","dir": 2,"size": 1.9,"rotation": 0,"flip": false},
+    {"id": "square-water-right","kind": "seat","x": 27.7,"y": 16.1,"family": "furnishings","prop": 0,"title": "Sentar e observar","text": "Daqui você vê a fonte e quem chega à praça.","dir": 1,"size": 1.9,"rotation": 0,"flip": false},
+    {"id": "square-guitar","kind": "instrument","x": 38,"y": 16.5,"family": "cozy","prop": 12,"title": "Violão da roda da praça","text": "Uma frase musical original do jogo. Observe, experimente e escute outra pessoa.","dir": 0,"size": 1.3,"rotation": 0,"flip": false},
+    {"id": "furnishings-discovery-hub","kind": "notice","family": "furnishings","prop": 3,"x": 11.85,"y": 6.9,"size": 1.3,"title": "Bebedouro público com torneira baixa","text": "O bebedouro fica junto à passagem da biblioteca. Use a torneira baixa; deixe livre a aproximação. A água e os bancos fazem parte de um espaço compartilhado.","hostDecor": "region-hub-1","dir": 0,"rotation": 0,"flip": false},
+    {"id": "square-fountain-water","kind": "notice","family": "fountain","prop": 12,"x": 23.5,"y": 18.6,"size": 3,"title": "Fonte da Praça das Vozes","text": "Fountain é uma fonte de água; source é uma fonte de informação. O contexto distingue os sentidos de “fonte”. Na praça, deixe livre a passagem até os bancos e o bebedouro.","hostDecor": "square-fountain-furniture","dir": 0,"rotation": 0,"flip": false}
+  ],
+  buildings: [
+    {"x": 6,"y": 2.5,"w": 9,"h": 4,"label": "BIBLIOTECA","style": "gable","color": "#b79a77","door": "door-library","editorId": "door-library"},
+    {"x": 34.2,"y": 3,"w": 9,"h": 4,"label": "CENTRAL VOICES","style": "arcade","color": "#8da993","door": "door-room-6","editorId": "door-room-6"}
+  ],
+  objectEdits: {
+    "animal-museum-entry": {"rotation": 0,"scale": 1.5},
+    "word-runner": {"rotation": 0,"scale": 1.75},
+    "community-board": {"rotation": 0,"scale": 2},
+    "building-sign-travel-play-museum-hub": {"rotation": 0,"scale": 0.75}
+  }
 };
+const plazaAdjustments = {
+  positions: {
+    "hub-pix": [23.5,15.399999999999999],
+    "food-museum-entry": [16.8,20.5],
+    "salon-entry-hub": [39.1,20.5],
+    "zambeto-companion-hub": [13.3,15.899999999999999],
+    "pix-vocabulary-prepare-1mjdxw6": [11.6,14.100000000000001],
+    "building-sign-salon-entry-hub": [36.083333333333336,20.42857142857143],
+    "building-sign-food-museum-entry": [14.137333333333334,20.596039682539683]
+  },
+  objectEdits: {
+    "city-university": {"rotation": 0,"scale": 1.1},
+    "city-restaurant": {"rotation": 0,"scale": 0.95},
+    "pix-vocabulary-prepare-1mjdxw6": {"rotation": 0,"scale": 1},
+    "food-museum-entry": {"rotation": 0,"scale": 0.95}
+  },
+  lights: {
+    "lamp-hub-1": {"x": 984,"y": 798.72}
+  }
+};
+function applyPlazaAdjustments(hub) {
+  const {positions,objectEdits,lights}=plazaAdjustments;
+  hub.positions={...hub.positions,...JSON.parse(JSON.stringify(positions))};
+  hub.objectEdits={...hub.objectEdits,...JSON.parse(JSON.stringify(objectEdits))};
+  if (hub.adventure?.lights) hub.adventure={...hub.adventure,
+    lights:hub.adventure.lights.map(light=>({...light,...lights[light.id]}))
+  };
+  return hub;
+}
 function author(d){
   Object.assign(d,{
     width:48,height:35,spawn:[23.5,23],meeting:[18.6,23.3],
     purpose:'A fonte liga o polo cultural ao norte, a feira a oeste, o campus a leste e os seis capítulos ao sul.',
     outline:[[6,1],[42,1],[47,7],[47,27],[42,34],[6,34],[1,27],[1,7]],
-    paths:[
-      [6.5,7.45,35,2.4],[16.8,8.5,3.1,5.9],[24.4,8.5,3.1,5.9],
-      [4.3,13.4,39.4,2.1],[22.45,9.6,3.1,18.4],[6,17.5,36,2.2],
-      [4.2,21.2,39.5,2.1],[7.5,23.2,3.1,4.7],[30.6,22.4,3.1,5.5],
-      [4.8,26.4,38.1,1.8],[6.9,30.65,34.2,2],[22.45,27.2,3.1,4.5],
-      ...[7.8,14.25,20.75,27.25,33.75,40.2].map(x=>[x-.72,28.1,1.44,2.7])
-    ],
     zones:[['Polo cultural',6,3,36,7],['Fonte e descanso',19,14,10,7],
       ['Feira e cozinha',5,18,13,8],['Campus e oficinas',30,12,13,13],
       ['Portais da história',7,28,34,5]],
-    anchors:[['observe-water',22.2,18.85,'observing',16,3],['mail-sort',7.4,9.9,'working',12,1]]
+    anchors:[['observe-water',22.2,18.85,'observing',16,3],['mail-sort',7.4,9.9,'working',12,1]],
+    ...JSON.parse(JSON.stringify(authoredLayout))
   });
-  for(const [i,b] of d.buildings.entries()) b.x=i===0?4.5:34.2;
-  d.positions={...d.positions,...Object.fromEntries(Object.entries({...travel,...landmarks}).map(([id,[x,y]])=>[id,[x-.5,y-.5]]))};
-  d.positions['door-library']=[8.5,6.1]; d.positions['door-room-6']=[38.2,7.1];
-  for(const row of d.decor){
-    const id=row[6]?.id;
-    if(id==='square-fountain-furniture') [row[2],row[3]]=[22,15.1];
-    const index=/^region-hub-(\d+)$/.exec(id);
-    if(index) [row[2],row[3]]=furnishings[+index[1]];
-  }
-  for(const scene of d.scenes){
-    const pos=scenePositions[scene.id];if(pos) [scene.x,scene.y]=[pos[0]-.5,pos[1]-.5];
-  }
 }
 author(layout);
+applyPlazaAdjustments(layout);
 author(D.defaults.hub);
+applyPlazaAdjustments(D.defaults.hub);
+
+// This release ships a new plaza. Older saves may contain a cached copy of
+// every map, including the plaza from before this layout was authored.
+const plazaLayoutVersion=2;
+const sceneDocument=D.document.bind(D);
+D.document=function(maps){return {...sceneDocument(maps),plazaLayoutVersion};};
+D.restoreLayouts=function(doc){
+ const version=doc?.plazaLayoutVersion||0;
+ if(doc?.maps?.hub&&version<plazaLayoutVersion){
+  const hub={...doc.maps.hub};
+  if(version<1){
+   Object.assign(hub,{
+    ...authoredLayout,
+    positions:{...hub.positions,...authoredLayout.positions},
+    objectEdits:{...hub.objectEdits,...authoredLayout.objectEdits}
+   });
+  }
+  doc={...doc,maps:{...doc.maps,hub:applyPlazaAdjustments(hub)}};
+ }
+ return this.normalise(doc);
+};
 
 const portalPoints={...travel,...landmarks};
 const previewDestinations=new Set([...Object.keys(travel),'city-door-hub-neighborhood']);
@@ -109,24 +267,6 @@ function shift(m,o,x,y){
 }
 V.PlazaLayout={
   museum:{w:266,h:224},
-  destinationNames:{
-    'travel-park':'Parque das Pontes', 'campus-travel-hub-school':'Escola Aberta',
-    'campus-travel-hub-museum':'Museu das Vozes', 'travel-garden':'Horta Comunitária',
-    'travel-market':'Feira das Histórias', 'travel-beach':'Praia das Marés',
-    'city-door-hub-neighborhood':'Bairro das Janelas'
-  },
-  drawDestination(c,o,cam){
-    const name=W.current?.plazaPlanned&&this.destinationNames[o.id];
-    if(!name)return false;
-    const x=o.x-cam.x,y=o.y-cam.y,near=W.nearest?.id===o.id;
-    if(x< -110||y< -30||x>c.canvas.width+110||y>c.canvas.height+100)return true;
-    c.save();c.fillStyle='#766343';
-    for(const dx of [-51,49])c.fillRect(x+dx,y-42,5,42);
-    V.WorldSigns.draw(c,name,x,y-37,{maxWidth:184,active:near});
-    c.restore();
-    if(near)V.Living.marker(c,x,y+12,'E','#e8d2a2');
-    return true;
-  },
   install(m,design=m?.design){
     if(!m||m.plazaPlanned)return;
 

@@ -91,10 +91,14 @@
         const contact=m.objects.find(o=>o.character===r.id||o.resident?.id===r.id);
         const origin=V.FragmentForest?.contact(r.id)||contact||{x:(tx+.5)*48,y:(ty+.5)*48};
         const spots=[[72,45],[-72,45],[54,-56],[-54,-56],[0,94]].map(([dx,dy])=>({x:origin.x+dx,y:origin.y+dy}));
-        const point=(V.FragmentForest?.contact(r.id)&&V.FastTravel.clear(m,origin,15)?origin:null)||spots.find(p=>V.FastTravel.clear(m,p,15)&&!m.objects.some(o=>V.dist(o,p)<48))
+        const placed=m.design?.positions?.[siteId(r.id)];
+        const point=(placed&&{x:(placed[0]+.5)*48,y:(placed[1]+.5)*48})||(V.FragmentForest?.contact(r.id)&&V.FastTravel.clear(m,origin,15)?origin:null)||spots.find(p=>V.FastTravel.clear(m,p,15)&&!m.objects.some(o=>V.dist(o,p)<48))
           ||V.Rooms.safe(m,{x:origin.x+80,y:origin.y+55},15);
         if(!point)continue;
-        m.objects.push({...point,id:siteId(r.id),type:'team-contact',recruit:r.id,label:'Recrutamento · '+name(r.id),interactionRange:83});
+        const o={...point,id:siteId(r.id),type:'team-contact',recruit:r.id,label:'Recrutamento · '+name(r.id),interactionRange:83};
+        m.objects.push(o);
+        V.ObjectEditing.style(o,m.design?.objectEdits?.[o.id]);
+        V.SceneDesign.registerObjects(m);
       }
     },
     progress(r){return V.state.sideQuests?.[questId(r.id)];},

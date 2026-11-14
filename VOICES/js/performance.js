@@ -69,7 +69,19 @@ V.RenderView={
   if(o.bounds&&Number.isFinite(o.bounds.x)&&o.bounds.x+o.bounds.w>=view.left&&o.bounds.x<=view.right&&o.bounds.y+o.bounds.h>=view.top&&o.bounds.y<=view.bottom)return true;
   return o.x+w>=view.left&&o.x-w<=view.right&&o.y+h>=view.top&&o.y-h<=view.bottom;
  },
- objects(c,m,cam){const view=this.bounds(c,cam);return m.objects.filter(o=>this.visible(o,view));},
+ depth(o,y=o.y){
+  y=o.interiorDoorDepth??y;
+  const layer=o.editorDecor?.layer||o.editorLayer||o.scene?.layer||o.layer;
+  return layer==='ground'?-1e6+y:layer==='canopy'?1e6+y:y;
+ },
+ objects(c,m,cam,includeDecor=false){
+  const view=this.bounds(c,cam),objects=m.objects.filter(o=>this.visible(o,view));
+  if(!includeDecor)return objects;
+  for(const d of m.decor||[])if(this.visible(d,view))objects.push({
+   id:d.id,type:'editor-decor',x:d.x+d.size/2,y:d.y+d.size*.9,editorDecor:d
+  });
+  return objects;
+ },
  decor(c,m,cam){const view=this.bounds(c,cam);return m.decor.filter(o=>this.visible(o,view));}
 };
 P.detect();

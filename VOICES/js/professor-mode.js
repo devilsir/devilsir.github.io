@@ -51,7 +51,83 @@ V.Assets.load=async function(){await Studio.startPromise;const r=await initialAs
 Studio.root=function(){let root=$('#professor-studio');if(!root){root=document.createElement('section');root.id='professor-studio';root.className='professor-studio';root.hidden=true;document.body.appendChild(root);}return root;};
 Studio.enter=function(){if(!V.Access.authorized)return V.Access.run(()=>this.enter());if(this.active){this.dashboard();return;}this.active=true;this.studentSettings={unlockAll:!!V.settings.unlockAll,translation:!!V.settings.translation,subtitles:!!V.settings.subtitles};V.settings.unlockAll=true;V.settings.translation=true;V.settings.subtitles=true;this.root();document.body.classList.add('professor-active');this.dashboard();};
 Studio.exit=function(){V.Access.lock();if(this.freePlay){V.Game.toTitle();V.state=null;this.freePlay=false;this.temporary={};}if(this.studentSettings){Object.assign(V.settings,this.studentSettings);this.studentSettings=null;V.Save.applySettings();}this.active=false;this.editing=false;this.hidePencil();this.root().hidden=true;this.root().innerHTML='';this.view='';document.body.classList.remove('professor-active','professor-live-edit');this.hover=null;};
-Studio.banner=function(active){let btn=$('#professor-return');if(!btn){btn=document.createElement('button');btn.id='professor-return';btn.className='professor-return';btn.innerHTML='✎ <span>Modo Professor</span>';btn.title='Voltar às ferramentas do professor';btn.onclick=()=>this.dashboard();document.body.appendChild(btn);}btn.hidden=!active;};
+function bindProfessorReturn(button, area, openPanel) {
+ const key='professor-return-position';
+ const clamp=value=>Math.max(0,Math.min(value,1));
+ let drag=null, moved=false;
+ const setPosition=(x,y)=>{
+  button.style.setProperty('--orb-x',clamp(x));
+  button.style.setProperty('--orb-y',clamp(y));
+ };
+ const saved=V.Save.read(key,null);
+ if(Number.isFinite(saved?.x)&&Number.isFinite(saved?.y))setPosition(saved.x,saved.y);
+ const savePosition=()=>V.Save.write(key,{
+  x:Number(button.style.getPropertyValue('--orb-x')),
+  y:Number(button.style.getPropertyValue('--orb-y'))
+ });
+ function move(left,top) {
+  const bounds=area.getBoundingClientRect(), orb=button.getBoundingClientRect();
+  setPosition((left-bounds.left)/Math.max(1,bounds.width-orb.width),
+   (top-bounds.top)/Math.max(1,bounds.height-orb.height));
+ }
+ button.addEventListener('pointerdown',event=>{
+  if(event.button!==0||drag)return;
+  const {left,top}=button.getBoundingClientRect();
+  drag={id:event.pointerId,x:event.clientX,y:event.clientY,left,top};
+  moved=false;
+  button.setPointerCapture(event.pointerId);
+ });
+ button.addEventListener('pointermove',event=>{
+  if(event.pointerId!==drag?.id)return;
+  const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+  if(!moved&&Math.hypot(dx,dy)<6)return;
+  moved=true;
+  move(drag.left+dx,drag.top+dy);
+ });
+ function endDrag(event){
+  if(event.pointerId!==drag?.id)return;
+  drag=null;
+  if(moved)savePosition();
+ }
+ for(const type of ['pointerup','pointercancel','lostpointercapture'])
+  button.addEventListener(type,endDrag);
+ button.addEventListener('keydown',event=>{
+  const step=event.shiftKey?48:16;
+  const offset={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,-step],ArrowDown:[0,step]}[event.key];
+  if(!offset||event.altKey||event.ctrlKey||event.metaKey)return;
+  event.preventDefault();
+  event.stopPropagation();
+  const {left,top}=button.getBoundingClientRect();
+  move(left+offset[0],top+offset[1]);
+  savePosition();
+ });
+ button.addEventListener('click',event=>{
+  if(event.detail&&moved){moved=false;return;}
+  openPanel();
+ });
+}
+Studio.banner=function(active){
+ let button=$('#professor-return');
+ if(!button){
+  const area=document.createElement('div');
+  area.className='professor-return-area';
+  button=document.createElement('button');
+  button.id='professor-return';
+  button.type='button';
+  button.className='professor-return';
+  button.innerHTML='<span aria-hidden="true">🎓</span>';
+  button.title='Voltar às ferramentas do professor';
+  button.setAttribute('aria-label','Voltar ao painel do Modo Professor');
+  button.setAttribute('aria-description','Arraste ou use as setas para mover.');
+  bindProfessorReturn(button,area,()=>{
+   if(this.view==='scenes'&&V.SceneEditor.active)V.SceneEditor.close();
+   else this.dashboard();
+  });
+  area.append(button);
+  document.body.append(area);
+ }
+ button.hidden=!active;
+};
 Studio.dashboard=function(){if(!this.active)return;this.view='dashboard';this.editing=false;document.body.classList.remove('professor-live-edit');this.hidePencil();this.banner(false);V.UI.close();const el=this.root();el.hidden=false;el.innerHTML=`<div class="professor-shell"><header class="professor-head"><div><small>VOICES / AMBIENTE DE AUTORIA</small><h2>Modo Professor <span>✎</span></h2><p>Prepare atividades, revise falas e organize o mundo sem alterar o progresso dos alunos.</p></div><button data-studio="exit" class="professor-outline">Sair do modo professor ✕</button></header><div class="professor-grid">
  <button data-studio="play"><b>▶</b><strong>Explorar sem bloqueios</strong><span>Todos os capítulos, regiões e registros disponíveis para testar. Progresso do aluno preservado.</span></button>
  <button data-studio="live"><b>✎</b><strong>Lápis nos textos</strong><span>Passe sobre uma fala, legenda, tradução ou texto na tela e clique no lápis — ou dê dois cliques no próprio texto — para alterar.</span></button>
@@ -66,7 +142,19 @@ Studio.curriculum=function(){if(!this.active||!V.Access.authorized)return this.e
 Studio.play=function(edit){if(!this.active||!V.Access.authorized)return this.enter();this.view='game';this.editing=edit;this.root().hidden=true;this.banner(true);document.body.classList.toggle('professor-live-edit',edit);
  if(!V.state||V.Game.screen!=='game'||!this.freePlay){this.freePlay=true;this.temporary={};V.Game.newState({grade:7,character:'nia',name:'Exploração do professor'});const s=V.state;s.flags.prologueDone=true;s.flags.prologueStarted=true;s.completed=[1,2,3,4,5,6];s.unlocked=6;s.evidence=V.content.chapters.flatMap(c=>c.clues||[]).map(c=>c.id);s.tools=Array.from(new Set([...s.tools,'PIX Tradutor']));V.Game.startGame();}else{V.UI.close();}
  V.settings.unlockAll=true;V.Game.updateHUD?.();this.message(edit?'Lápis ativo. Passe o cursor sobre o texto e clique em ✎, ou dê dois cliques no próprio texto.':'Exploração livre habilitada.');};
-Studio.scenes=function(){if(!this.active||!V.Access.authorized)return this.enter();this.view='scenes';this.root().hidden=true;this.banner(true);if(V.Game.screen==='game'&&V.Game.mode!=='explore'){this.message('Saia do desafio para editar o cenário.');this.dashboard();return;}V.UI.close();V.SceneEditor.open();if(!V.SceneEditor.active){this.message('O editor de cenários não pôde ser aberto.');this.dashboard();}};
+Studio.scenes=async function(){
+ if(!this.active||!V.Access.authorized)return this.enter();
+ if(V.Game.screen==='game'&&V.Game.mode!=='explore'){
+  this.message('Saia do desafio para editar o cenário.');
+  return;
+ }
+ this.view='scenes';
+ this.root().hidden=true;
+ this.banner(true);
+ V.UI.close();
+ await V.SceneEditor.open();
+ if(this.active&&this.view==='scenes'&&!V.SceneEditor.active)this.dashboard();
+};
 Studio.sprites=function(){if(!this.active||!V.Access.authorized)return this.enter();this.view='sprites';this.banner(false);const el=this.root();el.hidden=false;el.innerHTML=`<div class="professor-pixel"><div class="professor-pixel-top"><strong>✎ Modo Professor <small>/ Pixel Lab</small></strong><span>As sprites são guardadas para o pacote unificado.</span><button id="professor-close-pixel">← Voltar ao painel</button></div><iframe id="professor-pixel-frame" src="sprite-editor.html?professor=1" title="Editor de sprites Pixel Lab" allow="clipboard-read;clipboard-write"></iframe></div>`;
  $('#professor-close-pixel').onclick=async()=>{await this.askPatches();this.dashboard();};};
 Studio.message=function(msg){V.UI?.toast?.(msg);};

@@ -233,6 +233,7 @@
   V.Hooks.around(W,'init','infinity-trails:entrance',next=>function(...args){
     const result=next(...args);
     seedEntrance();
+    for(const id of ['park',forest])V.BuildingSigns.install(W.maps[id]);
     return result;
   });
   const load=W.load.bind(W);
@@ -249,6 +250,7 @@
     const key=run.serial+'-'+run.depth+'-'+run.seed;
     if(generatedFor!==V.state||m?.geometryRevision!==key){
       m=W.maps[map]=rooms.build(run);
+      V.BuildingSigns.install(m);
       generatedFor=V.state;
       V.Atlas.cache.delete(map);V.ObjectiveGuide.invalidate();
     }
@@ -329,7 +331,7 @@
       V.FragmentArt.draw(ctx,o.primary.sheet||'creatures',o.primary.art,x,y-lift,size);
     }else V.FragmentArt.draw(ctx,'trail-props',o.prop,x,y,size);
     F.diamond(ctx,x,y-size*.74,lock?6:8,tint);
-    if(o.kind==='entry'||W.nearest?.id===o.id){
+    if(!o.travelSign&&(o.kind==='entry'||W.nearest?.id===o.id)){
       V.Engine.text(ctx,o.kind==='entry'?title:o.label,x,y+23,'#f3e4b6',12,'center');
     }
   };

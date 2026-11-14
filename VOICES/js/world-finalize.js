@@ -8,6 +8,76 @@
   const V = window.V, W = V.World, T = 48;
   const asset = 'assets/expansion/building-signs-v2.webp';
   const type = 'building-sign';
+  const playFacade = 'play-museum-facade';
+  const playFacadeAsset = 'assets/expansion/play-museum-facade.webp';
+  const pathSign = 'travel-sign';
+  const passageTypes = new Set(['door','travel','exit','portal','fragment-site','infinity-trail']);
+  const classicDoor = {type:'single',normal:{x:0,y:1},appearance:19,width:74,height:101};
+  const museumDoor = {...classicDoor,appearance:20,width:82,height:108};
+  const defaultRouteScale = .5;
+  // Placa de orientação (props-polished, célula 36). Estenda só a parte
+  // reta da tábua superior e mantenha o poste e a seta de baixo no tamanho original.
+  const routeTop = [11,388,105,16];
+  const routeBottom = [11,433,105,75];
+  const routeLeft = [25,404,13,29];
+  const routeGrain = [75,404,18,29];
+  const routeTip = [96,404,20,29];
+  const routeFont = '700 20px "VOICES Sans", Arial, sans-serif';
+  const routeGap = 24;
+  const routePadding = 28;
+
+  const facadeSizes = {
+    'voices-museum':[416,347], 'open-school':[416,309], 'library':[416,326],
+    'community-center':[416,316], 'music-studio':[368,301],
+    'history-gallery':[410,301], 'observatory':[393,308], 'science-workshop':[414,293],
+    'news-office':[416,302], 
+    'fossil-pavilion':[416,284], 'festival-hall':[416,303], 'server-room':[416,227],
+    'voices-central':[416,283], 'system-lab':[416,292]
+  };
+  const buildingArt = {
+    'door-library':'library', 'door-room-6':'voices-central',
+    'door-room-1-0':'music-studio', 'door-room-1-1':'festival-hall',
+    'door-room-2-0':'history-gallery', 'door-room-2-1':'voices-museum',
+    'door-room-3-0':'science-workshop', 'door-room-3-1':'observatory',
+    'door-room-4-0':'news-office', 'door-room-4-1':'server-room',
+    'door-room-5-0':'community-center', 'door-room-5-1':'open-school',
+    'door-room-6-0':'voices-central', 'door-room-6-1':'system-lab'
+  };
+  const entranceArt = {
+    'campus-travel-hub-school': ['Escola Aberta','open-school',232,'culture'],
+    'campus-travel-hub-museum': ['Museu das Vozes','voices-museum',230,'culture'],
+    'animal-museum-fossils': ['Galeria dos Fósseis','fossil-pavilion',260,'nature']
+  };
+  const buildingNames = {
+    'door-library':'Biblioteca', 'door-room-6':'Central VOICES',
+    'door-room-1-0':'Estúdio de Ensaio', 'door-room-1-1':'Palco do Festival',
+    'door-room-2-0':'Arquivo de Memórias', 'door-room-2-1':'Galeria Restaurada',
+    'door-room-3-0':'Oficina de Ciências', 'door-room-3-1':'Observatório',
+    'door-room-4-0':'Redação do Bairro', 'door-room-4-1':'Sala dos Servidores',
+    'door-room-5-0':'Centro Comunitário', 'door-room-5-1':'Escola Aberta',
+    'door-room-6-0':'Arquivo Central', 'door-room-6-1':'Núcleo do Sistema'
+  };
+  const routeNames = {
+    beach:'Praia das Marés', garden:'Horta Comunitária', market:'Feira das Histórias',
+    park:'Parque das Pontes', harbor:'Porto das Vozes', neighborhood:'Bairro das Janelas',
+    school:'Escola Aberta', museum:'Museu das Vozes',
+    'university-biology':'Laboratório de Biologia', 'university-physics':'Laboratório de Química e Física',
+    'university-sports':'Ginásio e quadra poliesportiva', 'university-pool':'Centro Aquático',
+    'nature-cerrado':'Cerrado', 'capoeira-courtyard':'Pátio da Ginga',
+    'infinity-trails':'Trilhas do Infinito'
+  };
+  const facadeKey = art=>'facade-'+art;
+  const artSize = (art,w)=>({w,h:w*facadeSizes[art][1]/facadeSizes[art][0]});
+  const drawsSign = o=>o?.type===type||o?.type===pathSign;
+  const signDefaultScale = id=>id.startsWith(pathSign+'-')?defaultRouteScale:1;
+  const signPoint = (m,sign)=>{
+    const pos=m.design?.positions?.[sign.id],edit=m.design?.objectEdits?.[sign.id];
+    const objectEditor=V.ObjectEditing,offset=objectEditor.special(m)?objectEditor.offset(m):.5;
+    if(pos){sign.x=(pos[0]+offset)*T;sign.y=(pos[1]+offset)*T;}
+    if(edit||sign.type===pathSign)sign.visualScale=edit?.scale??signDefaultScale(sign.id);
+    if(edit)Object.assign(sign,{visualRotation:edit.rotation??0,visualFlip:!!edit.flip,editorLayer:edit.layer});
+    return sign;
+  };
   // Source rectangle, text panel and three opaque bands. All normalized
   // rectangles are measured from the pixels of the authored sprite.
   const boards = [
@@ -69,16 +139,50 @@
     'garden-pavilion':'Pavilhão do Jardim', 'muizenberg-huts':'Cabanas de Muizenberg'
   };
   const S = V.BuildingSigns = {
+    isSign:drawsSign,
+    defaultScale:signDefaultScale,
+    indoors(m,point) {
+      return V.Environment.isInterior(m)||!!(point&&m?.design?.adventure?.regions?.some(r=>
+        r.indoor&&point.x>=r.x&&point.x<=r.x+r.w&&point.y>=r.y&&point.y<=r.y+r.h));
+    },
+    interiorPassage(m,o) {
+      return passageTypes.has(o.type)&&!!(o.to||o.chapter&&o.type==='portal'||o.type==='exit'||
+        o.type==='infinity-trail'&&['return','next'].includes(o.kind))&&this.indoors(m,o);
+    },
+    interiorDoorDepth(m,o) {
+      const walls=m.design?.adventure?.architecture?.walls||[];
+      return walls.reduce((depth,wall)=>{
+        const [x1,y1]=wall.a,[x2,y2]=wall.b;
+        const distance=y1-o.y;
+        // Keep the opening visible when a nearby foreground wall would cover it.
+        if(Math.abs(y2-y1)<1&&distance>=0&&distance<=100&&
+          o.x>=Math.min(x1,x2)&&o.x<=Math.max(x1,x2))return Math.max(depth,y1+.25);
+        return depth;
+      },o.y);
+    },
+    interiorDoorSize(m,o) {
+      if(o.foodGalleryDoor)return {w:132,h:135};
+      if(m.culinaryInteriors&&o.interiorDoor)return {w:128,h:121};
+      const d=m.africanMuseum?museumDoor:classicDoor;
+      return {w:d.width+18,h:d.height+12};
+    },
     spec(m,o) {
+      if(this.indoors(m,o))return null;
+      const front=entranceArt[o.id];
+      if (front) {
+        const [name,sprite,width,kind]=front;
+        return {name,sprite,kind,...artSize(sprite,width)};
+      }
       if (m.culinary || o.interiorDoor) return null;
       if (o.culinaryLink && V.CulinaryWorld.facadeFrames[o.culinaryProp]) return {
         name:o.to==='university'?'Universidade das Vozes':'Restaurante dos Saberes',
         kind:o.to==='university'?'landmark':'shop', w:224, h:186, art:'culinary'
       };
+      if (o.playMuseumExterior) return {name:'Museu das Brincadeiras', kind:'culture', variant:1, ...V.PlayMuseum.facadeSize};
       if (o.foodFacade) return {name:'Museu da Comida', kind:'culture', w:240, h:210, art:'foodMuseum', offset:8};
       if (o.animalFacade) return {name:'Museu dos Animais', kind:'nature', w:210, h:180, art:'animalMuseum', offset:6};
-      if (o.salonLink && o.facade && !o.inside) return {name:'Salão Íris', kind:'shop', w:184, h:112, art:'salon'};
-      if (o.afLink && !m.africanMuseum && !o.playMuseumLink) {
+      if (o.salonLink && (o.facade || m.id==='hub') && !o.inside) return {name:'Salão Íris', kind:'shop', w:184, h:112, art:'salon'};
+      if (o.afLink && o.to==='african-words' && !m.africanMuseum && !o.playMuseumLink) {
         return {name:'Museu das Palavras Africanas', kind:'culture', ...V.PlazaLayout.museum, art:'wordsMuseum'};
       }
       return null;
@@ -90,10 +194,11 @@
     footprint(o,spec,p=o) {
       const {w,h}=this.dimensions(o,spec), scale=o.visualScale||1;
       const width=w*.80*scale, height=h*.60*scale;
-      return {x:p.x-width/2,y:p.y-20-height,w:width,h:height,owner:o.id,exteriorFacade:true};
+      return V.SceneDesign.rotateBox({x:p.x-width/2,y:p.y-20*scale-height,w:width,h:height,owner:o.id,exteriorFacade:true},p.x,p.y,o.visualRotation,o.visualFlip);
     },
     buildingFace(m,b) {
-      const x=b.x+b.w/2, front=b.y+b.h;
+      const x=b.x+b.w/2, front=b.y+b.h, art=buildingArt[b.door];
+      if (art) return fit(at(x,front,b.w,b.h+40),facadeSizes[art][0]/facadeSizes[art][1]);
       if (b.culture!=null) {
         const frame=V.AncestralArt.bounds.places[b.culture];
         if (!frame) return b;
@@ -133,21 +238,22 @@
         const door=m.objects.find(o=>o.id===b.door) || (b.culture!=null &&
           m.objects.find(o=>o.type==='room-door' && Math.abs(o.x-x)<b.w/2 && Math.abs(o.y-front)<54));
         const id=b.door||'building-'+i;
-        const name=(b.facade?.home && m.id==='residential' && W.maps[b.facade.home]?.name) || b.label;
+        const name=buildingNames[b.door] || (b.facade?.home && m.id==='residential' && W.maps[b.facade.home]?.name) || b.label;
         const kind=b.culture!=null?'heritage':b.sanctuaryHome!=null?'home':
           b.facade?.shop?'shop':b.facade?'home':'culture';
+        const face=this.buildingFace(m,b);
         const bottom=Math.min(front-12,(door?.y??front)-18);
         const top=b.y+b.h*.33;
-        const solid={x:b.x+b.w*.075,y:top,w:b.w*.85,h:Math.max(12,bottom-top),owner:'shell-'+id,exteriorFacade:true};
-        if (name) places.push(makePlace(id,name,kind,i,this.buildingFace(m,b),door,solid));
+        const solid={x:face.x+face.w*.075,y:top,w:face.w*.85,h:Math.max(12,bottom-top),owner:'shell-'+id,exteriorFacade:true};
+        if (name) places.push(makePlace(id,name,kind,i,face,door,solid));
       }
       for (const o of m.objects) {
         const spec=this.spec(m,o);
         if (spec) {
           const {w,h}=this.dimensions(o,spec),scale=o.visualScale||1;
           const box=at(o.x,o.y+(spec.offset||0)*scale,w*scale,h*scale);
-          const face=crop(box,alpha[spec.art]);
-          places.push(makePlace(o.id,spec.name,spec.kind,o.foodFacade?4:o.animalFacade?2:0,face,o,this.footprint(o,spec)));
+          const face=V.SceneDesign.rotateBox(crop(box,alpha[spec.art]),o.x,o.y,o.visualRotation,o.visualFlip);
+          places.push(makePlace(o.id,spec.name,spec.kind,spec.variant??(o.foodFacade?4:o.animalFacade?2:0),face,o,this.footprint(o,spec)));
         } else if (o.type==='market-stall' || o.marketKitchen) {
           const name=o.marketKitchen?'Cozinha dos Saberes':V.Markets.vendor(o.marketVendor)?.shop;
           const w=o.w||154, h=o.h||136;
@@ -182,13 +288,23 @@
     },
     install(m) {
       if (!m) return;
-      m.objects=m.objects.filter(o=>o.type!==type);
+      const replacedSigns=m.objects.some(drawsSign);
+      m.objects=m.objects.filter(o=>!drawsSign(o));
       m.solids=m.solids.filter(o=>!o.exteriorFacade);
-      const places=this.mapPlaces(m);
+      V.ObjectEditing.apply(m);
+      for(const o of m.objects){
+        delete o.travelSign;
+        if(this.interiorPassage(m,o))o.interiorDoorDepth=this.interiorDoorDepth(m,o);
+        else delete o.interiorDoorDepth;
+      }
+      const indoor=this.indoors(m);
+      const places=indoor?[]:this.mapPlaces(m);
       const solids=places.flatMap(p=>p.solid?[p.solid]:[]);
       // Replace narrow legacy footprints for freestanding entrances and stalls.
       const owners=new Set(solids.map(s=>s.owner));
-      m.solids=m.solids.filter(s=>!owners.has(s.owner));
+      const spriteShells=m.buildings.filter(b=>buildingArt[b.door]);
+      m.solids=m.solids.filter(s=>!owners.has(s.owner)&&!spriteShells.some(b=>
+        s.x===b.x&&s.y===b.y&&s.w===b.w&&s.h===b.h));
       m.solids.push(...solids);
 
       const structures=places.map(p=>p.face);
@@ -200,15 +316,190 @@
         routes.map(box=>({box,weight:15})),occupied.map(box=>({box,weight:2})));
       const measure=this.measure||=(document.createElement('canvas').getContext('2d'));
       for (const place of places.sort((a,b)=>a.front-b.front||a.x-b.x)) {
-        const sign=this.position(m,place,fixed,measure);
+        const sign=signPoint(m,this.position(m,place,fixed,measure));
         m.objects.push(sign);
         for (const box of this.silhouette(sign)) fixed.push({box,weight:26});
       }
-      if (places.length) {
+      const doors=new Set(places.map(p=>p.door?.id));
+      const signposts=fixed.concat(m.objects.filter(o=>o.type==='portal'||o.type==='room-door')
+        .map(o=>({box:at(o.x,o.y+4,o.width||64,o.height||84),weight:26})));
+      const destinations=[];
+      for (const o of m.objects) {
+        const route=doors.has(o.id)?null:this.route(m,o);
+        if(!route)continue;
+        const id=pathSign+'-'+o.id;
+        const text=this.routeText(measure,route.name);
+        const boardH=18+text.lines.length*routeGap;
+        const sign={id,type:pathSign,w:Math.max(128,Math.ceil((text.width+routePadding*2)/4)*4),
+          h:routeTop[3]+boardH+routeBottom[3],boardH,text,name:route.name,x:0,y:0,
+          label:'Placa de viagem · '+route.name,collectionOnly:true,interactionRange:0};
+        signPoint(m,sign);
+        const placed=m.design?.positions?.[id];
+        if(placed){
+          signposts.push({box:V.ObjectEditing.bounds(at(sign.x,sign.y,sign.w,sign.h),sign),weight:40});
+        }
+        destinations.push({o,sign,beside:route.beside,placed});
+      }
+      for(const {o,sign,beside,placed} of destinations){
+        if(!placed){
+          Object.assign(sign,this.routePosition(m,o,sign,beside,signposts));
+          signposts.push({box:V.ObjectEditing.bounds(at(sign.x,sign.y,sign.w,sign.h),sign),weight:40});
+        }
+        m.objects.push(sign);
+        o.travelSign=sign.id;
+      }
+      if (replacedSigns || places.length || m.objects.some(drawsSign)) {
         m.geometryRevision=(m.geometryRevision||0)+1;
         V.ObjectiveGuide.invalidate();
-        V.Atlas.cache.clear();
+        V.Atlas.cache.delete(m.id);
       }
+      V.SceneDesign.registerObjects(m);
+    },
+    route(m,o) {
+      if(this.indoors(m,o)||o.type==='room-door'&&o.door?.wall)return null;
+      const to=o.door?.to?.map||o.to||(o.chapter&&o.type==='portal'?'chapter-'+o.chapter:null);
+      const trail=o.type==='infinity-trail';
+      if (trail && o.kind==='return') return {name:'Floresta do Fragmento',beside:true};
+      if (trail && o.kind==='next') return {name:'Próxima sala',beside:true};
+      if (!to || to===m.id) return null;
+      const target=W.maps[to], indoor=target?V.Environment.isInterior(target):false;
+      if (o.type==='room-door' && indoor) return null;
+      if (!['door','room-door','travel','exit','portal','fragment-site','infinity-trail'].includes(o.type)) return null;
+      const name=routeNames[to]||(o.type==='portal'?V.content.chapters[o.chapter-1].title:V.FastTravel.name(to));
+      if (!name || (!target&&name===to)) return null;
+      const beside=['portal','room-door','door'].includes(o.type)||trail;
+      return {name:name.split(' · ')[0],beside};
+    },
+    routePosition(m,o,sign,beside,occupied) {
+      const offset=V.ObjectEditing.bounds(at(0,0,sign.w,sign.h),sign);
+      const face=V.ObjectEditing.bounds({x:-sign.w/2,y:-sign.h+routeTop[3],w:sign.w,h:sign.boardH},sign);
+      const {w,h}=offset, side=w/2+40;
+      const points=beside?[[side,0],[-side,0],[side,36],[-side,36],[0,60]]:
+        [[0,0],[side*.65,8],[-side*.65,8],[side,26],[-side,26],[0,36],[0,-28]];
+      let box=null,best=Infinity;
+      const nearby=occupied.filter(part=>rectOverlap(part.box,{x:o.x-w-124,y:o.y-h-120,w:2*w+248,h:h+280}));
+      for(const [i,[dx,dy]] of points.entries()){
+        const x=V.clamp(o.x+dx,16-offset.x,m.width*T-16-offset.x-w);
+        const y=V.clamp(o.y+dy,14-offset.y,m.height*T-20-offset.y-h);
+        const foot={x:x-18,y:y-10,w:36,h:11};
+        const candidate={...offset,x:offset.x+x,y:offset.y+y};
+        const board={...face,x:face.x+x,y:face.y+y};
+        const weight=nearby.reduce((sum,p)=>sum+p.weight*(
+          rectOverlap(board,p.box)/(board.w*board.h)+rectOverlap(candidate,p.box)/(w*h)*.4),0);
+        const blocked=m.solids.some(s=>rectOverlap(s,foot)>0);
+        const score=weight+i*.18+(blocked?25:0)+(Math.abs(x-o.x)+Math.abs(y-o.y))*.011;
+        if(score<best){best=score;box={x,y};}
+      }
+      return box;
+    },
+    routeText(c,name) {
+      c.save();
+      c.font=routeFont;
+      c.textAlign='center';
+      c.textBaseline='alphabetic';
+      const width=line=>{
+        const m=c.measureText(line);
+        return Math.ceil(Math.max(m.width,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||0)));
+      };
+      const words=name.trim().split(/\s+/);
+      let lines=[name],max=width(name);
+      if(words.length>1&&max>146){
+        let score=Infinity;
+        for(let i=1;i<words.length;i++){
+          const pair=[words.slice(0,i).join(' '),words.slice(i).join(' ')];
+          const first=width(pair[0]),second=width(pair[1]),long=Math.max(first,second);
+          const dangling=/^(d[aeo]s?|e|em|na|no|of|the|a|an)$/i.test(words[i-1]);
+          const balance=long+Math.abs(first-second)*.11+(dangling?15:0);
+          if(balance<score){score=balance;lines=pair;max=long;}
+        }
+      }
+      // Long names from custom maps can use extra rows without reducing letter size.
+      if(max>208&&words.length>1){
+        lines=[];
+        let line='';
+        for(const word of words){
+          const next=line?line+' '+word:word;
+          if(line&&width(next)>208){lines.push(line);line=word;}else line=next;
+        }
+        lines.push(line);
+        max=Math.max(...lines.map(width));
+      }
+      c.restore();
+      return {lines,width:max};
+    },
+    drawRoute(c,o,cam) {
+      const x=Math.round(o.x-cam.x),top=Math.round(o.y-cam.y-o.h);
+      const {w,boardH,text}=o,img=V.Assets.images.props;
+      if(!V.Assets.ready(img))return;
+      const left=Math.round(x-w/2), y=top+routeTop[3], stemX=x-53;
+      c.save();
+      c.imageSmoothingEnabled=false;
+      c.drawImage(img,...routeTop,stemX,top,105,routeTop[3]);
+      c.drawImage(img,...routeBottom,stemX,y+boardH,105,routeBottom[3]);
+      c.drawImage(img,...routeGrain,left+routeLeft[2],y,w-routeLeft[2]-routeTip[2],boardH);
+      c.drawImage(img,...routeLeft,left,y,routeLeft[2],boardH);
+      c.drawImage(img,...routeTip,left+w-routeTip[2],y,routeTip[2],boardH);
+
+      c.font=routeFont;
+      c.textAlign='center';
+      c.textBaseline='alphabetic';
+      c.fillStyle='#2f1b10';
+      const center=left+(w+routeLeft[2]-routeTip[2])/2;
+      for(const [i,line] of text.lines.entries()){
+        const metrics=c.measureText(line);
+        const mid=y+boardH/2+(i-(text.lines.length-1)/2)*routeGap;
+        const baseline=mid+(metrics.actualBoundingBoxAscent-metrics.actualBoundingBoxDescent)/2;
+        c.fillText(line,center,Math.round(baseline));
+      }
+      c.restore();
+    },
+    drawFacade(c,o,cam) {
+      const spec=this.spec(W.current||{},o);
+      if(!spec?.sprite)return;
+      const image=V.Assets.images[facadeKey(spec.sprite)],{w,h}=spec;
+      const x=o.x-cam.x,y=o.y-cam.y;
+      if(V.Assets.ready(image)){
+        V.SceneShadows.contact(c,x,y+3,w*.49,11,.21);
+        c.drawImage(image,Math.round(x-w/2),Math.round(y-h),w,h);
+      }
+      this.doorMarker(c,o,cam);
+    },
+    doorMarker(c,o,cam) {
+      if(W.nearest?.id===o.id)V.Living.marker(c,o.x-cam.x,o.y-cam.y+8,'E','#e8d2a2');
+    },
+    drawInteriorDoor(c,o,cam,m) {
+      if(o.foodGalleryDoor&&V.FoodGallery.drawPassage(c,o,cam)){
+        this.doorMarker(c,o,cam);
+      } else if(m.culinaryInteriors&&o.interiorDoor&&V.CulinaryInteriors.drawPassage(c,o,cam,m)){
+        this.doorMarker(c,o,cam);
+      } else {
+        this.drawRoomDoor(c,o,cam,m.africanMuseum?museumDoor:classicDoor,m);
+      }
+      return true;
+    },
+    drawRoomDoor(c,o,cam,door,m) {
+      if(!V.ResidentialArt.door(c,o,cam,door,m))V.Rooms.drawDoor(c,o,cam,door);
+      return true;
+    },
+    drawEntry(c,o,cam,original,owner,args,m=W.current) {
+      const affine=(fn,receiver)=>V.ObjectEditing.draw(c,o,cam,fn,receiver,[c,o,cam]);
+      if(drawsSign(o)){
+        if(this.indoors(m,o))return true;
+        if(o.type===type)return affine(this.draw,this);
+        affine(this.drawRoute,this);
+        return true;
+      }
+      if(this.interiorPassage(m,o))
+        return V.ObjectEditing.draw(c,o,cam,this.drawInteriorDoor,this,[c,o,cam,m]);
+      if(o.type==='room-door'&&owner!==V.Cozy&&this.indoors(m,o))
+        return V.ObjectEditing.draw(c,o,cam,this.drawRoomDoor,this,[c,o,cam,o.door,m]);
+      if(entranceArt[o.id])return affine(this.drawFacade,this);
+      if(o.travelSign&&!['door','room-door','portal','infinity-trail'].includes(o.type)&&
+        !(o.wordsRespectRole==='door'&&W.current?.id!=='african-words')){
+        this.doorMarker(c,o,cam);
+        return true;
+      }
+      return V.ObjectEditing.draw(c,o,cam,original,owner,args);
     },
     silhouette(sign) {
       const box=at(sign.x,sign.y,sign.w,sign.h);
@@ -278,7 +569,8 @@
           }
         }
       }
-      return {id:type+'-'+p.id,type,name:p.name,collectionOnly:true,interactionRange:0,...best};
+      return {id:type+'-'+p.id,type,name:p.name,label:'Placa da construção · '+p.name,
+        collectionOnly:true,interactionRange:0,...best};
     },
     draw(c,o,cam) {
       const x=o.x-cam.x, y=o.y-cam.y;
@@ -308,35 +600,82 @@
   };
 
   const group = V.AssetLoader.group.bind(V.AssetLoader);
-  V.AssetLoader.group = key=>key===asset?type:group(key);
+  const facadeAssets=Object.keys(facadeSizes).map(art=>[facadeKey(art),'assets/expansion/'+facadeKey(art)+'.webp']);
+  const facadeGroups=new Map(facadeAssets.map(([key,path])=>[path,key]));
+  V.AssetLoader.group = key=>key===asset?type:key===playFacadeAsset?playFacade:facadeGroups.get(key)||group(key);
   const loadAssets=V.Assets.load.bind(V.Assets);
   V.Assets.load=async function() {
-    await this.loadEntries([[type,asset]]);
+    await this.loadEntries([[type,asset],[playFacade,playFacadeAsset],...facadeAssets]);
     return loadAssets();
   };
   const groups=V.MapAssets.groups.bind(V.MapAssets);
   V.MapAssets.groups=function(m) {
     const out=groups(m);
     if (m?.objects.some(o=>o.type===type)) out.push(type);
-    return out;
+    if (m?.objects.some(o=>o.playMuseumExterior)) out.push(playFacade);
+    for(const b of m?.buildings||[])if(buildingArt[b.door])out.push(facadeKey(buildingArt[b.door]));
+    for(const o of m?.objects||[])if(entranceArt[o.id])out.push(facadeKey(entranceArt[o.id][1]));
+    return [...new Set(out)];
   };
-  for (const owner of [V.Cozy,V.Maritime,V.CapeRegion]) {
-    const draw=owner.drawObject.bind(owner);
-    owner.drawObject=function(c,o,cam,...args) {
-      if (o.type===type) return S.draw(c,o,cam);
-      if (owner===V.Cozy && V.PlazaLayout.drawDestination(c,o,cam)) return;
-      return draw(c,o,cam,...args);
-    };
+  const originalBuilding=V.Cozy.drawBuilding;
+  V.Cozy.drawBuilding=function(c,b,cam){
+    const art=buildingArt[b.door],img=art&&V.Assets.images[facadeKey(art)];
+    if(!V.Assets.ready(img))return originalBuilding.call(this,c,b,cam);
+    const {x,y,w,h}=S.buildingFace(W.current,b);
+    c.save();c.imageSmoothingEnabled=false;
+    c.drawImage(img,Math.round(x-cam.x),Math.round(y-cam.y),w,h);
+    c.restore();
+  };
+  const renderers=[
+    [V.Cozy,'drawObject'],[V.Maritime,'drawObject'],[V.CapeRegion,'drawObject'],
+    [V.Salon,'drawObject'],[V.AfricanMuseum,'drawObject'],[V.AfricanCuration,'drawObject'],
+    [V.FossilGallery,'draw'],[V.AnimalSanctuary,'draw'],
+    [V.NatureWorld,'draw'],[V.AnimalMuseum,'draw'],[V.FoodMuseum,'draw'],
+    [V.CulinaryWorld,'draw'],[V.CampusRenewal,'draw'],[V.WordsRespect,'draw']
+  ];
+  for(const [owner,method] of renderers){
+    const draw=owner[method];
+    owner[method]=function(c,o,cam,...args){return S.drawEntry(c,o,cam,draw,this,[c,o,cam,...args]);};
   }
   const landmark=V.Atlas.landmark.bind(V.Atlas);
   V.Atlas.landmark=function(c,o,m) {
     const cam={x:0,y:0};
-    if (o.type===type) return S.draw(c,o,cam);
-    return landmark(c,o,m);
+    if(drawsSign(o)||S.interiorPassage(m,o)||o.type==='room-door'&&S.indoors(m,o)||entranceArt[o.id]||
+      o.travelSign&&!['door','room-door','portal','infinity-trail'].includes(o.type))
+      return S.drawEntry(c,o,cam,landmark,null,[c,o,m],m);
+    if (o.playMuseumExterior) return V.ObjectEditing.draw(c,o,cam,V.PlayMuseum.drawFacade,V.PlayMuseum,[c,o,cam]);
+    return V.ObjectEditing.draw(c,o,cam,landmark,null,[c,o,m]);
   };
   const interactables=W.interactables.bind(W);
   W.interactables=function() {
-    return interactables().filter(o=>o.type!==type);
+    return interactables().filter(o=>!drawsSign(o));
+  };
+  // Older editor exports can contain manual coordinates for generated indoor signs.
+  const signId=id=>typeof id==='string'&&(id.startsWith(type+'-')||id.startsWith(pathSign+'-'));
+  const normalise=V.SceneDesign.normalise;
+  V.SceneDesign.normalise=function(doc) {
+    const layouts=doc?.maps;
+    if(!layouts||typeof layouts!=='object'||Array.isArray(layouts))return normalise.call(this,doc);
+    let maps=layouts;
+    for(const [id,design] of Object.entries(layouts)){
+      const live=W.maps[id];
+      if(!design||typeof design!=='object'||!S.indoors({
+        id,theme:live?.theme,cityInterior:live?.cityInterior,roomBuilder:design.builderMap,design
+      }))continue;
+      let clean=design;
+      for(const key of ['positions','objectEdits']){
+        const values=design[key];
+        if(values&&typeof values==='object'&&!Array.isArray(values)&&Object.keys(values).some(signId))
+          clean={...clean,[key]:Object.fromEntries(Object.entries(values).filter(([name])=>!signId(name)))};
+      }
+      if(Array.isArray(design.removedObjects)&&design.removedObjects.some(signId))
+        clean={...clean,removedObjects:design.removedObjects.filter(name=>!signId(name))};
+      if(clean!==design){
+        if(maps===layouts)maps={...layouts};
+        maps[id]=clean;
+      }
+    }
+    return normalise.call(this,maps===layouts?doc:{...doc,maps});
   };
   const preview=V.SceneDesign.preview.bind(V.SceneDesign);
   V.SceneDesign.preview=function(...args) {
