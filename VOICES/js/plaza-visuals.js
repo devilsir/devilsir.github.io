@@ -7,7 +7,146 @@
 /* Small, crisp shapes use the same three-pixel rhythm as the world sprites. */
 (function(){
 'use strict';
-const V=window.V,T=48;
+const V=window.V,W=V.World,T=48;
+/* Authored blocks keep destinations, chapter gates and walking paths together. */
+const layout=V.Cozy.layouts.hub, D=V.SceneDesign;
+const travel={
+  'animal-museum-entry':[18.1,7.6], 'travel-african-words-hub':[25.9,7.6],
+  'travel-park':[5.5,13.3], 'nature-brasil-entry':[11.5,13.3], 'travel-play-museum-hub':[17.5,13.3],
+  'campus-travel-hub-school':[30.5,13.3], 'campus-travel-hub-museum':[36.5,13.3], 'travel-garden':[42.5,13.3],
+  'city-restaurant':[9.6,21], 'food-museum-entry':[15.8,21], 'city-university':[32.2,21],
+  'salon-entry-hub':[38.6,21], 'travel-harbor-hub':[44.1,19.3],
+  'travel-market':[5.3,25.2], 'travel-beach':[42.6,25.2], 'waypoint-hub':[24,24.2],
+  'portal-1':[7.8,30.6], 'portal-2':[14.25,30.6], 'portal-3':[20.75,30.6],
+  'portal-4':[27.25,30.6], 'portal-5':[33.75,30.6], 'portal-6':[40.2,30.6]
+};
+const landmarks={
+  'hub-pix':[24,20.9], 'hub-nia':[21.9,21], 'hub-student':[36,16.1],
+  'guide':[23.9,26.15], 'terminal-hub':[29.2,25.2], 'word-runner':[10.6,25.2],
+  'community-board':[6.5,8.7], 'parcel':[6.7,10.35], 'resident-courier':[9.1,10.4],
+  'hub-record':[12.8,16.7], 'note-01':[12.1,8.35], 'note-02':[34,9.25],
+  'history-hub':[27.4,10.35], 'neighbor-paulo':[40,24.2],
+  'neighbors-pet-4':[39.2,24.1], 'animal-hub-0':[12.2,23.2], 'animal-hub-1':[25.9,20],
+  'animal-hub-2':[40,7.5], 'coast-hub-cat':[10.5,9.8],
+  'zambeto-companion-hub':[22.8,19.9], 'place-life-visitante-praca':[19.5,20.2],
+  'community-arcade-kiosk':[18.6,25.1], 'city-door-hub-neighborhood':[42.3,21.7],
+  'pix-discovery-hub-0':[16.3,25.45], 'pix-discovery-hub-1':[25.6,22.3],
+  'pix-discovery-hub-2':[33.8,24.1],
+  'pix-vocabulary-city-b5yik':[4.6,16.5], 'pix-vocabulary-shop-bg5fr':[6,23.4],
+  'pix-vocabulary-now-d739':[18.6,9.75], 'pix-vocabulary-new-d6un':[13.7,9.1],
+  'pix-vocabulary-quest-9u16y9':[22.3,8.9], 'pix-vocabulary-missing-agjos5':[19.4,23.7],
+  'pix-vocabulary-both-b5fyq':[29.2,22.2], 'pix-vocabulary-prepare-1mjdxw6':[9.1,23.1]
+};
+const furnishings=[
+  [4.4,7.6],[11.7,6.8],[5.7,21.3],[4.1,14.7],[29.9,24.8],[30.7,25.8],
+  [18,15.4],[28,17.8],[36.2,14.6],[4.3,17.4],[42.8,15.5],[30,3],
+  [6.3,18.6],[35.7,14.25]
+];
+const scenePositions={
+  'square-water-left':[19.3,17.6],'square-water-right':[28.7,17.6],
+  'square-tea':[10.5,23.1],'square-news':[5.25,8.95],
+  'square-guitar':[37.5,17],'furnishings-discovery-hub':[12.35,7.9],
+  'square-fountain-water':[24,19.1]
+};
+function author(d){
+  Object.assign(d,{
+    width:48,height:35,spawn:[23.5,23],meeting:[18.6,23.3],
+    purpose:'A fonte liga o polo cultural ao norte, a feira a oeste, o campus a leste e os seis capítulos ao sul.',
+    outline:[[6,1],[42,1],[47,7],[47,27],[42,34],[6,34],[1,27],[1,7]],
+    paths:[
+      [6.5,7.45,35,2.4],[16.8,8.5,3.1,5.9],[24.4,8.5,3.1,5.9],
+      [4.3,13.4,39.4,2.1],[22.45,9.6,3.1,18.4],[6,17.5,36,2.2],
+      [4.2,21.2,39.5,2.1],[7.5,23.2,3.1,4.7],[30.6,22.4,3.1,5.5],
+      [4.8,26.4,38.1,1.8],[6.9,30.65,34.2,2],[22.45,27.2,3.1,4.5],
+      ...[7.8,14.25,20.75,27.25,33.75,40.2].map(x=>[x-.72,28.1,1.44,2.7])
+    ],
+    zones:[['Polo cultural',6,3,36,7],['Fonte e descanso',19,14,10,7],
+      ['Feira e cozinha',5,18,13,8],['Campus e oficinas',30,12,13,13],
+      ['Portais da história',7,28,34,5]],
+    anchors:[['observe-water',22.2,18.85,'observing',16,3],['mail-sort',7.4,9.9,'working',12,1]]
+  });
+  for(const [i,b] of d.buildings.entries()) b.x=i===0?4.5:34.2;
+  d.positions={...d.positions,...Object.fromEntries(Object.entries({...travel,...landmarks}).map(([id,[x,y]])=>[id,[x-.5,y-.5]]))};
+  d.positions['door-library']=[8.5,6.1]; d.positions['door-room-6']=[38.2,7.1];
+  for(const row of d.decor){
+    const id=row[6]?.id;
+    if(id==='square-fountain-furniture') [row[2],row[3]]=[22,15.1];
+    const index=/^region-hub-(\d+)$/.exec(id);
+    if(index) [row[2],row[3]]=furnishings[+index[1]];
+  }
+  for(const scene of d.scenes){
+    const pos=scenePositions[scene.id];if(pos) [scene.x,scene.y]=[pos[0]-.5,pos[1]-.5];
+  }
+}
+author(layout);
+author(D.defaults.hub);
+
+const portalPoints={...travel,...landmarks};
+const previewDestinations=new Set([...Object.keys(travel),'city-door-hub-neighborhood']);
+const preview=D.preview.bind(D);
+D.preview=function(id,d){
+  const m=preview(id,d);
+  if(id!=='hub')return m;
+  const live=W.maps.hub;
+  if(live)for(const o of live.objects){
+    if(!previewDestinations.has(o.id)||m.objects.some(q=>q.id===o.id)||(d.removedObjects||[]).includes(o.id))continue;
+    m.objects.push({...o});
+  }
+  V.PlazaLayout.install(m,d);
+  return m;
+};
+
+function shift(m,o,x,y){
+  const dx=x-o.x,dy=y-o.y;
+  o.x=x;o.y=y;
+  for(const solid of m.solids)if(solid.owner===o.id||solid.owner==='host-'+o.id){solid.x+=dx;solid.y+=dy;}
+  for(const d of m.decor||[])if(d.linked===o.id){d.x+=dx;d.y+=dy;for(const s of m.solids)if(s.owner===d.id){s.x+=dx;s.y+=dy;}}
+  for(const a of m.anchors?.values()||[])if(a.object===o||a.id===o.id||a.id==='home-'+o.id){a.x+=dx;a.y+=dy;}
+  if(o.home)Object.assign(o.home,{x,y});
+  if(o.patrol)for(const point of o.patrol){point.x+=dx;point.y+=dy;}
+  const original=D.objectRegistry.hub?.[o.id];
+  if(original)Object.assign(original,{x,y});
+}
+V.PlazaLayout={
+  museum:{w:266,h:224},
+  destinationNames:{
+    'travel-park':'Parque das Pontes', 'campus-travel-hub-school':'Escola Aberta',
+    'campus-travel-hub-museum':'Museu das Vozes', 'travel-garden':'Horta Comunitária',
+    'travel-market':'Feira das Histórias', 'travel-beach':'Praia das Marés',
+    'city-door-hub-neighborhood':'Bairro das Janelas'
+  },
+  drawDestination(c,o,cam){
+    const name=W.current?.plazaPlanned&&this.destinationNames[o.id];
+    if(!name)return false;
+    const x=o.x-cam.x,y=o.y-cam.y,near=W.nearest?.id===o.id;
+    if(x< -110||y< -30||x>c.canvas.width+110||y>c.canvas.height+100)return true;
+    c.save();c.fillStyle='#766343';
+    for(const dx of [-51,49])c.fillRect(x+dx,y-42,5,42);
+    V.WorldSigns.draw(c,name,x,y-37,{maxWidth:184,active:near});
+    c.restore();
+    if(near)V.Living.marker(c,x,y+12,'E','#e8d2a2');
+    return true;
+  },
+  install(m,design=m?.design){
+    if(!m||m.plazaPlanned)return;
+
+    m.plazaPlanned=true;
+    m.solids=m.solids.filter(s=>!(s.x===14*T&&s.y===9*T&&s.w===4*T&&s.h===3*T));
+    for(const o of m.objects){
+      const point=portalPoints[o.id];
+      if(!point)continue;
+      const override=design.positions?.[o.id];
+      const final=override?[override[0]+.5,override[1]+.5]:point;
+      shift(m,o,final[0]*T,final[1]*T);
+    }
+    if(m===W.maps.hub)for(const o of m.objects.filter(o=>previewDestinations.has(o.id))){
+      D.objectRegistry.hub[o.id]||={...o};
+    }
+    m.geometryRevision=(m.geometryRevision||0)+1;
+    m.cache=null;
+  }
+};
+
 const Art=V.PlazaArt={facade:null,grounds:new WeakMap(),
  surface(c,m,cam){
   if(!m.cache)return;let layer=this.grounds.get(m.cache);
@@ -21,7 +160,7 @@ const Art=V.PlazaArt={facade:null,grounds:new WeakMap(),
   const f=m.decor.find(o=>o.id==='square-fountain-furniture'),legacy=m.objects.find(o=>o.type==='fountain');
   const fx=f?f.x+f.size/2:legacy?.x??16*T,fy=f?f.y+f.size*.75:(legacy?.y??12.7*T)-1.9*T;
   const paths=[...(m.design.paths||[])];
-  if(f)paths.push([fx/T-7,(fy+14)/T-.75,14,1.5],[fx/T-.75,(fy+14)/T-5.2,1.5,10.4]);
+  if(f && !m.plazaPlanned)paths.push([fx/T-7,(fy+14)/T-.75,14,1.5],[fx/T-.75,(fy+14)/T-5.2,1.5,10.4]);
   const onPath=(x,y)=>paths.some(([a,b,w,h])=>x>=a*T&&x<(a+w)*T&&y>=b*T&&y<(b+h)*T);
   // Keep the authored paths and their collisions; only dress their surface.
   c.save();c.beginPath();for(const[x,y,w,h]of paths)c.rect(x*T,y*T,w*T,h*T);c.clip();
@@ -115,7 +254,11 @@ const Art=V.PlazaArt={facade:null,grounds:new WeakMap(),
    for(const xx of [5,65]){r(xx+1,52,5,6,'#a67450');r(xx,50,7,2,'#cb9b66');r(xx+2,43,3,7,'#436c43');r(xx-1,46,9,3,'#668451');r(xx+1,42,5,3,'#7f965b');}
    this.facade=s;
   }
-  c.save();c.imageSmoothingEnabled=false;V.Cozy.pixelOval(c,x+5,y+2,70,13,'#17332b50');c.drawImage(this.facade,Math.round(x-76),Math.round(y-128),152,128);c.restore();
+  const {w,h}=V.PlazaLayout.museum;
+  c.save();c.imageSmoothingEnabled=false;
+  V.Cozy.pixelOval(c,x+5,y+2,w*.46,19,'#17332b50');
+  c.drawImage(this.facade,Math.round(x-w/2),Math.round(y-h),w,h);
+  c.restore();
  }
 };
 // The plaza's current fountain is a movable decoration. Keep its authored

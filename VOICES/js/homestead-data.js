@@ -28,8 +28,8 @@
     {
       "key": "hub/hub-student",
       "id": "hub-student",
-      "character": "student",
-      "name": "Bia",
+      "character": "town-rafa",
+      "name": "Rafa",
       "work": "hub",
       "home": "interior-horizonte-2",
       "slot": 0
@@ -1385,7 +1385,7 @@
     {
       "id": "home-staff-joao",
       "character": "housekeeper-joao",
-      "base": "vendor",
+      "base": "town-joao",
       "name": "João",
       "role": "Merceeiro",
       "work": "interior-mercearia",
@@ -1394,7 +1394,7 @@
     {
       "id": "home-staff-sofia",
       "character": "housekeeper-sofia",
-      "base": "musician",
+      "base": "town-sofia",
       "name": "Sofia",
       "role": "Atendente do café",
       "work": "interior-cafe",
@@ -1403,7 +1403,7 @@
     {
       "id": "home-staff-lia",
       "character": "housekeeper-lia",
-      "base": "courier",
+      "base": "town-lia-moveis",
       "name": "Lia",
       "role": "Vendedora de móveis",
       "work": "interior-shopping",

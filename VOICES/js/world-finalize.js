@@ -79,7 +79,7 @@
       if (o.animalFacade) return {name:'Museu dos Animais', kind:'nature', w:210, h:180, art:'animalMuseum', offset:6};
       if (o.salonLink && o.facade && !o.inside) return {name:'Salão Íris', kind:'shop', w:184, h:112, art:'salon'};
       if (o.afLink && !m.africanMuseum && !o.playMuseumLink) {
-        return {name:'Museu das Palavras Africanas', kind:'culture', w:152, h:128, art:'wordsMuseum'};
+        return {name:'Museu das Palavras Africanas', kind:'culture', ...V.PlazaLayout.museum, art:'wordsMuseum'};
       }
       return null;
     },
@@ -255,12 +255,12 @@
       let best=null, bestScore=Infinity;
       for (const option of candidates) {
         const {w,h,style,variant,text}=option;
-        const nudge=Math.min(p.face.w*.31,w*.95),doorSide=27+w*.47;
+        const nudge=Math.min(p.face.w*.25,w*.68),doorSide=25+w*.45;
         const anchors=p.door?[center-doorSide,center+doorSide,p.x,p.x-nudge,p.x+nudge]:
           [p.x,p.x-nudge*.5,p.x+nudge*.5,p.x-nudge,p.x+nudge];
-        const minX=Math.max(w/2+10,p.face.x-w*.08);
-        const maxX=Math.min(m.width*T-w/2-10,p.face.x+p.face.w+w*.08);
-        for (const gap of [4,10,18,28]) for (const anchor of anchors) {
+        const minX=Math.max(w/2+10,p.face.x+w*.16);
+        const maxX=Math.min(m.width*T-w/2-10,p.face.x+p.face.w-w*.16);
+        for (const gap of [0,4,9,16]) for (const anchor of anchors) {
           const x=V.clamp(anchor,minX,Math.max(minX,maxX));
           const y=Math.min(m.height*T-12,p.front+gap+h);
           const shape=this.silhouette({x,y,w,h,style});
@@ -271,8 +271,8 @@
           const heightCost=Math.max(0,h-(p.kind==='home'?82:98))*.11;
           const sizeCost=Math.abs(w-minW)*.058+Math.max(0,13-text.size)*.82+heightCost;
           const styleCost=variant*profile.preference;
-          const score=gap*.18+offset*3.5+crossing*5+sizeCost+styleCost+
-            Math.max(0,p.front+4-(y-h))*2;
+          const score=gap*.38+offset*5+crossing*5+sizeCost+styleCost+
+            Math.max(0,p.front-(y-h))*3;
           if (score<bestScore) {
             best={x,y,w,h,style,text};bestScore=score;
           }
@@ -324,6 +324,7 @@
     const draw=owner.drawObject.bind(owner);
     owner.drawObject=function(c,o,cam,...args) {
       if (o.type===type) return S.draw(c,o,cam);
+      if (owner===V.Cozy && V.PlazaLayout.drawDestination(c,o,cam)) return;
       return draw(c,o,cam,...args);
     };
   }
@@ -345,6 +346,7 @@
   };
   V.Hooks.around(W,'init','world-finalize:entrances',next=>function(...args) {
     const result=next(...args);
+    V.PlazaLayout.install(W.maps.hub);
     V.PortalSpacing.all();
     for (const m of Object.values(W.maps)) S.install(m);
     return result;

@@ -232,7 +232,7 @@
       if(c===3){this.prop(m,6,5,22,true);this.prop(m,19,5,27,true);}
       if(c===4||c===6){[4,8,16,20].forEach(x=>this.prop(m,x,6,24,true));}
       if(c===1){this.prop(m,18,12,14,true);this.prop(m,5,12,15,true);}
-      const librarian=m.objects.find(o=>o.library);if(librarian){librarian.x=12*T+24;librarian.y=7*T+24;librarian.label=c?'Conversar com a equipe do interior':'Conversar com a bibliotecária';}
+      const librarian=m.objects.find(o=>o.library);if(librarian){librarian.x=12*T+24;librarian.y=7*T+24;librarian.label=c?'Conversar com a equipe do interior':'Conversar com Davi';}
       m.objects.forEach(o=>{if(this.blocked(m,o.x,o.y)){const p=this.safe(m,o.x/T-.5,o.y/T-.5,false);o.x=p.x*T+24;o.y=p.y*T+24;}});
     },
     landscape(m) {

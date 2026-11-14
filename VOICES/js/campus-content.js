@@ -3678,7 +3678,8 @@
           }
         }
       ],
-      "sourceCharacter": "tomas"
+      "sprite": "assets/characters/town-cesar.webp",
+      "portrait": "assets/characters/town-cesar-portrait.webp"
     },
     {
       "id": "campus-reader",
@@ -3718,7 +3719,8 @@
           }
         }
       ],
-      "sourceCharacter": "elisa"
+      "sprite": "assets/characters/town-bel.webp",
+      "portrait": "assets/characters/town-bel-portrait.webp"
     },
     {
       "id": "campus-mediator",
@@ -3758,7 +3760,8 @@
           }
         }
       ],
-      "sourceCharacter": "curator"
+      "sprite": "assets/characters/town-irene.webp",
+      "portrait": "assets/characters/town-irene-portrait.webp"
     },
     {
       "id": "campus-researcher",

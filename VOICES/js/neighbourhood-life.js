@@ -21,8 +21,8 @@
     routine(m,o){
       if(!this.eligible(o)||o.livingRoutine)return;
       if(!o.character){
-        const people={joana:'courier',lindiwe:'jamila',zola:'guide',ayesha:'viviane',thandi:'ines',sipho:'andre'};
-        o.character=people[o.person]||['ines','andre','viviane','courier'][this.hash(o.id)%4];
+        const people={joana:'town-joana-capita',lindiwe:'town-lindiwe-porto',zola:'town-zola-porto',ayesha:'town-ayesha',thandi:'town-thandi',sipho:'town-sipho'};
+        o.character=V.MaritimeData.people.find(p=>o.type==='sea-person'&&p.id===o.person)?.sprite||people[o.person]||V.NpcArt.coastalCharacters[o.person]||'ines';
       }
       const origin={x:o.x,y:o.y},phase=this.hash(o.id),action=o.type==='food-museum-curator'||o.type==='animal-museum-curator'||m.id==='university'?'reading':o.type==='nature-ranger'?'observing':o.communityVisitor?'reading':'working';
       C.preparePerson(m,o);o.stationary=false;o.settled=false;o.livingRoutine=true;o.workOrigin=origin;o.workAction=action;
@@ -51,12 +51,12 @@
       [a,b].forEach((o,i)=>{g['anchor'+i]=C.addAnchor(m,id+'-'+i,spot[i].x,spot[i].y,'conversing',22,i?1:2);o.group=id;o.member=i;});m.chats.push(g);
     },
     seed(){
-      this.visitor(W.maps.market,'community-rute','Rute','ines',[12,9],'I am helping prepare the neighbourhood fair. We want the makers to choose the words on their labels.','Estou ajudando a preparar a feira do bairro. Queremos que as criadoras escolham as palavras de suas etiquetas.');
-      this.visitor(W.maps['cape-market'],'community-musa','Musa','luca',[13,11],'I am learning to sew. Zola showed me why a fabric label should include its source.','Estou aprendendo a costurar. Zola me mostrou por que a etiqueta de um tecido precisa indicar sua procedência.');
-      this.visitor(W.maps['food-museum'],'community-caue','Cauê','bento',[29,34],'I am comparing the dishes with the labels. I wrote down a question for Celina about the cooking techniques.','Estou comparando os pratos com as legendas. Anotei uma pergunta para Celina sobre as técnicas de preparo.');
-      this.visitor(W.maps.university,'community-luana','Luana','viviane',[15,10],'We are preparing a small exhibition. Each group needs to name its sources and explain what is still uncertain.','Estamos preparando uma pequena exposição. Cada grupo precisa nomear suas fontes e explicar o que ainda é incerto.');
-      this.visitor(W.maps.restaurant,'community-paulo','Paulo','andre',[15,19],'I came to try the menu and ask about the teaching kitchen. Sharing a table can begin a good conversation.','Vim conhecer o cardápio e perguntar sobre a cozinha de ensino. Compartilhar uma mesa pode começar uma boa conversa.');
-      this.visitor(W.maps.harbor,'community-noemia','Noêmia','viviane',[29,32],'I write down the animals I observe from the pier. Davi helps me compare my notes with his experience of the bay.','Anoto os animais que observo do cais. Davi me ajuda a comparar minhas notas com a experiência dele na baía.');
+      this.visitor(W.maps.market,'community-rute','Rute','town-rute',[12,9],'I am helping prepare the neighbourhood fair. We want the makers to choose the words on their labels.','Estou ajudando a preparar a feira do bairro. Queremos que as criadoras escolham as palavras de suas etiquetas.');
+      this.visitor(W.maps['cape-market'],'community-musa','Musa','town-musa',[13,11],'I am learning to sew. Zola showed me why a fabric label should include its source.','Estou aprendendo a costurar. Zola me mostrou por que a etiqueta de um tecido precisa indicar sua procedência.');
+      this.visitor(W.maps['food-museum'],'community-caue','Cauê','town-caue',[29,34],'I am comparing the dishes with the labels. I wrote down a question for Celina about the cooking techniques.','Estou comparando os pratos com as legendas. Anotei uma pergunta para Celina sobre as técnicas de preparo.');
+      this.visitor(W.maps.university,'community-luana','Luana','town-luana',[15,10],'We are preparing a small exhibition. Each group needs to name its sources and explain what is still uncertain.','Estamos preparando uma pequena exposição. Cada grupo precisa nomear suas fontes e explicar o que ainda é incerto.');
+      this.visitor(W.maps.restaurant,'community-paulo','Paulo','town-paulo-restaurante',[15,19],'I came to try the menu and ask about the teaching kitchen. Sharing a table can begin a good conversation.','Vim conhecer o cardápio e perguntar sobre a cozinha de ensino. Compartilhar uma mesa pode começar uma boa conversa.');
+      this.visitor(W.maps.harbor,'community-noemia','Noêmia','town-noemia',[29,32],'I write down the animals I observe from the pier. Davi helps me compare my notes with his experience of the bay.','Anoto os animais que observo do cais. Davi me ajuda a comparar minhas notas com a experiência dele na baía.');
       for(const m of Object.values(W.maps))for(const o of m.objects)this.routine(m,o);
       const find=(m,id)=>W.maps[m]?.objects.find(o=>o.id===id),pair=(m,a,b,lines,en)=>this.chat(W.maps[m],find(m,a),find(m,b),lines,en);
       pair('market','market-vendor-dandara','community-rute',['Rute, conferiu as legendas do tabuleiro?','Conferi os nomes. Falta registrar quem compartilhou o preparo.','Vamos perguntar e escrever juntas.'],['Rute, did you check the labels?','The names are ready. We still need to credit the people who shared the recipes.','Let us ask and write them together.']);

@@ -9,7 +9,41 @@
   const ids=new Set(["aline","amara","andre","archivist","atelier-cecilia","atelier-gilberto","atelier-ivana","atelier-joel","beach-beto","beach-celina","beach-ivo","beach-jorge","beach-lara","beach-nalu","beach-rebeca","beach-samira","bento","bisa","celso","cora","courier","curator","dandara","denis","dora","elder","elisa","enzo","gardener","guide","history-carolina","history-katherine","history-king","history-machado","history-nina","history-tim","ines","jaci","jamila","journalist","librarian","luan","luzia","maite","mila","musician","nara","neighbors-abel","neighbors-nilo","neighbors-rute","neighbors-yara","otavio","paulo","percussionist","protest-aldo","protest-ariane","protest-avelina","protest-cassio","protest-clarissa","protest-dario","protest-debora","protest-edivaldo","protest-ezequiel","protest-fabiola","protest-jeferson","protest-josias","protest-juliete","protest-livia","protest-marlene","protest-moises","protest-priscila","protest-raissa","protest-samuel","protest-sebastiao","protest-silas","protest-soraia","protest-tais","protest-wellington","ravi","resident","rui","scientist","selma","student","student2","teacher","technician","tomas","vendor","vitor","viviane"]);
   const coastalAtlases={"npc-ayesha-idle":"assets/maritime/sea-ayesha-idle.webp","npc-joana-idle":"assets/maritime/sea-joana-idle.webp","npc-kabelo-idle":"assets/maritime/sea-kabelo-idle.webp","npc-lindiwe-idle":"assets/maritime/sea-lindiwe-idle.webp","npc-naledi-idle":"assets/maritime/sea-naledi-idle.webp","npc-samira-idle":"assets/maritime/sea-samira-idle.webp","npc-sipho-idle":"assets/maritime/sea-sipho-idle.webp","npc-thandi-idle":"assets/maritime/sea-thandi-idle.webp","npc-zola-idle":"assets/maritime/sea-zola-idle.webp"};
 
-  V.NpcArt={paths,ids,
+  const roster={
+    helena:'Helena',rafa:'Rafa','davi-arquivo':'Davi',
+    'clara-porto':'Clara','inacio-porto':'Inácio',noemia:'Noêmia',luana:'Luana',
+    'joana-feira':'Joana',solange:'Solange',luiz:'Luiz',amina:'Amina',sizwe:'Sizwe',
+    thandi:'Thandi','zola-feira':'Zola',nandi:'Nandi','lia-restaurante':'Lia',rute:'Rute',
+    caue:'Cauê','celina-curadora':'Celina','rosa-guarda':'Rosa','lindiwe-guarda':'Lindiwe',
+    'dandara-cozinha':'Dandara','joana-capita':'Capitã Joana','bia-estudante':'Bia',
+    daniel:'Daniel',luisa:'Luísa',renata:'Renata','aline-piscina':'Aline',
+    'paulo-restaurante':'Paulo','dandara-naturalista':'Dandara','davi-pescador':'Davi',
+    cesar:'César',bel:'Bel',irene:'Irene',musa:'Musa',
+    joao:'João',sofia:'Sofia','lia-moveis':'Lia','zola-porto':'Zola',
+    ayesha:'Ayesha',kabelo:'Kabelo','lindiwe-porto':'Lindiwe',naledi:'Naledi',samira:'Samira',sipho:'Sipho'
+  };
+  const coastalCharacters={samira:'town-samira',naledi:'town-naledi',kabelo:'town-kabelo'};
+  const entries=[];
+  for(const [key,name] of Object.entries(roster)){
+    const id='town-'+key;
+    ids.add(id);
+    V.content.characters[id]={name,role:'Vizinhança',accent:'#d0bd8b'};
+    for(const alias of [id,id+'-portrait']){
+      const path='assets/characters/'+alias+'.webp';
+      paths.add(path);
+      entries.push([alias,path]);
+    }
+  }
+  const load=V.Assets.load.bind(V.Assets);
+  V.Assets.load=async function(...args){
+    await Promise.all([load(...args),this.loadEntries(entries)]);
+    for(const [speaker,art] of [['student','town-bia-estudante'],['librarian','town-davi-arquivo']]){
+      for(const suffix of ['', '-portrait'])this.images[speaker+suffix]=this.images[art+suffix];
+    }
+    return this.errors;
+  };
+
+  V.NpcArt={paths,ids,coastalCharacters,
     coastalFrame(c,id,x,y,size=72,time=0){
       const image=V.MaritimeArt.images.get(id+'-idle');
       if(!V.Assets.ready(image))return false;

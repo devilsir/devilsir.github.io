@@ -195,7 +195,7 @@
     },
     {
       "id": "animal-museum",
-      "src": "js/animal-museum.js?v=20261113-fachadas1",
+      "src": "js/animal-museum.js?v=20261113-praca1",
       "requires": [
         "duo-sleep",
         "food-museum",
@@ -307,7 +307,7 @@
     },
     {
       "id": "campus-content",
-      "src": "js/campus-content.js?v=20261113-elenco1",
+      "src": "js/campus-content.js?v=20261113-praca1",
       "requires": []
     },
     {
@@ -359,7 +359,7 @@
     },
     {
       "id": "cape-region-world",
-      "src": "js/cape-region-world.js?v=20261110-daily1",
+      "src": "js/cape-region-world.js?v=20261113-praca1",
       "requires": [
         "maritime-voyage"
       ]
@@ -697,7 +697,7 @@
     },
     {
       "id": "cooking-world",
-      "src": "js/cooking-world.js?v=20261113-fachadas1",
+      "src": "js/cooking-world.js?v=20261113-praca1",
       "requires": [
         "cooking-game",
         "duo-sessions",
@@ -734,7 +734,7 @@
     },
     {
       "id": "culinary-interiors",
-      "src": "js/culinary-interiors.js?v=20261103-loading1",
+      "src": "js/culinary-interiors.js?v=20261113-praca1",
       "requires": [
         "sanctuary-neighbors"
       ]
@@ -983,7 +983,7 @@
     },
     {
       "id": "food-expansion",
-      "src": "js/food-expansion.js?v=20261102-visual1",
+      "src": "js/food-expansion.js?v=20261113-praca1",
       "requires": [
         "cooking-hud",
         "cooking-world",
@@ -997,7 +997,7 @@
     },
     {
       "id": "food-museum",
-      "src": "js/food-museum.js?v=20261113-fachadas1",
+      "src": "js/food-museum.js?v=20261113-praca1",
       "requires": [
         "food-museum-data",
         "museum-studies",
@@ -1097,7 +1097,7 @@
     },
     {
       "id": "game",
-      "src": "js/game.js?v=20261113-perfis1",
+      "src": "js/game.js?v=20261113-praca1",
       "requires": [
         "combat",
         "cozy-world",
@@ -1258,7 +1258,7 @@
     },
     {
       "id": "homestead-data",
-      "src": "js/homestead-data.js?v=20261021-presence1",
+      "src": "js/homestead-data.js?v=20261113-praca1",
       "requires": []
     },
     {
@@ -1270,7 +1270,7 @@
     },
     {
       "id": "homestead-world",
-      "src": "js/homestead-world.js?v=20261111-interiors1",
+      "src": "js/homestead-world.js?v=20261113-praca1",
       "requires": [
         "city-atlas",
         "city-life",
@@ -1362,7 +1362,7 @@
     },
     {
       "id": "living-world",
-      "src": "js/living-world.js?v=20261113-arteclima1",
+      "src": "js/living-world.js?v=20261113-praca1",
       "requires": [
         "city-chronicle",
         "field-guide",
@@ -1412,7 +1412,7 @@
     },
     {
       "id": "maritime-data",
-      "src": "js/maritime-data.js?v=20261030-docks1",
+      "src": "js/maritime-data.js?v=20261113-praca1",
       "requires": []
     },
     {
@@ -1453,7 +1453,7 @@
     },
     {
       "id": "market-data",
-      "src": "js/market-data.js?v=20261101-market3",
+      "src": "js/market-data.js?v=20261113-praca1",
       "requires": [
         "botica"
       ]
@@ -1552,7 +1552,7 @@
     },
     {
       "id": "nature-world",
-      "src": "js/nature-world.js?v=20261103-mobile1",
+      "src": "js/nature-world.js?v=20261113-praca1",
       "requires": [
         "food-expansion",
         "wildlife-data"
@@ -1623,14 +1623,14 @@
     },
     {
       "id": "neighbourhood-life",
-      "src": "js/neighbourhood-life.js?v=20261111-polish1",
+      "src": "js/neighbourhood-life.js?v=20261113-praca1",
       "requires": [
         "community-stories"
       ]
     },
     {
       "id": "npc-art",
-      "src": "js/npc-art.js?v=20261113-elenco2",
+      "src": "js/npc-art.js?v=20261113-praca1",
       "requires": [
         "cape-art-data",
         "guard-village",
@@ -1723,7 +1723,7 @@
     },
     {
       "id": "place-life",
-      "src": "js/place-life.js?v=20261113-elenco2",
+      "src": "js/place-life.js?v=20261113-praca1",
       "requires": [
         "editor-buildings",
         "living-biomes"
@@ -1888,14 +1888,14 @@
     },
     {
       "id": "plaza-visuals",
-      "src": "js/plaza-visuals.js?v=20261101-plaza5",
+      "src": "js/plaza-visuals.js?v=20261113-praca1",
       "requires": [
         "duo-tutorial"
       ]
     },
     {
       "id": "portal-spacing",
-      "src": "js/portal-spacing.js?v=20261113-fachadas1",
+      "src": "js/portal-spacing.js?v=20261113-praca1",
       "requires": [
         "duo-tutorial"
       ]
@@ -2080,7 +2080,7 @@
     },
     {
       "id": "sanctuary-data",
-      "src": "js/sanctuary-data.js?v=20261102-sanctuary2",
+      "src": "js/sanctuary-data.js?v=20261113-praca1",
       "requires": [
         "field-guide",
         "wildlife-data"
@@ -2088,7 +2088,7 @@
     },
     {
       "id": "sanctuary-neighbors",
-      "src": "js/sanctuary-neighbors.js?v=20261113-fachadas1",
+      "src": "js/sanctuary-neighbors.js?v=20261113-praca1",
       "requires": [
         "animal-sanctuary",
         "city-facade-polish"
@@ -2354,7 +2354,7 @@
     },
     {
       "id": "world",
-      "src": "js/world.js?v=20261113-fachadas1",
+      "src": "js/world.js?v=20261113-praca1",
       "requires": [
         "content",
         "ground-cache",
@@ -2364,7 +2364,7 @@
     },
     {
       "id": "world-finalize",
-      "src": "js/world-finalize.js?v=20261113-placas2",
+      "src": "js/world-finalize.js?v=20261113-praca1",
       "requires": [
         "place-life",
         "residential-interiors",

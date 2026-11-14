@@ -52,7 +52,7 @@ const S=V.PortalSpacing={gap:216,
   return !m.objects.some(other=>other!==o&&!targets.has(other)&&!other.collectionOnly&&!V.Cozy.person(other)&&Math.hypot(other.x-p.x,other.y-p.y)<72);
  },
  arrange(m,relayout=false){
-  if(!m)return 0;const targets=m.objects.filter(o=>this.target(o));if(targets.length<2)return 0;
+  if(!m||m.plazaPlanned)return 0;const targets=m.objects.filter(o=>this.target(o));if(targets.length<2)return 0;
   const set=new Set(targets),obstacles=this.obstacles(m),reserved=targets.filter(o=>!this.movable(o)||!relayout&&
    targets.every(other=>o===other||this.separated(m,o,o,other))&&
    (!V.BuildingSigns?.spec(m,o)||this.clear(m,o,o,set,[],obstacles)));

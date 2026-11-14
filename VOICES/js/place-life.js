@@ -19,14 +19,14 @@ const people=[
 ];
 // Other public spaces gain visitors using the existing directional characters.
 const visitors=[
- ['hub','visitante-praca','Helena','nia',.42,.72,'Conhecendo a praça'],
- ['park','visitante-parque','Bia','taina',.46,.65,'Observando o parque'],
- ['garden','visitante-horta','Daniel','leo',.55,.67,'Visitando a horta'],
- ['market','visitante-feira','Luísa','sol',.43,.73,'Visitando as bancas'],
- ['university','visitante-campus','Davi','student',.51,.65,'Conhecendo o campus'],
- ['university-sports','visitante-ginasio','Renata','taina',.86,.84,'Acompanhando o treino'],
- ['university-pool','visitante-piscina','Aline','nia',.45,.82,'Conversando no centro aquático'],
- ['cape-town','visitante-cabo','Naledi','sol',.55,.72,'Visitando a cidade']
+ ['hub','visitante-praca','Helena','town-helena',.42,.72,'Conhecendo a praça'],
+ ['park','visitante-parque','Bia','town-bia-estudante',.46,.65,'Observando o parque'],
+ ['garden','visitante-horta','Daniel','town-daniel',.55,.67,'Visitando a horta'],
+ ['market','visitante-feira','Luísa','town-luisa',.43,.73,'Visitando as bancas'],
+ ['university','visitante-campus','Davi','town-davi-arquivo',.51,.65,'Conhecendo o campus'],
+ ['university-sports','visitante-ginasio','Renata','town-renata',.86,.84,'Acompanhando o treino'],
+ ['university-pool','visitante-piscina','Aline','town-aline-piscina',.45,.82,'Conversando no centro aquático'],
+ ['cape-town','visitante-cabo','Naledi','town-naledi',.55,.72,'Visitando a cidade']
 ];
 const P=V.PlaceLife={people,image:null,
  load(){return new Promise(resolve=>{const im=V.Assets.image();this.image=im;im.onload=im.onerror=resolve;im.src='assets/expansion/place-npcs.webp?v=20261102-living3';V.AssetLoader.register(im,resolve);});},
