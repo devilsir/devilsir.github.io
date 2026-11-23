@@ -54,7 +54,6 @@ const B=V.PixWorldVocabulary={
  open(words,title){V.UI.modal('PIX · '+title,'PALAVRAS DO AMBIENTE',`<p>Descubra os nomes em inglês deste objeto e ações relacionadas. Cada palavra fica guardada com seu significado, uma frase de exemplo e o local da descoberta.</p>`,'<button id="pix-context-notebook" class="primary">Abrir coleção do PIX</button>');this.strip(words,title);V.$('#pix-context-notebook').onclick=()=>P.glossary();},
  clues(){for(const button of V.$$('[data-pix-track]')){const s=this.source(button.dataset.pixTrack);if(!s||s.kind!=='interaction')continue;const clue=button.closest('.pix2-entry')?.querySelector('.pix2-clue');if(clue)clue.innerHTML='Explore em <strong>'+esc(V.FastTravel.name(s.map))+'</strong>: '+esc(s.description)+'.';}}
 };B.install();
-const init=W.init.bind(W);W.init=function(...args){const out=init(...args);B.seed();return out;};
 const load=W.load.bind(W);W.load=function(id,...args){B.bindMap(this.maps[id]);return load(id,...args);};
 const interactables=W.interactables.bind(W);W.interactables=function(...args){const list=interactables(...args),seen=new Set(list);for(const o of this.current?.objects||[])if(o.pixVocabularyOnly&&!seen.has(o))list.push(o);return list;};
 const contextual=X.contextual.bind(X);X.contextual=o=>o?.pixContext?undefined:contextual(o);

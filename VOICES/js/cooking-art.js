@@ -11,6 +11,7 @@ const A=V.CookingArt={images:{},names:['prep','batter','heat','extras','sweets',
  load(){if(this.ready)return this.ready;this.ready=Promise.all(this.names.map(key=>new Promise(resolve=>{const image=V.Assets.image();this.images[key]=image;image.onload=image.onerror=resolve;image.src='assets/cooking/'+key+'.webp?v=20261101-cook1';V.AssetLoader.register(image,resolve);})));return this.ready;},
  ensure(world=false){return V.MapAssets.ensure([world?'cooking-world':'cooking'],'Preparando a cozinha');},
  crop(sheet,row,col){
+  if(!V.CookingCrops&&window.VoicesApp)this.cropRequest||=window.VoicesApp.loadFeature('cooking-art').catch(()=>{});
   const im=this.images[sheet]||V.NatureArt?.images[sheet],meta=V.CookingCrops?.[sheet],slot=row*4+col,entry=meta?.frames[slot];if(!im?.naturalWidth||!entry)return null;
   this.crops||=new WeakMap();let cache=this.crops.get(im);if(!cache){cache=new Map();this.crops.set(im,cache);}if(cache.has(slot))return cache.get(slot);
   const[x,y,w,h]=entry.box,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');c.drawImage(im,x,y,w,h,0,0,w,h);

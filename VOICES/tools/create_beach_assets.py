@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import json
@@ -813,7 +814,7 @@ def main():
     jsrecords = [{**r, 'family': 'beach', 'solid': bool(r['solidFootprint'])} for r in records]
     source = 'data:image/png;base64,'+base64.b64encode((out / 'beach-props.png').read_bytes()).decode('ascii')
     js = "(function(){'use strict';const V=window.V;V.beachAssets="+json.dumps(jsrecords, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets.push(...V.beachAssets);V.beachMaterialSources={beach:"+json.dumps(source)+"};V.coastAnimals="+json.dumps(animal_records, ensure_ascii=False, separators=(',', ':'))+";})();\n"
-    (ROOT / 'js' / 'beach-assets.js').write_text(js, encoding='utf-8')
+    write_module(ROOT / 'js' / 'beach-assets.js', js)
     preview_grid(sprites, [p[1] for p in PROPS], 8, ROOT / 'tests' / 'beach-assets-preview.png')
     preview_grid(animal_sprites, [a[1] for a in ANIMALS], 4, ROOT / 'tests' / 'coast-animals-preview.png')
     print(json.dumps({'props': len(records), 'uniqueCells': len({s.tobytes() for s in sprites}), 'floors': 8, 'animatedAnimals': 8, 'animalFrames': 32, 'alpha': atlas.getchannel('A').getextrema(), 'recolorable': sum(bool(r['colorRoles']) for r in records)}))

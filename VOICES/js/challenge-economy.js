@@ -7,7 +7,7 @@
 (function(){
 'use strict';
 const V=window.V,P=V.Playground,esc=V.escape;
-const rates={runner:[12,10],rhythm:[12,10],room:[14,12],courier:[18,14],garden:[20,16],bridges:[16,14],memory:[22,18],museum:[22,18],platform:[48,40],radio:[18,14],moto:[24,20],'guarda-biodiversidade':[36,30]};
+const rates={runner:[12,10],rhythm:[12,10],room:[14,12],courier:[18,14],garden:[20,16],bridges:[16,14],memory:[22,18],museum:[22,18],platform:[48,40],radio:[18,14],moto:[24,20],basketball:[36,28],'basketball-virada':[38,30],'guarda-biodiversidade':[36,30]};
 const E=V.ChallengeEconomy={
  ensure(){const a=V.Progress.ensure();return a.challengeEconomy||={version:1,receipts:{},discoveries:{}};},
  // One receipt per run, phase and circuit leg. Reopening a result never pays again.

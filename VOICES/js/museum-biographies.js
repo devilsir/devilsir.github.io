@@ -6,19 +6,18 @@
 })(function () {
   'use strict';
   const V=window.V,esc=V.escape;
-  const {profiles,sources}=V.MuseumBiographyData;
-  const byReading=new Map(Object.values(profiles).filter(p=>p.portrait).map(p=>['portrait-note-'+p.portrait,p.id]));
+  const portraits='zumbi dandara machado carolina luiz-gama antonieta milton lelia abdias ruth conceicao gil elza nina katherine rosa harriet king mandela biko angela wangari marielle pele marta rebeca serena chimamanda maya baldwin sueli cartola'.split(' ');
+  const byReading=new Map(portraits.map((id,i)=>['portrait-note-'+(136+i),id]));
   for(const id of ['nina','tim','king','machado','carolina','katherine','conceicao'])byReading.set('heritage-book-'+id,id);
   for(const [reading,id] of [['heritage-book-rock','rosetta'],['cozy-book-05','rosana'],['book-03','mansa-musa']])byReading.set(reading,id);
   const normalize=value=>String(value).normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase('pt-BR');
-  const listing=Object.values(profiles).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
-  const areas=[...new Set(listing.map(p=>p.area))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 
   V.MuseumBiographies={
     forReading(id){return byReading.get(id)||null;},
     forClue(id){return {c2_mali:'mansa-musa',c3_johnson:'katherine',c3_carolina:'carolina',c3_reboucas:'reboucas'}[id]||null;},
 
     references(ids){
+      const {sources}=V.MuseumBiographyData;
       const links=new Map();
       for(const id of ids){
         const existing=V.content.sources.find(source=>source.id===id);
@@ -29,7 +28,8 @@
     },
 
     render(id){
-      const p=profiles[id];
+      const profiles=V.MuseumBiographyData?.profiles;
+      const p=profiles?.[id];
       if(!p)return '';
       const links=this.references(p.sourceIds);
       return `<article class="museum-bio" data-museum-bio="${esc(id)}">
@@ -48,6 +48,8 @@
     },
 
     open(id,back=null){
+      if(!V.MuseumBiographyData)return window.VoicesApp?.withFeature('museum-biographies',()=>this.open(id,back));
+      const {profiles}=V.MuseumBiographyData;
       if(!Object.hasOwn(profiles,id))return;
       V.UI.modal(profiles[id].name,'Biografias do acervo',this.render(id),
         `${back?'<button id="museum-bio-back" class="secondary">Voltar</button>':''}<button id="museum-bio-catalog" class="primary">Todas as biografias</button>`,true);
@@ -58,6 +60,9 @@
     },
 
     catalog(back=null,filter={query:'',area:''}){
+      if(!V.MuseumBiographyData)return window.VoicesApp?.withFeature('museum-biographies',()=>this.catalog(back,filter));
+      const listing=Object.values(V.MuseumBiographyData.profiles).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+      const areas=[...new Set(listing.map(p=>p.area))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
       V.UI.modal('Biografias do acervo','Museu das Vozes',`<div class="museum-bio-directory">
         <div class="museum-bio-filters"><label>Buscar por nome ou lugar<input id="museum-bio-search" type="search" value="${esc(filter.query)}" placeholder="Carolina, capoeira, Quênia…"></label>
         <label>Área<select id="museum-bio-area"><option value="">Todas</option>${areas.map(area=>`<option ${filter.area===area?'selected':''}>${esc(area)}</option>`).join('')}</select></label></div>

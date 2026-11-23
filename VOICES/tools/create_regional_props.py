@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import base64
@@ -361,7 +362,7 @@ def main():
     (target / 'regional-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     encoded = base64.b64encode((target / 'regional-props.png').read_bytes()).decode('ascii')
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.regionalAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.regionalAssets);V.regionalMaterialSources={regional:'data:image/png;base64,"+encoded+"'};})();\n"
-    (ROOT / 'js' / 'regional-assets.js').write_text(registry, encoding='utf-8')
+    write_module(ROOT / 'js' / 'regional-assets.js', registry)
     preview(images, records)
     print(json.dumps({'assets': len(records), 'uniqueCells': len({image.tobytes() for image in images}), 'atlasDimensions': [256, 96], 'canopies': [i for i, record in enumerate(records) if record['layer'] == 'canopy'], 'preview': 'tests/regional-props-preview.png'}, ensure_ascii=False))
 

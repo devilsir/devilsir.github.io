@@ -1,4 +1,5 @@
 'use strict';
+const { writeModule } = require('./generated-module.cjs');
 const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/cooking/workshop'),meta=require('../assets/cooking/workshop/generation.json');
 (async()=>{const sheets={},contact=createCanvas(1080,1660),cc=contact.getContext('2d');cc.fillStyle='#31534a';cc.fillRect(0,0,1080,1660);let serial=0;
@@ -18,5 +19,5 @@ const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/cooking/works
   cc.drawImage(out,serial%2*540+12,Math.floor(serial/2)*550+12,516,rows===1?129:516);cc.fillStyle='#f7e7bb';cc.font='18px sans-serif';cc.fillText(id,serial%2*540+20,Math.floor(serial/2)*550+545);serial++;
  }
  fs.writeFileSync(path.join(dir,'manifest.json'),JSON.stringify({generator:meta.generator,packing:'Complete cells, including disconnected food pieces; generous transparent margins; no browser pixel reads; compressed WebP.',sheets},null,2));
- fs.writeFileSync(path.join(root,'js/cooking-workshop-art-data.js'),'(function(){window.V.CookingWorkshopArtData='+JSON.stringify(sheets)+';})();\n');fs.writeFileSync(path.join(root,'.qa/review/cooking-workshop-atlases.png'),contact.toBuffer('image/png'));console.log(JSON.stringify(Object.fromEntries(Object.entries(sheets).map(([id,s])=>[id,s.bytes]))));
+ writeModule(path.join(root,'js/cooking-workshop-art-data.js'),'(function(){window.V.CookingWorkshopArtData='+JSON.stringify(sheets)+';})();\n');fs.writeFileSync(path.join(root,'.qa/review/cooking-workshop-atlases.png'),contact.toBuffer('image/png'));console.log(JSON.stringify(Object.fromEntries(Object.entries(sheets).map(([id,s])=>[id,s.bytes]))));
 })().catch(e=>{console.error(e.stack);process.exit(1);});

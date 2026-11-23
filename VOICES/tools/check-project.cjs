@@ -3,18 +3,28 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const assert = require('node:assert/strict'), acorn = require('acorn'), { root, manifest, editorManifest } = require('./runtime-files.cjs');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8'), runtime = manifest(html);
 const editor = fs.readFileSync(path.join(root, 'sprite-editor.html'), 'utf8');
-const scripts = runtime.scripts.map(url => url.split('?')[0]);
-const refs = [...scripts, runtime.bootstrap, ...editorManifest(editor).map(entry=>entry.src), ...runtime.styles, ...[...(html + editor).matchAll(/(?:src|href)="((?:js|css|assets)\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1])].map(url => url.split('?')[0]);
+const features = Object.values(runtime.features);
+const scripts = [...runtime.scripts, ...features.flatMap(feature => feature.scripts)].map(url => url.split('?')[0]);
+const pwa = JSON.parse(fs.readFileSync(path.join(root, 'manifest.webmanifest'), 'utf8'));
+assert(html.includes('rel="manifest" href="manifest.webmanifest"') && html.includes('id="pwa-install"'), 'Missing PWA entry points');
+assert.equal(pwa.scope, './');
+assert.equal(pwa.start_url, './');
+for (const size of ['192x192', '512x512']) assert(pwa.icons.some(icon => icon.sizes === size), 'Missing PWA icon: ' + size);
+const refs = [...scripts, runtime.bootstrap, ...editorManifest(editor).map(entry=>entry.src), ...runtime.styles, ...features.flatMap(feature => feature.styles), 'sw.js', ...pwa.icons.map(icon=>icon.src), ...[...(html + editor).matchAll(/(?:src|href)="((?:js|css|assets)\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1])].map(url => url.split('?')[0]);
 const graph=JSON.parse(fs.readFileSync(path.join(root,'data/module-graph.json'),'utf8'));
+const featureDeclarations = Object.fromEntries(Object.entries(runtime.features).map(([name, feature]) => [name, { modules: feature.modules, styles: feature.styles }]));
+assert.deepEqual(featureDeclarations, graph.features, 'Deferred groups must match the project catalog');
 assert.deepEqual(runtime.modules,graph.game,'The embedded game catalog must match the declared dependency graph');
 assert.deepEqual(editorManifest(editor),graph.editor,'The embedded editor catalog must match the declared dependency graph');
+assert.equal(new Set([...runtime.styles, ...features.flatMap(feature => feature.styles)]).size, runtime.styles.length + features.reduce((n, feature) => n + feature.styles.length, 0), 'Duplicate styles');
 assert.equal(new Set(scripts).size, scripts.length, 'Duplicate runtime scripts');
 for (const file of refs) assert(fs.existsSync(path.join(root, file)), 'Missing reference: ' + file);
 const reachable = new Set(refs);
 for (const folder of ['js', 'css']) for (const file of fs.readdirSync(path.join(root, folder))) {
   if (/\.(?:js|css)$/.test(file)) assert(reachable.has(folder + '/' + file), 'Unreferenced application file: ' + folder + '/' + file);
 }
-let checked = 0;
+new vm.Script(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), { filename: 'sw.js' });
+let checked = 1;
 for (const folder of ['js', 'tools']) for (const file of fs.readdirSync(path.join(root, folder))) {
   if (!/\.(?:js|cjs)$/.test(file)) continue;
   new vm.Script(fs.readFileSync(path.join(root, folder, file), 'utf8'), { filename: folder + '/' + file }); checked++;

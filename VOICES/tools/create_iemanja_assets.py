@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import json
 from PIL import Image, ImageDraw, ImageFont
@@ -224,7 +225,7 @@ def main():
     assert len({sheet.crop((f * 32,r * 32,f * 32 + 32,r * 32 + 32)).tobytes() for r in range(6) for f in range(4)}) >= 12
     data = content()
     (ROOT / 'data' / 'coast-sources.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    (ROOT / 'js' / 'coast-content.js').write_text("(function(){'use strict';const V=window.V=window.V||{};V.coastContent=" + json.dumps(data, ensure_ascii=False, separators=(',',':')) + ';})();\n', encoding='utf-8')
+    write_module(ROOT / 'js' / 'coast-content.js', "(function(){'use strict';const V=window.V=window.V||{};V.coastContent=" + json.dumps(data, ensure_ascii=False, separators=(',',':')) + ';})();\n')
     preview = Image.new('RGBA', (672, 464), '#233f44')
     pd = ImageDraw.Draw(preview)
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 14)

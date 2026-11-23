@@ -24,7 +24,6 @@ const visitors=[
  ['garden','visitante-horta','Daniel','town-daniel',.55,.67,'Visitando a horta'],
  ['market','visitante-feira','Luísa','town-luisa',.43,.73,'Visitando as bancas'],
  ['university','visitante-campus','Davi','town-davi-arquivo',.51,.65,'Conhecendo o campus'],
- ['university-sports','visitante-ginasio','Renata','town-renata',.86,.84,'Acompanhando o treino'],
  ['university-pool','visitante-piscina','Aline','town-aline-piscina',.45,.82,'Conversando no centro aquático'],
  ['cape-town','visitante-cabo','Naledi','town-naledi',.55,.72,'Visitando a cidade']
 ];
@@ -39,7 +38,7 @@ const P=V.PlaceLife={people,image:null,
  },
  populate(m){if(!m)return m;for(const p of people.filter(p=>p.map===m.id))this.add(m,p);for(const[map,id,name,character,fx,fy,action]of visitors.filter(p=>p[0]===m.id))this.add(m,{id,name,character,role:'Visitante',at:[m.width*fx,m.height*fy],en:'There is always something new to discover here.',pt:'Sempre há algo novo para descobrir por aqui.',words:['discover','place','story'],action});return m;},
  update(m,dt){if(!m||m.placeLifeTick===V.Engine.time)return;m.placeLifeTick=V.Engine.time;dt=V.clamp(dt,0,.08);for(const o of m.objects.filter(o=>o.type==='place-life')){o.walking=false;if(V.settings.reducedMotion||V.settings.npcMovement===false){o.frame=0;continue;}o.walkClock+=dt;if(V.World.nearest?.id===o.id&&V.Player.data&&V.dist(o,V.Player.data)<100){o.wait=Math.max(o.wait,1.2);o.frame=0;continue;}if(o.wait>0){o.wait-=dt;o.frame=0;continue;}const target=o.patrol[o.routeIndex%o.patrol.length],dx=target.x-o.x,dy=target.y-o.y,d=Math.hypot(dx,dy);if(d<2){o.routeIndex=(o.routeIndex+1)%o.patrol.length;o.wait=2+(o.routeIndex+o.walkClock)%4;o.frame=0;continue;}const step=Math.min(d,25*dt),x=o.x+dx/d*step,y=o.y+dy/d*step;if(!this.clear(m,x,y)){o.routeIndex=0;o.wait=1.5;continue;}const player=V.Player.data;if(player&&V.dist({x,y},player)<29){o.wait=.6;continue;}o.x=x;o.y=y;o.dir=dx<-.1?-1:dx>.1?1:o.dir;o.walking=true;o.frame=Math.floor(o.walkClock*6)%4;o.spriteRow=Math.abs(dy)>Math.abs(dx)?dy<0?3:0:dx<0?1:2; }},
- figure(c,o,x,y,size=64){const p=o.profile;if(p.character){V.Assets.sprite(c,p.character,x,y,o.walking?o.spriteRow||0:0,o.frame||0,size-2);}else if(p.sheet){
+ figure(c,o,x,y,size=64){const p=o.profile;if(p.character){V.Assets.sprite(c,p.character,x,y,o.spriteRow||0,o.frame||0,size-2);}else if(p.sheet){
    c.save();c.translate(x,y);if(o.dir<0)c.scale(-1,1);
    V.NatureArt.frame(c,p.sheet,p.row,o.frame||0,-size/2,-size+4,size,size);c.restore();
   }else if(V.Assets.ready(this.image)){const cell=this.image.naturalWidth/4;c.save();c.imageSmoothingEnabled=true;c.translate(x,y);if(o.dir<0)c.scale(-1,1);const frame=p.id==='mateus'?(o.frame||0):o.walking?1+(o.frame||0)%3:0;c.drawImage(this.image,frame*cell,p.row*cell,cell,cell,-size/2,-size+4,size,size);c.restore();}},
@@ -54,7 +53,7 @@ const group=V.AssetLoader.group.bind(V.AssetLoader);V.AssetLoader.group=key=>key
 const groups=V.MapAssets.groups.bind(V.MapAssets);V.MapAssets.groups=function(m){const out=groups(m);if(m?.objects.some(o=>o.type==='place-life'))out.push('place-life');return [...new Set(out)];};
 const relevant=V.PixWorldVocabulary.relevant.bind(V.PixWorldVocabulary);V.PixWorldVocabulary.relevant=m=>m?.objects.some(o=>o.type==='place-life')||relevant(m);
 const describe=V.PixWorldVocabulary.describe.bind(V.PixWorldVocabulary);V.PixWorldVocabulary.describe=function(m,o){if(o?.type==='place-life')return{words:this.words(o.profile.words),only:false,priority:2,label:o.profile.name+' · '+o.profile.role};return describe(m,o);};
-const init=W.init.bind(W);W.init=function(...args){const out=init(...args);for(const m of Object.values(W.maps))P.populate(m);V.PixWorldVocabulary.seed();V.ObjectiveGuide.invalidate();V.Atlas.cache.clear();return out;};
+const init=W.init.bind(W);W.init=function(...args){const out=init(...args);for(const m of Object.values(W.maps))P.populate(m);return out;};
 const preview=V.SceneDesign.preview.bind(V.SceneDesign);V.SceneDesign.preview=function(...args){return P.populate(preview(...args));};
 const update=C.update.bind(C);C.update=function(dt){const out=update(dt);if(V.Game.screen==='game'&&V.Game.mode==='explore'&&!V.modal&&!V.Dialogue.active)P.update(W.current,dt);return out;};
 for(const[owner,key]of [[C,'drawObject'],[V.NatureWorld,'draw'],[V.Maritime,'drawObject'],[V.CapeRegion,'drawObject'],[V.CulinaryWorld,'draw']]){const draw=owner[key].bind(owner);owner[key]=function(c,o,cam,...args){if(P.draw(c,o,cam))return true;return draw(c,o,cam,...args);};}

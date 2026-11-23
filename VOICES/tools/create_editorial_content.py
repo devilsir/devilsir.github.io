@@ -1,3 +1,4 @@
+from generated_module import write_module
 import json
 import pathlib
 import subprocess
@@ -555,7 +556,7 @@ assert len(readings) == 50 and len({r["id"] for r in readings}) == 50
 assert {r["id"] for r in readings} == {r["id"] for r in original["readings"]}
 assert all(len(r["paragraphs"]) >= 2 and all(isinstance(p, str) and p for p in r["paragraphs"]) for r in readings)
 content = {"version": "1.7", "readings": readings, "translations": translations, "dialogueTranslations": dialogue_translations, "figureTranslations": figure_translations}
-(ROOT / "js/editorial-content.js").write_text("(function(){'use strict';const V=window.V=window.V||{};V.editorialContent=" + json.dumps(content, ensure_ascii=False, separators=(",", ":")) + ";})();\n", encoding="utf-8")
+write_module(ROOT / "js/editorial-content.js", "(function(){'use strict';const V=window.V=window.V||{};V.editorialContent=" + json.dumps(content, ensure_ascii=False, separators=(",", ":")) + ";})();\n")
 review = {
     "version": "1.7",
     "readingsReviewed": 50,

@@ -43,10 +43,13 @@ const {environment}=require('./runtime-upgrade-test.cjs');
       }
     });
 
-    await check('an NPC can read at a native world object without furniture data',()=>{
+    await check('an NPC can read at a native world object without furniture data',async()=>{
       const m=V.World.maps.library,target=m.objects.find(o=>o.type==='reading'&&!o.scene);
-      const person=Object.values(V.World.maps).flatMap(map=>map.objects).find(o=>V.Cozy.person(o)&&o.character==='amara');
+      const isAmara=o=>V.Cozy.person(o)&&o.character==='amara';
+      const source=Object.values(V.World.maps).find(map=>map.objects.some(isAmara));
+      const person=source?.objects.find(isAmara);
       assert(target&&person);
+      await V.MapAssets.ensure(V.MapAssets.groups(source),'Preparando o cenário da personagem');
       const actor={...person,action:'reading',destination:{object:target},editorDrawing:true};
       const canvas=w.document.createElement('canvas');
       V.Cozy.drawObject(canvas.getContext('2d'),actor,{x:actor.x-100,y:actor.y-100},{});

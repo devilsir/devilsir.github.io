@@ -105,7 +105,7 @@ if(!isChild){
  const paintProfiles=V.PlayerProfiles.paint.bind(V.PlayerProfiles);V.PlayerProfiles.paint=function(...args){const out=paintProfiles(...args);for(const b of V.$$('[data-profile-enter]')){const profile=this.items.find(p=>p.id===b.dataset.profileEnter);if(profile?.playerCharacters?.length>1){const label=b.closest('.profile-card').querySelector('p');if(label)label.textContent=profile.playerCharacters.map(id=>V.content.characters[id]?.name||id).join(' + ')+' · dupla · nível '+(profile.level||1);}}return out;};
  const detail=V.ChallengeCatalog.detail.bind(V.ChallengeCatalog);V.ChallengeCatalog.detail=function(key,...args){const out=detail(key,...args);D.choice(key);return out;};
  const fishOpen=V.FishingChallenge.open.bind(V.FishingChallenge);V.FishingChallenge.open=function(...args){const out=fishOpen(...args);const host=V.$('.modal-body');if(host&&!V.$('#duo-fishing')){const section=document.createElement('section');section.className='duo-choice';section.innerHTML='<strong>Pescaria em dupla · duas telas</strong><div class="row"><label class="field">Onde pescar<select id="duo-fishing-habitat"><option value="cape">Costa do Cabo · África do Sul</option><option value="volta">Lago Volta · Gana</option></select></label><button id="duo-fishing" class="secondary">Jogar em dupla</button></div>';host.prepend(section);V.$('#duo-fishing').onclick=()=>D.launch('fish:fishing',{habitat:V.$('#duo-fishing-habitat').value});}return out;};
- const update=V.Game.update.bind(V.Game);V.Hooks.around(V.Game, 'update', 'duo-challenges:update:1', nextHook => function(dt){if(!D.active)return nextHook(dt);});
+ V.Hooks.around(V.Game, 'update', 'duo-challenges:update:1', nextHook => function(dt){if(!D.active)return nextHook(dt);});
  document.addEventListener('keydown',e=>{if(!D.active||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(D.physical(e.code,true,e.repeat)){e.preventDefault();e.stopImmediatePropagation();}},true);
  document.addEventListener('keyup',e=>{if(D.physical(e.code,false)){e.preventDefault();e.stopImmediatePropagation();}},true);
  window.addEventListener('message',e=>D.receive(e));
@@ -162,7 +162,7 @@ async function launch(resume=false,checkpoint=null){
 const init=V.Game.init.bind(V.Game);V.Game.init=async function(...args){try{await init(...args);resizeViewer();post({type:'ready'});}catch(e){post({type:'error',message:e.message});throw e;}};
 // Moving focus between viewers must not open the original lost-focus pause dialog.
 V.Game.pause=function(){clearLocalInput();};
-const update=V.Game.update.bind(V.Game);V.Hooks.around(V.Game, 'update', 'duo-challenges:update:2', nextHook => function(dt){if(!clocked&&!localPause)return nextHook(dt);});
+V.Hooks.around(V.Game, 'update', 'duo-challenges:update:2', nextHook => function(dt){if(!clocked&&!localPause)return nextHook(dt);});
 const toTitle=V.Game.toTitle.bind(V.Game);V.Game.toTitle=function(...args){if(booted){snapshot();post({type:'exit'});return;}return toTitle(...args);};
 V.ChallengeCatalog.open=()=>{snapshot();post({type:'exit'});};
 function canonical(code){

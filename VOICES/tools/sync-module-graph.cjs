@@ -10,7 +10,13 @@ for(const key of ['game','editor']){
  graph[key].sort((a,b)=>a.id.localeCompare(b.id,'en'));
 }
 fs.writeFileSync(path.join(root,'data/module-graph.json'),JSON.stringify(graph,null,2)+'\n');
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8'),runtime=manifest(html);delete runtime.scripts;runtime.modules=graph.game;
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8'),runtime=manifest(html);const featureStyles = new Set(Object.values(runtime.features || {}).flatMap(feature => feature.styles));
+delete runtime.scripts;
+runtime.modules=graph.game;
+runtime.features=graph.features||{};
+const baseStyles = [...new Set([...runtime.styles, ...featureStyles])];
+const deferredStyles = new Set(Object.values(runtime.features).flatMap(feature => feature.styles));
+runtime.styles = baseStyles.filter(url => !deferredStyles.has(url));
 fs.writeFileSync(path.join(root,'index.html'),html.replace(/(<script type="application\/json" id="voices-runtime">)[\s\S]*?(<\/script>)/,(_,a,b)=>a+JSON.stringify(runtime)+b));
 const editor=fs.readFileSync(path.join(root,'sprite-editor.html'),'utf8');fs.writeFileSync(path.join(root,'sprite-editor.html'),editor.replace(/(<script type="application\/json" id="voices-editor-modules">)[\s\S]*?(<\/script>)/,(_,a,b)=>a+JSON.stringify(graph.editor)+b));
 console.log('Synchronized explicit dependency catalogs for game and sprite editor.');

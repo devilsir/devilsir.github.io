@@ -19,11 +19,11 @@ V.Balloons={types,themes,
   if(/[!]$/.test(text))return 'surprise';if(/será|estou pensando|vou pensar|vou reler/i.test(text))return 'thought';
   if(/organizo|organizei|guard|ferramentas|etiquetas|costur|ajust/i.test(text))return 'practical';return 'conversation';},
  wrap(ctx,text,max){const result=[];let line='';for(const word of String(text).split(/\s+/)){if(!word)continue;const candidate=line?line+' '+word:word;if(ctx.measureText(candidate).width<=max){line=candidate;continue;}if(line){result.push(line);line='';}if(ctx.measureText(word).width<=max){line=word;continue;}for(const char of word){if(line&&ctx.measureText(line+char).width>max){result.push(line);line='';}line+=char;}}if(line)result.push(line);return result;},
- layout(ctx,o,cam={x:0,y:0},text='',kind=null){kind=kind||this.kind(o,text);const scale=o.visualScale||1,anchor={x:Math.round(o.x-(cam.x||0)),y:Math.round(o.y-(cam.y||0)-52*scale)},padding=['shout','surprise','thought'].includes(kind)?23:14,max=Math.min(258,Math.max(140,ctx.canvas.width-24)),fontSize=Math.max(13,Math.min(17,Math.round((V.settings.fontSize||17)*.75))),lineHeight=fontSize+5;ctx.font='600 '+fontSize+'px "VOICES Sans", sans-serif';
+ layout(ctx,o,cam={x:0,y:0},text='',kind=null){kind=kind||this.kind(o,text);const scale=o.visualScale||1,anchor={x:Math.round(o.x-(cam.x||0)),y:Math.round(o.y-(cam.y||0)-52*scale)},padding=['shout','surprise','thought'].includes(kind)?23:14,max=Math.min(288,Math.max(120,ctx.canvas.width-20)),fontSize=Math.max(15,Math.min(20,Math.round((V.settings.fontSize||17)*.9))),lineHeight=fontSize+5;ctx.font='600 '+fontSize+'px "VOICES Sans", sans-serif';
   const lines=text?this.wrap(ctx,text,max-padding*2):[],widest=lines.length?Math.max(...lines.map(s=>ctx.measureText(s).width)):24;
-  let width=Math.ceil(Math.max(text?68:52,widest+padding*2)),height=lines.length?lines.length*lineHeight+padding*2:48;if(kind==='reply'){width=Math.max(width,height);height=width;}
-  const tailLength=kind==='attention'?28:kind==='thought'?24:12,offset=kind==='conversation'?-Math.min(24,width*.12):0,x=Math.round(anchor.x-width/2+offset),bottom=anchor.y-tailLength,y=bottom-height;
-  return{kind,anchor,x,y,width,height,bottom,tailLength,lines,padding,fontSize,lineHeight,tailX:anchor.x-x};},
+  let width=Math.ceil(Math.max(text?68:52,widest+padding*2)),height=lines.length?lines.length*lineHeight+padding*2:48;if(kind==='reply'&&lines.length<=1){width=Math.max(width,height);height=width;}
+  const tailLength=kind==='attention'?28:kind==='thought'?24:12,offset=kind==='conversation'?-Math.min(24,width*.12):0,x=Math.round(V.clamp(anchor.x-width/2+offset,6,Math.max(6,ctx.canvas.width-width-6))),bottom=anchor.y-tailLength,y=bottom-height;
+  return{kind,anchor,x,y,width,height,bottom,tailLength,lines,padding,fontSize,lineHeight,tailX:V.clamp(anchor.x-x,18,width-18)};},
  outline(ctx,b){const{x,y,width:w,height:h,tailX:tx,tailLength:t,kind}=b,points=[];
   const add=(a,c)=>points.push([x+a,y+c]),tail=()=>{add(tx+7,h);add(tx,h+t);add(tx-7,h);};
   if(['question','reply','thought','shout','surprise'].includes(kind)){

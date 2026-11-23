@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import base64
@@ -719,7 +720,7 @@ def main():
     content = {'version': '1.9', 'license': 'MIT', 'creator': 'Original VOICES residents and pixel art', 'residents': [resident(k, p) for k, p in PEOPLE.items()], 'characters': characters, 'sources': sources, 'animals': animals, 'assetManifest': manifest, 'animalManifest': animal_manifest}
     encoded = base64.b64encode((out / 'tilesets' / 'neighbors-props.png').read_bytes()).decode('ascii')
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.neighborsAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.neighborsAssets);V.neighborsMaterialSources={neighbors:'data:image/png;base64,"+encoded+"'};V.neighborsContent="+json.dumps(content, ensure_ascii=False, separators=(',', ':'))+";})();\n"
-    (ROOT / 'js' / 'neighbors-content.js').write_text(registry, encoding='utf-8')
+    write_module(ROOT / 'js' / 'neighbors-content.js', registry)
     preview(props, animal_atlas, sprite_images, portrait_images)
     print(json.dumps({'props': 32, 'uniqueProps': len(set(x.tobytes() for x in props)), 'animals': 6, 'residents': 4, 'dialoguePairs': 12, 'preview': 'tests/neighbors-preview.png'}, ensure_ascii=False))
 

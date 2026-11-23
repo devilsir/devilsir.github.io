@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import json
@@ -601,7 +602,7 @@ def main():
     (dest/'protest-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     content = {'version':'2.1','license':'MIT','people':manifest_people,'characters':characters,'sources':[],'assetManifest':manifest}
     js = "(function(){'use strict';const V=window.V=window.V||{};V.protestContent="+json.dumps(content,ensure_ascii=False,separators=(',',':'))+";})();\n"
-    (ROOT/'js'/'protest-content.js').write_text(js,encoding='utf-8')
+    write_module(ROOT/'js'/'protest-content.js', js)
     preview(sprites,portraits)
     print(json.dumps({'people':24,'sprites':24,'portraits':24,'withSigns':10,'withoutSigns':14,'headwraps':5,'musicians':6,'uniqueSheets':24,'uniquePortraits':24,'preview':'tests/protest-preview.png'},ensure_ascii=False))
 

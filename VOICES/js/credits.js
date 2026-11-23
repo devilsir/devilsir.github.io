@@ -25,7 +25,7 @@ const C=V.Credits={
  normalize(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR');},
  link(value,local=false){
   if(typeof value!=='string')return null;
-  if(local)return value==='data/sources/catalogo-brincadeiras.pdf'?value:null;
+  if(local)return !window.VoicesApp?.externalResearch&&value==='data/sources/catalogo-brincadeiras.pdf'?value:null;
   try{const url=new URL(value);if(!['https:','http:'].includes(url.protocol))return null;return url.href;}catch{return null;}
  },
  references(){

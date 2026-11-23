@@ -8,15 +8,16 @@
 'use strict';const V=window.V,W=V.World;
 const S=V.WorldSigns={
  lines(c,text,max){const words=String(text||'').replace(/\s+/g,' ').trim().split(' '),lines=[];let line='';for(const word of words){const next=line?line+' '+word:word;if(c.measureText(next).width>max&&line){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);return lines;},
- draw(c,text,x,y,options={}){c.save();const font=options.active?14:13,max=options.maxWidth||230;c.font='600 '+font+'px "VOICES Sans",system-ui,sans-serif';const lines=this.lines(c,text,max-30),width=Math.min(max,Math.max(92,...lines.map(s=>c.measureText(s).width+30))),height=Math.max(34,lines.length*18+18),left=x-width/2,top=y-height/2;c.shadowColor='#173d3030';c.shadowBlur=4;c.shadowOffsetY=3;c.beginPath();if(c.roundRect)c.roundRect(left,top,width,height,6);else c.rect(left,top,width,height);c.fillStyle=options.active?'#375b4a':'#294d40';c.fill();c.shadowBlur=0;c.shadowOffsetY=0;c.strokeStyle=options.active?'#f2d78b':'#c4b17d';c.lineWidth=options.active?2:1.5;c.stroke();c.fillStyle='#f7edd3';c.textAlign='center';c.textBaseline='middle';lines.forEach((line,i)=>c.fillText(line,x,top+height/2+(i-(lines.length-1)/2)*18));c.restore();return{width,height};},
+ draw(c,text,x,y,options={}){c.save();const font=V.clamp(Math.round((V.settings?.fontSize||17)*.86),14,19)+(options.active?1:0),lineHeight=font+4,max=options.maxWidth||230;c.font='600 '+font+'px "VOICES Sans",system-ui,sans-serif';const lines=this.lines(c,text,max-30),width=Math.min(max,Math.max(92,...lines.map(s=>c.measureText(s).width+30))),height=Math.max(34,lines.length*lineHeight+16),left=x-width/2,top=y-height/2;c.shadowColor='#173d3030';c.shadowBlur=4;c.shadowOffsetY=3;c.beginPath();if(c.roundRect)c.roundRect(left,top,width,height,6);else c.rect(left,top,width,height);c.fillStyle=options.active?'#375b4a':'#294d40';c.fill();c.shadowBlur=0;c.shadowOffsetY=0;c.strokeStyle=options.active?'#f2d78b':'#c4b17d';c.lineWidth=options.active?2:1.5;c.stroke();c.fillStyle='#f7edd3';c.textAlign='center';c.textBaseline='middle';lines.forEach((line,i)=>c.fillText(line,x,top+height/2+(i-(lines.length-1)/2)*lineHeight,max-26));c.restore();return{width,height};},
  heading(c,text,x,y,max=250){
   c.save();
-  c.font='700 13px "VOICES Sans",system-ui,sans-serif';
+  const font=V.clamp(Math.round((V.settings?.fontSize||17)*.88),14,19);
+  c.font='700 '+font+'px "VOICES Sans",system-ui,sans-serif';
   c.textAlign='center';
   c.textBaseline='middle';
   const lines=this.lines(c,text,max);
   for(const [i,line] of lines.entries()){
-   const baseline=y+(i-(lines.length-1)/2)*17;
+   const baseline=y+(i-(lines.length-1)/2)*(font+4);
    c.lineWidth=3;
    c.strokeStyle='#253f35';
    c.strokeText(line,x,baseline,max);

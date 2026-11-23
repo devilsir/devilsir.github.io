@@ -1,4 +1,5 @@
 'use strict';
+const { writeModule } = require('./generated-module.cjs');
 const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/words-respect');
 (async()=>{
@@ -14,6 +15,6 @@ const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/words-respect
   oc.drawImage(image,x0,y0,sw,sh,x,y,w,h);frames.push({x,y,w,h});
  }
  const bytes=out.toBuffer('image/webp',94);fs.writeFileSync(path.join(dir,'courtyard.webp'),bytes);const meta={file:'assets/words-respect/courtyard.webp',cell,cols,rows,frames,bytes:bytes.length};
- fs.writeFileSync(path.join(dir,'manifest.json'),JSON.stringify({...meta,generator:generation.generator},null,2));fs.writeFileSync(path.join(root,'js/words-respect-art.js'),'(function(){window.V.WordsRespectArt='+JSON.stringify(meta)+';})();\n');
+ fs.writeFileSync(path.join(dir,'manifest.json'),JSON.stringify({...meta,generator:generation.generator},null,2));writeModule(path.join(root,'js/words-respect-art.js'),'(function(){window.V.WordsRespectArt='+JSON.stringify(meta)+';})();\n');
  console.log(JSON.stringify({frames:frames.length,bytes:bytes.length}));
 })().catch(e=>{console.error(e.stack);process.exit(1);});

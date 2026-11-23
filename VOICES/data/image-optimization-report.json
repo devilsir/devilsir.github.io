@@ -1,8 +1,8 @@
 {
-  "images": 296,
-  "before_bytes": 47907581,
-  "after_bytes": 33692452,
-  "saved_percent": 29.7,
+  "images": 290,
+  "before_bytes": 44823033,
+  "after_bytes": 30933728,
+  "saved_percent": 31.0,
   "files": [
     {
       "source": "assets/adventure/atlas-paper.webp",
@@ -1022,42 +1022,6 @@
       "max_channel_rmse": 4.104
     },
     {
-      "source": "assets/city/librarian-motion.webp",
-      "target": "assets/optimized/city/librarian-motion.webp",
-      "before": 347500,
-      "after": 317036,
-      "width": 1024,
-      "height": 512,
-      "max_channel_rmse": 5.105
-    },
-    {
-      "source": "assets/city/nia-motion.webp",
-      "target": "assets/optimized/city/nia-motion.webp",
-      "before": 375342,
-      "after": 342960,
-      "width": 1024,
-      "height": 512,
-      "max_channel_rmse": 4.936
-    },
-    {
-      "source": "assets/city/sol-motion.webp",
-      "target": "assets/optimized/city/sol-motion.webp",
-      "before": 396840,
-      "after": 362482,
-      "width": 1024,
-      "height": 512,
-      "max_channel_rmse": 4.274
-    },
-    {
-      "source": "assets/city/taina-motion.webp",
-      "target": "assets/optimized/city/taina-motion.webp",
-      "before": 346464,
-      "after": 313098,
-      "width": 1024,
-      "height": 512,
-      "max_channel_rmse": 4.348
-    },
-    {
       "source": "assets/culture/clothes-agbada-olive.png",
       "target": "assets/optimized/culture/clothes-agbada-olive.webp",
       "before": 458935,
@@ -1326,24 +1290,6 @@
       "width": 768,
       "height": 256,
       "max_channel_rmse": 5.229
-    },
-    {
-      "source": "assets/homestead/taina-daily.webp",
-      "target": "assets/optimized/homestead/taina-daily.webp",
-      "before": 501620,
-      "after": 440140,
-      "width": 768,
-      "height": 1024,
-      "max_channel_rmse": 5.36
-    },
-    {
-      "source": "assets/homestead/taina-music.webp",
-      "target": "assets/optimized/homestead/taina-music.webp",
-      "before": 1116782,
-      "after": 983008,
-      "width": 768,
-      "height": 1792,
-      "max_channel_rmse": 5.119
     },
     {
       "source": "assets/homestead/taina-percussion.webp",

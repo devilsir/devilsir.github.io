@@ -1,4 +1,5 @@
 """Pack imagegen artwork into the game's existing frame contracts."""
+from generated_module import write_module
 from pathlib import Path
 from PIL import Image
 import json
@@ -117,7 +118,7 @@ def main():
                          'player2Generation': 'assets/adventure/historiograph-mask-p2-generation.json'},
                 'files': saved, 'layouts': rigs}
     (TARGET/'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf8')
-    (ROOT/'js/playable-art-data.js').write_text('window.V.PlayableArtData='+json.dumps(manifest, ensure_ascii=False, separators=(',', ':'))+';\n', encoding='utf8')
+    write_module(ROOT/'js/playable-art-data.js', 'window.V.PlayableArtData='+json.dumps(manifest, ensure_ascii=False, separators=(',', ':'))+';\n')
     # Pixel Lab must show the same frame size and registration as the game.
     for name in ['sprite-editor-data.js', 'city-sprite-data.js', 'homestead-sprite-data.js']:
         file = ROOT/'js'/name

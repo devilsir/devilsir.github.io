@@ -56,7 +56,6 @@ old.start();P.observe();P.hud();E.hud();
 if(a.battle){const battle=copy(a.battle);if(V.Combat.resume(battle))V.UI.toast('Confronto retomado no último turno confirmado.');else{a.battle=null;V.UI.toast('O confronto foi encerrado com segurança. Você pode iniciá-lo novamente.');}}
 };
 V.Game.intro=()=>S.intro();
-V.Game.ending=()=>S.finale();
 V.Hooks.around(V.Game, 'update', 'adventure-boot:update:1', nextHook => function(dt){
 nextHook(dt);if(this.screen!=='game'||!V.state)return;
 const paused=V.modal||V.Dialogue.active||this.mode!=='explore'||V.SceneEditor.active;
@@ -78,7 +77,6 @@ V.Quests.inventory=()=>P.inventory();
 V.Quests.journal=function(){
 old.journal();const body=V.$('.modal-body');if(!body)return;const objective=N.objective(),top=document.createElement('div');top.className='adv-journal-tracker';top.innerHTML=`<p><strong>◇ ${V.escape(objective?.label||'Explore os registros disponíveis.')}</strong></p><div class="row"><button id="journal-track-current" class="primary">Rastrear objetivo</button><button id="journal-device" class="secondary">Abrir Historiógrafo</button><button id="journal-route-settings" class="quiet">Guia no chão</button></div>`;body.prepend(top);V.$('#journal-track-current').onclick=()=>{N.track();V.UI.close();};V.$('#journal-device').onclick=()=>S.device();V.$('#journal-route-settings').onclick=()=>N.panel();V.$$('.quest-card').forEach((card,i)=>{const b=document.createElement('button');b.className='secondary';b.textContent='Rastrear capítulo '+(i+1);b.disabled=!V.Quests.isUnlocked(i+1);b.onclick=()=>{N.track(i+1);V.UI.close();};card.appendChild(b);});
 };
-V.Game.map=()=>V.WorldAtlas.open();V.Atlas.regions=()=>V.WorldAtlas.open();
 const snapshot=V.Atlas.snapshot.bind(V.Atlas);V.Atlas.snapshot=function(m){const canvas=snapshot(m),signature=m.id+':'+(m.geometryRevision||0);if(canvas.adventureSignature!==signature){const ctx=canvas.getContext('2d');ctx.save();ctx.scale(canvas.width/(m.width*48),canvas.height/(m.height*48));for(const wall of A.geometry(m.design).walls)A.drawWall(ctx,m,wall,{x:0,y:0});for(const light of m.design.adventure?.lights||[])E.drawFixture(ctx,light,{x:0,y:0},m);ctx.restore();canvas.adventureSignature=signature;}return canvas;};
 D.document=function(maps){return{...old.document(maps),adventureVersion:3};};
 D.normalise=function(doc){const clean=old.normalise(doc);for(const[id,d]of Object.entries(clean)){if(doc.maps[id]?.adventure)A.normalise(doc.maps[id].adventure,d);else if(id==='museum')A.rebuildMuseum(d);}return clean;};

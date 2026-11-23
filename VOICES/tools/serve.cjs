@@ -2,7 +2,7 @@
 const http = require('node:http'), fs = require('node:fs'), path = require('node:path');
 const workspace = path.resolve(__dirname, '..'), root = process.argv.includes('--dist') ? path.join(workspace, 'dist') : workspace;
 const port = Number(process.env.PORT || 4173);
-const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.wav': 'audio/wav', '.woff': 'font/woff', '.pdf': 'application/pdf' };
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.webmanifest': 'application/manifest+json; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.wav': 'audio/wav', '.woff': 'font/woff', '.pdf': 'application/pdf' };
 const server = http.createServer((request, response) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname); }

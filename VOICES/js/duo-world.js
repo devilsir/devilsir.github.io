@@ -90,7 +90,7 @@ const D=V.DuoWorld={owner:null,actors:[],context:-1,loading:false,starting:false
    const canvas=this.root.querySelector('[data-world-canvas="'+i+'"]'),c=canvas.getContext('2d'),other=this.actors[1-i];
    const ghost={id:'duo-world-other',type:'duo-world-player',duoPlayer:1-i,x:other.data.x,y:other.data.y,character:other.character};
    const minimap=W.drawMiniMap;if(other.map===m.id)m.objects.push(ghost);W.drawMiniMap=()=>{};
-   try{c.imageSmoothingEnabled=false;originalRender(c);}finally{const at=m.objects.indexOf(ghost);if(at>=0)m.objects.splice(at,1);W.drawMiniMap=minimap;}
+   try{c.imageSmoothingEnabled=false;V.Engine.paint(c,ctx=>{originalRender(ctx);if(V.DuoTutorial?.enabled())V.DuoTutorial.drawRoute(i,ctx,W.camera);});}finally{const at=m.objects.indexOf(ghost);if(at>=0)m.objects.splice(at,1);W.drawMiniMap=minimap;}
   });
  }
 };

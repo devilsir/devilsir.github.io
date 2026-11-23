@@ -1,4 +1,5 @@
 'use strict';
+const { writeModule } = require('./generated-module.cjs');
 const fs=require('fs'),path=require('path'),{createCanvas,loadImage}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),dir=path.join(root,'assets/marine-life'),meta=require('../assets/marine-life/generation.json');
 const source=fs.readFileSync(path.join(__dirname,'prepare-nature-assets.cjs'),'utf8');
@@ -21,7 +22,7 @@ const pack=new Function('createCanvas',source.slice(source.indexOf('function pac
   c.drawImage(canvas,i*330+8,12,320,390);c.fillStyle='#f7e5bb';c.font='16px sans-serif';c.fillText(id,i*330+16,430);
  }
  fs.writeFileSync(path.join(dir,'manifest.json'),JSON.stringify({generator:meta.generator,packing:'Complete connected silhouettes; shared scale and baseline per animation row; nearest-neighbour resizing; alpha retained.',sheets},null,2));
- fs.writeFileSync(path.join(root,'js/marine-art-data.js'),'(function(){window.V.MarineArtData='+JSON.stringify(Object.fromEntries(sheets.map(s=>[s.id,s])))+';})();\n');
+ writeModule(path.join(root,'js/marine-art-data.js'),'(function(){window.V.MarineArtData='+JSON.stringify(Object.fromEntries(sheets.map(s=>[s.id,s])))+';})();\n');
  fs.mkdirSync(path.join(root,'.qa/review'),{recursive:true});fs.writeFileSync(path.join(root,'.qa/review/marine-atlases.png'),contact.toBuffer('image/png'));
  console.log(JSON.stringify(sheets.map(({id,bytes,cell})=>({id,bytes,cell}))));
 })().catch(e=>{console.error(e.stack);process.exit(1);});

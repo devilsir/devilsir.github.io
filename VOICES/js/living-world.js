@@ -559,7 +559,7 @@
     drawObject(ctx,o,cam,t) {
       const x=o.x-cam.x,y=o.y-cam.y,near=V.World.nearest?.id===o.id;if(x<-120||x>(V.Engine.canvas?.width||960)+120||y<-120||y>(V.Engine.canvas?.height||540)+120)return;
       if(['resident','ambient','npc'].includes(o.type)) {
-        V.Assets.sprite(ctx,o.character,x,y,o.chatSpeaking&&!V.settings.reducedMotion?4:o.dir||0,o.walking?o.frame:o.chatSpeaking&&!V.settings.reducedMotion?Math.floor(V.Engine.time*3)%4:0,56);
+        V.Assets.sprite(ctx,o.character,x,y,!o.walking&&o.chatSpeaking&&!V.settings.reducedMotion?4:o.dir||0,o.walking?o.frame:o.chatSpeaking&&!V.settings.reducedMotion?Math.floor(V.Engine.time*3)%4:0,56);
         let marker=o.type==='npc'?(o.hub?V.state.flags.prologueStarted:V.state.talked.includes(o.id))?'…':'!':o.type==='resident'?'…':'';
         if(o.type==='resident'&&missions.some(q=>q.owner===o.resident.id&&!V.state.sideQuests[q.id]?.done))marker='◇';
         if(marker&&(near||o.type!=='ambient'))this.marker(ctx,x,y,marker,o.type==='resident'?'#a0dfa1':t.accent);

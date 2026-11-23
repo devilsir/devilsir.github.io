@@ -1,3 +1,4 @@
+from generated_module import write_module
 import json
 from pathlib import Path
 
@@ -265,6 +266,6 @@ for id,p in plans.items():
     p.pop('_propSerial',None);p.pop('objectEdits',None);p.pop('removedObjects',None)
 
 output=root/'js/regional-content.js'
-output.write_text("(function(){'use strict';window.V.regionalContent="+json.dumps(plans,ensure_ascii=False,separators=(',',':'))+";})();\n")
+write_module(output, "(function(){'use strict';window.V.regionalContent="+json.dumps(plans,ensure_ascii=False,separators=(',',':'))+";})();\n")
 (root/'data/regional-layouts.json').write_text(json.dumps(plans,ensure_ascii=False,indent=2))
 print(json.dumps({id:[p['width'],p['height'],len(p['positions']),len(p['decor'])] for id,p in plans.items()}))

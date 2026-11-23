@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import base64
@@ -1278,7 +1279,7 @@ def main():
     encoded = base64.b64encode((out / 'furnishings-props.png').read_bytes()).decode('ascii')
     content = {'version': '2.1', 'license': 'MIT', 'groups': groups, 'characters': {}, 'residents': [], 'sources': [], 'assetManifest': manifest}
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.furnishingsAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.furnishingsAssets);V.furnishingsMaterialSources={furnishings:'data:image/png;base64,"+encoded+"'};V.furnishingsContent="+json.dumps(content, ensure_ascii=False, separators=(',', ':'))+";})();\n"
-    (ROOT / 'js' / 'furnishings-content.js').write_text(registry, encoding='utf-8')
+    write_module(ROOT / 'js' / 'furnishings-content.js', registry)
     preview(records, props)
     print(json.dumps({'props': 144, 'uniqueCells': 144, 'groups': groups, 'atlas': [256, 576], 'preview': 'tests/furnishings-preview.png'}, ensure_ascii=False))
 

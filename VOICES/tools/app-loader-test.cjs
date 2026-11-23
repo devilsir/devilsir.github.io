@@ -27,8 +27,8 @@ function environment(fail = false, child = false) {
   await e.w.VoicesApp.ready(); await new Promise(resolve => setTimeout(resolve, 0));
   assert.equal(e.state.initialized, 1); assert.equal(e.state.clicked, 1);
   assert(e.w.VoicesApp.loaded); assert.equal(new Set(e.requested).size, e.requested.length);
-  const scripts = [...e.w.document.querySelectorAll('script[src]')].filter(n => !n.src.endsWith('app-loader.js'));
-  assert(scripts.every(n => n.async === true));
+  const scripts = [...e.w.document.querySelectorAll('script[src]')].filter(node => e.requested.includes(node.src));
+  assert(scripts.length > 0 && scripts.every(node => node.async === true));
   await e.w.VoicesApp.ready(); assert.equal(e.state.initialized, 1); e.dom.window.close();
   console.log('PASS the title opens without the runtime, first actions replay once and the dependency graph starts before the game');
   const failed = environment(true);

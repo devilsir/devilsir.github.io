@@ -285,6 +285,46 @@
       ]
     },
     {
+      "id": "basketball-ai",
+      "src": "js/basketball-ai.js?v=20261122-contorno-basquete",
+      "requires": []
+    },
+    {
+      "id": "basketball-art",
+      "src": "js/basketball-art.js?v=20261122-basquete-opaco1",
+      "requires": [
+        "basketball-match",
+        "asset-loader",
+        "performance"
+      ]
+    },
+    {
+      "id": "basketball-challenge",
+      "src": "js/basketball-challenge.js?v=20261122-aro1",
+      "requires": [
+        "basketball-shot-art",
+        "campus-basketball",
+        "challenge-catalog",
+        "challenge-economy",
+        "motorcycle-delivery"
+      ]
+    },
+    {
+      "id": "basketball-match",
+      "src": "js/basketball-match.js?v=20261122-fechamento1",
+      "requires": [
+        "basketball-ai"
+      ]
+    },
+    {
+      "id": "basketball-shot-art",
+      "src": "js/basketball-shot-art.js?v=20261122-aro1",
+      "requires": [
+        "basketball-match",
+        "asset-loader"
+      ]
+    },
+    {
       "id": "battle-automation",
       "src": "js/battle-automation.js?v=20261112-fragment1",
       "requires": [
@@ -306,16 +346,27 @@
       ]
     },
     {
+      "id": "campus-basketball",
+      "src": "js/campus-basketball.js?v=20261122-ia-quadra",
+      "requires": [
+        "basketball-art",
+        "campus-renewal",
+        "map-streaming",
+        "duo-world"
+      ]
+    },
+    {
       "id": "campus-content",
       "src": "js/campus-content.js?v=20261113-praca1",
       "requires": []
     },
     {
       "id": "campus-renewal",
-      "src": "js/campus-renewal.js?v=20261114-portas-internas1",
+      "src": "js/campus-renewal.js?v=20261122-ia-quadra",
       "requires": [
         "legacy-art-polish",
-        "world-signs"
+        "world-signs",
+        "basketball-match"
       ]
     },
     {
@@ -413,7 +464,7 @@
     },
     {
       "id": "challenge-catalog",
-      "src": "js/challenge-catalog.js?v=20261030-play1",
+      "src": "js/challenge-catalog.js?v=20261122-basquete-opaco1",
       "requires": [
         "fishing-expansion",
         "platform-journey"
@@ -421,7 +472,7 @@
     },
     {
       "id": "challenge-economy",
-      "src": "js/challenge-economy.js?v=20261110-design1",
+      "src": "js/challenge-economy.js?v=20261122-ginasio",
       "requires": [
         "cooking-workshop"
       ]
@@ -465,6 +516,13 @@
         "city-motion",
         "battle-automation",
         "turn-interface-art"
+      ]
+    },
+    {
+      "id": "city-battle-render",
+      "src": "js/city-battle-render.js",
+      "requires": [
+        "city-battle"
       ]
     },
     {
@@ -562,13 +620,6 @@
       ]
     },
     {
-      "id": "combat",
-      "src": "js/combat.js",
-      "requires": [
-        "quests"
-      ]
-    },
-    {
       "id": "combat-gear",
       "src": "js/combat-gear.js?v=20261113-combate1",
       "requires": [
@@ -644,7 +695,6 @@
       "id": "cooking-art",
       "src": "js/cooking-art.js?v=20261103-loading1",
       "requires": [
-        "cooking-crops",
         "cooking-data",
         "duo-panels"
       ]
@@ -1099,7 +1149,7 @@
       "id": "game",
       "src": "js/game.js?v=20261114-editor-praca1",
       "requires": [
-        "combat",
+        "quests",
         "cozy-world",
         "minigames",
         "museum-biographies",
@@ -1515,8 +1565,7 @@
       "id": "museum-biographies",
       "src": "js/museum-biographies.js?v=20261111-museums1",
       "requires": [
-        "engine",
-        "museum-biography-data"
+        "engine"
       ]
     },
     {
@@ -1723,7 +1772,7 @@
     },
     {
       "id": "place-life",
-      "src": "js/place-life.js?v=20261113-praca1",
+      "src": "js/place-life.js?v=20261122-basquete1",
       "requires": [
         "editor-buildings",
         "living-biomes"
@@ -2363,6 +2412,14 @@
       ]
     },
     {
+      "id": "world-assembly",
+      "src": "js/world-assembly.js",
+      "requires": [
+        "infinity-trails",
+        "campus-basketball"
+      ]
+    },
+    {
       "id": "world-finalize",
       "src": "js/world-finalize.js?v=20261114-portas-internas1",
       "requires": [
@@ -2458,5 +2515,32 @@
         "community-sprite-data"
       ]
     }
-  ]
+  ],
+  "features": {
+    "combat": {
+      "modules": [
+        "city-battle-render"
+      ],
+      "styles": []
+    },
+    "cooking-art": {
+      "modules": [
+        "cooking-crops"
+      ],
+      "styles": []
+    },
+    "museum-biographies": {
+      "modules": [
+        "museum-biography-data"
+      ],
+      "styles": []
+    },
+    "scene-editor": {
+      "modules": [],
+      "styles": [
+        "css/scene-editor.css",
+        "css/editor-layout.css?v=20261029-layout1"
+      ]
+    }
+  }
 }

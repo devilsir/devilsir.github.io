@@ -1,3 +1,4 @@
+from generated_module import write_module
 from pathlib import Path
 import importlib.util
 import base64
@@ -551,7 +552,7 @@ def main():
     content = {'version': '2.0', 'license': 'MIT', 'creator': 'Original VOICES residents and pixel art', 'residents': [resident(k, p) for k, p in PEOPLE.items()], 'characters': characters, 'sources': [], 'assetManifest': manifest}
     encoded = base64.b64encode((out / 'tilesets' / 'atelier-props.png').read_bytes()).decode('ascii')
     registry = "(function(){'use strict';const V=window.V=window.V||{};V.atelierAssets="+json.dumps(records, ensure_ascii=False, separators=(',', ':'))+";V.sceneAssets=V.sceneAssets||[];V.sceneAssets.push(...V.atelierAssets);V.atelierMaterialSources={atelier:'data:image/png;base64,"+encoded+"'};V.atelierContent="+json.dumps(content, ensure_ascii=False, separators=(',', ':'))+";})();\n"
-    (ROOT / 'js' / 'atelier-content.js').write_text(registry, encoding='utf-8')
+    write_module(ROOT / 'js' / 'atelier-content.js', registry)
     preview(props, sprite_images, portrait_images)
     print(json.dumps({'props': 24, 'uniqueProps': len(set(x.tobytes() for x in props)), 'residents': 4, 'dialoguePairs': 12, 'preview': 'tests/atelier-preview.png'}, ensure_ascii=False))
 

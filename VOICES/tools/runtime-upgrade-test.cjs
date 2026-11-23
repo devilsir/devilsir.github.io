@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..');
 const {JSDOM}=require('jsdom');
 const native=require('@napi-rs/canvas');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
-const scripts=require('./runtime-files.cjs').manifest(html).scripts.map(url=>url.split('?')[0]);
+const scriptsFor=definition=>[...definition.scripts,...Object.values(definition.features||{}).flatMap(feature=>feature.scripts)].map(url=>url.split('?')[0]);
 const timers=new Set();
 async function environment(options={}){
  if(typeof options==='boolean')options={child:options};const child=options.child;
@@ -37,7 +37,7 @@ async function environment(options={}){
  w.HTMLCanvasElement.prototype.toDataURL=function(){this.getContext('2d');return canvases.get(this).canvas.toDataURL('image/png');};
  const definition=require('./runtime-files.cjs').manifest(options.bundle?fs.readFileSync(path.join(root,'dist/index.html'),'utf8'):html);
  if(!options.bundle)w.eval(fs.readFileSync(path.join(root,definition.bootstrap),'utf8'));
- const entries=options.bundle?definition.scripts.map(url=>'dist/'+url.split('?')[0]):[...scripts];
+ const entries=scriptsFor(definition).map(file=>options.bundle?'dist/'+file:file);
  if(options.moduleOrder==='reverse')entries.reverse();
  for(const file of entries){try{w.eval(fs.readFileSync(path.join(root,file),'utf8')+'\n//# sourceURL='+file);}catch(e){throw Error(file+': '+e.stack);}}
  w.VoicesModules.start(options.moduleOrder==='reverse'?[...definition.modules].reverse():definition.modules);
@@ -51,6 +51,38 @@ async function run(){
  const surface=()=>{const el=w.document.createElement('canvas');el.width=960;el.height=540;const c=el.getContext('2d');return{c,canvas:canvases.get(el).canvas};};
  await V.Game.init();
  console.log('Runtime initialized',JSON.stringify({maps:Object.keys(V.World.maps).length,assets:V.AssetLoader.records.size,deferred:[...V.AssetLoader.records].filter(r=>r.state==='deferred').length}));
+ check('world assembly has stable object IDs and places vocabulary after registering every map',()=>{
+  const snapshot=()=>Object.values(V.World.maps).map(map=>[map.id,map.objects.map(o=>[o.id,o.x,o.y])]);
+  const before=snapshot();
+  V.World.init();
+  assert.deepEqual(snapshot(),before);
+  for(const [id,objects] of before){
+   const keys=objects.map(o=>o[0]).filter(Boolean);
+   assert.equal(keys.length,new Set(keys).size,id);
+  }
+ });
+ const profiles=V.PlayerProfiles, oldCreate=profiles.create, oldToast=V.UI.toast, messages=[];
+ try{
+  const state={version:1,grade:6,unlocked:1,name:'Teste de importação',evidence:[],completed:[],character:'nia'};
+  const backup={text:async()=>JSON.stringify({format:'voices-save',state})};
+  V.UI.toast=message=>messages.push(message);
+  profiles.busy=true;
+  const busy=await profiles.import(backup);
+  profiles.busy=false;
+  profiles.create=async()=>false;
+  const failed=await profiles.import(backup);
+  profiles.create=async()=>true;
+  const imported=await profiles.import(backup);
+  check('backup import only reports success after creating a profile',()=>{
+   assert.deepEqual([busy,failed,imported],[false,false,true]);
+   assert.equal(messages.filter(message=>message.startsWith('Backup importado')).length,1);
+  });
+ }finally{
+  profiles.busy=false;
+  profiles.create=oldCreate;
+  V.UI.toast=oldToast;
+ }
+
  if(bundled){const studio=V.ProfessorStudio,walk=studio.walkNodes;let observed=0;studio.walkNodes=function(...args){observed++;return walk.apply(this,args);};studio.editing=true;const marker=w.document.createElement('span');marker.textContent='Verificação de inicialização tardia';V.$('#app').append(marker);await Promise.resolve();check('professor tools observe content when scripts load after the document is ready',()=>{assert(V.$('#professor-studio'));assert(observed>0);});studio.walkNodes=walk;studio.editing=false;marker.remove();}
  check('new profiles offer two characters',()=>{V.PlayerProfiles.form();assert(w.document.querySelector('#profile-player-count'));const count=V.$('#profile-player-count');count.value='2';count.onchange();V.$('[data-profile-character="leo"]').click();assert.match(V.$('[data-profile-slot="leo"]').textContent,/Jogador 2/);});
  V.UI.close();V.settings.playerCharacters=['nia','leo'];V.settings.challengePlayers=2;V.Game.newState({name:'Teste da dupla',character:'nia'});V.state.flags.prologueDone=true;V.state.flags.prologueStarted=true;V.Game.startGame();

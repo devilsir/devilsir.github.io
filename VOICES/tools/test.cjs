@@ -2,7 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), { spawn } = require('node:child_process'), { randomUUID } = require('node:crypto');
 const { snapshot, saveSnapshot, changedFiles } = require('./test-provenance.cjs');
 const root = path.resolve(__dirname, '..');
-const smoke = ['module-loader','test-runner','runtime-hooks','app-loader','runtime-upgrade','mobile-performance','loading-progress','duo-runtime','duo-world','duo-navigation','duo-tutorial','community-stories','daily-world','seasons','cooking','cooking-workshop','challenge-economy','words-respect','credits'].map(name => name + '-test.cjs');
+const smoke = ['module-loader','test-runner','runtime-hooks','app-loader','pwa-deferred','runtime-upgrade','mobile-performance','loading-progress','duo-runtime','duo-world','duo-navigation','duo-tutorial','community-stories','daily-world','seasons','cooking','cooking-workshop','challenge-economy','words-respect','credits'].map(name => name + '-test.cjs');
 const browser = new Set(['mask-file-browser-test.cjs']);
 const all = fs.readdirSync(__dirname).filter(name => name.endsWith('-test.cjs') && !browser.has(name)).sort();
 const args = process.argv.slice(2), requested = args.filter(arg => !arg.startsWith('--'));

@@ -78,7 +78,7 @@
       if(!o.livingRoutine)return false;
       const x=o.x-cam.x,y=o.y-cam.y;
       if(x< -85||y< -30||x>c.canvas.width+85||y>c.canvas.height+100)return true;
-      const active=['reading','working','writing','conversing'].includes(o.action),row=o.greeting>0?5:active&&o.dir!==3?4:o.dir||0,frame=V.settings.reducedMotion?0:o.walking?o.frame:active?Math.floor((o.walkClock||0)*1.6)%4:0;
+      const active=['reading','working','writing','conversing'].includes(o.action),row=o.walking?o.dir||0:o.greeting>0&&o.responding>0?5:active&&o.dir!==3?4:o.dir||0,frame=V.settings.reducedMotion?0:o.walking?o.frame:active?Math.floor((o.walkClock||0)*1.6)%4:0;
       const character=V.Assets.images[o.uniformSprite]?.naturalWidth?o.uniformSprite:o.character;
       if(!V.Assets.images[character]?.naturalWidth)return true;
       V.SceneShadows.character(c,character,x,y,64,row,frame,true);V.Assets.sprite(c,character,x,y,row,frame,64);

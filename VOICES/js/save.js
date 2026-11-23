@@ -16,9 +16,7 @@ V.Save={available:true,memory:{},
  settings(){const s=Object.assign({},V.defaultSettings,this.read('settings',{}));delete s.teacherPin;return s;},
  applySettings(){const s=V.settings;document.documentElement.style.setProperty('--font',s.fontSize+'px');document.body.classList.toggle('high-contrast',s.highContrast);document.body.classList.toggle('reduced-motion',s.reducedMotion);document.body.classList.toggle('presentation',s.presentation);V.Audio.apply();this.write('settings',s);},
  log(type,detail){const logs=this.read('log',[]);logs.push({at:new Date().toISOString(),type,detail,grade:V.state?.grade||6,team:V.state?.teamIndex||0});this.write('log',logs.slice(-400));},
- download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);},
- exportSave(){this.save();this.download('voices-progresso.json',{format:'voices-save',version:1,state:V.state,settings:V.settings});},
- importSave(file){file.text().then(text=>{const obj=JSON.parse(text);if(obj.format!=='voices-save'||!this.stateValid(obj.state))throw Error('Backup incompatível.');V.Game.loadState(obj.state);V.UI.toast('Progresso importado.');}).catch(e=>V.UI.toast('Não foi possível importar: '+e.message));}
+ download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 };})();
 
 });

@@ -3,6 +3,7 @@
 Original artwork stays in place. Only strictly smaller outputs enter the manifest.
 Run from VOICES: python tools/optimize_images.py
 """
+from generated_module import write_module
 from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 from pathlib import Path
@@ -64,7 +65,7 @@ def main():
                 print(f'Processed {i}/{len(candidates)} images', flush=True)
     files = {r['source']: r['target'] for r in records}
     script = "(function(){'use strict';const F=window.V.ImageFormats,optimized=" + json.dumps(files, ensure_ascii=False, separators=(',', ':')) + ";const original={...F.files},canonical=F.canonical.bind(F),reverse=Object.fromEntries(Object.entries(optimized).map(([a,b])=>[b,a]));for(const [a,b]of Object.entries(original))if(optimized[b])F.files[a]=optimized[b];Object.assign(F.files,optimized);F.canonical=key=>canonical(reverse[key]||key);F.optimized=optimized;})();\n"
-    (ROOT / 'js' / 'image-delivery-data.js').write_text(script, encoding='utf-8')
+    write_module(ROOT / 'js' / 'image-delivery-data.js', script)
     before = sum(r['before'] for r in records)
     after = sum(r['after'] for r in records)
     report = {'images': len(records), 'before_bytes': before,

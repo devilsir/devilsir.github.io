@@ -8,7 +8,19 @@ function manifest(html = fs.readFileSync(path.join(root, 'index.html'), 'utf8'))
   const data = JSON.parse(match[1]);
   if (data.modules) {
     modules.resolve(data.modules);
-    if (!data.scripts) data.scripts = data.modules.map(entry => entry.src);
+    const entries = new Map(data.modules.map(entry => [entry.id, entry]));
+    const deferred = new Set();
+    for (const feature of Object.values(data.features || {})) {
+      for (const id of feature.modules) {
+        if (!entries.has(id) || deferred.has(id)) throw new Error('Invalid deferred module: ' + id);
+        deferred.add(id);
+      }
+      if (!feature.scripts) feature.scripts = feature.modules.map(id => entries.get(id).src);
+    }
+    for (const entry of data.modules) {
+      if (!deferred.has(entry.id) && entry.requires.some(id => deferred.has(id))) throw new Error('Core module depends on deferred code: ' + entry.id);
+    }
+    if (!data.scripts) data.scripts = data.modules.filter(entry => !deferred.has(entry.id)).map(entry => entry.src);
   }
   return data;
 }

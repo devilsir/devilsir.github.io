@@ -13,7 +13,7 @@
     "test": "node tools/test.cjs",
     "test:all": "node tools/test.cjs --all",
     "test:failed": "node tools/test.cjs --failed",
-    "test:build": "npm run build && node tools/test.cjs --bundle runtime-upgrade",
+    "test:build": "npm run build && node tools/test.cjs --bundle runtime-upgrade pwa-deferred",
     "audit:world": "node tools/audit-world.js"
   },
   "devDependencies": {
