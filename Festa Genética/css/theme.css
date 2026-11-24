@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Mudança Genética & Dossiê 46 — Design System Vidro Fumê Arquitetônico
+   Grafite-obsidiana neutro, vidro translúcido fosco, luz de galeria em
+   champanhe dourado, verde-mineral, petróleo e coral de estúdio.
+   ========================================================================== */
+
+:root {
+  /* Superfícies Neutras & Vidro Fumê (sem azul/roxo genérico) */
+  --bg-deep: #0B0C0E;
+  --bg-mid: #131418;
+  --glass-bg: rgba(21, 22, 26, 0.72);
+  --glass-bg-strong: rgba(16, 17, 20, 0.88);
+  --glass-card: rgba(27, 28, 33, 0.64);
+  --glass-inner: rgba(255, 255, 255, 0.04);
+  --glass-inner-hover: rgba(255, 255, 255, 0.085);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-strong: rgba(216, 177, 106, 0.34);
+
+  /* Aliases semânticos unificados */
+  --desk-deep: #0B0C0E;
+  --desk-mid: #141519;
+  --desk-panel: rgba(21, 22, 26, 0.74);
+  --desk-elevated: rgba(29, 30, 35, 0.78);
+  --desk-border: rgba(255, 255, 255, 0.11);
+  --desk-border-strong: rgba(216, 177, 106, 0.42);
+
+  --paper: rgba(21, 22, 26, 0.76);
+  --paper-warm: rgba(30, 31, 37, 0.68);
+  --paper-deep: rgba(38, 39, 46, 0.82);
+  --paper-line: rgba(255, 255, 255, 0.09);
+  --paper-line-strong: rgba(255, 255, 255, 0.17);
+
+  /* Tipografia marfim / pedra quente de altíssimo contraste */
+  --ink: #F3F1EC;
+  --ink-muted: #A6A39B;
+  --ink-dim: #737068;
+  --cream-text: #F3F1EC;
+  --cream-muted: #A6A39B;
+  --cream-dim: #737068;
+
+  /* Paleta Editorial de Estúdio (Champanhe, Verde-Mineral, Coral, Petróleo) */
+  --champagne: #D8B16A;
+  --champagne-light: #ECD29E;
+  --champagne-soft: rgba(216, 177, 106, 0.14);
+
+  --emerald: #2FA37C;
+  --emerald-soft: rgba(47, 163, 124, 0.15);
+
+  --coral: #D15847;
+  --coral-soft: rgba(209, 88, 71, 0.15);
+
+  --petrol: #5A8FA8;
+  --petrol-soft: rgba(90, 143, 168, 0.15);
+
+  /* Aliases de acento */
+  --cyan: #5A8FA8;
+  --violet: #D8B16A;
+  --rose: #D15847;
+  --amber: #D8B16A;
+
+  --crimson: #C94B3E;
+  --crimson-dark: #9B3329;
+  --crimson-soft: rgba(201, 75, 62, 0.15);
+  --crimson-border: rgba(201, 75, 62, 0.46);
+
+  --brass: #D8B16A;
+  --brass-light: #ECD29E;
+  --brass-dark: #A68240;
+  --brass-soft: rgba(216, 177, 106, 0.14);
+
+  --slate: #5A8FA8;
+  --slate-dark: #3C6A80;
+  --slate-light: #89B8CE;
+  --slate-soft: rgba(90, 143, 168, 0.15);
+  --slate-border: rgba(90, 143, 168, 0.40);
+
+  --confirm-ink: #2FA37C;
+  --confirm-soft: rgba(47, 163, 124, 0.15);
+  --confirm-border: rgba(47, 163, 124, 0.46);
+
+  /* Parentais A / B */
+  --parent-a: #D8B16A;
+  --parent-b: #5A8FA8;
+
+  /* Raridades do Herbário */
+  --rar-comum: #9A968E;
+  --rar-incomum: #2FA37C;
+  --rar-raro: #5A8FA8;
+  --rar-lendario: #D8B16A;
+
+  /* Filete prismático metálico sutil (luz de galeria, sem neon brega) */
+  --studio-prism: linear-gradient(125deg, #D8B16A, #EDEAE2, #2FA37C, #5A8FA8, #D15847, #D8B16A);
+
+  /* Tipografia */
+  --font-serif: Georgia, "Palatino Linotype", Palatino, "Book Antiqua", serif;
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Courier Prime", Consolas, "Courier New", monospace;
+
+  /* Raios, vidro fosco e sombras suaves */
+  --radius-sm: 8px;
+  --radius: 13px;
+  --radius-lg: 18px;
+  --blur: blur(22px) saturate(125%);
+  --shadow-paper: 0 18px 46px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --shadow-desk: 0 22px 54px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --shadow-lift: 0 26px 60px rgba(0, 0, 0, 0.62), 0 0 28px rgba(216, 177, 106, 0.14);
+  --glow-studio: 0 0 24px rgba(216, 177, 106, 0.12), 0 0 42px rgba(47, 163, 124, 0.08);
+
+  --header-h: 58px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg-deep);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+#plant-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- Fundo Arquitetônico Obsidiana com Luz Ambiente Quente/Mineral ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-color: #0B0C0E;
+  background-image:
+    radial-gradient(ellipse 62% 48% at 15% 12%, rgba(216, 177, 106, 0.09), transparent 62%),
+    radial-gradient(ellipse 56% 48% at 86% 18%, rgba(47, 163, 124, 0.08), transparent 60%),
+    radial-gradient(ellipse 54% 46% at 80% 88%, rgba(209, 88, 71, 0.07), transparent 60%),
+    radial-gradient(ellipse 52% 46% at 18% 86%, rgba(90, 143, 168, 0.07), transparent 60%),
+    linear-gradient(160deg, #101114 0%, #0C0D10 55%, #08090B 100%);
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(243, 241, 236, 0.018) 0px, rgba(243, 241, 236, 0.018) 1px, transparent 1px, transparent 72px),
+    repeating-linear-gradient(0deg, rgba(243, 241, 236, 0.015) 0px, rgba(243, 241, 236, 0.015) 1px, transparent 1px, transparent 72px),
+    radial-gradient(circle at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.68) 100%);
+}
+
+/* ---------- Tipografia ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.005em;
+  color: #F4F2EC;
+}
+
+button, input, select {
+  font: inherit;
+  color: inherit;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.muted { color: var(--ink-muted); }
+.dim { color: var(--ink-dim); }
+.small { font-size: 12.5px; }
+.center { text-align: center; }
+.warn { color: #E87B6C; font-weight: 600; }
+.good { color: #4DC49B; font-weight: 700; }
+
+:focus-visible {
+  outline: 2px solid var(--champagne);
+  outline-offset: 2px;
+  box-shadow: 0 0 12px rgba(216, 177, 106, 0.35);
+}
+
+/* ---------- Barras de rolagem discretas ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(216, 177, 106, 0.34) rgba(12, 13, 16, 0.5);
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(12, 13, 16, 0.45); border-radius: 6px; }
+::-webkit-scrollbar-thumb {
+  background: rgba(216, 177, 106, 0.34);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(216, 177, 106, 0.62);
+}

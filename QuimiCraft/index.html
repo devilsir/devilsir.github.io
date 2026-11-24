@@ -2,12 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a1821">
-<title>QuimiCraft Voxel — Ciência & Sobrevivência v7.2</title>
+<title>QuimiCraft Voxel — Ciência & Sobrevivência v7.6</title>
 <link rel="stylesheet" href="styles/main.css">
 <link rel="stylesheet" href="styles/character-customization.css">
 <link rel="stylesheet" href="styles/science.css">
+<link rel="stylesheet" href="styles/alchemy.css">
+<link rel="stylesheet" href="styles/vehicles.css">
+<link rel="stylesheet" href="styles/catalog.css">
 </head>
 <body><div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
 <div id="game"></div>
@@ -22,7 +25,7 @@
     <b>Mundo pronto para explorar.</b>
     <span>O laboratório, a vila, os arredores e as colisões foram validados.</span>
     <button id="loaderEnter" class="primary" type="button">Entrar no mundo</button>
-    <small>O navegador só pode capturar o mouse depois deste clique.</small>
+    <button id="loaderGuided" class="secondary" type="button">Começar com prática guiada</button>
   </div>
   <div id="loaderError" class="loader-error" hidden>
     <b>Não foi possível preparar o mundo com segurança.</b>
@@ -36,13 +39,14 @@
     <p class="eyebrow">Uma aventura procedural</p>
     <h1 class="logo">QUIMI<br>CRAFT<span>Voxel survival</span></h1>
     <p class="tagline">Explore um mundo contínuo com cordilheiras, lagos extensos e estruturas distantes, visite a Vila dos Elementos e conheça o novo Laboratório Carbono: um centro científico completo com equipamentos, reações avançadas e uma missão na Tabela Periódica.</p>
-    <div id="localFrameNotice" class="local-frame-notice" hidden>Este arquivo foi aberto dentro de uma prévia. Ao clicar em Jogar, o QuimiCraft será aberto diretamente em uma nova aba para permitir o controle do mouse.</div>
     <button id="playBtn" class="primary">Jogar</button>
-    <div class="title-actions"><button id="customizeBtn" class="secondary">Personalizar personagem</button><button id="newWorldTitleBtn" class="secondary danger">Recomeçar mundo</button></div>
+    <div class="title-actions"><button id="customizeBtn" class="secondary">Personalizar personagem</button><button id="catalogTitleBtn" class="secondary" type="button">Catálogo ilustrado</button><button id="newWorldTitleBtn" class="secondary danger">Recomeçar mundo</button></div>
+    <div class="world-file-actions"><button id="exportWorldTitle" class="secondary" type="button">Exportar mundo</button><button id="importWorldTitle" class="secondary" type="button">Restaurar mundo</button></div>
+    <p id="worldSaveStatus" class="world-save-status" role="status"></p>
     <button id="settingsToggle" class="settings-toggle">Configurações <i>⌄</i></button>
     <div id="settings" class="settings"><div>
       <div class="setting"><label for="qualityPreset">Qualidade gráfica</label><select id="qualityPreset"><option value="low">Baixa — desempenho</option><option value="medium">Média</option><option value="high" selected>Alta</option><option value="cinematic">Cinemática</option><option value="custom">Personalizada</option></select></div>
-      <div class="setting"><label for="renderDistance">Distância de render</label><output id="renderOut">8 chunks</output><input id="renderDistance" type="range" min="3" max="12" value="8"></div>
+      <div class="setting"><label for="renderDistance">Distância de renderização</label><output id="renderOut">12 chunks</output><input id="renderDistance" type="range" min="8" max="16" value="12"></div>
       <div class="setting"><label for="shadowQuality">Sombras dinâmicas</label><select id="shadowQuality"><option value="0">Desativadas</option><option value="1">Baixas</option><option value="2" selected>Altas</option></select></div>
       <div class="setting"><label for="aoQuality">Ambient occlusion</label><select id="aoQuality"><option value="0">Desativado</option><option value="1">Suave</option><option value="2" selected>Completo</option></select></div>
       <div class="setting"><label for="waterQuality">Qualidade da água</label><select id="waterQuality"><option value="0">Simples</option><option value="1">Média</option><option value="2" selected>Reflexiva</option></select></div>
@@ -63,7 +67,7 @@
       <div class="setting"><label for="survivalDifficulty">Dificuldade de sobrevivência</label><select id="survivalDifficulty"><option value="relaxed">Relaxada</option><option value="normal" selected>Normal</option><option value="hard">Intensa</option></select></div>
       <div class="setting"><label for="scienceExplanation">Explicações científicas</label><select id="scienceExplanation"><option value="simple">Simplificadas</option><option value="standard" selected>Equilibradas</option><option value="extended">Estendidas</option></select></div>
     </div></div>
-    <div class="save-note">VERSÃO 7.3 · MUNDO EXPANDIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
+    <div class="save-note">VERSÃO 7.6 · MUNDO EXPANDIDO &nbsp;·&nbsp; Mundo salvo localmente neste dispositivo</div>
   </div>
 </section>
 
@@ -83,12 +87,51 @@
   <div id="enemyHud" class="enemy-hud"><div class="enemy-head"><span id="enemyName">CRIATURA</span><span id="enemyHp">0 / 0</span></div><div class="enemy-track"><div id="enemyFill" class="enemy-fill"></div></div></div>
   <div id="hotbar" class="hotbar"></div>
   <div class="break-wrap" id="breakWrap"><div class="break-fill" id="breakFill"></div></div>
+  <section id="vehicleHud" class="vehicle-hud" aria-label="Painel do veículo" hidden>
+    <header>
+      <strong id="vehicleName"></strong>
+      <b id="vehicleGear" class="vehicle-gear" aria-label="Marcha"></b>
+    </header>
+    <div class="vehicle-readouts">
+      <div class="vehicle-dial">
+        <svg viewBox="0 0 120 87" aria-hidden="true">
+          <path class="dial-base" d="M16 80A48 48 0 1 1 104 80"/>
+          <path class="dial-scale" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
+          <path class="dial-level" id="vehicleDialLevel" d="M16 80A48 48 0 1 1 104 80" pathLength="100"/>
+          <g id="vehicleNeedle" transform="rotate(-113 60 61)">
+            <path d="M57.6 64 60 21 62.4 64Z"/>
+          </g>
+          <circle class="dial-hub" cx="60" cy="61" r="4.3"/>
+          <text x="4" y="85">0</text><text id="vehicleDialMax" x="115" y="85" text-anchor="end">80</text>
+        </svg>
+        <span class="vehicle-speed"><b id="vehicleSpeed">0</b> <small>km/h</small></span>
+      </div>
+      <div class="vehicle-indicators">
+        <div id="vehicleStatus" class="vehicle-status"></div>
+        <div id="vehicleNitroPanel" class="vehicle-nitro">
+          <div><b>Nitro</b><span id="vehicleNitroText">100%</span></div>
+          <progress id="vehicleNitro" max="100" value="100" aria-label="Carga de nitro"></progress>
+        </div>
+        <div id="vehicleAltitude" class="vehicle-altitude" hidden></div>
+      </div>
+    </div>
+    <small id="vehicleControls" class="vehicle-controls"></small>
+  </section>
+  <div id="productionHud" class="fishing-status" hidden><span id="productionCopy" role="status"></span><div class="fishing-track"><i id="productionFill"></i></div></div>
+<div id="fishingHud" class="fishing-status" hidden><span id="fishingCopy" role="status"></span><div class="fishing-track"><i id="fishingFill"></i></div></div>
   <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário <kbd>V</kbd> veículos</div>
 </div>
+<div id="dragHint" class="drag-hint" hidden>Arraste ou use as setas para olhar · F atacar/quebrar · Q usar</div>
+<section id="fieldworkPanel" class="fieldwork-panel" aria-labelledby="fieldworkStep" hidden>
+  <button id="fieldworkClose" type="button" aria-label="Ocultar prática guiada">×</button>
+  <b id="fieldworkStep"></b>
+  <p id="fieldworkCopy" aria-live="polite"></p>
+  <button id="fieldworkNotebook" class="secondary" type="button" hidden>Registrar no caderno</button>
+</section>
 <div id="mobileControls" class="mobile-controls" aria-label="Controles móveis">
   <div class="mobile-move"><button type="button" data-mobile-key="KeyW" aria-label="Mover para frente">▲</button><button type="button" data-mobile-key="KeyA" aria-label="Mover para esquerda">◀</button><button type="button" data-mobile-key="KeyS" aria-label="Mover para trás">▼</button><button type="button" data-mobile-key="KeyD" aria-label="Mover para direita">▶</button></div>
-  <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
+  <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-key="ControlLeft" data-drive aria-label="Frear veículo" hidden>Freio</button><button type="button" data-mobile-key="ShiftLeft" data-drive aria-label="Ativar nitro" hidden>Nitro</button><button type="button" data-mobile-action="vehicle" aria-label="Equipar ou recolher veículo">V</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
 </div>
 <div id="waterOverlay" class="water-overlay" aria-hidden="true"><span class="water-caustics"></span><span id="breathWarning" class="breath-warning">FÔLEGO BAIXO</span></div><div id="climateOverlay" class="climate-overlay" aria-hidden="true"></div><div id="damage" class="damage"></div>
 
@@ -110,8 +153,8 @@
             <div id="equipLegs" class="mc-equipment-slot" data-equip-slot="legs" data-icon="Ⅱ" title="Pernas" role="button" tabindex="0" aria-label="Equipamento das pernas"></div>
             <div id="equipFeet" class="mc-equipment-slot" data-equip-slot="feet" data-icon="⌒" title="Pés" role="button" tabindex="0" aria-label="Equipamento dos pés"></div>
           </div>
-          <div class="mc-character-stage"><div id="inventoryAvatar" class="avatar-pixel mc-avatar" data-hair-style="0" aria-label="Prévia do personagem">
-              <span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span>
+          <div class="mc-character-stage"><canvas id="inventoryAvatar3d" class="avatar-3d" role="img" aria-label="Modelo 3D do personagem equipado"></canvas><div id="inventoryAvatar" class="avatar-pixel mc-avatar" data-hair-style="0" aria-label="Prévia do personagem">
+              <span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span><span class="avatar-beard"></span><span class="avatar-shoes"></span><span class="avatar-emblem"></span>
             </div><span class="mc-stage-shadow"></span></div>
           <div class="mc-offhand-wrap"><div id="equipBack" class="mc-equipment-slot mc-back" data-equip-slot="back" data-icon="▥" title="Costas" role="button" tabindex="0" aria-label="Equipamento das costas"></div><div id="equipOffhand" class="mc-equipment-slot mc-offhand" data-equip-slot="offhand" data-icon="⬡" title="Mão secundária" role="button" tabindex="0" aria-label="Equipamento da mão secundária"></div></div>
         </div>
@@ -137,7 +180,7 @@
 
 <section id="character" class="modal" aria-hidden="true"><div class="modal-card character-card">
   <div class="modal-head"><div><p class="eyebrow">Identidade do explorador</p><h2 class="modal-title">Personalizar personagem</h2><p class="modal-sub">Escolha pele, cabelo, uniforme e estilo. As mãos e o corpo acompanham suas escolhas.</p></div><button class="close" data-close="character">×</button></div>
-  <div class="character-body"><div class="avatar-preview"><div id="avatarPreview" class="avatar-pixel" data-hair-style="0"><span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span></div></div><div id="customGroups" class="custom-groups"></div></div>
+  <div class="character-body"><div class="avatar-preview"><canvas id="customAvatar3d" class="avatar-3d" role="img" aria-label="Modelo 3D do personagem personalizado"></canvas><div id="avatarPreview" class="avatar-pixel" data-hair-style="0"><span class="avatar-hair-piece avatar-hair-back"></span><span class="avatar-head"></span><span class="avatar-hair-piece avatar-hair-top"></span><span class="avatar-hair-piece avatar-hair-left"></span><span class="avatar-hair-piece avatar-hair-right"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-a"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-b"></span><span class="avatar-hair-piece avatar-hair-fringe fringe-c"></span><span class="avatar-hair-piece avatar-hair-bun"></span><span class="avatar-hair-piece avatar-hair-crest crest-a"></span><span class="avatar-hair-piece avatar-hair-crest crest-b"></span><span class="avatar-hair-piece avatar-hair-crest crest-c"></span><span class="avatar-body"></span><span class="avatar-accent"></span><span class="avatar-arm-l"></span><span class="avatar-arm-r"></span><span class="avatar-leg-l"></span><span class="avatar-leg-r"></span><span class="avatar-eye-l"></span><span class="avatar-eye-r"></span><span class="avatar-beard"></span><span class="avatar-shoes"></span><span class="avatar-emblem"></span></div></div><div id="customGroups" class="custom-groups"></div></div>
 </div></section>
 
 <section id="shop" class="modal" aria-hidden="true"><div class="modal-card shop-card">
@@ -209,7 +252,41 @@
   <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="command-row"><input id="devCommand" autocomplete="off" placeholder="Ex.: fly, heal, spawn golem, give crystal 64"><button id="runCommand" class="primary">Executar</button></div><div class="dev-help">fly · heal · speed 1–5 · infinite · recipes · time day|sunset|night · give item quantidade · tp x y z · spawn golem|wisp|magma|scorpion|deer|owl · clear mobs</div></div>
 </div></section>
 
-<section id="pause" class="modal" aria-hidden="true"><div class="modal-card pause-card"><h2>Mundo pausado</h2><p id="pauseCopy">O laboratório, a vila e as criaturas esperam por você.</p><div class="pause-actions"><button id="resumeBtn" class="primary">Continuar</button><button id="pauseHistoryBtn" class="secondary">Histórico de mensagens</button><button id="graphicsBtn" class="secondary">Opções gráficas</button><button id="restartBtn" class="secondary">Respawnar</button><button id="newWorldBtn" class="secondary danger">Recomeçar mundo</button><button id="titleBtn" class="secondary">Voltar ao início</button></div></div></section>
+<span id="alchemyLocator" class="alchemy-locator" hidden></span>
+<span id="alchemyEffects" class="alchemy-effects" hidden></span>
+<section id="alchemyWorkshop" class="modal" aria-hidden="true">
+  <div class="modal-card alchemy-card" role="dialog" aria-modal="true" aria-labelledby="alchemyTitle">
+    <header class="modal-head"><h2 id="alchemyTitle">Oficina alquímica</h2><button class="close" id="alchemyClose" type="button" aria-label="Fechar oficina alquímica">×</button></header>
+    <div id="alchemyBody" class="alchemy-body"></div>
+  </div>
+</section>
+<section id="frontierWorkshop" class="modal" aria-hidden="true">
+  <div class="modal-card frontier-card" role="dialog" aria-modal="true" aria-labelledby="frontierTitle">
+    <header class="modal-head"><h2 id="frontierTitle">Estação</h2><button class="close" id="frontierClose" type="button" aria-label="Fechar estação">×</button></header>
+    <div id="frontierJobs" class="frontier-jobs"></div>
+  </div>
+</section>
+<section id="pause" class="modal" aria-hidden="true"><div class="modal-card pause-card"><h2>Mundo pausado</h2><p id="pauseCopy">O laboratório, a vila e as criaturas esperam por você.</p><div class="pause-actions"><button id="resumeBtn" class="primary">Continuar</button><button id="cameraModeBtn" class="secondary" type="button">Usar câmera por arraste</button><button id="fieldworkResume" class="secondary" type="button">Prática guiada</button><button id="pauseHistoryBtn" class="secondary">Histórico de mensagens</button><button id="graphicsBtn" class="secondary">Opções gráficas</button><button id="catalogPauseBtn" class="secondary" type="button">Catálogo ilustrado</button><button id="restartBtn" class="secondary">Respawnar</button><button id="newWorldBtn" class="secondary danger">Recomeçar mundo</button><button id="titleBtn" class="secondary">Voltar ao início</button></div><div class="world-file-actions"><button id="exportWorldPause" class="secondary" type="button">Exportar mundo</button><button id="importWorldPause" class="secondary" type="button">Restaurar mundo</button></div><p id="pauseSaveStatus" class="world-save-status" role="status"></p></div></section>
+<section id="catalog" class="modal" role="dialog" aria-modal="true" aria-labelledby="catalogTitle" aria-hidden="true">
+  <div class="modal-card catalog-card">
+    <div class="modal-head"><div><h2 id="catalogTitle" class="modal-title">Catálogo ilustrado</h2><p class="modal-sub">Blocos, moradores, máquinas e criaturas do QuimiCraft.</p></div><button type="button" class="close" data-catalog-close aria-label="Fechar catálogo">×</button></div>
+    <div class="catalog-tools">
+      <input type="search" aria-label="Buscar no catálogo" placeholder="Buscar por nome ou habitat">
+      <div class="catalog-filters" role="group" aria-label="Categorias do catálogo">
+        <button type="button" class="secondary" data-category="all">Tudo</button>
+        <button type="button" class="secondary" data-category="block">Blocos</button>
+        <button type="button" class="secondary" data-category="npc">NPCs</button>
+        <button type="button" class="secondary" data-category="vehicle">Veículos</button>
+        <button type="button" class="secondary" data-category="animal">Fauna terrestre</button>
+        <button type="button" class="secondary" data-category="aquatic">Fauna aquática</button>
+        <button type="button" class="secondary" data-category="fantasy">Criaturas</button>
+      </div>
+    </div>
+    <div class="catalog-grid"></div>
+    <div class="catalog-footer"><span class="catalog-count" role="status"></span><div><button class="secondary" type="button" data-page="prev">Anterior</button><span class="catalog-pagination"></span><button class="secondary" type="button" data-page="next">Próxima</button></div></div>
+  </div>
+</section>
+<input type="file" id="worldImportFile" accept=".json,application/json" hidden>
 <div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
 <div id="chat" class="chat"><input id="chatInput" class="chat-box" maxlength="120" autocomplete="off" placeholder="Mensagem ou comando…  (-mododev)"></div>
 <div id="toast"></div>
@@ -219,6 +296,33 @@
 <script src="js/quimicraft-systems.js"></script>
 <script src="js/science-core.js"></script>
 <script src="js/science-ui.js"></script>
+<script src="js/frontier.js"></script>
+<script src="js/regions.js"></script>
+<script src="js/habitats.js"></script>
+<script src="js/settlements.js"></script>
+<script src="js/workshops.js"></script>
+<script src="js/professions.js"></script>
+<script src="js/combat-effects.js"></script>
+<script src="js/avatar-preview.js"></script>
+<script src="js/terrain.js"></script>
+<script src="js/horizon.js"></script>
+<script src="js/laboratory-door.js"></script>
+<script src="js/laboratory-layout.js"></script>
+<script src="js/player-input.js"></script>
+<script src="js/inventory-transaction.js"></script>
+<script src="js/world-storage.js"></script>
+<script src="js/player-models.js"></script>
+<script src="js/entity-ai.js"></script>
+<script src="js/alchemy.js"></script>
+<script src="js/alchemy-world.js"></script>
+<script src="js/alchemy-ui.js"></script>
+<script src="js/alchemy-play.js"></script>
+<script src="js/vehicle-models.js"></script>
+<script src="js/vehicles.js"></script>
+<script src="js/block-models.js"></script>
+<script src="js/depths.js"></script>
+<script src="js/wildlife-models.js"></script>
+<script src="js/catalog.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

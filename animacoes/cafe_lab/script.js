@@ -1,19 +1,17 @@
-// =========================================================
-//  • Titulação: botão "Abrir torneira (segurar)" — fluxo contínuo enquanto pressionado (até esvaziar).
-//    Resultados à direita do béquer, com quebra de linha automática.
-//  • Concentração: rótulos de água quente/fria posicionados à direita; vapor ancorado na xícara.
-//  • Diluição: controle flex (C2=0 ou V2=0); animações polidas.
-// =========================================================
 (() => {
   const W = 1280, H = 760;
   const canvas = document.getElementById('c');
+  const escalaCanvas = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(W * escalaCanvas);
+  canvas.height = Math.round(H * escalaCanvas);
   const ctx = canvas.getContext('2d');
+  ctx.scale(canvas.width / W, canvas.height / H);
+  const reduzirMovimento = matchMedia('(prefers-reduced-motion: reduce)');
 
   // ---------- Utils
   const TAU = Math.PI*2;
   const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
   const lerp = (a,b,t)=>a+(b-a)*t;
-  const map = (v, inMin, inMax, outMin, outMax)=> outMin + (outMax-outMin) * ((v-inMin)/(inMax-inMin));
   const rnd = (a,b)=> a + Math.random()*(b-a);
   function roundSmart(x, p=3){ const pow = Math.pow(10,p); return Math.round(x*pow)/pow; }
 
@@ -53,726 +51,849 @@
     return yy + lineH - y;
   }
 
-  const COLORS = { bg1:'#2b1f1c', bg2:'#3a2a26', accent:'#c08a64', accent2:'#f1b77d', cream:'#f6e7da', sugar:'#f8f6f4', bean:'#5a3a2f', dark:'#1b1210', green:'#7de39e', red:'#ff7a7a', blue:'#7db5ff', pink:'#ffb2d0' };
+  const COLORS = { accent:'#c08a64', accent2:'#f1b77d', cream:'#f6e7da' };
 
   // ---------- Input
-  const mouse = {x:0, y:0, down:false, justUp:false, justDown:false, pointerId:null};
-  function updateXY(e){
-    const r = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / r.width, scaleY = canvas.height / r.height;
-    mouse.x = (e.clientX - r.left) * scaleX;
-    mouse.y = (e.clientY - r.top) * scaleY;
-  }
-  canvas.addEventListener('pointerdown', e=>{ e.preventDefault(); updateXY(e); mouse.down=true; mouse.justDown=true; mouse.pointerId=e.pointerId; canvas.setPointerCapture?.(e.pointerId); });
-  canvas.addEventListener('pointermove', e=>{ updateXY(e); });
-  canvas.addEventListener('pointerup', e=>{ updateXY(e); mouse.down=false; mouse.justUp=true; if(mouse.pointerId===e.pointerId){ mouse.pointerId=null; } dragOwner=null; });
-  canvas.addEventListener('pointercancel', ()=>{ mouse.down=false; mouse.pointerId=null; dragOwner=null; });
-  canvas.addEventListener('mousedown', e=>{ updateXY(e); mouse.down=true; mouse.justDown=true; });
-  canvas.addEventListener('mousemove', e=>{ updateXY(e); });
-  canvas.addEventListener('mouseup', e=>{ updateXY(e); mouse.down=false; mouse.justUp=true; dragOwner=null; });
-  canvas.addEventListener('mouseleave', ()=>{ mouse.down=false; dragOwner=null; });
-
-  function hit(x,y,w,h){ return mouse.x>=x && mouse.x<=x+w && mouse.y>=y && mouse.y<=y+h; }
+  const mouse = {x:0, y:0, pressX:0, pressY:0, down:false, justUp:false, justDown:false, pointerId:null};
   let dragOwner = null;
+
+  function updateXY(e) {
+    const bounds = canvas.getBoundingClientRect();
+    mouse.x = (e.clientX - bounds.left) * W / bounds.width;
+    mouse.y = (e.clientY - bounds.top) * H / bounds.height;
+  }
+  function inBounds(px,py,x,y,w,h) {
+    return px>=x && px<=x+w && py>=y && py<=y+h;
+  }
+  function hit(x,y,w,h) {
+    return inBounds(mouse.x,mouse.y,x,y,w,h);
+  }
+  function pressedWithin(x,y,w,h) {
+    return inBounds(mouse.pressX,mouse.pressY,x,y,w,h);
+  }
+  canvas.addEventListener('pointerdown', e => {
+    if (mouse.pointerId !== null || e.button !== 0) return;
+    updateXY(e);
+    Object.assign(mouse, {pressX:mouse.x, pressY:mouse.y, down:true, justDown:true, pointerId:e.pointerId});
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (mouse.pointerId === e.pointerId || (mouse.pointerId === null && e.pointerType === 'mouse')) updateXY(e);
+  });
+  canvas.addEventListener('pointerup', e => {
+    if (mouse.pointerId !== e.pointerId) return;
+    updateXY(e);
+    Object.assign(mouse, {down:false, justUp:true, pointerId:null});
+  });
+  canvas.addEventListener('pointerleave', () => {
+    if (mouse.pointerId === null && !mouse.justUp) mouse.x = mouse.y = -1;
+  });
+  function cancelPointer() {
+    Object.assign(mouse, {down:false, justDown:false, justUp:false, pointerId:null});
+    dragOwner = null;
+  }
+  canvas.addEventListener('pointercancel', cancelPointer);
+  canvas.addEventListener('lostpointercapture', () => {
+    if (mouse.pointerId !== null) cancelPointer();
+  });
+  window.addEventListener('blur', cancelPointer);
 
   // ---------- UI components
   class Button{
-    constructor(x,y,w,h,label,onClick, opts={}){ Object.assign(this,{x,y,w,h,label,onClick}); this.opts = Object.assign({ fill: '#3d2b27', fillHover:'#49332e', stroke:'#00000033', text: COLORS.cream }, opts); this._pressed=false; }
+    constructor(x,y,w,h,label,onClick, opts={}){ Object.assign(this,{x,y,w,h,label,onClick}); this.opts = Object.assign({ fill: '#3d2b27', fillHover:'#49332e', stroke:'#00000033', text: COLORS.cream }, opts); }
     draw(){
       const hover = hit(this.x,this.y,this.w,this.h);
       const fill = hover?this.opts.fillHover:this.opts.fill;
       shadow(()=>{ pill(this.x, this.y, this.w, this.h, fill, this.opts.stroke); },{blur:18, y:8, color:'rgba(0,0,0,.35)'});
       text(this.label, this.x+this.w/2, this.y+this.h/2+1, 16, this.opts.text, 'center', 'middle', '700');
-      if(hover && mouse.justDown) this._pressed=true;
-      if(this._pressed && !mouse.down && hover && mouse.justUp){ this._pressed=false; this.onClick?.(); }
-      if(!mouse.down && !hover) this._pressed=false;
+      if(hover && mouse.justUp && pressedWithin(this.x,this.y,this.w,this.h)) this.onClick?.();
     }
   }
   class HoldButton{
-    constructor(x,y,w,h,label,onHold){ Object.assign(this,{x,y,w,h,label,onHold}); this.holding=false;}
+    constructor(x,y,w,h,label){ Object.assign(this,{x,y,w,h,label}); }
     draw(){
       const hovered = hit(this.x,this.y,this.w,this.h);
-      const active = hovered && mouse.down;
-      if(active) this.holding=true; else if(!mouse.down) this.holding=false;
-      const fill = this.holding? '#d7a174' : (hovered? '#49332e' : '#3d2b27');
+      const holding = hovered && mouse.down && pressedWithin(this.x,this.y,this.w,this.h);
+      const fill = holding ? '#d7a174' : hovered ? '#49332e' : '#3d2b27';
       shadow(()=>{ pill(this.x, this.y, this.w, this.h, fill, '#00000033'); },{blur:18,y:8,color:'rgba(0,0,0,.35)'});
-      text(this.label, this.x+this.w/2, this.y+this.h/2+1, 16, this.holding? '#1b1210':'#f6e7da', 'center', 'middle', '700');
-      if(this.holding){ try{ this.onHold && this.onHold(); }catch(e){} }
+      text(this.label, this.x+this.w/2, this.y+this.h/2+1, 16, holding ? '#1b1210':'#f6e7da', 'center', 'middle', '700');
+      return holding;
     }
   }
   class Slider{
-    constructor(x,y,w,min,max,val,label,units,onChange){ Object.assign(this,{x,y,w,min,max,val,label,units,onChange}); this.h=36; this.drag=false; this.step=null; this.disabled=false; }
+    constructor(x,y,w,min,max,val,label,units,onChange){ Object.assign(this,{x,y,w,min,max,val,label,units,onChange}); this.h=36; this.step=null; this.disabled=false; }
     setStep(s){ this.step=s; return this; }
     valueToX(v){ return this.x + ( (v-this.min)/(this.max-this.min) )*this.w; }
     xToValue(px){ const t = clamp((px-this.x)/this.w,0,1); let v = this.min + t*(this.max-this.min); if(this.step){ v = Math.round(v/this.step)*this.step; } return clamp(v,this.min,this.max); }
-    draw(){
+    draw(valorExibido = this.val, casas = 3){
       ctx.save();
       drawRoundedRect(this.x, this.y+this.h/2-6, this.w, 12, 6); ctx.fillStyle = '#00000044'; ctx.fill();
       const fx = this.valueToX(this.val); drawRoundedRect(this.x, this.y+this.h/2-6, fx-this.x, 12, 6); ctx.fillStyle = COLORS.accent; ctx.fill();
       const kx = fx, ky = this.y+this.h/2;
       shadow(()=>{ ctx.beginPath(); ctx.arc(kx, ky, 12, 0, TAU); ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle = COLORS.accent; ctx.stroke(); },{blur:10,y:4,color:'rgba(0,0,0,.35)'});
       text(this.label, this.x, this.y-8, 15, COLORS.cream, 'left');
-      const vStr = this.units? `${roundSmart(this.val)} ${this.units}` : `${roundSmart(this.val)}`;
+      const vStr = this.units? `${roundSmart(valorExibido, casas)} ${this.units}` : `${roundSmart(valorExibido, casas)}`;
       text(vStr, this.x+this.w, this.y-8, 15, COLORS.accent2, 'right', 'alphabetic', '700');
-      const overTrack = hit(this.x, this.y, this.w, this.h);
-      if(this.disabled){ ctx.globalAlpha=0.9; /* render only */ }
-      if(!this.disabled && mouse.justDown && overTrack && (dragOwner===null || dragOwner===this)){ dragOwner=this; this.drag=true; this.val = this.xToValue(mouse.x); this.onChange?.(this.val); }
-      if(this.drag && dragOwner===this){ if(mouse.down){ this.val = this.xToValue(mouse.x); this.onChange?.(this.val); } }
-      if(mouse.justUp && this.drag){ this.drag=false; if(dragOwner===this) dragOwner=null; }
+      if (!this.disabled && mouse.justDown && !dragOwner && pressedWithin(this.x,this.y,this.w,this.h)) dragOwner = this;
+      if (dragOwner === this && (mouse.down || mouse.justUp)) {
+        const val = this.xToValue(mouse.x);
+        if (val !== this.val) {
+          this.val = val;
+          this.onChange?.(val);
+        }
+      }
       ctx.restore();
     }
   }
   class Toggle{
     constructor(x,y, labels, index, onChange){ Object.assign(this,{x,y,labels,index,onChange}); this.h=36; this.w = labels.length*170; }
-    draw(){ const {x,y,h,w,labels} = this; drawRoundedRect(x,y,w,h,h/2); ctx.fillStyle='#00000033'; ctx.fill(); labels.forEach((lab,i)=>{ const segW = w/labels.length; const sx=x+i*segW; if(i===this.index){ drawRoundedRect(sx+2,y+2,segW-4,h-4,(h-4)/2); ctx.fillStyle = COLORS.accent; ctx.fill(); } text(lab, sx+segW/2, y+h/2+1, 14, i===this.index? '#1b1210':'#f6e7da', 'center', 'middle', '700'); if(hit(sx,y,segW,h) && mouse.justUp){ this.index=i; this.onChange?.(i);} }); }
+    draw(){ const {x,y,h,w,labels} = this; drawRoundedRect(x,y,w,h,h/2); ctx.fillStyle='#00000033'; ctx.fill(); labels.forEach((lab,i)=>{ const segW = w/labels.length; const sx=x+i*segW; if(i===this.index){ drawRoundedRect(sx+2,y+2,segW-4,h-4,(h-4)/2); ctx.fillStyle = COLORS.accent; ctx.fill(); } text(lab, sx+segW/2, y+h/2+1, 14, i===this.index? '#1b1210':'#f6e7da', 'center', 'middle', '700'); if(hit(sx,y,segW,h) && mouse.justUp && pressedWithin(sx,y,segW,h)){ this.index=i; this.onChange?.(i);} }); }
   }
 
   // ---------- Estado
   const State = {
     tab: 0,
-    conc: { 
-      sub: 0,
-      agua_quente_mL: 250, agua_fria_mL: 0, kettleHot_mL: 250, kettleCold_mL: 0,
-      acucar_g: 12,
-      cafe_colheres: 2,
-      MM_gmol: 342.30,
-      mexendo: false,
-      pouring: null,
-      pourRate_mLps: 80,
-      pouredHot_mL: 0, pouredCold_mL: 0, cup_mL: 0,
-      wavePhase: 0,
-      kettleX: 1060, cupI: 0, brewLocked:false, brew_spoons:0, brew_totalAvail_mg:0, cup_caffeine_mg:0, sugarLocked:false, sugar_g_locked:0, cup_sugar_g:0
-    },
-    dili: { modo:0, C1:80, V1_mL:200, C2:20, V2_mL:800, animT:0, swirl:0, lastMixT:0, solved:'V2' },
-    titu: { Va_mL:25, Mb:0.100, Vb_mL:0, Ca_true:+((Math.random()*0.10)+0.05).toFixed(3), eqReached:false, lastVb_mL:0, drops:[], ripples:[], beakerCapacity_L:0.6, flowRate_mLps:2.4, holding:false, tipX:800, tipY:416, ind:0, pKa:3.6 },
-    quiz: { q:null, score:0, shownFeedback:0 }
+    dili: { modo:0, C1:80, V1_mL:200, C2:20, V2_mL:800, volumesDesenhados:[], agitacao:0 },
+    // Amostra de 5-CQA na ordem de grandeza das bebidas medidas por Moeenfard et al.
+    // DOI 10.1155/2014/965353. pKa carboxílico: DOI 10.1039/JR9590002795.
+    titu: { Va_mL:25, Mb:0.002, Vb_mL:0, Ca_true:roundSmart(.0004 + Math.random() * .0006, 5), gotaEm:0, drops:[], ripples:[], flowRate_mLps:2.4, ind:0, pKa:3.59 },
   };
 
-  // ---------- Visual helpers
-  function drawCoffeeBackground(){ ctx.fillStyle = '#231714'; ctx.fillRect(0, H-180, W, 180); for(let i=0;i<8;i++){ ctx.fillStyle = i%2? '#2c1e1a':'#311f1b'; ctx.fillRect(i*(W/8), H-160, W/8-2, 140); } const g = ctx.createRadialGradient(W/2, 120, 60, W/2, 120, 600); g.addColorStop(0,'rgba(255,214,170,.14)'); g.addColorStop(1,'rgba(255,214,170,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
-  function coffeeColor(intensity){ const base={r:24,g:16,b:12}, milk={r:210,g:160,b:120}; const r=Math.round(lerp(milk.r, base.r, intensity)); const g=Math.round(lerp(milk.g, base.g, intensity)); const b=Math.round(lerp(milk.b, base.b, intensity)); return `rgb(${r},${g},${b})`; }
-  function drawSteam(x, y, t, anchorW=24){
-    ctx.save();
-    ctx.globalAlpha = 0.22 + 0.08*Math.sin(t*0.2);
-    for(let i=0;i<6;i++){
-      const ox = -anchorW/2 + (i/5)*anchorW + Math.sin(t*0.3 + i)*6;
-      const h = 28 + 10*Math.sin(t*0.4 + i*0.7);
-      ctx.beginPath();
-      ctx.moveTo(x+ox, y);
-      ctx.bezierCurveTo(x+ox-6, y-h*0.4, x+ox+6, y-h*0.7, x+ox, y-h);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#f5efe9';
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-  function drawKettle(x,y,label){ ctx.save(); drawRoundedRect(x,y,120,80,24); ctx.fillStyle='#8b7a70'; ctx.fill(); ctx.fillStyle='#6a5b52'; ctx.fillRect(x+90,y-20,18,20); ctx.beginPath(); ctx.arc(x+12,y+20,18,Math.PI*0.5,-Math.PI*0.3,true); ctx.lineWidth=12; ctx.strokeStyle='#6a5b52'; ctx.stroke(); text(label, x+60,y+44,14,'#1b1210','center','middle','800'); ctx.restore(); }
-  function drawDripperWithCup(cx, cy, fillFrac, col, wavePhase, scale=1.0){
-    const sDrip = scale*0.90, sCup = scale*1.40;
-    const w=200*sDrip,h=170*sDrip; const x=cx-w/2, y=cy-h;
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+w, y); ctx.lineTo(x+w*0.5, y+h); ctx.closePath(); ctx.fillStyle = '#d9c3ae'; ctx.fill(); ctx.strokeStyle='#b99f86'; ctx.lineWidth=3; ctx.stroke();
-    const groundsH = h*0.10 + h*0.35*clamp(State.conc.cafe_colheres/10,0,1);
-    ctx.beginPath(); ctx.moveTo(x+w*0.12, y+h*0.28); ctx.lineTo(x+w*0.88, y+h*0.28); ctx.lineTo(x+w*0.5, y+h*0.28+groundsH); ctx.closePath(); ctx.fillStyle = '#5a3a2f'; ctx.globalAlpha=0.95; ctx.fill(); ctx.globalAlpha=1;
+  // ---------- Vidraria e soluções
+  const volumeFormatado = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
+  const volumeTexto = volume => volume >= 1000
+    ? volumeFormatado.format(volume / 1000) + ' L' : volumeFormatado.format(volume) + ' mL';
 
-    const cupW=200*sCup, cupH=120*sCup, cupX=cx-cupW/2, cupY=cy+18*sDrip;
-    shadow(()=>{ drawRoundedRect(cupX, cupY, cupW, cupH, 28*sCup); ctx.fillStyle='#e6ded8'; ctx.fill(); },{blur:16,y:6,color:'rgba(0,0,0,.45)'});
-    ctx.beginPath(); ctx.arc(cupX+cupW-8*sCup, cupY+cupH/2, 26*sCup, 0, TAU); ctx.lineWidth=8*sCup; ctx.strokeStyle='#e6ded8'; ctx.stroke();
-
-    const f = clamp(fillFrac,0,1); const ly = cupY + cupH - f*cupH + 6*sCup;
-    ctx.save(); ctx.beginPath(); drawRoundedRect(cupX+6*sCup, cupY+6*sCup, cupW-12*sCup, cupH-12*sCup, 22*sCup); ctx.clip();
-      const A = 4*sCup, k = 0.045, wp = wavePhase;
-      ctx.beginPath(); ctx.moveTo(cupX+6*scale, ly);
-      for(let xx=cupX+6*sCup; xx<=cupX+cupW-6*sCup; xx+=4){ const yy = ly + Math.sin((xx* k) + wp)*A; ctx.lineTo(xx, yy); }
-      ctx.lineTo(cupX+cupW-6*sCup, cupY+cupH-6*sCup); ctx.lineTo(cupX+6*sCup, cupY+cupH-6*sCup); ctx.closePath();
-      let gAlpha = 0.95;
-      const grad = ctx.createLinearGradient(0, ly-10, 0, cupY+cupH-6*sCup);
-      if(State.conc.cupI <= 0.001){
-        // água levemente azulada
-        grad.addColorStop(0.00, 'rgba(160,210,255,0.90)');
-        grad.addColorStop(1.00, 'rgba(120,180,240,0.72)');
-      } else if(State.conc.sub===1) {
-        // Café: apenas tons de marrom (sem caramelo), multi-stop
-        const s = clamp(State.conc.cupI, 0, 0.98);
-        const c1 = _lerpColor('#9b6b4a', '#8b5a3c', s*0.5);
-        const c2 = _lerpColor('#8b5a3c', '#6b3f27', s*0.7);
-        const c3 = _lerpColor('#6b3f27', '#4a2a1a', s*0.9);
-        const c4 = _lerpColor('#4a2a1a', '#2f1a12', s);
-        grad.addColorStop(0.00, `rgba(${c1.r},${c1.g},${c1.b},0.96)`);
-        grad.addColorStop(0.35, `rgba(${c2.r},${c2.g},${c2.b},0.94)`);
-        grad.addColorStop(0.65, `rgba(${c3.r},${c3.g},${c3.b},0.92)`);
-        grad.addColorStop(1.00, `rgba(${c4.r},${c4.g},${c4.b},0.90)`);
-      } else {
-        // açúcar/sem café: âmbar claro
-        grad.addColorStop(0.00, col);
-        grad.addColorStop(1.00, 'rgba(150,110,70,0.70)');
-      }
-      ctx.fillStyle = grad; ctx.globalAlpha=gAlpha; ctx.fill();
-    ctx.restore();
-    ctx.globalAlpha = 0.18; ctx.fillStyle='#fff'; drawRoundedRect(cupX+10*scale, cupY+10*scale, 18*scale, cupH-20*scale, 16*scale); ctx.fill(); ctx.globalAlpha=1;
-    return {cupX, cupY, cupW, cupH};
-  }
-  function drawBeaker(x,y,w,h, fillFrac, color, wave=0){
-    ctx.save();
-    drawRoundedRect(x,y,w,h,18); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=3; ctx.stroke();
-    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
-    for(let i=1;i<10;i++){ const yy = y + h - i*(h/10); ctx.beginPath(); ctx.moveTo(x+6, yy); ctx.lineTo(x+18, yy); ctx.stroke(); }
-    const f = clamp(fillFrac,0,1); const ly = y + h - f*h;
-    ctx.save(); ctx.beginPath(); drawRoundedRect(x+4, y+4, w-8, h-8, 14); ctx.clip();
-      ctx.beginPath(); ctx.moveTo(x+4, ly);
-      const A = 3 + 2*Math.sin(wave*2.0), k=0.055, wp=wave;
-      for(let xx=x+4; xx<=x+w-4; xx+=4){ const yy = ly + Math.sin((xx* k) + wp)*A; ctx.lineTo(xx, yy); }
-      ctx.lineTo(x+w-4, y+h-4); ctx.lineTo(x+4, y+h-4); ctx.closePath();
-      const grad = ctx.createLinearGradient(0, ly-10, 0, y+h-4);
-      grad.addColorStop(0, color);
-      grad.addColorStop(1, '#0b0705');
-      ctx.globalAlpha=0.92; ctx.fillStyle=grad; ctx.fill();
-    ctx.restore();
-    ctx.restore();
+  function gradiente(x1, y1, x2, y2, tons) {
+    const g = ctx.createLinearGradient(x1, y1, x2, y2);
+    tons.forEach((tom, i) => g.addColorStop(i / (tons.length - 1), tom));
+    return g;
   }
 
-  // --- Transparent beaker for indicators (no coffee brown)
-  function drawBeakerTransparent(x,y,w,h, fillFrac, rgba, wave=0){
-    ctx.save();
-    drawRoundedRect(x,y,w,h,18);
-    ctx.strokeStyle='rgba(255,255,255,.35)';
-    ctx.lineWidth=3;
-    ctx.stroke();
-    // ticks
-    ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.lineWidth=1;
-    for(let i=1;i<10;i++){ const yy = y + h - i*(h/10); ctx.beginPath(); ctx.moveTo(x+6, yy); ctx.lineTo(x+18, yy); ctx.stroke(); }
-
-    const f = clamp(fillFrac,0,1); const ly = y + h - f*h;
-    ctx.save(); ctx.beginPath(); drawRoundedRect(x+4, y+4, w-8, h-8, 14); ctx.clip();
-      // liquid surface wave
-      ctx.beginPath(); ctx.moveTo(x+4, ly);
-      const A = 3 + 2*Math.sin(wave*2.0), k=0.055, wp=wave;
-      for(let xx=x+4; xx<=x+w-4; xx+=4){ const yy = ly + Math.sin((xx*k)+wp)*A; ctx.lineTo(xx, yy); }
-      ctx.lineTo(x+w-4, y+h-4); ctx.lineTo(x+4, y+h-4); ctx.closePath();
-
-      // Transparent water-like base with indicator tint
-      const grad = ctx.createLinearGradient(0, ly-10, 0, y+h-4);
-      grad.addColorStop(0, rgba);                 // indicator tint near surface
-      grad.addColorStop(1, 'rgba(180,200,210,0.25)'); // slightly darker near bottom
-      ctx.globalAlpha=1.0;
-      ctx.fillStyle = grad;
-      ctx.fill();
-    ctx.restore();
-
-    // subtle glass highlight
-    ctx.globalAlpha = 0.15;
-    ctx.fillStyle='#fff';
-    drawRoundedRect(x+10, y+10, 18, h-20, 16);
+  function elipse(x, y, rx, ry, cor) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, TAU);
+    ctx.fillStyle = cor;
     ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.restore();
   }
 
-  // --- Color helpers
-  function _hexToRgb(hex){ hex=hex.replace('#',''); if(hex.length===3){ hex=hex.split('').map(c=>c+c).join(''); } const n=parseInt(hex,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
-  function _lerp(a,b,t){ return a+(b-a)*t; }
-  function _lerpColor(c1,c2,t){ const a=_hexToRgb(c1), b=_hexToRgb(c2); const r=Math.round(_lerp(a.r,b.r,t)), g=Math.round(_lerp(a.g,b.g,t)), b2=Math.round(_lerp(a.b,b.b,t)); return {r,g,b:b2}; }
-
-  // --- pH estimate for weak acid (HA) titrated with strong base (NaOH), monoprotic
-  function calcPH_Titration(Va_mL, Vb_mL, Mb, Ca, pKa){
-    const log10 = (x)=> Math.log(x)/Math.LN10;
-    const Va = Va_mL/1000, Vb = Vb_mL/1000;
-    const nA = Ca*Va, nB = Mb*Vb;
-    const Vt = Math.max(1e-9, Va+Vb);
-    const Ka = Math.pow(10, -pKa), Kw = 1e-14;
-
-    if(nB <= 0){
-      // weak acid in water: [H+] ~ sqrt(Ka * C)
-      const C = Math.max(1e-12, nA/Vt);
-      const H = Math.sqrt(Ka*C);
-      return -log10(H);
-    }
-    if(nB < nA){
-      // buffer region
-      const ratio = Math.max(1e-12, nB/Math.max(1e-12, nA-nB));
-      return pKa + Math.log(ratio)/Math.LN10;
-    }
-    if(Math.abs(nB - nA) < 1e-12){
-      // equivalence: solution of A- (weak base)
-      const Csalt = Math.max(1e-12, nA/Vt);
-      const Kb = Kw/Ka;
-      const OH = Math.sqrt(Kb*Csalt);
-      const pOH = -Math.log(OH)/Math.LN10;
-      return 14 - pOH;
-    }
-    // after equivalence: excess strong base
-    const OH = Math.max(1e-12, (nB - nA)/Vt);
-    const pOH = -Math.log(OH)/Math.LN10;
-    return 14 - pOH;
+  function segmento(x0, y0, x1, y1, cor, largura = 1) {
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.strokeStyle = cor;
+    ctx.lineWidth = largura;
+    ctx.stroke();
   }
 
-  // --- Indicator color (RGBA) by pH
-  function indicatorRGBA(pH, idx, alpha=0.75){
-    function rgba(r,g,b,a){ return `rgba(${r},${g},${b},${a})`; }
-    if(idx===0){ // Phenolphthalein: colorless <8.2, magenta >10
-      if(pH <= 8.2) return rgba(230,245,255,0.15);
-      if(pH >= 10.0){ const c=_hexToRgb('#ff5fa0'); return rgba(c.r,c.g,c.b,alpha); }
-      const t = (pH-8.2)/(10.0-8.2);
-      const c = _lerpColor('#e6f5ff', '#ff5fa0', t);
-      return rgba(c.r,c.g,c.b, alpha);
-    }
-    if(idx===1){ // Bromothymol blue: yellow <6.0, green ~7.0, blue >7.6
-      if(pH <= 6.0){ const c=_hexToRgb('#ffd84a'); return rgba(c.r,c.g,c.b,alpha); }
-      if(pH >= 7.6){ const c=_hexToRgb('#2f6bff'); return rgba(c.r,c.g,c.b,alpha); }
-      // 6.0 to 7.6: yellow -> green -> blue
-      const t=(pH-6.0)/(7.6-6.0);
-      // first half to green, second to blue
-      if(t<0.5){
-        const c=_lerpColor('#ffd84a','#3ccf5a', t/0.5);
-        return rgba(c.r,c.g,c.b, alpha);
-      }else{
-        const c=_lerpColor('#3ccf5a','#2f6bff', (t-0.5)/0.5);
-        return rgba(c.r,c.g,c.b, alpha);
-      }
-    }
-    // Methyl orange: red <3.1, orange ~3.7, yellow >4.4
-    if(pH <= 3.1){ const c=_hexToRgb('#e84b3a'); return rgba(c.r,c.g,c.b,alpha); }
-    if(pH >= 4.4){ const c=_hexToRgb('#f2d14e'); return rgba(c.r,c.g,c.b,alpha); }
-    const t=(pH-3.1)/(4.4-3.1);
-    const c=_lerpColor('#e84b3a','#f2d14e', t);
-    return rgba(c.r,c.g,c.b, alpha);
+  function drawCoffeeBackground() {
+    ctx.fillStyle = '#261a15';
+    ctx.fillRect(0, 0, W, H);
+    const luz = ctx.createRadialGradient(750, 135, 60, 750, 135, 920);
+    luz.addColorStop(0, '#5a3a2855');
+    luz.addColorStop(1, '#100c0950');
+    ctx.fillStyle = luz;
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = gradiente(0, 592, 0, H, ['#4c322427', '#1e1410']);
+    ctx.fillRect(0, 592, W, H - 592);
+    segmento(0, 592, W, 592, '#8f614129');
   }
 
-  function drawBurette(x,y,h, levelRemaining){
+  function fundoVidraria(x, y, w, h) {
     ctx.save();
-    ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(x-8,y,16,h);
-    const ly = y + h*(1-clamp(levelRemaining,0,1));
-    ctx.fillStyle = '#9fd3ff'; ctx.fillRect(x-6, ly, 12, y+h-ly);
-    ctx.beginPath(); ctx.ellipse(x, ly, 10, 4, 0, 0, TAU); ctx.fillStyle='#8ec7ff'; ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,.5)'; for(let i=0;i<=10;i++){ ctx.fillRect(x+6, y+i*(h/10)-1, 12, 2); }
-    text('Bureta (NaOH)', x+24, y+12, 14, COLORS.cream, 'left');
-    ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(x-2, y+h, 4, 16);
+    drawRoundedRect(x, y, w, h, 22);
+    ctx.fillStyle = gradiente(x, y, x + w, y + h, ['#492e23', '#31211b', '#261b18']);
+    ctx.fill();
+    ctx.strokeStyle = '#74513d';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.clip();
+    // A grade suave atrás do vidro ajuda a enxergar a transparência.
+    for (let xx = x + 16; xx < x + w; xx += 26) {
+      segmento(xx, y, xx, y + h, '#e9bc8d08');
+    }
+    for (let yy = y + 21; yy < y + h; yy += 26) {
+      segmento(x, yy, x + w, yy, '#e9bc8d0a');
+    }
     ctx.restore();
   }
 
-  // ---------- NAV
-  const tabs = ['Concentração','Diluição','Titulação','Quiz'];
-  const navButtons = tabs.map((t,i)=> new Button(28 + i*(W/4), 18, (W/4)-40, 44, t, ()=>{ State.tab=i; if(i===3) ensureQuiz(); },{ fill:'#3d2b27', fillHover:'#49332e'}));
-  function drawNav(){ shadow(()=>{ drawRoundedRect(16,10,W-32,56,18); ctx.fillStyle='#312421'; ctx.fill(); },{blur:24,y:10,color:'rgba(0,0,0,.45)'}); for(let i=0;i<navButtons.length;i++){ const b=navButtons[i]; if(State.tab===i){ b.opts.fill = COLORS.accent; b.opts.fillHover = COLORS.accent; b.opts.text = '#1b1210'; } else { b.opts.fill = '#3d2b27'; b.opts.fillHover = '#49332e'; b.opts.text = COLORS.cream; } b.draw(); } }
+  const rgba = (rgb, alfa) => 'rgba(' + rgb.join(',') + ',' + alfa + ')';
+  const corMisturada = (a, b, t) => a.map((canal, i) => Math.round(lerp(canal, b[i], t)));
 
-  // ---------- Concentração
-  const togConcSub = new Toggle(32, 140, ['Açúcar','Café'], 0, i=>State.conc.sub=i);
-  const sHot = new Slider(70, 210, 380, 0, 1000, State.conc.agua_quente_mL, 'Água quente (mL)', 'mL', v=>{ State.conc.agua_quente_mL=v; if(State.conc.pouring===null){ State.conc.kettleHot_mL=v; } }).setStep(10);
-  const sCold = new Slider(70, 270, 380, 0, 1000, State.conc.agua_fria_mL, 'Água fria (mL)', 'mL', v=>{ State.conc.agua_fria_mL=v; if(State.conc.pouring===null){ State.conc.kettleCold_mL=v; } }).setStep(10);
-  const sAcucar = new Slider(70, 330, 380, 0, 500, State.conc.acucar_g, 'Açúcar (g)', 'g', v=>{ State.conc.acucar_g=v; }).setStep(1);
-  const sCafe = new Slider(70, 390, 380, 0, 20, State.conc.cafe_colheres, 'Café moído (colheres)', 'col', v=>{ State.conc.cafe_colheres=v; }).setStep(1);
-  const btnPourHot = new Button(70, 450, 180, 42, 'Despejar quente', ()=>{ State.conc.pouring = 'hot'; });
-  const btnPourCold = new Button(270, 450, 180, 42, 'Despejar fria', ()=>{ State.conc.pouring = 'cold'; });
-    const btnReset = new Button(70, 554, 380, 42, 'Resetar preparo', ()=>{ Object.assign(State.conc, { kettleHot_mL: State.conc.agua_quente_mL, kettleCold_mL: State.conc.agua_fria_mL, pouredHot_mL:0, pouredCold_mL:0, cup_mL:0, wavePhase:0, pouring:null, cupI:0, brewLocked:false, brew_spoons:0, brew_totalAvail_mg:0, cup_caffeine_mg:0, sugarLocked:false, sugar_g_locked:0, cup_sugar_g:0 }); });
-
-  function effectiveTempC(){ const H = State.conc.pouredHot_mL, C = State.conc.pouredCold_mL; const tot = H+C || 1; return (H*100 + C*20)/tot; }
-  function sugarSolubility_g_per_100mL(T){ const t = clamp((T-20)/(100-20), 0, 1); return lerp(33, 490, t); }
-  function caffeineSolubility_g_per_L(T){ const t = clamp((T-20)/(100-20), 0, 1); return lerp(20, 670, t); }
-  // --- New: map concentration to visual intensity & compute mg/L in cup
-  function intensityFromConc(mgL){
-    // 0 mg/L = água; ~1800 mg/L ≈ quase preto
-    return clamp(mgL / 1800, 0, 0.98);
-  }
-  function cupConcMgL(){
-    const V_L = State.conc.cup_mL/1000;
-    return V_L>0 ? (State.conc.cup_caffeine_mg / V_L) : 0;
+  function liquidoDiluicao(concentracao) {
+    const intensidade = clamp(1 - Math.exp(-concentracao / 68), 0, 1);
+    const pigmento = concentracao > 0
+      ? corMisturada([223, 147, 80], [83, 37, 21], intensidade) : [177, 219, 227];
+    return { pigmento, opacidade: .19 + intensidade * .76 };
   }
 
-  function extractionProgress(){
-    const Ht = State.conc.pouredHot_mL;
-    const Ct = State.conc.pouredCold_mL;
-    // progress only from what was poured (hot counts more than cold)
-    const eff = Ht + 0.25*Ct;
-    const target = 300; // mL reference for full extraction color
-    return clamp(eff / target, 0, 1);
-  }
-  
-function cupColorSugar(){
-  // Color of sugar solution depends only on dissolved sugar and poured volumes, not coffee spoons.
-  const ext = extractionProgress(); // 0..1 from poured water only
-  // Base tint from sugar (light amber), scaled by extraction
-  const I = clamp(0.10 + 0.50*ext, 0.0, 0.85);
-  // Blend between light amber and clear water
-  const top = `rgba(${Math.round(255*(1-I) + 210*I)}, ${Math.round(255*(1-I) + 190*I)}, ${Math.round(255*(1-I) + 120*I)}, 0.95)`;
-  return top;
-}
-function cupColorCoffee(){ return coffeeColor(State.conc.cupI); }
-  
-  function updatePouring(dt){
-  const rate = State.conc.pourRate_mLps;
-  let poured = 0;
-
-  if(State.conc.pouring==='hot' && State.conc.kettleHot_mL>0){
-    const d = Math.min(State.conc.kettleHot_mL, rate*dt);
-    State.conc.kettleHot_mL -= d;
-    State.conc.pouredHot_mL += d;
-    State.conc.cup_mL += d;
-    State.conc.wavePhase += d*0.04;
-    poured = d;
-  } else if(State.conc.pouring==='cold' && State.conc.kettleCold_mL>0){
-    const d = Math.min(State.conc.kettleCold_mL, rate*dt);
-    State.conc.kettleCold_mL -= d;
-    State.conc.pouredCold_mL += d;
-    State.conc.cup_mL += d;
-    State.conc.wavePhase += d*0.03;
-    poured = d;
-  } else {
-    State.conc.pouring = null;
+  function alturaDoMenisco(y, h, volume, capacidade) {
+    return y + h - 14 - (h - 48) * clamp(volume / capacidade, 0, 1);
   }
 
-  if(poured > 0){
-    // trava colheres no primeiro gotejamento
-    if(!State.conc.brewLocked){
-      State.conc.brewLocked = true;
-      State.conc.brew_spoons = State.conc.cafe_colheres;
-      const gramsPerSpoon_g = 6.5, caffeinePerGram_mg = 7.925;
-      State.conc.brew_totalAvail_mg = State.conc.brew_spoons * gramsPerSpoon_g * caffeinePerGram_mg;
-    }
-    // concentração real na xícara
-    const ext = extractionProgress(); // 0..1
-    const V_L = State.conc.cup_mL/1000;
-    const T = effectiveTempC();
-    const sol_mg = caffeineSolubility_g_per_L(T) * V_L * 1000;
-    const possible_mg = (State.conc.brew_totalAvail_mg||0) * ext;
-    State.conc.cup_caffeine_mg = Math.min(possible_mg, sol_mg);
+  function drawBeaker({ x, y, w, h }, { volume, capacidade, tinta, fase = 0, agitacao = 0 }) {
+    const meio = x + w / 2;
+    const base = y + h;
+    const esquerda = x + 9;
+    const direita = x + w - 9;
+    const raioElipse = (direita - esquerda) / 2;
+    const superficie = alturaDoMenisco(y, h, volume, capacidade);
+    const onda = agitacao * 3.2;
+    const corpo = new Path2D();
+    corpo.moveTo(x - 12, y - 9);
+    corpo.quadraticCurveTo(x + 8, y - 12, x + 10, y - 3);
+    corpo.lineTo(x + w - 9, y);
+    corpo.lineTo(x + w - 19, base - 13);
+    corpo.quadraticCurveTo(x + w - 22, base, x + w - 41, base + 1);
+    corpo.lineTo(x + 39, base + 1);
+    corpo.quadraticCurveTo(x + 21, base, x + 19, base - 13);
+    corpo.lineTo(x + 9, y + 10);
+    corpo.quadraticCurveTo(x + 6, y - 2, x - 12, y - 9);
+    corpo.closePath();
 
-    // cor por mg/L
-    const mgL = cupConcMgL();
-    State.conc.cupI = intensityFromConc(mgL);
-    // --- açúcar: mesma lógica de bloqueio e cálculo pela xícara ---
-    if(!State.conc.sugarLocked){
-      State.conc.sugarLocked = true;
-      State.conc.sugar_g_locked = State.conc.acucar_g || 0;
-    }
-    // limite por solubilidade no volume atual
-    const sol_g = sugarSolubility_g_per_100mL(T) * (State.conc.cup_mL/100);
-    // progresso de dissolução (rápido em quente, mais lento em frio) – reaproveita extractionProgress()
-    const extSugar = extractionProgress(); // 0..1
-    const targetSugar_g = Math.min(State.conc.sugar_g_locked * extSugar, sol_g);
-    State.conc.cup_sugar_g = targetSugar_g;
-  }
-}
+    ctx.save();
+    shadow(() => elipse(meio + 11, base + 5, w * .48, 10, '#0d090787'), {blur:18, y:5});
+    elipse(meio, y - 1, raioElipse, 15, '#d5e6e216');
+    ctx.fillStyle = gradiente(x, y, x + w, y, ['#e7ebde35', '#afc9c51b', '#a4adbe0d', '#f2dfc63a']);
+    ctx.fill(corpo);
+    ctx.save();
+    ctx.clip(corpo);
 
-
-function calcSugar(){
-  const V_L = State.conc.cup_mL/1000;
-  const T = effectiveTempC();
-  const sol_g_per_100mL = sugarSolubility_g_per_100mL(T);
-  const maxDiss_g = sol_g_per_100mL * (State.conc.cup_mL/100);
-
-  // usar açúcar travado após início do preparo; antes disso, refletir slider
-  const sugarTotal_g = State.conc.sugarLocked ? (State.conc.sugar_g_locked||0) : (State.conc.acucar_g||0);
-
-  
-  const dissolved_g = Math.min(State.conc.cup_sugar_g || 0, maxDiss_g, sugarTotal_g);
-  const excess_g = Math.max(0, sugarTotal_g - dissolved_g);
-  const n_mol = (State.conc.MM_gmol>0) ? (dissolved_g / State.conc.MM_gmol) : 0;
-  const C_gL = V_L>0 ? dissolved_g / V_L : 0;
-  const M = V_L>0 ? n_mol / V_L : 0;
-  return {V_L, T, sol_g_per_100mL, maxDiss_g, dissolved_g, excess_g, n_mol, C_gL, M, sugarTotal_g};
-}
-
-
-
-
-
-  
-  function calcCoffee(){
-    const V_L = State.conc.cup_mL/1000;
-    const gramsPerSpoon_g = 6.5;
-    const caffeinePerGram_mg = 7.925;
-    const caffeinePerSpoon_mg = gramsPerSpoon_g * caffeinePerGram_mg;
-
-    // Use locked spoons after brewing starts; otherwise reflect slider
-    const spoons = State.conc.brewLocked ? State.conc.brew_spoons : State.conc.cafe_colheres;
-    const totalAvail_mg = spoons * caffeinePerSpoon_mg;
-
-    const ext = extractionProgress();
-    const T = effectiveTempC();
-    const sol_mg = caffeineSolubility_g_per_L(T) * V_L * 1000;
-
-    // What is actually in the cup right now
-    const extracted_mg = State.conc.cup_caffeine_mg || Math.min(totalAvail_mg * ext, sol_mg);
-    const C_mgL = V_L>0 ? extracted_mg / V_L : 0;
-    return {V_L, T, spoons, totalAvail_mg, ext, sol_mg, extracted_mg, C_mgL, caffeinePerSpoon_mg};
-  }
-  function drawConcentracao(dt){
-    const kx = State.conc.kettleX;
-    if(State.conc.pouredHot_mL===0 && State.conc.pouredCold_mL===0 && State.conc.cup_mL===0){ State.conc.cupI = 0; }
-    drawKettle(kx, 150, 'Quente'); drawKettle(kx, 260, 'Fria');
-    text(`${Math.round(State.conc.kettleHot_mL)} mL`, kx+60, 138, 14, COLORS.accent2, 'center');
-    text(`${Math.round(State.conc.kettleCold_mL)} mL`, kx+60, 248, 14, COLORS.accent2, 'center');
-
-    const centerX = 700, centerY = 260; const fillFrac = clamp(State.conc.cup_mL/420, 0, 1);
-    const cupCol = (State.conc.sub===0) ? cupColorSugar() : coffeeColor(State.conc.cupI);
-    const cupGeom = drawDripperWithCup(centerX, centerY, fillFrac, cupCol, State.conc.wavePhase*0.15, 1.2);
-
-    const T = effectiveTempC();
-    if(State.conc.pouring==='hot' || T>85){
-      const x1 = cupGeom.cupX + cupGeom.cupW*0.35;
-      const x2 = cupGeom.cupX + cupGeom.cupW*0.65;
-      const yTop = cupGeom.cupY + 8;
-      const tnow = performance.now()/60;
-      drawSteam(x1, yTop, tnow);
-      drawSteam(x2, yTop, tnow+1.2);
+    segmento(x + 29, y + 11, x + 39, base - 17, '#e7fbf043', 2);
+    segmento(x + w - 36, y + 13, x + w - 45, base - 18, '#0c141e6b', 3);
+    if (volume > 0) {
+      const { pigmento, opacidade } = tinta;
+      const claro = corMisturada(pigmento, [255, 242, 212], .37);
+      const fundo = corMisturada(pigmento, [30, 16, 18], .43);
+      const larguraSuperficie = raioElipse - 3;
+      const profundidade = 8 + onda * .38;
+      ctx.beginPath();
+      ctx.moveTo(x, superficie);
+      for (let px = x; px <= x + w; px += 3) {
+        const u = clamp((px - meio) / larguraSuperficie, -1, 1);
+        const arco = Math.sqrt(Math.max(0, 1 - u * u)) * profundidade;
+        ctx.lineTo(px, superficie + arco + Math.sin(px * .067 + fase) * onda);
+      }
+      ctx.lineTo(x + w, base + 3);
+      ctx.lineTo(x, base + 3);
+      ctx.closePath();
+      ctx.fillStyle = gradiente(meio - w * .18, superficie - 2, meio + w * .28, base, [
+        rgba(claro, opacidade * .78), rgba(pigmento, opacidade), rgba(fundo, Math.min(.98, opacidade + .08))
+      ]);
+      ctx.fill();
+      elipse(meio, superficie, larguraSuperficie, profundidade, rgba(pigmento, opacidade * .77));
+      ctx.beginPath();
+      ctx.ellipse(meio, superficie, larguraSuperficie, profundidade, 0, .25, Math.PI - .18);
+      ctx.strokeStyle = rgba(claro, .58);
+      ctx.lineWidth = 1.55;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(meio, superficie - 1, larguraSuperficie - 4, profundidade - 1.5, 0, Math.PI * 1.21, Math.PI * 1.8);
+      ctx.strokeStyle = '#fff5df56';
+      ctx.lineWidth = 1.15;
+      ctx.stroke();
+      ctx.fillStyle = gradiente(x, superficie, x + w, superficie, ['#f6e5c92b', '#f6e5c900', '#f6e5c900', '#130e0f50']);
+      ctx.fillRect(x, superficie + profundidade, w, Math.max(0, base - superficie - profundidade));
     }
 
-    if(State.conc.pouring){
-      updatePouring(dt);
-      const bx=centerX, by=centerY-10;
-      const ty = cupGeom.cupY + 14 + (1-fillFrac)*(cupGeom.cupH-28);
-      const grad = ctx.createLinearGradient(bx, by, bx, ty);
-      grad.addColorStop(0, State.conc.pouring==='hot' ? 'rgba(255,230,200,0.9)' : 'rgba(180,220,255,0.8)');
-      grad.addColorStop(1, cupCol);
-      ctx.beginPath(); ctx.moveTo(bx-4, by); ctx.lineTo(bx+4, by); ctx.lineTo(bx+2, ty); ctx.lineTo(bx-2, ty); ctx.closePath();
-      ctx.fillStyle = grad; ctx.globalAlpha=0.85; ctx.fill(); ctx.globalAlpha=1;
-    }
+    ctx.beginPath();
+    ctx.moveTo(x + 18, y + 16);
+    ctx.bezierCurveTo(x + 21, y + 92, x + 27, base - 33, x + 34, base - 24);
+    ctx.strokeStyle = gradiente(x + 20, y + 15, x + 34, base - 17, ['#fff4dc73', '#fff4dc24', '#fff4dc62']);
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    segmento(x + w - 21, y + 38, x + w - 30, base - 26, '#edf6e534', 1.4);
+    ctx.restore();
 
-    togConcSub.draw();
-    sHot.draw(); sCold.draw(); sAcucar.draw(); sCafe.draw(); btnPourHot.draw(); btnPourCold.draw(); btnReset.draw();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = gradiente(x, y, x + w, base, ['#fae8d2be', '#97a4a187', '#e7d9c2ab']);
+    ctx.stroke(corpo);
+    ctx.beginPath();
+    ctx.ellipse(meio, y - 1, raioElipse, 15, 0, 0, TAU);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#dce2d681';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(meio, y - 1, raioElipse, 15, 0, .13, Math.PI * .77);
+    ctx.lineWidth = 2.3;
+    ctx.strokeStyle = '#fff1d7b5';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(meio, base - 8, w * .4, 8, 0, .17, Math.PI - .14);
+    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = '#e9ddd17d';
+    ctx.stroke();
 
-    
-    const px=470, py=520, pw=700, ph=206; shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
-    if(State.conc.sub===0){
-      const {V_L, T, sol_g_per_100mL, maxDiss_g, dissolved_g, excess_g, n_mol, C_gL, M} = calcSugar();
-      text('Concentração — Açúcar na xícara (solubilidade)', px+20, py+28, 18, COLORS.accent2);
-      let yy = py+58;
-      yy += wrapText(`T ≈ ${roundSmart(T,1)} °C  •  Solubilidade açúcar ≈ ${roundSmart(sol_g_per_100mL)} g/100 mL  •  Máx. dissolvido: ${roundSmart(maxDiss_g)} g`, px+20, yy, pw-40, 22, 15, COLORS.cream);
-      yy += wrapText(`Dissolvido efetivo m = ${roundSmart(dissolved_g)} g ${excess_g>0? `(excesso precipita: ${roundSmart(excess_g)} g)`:''}`, px+20, yy, pw-40, 22);
-      yy += wrapText(`C (g/L) = m/V = ${roundSmart(dissolved_g)} / ${roundSmart(V_L,3)} = ${roundSmart(C_gL)} g/L`, px+20, yy, pw-40, 22);
-      yy += wrapText(`n (mol) = m/MM = ${roundSmart(dissolved_g)} / 342,30 = ${roundSmart(n_mol)} mol`, px+20, yy, pw-40, 22);
-      yy += wrapText(`M (mol/L) = n/V = ${roundSmart(n_mol)} / ${roundSmart(V_L,3)} = ${roundSmart(M)} mol/L`, px+20, yy, pw-40, 22);
-      text('Ref.: ~33 g/100 mL (20 °C) → ~490 g/100 mL (100 °C).', px+20, py+ph-16, 13, '#caa38b');
-    } else {
-      const {V_L, T, spoons, totalAvail_mg, ext, sol_mg, extracted_mg, C_mgL, caffeinePerSpoon_mg} = calcCoffee();
-      text('Concentração — Café / Cafeína (extração)', px+20, py+28, 18, COLORS.accent2);
-      let yy = py+58;
-      yy += wrapText(`T ≈ ${roundSmart(T,1)} °C`, px+20, yy, pw-40, 22, 15, COLORS.cream);
-      yy += wrapText(`Colheres = ${spoons} (≈ ${roundSmart(caffeinePerSpoon_mg,3)} mg de cafeína por colher → total disponível ≈ ${roundSmart(totalAvail_mg,3)} mg)`, px+20, yy, pw-40, 22);
-      yy += wrapText(`Cafeína extraída ≈ min(${roundSmart(totalAvail_mg,3)}·${roundSmart(ext,2)}, limite) = ${roundSmart(extracted_mg,3)} mg`, px+20, yy, pw-40, 22);
-      yy += wrapText(`C (mg/L) = ${roundSmart(extracted_mg,3)} / ${roundSmart(V_L,3)} = ${roundSmart(C_mgL,3)} mg/L`, px+20, yy, pw-40, 22);
-      text('Nota: 1 colher de sopa ≈ 5–8 g (assumimos 6,5 g). Cada grama ≈ 7,925 mg de cafeína → ≈ 51,5 mg/colher.', px+20, py+ph-16, 13, '#caa38b');
+    const emLitros = capacidade >= 5000;
+    const inicioDaEscala = x + w - 69;
+    text(emLitros ? 'L' : 'mL', inicioDaEscala + 19, y + 23, 11, '#f5e4ce', 'right');
+    for (let i = 1; i <= 10; i++) {
+      const valor = i * capacidade / 10;
+      const linhaY = alturaDoMenisco(y, h, valor, capacidade);
+      const maior = i % 2 === 0;
+      segmento(inicioDaEscala, linhaY, inicioDaEscala + (maior ? 20 : 9), linhaY, maior ? '#f2e4d1bf' : '#e6e2d272');
+      if (maior) text(volumeFormatado.format(emLitros ? valor / 1000 : valor), inicioDaEscala - 6, linhaY + 4, 11, '#f4e6d3', 'right');
     }
+    ctx.restore();
+    return superficie;
   }
+
+  function hexRgb(hex) {
+    const valor = Number.parseInt(hex.slice(1), 16);
+    return [valor >> 16, (valor >> 8) & 255, valor & 255];
+  }
+
+  // Equilíbrio de um ácido monoprótico com balanço de cargas no volume misturado.
+  function calcPH_Titration(totalAcido, sodio, Ka) {
+    let menor = 0;
+    let maior = 14;
+    for (let i = 0; i < 32; i++) {
+      const pH = (menor + maior) / 2;
+      const H = 10 ** -pH;
+      const carga = H + sodio - 1e-14 / H - totalAcido * Ka / (Ka + H);
+      if (carga > 0) menor = pH;
+      else maior = pH;
+    }
+    return (menor + maior) / 2;
+  }
+
+  // Cor do indicador ao longo da sua faixa de viragem no modelo.
+  const incolor = hexRgb('#d8eef4');
+  const rosa = hexRgb('#f86eac');
+  const amarelo = hexRgb('#ffda5d');
+  const verde = hexRgb('#52ca7c');
+  const azul = hexRgb('#4686ff');
+  const vermelho = hexRgb('#ed6155');
+  const amareloMetila = hexRgb('#f6cc48');
+  function tintaIndicador(pH, indice) {
+    if (indice === 0) {
+      const t = clamp((pH - 8.2) / 1.8, 0, 1);
+      return { pigmento: corMisturada(incolor, rosa, t), opacidade: lerp(.27, .78, t) };
+    }
+    if (indice === 1) {
+      const pigmento = pH < 7
+        ? corMisturada(amarelo, verde, clamp(pH - 6, 0, 1))
+        : corMisturada(verde, azul, clamp((pH - 7) / .6, 0, 1));
+      return { pigmento, opacidade: .68 };
+    }
+    return { pigmento: corMisturada(vermelho, amareloMetila, clamp((pH - 3.1) / 1.3, 0, 1)), opacidade: .72 };
+  }
+
+  const capacidadeBureta = 100;
+
+  function drawBurette(x, y, h, dispensado, aberta) {
+    const fundo = y + h;
+    const alturaLiquido = fundo - y - 8;
+    const nivel = y + 4 + alturaLiquido * clamp(dispensado / capacidadeBureta, 0, 1);
+    const tipY = fundo + 29;
+    const poste = x - 76;
+    ctx.save();
+    sombraBureta(poste, x, fundo);
+    segmento(poste, y - 10, poste, 612, '#74564b', 6);
+    segmento(poste - 1, y - 10, poste - 1, 609, '#ad8973', 2);
+    segmento(poste, y + 34, x - 13, y + 34, '#b19787', 5);
+    segmento(poste, y + 34, x - 15, y + 34, '#f3d9ba82', 1);
+    drawRoundedRect(x - 10, y, 20, h, 8);
+    ctx.fillStyle = gradiente(x - 10, y, x + 10, y, ['#e9fff24e', '#e7fff823', '#8fa3a22d', '#d6e3d545']);
+    ctx.fill();
+    ctx.strokeStyle = '#cce4e08e';
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    if (dispensado < capacidadeBureta) {
+      ctx.save();
+      drawRoundedRect(x - 7, y + 3, 14, h - 5, 5);
+      ctx.clip();
+      ctx.fillStyle = gradiente(x - 7, nivel, x + 7, nivel, ['#c1e7ef8d', '#87c9e4a8', '#5099ba8f']);
+      ctx.fillRect(x - 7, nivel, 14, fundo - nivel);
+      elipse(x, nivel, 7, 2.4, '#def9f6b8');
+      ctx.restore();
+    }
+    for (let i = 0; i <= 10; i++) {
+      const linhaY = y + 4 + alturaLiquido * i / 10;
+      const maior = i % 2 === 0;
+      segmento(x + 6, linhaY, x + (maior ? 18 : 13), linhaY, '#e8f0df9f');
+      if (maior) text(String(i * capacidadeBureta / 10), x + 22, linhaY + 4, 11, '#f8e7d0');
+    }
+    text('NaOH · mL', x + 18, y - 14, 13, '#dfcfbc');
+    segmento(x, fundo - 3, x, tipY, '#b8d4cf', 4);
+    segmento(x - .5, fundo - 1, x - .5, tipY, '#f6fff1', 1);
+    drawRoundedRect(x - 12, fundo + 5, 24, 11, 4);
+    ctx.fillStyle = aberta ? '#d9a575' : '#97725d';
+    ctx.fill();
+    if (aberta) segmento(x + 8, fundo + 9, x + 24, fundo + 10, '#efb980', 4);
+    else segmento(x + 9, fundo + 9, x + 20, fundo - 1, '#cea485', 4);
+    ctx.restore();
+    return tipY;
+  }
+
+  function sombraBureta(poste, x, fundo) {
+    elipse(poste + 15, 617, 52, 8, '#140c098c');
+    drawRoundedRect(poste - 23, 604, 79, 10, 4);
+    ctx.fillStyle = '#715447';
+    ctx.fill();
+    segmento(poste - 19, 605, poste + 53, 605, '#b18b75', 1);
+    segmento(x - 1, fundo - 3, x - 1, fundo + 24, '#402e25', 5);
+  }
+
+  // ---------- Navegação
+  const navButtons = [...document.querySelectorAll('[data-tab]')];
+  const painelTitulacao = document.getElementById('calculos-titulacao');
+  const atalhoTitulacao = document.getElementById('atalho-titulacao');
+  navButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      cancelPointer();
+      State.tab = index;
+      navButtons.forEach(item => item.removeAttribute('aria-current'));
+      button.setAttribute('aria-current', 'page');
+      document.getElementById('concentracao').hidden = index !== 0;
+      document.getElementById('outros-experimentos').hidden = index !== 1 && index !== 2;
+      painelTitulacao.hidden = atalhoTitulacao.hidden = index !== 2;
+      document.getElementById('quiz').hidden = index !== 3;
+      if (index === 3 && !perguntaAtual) novoDesafio();
+      if (index === 1 || index === 2) iniciarCanvas();
+    });
+  });
 
   // ---------- Diluição
-  function concToIntensity(C, Cref){ if(Cref<=0) return 0.25; const ratio = clamp(C/Cref, 0, 1); return lerp(0.25, 0.95, ratio); }
+  const massaMolarSacarose = 342.2965; // NIST Chemistry WebBook, CAS 57-50-1.
   const togDili = new Toggle(70, 220, ['g/L','mol/L'], 0, i=>State.dili.modo=i);
   const sC1 = new Slider(70, 275, 380, 0, 300, State.dili.C1, 'C1 (concentração inicial)', '', v=>State.dili.C1=v).setStep(1);
-  const sV1 = new Slider(70, 325, 380, 0, 2000, State.dili.V1_mL, 'V1 (volume inicial, mL)', 'mL', v=>State.dili.V1_mL=v).setStep(10);
-  const sC2 = new Slider(70, 375, 380, 0, 300, State.dili.C2, 'C2 (concentração alvo)', '', v=>{ State.dili.C2=v; State.dili.solved = (v===0)?'C2':(State.dili.V2_mL===0?'V2':State.dili.solved); }).setStep(1);
-  const sV2 = new Slider(70, 425, 380, 0, 4000, State.dili.V2_mL, 'V2 (volume final, mL)', 'mL', v=>{ State.dili.V2_mL=v; State.dili.solved = (v===0)?'V2':(State.dili.C2===0?'C2':State.dili.solved); }).setStep(10);
-      
-  function computeDilutionFlex(){
+  const sV1 = new Slider(70, 325, 380, 0, 2000, State.dili.V1_mL, 'V1 (volume inicial)', 'mL', v=>State.dili.V1_mL=v).setStep(10);
+  const sC2 = new Slider(70, 375, 380, 0, 300, State.dili.C2, 'C2 (concentração alvo)', '', v=>State.dili.C2=v).setStep(1);
+  const sV2 = new Slider(70, 425, 380, 0, 4000, State.dili.V2_mL, 'V2 (volume final)', 'mL', v=>State.dili.V2_mL=v).setStep(10);
+
+  function computeDilutionFlex() {
     let {C1, V1_mL, C2, V2_mL} = State.dili;
-    const V1 = V1_mL/1000; let V2 = V2_mL/1000;
-    let solved='';
-    if(V2<=0 && C2>0){ V2 = (C1*V1)/(C2||1); solved='V2'; }
-    else if(C2<=0 && V2>0){ C2 = (C1*V1)/(V2||1); solved='C2'; }
-    else if(C2<=0 && V2<=0){ V2 = (C1*V1)/Math.max(1,1); solved='V2'; } else { solved=''; }
-    const add_mL = Math.max(0, (V2 - V1)*1000);
-    const C_final = (C1*V1)/(V2||1e-9);
-    return {C1, V1, C2, V2, add_mL, solved, C_final};
+    const V1 = V1_mL / 1000;
+    let V2 = V2_mL / 1000;
+    if (!V1) return {V1, V2, erro:'Defina um volume inicial maior que zero.'};
+    if (!C2 && !V2) return {V1, V2, erro:'Informe C2 ou V2. Use zero somente no campo que deseja calcular.'};
+
+    let calculado = '';
+    if (!V2) {
+      V2 = C1 * V1 / C2;
+      calculado = 'V2';
+    } else if (!C2) {
+      C2 = C1 * V1 / V2;
+      calculado = 'C2';
+    }
+    if (V2 < V1 - 1e-9) {
+      return {V1, V2, erro:'O volume final precisa ser igual ou maior que o inicial para diluir com água.'};
+    }
+    const concentracaoFinal = C1 * V1 / V2;
+    return {C1, V1, C2, V2, calculado, concentracaoFinal};
   }
-  function drawPourStream(x1,y1,x2,y2,phase,color){
-    const midx = (x1+x2)/2 + Math.sin(phase*2)*30;
-    const midy = (y1+y2)/2 - 40;
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.quadraticCurveTo(midx, midy, x2, y2);
-    const grad = ctx.createLinearGradient(x1,y1,x2,y2); grad.addColorStop(0,'rgba(180,220,255,0.85)'); grad.addColorStop(1,color);
-    ctx.lineWidth=6; ctx.strokeStyle=grad; ctx.globalAlpha=0.9; ctx.stroke(); ctx.globalAlpha=1;
+
+  function capacidadeComparativa(volume) {
+    const maximo = Math.max(500, volume);
+    const dezena = 10 ** Math.floor(Math.log10(maximo));
+    return dezena * [1, 2, 2.5, 5, 10].find(fator => fator * dezena + 1e-6 >= maximo);
   }
-  function drawDilution(dt){
-    const {C1,V1,C2,V2,add_mL,solved,C_final} = computeDilutionFlex();
-    const I_init = concToIntensity(C1, Math.max(C1, C_final, 1));
-    const I_final = concToIntensity(C_final, Math.max(C1, C_final, 1));
-    const colInit = coffeeColor(I_init), colFinal = coffeeColor(I_final);
 
-    const bx1=540, by1=190, bw1=200, bh1=260;
-    const bx2=880, by2=160, bw2=240, bh2=320;
-    const f1=clamp(V1/1.0,0,1), f2=clamp(V2/1.0,0,1);
+  function drawDilution(dt) {
+    const dili = State.dili;
+    text('Sacarose · C1·V1 = C2·V2', 32, 112, 18, COLORS.accent2);
+    wrapText('Use zero em C2 ou V2 para calcular esse valor.', 70, 183, 380, 20, 15);
+    togDili.draw();
+    const emMols = dili.modo === 1;
+    const unidade = emMols ? 'mol/L' : 'g/L';
+    const converter = gramasPorLitro => emMols ? gramasPorLitro / massaMolarSacarose : gramasPorLitro;
+    const mostrarConcentracao = gramasPorLitro => roundSmart(converter(gramasPorLitro), emMols ? 5 : 3);
+    sC1.units = sC2.units = unidade;
+    sC1.draw(converter(dili.C1), 5);
+    sV1.draw();
+    sC2.draw(converter(dili.C2), 5);
+    sV2.draw();
 
-    text('Diluição — C1·V1 = C2·V2 (duas variáveis)', 32, 128, 18, COLORS.accent2);
-    togDili.draw(); sC1.draw(); sV1.draw(); sC2.draw(); sV2.draw();
+    const { C1, V1, C2, V2, calculado, concentracaoFinal, erro } = computeDilutionFlex();
+    const inicial = V1 * 1000;
+    const final = erro ? 0 : V2 * 1000;
+    const capacidade = capacidadeComparativa(Math.max(inicial, final));
+    const mudaramVolumes = dili.volumesDesenhados.some((v, i) => v !== (i === 0 ? inicial : final));
+    dili.volumesDesenhados = [inicial, final];
+    dili.agitacao = mudaramVolumes ? 1 : dili.agitacao * Math.exp(-3.9 * dt);
+    const movimento = reduzirMovimento.matches ? 0 : dili.agitacao;
+    const fase = perf * .082;
+    const antes = {x:558, y:208, w:209, h:251};
+    const depois = {x:968, y:208, w:209, h:251};
 
-    if(State.dili.animT>0){ State.dili.animT = Math.max(0, State.dili.animT - dt*0.6); State.dili.swirl += dt*4; }
-    drawBeaker(bx1, by1, bw1, bh1, f1, colInit, perf*0.04);
-    drawBeaker(bx2, by2, bw2, bh2, f2, colFinal, perf*0.05 + State.dili.swirl*0.3);
-    text('Solução inicial', bx1+bw1/2, by1-16, 16, COLORS.cream, 'center');
-    text('Solução final', bx2+bw2/2, by2-16, 16, COLORS.cream, 'center');
-
-    if(State.dili.animT>0){
-      const px1 = bx1 + bw1 - 20, py1 = by1 + (1-f1)*bh1 + 10;
-      const px2 = bx2 + 20, py2 = by2 + (1-f2)*bh2 + 20;
-      drawPourStream(px1, py1, px2, py2, perf*0.1, colFinal);
-      for(let i=0;i<14;i++){
-        const t = Math.random();
-        const x = lerp(px1, px2, t) + Math.sin((perf+t*60)*0.05)*20;
-        const y = lerp(py1, py2, t) + Math.cos((perf+t*60)*0.05)*8;
-        ctx.beginPath(); ctx.arc(x, y, rnd(1,2), 0, TAU); ctx.fillStyle='rgba(180,220,255,0.9)'; ctx.fill();
-      }
-      ctx.save(); ctx.globalAlpha = 0.10 + 0.08*Math.sin(perf*0.2); ctx.beginPath(); drawRoundedRect(bx2+6, by2+6, bw2-12, bh2-12, 16); ctx.fillStyle=COLORS.accent2; ctx.fill(); ctx.restore();
+    fundoVidraria(520, 145, 700, 379);
+    text('Solução inicial', antes.x + antes.w / 2, 178, 16, COLORS.cream, 'center');
+    text('Solução final', depois.x + depois.w / 2, 178, 16, COLORS.cream, 'center');
+    drawBeaker(antes, { volume: inicial, capacidade, tinta: liquidoDiluicao(dili.C1), fase, agitacao: movimento * .65 });
+    drawBeaker(depois, { volume: final, capacidade, tinta: liquidoDiluicao(concentracaoFinal ?? 0), fase: fase + 1, agitacao: movimento });
+    text(volumeTexto(inicial) + ' · ' + mostrarConcentracao(dili.C1) + ' ' + unidade,
+      antes.x + antes.w / 2, 493, 15, COLORS.accent2, 'center');
+    const leituraFinal = erro ? '—' : volumeTexto(final) + ' · ' + mostrarConcentracao(concentracaoFinal) + ' ' + unidade;
+    text(leituraFinal, depois.x + depois.w / 2, 493, 15, COLORS.accent2, 'center');
+    if (!erro) {
+      const meio = (antes.x + antes.w + depois.x) / 2;
+      const agua = Math.max(0, final - inicial);
+      text('Água a adicionar', meio, 298, 14, COLORS.cream, 'center');
+      segmento(meio - 39, 319, meio + 42, 319, '#8dbac9', 1.8);
+      segmento(meio + 35, 314, meio + 42, 319, '#8dbac9', 1.8);
+      segmento(meio + 35, 324, meio + 42, 319, '#8dbac9', 1.8);
+      text(volumeTexto(agua), meio, 344, 16, '#b6dce4', 'center');
     }
 
-    const px=540, py=530, pw=580, ph=200; shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
-    const u = State.dili.modo===0? 'g/L':'mol/L';
-    text('Resultados de Diluição', px+20, py+28, 18, COLORS.accent2);
+    const px=520, py=545, pw=700, ph=173;
+    shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
+    text('Resultados de diluição', px+20, py+28, 18, COLORS.accent2);
+    if (erro) {
+      wrapText(erro, px+20, py+58, pw-40, 22);
+      return;
+    }
     let yy = py+58;
-    yy += wrapText(`C1=${roundSmart(C1)} ${u}, V1=${roundSmart(V1)} L, C2=${roundSmart(C2)} ${u}, V2=${roundSmart(V2)} L`, px+20, yy, pw-40, 22, 15, COLORS.cream);
-    if(solved==='V2'){ yy += wrapText(`Resolvendo V2: V2 = (C1·V1)/C2 = (${roundSmart(C1)}·${roundSmart(V1)})/${roundSmart(C2)} = ${roundSmart(V2)} L`, px+20, yy, pw-40, 22); }
-    else if(solved==='C2'){ yy += wrapText(`Resolvendo C2: C2 = (C1·V1)/V2 = (${roundSmart(C1)}·${roundSmart(V1)})/${roundSmart(V2)} = ${roundSmart(C2)} ${u}`, px+20, yy, pw-40, 22); }
-    else { yy += wrapText(`Checagem: C_final = (C1·V1)/V2 = ${roundSmart(C_final)} ${u}`, px+20, yy, pw-40, 22); }
-    yy += wrapText(`Água a adicionar = max(V2−V1, 0) = ${roundSmart(Math.max(0,V2-V1))} L (${Math.round(Math.max(0,(V2-V1)*1000))} mL)`, px+20, yy, pw-40, 22);
+    yy += wrapText(`C1 = ${mostrarConcentracao(C1)} ${unidade} · V1 = ${roundSmart(V1)} L · V2 = ${roundSmart(V2)} L`, px+20, yy, pw-40, 22);
+    if (calculado === 'V2') {
+      yy += wrapText(`V2 = (C1·V1)/C2 = ${roundSmart(V2)} L`, px+20, yy, pw-40, 22);
+    }
+    yy += wrapText(`Concentração final = (C1·V1)/V2 = ${mostrarConcentracao(concentracaoFinal)} ${unidade}`, px+20, yy, pw-40, 22);
+    if (Math.abs(C2 - concentracaoFinal) > 0.001) {
+      yy += wrapText(`Com esse volume, o alvo de ${mostrarConcentracao(C2)} ${unidade} não é atingido.`, px+20, yy, pw-40, 22);
+    }
+    wrapText(`Água a adicionar = ${Math.round(Math.max(0,V2-V1)*1000)} mL`, px+20, yy, pw-40, 22);
   }
 
   // ---------- Titulação
   const togInd = new Toggle(70, 452, ['Fenolftaleína','Azul de bromotimol','Alaranjado de metila'], 0, i=>{ State.titu.ind = i; });
-  const sVa = new Slider(70, 200, 380, 10, 200, State.titu.Va_mL, 'Amostra (café) Va (mL)', 'mL', v=>State.titu.Va_mL=v).setStep(1);
-  const sMb = new Slider(70, 260, 380, 0.05, 0.20, State.titu.Mb, 'Base (NaOH) Mb (mol/L)', 'mol/L', v=>State.titu.Mb=roundSmart(v,3)).setStep(0.005);
-  const sVb = new Slider(70, 320, 380, 0, 100, State.titu.Vb_mL, 'Volume de base adicionado Vb (mL)', 'mL', v=>State.titu.Vb_mL=v).setStep(0.05); sVb.disabled = true;
-  const btnZerar = new Button(70, 380, 140, 40, 'Zerar', ()=>{ State.titu.Vb_mL=0; State.titu.eqReached=false; State.titu.drops=[]; State.titu.ripples=[]; });
-    const btnSegurar = new HoldButton(390, 380, 240, 40, 'Abrir torneira (segurar)', ()=>{ State.titu.holding = true; });
+  const sVa = new Slider(70, 200, 380, 10, 200, State.titu.Va_mL, 'Volume da amostra Va', 'mL', v=>State.titu.Va_mL=v).setStep(1);
+  const sMb = new Slider(70, 260, 380, 0.001, 0.010, State.titu.Mb, 'Concentração de NaOH Mb', 'mol/L', v=>State.titu.Mb=roundSmart(v,4)).setStep(0.0005);
+  const sVb = new Slider(70, 320, 380, 0, capacidadeBureta, State.titu.Vb_mL, 'Volume de base adicionado Vb', 'mL', v=>State.titu.Vb_mL=v).setStep(0.05); sVb.disabled = true;
+  const btnZerar = new Button(70, 380, 140, 40, 'Zerar', () => {
+    Object.assign(State.titu, { Vb_mL: 0, gotaEm: 0, drops: [], ripples: [] });
+  });
+  const btnSegurar = new HoldButton(390, 380, 240, 40, 'Abrir torneira (segurar)');
+  const leiturasTitulacao = Object.fromEntries([...painelTitulacao.querySelectorAll('[data-titration]')]
+    .map(elemento => [elemento.dataset.titration, elemento]));
+  const mililitrosTitu = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3 });
+  const litrosTitu = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 6 });
+  const molaridadeTitu = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 7 });
+  let contaTitulacao;
 
-  function spawnDrops(n){
-    const tipX = (State.titu && State.titu.tipX) ? State.titu.tipX : 800;
-    const tipY = (State.titu && State.titu.tipY) ? State.titu.tipY : 416;
-    for(let i=0;i<n;i++){
-      State.titu.drops.push({x:tipX + rnd(-2,2), y:tipY, vy: rnd(140,170), r:rnd(2,3), t:0});
+  function calcularTitulacao({ Va_mL, Vb_mL, Mb, Ca_true, pKa }) {
+    const Va = Va_mL / 1000;
+    const Vb = Vb_mL / 1000;
+    const volume = Va_mL + Vb_mL;
+    const volumeLitros = volume / 1000;
+    const nAcido = Ca_true * Va;
+    const nBase = Mb * Vb;
+    const Veq = nAcido / Mb;
+    const nBaseEquivalencia = Mb * Veq;
+    const Ca_calc = nBaseEquivalencia / Va;
+    const totalAcido = nAcido / volumeLitros;
+    const sodio = nBase / volumeLitros;
+    const Ka = 10 ** -pKa;
+    const pHmix = calcPH_Titration(totalAcido, sodio, Ka);
+    return {
+      Va_mL, Vb_mL, Mb, Va, Vb, volume, volumeLitros, Veq, nAcido, nBase, nBaseEquivalencia,
+      Ca_calc, totalAcido, sodio, Ka, pHmix
+    };
+  }
+
+  function mostrarPassosTitulacao(conta) {
+    const litros = numero => litrosTitu.format(numero) + ' L';
+    const converterVolume = numero => mililitrosTitu.format(numero * 1000) + ' mL = ' + litros(numero);
+    const base = molaridadeTitu.format(conta.Mb) + ' mol/L';
+    const molsAcido = formatarMols(conta.nAcido);
+    const leituras = {
+      'volume-amostra': converterVolume(conta.Va),
+      'volume-equivalencia': converterVolume(conta.Veq),
+      'mols-base-equivalencia': '(' + base + ') × (' + litros(conta.Veq) + ') ≈ ' + formatarMols(conta.nBaseEquivalencia),
+      'mols-acido': molsAcido,
+      'concentracao-amostra': '(' + molsAcido + ') ÷ (' + litros(conta.Va) + ') ≈ ' + molaridadeTitu.format(conta.Ca_calc) + ' mol/L',
+      'volume-adicionado': converterVolume(conta.Vb),
+      'mols-base-atual': '(' + base + ') × (' + litros(conta.Vb) + ') ≈ ' + formatarMols(conta.nBase),
+      'volume-total': converterVolume(conta.volumeLitros),
+      'acido-total': molsAcido + ' ÷ ' + litros(conta.volumeLitros) + ' ≈ ' + formatarCientifico(conta.totalAcido) + ' mol/L',
+      sodio: formatarMols(conta.nBase) + ' ÷ ' + litros(conta.volumeLitros) + ' ≈ ' + formatarCientifico(conta.sodio) + ' mol/L',
+      ka: formatarCientifico(conta.Ka),
+      hidronio: formatarCientifico(10 ** -conta.pHmix) + ' mol/L',
+      ph: volumeFormatado.format(conta.pHmix)
+    };
+    for (const [nome, valor] of Object.entries(leituras)) {
+      const campo = leiturasTitulacao[nome];
+      if (campo.textContent !== valor) campo.textContent = valor;
     }
+    leiturasTitulacao['limite-bureta'].hidden = conta.Veq * 1000 <= capacidadeBureta + 1e-9;
   }
-  function drawRipples(){ ctx.save(); for(let i=State.titu.ripples.length-1;i>=0;i--){ const rp = State.titu.ripples[i]; rp.t += 0.02; const alpha = 0.35*(1-rp.t); const rad = lerp(2, 18, rp.t); ctx.beginPath(); ctx.arc(rp.x, rp.y, rad, 0, TAU); ctx.strokeStyle = `rgba(255,255,255,${alpha}
-  function drawStream(x, y1, y2){
-    // pequeno filete de líquido entre a ponta da bureta e o nível do béquer
-    const startY = y1;
-    const endY = Math.max(y1+20, y2-6);
-    ctx.save();
-    const grad = ctx.createLinearGradient(x, startY, x, endY);
-    grad.addColorStop(0, 'rgba(160,210,255,0.85)');
-    grad.addColorStop(1, 'rgba(120,180,240,0.35)');
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(x, startY);
-    ctx.lineTo(x, endY);
-    ctx.stroke();
-    ctx.restore();
-  }
-)`; ctx.lineWidth=1.5; ctx.stroke(); if(rp.t>=1) State.titu.ripples.splice(i,1);} ctx.restore(); }
-  function updateTitrationFlow(dt){
-    if(State.titu.holding){
-      if(State.titu.Vb_mL < 100){
-        const add = Math.min(State.titu.flowRate_mLps*dt, 100 - State.titu.Vb_mL);
-        State.titu.Vb_mL += add;
-        if(Math.random()<0.8) spawnDrops(1);
-      } else {
-        State.titu.holding = false;
+
+  function drawTitrationFlow(dt, holding, x, tipY, surfaceY) {
+    const titu = State.titu;
+    if (reduzirMovimento.matches) {
+      if (holding) segmento(x, tipY + 2, x, surfaceY, '#b2dbea75', 1.6);
+      return;
+    }
+    if (holding) {
+      titu.gotaEm -= dt;
+      if (titu.gotaEm <= 0) {
+        titu.drops.push({ x: x + rnd(-1.4, 1.4), y: tipY, velocidade: rnd(130, 185) });
+        titu.gotaEm = 0.108;
       }
     }
-    if(!mouse.down) State.titu.holding = false;
-  }
-  function updateTitrationAnim(dt, beakerRect, Vtot_L){
-    if(State.titu.Vb_mL > State.titu.lastVb_mL + 0.02){ const inc = State.titu.Vb_mL - State.titu.lastVb_mL; const n = Math.min(8, Math.max(1, Math.floor(inc/0.05))); spawnDrops(n); }
-    State.titu.lastVb_mL = State.titu.Vb_mL;
-    for(let i=State.titu.drops.length-1;i>=0;i--){
-      const d = State.titu.drops[i]; d.t += dt; d.y += d.vy*dt;
-      const surfaceY = beakerRect.y + beakerRect.h - clamp(Vtot_L/State.titu.beakerCapacity_L,0,1)*beakerRect.h;
-      if(d.y >= surfaceY-4 && d.y <= surfaceY+12){ State.titu.ripples.push({x: beakerRect.x + beakerRect.w/2, y: surfaceY-2, t:0}); State.titu.drops.splice(i,1); }
-      if(d.y > beakerRect.y+beakerRect.h+40){ State.titu.drops.splice(i,1); }
+    for (let i = titu.drops.length - 1; i >= 0; i--) {
+      const gota = titu.drops[i];
+      gota.velocidade += 590 * dt;
+      gota.y += gota.velocidade * dt;
+      if (gota.y >= surfaceY) {
+        titu.ripples.push({ x: gota.x, t: 0 });
+        titu.drops.splice(i, 1);
+      } else {
+        const aspecto = Math.min(5.2, 2.45 + gota.velocidade / 205);
+        const luz = gradiente(gota.x - 2, gota.y - aspecto, gota.x + 2, gota.y + aspecto, [
+          '#b9e4f05b', '#d3f7ffee', '#70adceae'
+        ]);
+        elipse(gota.x, gota.y, 2.35, aspecto, luz);
+        elipse(gota.x - .63, gota.y - .74, .48, 1.12, '#fffbefb5');
+      }
+    }
+    for (let i = titu.ripples.length - 1; i >= 0; i--) {
+      const onda = titu.ripples[i];
+      onda.t += dt * 2.6;
+      if (onda.t >= 1) {
+        titu.ripples.splice(i, 1);
+        continue;
+      }
+      ctx.beginPath();
+      ctx.ellipse(onda.x, surfaceY + 1, lerp(2, 31, onda.t), lerp(1, 6.1, onda.t), 0, 0, TAU);
+      ctx.strokeStyle = 'rgba(237,248,243,' + .69 * (1 - onda.t) + ')';
+      ctx.lineWidth = 1.3;
+      ctx.stroke();
     }
   }
-  function drawTitulacao(dt){
-    text('Titulação do ácido clorogênico (café) com NaOH — modelo 1:1', 32, 128, 18, COLORS.accent2);
-    sVb.val = State.titu.Vb_mL; sVa.draw(); sMb.draw(); sVb.draw(); btnZerar.draw(); btnSegurar.draw();
+
+  function drawTitulacao(dt) {
+    const titu = State.titu;
+    text('Ácido clorogênico (5-CQA) com NaOH · modelo 1:1', 32, 112, 18, COLORS.accent2);
+    sVa.draw(); sMb.draw(titu.Mb, 4); btnZerar.draw();
+    const torneira = btnSegurar.draw();
     text('Indicador', 70, 440, 14, COLORS.cream, 'left');
-    togInd.index = State.titu.ind; togInd.draw();
-    const b = {x:680, y:260, w:220, h:280};
-    // Update drop tip based on current beaker/burette layout
-        updateTitrationFlow(dt);
-    const {Va_mL, Mb, Vb_mL, Ca_true, beakerCapacity_L} = State.titu; const Va=Va_mL/1000; const Vb=Vb_mL/1000;
-    const Ca_calc = Va>0? (Mb*Vb)/Va : 0; const Veq_mL = (Ca_true*Va)/Mb * 1000; const near = Math.abs(Vb_mL - Veq_mL) < 0.4;
-    if(near) State.titu.eqReached = true; else if(Vb_mL < Veq_mL) State.titu.eqReached = false;
+    togInd.draw();
 
-    const levelRemaining = 1 - clamp(Vb_mL/100, 0, 1);
-    const buretteX = b.x + b.w/2;
-    const buretteY = 80;
-    const buretteH = 280; // bureta mais curta e mais alta na página
-    drawBurette(buretteX, buretteY, buretteH, levelRemaining);
-    // interação direta na bureta: segurar o clique mantém a torneira aberta
-    const bxHit = buretteX - 18, byHit = buretteY, bwHit = 36, bhHit = buretteH + 18;
-    if(mouse.down && hit(bxHit, byHit, bwHit, bhHit)){ State.titu.holding = true; }
+    const b = {x:693, y:381, w:200, h:229};
+    const buretteX = b.x + b.w / 2;
+    const buretteY = 86;
+    const buretteH = 244;
+    const areaBureta = [buretteX - 20, buretteY, 49, buretteH + 29];
+    const segurandoBureta = mouse.down && hit(...areaBureta) && pressedWithin(...areaBureta);
+    const holding = (torneira || segurandoBureta) && titu.Vb_mL < capacidadeBureta;
+    if (holding) titu.Vb_mL = Math.min(titu.Vb_mL + titu.flowRate_mLps * dt, capacidadeBureta);
+    sVb.val = titu.Vb_mL;
+    sVb.draw();
 
-    // atualizar ponta da bureta para animação das gotas
-    State.titu.tipX = buretteX; State.titu.tipY = buretteY + buretteH + 16;
-
-    // Béquer (levemente menor)
-    // 'b' já definido acima com tamanho reduzido
-    const Vtot_L = (Va_mL + Vb_mL)/1000;
-    const prog = clamp(Vb_mL/(Veq_mL||1e-6), 0, 1.4);
-    const pHmix = calcPH_Titration(Va_mL, Vb_mL, Mb, Ca_true, State.titu.pKa);
-    const indCol = indicatorRGBA(pHmix, State.titu.ind, 0.75);
-    drawBeakerTransparent(b.x, b.y, b.w, b.h, clamp(Vtot_L/beakerCapacity_L,0,1), indCol, perf*0.05);
-    
-    // Desenhar filete contínuo enquanto a torneira estiver aberta
-    const surfaceY = b.y + b.h - clamp(Vtot_L/beakerCapacity_L,0,1)*b.h;
-    if(State.titu.holding && typeof drawStream==='function'){ drawStream(State.titu.tipX, State.titu.tipY-4, surfaceY); }
-if(prog>0.95 && prog<1.05 && !State.titu.eqReached){
-      ctx.save(); ctx.globalAlpha = 0.10 + 0.10*Math.sin(perf*0.4); drawRoundedRect(b.x+6, b.y+6, b.w-12, b.h-12, 16); ctx.fillStyle=COLORS.pink; ctx.fill(); ctx.restore();
+    if (!contaTitulacao || contaTitulacao.Va_mL !== titu.Va_mL || contaTitulacao.Mb !== titu.Mb || contaTitulacao.Vb_mL !== titu.Vb_mL) {
+      contaTitulacao = calcularTitulacao(titu);
+      mostrarPassosTitulacao(contaTitulacao);
     }
-    ctx.save(); for(const d of State.titu.drops){ ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, TAU); ctx.fillStyle='#9fd3ff'; ctx.fill(); } ctx.restore();
-    drawRipples();
-    updateTitrationAnim(dt, b, Vtot_L);
+    const { Vb_mL, Veq, volume, Ca_calc, pHmix } = contaTitulacao;
+    const { ind } = titu;
+    fundoVidraria(652, 49, 254, 618);
+    const tipY = drawBurette(buretteX, buretteY, buretteH, Vb_mL, holding);
+    const agitacao = reduzirMovimento.matches ? 0 : Math.min(1, (holding ? .3 : 0) + titu.ripples.length * .15);
+    const superficie = drawBeaker(b, { volume, capacidade: 300, tinta: tintaIndicador(pHmix, ind), fase: perf * .11, agitacao });
+    drawTitrationFlow(dt, holding, buretteX, tipY, superficie);
+    text('Mistura no béquer', buretteX, 636, 13, COLORS.cream, 'center');
+    text(volumeTexto(volume), buretteX, 654, 16, COLORS.accent2, 'center');
 
-    const px= b.x + b.w + 20, py= b.y, pw= W - px - 20, ph= 320;
+    const px=920, py=210, pw=340, ph=320;
     shadow(()=>{ drawRoundedRect(px,py,pw,ph,18); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:22,y:10,color:'rgba(0,0,0,.45)'});
-    text('Resultados da Titulação', px+14, py+24, 18, COLORS.accent2);
+    text('Resultados da titulação', px+14, py+24, 18, COLORS.accent2);
     let yy = py+54;
-    yy += wrapText(`Dados: Va=${roundSmart(Va)} L (${Va_mL} mL), Mb=${roundSmart(Mb,3)} mol/L, Vb=${roundSmart(Vb)} L (${roundSmart(Vb_mL)} mL)`, px+14, yy, pw-28, 20, 15, COLORS.cream);
-    yy += wrapText('Equivalência: Ca·Va = Cb·Vb  →  Ca = (Mb·Vb)/Va', px+14, yy, pw-28, 20);
-    yy += wrapText(`Cálculo: Ca = (${roundSmart(Mb,3)} · ${roundSmart(Vb)}) / ${roundSmart(Va)} = ${roundSmart(Ca_calc,4)} mol/L`, px+14, yy, pw-28, 20);
-    yy += wrapText(`Ponto de viragem esperado em ≈ ${roundSmart(Veq_mL,2)} mL`, px+14, yy, pw-28, 20);
-    yy += wrapText(`pH estimado da mistura ≈ ${roundSmart(pHmix,2)}  •  Indicador: ${['Fenolftaleína','Azul de bromotimol','Alaranjado de metila'][State.titu.ind]}`, px+14, yy, pw-28, 20);
-    yy += wrapText('Nota didática: a amostra do café está transparente para facilitar a visualização da mudança de cor do indicador.', px+14, yy+6, pw-28, 18, 13, '#caa38b');
+    yy += wrapText(`Base dispensada · ${volumeFormatado.format(Vb_mL)} mL`, px+14, yy, pw-28, 20);
+    yy += wrapText(`Equivalência teórica · ${volumeFormatado.format(Veq * 1000)} mL`, px+14, yy, pw-28, 20);
+    if (Veq * 1000 > capacidadeBureta + 1e-9) {
+      yy += wrapText('A bureta comporta 100 mL. Reduza a amostra ou aumente a concentração da base.', px+14, yy, pw-28, 20, 15, COLORS.accent2);
     }
+    yy += wrapText(`Concentração da amostra · ${molaridadeTitu.format(Ca_calc)} mol/L`, px+14, yy, pw-28, 20);
+    yy += wrapText(`pH estimado ≈ ${volumeFormatado.format(pHmix)} · ${togInd.labels[ind]}`, px+14, yy, pw-28, 20);
+    wrapText('O pH simula a primeira dissociação do 5-CQA isolado. O café também contém outros ácidos.', px+14, yy+6, pw-28, 18, 13, '#caa38b');
+  }
 
   // ---------- Quiz
-  const btnNewQuiz = new Button(70, 170, 200, 44, 'Novo desafio', ()=>{ State.quiz.q = genQuiz(); State.quiz.shownFeedback=0; });
-  
+  const pergunta = document.getElementById('pergunta-quiz');
+  const resposta = document.getElementById('resposta-quiz');
+  const respostaNumerica = document.getElementById('resposta-numerica');
+  const alternativas = document.getElementById('alternativas-quiz');
+  const filtroQuiz = document.getElementById('tipo-quiz');
+  const formulario = document.getElementById('form-quiz');
+  const conferir = formulario.querySelector('[type=submit]');
+  const feedback = document.getElementById('resultado-quiz');
+  const pontuacao = document.getElementById('pontuacao-quiz');
+  let perguntaAtual;
+  let acertos = 0, respondidas = 0;
+  const arredondado = (min, max) => Math.round(rnd(min, max));
+  const formatarResposta = valor => valor.toLocaleString('pt-BR', { maximumFractionDigits: 4 });
 
-class NumInput{
-  constructor(x,y,w,label){ Object.assign(this,{x,y,w,label}); this.val=''; }
-  draw(){
-    text(this.label, this.x, this.y-8, 15, COLORS.cream, 'left');
-    shadow(()=>{ pill(this.x, this.y, this.w, 40, '#3d2b27'); }, {blur:16,y:6,color:'rgba(0,0,0,.35)'});
-    const shown = (this.val!=='' ? this.val : 'digite aqui...');
-    text(shown, this.x+12, this.y+25, 16, COLORS.accent2, 'left', 'middle');
-    if(mouse.justDown && hit(this.x, this.y, this.w, 40)){
-      const v = prompt('Sua resposta (número, use ponto para decimais):', this.val);
-      if(v!==null) this.val = v;
+  const perguntasObjetivas = [
+    ['Qual teste isola o efeito da temperatura da água sobre a extração?',
+      ['Usar a mesma dose, moagem e volume nas duas receitas.', 'Trocar a dose e a temperatura entre as receitas.', 'Usar café em uma receita e açúcar na outra.'],
+      'Mude apenas a temperatura e mantenha as demais condições iguais.'],
+    ['Qual dos três tipos de café tem as partículas menores no simulador?',
+      ['Moído', 'Triturado', 'Em grãos'],
+      'O café moído tem partículas mais finas que o triturado e o café em grãos inteiros.'],
+    ['O que o filtro de papel retém durante o preparo?',
+      ['As partículas sólidas do café.', 'Toda a água quente.', 'Toda a cafeína dissolvida.'],
+      'O filtro retém o pó e os pedaços de café. A cafeína dissolvida atravessa com a água.'],
+    ['Qual unidade o Café Lab usa para a concentração de cafeína na xícara?',
+      ['mg/L', 'mL', '°C'],
+      'A leitura divide a massa de cafeína em miligramas pelo volume em litros.'],
+    ['Se dobrarmos o volume de uma solução adicionando apenas água, o que acontece com a concentração?',
+      ['Cai pela metade.', 'Dobra.', 'Fica igual.'],
+      'A quantidade de soluto permanece a mesma. Ela passa a ocupar o dobro do volume.'],
+    ['Para que serve o indicador na titulação?',
+      ['Para sinalizar uma faixa de pH por mudança de cor.', 'Para medir o volume de café por mudança de cor.', 'Para impedir a reação com a base.'],
+      'O indicador muda de cor em uma faixa de pH característica.']
+  ];
+  const perguntasVF = [
+    ['Ao misturar volumes iguais de água a 100 °C e 20 °C, a temperatura da mistura fica entre as duas iniciais.', true,
+      'Com perdas de calor desprezíveis durante a mistura, o balanço de entalpia dá cerca de 59,3 °C.'],
+    ['Depois de adicionar somente água a uma solução, sua concentração sempre aumenta.', false,
+      'Adicionar água aumenta o volume e diminui a concentração de uma solução com soluto.'],
+    ['É possível dissolver açúcar na xícara com a dose de café em zero.', true,
+      'Nesse preparo, a água cai direto na xícara e pode dissolver o açúcar.'],
+    ['Uma parte do açúcar pode ficar no fundo da xícara quando a água atinge o limite de solubilidade.', true,
+      'O excesso permanece sólido até haver condições para dissolver mais.'],
+    ['A cor da bebida no simulador mede diretamente a concentração de cafeína de um café real.', false,
+      'A cor é uma representação visual do modelo. Medir cafeína em uma bebida real exige análise própria.'],
+    ['Todo indicador ácido-base muda de cor exatamente no pH 7.', false,
+      'Cada indicador tem sua faixa de viragem. A fenolftaleína, por exemplo, muda de cor em meio básico.']
+  ];
+  const perguntasCalculo = [
+    () => {
+      const volume = arredondado(150, 600), massa = arredondado(5, 40);
+      return { texto: `Dissolveram-se ${massa} g de açúcar em uma solução de ${volume} mL. Qual é a concentração em g/L?`,
+        valor: massa * 1000 / volume, unidade: 'g/L', ideia: 'Divida a massa pelo volume convertido em litros.' };
+    },
+    () => {
+      const C1 = arredondado(40, 160), C2 = arredondado(10, C1 - 5), V1 = arredondado(100, 400);
+      return { texto: `Uma solução de ${V1} mL vai de ${C1} g/L para ${C2} g/L por diluição. Qual é o volume final em litros?`,
+        valor: C1 * (V1 / 1000) / C2, unidade: 'L', ideia: 'Use V₂ = C₁ × V₁ ÷ C₂ e expresse V₁ em litros.' };
+    },
+    () => {
+      const Va = arredondado(20, 50), Mb = arredondado(5, 20) / 100, Vb = arredondado(10, 50);
+      return { texto: `Uma amostra de ${Va} mL atingiu a equivalência com ${Vb} mL de base a ${formatarResposta(Mb)} mol/L. Qual é a concentração inicial em mol/L, considerando a reação 1:1?`,
+        valor: Mb * Vb / Va, unidade: 'mol/L', ideia: 'Na equivalência, use Cₐ = Cᵦ × Vᵦ ÷ Vₐ.' };
+    },
+    () => {
+      const quente = arredondado(1, 5) * 50, fria = arredondado(1, 5) * 50;
+      return { texto: `Ao desprezar perdas de calor e a diferença de densidade, qual é a temperatura final em °C ao misturar ${quente} mL de água a 100 °C com ${fria} mL a 20 °C?`,
+        valor: (quente * 100 + fria * 20) / (quente + fria), unidade: '°C',
+        ideia: 'Multiplique cada temperatura pelo volume correspondente, some os produtos e divida pelo volume total.' };
+    }
+  ];
+  const bancos = { objetiva: perguntasObjetivas, vf: perguntasVF, calculo: perguntasCalculo };
+  const ordemTipos = Object.keys(bancos);
+  const filas = {}, ultimaPergunta = {};
+  let proximoTipo = 0;
+
+  function embaralhar(itens) {
+    const ordem = [...itens];
+    for (let i = ordem.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ordem[i], ordem[j]] = [ordem[j], ordem[i]];
+    }
+    return ordem;
+  }
+
+  function retirarPergunta(tipo) {
+    if (!filas[tipo]?.length) {
+      filas[tipo] = embaralhar(bancos[tipo]);
+      if (filas[tipo][0] === ultimaPergunta[tipo]) filas[tipo].push(filas[tipo].shift());
+    }
+    const item = filas[tipo].shift();
+    ultimaPergunta[tipo] = item;
+    if (tipo === 'calculo') return item();
+    const [texto, valores, ideia] = item;
+    if (tipo === 'vf') {
+      return { texto, opcoes: ['Verdadeiro', 'Falso'], correta: valores ? 'Verdadeiro' : 'Falso', ideia };
+    }
+    return { texto, opcoes: embaralhar(valores), correta: valores[0], ideia };
+  }
+
+  function novoDesafio() {
+    const tipo = filtroQuiz.value === 'todos' ? ordemTipos[proximoTipo++ % ordemTipos.length] : filtroQuiz.value;
+    perguntaAtual = retirarPergunta(tipo);
+    const { texto, opcoes } = perguntaAtual;
+    pergunta.textContent = texto;
+    feedback.textContent = '';
+    resposta.value = '';
+    respostaNumerica.hidden = Boolean(opcoes);
+    resposta.disabled = Boolean(opcoes);
+    conferir.disabled = false;
+    alternativas.replaceChildren();
+    for (const opcao of opcoes ?? []) {
+      const label = document.createElement('label');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'alternativa';
+      radio.value = opcao;
+      label.append(radio, opcao);
+      alternativas.append(label);
     }
   }
-}
-const quizInput = new NumInput(70, 260, 220, 'Sua resposta (número)');
-  const btnCheck = new Button(70, 320, 160, 44, 'Conferir', ()=>{ checkQuiz(); });
-  function rand(a,b){ return a + Math.random()*(b-a); }
-  function genQuiz(){ const type=Math.floor(Math.random()*3); if(type===0){ const V=Math.round(rand(150,600)); const m=Math.round(rand(5,40)); return {type, V, m, MM:342.3, input:'', text:`Você adicionou ${m} g de açúcar em ${V} mL de café. Calcule C (g/L) e/ou M (mol/L).`}; } if(type===1){ const C1=Math.round(rand(40,160)); const C2=Math.round(rand(10, C1-5)); const V1=Math.round(rand(100,400)); return {type, C1, C2, V1, input:'', text:`Diluição: C1=${C1} g/L, V1=${V1} mL → C2=${C2} g/L. Quanto fica V2 (L)?`}; } const Va=[20,25,30,40,50][Math.floor(Math.random()*5)]; const Mb=[0.05,0.1,0.15,0.2][Math.floor(Math.random()*4)]; const Ca=+(rand(0.05,0.15).toFixed(3)); const Vb_mL=(Ca*(Va/1000))/Mb*1000; return {type:2, Va, Mb, Vb_mL, Ca, input:'', text:`Titulação: Va=${Va} mL, Mb=${Mb} mol/L. Na equivalência, Vb≈${roundSmart(Vb_mL,2)} mL. Calcule Ca (mol/L).`}; }
-  function ensureQuiz(){ if(!State.quiz.q) State.quiz.q = genQuiz(); }
-  function checkQuiz(){ const q=State.quiz.q; if(!q) return; const val=parseFloat((quizInput.val||'').replace(',','.')); let ok=false, correct=0; if(q.type===0){ const V=q.V/1000; const C=q.m/V; const M=(q.m/342.3)/V; correct=C; ok = (isFinite(val) && (Math.abs(val-C)/C < 0.03 || Math.abs(val-M)/M < 0.03)); } else if(q.type===1){ const V2=(q.C1*(q.V1/1000))/q.C2; correct=V2; ok = isFinite(val) && Math.abs(val-V2)/V2 < 0.03; } else { const Ca=(q.Mb*(q.Vb_mL/1000))/(q.Va/1000); correct=Ca; ok = isFinite(val) && Math.abs(val-Ca)/Ca < 0.03; } State.quiz.shownFeedback = ok?1:2; if(ok) State.quiz.score++; State.quiz.correct=correct; }
-  function drawQuiz(){ btnNewQuiz.draw(); ensureQuiz(); const q=State.quiz.q; const px=70, py=230, pw=820, ph=240; shadow(()=>{ drawRoundedRect(px,py-120,pw,100,16); ctx.fillStyle='#281d1a'; ctx.fill(); },{blur:20,y:8,color:'rgba(0,0,0,.45)'}); text('Desafio', px+20, py-90, 18, COLORS.accent2); text(q.text, px+20, py-52, 16, COLORS.cream); quizInput.draw(); btnCheck.draw(); if(State.quiz.shownFeedback===1){ text('✔ Correto! +1 ponto ☕', px+20, py+60, 18, COLORS.green);} else if(State.quiz.shownFeedback===2){ text(`✖ Referência ≈ ${roundSmart(State.quiz.correct,4)}`, px+20, py+60, 18, COLORS.red);} shadow(()=>{ drawRoundedRect(W-300, 150, 220, 90, 18); ctx.fillStyle='#2f231f'; ctx.fill(); },{blur:18,y:8,color:'rgba(0,0,0,.4)'}); text('Pontuação', W-190, 180, 16, COLORS.cream, 'center'); text(`${State.quiz.score} ☕`, W-190, 214, 28, COLORS.accent2, 'center'); }
 
-  function drawFooter(){ }
+  filtroQuiz.addEventListener('change', novoDesafio);
+  document.getElementById('novo-desafio').addEventListener('click', () => {
+    novoDesafio();
+    (alternativas.querySelector('input') ?? resposta).focus();
+  });
+  formulario.addEventListener('submit', evento => {
+    evento.preventDefault();
+    if (perguntaAtual.respondida) return;
+    const { valor, unidade, correta, ideia } = perguntaAtual;
+    let acertou, referencia;
+    if (correta) {
+      const escolhida = alternativas.querySelector('input:checked');
+      if (!escolhida) {
+        feedback.textContent = 'Marque uma alternativa para conferir.';
+        return;
+      }
+      acertou = escolhida.value === correta;
+      referencia = correta;
+      for (const opcao of alternativas.querySelectorAll('input')) {
+        opcao.disabled = true;
+        if (opcao.value === correta) opcao.parentElement.setAttribute('data-certa', '');
+      }
+    } else {
+      const entrada = resposta.value.trim().replace(',', '.');
+      if (!/^\d*\.?\d+$/.test(entrada)) {
+        feedback.textContent = 'Digite um número usando vírgula ou ponto para os decimais.';
+        return;
+      }
+      acertou = Math.abs(Number(entrada) - valor) / valor < 0.03;
+      referencia = formatarResposta(valor) + ' ' + unidade;
+      resposta.disabled = true;
+    }
+    perguntaAtual.respondida = true;
+    conferir.disabled = true;
+    respondidas++;
+    if (acertou) acertos++;
+    pontuacao.textContent = `${acertos} ${acertos === 1 ? 'acerto' : 'acertos'} de ${respondidas} ${respondidas === 1 ? 'resposta' : 'respostas'}`;
+    feedback.textContent = (acertou ? 'Correto! ' : 'Resposta esperada: ' + referencia + '. ') + ideia;
+  });
 
-  let perf=0, last=performance.now();
-  function frame(now){
-    const dt = Math.min(0.05, (now-last)/1000); last=now; perf += dt*60;
-    ctx.clearRect(0,0,W,H);
-    drawCoffeeBackground(); drawNav();
-    const titles=['Concentração','Diluição (C1·V1=C2·V2)','Titulação (ácido clorogênico)','Quiz (Desafios)'];
-    text(titles[State.tab], 32, 98, 26, COLORS.accent2, 'left','alphabetic','800');
-    if(State.tab===0) drawConcentracao(dt);
-    if(State.tab===1) drawDilution(dt);
-    if(State.tab===2) drawTitulacao(dt);
-    if(State.tab===3) drawQuiz();
-    drawFooter();
-    mouse.justUp=false; mouse.justDown=false;
-    requestAnimationFrame(frame);
+  let perf = 0, last = 0, animation = 0;
+  function frame(now) {
+    animation = 0;
+    if (State.tab !== 1 && State.tab !== 2) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    perf += dt * 60;
+    ctx.clearRect(0, 0, W, H);
+    drawCoffeeBackground();
+    text(State.tab === 1 ? 'Diluição' : 'Titulação', 32, 77, 32, COLORS.accent2, 'left', 'alphabetic', '800');
+    if (State.tab === 1) drawDilution(dt);
+    else drawTitulacao(dt);
+    if (mouse.justUp) dragOwner = null;
+    mouse.justUp = false;
+    mouse.justDown = false;
+    animation = requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+
+  function iniciarCanvas() {
+    if (animation) return;
+    last = performance.now();
+    animation = requestAnimationFrame(frame);
+  }
 })();

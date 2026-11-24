@@ -107,3 +107,115 @@
 @media(max-width:760px){
   .style-options { grid-template-columns: repeat(2, 1fr); }
 }
+
+.avatar-head {
+  border-radius: 8px 8px 10px 10px !important;
+  border-bottom: 4px solid #40281940;
+  box-shadow: inset 3px 2px #ffffff28, inset -3px -2px #38262222;
+}
+.avatar-body {
+  background: linear-gradient(112deg,#ffffff2b 0 16%,transparent 17% 77%,#172b3538 78%),var(--coat) !important;
+  border-radius: 7px 7px 4px 4px !important;
+}
+.avatar-body::before,.avatar-body::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in srgb,var(--accent) 72%,#1a2a31);
+  border-radius: 2px;
+}
+.avatar-body::before { width: 4px; height: 73%; left: calc(50% - 2px); top: 11%; }
+.avatar-body::after { width: 22%; height: 12%; right: 12%; top: 63%; box-shadow: 0 -3px #d9b477; }
+.avatar-arm-l,.avatar-arm-r {
+  border-radius: 6px 6px 5px 5px !important;
+  box-shadow: inset 2px 0 #efffff21, inset -2px 0 #13252735;
+}
+.avatar-leg-l,.avatar-leg-r {
+  border-radius: 3px !important;
+  box-shadow: inset 2px 0 #ffffff18, inset -2px 0 #172b354f;
+}
+.avatar-eye-l,.avatar-eye-r { box-shadow: 1px -1px 0 #eaf9f6; }
+
+.avatar-3d{display:none;width:100%;height:100%;min-height:145px;max-height:340px;object-fit:contain}
+.avatar-3d-ready>.avatar-3d{display:block}
+.avatar-3d-ready>.avatar-pixel{display:none}
+.avatar-preview.avatar-3d-ready{min-height:255px;background:radial-gradient(ellipse at 50% 46%,#29464e,#172729 74%)}
+.mc-character-stage.avatar-3d-ready{background:radial-gradient(ellipse at 50% 49%,#2b4146,#15191b 76%)}
+.fishing-status{position:fixed;z-index:9;bottom:148px;left:50%;transform:translateX(-50%);min-width:210px;padding:9px 12px;background:#101e27ed;color:#d9f8fb;border:1px solid #3e7784;border-radius:9px;text-align:center;font-size:.82rem;pointer-events:none}
+.fishing-status[hidden]{display:none}
+.fishing-status.bite{border-color:#92dbaa;color:#c4f4d5}
+.fishing-track{height:4px;margin-top:7px;background:#13414b;border-radius:3px;overflow:hidden}
+.fishing-track i{height:100%;display:block;background:#69babe}
+.fishing-status.bite .fishing-track i{background:#a6e785}
+.frontier-card{width:min(570px,94vw);max-height:86dvh;overflow:auto}
+.frontier-jobs{display:grid;gap:8px;padding:12px 18px 20px}
+.frontier-job{text-align:left;min-height:44px;padding:10px 13px}
+
+
+.character-card{width:min(870px,94vw)}
+.character-body{align-items:start}
+.character-card .avatar-preview{position:sticky;top:16px}
+.custom-groups{min-width:0}
+.custom-group .style-options{grid-template-columns:repeat(auto-fit,minmax(94px,1fr))}
+.custom-group .style-option{min-height:40px;padding:7px 5px}
+.custom-group .style-option[data-custom="hairStyle"]{min-height:53px}
+.custom-group .style-option[data-custom="badge"]{--sigil:#ffc55f;min-height:53px}
+.style-option[data-custom="badge"][data-value="1"]{--sigil:#64efef}
+.style-option[data-custom="badge"][data-value="2"]{--sigil:#a3f491}
+.style-option[data-custom="badge"][data-value="3"]{--sigil:#cca8ff}
+.badge-swatch{display:grid;place-items:center;width:26px;height:24px;color:var(--sigil);border:1px solid currentColor;
+  border-radius:7px;background:#121d23;text-shadow:0 0 6px currentColor;box-shadow:0 0 10px -4px var(--sigil);font:700 16px/1 system-ui}
+.hair-style-icon:is([data-style="4"],[data-style="10"]){border-radius:9px 9px 6px 6px;transform:translateY(-3px)}
+.hair-style-icon:is([data-style="4"],[data-style="10"]) i{top:-3px;width:12px;height:13px;border-radius:45%}
+.hair-style-icon:is([data-style="4"],[data-style="10"]) i:nth-child(2){left:8px}
+.hair-style-icon:is([data-style="4"],[data-style="10"]) i:nth-child(3){right:0}
+.hair-style-icon[data-style="10"]{width:31px;height:24px;scale:1.13}
+.hair-style-icon:is([data-style="5"],[data-style="7"],[data-style="11"]){height:16px;margin-bottom:5px}
+.hair-style-icon:is([data-style="5"],[data-style="7"],[data-style="11"]) i{top:9px;width:6px;height:18px;border-radius:2px 2px 6px 6px}
+.hair-style-icon:is([data-style="5"],[data-style="7"],[data-style="11"]) i:nth-child(2){right:0}
+.hair-style-icon[data-style="7"] i{width:8px;height:16px}
+.hair-style-icon[data-style="11"] i{height:21px}
+.hair-style-icon[data-style="11"] i:nth-child(3){right:6px}
+.hair-style-icon[data-style="6"]{height:11px;margin-bottom:7px;border-radius:8px 8px 2px 2px}
+.hair-style-icon[data-style="8"] i:first-child{right:-3px;top:6px;width:8px;height:22px;border-radius:8px;transform:rotate(-18deg)}
+.hair-style-icon[data-style="9"]{transform:skewX(-13deg) scaleY(.71);border-radius:9px 4px 9px 5px}
+.hair-style-icon[data-style="12"]{background:transparent;border:1px dashed #98aaa8;box-shadow:none}
+.avatar-pixel:is([data-hair-style="4"],[data-hair-style="5"],[data-hair-style="6"],[data-hair-style="7"],[data-hair-style="8"],[data-hair-style="9"],[data-hair-style="10"],[data-hair-style="11"]) .avatar-hair-top{
+  display:block!important;left:10px;top:6px;width:54px;height:18px;border-radius:9px 9px 3px 3px
+}
+.avatar-pixel:is([data-hair-style="5"],[data-hair-style="7"],[data-hair-style="11"]) :is(.avatar-hair-left,.avatar-hair-right){
+  display:block!important;top:14px;width:9px;height:45px;border-radius:6px
+}
+.avatar-pixel:is([data-hair-style="5"],[data-hair-style="7"],[data-hair-style="11"]) .avatar-hair-left{left:10px}
+.avatar-pixel:is([data-hair-style="5"],[data-hair-style="7"],[data-hair-style="11"]) .avatar-hair-right{right:10px}
+.avatar-pixel[data-hair-style="8"] .avatar-hair-back{display:block!important;left:45px;top:12px;width:19px;height:51px}
+.avatar-pixel[data-hair-style="10"] .avatar-hair-top{top:-3px;left:3px;width:68px;height:27px;border-radius:40%}
+.avatar-pixel[data-silhouette="1"] .avatar-body{width:52px;left:11px;border-radius:10px 10px 4px 4px!important}
+.avatar-pixel[data-outfit="1"] .avatar-body{box-shadow:inset 8px 0 var(--accent),inset -8px 0 var(--accent)}
+.avatar-pixel[data-outfit="2"] .avatar-body{border-bottom:19px solid var(--accent)}
+.avatar-pixel[data-outfit="3"] .avatar-accent{top:65px;transform:rotate(-13deg)}
+.avatar-pixel[data-outfit="4"] .avatar-accent{width:62px;left:6px;transform:rotate(16deg)}
+.avatar-pixel[data-outfit="5"] .avatar-body{border-inline:7px solid var(--accent)}
+.avatar-pixel .avatar-beard,.avatar-pixel .avatar-shoes,.avatar-pixel .avatar-emblem{display:none;box-shadow:none}
+.avatar-pixel:is([data-beard="1"],[data-beard="2"],[data-beard="3"],[data-beard="4"],[data-beard="5"]) .avatar-beard{
+  display:block;left:23px;top:43px;width:28px;height:11px;background:var(--hair);z-index:7
+}
+.avatar-pixel[data-beard="1"] .avatar-beard{height:4px}
+.avatar-pixel[data-beard="3"] .avatar-beard{left:32px;width:10px;top:47px}
+.avatar-pixel[data-beard="5"] .avatar-beard{height:20px;clip-path:polygon(0 0,100% 0,58% 100%,42% 100%)}
+.avatar-pixel:is([data-face="gas_mask"],[data-face="respirator_mask"]) .avatar-beard{display:none}
+.avatar-pixel[data-shoes] .avatar-shoes{display:block;left:10px;top:169px;width:23px;height:13px;background:#3a3336;box-shadow:31px 0 #3a3336;z-index:5}
+.avatar-pixel[data-shoes="1"] .avatar-shoes{background:var(--accent);box-shadow:31px 0 var(--accent);border-bottom:3px solid #f0e2d1}
+.avatar-pixel[data-shoes="4"] .avatar-shoes{height:8px;top:174px;background:#967348;box-shadow:31px 0 #967348}
+.avatar-pixel[data-badge] .avatar-emblem{display:block;left:17px;top:69px;width:8px;height:8px;z-index:7;
+  --sigil:#ffc55f;background:var(--sigil);box-shadow:0 0 9px 1px var(--sigil);border-radius:2px;transform:rotate(45deg)}
+.avatar-pixel[data-badge="1"] .avatar-emblem{--sigil:#64efef}
+.avatar-pixel[data-badge="2"] .avatar-emblem{--sigil:#a3f491}
+.avatar-pixel[data-badge="3"] .avatar-emblem{--sigil:#cca8ff}
+@media(max-width:760px){
+  .character-card .avatar-preview{position:relative;top:auto}
+  .custom-group .style-options{grid-template-columns:repeat(auto-fit,minmax(76px,1fr))}
+}
+
+.avatar-pixel[data-head="iron_helmet"] .avatar-hair-piece{display:none!important}
+.avatar-pixel:is([data-head="face_shield"],[data-head="diving_mask"],[data-head="protective_goggles"],[data-face="gas_mask"],[data-face="respirator_mask"]) :is(.avatar-hair-fringe,.avatar-hair-bun,.avatar-hair-crest,.avatar-hair-left,.avatar-hair-right){display:none!important}
+.avatar-pixel:is([data-feet="iron_boots"],[data-feet="rubber_boots"],[data-feet="insulated_boots"],[data-feet="fins"]) .avatar-shoes{background:#6f838b;box-shadow:31px 0 #6f838b;border-bottom:0}

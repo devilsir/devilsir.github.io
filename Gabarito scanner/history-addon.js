@@ -36,6 +36,7 @@
     answerKeyInput: $('answerKeyInput'),
     resultAnswerKeyInput: $('resultAnswerKeyInput'),
     optionCount: $('optionCount'),
+    optionScheme: $('optionScheme'),
     gradeScore: $('gradeScore'),
     scoreFraction: $('scoreFraction'),
     scorePercent: $('scorePercent'),
@@ -251,17 +252,63 @@
     if (file && String(file.type || '').startsWith('image/')) beginSession(file);
   }
 
+  function stripAnswerDelimiters(raw) {
+    let token = String(raw || '').trim();
+    let prev;
+    do {
+      prev = token;
+      token = token
+        .replace(/^["'“”‘’«»(\[{<\s]+/, '')
+        .replace(/["'“”‘’«»)\]}>.,;:\s]+$/, '');
+    } while (token !== prev);
+    return token;
+  }
+
+  function normalizeHistoryToken(rawToken, scheme) {
+    const cleaned = stripAnswerDelimiters(rawToken);
+    const upper = cleaned.toUpperCase();
+    if (['--', 'ANULADA', 'ANULADO'].includes(String(rawToken || '').trim().toUpperCase()) || ['--', 'ANULADA', 'ANULADO'].includes(upper)) {
+      return '--';
+    }
+    if (['-', '—', '–', '_', 'BRANCO', 'BLANK'].includes(upper)) return null;
+    if (scheme === 'lower' && /^[A-F]$/.test(upper)) return upper.toLowerCase();
+    if (scheme === 'roman' && /^(I|II|III|IV|V|VI)$/.test(upper)) return upper;
+    if (scheme === 'vf') {
+      if (['V', 'VERDADEIRO', 'TRUE', 'T'].includes(upper)) return 'V';
+      if (['F', 'FALSO', 'FALSE'].includes(upper)) return 'F';
+      return null;
+    }
+    if (scheme === 'ce') {
+      if (['C', 'CERTO', 'CORRETO'].includes(upper)) return 'C';
+      if (['E', 'ERRADO', 'INCORRETO'].includes(upper)) return 'E';
+      return null;
+    }
+    return /^(I|II|III|IV|V|VI|[A-F]|[VFCE])$/.test(upper) ? upper : null;
+  }
+
   function parseAnswerKey(text, expectedCount) {
     const raw = String(text || '').trim();
     if (!raw) return [];
+    const scheme = els.optionScheme?.value || 'upper';
     const result = Array.from({ length: expectedCount }, () => null);
-    const numbered = [...raw.matchAll(/(?:^|[\n;,])\s*(\d{1,3})(?:\s+|[.):]\s*|-(?=\s*[A-F])\s*|(?=--))(--|ANULADA|ANULADO|[A-F]|-|—|BRANCO|BLANK)(?=\s*(?:$|[\n;,]))/gim)];
+    if (raw.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed.slice(0, expectedCount).map((tok) => normalizeHistoryToken(tok, scheme));
+        }
+      } catch {}
+    }
+    const numbered = [
+      ...raw.matchAll(
+        /(?:^|[\n;,])\s*(\d{1,3})(?:\s+(?=--)|[.):]\s*|\s*-(?!-)\s*|\s+)([("'“”‘’\[«]*?(?:--|ANULADA|ANULADO|BRANCO|BLANK|VERDADEIRO|FALSO|CERTO|ERRADO|III|II|IV|VI|I|V|[A-Fa-f]|-|—)[)"'“”‘’\]»]*)(?=\s*(?:$|[\n;,]))/gim
+      )
+    ];
     if (numbered.length) {
       numbered.forEach((match) => {
         const question = Number(match[1]);
         if (question < 1 || question > expectedCount) return;
-        const token = String(match[2]).toUpperCase();
-        result[question - 1] = ['--', 'ANULADA', 'ANULADO'].includes(token) ? '--' : ['-', '—', 'BRANCO', 'BLANK'].includes(token) ? null : token;
+        result[question - 1] = normalizeHistoryToken(match[2], scheme);
       });
       return result;
     }
@@ -269,10 +316,7 @@
       .split(/[\s,;|/]+/)
       .filter(Boolean)
       .slice(0, expectedCount)
-      .map((token) => {
-        const value = token.toUpperCase();
-        return ['--', 'ANULADA', 'ANULADO'].includes(value) ? '--' : ['-', '—', 'BRANCO', 'BLANK'].includes(value) ? null : /^[A-F]$/.test(value) ? value : null;
-      });
+      .map((token) => normalizeHistoryToken(token, scheme));
   }
 
   function collectQuestionRows() {

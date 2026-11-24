@@ -1,11 +1,29 @@
-const CACHE_NAME = 'omr-scanner-v9';
+const CACHE_NAME = 'omr-scanner-v14';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './pwa.js',
   './history-addon.js',
-  './assets/index-OMRfix9.js',
+  './src/main.js',
+  './src/config.js',
+  './src/utils/math.js',
+  './src/utils/image.js',
+  './src/utils/txt-export.js',
+  './src/scoring/answer-key.js',
+  './src/cv/document-detector.js',
+  './src/cv/preprocessor.js',
+  './src/cv/mark-detector.js',
+  './src/cv/grid-reconstructor.js',
+  './src/cv/bubble-analyzer.js',
+  './src/cv/answer-classifier.js',
+  './src/cv/quality-estimator.js',
+  './src/cv/template-registrar.js',
+  './src/cv/omr-engine.js',
+  './src/ui/crop-editor.js',
+  './src/ui/result-overlay.js',
+  './src/ui/zoom-viewer.js',
+  './src/demo/demo-sheets.js',
   './assets/index-RXXbEzxx.css',
   './assets/history-addon.css',
   './vendor/opencv.js',
@@ -49,11 +67,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Scripts/styles use network-first so a new build cannot be trapped behind an old PWA cache.
-  const versionSensitive = request.destination === 'script' || request.destination === 'style' || url.pathname.endsWith('/manifest.webmanifest');
+  // Scripts/styles use network-first with no-cache revalidation so new builds are never trapped behind old caches.
+  const versionSensitive =
+    request.destination === 'script' ||
+    request.destination === 'style' ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('/manifest.webmanifest');
   if (versionSensitive) {
     event.respondWith(
-      fetch(request)
+      fetch(new Request(request, { cache: 'no-cache' }))
         .then((response) => {
           if (response.ok) {
             const copy = response.clone();

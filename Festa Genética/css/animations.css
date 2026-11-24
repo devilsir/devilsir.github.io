@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Floricultura & Dossiê 46 — Animações 2D & Brilho Discreto
+   ========================================================================== */
+
+@keyframes cust-enter {
+  0% { opacity: 0; transform: translateX(-22px) translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+}
+
+@keyframes cust-breathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-2.5px) scaleY(1.008); }
+}
+
+@keyframes rgb-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes led-breathe {
+  0%, 100% { box-shadow: 0 0 12px rgba(47, 163, 124, 0.22), 0 12px 30px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 24px rgba(47, 163, 124, 0.44), 0 12px 32px rgba(0, 0, 0, 0.46); }
+}
+
+@keyframes ping-glow {
+  0%, 100% { transform: scale(1); opacity: 0.85; box-shadow: 0 0 5px #2FA37C; }
+  50% { transform: scale(1.22); opacity: 1; box-shadow: 0 0 10px #D8B16A; }
+}
+
+/* ---------- Partículas sutis de luz quente e mineral ---------- */
+#dust-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.dust-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(236, 210, 158, 0.65), rgba(216, 177, 106, 0.16) 62%, transparent);
+  opacity: 0;
+  animation: dust-drift linear infinite;
+  will-change: transform, opacity;
+}
+.dust-mote:nth-child(3n) {
+  background: radial-gradient(circle, rgba(167, 224, 203, 0.58), rgba(47, 163, 124, 0.14) 62%, transparent);
+}
+.dust-mote:nth-child(4n) {
+  background: radial-gradient(circle, rgba(243, 241, 236, 0.55), rgba(255, 255, 255, 0.08) 62%, transparent);
+}
+
+@keyframes dust-drift {
+  0% { transform: translate3d(0, 0, 0) scale(0.75); opacity: 0; }
+  20% { opacity: var(--o, 0.26); }
+  80% { opacity: var(--o, 0.26); }
+  100% { transform: translate3d(var(--dx, 28px), var(--dy, -90px), 0) scale(1.05); opacity: 0; }
+}
+
+/* ---------- Plantas: balanço orgânico & brilho natural ---------- */
+.plant-art-graphic .plant-sway {
+  transform-box: view-box;
+  transform-origin: 60px 134px;
+  animation: plant-sway 5.6s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+.plant-art-graphic .bio-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bio-pulse 3.4s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+.plant-art-graphic .bio-soil { animation: bio-pulse 3.4s ease-in-out infinite; opacity: 0.58; }
+.plant-art-graphic .spore { animation: spore-rise 3.8s ease-in-out infinite; opacity: 0; }
+
+@keyframes plant-sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+@keyframes bio-pulse {
+  0%, 100% { opacity: 0.42; transform: scale(0.94); }
+  50% { opacity: 0.78; transform: scale(1.05); }
+}
+@keyframes spore-rise {
+  0% { opacity: 0; transform: translateY(5px); }
+  30% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-16px); }
+}
+
+/* ---------- Abertura de Cápsula / Broto ---------- */
+.seedling-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.capsule-shell {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 3;
+  animation: capsule-open 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--delay, 0.1s);
+}
+.capsule-shell::before {
+  content: "";
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(243, 241, 236, 0.9), rgba(216, 177, 106, 0.42) 55%, transparent 72%);
+  box-shadow: 0 0 20px rgba(216, 177, 106, 0.45);
+}
+.seedling-art-reveal {
+  animation: sprout-emerge 0.60s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+  animation-delay: var(--delay, 0.1s);
+}
+.seedling.settled .capsule-shell { display: none; }
+.seedling.settled .seedling-art-reveal { animation: none; opacity: 1; transform: none; }
+
+@keyframes capsule-open {
+  0% { transform: scale(0.55); opacity: 0.92; }
+  45% { transform: scale(1.28); opacity: 0.8; }
+  100% { transform: scale(1.82); opacity: 0; }
+}
+@keyframes sprout-emerge {
+  0% { transform: translateY(12px) scale(0.75); opacity: 0; }
+  65% { transform: translateY(-2px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ---------- Retrato Falado & Carimbo Forense ---------- */
+.portrait-graphic.pulse-update { animation: portrait-sketch-pulse 0.32s ease; }
+@keyframes portrait-sketch-pulse {
+  0% { filter: contrast(1.1); transform: scale(1.012); }
+  100% { filter: contrast(1); transform: scale(1); }
+}
+
+.forensic-stamp {
+  position: absolute;
+  top: 16px;
+  right: 14px;
+  z-index: 12;
+  padding: 7px 13px;
+  border: 2.5px double currentColor;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  pointer-events: none;
+  transform: rotate(-9deg);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  animation: stamp-slam 0.44s cubic-bezier(0.2, 1.35, 0.35, 1) both;
+}
+.forensic-stamp.confirmed {
+  color: #4DC49B;
+  background: rgba(12, 26, 21, 0.92);
+}
+.forensic-stamp.partial {
+  color: #E2BE78;
+  background: rgba(28, 22, 12, 0.92);
+}
+.forensic-stamp.inconsistent {
+  color: #E87B6C;
+  background: rgba(32, 14, 13, 0.94);
+}
+
+@keyframes stamp-slam {
+  0% { transform: scale(2.5) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(0.92) rotate(-7deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-9deg); opacity: 0.98; }
+}
+
+/* ---------- Transições Gerais ---------- */
+@keyframes sheet-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop-in {
+  from { transform: scale(0.9) translateY(6px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+@keyframes card-leave {
+  to { transform: scale(0.7) rotate(-4deg); opacity: 0; }
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes star-pop {
+  0% { transform: scale(0) rotate(-65deg); opacity: 0; }
+  70% { transform: scale(1.18) rotate(6deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes badge-slide {
+  from { opacity: 0; transform: translateX(36px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes spark-burst {
+  from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.15); opacity: 0; }
+}
+@keyframes confetti-fall {
+  to { transform: translate(var(--drift), 108vh) rotate(var(--rot)); }
+}
+
+.sheet-anim { animation: sheet-enter 0.28s ease both; }
+.plant-card.fresh { animation: pop-in 0.4s ease both; }
+.plant-card.leaving { animation: card-leave 0.24s ease forwards; }
+
+#fx-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 95;
+  overflow: hidden;
+}
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: spark-burst 0.8s ease-out forwards;
+}
+.confetti {
+  position: absolute;
+  top: -16px;
+  width: 8px;
+  height: 13px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition: none !important;
+  }
+  .dust-mote { display: none; }
+}

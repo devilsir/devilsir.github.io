@@ -1,0 +1,215 @@
+.ocular-wrap {
+  position: absolute;
+  right: 1.05rem;
+  top: 0.78rem;
+  bottom: 10.4rem;
+  width: min(39%, 400px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.34rem;
+  pointer-events: none;
+}
+
+.ocular-wrap > * {
+  pointer-events: auto;
+}
+
+.ocular-wrap canvas {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100% - 4.3rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 7px solid #161f2a;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.09),
+    0 0 0 1.5px rgba(125, 215, 232, 0.24),
+    0 0 0 8px rgba(9, 13, 19, 0.78),
+    0 16px 40px rgba(2, 5, 10, 0.84);
+  background: #04060a;
+  touch-action: none;
+  cursor: move;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.ocular-wrap.is-focused canvas {
+  border-color: #1b323d;
+  box-shadow:
+    0 0 0 1.5px rgba(88, 201, 154, 0.52),
+    0 0 22px rgba(75, 199, 216, 0.24),
+    0 0 0 8px rgba(9, 13, 19, 0.78),
+    0 16px 40px rgba(2, 5, 10, 0.84);
+}
+
+.ocular-wrap.is-alert canvas {
+  border-color: #c9526c;
+  box-shadow:
+    0 0 0 1.5px rgba(255, 130, 155, 0.65),
+    0 0 28px rgba(217, 75, 108, 0.48),
+    0 14px 36px rgba(3, 6, 10, 0.78);
+}
+
+/* Hitachi HT7800 Rectangular Electron Microscope Live Acquisition Monitor */
+.em-screen-wrap {
+  width: min(47%, 530px);
+}
+
+.em-screen-wrap canvas {
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  border-width: 5px;
+  border-color: #1a2432;
+}
+
+.em-screen-wrap.is-focused canvas {
+  border-color: #214a48;
+}
+
+.em-screen-wrap .ocular-title,
+.em-screen-wrap .ocular-status {
+  font-size: 0.90rem;
+  font-weight: 700;
+  padding: 0.34rem 0.68rem;
+  line-height: 1.25;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.micro-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  width: 100%;
+}
+
+.micro-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: center;
+  gap: 0.44rem 0.62rem;
+}
+
+.micro-row .field {
+  min-width: 118px;
+  max-width: 175px;
+}
+
+.field.is-fine output {
+  color: var(--green);
+}
+
+.field.is-fine input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.13) var(--fill-start, 0%),
+    var(--green) var(--fill-start, 0%),
+    var(--green) var(--fill-end, 0%),
+    rgba(255, 255, 255, 0.13) var(--fill-end, 0%),
+    rgba(255, 255, 255, 0.13) 100%);
+}
+
+.field.is-fine input[type="range"]::-webkit-slider-thumb {
+  border-color: var(--green);
+}
+
+.field.is-fine input[type="range"]::-moz-range-thumb {
+  border-color: var(--green);
+}
+
+.ocular-wrap canvas:focus-visible { outline-offset: 4px; }
+
+.ocular-title, .ocular-status {
+  font: 650 0.66rem var(--mono);
+  letter-spacing: 0.04em;
+  color: #cfe0ea;
+  background: rgba(11, 16, 23, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  padding: 0.32rem 0.56rem;
+  text-align: center;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.ocular-status {
+  color: var(--amber);
+  min-height: 1.4rem;
+}
+
+.ocular-status.ok {
+  color: var(--green);
+  border-color: rgba(88, 201, 154, 0.32);
+}
+
+.ocular-status.danger {
+  color: #ff9db8;
+  border-color: rgba(217, 124, 159, 0.52);
+  background: rgba(54, 19, 31, 0.9);
+}
+
+.lens-buttons {
+  display: flex;
+  gap: 0.28rem;
+}
+
+.lens-buttons button {
+  flex: 1;
+  min-width: 44px;
+  padding: 0.38rem 0.42rem;
+  font-family: var(--mono);
+  font-weight: 700;
+  border-bottom: 3px solid var(--lens, #9dadb2);
+}
+
+.bench-preview {
+  position: absolute;
+  right: 0.9rem;
+  top: 0.85rem;
+  width: clamp(150px, 21%, 236px);
+  padding: 0.42rem;
+  background: rgba(12, 18, 26, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(4, 7, 12, 0.6);
+  display: grid;
+  gap: 0.32rem;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bench-preview canvas {
+  width: 100%;
+  aspect-ratio: 1.52;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bench-preview span {
+  font: 600 0.65rem var(--mono);
+  color: #c2d6e0;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 900px) {
+  .ocular-wrap {
+    top: 4.9rem;
+    bottom: 0.7rem;
+    width: min(52%, 340px);
+    right: 0.6rem;
+  }
+  .ocular-wrap canvas { border-width: 4px; }
+  .bench-preview { top: auto; bottom: 0.7rem; right: 0.7rem; width: 158px; }
+}
+
+@media (max-width: 560px) {
+  .ocular-wrap { width: 56%; right: 0.45rem; }
+  .ocular-title, .ocular-status { font-size: 0.59rem; padding: 0.24rem 0.36rem; }
+}

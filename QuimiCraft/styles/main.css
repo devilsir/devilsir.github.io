@@ -128,3 +128,30 @@
 /* Block items are miniature renders of their real texture atlas tiles. */
 .block-preview{position:absolute;left:50%;top:50%;width:48px;height:48px;max-width:100%;max-height:100%;object-fit:contain;transform:translate(-50%,-50%);image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
 .hotbar .block-preview{width:47px;height:47px}.mc-inventory-card .block-preview{width:94%;height:94%}.mc-recipe-icon .block-preview{width:38px;height:38px}.mc-craft-output .block-preview{width:52px;height:52px}.mc-craft-slot .block-preview{width:43px;height:43px}.mc-equipment-slot .block-preview{width:35px;height:35px}
+
+#loaderGuided{width:100%;margin-top:6px}
+#pause .pause-card{max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain}
+#pause .pause-actions{gap:7px}
+.world-file-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.world-file-actions button{flex:1 1 125px;padding:9px 12px;font-size:.78rem}
+.world-save-status{margin:9px 0 0;color:#ffcf99;font-size:.79rem;line-height:1.4}
+.world-save-status:empty{display:none}
+.drag-hint{position:fixed;z-index:5;top:12px;left:50%;transform:translateX(-50%);max-width:min(72vw,520px);padding:6px 12px;border:1px solid #7fd3ad55;border-radius:8px;background:#091720e9;color:#d8f1e8;text-align:center;font-size:.74rem;pointer-events:none}
+body:has(#pause.open) .drag-hint,body:has(.modal.open) .drag-hint,body:has(#hud:not(.visible)) .drag-hint{display:none}
+.fieldwork-panel{position:fixed;z-index:6;right:18px;bottom:148px;width:min(285px,calc(100vw - 36px));padding:14px 34px 12px 14px;border:1px solid #74c9a75e;border-radius:12px;background:#0a1c24ee;color:#d8f1e8;box-shadow:0 12px 25px #0005}
+body:has(#hud:not(.visible)) .fieldwork-panel{display:none}
+.fieldwork-panel b{font-size:.82rem;color:#bfe579}
+.fieldwork-panel p{font-size:.8rem;line-height:1.45;margin:6px 0 0}
+#fieldworkClose{position:absolute;right:7px;top:7px;min-width:27px;min-height:27px;border:1px solid #79ae9d55;border-radius:6px;background:#142d36;color:#e5fff7;cursor:pointer}
+#fieldworkNotebook{margin-top:9px;padding:7px 9px;font-size:.75rem}
+.fieldwork-form{display:grid;gap:8px;margin-bottom:16px}
+.fieldwork-form textarea{resize:vertical;min-height:68px;padding:10px;border:1px solid #91b9b06b;border-radius:8px;background:#0b1b22;color:#f0fff8;font:inherit}
+.fieldwork-form button{justify-self:start}
+.fieldwork-panel[hidden],.drag-hint[hidden],#fieldworkNotebook[hidden],#cameraModeBtn[hidden]{display:none}
+@media (pointer:coarse),(max-width:670px){.fieldwork-panel{right:8px;bottom:195px;width:min(245px,calc(100vw - 16px))}}
+@media (max-height:520px){.fieldwork-panel{top:63px;bottom:auto}}
+
+#game canvas{touch-action:pinch-zoom}
+.fieldwork-form textarea{user-select:text;-webkit-user-select:text}
+#pause .world-save-status{margin:9px 0 0;color:#ffcf99}
+#pause .pause-actions button{padding-block:10px}

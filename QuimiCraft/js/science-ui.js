@@ -89,6 +89,8 @@
     const closeModal = typeof bridge.closeModal === "function" ? bridge.closeModal : function () {};
     const playFeedback = typeof bridge.playFeedback === "function" ? bridge.playFeedback : function () {};
     const refreshInventory = typeof bridge.refreshInventory === "function" ? bridge.refreshInventory : function () {};
+    const recordAnalysis = typeof bridge.recordAnalysis === "function" ? bridge.recordAnalysis : () => {};
+    const recordObservation = typeof bridge.recordObservation === "function" ? bridge.recordObservation : () => {};
     const recordReaction = typeof bridge.recordReaction === "function" ? bridge.recordReaction : function () {};
     const openLegacyChemistry = typeof bridge.openLegacyChemistry === "function" ? bridge.openLegacyChemistry : function () {};
 
@@ -253,8 +255,9 @@
 
     function renderObservations(notebook) {
       const observations = notebook.observations || [];
-      if (!observations.length) return '<p class="science-empty">Nenhuma observação registrada ainda.</p>';
-      return `<div class="observation-list">${observations.slice().reverse().map(observation => `
+      const form = '<form class="fieldwork-form" data-observation-form><label for="fieldObservation">Observação de campo</label><textarea id="fieldObservation" name="observation" rows="3" maxlength="420" required placeholder="O que você mediu? O que o resultado indica?"></textarea><button type="submit" class="secondary">Registrar observação</button></form>';
+      if (!observations.length) return form + '<p class="science-empty">Nenhuma observação registrada ainda.</p>';
+      return form + `<div class="observation-list">${observations.slice().reverse().map(observation => `
         <article><span>${escapeHTML(observation.category)} · ${formatDate(observation.createdAt)}</span><p>${escapeHTML(observation.text)}</p></article>
       `).join("")}</div>`;
     }
@@ -272,7 +275,19 @@
       else if (activeNotebookTab === "elements") notebookContent.innerHTML = renderElementCatalog();
       else if (activeNotebookTab === "samples") notebookContent.innerHTML = renderSamples(samples);
       else if (activeNotebookTab === "water") notebookContent.innerHTML = renderWaterCatalog();
-      else if (activeNotebookTab === "observations") notebookContent.innerHTML = renderObservations(notebook);
+      else if (activeNotebookTab === "observations") {
+        notebookContent.innerHTML = renderObservations(notebook);
+        notebookContent.querySelector("[data-observation-form]")?.addEventListener("submit", event => {
+          event.preventDefault();
+          const value = event.currentTarget.elements.observation.value.trim();
+          if (!value) return;
+          system.addObservation(value, "Campo");
+          system.persist(true);
+          recordObservation();
+          renderNotebook();
+          toast("Observação registrada no caderno.");
+        });
+      }
       else notebookContent.innerHTML = renderCatalog(activeNotebookTab, system.catalog[activeNotebookTab] || []);
     }
 
@@ -470,6 +485,7 @@
       stationContent.querySelectorAll("[data-analyze-sample]").forEach(button => {
         button.addEventListener("click", () => {
           const result = system.analyzeSample(button.dataset.analyzeSample, activeStationId);
+          recordAnalysis(result);
           toast(result.message);
           renderStation();
           renderNotebook();

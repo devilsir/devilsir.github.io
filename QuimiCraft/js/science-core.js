@@ -38,6 +38,8 @@
     splash: "◒"
   });
   const BIOME_TEMPERATURES = Object.freeze({
+    "floresta de sequoias": 19, manguezal: 27, "chapadas ocres": 27, "fiordes glaciais": 5,
+    "campina de aurora": 16, "caldeira vítrea": 31,
     "tundra": -11,
     "taiga": 5,
     "prado alpino": 8,
@@ -160,6 +162,8 @@
   });
 
   const ITEM_NAMES = Object.freeze({
+    stone_pickaxe: "Picareta de pedra",
+    iron_pickaxe: "Picareta de ferro",
     chemical_lab_coat: "Jaleco químico resistente",
     gas_mask: "Máscara de gás",
     disposable_gloves: "Luvas descartáveis",
@@ -214,6 +218,8 @@
   });
 
   const ITEM_COLORS = Object.freeze({
+    stone_pickaxe: "#98a6a3",
+    iron_pickaxe: "#b7d2d8",
     chemical_lab_coat: "#d9f5ed",
     gas_mask: "#455b55",
     disposable_gloves: "#d6eef1",
@@ -282,6 +288,30 @@
       protections: {},
       repair: [["stick", 2], ["wool", 1]],
       effect: "arma de longo alcance; a corda e a estrutura exigem manutenção"
+    }),
+    copper_pickaxe: Object.freeze({
+      slot:"tool",abbr:"COBRE",maxDurability:245,miningSpeed:2.36,protections:{},
+      repair:[["copper",2],["stick",1]],effect:"extração de minério de prata"
+    }),
+    hoe: Object.freeze({
+      slot:"tool",abbr:"ENXADA",maxDurability:205,protections:{},
+      repair:[["stone",2],["stick",1]],effect:"prepara o solo para semear"
+    }),
+    fishing_rod: Object.freeze({
+      slot:"tool",abbr:"VARA",maxDurability:175,protections:{},
+      repair:[["stick",1],["wool",1]],effect:"lança linha e anzol sobre águas abertas"
+    }),
+    reinforced_rod: Object.freeze({
+      slot:"tool",abbr:"REFORÇO",maxDurability:270,protections:{},
+      repair:[["brass_ingot",1],["wool",1]],effect:"reduz a espera e amplia a janela da fisgada"
+    }),
+    stone_pickaxe: Object.freeze({
+      slot: "tool", abbr: "PEDRA", maxDurability: 145, miningSpeed: 1.85, protections: {},
+      repair: [["stone", 2], ["stick", 1]], effect: "acelera a extração de pedra e minérios"
+    }),
+    iron_pickaxe: Object.freeze({
+      slot: "tool", abbr: "FERRO", maxDurability: 360, miningSpeed: 2.9, protections: {},
+      repair: [["iron", 2], ["stick", 1]], effect: "mineração rápida e maior durabilidade"
     }),
     iron_sword: Object.freeze({
       slot: "tool",
@@ -765,6 +795,7 @@
 
   const RESEARCH_NODES = Object.freeze([
     Object.freeze({ id: "field_sampling", category: "Chemistry", name: "Amostragem de campo", cost: 0, requires: [], unlocks: "Recipientes e registro básico de amostras." }),
+    Object.freeze({ id: "field_alchemy", category: "Chemistry", name: "Alquimia de campo", cost: 6, requires: ["field_sampling"], unlocks: "Molde três frascos com uma unidade de vidro nas oficinas alquímicas." }),
     Object.freeze({ id: "water_safety", category: "Environmental Science", name: "Segurança hídrica", cost: 4, requires: ["field_sampling"], unlocks: "Diagnóstico e tratamento de águas perigosas." }),
     Object.freeze({ id: "chemical_hazards", category: "Survival", name: "Riscos químicos", cost: 5, requires: ["field_sampling"], unlocks: "Leitura de toxicidade, corrosão, fumaça e ar contaminado." }),
     Object.freeze({ id: "microscopy", category: "Biology", name: "Microscopia", cost: 5, requires: ["field_sampling"], unlocks: "Análise de fungos, água e microrganismos." }),
@@ -1291,6 +1322,8 @@
 
   function createCraftingRecipes(block) {
     return [
+      { name: "Picareta de pedra", desc: "3 pedras e 2 bastões", need: [[block.STONE, 3], ["stick", 2]], out: ["stone_pickaxe", 1] },
+      { name: "Picareta de ferro", desc: "3 ferros e 2 bastões", need: [[block.IRON, 3], ["stick", 2]], out: ["iron_pickaxe", 1] },
       { name: "Frascos de amostra", desc: "2 vidros → 4 frascos", need: [[block.GLASS, 2]], out: ["sample_vial", 4] },
       { name: "Tubos de ensaio", desc: "2 vidros → 4 tubos", need: [[block.GLASS, 2]], out: ["test_tube", 4] },
       { name: "Placas de Petri", desc: "2 vidros → 3 placas", need: [[block.GLASS, 2]], out: ["petri_dish", 3] },
@@ -1345,6 +1378,12 @@
     const removeItem = (id, quantity) => rawRemoveItem(resolveItemId(id), quantity);
     const addItem = (id, quantity) => rawAddItem(resolveItemId(id), quantity);
     const itemName = id => rawItemName(resolveItemId(id));
+    const exchange = typeof options.exchangeItems === "function"
+      ? (need, out, reserve = [], preview = false) => options.exchangeItems(
+          need.map(([id, n]) => [resolveItemId(id), n]),
+          out.map(([id, n]) => [resolveItemId(id), n]),
+          reserve.map(([id, n]) => [resolveItemId(id), n]), preview)
+      : null;
     const onChange = typeof options.onChange === "function" ? options.onChange : function () {};
     const getSampleCapacity = typeof options.getSampleCapacity === "function"
       ? options.getSampleCapacity
@@ -1652,10 +1691,15 @@
       if (countItem(container) < 1) {
         return { ok: false, message: `Você precisa de ${itemName(container)} para coletar esta amostra.` };
       }
-      if (!removeItem(container, 1)) return { ok: false, message: "Não foi possível preparar o recipiente." };
-      if (!addItem("sealed_sample", 1)) {
-        addItem(container, 1);
-        return { ok: false, message: "A mochila está cheia para receber a amostra selada." };
+      if (exchange) {
+        const result = exchange([[container, 1]], [["sealed_sample", 1]]);
+        if (!result.ok) return result;
+      } else {
+        if (!removeItem(container, 1)) return { ok: false, message: "Não foi possível preparar o recipiente." };
+        if (!addItem("sealed_sample", 1)) {
+          addItem(container, 1);
+          return { ok: false, message: "A mochila está cheia para receber a amostra selada." };
+        }
       }
       const sample = {
         id: `sample-${Date.now().toString(36)}-${Math.abs(worldSeed + state.statistics.samplesCollected).toString(36)}`,
@@ -1774,8 +1818,16 @@
       const index = state.samples.findIndex(entry => entry.id === sampleId);
       if (index < 0) return { ok: false, message: "Amostra não encontrada." };
       const sample = state.samples[index];
-      if (!removeItem("sealed_sample", 1)) return { ok: false, message: "A amostra selada não está na mochila." };
-      addItem(sample.container, 1);
+      if (exchange) {
+        const result = exchange([["sealed_sample", 1]], [[sample.container, 1]]);
+        if (!result.ok) return result;
+      } else {
+        if (!removeItem("sealed_sample", 1)) return { ok: false, message: "A amostra selada não está na mochila." };
+        if (!addItem(sample.container, 1)) {
+          addItem("sealed_sample", 1);
+          return { ok: false, message: "Libere espaço para recuperar o recipiente." };
+        }
+      }
       state.samples.splice(index, 1);
       emit(true);
       return { ok: true, message: `${itemName(sample.container)} recuperado; a amostra foi descartada com segurança.` };
@@ -1794,6 +1846,20 @@
           ? `${sample.name} armazenada sob refrigeração.`
           : `${sample.name} retirada da refrigeração.`
       };
+    }
+
+    function reactionItems(reaction) {
+      const need = reaction.fuel ? [...reaction.need, reaction.fuel] : reaction.need;
+      const reserved = [];
+      if (reaction.container) reserved.push([reaction.container, 1]);
+      if (reaction.catalyst) reserved.push(reaction.catalyst);
+      return {need, reserved};
+    }
+
+    function reactionFailureChance(reaction, protection) {
+      const minimum = reaction.risk?.minimumProtection || 0;
+      const explosion = reaction.risk?.explosion || 0;
+      return protection < minimum ? clamp(.28 + (minimum - protection) * .72 + explosion * .28, 0, .86) : explosion * .08;
     }
 
     function reactionAvailability(reactionId, stationId, equippedIds) {
@@ -1827,6 +1893,15 @@
           message: `Faltam ${missing.map(([id, quantity]) => `${quantity}× ${itemName(id)}`).join(" + ")}.`
         };
       }
+      if (exchange) {
+        const {need, reserved} = reactionItems(reaction);
+        const outcomes = [reaction.out];
+        if (reactionFailureChance(reaction, riskProtection) > 0) outcomes.push([["unknown_residue", 1]]);
+        for (const products of outcomes) {
+          const result = exchange(need, products, reserved, true);
+          if (!result.ok) return {...result, reaction, protection: riskProtection};
+        }
+      }
       return {
         ok: true,
         reaction,
@@ -1849,16 +1924,17 @@
       const { reaction, protection } = availability;
       const minimum = reaction.risk?.minimumProtection || 0;
       const underProtected = protection < minimum;
-      const explosionRisk = reaction.risk?.explosion || 0;
-      const failureChance = underProtected
-        ? clamp(0.28 + (minimum - protection) * 0.72 + explosionRisk * 0.28, 0, 0.86)
-        : explosionRisk * 0.08;
-
-      reaction.need.forEach(([id, quantity]) => removeItem(id, quantity));
-      if (reaction.fuel) removeItem(reaction.fuel[0], reaction.fuel[1]);
-      const failed = Math.random() < failureChance;
+      const failed = Math.random() < reactionFailureChance(reaction, protection);
+      const {need, reserved} = reactionItems(reaction);
+      const products = failed ? [["unknown_residue", 1]] : reaction.out;
+      if (exchange) {
+        const result = exchange(need, products, reserved);
+        if (!result.ok) return result;
+      } else {
+        for (const [id, quantity] of need) removeItem(id, quantity);
+        for (const [id, quantity] of products) addItem(id, quantity);
+      }
       if (failed) {
-        addItem("unknown_residue", 1);
         state.reactions.failed.push({
           id: reaction.id,
           station: stationId,
@@ -1886,7 +1962,6 @@
         return { ok: false, failed: true, reaction: clone(reaction), message: "A reação falhou e produziu um resíduo desconhecido." };
       }
 
-      reaction.out.forEach(([id, quantity]) => addItem(id, quantity));
       if (!state.reactions.completed.includes(reaction.id)) state.reactions.completed.push(reaction.id);
       registerDiscovery("reactions", reaction.id, {
         name: reaction.name,
@@ -2034,10 +2109,11 @@
         : baseAmbient - 5;
       const weatherCooling = env.weather === "snow" ? 9 : env.weather === "rain" ? 4 : 0;
       const windCooling = clamp(env.wind, 0, 1) * (1.2 + state.body.wetness * 2.2);
-      let ambient = baseAmbient + daytimeHeat - undergroundCooling - weatherCooling - windCooling;
+      let ambient = env.safe ? 22 : baseAmbient + daytimeHeat - undergroundCooling - weatherCooling - windCooling;
       if (env.inWater) ambient = waterTemperature;
 
-      if (env.inWater) state.body.wetness = clamp(state.body.wetness + elapsed * 0.42, 0, 1);
+      if (env.safe) state.body.wetness = Math.max(0,state.body.wetness-elapsed*.28);
+      else if (env.inWater) state.body.wetness = clamp(state.body.wetness + elapsed * 0.42, 0, 1);
       else if (env.weather === "rain" || env.weather === "snow") state.body.wetness = clamp(state.body.wetness + elapsed * 0.08, 0, 1);
       else state.body.wetness = clamp(state.body.wetness - elapsed * (env.nearFire ? 0.12 : 0.018), 0, 1);
 
@@ -2052,7 +2128,9 @@
       target -= state.body.wetness * (2.3 - gear.insulation * 1.6);
       target -= gear.cooling * 2.4;
       target = 37 + (target - 37) * (1 - gear.insulation * 0.7 + gear.conductivity * 0.52);
-      state.body.temperature += (target - state.body.temperature) * (1 - Math.exp(-elapsed / 34));
+      if(env.alchemyWarmth&&!env.safe&&target<36.8)target=Math.min(36.8,target+2.6);
+      if(env.safe)target=37;
+      state.body.temperature += (target - state.body.temperature) * (1 - Math.exp(-elapsed / (env.safe?4.5:34)));
       state.body.temperature = clamp(state.body.temperature, 30, 43);
 
       const rawHazards = {
@@ -2060,11 +2138,11 @@
       };
       for (const key of HAZARD_KEYS) {
         const pulse = state.hazardPulse[key];
-        rawHazards[key] = clamp(rawHazards[key] + pulse, 0, 100);
-        state.hazardPulse[key] = clamp(pulse - elapsed * 4.2, 0, 100);
+        rawHazards[key] = env.safe ? 0 : clamp(rawHazards[key] + pulse, 0, 100);
+        state.hazardPulse[key] = clamp(pulse - elapsed * (env.safe?23:4.2), 0, 100);
         const effective = rawHazards[key] * (1 - (gear.protection[key] || 0));
         state.hazards[key] += (effective - state.hazards[key]) * (1 - Math.exp(-elapsed * 3.5));
-        state.exposures[key] = Math.max(0, state.exposures[key] + elapsed * (effective / 35 - 0.08));
+        state.exposures[key] = Math.max(0, state.exposures[key] + elapsed * (effective / 35 - (env.safe?.9:.08)));
         if (effective >= 18 && !warnedHazards.has(key)) {
           warnedHazards.add(key);
           state.statistics.hazardsEntered += 1;

@@ -44,3 +44,4 @@ self.addEventListener('fetch',event=>{
   }catch(e){return new Response('Armazenamento privado indisponível',{status:503})}
  })());
 });
+importScripts('./central-sw.js');

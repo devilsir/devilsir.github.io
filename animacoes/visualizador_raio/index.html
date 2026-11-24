@@ -1,16 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a101b">
+  <meta name="description" content="Compare raios atômicos e iônicos, experimente adicionar ou retirar elétrons e explore as tendências periódicas.">
   <title>Laboratório de Raios</title>
-  <link href="style.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="root"></div>
-  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-  <script src="script.compiled.js?v=sem-jsx-local-3"></script>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-atom" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="12" rx="10" ry="4.5"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="icon-left" viewBox="0 0 24 24"><path d="M19 12H5m7-7-7 7 7 7"/></symbol>
+    <symbol id="icon-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+    <symbol id="icon-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="icon-compare" viewBox="0 0 24 24"><path d="M12 4v16M3 9V5h5v4zm13 10v-4h5v4zM3 15h5m8-6h5"/></symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24"><path d="M12 6v15M3 4h5c2 0 4 1 4 3 0-2 2-3 4-3h5v14h-5c-2 0-4 1-4 3 0-2-2-3-4-3H3z"/></symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24"><path d="M3 4h5v5H3zM16 4h5v5h-5zM3 10h5v5H3zM9.5 10h5v5h-5zM16 10h5v5h-5zM3 16h5v5H3zM9.5 16h5v5h-5zM16 16h5v5h-5z"/></symbol>
+    <symbol id="icon-list" viewBox="0 0 24 24"><path d="M9 5h12M9 12h12M9 19h12M3 5h1M3 12h1M3 19h1"/></symbol>
+    <symbol id="icon-sound-on" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zm13 0a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></symbol>
+    <symbol id="icon-sound-off" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zm13 0 5 6m0-6-5 6"/></symbol>
+    <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M9 5H6v14h3zm9 0h-3v14h3z"/></symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7z"/></symbol>
+    <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 6m-2-6V5m0 6h6"/></symbol>
+    <symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M5 12h14m-7-7v14"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="icon-scale" viewBox="0 0 24 24"><path d="m4 15 11-11 5 5L9 20zm4-4 2 2m1-5 2 2m1-5 2 2"/></symbol>
+    <symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zm-9 9 9 5 9-5m-18 4 9 5 9-5"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../" aria-label="Voltar para as animações de Química">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-atom"/></svg></span>
+        <span>Laboratório de <strong>Raios</strong></span>
+      </a>
+      <nav class="main-nav" aria-label="Áreas do laboratório">
+        <button type="button" data-panel="lab" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#icon-compare"/></svg> Comparador</button>
+        <button type="button" data-panel="education"><svg class="icon" aria-hidden="true"><use href="#icon-layers"/></svg> Educativo</button>
+        <button type="button" data-panel="periodic"><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg> Tabela periódica</button>
+        <button type="button" data-panel="activities"><svg class="icon" aria-hidden="true"><use href="#icon-book"/></svg> Atividades</button>
+      </nav>
+      <div class="preferences" aria-label="Preferências">
+        <button type="button" id="motion-toggle" class="icon-button" aria-label="Animações" aria-pressed="true" title="Pausar animações"><svg class="icon" aria-hidden="true"><use href="#icon-pause"/></svg></button>
+        <button type="button" id="sound-toggle" class="icon-button" aria-label="Som" aria-pressed="false" title="Ativar som"><svg class="icon" aria-hidden="true"><use href="#icon-sound-off"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section id="lab" aria-labelledby="lab-title">
+      <div class="intro" id="lab-intro">
+        <h1 id="lab-title" tabindex="-1">Compare átomos <span>e íons</span></h1>
+        <p>Explore como o raio muda quando um átomo ganha ou perde elétrons.</p>
+      </div>
+
+      <div class="intro" id="education-intro" hidden>
+        <h1 id="education-title" tabindex="-1">Modo <span>educativo</span></h1>
+        <p>Avance pelo tutorial e teste cada ideia na bancada.</p>
+      </div>
+
+      <div class="lab-layout">
+        <aside id="education-guide" class="panel tutorial-guide" aria-labelledby="tutorial-step-title" hidden>
+          <div class="tutorial-progress">
+            <span id="tutorial-step-number"></span>
+            <progress id="tutorial-progress" value="1" max="5" aria-label="Progresso do tutorial"></progress>
+          </div>
+          <h2 id="tutorial-step-title" tabindex="-1"></h2>
+          <div class="tutorial-copy" id="tutorial-copy"></div>
+          <div class="tutorial-neighbors" id="tutorial-neighbors" role="group" aria-label="Esquema dos vizinhos do íon" hidden></div>
+          <p id="tutorial-task" class="tutorial-task"></p>
+          <div class="tutorial-sources" id="tutorial-sources" aria-label="Fontes da etapa"></div>
+          <button type="button" id="tutorial-reset" class="text-button"><svg class="icon" aria-hidden="true"><use href="#icon-reset"/></svg> Restaurar exemplo</button>
+          <div class="tutorial-navigation" role="group" aria-label="Etapas do tutorial">
+            <button type="button" id="tutorial-prev" class="button button-secondary"><svg class="icon" aria-hidden="true"><use href="#icon-left"/></svg> Anterior</button>
+            <button type="button" id="tutorial-next" class="button button-primary">Próximo <svg class="icon" aria-hidden="true"><use href="#icon-right"/></svg></button>
+          </div>
+        </aside>
+        <div class="bench">
+          <section class="panel comparison" aria-labelledby="comparison-title">
+            <div class="comparison-header">
+              <h2 id="comparison-title" tabindex="-1">Bancada de comparação</h2>
+              <div class="comparison-actions">
+                <div class="segmented" aria-label="Modo de comparação" role="group">
+                  <button type="button" data-mode="linked" aria-pressed="true">Átomo → íon</button>
+                  <button type="button" data-mode="free" aria-pressed="false">Comparação livre</button>
+                </div>
+                <button type="button" id="replay-ion" class="button button-primary"><svg class="icon" aria-hidden="true"><use href="#icon-play"/></svg> <span id="replay-label">Animar formação</span></button>
+              </div>
+            </div>
+            <div id="species-stages" class="species-stages"></div>
+            <div class="comparison-footer">
+              <div class="scale-caption"><svg class="icon" aria-hidden="true"><use href="#icon-scale"/></svg> Escala linear compartilhada</div>
+              <div class="difference" id="difference">
+                <span id="difference-label">Variação do raio</span>
+                <strong id="difference-value"></strong>
+                <span id="difference-percent" class="difference-percent"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel controls" aria-labelledby="controls-title">
+            <div class="control-intro">
+              <h2 id="controls-title">Ajustar elétrons</h2>
+              <p id="edit-species"></p>
+            </div>
+            <div id="edit-targets" class="segmented edit-targets" role="group" aria-label="Espécie para editar" hidden>
+              <button type="button" data-edit="a" aria-pressed="false">A</button>
+              <button type="button" data-edit="b" aria-pressed="true">B</button>
+            </div>
+            <div class="stepper" role="group" aria-label="Ajustar número de elétrons">
+              <button type="button" id="remove-electron" class="step-button" aria-label="Remover elétron" title="Remover elétron"><svg class="icon" aria-hidden="true"><use href="#icon-minus"/></svg></button>
+              <label class="visually-hidden" for="electron-count">Número de elétrons</label>
+              <input type="number" id="electron-count" min="0" max="16" step="1" inputmode="numeric" aria-describedby="edit-species">
+              <button type="button" id="add-electron" class="step-button" aria-label="Adicionar elétron" title="Adicionar elétron"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></button>
+            </div>
+            <div class="control-actions">
+              <button type="button" id="common-ion" class="button button-primary">Íon de referência</button>
+              <button type="button" id="reset-charge" class="button button-secondary"><svg class="icon" aria-hidden="true"><use href="#icon-reset"/></svg> Neutralizar</button>
+            </div>
+          </section>
+          <div class="visually-hidden" id="announcement" role="status" aria-atomic="true"></div>
+        </div>
+
+        <aside class="lab-sidebar" id="lab-sidebar" aria-label="Experimentos e interpretação">
+          <section id="activity-result" class="panel sidebar-panel activity-result" aria-labelledby="activity-result-title" hidden>
+            <h2 id="activity-result-title">Resultado da atividade</h2>
+            <p id="activity-feedback"></p>
+            <p id="activity-explanation"></p>
+            <div class="activity-result-actions">
+              <button type="button" class="text-button" id="return-to-activity">Voltar à atividade <svg class="icon" aria-hidden="true"><use href="#icon-right"/></svg></button>
+              <button type="button" class="icon-button" id="dismiss-activity" aria-label="Fechar resultado" title="Fechar resultado"><svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button>
+            </div>
+          </section>
+          <section class="panel sidebar-panel" aria-labelledby="examples-title">
+            <h2 id="examples-title">Exemplos para testar</h2>
+            <div id="quick-examples" class="quick-examples"></div>
+            <div class="sidebar-divider"></div>
+            <h3>Relações entre espécies</h3>
+            <div id="trend-examples" class="trend-examples"></div>
+            <details class="extra-examples" id="more-examples">
+              <summary>Mais comparações <svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg></summary>
+              <div id="extra-examples" class="trend-examples"></div>
+            </details>
+          </section>
+          <section class="panel sidebar-panel explanation" aria-labelledby="explanation-title">
+            <h2 id="explanation-title"><svg class="icon" aria-hidden="true"><use href="#icon-layers"/></svg> O que mudou?</h2>
+            <p id="comparison-explanation"></p>
+          </section>
+        </aside>
+      </div>
+
+      <details class="sources panel">
+        <summary>Como interpretar os desenhos e os dados <svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg></summary>
+        <div class="sources-body">
+          <p>O contorno está em escala linear de raio. Os anéis e os pontos formam um esquema das camadas eletrônicas. As trilhas animadas indicam ganho ou perda de elétrons de forma ilustrativa.</p>
+          <p>O raio mostrado para o átomo neutro é covalente, obtido de distâncias de ligação. Para os íons, cada cartão indica a fonte, o método e as condições disponíveis. NC é o número de coordenação. A diferença exibida é entre os valores de referência e pode refletir métodos distintos. Valores negativos seguem a convenção cristalográfica da fonte e aparecem no cartão em forma numérica. As camadas aparecem nas espécies com configuração cadastrada.</p>
+          <ul>
+            <li><a href="https://doi.org/10.1039/B801115J" target="_blank" rel="noopener noreferrer">Cordero et al. (2008)</a> — raios covalentes, com a opção de spin alto nos metais com dois valores.</li>
+            <li><a href="https://doi.org/10.1107/S0567739476001551" target="_blank" rel="noopener noreferrer">Shannon (1976)</a> — raios iônicos efetivos por coordenação e estado de spin.</li>
+            <li>As demais publicações estão em “Fonte e interpretação dos raios”, na Tabela periódica.</li>
+            <li><a href="https://www.nist.gov/pml/atomic-spectra-database" target="_blank" rel="noopener noreferrer">NIST Atomic Spectra Database</a> — referência para configurações eletrônicas.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section id="periodic" aria-labelledby="periodic-title" hidden>
+      <div class="intro">
+        <h1 id="periodic-title" tabindex="-1">Tabela <span>periódica</span></h1>
+        <p>Selecione um elemento para consultar o raio do átomo neutro e os registros dos seus íons. Use A ou B para abrir um registro no comparador.</p>
+      </div>
+      <div class="periodic-layout">
+        <section class="panel periodic-browser" aria-label="Selecionar um elemento">
+          <div class="picker-tools">
+            <label class="search-box">
+              <svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg>
+              <span class="visually-hidden">Buscar na tabela periódica</span>
+              <input type="search" id="periodic-search" placeholder="Nome, número ou íon (Na⁻)" autocomplete="off">
+            </label>
+            <div class="segmented" role="group" aria-label="Formato da tabela periódica">
+              <button type="button" data-periodic-layout="table" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg> Tabela</button>
+              <button type="button" data-periodic-layout="list" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#icon-list"/></svg> Lista</button>
+            </div>
+          </div>
+          <ul class="periodic-legend" aria-label="Legenda dos elementos">
+            <li data-availability="cation"><strong>+</strong> Cátions</li>
+            <li data-availability="anion"><strong>−</strong> Ânions</li>
+            <li data-availability="both"><strong>±</strong> Cátions e ânions</li>
+            <li data-availability="none"><strong>·</strong> Só raio covalente</li>
+          </ul>
+          <div class="periodic-scroll" id="periodic-grid" role="region" aria-label="Elementos químicos" tabindex="0"></div>
+        </section>
+        <section class="panel periodic-detail" aria-labelledby="ion-detail-title">
+          <div class="periodic-detail-header">
+            <span id="ion-detail-symbol" class="periodic-detail-symbol" aria-hidden="true"></span>
+            <div>
+              <h2 id="ion-detail-title" tabindex="-1"></h2>
+              <p id="ion-detail-location"></p>
+            </div>
+          </div>
+          <div class="periodic-neutral" id="atomic-radius-record"></div>
+          <label class="periodic-charge-tools" id="periodic-charge-tools" hidden>
+            <span>Espécie</span>
+            <select id="periodic-charge-filter"></select>
+          </label>
+          <p id="ion-record-count" class="ion-record-count" role="status"></p>
+          <p id="ion-radius-empty" class="ion-radius-empty" hidden>Sem raios iônicos para este elemento nas referências consultadas.</p>
+          <div class="ion-table-scroll" role="region" aria-label="Raios por carga e coordenação" tabindex="0">
+            <table class="ion-radius-table" id="ion-radius-table">
+              <caption class="visually-hidden">Registros iônicos e suas fontes</caption>
+              <thead><tr><th scope="col">Íon</th><th scope="col"><abbr title="Número de coordenação">NC</abbr></th><th scope="col">Spin</th><th scope="col">Medida (pm)</th><th scope="col">Comparar</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+      <details class="sources panel">
+        <summary>Fonte e interpretação dos raios <svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg></summary>
+        <div class="sources-body">
+          <p>O raio do átomo neutro é covalente. Para os íons, a tabela reúne raios derivados de distâncias cristalinas, estimativas publicadas e cálculos para íons isolados. Todos estão em picômetros (1 Å = 100 pm). NC é o número de coordenação. “—” indica um íon isolado ou um registro sem NC atribuído. A tabela também inclui estados de íons isolados tabulados pelo NIST e relatos de estados transitórios. Nas referências cristalográficas, a carga indica o estado de oxidação adotado pela fonte. Nos registros de distância orbital, a medida descreve um orbital específico. Use “Com medida” para ver os raios e distâncias disponíveis e “Todos os registros” para acessar também as cargas documentadas sem valor de tamanho.</p>
+          <p><strong>Códigos de Shannon</strong> · E indica estimativa publicada por Shannon, C indica cálculo por relações de comprimento e força de ligação, R indica uso de curvas de raio e volume, M indica referência a óxidos metálicos, A indica Ahrens (1952), P indica Pauling (1960), e * indica concordância entre determinações estruturais.</p>
+          <p>Os raros valores negativos pertencem à convenção cristalográfica usada para descrever distâncias entre íons.</p>
+          <ul>
+            <li><a href="https://doi.org/10.1039/B801115J" target="_blank" rel="noopener noreferrer">Cordero et al. (2008), Tabela 2</a> — raios covalentes.</li>
+            <li><a href="https://doi.org/10.1002/chem.200800987" target="_blank" rel="noopener noreferrer">Pyykkö e Atsumi (2009), Figura 2</a> — raios covalentes de ligação simples.</li>
+            <li><a href="https://doi.org/10.1107/S0567739476001551" target="_blank" rel="noopener noreferrer">Shannon (1976), Tabela 1</a> — raios iônicos efetivos (coluna IR).</li>
+            <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11301896/" target="_blank" rel="noopener noreferrer">Hawthorne e Gagné (2024), Tabela 2</a> — raios iônicos derivados de distâncias em cristais.</li>
+            <li><a href="https://doi.org/10.1021/ja01402a019" target="_blank" rel="noopener noreferrer">Pauling (1927), Tabela II</a> — raios de ânions calculados para cristais.</li>
+            <li><a href="https://doi.org/10.1039/C0DT00401D" target="_blank" rel="noopener noreferrer">Lang e Smith (2010), Tabela 1</a> — raio do hidreto pelo modelo de esferas deformáveis.</li>
+            <li><a href="https://doi.org/10.18434/T4W30F" target="_blank" rel="noopener noreferrer">NIST Atomic Spectra Database (v5.12)</a> — configurações dos estados tabulados de H a Ds.</li>
+            <li><a href="https://doi.org/10.62476/apr.8130" target="_blank" rel="noopener noreferrer">Al-Sharaa et al. (2026), Tabela 1</a> — máximos externos da distribuição radial do orbital 2s.</li>
+            <li><a href="https://www.multiresearchjournal.com/admin/uploads/archives/archive-1686050129.pdf" target="_blank" rel="noopener noreferrer">Al-Kazrajy e Al-Khafaji (2023), Tabela 4</a> — distâncias médias do orbital 2p de íons com cinco elétrons.</li>
+            <li><a href="https://doi.org/10.1016/j.commatsci.2023.112350" target="_blank" rel="noopener noreferrer">Alsalman et al. (2023)</a> — previsões cristalográficas para cátions. <a href="https://doi.org/10.1016/j.commatsci.2024.113491" target="_blank" rel="noopener noreferrer">Alsalman et al. (2025)</a> — raios de ânions calibrados por distâncias cristalinas. <a href="https://cmd-ml.github.io/" target="_blank" rel="noopener noreferrer">Tabelas dos autores</a>.</li>
+            <li><a href="https://doi.org/10.3390/atoms14070059" target="_blank" rel="noopener noreferrer">Haug (2026)</a> — distância mais provável do elétron 1s no modelo de Dirac para núcleo pontual. O laboratório aplica a fórmula aos íons com um elétron de Z = 2 a 118.</li>
+            <li><a href="https://doi.org/10.1063/1.556047" target="_blank" rel="noopener noreferrer">Andersen, Haugen e Hotop (1999), Tabela 5</a> — tempos de vida de estados metaestáveis de ânions atômicos.</li>
+            <li><a href="https://doi.org/10.1103/PhysRevLett.77.470" target="_blank" rel="noopener noreferrer">Sommerfeld et al. (1996)</a> e <a href="https://doi.org/10.1103/PhysRevLett.80.464" target="_blank" rel="noopener noreferrer">Morishita et al. (1998)</a> — resultados teóricos divergentes sobre a ressonância de H²⁻.</li>
+            <li><a href="https://doi.org/10.1103/PhysRevA.104.012819" target="_blank" rel="noopener noreferrer">Kaygorodov et al. (2021)</a> — afinidade eletrônica calculada para Og, que prevê Og⁻ ligado.</li>
+            <li>O relato de O²⁻, F²⁻, Cl²⁻ e Br²⁻ monoatômicos isolados de <a href="https://doi.org/10.1038/211963c0" target="_blank" rel="noopener noreferrer">Stuckey e Kiser (1966)</a> foi contestado por <a href="https://doi.org/10.1038/2121453a0" target="_blank" rel="noopener noreferrer">Fremlin (1966)</a>. <a href="https://pubmed.ncbi.nlm.nih.gov/23988524/" target="_blank" rel="noopener noreferrer">Cl₂²⁻</a> designa um diânion molecular de dois átomos.</li>
+            <li><a href="https://doi.org/10.1021/ic00310a023" target="_blank" rel="noopener noreferrer">Dawes et al. (1989)</a> — raios mínimos de Na⁻ derivados de contatos com hidrogênio em três cristais.</li>
+            <li><a href="https://rahmlab.com/radii-of-the-elements/" target="_blank" rel="noopener noreferrer">Rahm et al. (2016), Tabelas S2 e S3</a> — raios de íons isolados calculados por densidade eletrônica.</li>
+            <li><a href="https://doi.org/10.1016/0022-5088(86)90511-4" target="_blank" rel="noopener noreferrer">David (1986), Tabela 1</a> — estimativas cristalográficas para actinídeos trivalentes.</li>
+            <li>Previsões para íons superpesados em <a href="https://doi.org/10.1524/ract.2000.88.12.833" target="_blank" rel="noopener noreferrer">Bilewicz (2000)</a>, <a href="https://doi.org/10.1070/RC2002v071n05ABEH000712" target="_blank" rel="noopener noreferrer">Ionova (2002)</a>, <a href="https://doi.org/10.1007/978-3-642-37466-1_3" target="_blank" rel="noopener noreferrer">Pershina (2014)</a>, <a href="https://doi.org/10.1007/BFb0116498" target="_blank" rel="noopener noreferrer">Fricke (1975)</a> e <a href="https://doi.org/10.1021/j100612a015" target="_blank" rel="noopener noreferrer">Keller et al. (1974)</a>.</li>
+            <li><a href="https://github.com/materialsproject/pymatgen/blob/v2025.2.18/dev_scripts/Shannon%20Radii.xlsx" target="_blank" rel="noopener noreferrer">Transcrição digital da Tabela 1, pymatgen v2025.2.18</a></li>
+            <li><a href="https://www.sbq.org.br/wp-content/uploads/2025/02/tabela-periodica_SBQ_4.0_fev2025.pdf" target="_blank" rel="noopener noreferrer">Nomes dos elementos, Sociedade Brasileira de Química (2025)</a></li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section id="activities" aria-labelledby="activities-title" hidden>
+      <div class="intro">
+        <h1 id="activities-title" tabindex="-1">Atividades <span>de laboratório</span></h1>
+        <p>Faça uma previsão e use a bancada para conferir o resultado.</p>
+      </div>
+      <div class="activities-layout">
+        <nav class="panel sidebar-panel activity-nav" id="activity-nav" aria-label="Escolher atividade"></nav>
+        <section class="panel activity-card" aria-labelledby="activity-title">
+          <h2 id="activity-title"></h2>
+          <p id="activity-description"></p>
+          <fieldset>
+            <legend id="activity-question"></legend>
+            <div id="activity-options" class="activity-options"></div>
+          </fieldset>
+          <button type="button" class="button button-primary" id="test-activity">Testar na bancada <svg class="icon" aria-hidden="true"><use href="#icon-right"/></svg></button>
+        </section>
+      </div>
+    </section>
+
+    <footer class="site-footer"><a href="../"><svg class="icon" aria-hidden="true"><use href="#icon-left"/></svg> Todas as animações</a></footer>
+  </main>
+
+  <dialog id="species-dialog" aria-labelledby="picker-title">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div>
+          <h2 id="picker-title">Escolher espécie</h2>
+          <p id="picker-description"></p>
+        </div>
+        <form method="dialog"><button type="submit" class="icon-button" aria-label="Fechar seletor"><svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button></form>
+      </div>
+      <div class="picker-tools">
+        <label class="search-box">
+          <svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg>
+          <span class="visually-hidden">Buscar elemento por nome, símbolo, número atômico ou carga</span>
+          <input type="search" id="element-search" placeholder="Nome, número ou íon (Na⁻)" autocomplete="off" autofocus>
+        </label>
+        <div class="segmented" role="group" aria-label="Formato do seletor">
+          <button type="button" data-picker-layout="table" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg> Tabela</button>
+          <button type="button" data-picker-layout="list" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#icon-list"/></svg> Lista</button>
+        </div>
+      </div>
+      <div id="picker-elements"></div>
+      <section id="picker-species" class="picker-species" aria-labelledby="picker-species-title" hidden>
+        <div class="picker-species-heading">
+          <h3 id="picker-species-title"></h3>
+          <label class="periodic-charge-tools" id="picker-charge-tools" hidden>
+            <span>Carga</span>
+            <select id="picker-charge-filter"></select>
+          </label>
+        </div>
+        <div id="picker-charge-options" class="picker-charge-options"></div>
+      </section>
+    </div>
+  </dialog>
+
+  <template id="species-template">
+    <article class="species-card">
+      <header class="species-header">
+        <div class="species-kicker"><span class="slot-id" data-field="slot"></span><span class="kind-dot"></span><span data-field="kind"></span></div>
+        <button type="button" class="species-picker" data-field="pick">
+          <span data-field="name"></span><svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg>
+        </button>
+      </header>
+      <div class="atom-scene" data-field="scene">
+        <p class="formation-caption" data-field="formationCaption" role="status" hidden></p>
+        <div class="scene-empty" data-field="empty" hidden>
+          <span data-field="emptyIcon" aria-hidden="true">?</span>
+          <strong data-field="emptyLabel"></strong>
+        </div>
+      </div>
+      <div class="species-readout">
+        <div class="readout-main">
+          <strong class="species-symbol" data-field="symbol"></strong>
+          <div class="radius-readout">
+            <span data-field="radius"></span>
+            <small data-field="basis"></small>
+            <small data-field="referenceNote" hidden></small>
+            <a data-field="source" class="radius-source" target="_blank" rel="noopener noreferrer" hidden></a>
+          </div>
+        </div>
+        <dl class="species-facts">
+          <div><dt>Prótons</dt><dd data-field="protons"></dd></div>
+          <div><dt>Elétrons</dt><dd data-field="electrons"></dd></div>
+          <div><dt>Carga</dt><dd data-field="charge"></dd></div>
+        </dl>
+        <p class="shell-readout"><span>Camadas</span> <strong data-field="shells"></strong></p>
+      </div>
+    </article>
+  </template>
+
+  <noscript><p class="no-script">Ative o JavaScript para usar o Laboratório de Raios.</p></noscript>
+  <script defer src="periodic-data.js"></script>
+  <script defer src="literature-data.js"></script>
+  <script defer src="atomic-ion-data.js"></script>
+  <script defer src="chemistry.js"></script>
+  <script defer src="atom-view.js"></script>
+  <script defer src="experiments.js"></script>
+  <script defer src="species-picker.js"></script>
+  <script defer src="periodic-table.js"></script>
+  <script defer src="script.js"></script>
 </body>
 </html>

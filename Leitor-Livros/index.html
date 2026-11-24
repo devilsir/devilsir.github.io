@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="paper">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#6b4f35">
-  <meta name="description" content="Leitor de livros com OCR e leitura em voz alta, instalável e utilizável offline.">
+  <meta name="description" content="Leitor de livros com OCR local e leitura em voz alta, 100% offline e instalável.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Leitor">
@@ -17,27 +17,16 @@
 <body>
   <main class="app">
     <header class="hero">
-      <div>
-        <p class="eyebrow">OCR + texto em voz alta</p>
+      <div class="hero-copy">
         <h1>Leitor de Livros</h1>
         <p class="subtitle">Fotografe uma página. O texto é reconhecido e lido diretamente no seu aparelho.</p>
       </div>
-      <button id="installBtn" class="install-btn" hidden>＋ Instalar app</button>
+      <div class="hero-actions">
+        <button id="themeBtn" class="ghost icon-btn" type="button" title="Alternar tema de leitura">◐ Escuro</button>
+        <button id="updateBtn" class="secondary" type="button" hidden>↻ Atualizar app</button>
+        <button id="installBtn" class="install-btn" type="button" hidden>＋ Instalar app</button>
+      </div>
     </header>
-
-    <section id="offlineSetup" class="offline-panel" aria-live="polite">
-      <div class="offline-top">
-        <div>
-          <strong id="offlineTitle">Preparando uso offline…</strong>
-          <span id="offlineDetail">Na primeira abertura, o app salva o motor OCR no celular.</span>
-        </div>
-        <span id="offlineBadge" class="badge loading">Preparando</span>
-      </div>
-      <div class="setup-progress">
-        <div id="setupBar" class="setup-bar"></div>
-      </div>
-      <small id="setupHint">Mantenha esta página aberta até aparecer “Offline pronto”.</small>
-    </section>
 
     <section class="card">
       <div class="section-head">
@@ -45,56 +34,147 @@
           <p class="eyebrow">1 · Página</p>
           <h2>Fotografar ou escolher</h2>
         </div>
-        <label class="compact-field">
-          <span>Idioma</span>
-          <select id="ocrLanguage">
-            <option value="por">Português</option>
-            <option value="eng">English</option>
-            <option value="por+eng">Português + English</option>
-          </select>
-        </label>
+        <div class="head-fields">
+          <label class="compact-field">
+            <span>Idioma</span>
+            <select id="ocrLanguage">
+              <option value="por">Português</option>
+              <option value="eng">English</option>
+              <option value="por+eng">Português + English</option>
+            </select>
+          </label>
+          <label class="compact-field">
+            <span>Layout</span>
+            <select id="ocrPsm">
+              <option value="3">Automático</option>
+              <option value="6">Bloco único</option>
+              <option value="4">Coluna única</option>
+            </select>
+          </label>
+        </div>
       </div>
 
-      <label class="upload" for="imageInput">
+      <div id="uploadZone" class="upload" role="button" tabindex="0" aria-label="Tirar foto, escolher imagem, arrastar ou colar">
         <span class="capture-icon" aria-hidden="true">▣</span>
         <strong>Tirar foto da página</strong>
-        <small>ou toque aqui para escolher uma imagem</small>
-      </label>
+        <small>Toque para abrir a câmera, arraste uma imagem ou cole com Ctrl+V</small>
+        <div class="upload-subactions">
+          <label class="primary upload-trigger" for="imageInput">Câmera</label>
+          <label class="secondary upload-trigger" for="galleryInput">Galeria / Arquivo</label>
+        </div>
+      </div>
       <input id="imageInput" type="file" accept="image/*" capture="environment" hidden>
+      <input id="galleryInput" type="file" accept="image/*" hidden>
+
+      <div class="samples-block">
+        <div class="samples-head">
+          <strong>Ou teste com uma página de exemplo</strong>
+          <span>Clique em um livro abaixo para experimentar o OCR e a leitura em voz alta</span>
+        </div>
+        <div id="sampleGallery" class="sample-grid">
+          <button class="sample-card" type="button" data-sample="dom-casmurro" data-lang="por" data-src="./samples/dom-casmurro.jpg">
+            <img src="./samples/dom-casmurro.jpg" alt="Página de exemplo: Dom Casmurro">
+            <span>
+              <strong>Dom Casmurro</strong>
+              <small>Literatura · PT-BR</small>
+            </span>
+          </button>
+          <button class="sample-card" type="button" data-sample="ciencia-universo" data-lang="por" data-src="./samples/ciencia-universo.jpg">
+            <img src="./samples/ciencia-universo.jpg" alt="Página de exemplo: A Origem das Estrelas">
+            <span>
+              <strong>O Universo</strong>
+              <small>Didático · PT-BR</small>
+            </span>
+          </button>
+          <button class="sample-card" type="button" data-sample="dialogo-noturno" data-lang="por" data-src="./samples/dialogo-noturno.jpg">
+            <img src="./samples/dialogo-noturno.jpg" alt="Página de exemplo: A Lâmpada Acesa">
+            <span>
+              <strong>A Lâmpada Acesa</strong>
+              <small>Diálogos · PT-BR</small>
+            </span>
+          </button>
+          <button class="sample-card" type="button" data-sample="english-classic" data-lang="eng" data-src="./samples/english-classic.jpg">
+            <img src="./samples/english-classic.jpg" alt="Sample book page: Sherlock Holmes">
+            <span>
+              <strong>Sherlock Holmes</strong>
+              <small>Classic · English</small>
+            </span>
+          </button>
+        </div>
+      </div>
 
       <div id="previewLayout" class="preview-layout" hidden>
-        <div class="preview-wrap">
-          <img id="preview" alt="Pré-visualização da página fotografada">
+        <div class="preview-column">
+          <div class="preview-toolbar">
+            <button id="rotateLeftBtn" class="ghost" type="button" title="Girar 90° à esquerda">↶ 90°</button>
+            <button id="rotateRightBtn" class="ghost" type="button" title="Girar 90° à direita">↷ 90°</button>
+            <button id="toggleProcessedBtn" class="ghost" type="button" aria-pressed="false">Ver imagem tratada</button>
+          </div>
+          <div class="preview-wrap">
+            <img id="preview" alt="Pré-visualização da página fotografada">
+          </div>
         </div>
 
         <div class="image-options">
           <label class="option-row">
+            <input id="removeShadow" type="checkbox" checked>
+            <span>
+              <strong>Remover sombras</strong>
+              <small>Corrige iluminação desigual e dobra do livro.</small>
+            </span>
+          </label>
+          <label class="option-row">
             <input id="grayscaleImage" type="checkbox" checked>
             <span>
               <strong>Escala de cinza</strong>
-              <small>Reduz ruído das cores.</small>
+              <small>Reduz ruído das cores do papel.</small>
             </span>
           </label>
           <label class="option-row">
             <input id="enhanceImage" type="checkbox" checked>
             <span>
-              <strong>Melhorar contraste</strong>
-              <small>Ajuda em fotos escuras ou amareladas.</small>
+              <strong>Contraste e nitidez</strong>
+              <small>Destaca letras claras ou levemente borradas.</small>
+            </span>
+          </label>
+          <label class="option-row">
+            <input id="binarizeImage" type="checkbox">
+            <span>
+              <strong>Preto e branco forte</strong>
+              <small>Binarização adaptativa para papel muito amarelado.</small>
+            </span>
+          </label>
+          <label class="option-row">
+            <input id="cleanTextOption" type="checkbox" checked>
+            <span>
+              <strong>Limpar quebras e hifens</strong>
+              <small>Junta palavras divididas no fim da linha para melhorar a leitura.</small>
+            </span>
+          </label>
+          <label class="option-row">
+            <input id="appendTextOption" type="checkbox">
+            <span>
+              <strong>Acrescentar ao texto</strong>
+              <small>Soma novas páginas ao final sem apagar a página anterior.</small>
             </span>
           </label>
         </div>
       </div>
 
       <div class="button-row">
-        <button id="ocrBtn" class="primary" disabled>Reconhecer texto</button>
-        <button id="clearImageBtn" class="secondary">Trocar página</button>
+        <button id="ocrBtn" class="primary" type="button" disabled>Reconhecer texto</button>
+        <button id="cancelOcrBtn" class="danger" type="button" hidden>Cancelar</button>
+        <button id="clearImageBtn" class="secondary" type="button">Trocar página</button>
       </div>
 
       <div id="ocrProgressWrap" class="task-progress" hidden>
         <div class="progress-track"><div id="ocrProgressBar" class="progress-fill"></div></div>
         <span id="ocrProgressText">0%</span>
       </div>
-      <p id="ocrStatus" class="micro-status">Aguardando uma página.</p>
+      <div class="status-line">
+        <p id="ocrStatus" class="micro-status">Aguardando uma página.</p>
+        <span id="ocrConfidence" class="badge neutral" hidden></span>
+      </div>
     </section>
 
     <section class="card">
@@ -104,15 +184,20 @@
           <h2>Revise antes de ouvir</h2>
         </div>
         <div class="mini-actions">
-          <button id="copyBtn" class="ghost">Copiar</button>
-          <button id="clearTextBtn" class="ghost">Limpar</button>
+          <button id="formatTextBtn" class="ghost" type="button" title="Unir quebras de linha e hifens de livro">Formatar</button>
+          <button id="fontDownBtn" class="ghost" type="button" title="Diminuir fonte">A−</button>
+          <button id="fontUpBtn" class="ghost" type="button" title="Aumentar fonte">A+</button>
+          <button id="copyBtn" class="ghost" type="button">Copiar</button>
+          <button id="downloadTxtBtn" class="ghost" type="button">Salvar .txt</button>
+          <button id="clearTextBtn" class="ghost" type="button">Limpar</button>
         </div>
       </div>
 
-      <textarea id="text" spellcheck="true" placeholder="O texto reconhecido aparecerá aqui. Você também pode colar qualquer texto manualmente."></textarea>
+      <textarea id="text" spellcheck="true" placeholder="O texto reconhecido aparecerá aqui. Você também pode colar ou digitar qualquer texto manualmente."></textarea>
       <div class="text-stats">
         <span id="wordCount">0 palavras</span>
         <span id="charCount">0 caracteres</span>
+        <span id="readTimeEstimate">0s de leitura</span>
       </div>
     </section>
 
@@ -122,7 +207,10 @@
           <p class="eyebrow">3 · Voz</p>
           <h2>Leitura em voz alta</h2>
         </div>
-        <span id="voiceCount" class="badge neutral">0 vozes</span>
+        <div class="voice-badges">
+          <span id="wakeLockBadge" class="badge ready" hidden>Tela ativa</span>
+          <span id="voiceCount" class="badge neutral">0 vozes</span>
+        </div>
       </div>
 
       <div class="voice-filters">
@@ -134,6 +222,7 @@
         <label class="compact-field">
           <span>Ordenar vozes</span>
           <select id="voiceLanguage">
+            <option value="auto">Seguir idioma do OCR</option>
             <option value="pt">Português primeiro</option>
             <option value="en">English primeiro</option>
             <option value="all">Todas</option>
@@ -146,14 +235,19 @@
           <span>Voz</span>
           <div class="voice-select-row">
             <select id="voiceSelect"></select>
-            <button id="testVoiceBtn" class="secondary">Testar</button>
+            <button id="downloadVoiceBtn" class="secondary" type="button" hidden>↓ Baixar voz</button>
+            <button id="testVoiceBtn" class="secondary" type="button">Testar</button>
           </div>
-          <small id="voiceInfo">Carregando vozes do aparelho…</small>
+          <small id="voiceInfo">Carregando vozes…</small>
+          <div id="neuralProgressWrap" class="task-progress neural-progress" hidden>
+            <div class="progress-track"><div id="neuralProgressBar" class="progress-fill"></div></div>
+            <span id="neuralProgressText">0%</span>
+          </div>
         </label>
 
         <label>
           <span>Velocidade <b id="rateValue">1.0x</b></span>
-          <input id="rate" type="range" min="0.5" max="2.5" step="0.1" value="1">
+          <input id="rate" type="range" min="0.5" max="2.5" step="0.05" value="1">
         </label>
 
         <label>
@@ -167,24 +261,31 @@
         </label>
       </div>
 
+      <div id="readerLiveWrap" class="reader-live" hidden>
+        <div class="reader-live-head">
+          <strong>Acompanhamento por trecho</strong>
+          <span id="chunkCounter" class="micro-badge">0 / 0</span>
+        </div>
+        <div id="readerChunks" class="reader-chunks" aria-live="polite"></div>
+      </div>
+
       <div class="reader-progress">
         <div class="progress-track"><div id="readingBar" class="progress-fill"></div></div>
         <span id="readingText">0%</span>
       </div>
 
       <div class="player">
-        <button id="playBtn" class="primary">▶ Ler</button>
-        <button id="pauseBtn" class="secondary">Ⅱ Pausar</button>
-        <button id="resumeBtn" class="secondary">▶ Continuar</button>
-        <button id="restartBtn" class="secondary">↺ Reiniciar</button>
-        <button id="stopBtn" class="danger">■ Parar</button>
+        <button id="prevChunkBtn" class="secondary" type="button" title="Trecho anterior">⏮</button>
+        <button id="playPauseBtn" class="primary" type="button">▶ Ler</button>
+        <button id="nextChunkBtn" class="secondary" type="button" title="Próximo trecho">⏭</button>
+        <button id="restartBtn" class="secondary" type="button">↺ Reiniciar</button>
+        <button id="stopBtn" class="danger" type="button">■ Parar</button>
       </div>
 
       <p class="note">
-        As vozes vêm do próprio celular/navegador. Algumas precisam ser baixadas uma vez nas configurações de fala do Android para funcionarem sem internet.
+        Dica: toque em qualquer trecho acima para começar a ouvir a partir dele. Alterar velocidade, volume ou tom durante a leitura aplica o ajuste imediatamente.
       </p>
     </section>
-
 
     <section class="card history-card" id="historySection">
       <div class="section-head history-head">
@@ -206,6 +307,10 @@
         <span id="storageStatus" class="storage-status">Verificando armazenamento…</span>
       </div>
 
+      <div class="history-search-wrap">
+        <input id="historySearch" type="search" placeholder="Filtrar histórico por palavra ou data…" autocomplete="off">
+      </div>
+
       <div id="historyEmpty" class="history-empty">
         <strong>Nenhuma página salva ainda.</strong>
         <span>Fotografe uma página e reconheça o texto. Ela aparecerá aqui automaticamente.</span>
@@ -215,12 +320,20 @@
     </section>
 
     <section class="privacy-card">
-      <strong>Privacidade local</strong>
-      <p>A foto da página é processada pelo OCR dentro do navegador. O app não possui servidor para receber suas fotos ou o texto reconhecido.</p>
+      <strong>Privacidade e funcionamento 100% local</strong>
+      <p>Todo o motor OCR (WebAssembly + idiomas) e o histórico ficam no próprio navegador. Nenhuma foto ou texto sai do seu dispositivo.</p>
     </section>
   </main>
 
   <canvas id="processingCanvas" hidden></canvas>
-  <script src="./app.js" defer></script>
+  <script src="./js/config.js" defer></script>
+  <script src="./js/image-processing.js" defer></script>
+  <script src="./js/text-cleaner.js" defer></script>
+  <script src="./js/storage.js" defer></script>
+  <script src="./js/ocr.js" defer></script>
+  <script src="./js/piper-tts.js" defer></script>
+  <script src="./js/tts.js" defer></script>
+  <script src="./js/offline.js" defer></script>
+  <script src="./js/main.js" defer></script>
 </body>
 </html>

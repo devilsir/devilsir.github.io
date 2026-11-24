@@ -1,3 +1,351 @@
-html, body { height: 100%; margin: 0; background:#1b1210; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; }
-  #c { display:block; margin:0 auto; background: #2b1f1c; box-shadow: 0 10px 40px rgba(0,0,0,.6), inset 0 0 180px rgba(20,10,8,.6); touch-action: none; }
-  .nosel { -webkit-user-select:none; user-select:none; }
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #f6e9db;
+  background: #211713;
+  --muted: #d0b9a9;
+  --accent: #f2bc86;
+  --line: #574034;
+  --panel: #30221c;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 0%, #422b20 0, transparent 62%);
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 2px solid #ffd5a8; outline-offset: 4px; }
+.topbar, main { width: min(100% - 48px, 1260px); margin-inline: auto; }
+.topbar {
+  display: flex;
+  min-height: 76px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-size: 1.2rem; font-weight: 760; white-space: nowrap; }
+.brand-mark { color: var(--accent); margin-right: 5px; }
+nav { display: flex; flex-wrap: wrap; gap: 4px; }
+nav button, .reset {
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 650;
+}
+nav button:hover, .reset:hover { background: #453126; color: #fff0e2; }
+nav [aria-current="page"] { background: #51382b; color: #ffd3a8; }
+.experiment-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 30px 0 22px;
+}
+h1, h2, h3, p, figure, dl, dd { margin: 0; }
+h1 { font: 500 clamp(2.2rem, 5vw, 3.6rem)/1.05 Georgia, serif; letter-spacing: -.03em; }
+.experiment-heading p { margin-top: 10px; color: var(--muted); }
+h2 { font-size: 1.17rem; }
+h3 { font-size: 1rem; }
+#receitas { display: grid; gap: 14px; }
+#receitas.comparing { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.recipe {
+  display: grid;
+  grid-template-columns: minmax(215px, .90fr) minmax(0, 1.78fr) minmax(195px, .85fr);
+  grid-template-areas: "heading heading heading" "controls scene results";
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  min-width: 0;
+}
+.recipe-heading { grid-area: heading; }
+.comparing .recipe {
+  --recipe-accent: #f2bc86;
+  grid-template-columns: minmax(173px, .9fr) minmax(0, 1.65fr);
+  grid-template-areas: "heading heading" "controls scene" "controls results";
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+}
+.comparing .recipe + .recipe { --recipe-accent: #a8d4e0; }
+.comparing .recipe-heading { color: var(--recipe-accent); }
+.compare-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 13px;
+  margin-bottom: 17px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #3a281f;
+  color: var(--muted);
+  font-size: .88rem;
+}
+.compare-actions button { flex: 0 0 auto; }
+.card { min-width: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.controls, .results { padding: clamp(12px, 1.5vw, 21px); }
+.controls { grid-area: controls; }
+.results { grid-area: results; }
+fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+.segments {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  background: #221814;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.segments label { position: relative; flex: 1; cursor: pointer; }
+.segments input, .sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.segments span { display: block; border-radius: 6px; padding: 7px 5px; text-align: center; white-space: nowrap; color: var(--muted); font-size: .84rem; font-weight: 700; }
+.segments input:checked + span { background: #e7ad79; color: #2c1b13; }
+.segments input:focus-visible + span { outline: 2px solid #ffe0be; outline-offset: 2px; }
+.segments input:disabled + span { opacity: .57; cursor: default; }
+.mode-switch span { padding-inline: 11px; }
+.recipe-field { display: grid; gap: 6px; }
+.recipe-field label, .range label { font-size: .86rem; font-weight: 650; }
+select {
+  min-width: 0;
+  max-width: 100%;
+  padding: 7px 8px;
+  color: inherit;
+  background: #241914;
+  border: 1px solid #715447;
+  border-radius: 7px;
+}
+.control-hint, .model-note { font-size: .78rem; line-height: 1.45; color: var(--muted); }
+.control-hint { min-height: 2.9em; }
+.lab-note { margin: 12px 0 22px; }
+.lab-note summary { width: fit-content; cursor: pointer; color: var(--accent); }
+.lab-note p { max-width: 85ch; margin-top: 8px; }
+.lab-note a { color: var(--accent); }
+.filter-choice, .agitation-choice { margin-top: 10px; }
+.temperature-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: .82rem;
+  cursor: pointer;
+}
+.temperature-toggle input { margin: 0; accent-color: #e5ae82; }
+.temperature-range { padding: 7px 8px 4px; border-radius: 6px; background: #261b16; }
+.range { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 5px 8px; margin-top: 10px; }
+.range small { display: inline-block; margin-left: 3px; color: var(--muted); font-size: .72rem; font-weight: 500; }
+.comparing .range small { display: block; margin: 2px 0 0; }
+.quantity { display: flex; align-items: center; gap: 3px; color: var(--accent); font-size: .83rem; }
+.quantity input {
+  width: 5ch;
+  padding: 3px 4px;
+  text-align: right;
+  appearance: textfield;
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #241914;
+  font-variant-numeric: tabular-nums;
+}
+.quantity input::-webkit-inner-spin-button { appearance: none; }
+.quantity input:disabled { opacity: .65; }
+.range output { color: var(--accent); font-size: .84rem; font-variant-numeric: tabular-nums; }
+.range input[type=range] { grid-column: 1 / -1; width: 100%; margin: 0; min-height: 22px; accent-color: #e5ae82; }
+.range.cold input[type=range] { accent-color: #9bcde1; }
+.range .dose-mols {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  color: var(--muted);
+  font-size: .73rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.dose-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 9px;
+}
+.dose-actions p { color: var(--muted); font-size: .72rem; }
+.ingredient-button {
+  padding: 5px 8px;
+  border: 1px solid #81604a;
+  border-radius: 6px;
+  color: #ffd6af;
+  background: #453026;
+  font-size: .76rem;
+  font-weight: 700;
+}
+.ingredient-button:hover:not(:disabled) { background: #5a3d2f; }
+.pour-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+.pour-button {
+  border: 1px solid #cc956d;
+  border-radius: 7px;
+  padding: 8px 9px;
+  background: #f2bc86;
+  color: #2b1c14;
+  font-weight: 750;
+  font-size: .83rem;
+}
+.pour-button:hover:not(:disabled) { filter: brightness(1.14); }
+.pour-button.cold-button { background: #29373d; color: #c8e7f1; border-color: #667e89; }
+.reset { display: block; width: 100%; margin-top: 5px; padding: 8px 3px; font-size: .78rem; }
+.apparatus { grid-area: scene; display: flex; flex-direction: column; overflow: hidden; background: #251913; }
+.apparatus-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 5px 12px; padding: 14px 14px 7px; }
+.apparatus-heading p { font-size: .78rem; color: var(--recipe-accent, var(--accent)); }
+.preparo-visual { display: block; width: 100%; min-height: 0; flex: 1; object-fit: contain; }
+.comparing .preparo-visual { flex: 0 0 auto; }
+.water-readings {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+.water-readings div { min-width: 0; padding: 12px 3px; text-align: center; }
+.water-readings div + div { border-left: 1px solid var(--line); }
+.timing-readings { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+.timing-readings div { padding-block: 9px; }
+.timing-readings .dissolution-speed { color: var(--muted); font-size: .73rem; font-weight: 550; }
+.clock-note { padding: 0 7px 8px; color: var(--muted); font-size: .71rem; text-align: center; }
+dt { font-size: .79rem; color: var(--muted); }
+dd { margin-top: 3px; font-variant-numeric: tabular-nums; font-weight: 690; }
+.metrics { margin-top: 10px; }
+.metrics > div { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.mass-concentration { margin-top: 5px; color: var(--recipe-accent, #ffd2a4); font: 500 clamp(1.3rem, 2.3vw, 2.2rem)/1.15 Georgia, serif; overflow-wrap: anywhere; }
+.molar-reading { color: var(--recipe-accent, #ffd2a4); font-size: .8rem; font-weight: 560; overflow-wrap: anywhere; }
+.molar-ratio { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; }
+.molar-ratio dd { color: var(--recipe-accent, #ffd2a4); font-size: .85rem; }
+.molar-calculations { margin-top: 12px; overflow-wrap: anywhere; }
+.molar-calculations summary { color: var(--recipe-accent, var(--accent)); cursor: pointer; font-weight: 650; }
+.molar-calculations p, .molar-calculations dl > div { margin-top: 8px; }
+.molar-calculations dd { font-weight: 500; }
+.molar-calculations a { color: var(--accent); }
+.comparing .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 10px; }
+.comparing .mass-concentration { font-size: 1.45rem; }
+#c { display: block; width: max(800px, 100%); height: auto; background: #2b1f1c; touch-action: pan-x pan-y; user-select: none; }
+#outros-experimentos { margin: 16px 0 24px; border: 1px solid var(--line); border-radius: 16px; overflow: auto; }
+.titration-jump {
+  display: inline-block;
+  margin-top: 13px;
+  color: var(--accent);
+  font-size: .88rem;
+  font-weight: 650;
+  text-underline-offset: 3px;
+}
+.titration-guide { margin-bottom: 24px; scroll-margin-top: 14px; }
+.titration-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+.titration-card { padding: clamp(14px, 2.1vw, 26px); line-height: 1.5; }
+.titration-card p, .titration-variables dd { color: var(--muted); font-size: .88rem; }
+.titration-card p { margin-top: 5px; }
+.titration-card a { color: var(--accent); }
+.titration-card .titration-equation {
+  color: #ffe1c6;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.titration-card .titration-alert { color: var(--accent); }
+.titration-steps { margin: 16px 0 0; padding-inline-start: 1.6rem; }
+.titration-steps li { padding-inline-start: 4px; margin-bottom: 13px; }
+.titration-steps li::marker { color: var(--accent); font-weight: 700; }
+.titration-current { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.titration-variables { margin-top: 8px; }
+.titration-variables > div {
+  display: grid;
+  grid-template-columns: minmax(5rem, .36fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 6px 10px;
+  padding-block: 7px;
+  border-bottom: 1px solid var(--line);
+}
+.titration-variables dt { color: var(--accent); font-size: .84rem; font-weight: 700; }
+.titration-variables dd { margin: 0; font-weight: 450; }
+.titration-ph { margin-top: 14px; }
+.titration-ph summary { color: var(--accent); cursor: pointer; font-weight: 700; }
+.titration-ph-variables { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+.titration-ph > dl + p { margin-top: 12px; }
+@media (max-width: 720px) {
+  .titration-layout, .titration-ph-variables { grid-template-columns: minmax(0, 1fr); }
+}
+.quiz-card { display: grid; justify-items: start; gap: 15px; max-width: 700px; padding: clamp(14px, 3vw, 27px); margin-bottom: 24px; }
+.quiz-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; width: 100%; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.quiz-toolbar label, #resposta-numerica label { color: var(--muted); font-size: .88rem; }
+.quiz-question { display: grid; gap: 10px; width: 100%; }
+.quiz-question legend { padding: 0 0 12px; font-size: 1.14rem; line-height: 1.45; color: #ffe2c6; }
+.quiz-card input[type=text] { display: block; width: min(240px, 100%); margin-top: 5px; padding: 9px; color: inherit; background: #221814; border: 1px solid var(--line); border-radius: 7px; }
+.quiz-options { display: grid; gap: 6px; }
+.quiz-options:empty { display: none; }
+.quiz-options label { display: flex; align-items: baseline; gap: 9px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: #271c17; cursor: pointer; }
+.quiz-options input { accent-color: var(--accent); }
+.quiz-options label:has(input:checked) { border-color: #ca9464; background: #493126; }
+.quiz-options label[data-certa] { border-color: #719178; }
+.quiz-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.quiz-actions button { padding: 8px 13px; border: 1px solid var(--line); border-radius: 7px; background: #503528; color: inherit; font-weight: 650; }
+.quiz-actions button:first-child { background: var(--accent); color: #231713; }
+#resultado-quiz { color: var(--accent); min-height: 1.5em; }
+@media (max-width: 1040px) {
+  .recipe { grid-template-columns: minmax(190px, .9fr) minmax(0, 1.65fr); grid-template-areas: "heading heading" "controls scene" "results results"; }
+  .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 10px; }
+  .comparing .recipe { grid-template-columns: minmax(0, 1fr); grid-template-areas: "heading" "scene" "controls" "results"; grid-template-rows: auto auto 1fr auto; }
+  .mass-concentration { font-size: 1.45rem; }
+  @supports (grid-template-rows: subgrid) {
+    .comparing .recipe { grid-row: span 4; grid-template-rows: subgrid; }
+  }
+}
+@media (max-width: 600px) {
+  .topbar, main { width: calc(100% - 24px); }
+  .topbar { padding: 12px 0; display: block; }
+  nav { margin-top: 9px; justify-content: space-between; }
+  nav button { padding: 8px; font-size: .81rem; }
+  .experiment-heading { align-items: start; flex-direction: column; margin: 20px 0 14px; }
+  .recipe { grid-template-columns: minmax(0, 1fr); grid-template-areas: "heading" "controls" "scene" "results"; }
+  .comparing .recipe { gap: 7px; }
+  #receitas.comparing { gap: 8px; }
+  .comparing .card { border-radius: 11px; }
+  .comparing .controls, .comparing .results { padding: 8px; }
+  .comparing .apparatus-heading { padding: 8px 7px 3px; min-height: 58px; }
+  .comparing .apparatus-heading h3 { font-size: .83rem; }
+  .comparing .apparatus-heading p, .comparing .range small { font-size: .69rem; }
+  .comparing .recipe-field select { font-size: .82rem; }
+  .comparing .temperature-toggle { font-size: .72rem; }
+  .comparing .temperature-range { padding-inline: 4px; column-gap: 3px; }
+  .comparing .clock-note { font-size: .62rem; }
+  .comparing .range label { font-size: .75rem; }
+  .comparing .range small { margin-left: 0; }
+  .comparing .range output { font-size: .74rem; }
+  .comparing .control-hint { min-height: 3.1em; font-size: .7rem; }
+  .comparing .ingredient-button { padding: 5px 4px; font-size: .71rem; }
+  .comparing .dose-actions p { font-size: .67rem; }
+  .comparing .water-readings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comparing .water-readings div { padding: 5px 2px; }
+  .comparing .water-readings div:nth-child(3) { border-left: 0; }
+  .comparing .water-readings div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .comparing .timing-readings { grid-template-columns: minmax(0, 1fr); }
+  .comparing .timing-readings div + div { border-left: 0; padding-top: 0; }
+  .comparing .water-readings dt, .comparing .metrics dt { font-size: .66rem; }
+  .comparing .water-readings dd { font-size: .74rem; }
+  .comparing .pour-button { padding-inline: 2px; font-size: .76rem; }
+  .comparing .mass-concentration { font-size: 1.1rem; }
+  .comparing .molar-reading, .comparing .molar-ratio dd { font-size: .72rem; }
+  .metrics, .comparing .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comparing .metrics dt { min-height: 2.65em; }
+  .comparing .mass-concentration { min-height: 2.25em; }
+  .comparing .molar-ratio dt { min-height: 0; }
+  .compare-actions { flex-wrap: wrap; }
+}

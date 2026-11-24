@@ -37,7 +37,7 @@
       coat: 0,
       accent: 0,
       pants: 0,
-      hairStyle: 0
+      hairStyle: 0, silhouette: 0, badge: 0, outfit: 0, beard: 0, shoes: 0
     };
 
     const style = { ...defaults, ...(initialStyle || {}) };
@@ -46,11 +46,7 @@
       for (const key of Object.keys(labels)) {
         style[key] = clampIndex(style[key], options[key], defaults[key]);
       }
-      style.hairStyle = clampIndex(
-        style.hairStyle,
-        options.hairStyle,
-        defaults.hairStyle
-      );
+      for(const key of ["hairStyle","silhouette","badge","outfit","beard","shoes"]){if(options[key])style[key]=clampIndex(style[key],options[key],defaults[key])}
     }
 
     function persist() {
@@ -68,7 +64,7 @@
       previewElement.style.setProperty("--accent", options.accent[style.accent]);
       previewElement.style.setProperty("--pants", options.pants[style.pants]);
       controlsElement.style.setProperty("--hair-preview", options.hair[style.hair]);
-      previewElement.dataset.hairStyle = String(style.hairStyle);
+      for(const key of ["hairStyle","silhouette","badge","outfit","beard","shoes"])previewElement.dataset[key]=String(style[key]);
     }
 
     function apply({ save = true, notify = true } = {}) {
@@ -107,10 +103,21 @@
       return `<div class="custom-group"><label>Estilo do cabelo</label><div class="style-options">${buttons}</div></div>`;
     }
 
+    function renderChoices(key,label) {
+      if(!options[key])return "";
+      const buttons=options[key].map((name,index)=>
+        '<button type="button" class="style-option '+(style[key]===index?"active":"")+'" data-custom="'+key+
+        '" data-value="'+index+'" aria-pressed="'+(style[key]===index)+'">'+
+        (key==="badge"?'<i class="badge-swatch" aria-hidden="true">'+["△","⚗","∿","◇"][index]+'</i>':"")+name+'</button>').join("");
+      return '<div class="custom-group"><label>'+label+'</label><div class="style-options">'+buttons+'</div></div>';
+    }
     function render() {
       normalize();
       controlsElement.innerHTML =
-        Object.keys(labels).map(renderColorGroup).join("") + renderHairStyles();
+        renderChoices("silhouette","Silhueta") + renderHairStyles() + renderChoices("beard","Barba") +
+        renderColorGroup("skin") + renderColorGroup("hair") + renderChoices("outfit","Roupa") +
+        renderChoices("shoes","Calçado") + ["coat","accent","pants"].map(renderColorGroup).join("") +
+        renderChoices("badge","Insígnia");
       updatePreview();
     }
 
@@ -125,6 +132,7 @@
       style[key] = value;
       apply();
       render();
+      controlsElement.querySelector('[data-custom="'+key+'"][data-value="'+value+'"]')?.focus({preventScroll:true});
     }
 
     controlsElement.addEventListener("click", handleClick);

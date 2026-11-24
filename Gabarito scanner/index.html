@@ -16,10 +16,25 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="OMR Scanner" />
-    <title>Leitor OMR ENEM</title>
-    <script type="module" crossorigin src="./assets/index-OMRfix9.js"></script>
+    <title>Leitor OMR — Vertical &amp; Horizontal</title>
+    <script type="module" src="./src/main.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-RXXbEzxx.css">
     <link rel="stylesheet" href="./assets/history-addon.css" />
+    <style>
+      .demo-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 20px; width: 100%; max-width: 460px; }
+      .demo-controls-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+      .demo-controls select { height: 38px; padding: 0 11px; border: 1px solid var(--line); border-radius: 10px; background: #0d1117; color: var(--text); font-size: 11px; flex: 1; min-width: 210px; }
+      .demo-controls .text-button { margin-top: 0; font-size: 11px; padding: 6px 10px; }
+      .suite-modal[hidden] { display: none; }
+      .suite-modal { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 20px; }
+      .suite-backdrop { position: absolute; inset: 0; border: 0; background: #030508c8; backdrop-filter: blur(5px); cursor: default; }
+      .suite-panel { position: relative; width: min(920px, 100%); max-height: 90vh; display: flex; flex-direction: column; gap: 14px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); padding: 24px; box-shadow: 0 30px 100px #00000099; overflow: hidden; }
+      .suite-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+      .suite-header h2 { margin: 0; font-size: 20px; letter-spacing: -0.03em; }
+      .suite-status { font-family: DM Mono, monospace; font-size: 11px; color: var(--muted); margin: 0; }
+      .suite-output { flex: 1; min-height: 240px; max-height: 55vh; overflow: auto; margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #090d12; color: #dce3ec; font-family: DM Mono, monospace; font-size: 11px; line-height: 1.55; white-space: pre; }
+      .suite-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+    </style>
   </head>
   <body>
     <div class="app-shell">
@@ -90,7 +105,16 @@
                 <button class="primary-button" id="chooseFileButton" type="button">Escolher foto</button>
                 <button class="secondary-button" id="cameraButton" type="button">Usar câmera</button>
               </div>
-              <button class="text-button" id="demoButton" type="button">Testar com folha de demonstração</button>
+              <div class="demo-controls">
+                <div class="demo-controls-row">
+                  <select id="demoPreset" aria-label="Tipo de imagem de teste"></select>
+                  <button class="secondary-button" id="demoButton" type="button" style="min-height: 38px; padding: 0 14px; font-size: 11px;">Testar imagem</button>
+                </div>
+                <div class="demo-controls-row">
+                  <button class="text-button" id="runSuiteButton" type="button">Rodar bateria completa (22 imagens) e exportar .TXT</button>
+                  <button class="text-button" id="downloadDemoImageButton" type="button">Baixar foto demo (.JPG)</button>
+                </div>
+              </div>
             </article>
 
             <aside class="setup-card">
@@ -114,6 +138,26 @@
               </div>
               <p class="identity-hint">A matéria e o aluno acompanham a foto, a nota e as questões erradas no histórico.</p>
 
+              <div class="field-grid two-columns">
+                <label class="field">
+                  <span>Orientação do gabarito</span>
+                  <select id="sheetOrientation">
+                    <option value="vertical" selected>Vertical (opções na horizontal)</option>
+                    <option value="horizontal">Horizontal (opções na vertical)</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Caracteres das opções</span>
+                  <select id="optionScheme">
+                    <option value="upper" selected>Maiúsculas (A, B, C…)</option>
+                    <option value="lower">Minúsculas (a, b, c…)</option>
+                    <option value="roman">Romanos (I, II, III…)</option>
+                    <option value="vf">Verdadeiro ou Falso (V / F)</option>
+                    <option value="ce">Certo ou Errado (C / E)</option>
+                  </select>
+                </label>
+              </div>
+
               <div class="field-grid three-columns">
                 <label class="field">
                   <span>Questões</span>
@@ -122,9 +166,11 @@
                 <label class="field">
                   <span>Alternativas</span>
                   <select id="optionCount">
-                    <option value="4">A–D</option>
-                    <option value="5" selected>A–E</option>
-                    <option value="6">A–F</option>
+                    <option value="2">A–B (2)</option>
+                    <option value="3">A–C (3)</option>
+                    <option value="4">A–D (4)</option>
+                    <option value="5" selected>A–E (5)</option>
+                    <option value="6">A–F (6)</option>
                   </select>
                 </label>
                 <label class="field">
@@ -135,14 +181,25 @@
               <p class="grade-preview" id="pointsPerQuestionHint">Cada questão vale 0,20 ponto.</p>
 
               <label class="field">
-                <span>Modo de estrutura</span>
-                <select id="recognitionMode">
-                  <option value="auto" selected>Detectar bolhas automaticamente</option>
-                  <option value="template" disabled>Modelo salvo — nenhum disponível</option>
+                <span>Formato impresso na folha</span>
+                <select id="markStyle">
+                  <option value="auto" selected>Automático (bolha, quadrado, parênteses, aspas)</option>
+                  <option value="bubble">Bolhas / círculos (◯)</option>
+                  <option value="box">Quadrados / células de tabela (☐)</option>
+                  <option value="delimited">Parênteses / aspas / colchetes ((A), "A", [A])</option>
+                  <option value="plain">Letras ou símbolos soltos (a, I, V/F)</option>
                 </select>
               </label>
 
               <label class="field">
+                <span>Modo de estrutura</span>
+                <select id="recognitionMode">
+                  <option value="auto" selected>Detectar estrutura automaticamente</option>
+                  <option value="template" disabled>Modelo salvo — nenhum disponível</option>
+                </select>
+              </label>
+
+              <label class="field" id="readingOrderField">
                 <span>Ordem em páginas com colunas</span>
                 <select id="readingOrder">
                   <option value="columns" selected>Coluna por coluna</option>
@@ -156,9 +213,9 @@
                   id="answerKeyInput"
                   rows="7"
                   spellcheck="false"
-                  placeholder="1 A&#10;2 C&#10;3 E&#10;4 B&#10;5 D&#10;11 --"
+                  placeholder="1 A&#10;2 (c)&#10;3 &quot;E&quot;&#10;4 IV&#10;5 V&#10;11 --"
                 ></textarea>
-                <small id="answerKeyHint">Aceita linhas numeradas, sequência “A C E B D” ou array JSON. Use “--” para questão anulada (ex.: 11 --).</small>
+                <small id="answerKeyHint">Aceita linhas numeradas, parênteses, aspas, minúsculas, romanos (I–VI), V/F ou JSON. Use “--” para anular (ex.: 11 --).</small>
               </label>
             </aside>
           </div>
@@ -377,6 +434,7 @@
 
           <div class="result-actions">
             <button class="secondary-button" id="saveTemplateButton" type="button">Salvar este layout como modelo</button>
+            <button class="secondary-button" id="exportTxtButton" type="button">Exportar relatório .TXT</button>
             <button class="secondary-button" id="exportJsonButton" type="button">Exportar dados JSON</button>
             <button class="primary-button" id="finishButton" type="button">Finalizar revisão</button>
           </div>
@@ -425,6 +483,27 @@
           <span>Armazenamento local · as fotos não saem do aparelho.</span>
           <button class="text-button" id="clearHistoryButton" type="button">Limpar histórico</button>
         </footer>
+      </section>
+    </div>
+
+    <div class="suite-modal" id="suiteModal" role="dialog" aria-modal="true" aria-labelledby="suiteTitle" hidden>
+      <button class="suite-backdrop" id="suiteBackdrop" type="button" aria-label="Fechar bateria de testes"></button>
+      <section class="suite-panel">
+        <header class="suite-header">
+          <div>
+            <p class="eyebrow">Benchmark automatizado</p>
+            <h2 id="suiteTitle">Bateria completa de testes OMR</h2>
+          </div>
+          <button class="close-button" id="closeSuiteButton" type="button" aria-label="Fechar">×</button>
+        </header>
+        <p class="suite-status" id="suiteStatus">Preparando bateria de testes…</p>
+        <div class="progress-track"><i id="suiteProgress"></i></div>
+        <pre class="suite-output" id="suiteReportOutput">Aguardando execução…</pre>
+        <div class="suite-actions">
+          <button class="secondary-button" id="rerunSuiteButton" type="button" disabled>Rodar novamente</button>
+          <button class="secondary-button" id="copySuiteTxtButton" type="button" disabled>Copiar .TXT</button>
+          <button class="primary-button" id="downloadSuiteTxtButton" type="button" disabled>Baixar relatório .TXT</button>
+        </div>
       </section>
     </div>
 

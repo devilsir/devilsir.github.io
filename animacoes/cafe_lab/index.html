@@ -1,14 +1,333 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Café Lab — Concentração, Diluição e Titulação</title>
-
-<link href="style.css" rel="stylesheet"/></head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Café Lab — Concentração, Diluição e Titulação</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="preparo-visual.js" defer></script>
+  <script src="preparo.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
 <body>
-<canvas aria-label="Café Lab: atividade didática de concentração, diluição e titulação" class="nosel" height="760" id="c" width="1280"></canvas>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> Café Lab</div>
+    <nav aria-label="Experimentos">
+      <button type="button" data-tab="0" aria-current="page">Concentração</button>
+      <button type="button" data-tab="1">Diluição</button>
+      <button type="button" data-tab="2">Titulação</button>
+      <button type="button" data-tab="3">Quiz</button>
+    </nav>
+  </header>
+  <main>
+    <section id="concentracao" aria-labelledby="titulo-preparo">
+      <header class="experiment-heading">
+        <div>
+          <h1 id="titulo-preparo">Bancada de café</h1>
+          <p>Compare as receitas e adicione novas doses sem esvaziar a xícara.</p>
+        </div>
+        <fieldset class="segments mode-switch">
+          <legend class="sr-only">Modo de preparo</legend>
+          <label><input type="radio" name="modo" value="simples" checked><span>Um preparo</span></label>
+          <label><input type="radio" name="modo" value="comparativo"><span>Comparar dois</span></label>
+        </fieldset>
+      </header>
 
-<script src="script.js"></script></body>
+      <div class="compare-actions" id="acoes-comparacao" hidden>
+        <p>Use os botões de cada receita ou inicie os dois preparos juntos.</p>
+        <button type="button" class="pour-button" id="despejar-ambos">Despejar os dois</button>
+      </div>
+      <div id="receitas"></div>
+      <details class="model-note lab-note">
+        <summary>Como a simulação calcula temperatura e tempo</summary>
+        <p>Cada dose entra com a massa e a entalpia da água na temperatura selecionada. Ao longo do preparo, o líquido troca calor com o ambiente a 20 °C segundo a lei de Newton. O vapor e os cálculos usam a temperatura atual. O modelo adota constantes de tempo ilustrativas de 3 min no filtro e 15 min na xícara. <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir5078.pdf">NIST</a> · <a href="https://handbook.ashrae.org/handbooks/F25/SI/F25_Ch01/F25_Ch01_si.aspx#c01tab6">ASHRAE / IAPWS</a> · <a href="https://web.mae.ufl.edu/uhk/COOLING-COFFEE.pdf">Resfriamento de uma xícara</a></p>
+        <p>A vazão responde à razão densidade/viscosidade. Enquanto há água no leito, a extração libera cafeína de acordo com <var>dm</var>/<var>dt</var> = <var>k</var>(<var>T</var>) × (<var>m</var><sub>limite</sub> − <var>m</var><sub>liberada</sub>). A taxa de referência vem de uma infusão de arábica moído a 90 °C e varia com a temperatura pela equação de Arrhenius. Os ajustes de moagem, os limites de extração e as vazões dos coadores são didáticos. <a href="https://kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003370445">Cinética da cafeína</a> · <a href="https://doi.org/10.1016/j.ces.2015.06.003">Extração em leito de café</a> · <a href="https://doi.org/10.21930/rcta.vol23_num2_art:2438">Filtração por gravidade</a></p>
+        <p>A dissolução da sacarose é recalculada a cada passo com a temperatura e a solubilidade atuais. O modelo de primeira ordem usa como referência cerca de 40 s a 20 °C para 4,5 g de açúcar em 200 g de água sob agitação. Acima de 50 °C, os tempos são extrapolados pela difusão relativa (T absoluta/viscosidade). Perto da saturação, a taxa diminui e o excesso pode voltar a ficar sólido conforme a bebida esfria. A previsão de tempo usa a temperatura estimada para o volume final durante o despejo e a temperatura atual após a coagem. A dose é considerada dissolvida com até 0,01 g de resíduo. <a href="https://doi.org/10.6028/NBS.CIRC.440">Solubilidade (tabela 134)</a> · <a href="https://doi.org/10.1021/ja02086a003">Dissolução</a> · <a href="https://trc.nist.gov/ThermoML/10.1021/je0602061.html">Difusão da sacarose</a> · <a href="https://www.npl.co.uk/getattachment/ce27ea2c-b1eb-4697-8590-be08105c8bc3/Sugar-REPORT.pdf?lang=en-GB">Medições do NPL</a></p>
+        <p>Mexer a xícara renova o líquido em contato com os cristais. O modo com agitação usa as medições do NPL a 100 movimentos por minuto. O modo sem agitação aplica 25% dessa taxa como aproximação didática. A temperatura e a massa de água determinam o limite de solubilidade. <a href="https://www.npl.co.uk/skills-learning/measurement-at-home/sugar-measure-water-temperature">Protocolo do NPL</a> · <a href="https://www.mdpi.com/2227-9717/8/11/1511">Experimentos de mistura e dissolução</a></p>
+      </details>
+
+      <template id="modelo-receita">
+        <article class="recipe">
+          <h2 class="recipe-heading" data-reading="titulo"></h2>
+          <section class="card controls">
+            <div class="recipe-field">
+              <label data-label="forma">Forma do café</label>
+              <select data-field="forma">
+                <option value="graos">Em grãos</option>
+                <option value="triturado">Triturado</option>
+                <option value="moido">Moído</option>
+              </select>
+              <p class="control-hint" data-reading="moagem"></p>
+            </div>
+            <div class="recipe-field filter-choice">
+              <label data-label="coador">Coador</label>
+              <select data-field="coador">
+                <option value="pano">Pano (rápido)</option>
+                <option value="papel">Papel</option>
+                <option value="duplo">Papel duplo (lento)</option>
+              </select>
+            </div>
+            <div class="range">
+              <label data-label="cafe">Café inicial</label>
+              <span class="quantity">
+                <input type="number" data-exact="cafe" aria-label="Café em gramas" inputmode="numeric">
+                <span aria-hidden="true">g</span>
+              </span>
+              <output class="sr-only" data-reading="cafe"></output>
+              <input data-field="cafe" type="range" min="0" max="130" step="1">
+              <output class="dose-mols"><span>Cafeína na dose</span> <span data-reading="molsDose-cafe"></span></output>
+              <div class="dose-actions" data-dose-row="cafe" hidden>
+                <button type="button" class="ingredient-button" data-add="cafe">Adicionar café</button>
+                <p data-reading="totalCafe"></p>
+              </div>
+            </div>
+            <div class="range">
+              <label data-label="acucar">Açúcar inicial</label>
+              <span class="quantity">
+                <input type="number" data-exact="acucar" aria-label="Açúcar em gramas" inputmode="numeric">
+                <span aria-hidden="true">g</span>
+              </span>
+              <output class="sr-only" data-reading="acucar"></output>
+              <input data-field="acucar" type="range" min="0" max="500" step="1">
+              <output class="dose-mols"><span>Sacarose na dose</span> <span data-reading="molsDose-acucar"></span></output>
+              <div class="dose-actions" data-dose-row="acucar" hidden>
+                <button type="button" class="ingredient-button" data-add="acucar">Adicionar açúcar</button>
+                <p data-reading="totalAcucar"></p>
+              </div>
+            </div>
+            <div class="recipe-field agitation-choice">
+              <label data-label="agitacaoAcucar">Agitação da xícara</label>
+              <select data-field="agitacaoAcucar">
+                <option value="com">Com agitação</option>
+                <option value="sem">Sem agitação</option>
+              </select>
+            </div>
+            <label class="temperature-toggle" data-label="temperaturaLivre">
+              <input type="checkbox" data-field="temperaturaLivre">
+              Ajustar temperaturas
+            </label>
+            <div class="range hot">
+              <label data-label="quente"><span data-reading="nome-quente">Água quente</span> <small data-reading="temp-quente">100 °C</small></label>
+              <output data-reading="quente"></output>
+              <input data-field="quente" type="range" min="0" max="1000" step="10">
+            </div>
+            <div class="range temperature-range" data-temperature="quente" hidden>
+              <label data-label="temperaturaQuente">Temperatura A</label>
+              <output data-reading="temperaturaQuente"></output>
+              <input data-field="temperaturaQuente" type="range" min="10" max="100" step="1">
+            </div>
+            <div class="range cold">
+              <label data-label="fria"><span data-reading="nome-fria">Água fria</span> <small data-reading="temp-fria">20 °C</small></label>
+              <output data-reading="fria"></output>
+              <input data-field="fria" type="range" min="0" max="1000" step="10">
+            </div>
+            <div class="range temperature-range" data-temperature="fria" hidden>
+              <label data-label="temperaturaFria">Temperatura B</label>
+              <output data-reading="temperaturaFria"></output>
+              <input data-field="temperaturaFria" type="range" min="10" max="100" step="1">
+            </div>
+            <div class="pour-actions">
+              <button class="pour-button" type="button" data-pour="quente" aria-label="Despejar água quente">Quente</button>
+              <button class="pour-button cold-button" type="button" data-pour="fria" aria-label="Despejar água fria">Fria</button>
+            </div>
+            <button type="button" data-reset class="reset">Reiniciar preparo</button>
+          </section>
+
+          <figure class="card apparatus">
+            <figcaption class="apparatus-heading">
+              <h3 data-reading="aparelho">Filtração</h3>
+              <p role="status" data-reading="estado">Pronto para começar</p>
+            </figcaption>
+            <canvas class="preparo-visual" width="1000" height="732" aria-hidden="true"></canvas>
+            <dl class="water-readings">
+              <div><dt>No filtro</dt><dd data-reading="filtro">0 mL</dd></div>
+              <div><dt>Água coletada</dt><dd data-reading="xicara">0 mL</dd></div>
+              <div><dt>Bebida</dt><dd data-reading="bebida">0 mL</dd></div>
+              <div><dt>Temperatura</dt><dd data-reading="temperatura">—</dd></div>
+            </dl>
+            <dl class="water-readings timing-readings">
+              <div><dt>Tempo de coagem</dt><dd data-reading="tempoCoagem">—</dd></div>
+              <div>
+                <dt>Para dissolver o açúcar</dt>
+                <dd data-reading="tempoAcucar">—</dd>
+                <dd class="dissolution-speed" data-reading="velocidadeAcucar" hidden></dd>
+                <dd class="dissolution-speed" data-reading="velocidadeAlternativa" hidden></dd>
+              </div>
+            </dl>
+            <p class="clock-note">Tempo simulado · animação 20×</p>
+          </figure>
+
+          <section class="card results">
+            <h3>Resultado</h3>
+            <dl class="metrics">
+              <div>
+                <dt>Cafeína</dt>
+                <dd class="mass-concentration" data-reading="concentracaoCafe">—</dd>
+                <dd class="molar-reading" data-reading="molaridadeCafeina">—</dd>
+              </div>
+              <div>
+                <dt>Cafeína extraída</dt>
+                <dd data-reading="massaCafe">0 mg</dd>
+                <dd class="molar-reading" data-reading="molsCafeina">n = 0 mol</dd>
+              </div>
+              <div><dt>Fração extraída</dt><dd data-reading="fracao">—</dd></div>
+              <div>
+                <dt>Sacarose</dt>
+                <dd class="mass-concentration" data-reading="concentracaoAcucar">—</dd>
+                <dd class="molar-reading" data-reading="molaridadeSacarose">—</dd>
+              </div>
+              <div>
+                <dt>Açúcar dissolvido</dt>
+                <dd data-reading="massaAcucar">0 g</dd>
+                <dd class="molar-reading" data-reading="molsSacarose">n = 0 mol</dd>
+              </div>
+              <div><dt>Açúcar sólido</dt><dd data-reading="excesso">0 g</dd></div>
+              <div class="molar-ratio"><dt>Razão molar de sacarose por cafeína</dt><dd data-reading="razaoMolar">—</dd></div>
+            </dl>
+            <details class="model-note molar-calculations" data-calculos>
+              <summary>Cálculos em mol</summary>
+              <p><var>n</var> = <var>m</var> ÷ <var>M</var>, com massa <var>m</var> em gramas e massa molar <var>M</var> em g/mol. A concentração <var>C</var> = <var>n</var> ÷ <var>V</var> usa o volume da bebida em litros.</p>
+              <p data-reading="volumeCalculo"></p>
+              <dl>
+                <div>
+                  <dt>Cafeína extraída</dt>
+                  <dd data-reading="n-cafeina"></dd>
+                  <dd data-reading="c-cafeina"></dd>
+                </div>
+                <div>
+                  <dt>Sacarose dissolvida</dt>
+                  <dd data-reading="n-sacarose"></dd>
+                  <dd data-reading="c-sacarose"></dd>
+                </div>
+              </dl>
+              <p data-reading="razaoCalculo"></p>
+              <p>A dose de café usa a estimativa de 8 mg de cafeína por grama. Massas molares do NIST para <a href="https://webbook.nist.gov/cgi/cbook.cgi?ID=C58082">cafeína</a> e <a href="https://webbook.nist.gov/cgi/cbook.cgi?ID=57-50-1">sacarose</a>.</p>
+            </details>
+          </section>
+        </article>
+      </template>
+    </section>
+    <a class="titration-jump" id="atalho-titulacao" href="#calculos-titulacao" hidden>Ver cálculo e legenda</a>
+    <section id="outros-experimentos" hidden tabindex="0" aria-label="Experimentos de diluição e titulação">
+      <canvas id="c" width="1280" height="760" aria-label="Área do simulador"></canvas>
+    </section>
+    <section id="calculos-titulacao" class="titration-guide" aria-labelledby="titulo-calculos-titulacao" tabindex="-1" hidden>
+      <div class="titration-layout">
+        <div class="card titration-card">
+          <h2 id="titulo-calculos-titulacao">Cálculo da titulação</h2>
+          <p>O simulador fornece o volume teórico de equivalência da amostra virtual. Em laboratório, esse volume é estimado pela viragem do indicador ou pela curva de titulação. <a href="https://doi.org/10.1351/goldbook.T06387">IUPAC</a></p>
+          <p class="titration-alert" data-titration="limite-bureta" hidden>A equivalência teórica está acima do limite de 100 mL da bureta.</p>
+          <ol class="titration-steps">
+            <li>
+              <h3>Escreva a reação de neutralização</h3>
+              <p class="titration-equation">HA + OH<sup>−</sup> → A<sup>−</sup> + H<sub>2</sub>O</p>
+              <p>O modelo trata a primeira dissociação do ácido clorogênico (5-CQA). Um mol de NaOH fornece um mol de OH<sup>−</sup>, que reage com um mol de HA.</p>
+            </li>
+            <li>
+              <h3>Converta os volumes para litros</h3>
+              <p>Divida os valores em mL por 1.000 para usar a concentração em mol/L.</p>
+              <p class="titration-equation"><var>V<sub>a</sub></var> = <span data-titration="volume-amostra"></span></p>
+              <p class="titration-equation"><var>V<sub>eq</sub></var> = <span data-titration="volume-equivalencia"></span></p>
+            </li>
+            <li>
+              <h3>Calcule a quantidade de base na equivalência</h3>
+              <p class="titration-equation"><var>n<sub>b,eq</sub></var> = <var>M<sub>b</sub></var> × <var>V<sub>eq</sub></var> = <span data-titration="mols-base-equivalencia"></span></p>
+            </li>
+            <li>
+              <h3>Encontre a quantidade inicial de ácido</h3>
+              <p>Na equivalência, a proporção 1:1 iguala as quantidades de ácido da amostra e de base adicionada.</p>
+              <p class="titration-equation"><var>n<sub>a</sub></var> = <var>n<sub>b,eq</sub></var> ≈ <span data-titration="mols-acido"></span></p>
+            </li>
+            <li>
+              <h3>Calcule a concentração da amostra</h3>
+              <p>Divida os mols de ácido pelo volume inicial da amostra.</p>
+              <p class="titration-equation"><var>C<sub>a</sub></var> = <var>n<sub>a</sub></var> ÷ <var>V<sub>a</sub></var> = <span data-titration="concentracao-amostra"></span></p>
+            </li>
+          </ol>
+          <div class="titration-current">
+            <h3>Base adicionada até agora</h3>
+            <p class="titration-equation"><var>V<sub>b</sub></var> = <span data-titration="volume-adicionado"></span></p>
+            <p class="titration-equation"><var>n<sub>b</sub></var> = <var>M<sub>b</sub></var> × <var>V<sub>b</sub></var> = <span data-titration="mols-base-atual"></span></p>
+          </div>
+        </div>
+        <aside class="card titration-card titration-legend" aria-labelledby="titulo-legenda-titulacao">
+          <h2 id="titulo-legenda-titulacao">Legenda das variáveis</h2>
+          <dl class="titration-variables">
+            <div><dt><var>V<sub>a</sub></var></dt><dd>Volume inicial da amostra de ácido, em mL ou L.</dd></div>
+            <div><dt><var>V<sub>b</sub></var></dt><dd>Volume de base já dispensado pela bureta, em mL ou L.</dd></div>
+            <div><dt><var>V<sub>eq</sub></var></dt><dd>Volume teórico de base que reage com todo o ácido na equivalência, em mL ou L.</dd></div>
+            <div><dt><var>M<sub>b</sub></var></dt><dd>Concentração molar da solução de hidróxido de sódio (NaOH), a base da bureta, em mol/L.</dd></div>
+            <div><dt><var>n<sub>b</sub></var></dt><dd>Quantidade de NaOH adicionada até agora, em mol.</dd></div>
+            <div><dt><var>n<sub>b,eq</sub></var></dt><dd>Quantidade de NaOH necessária na equivalência, em mol.</dd></div>
+            <div><dt><var>n<sub>a</sub></var></dt><dd>Quantidade inicial de ácido na amostra, em mol.</dd></div>
+            <div><dt><var>C<sub>a</sub></var></dt><dd>Concentração inicial do ácido na amostra, em mol/L.</dd></div>
+            <div><dt>HA, A<sup>−</sup> e OH<sup>−</sup></dt><dd>Forma ácida do 5-CQA, sua base conjugada e íon hidróxido, respectivamente.</dd></div>
+            <div><dt>pH</dt><dd>Medida logarítmica da acidez da solução, sem unidade.</dd></div>
+          </dl>
+        </aside>
+      </div>
+      <details class="card titration-card titration-ph">
+        <summary>Como o simulador calcula o pH</summary>
+        <p>O pH usa o volume adicionado no momento e o equilíbrio da primeira dissociação do 5-CQA.</p>
+        <ol class="titration-steps">
+          <li>
+            <h3>Calcule o volume misturado</h3>
+            <p class="titration-equation"><var>V<sub>total</sub></var> = <var>V<sub>a</sub></var> + <var>V<sub>b</sub></var> = <span data-titration="volume-total"></span></p>
+          </li>
+          <li>
+            <h3>Calcule as concentrações no béquer</h3>
+            <p class="titration-equation"><var>C<sub>T</sub></var> = <var>n<sub>a</sub></var> ÷ <var>V<sub>total</sub></var> = <span data-titration="acido-total"></span></p>
+            <p class="titration-equation">[Na<sup>+</sup>] = <var>n<sub>b</sub></var> ÷ <var>V<sub>total</sub></var> = <span data-titration="sodio"></span></p>
+          </li>
+          <li>
+            <h3>Equilibre as cargas e obtenha o pH</h3>
+            <p class="titration-equation"><var>K<sub>a</sub></var> = 10<sup>−<var>pK<sub>a</sub></var></sup> ≈ <span data-titration="ka"></span></p>
+            <p class="titration-equation"><var>h</var> + [Na<sup>+</sup>] = [A<sup>−</sup>] + [OH<sup>−</sup>]</p>
+            <p>O simulador resolve essa igualdade com [A<sup>−</sup>] = <var>C<sub>T</sub></var> × <var>K<sub>a</sub></var> ÷ (<var>K<sub>a</sub></var> + <var>h</var>) e [OH<sup>−</sup>] = <var>K<sub>w</sub></var> ÷ <var>h</var>.</p>
+            <p class="titration-equation"><var>h</var> ≈ <span data-titration="hidronio"></span> · pH = −log<sub>10</sub>(<var>h</var>) ≈ <span data-titration="ph"></span></p>
+          </li>
+        </ol>
+        <dl class="titration-variables titration-ph-variables">
+          <div><dt><var>V<sub>total</sub></var></dt><dd>Volume total da mistura no béquer, em L.</dd></div>
+          <div><dt><var>C<sub>T</sub></var></dt><dd>Concentração total das formas HA e A<sup>−</sup> no béquer, em mol/L.</dd></div>
+          <div><dt><var>h</var></dt><dd>Concentração de íons hidrônio (H<sub>3</sub>O<sup>+</sup>), em mol/L.</dd></div>
+          <div><dt>[Na<sup>+</sup>], [A<sup>−</sup>] e [OH<sup>−</sup>]</dt><dd>Concentrações dos íons sódio, da base conjugada do ácido e de hidróxido, em mol/L.</dd></div>
+          <div><dt><var>K<sub>a</sub></var> e <var>pK<sub>a</sub></var></dt><dd>Constante de dissociação do ácido e seu logaritmo negativo. O modelo usa pK<sub>a</sub> = 3,59.</dd></div>
+          <div><dt><var>K<sub>w</sub></var></dt><dd>Produto iônico da água, aproximado por 10<sup>−14</sup> a 25 °C.</dd></div>
+        </dl>
+        <p>O modelo usa concentrações no cálculo do pH e considera apenas a primeira dissociação do 5-CQA isolado. <a href="https://doi.org/10.1039/JR9590002795">Constante de dissociação do 5-CQA</a></p>
+      </details>
+    </section>
+    <section id="quiz" hidden aria-labelledby="titulo-quiz">
+      <header class="experiment-heading">
+        <h1 id="titulo-quiz">Desafios</h1>
+        <p id="pontuacao-quiz">0 acertos de 0 respostas</p>
+      </header>
+      <form id="form-quiz" class="card quiz-card">
+        <div class="quiz-toolbar">
+          <label for="tipo-quiz">Tipo de pergunta</label>
+          <select id="tipo-quiz">
+            <option value="todos">Todos os tipos</option>
+            <option value="objetiva">Múltipla escolha</option>
+            <option value="vf">Verdadeiro ou falso</option>
+            <option value="calculo">Cálculo</option>
+          </select>
+        </div>
+        <fieldset class="quiz-question">
+          <legend id="pergunta-quiz"></legend>
+          <div id="resposta-numerica">
+            <label for="resposta-quiz">Sua resposta</label>
+            <input id="resposta-quiz" type="text" inputmode="decimal" autocomplete="off">
+          </div>
+          <div id="alternativas-quiz" class="quiz-options"></div>
+        </fieldset>
+        <div class="quiz-actions">
+          <button type="submit">Conferir</button>
+          <button type="button" id="novo-desafio">Novo desafio</button>
+        </div>
+        <p id="resultado-quiz" role="status"></p>
+      </form>
+    </section>
+  </main>
+</body>
 </html>
