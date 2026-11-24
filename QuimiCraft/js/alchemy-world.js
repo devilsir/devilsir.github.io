@@ -165,6 +165,13 @@ globalThis.QuimiCraftAlchemyWorld = (() => {
       site.resident={...checkpoints[0],id:"alchemy:"+id,role:"alchemist",name:config.person,
         tint:parseInt(config.color.slice(1),16),trim:parseInt(config.color.slice(1),16),scale:config.scale,
         skin:config.skin,hair:config.hair,accessory:config.accessory,culture:climate,variant:rotation,office:site,checkpoints};
+      const [ax,az]=point(-1,-d+2),[kx,kz]=point(1,-d+2);
+      const names=[["Ícaro","Lia"],["Marta","Ravi"],["Davi","Nina"],["Amália","Bento"]];
+      const [assistantName,childName]=names[rotation];
+      site.assistant={...site.resident,id:site.resident.id+":assistant",name:assistantName+" dos Frascos",
+        x:ax+.5,y:base+1,z:az+.5,scale:.94};
+      site.apprentice={...site.resident,id:site.resident.id+":apprentice",name:childName,
+        x:kx+.5,y:base+1,z:kz+.5,role:"child",age:"child",apprentice:true,scale:.63,accessory:null};
       return site;
     }
     function resolve(id,candidates){

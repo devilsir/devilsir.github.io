@@ -10,7 +10,7 @@ require("../js/combat-effects.js");
 require("../js/terrain.js");
 
 const frontier=QuimiCraftFrontier;
-const B={AIR:0,DIRT:1,GRASS:2,MOSS:3,PEAT:4,CLAY:5,WATER:6,STONE:7,TALL_GRASS:8,LEAVES:9,PLANK:10,COPPER:11,COAL:12};
+const B={AIR:0,DIRT:1,GRASS:2,MOSS:3,PEAT:4,CLAY:5,WATER:6,STONE:7,TALL_GRASS:8,LEAVES:9,PLANK:10,COPPER:11,COAL:12,FENCE_WOOD:13};
 const defs={};
 frontier.register(B,defs);
 
@@ -25,6 +25,7 @@ function homestead(saved=[]){
   const professions=QuimiCraftProfessions.create({
     B,getBlock:get,setBlock:set,count,
     exchange(need,out){
+      if(context.full&&out.length)return {ok:false,message:"Mochila cheia"};
       if(need.some(([id,qty])=>count(id)<qty))return {ok:false,message:"Insumos insuficientes"};
       for(const [id,qty] of need)inventory.set(id,count(id)-qty);
       for(const [id,qty] of out)inventory.set(id,count(id)+qty);
@@ -136,6 +137,71 @@ test("cultivo sob teto exige luz, e oficinas exibem os processos corretos",()=>{
   h.context.selected="hoe";
   h.use(-7,3,0);
   assert.equal(h.get(-7,3,0),B.DIRT);
+});
+
+test("frutíferas soltam material de plantio, passam pela floração e frutificam de novo",()=>{
+  for(const crop of frontier.crops(B).filter(crop=>crop.regrows)){
+    const h=homestead();
+    h.set(0,3,0,B.DIRT);
+    h.set(1,4,0,crop.wild);
+    h.set(2,3,0,B.WATER);
+    h.use(1,4,0);
+    assert.equal(h.count(crop.food),2);
+    assert.equal(h.count(crop.seed),1);
+    h.use(0,3,0);
+    h.context.selected=crop.seed;
+    if(crop.support){
+      h.use(0,3,0);
+      assert.equal(h.get(0,4,0),B.AIR);
+      assert.equal(h.count(crop.seed),1);
+      h.inventory.set(B.FENCE_WOOD,1);
+    }
+    h.use(0,3,0);
+    assert.equal(h.get(0,4,0),crop.stages[0]);
+    assert.equal(h.count(crop.seed),0);
+    assert.equal(h.count(B.FENCE_WOOD),0);
+    h.professions.update(crop.seconds);
+    assert.equal(h.get(0,4,0),crop.stages[1]);
+    h.use(0,4,0);
+    assert.equal(h.count(crop.food),2);
+    h.professions.update(crop.seconds);
+    assert.equal(h.get(0,4,0),crop.stages[2]);
+    h.context.full=true;
+    h.use(0,4,0);
+    assert.equal(h.get(0,4,0),crop.stages[2]);
+    h.context.full=false;
+    h.use(0,4,0);
+    assert.equal(h.count(crop.food),5);
+    assert.equal(h.get(0,4,0),crop.stages[1]);
+    h.professions.persist();
+    const restored=homestead(h.context.saved);
+    restored.set(0,3,0,B.WET_FARMLAND);
+    restored.set(2,3,0,B.WATER);
+    restored.set(0,4,0,crop.stages[1]);
+    restored.professions.update(crop.seconds);
+    assert.equal(restored.get(0,4,0),crop.stages[2]);
+    restored.professions.clearPlot({x:0,y:3,z:0,id:B.FARMLAND});
+    assert.equal(restored.get(0,4,0),B.AIR);
+    assert.deepEqual(restored.catches,[[crop.food,3],[crop.seed,1],...(crop.support?[[B.FENCE_WOOD,1]]:[])]);
+  }
+});
+
+test("as nove frutíferas silvestres aparecem somente nos biomas e solos definidos",()=>{
+  const crops=frontier.crops(B).filter(crop=>crop.regrows);
+  const biomes=new Set(crops.flatMap(crop=>crop.biomes));
+  const found=new Set();
+  for(let i=0;i<9;i++){
+    const picker=frontier.wildFruitPicker(B,(x,z,salt)=>salt===1506?.998:i/9,5);
+    for(const biome of biomes){
+      const id=picker(biome,B.GRASS,0,0,2);
+      const crop=frontier.cropAt(crops,id);
+      assert.ok(crop.biomes.includes(biome));
+      found.add(id);
+      assert.equal(picker(biome,B.WATER,0,0,2),0);
+    }
+    assert.equal(picker("fiordes glaciais",B.GRASS,0,0,2),0);
+  }
+  assert.equal(found.size,9);
 });
 
 test("pesca consome isca, respeita a fisgada e entrega peixe do bioma",()=>{

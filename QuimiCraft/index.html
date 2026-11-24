@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="styles/character-customization.css">
 <link rel="stylesheet" href="styles/science.css">
 <link rel="stylesheet" href="styles/alchemy.css">
-<link rel="stylesheet" href="styles/vehicles.css">
-<link rel="stylesheet" href="styles/catalog.css">
+<link rel="stylesheet" href="styles/vehicles.css?v=2">
+<link rel="stylesheet" href="styles/catalog.css?v=3">
 </head>
 <body><div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
 <div id="game"></div>
@@ -131,7 +131,7 @@
 </section>
 <div id="mobileControls" class="mobile-controls" aria-label="Controles móveis">
   <div class="mobile-move"><button type="button" data-mobile-key="KeyW" aria-label="Mover para frente">▲</button><button type="button" data-mobile-key="KeyA" aria-label="Mover para esquerda">◀</button><button type="button" data-mobile-key="KeyS" aria-label="Mover para trás">▼</button><button type="button" data-mobile-key="KeyD" aria-label="Mover para direita">▶</button></div>
-  <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-key="ControlLeft" data-drive aria-label="Frear veículo" hidden>Freio</button><button type="button" data-mobile-key="ShiftLeft" data-drive aria-label="Ativar nitro" hidden>Nitro</button><button type="button" data-mobile-action="vehicle" aria-label="Equipar ou recolher veículo">V</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
+  <div class="mobile-actions"><button type="button" data-mobile-action="jump" aria-label="Pular ou subir">↑</button><button type="button" id="mountDescend" data-mobile-key="ShiftLeft" aria-label="Descer com o dragão" hidden>↓</button><button type="button" data-mobile-action="attack" aria-label="Atacar ou quebrar">⚔</button><button type="button" id="offhandAction" data-mobile-action="focus" aria-label="Conjurar com a mão secundária" hidden>✧</button><button type="button" data-mobile-action="use" aria-label="Usar ou colocar">◆</button><button type="button" data-mobile-action="interact" aria-label="Interagir">E</button><button type="button" data-mobile-action="sample" aria-label="Coletar amostra">G</button><button type="button" data-mobile-key="ControlLeft" data-drive aria-label="Frear veículo" hidden>Freio</button><button type="button" data-mobile-key="ShiftLeft" data-drive aria-label="Ativar nitro" hidden>Nitro</button><button type="button" data-mobile-action="vehicle" aria-label="Equipar ou recolher veículo">V</button><button type="button" data-mobile-action="inventory" aria-label="Abrir inventário">▦</button></div>
 </div>
 <div id="waterOverlay" class="water-overlay" aria-hidden="true"><span class="water-caustics"></span><span id="breathWarning" class="breath-warning">FÔLEGO BAIXO</span></div><div id="climateOverlay" class="climate-overlay" aria-hidden="true"></div><div id="damage" class="damage"></div>
 
@@ -269,22 +269,59 @@
 <section id="pause" class="modal" aria-hidden="true"><div class="modal-card pause-card"><h2>Mundo pausado</h2><p id="pauseCopy">O laboratório, a vila e as criaturas esperam por você.</p><div class="pause-actions"><button id="resumeBtn" class="primary">Continuar</button><button id="cameraModeBtn" class="secondary" type="button">Usar câmera por arraste</button><button id="fieldworkResume" class="secondary" type="button">Prática guiada</button><button id="pauseHistoryBtn" class="secondary">Histórico de mensagens</button><button id="graphicsBtn" class="secondary">Opções gráficas</button><button id="catalogPauseBtn" class="secondary" type="button">Catálogo ilustrado</button><button id="restartBtn" class="secondary">Respawnar</button><button id="newWorldBtn" class="secondary danger">Recomeçar mundo</button><button id="titleBtn" class="secondary">Voltar ao início</button></div><div class="world-file-actions"><button id="exportWorldPause" class="secondary" type="button">Exportar mundo</button><button id="importWorldPause" class="secondary" type="button">Restaurar mundo</button></div><p id="pauseSaveStatus" class="world-save-status" role="status"></p></div></section>
 <section id="catalog" class="modal" role="dialog" aria-modal="true" aria-labelledby="catalogTitle" aria-hidden="true">
   <div class="modal-card catalog-card">
-    <div class="modal-head"><div><h2 id="catalogTitle" class="modal-title">Catálogo ilustrado</h2><p class="modal-sub">Blocos, moradores, máquinas e criaturas do QuimiCraft.</p></div><button type="button" class="close" data-catalog-close aria-label="Fechar catálogo">×</button></div>
+    <div class="modal-head"><div><h2 id="catalogTitle" class="modal-title">Catálogo ilustrado</h2><p class="modal-sub">Blocos, equipamentos, moradores, veículos e criaturas do QuimiCraft.</p></div><button type="button" class="close" data-catalog-close aria-label="Fechar catálogo">×</button></div>
     <div class="catalog-tools">
-      <input type="search" aria-label="Buscar no catálogo" placeholder="Buscar por nome ou habitat">
+      <input type="search" aria-label="Buscar no catálogo" placeholder="Buscar por nome, material ou habitat">
       <div class="catalog-filters" role="group" aria-label="Categorias do catálogo">
         <button type="button" class="secondary" data-category="all">Tudo</button>
         <button type="button" class="secondary" data-category="block">Blocos</button>
+        <button type="button" class="secondary" data-category="plants">Plantas</button>
+        <button type="button" class="secondary" data-category="weapon">Armas</button>
+        <button type="button" class="secondary" data-category="shield">Escudos</button>
+        <button type="button" class="secondary" data-category="focus">Artefatos</button>
         <button type="button" class="secondary" data-category="npc">NPCs</button>
         <button type="button" class="secondary" data-category="vehicle">Veículos</button>
         <button type="button" class="secondary" data-category="animal">Fauna terrestre</button>
         <button type="button" class="secondary" data-category="aquatic">Fauna aquática</button>
         <button type="button" class="secondary" data-category="fantasy">Criaturas</button>
       </div>
+      <div class="catalog-filters catalog-block-filters" role="group" aria-label="Tipos de bloco" hidden>
+        <button type="button" class="secondary" data-block-filter="all">Todos os blocos</button>
+        <button type="button" class="secondary" data-block-filter="natural">Terreno</button>
+        <button type="button" class="secondary" data-block-filter="building">Construção</button>
+        <button type="button" class="secondary" data-block-filter="mineral">Minérios</button>
+        <button type="button" class="secondary" data-block-filter="station">Estações</button>
+        <button type="button" class="secondary" data-block-filter="plant">Vegetação</button>
+        <button type="button" class="secondary" data-block-filter="treasure">Tesouros</button>
+      </div>
     </div>
     <div class="catalog-grid"></div>
     <div class="catalog-footer"><span class="catalog-count" role="status"></span><div><button class="secondary" type="button" data-page="prev">Anterior</button><span class="catalog-pagination"></span><button class="secondary" type="button" data-page="next">Próxima</button></div></div>
   </div>
+  <dialog class="catalog-inspector" aria-labelledby="catalogItemTitle" aria-describedby="catalogItemDetail">
+    <div class="catalog-inspector-head">
+      <h2 id="catalogItemTitle" class="modal-title"></h2>
+      <button type="button" class="close" data-inspector-close aria-label="Voltar ao catálogo">×</button>
+    </div>
+    <div class="catalog-viewer">
+      <img class="catalog-poster" alt="" hidden>
+      <div class="catalog-live-view" role="group" aria-label="Modelo 3D interativo" aria-describedby="catalogModelHelp" tabindex="0" hidden></div>
+      <p class="catalog-view-status" role="status" hidden></p>
+    </div>
+    <div class="catalog-inspector-tools">
+      <div class="catalog-view-modes" role="group" aria-label="Modo de visualização">
+        <button class="secondary" type="button" data-view="2d" aria-pressed="true">2D</button>
+        <button class="secondary" type="button" data-view="3d" aria-pressed="false">3D</button>
+      </div>
+      <div class="catalog-model-controls" role="group" aria-label="Controles do modelo 3D" hidden>
+        <button class="secondary" type="button" data-zoom="out" aria-label="Diminuir zoom">−</button>
+        <button class="secondary" type="button" data-zoom="in" aria-label="Aumentar zoom">+</button>
+        <button class="secondary" type="button" data-reset-view>Redefinir vista</button>
+      </div>
+    </div>
+    <p id="catalogModelHelp" class="catalog-model-help" hidden>Arraste ou use as setas para girar. Use + e − para ajustar o zoom.</p>
+    <p id="catalogItemDetail" class="catalog-item-detail"></p>
+  </dialog>
 </section>
 <input type="file" id="worldImportFile" accept=".json,application/json" hidden>
 <div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
@@ -294,14 +331,15 @@
 <script src="assets/three.min.js"></script>
 <script src="js/character-customization.js"></script>
 <script src="js/quimicraft-systems.js"></script>
+<script src="js/arsenal.js?v=3"></script>
 <script src="js/science-core.js"></script>
 <script src="js/science-ui.js"></script>
-<script src="js/frontier.js"></script>
+<script src="js/frontier.js?v=2"></script>
 <script src="js/regions.js"></script>
 <script src="js/habitats.js"></script>
-<script src="js/settlements.js"></script>
-<script src="js/workshops.js"></script>
-<script src="js/professions.js"></script>
+<script src="js/settlements.js?v=2"></script>
+<script src="js/workshops.js?v=2"></script>
+<script src="js/professions.js?v=2"></script>
 <script src="js/combat-effects.js"></script>
 <script src="js/avatar-preview.js"></script>
 <script src="js/terrain.js"></script>
@@ -311,18 +349,30 @@
 <script src="js/player-input.js"></script>
 <script src="js/inventory-transaction.js"></script>
 <script src="js/world-storage.js"></script>
-<script src="js/player-models.js"></script>
+<script src="js/player-models.js?v=4"></script>
+<script src="js/biome-fauna.js"></script>
+<script src="js/dragons.js?v=2"></script>
+<script src="js/creature-poses.js"></script>
+<script src="js/expeditions.js?v=2"></script>
+<script src="js/mounts.js?v=2"></script>
+<script src="js/npc-looks.js?v=2"></script>
+<script src="js/mob-spawn.js"></script>
+<script src="js/breeding.js"></script>
 <script src="js/entity-ai.js"></script>
 <script src="js/alchemy.js"></script>
 <script src="js/alchemy-world.js"></script>
 <script src="js/alchemy-ui.js"></script>
 <script src="js/alchemy-play.js"></script>
-<script src="js/vehicle-models.js"></script>
+<script src="js/vehicle-models.js?v=2"></script>
 <script src="js/vehicles.js"></script>
-<script src="js/block-models.js"></script>
-<script src="js/depths.js"></script>
-<script src="js/wildlife-models.js"></script>
-<script src="js/catalog.js"></script>
-<script src="js/game.js"></script>
+<script src="js/surface-art.js"></script>
+<script src="js/plant-models.js?v=3"></script>
+<script src="js/block-models.js?v=2"></script>
+<script src="js/depths.js?v=2"></script>
+<script src="js/aquatic.js"></script>
+<script src="js/wildlife-models.js?v=8"></script>
+<script src="js/catalog.js?v=4"></script>
+<script src="js/menu-backdrop.js?v=2"></script>
+<script src="js/game.js?v=8"></script>
 </body>
 </html>

@@ -7,11 +7,29 @@
 <title>CitoLab 3D — Laboratório Virtual</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="css/theme.css?v=14">
-<link rel="stylesheet" href="css/layout.css?v=14">
-<link rel="stylesheet" href="css/microscope.css?v=19">
+<link rel="stylesheet" href="css/layout.css?v=28">
+<link rel="stylesheet" href="css/microscope.css?v=27">
 <script type="importmap">{"imports":{"three":"./libs/three.module.js","three/addons/":"./libs/"}}</script>
+<style>
+#boot-loader{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 42%,#13202d 0%,#090e15 62%,#060a0f 100%);transition:opacity .32s ease,visibility .32s ease}
+#boot-loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+</style>
 </head>
 <body>
+<div id="boot-loader" role="status" aria-atomic="true">
+  <div class="loader-card">
+    <div class="loader-orb" aria-hidden="true"><i></i><i></i>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polygon points="12 2.5 20.2 7.25 20.2 16.75 12 21.5 3.8 16.75 3.8 7.25"/>
+        <circle cx="12" cy="12" r="3.4"/>
+      </svg>
+    </div>
+    <p class="loader-kicker">LABORATÓRIO VIRTUAL 3D</p>
+    <h2 class="loader-title">CitoLab <b>3D</b></h2>
+    <p class="loader-sub" id="boot-status">Inicializando motor gráfico 3D e bancada virtual...</p>
+    <div class="loader-bar" aria-hidden="true"><i></i></div>
+  </div>
+</div>
 <header class="topbar">
   <a href="#citologia" class="brand" aria-label="CitoLab 3D, início">
     <span class="brand-mark" aria-hidden="true">
@@ -36,10 +54,13 @@
       <div id="projection" class="projection" aria-hidden="true"></div>
       <div id="overlay" class="overlay"></div>
       <header class="scene-heading">
-        <p id="scene-kicker" class="eyebrow"></p>
-        <h1 id="scene-title">CitoLab 3D</h1>
-        <p id="scene-subtitle">Laboratório Virtual de Citologia, Bioquímica e Histologia</p>
-        <div class="view-help" id="view-help">Arraste para orbitar · Role para aproximar</div>
+        <div id="scene-heading-content">
+          <p id="scene-kicker" class="eyebrow"></p>
+          <h1 id="scene-title">CitoLab 3D</h1>
+          <p id="scene-subtitle">Laboratório Virtual de Citologia, Bioquímica e Histologia</p>
+          <div class="view-help" id="view-help">Arraste para orbitar · Role para aproximar</div>
+        </div>
+        <button id="toggle-scene-heading" class="quiet scene-heading-toggle" type="button" aria-controls="scene-heading-content" aria-expanded="true" aria-label="Recolher texto da cena" title="Recolher texto da cena">−</button>
       </header>
       <div id="tooltip" class="tooltip" hidden></div>
       <div class="scene-error" id="scene-error" role="alert" hidden></div>
@@ -56,11 +77,6 @@
     <div id="guide-body"></div>
   </aside>
 </main>
-<footer>
-  <span>CitoLab 3D</span>
-  <span>Citologia · Metabolismo · DNA/RNA · Divisão Celular · Histologia · Óptico · Eletrônico</span>
-  <span class="footer-local"><i></i> Bancada ativa</span>
-</footer>
-<script type="module" src="js/main.js?v=22"></script>
+<script type="module" src="js/main.js?v=44"></script>
 </body>
 </html>

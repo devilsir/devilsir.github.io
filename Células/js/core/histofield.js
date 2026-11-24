@@ -1,4 +1,5 @@
 import { random } from './geometry.js';
+import { insectTissues } from '../data/insectSpecimens.js?v=1';
 
 // Real end-of-course honeybee microscope photograph (dissected crop, ribbed ventriculus, Malpighian tubules & tracheae!)
 const beeCourseImg = new Image();
@@ -1214,6 +1215,81 @@ function liverLobule(ctx, b, p, rgb, layer, anchor, zoom) {
   });
 }
 
+function insectSection(ctx, _b, p, rgb, layer, anchor, zoom, sample) {
+  const gut = sample.region === 'gut';
+  const trachea = sample.region === 'trachea';
+  const r = sample.radius;
+  const sections = gut ? [[0, 0, 1], [r * 1.8, -r * 0.66, 0.35]]
+    : trachea ? [[-32, 4, 1.15], [25, -27, 0.75], [29, 33, 0.62], [-49, -35, 0.37], [2, 46, 0.35]]
+      : [[-40, 14, 1], [32, -20, 0.85], [24, 46, 0.70]];
+
+  for (const [i, [x, y, scale]] of sections.entries()) {
+    const rx = r * scale;
+    const ry = rx * (gut ? 0.73 : 0.86);
+    const phase = i * 1.76 + r * 0.03;
+    const steps = gut ? 72 : 42;
+    const points = (a, inner) => {
+      const fold = inner && gut ? 0.13 * Math.cos(a * (sample.animal === 'copris' ? 7 : 5) + phase) : 0;
+      const contour = (inner ? (trachea ? 0.75 : 0.56) : 1) + fold
+        + 0.044 * Math.cos(a * 3 + phase) + 0.025 * Math.sin(a * 7 - phase);
+      return [x + Math.cos(a) * rx * contour, y + Math.sin(a) * ry * contour];
+    };
+    const trace = inner => {
+      for (let k = 0; k < steps; k++) {
+        const xy = points(k * tau / steps, inner);
+        if (k === 0) ctx.moveTo(...xy);
+        else ctx.lineTo(...xy);
+      }
+      ctx.closePath();
+    };
+
+    if (layer === 0) {
+      ellipse(ctx, x, y, rx * 1.22, ry * 1.24, 0, tint(rgb.matrix, 4, 0.45));
+      ctx.beginPath();
+      trace(false);
+      ctx.fillStyle = p.cyto;
+      ctx.fill();
+      ctx.strokeStyle = p.edge;
+      ctx.lineWidth = gut ? 4 : 2;
+      ctx.stroke();
+      ctx.beginPath();
+      trace(true);
+      ctx.fillStyle = tint(rgb.bg, 18, 1);
+      ctx.fill();
+      continue;
+    }
+    if (layer === 2) {
+      ctx.beginPath();
+      trace(true);
+      ctx.strokeStyle = tint(rgb.edge, -12, 0.54);
+      ctx.lineWidth = trachea ? 2.5 : 1.4;
+      ctx.stroke();
+      anchor(trachea ? 'Lúmen traqueal' : gut ? 'Lúmen intestinal' : 'Lúmen do túbulo de Malpighi', x, y, 2);
+      continue;
+    }
+    const rng = random(338 + i * 37 + Math.round(r));
+    const cells = Math.max(9, Math.round(rx * (gut ? 0.42 : 0.6)));
+    for (let j = 0; j < cells; j++) {
+      const a = j * tau / cells;
+      const outer = points(a, false);
+      const inner = points(a, true);
+      ctx.strokeStyle = tint(rgb.edge, 8, 0.29);
+      ctx.lineWidth = 0.55;
+      ctx.beginPath();
+      ctx.moveTo(...outer);
+      ctx.quadraticCurveTo((outer[0] + inner[0]) * 0.5 + 1.2, (outer[1] + inner[1]) * 0.5, ...inner);
+      ctx.stroke();
+      if (!trachea || j % 4 === 0) {
+        const cx = outer[0] * 0.68 + inner[0] * 0.32;
+        const cy = outer[1] * 0.68 + inner[1] * 0.32;
+        drawNucleus(ctx, cx, cy, gut ? 3.8 : 2.55, gut ? 2.7 : 1.65, a,
+          rgb.nucleus, rgb.core, rng, zoom);
+      }
+    }
+    anchor(trachea ? 'Parede traqueal' : gut ? 'Epitélio intestinal' : 'Epitélio do túbulo', x + rx * 0.83, y, 1);
+  }
+}
+
 const drawing = {
   bee: beeHistoresin, blood: bloodSmear, leaf: leafEpidermis, cartilage: hyalineCartilage, liver: liverLobule,
   epithelial, connective, muscle: muscular, nervous, bacteria
@@ -1337,13 +1413,15 @@ export function paintField(canvas, slide, { fov = 400, x = 0, y = 0, layer = 1, 
   ctx.translate(-b.left, -b.top);
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  drawing[slide.tissue](ctx, b, p, rgb, layer, (label, px, py, depth) => {
+  const specimen = insectTissues[slide.tissue];
+  const draw = specimen ? insectSection : drawing[slide.tissue];
+  draw(ctx, b, p, rgb, layer, (label, px, py, depth) => {
     if (!collect || annotations.length > 1700) return;
     const localX = (px - b.left) * zoom, localY = (py - b.top) * zoom;
     if (Math.hypot((localX - width * .5) / width, (localY - height * .5) / height) < .38) {
       annotations.push({ label, x: localX, y: localY, depth });
     }
-  }, zoom, gramPhase);
+  }, zoom, specimen || gramPhase);
   ctx.restore();
   return annotations;
 }

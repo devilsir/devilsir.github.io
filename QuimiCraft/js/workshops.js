@@ -88,6 +88,7 @@ globalThis.QuimiCraftWorkshops=(()=>{
     };
     const glass=(name,need,out,count=1)=>job(name,[...need,[B.COAL,1]],[[out,count]],"glass",3.15);
     const kitchen=[
+      cook("Assar batata",[["potato",1]],"baked_potato"),
       cook("Ensopado de legumes",[["carrot",1],["beans",1]],"veggie_stew",2),
       cook("Caldeirada",[["raw_fish",1],["carrot",1]],"fish_stew",2),
       cook("Filé dourado",[["raw_trout",1],["wheat",1]],"fish_fillet",2),

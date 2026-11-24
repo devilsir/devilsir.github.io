@@ -1,9 +1,10 @@
+import { tissues } from '../data/tissues.js?v=23';
+
 const key = 'citolab3d.slide.v1';
-const tissueIds = ['bee', 'epithelial', 'connective', 'muscle', 'nervous', 'bacteria'];
 const stainIds = ['historesin', 'he', 'pas', 'masson', 'gram', 'fresh'];
 
 function valid(slide) {
-  return slide && tissueIds.includes(slide.tissue) && stainIds.includes(slide.stain) &&
+  return slide && Object.hasOwn(tissues, slide.tissue) && stainIds.includes(slide.stain) &&
     Number.isFinite(slide.thickness) && slide.thickness >= 1 && slide.thickness <= 12;
 }
 

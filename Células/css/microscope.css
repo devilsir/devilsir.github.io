@@ -52,9 +52,48 @@
     0 14px 36px rgba(3, 6, 10, 0.78);
 }
 
+/* Compact inline loader overlay for Optical ocular & Electron monitor while micrographs decode */
+.ocular-loader {
+  position: absolute;
+  inset: 2.1rem 0.4rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  background: rgba(7, 12, 18, 0.84);
+  border-radius: 14px;
+  z-index: 5;
+  color: #e4f6fc;
+  font: 600 0.76rem Inter, "Segoe UI", sans-serif;
+  text-align: center;
+  padding: 0.75rem;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.ocular-wrap:not(.em-screen-wrap) .ocular-loader {
+  border-radius: 50%;
+}
+
+.ocular-loader[hidden] {
+  display: none;
+}
+
+.ocular-loader .mini-spin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(75, 199, 216, 0.22);
+  border-top-color: var(--cyan);
+  animation: loaderSpin 0.85s linear infinite;
+}
+
 /* Hitachi HT7800 Rectangular Electron Microscope Live Acquisition Monitor */
 .em-screen-wrap {
-  width: min(47%, 530px);
+  bottom: 0.7rem;
+  width: min(36%, 400px);
+  justify-content: flex-start;
 }
 
 .em-screen-wrap canvas {
@@ -70,7 +109,7 @@
 
 .em-screen-wrap .ocular-title,
 .em-screen-wrap .ocular-status {
-  font-size: 0.90rem;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 0.34rem 0.68rem;
   line-height: 1.25;
@@ -99,6 +138,15 @@
   min-width: 118px;
   max-width: 175px;
 }
+
+.em-controls .micro-row .field {
+  flex: 1 1 6.75rem;
+  min-width: 6.75rem;
+  max-width: 215px;
+}
+
+.em-controls .micro-row .field:has(select) { flex-basis: 10rem; }
+.em-controls .row { justify-content: center; }
 
 .field.is-fine output {
   color: var(--green);
@@ -185,6 +233,25 @@
   z-index: 3;
 }
 
+.insect-reference img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.insect-reference figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.insect-reference figcaption p { margin-top: 0.24rem; }
+
+.bench-preview canvas.is-unstained {
+  filter: grayscale(1) sepia(0.42) saturate(0.78) contrast(0.92);
+}
+
 .bench-preview canvas {
   width: 100%;
   aspect-ratio: 1.52;
@@ -206,10 +273,19 @@
     right: 0.6rem;
   }
   .ocular-wrap canvas { border-width: 4px; }
+  .em-screen-wrap {
+    width: min(48%, 320px);
+    justify-content: flex-end;
+  }
   .bench-preview { top: auto; bottom: 0.7rem; right: 0.7rem; width: 158px; }
 }
 
 @media (max-width: 560px) {
   .ocular-wrap { width: 56%; right: 0.45rem; }
-  .ocular-title, .ocular-status { font-size: 0.59rem; padding: 0.24rem 0.36rem; }
+  .em-screen-wrap { width: 48%; }
+  .ocular-title, .ocular-status,
+  .em-screen-wrap .ocular-title, .em-screen-wrap .ocular-status {
+    font-size: 0.59rem;
+    padding: 0.24rem 0.36rem;
+  }
 }

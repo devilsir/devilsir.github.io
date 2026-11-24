@@ -5,6 +5,7 @@ globalThis.QuimiCraftSettlements=(()=>{
   const CELL=920,shops=["food","armor","solid","liquid","trinket"];
   const roles=["farmer","miner","botanist","glazier","ceramist","teacher","baker","fisher","geologist","weaver","cook","smith","gardener"];
   const first=["Alba","Bento","Cora","Dália","Érico","Gael","Iara","Jaci","Lina","Mara","Nara","Noé","Ravi","Téo","Zuri"];
+  const youngNames=["Nina","Luan","Bia","Caíque","Yasmin","Tainá","Davi","Nalu","Joana","Rael"];
   const endings={field:"dos Campos",forest:"do Bosque",coast:"das Marés",dry:"da Chapada",snow:"da Serra",volcanic:"da Caldeira"};
   const skins=[0x704431,0xb37451,0xe2a47e,0x9c634b,0xce936a,0x5f3d30];
   const hair=[0x201c1a,0x49322a,0x734628,0x34333d,0xb38245,0xb0a3a0];
@@ -268,6 +269,29 @@ globalThis.QuimiCraftSettlements=(()=>{
         floor.set(cell(a,b),{y:base,id:B.FIELDSTONE});
         add(a,base+1,b,B.FENCE_WOOD);
         add(a,base+2,b,B.VILLAGE_LANTERN);
+      }
+      const homes=buildings.filter(b=>b.kind==="house").sort((a,b)=>roll(a.x,a.z,691)-roll(b.x,b.z,691));
+      for(const [i,house] of homes.slice(0,site.main?2:1).entries()){
+        people.push({site:site.id,region,culture,id:site.id+":villager:"+i,role:"villager",
+          name:(i===0?"Salomé":"Tomás")+" "+endings[culture],
+          x:house.frontX+1.32,z:house.frontZ-house.side*.86,skin:choose(skins,roll(x+i,z,682)),
+          hair:choose(hair,roll(x,z+i,683)),trim:theme.trim,tint:theme.tint,title:"Morador da vila"});
+      }
+      const childCount=homes.length?(site.main?8:4+Math.floor(roll(x,z,692)*2)):0;
+      const offset=Math.floor(roll(x,z,693)*youngNames.length);
+      for(let i=0;i<childCount;i++){
+        const house=homes[i%homes.length];
+        const childX=house.frontX+(i>=homes.length?.78:0),childZ=house.frontZ-house.side*1.06;
+        const deck=floor.get(cell(Math.floor(childX),Math.floor(childZ)));
+        const playZ=z+spine(0)+(i%2===0?-1:1),playX=x+i%4-2;
+        const playDeck=floor.get(cell(playX,playZ));
+        const play=i<3&&playDeck?{x:playX+.5,y:playDeck.y+1,z:playZ+.5}:null;
+        people.push({site:site.id,region,culture,id:site.id+":child:"+i,role:"child",age:"child",
+          name:youngNames[(i+offset)%youngNames.length]+" "+endings[culture],
+          x:childX,z:childZ,y:deck?deck.y+1:undefined,play,interest:["insects","orchard","stones","water"][i%4],
+          scale:.57+roll(x+i,z,694)*.13,skin:choose(skins,roll(x+i,z,695)),
+          hair:choose(hair.slice(0,-1),roll(x,z-i,696)),trim:theme.trim,tint:theme.tint,
+          variant:Math.floor(roll(x+i,z,697)*4),title:"Criança da comunidade"});
       }
       const civic=civicDistrict({B,site,culture,theme,floor,road,structure,doors,buildings,people,roll,cell,paving,region,choose,add});
       const district={...site,region,culture,buildings,people,doors,floor,road,structure,civic};

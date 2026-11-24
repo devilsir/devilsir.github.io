@@ -623,7 +623,7 @@ export function centralDogma3d({ scene, lights, engine, label, toolbar, guide, v
 
   let downPos = null;
   canvas.addEventListener('pointermove', event => {
-    if (event.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const key = pickAt(event);
     hoveredKey = key;
     if (key) {

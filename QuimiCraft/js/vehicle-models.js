@@ -3,6 +3,12 @@
 globalThis.QuimiCraftVehicleModels = (() => {
   function create(THREE){
     const box=new THREE.BoxGeometry(1,1,1),wheel=new THREE.CylinderGeometry(1,1,1,12),cone=new THREE.CylinderGeometry(.13,1,1,9);
+    const padded=new THREE.BoxGeometry(1,1,1,4,4,4),points=padded.getAttribute("position"),inner=new THREE.Vector3(),p=new THREE.Vector3();
+    for(let i=0;i<points.count;i++){
+      p.fromBufferAttribute(points,i);inner.copy(p).clampScalar(-.36,.36);
+      p.sub(inner).normalize().multiplyScalar(.14).add(inner);points.setXYZ(i,p.x,p.y,p.z);
+    }
+    padded.computeVertexNormals();
     const ring=new THREE.TorusGeometry(1,.13,6,20);
     const coilCurve=new THREE.Curve();
     coilCurve.getPoint=(t,target=new THREE.Vector3())=>target.set(.085*Math.cos(t*Math.PI*10),.33*(t-.5),.085*Math.sin(t*Math.PI*10));
@@ -58,6 +64,9 @@ globalThis.QuimiCraftVehicleModels = (() => {
         tube(cab,"brass",fTop(side),rTop(side),.042);
         tube(cab,"steel",[side*w,base+.025,.41],[side*(w-.055),high,.41],.026);
         plate(cab,skin,side*.61,.286,.29,.065,.12,.76);
+        plate(cab,"ink",side*(w-.022),.36,.17,.052,.107,.82);
+        plate(cab,"seat",side*(w-.039),.392,.22,.049,.088,.64);
+        plate(cab,"brass",side*(w-.019),.415,.31,.027,.028,.155);
         plate(cab,"chrome",side*(w+.041),.379,.40,.031,.043,.16);
         for(const z of [-.41,.58])plate(cab,"ink",side*(w+.02),.31,z,.04,.10,.09);
         tube(cab,"steel",[side*(w-.01),.63,-.49],[side*(w+.16),.64,-.54],.027);
@@ -66,10 +75,14 @@ globalThis.QuimiCraftVehicleModels = (() => {
       }
       tube(cab,"steel",f(-1),f(1),.044);
       tube(cab,"steel",r(-1),r(1),.044);
+      tube(cab,"edge",[0,base,front],[0,high,shield],.016);
       const roofZ=(shield+deck)/2;
       plate(cab,"ink",0,high+.013,roofZ,2*w-.02,.083,1.11);
       plate(cab,skin,0,high+.055,roofZ,2*w-.12,.031,1.02);
       plate(cab,"brass",0,high-.001,shield-.045,2*w-.03,.051,.08);
+      plate(cab,"ink",0,high-.040,roofZ,1.05,.033,.83);
+      for(const x of [-.212,.212])plate(cab,"seat",x,high-.064,shield+.127,.307,.037,.177).rotation.x=.10;
+      plate(cab,"chrome",0,high-.135,shield+.065,.25,.092,.036);
       for(const x of [-.31,.31])plate(cab,"lamp",x,high-.008,shield-.092,.17,.044,.025);
       tube(cab,"ink",[-.235,.37,-.576],[.166,.54,-.542],.015);
       tube(cab,"ink",[.050,.55,-.54],[.293,.529,-.544],.015);
@@ -89,29 +102,63 @@ globalThis.QuimiCraftVehicleModels = (() => {
       }
       return {joint,spin,r,steer,baseY:y};
     }
-    function cockpit(g,y,z,housing){
-      plate(g,"ink",0,y-.12,z,1.13,.18,.94);
-      plate(g,"seat",0,y,z+.23,.77,.18,.57).rotation.x=-.09;
-      plate(g,"seat",0,y+.31,z+.57,.77,.62,.14).rotation.x=.17;
-      plate(g,housing,0,y+.39,z-.47,1.03,.18,.2);
-      for(const x of [-.25,0,.25])plate(g,x===0?"brass":"glass",x,y+.49,z-.48,.12,.03,.10);
+    function cockpit(g,y,z,housing,rig){
+      const plane=rig.kind==="glider",width=plane?.84:1.13,s=plane?.85:1;
+      const cab=pivot(g,0,y,z);cab.name="Interior da cabine";
+      rig.cockpitView=pivot(cab,0,.80,.23);
+      plate(cab,"ink",0,-.12,0,width,.18,.96);
+      for(const x of [-width*.42,width*.42])plate(cab,"edge",x,-.02,-.15,.042,.027,.53);
+      mesh(cab,padded,"seat",0,0,.23,.71*s,.16,.55).rotation.x=-.09;
+      mesh(cab,padded,"seat",0,.275,.55,.71*s,.55,.15).rotation.x=.17;
+      mesh(cab,padded,"ink",0,.555,.614,.32*s,.137,.14).rotation.x=.13;
+      for(const side of [-1,1]){
+        mesh(cab,padded,"seat",side*.29*s,.074,.27,.155*s,.122,.47).rotation.z=side*.11;
+        tube(cab,"edge",[side*.296*s,.544,.558],[side*.184*s,.118,.494],.022);
+        partSeatBelt(side);
+      }
+      for(const x of [-.19,-.096,0,.096,.19])plate(cab,"ink",x*s,.291,.468,.014,.247,.015).rotation.x=.17;
+      mesh(cab,padded,housing,0,.386,-.443,.99*s,.226,.287);
+      plate(cab,"ink",0,.414,-.269,.86*s,.179,.066).rotation.x=.25;
+      plate(cab,"brass",0,.537,-.394,.91*s,.035,.248).rotation.x=.02;
+      rig.gauges=[];
+      for(const [i,px] of [-.246,0,.246].entries()){
+        const gauge=pivot(cab,px*s,.437,-.223);gauge.rotation.x=.25;
+        mesh(gauge,wheel,"brass",0,0,0,.074,.029,.074).rotation.x=Math.PI/2;
+        mesh(gauge,wheel,"ink",0,0,.019,.061,.018,.061).rotation.x=Math.PI/2;
+        for(let k=0;k<6;k++){
+          const a=-2.49+k*.83,tick=plate(gauge,k===5?"red":"edge",Math.sin(a)*.044,Math.cos(a)*.044,.030,.007,.014,.005);
+          tick.rotation.z=-a;
+        }
+        const needle=pivot(gauge,0,0,.038);
+        plate(needle,i===1?"glass":"lamp",0,.016,0,.008,.048,.008);
+        rig.gauges.push(needle);
+      }
       tube(g,"edge",[0,y+.23,z-.47],[0,y+.41,z-.14],.055);
-      const steering=pivot(g,0,y+.45,z-.12);
-      steering.rotation.x=-Math.PI*.36;
-      mesh(steering,ring,"rubber",0,0,0,.24,.24,.22);
-      for(const angle of [0,Math.PI*2/3,Math.PI*4/3]){
-        const spoke=pivot(steering,0,0,0);
-        spoke.rotation.z=angle;
-        plate(spoke,"edge",0,.112,0,.031,.19,.027);
+      const controls=pivot(cab,0,.432,-.09);controls.rotation.x=plane?-.66:-1.02;
+      const steering=pivot(controls,0,0,0);rig.steering=steering;
+      if(plane){
+        for(const side of [-1,1]){
+          tube(steering,"steel",[0,0,0],[side*.166,-.039,0],.030);
+          tube(steering,"rubber",[side*.166,-.040,0],[side*.224,.138,0],.045);
+        }
+      }else{
+        mesh(steering,ring,"rubber",0,0,0,.215,.215,.20);
+        for(const angle of [0,Math.PI*2/3,Math.PI*4/3]){
+          const spoke=pivot(steering,0,0,0);spoke.rotation.z=angle;
+          plate(spoke,"edge",0,.099,0,.029,.172,.026);
+        }
       }
-      mesh(steering,wheel,"brass",0,0,0,.067,.042,.067).rotation.x=Math.PI/2;
-      for(const x of [-.25,.25]){
-        mesh(g,wheel,"ink",x,y+.414,z-.35,.081,.032,.081).rotation.x=Math.PI/2;
-        plate(g,"lamp",x+.016,y+.415,z-.329,.058,.012,.008).rotation.z=.55;
+      mesh(steering,wheel,"brass",0,0,0,.054,.033,.054).rotation.x=Math.PI/2;
+      for(const x of [-.31,.31]){
+        const sx=Math.sign(x);
+        plate(cab,"ink",x*s,.115,.034,.126,.036,.26);
+        const lever=pivot(cab,x*s,.129,.082);lever.rotation.x=sx*.31;
+        tube(lever,"edge",[0,0,0],[0,.194,-.028],.019);
+        mesh(lever,padded,plane?"wood":sx>0?"brass":"rubber",0,.188,-.031,.048,.055,.044);
       }
-      for(const x of [-.49,.49]){
-        tube(g,"brass",[x,y,z+.56],[x,y+.62,z+.51],.046);
-        tube(g,"steel",[x,y+.62,z+.51],[x,y+.50,z-.41],.047);
+      function partSeatBelt(side){
+        tube(cab,"ink",[side*.267*s,.447,.475],[side*.159*s,.085,.222],.019);
+        plate(cab,"brass",side*.149*s,.115,.221,.054,.039,.041).rotation.x=.44;
       }
     }
     function nitroExhaust(g,rig,x,y,z){
@@ -178,7 +225,7 @@ globalThis.QuimiCraftVehicleModels = (() => {
           plate(g,"edge",x*.84,.78,-.49,.18,.13,.89);
         }
       }
-      cockpit(g,tracked?1.04:.89,tracked?.41:.39,skin);
+      cockpit(g,tracked?1.04:.89,tracked?.41:.39,skin,rig);
       cabin(g,tracked?1.04:.89,tracked?.41:.39,skin,tracked);
       if(kind==="cart"){
         plate(g,"rust",0,.86,-.84,.71,.3,.52);
@@ -240,6 +287,7 @@ globalThis.QuimiCraftVehicleModels = (() => {
         tube(joint,"edge",[-w/2,.025,v],[w/2,h-.025,v],.015);
         tube(joint,"edge",[w/2,.025,v],[-w/2,h-.025,v],.015);
       }
+      return joint;
     }
     function glider(g){
       const rig={root:g,kind:"glider",wheels:[],tracks:[]};
@@ -249,15 +297,42 @@ globalThis.QuimiCraftVehicleModels = (() => {
         tube(g,"wood",[x,.35,.98],[x,1.26,.87],.048);
         tube(g,"wood",[x,1.27,1.06],[x,1.02,-2.4],.047);
         tube(g,"steel",[x,1.21,1.02],[x,.33,-.52],.021);
-        for(const u of [1.08,2.15])wingCell(g,u*side,1.16,.27,1.10,.91,1.57);
-        rig.wheels.push(tire(g,x*1.83,.27,.31,.265,.103));
-        tube(g,"steel",[x*1.82,.29,.31],[x,.96,.24],.037);
+        const inner=wingCell(g,side*1.08,1.16,.27,1.10,.91,1.57);
+        const outer=wingCell(g,side*2.15,1.16,.27,1.10,.91,1.57);
+        inner.updateMatrix();outer.updateMatrix();
+        const anchor=(joint,u,y,z)=>new THREE.Vector3(u,y,z).applyMatrix4(joint.matrix).toArray();
+        for(const z of [-.730,.728])for(const y of [0,.91]){
+          const root=anchor(inner,-side*.55,y,z);
+          tube(g,"wood",[0,root[1],root[2]],root,.043);
+          tube(g,"edge",anchor(inner,side*.54,y,z),anchor(outer,-side*.55,y,z),.031);
+          if(!y)tube(g,"steel",[x,.411,z+.32],root,.029);
+        }
+        tube(g,"edge",[x,1.263,.85],anchor(inner,0,.91,-.69),.028);
+        const main=tire(g,x*1.83,.27,.31,.265,.103);
+        rig.wheels.push(main);
+        const axle=main.joint.position.toArray();
+        tube(g,"steel",axle,[x,.45,-.03],.042).name="Montante do trem principal";
+        tube(g,"edge",axle,[x,.391,.89],.032).name="Escora do trem principal";
+        tube(g,"steel",[x,.35,.98],[x,.419,-.36],.047);
       }
+      tube(g,"brass",[-.55,.27,.31],[.55,.27,.31],.031).name="Eixo do trem principal";
       plate(g,"cream",0,.85,-1.44,.66,.34,1.95);
       for(const x of [-.34,.34])plate(g,"rust",x,.97,-1.44,.035,.058,1.88);
       wingCell(g,0,.87,-2.55,1.52,.65,1.0);
-      rig.wheels.push(tire(g,0,.145,-1.75,.14,.07));
-      cockpit(g,.92,.33,"wood");
+      const nose=tire(g,0,.145,-1.75,.14,.07);
+      rig.wheels.push(nose);
+      for(const side of [-1,1]){
+        const hub=[side*.052,.145,-1.75],elbow=[side*.098,.486,-1.70];
+        tube(g,"steel",hub,elbow,.033).name="Garfo da roda dianteira";
+        tube(g,"wood",elbow,[side*.293,.669,-1.60],.045).name="Ancoragem da roda dianteira";
+        tube(g,"edge",elbow,[side*.283,.724,-2.12],.026);
+      }
+      tube(g,"brass",[-.074,.145,-1.75],[.074,.145,-1.75],.020);
+      cockpit(g,.92,.33,"wood",rig);
+      const frame=[[-.366,1.18,-.220],[.366,1.18,-.220],[.302,1.53,-.071],[-.302,1.53,-.071]];
+      pane(g,frame,"Para-brisa da aeronave");
+      for(let i=0;i<4;i++)tube(g,i===0?"wood":"brass",frame[i],frame[(i+1)%4],.025);
+      for(const side of [-1,1])tube(g,"steel",[side*.366,1.18,-.220],[side*.30,.985,.11],.031);
       const drive=pivot(g,0,.67,.63);
       rig.drive=drive;drive.visible=false;
       tube(drive,"brass",[0,.27,-.45],[0,-.15,-.68],.045);
@@ -271,6 +346,7 @@ globalThis.QuimiCraftVehicleModels = (() => {
         tube(drive,"ink",[side*.12,-.09,-.57],[side*.12,.37,.45],.037);
       }
       const prop=pivot(drive,0,.44,.72);
+      tube(drive,"steel",[0,.36,.45],[0,.44,.742],.073).name="Eixo da hélice";
       mesh(prop,wheel,"brass",0,0,0,.136,.151,.136).rotation.x=Math.PI/2;
       for(const side of [-1,1]){
         const blade=plate(prop,"wood",side*.49,side*.035,0,.87,.161,.071);
@@ -291,6 +367,11 @@ globalThis.QuimiCraftVehicleModels = (() => {
       rig.root.position.set(v.x,v.renderY??v.y,v.z);
       rig.root.rotation.set(v.tilt||0,v.yaw,v.bank||0,"YXZ");
       const speed=v.speed||0,turn=v.yawRate||0;
+      if(rig.steering)rig.steering.rotation.z=(v.steer||0)*-.51+(v.bank||0)*.28;
+      if(rig.gauges){
+        const values=[Math.min(1,Math.abs(speed)/16),Math.min(1,Math.abs(v.tilt||0)*1.2+.18),Math.min(1,Math.abs(turn)*.40+.22)];
+        rig.gauges.forEach((needle,i)=>needle.rotation.z=.96-values[i]*2.81);
+      }
       for(const tire of rig.wheels){
         const groundSpeed=speed+turn*tire.joint.position.x;
         tire.speed=v.flying?(tire.speed||0)*Math.exp(-1.8*dt):groundSpeed;

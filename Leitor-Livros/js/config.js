@@ -1,7 +1,7 @@
 (function (App) {
   "use strict";
 
-  const APP_VERSION = "2.3.0";
+  const APP_VERSION = "2.4.0";
   const CACHE_NAME = `leitor-livros-v${APP_VERSION}`;
   const SETTINGS_KEY = "bookReaderSettings";
 

@@ -34,13 +34,18 @@ globalThis.QuimiCraftDepths=(()=>{
     fresh:{id:"fresh",label:"Água doce profunda",rgb:[.16,.47,.53],chem:{id:"fresh"}}
   };
   const fauna=Object.freeze({
-    orca:{name:"Orca",habitat:"Mar glacial e águas costeiras frias",speed:2.55,extent:1.21,minDepth:8,swim:.42,mode:"pod"},
-    dolphin:{name:"Golfinho",habitat:"Mar aberto e costa",speed:2.95,extent:.79,minDepth:5,swim:.43,mode:"curious"},
-    caiman:{name:"Jacaré",habitat:"Manguezal, delta e pântano",speed:1.30,extent:.80,minDepth:3,swim:.21,mode:"ambush",damage:7,hp:42,drop:"raw_game"},
-    piranha:{name:"Piranha",habitat:"Água doce tropical",speed:1.95,extent:.27,minDepth:3,swim:.5,mode:"school",damage:3.5,hp:12,drop:"raw_piranha"},
-    reef_shark:{name:"Cação",habitat:"Água marinha",speed:2.1,extent:1.02,minDepth:6,swim:.65,mode:"cruise"},
-    ray:{name:"Raia",habitat:"Fundo marinho e estuários",speed:1.48,extent:.63,minDepth:4,swim:.82,mode:"bottom"},
-    jelly:{name:"Água-viva",habitat:"Águas marinhas profundas",speed:.57,extent:.32,minDepth:6,swim:.65,mode:"drift"}
+    orca:{name:"Orca",habitat:"Mar glacial e águas costeiras frias",speed:2.82,extent:1.21,minDepth:8,swim:.42,mode:"pod",hp:86,damage:0},
+    dolphin:{name:"Golfinho",habitat:"Mar aberto e costa",speed:3.14,extent:.79,minDepth:5,swim:.43,mode:"curious",hp:39,damage:0},
+    caiman:{name:"Jacaré",habitat:"Manguezal, delta e pântano",speed:1.30,extent:.80,minDepth:3,swim:.21,mode:"ambush",damage:11,hp:47,drop:"raw_game",
+      attack:{kind:"bite",range:1.55,notice:5.2,windup:.67,strike:.34,recover:.66,cooldown:3.35}},
+    piranha:{name:"Piranha",habitat:"Água doce tropical",speed:2.04,extent:.27,minDepth:3,swim:.50,mode:"school",damage:4,hp:12,drop:"raw_piranha",
+      attack:{kind:"bite",range:.85,notice:4.5,windup:.24,strike:.22,recover:.34,cooldown:1.65}},
+    reef_shark:{name:"Cação",habitat:"Água marinha",speed:2.48,extent:1.02,minDepth:6,swim:.65,mode:"cruise",hp:58,damage:15,drop:"raw_fish",
+      attack:{kind:"bite",range:1.66,notice:7.5,windup:.49,strike:.34,recover:.69,cooldown:3.05}},
+    ray:{name:"Raia",habitat:"Fundo marinho e estuários",speed:1.52,extent:.63,minDepth:4,swim:.82,mode:"bottom",hp:25,damage:6,drop:"raw_fish",
+      attack:{kind:"tail",range:1.12,notice:3.2,windup:.39,strike:.29,recover:.54,cooldown:2.55}},
+    jelly:{name:"Água-viva",habitat:"Águas marinhas profundas",speed:.55,extent:.32,minDepth:6,swim:.65,mode:"drift",hp:8,damage:2.5,
+      attack:{kind:"sting",range:.69,notice:1.04,windup:.34,strike:.24,recover:.35,cooldown:2.10}}
   });
 
   function register(B,defs){

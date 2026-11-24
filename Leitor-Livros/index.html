@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#6b4f35">
-  <meta name="description" content="Leitor de livros com OCR local e leitura em voz alta, 100% offline e instalável.">
+  <meta name="description" content="Leitor de livros com reconhecimento de texto e leitura em voz alta.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Leitor">
@@ -207,27 +207,21 @@
           <p class="eyebrow">3 · Voz</p>
           <h2>Leitura em voz alta</h2>
         </div>
-        <div class="voice-badges">
-          <span id="wakeLockBadge" class="badge ready" hidden>Tela ativa</span>
-          <span id="voiceCount" class="badge neutral">0 vozes</span>
+        <div class="head-fields">
+          <label class="compact-field">
+            <span>Ordenar vozes</span>
+            <select id="voiceLanguage">
+              <option value="auto">Seguir idioma do OCR</option>
+              <option value="pt">Português primeiro</option>
+              <option value="en">English primeiro</option>
+              <option value="all">Todas</option>
+            </select>
+          </label>
+          <div class="voice-badges">
+            <span id="wakeLockBadge" class="badge ready" hidden>Tela ativa</span>
+            <span id="voiceCount" class="badge neutral">0 vozes</span>
+          </div>
         </div>
-      </div>
-
-      <div class="voice-filters">
-        <label class="check-field">
-          <input id="offlineVoicesOnly" type="checkbox" checked>
-          <span>Priorizar vozes offline</span>
-        </label>
-
-        <label class="compact-field">
-          <span>Ordenar vozes</span>
-          <select id="voiceLanguage">
-            <option value="auto">Seguir idioma do OCR</option>
-            <option value="pt">Português primeiro</option>
-            <option value="en">English primeiro</option>
-            <option value="all">Todas</option>
-          </select>
-        </label>
       </div>
 
       <div class="controls-grid">
@@ -235,7 +229,6 @@
           <span>Voz</span>
           <div class="voice-select-row">
             <select id="voiceSelect"></select>
-            <button id="downloadVoiceBtn" class="secondary" type="button" hidden>↓ Baixar voz</button>
             <button id="testVoiceBtn" class="secondary" type="button">Testar</button>
           </div>
           <small id="voiceInfo">Carregando vozes…</small>
@@ -320,8 +313,8 @@
     </section>
 
     <section class="privacy-card">
-      <strong>Privacidade e funcionamento 100% local</strong>
-      <p>Todo o motor OCR (WebAssembly + idiomas) e o histórico ficam no próprio navegador. Nenhuma foto ou texto sai do seu dispositivo.</p>
+      <strong>Privacidade</strong>
+      <p>O reconhecimento das páginas, as vozes neurais e o histórico são processados diretamente no seu dispositivo.</p>
     </section>
   </main>
 

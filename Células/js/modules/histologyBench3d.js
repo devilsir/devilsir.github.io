@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { buildInsect, buildInsectExtracts } from './histologyInsects3d.js?v=1';
 import {
   v, group, mesh, box, sphere, cylinder, capsule, lathe, torus, rod, tube,
   material, glow, platform, labelSprite, organicDisplace, tintGeometry,
@@ -120,475 +121,49 @@ function makeLeicaBadgeTexture() {
   return tex;
 }
 
-// Live Samsung Lab Monitor Canvas connected to the Zeiss Stemi 2000-C top CCD camera (Course Photo 1!)
 function makeLupaMonitorPanel() {
   const c = document.createElement('canvas');
   c.width = 512; c.height = 336;
   const ctx = c.getContext('2d');
-  const tex = new T.CanvasTexture(c);
-  tex.colorSpace = T.SRGBColorSpace;
-  tex.anisotropy = 4;
+  const texture = new T.CanvasTexture(c);
+  texture.colorSpace = T.SRGBColorSpace;
+  texture.anisotropy = 4;
+  let lastStatus = '';
 
-  let lastDraw = -99;
-  let lastStage = '';
-
-  function drawBeeTop(x, y, scale, t, frozen, opened) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-
-    // Translucent veined wings
-    for (const s of [-1, 1]) {
-      ctx.save();
-      ctx.translate(10, s * 10);
-      ctx.rotate(s * (0.48 + (frozen ? 0 : Math.sin(t * 2.4) * 0.04)));
-      ctx.fillStyle = 'rgba(218, 245, 255, 0.34)';
-      ctx.strokeStyle = 'rgba(235, 250, 255, 0.65)';
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      ctx.ellipse(-26, s * 22, 34, 11, s * 0.18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(2, s * 14); ctx.lineTo(-48, s * 26);
-      ctx.moveTo(-14, s * 19); ctx.lineTo(-36, s * 30);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // Jointed legs
-    ctx.strokeStyle = '#251a14';
-    ctx.lineWidth = 2.6;
-    for (const s of [-1, 1]) {
-      for (let l = 0; l < 3; l++) {
-        const lx = 24 - l * 15;
-        ctx.beginPath();
-        ctx.moveTo(lx, s * 12);
-        ctx.lineTo(lx - 6, s * 30);
-        ctx.lineTo(lx - 15, s * 40);
-        ctx.stroke();
-      }
-    }
-
-    // Striped abdomen
-    const abdGrad = ctx.createLinearGradient(-56, -22, -6, 22);
-    abdGrad.addColorStop(0, '#1e1612');
-    abdGrad.addColorStop(0.5, '#30231c');
-    abdGrad.addColorStop(1, '#18110e');
-    ctx.fillStyle = abdGrad;
-    ctx.beginPath();
-    ctx.ellipse(-30, 0, 32, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Amber tergite bands
-    ctx.fillStyle = frozen ? '#b69852' : '#e6a62c';
-    for (const bx of [-42, -29, -16]) {
-      ctx.beginPath();
-      ctx.ellipse(bx, 0, 4.6, 16.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Fuzzy golden-brown thorax
-    const thGrad = ctx.createRadialGradient(14, -4, 3, 14, 0, 20);
-    thGrad.addColorStop(0, '#c8923e');
-    thGrad.addColorStop(1, '#684418');
-    ctx.fillStyle = thGrad;
-    ctx.beginPath();
-    ctx.ellipse(14, 0, 19, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Head + compound eyes + antennae
-    ctx.fillStyle = '#1b1412';
-    ctx.beginPath();
-    ctx.ellipse(37, 0, 11, 13, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#0d0c14';
-    ctx.beginPath();
-    ctx.ellipse(40, -10, 5, 7, 0.25, 0, Math.PI * 2);
-    ctx.ellipse(40, 10, 5, 7, -0.25, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#241a16';
-    ctx.lineWidth = 2;
-    for (const s of [-1, 1]) {
-      const wag = frozen ? 0 : Math.sin(t * 3 + s) * 2.5;
-      ctx.beginPath();
-      ctx.moveTo(45, s * 4);
-      ctx.quadraticCurveTo(56, s * 12, 62, s * (16 + wag));
-      ctx.stroke();
-    }
-
-    // If opened on red wax, show exposed dorsal incision (glowing during dissection, hollow dark cavity after organ removal!)
-    if (opened === 'active') {
-      ctx.fillStyle = 'rgba(246, 232, 118, 0.48)';
-      ctx.beginPath();
-      ctx.ellipse(-38, 0, 18, 8.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (opened === 'empty') {
-      ctx.fillStyle = '#380914';
-      ctx.beginPath();
-      ctx.ellipse(-36, 0, 19, 9.2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(220, 140, 150, 0.65)';
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  function update(stageKey, t, resinMode, tissueName = 'Amostra', afterDissect = false, force = false) {
-    const stateTag = `${stageKey}|${resinMode ? 1 : 0}|${afterDissect ? 1 : 0}`;
-    if (!force && stateTag === lastStage && Math.abs(t - lastDraw) < 0.08) return;
-    lastDraw = t;
-    lastStage = stateTag;
-
-    // Dark clinical AxioVision desktop frame
+  function showLiveFrame(name, status) {
+    const content = name + '|' + status;
+    if (content === lastStatus) return;
+    lastStatus = content;
     ctx.fillStyle = '#0a1219';
-    ctx.fillRect(0, 0, 512, 336);
-
-    // Top acquisition software header bar
-    ctx.fillStyle = '#132230';
-    ctx.fillRect(0, 0, 512, 34);
-    ctx.fillStyle = '#254258';
-    ctx.fillRect(0, 33, 512, 1.5);
-
-    const pulse = 0.55 + 0.45 * Math.sin(t * 4.5);
-    ctx.fillStyle = `rgba(74, 245, 148, ${pulse.toFixed(2)})`;
-    ctx.beginPath(); ctx.arc(16, 17, 5, 0, Math.PI * 2); ctx.fill();
-
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = '#152732';
+    ctx.fillRect(0, 0, c.width, 38);
+    ctx.fillRect(361, 51, 140, 271);
     ctx.fillStyle = '#dff6ff';
-    ctx.font = '700 13px Inter, Segoe UI, sans-serif';
-    ctx.fillText('ZEISS Stemi 2000-C  ·  CCD AO VIVO', 28, 22);
-
-    const isCapture = resinMode && stageKey === 'bee_capture';
-    const isFreeze = resinMode && stageKey === 'bee_freeze';
-    const isDissectActive = resinMode && stageKey === 'bee_dissect';
-    const isPostExtract = resinMode && !isCapture && !isFreeze && !isDissectActive && afterDissect;
-    const zoomLabel = isDissectActive
-      ? '32× · DISSECÇÃO ATIVA'
-      : isPostExtract
-        ? '32× · ÓRGÃO RETIRADO'
-        : isFreeze
-          ? '20× · PLATINA AGUARDANDO'
-          : isCapture
-            ? '20× · CERA VAZIA (PRÉ-ABELHA)'
-            : '12× · MACROSCOPIA';
-
-    ctx.fillStyle = isPostExtract ? '#6ef7b8' : '#7de6f8';
-    ctx.font = '700 11.5px Consolas, monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText(zoomLabel, 500, 22);
-    ctx.textAlign = 'left';
-
-    // Optical circular viewport centered in left-middle
-    const cx = 216, cy = 184, rad = 132;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-    ctx.clip();
-
-    if (isCapture || isFreeze) {
-      // BEFORE PLACING THE BEE ON LUPA 01: Empty glossy crimson red-wax dish + fresh glistening 0.9% saline droplet!
-      const bg = ctx.createRadialGradient(cx, cy, 16, cx, cy, rad);
-      bg.addColorStop(0, '#a62a40');
-      bg.addColorStop(0.68, '#6e1628');
-      bg.addColorStop(1, '#2c0810');
-      ctx.fillStyle = bg;
-      ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-
-      // Subtle micro-scratches on laboratory dissection wax
-      ctx.strokeStyle = 'rgba(255, 195, 205, 0.12)';
-      ctx.lineWidth = 1.2;
-      for (let i = 0; i < 6; i++) {
-        ctx.beginPath();
-        ctx.moveTo(cx - 88 + i * 24, cy - 72 + (i % 2) * 30);
-        ctx.lineTo(cx - 32 + i * 24, cy + 54 - (i % 3) * 22);
-        ctx.stroke();
-      }
-
-      // Glistening clear 0.9% NaCl saline drop ready for specimen!
-      const sh = Math.sin(t * 1.8) * 3;
-      const sal = ctx.createRadialGradient(cx + 4, cy, 6, cx + 4, cy, 86);
-      sal.addColorStop(0, 'rgba(148, 236, 255, 0.30)');
-      sal.addColorStop(0.84, 'rgba(98, 202, 232, 0.16)');
-      sal.addColorStop(1, 'rgba(215, 250, 255, 0.62)');
-      ctx.fillStyle = sal;
-      ctx.beginPath();
-      ctx.arc(cx + 4, cy, 86, 0, Math.PI * 2);
-      ctx.fill();
-      // Specular crescent reflection on droplet meniscus
-      ctx.strokeStyle = 'rgba(240, 252, 255, 0.72)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx + 4, cy, 74, -2.5 + sh * 0.01, -1.6 + sh * 0.01);
-      ctx.stroke();
-
-      // Clear status badge showing specimen is NOT YET under Lupa!
-      ctx.fillStyle = 'rgba(8, 16, 24, 0.80)';
-      ctx.strokeStyle = isFreeze ? 'rgba(130, 226, 255, 0.75)' : 'rgba(250, 204, 92, 0.75)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.roundRect(cx - 102, cy - 22, 204, 44, 8); ctx.fill(); ctx.stroke();
-      ctx.textAlign = 'center';
-      ctx.fillStyle = isFreeze ? '#9eeeff' : '#ffe082';
-      ctx.font = '700 12px Consolas, monospace';
-      ctx.fillText(isFreeze ? 'AGUARDANDO ABELHA' : 'PLATINA VAZIA · SEM ABELHA', cx, cy - 4);
-      ctx.fillStyle = '#d8eef8';
-      ctx.font = '600 11px Inter, sans-serif';
-      ctx.fillText(isFreeze ? 'Espécime em crioeutanásia (−20 °C)' : 'Abelha no favo (Petri) · Salina pronta', cx, cy + 14);
-      ctx.textAlign = 'left';
-    } else if (isDissectActive) {
-      // ACTIVE DISSECTION ON RED WAX + SALINE + GLOWING VENTRICULUS / MALPIGHIAN / HEART + REALISTIC FLAT TWEEZERS TIPS!
-      const bg = ctx.createRadialGradient(cx, cy, 16, cx, cy, rad);
-      bg.addColorStop(0, '#9e263c');
-      bg.addColorStop(0.68, '#691525');
-      bg.addColorStop(1, '#2d0810');
-      ctx.fillStyle = bg;
-      ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-
-      // Refractive saline drop meniscus
-      const sal = ctx.createRadialGradient(cx + 8, cy, 8, cx + 8, cy, 96);
-      sal.addColorStop(0, 'rgba(135, 228, 248, 0.28)');
-      sal.addColorStop(0.82, 'rgba(92, 196, 226, 0.16)');
-      sal.addColorStop(1, 'rgba(205, 248, 255, 0.55)');
-      ctx.fillStyle = sal;
-      ctx.beginPath();
-      ctx.arc(cx + 8, cy, 96, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pinned bee body on left side of saline pool
-      drawBeeTop(cx - 56, cy - 6, 1.18, t, true, 'active');
-
-      // Dissected glowing translucent Midgut / Ventriculus (ribbed curved tube — matches real Course Photo 3!)
-      const lift = Math.sin(t * 2.6) * 6;
-      ctx.save();
-      ctx.shadowColor = '#f4f06c';
-      ctx.shadowBlur = 12;
-      ctx.strokeStyle = '#eae25c';
-      ctx.lineWidth = 11;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(cx - 18, cy - 6);
-      ctx.bezierCurveTo(cx + 10, cy - 36 - lift * 0.4, cx + 44, cy + 28 - lift * 0.5, cx + 76, cy - 10 - lift);
-      ctx.stroke();
-
-      // Circular muscular rings along the ventriculus wall
-      ctx.shadowBlur = 0;
-      ctx.strokeStyle = 'rgba(112, 92, 16, 0.72)';
-      ctx.lineWidth = 1.6;
-      for (let k = 0; k <= 12; k++) {
-        const u = k / 12;
-        const px = cx - 12 + u * 84;
-        const py = cy - 8 + Math.sin(u * Math.PI * 2) * 14 - lift * u;
-        ctx.beginPath();
-        ctx.moveTo(px - 2, py - 6);
-        ctx.lineTo(px + 2, py + 6);
-        ctx.stroke();
-      }
-
-      // Radiating fine golden Malpighian tubules & silvery tracheal filaments
-      ctx.strokeStyle = 'rgba(242, 236, 118, 0.85)';
-      ctx.lineWidth = 1.8;
-      for (let m = 0; m < 7; m++) {
-        const ang = (m / 7) * Math.PI * 2 + 0.4;
-        const mx = cx + 24, my = cy + 6 - lift * 0.4;
-        ctx.beginPath();
-        ctx.moveTo(mx, my);
-        ctx.quadraticCurveTo(
-          mx + Math.cos(ang) * 26, my + Math.sin(ang) * 26,
-          mx + Math.cos(ang + 0.35) * 48, my + Math.sin(ang + 0.35) * 42
-        );
-        ctx.stroke();
-      }
-
-      // Pulsing dorsal heart vessel near thorax/abdomen junction
-      const heartPulse = 1 + Math.sin(t * 5.2) * 0.16;
-      ctx.fillStyle = 'rgba(255, 242, 130, 0.78)';
-      ctx.beginPath();
-      ctx.ellipse(cx + 76, cy - 12 - lift, 14 * heartPulse, 9 * heartPulse, -0.3, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Tapered brushed-steel Dumont #5 forceps blades entering cleanly from bottom-right!
-      const fx = cx + 76, fy = cy - 10 - lift;
-      const pinch = Math.sin(t * 2.6) * 2.5;
-      ctx.fillStyle = '#dce9f2';
-      ctx.strokeStyle = '#5c7280';
-      ctx.lineWidth = 1.1;
-      for (const [ox, oy, w1] of [[156, 86, 10], [172, 66, 10]]) {
-        ctx.beginPath();
-        ctx.moveTo(fx + (ox > 160 ? 3 : -1), fy + (ox > 160 ? -3 - pinch : 2 + pinch));
-        ctx.lineTo(cx + ox - w1 * 0.4, cy + oy + w1 * 0.4);
-        ctx.lineTo(cx + ox + w1 * 0.4, cy + oy - w1 * 0.4);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      }
-      ctx.restore();
-    } else if (isPostExtract) {
-      // AFTER ORGAN REMOVAL: Dissected open bee carcass remaining on red wax with EMPTY abdominal cavity (organ moved to fixative!)
-      const bg = ctx.createRadialGradient(cx, cy, 16, cx, cy, rad);
-      bg.addColorStop(0, '#962338');
-      bg.addColorStop(0.68, '#621322');
-      bg.addColorStop(1, '#29070e');
-      ctx.fillStyle = bg;
-      ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-
-      // Slightly cloudy post-dissection saline pool with residual hemolymph trace
-      const sal = ctx.createRadialGradient(cx + 8, cy, 8, cx + 8, cy, 94);
-      sal.addColorStop(0, 'rgba(162, 224, 232, 0.25)');
-      sal.addColorStop(0.75, 'rgba(130, 185, 200, 0.14)');
-      sal.addColorStop(1, 'rgba(205, 245, 252, 0.48)');
-      ctx.fillStyle = sal;
-      ctx.beginPath();
-      ctx.arc(cx + 8, cy, 94, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Open bee carcass WITHOUT ventriculus / Malpighian tubules / heart!
-      drawBeeTop(cx - 46, cy - 10, 1.18, t, true, 'empty');
-
-      // Tiny detached tergite shell fragment resting beside the empty cavity
-      ctx.fillStyle = '#241914';
-      ctx.strokeStyle = '#d49a2a';
-      ctx.lineWidth = 1.6;
-      ctx.beginPath();
-      ctx.ellipse(cx + 42, cy - 18, 12, 6, 0.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Clear green confirmation banner inside monitor: Organ already extracted!
-      ctx.fillStyle = 'rgba(8, 22, 18, 0.84)';
-      ctx.strokeStyle = 'rgba(94, 238, 172, 0.8)';
-      ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.roundRect(cx - 106, cy + 44, 212, 42, 8); ctx.fill(); ctx.stroke();
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#6ff7bc';
-      ctx.font = '700 12px Consolas, monospace';
-      ctx.fillText('ÓRGÃO RETIRADO ✓', cx, cy + 61);
-      ctx.fillStyle = '#dcf8ee';
-      ctx.font = '600 10.5px Inter, sans-serif';
-      ctx.fillText('Ventrículo/coração no processamento', cx, cy + 78);
-      ctx.textAlign = 'left';
-    } else {
-      // Macroscopic biopsy specimen on dark contrast stage for classical/Gram/fresh protocols
-      const bg = ctx.createRadialGradient(cx, cy, 12, cx, cy, rad);
-      bg.addColorStop(0, '#2d3b46');
-      bg.addColorStop(0.85, '#161e26');
-      bg.addColorStop(1, '#090d12');
-      ctx.fillStyle = bg;
-      ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-      ctx.fillStyle = '#db849f';
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, 42, 26, 0.25, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 210, 224, 0.55)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    // Subtle optical reticle crosshair + vignette
-    ctx.strokeStyle = 'rgba(180, 244, 255, 0.28)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(cx - rad, cy); ctx.lineTo(cx + rad, cy);
-    ctx.moveTo(cx, cy - rad); ctx.lineTo(cx, cy + rad);
-    ctx.stroke();
-
-    const vig = ctx.createRadialGradient(cx, cy, rad * 0.72, cx, cy, rad);
-    vig.addColorStop(0, 'rgba(0,0,0,0)');
-    vig.addColorStop(1, 'rgba(0,0,0,0.68)');
-    ctx.fillStyle = vig;
-    ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-    ctx.restore();
-
-    // Circular ocular bezel ring
-    ctx.strokeStyle = '#3d667e';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Calibrated optical scale bar inside ocular bottom-left
-    ctx.fillStyle = 'rgba(6, 14, 20, 0.74)';
-    ctx.fillRect(122, 274, 86, 22);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(130, 289, 54, 3);
-    ctx.font = '700 11px Consolas, monospace';
-    ctx.fillText(isDissectActive || isPostExtract ? '500 μm' : '1,0 mm', 132, 285);
-
-    // Right side telemetry & anatomical legend panel on monitor
-    ctx.fillStyle = '#0e1a24';
-    ctx.fillRect(362, 46, 140, 276);
-    ctx.strokeStyle = '#233f52';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(362, 46, 140, 276);
-
-    ctx.fillStyle = '#6fe6f5';
-    ctx.font = '700 11px Inter, sans-serif';
-    ctx.fillText('IMAGEM DA LUPA', 372, 66);
-
-    const rows = isDissectActive
-      ? [
-        ['Amostra', 'Apis · Dissecção'],
-        ['Meio', 'Salina NaCl 0,9%'],
-        ['Base', 'Cera vermelha'],
-        ['Órgãos', 'Ventrículo +'],
-        ['', 'Túb. Malpighi'],
-        ['', 'Vaso dorsal'],
-        ['Aumento', '32× (Zoom)']
-      ]
-      : isPostExtract
-        ? [
-          ['Status', 'Órgão retirado ✓'],
-          ['Na cera', 'Carcaça aberta'],
-          ['Cavidade', 'Sem vísceras'],
-          ['Destino', 'Fixador / Resina'],
-          ['Aumento', '32× (Zoom)']
-        ]
-        : isFreeze
-          ? [
-            ['Platina', 'Cera vazia'],
-            ['Abelha', 'Crio −20 °C'],
-            ['Tempo', '3–5 min (gelo)'],
-            ['Meio', 'Salina pronta'],
-            ['Aumento', '20× (LED)']
-          ]
-          : isCapture
-            ? [
-              ['Platina', 'Cera vazia'],
-              ['Abelha', 'No favo (Petri)'],
-              ['Meio', 'Salina NaCl 0,9%'],
-              ['Status', 'Pré-dissecção'],
-              ['Aumento', '20× (LED)']
-            ]
-            : [
-              ['Amostra', tissueName.slice(0, 15)],
-              ['Modo', 'Macroscopia'],
-              ['Fundo', 'Platina escura'],
-              ['Aumento', '12× (LED)']
-            ];
-
-    let ry = 92;
-    for (const [k, val] of rows) {
-      if (k) {
-        ctx.fillStyle = '#7ea3b8';
-        ctx.font = '600 10px Inter, sans-serif';
-        ctx.fillText(k.toUpperCase(), 372, ry);
-        ry += 14;
-      }
-      ctx.fillStyle = '#eaf7ff';
-      ctx.font = '700 12px Inter, sans-serif';
-      ctx.fillText(val, 372, ry);
-      ry += 20;
-    }
-
-    // Bottom Samsung SyncMaster status line
+    ctx.font = '700 15px Consolas, monospace';
+    ctx.fillText('LUPA 01  ·  CÂMERA CCD', 16, 25);
     ctx.fillStyle = '#5ee8b6';
-    ctx.font = '700 10px Consolas, monospace';
-    ctx.fillText('CCD 1280×960 · OK', 372, 310);
-
-    tex.needsUpdate = true;
+    ctx.fillText('AO VIVO', 422, 25);
+    ctx.strokeStyle = '#71b7c4';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(216, 184, 134, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = '#8dadb9';
+    ctx.font = '700 11px Consolas, monospace';
+    ctx.fillText('ESPÉCIME', 372, 76);
+    ctx.fillText('CAMPO', 372, 138);
+    ctx.fillText('DISSECÇÃO', 372, 200);
+    ctx.fillStyle = '#e6f7f9';
+    ctx.font = '600 13px Inter, sans-serif';
+    ctx.fillText(name, 372, 95, 118);
+    ctx.fillText('Placa de dissecção', 372, 157, 118);
+    ctx.fillText(status, 372, 219, 118);
+    texture.needsUpdate = true;
   }
 
-  update('bee_capture', 0, true, 'Abelha', false, true);
-  return { texture: tex, update };
+  showLiveFrame('Sem amostra', 'Aguardando amostra');
+  return { texture, showLiveFrame };
 }
 
 // Sculpted Realistic Dumont #5 Stainless-Steel Precision Laboratory Tweezers (Flat Tapered Arms, Spring Heel, Serrated Grip, Fine Pinching Tips!)
@@ -652,47 +227,97 @@ function makeTweezers(parent, steelMat, darkMat) {
   return root;
 }
 
-// Sculpted curved-shoulder borosilicate reagent bottle (LatheGeometry — optional amber glass or crinkled aluminum foil wrap!)
+function reagentLabel(name, color) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 384;
+  canvas.height = 168;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f2efe5';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, 22);
+  ctx.fillRect(24, 128, canvas.width - 48, 4);
+  ctx.fillStyle = '#172932';
+  ctx.font = '700 44px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, canvas.width / 2, 78, canvas.width - 38);
+  const texture = new T.CanvasTexture(canvas);
+  texture.colorSpace = T.SRGBColorSpace;
+  texture.anisotropy = 4;
+  return texture;
+}
+
 function makeReagentBottle(parent, x, z, liquidHex, labelText, { height = 1.04, radius = 0.29, amber = false, foil = false, tagYOffset = 0 } = {}) {
-  const jar = group(parent, x, 0, z);
-  const glass = amber
-    ? glassMaterial('#9c5618', { opacity: 0.62, clearcoat: 1.0, roughness: 0.06, iridescence: 0.2 })
-    : glassMaterial('#d0f2f8', { opacity: 0.30, clearcoat: 1.0, roughness: 0.05 });
-  const liquid = gelMaterial(liquidHex, { opacity: 0.84, emissive: liquidHex, emissiveIntensity: 0.16, iridescence: 0.3 });
+  const base = 0.24;
+  const jar = group(parent, x, base, z);
+  const glass = glassMaterial(amber ? '#955820' : '#d9edf0', {
+    opacity: amber ? 0.51 : 0.23,
+    roughness: 0.10,
+    iridescence: 0.06
+  });
+  const liquid = gelMaterial(liquidHex, {
+    opacity: 0.67, emissive: liquidHex, emissiveIntensity: 0.035, roughness: 0.13
+  });
 
   const profile = [
-    [0.01, 0.24], [radius * 0.96, 0.24], [radius * 1.02, 0.30], [radius, 0.24 + height * 0.68],
-    [radius * 0.54, 0.24 + height * 0.88], [radius * 0.48, 0.24 + height], [radius * 0.56, 0.24 + height + 0.04]
+    [0, 0.019], [0.64, 0.019], [0.85, 0.004], [0.94, 0.004], [0.985, 0.026],
+    [1, 0.077], [1, 0.57], [0.985, 0.625], [0.94, 0.67], [0.85, 0.716],
+    [0.72, 0.76], [0.59, 0.80], [0.53, 0.842], [0.52, 0.895],
+    [0.55, 0.902], [0.55, 0.93], [0.51, 0.936], [0.51, 0.975],
+    [0.54, 0.983], [0.54, 1.015], [0.50, 1.025], [0.399, 1.025], [0.39, 1.008],
+    [0.39, 0.84], [0.46, 0.784], [0.61, 0.734], [0.76, 0.681], [0.872, 0.625],
+    [0.904, 0.565], [0.904, 0.105], [0.85, 0.064], [0, 0.064]
   ];
-  lathe(jar, glass, profile, 24);
+  lathe(jar, glass, profile.map(([r, y]) => [r * radius, y * height]), 48);
+
+  const fill = height * (amber ? 0.53 : 0.51);
+  lathe(jar, liquid, [
+    [0, height * 0.067], [radius * 0.84, height * 0.067], [radius * 0.90, height * 0.106],
+    [radius * 0.901, fill + 0.012], [radius * 0.873, fill + 0.004], [radius * 0.81, fill], [0, fill]
+  ], 40);
 
   if (foil) {
-    // Authentic crinkled aluminum foil wrap protecting light-sensitive stains (Schiff, Eosina, Hematoxilina — Course Photo 13!)
-    const foilGeo = new T.CylinderGeometry(radius * 0.96, radius * 1.06, height * 0.78, 22, 8);
-    organicDisplace(foilGeo, 0.075, 11, x * 13 + z * 7);
-    mesh(jar, foilGeo, metalMaterial('#cfd9e0', { metalness: 0.94, roughness: 0.24 }), 0, 0.26 + height * 0.4, 0);
-  } else {
-    const liqH = height * 0.56;
-    lathe(jar, liquid, [
-      [0.01, 0.27], [radius * 0.88, 0.27], [radius * 0.90, 0.27 + liqH], [radius * 0.84, 0.27 + liqH + 0.02], [0.01, 0.27 + liqH + 0.02]
-    ], 22);
-    torus(jar, glow(liquidHex, 0.36), radius * 0.86, 0.014, 0, 0.28 + liqH, 0).rotation.x = Math.PI / 2;
+    const wrap = new T.LatheGeometry([
+      [radius * 0.96, height * 0.045], [radius * 1.04, height * 0.09],
+      [radius * 1.035, height * 0.36], [radius * 1.05, height * 0.61],
+      [radius * 0.97, height * 0.69], [radius * 0.76, height * 0.77],
+      [radius * 0.57, height * 0.84]
+    ].map(([r, h]) => new T.Vector2(r, h)), 40);
+    organicDisplace(wrap, 0.032, 24, x * 13 + z * 7);
+    mesh(jar, wrap, metalMaterial('#c4cbd0', { metalness: 0.83, roughness: 0.32, side: T.DoubleSide }));
   }
 
-  // Ribbed black screw cap
-  lathe(jar, anodizedMaterial('#1c2430'), [
-    [0.01, 0.24 + height + 0.02], [radius * 0.58, 0.24 + height + 0.02],
-    [radius * 0.58, 0.24 + height + 0.16], [radius * 0.5, 0.24 + height + 0.19], [0.01, 0.24 + height + 0.19]
-  ], 20);
+  const capMaterial = material(amber ? '#2c2928' : '#26343e', { roughness: 0.47, metalness: 0.04 });
+  const capRadius = radius * 0.65;
+  const capBase = height * 0.895;
+  const ribHeight = 0.121;
+  const ribSegments = 96;
+  const ribs = new T.CylinderGeometry(capRadius, capRadius, ribHeight, ribSegments, 1, true);
+  const vertices = ribs.attributes.position;
+  for (let i = 0; i < vertices.count; i++) {
+    const ridge = (i % (ribSegments + 1)) % 3 ? 0.947 : 1;
+    vertices.setX(i, vertices.getX(i) * ridge);
+    vertices.setZ(i, vertices.getZ(i) * ridge);
+  }
+  ribs.computeVertexNormals();
+  mesh(jar, ribs, capMaterial, 0, capBase + 0.018 + ribHeight / 2, 0);
+  lathe(jar, capMaterial, [
+    [radius * 0.54, capBase], [capRadius * 0.95, capBase], [capRadius, capBase + 0.008],
+    [capRadius, capBase + 0.024], [capRadius * 0.93, capBase + 0.031],
+    [capRadius * 0.93, capBase + 0.127], [capRadius, capBase + 0.136],
+    [capRadius * 0.995, capBase + 0.149], [capRadius * 0.92, capBase + 0.160],
+    [capRadius * 0.77, capBase + 0.164], [0, capBase + 0.164]
+  ], 36);
 
-  // Clinical lab paper label band wrapped on front
-  const bandGeo = new T.CylinderGeometry(radius * 1.05, radius * 1.05, 0.28, 16, 1, true, -0.75, 1.5);
-  mesh(jar, bandGeo, enamelMaterial('#edf2f4', { roughness: 0.68 }), 0, 0.24 + height * 0.42, 0);
+  const labelRadius = radius * (foil ? 1.083 : 1.014);
+  const labelGeo = new T.CylinderGeometry(labelRadius, labelRadius, height * 0.286, 28, 1, true, -1.23, 2.46);
+  mesh(jar, labelGeo, material('#ffffff', { map: reagentLabel(labelText, liquidHex), roughness: 0.8 }), 0, height * 0.358, 0);
 
   const tag = labelSprite(labelText, { scale: 0.29, border: liquidHex, color: '#eef7fa' });
-  tag.position.set(0, height + 0.66 + tagYOffset, 0.05);
+  tag.position.set(0, height + 0.42 + tagYOffset, 0.05);
   jar.add(tag);
-  return { jar, liquid };
+  return { jar, liquid, tag };
 }
 
 // Sculpted 3D Worker Bee model (head, compound eyes, antennae, striped thorax/abdomen, translucent wings & legs!)
@@ -765,6 +390,7 @@ function makeBee(parent) {
   // Glowing internal viscera core (visible ONLY during active dissection — disappears once organ is extracted!)
   const cavityViscera = sphere(openAbd, glow('#e8df58', 0.85), 0.11, 0.042, 0.058, 0, 0.022, 0, 12);
   openAbd.visible = false;
+  bee.dissectionOrgans = { gut: cavityViscera };
 
   bee.setDissectionState = function setDissectionState(mode = 'intact') {
     intactAbd.visible = mode === 'intact';
@@ -788,7 +414,7 @@ function makeBee(parent) {
   return bee;
 }
 
-export function buildHistologyBench(scene) {
+export function buildHistologyBench(scene, renderer, stockSamples) {
   platform(scene);
 
   // Subtle dedicated overhead & warm accent studio lights for crisp shadows & glistening glass!
@@ -826,7 +452,7 @@ export function buildHistologyBench(scene) {
 
   // Zeiss Stemi stereomicroscope base + black specimen plate + vertical column + blue focus dial + cream binocular head!
   roundedSlab(lupaStation, enamel, 2.2, 2.6, 0.22, 0.22, 0.04, 0, 0.11, 0.2);
-  roundedSlab(lupaStation, black, 1.24, 1.24, 0.04, 0.08, 0.01, 0, 0.23, 0.55);
+  const lupaPlate = roundedSlab(lupaStation, black, 1.24, 1.24, 0.04, 0.08, 0.01, 0, 0.23, 0.55);
   // Vertical square column + blue Zeiss cap & coaxial focus dials
   roundedSlab(lupaStation, enamel, 0.58, 0.58, 2.55, 0.06, 0.025, 0, 1.48, -0.78);
   roundedSlab(lupaStation, zeissBlue, 0.62, 0.62, 0.24, 0.06, 0.025, 0, 2.82, -0.78);
@@ -868,15 +494,48 @@ export function buildHistologyBench(scene) {
   // Subtle recessed metallic back housing + vents
   roundedSlab(monHead, dark, 1.48, 0.12, 0.92, 0.06, 0.02, 0, 0.02, -0.11);
   // Active high-contrast self-luminous LCD screen mounted cleanly in front of the bezel face (z = +0.068)!
-  const monScreenMat = new T.MeshStandardMaterial({
-    map: lupaMonitorPanel.texture,
-    emissiveMap: lupaMonitorPanel.texture,
-    emissive: new T.Color('#ffffff'),
-    emissiveIntensity: 0.96,
-    roughness: 0.16,
-    metalness: 0.02
-  });
+  const monScreenMat = new T.MeshBasicMaterial({ map: lupaMonitorPanel.texture, toneMapped: false });
   mesh(monHead, new T.PlaneGeometry(1.90, 1.24), monScreenMat, 0, 0.02, 0.068);
+  const ccdTarget = new T.WebGLRenderTarget(384, 384);
+  const ccdLayer = 3;
+  const ccdCamera = new T.OrthographicCamera(-0.67, 0.67, 0.67, -0.67, 0.02, 1.25);
+  ccdCamera.up.set(0, 0, -1);
+  ccdCamera.layers.set(ccdLayer);
+  const ccdImage = mesh(monHead, new T.CircleGeometry(0.488, 64),
+    new T.MeshBasicMaterial({ map: ccdTarget.texture }), -0.1484, -0.039, 0.074);
+  ccdImage.castShadow = ccdImage.receiveShadow = ccdImage.visible = false;
+  let lastCapture = -Infinity, lastPose = '', lastMoving = false;
+
+  function updateLupaLive(time, animal, name, status, moving) {
+    const position = animal?.visible ? animal.position : null;
+    const onPlate = position && Math.hypot(position.x - waxDish.position.x, position.z - waxDish.position.z) < 0.61;
+    const specimen = onPlate ? name : 'Sem amostra';
+    const dissection = onPlate ? status : 'Aguardando amostra';
+    lupaMonitorPanel.showLiveFrame(specimen, dissection);
+
+    const pose = [specimen, dissection, onPlate && position.x, onPlate && position.y,
+      onPlate && position.z, onPlate && animal.rotation.y].join('|');
+    if (time - lastCapture < 1 / 24 || (!moving && !lastMoving && pose === lastPose)) return;
+    lastCapture = time;
+    lastPose = pose;
+    lastMoving = moving;
+
+    const previousTarget = renderer.getRenderTarget();
+    const { autoUpdate, needsUpdate } = renderer.shadowMap;
+    ccdImage.visible = false;
+    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.needsUpdate = false;
+    try {
+      renderer.setRenderTarget(ccdTarget);
+      renderer.render(scene, ccdCamera);
+    } finally {
+      renderer.setRenderTarget(previousTarget);
+      renderer.shadowMap.autoUpdate = autoUpdate;
+      renderer.shadowMap.needsUpdate = needsUpdate;
+      ccdImage.visible = true;
+    }
+  }
+
   // Crisp thin inner recess trim frame around the active LCD screen
   const frameTrim = anodizedMaterial('#090d12', { roughness: 0.45 });
   box(monHead, frameTrim, 1.96, 0.032, 0.02, 0, 0.655, 0.062);
@@ -905,20 +564,21 @@ export function buildHistologyBench(scene) {
   // Glass Petri Dish with Brown Hexagonal Bee Brood Comb (Photo 8!)
   const petri = group(lupaStation, -1.45, 0.02, 2.32);
   lathe(petri, glass, [[0.01, 0], [0.76, 0], [0.78, 0.02], [0.78, 0.18], [0.75, 0.18], [0.75, 0.03], [0.01, 0.03]], 30);
+  const petriComb = group(petri);
   const combMat = organelleMaterial('#784e30', { roughness: 0.62, clearcoat: 0.2 });
   for (let i = 0; i < 18; i++) {
     const a = -0.4 + (i / 17) * 4.5;
     const rad = 0.42 + (i % 2) * 0.08;
-    cylinder(petri, combMat, 0.062, 0.058, 0.095, Math.cos(a) * rad, 0.08, Math.sin(a) * rad, 6);
+    cylinder(petriComb, combMat, 0.062, 0.058, 0.095, Math.cos(a) * rad, 0.08, Math.sin(a) * rad, 6);
   }
   const petriTag = labelSprite('Favo · Captura', { scale: 0.26, border: '#e0a958', color: '#fff0d4' });
   petriTag.position.set(0, 0.48, 0);
-  petri.add(petriTag);
+  petriComb.add(petriTag);
 
   // Translucent Red-Wax Dissection Dish sitting cleanly on Lupa stage (Photo 9!)
   const waxDish = group(lupaStation, 0, 0.26, 0.55);
   lathe(waxDish, glass, [[0.01, 0], [0.54, 0], [0.56, 0.02], [0.56, 0.16], [0.53, 0.16], [0.53, 0.03], [0.01, 0.03]], 28);
-  cylinder(waxDish, gelMaterial('#b8243a', { opacity: 0.92, clearcoat: 0.95, roughness: 0.18 }), 0.52, 0.52, 0.085, 0, 0.065, 0, 26);
+  cylinder(waxDish, material('#a53446', { roughness: 0.62 }), 0.52, 0.52, 0.085, 0, 0.065, 0, 40);
   // Glistening 0.9% saline droplet right in center of red wax
   const salineDrop = sphere(waxDish, gelMaterial('#94efff', { opacity: 0.46, iridescence: 0.42 }), 0.22, 0.036, 0.22, 0, 0.115, 0, 20);
 
@@ -938,6 +598,18 @@ export function buildHistologyBench(scene) {
   // Sculpted 3D Worker Bee + Dissected Midgut/Ventriculus Organ (Photo 3!) + Animated Steel Entomological Forceps (Photo 9!)
   const bee = makeBee(lupaStation);
   bee.position.set(-1.35, 0.18, 2.32);
+  bee.userData.feet = 0.11;
+  const animals = {
+    bee,
+    drosophila: buildInsect(lupaStation, 'drosophila'),
+    copris: buildInsect(lupaStation, 'copris'),
+    tenebrio: buildInsect(lupaStation, 'tenebrio')
+  };
+  const insectExtracts = buildInsectExtracts(lupaStation);
+  const insectDish = group(lupaStation, 0.87, 0.034, 1.34);
+  lathe(insectDish, glass, [[0.01, 0], [0.24, 0], [0.255, 0.014], [0.255, 0.071],
+    [0.235, 0.071], [0.235, 0.025], [0.01, 0.025]], 26);
+  insectDish.visible = false;
 
   const beeOrgan = group(lupaStation, 0, 0.4, 0.55);
   const orgMat = proteinMaterial('#d8cf4a', { emissive: '#8f8414', emissiveIntensity: 0.42, clearcoat: 0.88 });
@@ -955,13 +627,22 @@ export function buildHistologyBench(scene) {
   forceps.scale.setScalar(0.95);
   forceps.visible = false;
 
+  const plateCenter = waxDish.getWorldPosition(v());
+  ccdCamera.position.copy(plateCenter);
+  ccdCamera.position.y += 0.76;
+  ccdCamera.lookAt(plateCenter);
+  for (const root of [lupaPlate, waxDish, ...Object.values(animals), forceps, beeOrgan, insectExtracts, insectDish]) {
+    root.traverse(object => object.layers.enable(ccdLayer));
+  }
+  for (const light of scene.children.filter(object => object.isLight)) light.layers.enable(ccdLayer);
+
   interactives.set('lupa', {
     object: lupaStation, view: 'lupa', title: 'Estereomicroscópio (Lupa 01) e Dissecção',
     subtitle: 'Captura da abelha, crioeutanásia em gelo e dissecção sobre cera vermelha com pinça', color: '#e4d5ad'
   });
   interactives.set('lupaMonitor', {
     object: lupaMonitor, view: 'lupaMonitor', title: 'Monitor de vídeo · Câmera CCD (Lupa 01)',
-    subtitle: 'Imagem ampliada ao vivo do estereomicroscópio (favo, gelo e dissecção sobre cera vermelha)', color: '#58e4f5'
+    subtitle: 'Imagem ao vivo da placa de dissecção, posicionada sob a objetiva.', color: '#58e4f5'
   });
 
   // =========================================================================
@@ -982,8 +663,8 @@ export function buildHistologyBench(scene) {
   ];
   const bottles = bathSpecs.map(([name, dye, isAmber], index) => {
     const x = (index - 2) * 0.78;
-    const { liquid } = makeReagentBottle(rack, x, 0, dye, name, { height: 1.02, radius: 0.27, amber: isAmber });
-    return { x: x - 3.55, liquid };
+    const { jar, liquid, tag } = makeReagentBottle(rack, x, 0, dye, name, { height: 1.02, radius: 0.27, amber: isAmber });
+    return { x: x - 3.55, name, jar, liquid, tag };
   });
 
   // White 9-Well Polyethylene Historesin Embedding Mold Tray (EXACT match to Photo 10!)
@@ -1002,18 +683,56 @@ export function buildHistologyBench(scene) {
   moldTag.position.set(0, 0.54, 0);
   resinMold.add(moldTag);
 
-  // Wooden Mounting Block with White/Red ID Paper Band & Translucent Historesin Pyramid (EXACT match to Photo 6!)
-  const woodBlockPreview = group(rack, 1.15, 0.02, 1.62);
-  roundedSlab(woodBlockPreview, woodMat, 0.52, 0.52, 0.56, 0.03, 0.015, 0, 0.28, 0);
-  box(woodBlockPreview, enamelMaterial('#f4f4f0', { roughness: 0.72 }), 0.54, 0.26, 0.54, 0, 0.26, 0);
-  box(woodBlockPreview, material('#d9383a', { roughness: 0.55 }), 0.546, 0.032, 0.546, 0, 0.38, 0);
-  box(woodBlockPreview, material('#d9383a', { roughness: 0.55 }), 0.546, 0.032, 0.546, 0, 0.14, 0);
-  // Translucent trapezoidal Historesin block glued on top with tiny bee organ inside!
-  cylinder(woodBlockPreview, resinBlockMat, 0.14, 0.21, 0.24, 0, 0.68, 0, 4).rotation.y = Math.PI / 4;
-  sphere(woodBlockPreview, orgMat, 0.055, 0.035, 0.045, 0, 0.67, 0, 10);
-  const woodTag = labelSprite('Bloco madeira + Resina', { scale: 0.24, border: '#d98c5a', color: '#ffe8d4' });
-  woodTag.position.set(0, 1.05, 0);
+  const prepSampleMat = tissueMat.clone();
+  const moldSample = sphere(resinMold, tissueMat.clone(), 0.072, 0.029, 0.052, 0, 0.188, 0, 12);
+  moldSample.visible = false;
+
+  const resinMixer = group(rack, -1.92, 0.02, 1.59);
+  lathe(resinMixer, glass, [[0.01, 0.02], [0.24, 0.02], [0.28, 0.08], [0.31, 0.61],
+    [0.29, 0.61], [0.26, 0.09], [0.01, 0.09]], 28);
+  torus(resinMixer, glass, 0.30, 0.014, 0, 0.61, 0).rotation.x = Math.PI / 2;
+  const resinMixLiquid = cylinder(resinMixer, resinBlockMat, 0.266, 0.25, 0.20, 0, 0.19, 0, 26);
+  const resinStirrer = group(resinMixer, 0, 0.08, 0);
+  cylinder(resinStirrer, steel, 0.019, 0.019, 0.73, 0.08, 0.37, 0, 10).rotation.z = -0.23;
+  const mixTag = labelSprite('Mistura de resina', { scale: 0.21, border: '#e6b85c', color: '#fff3d4' });
+  mixTag.position.set(0, 0.93, 0);
+  resinMixer.add(mixTag);
+
+  const paperMat = enamelMaterial('#f4f4f0', { roughness: 0.72 });
+  const redTape = material('#d9383a', { roughness: 0.55 });
+
+  function resinCube(parent, x, y, z, tape, sampleMat) {
+    const cube = group(parent, x, y, z);
+    roundedSlab(cube, woodMat, 0.52, 0.52, 0.56, 0.03, 0.015, 0, 0.28, 0);
+    box(cube, paperMat, 0.54, 0.26, 0.54, 0, 0.26, 0);
+    for (const height of [0.14, 0.38]) {
+      box(cube, tape, 0.546, 0.032, 0.546, 0, height, 0);
+    }
+    const tip = group(cube);
+    cylinder(tip, resinBlockMat, 0.14, 0.21, 0.24, 0, 0.68, 0, 4).rotation.y = Math.PI / 4;
+    sphere(tip, sampleMat, 0.078, 0.039, 0.060, 0, 0.67, 0, 12);
+    return { cube, tip };
+  }
+
+  const { cube: woodBlockPreview, tip: woodResinTip } = resinCube(rack, 1.15, 0.02, 1.62, redTape, prepSampleMat);
+  const woodTag = labelSprite('Suporte de madeira', { scale: 0.21, border: '#d98c5a', color: '#ffe8d4' });
+  woodTag.position.set(0, 1.03, 0);
   woodBlockPreview.add(woodTag);
+
+  const resinTray = group(rack, -0.26, 0, 2.98);
+  roundedSlab(resinTray, dark, 4.02, 0.91, 0.12, 0.08, 0.02, 0, 0.07, 0);
+  roundedSlab(resinTray, steel, 3.93, 0.82, 0.035, 0.07, 0.008, 0, 0.135, 0);
+  const stockBlocks = stockSamples.map(({ id, label, color }, index) => {
+    const tape = material(color, { roughness: 0.65 });
+    const sample = tissueMat.clone();
+    sample.color.set(color);
+    const { cube } = resinCube(resinTray, (index - (stockSamples.length - 1) / 2) * 0.96, 0.16, 0, tape, sample);
+    cube.scale.setScalar(0.82);
+    const tag = labelSprite(label, { scale: 0.15, border: color, color: '#f7fbff' });
+    tag.position.set(0, 0.24, 0.31);
+    cube.add(tag);
+    return { id, cube };
+  });
 
   // Biopsy specimen floating/dipping into baths
   const specimen = sphere(scene, tissueMat, 0.26, 0.14, 0.2, -3.9, 0.22, 2.0, 18);
@@ -1124,7 +843,7 @@ export function buildHistologyBench(scene) {
   const resinPrism = cylinder(resinHolder, resinBlockMat, 0.12, 0.20, 0.28, 0, 0, 0.28, 4);
   resinPrism.rotation.x = Math.PI / 2;
   resinPrism.rotation.y = Math.PI / 4;
-  sphere(resinHolder, orgMat, 0.058, 0.042, 0.042, 0, 0, 0.33, 12);
+  sphere(resinHolder, prepSampleMat, 0.058, 0.042, 0.042, 0, 0, 0.33, 12);
   resinHolder.visible = false;
 
   // =========================================================================
@@ -1151,8 +870,12 @@ export function buildHistologyBench(scene) {
 
   // 1) Stainless Steel Disposable Blade + red finger guard (classical paraffin protocols)
   const steelBlade = group(bladeStage, 0, 0.88, -0.06);
-  const sbMesh = box(steelBlade, chrome, 1.48, 0.052, 0.38, 0, 0, 0);
-  sbMesh.rotation.x = -0.34;
+  const steelEdgeProfile = group(steelBlade);
+  steelEdgeProfile.rotation.x = -0.34;
+  box(steelEdgeProfile, material('#aab9c2', { metalness: 0.35, roughness: 0.32 }), 1.48, 0.052, 0.38);
+  box(steelEdgeProfile, chrome, 1.46, 0.018, 0.082, 0, 0.025, 0.145);
+  box(steelEdgeProfile, material('#d3e1e8', { metalness: 0.54, roughness: 0.21 }),
+    1.46, 0.009, 0.020, 0, 0.028, 0.185);
   box(steelBlade, eStopRed, 0.26, 0.06, 0.05, 0.64, 0.10, 0.12);
 
   // 2) AUTHENTIC GREENISH SODA-LIME TRIANGULAR GLASS KNIFE (Navalha de vidro triangular — frames 3 & 8!)
@@ -1169,11 +892,18 @@ export function buildHistologyBench(scene) {
   gkGeo.translate(-0.12, -0.02, 0.06);
   gkGeo.rotateX(-0.36);
   // Real green-tinted float-glass optical prism material!
-  const gkMat = glassMaterial('#8fe8cf', { opacity: 0.66, ior: 1.52, iridescence: 0.52, clearcoat: 1.0, roughness: 0.02 });
+  const gkMat = glassMaterial('#8fe8cf', { opacity: 0.78, ior: 1.52, iridescence: 0.52, clearcoat: 1.0, roughness: 0.02 });
   mesh(glassKnife, gkGeo, gkMat);
   // Razor-bright optical cutting edge gleam along the upper glass apex
   box(glassKnife, glow('#dcfff6', 1.35), 0.26, 0.012, 0.012, 0, 0.40, -0.10);
-  glassKnife.visible = false;
+  const glassEdge = v(-0.18, 1.82, 1.78);
+  const steelEdge = v(-0.18, 1.53, 1.44);
+  function setResinKnife(active) {
+    bladeStage.position.z = active ? glassEdge.z + 0.16 : 1.32;
+    glassKnife.visible = active;
+    steelBlade.visible = !active;
+  }
+  setResinKnife(false);
 
   // =========================================================================
   // SOLID CREAM-BEIGE LEICA RM2255 DISC FLYWHEEL + BLACK ERGONOMIC HANDLE!
@@ -1198,21 +928,19 @@ export function buildHistologyBench(scene) {
   //   1) Black Cylindrical Contrast Water Cup with floating translucent cuts!
   //   2) Folded White Tissue with Spare Triangular Glass Knife & Pickup Needle!
   // =========================================================================
-  const blackCup = group(micro, 0.88, 0.0, 2.38);
+  const blackCup = group(scene, 1.20, -0.02, 2.32);
+  blackCup.userData.pickKey = 'blackCup';
+  interactives.set('blackCup', {
+    object: blackCup, view: 'cup', title: 'Copo preto com água',
+    subtitle: 'Recebe a película transferida da navalha com a pinça.', color: '#8ee8ff'
+  });
   const cupBodyMat = anodizedMaterial('#14171c', { roughness: 0.42, metalness: 0.22 });
   lathe(blackCup, cupBodyMat, [
     [0.01, 0], [0.46, 0], [0.48, 0.04], [0.50, 0.62], [0.47, 0.62], [0.45, 0.05], [0.01, 0.05]
   ], 28);
-  // Dark high-contrast glossy water meniscus right at the top rim!
-  cylinder(blackCup, glassMaterial('#1a2832', { opacity: 0.92, clearcoat: 1.0, roughness: 0.03 }), 0.465, 0.465, 0.03, 0, 0.585, 0, 26);
-  // 3 ultra-thin translucent Historesin sections floating clearly on the black water meniscus (frame 4 & 8!)
-  const cupSlices = [];
-  for (const [cx, cz] of [[-0.14, 0.06], [0.10, -0.10], [0.04, 0.16]]) {
-    const cs = mesh(blackCup, new T.CylinderGeometry(0.068, 0.068, 0.008, 12),
-      gelMaterial('#d8eef5', { opacity: 0.68, emissive: '#94c4d4', emissiveIntensity: 0.22 }), cx, 0.606, cz);
-    cs.scale.set(1.25, 1, 0.82);
-    cupSlices.push(cs);
-  }
+  const cupWater = cylinder(blackCup, glassMaterial('#1a2832', {
+    opacity: 0.92, clearcoat: 1.0, roughness: 0.09
+  }), 0.465, 0.465, 0.03, 0, 0.585, 0, 36);
   const cupRippleMat = glow('#8ee8ff', 0.85, { transparent: true, opacity: 0, depthWrite: false });
   const cupRipple = torus(blackCup, cupRippleMat, 0.14, 0.009, 0, 0.608, 0);
   cupRipple.rotation.x = Math.PI / 2;
@@ -1222,27 +950,18 @@ export function buildHistologyBench(scene) {
 
   // Realistic Dumont #5 Precision Tweezers at Leica RM2255 + Translucent Cut Film + Fishing Glass Slide!
   const microForceps = makeTweezers(micro, chrome, dark);
-  microForceps.position.set(-0.18, 1.84, 1.18);
+  microForceps.position.copy(glassEdge);
   microForceps.rotation.set(0.18, -0.58, 0.52);
   microForceps.scale.setScalar(1.08);
   microForceps.visible = false;
 
-  const transferFilm = group(micro, -0.18, 1.82, 1.18);
-  const filmMat = gelMaterial('#e6f8ff', { opacity: 0.78, emissive: '#9ee4f8', emissiveIntensity: 0.32, iridescence: 0.45 });
-  mesh(transferFilm, new T.BoxGeometry(0.16, 0.008, 0.12), filmMat);
-  box(transferFilm, material('#e4d45e', { transparent: true, opacity: 0.65 }), 0.06, 0.011, 0.045);
-  transferFilm.visible = false;
-
-  // Clean Glass Slide that dips into the black contrast water cup to fish the stretched Historesin film!
-  const cupPickSlide = group(micro, 0.92, 0.86, 2.38);
-  roundedSlab(cupPickSlide, glass, 1.18, 0.52, 0.036, 0.02, 0.006, 0, 0, 0);
-  box(cupPickSlide, frosted, 0.26, 0.04, 0.48, 0.44, 0.002, 0);
-  const cupSlideSections = group(cupPickSlide, -0.14, 0.024, 0);
-  for (const [sx, sz] of [[-0.20, 0.04], [0.02, -0.06], [0.22, 0.05]]) {
-    mesh(cupSlideSections, new T.CylinderGeometry(0.065, 0.065, 0.009, 12), filmMat, sx, 0, sz).scale.set(1.2, 1, 0.85);
+  const transferFilm = group(scene);
+  const filmMat = gelMaterial('#f3e5ca', { opacity: 0.86, roughness: 0.34, iridescence: 0.10 });
+  for (const [x, z, scale] of [[-0.21, 0.06, 0.98], [0.02, -0.08, 1.06], [0.23, 0.05, 0.94]]) {
+    const geometry = organicDisplace(new T.CylinderGeometry(0.10, 0.10, 0.008, 24), 0.08, 6, x * 15);
+    mesh(transferFilm, geometry, filmMat, x, 0, z).scale.set(scale, 1, scale * 0.78);
   }
-  cupSlideSections.visible = false;
-  cupPickSlide.visible = false;
+  transferFilm.visible = false;
 
   // Folded white bench tissue holding a spare green triangular glass knife & insulin syringe needle!
   const microTissue = group(micro, -0.45, 0.01, 2.48);
@@ -1338,10 +1057,10 @@ export function buildHistologyBench(scene) {
   ];
   const stainBottles = stainBottleSpecs.map(([name, dye, isFoil, isAmber], i) => {
     const x = (i - 2) * 0.76;
-    const { liquid } = makeReagentBottle(stain, x, -0.82, dye, name, {
+    const { jar, liquid } = makeReagentBottle(stain, x, -0.82, dye, name, {
       height: 0.78, radius: 0.21, foil: isFoil, amber: isAmber, tagYOffset: i % 2 ? 0.26 : 0
     });
-    return { name, liquid };
+    return { name, jar, liquid };
   });
 
   // Glass Filtration Funnel + Pleated White Filter Paper + Erlenmeyer Flask (Course Photos 12 & 15!)
@@ -1384,9 +1103,14 @@ export function buildHistologyBench(scene) {
   // 3 distinct serial resin/paraffin sections arranged neatly on the glass slide (EXACT match to Photos 4 & 14!)
   const patchMat = organelleMaterial('#6ea8dc', { roughness: 0.36, clearcoat: 0.55 });
   const patch = group(slide, 0.14, 0.032, 0);
+  const roundSections = group(patch);
   for (const [px, pz, sx, sz] of [[-0.22, 0.06, 0.22, 0.16], [0.06, -0.09, 0.24, 0.17], [0.28, 0.1, 0.21, 0.16]]) {
     const secGeo = organicDisplace(new T.CylinderGeometry(0.11, 0.11, 0.014, 16), 0.08, 6, px * 15);
-    mesh(patch, secGeo, patchMat, px, 0, pz).scale.set(sx / 0.22, 1, sz / 0.16);
+    mesh(roundSections, secGeo, patchMat, px, 0, pz).scale.set(sx / 0.22, 1, sz / 0.16);
+  }
+  const paraffinSections = group(patch);
+  for (let i = 0; i < ribbonSlices.length; i++) {
+    roundedSlab(paraffinSections, patchMat, 0.138, 0.34, 0.013, 0.024, 0.003, (i - 2.5) * 0.15, 0.004, 0);
   }
   // Radial staining diffusion wave overlay on the sections
   const stainWaveMat = glow('#6ea8dc', 0.9, { transparent: true, opacity: 0, depthWrite: false });
@@ -1415,15 +1139,16 @@ export function buildHistologyBench(scene) {
   });
 
   return {
-    lupaStation, lupaMonitor, updateLupaMonitor: lupaMonitorPanel.update,
-    bee, beeOrgan, forceps, iceChamber, iceCrystals, waxDish, salineDrop,
-    rack, bottles, resinMold, moldWells, woodBlockPreview, specimen,
-    micro, feeder, paraffin, resinHolder, steelBlade, glassKnife, crank, ribbon, ribbonSlices,
-    blackCup, cupSlices, cupRipple, cupRippleMat, microForceps, transferFilm, cupPickSlide, cupSlideSections,
+    lupaStation, lupaMonitor, updateLupaLive, dispose: () => ccdTarget.dispose(),
+    bee, animals, insectExtracts, insectDish, petri, petriComb, beeOrgan, forceps, iceChamber, iceCrystals, waxDish, salineDrop,
+    rack, bottles, resinMold, moldWells, moldSample, prepSampleMat, woodBlockPreview, woodResinTip,
+    resinMixer, resinMixLiquid, resinStirrer, resinTray, stockBlocks, specimen,
+    micro, feeder, paraffin, resinHolder, setResinKnife, glassEdge, steelEdge, crank, ribbon, ribbonSlices,
+    blackCup, cupWater, cupRipple, cupRippleMat, microForceps, transferFilm,
     updateMicrotomeLED: ledPanel.update,
     hotplate, heatGlow, heatGlowMat, water, waterSurface, ripples, steamPuffs,
     stain, stainBottles, filterStation, filteredLiqMat, filterDrop, stainingDish, dishLiqMat, dipSlide,
-    paperTowel, slide, patch, patchMat, stainWave, stainWaveMat, coverslipPivot, coverslip, mountDrop,
+    paperTowel, slide, patch, patchMat, roundSections, paraffinSections, stainWave, stainWaveMat, coverslipPivot, coverslip, mountDrop,
     dropper, drop, dropMat, interactives
   };
 }

@@ -1,4 +1,4 @@
-const CACHE = "leitor-livros-v2.3.0";
+const CACHE = "leitor-livros-v2.4.0";
 const BASE = new URL("./", self.location.href);
 
 const CORE_SIMD = "./vendor/core/tesseract-core-simd-lstm.wasm.js";

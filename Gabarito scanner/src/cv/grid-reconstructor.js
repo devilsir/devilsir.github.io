@@ -454,8 +454,20 @@ function alignBlockToConsensusTracks(rows, allCandidates, optionLabels, diameter
 
 function consolidateBlock(rows, blockId, diameter, optionLabels, shapeKind, allCandidates) {
   const clean0 = deduplicateRowsInBlock(rows, diameter * 0.65);
-  const clean = alignBlockToConsensusTracks(clean0, allCandidates, optionLabels, diameter, shapeKind);
+  let clean = alignBlockToConsensusTracks(clean0, allCandidates, optionLabels, diameter, shapeKind);
   const vPitch = estimateRowPitch(clean, diameter);
+
+  // Drop an isolated top column-header row (e.g. "A B C D" printed above Q01) when it sits
+  // clearly closer to row 1 than the uniform row spacing of rows 1..N!
+  if (clean.length >= 4) {
+    const firstGap = clean[1].yCenter - clean[0].yCenter;
+    const restGaps = clean.slice(2).map((r, i) => r.yCenter - clean[i + 1].yCenter);
+    const restMed = median(restGaps);
+    if (restMed > 0 && firstGap < restMed * 0.76 && coeffOfVariation(restGaps) < 0.14) {
+      clean = clean.slice(1);
+    }
+  }
+
   const gaps = clean.map((r) => r.columnGap);
   const medGap = median(gaps);
 
@@ -469,14 +481,11 @@ function consolidateBlock(rows, blockId, diameter, optionLabels, shapeKind, allC
   const uSpread = Math.max(diameter * 0.25, median(uResiduals) * 1.4826);
   const gapSpread = Math.max(diameter * 0.18, mad(gaps, medGap) * 1.4826);
 
-  clean.forEach((row, idx) => {
+  clean.forEach((row) => {
     row.blockId = blockId;
     const uAlign = clamp(1 - Math.abs(row.xStart - expectedUAt(row.yCenter)) / (uSpread * 3.5));
     const gAlign = clamp(1 - Math.abs(row.columnGap - medGap) / (gapSpread * 3.5));
-    // Penalize an isolated top header row (e.g. "A B C D" above Q01) sitting much closer than vPitch
-    const isOffPitchHeader =
-      idx === 0 && clean.length >= 4 && clean[1].yCenter - row.yCenter < vPitch * 0.72;
-    row.rowConfidence = clamp(row.rowConfidence * 0.72 + uAlign * 0.16 + gAlign * 0.12 - (isOffPitchHeader ? 0.35 : 0));
+    row.rowConfidence = clamp(row.rowConfidence * 0.72 + uAlign * 0.16 + gAlign * 0.12);
   });
 
   const filled = [];
@@ -516,6 +525,31 @@ function consolidateBlock(rows, blockId, diameter, optionLabels, shapeKind, allC
         clamp(clean.length / 8) * 0.15
     )
   };
+}
+
+function deduplicateOverlappingBlocks(blocks, optionCount) {
+  if (blocks.length <= 1) return blocks;
+  const meta = blocks.map((blk) => {
+    const uMin = blk.xStart;
+    const uMax = blk.xStart + blk.columnGap * Math.max(1, optionCount - 1);
+    const detectedCount = blk.rows.reduce((acc, r) => acc + (r.matchedBubbleCount || 0), 0);
+    const totalSlots = Math.max(1, blk.rows.length * optionCount);
+    const coverage = detectedCount / totalSlots;
+    const rank = blk.confidence * 0.5 + coverage * 0.5 + Math.min(0.4, blk.rows.length * 0.03);
+    return { blk, uMin, uMax, coverage, rank };
+  });
+
+  meta.sort((a, b) => b.rank - a.rank);
+  const kept = [];
+  for (const item of meta) {
+    const overlaps = kept.some((existing) => {
+      const inter = Math.max(0, Math.min(item.uMax, existing.uMax) - Math.max(item.uMin, existing.uMin));
+      const minSpan = Math.max(1, Math.min(item.uMax - item.uMin, existing.uMax - existing.uMin));
+      return inter > minSpan * 0.15;
+    });
+    if (!overlaps) kept.push(item);
+  }
+  return kept.map((k) => k.blk).sort((a, b) => a.xStart - b.xStart);
 }
 
 function normalizeMultiBlockGrid(blocks, expectedQuestions, readingOrder, diameter, optionLabels, shapeKind) {
@@ -684,6 +718,8 @@ export class GridReconstructor {
     if (!blocks.length) {
       blocks = [consolidateBlock(fittedRows, 'block-1', diameter, labels, shapeKind, candidates)];
     }
+
+    blocks = deduplicateOverlappingBlocks(blocks, k);
 
     const effectiveOrder = isHorizontal ? 'columns' : readingOrder;
     blocks = normalizeMultiBlockGrid(blocks, expectedQuestions, effectiveOrder, diameter, labels, shapeKind);

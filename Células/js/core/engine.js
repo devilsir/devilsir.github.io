@@ -1,5 +1,6 @@
 import * as T from 'three';
 import { OrbitControls } from 'three/addons/OrbitControls.js';
+import { deviceProfile } from './deviceProfile.js?v=23';
 
 function createStudioEnvMap(renderer) {
   const pmrem = new T.PMREMGenerator(renderer);
@@ -97,16 +98,25 @@ void main() {
 export class Engine {
   constructor(stage) {
     this.stage = stage;
-    this.renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    this.profile = deviceProfile;
+    this.renderer = new T.WebGLRenderer({
+      antialias: deviceProfile.antialias,
+      alpha: true,
+      powerPreference: deviceProfile.powerPreference
+    });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.outputColorSpace = T.SRGBColorSpace;
     this.renderer.toneMapping = T.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.18;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = T.PCFSoftShadowMap;
-    this.maxPixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    this.renderer.shadowMap.type = deviceProfile.isMobile ? T.PCFShadowMap : T.PCFSoftShadowMap;
+    this.renderer.shadowMap.autoUpdate = deviceProfile.shadowUpdateStride <= 1;
+    this._shadowFrame = 0;
+    this.maxPixelRatio = deviceProfile.maxDpr;
     this.pixelCap = this.maxPixelRatio;
     this.renderBudget = { elapsed: 0, frames: 0 };
+    this.viewportWidth = Math.max(1, stage.clientWidth);
+    this.viewportHeight = Math.max(1, stage.clientHeight);
     stage.append(this.renderer.domElement);
 
     this.envRT = createStudioEnvMap(this.renderer);
@@ -116,7 +126,7 @@ export class Engine {
     this.camera.layers.enable(1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = .08;
+    this.controls.dampingFactor = deviceProfile.isMobile ? .11 : .08;
     this.controls.minDistance = 0.32;
     this.controls.maxDistance = 42;
     this.controls.addEventListener('start', () => { this.destination = null; });
@@ -124,8 +134,8 @@ export class Engine {
     this.shakeState = null;
     this.shakeOffset = new T.Vector3();
 
-    // Lightweight GPU Depth-of-Field Selective Bokeh pipeline (half-res offscreen targets)
-    const hasHalfFloat = this.renderer.capabilities.isWebGL2 &&
+    // Lightweight GPU Depth-of-Field Selective Bokeh pipeline (hardware-scaled offscreen targets)
+    const hasHalfFloat = deviceProfile.dofHalfFloat && this.renderer.capabilities.isWebGL2 &&
       (this.renderer.extensions.has('EXT_color_buffer_float') || this.renderer.extensions.has('EXT_color_buffer_half_float'));
     const rtOpts = {
       minFilter: T.LinearFilter,
@@ -183,14 +193,16 @@ export class Engine {
   fit() {
     const width = Math.max(1, this.stage.clientWidth);
     const height = Math.max(1, this.stage.clientHeight);
+    this.viewportWidth = width;
+    this.viewportHeight = height;
     this.camera.aspect = width / height;
     this.camera.fov = this.camera.aspect < 1.12 ? 48 : 37;
     this.camera.updateProjectionMatrix();
     this.renderer.setPixelRatio(this.pixelCap);
     this.renderer.setSize(width, height, false);
-    // Cap offscreen blur targets to ~0.42x CSS viewport (max 640px wide): 4x faster on HiDPI & silkier optical bokeh!
-    const bw = Math.max(2, Math.min(640, Math.floor(width * 0.42)));
-    const bh = Math.max(2, Math.min(420, Math.floor(height * 0.42)));
+    // Hardware-scaled offscreen blur targets (smaller & faster on mobile tile GPUs, identical smooth bokeh!)
+    const bw = Math.max(2, Math.min(deviceProfile.dofMaxW, Math.floor(width * deviceProfile.dofScale)));
+    const bh = Math.max(2, Math.min(deviceProfile.dofMaxH, Math.floor(height * deviceProfile.dofScale)));
     this.dofBg.setSize(bw, bh);
     this.dofH.setSize(bw, bh);
     this.dofV.setSize(bw, bh);
@@ -216,7 +228,14 @@ export class Engine {
   render(scene) {
     const r = this.renderer;
     const cam = this.camera;
+    this._shadowFrame++;
+    const shouldUpdateShadow = deviceProfile.shadowUpdateStride <= 1 ||
+      (this._shadowFrame % deviceProfile.shadowUpdateStride === 1);
+
     if (this.dofCurrent <= 0.015 || !this.focusObjects.length) {
+      if (r.shadowMap.enabled && deviceProfile.shadowUpdateStride > 1) {
+        r.shadowMap.needsUpdate = shouldUpdateShadow;
+      }
       r.render(scene, cam);
       return;
     }
@@ -236,11 +255,11 @@ export class Engine {
       });
     }
 
-    // Compute shadow map ONCE for the frame before splitting background & focused foreground
+    // Compute shadow map ONCE for the frame (throttled cleanly on mobile!) before splitting background & foreground
     const prevAutoShadow = r.shadowMap.autoUpdate;
     if (r.shadowMap.enabled) {
       r.shadowMap.autoUpdate = false;
-      r.shadowMap.needsUpdate = true;
+      r.shadowMap.needsUpdate = shouldUpdateShadow;
     }
 
     // Pass 1: Render out-of-focus background (Layer 0 only, no labels, no focused foreground)
@@ -252,11 +271,11 @@ export class Engine {
 
     if (r.shadowMap.enabled) r.shadowMap.needsUpdate = false;
 
-    // Pass 1b: Diagonal Kawase disc pre-filter + overlapping separable Gaussian passes (silky bokeh, zero grid dots!)
+    // Pass 1b: Diagonal Kawase disc pre-filter + separable Gaussian blur (1 wider pass on mobile, 2 on desktop!)
     const invW = 1 / Math.max(2, this.dofBg.width);
     const invH = 1 / Math.max(2, this.dofBg.height);
-    const k0 = this.dofCurrent * 1.15;
-    const s1 = this.dofCurrent * 1.15;
+    const k0 = this.dofCurrent * (deviceProfile.dofPasses === 1 ? 1.35 : 1.15);
+    const s1 = this.dofCurrent * (deviceProfile.dofPasses === 1 ? 1.85 : 1.15);
     const s2 = this.dofCurrent * 1.65;
 
     this.preMat.uniforms.tDiffuse.value = this.dofBg.texture;
@@ -274,15 +293,17 @@ export class Engine {
     r.setRenderTarget(this.dofV);
     r.render(this.blurScene, this.dofCam);
 
-    this.blurMat.uniforms.tDiffuse.value = this.dofV.texture;
-    this.blurMat.uniforms.uStep.value.set(invW * s2, 0);
-    r.setRenderTarget(this.dofH);
-    r.render(this.blurScene, this.dofCam);
+    if (deviceProfile.dofPasses >= 2) {
+      this.blurMat.uniforms.tDiffuse.value = this.dofV.texture;
+      this.blurMat.uniforms.uStep.value.set(invW * s2, 0);
+      r.setRenderTarget(this.dofH);
+      r.render(this.blurScene, this.dofCam);
 
-    this.blurMat.uniforms.tDiffuse.value = this.dofH.texture;
-    this.blurMat.uniforms.uStep.value.set(0, invH * s2);
-    r.setRenderTarget(this.dofV);
-    r.render(this.blurScene, this.dofCam);
+      this.blurMat.uniforms.tDiffuse.value = this.dofH.texture;
+      this.blurMat.uniforms.uStep.value.set(0, invH * s2);
+      r.setRenderTarget(this.dofV);
+      r.render(this.blurScene, this.dofCam);
+    }
 
     // Pass 2: Composite blurred HDR background -> clear depth -> render crisp focused foreground + labels!
     r.setRenderTarget(null);
@@ -345,11 +366,16 @@ export class Engine {
     const budget = this.renderBudget;
     budget.elapsed += dt;
     budget.frames++;
-    if (budget.elapsed > 2.4) {
+    const windowSec = deviceProfile.isMobile ? 1.8 : 2.4;
+    if (budget.elapsed > windowSec) {
       const fps = budget.frames / budget.elapsed;
-      const max = Math.min(window.devicePixelRatio || 1, 2);
-      const min = Math.min(max, 0.85);
-      const next = fps < 46 ? Math.max(min, this.pixelCap * 0.86) : fps > 57 ? Math.min(max, this.pixelCap * 1.05) : this.pixelCap;
+      const max = deviceProfile.maxDpr;
+      const min = Math.min(max, deviceProfile.minDpr);
+      const next = fps < deviceProfile.fpsLow
+        ? Math.max(min, this.pixelCap * 0.86)
+        : fps > deviceProfile.fpsHigh
+          ? Math.min(max, this.pixelCap * 1.05)
+          : this.pixelCap;
       if (Math.abs(next - this.pixelCap) >= 0.03) {
         this.pixelCap = next;
         this.fit();

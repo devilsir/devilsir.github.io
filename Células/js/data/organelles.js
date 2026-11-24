@@ -1176,6 +1176,19 @@ export const organelles = {
   // =========================================================================
   // CÉLULA EPITELIAL INTESTINAL (ENTERÓCITO POLARIZADO)
   // =========================================================================
+  epi_glycocalyx: item(
+    'Glicocálix apical', '#e4c17d',
+    'Revestimento de glicoproteínas e mucinas ligado à membrana, com filamentos sobre as pontas das microvilosidades.',
+    'Forma uma interface entre a borda em escova e o conteúdo do lúmen.',
+    'A camada ajuda a regular o acesso de moléculas à superfície de absorção.',
+    'Os filamentos aparecem em dourado no modelo.',
+    [
+      step('Glicocálix sobre a borda em escova', 'INTERFACE COM O LÚMEN',
+        'Veja os filamentos saindo das pontas das microvilosidades.',
+        'epi_glyco_main', [0.66, 1.04, 3.15], 'epi_glycocalyx')
+    ]
+  ),
+
   epi_microvilli: item(
     'Microvilosidades (borda em escova)', '#68d8c2',
     'Dezenas de projeções digitiformes da membrana apical sustentadas por feixes internos de filamentos de actina.',
@@ -1192,9 +1205,22 @@ export const organelles = {
     ]
   ),
 
+  epi_terminal: item(
+    'Trama terminal', '#b0df9d',
+    'Rede de filamentos no citoplasma logo abaixo da membrana apical. Os feixes de actina das microvilosidades penetram nessa região.',
+    'Sustenta e ancora a borda em escova.',
+    'Conecta o citoesqueleto apical aos feixes laterais de actina.',
+    'No modelo, a malha verde-clara fica abaixo das microvilosidades.',
+    [
+      step('Raízes de actina e trama terminal', 'CITOESQUELETO APICAL',
+        'Acompanhe os feixes que descem das microvilosidades até a malha apical.',
+        'epi_terminal_main', [0.65, 0.55, 3.10], 'epi_terminal')
+    ]
+  ),
+
   epi_junctions: item(
-    'Junções oclusivas e desmossomos', '#ffe37d',
-    'Cinturão apical de proteínas de vedação (junções oclusivas / tight junctions) somado a placas laterais de ancoragem mecânica (desmossomos).',
+    'Complexo de junções laterais', '#ffe37d',
+    'A zônula de oclusão ocupa a posição mais apical. Abaixo ficam a zônula de adesão e os desmossomos pontuais ligados a filamentos de queratina.',
     'Vedam o espaço entre células vizinhas impedindo vazamento paracelular e mantêm o epitélio firmemente unido.',
     'Mantêm separadas as proteínas da face apical (lúmen intestinal) e da face basolateral (corrente sanguínea).',
     'Graças às junções oclusivas, os nutrientes precisam atravessar seletivamente a célula em vez de vazar livremente entre elas.',
@@ -1202,29 +1228,29 @@ export const organelles = {
       step(
         'Vedação intercelular e coesão mecânica',
         'BARREIRA EPITELIAL',
-        'O anel dourado superior (junção oclusiva) sela as células contra bactérias e vazamentos, enquanto os desmossomos rosados ancoram o citoesqueleto lateralmente.',
+        'Na interface com as células vizinhas, o dourado marca a oclusão, o verde marca o cinturão de adesão e as placas rosadas representam os desmossomos.',
         'epi_junc_main', [1.15, 0.65, 4.4], 'epi_junctions'
       )
     ]
   ),
 
   epi_body: item(
-    'Polaridade celular (núcleo basal e Golgi)', '#9884f0',
-    'Célula colunar alta com nítida polaridade estrutural: núcleo oval deslocado para a base, Complexo de Golgi supranuclear e mitocôndrias abundantes.',
-    'Organiza o transporte direcional (transcitose) de nutrientes do lúmen intestinal até os vasos sanguíneos na base.',
+    'Citoplasma e polaridade apicobasal', '#9884f0',
+    'Célula cilíndrica com núcleo oval próximo da base, envelope nuclear duplo, nucléolo, retículo rugoso, Golgi acima do núcleo e mitocôndrias.',
+    'Organiza a absorção pelo polo apical e a liberação de nutrientes pela face basolateral.',
     'Absorção apical ativa, processamento lipídico/proteico interno e liberação basolateral.',
     'A polaridade apicobasal é característica essencial de todos os epitélios de revestimento e secreção.',
     [
       step(
         'Polaridade apicobasal: núcleo basal e Golgi supranuclear',
         'ARQUITETURA COLUNAR POLARIZADA',
-        'O núcleo oval desloca-se para a base enquanto o Complexo de Golgi e fileiras de mitocôndrias ocupam a região supranuclear, alinhados ao fluxo direcional de nutrientes do intestino ao sangue.',
+        'O corte frontal expõe o nucléolo e o envelope nuclear. As cisternas azuladas do retículo rugoso têm ribossomos aderidos, e as cisternas douradas do Golgi ficam acima do núcleo.',
         'epi_body_main', [1.1, 0.65, 5.2], 'epi_polarity'
       ),
       step(
         'Absorção polarizada (SGLT1 apical → GLUT2 basolateral)',
         'TRANSPORTE DIRECIONAL DE NUTRIENTES',
-        'Na borda em escova, cotransportadores SGLT1 captam glicose + Na⁺ do lúmen intestinal; no polo basolateral, transportadores GLUT2 e a bomba Na⁺/K⁺ entregam a glicose diretamente aos capilares abaixo da lâmina basal.',
+        'O SGLT1 traz glicose e Na⁺ do lúmen para a célula. O GLUT2 permite a saída de glicose pela face basolateral. A bomba Na⁺/K⁺ ajuda a manter o gradiente de sódio.',
         'epi_body_main', [1.2, 0.45, 5.6], 'epi_transcytosis'
       )
     ]
@@ -1232,7 +1258,7 @@ export const organelles = {
 
   epi_basal: item(
     'Lâmina basal (membrana basal)', '#c79ef0',
-    'Malha acelular densa de colágeno tipo IV e laminina sobre a qual repousa a base das células epiteliais.',
+    'Matriz rica em laminina e colágeno tipo IV. O modelo distingue a rede superficial e a camada mais densa imediatamente abaixo.',
     'Ancora o epitélio ao tecido conjuntivo subjacente, atua como filtro molecular e orienta a regeneração tecidual.',
     'Troca de nutrientes e gases por difusão a partir dos capilares do tecido conjuntivo (epitélios são avasculares).',
     'A invasão da lâmina basal por células tumorais epiteliais marca a transição de um carcinoma in situ para um tumor invasivo.',
@@ -1240,9 +1266,22 @@ export const organelles = {
       step(
         'Ancoragem e suporte do epitélio',
         'MATRIZ DE SUPORTE BASAL',
-        'Todas as células epiteliais apoiam-se sobre esta malha fibrosa proteica que separa e conecta o epitélio aos vasos sanguíneos abaixo.',
+        'Veja onde a membrana basal da célula se prende à rede de matriz extracelular que sustenta o epitélio.',
         'epi_basal_main', [1.1, 0.65, 4.8], 'epi_basal'
       )
+    ]
+  ),
+
+  epi_support: item(
+    'Tecido conjuntivo da lâmina própria', '#c6a28c',
+    'Tecido imediatamente abaixo da membrana basal. O recorte mostra a matriz e seus feixes ondulados de colágeno.',
+    'Sustenta o epitélio simples e permite trocas com os vasos da lâmina própria.',
+    'A matriz conjuntiva participa da difusão de nutrientes e gases entre capilares e epitélio.',
+    'A lâmina própria acompanha as vilosidades do intestino delgado.',
+    [
+      step('Interface entre epitélio e lâmina própria', 'SUPORTE SUBEPITELIAL',
+        'Observe a faixa de matriz conjuntiva abaixo da lâmina basal.',
+        'epi_support_main', [1.12, 0.22, 4.05], 'epi_support')
     ]
   ),
 

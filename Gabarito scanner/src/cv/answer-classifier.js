@@ -47,8 +47,8 @@ function classifyRow(row, calibration) {
     );
     reasons.push(`Mais de uma alternativa apresenta marcação forte: ${detectedAnswer.join(' e ')}.`);
   } else if (bestScore < THRESHOLDS.blankThreshold) {
-    // Catch visibly faint/erased marks that stand cleanly above completely empty siblings (>= 3.2x secondScore)
-    if (bestScore >= 0.14 && best.faintEvidence && margin >= 0.10 && bestScore >= Math.max(0.04, secondScore) * 3.2) {
+    // Catch visibly faint/erased marks that stand cleanly above completely empty siblings (>= 3.4x secondScore)
+    if (bestScore >= 0.14 && margin >= 0.10 && bestScore >= Math.max(0.04, secondScore) * 3.4) {
       classification = 'ambiguous';
       detectedAnswer = best.option;
       answerConfidence = clamp(0.32 + margin * 0.8 + rowConf * 0.12);
@@ -65,7 +65,7 @@ function classifyRow(row, calibration) {
     detectedAnswer = best.option;
     const isCircledClear = best.markType === 'circled' && bestScore >= 0.44 && margin >= 0.22;
     const isOverwhelminglyIsolated =
-      bestScore >= 0.44 && margin >= 0.34 && bestScore >= Math.max(0.05, secondScore) * 5.0;
+      bestScore >= 0.41 && margin >= 0.32 && bestScore >= Math.max(0.05, secondScore) * 5.0;
     const isWeak = bestScore < THRESHOLDS.certainThreshold && !isCircledClear && !isOverwhelminglyIsolated;
     const isTightMargin = margin < THRESHOLDS.minimumMargin;
     const lowGeom = rowConf < 0.42;

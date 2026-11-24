@@ -5,6 +5,7 @@ globalThis.QuimiCraftProfessions = (() => {
     const {B, getBlock, setBlock, exchange, selected, notify, blocked, roof, sunlit, weather, season,
       wear, working, receive, reward, findWater, position, showFishing, splash, load, save, launchWorkshop} = api;
     const crops=QuimiCraftFrontier.crops(B);
+    const planting=new Map(crops.map(crop=>[crop.seed,crop]));
     const workbench=globalThis.QuimiCraftWorkshops;
     const workshops=QuimiCraftFrontier.stations(B);
     function isRod(id){return workbench?.fishingRods.has(id)||id==="fishing_rod"}
@@ -17,7 +18,8 @@ globalThis.QuimiCraftProfessions = (() => {
       );
     }
     const plots=new Map();
-    const bases=[B.DIRT,B.GRASS,B.MOSS,B.PEAT,B.CLAY,B.MEADOW_SOIL,B.FOREST_LOAM,B.PODZOL,B.LATERITE,B.PEAT_MAT,B.LOESS];
+    const bases=new Set([B.DIRT,B.GRASS,B.MOSS,B.PEAT,B.CLAY,B.MEADOW_SOIL,B.FOREST_LOAM,B.PODZOL,B.LATERITE,
+      B.PEAT_MAT,B.LOESS,B.RED_EARTH,B.BLACK_EARTH,B.BROWN_EARTH].filter(Number.isInteger));
     const waterIds=[B.WATER];
     const key=(x,y,z)=>x+"|"+y+"|"+z;
     let cast=null, delay=0, saving=0, dirty=false;
@@ -30,7 +32,8 @@ globalThis.QuimiCraftProfessions = (() => {
     }
 
     const soil=id=>id===B.FARMLAND||id===B.WET_FARMLAND;
-    const isCrop=id=>!!QuimiCraftFrontier.cropAt(crops,id);
+    const cropAt=id=>QuimiCraftFrontier.cropAt(crops,id);
+    const isCrop=id=>!!cropAt(id);
     function persist(){
       if(!dirty)return;
       save([...plots.values()].map(({x,y,z,clock,water,feed,last})=>[x,y,z,clock,water,feed,last]));
@@ -56,34 +59,56 @@ globalThis.QuimiCraftProfessions = (() => {
       const t=cell(target);
       const id=selected();
       if(t&&workshops.has(t.id))return {kind:"station",label:api.name(t.id),t};
-      if(t&&isCrop(t.id))return {kind:"crop",label:"Colher / examinar cultivo",t};
+      const crop=cropAt(t?.id);
+      if(crop)return {kind:"crop",label:t.id===crop.wild||t.id===crop.stages.at(-1)?"Colher "+api.name(crop.food).toLowerCase():
+        "Examinar cultivo · "+QuimiCraftFrontier.cropStage(crop,t.id),t};
       if(t&&soil(t.id)){
-        if(crops.some(row=>row.seed===id))return {kind:"seed",label:"Plantar "+api.name(id).toLowerCase(),t};
+        if(planting.has(id))return {kind:"seed",label:"Plantar "+api.name(id).toLowerCase(),t};
         if(id==="water_bucket")return {kind:"water",label:"Irrigar a terra",t};
         if(id==="mineral_mix"||id==="fertilizer")return {kind:"feed",label:"Adubar a terra",t};
       }
-      if(t&&t.top&&bases.includes(t.id)&&id==="hoe")return {kind:"till",label:"Arar o solo",t};
+      if(t&&bases.has(t.id)){
+        if(t.top&&id==="hoe")return {kind:"till",label:"Arar o solo",t};
+        if(planting.has(id))return {kind:"seed-guide",label:"Prepare o solo com a enxada",t};
+      }
       if(isRod(id))return {kind:"fish",label:cast?.stage==="bite"?"Puxar a linha":cast?"Recolher a linha":"Lançar a vara"};
       return null;
     }
 
     function harvest(t,broken=false){
-      const crop=QuimiCraftFrontier.cropAt(crops,t.id);
+      const crop=cropAt(t.id);
       if(!crop)return false;
       const {x,y,z}=t;
+      if(getBlock(x,y,z)!==t.id)return false;
       if(blocked(x,y,z)){notify("A área protegida fica livre de cultivo.");return true}
-      if(crop.wild!==t.id&&!broken&&t.id!==crop.stages[2]){notify("O cultivo ainda está crescendo.");return true}
-      const yieldItems=crop.wild===t.id?[[crop.seed,2]]:
-        t.id===crop.stages[2]?[[crop.food,2],[crop.seed,2]]:[[crop.seed,1]];
+      const wild=t.id===crop.wild,mature=t.id===crop.stages.at(-1);
+      if(!wild&&!mature&&!broken){
+        const plot=plots.get(key(x,y-1,z)),stage=QuimiCraftFrontier.cropStage(crop,t.id);
+        const progress=plot?Math.floor(100*Math.min(1,plot.clock/(crop.seconds*(crop.stages.length-1)))):null;
+        notify(stage+(progress===null?".":" · "+progress+"% até a colheita.")+" "+crop.guide);
+        return true;
+      }
+      const yieldItems=[[crop.seed,crop.regrows?1:wild||mature?2:1]];
+      if(mature||wild&&(crop.regrows||crop.wildFood))yieldItems.unshift([crop.food,crop.regrows&&!wild?3:2]);
+      if(crop.support&&broken&&!wild)yieldItems.push([B.FENCE_WOOD,1]);
+      const location=key(x,y-1,z),regrow=!broken&&!wild&&crop.regrows&&soil(getBlock(x,y-1,z));
       if(!broken){
         const result=exchange([],yieldItems);
         if(!result.ok){notify(result.message);return true}
       }else for(const [id,count] of yieldItems)receive(id,count,{x:x+.5,y:y+.32,z:z+.5});
-      setBlock(x,y,z,B.AIR);
-      plots.delete(key(x,y-1,z));
+      if(regrow){
+        const plot=plots.get(location)||{x,y:y-1,z,water:0,feed:0,last:0};
+        plot.clock=crop.seconds;
+        plots.set(location,plot);
+        setBlock(x,y,z,crop.stages[1]);
+      }else{
+        setBlock(x,y,z,B.AIR);
+        plots.delete(location);
+      }
       dirty=true;
-      reward("cultivo",crop.food,t);
-      notify(t.id===crop.wild?"Sementes silvestres coletadas.":"Colheita recolhida.");
+      if(mature||wild)reward("cultivo",crop.food,t);
+      notify(regrow?"Colheita recolhida. A planta vai frutificar de novo.":wild?(crop.regrows||crop.wildFood?"Colheita e material de plantio coletados.":"Sementes silvestres coletadas."):
+        mature?"Colheita recolhida.":"Cultivo removido.");
       return true;
     }
 
@@ -91,8 +116,15 @@ globalThis.QuimiCraftProfessions = (() => {
       if(!actionData)return false;
       const {kind,t}=actionData;
       if(kind==="fish"){fish();return true}
+      if(getBlock(t.x,t.y,t.z)!==t.id)return false;
       if(kind==="station"){launchWorkshop(t,workshops.get(t.id));return true}
       if(kind==="crop")return harvest(t);
+      if(kind==="seed-guide"){
+        const crop=planting.get(selected());
+        if(!crop)return false;
+        notify(QuimiCraftFrontier.plantingInstructions(crop));
+        return true;
+      }
       const {x,y,z}=t;
       if(blocked(x,y,z)||blocked(x,y+1,z)){notify("O laboratório é uma área protegida.");return true}
       const above=getBlock(x,y+1,z);
@@ -104,11 +136,17 @@ globalThis.QuimiCraftProfessions = (() => {
         wear("hoe",.8,"cultivo");
         return true;
       }
-      const crop=crops.find(row=>row.seed===selected());
       const existing=plots.get(location);
       if(kind==="seed"){
-        if(above!==B.AIR){notify("Junto a este solo já existe uma planta ou um bloco.");return true}
-        const result=exchange([[crop.seed,1]],[]);
+        const crop=planting.get(selected());
+        if(!crop)return false;
+        if(y+1>=api.maxY||above!==B.AIR){notify("Deixe um bloco livre acima do canteiro.");return true}
+        const need=[[crop.seed,1]];
+        if(crop.support){
+          if(api.count(B.FENCE_WOOD)<1){notify("Tenha 1 cerca de madeira na mochila para montar o tutor.");return true}
+          need.push([B.FENCE_WOOD,1]);
+        }
+        const result=exchange(need,[]);
         if(!result.ok){notify(result.message);return true}
         setBlock(x,y+1,z,crop.stages[0]);
         plots.set(location,{x,y,z,clock:0,last:0,feed:existing?.feed??0,water:existing?.water??(t.id===B.WET_FARMLAND?20:0)});
@@ -206,15 +244,16 @@ globalThis.QuimiCraftProfessions = (() => {
         const wet=plot.water>0||wetNearby(x,y,z)||exposed&&["rain","storm"].includes(weather());
         const desired=wet?B.WET_FARMLAND:B.FARMLAND;
         if(getBlock(x,y,z)!==desired)setBlock(x,y,z,desired);
-        const stage=getBlock(x,y+1,z),crop=QuimiCraftFrontier.cropAt(crops,stage);
+        const stage=getBlock(x,y+1,z),crop=cropAt(stage);
         if(!crop||!crop.stages.includes(stage)){
           if(!plot.water&&!plot.feed){plots.delete(location);dirty=true}
           continue;
         }
         const current=crop.stages.indexOf(stage);
-        if(current<2){
+        const lastStage=crop.stages.length-1;
+        if(current<lastStage){
           plot.clock+=QuimiCraftFrontier.growClock(elapsed,{wet,sun:sunlit(x,y+1,z),winter:season()===3,fed:plot.feed>0});
-          const next=Math.min(2,Math.floor(plot.clock/crop.seconds));
+          const next=Math.min(lastStage,Math.floor(plot.clock/crop.seconds));
           if(next>current)setBlock(x,y+1,z,crop.stages[next]);
         }
         dirty=true;

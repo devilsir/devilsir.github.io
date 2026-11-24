@@ -1,5 +1,5 @@
 {
-  "name": "Leitor de Livros Offline",
+  "name": "Leitor de Livros",
   "short_name": "Leitor",
   "description": "Fotografe páginas, reconheça o texto e escute em voz alta.",
   "start_url": "./",

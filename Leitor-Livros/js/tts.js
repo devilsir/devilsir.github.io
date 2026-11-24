@@ -1,7 +1,7 @@
 (function (App) {
   "use strict";
 
-  const { PIPER_VOICES, listStoredVoiceIds, synthesize, downloadVoice, removeVoice } = App.piperTts;
+  const { PIPER_VOICES, synthesize } = App.piperTts;
 
   function splitSpeechChunks(text, maxLen = 210) {
     const cleaned = String(text || "")
@@ -91,13 +91,13 @@
     return chunks;
   }
 
-  function scoreVoice(voice, preferredLang = "pt", storedNeuralIds = new Set()) {
+  function scoreVoice(voice, preferredLang = "pt") {
     const lang = (voice.lang || "").toLowerCase();
     const name = (voice.name || "").toLowerCase();
     let score = 0;
 
-    if (voice.localService) score += 120;
-    if (voice.default) score += 12;
+    if (voice.localService) score += 100;
+    if (voice.default) score += 10;
 
     if (preferredLang === "pt") {
       if (lang === "pt-br" || lang.startsWith("pt-br")) score += 95;
@@ -108,18 +108,14 @@
     }
 
     if (voice.neural) {
-      // Downloaded neural Piper voices rank highest; undownloaded ones still appear prominently
-      score += storedNeuralIds.has(voice.id) ? 48 : 34;
+      // Built-in Piper neural voices come first for the chosen language
+      score += 60;
     } else {
-      if (/natural|neural|enhanced|premium|luciana|francisca|antonio|thalita|maria|daniel/.test(name)) {
+      if (/natural|neural|enhanced|premium|luciana|francisca|antonio|thalita/.test(name)) {
         score += 24;
       }
-      if (/google|microsoft/.test(name)) {
-        score += 10;
-      }
-      if (/espeak|compact|bells|whisper|zarvox|trinoids/.test(name)) {
-        score -= 25;
-      }
+      if (/google|microsoft/.test(name)) score += 10;
+      if (/espeak|compact|bells|whisper|zarvox|trinoids/.test(name)) score -= 25;
     }
 
     return score;
@@ -133,7 +129,6 @@
       this.onNeuralProgress = onNeuralProgress || (() => {});
       this.onError = onError || (() => {});
 
-      this.storedNeuralIds = new Set();
       this.systemVoices = [];
       this.voices = [...PIPER_VOICES];
       this.chunks = [];
@@ -154,8 +149,6 @@
       this.wakeLock = null;
       this.wakeLockActive = false;
 
-      this.refreshStoredNeuralVoices();
-
       if (this.speechApiSupported) {
         this._boundVoicesChanged = () => this.refreshVoices();
         window.speechSynthesis.addEventListener?.("voiceschanged", this._boundVoicesChanged);
@@ -175,50 +168,19 @@
       });
     }
 
-    async refreshStoredNeuralVoices() {
-      this.storedNeuralIds = await listStoredVoiceIds();
-      this.refreshVoices();
-      return this.storedNeuralIds;
-    }
-
-    isNeuralVoiceStored(voice) {
-      return Boolean(voice?.neural && this.storedNeuralIds.has(voice.id));
-    }
-
-    async downloadNeuralVoice(voice) {
-      if (!voice?.neural) return;
-      await downloadVoice(voice.id, (info) => this.onNeuralProgress(info));
-      await this.refreshStoredNeuralVoices();
-    }
-
-    async removeNeuralVoice(voice) {
-      if (!voice?.neural) return;
-      if (this.voice?.id === voice.id) this.stop();
-      await removeVoice(voice.id);
-      await this.refreshStoredNeuralVoices();
-    }
-
     refreshVoices() {
       const sys = this.speechApiSupported ? window.speechSynthesis.getVoices() || [] : [];
       this.systemVoices = sys;
       this.voices = [...PIPER_VOICES, ...sys];
-      this.onVoicesChange(this.voices, this.storedNeuralIds);
+      this.onVoicesChange(this.voices);
       return this.voices;
     }
 
-    getSortedVoices({ preferredLang = "pt", offlineOnly = true } = {}) {
-      const sorted = [...this.voices].sort((a, b) => {
-        const diff =
-          scoreVoice(b, preferredLang, this.storedNeuralIds) -
-          scoreVoice(a, preferredLang, this.storedNeuralIds);
+    getSortedVoices({ preferredLang = "pt" } = {}) {
+      return [...this.voices].sort((a, b) => {
+        const diff = scoreVoice(b, preferredLang) - scoreVoice(a, preferredLang);
         return diff || `${a.lang} ${a.name}`.localeCompare(`${b.lang} ${b.name}`);
       });
-
-      if (offlineOnly) {
-        const local = sorted.filter((v) => v.localService);
-        return local.length ? local : sorted;
-      }
-      return sorted;
     }
 
     setConfig({ voice, rate, volume, pitch } = {}, restartCurrentIfPlaying = false) {
@@ -372,8 +334,8 @@
       this.stop();
       const isEn = (voice.lang || "").toLowerCase().startsWith("en");
       const sample = isEn
-        ? "Hello. This is how your book will sound with a neural voice."
-        : "Olá. É assim que a leitura do seu livro vai soar com esta voz natural.";
+        ? "Hello. This is how your book will sound."
+        : "Olá. É assim que a leitura do seu livro vai soar.";
 
       if (voice.neural) {
         const activeToken = ++this.token;
@@ -382,13 +344,12 @@
             rate: this.rate,
             onProgress: (info) => this.onNeuralProgress(info)
           });
-          await this.refreshStoredNeuralVoices();
           this.onNeuralProgress(null);
           if (activeToken !== this.token || !wavBlob) return;
           await this._playWavBlob(wavBlob, activeToken, () => {});
         } catch (err) {
           this.onNeuralProgress(null);
-          this.onError(err?.message || "Não foi possível testar esta voz neural.");
+          this.onError(err?.message || "Não foi possível testar esta voz.");
         }
         return;
       }
@@ -442,7 +403,7 @@
       await audio.play();
     }
 
-    _prefetchNeuralChunk(index, activeToken) {
+    _prefetchNeuralChunk(index) {
       if (!this.voice?.neural) return;
       if (index >= this.chunks.length) return;
       const key = `${this.voice.id}:${this.rate}:${index}`;
@@ -452,12 +413,10 @@
         () => null
       );
       this.prefetchCache.set(key, promise);
-      // Keep cache small
       if (this.prefetchCache.size > 3) {
         const oldestKey = this.prefetchCache.keys().next().value;
         if (oldestKey !== key) this.prefetchCache.delete(oldestKey);
       }
-      void activeToken;
     }
 
     _speakFrom(index) {
@@ -513,20 +472,11 @@
           wavBlob = await this.prefetchCache.get(key);
           this.prefetchCache.delete(key);
         } else {
-          const isStored = this.isNeuralVoiceStored(voice);
-          if (!isStored) {
-            this.onNeuralProgress({
-              phase: "downloading",
-              percent: 1,
-              label: `Preparando ${voice.name}…`
-            });
-          } else {
-            this.onNeuralProgress({
-              phase: "synthesizing",
-              percent: 100,
-              label: `Gerando voz neural (${idx + 1}/${this.chunks.length})…`
-            });
-          }
+          this.onNeuralProgress({
+            phase: "synthesizing",
+            percent: 45,
+            label: `Preparando áudio (${idx + 1}/${this.chunks.length})…`
+          });
 
           wavBlob = await synthesize(this.chunks[idx], voice.id, {
             rate: this.rate,
@@ -534,9 +484,6 @@
               if (activeToken === this.token) this.onNeuralProgress(info);
             }
           });
-          if (!isStored) {
-            await this.refreshStoredNeuralVoices();
-          }
         }
 
         if (activeToken !== this.token || this.status !== "playing") {
@@ -551,8 +498,7 @@
           return;
         }
 
-        // Prefetch next chunk in background while current WAV plays
-        this._prefetchNeuralChunk(idx + 1, activeToken);
+        this._prefetchNeuralChunk(idx + 1);
 
         await this._playWavBlob(wavBlob, activeToken, () => {
           this._advanceAfterChunk(activeToken);
@@ -565,7 +511,7 @@
           this._clearTimers();
           this._releaseWakeLock();
           this._emitState();
-          this.onError(err?.message || "Erro ao sintetizar áudio com a voz neural.");
+          this.onError(err?.message || "Erro ao gerar áudio com esta voz.");
         }
       }
     }
@@ -587,7 +533,7 @@
       }
 
       if (!this.speechApiSupported) {
-        this.onError("Síntese de voz nativa indisponível; selecione uma voz neural Piper.");
+        this.onError("Selecione uma voz neural para ouvir a leitura.");
         this.stop();
         return;
       }

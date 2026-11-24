@@ -1,12 +1,12 @@
 import * as T from 'three';
-import { organelles } from '../data/organelles.js?v=19';
+import { organelles } from '../data/organelles.js?v=20';
 import {
   v, group, mesh, material, glow, sphere, torus, tube, cylinder, lathe, curve, random,
   instances, instanceUpdater, membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial,
   organicDisplace, tintGeometry, textures
 } from '../core/geometry.js';
 import { node, select, range, button, toggle, heading, card, row, showTooltip, hideTooltip } from '../core/ui.js?v=9';
-import { release } from '../core/sceneManager.js?v=7';
+import { release } from '../core/sceneManager.js?v=25';
 import {
   attachMembraneMicro, attachCytoplasmMicro, attachNucleusMicro,
   attachMitoMicro, attachVacuoleMicro, attachChloroplastMicro, attachBacteriaMicro
@@ -18,7 +18,7 @@ import {
 } from './cellOrganelleDetails.js?v=19';
 import {
   buildExtraModel, EXTRA_OUTER_KEYS, EXTRA_LABEL_OFFSETS, EXTRA_CAMERAS
-} from './cellModels.js?v=19';
+} from './cellModels.js?v=22';
 import {
   VIRUS_SUBTYPES, VIRUS_SUMMARY, VIRUS_LABEL_OFFSETS, VIRUS_CAMERAS, buildVirusSubtype
 } from './virusLibrary.js?v=19';
@@ -59,6 +59,7 @@ const types = {
     epithelial: 'Célula epitelial (microvilosidades)'
   }
 };
+const typeLabels = Object.assign({}, ...Object.values(types));
 const modelFacts = {
   animal: 'Eucarionte com núcleo, citoplasma dinâmico, membrana fluida com colesterol/glicocálix, organelas membranosas e centrossomo. Clique em qualquer estrutura para explorar em micro-zoom.',
   plant: 'Eucarionte fotossintético com parede celulósica, plasmodesmos, membrana com fitoesteróis/aquaporinas, cloroplastos e grande vacúolo central.',
@@ -69,9 +70,10 @@ const modelFacts = {
   neuron: 'Célula nervosa altamente polarizada: dendritos receptores, soma com corpúsculos de Nissl, axônio mielinizado com condução saltatória nos nódulos de Ranvier e sinapses químicas.',
   osteocyte: 'Célula óssea madura de formato estrelado: habita uma lacuna na matriz mineralizada de hidroxiapatita e estende prolongamentos por canalículos para detectar esforço mecânico.',
   erythrocyte: 'Hemácia (eritrócito) de mamífero: disco bicôncavo flexível, ANUCLEADO e sem mitocôndrias, especializado em maximizar o espaço interno para hemoglobina (Fe²⁺) e transporte de O₂.',
-  epithelial: 'Enterócito intestinal polarizado: formato colunar alto com borda em escova (microvilosidades que ampliam a área de absorção em ~20×), junções oclusivas apicais e lâmina basal.'
+  epithelial: 'Enterócito de um epitélio simples cilíndrico. Explore o glicocálix, a borda em escova, a trama terminal, as junções laterais, as organelas e a interface com o tecido conjuntivo.'
 };
 const CORE_TYPES = new Set(['animal', 'plant', 'bacteria']);
+const CONNECTED_MODELS = new Set(['epithelial', 'neuron', 'muscle']);
 const cutStart = Math.PI * .86;
 const cutArc = Math.PI * 1.47;
 const meridians = [cutStart, cutStart + cutArc];
@@ -803,7 +805,7 @@ const vegetal = {
 };
 const prokaryote = { nucleoid: [-0.92, 0.02, 0.04], plasmid: [2.08, 0.18, 0.52], ribosome: [0, 0, 0], flagellum: [3.98, 0.02, 0] };
 
-export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar, guide, viewport, tooltip, audio, labelsVisible, setLabelsVisible, onLabelsChange }) {
+export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar, guide, viewport, tooltip, audio, labelsVisible, setLabelsVisible, onLabelsChange, runWithLoader }) {
   lights.rim.color.set('#5ee7f5');
   lights.rim.intensity = 2.05;
   lights.key.shadow.mapSize.set(2048, 2048);
@@ -872,6 +874,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   let guideLines = null, guidePositions = null;
   let secondMito = null, secondChlor = null;
   let exploded = 0, xray = false, paused = false, time = 0;
+  let animateMuscle = true;
 
   const getSteps = (key = selected) => {
     const data = organelles[key];
@@ -953,28 +956,28 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
           virusSubtype = VIRUS_KEY_TO_SUB[selected];
           virusSelect.input.value = virusSubtype;
           audio.play('click');
-          loadModel();
+          rebuildModel();
         }, { className: 'primary' }));
       } else if (type === 'virus' && virusSubtype !== 'gallery' && virusSubtype !== 'comparison') {
         navBtns.push(button('← Voltar à galeria (10 vírus)', () => {
           virusSubtype = 'gallery';
           virusSelect.input.value = 'gallery';
           audio.play('click');
-          loadModel();
+          rebuildModel();
         }));
       } else if (type === 'bacteria' && bacteriaSubtype === 'gallery' && BACTERIA_KEY_TO_SUB[selected]) {
         navBtns.push(button('Ver formato isolado →', () => {
           bacteriaSubtype = BACTERIA_KEY_TO_SUB[selected];
           bacteriaSelect.input.value = bacteriaSubtype;
           audio.play('click');
-          loadModel();
+          rebuildModel();
         }, { className: 'primary' }));
       } else if (type === 'bacteria' && bacteriaSubtype !== 'gallery' && bacteriaSubtype !== 'complete') {
         navBtns.push(button('← Voltar à galeria (9 formatos)', () => {
           bacteriaSubtype = 'gallery';
           bacteriaSelect.input.value = 'gallery';
           audio.play('click');
-          loadModel();
+          rebuildModel();
         }));
       }
 
@@ -1144,6 +1147,11 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     }
   }
 
+  function rebuildModel() {
+    const name = typeLabels[type] || 'modelo celular';
+    runWithLoader(name, 'Preparando o modelo e seus componentes 3D…', loadModel);
+  }
+
   function loadModel() {
     engine.clearFocusFilter(true);
     release(model);
@@ -1183,7 +1191,10 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
 
     const isVirusGallery = type === 'virus' && virusSubtype === 'gallery';
     const isBactGallery = type === 'bacteria' && bacteriaSubtype === 'gallery';
-    stand.visible = !(isVirusGallery || isBactGallery);
+    const connected = CONNECTED_MODELS.has(type);
+    stand.visible = !connected && !(isVirusGallery || isBactGallery);
+    explodedControl.element.hidden = connected;
+    muscleControls.hidden = type !== 'muscle';
     virusSelect.element.hidden = type !== 'virus';
     bacteriaSelect.element.hidden = type !== 'bacteria';
 
@@ -1447,7 +1458,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
 
   let start;
   canvas.addEventListener('pointermove', event => {
-    if (event.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const next = hit(event);
     hovered = next || null;
     if (next) {
@@ -1489,22 +1500,36 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   const virusSelect = select('Tipo de vírus', VIRUS_SUBTYPES, virusSubtype, value => {
     virusSubtype = value;
     audio.play('click');
-    loadModel();
+    rebuildModel();
   });
   virusSelect.element.hidden = true;
 
   const bacteriaSelect = select('Formato bacteriano', BACTERIA_SUBTYPES, bacteriaSubtype, value => {
     bacteriaSubtype = value;
     audio.play('click');
-    loadModel();
+    rebuildModel();
   });
   bacteriaSelect.element.hidden = true;
 
+  const explodedControl = range('Vista explodida', 0, 100, 1, 0,
+    value => { exploded = value / 100; }, value => value + '%', { wheel: true, reset: 0 });
+  const muscleControls = row(
+    toggle('Contração na vista geral', true, value => { animateMuscle = value; audio.play('click'); }),
+    button('Ver contração de perto', () => {
+      pick('muscle_sarcomere', false);
+      changeStep(getSteps('muscle_sarcomere').findIndex(step => step.anim === 'muscle_contract'));
+    })
+  );
   toolbar.append(
-    select('Modelo celular', types, type, value => { type = value; audio.play('click'); loadModel(); }).element,
+    select('Modelo celular', types, type, value => {
+      type = value;
+      audio.play('click');
+      rebuildModel();
+    }).element,
     virusSelect.element,
     bacteriaSelect.element,
-    range('Vista explodida', 0, 100, 1, 0, value => { exploded = value / 100; }, value => value + '%', { wheel: true, reset: 0 }).element,
+    explodedControl.element,
+    muscleControls,
     row(
       focusToggle,
       toggle('Raio-X', false, value => { xray = value; audio.play('click'); }),
@@ -1529,7 +1554,8 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   return {
     update(dt) {
       if (!paused) time += dt;
-      const activeAnim = tourActive ? activeStepData()?.anim || null : null;
+      const contractionOverview = !tourActive && type === 'muscle' && animateMuscle;
+      const activeAnim = tourActive ? activeStepData()?.anim : contractionOverview ? 'muscle_overview' : null;
 
       // Subtle organic breathing + exploded displacement + guide lines
       let gIdx = 0;

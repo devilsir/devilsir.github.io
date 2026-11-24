@@ -19,6 +19,7 @@ import { ResultOverlay } from './ui/result-overlay.js';
 import { ZoomPanViewer } from './ui/zoom-viewer.js';
 import { CAPTURE_CONDITIONS, DEMO_PRESETS, generateDemoPhoto } from './demo/demo-sheets.js';
 import { downloadTextFile, formatBenchmarkSuiteTxt, formatSingleScanTxt } from './utils/txt-export.js';
+import { buildZipBlob, downloadBlob } from './utils/zip.js';
 
 console.info('[OMR] build v10 (ES Modules · Vertical/Horizontal · Multi-estilo) carregado');
 
@@ -119,6 +120,7 @@ const els = {
   rerunSuiteButton: $('#rerunSuiteButton'),
   copySuiteTxtButton: $('#copySuiteTxtButton'),
   downloadSuiteTxtButton: $('#downloadSuiteTxtButton'),
+  downloadSuiteZipButton: $('#downloadSuiteZipButton'),
   reviewSheet: $('#reviewSheet'),
   reviewBackdrop: $('#reviewBackdrop'),
   closeReviewButton: $('#closeReviewButton'),
@@ -146,7 +148,8 @@ const state = {
   currentLayer: 'rectified',
   debug: { debug: false, rows: true, bubbles: true, centers: false, scores: false, inferred: true },
   busy: false,
-  lastSuiteTxt: ''
+  lastSuiteTxt: '',
+  lastSuiteZipBlob: null
 };
 
 const parser = new AnswerKeyParser();
@@ -1205,6 +1208,77 @@ function closeSuiteModal() {
   document.body.style.overflow = '';
 }
 
+async function renderSuiteRecognitionJpeg(result, scored, meta, { includeScores = false } = {}) {
+  const rect = result.rectified.canvas;
+  const maxDim = 1500;
+  const scale = Math.min(1, maxDim / Math.max(rect.width, rect.height));
+  const imgW = Math.max(1, Math.round(rect.width * scale));
+  const imgH = Math.max(1, Math.round(rect.height * scale));
+  const bannerH = 54;
+
+  // Render overlay at full rectified resolution so stroke widths and coordinates stay exact
+  const overlayCanvas = document.createElement('canvas');
+  const tempOverlay = new ResultOverlay(overlayCanvas);
+  tempOverlay.setSize(rect.width, rect.height);
+  tempOverlay.render(scored.questions, result.structure, {
+    debug: true,
+    rows: true,
+    bubbles: true,
+    centers: true,
+    scores: includeScores,
+    inferred: true,
+    selectedQuestion: null
+  });
+
+  const out = document.createElement('canvas');
+  out.width = imgW;
+  out.height = imgH + bannerH;
+  const ctx = out.getContext('2d', { alpha: false });
+
+  // Top summary banner
+  ctx.fillStyle = '#0e131b';
+  ctx.fillRect(0, 0, imgW, bannerH);
+  ctx.fillStyle = '#242c38';
+  ctx.fillRect(0, bannerH - 1, imgW, 1);
+
+  const pct = meta.totalQuestions ? Math.round((meta.expectedMatches / meta.totalQuestions) * 100) : 0;
+  const accent = pct === 100 ? '#37e589' : pct >= 80 ? '#ffbf47' : '#ff5f65';
+  ctx.fillStyle = accent;
+  ctx.fillRect(0, 0, 5, bannerH);
+
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f5f6f2';
+  ctx.font = '700 15px Manrope, Arial, sans-serif';
+  ctx.fillText(`[${meta.indexLabel}] ${meta.presetId} · ${meta.conditionShort}${includeScores ? ' (SCORES)' : ''}`, 16, 20);
+
+  ctx.fillStyle = '#98a1ad';
+  ctx.font = '500 12px DM Mono, monospace';
+  ctx.fillText(
+    `Detector: ${meta.detector} · Cobertura: ${Math.round(meta.bubbleCoverage * 100)}% · Blocos: ${meta.blockCount} · Qualidade: ${Math.round(meta.qualityOverall * 100)}%`,
+    16,
+    39
+  );
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = accent;
+  ctx.font = '700 16px DM Mono, monospace';
+  ctx.fillText(`${meta.expectedMatches}/${meta.totalQuestions} (${pct}%)`, imgW - 16, 28);
+
+  // Composite rectified sheet + recognition overlay below the top summary banner
+  ctx.drawImage(rect, 0, bannerH, imgW, imgH);
+  ctx.drawImage(overlayCanvas, 0, bannerH, imgW, imgH);
+
+  const blob = await new Promise((resolve) => out.toBlob(resolve, 'image/jpeg', 0.86));
+  const bytes = blob ? new Uint8Array(await blob.arrayBuffer()) : new Uint8Array(0);
+
+  overlayCanvas.width = 1;
+  overlayCanvas.height = 1;
+  out.width = 1;
+  out.height = 1;
+  return bytes;
+}
+
 async function runFullBenchmarkSuite() {
   if (state.busy || !els.suiteModal) return;
   setBusy(true);
@@ -1213,17 +1287,21 @@ async function runFullBenchmarkSuite() {
   els.rerunSuiteButton.disabled = true;
   els.copySuiteTxtButton.disabled = true;
   els.downloadSuiteTxtButton.disabled = true;
+  if (els.downloadSuiteZipButton) els.downloadSuiteZipButton.disabled = true;
+  state.lastSuiteZipBlob = null;
   els.suiteProgress.style.width = '2%';
   els.suiteReportOutput.textContent = 'Inicializando OpenCV.js e preparando 22 imagens de teste…';
 
   const startedAt = Date.now();
   const entries = [];
+  const zipFiles = [];
 
   try {
     const engine = await ensureEngine();
 
     for (let i = 0; i < DEMO_PRESETS.length; i += 1) {
       const preset = DEMO_PRESETS[i];
+      const indexLabel = String(i + 1).padStart(2, '0');
       const pct = Math.round(((i + 0.2) / DEMO_PRESETS.length) * 100);
       els.suiteProgress.style.width = `${pct}%`;
       els.suiteStatus.textContent = `Executando ${i + 1} / ${DEMO_PRESETS.length} · ${preset.label}`;
@@ -1247,7 +1325,6 @@ async function runFullBenchmarkSuite() {
         const scored = scorer.score(result.questions, demo.answers, { maxGrade: 10 });
         const durationMs = Math.round(performance.now() - t0);
 
-        // Count matches against ground truth (including intentional blank/multiple/ambiguous on enem-vertical)
         let expectedMatches = 0;
         const mismatches = [];
         for (const q of scored.questions) {
@@ -1268,7 +1345,8 @@ async function runFullBenchmarkSuite() {
         }
 
         const diag = result.structure.diagnostics;
-        entries.push({
+        const entry = {
+          indexLabel,
           presetId: preset.id,
           presetLabel: preset.label,
           condition: preset.condition,
@@ -1288,12 +1366,28 @@ async function runFullBenchmarkSuite() {
           docConfidence: doc.confidence || 0,
           durationMs,
           mismatches
-        });
+        };
+        entries.push(entry);
+
+        // Render annotated recognition image (bolhas, grade, centros e status) for the ZIP archive
+        const recJpeg = await renderSuiteRecognitionJpeg(result, scored, entry, { includeScores: false });
+        if (recJpeg.length) {
+          zipFiles.push({ name: `imagens/${indexLabel}-${preset.id}-reconhecimento.jpg`, data: recJpeg });
+        }
+
+        // For any scenario with mismatches/revisar, also add a detailed debug image with fillScores!
+        if (mismatches.length > 0) {
+          const debugJpeg = await renderSuiteRecognitionJpeg(result, scored, entry, { includeScores: true });
+          if (debugJpeg.length) {
+            zipFiles.push({ name: `debug/${indexLabel}-${preset.id}-scores.jpg`, data: debugJpeg });
+          }
+        }
 
         result.rectified.canvas.width = 1;
         result.rectified.canvas.height = 1;
       } catch (err) {
         entries.push({
+          indexLabel,
           presetId: preset.id,
           presetLabel: preset.label,
           condition: preset.condition,
@@ -1322,23 +1416,27 @@ async function runFullBenchmarkSuite() {
         }
       }
 
-      // Live preview update after each case
       const runningTxt = formatBenchmarkSuiteTxt(entries, { startedAt, finishedAt: Date.now() });
       els.suiteReportOutput.textContent = runningTxt;
     }
 
     const finalTxt = formatBenchmarkSuiteTxt(entries, { startedAt, finishedAt: Date.now() });
     state.lastSuiteTxt = finalTxt;
+    zipFiles.unshift({ name: 'relatorio-bateria-omr.txt', data: finalTxt });
+    state.lastSuiteZipBlob = buildZipBlob(zipFiles);
+
     els.suiteReportOutput.textContent = finalTxt;
     els.suiteProgress.style.width = '100%';
 
     const totalQ = entries.reduce((a, e) => a + e.totalQuestions, 0);
     const totalOk = entries.reduce((a, e) => a + e.expectedMatches, 0);
     const pct = totalQ ? ((totalOk / totalQ) * 100).toFixed(1) : '0.0';
-    els.suiteStatus.textContent = `Bateria concluída · ${totalOk}/${totalQ} questões (${pct}%) em ${entries.length} cenários.`;
+    const zipMb = (state.lastSuiteZipBlob.size / (1024 * 1024)).toFixed(1);
+    els.suiteStatus.textContent = `Bateria concluída · ${totalOk}/${totalQ} questões (${pct}%) · ZIP pronto (${zipFiles.length} arquivos, ${zipMb} MB).`;
     els.rerunSuiteButton.disabled = false;
     els.copySuiteTxtButton.disabled = false;
     els.downloadSuiteTxtButton.disabled = false;
+    if (els.downloadSuiteZipButton) els.downloadSuiteZipButton.disabled = false;
   } catch (err) {
     els.suiteStatus.textContent = `Falha ao executar bateria: ${err.message}`;
     els.rerunSuiteButton.disabled = false;
@@ -1377,6 +1475,11 @@ function bindEvents() {
     if (!state.lastSuiteTxt) return;
     downloadTextFile(`bateria-testes-omr-${new Date().toISOString().slice(0, 10)}.txt`, state.lastSuiteTxt);
     showToast('Relatório da bateria exportado em .TXT.');
+  });
+  els.downloadSuiteZipButton?.addEventListener('click', () => {
+    if (!state.lastSuiteZipBlob) return;
+    downloadBlob(`bateria-testes-omr-${new Date().toISOString().slice(0, 10)}.zip`, state.lastSuiteZipBlob);
+    showToast('Arquivo .ZIP (.TXT + imagens de reconhecimento) baixado.');
   });
   els.copySuiteTxtButton?.addEventListener('click', async () => {
     if (!state.lastSuiteTxt) return;

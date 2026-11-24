@@ -1,5 +1,17 @@
 import * as T from 'three';
 import { audio } from './audio.js';
+import { deviceProfile } from './deviceProfile.js?v=23';
+
+const MIN_LOADING_MS = 550;
+
+export function afterPaint() {
+  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+export async function keepLoaderVisible(startedAt) {
+  const remaining = MIN_LOADING_MS - (performance.now() - startedAt);
+  if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
+}
 
 function release(root) {
   const geometries = new Set();
@@ -32,14 +44,37 @@ export class SceneManager {
   constructor(engine, elements, state, navigate) {
     Object.assign(this, { engine, ...elements, state, navigate });
     this.time = performance.now();
-    this.transitionTimer = null;
+    this.loading = null;
     this.labelsVisible = true;
     this.labelListeners = new Set();
     this.engine.camera.layers.enable(1);
+
     this.veil = document.createElement('div');
     this.veil.className = 'stage-veil';
-    this.veil.setAttribute('aria-hidden', 'true');
-    this.viewport.append(this.veil);
+    this.veil.hidden = true;
+    this.veil.setAttribute('role', 'status');
+    this.veil.setAttribute('aria-atomic', 'true');
+    this.veil.innerHTML =
+      '<div class="loader-card">' +
+      '<div class="loader-orb" aria-hidden="true"><i></i><i></i></div>' +
+      '<p class="loader-kicker">CARREGANDO MÓDULO</p>' +
+      '<h2 class="loader-title">Preparando cena 3D...</h2>' +
+      '<p class="loader-sub">Compilando modelos, materiais e iluminação</p>' +
+      '<div class="loader-bar" aria-hidden="true"><i></i></div>' +
+      '</div>';
+    this.veilKicker = this.veil.querySelector('.loader-kicker');
+    this.veilTitle = this.veil.querySelector('.loader-title');
+    this.veilSub = this.veil.querySelector('.loader-sub');
+    this.workspace.after(this.veil);
+    this.viewportVisible = true;
+    if (typeof IntersectionObserver !== 'undefined') {
+      this.visibilityObserver = new IntersectionObserver(entries => {
+        const entry = entries[0];
+        this.viewportVisible = Boolean(!entry || entry.isIntersecting);
+        if (this.viewportVisible) this.time = performance.now();
+      }, { threshold: 0.01 });
+      this.visibilityObserver.observe(this.viewport);
+    }
 
     this.frame = this.frame.bind(this);
     this.frameId = requestAnimationFrame(this.frame);
@@ -51,13 +86,60 @@ export class SceneManager {
     engine.renderer.domElement.addEventListener('webglcontextrestored', () => { this.error.hidden = true; });
   }
 
-  mount(factory, onMounted = null) {
-    if (this.transitionTimer) {
-      clearTimeout(this.transitionTimer);
-      this.transitionTimer = null;
+  startLoading(title, subtitle, kicker, show = true) {
+    const loading = { startedAt: performance.now(), show };
+    this.loading = loading;
+    this.veilKicker.textContent = kicker;
+    this.veilTitle.textContent = title;
+    this.veilSub.textContent = subtitle;
+    this.veil.hidden = !show;
+    this.workspace.setAttribute('aria-busy', 'true');
+    this.workspace.inert = true;
+    return loading;
+  }
+
+  async finishLoading(loading) {
+    if (this.loading !== loading) return;
+    if (loading.show) await keepLoaderVisible(loading.startedAt);
+    if (this.loading !== loading) return;
+    this.loading = null;
+    this.veil.hidden = true;
+    this.workspace.removeAttribute('aria-busy');
+    this.workspace.inert = false;
+  }
+
+  async runWithLoader(title, subtitle, task) {
+    const loading = this.startLoading(title, subtitle, 'ATUALIZANDO CENA');
+    await afterPaint();
+    if (this.loading !== loading) return;
+
+    try {
+      await task();
+      if (this.loading !== loading) return;
+      this.engine.frame(0.016);
+      this.active.handle?.update?.(0.016);
+      this.engine.render(this.active.scene);
+      this.error.hidden = true;
+    } catch (error) {
+      if (this.loading !== loading) return;
+      this.error.hidden = false;
+      this.error.textContent = 'Não foi possível atualizar a cena. Selecione outro modelo ou módulo.';
+      console.error(error);
+    } finally {
+      await this.finishLoading(loading);
     }
-    const performMount = () => {
+  }
+
+  async mount(loadFactory, onMounted, { name, hint, booting }) {
+    const loading = this.startLoading(name, hint, 'CARREGANDO MÓDULO', !booting);
+    await afterPaint();
+    if (this.loading !== loading) return;
+
+    try {
       this.unmount();
+      const factory = await loadFactory();
+      if (this.loading !== loading) return;
+
       const scene = new T.Scene();
       scene.environment = this.engine.envMap;
       if ('environmentIntensity' in scene) scene.environmentIntensity = 0.85;
@@ -71,7 +153,7 @@ export class SceneManager {
       const key = new T.DirectionalLight('#f6fbff', 2.35);
       key.position.set(5.5, 9.2, 8.5);
       key.castShadow = true;
-      key.shadow.mapSize.set(1024, 1024);
+      key.shadow.mapSize.set(deviceProfile.shadowSize, deviceProfile.shadowSize);
       key.shadow.camera.near = 1.5;
       key.shadow.camera.far = 30;
       key.shadow.camera.left = -7.5;
@@ -80,7 +162,7 @@ export class SceneManager {
       key.shadow.camera.bottom = -6.5;
       key.shadow.bias = -0.0005;
       key.shadow.normalBias = 0.028;
-      key.shadow.radius = 3.2;
+      key.shadow.radius = deviceProfile.isMobile ? 2.0 : 3.2;
       const fill = new T.DirectionalLight('#8ac4e3', 0.82);
       fill.position.set(-6.5, -1.5, 5.5);
       const rim = new T.DirectionalLight('#5be0f2', 1.95);
@@ -97,48 +179,55 @@ export class SceneManager {
         item.className = 'scene-label';
         item.textContent = text;
         this.projection.append(item);
-        const entry = { item, target, offset, enabled: true };
+        const entry = { item, target, offset, enabled: true, lastX: NaN, lastY: NaN, lastHidden: null };
         labels.add(entry);
         entry.remove = () => { labels.delete(entry); item.remove(); };
         return entry;
       };
-      try {
-        this.active.handle = factory({
-          scene, lights, engine: this.engine, audio, label,
-          signal: abort.signal, toolbar: this.toolbar, guide: this.guide, overlay: this.overlay,
-          viewport: this.viewport, tooltip: this.tooltip, help: this.help, state: this.state, navigate: this.navigate,
-          labelsVisible: () => this.labelsVisible,
-          setLabelsVisible: show => this.setLabelsVisible(show),
-          onLabelsChange: fn => {
-            this.labelListeners.add(fn);
-            abort.signal.addEventListener('abort', () => this.labelListeners.delete(fn), { once: true });
+      this.active.handle = factory({
+        scene, lights, engine: this.engine, audio, label,
+        signal: abort.signal, toolbar: this.toolbar, guide: this.guide, overlay: this.overlay,
+        viewport: this.viewport, tooltip: this.tooltip, help: this.help, state: this.state, navigate: this.navigate,
+        runWithLoader: (title, subText, fn) => this.runWithLoader(title, subText, fn),
+        labelsVisible: () => this.labelsVisible,
+        setLabelsVisible: show => this.setLabelsVisible(show),
+        onLabelsChange: fn => {
+          this.labelListeners.add(fn);
+          abort.signal.addEventListener('abort', () => this.labelListeners.delete(fn), { once: true });
+        }
+      });
+      // Automatic Mobile Hardware Budget Guard: keeps all shadows & lights intact while preventing
+      // 6-face PointLight cubemap shadows and desktop 2048px shadow maps from saturating mobile GPUs!
+      if (deviceProfile.isMobile) {
+        scene.traverse(obj => {
+          if (obj.isPointLight && !deviceProfile.allowPointShadows && obj.castShadow) {
+            obj.castShadow = false;
+          } else if (obj.isDirectionalLight && obj.castShadow && obj.shadow) {
+            if (obj.shadow.mapSize.x > deviceProfile.shadowSize) {
+              obj.shadow.mapSize.set(deviceProfile.shadowSize, deviceProfile.shadowSize);
+              if (obj.shadow.map) { obj.shadow.map.dispose(); obj.shadow.map = null; }
+            }
+            obj.shadow.radius = Math.min(obj.shadow.radius || 2, 2.0);
           }
         });
-        this.error.hidden = true;
-        onMounted?.(true);
-      } catch (error) {
-        this.unmount();
-        this.error.hidden = false;
-        this.error.textContent = 'Não foi possível iniciar esta cena. Selecione outro módulo ou recarregue a página.';
-        console.error(error);
-        onMounted?.(false);
+        this.engine._shadowFrame = 0; // Guarantee crisp shadow map on first mounted frame!
       }
-      requestAnimationFrame(() => {
-        this.veil.classList.remove('active');
-      });
-    };
-
-    // First load mounts immediately with a smooth reveal; module switches dissolve cleanly (~200ms)
-    if (!this.active) {
-      this.veil.classList.add('active');
-      performMount();
-      return;
+      // Warm up first GPU render & shader compilation WHILE the loading screen is visibly covering the viewport!
+      this.engine.frame(0.016);
+      this.active.handle?.update?.(0.016);
+      this.engine.render(scene);
+      this.error.hidden = true;
+      onMounted(true);
+    } catch (error) {
+      if (this.loading !== loading) return;
+      this.unmount();
+      this.error.hidden = false;
+      this.error.textContent = 'Não foi possível iniciar esta cena. Tente abrir o módulo novamente.';
+      console.error(error);
+      onMounted(false);
+    } finally {
+      await this.finishLoading(loading);
     }
-    this.veil.classList.add('active');
-    this.transitionTimer = setTimeout(() => {
-      this.transitionTimer = null;
-      performMount();
-    }, 105);
   }
 
   unmount() {
@@ -174,23 +263,39 @@ export class SceneManager {
     this.frameId = requestAnimationFrame(this.frame);
     const dt = Math.min(.05, Math.max(.001, (now - this.time) / 1000));
     this.time = now;
-    if (!this.active?.handle || document.hidden) return;
+    if (this.loading || !this.active?.handle || document.hidden || !this.viewportVisible) return;
     const { scene, labels, handle } = this.active;
     this.engine.frame(dt);
     handle.update?.(dt);
     this.engine.render(scene);
     if (!labels.size || !this.labelsVisible) return;
-    const width = this.viewport.clientWidth;
-    const height = this.viewport.clientHeight;
-    for (const { item, target, offset, enabled } of labels) {
+    // Use ResizeObserver-cached dimensions (zero DOM layout read per frame!) + dirty-delta DOM writes
+    const width = this.engine.viewportWidth;
+    const height = this.engine.viewportHeight;
+    const snap = deviceProfile.isMobile ? 0.75 : 0.35;
+    for (const entry of labels) {
+      const { item, target, offset, enabled } = entry;
       if (!enabled || !target.visible || target.parent?.visible === false) {
-        item.hidden = true;
+        if (entry.lastHidden !== true) {
+          item.hidden = true;
+          entry.lastHidden = true;
+        }
         continue;
       }
       target.getWorldPosition(labelPosition).add(offset).project(this.engine.camera);
-      item.hidden = labelPosition.z > 1 || labelPosition.z < -1 || Math.abs(labelPosition.x) > .97 || Math.abs(labelPosition.y) > .93;
-      if (!item.hidden) {
-        item.style.transform = `translate3d(${((labelPosition.x + 1) * width / 2).toFixed(1)}px, ${((1 - labelPosition.y) * height / 2).toFixed(1)}px, 0) translate(-50%, -100%)`;
+      const hidden = labelPosition.z > 1 || labelPosition.z < -1 || Math.abs(labelPosition.x) > .97 || Math.abs(labelPosition.y) > .93;
+      if (entry.lastHidden !== hidden) {
+        item.hidden = hidden;
+        entry.lastHidden = hidden;
+      }
+      if (!hidden) {
+        const px = (labelPosition.x + 1) * width * 0.5;
+        const py = (1 - labelPosition.y) * height * 0.5;
+        if (Math.abs(px - entry.lastX) >= snap || Math.abs(py - entry.lastY) >= snap || Number.isNaN(entry.lastX)) {
+          entry.lastX = px;
+          entry.lastY = py;
+          item.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0) translate(-50%, -100%)`;
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 import * as T from 'three';
 import { group } from '../core/geometry.js';
-import { emSpecimens, emSpecimenOptions } from '../data/emSpecimens.js?v=22';
+import { deviceProfile } from '../core/deviceProfile.js?v=23';
+import { emSpecimens, emSpecimenOptions } from '../data/emSpecimens.js?v=23';
 import { buildElectronMicroscope } from './electronMicroscopeModel.js?v=14';
 import { node, button, select, toggle, range, row, card, heading, note, metric, showTooltip, hideTooltip } from '../core/ui.js?v=9';
 
@@ -8,6 +9,7 @@ const clamp = (val, lo, hi) => Math.max(lo, Math.min(hi, val));
 const smoothstep = u => { const c = clamp(u, 0, 1); return c * c * (3 - 2 * c); };
 const MIN_MAG = 200;
 const MAX_MAG = 600000;
+const MAG_SLIDER_STEPS = 1000;
 const magPresets = [200, 2000, 10000, 100000, 600000];
 const palettes = {
   gray: 'Escala de cinza real (TEM/MEV)',
@@ -16,15 +18,11 @@ const palettes = {
   invert: 'Negativo / Contraste Invertido'
 };
 
-// Logarithmic slider helpers so 200x -> 600.000x feels silky across every decade!
-const magToSlider = mag => Math.round(1000 * Math.log(clamp(mag, MIN_MAG, MAX_MAG) / MIN_MAG) / Math.log(MAX_MAG / MIN_MAG));
-const sliderToMag = val => {
-  const raw = MIN_MAG * Math.pow(MAX_MAG / MIN_MAG, clamp(val, 0, 1000) / 1000);
-  if (raw < 1000) return Math.round(raw / 50) * 50;
-  if (raw < 10000) return Math.round(raw / 250) * 250;
-  if (raw < 100000) return Math.round(raw / 1000) * 1000;
-  return Math.round(raw / 5000) * 5000;
-};
+// The logarithmic slider covers the selected specimen's entire magnification range.
+const magToSlider = (mag, lo, hi) => Math.round(MAG_SLIDER_STEPS * Math.log(mag / lo) / Math.log(hi / lo));
+const sliderToMag = (value, lo, hi) => Math.round(lo * (hi / lo) ** (value / MAG_SLIDER_STEPS));
+const formatMag = mag => mag.toLocaleString('pt-BR') + '×';
+const photoZoom = (tier, fovUm) => tier.widthUm / fovUm;
 
 function fmtScale(um) {
   const nm = um * 1000;
@@ -39,30 +37,36 @@ function hexToRgb(hex) {
 }
 
 // Extract real spatial luminance & Sobel membrane-edge gradients once per specimen for 60 FPS EDS & 600.000x nano-synthesis!
+// Wrapped in try/catch so even strict file:// CORS contexts never crash the Electron Microscope!
 function extractFeatures(img) {
-  const fw = 360, fh = Math.max(180, Math.round(360 * (img.naturalHeight / Math.max(1, img.naturalWidth))));
-  const c = Object.assign(document.createElement('canvas'), { width: fw, height: fh });
-  const x = c.getContext('2d', { willReadFrequently: true });
-  x.drawImage(img, 0, 0, fw, fh);
-  const data = x.getImageData(0, 0, fw, fh).data;
-  const lum = new Float32Array(fw * fh);
-  for (let i = 0, p = 0; i < lum.length; i++, p += 4) {
-    lum[i] = (0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2]) / 255;
-  }
-  const edge = new Float32Array(fw * fh);
-  const gxArr = new Float32Array(fw * fh);
-  const gyArr = new Float32Array(fw * fh);
-  for (let y = 1; y < fh - 1; y++) {
-    for (let cx = 1; cx < fw - 1; cx++) {
-      const idx = y * fw + cx;
-      const gx = -lum[idx - fw - 1] + lum[idx - fw + 1] - 2 * lum[idx - 1] + 2 * lum[idx + 1] - lum[idx + fw - 1] + lum[idx + fw + 1];
-      const gy = -lum[idx - fw - 1] - 2 * lum[idx - fw] - lum[idx - fw + 1] + lum[idx + fw - 1] + 2 * lum[idx + fw] + lum[idx + fw + 1];
-      gxArr[idx] = gx;
-      gyArr[idx] = gy;
-      edge[idx] = Math.min(1, Math.hypot(gx, gy) * 1.45);
+  try {
+    const fw = deviceProfile.edsFeatWidth;
+    const fh = Math.max(120, Math.round(fw * (img.naturalHeight / Math.max(1, img.naturalWidth))));
+    const c = Object.assign(document.createElement('canvas'), { width: fw, height: fh });
+    const x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(img, 0, 0, fw, fh);
+    const data = x.getImageData(0, 0, fw, fh).data;
+    const lum = new Float32Array(fw * fh);
+    for (let i = 0, p = 0; i < lum.length; i++, p += 4) {
+      lum[i] = (0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2]) / 255;
     }
+    const edge = new Float32Array(fw * fh);
+    const gxArr = new Float32Array(fw * fh);
+    const gyArr = new Float32Array(fw * fh);
+    for (let y = 1; y < fh - 1; y++) {
+      for (let cx = 1; cx < fw - 1; cx++) {
+        const idx = y * fw + cx;
+        const gx = -lum[idx - fw - 1] + lum[idx - fw + 1] - 2 * lum[idx - 1] + 2 * lum[idx + 1] - lum[idx + fw - 1] + lum[idx + fw + 1];
+        const gy = -lum[idx - fw - 1] - 2 * lum[idx - fw] - lum[idx - fw + 1] + lum[idx + fw - 1] + 2 * lum[idx + fw] + lum[idx + fw + 1];
+        gxArr[idx] = gx;
+        gyArr[idx] = gy;
+        edge[idx] = Math.min(1, Math.hypot(gx, gy) * 1.45);
+      }
+    }
+    return { fw, fh, lum, edge, gxArr, gyArr };
+  } catch (_) {
+    return null;
   }
-  return { fw, fh, lum, edge, gxArr, gyArr };
 }
 
 function hash2d(x, y, salt = 0) {
@@ -98,7 +102,7 @@ function drawEmNanoUltrastructure(ctx, W, viewH, spec, feat, sx, sy, sw, sh, iw,
   const worldTop = (sy / ih) * (fovUm * (viewH / W) * (ih / sh));
   const pxPerUm = W / Math.max(1e-5, fovUm);
 
-  const cellPx = clamp(stepUm * pxPerUm, 11, 24);
+  const cellPx = clamp(stepUm * pxPerUm, deviceProfile.isMobile ? 16 : 12, 26);
   const ox = ((worldLeft * pxPerUm) % cellPx + cellPx) % cellPx;
   const oy = ((worldTop * pxPerUm) % cellPx + cellPx) % cellPx;
   const baseI = Math.floor(worldLeft / stepUm);
@@ -316,14 +320,14 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
   scene.fog.density = 0.0062;
 
   const canvas = node('canvas', {
-    width: 720, height: 540, tabIndex: 0,
+    width: deviceProfile.emCanvasW, height: deviceProfile.emCanvasH, tabIndex: 0,
     'aria-label': 'Monitor do Microscópio Eletrônico Hitachi HT7800 com mapeamento químico EDS até 600.000×.'
   });
   const ctx = canvas.getContext('2d');
-  const offscreen = Object.assign(document.createElement('canvas'), { width: 720, height: 540 });
+  const offscreen = Object.assign(document.createElement('canvas'), { width: deviceProfile.emCanvasW, height: deviceProfile.emCanvasH });
   const octx = offscreen.getContext('2d');
 
-  // Preload ALL real Public Domain EM micrographs across every multi-scale tier & extract EDS maps lazily per file!
+  // Preload EM micrographs: on desktop preload all; on mobile load lazily per active specimen to protect mobile RAM!
   const imagesByFile = new Map();
   const featuresByFile = new Map();
   const edsCache = new Map();
@@ -348,8 +352,14 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     return img;
   }
 
-  for (const spec of Object.values(emSpecimens)) {
+  function preloadSpecimen(spec) {
     for (const tier of getTiers(spec)) ensureImage(tier.file);
+  }
+
+  if (deviceProfile.lazyEmImages) {
+    preloadSpecimen(emSpecimens.mitochondria);
+  } else {
+    for (const spec of Object.values(emSpecimens)) preloadSpecimen(spec);
   }
 
   function getEdsOverlay(filePath, elements, edsMode, specId) {
@@ -359,10 +369,13 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     const img = imagesByFile.get(filePath);
     if (!img || !img.complete || !img.naturalWidth) return null;
     let feat = featuresByFile.get(filePath);
-    if (!feat) {
+    if (feat === undefined) {
       feat = extractFeatures(img);
       featuresByFile.set(filePath, feat);
     }
+    if (!feat) return null;
+    // Cap offscreen EDS cache size to protect mobile RAM across long multi-specimen sessions
+    if (edsCache.size >= (deviceProfile.isMobile ? 8 : 18)) edsCache.clear();
     const ov = buildEdsOverlayCanvas(feat, elements, edsMode);
     edsCache.set(key, ov);
     return ov;
@@ -394,7 +407,12 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
 
   const titleEl = node('div', { className: 'ocular-title' });
   const statusEl = node('div', { className: 'ocular-status', role: 'status' });
-  const monitorWrap = node('div', { className: 'ocular-wrap em-screen-wrap' }, titleEl, canvas, statusEl);
+  const monitorLoaderTxt = node('span', {}, 'Carregando micrografia eletrônica e mapa EDS...');
+  const monitorLoader = node('div', { className: 'ocular-loader', hidden: true },
+    node('span', { className: 'mini-spin', 'aria-hidden': 'true' }),
+    monitorLoaderTxt
+  );
+  const monitorWrap = node('div', { className: 'ocular-wrap em-screen-wrap' }, titleEl, canvas, monitorLoader, statusEl);
   overlay.append(monitorWrap);
 
   const infoHost = node('div');
@@ -414,9 +432,10 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     return { val, b };
   });
 
-  const magSlider = range('Aumento', 0, 1000, 1, magToSlider(settings.mag), v => {
-    setMag(sliderToMag(v), false);
-  }, x => sliderToMag(x).toLocaleString('pt-BR') + '×', { wheel: true, resetValue: magToSlider(10000) });
+  const magSlider = range('Aumento', 0, MAG_SLIDER_STEPS, 1, 0, value => {
+    const { minMag = MIN_MAG, maxMag = MAX_MAG } = emSpecimens[settings.specimen];
+    setMag(sliderToMag(value, minMag, maxMag));
+  }, () => formatMag(settings.mag), { wheel: true });
 
   const kvSlider = range('Tensão HV', 5, 120, 5, settings.kv, v => {
     settings.kv = v;
@@ -442,6 +461,7 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
 
   const specimenSelect = select('Amostra EM', emSpecimenOptions, settings.specimen, id => {
     const spec = emSpecimens[id];
+    preloadSpecimen(spec);
     settings.specimen = id;
     settings.kv = clamp(spec.defaultKv, 5, 120);
     kvSlider.set(settings.kv);
@@ -457,7 +477,7 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     stigSlider.set(0);
     loadAnim = 1.0;
     audio.play('click');
-    setMag(spec.defaultMag); // Jump straight to each specimen's true 1:1 calibrated magnification!
+    setMag(spec.defaultMag);
   });
 
   const paletteSelect = select('Cor base', palettes, settings.palette, val => {
@@ -553,8 +573,9 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
 
   function zoomFactor() {
     const spec = emSpecimens[settings.specimen];
-    const { dominant } = pickActiveTier(spec, fovUmCurrent());
-    return clamp(dominant.widthUm / fovUmCurrent(), 1, 18);
+    const fovUm = fovUmCurrent();
+    const { dominant } = pickActiveTier(spec, fovUm);
+    return Math.max(1, photoZoom(dominant, fovUm));
   }
 
   function clampPan() {
@@ -564,18 +585,17 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     settings.panY = clamp(settings.panY, -maxPan, maxPan);
   }
 
-  function setMag(value, syncSlider = true) {
-    const spec = emSpecimens[settings.specimen];
-    const lo = spec.minMag || MIN_MAG;
-    const hi = spec.maxMag || MAX_MAG;
+  function setMag(value) {
+    const { minMag: lo = MIN_MAG, maxMag: hi = MAX_MAG } = emSpecimens[settings.specimen];
     rangeHint = '';
-    if (value < lo - 1) {
-      rangeHint = `Mín. real de ${spec.short}: ${lo.toLocaleString('pt-BR')}× · Para 200× real use Epiderme Foliar ou Pólens (MEV)`;
-    } else if (value > hi + 1) {
-      rangeHint = `Máx. real de ${spec.short}: ${hi.toLocaleString('pt-BR')}× · Para 600.000× use Mitocôndrias ou Coronavírus`;
+    if (value < lo) {
+      rangeHint = `Aumento mínimo da amostra: ${formatMag(lo)}`;
+    } else if (value > hi) {
+      rangeHint = `Aumento máximo da amostra: ${formatMag(hi)}`;
     }
     settings.mag = Math.round(clamp(value, lo, hi));
-    if (syncSlider) magSlider.set(magToSlider(settings.mag));
+    magSlider.set(magToSlider(settings.mag, lo, hi));
+    magSlider.input.setAttribute('aria-valuetext', formatMag(settings.mag));
     for (const item of magBtns) {
       const inRange = item.val >= lo && item.val <= hi;
       item.b.setAttribute('aria-pressed', String(Math.abs(item.val - settings.mag) < Math.max(50, item.val * 0.04)));
@@ -706,12 +726,10 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     );
   }
 
-  const controlsWrap = node('div', { className: 'micro-controls' },
+  const controlsWrap = node('div', { className: 'micro-controls em-controls' },
     node('div', { className: 'micro-row' },
       node('div', { className: 'lens-buttons', role: 'group', 'aria-label': 'Presets de aumento até 600.000×' }, ...magBtns.map(m => m.b)),
-      magSlider.element, focusSlider.element, specimenSelect.element
-    ),
-    node('div', { className: 'micro-row' },
+      magSlider.element, focusSlider.element, specimenSelect.element,
       kvSlider.element, stigSlider.element, edsOpacitySlider.element, paletteSelect.element
     ),
     node('div', { className: 'micro-row' },
@@ -774,7 +792,7 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
   let down3d = null;
   stageCanvas.addEventListener('pointerdown', e => { down3d = [e.clientX, e.clientY]; }, { signal });
   stageCanvas.addEventListener('pointermove', e => {
-    if (e.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (e.buttons || e.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const key = pickPart(e);
     hoveredKey = key;
     if (key) {
@@ -821,46 +839,57 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     if (imgAspect > canvasAspect) baseW = ih * canvasAspect;
     else baseH = iw / canvasAspect;
 
-    const z = clamp(tier.widthUm / fovUm, 1, 18);
-    const sw = baseW / z;
-    const sh = baseH / z;
+    const z = photoZoom(tier, fovUm);
+    const cropScale = Math.max(1, z);
+    const sw = baseW / cropScale;
+    const sh = baseH / cropScale;
+    // At a wider field, center the recorded photo at its actual scale.
+    const displayScale = Math.min(1, z);
+    const dw = W * displayScale;
+    const dh = viewH * displayScale;
+    const dx = (W - dw) / 2;
+    const dy = (viewH - dh) / 2;
     const [fcx, fcy] = tier.focusCenter || [0.5, 0.5];
     const cx = iw * (fcx + settings.panX);
     const cy = ih * (fcy + settings.panY);
-    const sx = clamp(cx - sw / 2, 0, iw - sw);
-    const sy = clamp(cy - sh / 2, 0, ih - sh);
+    const sx = clamp(cx - sw / 2, 0, Math.max(0, iw - sw));
+    const sy = clamp(cy - sh / 2, 0, Math.max(0, ih - sh));
 
     // Ensure feature map (luminance + Sobel gradients) exists for photo-guided 600.000x nano-synthesis!
     let feat = featuresByFile.get(tier.file);
-    if (!feat && z > 1.30) {
+    if (feat === undefined && z > 1.30) {
       feat = extractFeatures(img);
       featuresByFile.set(tier.file, feat);
     }
 
+    // CRITICAL PERFORMANCE & CRASH FIX:
+    // Draw raw image + unfiltered nano-synthesis onto offscreen FIRST (zero per-stroke GPU filter passes!),
+    // then apply CSS colorFilter + brightness + contrast + blur ONCE in a single GPU blit to ctx!
+    octx.filter = 'none';
     octx.clearRect(0, 0, W, viewH);
     octx.imageSmoothingEnabled = true;
     octx.imageSmoothingQuality = 'high';
-    octx.filter = `${colorFilter} brightness(${kvBrightness.toFixed(2)}) contrast(${kvContrast.toFixed(2)}) ${blurPx > 0.15 ? `blur(${blurPx}px)` : ''}`;
-    octx.drawImage(img, sx, sy, sw, sh, 0, 0, W, viewH);
+    octx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
 
-    // Photo-guided 600.000x Nanoscale Ultrastructure Synthesis strictly locked to real photo luminance & gradient contours!
+    // Photo-guided 600.000x Nanoscale Ultrastructure Synthesis (runs with filter='none' — 500x faster & zero GPU crash!)
     if (feat && z > 1.32) {
       drawEmNanoUltrastructure(octx, W, viewH, spec, feat, sx, sy, sw, sh, iw, ih, z, fovUm);
     }
 
     if (stigAbs > 0.4) {
-      const dx = settings.stigmator * 1.45;
-      const dy = -settings.stigmator * 0.75;
+      const shiftX = settings.stigmator * 1.45;
+      const shiftY = -settings.stigmator * 0.75;
       octx.globalAlpha = Math.min(0.45, stigAbs * 0.055);
-      octx.drawImage(img, sx, sy, sw, sh, dx, dy, W, viewH);
-      octx.drawImage(img, sx, sy, sw, sh, -dx, -dy, W, viewH);
+      octx.drawImage(img, sx, sy, sw, sh, dx + shiftX, dy + shiftY, dw, dh);
+      octx.drawImage(img, sx, sy, sw, sh, dx - shiftX, dy - shiftY, dw, dh);
       octx.globalAlpha = 1;
     }
-    octx.filter = 'none';
 
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.drawImage(offscreen, 0, 0);
+    ctx.filter = `${colorFilter} brightness(${kvBrightness.toFixed(2)}) contrast(${kvContrast.toFixed(2)}) ${blurPx > 0.15 ? `blur(${blurPx}px)` : ''}`;
+    ctx.drawImage(offscreen, 0, 0, W, viewH, 0, 0, W, viewH);
+    ctx.filter = 'none';
 
     // Real Spatial Chemical Elemental Mapping (EDS) cleanly matching this exact micrograph tier!
     const edsOv = (settings.edsMode !== 'off' && settings.edsOpacity > 0.01)
@@ -874,14 +903,14 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
       if (blurPx > 0.25) ctx.filter = `blur(${blurPx}px)`;
       ctx.globalCompositeOperation = 'screen';
       ctx.globalAlpha = settings.edsOpacity * alpha;
-      ctx.drawImage(edsOv, esx, esy, esw, esh, 0, 0, W, viewH);
+      ctx.drawImage(edsOv, esx, esy, esw, esh, dx, dy, dw, dh);
       ctx.globalCompositeOperation = 'color';
       ctx.globalAlpha = settings.edsOpacity * 0.55 * alpha;
-      ctx.drawImage(edsOv, esx, esy, esw, esh, 0, 0, W, viewH);
+      ctx.drawImage(edsOv, esx, esy, esw, esh, dx, dy, dw, dh);
     }
     ctx.restore();
 
-    return { iw, ih, sx, sy, sw, sh, tier };
+    return { iw, ih, sx, sy, sw, sh, dx, dy, dw, dh, tier };
   }
 
   function drawMicrograph() {
@@ -893,6 +922,7 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
     ctx.fillRect(0, 0, W, H);
 
     if (!settings.beamOn) {
+      monitorLoader.hidden = true;
       ctx.fillStyle = '#0b0e14';
       ctx.fillRect(0, 0, W, viewH);
       ctx.strokeStyle = 'rgba(255, 92, 122, 0.42)';
@@ -943,6 +973,10 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
       hiMeta = renderPhotoTier(hiTier, loTier ? alphaHi : 1, W, viewH, spec, fovUm, colorFilter, kvBrightness, kvContrast, blurPx, stigAbs);
     }
     const domMeta = (dominant === hiTier ? hiMeta : loMeta) || hiMeta || loMeta;
+    monitorLoader.hidden = Boolean(domMeta);
+    if (!domMeta) {
+      monitorLoaderTxt.textContent = `Carregando ${spec.short} e mapa químico EDS...`;
+    }
 
     if (domMeta) {
       // Subtle TEM phase-contrast fine grain above 100.000x
@@ -996,8 +1030,11 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
         const pillH = 38;
         const items = [];
         for (const [nx, ny, text] of annList) {
-          const px = ((nx * domMeta.iw) - domMeta.sx) / domMeta.sw * W;
-          const py = ((ny * domMeta.ih) - domMeta.sy) / domMeta.sh * viewH;
+          const u = (nx * domMeta.iw - domMeta.sx) / domMeta.sw;
+          const v = (ny * domMeta.ih - domMeta.sy) / domMeta.sh;
+          if (u < 0 || u > 1 || v < 0 || v > 1) continue;
+          const px = domMeta.dx + u * domMeta.dw;
+          const py = domMeta.dy + v * domMeta.dh;
           if (px < 18 || px > W - 18 || py < 62 || py > viewH - 22) continue;
           const tw = Math.min(W - 44, ctx.measureText(text).width + 24);
           const bx = clamp(px + tw + 24 < W ? px + 18 : px - tw - 18, 12, W - tw - 12);
@@ -1140,8 +1177,20 @@ export function electronMicroscope3d({ scene, lights, engine, toolbar, guide, la
 
       if (dirty) {
         dirty = false;
-        drawMicrograph();
+        try {
+          drawMicrograph();
+        } catch (err) {
+          console.error('[Eletrônico] Erro ao renderizar micrografia:', err);
+          monitorLoader.hidden = true;
+        }
       }
+    },
+    dispose() {
+      edsCache.clear();
+      featuresByFile.clear();
+      imagesByFile.clear();
+      offscreen.width = offscreen.height = 1;
+      specCanvas.width = specCanvas.height = 1;
     }
   };
 }

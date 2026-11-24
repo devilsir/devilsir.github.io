@@ -1,4 +1,4 @@
-import { paintField, isBeePhotoReady } from './histofield.js?v=22';
+import { paintField, isBeePhotoReady } from './histofield.js?v=23';
 
 // Standard widefield eyepiece FN = 18 mm (FOV = 18 mm / M_obj):
 // 4x -> 4500 um | 10x -> 1800 um | 40x -> 450 um | 100x Oil -> 180 um | 1000x (100x Apo + Optovar 2.5x) -> 72 um!
@@ -47,12 +47,13 @@ export class Ocular {
     const size = this.canvas.width;
     const center = size / 2;
     const isDarkfieldPhoto = slide.tissue === 'bee' && slide.stain === 'historesin' && isBeePhotoReady();
-    const key = [slide.tissue, slide.stain, lens.power, x, y, labels, isDarkfieldPhoto ? 1 : 0].join('/');
+    const stainPhase = slide.stainPhase ?? 4;
+    const key = [slide.tissue, slide.stain, stainPhase, lens.power, x, y, labels, isDarkfieldPhoto ? 1 : 0].join('/');
     if (this.key !== key) {
       this.key = key;
       this.anchors = [];
       for (let layer = 0; layer < 3; layer++) {
-        this.anchors.push(...paintField(this.layers[layer], slide, { layer, fov, x, y, collect: labels }));
+        this.anchors.push(...paintField(this.layers[layer], slide, { layer, fov, x, y, stainPhase, gramPhase: stainPhase, collect: labels }));
       }
     }
 

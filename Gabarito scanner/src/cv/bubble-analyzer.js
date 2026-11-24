@@ -12,6 +12,7 @@ function measureBubble(
   gray,
   normalized,
   adaptive,
+  adaptiveFine,
   inkDelta,
   bubble,
   fallbackDiameter,
@@ -32,15 +33,20 @@ function measureBubble(
   const isWideBox = isBox && (rx / Math.max(1, ry) > 1.28 || ry / Math.max(1, rx) > 1.28);
   const coreR = Math.min(rx, ry) * 0.88;
 
-  // For open symbols like "I" or small lowercase "a"/"b"/"c"/"d", a hand-drawn circle
-  // scales with the available spacing around the character (~0.24 * optionGap) rather than just tiny x-height!
-  const gapScaledHalo = optionGap > 0 ? optionGap * 0.24 : fallbackDiameter * 0.62;
-  const maxSafeHalo = optionGap > 0 ? (optionGap * 0.46) / 1.54 : fallbackDiameter * 0.95;
-  const haloRx = isOpen ? Math.min(maxSafeHalo, Math.max(rx, ry, gapScaledHalo)) : rx;
-  const haloRy = isOpen ? Math.min(maxSafeHalo, Math.max(ry, rx * 0.85, gapScaledHalo)) : ry;
+  // Independent inner & outer halo radii (in pixels) for open symbols:
+  // - haloInner starts just outside the printed glyph (so tight circles around "I".."V" are ALWAYS caught!)
+  // - haloOuter expands with optionGap (so generous circles around tiny lowercase "a"/"b"/"c"/"d" are ALSO caught!)
+  const glyphR = Math.max(rx, ry);
+  const haloInnerPx = isOpen ? Math.max(4, glyphR * 0.76) : glyphR * 0.88;
+  const maxSafeOuter = optionGap > 0 ? optionGap * 0.42 : glyphR * 2.5;
+  const haloOuterPx = isOpen
+    ? Math.min(maxSafeOuter, Math.max(glyphR * 1.95, optionGap > 0 ? Math.min(optionGap * 0.34, glyphR * 3.1) : glyphR * 2.2))
+    : glyphR * 1.36;
+  const bgInnerPx = isOpen ? haloOuterPx + 2 : glyphR * 1.24;
+  const bgOuterPx = isOpen ? Math.min(optionGap > 0 ? optionGap * 0.48 : haloOuterPx + 14, haloOuterPx + Math.max(8, glyphR * 0.7)) : glyphR * 1.72;
 
-  const spanX = isOpen ? Math.max(rx * 2.1, haloRx * 2.05) : isBox ? rx * 1.48 : rx * 1.75;
-  const spanY = isOpen ? Math.max(ry * 2.1, haloRy * 2.05) : isBox ? ry * 1.48 : ry * 1.75;
+  const spanX = isOpen ? Math.max(rx * 2.0, bgOuterPx + 2) : isBox ? rx * 1.48 : rx * 1.75;
+  const spanY = isOpen ? Math.max(ry * 2.0, bgOuterPx + 2) : isBox ? ry * 1.48 : ry * 1.75;
 
   const xMin = Math.max(0, Math.floor(bubble.centerX - spanX));
   const xMax = Math.min(gray.cols - 1, Math.ceil(bubble.centerX + spanX));
@@ -51,10 +57,12 @@ function measureBubble(
     inner: [],
     innerNorm: [],
     innerBinary: [],
+    innerFine: [],
     innerDelta: [],
     core: [],
     coreNorm: [],
     coreBinary: [],
+    coreFine: [],
     coreDelta: [],
     center: [],
     edge: [],
@@ -71,17 +79,16 @@ function measureBubble(
   for (let y = yMin; y <= yMax; y += 1) {
     const dy = y - bubble.centerY;
     const sy = dy / ry;
-    const hsy = dy / haloRy;
     for (let x = xMin; x <= xMax; x += 1) {
       const dx = x - bubble.centerX;
       const sx = dx / rx;
-      const hsx = dx / haloRx;
       const dist = Math.hypot(sx, sy);
-      const haloDist = Math.hypot(hsx, hsy);
+      const pxDist = Math.hypot(dx, dy);
       const boxDist = Math.max(Math.abs(sx), Math.abs(sy));
       const gVal = pixelAt(gray, x, y);
       const nVal = pixelAt(normalized, x, y);
       const aVal = Number(pixelAt(adaptive, x, y) > 0);
+      const fVal = Number(pixelAt(adaptiveFine, x, y) > 0);
       const dVal = pixelAt(inkDelta, x, y);
       const qIdx = (dy >= 0 ? 2 : 0) + (dx >= 0 ? 1 : 0);
 
@@ -90,6 +97,7 @@ function measureBubble(
         samples.inner.push(gVal);
         samples.innerNorm.push(nVal);
         samples.innerBinary.push(aVal);
+        samples.innerFine.push(fVal);
         samples.innerDelta.push(dVal);
         samples.quadrants[qIdx].push(gVal);
 
@@ -98,10 +106,11 @@ function measureBubble(
         }
       }
 
-      if (isWideBox && Math.hypot(dx, dy) <= coreR) {
+      if (isWideBox && pxDist <= coreR) {
         samples.core.push(gVal);
         samples.coreNorm.push(nVal);
         samples.coreBinary.push(aVal);
+        samples.coreFine.push(fVal);
         samples.coreDelta.push(dVal);
       }
 
@@ -114,9 +123,7 @@ function measureBubble(
       }
 
       // Outer halo captures hand-drawn circles around open symbols/letters
-      const haloLo = isOpen ? 0.70 : 0.88;
-      const haloHi = isOpen ? 1.52 : 1.36;
-      if (haloDist >= haloLo && haloDist <= haloHi) {
+      if (pxDist >= haloInnerPx && pxDist <= haloOuterPx) {
         samples.halo.push(gVal);
         samples.haloQuads[qIdx].push(gVal);
       }
@@ -126,7 +133,7 @@ function measureBubble(
       if (isBox) {
         inBg = boxDist >= 1.08 && boxDist <= 1.44;
       } else if (isOpen) {
-        inBg = haloDist >= 1.58 && haloDist <= 1.98;
+        inBg = pxDist >= bgInnerPx && pxDist <= bgOuterPx;
       } else {
         inBg = dist >= 1.24 && dist <= 1.72;
       }
@@ -187,6 +194,9 @@ function measureBubble(
   const inkCutoff = bgPaper - Math.max(15, bgMad * 2.1);
   const darkPixelRatio = samples.inner.filter((v) => v < inkCutoff).length / Math.max(1, samples.inner.length);
   const adaptiveInkRatio = mean(samples.innerBinary);
+  const fineInkRatio = mean(samples.innerFine);
+  // High-contrast ink pixels (> 38 gray levels below local background) distinguish true pen ink from smooth shadow steps
+  const strongDeltaRatio = samples.innerDelta.filter((v) => v >= 38).length / Math.max(1, samples.innerDelta.length);
 
   const inkRange = Math.max(95, bgPaper - 24);
   const normRange = Math.max(90, bgPaperNorm - 20);
@@ -227,16 +237,19 @@ function measureBubble(
     normMeanDarkness * 0.34 + adaptiveInkRatio * 0.36 + softInkMean * 0.30
   );
 
-  // Raw gray ink summary (strictly bounded when adaptive/normalized ink is weak so cast shadow edges never spoof ink)
+  // Raw gray ink summary (strictly bounded when high-frequency ink is absent so hard cast shadow lines never spoof marks)
   const rawGrayInk = clamp(
     medianDarkness * 0.24 + meanDarkness * 0.36 + darkPixelRatio * 0.30 + centerDarkness * 0.10
   );
-  const lowHighFreqInk = isBox ? adaptiveInkRatio < 0.11 : illumInvariantInk < 0.14;
+  const shadowOnlyCell = isBox && strongDeltaRatio < 0.08 && fineInkRatio < 0.075;
+  const lowHighFreqInk = shadowOnlyCell || (isBox ? adaptiveInkRatio < 0.11 : illumInvariantInk < 0.14);
   const guardedRawGray = lowHighFreqInk
-    ? Math.min(rawGrayInk, Math.min(illumInvariantInk, adaptiveInkRatio + 0.04) * 1.45 + 0.03)
+    ? Math.min(rawGrayInk, Math.min(illumInvariantInk, fineInkRatio + 0.03) * 1.35 + 0.02)
     : rawGrayInk;
 
-  let coreInk = clamp(guardedRawGray * 0.54 + illumInvariantInk * 0.46);
+  let coreInk = shadowOnlyCell
+    ? clamp(fineInkRatio * 0.7 + strongDeltaRatio * 0.8 + softInkMean * 0.35)
+    : clamp(guardedRawGray * 0.54 + illumInvariantInk * 0.46);
 
   // For wide rectangular table cells (e.g. horizontal tables 118x66), also evaluate a centered square core
   // so an X or dot in the middle of the cell isn't diluted by empty white side margins!
@@ -245,12 +258,17 @@ function measureBubble(
     const cNormDark = clamp((bgPaperNorm - mean(samples.coreNorm)) / (normRange * 0.88));
     const cDarkRatio = samples.core.filter((v) => v < inkCutoff).length / samples.core.length;
     const cAdapt = mean(samples.coreBinary);
+    const cFine = mean(samples.coreFine);
+    const cStrongDelta = samples.coreDelta.filter((v) => v >= 38).length / samples.coreDelta.length;
     const cDelta = clamp(mean(samples.coreDelta) / Math.max(78, inkRange * 0.64));
+    const cShadowOnly = cStrongDelta < 0.10 && cFine < 0.10;
     const cInv = clamp(cNormDark * 0.34 + cAdapt * 0.36 + cDelta * 0.30);
     const cRaw = clamp(cMeanDark * 0.52 + cDarkRatio * 0.48);
     const cGuarded =
-      cAdapt < 0.13 ? Math.min(cRaw, Math.min(cInv, cAdapt + 0.04) * 1.45 + 0.03) : cRaw;
-    const centerSquareInk = clamp(cGuarded * 0.54 + cInv * 0.46);
+      cShadowOnly || cAdapt < 0.13 ? Math.min(cRaw, Math.min(cInv, cFine + 0.03) * 1.35 + 0.02) : cRaw;
+    const centerSquareInk = cShadowOnly
+      ? clamp(cFine * 0.7 + cStrongDelta * 0.8 + cDelta * 0.35)
+      : clamp(cGuarded * 0.54 + cInv * 0.46);
     coreInk = Math.max(coreInk, centerSquareInk * 0.96);
   }
 
@@ -472,6 +490,7 @@ export class BubbleAnalyzer {
             preprocessed.gray,
             preprocessed.normalized,
             preprocessed.adaptive,
+            preprocessed.adaptiveFine,
             preprocessed.inkDelta,
             bubble,
             fallbackDiam || Math.max(bubble.radiusX, bubble.radiusY) * 2,

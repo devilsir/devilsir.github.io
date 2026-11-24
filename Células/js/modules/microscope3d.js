@@ -3,9 +3,11 @@ import {
   group, mesh, box, sphere, cylinder, lathe, torus, rod, tube, v, glow, material, platform,
   enamelMaterial, metalMaterial, anodizedMaterial, glassMaterial, frostedGlassMaterial, gelMaterial
 } from '../core/geometry.js';
-import { tissues, stains, readySlides } from '../data/tissues.js?v=22';
-import { lenses, fovFor, apertureFor, depthOfField, fmt, Ocular } from '../core/microscopeOptics.js?v=22';
-import { onBeePhotoLoad } from '../core/histofield.js?v=22';
+import { tissues, stains, readySlides } from '../data/tissues.js?v=23';
+import { lenses, fovFor, apertureFor, depthOfField, fmt, Ocular } from '../core/microscopeOptics.js?v=24';
+import { onBeePhotoLoad, isBeePhotoReady } from '../core/histofield.js?v=23';
+import { insectReference } from '../core/insectReference.js?v=1';
+import { deviceProfile } from '../core/deviceProfile.js?v=23';
 import { node, button, select, toggle, range, row, card, heading, note, metric, showTooltip, hideTooltip } from '../core/ui.js?v=9';
 
 // Helper: beveled rounded-rectangle slab (replaces harsh sharp boxes across clinical instruments!)
@@ -425,13 +427,25 @@ export function microscope3d({ scene, lights, engine, toolbar, guide, label, ove
   viewLocked(true);
   engine.controls.enabled = false;
 
+  const ocularSize = deviceProfile.ocularSize;
   const canvas = node('canvas', {
-    width: 720, height: 720, tabIndex: 0,
+    width: ocularSize, height: ocularSize, tabIndex: 0,
     'aria-label': 'Campo visual da ocular. Arraste para mover a lâmina e role o mouse para foco fino.'
   });
   const caption = node('span', { className: 'ocular-title' });
   const status = node('span', { className: 'ocular-status', role: 'status' });
-  const ocularWrap = node('div', { className: 'ocular-wrap' }, caption, canvas, status);
+  const ocularLoader = node('div', { className: 'ocular-loader', hidden: true },
+    node('span', { className: 'mini-spin', 'aria-hidden': 'true' }),
+    node('span', {}, 'Carregando lâmina de alta resolução...')
+  );
+  const syncOcularLoader = () => {
+    const waitingBee = settings.slide.tissue === 'bee' && settings.slide.stain === 'historesin' && !isBeePhotoReady();
+    ocularLoader.hidden = !waitingBee;
+  };
+  syncOcularLoader();
+  const offBeeLoaderSync = onBeePhotoLoad(() => { syncOcularLoader(); imageDirty = true; });
+  signal.addEventListener('abort', offBeeLoaderSync, { once: true });
+  const ocularWrap = node('div', { className: 'ocular-wrap' }, caption, canvas, ocularLoader, status);
   overlay.append(ocularWrap);
   const ocular = new Ocular(canvas);
 
@@ -524,8 +538,10 @@ export function microscope3d({ scene, lights, engine, toolbar, guide, label, ove
   const beeRegionsHead = heading('Regiões da abelha (Minicurso)');
   beeRegionsHead.hidden = true;
 
+  const referenceHost = node('div', { hidden: true });
+  let currentReference = null;
   guide.append(
-    heading('Óptica e controles'), discovered,
+    heading('Óptica e controles'), discovered, referenceHost,
     beeRegionsHead, beeRegions,
     node('div', { className: 'metrics' }, field.element, working.element, aperture.element, depth.element, macroRead.element, microRead.element),
     alert, resolutionHelp,
@@ -539,6 +555,15 @@ export function microscope3d({ scene, lights, engine, toolbar, guide, label, ove
     const lens = atLens();
     const slide = settings.slide;
     const isBeeCourse = slide.tissue === 'bee' && slide.stain === 'historesin';
+    const reference = tissues[slide.tissue].figure;
+    if (reference !== currentReference) {
+      currentReference = reference;
+      referenceHost.hidden = !reference;
+      referenceHost.replaceChildren(...(reference ? [
+        note('A ocular mostra o corte simulado. A figura abaixo é a referência publicada.'),
+        insectReference(reference)
+      ] : []));
+    }
     beeRegionsHead.hidden = !isBeeCourse;
     beeRegions.hidden = !isBeeCourse;
     caption.textContent = lens.ultra
@@ -552,7 +577,7 @@ export function microscope3d({ scene, lights, engine, toolbar, guide, label, ove
     macroRead.value.textContent = fmtUm(settings.macro, 0);
     microRead.value.textContent = fmtUm(settings.micro, 1);
     model.tint.color.set(slideColors[slide.stain] || '#d987ac');
-    model.cover.visible = slide.stain !== 'gram';
+    model.cover.visible = slide.coverslip ?? (slide.stain !== 'gram');
     model.crack.visible = settings.cracked;
     model.drip.visible = settings.oil;
     exchange.hidden = !settings.cracked;
@@ -746,7 +771,7 @@ export function microscope3d({ scene, lights, engine, toolbar, guide, label, ove
       }
       return;
     }
-    if (event.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const key = pickPart(event);
     hoveredKey = key;
     if (key) {

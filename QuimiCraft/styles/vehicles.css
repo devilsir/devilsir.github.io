@@ -1,4 +1,4 @@
-.vehicle-hud[hidden],.vehicle-hud [hidden],.mobile-controls [data-drive][hidden]{display:none}
+.vehicle-hud[hidden],.vehicle-hud [hidden],.mobile-controls button[hidden]{display:none}
 .vehicle-hud{
   --meter:#81e4c9;
   position:absolute;bottom:108px;left:50%;transform:translateX(-50%);display:grid;gap:7px;

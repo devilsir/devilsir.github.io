@@ -273,6 +273,7 @@
   });
 
   const EQUIPMENT_DEFINITIONS = Object.freeze({
+    ...globalThis.QuimiCraftArsenal?.equipment(),
     wind_staff: Object.freeze({
       slot: "tool",
       abbr: "CAJADO",

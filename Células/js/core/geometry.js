@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { deviceProfile } from './deviceProfile.js?v=23';
 
 export const v = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 
@@ -15,9 +16,10 @@ const textureCache = new Map();
 
 function makeSharedTexture(key, size, drawFn, repeatX = 1, repeatY = 1) {
   if (textureCache.has(key)) return textureCache.get(key);
-  const canvas = Object.assign(document.createElement('canvas'), { width: size, height: size });
+  const actualSize = Math.min(size, deviceProfile.texSize);
+  const canvas = Object.assign(document.createElement('canvas'), { width: actualSize, height: actualSize });
   const ctx = canvas.getContext('2d');
-  drawFn(ctx, size);
+  drawFn(ctx, actualSize);
   const tex = new T.CanvasTexture(canvas);
   tex.wrapS = tex.wrapT = T.RepeatWrapping;
   tex.repeat.set(repeatX, repeatY);
@@ -166,20 +168,53 @@ export function grain(seed = 17, scale = 256) {
   return textures.organicBump();
 }
 
-// PBR material builders
+// Strips MeshPhysicalMaterial-only keys cleanly when building fast mobile MeshStandardMaterial equivalents
+function stripPhysicalKeys(options) {
+  if (!options) return {};
+  const {
+    clearcoat, clearcoatRoughness, sheen, sheenRoughness, sheenColor,
+    iridescence, iridescenceIOR, ior, reflectivity, transmission, thickness, ...std
+  } = options;
+  return std;
+}
+
+// PBR material builders (automatically selects fast shader variants on mobile with matched gloss & envMap sheen!)
 export const material = (color, options = {}) => new T.MeshStandardMaterial({
-  color, roughness: .52, metalness: .04, envMapIntensity: .9, ...options
+  color, roughness: .52, metalness: .04, envMapIntensity: .9, ...stripPhysicalKeys(options)
 });
 
-export const physical = (color, options = {}) => new T.MeshPhysicalMaterial({
-  color, roughness: .38, metalness: .02, envMapIntensity: 1.0, ...options
-});
+export const physical = (color, options = {}) => deviceProfile.isMobile
+  ? new T.MeshStandardMaterial({
+    color, roughness: .32, metalness: .04, envMapIntensity: 1.15, ...stripPhysicalKeys(options)
+  })
+  : new T.MeshPhysicalMaterial({
+    color, roughness: .38, metalness: .02, envMapIntensity: 1.0, ...options
+  });
 
 export const glow = (color, intensity = .32, options = {}) => new T.MeshStandardMaterial({
-  color, emissive: color, emissiveIntensity: intensity, roughness: .32, metalness: .05, envMapIntensity: .9, ...options
+  color, emissive: color, emissiveIntensity: intensity, roughness: .32, metalness: .05, envMapIntensity: .9, ...stripPhysicalKeys(options)
 });
 
 export function membraneMaterial(color, options = {}) {
+  if (deviceProfile.isMobile) {
+    const { sheen, sheenRoughness, sheenColor, iridescence, iridescenceIOR, ...mobOpts } = options;
+    return new T.MeshPhysicalMaterial({
+      color,
+      roughness: 0.10,
+      metalness: 0.02,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.1,
+      ior: 1.38,
+      transparent: true,
+      opacity: 0.3,
+      depthWrite: false,
+      side: T.DoubleSide,
+      bumpMap: textures.membraneBump(),
+      bumpScale: 0.028,
+      envMapIntensity: 1.6,
+      ...mobOpts
+    });
+  }
   const sheenCol = new T.Color(color).lerp(new T.Color('#e4fbff'), 0.48);
   return new T.MeshPhysicalMaterial({
     color,
@@ -207,6 +242,25 @@ export function membraneMaterial(color, options = {}) {
 
 // Lush refractive wet bio-fluid / gelatinous protoplasm material
 export function gelMaterial(color, options = {}) {
+  if (deviceProfile.isMobile) {
+    const { sheen, sheenRoughness, sheenColor, iridescence, iridescenceIOR, ...mobOpts } = options;
+    return new T.MeshPhysicalMaterial({
+      color,
+      roughness: 0.06,
+      metalness: 0.02,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.08,
+      ior: 1.36,
+      transparent: true,
+      opacity: 0.44,
+      depthWrite: false,
+      side: T.DoubleSide,
+      bumpMap: textures.membraneBump(),
+      bumpScale: 0.022,
+      envMapIntensity: 1.75,
+      ...mobOpts
+    });
+  }
   const sheenCol = new T.Color(color).lerp(new T.Color('#f0feff'), 0.55);
   return new T.MeshPhysicalMaterial({
     color,
@@ -234,6 +288,18 @@ export function gelMaterial(color, options = {}) {
 
 // Wet cryo-EM glossy macromolecule / transmembrane protein surface
 export function proteinMaterial(color, options = {}) {
+  if (deviceProfile.isMobile) {
+    return new T.MeshStandardMaterial({
+      color,
+      roughness: 0.19,
+      metalness: 0.06,
+      bumpMap: textures.organicBump(),
+      bumpScale: 0.024,
+      roughnessMap: textures.organicRoughness(),
+      envMapIntensity: 1.38,
+      ...stripPhysicalKeys(options)
+    });
+  }
   const sheenCol = new T.Color(color).lerp(new T.Color('#ffffff'), 0.42);
   return new T.MeshPhysicalMaterial({
     color,
@@ -255,6 +321,18 @@ export function proteinMaterial(color, options = {}) {
 }
 
 export function organelleMaterial(color, options = {}) {
+  if (deviceProfile.isMobile) {
+    return new T.MeshStandardMaterial({
+      color,
+      roughness: 0.30,
+      metalness: 0.05,
+      bumpMap: textures.organicBump(),
+      bumpScale: 0.032,
+      roughnessMap: textures.organicRoughness(),
+      envMapIntensity: 1.12,
+      ...stripPhysicalKeys(options)
+    });
+  }
   const sheenCol = new T.Color(color).lerp(new T.Color('#ffffff'), 0.32);
   return new T.MeshPhysicalMaterial({
     color,
@@ -274,6 +352,18 @@ export function organelleMaterial(color, options = {}) {
 }
 
 export function glassMaterial(color = '#c4eaf2', options = {}) {
+  if (deviceProfile.isMobile) {
+    return new T.MeshStandardMaterial({
+      color,
+      roughness: 0.07,
+      metalness: 0.12,
+      transparent: true,
+      opacity: 0.32,
+      depthWrite: false,
+      envMapIntensity: 1.65,
+      ...stripPhysicalKeys(options)
+    });
+  }
   return new T.MeshPhysicalMaterial({
     color,
     roughness: 0.06,
@@ -291,6 +381,19 @@ export function glassMaterial(color = '#c4eaf2', options = {}) {
 }
 
 export function frostedGlassMaterial(color = '#d5e4e8', options = {}) {
+  if (deviceProfile.isMobile) {
+    return new T.MeshStandardMaterial({
+      color,
+      roughness: 0.44,
+      metalness: 0.06,
+      bumpMap: textures.frostedBump(),
+      bumpScale: 0.022,
+      transparent: true,
+      opacity: 0.86,
+      envMapIntensity: 1.05,
+      ...stripPhysicalKeys(options)
+    });
+  }
   return new T.MeshPhysicalMaterial({
     color,
     roughness: 0.48,
@@ -320,6 +423,17 @@ export function metalMaterial(color = '#b2bec8', options = {}) {
 }
 
 export function enamelMaterial(color = '#dde2e5', options = {}) {
+  if (deviceProfile.isMobile) {
+    return new T.MeshStandardMaterial({
+      color,
+      roughness: 0.28,
+      metalness: 0.09,
+      bumpMap: textures.enamelBump(),
+      bumpScale: 0.01,
+      envMapIntensity: 1.15,
+      ...stripPhysicalKeys(options)
+    });
+  }
   return new T.MeshPhysicalMaterial({
     color,
     roughness: 0.34,

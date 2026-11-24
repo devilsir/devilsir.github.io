@@ -1,4 +1,4 @@
-const CACHE_NAME = 'omr-scanner-v14';
+const CACHE_NAME = 'omr-scanner-v17';
 const APP_SHELL = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const APP_SHELL = [
   './src/utils/math.js',
   './src/utils/image.js',
   './src/utils/txt-export.js',
+  './src/utils/zip.js',
   './src/scoring/answer-key.js',
   './src/cv/document-detector.js',
   './src/cv/preprocessor.js',

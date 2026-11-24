@@ -157,7 +157,7 @@ export function cellDivision3d({ scene, lights, engine, label, toolbar, guide, v
   const pickRoots = [...chromatids.flatMap(c => [c.a.root, c.b.root]), ...centrosomes, chiasma.group, cleaveMid, cleaveL, cleaveR];
 
   canvas.addEventListener('pointermove', event => {
-    if (event.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, 1 - (event.clientY - bounds.top) / bounds.height * 2);
     ray.setFromCamera(pointer, engine.camera);

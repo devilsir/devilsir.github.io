@@ -2,7 +2,7 @@ import * as T from 'three';
 import {
   v, group, mesh, box, sphere, cylinder, capsule, lathe, torus, tube, rod, curve,
   material, glow, instances, instanceUpdater, labelSprite,
-  membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial, organicDisplace, tintGeometry
+  membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial, organicDisplace, tintGeometry, mergeGeos
 } from '../core/geometry.js';
 import { createAnchor } from './cellMicroDetails.js?v=19';
 
@@ -92,6 +92,24 @@ const smootherstep = x => {
   return c * c * c * (c * (c * 6 - 15) + 10);
 };
 
+function taperedTube(parent, mat, path, radiusAt, segments = 24, sides = 9) {
+  const geo = new T.TubeGeometry(path, segments, 1, sides);
+  const positions = geo.attributes.position;
+  const center = v(), edge = v();
+  for (let ring = 0; ring <= segments; ring++) {
+    const u = ring / segments;
+    path.getPointAt(u, center);
+    const radius = radiusAt(u);
+    for (let side = 0; side <= sides; side++) {
+      const i = ring * (sides + 1) + side;
+      edge.fromBufferAttribute(positions, i).sub(center).multiplyScalar(radius).add(center);
+      positions.setXYZ(i, edge.x, edge.y, edge.z);
+    }
+  }
+  geo.computeVertexNormals();
+  return mesh(parent, geo, mat);
+}
+
 function addTag(host, text, x, y, z, border = '#68dce8', color = '#eef7fa', sc = 0.21) {
   const sp = labelSprite(text, { scale: sc, border, color, font: '700 26px system-ui, sans-serif', depthTest: false });
   sp.position.set(x, y, z);
@@ -121,7 +139,7 @@ function miniCutMito(parent, x, y, z, scale = 1, rotZ = 0) {
 }
 
 export const EXTRA_OUTER_KEYS = new Set([
-  'viral_envelope', 'muscle_sarcolemma', 'stem_membrane', 'osteocyte_lacuna', 'rbc_membrane', 'epi_membrane'
+  'viral_envelope', 'muscle_sarcolemma', 'stem_membrane', 'osteocyte_lacuna', 'rbc_membrane', 'epi_body'
 ]);
 
 export const EXTRA_LABEL_OFFSETS = {
@@ -149,10 +167,13 @@ export const EXTRA_LABEL_OFFSETS = {
   rbc_membrane: v(0, 2.58, 0.2),
   rbc_anucleate: v(-0.65, 0.88, 0.65),
   rbc_hemoglobin: v(0.95, -0.62, 0.75),
-  epi_microvilli: v(0, 1.18, 0.35),
+  epi_glycocalyx: v(-0.58, 0.99, 0.46),
+  epi_microvilli: v(0.6, 0.63, 0.44),
+  epi_terminal: v(-0.48, 0.12, 0.86),
   epi_junctions: v(1.52, 0.42, 0.45),
   epi_body: v(-0.4, 0.48, 0.55),
-  epi_basal: v(0, -0.58, 0.45)
+  epi_basal: v(-0.78, 0.10, 0.83),
+  epi_support: v(0.90, -0.27, 0.70)
 };
 
 export const EXTRA_CAMERAS = {
@@ -162,7 +183,7 @@ export const EXTRA_CAMERAS = {
   neuron: { eye: [0.6, 2.4, 15.6], target: [0.5, 0.1, 0] },
   osteocyte: { eye: [1.5, 2.4, 13.8], target: [0, 0, 0] },
   erythrocyte: { eye: [1.6, 2.8, 12.2], target: [0, 0, 0] },
-  epithelial: { eye: [1.9, 1.8, 13.4], target: [0, 0.1, 0] }
+  epithelial: { eye: [1.12, 1.55, 12.2], target: [0, -0.02, 0] }
 };
 
 export function buildExtraModel(type, ctx) {
@@ -509,23 +530,60 @@ function buildVirusModel({ build, anchors }) {
 // ============================================================================
 function buildMuscleModel({ build, anchors }) {
   const updaters = [];
+  const halfLength = 4.1;
+  const cutStart = Math.PI * 0.78;
+  const cutArc = Math.PI * 1.44;
+  const triadXs = [-2.4, 0, 2.4];
+  const mitochondria = [[-2.2, -1.15, 0.22], [-0.4, -1.2, 0.35], [1.4, -1.15, 0.28], [2.6, 0.85, 0.32]];
+
+  function fiberPoint(x, angle, scale = 1) {
+    const u = x / halfLength;
+    const radius = 1.74 * scale * (1 - 0.055 * u * u
+      + 0.019 * Math.sin(angle * 3 + x * 0.8) + 0.012 * Math.cos(angle * 7 - x * 1.4));
+    return v(x, radius * Math.sin(angle) + 0.044 * Math.sin(x * 0.91), radius * Math.cos(angle));
+  }
+
+  function fiberSurface(scale, cut) {
+    const geo = new T.CylinderGeometry(1, 1, halfLength * 2, 48, 32, cut, cut ? cutStart : 0, cut ? cutArc : tau);
+    const pos = geo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), z = pos.getZ(i);
+      const p = fiberPoint(-pos.getY(i), Math.atan2(x, z), scale * Math.hypot(x, z));
+      pos.setXYZ(i, p.x, p.y, p.z);
+    }
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  const ringPoints = (x, scale) => Array.from({ length: 36 }, (_, i) => fiberPoint(x, i * tau / 36, scale));
 
   // A. Cutaway Cylindrical Sarcolemma + Transverse T-tubule invaginations
   const tPulses = [];
   const sarcoObj = build('muscle_sarcolemma', [0, 0, 0], item => {
-    const geo = new T.CylinderGeometry(1.74, 1.74, 8.2, 42, 1, true, Math.PI * 0.78, Math.PI * 1.44);
-    geo.rotateZ(Math.PI / 2);
-    const mat = membraneMaterial('#e07b82', { opacity: 0.32, clearcoat: 0.88, bumpScale: 0.032 });
-    mat.userData.shell = 0.32;
-    mesh(item, geo, mat);
-    const ttMat = proteinMaterial('#5ce0ed', { emissive: '#1e788a', emissiveIntensity: 0.36, clearcoat: 0.85 });
-    for (const tx of [-2.4, 0, 2.4]) {
-      const ring = torus(item, ttMat, 1.66, 0.044, tx, 0, 0);
-      ring.rotation.y = Math.PI / 2;
-      const pRingMat = glow('#82f8ff', 1.15, { transparent: true, opacity: 0.6, depthWrite: false });
-      const pRing = torus(item, pRingMat, 1.56, 0.028, tx, 0, 0);
-      pRing.rotation.y = Math.PI / 2;
-      tPulses.push({ ring: pRing, mat: pRingMat, x: tx });
+    const mat = membraneMaterial('#da8584', { opacity: 0.43, clearcoat: 0.76, bumpScale: 0.027 });
+    mat.userData.shell = 0.43;
+    mesh(item, fiberSurface(1, true), mat);
+    const sarcoplasm = gelMaterial('#9b525b', { opacity: 0.26, roughness: 0.34, bumpScale: 0.013 });
+    sarcoplasm.userData.shell = 0.26;
+    mesh(item, fiberSurface(0.965, false), sarcoplasm);
+    const rim = proteinMaterial('#bc777c', { roughness: 0.37 });
+    for (const angle of [cutStart, cutStart + cutArc]) {
+      tube(item, rim, Array.from({ length: 25 }, (_, i) => fiberPoint(-halfLength + i * halfLength / 12, angle)),
+        0.028, false, 34, 7);
+    }
+
+    const ttMat = proteinMaterial('#70bfc4', { emissive: '#326970', emissiveIntensity: 0.23, roughness: 0.30 });
+    for (const tx of triadXs) {
+      tube(item, ttMat, ringPoints(tx, 0.56), 0.041, true, 42, 8);
+      for (const angle of [-0.44, Math.PI + 0.38]) {
+        const entrance = fiberPoint(tx, angle, 0.995);
+        const inside = fiberPoint(tx, angle + 0.03, 0.79);
+        const junction = fiberPoint(tx, angle, 0.56);
+        const route = curve([entrance, inside, junction]);
+        taperedTube(item, ttMat, route, u => 0.038 + 0.034 * (1 - u) ** 2, 15, 8);
+        const pulse = sphere(item, glow('#9bedec', 0.67), 0.053, 0.053, 0.053, entrance.x, entrance.y, entrance.z, 8);
+        tPulses.push({ pulse, route });
+      }
     }
   }, false);
   createAnchor(sarcoObj, anchors, 'muscle_sarco_main', 0, 0.35, 0.6);
@@ -535,10 +593,13 @@ function buildMuscleModel({ build, anchors }) {
   const nucObj = build('muscle_nuclei', [0, 0, 0], item => {
     const nucMat = proteinMaterial('#9682f0', { emissive: '#4d3ca6', emissiveIntensity: 0.3, clearcoat: 0.84 });
     const nolusMat = glow('#ff9ed4', 0.68);
-    for (const [nx, ny, nz] of [[-2.7, 1.32, 0.32], [-0.4, 1.38, -0.52], [1.9, 1.34, 0.28], [2.8, -1.32, -0.25]]) {
-      const n = mesh(item, organicDisplace(new T.SphereGeometry(0.42, 18, 12), 0.04, 3, nx), nucMat, nx, ny, nz);
-      n.scale.set(1.55, 0.46, 0.62);
-      sphere(item, nolusMat, 0.14, 0.08, 0.10, nx + 0.1, ny, nz + 0.14, 10);
+    for (const [x, angle] of [[-2.7, 1.26], [-0.4, 1.92], [1.9, 1.32], [2.8, -1.74]]) {
+      const p = fiberPoint(x, angle, 0.875);
+      const submembrane = group(item, p.x, p.y, p.z);
+      submembrane.rotation.x = -angle;
+      const nucleus = mesh(submembrane, organicDisplace(new T.SphereGeometry(0.41, 24, 16), 0.052, 3, x), nucMat);
+      nucleus.scale.set(1.54, 0.65, 0.36);
+      sphere(submembrane, nolusMat, 0.102, 0.069, 0.064, 0.13, 0.025, 0.041, 12);
     }
   }, false);
   createAnchor(nucObj, anchors, 'muscle_nuclei_main', -1.8, 1.32, 0.35);
@@ -547,28 +608,51 @@ function buildMuscleModel({ build, anchors }) {
   // C. Sculpted Contracting Myofibrils & Sarcomeres (Z-disc, Myosin II Cross-Bridges, Actin + Troponin, Elastic Titin!)
   const sarcomereUnits = [];
   const myosinHeads = [];
+  const bundledFibrils = [];
   const sarcoMeshObj = build('muscle_sarcomere', [0, 0, 0], item => {
-    const zMat = proteinMaterial('#ffd266', { emissive: '#b57b1b', emissiveIntensity: 0.45, clearcoat: 0.86 });
+    const zMat = proteinMaterial('#deb976', { emissive: '#866038', emissiveIntensity: 0.25, clearcoat: 0.72 });
+    const zDiscMat = gelMaterial('#ce9f6b', { opacity: 0.58, roughness: 0.36 });
     const myosinMat = proteinMaterial('#e0526c', { emissive: '#8f1e38', emissiveIntensity: 0.34, clearcoat: 0.84 });
     const headMat = proteinMaterial('#ff889e', { emissive: '#b8324e', emissiveIntensity: 0.44, clearcoat: 0.9 });
     const actinMat = proteinMaterial('#68e0f5', { emissive: '#1e788f', emissiveIntensity: 0.32, clearcoat: 0.84 });
     const tropoMat = glow('#82ffbe', 0.85);
-    const titinMat = glow('#ffe49e', 0.55);
-    const mLineMat = glow('#ff9ec4', 0.68);
+    const titinMat = proteinMaterial('#e6c28b', { emissiveIntensity: 0.21 });
+    const mLineMat = proteinMaterial('#d991ae', { emissiveIntensity: 0.22 });
+    const titinSpiral = curve(Array.from({ length: 25 }, (_, i) => {
+      const u = i / 24, phase = u * tau * 4;
+      const radius = 0.031 * Math.sin(Math.PI * u);
+      return v(u, Math.cos(phase) * radius, Math.sin(phase) * radius);
+    }));
+    const titinGeo = new T.TubeGeometry(titinSpiral, 32, 0.012, 7);
+    const fibrilMat = gelMaterial('#b85f69', { opacity: 0.54, roughness: 0.33, bumpScale: 0.012 });
+    for (const [index, [y, z]] of [[0.95, -0.63], [-0.93, -0.58], [0.06, -1.11], [0.81, 0.04], [-0.82, -0.015], [0.04, 0.95]].entries()) {
+      const extent = halfLength - 0.095;
+      const profile = Array.from({ length: 81 }, (_, i) => {
+        const x = T.MathUtils.lerp(-extent, extent, i / 80);
+        const band = 0.038 * Math.cos(x * tau / 2.4) + 0.016 * Math.cos(x * tau / 0.8);
+        return [0.26 + band + 0.01 * Math.sin(index * 1.9 + x), x];
+      });
+      profile.unshift([0, -extent]);
+      profile.push([0, extent]);
+      const fibril = lathe(item, fibrilMat, profile, 20, 0, y, z);
+      fibril.rotation.z = -Math.PI / 2;
+      bundledFibrils.push(fibril);
+    }
 
     const bundleOffsets = [[0, 0.46, 0.48], [0, -0.46, 0.48], [0, 0, -0.45]];
     for (let bi = 0; bi < bundleOffsets.length; bi++) {
       const [bx, by, bz] = bundleOffsets[bi];
       const bundle = group(item, bx, by, bz);
-      for (const sx of [-2.4, 0, 2.4]) {
+      for (const [index, sx] of [-2.4, 0, 2.4].entries()) {
         const unit = group(bundle, sx, 0, 0);
-        const mLine = torus(unit, mLineMat, 0.36, 0.018);
+        const mLine = torus(unit, mLineMat, 0.235, 0.021);
         mLine.rotation.y = Math.PI / 2;
         for (let r = 0; r < 5; r++) {
           const a = (r / 5) * tau;
           const ry = Math.cos(a) * 0.21, rz = Math.sin(a) * 0.21;
           const m = cylinder(unit, myosinMat, 0.038, 0.038, 1.18, 0, ry, rz, 8);
           m.rotation.z = Math.PI / 2;
+          rod(unit, mLineMat, v(0, 0, 0), v(0, Math.cos(a) * 0.233, Math.sin(a) * 0.233), 0.015, 6);
           // Sculpted angled Myosin II cross-bridge heads on the hero top bundle!
           if (bi === 0 && sx === 0) {
             for (const hx of [-0.46, -0.26, 0.26, 0.46]) {
@@ -581,10 +665,13 @@ function buildMuscleModel({ build, anchors }) {
           }
         }
         // Left & Right sliding Z-discs + Actin filaments + Troponin Ca2+ beads + Elastic Titin links!
-        const leftZ = group(unit, -1.16, 0, 0);
-        torus(leftZ, zMat, 0.38, 0.038).rotation.y = Math.PI / 2;
-        const rightZ = group(unit, 1.16, 0, 0);
-        torus(rightZ, zMat, 0.38, 0.038).rotation.y = Math.PI / 2;
+        const leftZ = group(unit, -1.2, 0, 0);
+        const rightZ = group(unit, 1.2, 0, 0);
+        // Adjacent sarcomeres share a single Z disc without separating during contraction.
+        for (const disc of index === 2 ? [leftZ, rightZ] : [leftZ]) {
+          cylinder(disc, zDiscMat, 0.365, 0.365, 0.048, 0, 0, 0, 24).rotation.z = Math.PI / 2;
+          torus(disc, zMat, 0.374, 0.024).rotation.y = Math.PI / 2;
+        }
         for (let r = 0; r < 6; r++) {
           const a = (r / 6) * tau + 0.3;
           const ry = Math.cos(a) * 0.29, rz = Math.sin(a) * 0.29;
@@ -597,12 +684,10 @@ function buildMuscleModel({ build, anchors }) {
             sphere(rightZ, tropoMat, 0.024, 0.024, 0.024, -0.56, ry, rz, 6);
           }
         }
-        // Elastic Titin spring anchoring myosin M-line to Z-disc
-        const titL = cylinder(unit, titinMat, 0.011, 0.011, 0.52, -0.84, 0, 0, 6);
-        titL.rotation.z = Math.PI / 2;
-        const titR = cylinder(unit, titinMat, 0.011, 0.011, 0.52, 0.84, 0, 0, 6);
-        titR.rotation.z = Math.PI / 2;
-        sarcomereUnits.push({ unit, baseX: sx, leftZ, rightZ, titL, titR });
+        // The spring starts on the thick filament and stays attached to the moving Z disc.
+        const titL = mesh(unit, titinGeo, titinMat, -0.56, 0.21, 0);
+        const titR = mesh(unit, titinGeo, titinMat, 0.56, 0.21, 0);
+        sarcomereUnits.push({ unit, index: index - 1, leftZ, rightZ, titL, titR });
       }
     }
   }, false);
@@ -614,19 +699,24 @@ function buildMuscleModel({ build, anchors }) {
   // D. Sarcoplasmic Reticulum Triads (Terminal Cisternae flanking each T-tubule!) + Ca2+ release cloud
   let caIons = null, putCa = null, srMat = null;
   const srObj = build('muscle_sr', [0, 0, 0], item => {
-    srMat = proteinMaterial('#3ec9a7', { emissive: '#18755e', emissiveIntensity: 0.3, clearcoat: 0.8 });
-    // Terminal Cisternae rings directly flanking the T-tubules at x = -2.4, 0, +2.4 (= Muscular Triads!)
-    for (const tx of [-2.4, 0, 2.4]) {
-      for (const side of [-0.14, 0.14]) {
-        const tc = torus(item, srMat, 1.54, 0.052, tx + side, 0, 0, Math.PI * 1.15);
-        tc.rotation.y = Math.PI / 2;
-        tc.rotation.x = -Math.PI * 0.55;
+    srMat = proteinMaterial('#58ba99', { emissive: '#295c49', emissiveIntensity: 0.22, clearcoat: 0.68 });
+    const cisternaOffset = 0.15;
+    const cisternaScale = 0.58;
+    for (const tx of triadXs) {
+      for (const side of [-cisternaOffset, cisternaOffset]) {
+        tube(item, srMat, ringPoints(tx + side, cisternaScale), 0.065, true, 44, 9);
       }
     }
-    // Fenestrated longitudinal SR tubules bridging adjacent terminal cisternae
-    for (let k = 0; k < 7; k++) {
-      const sx = -2.3 + k * 0.78;
-      tube(item, srMat, [v(sx, -0.95, 0.84), v(sx + 0.25, -0.15, 0.98), v(sx - 0.15, 0.72, 0.88)], 0.036, false, 18, 7);
+    // Longitudinal branches physically join the adjacent cisternae.
+    for (let i = 0; i < triadXs.length - 1; i++) {
+      const from = triadXs[i] + cisternaOffset;
+      const to = triadXs[i + 1] - cisternaOffset;
+      for (let j = 0; j < 8; j++) {
+        const angle = j * tau / 8;
+        tube(item, srMat, [fiberPoint(from, angle, cisternaScale), fiberPoint(T.MathUtils.lerp(from, to, 0.28), angle + 0.10, 0.61),
+          fiberPoint(T.MathUtils.lerp(from, to, 0.70), angle - 0.08, 0.62),
+          fiberPoint(to, angle, cisternaScale)], 0.035, false, 18, 7);
+      }
     }
     caIons = instances(item, new T.SphereGeometry(0.044, 8, 6), glow('#7dffbf', 1.05), 30, true);
     putCa = instanceUpdater(caIons);
@@ -638,8 +728,8 @@ function buildMuscleModel({ build, anchors }) {
   // E. Sculpted Cutaway Aligned Mitochondria (with internal cristae!) fueling contraction
   let mAtp = null, putMAtp = null;
   const mitoObj = build('muscle_mito', [0, 0, 0], item => {
-    for (const [mx, my, mz] of [[-2.2, -1.15, 0.22], [-0.4, -1.2, 0.35], [1.4, -1.15, 0.28], [2.6, 0.85, 0.32]]) {
-      miniCutMito(item, mx, my, mz, 1.05, 0);
+    for (const [i, [mx, my, mz]] of mitochondria.entries()) {
+      miniCutMito(item, mx, my, mz, 0.88 + i * 0.045, 0.09 * Math.sin(i * 1.65));
     }
     mAtp = instances(item, new T.SphereGeometry(0.048, 8, 6), glow('#82ffd4', 1.02), 18, true);
     putMAtp = instanceUpdater(mAtp);
@@ -647,7 +737,8 @@ function buildMuscleModel({ build, anchors }) {
   createAnchor(mitoObj, anchors, 'muscle_mito_main', 1.4, -0.95, 0.45);
   const tagMMito = addTag(mitoObj, 'Mitocôndrias interfibrilares (ATP para miosina e SERCA)', 1.2, -1.66, 0.6, '#e87c66', '#ffe0d9', 0.2);
 
-  updaters.push((t, _dt, _key, activeAnim) => {
+  let contractionPhase = 0, beat = 0;
+  updaters.push((t, dt, _key, activeAnim) => {
     const isSarco = activeAnim === 'muscle_sarco';
     const isNuc = activeAnim === 'muscle_nuclei';
     const isBands = activeAnim === 'muscle_bands';
@@ -665,32 +756,50 @@ function buildMuscleModel({ build, anchors }) {
     tagSR.visible = isSR || isTriad;
     tagMMito.visible = isMito;
 
-    const beat = isBands ? 0.15 : 0.5 - 0.5 * Math.cos(t * (isContract ? 2.6 : 1.4));
-    const pull = beat * 0.28;
+    const contracting = isContract || activeAnim === 'muscle_overview';
+    if (contracting) contractionPhase = (contractionPhase + dt * 2.9) % tau;
+    const targetBeat = contracting ? 0.5 - 0.5 * Math.cos(contractionPhase) : 0;
+    beat += (targetBeat - beat) * (1 - Math.exp(-dt * 13));
+    if (!contracting && beat < 0.002) contractionPhase = 0;
+    const span = 1.2 - beat * 0.28;
+    const axialScale = span / 1.2;
+    const radialScale = 1 / Math.sqrt(axialScale);
+    sarcoObj.scale.set(axialScale, radialScale, radialScale);
+    nucObj.scale.copy(sarcoObj.scale);
+    srObj.scale.copy(sarcoObj.scale);
+    mitoObj.scale.copy(sarcoObj.scale);
+    sarcoMeshObj.scale.set(1, radialScale, radialScale);
     for (const s of sarcomereUnits) {
-      s.leftZ.position.x = -1.16 + pull;
-      s.rightZ.position.x = 1.16 - pull;
-      s.unit.position.x = s.baseX * (1 - beat * 0.14);
-      s.titL.scale.y = 1 - beat * 0.42;
-      s.titR.scale.y = 1 - beat * 0.42;
+      s.leftZ.position.x = -span;
+      s.rightZ.position.x = span;
+      s.unit.position.x = s.index * 2 * span;
+      s.titL.scale.x = -(span - 0.56);
+      s.titR.scale.x = span - 0.56;
     }
+    for (const fibril of bundledFibrils) fibril.scale.y = axialScale;
     // Cross-bridge myosin II heads actively rowing toward M-line!
     for (const mh of myosinHeads) {
-      mh.grp.rotation.z = Math.sin(t * (isContract ? 7.2 : 3.2) + mh.phase) * 0.34 * mh.dir;
+      mh.grp.rotation.z = contracting ? Math.sin(t * 7.2 + mh.phase) * 0.34 * mh.dir : 0;
     }
 
-    for (let i = 0; i < tPulses.length; i++) {
-      const tp = (t * 0.9 + i * 0.22) % 1;
-      tPulses[i].ring.scale.setScalar(Math.max(0.2, 1.05 - tp * 0.82));
-      tPulses[i].mat.opacity = Math.sin(tp * Math.PI) * (isSarco || isTriad ? 0.95 : 0.45);
+    for (const [i, { pulse, route }] of tPulses.entries()) {
+      pulse.visible = isSarco || isTriad;
+      if (pulse.visible) {
+        const p = (t * 0.9 + i * 0.22) % 1;
+        route.getPointAt(p, pulse.position);
+        pulse.scale.setScalar(Math.sin(p * Math.PI));
+      }
     }
 
-    srMat.emissiveIntensity = isSR || isTriad ? 0.68 : 0.28;
+    srMat.emissiveIntensity = isSR || isTriad ? 0.48 : 0.22;
     caIons.visible = isSR || isContract || isTriad;
     if (caIons.visible) {
       for (let i = 0; i < caIons.count; i++) {
         const p = (t * 0.78 + i / caIons.count) % 1;
-        putCa(i, -2.2 + (i % 7) * 0.74 + Math.sin(p * 8 + i) * 0.14, -0.7 + p * 1.4, 0.98 - p * 0.52, Math.sin(p * Math.PI) * 1.15);
+        const tx = triadXs[i % triadXs.length] + (i % 2 ? 0.15 : -0.15);
+        const angle = Math.floor(i / triadXs.length) * 0.63;
+        const q = fiberPoint(tx, angle, 0.58 - p * 0.19);
+        putCa(i, q.x, q.y, q.z, Math.sin(p * Math.PI) * 0.82);
       }
       caIons.instanceMatrix.needsUpdate = true;
     }
@@ -699,8 +808,9 @@ function buildMuscleModel({ build, anchors }) {
     if (mAtp.visible) {
       for (let i = 0; i < mAtp.count; i++) {
         const p = (t * 0.65 + i / mAtp.count) % 1;
-        const mx = -2.2 + (i % 4) * 1.6;
-        putMAtp(i, mx + Math.sin(i * 2) * 0.18, -1.08 + p * 1.15, 0.35 + p * 0.2, Math.sin(p * Math.PI) * 1.12);
+        const [mx, my, mz] = mitochondria[i % mitochondria.length];
+        putMAtp(i, mx + p * 0.22, T.MathUtils.lerp(my, Math.sign(my) * 0.47, p),
+          T.MathUtils.lerp(mz, 0.48, p), Math.sin(p * Math.PI) * 0.78);
       }
       mAtp.instanceMatrix.needsUpdate = true;
     }
@@ -881,15 +991,29 @@ function buildStemModel({ build, anchors }) {
 function buildNeuronModel({ build, anchors }) {
   const updaters = [];
   const somaPos = [-3.3, 0.1, 0];
+  const terminalX = 4.45;
+  const axonPoint = x => v(x, 0.086 * Math.sin(x * 0.8) * (1 - smootherstep((x - 3.1) / 1.35)),
+    0.085 * Math.sin(x * 0.9) * (1 - smootherstep((x - 3.1) / 1.35)));
+  const boutons = [v(0.93, 0.84, 0.15), v(1.08, 0, 0), v(0.90, -0.84, -0.12)];
+  const boutonRadius = 0.27;
+  const cleftWidth = 0.09;
 
   // A. Soma + Euchromatic Nucleus + Sculpted Stacked Nissl Bodies (RER + ribosomes, no boxes!)
   const somaObj = build('neuron_soma', somaPos, item => {
-    const sGeo = organicDisplace(new T.SphereGeometry(1.34, 36, 24, Math.PI * 0.75, Math.PI * 1.48), 0.08, 3.2, 7);
-    const sMat = membraneMaterial('#9d86f2', { opacity: 0.46, clearcoat: 0.88 });
-    sMat.userData.shell = 0.46;
+    const sGeo = organicDisplace(new T.SphereGeometry(1.34, 48, 32, Math.PI * 0.75, Math.PI * 1.48), 0.09, 3.2, 7);
+    sGeo.scale(1, 0.96, 0.90);
+    const sMat = membraneMaterial('#9d86d7', { opacity: 0.47, clearcoat: 0.79 });
+    sMat.userData.shell = 0.47;
     mesh(item, sGeo, sMat);
-    mesh(item, new T.SphereGeometry(0.62, 18, 14), proteinMaterial('#c7b8ff', { emissive: '#624dc4', emissiveIntensity: 0.36, clearcoat: 0.85 }), 0, 0, -0.08);
-    mesh(item, new T.SphereGeometry(0.22, 12, 10), glow('#ff9ed8', 0.7), 0.12, 0.1, 0.12);
+    const somaFluid = organicDisplace(new T.SphereGeometry(1.285, 38, 24), 0.09, 3.2, 7);
+    somaFluid.scale(1, 0.96, 0.90);
+    const somaFluidMat = gelMaterial('#775991', { opacity: 0.34, roughness: 0.36, bumpScale: 0.012 });
+    somaFluidMat.userData.shell = 0.34;
+    mesh(item, somaFluid, somaFluidMat);
+    const nucleus = mesh(item, organicDisplace(new T.SphereGeometry(0.62, 26, 18), 0.05, 3, 11),
+      gelMaterial('#ba9aed', { opacity: 0.78, roughness: 0.29 }), -0.11, 0.01, -0.14);
+    nucleus.scale.set(1.05, 0.93, 0.91);
+    sphere(item, proteinMaterial('#eb9dca', { emissiveIntensity: 0.18 }), 0.18, 0.15, 0.17, 0.03, 0.09, 0.08, 16);
     // Authentic stacked blue RER Nissl cisternae studded with ribosomes around nucleus!
     const nisslMat = proteinMaterial('#52b4e8', { emissive: '#1e6999', emissiveIntensity: 0.38, clearcoat: 0.82 });
     const ribMat = glow('#b8f4ff', 0.82);
@@ -897,7 +1021,10 @@ function buildNeuronModel({ build, anchors }) {
       const nb = group(item, nx, ny, nz);
       nb.rotation.z = rz;
       for (let l = -1; l <= 1; l++) {
-        capsule(nb, nisslMat, 0.045, 0.24, 0, l * 0.095, 0, 6, 8).rotation.z = Math.PI / 2;
+        const y = l * 0.095;
+        const cisterna = curve([v(-0.16, y + 0.01, -0.035), v(-0.06, y, 0),
+          v(0.06, y + 0.013, 0.018), v(0.15, y + 0.036, -0.015)]);
+        taperedTube(nb, nisslMat, cisterna, u => 0.023 + 0.027 * Math.sin(u * Math.PI), 12, 7);
         sphere(nb, ribMat, 0.022, 0.022, 0.022, -0.08 + l * 0.04, l * 0.095 + 0.048, 0.02, 6);
         sphere(nb, ribMat, 0.022, 0.022, 0.022, 0.08 - l * 0.03, l * 0.095 + 0.048, 0.02, 6);
       }
@@ -910,60 +1037,86 @@ function buildNeuronModel({ build, anchors }) {
   let dendSparks = null, putDend = null;
   const dendPaths = [];
   const dendObj = build('neuron_dendrites', somaPos, item => {
-    const dMat = proteinMaterial('#8c78eb', { emissive: '#3e2da8', emissiveIntensity: 0.3, clearcoat: 0.82 });
-    const spineMat = proteinMaterial('#70f8ff', { emissive: '#1e859c', emissiveIntensity: 0.45, clearcoat: 0.9 });
-    const angles = [2.1, 2.65, 3.18, -2.65, -2.05, 1.55];
+    const dMat = proteinMaterial('#9880c5', { emissive: '#4b326e', emissiveIntensity: 0.19, clearcoat: 0.64, roughness: 0.31 });
+    const spineMat = proteinMaterial('#b7a5de', { emissive: '#665798', emissiveIntensity: 0.15 });
+    const angles = [2.04, 2.58, 3.16, -2.68, -2.10, 1.44];
     for (let i = 0; i < angles.length; i++) {
       const a = angles[i];
-      const p0 = v(Math.cos(a) * 1.15, Math.sin(a) * 1.15, 0);
-      const p1 = v(Math.cos(a) * 2.15, Math.sin(a) * 2.05, (i % 2 ? 0.28 : -0.25));
-      const p2 = v(Math.cos(a + 0.18) * 3.0, Math.sin(a + 0.18) * 2.65, (i % 2 ? 0.45 : -0.35));
-      const p3 = v(Math.cos(a - 0.22) * 2.85, Math.sin(a - 0.22) * 2.55, 0.12);
-      tube(item, dMat, [p0, p1, p2], 0.085, false, 18, 8);
-      tube(item, dMat, [p1, p3], 0.055, false, 14, 7);
-      // Mushroom dendritic spines along branches
-      const c = curve([p2, p1, p0]);
-      for (const u of [0.22, 0.46, 0.7]) {
-        const spPt = c.getPoint(u);
-        const side = (i % 2 ? 1 : -1) * 0.14;
-        rod(item, spineMat, spPt, spPt.clone().add(v(0, side, 0.06)), 0.016, 6);
-        sphere(item, spineMat, 0.052, 0.048, 0.048, spPt.x, spPt.y + side * 1.2, spPt.z + 0.07, 8);
+      const span = 2.51 + 0.34 * Math.sin(i * 2.3);
+      const depth = 0.26 * Math.cos(i * 2.04);
+      const p0 = v(Math.cos(a) * 0.73, Math.sin(a) * 0.73, depth * 0.7);
+      const p1 = v(Math.cos(a + 0.06) * 1.43, Math.sin(a + 0.06) * 1.40, depth);
+      const p2 = v(Math.cos(a - 0.07) * 2.08, Math.sin(a - 0.07) * 1.92, depth * 1.75);
+      const p3 = v(Math.cos(a + 0.15 * Math.cos(i)) * (span + 0.31),
+        Math.sin(a + 0.15 * Math.cos(i)) * span, depth * 2.4 + 0.08);
+      const trunk = curve([p0, p1, p2, p3]);
+      taperedTube(item, dMat, trunk, u =>
+        0.019 + (0.21 + 0.025 * Math.cos(i)) * (1 - u) ** 1.42 * smootherstep(u / 0.21), 38, 10);
+      for (const [fork, spread] of [[0.48, -0.28], [0.70, 0.24]]) {
+        const root = trunk.getPointAt(fork);
+        const toward = v(Math.cos(a + spread), Math.sin(a + spread), -depth * 0.8);
+        const end = root.clone().addScaledVector(toward, 0.66 + 0.22 * Math.sin(i + fork * 3));
+        const mid = root.clone().lerp(end, 0.54).add(v(-0.04, 0.035, spread * 0.25));
+        taperedTube(item, dMat, curve([root, mid, end]), u => 0.012 + 0.063 * (1 - u) ** 1.4, 15, 7);
       }
-      dendPaths.push(c);
+      for (const u of [0.44, 0.57, 0.72, 0.83]) {
+        const start = trunk.getPointAt(u);
+        const normal = trunk.getTangentAt(u).cross(v(0, 0, 1)).normalize().multiplyScalar(i % 2 ? 1 : -1);
+        const end = start.clone().addScaledVector(normal, 0.19 - u * 0.073).add(v(0, 0, 0.04));
+        rod(item, spineMat, start, end, 0.014, 6);
+        sphere(item, spineMat, 0.043, 0.037, 0.04, end.x, end.y, end.z, 8);
+      }
+      dendPaths.push(curve([p3, p2, p1, p0]));
     }
-    dendSparks = instances(item, new T.SphereGeometry(0.078, 8, 6), glow('#70f8ff', 1.1), 20, true);
+    dendSparks = instances(item, new T.SphereGeometry(0.042, 8, 6), glow('#8bdce9', 0.8), 20, true);
     putDend = instanceUpdater(dendSparks);
   }, false);
   createAnchor(dendObj, anchors, 'neuron_dend_main', -1.85, 0.75, 0.35);
   const tagDend = addTag(dendObj, 'Dendritos + Espinhas dendríticas (recepção sináptica)', -1.9, 2.25, 0.45, '#70f8ff', '#dcfbff', 0.21);
 
   // C. Myelinated Axon + Concentric Schwann Cell Wraps (with Schwann Nuclei!) + Nav1.6 Nodes of Ranvier!
-  const nodeXs = [-1.65, -0.05, 1.55, 3.15];
+  const nodeXs = [-1.65, -0.05, 1.55, 3.10];
   let apPulse = null, apRing = null, apRingMat = null;
   const myelinObj = build('neuron_myelin', [0, 0.1, 0], item => {
-    const axMat = proteinMaterial('#78c4f5', { emissive: '#226596', emissiveIntensity: 0.34, clearcoat: 0.84 });
-    cylinder(item, axMat, 0.16, 0.16, 6.4, 0.9, 0, 0, 16).rotation.z = Math.PI / 2;
-    // 4 Multi-layered Concentric Schwann Myelin Sheaths + outer Schwann cell nucleus!
-    const myeOuter = proteinMaterial('#f2cf80', { emissive: '#a6741e', emissiveIntensity: 0.26, clearcoat: 0.9, roughness: 0.2 });
-    const myeInner = proteinMaterial('#ffe4a6', { emissive: '#946218', emissiveIntensity: 0.2, clearcoat: 0.85 });
-    const schwNuc = proteinMaterial('#9c84f5', { emissive: '#4d38a8', emissiveIntensity: 0.32, clearcoat: 0.82 });
+    const axMat = proteinMaterial('#729ecc', { emissive: '#315671', emissiveIntensity: 0.21, clearcoat: 0.68 });
+    const axon = curve([-2.57, -2.22, -1.65, -0.60, 0.53, 1.67, 2.81, 3.68, terminalX].map(axonPoint));
+    taperedTube(item, axMat, axon, u => {
+      const hillock = smootherstep(u / 0.061) * (1 - smootherstep((u - 0.061) / 0.09));
+      return 0.024 + 0.118 * smootherstep(u / 0.06) + 0.15 * hillock;
+    }, 78, 12);
+    const myeOuter = proteinMaterial('#dbbf87', { emissive: '#826031', emissiveIntensity: 0.17, clearcoat: 0.77, roughness: 0.29 });
+    const myeInner = proteinMaterial('#edcf98', { emissive: '#855f2d', emissiveIntensity: 0.12, clearcoat: 0.65 });
+    const schwNuc = proteinMaterial('#9e88bd', { emissive: '#544178', emissiveIntensity: 0.19 });
     for (const mx of [-0.85, 0.75, 2.35, 3.85]) {
-      // Sculpted lipid internode cushion with concentric cutaway rings visible at ends
-      capsule(item, myeOuter, 0.37, 0.84, mx, 0, 0, 8, 18).rotation.z = Math.PI / 2;
-      for (const side of [-0.56, 0.56]) {
-        torus(item, myeInner, 0.26, 0.025, mx + side, 0, 0).rotation.y = Math.PI / 2;
+      const center = axonPoint(mx);
+      const sheath = group(item, center.x, center.y, center.z);
+      const tangent = axonPoint(mx + 0.05).sub(axonPoint(mx - 0.05)).normalize();
+      sheath.quaternion.setFromUnitVectors(v(1, 0, 0), tangent);
+      const profile = [[0.14, -0.69], [0.20, -0.685], [0.27, -0.61], [0.34, -0.49], [0.36, -0.2],
+        [0.35, 0.12], [0.37, 0.35], [0.33, 0.49], [0.27, 0.6], [0.20, 0.68], [0.14, 0.69], [0.14, -0.69]];
+      const wrap = lathe(sheath, myeOuter, profile, 32);
+      organicDisplace(wrap.geometry, 0.047, 5.1, mx);
+      wrap.rotation.z = -Math.PI / 2;
+      for (const side of [-1, 1]) {
+        for (const [x, r] of [[0.64, 0.233], [0.58, 0.276], [0.51, 0.315]]) {
+          torus(sheath, myeInner, r, 0.013, x * side, 0, 0).rotation.y = Math.PI / 2;
+        }
       }
-      // Flattened Schwann cell nucleus bulging cleanly on outer sheath surface
-      const sn = sphere(item, schwNuc, 0.19, 0.085, 0.12, mx, 0.38, 0.12, 12);
+      const sn = sphere(sheath, schwNuc, 0.19, 0.085, 0.13, 0.12, 0.335, 0.08, 14);
       sn.rotation.z = 0.08;
     }
-    const nodeMat = glow('#68f0ff', 0.92);
+    const nodeMat = proteinMaterial('#83c8d4', { emissive: '#2b778c', emissiveIntensity: 0.2 });
     for (const nx of nodeXs) {
-      torus(item, nodeMat, 0.22, 0.036, nx, 0, 0).rotation.y = Math.PI / 2;
+      const p = axonPoint(nx);
+      for (let i = 0; i < 8; i++) {
+        const a = i / 8 * tau;
+        sphere(item, nodeMat, 0.045, 0.032, 0.03, nx, p.y + Math.sin(a) * 0.145,
+          p.z + Math.cos(a) * 0.145, 7);
+      }
     }
-    apPulse = mesh(item, new T.SphereGeometry(0.26, 14, 12), glow('#fff070', 1.3), nodeXs[0], 0, 0);
+    apPulse = mesh(item, new T.SphereGeometry(0.13, 14, 12), glow('#fff070', 0.9), nodeXs[0], 0, 0);
     apRingMat = glow('#ffe35e', 1.15, { transparent: true, opacity: 0.85, depthWrite: false });
-    apRing = torus(item, apRingMat, 0.42, 0.04, nodeXs[0], 0, 0);
+    apRing = torus(item, apRingMat, 0.157, 0.019, nodeXs[0], 0, 0);
     apRing.rotation.y = Math.PI / 2;
   }, false);
   createAnchor(myelinObj, anchors, 'neuron_myelin_main', 0.9, 0.05, 0.3);
@@ -972,26 +1125,44 @@ function buildNeuronModel({ build, anchors }) {
 
   // D. Synaptic Axon Terminals (Ca2+ Channels + Presynaptic Mitochondrion + Curved Organic Postsynaptic Receptors!)
   let synVes = null, putSyn = null, synCa = null, putSynCa = null;
-  const synObj = build('neuron_synapse', [4.45, 0.1, 0], item => {
-    const tMat = proteinMaterial('#78c4f5', { emissive: '#226596', emissiveIntensity: 0.3, clearcoat: 0.84 });
-    const boutonMat = gelMaterial('#98b4ff', { opacity: 0.56, emissive: '#4d5cc4', emissiveIntensity: 0.3, iridescence: 0.35 });
-    const buttons = [[0.85, 0.84, 0.15], [1.05, 0.0, 0.0], [0.85, -0.84, -0.12]];
-    for (let bi = 0; bi < buttons.length; bi++) {
-      const [bx, by, bz] = buttons[bi];
-      tube(item, tMat, [v(-0.2, 0, 0), v(bx * 0.55, by * 0.6, bz), v(bx, by, bz)], 0.095, false, 16, 8);
-      mesh(item, organicDisplace(new T.SphereGeometry(0.32, 16, 12), 0.08, 4, bi + 2), boutonMat, bx, by, bz);
-      // Presynaptic mitochondrion powering vesicle recycling!
-      miniCutMito(item, bx - 0.06, by, bz, 0.35, 0.4);
+  const synObj = build('neuron_synapse', [terminalX, 0.1, 0], item => {
+    const tMat = proteinMaterial('#729ecc', { emissive: '#315671', emissiveIntensity: 0.21, clearcoat: 0.68 });
+    const boutonMat = gelMaterial('#829cd7', { opacity: 0.68, roughness: 0.30, emissive: '#495883', emissiveIntensity: 0.18 });
+    const vesicleMat = proteinMaterial('#8dcfba', { roughness: 0.33, emissiveIntensity: 0.16 });
+    for (const [i, end] of boutons.entries()) {
+      const root = axonPoint(terminalX - 0.16);
+      root.x -= terminalX;
+      const branch = curve([root, v(0.23, end.y * 0.19, end.z * 0.38),
+        v(0.58, end.y * 0.72, end.z * 0.80), end]);
+      taperedTube(item, tMat, branch, u => 0.144 - 0.075 * u, 22, 9);
+      const bulb = mesh(item, organicDisplace(new T.SphereGeometry(boutonRadius, 22, 16), 0.063, 5, i + 2),
+        boutonMat, end.x, end.y, end.z);
+      bulb.scale.set(1, 0.86, 0.93);
+      miniCutMito(item, end.x - 0.08, end.y - 0.057, end.z, 0.31, 0.55);
+      for (let j = 0; j < 5; j++) {
+        const a = j * 2.4;
+        sphere(item, vesicleMat, 0.032, 0.031, 0.031, end.x + 0.085 + Math.sin(a) * 0.057,
+          end.y + Math.cos(a) * 0.096, end.z + 0.046 + Math.sin(a) * 0.038, 8);
+      }
     }
-    // Curved organic Postsynaptic Dendrite Membrane + Ligand-Gated Receptor Channels (not a plain box!)
-    const postGeo = organicDisplace(new T.SphereGeometry(1.45, 24, 18, -Math.PI * 0.28, Math.PI * 0.56, Math.PI * 0.16, Math.PI * 0.68), 0.04, 3, 7);
-    const postMem = mesh(item, postGeo, gelMaterial('#5ce0c4', { opacity: 0.52, clearcoat: 0.9, side: T.DoubleSide }), 3.25, 0, 0);
-    postMem.rotation.y = Math.PI;
-    const recMat = proteinMaterial('#ffd268', { emissive: '#a86818', emissiveIntensity: 0.44, clearcoat: 0.9 });
-    for (const ry of [-0.78, 0, 0.78]) {
-      lathe(item, recMat, [[0.03, -0.06], [0.08, 0], [0.06, 0.10], [0.11, 0.16]], 12, 1.84, ry, 0).rotation.z = Math.PI / 2;
-    }
-    synVes = instances(item, new T.SphereGeometry(0.058, 8, 6), glow('#7dffcc', 1.05), 18, true);
+    const dendriteRadius = 0.29;
+    const postCenters = boutons.map(p => p.clone().add(v(boutonRadius + cleftWidth + dendriteRadius, 0, 0)));
+    const post = curve([postCenters[0].clone().add(v(0.17, 0.67, -0.14)), ...postCenters,
+      postCenters[2].clone().add(v(0.21, -0.66, -0.16))]);
+    taperedTube(item, gelMaterial('#5ba99f', { opacity: 0.65, roughness: 0.33 }),
+      post, u => {
+        const cap = Math.max(0, (Math.abs(u - 0.5) - 0.43) / 0.07);
+        return dendriteRadius * (0.89 + 0.11 * Math.sin(u * Math.PI)) * Math.sqrt(Math.max(0.0001, 1 - cap * cap));
+      }, 48, 14);
+    const recMat = proteinMaterial('#d9b971', { emissive: '#8c632d', emissiveIntensity: 0.21 });
+    boutons.forEach((p, i) => {
+      const wallX = postCenters[i].x - dendriteRadius;
+      for (const z of [-0.046, 0.046]) {
+        lathe(item, recMat, [[0.018, -0.045], [0.044, -0.026], [0.038, 0.03], [0.025, 0.043]],
+          10, wallX, p.y, p.z + z).rotation.z = Math.PI / 2;
+      }
+    });
+    synVes = instances(item, new T.SphereGeometry(0.032, 8, 6), glow('#7dffcc', 0.85), 18, true);
     putSyn = instanceUpdater(synVes);
     synCa = instances(item, new T.SphereGeometry(0.044, 8, 6), glow('#ffe36e', 1.05), 12, true);
     putSynCa = instanceUpdater(synCa);
@@ -1016,40 +1187,51 @@ function buildNeuronModel({ build, anchors }) {
     tagSynCa.visible = isSynCa;
     tagSyn.visible = isSyn || isSynCa;
 
-    for (let i = 0; i < dendSparks.count; i++) {
-      const p = (t * (isDend ? 0.72 : 0.36) + i / dendSparks.count) % 1;
-      dendPaths[i % dendPaths.length].getPoint(p, pt);
-      putDend(i, pt.x, pt.y, pt.z, Math.sin(p * Math.PI) * 1.15);
+    dendSparks.visible = isDend;
+    if (isDend) {
+      for (let i = 0; i < dendSparks.count; i++) {
+        const p = (t * 0.72 + i / dendSparks.count) % 1;
+        dendPaths[i % dendPaths.length].getPointAt(p, pt);
+        putDend(i, pt.x, pt.y, pt.z, Math.sin(p * Math.PI) * 0.88);
+      }
+      dendSparks.instanceMatrix.needsUpdate = true;
     }
-    dendSparks.instanceMatrix.needsUpdate = true;
 
     const segCount = nodeXs.length - 1;
     const raw = (t * (isSalt ? 1.15 : 0.72)) % segCount;
     const seg = Math.floor(raw);
     const u = raw - seg;
     const lx = T.MathUtils.lerp(nodeXs[seg], nodeXs[seg + 1], smootherstep(u));
-    const arcY = Math.sin(u * Math.PI) * 0.54;
-    apPulse.position.set(lx, arcY, 0.28);
-    apPulse.scale.setScalar(0.85 + Math.sin(u * Math.PI) * 0.45);
-    const nearNode = 1 - Math.sin(u * Math.PI);
-    apRing.position.set(u < 0.5 ? nodeXs[seg] : nodeXs[seg + 1], 0, 0);
-    apRing.scale.setScalar(0.75 + nearNode * 0.9);
-    apRingMat.opacity = nearNode * 0.92;
-
-    for (let i = 0; i < synVes.count; i++) {
-      const p = (t * (isSyn || isSynCa ? 0.85 : 0.42) + i / synVes.count) % 1;
-      const by = (i % 3 - 1) * 0.82;
-      putSyn(i, 1.08 + p * 0.72, by + Math.sin(p * 8 + i) * 0.14, Math.cos(i * 2.1) * 0.22, Math.sin(p * Math.PI) * 1.2);
+    apPulse.visible = isSalt;
+    apRing.visible = isSalt;
+    if (isSalt) {
+      apPulse.position.copy(axonPoint(lx));
+      apPulse.scale.setScalar(0.73 + Math.sin(u * Math.PI) * 0.24);
+      apRing.position.copy(axonPoint(u < 0.5 ? nodeXs[seg] : nodeXs[seg + 1]));
+      apRingMat.opacity = (1 - Math.sin(u * Math.PI)) * 0.92;
     }
-    synVes.instanceMatrix.needsUpdate = true;
 
-    synCa.visible = isSynCa || isSyn;
+    synVes.visible = isSyn || isSynCa;
+    if (synVes.visible) {
+      for (let i = 0; i < synVes.count; i++) {
+        const p = (t * 0.85 + i / synVes.count) % 1;
+        const b = boutons[i % boutons.length];
+        const start = isSyn ? boutonRadius : 0.035;
+        const end = isSyn ? boutonRadius + cleftWidth : boutonRadius - 0.025;
+        putSyn(i, b.x + T.MathUtils.lerp(start, end, p), b.y + Math.sin(i * 2.3) * 0.055,
+          b.z + Math.cos(i * 2.3) * 0.045, Math.sin(p * Math.PI) * (isSyn ? 0.62 : 0.92));
+      }
+      synVes.instanceMatrix.needsUpdate = true;
+    }
+
+    synCa.visible = isSynCa;
     if (synCa.visible) {
       for (let i = 0; i < synCa.count; i++) {
         const p = (t * 0.76 + i / synCa.count) % 1;
-        const by = (i % 3 - 1) * 0.82;
+        const b = boutons[i % boutons.length];
         const side = i % 2 ? 1 : -1;
-        putSynCa(i, 0.88 + side * (1 - p) * 0.34, by + side * (1 - p) * 0.34, 0.22, Math.sin(p * Math.PI) * 1.15);
+        putSynCa(i, b.x - 0.08 + 0.11 * p, b.y + side * (0.25 - p * 0.20),
+          b.z + 0.038, Math.sin(p * Math.PI) * 0.73);
       }
       synCa.instanceMatrix.needsUpdate = true;
     }
@@ -1275,27 +1457,75 @@ function buildErythrocyteModel({ build, anchors }) {
 //    Borda em escova (Actina + Trama terminal + SGLT1) · Complexo juncional completo
 //    (Zônula oclusão → Zônula adesão → Desmossomos) · Polaridade + GLUT2 · Lâmina basal
 // ============================================================================
-function buildEpithelialModel({ build, anchors }) {
+function buildEpithelialModel({ build, anchors, rng }) {
   const updaters = [];
+  const halfHeight = 2.225;
+  const apex = 2.25;
+  const junctionY = 1.2;
+  const basalY = -2.42;
+  const cutStart = Math.PI * 0.29;
+  const cutArc = Math.PI * 1.50;
+  const rounded = value => Math.sign(value) * Math.abs(value) ** 0.78;
+
+  function wallPoint(angle, y, scale = 1) {
+    const u = y / halfHeight;
+    const radius = scale * (1.24 + 0.055 * u + 0.085 * (1 - u * u)
+      + 0.028 * Math.sin(3 * angle + 1.5 * y) + 0.014 * Math.cos(6 * angle - 1.3 * y));
+    return v(rounded(Math.sin(angle)) * radius + 0.055 * Math.sin(y * 1.1), y,
+      rounded(Math.cos(angle)) * radius * 0.92);
+  }
+
+  function bodySurface(geo, scale, fixedY = null) {
+    const positions = geo.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      const point = wallPoint(Math.atan2(x, z), fixedY ?? y, scale * Math.hypot(x, z));
+      positions.setXYZ(i, point.x, y, point.z);
+    }
+    geo.computeVertexNormals();
+    return geo;
+  }
 
   // A. Dense Wavy Apical Microvilli Brush Border + Terminal Web + SGLT1 Cotransporters!
   const villi = [];
+  const glycoFilaments = [];
   let nutrients = null, putNut = null;
-  const microObj = build('epi_microvilli', [0, 2.25, 0], item => {
-    const vMat = proteinMaterial('#68d8c2', { emissive: '#1e7a69', emissiveIntensity: 0.26, clearcoat: 0.86 });
-    const actMat = glow('#b2ffec', 0.52);
-    const sgltMat = proteinMaterial('#ffe07d', { emissive: '#b57b18', emissiveIntensity: 0.48, clearcoat: 0.9 });
-    // Horizontal Terminal Web (trama terminal) anchoring all actin cores!
-    cylinder(item, gelMaterial('#9effe6', { opacity: 0.38 }), 1.28, 1.28, 0.08, 0, -0.02, 0, 24);
-    for (let ix = -3; ix <= 3; ix++) {
-      for (let iz = -2; iz <= 2; iz++) {
-        const vx = ix * 0.33, vz = iz * 0.32;
-        if (Math.hypot(vx, vz) > 1.24) continue;
-        const finger = group(item, vx, 0, vz);
-        capsule(finger, vMat, 0.105, 0.72, 0, 0.42, 0, 6, 12);
-        cylinder(finger, actMat, 0.028, 0.028, 0.78, 0, 0.38, 0, 6);
-        if ((ix + iz) % 2 === 0) sphere(finger, sgltMat, 0.036, 0.036, 0.036, 0.09, 0.62, 0.05, 7);
-        villi.push({ finger, phase: ix * 0.7 + iz * 0.9 });
+  const microObj = build('epi_microvilli', [0, apex, 0], item => {
+    const vMat = gelMaterial('#68bba3', {
+      opacity: 0.75, roughness: 0.35, clearcoat: 0.44, envMapIntensity: 0.75, depthWrite: true
+    });
+    const actMat = proteinMaterial('#a8e8cc', { emissiveIntensity: 0.12, roughness: 0.35 });
+    const sgltMat = proteinMaterial('#e8bd69', { emissive: '#93611c', emissiveIntensity: 0.23 });
+    const plate = bodySurface(new T.CylinderGeometry(1, 1, 0.12, 42), 0.99, halfHeight);
+    mesh(item, plate, gelMaterial('#79d5be', { opacity: 0.56 }), 0, -0.065, 0);
+    for (let ix = -4; ix <= 4; ix++) {
+      for (let iz = -4; iz <= 4; iz++) {
+        const phase = ix * 1.47 + iz * 2.08;
+        const vx = ix * 0.248 + (iz % 2) * 0.09 + 0.024 * Math.sin(phase);
+        const vz = iz * 0.237 + 0.027 * Math.cos(phase * 1.2);
+        if ((vx / 1.13) ** 4 + (vz / 1.04) ** 4 > 0.86) continue;
+        const finger = group(item, vx, -0.045, vz);
+        const length = 0.60 + 0.12 * Math.sin(phase) + 0.07 * Math.cos(ix * 0.7);
+        const lean = vx * 0.052 + Math.sin(phase * 1.3) * 0.04;
+        const tip = v(lean, length, vz * 0.058);
+        const stalk = curve([v(0, -0.075, 0), v(lean * 0.24, length * 0.34, 0), tip]);
+        taperedTube(finger, vMat, stalk, u => {
+          const cap = Math.max(0, (u - 0.82) / 0.18);
+          return (0.083 + 0.025 * Math.exp(-u * 11)) * Math.sqrt(Math.max(0.0001, 1 - cap * cap));
+        }, 20, 9);
+        tube(finger, actMat, [v(0, -0.20, 0), v(lean * 0.24, length * 0.34, 0), tip.clone().multiplyScalar(0.81)], 0.022, false, 12, 6);
+        if ((ix + iz) % 3 === 0) sphere(finger, sgltMat, 0.035, 0.031, 0.032, 0.076 + lean * 0.6, length * 0.66, 0.018, 7);
+        villi.push({ finger, length, lean });
+        const root = finger.position.clone().add(tip);
+        for (let strand = 0; strand < 4; strand++) {
+          const angle = phase + strand * tau / 4;
+          const dx = Math.cos(angle), dz = Math.sin(angle);
+          const height = 0.10 + (1 + Math.sin(phase + strand * 1.7)) * 0.075;
+          const stem = root.clone().add(v(dx * 0.026, -0.019, dz * 0.026));
+          const center = root.clone().add(v(dx * 0.053, height * 0.45, dz * 0.053));
+          const end = root.clone().add(v(dx * 0.067, height, dz * 0.067));
+          glycoFilaments.push(new T.TubeGeometry(curve([stem, center, end]), 5, 0.008, 4));
+        }
       }
     }
     nutrients = instances(item, new T.SphereGeometry(0.062, 8, 6), glow('#ffd86b', 1.05), 24, true);
@@ -1304,23 +1534,73 @@ function buildEpithelialModel({ build, anchors }) {
   createAnchor(microObj, anchors, 'epi_villi_main', 0, 0.55, 0.4);
   const tagVilli = addTag(microObj, 'Microvilosidades (Actina + Trama terminal + SGLT1 · ×20 área)', 0, 1.44, 0.5, '#68d8c2', '#dcfff8', 0.2);
 
+  const glycoObj = build('epi_glycocalyx', [0, apex, 0], item => {
+    mesh(item, mergeGeos(glycoFilaments), proteinMaterial('#e4c17d', {
+      emissive: '#88591c', emissiveIntensity: 0.18, roughness: 0.58
+    }));
+  }, false);
+  createAnchor(glycoObj, anchors, 'epi_glyco_main', 0, 0.79, 0.62);
+
+  const terminalObj = build('epi_terminal', [0, apex, 0], item => {
+    const actin = proteinMaterial('#b0df9d', { roughness: 0.45, emissiveIntensity: 0.13 });
+    for (let i = -5; i <= 5; i++) {
+      const offset = i * 0.182;
+      const extent = Math.sqrt(1.17 - offset * offset);
+      for (const across of [false, true]) {
+        const points = Array.from({ length: 9 }, (_, j) => {
+          const along = (j / 4 - 1) * extent;
+          const y = -0.209 + Math.sin(j * 1.6 + i * 0.8) * 0.025 + (across ? 0.028 : 0);
+          return across ? v(along, y, offset) : v(offset, y, along);
+        });
+        tube(item, actin, points, 0.017, false, 16, 6);
+      }
+    }
+  }, false);
+  createAnchor(terminalObj, anchors, 'epi_terminal_main', 0, -0.20, 0.75);
+
   // B. Complete Apical-to-Basal Junctional Complex: Tight Junction -> Adherens Belt -> Desmosomes + Keratin!
-  const juncObj = build('epi_junctions', [0, 1.2, 0], item => {
-    // 1. Zonula Occludens (Tight Junction claudin sealing strands at very top)
-    const tjMat = glow('#ffe37d', 0.85);
-    torus(item, tjMat, 1.36, 0.044, 0, 0.68, 0).rotation.x = Math.PI / 2;
-    torus(item, tjMat, 1.36, 0.028, 0, 0.58, 0).rotation.x = Math.PI / 2;
-    // 2. Zonula Adherens (E-cadherin + circumferential actin belt just below tight junction)
-    const adhMat = proteinMaterial('#68f0b8', { emissive: '#1e8a5c', emissiveIntensity: 0.42, clearcoat: 0.85 });
-    torus(item, adhMat, 1.36, 0.046, 0, 0.32, 0).rotation.x = Math.PI / 2;
-    // 3. Spot Desmosomes (Desmoplakin plaques + anchoring violet keratin filaments!)
-    const desmMat = proteinMaterial('#f07d94', { emissive: '#942842', emissiveIntensity: 0.42, clearcoat: 0.86 });
-    const kerMat = glow('#c496ff', 0.6);
-    for (const [dx, dy] of [[-1.36, -0.35], [1.36, -0.35], [-1.36, -1.28], [1.36, -1.28]]) {
-      const p = cylinder(item, desmMat, 0.19, 0.19, 0.12, dx, dy, 0.2, 14);
-      p.rotation.z = Math.PI / 2;
-      const inDir = -Math.sign(dx);
-      tube(item, kerMat, [v(dx, dy, 0.2), v(dx + inDir * 0.28, dy + 0.16, 0.16), v(dx + inDir * 0.48, dy - 0.12, 0.1)], 0.022, false, 12, 6);
+  const juncObj = build('epi_junctions', [0, junctionY, 0], item => {
+    const tjMat = proteinMaterial('#e6bd68', { emissive: '#87551c', emissiveIntensity: 0.27 });
+    const adhMat = proteinMaterial('#66cfa8', { emissive: '#2c7459', emissiveIntensity: 0.22 });
+    const desmMat = proteinMaterial('#d985a1', { emissive: '#873d61', emissiveIntensity: 0.22 });
+    const kerMat = proteinMaterial('#b799dc', { emissiveIntensity: 0.1 });
+    const neighborMat = gelMaterial('#429d9a', { opacity: 0.24, roughness: 0.33 });
+    const junctionPoint = (angle, y) => wallPoint(angle, y + junctionY).setY(y);
+
+    for (const side of [-1, 1]) {
+      const center = side * Math.PI / 2;
+      const panel = new T.PlaneGeometry(1, halfHeight * 2, 16, 26);
+      const pos = panel.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const u = pos.getX(i);
+        const y = pos.getY(i) - junctionY;
+        const point = junctionPoint(center + u * 1.35, y);
+        pos.setXYZ(i, point.x + side * (0.115 + 0.19 * u * u), y, point.z);
+      }
+      panel.computeVertexNormals();
+      mesh(item, panel, neighborMat);
+      // Each belt and its short contacts follow the same wall as the neighboring cell fragment.
+      for (const [height, mat, radius] of [[0.72, tjMat, 0.033], [0.59, tjMat, 0.022], [0.34, adhMat, 0.039]]) {
+        const strand = Array.from({ length: 13 }, (_, i) =>
+          junctionPoint(center + (i / 12 - 0.5) * 1.33, height + 0.018 * Math.sin(i * 0.7)));
+        tube(item, mat, strand, radius, false, 26, 7);
+        tube(item, mat, strand.map((p, i) => p.clone().add(v(side * (0.115 + 0.19 * (i / 12 - 0.5) ** 2), 0, 0))), radius, false, 26, 7);
+        for (let i = 1; i < 12; i += 2) {
+          const p = strand[i];
+          rod(item, mat, p, p.clone().add(v(side * (0.115 + 0.19 * (i / 12 - 0.5) ** 2), 0, 0)), 0.019, 6);
+        }
+      }
+      for (const y of [-0.33, -1.23, -2.2]) {
+        const p = junctionPoint(center - side * 0.18, y);
+        const other = p.clone().add(v(side * 0.125, 0, 0));
+        sphere(item, desmMat, 0.043, 0.14, 0.14, p.x, y, p.z, 12);
+        sphere(item, desmMat, 0.043, 0.14, 0.14, other.x, y, other.z, 12);
+        rod(item, desmMat, p, other, 0.035, 8);
+        for (const d of [-1, 1]) {
+          tube(item, kerMat, [p, p.clone().add(v(-side * 0.18, d * 0.13, -0.03)),
+            p.clone().add(v(-side * 0.55, d * 0.2, -0.12))], 0.018, false, 12, 6);
+        }
+      }
     }
   }, false);
   createAnchor(juncObj, anchors, 'epi_junc_main', 1.15, 0.25, 0.35);
@@ -1329,47 +1609,127 @@ function buildEpithelialModel({ build, anchors }) {
   // C. Polarized Columnar Body (Basal Oval Nucleus + Supranuclear Golgi + Cutaway Mitochondria + Basolateral GLUT2 Transcytosis!)
   let basoExport = null, putBaso = null;
   const bodyObj = build('epi_body', [0, 0, 0], item => {
-    const cGeo = new T.CylinderGeometry(1.32, 1.28, 4.45, 38, 1, true, Math.PI * 0.76, Math.PI * 1.48);
-    const mat = membraneMaterial('#4bc7d8', { opacity: 0.32, clearcoat: 0.88 });
-    mat.userData.shell = 0.32;
+    const cGeo = bodySurface(new T.CylinderGeometry(1, 1, halfHeight * 2, 48, 24, true, cutStart, cutArc), 1.0);
+    const mat = membraneMaterial('#52cbbb', { opacity: 0.42, clearcoat: 0.79 });
+    mat.userData.shell = 0.42;
     mesh(item, cGeo, mat);
-    const nuc = mesh(item, organicDisplace(new T.SphereGeometry(0.68, 18, 14), 0.04, 3, 2),
-      proteinMaterial('#9884f0', { emissive: '#4d3ca6', emissiveIntensity: 0.34, clearcoat: 0.84 }), 0, -1.08, -0.08);
-    nuc.scale.set(0.88, 1.32, 0.85);
+    const cytosol = gelMaterial('#3b8e85', { opacity: 0.29, roughness: 0.37, bumpScale: 0.012 });
+    cytosol.userData.shell = 0.29;
+    mesh(item, bodySurface(new T.CylinderGeometry(1, 1, halfHeight * 2 - 0.08, 40, 16, true, cutStart, cutArc), 0.96), cytosol);
+    mesh(item, bodySurface(new T.CylinderGeometry(1, 1, 0.045, 42), 0.99, -halfHeight), mat, 0, -halfHeight, 0);
+    const rim = proteinMaterial('#6bb9ab', { roughness: 0.38 });
+    for (const angle of [cutStart, cutStart + cutArc]) {
+      tube(item, rim, Array.from({ length: 22 }, (_, i) => wallPoint(angle, -halfHeight + i * halfHeight * 2 / 21)),
+        0.023, false, 32, 7);
+    }
+    const nucleus = group(item, 0, -1.08, -0.09);
+    nucleus.scale.set(0.86, 1.27, 0.84);
+    const envelope = membraneMaterial('#8b75d2', { opacity: 0.66, clearcoat: 0.64 });
+    const chromatin = proteinMaterial('#b4a0ed', { roughness: 0.51 });
+    for (const radius of [0.65, 0.69]) {
+      mesh(nucleus, organicDisplace(new T.SphereGeometry(radius, 32, 22, Math.PI * 0.78, Math.PI * 1.43),
+        0.025, 3.5, 2), envelope);
+    }
+    sphere(nucleus, gelMaterial('#6c5d9e', { opacity: 0.48 }), 0.62, 0.63, 0.53, 0, 0, -0.11, 22);
+    sphere(nucleus, proteinMaterial('#d9b2ed', { roughness: 0.5 }), 0.19, 0.16, 0.16, 0.07, 0.06, 0.38, 19);
+    for (let i = 0; i < 22; i++) {
+      const angle = rng() * tau;
+      const y = (rng() - 0.5) * 0.98;
+      const reach = 0.54 * Math.sqrt(1 - (y / 0.64) ** 2);
+      const size = 0.042 + rng() * 0.038;
+      sphere(nucleus, chromatin, size, size * 0.7, size * 0.8,
+        Math.cos(angle) * reach, y, Math.sin(angle) * reach * 0.62, 7);
+    }
+    const rer = proteinMaterial('#6f88c9', { roughness: 0.5 });
+    const ribosome = proteinMaterial('#c6daef', { roughness: 0.53 });
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 4; i++) {
+        const y = -0.64 - i * 0.18;
+        const sheet = curve([v(side * 0.55, y + 0.18, -0.30), v(side * 0.76, y, -0.04),
+          v(side * 0.80, y - 0.067, 0.32), v(side * 0.73, y - 0.13, 0.54)]);
+        taperedTube(item, rer, sheet, u => 0.027 + Math.sin(u * Math.PI) * 0.028, 15, 7);
+        for (let j = 1; j < 6; j++) {
+          const p = sheet.getPointAt(j / 7);
+          sphere(item, ribosome, 0.025, 0.024, 0.027, p.x, p.y + 0.052, p.z, 7);
+        }
+      }
+    }
     // Supranuclear curved Golgi cisternae
     const gMat = proteinMaterial('#f0ae54', { emissive: '#9c5c1a', emissiveIntensity: 0.3, clearcoat: 0.82 });
     for (let i = 0; i < 4; i++) {
-      torus(item, gMat, 0.44 - i * 0.05, 0.058, 0, 0.34 + i * 0.17, 0.12).rotation.x = Math.PI / 2;
+      const y = 0.25 + i * 0.13;
+      const half = 0.48 - i * 0.04;
+      const cisterna = curve([v(-half, y + 0.07, 0.16), v(-half * 0.58, y - 0.02, -0.055),
+        v(0, y - 0.03, -0.14), v(half * 0.68, y + 0.015, -0.04), v(half, y + 0.09, 0.19)]);
+      taperedTube(item, gMat, cisterna, u => 0.035 + 0.023 * Math.sin(u * Math.PI), 20, 8).scale.z = 1.3;
     }
     // Cutaway Mitochondria cleanly spaced away from basal nucleus & supranuclear Golgi!
     for (const [mx, my, mz] of [[-0.78, 1.24, 0.24], [0.78, 1.18, 0.24], [-0.84, 0.14, 0.34], [0.84, -0.22, 0.32]]) {
       miniCutMito(item, mx, my, mz, 0.60, 1.35);
     }
-    // Basolateral GLUT2 glucose export stream leaving basal face toward bloodstream!
+    const glut = proteinMaterial('#75d6a5', { emissive: '#267155', emissiveIntensity: 0.18 });
+    for (const angle of [-2.2, -1.65, 1.6, 2.12]) {
+      const p = wallPoint(angle, -1.55, 0.98);
+      sphere(item, glut, 0.055, 0.092, 0.067, p.x, p.y, p.z, 10);
+    }
+    // Basolateral export stays close to the membrane transporters.
     basoExport = instances(item, new T.SphereGeometry(0.056, 8, 6), glow('#7dffbe', 1.05), 14, true);
     putBaso = instanceUpdater(basoExport);
   }, false);
   createAnchor(bodyObj, anchors, 'epi_body_main', 0, -0.35, 0.45);
   const tagPolar = addTag(bodyObj, 'Polaridade apicobasal (Golgi supranuclear · Núcleo basal)', 0, -0.15, 0.88, '#a894ff', '#f0ebff', 0.2);
-  const tagTrans = addTag(bodyObj, 'Transcitose polarizada (SGLT1 apical → GLUT2 basolateral)', 0, -1.78, 0.92, '#7dffbe', '#dcffef', 0.2);
+  const tagTrans = addTag(bodyObj, 'Transporte de glicose · SGLT1 apical e GLUT2 basolateral', 0, -1.78, 0.92, '#7dffbe', '#dcffef', 0.2);
 
   // D. Woven Collagen IV / Laminin Basal Lamina + Hemidesmosomes anchoring cell base!
-  const basalObj = build('epi_basal', [0, -2.42, 0], item => {
-    const blGeo = organicDisplace(new T.BoxGeometry(3.65, 0.22, 2.8, 10, 2, 10), 0.03, 3, 5);
-    mesh(item, blGeo, proteinMaterial('#c79ef0', { emissive: '#5e3894', emissiveIntensity: 0.26, roughness: 0.42 }));
-    const fibMat = glow('#dec4ff', 0.52);
-    for (let i = -3; i <= 3; i++) {
-      rod(item, fibMat, v(-1.75, 0.13, i * 0.38), v(1.75, 0.13, i * 0.38), 0.026);
-      rod(item, fibMat, v(i * 0.48, 0.12, -1.3), v(i * 0.48, 0.12, 1.3), 0.02);
+  const basalObj = build('epi_basal', [0, basalY, 0], item => {
+    cylinder(item, material('#75618f', { roughness: 0.65 }), 1.55, 1.58, 0.115, 0, 0.046, 0, 52).scale.z = 0.83;
+    const sheet = new T.CircleGeometry(1, 48);
+    sheet.rotateX(-Math.PI / 2);
+    const pos = sheet.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), z = pos.getZ(i), a = Math.atan2(z, x);
+      const irregular = Math.hypot(x, z) < 0.1 ? 1 : 1 + 0.035 * Math.sin(a * 5) + 0.022 * Math.cos(a * 8);
+      pos.setXYZ(i, 1.66 * x * irregular, 0.115 + 0.026 * Math.sin(x * 4 + z * 3), 1.36 * z * irregular);
     }
-    // Hemidesmosome integrin anchors fastening cell base to Basal Lamina!
-    const hdMat = proteinMaterial('#ff88aa', { emissive: '#a82850', emissiveIntensity: 0.45, clearcoat: 0.88 });
-    for (const [hx, hz] of [[-0.72, 0.55], [0, 0.72], [0.72, 0.55], [-0.55, -0.45], [0.55, -0.45]]) {
-      cylinder(item, hdMat, 0.14, 0.16, 0.16, hx, 0.19, hz, 10);
+    sheet.computeVertexNormals();
+    mesh(item, sheet, gelMaterial('#a991cb', { opacity: 0.68, roughness: 0.4 }));
+    const fibMat = proteinMaterial('#c1abd7', { emissiveIntensity: 0.12, roughness: 0.43 });
+    for (let i = -3; i <= 3; i++) {
+      const offset = i * 0.28;
+      const extent = Math.sqrt(1.24 - offset ** 2);
+      tube(item, fibMat, [v(-1.4 * extent, 0.135, offset), v(-0.46, 0.15, offset + 0.07),
+        v(0.48, 0.132, offset - 0.08), v(1.4 * extent, 0.14, offset)], 0.019, false, 22, 6);
+      tube(item, fibMat, [v(offset, 0.143, -extent), v(offset - 0.08, 0.14, -0.36),
+        v(offset + 0.08, 0.15, 0.42), v(offset, 0.14, extent)], 0.015, false, 22, 6);
+    }
+    const hdMat = proteinMaterial('#df8da9', { emissive: '#813555', emissiveIntensity: 0.22 });
+    for (const [x, z] of [[-0.72, 0.55], [0, 0.72], [0.72, 0.55], [-0.55, -0.45], [0.55, -0.45]]) {
+      sphere(item, hdMat, 0.125, 0.051, 0.11, x, 0.197, z, 10);
+      rod(item, hdMat, v(x, 0.12, z), v(x, 0.218, z), 0.043, 8);
+      tube(item, fibMat, [v(x, 0.2, z), v(x * 0.92, 0.34, z - 0.04),
+        v(x * 0.67, 0.49, z - 0.09)], 0.018, false, 12, 6);
     }
   }, false);
   createAnchor(basalObj, anchors, 'epi_basal_main', 0, 0.1, 0.45);
-  const tagBasal = addTag(basalObj, 'Lâmina basal (Colágeno IV + Laminina) + Hemidesmossomos', 0, -0.62, 0.65, '#dec4ff', '#f5ecff', 0.2);
+  const tagBasal = addTag(basalObj, 'Lâmina basal · Laminina, colágeno IV e pontos de adesão', 0, -0.62, 0.65, '#dec4ff', '#f5ecff', 0.2);
+
+  const supportObj = build('epi_support', [0, basalY - 0.17, 0], item => {
+    const matrix = organelleMaterial('#77625e', { roughness: 0.76, clearcoat: 0.05 });
+    const fibers = proteinMaterial('#c6a28c', { roughness: 0.68 });
+    const pad = organicDisplace(new T.CylinderGeometry(1.62, 1.68, 0.31, 48, 5), 0.031, 4, 7);
+    mesh(item, pad, matrix).scale.z = 0.82;
+    for (let i = -4; i <= 4; i++) {
+      const offset = i * 0.27;
+      const end = Math.sqrt(2.13 - offset ** 2);
+      const pts = Array.from({ length: 11 }, (_, j) => {
+        const x = (j / 5 - 1) * end;
+        const z = offset + 0.055 * Math.sin(j * 1.3 + i);
+        return v(x, 0.158 + Math.sin(j + i) * 0.022, z * 0.84);
+      });
+      tube(item, fibers, pts, 0.022, false, 19, 6);
+    }
+  }, false);
+  createAnchor(supportObj, anchors, 'epi_support_main', 0, 0.05, 0.95);
 
   updaters.push((t, _dt, _key, activeAnim) => {
     const isVilli = activeAnim === 'epi_microvilli';
@@ -1384,24 +1744,25 @@ function buildEpithelialModel({ build, anchors }) {
     tagTrans.visible = isTrans;
     tagBasal.visible = isBasal;
 
-    for (const f of villi) {
-      f.finger.rotation.z = Math.sin(t * (isVilli ? 3.2 : 1.5) + f.phase) * (isVilli ? 0.14 : 0.06);
+    nutrients.visible = isVilli || isTrans;
+    if (nutrients.visible) {
+      for (let i = 0; i < nutrients.count; i++) {
+        const { finger, length, lean } = villi[(i * 7) % villi.length];
+        const p = (t * 0.67 + i / nutrients.count) % 1;
+        const side = p < 0.3 ? 0.18 * (1 - p / 0.3) : 0;
+        putNut(i, finger.position.x + lean * (1 - p) + side, length * (0.87 - p * 0.94),
+          finger.position.z, Math.sin(p * Math.PI) * 0.57);
+      }
+      nutrients.instanceMatrix.needsUpdate = true;
     }
-    for (let i = 0; i < nutrients.count; i++) {
-      const p = (t * (isVilli || isTrans ? 0.68 : 0.3) + i / nutrients.count) % 1;
-      const nx = ((i % 7) - 3) * 0.32;
-      const nz = (Math.floor(i / 7) - 1) * 0.34;
-      putNut(i, nx + Math.sin(p * 7 + i) * 0.05, 1.48 - p * 2.02, nz, Math.sin(p * Math.PI) * 1.15);
-    }
-    nutrients.instanceMatrix.needsUpdate = true;
 
-    basoExport.visible = isTrans || isBasal;
+    basoExport.visible = isTrans;
     if (basoExport.visible) {
       for (let i = 0; i < basoExport.count; i++) {
         const p = (t * 0.56 + i / basoExport.count) % 1;
-        const bx = ((i % 5) - 2) * 0.42;
-        const bz = (Math.floor(i / 5) - 1) * 0.38;
-        putBaso(i, bx, -1.65 - p * 1.15, bz + 0.35, Math.sin(p * Math.PI) * 1.18);
+        const angle = [-2.2, -1.65, 1.6, 2.12][i % 4];
+        const point = wallPoint(angle, -1.55, 0.79 + p * 0.33);
+        putBaso(i, point.x, point.y, point.z, Math.sin(p * Math.PI) * 0.62);
       }
       basoExport.instanceMatrix.needsUpdate = true;
     }

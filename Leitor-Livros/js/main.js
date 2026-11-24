@@ -1,7 +1,6 @@
 (function (App) {
   "use strict";
 
-  const { setupOfflineSupport } = App.offline;
   const {
     clearAllHistory,
     deleteHistoryPage,
@@ -67,10 +66,8 @@
 
     wakeLockBadge: $("#wakeLockBadge"),
     voiceCount: $("#voiceCount"),
-    offlineVoicesOnly: $("#offlineVoicesOnly"),
     voiceLanguage: $("#voiceLanguage"),
     voiceSelect: $("#voiceSelect"),
-    downloadVoiceBtn: $("#downloadVoiceBtn"),
     testVoiceBtn: $("#testVoiceBtn"),
     voiceInfo: $("#voiceInfo"),
     neuralProgressWrap: $("#neuralProgressWrap"),
@@ -160,7 +157,6 @@
       removeShadow: els.removeShadow.checked,
       binarize: els.binarizeImage.checked,
       cleanText: els.cleanTextOption.checked,
-      offlineVoice: els.offlineVoicesOnly.checked,
       voiceLanguage: els.voiceLanguage.value,
       voiceURI: els.voiceSelect.value || state.savedVoiceURI,
       rate: els.rate.value,
@@ -186,7 +182,6 @@
     els.removeShadow.checked = Boolean(s.removeShadow);
     els.binarizeImage.checked = Boolean(s.binarize);
     els.cleanTextOption.checked = Boolean(s.cleanText);
-    els.offlineVoicesOnly.checked = Boolean(s.offlineVoice);
     els.voiceLanguage.value = s.voiceLanguage;
     els.rate.value = s.rate;
     els.volume.value = s.volume;
@@ -669,27 +664,15 @@
 
     els.testVoiceBtn.disabled = false;
     if (voice.neural) {
-      const stored = reader.isNeuralVoiceStored(voice);
-      els.downloadVoiceBtn.hidden = false;
-      els.downloadVoiceBtn.disabled = false;
-      els.downloadVoiceBtn.textContent = stored ? "✕ Remover" : "↓ Baixar offline";
-      els.voiceInfo.textContent = stored
-        ? `${voice.name} (${voice.lang}) · voz neural Piper salva offline neste aparelho.`
-        : `${voice.name} (${voice.lang}) · voz neural open-source Piper (${voice.sizeLabel} no 1º uso, depois 100% offline).`;
+      els.voiceInfo.textContent = `${voice.name} (${voice.lang}) · voz neural local.`;
     } else {
-      els.downloadVoiceBtn.hidden = true;
-      els.voiceInfo.textContent = voice.localService
-        ? `${voice.name} (${voice.lang}) · voz local do aparelho.`
-        : `${voice.name} (${voice.lang}) · voz do sistema.`;
+      els.voiceInfo.textContent = `${voice.name} (${voice.lang}) · voz do aparelho.`;
     }
   }
 
   function renderVoices() {
     const preferredLang = getEffectiveVoiceLang();
-    state.visibleVoices = reader.getSortedVoices({
-      preferredLang,
-      offlineOnly: els.offlineVoicesOnly.checked
-    });
+    state.visibleVoices = reader.getSortedVoices({ preferredLang });
 
     const previous = els.voiceSelect.value || state.savedVoiceURI;
     els.voiceSelect.innerHTML = "";
@@ -697,12 +680,7 @@
     state.visibleVoices.forEach((voice) => {
       const option = document.createElement("option");
       option.value = voice.voiceURI;
-      if (voice.neural) {
-        const tag = reader.isNeuralVoiceStored(voice) ? "neural · offline ✓" : `neural · ${voice.sizeLabel}`;
-        option.textContent = `${voice.name} — ${voice.lang} · ${tag}`;
-      } else {
-        option.textContent = `${voice.name} — ${voice.lang}${voice.localService ? " · offline" : ""}`;
-      }
+      option.textContent = `${voice.name} — ${voice.lang}`;
       els.voiceSelect.appendChild(option);
     });
 
@@ -802,31 +780,6 @@
     onError: (msg) => showToast(msg)
   });
 
-  els.downloadVoiceBtn.addEventListener("click", async () => {
-    const voice = getSelectedVoice();
-    if (!voice?.neural) return;
-
-    if (reader.isNeuralVoiceStored(voice)) {
-      if (!confirm(`Remover o modelo offline da voz ${voice.name} deste aparelho?`)) return;
-      await reader.removeNeuralVoice(voice);
-      showToast(`Modelo ${voice.name} removido`);
-      return;
-    }
-
-    els.downloadVoiceBtn.disabled = true;
-    els.testVoiceBtn.disabled = true;
-    try {
-      await reader.downloadNeuralVoice(voice);
-      renderNeuralProgress(null);
-      showToast(`${voice.name} pronta para uso offline`);
-    } catch (err) {
-      renderNeuralProgress(null);
-      showToast(err?.message || "Não foi possível baixar esta voz");
-    } finally {
-      updateVoiceInfo();
-    }
-  });
-
   function syncTextAndChunks() {
     updateTextStats();
     if (reader.status !== "playing") {
@@ -845,11 +798,6 @@
       pitch: els.pitch.value
     });
     reader.play(els.textArea.value, idx);
-  });
-
-  els.offlineVoicesOnly.addEventListener("change", () => {
-    renderVoices();
-    persistSettings();
   });
 
   els.voiceLanguage.addEventListener("change", () => {
@@ -1152,7 +1100,7 @@
         updateOcrButton();
       });
 
-    await setupOfflineSupport({
+    await App.offline?.setupOfflineSupport({
       onUpdateAvailable: (applyUpdate) => {
         els.updateBtn.hidden = false;
         els.updateBtn.onclick = () => {

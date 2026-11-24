@@ -1,3 +1,5 @@
+import { insectTissues } from './insectSpecimens.js?v=1';
+
 export const tissues = {
   bee: {
     name: 'Abelha · Ventrículo e trato digestivo (Resultado real · Minicurso)',
@@ -52,7 +54,8 @@ export const tissues = {
     structure: 'Cordões radiais de hepatócitos poliédricos (muitos binucleados e ricos em grânulos de glicogênio PAS+) convergindo para a veia centrolobular, separados por capilares sinusoides com hemácias e células de Kupffer.',
     function: 'Metabolismo de carboidratos/lipídios, desintoxicação xenobiótica, produção de bile e síntese de proteínas plasmáticas.',
     recognition: 'Identifique a veia centrolobular ampla e os cordões de hepatócitos poliédricos com um ou dois núcleos arredondados de nucléolo evidente.',
-    suggested: 'he' }
+    suggested: 'he' },
+  ...Object.fromEntries(Object.entries(insectTissues).map(([id, tissue]) => [id, { ...tissue, suggested: 'he' }]))
 };
 
 export const stains = {
@@ -83,7 +86,8 @@ export const readySlides = {
   muscle: { tissue: 'muscle', stain: 'he', thickness: 5 },
   nervous: { tissue: 'nervous', stain: 'he', thickness: 5 },
   bacteria: { tissue: 'bacteria', stain: 'gram', thickness: 1 },
-  fresh: { tissue: 'epithelial', stain: 'fresh', thickness: 8 }
+  fresh: { tissue: 'epithelial', stain: 'fresh', thickness: 8 },
+  ...Object.fromEntries(Object.keys(insectTissues).map(tissue => [tissue, { tissue, stain: 'he', thickness: 5 }]))
 };
 
 export function compatibleStains(tissue) {
@@ -91,6 +95,7 @@ export function compatibleStains(tissue) {
     : tissue === 'blood' ? ['giemsa', 'he', 'fresh']
     : tissue === 'leaf' ? ['botany', 'historesin', 'fresh']
     : tissue === 'bee' ? ['historesin', 'he', 'pas', 'fresh']
+    : Object.hasOwn(insectTissues, tissue) ? ['he', 'pas', 'fresh']
     : ['he', 'pas', 'masson', 'fresh'];
   return Object.fromEntries(ids.map(key => [key, stains[key].name]));
 }

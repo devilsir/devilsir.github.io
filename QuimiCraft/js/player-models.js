@@ -2,7 +2,7 @@
 
 globalThis.QuimiCraftModels = (() => {
   function create(THREE, options) {
-    const {blocks, block, atlas, texFor, uvTile, itemColor, shadows, detailedBlockMiniature} = options;
+    const {blocks, block, atlas, texFor, uvTile, itemColor, shadows, detailedBlockMiniature,produceMiniature} = options;
     const boxGeo = new THREE.BoxGeometry(1, 1, 1);
     const yAxis = new THREE.Vector3(0, 1, 0);
     const cut = .065;
@@ -29,6 +29,7 @@ globalThis.QuimiCraftModels = (() => {
     const materialCache = new Map();
     const textures = new Map();
     const icons = new Map();
+    const shieldShapes = new Map();
     const itemMatt = new THREE.MeshLambertMaterial({map:atlas.texture, alphaTest:.38, color:0xffffff, side:THREE.DoubleSide,
       emissive:0x141414, emissiveIntensity:.62});
 
@@ -95,6 +96,40 @@ globalThis.QuimiCraftModels = (() => {
       for (let i=0;i<5;i++) box(root,thread,[0,(i-2)*height*.16,-.049],[.107,.016,.016],[0,0,-.19]);
     }
 
+    function staffVariant(root,w){
+      const frost=w.style==="frost",shade=tint(w.style,w.color),trim=tint(w.style+"-trim",w.trim);
+      const shaft=frost?dark:wood;
+      bar(root,shaft,[0,-.62,0],[0,1.06,0],.096);
+      grip(root,.39);
+      for(const y of [-.58,.55,.87])bevel(root,trim,[0,y,0],[.143,.067,.137]);
+      const center=[0,1.20,0],key=w.style+"-glow";
+      if(!materialCache.has(key))materialCache.set(key,new THREE.MeshStandardMaterial({
+        color:w.color,emissive:w.color,emissiveIntensity:.45,roughness:.24,flatShading:true
+      }));
+      root.userData.core=mesh(root,globe,materialCache.get(key),center,frost?[.143,.29,.141]:[.21,.24,.18],[.12,.36,.24]);
+      root.userData.coreSize=root.userData.core.scale.clone();
+      if(frost){
+        for(const [x,z] of [[.18,.08],[-.18,.08],[0,-.17]]){
+          const elbow=[x*.75,1.05,z*.72],tip=[x,1.45,z];
+          bar(root,metal,[0,.84,0],elbow,.051);
+          bar(root,trim,elbow,tip,.041);
+          mesh(root,globe,shade,tip,[.063,.13,.062],[.26,.1,.28]);
+        }
+      }else{
+        for(const side of [-1,1]){
+          bar(root,brass,[0,.73,0],[side*.19,1.02,.04],.052);
+          bar(root,trim,[side*.19,1.02,.04],[side*.29,1.26,-.06],.048);
+          mesh(root,globe,shade,[side*.274,1.35,-.07],[.052,.111,.053],[.2,side*.44,side*.3]);
+        }
+      }
+      root.userData.rings=Array.from({length:frost?1:2},(_,index)=>{
+        const scale=(frost?.226:.29)+index*.05;
+        const ring=mesh(root,torus,index?shade:trim,center,[scale,scale,scale]);
+        ring.userData.phase=index*Math.PI*.63;
+        return ring;
+      });
+    }
+
     function staff(root) {
       bevel(root,wood,[0,.24,0],[.092,1.55,.095]);
       box(root,lightWood,[.026,.23,-.048],[.028,.96,.012]);
@@ -115,23 +150,93 @@ globalThis.QuimiCraftModels = (() => {
       });
     }
 
-    function bow(root) {
+    function bow(root,w) {
+      const variant=w?.style,steel=variant==="steel",bamboo=variant==="bamboo";
+      const limb=variant?tint(variant,w.color):wood,laminate=variant?tint(variant+"-trim",w.trim):lightWood;
       grip(root,.31);
       const tips = [];
       for (const side of [-1,1]) {
-        const path = [[0,side*.1,-.035],[0,side*.31,.043],[0,side*.60,.212],[0,side*.77,.305]];
+        const path=bamboo?[[0,side*.1,-.055],[0,side*.32,-.005],[0,side*.62,.237],[0,side*.75,.31],[0,side*.9,.19]]:
+          steel?[[0,side*.08,-.048],[0,side*.37,-.011],[0,side*.65,.163],[0,side*.94,.289]]:
+          [[0,side*.1,-.035],[0,side*.31,.043],[0,side*.60,.212],[0,side*.77,.305]];
         tips.push(path.at(-1));
         for (let i=1;i<path.length;i++) {
-          bar(root,wood,path[i-1],path[i],.089-i*.01,.074);
+          bar(root,limb,path[i-1],path[i],(steel?.115:.089)-i*.01,.074);
           const strip = path.slice(i-1,i+1).map(([x,y,z])=>[x-.04,y,z-.015]);
-          bar(root,lightWood,strip[0],strip[1],.028,.018);
+          bar(root,laminate,strip[0],strip[1],.028,.018);
         }
-        bevel(root,brass,[0,side*.667,.252],[.091,.081,.104],[side*.23,0,0]);
+        const cap=variant?path.at(-2):[0,side*.667,.252];
+        bevel(root,steel?dark:brass,cap,[.105,.075,.096],[side*.23,0,0]);
+        if(variant)for(const pt of path.slice(1,-1)){
+          bevel(root,laminate,pt,[.109,.045,.098],[side*.19,0,0]);
+          if(steel)bevel(root,brass,[.057,pt[1],pt[2]],[.032,.039,.046]);
+        }
       }
       root.userData.bowTips = tips.map(tip=>new THREE.Vector3(...tip));
       root.userData.string = [bevel(root,thread,[0,0,0],[.012,1,.012]),bevel(root,thread,[0,0,0],[.012,1,.012])];
       root.userData.arrow = arrow(root);
       root.userData.forward=new THREE.Vector3(0,0,-1);
+    }
+    function crossbow(root,w){
+      const rail=tint("crossbow-rail",w.trim),stock=tint("crossbow-stock",w.color);
+      bevel(root,stock,[0,-.039,.18],[.167,.15,.70]);
+      bevel(root,lightWood,[0,-.067,.495],[.221,.122,.261],[.18,0,0]);
+      bevel(root,leather,[0,-.15,.20],[.11,.218,.12],[-.40,0,0]);
+      bevel(root,rail,[0,.047,-.095],[.103,.046,.83]);
+      bevel(root,metal,[0,.014,-.368],[.25,.115,.228]);
+      bevel(root,dark,[0,.060,-.398],[.254,.033,.066]);
+      for(const side of [-1,1]){
+        bevel(root,brass,[side*.086,-.042,.196],[.024,.083,.46]);
+        for(const z of [.008,.23,.40])mesh(root,globe,metal,[side*.098,-.025,z],[.027,.032,.032]);
+        bar(root,dark,[side*.111,.058,-.337],[side*.092,.139,-.337],.039);
+      }
+      bevel(root,rail,[0,.141,-.337],[.214,.034,.057]);
+      bevel(root,brass,[0,.066,-.471],[.020,.075,.028]);
+      const tips=[];
+      for(const side of [-1,1]){
+        const path=[[0,.017,-.383],[side*.245,.041,-.46],[side*.467,.057,-.391],[side*.683,.065,-.257]];
+        for(let i=1;i<path.length;i++){
+          bar(root,i===1?metal:dark,path[i-1],path[i],.076-i*.009,.098-i*.014);
+          bar(root,rail,path[i-1].map((v,k)=>v+(k===1?.026:0)),path[i].map((v,k)=>v+(k===1?.026:0)),.028,.036);
+        }
+        const pulley=mesh(root,cyl,brass,path.at(-1),[.111,.034,.111],[0,0,0]);
+        tips.push(pulley.position.toArray());
+      }
+      const stirrup=mesh(root,torus,metal,[0,.01,-.563],[.094,.112,.108],[Math.PI/2,0,0]);
+      stirrup.rotation.z=Math.PI/4;
+      root.userData.bowTips=tips.map(tip=>new THREE.Vector3(...tip));
+      root.userData.string=tips.map(()=>bevel(root,thread,[0,0,0],[.014,1,.014]));
+      root.userData.arrow=bolt(root);
+    }
+    function shield(root,s){
+      if(!shieldShapes.has(s.shape)){
+        const path=new THREE.Shape();
+        if(s.shape==="oval")path.absellipse(0,0,.31,.453,0,Math.PI*2);
+        else{
+          const form=s.shape==="tower"?[[-.28,-.53],[.28,-.53],[.343,-.44],[.343,.44],[.260,.53],[-.260,.53],[-.343,.44],[-.343,-.44]]:
+            [[0,-.55],[.28,-.35],[.37,.11],[.33,.38],[.18,.48],[0,.40],[-.18,.48],[-.33,.38],[-.37,.11],[-.28,-.35]];
+          path.moveTo(...form[0]);for(const pt of form.slice(1))path.lineTo(...pt);path.closePath();
+        }
+        shieldShapes.set(s.shape,new THREE.ExtrudeGeometry(path,{depth:.07,bevelEnabled:true,bevelThickness:.026,bevelSize:.031,bevelSegments:1,curveSegments:6}));
+      }
+      const geo=shieldShapes.get(s.shape),plate=tint("shield-"+s.shape,s.color),rim=tint("rim-"+s.shape,s.trim);
+      mesh(root,geo,rim,[0,0,-.003],[1,1,1]);
+      mesh(root,geo,plate,[0,0,-.032],[.87,.90,1]);
+      for(const side of [-1,1]){
+        for(const y of [-.29,.28])mesh(root,globe,rim,[side*.20,y,-.058],[.041,.039,.026],[0,0,Math.PI/4]);
+        bevel(root,leather,[side*.147,.018,.139],[.048,.281,.091],[0,0,side*.14]);
+        if(s.shape==="tower"){
+          for(const x of [.101,.215])bevel(root,rim,[side*x,.005,-.067],[.023,.82,.043]);
+        }else if(s.shape==="dragon"){
+          for(let i=0;i<3;i++)mesh(root,globe,i%2?crystal:rim,[side*(.082+i*.050),.036+i*.084,-.083],
+            [.077,.096,.043],[0,side*.31,side*-.62]);
+        }else{
+          bevel(root,lightWood,[side*.102,-.004,-.063],[.029,.691,.032],[0,0,side*.05]);
+        }
+      }
+      mesh(root,s.shape==="dragon"?globe:cyl,rim,[0,0,-.080],[.257,.082,.267],s.shape==="dragon"?[0,0,.78]:[Math.PI/2,0,0]);
+      if(s.shape==="dragon")mesh(root,globe,crystal,[0,0,-.145],[.087,.116,.041]);
+      bar(root,leather,[-.130,.015,.153],[.130,.015,.153],.060);
     }
 
     function arrow(parent) {
@@ -142,6 +247,138 @@ globalThis.QuimiCraftModels = (() => {
       mesh(root,globe,edge,[0,0,-.51],[.042,.047,.09]);
       for (const side of [-1,1]) bevel(root,side<0 ? thread : brass,[side*.031,0,.23],[.054,.02,.14],[0,0,side*.32]);
       return root;
+    }
+    function bolt(parent){
+      const shape=arrow(parent);
+      shape.name="Virote";
+      shape.scale.set(1.17,1.17,.64);
+      return shape;
+    }
+
+    const bladeProfiles=new Map();
+    const forgedBlades={
+      dagger:{grip:.25,width:.14,guard:.141,fuller:[[.01,.175],[.004,.60]],path:[[0,.805],[-.11,.49],[-.10,.178],[-.048,.15],[.049,.15],[.105,.195],[.106,.49]]},
+      longsword:{grip:.36,width:.16,guard:.212,fuller:[[0,.27],[0,1.28]],path:[[0,1.56],[-.082,1.37],[-.12,.33],[-.059,.208],[.059,.208],[.12,.33],[.082,1.37]]},
+      greatsword:{grip:.56,width:.20,guard:.31,fuller:[[0,.46],[0,1.74]],path:[[0,2.06],[-.095,1.92],[-.165,.85],[-.20,.61],[-.13,.52],[-.134,.31],[.134,.31],[.13,.52],[.20,.61],[.165,.85],[.095,1.92]]},
+      scimitar:{grip:.33,width:.16,guard:.195,fuller:[[0,.29],[.009,.73],[.082,1.04],[.269,1.33]],path:[[.44,1.53],[.264,1.39],[.113,1.22],[-.008,.99],[-.087,.72],[-.093,.32],[-.059,.205],[.063,.205],[.116,.40],[.135,.76],[.247,1.055],[.404,1.292]]}
+    };
+    function forgedSword(root,w){
+      const {grip:handle,width,guard,path,fuller}=forgedBlades[w.style];
+      const body=tint(w.style,w.color),edgeTone=tint(w.style+"-edge",w.trim);
+      const hilt=w.style==="scimitar"?brass:metal,guardY=handle*.49,two=w.twoHanded;
+      grip(root,handle);
+      bevel(root,hilt,[0,-handle*.52,0],[width*.98,.10,width*.76],[0,.20,Math.PI*.25]);
+      if(two)for(const y of [-.236,-.114,0,.107])bevel(root,metal,[0,y,0],[.122,.033,.115]);
+      bevel(root,brass,[0,guardY,0],[width,.08,.133]);
+      for(const side of [-1,1]){
+        const arc=w.style==="scimitar"?-.083:.050;
+        const tip=[side*guard,guardY+arc,0],start=[side*width*.40,guardY+.012,0];
+        bar(root,hilt,start,tip,two?.084:.064,.082);
+        mesh(root,globe,edgeTone,tip,[.058,.068,.069],[0,0,.29]);
+        for(let i=1;i<fuller.length;i++){
+          bar(root,dark,[...fuller[i-1],side*.037],[...fuller[i],side*.037],two?.034:.021,.012);
+          bar(root,edgeTone,[fuller[i-1][0]+.022,fuller[i-1][1],side*.041],[fuller[i][0]+.022,fuller[i][1],side*.041],.012,.010);
+        }
+      }
+      if(!bladeProfiles.has(w.style)){
+        const shape=new THREE.Shape();
+        shape.moveTo(...path[0]);for(const point of path.slice(1))shape.lineTo(...point);shape.closePath();
+        const depth=two?.059:.042;
+        const geo=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelThickness:.012,bevelSize:.016,bevelSegments:1});
+        geo.translate(0,0,-depth/2);
+        bladeProfiles.set(w.style,geo);
+      }
+      mesh(root,bladeProfiles.get(w.style),[body,edgeTone],[0,0,0],[1,1,1]);
+      for(const side of [-1,1])mesh(root,globe,two?crystal:edgeTone,[0,guardY,side*.079],[.051,.046,.021],[0,0,.78]);
+    }
+    function mace(root,w){
+      const iron=tint("mace-iron",w.color),accent=tint("mace-band",w.trim);
+      grip(root,.37);
+      bar(root,dark,[0,-.27,0],[0,.76,0],.108);
+      for(const y of [-.24,.20,.52,.74])mesh(root,cyl,accent,[0,y,0],[.142,.051,.142]);
+      mesh(root,cyl,iron,[0,.774,0],[.278,.293,.278],[0,Math.PI/8,0]);
+      for(let i=0;i<6;i++){
+        const arm=new THREE.Group();arm.rotation.y=i*Math.PI/3;root.add(arm);
+        bevel(arm,iron,[0,.78,.129],[.093,.257,.162],[.09,0,0]);
+        bevel(arm,metal,[0,.825,.198],[.055,.177,.093],[-.26,0,0]);
+        mesh(arm,globe,accent,[0,.718,.191],[.044,.044,.034]);
+      }
+      bevel(root,accent,[0,.969,0],[.093,.112,.093],[0,0,.68]);
+    }
+    function wand(root,w){
+      const tone=tint("wand",w.color),tip=tint("wand-crystal",w.trim);
+      grip(root,.22);
+      bar(root,wood,[0,-.16,0],[0,.54,-.018],.069);
+      bar(root,tone,[0,.11,0],[0,.52,-.022],.046);
+      for(let i=0;i<6;i++)mesh(root,torus,i%2?brass:tone,[0,.08+i*.075,-.012],[.045-i*.002,.045-i*.002,.050],[Math.PI/2,.24,i*.26]);
+      root.userData.core=mesh(root,globe,tip,[0,.567,-.022],[.079,.119,.08],[.11,.28,.31]);
+      root.userData.coreSize=root.userData.core.scale.clone();
+    }
+    function focus(root,item){
+      const primary=tint(item.shape,item.color),accent=tint(item.shape+"-gilt",item.trim);
+      if(item.shape==="book"){
+        const pages=tint("parchment","#ece0bb"),ink=tint("sigils","#765c64");
+        bevel(root,primary,[0,-.15,0],[.627,.095,.477]);
+        bevel(root,accent,[0,-.087,0],[.05,.15,.49]);
+        for(const side of [-1,1]){
+          const leaf=new THREE.Group();leaf.position.x=side*.041;leaf.rotation.z=side*.19;root.add(leaf);
+          bevel(leaf,primary,[side*.161,-.098,0],[.343,.059,.493]);
+          bevel(leaf,pages,[side*.151,-.050,-.003],[.310,.071,.439]);
+          for(const [i,z] of [-.164,-.116,-.055,.068,.115,.163].entries()){
+            if(side>0&&i>1&&i<4)continue;
+            bar(leaf,ink,[side*.077,-.013,z],[side*(.150+Math.sin(z*38)*.018),-.013,z],.009,.006);
+            bar(leaf,ink,[side*.172,-.013,z],[side*(i%2?.229:.260),-.013,z],.009,.006);
+          }
+          if(side>0){
+            mesh(leaf,torus,accent,[.169,-.018,.008],[.055,.055,.049],[Math.PI/2,0,0]);
+            for(let k=0;k<4;k++){
+              const a=k*Math.PI/2,dx=Math.cos(a)*.039,dz=Math.sin(a)*.041;
+              bar(leaf,ink,[.169+dx*.48,-.012,.008+dz*.48],[.169+dx*1.12,-.012,.008+dz*1.12],.011,.006);
+            }
+            bevel(leaf,ink,[.169,-.013,.008],[.024,.009,.024],[0,Math.PI/4,0]);
+          }
+          for(const z of [-.226,.226])bevel(leaf,accent,[side*.294,-.067,z],[.062,.065,.056]);
+        }
+        bar(root,primary,[.024,-.028,.019],[.097,-.082,.297],.051,.008);
+        root.rotation.x=-.16;
+        return;
+      }
+      bevel(root,metal,[0,-.233,0],[.226,.083,.225]);
+      mesh(root,cyl,accent,[0,-.181,0],[.275,.083,.275]);
+      root.userData.core=mesh(root,globe,primary,[0,.067,0],[.272,.296,.274],[.23,.31,.22]);
+      root.userData.coreSize=root.userData.core.scale.clone();
+      root.userData.rings=[0,1].map(i=>{
+        const ring=mesh(root,torus,i?accent:primary,[0,.064,0],[.22+i*.045,.22+i*.045,.239]);
+        ring.userData.phase=i*Math.PI*.55;
+        return ring;
+      });
+      for(const side of [-1,1])for(const z of [-1,1]){
+        bar(root,brass,[side*.075,-.165,z*.075],[side*.147,-.043,z*.145],.04);
+        mesh(root,globe,accent,[side*.15,-.040,z*.148],[.053,.051,.053]);
+      }
+    }
+    function swordVariant(root,w){
+      const bronze=w.style==="bronze",body=tint(w.style,w.color),sharpened=tint(w.style+"-trim",w.trim);
+      grip(root,.33);
+      bevel(root,bronze?brass:dark,[0,-.21,0],[.145,.09,.126]);
+      for(const side of [-1,1]){
+        bar(root,body,[0,.185,0],[side*(bronze?.182:.235),bronze?.24:.125,0],.075,.119);
+        mesh(root,globe,sharpened,[side*(bronze?.172:.237),bronze?.244:.118,0],[.065,.056,.067]);
+      }
+      if(!bladeProfiles.has(w.style)){
+        const shape=new THREE.Shape();
+        const path=bronze?[[0,1.03],[-.131,.82],[-.117,.31],[-.074,.22],[.074,.22],[.117,.31],[.131,.82]]:
+          [[0,1.32],[-.106,1.09],[-.103,.79],[-.155,.69],[-.122,.30],[-.062,.22],[.071,.22],[.148,.44],[.102,.55],[.143,.82],[.112,1.05]];
+        shape.moveTo(...path[0]);for(const point of path.slice(1))shape.lineTo(...point);shape.closePath();
+        const geo=new THREE.ExtrudeGeometry(shape,{depth:.042,bevelEnabled:true,bevelThickness:.016,bevelSize:.017,bevelSegments:1});
+        geo.translate(0,0,-.021);
+        bladeProfiles.set(w.style,geo);
+      }
+      mesh(root,bladeProfiles.get(w.style),body,[0,0,0],[1,1,1]);
+      for(const side of [-1,1]){
+        bar(root,sharpened,[0,.29,side*.039],[0,bronze?.90:1.12,side*.039],bronze?.018:.026,.015);
+        if(!bronze)for(let i=0;i<3;i++)mesh(root,globe,sharpened,[.045,.44+i*.17,side*.035],[.021,.06,.015],[0,0,-.44]);
+      }
     }
 
     function sword(root) {
@@ -181,10 +418,21 @@ globalThis.QuimiCraftModels = (() => {
         root.add(blockMiniature(id,first ? .485 : dropped ? .28 : .315,view));
         return root;
       }
-      if (id === "wind_staff") staff(root);
-      else if (id === "bow") {bow(root);root.rotation.y=first?-.62:-.24}
+      const arsenal=globalThis.QuimiCraftArsenal,weapon=arsenal?.weapons[id],guard=arsenal?.shields[id],artifact=arsenal?.focuses[id],produce=produceMiniature?.(id);
+      if(produce){produce.scale.setScalar(.86);produce.rotation.z=id==="carrot"?-.21:-.10;root.add(produce)}
+      else if (id === "wind_staff") staff(root);
+      else if (id === "bow"||weapon?.family==="bow") {bow(root,weapon);root.rotation.y=first?-.62:-.24}
+      else if (weapon?.family==="crossbow") {crossbow(root,weapon);root.rotation.y=first?-.14:-.17}
+      else if (guard) shield(root,guard);
+      else if (artifact) focus(root,artifact);
       else if (id === "iron_sword") sword(root);
+      else if (weapon?.family==="mace") mace(root,weapon);
+      else if (weapon?.style==="wand") wand(root,weapon);
+      else if (weapon&&forgedBlades[weapon.style]) forgedSword(root,weapon);
+      else if (weapon?.family==="staff") staffVariant(root,weapon);
+      else if (weapon?.family==="sword") swordVariant(root,weapon);
       else if (id === "arrow") arrow(root);
+      else if (id === "bolt") bolt(root);
       else if (String(id).endsWith("_pickaxe")) pick(root,id.split("_")[0]);
       else if (id === "hoe") {
         bar(root,wood,[0,-.42,0],[0,.58,0],.073);
@@ -274,13 +522,18 @@ globalThis.QuimiCraftModels = (() => {
       const {core,rings,string,bowTips} = root.userData;
       if (core) {
         core.rotation.y = now * .0019 * motion;
-        core.scale.set(.169,.22,.167).multiplyScalar(1+Math.sin(now*.005)*.07*motion);
+        const size=root.userData.coreSize;
+        if(size)core.scale.copy(size);
+        else core.scale.set(.169,.22,.167);
+        core.scale.multiplyScalar(1+Math.sin(now*.005)*.07*motion);
       }
       rings?.forEach((ring,index)=>{
         ring.rotation.set(.8+index*.94,now*.00118*motion+ring.userData.phase, ring.userData.phase+now*.00043*motion);
       });
       if (string) {
-        const pull = new THREE.Vector3(.027,0,.306+action*.31);
+        const crossbow=root.userData.kind==="crossbow";
+        const pull=crossbow?new THREE.Vector3(0,.078,hasArrow?.22:-.225):
+          new THREE.Vector3(.027,0,bowTips[0].z+action*.31);
         string.forEach((span,index)=>{
           const end = bowTips[index];
           const difference = pull.clone().sub(end);
@@ -288,7 +541,8 @@ globalThis.QuimiCraftModels = (() => {
           span.scale.y = difference.length();
           span.quaternion.setFromUnitVectors(yAxis,difference.normalize());
         });
-        root.userData.arrow.position.set(.047,.023,.005+action*.31);
+        if(crossbow)root.userData.arrow.position.set(0,.103,-.173);
+        else root.userData.arrow.position.set(.047,.023,.005+action*.31);
         root.userData.arrow.visible = hasArrow;
       }
     }
@@ -297,7 +551,10 @@ globalThis.QuimiCraftModels = (() => {
       if (icons.has(id)) return icons.get(id);
       const alchemyItem=globalThis.QuimiCraftAlchemy?.itemData[id];
       const vehicleItem=globalThis.QuimiCraftVehicles?.itemData[id];
-      if (!vehicleItem&&!alchemyItem&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","carbon_badge"].includes(id)) return "";
+      const weapon=globalThis.QuimiCraftArsenal?.weapons[id];
+      const guard=globalThis.QuimiCraftArsenal?.shields[id];
+      const artifact=globalThis.QuimiCraftArsenal?.focuses[id];
+      if (!weapon&&!guard&&!artifact&&!vehicleItem&&!alchemyItem&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","bolt","carbon_badge"].includes(id)) return "";
       const canvas = document.createElement("canvas");
       canvas.width=canvas.height=64;
       const ctx = canvas.getContext("2d");
@@ -374,6 +631,74 @@ globalThis.QuimiCraftModels = (() => {
         line(handle,"#a8835b",7);
         tile([[26,15],[45,26],[40,36],[21,26]],"#9ca9ae");
         line([[22,24],[27,15],[44,25]],"#d2d8da",2);
+      } else if(artifact){
+        if(artifact.shape==="book"){
+          tile([[8,15],[30,19],[54,12],[58,45],[33,53],[9,47]],artifact.color);
+          tile([[11,11],[30,16],[52,9],[54,40],[31,47],[12,41]],"#e8d8ad");
+          line([[30,17],[31,47]],artifact.trim,3);
+          for(const y of [20,26,32,38]){line([[15,y],[26,y+3]],"#775d64",1.4);line([[35,y+1],[49,y-3]],"#775d64",1.4);}
+        }else{
+          line([[21,53],[44,53]],"#87634e",6);
+          tile([[17,26],[24,15],[36,10],[47,18],[52,30],[43,42],[31,48],[20,41]],artifact.color);
+          tile([[22,25],[33,16],[42,20],[36,35],[26,38]],artifact.trim);
+          line([[15,35],[25,26],[45,20],[56,23],[48,33],[28,42],[17,41]],"#dbb78a",2.6);
+        }
+      } else if(guard){
+        const outline=guard.shape==="oval"?[[19,11],[32,5],[45,11],[51,23],[49,41],[41,54],[32,59],[23,54],[15,41],[13,23]]:
+          guard.shape==="tower"?[[15,8],[49,8],[54,14],[54,51],[48,57],[16,57],[10,51],[10,14]]:
+          [[16,10],[22,6],[32,11],[42,6],[48,10],[54,24],[48,44],[32,60],[16,44],[10,24]];
+        tile(outline,guard.trim);
+        tile(outline.map(([x,y])=>[32+(x-32)*.83,32+(y-32)*.86]),guard.color);
+        tile([[32,22],[42,30],[32,41],[22,30]],guard.shape==="dragon"?"#7bdec7":guard.trim);
+        if(guard.shape==="tower")line([[32,14],[32,52]],guard.trim,3);
+      } else if(id==="crossbow"){
+        line([[32,51],[32,15]],"#624334",10);
+        line([[31,47],[31,12]],"#c6d8d9",3);
+        line([[9,28],[14,18],[25,16],[32,22],[39,16],[50,18],[55,28]],"#4a6a77",6);
+        line([[9,28],[32,36],[55,28]],"#f4dfb4",2);
+        tile([[28,12],[32,5],[36,12],[32,19]],"#d7e8e6");
+      } else if(id==="bolt"){
+        line([[15,50],[47,19]],"#a8794c",5);
+        tile([[41,19],[55,10],[49,25],[41,28]],"#bccfd8");
+        tile([[13,39],[24,36],[24,46],[14,54]],"#866744");
+      } else if(weapon?.family==="mace"){
+        line([[12,52],[36,29]],"#584235",8);
+        tile([[27,16],[42,8],[55,17],[56,28],[46,41],[33,40],[26,30]],weapon.color);
+        line([[30,21],[42,29],[53,24]],weapon.trim,4);
+        line([[35,13],[44,22],[51,17]],"#e0dcce",2);
+      } else if(weapon?.style==="wand"){
+        line([[13,51],[46,16]],"#593936",7);
+        line([[19,46],[43,19]],weapon.color,3);
+        tile([[44,8],[53,9],[56,17],[47,22],[42,17]],weapon.trim);
+        for(const [x,y] of [[34,16],[50,29],[60,7]])line([[x-2,y],[x+2,y]],"#d6a88a",1.5);
+      } else if(weapon&&forgedBlades[weapon.style]){
+        const blade=forgedBlades[weapon.style],top=Math.max(...blade.path.map(([,y])=>y)),scale=36/top;
+        const originX=26,originY=40;
+        const project=([x,y])=>[originX+(y*.86+x*.51)*scale,originY+(-y*.51+x*.86)*scale];
+        line([[13,50],[27,40]],"#714d37",weapon.twoHanded?9:6);
+        line([[21,32],[34,45]],weapon.trim,5);
+        tile(blade.path.map(project),weapon.color);
+        line(blade.fuller.map(project),weapon.trim,2);
+      } else if(weapon?.style){
+        const {color,trim,family}=weapon;
+        if(family==="sword"){
+          line([[12,54],[27,39]],"#775541",7);
+          const tip=weapon.style==="bronze"?[55,11]:[56,8];
+          tile([[20,36],[43,13],tip,[54,19],[31,45]],color);
+          line([[29,37],[51,13]],trim,2);
+          line([[16,32],[32,48]],color,6);
+        }else if(family==="bow"){
+          const path=weapon.style==="bamboo"?[[16,8],[18,16],[38,22],[45,34],[42,46],[29,54]]:
+            [[10,8],[26,14],[44,23],[47,39],[39,52],[29,57]];
+          line([path[0],path.at(-1)],"#e0ded2",2);
+          line(path,"#252a31",8);line(path,color,5);
+          line(path.slice(2,4),trim,4);
+        }else{
+          line([[12,55],[39,22]],"#283039",9);line([[12,55],[39,22]],trim,3);
+          tile([[46,6],[56,19],[42,33],[34,20]],color);
+          line([[34,19],[38,8],[46,6],[53,11],[57,20]],trim,2.3);
+          line([[42,28],[53,18]],trim,2);
+        }
       } else if (id==="iron_sword") {
         line([[13,53],[29,37]],"#a87a54",7);
         tile([[22,35],[47,11],[55,9],[53,17],[30,44]],"#b7d0d7");
@@ -812,6 +1137,9 @@ globalThis.QuimiCraftModels = (() => {
       const heldFirst = new THREE.Group();
       heldFirst.position.set(0,-.046,-.094);
       hands[1].group.add(heldFirst);
+      const heldOffFirst=new THREE.Group();
+      heldOffFirst.position.set(0,.041,-.174);
+      hands[0].group.add(heldOffFirst);
       const heldThird = new THREE.Group();
       heldThird.position.set(0,-.046,-.094);
       heldThird.rotation.set(-.13,0,-.10);
@@ -882,7 +1210,7 @@ globalThis.QuimiCraftModels = (() => {
         pack.visible=!backId;
       }
 
-      function animate({dt, now, motion, moving, sprint, crouch, swim, airborne, pitch, action, firstType, activity=null, aspect = 16/9}) {
+      function animate({dt, now, motion, moving, sprint, crouch, swim, airborne, pitch, action, firstType, offhand=false,offhandAction=0,activity=null, aspect = 16/9}) {
         const aura=marks[currentBadge].userData.aura;
         const halo=.39+Math.sin(now*.003)*.026*motion;
         aura.scale.set(halo,halo,1);
@@ -905,14 +1233,18 @@ globalThis.QuimiCraftModels = (() => {
         const pulse=kind==="forge"?Math.sin(phase*Math.PI*6)**2:kind==="cook"?Math.sin(phase*Math.PI*5):0;
         const lift=taste?envelope*1.30:kind==="throw_vial"?envelope*(1.65-phase*2.35):work?envelope*(.67+pulse*.43):kind==="cast"?envelope*(.9-phase*2.15):kind==="reel"?envelope*.82:kind==="bite"?.20:0;
         const right=hands[1].group,left=hands[0].group;
-        right.position.x=mix(right.position.x,(.55-(taste?.28:work?.12:0)*envelope)*screenWidth,ease);
+        const twoHanded=globalThis.QuimiCraftArsenal?.weapons[firstType]?.twoHanded;
+        right.position.x=mix(right.position.x,((twoHanded?.31:.55)-(taste?.28:work?.12:0)*envelope)*screenWidth,ease);
         right.position.y=mix(right.position.y,-.59+(taste?.46:work?.12:0)*envelope,ease);
         right.position.z=mix(right.position.z,-1.03+(taste?.33:0)*envelope,ease);
-        left.position.x=-.58*screenWidth;
-        left.rotation.x=mix(left.rotation.x,-.35-swing*.25-(fishing?.38:work?.35:0)*motion,ease);
+        left.position.x=mix(left.position.x,(twoHanded?.24:-.58+offhandAction*.19)*screenWidth,ease);
+        left.position.y=mix(left.position.y,twoHanded?-.785-action*.022:-.67+offhandAction*.27,ease);
+        left.position.z=mix(left.position.z,twoHanded?-1.08:-1.1-offhandAction*.10,ease);
+        left.rotation.x=mix(left.rotation.x,-.35-swing*.25-(fishing?.38:work?.35:0)*motion-action*(twoHanded?.86:0)-offhandAction*.63,ease);
+        left.rotation.z=mix(left.rotation.z,twoHanded?-.31+action*.12:-.15,ease);
         right.rotation.x=mix(right.rotation.x,-.32+swing*.17-action*.94-lift,ease);
         right.rotation.z=.15-action*.32-(work?pulse*.36:0);
-        left.visible=!isBlock||!!kind;
+        left.visible=!isBlock||!!kind||offhand;
         const reach=isBlock ? .12 : 0;
         heldFirst.position.set(0,-.046+(isBlock?.09:0),-.094-reach);
         heldThird.position.set(0,-.046+(isBlock?.061:0),-.094-reach*.62);
@@ -920,7 +1252,7 @@ globalThis.QuimiCraftModels = (() => {
         heldThird.rotation.set(isBlock?.10:work?.16:-.13,0,-.10);
         const holding=firstType!=null;
         hands[1].fingers.flex(holding?(isBlock?.43:.94):action*.52,dt);
-        hands[0].fingers.flex(fishing||work?.64:.12,dt);
+        hands[0].fingers.flex(twoHanded?.90:fishing||work||offhand?.64:.12,dt);
         torso.rotation.x = mix(torso.rotation.x,mounted?.18:swim?.36:crouch?.23:sprint?.14:0,ease);
         torso.rotation.z = mix(torso.rotation.z,-swing*.07,ease);
         head.rotation.x = mix(head.rotation.x,Math.max(-.31,Math.min(.31,pitch*.42)),ease);
@@ -928,11 +1260,12 @@ globalThis.QuimiCraftModels = (() => {
         for (const eye of eyes) eye.scale.y = blink>4.52?Math.max(.09,Math.abs(blink-4.61)*10):1;
         arms.forEach(({shoulder,elbow,fingers},index)=>{
           const side = index===0?-1:1;
-          const effect=side===1?lift:(work||fishing?envelope*.41:0);
-          shoulder.rotation.x=mix(shoulder.rotation.x,mounted?-.69:swing*side+(swim?-.65:0)-(side===1?action*1.16:0)-effect*.79,ease);
-          elbow.rotation.x=mix(elbow.rotation.x,mounted?-.65:-.14-Math.abs(swing)*.29-(side===1?action*.68:0)-effect*(taste?1.22:.72),ease);
-          fingers.flex(mounted?.64:side===1?(holding?(isBlock?.43:.94):action*.51):fishing||work?.64:.12,dt);
-          shoulder.rotation.z = side*(.07+Math.abs(swing)*.075+breath);
+          const effect=side===1?lift:(work||fishing?envelope*.41:0)+offhandAction*.81;
+          const strike=side===1?action:twoHanded?action*.88+.18:0;
+          shoulder.rotation.x=mix(shoulder.rotation.x,mounted?-.69:swing*side+(swim?-.65:0)-strike*1.16-effect*.79,ease);
+          elbow.rotation.x=mix(elbow.rotation.x,mounted?-.65:-.14-Math.abs(swing)*.29-strike*.68-effect*(taste?1.22:.72),ease);
+          fingers.flex(mounted?.64:side===1?(holding?(isBlock?.43:.94):action*.51):twoHanded?.92:fishing||work||offhand?.64:.12,dt);
+          shoulder.rotation.z = twoHanded&&side===-1?.34+action*.16:side*(.07+Math.abs(swing)*.075+breath);
         });
         legs.forEach(({hip,knee},index)=>{
           const step = swing*(index===0?1:-1);
@@ -944,7 +1277,7 @@ globalThis.QuimiCraftModels = (() => {
 
       setAppearance({});
       setEquipment();
-      return {root,first,heldFirst,heldThird,leftWrist,headGear,gear,chestFit,hairStyles,animate,setEquipment,setAppearance};
+      return {root,first,heldFirst,heldOffFirst,heldThird,leftWrist,headGear,gear,chestFit,hairStyles,animate,setEquipment,setAppearance};
     }
 
     return {item,icon,animateItem,avatar,alchemistAttire};

@@ -114,6 +114,8 @@ h1 {
   line-height: .88;
 }
 
+.central-word { letter-spacing: normal; }
+
 h1 em {
   display: block;
   color: var(--gold);
@@ -451,6 +453,24 @@ h1 em {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 16px;
+}
+
+.github-link {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--gold);
+  background: var(--panel);
+}
+
+.github-link:hover {
+  border-color: var(--gold);
+  color: var(--black);
+  background: var(--gold);
 }
 
 .install-app {

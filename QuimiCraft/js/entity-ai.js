@@ -77,6 +77,7 @@ globalThis.QuimiCraftAI = (() => {
     lab_hydrologist: profile("civilian",41,.95,3.32,6,1.25,null),
     lab_mineralogist: profile("civilian",47,.83,3.1,6,1.45,null),
     lab_ecologist: profile("civilian",38,1.15,3.55,7,1.40,null),
+    child:profile("civilian",19,1.04,3.25,6,3.1,null),
     carbon: profile("civilian", 42, .76, 2.25, 5, 2.3, null),
     ranger: profile("guard", 64, 1.65, 4.65, 14, 11, guard),
     shop_armor: profile("shop", 58, .86, 2.65, 7, 2.5, null),
@@ -101,7 +102,7 @@ globalThis.QuimiCraftAI = (() => {
   const point = a => ({x: a.x, y: a.y, z: a.z});
 
   function getProfile(type, role) {
-    return role ? civilians[role] || resident : species[type] || species.capivara;
+    return role ? civilians[role] || resident : globalThis.QuimiCraftBiomeFauna?.species[type]?.profile || species[type] || species.capivara;
   }
 
   function brain(home, phase = 0) {
@@ -168,7 +169,7 @@ globalThis.QuimiCraftAI = (() => {
     }
     const homeDistance=range(e,a.home);
     const leash=p.roam+(e.persistent?6:18);
-    if(!e.persistent&&e.habitat&&homeDistance>p.roam*1.15&&!enemy?.visible&&a.memoryTime<=0){
+    if(!e.persistent&&(e.habitat||e.petsite)&&homeDistance>p.roam*1.15&&!enemy?.visible&&a.memoryTime<=0){
       a.goal=null;
       return {mode:"return",goal:a.home,speed:p.walk*1.32};
     }
@@ -176,7 +177,8 @@ globalThis.QuimiCraftAI = (() => {
       a.memoryTime = 0;
       return {mode: "return", goal: a.home, speed: p.run * .72};
     }
-    if (p.strike && enemy?.visible && !enemy.actor.dead && enemy.dist <= p.strike.range) {
+    const levelWithEnemy=enemy&&(p.strike?.kind==="shot"||Math.abs(enemy.actor.y-e.y)<=1.22);
+    if (p.strike && enemy?.visible && levelWithEnemy && !enemy.actor.dead && enemy.dist <= p.strike.range) {
       if (p.strike.kind === "shot" && enemy.dist < 2.7 && a.cooldown > .2) {
         const angle = heading(enemy.actor, e);
         return {mode: "kite", goal: {x: e.x + Math.sin(angle) * 3, y: e.y, z: e.z + Math.cos(angle) * 3},
@@ -190,7 +192,7 @@ globalThis.QuimiCraftAI = (() => {
         return {mode: "recover", goal: null, aim: enemy.actor, speed: 0};
       }
     }
-    if (a.memoryTime > 0 && a.memory && range(e, a.memory) > .65 &&
+    if (a.memoryTime > 0 && a.memory && (range(e,a.memory)>.65||Math.abs(e.y-a.memory.y)>.82) &&
         (p.temperament === "hostile" || p.temperament === "guard" || a.retaliate > 0)) {
       return {mode: enemy?.visible ? "chase" : "search", goal: a.memory, speed: enemy?.visible ? p.run : Math.min(p.run,p.walk*1.52)};
     }
@@ -210,42 +212,89 @@ globalThis.QuimiCraftAI = (() => {
     return {mode: e.persistent ? "patrol" : "wander", goal: a.goal, speed: p.walk};
   }
 
-  function findPath(start, destination, inspect, maxVisits = 66) {
+  function findPath(start, destination, inspect, maxVisits = 66, matchHeight = false) {
     const sx = Math.floor(start.x);
     const sz = Math.floor(start.z);
     const length = range(start, destination);
-    if (length < .6) return [];
-    const scale = Math.min(1, 9 / length);
+    const goalY=matchHeight&&length<=9&&Math.abs(destination.y-start.y)>.78?Math.round(destination.y):null;
+    if (length < .6 && goalY===null) return [];
+    const scale = length>9?9/length:1;
     const gx = Math.floor(start.x + (destination.x - start.x) * scale);
     const gz = Math.floor(start.z + (destination.z - start.z) * scale);
-    const estimate = (x, z) => Math.hypot(gx - x, gz - z);
-    const origin = {x: sx, z: sz, y: start.y, g: 0, h: estimate(sx, sz), from: null};
+    const estimate = (x,y,z) => Math.hypot(gx-x,gz-z)+(goalY===null?0:Math.abs(goalY-y)*.85);
+    const origin = {x: sx, z: sz, y: start.y, g: 0, h: estimate(sx,start.y,sz), from: null};
     const open = [origin];
-    const cost = new Map([[sx + "," + sz, 0]]);
+    const keyOf=(x,y,z)=>x+","+y+","+z;
+    const cost = new Map([[keyOf(sx,start.y,sz), 0]]);
     const steps = [[1,0],[-1,0],[0,1],[0,-1]];
     let best = origin;
 
     for (let visits = 0; open.length && visits < maxVisits; visits++) {
       open.sort((a, b) => a.g + a.h - b.g - b.h || a.h - b.h);
       const node = open.shift();
+      if(node.g!==cost.get(keyOf(node.x,node.y,node.z)))continue;
       if (node.h < best.h) best = node;
       if (node.h === 0) break;
       for (const [dx, dz] of steps) {
         const x = node.x + dx;
         const z = node.z + dz;
         if (Math.abs(x - sx) > 10 || Math.abs(z - sz) > 10) continue;
-        const key = x + "," + z;
-        const y = inspect(x + .5, z + .5, node.y);
+        const from = node.from?{x:node.x+.5,y:node.y,z:node.z+.5}:start;
+        const y = inspect(x + .5, z + .5, node.y, from);
         if (!Number.isFinite(y)) continue;
-        const g = node.g + 1 + Math.abs(y - node.y) * .48;
+        const key = keyOf(x,y,z);
+        const change = y-node.y;
+        const g = node.g + 1 + (change>0?change*.85:-change*.38);
         if (g >= (cost.get(key) ?? Infinity)) continue;
         cost.set(key, g);
-        open.push({x, y, z, g, h: estimate(x, z), from: node});
+        open.push({x, y, z, g, h: estimate(x,y,z), from: node});
       }
     }
     const route = [];
     for (let node = best; node.from; node = node.from) route.unshift({x: node.x + .5, y: node.y, z: node.z + .5});
     return route;
+  }
+
+  function createTraversal({solid,blocked,hazard,minY=1,maxY=95}){
+    function supports(x,y,z,radius){
+      if(solid(x,y-.04,z))return true;
+      for(let ix=Math.floor(x-radius);ix<=Math.floor(x+radius);ix++){
+        for(let iz=Math.floor(z-radius);iz<=Math.floor(z+radius);iz++){
+          if(solid(ix+.5,y-.04,iz+.5))return true;
+        }
+      }
+      return false;
+    }
+    function standing(e,x,z,ceiling,floor,radius,safe=true){
+      for(let y=Math.min(maxY,Math.floor(ceiling+.0001));y>=Math.max(minY,Math.ceil(floor-.0001));y--){
+        if(!supports(x,y,z,radius)||safe&&hazard(e,x,y,z)||blocked(e,x,z,y))continue;
+        return y;
+      }
+      return null;
+    }
+    function clearAt(e,from,to,y){
+      const steps=Math.max(1,Math.ceil(range(from,to)/.20));
+      for(let i=1;i<=steps;i++){
+        const t=i/steps;
+        if(blocked(e,from.x+(to.x-from.x)*t,from.z+(to.z-from.z)*t,y))return false;
+      }
+      return true;
+    }
+    function canHop(e,from,to){
+      for(let y=from.y+.11;y<to.y;y+=.19)if(blocked(e,from.x,from.z,y))return false;
+      return !blocked(e,from.x,from.z,to.y)&&clearAt(e,from,to,to.y);
+    }
+    function edge(e,from,x,z,limits,radius){
+      const y=standing(e,x,z,from.y+limits.up+.09,from.y-limits.down-.08,radius);
+      if(y===null)return null;
+      if(y>from.y+.12)return canHop(e,from,{x,y,z})?y:null;
+      return clearAt(e,from,{x,z},from.y)?y:null;
+    }
+    function hopPoint(from,to,t){
+      const rise=Math.min(t/.39,1),across=Math.max(0,(t-.39)/.61),curve=rise*(2-rise);
+      return {x:from.x+(to.x-from.x)*across,y:from.y+(to.y-from.y)*curve,z:from.z+(to.z-from.z)*across};
+    }
+    return {supports,standing,edge,hopPoint};
   }
 
   function loot(p, random = Math.random, bonus = () => 0) {
@@ -257,5 +306,5 @@ globalThis.QuimiCraftAI = (() => {
     return result;
   }
 
-  return {getProfile, brain, tick, alarm, findPath, loot, range, heading, types: Object.keys(species)};
+  return {getProfile, brain, tick, alarm, findPath, createTraversal, loot, range, heading, types: Object.keys(species)};
 })();

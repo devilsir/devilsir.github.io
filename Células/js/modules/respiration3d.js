@@ -984,7 +984,7 @@ export function respiration3d({ scene, lights, engine, label, toolbar, guide, vi
 
   let downAt = null;
   canvas.addEventListener('pointermove', event => {
-    if (event.buttons) { hideTooltip(tooltip, viewport); return; }
+    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
     const key = pickAt(event);
     hoveredKey = key;
     if (key) {
