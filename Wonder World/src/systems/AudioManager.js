@@ -57,8 +57,8 @@ export class AudioManager {
     syncHorrorMix() {
         if (!this.context || !this.horrorScoreBus || !this.ambienceBus) return;
         const time = this.context.currentTime;
-        this.horrorScoreBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : 0, time, .075);
-        this.ambienceBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : .015, time, .095);
+        this.horrorScoreBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : this.horrorMix === "film" ? .52 : 0, time, .075);
+        this.ambienceBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : this.horrorMix === "film" ? .45 : .015, time, .095);
     }
 
     updateAtmosphere(dt, stage, position, mode, caption) {

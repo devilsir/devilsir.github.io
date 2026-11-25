@@ -103,10 +103,97 @@ globalThis.QuimiCraftAquatic=(()=>{
       tail.rotation.y+=burst*.81;
     }
   }
-  function breachPose(progress,height){
-    const t=Math.max(0,Math.min(1,progress));
+  const breachStart=(bounds,surface)=>surface-bounds.max.y-.18;
+  function breachPose(progress,bounds,surface,start=breachStart(bounds,surface),end=start){
+    const t=clamp(progress);
     const arc=4*t*(1-t);
-    return {lift:height*arc,pitch:(.58-1.18*t)*Math.min(1,arc*4)};
+    const length=bounds.max.z-bounds.min.z;
+    const apex=surface-bounds.min.y+.28+length*.17;
+    const y=start+(end-start)*t+(apex-(start+end)*.5)*arc;
+    const pitch=.72*(1-2*t)*Math.min(1,arc*5);
+    const sine=Math.sin(pitch),cosine=Math.cos(pitch);
+    const front=-bounds.min.z*sine,back=-bounds.max.z*sine;
+    return {progress:t,y,pitch,front:-bounds.min.z*cosine,
+      low:y+bounds.min.y*cosine+Math.min(front,back),
+      high:y+bounds.max.y*cosine+Math.max(front,back)};
+  }
+  function breachContact(action,frame,surface){
+    if(!action.contact&&frame.progress>0&&frame.progress<=.5&&frame.high>=surface){
+      action.contact="exit";
+      return "exit";
+    }
+    if(action.contact!=="entry"&&frame.progress>.5&&frame.low<=surface){
+      action.contact="entry";
+      return "entry";
+    }
+    return null;
+  }
+  function createSplashEffects(THREE,parent,quality){
+    const effects=[];
+    let rippleGeometry;
+    function splash(point,scale,contact){
+      const level=quality();
+      if(!level)return;
+      const landing=contact==="entry",count=(landing?72:44)/(level===1?2:1);
+      const group=new THREE.Group();
+      group.name=landing?"Espuma do mergulho":"Respingos da saída";
+      group.position.copy(point);
+      const geometry=new THREE.BufferGeometry();
+      const positions=new THREE.Float32BufferAttribute(new Float32Array(count*3),3).setUsage(THREE.DynamicDrawUsage);
+      geometry.setAttribute("position",positions);
+      const material=new THREE.PointsMaterial({color:0xd7f5ff,size:Math.max(.075,scale*.105),transparent:true,depthWrite:false});
+      const drops=new THREE.Points(geometry,material);
+      drops.frustumCulled=false;
+      drops.renderOrder=4;
+      group.add(drops);
+      rippleGeometry??=new THREE.RingGeometry(.86,1,40).rotateX(-Math.PI/2);
+      const ripples=Array.from({length:landing?2:1},(_,i)=>{
+        const ring=new THREE.Mesh(rippleGeometry,new THREE.MeshBasicMaterial({color:i?0x9edfea:0xe1faff,
+          transparent:true,depthWrite:false,side:THREE.DoubleSide}));
+        ring.position.y=.025;
+        ring.renderOrder=4;
+        group.add(ring);
+        return ring;
+      });
+      const seeds=Array.from({length:count},()=>[Math.random()*Math.PI*2,Math.random(),Math.random()]);
+      parent.add(group);
+      effects.push({group,positions,drops,ripples,seeds,scale,landing,time:0});
+      poseSplash(effects[effects.length-1]);
+    }
+    function poseSplash({positions,drops,ripples,seeds,scale,landing,time}){
+      for(const [i,[angle,speed,lift]] of seeds.entries()){
+        const radius=scale*(.04+(1.1+speed*(landing?4:2.7))*time);
+        const y=time*((2.05+lift*1.75)*Math.sqrt(scale)-(landing?4.1:4.8)*time);
+        positions.setXYZ(i,Math.cos(angle)*radius,Math.max(.025,y),Math.sin(angle)*radius);
+      }
+      positions.needsUpdate=true;
+      drops.material.opacity=.91*(1-clamp((time-.13)/.75));
+      ripples.forEach((ring,i)=>{
+        const age=clamp((time-i*.10)/.84);
+        ring.visible=time>=i*.10;
+        ring.scale.setScalar(scale*(.19+Math.sqrt(age)*(i?1.44:2.1)));
+        ring.material.opacity=(i?.44:.76)*(1-age)**1.5;
+      });
+    }
+    function remove(effect){
+      parent.remove(effect.group);
+      effect.drops.geometry.dispose();
+      effect.drops.material.dispose();
+      for(const ring of effect.ripples)ring.material.dispose();
+    }
+    function update(dt){
+      for(let i=effects.length-1;i>=0;i--){
+        const effect=effects[i];
+        effect.time+=dt;
+        if(effect.time>=.96){remove(effect);effects.splice(i,1)}
+        else poseSplash(effect);
+      }
+    }
+    function clear(){
+      for(const effect of effects)remove(effect);
+      effects.length=0;
+    }
+    return {splash,update,clear};
   }
   function spray(THREE,model,time,ghost=false){
     if(!model.spouts?.length)return;
@@ -144,5 +231,5 @@ globalThis.QuimiCraftAquatic=(()=>{
   function releaseSpray(model){
     model?.waterSpray?.material.dispose();
   }
-  return {fishProfile,stepStrike,pose,breachPose,spray,releaseSpray};
+  return {fishProfile,stepStrike,pose,breachStart,breachPose,breachContact,createSplashEffects,spray,releaseSpray};
 })();

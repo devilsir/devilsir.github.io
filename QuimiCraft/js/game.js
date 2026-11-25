@@ -388,7 +388,7 @@ function treeCandidates(x,z,veg,y=null){
   if(!(veg>0))return trees;
   const bx=x-positiveMod(x-1,5),bz=z-positiveMod(z-2,5);
   for(const tx of [bx,bx+5])for(const tz of [bz,bz+5]){if(Math.abs(tx-x)>4||Math.abs(tz-z)>4||villageFootprint(tx,tz,3)||labBoundsContains(tx,tz,LAB_PROTECTION_MARGIN+2))continue;const h=terrainHeight(tx,tz),b=biomeAt(tx,tz),seed=hash(tx>>1,tz>>1,41+WORLD_SEED%113),threshold=({floresta:.31,taiga:.37,tundra:.68,pântano:.5,savana:.57,"bosque de cerejeiras":.35,"selva tropical":.22,"prado alpino":.76,"planície florida":.82,planície:.89,"floresta de sequoias":.19,"manguezal":.32,"campina de aurora":.72,"fiordes glaciais":.8,"bosque lilás":.24,"delta salobro":.58,"termas minerais":.79}[b]??2)+(veg===1?.17:0);
-    if(seed<threshold||(y!==null&&(y<=h||y>h+17)))continue;
+    if(h<WATER_LEVEL||seed<threshold||(y!==null&&(y<=h||y>h+17)))continue;
     const soil=surfaceBlock(tx,tz,h,b);
     if(!ecology.fertile.has(soil)&&![BLOCK.GRASS,BLOCK.MOSS,BLOCK.FROSTED_SOIL,BLOCK.PEAT,BLOCK.MUD].includes(soil))continue;
     const giant=b==="floresta de sequoias",mangrove=b==="manguezal"||b==="delta salobro",pine=b==="taiga"||b==="tundra"||giant,dry=b==="savana",cherry=b==="bosque de cerejeiras",tropical=b==="selva tropical",birch=b==="floresta"&&seed>.59||b==="campina de aurora",jacaranda=b==="bosque lilás"||cherry&&seed>.83,palm=tropical&&hash(tx,tz,819)>.48,tall=(giant?11:mangrove?5:pine?7:palm?8:tropical?6:4)+Math.floor(hash(tx,tz,51)*(pine||palm?4:3)),trunk=giant?BLOCK.REDWOOD_LOG:mangrove?BLOCK.MANGROVE_LOG:jacaranda?BLOCK.JACARANDA_LOG:birch?BLOCK.BIRCH_LOG:dry?BLOCK.ACACIA_LOG:cherry?BLOCK.CHERRY_LOG:palm?BLOCK.PALM_LOG:pine?BLOCK.PINE_LOG:BLOCK.WOOD,leaf=giant?BLOCK.REDWOOD_LEAF:mangrove?BLOCK.MANGROVE_LEAF:jacaranda?BLOCK.JACARANDA_LEAF:birch?BLOCK.BIRCH_LEAF:dry?BLOCK.ACACIA_LEAF:cherry?BLOCK.CHERRY_LEAVES:palm?BLOCK.PALM_LEAVES:pine?BLOCK.PINE_LEAVES:BLOCK.LEAVES;
@@ -413,9 +413,9 @@ function vegetationBlock(x,y,z,h,b,top,veg,trees,habitat=null){
       if(dy>=-2&&dy<=1&&Math.hypot(dx,dz)<=radius+.2*hash(x,y,z)&&!(dx===0&&dz===0&&dy<1))return leaf;
     }
   }
-  if(veg>0&&y===WATER_LEVEL+1&&h<WATER_LEVEL&&h>WATER_LEVEL-5&&["pântano","delta salobro","manguezal"].includes(b)&&hash(x,z,183)>.974)return BLOCK.WATER_LILY;
-  const bambooColumn=veg>0&&b==="selva tropical"&&positiveMod(x,4)===1&&positiveMod(z,4)===2&&hash(x,z,911)>.48;
-  if(veg>0&&y===h+1&&h>=WATER_LEVEL){
+  const growsOnLand=veg>0&&h>=WATER_LEVEL;
+  const bambooColumn=growsOnLand&&b==="selva tropical"&&positiveMod(x,4)===1&&positiveMod(z,4)===2&&hash(x,z,911)>.48;
+  if(growsOnLand&&y===h+1){
     const fruit=bambooColumn?0:wildFruitAt(b,top,x,z,veg);
     if(fruit)return fruit;
     const regional=habitats.vegetation(habitat,x,z,h)||ecology.cover(b,x,z);
@@ -433,12 +433,12 @@ function vegetationBlock(x,y,z,h,b,top,veg,trees,habitat=null){
     }
     if((b==="selva tropical"||b==="pântano")&&chance>.91)return b==="pântano"?BLOCK.REED:BLOCK.FERN;
   }
-  if(veg>0&&(b==="deserto"||b==="badlands"||b==="cânion calcário")&&y>h&&y<=h+3+Math.floor(hash(x,z,3)*2)&&positiveMod(x,7)===2&&positiveMod(z,7)===4&&hash(x,z,9)>.45+(veg===1?.2:0))return BLOCK.CACTUS;
+  if(growsOnLand&&(b==="deserto"||b==="badlands"||b==="cânion calcário")&&y>h&&y<=h+3+Math.floor(hash(x,z,3)*2)&&positiveMod(x,7)===2&&positiveMod(z,7)===4&&hash(x,z,9)>.45+(veg===1?.2:0))return BLOCK.CACTUS;
   if(bambooColumn&&y>h&&y<=h+3+Math.floor(hash(x,z,912)*3))return BLOCK.BAMBOO;
   if(b==="bosque de cristais"&&positiveMod(x,8)===3&&positiveMod(z,8)===5&&y>h&&y<=h+2+Math.floor(hash(x,z,71)*5))return y===h+1&&hash(x,z,72)>.72?BLOCK.GLOWSTONE:BLOCK.CRYSTAL;
   if(b==="vulcânico"&&positiveMod(x,11)===6&&positiveMod(z,11)===3&&y>h&&y<=h+1+Math.floor(hash(x,z,73)*3))return BLOCK.BASALT;
   if(b==="badlands"){const rx=positiveMod(x,31),rz=positiveMod(z,31),pillar=(rx===5||rx===10)&&(rz===6||rz===11);if(pillar&&y>h&&y<=h+2+Math.floor(hash(rx,rz,74)*3))return y===h+1?BLOCK.ALCHEMY_BRICK:BLOCK.MARBLE;if(y===h+1&&rx>=5&&rx<=10&&rz>=6&&rz<=11&&(rx===5||rx===10||rz===6||rz===11)&&hash(x,z,75)>.45)return BLOCK.ALCHEMY_BRICK}
-  if(veg>0&&y===h+1&&[BLOCK.GRASS,BLOCK.MOSS,BLOCK.PEAT,BLOCK.FROSTED_SOIL].includes(top)){const density=veg===1?.945:.86,q=hash(x,z,91+WORLD_SEED%67);if(q>density){if(b==="tundra"||b==="prado alpino")return q>.94?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS;if(b==="bosque de cerejeiras"||b==="planície florida")return q>.955?BLOCK.POPPY:q>.91?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="pântano")return q>.95?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="selva tropical")return q>.965?BLOCK.POPPY:BLOCK.TALL_GRASS;return q>.965?BLOCK.POPPY:q>.935?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS}}
+  if(growsOnLand&&y===h+1&&[BLOCK.GRASS,BLOCK.MOSS,BLOCK.PEAT,BLOCK.FROSTED_SOIL].includes(top)){const density=veg===1?.945:.86,q=hash(x,z,91+WORLD_SEED%67);if(q>density){if(b==="tundra"||b==="prado alpino")return q>.94?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS;if(b==="bosque de cerejeiras"||b==="planície florida")return q>.955?BLOCK.POPPY:q>.91?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="pântano")return q>.95?BLOCK.BLUE_FLOWER:BLOCK.TALL_GRASS;if(b==="selva tropical")return q>.965?BLOCK.POPPY:BLOCK.TALL_GRASS;return q>.965?BLOCK.POPPY:q>.935?BLOCK.WHITE_FLOWER:BLOCK.TALL_GRASS}}
   return BLOCK.AIR;
 }
 function recordColumnEdit(x,y,z,id){
@@ -864,7 +864,7 @@ const liquidFogFragment=
   "float fogAlpha(vec3 point){return smoothstep(uFogNear,uFogFar,distance(cameraPosition,point));}";
 const waterMat=new THREE.ShaderMaterial({
   transparent:true,depthWrite:false,depthTest:true,side:THREE.DoubleSide,
-  uniforms:{uTime:{value:0},uQuality:{value:1},uWorldWater:{value:true},uUnderwater:{value:0},uSun:{value:new THREE.Vector3(.2,1,.1)},...liquidFog()},
+  uniforms:{uTime:{value:0},uQuality:{value:1},uWorldWater:{value:true},uUnderwater:{value:0},uSun:{value:new THREE.Vector3(.2,1,.1)},uSurfaceLight:{value:new THREE.Color()},...liquidFog()},
   vertexShader:`
     attribute float depthVal;
     attribute vec3 waterTint;
@@ -878,7 +878,7 @@ const waterMat=new THREE.ShaderMaterial({
     }`,
   fragmentShader:`
     ${liquidFogFragment}
-    uniform vec3 uSun;
+    uniform vec3 uSun,uSurfaceLight;
     uniform bool uWorldWater;
     uniform float uTime,uQuality,uUnderwater;
     varying vec3 vTint,vWorld,vNormal;
@@ -916,8 +916,15 @@ const waterMat=new THREE.ShaderMaterial({
       float alpha=.43+fresnel*.17+sheen*.035;
       color+=vec3(.07,.12,.15)*sheen*mix(.58,1.0,top);
       if(innerFace){
-        color=mix(pale,pale*.83,depth)+vec3(.025,.045,.06)*sheen;
-        alpha=mix(.23,.34,top)+fresnel*.14+sheen*.025;
+        if(uWorldWater){
+          float skylight=top*smoothstep(.61,.81,facing);
+          vec3 filteredSky=uSurfaceLight*.74+pale*.22;
+          color=mix(pale*.65,filteredSky,skylight)+vec3(.08,.12,.14)*sheen*top;
+          alpha=.13+.51*skylight+sheen*.08*top;
+        }else{
+          color=mix(pale,pale*.83,depth)+vec3(.025,.045,.06)*sheen;
+          alpha=mix(.23,.34,top)+fresnel*.14+sheen*.025;
+        }
       }else{
         float highlight=pow(max(dot(reflect(-normalize(uSun),normal),view),0.0),56.0);
         color=mix(color,vec3(.69,.88,.98),fresnel*.36);
@@ -1645,13 +1652,16 @@ function supportedAt(pos){
   return voxelBodyBlocked(pos.x-r,pos.x+r,pos.y-.075,pos.y-.027,pos.z-r,pos.z+r)||vehicles.supportsPlayer(pos)||labDecorSupports(pos);
 }
 function moveAxis(axis,delta){if(!delta)return;const before=player.pos[axis],test=player.pos.clone();test[axis]+=delta;if(!collides(test)){if(player.crouch&&player.onGround&&(axis==="x"||axis==="z")&&!supportedAt(test))return;player.pos.copy(test);return}let lo=0,hi=1;for(let i=0;i<7;i++){const m=(lo+hi)/2,test2=player.pos.clone();test2[axis]=before+delta*m;if(collides(test2))hi=m;else lo=m}player.pos[axis]=before+delta*lo;if(axis==="y"){if(delta<0){player.onGround=true;const fall=player.fallStart-player.pos.y;if(fall>5.2&&!player.inWater){damagePlayer(Math.floor((fall-4.6)*4),"queda");dustBurst(player.pos.clone(),Math.min(18,Math.floor(fall*1.5)));sound("land",Math.min(1,fall/12));wakeNearbyScreamers(player.pos,9)}player.fallStart=player.pos.y}else player.fallStart=player.pos.y;player.vel.y=0}}
+function waterColumnSurface(x,y,z,maxY=MAX_Y-1){
+  const bx=Math.floor(x),bz=Math.floor(z);
+  let top=Math.floor(y);
+  while(top<maxY&&getBlock(bx,top+1,bz)===BLOCK.WATER)top++;
+  return top+liquidSurfaceHeight(BLOCK.WATER,x,top,z);
+}
 function waterSurfaceAt(x,z){
   const bx=Math.floor(x),bz=Math.floor(z),feet=Math.floor(player.pos.y);
   for(let yy=Math.min(MAX_Y-2,feet+3);yy>=Math.max(0,feet-3);yy--){
-    if(getBlock(bx,yy,bz)!==BLOCK.WATER)continue;
-    let top=yy;
-    while(top<Math.min(MAX_Y-2,yy+18)&&getBlock(bx,top+1,bz)===BLOCK.WATER)top++;
-    return top+liquidSurfaceHeight(BLOCK.WATER,x,top,z);
+    if(getBlock(bx,yy,bz)===BLOCK.WATER)return waterColumnSurface(x,yy,z,Math.min(MAX_Y-2,yy+18));
   }
   return -Infinity
 }
@@ -2050,15 +2060,14 @@ function updateBreath(dt,moving){
 const regionalWaterVisibility={fresh:1,salt:1.12,cold:1.15,tannin:.58,acid:.66,thermal:.82,mineral:.94};
 function waterFogProfile(x,z){
   const {rgb,id}=regionalWater(x,z);
-  const tint=rgb.map((c,i)=>clamp((c*1.12+[.055,.126,.153][i])*.71+[.29,.70,.93][i]*.29,0,1));
-  return {rgb:tint,visibility:regionalWaterVisibility[id]??1};
+  return {rgb,visibility:regionalWaterVisibility[id]??1};
 }
 function updateUnderwaterUI(clarity,tint){
   const overlay=$("waterOverlay"),submerged=clarity!==null;
   overlay.classList.toggle("on",submerged);
   overlay.classList.toggle("low-air",submerged&&player.headUnderwater&&player.breath<=playerBreathMax()*.25);
   if(submerged){
-    overlay.style.setProperty("--water-rgb",tint.map(c=>Math.round(c*255)).join(","));
+    overlay.style.setProperty("--water-rgb",tint.toArray().map(c=>Math.round(c*255)).join(","));
     overlay.style.setProperty("--clarity",clarity.toFixed(2));
   }
 }
@@ -2577,6 +2586,7 @@ function combatParticles(pos,color=0xffffff,count=8,style=""){
 }
 const projectileForward=new THREE.Vector3(0,0,-1);
 const frontierFx=QuimiCraftEffects.create(THREE,scene,()=>settings.particles,()=>document.documentElement.classList.contains("reduced-motion"));
+const aquaticFx=QuimiCraftAquatic.createSplashEffects(THREE,scene,()=>settings.particles);
 const dragonShotLight=new THREE.PointLight(0xffffff,0,4.8,2);
 const dragonBursts=new Map();
 projectileRoot.add(dragonShotLight);
@@ -2648,7 +2658,9 @@ function closeDragonBurst(e){
 }
 function updateDragonBursts(dt){
   for(const [e,burst] of dragonBursts){
-    if(e.dead||burst.kind==="mount"&&riding?.actor!==e){closeDragonBurst(e);continue}
+    if(e.dead||(burst.kind==="mount"?riding?.actor!==e:!QuimiCraftAI.canPursue(e,combatTargetAvailable))){
+      closeDragonBurst(e);continue;
+    }
     const direction=burst.direction,start=e.rig.nose.getWorldPosition(new THREE.Vector3());
     const aim=burst.kind==="mount"?aimDirection():burst.target&&!burst.target.dead?
       entityAimPoint(burst.target).sub(start).normalize():null;
@@ -2936,7 +2948,7 @@ function attackSelected(alt=false){
   const staff=w.family==="staff";
   if(player.attackCooldown>previous)scienceSystem?.damageEquipment(id,staff&&alt?2.2:1,staff?"conjuração":w.reach?"ataque":"disparo");
 }
-const mobDamageFlashes=new Map(),mobMoveMultiplier=1.18;
+const mobDamageFlashes=new Map(),mobMoveMultiplier=1.30;
 function restoreMobColor(e){
   const flash=mobDamageFlashes.get(e);
   if(!flash)return;
@@ -3030,8 +3042,7 @@ function hitEntity(e,damage,source="ataque",knock=null,attacker=playerActor,atta
   flashMobDamage(e);
   mobKnockback(e,attacker,knock);
   if(e.hp>0){
-    QuimiCraftAI.alarm(e.ai,e.profile,attacker);
-    e.ai.vision=null;
+    if(!e.bonded||e.groveRage)QuimiCraftAI.alarm(e,attacker);
     e.jumpCooldown=Math.min(e.jumpCooldown,.12);
   }
   sound("hit",.55);
@@ -3210,7 +3221,7 @@ function updateProjectiles(dt){
     dragonShotLight.intensity=0;
   }
 }
-const MOB_STATUS = {stone:"PETRIFICADO",stun:"ATORDOADO",windup:"PREPARANDO ATAQUE",breathCharge:"CARREGANDO RAJADA",breath:"CANALIZANDO RAJADA",flee:"EM FUGA",chase:"PERSEGUINDO",search:"PROCURANDO",kite:"RECUANDO"};
+const MOB_STATUS = {stone:"PETRIFICADO",stun:"ATORDOADO",windup:"PREPARANDO ATAQUE",breathCharge:"CARREGANDO RAJADA",breath:"CANALIZANDO RAJADA",flee:"EM FUGA",chase:"PERSEGUINDO",search:"PROCURANDO",kite:"RECUANDO",evade:"RETORNANDO"};
 function updateEnemyHud(dt){const aimed=state.aimEntity&&!state.aimEntity.dead?state.aimEntity:null;if(state.combatTargetTime>0)state.combatTargetTime-=dt;const e=aimed||(state.combatTargetTime>0&&state.combatTarget&&!state.combatTarget.dead?state.combatTarget:null);if(e){$("enemyHud").classList.add("show");$("enemyName").textContent=e.name.toUpperCase()+(MOB_STATUS[e.ai.mode]?" · "+MOB_STATUS[e.ai.mode]:"");$("enemyHp").textContent=`${Math.ceil(e.hp)} / ${e.maxHp}`;$("enemyFill").style.width=clamp(e.hp/e.maxHp*100,0,100)+"%"}else $("enemyHud").classList.remove("show")}
 
 const torchLights=[];
@@ -4224,6 +4235,11 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
     else if(type!=="fox")faunaDetails(species,variant,g,rig);
     type=species;name=variant.name;
   }
+  if(rig.boto){
+    g.updateMatrixWorld(true);
+    rig.boto.breachBounds=new THREE.Box3().setFromObject(rig.boto.group).translate(g.position.clone().negate());
+    g.rotation.order="YXZ";
+  }
   if(regional?.shape==="fantasy"&&!special)wildlife.regionalThreat(species,g,rig);
   if(special)wildlife.ambientEffects(rig,0,0,0,1);
   if(ghost&&!nativeGhost)name=spectral.name(species,name);
@@ -4355,7 +4371,7 @@ function updateOffspring(dt){
   }
 }
 function courtshipBehavior(e,behavior,dt){
-  if(["flee","chase","windup","strike","search"].includes(behavior.mode))return behavior;
+  if(e.ai.engagement||e.ai.returnTo||behavior.mode==="flee")return behavior;
   const mate=breeding.mate(e,entities,visibleActor);
   if(mate){
     const gap=QuimiCraftAI.range(e,mate);
@@ -4953,6 +4969,7 @@ function inspectedAquaticModel(id,ghost=false){
     const size=new THREE.Box3().setFromObject(model.group).getSize(new THREE.Vector3());
     model.group.scale.multiplyScalar(length/size.z);
   }
+  if(model.breach)model.breachBounds=new THREE.Box3().setFromObject(model.group);
   if(ghost)spectral.apply(THREE,model.group);
   return model.group;
 }
@@ -4971,22 +4988,25 @@ function buildFish(x,y,z,water,species=null,ghost=spectral.roll()){
   if(ghost)spectral.apply(THREE,group);
   fishRoot.add(group);
   const heading=Math.random()*TAU;
+  group.rotation.order="YXZ";
   group.rotation.y=heading+Math.PI;
   const record={...model,id,profile,large,aquatic:true,hostile:aquaticHostile(profile),spectral:ghost,name:group.name,hp:profile.hp,maxHp:profile.hp,dead:false,
     ai:{mode:"idle"},angle:heading,speed:profile.speed*mobMoveMultiplier,timer:Math.random()*2,baseY:y,phase:Math.random()*TAU,
     cooldown:0,strike:null,alarm:0,water,surfaceClearance,surfaceAt:model.spouts?8+Math.random()*12:Infinity,surfacings:0,
+    breachBounds:model.breach?bounds:null,
     get x(){return group.position.x},get y(){return group.position.y},get z(){return group.position.z}};
   fishSchool.push(record);
   return record;
 }
 function findFishWater(x,z){
+  const sampleX=x,sampleZ=z;
   x=Math.floor(x);z=Math.floor(z);
   const terrain=terrainHeight(x,z);
   for(let y=Math.min(MAX_Y-3,Math.max(WATER_LEVEL,terrain+3));y>=Math.max(2,terrain+1);y--){
     if(getBlock(x,y,z)!==BLOCK.WATER)continue;
     let bottom=y;
     while(bottom>terrain+1&&getBlock(x,bottom-1,z)===BLOCK.WATER)bottom--;
-    return {y:y+.37,top:y+liquidSurfaceHeight(BLOCK.WATER,x+.5,y,z+.5),bottom,depth:y-bottom+1};
+    return {y:y+.37,top:y+liquidSurfaceHeight(BLOCK.WATER,sampleX,y,sampleZ),bottom,depth:y-bottom+1};
   }
   return null;
 }
@@ -4996,6 +5016,42 @@ function aquaticWater(x,y,z,extent,angle){
   const stepX=Math.sin(angle)*extent,stepZ=Math.cos(angle)*extent,flank=extent>2?.63:.33;
   return getBlock(x+stepX,y,z+stepZ)===BLOCK.WATER&&getBlock(x-stepX*.66,y,z-stepZ*.66)===BLOCK.WATER
     &&getBlock(x+stepZ*flank,y,z-stepX*flank)===BLOCK.WATER&&getBlock(x-stepZ*flank,y,z+stepX*flank)===BLOCK.WATER;
+}
+function planAquaticBreach(bounds,x,y,z,heading,duration,travel,extent){
+  const dx=Math.sin(heading),dz=Math.cos(heading);
+  const first=findFishWater(x,z),last=findFishWater(x+dx*travel,z+dz*travel);
+  if(!first||!last||Math.abs(first.top-last.top)>.30)return null;
+  const start=Math.min(y,QuimiCraftAquatic.breachStart(bounds,first.top));
+  const end=QuimiCraftAquatic.breachStart(bounds,last.top);
+  const span=Math.max(-bounds.min.z,bounds.max.z),width=Math.max(-bounds.min.x,bounds.max.x);
+  const rx=Math.abs(dx)*span+Math.abs(dz)*width,rz=Math.abs(dz)*span+Math.abs(dx)*width;
+  for(let i=0;i<=6;i++){
+    const t=i/6,nx=x+dx*travel*t,nz=z+dz*travel*t;
+    const surface=lerp(first.top,last.top,t);
+    if(!aquaticWater(nx,surface-.65,nz,extent,heading))return null;
+    const frame=QuimiCraftAquatic.breachPose(t,bounds,surface,start,end);
+    if(voxelBodyBlocked(nx-rx,nx+rx,frame.low,frame.high,nz-rz,nz+rz))return null;
+  }
+  return {x,z,dx,dz,heading,duration,travel,first,last,start,end,time:0,contact:null};
+}
+function moveAquaticBreach(group,bounds,jump,dt){
+  jump.time=Math.min(jump.duration,jump.time+dt);
+  const progress=jump.time/jump.duration,surface=lerp(jump.first.top,jump.last.top,progress);
+  const frame=QuimiCraftAquatic.breachPose(progress,bounds,surface,jump.start,jump.end);
+  group.position.set(jump.x+jump.dx*jump.travel*progress,frame.y,jump.z+jump.dz*jump.travel*progress);
+  group.rotation.set(frame.pitch,jump.heading+Math.PI,0);
+  const contact=QuimiCraftAquatic.breachContact(jump,frame,surface);
+  if(contact){
+    const noseX=group.position.x+jump.dx*frame.front,noseZ=group.position.z+jump.dz*frame.front;
+    const water=findFishWater(noseX,noseZ);
+    const atNose=water&&Math.abs(water.top-surface)<.30;
+    const x=atNose?noseX:group.position.x,z=atNose?noseZ:group.position.z;
+    const size=clamp((bounds.max.z-bounds.min.z)*.39,.66,2.15);
+    aquaticFx.splash(new THREE.Vector3(x,(atNose?water.top:findFishWater(x,z)?.top??surface)+.016,z),size,contact);
+    const distance=Math.hypot(player.pos.x-x,player.pos.y-surface,player.pos.z-z);
+    if(distance<24)sound("splash",(contact==="entry"?1.2:.76)*(1-distance/28));
+  }
+  return progress>=1;
 }
 function disposeAquatic(f){
   fishRoot.remove(f.group);
@@ -5018,6 +5074,9 @@ function hitAquatic(f,damage,attacker,knock){
   sound("hit",.42);
   if(f.hp>0){
     f.alarm=f.profile.attack?.kind==="tail"?5.2:2.8;
+    if(f.profile.attack&&(attacker===playerActor||attacker===riding?.actor)&&!labSafe()){
+      QuimiCraftAI.engage(f,playerActor);
+    }
     return;
   }
   f.dead=true;
@@ -5092,6 +5151,17 @@ function updateFish(dt,now){
       f.dead=true;clearCreatureStone(f);creatureAfflictions.delete(f);restoreMobColor(f);disposeAquatic(f);fishSchool.splice(i,1);
       continue;
     }
+    if(!f.dead&&f.breaching){
+      f.phase+=dt*5;
+      QuimiCraftAquatic.pose(f,f.phase,.52*motion);
+      if(moveAquaticBreach(g,f.breachBounds,f.breaching,dt)){
+        f.water=f.breaching.last;
+        f.baseY=aquaticDepth(f.water,f.water.top-f.water.depth*p.swim,p);
+        f.breaching=null;
+        f.surfaceAt=15+Math.random()*16;
+      }
+      continue;
+    }
     if(Math.hypot(f.vx||0,f.vz||0)>.02){
       const x=f.x+f.vx*dt,z=f.z+f.vz*dt;
       if(aquaticWater(x,f.y-(f.surfaceLift??0),z,p.extent,f.angle)){g.position.x=x;g.position.z=z}
@@ -5103,11 +5173,32 @@ function updateFish(dt,now){
     f.alarm=Math.max(0,f.alarm-dt);
     f.frostTime=Math.max(0,(f.frostTime||0)-dt);
     const heightGap=Math.abs(target.y-f.y),inside=player.inWater&&heightGap<2.55;
-    const aggressive=inside&&attack&&distance<attack.notice&&!labSafe()&&(attack.kind!=="tail"||attack.venom||f.alarm>0);
-    const pursuing=aggressive&&attack.kind==="bite"&&combatSegmentClear(g.position,target);
     const totalGap=Math.hypot(distance,heightGap);
+    if(f.ai.engagement&&!QuimiCraftAI.canPursue(f,combatTargetAvailable)){
+      QuimiCraftAI.disengage(f);
+      f.strike=null;
+    }
+    const returning=QuimiCraftAI.returnGoal(f);
+    const canDetect=attack&&inside&&distance<attack.notice*1.25&&aquaticHostile(p);
+    const seen=player.inWater&&(f.ai.engagement||canDetect)&&combatSegmentClear(g.position,target);
+    if(!f.ai.engagement&&!returning&&canDetect&&seen&&combatTargetAvailable(playerActor)){
+      QuimiCraftAI.engage(f,playerActor);
+    }
+    const combat=f.ai.engagement;
+    if(combat){
+      if(seen){
+        combat.lastSeen={x:target.x,y:target.y,z:target.z};
+        combat.searching=false;
+      }else if(QuimiCraftAI.range(f,combat.lastSeen)<.75&&Math.abs(f.y-combat.lastSeen.y)<1){
+        combat.searching=true;
+      }
+    }
+    const rearAttack=combat&&attack.kind==="tail"&&seen&&totalGap<=attack.range+.36;
+    const chaseGoal=combat&&(seen||player.inWater&&combat.searching?target:combat.lastSeen);
+    const destination=returning||chaseGoal;
+    const pursuing=!!chaseGoal&&!rearAttack&&(seen||QuimiCraftAI.range(f,chaseGoal)>.65||Math.abs(f.y-chaseGoal.y)>.85);
     const fleeing=inside&&(f.alarm>0&&!attack||!f.large&&distance<2.45);
-    const heading=Math.atan2(dx,dz);
+    const heading=destination?QuimiCraftAI.heading(f,destination):Math.atan2(dx,dz);
     const previous=f.angle;
     f.timer-=dt;
     if(f.timer<=0){
@@ -5119,24 +5210,26 @@ function updateFish(dt,now){
         f.baseY=aquaticDepth(bath,bath.top-bath.depth*p.swim,p);
       }
     }
-    if(pursuing)f.angle=turnToward(f.angle,heading,dt*(f.id==="piranha"?5.5:3.1));
-    else if(aggressive&&attack.kind==="tail")f.angle=turnToward(f.angle,heading+Math.PI,dt*5);
+    if(rearAttack)f.angle=turnToward(f.angle,heading+Math.PI,dt*5);
+    else if(pursuing||returning)f.angle=turnToward(f.angle,heading,dt*(f.id==="piranha"?6.3:4.15));
     else if(fleeing)f.angle=turnToward(f.angle,heading+Math.PI,dt*4.3);
     else if(inside&&distance>3&&distance<9&&p.mode==="curious")f.angle=turnToward(f.angle,heading,dt*.46);
     const approach=attack?.kind==="bite"?.40:.13;
-    const pose=QuimiCraftAquatic.stepStrike(f,dt,aggressive&&totalGap<attack.range+approach&&combatSegmentClear(g.position,target));
-    f.ai.mode=pose?.stage??(pursuing?"chase":fleeing?"flee":"idle");
+    const pose=QuimiCraftAquatic.stepStrike(f,dt,!!combat&&seen&&totalGap<attack.range+approach);
+    f.ai.mode=pose?.stage??(returning?"evade":combat?(seen?"chase":"search"):fleeing?"flee":"idle");
     const stroke=p.mode==="drift"?.65+.35*Math.max(0,Math.sin(f.phase)):1;
     const lunge=attack?.kind==="bite"?(pose?.stage==="windup"?.33:1+(pose?.burst??0)*1.67):1;
     const bracing=attack?.kind!=="bite"&&pose&&pose.stage!=="recover";
-    const pace=f.speed*stroke*lunge*(pursuing?1.24:fleeing?1.35:bracing?.16:1)*(f.frostTime>0?.52:1);
-    const travel=pursuing&&pose?Math.min(pace*dt,Math.max(.010,distance-.20)):pace*dt;
+    const pace=f.speed*stroke*lunge*(bracing?.16:pursuing?1.54:returning?1.26:fleeing?1.35:1)*(f.frostTime>0?.52:1);
+    const travel=pursuing||returning?Math.min(pace*dt,Math.max(.010,QuimiCraftAI.range(f,destination)-.20)):pace*dt;
     const nx=f.x+Math.sin(f.angle)*travel,nz=f.z+Math.cos(f.angle)*travel;
     f.surfaceAt-=dt;
-    const surfacing=f.surfaceAt<0&&!pursuing;
+    const surfacing=f.surfaceAt<0&&!combat&&!returning;
+    const wantsJump=surfacing&&!f.surfaceAction&&f.breachBounds&&f.surfacings%(f.id==="dolphin"?2:3)===1;
     const bob=p.mode==="curious"?.49:p.mode==="bottom"?.11:.22;
     const nearSurface=surfacing||!!f.surfaceAction;
-    const ty=aquaticDepth(f.water,nearSurface?f.water.top-.42:pursuing?target.y:f.baseY+Math.sin(now*.0018+f.phase*.13)*bob,
+    const readyY=wantsJump?QuimiCraftAquatic.breachStart(f.breachBounds,f.water.top):f.water.top-.42;
+    const ty=aquaticDepth(f.water,nearSurface?readyY:destination?destination.y:f.baseY+Math.sin(now*.0018+f.phase*.13)*bob,
       p,nearSurface?.35:f.surfaceClearance);
     const previousLift=f.surfaceLift??0;
     const ny=lerp(f.y-previousLift,ty,Math.min(1,dt*2.4));
@@ -5147,35 +5240,37 @@ function updateFish(dt,now){
       f.angle+=Math.PI*.61;
       f.timer=.13;
     }
-    if(surfacing&&!f.surfaceAction&&(f.y>=f.water.top-.48||f.surfaceAt<-5)){
-      if(clear&&f.y>=f.water.top-.48&&distance<36){
-        const cycle=f.surfacings++%(f.id==="dolphin"?2:3);
+    if(surfacing&&!f.surfaceAction&&(f.y>=readyY-.07||f.surfaceAt<-5)){
+      if(clear&&f.y>=readyY-.07&&distance<36){
+        f.surfacings++;
+        if(wantsJump){
+          const duration=f.id==="humpback"?1.9:f.id==="orca"?1.52:1.34;
+          f.breaching=planAquaticBreach(f.breachBounds,f.x,f.y,f.z,f.angle,duration,f.speed*duration,p.extent);
+          if(f.breaching){
+            moveAquaticBreach(g,f.breachBounds,f.breaching,0);
+            continue;
+          }
+        }
         const top=Math.ceil(f.water.top);
-        const jump=!!f.breach&&cycle===1&&getBlock(f.x,top,f.z)===BLOCK.AIR&&getBlock(f.x,top+1,f.z)===BLOCK.AIR;
-        f.surfaceAction={jump,time:0,duration:jump?(f.id==="humpback"?1.70:1.18):1.04};
-        if(distance<14)sound("splash",jump?.82:.62);
+        if(getBlock(f.x,top,f.z)===BLOCK.AIR){
+          f.surfaceAction={time:0,duration:1.04};
+          if(distance<14)sound("splash",.62);
+        }else f.surfaceAt=13+Math.random()*15;
       }else f.surfaceAt=13+Math.random()*15;
     }
     const display=f.surfaceAction;
-    const leap=display?.jump?QuimiCraftAquatic.breachPose(display.time/display.duration,f.breach):null;
-    const spoutLift=display&&!display.jump&&f.spouts?.length?Math.max(0,f.water.top-ny-f.spouts[0][1]*g.scale.y+.035)*Math.min(1,display.time*9,Math.max(0,(display.duration-display.time)*9)):0;
-    f.surfaceLift=leap?.lift??spoutLift;
+    f.surfaceLift=display&&f.spouts?.length?Math.max(0,f.water.top-ny-f.spouts[0][1]*g.scale.y+.035)*Math.min(1,display.time*9,Math.max(0,(display.duration-display.time)*9)):0;
     g.position.y+=f.surfaceLift;
     g.rotation.y=turnToward(g.rotation.y,f.angle+Math.PI,dt*4);
-    g.rotation.x=leap?leap.pitch*motion:lerp(g.rotation.x,clamp((f.y-ty)*.27,-.32,.32)*motion,Math.min(1,dt*3.2));
+    g.rotation.x=lerp(g.rotation.x,clamp((f.y-ty)*.27,-.32,.32)*motion,Math.min(1,dt*3.2));
     const turn=Math.atan2(Math.sin(f.angle-previous),Math.cos(f.angle-previous));
     g.rotation.z=lerp(g.rotation.z,clamp(-turn*1.42,-.27,.27)*motion,Math.min(1,dt*4.7));
     f.phase+=dt*(p.mode==="drift"?4.5:3.5+pace*3.2);
     QuimiCraftAquatic.pose(f,f.phase,clamp(.47+pace*.35,.42,1.6)*motion,pose);
     if(display){
-      QuimiCraftAquatic.spray(THREE,f,display.jump||!settings.particles?-1:display.time,f.spectral);
+      QuimiCraftAquatic.spray(THREE,f,settings.particles?display.time:-1,f.spectral);
       display.time+=dt;
       if(display.time>=display.duration){
-        if(display.jump&&distance<36){
-          const splash=g.position.clone().setY(f.water.top);
-          combatParticles(splash,0x9fe8f3,20,"vapor");
-          if(distance<14)sound("splash",.78);
-        }
         f.surfaceAction=null;f.surfaceAt=15+Math.random()*16;
         QuimiCraftAquatic.spray(THREE,f,-1);
       }
@@ -5183,7 +5278,7 @@ function updateFish(dt,now){
     if(f.id==="pufferfish")g.scale.setScalar(lerp(g.scale.x,pose?.stage==="windup"||pose?.stage==="strike"?1.48:1,dt*6));
     const biteDirection=attack?.kind==="tail"?f.angle+Math.PI:f.angle;
     const facing=Math.cos(biteDirection-Math.atan2(target.x-f.x,target.z-f.z));
-    if(pose?.hit&&inside&&!labSafe()&&(attack.kind==="sting"||facing>.25)&&
+    if(pose?.hit&&combat&&player.inWater&&(attack.kind==="sting"||facing>.25)&&
       Math.hypot(target.x-f.x,target.y-f.y,target.z-f.z)<=attack.range&&combatSegmentClear(g.position,target)){
       damagePlayer(p.damage,f.name,attack.venom||attack.kind==="sting"?"toxicity":"",spectral.markAttack(f,attack));
       sound("splash",.40);
@@ -5202,22 +5297,27 @@ function nearbyActor(origin,candidates,maxDistance,filter){
   }
   return winner ? {actor:winner,dist,visible:true} : null;
 }
-function senseEntity(e){
-  const p=e.profile,a=e.ai;
+function combatTargetAvailable(target){
+  if(target===playerActor)return !labSafe();
+  return target.group?.parent===(target.aquatic?fishRoot:entityRoot);
+}
+function senseEntity(e,tracked){
+  const p=e.profile;
   const liveThreat=target=>target!==e&&!target.dead&&target.hostile;
-  if(e.feedingPause>0||e.bonded&&!e.groveRage)return {};
+  if(e.feedingPause>0||e.bonded&&!e.hostile)return {};
+  if(tracked)return {enemy:{actor:tracked,visible:visibleActor(e,tracked)&&alchemyPlay.distantSight(e,tracked)}};
+  const notice=QuimiCraftAI.detectionRange(p);
   if(e.persistent){
     const greet=QuimiCraftAI.range(e,playerActor)<2.75&&visibleActor(e,playerActor)?playerActor:null;
     if(p.temperament==="guard"){
-      return {enemy:nearbyActor(e,entities,p.sense,liveThreat),greet};
+      return {enemy:nearbyActor(e,entities,notice,liveThreat),greet};
     }
     const threat=nearbyActor(e,entities,p.sense,liveThreat);
     return {threat:threat?{...threat,alarming:true}:null,greet};
   }
-  if(p.temperament==="hostile"||a.retaliate>0){
-    const seen=nearbyActor(e,[playerActor],p.sense,target=>!target.dead&&!labSafe()&&alchemyPlay.distantSight(e,target));
-    if(p.temperament==="neutral")return {enemy:seen};
-    const resident=nearbyActor(e,npcs,p.sense*.72,target=>!target.dead&&!target.ai.recovering&&target.role!=="carbon"&&target.role!=="child"&&alchemyPlay.distantSight(e,target));
+  if(e.hostile||p.temperament==="hostile"){
+    const seen=nearbyActor(e,[playerActor],notice,target=>!target.dead&&!labSafe()&&alchemyPlay.distantSight(e,target));
+    const resident=p.temperament==="neutral"?null:nearbyActor(e,npcs,notice*.72,target=>!target.dead&&!target.ai.recovering&&target.role!=="carbon"&&target.role!=="child"&&alchemyPlay.distantSight(e,target));
     return {enemy:resident&&(!seen||resident.dist+1.3<seen.dist)?resident:seen};
   }
   if(p.temperament==="skittish"||p.temperament==="calm"){
@@ -5260,7 +5360,7 @@ function hitNPC(npc,damage,source){
   }
 }
 function finishEntityStrike(e,target){
-  if(!e.profile.strike||target.dead||target.ai?.recovering>0||(target===playerActor&&labSafe()))return;
+  if(!e.profile.strike||e.ai.engagement?.target!==target||!QuimiCraftAI.canPursue(e,combatTargetAvailable))return;
   const strike=spectral.markAttack(e,e.profile.strike);
   const start=strike.dragon?e.rig.nose.getWorldPosition(new THREE.Vector3()):entityAimPoint(e),finish=entityAimPoint(target);
   const planar=QuimiCraftAI.range(e,target);
@@ -5366,7 +5466,7 @@ function steerEntity(e,behavior,dt){
   a.pace=lerp(a.pace,behavior.speed*mobMoveMultiplier*(e.frostTime>0?.52:1),ease);
   const goal=behavior.goal;
   if(!goal||previousMode!==a.mode){a.route=[];a.stalled=0}
-  const matchHeight=!!goal&&["chase","search","return","courtship","follow"].includes(behavior.mode);
+  const matchHeight=!!goal&&["chase","search","return","evade","courtship","follow"].includes(behavior.mode);
   if(goal&&a.routeGoal&&(QuimiCraftAI.range(a.routeGoal,goal)>2.3||matchHeight&&Math.abs(a.routeGoal.y-goal.y)>1.2))a.route=[];
   while(a.route.length&&QuimiCraftAI.range(e,a.route[0])<.26&&Math.abs(e.y-a.route[0].y)<.22)a.route.shift();
   if(matchHeight&&!a.route.length&&Math.abs(e.y-goal.y)>.82&&QuimiCraftAI.range(e,goal)<3.5){
@@ -5518,8 +5618,7 @@ function spawnFolklore(dt){
 function angerFolklore(type,origin,range,target){
   for(const e of entities){
     if(e.dead||e.type!==type||Math.hypot(e.x-origin.x,e.y-origin.y,e.z-origin.z)>range)continue;
-    QuimiCraftAI.alarm(e.ai,e.profile,target);
-    e.ai.vision=null;
+    QuimiCraftAI.alarm(e,target);
   }
 }
 function wakeNearbyScreamers(origin,range){
@@ -5562,32 +5661,56 @@ function updateBoto(e,dt,now){
       Object.assign(e,place,{botoOnLand:night,vy:0,onGround:night,hop:null});
       Object.assign(e.ai.home,place);
       rig.human.visible=night;rig.boto.group.visible=!night;
+      e.botoBreach=null;e.botoLanding=null;
+      e.group.rotation.x=0;
       e.group.position.set(e.x,e.y,e.z);
       combatParticles(e.group.position,0xe8b9d3,9,"vapor");
     }
   }
   if(e.botoOnLand)return false;
-  const t=now*.001+e.phase;
-  const x=water.x+Math.sin(t*.92)*.37,z=water.z+Math.cos(t*.92)*.37;
-  const model=rig.boto,cycle=t%15,breaching=Math.floor(t/15)%2!==0;
+  const t=now*.001+e.phase,cycleIndex=Math.floor(t/15);
+  const model=rig.boto,cycle=t%15,breaching=cycleIndex%2!==0;
+  const heading=Math.atan2(water.x-shore.x,water.z-shore.z);
+  const approach=breaching?Math.min(1,cycle/1.45)*clamp((5.3-cycle)/1.6,0,1):0;
+  const swimOut=(.58-model.breachBounds.min.z)*approach;
+  const x=water.x+Math.sin(t*.92)*.37+Math.sin(heading)*swimOut;
+  const z=water.z+Math.cos(t*.92)*.37+Math.cos(heading)*swimOut;
+  const {group}=e;
+  if(breaching&&cycle>=1.45&&cycle<1.9&&e.botoBreachCycle!==cycleIndex){
+    e.botoBreachCycle=cycleIndex;
+    for(const offset of [0,.68,-.68]){
+      e.botoBreach=planAquaticBreach(model.breachBounds,e.x,e.y,e.z,heading+offset,1.34,1.9,.62);
+      if(e.botoBreach)break;
+    }
+  }
+  if(e.botoBreach){
+    const landed=moveAquaticBreach(group,model.breachBounds,e.botoBreach,dt);
+    Object.assign(e,group.position);
+    QuimiCraftAquatic.pose(model,t*5.3,.55);
+    if(landed){e.botoBreach=null;e.botoLanding=group.position.clone()}
+    return true;
+  }
   const surface=Math.min(1,cycle*2,Math.max(0,(3.2-cycle)*1.4));
   const y=water.y+Math.sin(t*1.8)*.16;
   if(isWaterAt(x,y,z)){
     const room=getBlock(x,WATER_LEVEL+1,z)===BLOCK.AIR&&getBlock(x,WATER_LEVEL+2,z)===BLOCK.AIR;
-    const leap=room&&breaching?QuimiCraftAquatic.breachPose((cycle-.86)/1.36,model.breach):null;
-    const crest=WATER_LEVEL+.80-model.spouts[0][1];
-    Object.assign(e,{x,z,y:lerp(y,crest,surface)+(leap?.lift??0)});
-    e.group.rotation.x=leap?.pitch??0;
+    const crest=room&&!breaching?(findFishWater(x,z)?.top??WATER_LEVEL+.88)-model.spouts[0][1]-model.group.position.y:y;
+    if(e.botoLanding){
+      e.botoLanding.lerp(new THREE.Vector3(x,y,z),1-Math.exp(-dt*3));
+      Object.assign(e,e.botoLanding);
+      if(Math.hypot(e.x-x,e.z-z)<.11)e.botoLanding=null;
+    }else Object.assign(e,{x,z,y:lerp(y,crest,surface)});
+    group.rotation.x=0;
     QuimiCraftAquatic.spray(THREE,model,room&&!breaching&&settings.particles?cycle-.83:-1,e.spectral);
   }else QuimiCraftAquatic.spray(THREE,model,-1);
   e.group.position.set(e.x,e.y,e.z);
-  e.group.rotation.y=-t*.92-Math.PI*.5;
+  e.group.rotation.y=turnToward(e.group.rotation.y,approach>0&&cycle<1.9?heading+Math.PI:-t*.92-Math.PI*.5,dt*5);
   QuimiCraftAquatic.pose(rig.boto,t*5.3,.7);
   wildlife.folkloreEffects(rig,now,.24,settings.particles>0);
   return true;
 }
 function updateFolklore(e,dt,now,dist){
-  if(!folklore.active(e.type,state.day,state.dayCount)){
+  if(!e.ai.engagement&&!e.ai.returnTo&&!folklore.active(e.type,state.day,state.dayCount)){
     removeEntity(e);
     return true;
   }
@@ -5636,8 +5759,7 @@ function updateEntities(dt,now){
     e.feedingPause=Math.max(0,(e.feedingPause||0)-dt);
     if(natureFolk[e.type]){
       e.groveRage=Math.max(0,(e.groveRage||0)-dt);
-      e.hostile=e.groveRage>0;
-      if(!e.hostile){e.ai.retaliate=0;e.ai.enemy=null}
+      e.hostile=e.groveRage>0||!!e.ai.engagement;
     }
     const dist=QuimiCraftAI.range(e,playerActor);
     if(e.hostile&&!e.persistent&&!spawnDirector.inRange(e,player.pos)){removeEntity(e);continue}
@@ -5647,7 +5769,7 @@ function updateEntities(dt,now){
       continue;
     }
     if(folklore.creatures[e.type]&&dist<settings.render*CHUNK*1.5&&updateFolklore(e,dt,now,dist))continue;
-    if(e.spawnKind==="hostile"&&retireDarkMob(e,dt,Math.hypot(dist,e.y-player.pos.y))){
+    if(e.spawnKind==="hostile"&&!e.ai.engagement&&!e.ai.returnTo&&retireDarkMob(e,dt,Math.hypot(dist,e.y-player.pos.y))){
       removeEntity(e);
       continue;
     }
@@ -5692,7 +5814,7 @@ function updateEntities(dt,now){
         else{removeEntity(e);continue}
       }
     }
-    if(e.bonded&&!e.groveRage){
+    if(e.bonded&&!e.hostile&&!a.returnTo){
       if(DRAGONS[e.type]){
         steerDragon(e,{mode:"idle",speed:0,rest:true},dt);
         e.group.position.set(e.x,e.y,e.z);
@@ -5701,8 +5823,9 @@ function updateEntities(dt,now){
       animateEntityRig(e,dt,now,0);
       continue;
     }
+    if(e.dragonBurst?.kind==="enemy"&&!QuimiCraftAI.canPursue(e,combatTargetAvailable))closeDragonBurst(e);
     let behavior=e.dragonBurst?{mode:e.dragonBurst.chargeLeft>0?"breathCharge":"breath",speed:0,aim:e.dragonBurst.target}:
-      e.feedingPause>0?{mode:"idle",speed:0}:alchemyPlay.npcBehavior(e,QuimiCraftAI.tick(e,dt,()=>senseEntity(e)),dt);
+      e.feedingPause>0?{mode:"idle",speed:0}:alchemyPlay.npcBehavior(e,QuimiCraftAI.tick(e,dt,target=>senseEntity(e,target),combatTargetAvailable),dt);
     behavior=courtshipBehavior(e,behavior,dt);
     if((e.resident?.civic||e.role==="child")&&state.day>.6&&state.day<.90&&["wander","patrol","idle"].includes(behavior.mode)){
       const home=e.ai.home;
@@ -5839,7 +5962,7 @@ function provokeGrove(x,y,z,victim=null){
   for(const id of groves)groveAlarm.set(id,65);
   for(const e of entities){
     if(!natureFolk[e.type]||e.dead||!nearby.includes(e)&&!groves.has(e.grove))continue;
-    e.groveRage=65;e.hostile=true;e.ai.retaliate=65;e.ai.think=0;
+    e.groveRage=65;e.hostile=true;QuimiCraftAI.alarm(e,playerActor);
     if(riding?.actor===e)leaveMount(true);
   }
   if(first){toast("As árvores vivas estão defendendo o bosque!");sound("alert",.61)}
@@ -7239,7 +7362,7 @@ let bubbleClock=0,lastWorldSaveAt=0,wasNearLaboratory=false,mobileControlsVisibl
 function syncMobileControls(){
   if(!touchInput)return;const visible=!!(state.playing&&!uiBlocking());if(visible===mobileControlsVisible)return;mobileControlsVisible=visible;$("mobileControls")?.classList.toggle("active",visible)
 }
-const colorNight=new THREE.Color(0x071326),colorDawn=new THREE.Color(0xd8795c),colorDay=new THREE.Color(0x8bc8e7),colorFog=new THREE.Color();
+const colorNight=new THREE.Color(0x071326),colorDawn=new THREE.Color(0xd8795c),colorDay=new THREE.Color(0x8bc8e7),colorFog=new THREE.Color(),waterTint=new THREE.Color();
 const climateGroup=new THREE.Group();scene.add(climateGroup);
 const precipMax=230,precipPositions=new Float32Array(precipMax*6),snowPositions=new Float32Array(precipMax*3);
 const rainGeo=new THREE.BufferGeometry(),snowGeo=new THREE.BufferGeometry();
@@ -7366,22 +7489,27 @@ function updateCycle(dt,now){
   if(weather==="snow"){colorFog.lerp(new THREE.Color(0xb5c8d5),.2);}
   sky.position.copy(camera.position);skyMat.uniforms.uTime.value=state.day;stars.position.copy(camera.position);starMat.opacity=clamp((-.04-solar)*2.2,0,.88);sunOrb.visible=solar>-.18;moonOrb.visible=solar<.17&&phase!==0;
   cloudGroup.position.set(cx+Math.sin(now*.000026)*19,player.pos.y,cz+Math.cos(now*.000023)*16);cloudMaterial.opacity=weather==="storm"?.72:weather==="rain"?.83:lerp(.36,.88,day);cloudMaterial.color.set(weather==="storm"?0x7c8da8:weather==="rain"?0xb3bfca:0xffffff);sunOrb.children[0].material.opacity=weather==="storm"?.24:weather==="rain"?.5:1;moonOrb.children[0].material.opacity=weather==="storm"?.3:1;sunOrb.children[1].lookAt(camera.position);moonOrb.children[1].lookAt(camera.position);waterMat.uniforms.uTime.value=now*(document.documentElement.classList.contains("reduced-motion")?.00024:.001);lavaMat.uniforms.uTime.value=now*(document.documentElement.classList.contains("reduced-motion")?.00024:.001);blockGlowTime.value=now*.001;waterMat.uniforms.uSun.value.copy(sunPos).normalize();
+  waterMat.uniforms.uSurfaceLight.value.copy(colorFog);
   const cameraSubmerged=state.started&&isCameraUnderwater();
   const clarity=cameraSubmerged?underwaterClarity():null;
   const waterFog=cameraSubmerged?fluidFlow.blendWaterFog(camera.position.x,camera.position.z,waterFogProfile):null;
   submergedSeconds=cameraSubmerged?submergedSeconds+(state.playing?dt:0):0;
-  updateUnderwaterUI(clarity,waterFog?.rgb);
   sky.visible=!cameraSubmerged;
   stars.visible=cloudGroup.visible=!cameraSubmerged&&settings.clouds;
   if(lightningMesh)lightningMesh.visible=!cameraSubmerged;
   if(cameraSubmerged){
     sunOrb.visible=moonOrb.visible=rainVisual.visible=snowVisual.visible=false;
-    colorFog.setRGB(...waterFog.rgb).multiplyScalar(.72+clarity*.18);
-    hemi.color.lerp(new THREE.Color().setRGB(...waterFog.rgb),.42);
-    hemi.groundColor.lerp(new THREE.Color(0x28658c),.55);
-    sunLight.color.lerp(new THREE.Color(0x94d9f7),.42);
-    renderer.toneMappingExposure=lerp(.82,.99,clarity);
+    const {x,y,z}=camera.position,depth=waterColumnSurface(x,y,z)-y;
+    const lightThroughWater=Math.exp(-depth/(11*waterFog.visibility));
+    const daylight=day*(weather==="storm"?.58:weather==="clear"?1:.78);
+    waterTint.setRGB(...waterFog.rgb);
+    colorFog.copy(waterTint).multiplyScalar(.23+daylight*(.25+.34*lightThroughWater)+clarity*.10);
+    hemi.color.lerp(waterTint,.62);
+    hemi.groundColor.lerp(colorFog,.55);
+    sunLight.color.lerp(waterTint,.55);
+    sunLight.intensity*=lerp(.33,.88,lightThroughWater);
   }
+  updateUnderwaterUI(clarity,colorFog);
   const fog=horizon.fogRange(visibleRenderRange(dt),CHUNK,weather,clarity,submergedSeconds,waterFog?.visibility);
   scene.fog.near=fog.near;scene.fog.far=fog.far;
   scene.fog.color.copy(colorFog);scene.background.copy(colorFog);
@@ -7432,7 +7560,7 @@ function animate(now){
   if(state.catalog)return;
   if(state.playing){updateFieldAir(dt);updateAfflictions(dt);if(!gasBlackout)playerInput.turn(keys,dt);updateLabDecor(now,Math.min(.28,elapsed));updatePhysics(dt);updateQueuedPlacement(dt);updateFluids(dt);alchemyPlay.tick(dt);tickPlayerActivities(dt);professions.update(dt);updateFish(dt,now);ensureChunks();updateTarget(dt);updateEntities(dt,now);updateProjectiles(dt);updateDragonBursts(dt);updateDrops(dt,now);updateEnemyHud(dt);updateInteraction();const nearLab=labBoundsContains(player.pos.x,player.pos.z,3);if(nearLab&&!wasNearLaboratory)verifyLaboratoryOnEntry();wasNearLaboratory=nearLab;bubbleClock+=dt;if(player.inWater&&bubbleClock>.17){bubbleClock=0;bubble(player.pos)}if(now-lastWorldSaveAt>10000){lastWorldSaveAt=now;saveWorldState()}}else if(!state.started)updateMenu(now);else updatePlayerCamera(dt,false);
   updateMobDamageFlashes(now,dt);
-  syncMobileControls();updateVehicleHud();updateGameplayFPS(now);updateCycle(dt,now);frontierFx.update(dt);updateParticles(dt);updateHud();
+  syncMobileControls();updateVehicleHud();updateGameplayFPS(now);updateCycle(dt,now);frontierFx.update(dt);aquaticFx.update(dt);updateParticles(dt);updateHud();
   if(!state.started&&!state.loading&&menuBackdrop){
     renderer.toneMappingExposure=1.02;
     renderer.render(menuBackdrop.scene,menuBackdrop.camera);
@@ -7989,7 +8117,7 @@ function catalogActorClips(group){
   if(role&&rig.arms.length&&!tree)ids.push("signal");
   return QuimiCraftCreaturePoses.clips(...ids);
 }
-function playActorPreview(group,clip,elapsed,dt){
+function playActorPreview(group,clip,elapsed,dt,splash){
   const e=catalogActors.get(group),poses=QuimiCraftCreaturePoses;
   const t=poses.clipTime(clip,elapsed),flight=["flight","glide","land","float"].includes(clip);
   const landing=clip==="land"?clamp((t-.45)/1.52,0,1):0;
@@ -8004,11 +8132,20 @@ function playActorPreview(group,clip,elapsed,dt){
   if(e.rig.boto){
     const human=clip==="walk"||clip==="run";
     e.rig.human.visible=human;e.rig.boto.group.visible=!human;
+    group.rotation.x=0;
+    e.rig.boto.group.rotation.x=0;
     if(!human){
       const arc=clip==="swim"?Math.max(0,Math.sin(t*Math.PI/2.5))**3:0;
-      const leap=clip==="breach"?QuimiCraftAquatic.breachPose((t-.55)/1.58,e.rig.boto.breach):null;
-      e.rig.boto.group.rotation.x=leap?.pitch??(arc*-.31*Math.cos(t*2.2));
-      group.position.y+=leap?.lift??(arc*.33);
+      if(clip==="breach")previewAquaticBreach(group,e.rig.boto,(t-.58)/1.62,splash);
+      else{
+        e.rig.boto.previewBreach=null;
+        e.rig.boto.group.rotation.x=arc*-.31*Math.cos(t*2.2);
+        group.position.y+=arc*.33;
+        if(clip==="spout"&&Number.isFinite(group.userData.previewWaterSurface)){
+          group.position.y=(group.userData.previewWaterSurface-e.rig.boto.group.position.y-e.rig.boto.spouts[0][1]+.045)*
+            clamp(t/.55,0,1)*clamp((2.55-t)/.65,0,1);
+        }
+      }
       QuimiCraftAquatic.pose(e.rig.boto,t*5.3,.7+arc*.37);
     }
     QuimiCraftAquatic.spray(THREE,e.rig.boto,clip==="spout"?t-.56:-1);
@@ -8054,6 +8191,18 @@ function playCatalogItem(group,clip,elapsed){
   group.rotation.y=(group.userData.catalogYaw??=group.rotation.y)+
     (clip==="boltShot"||clip==="bowShot"?Math.sin(Math.PI*ease((t-.88)/.31))*.13:0);
   playerModels.animateItem(group,clock,pull,clip==="glow"?1.55:1,arrow);
+}
+function previewAquaticBreach(group,model,progress,splash){
+  const surface=group.userData.previewWaterSurface;
+  if(!Number.isFinite(surface))return;
+  const bounds=model.breachBounds,frame=QuimiCraftAquatic.breachPose(progress,bounds,surface);
+  const length=bounds.max.z-bounds.min.z;
+  group.position.y=frame.y;
+  group.position.z=(.5-frame.progress)*length*.92;
+  group.rotation.x=frame.pitch;
+  if(frame.progress===0)model.previewBreach=null;
+  const contact=QuimiCraftAquatic.breachContact(model.previewBreach??={},frame,surface);
+  if(contact)splash?.(new THREE.Vector3(group.position.x,surface+.016,group.position.z-frame.front),length*.37,contact);
 }
 function catalogEntries(){
   const entries=[],blockAngle=[1.36,1.23,-1.78],personAngle=[.76,.30,-2.6],
@@ -8265,19 +8414,20 @@ function catalogEntries(){
         ...(model.breach?["breach"]:[]),...(attack?[attack]:id==="orca"?["bite"]:[]));
     },animate:swimPreview,compare:true};
   };
-  const swimPreview=(group,clip,elapsed)=>{
+  const swimPreview=(group,clip,elapsed,dt,splash)=>{
     const model=group.userData.aquaticRig,p=aquaticProfile(group.name);
     const t=clipTime(clip,elapsed),striking=clip==="bite"||clip==="attack";
     const frame=striking?previewStrike(Math.max(0,t-.35),p.attack?.windup??.52,p.attack?.strike):null;
     const burst=frame?Math.sin(frame.release*Math.PI):0;
     const pace=clip==="idle"?.26:clip==="dart"?1.52:.82;
-    const scale=group.scale.x,progress=clamp((t-.62)/1.65,0,1);
-    const leap=clip==="breach"?QuimiCraftAquatic.breachPose(progress,model.breach):null;
-    group.position.z=(clip==="dart"?-Math.sin(t*2.16)*.32:leap?-Math.sin(Math.PI*progress)*.59:-burst*.25)*scale;
+    const scale=group.scale.x;
+    group.position.z=(clip==="dart"?-Math.sin(t*2.16)*.32:-burst*.25)*scale;
     const surfaceY=group.userData.previewWaterSurface;
     const spoutLift=clip==="spout"&&model.spouts?.length&&Number.isFinite(surfaceY)?Math.max(0,surfaceY-model.spouts[0][1]*scale+.045)*clamp(t/.55,0,1)*clamp((2.55-t)/.65,0,1):0;
-    group.position.y=(leap?.lift??(clip==="idle"||clip==="spout"?0:Math.sin(t*2.35)*.09))*scale+spoutLift;
-    group.rotation.x=leap?.pitch??0;
+    group.position.y=(clip==="idle"||clip==="spout"?0:Math.sin(t*2.35)*.09)*scale+spoutLift;
+    group.rotation.x=0;
+    if(clip==="breach")previewAquaticBreach(group,model,(t-.54)/(group.name==="humpback"?1.95:1.67),splash);
+    else model.previewBreach=null;
     QuimiCraftAquatic.pose(model,t*(model.swimStyle==="pulse"?4.5:3.5+p.speed*3.2)*pace,pace,
       frame&&{open:Math.max(frame.charge,frame.release),burst});
     QuimiCraftAquatic.spray(THREE,model,clip==="spout"?t-.56:-1,model.ghost);
@@ -8312,7 +8462,8 @@ function catalogCharacter(){
   avatar.root.traverse(node=>{if(node.isMesh&&!node.material.transparent)node.castShadow=node.receiveShadow=true});
   return avatar.root;
 }
-const catalog=QuimiCraftCatalog.create({THREE,root:$("catalog"),entries:catalogEntries,scenery:catalogLandscape,character:catalogCharacter,onClose:()=>{state.catalog=false}});
+const catalog=QuimiCraftCatalog.create({THREE,root:$("catalog"),entries:catalogEntries,scenery:catalogLandscape,character:catalogCharacter,
+  particleQuality:()=>settings.particles,onClose:()=>{state.catalog=false}});
 for(const id of ["catalogTitleBtn","catalogPauseBtn"])$(id).onclick=()=>{
   state.catalog=true;
   catalog.open($(id));

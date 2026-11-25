@@ -226,7 +226,8 @@ export class Game {
         window.addEventListener("resize", () => this.resizeRendering());
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) this.flushCampaignTiming();
-            if (document.hidden) this.audio.stopAtmosphere();
+            if (document.hidden && this.openingAudio) this.setOpeningCue(this.openingAudio);
+            else if (document.hidden) this.audio.stopAtmosphere();
             else if (this.openingAudio) this.setOpeningCue(this.openingAudio);
         });
         window.addEventListener("pagehide", () => this.flushCampaignTiming());
@@ -609,6 +610,7 @@ export class Game {
         this.world.restoreProgress(save.inventory, save.solvedPuzzles, save.powerRestored, save.checkpoint, save.openedContainers, save.lootedContainers, save.activatedCheckpoints);
         this.inventory.restore(save.inventory, this.itemCatalog);
         this.syncTorchAvailability();
+        this.fire.torchLit = save.torchLit === true && this.fire.torchAvailable && this.fire.fuel > 0;
         this.lastCheckpoint = save.checkpoint;
         this.runtimeCheckpointPositions.set(save.checkpoint, Vector3.FromArray(save.checkpointPosition));
         this.endings = new Set(save.endings);
@@ -735,7 +737,6 @@ export class Game {
         this.audio.impact(1.3);
         window.setTimeout(() => {
             this.world.closeSideEntranceBehindPlayer();
-            this.fire.torchLit = false;
         }, 600);
         void this.ui.showChapterCard("ATRAÇÃO FINAL", "CAPÍTULO 1 · O CORPO", 4300).then(() => {
             this.objectives.set("search-friends", "PROCURE SINAIS DOS SEUS AMIGOS E RESTAURE A ELETRICIDADE.");
@@ -1274,10 +1275,24 @@ export class Game {
     }
     setOpeningCue(cue) {
         this.openingAudio = cue;
-        if (cue === "quadro" || cue === "fim") this.audio.stopLoop("projector");
-        if (cue === "rota17") this.audio.startRain();
-        this.audio.setSoundtrack(cue === "body" ? "dread" : "dream");
-        this.audio.setHorrorMix(document.hidden ? "off" : cue === "quadro" || cue === "fim" ? "quiet" : "normal");
+        if (document.hidden) {
+            this.audio.stopLoop("projector");
+            this.audio.stopLoop("rain");
+            this.audio.setHorrorMix("off");
+            return;
+        }
+        const commercial = ["convite", "projecao", "body"].includes(cue);
+        if (commercial || cue === "fita" || cue === "monitor") this.audio.startProjector();
+        else this.audio.stopLoop("projector");
+        if (["estrada", "rota17", "ficha", "chegada"].includes(cue)) this.audio.startRain();
+        const track = commercial ? "dream"
+            : cue === "monitor" ? "factory"
+            : cue === "estrada" || cue === "rota17" ? "pursuit"
+            : ["fechamento", "fita", "arquivo", "pista", "chegada"].includes(cue) ? "dread"
+            : null;
+        this.audio.setSoundtrack(track);
+        // Let the fourth shadow and the promise in the car land without a score.
+        this.audio.setHorrorMix(track ? "film" : "quiet");
     }
 
     campaignCountsTime() {
@@ -1627,6 +1642,7 @@ export class Game {
             solvedPuzzles: [...this.world.solvedPuzzles],
             powerRestored: this.world.powerRestored,
             torchFuel: this.fire.fuel,
+            torchLit: this.fire.torchLit,
             playerHealth: Math.max(1, this.player.health),
             playerArmor: this.player.armor,
             lives: this.lives,

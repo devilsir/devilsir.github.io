@@ -105,59 +105,95 @@ globalThis.QuimiCraftAI = (() => {
     return role ? civilians[role] || resident : globalThis.QuimiCraftBiomeFauna?.species[type]?.profile || species[type] || species.capivara;
   }
 
+  const detectionRange = p => p.sense * 1.25;
+  const chaseSpeed = p => Math.max(3.1, p.run * 1.19);
+  const validTarget = () => true;
+
   function brain(home, phase = 0) {
-    return {home: point(home), mode: "idle", goal: null, wait: .7 + phase * .22, memoryTime: 0,
-      memory: null, retaliate: 0, fear: 0, swing: null, cooldown: 0, think: (phase % 3) * .1,
+    return {home: point(home), mode: "idle", goal: null, wait: .7 + phase * .22, engagement: null,
+      returnTo: null, fear: 0, swing: null, cooldown: 0, think: (phase % 3) * .1,
       pace: 0, route: [], routeDelay: 0, stalled: 0, panic: null, vision: null, recovering: 0, aim: 0};
   }
 
-  function alarm(ai, type, threat) {
-    if (type.temperament === "neutral") ai.retaliate = 8;
-    if (type.temperament === "calm" || type.temperament === "skittish") {
-      ai.fear = 5;
-      ai.panic = point(threat);
-    }
-    if (type.strike) {
-      ai.memoryTime = 4.5;
-      ai.memory = point(threat);
-    }
-    ai.think = 0;
+  function engage(e, target) {
+    const a = e.ai;
+    if (a.engagement || a.returnTo || !target || target.dead || target.ai?.recovering > 0) return;
+    const radius = e.aquatic ? Math.max(26, Math.min(40, e.profile.attack.notice * 4.6)) :
+      Math.max(36, Math.min(56, e.profile.sense * 2.7));
+    a.engagement = {target, origin: point(e), lastSeen: point(target), radius, searching: false};
   }
 
-  function tick(e, dt, sense, random = Math.random) {
+  function canPursue(e, canFight = validTarget) {
+    const combat = e.ai.engagement;
+    if (!combat) return false;
+    const {target, origin, radius} = combat;
+    return !target.dead && !(target.ai?.recovering > 0) && canFight(target) &&
+      Math.hypot(range(origin, target), target.y - origin.y) <= radius;
+  }
+
+  function disengage(e) {
     const a = e.ai;
-    const p = e.profile;
+    if (!a.engagement) return;
+    a.returnTo = a.engagement.origin;
+    a.engagement = a.swing = a.vision = a.goal = a.routeGoal = null;
+    a.route = [];
+    a.stalled = a.routeDelay = a.aim = 0;
+  }
+
+  function returnGoal(e) {
+    const a = e.ai, goal = a.returnTo;
+    if (!goal || range(e, goal) > .9 || !e.flying && Math.abs(e.y - goal.y) > 1.35) return goal;
+    a.returnTo = null;
+    a.think = a.wait = .65;
+    return null;
+  }
+
+  function alarm(e, threat) {
+    const a = e.ai, p = e.profile;
+    if (p.temperament === "calm" || p.temperament === "skittish") {
+      a.fear = 5;
+      a.panic = point(threat);
+    }
+    if (p.strike) engage(e, threat);
+    a.think = 0;
+  }
+
+  function tick(e, dt, sense, canFight = validTarget, random = Math.random) {
+    const a = e.ai, p = e.profile;
     a.cooldown = Math.max(0, a.cooldown - dt);
-    a.memoryTime = Math.max(0, a.memoryTime - dt);
     a.fear = Math.max(0, a.fear - dt);
-    a.retaliate = Math.max(0, a.retaliate - dt);
     a.routeDelay -= dt;
     a.aim = Math.max(0, a.aim - dt);
+
+    if (a.engagement && !canPursue(e, canFight)) disengage(e);
+    const returning = returnGoal(e);
+    if (returning) return {mode: "evade", goal: returning, speed: chaseSpeed(p) * .88};
+
     if ((a.think -= dt) <= 0) {
       a.think = .19 + random() * .13;
-      a.vision = sense();
+      a.vision = sense(a.engagement?.target);
       const {enemy, threat} = a.vision;
-      if (enemy?.visible) {
-        a.memory = point(enemy.actor);
-        a.memoryTime = 4.2;
+      if (p.strike && enemy?.visible && canFight(enemy.actor)) {
+        engage(e, enemy.actor);
+        if (a.engagement?.target === enemy.actor) {
+          a.engagement.lastSeen = point(enemy.actor);
+          a.engagement.searching = false;
+        }
       }
       if (threat?.visible) {
         a.panic = point(threat.actor);
         a.fear = Math.max(a.fear, threat.alarming ? 2.8 : .6);
       }
     }
-    const perceived = a.vision || {};
-    const enemy = perceived.enemy;
+
+    const perceived = a.vision || {}, combat = a.engagement, target = combat?.target;
+    const visible = !!target && perceived.enemy?.actor === target && perceived.enemy.visible;
     if (a.swing) {
-      const swing = a.swing;
-      if (!swing.target.dead && !swing.target.ai?.recovering && (swing.remaining -= dt) <= 0) {
-        a.swing = null;
-        a.cooldown = p.strike.cooldown;
-        a.aim = .27;
-        return {mode: "strike", goal: null, aim: swing.target, speed: 0, strike: swing.target};
-      }
-      if (swing.target.dead || swing.target.ai?.recovering > 0) a.swing = null;
-      else return {mode: "windup", goal: null, aim: swing.target, speed: 0};
+      if ((a.swing.remaining -= dt) > 0) return {mode: "windup", goal: null, aim: target, speed: 0};
+      a.swing = null;
+      a.cooldown = p.strike.cooldown;
+      a.aim = .27;
+      return {mode: "strike", goal: null, aim: target, speed: 0, strike: target};
     }
     if (a.fear > 0 && a.panic) {
       const away = heading(a.panic, e);
@@ -167,35 +203,38 @@ globalThis.QuimiCraftAI = (() => {
       }
       return {mode: "flee", goal, speed: p.run};
     }
-    const homeDistance=range(e,a.home);
-    const leash=p.roam+(e.persistent?6:18);
-    if(!e.persistent&&(e.habitat||e.petsite)&&homeDistance>p.roam*1.15&&!enemy?.visible&&a.memoryTime<=0){
-      a.goal=null;
-      return {mode:"return",goal:a.home,speed:p.walk*1.32};
-    }
-    if (homeDistance > leash && !(e.persistent && p.temperament !== "guard" && a.fear)) {
-      a.memoryTime = 0;
-      return {mode: "return", goal: a.home, speed: p.run * .72};
-    }
-    const aimedStrike=p.strike?.kind==="shot"||p.strike?.kind==="gaze";
-    const levelWithEnemy=enemy&&(aimedStrike||Math.abs(enemy.actor.y-e.y)<=1.22);
-    if (p.strike && enemy?.visible && levelWithEnemy && !enemy.actor.dead && enemy.dist <= p.strike.range) {
-      if (p.strike.kind === "shot" && enemy.dist < 2.7 && a.cooldown > .2) {
-        const angle = heading(enemy.actor, e);
+    const aimedStrike = p.strike?.kind === "shot" || p.strike?.kind === "gaze";
+    const distance = target ? range(e, target) : Infinity;
+    if (p.strike && visible && distance <= p.strike.range && (aimedStrike || Math.abs(target.y - e.y) <= 1.22)) {
+      if (p.strike.kind === "shot" && distance < 2.7 && a.cooldown > .2) {
+        const angle = heading(target, e);
         return {mode: "kite", goal: {x: e.x + Math.sin(angle) * 3, y: e.y, z: e.z + Math.cos(angle) * 3},
-          aim: enemy.actor, speed: p.walk * 1.38};
+          aim: target, speed: p.walk * 1.38};
       }
       if (a.cooldown <= 0) {
-        a.swing = {target: enemy.actor, remaining: p.strike.windup};
-        return {mode: "windup", goal: null, aim: enemy.actor, speed: 0};
+        a.swing = {target, remaining: p.strike.windup};
+        return {mode: "windup", goal: null, aim: target, speed: 0};
       }
-      if (a.aim > 0 || enemy.dist < p.strike.range * .78 || aimedStrike) {
-        return {mode: "recover", goal: null, aim: enemy.actor, speed: 0};
+      if (a.aim > 0 || distance < p.strike.range * .78 || aimedStrike) {
+        return {mode: "recover", goal: null, aim: target, speed: 0};
       }
     }
-    if (a.memoryTime > 0 && a.memory && (range(e,a.memory)>.65||Math.abs(e.y-a.memory.y)>.82) &&
-        (p.temperament === "hostile" || p.temperament === "guard" || a.retaliate > 0)) {
-      return {mode: enemy?.visible ? "chase" : "search", goal: a.memory, speed: enemy?.visible ? p.run : Math.min(p.run,p.walk*1.52)};
+    if (combat) {
+      const last = combat.lastSeen;
+      if (!visible && range(e, last) < .75 && Math.abs(e.y - last.y) < 1) combat.searching = true;
+      const goal = visible || combat.searching ? point(target) : last;
+      const nearGoal = range(e, goal) < .32 && Math.abs(e.y - goal.y) < .8;
+      return {mode: visible ? "chase" : "search", goal: nearGoal ? null : goal, aim: nearGoal ? target : null,
+        speed: nearGoal ? 0 : chaseSpeed(p)};
+    }
+
+    const homeDistance = range(e, a.home);
+    if (!e.persistent && (e.habitat || e.petsite) && homeDistance > p.roam * 1.15) {
+      a.goal = null;
+      return {mode: "return", goal: a.home, speed: p.walk * 1.32};
+    }
+    if (homeDistance > p.roam + (e.persistent ? 6 : 18)) {
+      return {mode: "return", goal: a.home, speed: p.run * .72};
     }
     if (perceived.greet && e.persistent) return {mode: "greet", goal: null, aim: perceived.greet, speed: 0};
     if (e.persistent && range(e, a.home) > p.roam + .7) return {mode: "return", goal: a.home, speed: p.walk};
@@ -307,5 +346,6 @@ globalThis.QuimiCraftAI = (() => {
     return result;
   }
 
-  return {getProfile, brain, tick, alarm, findPath, createTraversal, loot, range, heading, types: Object.keys(species)};
+  return {getProfile,brain,tick,alarm,engage,canPursue,disengage,returnGoal,detectionRange,
+    findPath,createTraversal,loot,range,heading,types:Object.keys(species)};
 })();

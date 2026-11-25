@@ -194,7 +194,6 @@ export class Chapter3World {
         this.noise.restoreDanger(0);
         this.player.teleport(this.checkpoints.chapter3Start.clone(), Math.PI);
         this.player.setEnabled(true);
-        this.fire.torchLit = false;
         this.audio.stopMusicBoxTheme();
         this.audio.startJesseMelody("distant", this.checkpoints.jackChamber);
         this.objective.set("follow-jesse-melody", "SIGA A MELODIA ATÉ A CAIXA DE BRINQUEDO.");
@@ -544,7 +543,7 @@ export class Chapter3World {
             return false;
         if (this.playerInGasRoom() && this.gasConcentration > 0.28)
             return false;
-        return this.replacementTorchOwned;
+        return this.replacementTorchOwned || this.inventory.has("torch");
     }
     setNoiseLevel(value) {
         this.noise.restoreDanger(value);

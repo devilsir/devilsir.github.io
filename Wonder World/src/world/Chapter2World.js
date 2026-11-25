@@ -167,7 +167,6 @@ export class Chapter2World {
         this.openingElapsed = 0;
         this.openingComplete = false;
         this.torchDisabled = true;
-        this.fire.torchLit = false;
         this.audio.stopLoop("rain");
         this.audio.startInteriorHum();
         this.audio.startIndustrialDepths();
@@ -2090,10 +2089,9 @@ export class Chapter2World {
         const position = this.player.collider.position;
         if (this.openingComplete && !this.corridorLessonTriggered && position.z > 214) {
             this.corridorLessonTriggered = true;
-            this.fire.torchLit = false;
             this.torchDisabled = false;
             this.audio.windGust();
-            this.ui.showSoundCaption("uma corrente de ar apaga a chama — você pode acendê-la novamente", 2200);
+            this.ui.showSoundCaption("uma corrente de ar atravessa o corredor", 2200);
             this.ui.showSubtitle("Protagonista", "Eles param quando eu olho. Certo... continua olhando.", 4400);
         }
         if (!this.modelingObjectiveTriggered && position.z > 245) {

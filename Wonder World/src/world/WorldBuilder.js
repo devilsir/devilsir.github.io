@@ -1332,7 +1332,6 @@ Pressione E novamente ou Esc para fechar.`);
                 corridorToy.position = new Vector3(-1.8, 0, 48.8);
                 corridorToy.rotation.y = Math.PI;
                 movedOnce = true;
-                this.fire.torchLit = false;
                 this.ui.showSoundCaption("um brinquedo arrasta o tecido no chão");
             }
         }, 250);

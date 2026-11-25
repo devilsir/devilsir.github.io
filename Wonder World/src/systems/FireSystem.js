@@ -4,6 +4,7 @@ import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { animateTorchFlame, makeTorchFlame } from "./TorchFlame.js";
 export class FireSystem {
     fuel = 0;
     torchLit = false;
@@ -16,8 +17,11 @@ export class FireSystem {
     torchRoot;
     torchLight;
     torchBeam;
-    torchFlames = [];
+    torchFlame = null;
+    torchWrap = null;
     torchHandle = null;
+    torchSeconds = 0;
+    torchLightingActive = false;
     burnables = new Map();
     fires = [];
     scorchMarks = [];
@@ -33,18 +37,21 @@ export class FireSystem {
         this.torchRoot = new TransformNode("torch-root", scene);
         this.torchRoot.parent = camera;
         this.torchRoot.position = new Vector3(0.38, -0.34, 0.78);
-        this.torchLight = new PointLight("torch-light", Vector3.Zero(), scene);
+        this.torchLight = new PointLight("torch-light", new Vector3(0.05, 0.2, 0), scene);
         this.torchLight.parent = this.torchRoot;
-        this.torchLight.diffuse = new Color3(1, 0.44, 0.12);
+        this.torchLight.diffuse = new Color3(1, 0.57, 0.26);
         this.torchLight.specular = new Color3(1, 0.24, 0.05);
-        this.torchLight.range = 10;
+        this.torchLight.range = 25;
         this.torchLight.intensity = 0;
-        this.torchBeam = new SpotLight("torch-beam", new Vector3(0.08, -0.05, 0.1), new Vector3(0, -0.035, 1), Math.PI / 2.7, 3.4, scene);
+        this.torchLight.setEnabled(false);
+        this.torchBeam = new SpotLight("torch-beam", new Vector3(0.08, -0.05, 0.1), new Vector3(0, -0.075, 1), Math.PI / 2.25, 2.8, scene);
         this.torchBeam.parent = camera;
-        this.torchBeam.diffuse = new Color3(1, 0.49, 0.16);
+        this.torchBeam.diffuse = new Color3(1, 0.62, 0.32);
         this.torchBeam.specular = new Color3(1, 0.28, 0.06);
-        this.torchBeam.range = 26;
+        this.torchBeam.range = 46;
         this.torchBeam.intensity = 0;
+        this.torchBeam.setEnabled(false);
+        this.torchRoot.metadata = { constructionLocked: true, torchRig: true };
         this.createTorchVisuals();
         this.torchRoot.setEnabled(false);
         scene.onBeforeRenderObservable.add(() => this.update(scene.metadata?.wonderWorldFrameSeconds ?? scene.getEngine().getDeltaTime() / 1000));
@@ -66,26 +73,26 @@ export class FireSystem {
             this.torchLit = false;
         this.ensureTorchVisualIntegrity();
         this.torchRoot.setEnabled(available);
-        if (this.torchHandle && !this.torchHandle.isDisposed()) {
-            this.torchHandle.setEnabled(available);
-            this.torchHandle.visibility = 1;
-        }
+        this.syncTorchLights(available && this.torchLit);
     }
     ensureTorchVisualIntegrity() {
-        if (!this.torchHandle || this.torchHandle.isDisposed()) {
-            this.torchFlames.forEach((flame) => {
-                if (!flame.isDisposed())
-                    flame.dispose();
-            });
-            this.torchFlames = [];
+        if (this.torchHandle?.isDisposed() || this.torchWrap?.isDisposed() || this.torchFlame?.isDisposed()) {
+            const flameMaterial = this.torchFlame?.material;
+            for (const mesh of [this.torchHandle, this.torchWrap, this.torchFlame])
+                if (mesh && !mesh.isDisposed()) mesh.dispose();
+            this.torchFlame = null;
             this.createTorchVisuals();
+            if (flameMaterial && flameMaterial !== this.torchFlame.material) flameMaterial.dispose(false, true);
+            this.torchFlame.setEnabled(this.torchLightingActive);
         }
-        this.torchRoot.metadata = { ...(this.torchRoot.metadata ?? {}), constructionLocked: true, torchRig: true };
-        if (this.torchHandle)
-            this.torchHandle.metadata = { ...(this.torchHandle.metadata ?? {}), constructionLocked: true, torchRig: true };
-        this.torchFlames.forEach((flame) => {
-            flame.metadata = { ...(flame.metadata ?? {}), constructionLocked: true, torchRig: true };
-        });
+    }
+    syncTorchLights(active) {
+        if (active === this.torchLightingActive)
+            return;
+        this.torchLightingActive = active;
+        this.torchFlame.setEnabled(active);
+        this.torchLight.setEnabled(active);
+        this.torchBeam.setEnabled(active);
     }
     toggleTorch() {
         if (!this.torchAvailable)
@@ -203,25 +210,25 @@ export class FireSystem {
         this.ensureTorchVisualIntegrity();
         if (!this.torchAvailable)
             this.torchLit = false;
-        this.torchRoot.setEnabled(this.torchAvailable);
-        const fuelRatio = this.infiniteFuel ? 1 : this.fuel / 100;
         if (this.torchLit && !this.infiniteFuel) {
             this.fuel = Math.max(0, this.fuel - deltaSeconds * 0.72);
             if (this.fuel <= 0)
                 this.torchLit = false;
         }
         const lightingActive = this.torchAvailable && this.torchLit;
-        const flicker = lightingActive ? 0.88 + Math.random() * 0.21 : 0;
-        this.torchLight.intensity = flicker * (0.55 + fuelRatio * 0.95);
-        this.torchLight.range = 8 + fuelRatio * 8;
-        this.torchBeam.intensity = flicker * (1.95 + fuelRatio * 2.85);
-        this.torchBeam.range = 22 + fuelRatio * 14;
-        this.torchBeam.angle = Math.PI / (2.35 + fuelRatio * 0.35);
-        this.torchFlames.forEach((flame, index) => {
-            flame.setEnabled(this.torchAvailable && this.torchLit);
-            flame.scaling.y = 0.75 + Math.random() * 0.55;
-            flame.position.y = 0.09 + index * 0.06 + Math.sin(performance.now() * 0.009 + index) * 0.025;
-        });
+        this.syncTorchLights(lightingActive);
+        if (lightingActive) {
+            const fuel = this.infiniteFuel ? 1 : this.fuel / 100;
+            this.torchSeconds += deltaSeconds;
+            const t = this.torchSeconds;
+            // Soft flicker: enough movement to feel alive without random full-frame flashes.
+            const flicker = 1 + Math.sin(t * 10.6) * 0.055 + Math.sin(t * 17.9) * 0.028 + Math.sin(t * 4.1) * 0.03;
+            this.torchLight.intensity = flicker * (0.95 + fuel * 1.15);
+            this.torchLight.range = 15 + fuel * 10;
+            this.torchBeam.intensity = flicker * (2.85 + fuel * 2.85);
+            this.torchBeam.range = 30 + fuel * 16;
+            animateTorchFlame(this.torchFlame, t);
+        }
         this.updateAccumulator += deltaSeconds;
         for (let index = this.fires.length - 1; index >= 0; index -= 1) {
             const fire = this.fires[index];
@@ -281,17 +288,16 @@ export class FireSystem {
         handle.isPickable = false;
         handle.alwaysSelectAsActiveMesh = true;
         handle.metadata = { constructionLocked: true, torchRig: true };
-        for (let i = 0; i < 4; i += 1) {
-            const flame = MeshBuilder.CreateSphere(`torch-flame-${i}`, { diameter: 0.12 + i * 0.025, segments: 6 }, this.scene);
-            flame.parent = this.torchRoot;
-            flame.position = new Vector3((Math.random() - 0.5) * 0.12, 0.08 + i * 0.07, (Math.random() - 0.5) * 0.1);
-            flame.material = this.materials.emissive(`torch-${i}`, i % 2 ? new Color3(1, 0.2, 0.02) : new Color3(1, 0.66, 0.07), 2);
-            flame.isPickable = false;
-            flame.alwaysSelectAsActiveMesh = true;
-            flame.metadata = { constructionLocked: true, torchRig: true };
-            flame.setEnabled(false);
-            this.torchFlames.push(flame);
-        }
+        const wrap = MeshBuilder.CreateCylinder("torch-wrap", { height: 0.12, diameterTop: 0.104, diameterBottom: 0.073, tessellation: 8 }, this.scene);
+        wrap.parent = this.torchRoot;
+        wrap.position.set(0.05, 0.149, 0);
+        wrap.rotation.z = handle.rotation.z;
+        wrap.material = this.materials.solid("torch-wrap-material", new Color3(0.18, 0.067, 0.03), 0.94);
+        wrap.isPickable = false;
+        wrap.alwaysSelectAsActiveMesh = true;
+        wrap.metadata = { constructionLocked: true, torchRig: true };
+        this.torchWrap = wrap;
+        this.torchFlame = makeTorchFlame(this.scene, this.torchRoot);
     }
     createScorchMark(position) {
         if (this.scorchMarks.length >= this.maxScorches)

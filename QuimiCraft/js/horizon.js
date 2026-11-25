@@ -15,8 +15,10 @@ globalThis.QuimiCraftHorizon=(()=>{
   function fogRange(range,chunkSize,weather,clarity=null,waterSeconds=0,waterVisibility=1){
     const far=(range+.52)*chunkSize;
     if(clarity!==null){
-      const adapted=.36+.64*(1-Math.exp(-waterSeconds/7));
-      return {near:-2+clarity*1.5,far:Math.min(far,(64+clarity*32)*waterVisibility*adapted)};
+      const adapted=.58+.42*(1-Math.exp(-waterSeconds/7));
+      const waterFar=Math.min(far,(33+clarity*23)*waterVisibility*adapted);
+      // A névoa já colore objetos próximos e engrossa com a distância.
+      return {near:-waterFar*.32,far:waterFar};
     }
     const edge=range*chunkSize;
     const onset={clear:1,rain:.84,snow:.85,storm:.72}[weather]??1;

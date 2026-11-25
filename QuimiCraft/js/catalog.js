@@ -9,7 +9,7 @@ globalThis.QuimiCraftCatalog=(()=>{
   const thumbnailBlue=0x14262e;
   const defaultZoom=1.10;
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  function create({THREE,root,entries,scenery,character,onClose}){
+  function create({THREE,root,entries,scenery,character,particleQuality,onClose}){
     const grid=root.querySelector(".catalog-grid");
     const pages=root.querySelector(".catalog-pagination");
     const search=root.querySelector("input[type=search]");
@@ -56,7 +56,8 @@ globalThis.QuimiCraftCatalog=(()=>{
       key.shadow.normalBias=.016;key.shadow.bias=-.00035;
       scene.add(ambient,key,fill,key.target);
       const camera=new THREE.OrthographicCamera(-2,2,1.5,-1.5,.03,70);
-      return {renderer,scene,camera,ambient,key,fill};
+      const splashes=QuimiCraftAquatic.createSplashEffects(THREE,scene,particleQuality);
+      return {renderer,scene,camera,ambient,key,fill,splashes};
     }
     function getStudio(){
       if(failed||studio?.renderer.getContext().isContextLost())return null;
@@ -84,8 +85,12 @@ globalThis.QuimiCraftCatalog=(()=>{
       setStage(entry,model,false);
       return model;
     }
-    function setStage(entry,model,landscape){
+    function setStage(entry,model,landscape,clip){
       const context=studio,{object,box,center,radius}=model;
+      if(model.stage)context.scene.remove(model.stage);
+      model.stage=null;
+      model.aquatic=entry.category==="aquatic"||object.userData.creatureType==="pink_boto"&&["swim","spout","breach"].includes(clip);
+      delete object.userData.previewWaterSurface;
       model.landscape=landscape;
       context.scene.background.setHex(landscape?0xaec9d2:thumbnailBlue);
       context.scene.fog=null;
@@ -116,7 +121,6 @@ globalThis.QuimiCraftCatalog=(()=>{
         context.scene.add(model.stage);
         updateStageLighting(model.center,model.radius);
       }else{
-        if(model.stage)context.scene.remove(model.stage);
         context.key.target.position.set(0,0,0);
         context.key.position.set(-3,5,-3);context.fill.position.set(3,2,4);
       }
@@ -169,7 +173,10 @@ globalThis.QuimiCraftCatalog=(()=>{
         const rest=comparing?THREE.MathUtils.lerp(model.center.y,avatarCenter,.36):model.center.y;
         focus.y=rest+rise*(comparing?.49:.64)+(model.subject?Math.min(.15,model.radius*.40):-model.radius*.12);
         if(model.aquatic){
-          if(inspection?.entry&&animationSelect.value==="spout")focus.y+=Math.max(.8,model.radius*.33);
+          if(inspection?.entry&&animationSelect.value==="breach"){
+            focus.y=THREE.MathUtils.lerp(model.center.y,model.floor,.68)+rise*.44;
+            focus.z+=model.object.position.z*.58;
+          }else if(inspection?.entry&&animationSelect.value==="spout")focus.y+=Math.max(.8,model.radius*.33);
           else focus.y-=Math.min(.32,model.radius*.22);
         }
       }
@@ -241,7 +248,8 @@ globalThis.QuimiCraftCatalog=(()=>{
         if(changed){
           const dt=current.lastFrame===null||!current.playing?0:Math.min(.08,(now-current.lastFrame)/1000);
           current.lastFrame=now;current.elapsed+=dt;
-          current.entry.animate(current.model.object,animationSelect.value,current.elapsed,dt);
+          studio.splashes.update(dt);
+          current.entry.animate(current.model.object,animationSelect.value,current.elapsed,dt,studio.splashes.splash);
           current.model.stage?.userData.animate?.(current.elapsed);
           current.poseDirty=false;
         }
@@ -266,7 +274,8 @@ globalThis.QuimiCraftCatalog=(()=>{
         const closeup=model.aquatic&&!comparing&&model.radius<.35;
         const minimum=comparing?1.92:model.subject?(closeup?.09:1.56):0;
         const spraying=model.aquatic&&animationSelect.value==="spout";
-        const half=Math.max(model.radius*(closeup?1.33:fit),minimum,spraying?model.radius*1.65+1.5:0);
+        const jumping=model.aquatic&&animationSelect.value==="breach";
+        const half=Math.max(model.radius*(closeup?1.33:fit),minimum,spraying?model.radius*1.65+1.5:jumping?model.radius*1.34+.85:0);
         if(comparing&&current.comparisonAngle!==current.orbit.theta){
           const center=model.center.clone().lerp(model.avatar.position,.42);
           updateStageLighting(center,half);
@@ -292,7 +301,7 @@ globalThis.QuimiCraftCatalog=(()=>{
       status.textContent=inspection.image?"Modelo 3D indisponível.":"Visualização indisponível.";
       status.hidden=is3D||!!inspection.image&&!view3D.disabled;
       if(is3D){
-        setStage(inspection.entry,inspection.model,!!scenery);
+        setStage(inspection.entry,inspection.model,!!scenery,animationSelect.value);
         live.append(studio.renderer.domElement);
         live.focus({preventScroll:true});
       }
@@ -352,6 +361,7 @@ globalThis.QuimiCraftCatalog=(()=>{
       if(!inspection)return;
       const {entry,trigger,model}=inspection;
       inspection=null;
+      studio?.splashes.clear();
       if(viewFrame){cancelAnimationFrame(viewFrame);viewFrame=0}
       inspector.close();
       if(model)removeModel(entry,model);
@@ -475,6 +485,10 @@ globalThis.QuimiCraftCatalog=(()=>{
     compare.onchange=()=>{if(inspection){inspection.comparisonAngle=null;updateComparison()}};
     function restartAnimation(){
       if(!inspection?.clips)return;
+      studio.splashes.clear();
+      if(inspection.model.object.userData.creatureType==="pink_boto"){
+        setStage(inspection.entry,inspection.model,!!scenery,animationSelect.value);
+      }
       inspection.elapsed=0;inspection.lastFrame=null;inspection.poseDirty=true;inspection.playing=true;
       animationToggle.textContent="Pausar";
       renderView();
