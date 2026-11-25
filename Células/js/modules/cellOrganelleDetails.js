@@ -2,7 +2,7 @@ import * as T from 'three';
 import {
   v, group, mesh, box, sphere, cylinder, capsule, lathe, torus, tube, rod, curve,
   material, glow, instances, instanceUpdater, labelSprite,
-  membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial, organicDisplace
+  membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial, organicDisplace, mergeGeos
 } from '../core/geometry.js';
 import { createAnchor } from './cellMicroDetails.js?v=16';
 
@@ -847,12 +847,12 @@ export function attachCentrosomeMicro(parent, anchors) {
 //    Cinesina (→ +) & Dineína (→ −) caminhando passo a passo com ATP
 //    F-Actina dupla hélice (7 nm) + Arp2/3 (70°) · Filamento Intermediário (10 nm)
 // ============================================================================
-export function attachCytoskeletonMicro(parent, anchors) {
-  const updaters = [];
+export function attachCytoskeletonMicro(parent, anchors, network) {
   createAnchor(parent, anchors, 'cyto_skel_main', 0, 0.2, 0.2);
 
   // --- A. HERO MICROTUBULE (~25 nm): 13-protofilament hollow lattice of α/β-tubulin dimers! ---
   const mtGroup = group(parent, 0.22, 0.16, 0.82);
+  mtGroup.visible = false;
   mtGroup.rotation.z = 0.12;
   const mtRadius = 0.088; // proportional to 25 nm
   const alphaMat = proteinMaterial('#2e9db5', { emissive: '#105468', emissiveIntensity: 0.26, clearcoat: 0.86 });
@@ -903,7 +903,8 @@ export function attachCytoskeletonMicro(parent, anchors) {
     // Coiled-coil helical stalk + cargo vesicle on top!
     tube(root, sMat, [v(0, 0.10, 0), v(0.014, 0.17, 0.01), v(-0.014, 0.24, -0.01), v(0, 0.30, 0)], 0.012, false, 16, 6);
     const cargo = sphere(root, gelMaterial(cargoHex, { opacity: 0.74, emissive: cargoHex, emissiveIntensity: 0.28, iridescence: 0.45 }), 0.105, 0.095, 0.095, 0, 0.40, 0, 14);
-    const atpSpark = sphere(root, glow('#82ffbe', 1.2), 0.024, 0.024, 0.024, 0, 0.04, 0.04, 8);
+    const atpSpark = group(root, 0, 0.04, 0.04);
+    sphere(atpSpark, glow('#82ffbe', 1.2), 0.024, 0.024, 0.024, 0, 0, 0, 8);
     return { root, footL, footR, legL, legR, cargo, atpSpark };
   }
   const kinesin = makeWalker('#5cffca', '#82f5e6', '#ffd068');
@@ -911,6 +912,7 @@ export function attachCytoskeletonMicro(parent, anchors) {
 
   // --- C. HERO F-ACTIN MICROFILAMENT (~7 nm): Double-stranded right-handed helix + Arp2/3 70° branch! ---
   const actinGroup = group(parent, 0.16, -0.34, 0.92);
+  actinGroup.visible = false;
   const actA = proteinMaterial('#f5748e', { emissive: '#94223a', emissiveIntensity: 0.28, clearcoat: 0.86 });
   const actB = proteinMaterial('#ffab8a', { emissive: '#a84824', emissiveIntensity: 0.28, clearcoat: 0.86 });
   const actinLen = 28;
@@ -927,7 +929,8 @@ export function attachCytoskeletonMicro(parent, anchors) {
   actInstA.instanceMatrix.needsUpdate = actInstB.instanceMatrix.needsUpdate = true;
   // Sculpted Arp2/3 Nucleating Complex spawning a 70° actin daughter branch!
   const arpMat = proteinMaterial('#ffd268', { emissive: '#9c6614', emissiveIntensity: 0.42, clearcoat: 0.9 });
-  const arp = sphere(actinGroup, arpMat, 0.044, 0.036, 0.036, -0.02, 0.024, 0.015, 12);
+  const arp = group(actinGroup, -0.02, 0.024, 0.015);
+  sphere(arp, arpMat, 0.044, 0.036, 0.036, 0, 0, 0, 12);
   const branch = group(actinGroup, -0.02, 0.024, 0.015);
   branch.rotation.z = 1.22; // authentic 70° Arp2/3 branching angle!
   for (let i = 0; i < 10; i++) {
@@ -939,6 +942,7 @@ export function attachCytoskeletonMicro(parent, anchors) {
 
   // --- D. HERO INTERMEDIATE FILAMENT (~10 nm): 8-strand woven rope cable (Keratin/Vimentin — apolar!) ---
   const interGroup = group(parent, 0.20, -0.66, 0.88);
+  interGroup.visible = false;
   const ifMatA = proteinMaterial('#b48ef5', { emissive: '#58349e', emissiveIntensity: 0.28, clearcoat: 0.8 });
   const ifMatB = proteinMaterial('#e8c47a', { emissive: '#8f641c', emissiveIntensity: 0.26, clearcoat: 0.8 });
   for (let s = 0; s < 4; s++) {
@@ -954,26 +958,29 @@ export function attachCytoskeletonMicro(parent, anchors) {
   createAnchor(interGroup, anchors, 'cyto_skel_inter', 0, 0.02, 0.06);
 
   // Contextual 3D micro-tags
-  const tagMT = addTag(mtGroup, 'Microtúbulo (~25 nm) · 13 protofilamentos α/β · (−) → (+)', 0.05, 0.28, 0.14, '#7ceeff', '#dffaff', 0.135);
-  const tagKin = addTag(mtGroup, 'Cinesina (caminha → +) · Dineína (← −) · ATP', -0.04, 0.62, 0.16, '#5cffca', '#dcfff2', 0.135);
-  const tagAct = addTag(actinGroup, 'F-Actina (~7 nm) · Dupla hélice + ramo Arp2/3 (70°)', 0.06, 0.34, 0.14, '#ff94a8', '#ffe4ea', 0.135);
-  const tagIF = addTag(interGroup, 'Filamento intermediário (~10 nm) · Cabo de tração apolar', 0.02, 0.22, 0.14, '#c4a6ff', '#f0e8ff', 0.135);
+  const tagMT = addTag(mtGroup, 'Microtúbulo (~25 nm) · 13 protofilamentos α/β · (−) → (+)', 0.05, 0.32, 0.14, '#7ceeff', '#dffaff', 0.105);
+  const tagKin = addTag(mtGroup, 'Cinesina (caminha → +) · Dineína (← −) · ATP', -0.04, 0.48, 0.16, '#5cffca', '#dcfff2', 0.105);
+  const tagAct = addTag(actinGroup, 'F-Actina (~7 nm) · Dupla hélice + ramo Arp2/3 (70°)', 0.06, -0.25, 0.14, '#ff94a8', '#ffe4ea', 0.105);
+  const tagIF = addTag(interGroup, 'Filamento intermediário (~10 nm) · Cabo de tração apolar', 0.02, 0.22, 0.14, '#c4a6ff', '#f0e8ff', 0.105);
 
-  updaters.push((t, _dt, activeKey, activeAnim) => {
-    const isSkel = activeKey === 'cytoskeleton';
+  return (t, activeAnim) => {
     const isTrack = activeAnim === 'skel_track';
     const isMotors = activeAnim === 'skel_motors';
     const isActin = activeAnim === 'skel_actin';
     const isInter = activeAnim === 'skel_intermediate';
 
-    mtGroup.visible = isSkel || isTrack || isMotors || isActin || isInter;
-    actinGroup.visible = isSkel || isActin || isInter || isTrack || isMotors;
-    interGroup.visible = isSkel || isInter || isActin || isTrack || isMotors;
+    network.visible = !(isTrack || isMotors || isActin || isInter);
+    mtGroup.visible = isTrack || isMotors;
+    actinGroup.visible = isActin;
+    interGroup.visible = isInter;
+    kinesin.root.visible = dynein.root.visible = isMotors;
 
     tagMT.visible = isTrack;
     tagKin.visible = isMotors;
     tagAct.visible = isActin;
     tagIF.visible = isInter;
+
+    if (network.visible) return;
 
     // Dynamic instability curling on microtubule (+) tip
     const curlWave = 0.5 + 0.5 * Math.sin(t * (isTrack ? 2.8 : 1.2));
@@ -1007,8 +1014,7 @@ export function attachCytoskeletonMicro(parent, anchors) {
     arp.scale.setScalar(isActin ? 1 + Math.sin(t * 4) * 0.14 : 1);
     branch.scale.setScalar(isActin ? 0.95 + Math.sin(t * 2.4) * 0.1 : 1);
     interGroup.scale.x = isInter ? 1 + Math.sin(t * 2.8) * 0.075 : 1;
-  });
-  return updaters;
+  };
 }
 
 // ============================================================================
@@ -1037,16 +1043,19 @@ export function attachWallMicro(parent, type, shellPoint, cutStart, cutArc, anch
     // 2. Crisscrossed multi-lamellar Cellulose Microfibrils + amber Hemicellulose cross-links!
     const celMat = proteinMaterial('#7cf078', { emissive: '#26782a', emissiveIntensity: 0.26, clearcoat: 0.8 });
     const hemiMat = proteinMaterial('#f5c964', { emissive: '#946218', emissiveIntensity: 0.3, clearcoat: 0.72 });
+    const cellulose = [], hemicellulose = [];
     for (let i = -3; i <= 3; i++) {
       // Upper oriented microfibril bundle
-      tube(patch, celMat, [v(-0.42, 0.088, i * 0.082), v(0, 0.094, i * 0.082 + 0.025), v(0.42, 0.086, i * 0.082)], 0.018, false, 16, 7);
+      cellulose.push(new T.TubeGeometry(curve([v(-0.42, 0.088, i * 0.082), v(0, 0.094, i * 0.082 + 0.025), v(0.42, 0.086, i * 0.082)]), 16, 0.018, 7));
       // Lower orthogonal microfibril bundle
-      tube(patch, celMat, [v(i * 0.11, 0.015, -0.28), v(i * 0.11 + 0.03, 0.02, 0), v(i * 0.11, 0.012, 0.28)], 0.017, false, 16, 7);
+      cellulose.push(new T.TubeGeometry(curve([v(i * 0.11, 0.015, -0.28), v(i * 0.11 + 0.03, 0.02, 0), v(i * 0.11, 0.012, 0.28)]), 16, 0.017, 7));
       // Flexible Hemicellulose tethers linking adjacent cellulose cables
       if (i < 3) {
-        tube(patch, hemiMat, [v(i * 0.11, 0.025, 0.05), v(i * 0.11 + 0.055, 0.056, 0.02), v((i + 1) * 0.11, 0.086, 0.08)], 0.008, false, 10, 5);
+        hemicellulose.push(new T.TubeGeometry(curve([v(i * 0.11, 0.025, 0.05), v(i * 0.11 + 0.055, 0.056, 0.02), v((i + 1) * 0.11, 0.086, 0.08)]), 10, 0.008, 5));
       }
     }
+    mesh(patch, mergeGeos(cellulose), celMat).userData.materialUses = cellulose.length;
+    mesh(patch, mergeGeos(hemicellulose), hemiMat).userData.materialUses = hemicellulose.length;
 
     // 3. Plasma-membrane Cellulose Synthase Rosette (CesA hexamer) spinning nascent microfibril!
     const cesGroup = group(patch, -0.24, -0.075, 0.04);
@@ -1105,19 +1114,29 @@ export function attachWallMicro(parent, type, shellPoint, cutStart, cutArc, anch
     const pepMat = proteinMaterial('#ff7aa8', { emissive: '#a82252', emissiveIntensity: 0.42, clearcoat: 0.88 });
     const teicMat = proteinMaterial('#88e8ff', { emissive: '#227a96', emissiveIntensity: 0.35, clearcoat: 0.85 });
 
+    const namSites = [], nagSites = [], peptideSites = [];
     const glycanLayers = [0.02, 0.095];
     for (const ly of glycanLayers) {
       for (let row = -2; row <= 2; row++) {
         const rz = row * 0.105;
         for (let col = -3; col <= 3; col++) {
           const cx = col * 0.11;
-          sphere(patch, (col + row) % 2 === 0 ? namMat : nagMat, 0.036, 0.028, 0.032, cx, ly, rz, 10);
+          ((col + row) % 2 === 0 ? namSites : nagSites).push([cx, ly, rz]);
           // Tetrapeptide cross-links bridging neighboring glycan chains (penicillin target!)
           if (row < 2 && col % 2 === 0) {
-            rod(patch, pepMat, v(cx, ly, rz + 0.028), v(cx, ly, rz + 0.078), 0.011, 7);
+            peptideSites.push([cx, ly, rz + 0.053]);
           }
         }
       }
+    }
+    const sugarGeo = new T.SphereGeometry(1, 10, 5).scale(0.036, 0.028, 0.032);
+    const peptideGeo = new T.CylinderGeometry(0.011, 0.011, 0.05, 7).rotateX(Math.PI / 2);
+    for (const [geo, mat, sites] of [[sugarGeo, namMat, namSites], [sugarGeo, nagMat, nagSites], [peptideGeo, pepMat, peptideSites]]) {
+      const batch = instances(patch, geo, mat, sites.length);
+      const put = instanceUpdater(batch);
+      sites.forEach(([x, y, z], i) => put(i, x, y, z));
+      batch.instanceMatrix.needsUpdate = true;
+      batch.userData.materialUses = sites.length;
     }
     // Vertical Teichoic / Lipoteichoic acid anchors threading through peptidoglycan mesh!
     for (const [tx, tz] of [[-0.28, -0.05], [0.02, 0.12], [-0.14, 0.16]]) {

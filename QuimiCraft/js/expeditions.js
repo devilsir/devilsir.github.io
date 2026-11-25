@@ -7,9 +7,16 @@ globalThis.QuimiCraftExpeditions=(()=>{
     den:{chance:.68,reach:15},
     temple:{chance:.57,reach:13,regions:["deserto","salinas","badlands","chapadas ocres","savana","cânion calcário"]},
     lab:{chance:.64,reach:24},
-    grove:{chance:.72,reach:19,regions:["floresta","floresta de sequoias","selva tropical","bosque de cerejeiras","bosque lilás","taiga","planície florida"]}
+    grove:{chance:.72,reach:19,regions:["floresta","floresta de sequoias","selva tropical","bosque de cerejeiras","bosque lilás","taiga","planície florida","manguezal","delta salobro"]}
   };
   const spacing=144,slots=[[35,35],[108,35],[35,108],[108,108]],kinds=Object.keys(table);
+  const denGuards={
+    ice_dragon:["sapphire_sentinel","silver_sentinel","SAPPHIRE_ORE","SILVER_ORE"],
+    fire_dragon:["ruby_sentinel","gold_sentinel","RUBY_ORE","GOLD"],
+    nature_dragon:["emerald_sentinel","gold_sentinel","EMERALD_ORE","GOLD"],
+    time_dragon:["opal_sentinel","gold_sentinel","OPAL_ORE","GOLD"],
+    earth_dragon:["amethyst_sentinel","silver_sentinel","AMETHYST","SILVER_ORE"]
+  };
   const loot={
     den:[["raw_beef",3,6],["hide",2,5],["gold_nugget",4,8],["crystal_shard",2,5],["bronze_ingot",2,4]],
     temple:[["gold_nugget",5,9],["bolt",8,14],["copper_ingot",2,5],["bread",2,4],["prism_pendant",1,1]],
@@ -103,7 +110,10 @@ globalThis.QuimiCraftExpeditions=(()=>{
           put(side*6,y+1,-3,B.SPECTRAL);
         }
         chest(-4,y+1,4,0);chest(4,y+1,4,1);
-        actor(0,y+1,1,site.dragon);actor(-5,y+1,-2,"den_sentinel");
+        const [gemGuard,metalGuard,gemOre,metalOre]=denGuards[site.dragon];
+        put(-6,y+3,3,B[gemOre]);put(6,y+3,3,B[metalOre]);
+        actor(0,y+1,1,site.dragon);
+        actor(-5,y+1,-2,gemGuard);actor(5,y+1,1,metalGuard);
       }else if(site.kind==="temple"){
         room(8,y,-7,15,5,B.LIMESTONE,B.OCHRE_PLASTER,B.TRAVERTINE);
         for(let tier=1;tier<=4;tier++)box(-8+tier*2,y+5+tier,-7+tier*2,8-tier*2,y+5+tier,8-tier*2,tier%2?B.LIMESTONE:B.SILICA_SAND);
@@ -173,6 +183,11 @@ globalThis.QuimiCraftExpeditions=(()=>{
         }
         chest(-3,y+1,-3,0);
         actor(-6,y+1,-3,"living_tree");actor(5,y+1,1,"living_tree_warden");actor(3,y+1,-7,"living_tree_elder");
+        const home=biome(site.x,site.z),trees=["living_tree_pine","living_tree_cherry","living_tree_willow","living_tree_mangrove"];
+        const preferred={taiga:0,"floresta de sequoias":0,"bosque de cerejeiras":1,"bosque lilás":1,"selva tropical":2,manguezal:3,"delta salobro":3};
+        const choice=preferred[home]??Math.floor(rand(site.x,site.z,141)*trees.length);
+        actor(-7,y+1,1,trees[choice]);
+        actor(0,y+1,7,trees[(choice+1+Math.floor(rand(site.x,site.z,142)*3))%trees.length]);
       }
       if(site.kind==="den"||site.kind==="temple"){
         for(const [k,column] of columns){

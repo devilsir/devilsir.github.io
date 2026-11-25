@@ -47,7 +47,7 @@ export class FireSystem {
         this.torchBeam.intensity = 0;
         this.createTorchVisuals();
         this.torchRoot.setEnabled(false);
-        scene.onBeforeRenderObservable.add(() => this.update(scene.getEngine().getDeltaTime() / 1000));
+        scene.onBeforeRenderObservable.add(() => this.update(scene.metadata?.wonderWorldFrameSeconds ?? scene.getEngine().getDeltaTime() / 1000));
     }
     register(mesh, definition) {
         this.burnables.set(mesh.uniqueId, {
@@ -153,7 +153,7 @@ export class FireSystem {
         if (light) {
             light.parent = root;
             light.diffuse = new Color3(1, 0.28, 0.04);
-            light.range = 8;
+            light.range = 9.5;
             light.intensity = 0.85;
         }
         this.fires.push({ root, light, flameMeshes, smokeMeshes, age: 0, duration, source: null });
@@ -210,12 +210,13 @@ export class FireSystem {
             if (this.fuel <= 0)
                 this.torchLit = false;
         }
-        const flicker = this.torchAvailable && this.torchLit ? 0.78 + Math.random() * 0.32 : 0;
-        this.torchLight.intensity = flicker * (0.32 + fuelRatio * 0.82);
-        this.torchLight.range = 6 + fuelRatio * 7;
-        this.torchBeam.intensity = flicker * (1.55 + fuelRatio * 2.25);
-        this.torchBeam.range = 18 + fuelRatio * 12;
-        this.torchBeam.angle = Math.PI / (2.55 + fuelRatio * 0.35);
+        const lightingActive = this.torchAvailable && this.torchLit;
+        const flicker = lightingActive ? 0.88 + Math.random() * 0.21 : 0;
+        this.torchLight.intensity = flicker * (0.55 + fuelRatio * 0.95);
+        this.torchLight.range = 8 + fuelRatio * 8;
+        this.torchBeam.intensity = flicker * (1.95 + fuelRatio * 2.85);
+        this.torchBeam.range = 22 + fuelRatio * 14;
+        this.torchBeam.angle = Math.PI / (2.35 + fuelRatio * 0.35);
         this.torchFlames.forEach((flame, index) => {
             flame.setEnabled(this.torchAvailable && this.torchLit);
             flame.scaling.y = 0.75 + Math.random() * 0.55;

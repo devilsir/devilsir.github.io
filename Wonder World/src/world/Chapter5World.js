@@ -1,3 +1,4 @@
+import { StoryDialogue } from "../systems/StoryDialogue.js";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
@@ -64,6 +65,12 @@ export class Chapter5World {
     mannequins = [];
     mirrorTextures = [];
     proofScore = 0;
+    storyDialogue = new StoryDialogue(
+        (speaker, text) => this.ui.showSubtitle(speaker, text, Infinity),
+        () => this.ui.hideSubtitle()
+    );
+    proofQuestion = null;
+    storyScenePlaying = false;
     proofContradictions = 0;
     proofComplete = false;
     archiveDataAccessed = false;
@@ -76,6 +83,7 @@ export class Chapter5World {
     readerClock = 0;
     jesseChaseActive = false;
     jesseCheckpoint = 0;
+    jesseRespawnPosition = null;
     postCreditsSeen = false;
     creditsSeen = false;
     finalDialogueSeen = false;
@@ -83,7 +91,6 @@ export class Chapter5World {
     mimicAttackCount = 0;
     deathCount = 0;
     completionSeconds = 0;
-    campaignStartTimestamp = Date.now();
     optionalRescueClock = 0;
     smokeClock = 0;
     mirrorRefreshClock = 0;
@@ -131,6 +138,7 @@ export class Chapter5World {
             },
             onChaseCheckpoint: (index) => {
                 this.jesseCheckpoint = Math.max(this.jesseCheckpoint, index);
+                this.jesseRespawnPosition = this.player.collider.position.clone();
                 this.callbacks.onCheckpoint(`chapter5-jesse-${index}`);
             },
             isPathObstructed: (from, to) => this.pathObstructed(from, to)
@@ -156,6 +164,7 @@ export class Chapter5World {
         this.noise.setEnabled(false);
     }
     startFromTransition(mimicAttackCount) {
+        this.resetStoryPresentation();
         this.active = true;
         this.root.setEnabled(true);
         this.phase = "approach";
@@ -177,7 +186,8 @@ export class Chapter5World {
             this.ui.toast("Use espelhos, gravações e lembranças para testar a identidade.", 4600);
         }, 1200);
     }
-    restore(save, checkpoint) {
+    restore(save, checkpoint, savedPosition) {
+        this.resetStoryPresentation();
         this.active = true;
         this.root.setEnabled(true);
         this.phase = save.phase;
@@ -197,7 +207,6 @@ export class Chapter5World {
         this.mimicAttackCount = save.mimicAttackCount;
         this.deathCount = save.deathCount;
         this.completionSeconds = save.completionSeconds;
-        this.campaignStartTimestamp = Date.now() - Math.round(save.completionSeconds * 1000);
         save.documents.forEach((id) => this.documents.add(id));
         save.recordings.forEach((id) => this.recordings.add(id));
         save.rescuedDocuments.forEach((id) => this.rescuedDocuments.add(id));
@@ -206,11 +215,11 @@ export class Chapter5World {
         this.noah.restore(save.noah);
         this.noise.setEnabled(true);
         this.applyPersistentVisualState();
-        const destination = this.destinationForCheckpoint(checkpoint);
+        const destination = (save.jesseChaseActive ? savedPosition : undefined) ?? this.destinationForCheckpoint(checkpoint);
         this.player.teleport(destination, 0);
         this.player.setEnabled(true);
         if (save.jesseChaseActive)
-            this.startFinalJesseChase(Math.max(0, save.jesseCheckpoint));
+            this.startFinalJesseChase(Math.max(0, save.jesseCheckpoint), true);
         if (save.phase === "credits")
             this.beginCredits();
         else if (save.phase === "post-credits")
@@ -219,7 +228,6 @@ export class Chapter5World {
             this.callbacks.onChapterComplete();
     }
     serialize() {
-        this.completionSeconds = Math.max(this.completionSeconds, (Date.now() - this.campaignStartTimestamp) / 1000);
         return {
             phase: this.phase,
             proofScore: this.proofScore,
@@ -250,7 +258,7 @@ export class Chapter5World {
     update(deltaSeconds) {
         if (!this.active)
             return;
-        this.completionSeconds = Math.max(this.completionSeconds, (Date.now() - this.campaignStartTimestamp) / 1000);
+        this.storyDialogue.update(deltaSeconds);
         this.noah.update(deltaSeconds);
         this.noise.update(deltaSeconds);
         if (this.jesseChaseActive)
@@ -665,6 +673,20 @@ export class Chapter5World {
         this.childhoodProjector.parent = this.root;
         this.childhoodProjector.position = new Vector3(-9, 1.05, 1630);
         this.childhoodProjector.material = this.materials.get("metal", 28);
+        const lens = MeshBuilder.CreateCylinder("childhood-projector-lens", { height: 0.42, diameterTop: 0.35, diameterBottom: 0.49, tessellation: 12 }, this.scene);
+        lens.parent = this.childhoodProjector;
+        lens.position.set(0, 0.16, -0.98);
+        lens.rotation.x = Math.PI / 2;
+        lens.material = this.materials.get("glass", 15);
+        lens.isPickable = false;
+        for (const side of [-1, 1]) {
+          const reel = MeshBuilder.CreateCylinder(`childhood-projector-reel-${side}`, { height: 0.14, diameter: side > 0 ? 0.8 : 0.62, tessellation: 12 }, this.scene);
+          reel.parent = this.childhoodProjector;
+          reel.position.set(0, 0.73, side * 0.47);
+          reel.rotation.z = Math.PI / 2;
+          reel.material = this.materials.get("metal", 20);
+          reel.isPickable = false;
+        }
         this.interaction.register(this.childhoodProjector, {
             prompt: "[E] Reproduzir fragmento do filme infantil",
             onInteract: () => this.playChildhoodFlashback("film-fragment")
@@ -818,7 +840,7 @@ export class Chapter5World {
         track.material = this.materials.get("metal", 48);
     }
     createFinalJesseRoute() {
-        this.blastDoor = this.createDoor("final-blast-door", new Vector3(0, 2.2, 1862), new Vector3(0, 4.8, 0), "metal", 52);
+        this.blastDoor = this.createDoor("final-blast-door", new Vector3(0, 2.1, 1862), new Vector3(0, 4.8, 0), "metal", 52);
         const control = MeshBuilder.CreateBox("final-blast-door-control", { width: 0.75, height: 1.1, depth: 0.42 }, this.scene);
         control.parent = this.root;
         control.position = new Vector3(4.2, 1.2, 1857);
@@ -939,14 +961,14 @@ export class Chapter5World {
         this.noahReader.parent = this.root;
         this.noahReader.position = new Vector3(3.5, 1.3, 2023);
         this.noahReader.material = this.materials.emissive("identity-card-reader", new Color3(0.04, 0.22, 0.55), 0.55);
-        this.exitDoorLeft = MeshBuilder.CreateBox("final-exit-left", { width: 4.5, height: 5, depth: 0.55 }, this.scene);
+        this.exitDoorLeft = MeshBuilder.CreateBox("final-exit-left", { width: 4.9, height: 5, depth: 0.55 }, this.scene);
         this.exitDoorLeft.parent = this.root;
-        this.exitDoorLeft.position = new Vector3(-2.3, 2.5, 2028);
+        this.exitDoorLeft.position = new Vector3(-2.45, 2.5, 2028);
         this.exitDoorLeft.material = this.materials.get("metal", 82);
         this.exitDoorLeft.checkCollisions = true;
-        this.exitDoorRight = MeshBuilder.CreateBox("final-exit-right", { width: 4.5, height: 5, depth: 0.55 }, this.scene);
+        this.exitDoorRight = MeshBuilder.CreateBox("final-exit-right", { width: 4.9, height: 5, depth: 0.55 }, this.scene);
         this.exitDoorRight.parent = this.root;
-        this.exitDoorRight.position = new Vector3(2.3, 2.5, 2028);
+        this.exitDoorRight.position = new Vector3(2.45, 2.5, 2028);
         this.exitDoorRight.material = this.materials.get("metal", 82);
         this.exitDoorRight.checkCollisions = true;
         this.exitDoorBlocker = MeshBuilder.CreateBox("final-exit-doorway-blocker", { width: 9.8, height: 5.2, depth: 1.3 }, this.scene);
@@ -975,7 +997,7 @@ export class Chapter5World {
         exitUpper.metadata = { permanentDoorWall: true };
         this.interaction.register(this.playerReader, {
             prompt: "[E] Inserir o Cartão do Corpo",
-            enabled: () => this.phase === "exit" && !this.playerReaderReady,
+            enabled: () => this.phase === "exit" && !this.playerReaderReady && !this.finalSequenceLocked,
             onInteract: () => {
                 if (!this.inventory.has("bodyCard")) {
                     this.ui.toast("O Cartão do Corpo não está no inventário.");
@@ -990,7 +1012,7 @@ export class Chapter5World {
         });
         this.interaction.register(this.noahReader, {
             prompt: "[E] Sincronizar com Noah",
-            enabled: () => this.phase === "exit" && this.noahReaderReady && !this.finalSequenceLocked,
+            enabled: () => this.phase === "exit" && this.playerReaderReady && this.noahReaderReady && !this.finalSequenceLocked,
             onInteract: () => this.synchronizeFinalExit()
         });
     }
@@ -1060,46 +1082,59 @@ export class Chapter5World {
             { id: "blast-door", position: new Vector3(0, 0.2, 1865), room: "final-route" }
         ];
     }
+    resetStoryPresentation() {
+        this.storyDialogue.clear();
+        if (this.proofQuestion) this.ui.hideTacticalActions();
+        if (this.storyScenePlaying) this.audio.stopLoop("projector");
+        this.proofQuestion = null;
+        this.storyScenePlaying = false;
+    }
+
     updateProofSequence() {
         if (this.phase === "approach" && Vector3.Distance(this.player.collider.position, this.checkpoints.proof) < 24) {
             this.phase = "proof";
             this.player.setEnabled(true);
             this.objective.set("prove-life", "PROVE QUE VOCÊ E NOAH SÃO HUMANOS.");
             this.callbacks.onCheckpoint("chapter5-proof");
-            this.ui.showSubtitle("Protagonista", "Você disse que entrar era uma péssima ideia. Eu também disse.", 4200);
-            this.ui.showSubtitle("Noah", "Isso qualquer coisa lá dentro pode ter ouvido. Me mostra algo que ela não consegue copiar direito.", 5200);
+            this.storyDialogue.enqueue([
+                ["Protagonista", "Você disse que entrar era uma péssima ideia. Eu também disse.", 4200],
+                ["Noah", "Isso qualquer coisa lá dentro pode ter ouvido. Me mostra algo que ela não consegue copiar direito.", 5800]
+            ]);
         }
         if (this.phase === "proof" && this.proofStations.every((station) => station.used) && !this.proofComplete)
             this.completeProofOfLife();
     }
     runProofQuestion(stationId, prompt, answers) {
         const station = this.proofStations.find((entry) => entry.id === stationId);
-        if (!station || station.used)
+        if (!station || station.used || this.proofQuestion || this.phase !== "proof")
             return;
         this.player.setEnabled(false);
         this.player.releasePointerLock();
-        this.ui.showSubtitle("Noah", prompt, 5200);
+        this.proofQuestion = stationId;
+        this.storyDialogue.suspend(true);
         this.ui.showTacticalActions(answers.map((answer) => ({ id: answer.id, label: answer.label })), (action) => {
             const answer = answers.find((candidate) => candidate.id === action);
-            if (!answer)
+            if (!answer || this.proofQuestion !== stationId || this.phase !== "proof")
                 return;
             station.used = true;
             this.proofAnswers.set(stationId, answer.id);
             if (answer.correct) {
                 this.proofScore += 2;
                 this.noah.trust += 1;
-                this.ui.showSubtitle("Noah", stationId === "recording" ? "Daniel parou a frase do mesmo jeito. Certo." : "Certo. Continua.", 2800);
+                this.storyDialogue.enqueue([["Noah", stationId === "recording" ? "Daniel parou a frase do mesmo jeito. Certo." : "Certo. Continua.", 2800]]);
             }
             else {
                 this.proofContradictions += 1;
                 this.proofScore -= 1;
                 this.noah.trust -= 1;
-                this.ui.showSubtitle("Noah", "Isso não prova nada. Ou prova a coisa errada.", 3200);
+                this.storyDialogue.enqueue([["Noah", "Isso não prova nada. Ou prova a coisa errada.", 3200]]);
             }
+            this.proofQuestion = null;
             this.ui.hideTacticalActions();
+            this.storyDialogue.suspend(false);
             this.player.setEnabled(true);
             this.player.requestPointerLock();
-        });
+        }, prompt);
     }
     completeProofOfLife() {
         this.proofComplete = true;
@@ -1108,29 +1143,26 @@ export class Chapter5World {
         this.proofBarrier.checkCollisions = false;
         this.noah.carryingIdentityCard = true;
         this.noah.setFollow();
-        this.ui.showSubtitle("Noah", "Eu ainda não confio em tudo que você lembra. Mas confio no erro. Só você insistia que a gente devia ir embora antes de entrar.", 6800);
-        window.setTimeout(() => {
-            this.ui.showSubtitle("Protagonista", "E você riu porque eu estava segurando a ficha com os dentes.", 4200);
-            this.objective.set("search-archives", "INVESTIGUE OS ARQUIVOS CENTRAIS COM NOAH.");
-            this.callbacks.onCheckpoint("chapter5-archives");
-            this.reactToMimicBehavior();
-        }, 2600);
+        this.objective.set("search-archives", "INVESTIGUE OS ARQUIVOS CENTRAIS COM NOAH.");
+        this.callbacks.onCheckpoint("chapter5-archives");
+        this.storyDialogue.enqueue([
+            ["Noah", this.proofScore > 0
+                ? "Eu ainda não confio em tudo que você lembra. Mas confio no erro. Só você insistia que a gente devia ir embora antes de entrar."
+                : "Você errou algumas coisas. Mas eu também não lembro de tudo igual. Lembro de você pedindo pra gente ir embora.", 7200],
+            ["Protagonista", "E você riu porque eu estava segurando a ficha com os dentes.", 4200]
+        ]);
+        this.reactToMimicBehavior();
     }
+
     reactToMimicBehavior() {
-        if (this.mimicAttackCount === 0) {
-            this.ui.showSubtitle("Noah", "Você parou quando ela caiu. Eu ouvi o silêncio depois.", 4200);
-        }
-        else if (this.mimicAttackCount <= 3) {
-            this.ui.showSubtitle("Noah", "Você acertou mais algumas vezes depois que ela parou. Eu não sei se eu faria diferente.", 4600);
-        }
-        else if (this.mimicAttackCount <= 12) {
-            this.ui.showSubtitle("Noah", "A coisa já não estava se mexendo. Mesmo assim, os golpes continuaram por um tempo.", 4800);
-        }
-        else {
-            this.ui.showSubtitle("Noah", "Quando ela parou, o som do porrete continuou. Eu quase não chamei você depois disso.", 5200);
-            this.audio.memoryFragments();
-        }
+        const count = this.mimicAttackCount;
+        const line = count === 0 ? "Você parou quando ela caiu. Eu ouvi o silêncio depois."
+            : count <= 3 ? "Você acertou mais algumas vezes depois que ela parou. Eu não sei se eu faria diferente."
+            : count <= 12 ? "A coisa já não estava se mexendo. Mesmo assim, os golpes continuaram por um tempo."
+            : "Quando ela parou, o som do porrete continuou. Eu quase não chamei você depois disso.";
+        this.storyDialogue.enqueue([["Noah", line, 5200, count > 12 ? () => this.audio.memoryFragments() : undefined]]);
     }
+
     readArchiveRecord(record) {
         if (!this.documents.has(record.id)) {
             this.documents.add(record.id);
@@ -1145,13 +1177,14 @@ export class Chapter5World {
     }
     noahReactToRecord(record) {
         if (record.id === "symbolic-program")
-            this.ui.showSubtitle("Noah", "Corpo. Movimento. Medo. Identidade. A gente passou por cada parte como se fosse um teste.", 5600);
+            this.storyDialogue.enqueue([["Noah", "Corpo. Movimento. Medo. Identidade. A gente passou por cada parte como se fosse um teste.", 5600]]);
         if (record.id === "permanent-visitors-a")
-            this.ui.showSubtitle("Noah", "Eles não perderam essas crianças. Eles decidiram ficar com elas.", 4800);
+            this.storyDialogue.enqueue([["Noah", "Eles não perderam essas crianças. Eles decidiram ficar com elas.", 4800]]);
         if (record.id === "protagonist-file")
-            this.ui.showSubtitle("Noah", "A ficha no chão... você não encontrou hoje. Você voltou para buscar sem saber.", 5200);
+            this.storyDialogue.enqueue([["Noah", "A ficha no chão... você não encontrou hoje. Você voltou para buscar sem saber.", 5200]]);
     }
     playChildhoodFlashback(id) {
+        if (this.storyScenePlaying) return;
         if (this.flashbacksSeen.has(id)) {
             this.ui.toast("O filme termina sempre no mesmo quadro queimado.");
             return;
@@ -1159,17 +1192,23 @@ export class Chapter5World {
         this.flashbacksSeen.add(id);
         this.player.setEnabled(false);
         this.player.releasePointerLock();
-        this.audio.startProjector();
-        this.ui.setCorruption(0.62, 2600);
-        this.ui.showSubtitle("Gravação infantil", "Sujeito 13-R, olhe para o nariz vermelho. Diga qual parte de você ele reconhece.", 5400);
-        window.setTimeout(() => {
-            this.ui.showSubtitle("Voz infantil", "Ele lembra de mim quando eu não lembro dele.", 4400);
-            this.audio.memoryFragments();
-            this.audio.stopLoop("projector");
+        this.storyScenePlaying = true;
+        this.storyDialogue.enqueue([
+            ["Gravação infantil", "Sujeito 13-R, olhe para o nariz vermelho. Diga qual parte de você ele reconhece.", 4700, () => {
+                this.audio.startProjector();
+                this.ui.setCorruption(0.62, 2600);
+            }],
+            ["Voz infantil", "Ele lembra de mim quando eu não lembro dele.", 3300, () => {
+                this.audio.memoryFragments();
+                this.audio.stopLoop("projector");
+            }]
+        ], () => {
+            this.storyScenePlaying = false;
             this.player.setEnabled(true);
             this.callbacks.onCheckpoint("chapter5-memory");
-        }, 2600);
+        });
     }
+
     canAccessArchiveCore() {
         return this.documents.has("symbolic-program")
             && this.documents.has("permanent-visitors-a")
@@ -1177,7 +1216,7 @@ export class Chapter5World {
             && (this.flashbacksSeen.has("film-fragment") || this.flashbacksSeen.has("token-memory"));
     }
     revealExperimentProgram() {
-        if (this.archiveDataAccessed)
+        if (this.archiveDataAccessed || this.storyScenePlaying)
             return;
         this.archiveDataAccessed = true;
         this.experimentRevelationSeen = true;
@@ -1185,18 +1224,21 @@ export class Chapter5World {
         this.phase = "revelation";
         this.player.setEnabled(false);
         this.player.releasePointerLock();
-        this.audio.memoryFragments();
-        this.ui.setCorruption(0.78, 3800);
-        this.ui.showSubtitle("Diretor do programa", "O visitante pode perder a lembrança e manter a conexão. A ausência consciente não encerra a transferência.", 6200);
-        window.setTimeout(() => {
-            this.ui.showSubtitle("Noah", "Você esteve aqui antes. Body reconheceu você porque alguma parte ficou nele.", 5600);
-        }, 2100);
-        window.setTimeout(() => {
-            this.ui.showSubtitle("Protagonista", "Eles não apagaram o que aconteceu. Só apagaram o caminho até a lembrança.", 5600);
+        this.storyScenePlaying = true;
+        this.storyDialogue.enqueue([
+            ["Diretor do programa", "O visitante pode perder a lembrança e manter a conexão. A ausência consciente não encerra a transferência.", 5600, () => {
+                this.audio.memoryFragments();
+                this.ui.setCorruption(0.78, 3800);
+            }],
+            ["Noah", "Você esteve aqui antes. Body reconheceu você porque alguma parte ficou nele.", 4400],
+            ["Protagonista", "Eles não apagaram o que aconteceu. Só apagaram o caminho até a lembrança.", 4600]
+        ], () => {
+            this.storyScenePlaying = false;
             this.player.setEnabled(true);
             this.beginFacilityFailure();
-        }, 5100);
+        });
     }
+
     beginFacilityFailure() {
         if (this.collapseStarted)
             return;
@@ -1269,13 +1311,14 @@ export class Chapter5World {
             this.objective.set("synchronized-exit", "ATIVE OS DOIS LEITORES DE CARTÃO EM SINCRONIA.");
         }
     }
-    startFinalJesseChase(checkpoint) {
+    startFinalJesseChase(checkpoint, restoring = false) {
         if (this.jesseChaseActive)
             return;
         this.phase = "jesse-return";
         this.escapeSegment = Math.max(this.escapeSegment, 4);
         this.jesseChaseActive = true;
         this.jesseCheckpoint = checkpoint;
+        this.jesseRespawnPosition = this.player.collider.position.clone();
         this.noise.setEnabled(true);
         this.audio.startJesseChase();
         const route = [
@@ -1287,6 +1330,7 @@ export class Chapter5World {
         ];
         this.jesse.startChase(route, checkpoint);
         this.objective.set("final-jesse", "FUJA DE JESSE E NÃO DEIXE NOAH PARA TRÁS.");
+        if (restoring) return;
         this.callbacks.onCheckpoint(`chapter5-jesse-${checkpoint}`);
         this.ui.showSubtitle("Noah", "Não é uma gravação. Ele voltou.", 2800);
         this.ui.showSoundCaption("a caixa de música ganha percussão metálica", 2600);
@@ -1296,10 +1340,11 @@ export class Chapter5World {
         this.player.health = 100;
         this.ui.flashDamage(1);
         this.ui.showSoundCaption("as mãos de Jesse fecham o corredor", 2200);
-        this.player.teleport(this.checkpoints.finalJesse.clone(), 0);
-        this.noah.teleport(this.checkpoints.finalJesse.add(new Vector3(2, 0, 1)));
+        const respawn = this.jesseRespawnPosition ?? this.checkpoints.finalJesse;
+        this.player.teleport(respawn.clone(), 0);
+        this.noah.teleport(respawn.add(new Vector3(1.6, 0, -1.1)));
         this.noah.setFollow();
-        this.jesse.resetChase(new Vector3(-7, 5.8, 1816), Math.max(0, this.jesseCheckpoint));
+        this.jesse.resetChase(respawn.add(new Vector3(0, 0, -12)), Math.max(0, this.jesseCheckpoint));
         this.callbacks.onPlayerDamaged();
     }
     updateMannequinReturn(deltaSeconds) {
@@ -1423,18 +1468,19 @@ export class Chapter5World {
         }
     }
     updateFinalReaders(deltaSeconds) {
-        if (this.phase !== "exit")
-            return;
-        if (this.playerReaderReady) {
-            this.readerClock -= deltaSeconds;
-            if (this.readerClock <= 0 && !this.noahReaderReady) {
-                this.playerReaderReady = false;
-                this.playerReader.material = this.materials.emissive("body-card-reader-reset", new Color3(0.48, 0.06, 0.045), 0.55);
-                this.ui.showSubtitle("Sistema", "SINCRONIA EXPIRADA.", 1600);
-            }
-        }
+        if (this.phase !== "exit" || this.finalSequenceLocked || !this.playerReaderReady) return;
+        this.readerClock = Math.max(0, this.readerClock - deltaSeconds);
+        if (this.readerClock > 0) return;
+        this.playerReaderReady = false;
+        this.noahReaderReady = false;
+        this.noah.wait();
+        this.playerReader.material = this.materials.emissive("body-card-reader-reset", new Color3(0.48, 0.06, 0.045), 0.55);
+        this.noahReader.material = this.materials.emissive("identity-card-reader", new Color3(0.04, 0.22, 0.55), 0.55);
+        this.ui.showSubtitle("Sistema", "SINCRONIA EXPIRADA.", 1600);
     }
+
     synchronizeFinalExit() {
+        if (this.finalSequenceLocked) return;
         if (!this.playerReaderReady || !this.noahReaderReady || this.readerClock <= 0) {
             this.ui.toast("Os leitores precisam ser ativados dentro da mesma janela.");
             return;
@@ -1488,13 +1534,16 @@ export class Chapter5World {
         this.creditsSeen = true;
         this.player.setEnabled(false);
         this.player.releasePointerLock();
+        const timing = this.callbacks.getCampaignTiming?.(true) ?? { seconds: 0, complete: false };
+        this.completionSeconds = timing.seconds;
         this.callbacks.onCheckpoint("true-ending");
         this.ui.showFinalCredits({
             title: "ATRAÇÃO FINAL",
             ending: "FINAL VERDADEIRO — SALVOS PELAS AUTORIDADES",
             documents: this.documents.size + this.rescuedDocuments.size,
             deaths: this.deathCount,
-            completionSeconds: Math.round(this.completionSeconds),
+            completionSeconds: Math.floor(timing.seconds),
+            timeIsPartial: !timing.complete,
             endings: this.callbacks.getEndingCount(),
             postDefeatAttacks: this.mimicAttackCount,
             rescuedRecords: this.rescuedDocuments.size
@@ -1550,6 +1599,7 @@ export class Chapter5World {
             this.ui.showSubtitle("Noah", "A porta vai fechar. Me puxa quando eu passar!", 2500);
         }
         else if (tag === "identity-reader") {
+            if (this.phase !== "exit" || !this.playerReaderReady || this.readerClock <= 0 || this.finalSequenceLocked) return;
             this.noahReaderReady = true;
             this.noahReader.material = this.materials.emissive("identity-reader-ready", new Color3(0.1, 0.8, 0.18), 0.85);
             this.ui.showSoundCaption("o Cartão da Identidade de Noah é reconhecido", 1600);
@@ -1577,8 +1627,8 @@ export class Chapter5World {
         if (this.escapeSegment >= 2)
             this.bodyBeam.position.y = 3.1;
         if (this.trueEndingDiscovered) {
-            this.exitDoorLeft.position.x = -7.3;
-            this.exitDoorRight.position.x = 7.3;
+            this.exitDoorLeft.position.x = -7.45;
+            this.exitDoorRight.position.x = 7.45;
             this.exitDoorLeft.checkCollisions = false;
             this.exitDoorRight.checkCollisions = false;
             this.exitDoorBlocker.setEnabled(false);

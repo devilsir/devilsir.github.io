@@ -1,9 +1,14 @@
+import { GRAPHICS_OPTIONS } from "../systems/Settings.js";
+import { openFinaleOverlay } from "./FinaleOverlay.js";
+import { playIllustratedOpening } from "./OpeningFilm.js";
+
 export class GameUI {
     root;
     currentSettings;
     menuActionHandler = null;
     pauseHandler = null;
     tacticalHandler = null;
+    tacticalQuestionOpen = false;
     toastTimer = 0;
     subtitleTimer = 0;
     captionTimer = 0;
@@ -16,6 +21,9 @@ export class GameUI {
         this.currentSettings = settings;
         this.root.innerHTML = this.template();
         this.applySettings(settings);
+    }
+    get isLoading() {
+        return this.loadingDepth > 0;
     }
     showLoading(message, detail = "Aguarde enquanto o cenário é preparado.") {
         this.loadingDepth += 1;
@@ -189,11 +197,16 @@ export class GameUI {
             callbacks.onClose();
         };
     }
+    get finaleOverlayOpen() {
+        return this.root.querySelector("#final-credits-overlay[open], #post-credits-overlay[open]") !== null;
+    }
+
     showFinalCredits(stats, onComplete) {
-        this.root.querySelector("#final-credits-overlay")?.remove();
-        const overlay = document.createElement("section");
+        const overlay = document.createElement("dialog");
         overlay.id = "final-credits-overlay";
         overlay.className = "final-credits-overlay";
+        overlay.setAttribute("aria-label", "Créditos finais");
+        overlay.dataset.calm = String(this.currentSettings.reducedFlashing || this.currentSettings.reducedCameraShake || false);
         const minutes = Math.floor(stats.completionSeconds / 60);
         const seconds = stats.completionSeconds % 60;
         const behaviorLine = stats.postDefeatAttacks === 0
@@ -223,7 +236,7 @@ export class GameUI {
         <p>Instalação: estruturalmente perdida</p>
         <div class="credits-gap"></div>
         <h3>ESTATÍSTICAS DA CAMPANHA</h3>
-        <p>Tempo: ${minutes}:${String(seconds).padStart(2, "0")}</p>
+        <p>${stats.timeIsPartial ? "Tempo registrado" : "Tempo de campanha"}: ${minutes}:${String(seconds).padStart(2, "0")}</p>
         <p>Documentos encontrados: ${stats.documents}</p>
         <p>Registros resgatados do incêndio: ${stats.rescuedRecords}</p>
         <p>Mortes e recuperações: ${stats.deaths}</p>
@@ -236,22 +249,16 @@ export class GameUI {
       </div>
       <button class="credits-skip" type="button" disabled>PULAR CRÉDITOS</button>
     `;
-        this.root.appendChild(overlay);
         const button = overlay.querySelector(".credits-skip");
-        const finish = () => {
-            overlay.classList.add("leaving");
-            window.setTimeout(() => { overlay.remove(); onComplete(); }, 700);
-        };
-        window.setTimeout(() => { button.disabled = false; }, 4500);
-        button.onclick = finish;
-        window.setTimeout(() => { if (overlay.isConnected)
-            finish(); }, 33000);
+        openFinaleOverlay(this.root, overlay, button, { unlockMs: 4500, autoMs: 33000, fadeMs: 700 }, onComplete);
     }
+
     showPostCredits(onComplete) {
-        this.root.querySelector("#post-credits-overlay")?.remove();
-        const overlay = document.createElement("section");
+        const overlay = document.createElement("dialog");
         overlay.id = "post-credits-overlay";
         overlay.className = "post-credits-overlay";
+        overlay.setAttribute("aria-label", "Cena pós-créditos");
+        overlay.dataset.calm = String(this.currentSettings.reducedFlashing || this.currentSettings.reducedCameraShake || false);
         overlay.innerHTML = `
       <div class="government-room">
         <div class="official official-a"></div>
@@ -274,20 +281,16 @@ export class GameUI {
       </div>
       <button class="post-credits-close" type="button" disabled>ENCERRAR</button>
     `;
-        this.root.appendChild(overlay);
+        const button = overlay.querySelector(".post-credits-close");
+        const later = openFinaleOverlay(this.root, overlay, button, { unlockMs: 11600, autoMs: 16000, fadeMs: 0 }, onComplete);
         const indicator = overlay.querySelector(".elevator-indicator");
         const levels = ["NÍVEL -8", "NÍVEL -9", "NÍVEL -10", "NÍVEL DESCONHECIDO"];
-        levels.forEach((level, index) => window.setTimeout(() => { indicator.textContent = level; }, 3600 + index * 1500));
-        window.setTimeout(() => overlay.classList.add("elevator-focus"), 3200);
-        window.setTimeout(() => overlay.classList.add("doors-open"), 9000);
-        window.setTimeout(() => overlay.classList.add("eyes-visible"), 10400);
-        const button = overlay.querySelector(".post-credits-close");
-        window.setTimeout(() => { button.disabled = false; }, 11600);
-        const finish = () => { overlay.remove(); onComplete(); };
-        button.onclick = finish;
-        window.setTimeout(() => { if (overlay.isConnected)
-            finish(); }, 16000);
+        levels.forEach((level, index) => later(() => { indicator.textContent = level; }, 3600 + index * 1500));
+        later(() => overlay.classList.add("elevator-focus"), 3200);
+        later(() => overlay.classList.add("doors-open"), 9000);
+        later(() => overlay.classList.add("eyes-visible"), 10400);
     }
+
     setEndingGallery(endings) {
         const labels = {
             "dead-by-creature": "FINAL: MORTO PELA CRIATURA",
@@ -358,8 +361,16 @@ export class GameUI {
             : "";
         subtitle.innerHTML = `${label}${this.escape(text)}`;
         subtitle.classList.remove("hidden");
-        this.subtitleTimer = window.setTimeout(() => subtitle.classList.add("hidden"), duration);
+        this.subtitleTimer = Number.isFinite(duration)
+            ? window.setTimeout(() => subtitle.classList.add("hidden"), duration)
+            : 0;
     }
+    hideSubtitle() {
+        window.clearTimeout(this.subtitleTimer);
+        this.subtitleTimer = 0;
+        this.get("subtitle").classList.add("hidden");
+    }
+
     showSoundCaption(text, duration = 2600) {
         if (!this.currentSettings.soundCaptions)
             return;
@@ -437,51 +448,8 @@ export class GameUI {
         }
         return false;
     }
-    async playOpeningFilm(onSkip) {
-        const screen = this.get("cinematic");
-        const canvas = this.get("film-canvas");
-        const context = canvas.getContext("2d");
-        if (!context)
-            return;
-        screen.classList.remove("hidden");
-        let skipped = false;
-        const narrationText = "Bem-vindos ao Wonder World, onde toda criança encontra uma parte de si mesma.";
-        const narration = new SpeechSynthesisUtterance(narrationText);
-        narration.lang = "pt-BR";
-        narration.rate = 0.88;
-        narration.pitch = 0.86;
-        narration.volume = this.currentSettings.dialogueVolume * this.currentSettings.masterVolume;
-        window.speechSynthesis.cancel();
-        window.setTimeout(() => {
-            if (!skipped)
-                window.speechSynthesis.speak(narration);
-        }, 650);
-        this.get("skip-film").onclick = () => {
-            skipped = true;
-            window.speechSynthesis.cancel();
-            screen.classList.add("hidden");
-            onSkip();
-        };
-        const start = performance.now();
-        const duration = 13000;
-        await new Promise((resolve) => {
-            const draw = (now) => {
-                if (skipped) {
-                    resolve();
-                    return;
-                }
-                const elapsed = now - start;
-                const t = elapsed / 1000;
-                this.drawFilmFrame(context, canvas, t);
-                if (elapsed >= duration) {
-                    screen.classList.add("hidden");
-                    resolve();
-                    return;
-                }
-                requestAnimationFrame(draw);
-            };
-            requestAnimationFrame(draw);
-        });
+    playOpeningFilm(onSkip, onCue) {
+        return playIllustratedOpening(this.get("cinematic"), this.currentSettings, onSkip, onCue);
     }
     showChapterCard(title, subtitle = "", duration = 3600) {
         const screen = this.get("chapter-card");
@@ -506,22 +474,54 @@ export class GameUI {
     setBossHealth(percent) {
         this.get("boss-health-fill").style.width = `${Math.max(0, Math.min(100, percent))}%`;
     }
-    showTacticalActions(actions, handler) {
+    showTacticalActions(actions, handler, question = "") {
         this.tacticalHandler = handler;
         const container = this.get("tactical-actions");
+        if (container.open) container.close();
         container.innerHTML = "";
+        this.tacticalQuestionOpen = !!question;
+        container.classList.toggle("is-question", this.tacticalQuestionOpen);
+        const focusable = [];
+        if (question) {
+            const prompt = document.createElement("p");
+            prompt.id = "tactical-question";
+            prompt.textContent = question;
+            container.setAttribute("aria-labelledby", prompt.id);
+            container.append(prompt);
+        } else {
+            container.removeAttribute("aria-labelledby");
+        }
         for (const action of actions) {
             const button = document.createElement("button");
             button.className = "ui-button";
             button.textContent = action.label;
             button.disabled = action.enabled === false;
+            if (!button.disabled) focusable.push(button);
             button.onclick = () => this.tacticalHandler?.(action.id);
             container.append(button);
         }
         container.classList.remove("hidden");
+        container.oncancel = question ? (event) => event.preventDefault() : null;
+        if (question) container.showModal();
+        else container.show();
+        container.onkeydown = question ? (event) => {
+            if (event.key !== "Tab" || !focusable.length) return;
+            event.preventDefault();
+            const current = focusable.findIndex((button) => button === document.activeElement);
+            const step = event.shiftKey ? -1 : 1;
+            const next = current < 0 ? (event.shiftKey ? focusable.length - 1 : 0) : (current + step + focusable.length) % focusable.length;
+            focusable[next]?.focus({ preventScroll: true });
+        } : null;
+        if (question) focusable[0]?.focus({ preventScroll: true });
     }
     hideTacticalActions() {
-        this.get("tactical-actions").classList.add("hidden");
+        this.tacticalQuestionOpen = false;
+        this.tacticalHandler = null;
+        const container = this.get("tactical-actions");
+        container.onkeydown = null;
+        container.oncancel = null;
+        if (container.open) container.close();
+        container.classList.add("hidden");
     }
     flashDamage(strength = 1) {
         const vignette = this.get("damage-vignette");
@@ -643,155 +643,6 @@ export class GameUI {
     }
     escape(value) {
         return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character] ?? character);
-    }
-    drawFilmFrame(context, canvas, t) {
-        const width = canvas.width;
-        const height = canvas.height;
-        const flicker = 0.78 + Math.random() * 0.16;
-        context.fillStyle = `rgb(${220 * flicker},${220 * flicker},${214 * flicker})`;
-        context.fillRect(0, 0, width, height);
-        context.save();
-        context.translate(Math.sin(t * 18) * 1.2, Math.cos(t * 13) * 0.8);
-        context.fillStyle = "#1a1a1a";
-        context.textAlign = "center";
-        if (t < 2.1) {
-            context.font = "bold 44px Georgia";
-            context.fillText("WONDER WORLD", width / 2, 125);
-            context.font = "22px Georgia";
-            context.fillText("ONDE A DIVERSÃO GANHA VIDA!", width / 2, 172);
-            this.drawMascot(context, width / 2, 350, 1.1, false);
-        }
-        else if (t < 5.3) {
-            context.font = "bold 32px Georgia";
-            context.fillText("UM DIA PERFEITO PARA TODA A FAMÍLIA", width / 2, 70);
-            for (let i = 0; i < 5; i += 1) {
-                const x = 120 + i * 140;
-                const bounce = Math.sin(t * 5 + i) * 9;
-                this.drawPerson(context, x, 310 + bounce, 0.72, i < 2);
-            }
-            context.strokeStyle = "#333";
-            context.lineWidth = 10;
-            context.beginPath();
-            context.arc(width / 2, 320, 230, Math.PI, 0);
-            context.stroke();
-        }
-        else if (t < 7.4) {
-            context.font = "bold 31px Georgia";
-            context.fillText("CONHEÇA BODY, O AMIGO DE QUATRO BRAÇOS!", width / 2, 72);
-            this.drawMascot(context, width / 2, 345, 1.45, false);
-        }
-        else if (t < 7.65) {
-            context.fillStyle = "#111";
-            context.fillRect(0, 0, width, height);
-            context.fillStyle = "#ddd";
-            context.fillRect(width / 2 - 115, 170, 230, 260);
-            context.fillStyle = "#111";
-            for (let i = 0; i < 6; i += 1)
-                this.drawPerson(context, 140 + i * 125, 420, 0.5, false);
-            context.fillStyle = "#fff";
-            context.font = "18px monospace";
-            context.fillText("QUADRO 437-B", width / 2, 510);
-        }
-        else if (t < 10.4) {
-            context.font = "bold 34px Georgia";
-            context.fillText("BRINQUEDOS, MÚSICA E SORRISOS!", width / 2, 72);
-            for (let i = 0; i < 4; i += 1) {
-                this.drawToy(context, 170 + i * 155, 310 + Math.sin(t * 7 + i) * 8, 0.9);
-            }
-        }
-        else {
-            context.font = "bold 48px Georgia";
-            context.fillText("WONDER WORLD", width / 2, 210);
-            context.font = "24px Georgia";
-            context.fillText("TODA CRIANÇA ENCONTRA UMA PARTE DE SI MESMA", width / 2, 265);
-            context.font = "18px Georgia";
-            context.fillText("VISITE-NOS NA ROTA 17", width / 2, 430);
-        }
-        for (let i = 0; i < 90; i += 1) {
-            const x = Math.random() * width;
-            const y = Math.random() * height;
-            context.fillStyle = Math.random() > 0.5 ? "rgba(0,0,0,.15)" : "rgba(255,255,255,.18)";
-            context.fillRect(x, y, Math.random() * 2 + 0.5, Math.random() * 2 + 0.5);
-        }
-        if (t > 0.55 && t < 6.8) {
-            context.fillStyle = "rgba(8,8,8,.82)";
-            context.fillRect(60, height - 76, width - 120, 46);
-            context.fillStyle = "#f1eee4";
-            context.font = "20px Georgia";
-            context.fillText("Bem-vindos ao Wonder World, onde toda criança encontra uma parte de si mesma.", width / 2, height - 46);
-        }
-        if (Math.random() < 0.18) {
-            context.strokeStyle = "rgba(25,25,25,.4)";
-            context.lineWidth = Math.random() * 2 + 0.5;
-            const x = Math.random() * width;
-            context.beginPath();
-            context.moveTo(x, 0);
-            context.lineTo(x + Math.sin(t) * 20, height);
-            context.stroke();
-        }
-        context.restore();
-    }
-    drawPerson(context, x, y, scale, child) {
-        const height = child ? 130 : 180;
-        context.save();
-        context.translate(x, y);
-        context.scale(scale, scale);
-        context.fillStyle = "#2b2b2b";
-        context.beginPath();
-        context.arc(0, -height * 0.7, 25, 0, Math.PI * 2);
-        context.fill();
-        context.fillRect(-22, -height * 0.55, 44, height * 0.48);
-        context.fillRect(-45, -height * 0.48, 25, 85);
-        context.fillRect(20, -height * 0.48, 25, 85);
-        context.fillRect(-21, -height * 0.08, 18, 85);
-        context.fillRect(3, -height * 0.08, 18, 85);
-        context.restore();
-    }
-    drawMascot(context, x, y, scale, burned) {
-        context.save();
-        context.translate(x, y);
-        context.scale(scale, scale);
-        context.fillStyle = burned ? "#111" : "#393939";
-        context.beginPath();
-        context.ellipse(0, 0, 95, 120, 0, 0, Math.PI * 2);
-        context.fill();
-        context.beginPath();
-        context.arc(0, -116, 72, 0, Math.PI * 2);
-        context.fill();
-        context.strokeStyle = "#333";
-        context.lineWidth = 24;
-        for (const angle of [-2.6, -2.1, -1.05, -0.55]) {
-            context.beginPath();
-            context.moveTo(Math.cos(angle) * 55, Math.sin(angle) * 42 - 15);
-            context.lineTo(Math.cos(angle) * 150, Math.sin(angle) * 110);
-            context.stroke();
-        }
-        context.fillStyle = "#888";
-        context.beginPath();
-        context.arc(0, -112, 20, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = "#eee";
-        context.beginPath();
-        context.arc(-24, -130, 10, 0, Math.PI * 2);
-        context.arc(24, -130, 10, 0, Math.PI * 2);
-        context.fill();
-        context.restore();
-    }
-    drawToy(context, x, y, scale) {
-        context.save();
-        context.translate(x, y);
-        context.scale(scale, scale);
-        context.fillStyle = "#333";
-        context.fillRect(-45, -65, 90, 100);
-        context.beginPath();
-        context.arc(0, -82, 48, 0, Math.PI * 2);
-        context.fill();
-        context.fillStyle = "#aaa";
-        context.beginPath();
-        context.arc(-15, -88, 6, 0, Math.PI * 2);
-        context.arc(15, -88, 6, 0, Math.PI * 2);
-        context.fill();
-        context.restore();
     }
     template() {
         return `
@@ -918,7 +769,7 @@ export class GameUI {
             ${this.checkboxRow("Janelas maiores no chefe", "extendedBossWindows", true)}
             ${this.checkboxRow("Mais tempo em apagões e puzzles", "extendedPuzzleWindows", true)}
             ${this.checkboxRow("Perseguições simplificadas", "simplifiedChase", true)}
-            ${this.selectRow("Desempenho", "performancePreset", [["performance", "Desempenho"], ["balanced", "Equilibrado"], ["cinematic", "Cinemático"]])}
+            ${this.selectRow("Qualidade gráfica", "performancePreset", GRAPHICS_OPTIONS)}
           </div>
           <div class="settings-actions">
             <button class="ui-button" data-settings-reset>RESTAURAR</button>
@@ -933,7 +784,20 @@ export class GameUI {
           <div class="kicker">Créditos</div>
           <h2>ATRAÇÃO FINAL</h2>
           <p>Direção criativa e conceito: Timbó.</p>
-          <p>Campanha procedural criada dentro do projeto, sem arte ou áudio externo em tempo de execução.</p>
+          <p>Campanha procedural. As faixas abaixo foram recortadas e adaptadas para reprodução local no jogo.</p>
+          <div class="kicker">Trilha sonora</div>
+          <ul>
+            <li><a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100048" target="_blank" rel="noopener noreferrer">The Dread</a> — Kevin MacLeod (incompetech.com), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.</li>
+            <li><a href="https://opengameart.org/content/dream-2-ambience" target="_blank" rel="noopener noreferrer">Dream 2 Ambience</a> — TokyoGeisha (Marcus Davies), <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a>.</li>
+            <li><a href="https://opengameart.org/content/a-lurking-evil-horror-ambience" target="_blank" rel="noopener noreferrer">A lurking evil (horror ambience)</a> — congusbongus, CC0 1.0.</li>
+            <li><a href="https://lpc.opengameart.org/content/factory-ambiance" target="_blank" rel="noopener noreferrer">Factory ambiance</a> - yd, CC0 1.0.</li>
+            <li><a href="https://opengameart.org/content/determined-pursuit-epic-orchestra-loop" target="_blank" rel="noopener noreferrer">Determined Pursuit</a> - Emma_MA, CC0 1.0.</li>
+            <li><a href="https://lpc.opengameart.org/content/dripping-water-loop" target="_blank" rel="noopener noreferrer">Dripping water loop</a> - Independent.nu / qubodup, CC0 1.0.</li>
+            <li><a href="https://opengameart.org/content/footsteps-0" target="_blank" rel="noopener noreferrer">Footsteps</a> - GboxMikeFozzy, CC0 1.0.</li>
+            <li><a href="https://opengameart.org/content/metal-impact-sounds" target="_blank" rel="noopener noreferrer">Metal Impact Sounds</a> - Brian MacIntosh (BMacZero), CC0 1.0.</li>
+            <li><a href="https://opengameart.org/content/underwater-or-space-engine-rumble" target="_blank" rel="noopener noreferrer">Underwater or space engine rumble</a> - gmason, CC0 1.0.</li>
+            <li><a href="https://opengameart.org/content/string-and-piano-horror-stings" target="_blank" rel="noopener noreferrer">String and piano horror stings</a> - congusbongus, CC0 1.0.</li>
+          </ul>
           <div class="kicker">Galeria de finais</div>
           <div id="credits-ending-gallery" class="ending-gallery"></div>
           <button class="ui-button" id="credits-close">VOLTAR</button>
@@ -981,11 +845,18 @@ export class GameUI {
         </div>
       </div>
 
-      <div id="cinematic" class="screen hidden">
-        <canvas id="film-canvas" width="900" height="540"></canvas>
-        <div class="film-overlay"></div>
-        <button id="skip-film" class="ui-button">PULAR</button>
-      </div>
+      <dialog id="cinematic" class="screen hidden" aria-label="Filme de abertura">
+        <div class="opening-frame">
+          <div class="opening-copy" role="status" aria-live="polite" aria-atomic="true">
+            <p class="opening-marker"></p>
+            <h1 class="opening-title"></h1>
+            <p class="opening-detail"></p>
+          </div>
+          <p class="opening-subtitle"></p>
+          <span class="opening-progress" aria-hidden="true"></span>
+        </div>
+        <button id="skip-film" class="ui-button" aria-label="Pular filme de abertura">PULAR</button>
+      </dialog>
 
       <div id="chapter-card" class="screen hidden">
         <div>
@@ -996,8 +867,8 @@ export class GameUI {
 
       <div id="boss-ui" class="hidden">
         <div id="boss-bar"><div id="boss-name"></div><div id="boss-health"><div id="boss-health-fill"></div></div></div>
-        <div id="tactical-actions" class="hidden"></div>
       </div>
+      <dialog id="tactical-actions" class="hidden"></dialog>
 
       <div id="debug-panel" class="hidden">
         <strong>DEBUG · ?debug=1</strong>

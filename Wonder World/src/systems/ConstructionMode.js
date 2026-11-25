@@ -70,7 +70,7 @@ export class ConstructionMode {
         this.setActive(!this.active);
     }
     setActive(active) {
-        if (this.active === active)
+        if ((active && this.callbacks.canOpen?.() === false) || this.active === active)
             return;
         this.active = active;
         this.ui.root.classList.toggle("is-open", active);

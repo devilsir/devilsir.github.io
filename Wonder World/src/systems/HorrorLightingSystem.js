@@ -1,3 +1,4 @@
+import { GRAPHICS_QUALITY } from "./Settings.js";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -171,14 +172,19 @@ export class HorrorLightingSystem {
             tracked.light.intensity = tracked.lastApplied;
     }
     applyPerformancePreset(preset) {
-        this.scene.fogDensity = preset === "performance" ? 0.014 : preset === "cinematic" ? 0.022 : 0.019;
-        if (this.glow)
-            this.glow.intensity = preset === "performance" ? 0.3 : preset === "cinematic" ? 0.68 : 0.52;
+        const { fog, effects } = GRAPHICS_QUALITY[this.safeMode ? "lite" : preset];
+        this.scene.fogDensity = fog;
+        if (this.glow) {
+            this.glow.isEnabled = effects >= 2;
+            this.glow.intensity = effects >= 4 ? 0.65 : effects >= 3 ? 0.53 : 0.36;
+        }
         if (this.pipeline) {
-            this.pipeline.bloomEnabled = preset !== "performance";
-            this.pipeline.grainEnabled = preset !== "performance";
-            this.pipeline.chromaticAberrationEnabled = preset === "cinematic";
-            this.pipeline.sharpenEnabled = true;
+            this.pipeline.fxaaEnabled = effects >= 3;
+            this.pipeline.bloomEnabled = effects >= 3;
+            this.pipeline.bloomWeight = effects >= 4 ? 0.18 : 0.12;
+            this.pipeline.grainEnabled = effects >= 4;
+            this.pipeline.chromaticAberrationEnabled = effects >= 4;
+            this.pipeline.sharpenEnabled = effects >= 4;
         }
     }
     rescanLights() {
@@ -214,7 +220,7 @@ export class HorrorLightingSystem {
                 flicker = Math.max(0.15, (1 + slow + unstable) * drop);
             }
             tracked.multiplier = tracked.scale * flicker;
-            tracked.lastApplied = tracked.sourceIntensity * tracked.multiplier;
+            tracked.lastApplied = tracked.sourceIntensity * tracked.multiplier * tracked.boost;
             light.intensity = tracked.lastApplied;
         }
     }
@@ -222,10 +228,13 @@ export class HorrorLightingSystem {
         if (!light || light.metadata?.constructionEditorLight || this.tracked.has(light.uniqueId))
             return;
         const name = String(light.name ?? "light").toLowerCase();
+        // The torch owns its light and flicker directly.
+        if (name === "torch-light" || name === "torch-beam") return;
         const critical = ["torch", "fire-light", "guide", "checkpoint", "beacon", "status", "alarm", "emergency", "projector", "ember"].some((token) => name.includes(token));
         const global = name === "ambient" || name === "storm-directional";
         const facility = ["facility", "chapter2-light", "chapter3-light", "corridor", "ceiling", "room-light"].some((token) => name.includes(token));
         const scale = global ? 1 : critical ? 0.82 : facility ? 0.27 : 0.43;
+        const boost = global ? 1 : critical ? 1.15 : facility ? 1.18 : 1.14;
         const flicker = !this.safeMode && facility && this.hash(name) % 3 !== 0;
         const seed = (this.hash(name) % 997) / 997;
         const sourceIntensity = Math.max(0, Number(light.intensity ?? 0));
@@ -233,8 +242,9 @@ export class HorrorLightingSystem {
         const tracked = {
             light,
             sourceIntensity,
-            lastApplied: sourceIntensity * multiplier,
+            lastApplied: sourceIntensity * multiplier * boost,
             multiplier,
+            boost,
             scale,
             flicker,
             seed,

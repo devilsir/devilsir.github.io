@@ -2,6 +2,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Ray } from "@babylonjs/core/Culling/ray";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 export class MannequinSystem {
     scene;
@@ -23,7 +24,6 @@ export class MannequinSystem {
     rulesCollapsed = 0;
     updateAccumulator = 0;
     matrixAccumulator = 0;
-    groupCursor = 0;
     lurePosition = null;
     lureExpiresAt = 0;
     observationVisualization = false;
@@ -42,12 +42,28 @@ export class MannequinSystem {
         this.onDamage = onDamage;
         this.highDetailLimit = Math.max(6, highDetailLimit);
         this.countLimit = spawns.length;
-        this.lowDetailSource = MeshBuilder.CreateCapsule("mannequin-thin-source", {
-            height: 2.55,
-            radius: 0.38,
-            tessellation: 8,
-            subdivisions: 2
-        }, scene);
+        // One instanced mesh, but a readable head, shoulders, arms and legs.
+        const torso = MeshBuilder.CreateCylinder("mannequin-lod-torso", { height: 1, diameterTop: 0.74, diameterBottom: 0.48, tessellation: 5 }, scene);
+        torso.position.y = 1.25;
+        torso.scaling.z = 0.57;
+        const head = MeshBuilder.CreateSphere("mannequin-lod-head", { diameter: 0.58, segments: 4 }, scene);
+        head.position.y = 2.08;
+        head.scaling.set(0.81, 1.12, 0.78);
+        const pieces = [torso, head];
+        for (const side of [-1, 1]) {
+          const arm = MeshBuilder.CreateBox("mannequin-lod-arm", { width: 0.16, height: 1.05, depth: 0.17 }, scene);
+          arm.position.set(side * 0.44, 1.3, 0);
+          arm.rotation.z = side * 0.16;
+          const leg = MeshBuilder.CreateBox("mannequin-lod-leg", { width: 0.2, height: 0.92, depth: 0.23 }, scene);
+          leg.position.set(side * 0.16, 0.46, 0);
+          pieces.push(arm, leg);
+        }
+        const silhouette = Mesh.MergeMeshes(pieces, true);
+        if (!silhouette) {
+          pieces.forEach((piece) => piece.dispose());
+        }
+        this.lowDetailSource = silhouette ?? MeshBuilder.CreateCylinder("mannequin-lod-fallback", { height: 2.45, diameter: 0.62, tessellation: 6 }, scene);
+        this.lowDetailSource.name = "mannequin-thin-source";
         this.lowDetailSource.material = materials.get("plastic", 1);
         this.lowDetailSource.isPickable = false;
         this.lowDetailSource.checkCollisions = false;
@@ -72,7 +88,7 @@ export class MannequinSystem {
             });
         });
         this.lowDetailMatrices = new Float32Array(this.records.length * 16);
-        this.lowDetailSource.thinInstanceSetBuffer("matrix", this.lowDetailMatrices, 16, true);
+        this.lowDetailSource.thinInstanceSetBuffer("matrix", this.lowDetailMatrices, 16, false);
         for (let index = 0; index < this.highDetailLimit; index += 1)
             this.actors.push(this.createActor(index));
         this.refreshThinInstances(true);
@@ -80,6 +96,7 @@ export class MannequinSystem {
     setChapterEnabled(enabled) {
         this.chapterEnabled = enabled;
         this.lowDetailSource.setEnabled(enabled);
+        if (enabled) this.refreshThinInstances(true);
         if (!enabled)
             this.actors.forEach((actor) => actor.root.setEnabled(false));
     }
@@ -270,15 +287,19 @@ export class MannequinSystem {
         const now = performance.now() * 0.001;
         if (this.lurePosition && now >= this.lureExpiresAt)
             this.lurePosition = null;
-        const updateGroup = this.groupCursor % 4;
-        this.groupCursor += 1;
         const raySamples = [];
         for (const record of this.records) {
-            if (!record.enabled || record.id >= this.countLimit || record.state === "inactive")
-                continue;
+            if (!record.enabled || record.id >= this.countLimit || record.state === "inactive" || record.state === "crushed") continue;
             const distance = Vector3.Distance(record.position, this.player.collider.position);
-            if (distance > 55 && record.group % 4 !== updateGroup)
-                continue;
+            // Do not pathfind a dormant group in another sector. Nearby lures still
+            // wake their group even before the player is within direct line of sight.
+            const hearsLure = this.lurePosition && Vector3.DistanceSquared(record.position, this.lurePosition) < 48 * 48;
+            if (distance > 36 && !hearsLure) {
+              record.state = "dormant";
+              record.observed = false;
+              record.anticipation = 0;
+              continue;
+            }
             const observedResult = this.evaluateObservation(record, now);
             record.observed = observedResult.observed;
             if (observedResult.ray)
@@ -388,6 +409,8 @@ export class MannequinSystem {
             record.state = "stalking";
         if (this.rulesCollapsed > 0.38 && distanceToPlayer < 28)
             record.state = record.health < 45 ? "crawler" : "running";
+        // Dormant actors stay on their marks until disturbed.
+        if (record.state === "dormant") return;
         if (frozen || !this.movementEnabled) {
             record.anticipation = Math.max(0, record.anticipation - deltaSeconds * 2);
             if (record.observed && now - record.lastJointCue > 3.4 && Math.random() < 0.035) {
@@ -430,6 +453,22 @@ export class MannequinSystem {
             this.audio.mannequinJoint(record.position, record.state === "running" ? 0.65 : 0.32);
         }
     }
+    collisionRay(origin, direction, length) {
+      const endX = origin.x + direction.x * length;
+      const endZ = origin.z + direction.z * length;
+      const minX = Math.min(origin.x, endX) - 0.8;
+      const maxX = Math.max(origin.x, endX) + 0.8;
+      const minZ = Math.min(origin.z, endZ) - 0.8;
+      const maxZ = Math.max(origin.z, endZ) + 0.8;
+      return this.scene.pickWithRay(new Ray(origin, direction, length), (mesh) => {
+        if (!mesh.checkCollisions || mesh === this.player.collider || !mesh.isEnabled() || mesh.metadata?.mannequinVisual) return false;
+        // Query the exact triangles after a cheap world-space bounds check.
+        const box = mesh.getBoundingInfo().boundingBox;
+        return box.maximumWorld.x >= minX && box.minimumWorld.x <= maxX
+            && box.maximumWorld.z >= minZ && box.minimumWorld.z <= maxZ;
+      });
+    }
+
     moveRecordSafely(record, movement) {
         const horizontal = movement.clone();
         horizontal.y = 0;
@@ -444,11 +483,7 @@ export class MannequinSystem {
             const base = record.position.add(new Vector3(0, record.state === "crawler" ? 0.42 : 0.82, 0));
             const origins = [base, base.add(side), base.subtract(side)];
             return origins.every((origin) => {
-                const pick = this.scene.pickWithRay(new Ray(origin, direction, distance + 0.42), (mesh) => {
-                    if (!mesh.checkCollisions || !mesh.isEnabled() || mesh === this.player.collider)
-                        return false;
-                    return !mesh.metadata?.mannequinVisual;
-                });
+                const pick = this.collisionRay(origin, direction, distance + 0.42);
                 return !pick?.hit || pick.distance > distance + 0.3;
             });
         };
@@ -469,11 +504,7 @@ export class MannequinSystem {
     }
     navigationDirection(record, desired) {
         const origin = record.position.add(new Vector3(0, 0.8, 0));
-        const pick = this.scene.pickWithRay(new Ray(origin, desired, 1.25), (mesh) => {
-            if (!mesh.checkCollisions || mesh === this.player.collider || mesh.metadata?.mannequinVisual)
-                return false;
-            return mesh.isEnabled();
-        });
+        const pick = this.collisionRay(origin, desired, 1.25);
         if (!pick?.hit || pick.distance > 0.95)
             return desired;
         const side = record.id % 2 === 0 ? 1 : -1;
@@ -561,6 +592,7 @@ export class MannequinSystem {
             matrix.copyToArray(this.lowDetailMatrices, offset);
         }
         this.lowDetailSource.thinInstanceBufferUpdated("matrix");
+        if (this.chapterEnabled) this.lowDetailSource.thinInstanceRefreshBoundingInfo();
     }
     createActor(index) {
         const root = new TransformNode(`mannequin-actor-${index}`, this.scene);

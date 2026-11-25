@@ -72,7 +72,7 @@ globalThis.QuimiCraftNPCLooks=(()=>{
     function face(head,p,skin,tone,hairMat,brightEye,{cap=false,hideHair=false}={}){
       head.scale.set(p.faceW,p.faceH,p.faceD);
       paint(head,skin,[0,0,0],[.423,.434,.426]);
-      paint(head,tone,[0,-.176,-.055],[.327,.131,.327],[.05,0,0]);
+      paint(head,skin,[0,-.176,-.043],[.327,.131,.327],[.02,0,0]);
       for(const side of [-1,1]){
         const x=side*.096*p.spacing;
         paint(head,tone,[side*.225,-.012,.017],[.065,.12,.106],[0,0,side*.13]);
@@ -85,10 +85,40 @@ globalThis.QuimiCraftNPCLooks=(()=>{
         if(p.freckles)for(let i=0;i<3;i++)box(head,0x885e47,[side*(.073+i*.026),-.039+(i%2)*.014,-.218],[.010,.010,.012]);
       }
       paint(head,tone,[0,-.018,-.223],[.068*p.nose,p.child?.065:.087,.057*p.nose]);
-      paint(head,skin,[0,-.117,-.225],[.121,.038,.026]);
-      box(head,0x67433d,[0,-.117,-.243],[p.child?.077:.107,.013,.011],[0,0,(p.detail-.5)*.17]);
+      paint(head,mat(0x67433d),[0,-.115,-.211],[p.child?.070:.094,.014,.025],[0,0,(p.detail-.5)*.12]);
       if(p.beard)paint(head,hairMat,[0,-.161,-.183],[p.beard==="goatee"?.122:.291,p.beard==="stubble"?.061:.108,.113]);
       if(!hideHair)hair(head,p,hairMat,cap);
+    }
+    function rangerHelmet(head,metal,lining,trim){
+      const helmet=new T.Group();
+      helmet.name="Capacete da Guardiã Íris";head.add(helmet);
+      const rings=[[.165,.279,.276],[.224,.279,.282],[.284,.250,.253],[.336,.200,.203],
+        [.377,.140,.146],[.397,.062,.072],[.402,.004,.004]];
+      const positions=[],indices=[],segments=40;
+      for(const [row,[y,rx,rz]] of rings.entries())for(let i=0;i<segments;i++){
+        const a=i*Math.PI*2/segments,back=Math.cos(a),side=Math.sin(a),taper=[.49,.51,.62,.81,1,1,1][row];
+        const nape=Math.max(0,back)**.82*[.217,.153,.084,.033,0,0,0][row];
+        positions.push(Math.sign(side)*Math.abs(side)**taper*rx,y-nape,.023+Math.sign(back)*Math.abs(back)**taper*rz);
+        if(row<rings.length-1){
+          const p=row*segments+i,q=row*segments+(i+1)%segments;
+          indices.push(p,q,p+segments,q,q+segments,p+segments);
+        }
+      }
+      const shell=new T.BufferGeometry();
+      shell.setAttribute("position",new T.Float32BufferAttribute(positions,3));
+      shell.setIndex(indices);shell.computeVertexNormals();
+      const crown=new T.Mesh(shell,metal);
+      crown.name="Copa e proteção contínua da nuca";crown.userData.ownGeometry=true;helmet.add(crown);
+      const bottom=index=>positions.slice(index*3,index*3+3);
+      for(let i=0;i<segments;i++){
+        beam(helmet,lining,bottom(i),bottom((i+1)%segments),.026,.022);
+      }
+      paint(helmet,lining,[0,.150,-.234],[.392,.040,.123],[.12,0,0]);
+      for(const side of [-1,1]){
+        paint(helmet,lining,[side*.246,.044,.078],[.033,.158,.118],[.17,0,0]);
+        paint(helmet,trim,[side*.241,.131,.118],[.026,.032,.028]);
+        paint(helmet,trim,[side*.113,.011,.291],[.029,.030,.022]);
+      }
     }
     function dress(group,rig,p,cloth,accent,accessory){
       if(p.attire==="uniform")return;
@@ -121,7 +151,7 @@ globalThis.QuimiCraftNPCLooks=(()=>{
         if(foot)foot.material=mat(p.shoe);
       }
     }
-    return {face,dress};
+    return {face,dress,rangerHelmet};
   }
   return {describe,create};
 })();

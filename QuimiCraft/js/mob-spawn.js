@@ -2,8 +2,13 @@
 "use strict";
 
 globalThis.QuimiCraftMobSpawn=(()=>{
-  const maxRadius=36,minRadius=12;
-  const limits=[{natural:0,hostile:0},{natural:5,hostile:2},{natural:9,hostile:4},{natural:14,hostile:6}];
+  const hostileChunks=16,minRadius=12;
+  const limits=[
+    {natural:0,hostile:0,aquatic:0},
+    {natural:20,hostile:2,aquatic:20},
+    {natural:40,hostile:12,aquatic:36},
+    {natural:60,hostile:20,aquatic:52}
+  ];
   const emitters={TORCH:13,SPECTRAL:12,VILLAGE_LANTERN:12,FIRE:14,LAVA:14,GLOW_FUNGUS:8,
     SUNKEN_BEACON:9,LIGHT_CRYSTAL:11,CAMPFIRE:14,ALCHEMY_LANTERN:12};
   const gap=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
@@ -21,16 +26,21 @@ globalThis.QuimiCraftMobSpawn=(()=>{
     return value;
   }
   function create(chunkSize,random=Math.random){
-    let age=0,nextNatural=1.9,nextHostile=6.5,nextCleanup=20;
+    let age=0,nextNatural=.65,nextHostile=6.5,nextCleanup=20;
     const areaClock=new Map();
     const cell=p=>Math.floor(p.x/chunkSize)+","+Math.floor(p.z/chunkSize);
-    const active=actors=>actors.filter(e=>!e.persistent&&!e.dead&&!e.petsite&&!e.birth);
+    const active=e=>!e.persistent&&!e.dead&&!e.petsite&&!e.bonded;
+    const wildlifeCount=actors=>actors.filter(e=>active(e)&&!e.hostile&&!e.aquatic&&!e.plant&&!e.birth).length;
+    const hostileCount=actors=>actors.filter(e=>active(e)&&e.hostile).length;
+    const inRange=(p,player)=>Math.hypot(p.x-player.x,p.z-player.z)<=chunkSize*hostileChunks;
+    function canSpawnHostile(p,player,actors,quality){
+      return inRange(p,player)&&hostileCount(actors)<(limits[quality]?.hostile??0);
+    }
     function eligible(p,player,actors,quality){
-      if(!limits[quality]?.hostile)return false;
-      if(gap(p,player)<minRadius||gap(p,player)>maxRadius)return false;
+      if(!canSpawnHostile(p,player,actors,quality)||gap(p,player)<minRadius)return false;
       if(p.light>5||p.protected)return false;
       if((areaClock.get(cell(p))??0)>age)return false;
-      const neighbors=active(actors);
+      const neighbors=actors.filter(active);
       if(neighbors.some(e=>gap(e,p)<2.7))return false;
       return neighbors.filter(e=>e.hostile&&gap(e,p)<13).length<2;
     }
@@ -44,16 +54,20 @@ globalThis.QuimiCraftMobSpawn=(()=>{
       }
       if(budget.hostile&&age>=nextHostile){
         nextHostile=age+7.1+random()*3.9;
-        const count=active(actors).filter(e=>e.hostile).length;
+        const count=hostileCount(actors);
         if(count<budget.hostile)attempt("hostile",p=>eligible(p,player,actors,quality),record);
       }
       if(budget.natural&&age>=nextNatural){
-        nextNatural=age+2.7+random()*2.7;
-        if(active(actors).filter(e=>!e.hostile).length<budget.natural)attempt("natural");
+        nextNatural=age+.85+random()*1.15;
+        const remaining=budget.natural-wildlifeCount(actors);
+        for(let i=0;i<Math.min(2,remaining);i++){
+          if(wildlifeCount(actors)>=budget.natural)break;
+          if(attempt("natural")===null)break;
+        }
       }
     }
-    return {tick,eligible,record};
+    return {tick,eligible,record,canSpawnHostile,inRange,wildlifeCount,hostileCount};
   }
-  return {create,limits,emitters,civilTwilight,lightLevel};
+  return {create,limits,hostileChunks,emitters,civilTwilight,lightLevel};
 })();
 

@@ -6,8 +6,10 @@ globalThis.QuimiCraftCatalog=(()=>{
   const pageSize=18;
   const inCategory=(entry,key)=>key==="all"||entry.category===key||key==="plants"&&entry.plant||key==="npc"&&entry.resident;
   const width=192,height=132;
+  const thumbnailBlue=0x14262e;
+  const defaultZoom=1.10;
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
-  function create({THREE,root,entries,onClose}){
+  function create({THREE,root,entries,scenery,character,onClose}){
     const grid=root.querySelector(".catalog-grid");
     const pages=root.querySelector(".catalog-pagination");
     const search=root.querySelector("input[type=search]");
@@ -17,7 +19,6 @@ globalThis.QuimiCraftCatalog=(()=>{
     const categories=[...root.querySelectorAll("[data-category]")];
     const blockFilters=root.querySelector(".catalog-block-filters"),blockButtons=[...root.querySelectorAll("[data-block-filter]")];
     const inspector=root.querySelector(".catalog-inspector");
-    const viewer=inspector.querySelector(".catalog-viewer");
     const poster=inspector.querySelector(".catalog-poster");
     const live=inspector.querySelector(".catalog-live-view");
     const status=inspector.querySelector(".catalog-view-status");
@@ -27,7 +28,13 @@ globalThis.QuimiCraftCatalog=(()=>{
     const view3D=inspector.querySelector('[data-view="3d"]');
     const zoomIn=inspector.querySelector('[data-zoom="in"]');
     const zoomOut=inspector.querySelector('[data-zoom="out"]');
+    const compare=inspector.querySelector("#catalogCompare"),compareControl=compare.closest("label");
+    const animationControls=inspector.querySelector(".catalog-animation-controls");
+    const animationSelect=inspector.querySelector("#catalogAnimation");
+    const animationToggle=inspector.querySelector("[data-animation-toggle]");
+    const noteLinks=inspector.querySelector("#catalogClues"),noteBack=inspector.querySelector("[data-note-back]");
     const cache=new Map();
+    const byKey=new Map(),noteHistory=[];
     let list=null,active=false,category="all",blockFilter="all",page=0,revision=0,studio=null,failed=false,returnTo=null;
     let inspection=null,resumeThumbnails=null,viewFrame=0;
 
@@ -36,15 +43,20 @@ globalThis.QuimiCraftCatalog=(()=>{
       renderer.outputEncoding=THREE.sRGBEncoding;
       renderer.toneMapping=THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure=.92;
+      renderer.shadowMap.autoUpdate=false;
       const scene=new THREE.Scene();
       scene.background=new THREE.Color();
-      scene.add(new THREE.HemisphereLight(0xecf5ff,0x3d5262,.78));
+      const ambient=new THREE.HemisphereLight(0xecf5ff,0x3d5262,.78);
       const key=new THREE.DirectionalLight(0xfff2da,1.02);
       const fill=new THREE.DirectionalLight(0xc6ddf1,.24);
       key.position.set(-3,5,-3);fill.position.set(3,2,4);
-      scene.add(key,fill);
+      key.shadow.mapSize.set(1024,1024);
+      Object.assign(key.shadow.camera,{left:-4.1,right:4.1,top:4.1,bottom:-4.1,near:.5,far:18});
+      key.shadow.camera.updateProjectionMatrix();
+      key.shadow.normalBias=.016;key.shadow.bias=-.00035;
+      scene.add(ambient,key,fill,key.target);
       const camera=new THREE.OrthographicCamera(-2,2,1.5,-1.5,.03,70);
-      return {renderer,scene,camera};
+      return {renderer,scene,camera,ambient,key,fill};
     }
     function getStudio(){
       if(failed||studio?.renderer.getContext().isContextLost())return null;
@@ -65,19 +77,122 @@ globalThis.QuimiCraftCatalog=(()=>{
       }
       const center=box.getCenter(new THREE.Vector3()),radius=Math.max(.08,box.max.distanceTo(center));
       const angle=new THREE.Vector3(...entry.angle).normalize();
-      context.scene.background.setHex(entry.tint??0xd9e5e5);
+      const vehicle=entry.category==="vehicle";
+      const model={object,box,center,radius,angle,baseY:object.position.y,landscape:false,
+        subject:!!entry.compare||vehicle,vehicle,aquatic:entry.category==="aquatic"};
       context.scene.add(object);
-      return {object,box,center,radius,angle};
+      setStage(entry,model,false);
+      return model;
+    }
+    function setStage(entry,model,landscape){
+      const context=studio,{object,box,center,radius}=model;
+      model.landscape=landscape;
+      context.scene.background.setHex(landscape?0xaec9d2:thumbnailBlue);
+      context.scene.fog=null;
+      context.ambient.color.setHex(0xecf5ff);
+      const lighting=entry.lighting;
+      context.ambient.intensity=lighting?.ambient??(landscape?.58:.71);
+      context.key.intensity=lighting?.key??(landscape?1.06:.96);
+      context.fill.intensity=lighting?.fill??(landscape?.27:.24);
+      context.fill.color.setHex(lighting?.rim??0xc6ddf1);
+      context.renderer.shadowMap.enabled=context.key.castShadow=landscape;
+      if(landscape){
+        context.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+        context.landscapes??={};
+        const habitat=model.aquatic?"water":model.subject?"forest":"display";
+        model.stage=context.landscapes[habitat]??=scenery(habitat);
+        model.floor=model.aquatic?box.max.y+Math.max(1.2,Math.min(2.6,radius*.45)):model.subject&&!model.vehicle?0:box.min.y-.008;
+        model.stage.position.set(center.x,model.floor,center.z);
+        if(model.aquatic){
+          model.waterDepth=Math.max(12,model.floor-box.min.y+Math.max(7,radius*1.2));
+          model.stage.userData.setDepth(model.waterDepth);
+          object.userData.previewWaterSurface=model.floor;
+        }
+        object.traverse(part=>{
+          if(!part.isMesh)return;
+          const solid=!part.material.transparent&&!part.userData.noShadow;
+          part.castShadow=part.receiveShadow=solid;
+        });
+        context.scene.add(model.stage);
+        updateStageLighting(model.center,model.radius);
+      }else{
+        if(model.stage)context.scene.remove(model.stage);
+        context.key.target.position.set(0,0,0);
+        context.key.position.set(-3,5,-3);context.fill.position.set(3,2,4);
+      }
+    }
+    function updateStageLighting(center,radius){
+      const {key,fill,renderer}=studio,scale=Math.max(1,radius*.82);
+      key.target.position.copy(center);
+      key.position.copy(center).addScaledVector(new THREE.Vector3(-4.55,6.7,-3.9),scale);
+      fill.position.copy(center).addScaledVector(new THREE.Vector3(3,2,4),scale);
+      Object.assign(key.shadow.camera,{left:-3.5*scale,right:3.5*scale,top:3.5*scale,bottom:-3.5*scale,far:22*scale});
+      key.shadow.camera.updateProjectionMatrix();
+      key.shadow.normalBias=.018;
+      renderer.shadowMap.needsUpdate=true;
+    }
+    function positionComparison(model,direction){
+      const {avatar,box,floor,center}=model;
+      const side=new THREE.Vector3(direction.z,0,-direction.x).normalize();
+      const half=box.getSize(new THREE.Vector3()).multiplyScalar(.5);
+      const span=Math.abs(side.x)*half.x+Math.abs(side.z)*half.z;
+      const pedestalClearance=model.subject?0:.70*(Math.abs(side.x)+Math.abs(side.z))+.40;
+      const gap=Math.max(span+.61,pedestalClearance);
+      avatar.position.copy(center).addScaledVector(side,gap);
+      avatar.position.y=model.aquatic?Math.min(floor-1.82,center.y-.86):floor-(model.subject?0:.40);
+      avatar.rotation.y=Math.atan2(-direction.x,-direction.z);
+      return center.clone().lerp(avatar.position,.42);
+    }
+    function updateComparison(){
+      const {model,mode}=inspection;
+      if(!model)return;
+      if(mode==="3d"&&compare.checked){
+        model.avatar??=character();
+        studio.scene.add(model.avatar);
+      }else if(model.avatar)studio.scene.remove(model.avatar);
+      if(model.landscape)updateStageLighting(model.center,model.radius);
+      renderView();
     }
     function removeModel(entry,model){
       studio.scene.remove(model.object);
+      if(model.stage)studio.scene.remove(model.stage);
+      if(model.avatar)studio.scene.remove(model.avatar);
       entry.release?.(model.object);
     }
     function pointCamera(model,direction){
       const {camera}=studio;
-      camera.position.copy(model.center).addScaledVector(direction,model.radius*5.6+2);
-      camera.lookAt(model.center);
+      const comparing=model.avatar?.parent===studio.scene;
+      const focus=comparing?positionComparison(model,direction):model.center.clone();
+      if(model.landscape){
+        const rise=Math.max(0,model.object.position.y-model.baseY);
+        const avatarCenter=comparing?model.avatar.position.y+.96:0;
+        const rest=comparing?THREE.MathUtils.lerp(model.center.y,avatarCenter,.36):model.center.y;
+        focus.y=rest+rise*(comparing?.49:.64)+(model.subject?Math.min(.15,model.radius*.40):-model.radius*.12);
+        if(model.aquatic){
+          if(inspection?.entry&&animationSelect.value==="spout")focus.y+=Math.max(.8,model.radius*.33);
+          else focus.y-=Math.min(.32,model.radius*.22);
+        }
+      }
+      camera.far=Math.max(70,model.radius*20);
+      const distance=model.landscape&&model.aquatic?model.radius+1.8:model.radius*5.6+2;
+      camera.position.copy(focus).addScaledVector(direction,distance);
+      camera.lookAt(focus);
       camera.updateMatrixWorld(true);
+      return focus;
+    }
+    function showTrees(model,focus,direction){
+      if(!model.stage?.userData.trees)return;
+      const {x,z}=model.stage.position;
+      for(const tree of model.stage.userData.trees){
+        const dx=x+tree.position.x-focus.x,dz=z+tree.position.z-focus.z;
+        const depth=dx*direction.x+dz*direction.z;
+        const across=Math.abs(dx*direction.z-dz*direction.x);
+        const visible=depth<=.8||across>tree.userData.crownRadius+model.radius*.72+.58;
+        if(tree.visible!==visible){
+          tree.visible=visible;
+          studio.renderer.shadowMap.needsUpdate=true;
+        }
+      }
     }
     function draw(w,h,halfH,zoom=1){
       const {renderer,scene,camera}=studio;
@@ -121,10 +236,43 @@ globalThis.QuimiCraftCatalog=(()=>{
         const scale=Math.min(window.devicePixelRatio||1,2);
         const w=Math.round(live.clientWidth*scale),h=Math.round(live.clientHeight*scale);
         if(!w||!h)return;
-        const animate=current.entry.animate&&!document.documentElement.classList.contains("reduced-motion");
-        if(animate)current.entry.animate(current.model.object,now);
-        pointCamera(current.model,new THREE.Vector3().setFromSpherical(current.orbit));
-        draw(w,h,current.model.radius*1.10*Math.max(1,h/w),current.zoom);
+        const animate=current.clips&&current.playing;
+        const changed=current.clips&&(animate||current.poseDirty);
+        if(changed){
+          const dt=current.lastFrame===null||!current.playing?0:Math.min(.08,(now-current.lastFrame)/1000);
+          current.lastFrame=now;current.elapsed+=dt;
+          current.entry.animate(current.model.object,animationSelect.value,current.elapsed,dt);
+          current.model.stage?.userData.animate?.(current.elapsed);
+          current.poseDirty=false;
+        }
+        if(current.model.landscape&&changed&&(!animate||now-current.shadowFrame>80)){
+          studio.renderer.shadowMap.needsUpdate=true;
+          current.shadowFrame=now;
+        }
+        const {model}=current,direction=new THREE.Vector3().setFromSpherical(current.orbit);
+        const comparing=model.avatar?.parent===studio.scene;
+        const focus=pointCamera(model,direction);
+        if(model.landscape)showTrees(model,focus,direction);
+        if(model.aquatic&&model.stage){
+          const submerged=studio.camera.position.y<model.floor;
+          const oceanColor=new THREE.Color(0x4bade1).convertSRGBToLinear();
+          const near=Math.max(8,model.radius*2.5),far=Math.max(32,model.radius*7);
+          studio.scene.background.copy(submerged?oceanColor:new THREE.Color(0xaec9d2));
+          studio.scene.fog=submerged?new THREE.Fog(oceanColor,near,far):null;
+          model.stage.userData.submerge(submerged,submerged?near:100,submerged?far:200,submerged?oceanColor:null);
+          studio.ambient.color.setHex(submerged?0x9fe2ff:0xecf5ff);
+        }
+        const fit=model.aquatic?(comparing?1.15:1.02):comparing?1.38:1.18;
+        const closeup=model.aquatic&&!comparing&&model.radius<.35;
+        const minimum=comparing?1.92:model.subject?(closeup?.09:1.56):0;
+        const spraying=model.aquatic&&animationSelect.value==="spout";
+        const half=Math.max(model.radius*(closeup?1.33:fit),minimum,spraying?model.radius*1.65+1.5:0);
+        if(comparing&&current.comparisonAngle!==current.orbit.theta){
+          const center=model.center.clone().lerp(model.avatar.position,.42);
+          updateStageLighting(center,half);
+          current.comparisonAngle=current.orbit.theta;
+        }
+        draw(w,h,half*Math.max(1,h/w),current.zoom);
         if(animate)renderView();
       });
     }
@@ -134,31 +282,53 @@ globalThis.QuimiCraftCatalog=(()=>{
       if(is3D&&view3D.disabled)return;
       inspection.mode=mode;
       inspection.drag=null;
+      inspection.lastFrame=null;
       view2D.setAttribute("aria-pressed",String(!is3D));
       view3D.setAttribute("aria-pressed",String(is3D));
       live.hidden=controls.hidden=help.hidden=!is3D;
+      compareControl.hidden=!is3D||!inspection.model;
+      animationControls.hidden=!is3D||!inspection.clips;
       poster.hidden=is3D||!inspection.image;
       status.textContent=inspection.image?"Modelo 3D indisponível.":"Visualização indisponível.";
       status.hidden=is3D||!!inspection.image&&!view3D.disabled;
       if(is3D){
+        setStage(inspection.entry,inspection.model,!!scenery);
         live.append(studio.renderer.domElement);
         live.focus({preventScroll:true});
-        renderView();
       }
+      updateComparison();
     }
     function openDetail(entry,trigger){
       if(inspection)return;
-      inspection={entry,trigger,model:null,image:null,mode:null,zoom:1,drag:null};
+      inspection={entry,trigger,model:null,image:null,mode:null,zoom:entry.zoom??defaultZoom,drag:null,elapsed:0,lastFrame:null,shadowFrame:0,poseDirty:true,
+        playing:!document.documentElement.classList.contains("reduced-motion")};
+      animationToggle.textContent=inspection.playing?"Pausar":"Reproduzir";
       inspector.querySelector("#catalogItemTitle").textContent=entry.name;
       inspector.querySelector("#catalogItemDetail").textContent=entry.detail||"";
-      viewer.style.backgroundColor="#"+(entry.tint??0xd9e5e5).toString(16).padStart(6,"0");
+      const {story,clue,links}=QuimiCraftCatalogLore.describe(entry,byKey);
+      inspector.querySelector("#catalogStory").textContent=story;
+      inspector.querySelector("#catalogTrivia").textContent=clue;
+      noteLinks.hidden=!links.length;
+      noteBack.hidden=!noteHistory.length;
+      noteLinks.replaceChildren(...links.map(({key,label})=>{
+        const button=document.createElement("button"),target=byKey.get(key);
+        button.type="button";button.className="catalog-clue";button.textContent=label;
+        button.onclick=()=>{
+          noteHistory.push(entry);
+          if(noteHistory.length>24)noteHistory.shift();
+          followNote(target);
+        };
+        return button;
+      }));
       try{
         inspection.model=addModel(entry);
         if(inspection.model){
+          inspection.clips=typeof entry.clips==="function"?entry.clips(inspection.model.object):entry.clips;
           inspection.orbit=new THREE.Spherical().setFromVector3(inspection.model.angle);
           inspection.image=snapshot(inspection.model,768,528);
         }
       }catch(error){console.warn("QuimiCraft catálogo",entry.key,error)}
+      animationSelect.replaceChildren(...Object.entries(inspection.clips??{}).map(([id,clip])=>new Option(clip.label,id)));
       inspection.image||=cache.get(entry.key);
       if(!inspection.image){
         try{inspection.image=entry.fallback?.()}
@@ -168,10 +338,17 @@ globalThis.QuimiCraftCatalog=(()=>{
       poster.alt="Ilustração de "+entry.name;
       view3D.disabled=!inspection.model;
       zoomIn.disabled=zoomOut.disabled=false;
-      setView("2d");
       inspector.showModal();
+      inspector.scrollTop=0;
+      setView(inspection.model?"3d":"2d");
     }
-    function closeDetail(restoreFocus=true){
+    function followNote(entry){
+      if(!inspection||!entry)return;
+      const trigger=inspection.trigger;
+      closeDetail(false,true);
+      openDetail(entry,trigger);
+    }
+    function closeDetail(restoreFocus=true,following=false){
       if(!inspection)return;
       const {entry,trigger,model}=inspection;
       inspection=null;
@@ -180,13 +357,16 @@ globalThis.QuimiCraftCatalog=(()=>{
       if(model)removeModel(entry,model);
       live.replaceChildren();
       poster.removeAttribute("src");
-      if(restoreFocus&&trigger.isConnected)trigger.focus({preventScroll:true});
-      if(active&&resumeThumbnails)requestAnimationFrame(resumeThumbnails);
-      resumeThumbnails=null;
+      if(restoreFocus&&trigger?.isConnected)trigger.focus({preventScroll:true});
+      if(!following){
+        noteHistory.length=0;
+        if(active&&resumeThumbnails)requestAnimationFrame(resumeThumbnails);
+        resumeThumbnails=null;
+      }
     }
     function rotate(dx,dy){
       inspection.orbit.theta-=dx;
-      inspection.orbit.phi=clamp(inspection.orbit.phi-dy,.07,Math.PI-.07);
+      inspection.orbit.phi=clamp(inspection.orbit.phi-dy,.07,inspection.model.aquatic?1.80:inspection.model.landscape?1.55:Math.PI-.07);
       renderView();
     }
     function zoom(factor){
@@ -245,7 +425,7 @@ globalThis.QuimiCraftCatalog=(()=>{
         if(src){
           if(cache.size>=160)cache.delete(cache.keys().next().value);
           cache.set(e.key,src);image.src=src;picture.append(image);
-        }else picture.classList.add("catalog-picture-unavailable");
+        }
         if(queue.length)requestAnimationFrame(work);
       }
       if(queue.length)requestAnimationFrame(work);
@@ -255,7 +435,8 @@ globalThis.QuimiCraftCatalog=(()=>{
       returnTo=button;
       if(!list){
         list=entries().map(e=>({...e,query:normalize([e.name,e.detail,e.key,e.alias].join(" "))}));
-        const label={block:"Blocos",plants:"Plantas",weapon:"Armas",focus:"Artefatos"};
+        for(const entry of list)byKey.set(entry.key,entry);
+        const label={block:"Blocos",plants:"Plantas",weapon:"Armas",focus:"Artefatos",gear:"Equipamentos"};
         for(const button of categories){
           const key=button.dataset.category;
           if(label[key])button.textContent=label[key]+" ("+list.filter(item=>inCategory(item,key)).length+")";
@@ -285,14 +466,30 @@ globalThis.QuimiCraftCatalog=(()=>{
     prev.onclick=()=>{page--;render()};
     next.onclick=()=>{page++;render()};
     inspector.querySelector("[data-inspector-close]").onclick=()=>closeDetail();
+    noteBack.onclick=()=>followNote(noteHistory.pop());
     inspector.addEventListener("cancel",event=>{event.preventDefault();closeDetail()});
     view2D.onclick=()=>setView("2d");
     view3D.onclick=()=>setView("3d");
     zoomOut.onclick=()=>zoom(1/1.2);
     zoomIn.onclick=()=>zoom(1.2);
+    compare.onchange=()=>{if(inspection){inspection.comparisonAngle=null;updateComparison()}};
+    function restartAnimation(){
+      if(!inspection?.clips)return;
+      inspection.elapsed=0;inspection.lastFrame=null;inspection.poseDirty=true;inspection.playing=true;
+      animationToggle.textContent="Pausar";
+      renderView();
+    }
+    animationSelect.onchange=restartAnimation;
+    inspector.querySelector("[data-animation-replay]").onclick=restartAnimation;
+    animationToggle.onclick=()=>{
+      if(!inspection?.clips)return;
+      inspection.playing=!inspection.playing;inspection.lastFrame=null;
+      animationToggle.textContent=inspection.playing?"Pausar":"Reproduzir";
+      renderView();
+    };
     inspector.querySelector("[data-reset-view]").onclick=()=>{
       inspection.orbit.setFromVector3(inspection.model.angle);
-      inspection.zoom=1;zoom(1);
+      inspection.zoom=inspection.entry.zoom??defaultZoom;zoom(1);
     };
     new ResizeObserver(renderView).observe(live);
     live.addEventListener("pointerdown",event=>{

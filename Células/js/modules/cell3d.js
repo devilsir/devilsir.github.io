@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { organelles } from '../data/organelles.js?v=20';
+import { organelles } from '../data/organelles.js?v=21';
 import {
   v, group, mesh, material, glow, sphere, torus, tube, cylinder, lathe, curve, random,
   instances, instanceUpdater, membraneMaterial, gelMaterial, proteinMaterial, organelleMaterial,
@@ -15,7 +15,7 @@ import {
   attachRERMicro, attachSERMicro, attachGolgiMicro,
   attachLysosomeMicro, attachPeroxisomeMicro, attachCentrosomeMicro,
   attachCytoskeletonMicro, attachWallMicro, attachCapsuleMicro
-} from './cellOrganelleDetails.js?v=19';
+} from './cellOrganelleDetails.js?v=21';
 import {
   buildExtraModel, EXTRA_OUTER_KEYS, EXTRA_LABEL_OFFSETS, EXTRA_CAMERAS
 } from './cellModels.js?v=22';
@@ -158,26 +158,23 @@ function bilayer(parent, type) {
   const head = instanceUpdater(heads);
   const dummy = new T.Object3D();
   const upVec = v(0, 1, 0);
+  const barrelMatrices = [], sterolMatrices = [];
   let index = 0;
 
   for (const phi of meridians) {
     for (let i = 0; i < perMeridian; i++) {
       const angle = .06 + i * (Math.PI - .12) / (perMeridian - 1);
       // Sculpted rhythmic transmembrane protein barrels along the cutaway rim
-      if (i % 11 === 5 && i > 8 && i < perMeridian - 8) {
+      const isBarrel = i % 11 === 5 && i > 8 && i < perMeridian - 8;
+      const isSterol = i % 7 === 2 && i > 6 && i < perMeridian - 6;
+      if (isBarrel || isSterol) {
         const mid = shellPoint(type, angle, phi, .998);
         const out = shellPoint(type, angle, phi, 1.05).sub(mid).normalize();
-        const barrel = group(parent, mid.x, mid.y, mid.z);
-        barrel.quaternion.setFromUnitVectors(upVec, out);
-        lathe(barrel, protMat, barrelProfile, 16);
-        torus(barrel, glow('#7ef8ff', 0.72), .046, .012, 0, .105, 0).rotation.x = Math.PI / 2;
-        torus(barrel, glow('#62d6f5', 0.48), .042, .01, 0, -.102, 0).rotation.x = Math.PI / 2;
-      } else if (i % 7 === 2 && i > 6 && i < perMeridian - 6) {
-        const mid = shellPoint(type, angle, phi, .998);
-        const out = shellPoint(type, angle, phi, 1.05).sub(mid).normalize();
-        const stab = group(parent, mid.x, mid.y, mid.z);
-        stab.quaternion.setFromUnitVectors(upVec, out);
-        lathe(stab, cholMat, sterolProfile, 10);
+        dummy.position.copy(mid);
+        dummy.quaternion.setFromUnitVectors(upVec, out);
+        dummy.scale.setScalar(1);
+        dummy.updateMatrix();
+        (isBarrel ? barrelMatrices : sterolMatrices).push(dummy.matrix.clone());
       }
 
       for (const layer of [1.019, .977]) {
@@ -200,6 +197,23 @@ function bilayer(parent, type) {
   heads.count = index;
   tails.count = index * 2;
   heads.instanceMatrix.needsUpdate = tails.instanceMatrix.needsUpdate = true;
+
+  const barrelGeo = new T.LatheGeometry(barrelProfile.map(([x, y]) => new T.Vector2(x, y)), 16);
+  const sterolGeo = new T.LatheGeometry(sterolProfile.map(([x, y]) => new T.Vector2(x, y)), 10);
+  const outerRingGeo = new T.TorusGeometry(.046, .012, 12, 48).rotateX(Math.PI / 2).translate(0, .105, 0);
+  const innerRingGeo = new T.TorusGeometry(.042, .01, 12, 48).rotateX(Math.PI / 2).translate(0, -.102, 0);
+  for (const [geo, mat, matrices] of [
+    [barrelGeo, protMat, barrelMatrices],
+    [sterolGeo, cholMat, sterolMatrices],
+    [outerRingGeo, glow('#7ef8ff', 0.72), barrelMatrices],
+    [innerRingGeo, glow('#62d6f5', 0.48), barrelMatrices]
+  ]) {
+    const batch = instances(parent, geo, mat, matrices.length);
+    matrices.forEach((matrix, i) => batch.setMatrixAt(i, matrix));
+    batch.instanceMatrix.needsUpdate = true;
+    // Each ring previously had its own material. The barrels and sterols shared theirs.
+    if (mat === protMat || mat === cholMat) batch.userData.materialUses = matrices.length;
+  }
 
   // Type-specific membrane ultrastructure:
   // Plant -> sculpted trumpet-shaped plasmodesmata cytoplasmic bridges with central desmotubule
@@ -686,35 +700,49 @@ function centriole(parent) {
   }
 }
 
-function cytoskeleton(parent, rng) {
-  // 1. Radiating Microtubules (cyan-teal, ~25 nm) originating near centrosome
-  const mtMat = material('#56c0d4', { opacity: .34, transparent: true, depthWrite: false, roughness: 0.35 });
+function cytoskeleton(parent, type, rng) {
+  const network = group(parent);
+  const filament = { transparent: true, depthWrite: false };
+  const mtMat = glow('#4ecde8', .28, { ...filament, opacity: .76 });
   for (let i = 0; i < 16; i++) {
     const a = i * 2.38;
-    const end = v(Math.cos(a) * (2.0 + rng() * 1.45), (rng() - .5) * 4.1, Math.sin(a) * 1.9);
-    tube(parent, mtMat, [v(.95, 1.05, .45), end.clone().multiplyScalar(.45).add(v(0, .35, -.35)), end], .024, false, 18, 6);
+    const radius = .81 + rng() * .045;
+    const theta = .48 + rng() * 2.2;
+    const phi = i < 10 ? 1.03 + (i / 9) * 1.68 : a;
+    const end = shellPoint(type, theta, phi, radius);
+    const bend = end.clone().multiplyScalar(.64).add(v(.32, .38, .10));
+    tube(network, mtMat, [v(1.02, 1.24, .63), bend, end], .040, false, 22, 6);
   }
-  // 2. Cortical F-Actin network (warm rose-coral, ~7 nm) hugging inner cell cortex
-  const actMat = material('#e87c96', { opacity: .24, transparent: true, depthWrite: false, roughness: 0.42 });
+
+  // Extend the cortical mesh along the exposed face of the cutaway.
+  const actMat = glow('#ee7799', .30, { ...filament, opacity: .70 });
   for (let i = 0; i < 8; i++) {
-    const y = -1.6 + i * 0.48;
-    const r = Math.sqrt(Math.max(0.25, 1 - (y / 2.75) ** 2));
-    const pts = Array.from({ length: 10 }, (_, j) => {
-      const phi = cutStart + 0.12 + (j / 9) * (cutArc - 0.24);
-      return v(-Math.cos(phi) * r * 3.72, y + Math.sin(j * 1.3 + i) * 0.12, Math.sin(phi) * r * 2.58);
+    const pts = Array.from({ length: 12 }, (_, j) => {
+      const phi = cutStart + .18 - (j / 11) * (tau - cutArc + .36);
+      const theta = .64 + i * .263 + Math.sin(j * .92 + i * 1.3) * .084;
+      return shellPoint(type, theta, phi, .86);
     });
-    tube(parent, actMat, pts, .012, false, 20, 5);
+    tube(network, actMat, pts, .023, false, 28, 6);
   }
-  // 3. Perinuclear Intermediate Filaments (violet-gold, ~10 nm) cradling the nucleus
-  const ifMat = material('#b492e8', { opacity: .26, transparent: true, depthWrite: false, roughness: 0.45 });
+  for (let i = 0; i < 4; i++) {
+    const pts = Array.from({ length: 10 }, (_, j) => {
+      const theta = .68 + j * .20;
+      const phi = 1.18 + i * .43 + Math.sin(j * .75 + i) * .14;
+      return shellPoint(type, theta, phi, .855);
+    });
+    tube(network, actMat, pts, .021, false, 24, 6);
+  }
+
+  const ifMat = glow('#b290ee', .28, { ...filament, opacity: .73 });
   for (let i = 0; i < 6; i++) {
     const a = (i / 6) * tau;
-    tube(parent, ifMat, [
-      v(-0.6 + Math.cos(a) * 1.35, 0.25 + Math.sin(a) * 1.15, -0.15),
-      v(-0.6 + Math.cos(a + 0.9) * 1.95, 0.25 + Math.sin(a + 0.9) * 1.55, 0.45),
-      v(Math.cos(a + 1.5) * 2.9, Math.sin(a + 1.5) * 1.8, -0.35)
-    ], .017, false, 18, 6);
+    tube(network, ifMat, [
+      v(-.60 + Math.cos(a) * 1.30, .25 + Math.sin(a) * 1.04, .55),
+      v(-.60 + Math.cos(a + .9) * 1.78, .25 + Math.sin(a + .9) * 1.38, 1.17),
+      v(Math.cos(a + 1.5) * 2.72, Math.sin(a + 1.5) * 1.75, .94)
+    ], .030, false, 22, 6);
   }
+  return network;
 }
 
 function createMotileFlagellum(parent) {
@@ -869,10 +897,12 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   let tourActive = false;
   let focusMode = false;
   let hovered = null;
+  let pendingHover = null;
   let rerObj = null, golgiObj = null, flagellumCtrl = null, mainMito = null;
   let secVesicles = null, erVesicles = null, fusionRings = null, cytoFlowMesh = null;
   let guideLines = null, guidePositions = null;
   let secondMito = null, secondChlor = null;
+  let updateCytoskeleton = null;
   let exploded = 0, xray = false, paused = false, time = 0;
   let animateMuscle = true;
 
@@ -1084,15 +1114,16 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     const copies = [...structures];
     if (secondMito) copies.push(['mitochondria', secondMito]);
     if (secondChlor) copies.push(['chloroplast', secondChlor]);
-    const blend = 1 - Math.exp(-dt * 9.5);
-    const hasInternalFocus = focusMode && !OUTER_KEYS.has(selected);
+    const decay = -dt * 9.5;
+    const baseBlend = 1 - Math.exp(decay);
     const activeAnim = tourActive ? activeStepData()?.anim : null;
+    const emphasizeInterior = (focusMode && !OUTER_KEYS.has(selected)) || activeAnim === 'skel_overview';
 
     for (const [key, object] of copies) {
       const isHovered = key === hovered;
       const isSelected = key === selected;
       const isOuter = OUTER_KEYS.has(key);
-      const dimmed = hasInternalFocus && !isSelected && !isHovered && !isOuter;
+      const dimmed = emphasizeInterior && !isSelected && !isHovered && !isOuter;
       // Extra transparency on lysosome/peroxisome outer shell during interior zoom steps!
       const peekInside = tourActive && (
         (key === 'lysosome' && ['lyso_enzymes', 'lyso_fusion', 'lyso_digest'].includes(activeAnim)) ||
@@ -1102,6 +1133,9 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       object.traverse(item => {
         const mat = item.material;
         if (!mat || !mat.isMeshStandardMaterial) return;
+        // Preserve the per-mesh interpolation rate when a shared material is batched.
+        const uses = item.userData.materialUses;
+        const blend = uses === undefined ? baseBlend : 1 - Math.exp(decay * uses);
         if (mat.userData.baseEmissiveIntensity === undefined) {
           mat.userData.baseEmissiveIntensity = mat.emissiveIntensity;
           mat.userData.baseEmissive = mat.emissive.clone();
@@ -1122,7 +1156,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         }
 
         if (mat.userData.shell) {
-          const targetOp = xray ? 0.055 : (hasInternalFocus ? mat.userData.shell * 0.52 : mat.userData.shell);
+          const targetOp = xray ? 0.055 : (emphasizeInterior ? mat.userData.shell * 0.52 : mat.userData.shell);
           mat.opacity += (targetOp - mat.opacity) * blend;
         } else if (mat.userData.peekShell) {
           const targetOp = peekInside ? 0.22 : (dimmed ? 0.28 : mat.userData.baseOpacity);
@@ -1162,8 +1196,10 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     for (const entry of labels.values()) entry.remove();
     labels.clear();
     motions.length = 0;
+    pendingHover = null;
     hovered = flagellumCtrl = secVesicles = erVesicles = fusionRings = cytoFlowMesh = mainMito = null;
     secondMito = secondChlor = rerObj = golgiObj = guideLines = guidePositions = null;
+    updateCytoskeleton = null;
     tourActive = false;
     focusMode = false;
     stepIndex = 0;
@@ -1182,9 +1218,22 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       make(object);
       const offset = ALL_LABEL_OFFSETS[key] || (key === 'membrane' ? v(0, 2.86, 0) : key === 'wall' ? v(2.77, 2.58, -.68) :
         key === 'capsule' ? v(-2.55, 1.43, -.2) : key === 'cytoplasm' ? v(0.85, 0.8, 1.45) :
-        key === 'cytoskeleton' ? v(-.65, -.37, -1.2) : v(0, .46, .24));
+        key === 'cytoskeleton' ? v(-.32, -1.52, 2.02) : v(0, .46, .24));
       const entry = label(organelles[key].name, object, offset);
       entry.enabled = labelsVisible ? labelsVisible() : true;
+      if (key === 'cytoskeleton') {
+        const item = entry.item;
+        item.tabIndex = 0;
+        item.setAttribute('role', 'button');
+        item.style.pointerEvents = 'auto';
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => pick(key));
+        item.addEventListener('keydown', event => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          pick(key);
+        });
+      }
       labels.set(key, entry);
       return object;
     };
@@ -1287,8 +1336,10 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     } else {
       const positions = type === 'plant' ? vegetal : eukaryote;
 
-      const skelObj = build('cytoskeleton', positions.cytoskeleton, item => cytoskeleton(item, rng), false);
-      microUpdaters.push(...attachCytoskeletonMicro(skelObj, anchors));
+      build('cytoskeleton', positions.cytoskeleton, item => {
+        const network = cytoskeleton(item, type, rng);
+        updateCytoskeleton = attachCytoskeletonMicro(item, anchors, network);
+      }, false);
 
       const nucObj = build('nucleus', positions.nucleus, item => {
         nucleus(item, rng);
@@ -1447,18 +1498,16 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       if (item.object === secVesicles || item.object === erVesicles || item.object === fusionRings ||
         item.object === cytoFlowMesh || item.object === guideLines) continue;
       let object = item.object;
-      while (object && !object.userData.key) object = object.parent;
+      while (object?.visible && !object.userData.key) object = object.parent;
       const key = object?.userData.key;
-      if (!key) continue;
-      if (!OUTER_KEYS.has(key)) return key;
+      if (!key || !object.visible) continue;
+      if (key === 'cytoskeleton' || !OUTER_KEYS.has(key)) return key;
       if (key === 'membrane' || !outerSurface) outerSurface = key;
     }
     return outerSurface;
   }
 
-  let start;
-  canvas.addEventListener('pointermove', event => {
-    if (event.buttons || event.pointerType === 'touch') { hideTooltip(tooltip, viewport); return; }
+  function updateHover(event) {
     const next = hit(event);
     hovered = next || null;
     if (next) {
@@ -1469,9 +1518,25 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     } else {
       hideTooltip(tooltip, viewport);
     }
+  }
+
+  let start;
+  canvas.addEventListener('pointermove', event => {
+    if (event.buttons || event.pointerType === 'touch') {
+      pendingHover = null;
+      hideTooltip(tooltip, viewport);
+      return;
+    }
+    pendingHover = event;
   }, { signal });
-  canvas.addEventListener('pointerleave', () => { hovered = null; hideTooltip(tooltip, viewport); }, { signal });
-  canvas.addEventListener('pointerdown', event => { start = [event.clientX, event.clientY]; }, { signal });
+  canvas.addEventListener('pointerleave', () => {
+    pendingHover = hovered = null;
+    hideTooltip(tooltip, viewport);
+  }, { signal });
+  canvas.addEventListener('pointerdown', event => {
+    pendingHover = null;
+    start = [event.clientX, event.clientY];
+  }, { signal });
   canvas.addEventListener('pointerup', event => {
     const origin = start;
     start = null;
@@ -1541,7 +1606,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   guide.append(summary, details, node('h3', {}, 'Seleção rápida'), shortcuts);
   loadModel();
 
-  let activeSec, activeEr, activeRings;
+  let activeSec, activeEr;
   let putSec, putEr, putRing;
   const endpoint = v(), pt = v(), ringDummy = new T.Object3D(), upAxis = v(0, 0, 1);
   const erPts = [v(), v(), v()];
@@ -1553,6 +1618,10 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
 
   return {
     update(dt) {
+      if (pendingHover) {
+        updateHover(pendingHover);
+        pendingHover = null;
+      }
       if (!paused) time += dt;
       const contractionOverview = !tourActive && type === 'muscle' && animateMuscle;
       const activeAnim = tourActive ? activeStepData()?.anim : contractionOverview ? 'muscle_overview' : null;
@@ -1595,6 +1664,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       }
 
       updateMaterials(dt);
+      updateCytoskeleton?.(time, activeAnim);
 
       // Update all bespoke micro-structure & step-triggered animations
       if (!paused) {
@@ -1602,7 +1672,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       }
 
       // Update 3D Pulsing Beacon & Active Step Callout Pin
-      const st = tourActive ? activeStepData() : null;
+      const st = tourActive && selected !== 'cytoskeleton' ? activeStepData() : null;
       if (st) {
         const anchorObj = anchors.get(st.anchor) || structures.get(selected);
         if (anchorObj) {
@@ -1674,13 +1744,13 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         erVesicles.instanceMatrix.needsUpdate = true;
       }
 
-      if (secVesicles && fusionRings && golgiObj) {
+      if (secVesicles && fusionRings) {
         const hideSecForSkel = tourActive && selected === 'cytoskeleton' && ['skel_track', 'skel_motors', 'skel_actin', 'skel_intermediate'].includes(activeAnim);
-        secVesicles.visible = !hideSecForSkel;
-        fusionRings.visible = !hideSecForSkel;
+        secVesicles.visible = fusionRings.visible = !hideSecForSkel;
+      }
+      if (secVesicles?.visible && fusionRings && golgiObj) {
         if (activeSec !== secVesicles) {
           activeSec = secVesicles;
-          activeRings = fusionRings;
           putSec = instanceUpdater(secVesicles);
           putRing = instanceUpdater(fusionRings);
         }

@@ -114,7 +114,7 @@ export class BodyBoss {
                 this.seam.material = materials.get("burned", 0);
             }
         });
-        scene.onBeforeRenderObservable.add(() => this.update(scene.getEngine().getDeltaTime() / 1000));
+        scene.onBeforeRenderObservable.add(() => this.update(scene.metadata?.wonderWorldFrameSeconds ?? scene.getEngine().getDeltaTime() / 1000));
     }
     setExtendedReactionWindows(enabled) {
         this.extendedReactionWindows = enabled;

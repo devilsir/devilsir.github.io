@@ -183,6 +183,7 @@ export class Engine {
     this.dofTarget = 0;
     this.dofCurrent = 0;
     this.focusObjects = [];
+    this.focusMeshes = [];
     this._moved = [];
 
     this.resize = new ResizeObserver(() => this.fit());
@@ -210,8 +211,18 @@ export class Engine {
 
   setFocusFilter(objects = null, strength = 0) {
     if (objects && objects.length && strength > 0.01) {
-      this.focusObjects = objects;
       this.dofTarget = Math.max(0, Math.min(1, strength));
+      if (objects.length === this.focusObjects.length && objects.every((root, i) => root === this.focusObjects[i])) return;
+
+      // Keep our own roots because callers can reuse their input array on the next frame.
+      this.focusObjects = [...objects];
+      const meshes = new Set();
+      for (const root of this.focusObjects) {
+        root?.traverse(object => {
+          if (object.isMesh || object.isLine || object.isPoints) meshes.add(object);
+        });
+      }
+      this.focusMeshes = [...meshes];
     } else {
       this.dofTarget = 0;
     }
@@ -221,7 +232,8 @@ export class Engine {
     this.dofTarget = 0;
     if (instant) {
       this.dofCurrent = 0;
-      this.focusObjects = [];
+      this.focusObjects.length = 0;
+      this.focusMeshes.length = 0;
     }
   }
 
@@ -245,14 +257,11 @@ export class Engine {
     moved.length = 0;
 
     // Isolate focused foreground meshes onto Layer 2 (keeping sprites on Layer 1 intact!)
-    for (const root of this.focusObjects) {
-      if (!root) continue;
-      root.traverse(obj => {
-        if ((obj.isMesh || obj.isLine || obj.isPoints) && obj.layers.mask === 1) {
-          obj.layers.set(2);
-          moved.push(obj);
-        }
-      });
+    for (const object of this.focusMeshes) {
+      if (object.layers.mask === 1) {
+        object.layers.set(2);
+        moved.push(object);
+      }
     }
 
     // Compute shadow map ONCE for the frame (throttled cleanly on mobile!) before splitting background & foreground
@@ -387,8 +396,7 @@ export class Engine {
     const dofRate = 1 - Math.exp(-dt * 7.2);
     this.dofCurrent += (this.dofTarget - this.dofCurrent) * dofRate;
     if (this.dofTarget === 0 && this.dofCurrent < 0.015) {
-      this.dofCurrent = 0;
-      this.focusObjects = [];
+      this.clearFocusFilter(true);
     }
 
     if (this.destination) {

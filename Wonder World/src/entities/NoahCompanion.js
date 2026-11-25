@@ -71,6 +71,30 @@ export class NoahCompanion {
         bandageWrap.rotation.z = -0.18;
         bandageWrap.position.y = 0.03;
         bandageWrap.material = bandage;
+
+        const eyeWhite = materials.solid("noah-eye-white", new Color3(0.40, 0.37, 0.31), 0.68);
+        const eyeDark = materials.solid("noah-eye-dark", new Color3(0.033, 0.038, 0.035), 0.62);
+        const lip = materials.solid("noah-lip", new Color3(0.30, 0.15, 0.12), 0.85);
+        const collar = materials.solid("noah-collar", new Color3(0.18, 0.20, 0.22), 0.86);
+        const sculpt = (name, parent, position, scale, material) => {
+            const detail = MeshBuilder.CreateSphere(`noah-${name}`, { diameter: 1, segments: 6 }, scene);
+            detail.parent = parent;
+            detail.position = position;
+            detail.scaling = scale;
+            detail.material = material;
+            detail.isPickable = false;
+            detail.checkCollisions = false;
+            return detail;
+        };
+        for (const side of [-1, 1]) {
+            sculpt(`ear-${side}`, this.head, new Vector3(side * 0.303, -0.022, 0.015), new Vector3(0.11, 0.18, 0.10), skin);
+            sculpt(`eye-${side}`, this.head, new Vector3(side * 0.105, 0.015, 0.312), new Vector3(0.096, 0.047, 0.037), eyeWhite);
+            sculpt(`iris-${side}`, this.head, new Vector3(side * 0.103, 0.015, 0.331), new Vector3(0.034, 0.036, 0.012), eyeDark);
+            sculpt(`brow-${side}`, this.head, new Vector3(side * 0.109, 0.075, 0.308), new Vector3(0.108, 0.025, 0.035), hair).rotation.z = side * 0.13;
+            sculpt(`collar-${side}`, this.torso, new Vector3(side * 0.124, 0.53, 0.228), new Vector3(0.16, 0.24, 0.07), collar).rotation.z = side * 0.55;
+        }
+        sculpt("nose", this.head, new Vector3(0, -0.057, 0.323), new Vector3(0.093, 0.16, 0.136), skin);
+        sculpt("mouth", this.head, new Vector3(0, -0.156, 0.289), new Vector3(0.124, 0.028, 0.033), lip);
         this.leftArm = new TransformNode("noah-left-arm", scene);
         this.rightArm = new TransformNode("noah-right-arm", scene);
         this.leftLeg = new TransformNode("noah-left-leg", scene);
@@ -153,7 +177,13 @@ export class NoahCompanion {
             destination = this.player.collider.position.add(backward).add(new Vector3(0.75, 0, 0));
         }
         if (!destination || this.command === "wait") {
-            this.poseIdle();
+            if (this.command === "hold") {
+                this.poseHolding();
+            } else if (this.command === "crawl") {
+                this.poseCrouched();
+            } else {
+                this.poseIdle();
+            }
             return;
         }
         const flat = destination.subtract(this.root.position);
@@ -255,6 +285,10 @@ export class NoahCompanion {
         this.limbs.push(thigh, shin, shoe);
     }
     poseWalking(speed) {
+        this.root.scaling.y = 1;
+        this.leftArm.rotation.z = 0;
+        this.rightArm.rotation.z = 0;
+        if (this.command === "crawl") this.root.scaling.y = 0.68;
         const swing = Math.sin(this.gaitClock * (speed + 3)) * 0.46;
         this.leftArm.rotation.x = swing;
         this.rightArm.rotation.x = -swing * 0.72;
@@ -264,6 +298,9 @@ export class NoahCompanion {
         this.head.rotation.y = Math.sin(this.gaitClock * 1.4) * 0.08;
     }
     poseIdle() {
+        this.root.scaling.y = 1;
+        this.leftArm.rotation.z = 0;
+        this.rightArm.rotation.z = 0;
         this.leftArm.rotation.x *= 0.82;
         this.rightArm.rotation.x *= 0.82;
         this.leftLeg.rotation.x *= 0.82;
@@ -272,6 +309,7 @@ export class NoahCompanion {
         this.head.rotation.y = Math.sin(this.gaitClock * 0.7) * 0.045;
     }
     poseHolding() {
+        this.root.scaling.y = 1;
         this.leftArm.rotation.x = -1.05;
         this.rightArm.rotation.x = -1.05;
         this.leftArm.rotation.z = -0.22;
@@ -279,6 +317,8 @@ export class NoahCompanion {
     }
     poseCrouched() {
         this.root.scaling.y = 0.68;
+        this.leftArm.rotation.z = 0;
+        this.rightArm.rotation.z = 0;
         this.leftLeg.rotation.x = 0.75;
         this.rightLeg.rotation.x = 0.75;
         this.leftArm.rotation.x = -0.6;

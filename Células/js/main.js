@@ -1,4 +1,4 @@
-import { Engine } from './core/engine.js?v=23';
+import { Engine } from './core/engine.js?v=24';
 import { SceneManager, afterPaint, keepLoaderVisible } from './core/sceneManager.js?v=25';
 import { state } from './core/state.js?v=12';
 import { audio } from './core/audio.js';
@@ -6,7 +6,7 @@ import { button, node } from './core/ui.js?v=9';
 import { glossaries } from './data/glossary.js?v=14';
 
 const modules = {
-  citologia: ['Citologia', 'Célula e organelas', 'Explore o interior celular, membrana, citoplasma e organelas em etapas com micro-zoom.', () => import('./modules/cell3d.js?v=28').then(module => module.cell3d), 'Montando modelos 3D celulares, membrana e organelas...'],
+  citologia: ['Citologia', 'Célula e organelas', 'Explore o interior celular, membrana, citoplasma e organelas em etapas com micro-zoom.', () => import('./modules/cell3d.js?v=30').then(module => module.cell3d), 'Montando modelos 3D celulares, membrana e organelas...'],
   bioenergetica: ['Bioenergética', 'Metabolismo energético', 'Compare catabolismo (respiração e fermentação) e anabolismo (fotossíntese no cloroplasto).', () => import('./modules/respiration3d.js?v=23').then(module => module.respiration3d), 'Preparando mitocôndria, cadeia respiratória e cloroplasto 3D...'],
   dogma: ['DNA e RNA', 'Replicação e dogma central', 'Acompanhe replicação semiconservativa, transcrição, tradução e teste o efeito de mutações.', () => import('./modules/centralDogma3d.js?v=23').then(module => module.centralDogma3d), 'Construindo dupla-hélice, RNA polimerase e ribossomo 80S...'],
   divisao: ['Divisão Celular', 'Mitose, meiose e ciclo celular', 'Explore interfase (G1, S, G2), divisão equacional, meiose I/II e crossing-over em 3D.', () => import('./modules/cellDivision3d.js?v=23').then(module => module.cellDivision3d), 'Preparando cromossomos, fuso mitótico e quiasmas...'],

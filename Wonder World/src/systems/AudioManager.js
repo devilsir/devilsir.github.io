@@ -1,3 +1,5 @@
+import { Atmosphere } from "./Atmosphere.js";
+import { Soundtrack } from "./Soundtrack.js";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 export class AudioManager {
     context = null;
@@ -9,6 +11,12 @@ export class AudioManager {
     loops = new Map();
     spatialLoops = new Map();
     timers = new Map();
+    soundtrack = new Soundtrack();
+    soundtrackMood = null;
+    atmosphere = new Atmosphere();
+    horrorScoreBus = null;
+    ambienceBus = null;
+    horrorMix = "normal";
     constructor(settings) {
         this.settings = settings;
     }
@@ -17,15 +25,58 @@ export class AudioManager {
     }
     async unlock() {
         const context = this.ensureContext();
-        if (context.state !== "suspended")
-            return;
-        try {
+        if (context.state === "suspended") {
+          try {
             await context.resume();
-        }
-        catch (error) {
+          } catch (error) {
             console.warn("Não foi possível liberar o áudio do navegador.", error);
+          }
         }
+        this.syncSoundtrack();
     }
+
+    setSoundtrack(mood) {
+        if (this.soundtrackMood === mood) return;
+        this.soundtrackMood = mood;
+        this.syncSoundtrack();
+    }
+
+    syncSoundtrack() {
+        if (this.context?.state !== "running" || !this.music) return;
+        const audible = this.settings.musicVolume > 0 && this.settings.masterVolume > 0;
+        this.soundtrack.update(audible ? this.soundtrackMood : null, this.context, this.horrorScoreBus ?? this.music);
+    }
+
+    setHorrorMix(mode) {
+        if (this.horrorMix === mode) return;
+        this.horrorMix = mode;
+        if (mode === "off") this.atmosphere.reset();
+        this.syncHorrorMix();
+    }
+
+    syncHorrorMix() {
+        if (!this.context || !this.horrorScoreBus || !this.ambienceBus) return;
+        const time = this.context.currentTime;
+        this.horrorScoreBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : 0, time, .075);
+        this.ambienceBus.gain.setTargetAtTime(this.horrorMix === "normal" ? 1 : .015, time, .095);
+    }
+
+    updateAtmosphere(dt, stage, position, mode, caption) {
+        if (!this.context || !this.ambienceBus || this.context.state !== "running") return;
+        const muted = !this.settings.effectsVolume || !this.settings.masterVolume;
+        this.atmosphere.update(dt, stage, position, muted ? "off" : mode, this.context, this.ambienceBus, caption);
+    }
+
+    playHorrorSting(strength) {
+        if (this.context?.state !== "running" || !this.effects || !this.settings.effectsVolume || !this.settings.masterVolume) return;
+        void this.atmosphere.playSting(strength, this.context, this.effects);
+    }
+
+    stopAtmosphere() {
+        this.atmosphere.reset();
+        this.setHorrorMix("off");
+    }
+
     applySettings(settings) {
         this.settings = settings;
         if (!this.context || !this.master || !this.effects || !this.music || !this.dialogue)
@@ -34,6 +85,7 @@ export class AudioManager {
         this.effects.gain.value = settings.effectsVolume;
         this.music.gain.value = settings.musicVolume;
         this.dialogue.gain.value = settings.dialogueVolume;
+        this.syncSoundtrack();
     }
     startProjector() {
         const context = this.ensureContext();
@@ -75,7 +127,7 @@ export class AudioManager {
         low.frequency.value = 6500;
         const gain = context.createGain();
         gain.gain.value = 0.22;
-        source.connect(high).connect(low).connect(gain).connect(this.bus("effects"));
+        source.connect(high).connect(low).connect(gain).connect(this.ambienceBus ?? this.bus("effects"));
         source.start();
         this.loops.set("rain", [source, gain]);
     }
@@ -83,7 +135,7 @@ export class AudioManager {
         const context = this.ensureContext();
         if (this.loops.has("interior"))
             return;
-        const output = this.bus("effects");
+        const output = this.ambienceBus ?? this.bus("effects");
         const hum = context.createOscillator();
         hum.type = "sine";
         hum.frequency.value = 59.7;
@@ -114,7 +166,7 @@ export class AudioManager {
         const context = this.ensureContext();
         if (this.loops.has("drone"))
             return;
-        const output = this.bus("music");
+        const output = this.horrorScoreBus ?? this.bus("music");
         const oscillators = [];
         const gain = context.createGain();
         gain.gain.value = 0.035;
@@ -151,6 +203,9 @@ export class AudioManager {
         this.loops.delete(id);
     }
     stopAll() {
+        this.soundtrackMood = null;
+        this.soundtrack.stop();
+        this.stopAtmosphere();
         [...this.loops.keys()].forEach((id) => this.stopLoop(id));
         for (const loop of this.spatialLoops.values()) {
             try {
@@ -762,6 +817,11 @@ export class AudioManager {
         this.music = this.context.createGain();
         this.dialogue = this.context.createGain();
         this.effects.connect(this.master);
+        this.horrorScoreBus = this.context.createGain();
+        this.ambienceBus = this.context.createGain();
+        this.horrorScoreBus.connect(this.music);
+        this.ambienceBus.connect(this.effects);
+        this.syncHorrorMix();
         this.music.connect(this.master);
         this.dialogue.connect(this.master);
         this.master.connect(this.context.destination);

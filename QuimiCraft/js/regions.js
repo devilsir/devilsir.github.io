@@ -195,7 +195,7 @@ globalThis.QuimiCraftRegions=(()=>{
       return roll>.981?region(biome).ore:0;
     };
     const stratum=(biome,x,y,z)=>hash(Math.floor(x/5),Math.floor(y/4),Math.floor(z/5)+1193+salt)>.72?region(biome).rock:0;
-    return {surface,cover,ore,stratum,produce:new Map(Object.entries(produce).map(([block,item])=>[B[block],item])),
+    return {surface,cover,ore,stratum,region,produce:new Map(Object.entries(produce).map(([block,item])=>[B[block],item])),
       ores:new Set(oreKeys.map(key=>B[key])),fertile:new Set(fertileKeys.map(key=>B[key]))};
   }
   const localFish=biome=>ecoregions[biome]?.[4];

@@ -1,3 +1,4 @@
+import { CampaignClock, readCampaignTiming } from "../systems/CampaignClock.js";
 import "@babylonjs/core/Collisions/collisionCoordinator";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
@@ -9,10 +10,11 @@ import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { SettingsStore } from "../systems/Settings.js";
+import { GRAPHICS_QUALITY, SettingsStore } from "../systems/Settings.js";
 import { SaveSystem, DEFAULT_CHAPTER2_SAVE, DEFAULT_CHAPTER3_SAVE, DEFAULT_CHAPTER4_SAVE, DEFAULT_CHAPTER5_SAVE } from "../systems/SaveSystem.js";
 import { GameUI } from "../ui/GameUI.js";
 import { AudioManager } from "../systems/AudioManager.js";
+import { selectHorrorScore } from "../systems/HorrorScore.js";
 import { PlayerController } from "./PlayerController.js";
 import { InteractionSystem } from "../systems/InteractionSystem.js";
 import { Inventory } from "../systems/Inventory.js";
@@ -24,6 +26,8 @@ import { HorrorLightingSystem } from "../systems/HorrorLightingSystem.js";
 import { ConstructionMode } from "../systems/ConstructionMode.js";
 import { ITEM_CATALOG, WorldBuilder } from "../world/WorldBuilder.js";
 import { BodyBoss } from "../entities/BodyBoss.js";
+import { HorrorDirector, createHorrorTapeView } from "../systems/HorrorDirector.js";
+
 export class Game {
     canvas;
     engine;
@@ -32,6 +36,7 @@ export class Game {
     saveSystem = new SaveSystem();
     ui;
     audio;
+    horrorDirector;
     materials;
     player;
     interaction;
@@ -63,6 +68,13 @@ export class Game {
     nextLightning = 3;
     debugEnabled = false;
     lastCheckpoint = "prologue-start";
+    soundtrackClock = 0;
+    campaignClock = new CampaignClock();
+    campaignTimingBound = false;
+    openingAudio = null;
+    ambientCaption = (line) => {
+        if (this.settingsStore.value.soundCaptions) this.ui.showSoundCaption(line, 1650);
+    };
     chapterTransitionStarted = false;
     fireDamageCooldown = 0;
     collisionDebugVisible = false;
@@ -76,6 +88,7 @@ export class Game {
     movementDebugAccumulator = 0;
     maxLives = 3;
     lives = 3;
+    hudUpdateRemaining = 0;
     runtimeCheckpointPositions = new Map();
     constructionRestorePlayer = false;
     constructionRestoreGuide = false;
@@ -93,20 +106,22 @@ export class Game {
                 reducedHeadBob: true
             };
         }
-        this.engine = new Engine(canvas, !this.safeMode, {
+        this.engine = new Engine(canvas, !this.safeMode && this.settingsStore.value.performancePreset === "cinematic", {
             preserveDrawingBuffer: false,
             stencil: true,
-            antialias: true,
-            powerPreference: this.safeMode ? "low-power" : "high-performance",
+            antialias: !this.safeMode && this.settingsStore.value.performancePreset === "cinematic",
+            powerPreference: this.safeMode || GRAPHICS_QUALITY[this.settingsStore.value.performancePreset].effects < 2 ? "low-power" : "default",
             disableWebGL2Support: this.safeMode
         });
         this.scene = new Scene(this.engine);
+        this.scene.metadata = { wonderWorldFrameSeconds: 0 };
         this.scene.collisionsEnabled = true;
         this.scene.clearColor = new Color4(0.012, 0.014, 0.019, 1);
         this.scene.skipPointerMovePicking = true;
         this.ui = new GameUI(uiRoot, this.settingsStore.value);
         this.audio = new AudioManager(this.settingsStore.value);
-        this.materials = new ProceduralMaterials(this.scene, this.safeMode ? 128 : this.settingsStore.value.performancePreset === "performance" ? 256 : 512);
+        this.horrorDirector = new HorrorDirector(createHorrorTapeView(uiRoot), this.audio, this.ui);
+        this.materials = new ProceduralMaterials(this.scene, GRAPHICS_QUALITY[this.safeMode ? "lite" : this.settingsStore.value.performancePreset].textureSize);
         this.inventory = new Inventory((items) => {
             this.ui.updateStatus(this.player?.health ?? 100, this.fire?.fuel ?? 0, items, this.lives, this.player?.armor ?? 0);
             this.fire?.setTorchAvailable(items.some((item) => item.id === "torch" || item.id === "replacementTorch"));
@@ -163,6 +178,7 @@ export class Game {
         this.setupSceneLighting();
         this.horrorLighting = new HorrorLightingSystem(this.scene, this.player.camera, this.safeMode);
         this.construction = new ConstructionMode(this.scene, this.canvas, this.player, this.materials, this.interaction, this.inventory, this.fire, () => this.itemCatalog, {
+            canOpen: () => !this.openingAudio && !this.ui.finaleOverlayOpen && !this.ui.tacticalQuestionOpen,
             onActiveChanged: (active) => this.handleConstructionModeChanged(active),
             onToast: (message, duration) => this.ui.toast(message, duration),
             onLoadingStart: (message, detail) => this.ui.showLoading(message, detail),
@@ -186,12 +202,34 @@ export class Game {
         // five chapters synchronously here previously left slower browsers on a blank page.
         this.enterMenuMode();
         this.ui.setContinueEnabled(this.saveSystem.hasSave());
+        let lastFrame = 0;
+        let frameDeadline = 0;
         this.engine.runRenderLoop(() => {
-            const deltaSeconds = Math.min(0.05, this.engine.getDeltaTime() / 1000);
+            const now = performance.now();
+            this.campaignClock.sample(now, this.campaignCountsTime());
+            if (document.hidden || this.openingAudio) {
+                lastFrame = 0;
+                frameDeadline = 0;
+                return;
+            }
+            const idle = this.stage === "menu" || this.paused || this.inventoryOpen;
+            const quality = GRAPHICS_QUALITY[this.safeMode ? "lite" : this.settingsStore.value.performancePreset];
+            const interval = 1000 / (idle ? 24 : quality.fps);
+            if (now + 2 < frameDeadline) return;
+            frameDeadline = Math.max(now, frameDeadline + interval);
+            const deltaSeconds = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 0;
+            lastFrame = now;
+            this.scene.metadata.wonderWorldFrameSeconds = deltaSeconds;
             this.update(deltaSeconds);
             this.scene.render();
         });
-        window.addEventListener("resize", () => this.engine.resize());
+        window.addEventListener("resize", () => this.resizeRendering());
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) this.flushCampaignTiming();
+            if (document.hidden) this.audio.stopAtmosphere();
+            else if (this.openingAudio) this.setOpeningCue(this.openingAudio);
+        });
+        window.addEventListener("pagehide", () => this.flushCampaignTiming());
         this.ui.hideLoading();
         if (this.debugEnabled) {
             // Debug chapter selection expects every destination to exist. Build incrementally
@@ -208,7 +246,7 @@ export class Game {
             return this.chapter2;
         const { Chapter2World, CHAPTER2_ITEMS } = await import("../world/Chapter2World.js");
         Object.assign(this.itemCatalog, CHAPTER2_ITEMS);
-        this.chapter2 = new Chapter2World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+        this.chapter2 = new Chapter2World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsForChapter(this.settingsStore.value), {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter2"),
             onChapterComplete: () => void this.finishChapter2(),
             onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
@@ -220,7 +258,7 @@ export class Game {
             return this.chapter3;
         const { Chapter3World, CHAPTER3_ITEMS } = await import("../world/Chapter3World.js");
         Object.assign(this.itemCatalog, CHAPTER3_ITEMS);
-        this.chapter3 = new Chapter3World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+        this.chapter3 = new Chapter3World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsForChapter(this.settingsStore.value), {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter3"),
             onChapterComplete: () => void this.finishChapter3(),
             onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último setor estabilizado.")
@@ -232,7 +270,7 @@ export class Game {
             return this.chapter4;
         const { Chapter4World, CHAPTER4_ITEMS } = await import("../world/Chapter4World.js");
         Object.assign(this.itemCatalog, CHAPTER4_ITEMS);
-        this.chapter4 = new Chapter4World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+        this.chapter4 = new Chapter4World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsForChapter(this.settingsStore.value), {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter4"),
             onChapterComplete: () => void this.finishChapter4(),
             onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto estável da prisão."),
@@ -252,7 +290,7 @@ export class Game {
             return this.chapter5;
         const { Chapter5World, CHAPTER5_ITEMS } = await import("../world/Chapter5World.js");
         Object.assign(this.itemCatalog, CHAPTER5_ITEMS);
-        this.chapter5 = new Chapter5World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsStore.value, {
+        this.chapter5 = new Chapter5World(this.scene, this.materials, this.interaction, this.inventory, this.objectives, this.ui, this.audio, this.fire, this.player, this.settingsForChapter(this.settingsStore.value), {
             onCheckpoint: (checkpoint) => this.checkpoint(checkpoint, "chapter5"),
             onChapterComplete: () => this.finishChapter5(),
             onPlayerDamaged: () => void this.handleRespawn("Você retorna ao último ponto seguro com Noah."),
@@ -261,6 +299,7 @@ export class Game {
                 this.saveSystem.write(this.currentSavePayload());
             },
             getEndingCount: () => this.endings.size,
+            getCampaignTiming: (freeze = false) => this.campaignClock.snapshot(performance.now(), freeze),
             onReturnMenu: () => {
                 this.saveSystem.write(this.currentSavePayload());
                 this.enterMenuMode();
@@ -289,6 +328,8 @@ export class Game {
         return this.chapter5;
     }
     async ensureBuiltThrough(chapter, message) {
+        if (this.worldBuilt && (chapter < 2 || this.chapter2Built) && (chapter < 3 || this.chapter3Built)
+            && (chapter < 4 || this.chapter4Built) && (chapter < 5 || this.chapter5Built)) return;
         this.ui.showLoading(message, "Carregando módulos e geometria procedural.");
         try {
             await this.yieldToBrowser();
@@ -373,6 +414,13 @@ export class Game {
         window.addEventListener("pointerdown", unlockAudio);
         window.addEventListener("keydown", unlockAudio);
         window.addEventListener("keydown", (event) => {
+            if (this.openingAudio || this.ui.finaleOverlayOpen || this.ui.tacticalQuestionOpen) {
+                if (event.code === "F2") {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+                return;
+            }
             if (!event.repeat
                 && (event.code === "KeyE" || event.code === "Escape")
                 && this.stage !== "menu"
@@ -466,6 +514,7 @@ export class Game {
             || Boolean(this.chapter5?.active);
     }
     async startNewGame() {
+        this.horrorDirector.reset();
         this.ui.showLoading("Iniciando nova campanha…", "Preparando o estacionamento, as colisões e o estado inicial.");
         this.ui.hideMenu();
         this.player.setEnabled(false);
@@ -489,7 +538,15 @@ export class Game {
         finally {
             this.ui.hideLoading();
         }
-        await this.ui.playOpeningFilm(() => undefined);
+        this.campaignTimingBound = false;
+        this.campaignClock.start(performance.now());
+        this.setOpeningCue("convite");
+        try {
+            await this.ui.playOpeningFilm(() => undefined, (cue) => this.setOpeningCue(cue));
+        } finally {
+            this.openingAudio = null;
+            this.audio.stopLoop("projector");
+        }
         this.ui.showLoading("Entrando no estacionamento…", "Finalizando câmera, objetivos e iluminação.");
         try {
             this.ui.ensureGameplayVisible();
@@ -522,6 +579,7 @@ export class Game {
         this.ui.toast("WASD para andar · E interage · F acende a tocha · H mostra o caminho · Tab inventário · F2 construção", 6800);
     }
     async loadGame(save) {
+        this.horrorDirector.reset();
         this.ui.showLoading("Carregando jogo salvo…", "Reconstruindo o cenário e restaurando o último checkpoint.");
         this.ui.hideMenu();
         this.player.setEnabled(false);
@@ -529,10 +587,10 @@ export class Game {
         try {
             await this.yieldToBrowser();
 
-        const requiredChapter = save.stage === "chapter5" || save.stage === "campaign-complete" || save.stage === "chapter5-transition" ? 5
-            : save.stage === "chapter4" || save.stage === "chapter4-transition" ? 4
-                : save.stage === "chapter3" || save.stage === "chapter3-transition" ? 3
-                    : save.stage === "chapter2" || save.stage === "chapter2-transition" ? 2
+        const requiredChapter = save.stage === "chapter5" || save.stage === "campaign-complete" ? 5
+            : save.stage === "chapter4" || save.stage === "chapter5-transition" ? 4
+                : save.stage === "chapter3" || save.stage === "chapter4-transition" ? 3
+                    : save.stage === "chapter2" || save.stage === "chapter3-transition" ? 2
                         : 1;
         await this.ensureBuiltThrough(requiredChapter, "Restaurando o Wonder World…");
         this.ui.hideMenu();
@@ -541,6 +599,8 @@ export class Game {
         this.inventoryOpen = false;
         this.ui.hideInventory();
         this.stage = save.stage;
+        this.campaignClock.restore(readCampaignTiming(save), save.stage === "campaign-complete" || save.chapter5.creditsSeen);
+        this.campaignTimingBound = true;
         this.player.health = save.playerHealth;
         this.player.armor = save.playerArmor;
         this.lives = save.lives;
@@ -557,13 +617,17 @@ export class Game {
             this.teleportToSafePosition(this.destinationForCheckpoint(save.checkpoint, save.stage));
             this.player.setEnabled(true);
             this.audio.startRain();
-            this.prologueElapsed = 20;
-            this.screamPlayed = true;
+            const waitingForFriends = save.objectiveId === "wait-friends";
+            this.prologueElapsed = waitingForFriends ? 0 : 20;
+            this.screamPlayed = !waitingForFriends;
+            if (waitingForFriends) {
+                this.ambientTimer = 4;
+            }
         }
         else if (save.stage === "chapter5" || save.stage === "campaign-complete") {
             this.world.enteredWonderWorld = true;
             this.audio.startInteriorHum();
-            this.requireChapter5().restore(save.chapter5, save.checkpoint);
+            this.requireChapter5().restore(save.chapter5, save.checkpoint, Vector3.FromArray(save.checkpointPosition));
             if (save.stage === "campaign-complete")
                 this.player.setEnabled(false);
         }
@@ -733,6 +797,7 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter3-transition", "chapter3-transition");
+        this.requireChapter2().deactivateOnExit();
         this.ui.showLoading("Abrindo a próxima atração…", "Preparando a Caixa de Sustos.");
         try {
             await this.ensureBuiltThrough(3, "Preparando a caixa de sustos…");
@@ -755,6 +820,7 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter4-transition", "chapter4-transition");
+        this.requireChapter3().deactivateOnExit();
         this.ui.showLoading("Descendo para a prisão…", "Preparando corredores, celas e rotas de fuga.");
         try {
             await this.ensureBuiltThrough(4, "Preparando a prisão subterrânea…");
@@ -777,6 +843,7 @@ export class Game {
         this.player.setEnabled(false);
         this.player.releasePointerLock();
         this.checkpoint("chapter5-transition", "chapter5-transition");
+        this.requireChapter4().deactivateOnExit();
         this.ui.showLoading("Acessando os arquivos centrais…", "Preparando o setor final da campanha.");
         try {
             await this.ensureBuiltThrough(5, "Preparando os arquivos centrais…");
@@ -799,6 +866,7 @@ export class Game {
         this.ui.showDocument("CAMPANHA CONCLUÍDA", "O final verdadeiro foi registrado. Você pode retornar ao menu, revisar os finais descobertos ou iniciar uma nova campanha sem apagar este registro.", () => this.enterMenuMode());
     }
     togglePause() {
+        if (this.openingAudio || this.ui.finaleOverlayOpen || this.ui.tacticalQuestionOpen) return;
         if (this.inventoryOpen) {
             this.closeInventory();
             return;
@@ -806,6 +874,7 @@ export class Game {
         if (this.stage === "menu" || this.chapterTransitionStarted)
             return;
         this.paused = !this.paused;
+        this.campaignClock.sample(performance.now(), this.campaignCountsTime());
         this.player.setEnabled(!this.paused);
         if (this.paused) {
             this.player.releasePointerLock();
@@ -829,6 +898,7 @@ export class Game {
         }
     }
     toggleInventory() {
+        if (this.ui.tacticalQuestionOpen) return;
         if (this.stage === "menu" || this.chapterTransitionStarted)
             return;
         if (this.inventoryOpen) {
@@ -1067,14 +1137,32 @@ export class Game {
         if (this.guide && this.guide.enabled !== settings.guideLightEnabled)
             this.guide.setEnabled(settings.guideLightEnabled);
         this.boss.setExtendedReactionWindows(settings.extendedBossWindows);
-        this.chapter2?.applySettings(settings);
-        this.chapter3?.applySettings(settings);
-        this.chapter4?.applySettings(settings);
-        this.chapter5?.applySettings(settings);
-        const scaling = settings.performancePreset === "performance" ? 1.5 : settings.performancePreset === "cinematic" ? 0.82 : 1;
-        this.engine.setHardwareScalingLevel(scaling);
-        this.horrorLighting.applyPerformancePreset(settings.performancePreset);
+        const chapterSettings = this.settingsForChapter(settings);
+        this.chapter2?.applySettings(chapterSettings);
+        this.chapter3?.applySettings(chapterSettings);
+        this.chapter4?.applySettings(chapterSettings);
+        this.chapter5?.applySettings(chapterSettings);
+        const preset = this.safeMode ? "performance" : settings.performancePreset;
+        this.resizeRendering(preset);
+        this.horrorLighting.applyPerformancePreset(preset);
     }
+    settingsForChapter(settings) {
+        return this.safeMode || settings.performancePreset === "lite"
+          ? { ...settings, performancePreset: "performance" } : settings;
+    }
+
+    resizeRendering(preset = this.safeMode ? "performance" : this.settingsStore.value.performancePreset) {
+        const pixels = Math.max(1, this.canvas.clientWidth * this.canvas.clientHeight);
+        // Bound GPU work without changing the viewport or the HTML overlays.
+        const quality = GRAPHICS_QUALITY[this.safeMode ? "lite" : preset];
+        const scale = Math.max(quality.minScale, Math.sqrt(pixels / quality.maxPixels));
+        if (Math.abs(this.engine.getHardwareScalingLevel() - scale) > 0.001) {
+            this.engine.setHardwareScalingLevel(scale);
+        } else {
+            this.engine.resize();
+        }
+    }
+
     syncTorchAvailability() {
         const available = this.inventory.has("torch") || this.inventory.has("replacementTorch");
         if (this.fire.torchAvailable !== available)
@@ -1184,7 +1272,50 @@ export class Game {
         if (this.stage === "chapter3")
             this.requireChapter3().handleContextAction();
     }
+    setOpeningCue(cue) {
+        this.openingAudio = cue;
+        if (cue === "quadro" || cue === "fim") this.audio.stopLoop("projector");
+        if (cue === "rota17") this.audio.startRain();
+        this.audio.setSoundtrack(cue === "body" ? "dread" : "dream");
+        this.audio.setHorrorMix(document.hidden ? "off" : cue === "quadro" || cue === "fim" ? "quiet" : "normal");
+    }
+
+    campaignCountsTime() {
+        return !document.hidden && this.stage !== "menu" && this.stage !== "campaign-complete"
+            && !this.paused && !this.ui.isLoading;
+    }
+
+    flushCampaignTiming() {
+        this.campaignClock.sample(performance.now(), false);
+        if (!this.campaignTimingBound) return;
+        const time = this.campaignClock.snapshot(performance.now());
+        this.saveSystem.writeCampaignTiming(time.seconds, time.complete);
+    }
+
+    updateAudioDirection(deltaSeconds, allowed, objective) {
+        const position = this.player.collider.position;
+        const melodyPuzzle = this.stage === "chapter3" ? this.chapter3?.checkpoints.generator4 : null;
+        const nearMelodyPuzzle = !!melodyPuzzle && Vector3.DistanceSquared(position, melodyPuzzle) <= 17 * 17;
+        const finale = this.stage === "chapter5" && ["true-ending", "post-credits"].includes(this.lastCheckpoint);
+        const score = selectHorrorScore(this.stage, finale ? "true-ending" : objective, nearMelodyPuzzle);
+        const quiet = this.horrorDirector.quietWindow || (this.stage.startsWith("chapter") && score === null);
+        const mode = !allowed ? "off" : quiet ? "quiet" : "normal";
+        this.audio.setHorrorMix(this.stage === "menu" ? "normal" : mode);
+        this.soundtrackClock -= deltaSeconds;
+        if (this.soundtrackClock > 0) return;
+        const elapsed = 0.25 - this.soundtrackClock;
+        this.soundtrackClock = 0.25;
+        this.audio.setSoundtrack(score);
+        this.audio.updateAtmosphere(elapsed, this.stage, position, mode, this.ambientCaption);
+    }
+
     update(deltaSeconds) {
+        const objective = this.objectives.get().id;
+        const allowed = !this.paused && !this.inventoryOpen && !this.construction.active && !this.chapterTransitionStarted && this.player.enabled;
+        this.horrorDirector.update(
+            deltaSeconds, this.stage, this.player.collider.position, this.lastCheckpoint, objective, allowed, this.settingsStore.value
+        );
+        this.updateAudioDirection(deltaSeconds, allowed, objective);
         // Keep simulation, camera and rendering in one deterministic loop. The old
         // controller ran from Scene.onBeforeRender, after the game systems had already
         // updated, which allowed the collider/audio to advance while a stale camera was
@@ -1222,8 +1353,12 @@ export class Game {
             this.ui.showSoundCaption("o calor queima sua pele", 1000);
             this.fireDamageCooldown = 0.65;
         }
-        this.ui.updateStatus(this.player.health, this.fire.fuel, this.inventory.list(), this.lives, this.player.armor);
-        this.ui.setStamina(this.player.stamina);
+        this.hudUpdateRemaining -= deltaSeconds;
+        if (this.hudUpdateRemaining <= 0) {
+            this.hudUpdateRemaining = 0.1;
+            this.ui.updateStatus(this.player.health, this.fire.fuel, this.inventory.list(), this.lives, this.player.armor);
+            this.ui.setStamina(this.player.stamina);
+        }
         if (this.stage === "prologue" || this.stage === "chapter1")
             this.updateLightning(deltaSeconds);
         if (this.stage === "prologue")
@@ -1476,10 +1611,14 @@ export class Game {
         if (blockedAtCheckpoint)
             window.setTimeout(() => this.teleportToSafePosition(safePosition), 0);
         this.saveSystem.write({ ...this.currentSavePayload(), checkpoint, stage, bossPhase });
+        this.campaignTimingBound = true;
         this.ui.setContinueEnabled(true);
     }
     currentSavePayload() {
+        const time = this.campaignClock.snapshot(performance.now());
         return {
+            campaignPlaySeconds: time.seconds,
+            campaignPlayTimeComplete: this.campaignClock.started && time.complete,
             stage: this.stage,
             checkpoint: this.lastCheckpoint,
             checkpointPosition: this.checkpointPositionTuple(),

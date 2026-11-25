@@ -46,7 +46,23 @@ globalThis.QuimiCraftArsenal=(()=>{
       ingredients:[["stick",2],["SAPPHIRE_ORE",1],["ICE",1]],repair:[["stick",1],["SAPPHIRE_ORE",1]],durability:480,detail:"Orbe e pulso que desaceleram criaturas."},
     prism_staff:{family:"staff",name:"Cajado Prismático",damage:15,speed:23,cooldown:.84,mana:19,color:"#ce86f1",trim:"#8df0d8",style:"prism",
       special:"Rajada prismática",altMana:33,altDelay:1.84,
-      ingredients:[["stick",2],["OPAL_ORE",1],["FLUORITE",1]],repair:[["OPAL_ORE",1],["stick",1]],durability:560,detail:"Orbe forte e rajada em leque de três orbes."}
+      ingredients:[["stick",2],["OPAL_ORE",1],["FLUORITE",1]],repair:[["OPAL_ORE",1],["stick",1]],durability:560,detail:"Orbe forte e rajada em leque de três orbes."},
+    silver_staff:{family:"staff",name:"Cajado de Prata",damage:17,speed:24,cooldown:.63,mana:15,color:"#bccddf",trim:"#f0f9ff",style:"silver",
+      silver:true,special:"Pulso lunar",altMana:29,altDelay:1.75,durability:460,
+      ingredients:[["silver_ingot",3],["stick",2],["crystal_shard",1]],repair:[["silver_ingot",1],["stick",1]],
+      detail:"Dispara orbes de prata e lança um pulso lunar circular. Ambos ferem lobisomens."},
+    spectral_sword:{family:"sword",name:"Espada fantasmagórica",damage:20,reach:3.45,cooldown:.49,style:"spectralBlade",
+      spectralWeapon:true,color:"#63a7bb",trim:"#a2ffe9",durability:385,
+      ingredients:[["iron_ingot",2],["ectoplasm",2],["stick",1]],repair:[["ectoplasm",1],["iron_ingot",1]],
+      detail:"A lâmina de ectoplasma corta criaturas na forma fantasma."},
+    spectral_bow:{family:"bow",name:"Arco fantasmagórico",damage:17,speed:29,cooldown:.57,style:"spectralBow",
+      spectralWeapon:true,color:"#437f91",trim:"#9fffea",durability:350,
+      ingredients:[["stick",3],["wool",2],["ectoplasm",2]],repair:[["ectoplasm",1],["wool",1]],
+      detail:"Impregna de ectoplasma qualquer flecha disparada. Fere criaturas na forma fantasma."},
+    spectral_staff:{family:"staff",name:"Cajado fantasmagórico",damage:16,speed:21,cooldown:.56,mana:14,style:"spectralStaff",
+      special:"Orbes do véu",altMana:27,altDelay:1.68,spectralWeapon:true,color:"#56d3d4",trim:"#c1fff3",durability:405,
+      ingredients:[["stick",2],["ectoplasm",3],["crystal_shard",1]],repair:[["ectoplasm",1],["stick",1]],
+      detail:"Dispara um orbe ou três orbes em leque. Ambos ferem criaturas na forma fantasma."}
   };
   const shields=Object.freeze({
     shield_oval:{name:"Escudo oval",shape:"oval",color:"#a3744a",trim:"#d3a55a",armor:.08,blockChance:.31,reduction:.53,
@@ -58,7 +74,10 @@ globalThis.QuimiCraftArsenal=(()=>{
     shield_dragon:{name:"Escudo antidragão",shape:"dragon",color:"#4c364f",trim:"#dbb66d",
       armor:.11,blockChance:.23,reduction:.43,dragonGuard:.61,protections:{physical:.14},
       durability:640,ingredients:[["OBSIDIAN",2],["armor_plate",2],["bronze_ingot",2],["hide",1]],
-      repair:[["OBSIDIAN",1],["bronze_ingot",1]],detail:"Reduz em 61% o dano das baforadas e protege contra efeitos de gelo e tempo."}
+      repair:[["OBSIDIAN",1],["bronze_ingot",1]],detail:"Reduz em 61% o dano das baforadas comuns. É a única peça capaz de bloquear uma rajada dracônica enquanto tiver durabilidade."},
+    shield_mirror:{name:"Escudo de Espelho",shape:"mirror",color:"#aac8d1",trim:"#b68b59",armor:.10,blockChance:.25,reduction:.47,
+      mirrorGuard:true,protections:{physical:.12},durability:475,ingredients:[["GLASS",2],["silver_ingot",2],["bronze_ingot",1],["hide",1]],
+      repair:[["silver_ingot",1],["bronze_ingot",1]],detail:"Levanta automaticamente com a mão secundária livre e reflete o olhar petrificante das medusas. Cada reflexo desgasta a prata."}
   });
   const focuses=Object.freeze({
     grimoire:{name:"Grimório dos Selos",shape:"book",color:"#5f526d",trim:"#e8c894",
@@ -70,6 +89,139 @@ globalThis.QuimiCraftArsenal=(()=>{
       ingredients:[["crystal_shard",2],["wind_essence",1],["copper_ingot",1]],repair:[["crystal_shard",1]],
       durability:420,detail:"Mão secundária. X dispara um pulso de 11 de dano por 12 de mana."}
   });
+  const classGear=Object.freeze({
+    mage_circlet:{name:"Diadema prismático",role:"Mago",shape:"circlet",slot:"head",color:"#6c518f",trim:"#9df0db",durability:300,
+      stats:{magicPower:.12},ingredients:[["bronze_ingot",2],["crystal_shard",2]],repair:[["crystal_shard",1]],
+      detail:"Mago. +12% de dano com magia."},
+    mage_hat:{name:"Chapéu pontudo de mago",role:"Mago",shape:"wizardHat",slot:"head",color:"#32346a",trim:"#d4ad71",durability:320,
+      stats:{magicPower:.09,manaDiscount:.06},ingredients:[["wool",4],["hide",1],["crystal_shard",1]],repair:[["wool",2]],
+      detail:"Mago. Aba larga e copa de feltro. +9% de dano mágico e 6% a menos de mana por conjuração."},
+    mage_vestment:{name:"Veste de conjurador",role:"Mago",shape:"vestment",slot:"chest",color:"#3e387a",trim:"#9dd9cf",durability:330,
+      stats:{armor:.08,manaDiscount:.22},protections:{electric:.10},
+      ingredients:[["wool",4],["hide",1],["crystal_shard",2]],repair:[["wool",2],["crystal_shard",1]],
+      detail:"Mago. Reduz em 22% o custo de mana e oferece proteção elétrica."},
+    mage_mantle:{name:"Manto do firmamento",role:"Mago",shape:"mageCape",slot:"back",color:"#423368",trim:"#c9aaff",durability:280,
+      stats:{manaRegen:.24},ingredients:[["wool",3],["wind_essence",2],["crystal_shard",1]],repair:[["wool",1],["wind_essence",1]],
+      detail:"Mago. Regenera mana 24% mais rápido."},
+    mage_trousers:{name:"Calças do conjurador",role:"Mago",shape:"mageLegs",slot:"legs",color:"#3d356e",trim:"#a6dbd8",durability:295,
+      stats:{armor:.05,manaDiscount:.08},ingredients:[["wool",3],["crystal_shard",1]],repair:[["wool",1]],
+      detail:"Mago. Reduz em 8% o custo de mana."},
+    mage_boots:{name:"Botas do conjurador",role:"Mago",shape:"mageBoots",slot:"feet",color:"#4b3d64",trim:"#a6dbd8",durability:285,
+      stats:{armor:.04,manaRegen:.12},ingredients:[["hide",2],["wool",2],["wind_essence",1]],repair:[["hide",1]],
+      detail:"Mago. Regenera mana 12% mais rápido."},
+    archer_hood:{name:"Capuz do mateiro",role:"Arqueiro",shape:"hood",slot:"head",color:"#3e5d45",trim:"#c6b374",durability:310,
+      stats:{archeryCycle:.12},ingredients:[["wool",2],["hide",2],["feather",1]],repair:[["hide",1],["wool",1]],
+      detail:"Arqueiro. Reduz em 12% o intervalo do arco e o tempo de armar a balestra."},
+    archer_jerkin:{name:"Gibão do arqueiro",role:"Arqueiro",shape:"jerkin",slot:"chest",color:"#496a47",trim:"#d8af73",durability:415,
+      stats:{armor:.15,archeryPower:.15},ingredients:[["hide",4],["wool",2],["bronze_ingot",1]],repair:[["hide",2],["bronze_ingot",1]],
+      detail:"Arqueiro. +15% de dano com flechas e virotes."},
+    archer_quiver:{name:"Aljava reforçada",role:"Arqueiro",shape:"quiver",slot:"back",color:"#805437",trim:"#d1b17d",durability:360,
+      stats:{archerySpeed:.20},ingredients:[["hide",3],["stick",2],["feather",3]],repair:[["hide",1],["stick",1]],
+      detail:"Arqueiro. Flechas e virotes viajam 20% mais rápido."},
+    archer_trousers:{name:"Calças do arqueiro",role:"Arqueiro",shape:"archerLegs",slot:"legs",color:"#45573c",trim:"#c8a877",durability:360,
+      stats:{armor:.10,archerySpeed:.09},ingredients:[["hide",3],["wool",2],["feather",1]],repair:[["hide",1]],
+      detail:"Arqueiro. Aumenta em 9% a velocidade de flechas e virotes."},
+    archer_boots:{name:"Botas do arqueiro",role:"Arqueiro",shape:"archerBoots",slot:"feet",color:"#66503c",trim:"#b6ba77",durability:325,
+      stats:{armor:.055,archeryCycle:.06},ingredients:[["hide",3],["wool",1]],repair:[["hide",1]],
+      detail:"Arqueiro. Reduz em 6% o intervalo do arco e a recarga da balestra."},
+    melee_helm:{name:"Elmo da vanguarda",role:"Corpo a corpo",shape:"helm",slot:"head",color:"#62717e",trim:"#e0b577",durability:640,
+      stats:{armor:.13},protections:{physical:.09},ingredients:[["steel_ingot",3],["hide",1],["bronze_ingot",1]],
+      repair:[["steel_ingot",1]],detail:"Corpo a corpo. Elmo pesado que reforça a defesa física."},
+    melee_plate:{name:"Armadura da vanguarda",role:"Corpo a corpo",shape:"plate",slot:"chest",color:"#525c6b",trim:"#ddb576",durability:810,
+      stats:{armor:.31,meleePower:.14},ingredients:[["steel_ingot",4],["bronze_ingot",2],["hide",2]],repair:[["steel_ingot",2],["hide",1]],
+      detail:"Corpo a corpo. Armadura pesada e +14% de dano com lâminas e maças."},
+    melee_mantle:{name:"Manto da vanguarda",role:"Corpo a corpo",shape:"warCape",slot:"back",color:"#793e45",trim:"#e0b282",durability:390,
+      stats:{meleePower:.09},ingredients:[["wool",4],["bronze_ingot",1],["hide",1]],repair:[["wool",2]],
+      detail:"Corpo a corpo. +9% de dano com lâminas e maças."},
+    melee_trousers:{name:"Calças da vanguarda",role:"Corpo a corpo",shape:"meleeLegs",slot:"legs",color:"#556171",trim:"#d9aa70",
+      finish:"metal",durability:690,stats:{armor:.18,meleePower:.08},ingredients:[["steel_ingot",3],["hide",2]],
+      repair:[["steel_ingot",1],["hide",1]],detail:"Corpo a corpo. Perneiras de aço com +8% de dano com lâminas e maças."},
+    melee_boots:{name:"Botas da vanguarda",role:"Corpo a corpo",shape:"meleeBoots",slot:"feet",color:"#4a5662",trim:"#d9aa70",
+      finish:"metal",durability:610,stats:{armor:.115,fall:.78},ingredients:[["steel_ingot",2],["hide",2],["bronze_ingot",1]],
+      repair:[["steel_ingot",1]],detail:"Corpo a corpo. Botas de placas que reduzem em 22% o dano de queda."}
+  });
+  const metalSets=[
+    {id:"copper",name:"cobre",ingot:"copper_ingot",color:"#aa6347",trim:"#f0b079",durability:355,armor:[.17,.10,.06]},
+    {id:"bronze",name:"bronze",ingot:"bronze_ingot",color:"#916a3b",trim:"#efc385",durability:520,armor:[.225,.14,.085]},
+    {id:"steel",name:"aço",ingot:"steel_ingot",color:"#677c8b",trim:"#c6e3e8",durability:765,armor:[.31,.19,.12]}
+  ];
+  const metalApparel=Object.fromEntries(metalSets.flatMap(set=>[
+    ["cuirass","chest","Peitoral","metalPlate",5,1],
+    ["leggings","legs","Perneiras","metalLegs",4,.89],
+    ["boots","feet","Botas","metalBoots",3,.81]
+  ].map(([id,slot,name,shape,ingots,life],index)=>[set.id+"_"+id,{
+    name:name+" de "+set.name,role:"Armaduras de metal",shape,slot,color:set.color,trim:set.trim,finish:"metal",
+    durability:Math.round(set.durability*life),stats:{armor:set.armor[index]},
+    ingredients:[[set.ingot,ingots],["hide",2]],repair:[[set.ingot,index===0?2:1],["hide",1]],
+    detail:"Armadura de "+set.name+" com placas rebitadas e forro de couro."
+  }])));
+  const spectralApparel=Object.fromEntries([
+    ["hood","head","Elmo fantasmagórico","helm",.18,2],
+    ["coat","chest","Peitoral fantasmagórico","plate",.34,3],
+    ["leggings","legs","Perneiras fantasmagóricas","metalLegs",.22,2],
+    ["boots","feet","Botas fantasmagóricas","metalBoots",.16,2]
+  ].map(([key,slot,name,shape,ward,amount])=>["spectral_"+key,{
+    name,shape,slot,role:"Fantasmagórico",color:"#344f65",trim:"#79efda",finish:"spectral",
+    durability:295,stats:{spectralWard:ward},ingredients:[["ectoplasm",amount],["wool",1]],
+    repair:[["ectoplasm",1],["wool",1]],
+    detail:"Reduz em "+Math.round(ward*100)+"% o dano de criaturas fantasma enquanto estiver íntegro."
+  }]));
+  const apparel=Object.freeze({
+    ...classGear,
+    ...spectralApparel,
+    buffer_armor:{name:"Armadura Tampônica",role:"Proteção",shape:"bufferSuit",slot:"chest",color:"#274849",trim:"#c9bd54",
+      durability:160,stats:{armor:.19},ingredients:[["ceramic_plate",2],["bronze_ingot",2],["hide",2],["buffer_solution",2]],
+      repair:[["buffer_solution",1],["ceramic_plate",1]],
+      detail:"Reservatórios de solução tampão reduzem em 75% o dano de corrosão do Slime Ácido e de outras fontes. Recarregue na oficina de reparo."},
+    ear_protectors:{name:"Protetores de ouvido",role:"Proteção",shape:"earProtectors",slot:"head",color:"#334657",trim:"#dca955",
+      durability:225,stats:{hearingProtection:.86},ingredients:[["wool",2],["hide",1],["iron_ingot",1]],repair:[["wool",1],["hide",1]],
+      detail:"Abafadores acolchoados. Reduzem em 86% o dano do grito do Gritador."},
+    travel_tunic:{name:"Túnica de viagem",role:"Vestuário",shape:"tunic",slot:"chest",color:"#846749",trim:"#e5ca91",
+      durability:245,stats:{armor:.045,insulation:.18,coldResistance:.12},protections:{thermal:.12},
+      ingredients:[["wool",3],["hide",1]],repair:[["wool",1]],
+      detail:"Túnica de lã com faixa de couro, forro leve e proteção térmica."},
+    archmage_robe:{name:"Traje arcano de mago",role:"Mago",shape:"arcaneRobe",slot:"chest",color:"#2e4268",trim:"#9ce6d6",
+      durability:400,stats:{armor:.08,magicPower:.20,manaDiscount:.14},protections:{electric:.12},
+      ingredients:[["wool",5],["crystal_shard",3],["wind_essence",2]],repair:[["wool",2],["crystal_shard",1]],
+      detail:"Traje longo bordado. +20% de dano mágico e 14% a menos de mana por conjuração."},
+    dragonhide_coat:{name:"Casaco de couro de dragão",role:"Couro de dragão",shape:"dragonCoat",slot:"chest",color:"#563743",trim:"#e7a68a",
+      finish:"dragon",durability:660,stats:{armor:.23,insulation:.24,heatResistance:.22,coldResistance:.15},
+      protections:{fire:.24,thermal:.20},
+      ingredients:[["dragon_hide",4],["hide",2],["bronze_ingot",1]],repair:[["dragon_hide",1],["hide",1]],
+      detail:"Casaco de couro escamado com proteção contra fogo e temperaturas extremas."},
+    dragonhide_trousers:{name:"Calças de couro de dragão",role:"Couro de dragão",shape:"dragonLegs",slot:"legs",color:"#5e3c48",trim:"#dc9d81",
+      finish:"dragon",durability:545,stats:{armor:.145},protections:{fire:.14},
+      ingredients:[["dragon_hide",3],["wool",2]],repair:[["dragon_hide",1]],
+      detail:"Calças flexíveis com escamas sobre as coxas e proteção contra fogo."},
+    dragonhide_boots:{name:"Botas de couro de dragão",role:"Couro de dragão",shape:"dragonBoots",slot:"feet",color:"#4a303a",trim:"#db9f85",
+      finish:"dragon",durability:490,stats:{armor:.091,insulation:.10,heatResistance:.08,coldResistance:.08},
+      protections:{fire:.12,thermal:.10},
+      ingredients:[["dragon_hide",2],["hide",2]],repair:[["dragon_hide",1]],
+      detail:"Botas forradas de couro dracônico que protegem contra fogo e temperaturas extremas."},
+    ...metalApparel
+  });
+  const gauntlets=[
+    ["fire","Fogo","#70322e","#ffc174",15,.32,"sulfur","Incendeia o alvo com brasas."],
+    ["magma","Magma","#3f2c34","#ff724b",23,.59,"MAGMA_ROCK","Espalha respingos de magma e queima mais tempo."],
+    ["stone","Pedra","#63625e","#d1af85",20,.48,"STONE","Empurra e atordoa com uma pancada de fragmentos."],
+    ["ice","Gelo","#4e87a6","#aeeaff",14,.35,"ICE","Desacelera o alvo e solta estilhaços de gelo."],
+    ["lightning","Raio","#514b7a","#f3e790",17,.30,"voltaic_cell","Solta faíscas e atordoa brevemente."],
+    ["venom","Veneno","#354b38","#b7ee68",13,.29,"venom","Aplica veneno em contato e solta gotas verdes."]
+  ];
+  for(const [element,label,color,trim,damage,cooldown,ingredient,detail] of gauntlets){
+    weapons["gauntlets_"+element]={
+      name:"Luvas de "+label,family:"gauntlet",style:element,element,color,trim,damage,cooldown,
+      reach:2.48,arc:.43,twoHanded:true,durability:365,ingredients:[["hide",3],["bronze_ingot",1],[ingredient,2]],
+      repair:[["hide",1],[ingredient,1]],detail
+    };
+  }
+  weapons.spectral_gauntlets={
+    name:"Luvas fantasmagóricas",family:"gauntlet",style:"spectralGauntlets",element:"spectral",
+    spectralWeapon:true,color:"#365b74",trim:"#8bffe6",damage:18,cooldown:.34,reach:2.52,arc:.43,
+    twoHanded:true,durability:375,ingredients:[["ectoplasm",4],["hide",2],["silver_ingot",1]],
+    repair:[["ectoplasm",1],["hide",1]],detail:"Um par de manoplas luminosas que permite atingir criaturas fantasma com socos."
+  };
+  const melee=weapon=>Number.isFinite(weapon?.reach)&&weapon.family!=="staff";
   const entries=Object.entries(weapons),variants=entries.filter(([,w])=>w.style);
   const blockId=(id,B)=>Object.hasOwn(B,id)?B[id]:id;
   function recipes(B){
@@ -80,21 +232,27 @@ globalThis.QuimiCraftArsenal=(()=>{
     return Object.entries(shields).map(([id,w])=>recipe(B,id,w));
   }
   const focusRecipes=B=>Object.entries(focuses).map(([id,item])=>recipe(B,id,item));
+  const classGearRecipes=B=>Object.entries(classGear).map(([id,item])=>recipe(B,id,item));
+  const apparelRecipes=B=>Object.entries(apparel).map(([id,item])=>recipe(B,id,item));
   function equipment(){
-    const abbr={sword:"LÂMINA",bow:"ARCO",crossbow:"BALESTRA",staff:"CAJADO",mace:"MAÇA"};
+    const abbr={sword:"LÂMINA",bow:"ARCO",crossbow:"BALESTRA",staff:"CAJADO",mace:"MAÇA",gauntlet:"LUVAS"};
     const tools=Object.fromEntries(variants.map(([id,w])=>[id,{
       slot:"tool",abbr:w.style==="wand"?"VARINHA":abbr[w.family],maxDurability:w.durability,protections:{},effect:w.detail,repair:w.repair
     }]));
     const guard=Object.fromEntries(Object.entries(shields).map(([id,s])=>[id,{
-      slot:"offhand",abbr:"ESCUDO",armor:s.armor,blockChance:s.blockChance,blockReduction:s.reduction,dragonGuard:s.dragonGuard,
+      slot:"offhand",abbr:"ESCUDO",armor:s.armor,blockChance:s.blockChance,blockReduction:s.reduction,dragonGuard:s.dragonGuard,mirrorGuard:s.mirrorGuard,
       protections:s.protections,maxDurability:s.durability,effect:s.detail,repair:s.repair
     }]));
     const held=Object.fromEntries(Object.entries(focuses).map(([id,item])=>[id,{
       slot:"offhand",abbr:item.shape==="book"?"LIVRO":"ORBE",maxDurability:item.durability,
       protections:{},effect:item.detail,repair:item.repair
     }]));
-    return {...tools,...guard,...held};
+    const wearables=Object.fromEntries(Object.entries(apparel).map(([id,item])=>[id,{
+      slot:item.slot,abbr:item.role==="Corpo a corpo"?"VANG.":item.role.toUpperCase(),
+      maxDurability:item.durability,protections:item.protections??{},effect:item.detail,repair:item.repair,...item.stats
+    }]));
+    return {...tools,...guard,...held,...wearables};
   }
-  return {weapons:Object.freeze(weapons),shields,focuses,recipes,shieldRecipes,focusRecipes,equipment};
+  return {weapons:Object.freeze(weapons),shields,focuses,classGear,apparel,recipes,shieldRecipes,focusRecipes,classGearRecipes,apparelRecipes,equipment,melee};
 })();
 

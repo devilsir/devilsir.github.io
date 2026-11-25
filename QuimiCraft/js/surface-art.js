@@ -4,7 +4,7 @@
 globalThis.QuimiCraftSurfaceArt=(()=>{
   const tiles={plain:210,amber:211,cobalt:212,leaded:213,apparatus:214,iceTop:215,iceSide:216,blueIce:217,
     frostTop:218,frostSide:219,hoarfrost:220,basaltGlass:221,leaf:222,pigment:223,
-    pineEnd:252,cherryEnd:253,palmEnd:254};
+    magma:225,bedrock:226,linen:227,blanket:228,pineEnd:252,cherryEnd:253,palmEnd:254};
   const treeTiles=new Map();
   const trees={
     WOOD:[[117,78,48],[174,121,69],2.4,"furrow"],
@@ -31,7 +31,8 @@ globalThis.QuimiCraftSurfaceArt=(()=>{
     [tiles.leaded,[153,204,215]],[tiles.apparatus,[128,218,231]],
     [tiles.iceTop,[177,223,239]],[tiles.iceSide,[133,190,212]],[tiles.blueIce,[69,150,203]],
     [tiles.frostTop,[186,208,212]],[tiles.frostSide,[135,153,152]],[tiles.hoarfrost,[206,226,234]],
-    [tiles.basaltGlass,[77,87,107]],[tiles.leaf,[77,127,62]],[tiles.pigment,[216,210,204]]
+    [tiles.basaltGlass,[77,87,107]],[tiles.leaf,[77,127,62]],[tiles.pigment,[216,210,204]],
+    [tiles.magma,[104,65,51]],[tiles.bedrock,[64,67,73]],[tiles.linen,[225,215,191]],[tiles.blanket,[168,55,74]]
   ]);
   const transparentTiles=new Set([210,211,212,213,214,215,216,217]);
   const color=tile=>swatch.get(tile);
@@ -166,7 +167,38 @@ globalThis.QuimiCraftSurfaceArt=(()=>{
     if(frost){shade+=32;alpha+=43}
     return [...swatch.get(tile).map((value,i)=>value+shade*(i===2?.68:1)),clamp(alpha,36,245)];
   }
+  function fracturedRock(tile,x,y,hash){
+    const magma=tile===tiles.magma,columns=magma?4:8,cell=32/columns;
+    const u=x+(magma?Math.sin(y*Math.PI/8)*1.4:Math.sin(y*Math.PI/16)*2.3),v=y+Math.sin(x*Math.PI/8)*(magma?.89:1.8);
+    let near=Infinity,next=Infinity,variation=0;
+    const wrap=n=>(n%columns+columns)%columns;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+      const i=Math.floor(u/cell)+dx,j=Math.floor(v/cell)+dy,wx=wrap(i),wy=wrap(j);
+      const ox=(i+.24+hash(wx,wy,tile)*.55)*cell,oy=(j+.24+hash(wy,wx,tile+111)*.55)*cell;
+      const d=Math.hypot(u-ox,(v-oy)*(magma?1:1.38));
+      if(d<near){next=near;near=d;variation=hash(wx,wy,tile+51)}
+      else if(d<next)next=d;
+    }
+    const crack=next-near,grit=(hash(x,y,tile+83)-.5)*17;
+    const strata=Math.sin((y+x*.5)*Math.PI/4+Math.sin(x*Math.PI/8)*.63);
+    if(magma){
+      const fracture=hash((x>>2),(y>>2),tile+51);
+      if(crack<.54&&fracture>.17)return tone(fracture>.74?[237,120,43]:[182,72,28],grit);
+      if(crack<1.40)return tone([91,46,35],grit+strata*9);
+      const vesicle=hash(x,y,tile+31)>.91&&crack>3;
+      return tone([68,50,49],grit+variation*26+strata*6-(vesicle?26:0));
+    }
+    const mineral=hash(x,y,tile+9)>.92;
+    const ridge=crack<.67?(strata>.18?17:-19):0;
+    return tone(variation>.74?[78,78,83]:variation<.25?[41,44,53]:[57,61,70],
+      grit+strata*9+ridge+(mineral?21:0));
+  }
   function paint(tile,x,y,hash){
+    if(tile===tiles.magma||tile===tiles.bedrock)return fracturedRock(tile,x,y,hash);
+    if(tile===tiles.linen||tile===tiles.blanket){
+      const fold=tile===tiles.blanket&&y%16===1?-18:0;
+      return tone(swatch.get(tile),(hash(x,y,tile)-.5)*8+(x%2?3:-3)+(y%2?3:-3)+fold);
+    }
     const tree=treeTiles.get(tile);
     if(tree){
       if(tree.style==="coal")return coalPixel(x,y,hash);

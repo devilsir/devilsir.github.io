@@ -89,7 +89,7 @@ globalThis.QuimiCraftProfessions = (() => {
         return true;
       }
       const yieldItems=[[crop.seed,crop.regrows?1:wild||mature?2:1]];
-      if(mature||wild&&(crop.regrows||crop.wildFood))yieldItems.unshift([crop.food,crop.regrows&&!wild?3:2]);
+      if(mature||wild&&(crop.regrows||crop.wildFood))yieldItems.unshift([crop.food,crop.yield?.[Number(wild)]??2]);
       if(crop.support&&broken&&!wild)yieldItems.push([B.FENCE_WOOD,1]);
       const location=key(x,y-1,z),regrow=!broken&&!wild&&crop.regrows&&soil(getBlock(x,y-1,z));
       if(!broken){

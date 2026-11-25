@@ -21,26 +21,36 @@ globalThis.QuimiCraftPlantModels=(()=>{
     p.add([a,right,under,left],tile,tint(.75));
     p.add([under,right,b,left],tile,tint(.72));
   }
-  function orchardLeaf(p,a,b,width,color,scallop=false){
-    const dx=b[0]-a[0],dz=b[2]-a[2],len=Math.hypot(dx,dz);
-    const rows=[[.22,.67],[.45,1],[.69,scallop?.69:.79],[.86,.38]];
+  function orchardLeaf(p,a,b,width,color,scallop=false,veinColor=null){
+    const dx=b[0]-a[0],dz=b[2]-a[2],len=Math.hypot(dx,dz)||1;
+    const rows=scallop?[[.12,.46],[.24,.79],[.37,.77],[.49,1],[.66,.73],[.76,.69],[.91,.29]]:
+      [[.16,.49],[.32,.78],[.47,1],[.66,.78],[.87,.40]];
     const spine=[a,...rows.map(([t])=>[
-      a[0]+dx*t,a[1]+(b[1]-a[1])*t+Math.sin(t*Math.PI)*width*.31,a[2]+dz*t
+      a[0]+dx*t,a[1]+(b[1]-a[1])*t+Math.sin(t*Math.PI)*width*.39,a[2]+dz*t
     ]),b];
     const tint=f=>color.map(v=>v*f);
+    const under=([x,y,z])=>[x,y-Math.max(.003,width*.13),z];
     for(const side of [-1,1]){
       const flank=[a,...rows.map(([t,w],i)=>[
-        spine[i+1][0]-side*dz/len*width*w,spine[i+1][1]-width*w*.31,spine[i+1][2]+side*dx/len*width*w
+        spine[i+1][0]-side*dz/len*width*w,spine[i+1][1]-width*w*(.29+(i%3)*.038),spine[i+1][2]+side*dx/len*width*w
       ]),b];
       for(let i=0;i<spine.length-1;i++){
         const face=[spine[i],flank[i],flank[i+1],spine[i+1]];
         if(i===0)face.splice(1,1);
         if(i===spine.length-2)face.splice(2,1);
         if(side<0)face.reverse();
-        const reverse=[...face].reverse();
+        const reverse=face.map(under).reverse();
         if(face.length===3){face.push(face[2]);reverse.push(reverse[2])}
-        p.add(face,leafTile,tint(side>0?1.06:.91));
-        p.add(reverse,leafTile,tint(.74));
+        p.add(face,leafTile,tint((side>0?1.06:.91)+(i%3-1)*.035));
+        p.add(reverse,leafTile,tint(.72+(i%2)*.035));
+        const edge=[flank[i],flank[i+1],under(flank[i+1]),under(flank[i])];
+        p.add(side>0?edge:edge.reverse(),leafTile,tint(.84));
+      }
+    }
+    if(veinColor){
+      const raised=spine.map(([x,y,z],i)=>[x,y+(i>0&&i<spine.length-1?.003:0),z]);
+      for(let i=1;i<raised.length;i++){
+        p.rod(raised[i-1],raised[i],width*(.052-.030*i/raised.length),leafTile,leafTile,4,veinColor);
       }
     }
   }
@@ -180,11 +190,14 @@ globalThis.QuimiCraftPlantModels=(()=>{
       const top=vec(at[0],h*(.82+(i%3)*.08),at[2],angle,.092);
       const dry=phase===2;
       p.rod(at,top,.014,dry?pigment:leafTile,undefined,4,dry?[1.03,.84,.46]:green);
-      for(let j=0;j<2;j++)blade(p,[at[0],h*(.18+j*.28),at[2]],vec(at[0],h*(.40+j*.28),at[2],angle+.69+j,.17),
-        .037,.017,dry?[.99,.94,.69]:lime,dry?pigment:leafTile);
+      for(let j=0;j<2;j++){
+        const node=between(at,top,.25+j*.32);
+        blade(p,node,vec(node[0],node[1]+h*.25,node[2],angle+.69+j,.17),
+          .037,.017,dry?[.99,.94,.69]:lime,dry?pigment:leafTile);
+      }
       if(phase<2)continue;
       for(let j=0;j<3;j++)for(const side of [-1,1]){
-        const y=top[1]-.113+j*.054,x=top[0]+side*(.031-j*.006),z=top[2]+(j%2)*.018;
+        const node=between(at,top,.85+j*.067),y=node[1],x=node[0]+side*(.028-j*.004),z=node[2]+(j%2)*.016;
         berry(p,x,y,z,.040,[1.24,1.02,.51]);
         if(j===2)blade(p,[x,y,z],[x+side*.018,y+.067,z],.009,.005,[1.21,1,.56],pigment);
       }
@@ -196,14 +209,14 @@ globalThis.QuimiCraftPlantModels=(()=>{
       const a=[x,.012,z],mid=[x+tilt*.31,h*.53,z-.065],tip=[x+tilt*.62,h,z+.042];
       p.rod(a,mid,.017,leafTile,leafTile,4,stem);p.rod(mid,tip,.014,leafTile,leafTile,4,green);
       for(let j=0;j<3;j++){
-        const o=[x+tilt*j*.19,h*(.29+j*.21),z],angle=rings[j]+tilt;
-        for(const k of [-1,1])blade(p,o,vec(o[0],o[1]+.09,z,angle+k*.49,.16-j*.013),.069-j*.008,.027,j===1?lime:green);
+        const o=j<2?between(a,mid,.54+j*.35):between(mid,tip,.51),angle=rings[j]+tilt;
+        for(const k of [-1,1])orchardLeaf(p,o,vec(o[0],o[1]+.09,o[2],angle+k*.49,.16-j*.013),.059-j*.008,j===1?lime:green);
       }
       if(phase===1)head(p,tip[0],tip[1],tip[2],.072,5,[1.15,.94,1.18],[1.28,1.06,.58]);
       if(phase===2){
         for(let q=0;q<2;q++){
           const pod=[tip[0]+(q?-.088:.092),h*.74,tip[2]+(q?.089:-.056)];
-          p.rod([tip[0],h*.87,tip[2]],pod,.010,leafTile,leafTile,4,stem);
+          p.rod(between(mid,tip,.60+q*.19),pod,.010,leafTile,leafTile,4,stem);
           p.shell([[pod[0]+.048,pod[1]-.20,pod[2],.015,.018],[pod[0]+.045,pod[1]-.151,pod[2],.041,.030],
             [pod[0]+.012,pod[1]-.074,pod[2],.043,.031],[pod[0],pod[1],pod[2],.027,.023]],pigment,pigment,6,.33,undefined,beanPod);
         }
@@ -331,11 +344,13 @@ globalThis.QuimiCraftPlantModels=(()=>{
     }
   }
   function pitayaFruit(p,x,y,z,r){
-    fruitBody(p,x,y,z,r,[1.30,.30,.67],[[-1.14,.27],[-.57,.84],[.24,1],[.88,.76],[1.28,.30]]);
-    for(let i=0;i<6;i++){
-      const a=i*1.05+.39,h=i%2?.40:-.40;
-      const start=vec(x,y+r*(h-.29),z,a,r*.81),tip=vec(x,y+r*(h+.73),z,a,r*1.19);
-      blade(p,start,tip,r*.29,.013,i%2?lime:[1.24,.39,.62]);
+    fruitBody(p,x,y,z,r,[1.30,.30,.67],[[-1.12,.22],[-.85,.59],[-.51,.86],[-.12,1],[.31,.99],[.72,.83],
+      [1.03,.53],[1.24,.24]],12);
+    for(let i=0;i<9;i++){
+      const a=i*goldenAngle+.39,h=[-.49,-.12,.28][i%3];
+      const start=vec(x,y+r*(h-.22),z,a,r*(i%3===0?.63:.83));
+      const tip=vec(x,y+r*(h+.52),z,a,r*(1.12+i%2*.08));
+      orchardLeaf(p,start,tip,r*.193,i%3===0?[1.24,.39,.62]:lime,true);
     }
   }
   function blackberryFruit(p,x,y,z,r){
@@ -380,7 +395,7 @@ globalThis.QuimiCraftPlantModels=(()=>{
   }
   function strawberryPlant(p,phase){
     const size=[.53,.84,1][phase],height=[.19,.32,.39][phase],base=[.5,.02,.5];
-    for(let i=0;i<[3,5,8][phase];i++){
+    for(let i=0;i<[3,6,10][phase];i++){
       const a=.19+i*goldenAngle,top=vec(.5,height*(.76+(i%4)*.11),.5,a,size*(.13+i%3*.036));
       const bend=vec(.5,top[1]*.60,.5,a+.21,size*.076);
       p.rod(base,bend,.010,leafTile,leafTile,4,stem);
@@ -388,7 +403,7 @@ globalThis.QuimiCraftPlantModels=(()=>{
       for(const spread of [-.77,0,.77]){
         orchardLeaf(p,top,vec(top[0],top[1]+size*.043,top[2],a+spread,size*(spread?.14:.174)),.054*size,i%2?lime:green,true);
       }
-      if(phase&&i<(phase===1?4:6)){
+      if(phase&&i<(phase===1?5:9)){
         const at=vec(.5,phase===1?.215:.111+(i%3)*.041,.5,a+.24,size*(.22+i%2*.052));
         const r=.052+i%3*.007;
         p.rod(bend,[at[0],at[1]+(phase===2?r*.78:0),at[2]],.006,leafTile,leafTile,4,stem);
@@ -398,31 +413,63 @@ globalThis.QuimiCraftPlantModels=(()=>{
     }
   }
   function cladode(p,from,to,width){
-    p.rod(from,to,width*.38,leafTile,leafTile,6,green);
-    for(const a of [.42,2.51,4.61]){
-      const middle=from.map((v,i)=>(v+to[i])*.5);
-      blade(p,from,vec(middle[0],middle[1],middle[2],a,width),width*.23,.024,lime);
-      blade(p,to,vec(middle[0],middle[1],middle[2],a,width),width*.23,.024,green);
+    const normalize=v=>{const length=Math.hypot(...v)||1;return v.map(n=>n/length)};
+    const cross=([x,y,z],[a,b,c])=>[y*c-z*b,z*a-x*c,x*b-y*a];
+    const axis=normalize(to.map((v,i)=>v-from[i])),side=normalize(cross(axis,Math.abs(axis[1])>.86?[0,0,1]:[0,1,0]));
+    const up=cross(axis,side),sides=12,sections=[[-.045,.55],[.11,.76],[.29,1],[.53,1.04],[.78,.94],[.94,.69],[1.05,.48]];
+    const rimAngle=.32;
+    const shell=sections.map(([t,scale],row)=>Array.from({length:sides},(_,i)=>{
+      const a=i*Math.PI*2/sides+rimAngle,rib=(.5+.5*Math.cos((a-rimAngle)*3))**1.56;
+      const r=width*scale*(.44+.56*rib)*(.97+.07*Math.cos(row*1.71+i*.28));
+      const center=between(from,to,t);
+      return center.map((v,k)=>v+r*(side[k]*Math.cos(a)+up[k]*Math.sin(a))+up[k]*width*.16*Math.sin(Math.PI*t));
+    }));
+    for(let row=1;row<shell.length;row++)for(let i=0;i<sides;i++){
+      const j=(i+1)%sides,edge=i%4===0||i%4===3;
+      p.add([shell[row-1][i],shell[row-1][j],shell[row][j],shell[row][i]],leafTile,
+        edge?[1.07+(row%2)*.075,1.19,.78]:[.66,.97+(row%2)*.045,.73]);
+      if(row>1&&row<6&&i%4===0&&width>.053){
+        const at=shell[row][i],a=i*Math.PI*2/sides+rimAngle;
+        const tip=at.map((v,k)=>v+(side[k]*Math.cos(a)+up[k]*Math.sin(a))*.009+.003*axis[k]);
+        p.rod(at,tip,.0038,pigment,pigment,4,[.92,.83,.56]);
+      }
+    }
+    for(const end of [0,shell.length-1]){
+      const ring=shell[end],center=between(from,to,sections[end][0]);
+      for(let i=0;i<sides;i++){
+        const j=(i+1)%sides;
+        const tri=end===0?[center,ring[j],ring[i]]:[center,ring[i],ring[j]];
+        p.add([...tri,tri[2]],leafTile,shade);
+      }
     }
   }
   function pitayaPlant(p,phase,wild=false){
-    const h=[.43,.69,.89][phase],trunk=[.48,.02,.49],fork=[.49,h*.67,.48];
-    if(!wild)p.rod([.55,0,.56],[.55,.49,.56],.039,wood);
-    cladode(p,trunk,fork,.102);
-    for(let i=0;i<[1,3,5][phase];i++){
-      const a=.28+i*goldenAngle,elbow=vec(.49,h-(i%3)*.047,.48,a,.14),tip=vec(.49,h*(.69+i%2*.058),.48,a,phase===0?.14:.31+i%3*.022);
-      cladode(p,fork,elbow,.086);
-      cladode(p,elbow,tip,.083);
-      if(phase&&i%2===0){
-        const at=between(elbow,tip,.55);
-        cladode(p,at,vec(at[0],tip[1]-.093,at[2],a+.73,.105),.043);
+    const h=[.39,.68,.94][phase],trunk=[.47,.014,.49],stem=[.53,h*.38,.52],fork=[.49,h*.72,.48];
+    if(!wild){
+      p.rod([.54,.0,.56],[.54,h*.69,.56],.033,wood);
+      p.rod([.52,h*.45,.57],[.466,h*.43,.514],.017,wood,wood,5,[1.03,.87,.62]);
+    }
+    cladode(p,trunk,stem,.098);cladode(p,stem,fork,.110);
+    for(let i=0;i<[1,4,7][phase];i++){
+      const a=.28+i*goldenAngle,elbow=vec(.49,h-(i%3)*.043,.48,a,.141);
+      const crown=vec(.49,h*(.88+i%2*.071),.48,a,phase===0?.14:.246+i%3*.016);
+      const tip=vec(crown[0],h*(.57+i%3*.056),crown[2],a+.17,phase===0?.062:.144);
+      cladode(p,fork,elbow,.084);cladode(p,elbow,crown,.087);cladode(p,crown,tip,.064);
+      const spur=between(crown,tip,.57);
+      const branch=vec(spur[0],spur[1]+.021,spur[2],a+.91,.106);
+      if(phase&&i%2===0)cladode(p,spur,branch,.047);
+      if(phase===1)head(p,...tip,.084,9,cream,golden,{cup:true,shape:"star"});
+      if(phase===2){
+        for(const [node,radial,r] of [[tip,a,.080+i%3*.005],...(i%2===0?[[branch,a+.88,.066]]:[])]){
+          const fruit=vec(node[0],node[1]-r*1.29,node[2],radial,.029+i%2*.016);
+          p.rod(node,[fruit[0],fruit[1]+r*.96,fruit[2]],.0065,leafTile,leafTile,5,stem);
+          pitayaFruit(p,...fruit,r);
+        }
       }
-      if(phase===1)head(p,...tip,.098,8,cream,golden,{cup:true,shape:"star"});
-      if(phase===2&&i!==4)pitayaFruit(p,tip[0],tip[1]-.065,tip[2],.075+i%3*.008);
     }
   }
   function bramble(p,phase){
-    const h=[.27,.53,.74][phase],n=[2,4,6][phase];
+    const h=[.27,.53,.78][phase],n=[2,4,8][phase];
     for(let i=0;i<n;i++){
       const a=.14+i*goldenAngle,base=vec(.5,.018,.5,a,.025),bend=vec(.5,h*(.84+i%3*.07),.5,a,.127+i%3*.029);
       const tip=vec(.5,h*(.70+i%3*.066),.5,a,.176+i%3*.046);
@@ -435,7 +482,7 @@ globalThis.QuimiCraftPlantModels=(()=>{
         for(const turn of [-.57,.54])orchardLeaf(p,twig,vec(twig[0],twig[1]+.022,twig[2],az+turn,.106),.040,j%2?green:lime,true);
       }
       if(phase===1)head(p,...tip,.068,5,cream,golden);
-      if(phase===2)for(let j=0;j<2;j++){
+      if(phase===2)for(let j=0;j<2+(i%2);j++){
         const at=vec(tip[0],tip[1]-.044-j*.023,tip[2],a+(j===0?-.53:1.06),.034);
         p.rod(tip,[at[0],at[1]+.027,at[2]],.0045,leafTile,leafTile,4,stem);
         blackberryFruit(p,...at,.042+j*.006);
@@ -454,15 +501,15 @@ globalThis.QuimiCraftPlantModels=(()=>{
     for(const side of [-1,1]){
       const tip=[.49+side*(phase?.24:.13),h,.47+side*.053];
       p.rod(fork,tip,.010,wood);
-      for(let i=0;i<[2,3,4][phase];i++){
-        const at=between(fork,tip,.27+i*.235),az=i%2?1.1:-1.05;
+      for(let i=0;i<[2,3,5][phase];i++){
+        const at=between(fork,tip,.19+i*.187),az=i%2?1.1:-1.05;
         const node=vec(at[0],at[1]-.036,at[2],az,.084+i%2*.020);
         p.rod(at,node,.007,leafTile,leafTile,4,stem);
         for(const fan of [-.60,.04,.67])orchardLeaf(p,node,vec(node[0],node[1]+.018,node[2],az+fan,.111+Math.abs(fan)*.054),
           .040+i%2*.008,i%2?lime:green,true);
-        if(!phase||i>2)continue;
+        if(!phase)continue;
         const hanging=[node[0]+side*.02,node[1]-.128-i%2*.032,node[2]];
-        p.rod(node,[hanging[0],hanging[1]+.035,hanging[2]],.007,leafTile,leafTile,4,stem);
+        p.rod(node,[hanging[0],hanging[1]+(phase===2?.059:.025),hanging[2]],.007,leafTile,leafTile,4,stem);
         if(phase===1)head(p,...hanging,.046,5,[.85,1.06,.63],golden);
         else grapeFruit(p,...hanging,.065+i%2*.016);
       }
@@ -470,10 +517,10 @@ globalThis.QuimiCraftPlantModels=(()=>{
   }
   const fruitTrees={
     JABUTICABA:{fruit:(p,x,y,z,r)=>berry(p,x,y,z,r,jabuticabaPurple),leaf:[.70,1.12,.79],flower:cream,fruitOnTrunk:true,height:.91,reach:.30,leafSize:.135,fruitSize:.025},
-    ACEROLA:{fruit:acerolaFruit,leaf:[.84,1.14,.82],flower:pink,height:.78,reach:.31,leafSize:.118,fruitSize:.029,clusters:3},
-    LIME:{fruit:limeFruit,leaf:[.79,1.05,.60],flower:cream,height:.90,reach:.26,leafSize:.143,fruitSize:.052,clusters:2},
-    POMEGRANATE:{fruit:pomegranateFruit,leaf:[.65,1.08,.63],flower:[1.31,.38,.22],height:.97,reach:.27,leafSize:.109,fruitSize:.071,clusters:1},
-    STARFRUIT:{fruit:starfruit,leaf:[1.04,1.18,.63],flower:pink,height:.93,pinnate:true,reach:.31,leafSize:.145,fruitSize:.050,clusters:2}
+    ACEROLA:{fruit:acerolaFruit,leaf:[.84,1.14,.82],flower:pink,height:.78,reach:.31,leafSize:.118,fruitSize:.029,clusters:4},
+    LIME:{fruit:limeFruit,leaf:[.79,1.05,.60],flower:cream,height:.90,reach:.26,leafSize:.143,fruitSize:.052,clusters:3},
+    POMEGRANATE:{fruit:pomegranateFruit,leaf:[.65,1.08,.63],flower:[1.31,.38,.22],height:.97,reach:.27,leafSize:.109,fruitSize:.071,clusters:2},
+    STARFRUIT:{fruit:starfruit,leaf:[1.04,1.18,.63],flower:pink,height:.93,pinnate:true,reach:.31,leafSize:.145,fruitSize:.050,clusters:3}
   };
   function orchardTree(p,phase,tree){
     const h=tree.height*[.39,.76,1][phase],reach=tree.reach*[.49,.80,1][phase];
@@ -484,9 +531,9 @@ globalThis.QuimiCraftPlantModels=(()=>{
     for(let i=0;i<3;i++){
       const root=vec(.5,.018,.5,rings[i],.056+phase*.021);
       p.rod(root,[.501,h*.16,.503],.012+phase*.004,wood,wood,4,[.86,.89,.83]);
-      blade(p,top,vec(top[0],h,top[2],rings[i],reach*.50),.031,.013,tree.leaf);
+      orchardLeaf(p,top,vec(top[0],h,top[2],rings[i],reach*.51),.032,tree.leaf);
     }
-    for(let i=0;i<[2,4,7][phase];i++){
+    for(let i=0;i<[2,5,8][phase];i++){
       const a=.33+i*goldenAngle,origin=i>4?between(base,fork,.66+i%2*.11):between(fork,knuckle,(i%4)*.30);
       const tip=vec(.5,h*(.68+i%4*.076),.5,a,reach*(.81+i%3*.087));
       const elbow=vec(origin[0],tip[1]-.052,origin[2],a-.20,reach*.56);
@@ -502,8 +549,8 @@ globalThis.QuimiCraftPlantModels=(()=>{
           const inner=between(origin,elbow,side<0?.62:.91);
           const spur=vec(inner[0],inner[1]+.034,inner[2],a+side*1.2,reach*.23);
           p.rod(inner,spur,.0055,wood,wood,4);
-          for(const offset of [-.43,.26])blade(p,spur,
-            vec(spur[0],spur[1]+.027,spur[2],a+side*1.24+offset,tree.leafSize*.84),tree.leafSize*.26,.012,side>0?tree.leaf:green);
+          for(const offset of [-.43,.26])orchardLeaf(p,spur,
+            vec(spur[0],spur[1]+.027,spur[2],a+side*1.24+offset,tree.leafSize*.84),tree.leafSize*.26,side>0?tree.leaf:green);
         }
       }
       for(const [j,at] of terminals.entries()){
@@ -519,28 +566,36 @@ globalThis.QuimiCraftPlantModels=(()=>{
         }else{
           for(const spread of [-.64,.15,.78]){
             const end=vec(at[0],at[1]+.015+Math.abs(spread)*.020,at[2],angle+spread,size*(spread>0?.90:1));
-            if(spread===.15)orchardLeaf(p,at,end,size*.30,j%2?tree.leaf:lime);
-            else blade(p,at,end,size*.28,.012,j%2?green:tree.leaf);
+            orchardLeaf(p,at,end,size*(spread===.15?.30:.27),j%2?tree.leaf:lime,spread!==.15);
           }
         }
       }
       if(phase&&!tree.fruitOnTrunk){
-        for(let j=0;j<tree.clusters;j++){
+        for(let j=0;j<Math.min(tree.clusters,3);j++){
           if(j>0&&i%3===1&&tree.clusters<3)continue;
           const end=terminals[j],size=tree.fruitSize*(.84+(i+j)%3*.11);
           const at=vec(end[0],end[1]-.034-size*.54,end[2],a+j*.96,.017+j*.007);
-          p.rod(end,[at[0],at[1]+(phase===2?size*.66:0),at[2]],.0045,leafTile,leafTile,4,stem);
+          p.rod(end,[at[0],at[1]+(phase===2?size*.61:0),at[2]],.0045,leafTile,leafTile,4,stem);
           if(phase===1)head(p,...at,Math.min(.047,size*.84),5,tree.flower,golden,{cup:true});
           else tree.fruit(p,...at,size);
+        }
+        if(phase===2&&tree.clusters>3){
+          const branch=terminals[1],at=vec(branch[0],branch[1]-.062,branch[2],a+1.72,.036);
+          p.rod(branch,[at[0],at[1]+tree.fruitSize*.61,at[2]],.0048,leafTile,leafTile,4,stem);
+          tree.fruit(p,...at,tree.fruitSize*.94);
         }
       }
     }
     if(phase&&tree.fruitOnTrunk){
-      for(let i=0;i<(phase===2?23:11);i++){
+      for(let i=0;i<(phase===2?34:14);i++){
         const a=i*goldenAngle,t=.12+(i%12)*.062,target=t<.49?between(base,fork,t/.49):between(fork,knuckle,(t-.49)/.28);
         const at=vec(...target,a,t<.49?.046:.036);
         if(phase===1)head(p,...at,.023,5,cream,golden);
-        else tree.fruit(p,...at,tree.fruitSize*(.87+i%3*.11));
+        else{
+          const r=tree.fruitSize*(.87+i%3*.11);
+          p.rod(target,[at[0],at[1]+r*.26,at[2]],.0045,wood,wood,4,[.92,.84,.82]);
+          tree.fruit(p,...at,r);
+        }
       }
     }
   }
@@ -575,13 +630,14 @@ globalThis.QuimiCraftPlantModels=(()=>{
   }
   function roots(p,phase,potato){
     const height=[.20,.40,.66][phase],size=[.63,.85,1][phase];
-    const base=[.5,.017,.50],bolts=potato?[2,3,4][phase]:[3,5,7][phase];
+    const bulb=phase===1?-.075:-.10,radius=phase===1?.059:.132;
+    const base=[.5,phase?potato?-.028:bulb+radius*.54:.017,.50],bolts=potato?[2,3,4][phase]:[3,5,7][phase];
     for(let i=0;i<bolts;i++){
       const angle=.22+i*goldenAngle,tip=vec(.5,height*(.76+i%3*.115),.5,angle,(potato?.191:.182)*size);
       const middle=vec(.5,tip[1]*.56,.5,angle+.12,.082*size);
       const tile=potato?leafTile:pigment,tint=potato?stem:beetStem;
-      p.rod(base,middle,.018*size,tile,tile,4,tint);
-      p.rod(middle,tip,.011*size,tile,tile,4,tint);
+      p.rod(base,between(base,middle,1.08),.018*size,tile,tile,5,tint);
+      p.rod(between(middle,tip,-.11),between(middle,tip,1.025),.012*size,tile,tile,5,tint);
       if(potato){
         for(let l=0;l<3;l++){
           const at=between(middle,tip,(l+1)/3);
@@ -590,19 +646,19 @@ globalThis.QuimiCraftPlantModels=(()=>{
         }
         if(phase===1&&i%2===0)head(p,...tip,.053,5,[1.03,.79,1.24],golden);
       }else{
-        const end=vec(tip[0],tip[1]+.037*size,tip[2],angle,.163*size);
-        orchardLeaf(p,tip,end,.066*size,i%2?shade:green,true);
-        p.rod(tip,between(tip,end,.81),.004,pigment,pigment,4,beetStem);
+        const neck=between(middle,tip,.95);
+        const end=vec(tip[0],tip[1]+(.071-i%3*.024)*size,tip[2],angle,.226*size);
+        orchardLeaf(p,neck,end,.087*size,i%2?[.51,.79,.59]:[.66,.92,.69],true,beetStem);
       }
     }
     if(!phase)return;
     if(potato)for(let i=0;i<(phase===1?2:4);i++){
       const a=.29+i*goldenAngle,r=(phase===1?.049:.082)+i%2*.017;
       const at=vec(.5,-.13-i%2*.065,.5,a,.11+i*.027);
-      p.rod([.5,-.055,.5],at,.009,wood,wood,4);
+      p.rod(base,at,.009,wood,wood,4);
       potatoTuber(p,...at,r);
     }
-    else beetRoot(p,.50,phase===1?-.075:-.10,.50,phase===1?.059:.132);
+    else beetRoot(p,.50,bulb,.50,radius);
   }
   const fruitCrops={STRAWBERRY:strawberryPlant,DRAGON_FRUIT:pitayaPlant,BLACKBERRY:bramble,GRAPES:grapevine,
     ...Object.fromEntries(Object.entries(fruitTrees).map(([key,tree])=>[key,(p,phase)=>orchardTree(p,phase,tree)]))};
@@ -635,7 +691,11 @@ globalThis.QuimiCraftPlantModels=(()=>{
   const produce={
     beet:p=>{
       beetRoot(p,.5,.46,.5,.23);
-      for(const a of [.45,2.58,4.75])blade(p,[.5,.65,.5],vec(.5,.80,.5,a,.142),.049,.017,green);
+      for(const a of [.45,2.58,4.75]){
+        const tip=vec(.5,.715,.5,a,.062);
+        p.rod([.5,.60,.5],tip,.012,pigment,pigment,4,beetStem);
+        orchardLeaf(p,tip,vec(tip[0],.835,tip[2],a,.139),.044,green,true,beetStem);
+      }
     },
     beet_seed:p=>plantingMaterial(p,(q,phase)=>roots(q,phase,false)),
     potato:p=>potatoTuber(p,.50,.44,.50,.32),

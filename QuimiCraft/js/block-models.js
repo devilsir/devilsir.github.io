@@ -450,6 +450,53 @@ globalThis.QuimiCraftBlockModels=(()=>{
       for(const x of [.12,.785])box(brass,x,.632,.128,x+.087,.684,.852);
     }
   }
+  function fieldEquipment({box,shell,rod},{unit,x,z}){
+    const tone=unit.color.slice(1).match(/../g).map(channel=>parseInt(channel,16)/142);
+    box(iron,.055,0,.07,.945,.12,.93,dark);
+    box(iron,x===0?.06:0,.12,z===0?.08:0,x===unit.length-1?.94:1,.66,z===unit.depth-1?.92:1,tone);
+    box(ceramic,x===0?.025:0,.66,0,x===unit.length-1?.975:1,.76,1,dark);
+    for(const p of [.18,.40,.62,.82])box(iron,p,.235,.055,p+.085,.5,.072,dark);
+    box(spectral,.11,.565,.051,.23,.596,.077);
+    if(unit.id==="fume_hood"){
+      if(x===unit.length-1){
+        box(iron,0,.76,0,.2,2.56,1,tone);
+        box(glaze,.202,1.18,.16,.235,1.96,.84,blue);
+      }
+      box(iron,0,2.54,0,1,2.74,1,tone);
+      box(spectral,.025,2.527,.15,.975,2.549,.21);
+      box(coal,.08,2.527,.31,.92,2.546,.89);
+      for(const p of [.13,.22,.31,.40,.49,.58,.67,.76,.85])box(iron,p,2.502,.31,p+.030,2.544,.89,dark);
+      if(x===0)box(iron,.009,.75,z===0?.018:.90,.086,2.57,z===0?.10:.985,tone);
+      if(z===1)box(glaze,0,.77,.925,1,2.54,.968,blue);
+      const left=x===0?.025:0,right=x===unit.length-1?.975:1,front=z===0?.025:0,back=z===unit.depth-1?.975:1;
+      box(iron,left,2.74,front,right,3.62,back,tone);
+      box(iron,0,3.61,0,1,3.75,1,dark);
+      box(iron,0,2.77,0,1,2.85,1,dark);
+      box(coal,.09,3.748,.10,.91,3.765,.91);
+      for(const p of [.13,.23,.33,.43,.53,.63,.73,.83])box(iron,p,3.76,.10,p+.045,3.79,.91,tone);
+      if(z===0){
+        box(coal,.11,2.96,.015,.89,3.52,.034);
+        for(const h of [3.01,3.10,3.19,3.28,3.37,3.46])box(iron,.11,h,.003,.89,h+.032,.037,dark);
+        if(x===0)box(spectral,.82,2.89,.009,.92,2.933,.033);
+      }
+      return;
+    }
+    if(unit.id==="field_analyzer"){
+      box(iron,.17,.76,.27,.83,.91,.86,tone);
+      box(glaze,.235,.90,.30,.76,.99,.78,blue);
+      box(spectral,.30,.981,.45,.70,.992,.50);
+    }else if(unit.id==="field_boiler"||unit.id==="field_extractor"){
+      const tube=unit.id==="field_boiler"?copper:glaze;
+      shell([[.49,.76,.55,.24,.26],[.49,.83,.55,.29,.3],[.49,1.15,.55,.29,.3],[.49,1.28,.55,.18,.19]],
+        tube,iron,12,0,p=>p,tone);
+      rod([.11,1.32,.55],[.89,1.32,.55],.046,copper);
+      rod([.49,1.22,.55],[.49,1.32,.55],.055,iron);
+    }else{
+      box(iron,.09,.76,.14,.91,1.28,.87,tone);
+      box(glaze,.18,.92,.114,.82,1.18,.15,blue);
+      box(spectral,.23,1.10,.1,.74,1.126,.12);
+    }
+  }
   function create(block,faces,definitions={}){
     const styles={
       FURNACE:furnace,FIRE:campfire,KITCHEN_STOVE:stove,GLASS_KILN:kiln,METAL_FORGE:forge,
@@ -462,6 +509,18 @@ globalThis.QuimiCraftBlockModels=(()=>{
       const data=draw(faces);
       build(data);
       models.set(block[key],data.result);
+    }
+    for(const [id,segment] of globalThis.QuimiCraftFieldLab?.byBlock??[]){
+      if(!definitions[id])continue;
+      const data=draw(faces);
+      fieldEquipment(data,segment);
+      const rotate=([x,y,z],offset)=>segment.axis===1?[offset-z,y,x]:segment.axis===2?[offset-x,y,offset-z]:
+        segment.axis===3?[z,y,offset-x]:[x,y,z];
+      for(const face of data.result){
+        face.vertices=face.vertices.map(point=>rotate(point,1));
+        face.normal=rotate(face.normal,0);
+      }
+      models.set(id,data.result);
     }
     const plantIds=new Set(Object.keys(QuimiCraftPlantModels.styles).map(key=>block[key]).filter(Number.isInteger));
     for(const [value,def] of Object.entries(definitions)){

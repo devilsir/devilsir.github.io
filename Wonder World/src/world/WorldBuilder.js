@@ -2,6 +2,7 @@ import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { ParticleSystem } from "@babylonjs/core/Particles/particleSystem";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
@@ -129,6 +130,9 @@ export class WorldBuilder {
     update() {
         if (!this.enteredWonderWorld)
             return;
+        // Owned by campaign stepping, so pause and cinematics do not keep attacking.
+        const dt = this.scene.metadata?.wonderWorldFrameSeconds ?? this.scene.getEngine().getDeltaTime() / 1000;
+        for (const enemy of this.plushEnemies) enemy.update(dt);
         const playerPosition = this.player.collider.position;
         if (!this.auditoriumTriggerUsed && this.auditoriumOpened && playerPosition.z > 142 && Math.abs(playerPosition.x) < 10) {
             this.auditoriumTriggerUsed = true;
@@ -161,12 +165,12 @@ export class WorldBuilder {
         for (const enemy of this.plushEnemies) {
             if (enemy.isDead())
                 continue;
-            const offset = enemy.getPosition().subtract(origin);
+            const offset = enemy.getPosition().add(new Vector3(0, 0.72, 0)).subtract(origin);
             const distance = offset.length();
             if (distance <= 0.01 || distance > bestDistance)
                 continue;
             const facing = Vector3.Dot(forward, offset.scale(1 / distance));
-            if (facing < (charged ? 0.42 : 0.58))
+            if (facing < (charged ? 0.42 : 0.58) || !enemy.canBeReachedFrom(origin))
                 continue;
             selected = enemy;
             bestDistance = distance;
@@ -358,10 +362,12 @@ export class WorldBuilder {
                 || solvedPuzzles.length > 0
                 || inventoryIds.some((id) => ["panelKey", "fuse", "cable", "crank", "bodyCard", "bandage"].includes(id));
         this.fenceOpened = this.enteredWonderWorld;
+        const parkingGateHinge = this.scene.getTransformNodeByName("parking-gate-hinge");
+        if (parkingGateHinge) parkingGateHinge.rotation.y = this.fenceOpened ? -Math.PI / 2 : 0;
         this.sideDoorOpened = this.enteredWonderWorld;
         // The entrance closes behind the player; unlocked state and physical open
         // state are separate so continuing a save never leaves a wall-sized gap.
-        this.sideDoor.position.set(20, 2.25, 37.75);
+        this.sideDoor.position.set(20, 2.25, 38.05);
         this.sideDoor.checkCollisions = true;
         this.setDoorwayBlocked(this.sideDoorBlocker, true);
         this.torchTaken = inventoryIds.includes("torch");
@@ -410,10 +416,21 @@ export class WorldBuilder {
             }
         }
         this.solvedPuzzles.delete(nearest);
-        if (nearest === "hands")
-            this.handsAngles = [0, 0, 0, 0];
-        if (nearest === "eyes")
-            this.eyesAngles = [0, 0, 0];
+        if (nearest === "hands") {
+            this.handsAngles.fill(0);
+            this.handsAngles.forEach((_angle, index) => {
+                const pivot = this.scene.getTransformNodeByName(`hand-pivot-${index}`);
+                if (pivot) pivot.rotation.z = 0;
+            });
+        }
+        if (nearest === "eyes") {
+            this.eyesAngles.fill(0);
+            this.eyesAngles.forEach((_angle, index) => {
+                const mirror = this.scene.getMeshByName(`eye-mirror-${index}`);
+                if (mirror) mirror.rotation.y = 0;
+            });
+            this.updateEyeBeams(false);
+        }
         if (nearest === "heart") {
             this.heartValves = [0, 0, 0];
             this.heartPulses = [];
@@ -535,23 +552,51 @@ export class WorldBuilder {
         createBoundary("map-boundary-back", new Vector3(0, wallHeight / 2 - 2, 2130), totalWidth + thickness * 2, thickness);
     }
     createBuildingFacade() {
-        const facade = MeshBuilder.CreateBox("Wonder-World-facade", { width: 52, height: 14, depth: 2 }, this.scene);
-        facade.position = new Vector3(0, 7, 39);
-        facade.material = this.materials.get("concrete", 0);
-        facade.checkCollisions = false;
-        const facadeLeftCollider = MeshBuilder.CreateBox("facade-collider-left", { width: 44.4, height: 14, depth: 1.8 }, this.scene);
-        facadeLeftCollider.position = new Vector3(-3.8, 7, 39);
-        facadeLeftCollider.isVisible = false;
-        facadeLeftCollider.checkCollisions = true;
-        const facadeRightCollider = MeshBuilder.CreateBox("facade-collider-right", { width: 4.4, height: 14, depth: 1.8 }, this.scene);
-        facadeRightCollider.position = new Vector3(23.8, 7, 39);
-        facadeRightCollider.isVisible = false;
-        facadeRightCollider.checkCollisions = true;
+        const concrete = this.materials.get("concrete", 0);
+        // Cut the visible wall and its collision at the same doorway.
+        const facadePart = (name, x, y, width, height) => {
+          const piece = MeshBuilder.CreateBox(name, { width, height, depth: 2 }, this.scene);
+          piece.position = new Vector3(x, y, 39);
+          piece.material = concrete;
+          piece.checkCollisions = true;
+          piece.isPickable = false;
+        };
+        facadePart("Wonder-World-facade", -3.8, 7, 44.4, 14);
+        facadePart("facade-bay-right", 23.8, 7, 4.4, 14);
+        facadePart("facade-bay-lintel", 20, 9.25, 3.2, 9.5);
         const marquee = MeshBuilder.CreateBox("entrance-marquee", { width: 26, height: 1.2, depth: 4 }, this.scene);
         marquee.position = new Vector3(0, 6.6, 36.5);
         marquee.material = this.materials.get("metal", 0);
         marquee.checkCollisions = true;
-        this.createTextSign("wonder-world-sign", "WONDER WORLD", new Vector3(0, 9.8, 37.92), 16, 2.8, new Color3(0.6, 0.12, 0.07));
+        const titleSign = this.createTextSign("wonder-world-sign", "WONDER WORLD", new Vector3(0, 11.45, 37.92), 16, 2.8, new Color3(0.6, 0.12, 0.07));
+        const wornSign = titleSign.material;
+        wornSign.emissiveTexture = wornSign.albedoTexture;
+        wornSign.emissiveColor = new Color3(0.42, 0.39, 0.33);
+        const fascia = [];
+        const trim = (name, x, y, z, width, height, depth) => {
+            const piece = MeshBuilder.CreateBox(name, { width, height, depth }, this.scene);
+            piece.position = new Vector3(x, y, z);
+            fascia.push(piece);
+        };
+        trim("marquee-rim-top", 0, 7.1, 34.46, 26.3, 0.15, 0.19);
+        trim("marquee-rim-bottom", 0, 6.05, 34.46, 26.3, 0.19, 0.19);
+        trim("sign-band-upper", 0, 13.02, 37.9, 17.3, 0.19, 0.28);
+        trim("sign-band-lower", 0, 9.9, 37.9, 17.3, 0.19, 0.28);
+        for (let x = -20; x <= 20; x += 8) {
+            for (const side of [-1, 1]) {
+                trim(`window-frame-side-${x}-${side}`, x + side * 2.02, 8.4, 37.85, 0.15, 3.14, 0.21);
+                trim(`window-frame-rail-${x}-${side}`, x, 8.4 + side * 1.52, 37.85, 4.15, 0.15, 0.21);
+            }
+            trim(`window-mullion-${x}`, x, 8.4, 37.84, 0.095, 3, 0.13);
+        }
+        const rails = Mesh.MergeMeshes(fascia, true);
+        if (rails) {
+            rails.name = "facade-trim-batch";
+            rails.material = this.materials.solid("weathered-marquee-trim", new Color3(0.35, 0.23, 0.15), 0.73, 0.42);
+            rails.material.emissiveColor = new Color3(0.038, 0.030, 0.025);
+            rails.isPickable = false;
+            rails.checkCollisions = false;
+        }
         for (let x = -20; x <= 20; x += 8) {
             const window = MeshBuilder.CreatePlane(`facade-window-${x}`, { width: 4, height: 3 }, this.scene);
             window.position = new Vector3(x, 8.4, 37.94);
@@ -559,10 +604,29 @@ export class WorldBuilder {
             window.material = this.materials.get("glass", Math.abs(x));
         }
         this.sideDoor = MeshBuilder.CreateBox("side-entrance-door", { width: 3.2, height: 4.5, depth: 0.28 }, this.scene);
-        this.sideDoor.position = new Vector3(20, 2.25, 37.75);
+        this.sideDoor.position = new Vector3(20, 2.25, 38.05);
         this.sideDoor.material = this.materials.get("metal", 1);
+
+        const doorInsetMaterial = this.materials.get("metal", 4);
+        const doorTrimMaterial = this.materials.solid("side-door-trim", new Color3(0.21, 0.19, 0.17), 0.52, 0.44);
+        const doorDetails = [
+            ["upper-panel", 0, 0.67, 2.42, 2.48, doorInsetMaterial],
+            ["lower-panel", 0, -1.28, 2.42, 1.13, doorInsetMaterial],
+            ["kick-plate", 0, -1.91, 2.66, 0.25, doorTrimMaterial],
+            ["lock-plate", -1.05, 0, 0.34, 0.63, doorTrimMaterial],
+            ["top-hinge", 1.37, 1.34, 0.19, 0.36, doorTrimMaterial],
+            ["bottom-hinge", 1.37, -1.35, 0.19, 0.36, doorTrimMaterial]
+        ];
+        for (const [part, x, y, width, height, material] of doorDetails) {
+            const detail = MeshBuilder.CreateBox(`side-entrance-door-${part}`, { width, height, depth: 0.04 }, this.scene);
+            detail.parent = this.sideDoor;
+            detail.position = new Vector3(x, y, part === "lock-plate" ? -0.181 : -0.154);
+            detail.material = material;
+            detail.isPickable = false;
+            detail.checkCollisions = false;
+        }
         this.sideDoor.checkCollisions = true;
-        this.sideDoorBlocker = this.createDoorFrame("side-entrance", this.sideDoor.position.clone(), 3.2, 4.5, 0.28, 0, true, 3.2, 4.8);
+        this.sideDoorBlocker = this.createDoorFrame("side-entrance", this.sideDoor.position.clone(), 3.2, 4.5, 0.28, 0, false, 3.2, 4.8);
         const sideDoorHandle = MeshBuilder.CreateBox("side-entrance-door-handle", { width: 0.16, height: 0.42, depth: 0.12 }, this.scene);
         sideDoorHandle.parent = this.sideDoor;
         sideDoorHandle.position = new Vector3(-1.05, 0, -0.18);
@@ -679,7 +743,7 @@ export class WorldBuilder {
         blocker.checkCollisions = blocked;
     }
     closeSideEntranceBehindPlayer() {
-        this.sideDoor.position.set(20, 2.25, 37.75);
+        this.sideDoor.position.set(20, 2.25, 38.05);
         this.sideDoor.checkCollisions = true;
         this.setDoorwayBlocked(this.sideDoorBlocker, true);
     }
@@ -737,13 +801,23 @@ export class WorldBuilder {
             topRail.material = this.materials.get("metal", 1);
             topRail.checkCollisions = true;
         }
-        const brokenPanel = MeshBuilder.CreateBox("broken-fence-panel", { width: 5.5, height: 3.6, depth: 0.18 }, this.scene);
-        brokenPanel.position = new Vector3(20, 1.8, 31.5);
-        brokenPanel.rotation.z = -0.13;
+        for (const [index, x] of [openingMinX, openingMaxX].entries()) {
+          const jamb = MeshBuilder.CreateCylinder(`parking-gate-jamb-${index}`, { height: 4.5, diameter: 0.2, tessellation: 8 }, this.scene);
+          jamb.parent = root;
+          jamb.position.set(x, 2.25, fenceZ);
+          jamb.material = this.materials.get("metal", 1);
+          jamb.checkCollisions = true;
+        }
+        const hinge = new TransformNode("parking-gate-hinge", this.scene);
+        hinge.parent = root;
+        hinge.position.set(openingMinX + 0.1, 0, fenceZ);
+        const brokenPanel = MeshBuilder.CreateBox("broken-fence-panel", { width: 5.5, height: 4.25, depth: 0.18 }, this.scene);
+        brokenPanel.parent = hinge;
+        brokenPanel.position.set(2.75, 2.125, 0);
         brokenPanel.material = this.materials.get("metal", 0);
         brokenPanel.checkCollisions = true;
         this.interaction.register(brokenPanel, {
-            prompt: () => this.inventory.has("torch") && this.inventory.has("fuel") ? "[E] LEVANTAR A SEÇÃO DANIFICADA" : "A ESTRUTURA ESTÁ PRESA E É DIFÍCIL ENXERGAR",
+            prompt: () => this.inventory.has("torch") && this.inventory.has("fuel") ? "[E] ABRIR O PORTÃO DANIFICADO" : "A ESTRUTURA ESTÁ PRESA E É DIFÍCIL ENXERGAR",
             maxDistance: 2.05,
             contextHint: () => !this.inventory.has("torch")
                 ? "Está escuro demais para examinar a cerca."
@@ -751,7 +825,7 @@ export class WorldBuilder {
                     ? "A tocha precisa de combustível."
                     : !this.fire.torchLit
                         ? "Acenda a tocha para enxergar a trava da cerca."
-                        : "A seção danificada pode ser levantada.",
+                        : "A trava do portão está solta.",
             onInteract: () => {
                 if (!this.inventory.has("torch") || !this.inventory.has("fuel")) {
                     this.ui.toast("Encontre luz e combustível antes de atravessar.");
@@ -764,9 +838,7 @@ export class WorldBuilder {
                 }
                 if (!this.fenceOpened) {
                     this.fenceOpened = true;
-                    brokenPanel.rotation.z = -1.32;
-                    brokenPanel.position.y = 3.4;
-                    brokenPanel.checkCollisions = false;
+                    hinge.rotation.y = -Math.PI / 2;
                     this.audio.impact(0.75);
                     this.objective.set("reach-side-door", "ALCANCE A ENTRADA LATERAL.");
                 }
@@ -847,6 +919,16 @@ export class WorldBuilder {
             cabin.scaling.x = 0.9;
             cabin.material = this.materials.get("glass", index);
             cabin.checkCollisions = true;
+            // Keep the original collision volume; only reshape the visible roof and windows.
+            cabin.visibility = 0;
+            cabin.isPickable = false;
+            const roof = MeshBuilder.CreateCylinder(`car-roofline-${index}`, { height: 1.25, diameterTop: 0.72, diameterBottom: 1, tessellation: 4 }, this.scene);
+            roof.bakeTransformIntoVertices(Matrix.RotationY(Math.PI / 4));
+            roof.parent = root;
+            roof.position = new Vector3(0, 1.95, -0.2);
+            roof.scaling = new Vector3(4.14, 1, 4.81);
+            roof.material = this.materials.solid("car-weathered-glass", new Color3(0.065, 0.083, 0.091), 0.39, 0.22);
+            roof.isPickable = false;
             for (const side of [-1, 1]) {
                 for (const z of [-2.35, 2.35]) {
                     const wheel = MeshBuilder.CreateCylinder(`car-wheel-${index}-${side}-${z}`, { height: 0.38, diameter: 0.82, tessellation: 12 }, this.scene);
@@ -978,10 +1060,14 @@ Pressione E novamente ou Esc para fechar.`);
     }
     createMaintenanceShed() {
         this.createRoomShell("exterior-shed", new Vector3(-27, 0, 25), 9, 8, 4, "metal", true, ["east"]);
-        const openDoor = MeshBuilder.CreateBox("shed-door-open", { width: 2.4, height: 3.3, depth: 0.2 }, this.scene);
-        openDoor.position = new Vector3(-22.55, 1.65, 25);
-        openDoor.rotation.y = -0.8;
+        const hinge = new TransformNode("shed-door-hinge", this.scene);
+        hinge.position.set(-22.5, 0, 26.42);
+        hinge.rotation.y = -Math.PI / 2.45;
+        const openDoor = MeshBuilder.CreateBox("shed-door-open", { width: 0.2, height: 3.2, depth: 2.78 }, this.scene);
+        openDoor.parent = hinge;
+        openDoor.position.set(0, 1.6, -1.39);
         openDoor.material = this.materials.get("metal", 1);
+        openDoor.checkCollisions = true;
     }
     createDrainage() {
         for (let x = -45; x < 45; x += 3) {
@@ -1024,6 +1110,29 @@ Pressione E novamente ou Esc para fechar.`);
         paper.position = new Vector3(-8, 0.06, 12);
         paper.rotation.y = 0.37;
         paper.material = this.materials.solid("newsprint", new Color3(0.67, 0.63, 0.52), 0.96);
+        const ink = new DynamicTexture("closure-newspaper-ink", { width: 256, height: 256 }, this.scene, false);
+        const print = ink.getContext();
+        print.fillStyle = "#bcb090";
+        print.fillRect(0, 0, 256, 256);
+        print.fillStyle = "#34302c";
+        print.font = "bold 20px Georgia";
+        print.fillText("HAWTHORNE GAZETTE", 13, 34, 230);
+        print.fillRect(13, 45, 230, 3);
+        print.font = "bold 17px Georgia";
+        print.fillText("WONDER WORLD FECHA", 13, 73, 230);
+        for (let row = 0; row < 10; row += 1) {
+            for (const x of [13, 134]) print.fillRect(x, 92 + row * 12, 85 + (row % 4) * 6, 2);
+        }
+        ink.update();
+        const printMat = new StandardMaterial("gazette-ink-material", this.scene);
+        printMat.diffuseTexture = ink;
+        printMat.diffuseColor = new Color3(0.91, 0.86, 0.73);
+        printMat.specularColor = new Color3(0.02, 0.02, 0.02);
+        const printSurface = MeshBuilder.CreateGround("gazette-print-surface", { width: 1.04, height: 1.44 }, this.scene);
+        printSurface.parent = paper;
+        printSurface.position.y = 0.018;
+        printSurface.material = printMat;
+        printSurface.isPickable = false;
         this.interaction.register(paper, {
             prompt: "[E] LER O JORNAL MOLHADO",
             onInteract: () => {
@@ -1193,6 +1302,20 @@ Pressione E novamente ou Esc para fechar.`);
         desk.position = new Vector3(0, 0.65, 51);
         desk.material = this.materials.get("wood", 0);
         desk.checkCollisions = true;
+        const counterTop = MeshBuilder.CreateBox("lobby-desk-countertop", { width: 8.2, height: 0.15, depth: 1.91 }, this.scene);
+        counterTop.position = new Vector3(0, 1.29, 51);
+        counterTop.material = this.materials.solid("lobby-desk-dark-veneer", new Color3(0.19, 0.108, 0.058), 0.79);
+        counterTop.isPickable = false;
+        const log = MeshBuilder.CreateBox("lobby-last-shift-log", { width: 0.78, height: 0.09, depth: 0.62 }, this.scene);
+        log.position = new Vector3(-1.45, 1.41, 50.37);
+        log.rotation.y = -0.22;
+        log.material = this.materials.solid("lobby-log-sun-faded-cloth", new Color3(0.29, 0.25, 0.15), 0.95);
+        this.interaction.register(log, {
+            prompt: "[E] LER O LIVRO DE TURNO",
+            maxDistance: 2.4,
+            onInteract: () => this.ui.showDocument("RECEPÇÃO — LIVRO DO ÚLTIMO TURNO",
+                "21h40. A direção mandou carimbar ENCERRADO na bilheteria. Ninguém pediu as chaves do subsolo.\n\n22h10. Na porta lateral, as marcas de dedos estão do lado de dentro. Passei o pano duas vezes. Quando voltei, tinham aparecido de novo.\n\n23h07. Deixei a luz da manutenção acesa. Se alguém ainda estiver lá embaixo, ao menos vai saber por onde voltar.")
+        });
         for (let i = 0; i < 4; i += 1) {
             const turnstile = MeshBuilder.CreateCylinder(`turnstile-${i}`, { height: 1.1, diameter: 0.22, tessellation: 8 }, this.scene);
             turnstile.position = new Vector3(-4.5 + i * 3, 0.55, 57);
@@ -1251,8 +1374,8 @@ Pressione E novamente ou Esc para fechar.`);
     }
     spawnGiftShopPlushWave() {
         const positions = [
-            new Vector3(-22, 0, 57), new Vector3(-18, 0, 61), new Vector3(-12, 0, 59),
-            new Vector3(-21, 0, 67), new Vector3(-11, 0, 66), new Vector3(-16, 0, 72)
+            new Vector3(-22, 0, 57), new Vector3(-18, 0, 61), new Vector3(-11, 0, 60.5),
+            new Vector3(-22.5, 0, 65.4), new Vector3(-10.2, 0, 65.5), new Vector3(-18, 0, 70.2)
         ];
         positions.forEach((position, index) => {
             const enemy = new PlushEnemy(this.scene, this.materials, this.fire, this.player, this.audio, {
@@ -1261,12 +1384,26 @@ Pressione E novamente ou Esc para fechar.`);
                 scale: 0.7 + (index % 3) * 0.12,
                 variant: index,
                 dormant: index > 1,
+                kind: index === 2 || index === 4 ? "watcher" : "crawler",
+                onCue: (caption) => this.ui.showSoundCaption(caption, 1050),
                 activationDistance: 12
             });
             this.plushEnemies.push(enemy);
         });
         this.objective.set("survive-plush", "SOBREVIVA AOS BRINQUEDOS E ENCONTRE AS PEÇAS DO QUADRO.");
     }
+    spawnMaintenanceBruiser() {
+        if (this.plushEnemies.some((enemy) => enemy.root.name === "maintenance-costurado")) return;
+        const enemy = new PlushEnemy(this.scene, this.materials, this.fire, this.player, this.audio, {
+          name: "maintenance-costurado",
+          position: new Vector3(-16.9, 0, 88.6),
+          scale: 1.16, variant: 5, kind: "bruiser", dormant: false, activationDistance: 10,
+          onCue: (caption) => this.ui.showSoundCaption(caption, 1400)
+        });
+        this.plushEnemies.push(enemy);
+        this.ui.showSoundCaption("um pano pesado cai do outro lado da manutenção", 1400);
+    }
+
     createFoodCourt() {
         for (let i = 0; i < 8; i += 1) {
             const table = MeshBuilder.CreateCylinder(`food-table-${i}`, { height: 0.85, diameter: 2.2, tessellation: 18 }, this.scene);
@@ -1339,6 +1476,7 @@ Pressione E novamente ou Esc para fechar.`);
                 this.inventory.add(ITEM_CATALOG.cable);
                 cable.setEnabled(false);
                 this.audio.pickup();
+                this.spawnMaintenanceBruiser();
                 this.updatePowerObjective();
             }
         });
@@ -1475,7 +1613,7 @@ Pressione E novamente ou Esc para fechar.`);
             }
             this.interaction.register(palm, {
                 prompt: () => this.solvedPuzzles.has("hands") ? "MECANISMO DAS MÃOS ATIVO" : `[E] AJUSTAR MÃO ${i + 1}`,
-                contextHint: "Pista: giros finais 2 · 4 · 3 · 1.",
+                contextHint: () => `Mão ${i + 1}: posição ${this.handsAngles[i] ?? 0} de 0–3. Alvo: ${target[i]}.`,
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("hands")) {
                         if (!this.powerRestored)
@@ -1490,7 +1628,7 @@ Pressione E novamente ou Esc para fechar.`);
                 }
             });
         }
-        this.createTextSign("hands-clue", "GIROS FINAIS: 2 · 4 · 3 · 1", new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
+        this.createTextSign("hands-clue", `POSIÇÕES: ${target.join(" · ")}`, new Vector3(-16, 2.3, 125.1), 8, 0.8, new Color3(0.3, 0.25, 0.18));
     }
     createEyesPuzzle() {
         this.createTextSign("eyes-title", "OLHOS · VEJA O QUE ELES VEEM", new Vector3(16, 4.6, 124.7), 7.8, 1.2, new Color3(0.17, 0.32, 0.38));
@@ -1502,7 +1640,7 @@ Pressione E novamente ou Esc para fechar.`);
             mirror.checkCollisions = true;
             this.interaction.register(mirror, {
                 prompt: () => this.solvedPuzzles.has("eyes") ? "FEIXE ÓPTICO ESTÁVEL" : `[E] GIRAR ESPELHO ${i + 1}`,
-                contextHint: "Pista: espelhos 1, 2 e 3 terminam com 2, 3 e 4 giros.",
+                contextHint: () => `Espelho ${i + 1}: posição ${this.eyesAngles[i] ?? 0} de 0–3. Alvo: ${targets[i]}.`,
                 onInteract: () => {
                     if (!this.powerRestored || this.solvedPuzzles.has("eyes")) {
                         if (!this.powerRestored)
@@ -1517,7 +1655,7 @@ Pressione E novamente ou Esc para fechar.`);
                 }
             });
         }
-        this.createTextSign("eyes-clue", "ESPELHOS: 2 · 3 · 4", new Vector3(16, 2.35, 125.1), 5.5, 0.9, new Color3(0.7, 0.65, 0.45));
+        this.createTextSign("eyes-clue", `POSIÇÕES: ${targets.join(" · ")}`, new Vector3(16, 2.35, 125.1), 5.5, 0.9, new Color3(0.7, 0.65, 0.45));
     }
     createHeartPuzzle() {
         this.createTextSign("heart-title", "CORAÇÃO · MANTENHA O RITMO", new Vector3(-16, 4.6, 143.7), 7.2, 1.2, new Color3(0.55, 0.05, 0.04));
@@ -1621,12 +1759,8 @@ Pressione E novamente ou Esc para fechar.`);
         floor.position = new Vector3(0, -0.1, 153);
         floor.material = this.materials.floor("wood", 1);
         floor.checkCollisions = true;
-        const wall = MeshBuilder.CreateTorus("auditorium-wall", { diameter: 38, thickness: 1.2, tessellation: 64 }, this.scene);
-        wall.position = new Vector3(0, 3.5, 153);
-        wall.rotation.x = Math.PI / 2;
-        wall.scaling.y = 3.8;
-        wall.material = this.materials.get("concrete", 0);
-        wall.checkCollisions = false;
+        const wallMaterial = this.materials.get("concrete", 0);
+        const wallParts = [];
         for (let index = 0; index < 32; index += 1) {
             const angle = (index / 32) * Math.PI * 2;
             const entranceDistance = Math.abs(Math.atan2(Math.sin(angle - Math.PI), Math.cos(angle - Math.PI)));
@@ -1638,12 +1772,24 @@ Pressione E novamente ou Esc para fechar.`);
             segment.rotation.y = angle;
             segment.isVisible = false;
             segment.checkCollisions = true;
+            const face = segment.clone(`auditorium-wall-panel-${index}`);
+            face.isVisible = true;
+            face.checkCollisions = false;
+            face.isPickable = false;
+            face.material = wallMaterial;
+            wallParts.push(face);
+        }
+        const hallWall = Mesh.MergeMeshes(wallParts, true);
+        if (hallWall) {
+            hallWall.name = "auditorium-wall";
+            hallWall.isPickable = false;
+            hallWall.checkCollisions = false;
         }
         this.auditoriumDoor = MeshBuilder.CreateBox("auditorium-door", { width: 6, height: 5.5, depth: 0.5 }, this.scene);
-        this.auditoriumDoor.position = new Vector3(0, 2.75, 137.1);
+        this.auditoriumDoor.position = new Vector3(0, 2.75, 134.4);
         this.auditoriumDoor.material = this.materials.get("metal", 0);
         this.auditoriumDoor.checkCollisions = true;
-        this.auditoriumDoorBlocker = this.createDoorFrame("auditorium", this.auditoriumDoor.position.clone(), 6, 5.5, 0.5, 0, false, 7.2, 7.2);
+        this.auditoriumDoorBlocker = this.createDoorFrame("auditorium", this.auditoriumDoor.position.clone(), 6, 5.5, 0.5, 0, false, 10.8, 7.2);
         this.interaction.register(this.auditoriumDoor, {
             prompt: () => this.auditoriumOpened ? "PORTAS DO AUDITÓRIO ABERTAS" : `[E] VERIFICAR TRAVAS DO AUDITÓRIO (${this.solvedPuzzles.size}/4)`,
             onInteract: () => {
@@ -1758,12 +1904,12 @@ Pressione E novamente ou Esc para fechar.`);
     createUndergroundTransition() {
         this.createCorridor("underground-corridor", new Vector3(0, 0, 177), 7, 20, "metal");
         this.elevatorDoor = MeshBuilder.CreateBox("underground-elevator-door", { width: 5.5, height: 5.5, depth: 0.5 }, this.scene);
-        this.elevatorDoor.position = new Vector3(0, 2.75, 186.5);
+        this.elevatorDoor.position = new Vector3(0, 2.75, 187);
         this.elevatorDoor.material = this.materials.get("metal", 0);
         this.elevatorDoor.checkCollisions = true;
         this.elevatorDoorBlocker = this.createDoorFrame("underground-elevator", this.elevatorDoor.position.clone(), 5.5, 5.5, 0.5, 0, false, 7, 5.8);
         const reader = MeshBuilder.CreateBox("body-card-reader", { width: 0.65, height: 1.2, depth: 0.25 }, this.scene);
-        reader.position = new Vector3(3.6, 1.35, 185.9);
+        reader.position = new Vector3(3.15, 1.35, 186.35);
         reader.material = this.materials.get("plastic", 0);
         this.interaction.register(reader, {
             prompt: "[E] INSERIR CARTÃO DO CORPO",
@@ -2096,8 +2242,8 @@ Pressione E novamente ou Esc para fechar.`);
     enableFacilityLights(enabled) {
         this.scene.lights.filter((light) => light.name.startsWith("facility-light")).forEach((light) => light.setEnabled(enabled));
     }
-    updateEyeBeams() {
-        this.audio.objective();
+    updateEyeBeams(playAudio = true) {
+        if (playAudio) this.audio.objective();
         const total = this.eyesAngles.reduce((sum, value) => sum + value, 0);
         const light = this.scene.getLightByName("facility-light-eyes");
         if (light)

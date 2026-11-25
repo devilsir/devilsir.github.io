@@ -2,7 +2,7 @@
 
 globalThis.QuimiCraftAI = (() => {
   const attack = (kind, damage, range, windup, cooldown, effect = "") =>
-    Object.freeze({kind, damage, range, windup, cooldown, effect});
+    Object.freeze({kind, damage, range, windup, cooldown, effect, venom:kind==="lunge"&&effect==="toxicity"});
   const profile = (temperament, hp, walk, run, sense, roam, strike, loot = []) =>
     Object.freeze({temperament, hp, walk, run, sense, roam, strike, loot: Object.freeze(loot.map(Object.freeze))});
   const guard = attack("shot", 11, 9, .38, 1.7, "guard");
@@ -42,15 +42,15 @@ globalThis.QuimiCraftAI = (() => {
     frost_owl: profile("skittish", 19, 1.25, 4.85, 10, 21, null,
       [["feather", 2, 3], ["bait", 1, 1, .18]]),
     glass_scorpion: profile("hostile", 37, 1.21, 5.05, 13, 19, attack("lunge", 13, 2.45, .48, 1.72, "toxicity"),
-      [["chitin", 2, 3], ["BASALT_GLASS", 1, 2], ["aquamarine", 1, 1, .12]]),
-    slime: profile("hostile", 26, .83, 2.6, 11, 15, attack("lunge", 7, 2.1, .48, 1.6, "corrosion"),
+      [["venom", 1, 2], ["chitin", 2, 3], ["BASALT_GLASS", 1, 2], ["aquamarine", 1, 1, .12]]),
+    slime: profile("hostile", 26, .83, 2.6, 11, 15, attack("lunge", 32, 2.1, .48, 1.6, "corrosion"),
       [["acid_gel", 1, 2], ["unknown_residue", 1, 1, .22]]),
     cobrete: profile("neutral", 34, .85, 2.15, 8, 13, attack("melee", 8, 1.58, .38, 1.45),
       [["copper_core", 1, 1], ["COPPER", 1, 2], ["copper_ingot", 1, 1, .18]]),
     cristalume: profile("skittish", 17, 1.25, 3.7, 9, 17, null,
       [["crystal_shard", 1, 2], ["CRYSTAL", 1, 1], ["prism_pendant", 1, 1, .035]]),
     scorpion: profile("hostile", 23, 1.32, 4.75, 12, 17, attack("lunge", 9, 2.35, .37, 1.55, "toxicity"),
-      [["chitin", 1, 2], ["acid_gel", 1, 1, .16]]),
+      [["venom", 1, 2], ["chitin", 1, 2], ["acid_gel", 1, 1, .16]]),
     golem: profile("hostile", 76, .64, 1.85, 9, 12, attack("slam", 18, 2.25, .83, 2.7),
       [["OBSIDIAN", 1, 3], ["gold_nugget", 1, 2], ["CRYSTAL", 1, 1, .19]]),
     wisp: profile("hostile", 20, 1.1, 3.05, 15, 19, attack("shot", 8, 8.5, .62, 2.3, "electric"),
@@ -177,7 +177,8 @@ globalThis.QuimiCraftAI = (() => {
       a.memoryTime = 0;
       return {mode: "return", goal: a.home, speed: p.run * .72};
     }
-    const levelWithEnemy=enemy&&(p.strike?.kind==="shot"||Math.abs(enemy.actor.y-e.y)<=1.22);
+    const aimedStrike=p.strike?.kind==="shot"||p.strike?.kind==="gaze";
+    const levelWithEnemy=enemy&&(aimedStrike||Math.abs(enemy.actor.y-e.y)<=1.22);
     if (p.strike && enemy?.visible && levelWithEnemy && !enemy.actor.dead && enemy.dist <= p.strike.range) {
       if (p.strike.kind === "shot" && enemy.dist < 2.7 && a.cooldown > .2) {
         const angle = heading(enemy.actor, e);
@@ -188,7 +189,7 @@ globalThis.QuimiCraftAI = (() => {
         a.swing = {target: enemy.actor, remaining: p.strike.windup};
         return {mode: "windup", goal: null, aim: enemy.actor, speed: 0};
       }
-      if (a.aim > 0 || enemy.dist < p.strike.range * .78 || p.strike.kind === "shot") {
+      if (a.aim > 0 || enemy.dist < p.strike.range * .78 || aimedStrike) {
         return {mode: "recover", goal: null, aim: enemy.actor, speed: 0};
       }
     }

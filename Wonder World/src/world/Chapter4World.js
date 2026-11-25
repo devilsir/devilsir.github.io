@@ -68,6 +68,7 @@ export class Chapter4World {
     mirrors = [];
     removedLoadout = new Set();
     floorResetTimer = 0;
+    floorCollapsePending = false;
     floorCheckTimer = 0;
     floorSafeIndex = -1;
     guardObservationClock = 0;
@@ -132,6 +133,13 @@ export class Chapter4World {
         this.root.setEnabled(false);
         this.mimic.setVisible(false);
     }
+    deactivateOnExit() {
+      this.active = false;
+      this.root.setEnabled(false);
+      this.mimic.setVisible(false);
+      this.audio.stopLoop("prison-drone");
+    }
+
     startFromTransition() {
         this.active = true;
         this.phase = "waking";
@@ -204,6 +212,10 @@ export class Chapter4World {
             this.phase = "floor";
         else
             this.phase = "escape";
+        if (this.phase === "boss" || this.phase === "postboss") {
+            const bossDoor = this.doors.find((door) => door.mesh === this.bossGate);
+            if (bossDoor) this.openDoor(bossDoor, false);
+        }
         const destination = this.destinationForCheckpoint(checkpoint);
         this.player.teleport(destination, Math.PI);
         this.player.setEnabled(!this.chapterComplete);
@@ -227,8 +239,8 @@ export class Chapter4World {
         }
         else if (this.phase === "postboss") {
             this.boss.start(progress.bossState, 0, progress.identityRoundsCompleted, true);
-            this.archiveGate.position.copyFrom(this.archiveGate.position.add(new Vector3(4.4, 0, 0)));
-            this.archiveGate.checkCollisions = false;
+            const archiveDoor = this.doors.find((door) => door.mesh === this.archiveGate);
+            if (archiveDoor) this.openDoor(archiveDoor, false);
             this.objective.set("search-mimic-remains", "PROCURE UMA ROTA PARA OS ARQUIVOS.");
         }
         this.boss.restorePostDefeatStats(progress.postDefeatAttackCount, progress.postDefeatStopTime, progress.inspectedBody, progress.attemptedImmediateExit);
@@ -449,9 +461,11 @@ export class Chapter4World {
         this.createProceduralSign("choice-sign-a", "EVIDÊNCIAS / EQUIPAMENTO APREENDIDO", new Vector3(-5.4, 2.8, 1250), Math.PI / 2, 5.2, 0.9, false);
         this.createProceduralSign("choice-sign-b", "TRIAGEM MÉDICA", new Vector3(5.4, 2.8, 1250), -Math.PI / 2, 4.4, 0.9, false);
         for (let index = 0; index < 28; index += 1) {
+            const x = -5.2 + (index % 14) * 0.8;
+            if (Math.abs(x) < 2.15) continue; // Keep the central corridor and cell threshold clear.
             const bar = MeshBuilder.CreateCylinder(`prison-bar-${index}`, { height: 4.5, diameter: 0.11, tessellation: 8 }, this.scene);
             bar.parent = this.root;
-            bar.position = new Vector3(-5.2 + (index % 14) * 0.8, 2.25, 1070 + Math.floor(index / 14) * 39);
+            bar.position = new Vector3(x, 2.25, 1069 + Math.floor(index / 14) * 40);
             bar.material = metal;
             bar.checkCollisions = true;
         }
@@ -492,6 +506,17 @@ export class Chapter4World {
         this.intercom.parent = this.root;
         this.intercom.position = new Vector3(4.82, 1.6, 1063);
         this.intercom.material = metal;
+        const grille = MeshBuilder.CreateCylinder("cell-intercom-grille", { height: 0.04, diameter: 0.38, tessellation: 10 }, this.scene);
+        grille.parent = this.intercom;
+        grille.position.set(-0.41, 0.24, 0);
+        grille.rotation.z = Math.PI / 2;
+        grille.material = this.materials.solid("cell-intercom-dark", new Color3(0.13, 0.12, 0.1), 0.72);
+        grille.isPickable = false;
+        const callButton = MeshBuilder.CreateBox("cell-intercom-call-button", { width: 0.055, height: 0.16, depth: 0.14 }, this.scene);
+        callButton.parent = this.intercom;
+        callButton.position.set(-0.415, -0.22, 0);
+        callButton.material = this.materials.emissive("cell-intercom-dim-button", new Color3(0.44, 0.08, 0.035), 0.38);
+        callButton.isPickable = false;
         this.interaction.register(this.intercom, {
             prompt: () => !this.escapeMechanism[0] ? "O intercomunicador não recebe energia" : this.escapeMechanism[1] ? "O intercomunicador repete uma respiração" : "E · Conectar fio ao intercomunicador",
             enabled: () => this.active && this.escapeMechanism[0] === true && this.escapeMechanism[1] !== true,
@@ -536,12 +561,12 @@ export class Chapter4World {
             }
         });
         const cellDoor = this.createDoor("cell-door", new Vector3(0, 2.3, 1069), new Vector3(4.6, 0, 0));
-        this.maintenanceDoor = MeshBuilder.CreateBox("maintenance-route-door", { width: 2.2, height: 3.7, depth: 0.24 }, this.scene);
+        this.maintenanceDoor = MeshBuilder.CreateBox("maintenance-route-door", { width: 4.2, height: 3.7, depth: 0.24 }, this.scene);
         this.maintenanceDoor.parent = this.root;
-        this.maintenanceDoor.position = new Vector3(-4.9, 1.85, 1087);
+        this.maintenanceDoor.position = new Vector3(0, 1.85, 1087);
         this.maintenanceDoor.material = metal;
         this.maintenanceDoor.checkCollisions = true;
-        this.maintenanceDoorBlocker = this.createDoorFrame("maintenance-route", this.maintenanceDoor.position.clone(), 2.2, 3.7, 0, 4.2, 5.8);
+        this.maintenanceDoorBlocker = this.createDoorFrame("maintenance-route", this.maintenanceDoor.position.clone(), 4.2, 3.7, 0, 8, 5.5);
         this.interaction.register(this.maintenanceDoor, {
             prompt: "E · Empurrar passagem de manutenção",
             enabled: () => this.active && this.escapeMechanism.every(Boolean) && !this.prisonEscaped,
@@ -647,7 +672,7 @@ export class Chapter4World {
     }
     createChoiceRoutes() {
         const metal = this.materials.get("metal", 38);
-        this.createDoor("equipment-route-door", new Vector3(-22, 2.2, 1310), new Vector3(4.4, 0, 0));
+        this.createDoor("equipment-route-door", new Vector3(-22, 2.3, 1310), new Vector3(4.4, 0, 0));
         this.equipmentLocker = MeshBuilder.CreateBox("evidence-equipment-locker", { width: 4.6, height: 4.2, depth: 1.3 }, this.scene);
         this.equipmentLocker.parent = this.root;
         this.equipmentLocker.position = new Vector3(-22, 2.1, 1303);
@@ -672,7 +697,7 @@ export class Chapter4World {
             drop.material = this.materials.solid(`blood-drop-mat-${index}`, new Color3(0.22, 0.018, 0.015), 0.55);
             drop.isPickable = false;
         }
-        this.bloodTrapDoor = this.createDoor("blood-trap-door", new Vector3(22, 2.2, 1306), new Vector3(0, 0, -4.4)).mesh;
+        this.bloodTrapDoor = this.createDoor("blood-trap-door", new Vector3(22, 2.3, 1306), new Vector3(0, 0, -4.4)).mesh;
     }
     createPreBossEncounters() {
         this.preBossEncounters.push({ id: "maya-reflection", position: new Vector3(-12, 0, 1328), identity: "maya", evidence: "mirrored-hand", triggered: false }, { id: "daniel-recording", position: new Vector3(12, 0, 1328), identity: "daniel", evidence: "wrong-memory", triggered: false }, { id: "employee-breath", position: new Vector3(0, 0, 1340), identity: "employee", evidence: "shared-breath", triggered: false });
@@ -692,8 +717,8 @@ export class Chapter4World {
         const metal = this.materials.get("metal", 42);
         const glass = this.materials.get("glass", 38);
         const tile = this.materials.get("tile", 39);
-        this.bossGate = this.createDoor("mimic-boss-gate", new Vector3(0, 2.6, 1364), new Vector3(5.2, 0, 0)).mesh;
-        this.archiveGate = this.createDoor("archive-gate", new Vector3(0, 2.6, 1412), new Vector3(5.2, 0, 0)).mesh;
+        this.bossGate = this.createDoor("mimic-boss-gate", new Vector3(0, 2.3, 1364), new Vector3(5.2, 0, 0)).mesh;
+        this.archiveGate = this.createDoor("archive-gate", new Vector3(0, 2.3, 1412), new Vector3(5.2, 0, 0)).mesh;
         for (let index = 0; index < 8; index += 1) {
             const angle = (index / 8) * Math.PI * 2;
             const platform = MeshBuilder.CreateCylinder(`restraint-platform-${index}`, { height: 0.42, diameter: 3.2, tessellation: 18 }, this.scene);
@@ -887,9 +912,18 @@ export class Chapter4World {
                 }
             }
         }
-        if (this.phase !== "floor" || this.fragileFloorSolved || this.floorResetTimer > 0) {
-            this.floorResetTimer = Math.max(0, this.floorResetTimer - deltaSeconds);
-            return;
+        if (this.phase !== "floor" || this.fragileFloorSolved) {
+          this.floorCollapsePending = false;
+          this.floorResetTimer = 0;
+          return;
+        }
+        if (this.floorResetTimer > 0) {
+          this.floorResetTimer = Math.max(0, this.floorResetTimer - deltaSeconds);
+          if (this.floorResetTimer === 0 && this.floorCollapsePending) {
+            this.floorCollapsePending = false;
+            this.failFragileFloor();
+          }
+          return;
         }
         if (this.floorCheckTimer > 0)
             return;
@@ -926,7 +960,7 @@ export class Chapter4World {
         this.ui.showSoundCaption(immediate ? "a cruz desaba sem aviso" : "o piso frágil se rompe");
         this.createDustBurst(tile.mesh.position);
         this.floorResetTimer = immediate ? 0.45 : (this.settings.extendedPuzzleWindows ? 1.25 : 0.75);
-        window.setTimeout(() => this.failFragileFloor(), Math.round(this.floorResetTimer * 1000));
+        this.floorCollapsePending = true;
     }
     failFragileFloor() {
         if (!this.active || this.fragileFloorSolved)
@@ -1355,7 +1389,7 @@ export class Chapter4World {
         blocker.metadata = { doorwayBlocker: true, interactionPassthrough: true };
         return blocker;
     }
-    openDoor(door) {
+    openDoor(door, playAudio = true) {
         if (door.open)
             return;
         door.open = true;
@@ -1363,7 +1397,7 @@ export class Chapter4World {
         door.mesh.checkCollisions = false;
         door.blocker.setEnabled(false);
         door.blocker.checkCollisions = false;
-        this.audio.impact(0.45);
+        if (playAudio) this.audio.impact(0.45);
     }
     createDocument(id, title, body, position) {
         const mesh = MeshBuilder.CreateBox(`chapter4-document-${id}`, { width: 0.72, height: 0.035, depth: 0.95 }, this.scene);

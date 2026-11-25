@@ -178,6 +178,14 @@ export class Chapter3World {
         this.root.setEnabled(false);
         this.noise.setEnabled(false);
     }
+    deactivateOnExit() {
+      this.active = false;
+      this.root.setEnabled(false);
+      this.noise.setEnabled(false);
+      this.jesse.stop();
+      this.mimic.setVisible(false);
+    }
+
     startFromTransition() {
         this.active = true;
         this.phase = "arrival";
@@ -412,10 +420,13 @@ export class Chapter3World {
     }
     resetEnemiesForPlayerRespawn() {
         if (this.miniboss && !this.minibossDefeated && this.miniboss.state !== "dead") {
-            this.miniboss.collider.position.copyFrom(this.checkpoints.generator3.add(new Vector3(0, 0, 1)));
+            this.miniboss.collider.position.copyFrom(this.checkpoints.generator3.add(new Vector3(0, 1.5, 1)));
             this.miniboss.state = this.gasEntered ? "stalking" : "dormant";
             this.miniboss.attackCooldown = 2;
             this.miniboss.stagger = 0;
+            this.miniboss.stateElapsed = 0;
+            this.miniboss.root.rotation.z = 0;
+            this.poseMiniboss(0, 0, 0);
             this.miniboss.root.setEnabled(this.gasEntered);
         }
     }
@@ -471,17 +482,22 @@ export class Chapter3World {
         return true;
     }
     handleContextAction() {
-        if (!this.active || this.traversalMotion)
-            return false;
-        const playerPosition = this.player.collider.position;
-        const obstacle = this.traversalObstacles
-            .filter((entry) => !entry.completed)
-            .sort((a, b) => Vector3.Distance(a.mesh.position, playerPosition) - Vector3.Distance(b.mesh.position, playerPosition))[0];
-        if (!obstacle || Vector3.Distance(obstacle.mesh.position, playerPosition) > 3.2)
-            return false;
-        this.beginTraversal(obstacle);
-        return true;
+      if (!this.active || this.phase !== "chase" || this.traversalMotion) return false;
+      const obstacle = this.findNearbyTraversal(3.2);
+      if (!obstacle) return false;
+      this.beginTraversal(obstacle);
+      return true;
     }
+    findNearbyTraversal(radius) {
+      const position = this.player.collider.position;
+      // The sliding door mesh is above the player: use floor distance here.
+      return this.traversalObstacles
+        .filter((entry) => !entry.completed && (entry.type === "vault" ? position.z < entry.end.z - 1 : position.x < entry.end.x - 1))
+        .map((entry) => ({ entry, distance: Math.hypot(entry.mesh.position.x - position.x, entry.mesh.position.z - position.z) }))
+        .filter(({ distance }) => distance < radius)
+        .sort((a, b) => a.distance - b.distance)[0]?.entry;
+    }
+
     throwObject() {
         if (!this.active || this.phase === "arrival" || this.phase === "jack")
             return false;
@@ -578,9 +594,14 @@ export class Chapter3World {
     spawnMiniboss() {
         this.enableForDebug();
         this.miniboss.health = 100;
+        this.miniboss.stateElapsed = 0;
+        this.miniboss.attackCooldown = 0;
+        this.miniboss.root.rotation.z = 0;
+        this.miniboss.collider.checkCollisions = true;
+        this.poseMiniboss(0, 0, 0);
         this.miniboss.state = "stalking";
         this.miniboss.root.setEnabled(true);
-        this.miniboss.collider.position.copyFrom(this.checkpoints.generator3.add(new Vector3(0, 0, 7)));
+        this.miniboss.collider.position.copyFrom(this.checkpoints.generator3.add(new Vector3(1.8, 1.5, 7)));
         this.minibossDefeated = false;
     }
     triggerMayaReveal() {
@@ -764,6 +785,8 @@ export class Chapter3World {
         const slideDoor = MeshBuilder.CreateBox("chase-slide-door", { width: 6.5, height: 3.4, depth: 0.45 }, this.scene);
         slideDoor.parent = this.root;
         slideDoor.position = new Vector3(4, 3.1, 678);
+        // Chase segment C runs along X; the leaf spans Z, across the passage.
+        slideDoor.rotation.y = Math.PI / 2;
         slideDoor.material = metal;
         slideDoor.checkCollisions = true;
         this.traversalObstacles.push({ mesh: slideDoor, type: "slide", completed: false, checkpoint: 2, end: new Vector3(8, 0.12, 678) });
@@ -799,18 +822,18 @@ export class Chapter3World {
     }
     createServiceElevator() {
         const metal = this.materials.get("metal", 16);
-        const doorLeft = MeshBuilder.CreateBox("service-elevator-door-left", { width: 2.4, height: 4.5, depth: 0.28 }, this.scene);
-        const doorRight = MeshBuilder.CreateBox("service-elevator-door-right", { width: 2.4, height: 4.5, depth: 0.28 }, this.scene);
+        const doorLeft = MeshBuilder.CreateBox("service-elevator-door-left", { width: 2.6, height: 4.5, depth: 0.28 }, this.scene);
+        const doorRight = MeshBuilder.CreateBox("service-elevator-door-right", { width: 2.6, height: 4.5, depth: 0.28 }, this.scene);
         doorLeft.parent = doorRight.parent = this.root;
         // Start fully retracted. The old values placed both leaves already closed,
         // so the "close elevator" sequence appeared frozen and the player met a wall.
-        doorLeft.position = new Vector3(-3.8, 2.25, 729.6);
-        doorRight.position = new Vector3(3.8, 2.25, 729.6);
+        doorLeft.position = new Vector3(-3.9, 2.25, 718);
+        doorRight.position = new Vector3(3.9, 2.25, 718);
         doorLeft.material = doorRight.material = metal;
         doorLeft.checkCollisions = doorRight.checkCollisions = false;
         const elevatorHeader = MeshBuilder.CreateBox("service-elevator-header", { width: 5.2, height: 1, depth: 0.72 }, this.scene);
         elevatorHeader.parent = this.root;
-        elevatorHeader.position = new Vector3(0, 5, 729.6);
+        elevatorHeader.position = new Vector3(0, 5, 718);
         elevatorHeader.material = metal;
         elevatorHeader.checkCollisions = true;
         elevatorHeader.metadata = { permanentDoorWall: true };
@@ -834,7 +857,7 @@ export class Chapter3World {
         doorRight.metadata = { elevatorDoor: true, side: 1 };
     }
     createDanielRoom() {
-        const fabric = this.materials.get("plush", 12);
+        const fabric = this.materials.solid("daniel-brown-jacket", new Color3(0.29, 0.17, 0.09), 0.9);
         const skin = this.materials.get("plastic", 12);
         const bodyRoot = new TransformNode("daniel-body-root", this.scene);
         bodyRoot.parent = this.root;
@@ -844,6 +867,26 @@ export class Chapter3World {
         torso.parent = bodyRoot;
         torso.position.y = 0.85;
         torso.material = fabric;
+        const zipper = MeshBuilder.CreateBox("daniel-jacket-zipper", { width: 0.045, height: 0.84, depth: 0.03 }, this.scene);
+        zipper.parent = bodyRoot;
+        zipper.position.set(0.02, 0.92, -0.415);
+        zipper.material = this.materials.get("metal", 12);
+        zipper.isPickable = false;
+        const badge = MeshBuilder.CreateBox("daniel-jacket-badge", { width: 0.23, height: 0.15, depth: 0.028 }, this.scene);
+        badge.parent = bodyRoot;
+        badge.position.set(-0.22, 1.07, -0.354);
+        badge.rotation.y = -0.48;
+        badge.material = this.materials.solid("daniel-badge-cream", new Color3(0.58, 0.47, 0.28), 0.78);
+        badge.isPickable = false;
+        const bootMaterial = this.materials.get("metal", 6);
+        for (const side of [-1, 1]) {
+          const boot = MeshBuilder.CreateCapsule(`daniel-boot-${side}`, { height: 0.49, radius: 0.16, tessellation: 8 }, this.scene);
+          boot.parent = bodyRoot;
+          boot.position.set(side * 0.71, -0.87, -0.12);
+          boot.rotation.x = Math.PI / 2;
+          boot.material = bootMaterial;
+          boot.isPickable = false;
+        }
         const head = MeshBuilder.CreateSphere("daniel-head", { diameter: 0.72, segments: 14 }, this.scene);
         head.parent = bodyRoot;
         head.position = new Vector3(0.12, 1.95, -0.15);
@@ -1073,7 +1116,7 @@ export class Chapter3World {
             enabled: () => !this.generatorStates[2],
             onInteract: () => this.tryGenerator3()
         });
-        this.miniboss = this.createMiniboss(center.add(new Vector3(0, 0, 1)));
+        this.miniboss = this.createMiniboss(center.add(new Vector3(0, 1.5, 1)));
         this.createProceduralSign("gas-warning", "PERIGO · GÁS DE PROCESSAMENTO\nNÃO USE CHAMAS\nVENTILE ANTES DA MANUTENÇÃO", center.add(new Vector3(0, 4.6, -7)), 0, 6, 2.2, true);
         const sealMesh = this.createCollectible("gas-seal-item", CHAPTER3_ITEMS.gasSeal, center.add(new Vector3(6, 0.5, 5)), "[E] PEGAR VEDAÇÃO DE GÁS", () => undefined, "seal");
         sealMesh.rotation.z = Math.PI / 2;
@@ -1348,7 +1391,7 @@ export class Chapter3World {
             this.emitNoise("impact", 1.25, "metal", shelf.position);
         }
         if (this.settings.simplifiedChase && !this.traversalMotion) {
-            const obstacle = this.traversalObstacles.find((entry) => !entry.completed && Vector3.Distance(entry.mesh.position, playerPosition) < 2.2);
+            const obstacle = this.findNearbyTraversal(2.2);
             if (obstacle)
                 this.beginTraversal(obstacle);
         }
@@ -1357,8 +1400,8 @@ export class Chapter3World {
             const doors = [this.scene.getMeshByName("service-elevator-door-left"), this.scene.getMeshByName("service-elevator-door-right")].filter(Boolean);
             doors.forEach((door) => {
                 const side = Number(door.metadata?.side ?? 1);
-                door.position.x += ((side * 1.22) - door.position.x) * Math.min(1, deltaSeconds * 2.8);
-                door.checkCollisions = Math.abs(door.position.x - side * 1.22) < 0.45;
+                door.position.x += ((side * 1.3) - door.position.x) * Math.min(1, deltaSeconds * 2.8);
+                door.checkCollisions = Math.abs(door.position.x - side * 1.3) < 0.45;
             });
             if (this.chaseElevatorTimer > 2.1 && this.chaseElevatorTimer - deltaSeconds <= 2.1) {
                 this.audio.impact(1.2);
@@ -1385,6 +1428,12 @@ export class Chapter3World {
         if (t >= 1) {
             this.player.setEnabled(true);
             this.traversalMotion = null;
+            if (motion.obstacle.checkpoint === this.chaseCheckpoint) {
+              // Jesse can trigger a route marker before a nearby obstacle is crossed.
+              this.callbacks.onCheckpoint(`jesse-chase-${this.chaseCheckpoint}`);
+            } else {
+              this.setChaseCheckpoint(motion.obstacle.checkpoint);
+            }
             this.emitNoise("impact", motion.type === "vault" ? 0.55 : 0.34, "metal", motion.end);
         }
     }
@@ -1461,53 +1510,117 @@ export class Chapter3World {
         }
     }
     updateMiniboss(deltaSeconds) {
-        if (!this.miniboss || this.miniboss.state === "dead" || this.miniboss.state === "dormant" || !this.miniboss.root.isEnabled())
-            return;
-        this.miniboss.stateElapsed += deltaSeconds;
-        this.miniboss.attackCooldown = Math.max(0, this.miniboss.attackCooldown - deltaSeconds);
-        if (this.miniboss.state === "staggered") {
-            this.miniboss.stagger -= deltaSeconds;
-            this.miniboss.root.rotation.z = Math.sin(this.miniboss.stateElapsed * 15) * 0.12;
-            if (this.miniboss.stagger <= 0) {
-                this.miniboss.root.rotation.z = 0;
-                this.miniboss.state = "stalking";
-                this.miniboss.stateElapsed = 0;
+        const enemy = this.miniboss;
+        if (!enemy || enemy.state === "dead" || enemy.state === "dormant" || !enemy.root.isEnabled()) return;
+
+        const windupSeconds = this.settings.extendedPuzzleWindows ? 1.2 : 0.88;
+        const recoverySeconds = 1.3;
+        enemy.stateElapsed += deltaSeconds;
+        enemy.attackCooldown = Math.max(0, enemy.attackCooldown - deltaSeconds);
+        const target = this.player.collider.position;
+        const position = enemy.collider.position;
+        const dx = target.x - position.x;
+        const dz = target.z - position.z;
+        const distanceSquared = dx * dx + dz * dz;
+        const inReachHeight = Math.abs(target.y + 0.9 - position.y) <= 1.4;
+        const torchThreat = this.fire.getTorchThreatPosition();
+
+        if (enemy.state === "staggered") {
+            enemy.stagger -= deltaSeconds;
+            enemy.root.rotation.z = Math.sin(enemy.stateElapsed * 15) * 0.12;
+            this.poseMiniboss(0, 0, 0);
+            if (enemy.stagger <= 0) {
+                enemy.root.rotation.z = 0;
+                enemy.state = "stalking";
+                enemy.stateElapsed = 0;
             }
             return;
         }
-        const target = this.player.collider.position;
-        const torchThreat = this.fire.getTorchThreatPosition();
-        if (torchThreat && this.fire.isTorchThreatNear(this.miniboss.collider.position, 6.2)) {
-            const away = this.miniboss.collider.position.subtract(torchThreat);
+        if (torchThreat && this.fire.isTorchThreatNear(position, 6.2)) {
+            const away = position.subtract(torchThreat);
             away.y = 0;
             if (away.lengthSquared() > 0.001) {
                 away.normalize();
-                this.miniboss.collider.moveWithCollisions(away.scale(deltaSeconds * 4.2));
-                this.miniboss.root.rotation.y = Math.atan2(away.x, away.z);
+                enemy.collider.moveWithCollisions(away.scale(deltaSeconds * 4.2));
+                enemy.root.rotation.y = Math.atan2(away.x, away.z);
             }
-            this.miniboss.state = "stalking";
-            this.miniboss.attackCooldown = Math.max(this.miniboss.attackCooldown, 0.65);
+            if (enemy.state !== "stalking") enemy.stateElapsed = 0;
+            enemy.state = "stalking";
+            enemy.attackCooldown = Math.max(enemy.attackCooldown, 0.65);
+            this.poseMiniboss(0, 0, 0.2);
             return;
         }
-        const distance = Vector3.Distance(this.miniboss.collider.position, target);
-        if (distance > 2.1) {
-            const direction = target.subtract(this.miniboss.collider.position);
-            direction.y = 0;
-            direction.normalize();
+
+        if (enemy.state === "windup") {
+            const raised = Math.min(1, 0.25 + enemy.stateElapsed / windupSeconds);
+            this.poseMiniboss(raised, 0, 0);
+            if (enemy.stateElapsed < windupSeconds) return;
+            // Facing remains committed throughout the tell; a sidestep or cover beats the sweep.
+            const facing = enemy.root.rotation.y;
+            const forwardDistance = dx * Math.sin(facing) + dz * Math.cos(facing);
+            const insideArc = distanceSquared <= 0.04 || forwardDistance >= Math.sqrt(distanceSquared) * 0.62;
+            enemy.state = "recovering";
+            enemy.stateElapsed = 0;
+            this.poseMiniboss(0, 1, 0);
+            this.audio.clubImpact(position, "metal", false);
+            this.emitNoise("attack", 0.8, "metal", position);
+            if (inReachHeight && distanceSquared <= 2.35 ** 2 && insideArc && !this.isMinibossSwingBlocked(target)) {
+                this.damagePlayer(14, "O experimento de manutenção golpeia você.");
+            }
+            return;
+        }
+        if (enemy.state === "recovering") {
+            if (enemy.stateElapsed < recoverySeconds) {
+                this.poseMiniboss(0, 1 - enemy.stateElapsed / recoverySeconds, 0);
+                return;
+            }
+            enemy.state = "stalking";
+            enemy.stateElapsed = 0;
+        }
+
+        if (inReachHeight && distanceSquared <= 2.1 ** 2 && enemy.attackCooldown <= 0) {
+            if (this.isMinibossSwingBlocked(target)) {
+                enemy.attackCooldown = 0.32;
+            } else {
+                if (distanceSquared > 0.04) enemy.root.rotation.y = Math.atan2(dx, dz);
+                enemy.state = "windup";
+                enemy.stateElapsed = 0;
+                this.poseMiniboss(0.25, 0, 0);
+                this.audio.springRelease(position);
+                this.ui.showSoundCaption("as molas do traje rangem antes do golpe", Math.ceil(windupSeconds * 1000));
+                return;
+            }
+        }
+        if (distanceSquared > 2.1 ** 2) {
+            const distance = Math.sqrt(distanceSquared);
             const speed = this.gasConcentration > 0.5 ? 2.6 : 3.35;
-            this.miniboss.collider.moveWithCollisions(direction.scale(speed * deltaSeconds));
-            this.miniboss.root.rotation.y = Math.atan2(direction.x, direction.z);
-            this.miniboss.state = "stalking";
+            enemy.collider.moveWithCollisions(new Vector3(dx / distance * speed * deltaSeconds, 0, dz / distance * speed * deltaSeconds));
+            enemy.root.rotation.y = Math.atan2(dx, dz);
+            this.poseMiniboss(0, 0, 1);
+        } else {
+            this.poseMiniboss(0, 0, 0);
         }
-        else if (this.miniboss.attackCooldown <= 0) {
-            this.miniboss.state = "attacking";
-            this.miniboss.attackCooldown = 2.3;
-            this.audio.impact(0.72);
-            this.emitNoise("attack", 0.8, "metal", this.miniboss.collider.position);
-            this.damagePlayer(14, "O experimento de manutenção golpeia você.");
-        }
-        const gait = performance.now() * 0.006;
-        this.miniboss.parts.forEach((part, index) => part.rotation.x = Math.sin(gait + index * 1.7) * 0.18);
+    }
+
+    poseMiniboss(raised, followThrough, stride) {
+        const { root, parts, stateElapsed } = this.miniboss;
+        const gait = Math.sin(stateElapsed * 7) * 0.19 * stride;
+        root.rotation.x = -raised * 0.12 + followThrough * 0.34;
+        parts[2].rotation.x = gait - raised * 1.3 + followThrough * 0.65;
+        parts[3].rotation.x = -gait - raised * 1.17 + followThrough * 0.49;
+        parts[4].rotation.x = -gait;
+        parts[5].rotation.x = gait;
+    }
+
+    isMinibossSwingBlocked(target) {
+        const position = this.miniboss.collider.position;
+        const direction = new Vector3(target.x - position.x, target.y + 0.9 - position.y, target.z - position.z);
+        const distance = direction.length();
+        if (distance < 0.08) return false;
+        const pick = this.scene.pickWithRay(new Ray(position, direction.scale(1 / distance), distance), (mesh) =>
+            mesh.checkCollisions && mesh.isEnabled() && mesh !== this.player.collider && mesh !== this.miniboss.collider
+        );
+        return Boolean(pick?.hit && pick.distance < distance - 0.05);
     }
     updateMayaSequence(deltaSeconds) {
         if (this.mayaSequence < 0)
@@ -1814,7 +1927,14 @@ export class Chapter3World {
         this.audio.impact(1.25);
         this.player.damage(reason === "chase" ? 100 : 42);
         if (reason === "chase") {
+            this.traversalMotion = null;
             const checkpointPosition = this.chaseRoute[this.chaseCheckpoint] ?? this.checkpoints.chase1;
+            for (const obstacle of this.traversalObstacles) {
+              const beforeExit = obstacle.type === "vault" ? checkpointPosition.z < obstacle.end.z : checkpointPosition.x < obstacle.end.x && checkpointPosition.z <= obstacle.end.z;
+              if (!beforeExit) continue;
+              obstacle.completed = false;
+              if (obstacle.type === "slide") obstacle.mesh.position.y = 3.1;
+            }
             this.player.health = Math.max(35, this.player.health);
             this.player.teleport(checkpointPosition.clone(), Math.PI);
             this.player.setEnabled(true);
@@ -1851,6 +1971,7 @@ export class Chapter3World {
         obstacle.completed = true;
         this.player.setEnabled(false);
         this.traversalMotion = {
+            obstacle,
             type: obstacle.type,
             elapsed: 0,
             duration: this.settings.simplifiedChase ? 0.42 : obstacle.type === "vault" ? 0.68 : 0.78,
@@ -1859,9 +1980,9 @@ export class Chapter3World {
         };
         if (obstacle.type === "slide")
             obstacle.mesh.position.y += 0.7;
-        this.setChaseCheckpoint(obstacle.checkpoint);
     }
     setChaseCheckpoint(index) {
+        if (this.traversalMotion) return;
         const safe = Math.max(this.chaseCheckpoint, Math.min(4, index));
         if (safe === this.chaseCheckpoint)
             return;

@@ -16,8 +16,10 @@ export class ProceduralMaterials {
             return existing;
         const material = new PBRMaterial(key, this.scene);
         material.albedoTexture = this.makeTexture(kind, variant, false);
-        material.bumpTexture = this.makeTexture(kind, variant, true);
-        material.bumpTexture.level = kind === "plush" ? 0.42 : 0.65;
+        if (this.size > 128) {
+            material.bumpTexture = this.makeTexture(kind, variant, true);
+            material.bumpTexture.level = kind === "plush" ? 0.42 : 0.65;
+        }
         material.useParallax = false;
         material.metallic = kind === "metal" ? 0.56 : kind === "glass" ? 0.04 : 0.02;
         material.roughness = this.roughness(kind);

@@ -50,6 +50,10 @@ globalThis.QuimiCraftFrontier = (() => {
       guide:"Plante uma muda de caramboleira, que pode ser produzida por enxertia. Os frutos se formam nos ramos e têm cinco saliências que desenham uma estrela no corte."}
   ];
   const fruitPhases=["SPROUT","GROWING","RIPE"];
+  const fruitYields={
+    STRAWBERRY:[5,3],DRAGON_FRUIT:[4,3],BLACKBERRY:[6,4],JABUTICABA:[6,4],ACEROLA:[6,4],
+    LIME:[4,3],POMEGRANATE:[4,3],GRAPES:[5,3],STARFRUIT:[4,3]
+  };
   const rootCrops=[
     {key:"BEET",name:"Beterraba",seed:"beet_seed",food:"beet",color:"#ae4260",seconds:29,wildFood:true,
       guide:"Plante uma muda em terra arada. As folhas têm pecíolos avermelhados e a beterraba cresce sob o solo."},
@@ -153,7 +157,8 @@ globalThis.QuimiCraftFrontier = (() => {
       {seed:"bean_seed",food:"beans",wild:B.WILD_BEAN,stages:[B.BEAN_SPROUT,B.BEAN_GROWING,B.BEAN_RIPE],seconds:34,
         guide:"Semeie um feijão. Após a floração, as vagens crescem nos ramos e guardam os grãos."},
       ...rootCrops.map(crop=>({...crop,wild:B["WILD_"+crop.key],stages:fruitPhases.map(phase=>B[crop.key+"_"+phase])})),
-      ...fruits.map(fruit=>({...fruit,regrows:true,wild:B["WILD_"+fruit.key],stages:fruitPhases.map(phase=>B[fruit.key+"_"+phase])}))
+      ...fruits.map(fruit=>({...fruit,regrows:true,yield:fruitYields[fruit.key],
+        wild:B["WILD_"+fruit.key],stages:fruitPhases.map(phase=>B[fruit.key+"_"+phase])}))
     ];
   }
 

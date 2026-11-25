@@ -1,3 +1,4 @@
+import { readCampaignTiming } from "./CampaignClock.js";
 const STORAGE_KEY = "atracao-final-save-v6";
 const ENDING_GALLERY_KEY = "atracao-final-ending-gallery-v1";
 const AUTHORED_ENDINGS = ["dead-by-creature", "saved-by-authorities"];
@@ -122,6 +123,8 @@ export const DEFAULT_SAVE = {
     lootedContainers: [],
     activatedCheckpoints: [],
     guideEnabled: true,
+    campaignPlaySeconds: 0,
+    campaignPlayTimeComplete: false,
     chapter2: { ...DEFAULT_CHAPTER2_SAVE },
     chapter3: { ...DEFAULT_CHAPTER3_SAVE },
     chapter4: { ...DEFAULT_CHAPTER4_SAVE },
@@ -131,15 +134,21 @@ export const DEFAULT_SAVE = {
 };
 export class SaveSystem {
     hasSave() {
-        return localStorage.getItem(STORAGE_KEY) !== null || LEGACY_STORAGE_KEYS.some((key) => localStorage.getItem(key) !== null);
+        return this.load() !== null;
     }
+
     load() {
+        for (const key of [STORAGE_KEY, ...LEGACY_STORAGE_KEYS]) {
+            const save = this.loadCandidate(key);
+            if (save) return save;
+        }
+        return null;
+    }
+
+    loadCandidate(key) {
         try {
-            const raw = localStorage.getItem(STORAGE_KEY)
-                ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find((value) => value !== null)
-                ?? null;
-            if (!raw)
-                return null;
+            const raw = localStorage.getItem(key);
+            if (!raw) return null;
             const parsed = JSON.parse(raw);
             if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3 && parsed.version !== 4 && parsed.version !== 5 && parsed.version !== 6)
                 return null;
@@ -149,6 +158,7 @@ export class SaveSystem {
             ];
             const stageCandidate = typeof parsed.stage === "string" ? parsed.stage : "";
             const stage = stages.includes(stageCandidate) ? stageCandidate : "prologue";
+            const timing = readCampaignTiming(parsed);
             return {
                 version: 6,
                 stage,
@@ -167,6 +177,8 @@ export class SaveSystem {
                 lootedContainers: this.stringArray(parsed.lootedContainers),
                 activatedCheckpoints: this.stringArray(parsed.activatedCheckpoints),
                 guideEnabled: parsed.guideEnabled !== false,
+                campaignPlaySeconds: timing.seconds,
+                campaignPlayTimeComplete: timing.complete,
                 chapter2: this.sanitizeChapter2(parsed.version >= 2 ? parsed.chapter2 : undefined),
                 chapter3: this.sanitizeChapter3(parsed.version >= 3 ? parsed.chapter3 : undefined),
                 chapter4: this.sanitizeChapter4(parsed.version >= 4 ? parsed.chapter4 : undefined),
@@ -194,6 +206,18 @@ export class SaveSystem {
         localStorage.setItem(ENDING_GALLERY_KEY, JSON.stringify(payload.endings));
         LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     }
+    writeCampaignTiming(seconds, complete) {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            const payload = JSON.parse(raw);
+            if (!payload || payload.version !== 6) return;
+            payload.campaignPlaySeconds = seconds;
+            payload.campaignPlayTimeComplete = complete;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch { /* Unavailable storage must not interrupt pause or navigation. */ }
+    }
+
     clear() {
         localStorage.removeItem(STORAGE_KEY);
         LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));

@@ -12,11 +12,15 @@ globalThis.QuimiCraftHorizon=(()=>{
   const minimumRadius=5;
   const preloadRadius=range=>Math.min(6,Math.max(minimumRadius,Math.floor(range*.43)));
   const streamRadius=range=>range+2;
-  function fogRange(range,chunkSize,weather,clarity=null){
-    if(clarity!==null)return {near:2+clarity*3,far:13+clarity*31};
+  function fogRange(range,chunkSize,weather,clarity=null,waterSeconds=0,waterVisibility=1){
+    const far=(range+.52)*chunkSize;
+    if(clarity!==null){
+      const adapted=.36+.64*(1-Math.exp(-waterSeconds/7));
+      return {near:-2+clarity*1.5,far:Math.min(far,(64+clarity*32)*waterVisibility*adapted)};
+    }
     const edge=range*chunkSize;
     const onset={clear:1,rain:.84,snow:.85,storm:.72}[weather]??1;
-    return {near:edge*onset,far:(range+.52)*chunkSize};
+    return {near:edge*onset,far};
   }
   function disk(cx,cz,radius){
     const out=[],limit=(radius+.37)**2;

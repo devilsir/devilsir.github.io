@@ -14,9 +14,8 @@
 .catalog-entry{display:flex;flex-direction:column;margin:0;padding:0;overflow:hidden;text-align:left;border:1px solid #3b5c63;border-radius:8px;background:#122f38;color:#f4faf6;cursor:pointer}
 .catalog-entry:hover{border-color:#a6e2c9;background:#1a3c45}
 .catalog-entry:focus-visible,.catalog-inspector button:focus-visible,.catalog-live-view:focus-visible{outline:2px solid #a6e2c9;outline-offset:-2px}
-.catalog-picture{display:block;width:100%;aspect-ratio:16/11;background:#d9e5e5}
+.catalog-picture{display:block;width:100%;aspect-ratio:16/11;background:#14262e}
 .catalog-picture img{display:block;width:100%;height:100%;object-fit:contain}
-.catalog-picture-unavailable{background:#1e3c43}
 .catalog-entry-name{display:block;font-size:.85rem;font-weight:700;line-height:1.18;margin:7px 8px}
 .catalog-entry-detail{display:block;font-size:.71rem;line-height:1.25;color:#c0d4d0;margin:-3px 8px 8px}
 .catalog-empty{grid-column:1/-1;margin:18px 4px}
@@ -27,21 +26,36 @@
 .catalog-inspector::backdrop{background:#051117c2}
 .catalog-inspector-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
 .catalog-inspector-head .close{flex:none}
-.catalog-viewer{position:relative;height:clamp(166px,51dvh,440px);overflow:hidden;border-radius:10px;background:#d9e5e5}
+.catalog-detail-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:none}
+.catalog-detail-actions [data-note-back]{width:auto;min-height:35px;padding:4px 10px;font-size:.8rem}
+.catalog-viewer{position:relative;height:clamp(166px,51dvh,440px);overflow:hidden;border-radius:10px;background:#14262e}
 .catalog-poster,.catalog-live-view{width:100%;height:100%}
 .catalog-poster{display:block;object-fit:contain}
 .catalog-live-view{cursor:grab;touch-action:none}
 .catalog-live-view:active{cursor:grabbing}
 .catalog-live-view canvas{display:block;width:100%;height:100%}
-.catalog-view-status{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:15px;text-align:center;color:#1c3c46}
+.catalog-view-status{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:15px;text-align:center;color:#c0d4d0}
 .catalog-inspector-tools,.catalog-view-modes,.catalog-model-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .catalog-inspector-tools{justify-content:space-between;margin-top:12px}
+.catalog-animation-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.catalog-animation-controls label{font-size:.87rem;color:#cce5dc}
+.catalog-animation-controls select{min-height:40px;padding:5px 10px;border:1px solid #51767b;border-radius:8px;background:#15353e;color:#f4faf6;font:inherit}
+.catalog-animation-controls select:focus-visible{outline:2px solid #a6e2c9;outline-offset:1px}
 .catalog-inspector-tools button{width:auto;min-width:42px;min-height:40px;padding:5px 12px;font-size:.84rem}
 .catalog-view-modes button[aria-pressed=true]{background:#a6e2c9;color:#17322b;border-color:#a6e2c9}
 .catalog-inspector-tools button:disabled{opacity:.5;cursor:default}
 .catalog-model-help,.catalog-item-detail{margin:9px 0 0;color:#c0d4d0;font-size:.82rem;line-height:1.45}
 .catalog-model-help{font-size:.73rem}
 .catalog-item-detail:empty,.catalog-inspector [hidden]{display:none}
+.catalog-field-notes{margin-top:14px;padding:12px 14px;border:1px solid #385862;border-radius:12px;background:#142e39}
+.catalog-field-notes h3{margin:0 0 4px;color:#a6e2c9;font-size:.82rem}
+.catalog-field-notes p{margin:0;color:#e1eeeb;font-size:.88rem;line-height:1.5}
+.catalog-field-notes p+h3{margin-top:10px}
+.catalog-clues{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:9px}
+.catalog-clue{width:auto;padding:4px 0;border:0;border-radius:2px;background:transparent;color:#b4e8d2;
+  font:inherit;font-size:.84rem;text-align:left;text-decoration:underline;text-underline-offset:.23em;cursor:pointer}
+.catalog-clue:hover{color:#f2fff5}
+.catalog-inspector .catalog-clue:focus-visible{outline-offset:3px}
 .forge-section{font-size:.9rem;color:#f1c081;margin:13px 0 4px}
 .forge-section:first-child{margin-top:0}
 @media (max-width:650px){
@@ -53,3 +67,5 @@
   .catalog-inspector-head .modal-title{font-size:1.25rem}
 }
 
+.catalog-compare:not([hidden]){display:inline-flex;align-items:center;gap:.45rem;font-size:.83rem;cursor:pointer}
+.catalog-compare input{accent-color:#6acdc0}

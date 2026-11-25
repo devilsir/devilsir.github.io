@@ -6,6 +6,7 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Plane } from "@babylonjs/core/Maths/math.plane";
 import { Ray } from "@babylonjs/core/Culling/ray";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { MannequinSystem } from "../entities/MannequinSystem.js";
@@ -146,6 +147,16 @@ export class Chapter2World {
         this.root.setEnabled(false);
         this.mannequins.setChapterEnabled(false);
     }
+    deactivateOnExit() {
+      this.active = false;
+      this.root.setEnabled(false);
+      this.mannequins.setChapterEnabled(false);
+      this.updateMirrorRendering();
+      this.audio.stopLoop("industrial-depths");
+      this.audio.stopLoop("machine-alarm");
+      this.audio.stopMusicBoxTheme();
+    }
+
     startFromElevator() {
         this.active = true;
         this.root.setEnabled(true);
@@ -162,8 +173,7 @@ export class Chapter2World {
         this.audio.startIndustrialDepths();
         this.startChapterSpatialAudio();
         this.objective.set("chapter2-descend", "AGUARDE O ELEVADOR CONCLUIR A DESCIDA.");
-        for (const mirror of this.mirrors)
-            mirror.texture.refreshRate = this.settings.performancePreset === "performance" ? 4 : 2;
+        this.updateMirrorRendering();
     }
     enableForDebug() {
         this.active = true;
@@ -175,8 +185,7 @@ export class Chapter2World {
         this.torchDisabled = false;
         this.player.setEnabled(true);
         this.startChapterSpatialAudio();
-        for (const mirror of this.mirrors)
-            mirror.texture.refreshRate = this.settings.performancePreset === "performance" ? 4 : 2;
+        this.updateMirrorRendering();
     }
     restore(progress, checkpoint) {
         this.active = true;
@@ -209,6 +218,10 @@ export class Chapter2World {
         this.trackSwitchState = progress.trackSwitchState;
         progress.arena2Blockers.forEach((value, index) => this.arena2Blockers[index] = value ?? false);
         this.arena3Pass = progress.arena3Pass;
+        const objectiveId = this.objective.get().id;
+        // Keep later objectives and the torch state when resuming a checkpoint.
+        this.corridorLessonTriggered = checkpoint !== "chapter2-elevator-arrival" && checkpoint !== "chapter2-transition";
+        this.modelingObjectiveTriggered = objectiveId !== "learn-observation" && objectiveId !== "chapter2-descend";
         this.applyRestoredVisualState();
         this.mannequins.setMovementEnabled(true);
         this.mannequins.setRuleCollapse(this.ruleCollapseProgress);
@@ -219,8 +232,7 @@ export class Chapter2World {
             this.audio.startMachineAlarm();
         if (this.mayaEventSeen)
             this.audio.startMusicBoxTheme();
-        for (const mirror of this.mirrors)
-            mirror.texture.refreshRate = this.settings.performancePreset === "performance" ? 4 : 2;
+        this.updateMirrorRendering();
     }
     serialize() {
         return {
@@ -348,22 +360,28 @@ export class Chapter2World {
         this.updateAreaTriggers();
         this.mannequins.update(deltaSeconds);
         this.mirrorRenderAccumulator += deltaSeconds;
-        if (this.mirrorRenderAccumulator > 0.8) {
-            this.mirrorRenderAccumulator = 0;
-            const renderList = this.mannequins.getReflectableMeshes();
-            for (const mirror of this.mirrors)
-                mirror.texture.renderList = renderList;
+        if (this.mirrorRenderAccumulator > 0.24) {
+          this.mirrorRenderAccumulator = 0;
+          this.updateMirrorRendering();
         }
         this.sphereDamageCooldown = Math.max(0, this.sphereDamageCooldown - deltaSeconds);
         this.blackoutDamageCooldown = Math.max(0, this.blackoutDamageCooldown - deltaSeconds);
         this.arena3HydraulicDamageCooldown = Math.max(0, this.arena3HydraulicDamageCooldown - deltaSeconds);
     }
+    updateMirrorRendering() {
+      const near = this.active && Vector3.DistanceSquared(this.player.collider.position, this.checkpoints.mirrorRoom) < 32 * 32;
+      const rate = near ? (this.settings.performancePreset === "performance" ? 4 : 2) : 0;
+      const renderList = near ? this.mannequins.getReflectableMeshes() : [];
+      for (const mirror of this.mirrors) {
+        if (mirror.texture.refreshRate !== rate) mirror.texture.refreshRate = rate;
+        mirror.texture.renderList = renderList;
+      }
+    }
     applySettings(settings) {
         this.settings = settings;
         const mannequinCount = settings.performancePreset === "performance" ? 62 : 80;
         this.mannequins.setCount(mannequinCount);
-        for (const mirror of this.mirrors)
-            mirror.texture.refreshRate = settings.performancePreset === "performance" ? 4 : 2;
+        this.updateMirrorRendering();
     }
     canUseTorch() {
         return !this.active || !this.torchDisabled;
@@ -601,6 +619,10 @@ export class Chapter2World {
             const passageBlocked = !door.open || Math.abs(door.mesh.position.y - door.openY) > 3.25;
             door.mesh.checkCollisions = passageBlocked;
             door.blocker.setEnabled(passageBlocked);
+            if (door.blocker.checkCollisions !== passageBlocked) {
+              this.scene.metadata ??= {};
+              this.scene.metadata.guideObstacleRevision = (this.scene.metadata.guideObstacleRevision ?? 0) + 1;
+            }
             door.blocker.checkCollisions = passageBlocked;
         }
     }
@@ -731,6 +753,32 @@ export class Chapter2World {
             table.position = new Vector3(x, 0.5, z);
             table.material = this.materials.get("metal", tableIndex);
             table.checkCollisions = true;
+            // Preserve the collision volume, but replace the solid block visually.
+            table.isVisible = false;
+            table.isPickable = false;
+            const parts = [];
+            const addPart = (width, height, depth, dx, y, dz) => {
+              const part = MeshBuilder.CreateBox("workbench-part", { width, height, depth }, this.scene);
+              part.position = new Vector3(x + dx, y, z + dz);
+              part.material = table.material;
+              parts.push(part);
+            };
+            addPart(8, 0.16, 2.8, 0, 0.92, 0);
+            addPart(7.4, 0.10, 1.85, 0, 0.31, 0.23);
+            for (const dx of [-3.68, 3.68]) {
+              for (const dz of [-1.08, 1.08]) addPart(0.18, 0.85, 0.18, dx, 0.425, dz);
+            }
+            const bench = Mesh.MergeMeshes(parts, true);
+            if (bench) {
+              bench.name = `modeling-workbench-${tableIndex}`;
+              bench.parent = this.root;
+              bench.isPickable = false;
+            }
+            const vise = MeshBuilder.CreateCylinder(`modeling-vise-${tableIndex}`, { height: 0.3, diameterTop: 0.51, diameterBottom: 0.74, tessellation: 8 }, this.scene);
+            vise.position.set(x - 3.35, 1.15, z - 1.03);
+            vise.parent = this.root;
+            vise.isPickable = false;
+            vise.material = this.materials.solid("modeling-vise-painted", new Color3(0.24, 0.11, 0.075), 0.68);
             for (let partIndex = 0; partIndex < 4; partIndex += 1) {
                 const part = partIndex % 2 === 0
                     ? MeshBuilder.CreateSphere(`model-part-${tableIndex}-${partIndex}`, { diameter: 0.42 + partIndex * 0.06, segments: 8 }, this.scene)
@@ -795,6 +843,7 @@ export class Chapter2World {
         observationConsole.checkCollisions = true;
         this.interaction.register(observationConsole, {
             prompt: () => this.mirrorSolved ? "LINHAS DE OBSERVAÇÃO ESTÁVEIS" : "[E] TESTAR LINHAS DE OBSERVAÇÃO",
+            contextHint: () => this.mirrorSolved ? "Grade liberada" : "Testar o alinhamento dos quatro espelhos",
             onInteract: () => this.evaluateMirrorPuzzle(true)
         });
         const reset = MeshBuilder.CreateBox("mirror-reset-switch", { width: 0.7, height: 0.85, depth: 0.24 }, this.scene);
@@ -1181,6 +1230,7 @@ export class Chapter2World {
             onInteract: () => {
                 if (this.arena3Pass !== 1 || this.sphereState !== "settled")
                     return;
+                this.activeArena = 3;
                 this.sphereState = "arena3-return";
                 this.crushCountThisRun = 0;
                 this.sphereSpeed = 0;
@@ -1235,8 +1285,9 @@ export class Chapter2World {
         lid.material = this.materials.get("wood", 1);
     }
     createDocuments() {
+        this.createDocument("modeling-shift", "BANCADA 02 | LIVRO DE TURNO", "23h10. No primeiro molde, o rosto saiu liso. No segundo, reconheci a menina da ficha M-04 antes de conferir o número. Ela pediu que eu ficasse olhando enquanto o outro funcionário fechava a porta. No formulário, marquei: peça fora de medida.", new Vector3(0.95, 1.045, 247.15));
         this.createDocument("modeling-manual", "MEMORANDO 22-B", "Os sujeitos artificiais devem permanecer imóveis durante a observação direta. Movimento fora da linha de visão é uma resposta esperada do protocolo, não uma falha mecânica.", new Vector3(8, 1.2, 248));
-        this.createDocument("mirror-report", "RELATÓRIO DE ESPELHOS", "A reflexão conta como observação apenas quando o sujeito, o espelho e o observador compartilham uma linha limpa. Vidro sujo reduz a resposta. Vidro quebrado produz zonas cegas perigosas.", new Vector3(-25, 1.2, 271));
+        this.createDocument("mirror-report", "RELATÓRIO DE ESPELHOS", "A reflexão conta como observação apenas quando o sujeito, o espelho e o observador compartilham uma linha limpa. Vidro sujo reduz a resposta. Vidro quebrado produz zonas cegas perigosas.\n\nLeitura padrão, por suporte: 1 e 2 na marca inicial; 3 adiantado três marcas; 4 adiantado uma. Com os quatro ajustados, valide a leitura no console.", new Vector3(-25, 1.2, 271));
         this.createDocument("warehouse-note", "INSTRUÇÃO AO TURNO DA NOITE", "Nunca feche os três corredores de prateleiras ao mesmo tempo. A equipe de resgate precisa conservar uma rota aberta até a grade de energia.", new Vector3(29, 1.2, 274));
         this.createDocument("maya-file", "FICHA M-04 · MAYA", "Reconhecimento facial: instável. Memória residual: elevada. O sujeito pede que Jesse pare de tocar a música. Recomenda-se separar as duas unidades antes do próximo ciclo.", new Vector3(-2, 1.1, 507));
     }
@@ -1275,6 +1326,7 @@ export class Chapter2World {
         this.updateMirrorPlane(rig);
         this.interaction.register(surface, {
             prompt: () => this.mirrorSolved ? `ESPELHO ${index + 1} TRAVADO` : `[E] GIRAR ESPELHO ${index + 1} · ${this.mirrorAngles[index] * 45}°`,
+            contextHint: () => `Espelho ${index + 1}: ${this.mirrorAngles[index] * 45}°`,
             maxDistance: 4,
             onInteract: () => {
                 if (this.mirrorSolved)
@@ -1363,11 +1415,7 @@ export class Chapter2World {
             this.ui.toast("Os suportes encaixaram. Teste as linhas no console.", 1800);
             return;
         }
-        const visibleTargets = this.mirrorTargets.filter((position) => this.isObservedThroughMirror(position)).length;
-        if (visibleTargets < 2) {
-            this.ui.toast("A posição está correta, mas você precisa olhar para o conjunto de espelhos.");
-            return;
-        }
+        // The console checks the aligned supports, independently of where the player looks.
         this.mirrorSolved = true;
         const door = this.scene.getMeshByName("mirror-cell-container-door");
         if (door) {
@@ -1674,6 +1722,10 @@ export class Chapter2World {
             this.ui.toast("A trava do Teste C depende do circuito anterior.");
             return;
         }
+        if (arena === 3 && this.arena3Pass === 1) {
+          this.ui.toast("A esfera aguarda no fim do trilho. Use o guincho de retorno.");
+          return;
+        }
         this.activeArena = arena;
         this.crushCountThisRun = 0;
         this.sphereSpeed = 0;
@@ -1911,6 +1963,7 @@ export class Chapter2World {
             this.objective.set("sphere-return", "ACIONE O GUINCHO DE RETORNO E ALCANCE UMA ZONA SEGURA.");
             this.ui.showSoundCaption("uma segunda onda atravessa as portas laterais", 1800);
             this.mannequins.emitLure(new Vector3(0, 0, 477), 1.6, 10);
+            this.callbacks.onCheckpoint("chapter2-arena-3-return");
         }
         else if (this.sphereState === "arena3-return") {
             if (this.crushCountThisRun < 1) {
@@ -2054,11 +2107,11 @@ export class Chapter2World {
             this.objective.set("blackout-control", "ATIVE AS TRÊS CHAVES DE RESERVA ENTRE OS APAGÕES.");
             this.ui.showSoundCaption("um relé inicia uma contagem mecânica", 1500);
         }
-        if (this.machineActivated && this.completedArenas.has(1) && !this.completedArenas.has(2) && position.z > 418) {
+        if (this.machineActivated && this.completedArenas.has(1) && !this.completedArenas.has(2) && this.activeArena !== 2 && position.z > 418) {
             this.activeArena = 2;
             this.objective.set("sphere-arena-2", "ESCOLHA O RAMO CERTO E USE O SOM PARA POSICIONAR O GRUPO.");
         }
-        if (this.completedArenas.has(2) && !this.completedArenas.has(3) && position.z > 458) {
+        if (this.completedArenas.has(2) && !this.completedArenas.has(3) && this.activeArena !== 3 && this.arena3Pass === 0 && position.z > 458) {
             this.activeArena = 3;
             this.objective.set("sphere-arena-3", "SOBREVIVA ÀS ONDAS E USE A ESFERA DUAS VEZES.");
         }
@@ -2384,15 +2437,17 @@ export class Chapter2World {
         }
         if (this.machineActivated) {
             this.machineRedLights.forEach((light) => light.intensity = 4.5);
-            if (this.completedArenas.has(3))
-                this.sphere.position = new Vector3(0, 3.45, 463);
-            else if (this.completedArenas.has(2))
-                this.sphere.position = new Vector3(0, 3.45, 462);
-            else if (this.completedArenas.has(1))
-                this.sphere.position = new Vector3(0, 3.45, 416);
-            else
-                this.sphere.position = new Vector3(0, 3.45, 354);
-            this.sphereState = this.completedArenas.size > 0 ? "settled" : this.sphereState;
+            // Resume at the correct end of the track. In-flight runs can be retried,
+            // since older saves do not include sphere position, target or hit count.
+            const readyForReturn = !this.completedArenas.has(3) && this.arena3Pass === 1;
+            const trackZ = this.completedArenas.has(3) ? 463 : readyForReturn ? 496
+              : this.completedArenas.has(2) ? 462 : this.completedArenas.has(1) ? 416 : 354;
+            this.sphere.position = new Vector3(0, 3.45, trackZ);
+            this.sphereState = this.completedArenas.size > 0 ? "settled" : "docked";
+            if (readyForReturn) {
+              this.activeArena = 3;
+              this.objective.set("sphere-return", "ACIONE O GUINCHO DE RETORNO E ALCANCE UMA ZONA SEGURA.");
+            }
         }
         if (this.completedArenas.has(3)) {
             const panels = this.scene.meshes.filter((mesh) => mesh.name.startsWith("arena3-hanging-panel-"));

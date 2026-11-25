@@ -34,8 +34,21 @@ globalThis.QuimiCraftDepths=(()=>{
     fresh:{id:"fresh",label:"Água doce profunda",rgb:[.16,.47,.53],chem:{id:"fresh"}}
   };
   const fauna=Object.freeze({
-    orca:{name:"Orca",habitat:"Mar glacial e águas costeiras frias",speed:2.82,extent:1.21,minDepth:8,swim:.42,mode:"pod",hp:86,damage:0},
+    leatherback:{name:"Tartaruga-de-couro gigante",scientific:"Dermochelys coriacea",habitat:"Mar aberto e águas costeiras",speed:1.27,extent:.73,minDepth:5,swim:.3,mode:"cruise",hp:75,damage:0,bodySize:1.78,waters:["salt"]},
+    seahorse_red:{name:"Cavalo-marinho vermelho espinhoso",habitat:"Águas costeiras e vegetação submersa",speed:.33,extent:.09,minDepth:2,swim:.71,mode:"drift",hp:6,damage:0,bodySize:.18,sizeAxis:"y",small:true,waters:["salt"]},
+    seahorse_gold:{name:"Cavalo-marinho dourado rajado",habitat:"Águas costeiras rasas",speed:.37,extent:.10,minDepth:2,swim:.69,mode:"drift",hp:7,damage:0,bodySize:.19,sizeAxis:"y",small:true,waters:["salt"]},
+    shrimp_pink:{name:"Camarão-rosa",scientific:"Farfantepenaeus brasiliensis",habitat:"Fundos arenosos costeiros",speed:.55,extent:.14,minDepth:2,swim:.87,mode:"bottom",hp:5,damage:0,bodySize:.21,small:true,waters:["salt"],drop:"raw_shrimp"},
+    shrimp_seabob:{name:"Camarão-sete-barbas",scientific:"Xiphopenaeus kroyeri",habitat:"Fundos rasos de areia e lama",speed:.47,extent:.11,minDepth:2,swim:.9,mode:"bottom",hp:4,damage:0,bodySize:.14,small:true,waters:["salt"],drop:"raw_shrimp"},
+    shrimp_white:{name:"Camarão-branco",scientific:"Litopenaeus schmitti",habitat:"Costas e desembocaduras salobras",speed:.52,extent:.13,minDepth:2,swim:.87,mode:"bottom",hp:9,damage:0,bodySize:.19,small:true,waters:["salt"],drop:"raw_shrimp"},
+    shrimp_pitu:{name:"Camarão-pitu",scientific:"Macrobrachium carcinus",habitat:"Rios e remansos de água doce tropical",speed:.49,extent:.17,minDepth:2,swim:.91,mode:"bottom",hp:11,damage:0,bodySize:.26,small:true,waters:["fresh","tannin"],tropical:true,drop:"raw_shrimp"},
+    orca:{name:"Orca",habitat:"Mar glacial e águas costeiras frias",speed:2.82,extent:1.67,minDepth:8,swim:.35,mode:"pod",hp:86,damage:0},
+    humpback:{name:"Baleia-jubarte",habitat:"Águas marinhas profundas, nas bacias costeiras e glaciais",speed:1.72,extent:2.45,minDepth:10,swim:.36,mode:"whale",hp:180,damage:0},
     dolphin:{name:"Golfinho",habitat:"Mar aberto e costa",speed:3.14,extent:.79,minDepth:5,swim:.43,mode:"curious",hp:39,damage:0},
+    mermaid:{name:"Sereia",habitat:"Costas e bacias marinhas",speed:2.33,extent:.68,minDepth:4,swim:.49,baseClearance:1.48,surfaceClearance:.92,mode:"curious",hp:57,damage:0},
+    fishfolk_tail:{name:"Homem-peixe de Cauda",habitat:"Águas costeiras e estuários",speed:2.17,extent:.72,minDepth:4,swim:.55,baseClearance:1.48,surfaceClearance:.92,mode:"curious",hp:66,damage:9,
+      attack:{kind:"tail",range:1.48,notice:3.6,windup:.45,strike:.29,recover:.56,cooldown:2.6}},
+    fishfolk_head:{name:"Homem-peixe de Cabeça",habitat:"Pântanos, manguezais e deltas",speed:1.83,extent:.66,minDepth:3,swim:.72,baseClearance:1.10,surfaceClearance:1.02,mode:"ambush",hp:62,damage:12,
+      attack:{kind:"bite",range:1.50,notice:4.65,windup:.55,strike:.27,recover:.55,cooldown:2.7}},
     caiman:{name:"Jacaré",habitat:"Manguezal, delta e pântano",speed:1.30,extent:.80,minDepth:3,swim:.21,mode:"ambush",damage:11,hp:47,drop:"raw_game",
       attack:{kind:"bite",range:1.55,notice:5.2,windup:.67,strike:.34,recover:.66,cooldown:3.35}},
     piranha:{name:"Piranha",habitat:"Água doce tropical",speed:2.04,extent:.27,minDepth:3,swim:.50,mode:"school",damage:4,hp:12,drop:"raw_piranha",
@@ -44,6 +57,10 @@ globalThis.QuimiCraftDepths=(()=>{
       attack:{kind:"bite",range:1.66,notice:7.5,windup:.49,strike:.34,recover:.69,cooldown:3.05}},
     ray:{name:"Raia",habitat:"Fundo marinho e estuários",speed:1.52,extent:.63,minDepth:4,swim:.82,mode:"bottom",hp:25,damage:6,drop:"raw_fish",
       attack:{kind:"tail",range:1.12,notice:3.2,windup:.39,strike:.29,recover:.54,cooldown:2.55}},
+    venom_ray:{name:"Arraia Venenosa",habitat:"Estuários salobros e fundo marinho",speed:1.42,extent:.61,minDepth:4,swim:.83,mode:"bottom",hp:29,damage:8,drop:"venom",
+      attack:{kind:"tail",venom:true,range:1.28,notice:3.5,windup:.42,strike:.31,recover:.56,cooldown:2.65}},
+    pufferfish:{name:"Baiacu",habitat:"Águas costeiras",speed:.86,extent:.33,minDepth:3,swim:.53,mode:"defensive",hp:14,damage:3,drop:"venom",
+      attack:{kind:"sting",venom:true,range:.64,notice:1.26,windup:.46,strike:.21,recover:.45,cooldown:2.30}},
     jelly:{name:"Água-viva",habitat:"Águas marinhas profundas",speed:.55,extent:.32,minDepth:6,swim:.65,mode:"drift",hp:8,damage:2.5,
       attack:{kind:"sting",range:.69,notice:1.04,windup:.34,strike:.24,recover:.35,cooldown:2.10}}
   });
@@ -186,17 +203,25 @@ globalThis.QuimiCraftDepths=(()=>{
       return 0;
     }
     function eligible(biome,lake,water,depth){
+      const references=Object.entries(fauna).filter(([,p])=>p.waters?.includes(water)&&depth>=p.minDepth&&
+        (!p.tropical||hot.has(biome))).map(([id])=>id);
+      return [...residentFauna(biome,lake,water,depth),...references];
+    }
+    function residentFauna(biome,lake,water,depth){
       if(water==="acid"||water==="thermal"||!lake&&!kindFallback.has(water))return [];
       const zone=lake?(water==="cold"?"glacial":water==="salt"?"marine":"fresh"):null;
       const wetland=biome==="manguezal"||biome==="delta salobro"||biome==="pântano";
       if(wetland&&depth>=3&&zone!=="glacial"&&(!lake||lake.radius>.46||zone!=="marine")){
-        return depth>=4&&water==="salt"?["caiman","caiman","ray"]:["caiman"];
+        return depth>=4&&water==="salt"?["caiman","ray","venom_ray","pufferfish","fishfolk_head","fishfolk_tail"]:["caiman","fishfolk_head"];
       }
-      if(zone==="glacial"||!lake&&water==="cold"&&polar.has(biome))return depth>=8?["orca","orca","jelly"]:depth>=6?["jelly"]:[];
+      if(zone==="glacial"||!lake&&water==="cold"&&polar.has(biome)){
+        return depth>=8?["orca","orca","jelly",...(depth>=fauna.humpback.minDepth?["humpback"]:[])]:depth>=6?["jelly"]:[];
+      }
       if(zone==="marine"||water==="salt"&&!hot.has(biome)){
-        if(depth>=8&&zone==="marine")return ["dolphin","dolphin","reef_shark","ray","jelly"];
-        if(depth>=6)return ["dolphin","reef_shark","ray"];
-        return depth>=4?["ray"]:[];
+        if(depth>=8&&zone==="marine")return ["dolphin","dolphin","reef_shark","ray","jelly","venom_ray","pufferfish","mermaid","fishfolk_tail",
+          ...(depth>=fauna.humpback.minDepth?["humpback","humpback"]:[])];
+        if(depth>=6)return ["dolphin","reef_shark","ray","venom_ray","pufferfish","mermaid","fishfolk_tail"];
+        return depth>=4?["ray","venom_ray","pufferfish","fishfolk_tail","mermaid"]:depth>=3?["pufferfish"]:[];
       }
       if(depth<3||!hot.has(biome))return [];
       if(water==="salt"||water==="cold")return [];

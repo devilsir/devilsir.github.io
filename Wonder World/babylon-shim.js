@@ -13,6 +13,7 @@ export const FreeCamera = B.FreeCamera;
 export const HemisphericLight = B.HemisphericLight;
 export const HighlightLayer = B.HighlightLayer;
 export const Matrix = B.Matrix;
+export const Mesh = B.Mesh;
 export const MeshBuilder = B.MeshBuilder;
 export const MirrorTexture = B.MirrorTexture;
 export const PBRMaterial = B.PBRMaterial;

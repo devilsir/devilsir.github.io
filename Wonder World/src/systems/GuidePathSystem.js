@@ -17,6 +17,7 @@ export class GuidePathSystem {
     animationTime = 0;
     maxMarkers = 48;
     cachedRoute = null;
+    displayedRoute = null;
     cachedSignature = "";
     cacheUntil = 0;
     constructor(scene, materials, player, routeProvider) {
@@ -92,6 +93,8 @@ export class GuidePathSystem {
         const playerPoint = this.player.collider.getAbsolutePosition().clone();
         const authoredPoints = [playerPoint, ...route.map((point) => point.clone())];
         const points = this.getCollisionAwareRoute(authoredPoints);
+        if (points === this.displayedRoute) return;
+        this.displayedRoute = points;
         const segmentLengths = [];
         let totalLength = 0;
         for (let segment = 0; segment < points.length - 1; segment += 1) {
@@ -145,14 +148,16 @@ export class GuidePathSystem {
         });
     }
     getCollisionAwareRoute(points) {
-        const signature = points.map((point, index) => {
+        const signature = (this.scene?.metadata?.guideObstacleRevision ?? 0) + "|" + points.map((point, index) => {
             const precision = index === 0 ? 1.2 : 0.25;
             return `${Math.round(point.x / precision)},${Math.round(point.y / precision)},${Math.round(point.z / precision)}`;
         }).join("|");
         const now = performance.now();
         if (this.cachedRoute && this.cachedSignature === signature && now < this.cacheUntil)
-            return this.cachedRoute.map((point) => point.clone());
+            return this.cachedRoute;
         const result = [points[0].clone()];
+        const routeDeadline = now + 15;
+        let partial = false;
         for (let index = 0; index < points.length - 1; index += 1) {
             const start = result[result.length - 1];
             const end = points[index + 1].clone();
@@ -160,44 +165,33 @@ export class GuidePathSystem {
                 result.push(end);
                 continue;
             }
-            const navigationPath = this.findNavigationPath(start, end);
-            if (navigationPath && navigationPath.length > 1)
-                navigationPath.slice(1).forEach((point) => result.push(point));
-            else {
-                const detour = this.findSimpleDetour(start, end);
-                if (detour)
-                    detour.forEach((point) => result.push(point));
-                else
-                    result.push(end);
+            const detour = this.findSimpleDetour(start, end, now + 8);
+            if (detour) {
+                result.push(...detour);
+                continue;
             }
+            const navigationPath = this.findNavigationPath(start, end, routeDeadline);
+            if (navigationPath && navigationPath.length > 1) {
+                result.push(...navigationPath.slice(1));
+                continue;
+            }
+            // Do not point through an unchecked wall when the search runs out of budget.
+            partial = true;
+            break;
         }
-        const simplified = this.simplifyRoute(result);
         this.cachedSignature = signature;
-        this.cachedRoute = simplified.map((point) => point.clone());
-        this.cacheUntil = now + 520;
-        return simplified;
-    }
-    simplifyRoute(points) {
-        if (points.length <= 2)
-            return points;
-        const result = [points[0].clone()];
-        let anchor = 0;
-        while (anchor < points.length - 1) {
-            let next = points.length - 1;
-            while (next > anchor + 1 && !this.segmentIsClear(points[anchor], points[next], next === points.length - 1))
-                next -= 1;
-            result.push(points[next].clone());
-            anchor = next;
-        }
+        this.cachedRoute = result;
+        this.cacheUntil = performance.now() + (partial ? 1500 : 950);
         return result;
     }
-    findSimpleDetour(start, end) {
+    findSimpleDetour(start, end, deadline) {
         const flat = new Vector3(end.x - start.x, 0, end.z - start.z);
         if (flat.lengthSquared() < 0.01)
             return null;
         flat.normalize();
         const perpendicular = new Vector3(-flat.z, 0, flat.x);
         for (const offset of [1.8, -1.8, 3.2, -3.2, 4.8, -4.8, 6.4, -6.4]) {
+            if (performance.now() >= deadline) return null;
             const first = Vector3.Lerp(start, end, 0.28).add(perpendicular.scale(offset));
             const second = Vector3.Lerp(start, end, 0.72).add(perpendicular.scale(offset));
             first.y = this.findFloorHeight(first);
@@ -206,13 +200,15 @@ export class GuidePathSystem {
                 return [first, second, end.clone()];
         }
         for (const corner of [new Vector3(start.x, start.y, end.z), new Vector3(end.x, end.y, start.z)]) {
+            if (performance.now() >= deadline) return null;
             corner.y = this.findFloorHeight(corner);
             if (this.segmentIsClear(start, corner) && this.segmentIsClear(corner, end, true))
                 return [corner, end.clone()];
         }
         return null;
     }
-    findNavigationPath(start, end) {
+    findNavigationPath(start, end, deadline) {
+        if (performance.now() >= deadline) return null;
         const step = 1.45;
         const margin = 5.2;
         const minX = Math.floor((Math.min(start.x, end.x) - margin) / step) * step;
@@ -289,6 +285,7 @@ export class GuidePathSystem {
             if (!currentPoint)
                 continue;
             for (const [dx, dz, cost] of directions) {
+                if (performance.now() >= deadline) return null;
                 const nx = current.x + dx;
                 const nz = current.z + dz;
                 if (nx < 0 || nx >= cols || nz < 0 || nz >= rows)
@@ -321,14 +318,21 @@ export class GuidePathSystem {
         horizontal.normalize();
         const origin = new Vector3(start.x, Math.max(start.y, end.y) + 0.82, start.z).add(horizontal.scale(0.12));
         const rayLength = Math.max(0.05, length - 0.12);
-        const pick = this.scene.pickWithRay(new Ray(origin, horizontal, rayLength), (mesh) => this.isNavigationBlocker(mesh));
+        const pick = this.scene.pickWithRay(new Ray(origin, horizontal, rayLength), (mesh) => this.isNavigationBlocker(mesh)
+            && this.overlapsXZ(mesh, start.x, start.z, end.x, end.z));
         if (!pick?.hit)
             return true;
         const tolerance = allowDestinationContact ? 0.78 : 0.18;
         return Number(pick.distance ?? 0) >= rayLength - tolerance;
     }
+    overlapsXZ(mesh, x0, z0, x1 = x0, z1 = z0) {
+        const { minimumWorld: min, maximumWorld: max } = mesh.getBoundingInfo().boundingBox;
+        const margin = 0.75;
+        return max.x >= Math.min(x0, x1) - margin && min.x <= Math.max(x0, x1) + margin
+            && max.z >= Math.min(z0, z1) - margin && min.z <= Math.max(z0, z1) + margin;
+    }
     isNavigationBlocker(mesh) {
-        if (!mesh.isEnabled() || !mesh.checkCollisions || mesh.metadata?.guideMarker || mesh.metadata?.guideFloor)
+        if (mesh === this.player.collider || !mesh.isEnabled() || !mesh.checkCollisions || mesh.metadata?.guideMarker || mesh.metadata?.guideFloor)
             return false;
         const name = mesh.name.toLowerCase();
         if (name.includes("floor") || name.includes("ground") || name.includes("foundation") || name.includes("ceiling") || name.includes("roof") || name.includes("stage") || name.includes("platform") || name.includes("ramp") || name.includes("track"))
@@ -338,10 +342,10 @@ export class GuidePathSystem {
     findFloorPoint(point) {
         const expectedY = Number.isFinite(point.y) ? point.y : this.player.collider.position.y;
         const origin = new Vector3(point.x, expectedY + 2.8, point.z);
-        const pick = this.scene.pickWithRay(new Ray(origin, new Vector3(0, -1, 0), 6.8), (mesh) => this.isGuideFloor(mesh));
+        const pick = this.scene.pickWithRay(new Ray(origin, new Vector3(0, -1, 0), 6.8), (mesh) => this.isGuideFloor(mesh) && this.overlapsXZ(mesh, point.x, point.z));
         if (pick?.hit && pick.pickedPoint)
             return pick.pickedPoint.clone();
-        const fallback = this.scene.pickWithRay(new Ray(new Vector3(point.x, expectedY + 1.4, point.z), new Vector3(0, -1, 0), 4.2), (mesh) => mesh.checkCollisions && mesh.isEnabled() && !this.isGuideBlocker(mesh));
+        const fallback = this.scene.pickWithRay(new Ray(new Vector3(point.x, expectedY + 1.4, point.z), new Vector3(0, -1, 0), 4.2), (mesh) => mesh !== this.player.collider && mesh.checkCollisions && mesh.isEnabled() && !this.isGuideBlocker(mesh) && this.overlapsXZ(mesh, point.x, point.z));
         if (fallback?.hit && fallback.pickedPoint)
             return fallback.pickedPoint.clone();
         return null;
@@ -354,7 +358,7 @@ export class GuidePathSystem {
         return Math.max(0.02, expectedY - 0.08);
     }
     isGuideFloor(mesh) {
-        if (!mesh.checkCollisions || !mesh.isEnabled() || this.isGuideBlocker(mesh))
+        if (mesh === this.player.collider || !mesh.checkCollisions || !mesh.isEnabled() || this.isGuideBlocker(mesh))
             return false;
         const name = mesh.name.toLowerCase();
         return Boolean(mesh.metadata?.guideFloor
@@ -379,6 +383,7 @@ export class GuidePathSystem {
             || name.includes("foundation"));
     }
     hideAll() {
+        this.displayedRoute = null;
         this.markers.forEach((marker) => marker.setEnabled(false));
     }
 }

@@ -19,6 +19,7 @@
     biological: "Contaminação biológica",
     smoke: "Fumaça",
     fire: "Fogo e calor",
+    thermal: "Variação térmica",
     electric: "Eletricidade",
     pressure: "Pressão",
     physical: "Impacto físico",
@@ -677,6 +678,7 @@
   });
 
   const STATIONS = Object.freeze({
+    ...globalThis.QuimiCraftFieldLab?.stations,
     chemistry_workbench: Object.freeze({
       id: "chemistry_workbench",
       name: "Bancada de Química",
@@ -811,6 +813,7 @@
   ]);
 
   const REACTIONS = Object.freeze([
+    ...(globalThis.QuimiCraftFieldLab?.reactions??[]),
     Object.freeze({
       id: "sodium_water",
       name: "Sódio em água",
@@ -1079,6 +1082,7 @@
   });
 
   const ANALYSIS_PROPERTIES = Object.freeze({
+    ...globalThis.QuimiCraftFieldLab?.analyses,
     microscope: Object.freeze(["biologicalContamination", "microorganisms", "appearance"]),
     spectrometer: Object.freeze(["composition", "radioactivity", "magneticBehavior"]),
     precision_balance: Object.freeze(["mass", "density"]),
@@ -1474,7 +1478,7 @@
 
     function protectionSummary(equippedIds) {
       const ids = [...new Set((equippedIds || []).filter(Boolean))];
-      const protection = Object.fromEntries([...HAZARD_KEYS, "fire", "electric", "pressure", "physical", "splash"].map(key => [key, 0]));
+      const protection = Object.fromEntries(Object.keys(HAZARD_LABELS).map(key => [key, 0]));
       let insulation = 0;
       let heatResistance = 0;
       let coldResistance = 0;
@@ -1997,7 +2001,7 @@
       grantResearchPoints(3, `experimento: ${reaction.name}`);
       addObservation(`${reaction.name} concluída em ${STATIONS[stationId]?.name || stationId}: ${reaction.equation}.`, "reaction");
       emit(true);
-      return { ok: true, failed: false, reaction: clone(reaction), message: `${reaction.name} concluída com segurança.` };
+      return { ok: true, failed: false, reaction: clone(reaction), message: `${reaction.name} concluída.` };
     }
 
     function waterProfileFor(context) {

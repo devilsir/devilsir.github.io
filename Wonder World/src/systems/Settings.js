@@ -1,3 +1,19 @@
+export const GRAPHICS_QUALITY = {
+  lite:        { maxPixels: 64000,   minScale: 2.15, fps: 24, textureSize: 128, effects: 0, fog: 0.014 },
+  performance: { maxPixels: 112000,  minScale: 1.75, fps: 30, textureSize: 128, effects: 1, fog: 0.014 },
+  balanced:    { maxPixels: 270000,  minScale: 1.25, fps: 45, textureSize: 256, effects: 2, fog: 0.017 },
+  high:        { maxPixels: 650000,  minScale: 1,    fps: 60, textureSize: 256, effects: 3, fog: 0.019 },
+  cinematic:   { maxPixels: 2100000, minScale: 1,    fps: 60, textureSize: 512, effects: 4, fog: 0.021 }
+};
+
+export const GRAPHICS_OPTIONS = [
+  ["lite", "Muito leve"],
+  ["performance", "Desempenho"],
+  ["balanced", "Equilibrado"],
+  ["high", "Alto"],
+  ["cinematic", "Cinemático"]
+];
+
 export const DEFAULT_SETTINGS = {
     masterVolume: 0.82,
     effectsVolume: 0.82,
@@ -20,7 +36,7 @@ export const DEFAULT_SETTINGS = {
     extendedBossWindows: false,
     extendedPuzzleWindows: false,
     simplifiedChase: false,
-    performancePreset: "balanced"
+    performancePreset: "performance"
 };
 const STORAGE_KEY = "atracao-final-settings-v1";
 const clamp = (value, min, max, fallback) => {
@@ -57,9 +73,9 @@ export class SettingsStore {
     sanitize(raw) {
         const sprintMode = raw.sprintMode === "toggle" ? "toggle" : "hold";
         const crouchMode = raw.crouchMode === "toggle" ? "toggle" : "hold";
-        const performancePreset = raw.performancePreset === "performance" || raw.performancePreset === "cinematic"
+        const performancePreset = typeof raw.performancePreset === "string" && Object.hasOwn(GRAPHICS_QUALITY, raw.performancePreset)
             ? raw.performancePreset
-            : "balanced";
+            : DEFAULT_SETTINGS.performancePreset;
         return {
             masterVolume: clamp(raw.masterVolume, 0, 1, DEFAULT_SETTINGS.masterVolume),
             effectsVolume: clamp(raw.effectsVolume, 0, 1, DEFAULT_SETTINGS.effectsVolume),

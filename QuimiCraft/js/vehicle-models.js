@@ -63,7 +63,12 @@ globalThis.QuimiCraftVehicleModels = (() => {
         tube(cab,"steel",f(side),r(side),.043);
         tube(cab,"brass",fTop(side),rTop(side),.042);
         tube(cab,"steel",[side*w,base+.025,.41],[side*(w-.055),high,.41],.026);
-        plate(cab,skin,side*.61,.286,.29,.065,.12,.76);
+        const sill=[side*(w-.025),-.19,front+.03],rearSill=[side*(w-.025),-.19,back-.015];
+        mesh(cab,padded,skin,side*(w-.027),.063,(front+back)*.5,.083,.51,1.31);
+        tube(cab,"steel",sill,rearSill,.035);
+        tube(cab,"edge",sill,f(side),.028);
+        tube(cab,"edge",rearSill,r(side),.028);
+        plate(cab,"steel",side*(w+.012),-.147,.16,.032,.043,.91);
         plate(cab,"ink",side*(w-.022),.36,.17,.052,.107,.82);
         plate(cab,"seat",side*(w-.039),.392,.22,.049,.088,.64);
         plate(cab,"brass",side*(w-.019),.415,.31,.027,.028,.155);
@@ -73,6 +78,9 @@ globalThis.QuimiCraftVehicleModels = (() => {
         plate(cab,"ink",side*(w+.17),.64,-.545,.135,.16,.07);
         plate(cab,"chrome",side*(w+.17),.64,-.499,.111,.13,.018);
       }
+      mesh(cab,padded,skin,0,.063,front+.045,2*w-.04,.50,.10);
+      mesh(cab,padded,skin,0,.052,back-.037,2*w-.035,.49,.10);
+      plate(cab,"edge",0,-.182,back-.025,2*w-.06,.068,.11);
       tube(cab,"steel",f(-1),f(1),.044);
       tube(cab,"steel",r(-1),r(1),.044);
       tube(cab,"edge",[0,base,front],[0,high,shield],.016);
@@ -358,16 +366,205 @@ globalThis.QuimiCraftVehicleModels = (() => {
       for(let i=0;i<12;i++)rig.belt.push(plate(drive,"edge",.12,0,0,.037,.039,.063));
       return rig;
     }
+    const hulls=new Map();
+    const boatStyles={
+      dinghy:{rail:"wood",hull:"wood",deck:"cream",free:.35,stem:.18,stern:.49},
+      boat:{rail:"cream",hull:"teal",deck:"wood",free:.49,stem:.30,stern:.67},
+      ship:{rail:"edge",hull:"steel",deck:"wood",free:.83,stem:.58,stern:.68},
+      speedboat:{rail:"cream",hull:"red",deck:"cream",free:.43,stem:.20,stern:.91}
+    };
+    function hullStations(length,style){
+      return [[-1,.07,style.stem],[-.95,.24,style.stem*.80],[-.83,.54,style.stem*.49],
+        [-.66,.76,style.stem*.22],[-.43,.90,.025],[-.16,1,0],[.17,1,0],[.48,.97,-.016],
+        [.73,.90,0],[.94,style.stern,0],[1,style.stern*.90,.028]].map(([z,width,height])=>[z*length,width,height]);
+    }
+    function buildHull(kind,p,style,stations){
+      if(hulls.has(kind))return hulls.get(kind);
+      const profile=[[-1,0],[-.96,.31],[-.78,.66],[-.49,.86],[0,1],[.49,.86],[.78,.66],[.96,.31],[1,0]];
+      const points=[],colors=[],indices=[],distance=p.halfZ,tones=[palette[style.hull],0x222e35,palette[style.rail]].map(c=>new THREE.Color(c));
+      for(const [i,[z,w,rake]] of stations.entries()){
+        for(const [j,[u,v]] of profile.entries()){
+          const depth=(style.free+p.draft)*v*(.73+.27*w)-rake*(1-v);
+          points.push(u*p.halfX*w,style.free-depth,z);
+          const color=tones[0].clone().lerp(tones[1],Math.min(.82,v*.96));
+          if(v<.36)color.lerp(tones[2],v<.05?.48:.12);
+          color.multiplyScalar(.94+Math.cos(z/distance*6)*.055);
+          colors.push(...color.toArray());
+          if(i===0||j===0)continue;
+          const a=(i-1)*profile.length+j-1,b=a+1,c=a+profile.length,d=c+1;
+          indices.push(a,b,c,b,d,c);
+        }
+      }
+      const tail=(stations.length-1)*profile.length;
+      for(let j=1;j<profile.length-1;j++)indices.push(0,j,j+1,tail,tail+j+1,tail+j);
+      const geo=new THREE.BufferGeometry();
+      geo.setAttribute("position",new THREE.Float32BufferAttribute(points,3));
+      geo.setAttribute("color",new THREE.Float32BufferAttribute(colors,3));
+      geo.setIndex(indices);geo.computeVertexNormals();
+      hulls.set(kind,geo);
+      return geo;
+    }
+    const hullMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.47,metalness:.15,side:THREE.DoubleSide});
+    const canvasMat=new THREE.MeshStandardMaterial({color:0xe7ddbf,roughness:.93,side:THREE.DoubleSide});
+    const canvasEdge=new THREE.MeshStandardMaterial({color:0x567871,roughness:.9,side:THREE.DoubleSide});
+    function boatFurniture(g,layout,style){
+      const {chest,mast}=layout;
+      const cargo=pivot(g,chest.x,chest.y,chest.z);cargo.name="Baú de bordo";
+      plate(cargo,"wood",0,chest.h*.35,0,chest.w,chest.h*.70,chest.d);
+      const lid=pivot(cargo,0,chest.h*.68,chest.d*.40);
+      plate(lid,"wood",0,chest.h*.10,-chest.d*.40,chest.w*1.02,chest.h*.27,chest.d*1.05);
+      for(const side of [-1,1]){
+        plate(cargo,"edge",side*chest.w*.32,chest.h*.36,0,.045,chest.h*.75,chest.d*1.035);
+        plate(lid,"steel",side*chest.w*.32,chest.h*.16,-chest.d*.40,.047,chest.h*.24,chest.d*1.08);
+      }
+      plate(cargo,"brass",0,chest.h*.56,-chest.d*.52,.10,.102,.024);
+      plate(cargo,"edge",0,chest.h*.57,-chest.d*.55,.025,.027,.012);
+      const footing=pivot(g,mast.x,mast.y,mast.z);footing.name="Mastro e vela de bordo";
+      plate(footing,"edge",0,.045,0,.22,.09,.22);
+      tube(footing,"wood",[0,.04,0],[0,mast.height,0],.042);
+      tube(footing,"brass",[0,mast.height-.10,0],[0,mast.height+.02,0],.052);
+      const boom=pivot(footing,0,.03,0);
+      const {height,width}=mast,top=height*.91,bottom=height*.29;
+      const points=[],uv=[],indices=[],segments=13,strips=12;
+      const profile=(u,v)=>[(1-v)*width*u,.022*Math.sin(v*5)*u+bottom+(top-bottom)*v,.15*Math.sin(u*Math.PI)*(1-v)];
+      for(let y=0;y<=strips;y++)for(let x=0;x<=segments;x++){
+        const u=x/segments,v=y/strips*.984;
+        points.push(...profile(u,v));uv.push(u,v);
+        if(x<segments&&y<strips){
+          const i=y*(segments+1)+x,n=i+segments+1;
+          indices.push(i,i+1,n,n,i+1,n+1);
+        }
+      }
+      const shape=new THREE.BufferGeometry();
+      shape.setAttribute("position",new THREE.Float32BufferAttribute(points,3));
+      shape.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));shape.setIndex(indices);
+      for(let row=0;row<strips;row++)shape.addGroup(row*segments*6,segments*6,row===0||row===3?1:0);
+      shape.computeVertexNormals();
+      const sail=new THREE.Mesh(shape,[canvasMat,canvasEdge]);sail.castShadow=true;sail.receiveShadow=true;
+      sail.name="Vela de lona";boom.add(sail);
+      tube(boom,"wood",[0,bottom-.01,0],[width+.035,bottom-.01,0],.029);
+      tube(boom,style.rail,[0,top,0],[width,bottom,0],.012);
+      tube(boom,"edge",[width,bottom,0],[0,.09,0],.013);
+      const furled=pivot(footing,0,height*.31,0);furled.name="Vela recolhida";
+      plate(furled,"cream",.032,.19,0,.13,.41,.127);
+      for(const y of [.07,.30])plate(furled,"edge",.032,y,0,.145,.027,.14);
+      return {lid,boom,furled,sail};
+    }
+    function boat(g,kind){
+      const p=QuimiCraftVehicles.types[kind],s=boatStyles[kind],stations=hullStations(p.halfZ,s);
+      const rig={root:g,kind,wheels:[],tracks:[],helmPedals:[],boat:true};
+      const {halfX:w,halfZ:l}=p,deck=kind==="ship"?.64:kind==="dinghy"?.105:.20;
+      const hull=new THREE.Mesh(buildHull(kind,p,s,stations),hullMat);
+      hull.castShadow=hull.receiveShadow=true;hull.name="Casco com quilha e linha-d'água";g.add(hull);
+      const widthAt=z=>{
+        const j=stations.findIndex(([at])=>at>=z);
+        if(j<=0)return stations[j===0?0:stations.length-1][1];
+        const [za,wa]=stations[j-1],[zb,wb]=stations[j];
+        return THREE.MathUtils.lerp(wa,wb,(z-za)/(zb-za));
+      };
+      for(let z=-l+.15;z<l-.13;z+=kind==="ship"?.245:.196){
+        const width=widthAt(z)*w*(kind==="ship"?1.84:1.55);
+        plate(g,s.deck,0,deck,z,width,.083,kind==="ship"?.235:.187);
+        plate(g,"edge",0,deck+.043,z,width*.88,.008,.016);
+      }
+      for(const side of [-1,1]){
+        const outer=stations.map(([z,f,y])=>[side*w*f,s.free+y,z]);
+        for(let i=1;i<outer.length;i++){
+          const a=outer[i-1],b=outer[i];
+          tube(g,s.rail,a,b,kind==="ship"?.087:.059);
+          const strip=([x,y,z])=>[x*.976,y-.135,z];
+          tube(g,kind==="speedboat"?"red":s.rail,strip(a),strip(b),.026);
+        }
+        if(kind==="ship"){
+          for(let z=-l+.73;z<l-.31;z+=.57){
+            const x=side*w*widthAt(z)*.90;
+            tube(g,"chrome",[x,deck,z],[x,deck+.53,z],.023);
+            const end=z+.57;
+            if(end<l-.29)tube(g,"edge",[x,deck+.53,z],[side*w*widthAt(end)*.90,deck+.53,end],.019);
+          }
+        }
+        for(const z of [-l*.51,l*.54]){
+          const x=side*w*widthAt(z)*.92;
+          tube(g,"brass",[x,s.free,z-.115],[x,s.free,z+.115],.033);
+          plate(g,"steel",x*.99,s.free-.056,z,.050,.118,.095);
+        }
+      }
+      const helm=pivot(g,0,deck,-Math.min(.88,l*.36));
+      const seat=pivot(g,0,deck,.19);
+      rig.cockpitView=pivot(g,0,deck+(kind==="dinghy"?.94:1.05),.23);
+      rig.cockpitView.name="Vista do piloto";
+      plate(seat,"wood",0,.17,0,w*1.35,.115,.30);
+      if(kind!=="dinghy"){
+        plate(helm,kind==="speedboat"?"ink":"steel",0,.43,0,w*1.21,.31,.25);
+        plate(helm,"edge",0,.60,-.03,w*1.22,.066,.33);
+        const glassW=kind==="ship"?w*.53:w*.70;
+        pane(helm,[[-glassW,.63,-.22],[glassW,.63,-.22],[glassW*.88,1.02,-.078],[-glassW*.88,1.02,-.078]],"Para-brisa");
+        for(const side of [-1,1])tube(helm,"edge",[side*glassW,.63,-.22],[side*glassW*.88,1.02,-.078],.033);
+        if(kind==="speedboat")plate(g,"red",0,deck+.17,l*.72,w*1.38,.32,l*.32);
+        if(kind==="ship"){
+          const wCab=w*.56,base=deck+.12,roof=deck+1.43,rear=l*.47,front=-l*.39;
+          for(const side of [-1,1]){
+            const x=side*wCab;
+            plate(g,"cream",x,base+.22,(rear+front)/2,.10,.44,rear-front);
+            pane(g,[[x,base+.45,front],[x,base+.45,rear],[x,roof-.15,rear],[x,roof-.15,front]],"Janela da cabine");
+            for(const z of [front,(front+rear)/2,rear])tube(g,"edge",[x,base+.41,z],[x,roof,z],.036);
+          }
+          plate(g,"teal",0,roof,(rear+front)/2,wCab*2.22,.13,rear-front+.32);
+          tube(g,"chrome",[0,roof+.04,l*.13],[0,roof+.63,l*.13],.026);
+          plate(g,"lamp",0,roof+.63,l*.13,.090,.094,.115);
+        }
+      }
+      rig.steering=pivot(helm,0,.56,.20);
+      mesh(rig.steering,ring,"brass",0,0,0,.145,.145,.14).name="Volante ligado ao leme";
+      for(let i=0;i<3;i++){
+        const a=i*Math.PI*2/3;
+        tube(rig.steering,"edge",[0,0,0],[Math.sin(a)*.123,Math.cos(a)*.123,0],.016);
+      }
+      for(const side of [-1,1]){
+        const foot=pivot(helm,side*.16,.075,.51);
+        tube(foot,"steel",[0,0,0],[0,.13,.09],.024);
+        plate(foot,"rubber",0,.135,.09,.117,.047,.127).name=side<0?"Pedal de bombordo":"Pedal de estibordo";
+        rig.helmPedals.push(foot);
+        tube(g,"brass",[side*.26,deck+.048,helm.position.z+.58],[side*.23,deck+.048,l*.88],.015);
+      }
+      const rudder=pivot(g,0,-p.draft*.53,l*.93);rudder.name="Leme articulado";rig.rudder=rudder;
+      plate(rudder,"steel",0,-.05,.125,.085,p.draft*.79,.31);
+      plate(rudder,s.rail,0,-.12,.26,.066,p.draft*.69,.11);
+      rig.screw=pivot(g,0,-p.draft*.65,l*.81);
+      mesh(rig.screw,wheel,"brass",0,0,0,.074,.12,.074).rotation.x=Math.PI/2;
+      for(let i=0;i<3;i++){
+        const blade=pivot(rig.screw,0,0,0);blade.rotation.z=i*Math.PI*2/3;
+        mesh(blade,padded,"chrome",.125,.035,0,.189,.082,.041).rotation.y=.46;
+      }
+      rig.furniture=boatFurniture(g,QuimiCraftVehicles.deckLayout(kind),s);
+      return rig;
+    }
     function build(kind){
       const root=new THREE.Group();
       root.name="Veículo · "+kind;
-      return kind==="glider"?glider(root):chassis(root,kind);
+      return boatStyles[kind]?boat(root,kind):kind==="glider"?glider(root):chassis(root,kind);
     }
     function animate(rig,v,dt){
       rig.root.position.set(v.x,v.renderY??v.y,v.z);
       rig.root.rotation.set(v.tilt||0,v.yaw,v.bank||0,"YXZ");
       const speed=v.speed||0,turn=v.yawRate||0;
       if(rig.steering)rig.steering.rotation.z=(v.steer||0)*-.51+(v.bank||0)*.28;
+      if(rig.boat){
+        const steer=v.steer||0;
+        rig.rudder.rotation.y=steer*.62;
+        rig.screw.rotation.z+=dt*speed*8.5;
+        rig.cadence=(rig.cadence||0)+dt*(v.pedaling?5.25+Math.abs(speed)*.36:0);
+        rig.helmPedals.forEach((foot,i)=>{
+          const side=i===0?1:-1,pedal=v.pedaling?Math.sin(rig.cadence+i*Math.PI)*.23:0;
+          foot.rotation.x=side*steer*.46+pedal;
+        });
+        const {lid,boom,furled,sail}=rig.furniture,deployed=v.deck?.sail??false;
+        boom.visible=deployed;furled.visible=!deployed;
+        boom.rotation.y=(rig.kind==="dinghy"?Math.PI*.25:Math.PI*.67)+Math.sin((v.waterClock||0)*2.2)*.10+steer*.19;
+        sail.scale.z=1+Math.sin((v.waterClock||0)*3.6)*.24+Math.min(.7,Math.abs(speed)*.06);
+        lid.rotation.x=v.deck?.chestOpen?1.27:0;
+        return;
+      }
       if(rig.gauges){
         const values=[Math.min(1,Math.abs(speed)/16),Math.min(1,Math.abs(v.tilt||0)*1.2+.18),Math.min(1,Math.abs(turn)*.40+.22)];
         rig.gauges.forEach((needle,i)=>needle.rotation.z=.96-values[i]*2.81);
@@ -424,7 +621,30 @@ globalThis.QuimiCraftVehicleModels = (() => {
         }
       }
     }
-    return {build,animate};
+    function preview(rig,motor,clip,t,dt,reset){
+      if(reset){
+        for(const wheel of rig.wheels){wheel.spin.rotation.x=0;wheel.joint.position.y=wheel.baseY;wheel.speed=0}
+        for(const track of rig.tracks)track[0].userData.phase=0;
+        if(rig.drill)rig.drill.rotation.z=0;
+        if(rig.drive){rig.cadence=0;rig.pedals.rotation.x=0;rig.prop.rotation.z=0}
+        rig.jetTime=0;
+        if(rig.boat){rig.cadence=0;rig.screw.rotation.z=0}
+      }
+      const smooth=(x,low,high)=>THREE.MathUtils.smoothstep(x,low,high);
+      const turn=clip==="turn"?Math.sin(t*1.7):0;
+      const airborne=clip==="hop"||clip==="takeoff"||clip==="soar"||clip==="land";
+      const lift=clip==="hop"?Math.sin(Math.PI*smooth(t,.28,1.33))*.48:
+        clip==="takeoff"?smooth(t,.68,2.8)*.77:clip==="land"?(1-smooth(t,.45,2.25))*.77:
+        clip==="soar"?.64+Math.sin(t*2.2)*.12:0;
+      const work=(clip==="drill"||clip==="dig")?Math.sin(Math.PI*smooth(t,.25,2.6))**1.2:0;
+      const speed=clip==="drive"||rig.boat&&clip==="marinePedal"?5.8:clip==="nitro"?12:clip==="turn"?5.1:airborne?5.2:0;
+      const bank=clip==="soar"?Math.sin(t*1.65)*.19:turn*.13;
+      animate(rig,{x:turn*.20,y:lift+(rig.boat?Math.sin(t*2.8)*.04:0),z:0,yaw:turn*.46,yawRate:turn*2,steer:turn,speed,bank,
+        tilt:clip==="takeoff"?-lift*.21:clip==="land"?lift*.16:0,airborne:lift>.02,flying:rig.kind==="glider"&&lift>.10,
+        nitroActive:clip==="nitro",work,motor,pedaling:rig.boat?speed>0:motor&&(clip==="pedal"||clip==="takeoff"||clip==="soar"),
+        deck:rig.boat?{sail:clip==="sail",chestOpen:clip==="cargo"}:null,waterClock:t},dt);
+    }
+    return {build,animate,preview};
   }
   return {create};
 })();

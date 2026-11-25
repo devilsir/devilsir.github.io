@@ -19,6 +19,7 @@
     ["observations", "Observações"]
   ]);
   const ANALYSIS_STATIONS = new Set([
+    "field_analyzer",
     "microscope",
     "spectrometer",
     "precision_balance",
@@ -108,6 +109,7 @@
     const stationSubtitle = document.getElementById("scienceStationSubtitle");
     const stationNav = document.getElementById("scienceStationNav");
     const stationContent = document.getElementById("scienceStationContent");
+    let fieldSite=null;
     const temperaturePanel = document.getElementById("temperatureHud");
     const temperatureLabel = document.getElementById("temperatureLabel");
     const temperatureValue = document.getElementById("temperatureValue");
@@ -473,6 +475,8 @@
           </section>
         `);
       }
+      const fieldInfo=fieldSite&&bridge.fieldInfo?.(fieldSite);
+      if(fieldInfo)sections.unshift(`<p class="science-empty">${escapeHTML(fieldInfo)}</p>`);
       stationContent.innerHTML = sections.join("") || '<p class="science-empty">Nenhuma operação disponível nesta estação.</p>';
       bindStationActions();
     }
@@ -543,6 +547,7 @@
         return;
       }
       reactionRunning = true;
+      const stationId=activeStationId,source=fieldSite;
       stationContent.classList.add("reaction-running");
       const reaction = availability.reaction;
       playFeedback("reaction-start", reaction.feedback);
@@ -554,11 +559,14 @@
       const duration = reduceMotion ? Math.min(700, reaction.duration) : reaction.duration;
       progress.style.setProperty("--reaction-duration", `${duration}ms`);
       global.setTimeout(() => {
-        const result = system.performReaction(reactionId, activeStationId, getEquippedIds());
+        const result = source&&!bridge.fieldIntact?.(source)
+          ? {ok:false,message:"A estação foi desmontada antes de concluir."}
+          : system.performReaction(reactionId, stationId, getEquippedIds());
         playFeedback(result.ok ? "reaction-complete" : "reaction-failed", reaction.feedback);
         reactionRunning = false;
         stationContent.classList.remove("reaction-running");
         toast(result.message);
+        if(result.ok&&reaction.gas&&source)bridge.releaseGas?.(source,reaction.gas);
         if (result.ok) recordReaction(reactionId);
         refreshInventory();
         renderStation();
@@ -578,7 +586,8 @@
       openModal("researchTree");
     }
 
-    function openStation(ids) {
+    function openStation(ids,site=null) {
+      fieldSite=site;
       activeStationIds = [...new Set((ids || []).filter(id => system.stations[id]))];
       if (!activeStationIds.length) return false;
       activeStationId = activeStationIds[0];

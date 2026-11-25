@@ -410,31 +410,31 @@ export const organelles = {
         'Três famílias integradas (25 nm · 10 nm · 7 nm)',
         'ARQUITETURA MECÂNICA DINÂMICA',
         'A célula integra microtúbulos radiais (ciano, ~25 nm), malha cortical de F-actina sob a membrana (rosa, ~7 nm) e cabos de filamentos intermediários ao redor do núcleo (violeta, ~10 nm).',
-        'cyto_skel_main', [2.1, 2.2, 10.2], 'skel_overview'
+        'cyto_skel_main', [1.8, 2.55, 12.5], 'skel_overview'
       ),
       step(
         'Microtúbulos (~25 nm): 13 protofilamentos α/β-tubulina',
         'POLARIDADE (− → +) · INSTABILIDADE DINÂMICA',
         'No super zoom molecular, o microtúbulo revela um cilindro oco de 13 protofilamentos alternando dímeros de α- e β-tubulina. Na extremidade (+), a capa de GTP-tubulina alterna crescimento e curvatura em catástrofe.',
-        'cyto_skel_track', [0.68, 0.36, 1.56], 'skel_track'
+        'cyto_skel_track', [0.35, 0.32, 2.12], 'skel_track'
       ),
       step(
         'Motores moleculares: Cinesina (→ +) e Dineína (← −)',
         'CAMINHADA PASSO A PASSO COM ATP',
         'Observe proteínas motoras diméricas caminhando com duas "cabeças" alternadas ao longo do microtúbulo: a cinesina (verde-ciano) leva cargas para a periferia (+), enquanto a dineína (rosa-violeta) retorna ao centro (−), consumindo ATP a cada passo de 8 nm.',
-        'cyto_skel_motors', [0.62, 0.38, 1.48], 'skel_motors'
+        'cyto_skel_motors', [0.30, 0.30, 2.45], 'skel_motors'
       ),
       step(
         'Microfilamentos de F-actina (~7 nm) e ramo Arp2/3',
         'DUPLA HÉLICE · CÓRTEX E MIGRAÇÃO',
         'Com diâmetro 3,5× menor que o microtúbulo, a F-actina forma uma dupla hélice de monômeros de G-actina. O complexo Arp2/3 (dourado) nucleia novos ramos no ângulo característico de 70°, impulsionando pseudópodes e citocinese.',
-        'cyto_skel_actin', [0.58, 0.34, 1.38], 'skel_actin'
+        'cyto_skel_actin', [0.36, 0.29, 1.68], 'skel_actin'
       ),
       step(
         'Filamentos intermediários (~10 nm): cabos de tração',
         'CORDA APOLAR · QUERATINA / VIMENTINA',
         'Montados como uma corda trançada de 8 protofibrilas sem polaridade (+/−), os filamentos intermediários não servem de trilho para motores, mas absorvem enorme tensão mecânica ligando desmossomos e núcleo.',
-        'cyto_skel_inter', [0.58, 0.32, 1.38], 'skel_intermediate'
+        'cyto_skel_inter', [0.34, 0.28, 1.85], 'skel_intermediate'
       )
     ]
   ),

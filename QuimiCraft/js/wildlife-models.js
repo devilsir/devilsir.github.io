@@ -22,6 +22,7 @@ globalThis.QuimiCraftWildlife=(()=>{
       [.422,.741],[.239,.856],[.006,.882]].map(([r,y])=>new T.Vector2(r,y)),12);
     const skinMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:.68,flatShading:true});
     const coatMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:.86});
+    const aquaticSkin=new T.MeshStandardMaterial({vertexColors:true,roughness:.48});
     const materials=new Map();
     function material(color,glow=false,alpha=1){
       const key=color+":"+glow+":"+alpha;
@@ -30,6 +31,10 @@ globalThis.QuimiCraftWildlife=(()=>{
         transparent:alpha<1,opacity:alpha,depthWrite:alpha===1,side:alpha<1?T.DoubleSide:T.FrontSide
       }));
       return materials.get(key);
+    }
+    function mutedTint(color){
+      const tone=new T.Color(color);
+      return tone.clone().convertSRGBToLinear().lerp(tone,.26).getHex();
     }
     function part(parent,shape,color,pos,size,rotation=[0,0,0],glow=false,alpha=1){
       const p=new T.Mesh(geometry[shape],material(color,glow,alpha));
@@ -40,6 +45,11 @@ globalThis.QuimiCraftWildlife=(()=>{
     }
     function hinge(root,x,y,z){
       const g=new T.Group();g.position.set(x,y,z);root.add(g);return g;
+    }
+    function serpentPupil(parent,position,width,height,turn=0){
+      const pupil=part(parent,"diamond",0x170e1b,position,[width,height,.006],[0,turn,0]);
+      pupil.name="Pupila vertical serpentina";
+      return pupil;
     }
     function link(parent,color,from,to,radius,alpha=1,glow=false){
       const a=new T.Vector3(...from),b=new T.Vector3(...to),axis=b.clone().sub(a);
@@ -96,7 +106,8 @@ globalThis.QuimiCraftWildlife=(()=>{
       geo.setAttribute("position",new T.Float32BufferAttribute(vertices,3));geo.computeVertexNormals();
       const m=new T.Mesh(geo,material(color,false,alpha));m.userData.ownGeometry=true;m.castShadow=alpha===1;g.add(m);return m;
     }
-    function fanFin(parent,root,edge,colors,thickness=.014){
+    function fanFin(parent,root,edge,colors,thickness=.014,resolution=1){
+      if(resolution>1)return smoothFin(parent,root,edge,colors,thickness,resolution);
       const origin=new T.Vector3(...root),outline=edge.map(p=>new T.Vector3(...p));
       const a=outline[0].clone().sub(origin),b=outline.at(-1).clone().sub(origin);
       const normal=a.cross(b).normalize(),points=[origin,...outline],count=points.length;
@@ -119,9 +130,51 @@ globalThis.QuimiCraftWildlife=(()=>{
       const mesh=new T.Mesh(geo,skinMaterial);mesh.userData.ownGeometry=true;parent.add(mesh);
       return mesh;
     }
+    function smoothFin(parent,root,edge,colors,thickness,steps){
+      const origin=new T.Vector3(...root),rim=new T.CatmullRomCurve3(edge.map(p=>new T.Vector3(...p)));
+      const columns=rim.getPoints((edge.length-1)*3);
+      const normal=columns[0].clone().sub(origin).cross(columns.at(-1).clone().sub(origin)).normalize();
+      const width=columns.length,layerSize=1+steps*width,vertices=[],tints=[],indices=[];
+      const dark=new T.Color(colors[0]),light=new T.Color(colors[1]);
+      const triangle=(a,b,c,reverse)=>indices.push(a,reverse?c:b,reverse?b:c);
+      for(let layer=0;layer<2;layer++){
+        const start=layer*layerSize,side=layer?-1:1;
+        vertices.push(...origin.clone().addScaledVector(normal,side*thickness).toArray());
+        tints.push(dark.r,dark.g,dark.b);
+        for(let r=1;r<=steps;r++)for(const [i,p] of columns.entries()){
+          const t=r/steps,w=Math.sin(t*Math.PI);
+          const swell=side*thickness*(1-t*.61)+thickness*w*(.42+.13*Math.cos(i*Math.PI*2/3));
+          vertices.push(...origin.clone().lerp(p,t).addScaledVector(normal,swell).toArray());
+          const tint=dark.clone().lerp(light,.15+.65*t+.11*w*Math.cos(i*Math.PI*2/3));
+          if(layer===(colors.length>2&&normal.y<0?0:1))tint.lerp(new T.Color(colors[2]??colors[0]),.68).multiplyScalar(.83);
+          tints.push(tint.r,tint.g,tint.b);
+          if(i===width-1)continue;
+          const at=start+1+(r-1)*width+i;
+          if(r===1)triangle(start,at,at+1,layer);
+          else{
+            triangle(at-width,at,at+1,layer);
+            triangle(at-width,at+1,at+1-width,layer);
+          }
+        }
+      }
+      const border=[0,...Array.from({length:steps},(_,i)=>1+i*width),
+        ...Array.from({length:width-1},(_,i)=>layerSize-width+i+1),
+        ...Array.from({length:steps-1},(_,i)=>(steps-i-1)*width)];
+      for(let i=0;i<border.length;i++){
+        const a=border[i],b=border[(i+1)%border.length];
+        indices.push(b,a,a+layerSize,b,a+layerSize,b+layerSize);
+      }
+      const geo=new T.BufferGeometry();
+      geo.setAttribute("position",new T.Float32BufferAttribute(vertices,3));
+      geo.setAttribute("color",new T.Float32BufferAttribute(tints,3));
+      geo.setIndex(indices);geo.computeVertexNormals();
+      const mesh=new T.Mesh(geo,aquaticSkin);
+      mesh.userData.ownGeometry=true;parent.add(mesh);
+      return mesh;
+    }
     const eye=0x141e26;
     const pigment=(color,light)=>new T.Color(color).lerp(new T.Color(light?0xe5eee5:0x1a202b),light?.29:.36).getHex();
-    function contour(parent,sections,colors,pattern="",segments=12,shape=null,paint=null){
+    function contour(parent,sections,colors,pattern="",segments=12,shape=null,paint=null,finish=null){
       const p=[],tint=[],indices=[];
       const main=new T.Color(colors[0]),belly=new T.Color(colors[1]),deep=main.clone().multiplyScalar(.53);
       sections.forEach(([z,center,rx,ry],row)=>{
@@ -149,37 +202,20 @@ globalThis.QuimiCraftWildlife=(()=>{
       mesh.setAttribute("position",new T.Float32BufferAttribute(p,3));
       mesh.setAttribute("color",new T.Float32BufferAttribute(tint,3));
       mesh.setIndex(indices);mesh.computeVertexNormals();
-      const node=new T.Mesh(mesh,shape?coatMaterial:skinMaterial);
+      const node=new T.Mesh(mesh,finish||(shape?coatMaterial:skinMaterial));
       node.userData.ownGeometry=true;
       node.castShadow=true;node.receiveShadow=true;parent.add(node);
       return node;
     }
     function rayWing(parent,side,body,belly){
-      const outline=[[-.06,.016,-.56],[.43,.018,-.365],[.89,-.055,.05],[.37,-.033,.367],[-.076,-.009,.63]];
-      const upper=[...outline,[.42,.079,.018]],lower=[...outline,[.42,-.022,.018]];
-      const points=[],colors=[],indices=[];
-      for(const [layer,shape] of [upper,lower].entries())for(const [i,[x,y,z]] of shape.entries()){
-        points.push(x*side,y+(i===shape.length-1?0:layer?-.018:.018),z);
-        const c=new T.Color(layer?belly:body).multiplyScalar(i===5?1.17:i===2?1.05:.84+i*.035);
-        colors.push(c.r,c.g,c.b);
-      }
-      const triangle=(a,b,c)=>indices.push(a,side>0?b:c,side>0?c:b);
-      for(let i=0;i<5;i++){
-        const next=(i+1)%5;
-        triangle(5,next,i);
-        triangle(11,i+6,next+6);
-        triangle(i,next,next+6);
-        triangle(i,next+6,i+6);
-      }
-      const geo=new T.BufferGeometry();
-      geo.setAttribute("position",new T.Float32BufferAttribute(points,3));
-      geo.setAttribute("color",new T.Float32BufferAttribute(colors,3));
-      geo.setIndex(indices);geo.computeVertexNormals();
-      const wing=new T.Mesh(geo,skinMaterial);
-      parent.add(wing);
+      const outline=[[-.06,.016,-.56],[.26,.022,-.462],[.62,.005,-.223],[.89,-.055,.05],
+        [.61,-.041,.23],[.30,-.027,.437],[-.076,-.009,.63]].map(([x,y,z])=>[x*side,y,z]);
+      if(side<0)outline.reverse();
+      smoothFin(parent,[side*.075,.006,.034],outline,[pigment(body,false),body,belly],.036,8);
     }
     function scaledContour(parent,template,x,y,z,colors,pattern=""){
-      return contour(parent,template.map(([position,center,width,height])=>[position*z,center*y,width*x,height*y]),colors,pattern);
+      return contour(parent,sculptSections(template).map(([position,center,width,height])=>[position*z,center*y,width*x,height*y]),
+        colors,pattern,24,null,null,aquaticSkin);
     }
     function eyes(g,x,y,z,r){
       for(const side of [-1,1]){
@@ -207,94 +243,141 @@ globalThis.QuimiCraftWildlife=(()=>{
       jaw.rotation.x=-.09;
       return jaw;
     }
-    function shrimpModel(color){
+    function shrimpModel(color,kind="raw_shrimp"){
+      const pitu=kind==="shrimp_pitu",white=kind==="shrimp_white",small=kind==="shrimp_seabob";
+      const shellDark=new T.Color(pitu?0x172d26:white?0xaba99d:small?0x794832:0xaf553e);
+      const pituStripe=new T.Color(0xb99252);
       const group=new T.Group(),back=pigment(color,false),belly=pigment(color,true),wings=[];
       const tail=hinge(group,0,-.03,.15),tailTip=hinge(tail,0,-.089,.24);
       const head=[[-.35,-.035,.025,.033],[-.29,.008,.067,.059],[-.22,.023,.099,.086],
         [-.12,.035,.123,.102],[.005,.038,.116,.105],[.15,.012,.090,.079],[.21,-.002,.066,.065]];
-      contour(group,head,[color,belly],"scales",18);
+      contour(group,sculptSections(sculptSections(head)),[color,belly],"",44,null,(c,z,a)=>{
+        const stripe=Math.sin(a*(pitu?6:4)+z*8),mottle=Math.cos(z*91+a*25)*Math.sin(a*19-z*67);
+        if(pitu)c.copy(shellDark).lerp(pituStripe,Math.max(0,-stripe)**6*.78);
+        else c.lerp(shellDark,Math.max(0,stripe)**3*.33);
+        c.multiplyScalar(.98+.12*mottle);
+      },aquaticSkin).name="Carapaça do camarão";
       taper(group,[[0,.052,-.22,.048],[0,.059,-.32,.037],[0,.078,-.433,.006]],[back,belly],7);
       const jaw=aquaticMouth(group,[0,-.037,-.28],.035,.019,.033,back,belly);
       eyes(group,.064,.065,-.279,.025);
-      contour(tail,[[-.038,.04,.076,.067],[.065,.021,.083,.063],[.157,-.004,.067,.058],
-        [.231,-.047,.058,.048],[.32,-.083,.039,.032]],[color,belly],"stripe",16);
+      contour(tail,sculptSections(sculptSections([[-.055,.04,.076,.067],[.065,.021,.083,.063],[.157,-.004,.067,.058],
+        [.231,-.047,.058,.048],[.285,-.073,.045,.039],[.32,-.083,.039,.032]])),[color,belly],"",32,null,(c,z,a)=>{
+          const ring=Math.max(0,Math.cos(z*96+a*.59));
+          if(pitu)c.copy(shellDark).lerp(pituStripe,ring**5*.77);
+          else c.lerp(shellDark,ring**5*.42);
+        },aquaticSkin).name="Abdômen articulado";
       for(let i=0;i<4;i++){
         const y=.096-i*.024,z=.022+i*.069,r=.074-i*.010;
         fanFin(tail,[0,y-.062,z-.023],[[-r,y-.042,z],[0,y,z+.034],[r,y-.042,z]], [back,belly],.010);
       }
+      part(tailTip,"oval",back,[0,.016,.012],[.043,.042,.075]).name="Raiz do leque caudal";
       for(const side of [-1,1]){
-        const feeler=[[side*.031,.022,-.291],[side*.098,.012,-.42],[side*.134,-.012,-.547],[side*.162,-.034,-.64]];
+        const feeler=[[side*.031,.022,-.291],[side*.098,.012,-.42],[side*.134,-.012,-.547],[side*(small?.23:.162),-.034,small?-.75:-.67]];
         taper(group,feeler.map((p,i)=>[...p,.009-i*.0019]),[color,belly],5);
-        fanFin(tailTip,[0,.021,.031],[[side*.087,.014,.091],[side*.136,-.027,.18],[side*.082,-.036,.206],
+        fanFin(tailTip,[0,.013,-.015],[[side*.087,.014,.091],[side*.136,-.027,.18],[side*.082,-.036,.206],
           [side*.038,-.040,.165],[0,-.033,.123]],[back,color],.010);
+        if(pitu){
+          const claw=hinge(group,side*.063,-.052,-.16);
+          const dark=0x142e2b,orange=0xbe5728,rust=new T.Color(orange);
+          const jointBands=(c,a,j)=>c.lerp(rust,Math.max(0,1-Math.abs(j-8)/1.6,1-Math.abs(j-14)/1.35)*.94);
+          dragonCurve(claw,[[0,0,0,.028],[side*.079,-.039,-.059,.026],[side*.164,-.074,-.125,.032],
+            [side*.194,-.060,-.246,.028],[side*.210,-.055,-.337,.037],[side*.206,-.046,-.403,.028]],
+            [dark,0x444c36],12,[0,1,0],jointBands).name="Braço comprido do pitu";
+          for(const finger of [-1,1])dragonCurve(claw,[
+            [side*.205,-.046,-.385,.024],[side*.205+finger*.037,-.044,-.439,.017],
+            [side*.197+finger*.045,-.039,-.512,.010],[side*.188+finger*.020,-.037,-.552,.002]],
+            [dark,orange],11,[0,1,0],(c,a,j)=>c.lerp(rust,Math.max(0,1-j*.17)*.9)).name="Pinça longa do pitu";
+        }
         const swimmer=hinge(group,side*.047,-.038,-.102);swimmer.userData.side=side;wings.push(swimmer);
-        for(let i=0;i<4;i++){
-          const z=i*.053,t=i*.018;
+        for(let i=0;i<5;i++){
+          const z=i*.049,t=i*.018;
           taper(swimmer,[[0,0,z,.013],[side*(.102-t),-.077,z+.045,.010],[side*(.129-t),-.143,z+.015,.004]],[back,belly],5);
         }
       }
-      group.name="raw_shrimp";
+      group.name=kind;
       return {group,tail,tailTip,wings,jaw,verticalTail:false,swimStyle:"undulate",biteAngle:.32};
     }
     function fish(id,color,style){
       if(id==="raw_shrimp")return shrimpModel(color);
       const eel=id==="raw_eel",catfish=id==="raw_catfish",pike=id==="raw_pike",flat=style==="flat";
+      const puffer=id==="pufferfish";
       const g=new T.Group(),long=eel||catfish||style==="long",small=id==="raw_sardine";
       const length=eel?.79:pike?.73:long?.62:style==="slim"?.50:id==="raw_carp"?.46:.40;
-      const x=flat?.25:catfish?.145:long?.109:.176,y=flat?.064:long?.085:style==="deep"?.215:.146;
+      const x=flat?.25:catfish?.145:long?.109:puffer?.244:.176,y=flat?.064:long?.085:puffer?.233:style==="deep"?.215:.146;
       const belly=pigment(color,true),back=pigment(color,false),lateral=new T.Color(belly);
       const salmonid=id==="raw_trout"||id==="raw_char",blush=new T.Color(id==="raw_char"?0xd58458:0xb87b8a),fleck=new T.Color(0x455372);
-      const tail=hinge(g,0,-y*.05,length*.66),wings=[];
+      const wings=[];
       const markings=["raw_perch","piranha","raw_piranha","raw_tilapia"].includes(id)?"stripe":
         ["raw_trout","raw_char","raw_loach","raw_pike"].includes(id)?"speckle":style==="slim"?"silver":"scales";
       const hull=[[-1.15,-.20,.23,.14],[-1.04,-.14,.46,.32],[-.91,-.10,.69,.60],[-.73,-.05,.85,.84],
         [-.52,-.012,.95,.96],[-.36,0,1,1],[-.19,.02,.98,1],[-.03,.02,.94,.97],[.17,0,.88,.88],
-        [.34,-.02,.76,.76],[.49,-.042,.61,.60],[.64,-.046,.46,.45],[.83,-.05,.29,.31]];
-      const profile=salmonid?hull.flatMap((section,i)=>i===hull.length-1?[section]:
-        [section,section.map((value,k)=>(value+hull[i+1][k])*.5)]):hull;
-      contour(g,profile.map(([z,c,w,h])=>[z*length,c*y,w*x*(flat&&z>-.7?1.12:1),h*y]),[color,belly],markings,24,null,(mix,z,a)=>{
+        [.34,-.02,.76,.76],[.49,-.042,.61,.60],[.64,-.046,.46,.45],[.83,-.05,.29,.31],[.94,-.05,.19,.23],[1.04,-.05,.09,.14]];
+      const profile=sculptSections(sculptSections(hull));
+      const skin=profile.map(([z,c,w,h])=>[z*length,c*y,w*x*(flat&&z>-.7?1.12:1),h*y]);
+      const hullMesh=contour(g,skin,[color,belly],"",48,null,(mix,z,a)=>{
         const elevation=Math.cos(a),lane=elevation-(.041*Math.sin(z*11)+.06);
+        const row=Math.floor(a*9.5),arch=Math.cos(a*9.5*Math.PI*2)*.23;
+        const scales=(Math.cos(z*147+row*Math.PI+arch)*.5+.5)**4;
+        if(z>-.59*length&&!eel&&!catfish)mix.multiplyScalar(.93+scales*.17);
+        if(z<-.52*length)mix.multiplyScalar(.97+.035*Math.sin(a*15+z*90));
+        if(markings==="stripe"&&z>-.65*length)mix.multiplyScalar(1-Math.max(0,Math.cos(z*44+elevation))**3*.28);
+        if(puffer&&z>-.73*length&&elevation>-.34)mix.multiplyScalar(1-Math.max(0,Math.cos(z*70+a*7)*Math.sin(a*19))**5*.43);
         if(Math.abs(lane)<.26&&z>-.57*length)mix.lerp(lateral,(.26-Math.abs(lane))*.93);
+        if(Math.abs(lane)<.067&&z>-.38*length&&z<.64*length)mix.multiplyScalar(.93+.12*Math.sin(z*182)**2);
         if(salmonid&&z>-.57*length&&z<.68*length){
           if(Math.abs(elevation)<.31)mix.lerp(blush,(.31-Math.abs(elevation))*1.85);
           if(elevation>.12&&Math.sin(z*67+elevation*41)>.69)mix.lerp(fleck,.63);
         }
-      });
+      },aquaticSkin);
+      hullMesh.name="Corpo com escamas";
+      if(puffer)for(let row=0;row<5;row++)for(let k=0;k<11;k++){
+        const a=(k+(row%2)*.5)*Math.PI*2/11,z=length*(-.72+row*.29);
+        const [,c,w,h]=profile.reduce((best,next)=>Math.abs(next[0]*length-z)<Math.abs(best[0]*length-z)?next:best);
+        const base=[Math.sin(a)*x*w*.98,y*(c+Math.cos(a)*h*.98),z];
+        dragonHorn(g,[[...base,.025],[base[0]+Math.sin(a)*.044,base[1]+Math.cos(a)*.044,z+.025,.013],
+          [base[0]+Math.sin(a)*.083,base[1]+Math.cos(a)*.083,z+.06,.0015]],[back,belly],true);
+      }
       const hunter=id==="piranha"||pike,jaw=aquaticMouth(g,[0,-y*.26,-length*.91],
         x*(hunter?.52:catfish?.56:.36),y*(hunter?.23:.17),length*(pike?.22:.19),back,belly,hunter?4:0);
-      eyes(g,x*.77,y*(flat?.63:.22),-length*.74,small?.022:.030);
+      eyes(g,x*.77,y*(flat?.63:.22),-length*.74,puffer?.044:small?.022:.030);
       for(const side of [-1,1]){
         const paddle=hinge(g,side*x*.64,-y*.28,-length*.38);
         paddle.userData.side=side;wings.push(paddle);
-        const tip=[side*x*(flat?1.36:.91),-y*.62,length*.45];
+        const tip=[side*x*(flat?1.36:puffer?.58:.91),-y*(puffer?.36:.62),length*(puffer?.35:.45)];
         part(paddle,"oval",color,[0,0,0],[.034,.027,.058],[.07,side*.24,0]);
         fanFin(paddle,[0,0,-length*.085],[[side*x*.60,-y*.19,length*.11],tip,
-          [tip[0]*.69,tip[1]*.84,length*.54],[tip[0]*.27,tip[1]*.37,length*.49],[0,0,length*.22]],[back,belly],.013);
+          [tip[0]*.69,tip[1]*.84,length*.54],[tip[0]*.27,tip[1]*.37,length*.49],[0,0,length*.22]],[back,belly],.013,5);
         const gill=[[side*x*.83,y*.55,-length*.44,small?.005:.006],[side*x*.961,y*.21,-length*.36,.007],
           [side*x*.994,-y*.075,-length*.382,.007],[side*x*.884,-y*.41,-length*.468,.003]];
-        taper(g,gill,[back,pigment(back,true)],6,[0,0,1]).castShadow=false;
+        const plate=taper(g,gill,[back,pigment(back,true)],8,[0,0,1]);
+        plate.castShadow=false;plate.name="Borda do opérculo";
+        taper(g,gill.map(([gx,gy,gz,r])=>[gx*1.012,gy*.92,gz-length*.022,r*.51]),
+          [pigment(back,false),back],7,[0,0,1]).name="Abertura branquial";
+        if(!eel){
+          const mark=[side*x*.48,-y*.145,-length*1.03];
+          part(g,"oval",back,mark,[.013,.008,.012],[0,side*.40,0]).name="Narina";
+        }
         const pelvic=hinge(g,side*x*.46,-y*.45,length*.13);
         pelvic.userData.side=side;wings.push(pelvic);
         fanFin(pelvic,[0,0,-length*.14],[[side*x*.29,-y*.34,length*.05],[side*x*.54,-y*.63,length*.23],
-          [side*x*.20,-y*.24,length*.30],[0,0,length*.29]],[back,color],.009);
+          [side*x*.20,-y*.24,length*.30],[0,0,length*.29]],[back,color],.009,4);
       }
-      const crest=eel?1.13:id==="piranha"?1.60:flat?1.25:style==="deep"?1.88:1.72;
+      const crest=puffer?1.22:eel?1.13:id==="piranha"?1.60:flat?1.25:style==="deep"?1.88:1.72;
       const dorsalRoot=[0,y*.70,length*.035],dorsalEdge=eel?[
         [0,y*.72,-length*.47],[0,y*1.11,-length*.16],[0,y*1.23,length*.25],[0,y*.90,length*.68],[0,y*.36,length*.82]]:
         [[0,y*.72,-length*.51],[0,y*(crest*.87),-length*.32],[0,y*crest,-length*.185],
         [0,y*(crest*.91),-length*.04],[0,y*(crest*.75),length*.12],[0,y*.57,length*.42],[0,y*.36,length*.59]];
-      fanFin(g,dorsalRoot,dorsalEdge,[back,pigment(color,true)],.012);
+      fanFin(g,dorsalRoot,dorsalEdge,[back,pigment(color,true)],.012,6);
       if(id==="raw_perch"||id==="raw_seabass"||pike)fanFin(g,[0,y*.40,length*.51],
         [[0,y*.49,length*.34],[0,y*.92,length*.49],[0,y*.69,length*.62],[0,y*.29,length*.74]],[back,color],.009);
       fin(g,back,[[0,-y*.58,length*.18],[0,-y*1.04,length*.47],[0,-y*.30,length*.68]],.022);
-      contour(tail,[[-length*.10,0,x*.40,y*.39],[length*.04,0,x*.32,y*.34],[length*.25,0,x*.145,y*.24],
-        [length*.38,0,x*.09,y*.14]],[color,belly],"",10);
-      const tailTip=hinge(tail,0,0,length*.24);
+      const {tail,tailTip}=anchoredSwimmer(g,hullMesh,skin,48,length*.66,length*.90,aquaticSkin,length*.21);
+      part(tailTip,"oval",back,[0,0,length*.02],[x*.16,y*.23,length*.185]).name="Raiz da nadadeira caudal";
       for(const side of [-1,1]){
         const roundTail=flat||id==="raw_tilapia"||id==="raw_pacu";
-        const root=[0,0,-length*.10],tip=[0,side*y*(eel?.64:long?1.12:roundTail?1.16:1.45),length*(eel?.37:roundTail?.42:.52)];
+        const root=[0,-y*.05,-length*.10],tip=[0,side*y*(puffer?.68:eel?.64:long?1.12:roundTail?1.16:1.45),length*(eel?.37:roundTail?.42:.52)];
         const fork=[0,0,length*(roundTail?.49:.27)];
-        fanFin(tailTip,root,[[0,tip[1]*.51,length*.18],tip,[0,tip[1]*.72,tip[2]*1.07],[0,tip[1]*.33,length*.36],fork],[back,color],.013);
+        fanFin(tailTip,root,[[0,tip[1]*.51,length*.18],tip,[0,tip[1]*.72,tip[2]*1.07],[0,tip[1]*.33,length*.36],fork],[back,color],.013,5);
         if(catfish||id==="raw_loach"){
           const mouth=[side*x*.26,-y*.21,-length*1.10],bend=[side*x*.65,-y*.41,-length*1.20];
           taper(g,[[...mouth,.009],[...bend,.006],[side*x*1.28,-y*.60,-length*1.34,.002]],[back,belly],6);
@@ -303,15 +386,674 @@ globalThis.QuimiCraftWildlife=(()=>{
       g.name=id;
       return {group:g,tail,tailTip,wings,jaw,verticalTail:false,swimStyle:long?"undulate":"swim",biteAngle:hunter?.83:.41};
     }
+    function anchoredSwimmer(group,body,profile,segments,joint,tip,finish=body.material,bend=.33){
+      const spine=new T.Bone(),tail=new T.Bone(),tailTip=new T.Bone(),weights=[],bones=[];
+      spine.name="Eixo do torso";tail.name="Pedúnculo";tailTip.name="Raiz dos lobos caudais";
+      tail.position.z=joint;tailTip.position.z=tip-joint;spine.add(tail);tail.add(tailTip);
+      for(const [z] of profile){
+        const outer=T.MathUtils.smoothstep(z,tip-bend*1.24,tip-bend*.22);
+        const inner=T.MathUtils.smoothstep(z,joint-bend*.94,joint+bend);
+        for(let i=0;i<segments;i++){
+          bones.push(0,1,2,0);weights.push(1-inner,inner*(1-outer),inner*outer,0);
+        }
+      }
+      body.geometry.setAttribute("skinIndex",new T.Uint16BufferAttribute(bones,4));
+      body.geometry.setAttribute("skinWeight",new T.Float32BufferAttribute(weights,4));
+      const childIndex=group.children.indexOf(body);
+      group.remove(body);
+      const mesh=new T.SkinnedMesh(body.geometry,skinnedMaterial(finish));
+      mesh.name=body.name;mesh.userData.ownGeometry=true;mesh.frustumCulled=false;mesh.add(spine);group.add(mesh);
+      group.children.splice(childIndex,0,group.children.pop());
+      mesh.castShadow=mesh.receiveShadow=true;
+      mesh.updateMatrixWorld(true);mesh.bind(new T.Skeleton([spine,tail,tailTip]));
+      return {tail,tailTip};
+    }
+    function riverBoto(){
+      const g=new T.Group(),wings=[],rose=0xd48a94,pale=0xeaa6aa,shadow=0x875e75;
+      const profile=sculptSections(sculptSections(sculptSections([
+        [-1.44,-.089,.010,.013],[-1.40,-.091,.046,.025],[-1.23,-.083,.055,.037],
+        [-1.02,-.052,.082,.060],[-.89,-.014,.128,.122],[-.79,.011,.169,.190],
+        [-.648,.012,.231,.260],[-.47,-.002,.282,.275],[-.19,-.013,.323,.275],
+        [.13,-.026,.314,.251],[.39,-.045,.264,.213],[.69,-.081,.199,.167],[.91,-.118,.134,.118],
+        [1.10,-.138,.097,.081],[1.29,-.149,.077,.058],[1.42,-.146,.019,.021]
+      ])));
+      const pink=new T.Color(rose),lit=new T.Color(pale),deep=new T.Color(shadow);
+      const crown=([z,y,w,h],a)=>{
+        const c=Math.cos(a);
+        const ridge=.106*Math.exp(-(((z-.44)/.35)**2))*Math.max(0,c)**13;
+        return [Math.sin(a)*w,y+c*h+ridge,z];
+      };
+      const body=contour(g,profile,[rose,pale],"",58,crown,(color,z,a)=>{
+        const lower=T.MathUtils.smoothstep(-Math.cos(a),.12,.97);
+        const freckles=Math.sin(z*86+a*37)*Math.cos(z*111-a*71);
+        const bands=Math.cos(z*21+a*11+Math.sin(a*9));
+        color.copy(pink).lerp(lit,.58*(1-lower)).lerp(deep,lower*.25).multiplyScalar(.975+.052*bands+.043*freckles);
+        if(freckles>.71&&z>-.68&&z<.72)color.lerp(deep,.20);
+      },aquaticSkin);
+      body.name="Corpo rosado, melão, rostro e crista dorsal";
+      const {tail,tailTip}=anchoredSwimmer(g,body,profile,58,.59,1.26);
+      part(tailTip,"oval",rose,[0,-.147,.025],[.087,.061,.165]).name="Junção dos lobos caudais";
+      const jaw=hinge(g,0,-.099,-.784);
+      contour(jaw,[[-.635,-.007,.014,.013],[-.598,-.014,.041,.020],[-.47,-.020,.044,.024],
+        [-.29,-.022,.064,.039],[-.11,-.035,.104,.048],[.055,-.018,.117,.032]],
+        [rose,pale],"",29,null,null,aquaticSkin).name="Mandíbula longa";
+      for(const side of [-1,1]){
+        const eye=hinge(g,side*.186,.046,-.718);eye.rotation.y=-side*.91;
+        part(eye,"oval",shadow,[0,0,0],[.026,.018,.018]);
+        part(eye,"oval",0x31212b,[0,0,-.009],[.016,.013,.010]).name="Olho pequeno do boto";
+        part(eye,"oval",0xf7dad2,[.004,.004,-.018],[.004,.004,.003]);
+        dragonCurve(g,[[side*.039,-.095,-1.397,.003],[side*.053,-.101,-1.24,.004],[side*.076,-.105,-1.047,.006],
+          [side*.125,-.114,-.894,.007],[side*.164,-.107,-.784,.003]],[shadow,rose],8).name="Linha da boca";
+        dragonCurve(g,[[side*.190,-.124,-.731,.004],[side*.220,-.139,-.657,.006],
+          [side*.250,-.114,-.586,.003]],[rose,shadow],9).name="Dobra do pescoço";
+        const wing=hinge(g,side*.232,-.121,-.449);wing.userData.side=side;wings.push(wing);
+        fanFin(wing,[-side*.070,.045,-.028],[[side*.10,-.035,-.14],[side*.24,-.11,-.105],[side*.46,-.175,.064],
+          [side*.59,-.222,.257],[side*.53,-.234,.329],[side*.36,-.15,.327],[side*.15,-.066,.247],[0,-.006,.147]],
+          [rose,pale,shadow],.033,10).name="Nadadeira peitoral larga";
+        const edge=[[.13,-.002,-.065],[.32,-.014,-.041],[.48,-.042,.016],[.65,-.066,.145],[.55,-.081,.261],
+          [.36,-.076,.271],[.18,-.036,.232],[0,-.007,.165]];
+        fanFin(tailTip,[0,-.144,-.11],edge.map(([x,y,z])=>[side*x,-.144+y,z]),[rose,pale,shadow],.036,10).name="Lobo caudal";
+      }
+      part(g,"oval",0x805a6f,[0,.275,-.465],[.037,.008,.068],[.13,0,0]).name="Espiráculo";
+      return {group:g,tail,tailTip,wings,jaw,spouts:[[0,.282,-.465]],breach:1.12,verticalTail:true,swimStyle:"swim",biteAngle:.11};
+    }
+    let orcaSkin=null;
+    function paintOrca(color,z,c){
+      const clamp=value=>Math.max(0,Math.min(1,value));
+      const eyeCenter=.075+.13*(z+1.07);
+      const eyePatch=1-((z+1.06)/.342)**2-((c-eyeCenter)/.214)**2;
+      const flank=1-((z-.39)/.57)**2-((c+.61)/.38)**2;
+      const lower=-.63+.37*clamp((-z-1.23)/.71);
+      const lowerPatch=clamp((1.53-z)*15)*clamp((lower-c)*59);
+      const mantle=1-((z-.47)/.39)**2-((1-c)/.42)**2;
+      return color.setHex(0x090e16).multiplyScalar(1.1+.22*Math.max(c,0))
+        .lerp(orcaSaddle,clamp(mantle)*.73)
+        .lerp(orcaWhite,Math.max(clamp(eyePatch*19),clamp(flank*23),lowerPatch));
+    }
+    const orcaSaddle=new T.Color(0x495664),orcaWhite=new T.Color(0xf2f3eb);
+    function orcaFinish(profile,geometry,segments){
+      const from=profile[0][0],span=profile.at(-1)[0]-from,uv=[];
+      const colors=geometry.getAttribute("color");
+      for(const [z] of profile)for(let i=0;i<segments;i++){
+        uv.push((z-from)/span,(1+Math.cos(i*Math.PI*2/segments))/2);
+      }
+      for(let i=0;i<colors.count;i++){
+        const shade=colors.getX(i);
+        colors.setXYZ(i,shade,shade,shade);
+      }
+      geometry.setAttribute("uv",new T.Float32BufferAttribute(uv,2));
+      if(!orcaSkin){
+        const w=512,h=256,pixels=new Uint8Array(w*h*4),color=new T.Color();
+        for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+          paintOrca(color,from+(x+.5)*span/w,(y+.5)*2/h-1);
+          const i=(y*w+x)*4;
+          pixels[i]=color.r*255;pixels[i+1]=color.g*255;pixels[i+2]=color.b*255;pixels[i+3]=255;
+        }
+        const map=new T.DataTexture(pixels,w,h,T.RGBAFormat);
+        map.magFilter=T.LinearFilter;map.minFilter=T.LinearMipmapLinearFilter;map.generateMipmaps=true;map.needsUpdate=true;
+        orcaSkin=new T.MeshStandardMaterial({map,vertexColors:true,roughness:.43});
+      }
+      return orcaSkin;
+    }
+    function cetacean(kind){
+      const whale=kind==="humpback",g=new T.Group(),wings=[];
+      const back=whale?0x263d4c:0x111b23,belly=whale?0xb7cbd3:0xf8f8ec,dark=0x101923;
+      const coarse=whale?[
+        [-2.35,.05,.045,.045],[-2.30,.064,.20,.105],[-2.16,.075,.34,.165],[-1.94,.10,.46,.225],
+        [-1.66,.105,.57,.35],[-1.42,.06,.66,.49],[-1.15,.055,.75,.63],[-.73,.034,.83,.69],
+        [-.24,.038,.80,.70],[.24,.067,.71,.61],[.68,.106,.55,.51],[1.10,.075,.42,.38],
+        [1.49,.010,.31,.255],[1.84,-.039,.218,.174],[2.12,-.007,.139,.102],[2.39,.046,.109,.058],[2.54,.060,.025,.025]
+      ]:[
+        [-1.99,.032,.035,.038],[-1.954,.040,.18,.13],[-1.84,.054,.325,.224],[-1.63,.052,.435,.334],
+        [-1.39,.049,.527,.453],[-1.14,.028,.572,.537],[-.79,.022,.603,.565],[-.38,.017,.600,.559],
+        [.03,.008,.532,.507],[.40,-.017,.445,.432],[.72,-.068,.363,.352],[1.04,-.108,.267,.258],
+        [1.31,-.127,.198,.195],[1.59,-.112,.133,.124],[1.79,-.084,.105,.070],[1.92,-.08,.029,.027]
+      ];
+      const blowholeZ=whale?-1.32:-1.12;
+      const openings=whale?[[-.101,-.018],[.101,.018]]:[[0,0]];
+      const w=whale?.055:.096,d=whale?.110:.074;
+      function nostril(x,z){
+        return Math.min(...openings.map(([center,shear])=>{
+          const along=z-blowholeZ;
+          return Math.hypot((x-center-along*shear*8)/w,(along-.18*Math.abs(x-center))/d);
+        }));
+      }
+      const profile=sculptSections(sculptSections(sculptSections(coarse)));
+      for(let i=-8;i<=8;i++){
+        const z=blowholeZ+i*d*.18,upper=profile.findIndex(row=>row[0]>z),a=profile[upper-1],b=profile[upper];
+        const ratio=(z-a[0])/(b[0]-a[0]);
+        profile.splice(upper,0,[z,...a.slice(1).map((value,j)=>T.MathUtils.lerp(value,b[j+1],ratio))]);
+      }
+      const gradient=new T.Color(belly),base=new T.Color(back);
+      const bound=(v,lo=0,hi=1)=>Math.max(lo,Math.min(hi,v));
+      function surface(z,a,offset=0){
+        const n=profile.findIndex(p=>p[0]>=z),i=n<0?profile.length-1:Math.max(1,n),b=profile[i],c=profile[i-1];
+        const f=bound((z-c[0])/(b[0]-c[0]));
+        const [,y,rx,ry]=b.map((v,j)=>c[j]+(v-c[j])*f);
+        return [Math.sin(a)*(rx+offset),y+Math.cos(a)*(ry+offset),z];
+      }
+      const segments=144;
+      const smooth=T.MathUtils.smoothstep;
+      const mouthEnd=whale?-1.31:-1.08,front=coarse[0][0];
+      const lips=z=>{
+        const f=bound((z-front)/(mouthEnd-front));
+        const angle=whale?2.02+.21*Math.sin(f*Math.PI)-f*.39:2.14+.10*Math.sin((z+1.99)*4)-.29*smooth(z,-1.85,-1.13);
+        return T.MathUtils.lerp(angle,Math.PI,smooth(z,mouthEnd-.23,mouthEnd));
+      };
+      const lipLine=z=>surface(z,lips(z));
+      const hull=contour(g,profile,[back,belly],"",segments,([z,y,rx,ry],a)=>{
+        const c=Math.cos(a);let x=Math.sin(a)*rx,height=y+c*ry;
+        if(c>.82&&Math.abs(z-blowholeZ)<d*1.7){
+          const r=nostril(x,z);
+          height-=.035*(1-smooth(r,.33,.91))-.008*(1-smooth(Math.abs(r-1),.04,.29));
+        }
+        if(z<mouthEnd){
+          const angle=lips(z),fold=Math.acos(c);
+          if(fold>angle){
+            height=y+Math.cos(angle)*ry;
+            x=Math.sign(Math.sin(a))*rx*Math.sin(angle)*(Math.PI-fold)/(Math.PI-angle);
+          }
+        }
+        return [x,height,z];
+      },(color,z,a)=>{
+        const c=Math.cos(a),threshold=-.32-.21*bound((z+1.33)/2.1)+.029*Math.sin(z*14+a*7);
+        const mottling=.91+.061*Math.sin(z*16+a*7+Math.sin(a*4-z*9))+
+          .057*Math.sin(z*32-a*21)*Math.cos(z*38+a*19)+.075*Math.sin(z*78+a*62)*Math.sin(z*57-a*71);
+        if(whale)color.copy(base).multiplyScalar(mottling).lerp(gradient,bound((threshold-c)*5.5)*(z<1.43?1:.44));
+        else color.setRGB(1,1,1);
+        if(c>.82&&Math.abs(z-blowholeZ)<d*1.7){
+          const shade=T.MathUtils.lerp(.14,1,smooth(nostril(surface(z,a)[0],z),.54,1.05));
+          color.multiplyScalar(shade);
+        }
+      },aquaticSkin);
+      hull.name=whale?"Corpo contínuo da jubarte":"Corpo da orca com sela e manchas";
+      const joint=whale?1.02:.76,tip=whale?2.36:1.75;
+      const {tail,tailTip}=anchoredSwimmer(g,hull,profile,segments,joint,tip,whale?hull.material:orcaFinish(profile,hull.geometry,segments));
+      part(tailTip,"oval",back,[0,whale?.043:-.083,.008],
+        whale?[.137,.070,.211]:[.111,.072,.174]).name="Junção dos lobos caudais";
+      const jaw=hinge(g,0,surface(mouthEnd,Math.PI)[1],mouthEnd);
+      const mouthColor=whale?0x182833:0x10161d;
+      jaw.name=whale?"Mandíbula articulada da jubarte":"Mandíbula articulada da orca";
+      const jawRows=profile.filter(([z])=>z<mouthEnd).map(([z])=>[z,0,0,0]);
+      jawRows.push([mouthEnd-.0001,0,0,0]);
+      contour(jaw,jawRows,[belly,0xced9d8],"",96,([z],a)=>{
+        const angle=lips(z),c=Math.cos(a),side=Math.sign(Math.sin(a));
+        let at;
+        if(c>=0){
+          const edge=lipLine(z);
+          at=[edge[0]*Math.sin(a),edge[1]+.008*(1-smooth(z,mouthEnd-.16,mouthEnd)),z];
+        }else{
+          const folded=angle+(Math.PI-angle)*(Math.acos(c)-Math.PI/2)/(Math.PI/2);
+          at=surface(z,side*folded);
+        }
+        return [at[0],at[1]-jaw.position.y,z-jaw.position.z];
+      },(color,z,a)=>{
+        const c=Math.cos(a),folded=lips(z)+(Math.PI-lips(z))*Math.max(0,(Math.acos(c)-Math.PI/2)/(Math.PI/2));
+        if(c>.04)color.setHex(whale?0x392a36:0x2b1925);
+        else if(whale){
+          const threshold=-.32-.21*bound((z+1.33)/2.1)+.029*Math.sin(z*14+folded*7);
+          color.copy(base).lerp(gradient,bound((threshold-Math.cos(folded))*5.5));
+        }else paintOrca(color,z,Math.cos(folded));
+      },aquaticSkin).name=whale?"Mandíbula inferior e cavidade bucal da jubarte":"Queixo branco e interior da boca";
+      if(!whale){
+        part(jaw,"oval",0x593848,[0,-.006,-.44],[.143,.016,.218]).name="Língua";
+        for(const side of [-1,1])for(let i=0;i<8;i++){
+          const z=-1.88+i*.062,[x,y]=lipLine(z);
+          dragonCurve(g,[[side*x*.90,y+.019,z,.012],[side*x*.91,y+.006,z+.002,.009],
+            [side*x*.91,y-.012,z+.008,.002]],[0xe4e5d5,0x9daaa7],7).name="Dente da orca";
+        }
+      }
+      for(const side of [-1,1]){
+        const eyeZ=whale?-1.39:-1.41,eyeAngle=side*(whale?1.71:1.59);
+        const eye=surface(eyeZ,eyeAngle,.014);
+        part(g,"oval",whale?0x3d5260:back,eye,whale?[.034,.052,.086]:[.025,.038,.057]).name="Pálpebras";
+        const pupil=eye.slice();pupil[0]+=side*.020;
+        part(g,"oval",dark,pupil,whale?[.025,.031,.057]:[.018,.024,.041]).name=whale?"Olho da jubarte":"Olho da orca";
+        part(g,"oval",0xa9bfc7,[pupil[0]+side*.016,pupil[1]+.01,pupil[2]-.019],[.005,.009,.012]);
+        const lip=[];
+        for(let i=0;i<=15;i++){
+          const f=i/15,z=T.MathUtils.lerp(front+.005,mouthEnd-.12,f);
+          const at=surface(z,side*lips(z),.002);
+          lip.push([...at,.0015+.004*Math.sin(f*Math.PI)]);
+        }
+        dragonCurve(g,lip,[mouthColor,mouthColor],9).name="Linha da boca";
+        const wingRoot=surface(whale?-.92:-.85,side*2.02,-.08);
+        const wing=hinge(g,...wingRoot);wing.userData.side=side;wings.push(wing);
+        const outline=whale?[
+          [.02,0,-.32],[.26,-.035,-.37],[.39,-.069,-.35],[.58,-.108,-.29],[.83,-.161,-.21],
+          [1.10,-.24,-.055],[1.41,-.32,.17],[1.68,-.43,.47],[1.78,-.49,.66],
+          [1.62,-.45,.68],[1.32,-.37,.58],[.99,-.30,.46],[.64,-.21,.39],[.27,-.10,.36],[0,-.02,.26]
+        ]:[
+          [.05,.01,-.29],[.25,-.055,-.285],[.47,-.11,-.215],[.67,-.20,-.10],[.85,-.285,.11],
+          [.90,-.32,.31],[.82,-.311,.48],[.65,-.26,.56],[.47,-.19,.50],[.25,-.10,.39],[.03,-.015,.29]
+        ];
+        fanFin(wing,[-side*.09,.03,-.014],outline.map(([x,y,z])=>[side*x,y,z]),
+          [back,whale?0x506d7d:0x2b3a44,whale?belly:back],whale?.050:.043,10).name=whale?"Nadadeira peitoral longa":"Nadadeira peitoral arredondada";
+        if(whale)for(let i=0;i<8;i++){
+          const [x,y,z]=outline[i+1],size=.050-i*.0036;
+          part(wing,"oval",i%3?back:0x596d76,[side*x,y,z],[size,.031-i*.002,size*.87]).name="Tubérculo da nadadeira";
+        }
+        const edge=whale?[
+          [.26,-.025,-.13],[.64,-.031,-.108],[1.00,-.065,-.026],[1.45,-.11,.16],[1.36,-.13,.249],
+          [1.12,-.12,.316],[.96,-.11,.29],[.79,-.10,.345],[.62,-.073,.308],[.44,-.058,.351],[.27,-.039,.298],[.10,-.02,.23],[0,-.014,.14]
+        ]:[
+          [.17,.013,-.12],[.40,.016,-.106],[.69,.0,-.047],[1.035,-.043,.105],[.94,-.054,.225],
+          [.75,-.030,.276],[.52,-.026,.285],[.28,-.015,.255],[.11,-.003,.194],[0,0,.12]
+        ];
+        fanFin(tailTip,[0,whale?.039:-.08,-.19],edge.map(([x,y,z])=>[side*x,(whale?.039:-.08)+y,z]),
+          [back,whale?0x506676:0x293845,whale?0xc6d4d9:back],.039,10).name=whale?"Lobo da cauda da jubarte":"Lobo da cauda da orca";
+      }
+      const dorsal=whale?[
+        [0,.525,.38],[0,.58,.55],[0,.68,.75],[0,.78,.98],[0,.67,1.09],[0,.53,1.10],[0,.38,1.34]
+      ]:[
+        [0,.48,-.48],[0,.76,-.27],[0,1.06,-.05],[0,1.36,.13],[0,1.61,.34],[0,1.33,.29],
+        [0,1.02,.24],[0,.75,.29],[0,.47,.55]
+      ];
+      fanFin(g,[0,whale?.45:.46,whale?.69:-.05],dorsal,[back,whale?0x415865:0x2e3d47],whale?.051:.064,12).name=whale?"Corcova e nadadeira dorsal":"Nadadeira dorsal alta da orca";
+      const spouts=openings.map(([x])=>[x,surface(blowholeZ,x/(whale?.62:.58))[1]-.013,blowholeZ]);
+      spouts.forEach((at,i)=>{
+        const marker=hinge(g,...at);
+        marker.name=whale?(i===0?"Espiráculo esquerdo da jubarte":"Espiráculo direito da jubarte"):"Espiráculo da orca";
+      });
+      if(whale){
+        for(const side of [-1,1])for(let n=1;n<=7;n++){
+          const frontZ=-2.25+n*.024,endZ=frontZ+2.18-n*.075;
+          const groove=(start,end,parent)=>{
+            const points=[];
+            for(let i=0;i<=19;i++){
+              const z=T.MathUtils.lerp(start,end,i/19),f=bound((z-frontZ)/(endZ-frontZ)),a=side*(Math.PI-n*(.089+.057*Math.sin(f*Math.PI)));
+              const at=surface(z,a,.003);
+              if(parent===jaw){at[1]-=jaw.position.y;at[2]-=jaw.position.z;}
+              points.push([...at,.002+.005*Math.sin(f*Math.PI)]);
+            }
+            dragonCurve(parent,points,[0x607d8d,0x6a8594],7).name="Prega ventral";
+          };
+          if(frontZ<mouthEnd)groove(frontZ,Math.min(endZ,mouthEnd),jaw);
+          if(endZ>mouthEnd)groove(Math.max(frontZ,mouthEnd),endZ,g);
+        }
+        for(const side of [-1,1])for(let row=0;row<3;row++)for(let i=0;i<6-row;i++){
+          const z=-2.30+i*(.126+row*.016)+row*.018,angle=side*(.22+row*.68+Math.sin(i*2.4+row)*.11);
+          const [x,y]=surface(z,angle,.005);
+          const size=.030+(i%3)*.006;
+          part(g,"oval",(i+row)%4===0?0x536b77:back,[x,y,z],[size,.021+(i%2)*.008,size*.95]).name="Tubérculo do rostro";
+        }
+      }
+      return {group:g,tail,tailTip,wings,jaw,spouts,breach:whale?1.28:1.05,verticalTail:true,
+        swimStyle:whale?"whale":"swim",biteAngle:whale?.12:.34,jawRest:0,jawDrift:whale?.012:.009};
+    }
+    function verticalHull(parent,sections,colors,segments=30,paint=null){
+      return contour(parent,sculptSections(sculptSections(sections)),colors,"",segments,
+        ([y,z,xr,zr],a)=>[Math.sin(a)*xr,y,z-Math.cos(a)*zr],paint,aquaticSkin);
+    }
+    function humanFace(head,{skin,light,iris,eyebrow,width=1,mood=""}){
+      const smile=mood==="smile",stern=mood==="stern";
+      verticalHull(head,[[-.177,.028,.067*width,.072],[-.133,.013,.108*width,.118],
+        [-.071,.011,.143*width,.142],[.007,.014,.163*width,.151],[.069,.028,.171*width,.160],
+        [.131,.033,.144*width,.139],[.182,.036,.093*width,.094],[.211,.039,.021,.026]],
+        [skin,light],32).name="Rosto, maçãs e maxilar";
+      const mouth=hinge(head,0,-.119,-.118);
+      part(mouth,"oval",skin,[0,-.014,.006],[.077*width,.042,.039]);
+      dragonCurve(mouth,[[-.067*width,.006,-.013,.003],[0,-.009,-.035,.012],[.067*width,.008,-.013,.003]],
+        [pigment(skin,false),skin],11).name="Lábio inferior";
+      dragonCurve(head,[[-.073*width,smile?-.098:-.115,-.132,.003],[0,-.113,-.160,smile?.014:.008],
+        [.073*width,smile?-.098:-.115,-.132,.003]],[pigment(skin,false),skin],13).name=smile?"Sorriso enviesado":"Abertura da boca";
+      if(smile)dragonCurve(head,[[-.066*width,-.102,-.141,.001],[0,-.111,-.171,.006],
+        [.069*width,-.098,-.140,.001]],[0xe8c7aa,0xc8a38e],10).userData.noShadow=true;
+      dragonCurve(head,[[0,.040,-.132,.018],[0,-.011,-.154,.029],[0,-.054,-.188,.036],[0,-.073,-.154,.015]],
+        [skin,light],15).name="Nariz";
+      for(const side of [-1,1]){
+        const eyeGroup=hinge(head,side*.080*width,.027,-.125);
+        eyeGroup.rotation.y=-side*.31;eyeGroup.userData.entityEye=true;
+        part(eyeGroup,"oval",eyebrow,[0,0,0],[.051,.033,.024]);
+        part(eyeGroup,"oval",stern?0xb06536:0xe2ddce,[0,0,-.016],[.041,stern?.013:smile?.027:.024,.014]);
+        part(eyeGroup,"oval",iris,[0,.002,-.027],[.022,stern?.014:.022,.013],[0,0,0],stern);
+        part(eyeGroup,"oval",0x231f27,[0,.002,-.039],[.011,.015,.008]);
+        part(eyeGroup,"oval",0xf6f4e1,[-.008,.010,-.046],[.005,.006,.004]);
+        dragonCurve(head,[[side*.037*width,stern?.048:.066,-.127,.006],[side*.084*width,stern?.069:.074,-.135,stern?.015:.010],
+          [side*.130*width,stern?.086:.056,-.112,.004]],[eyebrow,pigment(eyebrow,true)],12).name="Sobrancelha";
+        part(head,"oval",skin,[side*.164*width,-.023,.019],[.036,.065,.037],[.13,side*.22,side*.19]);
+        part(head,"oval",pigment(skin,false),[side*.180*width,-.025,-.004],[.013,.032,.013],[.13,side*.22,side*.19]);
+        part(head,"oval",light,[side*.036,-.066,-.165],[.024,.014,.016]);
+      }
+      return mouth;
+    }
+    function organicArm(parent,rig,side,x,y,z,length,width,skin,accent,clawed=false,webbing=null){
+      const upper=hinge(parent,side*x,y,z);
+      upper.userData.side=side;rig.arms.push(upper);
+      dragonCurve(upper,[[0,.095,0,width*.60],[side*.02,.018,0,width],
+        [side*.017,-length*.27,.01,width*.83],[0,-length*.52,0,width*.57]],
+        [skin,accent],20,[0,0,1]).name="Ombro e braço";
+      const lower=hinge(upper,0,-length*.48,0);upper.userData.lower=lower;
+      dragonCurve(lower,[[0,.068,0,width*.58],[0,-.018,-.006,width*.69],
+        [0,-length*.24,-.027,width*.60],[0,-length*.46,-.034,width*.39]],
+        [skin,accent],19,[0,0,1]).name="Cotovelo e antebraço";
+      const hand=hinge(lower,0,-length*.48,-.035);
+      if(webbing){
+        swimmingHand(hand,side,skin,accent,webbing);
+        return {upper,lower,hand};
+      }
+      part(hand,"oval",skin,[0,-.025,0],[width*.57,width*.68,width*.36]);
+      for(let n=0;n<4;n++){
+        const at=(n-1.5)*width*.264,end=(clawed?.91:.65)*width*(1-Math.abs(n-1.45)*.08);
+        dragonCurve(hand,[[at,-width*.33,0,width*.153],[at,-width*.61,-.019,width*.133],
+          [at,-end-width*.22,-.029,width*.067]],[skin,accent],10,[0,0,1]);
+        if(clawed)dragonHorn(hand,[[at,-end-width*.12,-.025,.022],[at,-end-width*.56,-.035,.012],
+          [at,-end-width*.70,-.056,.001]],[0xb5a58d,0xe0d5ac]);
+      }
+      part(hand,"oval",accent,[-side*width*.41,-width*.30,-.011],[width*.166,width*.33,width*.18],[0,0,-side*.56]);
+      return {upper,lower,hand};
+    }
+    function organicLeg(parent,rig,x,y,z,length,width,skin,accent,phase,footDirection=-1,hoof=false,webbing=null){
+      const upper=hinge(parent,x,y,z);upper.userData.phase=phase;rig.legs.push(upper);
+      dragonCurve(upper,[[0,.09,.02,width*.64],[0,.012,.023,width],
+        [.009,-length*.27,-.014,width*.84],[0,-length*.55,-.018,width*.64]],
+        [skin,accent],20,[0,0,1]).name="Quadril e coxa";
+      const lower=hinge(upper,0,-length*.48,-.018);upper.userData.lower=lower;
+      dragonCurve(lower,[[0,.082,0,width*.65],[0,-.025,.007,width*.68],
+        [0,-length*.28,.022,width*.49],[0,-length*.51,.006,width*.38]],
+        [skin,accent],19,[0,0,1]).name="Joelho e canela";
+      const foot=hinge(lower,0,-length*.492,.006);foot.name=hoof?"Casco":footDirection>0?"Pé voltado para trás":"Pé";
+      if(webbing){
+        swimmingFoot(foot,Math.sign(x),skin,accent,webbing);
+        return {upper,lower,foot};
+      }
+      if(hoof)part(foot,"facet",accent,[0,-.045,-.026],[width*1.37,.116,width*1.75],[.13,0,0]);
+      else{
+        part(foot,"oval",skin,[0,-.022,footDirection*width*.55],[width*.78,.065,width*1.27],[.10*footDirection,0,0]);
+        for(let i=-2;i<=2;i++)part(foot,"oval",accent,[i*width*.277,-.022,footDirection*(width*1.48-Math.abs(i)*.016)],
+          [width*.167,.034,width*.29]);
+      }
+      return {upper,lower,foot};
+    }
+    const finMembrane=new T.MeshStandardMaterial({vertexColors:true,roughness:.53,transparent:true,opacity:.68,side:T.DoubleSide,depthWrite:false});
+    let scaleSkin;
+    function hybridScales(mesh,rings,segments,around,along=1){
+      if(!scaleSkin){
+        const size=512,color=new Uint8Array(size*size*4),relief=new Uint8Array(size*size*4);
+        for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+          const row=(y+.5)*12/size,off=Math.floor(row)%2*.5;
+          const u=((x+.5)*8/size+off)%1-.5,v=row%1;
+          const overlap=v-(.14+.76*(1-Math.sqrt(Math.max(0,1-4*u*u))));
+          const rim=Math.exp(-((overlap/.083)**2)),seam=Math.exp(-(((overlap+.09)/.045)**2));
+          const grain=Math.sin(x*1.713+y*.311)*Math.sin(y*2.017-x*.483);
+          const tone=211+34*rim-35*seam+7*grain;
+          color.set([tone,tone+4,tone+6,255],(y*size+x)*4);
+          const bump=120+95*rim-68*seam;
+          relief.set([bump,bump,bump,255],(y*size+x)*4);
+        }
+        const texture=data=>{
+          const map=new T.DataTexture(data,size,size,T.RGBAFormat);
+          map.wrapS=map.wrapT=T.RepeatWrapping;map.magFilter=T.LinearFilter;
+          map.minFilter=T.LinearMipmapLinearFilter;map.generateMipmaps=true;map.needsUpdate=true;
+          return map;
+        };
+        scaleSkin=new T.MeshStandardMaterial({vertexColors:true,map:texture(color),bumpMap:texture(relief),
+          bumpScale:.011,metalness:.16,roughness:.42});
+      }
+      const source=mesh.geometry,index=source.index.array,geometry=source.toNonIndexed(),uv=[];
+      for(let i=0;i<index.length;i+=3){
+        const columns=[index[i]%segments,index[i+1]%segments,index[i+2]%segments];
+        const seam=Math.max(...columns)-Math.min(...columns)>segments*.5;
+        for(let j=0;j<3;j++){
+          const u=seam&&columns[j]<segments*.5?columns[j]+segments:columns[j];
+          uv.push(u/segments*around,Math.floor(index[i+j]/segments)/(rings-1)*along);
+        }
+      }
+      geometry.setAttribute("uv",new T.Float32BufferAttribute(uv,2));
+      source.dispose();mesh.geometry=geometry;mesh.material=scaleSkin;
+    }
+    function digitWeb(parent,paths,colors,name){
+      for(let i=1;i<paths.length;i++){
+        const [a0,a1,a2]=paths[i-1], [b0,b1,b2]=paths[i];
+        const edge=(a,b,t)=>a.slice(0,3).map((v,k)=>T.MathUtils.lerp(v,b[k],t));
+        const a=edge(a1,a2,.51),b=edge(b1,b2,.51),fold=edge(a,b,.5);
+        fold[1]+=.016;
+        const web=fanFin(parent,edge(a0,b0,.5),[a0.slice(0,3),a,fold,b,b0.slice(0,3)],colors,.003,4);
+        if(web){web.material=finMembrane;web.name=name}
+      }
+    }
+    function swimmingHand(hand,side,skin,accent,webbing){
+      dragonCurve(hand,[[0,.013,.005,.035,.025],[0,-.024,.003,.047,.023],
+        [side*.004,-.058,-.004,.050,.021],[side*.004,-.079,-.012,.039,.015]],
+        [skin,accent],20,[0,0,1]).name="Palma com arco dos nós dos dedos";
+      const fingers=[.075,.095,.086,.060].map((length,i)=>{
+        const x=(i-1.5)*.025*side,y=-.068+Math.abs(i-1.2)*.005;
+        return [[x,y,.001,.013],[x*1.22,y-length*.46,-.009,.011],
+          [x*1.43,y-length*.78,-.024,.008],[x*1.46,y-length,-.036,.004]];
+      });
+      const thumb=[[-side*.029,-.029,.004,.018],[-side*.058,-.048,-.003,.015],
+        [-side*.073,-.071,-.020,.011],[-side*.071,-.090,-.035,.006]];
+      for(const path of [thumb,...fingers])dragonCurve(hand,path,[skin,accent],13,[0,0,1]).name=path===thumb?"Polegar articulado":"Dedo afilado";
+      digitWeb(hand,[thumb,...fingers],webbing,"Membrana interdigital da mão");
+    }
+    function swimmingFoot(foot,side,skin,accent,webbing){
+      dragonCurve(foot,[[0,-.017,.047,.040,.036],[0,-.026,.003,.055,.037],
+        [side*.007,-.029,-.073,.067,.029],[side*.003,-.033,-.119,.065,.022]],
+        [skin,accent],20,[0,1,0]).name="Calcanhar, peito e planta do pé";
+      const toes=Array.from({length:5},(_,i)=>{
+        const x=(i-2)*.025*side,len=.077-i*.008,base=-.099-Math.max(0,2-i)*.009;
+        return [[x,-.028,base,.015-i*.001],[x*1.20,-.034,base-len*.44,.013-i*.001],
+          [x*1.27,-.044,base-len*.76,.010-i*.001],[x*1.29,-.049,base-len,.006-i*.0006]];
+      });
+      for(const path of toes)dragonCurve(foot,path,[skin,accent],11,[0,1,0]).name="Dedo do pé";
+      digitWeb(foot,toes,webbing,"Membrana interdigital do pé");
+    }
+    function swimmingHybrid(type){
+      const headFish=type==="fishfolk_head",mermaid=type==="mermaid",g=new T.Group();
+      const skin=headFish?0x85814f:mermaid?0xa86f59:0x9e7867,light=headFish?0xbbad7d:mermaid?0xd3a082:0xd6a892;
+      const scales=headFish?0x456d57:mermaid?0x287e85:0x3b6686,lustre=mermaid?0x80d2b5:0x8dbed6,dark=0x293943;
+      const swimmer=hinge(g,0,-.055,0),rig={arms:[],legs:[]},wings=[];
+      const upper=verticalHull(swimmer,[[-.29,.028,.17,.15],[-.20,.018,.214,.16],[-.04,.013,.202,.148],
+        [.17,.006,mermaid?.23:.25,.164],[.33,.012,mermaid?.245:.302,.167],[.43,.014,.238,.129],
+        [.50,.017,.14,.099],[.57,.015,.095,.087]],[skin,light],36,(color,y,a)=>{
+          if(y<.03||Math.abs(Math.sin(a))>.83)color.lerp(new T.Color(scales),y<.03?.77:.50);
+          if(Math.cos(a)>.42&&y>.15&&y<.36)color.lerp(new T.Color(mermaid?0x42688f:scales),.77);
+          color.multiplyScalar(.94+.10*Math.sin(y*105+a*19)**2);
+        });
+      upper.name="Tronco contínuo do nadador";
+      hybridScales(upper,upper.geometry.attributes.position.count/36,36,2,1.8);
+      for(const side of [-1,1]){
+        const limb=organicArm(swimmer,rig,side,mermaid?.221:.268,.371,.018,.60,.103,skin,light,false,[scales,lustre]);
+        const web=fanFin(limb.lower,[0,-.03,.033],[[side*.069,-.07,.042],[side*.131,-.141,.081],
+          [side*.088,-.202,.094],[0,-.273,.057],[0,-.18,.025]],[scales,lustre],.012,5);
+        if(web)web.material=finMembrane;
+      }
+      const head=hinge(swimmer,0,.658,-.017);
+      let jaw,tail,tailTip;
+      if(headFish){
+        const fishHead=contour(head,sculptSections([[-.32,-.025,.118,.089],[-.24,.02,.173,.139],[-.12,.047,.190,.205],
+          [.023,.037,.161,.188],[.147,.013,.116,.128]]),[scales,light],"",36,null,(c,z,a)=>{
+          c.multiplyScalar(.84+.22*Math.cos(a*17+z*90)**2);
+        },aquaticSkin);
+        fishHead.name="Cabeça de peixe";
+        hybridScales(fishHead,fishHead.geometry.attributes.position.count/36,36,1);
+        jaw=aquaticMouth(head,[0,-.048,-.235],.142,.058,.118,scales,light,5);
+        eyes(head,.154,.077,-.188,.041);
+        const crest=fanFin(head,[0,.147,-.103],[[0,.163,-.223],[0,.271,-.11],[0,.299,.010],
+          [0,.209,.101],[0,.105,.155]],[scales,lustre],.018,6);
+        if(crest)crest.material=finMembrane;
+        for(const side of [-1,1]){
+          dragonCurve(head,[[side*.162,.115,-.107,.009],[side*.181,.063,-.053,.012],[side*.167,-.053,-.046,.010],
+            [side*.13,-.120,-.071,.003]],[dark,lustre],12).name="Fenda branquial";
+          const leg=organicLeg(swimmer,rig,side*.116,-.208,.036,.71,.107,skin,light,side>0?Math.PI:0,-1,false,[scales,lustre]);
+          const heel=fanFin(leg.lower,[0,-.14,.043],[[side*.059,-.185,.103],[side*.093,-.282,.161],
+            [side*.049,-.36,.093],[0,-.342,.049]],[scales,lustre],.013,4);
+          if(heel)heel.material=finMembrane;
+        }
+        tail=hinge(swimmer,0,-.201,.154);
+        const dorsal=fanFin(tail,[0,.046,0],[[0,.024,.10],[0,-.168,.29],[0,-.284,.32],[0,-.276,.12],
+          [0,-.33,.001]],[scales,lustre],.023,5);
+        if(dorsal)dorsal.material=finMembrane;
+      }else{
+        jaw=humanFace(head,{skin,light,iris:mermaid?0x9ddfc1:0x75d4ed,eyebrow:mermaid?0x563437:0x354954});
+        const hair=mermaid?0x603043:0x263d4a;
+        part(head,"oval",hair,[0,.101,.063],[.174,.185,.164],[.19,0,0]);
+        for(const side of [-1,1]){
+          for(let i=0;i<4;i++){
+            const at=hinge(head,side*(.085+i*.020),.108+i*.013,.06+i*.022);
+            const end=mermaid?-.49-i*.039:-.105-i*.026;
+            dragonCurve(at,[[0,.033,0,.044],[side*.037,-.071,.041,.049],
+              [side*.054,end*.64,.132+i*.013,.038],[side*.043,end,.176+i*.018,.006]],
+              [hair,mermaid?0xa05470:scales],15);
+            (rig.hair??=[]).push(at);
+          }
+          const ear=fanFin(head,[side*.128,-.019,.011],[[side*.167,.01,.043],[side*.243,.129,.122],
+            [side*.244,-.002,.115],[side*.175,-.083,.065]],[scales,lustre],.013,5);
+          if(ear)ear.material=finMembrane;
+          part(head,"oval",0xecd7ac,[side*.144,-.072,-.007],[.021,.037,.021]);
+        }
+        tail=hinge(swimmer,0,-.16,.022);
+        const tailSkin=dragonCurve(tail,[[0,.035,.011,.165,.213],[0,-.12,.012,.163,.209],[0,-.33,.047,.131,.165],
+          [0,-.55,.11,.102,.13],[0,-.79,.155,.07,.092],[0,-.98,.148,.04,.062]],
+          [scales,lustre],32,[1,0,0],(c,a,row)=>c.multiplyScalar(.88+.18*Math.cos(a*17+(row%2)*.83)**2));
+        tailSkin.name="Cauda de escamas";
+        hybridScales(tailSkin,tailSkin.geometry.attributes.position.count/32,32,2,2.2);
+        tailTip=hinge(tail,0,-.88,.156);
+        const socket=dragonCurve(tailTip,[[0,.089,-.003,.058,.076],[0,.024,-.004,.056,.070],
+          [0,-.035,.003,.062,.063],[0,-.094,.010,.051,.041],[0,-.142,.014,.017,.022]],
+          [scales,lustre],32,[1,0,0]);
+        socket.name="Raiz flexível da nadadeira caudal";
+        hybridScales(socket,socket.geometry.attributes.position.count/32,32,1);
+        for(const side of [-1,1]){
+          const tailFin=fanFin(tailTip,[0,.033,0],[[side*.11,-.082,.008],[side*.32,-.177,.047],
+            [side*.57,-.37,.132],[side*.45,-.433,.104],[side*.22,-.351,.052],[0,-.18,0]],
+            [scales,lustre],.026,8);
+          if(tailFin)tailFin.material=finMembrane;
+        }
+      }
+      return {group:g,tail,tailTip,wings,jaw,limbs:rig,verticalTail:!headFish,swimStyle:"hybrid",biteAngle:headFish?.61:.17};
+    }
+
+
+    const referenceShrimps={shrimp_pink:0xef9a7c,shrimp_seabob:0xb98465,shrimp_white:0xbcc0ac,shrimp_pitu:0x98794d};
+    function seahorse(kind){
+      const thorny=kind==="seahorse_red",group=new T.Group(),wings=[];
+      const base=thorny?0x852010:0xc78a29,shade=thorny?0x3c130c:0x553011,light=thorny?0xd05a25:0xf8d775;
+      const shadow=new T.Color(shade),mottle=new T.Color(thorny?0xf2ab75:0xffdf87);
+      const pigmentBands=(c,a,j)=>{
+        const streak=Math.cos(j*1.74+Math.sin(a*5)*.92);
+        c.lerp(shadow,Math.max(0,streak)**3*(thorny?.54:.81));
+        const fleck=Math.max(0,Math.sin(j*2.38+a*17)*Math.cos(a*23-j*.81))**4;
+        c.lerp(mottle,fleck*(thorny?.73:.32));
+        c.multiplyScalar(.86+.20*Math.cos(a*5+j*.23)**2);
+      };
+      dragonCurve(group,[[0,.275,.117,.042,.055],[0,.205,.151,.077,.088],[0,.087,.132,.112,.127],
+        [0,-.057,.118,.122,.134],[0,-.192,.162,.071,.089],[0,-.261,.201,.059,.055]],
+        [base,light],44,[0,0,1],pigmentBands,.09).name="Tronco com anéis ósseos";
+      const head=hinge(group,0,.274,.093);
+      dragonCurve(head,[[0,-.047,.045,.052],[0,.020,.017,.085,.073],[0,.051,-.063,.092,.077],
+        [0,.026,-.118,.054,.052],[0,-.019,-.156,.034],[0,-.056,-.226,.023],[0,-.062,-.254,.024]],
+        [base,light],34,[1,0,0],pigmentBands).name="Cabeça e focinho tubular";
+      part(head,"oval",shade,[0,-.063,-.253],[.022,.015,.009]);
+      eyes(head,.072,.046,-.088,.021);
+      const tail=hinge(group,0,-.232,.192),turn=thorny?1.13:.86;
+      const curl=Array.from({length:37},(_,i)=>{
+        const t=i/36,a=t*Math.PI*2*turn,r=(thorny?.145:.167)*(1-t*.91);
+        return [0,-.137-Math.sin(a)*r-t*.094,-.149+Math.cos(a)*r,.006+.059*(1-t)**1.36];
+      });
+      curl.unshift([0,.034,-.024,.070],[0,-.034,-.003,.063]);
+      dragonCurve(tail,curl,[base,light],26,[1,0,0],pigmentBands).name="Cauda preênsil enrolada";
+      if(thorny)for(let i=3;i<27;i+=2){
+        const [x,y,z,width]=curl[i],angle=(i-2)/36*Math.PI*2*turn;
+        const dy=-Math.sin(angle),dz=Math.cos(angle),side=i%4===1?1:-1;
+        dragonCurve(tail,[[side*width*.5,y+dy*width*.54,z+dz*width*.53,width*.33],
+          [side*width*.68,y+dy*width*1.10,z+dz*width*1.16,width*.18],
+          [side*width*.91,y+dy*width*1.60,z+dz*width*1.56,.002]],[base,0xf69a6f],7).name="Espinho da cauda preênsil";
+      }
+      const dorsal=hinge(group,0,-.018,.233);wings.push(dorsal);
+      const web=fanFin(dorsal,[0,.018,-.022],[[0,.110,.010],[0,.098,.076],[0,.035,.104],
+        [0,-.049,.114],[0,-.106,.083],[0,-.094,.008]],[shade,light],.008,8);
+      web.material=finMembrane;web.name="Nadadeira dorsal translúcida";
+      for(const side of [-1,1]){
+        const finRoot=hinge(head,side*.063,-.012,.048);finRoot.userData.side=side;
+        wings.push(finRoot);
+        const pectoral=fanFin(finRoot,[0,0,0],[[side*.033,.025,.025],[side*.065,.006,.038],
+          [side*.031,-.035,.049],[0,-.024,.026]],[base,light],.005,4);
+        pectoral.material=finMembrane;
+      }
+      for(let i=0;i<(thorny?15:5);i++){
+        const t=i/(thorny?14:4),a=i*2.399,side=i%2===0?1:-1;
+        const y=.26-t*.47,z=.185+.068*Math.sin(Math.PI*t),r=thorny?.055+.022*Math.sin(a):.028;
+        const at=[side*(.025+.048*Math.sin(Math.PI*t)),y,z];
+        dragonCurve(group,[[...at,r*.28],[at[0]+side*r*.32,y+r*.35,z+r*.55,r*.17],
+          [at[0]+side*r*.55,y+r*.82,z+r,r*.027]],[base,light],7).name="Espinho da crista";
+        if(thorny&&i%2===0)dragonCurve(group,[[at[0]+side*r*.22,y+r*.22,z+r*.45,.008],
+          [at[0]+side*r*.58,y+r*.40,z+r*.78,.006],[at[0]+side*r*.97,y+r*.55,z+r*.88,.0015]],
+          [base,light],6).name="Filamento ramificado";
+      }
+      for(let i=0;i<5;i++){
+        const z=-.098+i*.042,y=.101+.023*Math.sin(i*.85),r=thorny?.059:.035;
+        dragonCurve(head,[[0,y-.024,z,.021],[0,y+r*.47,z+.012,.013],[0,y+r,z-.006,.0018]],
+          [shade,light],10).name="Coroa do cavalo-marinho";
+      }
+      return {group,tail,wings,swimStyle:"seahorse"};
+    }
+    function leatherback(){
+      const group=new T.Group(),wings=[],top=0x25353d,cream=0x72868a,ink=0x142329;
+      const outline=sculptSections(sculptSections(sculptSections([
+        [-.64,-.017,.082,.083],[-.51,.008,.34,.192],[-.31,.023,.489,.262],
+        [-.055,.028,.523,.292],[.22,.017,.468,.269],[.46,.003,.322,.188],
+        [.62,-.029,.148,.105],[.72,-.036,.043,.036],[.765,-.037,.010,.014]
+      ])));
+      const speckle=(v,w)=>Math.pow(Math.max(0,Math.sin(v)*Math.cos(w)),11);
+      const ridge=a=>Math.max(0,Math.cos((a-Math.PI*.5)*12))**13;
+      contour(group,outline,[top,cream],"",104,([z,y,x,h],a)=>{
+        const c=Math.cos(a),raised=c>-.10?(h*.20)*ridge(a):0;
+        return [Math.sin(a)*x,y+c*h+raised,z];
+      },(c,z,a)=>{
+        c.lerp(new T.Color(cream),speckle(z*131+a*29,z*79-a*53)*.65);
+        if(Math.cos(a)>-.1)c.lerp(new T.Color(0x9ba8a3),ridge(a)*.61);
+      },aquaticSkin).name="Carapaça de couro com sete quilhas";
+      const tail=hinge(group,0,-.068,.62);
+      dragonCurve(tail,[[0,0,-.067,.075],[0,-.006,.057,.059],[0,-.019,.158,.021],
+        [0,-.031,.189,.006]],[top,cream],18).name="Cauda curta da tartaruga";
+      const head=hinge(group,0,-.038,-.59);
+      contour(head,sculptSections(sculptSections([[-.47,-.012,.038,.036],[-.434,.010,.109,.065],
+        [-.35,.021,.153,.108],[-.215,.026,.146,.102],[-.090,.017,.110,.091],[.059,.012,.129,.100]])),
+        [top,cream],"",52,null,(c,z,a)=>c.lerp(new T.Color(cream),speckle(z*107+a*26,z*66-a*36)*.88),
+        aquaticSkin).name="Cabeça mosqueada e bico";
+      eyes(head,.117,.065,-.355,.022);
+      for(const side of [-1,1]){
+        dragonCurve(head,[[side*.043,-.023,-.466,.005],[side*.098,-.027,-.436,.006],
+          [side*.139,-.033,-.359,.008],[side*.138,-.043,-.292,.002]],[ink,top],9);
+        for(const front of [true,false]){
+          const limb=hinge(group,side*(front?.282:.251),-.098,front?-.459:.448);
+          limb.userData.side=side;limb.userData.rear=!front;wings.push(limb);
+          part(limb,"oval",top,[0,0,0],front?[.146,.098,.139]:[.098,.068,.102]);
+          const edge=front?[[.03,.044,-.154],[.249,.027,-.229],[.436,-.006,-.202],[.704,-.085,-.091],
+            [.927,-.143,.094],[1.002,-.168,.221],[.884,-.162,.256],[.660,-.110,.205],[.314,-.023,.124],[.015,.006,.123]]:
+            [[.03,.019,-.086],[.14,.026,-.077],[.30,-.015,.032],[.415,-.036,.148],
+              [.371,-.055,.254],[.224,-.043,.237],[.056,-.002,.156]];
+          const paddle=fanFin(limb,[-side*.095,0,.007],edge.map(([x,y,z])=>[side*x,y,z]),[top,0x53686f,0x78888a],front?.061:.036,12);
+          paddle.name=front?"Nadadeira dianteira longa":"Nadadeira traseira";
+          const position=paddle.geometry.attributes.position,color=paddle.geometry.attributes.color,tint=new T.Color();
+          for(let i=0;i<position.count;i++){
+            const along=position.getX(i),cross=position.getZ(i);
+            tint.fromBufferAttribute(color,i).lerp(new T.Color(0xc4c6b5),speckle(along*172+cross*98,along*108-cross*151)*.93);
+            color.setXYZ(i,tint.r,tint.g,tint.b);
+          }
+        }
+      }
+      return {group,tail,wings,swimStyle:"turtle"};
+    }
     function creature(kind){
-      const palette={orca:[0x182a36,0xeff3ec],dolphin:[0x547d99,0xb0c9cb],reef_shark:[0x496473,0xc4ced0],caiman:[0x596846,0xb0a36a],piranha:[0x768f79,0xd98660],ray:[0x446c76,0xa6bcac],jelly:[0x69a4b8,0xa9dee0]};
-      const [body,cream]=palette[kind];
+      if(kind==="leatherback")return leatherback();
+      if(kind==="seahorse_red"||kind==="seahorse_gold")return seahorse(kind);
+      if(Object.hasOwn(referenceShrimps,kind))return shrimpModel(referenceShrimps[kind],kind);
+      if(kind==="humpback"||kind==="orca")return cetacean(kind);
+      if(["mermaid","fishfolk_head","fishfolk_tail"].includes(kind))return swimmingHybrid(kind);
+      if(kind==="pufferfish")return fish(kind,0xb49b4c,"deep");
+      const venomRay=kind==="venom_ray";
+      if(venomRay)kind="ray";
+      if(kind==="pink_boto")return riverBoto();
+      const palette={dolphin:[0x547d99,0xb0c9cb],reef_shark:[0x496473,0xc4ced0],caiman:[0x596846,0xb0a36a],piranha:[0x768f79,0xd98660],ray:[0x446c76,0xa6bcac],jelly:[0x69a4b8,0xa9dee0]};
+      const [body,cream]=venomRay?[0x526558,0xccbd88]:palette[kind];
       if(kind==="piranha"){
         const f=fish(kind,body,"deep");
         part(f.group,"oval",0xc76442,[0,-.13,-.13],[.149,.092,.29]);
         f.group.scale.setScalar(.84);return f;
       }
-      const g=new T.Group(),wings=[],tail=hinge(g,0,0,kind==="jelly"?0:kind==="orca"?.96:.68);
+      const g=new T.Group(),wings=[],tail=hinge(g,0,0,kind==="jelly"?0:.68);
       if(kind==="jelly"){
         const bell=hinge(g,0,0,0);
         bell.add(tail);
@@ -347,8 +1089,9 @@ globalThis.QuimiCraftWildlife=(()=>{
         return {group:g,tail,wings,jaw,verticalTail:false,swimStyle:"pulse"};
       }
       if(kind==="ray"){
-        contour(g,[[-.78,-.01,.13,.038],[-.64,0,.26,.077],[-.36,.018,.34,.124],
-          [-.02,.011,.34,.115],[.30,0,.27,.088],[.63,-.02,.11,.046],[.75,-.02,.062,.037]],[body,cream],"speckle",16);
+        contour(g,sculptSections([[-.78,-.01,.13,.038],[-.64,0,.26,.077],[-.36,.018,.34,.124],
+          [-.02,.011,.34,.115],[.30,0,.27,.088],[.63,-.02,.11,.046],[.75,-.02,.062,.037]]),
+          [body,cream],"",30,null,(c,z,a)=>c.multiplyScalar(.9+.15*Math.cos(z*34+a*18)**2),aquaticSkin);
         for(const side of [-1,1]){
           const wing=hinge(g,side*.11,0,-.07);wing.userData.side=side;wings.push(wing);
           rayWing(wing,side,body,cream);
@@ -357,6 +1100,8 @@ globalThis.QuimiCraftWildlife=(()=>{
         }
         taper(tail,[[0,-.016,-.077,.055],[0,-.028,.14,.043],[.012,-.037,.35,.028],
           [.032,-.017,.57,.018],[.088,.013,.78,.006]],[body,cream],8);
+        if(venomRay)dragonHorn(tail,[[.022,-.014,.408,.023],[.022,.031,.48,.018],
+          [.026,.057,.55,.011],[.035,.064,.64,.001]],[body,0xcbe781],true).name="Ferrão da arraia";
         fanFin(tail,[.004,-.010,.162],[[.007,.037,.199],[.018,.072,.268],[.019,.040,.318],[.015,-.013,.366]],
           [pigment(body,false),body],.010);
         const jaw=aquaticMouth(g,[0,-.055,-.51],.105,.025,.091,cream,cream);
@@ -395,28 +1140,22 @@ globalThis.QuimiCraftWildlife=(()=>{
         for(let i=0;i<4;i++)part(tail,"diamond",0x445a3c,[0,.092-i*.013,.16+i*.15],[.064-i*.01,.051-i*.007,.097-i*.009]);
         return {group:g,tail,wings,jaw,verticalTail:false,swimStyle:"undulate",biteAngle:.75};
       }
-      const orca=kind==="orca",dolphin=kind==="dolphin",length=orca?1.16:dolphin?.88:1.03;
-      const width=orca?.425:dolphin?.249:.292,height=orca?.412:dolphin?.263:.27;
-      const nose=dolphin?[-1.39,-.31,.21,.088]:orca?[-1.09,-.17,.43,.27]:[-1.16,-.14,.15,.125];
+      const dolphin=kind==="dolphin",length=dolphin?.88:1.03;
+      const width=dolphin?.249:.292,height=dolphin?.263:.27;
+      const nose=dolphin?[-1.39,-.31,.21,.088]:[-1.16,-.14,.15,.125];
       const oceanHull=[nose,[-1.035,-.12,dolphin?.43:.62,dolphin?.25:.50],[-.91,-.04,.71,.67],[-.81,.02,.83,.82],
         [-.665,.038,.94,.95],[-.47,.01,1,1],[-.285,.008,1.01,.985],[-.07,0,1,.94],
         [.16,-.021,.89,.87],[.33,-.036,.74,.77],[.51,-.055,.60,.63],[.64,-.085,.48,.48],[.84,-.13,.27,.29]];
       const warm=new T.Color(cream);
-      contour(g,oceanHull.map(([z,c,w,h])=>[z*length,c*height,w*width,h*height]),[body,cream],"",28,null,(mix,z,a)=>{
+      contour(g,oceanHull.map(([z,c,w,h])=>[z*length,c*height,w*width,h*height]),[body,cream],"",32,null,(mix,z,a)=>{
         const level=Math.cos(a);
-        if(orca){
-          const whitePatch=1-((z/length+.51)/.205)**2-((level-.235)/.235)**2;
-          if(whitePatch>-.19)mix.lerp(warm,Math.min(1,.38+whitePatch*2.4));
-          if(level<-.24&&z/length<.52)mix.lerp(warm,Math.min(.98,(-level-.23)*2.72));
-        }else if(dolphin&&level<.19&&z/length>-.80){
-          mix.lerp(warm,Math.min(.51,Math.max(0,.19-level)*.62));
-        }
-      });
+        if(dolphin&&level<.19&&z/length>-.80)mix.lerp(warm,Math.min(.51,Math.max(0,.19-level)*.62));
+      }).name="Corpo do cetáceo";
       const shark=kind==="reef_shark";
       const jaw=aquaticMouth(g,[0,-height*(shark?.47:.37),-length*(dolphin?.90:.76)],
-        width*(orca?.68:dolphin?.49:.64),height*(orca?.15:dolphin?.15:.20),
-        length*(dolphin?.349:shark?.237:.218),shark?cream:body,cream,shark?6:0);
-      eyes(g,width*.83,height*.18,-length*.766,orca?.044:.034);
+        width*(dolphin?.49:.64),height*(dolphin?.15:.20),
+        length*(dolphin?.349:shark?.237:.253),shark?cream:body,cream,shark?6:0);
+      eyes(g,width*.83,height*.18,-length*.766,.034);
       for(const side of [-1,1]){
         const start=[side*width*.61,-height*.21,-length*1.006];
         const finish=[side*width*.82,-height*.35,-length*.76];
@@ -424,7 +1163,7 @@ globalThis.QuimiCraftWildlife=(()=>{
       }
       for(const side of [-1,1]){
         const wing=hinge(g,side*width*.55,-height*.23,-length*.19);wing.userData.side=side;wings.push(wing);
-        const tip=side*(orca?.65:.45);
+        const tip=side*.45;
         fanFin(wing,[-side*.065,.017,-.24],[[tip*.44,-.024,-.06],[tip*.82,-.111,.18],[tip,-.17,.38],
           [tip*.62,-.188,.423],[tip*.21,-.105,.431],[-side*.07,-.035,.40]],[pigment(body,false),body],.026);
         if(shark)for(let j=0;j<5;j++){
@@ -432,18 +1171,18 @@ globalThis.QuimiCraftWildlife=(()=>{
           taper(g,[[x,.038,z,.006],[x+side*.007,.009,z+.018,.007],[x-side*.021,-len,z+.030,.004]],[0x293a46,body],5);
         }
       }
-      fanFin(g,[0,height*.57,-.28],[[0,height*.80,-.35],[0,height+(orca?.32:.21),-.01],
-        [0,height+(orca?.51:.32),.27],[0,height*.95,.19],[0,height*.56,.37],[0,height*.27,.55]],
-        [pigment(body,false),body],.032);
+      const dorsal=[[0,height*.80,-.35],[0,height+.21,-.01],[0,height+.32,.27],[0,height*.95,.19],[0,height*.56,.37],[0,height*.27,.55]];
+      fanFin(g,[0,height*.57,-.28],dorsal,[pigment(body,false),body],.032).name="Nadadeira dorsal";
       contour(tail,[[-.12,-height*.13,width*.34,height*.34],[0,-height*.16,width*.29,height*.33],[.15,-height*.21,width*.24,height*.31],
         [.33,-height*.18,width*.185,height*.22],[.52,-height*.12,width*.106,height*.095]],[body,cream]);
       for(const side of [-1,1]){
-        const cross=side*(orca?.53:.37),lift=side*(side>0?.43:.29);
+        const cross=side*.37,lift=side*(side>0?.43:.29);
         const edge=shark?[[0,lift*.47,.49],[0,lift,.74],[0,lift*.65,.755],[0,lift*.31,.63],[0,0,.59]]:
           [[cross*.44,-.013,.445],[cross*.74,-.023,.49],[cross,-.06,.67],[cross*.59,-.073,.655],[cross*.26,-.032,.61],[0,-.024,.515]];
         fanFin(tail,[0,-.014,shark?.33:.285],edge,[pigment(body,false),body],.021);
       }
-      return {group:g,tail,wings,jaw,verticalTail:orca||dolphin,swimStyle:shark?"undulate":"swim",biteAngle:shark?.77:.38};
+      return {group:g,tail,wings,jaw,verticalTail:dolphin,swimStyle:shark?"undulate":"swim",biteAngle:shark?.77:.38,
+        ...(dolphin?{spouts:[[0,height*.97,-length*.56]],breach:1.22}:{})};
     }
     function moth(group,rig){
       const head=hinge(group,0,.73,-.28);rig.head=head;
@@ -473,6 +1212,107 @@ globalThis.QuimiCraftWildlife=(()=>{
         if(!r||r>.3)continue;
         part(section,"oval",upper.material.color?.getHex()??0x79766c,[0,0,0],[r,r*.72,r]);
       }
+    }
+    function plumage(parent,rows,tones,name){
+      const positions=[],colors=[],indices=[];
+      const [base,edge,bar]=tones.map(tint=>new T.Color(tint));
+      const tone=new T.Color();
+      for(const [i,[from,to,width,lift]] of rows.entries()){
+        const a=new T.Vector3(...from),b=new T.Vector3(...to),normal=new T.Vector3(...lift).normalize();
+        const vane=b.clone().sub(a).cross(normal).normalize(),offset=positions.length/3;
+        for(let rib=0;rib<7;rib++){
+          const t=rib/6,span=width*(.072+.928*Math.sin(t*Math.PI)**.77);
+          const center=a.clone().lerp(b,t).addScaledVector(normal,Math.sin(t*Math.PI)*width*.34);
+          for(const side of [-1,0,1]){
+            const p=center.clone().addScaledVector(vane,span*side).addScaledVector(normal,side===0?width*.17:0);
+            positions.push(...p.toArray());
+            tone.copy(base).lerp(edge,.32+t*.30+(side===0?.23:0))
+              .lerp(bar,(rib+i%2)%3===0&&t>.14?.55:.08);
+            colors.push(tone.r,tone.g,tone.b);
+          }
+          if(rib===6)continue;
+          for(let side=0;side<2;side++){
+            const v=offset+rib*3+side;
+            indices.push(v,v+1,v+3,v+1,v+4,v+3);
+          }
+        }
+      }
+      const surface=new T.BufferGeometry();
+      surface.setAttribute("position",new T.Float32BufferAttribute(positions,3));
+      surface.setAttribute("color",new T.Float32BufferAttribute(colors,3));
+      surface.setIndex(indices);surface.computeVertexNormals();
+      const feathers=new T.Mesh(surface,leafMaterial);
+      feathers.userData.ownGeometry=true;feathers.name=name;parent.add(feathers);
+    }
+    function owl(g,rig,frost){
+      const light=frost?0xe4ebed:0xcbbea3,coat=mutedTint(frost?0x98a8b2:0x745c50);
+      const dark=frost?0x647180:0x463b3c,speckle=frost?0x526572:0x6d5144,beak=frost?0x6c7281:0x9e753f;
+      const body=hinge(g,0,.68,.022);rig.body=body;
+      contour(body,[[-.265,-.064,.062,.145],[-.221,-.024,.174,.265],[-.153,.008,.254,.314],
+        [.005,.028,.271,.331],[.16,-.006,.234,.279],[.26,-.056,.152,.183],[.32,-.09,.049,.081]],
+        [coat,light],"",24,torsoShape);
+      taper(body,[[0,.10,-.05,.253,.25],[0,.224,-.071,.214,.217],[0,.34,-.075,.199,.181]],
+        [coat,light],14);
+      const breast=[];
+      for(let row=0;row<5;row++)for(let col=-2;col<=2;col++){
+        const x=col*(.044+row*.004),y=.167-row*.076,z=-.193+Math.abs(x)*.30+(row>3?.021:0);
+        breast.push([[x,y,z],[x*1.21,y-.115,z-.041+Math.abs(x)*.20],.035,[0,.08,-1]]);
+      }
+      plumage(body,breast,[light,frost?0xf8f9fa:0xe3cead,speckle],"Penas do peito");
+      const head=hinge(g,0,.984,-.052);rig.head=head;
+      contour(head,[[-.236,.014,.105,.126],[-.192,.021,.215,.211],[-.07,.034,.267,.238],
+        [.044,.044,.247,.226],[.18,.022,.186,.175],[.224,.013,.099,.103]],[coat,light],"",24,torsoShape);
+      taper(head,[[0,-.052,-.197,.058],[0,-.073,-.274,.047],[0,-.126,-.309,.024],[0,-.154,-.278,.005]],
+        [beak,0xd1ae6d],8,[1,0,0]);
+      for(const side of [-1,1]){
+        const x=side*.125,y=.019,z=-.195;
+        part(head,"oval",dark,[x,y,z],[.149,.151,.084],[0,side*-.18,side*.12]);
+        part(head,"oval",light,[x,y,z-.031],[.124,.124,.073],[0,side*-.17,side*.10]);
+        const facial=[];
+        for(let i=0;i<16;i++){
+          const a=i*Math.PI*2/16,dx=Math.cos(a),dy=Math.sin(a);
+          facial.push([[x+dx*.047,y+dy*.043,-.262],[x+dx*.125,y+dy*.128,-.229+dx*side*.025],.026,[0,0,-1]]);
+        }
+        plumage(head,facial,[light,0xf3e6c7,dark],"Penas do disco facial");
+        const eye=hinge(head,x,.033,-.270);eye.userData.entityEye=true;
+        part(eye,"oval",dark,[0,0,0],[.067,.062,.028]);
+        part(eye,"oval",frost?0xe5b958:0xeb9b39,[0,0,-.018],[.053,.051,.021]);
+        part(eye,"oval",0x20202c,[0,0,-.036],[.026,.029,.014]);
+        part(eye,"oval",0xfff8e7,[-.012,.014,-.047],[.009,.009,.006]);
+        if(!frost){
+          const crest=Array.from({length:4},(_,i)=>[[side*(.131+i*.027),.164+i*.011,.013],
+            [side*(.176+i*.055),.280+i*.019,.044+i*.022],.036+i*.003,[0,0,-1]]);
+          plumage(head,crest,[coat,light,dark],"Penachos");
+        }
+        const wing=hinge(g,side*.224,.761,.055);
+        wing.userData.side=side;rig.wings.push(wing);
+        part(wing,"oval",coat,[-side*.013,-.034,.029],[.169,.135,.242],[.09,0,side*.13]);
+        taper(wing,[[-side*.062,.009,-.033,.108],[side*.137,.005,-.042,.109],
+          [side*.311,-.041,.015,.070],[side*.466,-.082,.105,.025]],[coat,light],12,[0,1,0]);
+        const flight=[];
+        for(let i=0;i<10;i++){
+          const x=.07+i*.041;
+          flight.push([[side*x,-.027-i*.0065,-.016+i*.011],
+            [side*(x+.11+i*.038),-.118-i*.017,.246+i*.011],.045-i*.0011,[0,1,-.2]]);
+        }
+        plumage(wing,flight,[coat,light,dark],"Rêmiges da asa");
+        for(let row=0;row<2;row++){
+          const cover=Array.from({length:8},(_,i)=>{
+            const x=.036+i*.050,y=.041-i*.010-row*.020,z=-.08+i*.009+row*.063;
+            return [[side*x,y,z],[side*(x+.082),y-.033,z+.173],.037,[0,1,0]];
+          });
+          plumage(wing,cover,[coat,row?light:pigment(coat,true),speckle],"Penas de cobertura");
+        }
+        const leg=hinge(body,side*.13,-.209,-.051);
+        taper(leg,[[0,.085,.018,.074],[0,-.045,0,.057],[side*.02,-.119,-.007,.036]],[light,coat],9);
+        taper(leg,[[side*.02,-.105,-.007,.038],[side*.036,-.249,-.027,.027],[side*.039,-.316,-.049,.034]],[dark,beak],8);
+        for(const toe of [-1,0,1])taper(leg,[[side*.039,-.300,-.048,.022],[side*.040+toe*.040,-.319,-.102,.017],
+          [side*.039+toe*.059,-.333,-.153,.012],[side*.037+toe*.061,-.355,-.168,.004]],[beak,0x4d4752],6);
+      }
+      const tail=hinge(body,0,-.085,.216);rig.tails.push(tail);
+      const rectrices=Array.from({length:7},(_,i)=>[[(i-3)*.020,0,-.018],[(i-3)*.048,-.245+Math.abs(i-3)*.022,
+        .296-Math.abs(i-3)*.027],.045,[0,1,0]]);
+      plumage(tail,rectrices,[coat,light,dark],"Penas da cauda");
     }
     function stockAnimalDetails(type,group,rig,colors){
       const head=rig.head;
@@ -505,17 +1345,53 @@ globalThis.QuimiCraftWildlife=(()=>{
         }
       }else if(type==="cow"||type==="pig"){
         const bovine=type==="cow",muzzle=head.children.find(node=>node.isMesh&&node.position.z<(bovine?-.25:-.30));
-        if(muzzle){muzzle.geometry=geometry.oval;muzzle.scale.multiplyScalar(.53);}
+        if(skull){
+          head.remove(skull);
+          const profile=bovine?
+            [[-.352,-.118,.139,.070],[-.273,-.076,.184,.129],[-.194,-.011,.213,.195],
+              [-.075,.034,.259,.246],[.073,.027,.261,.24],[.222,-.025,.145,.153]]:
+            [[-.481,-.082,.103,.074],[-.394,-.064,.149,.089],[-.286,-.037,.174,.127],
+              [-.181,.021,.231,.194],[-.031,.011,.263,.233],[.139,-.019,.197,.161],[.229,-.037,.091,.103]];
+          const cream=new T.Color(0xdeceb5);
+          const markings=bovine?(c,z,a)=>{
+            const sin=Math.sin(a),front=(z+.17)/.206;
+            const stripe=(sin-.085-.18*Math.sin(z*13))/.232;
+            const patch=front*front+stripe*stripe;
+            if(Math.cos(a)>.11)c.lerp(cream,1-T.MathUtils.smoothstep(patch,.57,1.03));
+          }:null;
+          contour(head,sculptSections(profile),[skull.material.color.getHex(),light],"",bovine?38:24,torsoShape,markings);
+        }
+        if(muzzle){muzzle.geometry=geometry.oval;muzzle.scale.multiplyScalar(.62);}
         const snout=bovine?-.347:-.467;
         for(const side of [-1,1]){
           part(head,"oval",bovine?0xc58f88:0xc48685,[side*(bovine?.141:.105),-.119,snout+.043],[.071,.052,.059]);
           link(head,bovine?0x715254:0x824658,[side*.019,-.165,snout-.006],
             [side*(bovine?.108:.083),-.159,snout+.022],.006);
-          const ear=head.children.find(node=>node.isMesh&&node.position.x*side>.21&&node.position.y>.12);
-          if(ear){ear.geometry=geometry.chamfer;ear.scale.multiplyScalar(.71);}
+          if(bovine){
+            const ear=head.children.find(node=>node.isMesh&&node.position.x*side>.21&&node.position.y>.12);
+            if(ear){ear.geometry=geometry.chamfer;ear.scale.multiplyScalar(.83);}
+          }else{
+            const path=[[side*.148,.133,-.018,.066,.059],[side*.198,.228,-.023,.082,.053],
+              [side*.268,.328,-.054,.060,.042],[side*.323,.342,-.091,.011,.014]];
+            taper(head,path,[0xb97179,0xe08f90],10,[0,0,1]).name="Orelha presa à cabeça";
+            fanFin(head,[side*.177,.200,-.065],[[side*.206,.287,-.071],[side*.299,.327,-.098],
+              [side*.264,.260,-.102],[side*.208,.222,-.087]],[0x854b59,0xd68787],.014);
+          }
         }
-        if(bovine)taper(group,[[0,.89,-.332,.25,.242],[0,.952,-.45,.232,.211],[0,1.027,-.581,.167,.165]],
-          [0x585253,0xa29a8f],10);
+        if(bovine){
+          for(const part of head.children)if(part.isMesh&&part.position.z<-.29&&part.position.y<-.10)
+            part.geometry=geometry.oval;
+          taper(group,[[0,.89,-.332,.25,.242],[0,.952,-.45,.232,.211],[0,1.027,-.581,.167,.165]],
+            [0x585253,0xa29a8f],10);
+        }
+        else{
+          const oldTail=group.children.find(node=>node.isMesh&&node.geometry.type==="TorusGeometry");
+          if(oldTail){oldTail.geometry.dispose();group.remove(oldTail);}
+          const tail=hinge(group,0,.59,.43);rig.tails.push(tail);
+          taper(tail,[[0,0,-.024,.046],[.015,.021,.095,.032],[.055,.095,.132,.033],
+            [.079,.185,.106,.028],[.017,.193,.110,.021],[-.016,.143,.142,.014],[.014,.117,.155,.007]],
+            [coat,light],8,[1,0,0]).name="Cauda enrolada";
+        }
       }else if(type==="sheep"){
         for(const mesh of rig.body.children.filter(node=>node.isMesh&&!node.userData.ownGeometry)){
           mesh.geometry=geometry.chamfer;mesh.scale.multiplyScalar(.76);
@@ -526,6 +1402,12 @@ globalThis.QuimiCraftWildlife=(()=>{
             [.152,.181,.153],[.28,side*.17,side*.28]);
         }
       }else if(type==="capivara"){
+        if(skull){
+          head.remove(skull);
+          contour(head,sculptSections([[-.470,-.078,.090,.074],[-.407,-.052,.153,.101],[-.311,-.019,.189,.148],
+            [-.192,.001,.239,.211],[-.022,.016,.281,.245],[.143,-.010,.221,.189],
+            [.252,-.041,.119,.111]]),[skull.material.color.getHex(),light],"",24,torsoShape);
+        }
         for(const side of [-1,1]){
           part(head,"oval",dark,[side*.092,-.037,-.441],[.041,.025,.023],[0,side*.25,0]);
           part(head,"oval",light,[side*.145,-.097,-.368],[.118,.053,.047],[.11,side*.21,0]);
@@ -561,8 +1443,8 @@ globalThis.QuimiCraftWildlife=(()=>{
         if(hull&&type!=="cow"){
           const size=hull.scale.clone().multiplyScalar(.57),y=hull.position.y,z=hull.position.z;
           size.z={pig:.455,sheep:.50,rabbit:.348,capivara:.486,owl:.274,chicken:.30}[type]??size.z;
-          const newBody=scaledContour(rig.body,[[-.99,0,.43,.56],[-.69,-.027,.79,.85],[-.29,.016,.92,1],
-            [.29,-.025,1,.89],[.69,-.04,.83,.75],[1,-.061,.34,.46]],size.x,size.y,size.z,[hull.material.color.getHex(),colors[1]]);
+          const newBody=scaledContour(rig.body,sculptSections([[-.99,0,.43,.56],[-.69,-.027,.79,.85],[-.29,.016,.92,1],
+            [.29,-.025,1,.89],[.69,-.04,.83,.75],[1,-.061,.34,.46]]),size.x,size.y,size.z,[hull.material.color.getHex(),colors[1]]);
           newBody.position.set(hull.position.x,y,z);
           if(type==="sheep"){hull.geometry=geometry.chamfer;hull.scale.multiplyScalar(.72)}
           else rig.body.remove(hull);
@@ -571,7 +1453,7 @@ globalThis.QuimiCraftWildlife=(()=>{
             const [fromY,toY]=[y+.045,head.y-.034],fromZ=z-size.z*.53,toZ=head.z+.091;
             const r=size.y*(type==="owl"?.68:.61);
             taper(group,[[0,fromY,fromZ,r*1.14,r*1.16],[0,(fromY+toY)*.50,(fromZ+toZ)*.50,r,r],
-              [0,toY,toZ,r*.65,r*.71]],[neck,colors[1]],10);
+              [0,toY,toZ,r*.81,r*.85]],[neck,colors[1]],16);
           }
         }
         for(const leg of rig.legs){
@@ -637,13 +1519,13 @@ globalThis.QuimiCraftWildlife=(()=>{
         for(const [x,y,z] of [[-.16,1.16,-.05],[.13,1.08,.053],[.04,1.25,.131]]){
           part(group,"diamond",0x71f3d4,[x,y,z],[.096,.31,.105],[.27,.45,x*.92],true);
         }
-      }else if(type==="golem"||type==="magma"){
+      }else if(type==="golem"){
         rig.body.geometry=geometry.facet;rig.body.scale.x*=1.08;
         for(const limb of [...rig.arms,...rig.legs]){
           const plate=limb.children.find(node=>node.isMesh);
           if(plate){plate.geometry=geometry.chamfer;plate.scale.multiplyScalar(.76)}
         }
-        const stone=type==="golem"?0x4e3a58:0x513433,rune=type==="golem"?0xb586d6:0xffa246;
+        const stone=0x4e3a58,rune=0xb586d6;
         for(const side of [-1,1]){
           part(group,"diamond",stone,[side*.56,1.68,.034],[.225,.208,.242],[.12,.37,side*.18]);
           for(const y of [1.12,1.28,1.46])part(group,"diamond",rune,[side*.229,y,-.311],[.033,.074,.047],[0,.15,side*.27],true);
@@ -709,11 +1591,11 @@ globalThis.QuimiCraftWildlife=(()=>{
       }
     }
     const forms={
-      lion:[.76,.72,.29,.35,.62,.68,1.02,.253,.232,.245],
-      tiger:[.72,.80,.29,.32,.59,.64,.98,.237,.224,.232],
-      jaguar:[.64,.685,.274,.285,.54,.57,.88,.233,.205,.217],
+      lion:[.81,.79,.282,.325,.68,.70,1.075,.248,.229,.241],
+      tiger:[.77,.91,.293,.320,.64,.67,1.02,.238,.223,.242],
+      jaguar:[.59,.70,.266,.266,.50,.54,.817,.216,.188,.216],
       lynx:[.68,.51,.196,.235,.60,.43,.89,.171,.172,.177],
-      brown_bear:[.81,.73,.365,.415,.64,.62,1.01,.269,.239,.25],
+      brown_bear:[.91,.89,.408,.424,.69,.67,1.02,.242,.222,.243],
       polar_bear:[.79,.79,.343,.35,.66,.70,1.07,.249,.21,.257],
       black_bear:[.76,.67,.31,.34,.61,.57,.98,.234,.221,.22],
       bison:[.93,.84,.379,.50,.66,.83,1.11,.274,.29,.27],
@@ -738,8 +1620,8 @@ globalThis.QuimiCraftWildlife=(()=>{
         [.06,.92,.85,-.85],[.31,.85,.79,-.66],[.60,.99,.97,-.84],[.85,.68,.79,-.65],[1.01,.11,.23,-.21]],
       polar_bear:[[-1.15,.38,.71,-.31],[-.91,.64,.93,-.64],[-.59,.87,1,-.82],[-.21,.93,.92,-.98],
         [.18,1,.82,-1.05],[.54,1.06,.87,-.87],[.79,.85,.70,-.71],[1.01,.45,.57,-.41],[1.12,.10,.24,-.18]],
-      brown_bear:[[-1.13,.32,.62,-.35],[-.91,.72,1.00,-.70],[-.60,1,1.22,-.84],[-.29,1.01,1.13,-.97],
-        [.11,.92,.76,-.95],[.54,1.04,.85,-.89],[.81,.86,.78,-.70],[1.02,.48,.47,-.48],[1.10,.09,.18,-.18]],
+      brown_bear:[[-1.13,.32,.56,-.46],[-.91,.75,1.05,-.78],[-.60,1,1.36,-.95],[-.29,1.02,1.19,-1.03],
+        [.11,.93,.82,-1.02],[.54,1.08,.88,-.96],[.81,.91,.79,-.76],[1.02,.49,.48,-.49],[1.10,.09,.18,-.18]],
       black_bear:stocky,
       badger:[[-1.10,.25,.69,-.29],[-.88,.69,.92,-.67],[-.55,.98,1,-.79],[-.21,1.04,.94,-.91],
         [.23,1.09,.86,-.83],[.61,1,.76,-.77],[.89,.67,.58,-.61],[1.08,.13,.23,-.23]],
@@ -761,6 +1643,20 @@ globalThis.QuimiCraftWildlife=(()=>{
     function torsoShape([z,center,rx,ry],angle){
       const c=Math.cos(angle),s=Math.sin(angle);
       return [s*rx*(1.05-.16*c*c),center+Math.sign(c)*Math.pow(Math.abs(c),.85)*ry,z];
+    }
+    function sculptSections(sections){
+      return sections.flatMap((row,i)=>{
+        const next=sections[i+1];
+        if(!next)return [row];
+        const before=sections[Math.max(0,i-1)],after=sections[Math.min(sections.length-1,i+2)];
+        const half=row.map((v,k)=>{
+          const average=(v+next[k])*.5;
+          if(k===0)return average;
+          const curved=average+(v+next[k]-before[k]-after[k])*.0625;
+          return T.MathUtils.clamp(curved,Math.min(v,next[k]),Math.max(v,next[k]));
+        });
+        return [row,half];
+      });
     }
     function torsoSections(id,length,width,height){
       return bodyProfiles[id].map(([z,w,back,belly])=>[z*length,(back+belly)*.5*height,w*width,(back-belly)*.5*height]);
@@ -910,37 +1806,360 @@ globalThis.QuimiCraftWildlife=(()=>{
     }
     function lionMane(body,rig){
       const mane=hinge(body,0,.125,-.54);rig.mane=mane;
-      const collar=[[-.333,.007,.157,.218],[-.264,.021,.278,.302],[-.15,.037,.321,.367],
-        [-.008,.031,.357,.386],[.133,.016,.307,.309],[.256,-.04,.167,.166],[.302,-.06,.055,.071]];
+      mane.name="Juba dourada com peito escuro";
+      const collar=[[-.366,.035,.126,.164],[-.292,.013,.237,.293],[-.194,-.003,.318,.372],
+        [-.082,-.033,.367,.423],[.043,-.067,.394,.442],[.195,-.042,.320,.339],
+        [.289,-.032,.219,.191],[.368,-.051,.064,.072]];
       const fringe=([z,y,rx,ry],a)=>{
         const split=1+.062*Math.cos(a*9+z*9)+.032*Math.sin(a*13-z*7);
         return [Math.sin(a)*rx*split,y+Math.cos(a)*ry*split,z];
       };
-      const lit=new T.Color(0xb98045),deep=new T.Color(0x654137);
-      contour(mane,collar,[0x8a5738,0x75402d],"",35,fringe,(color,z,a)=>{
-        color.lerp(lit,Math.max(0,Math.cos(a))*.56).lerp(deep,Math.max(0,-Math.cos(a))*.49);
+      const lit=new T.Color(0xc59654),deep=new T.Color(0x34261e);
+      contour(mane,sculptSections(sculptSections(collar)),[0x885731,0x51341f],"",64,fringe,(color,z,a)=>{
+        const c=Math.cos(a),strands=Math.sin(a*32+z*17+Math.sin(a*7)*1.1);
+        color.lerp(lit,Math.max(0,c+.20)*.63).lerp(deep,Math.max(0,-c+.08)*.69);
+        color.multiplyScalar(.95+strands*.10+.05*Math.sin(a*49-z*27));
       });
-      for(let i=0;i<12;i++){
-        const a=i*Math.PI/6,s=Math.sin(a),c=Math.cos(a),z=i%2?-.13:-.018;
-        taper(mane,[[s*.223,c*.241,z-.15,.057,.075],[s*.304,c*.311,z-.028,.071,.089],
-          [s*.321,c*.377-(c<0?.046:0),z+.122,.027,.043],[s*.27,c*.41-(c<0?.063:0),z+.16,.006,.005]],
-          [i%3===0?0x7c4732:0x945b36,i%2?0xb87e41:0x9d6940],6);
+      for(let i=0;i<30;i++){
+        const a=i*Math.PI/15,s=Math.sin(a),c=Math.cos(a),z=-.102+Math.sin(i*2.19)*.069;
+        const t=Math.max(0,-c),warm=c>.32,reach=.016*Math.cos(i*2.21);
+        dragonCurve(mane,[[s*.247,c*.270,z-.148,.029],[s*.346,c*.342-t*.047,z-.049,.043],
+          [s*(.387+reach),c*.397-t*.061,z+.104,.031],[s*.344,c*.408-t*.11,z+.213+reach,.003]],
+          [warm?0xa3733e:0x553620,warm?0xc09052:0x785237],7,[1,0,0]);
+      }
+    }
+    function predatorJaw(head,hx,hy,hz,muzzle,coat,trim){
+      const throatY=-hy*.44,hingeZ=-hz*.23,front=-hz-muzzle*.82;
+      const jaw=hinge(head,0,throatY,hingeZ);
+      jaw.name="Mandíbula articulada";
+      const gum=0x55313d,bone=0xe4d7bd;
+      const lower=sculptSections([
+        [front-hingeZ,-hy*.185,hx*.25,hy*.125],
+        [-hz-muzzle*.56-hingeZ,-hy*.223,hx*.43,hy*.204],
+        [-hz-muzzle*.20-hingeZ,-hy*.263,hx*.61,hy*.244],
+        [-hz*.68-hingeZ,-hy*.199,hx*.70,hy*.274],
+        [-hz*.21-hingeZ,-hy*.09,hx*.43,hy*.224],
+        [hz*.10-hingeZ,hy*.04,hx*.25,hy*.158]
+      ]);
+      contour(jaw,lower,[trim,coat],"",18,torsoShape).name="Queixo e ramos da mandíbula";
+      contour(jaw,lower.slice(0,5).map(([z,y,x,h])=>[z,y+h*.80,x*.81,h*.26]),[gum,0x482733],"",14,torsoShape);
+      part(jaw,"oval",0xac5669,[0,hy*.021,-hz*.65-muzzle*.37],[hx*.32,hy*.080,hz*.36+muzzle*.23]);
+      for(const side of [-1,1]){
+        part(jaw,"oval",coat,[side*hx*.46,hy*.067,.007],[hx*.26,hy*.26,hz*.24]);
+        for(let i=0;i<4;i++){
+          const t=i/3,x=side*hx*(.31+t*.18),z=front+muzzle*(.21+t*.63);
+          const size=hy*(i===0?.285:.14),width=hx*(i===0?.072:.053);
+          taper(head,[[x,throatY+hy*.046,z,width],[x*1.01,throatY-size*.43,z+.01,width*.70],
+            [x,throatY-size,z+.024,.002]],[bone,0xc0b29d],6,[0,0,1]);
+          taper(jaw,[[x*.86,-hy*.08,z-hingeZ+.017,width*.86],[x*.88,-hy*.009,z-hingeZ+.025,width*.62],
+            [x*.91,size*.59,z-hingeZ+.037,.002]],[bone,0xc0b29d],6,[0,0,1]);
+        }
+        taper(head,[[side*hx*.45,throatY+.015,front+.003,.010],[side*hx*.61,throatY+.005,-hz-muzzle*.52,.012],
+          [side*hx*.70,throatY-.009,-hz*.88,.010],[side*hx*.70,throatY+.015,hingeZ-.02,.003]],
+          [gum,coat],6,[0,1,0]);
+      }
+      return jaw;
+    }
+    function brazilianMammal(id,def,g,rig,attachLeg){
+      const possum=id==="opossum",coat=def.coat,trim=def.trim,dark=0x302d37;
+      const size=possum?.68:1;
+      const sections=[[-.58,.64,.116,.149],[-.36,.68,.197,.26],[-.10,.65,.235,.287],
+        [.19,.60,.236,.25],[.45,.56,.175,.19],[.62,.55,.09,.104]];
+      rig.body=contour(g,sculptSections(sections).map(([z,y,w,h])=>[z*size,y*size,w*size,h*size]),
+        [coat,trim],"",26,null,(color,z,a)=>{
+          const flank=Math.abs(Math.sin(a));
+          if(!possum&&flank>.56&&z>-.47&&z<.12)color.lerp(new T.Color(dark),.86);
+          color.multiplyScalar(.93+.09*Math.sin(95*z+15*a)**2);
+        });
+      const head=hinge(g,0,.70*size,-.50*size);rig.head=head;
+      const snout=possum?.34:.65;
+      contour(head,sculptSections([[-snout,-.115,.029,.036],[-snout*.78,-.088,.050,.049],
+        [-snout*.41,-.029,.108,.077],[-.04,.009,.141,.137],[.13,-.025,.113,.104]]).map(v=>v.map(n=>n*size)),
+        [possum?trim:coat,trim],"",22);
+      part(head,"oval",possum?0xb2777c:dark,[0,-.116*size,-snout*size],[.042,.032,.048].map(n=>n*size));
+      for(const side of [-1,1]){
+        const ear=[side*.113*size,.105*size,.015*size];
+        part(head,"oval",dark,ear,[.051,possum?.077:.045,.028],[.26,0,side*.34]);
+        part(head,"oval",possum?0xba858f:trim,[ear[0],ear[1]+.01,ear[2]-.021],[.026,.039,.010],[.22,0,side*.34]);
+        part(head,"oval",dark,[side*.114*size,.024*size,-.128*size],[.029,.024,.027]);
+        part(head,"oval",0xe5d6bf,[side*.122*size,.032*size,-.147*size],[.009,.009,.007]);
+        for(const z of [-.31,.32]){
+          attachLeg(g,rig,side*.145*size,z*size,.45*size,.43*size,(possum?.094:.133)*size,
+            material(coat),material(dark),side===Math.sign(z)?0:Math.PI);
+          const lower=rig.legs.at(-1)?.userData.lower;
+          if(lower)for(let i=-1;i<=1;i++)part(lower,"spike",0xbdb1a0,[i*.025*size,-.252*size,-.071*size],
+            [.012,.041,.013],[Math.PI*.6,0,0]);
+        }
+      }
+      const tail=hinge(g,0,.57*size,.52*size);rig.tails.push(tail);
+      if(possum){
+        dragonCurve(tail,[[0,0,-.07,.066],[0,.013,.13,.040],[.036,-.085,.42,.029],[.11,-.18,.62,.017],
+          [.22,-.15,.79,.010],[.248,-.08,.86,.003]],[0x887078,0xb69ba0],13,[0,1,0],
+          (color,a,i)=>color.multiplyScalar(i%3===0?.76:1));
+      }else{
+        dragonCurve(tail,[[0,0,-.05,.08,.10],[0,.11,.16,.14,.25],[0,.10,.43,.17,.31],
+          [0,.04,.67,.15,.26],[.03,-.02,.90,.09,.18],[.06,-.10,1.1,.01,.014]],[dark,coat],18);
+        for(let i=0;i<8;i++)part(tail,"shard",i%2?coat:dark,[(i%2?1:-1)*(.11+i*.006),.18-i*.035,.25+i*.084],
+          [.058,.163,.115],[.52,0,(i%2?1:-1)*.37]);
+      }
+    }
+    const carnivoreFaces={
+      lion:[1.15,.94,.50,.73,.32,0x966122],tiger:[1.13,1,.56,.76,.31,0xbe8a43],
+      jaguar:[1.17,.97,.62,.82,.29,0xa97b3a],lynx:[1.04,.88,.43,.61,.60,0xa99755],
+      cat:[1,.88,.46,.69,.53,0x9bb460],dog:[.92,.89,1.02,.60,.66,0x79513e],
+      wolf:[.98,1,1.22,.61,.74,0xc99554],fennec:[.92,.92,1.12,.53,1.39,0x79533e],
+      rime_fox:[.98,.94,1,.57,.82,0x916b45]
+    };
+    function carnivore(id,def,g,rig,seed){
+      const cat=def.shape==="cat",brush=id==="fennec"||id==="rime_fox",round=["lion","tiger","jaguar"].includes(id);
+      const [base,accent]=(id==="cat"&&seed>.57?[0x676873,0xe3d9cb]:
+        id==="dog"&&seed>.56?[0x614d40,0xc6ae91]:[def.coat,def.trim]).map(mutedTint);
+      const coat=new T.Color(base),pale=new T.Color(accent),dark=new T.Color(pigment(base,false)),ink=new T.Color(0x292631);
+      const [bodyY,length,width,height,hip,neckZ,headY,hx,hy,hz]=forms[id];
+      const [cheek,brow,muzzle,muzzleWidth,earHeight,iris]=carnivoreFaces[id];
+      const headZ=-neckZ-hz*.91,tip=-hz*(1+muzzle*.46);
+      const face=sculptSections(sculptSections(sculptSections([
+        [tip,-hy*.31,hx*muzzleWidth*.48,hy*.135],
+        [tip+hz*.105,-hy*.26,hx*muzzleWidth*.78,hy*.264],
+        [-hz*.99,-hy*.15,hx*(cat?.78:.59),hy*(cat?.62:.42)],
+        [-hz*.74,hy*.028,hx*cheek*.88,hy*.85*brow],
+        [-hz*.43,hy*.064,hx*cheek,hy*brow],
+        [-hz*.095,hy*.033,hx*cheek*.96,hy*brow*.98],
+        [hz*.32,-hy*.09,hx*.86,hy*.78],
+        [hz*.52,-hy*.23,hx*.79,hy*.65]
+      ])));
+      const torsoProfile=torsoSections(id,length,width,height).filter(([z])=>z>-.98*length);
+      const torsoRows=sculptSections(sculptSections(sculptSections(torsoProfile)));
+      const torso=(id==="jaguar"?sculptSections(torsoRows):torsoRows).map(([z,y,w,h])=>[z+.05,y+bodyY,w,h]);
+      const neckEnd=headZ+face.at(-1)[0],headBlend=face.length-1,shoulder=torso[0][0],mid=(neckEnd+shoulder)*.5;
+      const rows=face.map(([z,y,w,h])=>[z+headZ,y+headY,w,h]).concat(
+        [[mid,headY-hy*.30,Math.max(hx*.77,width*.59),hy*.75]],
+        torso
+      );
+      const tailRoot=torso.at(-2)[0],tailY=torso.at(-2)[1]+height*.06;
+      const tailLength=({lion:.87,tiger:.91,jaguar:.60,lynx:.23})[id]??(brush?.86:cat?.83:.71);
+      const tailStart=rows.length,tailEnd=rows.at(-1)[0],tailAt=tailRoot+tailLength*.50;
+      const append=brush?[[.20,.06,.123,.127],[.42,.025,.137,.132],[.67,-.067,.101,.103],[.88,-.092,.055,.064],[1,-.097,.007,.009]]:
+        [[.20,-.16,.071,.076],[.43,-.34,.057,.062],[.68,-.47,.048,.053],[.91,-.43,.034,.040],[1,-.36,.008,.011]];
+      if(!round)append.forEach(row=>{row[1]*=.32});
+      rows.push(...sculptSections(sculptSections(append.map(([z,y,w,h])=>[tailEnd+z*tailLength,tailY+y,w,h]))));
+      const n=id==="jaguar"?144:72,p=[],colors=[],ids=[],weights=[],triangles=[],skeleton=[];
+      const addBone=(parent,x,y,z,name)=>{
+        const node=new T.Bone();node.name=name;node.position.set(x,y,z);
+        parent?.add(node);skeleton.push(node);return node;
+      };
+      const spine=addBone(null,0,0,0,"Tronco");
+      const head=addBone(spine,0,headY,headZ,cat?"Cabeça felina":"Cabeça canina");rig.head=head;
+      const tail=addBone(spine,0,tailY,tailRoot,"Base da cauda");
+      const tailTip=addBone(tail,0,0,tailAt-tailRoot,"Ponta da cauda");
+      tail.userData.sway=brush?.75:1;tailTip.userData.sway=.42;rig.tails.push(tail,tailTip);
+      const smooth=T.MathUtils.smoothstep;
+      const fraction=value=>value-Math.floor(value);
+      const pigmentAt=(z,a,zone,limb=0)=>{
+        const c=Math.cos(a),flank=Math.abs(Math.sin(a));
+        const ramp=smooth(-c,cat?.28:.20,.92);
+        const color=coat.clone().lerp(pale,ramp*(round?.97:.83)).multiplyScalar(.98+.044*Math.sin(z*103+a*29)*Math.sin(z*43-a*27));
+        const scale=zone==="face"?30:14;
+        if(def.pattern==="tabby"||def.pattern==="tiger"){
+          const bend=Math.sin(a*3+z*8)*.53+Math.sin(a*5-z*11)*.25;
+          const axis=z*scale+bend+(limb?limb*9:0);
+          const stripe=Math.sin(axis),branch=Math.cos(axis*1.94-a*3)*smooth(flank,.44,.96);
+          if(def.pattern==="tiger"){
+            const bold=smooth(stripe,.68+.13*Math.sin(a*3-z*7),.95);
+            const split=smooth(branch,.73,.95)*smooth(stripe,.14,.51)*.55;
+            color.lerp(ink,Math.max(bold,split)*.98);
+          }else if(c>-.70||zone==="face")color.lerp(ink,smooth(stripe,.77,.97)*.69);
+        }else if(def.pattern==="rosette"||id==="lynx"){
+          const dense=zone==="face"||zone==="leg",u=z*(dense?21:11.5)+(zone==="leg"?limb*.31:0);
+          const j=Math.floor(u),rows=dense?24:16,v=a*rows/(2*Math.PI)+(j%2)*.5,k=Math.floor(v);
+          const seed=fraction(Math.sin(j*37.63+((k%rows+rows)%rows)*17.17)*8761.33);
+          const x=(fraction(u)-.5)*1.10+(seed-.5)*.22,y=fraction(v)-.5+(fraction(seed*9.7)-.5)*.22;
+          const d=Math.hypot(x*1.06,y)+.026*Math.sin(Math.atan2(y,x)*(seed>.48?4:5)+seed*10);
+          const small=id==="lynx"||dense;
+          const ring=smooth(d,.123,.186)*(1-smooth(d,.365,.448))*(.91+.09*Math.cos(u*24+v*9)**2);
+          const dot=seed>.39?(1-smooth(Math.hypot(x+.035,y-.02),.026,.076))*.88:0;
+          color.lerp(ink,small?1-smooth(d,.133,.244):Math.max(ring,dot));
+        }else if(def.pattern==="saddle"||id==="wolf"){
+          color.lerp(dark,T.MathUtils.smoothstep(c,.13,.86)*(zone==="face"?.42:.69));
+        }
+        if(zone==="face"&&z<headZ-hz*.58)color.lerp(pale,T.MathUtils.smoothstep(-c+.43*flank,.06,.86)*(cat?.85:.42));
+        if(zone==="leg")color.lerp(dark,limb*(brush?.54:cat?.13:.30));
+        if(zone==="tail")color.lerp(id==="rime_fox"?pale:dark,T.MathUtils.smoothstep(z,tailEnd+tailLength*.65,tailEnd+tailLength*.98)*(brush?.92:.40));
+        return color;
+      };
+      const vertex=(x,y,z,color,b=0,k=0,t=0)=>{
+        const id=p.length/3;p.push(x,y,z);colors.push(color.r,color.g,color.b);ids.push(b,k,0,0);weights.push(1-t,t,0,0);
+        return id;
+      };
+      const rindex=z=>rows.findIndex(row=>row[0]>=z);
+      const holes=[];
+      for(const front of [true,false]){
+        const a=rindex((front?-.79:.39)*length+.05),b=rindex((front?-.41:.80)*length+.05);
+        for(const side of [-1,1])holes.push({front,side,a,b,lo:(side>0?19:43)*n/72,hi:(side>0?29:53)*n/72});
+      }
+      rows.forEach(([z,y,w,h],j)=>{
+        for(let i=0;i<n;i++){
+          const a=i*2*Math.PI/n,[x,py]=torsoShape([z,y,w,h],a);
+          const faceWeight=j<=headBlend?1:j===headBlend+1?.49:0;
+          const tailWeight=T.MathUtils.smoothstep(z,tailRoot-.14,tailRoot+.09);
+          const tipWeight=T.MathUtils.smoothstep(z,tailAt-.19,tailAt+.17);
+          const zone=j<=headBlend?"face":j>=tailStart?"tail":"body";
+          const color=pigmentAt(z,a,zone);
+          if(tipWeight>0)vertex(x,py,z,color,2,3,tipWeight);
+          else vertex(x,py,z,color,0,faceWeight>0?1:2,faceWeight||tailWeight);
+          if(j===rows.length-1||holes.some(h=>j>=h.a&&j<h.b&&i>=h.lo&&i<h.hi))continue;
+          const at=j*n+i,next=j*n+(i+1)%n;
+          triangles.push(at,at+n,next,next,at+n,next+n);
+        }
+      });
+      const last=(rows.length-1)*n;
+      for(let i=1;i<n-1;i++)triangles.push(0,i,i+1,last,last+i+1,last+i);
+      for(const {side,front,a,b,lo,hi} of holes){
+        const loop=[];
+        for(let j=a;j<b;j++)loop.push(j*n+lo);
+        for(let i=lo;i<hi;i++)loop.push(b*n+i);
+        for(let j=b;j>a;j--)loop.push(j*n+hi);
+        for(let i=hi;i>lo;i--)loop.push(a*n+i);
+        const sum=loop.reduce((v,i)=>[v[0]+p[i*3],v[1]+p[i*3+1],v[2]+p[i*3+2]],[0,0,0]);
+        const [cx,cy,cz]=sum.map(v=>v/loop.length);
+        const x=side*width*(front?.78:.83),z=cz+(front?-.023:.012);
+        const y=Math.min(cy-.014,hip+.062),kneeY=y*(front?.52:.55),kneeZ=front?z+.046:z-.061;
+        const leg=addBone(spine,x,y,z,front?"Ombro":"Anca");
+        const knee=addBone(leg,side*.009,kneeY-y,kneeZ-z,front?"Cotovelo":"Jarrete");
+        leg.userData.lower=knee;leg.userData.phase=Number((side>0)===front)*Math.PI;rig.legs.push(leg);
+        const top=skeleton.indexOf(leg),lower=top+1,w=width*(cat?.48:.40),d=width*(front?.58:.73),paw=width*(cat?.35:.30);
+        const toes=cat?.095:.082,footX=x+side*.014,footZ=z+(front?-.071:-.045);
+        const path=[
+          [x,cy-.065,z,w*(front?.96:1.08),d,0,top,.60],
+          [x,y*.69,front?z-.031:z-.077,w*.71,d*.70,top,lower,0],
+          [knee.position.x+x,kneeY+.045,kneeZ,w*.52,d*.48,top,lower,.30],
+          [knee.position.x+x,kneeY-.035,kneeZ,w*.46,d*.43,top,lower,.77],
+          [footX,.102,footZ+.046,paw*.70,paw*.70,lower,lower,0],
+          [footX,.064,footZ,paw,toes,lower,lower,0],
+          [footX,.019,footZ-.007,paw*.91,toes*.96,lower,lower,0],
+          [footX,.011,footZ-.007,paw*.68,toes*.72,lower,lower,0]
+        ];
+        const arcs=loop.map(i=>Math.atan2(p[i*3+2]-cz,p[i*3]-cx));
+        const legRings=round?path.flatMap((point,j)=>{
+          if(!j)return [point];
+          const last=path[j-1],same=last[5]===point[5]&&last[6]===point[6];
+          const endsAtJoint=last[6]===point[5]&&point[7]===0;
+          if(!same&&!endsAtJoint)return [point];
+          return [.25,.5,.75].map(f=>[
+            ...last.slice(0,5).map((value,k)=>T.MathUtils.lerp(value,point[k],f)),
+            last[5],last[6],T.MathUtils.lerp(last[7],endsAtJoint&&!same?1:point[7],f)
+          ]).concat([point]);
+        }):path;
+        let previous=loop;
+        legRings.forEach(([px,py,pz,sx,sz,ib,ik,t],index)=>{
+          const ring=arcs.map(arc=>{
+            const vz=pz+Math.sin(arc)*sz;
+            const along=round?py*1.18+vz*.40:vz,phase=round?arc+side*.72+py*2.7:arc+side*.72;
+            return vertex(px+Math.cos(arc)*sx,py,vz,pigmentAt(along,phase,"leg",index/(legRings.length-1)),ib,ik,t);
+          });
+          for(let i=0;i<ring.length;i++){
+            const j=(i+1)%ring.length;
+            triangles.push(previous[i],previous[j],ring[i],previous[j],ring[j],ring[i]);
+          }
+          previous=ring;
+        });
+        for(let i=1;i<previous.length-1;i++)triangles.push(previous[0],previous[i],previous[i+1]);
+        for(let toe=-1.5;toe<=1.5;toe++){
+          part(knee,"oval",pigment(base,false),[footX-x-knee.position.x+toe*paw*.39,.031-kneeY,footZ-kneeZ-toes*.92],
+            [paw*.24,.018,.010],[.12,0,0]).name="Sulco da pata";
+        }
+      }
+      const geometry=new T.BufferGeometry();
+      geometry.setAttribute("position",new T.Float32BufferAttribute(p,3));
+      geometry.setAttribute("color",new T.Float32BufferAttribute(colors,3));
+      geometry.setAttribute("skinIndex",new T.Uint16BufferAttribute(ids,4));
+      geometry.setAttribute("skinWeight",new T.Float32BufferAttribute(weights,4));
+      geometry.setIndex(triangles);geometry.computeVertexNormals();
+      const skin=aquaticSkin.clone();skin.skinning=true;skin.roughness=.82;
+      const mesh=new T.SkinnedMesh(geometry,skin);mesh.name="Pelagem contínua do focinho às patas";
+      mesh.userData.ownGeometry=mesh.userData.ownMaterial=true;mesh.frustumCulled=false;g.add(mesh);mesh.add(spine);
+      mesh.bind(new T.Skeleton(skeleton));rig.body=mesh;rig.connectedQuadruped=true;
+      if(id==="lion"){
+        lionMane(spine,rig);
+        rig.mane.position.set(0,headY-.053,headZ+.16);
+        const end=tailEnd+tailLength-tailAt;
+        dragonCurve(tailTip,[[0,-.43,end-.12,.036],[0,-.405,end-.053,.060],
+          [0,-.365,end+.024,.048],[0,-.312,end+.082,.004]],
+          [0x422920,0x624331],15).name="Pincel escuro da cauda";
+      }
+      carnivoreFeatures(head,rig,{cat,brush,round,id,base,accent,dark:dark.getHex(),hx,hy,hz,earHeight,iris,muzzle,muzzleWidth,tip,face});
+    }
+    function carnivoreFeatures(head,rig,{cat,brush,round,id,base,accent,dark,hx,hy,hz,earHeight,iris,muzzle,muzzleWidth,tip,face}){
+      const nose=0x231d24,noseY=-hy*.245,biteReach=hz*muzzle*.50;
+      rig.jaw=predatorJaw(head,hx*(cat?.79:.73),hy*.86,hz*.92,biteReach,base,accent);
+      part(head,"chamfer",nose,[0,noseY,tip-.003],[hx*muzzleWidth*.96,hy*.27,hz*.19],[.16,0,0]).name=cat?"Trufa felina":"Trufa canina";
+      part(head,"oval",0x776260,[0,noseY+hy*.107,tip-.041],[hx*.19,.008,.008]);
+      for(const side of [-1,1]){
+        const pad=cat?hx*.49:hx*.37,padZ=tip+hz*(cat?.22:.29);
+        part(head,"oval",accent,[side*hx*muzzleWidth*.43,-hy*.35,padZ],[pad,hy*(cat?.30:.22),hz*(cat?.37:.31)],
+          [-.10,side*.22,side*.12]).name="Almofada do focinho";
+        const z=-hz*(cat?.813:.773),a=side*(cat?1.11:1.19);
+        const j=face.findIndex(row=>row[0]>=z),before=face[j-1],after=face[j],t=(z-before[0])/(after[0]-before[0]);
+        const row=before.map((value,i)=>T.MathUtils.lerp(value,after[i],t));
+        const [eyeX,eyeY]=torsoShape(row,a);
+        const eye=hinge(head,eyeX+side*.006,eyeY+.004,z-.011);
+        eye.rotation.set(-.07,-side*(cat?.72:.91),side*(cat?.12:.19));
+        eye.userData.entityEye=true;
+        (rig.youngEyes??=[]).push(eye);
+        if(round)part(eye,"oval",accent,[0,-hy*.113,-hz*.031],[hx*.304,hy*.107,hz*.074]).name="Marca clara sob o olho";
+        part(eye,"oval",dark,[0,0,0],[hx*.268,hy*.169,hz*.134]);
+        part(eye,"oval",iris,[0,0,-hz*.104],[hx*.192,hy*.125,hz*.083]);
+        part(eye,"oval",nose,[0,0,-hz*.172],[hx*(cat&&!round?.056:.094),hy*.088,.006]);
+        part(eye,"oval",0xf2e4c9,[-side*.007,.008,-hz*.198],[.006,.006,.006]);
+        dragonCurve(eye,[[-hx*.24,-.012,-hz*.072,.003],[0,hy*.177,-hz*.101,.014],
+          [hx*.24,.001,-hz*.063,.005]],[dark,base],8).name="Pálpebra superior";
+        const ox=side*hx*(round?.79:.67),ey=hy*.69,ez=hz*.10,h=hy*earHeight*(round?1.32:brush?1.31:1.47);
+        const outline=round?[[ox-side*hx*.29,ey+.012,ez],[ox-side*hx*.25,ey+h*.68,ez],
+          [ox,ey+h,ez+.013],[ox+side*hx*.23,ey+h*.66,ez+.010],[ox+side*hx*.25,ey+.009,ez+.039]]:
+          [[ox-side*hx*.51,ey,ez-.018],[ox-side*hx*.43,ey+h*.51,ez+.008],[ox+side*hx*.34,ey+h,ez+.030],
+            [ox+side*hx*.61,ey+h*.39,ez+.063],[ox+side*hx*.35,ey,ez+.044]];
+        fanFin(head,[ox,ey-.056,ez+.025],outline,[dark,base,base],.037,8).name="Orelha externa";
+        fanFin(head,[ox,ey-.010,ez-.011],outline.slice(1,-1).map(([x,y,z])=>[ox+(x-ox)*.69,ey+(y-ey)*.81,z-.028]),
+          [dark,brush?0xaa8377:accent],.013,7).name="Concha da orelha";
+        if(id==="lynx")dragonCurve(head,[[ox+side*hx*.21,ey+h*.83,ez+.01,.016],
+          [ox+side*hx*.32,ey+h*1.06,ez+.026,.014],[ox+side*hx*.43,ey+h+.102,ez+.042,.001]],[dark,0x392b33],9);
+        if(cat||brush){
+          for(let i=0;i<5;i++){
+            const x=side*hx*(.37+(i%3)*.11),y=-hy*(.30+Math.floor(i/3)*.22),z=padZ-hz*.24+(i%3)*hz*.06;
+            part(head,"oval",dark,[x,y,z],[.006,.005,.005]);
+            if(i<4)dragonCurve(head,[[x,y,z,.0018],[x+side*hx*.51,y+(.02-i*.014),z-hz*.08,.002],
+              [x+side*hx*(.89+i*.071),y+(.045-i*.032),z+hz*.11,.001]],[accent,0xf1dec7],5).userData.noShadow=true;
+          }
+        }
+        if(id==="wolf"||id==="lynx"||brush){
+          for(let i=0;i<4;i++){
+            const y=-hy*.36+i*hy*.19,x=side*hx*.80,z=hz*(.10+i*.09);
+            dragonCurve(head,[[x*.84,y,z-.046,.040],[x*1.14,y-.026,z+.028,.046],
+              [x*(1.23+i*.03),y-.070,z+.125,.002]],[base,i%2?accent:dark],10);
+          }
+        }
       }
     }
     function regional(id,def,g,rig,attachLeg,seed){
+      if(def.shape==="opossum"||def.shape==="anteater")return brazilianMammal(id,def,g,rig,attachLeg);
+      if(Object.hasOwn(carnivoreFaces,id))return carnivore(id,def,g,rig,seed);
       const feline=def.shape==="cat",bear=def.shape==="bear",bison=id==="bison",canine=def.shape==="dog";
       const fox=id==="fennec"||id==="rime_fox",badger=id==="badger",longBear=id==="polar_bear";
-      const [coat,trim]=id==="cat"&&seed>.57?[0x676873,0xe3d9cb]:id==="dog"&&seed>.56?[0x614d40,0xc6ae91]:[def.coat,def.trim];
+      const [coat,trim]=(id==="cat"&&seed>.57?[0x676873,0xe3d9cb]:
+        id==="dog"&&seed>.56?[0x614d40,0xc6ae91]:[def.coat,def.trim]).map(mutedTint);
       const dark=pigment(coat,false),noseColor=0x282630;
       const [bodyY,length,width,height,hip,neckZ,headY,hx,hy,hz]=forms[id];
       const legLength=(hip-.035)/.96;
       const body=hinge(g,0,bodyY,.05);rig.body=body;
-      const sections=torsoSections(id,length,width,height);
+      const brown=id==="brown_bear",baseSections=torsoSections(id,length,width,height);
+      const sections=brown?sculptSections(sculptSections(sculptSections(baseSections))):sculptSections(baseSections);
       const shoulder=new T.Color(dark),throat=new T.Color(trim);
-      contour(body,sections,[coat,trim],"",28,torsoShape,(color,z,a)=>{
+      contour(body,sections,[coat,trim],"",brown?68:28,torsoShape,(color,z,a)=>{
         const c=Math.cos(a),front=Math.max(0,(-z/length+.20)*.82);
         if(bison)color.lerp(shoulder,Math.min(1,front*(.98+c*.27)));
-        if(id==="brown_bear"||id==="wolf")color.lerp(shoulder,front*Math.max(0,c+.1)*.43);
+        if(brown)color.setHex(coat).lerp(new T.Color(0x916c47),Math.max(0,c)*(.44+front*.22))
+          .lerp(shoulder,Math.max(0,-c+.10)*.63);
+        else if(id==="wolf")color.lerp(shoulder,front*Math.max(0,c+.1)*.43);
         if(fox&&c<.08)color.lerp(throat,Math.min(.85,(.09-c)*.85));
         const texture=(.50+.50*Math.sin(a*(bear||bison?15:11)+z*(fox?32:24)))**3;
         color.multiplyScalar(.90+texture*(bear||fox||bison?.19:.12)+.05*Math.cos(z*18+a*4));
@@ -965,29 +2184,29 @@ globalThis.QuimiCraftWildlife=(()=>{
       if(id==="lion")lionMane(body,rig);
       const head=hinge(g,0,headY,-neckZ);rig.head=head;
       const heavy=bison||bear||id==="wolf",neckWidth=hx*(bison?1.11:heavy?1.02:.89);
-      taper(g,[[0,headY-hy*.76,-neckZ+hz*1.48,hy*.90,neckWidth],[0,headY-hy*.47,-neckZ+hz*.98,hy*.91,neckWidth*.94],
-        [0,headY-hy*.21,-neckZ+hz*.49,hy*.72,neckWidth*.77],[0,headY+hy*.03,-neckZ+hz*.18,hy*.53,neckWidth*.51]],
-        [bison?dark:coat,bear?coat:trim],12);
-      const muzzle=longBear?.335:bear?(id==="black_bear"?.235:.22):canine?.235:bison?.20:.132;
+      const neckRootZ=.05-length*.49,neckTipZ=-neckZ+hz*.13;
+      const neckAt=t=>T.MathUtils.lerp(neckRootZ,neckTipZ,t);
+      taper(g,[[0,bodyY+height*.29,neckRootZ,height*.76,width*.82],
+        [0,bodyY+height*.34,neckAt(.27),height*.71,Math.max(width*.76,neckWidth)],
+        [0,headY-hy*.51,neckAt(.56),hy*.91,neckWidth*.94],
+        [0,headY-hy*.25,neckAt(.81),hy*.76,neckWidth*.81],
+        [0,headY-hy*.071,neckTipZ,hy*.53,neckWidth*.53]],
+        [bison?dark:coat,bear?coat:trim],20).name="Pescoço ligado ao peito";
+      part(head,"oval",coat,[0,-hy*.21,hz*.51],[hx*.68,hy*.62,hz*.46]);
+      const muzzle=longBear?.335:bear?(brown?.256:.235):canine?.235:bison?.20:.132;
       const forehead=bison?1.24:badger?.81:1;
-      const skull=[[ -hz-muzzle*.80,-hy*.37,hx*.37,hy*.25],[-hz-muzzle*.30,-hy*.25,hx*.57,hy*.43],
+      const skull=[[ -hz-muzzle*.80,-hy*.31,hx*.37,hy*.16],[-hz-muzzle*.30,-hy*.195,hx*.57,hy*.29],
         [-hz*.90,-hy*.10,hx*.74,hy*.71],[-hz*.53,.016,hx*.98,hy*.93*forehead],
         [-hz*.08,.026,hx,hy*forehead],[hz*.47,.019,hx*.86,hy*.78],[hz*.72,.005,hx*.50,hy*.48]];
-      contour(head,skull,[badger?trim:coat,trim],"",16);
+      contour(head,sculptSections(sculptSections(skull)),[badger?trim:coat,trim],"",brown?48:24,torsoShape);
       const jawY=-hy*.40,snoutZ=-hz-muzzle*.67,noseZ=-hz-muzzle*.90;
-      part(head,"oval",trim,[0,jawY,snoutZ],[hx*.62,hy*.37,muzzle*.46]);
+      if(!bison)rig.jaw=predatorJaw(head,hx,hy,hz,muzzle,coat,trim);
+      part(head,"oval",trim,[0,jawY+hy*.16,snoutZ],[hx*.62,hy*.24,muzzle*.46]);
       part(head,"chamfer",noseColor,[0,-hy*.21,noseZ],[hx*(bear?.54:.47),hy*.37,muzzle*.36]);
-      part(head,"oval",dark,[0,-hy*.57,snoutZ-.01],[hx*.42,hy*.08,muzzle*.28]);
+      if(bison)part(head,"oval",dark,[0,-hy*.57,snoutZ-.01],[hx*.42,hy*.08,muzzle*.28]);
       if(bison){
         part(head,"oval",dark,[0,.15,-.053],[hx*1.02,hy*.59,hz*.82],[.20,0,0]);
         part(head,"shard",dark,[0,-.21,-.19],[.129,.206,.143],[.37,0,0]);
-      }
-      if(bear){
-        const lower=[[-hz-muzzle*.88,-hy*.34,hx*.27,hy*.16],[-hz-muzzle*.59,-hy*.41,hx*.54,hy*.24],
-          [-hz-muzzle*.13,-hy*.43,hx*.69,hy*.37],[-hz*.61,-hy*.36,hx*.59,hy*.31]];
-        contour(head,lower,[longBear?0xd6cfc4:trim,trim],"",14);
-        for(const side of [-1,1])taper(head,[[side*hx*.42,-hy*.38,-hz-muzzle*.81,.006],
-          [side*hx*.61,-hy*.44,-hz-muzzle*.49,.010],[side*hx*.72,-hy*.49,-hz-muzzle*.18,.004]],[dark,coat],5);
       }
       for(const side of [-1,1]){
         if(bison){
@@ -1008,14 +2227,14 @@ globalThis.QuimiCraftWildlife=(()=>{
             [peak[0]-side*.007,peak[1]-.042,peak[2]-.029],[baseX+side*hx*.29,earY+.01,sideZ-.028]],.009);
           if(id==="lynx")link(head,dark,[peak[0],peak[1]-.018,peak[2]],[peak[0]+side*.028,peak[1]+.086,peak[2]+.012],.016);
         }else{
-          const x=side*hx*.73,y=hy*.78,r=id==="black_bear"?.104:badger?.067:longBear?.068:.086;
+          const x=side*hx*.78,y=hy*.83,r=id==="black_bear"?.104:badger?.067:longBear?.068:brown?.075:.086;
           part(head,"oval",dark,[x,y,.050],[r,r*(id==="black_bear"?1.17:.93),.081],[0,0,side*.24]);
           part(head,"oval",trim,[x,y+.004,-.013],[r*.56,r*.56,.026],[0,0,side*.23]);
         }
         const x=side*hx*.66,y=hy*.245,z=-hz*.78;
         if(bear&&!badger){
           part(head,"oval",dark,[side*hx*.65,hy*.48,-hz*.69],[hx*.33,hy*.17,hz*.25],[0,side*.39,side*.13]);
-          part(head,"oval",trim,[side*hx*.40,-hy*.39,-hz-muzzle*.47],[hx*.54,hy*.32,muzzle*.53]);
+          part(head,"oval",trim,[side*hx*.40,-hy*.28,-hz-muzzle*.47],[hx*.54,hy*.22,muzzle*.53]);
         }
         if(badger)part(head,"oval",0x292932,[side*hx*.64,hy*.41,z-.002],[.072,.084,.078],[.41,side*.42,side*.25]);
         const eyeball=hinge(head,x,y,z);
@@ -1049,26 +2268,27 @@ globalThis.QuimiCraftWildlife=(()=>{
           const endY=-legLength*.56,padZ=-upperSize*.37;
           const kneeY=foot.position.y,kneeZ=upperSize*(front?.04:.23);
           const shinWidth=upperSize*(bison?.32:bear?.36:.32),kneeDepth=upperSize*(front?.43:.46);
-          const legCoat=[bison&&front?dark:coat,pigment(coat,true)];
+          const legCoat=brown?[dark,coat]:[bison&&front?dark:coat,pigment(coat,true)];
           foot.position.z=kneeZ;
           leg.remove(...leg.children.filter(node=>node.isMesh));
           foot.remove(...foot.children.filter(node=>node.isMesh));
           taper(leg,[[-side*upperSize*.20,upperSize*.79,front?-.048:.025,upperSize*(front?.64:.78),upperSize*.58],
             [-side*upperSize*.11,upperSize*.25,front?-.025:.004,upperSize*(front?.69:.84),upperSize*.57],
             [0,kneeY*.46,kneeZ*.39,upperSize*(front?.52:.62),upperSize*.42],
-            [0,kneeY-shinWidth*.13,kneeZ,kneeDepth,shinWidth*1.07]],legCoat);
-          taper(foot,[[0,shinWidth*.38,0,kneeDepth*.90,shinWidth],
+            [0,kneeY-shinWidth*.24,kneeZ,kneeDepth,shinWidth*1.08]],legCoat);
+          part(foot,"oval",coat,[0,.005,0],[shinWidth*1.13,shinWidth*.95,kneeDepth*.92]);
+          taper(foot,[[0,shinWidth*.58,0,kneeDepth*.91,shinWidth],
             [0,-legLength*.16,0,kneeDepth*.79,shinWidth*.96],
             [0,endY*.70,padZ*.38,shinWidth*.91,shinWidth*.79],
-            [0,endY+.015,padZ*.78,shinWidth*.96,shinWidth*.96]],[coat,pigment(coat,true)]);
+            [0,endY+.015,padZ*.78,shinWidth*.96,shinWidth*.96]],brown?[dark,0x473124]:[coat,pigment(coat,true)]);
           if(bison){
             for(const toe of [-1,1])part(foot,"chamfer",noseColor,[toe*upperSize*.31,endY-.025,padZ],
               [upperSize*.51,.091,upperSize*.80]);
           }else{
-            part(foot,"oval",fox?dark:coat,[0,endY,padZ],[upperSize*(bear?.78:.68),bear?.072:.061,upperSize*(longBear?1.03:.87)]);
-            for(let j=-1;j<=1;j++){
-              const xToe=j*upperSize*.314;
-              part(foot,"oval",bear?dark:coat,[xToe,endY-.015,padZ-upperSize*.49],[upperSize*.25,.039,upperSize*.34]);
+            part(foot,"oval",fox||brown?dark:coat,[0,endY,padZ],[upperSize*(bear?.78:.68),bear?.072:.061,upperSize*(longBear||brown?1.03:.87)]);
+            for(let j=brown?-2:-1;j<=(brown?2:1);j++){
+              const xToe=j*upperSize*(brown?.232:.314);
+              part(foot,"oval",bear?dark:coat,[xToe,endY-.015,padZ-upperSize*.49],[upperSize*(brown?.17:.25),.039,upperSize*.34]);
               if(bear)taper(foot,[[xToe,endY-.004,padZ-upperSize*.63,.015],[xToe,endY-.011,padZ-upperSize*.79,.012],
                 [xToe,endY-.028,padZ-upperSize*.99,.002]],[longBear?0x6d6565:trim,0xb5aaa0],6);
               if(canine||feline)part(foot,"oval",dark,[xToe,endY-.029,padZ-upperSize*.66],[upperSize*.091,.012,upperSize*.13]);
@@ -1087,20 +2307,51 @@ globalThis.QuimiCraftWildlife=(()=>{
         if(id==="lynx")part(tail,"oval",dark,[0,-.065,.200],[.072,.058,.076],[-.22,0,0]);
       }else{
         const size=bison?.45:id==="lion"?.85:feline?.72:.58;
-        const path=[[0,.019,0],[.033,bison?-.15:.031,size*.38],[.093,bison?-.30:.095,size*.72],
-          [.132,bison?-.40:.128,size*.93],[.169,bison?-.41:.158,size]];
-        for(let i=1;i<path.length;i++){
-          const radius=(bison?.053:.071)*(1-i*.14);
-          link(tail,id==="tiger"&&i%2===0?dark:coat,path[i-1],path[i],radius);
-          part(tail,"oval",coat,path[i],[radius,radius,radius]);
-        }
-        if(id==="lion"||bison||canine)part(tail,"shard",dark,path.at(-1),[.096,.095,.124],[.2,.28,0]);
+        const path=canine?
+          [[0,.019,-.036,.069],[.017,.024,size*.24,.082],[.052,-.044,size*.52,.079],
+            [.093,-.066,size*.79,.059],[.132,-.031,size*.96,.035],[.161,-.009,size*1.06,.008]]:
+          [[0,.019,-.028],[.033,bison?-.15:.031,size*.38],[.093,bison?-.30:.095,size*.72],
+            [.132,bison?-.40:.128,size*.93],[.169,bison?-.41:.158,size]].map((point,i)=>[...point,(bison?.053:.071)*(1-i*.15)]);
+        taper(tail,path,[coat,trim],12,[0,1,0],
+          (c,a,row)=>{if(id==="tiger"&&row%2===0)c.lerp(new T.Color(dark),.68)}).name="Cauda contínua";
+        if(id==="lion"||bison)part(tail,"shard",dark,path.at(-1).slice(0,3),[.096,.095,.124],[.2,.28,0]);
       }
       g.scale.setScalar(def.scale);
     }
+    function leafSprig(parent,from,to,color,accent,size,seed,width=.27){
+      const start=new T.Vector3(...from),end=new T.Vector3(...to),stem=end.clone().sub(start);
+      const transverse=new T.Vector3(stem.z,0,-stem.x).normalize();
+      const data=[],colors=[],indices=[];
+      for(let i=0;i<9;i++){
+        const t=.17+i*.096,side=i%2?-1:1,form=.77+.22*Math.sin(seed+i*2.1);
+        const origin=start.clone().lerp(end,t);
+        const tip=origin.clone().addScaledVector(transverse,side*size*(.65+form*.31))
+          .addScaledVector(stem,size*.42/stem.length());
+        tip.y+=size*(.14+Math.sin(i+seed)*.31);
+        const edge=new T.Vector3(tip.z-origin.z,0,origin.x-tip.x).normalize().multiplyScalar(size*width*form);
+        const mid=origin.clone().lerp(tip,.46);
+        const left=mid.clone().add(edge),right=mid.clone().sub(edge),ridge=mid.clone().add(new T.Vector3(0,size*.12,0));
+        const base=data.length/3;
+        const shade=new T.Color(color).lerp(new T.Color(accent),.27+.24*Math.sin(i*3.1+seed));
+        for(const [vertex,tint] of [[origin,.75],[left,.89],[ridge,1.23],[right,1.03],[tip,.91]]){
+          data.push(...vertex.toArray());colors.push(shade.r*tint,shade.g*tint,shade.b*tint);
+        }
+        indices.push(base,base+1,base+2,base,base+2,base+3,base+2,base+1,base+4,base+2,base+4,base+3);
+      }
+      const surface=new T.BufferGeometry();
+      surface.setAttribute("position",new T.Float32BufferAttribute(data,3));
+      surface.setAttribute("color",new T.Float32BufferAttribute(colors,3));
+      surface.setIndex(indices);surface.computeVertexNormals();
+      const leaves=new T.Mesh(surface,leafMaterial);
+      leaves.userData.ownGeometry=true;leaves.name="Folhas com nervura";parent.add(leaves);
+    }
+    const leafMaterial=new T.MeshStandardMaterial({vertexColors:true,side:T.DoubleSide,roughness:.86});
+    const barkRingGeometry=new T.TorusGeometry(1,.085,6,18);
     function livingTree(data,g,rig){
-      const {bark,inner,leaves,lit,aspect}=data,deep=pigment(bark,false);
+      const {aspect,lit}=data;
+      const [bark,inner,leaves]=[data.bark,data.inner,data.leaves].map(mutedTint),deep=pigment(bark,false);
       const elder=aspect==="elder",moss=aspect==="moss",lichen=new T.Color(moss?0x769b62:0xc29a75);
+      const pine=aspect==="pine",cherry=aspect==="cherry",willow=aspect==="willow",mangrove=aspect==="mangrove";
       const grain=(c,a,row)=>{
         const groove=(.5+.5*Math.sin(a*9+(row%4)*.53))**5;
         c.multiplyScalar(.81+groove*.32+Math.cos(a*4+row*.2)*.067);
@@ -1109,9 +2360,29 @@ globalThis.QuimiCraftWildlife=(()=>{
       const trunk=hinge(g,0,0,0);rig.body=trunk;
       const crown=hinge(trunk,0,5.65,.042);rig.crown=crown;rig.vines=[];
       const canopy=hinge(crown,0,-5.65,-.042);
-      taper(trunk,[[0,2.45,.06,.77,.83],[.025,3.01,.16,.93,1.05],[.09,3.55,.16,.99,1.02],
-        [-.045,3.94,.07,.78,elder?.73:.91],[.062,4.51,.07,.85,elder?.88:1.14],
-        [0,5.1,.05,.73,elder?.99:1.24],[.08,5.57,.09,.54,.90],[.07,6.09,.18,.41,.62]],[bark,inner],23,[1,0,0],grain);
+      const barkSections=[[0,2.42,.06,.74,.79],[.025,2.81,.12,.89,.99],[.025,3.14,.16,.96,1.06],
+        [.09,3.51,.16,.99,1.02],[.02,3.76,.11,.91,.96],[-.045,3.99,.07,.79,elder?.73:.91],
+        [.013,4.22,.07,.80,.94],[.062,4.51,.07,.85,elder?.88:1.14],[.032,4.81,.06,.82,1.13],
+        [0,5.1,.05,.73,elder?.99:1.24],[.08,5.57,.09,.63,.95],[.07,6.09,.18,.41,.62]];
+      taper(trunk,barkSections,[bark,inner],32,[1,0,0],grain).name="Tronco com casca estriada";
+      for(let i=0;i<22;i++){
+        const a=i*Math.PI*2/22,from=i%4,to=Math.min(barkSections.length,from+5+i%4);
+        const path=barkSections.slice(from,to).map(([x,y,z,depth,width],row,span)=>{
+          const winding=a+Math.sin(y*1.19+i*.71)*.094,root=row===0||row===span.length-1;
+          const edge=root?.956:1.002;
+          return [x+Math.sin(winding)*width*edge,y,z+Math.cos(winding)*depth*edge,root?.015:.034+(i%3)*.008];
+        });
+        taper(trunk,path,[i%4?deep:bark,inner],5,[1,0,0]).name="Veio da casca";
+      }
+      for(const [x,y,z,size] of [[-.41,3.46,-.711,.20],[.38,4.56,-.704,.21],[.71,3.87,.57,.17]]){
+        const knot=hinge(trunk,x,y,z),direction=Math.atan2(x,z);knot.rotation.y=direction;
+        part(knot,"oval",deep,[0,0,0],[size*.79,size, size*.30],[0,0,-.30]);
+        for(let i=0;i<3;i++){
+          const ring=new T.Mesh(barkRingGeometry,material(i===1?inner:bark));
+          ring.rotation.z=-.33;ring.position.z=size*.106;
+          ring.scale.set(size*(.203+i*.101),size*(.27+i*.123),.085);knot.add(ring);
+        }
+      }
       for(const side of [-1,1]){
         for(let i=0;i<5;i++){
           const x=side*(.12+i*.17),y=3.05+i*.34,z=-.67+Math.abs(x)*.23;
@@ -1121,20 +2392,27 @@ globalThis.QuimiCraftWildlife=(()=>{
         const branchBase=side*(elder?.242:.415);
         taper(trunk,[[branchBase,2.78,-.437,.133],[branchBase+side*.23,3.54,-.662,.155],
           [branchBase+side*.13,4.39,-.694,.104],[branchBase+side*.37,4.86,-.388,.031]],[deep,inner],10,[1,0,0],grain);
-        const leg=hinge(g,side*.64,3.02,.13);rig.legs.push(leg);
+        const leg=hinge(trunk,side*.64,3.02,.13);rig.legs.push(leg);
         taper(leg,[[0,.26,.05,.59,.52],[side*.12,-.46,.06,.51,.47],[side*.16,-1.24,.31,.27,.31],
           [side*.12,-1.45,.36,.24,.25]],[bark,inner],12,[1,0,0],grain);
         const shin=hinge(leg,side*.12,-1.32,.32);leg.userData.lower=shin;
+        part(shin,"oval",bark,[0,.006,0],[.34,.36,.37]);
         taper(shin,[[0,.18,0,.29,.30],[side*.12,-.38,-.10,.30,.25],[side*.18,-1.25,-.21,.33,.28],
           [side*.21,-1.58,-.33,.43,.39]],[bark,inner],12,[1,0,0],grain);
         for(let claw=-1;claw<=1;claw++){
           taper(shin,[[side*.16+claw*.18,-1.46,-.36,.18],[side*.20+claw*.28,-1.56,-.75,.166],
             [side*.24+claw*.34,-1.63,-1.09,.04]],[deep,inner],7);
         }
-        const arm=hinge(g,side*1.02,5.02,.03);arm.userData.side=side;rig.arms.push(arm);
+        for(const toe of [-1,1])taper(shin,[[side*.15,-1.40,-.25,.16],[side*.26+toe*.22,-1.53,-.02,.12],
+          [side*.31+toe*.37,-1.61,.24,.015]],[bark,inner],7,[0,1,0],grain);
+        if(mangrove)for(const spread of [-1,1])taper(shin,[[side*.14,-.50,-.12,.138],[side*.40,-.85,spread*.23,.107],
+          [side*.54,-1.25,spread*.42,.088],[side*.76,-1.63,spread*.54-.14,.024]],
+          [deep,inner],9,[0,0,1],grain).name="Raiz escora";
+        const arm=hinge(trunk,side*1.02,5.02,.03);arm.userData.side=side;rig.arms.push(arm);
         taper(arm,[[-side*.22,.30,.07,.43,.55],[side*.22,-.19,.01,.51,.53],
           [side*.51,-.80,.08,.38,.35],[side*.65,-1.39,.15,.26,.28]],[bark,inner],14,[1,0,0],grain);
         const hand=hinge(arm,side*.63,-1.29,.14);arm.userData.lower=hand;
+        part(hand,"oval",bark,[0,.036,.013],[.33,.37,.34]);
         taper(hand,[[0,.17,.05,.29],[side*.08,-.33,-.03,.35],[side*.19,-.97,-.38,.32],
           [side*.23,-1.20,-.52,.36]],[bark,inner],9);
         for(let j=-1;j<=1;j++){
@@ -1143,20 +2421,20 @@ globalThis.QuimiCraftWildlife=(()=>{
         }
         taper(hand,[[side*.043,-.98,-.403,.165],[side*-.137,-1.088,-.559,.118],
           [side*-.202,-1.173,-.738,.037]],[bark,inner],7);
-        part(hand,"shard",leaves,[side*.17,-.51,-.25],[.43,.55,.30],[.30,0,side*.19]);
+        const wristSprig=[[side*.061,-.42,-.21],[side*.34,-.76,-.31]];
+        link(hand,bark,...wristSprig,.027);
+        leafSprig(hand,...wristSprig,leaves,lichen,.205,side);
         taper(arm,[[side*.17,.08,-.004,.24],[side*.34,.36,-.019,.20],[side*.59,.61,.10,.11],
           [side*.70,.78,.23,.02]],[bark,inner],9,[0,0,1],grain);
-        part(trunk,"shard",leaves,[side*.91,4.88,.06],[.70,.34,.58],[.36,side*.20,0]);
-        for(let i=0;i<4;i++){
-          const a=[side*(.82+i*.13),4.84+i*.14,.19-i*.13];
-          fin(trunk,i%2?leaves:pigment(leaves,true),[a,[a[0]+side*.38,a[1]+.38,a[2]+.03],[a[0]+side*.21,a[1]+.04,a[2]-.41]],.078);
-        }
+        const elbowSprig=[[side*.22,.23,-.027],[side*.73,.75,.239]];
+        link(arm,bark,...elbowSprig,.024);
+        leafSprig(arm,...elbowSprig,leaves,pigment(leaves,true),.265,side*3);
         if(moss){
           taper(arm,[[side*.49,.08,-.20,.06],[side*.62,-.34,-.29,.052],[side*.79,-.83,-.16,.027],
             [side*.84,-1.13,-.09,.009]],[leaves,0x9bba72],7);
         }
       }
-      const head=hinge(g,0,5.31,-.33);rig.head=head;
+      const head=hinge(trunk,0,5.31,-.33);rig.head=head;
       taper(head,[[0,-.28,-.005,.38,.41],[0,.04,-.11,.58,.51],[0,.36,-.08,.70,.59],
         [0,.61,-.06,.68,.65],[0,.96,.04,.49,.49]],[bark,inner],16,[1,0,0],grain);
       taper(head,[[0,.448,-.562,.115],[0,.285,-.692,.132],[.032,.172,-.786,.096],
@@ -1179,30 +2457,51 @@ globalThis.QuimiCraftWildlife=(()=>{
         }
       }
       for(let i=0;i<8;i++){
-        const a=i*Math.PI/4+(elder?.25:0),s=Math.sin(a),c=Math.cos(a),length=(i%2?1.39:1.80)+(moss?.12:elder?Math.sin(i*2.3)*.16:0);
-        const curve=moss?-.27:elder?.13:0;
-        taper(canopy,[[s*.24,5.27,c*.30,.27],[s*.57,6.17,c*.63,.27],
-          [s*1.03,7.02+curve*.28,c*.96,.19],[s*length,7.47+(i%3)*.14+curve,c*length,.038]],[bark,inner],9,[0,0,1],grain);
-        taper(canopy,[[s*.63,6.38,c*.62,.13],[s*1.41,6.79,c*1.01,.11],
-          [s*1.88,6.95,c*1.33,.026]],[bark,inner],6);
-        for(const [y,r,t] of [[7.51,length,0],[7.83,1.16,1],[8.12,.57,2]]){
-          const h=y-.12+Math.sin(i*1.95)*.18+curve*(t===0?1:.19),shade=t===1?pigment(leaves,true):leaves;
-          part(canopy,i%3===0?"chamfer":"shard",shade,[s*r,h,c*r],[1.01-t*.16,.62-t*.062,.90-t*.12],[.35,i*.54,.3]);
-          if(t<2){
-            const leaf=[s*(r+.21),h-.11,c*(r+.22)],tip=[s*(r+.91),h-.33-t*.14,c*(r+.83)];
-            fanFin(canopy,leaf,[[tip[0]-c*.21,tip[1]+.14,tip[2]+s*.21],tip,
-              [tip[0]+c*.28,tip[1]+.17,tip[2]-s*.28]],[shade,pigment(shade,true)],.039);
+        const a=i*Math.PI/4+(elder||cherry?.25:0),s=Math.sin(a),c=Math.cos(a);
+        const length=(i%2?1.39:1.80)+(moss?.12:elder?Math.sin(i*2.3)*.16:willow?.36:pine?-.22:mangrove?.22:0);
+        const curve=moss?-.27:elder?.13:cherry?.14:willow?-.18:0;
+        const branch=[[s*.24,5.27,c*.30,.28],[s*.57,6.17,c*.63,.27],
+          [s*1.03,7.02+curve*.28,c*.96,.19],[s*length,7.47+(i%3)*.14+curve,c*length,.054]];
+        taper(canopy,branch,[bark,inner],13,[0,0,1],grain);
+        for(let j=0;j<5;j++){
+          const from=branch[j<2?1:2].slice(0,3),edge=j%2?1:-1;
+          const r=j===4?(pine?.22:.92):length+(.03+j*.13)-(pine?j*.22:0);
+          const x=s*r+c*edge*(.26+j*.066),z=c*r-s*edge*(.26+j*.066);
+          const y=(j===4?8.22:j===0?6.90:7.29+j*.16)+curve*.65+Math.sin(i*1.93)*.11;
+          const to=[x,y,z],fork=from.map((v,k)=>T.MathUtils.lerp(v,to[k],.52));
+          fork[1]+=.16;
+          taper(canopy,[[...from,.091],[...fork,.063],[...to,.015]],[bark,inner],7);
+          const shade=cherry&&j%2?0xe3a0b3:leaves;
+          leafSprig(canopy,fork,to,shade,cherry?0xf6bcce:pigment(leaves,true),.32+j*.034,i*4+j,pine?.078:willow?.15:.27);
+          if(cherry&&j%2===0&&j<4){
+            const flower=hinge(canopy,...to);
+            flower.name="Flor de cerejeira";
+            for(let petal=0;petal<5;petal++){
+              const angle=petal*Math.PI*.4;
+              part(flower,"oval",petal%2?0xe7a0b8:0xd57d9e,[Math.sin(angle)*.072,.04,Math.cos(angle)*.072],
+                [.076,.032,.084],[.19,angle,.12]);
+            }
+            part(flower,"oval",0xf6cc8f,[0,.059,0],[.047,.023,.047]);
           }
-          if(elder&&i%2===0){
-            const fruit=[s*(r+.26),h-.34,c*(r+.24)];
-            link(canopy,bark,[fruit[0]-s*.064,fruit[1]+.24,fruit[2]-c*.064],fruit,.026);
-            part(canopy,"shard",lit,fruit,[.12,.16,.101],[0,0,a],true);
+          if(elder&&j%2===0){
+            const stalk=from.map((v,k)=>T.MathUtils.lerp(fork[k],to[k],.69));
+            const fruit=[stalk[0]+s*.084,stalk[1]-.26,stalk[2]+c*.084];
+            link(canopy,bark,stalk,fruit,.023);
+            part(canopy,"shard",lit,fruit,[.11,.148,.097],[0,0,a],true);
           }
         }
-        if(moss&&i%2===0){
-          const vine=hinge(canopy,s*length,7.30,c*length);rig.vines.push(vine);
-          taper(vine,[[0,0,0,.088],[s*.20,-.33,c*.15,.073],
-            [s*.31,-.74,c*.20,.051],[s*.11,-1.16,c*.16,.015]],[leaves,0xaac17d],7,[0,0,1]);
+        if(willow||moss&&i%2===0){
+          const vine=hinge(canopy,...branch.at(-1).slice(0,3));rig.vines.push(vine);
+          const length=willow?1.64+i%3*.25:1.16;
+          const a=[s*.20,-length*.23,c*.15],b=[s*.31,-length*.61,c*.20],tip=[s*.16,-length,c*.16];
+          taper(vine,[[0,0,0,.071],[...a,.051],[...b,.036],[...tip,.010]],[leaves,0xaac17d],7,[0,0,1]);
+          leafSprig(vine,a,b,leaves,lichen,.21,i,.17);
+          if(willow)leafSprig(vine,b,tip,leaves,lichen,.22,i+3,.16);
+        }
+        if(pine&&i%2===0){
+          const anchor=branch[2].slice(0,3),cone=[anchor[0]+s*.084,anchor[1]-.24,anchor[2]+c*.08];
+          link(canopy,bark,anchor,cone,.022);
+          part(canopy,"facet",bark,cone,[.144,.203,.142],[.3,a,.18]).name="Pinha";
         }
       }
       const saddle=hinge(trunk,0,5.50,-.02);rig.saddle=saddle;
@@ -1213,9 +2512,45 @@ globalThis.QuimiCraftWildlife=(()=>{
         link(saddle,0xb8a071,[side*.40,.17,-.34],[side*.40,.16,.34],.052);
       }
     }
+    function geode(parent,x,y,z,r,stone,gem,yaw=0){
+      const socket=hinge(parent,x,y,z);socket.rotation.y=yaw;socket.name="Geodo";
+      const rims=[[.04,.42],[.49,.30],[.73,.06],[.84,-.16],[.98,-.085],[1.07,.16],[.79,.57],[.04,.61]];
+      const nodes=[],colors=[],indices=[],segments=13;
+      const shade=new T.Color(stone),bright=new T.Color(gem),tone=new T.Color();
+      for(const [row,[width,depth]] of rims.entries())for(let i=0;i<segments;i++){
+        const a=i/segments*Math.PI*2,rough=1+Math.sin(a*3+.41)*.113+Math.cos(a*5-.08)*.081;
+        nodes.push(Math.cos(a)*r*width*rough,Math.sin(a)*r*width*1.11*rough,r*(depth+Math.sin(a*3)*.045));
+        tone.copy(shade).lerp(bright,[.38,.49,.77,.52,.16,.02,.01,0][row]).multiplyScalar(.72+.21*rough);
+        colors.push(tone.r,tone.g,tone.b);
+        if(row<rims.length-1){
+          const n=row*segments+i,next=row*segments+(i+1)%segments;
+          indices.push(n,next,n+segments,next,next+segments,n+segments);
+        }
+      }
+      const surface=new T.BufferGeometry();
+      surface.setAttribute("position",new T.Float32BufferAttribute(nodes,3));
+      surface.setAttribute("color",new T.Float32BufferAttribute(colors,3));
+      surface.setIndex(indices);surface.computeVertexNormals();
+      const rock=new T.Mesh(surface,skinMaterial);rock.userData.ownGeometry=true;socket.add(rock);
+      for(let i=0;i<12;i++){
+        const a=i*2.399,x=Math.sin(a)*r*(.19+i*.028),y=Math.cos(a)*r*(.20+i*.026);
+        const depth=r*(.24-(i%4)*.105),height=r*(.23+(i%4)*.21),width=r*(.058+(i%3)*.023);
+        const crystal=taper(socket,[[x,y,depth,width],[x*.90,y*1.04,depth-height*.55,width*.94],
+          [x*.77,y*1.10,depth-height,.001]],[gem,pigment(gem,true)],6,[0,1,0]);
+        if(i%3===0)crystal.material=material(gem,true);
+      }
+      return socket;
+    }
     function siteWarden(data,g,rig,attachLeg){
-      const {color,secondary,aspect}=data,dune=aspect==="dune",lab=aspect==="lab",basalt=aspect==="basalt";
+      const {color,secondary,aspect,alloy}=data,dune=aspect==="dune",lab=aspect==="lab",basalt=aspect==="basalt";
+      const gem=aspect==="gem",forged=aspect==="metal";
       const metal=lab?0x35434e:dune?0x6e5746:0x34323e,edge=pigment(color,true),metalLit=lab?0xb4835d:dune?0xc8a35d:0x77636a;
+      let alloyMaterial;
+      if(forged){
+        const key="sentinel-alloy:"+alloy;
+        if(!materials.has(key))materials.set(key,new T.MeshStandardMaterial({color:alloy,metalness:.68,roughness:.33,flatShading:true}));
+        alloyMaterial=materials.get(key);
+      }
       rig.body=hinge(g,0,1.08,0);
       taper(rig.body,[[0,-.39,0,.19,.24],[0,-.26,.023,.27,.33],[0,-.078,.05,.313,.38],
         [0,.11,0,.34,.43],[0,.286,.036,.272,.35],[0,.348,.031,.19,.245]],[color,edge],12,[1,0,0],
@@ -1242,7 +2577,22 @@ globalThis.QuimiCraftWildlife=(()=>{
       part(head,"chamfer",metal,[0,-.136,-.159],[.30,.112,.158],[.12,0,0]);
       for(const side of [-1,1]){
         part(head,"oval",secondary,[side*.109,.051,-.315],[.058,.026,.035],[0,side*.12,side*.16],true);
-        if(basalt){
+        if(gem){
+          for(let i=0;i<3;i++){
+            const x=side*(.13+i*.070),y=.165-i*.071;
+            part(head,"shard",color,[x,y,.027],[.113,.132,.101],[.16,side*.30,side*.26]);
+            taper(head,[[x,y+.016,.027,.054],[x+side*.033,y+.110,.059,.053],[x+side*.059,y+.195-i*.022,.081,.009]],
+              [color,secondary],5,[0,0,1]).name="Cristal da coroa";
+          }
+          for(let i=0;i<3;i++){
+            const x=side*(.12+i*.051);
+            link(rig.body,secondary,[x,.038-i*.038,-.395+i*.046],[x+side*.042,.087-i*.031,-.362+i*.043],.012);
+          }
+        }else if(forged){
+          part(head,"chamfer",alloy,[side*.216,.081,.035],[.13,.27,.278],[.18,side*.18,side*.19]).material=alloyMaterial;
+          part(head,"disk",alloy,[side*.268,.055,.015],[.094,.027,.094],[0,0,Math.PI/2]).material=alloyMaterial;
+          part(head,"chamfer",alloy,[side*.113,.119,-.270],[.193,.031,.095],[0,side*.22,side*.27]).material=alloyMaterial;
+        }else if(basalt){
           taper(head,[[side*.199,.025,.040,.075],[side*.236,.139,.079,.061],[side*.269,.261,.115,.045],[side*.292,.315,.154,.011]],[metal,color],7);
           fanFin(rig.body,[side*.232,.179,.033],[[side*.32,.239,.078],[side*.414,.345,.167],
             [side*.41,.153,.246],[side*.24,.075,.205]],[metal,edge],.050);
@@ -1262,9 +2612,26 @@ globalThis.QuimiCraftWildlife=(()=>{
           [metal,color],9);
         part(arm,basalt?"shard":"chamfer",color,[side*.065,-.033,-.003],[.28,.28,.284],[0,side*.29,side*.25]);
         part(arm,"chamfer",edge,[side*.12,-.113,-.182],[.168,.190,.126],[.19,0,side*.16]);
+        if(gem)for(let i=0;i<3;i++){
+          const x=side*(.10+i*.037),y=.032-i*.071,z=-.019+i*.044;
+          taper(arm,[[x,y,z,.074],[x+side*.107,y+.104,z+.011,.059],[x+side*.174,y+.183,z+.036,.009]],
+            [edge,secondary],5,[1,0,0]);
+        }
+        if(forged)for(let i=0;i<3;i++){
+          part(arm,"chamfer",alloy,[side*(.068+i*.024),.039-i*.079,-.075],[.34-i*.037,.124,.26],
+            [.15,side*.18,side*.21]).material=alloyMaterial;
+          part(arm,"oval",metal,[side*(.133+i*.014),.056-i*.080,-.195],[.029,.026,.029]);
+        }
         const wrist=hinge(arm,side*.11,-.38,0);arm.userData.lower=wrist;
         taper(wrist,[[0,.045,.012,.107],[0,-.104,.023,.102],[side*.028,-.219,-.019,.133],[0,-.331,-.026,.086]],[color,edge],8);
         part(wrist,"chamfer",metal,[0,-.339,-.041],[.199,.192,.185],[.19,0,0]);
+        if(forged){
+          const sleeve=part(wrist,"disk",alloy,[0,-.198,-.002],[.149,.23,.14],[.14,0,side*.08]);
+          sleeve.material=alloyMaterial;sleeve.name="Braçadeira metálica";
+          for(let i=-1;i<=1;i++)part(wrist,"chamfer",alloy,[i*.052,-.362,-.125],[.052,.104,.056],
+            [.20,0,i*.14]).material=alloyMaterial;
+        }
+        if(gem)geode(arm,side*.133,-.037,-.122,.097,color,secondary,side*.18);
         if(dune)part(wrist,"chamfer",metalLit,[side*.142,-.182,-.029],[.102,.226,.177],[.25,0,0]);
         else part(wrist,"diamond",secondary,[0,-.189,-.126],[.049,.082,.036],[0,0,.22],true);
         const leg=attachLeg(g,rig,side*.23,.025,.71,.72,.27,material(color),material(metal),side>0?Math.PI:0)||rig.legs.at(-1);
@@ -1276,9 +2643,22 @@ globalThis.QuimiCraftWildlife=(()=>{
         part(lower,"chamfer",color,[0,-.288,-.078],[.16,.161,.142],[.12,0,0]);
         if(boot){boot.geometry=geometry.rounded;boot.scale.set(.259,.115,.341);boot.position.z=-.079;}
         part(lower,"chamfer",edge,[0,-.404,-.189],[.145,.061,.112],[.10,0,0]);
+        if(forged){
+          for(let i=0;i<3;i++)part(lower,"chamfer",alloy,[0,-.131-i*.077,-.111],[.176-i*.017,.091,.094],
+            [.12,0,0]).material=alloyMaterial;
+          part(lower,"chamfer",alloy,[0,-.393,-.187],[.243,.088,.165],[.13,0,0]).material=alloyMaterial;
+        }
       }
       function meshWardenCore(){
-        if(dune){
+        if(forged){
+          for(let i=0;i<4;i++){
+            part(rig.body,"chamfer",alloy,[0,.188-i*.113,-.329],[.49-i*.037,.139,.144],[.14,0,0]).material=alloyMaterial;
+            for(const side of [-1,1])part(rig.body,"oval",metal,[side*(.177-i*.013),.19-i*.112,-.411],[.031,.026,.026]);
+          }
+          part(rig.body,"diamond",secondary,[0,.046,-.451],[.111,.13,.046],[0,0,.20],true);
+        }else if(gem){
+          geode(rig.body,0,.040,-.430,.190,color,secondary);
+        }else if(dune){
           part(rig.body,"diamond",0x71968c,[0,.033,-.405],[.19,.22,.058],[.03,0,Math.PI/4]);
           part(rig.body,"diamond",secondary,[0,.033,-.446],[.105,.133,.044],[.03,0,Math.PI/4],true);
         }else if(lab){
@@ -1291,58 +2671,417 @@ globalThis.QuimiCraftWildlife=(()=>{
         }
       }
     }
+    const dragonSkin=new T.MeshStandardMaterial({vertexColors:true,roughness:.72});
+    const dragonKeratin=new T.MeshStandardMaterial({vertexColors:true,roughness:.31,metalness:.08});
+    const dragonMembrane=new T.MeshStandardMaterial({vertexColors:true,roughness:.77,side:T.DoubleSide});
+    const skinnedMaterials=new WeakMap();
+    function skinnedMaterial(source){
+      if(!skinnedMaterials.has(source)){
+        const material=source.clone();
+        material.skinning=true;
+        skinnedMaterials.set(source,material);
+      }
+      return skinnedMaterials.get(source);
+    }
+    const glowPlane=new T.PlaneGeometry(1,1);
+    function dragonGlow(parent,tint,x,y,z,size,opacity){
+      const material=new T.ShaderMaterial({
+        uniforms:{tint:{value:new T.Color(tint)},strength:{value:opacity}},
+        vertexShader:`varying vec2 coord;
+          void main(){coord=uv-.5;vec4 center=modelViewMatrix*vec4(0.,0.,0.,1.);
+          float scale=length(modelMatrix[0].xyz);
+          gl_Position=projectionMatrix*(center+vec4(position.xy*scale,0.,0.));}`,
+        fragmentShader:`varying vec2 coord;uniform vec3 tint;uniform float strength;
+          void main(){float falloff=1.-smoothstep(.02,.5,length(coord));
+          gl_FragColor=vec4(tint,falloff*falloff*strength);}`,
+        transparent:true,depthWrite:false,blending:T.AdditiveBlending
+      });
+      const glow=new T.Mesh(glowPlane,material);
+      glow.position.set(x,y,z);glow.scale.setScalar(size);
+      glow.userData.ownMaterial=true;glow.userData.noShadow=true;parent.add(glow);
+      return glow;
+    }
+    function dragonTaper(parent,points,colors,segments=12,reference,paint){
+      const mesh=taper(parent,points,colors,segments,reference,paint);
+      mesh.material=dragonSkin;mesh.castShadow=true;mesh.receiveShadow=true;
+      return mesh;
+    }
+    function dragonCurve(parent,knots,colors,segments,reference,paint,ridges=0){
+      const path=new T.CatmullRomCurve3(knots.map(([x,y,z])=>new T.Vector3(x,y,z)),false,"catmullrom",.43);
+      const points=path.getPoints((knots.length-1)*4).map((p,i,all)=>{
+        const t=i/4,j=Math.min(knots.length-2,Math.floor(t)),u=t-j;
+        const a=knots[j],b=knots[j+1];
+        const waviness=1+Math.cos(i*1.77)*ridges*(1-i/all.length);
+        const r=T.MathUtils.lerp(a[3],b[3],u),d=T.MathUtils.lerp(a[4]??a[3],b[4]??b[3],u);
+        return [...p.toArray(),r*waviness,d*waviness];
+      });
+      return dragonTaper(parent,points,colors,segments,reference,paint);
+    }
+    function dragonHorn(parent,knots,colors,crystal=false,material=dragonKeratin){
+      const segments=crystal?10:15;
+      const mesh=dragonCurve(parent,knots,colors,segments,[0,0,1],
+        (color,a,i)=>color.multiplyScalar(.85+Math.sin(a*2)**2*.16+Math.sin(i*1.77)*.08),.08);
+      mesh.material=material;
+      if(material===dragonKeratin)return mesh;
+      const rings=(knots.length-1)*4;
+      const charge=Float32Array.from({length:mesh.geometry.attributes.position.count},(_,i)=>{
+        const along=Math.floor(i/segments)/rings;
+        return T.MathUtils.lerp(.14,1,along**1.6)*(.84+.16*Math.cos(i%segments/segments*Math.PI*2));
+      });
+      mesh.geometry.setAttribute("hornCharge",new T.BufferAttribute(charge,1));
+      mesh.name="Chifre dracônico";
+      return mesh;
+    }
+    function dragonLegSkin(leg,lower,foot,colors,girth,front){
+      const [upper,shin]=leg.userData.bones,side=Math.sign(leg.position.x),ankle=upper+shin;
+      const knee=front?-.029:.044,segments=15;
+      const mesh=dragonCurve(leg,[
+        [-side*.115,.243,.044,.105,.137],[-side*.068,.164,.057,.153,.177],
+        [-side*.030,.079,.032,front?.174:.217,front?.179:.234],
+        [side*.013,-.071,knee,.142,.161],[side*.009,-.205,knee*.90,.103,.119],
+        [0,-upper-.013,0,.089,.091],[0,-upper-.11,.032,.074,.084],
+        [0,-ankle+.128,.025,.060,.069],[0,-ankle+.037,.012,.065,.075],
+        [0,-ankle-.018,-.013,.073,.095],[0,-ankle-.021,-.075,.060,.119],
+        [0,-ankle-.029,-.129,.041,.099],[0,-ankle-.030,-.170,.025,.057]
+      ].map(([x,y,z,r,d])=>[x,y,z,r*girth,d*girth]),colors,segments,[1,0,0],(color,a,i)=>{
+        const groove=Math.cos(a*13+i*.61)*.5+.5;
+        color.multiplyScalar(.89+.15*groove+.13*Math.sin(a)**2);
+      });
+      mesh.name="Pele contínua da perna e da pata";mesh.frustumCulled=false;
+      const position=mesh.geometry.getAttribute("position").setUsage(T.DynamicDrawUsage);
+      const rest=position.array.slice(),weights=new Float32Array(position.count*3);
+      for(let i=0;i<position.count;i++){
+        const ring=Math.floor(i/segments)/4;
+        weights[i*3]=1-T.MathUtils.smoothstep(ring,.38,3.25);
+        weights[i*3+1]=T.MathUtils.smoothstep(ring,4.12,5.88);
+        weights[i*3+2]=T.MathUtils.smoothstep(ring,7.62,9.18);
+      }
+      const socket=new T.Quaternion(),lastHip=new T.Quaternion(),lastKnee=new T.Quaternion(),lastAnkle=new T.Quaternion();
+      const shinMatrix=new T.Matrix4(),footMatrix=new T.Matrix4();
+      const undoShin=new T.Matrix4().makeTranslation(0,upper,0),undoAnkle=new T.Matrix4().makeTranslation(0,ankle,0);
+      const original=new T.Vector3(),vertex=new T.Vector3(),bent=new T.Vector3();
+      leg.userData.flexLeg=()=>{
+        if(lastHip.angleTo(leg.quaternion)<.002&&lastKnee.angleTo(lower.quaternion)<.002&&lastAnkle.angleTo(foot.quaternion)<.002)return;
+        lastHip.copy(leg.quaternion);lastKnee.copy(lower.quaternion);lastAnkle.copy(foot.quaternion);
+        socket.copy(lastHip).invert();
+        lower.updateMatrix();foot.updateMatrix();
+        shinMatrix.multiplyMatrices(lower.matrix,undoShin);
+        footMatrix.multiplyMatrices(lower.matrix,foot.matrix).multiply(undoAnkle);
+        for(let i=0;i<position.count;i++){
+          original.fromArray(rest,3*i);vertex.copy(original);
+          const hip=weights[i*3],bend=weights[i*3+1],paw=weights[i*3+2];
+          if(hip)vertex.lerp(bent.copy(original).applyQuaternion(socket),hip);
+          if(bend)vertex.lerp(bent.copy(original).applyMatrix4(shinMatrix),bend);
+          if(paw)vertex.lerp(bent.copy(original).applyMatrix4(footMatrix),paw);
+          position.setXYZ(i,vertex.x,vertex.y,vertex.z);
+        }
+        position.needsUpdate=true;mesh.geometry.computeVertexNormals();
+      };
+    }
+    function dragonPlates(parent,sections,coat,back,belly,crest){
+      const positions=[],colors=[],indices=[];
+      const profile=new T.CatmullRomCurve3(sections.map(([z,y,rx,ry])=>new T.Vector3(z,rx,ry)),false,"catmullrom");
+      const height=new T.CatmullRomCurve3(sections.map(([z,y])=>new T.Vector3(z,y,0)),false,"catmullrom");
+      function plate(t,a,halfWidth,halfLength,base,edge,depth){
+        const first=positions.length/3;
+        const add=(dt,da,rise,color)=>{
+          const p=profile.getPoint(t+dt),y=height.getPoint(t+dt).y;
+          positions.push(...torsoShape([p.x,y,p.y+rise,p.z+rise],a+da));
+          colors.push(color.r,color.g,color.b);
+        };
+        const outline=[[-1,0],[-.70,-.76],[-.16,-1],[.50,-.71],[1,-.13],
+          [.87,.32],[.39,.80],[-.20,1],[-.72,.67]];
+        add(-halfLength*.22,0,depth,base);
+        const shoulder=base.clone().lerp(edge,.28);
+        for(const [dt,da] of outline)add(dt*halfLength*.73,da*halfWidth*.75,depth*.64,shoulder);
+        for(const [dt,da] of outline)add(dt*halfLength,da*halfWidth,.004,edge);
+        for(let i=0;i<outline.length;i++){
+          const a=first+1+i,b=first+1+(i+1)%outline.length,n=outline.length;
+          indices.push(first,a,b,a,a+n,b,b,a+n,b+n);
+        }
+      }
+      const dark=new T.Color(back),main=new T.Color(coat),under=new T.Color(belly);
+      for(let row=0;row<14;row++){
+        const t=.085+row*.061;
+        for(let column=-5;column<=5;column++){
+          const a=(column+(row%2)*.46)*.263,flank=Math.abs(column)/5;
+          const scale=main.clone().lerp(dark,(crest==="stone"?.38:.15)+.26*Math.abs(Math.cos(row*2.17+column)));
+          const seam=scale.clone().lerp(dark,.44+flank*.19);
+          plate(t,a,.148-flank*.014,.038-flank*.007,scale.multiplyScalar(1.20),seam,.031-flank*.015);
+        }
+        for(let column=-1;column<=1;column++){
+          const lit=under.clone().multiplyScalar(1.04-Math.abs(column)*.12);
+          plate(t,Math.PI+column*.49,.290,.035,lit,under.clone().lerp(dark,.33),.022);
+        }
+      }
+      const geo=new T.BufferGeometry();
+      geo.setAttribute("position",new T.Float32BufferAttribute(positions,3));
+      geo.setAttribute("color",new T.Float32BufferAttribute(colors,3));
+      geo.setIndex(indices);geo.computeVertexNormals();
+      const plates=new T.Mesh(geo,dragonSkin);plates.receiveShadow=true;
+      plates.userData.ownGeometry=true;plates.userData.noShadow=true;parent.add(plates);
+    }
+    function dragonChargeScutes(parent,rig,surfaces,coat,iris,stage){
+      const vertices=[],indices=[];
+      for(const {center,normal,wide,long} of surfaces){
+        const lateral=new T.Vector3(1,0,0).addScaledVector(normal,-normal.x).normalize();
+        const along=new T.Vector3().crossVectors(normal,lateral);
+        const i=vertices.length/3;
+        vertices.push(...center.clone().addScaledVector(normal,.025).toArray());
+        for(let j=0;j<8;j++){
+          const a=j*Math.PI/4;
+          vertices.push(...center.clone().addScaledVector(lateral,Math.cos(a)*wide)
+            .addScaledVector(along,Math.sin(a)*long).addScaledVector(normal,-.003).toArray());
+          indices.push(i,i+1+j,i+1+(j+1)%8);
+        }
+      }
+      const geo=new T.BufferGeometry();
+      geo.setAttribute("position",new T.Float32BufferAttribute(vertices,3));
+      geo.setIndex(indices);geo.computeVertexNormals();
+      const material=new T.MeshStandardMaterial({color:coat,roughness:.55,metalness:.07,emissive:iris,emissiveIntensity:0});
+      const mesh=new T.Mesh(geo,material);
+      mesh.name="Escamas da carga";mesh.userData={ownGeometry:true,ownMaterial:true,noShadow:true};
+      mesh.receiveShadow=true;parent.add(mesh);
+      rig.chargeScales.push({material,stage,mesh});
+    }
+    function dragonWingPoint(wrist,a,b,t,u,side,crest){
+      const scallop=Math.sin(Math.PI*u)**1.48;
+      const flexible=a.flex&&b.flex;
+      const notch=flexible?(crest==="leaf"?.086:crest==="stone"?.144:.189):.053;
+      const edge=a.p.map((v,i)=>v+(b.p[i]-v)*u);
+      edge[0]-=side*scallop*notch*.56;
+      edge[1]-=scallop*(crest==="leaf"?.084:.055);
+      edge[2]-=scallop*notch;
+      const point=wrist.map((v,i)=>v+(edge[i]-v)*t);
+      const arch=Math.sin(t*Math.PI);
+      const rib=Math.sin(Math.PI*u*3)**2*Math.sin(Math.PI*u);
+      const hem=.017*T.MathUtils.smoothstep(t,.86,.956)*(1-T.MathUtils.smoothstep(t,.961,1))*scallop;
+      point[1]+=arch*(.048+.064*scallop+rib*.023)+hem;
+      return point;
+    }
+    function dragonWingSkin(parent,hinge,wrist,outline,side,colors,crest){
+      const positions=[],tints=[],indices=[],binding=[],steps=12,across=9;
+      const [shade,skin,sheen]=colors.map(c=>new T.Color(c));
+      const add=(p,flex,color)=>{
+        positions.push(...p);binding.push(flex);tints.push(color.r,color.g,color.b);
+        return binding.length-1;
+      };
+      const triangle=(a,b,c)=>indices.push(a,side>0?b:c,side>0?c:b);
+      const center=add(wrist,0,shade);
+      let boundary=[];
+      for(let sector=0;sector<outline.length-1;sector++){
+        const a=outline[sector],b=outline[sector+1],nextBoundary=[];
+        let previous=[center];
+        for(let row=1;row<=steps;row++){
+          const t=row/steps,width=Math.max(1,Math.round(across*t)),ring=[];
+          for(let k=0;k<=width;k++){
+            if(k===0&&sector>0){ring.push(boundary[row-1]);continue}
+            const u=k/width,vein=Math.sin(Math.PI*u),p=dragonWingPoint(wrist,a,b,t,u,side,crest);
+            const tint=shade.clone().lerp(skin,Math.sin(t*Math.PI*.86)*(.29+vein*.67));
+            const grain=Math.cos(t*38+u*9+sector)*.055+Math.sin(t*17-u*32)*.058;
+            tint.lerp(sheen,vein*Math.sin(t*Math.PI)*.57).multiplyScalar(1+grain);
+            if(t>.82)tint.lerp(shade,T.MathUtils.smoothstep(t,.82,1)*.53);
+            const flex=T.MathUtils.smoothstep(u,.06,.94);
+            ring.push(add(p,a.flex+(b.flex-a.flex)*flex,tint));
+          }
+          nextBoundary.push(ring.at(-1));
+          let i=0,j=0;
+          while(i<previous.length-1||j<ring.length-1){
+            if(i<previous.length-1&&(j===ring.length-1||(i+1)/(previous.length-1)<=(j+1)/(ring.length-1))){
+              triangle(previous[i],previous[++i],ring[j]);
+            }else{
+              triangle(previous[i],ring[j+1],ring[j]);j++;
+            }
+          }
+          previous=ring;
+        }
+        boundary=nextBoundary;
+      }
+      const geo=new T.BufferGeometry();
+      const position=new T.Float32BufferAttribute(positions,3).setUsage(T.DynamicDrawUsage);
+      geo.setAttribute("position",position);geo.setAttribute("color",new T.Float32BufferAttribute(tints,3));
+      geo.setIndex(indices);geo.computeVertexNormals();
+      const membrane=new T.Mesh(geo,dragonMembrane);
+      membrane.castShadow=membrane.receiveShadow=true;membrane.frustumCulled=false;
+      membrane.userData.ownGeometry=true;parent.add(membrane);
+      const offset=new T.Vector3(...wrist),rest=new T.Vector3(),bent=new T.Vector3(),last=new T.Quaternion();
+      return ()=>{
+        if(last.angleTo(hinge.quaternion)<.005)return;
+        last.copy(hinge.quaternion);
+        for(let i=0;i<binding.length;i++){
+          if(!binding[i])continue;
+          rest.fromArray(positions,i*3);
+          bent.copy(rest).sub(offset).applyQuaternion(last).add(offset);
+          rest.lerp(bent,binding[i]);position.setXYZ(i,rest.x,rest.y,rest.z);
+        }
+        position.needsUpdate=true;geo.computeVertexNormals();
+      };
+    }
     function dragon(data,g,rig,attachLeg){
       const {coat,back,belly,wing,horn,eye:iris,crest,form}=data;
       const ice=crest==="crystal",fire=crest==="ember",green=crest==="leaf",time=crest==="hourglass",earth=crest==="stone";
-      rig.form=form;rig.frills=[];
+      rig.form=form;rig.frills=[];rig.tailJoints=[];rig.chargeScales=[];rig.hornGlows=[];
+      const hornMaterial=rig.hornMaterial=dragonKeratin.clone();
+      hornMaterial.emissive.set(iris);
+      hornMaterial.emissiveIntensity=0;
+      hornMaterial.onBeforeCompile=shader=>{
+        shader.vertexShader=shader.vertexShader
+          .replace("#include <common>","#include <common>\nattribute float hornCharge; varying float hornRadiance;")
+          .replace("#include <begin_vertex>","#include <begin_vertex>\nhornRadiance=hornCharge;");
+        shader.fragmentShader=shader.fragmentShader
+          .replace("#include <common>","#include <common>\nvarying float hornRadiance;")
+          .replace("#include <emissivemap_fragment>","#include <emissivemap_fragment>\ntotalEmissiveRadiance*=hornRadiance;");
+      };
       const {length,girth,neck,skull,span,chord,lift,tail:tailLength}=form;
+      const root=g;
+      rig.flightBody=hinge(root,0,.89,0);
+      g=hinge(rig.flightBody,0,-.89,0);
       const body=hinge(g,0,.89,.02);rig.body=body;
-      const hull=[[-.83,.07,.15,.20],[-.67,.105,.32,.327],[-.41,.09,.442,.405],
-        [-.11,.058,.425,.393],[.19,-.005,.354,.301],[.49,-.012,.346,.267],
-        [.72,.023,.270,.216],[.89,.052,.143,.129]];
-      contour(body,hull.map(([z,y,w,h])=>[z*length,y,w*girth,h*(earth?1.07:ice?.91:1)]),[coat,belly],"",32,torsoShape,(color,z,a)=>{
+      const hull=[[-.87,.087,.10,.14],[-.76,.105,.213,.271],[-.60,.107,.365,.358],[-.39,.09,.458,.421],
+        [-.13,.058,.424,.385],[.17,-.006,.346,.299],[.40,-.003,.334,.270],[.56,.003,.355,.275],
+        [.75,.026,.276,.220],[.94,.054,.117,.117]]
+        .map(([z,y,w,h])=>[z*length,y,w*girth*(z<-.19?(earth?1.058:green?.965:1):1),h*(earth?1.07:ice?.91:1)]);
+      const profile=new T.CatmullRomCurve3(hull.map(([z,y,w,h])=>new T.Vector3(z,w,h)),false,"catmullrom");
+      const centerline=new T.CatmullRomCurve3(hull.map(([z,y])=>new T.Vector3(z,y,0)),false,"catmullrom");
+      const rings=profile.getPoints(38).map(({x,y,z},i)=>[x,centerline.getPoint(i/38).y,y,z]);
+      contour(body,rings,[coat,belly],"",44,torsoShape,(color,z,a)=>{
         const scales=(Math.cos(z*32+Math.sin(a*11))*.5+.5)*(Math.cos(a*17+z*13)*.5+.5);
-        color.multiplyScalar(.81+scales*.26+Math.sin(a)**2*.13);
+        color.multiplyScalar(.70+scales*.19+Math.sin(a)**2*.19);
       });
+      dragonPlates(body,hull,coat,back,belly,crest);
+      const scaleTint=new T.Color(belly).lerp(new T.Color(back),.27);
+      for(let row=0;row<4;row++){
+        const t=.525-row*.095,p=profile.getPoint(t),y=centerline.getPoint(t).y;
+        const chest=[-2,-1,0,1,2].map(side=>{
+          const a=Math.PI+side*.39;
+          return {center:new T.Vector3(...torsoShape([p.x,y,p.y+.013,p.z+.015],a)),
+            normal:new T.Vector3(Math.sin(a),Math.cos(a),-.22).normalize(),
+            wide:Math.min(.075,p.y*.22),long:.045+row*.002};
+        });
+        dragonChargeScutes(body,rig,chest,scaleTint,iris,.025+row*.075);
+      }
       const neckPoint=([x,y,z,r,d])=>[x,.98+(y-.98)*neck,-.58*length+(z+.58)*neck,r*girth,d*girth];
-      taper(g,[[0,.98,-.58,.252,.246],[0,1.096,-.704,.220,.218],[0,1.27,-.852,.171,.183],
-        [0,1.423,-.975,.141,.151],[0,1.548,-1.071,.137,.146],[0,1.587,-1.124,.132,.144]].map(neckPoint),[back,coat],15,
-        [1,0,0],(color,a,r)=>color.multiplyScalar(.84+(Math.cos(a*5+r*.67)*.5+.5)*.25));
-      const [hx,hy,hz]=neckPoint([0,1.58,-1.06,0,0]),head=hinge(g,hx,hy,hz);rig.head=head;head.scale.set(...skull);
-      contour(head,[[-.57,-.058,.094,.064],[-.48,-.034,.179,.090],[-.33,.024,.179,.136],
-        [-.18,.076,.241,.192],[-.025,.065,.229,.189],[.169,.027,.163,.135],[.226,.012,.071,.068]],
-        [coat,belly],"",20,null,(color,z,a)=>{
+      const neckBase=neckPoint([0,.98,-.58,0,0]),neckJoint=hinge(body,0,neckBase[1]-.89,neckBase[2]-.02);
+      rig.neck=neckJoint;
+      const neckLocal=p=>neckPoint(p).map((v,i)=>i<3?v-neckBase[i]:v);
+      const neckKnots=[[0,.875,-.395,.241,.220],[0,.96,-.55,.260,.255],[0,1.04,-.649,.237,.23],
+        [0,1.136,-.745,.205,.211],[0,1.237,-.827,.181,.194],[0,1.33,-.903,.157,.165],
+        [0,1.425,-.976,.151,.162],[0,1.50,-1.040,.148,.155],[0,1.587,-1.143,.128,.137]].map(neckLocal);
+      dragonCurve(neckJoint,neckKnots,[coat,back],26,
+        [1,0,0],(color,a,i)=>color.lerp(new T.Color(belly),Math.max(0,Math.cos(a))*(.47+.27*Math.min(1,i/14)))
+          .multiplyScalar(.89+(Math.cos(a*5+i*.67)*.5+.5)*.20));
+      for(let i=2;i<neckKnots.length;i++){
+        const [x,y,z,r,d]=neckKnots[i],prev=neckKnots[i-1],next=neckKnots[Math.min(i+1,neckKnots.length-1)];
+        const forward=new T.Vector3(0,next[2]-prev[2],prev[1]-next[1]).normalize();
+        const throat=[-1,0,1].map(side=>{
+          const angle=side*.53;
+          const normal=forward.clone().multiplyScalar(Math.cos(angle)).setX(Math.sin(angle));
+          const center=new T.Vector3(x+Math.sin(angle)*d,y,z).addScaledVector(forward,Math.cos(angle)*(r+.012));
+          return {center,normal,wide:d*(side?.24:.30),long:.038};
+        });
+        dragonChargeScutes(neckJoint,rig,throat,scaleTint,iris,.32+(i-2)*.081);
+      }
+      const [hx,hy,hz]=neckLocal([0,1.58,-1.06,0,0]),head=hinge(neckJoint,hx,hy,hz);rig.head=head;head.scale.set(...skull);
+      const throat=neckLocal([0,1.29,-.99,0,0]);
+      rig.throatGlow=dragonGlow(neckJoint,iris,...throat.slice(0,3),.34,0);
+      rig.throatGlow.visible=false;
+      contour(head,[[-.586,-.052,.077,.057],[-.545,-.041,.125,.074],[-.483,-.018,.166,.091],
+        [-.385,-.002,.157,.105],[-.29,.044,.204,.149],[-.185,.076,.243,.184],
+        [-.080,.085,.230,.192],[.037,.058,.226,.176],[.151,.028,.165,.135],[.225,.014,.091,.077]],
+        [coat,belly],"",36,torsoShape,(color,z,a)=>{
           const facet=Math.sin(a*9+z*28);
           color.multiplyScalar(.88+Math.max(0,facet)*.17+.08*Math.cos(a));
         });
       const jaw=hinge(head,0,-.093,-.185);rig.jaw=jaw;
-      contour(jaw,[[-.382,-.011,.087,.047],[-.31,-.035,.139,.053],[-.17,-.047,.153,.065],
-        [-.020,-.031,.116,.061],[.064,-.013,.052,.041]],[belly,back],"",12);
-      part(jaw,"oval",0x733a40,[0,-.007,-.245],[.103,.021,.116]);
+      contour(jaw,sculptSections([[-.403,-.015,.059,.029],[-.364,-.026,.112,.049],[-.306,-.045,.139,.062],
+        [-.226,-.056,.155,.073],[-.148,-.053,.158,.079],[-.066,-.039,.144,.076],[-.012,-.022,.116,.063],
+        [.074,-.008,.058,.043]]),[back,belly],"",38,torsoShape,(color,z,a)=>{
+          color.multiplyScalar(.93+.08*Math.cos(z*83+Math.cos(a)*3));
+        }).name="Mandíbula e queixo escamados";
+      const roof=dragonCurve(head,[[0,-.073,-.522,.075,.021],[0,-.087,-.385,.137,.030],
+        [0,-.063,-.239,.172,.039],[0,-.039,-.144,.156,.055],[0,-.043,-.061,.086,.062]],
+        [0x482533,0x975258],24,[1,0,0]);
+      roof.name="Palato";
+      dragonCurve(jaw,[[0,-.012,-.392,.044,.018],[0,-.009,-.295,.094,.020],[0,-.008,-.186,.122,.027],
+        [0,-.006,-.077,.113,.030],[0,-.009,.041,.062,.037]],[0x442331,0x9f5961],25,[1,0,0]).name="Assoalho da boca";
+      const tongue=hinge(jaw,0,.015,.015);rig.tongue=tongue;
+      dragonCurve(tongue,[[0,-.006,.013,.043,.018],[0,.022,-.071,.072,.027],[0,.020,-.159,.067,.020],
+        [0,.015,-.253,.052,.015],[0,.013,-.324,.021,.009],[0,.010,-.347,.005,.003]],
+        [0x8f384b,0xdc8082],24,[1,0,0]).name="Língua articulada";
+      dragonCurve(tongue,[[0,.044,-.077,.004],[0,.038,-.169,.004],[0,.026,-.267,.003]],
+        [0x9d4a5c,0xcc7378],7,[1,0,0]).name="Sulco da língua";
+      for(let i=0;i<2;i++){
+        const scutes=[-1,0,1].map(side=>({center:new T.Vector3(side*.068,-.087+i*.007,-.102-i*.133),
+          normal:new T.Vector3(side*.32,-.93,-.15).normalize(),wide:side?.028:.038,long:.040}));
+        dragonChargeScutes(jaw,rig,scutes,scaleTint,iris,.89+i*.075);
+      }
       rig.nose=hinge(head,0,-.070,-.56);
+      rig.breathGlow=dragonGlow(head,iris,0,-.095,-.60,.49,0);
+      rig.breathGlow.visible=false;
       for(const side of [-1,1]){
-        part(head,"oval",back,[side*.097,.020,-.509],[.048,.019,.052],[0,side*.18,-side*.17]);
+        const topGum=[],bottomGum=[];
+        for(let i=0;i<6;i++){
+          const z=-.493+i*.072,x=[.077,.115,.139,.159,.176,.179][i]*side;
+          topGum.push([x,-.086+i*.008,z,.022-i*.001,.023]);
+          bottomGum.push([x*.77,-.004-i*.002,z+.102,.016,.019]);
+        }
+        dragonCurve(head,topGum,[0x672f3d,0xbb6669],18,[0,1,0]).name="Gengiva superior";
+        dragonCurve(jaw,bottomGum,[0x6e3646,0xbb626b],18,[0,1,0]).name="Gengiva inferior";
+        const cheek=hinge(jaw,side*.104,-.006,-.017);(rig.mouthCorners??=[]).push(cheek);
+        dragonCurve(cheek,[[0,-.024,-.03,.021],[side*.024,.015,.008,.036],
+          [side*.019,.061,.055,.037],[0,.102,.052,.013]],[0x4e2937,0x954d59],16).name="Comissura da boca";
+        for(let i=0;i<5;i++){
+          const z=-.068-i*.064,x=side*(.104-i*.012),y=-.096-Math.sin(i*.68)*.018;
+          dragonCurve(jaw,[[x,y+.017,z+.038,.022],[x*.72,y-.018,z+.012,.025],
+            [x*.41,y-.025,z-.018,.012]],[back,belly],10,[1,0,0]).name="Placas submandibulares";
+        }
+        dragonCurve(head,[[side*.095,-.086,-.455,.023,.014],[side*.154,-.072,-.350,.032,.021],
+          [side*.190,-.048,-.229,.041,.029],[side*.187,-.036,-.116,.054,.040],
+          [side*.160,-.008,-.028,.037,.027]],[back,coat],11);
+        dragonCurve(jaw,[[side*.119,-.028,.055,.063],[side*.130,-.011,-.062,.038],
+          [side*.128,-.015,-.195,.019],[side*.093,-.006,-.337,.009]],[back,coat],11);
+        part(head,"oval",coat,[side*.097,.021,-.501],[.067,.032,.056],[0,side*.28,-side*.22]);
+        part(head,"oval",back,[side*.108,.037,-.520],[.039,.012,.029],[0,side*.28,-side*.22]);
         const eyeGroup=hinge(head,side*.187,.119,-.244);
         part(eyeGroup,"oval",back,[0,0,0],[.081,.057,.077],[0,side*.52,0]);
-        part(eyeGroup,"oval",iris,[side*.016,0,-.026],[.061,.032,.056],[0,side*.58,0],true);
-        part(eyeGroup,"oval",0x22222e,[side*.042,.001,-.045],[.020,.032,.017]);
+        const irisRig=hinge(eyeGroup,side*.040,0,-.055);irisRig.rotation.y=-side*.62;
+        part(irisRig,"oval",iris,[0,0,0],[.062,.039,.027],[0,0,0],true);
+        serpentPupil(irisRig,[0,0,-.028],.012,.036);
+        part(irisRig,"oval",0xfff6d7,[-.019,.014,-.023],[.006,.006,.006],[0,0,0],true).userData.noShadow=true;
+        dragonGlow(eyeGroup,iris,side*.032,.002,-.044,.228,.22);
+        const lid=part(irisRig,"oval",back,[0,.014,-.015],[.062,.037,.028]);
+        lid.visible=false;rig.eyes.push(lid);
         const brow=[[side*.125,.176,-.30],[side*.208,.177,-.217],[side*.238,.192,-.125],[side*.234,.149,-.07]];
-        taper(head,brow.map((p,i)=>[...p,.047-i*.011]),[back,coat],7);
+        dragonCurve(head,brow.map((p,i)=>[...p,.048-i*.010,.036-i*.007]),[back,coat],11);
         for(let i=0;i<3;i++){
           const z=-.15+i*.084,x=side*(.204-i*.023),y=.011+i*.013;
           part(head,crest==="crystal"||crest==="stone"?"shard":"chamfer",i%2?back:coat,[x,y,z],
-            [.053,.052,.093],[.11,side*.34,side*.15]);
+            [.056,.044,.094],[.11,side*.41,side*.15]);
         }
         const horns=ice?[[.128,.143,.040,.076],[.164,.35,.123,.071],[.25,.545,.151,.048],[.29,.668,.196,.003]]:
           fire?[[.127,.169,.047,.093],[.199,.211,.188,.077],[.268,.329,.344,.064],[.31,.474,.394,.042],[.29,.609,.296,.004]]:
           green?[[.137,.16,.032,.066],[.202,.329,.094,.055],[.302,.462,.178,.040],[.407,.543,.225,.029],[.463,.652,.208,.005]]:
           time?[[.138,.16,.036,.076],[.221,.249,.137,.064],[.328,.30,.255,.046],[.382,.35,.343,.029],[.402,.421,.375,.004]]:
           [[.148,.129,.045,.098],[.232,.193,.116,.086],[.328,.220,.160,.057],[.379,.264,.174,.006]];
-        taper(head,horns.map(([x,y,z,r])=>[side*x,y,z,r]),[horn,pigment(horn,true)],ice?5:9,[0,0,1],
-          (color,a,i)=>color.multiplyScalar(.79+(i%2)*.17+Math.abs(Math.sin(a*2))*.16));
+        const [hornX,hornY,hornZ,hornRadius]=horns[0];
+        const hornPoint=([x,y,z,r])=>[side*(hornX+(x-hornX)*1.14),hornY+(y-hornY)*1.23,
+          hornZ+(z-hornZ)*1.12,r*1.08];
+        const rootSocket=hornPoint(horns[0]).slice(0,3);
+        part(head,"chamfer",back,[rootSocket[0],rootSocket[1]-.013,rootSocket[2]],
+          [hornRadius*1.68,hornRadius*1.32,hornRadius*1.53],[.31,side*.11,-side*.29]);
+        const [nextX,nextY,nextZ]=hornPoint(horns[1]);
+        dragonTaper(head,[[...rootSocket.map((v,i)=>i===1?v-.062:v),hornRadius*.98],
+          [...rootSocket,hornRadius*1.23],[T.MathUtils.lerp(rootSocket[0],nextX,.31),
+            T.MathUtils.lerp(rootSocket[1],nextY,.31),T.MathUtils.lerp(rootSocket[2],nextZ,.31),hornRadius*.97]],
+          [back,pigment(coat,true)],13,[0,0,1]);
+        const hornMesh=dragonHorn(head,horns.map(hornPoint),[horn,pigment(horn,true)],ice,hornMaterial);
+        if(side===-1)hornMesh.userData.ownMaterial=true;
+        const hornGlow=dragonGlow(head,iris,...hornPoint(horns.at(-1)).slice(0,3),.46,0);
+        hornGlow.visible=false;rig.hornGlows.push(hornGlow);
         if(green){
           for(const [x,y,z,dx,dy] of [[.201,.324,.090,.016,.185],[.302,.462,.176,-.035,.187],[.399,.538,.219,.078,.094]]){
-            taper(head,[[side*x,y,z,.035],[side*(x+dx*.51),y+dy*.57,z-.026,.022],[side*(x+dx),y+dy,z-.09,.003]],[horn,0xc9ae6d],7);
+            dragonHorn(head,[[x,y,z,.038],[x+dx*.51,y+dy*.57,z-.026,.022],
+              [x+dx,y+dy,z-.09,.003]].map(hornPoint),[horn,0xc9ae6d],false,hornMaterial);
           }
           const frill=hinge(head,side*.154,.057,.042);frill.userData.side=side;rig.frills.push(frill);
           fanFin(frill,[0,0,0],[[side*.142,.035,.053],[side*.297,.046,.216],[side*.241,.154,.232],
@@ -1354,7 +3093,8 @@ globalThis.QuimiCraftWildlife=(()=>{
         }else if(earth){
           for(let i=0;i<3;i++)part(head,"chamfer",i%2?horn:back,[side*(.158+i*.042),.137,.069+i*.045],
             [.127,.144-i*.020,.124],[.25,side*.16,-side*.13]);
-          taper(jaw,[[side*.126,-.027,-.148,.037],[side*.164,.049,-.221,.028],[side*.184,.126,-.273,.003]],[horn,0xe1c79a],7);
+          dragonHorn(jaw,[[side*.126,-.042,-.138,.046],[side*.166,.036,-.207,.035],
+            [side*.184,.115,-.270,.020],[side*.169,.178,-.307,.002]],[horn,0xf0d5a9]);
         }else if(time){
           link(head,horn,[side*.118,.145,-.220],[side*.175,.152,-.112],.018);
           const ear=hinge(head,side*.146,.076,.03);ear.userData.side=side;rig.frills.push(ear);
@@ -1365,100 +3105,964 @@ globalThis.QuimiCraftWildlife=(()=>{
           fanFin(r,[0,0,0],[[side*.137,-.012,.063],[side*.239,.004,.160],[side*.201,.091,.236],
             [side*.205,.177,.231],[side*.118,.128,.183],[0,.090,.143]],[back,wing],.034);
         }
-        for(let i=0;i<4;i++){
-          const x=side*(.112+i*.011),z=-.445+i*.076;
-          part(head,"spike",0xffe8bd,[x,-.103,z],[.020,.098-i*.01,.021],[0,0,Math.PI]);
-          part(jaw,"spike",0xe3caa4,[x*.88,-.006,z+.20],[.013,.056,.016]);
+        for(let i=0;i<5;i++){
+          const [x,y,z]=topGum[i+1],reach=i===0?.112:.075-i*.007;
+          dragonHorn(head,[[x,y+.017,z,i===0?.026:.018],[x+side*.005,y-.026,z+.003,.018-i*.002],
+            [x,y-reach*.79,z+.014,.010],[x-side*.008,y-reach,z+.030,.002]],[0xbfa185,0xffedc7]).name="Dente superior";
+          const [bx,by,bz]=bottomGum[i];
+          dragonHorn(jaw,[[bx,by-.013,bz,.017],[bx+side*.004,by+.015,bz-.004,.012],
+            [bx-side*.004,by+.046-i*.004,bz-.011,.002]],[0xbfa181,0xf9e2be]).name="Dente inferior";
         }
         for(const front of [true,false]){
-          const leg=attachLeg(g,rig,side*(front?.302:.283)*girth,(front?-.425:.53)*length,.708,.72,front?.19:.22,
+          const leg=attachLeg(g,rig,side*(front?.343:.300)*girth,(front?-.443:.50)*length,.734,.72,front?.19:.22,
             material(coat),material(back),(side>0)===front?0:Math.PI)||rig.legs.at(-1);
           leg.userData.front=front;
           const lower=leg.userData.lower;
+          const upperLength=front?.344:.365,lowerLength=front?.337:.321;
+          leg.userData.bones=[upperLength,lowerLength];lower.position.y=-upperLength;
           for(const n of [...leg.children])if(n.isMesh)leg.remove(n);
           for(const n of [...lower.children])if(n.isMesh)lower.remove(n);
-          taper(leg,[[0,.20,front?.013:.072,.143],[0,.06,.022,.135],[0,-.139,front?-.019:.086,.101],[0,-.31,0,.065]]
-            .map(([x,y,z,r])=>[x,y,z,r*girth]),[back,coat]);
-          taper(lower,[[0,.055,0,.076],[0,-.107,.044,.067],[0,-.255,-.008,.051],[0,-.393,-.038,.066]]
-            .map(([x,y,z,r])=>[x,y,z,r*girth]),[coat,back]);
-          part(lower,"chamfer",coat,[0,-.389,-.089],[.128*girth,.071,.161]);
+          const foot=hinge(lower,0,-lowerLength,0);
+          leg.userData.foot=foot;
+          dragonLegSkin(leg,lower,foot,[back,coat],girth,front);
+          part(foot,"oval",back,[0,-.030,-.045],[.093*girth,.038,.083],[0,0,0]).userData.noShadow=true;
           for(const toe of [-1,0,1]){
-            const x=toe*.052*girth;
-            taper(lower,[[x,-.381,-.126,.021],[x,-.371,-.18,.018],[x+toe*.009,-.394,-.221,.003]],[horn,pigment(horn,true)],6);
+            const digit=hinge(foot,toe*.069*girth,-.019,-.115);
+            digit.rotation.y=-toe*.24;digit.userData.spread=-toe*.24;
+            const reach=toe===0?.113:.088;
+            dragonCurve(digit,[[0,.011,.061,.049],[0,.005,-.012,.047],
+              [0,-.007,-reach*.46,.038],[0,.001,-reach*.72,.035],[0,-.008,-reach,.024]],[back,coat],10);
+            dragonHorn(digit,[[0,-.005,-reach*.83,.026],[0,.006,-reach-.030,.025],
+              [0,-.007,-reach-.067,.014],[0,-.036,-reach-.092,.002]],[horn,pigment(horn,true)]);
+            (foot.userData.digits??=[]).push(digit);
           }
+          dragonTaper(foot,[[side*.054,.002,.031,.029],[side*.095,-.007,.084,.022],
+            [side*.113,-.030,.112,.014],[side*.119,-.048,.116,.002]],[coat,horn],9);
           if(earth||fire)part(leg,"shard",back,[side*.063,.093,.009],[.132*girth,.175,.155],[.3,side*.28,.07]);
         }
         const pivot=hinge(g,side*.30*girth,1.101,-.391*length);pivot.userData.side=side;rig.wings.push(pivot);
+        pivot.userData.rootX=pivot.position.x;
+        const socket=dragonCurve(pivot,[[0,-.50,0,.106],[0,-.30,0,.087],
+          [0,-.015,0,.057]],[coat,back],16);
+        socket.name="Raiz da asa";
+        pivot.userData.socket=socket;
         const wingPoint=([x,y,z])=>[side*x*span,y*lift,z*chord];
         const a=[0,0,-.103],elbow=wingPoint([.69,.303,-.324]),wrist=wingPoint([1.30,.343,-.209]);
-        const wingOutline=ice?[[2.64,.24,.086],[2.28,-.074,.87],[1.61,-.204,1.21],[.91,-.21,1.28],[.29,-.13,1.00]]:
-          green?[[2.37,.123,.263],[2.19,-.058,.73],[1.63,-.17,1.15],[1.03,-.258,1.29],[.33,-.24,1.03]]:
-          [[2.52,.145,.218],[2.18,-.078,.905],[1.60,-.19,1.27],[.91,-.22,1.339],[.28,-.19,1.064]];
+        const wingOutline=ice?[[2.69,.29,.045],[2.35,-.069,.89],[1.68,-.21,1.25],[.93,-.23,1.29],[.29,-.13,1.00]]:
+          green?[[2.40,.12,.27],[2.23,-.06,.77],[1.70,-.18,1.14],[1.07,-.267,1.31],[.33,-.24,1.03]]:
+          time?[[2.72,.18,.102],[2.40,-.071,.83],[1.62,-.22,1.16],[.94,-.21,1.23],[.28,-.151,1.03]]:
+          earth?[[2.42,.10,.294],[2.19,-.115,.913],[1.64,-.226,1.36],[1.02,-.252,1.44],[.32,-.20,1.13]]:
+          [[2.59,.18,.18],[2.23,-.082,.954],[1.63,-.211,1.33],[.93,-.238,1.37],[.29,-.193,1.10]];
         const tips=wingOutline.map(wingPoint),fold=hinge(pivot,...wrist);pivot.userData.tip=fold;
         const distal=hinge(fold,-wrist[0],-wrist[1],-wrist[2]);
         const root=[-side*.073,-.091,.481];
-        taper(pivot,[[...a,.105],[...elbow,.086],[...wrist,.062]],[back,coat],9,[0,0,1]);
-        part(pivot,"chamfer",coat,[-side*.022,.038,-.071],[.151,.124,.21],[.29,side*.22,0]);
-        fin(pivot,wing,[a,elbow,root],.044);
-        fin(pivot,wing,[elbow,wrist,root],.043);
-        const sheen=pigment(wing,true);
+        dragonCurve(pivot,[[...a,.145,.161],[...wingPoint([.31,.166,-.254]),.111,.128],[...elbow,.086,.096],
+          [...wingPoint([1.00,.322,-.273]),.058,.069],[...wrist,.054,.057]],[back,coat],16,[0,0,1]);
+        dragonCurve(pivot,[[-side*.126,-.055,-.068,.116],[-side*.031,.036,-.100,.158,.139],
+          [side*.091,.093,-.136,.117,.143],[side*.266,.146,-.219,.071,.088]],[back,coat],14,[0,0,1]);
+        dragonCurve(pivot,[[-side*.151,-.087,.104,.091,.105],[-side*.035,.015,.018,.106,.111],
+          [side*.104,.102,-.069,.077,.087],[side*.306,.181,-.179,.033,.046]],
+          [back,coat],12,[0,0,1]);
+        const sheen=green?0xa9bc75:pigment(wing,true),wingDark=pigment(wing,false);
+        pivot.userData.flex=dragonWingSkin(pivot,fold,wrist,[
+          {p:a,flex:0},{p:elbow,flex:0},...tips.map(p=>({p,flex:1})),{p:root,flex:0}
+        ],side,[wingDark,wing,sheen],crest);
+        dragonTaper(pivot,[[...root,.035],[side*.06,-.017,.36,.029],[side*.193,.068,.17,.015]],
+          [back,wing],8).userData.noShadow=true;
+        const ray=(tip,t)=>dragonWingPoint(wrist,{p:tip,flex:1},{p:tip,flex:1},t,0,side,crest);
         for(let i=0;i<tips.length;i++){
-          const tip=tips[i],next=tips[i+1]??root;
-          const mid=wrist.map((v,k)=>v+(tip[k]-v)*.55+(k===1?-.026:0));
-          taper(distal,[[...wrist,.040],[...mid,.021],[...tip,.006]],[back,coat],6,[0,1,0]);
-          const scallop=tip.map((v,k)=>v*.44+next[k]*.42+wrist[k]*.14+(k===1?-.034:0));
-          fanFin(distal,wrist,[tip,scallop,next],[i%2?pigment(wing,false):wing,green?0x98ad63:sheen],.018);
-          fin(distal,sheen,[wrist,mid,next.map((v,k)=>v+(wrist[k]-v)*.47)],.015);
+          const tip=tips[i],mid=ray(tip,.47);
+          dragonCurve(distal,[[...wrist,.046],[...ray(tip,.23),.034],[...mid,.023],
+            [...ray(tip,.74),.015],[...tip,.003]],[back,coat],10,[0,1,0]);
+          part(distal,"oval",coat,mid,[.044,.027,.051],[.17,side*.38,0]).userData.noShadow=true;
+          const hook=tip.map((v,k)=>v+(v-wrist[k])*.049+(k===1?-.032:0));
+          dragonHorn(distal,[[...ray(tip,.941),.016],[...tip,.012],[...hook,.002]],[back,horn]).userData.noShadow=true;
           if(i<tips.length-1){
-            const fold=tip.map((v,k)=>v*.72+wrist[k]*.28+(k===1?.012:0));
-            const edge=next.map((v,k)=>v*.37+wrist[k]*.63+(k===1?.014:0));
-            link(distal,pigment(wing,false),edge,fold,.009).castShadow=false;
+            const next=tips[i+1];
+            const vein=(t,u)=>{
+              const p=dragonWingPoint(wrist,{p:tip,flex:1},{p:next,flex:1},t,u,side,crest);
+              p[1]+=.010;
+              return p;
+            };
+            for(const offset of [0,.14]){
+              dragonTaper(distal,[[...vein(.30+offset,.02),.010],[...vein(.48+offset,.22),.008],
+                [...vein(.63+offset,.38),.006],[...vein(.72+offset,.51),.001]],[wingDark,wing],6).userData.noShadow=true;
+            }
           }
         }
-        taper(distal,[[...wrist,.036],[wrist[0]+side*.142,wrist[1]+.124,wrist[2]-.069,.022],
-          [wrist[0]+side*.214,wrist[1]+.152,wrist[2]-.091,.003]],[back,horn],6,[0,0,1]);
+        part(pivot,"oval",coat,wrist,[.080,.061,.079],[.14,side*.28,0]);
+        dragonHorn(distal,[[...wrist,.049],[wrist[0]+side*.113,wrist[1]+.084,wrist[2]-.059,.036],
+          [wrist[0]+side*.187,wrist[1]+.126,wrist[2]-.085,.021],
+          [wrist[0]+side*.252,wrist[1]+.105,wrist[2]-.124,.003]],[back,horn]);
       }
-      const tail=hinge(g,0,.94,.802*length);rig.tails.push(tail);
+      const tail=hinge(body,0,.05,.802*length-.02);rig.tails.push(tail);
       tail.scale.set(earth?1.31:1,earth?1.22:1,tailLength);
-      taper(tail,[[0,0,-.089,.149],[0,0,.141,.134],[.034,.014,.38,.115],
-        [.088,.03,.628,.090],[.175,.06,.90,.062],[.268,.099,1.11,.035],[.325,.134,1.26,.019]],
-        [coat,belly],12);
+      const tailPath=new T.CatmullRomCurve3([[0,0,-.126],[0,0,.141],[.014,.014,.38],
+        [.038,.03,.628],[.09,.06,.90],[.166,.099,1.11],[.235,.134,1.26]].map(p=>new T.Vector3(...p)));
+      const tailRadius=t=>.017+.144*(1-t)**.86;
+      const tailShell=dragonTaper(tail,tailPath.getPoints(27).map((p,i)=>[...p.toArray(),tailRadius(i/27)]),
+        [coat,back],18,[0,1,0],(color,a,i)=>color.lerp(new T.Color(belly),Math.max(0,Math.sin(a))*.72)
+          .multiplyScalar(.92+Math.cos(i*1.61+a*9)*.14));
+      const skin=new T.SkinnedMesh(tailShell.geometry,skinnedMaterial(dragonSkin));
+      tail.remove(tailShell);tail.add(skin);
+      skin.name="Cauda articulada";skin.castShadow=skin.receiveShadow=true;
+      skin.userData.ownGeometry=true;skin.frustumCulled=false;
+      const bones=[new T.Bone(),new T.Bone(),new T.Bone(),new T.Bone()];
+      const pivots=[0,.41,.83,1.23];
+      skin.add(bones[0]);
+      for(let i=1;i<bones.length;i++){bones[i].position.z=pivots[i]-pivots[i-1];bones[i-1].add(bones[i])}
+      function tailWeights(geometry){
+        const indices=[],weights=[],position=geometry.getAttribute("position");
+        for(let i=0;i<position.count;i++){
+          const z=position.getZ(i),j=z<pivots[1]?0:z<pivots[2]?1:2;
+          const t=T.MathUtils.smoothstep(z,pivots[j],pivots[j+1]);
+          indices.push(j,j+1,0,0);weights.push(1-t,t,0,0);
+        }
+        geometry.setAttribute("skinIndex",new T.Uint16BufferAttribute(indices,4));
+        geometry.setAttribute("skinWeight",new T.Float32BufferAttribute(weights,4));
+      }
+      tailWeights(skin.geometry);
+      skin.bind(new T.Skeleton(bones));
+      rig.tailJoints=bones.slice(1);
+      const details=new T.Group();
+      for(let i=0;i<5;i++){
+        const t=.16+i*.145,p=tailPath.getPoint(t),size=1-i*.12;
+        const plate=part(details,earth?"shard":"chamfer",i%2?back:coat,[p.x,p.y+tailRadius(t)*.80,p.z],
+          [.079*size,.088*size,.113*size],[.37,0,0]);
+        plate.userData.noShadow=true;
+      }
+      for(const side of [-1,1])for(let i=0;i<4;i++){
+        const t=.20+i*.166,p=tailPath.getPoint(t),r=tailRadius(t);
+        const plate=part(details,"chamfer",i%2?coat:back,[p.x+side*r*.66,p.y+r*.40,p.z-.025],
+          [r*.46,r*.39,.103-i*.012],[.15,.24,-side*.33]);
+        plate.userData.noShadow=true;
+      }
+      const joint=tailPath.getPoint(.84),tip=tailPath.getPoint(1),tipTangent=tailPath.getTangent(1);
+      const at=(x,y,z)=>[tip.x+x,tip.y+y,tip.z+z];
       if(green||fire){
-        for(const side of [-1,1])fanFin(tail,[.268,.103,1.08],[[.321+side*.18,.13,1.27],[.364+side*(green?.172:.207),.17,1.415],
-          [.355+side*.074,.205,1.62],[.348,.172,1.34]],[back,wing],.029);
+        for(const side of [-1,1]){
+          fanFin(details,joint.toArray(),[at(side*.19,-.01,.011),at(side*(green?.20:.23),.052,.155),
+            at(side*.078,.11,.37),at(0,.02,.085),tip.toArray()],[back,wing],.029);
+          dragonTaper(details,[[...joint.toArray(),.023],[...at(side*.066,.021,.024),.023],
+            [...at(side*.143,.056,.124),.014],[...at(side*.078,.11,.37),.002]],[back,coat],8);
+        }
       }else if(earth){
-        part(tail,"shard",back,[.328,.134,1.228],[.162,.152,.182],[.14,.26,.19]);
-        for(const side of [-1,1])part(tail,"shard",horn,[.329+side*.117,.142,1.251],[.082,.086,.127],[.218,side*.38,.28*side]);
+        part(details,"shard",back,at(0,0,.018),[.178,.147,.194],[.14,.26,.19]);
+        for(const side of [-1,1])part(details,"shard",horn,at(side*.101,.012,.032),[.098,.086,.137],[.218,side*.38,.28*side]);
       }else if(ice){
-        fanFin(tail,[.268,.104,1.086],[[.28,.209,1.226],[.386,.337,1.406],[.412,.139,1.65],
-          [.41,.055,1.441],[.346,.095,1.298]],[back,horn],.025);
+        fanFin(details,joint.toArray(),[at(-.072,.079,-.047),at(.018,.193,.152),at(.109,.038,.411),
+          at(.081,-.098,.182),at(.014,-.04,.020),tip.toArray()],[back,horn],.033);
+        dragonHorn(details,[[...joint.toArray(),.028],[...at(0,.034,.011),.050],
+          [...at(.060,.054,.165),.032],[...at(.109,.038,.411),.002]],[back,horn],true);
       }else{
-        part(tail,"ring",horn,[.345,.144,1.277],[.121,.121,.077],[.73,.13,0],true,.81);
-        part(tail,"diamond",horn,[.344,.146,1.290],[.054,.071,.143],[.137,.26,0]);
+        dragonTaper(details,[[...joint.toArray(),.033],[...at(-.031,-.014,-.068),.045],
+          [...tip.toArray(),.052],[...at(.042,.022,.113),.017]],[back,coat],12);
+        const collar=part(details,"ring",horn,tip.toArray(),[.053,.053,.082],[0,0,0],true);
+        collar.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),tipTangent);
+        part(details,"diamond",horn,at(.041,.022,.092),[.057,.062,.135],[.137,.26,0]);
+      }
+      for(const detail of details.children){
+        detail.updateMatrix();
+        const geometry=detail.geometry.clone().applyMatrix4(detail.matrix);
+        tailWeights(geometry);
+        const attached=new T.SkinnedMesh(geometry,skinnedMaterial(detail.material));
+        attached.userData={ownGeometry:true,sharedSkeleton:true,noShadow:detail.userData.noShadow};
+        attached.frustumCulled=false;attached.castShadow=!detail.userData.noShadow;attached.receiveShadow=true;
+        tail.add(attached);
+        attached.bind(skin.skeleton,skin.bindMatrix);
+        if(detail.userData.ownGeometry)detail.geometry.dispose();
       }
       for(let i=0;i<9;i++){
         const z=(-.72+i*.177)*length,h=1.20+Math.sin((i+.8)*.37)*.154;
         const scale=1-i*.055;
         if(ice||earth){
-          part(g,"shard",i%2?horn:back,[0,h-.020,z],[.085*scale*(earth?1.78:1),.159*scale*(ice?1.73:.98),.119*scale*(earth?1.38:1)],[.35,0,0]);
-          if(earth)for(const side of [-1,1])part(g,"chamfer",i%2?back:horn,[side*.112,h-.048,z+.025],
+          part(body,"shard",i%2?horn:back,[0,h-.910,z-.02],[.085*scale*(earth?1.78:1),.159*scale*(ice?1.73:.98),.119*scale*(earth?1.38:1)],[.35,0,0],ice&&i%2===1);
+          if(earth)for(const side of [-1,1])part(body,"chamfer",i%2?back:horn,[side*.112,h-.938,z+.005],
             [.118*scale,.099*scale,.136*scale],[.28,side*.36,side*.16]);
         }else{
-          fin(g,i%2?back:wing,[[0,h-.091,z-.068],[0,h+.137*scale*(fire?1.57:green?.85:1),z+.069],[0,h-.107,z+.127]],.070*scale);
+          const peak=.137*scale*(fire?1.57:green?.85:1);
+          fanFin(body,[0,h-.99,z+.052],[[0,h-.981,z-.092],[.018,h-.858+peak*.58,z-.018],
+            [0,h-.89+peak,z+.047],[-.009,h-.904+peak*.34,z+.088],[0,h-.997,z+.108]],[back,wing],.032*scale);
+        }
+        if((fire||earth)&&i%2===1){
+          for(const side of [-1,1]){
+            const warm=fire?0xf66f42:0xbb8357;
+            dragonTaper(body,[[side*.046,h-.888,z-.009,.004],[side*.056,h-.844,z+.024,.011],
+              [side*.037,h-.808,z+.050,.003]],[back,warm],6).userData.noShadow=true;
+            part(body,"shard",warm,[side*.053,h-.844,z+.030],[.010,.019,.018],[.58,0,side*.18],true).userData.noShadow=true;
+          }
         }
       }
       if(time){
         const halo=new T.Mesh(geometry.ring,material(0xffc46d,true,.72));
         halo.scale.set(.32,.32,.44);
-        halo.position.set(0,hy+.37,hz);halo.rotation.x=Math.PI/2;
-        g.add(halo);rig.halo=halo;
+        halo.position.set(0,.37,.02);halo.rotation.x=Math.PI/2;
+        head.add(halo);rig.halo=halo;
         for(const side of [-1,1])part(head,"diamond",0xf3c781,[side*.044,.255,.009],[.028,.072,.035],[0,0,side*.22],true);
         for(let i=0;i<7;i++){
           const a=i*Math.PI*2/7;
           part(halo,"diamond",0xffce86,[Math.cos(a),Math.sin(a),0],[.12,.16,.15],[0,0,a],true);
         }
       }
-      g.scale.setScalar(data.scale);
+      root.scale.setScalar(data.scale);
+    }
+    function magma(g,rig,attachLeg,data){
+      const rock=mutedTint(data?.tint??0x412c34),trim=pigment(rock,true),hot=data?.hot??0xff5b24,light=data?.glow??0xffc06e;
+      const coreColor=new T.Color(hot).convertSRGBToLinear(),surfaceColor=new T.Color(light).convertSRGBToLinear();
+      const fluid=new T.MeshStandardMaterial({color:coreColor.clone().multiplyScalar(.38),emissive:coreColor,emissiveIntensity:.84,roughness:.47});
+      const time=rig.moltenTime={value:0};
+      fluid.onBeforeCompile=shader=>{
+        shader.uniforms.moltenTime=time;shader.uniforms.moltenCore={value:coreColor};shader.uniforms.moltenRim={value:surfaceColor};
+        shader.vertexShader="varying vec3 vLava;\n"+shader.vertexShader.replace("#include <begin_vertex>","#include <begin_vertex>\nvLava=position;");
+        shader.fragmentShader="varying vec3 vLava;uniform vec3 moltenCore,moltenRim;uniform float moltenTime;\n"+
+          shader.fragmentShader.replace("#include <emissivemap_fragment>",`#include <emissivemap_fragment>
+            float twist = sin(vLava.x*19. + vLava.y*12. + vLava.z*8. + moltenTime*1.7);
+            float currents = .5 + .5*sin(vLava.y*23. - vLava.z*17. + twist*1.63 - moltenTime*3.2);
+            float crack = smoothstep(.68,.98,currents);
+            totalEmissiveRadiance *= .42 + .35*currents;
+            totalEmissiveRadiance += mix(moltenCore*.12,moltenRim*.57,crack);`);
+      };
+      const body=hinge(g,0,1.17,0);rig.body=body;
+      rig.moltenMaterial=fluid;rig.embers=[];
+      const core=taper(body,[[0,-.52,.02,.19,.26],[0,-.29,.03,.24,.35],[0,-.02,0,.31,.43],
+        [0,.23,.02,.32,.43],[0,.41,.025,.24,.34],[0,.49,0,.168,.23]],[hot,light],18,[1,0,0]);
+      core.material=fluid;core.userData.ownMaterial=true;core.name="Núcleo de lava";
+      for(let row=0;row<3;row++)for(let i=0;i<6;i++){
+        const a=i*Math.PI/3+(row%2)*.32,y=-.30+row*.26;
+        const width=row===0?.31:.43,depth=row===0?.23:.30;
+        part(body,"shard",i%3===0?trim:rock,[Math.sin(a)*width,y,Math.cos(a)*depth],
+          [.218+(i%2)*.034,.19+(row%2)*.032,.094],[.12-Math.sin(a)*.18,a,.29+Math.cos(a)*.27]);
+      }
+      const head=hinge(g,0,1.72,-.04);rig.head=head;
+      const skull=taper(head,[[0,-.186,.015,.149],[0,-.12,-.024,.215],[0,.039,.012,.263],
+        [0,.193,.055,.202],[0,.254,.09,.118]],[rock,trim],16,[1,0,0]);
+      skull.name="Máscara de rocha vulcânica";
+      part(head,"chamfer",0x291e2a,[0,-.048,-.211],[.37,.17,.124],[.02,0,0]);
+      for(const side of [-1,1]){
+        part(head,"oval",light,[side*.102,.005,-.293],[.071,.025,.023],[0,0,side*-.26],true);
+        const crest=[[side*.142,.126,.032,.10],[side*.188,.236,.066,.091],
+          [side*.276,.343,.13,.051],[side*.311,.401,.167,.008]];
+        taper(head,crest,[rock,trim],7,[0,0,1]);
+        const arm=hinge(g,side*.46,1.44,.003);arm.userData.side=side;rig.arms.push(arm);
+        const shoulder=taper(arm,[[0,.15,.022,.139],[side*.045,-.045,.029,.19],
+          [side*.132,-.218,.037,.158],[side*.152,-.329,.019,.106]],[hot,light],11);
+        shoulder.material=fluid;
+        for(let i=0;i<3;i++)part(arm,"shard",i===1?trim:rock,[side*(.09+i*.05),.07-i*.127,-.049],[.22,.149,.171],
+          [.13,side*.25,-side*.21]);
+        const fist=hinge(arm,side*.142,-.305,.024);arm.userData.lower=fist;
+        const stream=taper(fist,[[0,.065,.002,.111],[side*.04,-.07,-.006,.123],[side*.052,-.238,-.057,.141],
+          [side*.044,-.332,-.081,.112]],[hot,light],12);
+        stream.material=fluid;
+        part(fist,"chamfer",rock,[side*.045,-.235,-.016],[.247,.21,.246],[.18,0,side*.13]);
+        for(const knuckle of [-1,0,1])part(fist,"shard",trim,[side*.046+knuckle*.077,-.334,-.131],
+          [.055,.071,.058],[.20,.12,knuckle*.16]);
+        const leg=attachLeg(g,rig,side*.26,.056,.71,.72,.25,material(rock),material(trim),side>0?Math.PI:0)||rig.legs.at(-1);
+        part(leg,"shard",rock,[0,-.09,-.039],[.20,.157,.18],[.14,0,side*.21]);
+        const shin=leg.userData.lower;
+        part(shin,"shard",hot,[0,-.13,-.105],[.034,.13,.034],[.15,0,side*.18],true);
+        part(shin,"shard",trim,[0,-.25,-.073],[.136,.087,.127],[.25,0,0]);
+      }
+      for(let i=0;i<11;i++){
+        const spark=part(body,"shard",i%3?hot:light,[0,0,0],[.032,.044,.032],[0,0,0],true,.68);
+        spark.userData.noShadow=true;rig.embers.push(spark);
+      }
+    }
+    function ghost(g,rig,data){
+      const mist=new T.ShaderMaterial({
+        uniforms:{tint:{value:new T.Color(data.tint)},light:{value:new T.Color(data.glow)},time:{value:0},charge:{value:0}},
+        vertexShader:`varying vec3 eyeNormal,viewDir,local;uniform float time;
+          void main(){vec3 p=position;local=p;p.x+=sin(p.y*8.+time*3.)*.027;p.z+=cos(p.x*9.+p.y*6.-time*2.5)*.025;
+            vec4 view=modelViewMatrix*vec4(p,1.);eyeNormal=normalMatrix*normal;viewDir=-view.xyz;gl_Position=projectionMatrix*view;}`,
+        fragmentShader:`varying vec3 eyeNormal,viewDir,local;uniform vec3 tint,light;uniform float time,charge;
+          void main(){float rim=pow(1.-abs(dot(normalize(eyeNormal),normalize(viewDir))),1.9);
+            float strand=.57+.43*sin(local.y*14.+sin(local.x*12.-time*2.2)*1.45+time*3.);
+            float alpha=.16+.55*rim+.10*strand+charge*.12;
+            gl_FragColor=vec4(mix(tint*.64,light,.24+.50*rim+.13*strand)+light*.75*rim,alpha);}`,
+        side:T.DoubleSide,transparent:true,depthWrite:false
+      });
+      const body=hinge(g,0,.67,.02);rig.body=body;rig.ghostMist=mist;rig.embers=[];
+      const shroud=(parent,points,rings)=>{
+        const node=taper(parent,points,[data.tint,data.glow],rings,[0,0,1]);
+        node.material=mist;node.userData.noShadow=true;
+        return node;
+      };
+      const hull=shroud(body,[[0,-.57,.32,.045],[.071,-.37,.23,.14,.10],[0,-.17,.088,.21,.18],
+        [0,.10,.02,.30,.21],[0,.32,.05,.40,.235],[0,.46,.064,.31,.20],[0,.52,.045,.17,.121]],21);
+      hull.userData.ownMaterial=true;hull.name="Manto espectral translúcido";
+      const head=hinge(body,0,.51,-.071);rig.head=head;
+      globalThis.QuimiCraftSpectral?.halo(T,body,data.glow,[0,.36,-.16],1.46,1.64,.35);
+      shroud(head,[[0,-.13,0,.10],[0,-.065,-.04,.162],[0,.11,-.04,.215],[0,.25,.011,.177],
+        [0,.34,.12,.091],[0,.38,.205,.022]],18);
+      part(head,"oval",0x223444,[0,.078,-.174],[.147,.106,.038],[.12,0,.0],false,.65);
+      for(const side of [-1,1]){
+        part(head,"oval",data.glow,[side*.073,.098,-.211],[.040,.021,.020],[0,0,side*.23],true);
+        const arm=hinge(body,side*.245,.296,.055);arm.userData.side=side;rig.arms.push(arm);
+        shroud(arm,[[0,.045,.00,.134],[side*.12,-.042,-.013,.121],[side*.22,-.207,.033,.101],
+          [side*.27,-.34,.072,.075]],12);
+        const wrist=hinge(arm,side*.25,-.29,.061);arm.userData.lower=wrist;
+        shroud(wrist,[[0,.035,.009,.079],[side*.029,-.069,-.034,.090],[side*.060,-.217,-.134,.057],
+          [side*.064,-.264,-.176,.028]],11);
+        const tendril=hinge(body,side*.20,-.151,.17);rig.tails.push(tendril);
+        shroud(tendril,[[0,.056,0,.104],[side*.073,-.103,.102,.078],
+          [side*.031,-.304,.16,.054],[side*.13,-.414,.31,.006]],9);
+        for(let i=0;i<2;i++)link(wrist,data.glow,[side*.026,-.13,-.068-i*.044],[side*.074,-.245,-.154-i*.023],.012,.52,true);
+      }
+      for(let i=0;i<12;i++){
+        const mote=part(body,"diamond",data.glow,[0,0,0],[.020,.033,.020],[0,0,0],true,.52);
+        mote.userData.noShadow=true;rig.embers.push(mote);
+      }
+    }
+    function crab(g,rig,data){
+      const shell=data.tint,trim=data.glow,shadow=pigment(shell,false);
+      rig.body=hinge(g,0,0,0);rig.claws=[];
+      contour(rig.body,[[-.37,.253,.16,.10],[-.26,.275,.33,.155],[-.07,.29,.393,.206],
+        [.17,.24,.364,.173],[.34,.204,.233,.108],[.40,.19,.099,.055]],[shell,trim],"speckle",22,torsoShape);
+      for(const side of [-1,1]){
+        const stalk=[side*.116,.394,-.361];
+        taper(rig.body,[[side*.111,.332,-.289,.037],[...stalk,.032]],[shadow,shell],8);
+        part(rig.body,"oval",0x242938,stalk,[.036,.035,.038]);
+        for(let i=0;i<4;i++){
+          const leg=hinge(g,side*(.30-i*.022),.23,-.21+i*.157);
+          leg.userData.side=side;leg.userData.phase=(i%2)*Math.PI;
+          const knee=[side*(.24-i*.020),.087,-.092+i*.058],feet=[side*(.32-i*.022),-.21,-.104+i*.105];
+          taper(leg,[[0,0,0,.057],[...knee,.041],[...feet,.013]],[shell,trim],8);
+          rig.legs.push(leg);
+          part(rig.body,"shard",trim,[side*(.214-i*.025),.416-i*.027,-.17+i*.132],[.078,.050,.076],[.15,side*.21,i*.42]);
+        }
+        const arm=hinge(g,side*.205,.235,-.23);arm.userData.side=side;rig.arms.push(arm);
+        taper(arm,[[0,0,0,.071],[side*.148,.022,-.102,.082],[side*.239,.06,-.253,.073]],[shell,shadow],9);
+        const claw=hinge(arm,side*.235,.08,-.278);
+        part(claw,"oval",shell,[0,0,-.062],[.153,.113,.173],[.13,side*.10,0]);
+        taper(claw,[[side*.110,.010,-.074,.064],[side*.156,.023,-.218,.059],
+          [side*.084,.030,-.316,.020],[side*.013,.031,-.344,.004]],[shell,trim],8);
+        const finger=hinge(claw,-side*.08,.01,-.115);finger.userData.side=side;rig.claws.push(finger);
+        taper(finger,[[0,0,0,.054],[-side*.027,.008,-.114,.042],[side*.021,.019,-.199,.003]],
+          [shell,trim],8);
+      }
+    }
+    function armadillo(g,rig){
+      const coat=0x53443e,bone=0xb49e87,edge=0x827265,skin=0x73574e;
+      const body=hinge(g,0,0,0);rig.body=body;
+      const profile=sculptSections([[-.655,.437,.160,.17],[-.56,.448,.258,.25],[-.37,.46,.355,.344],
+        [-.17,.479,.389,.392],[.080,.475,.399,.409],[.31,.46,.382,.361],[.52,.425,.298,.266],
+        [.67,.415,.161,.159],[.737,.392,.054,.077]]);
+      contour(body,profile,[coat,skin],"",38,torsoShape).name="Carapaça abobadada";
+      function surface(z,angle,rise=0){
+        const index=Math.max(1,profile.findIndex(row=>row[0]>=z)),a=profile[index-1],b=profile[index];
+        const t=(z-a[0])/(b[0]-a[0]),row=a.map((v,k)=>T.MathUtils.lerp(v,b[k],t));
+        row[2]+=rise;row[3]+=rise;
+        return torsoShape(row,angle);
+      }
+      const tiles=[],tones=[],faces=[],plate=new T.Color(coat),ridge=new T.Color(bone),tint=new T.Color();
+      function scale(z,a,dz,da,light,stagger){
+        const corners=[[z-dz,a-da*.68,.007],[z,a-da,.017],[z+dz,a-da*.55,.010],
+          [z+dz*.92,a+da*.58,.010],[z,a+da,.016],[z-dz,a+da*.66,.008],[z+dz*stagger,a,.033]];
+        const base=tiles.length/3;
+        for(const [i,[at,arc,height]] of corners.entries()){
+          tiles.push(...surface(at,arc,height));
+          tint.copy(plate).lerp(ridge,light*(i===6?.87:i===1||i===4?.56:.39));
+          tones.push(tint.r,tint.g,tint.b);
+        }
+        for(let i=0;i<6;i++)faces.push(base+6,base+i,base+(i+1)%6);
+      }
+      for(let band=0;band<7;band++){
+        const z=-.24+band*.084;
+        const ring=Array.from({length:19},(_,i)=>[...surface(z,(i-9)*.21,.013),.027,.028]);
+        taper(body,ring,[edge,bone],7,[0,0,1]).name="Faixa do casco";
+        for(let i=0;i<23;i++)scale(z,-1.88+i*.171,.035,.085,.44+(i+band)%3*.14,.39);
+      }
+      for(const [from,count] of [[-.59,8],[.343,9]])for(let row=0;row<count;row++){
+        const z=from+row*.040;
+        for(let i=0;i<25;i++)scale(z,-1.90+(i+.4*(row%2))*.155,.019,.075,.49+(i+row*3)%4*.12,.14);
+      }
+      const armour=new T.BufferGeometry();
+      armour.setAttribute("position",new T.Float32BufferAttribute(tiles,3));
+      armour.setAttribute("color",new T.Float32BufferAttribute(tones,3));
+      armour.setIndex(faces);armour.computeVertexNormals();
+      const scutes=new T.Mesh(armour,skinMaterial);
+      scutes.userData.ownGeometry=true;scutes.name="Escamas do casco";body.add(scutes);
+      const head=hinge(g,0,.398,-.535);rig.head=head;
+      const snout=sculptSections([[-.546,-.268,.034,.029],[-.481,-.244,.060,.059],[-.353,-.158,.084,.087],
+        [-.207,-.074,.123,.133],[-.061,.004,.153,.137],[.083,.011,.16,.158],[.176,.016,.127,.129]]);
+      contour(head,snout,[coat,skin],"speckle",24,torsoShape).name="Focinho comprido";
+      part(head,"oval",0x9b7168,[0,-.265,-.532],[.041,.030,.035],[.40,0,0]);
+      for(const side of [-1,1]){
+        const eye=hinge(head,side*.118,-.011,-.203);eye.userData.entityEye=true;
+        part(eye,"oval",edge,[0,0,0],[.027,.023,.029]);
+        part(eye,"oval",0x221a19,[side*.010,.001,-.010],[.021,.019,.024]);
+        part(eye,"oval",0xbbae97,[side*.018,.007,-.025],[.005,.005,.005]);
+        taper(head,[[side*.074,.093,.036,.061,.046],[side*.104,.186,.046,.079,.050],
+          [side*.151,.286,.074,.057,.039],[side*.188,.327,.105,.008,.011]],[coat,edge],10,[0,0,1]);
+        fanFin(head,[side*.101,.167,-.001],[[side*.097,.232,.005],[side*.166,.308,.068],
+          [side*.181,.237,.061],[side*.141,.174,.021]],[0x78574b,0xa98875],.017);
+        for(let i=0;i<9;i++)part(head,"oval",i%3?edge:bone,[side*(.132-i*.008),.045-i*.021,-.103-i*.040],
+          [.015,.011,.012],[0,side*.41,.17]);
+        for(const front of [true,false]){
+          const leg=hinge(g,side*(front?.214:.237),front?.324:.306,front?-.385:.443);
+          leg.userData.phase=(side===1)===front?0:Math.PI;rig.legs.push(leg);
+          taper(leg,[[0,.078,.023,.112],[side*.018,-.04,.037,.096],[side*.018,-.139,.012,.061]],[coat,skin],10);
+          const knee=hinge(leg,side*.018,-.121,.019);leg.userData.lower=knee;
+          taper(knee,[[0,.025,.014,.067],[side*.010,-.058,-.018,.062],[side*.017,-.155,-.055,.062]],[coat,edge],9);
+          part(knee,"oval",coat,[0,-.153,-.072],[.078,.041,.071]);
+          for(let toe=-1;toe<=1;toe++)taper(knee,[[toe*.038,-.155,-.061,.023],[toe*.048,-.171,-.114,.019],
+            [toe*.056,-.19,-.172+Math.abs(toe)*.025,.002]],[edge,bone],6,[0,1,0]);
+        }
+      }
+      const points=[[0,.381,.626],[.014,.399,.762],[.066,.394,.927],[.145,.363,1.057],
+        [.233,.298,1.148],[.336,.225,1.196],[.438,.145,1.183],[.508,.083,1.117],[.539,.051,1.021]];
+      let parent=g;
+      for(let i=0;i<points.length-1;i++){
+        const start=points[i],last=points[i-1],end=points[i+1].map((v,k)=>v-start[k]),r=.073-i*.0074;
+        const tail=hinge(parent,...(last?start.map((v,k)=>v-last[k]):start));
+        tail.userData.sway=.58;rig.tails.push(tail);parent=tail;
+        const mid=end.map(n=>n*.47);
+        taper(tail,[[0,0,0,r],[...mid,r*1.12],[...end,Math.max(.003,r-.006)]],[coat,edge],11,[0,1,0],
+          (c,a,row)=>{if(row===1)c.multiplyScalar(.85+.24*Math.sin(a*3)**2);}).name="Anel da cauda";
+        if(i>0)part(tail,"oval",skin,[0,0,0],[r,r,r]);
+      }
+    }
+    function serpent(g,rig,data){
+      const {tint:coat,trim,glow:iris}=data,fire=!!data.fire;
+      const boneCount=fire?17:11,length=fire?3.65:2.23,first=fire?-.64:-.47,step=length/(boneCount-1),belly=fire?0xc99348:pigment(trim,true);
+      const height=z=>fire?.19+.94*Math.exp(-(((z-first)/.48)**2))+.025*Math.cos(z*5):.103+.166*Math.exp(-(((z-first)/.34)**2));
+      const pathX=z=>fire?.50*Math.sin((z-first)*4.38)*T.MathUtils.smoothstep(z-first,.20,1.39)*(1-.36*(z-first)/length):0;
+      const count=fire?28:14;
+      const knots=Array.from({length:count},(_,i)=>{
+        const t=i/(count-1),z=first+t*length;
+        const width=fire?(.192+.059*Math.sin(t*Math.PI))*((1-t)**.48)+.009:
+          t<.28?.123+Math.sin(t*Math.PI/.28)*.032:.127*(1-t)**.72+.008;
+        return [pathX(z),height(z),z,i===count-1?.003:width,i===count-1?.003:width*1.14];
+      });
+      const bronze=new T.Color(coat),bright=new T.Color(trim),scutes=new T.Color(belly);
+      const body=dragonCurve(g,knots,[coat,trim],fire?60:36,fire?[0,1,0]:[1,0,0],(color,a,row)=>{
+        const underside=Math.cos(a)<-.24;
+        if(fire){
+          const t=Math.abs(Math.cos(a*16+row*.66))**7,spine=Math.sin(row*.18+a*Math.PI);
+          if(underside)color.copy(scutes).multiplyScalar(row%3===0?.79:1.06);
+          else color.copy(bronze).lerp(bright,T.MathUtils.smoothstep(spine,-.28,.91)*.62+t*.21).multiplyScalar(.78+t*.38);
+          return;
+        }
+        if(underside)color.lerp(new T.Color(belly),.56).multiplyScalar(row%4===0?.79:1);
+        else{
+          const rowOffset=row%2?Math.PI*.5:0;
+          color.multiplyScalar(.82+.24*Math.cos(a*13+rowOffset)**4);
+          color.lerp(new T.Color(pigment(coat,false)),.22*Math.max(0,Math.sin(row*.59+Math.cos(a*2)*1.15))**2);
+        }
+      });
+      const positions=body.geometry.getAttribute("position"),indices=[],weights=[],bones=[];
+      for(let i=0;i<positions.count;i++){
+        const row=T.MathUtils.clamp((positions.getZ(i)-first)/step,0,boneCount-1),a=Math.floor(row),t=row-a;
+        indices.push(a,Math.min(a+1,boneCount-1),0,0);weights.push(1-t,t,0,0);
+      }
+      body.geometry.setAttribute("skinIndex",new T.Uint16BufferAttribute(indices,4));
+      body.geometry.setAttribute("skinWeight",new T.Float32BufferAttribute(weights,4));
+      const skin=dragonSkin.clone();skin.skinning=true;
+      const mesh=new T.SkinnedMesh(body.geometry,skin);
+      mesh.name="Corpo serpentino contínuo";mesh.userData.ownMaterial=mesh.userData.ownGeometry=true;
+      mesh.castShadow=mesh.receiveShadow=true;mesh.frustumCulled=false;
+      g.remove(body);g.add(mesh);
+      for(let i=0;i<boneCount;i++){
+        const bone=new T.Bone(),z=first+i*step;
+        bone.position.set(i===0?pathX(z):pathX(z)-pathX(z-step),i===0?height(z):height(z)-height(z-step),i===0?z:step);
+        (i===0?mesh:bones.at(-1)).add(bone);bones.push(bone);
+      }
+      mesh.bind(new T.Skeleton(bones));
+      rig.slither=bones;rig.body=mesh;
+      const head=hinge(bones[0],0,0,.023);rig.head=head;
+      if(fire){head.scale.set(1.42,1.28,1.28);rig.raisedSerpent=true;}
+      contour(head,sculptSections(sculptSections([[-.36,-.009,.048,.039],[-.319,.005,.102,.068],
+        [-.25,.031,.139,.100],[-.15,.035,.155,.121],[-.048,.021,.146,.113],[.044,.003,.106,.092],
+        [.12,-.003,.085,.069]])),[coat,trim],"",40,null,(color,z,a)=>{
+          color.multiplyScalar(.87+.18*Math.sin(z*111+a*13)**4);
+        },aquaticSkin).name="Cabeça e base do pescoço";
+      const jaw=aquaticMouth(head,[0,-.058,-.175],fire?.125:.114,fire?.083:.061,fire?.151:.132,coat,belly,5);
+      rig.jaw=jaw;
+      const tongue=hinge(jaw,0,-.011,-.163);tongue.visible=false;rig.serpentTongue=tongue;
+      dragonCurve(tongue,[[0,0,.03,.013],[0,.001,-.015,.012],[0,.007,-.080,.009],[0,.007,-.126,.006]],
+        [0x9b4365,0xe69ba4],11).name="Língua retrátil";
+      for(const side of [-1,1]){
+        dragonCurve(tongue,[[0,.007,-.113,.006],[side*.013,.009,-.153,.004],
+          [side*.028,.011,-.206,.001]],[0xab4667,0xe9879b],10);
+        const lid=hinge(head,side*.118,.062,-.243);lid.rotation.y=-side*.57;
+        part(lid,"oval",pigment(coat,false),[0,0,0],[.060,.043,.045]);
+        part(lid,"oval",iris,[0,0,-.033],[.048,.032,.025],[0,0,0],true);
+        serpentPupil(lid,[0,0,-.058],.009,.030);
+        part(lid,"oval",0xffeaca,[-.015,.014,-.052],[.007,.008,.006],[0,0,0],true);
+        part(head,"oval",0x28202b,[side*.065,.032,-.331],[.015,.009,.011],[.15,side*.39,0]);
+        if(data.profile.strike.venom||fire)dragonHorn(head,[[side*.095,-.055,-.305,.014],[side*.084,-.111,-.310,.007],
+          [side*.085,fire?-.162:-.131,-.292,.001]],[fire?0xe5b06a:0xdacead,0xffeed3]);
+      }
+    }
+    function venomFauna(g,rig,data){
+      const coat=data.tint,trim=data.trim,shadow=pigment(coat,false),iris=data.glow;
+      if(data.model==="serpent")return serpent(g,rig,data);
+      const body=hinge(g,0,.37,.06);rig.body=body;
+      part(body,"oval",coat,[0,.032,.24],[.252,.220,.318]);
+      part(body,"oval",shadow,[0,.018,-.101],[.183,.145,.218]);
+      for(const side of [-1,1]){
+        dragonCurve(body,[[side*.054,.207,.13,.019],[side*.094,.244,.26,.039],
+          [side*.071,.206,.41,.009]],[shadow,trim],10,[0,1,0]);
+        for(let i=0;i<4;i++)part(body,"oval",iris,[side*(.036+i*.034),.089+(i%2)*.037,-.289+i*.017],
+          [.024-i*.003,.017,.017],[0,0,0],true);
+        for(let i=0;i<4;i++){
+          const z=-.21+i*.099,spread=.145+Math.sin((i+1)*.6)*.10;
+          const leg=hinge(body,side*.115,-.008,z);leg.userData.side=side;leg.userData.phase=(i%2+(side>0?1:0))*Math.PI;
+          rig.legs.push(leg);
+          dragonCurve(leg,[[0,0,0,.049],[side*.13,.049,(i-1.5)*.062,.047],[side*spread,.073,(i-1.5)*.125,.033],
+            [side*(spread+.107),-.142,(i-1.5)*.196,.027],[side*(spread+.225),-.344,(i-1.5)*.24,.007]],
+            [coat,trim],14);
+        }
+        dragonHorn(body,[[side*.091,-.066,-.27,.026],[side*.11,-.12,-.327,.021],
+          [side*.088,-.16,-.351,.003]],[shadow,data.profile.strike.venom?iris:trim]);
+      }
+    }
+    function medusa(g,rig,data){
+      const skin=mutedTint(data.tint),belly=pigment(skin,true),dark=pigment(skin,false);
+      const {trim,glow,aspect}=data,salt=aspect==="salt",obsidian=aspect==="obsidian";
+      const hips=hinge(g,0,.74,.055);rig.serpentTail=hips;
+      const path=[[0,0,.00,.206],[0,-.19,.145,.236],[.028,-.43,.345,.236],[.121,-.56,.62,.220],
+        [.293,-.57,.813,.179],[.50,-.582,.87,.143],[.72,-.61,.785,.104],[.863,-.64,.595,.059],[.86,-.64,.43,.007]];
+      dragonCurve(hips,path,[skin,belly],17,[1,0,0],(c,a,i)=>{
+        const scale=Math.cos(a*12+i*.53)*Math.cos(i*1.48);
+        c.multiplyScalar(.94+scale*.12);
+        if(Math.cos(a)<-.58)c.lerp(new T.Color(belly),.55).multiplyScalar(i%3===0?.83:1.04);
+      },.036).name="Cauda serpentina";
+      dragonCurve(hips,path.map(([x,y,z,r],i)=>[x,y+r*.77,z+.018,r*.18*(i===0?.5:1),r*.27]),
+        [dark,trim],13,[1,0,0]).name="Crista dorsal da cauda";
+      const body=hinge(hips,0,0,0);rig.body=body;
+      dragonCurve(body,[[0,-.114,.025,.189,.195],[0,.066,.017,.178,.202],[0,.25,.002,.142,.170],
+        [0,.414,-.014,.153,.198],[0,.594,.005,.156,.283],[0,.719,.018,.110,.222],[0,.82,.035,.091,.142]],
+        [skin,belly],28,[1,0,0]).name="Tronco da medusa";
+      dragonCurve(body,[[0,.71,.024,.129,.141],[0,.81,.025,.103,.106],[0,.91,.016,.087,.103]],
+        [skin,belly],24,[1,0,0]).name="Pescoço";
+      for(const side of [-1,1])for(let i=0;i<5;i++){
+        const y=.09+i*.111,x=side*(.158-i*.012);
+        taper(body,[[side*.052,y,-.132,.033],[x,y+.017,-.141,.048],
+          [x+side*.044,y+.052,-.087,.014]],[dark,trim],6,[0,0,1]);
+      }
+      const head=hinge(body,0,.971,.011);rig.head=head;rig.snakes=[];
+      dragonCurve(head,[[0,-.197,-.019,.058,.085],[0,-.146,-.048,.116,.145],[0,-.094,-.039,.146,.17],
+        [0,-.022,-.022,.174,.180],[0,.075,.017,.18,.191],[0,.144,.032,.161,.169],
+        [0,.193,.060,.10,.111],[0,.207,.069,.018,.025]],[skin,belly],32,[1,0,0]).name="Rosto";
+      dragonCurve(head,[[0,.011,-.179,.025],[0,-.060,-.220,.035],[0,-.089,-.207,.028]],
+        [belly,skin],18,[1,0,0]).name="Nariz";
+      dragonCurve(head,[[-.053,-.126,-.179,.007],[0,-.133,-.203,.012],[.053,-.126,-.179,.007]],
+        [dark,0x815564],12,[0,1,0]).name="Lábios";
+      const eyes=hinge(head,0,-.023,-.183);eyes.name="Origem do olhar";rig.gazeOrigin=eyes;
+      rig.gazeEyes=[];
+      for(const side of [-1,1]){
+        const mark=hinge(eyes,side*.082,.014,0);
+        part(mark,"oval",dark,[0,0,0],[.059,.030,.022],[0,side*.26,side*.18]);
+        part(mark,"oval",glow,[0,0,-.018],[.038,.024,.014],[0,side*.21,side*.16],true);
+        serpentPupil(mark,[0,0,-.033],.0055,.022,side*.21);
+        part(mark,"oval",0xfff5d5,[-side*.011,.010,-.033],[.003,.004,.004],[0,0,0],true);
+        dragonCurve(head,[[side*.037,.043,-.190,.008],[side*.091,.05,-.186,.013],[side*.143,.032,-.157,.006]],
+          [dark,trim],12,[0,1,0]).name="Sobrancelha";
+        dragonCurve(head,[[side*.127,.016,-.139,.038],[side*.157,-.048,-.129,.032],
+          [side*.118,-.095,-.159,.015]],[belly,skin],15).name="Maçã do rosto";
+        part(head,"oval",skin,[side*.162,-.025,.013],[.045,.072,.033],[.14,side*.21,side*.16]);
+        part(head,"ring",trim,[side*.175,-.077,-.007],[.034,.043,.033],[0,side*.28,0]);
+        const aura=dragonGlow(mark,glow,0,0,-.028,.32,0);
+        aura.visible=false;rig.gazeEyes.push(aura);
+        const arm=hinge(body,side*.231,.654,.018);arm.userData.side=side;rig.arms.push(arm);
+        part(body,"oval",skin,[side*.212,.645,.016],[.116,.112,.113]);
+        dragonCurve(arm,[[0,.038,.01,.095],[side*.022,-.060,0,.111],[side*.039,-.227,.02,.071],
+          [side*.039,-.322,.005,.058]],[skin,belly],20);
+        const lower=hinge(arm,side*.039,-.290,.012);arm.userData.lower=lower;
+        dragonCurve(lower,[[0,.034,0,.066],[side*.012,-.075,-.027,.070],[side*.016,-.235,-.058,.051],
+          [side*.016,-.302,-.098,.049]],[skin,belly],18);
+        for(let i=0;i<4;i++)dragonCurve(lower,[[side*.017+(i-1.5)*.022,-.278,-.092,.015],
+          [side*.024+(i-1.5)*.023,-.333,-.121,.013],[side*.024+(i-1.5)*.025,-.35-(i%2)*.015,-.154,.003]],
+          [skin,belly],9,[0,0,1]);
+        dragonCurve(lower,[[-side*.011,-.257,-.062,.019],[-side*.054,-.285,-.084,.014],
+          [-side*.053,-.31,-.112,.004]],[skin,belly],9).name="Polegar";
+        part(lower,"oval",trim,[side*.012,-.122,-.034],[.075,.092,.081],[.19,0,.08]);
+      }
+      part(head,"oval",dark,[0,.106,.049],[.182,.114,.179]).name="Raiz da cabeleira";
+      for(let i=0;i<15;i++){
+        const a=i*Math.PI*2/15,x=Math.sin(a),z=Math.cos(a),lift=(i%4)*.041;
+        const snake=hinge(head,x*.117,.112+lift*.18,z*.113+.036);rig.snakes.push(snake);
+        const crown=(i%3)!==0,skull=[x*(.203+i%2*.053),crown?.20+lift:-.10-lift*.58,z*.22-.025];
+        const neck=[skull[0]*.82,skull[1]+(crown?.017:.041),skull[2]*.86];
+        const color=i%3?skin:trim;
+        dragonCurve(snake,[[-x*.035,-.027,-z*.035,.044],[x*.071,crown?.117:.041,z*.082,.040],
+          [x*.14,crown?.217+lift:-.023,z*.167,.032],[...neck,.028],[...skull,.035]],
+          [color,belly],14,[0,0,1],(c,a,k)=>c.multiplyScalar(.87+.16*Math.cos(k*1.3+a*4)**2),.025);
+        const face=hinge(snake,...skull);face.rotation.y=Math.atan2(-x,-z);
+        part(face,"oval",color,[0,0,-.019],[.043,.032,.058]);
+        part(face,"oval",belly,[0,-.015,-.028],[.035,.014,.049]);
+        for(const side of [-1,1])part(face,"oval",glow,[side*.029,.010,-.044],[.010,.008,.008],[0,0,0],true);
+        for(const side of [-1,1])link(face,0xba536d,[0,-.011,-.066],[side*.012,-.014,-.093],.003);
+      }
+      if(salt||obsidian)for(const arm of rig.arms)for(let i=0;i<3;i++){
+        const side=arm.userData.side;
+        part(arm,obsidian?"shard":"diamond",i%2?trim:skin,[side*(.006+i*.027),.062-i*.048,-.037],
+          [.082,.097,.091],[.19,side*.21,side*.50]);
+      }
+    }
+    function folkParticles(parent,rig,position,palette,count,kind){
+      const geometry=new T.BufferGeometry();
+      geometry.setAttribute("position",new T.BufferAttribute(new Float32Array(count*3),3).setUsage(T.DynamicDrawUsage));
+      const colors=Float32Array.from(Array.from({length:count},(_,i)=>new T.Color(palette[i%palette.length]).toArray()).flat());
+      geometry.setAttribute("color",new T.BufferAttribute(colors,3));
+      const points=new T.Points(geometry,new T.PointsMaterial({vertexColors:true,size:kind==="spray"?.048:kind==="smoke"?.058:.041,
+        transparent:true,opacity:.76,depthWrite:false,blending:kind==="smoke"?T.NormalBlending:T.AdditiveBlending}));
+      points.position.set(...position);points.frustumCulled=false;
+      points.userData.ownMaterial=points.userData.ownGeometry=true;
+      parent.add(points);(rig.folkParticles??=[]).push({points,kind});
+    }
+    function flameFronds(parent,rig,scale,count,sweep=.28){
+      for(let i=0;i<count;i++){
+        const a=i*2.399,at=hinge(parent,Math.cos(a)*scale*.26,0,Math.sin(a)*scale*.24);
+        const height=scale*(.55+(i%4)*.145),side=Math.sin(a)*scale*.165;
+        const shade=i%3===0?0xffea9a:i%3===1?0xff9a1f:0xf34d14;
+        const flame=dragonCurve(at,[[0,-.013,0,scale*.23],[side*.2,height*.34,scale*sweep*.28,scale*.16],
+          [side,height*.65,scale*sweep*.62,scale*.110],[side*.6,height,scale*sweep,.003]],
+          [shade,0xffd37b],16,[0,0,1]);
+        flame.material=material(shade,true,i%3===0?.84:.64);flame.castShadow=false;
+        flame.userData.noShadow=true;flame.name="Mecha de fogo translúcida";
+        (rig.flames??=[]).push(at);
+      }
+    }
+    function headlessHorse(g,rig){
+      const hide=0x331d25,flank=0x633533,coal=0x221b24,red=0x974822,ember=new T.Color(0xb76034);
+      rig.mule=true;
+      rig.body=contour(g,sculptSections(sculptSections(sculptSections([[-.90,1.24,.087,.14],[-.76,1.20,.211,.24],
+        [-.57,1.19,.304,.35],[-.36,1.148,.349,.372],[-.13,1.065,.305,.349],[.17,1.075,.283,.288],
+        [.41,1.128,.345,.314],[.64,1.105,.314,.278],[.80,1.067,.217,.208],[.89,1.06,.067,.10]]))),[hide,flank],"",50,torsoShape,(color,z,a)=>{
+          color.multiplyScalar(.91+.12*Math.sin(z*68+a*21)*Math.cos(z*91+a*37));
+          if(Math.abs(Math.sin(a))>.65&&z<-.37)color.lerp(new T.Color(flank),.32);
+          color.lerp(ember,T.MathUtils.smoothstep(Math.cos(a),.63,.99)*T.MathUtils.smoothstep(-z,-.30,.78)*.46);
+        },aquaticSkin);
+      rig.body.name="Peito, ventre e garupa";
+      dragonCurve(g,[[0,1.047,-.47,.25,.30],[0,1.207,-.60,.265,.269],[0,1.398,-.737,.212,.226],
+        [0,1.592,-.869,.169,.182],[0,1.748,-1.005,.125,.135]],[hide,flank],43,[1,0,0]).name="Pescoço ligado ao peito";
+      const throat=hinge(g,0,1.721,-.999);
+      part(throat,"oval",coal,[0,-.021,0],[.148,.062,.152]);
+      part(throat,"oval",0xff6c20,[0,.018,0],[.130,.064,.125],[0,0,0],true);
+      flameFronds(throat,rig,.73,13,1.53);
+      flameFronds(hinge(throat,0,.049,.10),rig,.55,8,1.98);
+      folkParticles(throat,rig,[0,.07,.14],[0xffb65c,0xff682a,0xffe0a8],38,"embers");
+      for(let i=0;i<11;i++){
+        const t=i/10,y=1.69-.41*t,z=-.883+.47*t,x=(i%3-1)*.028;
+        dragonCurve(g,[[x,y,z,.043],[x+.026,y-.049,z+.117,.054],
+          [x+.083,y-.15,z+.205,.031],[x+.056,y-.25,z+.268,.004]],[i%3?coal:hide,red],13,[0,0,1]);
+      }
+      for(const side of [-1,1])for(const front of [-1,1]){
+        const x=side*(front>0?.205:.194),z=front*.535,y=front>0?.987:.962;
+        const leg=organicLeg(g,rig,x,y,z,y-.055,front>0?.121:.096,hide,coal,side===front?0:Math.PI,-1,true);
+        leg.upper.userData.gallop=(front>0?1.93:0)+(side>0?.56:0);
+        const root=hinge(leg.upper,-side*.033,.115,.012);
+        dragonCurve(root,[[0,.148,0,.082,.103],[side*.032,.056,.013,.124,.152],
+          [side*.048,-.098,.055,.117,.120],[side*.033,-.261,.029,.052,.060]],[hide,flank],22).name="Músculos da perna";
+        part(leg.foot,"oval",0xb66333,[0,-.031,-.099],[.062,.016,.013]);
+      }
+      const tail=hinge(g,0,1.176,.698);rig.tails.push(tail);
+      for(let i=0;i<9;i++){
+        const s=(i-4)*.021;
+        dragonCurve(tail,[[s,0,0,.035],[s*1.3,-.054,.156,.041],[s*1.43,-.24,.303,.035],
+          [s*.97,-.44,.448,.026],[s*1.43,-.62+(i%3)*.054,.49+(i%3)*.037,.004]],[coal,i%3?red:hide],12);
+      }
+    }
+    function wolfFace(head,rig,skin,light){
+      const deep=new T.Color(0x2a2831),ash=new T.Color(light);
+      contour(head,sculptSections(sculptSections([[-.432,-.085,.042,.035],[-.391,-.081,.091,.053],[-.271,-.043,.121,.098],
+        [-.177,.013,.160,.138],[-.110,.033,.201,.184],[.030,.063,.232,.214],[.155,.048,.188,.176],
+        [.25,.010,.123,.135]])),[skin,light],"",49,torsoShape,(color,z,a)=>{
+        color.lerp(ash,T.MathUtils.smoothstep(-z,.11,.39)*Math.max(0,-Math.cos(a)+.29)*.76);
+        color.lerp(deep,.32*Math.max(0,Math.cos(a))**2);
+      },aquaticSkin).name="Crânio com focinho esculpido";
+      rig.jaw=predatorJaw(head,.211,.22,.266,.181,skin,light);
+      part(head,"chamfer",0x25202a,[0,-.068,-.438],[.142,.088,.062],[.20,0,0]).name="Trufa do lobisomem";
+      part(head,"oval",0x777079,[0,-.037,-.467],[.039,.011,.011]);
+      for(const side of [-1,1]){
+        const at=hinge(head,side*.142,.069,-.193);at.rotation.set(.04,-side*.46,side*.33);at.userData.entityEye=true;
+        part(at,"oval",0x2e2630,[0,0,0],[.052,.028,.031]);
+        part(at,"oval",0xc7d990,[0,-.004,-.024],[.038,.018,.019],[0,0,0],true);
+        part(at,"oval",0x271d28,[0,-.004,-.041],[.014,.018,.005]);
+        dragonCurve(at,[[-.052,.007,-.008,.005],[0,.025,-.020,.015],[.048,.008,-.008,.005]],[skin,light],9);
+        fanFin(head,[side*.155,.171,.057],[[side*.118,.171,.060],[side*.174,.264,.064],[side*.243,.330,.089],
+          [side*.267,.288,.115],[side*.232,.175,.111]],[skin,light],.032,9).name="Orelha lupina";
+        for(let i=0;i<7;i++)dragonCurve(head,[[side*(.147+i*.004),-.135+i*.054,.062,.057],
+          [side*(.236+i*.010),-.149+i*.058,.134,.048],
+          [side*(.272+i*.008),-.242+i*.065,.208,.018],[side*(.264+i*.009),-.287+i*.073,.229,.001]],
+          [skin,i%3===0?light:0x3e3a45],12).name="Juba lateral";
+      }
+      for(let i=-3;i<=3;i++)dragonCurve(head,[[i*.042,.171,.054,.049],[i*.046,.252-i%2*.022,.048,.042],
+        [i*.052,.386-Math.abs(i)*.028,.107,.004]],[skin,i%2?light:0x3e3a45],12).name="Crista de pelo";
+    }
+    function folklore(type,g,rig){
+      if(type==="boitata"){
+        serpent(g,rig,{tint:0xa24619,trim:0xeb9f32,glow:0xffd958,fire:true,profile:{strike:{}}});
+        g.scale.set(1.35,1.12,1.27);
+        const crest=hinge(rig.head,0,.112,.015);
+        flameFronds(crest,rig,.43,9,.61);
+        for(const [i,bone] of rig.slither.entries()){
+          if(i===0||i===2||i>14)continue;
+          const torch=hinge(bone,0,i<5?.16:.19-i*.008,.004);
+          flameFronds(torch,rig,(i<5?.33:.26)*(1-i*.035),i%2?3:4,1.06);
+          if(i%2===0)folkParticles(torch,rig,[0,.04,0],[0xffae43,0xff6222,0xffdf87],9,"embers");
+        }
+        return;
+      }
+      if(type==="headless_mule")return headlessHorse(g,rig);
+      const wolf=type==="werewolf",saci=type==="saci",boto=type==="pink_boto",curupira=type==="curupira";
+      const skin=wolf?0x41404c:saci?0x512e27:boto?0xb47d64:0x693629;
+      const light=wolf?0x887b81:saci?0x85503c:boto?0xe0ad8c:0xbd703f;
+      const cloth=wolf?0x784229:saci?0x983129:boto?0xe6e0d1:0x655431;
+      const body=boto?hinge(g,0,0,0):g;
+      if(boto){
+        rig.human=body;rig.boto=creature("pink_boto");g.add(rig.boto.group);
+        rig.boto.group.position.y=.34;body.visible=false;
+        folkParticles(rig.boto.group,rig,[0,.05,.45],[0xf6aad3,0xb2f4ed],18,"spray");
+      }
+      body.scale.setScalar(wolf?1.12:boto?1:curupira?.89:.77);
+      const broad=wolf?.404:boto?.273:curupira?.303:.204;
+      const woven=new T.Color(cloth),cinder=new T.Color(0x351b23);
+      rig.body=verticalHull(body,[[.675,.025,.14,.101],[.731,.025,.205,.139],[.825,.021,.213,.160],
+        [.947,.017,wolf?.219:.193,.149],[1.070,.011,broad*.83,.164],[1.178,.001,broad*.96,wolf?.235:.175],
+        [1.238,-.013,broad,wolf?.220:.176],[1.309,-.028,broad*.94,.168],
+        [1.387,-.039,broad*.64,.131],[1.446,-.039,.124,.109],[1.526,-.047,.095,.097]],
+        [boto?cloth:skin,light],56,(color,y,a)=>{
+          if(boto)color.lerp(woven,.77+.20*Math.sin(a*3)**2);
+          else if(y<.846)color.lerp(woven,.94);
+          if(wolf||curupira)color.multiplyScalar(.86+.14*Math.sin(y*133+a*23)**2+.047*Math.cos(y*71-a*17));
+          if(curupira&&y>.84)color.lerp(cinder,.28*Math.max(0,-Math.cos(a)));
+          if(boto&&Math.abs(Math.sin(a))<.35&&Math.cos(a)>.85&&y>1.04)color.lerp(woven,.25);
+        });
+      rig.body.name="Torso contínuo e pescoço";
+      const head=hinge(body,0,wolf?1.60:1.622,wolf?-.105:-.039);rig.head=head;
+      if(wolf){wolfFace(head,rig,skin,light);rig.werewolf=true;}
+      else humanFace(head,{skin,light,iris:boto?0x79674a:saci?0x795144:0xffb33a,eyebrow:curupira?0x7c361f:0x33242b,
+        width:curupira?1.06:saci?1.04:1,mood:curupira?"stern":saci?"smile":""});
+      for(const side of [-1,1]){
+        const arm=organicArm(body,rig,side,broad*.90,1.286,-.020,wolf?.84:.608,wolf?.169:curupira?.133:.092,
+          boto?cloth:skin,boto?0xc2c4bd:light,wolf);
+        if(boto){
+          part(arm.lower,"disk",0xe9e5da,[0,-.243,-.02],[.066,.077,.063],[.16,0,0]);
+          part(arm.lower,"oval",0x9c8061,[side*.066,-.237,-.046],[.014,.018,.013]);
+          const lapel=[[side*.083,1.393,-.119],[side*.170,1.295,-.167],[side*.056,1.123,-.16]];
+          fanFin(body,[side*.085,1.238,-.175],lapel,[0xc9c2b7,0xfff5dc],.017,4);
+        }else if(curupira||saci){
+          for(let i=0;i<(curupira?3:1);i++)part(arm.lower,"ring",curupira?0x986637:0x70533c,
+            [0,-.171-i*.022,-.019],[.060,.060,.044],[Math.PI/2,0,0]);
+          if(curupira){
+            const pulses=[[[side*.018,.070,-.054,.009],[side*.035,-.055,-.093,.012],[side*.073,-.173,-.085,.006],[side*.023,-.26,-.060,.003]],
+              [[side*.022,.053,-.035,.009],[side*.035,-.070,-.073,.010],[side*.016,-.16,-.056,.006],[side*.019,-.24,-.062,.002]]];
+            pulses.forEach((points,i)=>emberTrace(i?arm.lower:arm.upper,points));
+            if(side===1){
+              const staff=hinge(arm.hand,.012,-.073,-.018);staff.rotation.z=-.44;
+              dragonCurve(staff,[[0,-.40,0,.020],[0,.102,0,.020],[0,.60,.009,.019],
+                [0,.92,.010,.016]],[0x72452c,0x946c3a],12).name="Haste do Curupira";
+              fanFin(staff,[0,.92,.010],[[-.065,.928,.014],[-.057,1.041,.017],[0,1.170,.020],
+                [.063,1.033,.022],[.055,.943,.01]],[0x605e57,0xada494],.028,9).name="Ponta de pedra";
+              for(let i=0;i<5;i++)part(staff,"ring",0xb48a50,[0,.87+i*.014,.011],[.029,.026,.022],[Math.PI/2,0,0]);
+            }
+          }
+        }else if(wolf){
+          for(let i=0;i<3;i++)dragonCurve(arm.upper,[[side*.049,.059-i*.051,.044,.056],
+            [side*.117,-.018-i*.047,.08,.049],[side*.133,-.110-i*.051,.087,.003]],
+            [skin,light],12);
+        }
+        if(!saci||side>0){
+          const leg=organicLeg(body,rig,saci?0:side*(wolf?.160:.126),.758,.026,.743,wolf?.131:curupira?.105:.084,
+            boto?cloth:skin,boto?0xd4c7ac:light,side>0?Math.PI:0,curupira?1:-1);
+          if(boto)part(leg.foot,"oval",0xc5b6a1,[0,-.013,-.08],[.091,.052,.127],[.10,0,0]);
+          if(wolf){
+            leg.upper.userData.stance=side*.25;
+            dragonCurve(leg.upper,[[0,.046,.017,.128,.133],[side*.018,-.061,.011,.145,.137],
+              [side*.009,-.201,-.031,.127,.125],[0,-.333,-.020,.084,.086]],[0x5c3529,cloth],22).name="Calça de tecido rasgado";
+            for(let j=0;j<5;j++){
+              const at=j*Math.PI*.4;
+              dragonCurve(leg.upper,[[Math.cos(at)*.088,-.281,Math.sin(at)*.072,.048],
+                [Math.cos(at)*.112,-.344,Math.sin(at)*.092,.028],[Math.cos(at)*.084,-.391+(j%2)*.016,Math.sin(at)*.097,.003]],
+                [cloth,0x9f6443],8);
+            }
+            for(let j=-2;j<=2;j++)dragonHorn(leg.foot,[[j*.041,-.021,-.192,.016],[j*.044,-.039,-.222,.011],
+              [j*.047,-.061,-.238,.002]],[0xb0a8a2,0xe0d2bd]);
+          }else if(curupira)emberTrace(leg.lower,[[0,.031,-.040,.007],[side*.027,-.063,-.071,.010],
+            [side*.052,-.169,-.045,.009],[side*.011,-.302,-.035,.002]]);
+        }
+      }
+      if(curupira||saci){
+        const leaves=curupira?22:13;
+        for(let i=0;i<leaves;i++){
+          const a=i*Math.PI*2/leaves,theLeaf=hinge(body,Math.sin(a)*.190,.834,Math.cos(a)*.145);
+          theLeaf.rotation.y=a;
+          const length=curupira?.28+.12*(i%5)/4:.10+i%4*.041;
+          const tint=curupira?i%3?0x665b3a:0x8a7848:i%3?0xab2b25:0x832326;
+          fanFin(theLeaf,[0,.037,-.027],[[-.062,-.022,0],[-.067,-length*.61,.036],[.018,-length,.047],
+            [.062,-length*.71,.038],[.069,-.025,0]],[cloth,tint],.021,7).name=curupira?"Fibras do saiote":"Tecido vermelho";
+          if(curupira)dragonCurve(theLeaf,[[0,.021,-.016,.007],[0,-length*.49,.034,.006],[0,-length*.89,.053,.002]],
+            [0x8f9e4b,0xbbbf68],8);
+        }
+      }
+      if(curupira){
+        part(head,"oval",0x77311d,[0,.101,.065],[.183,.147,.166],[.08,0,0]);
+        const crown=hinge(head,0,.173,.047);crown.rotation.x=.29;crown.rotation.z=.13;
+        flameFronds(crown,rig,.59,15,.95);
+        flameFronds(hinge(crown,-.066,.12,.11),rig,.40,7,1.32);
+        folkParticles(crown,rig,[0,.05,0],[0xff6929,0xffb561,0xffd366],35,"embers");
+        for(const side of [-1,1]){
+          fanFin(head,[side*.147,-.011,.035],[[side*.16,.020,.022],[side*.255,.124,.059],
+            [side*.219,.027,.056],[side*.182,-.062,.035]],[skin,light],.026,9).name="Orelha pontuda";
+          emberTrace(body,[[side*.039,1.226,-.179,.007],[side*.115,1.219,-.177,.012],[side*.231,1.275,-.108,.010],
+            [side*.275,1.299,-.066,.006],[side*.244,1.336,-.049,.003]]);
+          emberTrace(body,[[side*.202,1.127,-.112,.008],[side*.155,1.069,-.158,.012],
+            [side*.103,.977,-.123,.008],[side*.160,.910,-.083,.003]]);
+        }
+        for(let i=0;i<11;i++){
+          const x=(i-5)*.032;
+          part(body,"oval",i%2?0x9a7347:0x694623,[x,1.313+Math.abs(x)**1.25*.39,-.177+Math.abs(x)*.46],[.023,.028,.021]);
+        }
+        part(body,"shard",0xc7b584,[0,1.253,-.193],[.032,.076,.024],[.19,0,-.22]);
+      }else if(saci){
+        for(let i=0;i<10;i++){
+          const a=i*2.399;
+          part(head,"oval",i%3?0x2f2529:0x48302a,[Math.sin(a)*.151,.057-(i%3)*.030,.075+Math.cos(a)*.094],[.035,.042,.031]);
+        }
+        verticalHull(head,[[.087,.042,.152,.142],[.113,.037,.185,.173],[.159,.051,.184,.161],
+          [.221,.067,.174,.158],[.272,.092,.156,.143],[.305,.119,.094,.102],[.316,.140,.031,.039]],
+          [0x962b29,0xea4d32],39,(color,y,a)=>color.multiplyScalar(.88+.16*Math.sin(y*76+a*6)**2)).name="Gorro vermelho costurado";
+        dragonCurve(head,[[-.044,.234,.146,.088,.088],[-.139,.247,.214,.089,.066],[-.217,.200,.314,.068,.054],
+          [-.256,.124,.378,.042,.034],[-.231,.055,.420,.018,.022],[-.198,.051,.441,.002,.005]],
+          [0xab272c,0xe74c35],26).name="Ponta caída do gorro";
+        dragonCurve(head,[[-.165,.111,.074,.012],[-.134,.140,-.076,.015],[0,.164,-.133,.015],
+          [.132,.139,-.091,.014],[.166,.099,.063,.010]],[0xb0312e,0xf75940],13).name="Borda dobrada do gorro";
+        const pipe=hinge(head,.058,-.111,-.148);
+        dragonCurve(pipe,[[0,0,0,.009],[.076,-.020,-.077,.008],[.111,-.029,-.119,.010]],[0x4c2d22,0x8b6042],10);
+        verticalHull(pipe,[
+          [-.054,-.116,.022,.023],[-.040,-.121,.031,.029],[-.010,-.120,.036,.033],[.003,-.120,.030,.028]
+        ],[0x6e4c31,0x9d7143],22).position.x=.115;
+        part(pipe,"oval",0x352a2b,[.115,.005,-.120],[.023,.006,.024]);
+        folkParticles(pipe,rig,[.114,.017,-.120],[0xd4c7b5,0xaab5ad],12,"smoke");
+        rig.saciVortex=saciVortex(body);
+        folkParticles(body,rig,[0,.26,0],[0xccd8bd,0xb1d2c8,0xf0dbba],30,"whirl");
+      }else if(boto){
+        const hat=hinge(head,0,.146,.044);hat.rotation.z=-.082;
+        verticalHull(hat,[[0,0,.225,.199],[.024,0,.251,.213],[.050,0,.225,.190],
+          [.061,0,.154,.136],[.087,.010,.151,.127],[.147,.020,.119,.109],[.176,.027,.050,.060]],
+          [0xe3d6ad,0xfff1cc],34).name="Chapéu de aba e copa";
+        part(hat,"ring",0x978163,[0,.075,.007],[.159,.138,.136],[Math.PI*.5,0,0]);
+        for(let i=0;i<4;i++)part(body,"oval",0xb29c77,[.013,1.119-i*.073,-.154],[.017,.019,.016]);
+      }else{
+        verticalHull(body,[[.747,.021,.180,.100],[.787,.019,.215,.159],[.825,.021,.216,.166],
+          [.855,.018,.193,.158]],[0x563226,cloth],30).name="Cintura da calça";
+        for(const side of [-1,1])for(let i=0;i<5;i++)dragonCurve(body,[
+          [side*.052,1.46-i*.053,-.103,.058],[side*(.103+i*.017),1.38-i*.055,-.158,.063],
+          [side*(.143+i*.019),1.22-i*.045,-.197,.009]],[skin,i%2?light:0x524754],11);
+        folkParticles(body,rig,[0,.087,.015],[0x9c83ae,0xafbbc8],16,"dust");
+      }
+    }
+    function emberTrace(parent,path){
+      const ember=dragonCurve(parent,path,[0xff791d,0xf6b458],9);
+      ember.material=material(0xe97528,true,.78);ember.userData.noShadow=true;
+      ember.name="Traço de brasa";
+      return ember;
+    }
+    function saciVortex(body){
+      const wind=hinge(body,0,.043,.019);wind.name="Redemoinho em espiral";wind.visible=false;
+      for(let i=0;i<4;i++){
+        const knots=Array.from({length:14},(_,j)=>{
+          const t=j/13,a=t*7.8+i*Math.PI*.5,y=.80*t,r=.055+.32*t;
+          return [Math.cos(a)*r,y,Math.sin(a)*r,.007+.036*Math.sin(t*Math.PI)];
+        });
+        const ribbon=dragonCurve(wind,knots,[0x6d8586,0xb0bbb2],11,[0,0,1]);
+        ribbon.material=material(i%2?0x96a49a:0x677c7d,true,i%2?.35:.49);
+        ribbon.userData.noShadow=true;
+      }
+      return wind;
+    }
+
+    function screamer(g,rig,form){
+      const {petal,light,leaf,bud,shape}=form,green=pigment(leaf,false);
+      const leaves=shape>1?9:shape<.90?5:7,petals=shape>1?5:shape<.90?8:6;
+      for(let i=0;i<leaves;i++){
+        const a=i*Math.PI*2/leaves,branch=hinge(g,0,.11,0);
+        branch.rotation.y=a;
+        for(let k=0;k<3;k++)part(branch,k===2&&shape<.9?"shard":"oval",k===2?leaf:green,[0,k*.11,.23+k*.12],
+          [.12/shape,.052,.33-k*.057],[-.25-k*.28,0,0]);
+      }
+      link(g,green,[0,.08,0],[0,.91*shape,-.062],.115);
+      const head=hinge(g,0,shape,-.07);head.rotation.x=.44;rig.bud=head;
+      part(head,"oval",bud,[0,0,0],[.289,.278*shape,.279]);
+      const throat=part(head,"oval",0x1c1526,[0,0,-.253],[.163,.019,.061]);
+      rig.throat=throat;rig.petals=[];
+      for(let i=0;i<petals;i++){
+        const at=hinge(head,0,0,-.208);at.rotation.z=i*2*Math.PI/petals;
+        const lobe=hinge(at,0,.13,0);lobe.rotation.x=.76;rig.petals.push(lobe);
+        part(lobe,"oval",i%2?pigment(petal,false):petal,[0,.068,-.036],[.12,.225*shape,.081],[-.32,0,0]);
+        part(lobe,"oval",light,[0,.126,-.066],[.026,.103,.013],[-.39,0,0]);
+      }
+    }
+
+    function folkloreEffects(rig,now,stride,enabled){
+      const time=now*.001;
+      if(rig.saciVortex){
+        const power=Math.max(rig.whirlPower||0,stride*.83);
+        rig.saciVortex.visible=enabled&&power>.14;
+        rig.saciVortex.rotation.y=time*(7+power*7);
+        rig.saciVortex.scale.set(.61+power*.53,.57+power*.49,.61+power*.53);
+      }
+      for(const {points,kind} of rig.folkParticles??[]){
+        points.visible=enabled&&(kind!=="dust"||stride>.18);
+        if(!points.visible)continue;
+        const attr=points.geometry.getAttribute("position"),wind=kind==="whirl",spray=kind==="spray",smoke=kind==="smoke";
+        points.material.opacity=wind?.28+stride*.58:spray?.57:smoke?.36:.76;
+        for(let i=0;i<attr.count;i++){
+          const life=(time*(wind?.58:.66+i%4*.11)+i*.618)%1,angle=i*2.399+time*(wind?4.4:1.05);
+          const pulse=.19*Math.sin(life*Math.PI),radius=wind?.31+life*.44+stride*.25:spray?.115+life*.18:smoke?.009+life*.083:.043+life*.26;
+          attr.setXYZ(i,Math.cos(angle)*radius,wind?life*1.12:spray?pulse:smoke?life*.32:kind==="dust"?pulse*1.8:life*.68,
+            Math.sin(angle)*radius+life*(spray?.62:smoke?.063:stride*.22));
+        }
+        attr.needsUpdate=true;
+      }
+    }
+    function ambientEffects(rig,now,charge,release,motion,stride=0){
+      const t=now*.001,power=Math.max(charge,release);
+      for(const [i,joint] of (rig.slither??[]).entries()){
+        const raised=rig.raisedSerpent,travel=raised&&i<3?.42:1;
+        joint.rotation.y=Math.sin(t*(3.5+stride*2.6)-i*.88)*(.059+stride*.13)*motion*(1-power*.44)*travel;
+        joint.rotation.x=i===0?-charge*.16+release*.11:Math.sin(t*3.55-i)*.016*stride*motion;
+      }
+      if(rig.slither){
+        rig.head.rotation.x=-charge*.16+release*.07;
+        const cycle=(t+stride*.26)%2.05;
+        const flick=Math.max(0,1-Math.abs(cycle-.55)*6.7,1-Math.abs(cycle-.80)*8.4)*(1-power);
+        rig.serpentTongue.visible=flick>.055;
+        rig.serpentTongue.position.z=-.074-flick*.091;
+        rig.serpentTongue.scale.z=.055+.96*flick;
+        rig.serpentTongue.rotation.x=Math.sin(t*24)*.062*flick;
+        if(rig.serpentTongue.visible)rig.jaw.rotation.x=Math.min(rig.jaw.rotation.x,-.052-.045*flick);
+      }
+      if(rig.moltenMaterial){
+        rig.moltenTime.value=t;rig.moltenMaterial.emissiveIntensity=.77+Math.sin(t*5)*.11*motion+power*.47;
+      }
+      if(rig.ghostMist){
+        rig.ghostMist.uniforms.time.value=t;rig.ghostMist.uniforms.charge.value=power;
+        rig.body.position.y=.67+Math.sin(t*3)*.065*motion;
+      }
+      for(const [i,mote] of (rig.embers??[]).entries()){
+        const u=(t*(.49+i%3*.11)+i*.618)%1,a=i*2.399+t*.82;
+        const r=(.22+u*.29)*(rig.ghostMist?1.09:.77)+power*.12;
+        const scale=(.018+i%4*.008)*Math.sin(u*Math.PI);
+        mote.position.set(Math.cos(a)*r,-.39+u*1.33,Math.sin(a)*r);
+        mote.scale.set(scale,scale*1.48,scale);
+      }
+      for(const claw of rig.claws??[])claw.rotation.y=claw.userData.side*(.16+charge*.56-release*.18);
+      if(rig.gazeOrigin){
+        rig.serpentTail.rotation.y=Math.sin(t*(2.4+stride*2))*(.11+stride*.16)*motion;
+        rig.body.rotation.z=Math.sin(t*3.8)*stride*.046*motion;
+        for(const [i,snake] of rig.snakes.entries()){
+          snake.rotation.x=Math.sin(t*5+i*.92)*(.16+power*.10)*motion;
+          snake.rotation.y=Math.cos(t*4+i*.88)*.20*motion;
+          snake.rotation.z=Math.sin(t*4+i*.87)*.17*motion;
+        }
+        for(const eye of rig.gazeEyes){
+          eye.visible=power>.03;eye.material.uniforms.strength.value=.87*power**1.5;
+          eye.scale.setScalar(.24+power*.27);
+        }
+      }
     }
     function regionalThreat(id,g,rig){
       if(id==="cave_shade"){
@@ -1473,22 +4077,16 @@ globalThis.QuimiCraftWildlife=(()=>{
           part(tail,"shard",0xb5f5db,[side*.17,.045,.076],[.147,.293,.103],[.19,side*.22,side*.79],true,.82);
           part(tail,"diamond",0x50cbe4,[side*.23,-.10,.187],[.071,.232,.08],[.39,.1,side*.43],true,.74);
         }
-      }else{
-        const bog=id==="bog_revenant";
+      }else if(id==="basalt_husk"){
         for(const side of [-1,1]){
-          if(bog){
-            part(g,"shard",0x5c724b,[side*.43,1.71,.04],[.245,.174,.248],[0,side*.36,0]);
-            for(let i=0;i<3;i++)part(g,"spike",i%2?0xa1a858:0x558c58,[side*(.34+i*.085),1.86-i*.024,.08+i*.047],
-              [.065,.226-i*.035,.065],[.33,side*.1,-side*.4]);
-          }else{
-            part(g,"shard",0x3e373d,[side*.43,1.72,-.025],[.242,.232,.256],[0,side*.46,side*.29]);
-            for(let i=0;i<3;i++)part(g,"diamond",i%2?0xff9c55:0xda6037,[side*(.32+i*.062),1.48+i*.103,-.307],
-              [.036,.113,.028],[.11,0,side*.38],true);
-          }
+          part(g,"shard",0x3e373d,[side*.43,1.72,-.025],[.242,.232,.256],[0,side*.46,side*.29]);
+          for(let i=0;i<3;i++)part(g,"diamond",i%2?0xff9c55:0xda6037,[side*(.32+i*.062),1.48+i*.103,-.307],
+            [.036,.113,.028],[.11,0,side*.38],true);
         }
       }
     }
-    return {fish,creature,refine,scorpion,regional,regionalThreat,cowCoat,deer,dragon,livingTree,siteWarden,shared:geometry};
+    return {fish,creature,refine,scorpion,regional,regionalThreat,cowCoat,deer,owl,dragon,livingTree,siteWarden,
+      magma,ghost,crab,armadillo,medusa,venomFauna,folklore,screamer,folkloreEffects,ambientEffects,geode,shared:geometry};
   }
   return {create};
 })();
