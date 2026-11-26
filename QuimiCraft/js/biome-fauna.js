@@ -2,7 +2,12 @@
 "use strict";
 
 globalThis.QuimiCraftBiomeFauna=(()=>{
-  const strike=(kind,damage,range,windup,cooldown,effect="")=>({kind,damage,range,windup,cooldown,effect});
+  const strike=(kind,damage,range,windup,cooldown,effect="")=>({
+    kind,damage,range,
+    windup:kind==="gaze"?Math.max(.85,windup*.78):Math.max(.18,Number((windup*.58).toFixed(2))),
+    cooldown:kind==="gaze"?cooldown:Math.max(.95,Number((cooldown*.68).toFixed(2))),
+    effect
+  });
   function animal(name,shape,coat,trim,pattern,width,height,scale,regions,temperament,hp,walk,run,sense,attack=null){
     return {name,shape,coat,trim,pattern,width,height,scale,regions,profile:{
       temperament,hp,walk,run,sense,roam:regions.length===0?5:shape==="bear"?17:15,strike:attack,loot:attack?[["hide",1,2]]:[]
@@ -18,10 +23,48 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
     const gaze={...strike("gaze",9,7.8,windup,7.8),color:glow,stoneSeconds};
     return monster(name,"medusa",tint,regions,hp,.95,3.18,.61,2.10,gaze,{aspect,glow,trim,loot:[["medusa_tear",1,2],...loot]});
   }
+  const exterminationTools={
+    fracture_hammer:{name:"Martelo de Fratura",color:"#8295a1",detail:"Rompe a placa carbonática da Sentinela de Travertino Fendido. O martelo é reutilizável."},
+    osmotic_salt:{name:"Sachê Osmótico",color:"#e6dec3",consumable:true,detail:"Retira água do Limo de Maré por osmose. Consome um sachê por finalização."},
+    brine_cold_pack:{name:"Bolsa de Gelo Salino",color:"#75c7e2",consumable:true,effect:"vapor",detail:"Resfria a Salamandra de Brasa. Consome uma bolsa por finalização."},
+    copper_ampoule:{name:"Ampola Cúprica",color:"#54c3ad",consumable:true,effect:"vapor",detail:"Neutraliza o micélio do Fungo de Vidro. Consome uma ampola por finalização."},
+    echo_fork:{name:"Diapasão de Ruptura",color:"#c2a4f1",detail:"Desfaz a carapaça do Escavador de Geodo e da variante Ressonante. O diapasão é reutilizável."},
+    sealing_cartridge:{name:"Cartucho de Vedação",color:"#e5ac65",consumable:true,detail:"Veda os poros das tecelãs de Fuligem e da Fornalha. Consome um cartucho por finalização."}
+  };
+  function bird(name,shape,coat,trim,regions,hp,speed,width,height,flying=true,attack=null){
+    return {...animal(name,shape,coat,trim,"",width,height,1,regions,"skittish",hp,.85,speed,9,attack),flying};
+  }
+  const finishFraction=.20;
   const species=Object.freeze({
+    fractured_sentinel:monster("Sentinela de Travertino Fendido","fractured_sentinel",0xb39a78,
+      ["cânion calcário","chapadas ocres","termas minerais"],78,.78,2.65,.70,1.99,strike("slam",17,2.38,.83,2.75),
+      {finisher:"fracture_hammer",composition:"carbonato de cálcio (CaCO₃)",loot:[["sentinel_crust",1,2]]}),
+    tide_ooze:monster("Limo de Maré","tide_ooze",0x627c43,
+      ["manguezal","delta salobro","pântano"],41,.85,3.08,.56,.87,strike("lunge",8,1.76,.47,2.05),
+      {finisher:"osmotic_salt",composition:"água e alginato de sódio",loot:[["tide_mucus",1,2],["SALT",1,2]]}),
+    ember_salamander:monster("Salamandra de Brasa","ember_salamander",0x61403c,
+      ["vulcânico","caldeira vítrea","badlands","deserto"],59,1.2,4.00,.58,.71,strike("lunge",13,2.12,.51,2.36,"fire"),
+      {finisher:"brine_cold_pack",composition:"carbonato básico de cobre (Cu₂CO₃(OH)₂)",loot:[["ember_scale",1,2],["SCORIA",1,2]]}),
+    glass_mycelium:monster("Fungo de Vidro","glass_mycelium",0x546d67,
+      ["floresta","planície florida","bosque lilás","bosque de cristais","cânion calcário"],53,.84,2.79,.64,1.52,strike("shot",9,5.5,.71,2.80,"biological"),
+      {finisher:"copper_ampoule",composition:"micélio luminescente e sílica",loot:[["GLOW_FUNGUS",1,2],["SILICA_SAND",1,2],["glass_myc_field_sample",1,2]]}),
+    echo_burrower:monster("Escavador de Geodo","echo_burrower",0x57596c,
+      ["montanha","cânion calcário","bosque de cristais","prado alpino","termas minerais"],72,1.12,3.67,.66,.91,strike("lunge",14,2.12,.46,2.32),
+      {finisher:"echo_fork",composition:"carapaça de quartzo e ametista",loot:[["AMETHYST",1,2],["crystal_shard",1,2],["geode_carapace",1,2]]}),
+    soot_weaver:monster("Tecelã de Fuligem","soot_weaver",0x38323e,
+      ["vulcânico","caldeira vítrea","badlands","chapadas ocres","pântano"],65,1.08,3.40,.64,.88,strike("shot",12,6.2,.65,2.65,"smoke"),
+      {finisher:"sealing_cartridge",composition:"seda com partículas de carbono e placas de quitina",loot:[["carbon_rod",1,2],["chitin",1,2],["soot_silk",1,2]]}),
+    resonant_burrower:monster("Escavador de Geodo Ressonante","echo_burrower",0x615373,
+      ["montanha","bosque de cristais","cânion calcário","termas minerais"],112,1.20,4.16,.80,1.16,strike("slam",23,2.70,.67,2.55),
+      {finisher:"echo_fork",contractOnly:true,scale:1.25,glow:0xf09fea,composition:"quartzo, ametista e granada",
+        loot:[["AMETHYST",2,3],["GARNET_ORE",1,2],["crystal_shard",2,3],["resonance_nodule",1,1]]}),
+    furnace_weaver:monster("Tecelã da Fornalha","soot_weaver",0x5e413e,
+      ["vulcânico","caldeira vítrea","badlands","pântano"],132,1.29,4.22,.83,1.13,strike("shot",23,8.3,.57,1.94,"fire"),
+      {finisher:"sealing_cartridge",contractOnly:true,scale:1.26,glow:0xfeaf59,composition:"quitina, carbono e cerâmica aluminosa",
+        loot:[["carbon_rod",2,4],["SCORIA",2,3],["chitin",2,3],["furnace_carapace",1,1]]}),
     grass_snake:monster("Serpente da Mata","serpent",0x59764c,["floresta","planície florida","bosque lilás","manguezal"],
       15,1.40,4.1,.38,.50,strike("lunge",5,1.41,.36,1.58),{glow:0xe5cb66,trim:0x99a663,loot:[["hide",1,1]]}),
-    pit_viper:monster("Jararaca","serpent",0x996340,["selva tropical","savana","deserto","cânion calcário","chapadas ocres"],
+    pit_viper:monster("Jararaca","serpent",0x996340,["selva tropical","floresta","pântano"],
       25,1.18,3.9,.42,.64,{...strike("lunge",8,1.65,.51,2.12,"toxicity"),venom:true},
       {glow:0xffd470,trim:0xe4a362,loot:[["venom",1,2],["hide",1,1]]}),
     cave_spider:monster("Aranha de Caverna","spider",0x58403d,["floresta","montanha","bosque de cristais","cânion calcário"],
@@ -32,18 +75,44 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
     cat:animal("Gato","cat",0xc67842,0xf1d1a0,"tabby",.33,.91,.66,[], "calm",14,1.24,4.3,6),
     dog:animal("Cachorro","dog",0x9a663e,0xebd3a1,"saddle",.41,1.10,.82,[], "calm",22,1.36,4.7,7),
     jaguar:animal("Onça-pintada","cat",0xd79a39,0xf1d395,"rosette",.56,1.32,1.08,["selva tropical","pântano","manguezal"], "neutral",47,1.24,6.55,12,strike("lunge",13,2.18,.38,2.1)),
-    tiger:animal("Tigre","cat",0xcb5921,0xf3d0a0,"tiger",.61,1.53,1.23,["floresta de sequoias","selva tropical","bosque de cerejeiras"], "neutral",58,1.22,6.2,12,strike("lunge",16,2.25,.49,2.35)),
+    tiger:animal("Tigre","cat",0xcb5921,0xf3d0a0,"tiger",.61,1.53,1.23,["taiga","bosque de cerejeiras"], "neutral",58,1.22,6.2,12,strike("lunge",16,2.25,.49,2.35)),
     lion:animal("Leão","cat",0xb78346,0xe4ba81,"mane",.60,1.62,1.22,["savana","chapadas ocres","badlands"], "neutral",53,1.16,6.35,11,strike("lunge",15,2.35,.48,2.45)),
     wolf:animal("Lobo","dog",0x677381,0xbfc4c1,"saddle",.47,1.24,1.03,["taiga","floresta","montanha","prado alpino"], "neutral",35,1.25,6.0,13,strike("lunge",10,2.03,.34,1.7)),
     opossum:animal("Saruê","opossum",0x635e62,0xe7dccc,"mask",.30,.70,1,["floresta","selva tropical","manguezal","pântano","bosque lilás"],
       "neutral",19,1.25,4.65,8,strike("lunge",7,1.62,.46,1.85)),
-    anteater:animal("Tamanduá-bandeira","anteater",0x727477,0xc2bcb1,"saddle",.47,1.17,1,["savana","planície","selva tropical","chapadas ocres"],
+    anteater:animal("Tamanduá-bandeira","anteater",0x727477,0xc2bcb1,"saddle",.47,1.17,1,["selva tropical","chapadas ocres"],
       "neutral",46,.99,4.12,10,strike("slam",14,2.02,.65,2.45)),
-    brown_bear:animal("Urso-pardo","bear",0x795039,0xc39269,"shoulder",.72,1.79,1.16,["taiga","montanha","floresta de sequoias"], "neutral",82,.84,4.5,11,strike("slam",19,2.3,.81,2.95)),
-    polar_bear:animal("Urso-polar","bear",0xd5ded8,0xf5ead7,"snow",.75,1.84,1.24,["fiordes glaciais","tundra","campina de aurora"], "neutral",89,.92,4.65,12,strike("slam",20,2.42,.77,2.85)),
-    black_bear:animal("Urso-negro","bear",0x30313a,0x886344,"muzzle",.65,1.61,1.06,["floresta","bosque de cerejeiras","floresta de sequoias"], "neutral",66,.95,4.95,10,strike("slam",14,2.12,.65,2.66)),
+    brown_bear:animal("Urso-pardo","bear",0x795039,0xc39269,"shoulder",.72,1.60,1.16,["taiga","montanha","floresta de sequoias"], "neutral",82,.84,4.5,11,strike("slam",19,2.3,.81,2.95)),
+    polar_bear:animal("Urso-polar","bear",0xd5ded8,0xf5ead7,"snow",.75,1.68,1.24,["tundra","campina de aurora"], "neutral",89,.92,4.65,12,strike("slam",20,2.42,.77,2.85)),
+    black_bear:animal("Urso-negro","bear",0x30313a,0x886344,"muzzle",.65,1.43,1.06,["floresta","bosque de cerejeiras","floresta de sequoias"], "neutral",66,.95,4.95,10,strike("slam",14,2.12,.65,2.66)),
     fennec:animal("Feneco","dog",0xd4a775,0xf5dcaa,"ears",.31,.98,.62,["deserto","salinas","cânion calcário"], "skittish",14,1.4,5.9,8),
     lynx:animal("Lince das Geadas","cat",0xaf8d6b,0xe7cfae,"tufts",.43,1.16,.87,["taiga","campina de aurora","prado alpino"], "skittish",27,1.39,5.6,9),
+    maned_wolf:animal("Lobo-guará","dog",0xb45b31,0xe7c29a,"blacklegs",.40,1.51,1,
+      ["savana","chapadas ocres","planície florida"],"skittish",33,1.20,5.62,10,strike("lunge",8,1.66,.43,2)),
+    hoary_fox:animal("Raposa-do-campo","dog",0x978378,0xd7bf91,"saddle",.29,.69,.66,
+      ["savana","chapadas ocres","planície"],"skittish",18,1.15,4.9,8),
+    elephant:animal("Elefante-africano","elephant",0x797473,0x9a8581,"",1.32,3.57,1,
+      ["savana"],"neutral",146,.85,4.4,13,strike("slam",26,3.25,.82,3.2)),
+    rhinoceros:animal("Rinoceronte-branco","rhinoceros",0x827f75,0xa69c8d,"",.90,1.84,1,
+      ["savana"],"neutral",119,.90,4.68,11,strike("lunge",24,2.7,.64,2.8)),
+    hippopotamus:animal("Hipopótamo","hippopotamus",0x7c646e,0xb18b8f,"",.99,1.68,1,
+      ["pântano","savana"],"neutral",112,.88,4.2,10,strike("lunge",22,2.55,.61,2.8)),
+    golden_lion_tamarin:animal("Mico-leão-dourado","tamarin",0xbb5716,0xe48f38,"",.24,.61,1,
+      ["selva tropical","floresta"],"skittish",15,1.04,4.12,7),
+    green_iguana:animal("Iguana-verde","iguana",0x628044,0xb2ad62,"",.29,.46,1,
+      ["selva tropical","manguezal","pântano"],"skittish",23,1.03,3.4,7),
+    toco_toucan:bird("Tucano-toco","toucan",0x292e37,0xf0e5bf,["selva tropical","pântano","chapadas ocres"],22,3.1,.26,.72),
+    hyacinth_macaw:bird("Arara-azul","macaw",0x2d54a0,0x508dcc,["pântano","savana","selva tropical"],24,3.55,.27,.75),
+    harpy_eagle:bird("Harpia","harpy",0x424750,0xd5d1c1,["selva tropical"],43,4.1,.47,1.09,true,strike("melee",15,1.76,.50,2.1)),
+    jabiru:bird("Tuiuiú","jabiru",0xeee7d5,0x3a3540,["pântano","delta salobro"],32,3.2,.36,1.43),
+    rufous_bellied_thrush:bird("Sabiá-laranjeira","thrush",0x716354,0xbd632f,["floresta","selva tropical","planície florida"],11,2.7,.18,.39),
+    three_banded_armadillo:animal("Tatu-bola","tatu",0x706359,0x997f66,"",.27,.49,1,
+      ["savana","chapadas ocres","badlands"],"skittish",23,.81,2.95,7),
+    pampas_deer:animal("Veado-campeiro","pampas_deer",0xa37545,0xe3c89d,"",.42,1.30,1,
+      ["savana","chapadas ocres","planície florida"],"skittish",31,1.20,5.7,9),
+    greater_rhea:bird("Ema","rhea",0x82796e,0xc2afa0,["savana","chapadas ocres","planície"],38,6.15,.49,1.85,false),
+    coati:animal("Quati","coati",0x88603f,0xd2ba8c,"",.32,.70,1,
+      ["floresta","selva tropical","pântano","chapadas ocres"],"skittish",21,1.18,4.1,8),
     bison:animal("Bisão das Pradarias","bison",0x725144,0x9c783f,"shoulder",.73,1.89,1.12,["planície","planície florida","prado alpino","savana"],"neutral",70,.81,4.1,8,strike("slam",13,2.24,.7,2.8)),
     badger:animal("Texugo-das-Pedras","bear",0x697077,0xcfcdc3,"mask",.41,.86,.60,["bosque lilás","floresta","cânion calcário","termas minerais"],"skittish",19,1.2,3.9,7),
     cave_shade:monster("Sombra de Mina","wisp",0x51467a,[],27,1.21,3.9,.37,1.32,strike("shot",8,7.2,.54,2.4,"electric")),
@@ -78,13 +147,13 @@ globalThis.QuimiCraftBiomeFauna=(()=>{
   const pets=["cat","dog"];
   function ambient(biome){return entries.filter(([,p])=>p.shape!=="fantasy"&&p.regions.includes(biome)).map(([id])=>id)}
   function hostile(biome,underground){
-    const local=entries.filter(([,p])=>p.shape==="fantasy"&&p.regions.includes(biome)).map(([id])=>id);
+    const local=entries.filter(([,p])=>p.shape==="fantasy"&&!p.contractOnly&&p.regions.includes(biome)).map(([id])=>id);
     return underground?["cave_shade","cave_shade","slime","golem","cave_spider",...local]:["wisp","scorpion","slime",...local,...local];
   }
   function gazeProtection(guard,remaining){
     if(guard?.mirrorGuard&&!guard.broken)return "reflect";
     return remaining>0?"stoned":"petrify";
   }
-  return {species,pets,ambient,hostile,gazeProtection};
+  return {species,pets,ambient,hostile,gazeProtection,exterminationTools,finishFraction};
 })();
 

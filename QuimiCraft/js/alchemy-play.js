@@ -234,11 +234,11 @@ globalThis.QuimiCraftAlchemyPlay = (() => {
       const arm=npc.rig.arms[1],lower=arm.userData.lower;
       if(job.action){
         const lift=Math.sin((1-job.action.left/(job.action.kind==="heal"?.8:.42))*Math.PI);
-        arm.rotation.x=-lift*(job.action.kind==="heal"?1.05:1.85);
-        lower.rotation.x=-lift*1.5;
+        arm.rotation.x=lift*(job.action.kind==="heal"?1.15:1.95);
+        lower.rotation.x=lift*1.15;
       }else if(npc.ai.mode==="alchemy-work"){
-        arm.rotation.x=-.48-Math.sin(now*.0037)*.22;
-        lower.rotation.x=-.6;
+        arm.rotation.x=.55+Math.sin(now*.0037)*.20;
+        lower.rotation.x=.65;
       }
     }
     function tick(dt){

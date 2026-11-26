@@ -1,0 +1,394 @@
+/* NOCTIS ECLIPSE — Etapa 4: Ciclo Lunar, Forja/Encantamentos/Alquimia, Fraquezas Ativas, Esconderijo Clássico Aprimorado, Ranking Persistente e Clã */
+
+/* ===================== PÍLULA LUNAR NA TOPBAR & VISÃO GERAL ===================== */
+.lunar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(213, 178, 110, 0.3);
+  background: rgba(12, 14, 24, 0.82);
+  color: #e6dfd5;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lunar-chip:hover {
+  border-color: var(--gothic-gold, #d5b26e);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.lunar-chip .lunar-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--lunar-color, #c8d8f8);
+  box-shadow: 0 0 10px var(--lunar-color, #c8d8f8);
+}
+
+.lunar-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lunar-phase-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 11, 18, 0.65);
+  text-align: left;
+}
+
+.lunar-phase-card.active {
+  border-color: var(--gothic-gold, #d5b26e);
+  background: linear-gradient(140deg, rgba(213, 178, 110, 0.15), rgba(10, 11, 18, 0.85));
+}
+
+.lunar-phase-card h4 {
+  margin: 0 0 2px;
+  font-size: 0.84rem;
+}
+
+.lunar-phase-card small {
+  color: #a9a4b0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.lunar-phase-card .btn,
+.view-header .header-actions .btn {
+  white-space: nowrap;
+  flex: none;
+}
+
+/* ===================== FORJA NEGRA & ENCANTAMENTOS ===================== */
+.forge-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+
+.forge-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.enchant-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  background: rgba(8, 9, 14, 0.82);
+}
+
+.enchant-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.enchant-card {
+  padding: 12px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(9, 10, 17, 0.72);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.enchant-card h4 {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.enchant-card p {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #c2bcc7;
+}
+
+.enchant-cost {
+  font-size: 0.7rem;
+  color: #d5b26e;
+}
+
+.item-enchant-pill {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 3;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.56rem;
+  font-weight: 800;
+  background: rgba(10, 10, 18, 0.9);
+  border: 1px solid currentColor;
+}
+
+/* ===================== FRAQUEZAS E RESISTÊNCIAS EM COMBATE ===================== */
+.combat-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.trait-chip {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 10, 16, 0.78);
+}
+
+.trait-chip.weak {
+  color: #ffd87d;
+  border-color: rgba(235, 190, 92, 0.45);
+}
+
+.trait-chip.resist {
+  color: #9cb2d8;
+  border-color: rgba(130, 158, 212, 0.38);
+}
+
+.trait-chip.unknown {
+  color: #8f8a96;
+}
+
+.combat-lunar-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(213, 178, 110, 0.34);
+  background: rgba(10, 12, 22, 0.8);
+  font-size: 0.68rem;
+  color: #e6dfd5;
+}
+
+.float-dmg.weakness {
+  color: #ffe07c;
+  text-shadow: 0 2px 14px rgba(245, 182, 56, 0.75);
+}
+
+.float-dmg.resisted {
+  color: #98b0da;
+  font-size: 0.95rem;
+}
+
+/* ===================== ESCONDERIJO CLÁSSICO APRIMORADO ===================== */
+.hideout-blueprint-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.blueprint-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 11, 18, 0.72);
+  color: #e7e1da;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, transform 0.18s ease, background 0.2s ease;
+}
+
+.blueprint-pill:hover,
+.blueprint-pill.active {
+  border-color: var(--gothic-gold, #d5b26e);
+  background: linear-gradient(145deg, rgba(213, 178, 110, 0.14), rgba(10, 11, 18, 0.88));
+  transform: translateY(-1px);
+}
+
+.blueprint-pill small {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a49fa9;
+}
+
+.blueprint-pill strong {
+  font-size: 0.82rem;
+}
+
+.blueprint-pill span {
+  font-size: 0.66rem;
+  color: var(--gothic-gold, #d5b26e);
+}
+
+.hideout-hotspot circle {
+  fill: rgba(255, 255, 255, 0.001);
+  stroke: transparent;
+  stroke-width: 5;
+  vector-effect: non-scaling-stroke;
+  transition: 0.22s fill, 0.22s stroke;
+}
+
+.hideout-hotspot-wall polygon,
+.hideout-hotspot-wall path {
+  stroke-dasharray: 7 4;
+}
+
+.hideout-hotspot-gate polygon,
+.hideout-hotspot-gate path {
+  stroke-dasharray: none;
+}
+
+.hideout-hotspot-path path {
+  stroke-dasharray: 10 6;
+}
+
+.hideout-hotspot-wall:hover path,
+.hideout-hotspot-wall:focus path {
+  fill: rgba(154, 182, 226, 0.18);
+  stroke: #9ab8e8;
+}
+
+.hideout-hotspot-gate:hover polygon,
+.hideout-hotspot-gate:focus polygon,
+.hideout-hotspot-gate:hover path,
+.hideout-hotspot-gate:focus path {
+  fill: rgba(232, 186, 98, 0.22);
+  stroke: #f0c878;
+}
+
+.hideout-hotspot-path:hover path,
+.hideout-hotspot-path:focus path {
+  fill: rgba(128, 214, 166, 0.2);
+  stroke: #85dea8;
+}
+
+.hideout-hotspot-sanctum:hover circle,
+.hideout-hotspot-sanctum:focus circle,
+.hideout-hotspot-sanctum:hover polygon,
+.hideout-hotspot-sanctum:focus polygon {
+  fill: rgba(196, 128, 240, 0.22);
+  stroke: #d298fa;
+}
+
+.hideout-lantern-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 63%, rgba(255, 200, 114, 0.26), transparent 9%),
+    radial-gradient(circle at 66% 63%, rgba(255, 200, 114, 0.26), transparent 9%),
+    radial-gradient(circle at 49% 56%, rgba(255, 212, 134, 0.16), transparent 11%),
+    radial-gradient(circle at 84% 21%, var(--lunar-glow, rgba(190, 214, 255, 0.26)), transparent 16%);
+  animation: hideoutLanternPulse 4.6s ease-in-out infinite alternate;
+}
+
+@keyframes hideoutLanternPulse {
+  0% { opacity: 0.72; }
+  100% { opacity: 1; }
+}
+
+.structure-zone-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.06);
+  color: #c2bcc8;
+}
+
+/* ===================== CLÃ BALANCEADO & RANKING PERSISTENTE ===================== */
+.clan-rival-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.clan-rival-card {
+  padding: 12px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(9, 10, 17, 0.68);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.clan-rival-card h4 {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.clan-rival-card .win-prob {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #8bf0a4;
+}
+
+.clan-rival-card .win-prob.mid {
+  color: #f0c975;
+}
+
+.clan-rival-card .win-prob.hard {
+  color: #ff8e9c;
+}
+
+.rank-trend {
+  font-size: 0.68rem;
+  font-weight: 800;
+  margin-left: 6px;
+}
+
+.rank-trend.up { color: #80e69a; }
+.rank-trend.down { color: #ff8494; }
+.rank-trend.flat { color: #8c8894; }
+
+@media (max-width: 1080px) {
+  .hideout-blueprint-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .clan-rival-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .hideout-blueprint-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lunar-phase-grid,
+  .enchant-grid {
+    grid-template-columns: 1fr;
+  }
+}

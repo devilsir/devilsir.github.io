@@ -10,6 +10,7 @@
     ["microorganisms", "Microrganismos"],
     ["substances", "Substâncias"],
     ["reactions", "Reações"],
+    ["hunt_chemistry", "Química de Extermínio"],
     ["experiments", "Experimentos"],
     ["recipes", "Receitas"],
     ["hazards", "Riscos"],
@@ -83,6 +84,7 @@
     const system = options.system;
     const bridge = options.bridge || {};
     const elements = Array.isArray(options.elements) ? options.elements : [];
+    const huntChemistryGuide = bridge.huntChemistryGuide || [];
     const itemName = typeof bridge.itemName === "function" ? bridge.itemName : value => String(value);
     const getEquippedIds = typeof bridge.getEquippedIds === "function" ? bridge.getEquippedIds : () => [];
     const toast = typeof bridge.toast === "function" ? bridge.toast : function () {};
@@ -130,12 +132,14 @@
     function renderNotebookTabs() {
       if (!notebookTabs) return;
       notebookTabs.innerHTML = NOTEBOOK_TABS.map(([id, label]) =>
-        `<button type="button" data-notebook-tab="${id}" class="${id === activeNotebookTab ? "active" : ""}">${label}</button>`
+        `<button type="button" data-notebook-tab="${id}"${id === activeNotebookTab ? ' class="active" aria-current="page"' : ""}>${label}</button>`
       ).join("");
       notebookTabs.querySelectorAll("[data-notebook-tab]").forEach(button => {
         button.addEventListener("click", () => {
           activeNotebookTab = button.dataset.notebookTab;
           renderNotebook();
+          notebookTabs.querySelector('[aria-current="page"]')?.focus();
+          if (notebookContent) notebookContent.scrollTop = 0;
         });
       });
     }
@@ -264,6 +268,39 @@
       `).join("")}</div>`;
     }
 
+    function renderHuntChemistryGuide() {
+      return `<section class="hunt-guide" aria-labelledby="huntGuideTitle">
+        <header>
+          <h3 id="huntGuideTitle">Química de Extermínio</h3>
+          <p>Recolha o material ao finalizar a criatura. Use <kbd>E</kbd> na estação indicada para cada etapa.</p>
+        </header>
+        <div class="hunt-guide-list">
+          ${huntChemistryGuide.map((entry, index) => `<details class="hunt-guide-chain"${index === 0 ? " open" : ""}>
+            <summary>
+              <span class="hunt-guide-creature">${escapeHTML(entry.creature)}</span>
+              <span class="hunt-guide-material">Material da criatura <strong>${escapeHTML(entry.material)}</strong></span>
+              <span class="hunt-guide-product">${escapeHTML(entry.product)}</span>
+            </summary>
+            <div class="hunt-guide-body">
+              ${entry.level ? `<p>Caçada de elite a partir do nível ${entry.level} com Mestre Gael.</p>` : ""}
+              <ol class="hunt-guide-steps">
+                ${entry.steps.map(step => `<li>
+                  <h4>${escapeHTML(step.name)}</h4>
+                  <p class="hunt-guide-station">${escapeHTML(step.station)}</p>
+                  <dl>
+                    <div><dt>Ingredientes</dt><dd>${escapeHTML(step.inputs)}</dd></div>
+                    ${step.fuel ? `<div><dt>Combustível</dt><dd>${escapeHTML(step.fuel)}</dd></div>` : ""}
+                    <div><dt>Produtos</dt><dd>${escapeHTML(step.outputs)}</dd></div>
+                  </dl>
+                </li>`).join("")}
+              </ol>
+              <p class="hunt-guide-use"><strong>${escapeHTML(entry.product)}</strong> ${escapeHTML(entry.use)}</p>
+            </div>
+          </details>`).join("")}
+        </div>
+      </section>`;
+    }
+
     function renderNotebook() {
       if (!notebookContent) return;
       const notebook = system.getNotebook();
@@ -277,6 +314,7 @@
       else if (activeNotebookTab === "elements") notebookContent.innerHTML = renderElementCatalog();
       else if (activeNotebookTab === "samples") notebookContent.innerHTML = renderSamples(samples);
       else if (activeNotebookTab === "water") notebookContent.innerHTML = renderWaterCatalog();
+      else if (activeNotebookTab === "hunt_chemistry") notebookContent.innerHTML = renderHuntChemistryGuide();
       else if (activeNotebookTab === "observations") {
         notebookContent.innerHTML = renderObservations(notebook);
         notebookContent.querySelector("[data-observation-form]")?.addEventListener("submit", event => {

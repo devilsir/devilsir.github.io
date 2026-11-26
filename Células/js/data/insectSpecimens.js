@@ -32,7 +32,7 @@ const tenebrioSections = figure(
 export const insectAnimals = {
   bee: {
     name: 'Abelha operária',
-    samples: ['bee']
+    samples: ['bee', 'beeTubules']
   },
   drosophila: {
     name: 'Mosca-da-fruta adulta',
@@ -55,6 +55,12 @@ export const insectAnimals = {
 };
 
 export const insectTissues = {
+  beeTubules: {
+    name: 'Abelha · Túbulos de Malpighi', short: 'Abelha · Túbulos de Malpighi',
+    animal: 'bee', region: 'tubules', color: '#e6e4ac', radius: 29,
+    structure: 'Túbulos finos do sistema excretor, ligados ao tubo digestivo. No modelo aberto, formam feixes claros junto ao ventrículo.',
+    recognition: 'Procure perfis tubulares estreitos, cada um com um lúmen cercado por células epiteliais.'
+  },
   flyMidgut: {
     name: 'Mosca-da-fruta · Intestino médio', short: 'Mosca · Intestino',
     animal: 'drosophila', region: 'gut', color: '#dba77e', radius: 66,

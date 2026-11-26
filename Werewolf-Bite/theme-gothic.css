@@ -1,0 +1,803 @@
+/* WEREWOLF BITE — Etapa 1: Identidade Visual Gótica, Tipografia, Molduras Temáticas por Facção, Ícones SVG e Swatches */
+
+:root {
+  --font-display: "Cinzel", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gothic-gold: #d5b26e;
+  --gothic-gold-soft: rgba(213, 178, 110, 0.34);
+  --gothic-line: rgba(213, 178, 110, 0.16);
+  --gothic-line-strong: rgba(213, 178, 110, 0.38);
+  --faction-metal: #9eb7dc;
+  --faction-glow: rgba(79, 131, 209, 0.24);
+  --faction-bg-tint: rgba(22, 34, 58, 0.42);
+  --faction-panel-top: rgba(22, 26, 40, 0.94);
+  --faction-panel-bot: rgba(9, 11, 18, 0.96);
+  --faction-ornament: rgba(168, 198, 239, 0.42);
+  --noise-svg: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+body[data-faction="moonborn"] {
+  --accent: #4f83d1;
+  --accent2: #b4d1f8;
+  --faction-metal: #b5c9e4;
+  --faction-glow: rgba(79, 131, 209, 0.28);
+  --faction-bg-tint: rgba(20, 34, 58, 0.46);
+  --faction-panel-top: rgba(20, 25, 39, 0.94);
+  --faction-panel-bot: rgba(8, 10, 16, 0.97);
+  --faction-ornament: rgba(178, 208, 248, 0.44);
+  --gothic-line: rgba(154, 186, 232, 0.18);
+  --gothic-line-strong: rgba(178, 208, 248, 0.45);
+}
+
+body[data-faction="bloodbound"] {
+  --accent: #ba2339;
+  --accent2: #ff8295;
+  --faction-metal: #d9a76a;
+  --faction-glow: rgba(186, 35, 57, 0.3);
+  --faction-bg-tint: rgba(58, 14, 24, 0.46);
+  --faction-panel-top: rgba(34, 18, 25, 0.94);
+  --faction-panel-bot: rgba(12, 8, 12, 0.97);
+  --faction-ornament: rgba(223, 162, 108, 0.46);
+  --gothic-line: rgba(217, 152, 118, 0.19);
+  --gothic-line-strong: rgba(236, 122, 138, 0.48);
+}
+
+/* Textura atmosférica e vinheta global */
+body {
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(circle at 50% -14%, var(--faction-bg-tint), transparent 46%),
+    radial-gradient(circle at 86% 18%, rgba(124, 22, 42, 0.16), transparent 36%),
+    radial-gradient(circle at 12% 88%, rgba(44, 68, 116, 0.14), transparent 38%),
+    linear-gradient(180deg, #090a11 0%, #07070c 55%, #040508 100%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0.04;
+  background-image: var(--noise-svg);
+  mix-blend-mode: overlay;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 89;
+  background: radial-gradient(circle at 50% 45%, transparent 56%, rgba(0, 0, 0, 0.46) 100%);
+}
+
+/* Tipografia gótica + números tabulares */
+h1, h2, h3, h4,
+.game-logo,
+.boot-title,
+.boot-mark,
+.view-header h2,
+.hero-copy h2,
+.panel h3,
+.modal h2,
+.creator-heading h2,
+.creator-form-header h2,
+.creator-nameplate strong,
+.division-banner h2,
+.combat-top h2,
+.event-content h2,
+.hideout-main-copy h2,
+.region-content h3,
+.rank-number,
+.mini-profile h3,
+.faction-seg strong,
+.creator-section-copy h3 {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.015em;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gothic-gold);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
+}
+
+.resource-chip b,
+.resource-chip small,
+.bar-row b,
+.stat-tile b,
+.stat-value b,
+.derived b,
+.league-points,
+.rank-value b,
+.damage-number,
+.turn-order,
+.combatant-ui .small {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ícones SVG góticos padronizados */
+.wb-icon {
+  width: 1.15em;
+  height: 1.15em;
+  display: inline-block;
+  vertical-align: -0.18em;
+  flex: none;
+  overflow: visible;
+}
+
+.nav-item .wb-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--faction-metal);
+  opacity: 0.78;
+  transition: transform 0.18s ease, color 0.18s ease, opacity 0.18s ease;
+}
+
+.nav-item:hover .wb-icon,
+.nav-item.active .wb-icon {
+  opacity: 1;
+  color: var(--accent2);
+  transform: scale(1.06);
+}
+
+.icon-tile .wb-icon {
+  width: 21px;
+  height: 21px;
+  color: var(--gothic-gold);
+}
+
+.resource-chip .wb-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-btn .wb-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.mobile-nav .wb-icon {
+  width: 19px;
+  height: 19px;
+  margin-bottom: 2px;
+}
+
+.ach-icon .wb-icon,
+.structure-topline .icon .wb-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--gothic-gold);
+}
+
+.hideout-core-icon .wb-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.beast-art .wb-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--faction-metal);
+}
+
+.event-icon .wb-icon {
+  width: 108px;
+  height: 108px;
+  color: var(--gothic-gold);
+  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.78));
+}
+
+.status-icon .wb-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.daily-day .reward .wb-icon {
+  width: 26px;
+  height: 26px;
+  color: var(--gothic-gold);
+}
+
+.faction-icon .wb-icon,
+.creator-faction-seal .wb-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.creator-faction-seal .wb-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.ability-btn strong .wb-icon,
+.pill .wb-icon,
+.stage-action .wb-icon,
+.btn .wb-icon {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+/* Molduras góticas temáticas nos painéis */
+.panel,
+.glass-panel,
+.modal {
+  position: relative;
+  border: 1px solid var(--gothic-line);
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 42%),
+    linear-gradient(155deg, var(--faction-panel-top), var(--faction-panel-bot));
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 246, 224, 0.08),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.panel::before,
+.glass-panel::before,
+.modal::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.032);
+  border-radius: calc(var(--radius, 15px) - 5px);
+  pointer-events: none;
+}
+
+.panel::after,
+.opening-card::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 14%;
+  right: 14%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--faction-ornament), var(--gothic-gold-soft), var(--faction-ornament), transparent);
+  pointer-events: none;
+}
+
+/* Botões com metalurgia sombria */
+.btn {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-small {
+  font-size: 0.7rem;
+  letter-spacing: 0.055em;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 46%);
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 92%, #ff7a8f 12%), color-mix(in srgb, var(--accent) 62%, #09060b));
+  border-color: color-mix(in srgb, var(--accent2) 64%, var(--gothic-gold) 24%);
+  box-shadow:
+    0 10px 26px var(--faction-glow),
+    inset 0 1px rgba(255, 240, 220, 0.25);
+  color: #fdf8f0;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #324a78, #192642);
+  border-color: rgba(154, 188, 240, 0.45);
+  box-shadow: 0 8px 22px rgba(32, 60, 108, 0.28);
+}
+
+.btn-ghost {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  border-color: var(--gothic-line);
+}
+
+.btn-ghost:hover {
+  border-color: var(--gothic-line-strong);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+}
+
+.btn-gold {
+  background: linear-gradient(180deg, #dfb86b, #8b662c);
+  border-color: #f3d796;
+  color: #120d06;
+  box-shadow: 0 8px 24px rgba(200, 161, 92, 0.26);
+}
+
+/* Tela de abertura aprimorada */
+.boot-mark {
+  border: 1px solid var(--gothic-line-strong);
+  background: radial-gradient(circle, rgba(186, 35, 57, 0.2), rgba(7, 8, 13, 0.96));
+  box-shadow: 0 0 65px rgba(186, 35, 57, 0.3), inset 0 0 22px rgba(213, 178, 110, 0.14);
+}
+
+.opening-screen {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(114, 146, 206, 0.18), transparent 36%),
+    radial-gradient(circle at 50% 62%, rgba(164, 24, 48, 0.18), transparent 44%),
+    linear-gradient(180deg, #060811 0%, #0b0c15 55%, #050509 100%);
+}
+
+.opening-card {
+  border: 1px solid rgba(213, 178, 110, 0.34);
+  box-shadow:
+    0 34px 96px rgba(0, 0, 0, 0.72),
+    0 0 60px rgba(186, 35, 57, 0.12),
+    inset 0 1px rgba(255, 241, 212, 0.14);
+}
+
+.opening-crest {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(213, 178, 110, 0.45);
+  background: radial-gradient(circle, rgba(186, 35, 57, 0.26), rgba(8, 9, 14, 0.85) 72%);
+  color: var(--gothic-gold);
+  box-shadow: 0 0 36px rgba(186, 35, 57, 0.26), inset 0 0 18px rgba(213, 178, 110, 0.12);
+}
+
+.opening-crest .wb-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.game-logo span {
+  background: linear-gradient(180deg, #fffaf0 0%, #dfd4be 54%, #a59886 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.85));
+}
+
+.game-logo strong {
+  background: linear-gradient(180deg, #ff5d74 0%, #c61e36 52%, #720b1b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 26px rgba(186, 35, 57, 0.48));
+}
+
+.opening-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px auto 0;
+  max-width: 320px;
+  color: var(--gothic-gold);
+  opacity: 0.72;
+}
+
+.opening-divider::before,
+.opening-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(213, 178, 110, 0.55), transparent);
+}
+
+/* Sidebar e Topbar com acabamento gótico */
+.topbar {
+  background: linear-gradient(180deg, rgba(11, 12, 19, 0.96), rgba(7, 8, 13, 0.92));
+  border-bottom: 1px solid var(--gothic-line);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.34);
+}
+
+.sidebar {
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 36%),
+    linear-gradient(180deg, rgba(16, 17, 26, 0.98), rgba(7, 8, 12, 0.99));
+  border-right: 1px solid var(--gothic-line);
+}
+
+.sidebar-profile {
+  border-bottom: 1px solid var(--gothic-line);
+}
+
+.resource-chip {
+  border-color: var(--gothic-line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(0, 0, 0, 0.25));
+}
+
+.nav-item {
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.nav-item.active {
+  border-color: var(--gothic-line-strong);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 30%, transparent), rgba(255, 255, 255, 0.025));
+  box-shadow: inset 3px 0 0 var(--accent2);
+}
+
+.nav-item .nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: linear-gradient(180deg, #dfb86b, #8b662c);
+  color: #120d06;
+  box-shadow: 0 0 12px rgba(213, 178, 110, 0.38);
+}
+
+.pill {
+  border-color: var(--gothic-line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.22));
+  color: #ece4d6;
+}
+
+.icon-tile {
+  border-color: var(--gothic-line);
+  background: radial-gradient(circle at 30% 20%, rgba(213, 178, 110, 0.14), rgba(10, 11, 17, 0.8));
+}
+
+/* Cartões de item e raridades enriquecidas */
+.item-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--rarity, #777) 68%, rgba(255, 255, 255, 0.12));
+  background:
+    radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--rarity, #777) 18%, transparent), transparent 62%),
+    linear-gradient(160deg, rgba(25, 26, 36, 0.94), rgba(10, 11, 16, 0.96));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.item-card:hover {
+  border-color: var(--rarity, #aaa);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.42),
+    0 0 22px color-mix(in srgb, var(--rarity, #777) 26%, transparent);
+}
+
+.item-card.rarity-legendary,
+.item-card.rarity-mythic,
+.item-card.rarity-cursed {
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.36),
+    inset 0 0 18px color-mix(in srgb, var(--rarity) 18%, transparent);
+}
+
+.item-card.rarity-legendary::before,
+.item-card.rarity-mythic::before,
+.item-card.rarity-cursed::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 42%, color-mix(in srgb, var(--rarity) 24%, white 10%) 50%, transparent 58%);
+  transform: translateX(-65%);
+  animation: wbRaritySheen 5.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wbRaritySheen {
+  0%, 72%, 100% { transform: translateX(-65%); opacity: 0; }
+  82% { opacity: 0.75; }
+  94% { transform: translateX(65%); opacity: 0; }
+}
+
+.equip-slot {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(155deg, rgba(22, 23, 33, 0.85), rgba(9, 10, 15, 0.92));
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.equip-slot:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--rarity, var(--gothic-gold)) 70%, white 10%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.equip-slot[class*="rarity-"] {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--rarity) 62%, transparent);
+  background:
+    radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--rarity) 16%, transparent), transparent 65%),
+    linear-gradient(155deg, rgba(24, 24, 34, 0.92), rgba(10, 11, 16, 0.96));
+}
+
+/* =====================================================================
+   CRIADOR DE PERSONAGEM & ATELIÊ — SWATCHES VISUAIS E GRADE DE MINIATURAS
+   ===================================================================== */
+
+.visual-picker-block {
+  display: grid;
+  gap: 8px;
+}
+
+.visual-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.visual-picker-head label,
+.visual-picker-head .picker-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #b7b1b8;
+}
+
+.visual-picker-value {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+.preset-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+  max-height: 258px;
+  overflow: auto;
+  padding: 2px 4px 4px 2px;
+}
+
+.preset-thumb {
+  position: relative;
+  display: grid;
+  grid-template-rows: 86px auto;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg, rgba(19, 20, 29, 0.92), rgba(8, 9, 14, 0.96));
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.preset-thumb:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent2) 58%, transparent);
+}
+
+.preset-thumb.active {
+  border-color: var(--gothic-gold);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gothic-gold) 65%, transparent),
+    0 10px 24px var(--faction-glow);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 22%, #151621), rgba(9, 10, 15, 0.98));
+}
+
+.preset-thumb-art {
+  position: relative;
+  width: 100%;
+  height: 86px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #07080d;
+}
+
+.preset-thumb-art .portrait-svg,
+.preset-thumb-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: static;
+  animation: none !important;
+  filter: none !important;
+}
+
+.preset-thumb span {
+  font-size: 0.61rem;
+  font-weight: 700;
+  color: #cdc7cf;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preset-thumb.active span {
+  color: #fff4db;
+}
+
+/* Swatches de cor */
+.swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swatch-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  padding: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(8, 9, 14, 0.9);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.swatch-btn:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.52);
+}
+
+.swatch-btn.active {
+  border-color: var(--gothic-gold);
+  box-shadow:
+    0 0 0 2px rgba(213, 178, 110, 0.35),
+    0 0 16px var(--faction-glow);
+  transform: scale(1.12);
+}
+
+.swatch-core {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.22), inset 0 -3px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* Pílulas selecionáveis para brilho dos olhos, marcas, acessórios e origens */
+.choice-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.choice-pill {
+  min-height: 33px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(10, 11, 18, 0.78);
+  color: #b7b1ba;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.choice-pill:hover {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--accent2) 55%, transparent);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.choice-pill.active {
+  color: #fff8eb;
+  border-color: var(--gothic-gold);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 34%, #1a1b28), rgba(14, 15, 22, 0.96));
+  box-shadow: 0 4px 16px var(--faction-glow);
+}
+
+.creator-field-stack {
+  display: grid;
+  gap: 15px;
+}
+
+.studio-visual-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.studio-visual-controls .preset-thumb-grid {
+  max-height: 190px;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
+
+.studio-visual-controls .preset-thumb {
+  grid-template-rows: 70px auto;
+}
+
+.studio-visual-controls .preset-thumb-art {
+  height: 70px;
+}
+
+/* Efeitos de retrato vivo para lobisomens e vampiros */
+.wb-svg-equipment .wb-relic-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wbRelicPulse 2.6s ease-in-out infinite;
+}
+
+.wb-svg-equipment .wb-rarity-aura {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wbRunes 14s linear infinite;
+}
+
+.portrait-stage.bust-focus .wb-preset-canvas {
+  transform: scale(1.52) translateY(15%);
+  transform-origin: 50% 18%;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.portrait-stage .wb-preset-canvas {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-panel {
+  grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.hero-copy {
+  min-width: 0;
+  padding: 20px 20px 20px 0;
+}
+
+.stat-strip {
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+}
+
+.stat-tile b,
+.derived b {
+  white-space: nowrap;
+}
+
+.action-banner {
+  flex-wrap: wrap;
+}
+
+.action-banner > div {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.action-banner .btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+.creator-preview {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+}
+
+/* Melhorias visuais de acessibilidade */
+body.reduced-motion .item-card::before,
+body.reduced-motion .wb-svg-equipment .wb-relic-halo,
+body.reduced-motion .wb-svg-equipment .wb-rarity-aura {
+  animation: none !important;
+}
+
+body.high-contrast .panel,
+body.high-contrast .glass-panel,
+body.high-contrast .modal,
+body.high-contrast .choice-pill,
+body.high-contrast .preset-thumb {
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+@media (max-width: 760px) {
+  .preset-thumb-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .swatch-btn {
+    width: 32px;
+    height: 32px;
+  }
+}

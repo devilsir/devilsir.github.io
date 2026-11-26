@@ -9,21 +9,31 @@
     <meta name="theme-color" content="#0b0b12" />
     <meta
       name="description"
-      content="Werewolf Bite — um RPG de fantasia sombria para navegador sobre Moonborn e Bloodbound."
+      content="Noctis Eclipse — um RPG de fantasia sombria para navegador sobre Moonborn e Bloodbound."
     />
-    <title>Werewolf Bite</title>
+    <title>Noctis Eclipse</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260803-reward-enemy-art-v3" />
-    <link rel="stylesheet" href="character.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=20261126-etapa4-v2" />
+    <link rel="stylesheet" href="character.css?v=20261126-etapa4-v2" />
+    <link rel="stylesheet" href="theme-gothic.css?v=20261126-etapa4-v2" />
+    <link rel="stylesheet" href="combat-cinematic.css?v=20261126-etapa4-v2" />
+    <link rel="stylesheet" href="etapa3-world.css?v=20261126-etapa4-v2" />
+    <link rel="stylesheet" href="etapa4-systems.css?v=20261126-etapa4-v2" />
   </head>
-  <body>
+  <body data-faction="moonborn">
     <noscript
-      ><div class="noscript">Werewolf Bite precisa de JavaScript para funcionar.</div></noscript
+      ><div class="noscript">Noctis Eclipse precisa de JavaScript para funcionar.</div></noscript
     >
 
     <div id="boot" class="boot-screen" aria-live="polite">
-      <div class="boot-mark" aria-hidden="true">WB</div>
-      <div class="boot-title">WEREWOLF BITE</div>
+      <div class="boot-mark" aria-hidden="true">NE</div>
+      <div class="boot-title">NOCTIS ECLIPSE</div>
       <div class="boot-line"><span></span></div>
       <p id="bootText">Despertando o Eclipse Oco…</p>
     </div>
@@ -57,8 +67,12 @@
           <div class="bat b3">◆</div>
         </div>
         <div class="opening-card glass-panel">
+          <div class="opening-crest" data-wb-icon="eclipse" aria-hidden="true"></div>
           <div class="eyebrow">O ECLIPSE OCO COMEÇOU</div>
-          <h1 class="game-logo"><span>WEREWOLF</span><strong>BITE</strong></h1>
+          <h1 class="game-logo"><span>NOCTIS</span><strong>ECLIPSE</strong></h1>
+          <div class="opening-divider" aria-hidden="true">
+            <span data-wb-icon="shards"></span>
+          </div>
           <p class="opening-copy">
             Duas linhagens. Uma noite agonizante. A fronteira ancestral se rompeu,
             e algo mais antigo que as duas facções está se alimentando da guerra.
@@ -67,20 +81,20 @@
             <button type="button" id="newGameBtn" class="btn btn-primary">Novo jogo</button>
             <button type="button" id="continueBtn" class="btn btn-secondary">Continuar</button>
             <button type="button" data-open-modal="settings" class="btn btn-ghost">
-              Settings
+              Configurações
             </button>
             <button type="button" data-open-modal="credits" class="btn btn-ghost">
-              Credits
+              Créditos
             </button>
           </div>
           <div class="opening-footer">
-            <button type="button"
+            <button
+              type="button"
               id="muteBtnOpening"
               class="icon-btn"
               aria-label="Ativar ou desativar áudio"
-            >
-              ♪
-            </button>
+              data-wb-icon="audioOn"
+            ></button>
             <span>Crônica local • salvamento automático ativado</span>
           </div>
         </div>
@@ -102,8 +116,8 @@
                 id="creatorFactionSeal"
                 class="creator-faction-seal"
                 aria-hidden="true"
-                >◒</span
-              >
+                data-wb-icon="moonborn"
+              ></span>
             </div>
             <div class="creator-stage-frame">
               <div
@@ -118,7 +132,7 @@
                   class="stage-action"
                   aria-label="Sortear aparência"
                 >
-                  ✦ Sortear
+                  <span data-wb-icon="dice"></span>Sortear
                 </button>
                 <button
                   type="button"
@@ -126,7 +140,7 @@
                   class="stage-action"
                   aria-pressed="false"
                 >
-                  ◎ Foco no retrato
+                  <span data-wb-icon="focus"></span>Foco no retrato
                 </button>
               </div>
               <div class="creator-nameplate" aria-live="polite">
@@ -151,9 +165,9 @@
               <span class="eyebrow">CRIAÇÃO DE PERSONAGEM</span>
               <h2>Cada cicatriz conta uma guerra</h2>
               <p>
-                Crie um retrato em camadas com silhueta marcante, história
-                ritual e identidade de facção. Cada escolha é salva e pode ser
-                editada depois.
+                Crie um retrato vivo com silhueta marcante, marcas rituais,
+                acessórios e identidade de facção. Cada escolha é salva e pode ser
+                editada depois no Ateliê.
               </p>
             </header>
 
@@ -180,10 +194,10 @@
                   data-value="moonborn"
                   aria-pressed="true"
                 >
-                  <span class="faction-icon" aria-hidden="true">◒</span>
+                  <span class="faction-icon" data-wb-icon="moonborn" aria-hidden="true"></span>
                   <span
                     ><strong>Moonborn</strong
-                    ><small>Instinto • osso • pedra da lua</small></span
+                    ><small>Instinto • osso • prata lunar</small></span
                   >
                 </button>
                 <button
@@ -193,7 +207,7 @@
                   data-value="bloodbound"
                   aria-pressed="false"
                 >
-                  <span class="faction-icon" aria-hidden="true">♦</span>
+                  <span class="faction-icon" data-wb-icon="bloodbound" aria-hidden="true"></span>
                   <span
                     ><strong>Bloodbound</strong
                     ><small>Ritual • veludo • cristal de sangue</small></span
@@ -216,7 +230,7 @@
                 aria-controls="creatorPanelForm"
                 data-creator-tab="form"
               >
-                Form
+                Forma
               </button>
               <button
                 type="button"
@@ -227,7 +241,7 @@
                 aria-controls="creatorPanelFeatures"
                 data-creator-tab="features"
               >
-                Features
+                Traços
               </button>
               <button
                 type="button"
@@ -249,7 +263,7 @@
                 aria-controls="creatorPanelLegacy"
                 data-creator-tab="legacy"
               >
-                Legacy
+                Legado
               </button>
             </div>
 
@@ -264,17 +278,25 @@
                 <span>01</span>
                 <div>
                   <h3>Base visual</h3>
-                  <p>Escolha a arte-base e o tom de pele ou pelagem.</p>
+                  <p>Escolha a arte-base pelas miniaturas e o tom de pele ou pelagem.</p>
                 </div>
               </div>
-              <div class="creator-field-grid">
-                <div class="field">
-                  <label for="portraitSelect">Arte base</label
-                  ><select id="portraitSelect" name="portrait"></select>
+              <div class="creator-field-stack">
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Arte base</span>
+                    <span id="creatorPortraitLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorPortraitThumbs" class="preset-thumb-grid" role="radiogroup" aria-label="Arte base"></div>
+                  <select id="portraitSelect" name="portrait" hidden aria-hidden="true"></select>
                 </div>
-                <div class="field">
-                  <label for="skinSelect">Tom de pele / pelagem</label
-                  ><select id="skinSelect" name="skinColor"></select>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Tom de pele / pelagem</span>
+                    <span id="creatorSkinLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorSkinSwatches" class="swatch-row" role="radiogroup" aria-label="Tom de pele ou pelagem"></div>
+                  <select id="skinSelect" name="skinColor" hidden aria-hidden="true"></select>
                 </div>
               </div>
             </section>
@@ -290,22 +312,42 @@
               <div class="creator-section-copy">
                 <span>02</span>
                 <div>
-                  <h3>Traços</h3>
-                  <p>Defina as cores do olhar e da pelagem.</p>
+                  <h3>Traços e marcas</h3>
+                  <p>Defina pelagem/cabelo, olhar, intensidade do brilho e cicatrizes rituais.</p>
                 </div>
               </div>
-              <div class="creator-field-grid">
-                <div class="field">
-                  <label for="hairColorSelect">Cor do cabelo / pelagem</label
-                  ><select id="hairColorSelect" name="hairColor"></select>
+              <div class="creator-field-stack">
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Cor do cabelo / pelagem</span>
+                    <span id="creatorHairColorLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorHairColorSwatches" class="swatch-row" role="radiogroup" aria-label="Cor do cabelo ou pelagem"></div>
+                  <select id="hairColorSelect" name="hairColor" hidden aria-hidden="true"></select>
                 </div>
-                <div class="field">
-                  <label for="eyeSelect">Cor dos olhos</label
-                  ><select id="eyeSelect" name="eyeColor"></select>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Cor dos olhos</span>
+                    <span id="creatorEyeLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorEyeSwatches" class="swatch-row" role="radiogroup" aria-label="Cor dos olhos"></div>
+                  <select id="eyeSelect" name="eyeColor" hidden aria-hidden="true"></select>
                 </div>
-                <div class="field">
-                  <label for="eyeGlowSelect">Brilho dos olhos</label
-                  ><select id="eyeGlowSelect" name="eyeGlow"></select>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Brilho dos olhos</span>
+                    <span id="creatorEyeGlowLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorEyeGlowPills" class="choice-pills" role="radiogroup" aria-label="Brilho dos olhos"></div>
+                  <select id="eyeGlowSelect" name="eyeGlow" hidden aria-hidden="true"></select>
+                </div>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Marca ritual / cicatriz</span>
+                    <span id="creatorMarkingLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorMarkingPills" class="choice-pills" role="radiogroup" aria-label="Marca ritual"></div>
+                  <select id="markingSelect" name="marking" hidden aria-hidden="true"></select>
                 </div>
               </div>
             </section>
@@ -323,22 +365,34 @@
                 <div>
                   <h3>Indumentária</h3>
                   <p>
-                    Ajuste acabamentos, cor da roupa e relíquias da linhagem.
+                    Ajuste metais, paleta da roupa/capa e relíquias próprias da linhagem.
                   </p>
                 </div>
               </div>
-              <div class="creator-field-grid">
-                <div class="field" data-bloodbound-only hidden>
-                  <label for="accessorySelect">Acessório de família</label
-                  ><select id="accessorySelect" name="accessory"></select>
+              <div class="creator-field-stack">
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Acessório da linhagem</span>
+                    <span id="creatorAccessoryLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorAccessoryPills" class="choice-pills" role="radiogroup" aria-label="Acessório da linhagem"></div>
+                  <select id="accessorySelect" name="accessory" hidden aria-hidden="true"></select>
                 </div>
-                <div class="field">
-                  <label for="metalSelect">Acabamento metálico</label
-                  ><select id="metalSelect" name="metal"></select>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Acabamento metálico</span>
+                    <span id="creatorMetalLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorMetalSwatches" class="swatch-row" role="radiogroup" aria-label="Acabamento metálico"></div>
+                  <select id="metalSelect" name="metal" hidden aria-hidden="true"></select>
                 </div>
-                <div class="field wide">
-                  <label for="accentSelect">Cor da roupa</label
-                  ><select id="accentSelect" name="accent"></select>
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Cor da roupa / capa</span>
+                    <span id="creatorAccentLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorAccentSwatches" class="swatch-row" role="radiogroup" aria-label="Cor da roupa"></div>
+                  <select id="accentSelect" name="accent" hidden aria-hidden="true"></select>
                 </div>
               </div>
             </section>
@@ -356,18 +410,22 @@
                 <div>
                   <h3>Legado</h3>
                   <p>
-                    Escolha o passado e a disciplina que moldam sua crônica.
+                    Escolha o passado e a disciplina de combate que moldam sua crônica.
                   </p>
                 </div>
               </div>
-              <div class="creator-field-grid">
-                <div class="field">
-                  <label for="backgroundSelect">Origem</label
-                  ><select id="backgroundSelect" name="background"></select>
+              <div class="creator-field-stack">
+                <div class="visual-picker-block">
+                  <div class="visual-picker-head">
+                    <span class="picker-label">Origem</span>
+                    <span id="creatorBackgroundLabel" class="visual-picker-value"></span>
+                  </div>
+                  <div id="creatorBackgroundPills" class="choice-pills" role="radiogroup" aria-label="Origem"></div>
+                  <select id="backgroundSelect" name="background" hidden aria-hidden="true"></select>
                 </div>
                 <div class="field">
-                  <label for="specSelect">Especialização</label
-                  ><select id="specSelect" name="specialization"></select>
+                  <label for="specSelect">Especialização</label>
+                  <select id="specSelect" name="specialization"></select>
                 </div>
               </div>
               <div id="specDescription" class="spec-card"></div>
@@ -375,10 +433,10 @@
 
             <div class="creator-actions">
               <button type="button" id="creatorBackBtn" class="btn btn-ghost">
-                Back
+                Voltar
               </button>
               <button type="submit" class="btn btn-primary">
-                Seal the Bloodline
+                Selar a Linhagem
               </button>
             </div>
           </form>
@@ -387,37 +445,39 @@
 
       <section id="game" class="game-screen screen" aria-label="Interface do jogo">
         <header class="topbar">
-          <button type="button"
+          <button
+            type="button"
             id="menuToggle"
             class="icon-btn mobile-only"
             aria-label="Abrir navegação"
-          >
-            ☰
-          </button>
+            data-wb-icon="menu"
+          ></button>
           <div class="brand-mini">
-            <span>WB</span><strong>Werewolf Bite</strong>
+            <span>NE</span><strong>Noctis Eclipse</strong>
           </div>
           <div class="top-resources">
-            <div class="resource-chip health">
-              <span>♥</span><b id="topHealth">0/0</b>
+            <div class="resource-chip health" title="Vida">
+              <span data-wb-icon="health"></span><b id="topHealth">0/0</b>
             </div>
-            <div class="resource-chip energy">
-              <span>⚡</span><b id="topEnergy">0/0</b
+            <div class="resource-chip energy" title="Energia de caçada">
+              <span data-wb-icon="energy"></span><b id="topEnergy">0/0</b
               ><small id="energyTimer"></small>
             </div>
-            <div class="resource-chip gold">
-              <span>◈</span><b id="topGold">0</b>
+            <div class="resource-chip gold" title="Ouro">
+              <span data-wb-icon="gold"></span><b id="topGold">0</b>
             </div>
-            <div class="resource-chip shards">
-              <span>✦</span><b id="topShards">0</b>
+            <div class="resource-chip shards" title="Fragmentos">
+              <span data-wb-icon="shards"></span><b id="topShards">0</b>
             </div>
           </div>
           <div class="top-actions">
-            <button type="button" id="dailyBtn" class="icon-btn" title="Recompensas diárias">
-              ☾
+            <button type="button" id="lunarChipBtn" class="lunar-chip" title="Ciclo Lunar e Rituais">
+              <span class="lunar-dot" aria-hidden="true"></span>
+              <span id="topLunarName">Lua</span>
             </button>
-            <button type="button" id="manualSaveBtn" class="icon-btn" title="Salvar">▣</button>
-            <button type="button" id="muteBtn" class="icon-btn" title="Áudio">♪</button>
+            <button type="button" id="dailyBtn" class="icon-btn" title="Recompensas diárias" data-wb-icon="daily"></button>
+            <button type="button" id="manualSaveBtn" class="icon-btn" title="Salvar crônica" data-wb-icon="save"></button>
+            <button type="button" id="muteBtn" class="icon-btn" title="Áudio" data-wb-icon="audioOn"></button>
           </div>
         </header>
 
@@ -425,49 +485,49 @@
           <div id="sidebarProfile" class="sidebar-profile"></div>
           <nav id="mainNav" class="main-nav" aria-label="Navegação principal">
             <button type="button" data-view="overview" class="nav-item active">
-              <span>⌂</span>Overview
+              <span data-wb-icon="overview"></span>Visão geral
             </button>
             <button type="button" data-view="character" class="nav-item">
-              <span>♟</span>Character
+              <span data-wb-icon="character"></span>Personagem
             </button>
             <button type="button" data-view="hunt" class="nav-item">
-              <span>◒</span>Hunt
+              <span data-wb-icon="hunt"></span>Caçada
             </button>
             <button type="button" data-view="city" class="nav-item">
-              <span>♜</span>City
+              <span data-wb-icon="city"></span>Cidade
             </button>
             <button type="button" data-view="arena" class="nav-item">
-              <span>⚔</span>Arena
+              <span data-wb-icon="arena"></span>Arena
             </button>
             <button type="button" data-view="missions" class="nav-item">
-              <span>◆</span>Missions
+              <span data-wb-icon="missions"></span>Missões
             </button>
             <button type="button" data-view="inventory" class="nav-item">
-              <span>▦</span>Inventory
+              <span data-wb-icon="inventory"></span>Inventário
             </button>
             <button type="button" data-view="merchant" class="nav-item">
-              <span>♧</span>Merchant
+              <span data-wb-icon="merchant"></span>Mercador
             </button>
             <button type="button" data-view="hideout" class="nav-item">
-              <span>⌂</span>Hideout
+              <span data-wb-icon="hideout"></span>Refúgio
             </button>
             <button type="button" data-view="clan" class="nav-item">
-              <span>♛</span>Clan
+              <span data-wb-icon="clan"></span>Clã
             </button>
             <button type="button" data-view="bestiary" class="nav-item">
-              <span>☠</span>Bestiary
+              <span data-wb-icon="bestiary"></span>Bestiário
             </button>
             <button type="button" data-view="achievements" class="nav-item">
-              <span>★</span>Achievements
+              <span data-wb-icon="achievements"></span>Conquistas
             </button>
             <button type="button" data-view="ranking" class="nav-item">
-              <span>▲</span>Ranking
+              <span data-wb-icon="ranking"></span>Ranking
             </button>
             <button type="button" data-view="messages" class="nav-item">
-              <span>✉</span>Messages
+              <span data-wb-icon="messages"></span>Mensagens
             </button>
             <button type="button" data-view="settings" class="nav-item">
-              <span>⚙</span>Settings
+              <span data-wb-icon="settings"></span>Configurações
             </button>
           </nav>
         </aside>
@@ -503,11 +563,16 @@
       hidden
     />
 
-    <script src="js/config.js?v=20260808-customization-trim-v1"></script>
-    <script src="js/data.js?v=20260808-customization-trim-v1"></script>
-    <script src="js/i18n-ptbr.js?v=20260808-customization-trim-v1"></script>
-    <script src="js/portrait-presets.js?v=20260808-customization-trim-v1"></script>
-    <script src="js/character-art.js?v=20260808-customization-trim-v1"></script>
-    <script src="js/app.js?v=20260808-customization-trim-v1"></script>
+    <script src="js/config.js?v=20261126-etapa4-v2"></script>
+    <script src="js/data.js?v=20261126-etapa4-v2"></script>
+    <script src="js/systems-depth.js?v=20261126-etapa4-v2"></script>
+    <script src="js/icons.js?v=20261126-etapa4-v2"></script>
+    <script src="js/i18n-ptbr.js?v=20261126-etapa4-v2"></script>
+    <script src="js/portrait-presets.js?v=20261126-etapa4-v2"></script>
+    <script src="js/character-art.js?v=20261126-etapa4-v2"></script>
+    <script src="js/enemy-art.js?v=20261126-etapa4-v2"></script>
+    <script src="js/battle-scenes.js?v=20261126-etapa4-v2"></script>
+    <script src="js/world-map.js?v=20261126-etapa4-v2"></script>
+    <script src="js/app.js?v=20261126-etapa4-v2"></script>
   </body>
 </html>

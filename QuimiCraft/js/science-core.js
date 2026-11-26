@@ -581,6 +581,16 @@
       repair: [["hide", 2], ["wool", 2]],
       effect: "protege do frio do solo e de descargas elétricas"
     }),
+    refractory_boots: Object.freeze({
+      slot: "feet",
+      abbr: "REFRATÁRIA",
+      armor: 0.08,
+      maxDurability: 385,
+      heatResistance: 0.56,
+      protections: { fire: 0.58 },
+      repair: [["refractory_plate", 1], ["iron", 1]],
+      effect: "o revestimento cerâmico reduz o dano de fogo e lava e ajuda no calor ambiental"
+    }),
     iron_boots: Object.freeze({
       slot: "feet",
       abbr: "FERRO",
@@ -1557,15 +1567,16 @@
       };
     }
 
-    function refillEquipment(id, mode) {
+    function refillEquipment(id, mode, material) {
       const definition = EQUIPMENT_DEFINITIONS[id];
       const condition = ensureEquipment(id);
       if (!definition || !condition) return { ok: false, message: "Equipamento desconhecido." };
       if (mode === "filter") {
         if (!definition.filterCapacity) return { ok: false, message: "Este item não usa filtro." };
-        const cartridge = countItem("filter_cartridge") > 0 ? "filter_cartridge" : "carbon_filter";
-        if (countItem(cartridge) < 1) return { ok: false, message: "É necessário um cartucho ou filtro de carbono." };
-        removeItem(cartridge, 1);
+        const options = ["filter_cartridge", "carbon_filter", "soot_filter"];
+        const cartridge = material ?? options.find(part => countItem(part) > 0);
+        if (!options.includes(cartridge) || countItem(cartridge) < 1 || !removeItem(cartridge, 1))
+          return { ok: false, message: "É necessário um cartucho ou filtro de carbono." };
         condition.filter = definition.filterCapacity;
         emit(true);
         return { ok: true, message: `Filtro de ${itemName(id)} substituído.` };
@@ -1600,6 +1611,20 @@
       state.statistics.repairs += 1;
       emit(true);
       return { ok: true, message: `${itemName(id)} reparado sem perder o item.` };
+    }
+
+    function sharpenPickaxe(id) {
+      const definition = EQUIPMENT_DEFINITIONS[id], condition = definition?.miningSpeed && ensureEquipment(id);
+      if (!condition || condition.durability >= definition.maxDurability)
+        return { ok: false, message: "Coloque uma picareta gasta na barra rápida." };
+      if (!removeItem("quartz_whetstone", 1))
+        return { ok: false, message: "Falta uma Pedra de Afiar de Quartzo." };
+      const restored = Math.min(definition.maxDurability * .25, definition.maxDurability - condition.durability);
+      condition.durability += restored;
+      condition.broken = false;
+      state.statistics.repairs += 1;
+      emit(true);
+      return { ok: true, message: `${itemName(id)} · +${Math.round(restored * 10) / 10} de condição.` };
     }
 
     function registerDiscovery(category, id, data) {
@@ -2387,6 +2412,7 @@
       useOxygen,
       refillEquipment,
       repairEquipment,
+      sharpenPickaxe,
       catalog: CATALOG,
       stations: STATIONS,
       reactions: REACTIONS,

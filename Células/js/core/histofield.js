@@ -1,5 +1,5 @@
 import { random } from './geometry.js';
-import { insectTissues } from '../data/insectSpecimens.js?v=1';
+import { insectTissues } from '../data/insectSpecimens.js?v=2';
 
 // Real end-of-course honeybee microscope photograph (dissected crop, ribbed ventriculus, Malpighian tubules & tracheae!)
 const beeCourseImg = new Image();

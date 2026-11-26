@@ -10,7 +10,7 @@ globalThis.QuimiCraftMobSpawn=(()=>{
     {natural:60,hostile:20,aquatic:52}
   ];
   const emitters={TORCH:13,SPECTRAL:12,VILLAGE_LANTERN:12,FIRE:14,LAVA:14,GLOW_FUNGUS:8,
-    SUNKEN_BEACON:9,LIGHT_CRYSTAL:11,CAMPFIRE:14,ALCHEMY_LANTERN:12};
+    SUNKEN_BEACON:9,LIGHT_CRYSTAL:11,CAMPFIRE:14,ALCHEMY_LANTERN:12,MYCELIUM_LAMP:13};
   const gap=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
   function civilTwilight(day){
     const sun=Math.sin(day*Math.PI*2);

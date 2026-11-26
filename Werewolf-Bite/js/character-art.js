@@ -48,6 +48,20 @@
       "Chain Halo",
       "Reliquary Brooch",
       "Thorn Crown",
+      "Trophy Fangs",
+      "Moonstone Torque",
+      "Bone Charms",
+    ],
+    markings: [
+      "None",
+      "Moon Sigil",
+      "Blood Sigil",
+      "Claw Marks",
+      "Ritual Runes",
+      "Eclipse Cracks",
+      "War Paint",
+      "Silver Brands",
+      "Constellation",
     ],
     metals: [
       "Blackened Silver",
@@ -83,13 +97,49 @@
   var factionAppearance = {
     moonborn: {
       skin: ["Ash", "Umber", "Onyx", "Russet", "Silver", "Sable", "Alabaster"],
-      accessories: ["None"],
+      accessories: [
+        "None",
+        "Trophy Fangs",
+        "Moonstone Torque",
+        "Bone Charms",
+        "Thorn Crown",
+        "Chain Halo",
+        "Raven Feather",
+      ],
+      markings: [
+        "None",
+        "Moon Sigil",
+        "Claw Marks",
+        "War Paint",
+        "Ritual Runes",
+        "Silver Brands",
+        "Eclipse Cracks",
+        "Constellation",
+      ],
       metals: ["Blackened Silver", "Grave Iron", "Moon Silver", "Ancient Gold", "Obsidian"],
       accents: ["Night Blue", "Bone", "Moss", "Violet", "Ash", "Ember", "Teal"]
     },
     bloodbound: {
       skin: ["Ash", "Umber", "Pale", "Onyx", "Russet", "Sable", "Alabaster"],
-      accessories: ["None", "Silver Ear Cuffs", "Blood Crystal Earrings", "Ritual Veil", "Raven Feather", "Chain Halo", "Reliquary Brooch", "Thorn Crown"],
+      accessories: [
+        "None",
+        "Silver Ear Cuffs",
+        "Blood Crystal Earrings",
+        "Ritual Veil",
+        "Raven Feather",
+        "Chain Halo",
+        "Reliquary Brooch",
+        "Thorn Crown",
+      ],
+      markings: [
+        "None",
+        "Blood Sigil",
+        "Ritual Runes",
+        "Eclipse Cracks",
+        "Silver Brands",
+        "Constellation",
+        "Claw Marks",
+      ],
       metals: ["Blackened Silver", "Grave Iron", "Blood Bronze", "Ancient Gold", "Obsidian"],
       accents: ["Crimson", "Bone", "Violet", "Ash", "Ember", "Teal"]
     }
@@ -107,16 +157,14 @@
     moonborn: {
       hair: "feral crown",
       beard: "none",
-      marking: "none",
       outfit: "wanderer",
       cloak: "none",
     },
     bloodbound: {
       hair: "razor crop",
       beard: "none",
-      marking: "none",
       outfit: "wanderer",
-      cloak: "none",
+      cloak: "crimson court",
     },
   };
 
@@ -126,6 +174,7 @@
       eyes: "amber",
       eyeGlow: "radiant",
       hairColor: "obsidian",
+      marking: "none",
       accessory: "none",
       metal: "moon silver",
       accent: "night blue",
@@ -135,8 +184,9 @@
     bloodbound: {
       skin: "pale",
       eyes: "crimson",
-      eyeGlow: "dormant",
+      eyeGlow: "gleaming",
       hairColor: "raven",
+      marking: "none",
       accessory: "none",
       metal: "blood bronze",
       accent: "crimson",
@@ -360,6 +410,8 @@
       eyes: "eyes",
       eyeGlow: "eyeGlow",
       hairColor: "hairColor",
+      marking: "markings",
+      accessory: "accessories",
       metal: "metals",
       accent: "accents",
       background: "backgrounds",
@@ -372,21 +424,6 @@
       result[key] =
         allowed.indexOf(candidate) >= 0 ? candidate : defaults[bloodline][key];
     });
-
-    if (bloodline === "bloodbound") {
-      var allowedAccessories = optionsFor("accessories", bloodline).map(lower);
-      var accessoryCandidate = lower(
-        source.accessory !== undefined
-          ? source.accessory
-          : defaults[bloodline].accessory,
-      );
-      result.accessory =
-        allowedAccessories.indexOf(accessoryCandidate) >= 0
-          ? accessoryCandidate
-          : defaults[bloodline].accessory;
-    } else {
-      result.accessory = "none";
-    }
 
     Object.assign(result, fixedVisual[bloodline]);
     result.portrait = normalizePreset(
@@ -406,6 +443,8 @@
       eyes: "eyes",
       eyeGlow: "eyeGlow",
       hairColor: "hairColor",
+      marking: "markings",
+      accessory: "accessories",
       metal: "metals",
       accent: "accents",
       background: "backgrounds",
@@ -413,10 +452,6 @@
     Object.keys(fields).forEach(function (key) {
       result[key] = lower(U.pick(optionsFor(fields[key], bloodline)));
     });
-    result.accessory =
-      bloodline === "bloodbound"
-        ? lower(U.pick(optionsFor("accessories", bloodline)))
-        : "none";
     var portraitChoices = presetOptions(bloodline);
     result.portrait = portraitChoices.length
       ? normalizePreset(U.pick(portraitChoices).id, bloodline)
@@ -550,21 +585,21 @@
   }
 
   var presetPartProfiles = {
-    moonborn_howlwarden: { fur: ["furDark", "furMid", "furLight"], skin: ["skinDark"], outfit: ["pantsGrad"], bone: ["boneGrad"], eyes: ["eyeGlowGrad"] },
+    moonborn_howlwarden: { eyes: ["eye-grad"] },
     moonborn_moonghost: { fur: ["furDark", "furMid", "furLight"], skin: ["skin", "flesh"], outfit: ["pants"], bone: ["claw"], eyes: ["eyeGrad"] },
-    moonborn_frostfang: { eyes: ["eyeGlow"] },
-    moonborn_eclipsehowl: { eyes: ["eye-grad"] },
-    moonborn_stonefur: { fur: ["furDark", "furMid", "furLight", "chestGrad"], outfit: ["pantsGrad"], eyes: ["eyeGlow"] },
-    moonborn_goldfang: { fur: ["furDark", "furMid", "furLight"], skin: ["skin"], outfit: ["pants"], bone: ["claw"], eyes: ["glow", "subtleGlow"] },
+    moonborn_frostfang: { fur: ["furDark", "furMid", "furLight", "chestGrad"], outfit: ["pantsGrad"], eyes: ["eyeGlow"] },
+    moonborn_eclipsehowl: { fur: ["furDark", "furMid", "furLight"], skin: ["skinDark"], outfit: ["pantsGrad"], bone: ["boneGrad"], eyes: ["eyeGlowGrad"] },
+    moonborn_stonefur: {},
+    moonborn_goldfang: { fur: ["furDark", "furMid", "furLight"], skin: ["skin"], outfit: ["pants"], bone: ["claw"] },
+    moonborn_ironmaw: { fur: ["fur-dark", "fur-mid", "fur-light"], skin: ["skin-dark", "skin-light"], outfit: ["pants-grad"], bone: ["claw-grad"], metal: ["gold"] },
+    moonborn_bloodscratch: { fur: ["fur-base"], outfit: ["pants-base"], eyes: ["eye-glow"] },
+    moonborn_stormpelt: { fur: ["torsoGrad"], outfit: ["pantsGrad"] },
     bloodbound_crimson_moon: { skin: ["skin"], cloak: ["cape-inner", "cape-outer"], outfit: ["vest", "pants"], metal: ["gold"] },
     bloodbound_nocturne_heir: { skin: ["skinGrad"], cloak: ["capeRed", "capeBlack"], outfit: ["vestGrad", "pantsGrad"], metal: ["goldGrad"] },
     bloodbound_crimsonveil: { skin: ["skin-grad"], cloak: ["cape-inner", "cape-dark", "cape-outer"], outfit: ["vest-grad", "suit-grad", "pants-grad"], metal: ["gold-grad"] },
     bloodbound_bloodhalo: { skin: ["skin-grad"], cloak: ["cape-inner", "cape-outer"], outfit: ["vest-grad"], metal: ["gold-grad", "cane-grad"] },
     bloodbound_dark_prince: { skin: ["skinGrad"], cloak: ["capeInner", "capeOuter"], outfit: ["vestGrad"], metal: ["goldGrad"] },
     bloodbound_royal_dusk: { skin: ["skinGrad"], cloak: ["capeOuterGrad", "capeInnerGrad"], outfit: ["vestGrad", "bootGrad"], metal: ["goldGrad", "caneGrad"] },
-    moonborn_ironmaw: { fur: ["fur-dark", "fur-mid", "fur-light"], skin: ["skin-dark"], outfit: ["pants-grad"], bone: ["claw-grad"], metal: ["gold"] },
-    moonborn_bloodscratch: { fur: ["fur-base"], outfit: ["pants-base"], eyes: ["eye-glow"] },
-    moonborn_stormpelt: { fur: ["torsoGrad"], outfit: ["pantsGrad"] },
     bloodbound_mooncourt: { skin: ["skin-grad"], cloak: ["cape-inner"], outfit: ["vest-grad"], metal: ["gold-grad"] },
     bloodbound_nightwing: { skin: ["skin"], hair: ["hair-grad"], cloak: ["cape-grad", "collar-grad"], outfit: ["vest-grad"] },
     bloodbound_velvetfang: { skin: ["skinGrad"], cloak: ["capeOuter", "capeInner", "redGrad"], outfit: ["vestGrad"], metal: ["goldGrad"] },
@@ -848,25 +883,25 @@
 
   /* Refined inline-SVG atelier: semantic leaf tagging, tonal recoloring and fitted vector details. */
   var refinedPresetFit = {
-    moonborn_howlwarden: { x: 256, top: 34, mouth: 182, face: 62, s: 1 },
-    moonborn_moonghost: { x: 256, top: 42, mouth: 178, face: 58, s: 1 },
-    moonborn_frostfang: { x: 256, top: 26, mouth: 198, face: 72, s: 1 },
-    moonborn_eclipsehowl: { x: 256, top: 42, mouth: 176, face: 64, s: 1 },
-    moonborn_stonefur: { x: 256, top: 34, mouth: 190, face: 68, s: 1 },
-    moonborn_goldfang: { x: 256, top: 26, mouth: 190, face: 68, s: 1 },
-    bloodbound_crimson_moon: { x: 400, top: 112, mouth: 230, face: 46, s: 1.25 },
-    bloodbound_nocturne_heir: { x: 256, top: 43, mouth: 128, face: 24, s: 0.78 },
-    bloodbound_crimsonveil: { x: 256, top: 22, mouth: 119, face: 29, s: 0.82 },
-    bloodbound_bloodhalo: { x: 256, top: 10, mouth: 118, face: 35, s: 0.86 },
-    bloodbound_dark_prince: { x: 256, top: 34, mouth: 151, face: 34, s: 0.9 },
-    bloodbound_royal_dusk: { x: 256, top: 24, mouth: 122, face: 29, s: 0.82 },
-    moonborn_ironmaw: { x: 256, top: 44, mouth: 186, face: 72, s: 1 },
-    moonborn_bloodscratch: { x: 256, top: 40, mouth: 190, face: 74, s: 1 },
-    moonborn_stormpelt: { x: 256, top: 96, mouth: 194, face: 58, s: 0.95 },
-    bloodbound_mooncourt: { x: 256, top: 34, mouth: 124, face: 34, s: 0.9 },
-    bloodbound_nightwing: { x: 256, top: 30, mouth: 122, face: 34, s: 0.9 },
-    bloodbound_velvetfang: { x: 256, top: 18, mouth: 118, face: 32, s: 0.88 },
-    bloodbound_blackveil: { x: 256, top: 26, mouth: 124, face: 33, s: 0.88 },
+    moonborn_howlwarden: { x: 0, top: -385, eyeY: -292, mouth: -185, neckY: -156, shoulderY: -158, chestY: -92, waistY: 50, shoulderW: 162, handLX: -325, handRX: 325, handY: 85, face: 112, s: 1.9 },
+    moonborn_moonghost: { x: 256, top: 82, eyeY: 118, mouth: 174, neckY: 196, shoulderY: 206, chestY: 245, waistY: 325, shoulderW: 94, handLX: 120, handRX: 392, handY: 420, face: 54, s: 1.0 },
+    moonborn_frostfang: { x: 500, top: 138, eyeY: 236, mouth: 356, neckY: 374, shoulderY: 355, chestY: 438, waistY: 596, shoulderW: 170, handLX: 195, handRX: 805, handY: 790, face: 110, s: 1.85 },
+    moonborn_eclipsehowl: { x: 256, top: 62, eyeY: 102, mouth: 158, neckY: 178, shoulderY: 192, chestY: 234, waistY: 318, shoulderW: 92, handLX: 112, handRX: 400, handY: 372, face: 58, s: 1.0 },
+    moonborn_stonefur: { x: 256, top: 62, eyeY: 118, mouth: 196, neckY: 212, shoulderY: 196, chestY: 256, waistY: 344, shoulderW: 106, handLX: 76, handRX: 436, handY: 382, face: 64, s: 1.04 },
+    moonborn_goldfang: { x: 256, top: 52, eyeY: 122, mouth: 190, neckY: 208, shoulderY: 204, chestY: 252, waistY: 334, shoulderW: 96, handLX: 92, handRX: 420, handY: 370, face: 64, s: 1.02 },
+    moonborn_ironmaw: { x: 256, top: 58, eyeY: 106, mouth: 176, neckY: 194, shoulderY: 198, chestY: 248, waistY: 336, shoulderW: 102, handLX: 98, handRX: 414, handY: 374, face: 64, s: 1.02 },
+    moonborn_bloodscratch: { x: 256, top: 34, eyeY: 67, mouth: 102, neckY: 124, shoulderY: 140, chestY: 196, waistY: 316, shoulderW: 108, handLX: 88, handRX: 424, handY: 346, face: 54, s: 0.98 },
+    moonborn_stormpelt: { x: 256, top: 82, eyeY: 128, mouth: 184, neckY: 200, shoulderY: 162, chestY: 222, waistY: 284, shoulderW: 106, handLX: 72, handRX: 440, handY: 388, face: 56, s: 0.98 },
+    bloodbound_crimson_moon: { x: 400, top: 106, eyeY: 170, mouth: 214, neckY: 250, shoulderY: 274, chestY: 348, waistY: 486, shoulderW: 98, handLX: 272, handRX: 528, handY: 442, face: 52, s: 1.3 },
+    bloodbound_nocturne_heir: { x: 256, top: 58, eyeY: 96, mouth: 122, neckY: 142, shoulderY: 158, chestY: 210, waistY: 292, shoulderW: 66, handLX: 166, handRX: 346, handY: 292, face: 28, s: 0.84 },
+    bloodbound_crimsonveil: { x: 256, top: 44, eyeY: 86, mouth: 116, neckY: 138, shoulderY: 150, chestY: 204, waistY: 292, shoulderW: 68, handLX: 102, handRX: 410, handY: 278, face: 30, s: 0.86 },
+    bloodbound_bloodhalo: { x: 256, top: 40, eyeY: 84, mouth: 114, neckY: 136, shoulderY: 150, chestY: 204, waistY: 292, shoulderW: 68, handLX: 158, handRX: 354, handY: 282, face: 32, s: 0.88 },
+    bloodbound_dark_prince: { x: 256, top: 52, eyeY: 100, mouth: 134, neckY: 156, shoulderY: 168, chestY: 222, waistY: 302, shoulderW: 70, handLX: 160, handRX: 352, handY: 296, face: 33, s: 0.9 },
+    bloodbound_royal_dusk: { x: 256, top: 46, eyeY: 88, mouth: 118, neckY: 138, shoulderY: 152, chestY: 206, waistY: 292, shoulderW: 68, handLX: 152, handRX: 360, handY: 282, face: 30, s: 0.86 },
+    bloodbound_mooncourt: { x: 256, top: 26, eyeY: 64, mouth: 104, neckY: 132, shoulderY: 148, chestY: 204, waistY: 292, shoulderW: 70, handLX: 148, handRX: 364, handY: 284, face: 33, s: 0.9 },
+    bloodbound_nightwing: { x: 256, top: 44, eyeY: 86, mouth: 118, neckY: 140, shoulderY: 154, chestY: 208, waistY: 294, shoulderW: 70, handLX: 150, handRX: 362, handY: 284, face: 33, s: 0.9 },
+    bloodbound_velvetfang: { x: 256, top: 42, eyeY: 86, mouth: 116, neckY: 138, shoulderY: 148, chestY: 206, waistY: 292, shoulderW: 66, handLX: 148, handRX: 364, handY: 278, face: 31, s: 0.88 },
+    bloodbound_blackveil: { x: 256, top: 44, eyeY: 80, mouth: 110, neckY: 136, shoulderY: 148, chestY: 206, waistY: 296, shoulderW: 72, handLX: 145, handRX: 367, handY: 222, face: 32, s: 0.88 },
   };
 
   var refinedFurPalettes = {
@@ -984,7 +1019,7 @@
     var source = fragmentDoc.documentElement.firstElementChild;
     var imported = root.ownerDocument.importNode ? root.ownerDocument.importNode(source, true) : source.cloneNode(true);
     imported.setAttribute("data-wb-internal", "true");
-    var parent = svgFaceParent(root);
+    var parent = placement === "top" ? root : svgFaceParent(root);
     if (placement === "behind") {
       var first = parent.querySelector('[data-wb-part="hair"], [data-wb-part="skin"], [data-wb-part="fur"]');
       if (first && first.parentNode === parent) parent.insertBefore(imported, first);
@@ -1171,14 +1206,194 @@
     return '<g><path d="M '+(x-f*.16)+' '+(y+f*.7)+' h '+(f*.32)+'" fill="none" stroke="'+metal+'" stroke-width="'+Math.max(1,s*1.02)+'" opacity=".85"/><circle cx="'+x+'" cy="'+(y+f*.72)+'" r="'+Math.max(4,s*4.2)+'" fill="'+colors.metalDark+'" stroke="'+pale+'" stroke-width="'+Math.max(.9,s*.92)+'"/><path d="M '+x+' '+(y+f*.58)+' l '+(-f*.08)+' '+(f*.14)+' l '+(f*.08)+' '+(f*.18)+' l '+(f*.08)+' '+(-f*.18)+' Z" fill="'+gem+'" stroke="'+pale+'" stroke-width="'+Math.max(.7,s*.72)+'"/></g>';
   }
 
+  function presetWeaponMini(item, colors, x, y, side, scale) {
+    if (!item) return "";
+    var palette = equipmentPalette(item, colors);
+    var rare = palette.edge;
+    var name = lower(item.name);
+    var rot = side === "left" ? -16 : 16;
+    var flip = side === "left" ? -1 : 1;
+    var sc = (scale || 1) * 0.42;
+    var shape = "";
+    if (/pistola|pistol/.test(name)) {
+      shape =
+        '<path d="M-10-8h56v18H12l-7 36h-20l5-54Z" fill="' + palette.dark + '" stroke="' + rare + '" stroke-width="4"/>' +
+        '<path d="M46-3h28v9H46" fill="' + palette.light + '"/><circle cx="14" cy="2" r="4" fill="' + palette.gem + '"/>';
+    } else if (/foco|focus|talism/.test(name)) {
+      shape =
+        '<path d="M0 78V-10" stroke="' + palette.light + '" stroke-width="7" stroke-linecap="round"/>' +
+        '<circle class="wb-relic-halo" cx="0" cy="-34" r="24" fill="' + palette.gem + '" fill-opacity=".28" stroke="' + rare + '" stroke-width="3"/>' +
+        '<path d="M0-54l12 20-12 20-12-20Z" fill="' + palette.gem + '" stroke="#fff" stroke-width="2"/>';
+    } else if (/gancho|hook/.test(name)) {
+      shape =
+        '<path d="M0 84V-26q0-48 40-50 18 0 26 14-36-6-36 30 0 20 18 22" fill="none" stroke="' + rare + '" stroke-width="13" stroke-linecap="round"/>' +
+        '<path d="M0 24v64" stroke="#4a3126" stroke-width="9" stroke-linecap="round"/>';
+    } else if (/garra|claw|talon/.test(name)) {
+      shape =
+        '<path d="M-22 18l10-76 12 74 16-82-2 102 32-88-14 104Z" fill="' + palette.light + '" stroke="' + rare + '" stroke-width="4"/>' +
+        '<path d="M-26 24h64v38h-64Z" fill="' + palette.dark + '" stroke="' + rare + '" stroke-width="4"/>';
+    } else if (/cutelo|cleaver/.test(name)) {
+      shape =
+        '<rect x="-6" y="14" width="12" height="86" rx="5" fill="#472e23"/>' +
+        '<path d="M0 18l-32-58 14-76 54 20 8 76Z" fill="' + palette.mid + '" stroke="' + rare + '" stroke-width="5"/>' +
+        '<path d="M-12-90l34 12" stroke="' + palette.light + '" stroke-width="4"/><circle cx="18" cy="-64" r="5" fill="#0d0e14"/>';
+    } else if (/adaga|dagger|presa/.test(name)) {
+      shape =
+        '<rect x="-5" y="16" width="10" height="66" rx="4" fill="#462f25"/>' +
+        '<path d="M-24 16h48" stroke="' + rare + '" stroke-width="8" stroke-linecap="round"/>' +
+        '<path d="M0 18l-18-32L0-88l18 74Z" fill="' + palette.light + '" stroke="' + rare + '" stroke-width="4"/>' +
+        '<path d="M0-68v68" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>';
+    } else {
+      shape =
+        '<path d="M0 112V36" stroke="#492f26" stroke-width="10" stroke-linecap="round"/>' +
+        '<circle cx="0" cy="120" r="9" fill="' + palette.dark + '" stroke="' + rare + '" stroke-width="3.5"/>' +
+        '<path d="M-32 34H32" stroke="' + rare + '" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M0 28l-15-26L0-128 15 2Z" fill="' + palette.light + '" stroke="' + rare + '" stroke-width="5"/>' +
+        '<path d="M0-104V6" stroke="#fff" stroke-opacity=".55" stroke-width="3"/>';
+    }
+    return (
+      '<g class="wb-eq-weapon" transform="translate(' + x.toFixed(1) + " " + y.toFixed(1) + ") rotate(" + rot + ") scale(" + (sc * flip).toFixed(3) + " " + sc.toFixed(3) + ')" opacity=".96">' +
+      shape +
+      "</g>"
+    );
+  }
+
   function presetEquipmentGeometry(entity, faction, fit, colors) {
     var equipment = entity && (entity.equipment || (entity.player && entity.player.equipment));
     if (!equipment) return "";
-    var x = fit.x, top = fit.top, y = fit.mouth, f = fit.face, s = fit.s, out = "";
-    if (equipment.head)
-      out += '<path d="M '+(x-f*.62)+' '+(top+f*.22)+' Q '+x+' '+(top-f*.02)+' '+(x+f*.62)+' '+(top+f*.22)+'" fill="none" stroke="'+rarityColor(equipment.head, colors.metalLight)+'" stroke-width="'+Math.max(1.4,s*1.5)+'"/><path d="M '+x+' '+(top+f*.02)+' l '+(-f*.1)+' '+(f*.16)+' l '+(f*.1)+' '+(f*.16)+' l '+(f*.1)+' '+(-f*.16)+' Z" fill="'+colors.metalDark+'" stroke="'+rarityColor(equipment.head, colors.metalLight)+'" stroke-width="'+Math.max(.7,s*.7)+'"/>';
-    if (equipment.amulet)
-      out += '<path d="M '+(x-f*.34)+' '+(y+f*.54)+' Q '+x+' '+(y+f*.76)+' '+(x+f*.34)+' '+(y+f*.54)+'" fill="none" stroke="'+colors.metalMid+'" stroke-width="'+Math.max(1,s)+'"/><circle cx="'+x+'" cy="'+(y+f*.72)+'" r="'+Math.max(3,s*3)+'" fill="'+rarityColor(equipment.amulet, colors.accentLight)+'" stroke="'+colors.metalLight+'" stroke-width="'+Math.max(.7,s*.7)+'"/>';
+    var x = fit.x, top = fit.top, eyeY = fit.eyeY != null ? fit.eyeY : top + fit.face * 0.62, y = fit.mouth, f = fit.face, s = fit.s;
+    var neckY = fit.neckY != null ? fit.neckY : y + f * 0.45;
+    var shY = fit.shoulderY != null ? fit.shoulderY : y + f * 0.65;
+    var chY = fit.chestY != null ? fit.chestY : shY + f * 0.72;
+    var shW = fit.shoulderW != null ? fit.shoulderW : f * 1.48;
+    var wY = fit.waistY != null ? fit.waistY : chY + f * 1.1;
+    var hLX = fit.handLX != null ? fit.handLX : x - shW * 1.18;
+    var hRX = fit.handRX != null ? fit.handRX : x + shW * 1.18;
+    var hY = fit.handY != null ? fit.handY : wY + f * 0.12;
+    var out = "";
+
+    // Aura sutil para equipamentos Lendários / Míticos / Amaldiçoados
+    var rareAuraColor = "";
+    Object.keys(equipment).forEach(function (slotKey) {
+      var it = equipment[slotKey];
+      if (!it) return;
+      if (it.rarity === "mythic" || it.rarity === "cursed" || it.rarity === "legendary") {
+        rareAuraColor = rarityColor(it, colors.accentLight);
+      }
+    });
+    if (rareAuraColor) {
+      out +=
+        '<g class="wb-rarity-aura" opacity=".28"><circle cx="' + x + '" cy="' + ((top + chY) * 0.52).toFixed(1) + '" r="' + (shW * 1.15).toFixed(1) + '" fill="none" stroke="' + rareAuraColor + '" stroke-width="' + Math.max(1.2, s * 1.3) + '" stroke-dasharray="' + (s * 6) + " " + (s * 10) + '"/></g>';
+    }
+
+    // Cabeça: Coroa, Capuz, Máscara ou Elmo
+    if (equipment.head) {
+      var hItem = equipment.head;
+      var hName = lower(hItem.name);
+      var hPal = equipmentPalette(hItem, colors);
+      var hEdge = hPal.edge;
+      if (/capuz|hood/.test(hName)) {
+        out +=
+          '<g class="wb-eq-head"><path d="M ' + (x - f * 0.82) + " " + (eyeY + f * 0.16) +
+          " Q " + (x - f * 0.92) + " " + (top - f * 0.28) + " " + x + " " + (top - f * 0.36) +
+          " Q " + (x + f * 0.92) + " " + (top - f * 0.28) + " " + (x + f * 0.82) + " " + (eyeY + f * 0.16) +
+          " Q " + x + " " + (top + f * 0.08) + " " + (x - f * 0.82) + " " + (eyeY + f * 0.16) +
+          ' Z" fill="' + hPal.dark + '" fill-opacity=".86" stroke="' + hEdge + '" stroke-width="' + Math.max(1.4, s * 1.45) + '"/></g>';
+      } else if (/m[aá]scara|mask|viseira|visor/.test(hName)) {
+        out +=
+          '<g class="wb-eq-head"><path d="M ' + (x - f * 0.62) + " " + (eyeY - f * 0.12) +
+          " Q " + x + " " + (eyeY - f * 0.3) + " " + (x + f * 0.62) + " " + (eyeY - f * 0.12) +
+          " L " + (x + f * 0.48) + " " + (eyeY + f * 0.22) + " L " + x + " " + (eyeY + f * 0.32) +
+          " L " + (x - f * 0.48) + " " + (eyeY + f * 0.22) + ' Z" fill="' + hPal.dark + '" fill-opacity=".84" stroke="' + hEdge + '" stroke-width="' + Math.max(1.3, s * 1.35) + '"/>' +
+          '<path d="M ' + (x - f * 0.42) + " " + eyeY + " H " + (x - f * 0.12) + " M " + (x + f * 0.12) + " " + eyeY + " H " + (x + f * 0.42) +
+          '" stroke="' + hPal.gem + '" stroke-width="' + Math.max(1.8, s * 1.8) + '" stroke-linecap="round"/></g>';
+      } else if (/elmo|helm/.test(hName)) {
+        out +=
+          '<g class="wb-eq-head"><path d="M ' + (x - f * 0.68) + " " + (eyeY - f * 0.06) +
+          " C " + (x - f * 0.66) + " " + (top - f * 0.22) + ", " + (x + f * 0.66) + " " + (top - f * 0.22) + ", " + (x + f * 0.68) + " " + (eyeY - f * 0.06) +
+          " L " + (x + f * 0.36) + " " + (top + f * 0.24) + " L " + x + " " + (eyeY - f * 0.02) +
+          " L " + (x - f * 0.36) + " " + (top + f * 0.24) + ' Z" fill="' + hPal.dark + '" fill-opacity=".94" stroke="' + hEdge + '" stroke-width="' + Math.max(1.5, s * 1.55) + '"/>' +
+          '<path d="M ' + x + " " + (top - f * 0.24) + " V " + (eyeY - f * 0.02) + '" stroke="' + hPal.light + '" stroke-width="' + Math.max(1.6, s * 1.6) + '"/></g>';
+      } else {
+        out +=
+          '<g class="wb-eq-head"><path d="M ' + (x - f * 0.62) + " " + (top + f * 0.24) +
+          " L " + (x - f * 0.46) + " " + (top - f * 0.16) + " L " + (x - f * 0.22) + " " + (top + f * 0.06) +
+          " L " + x + " " + (top - f * 0.32) + " L " + (x + f * 0.22) + " " + (top + f * 0.06) +
+          " L " + (x + f * 0.46) + " " + (top - f * 0.16) + " L " + (x + f * 0.62) + " " + (top + f * 0.24) +
+          " Q " + x + " " + (top + f * 0.12) + " " + (x - f * 0.62) + " " + (top + f * 0.24) +
+          ' Z" fill="' + hPal.dark + '" stroke="' + hEdge + '" stroke-width="' + Math.max(1.4, s * 1.5) + '" stroke-linejoin="round"/>' +
+          '<path d="M ' + x + " " + (top - f * 0.14) + " l " + (-f * 0.09) + " " + (f * 0.13) + " l " + (f * 0.09) + " " + (f * 0.13) + " l " + (f * 0.09) + " " + (-f * 0.13) + ' Z" fill="' + hPal.gem + '" stroke="#fff4dc" stroke-width="' + Math.max(0.7, s * 0.7) + '"/></g>';
+      }
+    }
+
+    // Torso: Ombreiras góticas (pauldrons) + broche/placa de peito
+    if (equipment.chest) {
+      var cPal = equipmentPalette(equipment.chest, colors);
+      var cEdge = cPal.edge;
+      var pw = shW * 0.46;
+      var ph = f * 0.42;
+      out +=
+        '<g class="wb-eq-chest" opacity=".92">' +
+        '<path d="M ' + (x - shW * 1.06) + " " + (shY + ph * 0.55) +
+        " Q " + (x - shW * 0.88) + " " + (shY - ph * 0.42) + " " + (x - shW * 0.42) + " " + (shY - ph * 0.06) +
+        " L " + (x - shW * 0.52) + " " + (shY + ph * 0.78) + " Q " + (x - shW * 0.84) + " " + (shY + ph * 0.92) + " " + (x - shW * 1.06) + " " + (shY + ph * 0.55) +
+        ' Z" fill="' + cPal.dark + '" stroke="' + cEdge + '" stroke-width="' + Math.max(1.5, s * 1.55) + '"/>' +
+        '<path d="M ' + (x + shW * 1.06) + " " + (shY + ph * 0.55) +
+        " Q " + (x + shW * 0.88) + " " + (shY - ph * 0.42) + " " + (x + shW * 0.42) + " " + (shY - ph * 0.06) +
+        " L " + (x + shW * 0.52) + " " + (shY + ph * 0.78) + " Q " + (x + shW * 0.84) + " " + (shY + ph * 0.92) + " " + (x + shW * 1.06) + " " + (shY + ph * 0.55) +
+        ' Z" fill="' + cPal.dark + '" stroke="' + cEdge + '" stroke-width="' + Math.max(1.5, s * 1.55) + '"/>' +
+        '<path d="M ' + (x - shW * 0.44) + " " + (shY + ph * 0.18) + " Q " + x + " " + (chY + f * 0.14) + " " + (x + shW * 0.44) + " " + (shY + ph * 0.18) +
+        '" fill="none" stroke="' + cPal.light + '" stroke-width="' + Math.max(1.2, s * 1.25) + '" stroke-opacity=".75"/>' +
+        '<path d="M ' + x + " " + (chY - f * 0.24) + " l " + (pw * 0.26) + " " + (f * 0.22) + " l " + (-pw * 0.26) + " " + (f * 0.28) + " l " + (-pw * 0.26) + " " + (-f * 0.28) +
+        ' Z" fill="' + cPal.mid + '" stroke="' + cEdge + '" stroke-width="' + Math.max(1.2, s * 1.2) + '"/>' +
+        "</g>";
+    }
+
+    // Amuleto: Corrente dupla + pingente lapidado
+    if (equipment.amulet) {
+      var aPal = equipmentPalette(equipment.amulet, colors);
+      out +=
+        '<g class="wb-eq-amulet">' +
+        '<path d="M ' + (x - f * 0.46) + " " + neckY + " Q " + x + " " + (neckY + f * 0.46) + " " + (x + f * 0.46) + " " + neckY +
+        '" fill="none" stroke="' + aPal.light + '" stroke-width="' + Math.max(1.3, s * 1.35) + '"/>' +
+        '<path d="M ' + x + " " + (neckY + f * 0.22) + " l " + (-f * 0.14) + " " + (f * 0.22) + " l " + (f * 0.14) + " " + (f * 0.26) + " l " + (f * 0.14) + " " + (-f * 0.26) +
+        ' Z" fill="' + aPal.gem + '" stroke="' + aPal.light + '" stroke-width="' + Math.max(1.1, s * 1.1) + '"/>' +
+        "</g>";
+    }
+
+    // Mãos e Anéis: Selos rúnicos nos punhos
+    if (equipment.hands || equipment.ring1) {
+      var lPal = equipmentPalette(equipment.ring1 || equipment.hands, colors);
+      out +=
+        '<circle class="wb-ring" cx="' + hLX + '" cy="' + hY + '" r="' + Math.max(6, f * 0.16) + '" fill="none" stroke="' + lPal.edge + '" stroke-width="' + Math.max(1.6, s * 1.65) + '" opacity=".86"/>';
+    }
+    if (equipment.hands || equipment.ring2) {
+      var rPal = equipmentPalette(equipment.ring2 || equipment.hands, colors);
+      out +=
+        '<circle class="wb-ring" cx="' + hRX + '" cy="' + hY + '" r="' + Math.max(6, f * 0.16) + '" fill="none" stroke="' + rPal.edge + '" stroke-width="' + Math.max(1.6, s * 1.65) + '" opacity=".86"/>';
+    }
+
+    // Relíquia: Orbe/totem rúnico flutuante ao lado do ombro direito
+    if (equipment.relic) {
+      var relPal = equipmentPalette(equipment.relic, colors);
+      var rx = x + shW * 1.22;
+      var ry = shY - f * 0.18;
+      var rr = Math.max(9, f * 0.24);
+      out +=
+        '<g class="wb-eq-relic">' +
+        '<circle class="wb-relic-halo" cx="' + rx + '" cy="' + ry + '" r="' + (rr * 1.55).toFixed(1) + '" fill="' + relPal.gem + '" fill-opacity=".22" stroke="' + relPal.edge + '" stroke-width="' + Math.max(1.1, s * 1.1) + '" stroke-dasharray="' + (s * 3) + " " + (s * 4) + '"/>' +
+        '<path d="M ' + rx + " " + (ry - rr) + " l " + (rr * 0.72) + " " + rr + " l " + (-rr * 0.72) + " " + rr + " l " + (-rr * 0.72) + " " + (-rr) + ' Z" fill="' + relPal.gem + '" stroke="#fff5e0" stroke-width="' + Math.max(1, s) + '"/>' +
+        "</g>";
+    }
+
+    // Armas Principal e Secundária encaixadas nas mãos
+    if (equipment.weapon) {
+      out += presetWeaponMini(equipment.weapon, colors, hRX, hY - f * 0.22, "right", s);
+    }
+    if (equipment.secondary) {
+      out += presetWeaponMini(equipment.secondary, colors, hLX, hY - f * 0.18, "left", s * 0.88);
+    }
+
     return out;
   }
 
@@ -1299,12 +1514,14 @@
     var fit = refinedFit(presetId, faction);
     svgRecolorPart(root, "hair", [colors.hairDark, svgMix(colors.hairLight, colors.hairDark, .45), colors.hairLight], {});
     svgSolidifyFirstWerewolf(root, a, presetId, colors);
-    svgSetPartStyle(root, "markings", "display:none");
-    if (faction === "bloodbound") {
+    if (a.marking && a.marking !== "none") {
+      svgInsertFragment(root, "wb-svg-part wb-svg-marking", presetMarkingGeometry(a, faction, fit, colors), "front");
+    }
+    if (a.accessory && a.accessory !== "none") {
       var accessoryBehind = a.accessory === "chain halo" || a.accessory === "raven feather" || a.accessory === "ritual veil";
       svgInsertFragment(root, "wb-svg-part wb-svg-accessory", presetAccessoryGeometry(a, faction, fit, colors), accessoryBehind ? "behind" : "front");
     }
-    svgInsertFragment(root, "wb-svg-part wb-svg-equipment", presetEquipmentGeometry(entity, faction, fit, colors), "front");
+    svgInsertFragment(root, "wb-svg-part wb-svg-equipment", presetEquipmentGeometry(entity, faction, fit, colors), "top");
   }
 
   function isUntouchedBloodboundAppearance(a) {
@@ -1439,12 +1656,10 @@
       if (doc.querySelector("parsererror")) throw new Error("SVG inválido");
       var root = doc.documentElement;
       if (size === "battle") svgStripBattleBackground(root);
-      if (faction === "bloodbound" && isUntouchedBloodboundAppearance(a))
-        return serializeExactPresetRoot(root, label, presetId, serial);
       var colors = presetColors(a);
       var profile = presetPartProfiles[presetId] || {};
       var outfitPalette = refinedPalette3(svgPaletteForOutfit(a, colors));
-      var cloakPalette = refinedPalette3(svgPaletteForCloak(a, colors));
+      var cloakPalette = refinedPalette3([svgDarken(colors.accentDark, 0.72), colors.accentDark, colors.accentLight]);
       var skinPalette = [colors.skinShadow, colors.skin, colors.skinLight];
       var furPalette = refinedFurPalettes[a.skin] || refinedFurPalettes.ash;
       var metalPalette = [colors.metalDark, colors.metalMid, colors.metalLight];
@@ -1461,8 +1676,7 @@
       svgRecolorPart(root, "fur", furPalette, cache);
       svgRecolorPart(root, "skin", skinPalette, cache);
       svgRecolorPart(root, "outfit", outfitPalette, cache);
-      svgRecolorPart(root, "cloak", cloakPalette, cache);
-      svgSetPartStyle(root, "cloak", "display:none");
+      if (faction === "bloodbound") svgRecolorPart(root, "cloak", cloakPalette, cache);
       svgRecolorPart(root, "metal", metalPalette, cache);
       svgRecolorPart(root, "bone", ["#8d806b", "#f4ead2"], cache);
       svgApplyEyes(root, a, colors, profile);
@@ -1561,19 +1775,21 @@
   function describe(entity) {
     var faction = entity.faction === "bloodbound" ? "bloodbound" : "moonborn";
     var a = normalizeAppearance(entity.appearance, faction);
-    var accessoryText =
-      faction === "bloodbound" && a.accessory !== "none"
-        ? ", acessório " + PT.label(a.accessory).toLowerCase()
-        : "";
-    return (
-      D.factions[faction].name +
-      ", olhos " +
-      PT.label(a.eyes).toLowerCase() +
-      ", acabamento " +
-      PT.label(a.metal).toLowerCase() +
-      accessoryText +
-      (a.portrait ? ", retrato " + presetLabel(a.portrait).toLowerCase() : "")
-    );
+    var parts = [
+      D.factions[faction].name,
+      "olhos " + PT.label(a.eyes).toLowerCase(),
+      "metal " + PT.label(a.metal).toLowerCase(),
+    ];
+    if (a.marking && a.marking !== "none") {
+      parts.push("marca " + PT.label(a.marking).toLowerCase());
+    }
+    if (a.accessory && a.accessory !== "none") {
+      parts.push("acessório " + PT.label(a.accessory).toLowerCase());
+    }
+    if (a.portrait) {
+      parts.push("retrato " + presetLabel(a.portrait).toLowerCase());
+    }
+    return parts.join(", ");
   }
 
   function stageArt(a, faction, ids, colors) {
@@ -3116,99 +3332,176 @@
     return svg;
   }
 
-  function itemShape(slot, colors, rare) {
-    if (slot === "weapon")
+  function itemShape(slot, colors, rare, item, metalGradId) {
+    var name = lower(item && item.name);
+    var mFill = "url(#" + metalGradId + ")";
+    var dark = colors[0], mid = colors[1], light = colors[2];
+
+    if (slot === "weapon") {
+      if (/garra|claw|talon/.test(name)) {
+        return (
+          '<path d="M24 72h62l-8 32H32Z" fill="' + dark + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M36 70C34 44 46 22 60 12c-4 18-6 36-4 58Z M56 70c2-28 14-46 30-56-6 20-8 38-8 56Z M76 70c4-22 14-38 28-44-6 16-8 30-10 44Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4" stroke-linejoin="round"/>' +
+          '<circle cx="55" cy="88" r="6" fill="' + rare + '" stroke="#fff3da" stroke-width="2"/>'
+        );
+      }
+      if (/cutelo|cleaver/.test(name)) {
+        return (
+          '<rect x="30" y="78" width="13" height="38" rx="5" transform="rotate(36 36 96)" fill="#4b3024" stroke="' + dark + '" stroke-width="3"/>' +
+          '<path d="M44 74L28 32 72 12l34 28-24 52-38-18Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M68 22l28 22" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>' +
+          '<circle cx="78" cy="40" r="6" fill="#0d0e15" stroke="' + rare + '" stroke-width="2.5"/>'
+        );
+      }
+      if (/sabre|saber/.test(name)) {
+        return (
+          '<path d="M28 108l20-20" stroke="#4c3125" stroke-width="10" stroke-linecap="round"/>' +
+          '<path d="M42 74q16 2 20 20-18 4-24-4" fill="none" stroke="' + rare + '" stroke-width="6" stroke-linecap="round"/>' +
+          '<path d="M48 80C66 56 84 36 106 14c-8 30-26 56-48 76Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M58 74C74 54 88 38 100 22" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2.5"/>'
+        );
+      }
+      if (/presa|fang/.test(name)) {
+        return (
+          '<path d="M32 104l16-18" stroke="#482e24" stroke-width="10" stroke-linecap="round"/>' +
+          '<path d="M36 74l24 22" stroke="' + rare + '" stroke-width="8" stroke-linecap="round"/>' +
+          '<path d="M44 82C58 58 64 34 94 16c-6 34-18 58-40 74Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<circle cx="48" cy="85" r="5" fill="' + rare + '" stroke="#fff" stroke-width="2"/>'
+        );
+      }
       return (
-        '<path d="M58 91l-9-10 7-47L75 7l7 34-15 43Z" fill="' +
-        colors[1] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/><path d="M45 84h32M55 87l-8 23m22-23 7 23" stroke="' +
-        colors[2] +
-        '" stroke-width="6"/>'
+        '<path d="M30 104l18-18" stroke="#492f25" stroke-width="10" stroke-linecap="round"/>' +
+        '<circle cx="26" cy="108" r="7" fill="' + dark + '" stroke="' + rare + '" stroke-width="3.5"/>' +
+        '<path d="M34 72l26 26" stroke="' + rare + '" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M46 82L98 18l8 8-48 68Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M54 74L96 26" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>'
       );
-    if (slot === "secondary")
+    }
+
+    if (slot === "secondary") {
+      if (/pistola|pistol/.test(name)) {
+        return (
+          '<path d="M22 46h78v18H56l-10 42H26l10-42H22Z" fill="' + dark + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<rect x="70" y="49" width="38" height="10" rx="3" fill="' + mFill + '" stroke="' + rare + '" stroke-width="3"/>' +
+          '<circle cx="52" cy="56" r="5" fill="' + rare + '"/>'
+        );
+      }
+      if (/adaga|dagger/.test(name)) {
+        return (
+          '<path d="M34 100l18-18" stroke="#482e24" stroke-width="9" stroke-linecap="round"/>' +
+          '<path d="M40 72l20 20" stroke="' + rare + '" stroke-width="7" stroke-linecap="round"/>' +
+          '<path d="M50 78L94 24l-2 16-32 48Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>'
+        );
+      }
+      if (/talism|foco|focus/.test(name)) {
+        return (
+          '<path d="M64 62v50" stroke="' + light + '" stroke-width="7" stroke-linecap="round"/>' +
+          '<circle cx="64" cy="44" r="24" fill="' + rare + '" fill-opacity=".26" stroke="' + rare + '" stroke-width="4.5"/>' +
+          '<path d="M64 24l13 20-13 20-13-20Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2.5"/>'
+        );
+      }
       return (
-        '<path d="M32 77q9-47 50-55 22-4 30 12-42-4-43 31-1 20 20 22" fill="none" stroke="' +
-        rare +
-        '" stroke-width="12"/><path d="M32 67v41" stroke="' +
-        colors[1] +
-        '" stroke-width="9"/>'
+        '<path d="M38 78q8-48 48-56 20-4 28 12-40-4-40 30 0 20 18 22" fill="none" stroke="' + rare + '" stroke-width="11" stroke-linecap="round"/>' +
+        '<path d="M38 66v44" stroke="' + mid + '" stroke-width="9" stroke-linecap="round"/>' +
+        '<circle cx="38" cy="108" r="6" fill="' + light + '"/>'
       );
-    if (slot === "head")
+    }
+
+    if (slot === "head") {
+      if (/coroa|crown/.test(name)) {
+        return (
+          '<path d="M20 88L28 38l22 24 14-36 14 36 22-24 8 50H20Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M64 46l7 11-7 11-7-11Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2"/>' +
+          '<path d="M22 92h84" stroke="' + light + '" stroke-width="5" stroke-linecap="round"/>'
+        );
+      }
+      if (/capuz|hood/.test(name)) {
+        return (
+          '<path d="M20 96C22 44 42 18 64 14c22 4 42 30 44 82l-18 10c-4-40-12-58-26-62-14 4-22 22-26 62Z" fill="' + dark + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M40 94c4-28 10-44 24-48 14 4 20 20 24 48" fill="none" stroke="' + light + '" stroke-opacity=".55" stroke-width="3"/>'
+        );
+      }
+      if (/m[aá]scara|mask|viseira|visor/.test(name)) {
+        return (
+          '<path d="M24 44q40-26 80 0l-8 50-32 20-32-20Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M38 58l18 4-6 10-12-6Zm52 0l-18 4 6 10 12-6Z" fill="#0b0c12" stroke="' + rare + '" stroke-width="2"/>' +
+          '<path d="M64 36v58" stroke="' + light + '" stroke-opacity=".5" stroke-width="2.5"/>'
+        );
+      }
       return (
-        '<path d="M24 79q3-52 40-62 37 10 40 62L86 69l-8-25-14-9-14 9-8 25Z" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/><path d="M64 17v50" stroke="' +
-        colors[2] +
-        '" stroke-width="4"/>'
+        '<path d="M26 86q2-56 38-66 36 10 38 66L84 74l-8-24-12-8-12 8-8 24Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M64 20v54M34 56h60" stroke="' + light + '" stroke-width="3.5" stroke-opacity=".75"/>'
       );
-    if (slot === "chest")
+    }
+
+    if (slot === "chest") {
+      if (/casaco|vestimenta|coat|robe/.test(name)) {
+        return (
+          '<path d="M26 30l22-14 16 14 16-14 22 14-6 82-32-12-32 12Z" fill="' + dark + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M48 18l16 32 16-32M64 50v50" fill="none" stroke="' + light + '" stroke-width="3.5"/>' +
+          '<circle cx="64" cy="56" r="5" fill="' + rare + '"/>'
+        );
+      }
       return (
-        '<path d="M25 29l24-13 15 12 15-12 24 13-9 74-30 15-30-15Z" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/><path d="M42 37l22 18 22-18M38 78h52" fill="none" stroke="' +
-        colors[2] +
-        '" stroke-width="4"/>'
+        '<path d="M22 30l26-14 16 12 16-12 26 14-10 74-32 14-32-14Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M40 38l24 18 24-18M38 76h52M64 56v56" fill="none" stroke="' + light + '" stroke-width="3.5" stroke-opacity=".8"/>' +
+        '<path d="M64 44l9 12-9 12-9-12Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2"/>'
       );
-    if (slot === "hands")
+    }
+
+    if (slot === "hands") {
       return (
-        '<path d="M20 34l30 9-4 59-28 9Zm88 0-30 9 4 59 28 9Z" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/>'
+        '<path d="M22 34l30 10-4 60-28 8Zm84 0-30 10 4 60 28 8Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M24 62h24M80 62h24" stroke="' + light + '" stroke-width="3.5"/>'
       );
-    if (slot === "legs")
+    }
+    if (slot === "legs") {
       return (
-        '<path d="M31 18h66l-9 96H65L60 59l-8 55H28Z" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/>'
+        '<path d="M30 18h68l-8 96H68l-4-54-4 54H38Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M32 34h64M42 66h16M70 66h16" stroke="' + light + '" stroke-width="3.5" stroke-opacity=".75"/>'
       );
-    if (slot === "feet")
+    }
+    if (slot === "feet") {
       return (
-        '<path d="M23 42h35l-3 48-35 20H8Zm47 0h35l15 68H73Z" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="5"/>'
+        '<path d="M24 38h32l-2 46-36 22H10Zm48 0h32l14 68H74Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+        '<path d="M24 56h30M74 56h30" stroke="' + light + '" stroke-width="3.5"/>'
       );
-    if (slot === "amulet")
+    }
+    if (slot === "amulet") {
       return (
-        '<path d="M28 26q36 61 72 0" fill="none" stroke="' +
-        colors[2] +
-        '" stroke-width="6"/><path d="M64 64L47 87l17 29 17-29Z" fill="' +
-        rare +
-        '" stroke="#eee" stroke-width="4"/>'
+        '<path d="M26 24q38 62 76 0" fill="none" stroke="' + light + '" stroke-width="5.5" stroke-linecap="round"/>' +
+        '<circle cx="64" cy="78" r="22" fill="' + dark + '" stroke="' + rare + '" stroke-width="4.5"/>' +
+        '<path d="M64 58l13 20-13 20-13-20Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2.5"/>'
       );
-    if (slot === "ring1" || slot === "ring2")
+    }
+    if (slot === "ring1" || slot === "ring2") {
       return (
-        '<circle cx="64" cy="69" r="35" fill="none" stroke="' +
-        colors[1] +
-        '" stroke-width="12"/><path d="M48 35l16-22 16 22-16 16Z" fill="' +
-        rare +
-        '" stroke="#eee" stroke-width="3"/>'
+        '<circle cx="64" cy="72" r="32" fill="none" stroke="' + mFill + '" stroke-width="11"/>' +
+        '<circle cx="64" cy="72" r="32" fill="none" stroke="' + rare + '" stroke-width="2.5"/>' +
+        '<path d="M48 36l16-22 16 22-16 16Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2.5"/>'
       );
-    if (slot === "relic")
+    }
+    if (slot === "relic") {
+      if (/c[aá]lice|chalice/.test(name)) {
+        return (
+          '<path d="M36 24h56l-8 38q-20 18-40 0Z" fill="' + mFill + '" stroke="' + rare + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+          '<path d="M64 70v32M42 104h44" stroke="' + light + '" stroke-width="6.5" stroke-linecap="round"/>' +
+          '<path d="M44 36h40" stroke="' + rare + '" stroke-width="4"/>'
+        );
+      }
       return (
-        '<circle cx="64" cy="64" r="42" fill="' +
-        colors[0] +
-        '" stroke="' +
-        rare +
-        '" stroke-width="7"/><path d="M64 28l21 36-21 36-21-36Z" fill="' +
-        rare +
-        '"/><circle cx="64" cy="64" r="8" fill="#fff"/>'
+        '<circle cx="64" cy="64" r="42" fill="' + dark + '" stroke="' + rare + '" stroke-width="5.5"/>' +
+        '<circle cx="64" cy="64" r="32" fill="none" stroke="' + light + '" stroke-opacity=".45" stroke-width="2" stroke-dasharray="5 5"/>' +
+        '<path d="M64 26l22 38-22 38-22-38Z" fill="' + rare + '" stroke="#fff4dc" stroke-width="2.5"/>' +
+        '<circle cx="64" cy="64" r="7" fill="#fff"/>'
       );
+    }
+    var liquidColor = item && item.effect === "energy" ? "#5ca0ff" : rare;
     return (
-      '<path d="M44 22h40l-4 24 18 53q4 16-16 16H46q-20 0-16-16l18-53Z" fill="' +
-      rare +
-      '" opacity=".72" stroke="#e8e0d5" stroke-width="5"/><path d="M39 82h50" stroke="#fff" stroke-opacity=".5" stroke-width="4"/>'
+      '<rect x="52" y="14" width="24" height="12" rx="3" fill="#6b4a33" stroke="' + light + '" stroke-width="2.5"/>' +
+      '<path d="M48 26h32l-4 22 20 48q4 18-16 18H48q-20 0-16-18l20-48Z" fill="#171923" stroke="' + light + '" stroke-width="4.5" stroke-linejoin="round"/>' +
+      '<path d="M38 78h52l6 18q4 14-14 14H46q-18 0-14-14Z" fill="' + liquidColor + '" fill-opacity=".82"/>' +
+      '<path d="M48 58l-8 24" stroke="#fff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"/>'
     );
   }
 
@@ -3223,21 +3516,70 @@
       metalLight: "#d0d7e2",
       accentLight: rare,
     });
+    var glowId = "itemGlow" + serial;
+    var metalId = "itemMetal" + serial;
+    var upgradeBadge =
+      item.upgrade > 0
+        ? '<rect x="82" y="8" width="38" height="24" rx="8" fill="#101119" stroke="' +
+          palette.edge +
+          '" stroke-width="2.5"/><text x="101" y="24" text-anchor="middle" fill="#fff4dc" font-size="13" font-weight="800">+' +
+          item.upgrade +
+          "</text>"
+        : "";
     return (
-      '<svg class="equipment-icon" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><radialGradient id="itemGlow' +
-      serial +
-      '"><stop stop-color="' +
-      rare +
-      '" stop-opacity=".42"/><stop offset="1" stop-color="' +
-      rare +
-      '" stop-opacity="0"/></radialGradient></defs><circle cx="64" cy="64" r="60" fill="url(#itemGlow' +
-      serial +
-      ')"/><g>' +
-      itemShape(slot, [palette.dark, palette.mid, palette.light], palette.edge) +
-      '</g><circle cx="109" cy="109" r="8" fill="' +
-      palette.edge +
-      '" stroke="#11131a" stroke-width="3"/></svg>'
+      '<svg class="equipment-icon" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs>' +
+      '<radialGradient id="' + glowId + '"><stop stop-color="' + rare + '" stop-opacity=".44"/><stop offset="1" stop-color="' + rare + '" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="' + metalId + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="' + palette.light + '"/><stop offset="48%" stop-color="' + palette.mid + '"/><stop offset="100%" stop-color="' + palette.dark + '"/></linearGradient>' +
+      '</defs><circle cx="64" cy="64" r="60" fill="url(#' + glowId + ')"/><g>' +
+      itemShape(slot, [palette.dark, palette.mid, palette.light], palette.edge, item, metalId) +
+      "</g>" +
+      upgradeBadge +
+      '<circle cx="109" cy="109" r="7" fill="' + palette.edge + '" stroke="#11131a" stroke-width="3"/></svg>'
     );
+  }
+
+  function swatchStyle(source, value, faction) {
+    var key = lower(value);
+    if (source === "skin") {
+      var p = faction === "moonborn" ? (refinedFurPalettes[key] || skinColors[key]) : skinColors[key];
+      if (p) return "linear-gradient(135deg, " + p[2] + " 0%, " + p[0] + " 55%, " + p[1] + " 100%)";
+    }
+    if (source === "hairColor") {
+      var h = hairColors[key];
+      if (h) return "linear-gradient(135deg, " + h[1] + " 0%, " + h[0] + " 100%)";
+    }
+    if (source === "eyes") {
+      var e = eyeColors[key];
+      if (e) return "radial-gradient(circle at 38% 35%, #ffffff 0%, " + e + " 46%, " + svgDarken(e, 0.48) + " 100%)";
+    }
+    if (source === "metals") {
+      var m = metalColors[key];
+      if (m) return "linear-gradient(135deg, " + m[2] + " 0%, " + m[1] + " 50%, " + m[0] + " 100%)";
+    }
+    if (source === "accents") {
+      var ac = accentColors[key];
+      if (ac) return "linear-gradient(135deg, " + ac[1] + " 0%, " + ac[0] + " 100%)";
+    }
+    return "linear-gradient(135deg, #666, #222)";
+  }
+
+  function renderThumb(presetId, faction) {
+    var preset = presetById[presetId];
+    if (!preset || !preset.svg) return "";
+    var serial = ++portraitSerial;
+    try {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(String(preset.svg), "image/svg+xml");
+      if (doc.querySelector("parsererror")) throw new Error("SVG");
+      var root = doc.documentElement;
+      svgPrefixIds(root, "wbt" + serial + "-");
+      root.removeAttribute("width");
+      root.removeAttribute("height");
+      root.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      return new XMLSerializer().serializeToString(root);
+    } catch (err) {
+      return "";
+    }
   }
 
   var originalOpponentFactory = D.generateOpponent;
@@ -3254,6 +3596,8 @@
     randomAppearance: randomAppearance,
     defaultAppearance: defaultAppearance,
     render: render,
+    renderThumb: renderThumb,
+    swatchStyle: swatchStyle,
     itemIcon: itemIcon,
     describe: describe,
     presetOptions: presetOptions,

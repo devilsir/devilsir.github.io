@@ -115,8 +115,6 @@ export class Engine {
     this.maxPixelRatio = deviceProfile.maxDpr;
     this.pixelCap = this.maxPixelRatio;
     this.renderBudget = { elapsed: 0, frames: 0 };
-    this.viewportWidth = Math.max(1, stage.clientWidth);
-    this.viewportHeight = Math.max(1, stage.clientHeight);
     stage.append(this.renderer.domElement);
 
     this.envRT = createStudioEnvMap(this.renderer);
@@ -194,19 +192,52 @@ export class Engine {
   fit() {
     const width = Math.max(1, this.stage.clientWidth);
     const height = Math.max(1, this.stage.clientHeight);
+    if (width === this.viewportWidth && height === this.viewportHeight && this.pixelCap === this.renderer.getPixelRatio()) return;
     this.viewportWidth = width;
     this.viewportHeight = height;
     this.camera.aspect = width / height;
     this.camera.fov = this.camera.aspect < 1.12 ? 48 : 37;
     this.camera.updateProjectionMatrix();
-    this.renderer.setPixelRatio(this.pixelCap);
-    this.renderer.setSize(width, height, false);
+    this.renderer.setDrawingBufferSize(width, height, this.pixelCap);
     // Hardware-scaled offscreen blur targets (smaller & faster on mobile tile GPUs, identical smooth bokeh!)
     const bw = Math.max(2, Math.min(deviceProfile.dofMaxW, Math.floor(width * deviceProfile.dofScale)));
     const bh = Math.max(2, Math.min(deviceProfile.dofMaxH, Math.floor(height * deviceProfile.dofScale)));
     this.dofBg.setSize(bw, bh);
     this.dofH.setSize(bw, bh);
     this.dofV.setSize(bw, bh);
+  }
+
+  prepareFocusFilter(scene, dimmableMaterials) {
+    const r = this.renderer;
+    const target = r.getRenderTarget();
+    const face = r.getActiveCubeFace();
+    const mipLevel = r.getActiveMipmapLevel();
+    try {
+      r.initRenderTarget(this.dofH);
+      r.initRenderTarget(this.dofV);
+      r.setRenderTarget(this.dofV);
+      r.compile(this.preScene, this.dofCam);
+      r.compile(this.blurScene, this.dofCam);
+
+      // Warm both output formats and opacity variants while the model loader covers the canvas.
+      r.setRenderTarget(this.dofBg);
+      r.compile(scene, this.camera);
+      r.setRenderTarget(null);
+      r.compile(this.blitScene, this.dofCam);
+      r.compile(scene, this.camera);
+
+      for (const mat of dimmableMaterials) mat.transparent = true;
+      r.compile(scene, this.camera);
+      r.setRenderTarget(this.dofBg);
+      r.compile(scene, this.camera);
+    } finally {
+      for (const mat of dimmableMaterials) {
+        if (!mat.transparent) continue;
+        mat.transparent = false;
+        mat.needsUpdate = true;
+      }
+      r.setRenderTarget(target, face, mipLevel);
+    }
   }
 
   setFocusFilter(objects = null, strength = 0) {
@@ -275,7 +306,7 @@ export class Engine {
     cam.layers.set(0);
     r.setRenderTarget(this.dofBg);
     r.setClearColor(0x000000, 0);
-    r.clear(true, true, true);
+    if (!r.autoClear) r.clear(true, true, true);
     r.render(scene, cam);
 
     if (r.shadowMap.enabled) r.shadowMap.needsUpdate = false;
@@ -314,7 +345,7 @@ export class Engine {
       r.render(this.blurScene, this.dofCam);
     }
 
-    // Pass 2: Composite blurred HDR background -> clear depth -> render crisp focused foreground + labels!
+    // Pass 2: Composite the blurred background and render the focused foreground and labels.
     r.setRenderTarget(null);
     const prevAutoClear = r.autoClear;
     r.autoClear = false;
@@ -325,18 +356,24 @@ export class Engine {
     this.blitMat.uniforms.uStrength.value = this.dofCurrent;
     r.render(this.blitScene, this.dofCam);
 
-    r.clearDepth();
     cam.layers.set(2);
     if (labelsOn) cam.layers.enable(1);
-    r.render(scene, cam);
+    // The background pass already updated this scene's world matrices.
+    const autoUpdateMatrices = scene.matrixWorldAutoUpdate;
+    scene.matrixWorldAutoUpdate = false;
+    try {
+      r.render(scene, cam);
+    } finally {
+      scene.matrixWorldAutoUpdate = autoUpdateMatrices;
 
-    // Restore exact original layers & renderer state before next interaction/raycast
-    r.autoClear = prevAutoClear;
-    if (r.shadowMap.enabled) r.shadowMap.autoUpdate = prevAutoShadow;
-    for (let i = 0; i < moved.length; i++) moved[i].layers.set(0);
-    moved.length = 0;
-    cam.layers.set(0);
-    if (labelsOn) cam.layers.enable(1);
+      // Restore the layers and renderer state before the next interaction.
+      r.autoClear = prevAutoClear;
+      if (r.shadowMap.enabled) r.shadowMap.autoUpdate = prevAutoShadow;
+      for (const object of moved) object.layers.set(0);
+      moved.length = 0;
+      cam.layers.set(0);
+      if (labelsOn) cam.layers.enable(1);
+    }
   }
 
   view(eye, target, instant = false, duration = null) {

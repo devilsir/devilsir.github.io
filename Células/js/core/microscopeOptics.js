@@ -1,4 +1,4 @@
-import { paintField, isBeePhotoReady } from './histofield.js?v=23';
+import { paintField, isBeePhotoReady } from './histofield.js?v=24';
 
 // Standard widefield eyepiece FN = 18 mm (FOV = 18 mm / M_obj):
 // 4x -> 4500 um | 10x -> 1800 um | 40x -> 450 um | 100x Oil -> 180 um | 1000x (100x Apo + Optovar 2.5x) -> 72 um!

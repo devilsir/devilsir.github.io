@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { buildInsect, buildInsectExtracts } from './histologyInsects3d.js?v=1';
+import { buildBeeOrgans, buildInsect } from './histologyInsects3d.js?v=3';
 import {
   v, group, mesh, box, sphere, cylinder, capsule, lathe, torus, rod, tube,
   material, glow, platform, labelSprite, organicDisplace, tintGeometry,
@@ -355,52 +355,44 @@ function makeBee(parent) {
     band.rotation.y = Math.PI / 2;
   }
 
-  // 2) Dissected open abdomen (lower curved shell + recessed dark-crimson hollow cavity + peeled dorsal tergite flaps!)
+  // 2) The opened abdomen keeps only the ventral shell and folds the tergites away from the organs.
   const openAbd = group(abd);
-  // Lower ventral half-shell (open on dorsal +Y face so you can peer straight into the hollow abdominal cavity!)
-  const lowerGeo = new T.LatheGeometry(abdProfile, 20, Math.PI * 0.14, Math.PI * 1.18);
+  const lowerGeo = new T.LatheGeometry(abdProfile, 24, Math.PI, Math.PI);
   lowerGeo.rotateZ(Math.PI / 2);
-  lowerGeo.rotateX(Math.PI * 0.72);
+  lowerGeo.scale(1, 0.8, 1.22);
   const lowerMat = proteinMaterial('#211916', { roughness: 0.28, clearcoat: 0.9, side: T.DoubleSide });
   mesh(openAbd, lowerGeo, lowerMat);
-  // Ventral amber stripe half-rings wrapping only the underside
   for (const bx of [-0.07, 0.0, 0.07]) {
     const r = bx === 0 ? 0.116 : 0.104;
-    const band = torus(openAbd, amberBand, r, 0.017, bx, 0, 0, Math.PI * 1.12);
-    band.rotation.y = Math.PI / 2;
-    band.rotation.x = Math.PI * 0.94;
+    const band = torus(openAbd, amberBand, r, 0.014, bx, -0.02, 0, Math.PI);
+    band.rotation.set(0, Math.PI / 2, Math.PI);
+    band.scale.set(1.22, 0.80, 1);
   }
-  // Deep recessed dark-crimson open surgical cavity lining inside the abdomen!
   const cavityMat = material('#2c0710', { roughness: 0.72, clearcoat: 0.3, side: T.DoubleSide });
-  const cav = mesh(openAbd, new T.SphereGeometry(1, 16, 12, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.55), cavityMat, 0, 0.025, 0);
-  cav.scale.set(0.155, 0.095, 0.092);
-  // Crisp surgical rim + two peeled-back lateral tergite cuticle flaps flanking the open cavity!
-  const rim = torus(openAbd, proteinMaterial('#c97a82', { roughness: 0.45 }), 0.105, 0.011, 0, 0.048, 0);
+  const cav = mesh(openAbd, new T.SphereGeometry(1, 20, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), cavityMat);
+  cav.scale.set(0.164, 0.078, 0.132);
+  const rim = torus(openAbd, proteinMaterial('#cb8582', { roughness: 0.45 }), 0.11, 0.008, 0, 0.006, 0);
   rim.rotation.x = Math.PI / 2;
-  rim.scale.set(1.32, 0.78, 1);
+  rim.scale.set(1.50, 1.18, 1);
   for (const s of [-1, 1]) {
-    const flap = box(openAbd, darkChitin, 0.18, 0.012, 0.052, 0, 0.068, s * 0.088);
-    flap.rotation.x = s * 0.52;
-    box(openAbd, amberBand, 0.032, 0.014, 0.054, -0.04, 0.070, s * 0.088).rotation.x = s * 0.52;
-    box(openAbd, amberBand, 0.032, 0.014, 0.054, 0.04, 0.070, s * 0.088).rotation.x = s * 0.52;
+    const flap = group(openAbd, 0, -0.012, s * 0.157);
+    flap.rotation.x = s * 0.41;
+    box(flap, darkChitin, 0.21, 0.013, 0.057);
+    for (const x of [-0.05, 0.045]) box(flap, amberBand, 0.032, 0.005, 0.057, x, 0.008, 0);
   }
-  // Detached dorsal tergite chip resting slightly behind on the red wax
   const chip = box(openAbd, darkChitin, 0.075, 0.012, 0.048, -0.18, -0.085, 0.12);
   chip.rotation.y = 0.48;
-  // Glowing internal viscera core (visible ONLY during active dissection — disappears once organ is extracted!)
-  const cavityViscera = sphere(openAbd, glow('#e8df58', 0.85), 0.11, 0.042, 0.058, 0, 0.022, 0, 12);
+  const organs = buildBeeOrgans(openAbd);
+  organs.gut.position.set(0.005, 0.025, -0.038);
+  organs.tubules.position.set(-0.004, 0.021, 0.065);
   openAbd.visible = false;
-  bee.dissectionOrgans = { gut: cavityViscera };
-
-  bee.setDissectionState = function setDissectionState(mode = 'intact') {
-    intactAbd.visible = mode === 'intact';
-    openAbd.visible = mode !== 'intact';
-    cavityViscera.visible = mode === 'active';
-  };
+  bee.dissectionOrgans = organs;
 
   // Pair of translucent iridescent veined wings
+  const wings = [];
   for (const s of [-1, 1]) {
     const wing = group(bee, 0.06, 0.095, s * 0.05);
+    wings.push({ wing, side: s });
     wing.rotation.set(s * 0.18, s * 0.42, 0.14);
     const wGeo = new T.SphereGeometry(1, 14, 10);
     const wm = mesh(wing, wGeo, wingMat, -0.14, 0, s * 0.12);
@@ -411,7 +403,40 @@ function makeBee(parent) {
       tube(bee, darkChitin, [v(lx, -0.02, s * 0.06), v(lx - 0.03, -0.08, s * 0.14), v(lx - 0.07, -0.11, s * 0.18)], 0.008, false, 8, 5);
     }
   }
+
+  bee.setDissectionState = (mode = 'intact', removed) => {
+    const open = mode !== 'intact';
+    intactAbd.visible = !open;
+    openAbd.visible = open;
+    for (const [region, organ] of Object.entries(organs)) organ.visible = mode === 'active' && !removed?.has(region);
+    for (const { wing, side } of wings) {
+      wing.position.z = side * (open ? 0.135 : 0.05);
+      wing.rotation.y = side * (open ? 0.94 : 0.42);
+    }
+  };
   return bee;
+}
+
+function arrangeInsectSamples(dish, organs) {
+  const samples = Object.entries(organs).map(([region, organ]) => {
+    const sample = organ.clone();
+    sample.position.set(0, 0, 0);
+    sample.visible = false;
+    const bounds = new T.Box3().setFromObject(sample, true);
+    return { region, sample, bounds, width: bounds.max.z - bounds.min.z };
+  });
+  const gap = 0.055;
+  const depth = samples.reduce((total, { width }) => total + width, 0) + gap * (samples.length - 1);
+  let z = -depth / 2;
+  const placed = {};
+  for (const { region, sample, bounds, width } of samples) {
+    const rest = v(-(bounds.min.x + bounds.max.x) * 0.5, 0.044 - bounds.min.y, z - bounds.min.z);
+    sample.position.copy(rest);
+    dish.add(sample);
+    placed[region] = { sample, rest, rotation: sample.quaternion.clone() };
+    z += width + gap;
+  }
+  return placed;
 }
 
 export function buildHistologyBench(scene, renderer, stockSamples) {
@@ -605,10 +630,13 @@ export function buildHistologyBench(scene, renderer, stockSamples) {
     copris: buildInsect(lupaStation, 'copris'),
     tenebrio: buildInsect(lupaStation, 'tenebrio')
   };
-  const insectExtracts = buildInsectExtracts(lupaStation);
-  const insectDish = group(lupaStation, 0.87, 0.034, 1.34);
-  lathe(insectDish, glass, [[0.01, 0], [0.24, 0], [0.255, 0.014], [0.255, 0.071],
-    [0.235, 0.071], [0.235, 0.025], [0.01, 0.025]], 26);
+  const insectDish = group(lupaStation, 0.83, 0.225, 0.90);
+  lathe(insectDish, glass, [[0.01, 0], [0.3, 0], [0.31, 0.014], [0.31, 0.071],
+    [0.293, 0.071], [0.293, 0.025], [0.01, 0.025]], 32).scale.set(1.06, 1, 1.22);
+  cylinder(insectDish, material('#354c54', { roughness: 0.9 }), 0.287, 0.287, 0.012, 0, 0.034, 0, 36)
+    .scale.set(1.06, 1, 1.22);
+  const insectSamples = Object.fromEntries(Object.entries(animals).map(([id, animal]) =>
+    [id, arrangeInsectSamples(insectDish, animal.dissectionOrgans)]));
   insectDish.visible = false;
 
   const beeOrgan = group(lupaStation, 0, 0.4, 0.55);
@@ -631,7 +659,7 @@ export function buildHistologyBench(scene, renderer, stockSamples) {
   ccdCamera.position.copy(plateCenter);
   ccdCamera.position.y += 0.76;
   ccdCamera.lookAt(plateCenter);
-  for (const root of [lupaPlate, waxDish, ...Object.values(animals), forceps, beeOrgan, insectExtracts, insectDish]) {
+  for (const root of [lupaPlate, waxDish, ...Object.values(animals), forceps, beeOrgan, insectDish]) {
     root.traverse(object => object.layers.enable(ccdLayer));
   }
   for (const light of scene.children.filter(object => object.isLight)) light.layers.enable(ccdLayer);
@@ -1140,7 +1168,7 @@ export function buildHistologyBench(scene, renderer, stockSamples) {
 
   return {
     lupaStation, lupaMonitor, updateLupaLive, dispose: () => ccdTarget.dispose(),
-    bee, animals, insectExtracts, insectDish, petri, petriComb, beeOrgan, forceps, iceChamber, iceCrystals, waxDish, salineDrop,
+    bee, animals, insectDish, insectSamples, petri, petriComb, beeOrgan, forceps, iceChamber, iceCrystals, waxDish, salineDrop,
     rack, bottles, resinMold, moldWells, moldSample, prepSampleMat, woodBlockPreview, woodResinTip,
     resinMixer, resinMixLiquid, resinStirrer, resinTray, stockBlocks, specimen,
     micro, feeder, paraffin, resinHolder, setResinKnife, glassEdge, steelEdge, crank, ribbon, ribbonSlices,

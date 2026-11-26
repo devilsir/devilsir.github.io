@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a1821">
 <title>QuimiCraft Voxel — Ciência & Sobrevivência v7.6</title>
-<link rel="stylesheet" href="styles/main.css?v=7">
+<link rel="stylesheet" href="styles/main.css?v=11">
 <link rel="stylesheet" href="styles/character-customization.css">
-<link rel="stylesheet" href="styles/science.css">
+<link rel="stylesheet" href="styles/science.css?v=2">
 <link rel="stylesheet" href="styles/alchemy.css">
 <link rel="stylesheet" href="styles/vehicles.css?v=2">
-<link rel="stylesheet" href="styles/catalog.css?v=8">
+<link rel="stylesheet" href="styles/catalog.css?v=9">
+<link rel="stylesheet" href="styles/exploration-map.css?v=2">
 </head>
 <body><div id="climateBadge" aria-live="polite">Primavera · Ensolarado</div>
 <div id="game"></div>
@@ -73,11 +74,15 @@
 
 <div id="hud">
   <div id="crosshair"></div>
-  <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div></div>
+  <div class="stats"><div id="fps">FPS 60</div><div id="coords">X 0 &nbsp; Y 0 &nbsp; Z 0</div><div id="biome">PLANÍCIE</div><div id="exterminationTracker" hidden></div></div>
   <div class="clock"><div class="clock-top"><span id="timeLabel">12:00</span><span id="dayLabel">DIA 1</span><span id="moonLabel" role="img" aria-label="Lua nova" title="Lua nova">🌑</span></div><div class="arc"><span id="orb" class="orb"></span></div></div>
   <div id="chemHud" class="chem-hud">DESCOBERTAS 0 / 47</div><div id="missionHud" class="mission-hud"></div>
   <button id="historyHudBtn" class="history-hud-button" type="button" aria-label="Abrir Histórico de mensagens">Histórico</button>
-  <div class="science-hud-actions"><button id="notebookHudBtn" type="button" aria-label="Abrir Caderno Científico"><b>N</b><span>Caderno</span></button><button id="researchHudBtn" type="button" aria-label="Abrir Árvore de Pesquisa"><b>R</b><span>Pesquisa</span></button></div>
+  <div class="science-hud-actions"><button id="notebookHudBtn" type="button" aria-label="Abrir Caderno Científico"><b>N</b><span>Caderno</span></button><button id="researchHudBtn" type="button" aria-label="Abrir Árvore de Pesquisa"><b>R</b><span>Pesquisa</span></button><button id="mapHudBtn" type="button" aria-label="Abrir mapa de exploração"><b>M</b><span>Mapa</span></button></div>
+  <div id="mapGuide" class="map-guide" role="group" aria-label="Guia do marcador" hidden>
+    <span class="map-guide-dial" aria-hidden="true"><span id="mapGuideArrow">↑</span><span class="map-guide-arrived">✓</span></span>
+    <div><strong id="mapGuideName"></strong><span id="mapGuideInfo"></span></div>
+  </div>
   <div id="temperatureHud" class="temperature-hud" data-state="comfortable"><div class="temperature-head"><span id="temperatureLabel">Confortável</span><b id="temperatureValue">37.0 °C</b></div><div class="temperature-track"><i id="temperatureFill"></i><span></span></div></div>
   <div class="left-hazard-stack" aria-label="Riscos e efeitos ativos">
     <div id="hazardHud" class="hazard-hud" aria-live="polite"></div>
@@ -121,8 +126,8 @@
   </section>
   <div id="productionHud" class="fishing-status" hidden><span id="productionCopy" role="status"></span><div class="fishing-track"><i id="productionFill"></i></div></div>
 <div id="fishingHud" class="fishing-status" hidden><span id="fishingCopy" role="status"></span><div class="fishing-track"><i id="fishingFill"></i></div></div>
-  <div id="interaction" class="interaction"></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
-  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário <kbd>V</kbd> veículos</div>
+  <div id="interaction" class="interaction"></div><div id="gamemodeChip" class="gamemode-chip" hidden></div><div id="viewChip" class="view-chip">C · 1ª PESSOA</div><div id="combatChip" class="combat-chip">Cajado do Vento · clique para conjurar</div>
+  <div id="controls"><kbd>WASD</kbd> mover <kbd>ESPAÇO</kbd> nadar/subir <kbd>CLIQUE</kbd> atacar/quebrar <kbd>DIR.</kbd> usar balde/colocar <kbd>E</kbd> interagir <kbd>G</kbd> coletar amostra <kbd>/</kbd> comandos <kbd>N</kbd> caderno <kbd>R</kbd> pesquisa <kbd>TAB</kbd> inventário <kbd>V</kbd> veículos</div>
 </div>
 <div id="dragHint" class="drag-hint" hidden>Arraste ou use as setas para olhar · F atacar/quebrar · Q usar</div>
 <section id="fieldworkPanel" class="fieldwork-panel" aria-labelledby="fieldworkStep" hidden>
@@ -202,6 +207,34 @@
   <div class="shop-body"><div class="shop-wallet"><span>CARTEIRA DO EXPLORADOR</span><b id="shopWallet">0 pepitas de ouro</b></div><div id="shopGrid" class="shop-grid"></div></div>
 </div></section>
 
+<section id="extermination" class="modal" role="dialog" aria-modal="true" aria-labelledby="exterminationTitle" aria-hidden="true"><div class="modal-card shop-card">
+  <div class="modal-head">
+    <div><h2 id="exterminationTitle" class="modal-title">Mestre Gael</h2><p class="modal-sub">Mestre de Extermínio da Vila dos Elementos</p></div>
+    <button class="close" id="exterminationClose" type="button" aria-label="Fechar painel de extermínio">×</button>
+  </div>
+  <div class="shop-body extermination-body">
+    <div class="extermination-rank">
+      <strong id="exterminationLevel">Nível 1 de Extermínio</strong>
+      <span id="exterminationXp">0 XP</span>
+      <progress id="exterminationProgress" max="1" value="0" aria-label="Progresso para o próximo nível de Extermínio"></progress>
+      <small id="exterminationNext"></small>
+    </div>
+    <div class="shop-wallet"><strong id="exterminationPoints">0 pontos de extermínio</strong><span id="exterminationCompleted">0 tarefas entregues</span></div>
+    <div class="extermination-actions" role="group" aria-label="Painéis de extermínio">
+      <button class="secondary" type="button" id="exterminationTasksTab" aria-pressed="true">Tarefas</button>
+      <button class="secondary" type="button" id="exterminationRewardsTab" aria-pressed="false">Recompensas</button>
+    </div>
+    <section class="extermination-panel" id="exterminationTasks" aria-label="Tarefas de extermínio">
+      <div id="exterminationContracts"></div>
+      <button class="secondary" type="button" id="exterminationKit">Retirar kit inicial</button>
+    </section>
+    <section class="extermination-panel" id="exterminationRewards" aria-label="Recompensas de extermínio" hidden>
+      <div class="shop-grid" id="exterminationStock"></div>
+    </section>
+    <div id="exterminationFeedback" role="status"></div>
+  </div>
+</div></section>
+
 <section id="chemistry" class="modal" aria-hidden="true"><div class="modal-card lab-card">
   <div class="modal-head"><div><p class="eyebrow">Estação de pesquisa</p><h2 class="modal-title">Bancada Química</h2><p class="modal-sub">Combine recursos do mundo, observe as equações e descubra materiais inéditos.</p></div><button class="close" data-close="chemistry">×</button></div>
   <div class="lab-body"><aside><p class="inv-label">Elementos dominados</p><div id="elementBoard" class="element-board"></div><button id="periodicTableBtn" class="periodic-launch" type="button"><span>PT</span><div><b>Abrir Tabela Periódica</b><small>Missão Arquivo dos Elementos</small></div></button><div id="labNote" class="lab-note">Prof. Carbono: “Toda reação começa com uma boa pergunta — e os reagentes certos.”</div></aside><main><p class="inv-label">Reações disponíveis</p><div id="chemRecipes" class="chem-recipes"></div></main></div>
@@ -261,9 +294,51 @@
   <div class="station-layout"><nav id="scienceStationNav" class="station-nav" aria-label="Equipamentos desta bancada"></nav><main id="scienceStationContent" class="station-content"></main></div>
 </div></section>
 
+<section id="explorationMap" class="modal" role="dialog" aria-modal="true" aria-labelledby="mapTitle" aria-hidden="true">
+  <div class="map-card">
+    <header class="map-header">
+      <div><h2 id="mapTitle">Mapa de exploração</h2><p id="mapLocation"></p></div>
+      <button id="mapClose" class="close" type="button" aria-label="Fechar mapa">×</button>
+    </header>
+    <div class="map-layout">
+      <div class="map-board">
+        <canvas tabindex="0" aria-label="Mapa do terreno explorado. Use as setas para mover e mais ou menos para ajustar o zoom."></canvas>
+        <div class="map-north" aria-label="Norte"><span>↑</span>N</div>
+        <div id="mapScale" class="map-scale"></div>
+        <div class="map-controls">
+          <button id="mapZoomOut" class="secondary" type="button" aria-label="Diminuir zoom do mapa">−</button>
+          <button id="mapZoomIn" class="secondary" type="button" aria-label="Aumentar zoom do mapa">+</button>
+          <button id="mapCenter" class="secondary" type="button">Minha posição</button>
+        </div>
+      </div>
+      <section class="map-waypoints" aria-labelledby="mapWaypointTitle">
+        <header><h3 id="mapWaypointTitle">Marcadores</h3><button id="mapWaypointNew" class="secondary" type="button">Novo marcador</button></header>
+        <label for="mapWaypointSelect">Destino</label>
+        <select id="mapWaypointSelect"></select>
+        <p id="mapWaypointStatus" role="status"></p>
+        <div id="mapWaypointActions" class="map-waypoint-actions">
+          <button id="mapWaypointCenter" class="secondary" type="button">Mostrar no mapa</button>
+          <button id="mapWaypointRemove" class="secondary" type="button">Remover</button>
+        </div>
+        <form id="mapWaypointForm" hidden>
+          <label for="mapWaypointName">Nome do marcador</label>
+          <input id="mapWaypointName" type="text" maxlength="48" placeholder="Recifes do sul" autocomplete="off">
+          <div class="map-waypoint-actions">
+            <button class="primary" type="submit">Salvar marcador</button>
+            <button id="mapWaypointCancel" class="secondary" type="button">Cancelar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <footer class="map-footer">
+      <div class="map-legend"><span><i class="map-player"></i>Você</span><span><i class="map-water"></i>Água</span><span><i class="map-fog"></i>Área inexplorada</span><span id="mapExtent"></span></div>
+      <p class="map-help">Arraste para mover · M para fechar</p>
+    </footer>
+  </div>
+</section>
 <section id="devMenu" class="modal" aria-hidden="true"><div class="modal-card dev-card">
   <div class="modal-head"><div><p class="eyebrow">Console experimental</p><h2 class="modal-title">Modo DEV</h2><p class="modal-sub">Ferramentas locais deste mundo. Digite <b>-mododev</b> no chat para reabrir.</p></div><button class="close" data-close="devMenu">×</button></div>
-  <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="command-row"><input id="devCommand" autocomplete="off" placeholder="Ex.: fly, heal, spawn golem, give crystal 64"><button id="runCommand" class="primary">Executar</button></div><div class="dev-help">fly · heal · speed 1–5 · infinite · recipes · time day|sunset|night · give item quantidade · tp x y z · spawn golem|wisp|magma|scorpion|deer|owl · clear mobs</div></div>
+  <div class="dev-body"><div id="devStatus" class="dev-status"></div><div id="devGrid" class="dev-grid"></div><div class="dev-command-wrap"><div id="devCmdSuggest" class="cmd-suggest" role="listbox" aria-label="Sugestões de comando" hidden></div><div id="devCmdHint" class="cmd-hint" hidden></div><div class="command-row"><input id="devCommand" autocomplete="off" spellcheck="false" placeholder="Ex.: gamemode creative, summon orca, give pedra 64 (Tab autocompleta)"><button id="runCommand" class="primary">Executar</button></div></div><div class="dev-help">gamemode creative|survival · summon criatura|bloco|id|nome · give bloco|item|id|nome qtd · setblock ~ ~ ~ bloco · fill · fly · heal · speed 1–5 · time · weather · tp · kill · clear</div></div>
 </div></section>
 
 <span id="alchemyLocator" class="alchemy-locator" hidden></span>
@@ -294,11 +369,14 @@
         <button type="button" class="secondary" data-category="shield">Escudos</button>
         <button type="button" class="secondary" data-category="gear">Equipamentos</button>
         <button type="button" class="secondary" data-category="focus">Artefatos</button>
+        <button type="button" class="secondary" data-category="food">Alimentos</button>
+        <button type="button" class="secondary" data-category="item">Itens e Química</button>
         <button type="button" class="secondary" data-category="npc">NPCs</button>
         <button type="button" class="secondary" data-category="vehicle">Veículos</button>
         <button type="button" class="secondary" data-category="animal">Fauna terrestre</button>
-        <button type="button" class="secondary" data-category="aquatic">Fauna aquática</button>
+        <button type="button" class="secondary" data-category="aquatic">Vida aquática</button>
         <button type="button" class="secondary" data-category="fantasy">Criaturas</button>
+        <button type="button" class="secondary" data-category="extermination">Extermínio</button>
       </div>
       <div class="catalog-filters catalog-block-filters" role="group" aria-label="Tipos de bloco" hidden>
         <button type="button" class="secondary" data-block-filter="all">Todos os blocos</button>
@@ -317,7 +395,6 @@
     <div class="catalog-inspector-head">
       <h2 id="catalogItemTitle" class="modal-title"></h2>
       <div class="catalog-detail-actions">
-        <button type="button" class="secondary" data-note-back hidden>Ficha anterior</button>
         <button type="button" class="close" data-inspector-close aria-label="Voltar ao catálogo">×</button>
       </div>
     </div>
@@ -346,31 +423,35 @@
     </div>
     <p id="catalogModelHelp" class="catalog-model-help" hidden>Arraste ou use as setas para girar. Use + e − para ajustar o zoom.</p>
     <p id="catalogItemDetail" class="catalog-item-detail"></p>
-    <section class="catalog-field-notes" aria-label="Notas de campo">
+    <section class="catalog-field-notes" aria-label="Ficha do catálogo">
+      <div id="catalogBiology" class="catalog-biology" hidden>
+        <h3>Biologia e relações</h3>
+        <dl id="catalogBioGrid" class="catalog-bio-grid"></dl>
+      </div>
       <h3>História</h3>
       <p id="catalogStory"></p>
-      <h3>Pista de campo</h3>
+      <h3>Curiosidades</h3>
       <p id="catalogTrivia"></p>
-      <nav id="catalogClues" class="catalog-clues" aria-label="Pistas em outras fichas" hidden></nav>
     </section>
   </dialog>
 </section>
 <input type="file" id="worldImportFile" accept=".json,application/json" hidden>
 <div id="notificationStack" class="notification-stack" aria-live="polite" aria-relevant="additions text"></div>
-<div id="chat" class="chat"><input id="chatInput" class="chat-box" maxlength="120" autocomplete="off" placeholder="Mensagem ou comando…  (-mododev)"></div>
+<div id="chat" class="chat"><div id="cmdSuggest" class="cmd-suggest" role="listbox" aria-label="Sugestões de comando" hidden></div><div id="cmdHint" class="cmd-hint" hidden></div><input id="chatInput" class="chat-box" maxlength="180" autocomplete="off" spellcheck="false" placeholder="Mensagem ou /comando… (Tab autocompleta)"></div>
 <div id="toast"></div>
 
 <script src="assets/three.min.js"></script>
 <script src="js/character-customization.js"></script>
 <script src="js/quimicraft-systems.js"></script>
-<script src="js/field-laboratory.js?v=3"></script>
+<script src="js/field-laboratory.js?v=7"></script>
 <script src="js/arsenal.js?v=12"></script>
-<script src="js/science-core.js?v=3"></script>
-<script src="js/science-ui.js?v=2"></script>
+<script src="js/science-core.js?v=4"></script>
+<script src="js/science-ui.js?v=3"></script>
 <script src="js/frontier.js?v=3"></script>
 <script src="js/regions.js?v=2"></script>
 <script src="js/habitats.js"></script>
-<script src="js/settlements.js?v=2"></script>
+<script src="js/extermination.js?v=2"></script>
+<script src="js/settlements.js?v=3"></script>
 <script src="js/workshops.js?v=2"></script>
 <script src="js/professions.js?v=3"></script>
 <script src="js/combat-effects.js?v=8"></script>
@@ -381,38 +462,44 @@
 <script src="js/laboratory-layout.js"></script>
 <script src="js/player-input.js"></script>
 <script src="js/inventory-transaction.js?v=3"></script>
-<script src="js/world-storage.js"></script>
-<script src="js/player-models.js?v=17"></script>
-<script src="js/biome-fauna.js?v=5"></script>
+<script src="js/world-storage.js?v=2"></script>
+<script src="js/player-models.js?v=20"></script>
+<script src="js/biome-fauna.js?v=16"></script>
 <script src="js/dragons.js?v=7"></script>
-<script src="js/creature-poses.js?v=15"></script>
+<script src="js/creature-poses.js?v=18"></script>
 <script src="js/expeditions.js?v=4"></script>
 <script src="js/mounts.js?v=4"></script>
 <script src="js/npc-looks.js?v=4"></script>
-<script src="js/mob-spawn.js?v=2"></script>
+<script src="js/mob-spawn.js?v=3"></script>
 <script src="js/breeding.js"></script>
-<script src="js/entity-ai.js?v=5"></script>
+<script src="js/entity-ai.js?v=8"></script>
 <script src="js/alchemy.js"></script>
 <script src="js/alchemy-world.js"></script>
 <script src="js/alchemy-ui.js"></script>
-<script src="js/alchemy-play.js"></script>
-<script src="js/vehicle-models.js?v=6"></script>
-<script src="js/vehicles.js?v=3"></script>
+<script src="js/alchemy-play.js?v=2"></script>
+<script src="js/vehicle-models.js?v=8"></script>
+<script src="js/vehicles.js?v=8"></script>
 <script src="js/surface-art.js?v=2"></script>
 <script src="js/plant-models.js?v=4"></script>
-<script src="js/block-models.js?v=5"></script>
-<script src="js/depths.js?v=6"></script>
-<script src="js/aquatic.js?v=7"></script>
-<script src="js/wildlife-models.js?v=29"></script>
-<script src="js/catalog-lore.js?v=4"></script>
-<script src="js/catalog.js?v=20"></script>
+<script src="js/block-models.js?v=6"></script>
+<script src="js/marine-life.js?v=4"></script>
+<script src="js/depths.js?v=18"></script>
+<script src="js/aquatic.js?v=13"></script>
+<script src="js/wildlife-models.js?v=40"></script>
+<script src="js/fauna-models.js?v=4"></script>
+<script src="js/wildlife-behavior.js?v=9"></script>
+<script src="js/catalog-lore.js?v=18"></script>
+<script src="js/catalog-lore-items.js?v=2"></script>
+<script src="js/catalog.js?v=26"></script>
 <script src="js/menu-backdrop.js?v=2"></script>
 <script src="js/geology.js"></script>
-<script src="js/folklore.js?v=2"></script>
+<script src="js/folklore.js?v=3"></script>
 <script src="js/fluid-flow.js?v=3"></script>
 <script src="js/spectral.js?v=2"></script>
 <script src="js/screamer.js"></script>
 <script src="js/survival.js?v=1"></script>
-<script src="js/game.js?v=39"></script>
+<script src="js/exploration-map.js?v=3"></script>
+<script src="js/commands.js?v=2"></script>
+<script src="js/game.js?v=67"></script>
 </body>
 </html>

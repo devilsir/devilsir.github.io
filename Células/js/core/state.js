@@ -1,4 +1,4 @@
-import { tissues } from '../data/tissues.js?v=23';
+import { tissues } from '../data/tissues.js?v=24';
 
 const key = 'citolab3d.slide.v1';
 const stainIds = ['historesin', 'he', 'pas', 'masson', 'gram', 'fresh'];

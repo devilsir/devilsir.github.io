@@ -27,7 +27,6 @@
 .catalog-inspector-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
 .catalog-inspector-head .close{flex:none}
 .catalog-detail-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:none}
-.catalog-detail-actions [data-note-back]{width:auto;min-height:35px;padding:4px 10px;font-size:.8rem}
 .catalog-viewer{position:relative;height:clamp(166px,51dvh,440px);overflow:hidden;border-radius:10px;background:#14262e}
 .catalog-poster,.catalog-live-view{width:100%;height:100%}
 .catalog-poster{display:block;object-fit:contain}
@@ -50,12 +49,12 @@
 .catalog-field-notes{margin-top:14px;padding:12px 14px;border:1px solid #385862;border-radius:12px;background:#142e39}
 .catalog-field-notes h3{margin:0 0 4px;color:#a6e2c9;font-size:.82rem}
 .catalog-field-notes p{margin:0;color:#e1eeeb;font-size:.88rem;line-height:1.5}
-.catalog-field-notes p+h3{margin-top:10px}
-.catalog-clues{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:9px}
-.catalog-clue{width:auto;padding:4px 0;border:0;border-radius:2px;background:transparent;color:#b4e8d2;
-  font:inherit;font-size:.84rem;text-align:left;text-decoration:underline;text-underline-offset:.23em;cursor:pointer}
-.catalog-clue:hover{color:#f2fff5}
-.catalog-inspector .catalog-clue:focus-visible{outline-offset:3px}
+.catalog-field-notes p+h3,.catalog-biology+h3{margin-top:11px}
+.catalog-biology{padding-bottom:10px;border-bottom:1px solid rgba(166,226,201,.18)}
+.catalog-bio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 14px;margin:6px 0 0}
+.catalog-bio-row{padding:6px 9px;border-radius:8px;background:rgba(9,25,32,.56);border:1px solid rgba(166,226,201,.12)}
+.catalog-bio-row dt{margin:0 0 2px;font-size:.73rem;font-weight:700;letter-spacing:.02em;color:#8ad4ba}
+.catalog-bio-row dd{margin:0;font-size:.82rem;line-height:1.38;color:#e4f0ed}
 .forge-section{font-size:.9rem;color:#f1c081;margin:13px 0 4px}
 .forge-section:first-child{margin-top:0}
 @media (max-width:650px){

@@ -2,7 +2,7 @@
 
 globalThis.QuimiCraftAI = (() => {
   const attack = (kind, damage, range, windup, cooldown, effect = "") =>
-    Object.freeze({kind, damage, range, windup, cooldown, effect, venom:kind==="lunge"&&effect==="toxicity"});
+    Object.freeze({kind, damage, range, windup: Math.max(.18, Number((windup * .58).toFixed(2))), cooldown: Math.max(.95, Number((cooldown * .68).toFixed(2))), effect, venom:kind==="lunge"&&effect==="toxicity"});
   const profile = (temperament, hp, walk, run, sense, roam, strike, loot = []) =>
     Object.freeze({temperament, hp, walk, run, sense, roam, strike, loot: Object.freeze(loot.map(Object.freeze))});
   const guard = attack("shot", 11, 9, .38, 1.7, "guard");
@@ -69,6 +69,7 @@ globalThis.QuimiCraftAI = (() => {
     sheep: profile("calm", 26, .76, 2.85, 5, 12, null, [["raw_mutton", 2, 4], ["wool", 1, 3]])
   });
   const civilians = Object.freeze({
+    extermination_master: profile("civilian",58,.85,3.35,8,1.6,null),
     seed_curator: profile("civilian",35,1.05,3.8,8,3.6,null),
     water_keeper: profile("civilian",46,1.21,3.86,8,3.5,null),
     cartographer: profile("civilian",40,1.35,4.2,10,4.7,null),
@@ -97,12 +98,16 @@ globalThis.QuimiCraftAI = (() => {
     mayor: profile("civilian", 44, 1.07, 3.4, 8, 6, null)
   });
   const resident = profile("civilian", 41, 1.08, 3.35, 7.5, 6, null);
+  const wildOnlyStrike=Object.freeze({...attack("lunge",9,1.65,.22,1.25),wildOnly:true});
+  const smallHunters=new Set(["lynx","fennec","owl","frost_owl"]);
   const heading = (a, b) => Math.atan2(b.x - a.x, b.z - a.z);
   const range = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
   const point = a => ({x: a.x, y: a.y, z: a.z});
 
   function getProfile(type, role) {
-    return role ? civilians[role] || resident : globalThis.QuimiCraftBiomeFauna?.species[type]?.profile || species[type] || species.capivara;
+    if(role)return civilians[role]||resident;
+    const base=globalThis.QuimiCraftBiomeFauna?.species[type]?.profile||species[type]||species.capivara;
+    return smallHunters.has(type)?{...base,strike:wildOnlyStrike}:base;
   }
 
   const detectionRange = p => p.sense * 1.25;
@@ -121,6 +126,7 @@ globalThis.QuimiCraftAI = (() => {
     const radius = e.aquatic ? Math.max(26, Math.min(40, e.profile.attack.notice * 4.6)) :
       Math.max(36, Math.min(56, e.profile.sense * 2.7));
     a.engagement = {target, origin: point(e), lastSeen: point(target), radius, searching: false};
+    a.think = 0;
   }
 
   function canPursue(e, canFight = validTarget) {
@@ -154,7 +160,7 @@ globalThis.QuimiCraftAI = (() => {
       a.fear = 5;
       a.panic = point(threat);
     }
-    if (p.strike) engage(e, threat);
+    if (p.strike&&!p.strike.wildOnly) engage(e, threat);
     a.think = 0;
   }
 
@@ -170,7 +176,7 @@ globalThis.QuimiCraftAI = (() => {
     if (returning) return {mode: "evade", goal: returning, speed: chaseSpeed(p) * .88};
 
     if ((a.think -= dt) <= 0) {
-      a.think = .19 + random() * .13;
+      a.think = a.engagement ? .07 + random() * .05 : .17 + random() * .11;
       a.vision = sense(a.engagement?.target);
       const {enemy, threat} = a.vision;
       if (p.strike && enemy?.visible && canFight(enemy.actor)) {
@@ -188,11 +194,16 @@ globalThis.QuimiCraftAI = (() => {
 
     const perceived = a.vision || {}, combat = a.engagement, target = combat?.target;
     const visible = !!target && perceived.enemy?.actor === target && perceived.enemy.visible;
+    const aimedStrike = p.strike?.kind === "shot" || p.strike?.kind === "gaze";
+    const distance = target ? range(e, target) : Infinity;
     if (a.swing) {
-      if ((a.swing.remaining -= dt) > 0) return {mode: "windup", goal: null, aim: target, speed: 0};
+      if ((a.swing.remaining -= dt) > 0) {
+        const stepIn = !aimedStrike && target && distance > p.strike.range * .55;
+        return {mode: "windup", goal: stepIn ? point(target) : null, aim: target, speed: stepIn ? chaseSpeed(p) * .45 : 0};
+      }
       a.swing = null;
       a.cooldown = p.strike.cooldown;
-      a.aim = .27;
+      a.aim = .16;
       return {mode: "strike", goal: null, aim: target, speed: 0, strike: target};
     }
     if (a.fear > 0 && a.panic) {
@@ -203,9 +214,7 @@ globalThis.QuimiCraftAI = (() => {
       }
       return {mode: "flee", goal, speed: p.run};
     }
-    const aimedStrike = p.strike?.kind === "shot" || p.strike?.kind === "gaze";
-    const distance = target ? range(e, target) : Infinity;
-    if (p.strike && visible && distance <= p.strike.range && (aimedStrike || Math.abs(target.y - e.y) <= 1.22)) {
+    if (p.strike && visible && distance <= p.strike.range && (aimedStrike || Math.abs(target.y - e.y) <= 1.5)) {
       if (p.strike.kind === "shot" && distance < 2.7 && a.cooldown > .2) {
         const angle = heading(target, e);
         return {mode: "kite", goal: {x: e.x + Math.sin(angle) * 3, y: e.y, z: e.z + Math.cos(angle) * 3},
@@ -213,9 +222,10 @@ globalThis.QuimiCraftAI = (() => {
       }
       if (a.cooldown <= 0) {
         a.swing = {target, remaining: p.strike.windup};
-        return {mode: "windup", goal: null, aim: target, speed: 0};
+        const stepIn = !aimedStrike && distance > p.strike.range * .55;
+        return {mode: "windup", goal: stepIn ? point(target) : null, aim: target, speed: stepIn ? chaseSpeed(p) * .45 : 0};
       }
-      if (a.aim > 0 || distance < p.strike.range * .78 || aimedStrike) {
+      if (a.aim > 0 || distance < p.strike.range * .52 || aimedStrike) {
         return {mode: "recover", goal: null, aim: target, speed: 0};
       }
     }

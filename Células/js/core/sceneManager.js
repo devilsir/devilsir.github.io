@@ -20,6 +20,7 @@ function release(root) {
   root.traverse(object => {
     if (object.geometry && !object.geometry.userData?.shared) geometries.add(object.geometry);
     if (object.isInstancedMesh) object.dispose();
+    if (object.isLight) object.shadow?.dispose();
     if (object.material) {
       for (const mat of [object.material].flat()) {
         if (mat && !mat.userData?.shared) materials.add(mat);
@@ -282,7 +283,7 @@ export class SceneManager {
         }
         continue;
       }
-      target.getWorldPosition(labelPosition).add(offset).project(this.engine.camera);
+      labelPosition.setFromMatrixPosition(target.matrixWorld).add(offset).project(this.engine.camera);
       const hidden = labelPosition.z > 1 || labelPosition.z < -1 || Math.abs(labelPosition.x) > .97 || Math.abs(labelPosition.y) > .93;
       if (entry.lastHidden !== hidden) {
         item.hidden = hidden;

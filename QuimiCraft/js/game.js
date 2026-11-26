@@ -39,6 +39,7 @@ QuimiCraftExpeditions.register(BLOCK,BDEF);
 const fieldLab=QuimiCraftFieldLab;
 fieldLab.register(BLOCK,BDEF);
 fieldLab.registerCement(BLOCK,BDEF);
+fieldLab.registerLamp(BLOCK,BDEF);
 const folklore=QuimiCraftFolklore,fluidFlow=QuimiCraftFluidFlow;
 const spectral=QuimiCraftSpectral,screamer=QuimiCraftScreamer;
 const barriers=[
@@ -251,7 +252,10 @@ terrainMat.onBeforeCompile=shader=>{
 let saveIssue = "";
 const worldStorage = QuimiCraftWorldStorage.create({storage:localStorage, idb:globalThis.indexedDB, seed:WORLD_SEED, chunkSize:CHUNK, onError:reportSaveIssue});
 const {mods, doors:doorMeta, fluids:fluidLevels} = worldStorage.maps;
+const explorationSurvey=QuimiCraftExplorationMap.createSurvey();
+const explorationWaypoints=QuimiCraftExplorationMap.createWaypoints(explorationSurvey);
 const chunks=new Map(),pending=[];
+let terrainVisibility=null;
 let wantedChunks=new Set(),chunkPriorities=new Map(),queueChanged=false;
 const editedColumnTops=new Map(),roofCache=new Map();
 const key3=(x,y,z)=>`${x}|${y}|${z}`, ckey=(cx,cz)=>`${cx},${cz}`;
@@ -259,11 +263,16 @@ const key3=(x,y,z)=>`${x}|${y}|${z}`, ckey=(cx,cz)=>`${cx},${cz}`;
 const VILLAGE=QuimiCraftFrontier.villageFor(localStorage);
 const ecology=QuimiCraftRegions.resourcePlan(BLOCK,hash,WORLD_SEED);
 const depths=QuimiCraftDepths.create({B:BLOCK,seed:WORLD_SEED,hash,level:WATER_LEVEL});
-const wildlife=QuimiCraftWildlife.create(THREE),DRAGONS=QuimiCraftDragons.species;
+const wildlife=QuimiCraftWildlife.create(THREE),faunaModels=QuimiCraftFaunaModels.create(THREE),DRAGONS=QuimiCraftDragons.species;
 const natureFolk=QuimiCraftMounts.trees,siteWardens=QuimiCraftMounts.wardens;
 const bondedMounts=new Map(),defeatedSiteActors=new Set(),groveAlarm=new Map(),discoveredSites=new Set();
 let riding=null,mountClock=0;
-const spawnLightPowers=new Uint8Array(256);
+const placementsWithLight=new Map([
+  [BLOCK.TORCH,{color:0xffab54,range:9,height:.71}],
+  [BLOCK.SPECTRAL,{color:0x66ebc8,range:11,height:.47}],
+  [BLOCK.MYCELIUM_LAMP,{color:0x7cedba,range:12,height:.41,steady:true}]
+]);
+const spawnLightPowers=new Uint8Array(Math.max(255,BLOCK.MYCELIUM_LAMP)+1);
 for(const [name,power] of Object.entries(QuimiCraftMobSpawn.emitters)){
   if(Number.isInteger(BLOCK[name]))spawnLightPowers[BLOCK[name]]=power;
 }
@@ -338,6 +347,10 @@ function findStandingY(x,z,guess=terrainHeight(x,z)+2){
 function surfaceBlock(x,z,h=terrainHeight(x,z),b=biomeAt(x,z),habitat,lake=depths.lakeAt(x,z)){
   const site=remoteSiteAt(x,z);if(site&&Math.max(Math.abs(x-site.x),Math.abs(z-site.z))<=8)return [BLOCK.MARBLE,BLOCK.PLANK,BLOCK.ALCHEMY_BRICK][site.kind];
   const road=villageGround(x,z);if(road)return road;
+  if(lake&&h<WATER_LEVEL&&WATER_LEVEL-h<=7&&lake.radius<.86){
+    const {basin}=lake,kind=depths.waterKind(lake,biomeAt(basin.x,basin.z));
+    if((kind==="marine"||kind==="subantarctic")&&noise.n2(x*.086+51,z*.086-72)>.13)return BLOCK.LIMESTONE;
+  }
   const extra=depths.surface(b,x,z,h-WATER_LEVEL,lake);
   if(extra)return extra;
   const regional=habitats.surface(habitat===undefined?habitats.at(x,z,b):habitat,x,z,h)||ecology.surface(b,x,z,h-WATER_LEVEL);
@@ -355,7 +368,16 @@ function caveAt(x,y,z,h){
 function naturalBlock(x,y,z,h,b,surface,habitat=null,lake=null){
   if(y<0||y>=MAX_Y)return BLOCK.AIR;
   if(y>h){
-    if(y===WATER_LEVEL&&h<WATER_LEVEL&&["taiga","tundra","fiordes glaciais"].includes(b)&&(!lake||lake.radius>.74)&&hash(x,z,707)>.12)return BLOCK.ICE;
+    if(y===WATER_LEVEL&&h<WATER_LEVEL){
+      if(["taiga","tundra","fiordes glaciais"].includes(b)&&(!lake||lake.radius>.74)&&hash(x,z,707)>.12)return BLOCK.ICE;
+      if(lake&&lake.radius>=.24&&lake.radius<.78){
+        const {basin}=lake;
+        const kind=depths.waterKind(lake,biomeAt(basin.x,basin.z)),zone=depths.polarZone(lake,kind);
+        const floe=noise.n2(x*.126+617,z*.126-394);
+        if((zone==="pack_edge"&&floe>.29)||(zone==="ice_channels"&&floe>-.02)||
+          (kind==="arctic"&&lake.radius>.34&&floe>.035))return BLOCK.ICE;
+      }
+    }
     return BLOCK.AIR;
   }
   if(y===0)return BLOCK.BEDROCK;
@@ -687,18 +709,46 @@ function vertexAO(x,y,z,f,corner){
   const raw=s1&&s2 ? .53 : 1-(s1+s2+co)*.12,strength=settings.ao===0?0:settings.ao===1?.55:1;return lerp(1,raw,strength);
 }
 function uvTile(id,u,v){const pad=.035,tx=id%atlas.cols,ty=Math.floor(id/atlas.cols);return[(tx+pad+u*(1-pad*2))/atlas.cols,1-(ty+pad+(1-v)*(1-pad*2))/atlas.rows]}
+const quadTileUV=new Map();
 function arrays(){return {p:[],n:[],uv:[],c:[],idx:[],refs:[]}}
 function addQuad(a,verts,normal,tex,color=[1,1,1],ref=null,ao=[1,1,1,1]){
   const base=a.p.length/3;
-  for(let i=0;i<4;i++){a.p.push(...verts[i]);a.n.push(...normal);a.uv.push(...uvTile(tex,...UV_CORNERS[i]));a.c.push(color[0]*ao[i],color[1]*ao[i],color[2]*ao[i])}
-  for(const i of TRI)a.idx.push(base+i);a.refs.push(ref,ref);
+  let uv=quadTileUV.get(tex);
+  if(!uv){uv=UV_CORNERS.flatMap(([u,v])=>uvTile(tex,u,v));quadTileUV.set(tex,uv)}
+  for(let i=0;i<4;i++){
+    a.p.push(...verts[i]);a.n.push(...normal);a.uv.push(uv[i*2],uv[i*2+1]);
+    a.c.push(color[0]*ao[i],color[1]*ao[i],color[2]*ao[i]);
+  }
+  for(const i of TRI)a.idx.push(base+i);
+  a.refs.push(ref);
+}
+function attachChunkFaces(mesh,bucket,x,z){
+  const blocks=new Uint32Array(bucket.refs.length),details=[];
+  let previous=null,index=-1;
+  for(let i=0;i<bucket.refs.length;i++){
+    const ref=bucket.refs[i];
+    if(typeof ref==="number")blocks[i]=ref;
+    else if(ref){
+      if(ref!==previous){index=details.push(ref)-1;previous=ref}
+      blocks[i]=0x80000000|index;
+    }
+  }
+  mesh.userData.blockFaces={blocks,details,x,z};
+}
+function readChunkFace(mesh,faceIndex){
+  const info=mesh.userData.blockFaces;
+  if(!info||!Number.isInteger(faceIndex))return null;
+  const quad=faceIndex>>>1,ref=info.blocks[quad];
+  if(!ref)return null;
+  if(ref>=0x80000000)return info.details[ref&0x7fffffff];
+  return {x:info.x+(ref&15),y:(ref>>>8)&127,z:info.z+((ref>>>4)&15),id:ref>>>18,n:FACES[(ref>>>15)&7].n};
 }
 function addCuboid(a,x,y,z,sx,sy,sz,tex,ref,color=[.86,.86,.86]){for(let fi=0;fi<6;fi++){const f=FACES[fi],verts=f.v.map(v=>[x+v[0]*sx,y+v[1]*sy,z+v[2]*sz]),shade=fi===2?1:fi===3?.62:(fi<2?.84:.75),t=[color[0]*shade,color[1]*shade,color[2]*shade];addQuad(a,verts,f.n,tex,t,{...ref,n:f.n},[1,1,1,1])}}
 const transparentTiles=QuimiCraftSurfaceArt.transparentTiles;
-function addModelFaces(a,clear,faces,x,y,z,id,variation=false){
+function addModelFaces(a,clear,faces,x,y,z,id,variation=false,blockCode=0){
   const rotate=variation?hash(x,z,CROP_BLOCKS.get(id)?.wild??id)*TAU:0,cs=Math.cos(rotate),sn=Math.sin(rotate);
   const lift=id===BLOCK.WATER_LILY&&variation?-.22:0;
-  const plantRef=BDEF[id]?.plant?{x,y,z,id,n:[0,1,0]}:null;
+  const plantRef=BDEF[id]?.plant?(blockCode?blockCode|(2<<15):{x,y,z,id,n:FACES[2].n}):null;
   for(const {vertices,normal,tile,color} of faces){
     const [nx,ny,nz]=normal,n=variation?[cs*nx-sn*nz,ny,sn*nx+cs*nz]:normal;
     const points=vertices.map(([u,v,w])=>{
@@ -709,10 +759,9 @@ function addModelFaces(a,clear,faces,x,y,z,id,variation=false){
     addQuad(clear&&transparentTiles.has(tile)?clear:a,points,n,tile,color,plantRef||{x,y,z,id,n});
   }
 }
-function clearBlockMesh(bucket){
-  const mesh=new THREE.Mesh(geometryFrom(bucket),clearMat);
+function clearBlockMesh(bucket,packed=false){
+  const mesh=new THREE.Mesh(geometryFrom(bucket,packed),clearMat);
   mesh.userData.translucentBlock=true;
-  mesh.userData.faceBlocks=bucket.refs;
   mesh.renderOrder=3;
   return mesh;
 }
@@ -850,8 +899,20 @@ function addDoorGeometry(a,x,y,z,id,preview=null,clear=null){
   }
 }
 
-function geometryFrom(a){
-  const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(a.p,3));g.setAttribute("normal",new THREE.Float32BufferAttribute(a.n,3));g.setAttribute("uv",new THREE.Float32BufferAttribute(a.uv,2));g.setAttribute("color",new THREE.Float32BufferAttribute(a.c,3));g.setIndex(a.idx);g.computeBoundingSphere();return g;
+function encodeAttribute(values,ArrayType,itemSize,scale){
+  const encoded=new ArrayType(values.length);
+  for(let i=0;i<values.length;i++)encoded[i]=Math.round(values[i]*scale);
+  return new THREE.BufferAttribute(encoded,itemSize,true);
+}
+function packedNormals(values){return encodeAttribute(values,Int8Array,3,127)}
+function geometryFrom(a,packed=false){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute("position",new THREE.Float32BufferAttribute(a.p,3));
+  g.setAttribute("normal",packed?packedNormals(a.n):new THREE.Float32BufferAttribute(a.n,3));
+  g.setAttribute("uv",packed?encodeAttribute(a.uv,Uint16Array,2,65535):
+    new THREE.Float32BufferAttribute(a.uv,2));
+  g.setAttribute("color",new THREE.Float32BufferAttribute(a.c,3));
+  g.setIndex(a.idx);g.computeBoundingSphere();return g;
 }
 
 const liquidFog=()=>({
@@ -942,27 +1003,37 @@ const lavaMat=new THREE.ShaderMaterial({
     void main(){vNormal=normal;vWorld=(modelMatrix*vec4(position,1.0)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
   fragmentShader:`${liquidFogFragment}
     varying vec3 vWorld; varying vec3 vNormal; uniform float uTime;
-    float flow(vec2 p,float time){
-      float drift=sin(p.y*2.8+p.x*.61-time*.83);
-      float fold=sin(p.x*4.1+p.y*.78+drift*1.55-time*.41);
-      return .56+.29*fold+.15*drift;
+    float lavaCell(vec2 p){
+      return fract(sin(dot(mod(p,12.0),vec2(28.63,91.17)))*21601.33);
+    }
+    float magma(vec2 p){
+      vec2 cell=floor(p),f=fract(p);
+      f=f*f*(3.0-2.0*f);
+      return mix(mix(lavaCell(cell),lavaCell(cell+vec2(1,0)),f.x),
+        mix(lavaCell(cell+vec2(0,1)),lavaCell(cell+1.0),f.x),f.y);
     }
     void main(){
       vec3 normal=normalize(vNormal);
       float top=max(0.0,normal.y);
       vec2 face=vec2(vWorld.x*abs(normal.z)+vWorld.z*abs(normal.x),vWorld.y);
-      vec2 p=mix(face,vWorld.xz,top);
-      float time=uTime;
-      float broad=flow(p+vec2(.11,-.17)*time,time);
-      float fine=flow(p*2.18+vec2(2.4,-1.9),time*1.56);
-      float streak=smoothstep(.50,.89,broad*.68+fine*.32);
-      float core=smoothstep(.69,.94,streak);
-      vec3 red=vec3(.64,.065,.009),orange=vec3(1.0,.31,.018),yellow=vec3(1.0,.69,.13);
-      vec3 color=mix(red,orange,.19+streak*.81);
-      color=mix(color,yellow,core*.65);
-      float glossy=pow(1.0-abs(dot(normal,normalize(cameraPosition-vWorld))),3.0);
-      color*=mix(.66,1.0,top);
-      color+=vec3(.23,.072,.019)*glossy*top;
+      vec2 p=floor(mix(face,vWorld.xz,top)*16.0)/16.0;
+      float loop=mod(uTime,6.0)/6.0,phase=loop*6.2831853;
+      vec2 drift=mix(vec2(0,1),vec2(-1,0),top)*loop;
+      float broad=magma(p*1.45+drift*12.0);
+      float ripple=sin(p.x*5.1+p.y*3.4+phase+2.2*broad);
+      float fine=magma(p*4.0+vec2(4,7)+drift*24.0);
+      float heat=broad*.74+fine*.26+ripple*.11;
+      float channels=smoothstep(.29,.58,heat);
+      float core=smoothstep(.56,.85,heat);
+      vec3 crust=vec3(.31,.043,.021),orange=vec3(.95,.235,.016),yellow=vec3(1.0,.77,.22);
+      vec3 color=mix(crust,orange,channels);
+      color=mix(color,yellow,core);
+      float spark=step(.89,lavaCell(floor(p*8.0)))*smoothstep(.45,.93,fine+.17*ripple);
+      color+=vec3(.24,.12,.035)*spark*channels;
+      vec3 view=normalize(cameraPosition-vWorld);
+      float sheen=pow(1.0-abs(dot(normal,view)),3.0);
+      color*=mix(.72,1.0,top);
+      color+=vec3(.15,.048,.012)*sheen*top;
       gl_FragColor=vec4(mix(color,uFogColor,fogAlpha(vWorld)),1.0);
     }`
 });
@@ -1053,20 +1124,24 @@ function seasonalBlockTint(id,tint){
   return tint
 }
 function seasonalBlockTex(id,fi){if(currentSeason()===3&&id===BLOCK.GRASS&&fi===2)return 8;return texFor(id,fi)}
+const uniformFaceLight=[1,1,1,1],leafBlockIds=new Set([BLOCK.LEAVES,BLOCK.PINE_LEAVES,BLOCK.DRY_LEAVES,BLOCK.CHERRY_LEAVES,BLOCK.PALM_LEAVES]);
 function meshChunkColumn(b,i){
   const lx=Math.floor(i/CHUNK),lz=i%CHUNK,x=b.cx*CHUNK+lx,z=b.cz*CHUNK+lz,scanTop=b.tops[(lz+1)*GRID+lx+1],a=b.a;
   for(let y=0;y<=scanTop;y++){const id=localBlock(b,x,y,z);if(id===BLOCK.AIR)continue;
+    // The top bit marks custom face references. The remaining fields hold ID, face, height and local X/Z.
+    const encoded=id<8192?(id<<18)|(y<<8)|(lz<<4)|lx:0;
     const power=spawnLightPowers[id];
     if(power)b.spawnLights.set(key3(x,y,z),{x:x+.5,y:y+.54,z:z+.5,power});
     if(id===BLOCK.WATER){addWaterVoxelFaces(b,x,y,z);continue;}
     if(id===BLOCK.LAVA){addLavaVoxelFaces(b,x,y,z);continue;}
     if(blockModels.models.has(id)){
       const flowers=blockModels.plantIds.has(id)&&!BDEF[id]?.solid;
-      addModelFaces(a,b.clear,blockModels.models.get(id),x,y,z,id,flowers);
-      if(id===BLOCK.TORCH||id===BLOCK.SPECTRAL)b.lights.push({x,y,z,id});
+      addModelFaces(a,b.clear,blockModels.models.get(id),x,y,z,id,flowers,encoded);
+      if(placementsWithLight.has(id))b.lights.push({x,y,z,id});
       continue;
     }if(BDEF[id]?.detail){addVillageDetail(a,x,y,z,id,(px,py,pz)=>localBlock(b,px,py,pz));continue}if(BDEF[id]?.station){addFrontierFurniture(a,x,y,z,id);continue}if(id===BLOCK.DOOR||id===BLOCK.DOOR_OPEN){addDoorGeometry(a,x,y,z,id,null,b.clear);continue}const optical=translucentBlocks.has(id),dest=optical?b.clear:a;
-    for(let fi=0;fi<6;fi++){const f=FACES[fi],nid=localBlock(b,x+f.n[0],y+f.n[1],z+f.n[2]);if(nid===id||faceOccludes(nid)||optical&&translucentBlocks.has(nid)&&nid<id)continue;const ao=optical?[1,1,1,1]:f.v.map((_,q)=>vertexAOLocal(b,x,y,z,f,q)),shade=fi===2?1:fi===3?.61:(fi<2?.82:.72),leaf=[BLOCK.LEAVES,BLOCK.PINE_LEAVES,BLOCK.DRY_LEAVES,BLOCK.CHERRY_LEAVES,BLOCK.PALM_LEAVES].includes(id),tint=leaf?(id===BLOCK.PINE_LEAVES?[.67,.86,.72]:id===BLOCK.DRY_LEAVES?[.96,.9,.64]:id===BLOCK.CHERRY_LEAVES?[1,.8,.91]:id===BLOCK.PALM_LEAVES?[.68,.92,.7]:[.77+hash(x,y,z)*.11,.93,.74]):optical?[.94,.99,1.03]:[shade,shade,shade];addQuad(dest,f.v.map(v=>[x+v[0],y+v[1],z+v[2]]),f.n,seasonalBlockTex(id,fi),seasonalBlockTint(id,tint),{x,y,z,id,n:f.n},ao)}
+    const leaf=leafBlockIds.has(id),flatLight=optical||settings.ao===0;
+    for(let fi=0;fi<6;fi++){const f=FACES[fi],nid=localBlock(b,x+f.n[0],y+f.n[1],z+f.n[2]);if(nid===id||faceOccludes(nid)||optical&&translucentBlocks.has(nid)&&nid<id)continue;const ao=flatLight?uniformFaceLight:f.v.map((_,q)=>vertexAOLocal(b,x,y,z,f,q)),shade=fi===2?1:fi===3?.61:(fi<2?.82:.72),tint=leaf?(id===BLOCK.PINE_LEAVES?[.67,.86,.72]:id===BLOCK.DRY_LEAVES?[.96,.9,.64]:id===BLOCK.CHERRY_LEAVES?[1,.8,.91]:id===BLOCK.PALM_LEAVES?[.68,.92,.7]:[.77+hash(x,y,z)*.11,.93,.74]):optical?[.94,.99,1.03]:[shade,shade,shade];addQuad(dest,f.v.map(v=>[x+v[0],y+v[1],z+v[2]]),f.n,seasonalBlockTex(id,fi),seasonalBlockTint(id,tint),encoded?encoded|(fi<<15):{x,y,z,id,n:f.n},ao)}
   }
 }
 function liquidCellHeight(id,x,y,z,read=getBlock){
@@ -1133,25 +1208,39 @@ function addWaterVoxelFaces(b,x,y,z){
 function stepChunkBuild(b){if(b.phase===0){fillVoxelColumn(b,b.i++);if(b.i>=GRID_COLS){b.phase=1;b.i=0}return false}meshChunkColumn(b,b.i++);return b.i>=CHUNK*CHUNK}
 function removeChunkMesh(old){if(!old)return;scene.remove(old.group);old.group.traverse(o=>{if(o.geometry)o.geometry.dispose()})}
 function geometryFromWater(water){
-  const wg=new THREE.BufferGeometry();wg.setAttribute("position",new THREE.Float32BufferAttribute(water.p,3));wg.setAttribute("normal",new THREE.Float32BufferAttribute(water.n,3));wg.setAttribute("depthVal",new THREE.Float32BufferAttribute(water.depth,1));wg.setAttribute("waterTint",new THREE.Float32BufferAttribute(water.tint,3));wg.setIndex(water.idx);wg.computeBoundingSphere();return wg;
+  const wg=new THREE.BufferGeometry();
+  wg.setAttribute("position",new THREE.Float32BufferAttribute(water.p,3));
+  wg.setAttribute("normal",packedNormals(water.n));
+  wg.setAttribute("depthVal",new THREE.BufferAttribute(Uint8Array.from(water.depth),1));
+  wg.setAttribute("waterTint",encodeAttribute(water.tint,Uint8Array,3,255));
+  wg.setIndex(water.idx);wg.computeBoundingSphere();return wg;
 }
 function finalizeChunk(b){
   const previous=chunks.get(b.k);
   if(b.lights.length||previous?.lights?.length)torchDirty=true;
-  removeChunkMesh(previous);const group=new THREE.Group(),g=geometryFrom(b.a),mesh=new THREE.Mesh(g,terrainMat);mesh.castShadow=settings.shadows>0;mesh.receiveShadow=settings.shadows>0;mesh.userData.faceBlocks=b.a.refs;mesh.frustumCulled=true;group.add(mesh);
-  const glass=b.clear.p.length?clearBlockMesh(b.clear):null;
-  if(glass)group.add(glass);
-  if(b.la.p.length){const lg=geometryFrom(b.la),lm=new THREE.Mesh(lg,lavaMat);lm.renderOrder=1;group.add(lm)}
+  removeChunkMesh(previous);
+  const x=b.cx*CHUNK,z=b.cz*CHUNK,group=new THREE.Group(),mesh=new THREE.Mesh(geometryFrom(b.a,true),terrainMat);
+  mesh.castShadow=mesh.receiveShadow=settings.shadows>0;
+  attachChunkFaces(mesh,b.a,x,z);group.add(mesh);
+  const glass=b.clear.p.length?clearBlockMesh(b.clear,true):null;
+  if(glass){attachChunkFaces(glass,b.clear,x,z);group.add(glass)}
+  if(b.la.p.length){const lg=geometryFrom(b.la,true),lm=new THREE.Mesh(lg,lavaMat);lm.renderOrder=1;group.add(lm)}
   if(b.wa.p.length){
     const wg=geometryFromWater(b.wa),wm=new THREE.Mesh(wg,waterMat);
     wm.position.copy(wg.boundingSphere.center);
-    wg.translate(-wm.position.x,-wm.position.y,-wm.position.z);
+    const position=wg.getAttribute("position");
+    for(let i=0;i<position.array.length;i+=3){
+      position.array[i]-=wm.position.x;
+      position.array[i+1]-=wm.position.y;
+      position.array[i+2]-=wm.position.z;
+    }
+    wg.boundingSphere.center.set(0,0,0);
     wm.renderOrder=2;wm.receiveShadow=settings.shadows>0;group.add(wm);
   }
+  group.visible=chunkWithinFog(b.cx,b.cz,terrainVisibility);
   scene.add(group);
   chunks.set(b.k,{group,mesh,glass,cx:b.cx,cz:b.cz,vox:b.vox,lights:b.lights,spawnLights:b.spawnLights});
   if(!previous){
-    const x=b.cx*CHUNK,z=b.cz*CHUNK;
     for(let vx=x-1;vx<=x+CHUNK;vx++)for(let vz=z-1;vz<=z+CHUNK;vz++){
       const top=editedColumnTops.get(vx+","+vz)??0;
       for(let y=1;y<=top;y++){
@@ -1330,9 +1419,9 @@ function processChunks(){
 
 // Procedural sky, celestial bodies and clouds.
 // Procedural sky, celestial bodies and clouds.
-const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{uTime:{value:.25},uHorizon:{value:new THREE.Color()}},vertexShader:`varying vec3 vPos;void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`
-  varying vec3 vPos;uniform float uTime;uniform vec3 uHorizon;vec3 noonTop=vec3(.12,.48,.78),noonHor=vec3(.62,.82,.93),nightTop=vec3(.008,.018,.07),nightHor=vec3(.035,.08,.15);
-  void main(){float h=normalize(vPos).y*.5+.5;float sun=max(sin(uTime*6.28318),-.15);float day=smoothstep(-.16,.15,sun);float dusk=pow(1.0-abs(clamp(sun,-1.0,1.0)),7.0);vec3 top=mix(nightTop,noonTop,day),hor=mix(nightHor,noonHor,day);hor+=vec3(.72,.20,.08)*dusk;vec3 c=mix(uHorizon,mix(hor,top,pow(h,.7)),smoothstep(.025,.56,abs(normalize(vPos).y)));gl_FragColor=vec4(c,1.0);}`});
+const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{uTime:{value:.25},uOvercast:{value:0},uHorizon:{value:new THREE.Color()}},vertexShader:`varying vec3 vPos;void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`
+  varying vec3 vPos;uniform float uTime;uniform float uOvercast;uniform vec3 uHorizon;vec3 noonTop=vec3(.12,.48,.78),noonHor=vec3(.62,.82,.93),nightTop=vec3(.008,.018,.07),nightHor=vec3(.035,.08,.15);
+  void main(){float h=normalize(vPos).y*.5+.5;float sun=max(sin(uTime*6.28318),-.15);float day=smoothstep(-.16,.15,sun);float dusk=pow(1.0-abs(clamp(sun,-1.0,1.0)),7.0);vec3 top=mix(nightTop,noonTop,day),hor=mix(nightHor,noonHor,day);hor+=vec3(.72,.20,.08)*dusk;vec3 c=mix(uHorizon,mix(hor,top,pow(h,.7)),smoothstep(.025,.56,abs(normalize(vPos).y)));vec3 cloud=mix(vec3(.037,.047,.064),mix(vec3(.33,.38,.45),vec3(.18,.22,.30),h),day);gl_FragColor=vec4(mix(c,cloud,uOvercast),1.0);}`});
 const sky=new THREE.Mesh(new THREE.SphereGeometry(425,32,16),skyMat);scene.add(sky);
 function celestialTexture(isMoon,phase=4){
   const c=document.createElement("canvas");c.width=c.height=32;const x=c.getContext("2d");
@@ -1433,9 +1522,43 @@ function addLabStation(x,z,r=2.4,stationIds=["chemistry_workbench"],id=`station-
 function nearestLabStation(){if(Math.abs(player.pos.y-LAB_LAYOUT.y)>3.5)return null;return labStationZones.map(zone=>({zone,distance:Math.hypot(player.pos.x-zone.x,player.pos.z-zone.z)})).filter(entry=>entry.distance<entry.zone.r).sort((a,b)=>a.distance-b.distance)[0]?.zone||null}
 function nearLabStation(){return !!nearestLabStation()}
 const player={pos:new THREE.Vector3(spawn.x+.5,spawn.y,spawn.z+.5),vel:new THREE.Vector3(),yaw:-.65,pitch:-.12,onGround:false,crouch:false,sprint:false,inWater:false,headUnderwater:false,inLava:false,step:0,lastGroundY:spawn.y,fallStart:spawn.y,health:100,mana:100,hunger:100,thirst:100,breath:100,attackCooldown:0,crossbowArmed:false,dragonSlow:0,petrified:0,lavaClock:0,survivalDamageClock:0,breathDamageClock:0};
-const keys={},settings={preset:"high",render:horizon.presetRange.high,sense:.5,volume:.7,shadows:2,ao:2,water:2,particles:2,vegetation:2,resolution:1,clouds:true,mobs:2},state={playing:false,started:false,startQueued:false,loading:false,awaitingEntry:false,inventory:false,chemistry:false,periodic:false,shop:false,character:false,chat:false,devOpen:false,graphics:false,history:false,professor:false,scientificNotebook:false,researchTree:false,scienceStation:false,paused:false,selected:0,left:false,right:false,target:null,breakKey:"",breakTime:0,cameraMode:0,day:.23,dayCount:1,lastFrame:performance.now(),fps:60,frames:0,fpsTime:0};
+const keys={},settings={preset:"high",render:horizon.presetRange.high,sense:.5,volume:.7,shadows:2,ao:2,water:2,particles:2,vegetation:2,resolution:1,clouds:true,mobs:2},state={playing:false,started:false,startQueued:false,loading:false,awaitingEntry:false,inventory:false,chemistry:false,periodic:false,shop:false,character:false,chat:false,devOpen:false,graphics:false,history:false,professor:false,scientificNotebook:false,researchTree:false,scienceStation:false,paused:false,gamemode:"survival",selected:0,left:false,right:false,target:null,breakKey:"",breakTime:0,cameraMode:0,day:.23,dayCount:1,lastFrame:performance.now(),fps:60,frames:0,fpsTime:0};
 const touchInput=matchMedia("(hover: none), (pointer: coarse)").matches;
 state.attackAnim=0;state.offhandAnim=0;state.focusCooldown=0;state.combatTarget=null;state.combatTargetTime=0;
+const isCreative=()=>state.gamemode==="creative";
+let lastSpaceTapAt=0,creativeBreakCooldown=0;
+function updateGamemodeHud(){
+  const chip=$("gamemodeChip");
+  if(!chip)return;
+  const creative=isCreative();
+  chip.hidden=!creative;
+  if(creative){
+    chip.classList.toggle("flying",dev.fly);
+    chip.textContent=dev.fly?"CRIATIVO · Voando (Espaço×2 pousar)":"CRIATIVO · Espaço×2 voar";
+  }
+}
+function setGamemode(mode){
+  const next=mode==="creative"?"creative":"survival";
+  const prev=state.gamemode;
+  state.gamemode=next;
+  if(next==="creative"){
+    dev.fly=true;
+    player.health=100;player.mana=100;player.hunger=100;player.thirst=100;
+    player.breath=playerBreathMax();player.dragonSlow=0;playerVenom=null;
+    gasExposure=0;gasBlackout=0;setPetrified(0);
+    player.vel.set(0,0,0);player.fallStart=player.pos.y;
+    for(const e of [...entities,...fishSchool]){
+      if(e.ai?.engagement?.target===playerActor)QuimiCraftAI.disengage(e);
+    }
+  }else{
+    dev.fly=false;
+    player.vel.set(0,0,0);player.fallStart=player.pos.y;
+  }
+  updateVitals();updateGamemodeHud();if(state.devOpen)renderDev();
+  if(initialReady)saveWorldState();
+  const label=next==="creative"?"Criativo":"Sobrevivência";
+  return {ok:true,msg:prev===next?`Você já está no modo ${label}.`:`Modo de jogo alterado para ${label}.`};
+}
 const dragonGuardPose={hold:0,lift:0,impact:0,sparks:null};
 const mirrorGuardPose={hold:0,lift:0,impact:0,sparks:null};
 const petrifiedMaterial=new THREE.MeshStandardMaterial({color:0x777a72,roughness:.98,flatShading:true});
@@ -1567,7 +1690,7 @@ state.attackAnim=Math.max(0,state.attackAnim-dt);
   if(guard)poseGuardShield(guard,shieldLift,recoil);
   const family=QuimiCraftArsenal.weapons[heldId]?.family;
   const hasArrow=family==="crossbow"?player.crossbowArmed&&player.attackCooldown<=0:
-    family!=="bow"||dev.infinite||countItem("arrow")+countItem("venom_arrow")>0;
+    family!=="bow"||dev.infinite||isCreative()||countItem("arrow")+countItem("venom_arrow")>0;
   const itemMotion=family==="gauntlet"&&settings.particles===0?0:motionScale;
   playerModels.animateItem(firstWeaponModel,now,hit,itemMotion,hasArrow);
   playerModels.animateItem(thirdWeaponModel,now,hit,itemMotion,hasArrow);
@@ -1765,7 +1888,7 @@ function updateFieldAir(dt){
     if(fieldLab.airLink(at,end,airPasses))windMote(at,dx,dz,fieldWind);
   }
   const respirator=scienceSnapshot?.protections?.protection?.toxicity||0;
-  fieldAir=labSafe()||dev.fly?0:clamp(concentration,0,100);
+  fieldAir=labSafe()||dev.fly||isCreative()?0:clamp(concentration,0,100);
   gasBlackout=Math.max(0,gasBlackout-dt);
   gasExposure=clamp(gasExposure+dt*(fieldAir*(1-respirator)*.009-.11),0,1);
   if(gasExposure>=1&&!gasBlackout){
@@ -1803,12 +1926,12 @@ function scanEnvironmentHazards(){
 function updateScienceEnvironment(dt,moving){
   environmentScanClock-=dt;if(environmentScanClock<=0||!cachedEnvironmentHazards||cachedEnvironmentHazards.safe!==labSafe()){environmentScanClock=.55;cachedEnvironmentHazards=scanEnvironmentHazards()}
   const env=cachedEnvironmentHazards,hazards={...env.hazards,toxicity:env.hazards.toxicity+fieldAir,air:env.hazards.air+fieldAir*.55};
-  scienceSnapshot=scienceSystem?.updateEnvironment(dt,{...env,hazards,alchemyWarmth:alchemyProgress.activeEffect("warmth"),day:state.day,inWater:player.inWater,waterTemperature:env.waterProfile.temperature,activity:player.sprint&&moving?1.7:moving?.55:0},equippedItemIds())||scienceSnapshot;
+  scienceSnapshot=scienceSystem?.updateEnvironment(dt,{...env,safe:env.safe||isCreative(),hazards,alchemyWarmth:alchemyProgress.activeEffect("warmth"),day:state.day,inWater:player.inWater,waterTemperature:env.waterProfile.temperature,activity:player.sprint&&moving?1.7:moving?.55:0},equippedItemIds())||scienceSnapshot;
   scienceHudClock-=dt;if(scienceHudClock<=0){scienceHudClock=.18;scienceUI?.updateHUD(scienceSnapshot)}
   return scienceSnapshot
 }
-function waterCurrentAt(x,z){
-  const bx=Math.floor(x),y=Math.floor(player.pos.y+.12),bz=Math.floor(z),key=key3(bx,y,bz);
+function waterCurrentAt(x,z,atY=player.pos.y+.12){
+  const bx=Math.floor(x),y=Math.floor(atY),bz=Math.floor(z),key=key3(bx,y,bz);
   if(fluidLevels.has(key)){
     const level=cellFluidLevel(BLOCK.WATER,bx,y,bz),current={x:0,z:0};
     for(const [dx,,dz] of fluidSides){
@@ -1846,7 +1969,20 @@ function updatePhysics(dt){
   }
   if(!dev.fly&&player.inWater&&!immobilized){const current=waterCurrentAt(player.pos.x,player.pos.z),currentResistance=clamp((scienceSnapshot?.protections?.protection?.pressure||0)*.35,0,.3);dx+=current.x*dt*(1-currentResistance);dz+=current.z*dt*(1-currentResistance)}
   forwardChunks=horizon.movementDirection(dx,dz);
-  if(dev.fly){player.vel.set(0,0,0);player.pos.x+=dx;player.pos.z+=dz;player.pos.y+=((keys.Space?1:0)-(keys.ShiftLeft?1:0))*speed*dt;player.onGround=false;updatePlayerCamera(dt,Math.abs(dx)+Math.abs(dz)>.001);updateVitals();return}
+  if(dev.fly){
+    player.vel.set(0,0,0);player.fallStart=player.pos.y;
+    const dy=((keys.Space?1:0)-(keys.ShiftLeft?1:0))*speed*dt;
+    if(isCreative()&&!collides(player.pos)){
+      moveAxis("x",dx);moveAxis("z",dz);
+      player.onGround=false;
+      moveAxis("y",dy);
+      if(dy<0&&player.onGround){dev.fly=false;updateGamemodeHud()}
+    }else{
+      player.pos.x+=dx;player.pos.z+=dz;player.pos.y=Math.max(1.5,player.pos.y+dy);
+      player.onGround=false;
+    }
+    updatePlayerCamera(dt,Math.abs(dx)+Math.abs(dz)>.001);updateVitals();return
+  }
   player.onGround=supportedAt(player.pos);const oldX=player.pos.x,oldZ=player.pos.z;moveAxis("x",dx);moveAxis("z",dz);
   const shoreBlocked=player.inWater&&moving&&Math.hypot(player.pos.x-oldX-dx,player.pos.z-oldZ-dz)>.03;
   if(shoreBlocked&&keys.Space&&player.pos.y>waterSurfaceAt(player.pos.x,player.pos.z)-2.2){
@@ -1950,7 +2086,7 @@ function inferDamageType(source){
   return"physical"
 }
 function damagePlayer(amount,source="criatura",damageType="",attack=null){
-  if(dev.fly||labSafe()||player.health<=0)return;
+  if(isCreative()||dev.fly||labSafe()||player.health<=0)return;
   if(attack?.spirit){
     const ward=equipmentStat("spectralWard");
     for(const slot of EQUIPMENT_SLOTS){
@@ -2051,6 +2187,7 @@ function updateVitals(){
 
 function updateBreath(dt,moving){
   let max=playerBreathMax();player.breathDamageClock=Math.max(0,player.breathDamageClock-dt);
+  if(isCreative()){player.breath=max;return}
   if(player.headUnderwater){
     if(alchemyProgress.activeEffect("air")){player.breath=Math.min(max,player.breath+dt*24);return;}
     const activity=moving?1.16:1,tankId=equippedItemIds().find(id=>EQUIPMENT_DEFS[id]?.oxygenCapacity),tank=tankId?scienceSystem?.useOxygen(equippedItemIds(),dt*activity*.62):null,assisted=!!tank?.available,drain=(assisted?2.15:5.4)*activity*breathDrainMultiplier();
@@ -2072,6 +2209,7 @@ function updateUnderwaterUI(clarity,tint){
   }
 }
 function updateSurvival(dt,moving){
+  if(isCreative()){player.health=100;player.mana=100;player.hunger=100;player.thirst=100;player.survivalDamageClock=0;return}
   if(labSafe()){player.health=Math.min(100,player.health+dt*1.5);player.survivalDamageClock=0;return}
   if(dev.fly)return;const activity=(player.sprint&&moving?1.7:0)+(moving?.45:0)+(player.inLava?.7:0),heat=["deserto","savana","badlands","vulcânico","salinas"].includes(biomeAt(player.pos.x,player.pos.z))?.55:0;
   const hungerRate=scienceSnapshot?.modifiers?.hungerRate||1,thirstRate=scienceSnapshot?.modifiers?.thirstRate||1;player.hunger=clamp(player.hunger-dt*(.035+activity*.018)*hungerRate,0,100);player.thirst=clamp(player.thirst-dt*(.052+activity*.026+heat*.025)*thirstRate,0,100);
@@ -2098,7 +2236,7 @@ function targetBlock(){
     const {x,y,z}=labDoor.cells[0];
     return {x,y,z,id:labDoor.isOpen?BLOCK.DOOR_OPEN:BLOCK.DOOR,labDoor:true,n:[0,0,-1]};
   }
-  const ref=hit?.object.userData.faceBlocks?.[hit.faceIndex];
+  const ref=hit&&readChunkFace(hit.object,hit.faceIndex);
   return ref?{...ref,point:hit.point}:null;
 }
 function aimedEntity(){const eye=attackOrigin(),dir=aimDirection();return attackableActors().filter(e=>!e.dead).map(e=>{const v=entityAimPoint(e).sub(eye),d=v.length();return {e,d,dot:v.normalize().dot(dir)}}).filter(q=>q.d<22&&q.dot>1-clamp(.24/q.d,.012,.12)).sort((a,b)=>b.dot-a.dot||a.d-b.d).find(q=>combatSegmentClear(eye,entityAimPoint(q.e)))?.e||null}
@@ -2124,7 +2262,13 @@ function updateTarget(dt){
     highlight.scale.set(cell.size,built?cell.size:.026,cell.size);
   }
   const protectedLab=t&&isLabProtectedBlock(t.x,t.y,t.z);
+  creativeBreakCooldown=Math.max(0,creativeBreakCooldown-dt);
+  if(!state.left)creativeBreakCooldown=0;
   if(state.left&&protectedLab){state.breakTime=0;state.breakKey="";$("breakWrap").classList.remove("visible");crackMesh.visible=false;const now=performance.now();if(now-labProtectToastAt>950){labProtectToastAt=now;toast("Os blocos do Laboratório Carbono são indestrutíveis")}}
+  else if(state.left&&isCreative()&&t&&(t.id!==BLOCK.BEDROCK||t.y>0)){
+    state.breakTime=0;state.breakKey="";$("breakWrap").classList.remove("visible");crackMesh.visible=false;
+    if(creativeBreakCooldown<=0){breakBlock(t);creativeBreakCooldown=.18}
+  }
   else if(state.left&&t&&requiredPick(t.id)>miningLevel()){
     state.breakTime=0;state.breakKey="";$("breakWrap").classList.remove("visible");crackMesh.visible=false;
     if(performance.now()-labProtectToastAt>1200){labProtectToastAt=performance.now();toast(requiredPick(t.id)===3?"Use uma picareta de ferro em bom estado.":"Use uma picareta de cobre ou ferro em bom estado.")}
@@ -2156,14 +2300,15 @@ function selectedMiningSpeed(blockId){
 }
 function breakBlock(t,operation=null){
   if(isLabProtectedBlock(t.x,t.y,t.z))return toast("Os blocos do Laboratório Carbono são indestrutíveis");
-  if(requiredPick(t.id)>(operation?.level??miningLevel()))return;
+  const creativeBreak=isCreative()&&!operation;
+  if(!creativeBreak&&requiredPick(t.id)>(operation?.level??miningLevel()))return;
   const fixture=BDEF[t.id];
   if(fixture?.gate||fixture?.bed){
     const cells=survival.bedAt(BLOCK,BDEF,getBlock,t)||[t],id=fixture.gate?.first??BLOCK.BED;
     const dirty=new Map();
     for(const cell of cells)editVoxel(cell.x,cell.y,cell.z,BLOCK.AIR,dirty);
     commitVoxelEdits(dirty);
-    receiveFrontier(id,1);sound("break",.55);burstBlock(t);
+    if(!creativeBreak)receiveFrontier(id,1);sound("break",.55);burstBlock(t);
     return;
   }
   if(t.id===BLOCK.EXPEDITION_CHEST&&expeditions.treasureAt(t.x,t.y,t.z)){
@@ -2171,12 +2316,13 @@ function breakBlock(t,operation=null){
     return;
   }
   wakeNearbyScreamers({x:t.x+.5,y:t.y+.5,z:t.z+.5},9);
-  if(treeTrunks.has(t.id)){
+  if(treeTrunks.has(t.id)&&!creativeBreak){
     provokeGrove(t.x,t.y,t.z);
     angerFolklore("curupira",t,15,playerActor);
   }
   const excavate=()=>operation?editVoxel(t.x,t.y,t.z,BLOCK.AIR,operation.dirty):setBlock(t.x,t.y,t.z,BLOCK.AIR);
   const receive=(id,n)=>{
+    if(creativeBreak)return;
     if(operation)operation.drops.set(id,(operation.drops.get(id)||0)+n);
     else receiveFrontier(id,n,player.pos);
   };
@@ -2212,11 +2358,11 @@ function breakBlock(t,operation=null){
     const roll=hash(t.x,t.y+17,t.z+23);
     if(roll>.74)receive(["wheat_seed","carrot_seed","bean_seed"][Math.floor(roll*717)%3],1);
   }
-  if(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN){const m=worldDoorMeta(t.x,t.y,t.z)||{half:0},baseY=t.y-(m.half||0),levels=m.group==="carbon-main-airlock"?[baseY,baseY+1,baseY+2]:[baseY,baseY+1];for(const yy of levels){mods.set(key3(t.x,yy,t.z),BLOCK.AIR);doorMeta.delete(key3(t.x,yy,t.z))}saveMods();rebuildChunk(Math.floor(t.x/CHUNK),Math.floor(t.z/CHUNK));addItem(BLOCK.DOOR,1)}
+  if(t.id===BLOCK.DOOR||t.id===BLOCK.DOOR_OPEN){const m=worldDoorMeta(t.x,t.y,t.z)||{half:0},baseY=t.y-(m.half||0),levels=m.group==="carbon-main-airlock"?[baseY,baseY+1,baseY+2]:[baseY,baseY+1];for(const yy of levels){mods.set(key3(t.x,yy,t.z),BLOCK.AIR);doorMeta.delete(key3(t.x,yy,t.z))}saveMods();rebuildChunk(Math.floor(t.x/CHUNK),Math.floor(t.z/CHUNK));if(!creativeBreak)addItem(BLOCK.DOOR,1)}
   else{excavate();if(![BLOCK.FIRE,BLOCK.WATER,BLOCK.LAVA,BLOCK.EXPEDITION_CHEST_OPEN].includes(t.id))receive(professions.soil(t.id)?BLOCK.DIRT:t.id,1);discoverFromBlock(t.id);const resourceKey=missionResourceKeyForId(t.id);if(resourceKey)elementMissions?.recordEvent("mine",{key:resourceKey,quantity:1});const minerals=[BLOCK.COAL,BLOCK.IRON,BLOCK.COPPER,BLOCK.SULFUR,BLOCK.SALT,BLOCK.GOLD,BLOCK.TIN,BLOCK.ZINC,BLOCK.CRYSTAL,BLOCK.AMETHYST,BLOCK.LIMESTONE];if(minerals.includes(t.id))scienceSystem?.registerDiscovery("minerals",resourceKey||String(t.id),{name:itemName(t.id),source:`Extraído em ${biomeAt(t.x,t.z)}`,amountCollected:1,researchProgress:25})}
   if(operation)return;
-  const tool=selectedItem();if(selectedMiningSpeed(t.id)>1)scienceSystem?.damageEquipment(tool,t.id===BLOCK.OBSIDIAN?1.7:1,"mineração");
-  burstBlock(t);sound("break",.65);highlight.visible=false;if(t.id===BLOCK.TORCH||t.id===BLOCK.SPECTRAL)updateTorches()
+  const tool=selectedItem();if(!creativeBreak&&selectedMiningSpeed(t.id)>1)scienceSystem?.damageEquipment(tool,t.id===BLOCK.OBSIDIAN?1.7:1,"mineração");
+  burstBlock(t);sound("break",.65);highlight.visible=false;if(placementsWithLight.has(t.id))updateTorches()
 }
 let queuedPlacement=null;
 function blockHitsPlayer(x,y,z){
@@ -2292,7 +2438,7 @@ function collectScientificSample(){
   const biome=biomeAt(player.pos.x,player.pos.z),environment=cachedEnvironmentHazards||scanEnvironmentHazards(),position=target?{x:target.x,y:target.y,z:target.z}:{x:player.pos.x,y:player.pos.y,z:player.pos.z};
   let metadata;
   if(creature){
-    metadata={kind:"animal",name:`Material biológico — ${creature.name}`,source:creature.name,sourceCreature:creature.type,discoveryId:creature.type,appearance:`Vestígio coletado de ${creature.name}`,contamination:creature.hostile?32:12,biologicalContamination:creature.hostile?38:16,composition:"material biológico"};
+    metadata={kind:"animal",name:`Material biológico — ${creature.name}`,source:creature.name,sourceCreature:creature.type,discoveryId:creature.type,appearance:`Vestígio coletado de ${creature.name}`,contamination:creature.hostile?32:12,biologicalContamination:creature.hostile?38:16,composition:regionalFauna[creature.type]?.composition??"material biológico"};
   }else if(canCollectWater()){
     const at=target?{x:target.x+target.n[0],z:target.z+target.n[2]}:player.pos;
     const profile=scienceSystem.waterProfileFor({biome:biomeAt(at.x,at.z),...regionalWater(at.x,at.z).chem});
@@ -2340,6 +2486,50 @@ function cookWithFurnace(){
   const result=production.enqueue(target,{name:itemName(id),need:[[raw,1],[BLOCK.COAL,1]],out:[[id,1]],kind:"cook",seconds:2.35});
   if(!result.ok)toast(result.message);
 }
+const activeHuntUtilities=new Set(["quartz_whetstone","soot_filter","vein_probe"]);
+const probeMinerals=new Set(Object.entries(BLOCK).filter(([name])=>name.endsWith("_ORE")||
+  ["IRON","COPPER","GOLD","TIN","ZINC","CRYSTAL","AMETHYST","HEMATITE","CASSITERITE","SPHALERITE","RUTILE","FLUORITE","MAGNETITE","PYRITE","MALACHITE","BAUXITE"].includes(name))
+  .map(([,id])=>id));
+function nearestProbedVein(origin){
+  const radius=12,px=Math.floor(origin.x),py=Math.floor(origin.y),pz=Math.floor(origin.z);
+  let nearest=null,best=radius**2;
+  for(let x=px-radius;x<=px+radius;x++)for(let z=pz-radius;z<=pz+radius;z++){
+    if(!hasChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK)))continue;
+    const planar=(x+.5-origin.x)**2+(z+.5-origin.z)**2;
+    if(planar>best)continue;
+    for(let y=Math.max(1,py-radius);y<=Math.min(MAX_Y-1,py+radius);y++){
+      const distance=planar+(y+.5-origin.y)**2;
+      if(distance>best)continue;
+      const id=getBlock(x,y,z);
+      if(!probeMinerals.has(id))continue;
+      best=distance;nearest={x,y,z,id,distance:Math.sqrt(distance)};
+    }
+  }
+  return nearest;
+}
+function useHuntUtility(id){
+  if(id==="vein_probe"){
+    const vein=nearestProbedVein(attackOrigin());
+    sound("magic",vein&&vein.distance<6?.57:.34);
+    return toast(vein?`${itemName(vein.id)} a ${Math.round(vein.distance)} m · X ${vein.x} · Y ${vein.y} · Z ${vein.z}`:"A sonda não encontrou um veio a até 12 m.");
+  }
+  let result;
+  if(id==="soot_filter"){
+    const mask=equipped.face?.id,condition=scienceSystem.equipmentCondition(mask);
+    if(!condition?.filterMaximum)return toast("Equipe uma máscara com filtro.");
+    if(condition.broken)return toast("Repare a máscara antes de trocar o filtro.");
+    if(condition.filter>=condition.filterMaximum)return toast("O filtro da máscara já está cheio.");
+    result=scienceSystem.refillEquipment(mask,"filter",id);
+  }else{
+    const pickaxe=invSlots.slice(0,9).filter(slot=>EQUIPMENT_DEFS[slot?.id]?.miningSpeed)
+      .map(slot=>scienceSystem.equipmentCondition(slot.id))
+      .reduce((lowest,condition)=>!lowest||condition.ratio<lowest.ratio?condition:lowest,null);
+    if(!pickaxe||pickaxe.ratio>=1)return toast("Coloque uma picareta gasta na barra rápida.");
+    result=scienceSystem.sharpenPickaxe(pickaxe.id);
+  }
+  if(result.ok){updateVitals();renderInventory();sound("pickup",.56)}
+  toast(result.message);
+}
 function useOrPlace(){
   if(player.petrified>0||gasBlackout>0||sleeping)return;
   if(riding)return attackWithMount();
@@ -2350,12 +2540,14 @@ function useOrPlace(){
   if(deckTarget?.kind==="deck"){
     const id=selectedItem();
     if(typeof id!=="number")return toast("Selecione um bloco e mire um espaço livre do piso.");
-    const built=vehicles.buildOnDeck(deckTarget,id,()=>dev.infinite||transactInventory([[id,1]],[]).ok);
+    const built=vehicles.buildOnDeck(deckTarget,id,()=>dev.infinite||isCreative()||transactInventory([[id,1]],[]).ok);
     if(built)sound("place",.52);
     return built;
   }
   if(vehicles.current())return vehicles.operate(state.target);
   const vehicleItem=selectedItem();
+  if(Object.hasOwn(exterminationTools,vehicleItem))return useExterminationTool(vehicleItem);
+  if(activeHuntUtilities.has(vehicleItem))return useHuntUtility(vehicleItem);
   if(["bucket","water_bucket","lava_bucket"].includes(vehicleItem))return useWorldBucket(vehicleItem);
   if(QuimiCraftVehicles.kindOf(vehicleItem))return vehicles.deploy(vehicleItem,vehiclePlacementTarget(vehicleItem));
   if(vehicleItem===QuimiCraftVehicles.motor)return vehicles.install();
@@ -2505,10 +2697,10 @@ function settlePlacement(site){
   }else setBlock(x,y,z,id);
   wakeNearbyScreamers({x:x+.5,y:y+.5,z:z+.5},4.4);
   if(id===BLOCK.FIRE)angerFolklore("boitata",{x,y,z},17,playerActor);
-  if(!dev.infinite&&--slot.count===0)invSlots[slotIndex]=null;
+  if(!dev.infinite&&!isCreative()&&--slot.count===0)invSlots[slotIndex]=null;
   saveInventory();renderInventory();
-  sound(id===BLOCK.TORCH||id===BLOCK.SPECTRAL?"torch":"place",.52);
-  if(id===BLOCK.TORCH||id===BLOCK.SPECTRAL)updateTorches();
+  sound(placementsWithLight.has(id)?"torch":"place",.52);
+  if(placementsWithLight.has(id))updateTorches();
   return true;
 }
 function placeSelected(){
@@ -2610,8 +2802,9 @@ function launchProjectile(kind,origin,dir,attack=null,owner=null){
     speed=attack?.speed??17;damage=attack?.damage??8;ttl=2.2;
   }else if(kind==="enemy"||kind==="mount"){
     if(!effect){
-      group.add(new THREE.Mesh(new THREE.OctahedronGeometry(.13,0),mobMats.purple));
-      group.add(new THREE.Mesh(new THREE.TorusGeometry(.19,.014,5,12),windMat));
+      const ember=owner?.type==="furnace_weaver";
+      group.add(new THREE.Mesh(new THREE.OctahedronGeometry(.13,0),ember?mobMats.lava:mobMats.purple));
+      group.add(new THREE.Mesh(new THREE.TorusGeometry(.19,.014,5,12),ember?mobMats.red:windMat));
     }
     speed=attack.speed??10;damage=attack.damage;ttl=2.7;
     if(breath)ttl=kind==="mount"?2.2:Math.max(1.4,attack.range*breath.range/speed);
@@ -2885,7 +3078,7 @@ function shootArrow(w){
   const silverAmmo=crossbow?"silver_bolt":"silver_arrow";
   const ammo=countItem(silverAmmo)?silverAmmo:poisoned?"venom_arrow":w.ammo||"arrow";
   const cycle=1-equipmentStat("archeryCycle");
-  if(!dev.infinite&&countItem(ammo)<1){toast("Sem "+(crossbow?"virotes":"flechas"));return false}
+  if(!dev.infinite&&!isCreative()&&countItem(ammo)<1){toast("Sem "+(crossbow?"virotes":"flechas"));return false}
   if(crossbow&&!player.crossbowArmed){
     player.crossbowArmed=true;player.attackCooldown=w.reload*cycle;state.attackAnim=.3;
     sound("bow",.31);updateCrossbowHint();
@@ -2896,7 +3089,7 @@ function shootArrow(w){
   const dir=aimDirection();
   launchProjectile("arrow",attackOrigin().addScaledVector(dir,.75),dir,
     {...w,ammo,silver:w.silver||ammo===silverAmmo,venom:ammo==="venom_arrow",speed:w.speed*(1+equipmentStat("archerySpeed")),damage:w.damage*(1+equipmentStat("archeryPower"))});
-  if(!dev.infinite){removeItem(ammo,1);saveInventory();renderHotbar()}
+  if(!dev.infinite&&!isCreative()){removeItem(ammo,1);saveInventory();renderHotbar()}
   else if(crossbow)updateCrossbowHint();
   sound("bow",crossbow?.92:.7);wakeNearbyScreamers(player.pos,4.5);
   return true;
@@ -3015,8 +3208,29 @@ function updateMobDamageFlashes(now,dt){
   }
 }
 
+const vulnerableToFinisher=e=>e.hp<=Math.floor(e.maxHp*QuimiCraftBiomeFauna.finishFraction);
+function useExterminationTool(id){
+  if(labSafe())return toast("Combate desativado no Laboratório Carbono.");
+  const e=aimedEntity(),from=attackOrigin();
+  if(!e||e.dead||entityAimPoint(e).distanceTo(from)>3.25)return toast("Aproxime-se e mire na criatura.");
+  const finisher=regionalFauna[e.type]?.finisher;
+  if(finisher!==id)return toast(finisher?e.name+" exige "+itemName(finisher)+".":"Este equipamento é para criaturas de extermínio.");
+  if(!vulnerableToFinisher(e))return toast("Enfraqueça "+e.name+" até 20% de vida.");
+  if(player.attackCooldown>0)return;
+  const tool=exterminationTools[id];
+  if(tool.consumable&&!dev.infinite&&!isCreative()){
+    const slot=invSlots[state.selected];
+    if(--slot.count===0)invSlots[state.selected]=null;
+    saveInventory();renderInventory();
+  }
+  player.attackCooldown=.55;state.attackAnim=.33;
+  combatParticles(entityAimPoint(e),tool.color,14,tool.effect);
+  sound(tool.consumable?"hit":id==="echo_fork"?"magic":"land",.68);
+  e.hp=0;killEntity(e,itemName(id),playerActor);
+}
 function hitEntity(e,damage,source="ataque",knock=null,attacker=playerActor,attack=null){
   if(!e||e.persistent||e.dead)return false;
+  const wildHunt=source==="caça natural";
   if(!spectral.canHurt(e,attack)){
     if(attacker===playerActor&&(!e.spectralHint||performance.now()-e.spectralHint>1750)){
       e.spectralHint=performance.now();
@@ -3033,16 +3247,40 @@ function hitEntity(e,damage,source="ataque",knock=null,attacker=playerActor,atta
   }
   if(e.plant)wakeNearbyScreamers(e,2);
   if(attacker===playerActor&&QuimiCraftBreeding.diet(e))angerFolklore("curupira",e,13,attacker);
-  if(e.aquatic){hitAquatic(e,damage,attacker,knock);return true}
+  if(e.aquatic){hitAquatic(e,damage,attacker,knock,wildHunt);return true}
   if(attacker===playerActor&&natureFolk[e.type])provokeGrove(e.x,e.y,e.z,e);
   if(attacker===playerActor&&DRAGONS[e.type]&&!e.bonded){e.trust=0;e.feedingPause=0}
-  e.hp=Math.max(0,e.hp-damage);
+  const finisher=regionalFauna[e.type]?.finisher;
+  const willResist=finisher&&e.hp<=damage;
+  e.hp=Math.max(willResist?Math.min(1,e.hp):0,e.hp-damage);
+  if(willResist&&attacker===playerActor&&performance.now()-(e.finishHint??-Infinity)>2200){
+    e.finishHint=performance.now();toast("Use "+itemName(finisher)+" para finalizar.");
+  }
   if(attacker===playerActor){state.combatTarget=e;state.combatTargetTime=2.8}
   combatParticles(entityAimPoint(e),e.hostile?0xff766c:0xdce8bd,7);
   flashMobDamage(e);
   mobKnockback(e,attacker,knock);
   if(e.hp>0){
-    if(!e.bonded||e.groveRage)QuimiCraftAI.alarm(e,attacker);
+    if(wildHunt){
+      const sameTerritorial=attacker&&!attacker.aquatic&&attacker.type===e.type&&wildlifeBehavior.sameSpeciesOf(e.type)==="territorial";
+      if(sameTerritorial&&e.hp<=e.maxHp*.60){
+        QuimiCraftAI.disengage(e);
+        if(attacker.ai?.engagement?.target===e)QuimiCraftAI.disengage(attacker);
+        e.clashRest=34;attacker.clashRest=34;
+        Object.assign(e.ai,{fear:4.5,panic:{x:attacker.x,y:attacker.y,z:attacker.z},think:0});
+      }else if(wildlifeBehavior.retaliates(e.type)&&e.profile.strike&&attacker&&!attacker.dead){
+        QuimiCraftAI.engage(e,attacker);
+      }else{
+        Object.assign(e.ai,{fear:4,panic:{x:attacker.x,y:attacker.y,z:attacker.z},think:0});
+      }
+      if(e.naturalGroup&&attacker&&!attacker.dead){
+        for(const ally of e.naturalGroup.members){
+          if(ally===e||ally.dead||QuimiCraftAI.range(e,ally)>12)continue;
+          if(wildlifeBehavior.groupDefenders.has(e.type)&&ally.profile.strike)QuimiCraftAI.engage(ally,attacker);
+          else Object.assign(ally.ai,{fear:3.6,panic:{x:attacker.x,y:attacker.y,z:attacker.z},think:0});
+        }
+      }
+    }else if(!e.bonded||e.groveRage)QuimiCraftAI.alarm(e,attacker);
     e.jumpCooldown=Math.min(e.jumpCooldown,.12);
   }
   sound("hit",.55);
@@ -3051,6 +3289,7 @@ function hitEntity(e,damage,source="ataque",knock=null,attacker=playerActor,atta
 }
 
 function killEntity(e,source,attacker){
+  if(e.dead)return;
   e.dead=true;
   if(e.plantKey)harvestedScreamers.add(e.plantKey);
   if(e.spectral)spawnDrop("ectoplasm",1+(Math.random()<.36?1:0),entityAimPoint(e));
@@ -3061,11 +3300,13 @@ function killEntity(e,source,attacker){
   breeding.forget(e);
   combatParticles(entityAimPoint(e),0xffd889,15);
   const assisted=attacker!==playerActor;
-  if(!e.young&&(!assisted||QuimiCraftAI.range(e,playerActor)<16)){
+  const hunt=regionalFauna[e.type]?.finisher;
+  if(source!=="caça natural"&&!e.young&&(!assisted||QuimiCraftAI.range(e,playerActor)<16)){
     const bonus=key=>{
       const lucky=countItem("lucky_charm")>0&&Math.random()<.28?1:0;
       const sample=!String(key).startsWith("raw_")&&isEquipped("sample_case")&&Math.random()<(equipmentDefinition("offhand")?.sampleBonus||0)?1:0;
-      return lucky+sample;
+      const insignia=!assisted&&hunt&&key===e.profile.loot[0][0]&&countItem("hunt_badge")>0?1:0;
+      return lucky+sample+insignia;
     };
     for(const {id:key,count} of QuimiCraftAI.loot(e.profile,Math.random,bonus)){
       const id=BLOCK[key]??key;
@@ -3076,13 +3317,14 @@ function killEntity(e,source,attacker){
     }
   }
   if(!assisted){
+    if(hunt&&!e.young&&!e.spectral)recordExtermination(e);
     offerRescueReward(e);
     const discovery=e.plant?"screamer:"+(e.resident?.variant??"forest"):e.spectral&&!spectral.isNative(e.type)?e.type+":ghost":e.type;
     scienceSystem?.registerDiscovery(e.plant?"plants":"animals",discovery,{name:e.name,source:"Observado em "+biomeAt(e.x,e.z),
       knownRisks:e.hostile?"comportamento hostil":e.profile.temperament==="neutral"?"revida quando provocado":"baixo",
       amountCollected:1,researchProgress:35});
     chatMessage("COMBATE",e.name+" derrotado com "+source+".");
-  }else if(QuimiCraftAI.range(e,playerActor)<14){
+  }else if(attacker?.role==="ranger"&&QuimiCraftAI.range(e,playerActor)<14){
     chatMessage("GUARDIÃ ÍRIS",e.name+" foi afastado da patrulha.");
   }
 }
@@ -3222,7 +3464,18 @@ function updateProjectiles(dt){
   }
 }
 const MOB_STATUS = {stone:"PETRIFICADO",stun:"ATORDOADO",windup:"PREPARANDO ATAQUE",breathCharge:"CARREGANDO RAJADA",breath:"CANALIZANDO RAJADA",flee:"EM FUGA",chase:"PERSEGUINDO",search:"PROCURANDO",kite:"RECUANDO",evade:"RETORNANDO"};
-function updateEnemyHud(dt){const aimed=state.aimEntity&&!state.aimEntity.dead?state.aimEntity:null;if(state.combatTargetTime>0)state.combatTargetTime-=dt;const e=aimed||(state.combatTargetTime>0&&state.combatTarget&&!state.combatTarget.dead?state.combatTarget:null);if(e){$("enemyHud").classList.add("show");$("enemyName").textContent=e.name.toUpperCase()+(MOB_STATUS[e.ai.mode]?" · "+MOB_STATUS[e.ai.mode]:"");$("enemyHp").textContent=`${Math.ceil(e.hp)} / ${e.maxHp}`;$("enemyFill").style.width=clamp(e.hp/e.maxHp*100,0,100)+"%"}else $("enemyHud").classList.remove("show")}
+function updateEnemyHud(dt){
+  const aimed=state.aimEntity&&!state.aimEntity.dead?state.aimEntity:null;
+  if(state.combatTargetTime>0)state.combatTargetTime-=dt;
+  const e=aimed||(state.combatTargetTime>0&&state.combatTarget&&!state.combatTarget.dead?state.combatTarget:null);
+  $("enemyHud").classList.toggle("show",!!e);
+  if(!e)return;
+  const finisher=regionalFauna[e.type]?.finisher;
+  const status=finisher&&vulnerableToFinisher(e)?"Use "+itemName(finisher):MOB_STATUS[e.ai.mode];
+  $("enemyName").textContent=e.name.toUpperCase()+(status?" · "+status:"");
+  $("enemyHp").textContent=`${Math.ceil(e.hp)} / ${e.maxHp}`;
+  $("enemyFill").style.width=clamp(e.hp/e.maxHp*100,0,100)+"%";
+}
 
 const torchLights=[];
 let torchCenter="",lightClock=0,torchDirty=true;
@@ -3240,10 +3493,11 @@ function updateTorches(){
   }
   spots.sort((a,b)=>a.d-b.d);
   for(const [i,t] of spots.slice(0,settings.shadows===0?5:10).entries()){
-    const spectral=t.id===BLOCK.SPECTRAL;
-    const lamp=new THREE.PointLight(spectral?0x66ebc8:0xffab54,1,spectral?11:9,2);
-    lamp.position.set(t.x+.5,t.y+(spectral?.47:.71),t.z+.5);
+    const {color,range,height,steady}=placementsWithLight.get(t.id);
+    const lamp=new THREE.PointLight(color,1,range,2);
+    lamp.position.set(t.x+.5,t.y+height,t.z+.5);
     lamp.userData.seed=i*1.7;
+    lamp.userData.steady=steady;
     scene.add(lamp);torchLights.push(lamp);
   }
 }
@@ -3302,6 +3556,15 @@ function pinStarter(id,slot,count=1){let at=invSlots.findIndex(s=>s?.id===id);if
 const ITEM_NAMES={bolt:"Virote",stick:"Bastão",wind_staff:"Cajado do Vento",bow:"Arco comum",iron_sword:"Espada de ferro",arrow:"Flecha",hydrogen:"Hidrogênio",oxygen:"Oxigênio",water:"Água destilada",copper_ingot:"Cobre refinado",sulfur:"Enxofre",acid:"Ácido sulfúrico",indicator:"Indicador natural",fertilizer:"Fertilizante mineral",glow_solution:"Solução luminescente",copper_sulfate:"Sulfato de cobre",lab_note:"Caderno de laboratório",acid_gel:"Gel ácido",chitin:"Quitina",wind_essence:"Essência do vento",crystal_shard:"Fragmento prismático",copper_core:"Núcleo de cobre",bronze_ingot:"Lingote de bronze",voltaic_cell:"Célula voltaica",ceramic_plate:"Placa cerâmica",feather:"Pena",hide:"Couro",gold_nugget:"Pepita de ouro",antidote:"Antídoto alcalino",armor_plate:"Placa de quitina",storm_focus:"Foco da tempestade",carbon_dioxide:"Dióxido de carbono",quicklime:"Óxido de cálcio",slaked_lime:"Hidróxido de cálcio",alkali:"Solução alcalina",neutral_salt:"Sal neutralizado",rust_pigment:"Pigmento de óxido de ferro",ammonia:"Solução de amônia",tetraammine:"Complexo de cobre",ethanol:"Etanol",plant_oil:"Óleo vegetal",soap:"Sabão artesanal",ph_kit:"Kit de pH",nitrate_mix:"Mistura de nitratos",bread:"Pão rústico",berries:"Frutas silvestres",honey:"Mel da serra",cheese:"Queijo curado",shield:"Escudo de bronze",chainmail:"Cota de malha",liquid_nitrogen:"Nitrogênio líquido",lucky_charm:"Berloque da sorte",prism_pendant:"Pingente prismático",lab_glassware:"Vidrarias de laboratório",carbon_rod:"Bastão de carbono",carbon_filter:"Filtro de carvão ativado",distillation_flask:"Balão de destilação",spectrometer_lens:"Lente espectrométrica",catalyst:"Catalisador metálico",protective_goggles:"Óculos de proteção",sample_case:"Maleta de amostras",sodium_chloride:"Cloreto de sódio",chlorine:"Cloro",sodium_hydroxide:"Hidróxido de sódio",hydrochloric_acid:"Ácido clorídrico",hydrogen_peroxide:"Peróxido de hidrogênio",activated_carbon:"Carvão ativado",purified_water:"Água purificada",copper_oxide:"Óxido de cobre",silver_dust:"Pó de prata",silver_nitrate:"Nitrato de prata",silver_chloride:"Cloreto de prata",sodium_nitrate:"Nitrato de sódio",chromatography_strip:"Cromatograma",pure_ethanol:"Etanol purificado",carbonate_solution:"Solução de carbonato",copper_crystal:"Cristal de sulfato de cobre",spectral_data:"Registro espectral",plated_iron:"Ferro cobreado",carbon_badge:"Insígnia do Prof. Carbono",periodic_key:"Chave da Tabela Periódica",cup:"Copo vazio",water_cup:"Copo com água",bucket:"Balde vazio",water_bucket:"Balde com água",lava_bucket:"Balde com lava",raw_venison:"Carne crua de cervo",cooked_venison:"Carne assada de cervo",raw_pork:"Carne suína crua",cooked_pork:"Carne suína assada",raw_beef:"Carne bovina crua",cooked_beef:"Carne bovina assada",raw_rabbit:"Carne crua de coelho",cooked_rabbit:"Carne assada de coelho",raw_chicken:"Carne crua de frango",cooked_chicken:"Frango assado",raw_mutton:"Carne crua de ovelha",cooked_mutton:"Carne assada de ovelha",wool:"Lã",iron_helmet:"Capacete de ferro",iron_chestplate:"Peitoral de ferro",iron_leggings:"Calças de ferro",iron_boots:"Botas de ferro",lab_coat:"Jaleco científico",respirator_mask:"Máscara respiratória",rubber_boots:"Botas de borracha",oxygen_tank:"Cilindro de oxigênio",chitin_armor:"Armadura de quitina"};
 Object.assign(ITEM_NAMES,window.QuimiCraftScience?.itemNames||{});
 for(const [id,[name,color]] of Object.entries(fieldLab.items)){ITEM_NAMES[id]=name;ITEM_COLORS[id]=color}
+const {exterminationTools}=QuimiCraftBiomeFauna;
+for(const [id,{name,color}] of Object.entries(exterminationTools)){ITEM_NAMES[id]=name;ITEM_COLORS[id]=color}
+const {master:exterminationMaster,contracts:exterminationContracts,stock:exterminationStock}=QuimiCraftExtermination;
+const huntBadge={name:"Insígnia do Batedor",color:"#e5b86d",
+  detail:"Carregue na mochila para colher uma unidade adicional do primeiro material de cada criatura de extermínio que você finalizar."};
+ITEM_NAMES.hunt_badge=huntBadge.name;ITEM_COLORS.hunt_badge=huntBadge.color;
+let savedExtermination;
+try{savedExtermination=JSON.parse(localStorage.qc_extermination_v1||"null")}catch{}
+const extermination=QuimiCraftExtermination.create(savedExtermination?.seed===WORLD_SEED?savedExtermination:null);
 Object.assign(ITEM_NAMES,Object.fromEntries(Object.entries({...QuimiCraftFrontier.items,...QuimiCraftWorkshops.itemData,...QuimiCraftAlchemy.itemData,...QuimiCraftVehicles.itemData}).map(([id,entry])=>[id,entry[0]])));
 const APPAREL=QuimiCraftArsenal.apparel;
 Object.assign(ITEM_NAMES,{silver_bath:"Banho de prata",silver_arrow:"Flecha prateada",silver_bolt:"Virote prateado",ectoplasm:"Ectoplasma"});
@@ -3512,7 +3775,9 @@ function updateCombatHint(){
   const crop=PLANTING_ITEMS.get(id),fruit=QuimiCraftFrontier.fruitFoods[id];
   const itemTip=crop?itemName(id)+" · interaja com terra arada"+(crop.support?" · leve 1 cerca de madeira":""):
     fruit?itemName(id)+" · use para comer":id==="petrifying_vial"?"Frasco petrificante · use para lançar":id==="venom"?"Veneno · no inventário, combine com uma arma corpo a corpo":id==="silver_bath"?"Banho de prata · arraste sobre uma arma, cajado, flecha ou virote":"";
-  const primary=weaponTip||tips[id]||itemTip||`${itemName(id??BLOCK.AIR)} · clique para quebrar`;
+  const utilityTip=activeHuntUtilities.has(id)?{quartz_whetstone:"Use para afiar a picareta mais gasta da barra",
+    soot_filter:"Use para renovar o filtro da máscara equipada",vein_probe:"Use para sondar minérios num raio de 12 m"}[id]:null;
+  const primary=weaponTip||tips[id]||(exterminationTools[id]&&itemName(id)+" · use ao mirar na criatura enfraquecida")||utilityTip||itemTip||`${itemName(id??BLOCK.AIR)} · clique para quebrar`;
   const enabled=!!focus&&!weapon?.twoHanded&&!riding&&!vehicles.current();
   $("offhandAction").hidden=!enabled;
   $("combatChip").textContent=primary+(invSlots[state.selected]?.silvered?" · Banho de prata":"")+(enabled?" · "+(state.focusCooldown?"Foco em recarga":(touchInput?"✧":"X")+" · "+focus.special):"");
@@ -3753,11 +4018,35 @@ scienceSystem=window.QuimiCraftScience.createScienceSystem({
   getSampleCapacity:()=>8+(isEquipped("sample_case")?(EQUIPMENT_DEFS.sample_case.sampleCapacity||12):0),
   onChange:api=>{if(scienceUI)scienceUI.updateHUD(api.getSnapshot())}
 });
+function huntChemistryGuide(){
+  const reactions=new Map(fieldLab.reactions.map(reaction=>[reaction.id,reaction]));
+  const itemLabel=key=>itemName(resolveScienceItemId(key));
+  const amounts=entries=>entries.map(([key,count])=>`${count}× ${itemLabel(key)}`).join(" + ");
+  return Object.entries(fieldLab.huntChemistry).map(([type,ids])=>{
+    const creature=QuimiCraftBiomeFauna.species[type],steps=ids.map(id=>reactions.get(id));
+    const product=resolveScienceItemId(steps.at(-1).out[0][0]);
+    return {
+      creature:creature.name,
+      material:itemLabel(steps[0].need[0][0]),
+      level:creature.contractOnly?exterminationContracts[type].level:null,
+      product:itemName(product),
+      use:fieldLab.huntUtilities[product]??BDEF[product]?.description,
+      steps:steps.map(reaction=>({
+        name:reaction.name,
+        station:reaction.stations.map(id=>scienceSystem.stations[id].name).join(" ou "),
+        inputs:amounts(reaction.need),
+        outputs:amounts(reaction.out),
+        fuel:reaction.fuel?amounts([reaction.fuel]):null
+      }))
+    };
+  });
+}
 scienceUI=window.QuimiCraftScienceUI.createScienceUI({
   system:scienceSystem,
   elements:PERIODIC_ELEMENTS,
   bridge:{
     itemName,
+    huntChemistryGuide:huntChemistryGuide(),
     getEquippedIds:equippedItemIds,
     toast,
     openModal:openScienceModal,
@@ -3821,7 +4110,7 @@ function renderProfessor(view=professorView){
   else if(view==="current")content.innerHTML=active?`<h3>${active.title}</h3><p>${active.description}</p><div class="mission-list">${missionCardHTML(active,active.state==="ready-to-complete"?"Pronta":"Em andamento")}</div>`:`<h3>Nenhuma missão ativa</h3><p>Abra “Missões disponíveis” para selecionar um elemento da etapa atual.</p>`;
   else if(view==="deliver")content.innerHTML=active?`<h3>Entregar materiais e pesquisa</h3><p>${active.state==="ready-to-complete"?"O objetivo foi concluído. Registre o elemento e receba a recompensa.":`Ainda falta concluir o objetivo: ${active.objective.description}`}</p><div class="mission-list">${missionCardHTML(active,active.state==="ready-to-complete"?"Concluir missão":"Ainda incompleta")}</div>`:`<h3>Nada para entregar</h3><p>Inicie uma missão para acompanhar sua pesquisa.</p>`;
   else if(view==="progress")content.innerHTML=`<h3>Progresso da Tabela Periódica</h3><p>Elementos concluídos: ${stats.completed} / 118</p><div class="stage-progress-list">${elementMissions.getStages().map(stage=>`<div class="stage-progress-row"><span>Etapa ${stage.id} — ${stage.title}</span><span>${stage.completed} / ${stage.total}</span></div>`).join("")}</div>`;
-  else if(view==="hints")content.innerHTML=active?`<h3>Dica — ${active.title}</h3><p>${active.hint}</p><p>Progresso atual: ${active.progress.current} / ${active.progress.total}. Itens já obtidos são reconhecidos sempre que o objetivo permitir.</p>`:`<h3>Dicas</h3><p>Escolha uma missão. O rastreador mostrará somente o objetivo ativo; você pode ocultá-lo com × e reexibi-lo com a tecla M.</p>`;
+  else if(view==="hints")content.innerHTML=active?`<h3>Dica — ${active.title}</h3><p>${active.hint}</p><p>Progresso atual: ${active.progress.current} / ${active.progress.total}. Itens já obtidos são reconhecidos sempre que o objetivo permitir.</p>`:`<h3>Dicas</h3><p>Escolha uma missão. O rastreador mostra o objetivo ativo. Use Shift + M para ocultá-lo ou reexibi-lo.</p>`;
   content.querySelectorAll("[data-jump-view]").forEach(button=>button.onclick=()=>renderProfessor(button.dataset.jumpView));
   content.querySelectorAll("[data-mission-action]").forEach(button=>button.onclick=()=>{const mission=elementMissions.getMissionForElement(Number(button.dataset.missionAction.match(/\d+/)?.[0]));if(!mission)return;if(mission.state==="available"){elementMissions.startMission(mission.id);elementMissions.setTrackerHidden(false);messageCenter.add({category:"mission",speaker:"PROF. CARBONO",text:`${mission.title}: ${mission.objective.description}`});refreshPeriodicWall();renderProfessor("current")}else if(mission.state==="ready-to-complete"){const completed=elementMissions.completeActiveMission();if(completed){scienceSystem?.registerDiscovery("elements",String(completed.elementAtomicNumber),{name:completed.elementName,symbol:completed.elementSymbol,source:completed.objective?.description||"Missão do Prof. Carbono",researchProgress:100});scienceSystem?.registerDiscovery("missions","periodic_elements",{name:"Restauração da Tabela Periódica",source:`${completed.elementName} (${completed.elementSymbol})`,researchProgress:Math.round(elementMissions.getStats().completed/118*100)});scienceSystem?.grantResearchPoints(3,`missão do elemento ${completed.elementSymbol}`);saveInventory();renderInventory();refreshPeriodicWall();renderProfessor("progress")}}else toast(mission.hint);updateMissionHud()})
 }
@@ -3844,6 +4133,139 @@ function renderShop(){const s=SHOP_CATALOG[currentShop];if(!s)return;$('shopWall
 function buyShop(i){const g=SHOP_CATALOG[currentShop]?.goods[i];if(!g)return;const [id,price,count]=g;if(countItem('gold_nugget')<price)return toast('Pepitas insuficientes');if(!invSlots.some(s=>s?.id===id)&&!invSlots.some(s=>!s)){toast('Mochila cheia');chatMessage("SISTEMA","Mochila cheia.",{category:"system"});return}removeItem('gold_nugget',price);addItem(id,count);saveInventory();renderInventory();renderShop();sound('pickup',.7);toast(`${itemName(id)} adquirido`)}
 function closeShop(){state.shop=false;$('shop').classList.remove('open');requestPointer()}
 
+function persistExtermination(){
+  if(switchingWorld)return;
+  try{localStorage.qc_extermination_v1=JSON.stringify({seed:WORLD_SEED,...extermination.snapshot()})}
+  catch(error){reportSaveIssue("O progresso de extermínio não pôde ser gravado.",error)}
+}
+function updateExterminationTracker(){
+  const tracker=$("exterminationTracker"),{assignment}=extermination.snapshot();
+  const {level,xp}=extermination.progress(),label="Extermínio Nv. "+level;
+  tracker.hidden=!assignment&&xp===0;
+  if(!assignment){tracker.textContent=xp>0?label+" · "+xp.toLocaleString("pt-BR")+" XP":"";return}
+  const {type,kills}=assignment,total=exterminationContracts[type].count;
+  tracker.textContent=label+" · "+(kills===total?"Volte ao Mestre Gael":`${regionalFauna[type].name} ${kills}/${total}`);
+}
+function recordExtermination(entity){
+  const progress=extermination.record(entity.type);
+  if(!progress)return;
+  persistExtermination();updateExterminationTracker();
+  const {level,previousLevel,gainedXp}=progress,leveledUp=level>previousLevel;
+  const xpLabel=`+${gainedXp} XP de Extermínio`;
+  if(gainedXp>0)toast(leveledUp?xpLabel+` · Nível ${level}!`:xpLabel);
+  if(leveledUp){
+    const unlocked=Object.entries(exterminationContracts).filter(([,contract])=>contract.level>previousLevel&&contract.level<=level)
+      .map(([type])=>regionalFauna[type].name);
+    const reward=unlocked.length?" Nova caçada com Gael · "+unlocked.join(", ")+".":"";
+    chatMessage(exterminationMaster.name,`Você chegou ao nível ${level} de Extermínio.`+reward,{category:"mission"});
+  }
+  if(progress.ready){
+    chatMessage(exterminationMaster.name,"Tarefa pronta para entrega. Volte à praça da Vila dos Elementos para receber seus pontos.",{category:"mission"});
+  }
+  if(progress.ready||leveledUp)sound("pickup",.65);
+}
+function renderExtermination(){
+  const {assignment,points,completed,starterTaken}=extermination.snapshot();
+  const {level,xp,startXp,nextXp}=extermination.progress(),atMax=nextXp===null;
+  $("exterminationLevel").textContent=`Nível ${level} de Extermínio`;
+  $("exterminationXp").textContent=xp.toLocaleString("pt-BR")+" XP";
+  const levelBar=$("exterminationProgress");
+  levelBar.max=atMax?1:nextXp-startXp;
+  levelBar.value=atMax?1:xp-startXp;
+  $("exterminationNext").textContent=atMax?"Nível máximo atingido":`${(nextXp-xp).toLocaleString("pt-BR")} XP para o nível ${level+1}`;
+  const countLabel=(count,one,many)=>count+" "+(count===1?one:many);
+  $("exterminationPoints").textContent=countLabel(points,"ponto de extermínio","pontos de extermínio");
+  $("exterminationCompleted").textContent=countLabel(completed,"tarefa entregue","tarefas entregues");
+  $("exterminationKit").hidden=starterTaken;
+  const nameOf=type=>regionalFauna[type].name;
+  if(assignment){
+    const {type,kills}=assignment,data=regionalFauna[type],{count,points:reward,xp:killXp}=exterminationContracts[type],ready=kills===count;
+    const tool=itemName(data.finisher),recipe=recipes.find(row=>row.out[0]===data.finisher);
+    $("exterminationContracts").innerHTML=`<div class="extermination-active">
+      <h3>${nameOf(type)}</h3>
+      <p>${kills} de ${count} abates · ${killXp} XP por abate · ${countLabel(reward,"ponto","pontos")} na entrega</p>
+      <progress max="${count}" value="${kills}" aria-label="Abates da tarefa"></progress>
+      ${ready?'<p>Gael pode registrar a tarefa e entregar os pontos.</p><button type="button" class="primary" data-hunt="claim">Entregar tarefa</button>':
+        `<p>Procure à noite ou em cavernas de ${data.regions.join(", ")}.</p>
+        <p>Finalize com <strong>${tool}</strong>. Receita na mochila · ${recipeNeedsLabel(recipe)}.</p>
+        <button type="button" class="secondary danger" data-hunt="abandon">Abandonar tarefa</button>`}
+    </div>`;
+  }else{
+    $("exterminationContracts").innerHTML=`<p>Ganhe XP abatendo as criaturas da sua tarefa. Volte à praça para entregar a tarefa e receber os pontos.</p>
+      <div class="extermination-contracts">${Object.entries(exterminationContracts).map(([type,{count,points:reward,level:required,xp:killXp}])=>{
+        const {finisher,regions}=regionalFauna[type];
+        const locked=level<required;
+        return `<button type="button" class="shop-item${locked?" extermination-locked":""}" data-contract="${type}" ${locked?"disabled":""}>
+          <span class="shop-icon" aria-hidden="true">${itemIconMarkup(finisher)}</span><span><strong>${nameOf(type)}</strong>
+          <small>${locked?"Bloqueada · nível ":"Nível "}${required}</small>
+          <small>${count} abates · ${killXp} XP por abate · ${reward} pontos</small><small>${regions.join(", ")}</small></span></button>`;
+      }).join("")}</div>`;
+  }
+  $("exterminationStock").innerHTML=Object.entries(exterminationStock).map(([id,{points:price,count}])=>{
+    const item=exterminationTools[id]||huntBadge;
+    return `<button type="button" class="shop-item" data-reward="${id}" ${price>points?"disabled":""}>
+      <span class="shop-icon" aria-hidden="true">${itemIconMarkup(id)}</span><span><strong>${itemName(id)} ×${count}</strong>
+      <small>${countLabel(price,"ponto","pontos")}</small><small>${item.detail}</small></span></button>`;
+  }).join("");
+}
+function showExterminationTab(rewards){
+  $("exterminationTasksTab").setAttribute("aria-pressed",String(!rewards));
+  $("exterminationRewardsTab").setAttribute("aria-pressed",String(rewards));
+  $("exterminationTasks").hidden=rewards;
+  $("exterminationRewards").hidden=!rewards;
+  $("exterminationFeedback").textContent="";
+}
+function openExtermination(){
+  state.extermination=true;state.playing=false;clearInput();document.exitPointerLock?.();
+  $("extermination").classList.add("open");$("extermination").setAttribute("aria-hidden","false");
+  showExterminationTab(false);renderExtermination();$("exterminationTasksTab").focus();
+}
+function closeExtermination(resume=true){
+  state.extermination=false;
+  $("extermination").classList.remove("open");$("extermination").setAttribute("aria-hidden","true");
+  if(resume)requestPointer();
+}
+function updateExterminationPanel(message){
+  persistExtermination();renderExtermination();updateExterminationTracker();
+  $("exterminationFeedback").textContent=message;
+}
+function grantExterminationItems(items){
+  const result=transactInventory([],items);
+  if(!result.ok)$("exterminationFeedback").textContent=result.message;
+  return result.ok;
+}
+$("exterminationClose").onclick=()=>closeExtermination();
+$("exterminationTasksTab").onclick=()=>showExterminationTab(false);
+$("exterminationRewardsTab").onclick=()=>showExterminationTab(true);
+$("exterminationKit").onclick=()=>{
+  if(state.extermination&&extermination.kit(grantExterminationItems)){
+    updateExterminationPanel("Kit recebido. Confira o martelo, os sachês e as bolsas na mochila.");
+    $("exterminationTasksTab").focus();
+  }
+};
+$("exterminationContracts").onclick=event=>{
+  if(!state.extermination)return;
+  const type=event.target.closest("[data-contract]")?.dataset.contract;
+  const action=event.target.closest("[data-hunt]")?.dataset.hunt;
+  if(type&&extermination.accept(type)){
+    const message="Tarefa aceita. Leve "+itemName(regionalFauna[type].finisher)+".";
+    updateExterminationPanel(message);chatMessage(exterminationMaster.name,message,{category:"mission"});
+  }else if(action==="claim"){
+    const reward=extermination.claim();
+    if(reward>0){updateExterminationPanel(`Tarefa entregue. Você recebeu ${reward} pontos de extermínio.`);sound("pickup",.65)}
+  }else if(action==="abandon"&&confirm("Abandonar a tarefa atual? A contagem de abates será zerada. O XP obtido será mantido.")&&extermination.abandon()){
+    updateExterminationPanel("Tarefa abandonada. Escolha outra criatura.");
+  }else return;
+  $("exterminationTasksTab").focus();
+};
+$("exterminationStock").onclick=event=>{
+  const id=event.target.closest("[data-reward]")?.dataset.reward;
+  if(state.extermination&&id&&extermination.buy(id,grantExterminationItems)){
+    updateExterminationPanel(itemName(id)+" na mochila.");
+    $("exterminationRewardsTab").focus();sound("pickup",.65);
+  }
+};
+
 const entityRoot=new THREE.Group(),entities=[],npcs=[];scene.add(entityRoot);
 const breeding=QuimiCraftBreeding.create();
 let birthLoadClock=0,heartTexture=null;
@@ -3854,6 +4276,7 @@ const mobMats={
 };
 Object.assign(mobMats,{eyeBrown:new THREE.MeshBasicMaterial({color:0x6b3f24}),eyeGreen:new THREE.MeshBasicMaterial({color:0x72b985}),eyeAmber:new THREE.MeshBasicMaterial({color:0xe1a83f}),eyeAcid:new THREE.MeshBasicMaterial({color:0x9cf06e}),eyeCrystal:new THREE.MeshBasicMaterial({color:0x70e8f0}),eyeViolet:new THREE.MeshBasicMaterial({color:0xb68cff}),eyeEmber:new THREE.MeshBasicMaterial({color:0xff7a2f})});
 const NPC_PROFILES={
+  npc_extermination_master:{...exterminationMaster,color:0x526469,accent:0xe4ae66,skin:0xac7356,hair:0x3b3338,accessory:"helm"},
   npc_child:{role:"child",name:"Criança da vila",color:0x778f6c,accent:0xf3ca89,skin:0xc38764,hair:0x392b28},
   npc_villager:{role:"villager",name:"Morador da vila",color:0x80885c,accent:0xe6bd82,skin:0xbc835d,hair:0x49362c,
     talk:"Se você trouxer pão para dois adultos da comunidade, eles podem formar uma família."},
@@ -4001,17 +4424,24 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
   if(type==="npc")type="npc_carbon";
   const species=type,regional=regionalFauna[species],dragon=DRAGONS[species];
   const plant=type==="screamer"?screamer.plants[resident?.variant]??screamer.plants.forest:null;
-  const nativeGhost=spectral.isNative(species),ghost=nativeGhost||(form??(!persistent&&!plant&&spectral.roll()));
+  const nativeGhost=spectral.isNative(species),ghost=nativeGhost||(!regional?.finisher&&(form??(!persistent&&!plant&&spectral.roll())));
   const variant=FAUNA_VARIANTS[species]||(regional?.model?regional:null);
   if(variant)type=variant.model;const g=new THREE.Group(),h=Number.isFinite(resident?.y)?resident.y:findStandingY(x,z,terrainHeight(x,z)+2),rig={legs:[],arms:[],wings:[],tails:[],rotors:[],eyes:[],head:null,body:null};g.position.set(x,h,z);let name="Criatura",flying=false,role="",look=null;
   const tree=natureFolk[species],warden=siteWardens[species],legend=folklore.creatures[species];
   const forged=regional?.alloy,gem=regional?.gem;
-  const special=!!(forged||gem||["magma","ghost","crab","armadillo","medusa","serpent","spider"].includes(type));
+  const polygonal=QuimiCraftFaunaModels.has(species)||QuimiCraftFaunaModels.has(regional?.shape);
+  const special=!!(polygonal||forged||gem||regional?.finisher||["magma","ghost","crab","armadillo","medusa","serpent","spider"].includes(type));
   if(dragon){name=dragon.name;flying=true;wildlife.dragon(dragon,g,rig,jointLeg)}
   else if(plant){name=plant.name;wildlife.screamer(g,rig,plant)}
   else if(legend){name=legend.name;wildlife.folklore(species,g,rig)}
   else if(tree){name=tree.name;role="nature_folk";wildlife.livingTree(tree,g,rig)}
   else if(warden){name=warden.name;wildlife.siteWarden(warden,g,rig,jointLeg)}
+  else if(regional?.finisher)wildlife.exterminationCreature(g,rig,regional);
+  else if(polygonal){
+    const style=regional??variant;
+    name=style.name;flying=style.flying===true;
+    faunaModels.terrestrial(species,style,g,rig,hash(x,z,WORLD_SEED%997));
+  }
   else if(forged||gem){
     wildlife.siteWarden({aspect:gem?"gem":"metal",color:regional.tint,secondary:gem??regional.glow,alloy:forged},g,rig,jointLeg);
   }else if(type==="ghost"){
@@ -4042,7 +4472,6 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
       part(g,coatMat,[-.2,1.18,-.181],[.24,.54,.028],[0,0,-.035]);part(g,coatMat,[.2,1.18,-.181],[.24,.54,.028],[0,0,.035]);part(g,mobMats.red,[0,1.35,-.198],[.08,.3,.025]);glassesFrame(g,-.09,1.835,-.258,.13,.1);glassesFrame(g,.09,1.835,-.258,.13,.1);part(g,metalMat,[0,1.835,-.26],[.05,.018,.014]);part(g,mobMats.cyan,[.2,1.03,-.19],[.15,.14,.018]);const flask=new THREE.Mesh(new THREE.OctahedronGeometry(.085,0),windGlassMat);flask.position.set(-.46,.77,-.08);g.add(flask)
     }else{
       npcLooks.rangerHelmet(head,mobMats.green,bootMat,brassMat);
-      part(g,mobMats.moss,[0,1.6,.205],[.68,.5,.09]);
       beam(g,leatherMat,[-.24,1.49,-.205],[.28,.91,-.207],.065,.029);
       const quiver=new THREE.Group();
       quiver.position.set(.29,1.20,.25);quiver.rotation.z=-.27;g.add(quiver);
@@ -4061,7 +4490,7 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
   }else if(type.startsWith("npc_")){
     const original=NPC_PROFILES[type]||NPC_PROFILES.npc_farmer;
     const alchemist=original.role==="alchemist",apprentice=!!resident?.apprentice,school=resident?.office?.kind||resident?.school||"wandering";
-    const uniform=alchemist||!resident&&["lab_ecologist","lab_hydrologist","lab_mineralogist","shop_armor"].includes(original.role);
+    const uniform=alchemist||original.role===exterminationMaster.role||!resident&&["lab_ecologist","lab_hydrologist","lab_mineralogist","shop_armor"].includes(original.role);
     look=QuimiCraftNPCLooks.describe(WORLD_SEED,resident?.id||type,{
       age:resident?.age,culture:resident?.culture,color:original.color,uniform,scale:resident?.scale
     });
@@ -4103,6 +4532,11 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
     }
     if(!alchemist&&p.accessory==="apron"){part(g,mobMats.cream,[0,1.08,-.202],[.43,.55,.025]);for(let q=-1;q<=1;q++)part(g,accent,[q*.14,.92,-.228],[.08,.11,.025])}
     if(p.accessory==="helm"||p.accessory==="lamp"){part(head,p.accessory==="helm"?metalMat:mobMats.dark,[0,.31,.02],[.54,.2,.53]);if(p.accessory==="lamp")part(head,windGlassMat,[0,.33,-.28],[.13,.12,.08])}
+    if(role===exterminationMaster.role){
+      part(head,accent,[0,.31,-.262],[.23,.068,.05]);
+      part(g,leatherMat,[0,1.25,-.185],[.52,.21,.06],[0,0,-.12]);
+      part(g,accent,[.12,1.27,-.225],[.15,.15,.045],[0,0,Math.PI/4]);
+    }
     if(!alchemist&&p.accessory==="goggles"){glassesFrame(head,-.09,.045,-.258,.13,.1);glassesFrame(head,.09,.045,-.258,.13,.1);part(head,accent,[0,.045,-.26],[.05,.018,.014])}
     if(p.accessory==="vials")for(let q=-1;q<=1;q++){const vial=new THREE.Mesh(new THREE.OctahedronGeometry(.065,0),q===0?windGlassMat:q<0?mobMats.purple:mobMats.slime);vial.position.set(q*.15,1.0,-.24);g.add(vial)}
     if(p.accessory==="crown"||p.accessory==="crystal"){for(let q=-1;q<=1;q++){const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.085+Math.abs(q)*.015,0),q===0?windGlassMat:mobMats.purple);const crown=p.accessory==="crown";gem.position.set(q*.15,crown?.33:1.12,-.08);gem.rotation.z=q*.25;(crown?head:g).add(gem)}}
@@ -4133,7 +4567,7 @@ function createEntity(type,x,z,persistent=false,resident=null,young=false,form){
         else node.position.y-=.16;
       }
     }
-    const label=nameSprite(name,alchemist||apprentice?"#dec9fc":p.shop?"#f1d985":"#c9e7c0");label.position.set(0,alchemist?2.67:look.child?2.40:2.58,0);g.add(label);persistent=true
+    const label=nameSprite(name,alchemist||apprentice?"#dec9fc":p.shop||role===exterminationMaster.role?"#f1d985":"#c9e7c0");label.position.set(0,alchemist?2.67:look.child?2.40:2.58,0);g.add(label);persistent=true
   }else if(regional&&!regional.model||type==="fox"){
     const style=regional||variant;
     name=style.name;
@@ -4288,6 +4722,11 @@ function disposeEntityDetails(group){group.userData.previewJet?.close();spectral
   if(node.isSprite){node.material.map?.dispose();node.material.dispose()}
 });group.userData.previewGaze?.close()}
 function removeEntity(e,keepModel=false){closeDragonBurst(e);clearCreatureStone(e);creatureAfflictions.delete(e);restoreMobColor(e);entityRoot.remove(e.group);if(!keepModel)disposeEntityDetails(e.group);
+  if(e.naturalGroup){
+    const members=e.naturalGroup.members,index=members.indexOf(e);
+    if(index>=0)members.splice(index,1);
+    e.naturalGroup=null;
+  }
   const companion=bondedMounts.get(e.bonded);
   if(companion&&!e.dead)Object.assign(companion,{x:e.x,y:e.y,z:e.z,hp:e.hp,angle:e.angle});
   let i=entities.indexOf(e);if(i>=0)entities.splice(i,1);i=npcs.indexOf(e);if(i>=0)npcs.splice(i,1);
@@ -4417,21 +4856,17 @@ function courtshipBehavior(e,behavior,dt){
   }
   return behavior;
 }
-function ambientMobPool(b,habitat){const pools={
-  "bosque lilás":["lilac_songbird","lilac_songbird","rabbit","forest_deer"],
-  "delta salobro":["salt_marsh_rabbit","mangrove_capivara","chicken","slime"],
-  "termas minerais":["pyrite_crawler","cristalume","deer","owl"],
-  "floresta de sequoias":["forest_deer","forest_deer","owl","rabbit"],
-  manguezal:["mangrove_capivara","mangrove_capivara","chicken","slime"],
-  "chapadas ocres":["scorpion","cobrete","chicken","forest_deer"],
-  "fiordes glaciais":["frost_owl","frost_owl","sheep","golem"],
-  "campina de aurora":["frost_owl","cristalume","forest_deer","sheep"],
-  "caldeira vítrea":["glass_scorpion","glass_scorpion","magma","cristalume"],
-  deserto:["scorpion","cobrete","chicken"],salinas:["salt_marsh_rabbit","scorpion","cobrete","wisp"],"cânion calcário":["golem","cobrete","scorpion","sheep"],badlands:["scorpion","cobrete","golem"],vulcânico:["magma","golem","wisp"],"bosque de cristais":["cristalume","wisp","cobrete"],taiga:["deer","owl","rabbit","sheep"],tundra:["deer","owl","golem","sheep"],"prado alpino":["deer","owl","rabbit","sheep"],"bosque de cerejeiras":["deer","owl","pig","rabbit"],"selva tropical":["capivara","slime","pig","chicken"],pântano:["slime","capivara","pig","wisp"],floresta:["deer","owl","pig","rabbit"],montanha:["golem","cobrete","owl","sheep"],"planície florida":["cow","pig","rabbit","chicken","sheep","deer"],planície:["cow","pig","rabbit","chicken","sheep","capivara"],savana:["cow","chicken","capivara","scorpion","deer"]};const p=[...(pools[b]||pools.planície)];const resident=QuimiCraftRegions.localFauna(b);
-  if(resident)p.push(resident,resident);
-  const specialties=habitats.fauna(habitat,false),additions=QuimiCraftBiomeFauna.ambient(b);
-  p.push(...specialties,...specialties,...additions,...additions);
-  return p.filter(type=>QuimiCraftAI.getProfile(type).temperament!=="hostile")
+function ambientMobPool(b,habitat){
+  const residents=wildlifeBehavior.landResidents[b]??[],specialties=habitats.fauna(habitat,false);
+  const regional=QuimiCraftBiomeFauna.ambient(b).filter(type=>{
+    if(type==="polar_bear")return b==="tundra"||b==="campina de aurora";
+    if(type==="lion"||type==="jaguar"||type==="capivara")return residents.includes(type);
+    return true;
+  });
+  const local=QuimiCraftRegions.localFauna(b);
+  const pool=[...residents,...residents,...regional,...specialties];
+  if(local&&(!residents.length||residents.includes(local)))pool.push(local);
+  return pool.filter(type=>QuimiCraftAI.getProfile(type).temperament!=="hostile");
 }
 function validMobPlacement(type,x,z,h){
   const actor=typeof type==="string"?{type}:type,radius=entityRadius(actor);
@@ -4521,6 +4956,8 @@ function nearbySpawnFloors(x,z,terrain,kind){
 function attemptMobSpawn(kind,eligible=()=>true,record=()=>{}){
   const hostile=kind==="hostile",attempts=hostile?18:20;
   if(!hostile&&spawnDirector.wildlifeCount(entities)>=QuimiCraftMobSpawn.limits[settings.mobs].natural)return null;
+  const tracked=hostile?extermination.hunting():null;
+  const prioritize=tracked&&entities.filter(e=>e.type===tracked&&!e.dead&&QuimiCraftAI.range(e,playerActor)<55).length<2;
   const maySpawnDragon=!hostile&&settings.mobs>0&&Math.random()<.19&&!entities.some(e=>DRAGONS[e.type]&&!e.dead);
   for(let tries=0;tries<attempts;tries++){
     const a=Math.random()*TAU,wide=tries%3===2;
@@ -4538,11 +4975,18 @@ function attemptMobSpawn(kind,eligible=()=>true,record=()=>{}){
         if(floor.light>5||!eligible(floor))continue;
       }else if(!spawnSkyOpen(x,y+.6,z)||entities.some(e=>!e.dead&&Math.hypot(e.x-x,e.z-z)<2.7))continue;
       const dragonPool=maySpawnDragon?QuimiCraftDragons.regional(biome):[];
-      const haunt=hostile&&!underground&&Math.random()<.16?
+      const huntHere=prioritize&&regionalFauna[tracked].regions.includes(biome);
+      const haunt=hostile&&!huntHere&&!underground&&Math.random()<.16?
         Object.keys(spectral.names).filter(id=>regionalFauna[id]?.regions.includes(biome)):[];
-      const pool=dragonPool.length?dragonPool:haunt.length?haunt:hostile?QuimiCraftBiomeFauna.hostile(biome,underground):ambientMobPool(biome,habitat);
+      const pool=huntHere?[tracked]:dragonPool.length?dragonPool:haunt.length?haunt:hostile?QuimiCraftBiomeFauna.hostile(biome,underground):ambientMobPool(biome,habitat);
       if(!pool.length)continue;
       const type=pool[Math.floor(Math.random()*pool.length)];
+      if(!hostile&&wildlifeBehavior.landDiets[type]&&entities.some(other=>!other.dead&&other.type===type&&
+        Math.hypot(other.x-x,other.z-z)<(wildlifeBehavior.social[type]?14:22)))continue;
+      if(type==="hippopotamus"&&![[0,3],[3,0],[0,-3],[-3,0],[0,8],[8,0],[0,-8],[-8,0]].some(([dx,dz])=>
+        ["fresh","tannin"].includes(regionalWater(x+dx,z+dz).id)&&findFishWater(x+dx,z+dz)))continue;
+      if(type==="polar_bear"&&![[0,7],[7,0],[0,-7],[-7,0],[12,4],[-12,-4],[4,-12],[-4,12]].some(([dx,dz])=>
+        regionalWater(x+dx,z+dz).zone==="arctic"&&findFishWater(x+dx,z+dz)))continue;
       if((hostile||hostileSpecies(type))&&!canSpawnHostile(floor))continue;
       const dragon=DRAGONS[type];
       if(dragon){
@@ -4550,7 +4994,7 @@ function attemptMobSpawn(kind,eligible=()=>true,record=()=>{}){
           ![-2.2,2.2].every(offset=>spawnSkyOpen(x+offset,y+dragon.hover,z)))continue;
       }else if(!validMobPlacement(type,x,z,y))continue;
       const model=regionalFauna[type]?.model||FAUNA_VARIANTS[type]?.model||type;
-      const flying=!!dragon||flyingMobTypes.has(model);
+      const flying=!!dragon||regionalFauna[type]?.flying===true||flyingMobTypes.has(model);
       const hover=regionalFauna[type]?.hover??1.15;
       const altitude=dragon?.hover??(flying?(entityCollidesWorld({type},x,z,y+hover)?.38:hover):0);
       if(flying&&entityCollidesWorld({type},x,z,y+altitude))continue;
@@ -4563,22 +5007,26 @@ function attemptMobSpawn(kind,eligible=()=>true,record=()=>{}){
       e.spawnKind=dragon?"dragon":kind;
       if(hostile){e.spawnRest=0;e.sunClock=2+Math.random()*3;e.sunTime=0;record(floor)}
       e.y=y+altitude;e.group.position.y=e.y;e.ai.home.y=e.y;
-      const herd=["cow","pig","sheep","rabbit","chicken","capivara","deer","bison"];
-      const paired=!hostile&&!e.hostile&&QuimiCraftBreeding.diet(e)&&Math.random()<(herd.includes(type)?.73:.32);
+      const social=wildlifeBehavior.social[type];
+      const paired=!hostile&&!e.hostile&&!e.spectral&&social;
       const limit=QuimiCraftMobSpawn.limits[settings.mobs].natural;
       if(paired){
+        const [label,minimum,maximum]=social,count=minimum-1+Math.floor(Math.random()*(maximum-minimum+1));
         let companions=0;
+        const group={label,home:{x,y,z},members:[e]};e.naturalGroup=group;
+        const spacing=Math.max(1,entityRadius(e)*1.23);
         for(const [dx,dz] of [[1.85,.45],[-1.85,-.45],[.45,-1.85],[-.45,1.85],[2.45,-1.65],[-2.45,1.65]]){
           if(spawnDirector.wildlifeCount(entities)>=limit)break;
-          const px=x+dx,pz=z+dz;
-          if(!hasChunk(Math.floor(px/CHUNK),Math.floor(pz/CHUNK))||labBoundsContains(px,pz,2)||
+          const px=x+dx*spacing,pz=z+dz*spacing;
+          if(!hasChunk(Math.floor(px/CHUNK),Math.floor(pz/CHUNK))||biomeAt(px,pz)!==biome||spawnProtected(px,y,pz)||
             entities.some(other=>!other.dead&&Math.hypot(other.x-px,other.z-pz)<1.25))continue;
           const floor=entityTraversal.standing(e,px,pz,y+1.02,y-1.1,entityRadius(e));
           if(floor===null||!validMobPlacement(type,px,pz,floor))continue;
-          const young=Math.random()<.27,companion=createEntity(type,px,pz,false,{y:floor},young);
+          const young=!!QuimiCraftBreeding.diet(e)&&Math.random()<.21,companion=createEntity(type,px,pz,false,{y:floor},young,false);
           companion.spawnKind="natural";
+          companion.naturalGroup=group;group.members.push(companion);
           if(young){companion.wildAge=.001;companion.parent=e}
-          if(++companions>=(herd.includes(type)?2+Number(Math.random()<.44):1))break;
+          if(++companions>=count)break;
         }
       }
       return e;
@@ -4669,6 +5117,7 @@ function initWorldLife(){
   ensureLaboratoryStaff();
   let ranger=npcs.find(n=>n.role==="ranger");if(!ranger)ranger=createEntity("npc_ranger",spawn.x-3.5,spawn.z+4.5,true);ranger.x=spawn.x-3.5;ranger.z=spawn.z+4.5;ranger.y=findStandingY(ranger.x,ranger.z,terrainHeight(ranger.x,ranger.z)+2);ranger.group.position.set(ranger.x,ranger.y,ranger.z);Object.assign(ranger.ai.home,{x:ranger.x,y:ranger.y,z:ranger.z});
   if(VILLAGE.version===3){for(const resident of villages.main().people)spawnVillageResident(resident)}else{
+  spawnVillageResident({...exterminationMaster,id:"legacy:"+exterminationMaster.role,site:"legacy",x:VILLAGE.x+1.5,z:VILLAGE.z+5.5,scale:1});
   const shopTypes=["npc_food","npc_armor","npc_solid","npc_liquid","npc_trinket"];shopTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role;if(!npcs.some(n=>n.role===role))createEntity(type,VILLAGE.x+(i-2)*VILLAGE.spacing+.5,VILLAGE.z-4.5,true)});
   const residentTypes=["npc_farmer","npc_miner","npc_botanist","npc_glazier","npc_ceramist","npc_teacher","npc_mayor","npc_baker","npc_fisher","npc_geologist"],homes=LEGACY_VILLAGE_BUILDINGS.filter(b=>b.kind==="house");residentTypes.forEach((type,i)=>{const role=NPC_PROFILES[type].role,b=homes[(i*3)%homes.length];spawnVillageResident({id:"legacy:"+role,role,site:"legacy",x:b.x+.5,z:b.z-4.35})});
   for(const [i,house] of homes.slice(0,5).entries()){
@@ -4713,14 +5162,14 @@ function animateEntityRig(e,dt,now,pace,preview=null){
   }
   QuimiCraftCreaturePoses.resetWave(r);
   const regional=regionalFauna[e.type],modelType=regional?.model||FAUNA_VARIANTS[e.type]?.model||e.type;
-  const crawler=["scorpion","crab","spider"].includes(modelType);
+  const crawler=["scorpion","crab","spider","soot_weaver"].includes(modelType);
   const flight=preview?.flight??e.flying;
   const airborne=preview?.airborne??(!flight&&!e.onGround);
   const stride=clamp(pace/e.profile.run,0,1);
   const load=preview?.charge??e.mountedCharge??(a.swing&&e.profile.strike?1-a.swing.remaining/e.profile.strike.windup:0);
   e.mountedStrike=Math.max(0,(e.mountedStrike||0)-dt);
   e.dragonRelease=Math.max(0,(e.dragonRelease||0)-dt);
-  const release=preview?.release??Math.max(a.aim/.27,e.mountedStrike/.58,e.dragonRelease/.34);
+  const release=preview?.release??Math.max(a.aim/.16,e.mountedStrike/.58,e.dragonRelease/.34);
   const bracing=preview?preview.charge>0||preview.release>0:a.mode==="windup"||a.mode==="strike";
   const motion=preview?1:document.documentElement.classList.contains("reduced-motion")?.45:1;
   const warden=siteWardens[e.type]||regional?.gem||regional?.alloy,expeditionRig=DRAGONS[e.type]||natureFolk[e.type]||warden;
@@ -4764,6 +5213,19 @@ function animateEntityRig(e,dt,now,pace,preview=null){
       }
     }
   });
+  if(r.primate){
+    const crouch=1-clamp(pace/e.profile.walk,0,1);
+    r.body.position.y=.315-crouch*.061;
+    r.body.rotation.x=crouch*.19;
+    r.head.position.y=.457-crouch*.045;
+    for(const leg of r.legs){
+      const {front,height}=leg.userData.primateRest;
+      leg.position.y=height-crouch*(front?.063:.074);
+      leg.rotation.x=lerp(leg.rotation.x,front?-.54:.72,crouch);
+      const lower=leg.userData.lower;
+      lower.rotation.x=lerp(lower.rotation.x,front?.83:-1.24,crouch);
+    }
+  }
   r.arms.forEach((arm,index)=>{
     const side=arm.userData.side||((index%2)*2-1);
     const wave=Math.sin(gait+(index%2?0:Math.PI));
@@ -4772,20 +5234,22 @@ function animateEntityRig(e,dt,now,pace,preview=null){
       arm.rotation.x=-load*.48+release*.15;
     }else{
       const heavy=["golem","magma"].includes(modelType);
-      arm.rotation.x=wave*(pace>.04?reach*.71:.02)-load*(heavy?1.55:1)-release*.52;
-      arm.rotation.z=side*((e.type==="golem"?-.08:r.werewolf?.58:0)+load*.22);
-      if(arm.userData.lower)arm.userData.lower.rotation.x=bracing?-.44-load*.58:Math.max(0,wave)*stride*.36-(r.werewolf?.36:0);
+      arm.rotation.x=wave*(pace>.04?reach*.71:.02)+load*(heavy?2.15:1.55)+release*(heavy?.65:.78);
+      arm.rotation.z=side*((e.type==="golem"?-.08:r.werewolf?.58:0)-load*.14);
+      if(arm.userData.lower)arm.userData.lower.rotation.x=bracing?.38+load*.42:Math.max(0,wave)*stride*.36+(r.werewolf?.42:0);
     }
   });
   if(r.bow){
-    const grip=r.arms[0],draw=r.arms[1],ready=bracing?clamp(load+.25,0,1):0;
-    grip.rotation.x=lerp(grip.rotation.x,-1.42,ready);
-    grip.userData.lower.rotation.x=lerp(grip.userData.lower.rotation.x,-.19,ready);
-    draw.rotation.x=lerp(draw.rotation.x,-1.10,ready);
-    draw.rotation.z=lerp(draw.rotation.z,-.69,ready);
-    draw.userData.lower.rotation.x=lerp(draw.userData.lower.rotation.x,-1.06,ready);
-    r.bow.rotation.x=lerp(-.10,1.60,ready);
-    playerModels.animateItem(r.bow,now,ready*.8,motion,bracing);
+    const grip=r.arms[0],draw=r.arms[1],aim=bracing?clamp(Math.max(load,release)+.30,0,1):0;
+    const pull=bracing?clamp(load,0,1):0;
+    grip.rotation.x=lerp(grip.rotation.x,1.42,aim);
+    grip.userData.lower.rotation.x=lerp(grip.userData.lower.rotation.x,.18,aim);
+    draw.rotation.x=lerp(draw.rotation.x,1.18,aim);
+    draw.rotation.y=lerp(0,.46,aim);
+    draw.rotation.z=lerp(draw.rotation.z,-.26,aim);
+    draw.userData.lower.rotation.x=lerp(draw.userData.lower.rotation.x,.92,aim);
+    r.bow.rotation.x=lerp(-.10,-1.60,aim);
+    playerModels.animateItem(r.bow,now,pull*.85,motion,load>0);
   }
   for(const wing of r.wings){
     const flap=Math.sin(now*(e.type==="chicken"?.006:.009+stride*.013)+e.phase)*(preview?.wings??1);
@@ -4808,14 +5272,30 @@ function animateEntityRig(e,dt,now,pace,preview=null){
       rotor.rotation.z+=dt*(1.7+index*.55+stride);rotor.rotation.x+=dt*(index%2?.35:-.28);
     }
   });
-  const blinkPhase=(now*.001+e.phase*.71)%4.8,blink=blinkPhase>4.58?Math.max(.08,Math.abs(blinkPhase-4.69)*9):1;
-  for(const eye of r.eyes)eye.scale.y=lerp(eye.scale.y,blink,.44);
+  const sleeping=!preview&&a.mode==="sleep";
+  const blinkPhase=(now*.001+e.phase*.71)%4.8,blink=sleeping?.08:blinkPhase>4.58?Math.max(.08,Math.abs(blinkPhase-4.69)*9):1;
+  for(const eye of r.eyes){
+    const baseY=eye.userData.restScaleY??=eye.scale.y;
+    eye.scale.y=lerp(eye.scale.y,baseY*blink,sleeping?.22:.44);
+  }
   if(r.head){
-    r.head.rotation.y=Math.sin(now*.0014+e.phase)*.06*motion;
-    r.head.rotation.x=bracing?-.11*load:Math.sin(now*.0018+e.phase)*.028;
+    r.head.rotation.y=sleeping?0:Math.sin(now*.0014+e.phase)*.06*motion;
+    const grazing=!preview&&a.mode==="forage",resting=!preview&&a.mode==="rest";
+    r.head.rotation.x=bracing?-.11*load:grazing?-.42+Math.sin(now*.008+e.phase)*.12:
+      sleeping?-.34+Math.sin(now*.0018+e.phase)*.024:resting?-.14:Math.sin(now*.0018+e.phase)*.028;
+  }
+  if(r.body&&!r.primate&&modelType!=="slime"&&modelType!=="tide_ooze"&&modelType!=="wisp"&&modelType!=="cristalume"){
+    const base=r.body.userData.restScale??=r.body.scale.clone();
+    if(sleeping){
+      const breath=1+Math.sin(now*.0022+e.phase)*.028*motion;
+      r.body.scale.set(base.x*1.02,base.y*breath,base.z*1.02);
+    }else if(r.body.userData.sleepScaled){
+      r.body.scale.copy(base);
+    }
+    r.body.userData.sleepScaled=sleeping;
   }
   if(r.jaw)QuimiCraftCreaturePoses.bite(r,load,release,dt);
-  if(modelType==="slime"&&r.body){
+  if((modelType==="slime"||modelType==="tide_ooze")&&r.body){
     const squash=1+Math.sin(now*.007+e.phase)*(.07+stride*.12)*motion-load*.19+release*.15;
     r.body.scale.set(1+(1-squash)*.37,squash,1+(1-squash)*.37);
     r.body.position.y=(1-squash)*.19;
@@ -4942,47 +5422,53 @@ const fishColors={
 };
 for(const [name,[,,tint]] of Object.entries(QuimiCraftWorkshops.fishSpecies))fishColors["raw_"+name]=tint;
 const sharedFishGeometry=new Set(Object.values(wildlife.shared));
-const aquaticHostile=profile=>!!profile.attack&&(profile.attack.kind!=="tail"||profile.attack.venom);
+const wildlifeBehavior=QuimiCraftWildlifeBehavior;
+const aquaticHostile=profile=>!!profile.attack&&!profile.defensiveOnly&&(profile.attack.kind!=="tail"||profile.attack.venom);
 const fishStyle=id=>QuimiCraftWorkshops.fishSpecies[id.slice(4)]?.[3]||
   (id==="raw_eel"||id==="raw_catfish"?"long":id==="raw_mullets"?"slim":undefined);
 const fishName=id=>itemName(id).replace(/\s+cru(?:a)?\b/gi,"").replace(/\s*\(cru(?:a)?\)/gi,"").replace(/^Filé de\s+/i,"");
 function aquaticProfile(id){
   return QuimiCraftDepths.fauna[id]||QuimiCraftAquatic.fishProfile(id,fishName(id),fishStyle(id));
 }
-function aquaticModel(id){
+function scaleAquaticModel(model,scale){
+  model.group.scale.multiplyScalar(scale);
+  model.bounds.min.multiplyScalar(scale);model.bounds.max.multiplyScalar(scale);
+}
+function aquaticModel(id,detail=false){
   const profile=QuimiCraftDepths.fauna[id];
-  const model=profile?wildlife.creature(id):wildlife.fish(id,fishColors[id]||fishColors.raw_fish,fishStyle(id));
-  if(profile?.bodySize){
-    const size=new THREE.Box3().setFromObject(model.group).getSize(new THREE.Vector3());
-    model.group.scale.setScalar(profile.bodySize/size[profile.sizeAxis??"z"]);
+  const freshwater=["green_anaconda","arapaima","amazon_manatee"].includes(id);
+  const model=freshwater?faunaModels.freshwater(id):profile?wildlife.creature(id,detail):wildlife.fish(id,fishColors[id]||fishColors.raw_fish,fishStyle(id));
+  model.bounds=new THREE.Box3().setFromObject(model.group);
+  const size=profile?.length??profile?.bodySize;
+  if(size){
+    const axis=profile.sizeAxis??"z";
+    scaleAquaticModel(model,size/(model.bounds.max[axis]-model.bounds.min[axis]));
   }
   return model;
 }
-const catalogAquaticLengths={humpback:13,orca:7,dolphin:2.8,pink_boto:2.4,reef_shark:2.2,caiman:2.5};
+const catalogAquaticLengths={dolphin:2.8,pink_boto:2.4,reef_shark:2.2,caiman:2.5};
 function inspectedAquaticModel(id,ghost=false){
-  const model=aquaticModel(id);
+  const model=aquaticModel(id,true);
   model.group.name=id;
   model.group.userData.aquaticRig=model;
   model.ghost=ghost;
-  const length=catalogAquaticLengths[id];
-  if(length){
-    const size=new THREE.Box3().setFromObject(model.group).getSize(new THREE.Vector3());
-    model.group.scale.multiplyScalar(length/size.z);
-  }
-  if(model.breach)model.breachBounds=new THREE.Box3().setFromObject(model.group);
+  const length=QuimiCraftDepths.fauna[id]?.catalogLength??catalogAquaticLengths[id];
+  if(length)scaleAquaticModel(model,length/(model.bounds.max.z-model.bounds.min.z));
+  if(model.breach)model.breachBounds=model.bounds;
   if(ghost)spectral.apply(THREE,model.group);
   return model.group;
 }
 function buildFish(x,y,z,water,species=null,ghost=spectral.roll()){
-  const biome=biomeAt(x,z),waterKind=regionalWater(x,z).id;
-  const base=species??QuimiCraftWorkshops.fishingYield({biome,kind:waterKind,depth:water.depth},"fishing_rod",null,()=>clamp(Math.random(),.14,.89))[0][0];
+  const base=species??QuimiCraftWorkshops.fishingYield({biome:biomeAt(x,z),kind:regionalWater(x,z).id,depth:water.depth},
+    "fishing_rod",null,()=>clamp(Math.random(),.14,.89))[0][0];
   const id=typeof base==="string"&&base!=="raw_piranha"&&(base.startsWith("raw_")||QuimiCraftDepths.fauna[base])?base:"raw_fish";
   const profile=aquaticProfile(id),large=!!QuimiCraftDepths.fauna[id]&&!profile.small,model=aquaticModel(id);
   const {group}=model;
-  if(!large)group.scale.multiplyScalar((id==="raw_shrimp"?.73:1)*(.84+Math.random()*.32));
-  const bounds=new THREE.Box3().setFromObject(group);
+  if(!large)scaleAquaticModel(model,(id==="raw_shrimp"?.73:1)*(.84+Math.random()*.32));
+  const bounds=model.bounds;
   const surfaceClearance=Math.max(profile.surfaceClearance??.35,bounds.max.y+.18);
-  y=aquaticDepth(water,y,profile,surfaceClearance);
+  const floorClearance=Math.max(profile.baseClearance??.43,-bounds.min.y+.16);
+  y=aquaticDepth(water,y,profile,surfaceClearance,floorClearance);
   group.position.set(x,y,z);
   group.name=ghost?spectral.name(id,profile.name):profile.name;
   if(ghost)spectral.apply(THREE,group);
@@ -4992,7 +5478,8 @@ function buildFish(x,y,z,water,species=null,ghost=spectral.roll()){
   group.rotation.y=heading+Math.PI;
   const record={...model,id,profile,large,aquatic:true,hostile:aquaticHostile(profile),spectral:ghost,name:group.name,hp:profile.hp,maxHp:profile.hp,dead:false,
     ai:{mode:"idle"},angle:heading,speed:profile.speed*mobMoveMultiplier,timer:Math.random()*2,baseY:y,phase:Math.random()*TAU,
-    cooldown:0,strike:null,alarm:0,water,surfaceClearance,surfaceAt:model.spouts?8+Math.random()*12:Infinity,surfacings:0,
+    cooldown:0,strike:null,alarm:0,water,surfaceClearance,floorClearance,stock:profile.stock,
+    surfaceAt:model.spouts||model.breathHeight?8+Math.random()*12:Infinity,surfacings:0,shoreAt:profile.shore?12+Math.random()*17:Infinity,
     breachBounds:model.breach?bounds:null,
     get x(){return group.position.x},get y(){return group.position.y},get z(){return group.position.z}};
   fishSchool.push(record);
@@ -5046,8 +5533,8 @@ function moveAquaticBreach(group,bounds,jump,dt){
     const water=findFishWater(noseX,noseZ);
     const atNose=water&&Math.abs(water.top-surface)<.30;
     const x=atNose?noseX:group.position.x,z=atNose?noseZ:group.position.z;
-    const size=clamp((bounds.max.z-bounds.min.z)*.39,.66,2.15);
-    aquaticFx.splash(new THREE.Vector3(x,(atNose?water.top:findFishWater(x,z)?.top??surface)+.016,z),size,contact);
+    const size=clamp((bounds.max.z-bounds.min.z)*.36,.66,3.60);
+    aquaticFx.splash(new THREE.Vector3(x,(atNose?water.top:findFishWater(x,z)?.top??surface)+.016,z),size,contact,{x:jump.dx,z:jump.dz});
     const distance=Math.hypot(player.pos.x-x,player.pos.y-surface,player.pos.z-z);
     if(distance<24)sound("splash",(contact==="entry"?1.2:.76)*(1-distance/28));
   }
@@ -5060,21 +5547,38 @@ function disposeAquatic(f){
   f.group.traverse(n=>{
     if(n.geometry&&!n.userData.spectralHalo&&!sharedFishGeometry.has(n.geometry))n.geometry.dispose();
     if(n.isSkinnedMesh)n.skeleton.dispose();
+    if(n.userData.ownMarineMaterial)n.material.dispose();
   });
 }
 function attackableActors(){
   return [...entities.filter(e=>!e.persistent&&e!==riding?.actor),...fishSchool.filter(f=>!f.dead)];
 }
-function hitAquatic(f,damage,attacker,knock){
+function hitAquatic(f,damage,attacker,knock,natural=false){
   flashMobDamage(f);
   mobKnockback(f,attacker,knock);
   f.hp=Math.max(0,f.hp-damage);
-  state.combatTarget=f;state.combatTargetTime=2.8;
-  combatParticles(f.group.position,0xd3f3ff,7);
+  if(!natural){state.combatTarget=f;state.combatTargetTime=2.8}
+  combatParticles(f.group.position,0xd3f3ff,f.large&&attacker?.large?14:7);
+  if(f.large&&attacker?.large&&f.water&&f.water.top-f.y<4.5){
+    aquaticFx.splash(new THREE.Vector3(f.x,f.water.top+.016,f.z),clamp((f.profile.length??5)*.22,1.1,2.8),"entry");
+  }
   sound("hit",.42);
   if(f.hp>0){
-    f.alarm=f.profile.attack?.kind==="tail"?5.2:2.8;
-    if(f.profile.attack&&(attacker===playerActor||attacker===riding?.actor)&&!labSafe()){
+    if(wildlifeBehavior.hasInkDefense(f.id)&&(f.inkCooldown??0)<=0&&(f.hp<=f.maxHp*.78||!f.profile.counter)){
+      f.inkCooldown=9.5;
+      combatParticles(f.group.position,0x171326,16,"vapor");
+      if(attacker?.aquatic&&(!f.grip?.attack?.lockedGrip||f.hp<=f.maxHp*.40)){
+        attacker.inkBlinded=2.8;
+        if(f.grip?.predator===attacker)f.grip=null;
+      }
+    }
+    if(natural&&attacker?.aquatic&&attacker.id===f.id&&wildlifeBehavior.sameSpeciesOf(f.id)==="territorial"&&f.hp<=f.maxHp*.60){
+      f.clashRest=34;attacker.clashRest=34;
+      if(attacker.wildRival===f)attacker.wildRival=null;
+      if(f.wildRival===attacker)f.wildRival=null;
+    }
+    if(!natural)f.alarm=f.profile.attack?.kind==="tail"?5.2:2.8;
+    if(f.profile.attack&&(attacker===playerActor||attacker===riding?.actor)&&!labSafe()&&!isCreative()){
       QuimiCraftAI.engage(f,playerActor);
     }
     return;
@@ -5082,40 +5586,145 @@ function hitAquatic(f,damage,attacker,knock){
   f.dead=true;
   f.death={elapsed:0,roll:f.group.rotation.z,pitch:f.group.rotation.x};
   if(f.spectral)spawnDrop("ectoplasm",1,f.group.position.clone());
-  if(f.profile.drop)spawnDrop(f.profile.drop,1,f.group.position.clone());
+  if(f.profile.drop&&!natural)spawnDrop(f.profile.drop,1,f.group.position.clone());
 }
-function aquaticDepth(water,value,profile,clearance=profile?.surfaceClearance??.23){
+function aquaticDepth(water,value,profile,clearance=profile?.surfaceClearance??.23,floor=profile?.baseClearance??.43){
+  if(profile?.anchored||profile?.benthic)return water.bottom+.10;
   const high=water.top-clearance;
-  return clamp(value,Math.min(high,water.bottom+(profile?.baseClearance??.43)),high);
+  return clamp(value,Math.min(high,water.bottom+floor),high);
+}
+const softSeafloor=new Set([BLOCK.SAND,BLOCK.SHELL_SAND,BLOCK.SILICA_SAND,BLOCK.RED_SAND,BLOCK.CLAY,BLOCK.MUD,
+  BLOCK.PEAT,BLOCK.DIRT,BLOCK.GRASS,BLOCK.GLACIAL_GRAVEL,BLOCK.GRAVEL,...variantSands]);
+const rockySeafloor=new Set([BLOCK.STONE,BLOCK.LIMESTONE,BLOCK.SLATE,BLOCK.FIELDSTONE,BLOCK.BASALT,
+  BLOCK.MARBLE,BLOCK.GRANITE,BLOCK.GNEISS,BLOCK.BLACK_SHALE,BLOCK.SANDSTONE].filter(Number.isInteger));
+function aquaticSubstrate(profile,x,z,bath){
+  if(!profile?.substrate)return true;
+  const floor=getBlock(x,bath.bottom-.06,z);
+  return (profile.substrate==="rock"?rockySeafloor:softSeafloor).has(floor);
+}
+function aquaticPlacement(id,x,z,angle,water=findFishWater(x,z)){
+  const p=aquaticProfile(id);
+  if(!water||water.depth<(p.minDepth??2)||!aquaticSubstrate(p,x,z,water))return null;
+  const y=aquaticDepth(water,water.top-water.depth*p.swim,p);
+  return aquaticWater(x,y,z,p.extent,angle)?{x,y,z,water}:null;
+}
+function placeAquatic(id,spot,angle,ghost){
+  const f=buildFish(spot.x,spot.y,spot.z,spot.water,id,ghost);
+  f.angle=angle;
+  f.group.rotation.y=angle+Math.PI;
+  return f;
+}
+function spawnOrcaPod(species,home,angle,lake,zone,slots,largeSlots){
+  const profile=aquaticProfile(species),preyId=profile.diet[0],preyProfile=aquaticProfile(preyId);
+  const availablePrey=fishSchool.some(f=>f.id===preyId&&!f.dead&&!f.spectral&&QuimiCraftAI.range(f,home)<20);
+  const reserve=availablePrey?0:1;
+  const count=Math.min(slots-reserve,largeSlots-(preyProfile.small?0:reserve),3);
+  if(count<2||fishSchool.some(f=>f.id===species&&!f.dead&&f.pod))return false;
+  const habitat=depths.polarZone(lake,zone);
+  const findSpot=(id,distance,direction)=>{
+    const x=home.x+Math.sin(direction)*distance,z=home.z+Math.cos(direction)*distance;
+    if(!hasChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK)))return null;
+    const local=depths.lakeAt(x,z);
+    if(local?.basin.key!==lake.basin.key||depths.polarZone(local,zone)!==habitat||regionalWater(x,z).zone!==zone)return null;
+    return aquaticPlacement(id,x,z,angle);
+  };
+  const formation=[home];
+  for(const side of [-1,1]){
+    const spot=findSpot(species,3.75,angle+Math.PI+side*.90);
+    if(spot&&formation.length<count)formation.push(spot);
+  }
+  if(formation.length<2)return false;
+  let preySpot=null;
+  if(!availablePrey){
+    for(const offset of [0,.82,-.82,1.65,-1.65,Math.PI]){
+      preySpot=findSpot(preyId,10,angle+offset);
+      if(preySpot)break;
+    }
+    if(!preySpot)return false;
+    placeAquatic(preyId,preySpot,angle+.28,false);
+  }
+  const pod={home,rest:2.5,pursuit:0,prey:null,members:[]},ghost=spectral.roll();
+  for(const spot of formation){
+    const orca=placeAquatic(species,spot,angle,ghost);
+    orca.pod=pod;
+    pod.members.push(orca);
+  }
+  return true;
+}
+function spawnDeepSeaHunt(home,angle,eligible,remaining){
+  const preyId=eligible.find(id=>aquaticProfile(id).counter);
+  let prey=fishSchool.find(f=>f.id===preyId&&!f.dead&&!f.spectral&&QuimiCraftAI.range(home,f)<22);
+  const alreadySpawned=fishSchool.some(f=>f.id===preyId&&!f.dead);
+  if(!prey&&!alreadySpawned&&preyId&&remaining>1){
+    for(const bearing of [angle,angle+.59,angle-.59,angle+1.15,angle-1.15]){
+      const x=home.x+Math.sin(bearing)*12,z=home.z+Math.cos(bearing)*12;
+      const spot=aquaticPlacement(preyId,x,z,bearing+Math.PI);
+      if(!spot)continue;
+      const water=regionalWater(x,z);
+      if(!depths.eligible(biomeAt(x,z),depths.lakeAt(x,z),water.id,spot.water.depth,water.zone).includes(preyId))continue;
+      prey=placeAquatic(preyId,spot,bearing+Math.PI,false);
+      break;
+    }
+  }
+  const hunter=placeAquatic("sperm_whale",home,prey?QuimiCraftAI.heading(home,prey):angle,false);
+  if(prey)hunter.wildPrey=prey;
 }
 function spawnAquatic(largeCount){
   const cap=QuimiCraftMobSpawn.limits[settings.mobs].aquatic,bigCap=Math.ceil(cap*.26);
+  const foundations=fishSchool.filter(f=>!f.dead&&(f.profile.anchored||f.stock!==undefined)).length;
   for(let tries=0;tries<30;tries++){
     const angle=Math.random()*TAU,dist=tries<18?6+Math.random()*44:Math.random()*12;
     const x=Math.floor(player.pos.x+Math.cos(angle)*dist)+.5,z=Math.floor(player.pos.z+Math.sin(angle)*dist)+.5;
     if(!hasChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK)))continue;
     const water=findFishWater(x,z);
     if(!water||water.depth<2)continue;
-    const biome=biomeAt(x,z),lake=depths.lakeAt(x,z),liquid=regionalWater(x,z),pool=depths.eligible(biome,lake,liquid.id,water.depth);
-    const allowed=largeCount<bigCap?pool:pool.filter(id=>aquaticProfile(id).small);
-    const species=allowed.length&&(Math.random()<.45||largeCount===0)?allowed[Math.floor(Math.random()*allowed.length)]:null;
+    const biome=biomeAt(x,z),lake=depths.lakeAt(x,z),liquid=regionalWater(x,z),pool=depths.eligible(biome,lake,liquid.id,water.depth,liquid.zone);
+    const allowed=pool.filter(id=>{
+      const p=aquaticProfile(id),marine=QuimiCraftMarineLife.profiles[id];
+      if((!p.small&&largeCount>=bigCap)||!aquaticSubstrate(p,x,z,water))return false;
+      if(!marine)return true;
+      const foundation=p.anchored||p.stock!==undefined;
+      return (!foundation||foundations<Math.ceil(cap*.50))&&
+        !fishSchool.some(actor=>!actor.dead&&actor.id===id&&QuimiCraftAI.range(actor,{x,z})<(p.solo?9:foundation?2.8:2));
+    });
+    const localStock=allowed.filter(id=>aquaticProfile(id).stock!==undefined);
+    const choices=localStock.length&&foundations<cap*.30&&Math.random()<.72?localStock:allowed;
+    const toHunt=allowed.includes("sperm_whale")&&!fishSchool.some(f=>f.id==="sperm_whale"&&!f.dead)&&
+      Math.min(cap-fishSchool.length,bigCap-largeCount)>1&&Math.random()<.42;
+    const species=toHunt?"sperm_whale":choices.length&&(Math.random()<.74||largeCount===0)?choices[Math.floor(Math.random()*choices.length)]:null;
     const profile=species?aquaticProfile(species):null;
     if(profile&&aquaticHostile(profile)&&!canSpawnHostile({x,z}))continue;
-    if(species&&fishSchool.filter(f=>f.id===species&&!f.dead).length>=(species==="humpback"?1:species==="piranha"?4:3))continue;
+    const quota=profile?.group?profile.group[1]*2:profile?.stock!==undefined?5:(profile?.mode==="whale"||profile?.deepSea)?1:species==="piranha"?5:3;
+    if(species&&fishSchool.filter(f=>f.id===species&&!f.dead).length>=quota)continue;
     const y=aquaticDepth(water,water.top-water.depth*(profile?.swim??(.20+Math.random()*.59)),profile);
     if(!aquaticWater(x,y,z,profile?.extent??.22,angle))continue;
-    const creature=buildFish(x,y,z,water,species);
-    creature.angle=angle;
-    creature.group.rotation.y=angle+Math.PI;
-    if(!species&&creature.id!=="raw_shrimp"){
-      const companions=1+Math.floor(Math.random()*3);
+    if(profile?.mode==="pod"){
+      if(spawnOrcaPod(species,{x,y,z,water},angle,lake,liquid.zone,cap-fishSchool.length,bigCap-largeCount))return;
+      continue;
+    }
+    if(species==="sperm_whale"||(species==="giant_squid"||species==="colossal_squid")&&allowed.includes("sperm_whale")&&
+      !fishSchool.some(f=>f.id==="sperm_whale"&&!f.dead)&&Math.min(cap-fishSchool.length,bigCap-largeCount)>1&&Math.random()<.45){
+      spawnDeepSeaHunt({x,y,z,water},angle,pool,Math.min(cap-fishSchool.length,bigCap-largeCount));
+      return;
+    }
+    const creature=placeAquatic(species,{x,y,z,water},angle,QuimiCraftMarineLife.profiles[species]||profile?.scientific&&liquid.zone?false:undefined);
+    if((!species&&creature.id!=="raw_shrimp")||profile?.mode==="school"){
+      const [minimum,maximum]=profile?.group??[2,4];
+      const companions=minimum-1+Math.floor(Math.random()*(maximum-minimum+1));
+      const school={members:[creature]};
+      creature.school=school;
       for(let i=0;i<companions&&fishSchool.length<cap;i++){
         const bearing=angle+(i+1)*2.399,r=.7+i*.33,px=x+Math.cos(bearing)*r,pz=z+Math.sin(bearing)*r;
         const bath=findFishWater(px,pz),py=y+(Math.random()-.5)*.48;
-        if(bath?.depth>=2&&aquaticWater(px,py,pz,creature.profile.extent,angle)){
-          const fish=buildFish(px,py,pz,bath,creature.id);
-          fish.angle=angle+(Math.random()-.5)*.41;
-          fish.group.rotation.y=fish.angle+Math.PI;
+        if(bath?.depth>=(creature.profile.minDepth??2)&&aquaticWater(px,py,pz,creature.profile.extent,angle)){
+          if(QuimiCraftMarineLife.profiles[creature.id]){
+            const local=regionalWater(px,pz);
+            if(!QuimiCraftMarineLife.eligible(biomeAt(px,pz),depths.lakeAt(px,pz),local.id,bath.depth,local.zone).includes(creature.id))continue;
+          }
+          if(creature.large&&largeCount+school.members.length>=bigCap)break;
+          const fish=placeAquatic(creature.id,{x:px,y:py,z:pz,water:bath},angle+(Math.random()-.5)*.41,creature.spectral);
+          fish.school=school;
+          school.members.push(fish);
         }
       }
     }
@@ -5135,18 +5744,98 @@ function updateAquaticDeath(f,dt,motion){
   QuimiCraftAquatic.pose(f,f.phase,.65*motion,null,time);
   return time>=1;
 }
+let aquaticEcologyClock=0;
+function aquaticLineOfSight(a,b){
+  return Math.abs(a.y-b.y)<(a.large||b.large?11:6)&&combatSegmentClear(a.group.position,b.group.position);
+}
+function breathingLead(f){
+  for(const radius of [0,2.5,5,8]){
+    for(let i=0;i<(radius?8:1);i++){
+      const angle=f.angle+i*TAU/8,x=f.x+Math.sin(angle)*radius,z=f.z+Math.cos(angle)*radius;
+      if(!hasChunk(Math.floor(x/CHUNK),Math.floor(z/CHUNK)))continue;
+      const bath=findFishWater(x,z);
+      if(!bath||bath.depth<(f.profile.minDepth??2)||getBlock(x,Math.ceil(bath.top),z)!==BLOCK.AIR||
+        getBlock(x,WATER_LEVEL,z)===BLOCK.ICE)continue;
+      return {x,y:bath.top-.43,z};
+    }
+  }
+  return null;
+}
+function orcaHuntWave(f,prey,now){
+  const pod=f.pod;
+  if(f.id!=="orca_b"||!pod||now<(pod.waveAt??0)||prey.water.top-prey.y>1.2||
+    !pod.members.some(other=>other!==f&&!other.dead&&QuimiCraftAI.range(other,prey)<5))return;
+  for(let i=0;i<8;i++){
+    const angle=i*TAU/8,dx=Math.sin(angle),dz=Math.cos(angle);
+    if(getBlock(prey.x+dx*2.4,WATER_LEVEL,prey.z+dz*2.4)!==BLOCK.ICE)continue;
+    pod.waveAt=now+9000;
+    prey.vx=(prey.vx??0)-dx*2.6;
+    prey.vz=(prey.vz??0)-dz*2.6;
+    aquaticFx.splash(new THREE.Vector3(prey.x,prey.water.top+.016,prey.z),1.6,"entry");
+    break;
+  }
+}
+function shoreRestSite(f){
+  for(const distance of [1.9,3.1,4.6]){
+    for(let i=0;i<8;i++){
+      const angle=f.angle+i*TAU/8,dx=Math.sin(angle),dz=Math.cos(angle);
+      const x=Math.floor(f.x+dx*distance)+.5,z=Math.floor(f.z+dz*distance)+.5;
+      const ice=getBlock(x,WATER_LEVEL,z)===BLOCK.ICE;
+      const floor=ice?WATER_LEVEL:terrainHeight(x,z);
+      if(f.profile.shore==="ice"&&!ice&&!rockySeafloor.has(getBlock(x,floor,z)))continue;
+      if(floor<WATER_LEVEL-1||floor>WATER_LEVEL+1||!solidAt(x,floor,z)||
+        getBlock(x,floor+1,z)!==BLOCK.AIR||getBlock(x,floor+2,z)!==BLOCK.AIR)continue;
+      const wx=x-dx*1.28,wz=z-dz*1.28,bath=findFishWater(wx,wz);
+      if(!bath||getBlock(wx,Math.ceil(bath.top),wz)!==BLOCK.AIR||Math.abs(bath.top-(floor+1))>1.2)continue;
+      const height=f.id==="adelie_penguin"?.37:.14;
+      return {shore:{x,y:floor+1+height,z},entry:{x:wx,y:bath.top-.35,z:wz},bath,angle,ttl:9};
+    }
+  }
+  return null;
+}
+function updateShoreRest(f,dt,motion){
+  const rest=f.haulout,g=f.group,upright=f.id==="adelie_penguin",hold=upright?4.1:6.0;
+  rest.time+=dt;
+  const entry=rest.time<.70,exit=rest.time>.70+hold;
+  const t=entry?rest.time/.70:exit?clamp((rest.time-.70-hold)/.70,0,1):1;
+  const from=exit?rest.shore:rest.entry,to=exit?rest.entry:rest.shore;
+  const blend=smooth(t);
+  g.position.set(lerp(from.x,to.x,blend),lerp(from.y,to.y,blend)+(entry||exit?Math.sin(t*Math.PI)*.50:0),lerp(from.z,to.z,blend));
+  if(upright)g.rotation.x=(exit?1-blend:blend)*Math.PI/2;
+  else g.rotation.x=0;
+  g.rotation.y=rest.angle+Math.PI+(exit?Math.PI:0);
+  f.ashore=!entry&&!exit;
+  f.phase+=dt*(f.ashore?1.1:4.8);
+  QuimiCraftAquatic.pose(f,f.phase,(f.ashore?.26:.92)*motion);
+  if(exit&&t===1){
+    f.haulout=null;f.ashore=false;f.water=rest.bath;f.angle=rest.angle+Math.PI;
+    f.baseY=aquaticDepth(rest.bath,rest.bath.top-rest.bath.depth*f.profile.swim,f.profile);
+    f.shoreAt=19+Math.random()*17;
+  }
+}
 function updateFish(dt,now){
   fishSpawnClock+=dt;
   if(fishSpawnClock>.85&&fishSchool.length<QuimiCraftMobSpawn.limits[settings.mobs].aquatic){
     fishSpawnClock=0;
     spawnAquatic(fishSchool.filter(f=>f.large&&!f.dead).length);
   }
+  aquaticEcologyClock+=dt;
+  if(aquaticEcologyClock>=.32){
+    const solar=clamp(Math.sin(state.day*TAU)*1.65,0,1),weather=currentWeather();
+    wildlifeBehavior.refreshAquatic(fishSchool,aquaticLineOfSight,aquaticEcologyClock,f=>{
+      const depth=Math.max(0,f.water.top-f.y);
+      const ice=getBlock(f.x,WATER_LEVEL,f.z)===BLOCK.ICE;
+      return {light:solar*Math.exp(-depth*.21)*(ice?.38:1),weather,day:state.day};
+    });
+    aquaticEcologyClock=0;
+  }
   const motion=document.documentElement.classList.contains("reduced-motion")?.58:1;
   const target=new THREE.Vector3(player.pos.x,player.pos.y+.58,player.pos.z);
   for(let i=fishSchool.length-1;i>=0;i--){
     const f=fishSchool[i],g=f.group,p=f.profile,attack=p.attack;
     const dx=target.x-f.x,dz=target.z-f.z,distance=Math.hypot(dx,dz);
-    const unload=distance>76||!hasChunk(Math.floor(f.x/CHUNK),Math.floor(f.z/CHUNK));
+    const unload=distance>76||!hasChunk(Math.floor(f.x/CHUNK),Math.floor(f.z/CHUNK))||
+      p.anchored&&(getBlock(f.x,f.y,f.z)!==BLOCK.WATER||!aquaticSubstrate(p,f.x,f.z,f.water));
     if(unload||f.dead&&updateAquaticDeath(f,dt,motion)){
       f.dead=true;clearCreatureStone(f);creatureAfflictions.delete(f);restoreMobColor(f);disposeAquatic(f);fishSchool.splice(i,1);
       continue;
@@ -5170,6 +5859,7 @@ function updateFish(dt,now){
     }
     if(f.dead)continue;
     if(stepCreatureStun(f,dt))continue;
+    if(f.haulout){updateShoreRest(f,dt,motion);continue}
     f.alarm=Math.max(0,f.alarm-dt);
     f.frostTime=Math.max(0,(f.frostTime||0)-dt);
     const heightGap=Math.abs(target.y-f.y),inside=player.inWater&&heightGap<2.55;
@@ -5195,9 +5885,32 @@ function updateFish(dt,now){
     }
     const rearAttack=combat&&attack.kind==="tail"&&seen&&totalGap<=attack.range+.36;
     const chaseGoal=combat&&(seen||player.inWater&&combat.searching?target:combat.lastSeen);
-    const destination=returning||chaseGoal;
+    f.surfaceAt-=dt;
+    const wild=!combat&&!returning&&!(p.dives&&f.surfaceAt<-14)?wildlifeBehavior.aquaticIntent(f):null;
+    const free=!combat&&!returning&&(!wild||wild.mode==="school");
+    f.shoreAt-=dt;
+    if(!free)f.shorePlan=null;
+    if(f.shorePlan&&(f.shorePlan.ttl-=dt)<=0){f.shorePlan=null;f.shoreAt=5}
+    if(free&&!f.shorePlan&&f.shoreAt<0){
+      f.shorePlan=shoreRestSite(f);
+      if(!f.shorePlan)f.shoreAt=5;
+    }
+    const shoreGoal=f.shorePlan?.entry;
+    if(shoreGoal&&QuimiCraftAI.range(f,shoreGoal)<.45&&Math.abs(f.y-shoreGoal.y)<.36){
+      f.haulout={...f.shorePlan,time:0};f.shorePlan=null;
+      f.surfaceAt=17;f.surfaceAction=null;f.surfaceLift=0;
+      continue;
+    }
+    const surfacing=f.surfaceAt<0&&free&&!shoreGoal;
+    if(surfacing&&!f.breathGoal){
+      f.breathGoal=breathingLead(f);
+      if(!f.breathGoal)f.surfaceAt=3;
+    }
+    if(!surfacing)f.breathGoal=null;
+    const waterGoal=surfacing?f.breathGoal:null;
+    const destination=returning||chaseGoal||shoreGoal||waterGoal||wild?.goal;
     const pursuing=!!chaseGoal&&!rearAttack&&(seen||QuimiCraftAI.range(f,chaseGoal)>.65||Math.abs(f.y-chaseGoal.y)>.85);
-    const fleeing=inside&&(f.alarm>0&&!attack||!f.large&&distance<2.45);
+    const fleeing=inside&&(f.alarm>0&&!attack||!f.large&&distance<2.45)&&wild?.mode!=="flee";
     const heading=destination?QuimiCraftAI.heading(f,destination):Math.atan2(dx,dz);
     const previous=f.angle;
     f.timer-=dt;
@@ -5210,27 +5923,39 @@ function updateFish(dt,now){
         f.baseY=aquaticDepth(bath,bath.top-bath.depth*p.swim,p);
       }
     }
-    if(rearAttack)f.angle=turnToward(f.angle,heading+Math.PI,dt*5);
+    const prey=wild?.prey,activeAttack=wild?.attack??attack,strikeTarget=combat?.target??prey;
+    const wildTailCounter=wild?.mode==="counter"&&activeAttack?.kind==="tail"&&prey&&Math.hypot(f.x-prey.x,f.y-prey.y,f.z-prey.z)<=activeAttack.range+.6;
+    if(rearAttack||wildTailCounter)f.angle=turnToward(f.angle,heading+Math.PI,dt*5);
     else if(pursuing||returning)f.angle=turnToward(f.angle,heading,dt*(f.id==="piranha"?6.3:4.15));
-    else if(fleeing)f.angle=turnToward(f.angle,heading+Math.PI,dt*4.3);
+    else if(fleeing)f.angle=turnToward(f.angle,Math.atan2(dx,dz)+Math.PI,dt*4.3);
+    else if(destination)f.angle=turnToward(f.angle,heading,dt*(wild?.mode==="hunt"||wild?.mode==="counter"?4.9:3.6));
     else if(inside&&distance>3&&distance<9&&p.mode==="curious")f.angle=turnToward(f.angle,heading,dt*.46);
-    const approach=attack?.kind==="bite"?.40:.13;
-    const pose=QuimiCraftAquatic.stepStrike(f,dt,!!combat&&seen&&totalGap<attack.range+approach);
-    f.ai.mode=pose?.stage??(returning?"evade":combat?(seen?"chase":"search"):fleeing?"flee":"idle");
+    if(f.strikeTarget!==strikeTarget){f.strike=null;f.strikeTarget=strikeTarget}
+    const preyGap=prey?Math.hypot(f.x-prey.x,f.y-prey.y,f.z-prey.z):Infinity;
+    const wildAimDir=activeAttack?.kind==="tail"?f.angle+Math.PI:f.angle;
+    const preyFacing=prey?Math.cos(wildAimDir-QuimiCraftAI.heading(f,prey)):-1;
+    const wildStrike=!!prey&&preyFacing>.25&&preyGap<activeAttack.range&&aquaticLineOfSight(f,prey);
+    const approach=activeAttack?.kind==="bite"?.40:.13;
+    const pose=QuimiCraftAquatic.stepStrike(f,dt,wildStrike||!!combat&&seen&&totalGap<activeAttack.range+approach,activeAttack);
+    f.ai.mode=pose?.stage??(returning?"evade":combat?(seen?"chase":"search"):fleeing?"flee":shoreGoal?"haulout":waterGoal?"breathe":wild?.mode??"idle");
     const stroke=p.mode==="drift"?.65+.35*Math.max(0,Math.sin(f.phase)):1;
-    const lunge=attack?.kind==="bite"?(pose?.stage==="windup"?.33:1+(pose?.burst??0)*1.67):1;
-    const bracing=attack?.kind!=="bite"&&pose&&pose.stage!=="recover";
-    const pace=f.speed*stroke*lunge*(bracing?.16:pursuing?1.54:returning?1.26:fleeing?1.35:1)*(f.frostTime>0?.52:1);
-    const travel=pursuing||returning?Math.min(pace*dt,Math.max(.010,QuimiCraftAI.range(f,destination)-.20)):pace*dt;
-    const nx=f.x+Math.sin(f.angle)*travel,nz=f.z+Math.cos(f.angle)*travel;
-    f.surfaceAt-=dt;
-    const surfacing=f.surfaceAt<0&&!combat&&!returning;
-    const wantsJump=surfacing&&!f.surfaceAction&&f.breachBounds&&f.surfacings%(f.id==="dolphin"?2:3)===1;
+    const lunge=activeAttack?.kind==="bite"?(pose?.stage==="windup"?(prey?.85:.33):1+(pose?.burst??0)*(prey?1.15:1.67)):1;
+    const bracing=activeAttack?.kind!=="bite"&&activeAttack?.kind!=="grasp"&&pose&&pose.stage!=="recover";
+    const pace=f.speed*stroke*lunge*(bracing?.16:pursuing?1.54:returning?1.26:fleeing?1.35:wild?.speed??1)*(f.frostTime>0?.52:1);
+    const facingOff=wild?.mode==="counter"||wild?.mode==="hunt"&&p.dives&&prey?.profile.counter;
+    const approachLimit=facingOff?activeAttack.range*.81:.15;
+    const travel=destination&&!fleeing?Math.min(pace*dt,Math.max(0,QuimiCraftAI.range(f,destination)-approachLimit)):pace*dt;
+    const current=p.current&&!destination?waterCurrentAt(f.x,f.z,f.y):null;
+    const nx=f.x+Math.sin(f.angle)*travel+(current?.x??0)*(p.current??0)*dt,nz=f.z+Math.cos(f.angle)*travel+(current?.z??0)*(p.current??0)*dt;
+    const atLead=surfacing&&waterGoal&&QuimiCraftAI.range(f,waterGoal)<.58;
+    const wantsJump=atLead&&!f.surfaceAction&&f.breachBounds&&f.surfacings%(p.breachEvery??(f.id==="dolphin"?2:3))===1;
     const bob=p.mode==="curious"?.49:p.mode==="bottom"?.11:.22;
-    const nearSurface=surfacing||!!f.surfaceAction;
-    const readyY=wantsJump?QuimiCraftAquatic.breachStart(f.breachBounds,f.water.top):f.water.top-.42;
-    const ty=aquaticDepth(f.water,nearSurface?readyY:destination?destination.y:f.baseY+Math.sin(now*.0018+f.phase*.13)*bob,
-      p,nearSurface?.35:f.surfaceClearance);
+    const nearSurface=atLead||!!f.surfaceAction;
+    const readyY=wantsJump?QuimiCraftAquatic.breachStart(f.breachBounds,f.water.top):
+      f.water.top-Math.max(.42,(f.spouts?.[0]?.[1]??0)*g.scale.y-.035);
+    const bath=f.shorePlan?.bath??f.water;
+    const ty=aquaticDepth(bath,nearSurface?readyY:destination?destination.y:f.baseY+Math.sin(now*.0018+f.phase*.13)*bob,
+      p,nearSurface||shoreGoal?.35:f.surfaceClearance,f.floorClearance);
     const previousLift=f.surfaceLift??0;
     const ny=lerp(f.y-previousLift,ty,Math.min(1,dt*2.4));
     const clear=aquaticWater(nx,ny,nz,p.extent,f.angle);
@@ -5240,14 +5965,15 @@ function updateFish(dt,now){
       f.angle+=Math.PI*.61;
       f.timer=.13;
     }
-    if(surfacing&&!f.surfaceAction&&(f.y>=readyY-.07||f.surfaceAt<-5)){
-      if(clear&&f.y>=readyY-.07&&distance<36){
+    if(surfacing&&!f.surfaceAction&&(atLead&&f.y>=readyY-.07||f.surfaceAt<-7)){
+      if(atLead&&clear&&f.y>=readyY-.07&&distance<36){
         f.surfacings++;
         if(wantsJump){
-          const duration=f.id==="humpback"?1.9:f.id==="orca"?1.52:1.34;
+          const duration=p.mode==="whale"?1.48+p.extent*.17:p.mode==="pod"?1.52:1.34;
           f.breaching=planAquaticBreach(f.breachBounds,f.x,f.y,f.z,f.angle,duration,f.speed*duration,p.extent);
           if(f.breaching){
             moveAquaticBreach(g,f.breachBounds,f.breaching,0);
+            f.breathGoal=null;
             continue;
           }
         }
@@ -5257,25 +5983,44 @@ function updateFish(dt,now){
           if(distance<14)sound("splash",.62);
         }else f.surfaceAt=13+Math.random()*15;
       }else f.surfaceAt=13+Math.random()*15;
+      if(!f.surfaceAction)f.breathGoal=null;
     }
     const display=f.surfaceAction;
-    f.surfaceLift=display&&f.spouts?.length?Math.max(0,f.water.top-ny-f.spouts[0][1]*g.scale.y+.035)*Math.min(1,display.time*9,Math.max(0,(display.duration-display.time)*9)):0;
+    const blowhole=f.spouts?.[0]?.[1]??f.breathHeight;
+    f.surfaceLift=display&&blowhole!=null?Math.max(0,f.water.top-ny-blowhole*g.scale.y+.035)*Math.min(1,display.time*9,Math.max(0,(display.duration-display.time)*9)):0;
     g.position.y+=f.surfaceLift;
-    g.rotation.y=turnToward(g.rotation.y,f.angle+Math.PI,dt*4);
-    g.rotation.x=lerp(g.rotation.x,clamp((f.y-ty)*.27,-.32,.32)*motion,Math.min(1,dt*3.2));
+    const armsForward=(f.swimStyle==="octopus"||f.swimStyle==="squid")&&preyGap<Math.max(3.5,(activeAttack?.range??0)+1.4);
+    g.rotation.y=turnToward(g.rotation.y,f.angle+(armsForward?0:Math.PI),dt*4);
+    const pitch=wild?.verticalRest?.90:p.dives?clamp((ty-f.y)*.26,-.70,.61):clamp((f.y-ty)*.27,-.32,.32);
+    g.rotation.x=lerp(g.rotation.x,pitch*motion,Math.min(1,dt*3.2));
     const turn=Math.atan2(Math.sin(f.angle-previous),Math.cos(f.angle-previous));
     g.rotation.z=lerp(g.rotation.z,clamp(-turn*1.42,-.27,.27)*motion,Math.min(1,dt*4.7));
     f.phase+=dt*(p.mode==="drift"?4.5:3.5+pace*3.2);
-    QuimiCraftAquatic.pose(f,f.phase,clamp(.47+pace*.35,.42,1.6)*motion,pose);
+    const swimPose=pose&&activeAttack?.lockedGrip?{...pose,burst:Math.min(1,pose.burst*1.28)}:pose;
+    QuimiCraftAquatic.pose(f,f.phase,clamp(.47+pace*.35,.42,1.6)*motion,swimPose);
+    if(f.stockVisual){
+      const stockScale=clamp(f.stock/p.stock,.13,1);
+      f.stockVisual.scale.setScalar(.50+.50*stockScale);
+    }
     if(display){
       QuimiCraftAquatic.spray(THREE,f,settings.particles?display.time:-1,f.spectral);
       display.time+=dt;
       if(display.time>=display.duration){
-        f.surfaceAction=null;f.surfaceAt=15+Math.random()*16;
+        f.surfaceAction=null;f.breathGoal=null;f.surfaceAt=15+Math.random()*16;
         QuimiCraftAquatic.spray(THREE,f,-1);
       }
     }
     if(f.id==="pufferfish")g.scale.setScalar(lerp(g.scale.x,pose?.stage==="windup"||pose?.stage==="strike"?1.48:1,dt*6));
+    if(pose?.hit&&prey&&!prey.dead&&preyFacing>.05&&
+      Math.hypot(f.x-prey.x,f.y-prey.y,f.z-prey.z)<=activeAttack.range+.30&&aquaticLineOfSight(f,prey)){
+      if(wildlifeBehavior.consumeStock(f,prey,4)){
+        f.wildPrey=null;f.feedRest=8;
+        continue;
+      }
+      hitAquatic(prey,activeAttack.damage??p.damage??7,f,null,true);
+      if(!prey.dead)orcaHuntWave(f,prey,now);
+      wildlifeBehavior.finishAquaticHunt(f,prey);
+    }
     const biteDirection=attack?.kind==="tail"?f.angle+Math.PI:f.angle;
     const facing=Math.cos(biteDirection-Math.atan2(target.x-f.x,target.z-f.z));
     if(pose?.hit&&combat&&player.inWater&&(attack.kind==="sting"||facing>.25)&&
@@ -5298,7 +6043,7 @@ function nearbyActor(origin,candidates,maxDistance,filter){
   return winner ? {actor:winner,dist,visible:true} : null;
 }
 function combatTargetAvailable(target){
-  if(target===playerActor)return !labSafe();
+  if(target===playerActor)return !labSafe()&&!isCreative();
   return target.group?.parent===(target.aquatic?fishRoot:entityRoot);
 }
 function senseEntity(e,tracked){
@@ -5316,19 +6061,81 @@ function senseEntity(e,tracked){
     return {threat:threat?{...threat,alarming:true}:null,greet};
   }
   if(e.hostile||p.temperament==="hostile"){
-    const seen=nearbyActor(e,[playerActor],notice,target=>!target.dead&&!labSafe()&&alchemyPlay.distantSight(e,target));
+    const seen=nearbyActor(e,[playerActor],notice,target=>!target.dead&&!labSafe()&&!isCreative()&&alchemyPlay.distantSight(e,target));
     const resident=p.temperament==="neutral"?null:nearbyActor(e,npcs,notice*.72,target=>!target.dead&&!target.ai.recovering&&target.role!=="carbon"&&target.role!=="child"&&alchemyPlay.distantSight(e,target));
     return {enemy:resident&&(!seen||resident.dist+1.3<seen.dist)?resident:seen};
   }
+  const wild=e.spectral||e.bonded?null:landPrey(e,notice);
+  const hunter=wildlifeBehavior.landPreyTypes.has(e.type)&&!e.spectral?
+    nearbyActor(e,entities,p.sense,target=>wildlifeBehavior.canHuntLand(target,e)&&!target.feedRest&&!inVillage(target.x,target.z,2)):null;
+  if(hunter)return {threat:{...hunter,alarming:true}};
   if(p.temperament==="skittish"||p.temperament==="calm"){
     const close=p.temperament==="calm"?Math.min(p.sense,player.sprint?3:1.3):p.sense*(player.crouch?.33:1);
     const lured=!player.sprint&&QuimiCraftBreeding.diet(e)?.items.includes(selectedItem());
     const nearbyPlayer=lured?null:nearbyActor(e,[playerActor],close,target=>!target.dead);
     const predator=nearbyActor(e,entities,p.sense*.75,liveThreat);
     const threat=predator&&(!nearbyPlayer||predator.dist<nearbyPlayer.dist)?predator:nearbyPlayer;
-    return {threat:threat?{...threat,alarming:threat.actor!==playerActor||player.sprint}:null};
+    return {enemy:wild,threat:threat?{...threat,alarming:threat.actor!==playerActor||player.sprint}:null};
   }
-  return {};
+  return {enemy:wild};
+}
+function landPrey(e,notice){
+  if(!e.profile.strike||inVillage(e.x,e.z,2)||wildlifeBehavior.isSleeping(e.type,state.day))return null;
+  const prey=target=>wildlifeBehavior.canHuntLand(e,target)&&!inVillage(target.x,target.z,2);
+  if(wildlifeBehavior.landDiets[e.type]&&e.feedRest<=0){
+    if(e.type==="wolf"||e.type==="lion"){
+      const packmate=nearbyActor(e,e.naturalGroup?.members??entities,11,target=>target!==e&&!target.dead&&!target.spectral&&target.type===e.type&&
+        target.ai.engagement?.target&&prey(target.ai.engagement.target))?.actor;
+      const quarry=packmate?.ai.engagement?.target;
+      if(quarry&&QuimiCraftAI.range(e,quarry)<notice*1.35&&visibleActor(e,quarry)){
+        return {actor:quarry,visible:true,dist:QuimiCraftAI.range(e,quarry)};
+      }
+    }
+    const pool=e.type==="polar_bear"?fishSchool:e.type==="jaguar"?[...entities,...fishSchool]:entities;
+    const found=nearbyActor(e,pool,notice,prey);
+    if(found)return found;
+  }
+  if((e.clashRest??0)<=0){
+    const rival=nearbyActor(e,entities,Math.min(9.5,notice),target=>wildlifeBehavior.canRivalLand(e,target)&&!inVillage(target.x,target.z,2));
+    if(rival)return rival;
+    const same=nearbyActor(e,entities,5.5,target=>wildlifeBehavior.canClashSameLand(e,target)&&!inVillage(target.x,target.z,2));
+    if(same)return same;
+  }
+  return null;
+}
+function naturalLandBehavior(e,behavior,dt){
+  const {grazers,herds,groundForagers,canHuntLand}=wildlifeBehavior;
+  if(e.persistent||e.spectral||e.bonded||e.feedingPause>0||e.courtship)return behavior;
+  const prey=e.ai.engagement?.target;
+  if(behavior.mode==="chase"&&(e.type==="wolf"||e.type==="lion")&&prey&&canHuntLand(e,prey)&&QuimiCraftAI.range(e,prey)>3.5){
+    const partner=(e.naturalGroup?.members??entities).find(other=>other!==e&&!other.dead&&other.type===e.type&&other.ai.engagement?.target===prey);
+    if(partner&&partner.phase<e.phase){
+      const side=Math.sin(e.phase)>0?1:-1,angle=prey.angle;
+      return {...behavior,goal:{x:prey.x+Math.cos(angle)*side*2.1,y:prey.y,z:prey.z-Math.sin(angle)*side*2.1}};
+    }
+  }
+  if(behavior.mode!=="idle"&&behavior.mode!=="wander")return behavior;
+  if(wildlifeBehavior.isSleeping(e.type,state.day,e))return {mode:"sleep",speed:0};
+  if(e.feedRest>14)return {mode:"rest",speed:0};
+  const family=e.naturalGroup?.members.find(other=>!other.dead&&!other.ai.fear&&!other.ai.engagement);
+  if(family&&family!==e&&QuimiCraftAI.range(e,family)>3.4&&QuimiCraftAI.range(e,e.naturalGroup.home)<e.profile.roam+8){
+    return {mode:"follow",goal:family,speed:e.profile.walk*1.14};
+  }
+  if(herds.has(e.type)&&QuimiCraftAI.range(e,e.ai.home)<e.profile.roam*.9){
+    const herd=nearbyActor(e,entities,10,other=>other!==e&&!other.dead&&!other.spectral&&other.type===e.type&&
+      !other.ai.fear&&other.phase<e.phase&&QuimiCraftAI.range(e.ai.home,other)<e.profile.roam);
+    if(herd?.dist>4.3)return {mode:"follow",goal:herd.actor,speed:e.profile.walk*1.1};
+  }
+  if(!e.onGround||!grazers.has(e.type)&&!groundForagers.has(e.type))return behavior;
+  e.forageClock=(e.forageClock??4+e.phase)-dt;
+  if(e.forageClock<-2.4)e.forageClock=5+Math.random()*6;
+  if(e.forageClock>0)return behavior;
+  const ground=getBlock(e.x,e.y-.12,e.z);
+  const leaves=e.type==="deer"||e.type==="forest_deer"||e.type==="cacao_tapir";
+  const food=leaves?[BLOCK.GRASS,BLOCK.MOSS,BLOCK.ROOTED_DIRT,BLOCK.DIRT,BLOCK.PODZOL].includes(ground):
+    grazers.has(e.type)?ecology.fertile.has(ground)||ground===BLOCK.MOSS:
+    ecology.fertile.has(ground)||ground===BLOCK.SAND||ground===BLOCK.DRY_LEAVES||ground===BLOCK.MUD;
+  return food?{mode:"forage",speed:0}:behavior;
 }
 const NPC_SUPPLIES={ranger:["arrow",4],shop_food:["bread",1],shop_armor:[BLOCK.IRON,1],shop_liquid:["water",1],
   shop_solid:[BLOCK.LIMESTONE,1],shop_trinket:["gold_nugget",1],miner:[BLOCK.COAL,1],botanist:["berries",2],
@@ -5364,7 +6171,7 @@ function finishEntityStrike(e,target){
   const strike=spectral.markAttack(e,e.profile.strike);
   const start=strike.dragon?e.rig.nose.getWorldPosition(new THREE.Vector3()):entityAimPoint(e),finish=entityAimPoint(target);
   const planar=QuimiCraftAI.range(e,target);
-  if(!visibleActor(e,target)||planar>strike.range*(strike.kind==="shot"?1.06:1.015))return;
+  if(!visibleActor(e,target)||planar>strike.range*(strike.kind==="shot"?1.18:1.26))return;
   if(strike.kind==="gaze")return finishMedusaGaze(e,target);
   if(strike.kind==="shot"){
     if(strike.dragon){
@@ -5380,7 +6187,7 @@ function finishEntityStrike(e,target){
     sound(e.persistent?"bow":"magic",.54);
     return;
   }
-  if(Math.abs(start.y-finish.y)>(strike.vertical??1.38))return;
+  if(Math.abs(start.y-finish.y)>(strike.vertical??1.75))return;
   if(strike.kind==="lunge")requestEntityJump(e,true);
   const direction=finish.clone().sub(start).setY(0).normalize();
   if(strike.kind==="lunge"){e.vx+=direction.x*2.75;e.vz+=direction.z*2.75}
@@ -5388,7 +6195,13 @@ function finishEntityStrike(e,target){
   if(target===playerActor){
     damagePlayer(strike.damage,e.name,strike.effect,strike);
     player.vel.addScaledVector(direction,strike.kind==="slam"?4.6:2.25);
-  }else hitNPC(target,strike.damage,e);
+  }else if(target.persistent)hitNPC(target,strike.damage,e);
+  else if((wildlifeBehavior.canHuntLand(e,target)||wildlifeBehavior.canRivalLand(e,target)||
+    wildlifeBehavior.canClashSameLand(e,target)||wildlifeBehavior.retaliates(e.type)&&target.ai?.engagement?.target===e)&&
+    !inVillage(target.x,target.z,2)&&hitEntity(target,strike.damage,"caça natural",direction,e,strike)&&target.dead){
+    if(wildlifeBehavior.canHuntLand(e,target))e.feedRest=28;
+    else e.clashRest=28;
+  }
   sound("land",strike.kind==="slam"?.61:.31);
 }
 function usableMirror(){
@@ -5414,7 +6227,7 @@ function finishMedusaGaze(e,target){
     hitNPC(target,strike.damage,e);
     return;
   }
-  if(dev.fly||player.health<=0)return;
+  if(isCreative()||dev.fly||player.health<=0)return;
   if(e.spectral){
     frontierFx.petrifyingGaze(source,point,0x8df8ef,null);
     if(player.petrified<=0){
@@ -5509,7 +6322,8 @@ function steerEntity(e,behavior,dt){
   if(e.flying){
     const floor=entityTraversal.standing(e,e.x,e.z,e.y+1.65,e.y-7,entityRadius(e));
     if(floor!==null){
-      const next=lerp(e.y,floor+(regionalFauna[e.type]?.hover??1.15),1-Math.exp(-dt*3.8));
+      const hover=a.mode==="sleep"?.06:a.mode==="rest"?.30:regionalFauna[e.type]?.hover??1.15;
+      const next=lerp(e.y,floor+hover,1-Math.exp(-dt*3.8));
       if(!entityCollidesWorld(e,e.x,e.z,next))e.y=next;
     }
   }else{
@@ -5641,7 +6455,7 @@ function updateScreamer(e,dt,now){
         e.screamPulse=s.pulse;
         const at=new THREE.Vector3(e.x,e.y+1.04,e.z),distance=at.distanceTo(entityAimPoint(playerActor));
         combatParticles(at,e.plant.light,13,"vapor");
-        if(distance<=s.range&&!labSafe()){
+        if(distance<=s.range&&!labSafe()&&!isCreative()){
           const protection=equipmentStat("hearingProtection");
           screamerSound((1-distance/s.range*.57)*(1-protection*.78));
           damagePlayer(s.damage,"grito do Gritador","sonic");
@@ -5726,11 +6540,11 @@ function updateFolklore(e,dt,now,dist){
     if(id!==BLOCK.FIRE)continue;
     const [x,y,z]=key.split("|").map(Number);
     if(Math.hypot(e.x-x,e.y-y,e.z-z)>range||isLabProtectedBlock(x,y,z))continue;
-    if(e.type==="boitata"&&Math.hypot(player.pos.x-x,player.pos.z-z)<10&&!labSafe())angerFolklore("boitata",{x,y,z},range,playerActor);
+    if(e.type==="boitata"&&Math.hypot(player.pos.x-x,player.pos.z-z)<10&&!labSafe()&&!isCreative())angerFolklore("boitata",{x,y,z},range,playerActor);
     editVoxel(x,y,z,BLOCK.AIR,dirty);
   }
   commitVoxelEdits(dirty);
-  if(e.type==="saci"&&dist<5&&Math.abs(e.y-player.pos.y)<2.6&&!labSafe()&&visibleActor(e,playerActor)){
+  if(e.type==="saci"&&dist<5&&Math.abs(e.y-player.pos.y)<2.6&&!labSafe()&&!isCreative()&&visibleActor(e,playerActor)){
     e.rig.whirlPower=1;
     const at=entityAimPoint(e),direction=player.pos.clone().sub(at).setY(0).normalize();
     player.folkloreWind=direction.multiplyScalar(5.75);
@@ -5757,6 +6571,8 @@ function updateEntities(dt,now){
     if(e.dead)continue;
     if(e===riding?.actor)continue;
     e.feedingPause=Math.max(0,(e.feedingPause||0)-dt);
+    e.feedRest=Math.max(0,(e.feedRest||0)-dt);
+    e.clashRest=Math.max(0,(e.clashRest||0)-dt);
     if(natureFolk[e.type]){
       e.groveRage=Math.max(0,(e.groveRage||0)-dt);
       e.hostile=e.groveRage>0||!!e.ai.engagement;
@@ -5827,6 +6643,7 @@ function updateEntities(dt,now){
     let behavior=e.dragonBurst?{mode:e.dragonBurst.chargeLeft>0?"breathCharge":"breath",speed:0,aim:e.dragonBurst.target}:
       e.feedingPause>0?{mode:"idle",speed:0}:alchemyPlay.npcBehavior(e,QuimiCraftAI.tick(e,dt,target=>senseEntity(e,target),combatTargetAvailable),dt);
     behavior=courtshipBehavior(e,behavior,dt);
+    behavior=naturalLandBehavior(e,behavior,dt);
     if((e.resident?.civic||e.role==="child")&&state.day>.6&&state.day<.90&&["wander","patrol","idle"].includes(behavior.mode)){
       const home=e.ai.home;
       behavior=QuimiCraftAI.range(e,home)>.58?{mode:"return",goal:home,speed:e.profile.walk}:{mode:"idle",speed:0};
@@ -5848,7 +6665,7 @@ function updateEntities(dt,now){
       .5+Math.sin(now*(flutter?.0085:.004)+e.phase)*(flutter?.23:.17);
     e.group.position.set(e.x,e.y+float,e.z);
     e.group.rotation.y=DRAGONS[e.type]?e.angle+Math.PI:
-      turnToward(e.group.rotation.y,e.angle+Math.PI,1-Math.exp(-dt*(pace>.07?10.5:6)));
+      turnToward(e.group.rotation.y,e.angle+Math.PI,1-Math.exp(-dt*(behavior.aim?18:pace>.07?10.5:6)));
     animateEntityRig(e,dt,now,pace);
     warnMedusaGaze(e);
     if(behavior.strike&&(DRAGONS[e.type]||gaze))finishEntityStrike(e,behavior.strike);
@@ -6187,6 +7004,7 @@ function interactionAction(){
   const n=nearestNPC();
   const station=nearestLabStation();
   const caption=(kind,label,value)=>({kind,label,value});
+  if(n?.role===exterminationMaster.role)return caption("npc","Tarefas e recompensas de "+n.name,n);
   const occupation=professions.action(t);
   const field=t&&fieldLab.locate(t);
   if(field&&fieldIntact(field))return caption("fieldStation","Usar "+field.unit.name,field);
@@ -6209,7 +7027,8 @@ function interactionAction(){
 }
 function updateInteraction(){
   const action=interactionAction(),el=$("interaction");
-  const prefix=touchInput?"Interagir":action?.kind.startsWith("vehicle")||QuimiCraftAlchemy.potions[selectedItem()]?"E":"E ou botão direito";
+  const held=selectedItem();
+  const prefix=touchInput?"Interagir":action?.kind.startsWith("vehicle")||QuimiCraftAlchemy.potions[held]||exterminationTools[held]||activeHuntUtilities.has(held)?"E":"E ou botão direito";
   const deck=state.deckTarget,build=deck?.kind==="deck"?"Colocar no piso do barco":deck?.kind==="deckBlock"?"Quebrar bloco do convés":null;
   el.textContent=build?(touchInput?"Usar":deck.kind==="deck"?"Botão direito":"F ou clique")+" · "+build:action?prefix+" · "+action.label:"";
   el.classList.toggle("show",!!action||!!build);
@@ -6249,6 +7068,7 @@ function interact(action=interactionAction()){
 }
 function interactNPC(n){
   if(n?.ai)n.ai.think=0;
+  if(n?.role===exterminationMaster.role)return openExtermination();
   if(n?.role==="child"){
     const lines=["Eu conheço três tipos de pedra pelo caminho de casa.","Quando chove, eu vejo os sapos perto da água.",
       "A gente brinca de contar os cristais nas pedras. Cada um tem um desenho diferente!",
@@ -6781,6 +7601,9 @@ function parseWorldState(){
   if(Number.isFinite(saved.day))state.day=clamp(saved.day,0,.999999);
   if(Number.isInteger(saved.dayCount)&&saved.dayCount>0)state.dayCount=saved.dayCount;
   if(Number.isFinite(saved.climateElapsed))climateState.elapsed=Math.max(0,saved.climateElapsed);
+  if(saved.gamemode==="creative"||saved.gamemode==="survival"){state.gamemode=saved.gamemode;if(state.gamemode==="creative")dev.fly=true}
+  explorationSurvey.load(saved.explorationMap);
+  explorationWaypoints.load(saved.explorationWaypoints);
   if(saved.science){try{scienceSystem?.importState(saved.science)}catch(error){console.warn("[QuimiCraft][Ciência] Estado científico inválido; usando valores padrão sem alterar o save original.",error);messageCenter?.add({category:"system",speaker:"SALVAMENTO",text:"Os dados científicos deste mundo não puderam ser migrados. O restante do mundo foi carregado normalmente."})}}
   if(sourceVersion<70)messageCenter?.add({category:"system",speaker:"SALVAMENTO",text:"Mundo anterior carregado com migração segura para o sistema científico v7.0."});
   return saved
@@ -6792,6 +7615,9 @@ function saveWorldState(){
   data.expeditions=snapshotMounts();
   data.bedSpawn=bedSpawn;
   data.harvestedScreamers=[...harvestedScreamers];
+  data.explorationMap=explorationSurvey.save();
+  data.explorationWaypoints=explorationWaypoints.save();
+  data.gamemode=state.gamemode;
   if(switchingWorld)return false;
   alchemyProgress.persist();
   persistVehicles();
@@ -6928,7 +7754,74 @@ function chatMessage(author,text,options={}){
   return messageCenter?.add({speaker,text,category:options.category||fallbackCategory,...options})
 }
 function chooseSlot(i){state.selected=(i+9)%9;renderHotbar()}
-function uiBlocking(){return state.catalog||state.alchemyWorkshop||state.frontierWorkshop||state.loading||state.awaitingEntry||state.inventory||state.chemistry||state.periodic||state.shop||state.character||state.chat||state.devOpen||state.graphics||state.history||state.professor||state.scientificNotebook||state.researchTree||state.scienceStation}
+const explorationMapModal=$("explorationMap");
+const mapGuide=$("mapGuide"),mapGuideArrow=$("mapGuideArrow"),mapGuideName=$("mapGuideName"),mapGuideInfo=$("mapGuideInfo");
+const mapGuideDirection=new THREE.Vector3();
+const mapGuideKm=new Intl.NumberFormat("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const mapBiomeColors={
+  planície:[128,156,95],"planície florida":[150,167,103],floresta:[77,123,89],taiga:[84,130,118],
+  tundra:[165,180,177],"fiordes glaciais":[163,197,205],"campina de aurora":[136,173,177],
+  savana:[173,153,90],deserto:[194,159,104],"selva tropical":[63,130,83],manguezal:[92,136,105],
+  pântano:[111,128,87],"delta salobro":[132,148,110],"bosque de cerejeiras":[155,129,137],
+  "bosque lilás":[142,126,161],"floresta de sequoias":[82,126,93],"prado alpino":[148,166,137],
+  montanha:[139,148,137],badlands:[164,104,72],"chapadas ocres":[181,130,83],
+  "cânion calcário":[177,157,114],"termas minerais":[174,155,125],salinas:[195,182,151],
+  vulcânico:[104,93,89],"caldeira vítrea":[106,97,115],"bosque de cristais":[127,129,162]
+};
+const explorationMapView=QuimiCraftExplorationMap.createView(explorationMapModal,explorationSurvey,{
+  position:()=>({x:player.pos.x,z:player.pos.z,yaw:player.yaw,biome:biomeAt(player.pos.x,player.pos.z)}),
+  surface(x,z){
+    const height=terrainHeight(x,z),biome=biomeAt(x,z);
+    if(height<WATER_LEVEL){
+      const surface=getBlock(x,WATER_LEVEL,z);
+      if(surface===BLOCK.ICE)return {height,color:[149,183,201],wet:true};
+      if(surface===BLOCK.WATER){
+        const depth=WATER_LEVEL-height,shade=Math.min(21,depth*2);
+        return {height,color:[70-shade,126-shade,148-shade],wet:true};
+      }
+    }
+    return {height,color:mapBiomeColors[biome]??[126,149,102],wet:false};
+  },
+  landmarks:()=>[{x:LAB_LAYOUT.cx,z:LAB_LAYOUT.cz,name:"Laboratório Carbono"},
+    {x:VILLAGE.x,z:VILLAGE.z,name:"Vila dos Elementos"}],
+  waypoints:explorationWaypoints,
+  onWaypointChange(){if(initialReady)saveWorldState()}
+});
+function updateMapGuide(){
+  const target=explorationWaypoints.current();
+  const visible=!!(target&&state.started&&!state.paused&&!uiBlocking());
+  if(mapGuide.hidden===visible)mapGuide.hidden=!visible;
+  if(!visible)return;
+  camera.getWorldDirection(mapGuideDirection);
+  const yaw=Math.hypot(mapGuideDirection.x,mapGuideDirection.z)>.01?
+    Math.atan2(-mapGuideDirection.x,-mapGuideDirection.z):player.yaw;
+  const guide=QuimiCraftExplorationMap.guideTo(target,{x:player.pos.x,z:player.pos.z,yaw});
+  const arrived=guide.distance<=2.25;
+  const distance=guide.distance>=1000?mapGuideKm.format(guide.distance/1000)+" km":Math.round(guide.distance)+" m";
+  const description=distance+" · "+(arrived?"Você chegou":guide.heading);
+  const rotation="rotate("+Math.round(guide.angle*180/Math.PI)+"deg)";
+  if(mapGuideArrow.style.transform!==rotation)mapGuideArrow.style.transform=rotation;
+  if(mapGuideName.textContent!==target.name)mapGuideName.textContent=target.name;
+  if(mapGuideInfo.textContent!==description)mapGuideInfo.textContent=description;
+  mapGuide.classList.toggle("arrived",arrived);
+}
+function openExplorationMap(){
+  if(!state.started||state.paused||uiBlocking())return;
+  explorationSurvey.reveal(player.pos.x,player.pos.z);
+  state.map=true;state.playing=false;clearInput();
+  explorationMapModal.classList.add("open");explorationMapModal.setAttribute("aria-hidden","false");
+  document.exitPointerLock?.();
+  explorationMapView.open();
+}
+function closeExplorationMap(resume=true){
+  if(!state.map)return;
+  state.map=false;
+  explorationMapView.close();explorationMapModal.classList.remove("open");explorationMapModal.setAttribute("aria-hidden","true");
+  if(resume)requestPointer();
+}
+$("mapHudBtn").onclick=openExplorationMap;
+$("mapClose").onclick=()=>closeExplorationMap();
+function uiBlocking(){return state.map||state.catalog||state.alchemyWorkshop||state.frontierWorkshop||state.loading||state.awaitingEntry||state.inventory||state.chemistry||state.periodic||state.shop||state.extermination||state.character||state.chat||state.devOpen||state.graphics||state.history||state.professor||state.scientificNotebook||state.researchTree||state.scienceStation}
 const playerInput=QuimiCraftInput.create({
   canvas:renderer.domElement,
   document,
@@ -7198,7 +8091,7 @@ function closeBoatCargo(){
 }
 $("closeBoatCargo").onclick=()=>closeInventory();
 function closeInventory(){closeBoatCargo();state.inventory=false;$("inventory").classList.remove("open");$("inventory").setAttribute("aria-hidden","true");if(state.started)requestPointer()}
-function closeModals(){closeBoatCargo();catalog.close();alchemyUI.close(false);closeFrontierWorkshop(false);state.inventory=state.chemistry=state.periodic=state.shop=state.character=state.chat=state.devOpen=state.graphics=state.history=state.professor=state.scientificNotebook=state.researchTree=state.scienceStation=false;state.paused=false;for(const id of ["inventory","chemistry","periodicTable","shop","character","devMenu","graphics","professor","messageHistory","scientificNotebook","researchTree","scienceStation","pause"])$(id).classList.remove("open");$("chat").classList.remove("open")}
+function closeModals(){closeExplorationMap(false);closeBoatCargo();catalog.close();alchemyUI.close(false);closeFrontierWorkshop(false);closeExtermination(false);state.inventory=state.chemistry=state.periodic=state.shop=state.character=state.chat=state.devOpen=state.graphics=state.history=state.professor=state.scientificNotebook=state.researchTree=state.scienceStation=false;state.paused=false;for(const id of ["inventory","chemistry","periodicTable","shop","character","devMenu","graphics","professor","messageHistory","scientificNotebook","researchTree","scienceStation","pause"])$(id).classList.remove("open");$("chat").classList.remove("open");chatCmdUI?.reset();devCmdUI?.reset()}
 function openScienceModal(id){
   const flags={scientificNotebook:"scientificNotebook",researchTree:"researchTree",scienceStation:"scienceStation",alchemyWorkshop:"alchemyWorkshop"},flag=flags[id],modal=$(id);if(!flag||!modal)return false;
   state[flag]=true;state.playing=false;state.left=false;state.right=false;modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.exitPointerLock?.();return true
@@ -7217,15 +8110,375 @@ function closeMessageHistory(){
   if(historyReturnToPause){state.paused=true;$("pause").classList.add("open")}else{state.paused=false;requestPointer()}
   historyReturnToPause=false
 }
-function openChat(){if(!state.started||uiBlocking())return;state.chat=true;state.playing=false;state.left=false;$("chat").classList.add("open");document.exitPointerLock?.();setTimeout(()=>$("chatInput").focus(),30)}
-function closeChat(){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";requestPointer()}
-function submitChat(){const text=$("chatInput").value.trim();if(!text)return closeChat();if(text.toLowerCase()==="-mododev"){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";return openDev()}chatMessage("VOCÊ",text);if(text.startsWith("/")&&dev.allRecipes)runDevCommand(text.slice(1));closeChat()}
-function openDev(){state.devOpen=true;state.playing=false;state.left=false;$("devMenu").classList.add("open");document.exitPointerLock?.();renderDev()}
-function closeDev(){state.devOpen=false;$("devMenu").classList.remove("open");requestPointer()}
-function renderDev(){const buttons=[['fly','Voar'],['infinite','Blocos infinitos'],['recipes','Todas as receitas'],['speed','Speed walk +'],['day','Meio-dia'],['night','Noite'],['golem','Spawn Golem'],['wisp','Spawn Espectro'],['magma','Spawn Magma'],['scorpion','Spawn Escorpião'],['cristalume','Spawn Cristalume'],['slime','Spawn Slime Ácido']];$("devStatus").innerHTML=`<span class="dev-pill">FLY ${dev.fly?'ON':'OFF'}</span><span class="dev-pill">SPEED ${dev.speed}×</span><span class="dev-pill">INFINITO ${dev.infinite?'ON':'OFF'}</span><span class="dev-pill">RECEITAS ${dev.allRecipes?'TODAS':'PROGRESSÃO'}</span>`;$("devGrid").innerHTML=buttons.map(([id,n])=>`<button class="dev-btn ${(id==='fly'&&dev.fly)||(id==='infinite'&&dev.infinite)||(id==='recipes'&&dev.allRecipes)?'on':''}" data-dev="${id}">${n}</button>`).join("");$("devGrid").querySelectorAll("[data-dev]").forEach(b=>b.onclick=()=>runDevCommand(b.dataset.dev))}
-function runDevCommand(raw){const p=String(raw).trim().toLowerCase().split(/\s+/),cmd=p[0],mobTypes=["slime","cobrete","cristalume","capivara","scorpion","golem","wisp","magma","deer","owl","pig","cow","rabbit","chicken","sheep"];if(cmd==="fly")dev.fly=!dev.fly;else if(cmd==="infinite"){dev.infinite=!dev.infinite;if(dev.infinite)for(const id of [...Object.values(BLOCK).filter(id=>typeof id==="number"&&id>0&&id!==BLOCK.LAVA),"arrow"])if(countItem(id)===0)addItem(id,99)}else if(cmd==="recipes"){dev.allRecipes=true;for(const r of CHEM)unlockedChem.add(r.id);saveChem();renderChemistry()}else if(cmd==="heal"){player.health=player.mana=player.hunger=player.thirst=100;player.breath=playerBreathMax();updateVitals()}else if(cmd==="speed")dev.speed=clamp(+(p[1]||dev.speed%5+1),1,5);else if(cmd==="day")state.day=.25;else if(cmd==="night")state.day=.72;
-  else if(cmd==="season"){const names={spring:0,primavera:0,summer:1,verao:1,autumn:2,outono:2,winter:3,inverno:3};const n=names[p[1]]??Number(p[1]);if(Number.isInteger(n)&&n>=0&&n<4){climateState.elapsed=n*420;climateState.season=-1;for(const ch of chunks.values())rebuildChunk(ch.cx,ch.cz)}else return toast("Use: season primavera/verao/outono/inverno")}
-  else if(cmd==="weather"){const names={clear:"clear",sol:"clear",rain:"rain",chuva:"rain",snow:"snow",neve:"snow",storm:"storm",tempestade:"storm",auto:null};if(!(p[1] in names))return toast("Use: weather sol/chuva/neve/tempestade/auto");climateState.override=names[p[1]]}else if(cmd==="time")state.day={day:.25,noon:.25,sunset:.49,night:.72}[p[1]]??state.day;else if(cmd==="tp"&&p.length>=4){const [x,y,z]=p.slice(1,4).map(Number);if(![x,y,z].every(Number.isFinite))return toast("Coordenadas inválidas");player.pos.set(x,y,z);player.vel.set(0,0,0);forwardChunks={x:0,z:0};ensureChunks(true)}else if(cmd==="spawn")spawnMob(p[1]);else if(mobTypes.includes(cmd))spawnMob(cmd);else if(cmd==="clear"&&p[1]==="mobs"){for(const e of [...entities])if(!e.persistent){breeding.forget(e);removeEntity(e)}}else if(cmd==="give"){const aliases={grass:BLOCK.GRASS,stone:BLOCK.STONE,sand:BLOCK.SAND,redsand:BLOCK.RED_SAND,wood:BLOCK.WOOD,glass:BLOCK.GLASS,lab:BLOCK.LAB,door:BLOCK.DOOR,torch:BLOCK.TORCH,copper:BLOCK.COPPER,sulfur:BLOCK.SULFUR,salt:BLOCK.SALT,spectral:BLOCK.SPECTRAL,gold:BLOCK.GOLD,tin:BLOCK.TIN,zinc:BLOCK.ZINC,crystal:BLOCK.CRYSTAL,obsidian:BLOCK.OBSIDIAN,basalt:BLOCK.BASALT,marble:BLOCK.MARBLE,clay:BLOCK.CLAY,alchemy:BLOCK.ALCHEMY_BRICK,ceramic:BLOCK.CERAMIC,bronze:BLOCK.BRONZE_BLOCK,limestone:BLOCK.LIMESTONE,slate:BLOCK.SLATE,amethyst:BLOCK.AMETHYST,niter:BLOCK.NITER,cherry:BLOCK.CHERRY_LOG,bamboo:BLOCK.BAMBOO,palm:BLOCK.PALM_LOG,village:BLOCK.VILLAGE_BRICK,flower:BLOCK.POPPY,water:"water",hydrogen:"hydrogen",oxygen:"oxygen",acid:"acid",ammonia:"ammonia",ethanol:"ethanol",goldnugget:"gold_nugget",arrow:"arrow",staff:"wind_staff",bow:"bow",sword:"iron_sword",furnace:BLOCK.FURNACE,fire:BLOCK.FIRE,cup:"cup",bucket:"bucket",watercup:"water_cup",waterbucket:"water_bucket",lavabucket:"lava_bucket",rawbeef:"raw_beef",cookedbeef:"cooked_beef",rawpork:"raw_pork",cookedpork:"cooked_pork",goggles:"protective_goggles",respirator:"respirator_mask",labcoat:"lab_coat",helmet:"iron_helmet",chestplate:"iron_chestplate",leggings:"iron_leggings",ironboots:"iron_boots",rubberboots:"rubber_boots",oxygentank:"oxygen_tank",chitinarmor:"chitin_armor"},id=aliases[p[1]]??(+p[1]);if(id!==undefined&&!Number.isNaN(id))addItem(id,clamp(+(p[2]||64),1,999))}else return toast("Comando não reconhecido");renderDev();toast(`DEV · ${cmd} aplicado`)}
+let chatCmdUI=null,devCmdUI=null;
+function buildCommandRegistries(){
+  const blockKeyById=new Map();
+  for(const [k,v] of Object.entries(BLOCK))if(typeof v==="number"&&!blockKeyById.has(v))blockKeyById.set(v,k);
+  const blockAliases={
+    [BLOCK.AIR]:["ar","vazio"],[BLOCK.GRASS]:["grama","relva"],[BLOCK.DIRT]:["terra"],
+    [BLOCK.STONE]:["pedra","rocha"],[BLOCK.SAND]:["areia"],[BLOCK.WOOD]:["madeira","tronco"],
+    [BLOCK.LEAVES]:["folhas"],[BLOCK.PLANK]:["tabua","tabuas"],[BLOCK.TORCH]:["tocha"],
+    [BLOCK.DOOR]:["porta"],[BLOCK.BEDROCK]:["rocha_matriz"],[BLOCK.LAB]:["laboratorio"],
+    [BLOCK.GLASS]:["vidro"],[BLOCK.WATER]:["agua"],[BLOCK.LAVA]:["magma_liquido"],
+    [BLOCK.FIRE]:["fogo","chama"],[BLOCK.FURNACE]:["fornalha","forno"],[BLOCK.OBSIDIAN]:["obsidiana"],
+    [BLOCK.COAL]:["carvao"],[BLOCK.IRON]:["ferro"],[BLOCK.GOLD]:["ouro"],[BLOCK.COPPER]:["cobre"],
+    [BLOCK.CRYSTAL]:["cristal"],[BLOCK.BED]:["cama"],[BLOCK.POPPY]:["flor","papoula"]
+  };
+  const blocks=[],usedBlockTokens=new Set();
+  for(const [rawId,def] of Object.entries(BDEF)){
+    const id=Number(rawId);
+    if(!Number.isInteger(id)||!def?.name)continue;
+    if(def.hidden&&(def.bed||def.gate))continue;
+    const field=fieldLab.byBlock.get(id)?.unit;
+    if(field&&id!==field.base)continue;
+    let token=(blockKeyById.get(id)||QuimiCraftCommands.slugify(def.name)||`block_${id}`).toLowerCase();
+    if(usedBlockTokens.has(token))token=`${token}_${id}`;
+    usedBlockTokens.add(token);
+    blocks.push({
+      token,numId:id,name:def.name,badge:"Bloco",
+      placeable:true,
+      aliases:[...(blockAliases[id]||[]),`block:${token}`,`block:${id}`,`id:${id}`],
+      priority:id<64?12:24
+    });
+  }
+  const itemAliases={
+    iron_sword:["sword","espada"],wind_staff:["staff","cajado"],bow:["arco"],arrow:["flecha"],
+    bolt:["virote"],iron_pickaxe:["pickaxe","picareta"],bucket:["balde"],water_bucket:["waterbucket"],
+    lava_bucket:["lavabucket"],gold_nugget:["goldnugget","pepita"],protective_goggles:["goggles","oculos"],
+    respirator_mask:["respirator","mascara"],lab_coat:["labcoat","jaleco"],oxygen_tank:["oxygentank"],
+    chitin_armor:["chitinarmor"],iron_helmet:["helmet","capacete"],iron_chestplate:["chestplate","peitoral"],
+    iron_leggings:["leggings","calcas"],iron_boots:["ironboots","botas"],rubber_boots:["rubberboots"]
+  };
+  const items=[];
+  for(const [id,name] of Object.entries(ITEM_NAMES)){
+    if(!id||!name)continue;
+    const isWeapon=!!QuimiCraftArsenal.weapons[id]||id==="bolt"||id==="venom_arrow"||id==="petrifying_vial"||!!exterminationTools[id];
+    const isShield=!!QuimiCraftArsenal.shields[id];
+    const isFocus=!!QuimiCraftArsenal.focuses[id];
+    const isGear=!!APPAREL[id]||!!EQUIPMENT_DEFS[id]||id==="hunt_badge";
+    const isVehicleKit=!!QuimiCraftVehicles.itemData[id];
+    const isPotion=!!QuimiCraftAlchemy.potions[id];
+    const isFood=!!FOOD_VALUES[id]||!!DRINK_VALUES[id];
+    const badge=isWeapon?"Arma":isShield?"Escudo":isFocus?"Artefato":isGear?"Equipamento":
+      isVehicleKit?"Kit de veículo":isPotion?"Alquimia":isFood?"Alimento":"Item";
+    const single=isWeapon||isShield||isFocus||isGear||isVehicleKit;
+    items.push({
+      token:id,id,name,badge,
+      defaultCount:single?1:(isPotion||isFood?16:64),
+      aliases:itemAliases[id]||[],
+      priority:single?20:30
+    });
+  }
+  const entitiesList=[],seenEntity=new Set();
+  const pushEntity=(entry)=>{
+    if(seenEntity.has(entry.token))return;
+    seenEntity.add(entry.token);
+    entitiesList.push(entry);
+  };
+  const baseMobs={pig:"Porco",cow:"Vaca",rabbit:"Coelho",chicken:"Galinha",sheep:"Ovelha",deer:"Cervo da Taiga",
+    owl:"Coruja Boreal",capivara:"Capivara",slime:"Slime Ácido",cobrete:"Cobrete",cristalume:"Cristalume",
+    scorpion:"Escorpião das Dunas",golem:"Golem de Obsidiana",wisp:"Espectro da Tempestade",magma:"Elemental de Magma"};
+  const fantasySet=new Set(["slime","cobrete","cristalume","golem","wisp","magma","peat_slime","travertine_guard"]);
+  for(const [id,name] of Object.entries(baseMobs)){
+    const cat=fantasySet.has(id)?"Criatura":"Fauna";
+    pushEntity({token:id,id,name,kind:"mob",badge:cat,priority:15});
+    if(QuimiCraftBreeding.diet({type:id}))pushEntity({token:`${id}:baby`,id,baby:true,name:`Filhote · ${name}`,kind:"mob",badge:"Filhote",priority:55});
+    if(!spectral.isNative(id))pushEntity({token:`${id}:ghost`,id,ghost:true,name:spectral.name(id,name),kind:"mob",badge:"Fantasma",priority:65});
+  }
+  for(const [id,v] of Object.entries(FAUNA_VARIANTS)){
+    const cat=fantasySet.has(id)?"Criatura":"Fauna";
+    pushEntity({token:id,id,name:v.name,kind:"mob",badge:cat,priority:18});
+    if(QuimiCraftBreeding.diet({type:id}))pushEntity({token:`${id}:baby`,id,baby:true,name:`Filhote · ${v.name}`,kind:"mob",badge:"Filhote",priority:58});
+    if(!spectral.isNative(id))pushEntity({token:`${id}:ghost`,id,ghost:true,name:spectral.name(id,v.name),kind:"mob",badge:"Fantasma",priority:68});
+  }
+  for(const [id,p] of Object.entries(regionalFauna)){
+    const cat=p.shape==="fantasy"?"Criatura":"Fauna";
+    pushEntity({token:id,id,name:p.name,kind:"mob",badge:cat,priority:16});
+    if(QuimiCraftBreeding.diet({type:id}))pushEntity({token:`${id}:baby`,id,baby:true,name:`Filhote · ${p.name}`,kind:"mob",badge:"Filhote",priority:56});
+    if(!p.finisher&&!spectral.isNative(id))pushEntity({token:`${id}:ghost`,id,ghost:true,name:spectral.name(id,p.name),kind:"mob",badge:"Fantasma",priority:66});
+  }
+  for(const [id,p] of Object.entries(DRAGONS)){
+    pushEntity({token:id,id,name:p.name,kind:"mob",badge:"Dragão",aliases:["dragao","dragon"],priority:14});
+    pushEntity({token:`${id}:ghost`,id,ghost:true,name:spectral.name(id,p.name),kind:"mob",badge:"Fantasma",priority:64});
+  }
+  for(const [id,p] of Object.entries(natureFolk)){
+    pushEntity({token:id,id,name:p.name,kind:"mob",badge:"Árvore viva",priority:25});
+  }
+  for(const [id,p] of Object.entries(siteWardens)){
+    pushEntity({token:id,id,name:p.name,kind:"mob",badge:"Guardião",priority:24});
+  }
+  for(const [id,p] of Object.entries(folklore.creatures)){
+    pushEntity({token:id,id,name:p.name,kind:"mob",badge:"Folclore",aliases:["folclore"],priority:18});
+  }
+  for(const [variant,plant] of Object.entries(screamer.plants)){
+    pushEntity({token:`screamer:${variant}`,id:`screamer:${variant}`,name:plant.name,kind:"mob",badge:"Planta",priority:30});
+  }
+  for(const [id,p] of Object.entries(QuimiCraftDepths.fauna)){
+    const extra=id==="brain_coral"?["coral_cerebro","coral"]:id==="sperm_whale"?["cachalote","baleia"]:
+      id==="giant_squid"?["lula_gigante","lula"]:id==="colossal_squid"?["lula_colossal","lula"]:
+      id.startsWith("orca")?["orca","baleia_assassina"]:[];
+    pushEntity({token:id,id,name:p.name,kind:"aquatic",badge:"Aquático",aliases:extra,priority:14});
+    if(!QuimiCraftMarineLife.profiles[id])pushEntity({token:`${id}:ghost`,id,ghost:true,name:spectral.name(id,p.name),kind:"aquatic",badge:"Fantasma",priority:67});
+  }
+  for(const id of Object.keys(fishColors)){
+    if(id==="raw_piranha"||id==="raw_shrimp")continue;
+    const name=fishName(id);
+    pushEntity({token:id,id,name,kind:"aquatic",badge:"Peixe",priority:26});
+  }
+  for(const [kind,p] of Object.entries(QuimiCraftVehicles.types)){
+    pushEntity({token:kind,id:kind,name:p.name,kind:"vehicle",badge:"Veículo",aliases:[p.item],priority:22});
+  }
+  for(const [type,p] of Object.entries({npc_carbon:{name:"Prof. Carbono"},npc_ranger:{name:"Guardiã Íris"},...NPC_PROFILES})){
+    if(type==="npc_child")continue;
+    pushEntity({token:type,id:type,name:p.name,kind:"npc",badge:"NPC",priority:32});
+  }
+  return {blocks,items,entities:entitiesList};
+}
+function findSummonWaterSpot(profile,coords){
+  const minDepth=Math.min(profile?.minDepth??1,2);
+  if(coords){
+    const w=findFishWater(coords[0],coords[2]);
+    if(w)return {x:coords[0],y:aquaticDepth(w,coords[1],profile),z:coords[2],water:w};
+  }
+  const eye=attackOrigin(),dir=aimDirection();
+  let fallback=null;
+  for(let d=2;d<=26;d+=1.2){
+    const px=eye.x+dir.x*d,pz=eye.z+dir.z*d;
+    if(!hasChunk(Math.floor(px/CHUNK),Math.floor(pz/CHUNK)))continue;
+    const w=findFishWater(px,pz);
+    if(!w)continue;
+    const spot={x:px,y:aquaticDepth(w,w.top-w.depth*(profile?.swim??.45),profile),z:pz,water:w};
+    if(w.depth>=minDepth)return spot;
+    if(!fallback)fallback=spot;
+  }
+  for(let r=0;r<=26;r+=2){
+    const steps=r===0?1:16;
+    for(let i=0;i<steps;i++){
+      const a=player.yaw+Math.PI+i*TAU/steps,px=player.pos.x+Math.sin(a)*r,pz=player.pos.z+Math.cos(a)*r;
+      if(!hasChunk(Math.floor(px/CHUNK),Math.floor(pz/CHUNK)))continue;
+      const w=findFishWater(px,pz);
+      if(!w)continue;
+      const spot={x:px,y:aquaticDepth(w,w.top-w.depth*(profile?.swim??.45),profile),z:pz,water:w};
+      if(w.depth>=minDepth)return spot;
+      if(!fallback)fallback=spot;
+    }
+  }
+  return fallback;
+}
+function summonCommandEntity(entry,coords,count=1){
+  const qty=clamp(Math.floor(count||1),1,20);
+  if(entry.kind==="vehicle"){
+    return vehicles.spawn(entry.id,coords);
+  }
+  if(entry.kind==="aquatic"){
+    const profile=aquaticProfile(entry.id);
+    const baseSpot=findSummonWaterSpot(profile,coords);
+    if(!baseSpot)return {ok:false,msg:`Nenhuma água próxima para invocar ${entry.name}. Aproxime-se da água ou use /setblock ~ ~ ~ water.`};
+    let spawned=0;
+    for(let i=0;i<qty;i++){
+      const spread=qty>1?1.2:0,ang=i*2.399;
+      const px=baseSpot.x+Math.cos(ang)*spread,pz=baseSpot.z+Math.sin(ang)*spread;
+      const w=findFishWater(px,pz)||baseSpot.water;
+      const sx=w===baseSpot.water&&qty>1?baseSpot.x:px,sz=w===baseSpot.water&&qty>1?baseSpot.z:pz;
+      const f=buildFish(sx,baseSpot.y,sz,w,entry.id,!!entry.ghost);
+      f.angle=player.yaw+Math.PI;
+      f.group.rotation.y=f.angle+Math.PI;
+      spawned++;
+    }
+    sound("splash",.5);
+    return {ok:true,msg:`Invocado: ${spawned>1?spawned+" × ":""}${entry.name} (${Math.round(baseSpot.x)}, ${Math.round(baseSpot.y)}, ${Math.round(baseSpot.z)})`};
+  }
+  const dist=DRAGONS[entry.id]?7.5:3.8;
+  const bx=coords?coords[0]:player.pos.x-Math.sin(player.yaw)*dist;
+  const bz=coords?coords[2]:player.pos.z-Math.cos(player.yaw)*dist;
+  const by=coords?coords[1]:findStandingY(bx,bz,Math.max(player.pos.y+3,terrainHeight(bx,bz)+2));
+  let spawned=0;
+  for(let i=0;i<qty;i++){
+    const r=qty>1?(0.9+Math.floor(i/6)*1.1):0,ang=i*2.399;
+    const x=bx+Math.cos(ang)*r,z=bz+Math.sin(ang)*r;
+    const y=coords?by:findStandingY(x,z,Math.max(by+2,terrainHeight(x,z)+2));
+    if(entry.id.startsWith("screamer:")){
+      createEntity("screamer",x,z,false,{y,variant:entry.id.split(":")[1]},false,false);
+    }else{
+      const e=createEntity(entry.id,x,z,entry.kind==="npc",{y},!!entry.baby,entry.ghost?true:false);
+      if(e&&DRAGONS[entry.id]&&!coords){e.y=y+2.5;e.group.position.y=e.y}
+    }
+    spawned++;
+  }
+  combatParticles(new THREE.Vector3(bx,by+.9,bz),0xa7f2d6,10,"vapor");
+  sound("magic",.42);
+  return {ok:true,msg:`Invocado: ${spawned>1?spawned+" × ":""}${entry.name}`};
+}
+const commandEngine=QuimiCraftCommands.create({
+  buildRegistries:buildCommandRegistries,
+  getGamemode:()=>state.gamemode,
+  setGamemode,
+  playerPos:()=>({x:player.pos.x,y:player.pos.y,z:player.pos.z}),
+  playerBlockPos:()=>({x:Math.floor(player.pos.x),y:Math.floor(player.pos.y),z:Math.floor(player.pos.z)}),
+  aimedBlockPos:()=>state.target?{x:state.target.x,y:state.target.y,z:state.target.z}:null,
+  aimedPlacePos:()=>{
+    if(state.target&&state.target.n){
+      const [dx,dy,dz]=state.target.n;
+      return {x:state.target.x+dx,y:state.target.y+dy,z:state.target.z+dz};
+    }
+    return {
+      x:Math.floor(player.pos.x-Math.sin(player.yaw)*2.5),
+      y:Math.floor(player.pos.y),
+      z:Math.floor(player.pos.z-Math.cos(player.yaw)*2.5)
+    };
+  },
+  giveEntry(entry,count,fromSummon){
+    const id=entry.kind==="block"?entry.numId:entry.id;
+    const ok=addItem(id,count);
+    if(!ok)return {ok:false,msg:"Mochila cheia — libere um espaço para receber o item."};
+    renderHotbar();refreshHeldItem();sound("pickup",.55);
+    const idNote=entry.kind==="block"?` (ID ${entry.numId})`:"";
+    const hint=fromSummon&&entry.kind==="block"?` · use /setblock ~ ~ ~ ${entry.token} para colocar no mundo`:"";
+    return {ok:true,msg:`Recebido: ${count} × ${entry.name}${idNote}${hint}`};
+  },
+  setBlockAt(x,y,z,entry){
+    x=Math.floor(x);y=Math.floor(y);z=Math.floor(z);
+    if(y<1||y>=MAX_Y)return {ok:false,msg:`Altura Y deve ficar entre 1 e ${MAX_Y-1}.`};
+    if(isLabProtectedBlock(x,y,z))return {ok:false,msg:"O Laboratório Carbono é protegido contra edição."};
+    setBlock(x,y,z,entry.numId);
+    if(placementsWithLight.has(entry.numId))updateTorches();
+    sound("place",.55);
+    return {ok:true,msg:`Bloco colocado: ${entry.name} (ID ${entry.numId}) em ${x}, ${y}, ${z}`};
+  },
+  fillBlocks([x1,y1,z1,x2,y2,z2],entry){
+    const minX=Math.min(x1,x2),maxX=Math.max(x1,x2);
+    const minY=Math.max(1,Math.min(y1,y2)),maxY=Math.min(MAX_Y-1,Math.max(y1,y2));
+    const minZ=Math.min(z1,z2),maxZ=Math.max(z1,z2);
+    const vol=(maxX-minX+1)*(maxY-minY+1)*(maxZ-minZ+1);
+    if(vol>4096)return {ok:false,msg:`Área muito grande (${vol} blocos). Limite: 4096 blocos.`};
+    const dirty=new Map();let placed=0;
+    for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++)for(let z=minZ;z<=maxZ;z++){
+      if(isLabProtectedBlock(x,y,z))continue;
+      editVoxel(x,y,z,entry.numId,dirty);placed++;
+    }
+    commitVoxelEdits(dirty);
+    if(placementsWithLight.has(entry.numId))updateTorches();
+    sound("place",.6);
+    return {ok:true,msg:`Preenchidos ${placed} blocos com ${entry.name} (ID ${entry.numId}).`};
+  },
+  summonEntity:summonCommandEntity,
+  teleportTo(x,y,z){
+    player.pos.set(x,clamp(y,1,MAX_Y+32),z);player.vel.set(0,0,0);player.fallStart=player.pos.y;
+    forwardChunks={x:0,z:0};ensureChunks(true);
+    return {ok:true,msg:`Teleportado para ${x.toFixed(1)}, ${player.pos.y.toFixed(1)}, ${z.toFixed(1)}`};
+  },
+  teleportNamed(place){
+    const dest=place==="lab"?{x:LAB_LAYOUT.cx,y:LAB_LAYOUT.y+1,z:LAB_LAYOUT.cz,label:"Laboratório Carbono"}:
+      place==="vila"?{x:VILLAGE.x,y:terrainHeight(VILLAGE.x,VILLAGE.z)+2,z:VILLAGE.z,label:"Vila dos Elementos"}:
+      {x:spawn.x+.5,y:spawn.y,z:spawn.z+.5,label:"Ponto inicial"};
+    player.pos.set(dest.x,dest.y,dest.z);player.vel.set(0,0,0);player.fallStart=player.pos.y;
+    forwardChunks={x:0,z:0};ensureChunks(true);
+    return {ok:true,msg:`Teleportado para ${dest.label} (${Math.round(dest.x)}, ${Math.round(dest.y)}, ${Math.round(dest.z)})`};
+  },
+  setTime(v,label){state.day=v;return {ok:true,msg:`Horário ajustado para ${label}.`}},
+  setWeather(v,label){climateState.override=v;return {ok:true,msg:`Clima ajustado para ${label}.`}},
+  setSeason(v,label){
+    climateState.elapsed=v*420;climateState.season=-1;
+    for(const ch of chunks.values())rebuildChunk(ch.cx,ch.cz);
+    return {ok:true,msg:`Estação ajustada para ${label}.`};
+  },
+  setFly(v){
+    dev.fly=v===null?!dev.fly:!!v;
+    player.vel.set(0,0,0);player.fallStart=player.pos.y;
+    updateGamemodeHud();if(state.devOpen)renderDev();
+    return {ok:true,msg:`Voo livre ${dev.fly?"ativado":"desativado"}.`};
+  },
+  setSpeed(v){
+    dev.speed=clamp(v??(dev.speed%5+1),1,5);
+    if(state.devOpen)renderDev();
+    return {ok:true,msg:`Velocidade ajustada para ${dev.speed}×.`};
+  },
+  healPlayer(){
+    player.health=player.mana=player.hunger=player.thirst=100;
+    player.breath=playerBreathMax();player.dragonSlow=0;playerVenom=null;
+    gasExposure=0;gasBlackout=0;setPetrified(0);updateVitals();
+    return {ok:true,msg:"Vida, mana, fome, sede e fôlego restaurados."};
+  },
+  clearWorld(scope){
+    if(scope==="inventory"){
+      invSlots.fill(null);saveInventory();renderInventory();renderHotbar();refreshHeldItem();
+      return {ok:true,msg:"Inventário esvaziado."};
+    }
+    let removed=0;
+    if(scope==="mobs"||scope==="all"){
+      for(const e of [...entities])if(!e.persistent&&!e.bonded){breeding.forget(e);removeEntity(e);removed++}
+    }
+    if(scope==="aquatic"||scope==="all"){
+      for(const f of [...fishSchool]){
+        f.dead=true;clearCreatureStone(f);creatureAfflictions.delete(f);restoreMobColor(f);disposeAquatic(f);
+        const idx=fishSchool.indexOf(f);if(idx>=0)fishSchool.splice(idx,1);removed++;
+      }
+    }
+    return {ok:true,msg:`Removidas ${removed} criaturas.`};
+  },
+  killSpecies(entry){
+    let removed=0;
+    if(entry.kind==="aquatic"){
+      for(const f of [...fishSchool])if(f.id===entry.id){
+        f.dead=true;clearCreatureStone(f);creatureAfflictions.delete(f);restoreMobColor(f);disposeAquatic(f);
+        const idx=fishSchool.indexOf(f);if(idx>=0)fishSchool.splice(idx,1);removed++;
+      }
+    }else{
+      for(const e of [...entities])if(!e.persistent&&!e.bonded&&e.type===entry.id){breeding.forget(e);removeEntity(e);removed++}
+    }
+    return {ok:true,msg:removed?`Removidos ${removed} × ${entry.name}.`:`Nenhum exemplar de ${entry.name} encontrado.`};
+  },
+  unlockRecipes(){
+    dev.allRecipes=true;for(const r of CHEM)unlockedChem.add(r.id);saveChem();renderChemistry();
+    if(state.devOpen)renderDev();
+    return {ok:true,msg:"Todas as receitas químicas liberadas."};
+  }
+});
+function openChat(initial=""){
+  if(!state.started||uiBlocking())return;
+  clearInput();
+  state.chat=true;state.playing=false;state.left=false;state.right=false;
+  $("chat").classList.add("open");
+  document.exitPointerLock?.();
+  const inp=$("chatInput");
+  inp.value=initial;
+  inp.focus();
+  inp.setSelectionRange(inp.value.length,inp.value.length);
+  chatCmdUI?.refresh();
+}
+function closeChat(){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";chatCmdUI?.reset();requestPointer()}
+function submitChat(raw=$("chatInput").value){
+  const text=String(raw||"").trim();
+  if(!text)return closeChat();
+  if(text.toLowerCase()==="-mododev"){state.chat=false;$("chat").classList.remove("open");$("chatInput").value="";chatCmdUI?.reset();return openDev()}
+  if(text.startsWith("/")){
+    const res=commandEngine.execute(text);
+    if(res?.msg){chatMessage("COMANDO",res.msg,{category:"system"});toast(res.msg)}
+    return closeChat();
+  }
+  chatMessage("VOCÊ",text);
+  closeChat();
+}
+function openDev(){state.devOpen=true;state.playing=false;state.left=false;$("devMenu").classList.add("open");document.exitPointerLock?.();renderDev();setTimeout(()=>{$("devCommand").focus();devCmdUI?.refresh()},20)}
+function closeDev(){state.devOpen=false;$("devMenu").classList.remove("open");devCmdUI?.reset();requestPointer()}
+function renderDev(){const buttons=[['gamemode creative','Modo Criativo'],['gamemode survival','Modo Sobrevivência'],['fly','Voar'],['infinite','Blocos infinitos'],['recipes','Todas as receitas'],['speed','Speed walk +'],['time day','Meio-dia'],['time night','Noite'],['summon golem','Invocar Golem'],['summon orca','Invocar Orca'],['summon sperm_whale','Invocar Cachalote'],['summon giant_squid','Invocar Lula Gigante']];$("devStatus").innerHTML=`<span class="dev-pill">MODO ${isCreative()?'CRIATIVO':'SOBREVIVÊNCIA'}</span><span class="dev-pill">FLY ${dev.fly?'ON':'OFF'}</span><span class="dev-pill">SPEED ${dev.speed}×</span><span class="dev-pill">INFINITO ${dev.infinite||isCreative()?'ON':'OFF'}</span><span class="dev-pill">RECEITAS ${dev.allRecipes?'TODAS':'PROGRESSÃO'}</span>`;$("devGrid").innerHTML=buttons.map(([id,n])=>`<button class="dev-btn ${(id==='gamemode creative'&&isCreative())||(id==='gamemode survival'&&!isCreative())||(id==='fly'&&dev.fly)||(id==='infinite'&&dev.infinite)||(id==='recipes'&&dev.allRecipes)?'on':''}" data-dev="${id}">${n}</button>`).join("");$("devGrid").querySelectorAll("[data-dev]").forEach(b=>b.onclick=()=>runDevCommand(b.dataset.dev))}
+function runDevCommand(raw){
+  const text=String(raw||"").trim();
+  if(!text)return;
+  const low=text.replace(/^\/+/,"").toLowerCase();
+  if(low==="infinite"){
+    dev.infinite=!dev.infinite;
+    if(dev.infinite)for(const id of [...Object.values(BLOCK).filter(id=>typeof id==="number"&&id>0&&id!==BLOCK.LAVA),"arrow"])if(countItem(id)===0)addItem(id,99);
+    renderDev();return toast(`DEV · blocos infinitos ${dev.infinite?"ON":"OFF"}`);
+  }
+  if(low==="day"||low==="night"){
+    const res=commandEngine.execute("time "+low);
+    renderDev();return toast(res.msg);
+  }
+  const res=commandEngine.execute(text);
+  renderDev();
+  if(res?.msg){chatMessage("COMANDO",res.msg,{category:"system"});toast(res.msg)}
+}
 function refreshChunkGraphics(){
   activeBuild=null;
   pending.length=0;
@@ -7294,23 +8547,49 @@ $("settingsToggle").onclick=()=>{$("settingsToggle").classList.toggle("open");$(
 $("qualityPreset").onchange=e=>applyPreset(e.target.value);$("renderDistance").oninput=e=>$("renderOut").value=`${e.target.value} chunks`;$("renderDistance").onchange=e=>{settings.render=horizon.normalizeRange(e.target.value);settings.preset="custom";saveSettings();centerChunk.x=999;ensureChunks(true)};
 for(const [id,key,rebuild] of [["shadowQuality","shadows",false],["aoQuality","ao",true],["waterQuality","water",false],["particleQuality","particles",false],["vegetationQuality","vegetation",true],["resolutionScale","resolution",false],["mobDensity","mobs",false]])$(id).onchange=e=>{settings[key]=+e.target.value;settings.preset="custom";applyGraphics(rebuild)};
 $("cloudToggle").onchange=e=>{settings.clouds=e.target.checked;settings.preset="custom";applyGraphics()};$("sensitivity").oninput=e=>{settings.sense=+e.target.value/100;$("senseOut").value=`${e.target.value}%`;saveSettings()};$("volume").oninput=e=>{settings.volume=+e.target.value/100;$("volumeOut").value=`${e.target.value}%`;if(master)master.gain.value=settings.volume*.32;saveSettings()};
-$("runCommand").onclick=()=>{runDevCommand($("devCommand").value);$("devCommand").value=""};$("devCommand").onkeydown=e=>{if(e.key==="Enter"){$("runCommand").click();e.stopPropagation()}};$("chatInput").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();submitChat()}else if(e.key==="Escape"){e.stopPropagation();closeChat()}};
+chatCmdUI=commandEngine.attachUI({
+  input:$("chatInput"),listEl:$("cmdSuggest"),hintEl:$("cmdHint"),requireSlash:true,
+  onSubmit:raw=>submitChat(raw),onEscape:closeChat
+});
+devCmdUI=commandEngine.attachUI({
+  input:$("devCommand"),listEl:$("devCmdSuggest"),hintEl:$("devCmdHint"),requireSlash:false,
+  onSubmit:raw=>{runDevCommand(raw);$("devCommand").value=""},onEscape:closeDev
+});
+$("runCommand").onclick=()=>{runDevCommand($("devCommand").value);$("devCommand").value="";devCmdUI?.hide()};
 
 
 document.addEventListener("keydown",e=>{
   if(state.loading||state.awaitingEntry)return;
   if(state.chat)return;
+  if(state.map){
+    const typing=e.target?.matches?.("input, textarea, select, [contenteditable]");
+    if(e.code==="Escape"||e.code==="KeyM"&&!typing){
+      e.preventDefault();
+      if(!e.repeat){
+        if(e.code==="Escape"&&explorationMapView.cancelPlacement())$("mapWaypointNew").focus();
+        else closeExplorationMap();
+      }
+    }
+    return;
+  }
   if(e.target?.matches?.("input, textarea, select, button")&&e.code!=="Escape"&&!state.playing)return;
   if(e.code==="Escape"){
     e.preventDefault();
     if(state.catalog){catalog.close();return}
     if(state.alchemyWorkshop){alchemyUI.close();return;}
     if(state.frontierWorkshop){closeFrontierWorkshop();return}
+    if(state.extermination)return closeExtermination();
     if(state.scientificNotebook)return closeScienceModal("scientificNotebook");if(state.researchTree)return closeScienceModal("researchTree");if(state.scienceStation)return closeScienceModal("scienceStation");if(state.history)return closeMessageHistory();if(state.professor)return closeProfessor();if(state.periodic)return closePeriodicTable();if(state.inventory)return closeInventory();if(state.chemistry)return closeChemistry();if(state.shop)return closeShop();if(state.character)return closeCharacter();if(state.devOpen)return closeDev();if(state.graphics)return closeGraphics();if(state.paused){state.paused=false;$("pause").classList.remove("open");return requestPointer()}if(state.started)return showPause()
   }
-  if(e.code==="Enter"&&state.started&&!uiBlocking()&&!state.paused){e.preventDefault();return openChat()}
+  if((e.key==="/"||e.code==="KeyT"||e.code==="Enter")&&state.started&&!uiBlocking()&&!state.paused){e.preventDefault();e.stopPropagation();return openChat(e.key==="/"?"/":"")}
   if(e.code==="Tab"&&state.started&&(state.inventory||!uiBlocking())&&!state.paused){e.preventDefault();return state.inventory?closeInventory():openInventory()}
-  if(e.code==="KeyM"&&state.started&&!uiBlocking()){e.preventDefault();const stats=elementMissions.getStats();if(stats.introduced){elementMissions.setTrackerHidden(!stats.trackerHidden);updateMissionHud()}return}
+  if(e.code==="KeyM"&&state.started&&!uiBlocking()&&!state.paused&&!e.repeat){
+    e.preventDefault();
+    if(!e.shiftKey)return openExplorationMap();
+    const stats=elementMissions.getStats();
+    if(stats.introduced){elementMissions.setTrackerHidden(!stats.trackerHidden);updateMissionHud()}
+    return;
+  }
   if(e.code==="KeyN"&&state.started&&!uiBlocking()&&!state.paused){e.preventDefault();return scienceUI?.openNotebook()}
   if(e.code==="KeyR"&&state.started&&!uiBlocking()&&!state.paused){e.preventDefault();return scienceUI?.openResearch()}
   if(e.code==="KeyG"&&state.playing&&!e.repeat&&!vehicles.current()&&!riding){e.preventDefault();return collectScientificSample()}
@@ -7332,7 +8611,7 @@ document.addEventListener("keydown",e=>{
     }
     if(e.code==="KeyQ"&&!e.repeat){e.preventDefault();return useOrPlace()}
   }
-  keys[e.code]=true;if(e.code.startsWith("Digit")){const n=+e.code.slice(5);if(n>=1&&n<=9)chooseSlot(n-1)}if(e.code==="KeyC"&&state.playing){e.preventDefault();cycleCamera()}if(e.code==="KeyE"&&state.playing&&!e.repeat){e.preventDefault();interact()}if(e.code==="Space"&&!dev.fly){e.preventDefault();if(state.playing&&!e.repeat)jumpOrGlide()}
+  keys[e.code]=true;if(e.code.startsWith("Digit")){const n=+e.code.slice(5);if(n>=1&&n<=9)chooseSlot(n-1)}if(e.code==="KeyC"&&state.playing){e.preventDefault();cycleCamera()}if(e.code==="KeyE"&&state.playing&&!e.repeat){e.preventDefault();interact()}if(e.code==="Space"){e.preventDefault();if(state.playing&&!e.repeat){if(isCreative()&&!riding&&!vehicles.current()){const now=performance.now();if(now-lastSpaceTapAt<300){dev.fly=!dev.fly;lastSpaceTapAt=0;player.vel.y=0;player.fallStart=player.pos.y;updateGamemodeHud();return}lastSpaceTapAt=now}if(!dev.fly)jumpOrGlide()}}
 });
 document.addEventListener("keyup",e=>{keys[e.code]=false;if(e.code==="KeyF")state.left=false});
 document.addEventListener("mouseup",e=>{if(e.button===0&&!keys.KeyF)state.left=false});
@@ -7422,22 +8701,30 @@ function updatePrecipitation(dt,now,weather){
   }
   if(weather==="storm"&&state.playing){
     lightningClock-=dt;
-    if(lightningClock<0){lightningClock=8+Math.random()*12;lightningLife=.33;const verts=[],sx=player.pos.x+(Math.random()-.5)*35,sz=player.pos.z+(Math.random()-.5)*35;
-      let x=sx,y=Math.max(player.pos.y+30,roofAt(sx,sz)+20),z=sz;
-      for(let n=0;n<9;n++){
-        const nx=x+(Math.random()-.5)*3,nz=z+(Math.random()-.5)*3;
-        const floor=Math.max(roofAt(x,z),roofAt(nx,z),roofAt(x,nz),roofAt(nx,nz))+.06;
-        if(y<=floor)break;
-        const ny=Math.max(y-4,floor);
-        verts.push(x,y,z,nx,ny,nz);x=nx;y=ny;z=nz;
-        if(ny===floor)break;
+    if(lightningClock<0){
+      lightningClock=8+Math.random()*12;lightningLife=.44;
+      const forward=21+Math.random()*17,side=(Math.random()-.5)*forward*.90;
+      const fx=-Math.sin(player.yaw),fz=-Math.cos(player.yaw);
+      const sx=player.pos.x+fx*forward-fz*side,sz=player.pos.z+fz*forward+fx*side;
+      const floor=roofAt(sx,sz)+.10,top=Math.max(player.pos.y+26,floor+25),verts=[];
+      let x=sx+(Math.random()-.5)*8,y=top,z=sz+(Math.random()-.5)*8;
+      for(let n=1;n<=13;n++){
+        const t=n/13,jitter=n===13?0:2.8,nx=sx+(Math.random()-.5)*jitter,nz=sz+(Math.random()-.5)*jitter;
+        const ny=Math.max(lerp(top,floor,t),roofAt(nx,nz)+.08);
+        verts.push(x,y,z,nx,ny,nz);
+        if(n===4||n===7){
+          const sign=n===4?1:-1,bx=nx+sign*(4+Math.random()*3),bz=nz+sign*(2+Math.random()*2);
+          const by=Math.max(ny-6,roofAt(bx,bz)+.1);
+          if(by<ny)verts.push(nx,ny,nz,(nx+bx)/2,ny-1,(nz+bz)/2,(nx+bx)/2,ny-1,(nz+bz)/2,bx,by,bz);
+        }
+        x=nx;y=ny;z=nz;
       }
       if(lightningMesh){climateGroup.remove(lightningMesh);lightningMesh.geometry.dispose();lightningMesh.material.dispose()}
-      const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));lightningMesh=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:0xe6f7ff,transparent:true,opacity:1}));climateGroup.add(lightningMesh);
+      const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));lightningMesh=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:0xf8fcff,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));climateGroup.add(lightningMesh);
       if(Math.random()<.26){const tx=Math.floor(sx),tz=Math.floor(sz),ty=terrainHeight(tx,tz)+1;if(ty>WATER_LEVEL&&!isLabProtectedBlock(tx,ty,tz)&&roofAt(tx,tz)<=ty&&getBlock(tx,ty,tz)===BLOCK.AIR){if(FIRE_FUEL.has(getBlock(tx,ty-1,tz)))setBlock(tx,ty,tz,BLOCK.FIRE)}}
     }
   }
-  if(lightningLife>0){lightningLife-=dt;if(!labSafe()&&roofAt(player.pos.x,player.pos.z)<=player.pos.y+1.4)renderer.toneMappingExposure+=Math.max(0,lightningLife)*.72;if(lightningMesh){lightningMesh.material.opacity=clamp(lightningLife*3,0,1);if(lightningLife<=0){climateGroup.remove(lightningMesh);lightningMesh.geometry.dispose();lightningMesh.material.dispose();lightningMesh=null}}}
+  if(lightningLife>0){lightningLife-=dt;if(!document.documentElement.classList.contains("reduced-flashing")&&!labSafe()&&roofAt(player.pos.x,player.pos.z)<=player.pos.y+1.4)renderer.toneMappingExposure+=Math.max(0,lightningLife)*.55;if(lightningMesh){lightningMesh.material.opacity=clamp(lightningLife*3.9,0,1);if(lightningLife<=0){climateGroup.remove(lightningMesh);lightningMesh.geometry.dispose();lightningMesh.material.dispose();lightningMesh=null}}}
   updateFire(dt,weather)
 }
 function updateClimateState(dt,now){
@@ -7466,6 +8753,19 @@ function visibleRenderRange(dt){
   }
   return horizonVisible;
 }
+function chunkWithinFog(cx,cz,view){
+  if(!view)return true;
+  const x=cx*CHUNK,z=cz*CHUNK;
+  const dx=Math.max(x-view.x,view.x-x-CHUNK,0),dz=Math.max(z-view.z,view.z-z-CHUNK,0);
+  return dx*dx+dz*dz<=view.range*view.range;
+}
+function updateTerrainVisibility(fogDistance){
+  const step=CHUNK/2,x=Math.floor(camera.position.x/step)*step+step*.5,z=Math.floor(camera.position.z/step)*step+step*.5;
+  const range=Math.ceil(fogDistance/step)*step+step;
+  if(terrainVisibility?.x===x&&terrainVisibility.z===z&&terrainVisibility.range===range)return;
+  terrainVisibility={x,z,range};
+  for(const ch of chunks.values())ch.group.visible=chunkWithinFog(ch.cx,ch.cz,terrainVisibility);
+}
 function updateCycle(dt,now){
   if(!state.paused){
     state.day+=dt/DAY_SECONDS;
@@ -7487,7 +8787,10 @@ function updateCycle(dt,now){
   if(season===2)colorFog.lerp(new THREE.Color(0xb78b69),day*.16);
   if(weather==="rain"||weather==="storm"){colorFog.lerp(new THREE.Color(0x465a74),.38);renderer.toneMappingExposure*=.84}
   if(weather==="snow"){colorFog.lerp(new THREE.Color(0xb5c8d5),.2);}
-  sky.position.copy(camera.position);skyMat.uniforms.uTime.value=state.day;stars.position.copy(camera.position);starMat.opacity=clamp((-.04-solar)*2.2,0,.88);sunOrb.visible=solar>-.18;moonOrb.visible=solar<.17&&phase!==0;
+  sky.position.copy(camera.position);skyMat.uniforms.uTime.value=state.day;
+  const overcast=weather==="storm"?.94:weather==="rain"?.64:weather==="snow"?.58:0;
+  skyMat.uniforms.uOvercast.value=lerp(skyMat.uniforms.uOvercast.value,overcast,Math.min(1,dt*3.3));
+  stars.position.copy(camera.position);starMat.opacity=clamp((-.04-solar)*2.2,0,.88)*(1-overcast);sunOrb.visible=solar>-.18;moonOrb.visible=solar<.17&&phase!==0;
   cloudGroup.position.set(cx+Math.sin(now*.000026)*19,player.pos.y,cz+Math.cos(now*.000023)*16);cloudMaterial.opacity=weather==="storm"?.72:weather==="rain"?.83:lerp(.36,.88,day);cloudMaterial.color.set(weather==="storm"?0x7c8da8:weather==="rain"?0xb3bfca:0xffffff);sunOrb.children[0].material.opacity=weather==="storm"?.24:weather==="rain"?.5:1;moonOrb.children[0].material.opacity=weather==="storm"?.3:1;sunOrb.children[1].lookAt(camera.position);moonOrb.children[1].lookAt(camera.position);waterMat.uniforms.uTime.value=now*(document.documentElement.classList.contains("reduced-motion")?.00024:.001);lavaMat.uniforms.uTime.value=now*(document.documentElement.classList.contains("reduced-motion")?.00024:.001);blockGlowTime.value=now*.001;waterMat.uniforms.uSun.value.copy(sunPos).normalize();
   waterMat.uniforms.uSurfaceLight.value.copy(colorFog);
   const cameraSubmerged=state.started&&isCameraUnderwater();
@@ -7512,6 +8815,7 @@ function updateCycle(dt,now){
   updateUnderwaterUI(clarity,colorFog);
   const fog=horizon.fogRange(visibleRenderRange(dt),CHUNK,weather,clarity,submergedSeconds,waterFog?.visibility);
   scene.fog.near=fog.near;scene.fog.far=fog.far;
+  if(state.started)updateTerrainVisibility(fog.far);
   scene.fog.color.copy(colorFog);scene.background.copy(colorFog);
   skyMat.uniforms.uHorizon.value.copy(colorFog);
   for(const material of [waterMat,lavaMat]){
@@ -7525,7 +8829,7 @@ function updateCycle(dt,now){
     lightClock=0;
     if(torchDirty||torchCenter!==Math.floor(player.pos.x/CHUNK)+","+Math.floor(player.pos.z/CHUNK))updateTorches();
   }
-  for(const l of torchLights)l.intensity=1.05+Math.sin(now*.011+l.userData.seed)*.18+hash(Math.floor(now/75),l.userData.seed)*.12;
+  for(const l of torchLights)if(!l.userData.steady)l.intensity=1.05+Math.sin(now*.011+l.userData.seed)*.18+hash(Math.floor(now/75),l.userData.seed)*.12;
   if(solar<-.2&&audioCtx&&now-lastCricket>1800+Math.random()*3600){lastCricket=now;cricket()}
 }
 let menuBackdrop;
@@ -7560,7 +8864,8 @@ function animate(now){
   if(state.catalog)return;
   if(state.playing){updateFieldAir(dt);updateAfflictions(dt);if(!gasBlackout)playerInput.turn(keys,dt);updateLabDecor(now,Math.min(.28,elapsed));updatePhysics(dt);updateQueuedPlacement(dt);updateFluids(dt);alchemyPlay.tick(dt);tickPlayerActivities(dt);professions.update(dt);updateFish(dt,now);ensureChunks();updateTarget(dt);updateEntities(dt,now);updateProjectiles(dt);updateDragonBursts(dt);updateDrops(dt,now);updateEnemyHud(dt);updateInteraction();const nearLab=labBoundsContains(player.pos.x,player.pos.z,3);if(nearLab&&!wasNearLaboratory)verifyLaboratoryOnEntry();wasNearLaboratory=nearLab;bubbleClock+=dt;if(player.inWater&&bubbleClock>.17){bubbleClock=0;bubble(player.pos)}if(now-lastWorldSaveAt>10000){lastWorldSaveAt=now;saveWorldState()}}else if(!state.started)updateMenu(now);else updatePlayerCamera(dt,false);
   updateMobDamageFlashes(now,dt);
-  syncMobileControls();updateVehicleHud();updateGameplayFPS(now);updateCycle(dt,now);frontierFx.update(dt);aquaticFx.update(dt);updateParticles(dt);updateHud();
+  if(state.playing)explorationSurvey.reveal(player.pos.x,player.pos.z);
+  syncMobileControls();updateVehicleHud();updateMapGuide();updateGameplayFPS(now);updateCycle(dt,now);frontierFx.update(dt);aquaticFx.update(dt);updateParticles(dt);updateHud();
   if(!state.started&&!state.loading&&menuBackdrop){
     renderer.toneMappingExposure=1.02;
     renderer.render(menuBackdrop.scene,menuBackdrop.camera);
@@ -7646,7 +8951,7 @@ const vehicles=QuimiCraftVehicles.create({
     return {x:Math.cos(angle)*power,z:Math.sin(angle)*power};
   },
   protectedPosition:(x,y,z)=>labBoundsContains(x,z,1)&&y<=LAB_LAYOUT.y+LAB_LAYOUT.height+1||inLabEntranceCorridor(x,z)&&y<=LAB_LAYOUT.y+4,
-  exchange:transactInventory,breakArea:excavateWithVehicle,inspect:inspectVehicleCut,surface:vehicleSurface,notice:toast,persist:persistVehicles
+  exchange:(need,out)=>isCreative()&&!out.length&&need.length?{ok:true}:transactInventory(need,out),breakArea:excavateWithVehicle,inspect:inspectVehicleCut,surface:vehicleSurface,notice:toast,persist:persistVehicles
 });
 function buildDeckMesh(id,size){
   const def=BDEF[id];
@@ -7753,7 +9058,8 @@ function vehiclePlacementTarget(id){
   const kind=QuimiCraftVehicles.kindOf(id);
   if(QuimiCraftVehicles.isBoat(kind)){
     const hit=aimFishingWater();
-    return hit&&Math.hypot(hit.x-player.pos.x,hit.z-player.pos.z)<11?hit:null;
+    if(hit&&Math.hypot(hit.x-player.pos.x,hit.z-player.pos.z)<11)return hit;
+    if(!QuimiCraftVehicles.types[kind].wheels)return null;
   }
   const t=state.target;
   return t&&t.n?.[1]===1?t:null;
@@ -7811,11 +9117,11 @@ function updateVehiclePhysics(dt){
   if(boat){
     player.yaw+=vehicle.yawRate*dt;
     vehicle.wakeClock=(vehicle.wakeClock??0)-dt;
-    if(vehicle.wakeClock<=0&&Math.abs(vehicle.speed)>.85){
+    if(!vehicle.onLand&&vehicle.wakeClock<=0&&Math.abs(vehicle.speed)>.85){
       vehicle.wakeClock=.11+Math.max(0,2-Math.abs(vehicle.speed))*.08;
       const stern=QuimiCraftVehicles.types[kind].halfZ*.89,yaw=vehicle.yaw;
       combatParticles(new THREE.Vector3(vehicle.x+Math.sin(yaw)*stern,vehicle.y+.021,vehicle.z+Math.cos(yaw)*stern),
-        0xd1f5ef,kind==="speedboat"?6:3,"vapor");
+        0xd1f5ef,QuimiCraftVehicles.hullKind(kind)==="speedboat"?6:3,"vapor");
     }
   }
   player.crouch=player.sprint=player.inWater=player.headUnderwater=player.inLava=false;
@@ -7874,9 +9180,10 @@ function updateVehicleHud(){
     set("vehicleStatus",v.report||(v.motor?"Hélice a pedal":"Planador"));
     set("vehicleControls",touchInput?"Setas dirigem · arraste para inclinar · ↑ decola · E sai":"W/S velocidade · A/D direção · Espaço decola · E sai no solo");
   }else if(boat){
-    set("vehicleStatus",v.report||(Math.abs(v.steer)>.10?"Leme acionado":"Navegação"));
-    set("vehicleControls",touchInput?"Setas controlam o barco · Freio · E desembarca":
-      "W/S avança e recua · A/D pedais do leme · Espaço freia · E desembarca");
+    set("vehicleStatus",v.report||(v.onLand?"Tração de trator":Math.abs(v.steer)>.10?"Leme acionado":"Navegação"));
+    set("vehicleControls",v.onLand?
+      (touchInput?"Setas dirigem · Freio · E sai":"W/S avança e recua · A/D dirige · Espaço freia · E sai"):
+      (touchInput?"Setas controlam o barco · Freio · E desembarca":"W/S avança e recua · A/D pedais do leme · Espaço freia · E desembarca"));
   }else{
     const charge=Math.round(v.nitro);
     if(shownCharge!==charge){
@@ -7974,14 +9281,13 @@ function catalogBlockView(id){
         hinge.rotation[axis]=angle*poses.doorSwing(clip,poses.clipTime(clip,elapsed));
       }};
   }
-  if(id===BLOCK.WATER||id===BLOCK.LAVA){
+  if(id===BLOCK.LAVA){
     return {model:()=>{
       const mesh=catalogBlock(id);
       mesh.material=mesh.material.clone();
       mesh.material.uniforms.uFogNear.value=990;mesh.material.uniforms.uFogFar.value=1000;
-      if(id===BLOCK.WATER)mesh.material.uniforms.uUnderwater.value=0;
       return mesh;
-    },clips:poses.clips("idle","flow"),animate:(mesh,clip,elapsed)=>{
+    },clips:poses.clips("flow","idle"),animate:(mesh,clip,elapsed)=>{
       mesh.material.uniforms.uTime.value=clip==="flow"?elapsed:0;
     }};
   }
@@ -7990,7 +9296,7 @@ function catalogBlockView(id){
 }
 function catalogLandscape(habitat){
   const root=new THREE.Group(),batches=new Map(),matrix=new THREE.Matrix4();
-  const water=habitat==="water";
+  const harbor=habitat==="harbor",water=habitat==="water"||harbor;
   const surfaces=new Map(),bedBlocks=new Map();
   function voxel(id,x,y,z,w,h=w,d=w,batch=batches){
     if(!batch.has(id))batch.set(id,[]);
@@ -8019,7 +9325,7 @@ function catalogLandscape(habitat){
     }
   }
   const span=water?22:habitat==="display"?4:8;
-  for(let z=-span;z<=span;z++)for(let x=-span;x<=span;x++){
+  for(let z=-span;!harbor&&z<=span;z++)for(let x=-span;x<=span;x++){
     const channel=water;
     const rise=Math.hypot(x,z)<4?0:Math.max(0,Math.floor(Math.sin(x*.63+z*.39)+Math.cos(z*.44-x*.49)))*.22;
     const top=channel?-1.36+Math.sin(x*.31+z*.27)*.36+Math.cos(z*.39-x*.22)*.25:habitat==="display"?-.40+rise:rise;
@@ -8109,7 +9415,7 @@ function catalogActorClips(group){
   if(tree)ids.push("climb");
   if(flying)ids.push(...(rig.wings.length?["flight","glide","land"]:["float"]));
   else if(rig.wings.length)ids.push("flap");
-  if(!flying&&!role&&!tree&&!rig.saciVortex&&(rig.legs.length||(FAUNA_VARIANTS[type]?.model??type)==="slime"))ids.push("hop");
+  if(!flying&&!role&&!tree&&!rig.saciVortex&&(rig.legs.length||type==="tide_ooze"||(FAUNA_VARIANTS[type]?.model??type)==="slime"))ids.push("hop");
   if(rig.jaw)ids.push("bite");
   if(strike==="slam")ids.push("slam");
   else if(strike==="shot")ids.push("shot");
@@ -8202,7 +9508,7 @@ function previewAquaticBreach(group,model,progress,splash){
   group.rotation.x=frame.pitch;
   if(frame.progress===0)model.previewBreach=null;
   const contact=QuimiCraftAquatic.breachContact(model.previewBreach??={},frame,surface);
-  if(contact)splash?.(new THREE.Vector3(group.position.x,surface+.016,group.position.z-frame.front),length*.37,contact);
+  if(contact)splash?.(new THREE.Vector3(group.position.x,surface+.016,group.position.z-frame.front),length*.37,contact,{x:0,z:-1});
 }
 function catalogEntries(){
   const entries=[],blockAngle=[1.36,1.23,-1.78],personAngle=[.76,.30,-2.6],
@@ -8221,53 +9527,64 @@ function catalogEntries(){
       angle,{...view,alias:"fantasma fantasmagórico espectral "+name});
   }
   const keys=Object.fromEntries(Object.entries(BLOCK).map(([name,id])=>[id,name]));
+  function huntProductRecipe(id){
+    const reaction=fieldLab.reactions.find(row=>row.out.some(([key])=>resolveScienceItemId(key)===id));
+    const station=scienceSystem.stations[reaction.stations[0]].name;
+    const ingredients=recipeNeedsLabel({need:reaction.need.map(([key,amount])=>[resolveScienceItemId(key),amount])});
+    return station+" · "+reaction.name+" · "+ingredients;
+  }
   const mineralDetails={
     DIAMOND_ORE:"Depósitos muito profundos",EMERALD_ORE:"Montanhas e cânions",RUBY_ORE:"Regiões vulcânicas e chapadas",
     SAPPHIRE_ORE:"Subsolo glacial e grandes bacias",OPAL_ORE:"Termas, cânions e bacias",GARNET_ORE:"Veios profundos",
     MAGNETITE:"Minério de ferro · redutível na forja",IRON:"Veios de ferro · fundição",SUNKEN_BEACON:"Ruínas de bacias profundas",
     SUNKEN_BRICK:"Ruínas de bacias profundas",SUNKEN_MOSAIC:"Piso das ruínas submersas"
   };
+  const extraMinerals=new Set([BLOCK.COAL,BLOCK.IRON,BLOCK.COPPER,BLOCK.GOLD,BLOCK.TIN,BLOCK.ZINC,BLOCK.SULFUR,BLOCK.CRYSTAL,BLOCK.AMETHYST,BLOCK.NITER,BLOCK.MALACHITE,BLOCK.PYRITE,BLOCK.BAUXITE,BLOCK.LUMEN_GEODE,BLOCK.BLUE_ICE_VEIN,BLOCK.BANDED_CALCITE,BLOCK.HEMATITE_VEIN,BLOCK.SALT].filter(Number.isInteger));
+  const extraBuildings=new Set([BLOCK.TORCH,BLOCK.SPECTRAL,BLOCK.GLOWSTONE,BLOCK.CERAMIC,BLOCK.FIELDSTONE,BLOCK.THATCH,BLOCK.WINDOW_LEADED,BLOCK.GARDEN_BOX,BLOCK.ALCHEMY_BORDER,BLOCK.ALCHEMY_SIGN,BLOCK.CIVIC_STONE,BLOCK.CIVIC_MARKER,BLOCK.LAB_GUIDE_GOLD,BLOCK.LAB_GUIDE_BLUE,BLOCK.LAB_GUIDE_GREEN,BLOCK.MAGNESIUM_CEMENT,BLOCK.MYCELIUM_LAMP].filter(Number.isInteger));
   for(const [value,def] of Object.entries(BDEF).sort((a,b)=>byName.compare(a[1].name,b[1].name))){
     const id=Number(value),key=keys[id]||value;
     if(def.hidden&&(def.bed||def.gate))continue;
     const field=fieldLab.byBlock.get(id)?.unit;
     if(field&&id!==field.base)continue;
     const crop=CROP_BLOCKS.get(id);
-    const plant=blockModels.plantIds.has(id)||!!crop||/LEAVES|_LEAF|_FLOWER|_LOG$/.test(key)||id===BLOCK.WOOD;
+    const plant=blockModels.plantIds.has(id)||!!crop||/LEAVES|_LEAF|_FLOWER|_LOG$|_END$/.test(key)||id===BLOCK.WOOD||id===BLOCK.BAMBOO||id===BLOCK.CACTUS;
     const treasure=id===BLOCK.EXPEDITION_CHEST||id===BLOCK.EXPEDITION_CHEST_OPEN;
     const station=def.station||def.alchemy||id===BLOCK.LAB||id===BLOCK.FURNACE;
-    const mineral=ecology.ores.has(id)||variantMinerals.has(id)||/_ORE$/.test(key)||[BLOCK.COAL,BLOCK.IRON,BLOCK.COPPER,BLOCK.GOLD,BLOCK.TIN,BLOCK.ZINC,BLOCK.SULFUR,BLOCK.CRYSTAL].includes(id);
-    const building=def.bed||def.gate||/BRICK|PLANK|GLASS|PLASTER|ROOF|TILE|BLOCK$|FENCE|WALL|DOOR|AWNING|LANTERN|MOSAIC|STAIR|SUNKEN|PATH/.test(key);
+    const mineral=ecology.ores.has(id)||variantMinerals.has(id)||/_ORE$/.test(key)||extraMinerals.has(id);
+    const building=def.bed||def.gate||extraBuildings.has(id)||/BRICK|PLANK|GLASS|PLASTER|ROOF|TILE|BLOCK$|FENCE|WALL|DOOR|AWNING|LANTERN|MOSAIC|STAIR|SUNKEN|PATH/.test(key);
     const blockType=treasure?"treasure":station?"station":plant?"plant":mineral?"mineral":building?"building":"natural";
     const notes=field?`${field.length} × ${field.depth} blocos. ${field.purpose}`:treasure?(id===BLOCK.EXPEDITION_CHEST?"Abra com E em covis, templos, laboratórios soterrados e aldeias das árvores vivas.":"O baú fica aberto depois que o saque é recolhido."):
       crop?(id===crop.wild&&crop.biomes?"Biomas: "+crop.biomes.join(", ")+". ":QuimiCraftFrontier.cropStage(crop,id)+". ")+crop.guide:
       def.bed?"Use E para marcar o retorno e dormir à noite ou durante tempestades.":
-      def.gate?"Use E para abrir ou fechar. Fechado, bloqueia o jogador e as criaturas.":mineralDetails[key];
+      def.gate?"Use E para abrir ou fechar. Fechado, bloqueia o jogador e as criaturas.":
+      id===BLOCK.MYCELIUM_LAMP?def.description+" "+huntProductRecipe(id):mineralDetails[key];
     const pick=requiredPick(id),hardness=Number.isFinite(def.hard)&&def.hard<99?"Dureza "+def.hard.toLocaleString("pt-BR"):null;
     const material=def.liquid?"Fluido":def.solid?(def.alpha||translucentBlocks.has(id)?"Sólido translúcido":"Sólido"):def.plant?"Vegetação atravessável":"Atravessável";
     const detail=[notes,material,hardness,pick?("Picareta de "+(pick===3?"ferro":"cobre")+" ou melhor"):null,"ID "+value].filter(Boolean).join(" · ");
     const {model=()=>catalogBlock(id),...view}=catalogBlockView(id);
     add("block","block:"+key,def.name,detail,model,blockAngle,{
       ...view,
-      plant,blockType,alias:[crop&&itemName(crop.food),treasure?"baú cofre tesouro estrutura":null].filter(Boolean).join(" "),
+      plant,blockType,extermination:id===BLOCK.MYCELIUM_LAMP,alias:[crop&&itemName(crop.food),treasure?"baú cofre tesouro estrutura":null].filter(Boolean).join(" "),
       loreData:crop?{food:crop.food,seed:crop.seed,phase:id===crop.wild?"wild":["sprout","growing","ripe"][crop.stages.indexOf(id)]}:
         {texture:def.tex,shade:def.icon},
       fallback:()=>blockIconSource(id),
       release:object=>object.traverse(part=>{part.geometry?.dispose();if([BLOCK.AIR,BLOCK.WATER,BLOCK.LAVA].includes(id))part.material?.dispose()})
     });
   }
+  const catalogedIds=new Set();
+  const track=(category,key,name,detail,model,angle,more={})=>{catalogedIds.add(key);add(category,key,name,detail,model,angle,more)};
   for(const crop of CROP_DEFS){
     const seed=crop.seed,food=crop.food;
-    add("produce",seed,itemName(seed),QuimiCraftFrontier.plantingInstructions(crop)+" "+crop.guide,
+    track("produce",seed,itemName(seed),QuimiCraftFrontier.plantingInstructions(crop)+" "+crop.guide,
       ()=>detailedBlockMiniature(seed),blockAngle,{plant:true,alias:itemName(food),loreData:{food,seed},fallback:()=>produceIconSource(seed)});
-    add("produce",food,itemName(food),"Item de colheita. "+crop.guide,
-      ()=>detailedBlockMiniature(food),blockAngle,{plant:true,loreData:{food,seed},fallback:()=>produceIconSource(food)});
+    track("produce",food,itemName(food),"Item de colheita. "+crop.guide,
+      ()=>detailedBlockMiniature(food),blockAngle,{plant:true,food:true,loreData:{food,seed},fallback:()=>produceIconSource(food)});
   }
   const weaponRecipes=new Map(QuimiCraftArsenal.recipes(BLOCK).map(row=>[row.out[0],row]));
   for(const [id,w] of Object.entries(QuimiCraftArsenal.weapons)){
     const recipe=weaponRecipes.get(id);
     const detail=w.detail||w.special||w.damage+" de dano.";
-    add("weapon",id,w.name,recipe?detail+" "+recipeNeedsLabel(recipe):detail,()=>{
+    track("weapon",id,w.name,recipe?detail+" "+recipeNeedsLabel(recipe):detail,()=>{
       const model=playerModels.item(id,"catalog");
       playerModels.animateItem(model,600,0,1,false);
       return model;
@@ -8280,29 +9597,94 @@ function catalogEntries(){
       loreData:{family:w.family,element:w.element},fallback:()=>playerModels.icon(id)
     });
   }
-  add("weapon","bolt","Virote","Munição da balestra.",()=>playerModels.item("bolt","catalog"),[1.4,.46,-1.9],{fallback:()=>playerModels.icon("bolt")});
-  add("weapon","venom_arrow","Flecha envenenada","Combine seis flechas comuns com uma dose de veneno. Arcos usam esta munição primeiro.",
+  track("weapon","arrow","Flecha","Munição padrão dos arcos.",()=>playerModels.item("arrow","catalog"),[1.4,.46,-1.9],{fallback:()=>playerModels.icon("arrow")});
+  track("weapon","bolt","Virote","Munição da balestra.",()=>playerModels.item("bolt","catalog"),[1.4,.46,-1.9],{fallback:()=>playerModels.icon("bolt")});
+  track("weapon","venom_arrow","Flecha envenenada","Combine seis flechas comuns com uma dose de veneno. Arcos usam esta munição primeiro.",
     ()=>playerModels.item("venom_arrow","catalog"),[1.4,.46,-1.9]);
-  add("weapon","petrifying_vial","Frasco petrificante","Arremesse para petrificar o alvo atingido por alguns segundos.",
+  track("weapon","silver_arrow","Flecha prateada","Flecha tratada com banho de prata para ferir lobisomens e criaturas lunares à distância.",
+    ()=>playerModels.item("silver_arrow","catalog"),[1.4,.46,-1.9]);
+  track("weapon","silver_bolt","Virote prateado","Virote de balestra revestido de prata, eficaz contra lobisomens.",
+    ()=>playerModels.item("silver_bolt","catalog"),[1.4,.46,-1.9]);
+  track("weapon","petrifying_vial","Frasco petrificante","Arremesse para petrificar o alvo atingido por alguns segundos.",
     ()=>playerModels.item("petrifying_vial","catalog"),blockAngle);
+  const fieldRecipes=fieldLab.recipes(BLOCK);
+  for(const [id,tool] of Object.entries(exterminationTools)){
+    const recipe=fieldRecipes.find(row=>row.out[0]===id);
+    track("weapon",id,tool.name,tool.detail+" Selecione na barra rápida e use a até 3,25 m quando o alvo estiver com 20% de vida ou menos. "+recipeNeedsLabel(recipe)+".",
+      ()=>playerModels.item(id,"catalog"),blockAngle,{extermination:true,alias:"equipamento de extermínio",fallback:()=>playerModels.icon(id)});
+  }
+  track("gear","hunt_badge",huntBadge.name,huntBadge.detail+" Disponível por pontos com Mestre Gael.",
+    ()=>playerModels.item("hunt_badge","catalog"),blockAngle,{extermination:true,alias:"equipamento de extermínio",fallback:()=>playerModels.icon("hunt_badge")});
+  for(const [id,usage] of Object.entries(fieldLab.huntUtilities)){
+    track("gear",id,itemName(id),usage+" "+huntProductRecipe(id),
+      ()=>playerModels.item(id,"catalog"),blockAngle,{extermination:true,alias:"química de extermínio",fallback:()=>playerModels.icon(id)});
+  }
+  const huntMaterials=new Set(["sentinel_crust","tide_mucus","ember_scale","shell_carbonate","sodium_alginate","alginate_beads"]);
+  for(const stages of Object.values(fieldLab.huntChemistry)){
+    for(const [i,key] of stages.entries()){
+      const reaction=fieldLab.reactions.find(row=>row.id===key);
+      if(i===0)huntMaterials.add(reaction.need[0][0]);
+      if(i<stages.length-1)huntMaterials.add(reaction.out[0][0]);
+    }
+  }
+  for(const id of huntMaterials){
+    const source=Object.values(regionalFauna).find(fauna=>fauna.finisher&&fauna.profile.loot.some(([item])=>item===id));
+    const detail=source?"Material obtido de "+source.name+".":huntProductRecipe(id);
+    track("produce",id,itemName(id),detail,()=>playerModels.item(id,"catalog"),blockAngle,
+      {extermination:true,alias:"química de extermínio",fallback:()=>playerModels.icon(id)});
+  }
   const shieldRecipes=new Map(QuimiCraftArsenal.shieldRecipes(BLOCK).map(row=>[row.out[0],row]));
-  for(const [id,p] of Object.entries(QuimiCraftArsenal.shields))add("shield",id,p.name,p.detail+" "+recipeNeedsLabel(shieldRecipes.get(id)),
+  track("shield","shield",itemName("shield"),(EQUIPMENT_DEFS.shield?.effect||"Bloqueia parte dos ataques físicos na mão secundária."),
+    ()=>playerModels.item("shield","catalog"),[.78,.36,-2.8],{fallback:()=>playerModels.icon("shield")});
+  for(const [id,p] of Object.entries(QuimiCraftArsenal.shields))track("shield",id,p.name,p.detail+" "+recipeNeedsLabel(shieldRecipes.get(id)),
     ()=>playerModels.item(id,"catalog"),[.78,.36,-2.8],{
       fallback:()=>playerModels.icon(id)
     });
   for(const recipe of QuimiCraftArsenal.apparelRecipes(BLOCK)){
     const [id]=recipe.out,p=APPAREL[id];
-    add("gear",id,p.name,p.detail+" "+recipeNeedsLabel(recipe),()=>playerModels.item(id,"catalog"),
+    track("gear",id,p.name,p.detail+" "+recipeNeedsLabel(recipe),()=>playerModels.item(id,"catalog"),
       [.93,.44,-2.45],{alias:p.role,fallback:()=>playerModels.icon(id)});
   }
   const focusRecipes=new Map(QuimiCraftArsenal.focusRecipes(BLOCK).map(row=>[row.out[0],row]));
-  for(const [id,focus] of Object.entries(QuimiCraftArsenal.focuses))add("focus",id,focus.name,focus.detail+" "+recipeNeedsLabel(focusRecipes.get(id)),
+  for(const [id,focus] of Object.entries(QuimiCraftArsenal.focuses))track("focus",id,focus.name,focus.detail+" "+recipeNeedsLabel(focusRecipes.get(id)),
     ()=>playerModels.item(id,"catalog"),[1.19,focus.shape==="book"?2.04:.74,-1.92],{
       alias:focus.shape==="book"?"livro magia mão secundária":"orbe esfera magia mão secundária",fallback:()=>playerModels.icon(id),
       ...(focus.shape==="orb"?{clips:clips("idle","orbit","glow"),animate:playCatalogItem}:{})
     });
+  const slotLabels={head:"Cabeça",face:"Rosto",chest:"Peitoral",hands:"Mãos",legs:"Pernas",feet:"Pés",back:"Costas",offhand:"Mão secundária",tool:"Ferramenta"};
+  for(const [id,def] of Object.entries(EQUIPMENT_DEFS).sort((a,b)=>byName.compare(itemName(a[0]),itemName(b[0])))){
+    if(catalogedIds.has(id)||!ITEM_NAMES[id])continue;
+    const hazards=Object.entries(def.protections||{}).filter(([,v])=>v>0).map(([k,v])=>`${scienceSystem?.hazardLabels?.[k]||k} ${Math.round(v*100)}%`).join(", ");
+    const slotText=slotLabels[def.slot]||"Equipamento";
+    const detail=[slotText,def.effect,def.armor?`Armadura ${Math.round(def.armor*100)}%`:null,def.miningSpeed?`Mineração ${def.miningSpeed}×`:null,hazards?"Proteção: "+hazards:null].filter(Boolean).join(" · ");
+    track("gear",id,itemName(id),detail,()=>playerModels.item(id,"catalog"),[.98,.44,-2.25],{alias:slotText+" equipamento ferramenta",fallback:()=>playerModels.icon(id)});
+  }
+  for(const [id,potion] of Object.entries(QuimiCraftAlchemy.potions)){
+    const detail=["Poção alquímica",potion.detail||potion.effect||""].filter(Boolean).join(" · ");
+    track("item",id,itemName(id),detail,()=>playerModels.item(id,"catalog"),blockAngle,{alias:"poção alquimia frasco",fallback:()=>playerModels.icon(id)});
+  }
+  const vehicleKitIds=new Set(Object.values(QuimiCraftVehicles.types).map(v=>v.item));
+  const chemRecipeOut=new Map(CHEM.map(r=>[r.out?.[0],r]));
+  const isFoodOrDrink=id=>!!FOOD_VALUES[id]||!!DRINK_VALUES[id]||/^(raw_|cooked_)/.test(id)||["wild_mint","alpine_berries","prickly_fruit","wild_cherries","samphire","wild_rice","cacao","pine_nuts","forest_mushroom"].includes(id);
+  for(const [id,name] of Object.entries(ITEM_NAMES).sort((a,b)=>byName.compare(a[1],b[1]))){
+    if(catalogedIds.has(id)||vehicleKitIds.has(id)||id===QuimiCraftVehicles.motor)continue;
+    catalogedIds.add(id);
+    if(isFoodOrDrink(id)){
+      const f=FOOD_VALUES[id],d=DRINK_VALUES[id];
+      const stats=[f?.hunger?`+${f.hunger} fome`:null,f?.health?`+${f.health} vida`:null,(f?.thirst||d?.thirst)?`+${f?.thirst||d?.thirst} sede`:null,d?.health?`+${d.health} vida`:null].filter(Boolean).join(" · ");
+      const detail=stats||(id.startsWith("raw_")?"Ingrediente cru — asse em um forno ou fogão para maior nutrição.":"Ingrediente culinário ou bebida coletável.");
+      const key=(Object.hasOwn(fishColors,id)&&id!=="raw_piranha"&&id!=="raw_shrimp")?"food:"+id:id;
+      add("food",key,name,detail,()=>playerModels.item(id,"catalog"),blockAngle,{food:true,alias:"comida alimento bebida culinária "+id,fallback:()=>produceIconSource(id)||playerModels.icon(id)});
+    }else{
+      const chem=chemRecipeOut.get(id);
+      const sciInfo=scienceSystem?.itemCatalog?.[id];
+      const detail=[chem?`Reação química · ${chem.eq}`:sciInfo?.role||"Material, reagente ou utensílio de exploração e laboratório."].filter(Boolean).join(" · ");
+      const key=Object.hasOwn(QuimiCraftVehicles.types,id)?"item:"+id:id;
+      add("item",key,name,detail,()=>playerModels.item(id,"catalog"),blockAngle,{alias:"item química material reagente "+id,fallback:()=>produceIconSource(id)||playerModels.icon(id)});
+    }
+  }
   for(const [type,p] of Object.entries({npc_carbon:{name:"Prof. Carbono",role:"Laboratório Carbono"},npc_ranger:{name:"Guardiã Íris",role:"Guarda de campo"},...NPC_PROFILES})){
-    if(type!=="npc_child")add("npc",type,p.name,p.role.replace(/_/g," "),()=>catalogActor(type),personAngle,{...actorView,loreData:{role:p.role}});
+    if(type!=="npc_child")add("npc",type,p.name,p.title||p.role.replace(/_/g," "),()=>catalogActor(type),personAngle,{...actorView,extermination:p.role===exterminationMaster.role,loreData:{role:p.role}});
   }
   for(const [school,p] of Object.entries(QuimiCraftAlchemy.specialties)){
     const resident={name:p.person,id:"catalog:"+school,role:"alchemist",x:0,y:0,z:0,office:{kind:school},
@@ -8322,7 +9704,7 @@ function catalogEntries(){
     for(const p of choices){
       const type="npc_"+(p.role.startsWith("shop_")?p.role.slice(5):p.role);
       add("npc",region+":"+p.id,p.name,[label,p.title].filter(Boolean).join(" · "),
-        ()=>catalogActor(type,{...p,id:p.id+":"+region}),personAngle,{...actorView,loreData:{region,role:p.role,title:p.title}});
+        ()=>catalogActor(type,{...p,id:p.id+":"+region}),personAngle,{...actorView,extermination:p.role===exterminationMaster.role,loreData:{region,role:p.role,title:p.title}});
     }
   }
   const models=QuimiCraftVehicleModels.create(THREE);
@@ -8339,26 +9721,43 @@ function catalogEntries(){
   }
   for(const [kind,p] of Object.entries(QuimiCraftVehicles.types)){
     const boat=QuimiCraftVehicles.isBoat(kind);
-    const detail=boat?`Pedais e leme articulado · Baú, vela e piso edificável · Calado de ${p.draft.toLocaleString("pt-BR")} m`:
+    const sail=QuimiCraftVehicles.sails[QuimiCraftVehicles.hullKind(kind)];
+    const land=p.wheels?` · Até 3 blocos de desnível · ${(p.dirtTop*3.6).toLocaleString("pt-BR",{maximumFractionDigits:1})} km/h em terra`:"";
+    const detail=boat?`Pedais e leme articulado · Baú e piso edificável · ${sail.name} · Calado de ${p.draft.toLocaleString("pt-BR")} m${land}`:
       {cart:"Cabine de vidro · exploração",drill:"Cabine de vidro · perfuração",bucket:"Cabine de vidro · escavação",glider:"Planador biplano"}[kind];
-    const modes=boat?["idle","marinePedal","turn","sail","cargo"]:kind==="glider"?["idle","takeoff","soar","land"]:["idle","drive","turn","hop","nitro"];
+    const modes=boat?["idle","marinePedal","turn","sail","cargo",...(p.wheels?["tractorWheels"]:[])]:kind==="glider"?["idle","takeoff","soar","land"]:["idle","drive","turn","hop","nitro"];
     if(kind==="drill")modes.push("drill");
     if(kind==="bucket")modes.push("dig");
-    add("vehicle",kind,p.name,detail,()=>vehicle(kind),vehicleAngle,{clips:clips(...modes),animate:playVehicle});
+    add("vehicle",kind,p.name,detail,()=>vehicle(kind),vehicleAngle,{boat,alias:p.item+" kit veículo",clips:clips(...modes),animate:playVehicle,loreData:{hull:p.hull,wheels:!!p.wheels}});
   }
   add("vehicle","glider_motor","14-bis de Campo motorizado","Módulo de pedal e hélice",()=>vehicle("glider",true),[-1.55,.75,1.64],
     {clips:clips("idle","pedal","takeoff","soar","land"),animate:playVehicle});
+  add("vehicle","pedal_drive",itemName("pedal_drive"),"Instale no 14-bis de Campo para impulsionar a hélice com pedais e decolar de pistas planas.",
+    ()=>playerModels.item("pedal_drive","catalog"),blockAngle,{alias:"módulo pedal correia hélice kit",fallback:()=>playerModels.icon("pedal_drive")});
   const base={pig:"Porco",cow:"Vaca",rabbit:"Coelho",chicken:"Galinha",sheep:"Ovelha",deer:"Cervo da Taiga",
     owl:"Coruja Boreal",capivara:"Capivara",slime:"Slime Ácido",cobrete:"Cobrete",cristalume:"Cristalume",
     scorpion:"Escorpião das Dunas",golem:"Golem de Obsidiana",wisp:"Espectro da Tempestade",magma:"Elemental de Magma"};
   const fantasy=new Set(["slime","cobrete","cristalume","golem","wisp","magma","peat_slime","travertine_guard"]);
   const feedingGuide=type=>QuimiCraftBreeding.diet({type})?.items.map(itemName).join(", ");
+  const bioNameOf=id=>regionalFauna[id]?.name||FAUNA_VARIANTS[id]?.name||QuimiCraftDepths.fauna[id]?.name||base[id]||(id.startsWith("raw_")?fishName(id):id);
+  const realWildlife=new Set(["grass_snake","pit_viper","cave_spider","venom_spider","scorpion","glass_scorpion","pyrite_crawler"]);
+  const landFieldGuide=type=>{
+    const social=wildlifeBehavior.social[type];
+    const group=social?social[0]+" de "+social[1]+" a "+social[2]:"Geralmente solitário";
+    const prey=wildlifeBehavior.landDiets[type]?.map(bioNameOf);
+    const food=[wildlifeBehavior.landFoods[type],prey?.length?"Caça "+prey.join(", "):null].filter(Boolean).join(" · ")||
+      (wildlifeBehavior.grazers.has(type)?"Folhas, ervas e brotos":null);
+    return [group,food].filter(Boolean).join(" · ");
+  };
   for(const type of [...Object.keys(base),...Object.keys(FAUNA_VARIANTS)]){
     const variant=FAUNA_VARIANTS[type];
     const category=fantasy.has(type)?"fantasy":"animal";
     const name=variant?.name||base[type],diet=feedingGuide(type);
-    add(category,type,name,[variant?"Variante regional":"",diet?"Reprodução com "+diet:"",spectral.isNative(type)?ghostNote:""].filter(Boolean).join(" · "),
-      ()=>catalogActor(type),animalAngle,{...actorView,loreData:{source:variant?.model}});
+    const regions=Object.entries(wildlifeBehavior.landResidents).filter(([,ids])=>ids.includes(type)).map(([biome])=>biome);
+    const hasBio=category==="animal"||realWildlife.has(type);
+    add(category,type,name,[category==="animal"?landFieldGuide(type):"",regions.join(", "),diet?"Reprodução com "+diet:"",spectral.isNative(type)?ghostNote:""].filter(Boolean).join(" · "),
+      ()=>catalogActor(type),animalAngle,{...actorView,loreData:{source:variant?.model},
+        ...(hasBio?{biology:wildlifeBehavior.ecologyOf(type,{nameOf:bioNameOf,aquatic:false})}:{})});
     addGhost(type,name,animalAngle,actorView);
     if(diet)add(category,type+":baby","Filhote · "+name,"Cresce mais rápido com "+diet,
       ()=>catalogActor(type,null,true),animalAngle,actorView);
@@ -8366,11 +9765,18 @@ function catalogEntries(){
   for(const [id,p] of Object.entries(regionalFauna)){
     const monster=p.shape==="fantasy";
     const habitat=p.regions.length?p.regions.map(region=>region[0].toUpperCase()+region.slice(1)).join(" · "):monster?"Cavernas e minas":"Vilas e povoados";
-    const detail=p.profile.strike?.kind==="gaze"?"Olhar petrificante · bloqueado pelo Escudo de Espelho · "+habitat:habitat;
+    const contract=exterminationContracts[id];
+    const requirement=contract?`Nível ${contract.level} para aceitar a caçada${p.contractOnly?" · Apenas com a tarefa ativa":""} · `:"";
+    const detail=p.finisher?`Extermínio · ${requirement}${habitat} · ${p.profile.hp} PV. Com 20% de vida ou menos, finalize com ${itemName(p.finisher)}. Rende ${p.profile.loot.map(([key])=>itemName(BLOCK[key]??key)).join(", ")}.`:
+      p.profile.strike?.kind==="gaze"?"Olhar petrificante · bloqueado pelo Escudo de Espelho · "+habitat:habitat;
     const diet=feedingGuide(id);
-    add(monster?"fantasy":"animal",id,p.name,detail+(diet?" · Reprodução com "+diet:"")+(spectral.isNative(id)?" · "+ghostNote:""),
-      ()=>catalogActor(id),animalAngle,{...actorView,loreData:{regions:p.regions}});
-    addGhost(id,p.name,animalAngle,actorView);
+    const field=monster?"":" · "+landFieldGuide(id);
+    const hasBio=!monster||realWildlife.has(id);
+    add(monster?"fantasy":"animal",id,p.name,detail+field+(diet?" · Reprodução com "+diet:"")+(spectral.isNative(id)?" · "+ghostNote:""),
+      ()=>catalogActor(id),animalAngle,{...actorView,...(p.shape==="tamarin"?{zoom:2.2}:{}),
+        extermination:!!contract,loreData:{regions:p.regions},
+        ...(hasBio?{biology:wildlifeBehavior.ecologyOf(id,{nameOf:bioNameOf,aquatic:false})}:{})});
+    if(!p.finisher)addGhost(id,p.name,animalAngle,actorView);
     if(diet)add("animal",id+":baby","Filhote · "+p.name,"Cresce mais rápido com "+diet,
       ()=>catalogActor(id,null,true),animalAngle,actorView);
   }
@@ -8407,17 +9813,20 @@ function catalogEntries(){
   }
   const releaseFish=group=>disposeAquatic(group.userData.aquaticRig);
   const aquaticView=id=>{
-    const p=aquaticProfile(id),attack={bite:"bite",tail:"attack",sting:"attack"}[p.attack?.kind];
+    const p=aquaticProfile(id),strike=p.counter??p.attack??p.forage;
+    const attack={bite:"bite",grasp:"tentacles",tail:"attack",sting:"attack"}[strike?.kind];
     return {release:releaseFish,clips:group=>{
       const model=group.userData.aquaticRig;
-      return clips("idle",id==="jelly"?"pulse":"swim","dart",...(model.spouts?["spout"]:[]),
-        ...(model.breach?["breach"]:[]),...(attack?[attack]:id==="orca"?["bite"]:[]));
+      if(p.anchored)return clips("idle");
+      return clips("idle",model.swimStyle==="pulse"?"pulse":"swim","dart",...(model.spouts?["spout"]:[]),
+        ...(model.breach?["breach"]:[]),...(p.dives?["dive"]:[]),...(attack?[attack]:[]));
     },animate:swimPreview,compare:true};
   };
   const swimPreview=(group,clip,elapsed,dt,splash)=>{
     const model=group.userData.aquaticRig,p=aquaticProfile(group.name);
-    const t=clipTime(clip,elapsed),striking=clip==="bite"||clip==="attack";
-    const frame=striking?previewStrike(Math.max(0,t-.35),p.attack?.windup??.52,p.attack?.strike):null;
+    const t=clipTime(clip,elapsed),striking=["bite","attack","tentacles"].includes(clip);
+    const attack=p.counter??p.attack??p.forage;
+    const frame=striking?previewStrike(Math.max(0,t-.35),attack?.windup??.52,attack?.strike):null;
     const burst=frame?Math.sin(frame.release*Math.PI):0;
     const pace=clip==="idle"?.26:clip==="dart"?1.52:.82;
     const scale=group.scale.x;
@@ -8425,30 +9834,44 @@ function catalogEntries(){
     const surfaceY=group.userData.previewWaterSurface;
     const spoutLift=clip==="spout"&&model.spouts?.length&&Number.isFinite(surfaceY)?Math.max(0,surfaceY-model.spouts[0][1]*scale+.045)*clamp(t/.55,0,1)*clamp((2.55-t)/.65,0,1):0;
     group.position.y=(clip==="idle"||clip==="spout"?0:Math.sin(t*2.35)*.09)*scale+spoutLift;
-    group.rotation.x=0;
-    if(clip==="breach")previewAquaticBreach(group,model,(t-.54)/(group.name==="humpback"?1.95:1.67),splash);
+    const dive=clip==="dive"?Math.sin(Math.PI*clamp((t-.25)/3.25,0,1)):0;
+    group.rotation.x=-dive*1.42;
+    group.position.y-=dive*(p.length??0)*.16;
+    if(clip==="breach")previewAquaticBreach(group,model,(t-.44)/2.05,splash);
     else model.previewBreach=null;
     QuimiCraftAquatic.pose(model,t*(model.swimStyle==="pulse"?4.5:3.5+p.speed*3.2)*pace,pace,
       frame&&{open:Math.max(frame.charge,frame.release),burst});
     QuimiCraftAquatic.spray(THREE,model,clip==="spout"?t-.56:-1,model.ghost);
   };
-  const aquaticDetails=p=>{
+  const aquaticDetails=(p,id)=>{
     const format=n=>n.toLocaleString("pt-BR",{maximumFractionDigits:2});
     const attacks={bite:"Mordida",tail:"Defesa com a cauda",sting:"Ferroada de contato"};
-    return [p.scientific,p.habitat||"Pescado",p.hp+" PV",format(p.speed)+" m/s",
-      p.attack?attacks[p.attack.kind]+" · "+format(p.damage)+" de dano":"Pacífico"].filter(Boolean).join(" · ");
+    const diet=wildlifeBehavior.dietOf({id,profile:p})?.map(food=>aquaticProfile(food).name).join(", ");
+    const role=p.mode==="pod"?"Caça em grupo":p.mode==="school"?"Nada em grupo":
+      p.anchored?"Fixo ao fundo":p.solo?"Solitário":p.mode==="drift"?"À deriva":null;
+    const food=[p.photosynthesis?(p.diet?"Simbiose fotossintética":"Fotossíntese"):null,diet?"Alimentação: "+diet:null].filter(Boolean).join(" · ");
+    const rawLen=p.length??p.catalogLength??catalogAquaticLengths[id]??(!p.anchored&&p.stock===undefined?p.bodySize:null);
+    const sizeText=rawLen?(rawLen>=1?format(rawLen)+" m de comprimento":Math.round(rawLen*100)+" cm de comprimento"):null;
+    const counterText=p.counter?(p.counter.kind==="grasp"?"Contra-ataca predadores com os tentáculos e nuvem de tinta":
+      p.counter.kind==="tail"?"Defende-se de predadores com golpes de cauda":"Defende-se em grupo contra predadores"):null;
+    return [p.scientific,p.habitat||"Pescado",sizeText,p.hp+" PV",format(p.speed)+" m/s",
+      role,food,p.attack?attacks[p.attack.kind]+" · "+format(p.attack.damage??p.damage)+" de dano":null,
+      counterText].filter(Boolean).join(" · ");
   };
+  const fantasyAquatic=new Set(["mermaid","fishfolk_tail","fishfolk_head","fishwoman_tail","fishwoman_head"]);
   for(const id of Object.keys(fishColors)){
     if(id==="raw_piranha"||id==="raw_shrimp")continue;
     const name=fishName(id),view=aquaticView(id);
     const profile=aquaticProfile(id);
-    add("aquatic",id,name,aquaticDetails(profile),()=>inspectedAquaticModel(id),fishAngle,{...view,loreData:{habitat:profile.habitat}});
+    add("aquatic",id,name,aquaticDetails(profile,id),()=>inspectedAquaticModel(id),fishAngle,
+      {...view,loreData:{habitat:profile.habitat},biology:wildlifeBehavior.ecologyOf(id,{profile,nameOf:bioNameOf,aquatic:true})});
     addGhost(id,name,fishAngle,view,()=>inspectedAquaticModel(id,true),"aquatic");
   }
   for(const [id,p] of Object.entries(QuimiCraftDepths.fauna)){
     const angle=id==="ray"?[1.35,1.14,-1.62]:fishAngle,view=aquaticView(id);
-    add("aquatic",id,p.name,aquaticDetails(p),()=>inspectedAquaticModel(id),angle,{...view,loreData:{habitat:p.habitat}});
-    addGhost(id,p.name,angle,view,()=>inspectedAquaticModel(id,true),"aquatic");
+    const bio=fantasyAquatic.has(id)?{}:{biology:wildlifeBehavior.ecologyOf(id,{profile:p,nameOf:bioNameOf,aquatic:true})};
+    add("aquatic",id,p.name,aquaticDetails(p,id),()=>inspectedAquaticModel(id),angle,{...view,loreData:{habitat:p.habitat},...bio});
+    if(!QuimiCraftMarineLife.profiles[id])addGhost(id,p.name,angle,view,()=>inspectedAquaticModel(id,true),"aquatic");
   }
   return entries;
 }
@@ -8463,13 +9886,13 @@ function catalogCharacter(){
   return avatar.root;
 }
 const catalog=QuimiCraftCatalog.create({THREE,root:$("catalog"),entries:catalogEntries,scenery:catalogLandscape,character:catalogCharacter,
-  particleQuality:()=>settings.particles,onClose:()=>{state.catalog=false}});
+  onClose:()=>{state.catalog=false}});
 for(const id of ["catalogTitleBtn","catalogPauseBtn"])$(id).onclick=()=>{
   state.catalog=true;
   catalog.open($(id));
 };
 
-applyCharacterStyle();applyEquipmentVisuals();updateMissionHud();saveInventory();saveEquipment();renderInventory();updateChemHud();updateVitals();window.addEventListener("pagehide",()=>{if(initialReady&&!switchingWorld)saveWorldState()});
+applyCharacterStyle();applyEquipmentVisuals();updateMissionHud();updateExterminationTracker();updateGamemodeHud();saveInventory();saveEquipment();renderInventory();updateChemHud();updateVitals();window.addEventListener("pagehide",()=>{if(initialReady&&!switchingWorld)saveWorldState()});
 document.addEventListener("visibilitychange",()=>{
   if(document.hidden){clearInput();if(initialReady&&!switchingWorld)saveWorldState()}
 });requestAnimationFrame(animate);

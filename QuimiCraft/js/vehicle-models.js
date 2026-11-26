@@ -405,9 +405,8 @@ globalThis.QuimiCraftVehicleModels = (() => {
       return geo;
     }
     const hullMat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.47,metalness:.15,side:THREE.DoubleSide});
-    const canvasMat=new THREE.MeshStandardMaterial({color:0xe7ddbf,roughness:.93,side:THREE.DoubleSide});
-    const canvasEdge=new THREE.MeshStandardMaterial({color:0x567871,roughness:.9,side:THREE.DoubleSide});
-    function boatFurniture(g,layout,style){
+    const sailCloths=new Map();
+    function boatFurniture(g,layout,style,kind){
       const {chest,mast}=layout;
       const cargo=pivot(g,chest.x,chest.y,chest.z);cargo.name="Baú de bordo";
       plate(cargo,"wood",0,chest.h*.35,0,chest.w,chest.h*.70,chest.d);
@@ -419,16 +418,24 @@ globalThis.QuimiCraftVehicleModels = (() => {
       }
       plate(cargo,"brass",0,chest.h*.56,-chest.d*.52,.10,.102,.024);
       plate(cargo,"edge",0,chest.h*.57,-chest.d*.55,.025,.027,.012);
+      const plan=QuimiCraftVehicles.sails[kind];
+      if(!sailCloths.has(kind))sailCloths.set(kind,plan.colors.map(color=>new THREE.MeshStandardMaterial({
+        color,roughness:.91,side:THREE.DoubleSide
+      })));
       const footing=pivot(g,mast.x,mast.y,mast.z);footing.name="Mastro e vela de bordo";
       plate(footing,"edge",0,.045,0,.22,.09,.22);
-      tube(footing,"wood",[0,.04,0],[0,mast.height,0],.042);
+      tube(footing,kind==="speedboat"?"steel":"wood",[0,.04,0],[0,mast.height,0],.042);
       tube(footing,"brass",[0,mast.height-.10,0],[0,mast.height+.02,0],.052);
       const boom=pivot(footing,0,.03,0);
-      const {height,width}=mast,top=height*.91,bottom=height*.29;
+      const {height,width}=mast,top=height*plan.top,bottom=height*plan.bottom;
       const points=[],uv=[],indices=[],segments=13,strips=12;
-      const profile=(u,v)=>[(1-v)*width*u,.022*Math.sin(v*5)*u+bottom+(top-bottom)*v,.15*Math.sin(u*Math.PI)*(1-v)];
+      const profile=(u,v)=>{
+        const [left,right]=QuimiCraftVehicles.sailSpan(plan,v);
+        return [THREE.MathUtils.lerp(left,right,u)*width,bottom+(top-bottom)*v,
+          plan.curve*Math.sin(u*Math.PI)*(.56+.44*Math.sin(Math.PI*v))];
+      };
       for(let y=0;y<=strips;y++)for(let x=0;x<=segments;x++){
-        const u=x/segments,v=y/strips*.984;
+        const u=x/segments,v=y/strips;
         points.push(...profile(u,v));uv.push(u,v);
         if(x<segments&&y<strips){
           const i=y*(segments+1)+x,n=i+segments+1;
@@ -438,19 +445,31 @@ globalThis.QuimiCraftVehicleModels = (() => {
       const shape=new THREE.BufferGeometry();
       shape.setAttribute("position",new THREE.Float32BufferAttribute(points,3));
       shape.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));shape.setIndex(indices);
-      for(let row=0;row<strips;row++)shape.addGroup(row*segments*6,segments*6,row===0||row===3?1:0);
+      for(let row=0;row<strips;row++){
+        const trim=row===0||row===strips-1?2:plan.stripes.includes(row)?1:0;
+        shape.addGroup(row*segments*6,segments*6,trim);
+      }
       shape.computeVertexNormals();
-      const sail=new THREE.Mesh(shape,[canvasMat,canvasEdge]);sail.castShadow=true;sail.receiveShadow=true;
-      sail.name="Vela de lona";boom.add(sail);
-      tube(boom,"wood",[0,bottom-.01,0],[width+.035,bottom-.01,0],.029);
-      tube(boom,style.rail,[0,top,0],[width,bottom,0],.012);
-      tube(boom,"edge",[width,bottom,0],[0,.09,0],.013);
+      const sail=new THREE.Mesh(shape,sailCloths.get(kind));
+      sail.castShadow=true;sail.receiveShadow=true;
+      sail.name=plan.name;boom.add(sail);
+      const spar=kind==="speedboat"?"steel":"wood";
+      if(kind==="dinghy")tube(boom,spar,profile(0,1),profile(1,0),.027);
+      else{
+        tube(boom,spar,profile(0,1),profile(1,1),.024);
+        tube(boom,spar,profile(0,0),profile(1,0),.029);
+      }
+      for(const side of [0,1]){
+        for(let rung=0;rung<6;rung++)tube(boom,style.rail,profile(side,rung/6),profile(side,(rung+1)/6),.010);
+      }
+      tube(boom,"edge",profile(1,0),[0,.09,0],.013);
       const furled=pivot(footing,0,height*.31,0);furled.name="Vela recolhida";
-      plate(furled,"cream",.032,.19,0,.13,.41,.127);
+      const roll=plate(furled,"cream",.032,.19,0,.13,.41,.127);
+      roll.material=sailCloths.get(kind)[0];
       for(const y of [.07,.30])plate(furled,"edge",.032,y,0,.145,.027,.14);
       return {lid,boom,furled,sail};
     }
-    function boat(g,kind){
+    function boat(g,kind,variant){
       const p=QuimiCraftVehicles.types[kind],s=boatStyles[kind],stations=hullStations(p.halfZ,s);
       const rig={root:g,kind,wheels:[],tracks:[],helmPedals:[],boat:true};
       const {halfX:w,halfZ:l}=p,deck=kind==="ship"?.64:kind==="dinghy"?.105:.20;
@@ -536,13 +555,25 @@ globalThis.QuimiCraftVehicleModels = (() => {
         const blade=pivot(rig.screw,0,0,0);blade.rotation.z=i*Math.PI*2/3;
         mesh(blade,padded,"chrome",.125,.035,0,.189,.082,.041).rotation.y=.46;
       }
-      rig.furniture=boatFurniture(g,QuimiCraftVehicles.deckLayout(kind),s);
+      rig.furniture=boatFurniture(g,QuimiCraftVehicles.deckLayout(kind),s,kind);
+      const wheels=QuimiCraftVehicles.types[variant].wheels;
+      if(wheels){
+        const {x,z,width,radius,lift}=wheels,axleY=radius-lift;
+        for(const end of [-1,1]){
+          tube(g,"steel",[-x,axleY,end*z],[x,axleY,end*z],width*.21);
+          for(const side of [-1,1]){
+            tube(g,"steel",[side*p.halfX*.73,deck-.10,end*z],[side*x,axleY,end*z],width*.27);
+            rig.wheels.push(tire(g,side*x,axleY,end*z,radius,width,end<0));
+          }
+        }
+      }
       return rig;
     }
     function build(kind){
       const root=new THREE.Group();
       root.name="Veículo · "+kind;
-      return boatStyles[kind]?boat(root,kind):kind==="glider"?glider(root):chassis(root,kind);
+      const hull=QuimiCraftVehicles.hullKind(kind);
+      return boatStyles[hull]?boat(root,hull,kind):kind==="glider"?glider(root):chassis(root,kind);
     }
     function animate(rig,v,dt){
       rig.root.position.set(v.x,v.renderY??v.y,v.z);
@@ -560,9 +591,13 @@ globalThis.QuimiCraftVehicleModels = (() => {
         });
         const {lid,boom,furled,sail}=rig.furniture,deployed=v.deck?.sail??false;
         boom.visible=deployed;furled.visible=!deployed;
-        boom.rotation.y=(rig.kind==="dinghy"?Math.PI*.25:Math.PI*.67)+Math.sin((v.waterClock||0)*2.2)*.10+steer*.19;
+        boom.rotation.y=QuimiCraftVehicles.sails[rig.kind].angle+Math.sin((v.waterClock||0)*2.2)*.10+steer*.19;
         sail.scale.z=1+Math.sin((v.waterClock||0)*3.6)*.24+Math.min(.7,Math.abs(speed)*.06);
         lid.rotation.x=v.deck?.chestOpen?1.27:0;
+        for(const wheel of rig.wheels){
+          wheel.spin.rotation.x+=dt*(v.onLand?speed:0)/wheel.r;
+          if(wheel.steer)wheel.joint.rotation.y=steer*.29;
+        }
         return;
       }
       if(rig.gauges){
@@ -637,12 +672,12 @@ globalThis.QuimiCraftVehicleModels = (() => {
         clip==="takeoff"?smooth(t,.68,2.8)*.77:clip==="land"?(1-smooth(t,.45,2.25))*.77:
         clip==="soar"?.64+Math.sin(t*2.2)*.12:0;
       const work=(clip==="drill"||clip==="dig")?Math.sin(Math.PI*smooth(t,.25,2.6))**1.2:0;
-      const speed=clip==="drive"||rig.boat&&clip==="marinePedal"?5.8:clip==="nitro"?12:clip==="turn"?5.1:airborne?5.2:0;
+      const speed=clip==="tractorWheels"?2.65:clip==="drive"||rig.boat&&clip==="marinePedal"?5.8:clip==="nitro"?12:clip==="turn"?5.1:airborne?5.2:0;
       const bank=clip==="soar"?Math.sin(t*1.65)*.19:turn*.13;
       animate(rig,{x:turn*.20,y:lift+(rig.boat?Math.sin(t*2.8)*.04:0),z:0,yaw:turn*.46,yawRate:turn*2,steer:turn,speed,bank,
         tilt:clip==="takeoff"?-lift*.21:clip==="land"?lift*.16:0,airborne:lift>.02,flying:rig.kind==="glider"&&lift>.10,
         nitroActive:clip==="nitro",work,motor,pedaling:rig.boat?speed>0:motor&&(clip==="pedal"||clip==="takeoff"||clip==="soar"),
-        deck:rig.boat?{sail:clip==="sail",chestOpen:clip==="cargo"}:null,waterClock:t},dt);
+        deck:rig.boat?{sail:clip==="sail",chestOpen:clip==="cargo"}:null,onLand:clip==="tractorWheels",waterClock:t},dt);
     }
     return {build,animate,preview};
   }

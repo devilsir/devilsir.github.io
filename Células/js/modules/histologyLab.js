@@ -1,9 +1,9 @@
 import * as T from 'three';
 import { v } from '../core/geometry.js';
-import { tissues, stains, tissueOptions, compatibleStains } from '../data/tissues.js?v=23';
-import { paintPreview, onBeePhotoLoad } from '../core/histofield.js?v=23';
-import { buildHistologyBench } from './histologyBench3d.js?v=29';
-import { insectAnimals, insectTissues } from '../data/insectSpecimens.js?v=1';
+import { tissues, stains, tissueOptions, compatibleStains } from '../data/tissues.js?v=24';
+import { paintPreview, onBeePhotoLoad } from '../core/histofield.js?v=24';
+import { buildHistologyBench } from './histologyBench3d.js?v=31';
+import { insectAnimals, insectTissues } from '../data/insectSpecimens.js?v=2';
 import { insectReference } from '../core/insectReference.js?v=1';
 import { node, button, select, range, heading, card, note, row, showTooltip, hideTooltip } from '../core/ui.js?v=9';
 
@@ -407,11 +407,17 @@ const resinActions = {
   bee_wood: 'Montar no cubo de madeira'
 };
 const supportsResin = tissue => tissue !== 'bacteria' && tissue !== 'blood';
+const dissectionRegion = sample => sample === 'bee' ? 'gut' : insectTissues[sample]?.region;
+const dissectionSampleName = sample => sample === 'bee' ? 'Ventrículo da abelha' : insectTissues[sample].short.split(' · ')[1];
+const dissectionActionLabel = (action, sample) => {
+  const name = dissectionSampleName(sample);
+  return `${action} ${name[0].toLocaleLowerCase('pt-BR')}${name.slice(1)}`;
+};
 
 const views = {
   general: ['Bancada inteira', [0.4, 7.1, 22.8], [-0.45, 1.05, 0.3]],
   lupa: ['Lupa 01 · Monitor e bancada', [-5.15, 3.52, 6.28], [-6.78, 1.18, 0.32]],
-  lupaAnimal: ['Dissecção · animal e pinça', [-6.68, 3.74, 4.20], [-7.62, 0.43, 1.38]],
+  lupaAnimal: ['Dissecção · animal e pinça', [-6.91, 2.56, 3.02], [-7.06, 0.33, 1.34]],
   lupaMonitor: ['Monitor da Lupa (CCD)', [-6.45, 2.05, 2.53], [-5.80, 1.39, -0.91]],
   baths: ['Banhos & Historesina', [-2.85, 4.3, 7.65], [-3.55, 0.72, 1.05]],
   resin: ['Resina e cubos de tecido', [-3.70, 5.2, 7.15], [-3.88, 0.15, 3.10]],
@@ -439,11 +445,12 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   state.draft = draft;
   const bench = draft.bench ??= { applied: new Set(), mounted: false, cutAt: null, message: '' };
   const dissection = bench.dissection ??= {
-    animal: 'bee', seat: 'petri', open: false, angle: 0.55, offset: v(), removed: new Set(), lastSample: null
+    animal: 'bee', seat: 'petri', open: false, angle: 0.55, offset: v(), removed: new Set()
   };
+  if (dissection.removed.size) dissection.open = true;
   const seats = { petri: v(-1.45, 0.055, 2.32), wax: v(0, 0.377, 0.55) };
   const petriView = [[-7.7, 3.72, 5.55], [-8.58, 0.18, 2.36]];
-  const removedRegions = new Set([...dissection.removed].map(id => id === 'bee' ? 'gut' : insectTissues[id].region));
+  const removedRegions = new Set([...dissection.removed].map(dissectionRegion));
   const resin = bench.resin ??= { mixed: false, embedded: null, blocks: new Set(['bee', ...stockSamples.map(({ id }) => id)]) };
 
   const viewLabels = {
@@ -503,7 +510,7 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   const paraffinSlideRest = v(4.87, 0.043, 2.14);
   const drySlideRest = v(3.15, 0.375, -1.72);
   const filmPosition = v(), slidePickupPosition = v();
-  const sampleDish = v(0.87, 0.105, 1.34);
+  const forcepsGripOffset = v(0.07, 0.055, 0);
   let patchTargetColor = new T.Color('#6ea8dc');
   let waveProgress = 1, cutCount = 98;
 
@@ -698,6 +705,7 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
     freeControls.hidden = !draft.freeMode;
     animalControl.element.hidden = !draft.freeMode;
     freeHelp.hidden = !draft.freeMode;
+    updateOrganControls();
     resinControls.hidden = !draft.freeMode;
     renderReferences(tissue);
     if (draft.freeMode) {
@@ -892,16 +900,30 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
     return target.copy(seats[seat]).add(dissection.offset).setY(seats[seat].y + animal.userData.feet);
   }
 
+  function exposedSamples() {
+    return dissection.seat === 'wax' && dissection.open
+      ? insectAnimals[dissection.animal].samples.filter(sample => !dissection.removed.has(sample))
+      : [];
+  }
+
+  function updateOrganControls() {
+    const samples = draft.freeMode ? exposedSamples() : [];
+    organControls.hidden = !samples.length;
+    organControls.replaceChildren(...samples.map(sample => button(
+      dissectionActionLabel('Retirar', sample),
+      () => runFreeTool('isolate:' + sample),
+      { disabled: Boolean(animalTransfer || extraction || cutAnimating()), className: 'primary' }
+    )));
+  }
+
   function dissectionTools() {
     const tools = {
       moveAnimal: dissection.seat === 'petri' ? 'Levar animal à placa de dissecção' : 'Devolver animal à placa de Petri',
       turnAnimal: 'Girar animal',
-      openAnimal: dissection.open ? 'Fechar abdômen' : 'Abrir abdômen',
     };
-    for (const id of insectAnimals[dissection.animal].samples) {
-      if (dissection.removed.has(id)) continue;
-      const name = id === 'bee' ? 'Ventrículo da abelha' : insectTissues[id].short.split(' · ')[1];
-      tools['isolate:' + id] = 'Isolar ' + name.toLocaleLowerCase('pt-BR');
+    if (dissection.seat === 'wax' && !dissection.open) tools.openAnimal = 'Abrir abdômen';
+    for (const sample of exposedSamples()) {
+      tools['isolate:' + sample] = dissectionActionLabel('Isolar', sample);
     }
     return tools;
   }
@@ -911,7 +933,8 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   function handleDissection(key) {
     const animal = b.animals[dissection.animal];
     const focusAnimal = !watchingDissection();
-    if (focusAnimal && key !== 'moveAnimal') camera('lupaAnimal');
+    hoveredKey = null;
+    hideTooltip(tooltip, viewport);
     if (key === 'moveAnimal') {
       const from = animal.position.clone();
       dissection.seat = dissection.seat === 'petri' ? 'wax' : 'petri';
@@ -921,26 +944,33 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
       audio.play('click');
       freeMessage(dissection.seat === 'wax' ? 'Animal na placa de dissecção.' : 'Animal na placa de Petri.');
     } else if (key === 'turnAnimal') {
+      if (focusAnimal && activeView !== 'lupaAnimal') camera('lupaAnimal');
       dissection.angle -= Math.PI / 4;
       audio.play('dial');
       freeMessage('Animal girado.');
-    } else if (dissection.seat !== 'wax') {
-      freeMessage('Leve o animal à placa de dissecção primeiro.');
     } else if (key === 'openAnimal') {
-      dissection.open = !dissection.open;
+      dissection.open = true;
+      if (activeView !== 'lupaAnimal' && (focusAnimal || dissection.animal === 'bee')) {
+        camera('lupaAnimal');
+      }
       audio.play('click');
-      freeMessage(dissection.open ? 'Abdômen aberto. Selecione a estrutura para isolar.' : 'Abdômen fechado.');
+      freeMessage('Abdômen aberto. Clique no órgão ou use o botão de retirada.');
     } else {
-      if (!dissection.open) {
-        freeMessage('Abra o abdômen para isolar uma estrutura.');
+      if (animalTransfer || extraction) {
+        freeMessage('Aguarde o fim da transferência para retirar outra estrutura.');
         return;
       }
       const sample = key.slice('isolate:'.length);
+      const region = dissectionRegion(sample);
+      const organ = animal.dissectionOrgans[region];
+      const { sample: model, rest, rotation } = b.insectSamples[dissection.animal][region];
       dissection.removed.add(sample);
-      removedRegions.add(sample === 'bee' ? 'gut' : insectTissues[sample].region);
-      dissection.lastSample = sample;
+      removedRegions.add(region);
       extraction = {
-        from: v(-0.15, 0.06, 0).applyAxisAngle(v(0, 1, 0), dissection.angle).add(animal.position),
+        model, rest, rotation,
+        from: b.insectDish.worldToLocal(organ.getWorldPosition(v())),
+        fromRotation: b.insectDish.getWorldQuaternion(new T.Quaternion()).invert()
+          .multiply(organ.getWorldQuaternion(new T.Quaternion())),
         start: time
       };
       audio.play('glass');
@@ -1128,8 +1158,9 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   const freeTool = select('Ação livre', {}, '', () => {});
   const freeFeedback = node('span', { className: 'pill', role: 'status', hidden: true });
   const freeExecute = button('Executar', () => runFreeTool(freeTool.input.value));
-  const freeControls = row(freeTool.element, freeExecute, freeFeedback);
-  const freeHelp = note('Arraste o animal na placa ou clique nele para transferir e abrir o abdômen. Clique nos órgãos expostos para isolar uma amostra. O menu Ação livre também permite girar o animal e preparar o corte.');
+  const organControls = node('div', { className: 'row', role: 'group', 'aria-label': 'Órgãos expostos', hidden: true });
+  const freeControls = row(freeTool.element, freeExecute, freeFeedback, organControls);
+  const freeHelp = note('Clique no animal para transferi-lo à cera e clique de novo para abrir o abdômen. Clique nos órgãos expostos ou use os botões Retirar para colocá-los na placa de amostras.');
   const resinStatus = node('p', { className: 'muted', role: 'status' });
   const resinControls = node('section', {},
     heading('Resina e cubos de tecido'),
@@ -1141,7 +1172,7 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   const animalControl = select('Animal', Object.fromEntries(Object.entries(insectAnimals).map(([key, animal]) => [
     key, animal.scientific ? animal.name + ' · ' + animal.scientific : animal.name
   ])), dissection.animal, animal => {
-    Object.assign(dissection, { animal, seat: 'petri', open: false, angle: 0.55, lastSample: null });
+    Object.assign(dissection, { animal, seat: 'petri', open: false, angle: 0.55 });
     dissection.offset.set(0, 0, 0);
     dissection.removed.clear();
     removedRegions.clear();
@@ -1205,6 +1236,8 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
   const filmHitPoint = v();
   const filmTarget = { title: 'Película do corte', color: '#f3e5ca' };
   const freeTargets = new Map();
+  const organBounds = new T.Box3();
+  const organCenter = v();
 
   function addFreeTarget(object, title, tool, drag = false, available) {
     const key = 'free-' + freeTargets.size;
@@ -1214,16 +1247,19 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
       color: '#6fd6c4' });
   }
 
+  const clickForDissection = () => dissection.seat === 'petri' ? 'moveAnimal'
+    : dissection.open ? null : 'openAnimal';
   for (const [id, animal] of Object.entries(b.animals)) {
-    addFreeTarget(animal, insectAnimals[id].name, () => dissection.seat === 'petri' ? 'moveAnimal' : 'openAnimal', true);
+    addFreeTarget(animal, insectAnimals[id].name, clickForDissection, true);
     for (const sample of insectAnimals[id].samples) {
-      const region = sample === 'bee' ? 'gut' : insectTissues[sample].region;
-      const name = sample === 'bee' ? 'Ventrículo da abelha' : insectTissues[sample].short.split(' · ')[1];
-      addFreeTarget(animal.dissectionOrgans[region], name, () => 'isolate:' + sample);
+      const organ = animal.dissectionOrgans[dissectionRegion(sample)];
+      addFreeTarget(organ, dissectionSampleName(sample), () => 'isolate:' + sample, false,
+        () => dissection.seat === 'wax' && dissection.open && !dissection.removed.has(sample) && !animalTransfer && !extraction);
+      freeTargets.get(organ.userData.freeKey).subtitle = 'Clique para retirar e levar à placa de amostras.';
     }
   }
   addFreeTarget(b.petri, 'Placa de Petri', () => dissection.seat === 'wax' ? 'moveAnimal' : 'turnAnimal');
-  addFreeTarget(b.waxDish, 'Placa de dissecção', () => dissection.seat === 'petri' ? 'moveAnimal' : 'openAnimal');
+  addFreeTarget(b.waxDish, 'Placa de dissecção', clickForDissection);
 
   function chooseTool(keys) {
     if (keys.includes(freeTool.input.value)) return freeTool.input.value;
@@ -1263,8 +1299,35 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
     ray.setFromCamera(pointer, engine.camera);
   }
 
+  function pickExposedOrgan() {
+    if (!draft.freeMode || activeView !== 'lupaAnimal' || animalTransfer || extraction) return null;
+    const animal = b.animals[dissection.animal];
+    const organs = exposedSamples().map(sample => animal.dissectionOrgans[dissectionRegion(sample)]).filter(organ => organ.visible);
+    const hit = ray.intersectObjects(organs, true)[0];
+    if (hit) {
+      let organ = hit.object;
+      while (!organ.userData.freeKey) organ = organ.parent;
+      return organ.userData.freeKey;
+    }
+
+    // Give the thin tubules and the spaces between them a selection margin.
+    let closest = null, minDistance = Infinity;
+    for (const organ of organs) {
+      organBounds.setFromObject(organ, true).expandByScalar(0.016);
+      if (!ray.ray.intersectsBox(organBounds)) continue;
+      const distance = ray.ray.distanceSqToPoint(organBounds.getCenter(organCenter));
+      if (distance < minDistance) {
+        minDistance = distance;
+        closest = organ.userData.freeKey;
+      }
+    }
+    return closest;
+  }
+
   function pickStation(event) {
     updatePointerRay(event);
+    const organKey = pickExposedOrgan();
+    if (organKey) return organKey;
     let filmDistance = Infinity;
     const film = isResinProtocol() ? b.transferFilm : b.ribbon;
     if (canPickFilm() && film.visible) {
@@ -1362,6 +1425,8 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
           : 'Clique para transferir com a pinça ao banho-maria.';
       } else if (key === 'crank') {
         sub = canCutWithCrank() ? 'Arraste a manivela para fatiar o bloco.' : 'Arraste a manivela para girar.';
+      } else if (freeTargets.get(key)?.tool === clickForDissection && !clickForDissection()) {
+        sub = exposedSamples().length ? 'Clique numa estrutura exposta para retirá-la.' : 'As amostras estão na placa ao lado.';
       }
       showTooltip(tooltip, viewport, event.clientX, event.clientY, info.title, sub, info.color);
     } else {
@@ -1392,7 +1457,8 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
             if (draft.freeMode) runFreeTool(transferStep());
             else advance();
           } else if (target) {
-            runFreeTool(target.tool());
+            const tool = target.tool();
+            if (tool !== null) runFreeTool(tool);
           } else if (key === 'crank' && (draft.freeMode || isMicrotomeStep(current()))) {
             useCrank();
           } else if (info?.view) {
@@ -1410,40 +1476,55 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
 
   function updateFreeDissection() {
     const animal = b.animals[dissection.animal];
+    const isBee = dissection.animal === 'bee';
     for (const model of Object.values(b.animals)) model.visible = model === animal;
-    b.petriComb.visible = dissection.animal === 'bee';
+    b.petriComb.visible = isBee;
     b.iceChamber.visible = b.beeOrgan.visible = false;
-    const organ = dissection.lastSample === 'bee' ? 'gut' : insectTissues[dissection.lastSample]?.region;
-    animal.setDissectionState(dissection.open ? (dissection.animal === 'bee' && organ ? 'empty' : 'active') : 'intact', removedRegions);
+    animal.setDissectionState(dissection.open ? 'active' : 'intact', removedRegions);
     animal.rotation.set(0, dissection.angle, 0);
     if (animalTransfer) {
       const p = Math.min(1, (time - animalTransfer.start) / 0.72);
       animal.position.lerpVectors(animalTransfer.from, animalTransfer.to, p);
       animal.position.y += Math.sin(p * Math.PI) * 0.27;
-      if (p >= 1) animalTransfer = null;
+      if (p >= 1) {
+        animalTransfer = null;
+        updateOrganControls();
+      }
     } else {
       animalPosition(dissection.seat, animal, animal.position);
     }
 
-    b.insectDish.visible = Boolean(organ);
-    b.insectExtracts.showRegion(organ);
+    b.insectDish.visible = removedRegions.size > 0;
+    for (const [id, samples] of Object.entries(b.insectSamples)) {
+      for (const [region, { sample, rest, rotation }] of Object.entries(samples)) {
+        sample.visible = id === dissection.animal && removedRegions.has(region);
+        if (sample.visible && sample !== extraction?.model) {
+          sample.position.copy(rest);
+          sample.quaternion.copy(rotation);
+        }
+      }
+    }
     b.forceps.visible = false;
     if (extraction) {
-      const p = Math.min(1, (time - extraction.start) / 0.93);
-      b.insectExtracts.position.lerpVectors(extraction.from, sampleDish, p);
-      b.insectExtracts.position.y += Math.sin(p * Math.PI) * 0.24;
+      const { model, from, rest, fromRotation, rotation, start } = extraction;
+      const p = Math.min(1, (time - start) / 0.93);
+      const progress = easeMotion(p);
+      model.position.lerpVectors(from, rest, progress);
+      model.position.y += Math.sin(p * Math.PI) * 0.24;
+      model.quaternion.slerpQuaternions(fromRotation, rotation, progress);
       if (p < 1) {
         b.forceps.visible = true;
-        b.forceps.position.copy(b.insectExtracts.position).add(v(0.07, 0.055, 0));
+        b.lupaStation.worldToLocal(model.getWorldPosition(b.forceps.position)).add(forcepsGripOffset);
         b.forceps.rotation.set(0.19, -0.45, 0.52);
         b.forceps.setPinch(0.08 + p * p * 0.36);
-      } else extraction = null;
-    } else {
-      b.insectExtracts.position.copy(sampleDish);
+      } else {
+        extraction = null;
+        updateOrganControls();
+      }
     }
 
     const status = animalTransfer ? 'Em transferência' : extraction ? 'Isolando amostra'
-      : dissection.open ? 'Abdômen aberto' : 'Abdômen fechado';
+      : dissection.open ? 'Abdômen aberto' : 'Animal íntegro';
     b.updateLupaLive(time, animal, insectAnimals[dissection.animal].name, status, Boolean(animalTransfer || extraction));
   }
 
@@ -1484,7 +1565,7 @@ export function histologyLab({ scene, lights, engine, toolbar, guide, label, ove
         for (const [id, animal] of Object.entries(b.animals)) {
           if (id !== 'bee') animal.visible = false;
         }
-        b.insectDish.visible = b.insectExtracts.visible = false;
+        b.insectDish.visible = false;
         b.petriComb.visible = true;
 
         b.iceChamber.visible = resinMode && (inFreeze || (active && key === 'bee_freeze'));

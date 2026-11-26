@@ -150,9 +150,9 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     }
     for(const [i,arm] of rig.arms.entries()){
       const side=arm.userData.side??(i===0?-1:1),walk=Math.sin(gait+i*Math.PI),reach=Math.sin(t*5.65+i*Math.PI);
-      rotation(arm,climbing?1.29+reach*.41*motion:(-walk*step*.38+sway*.058-grab*1.69+hit*.64)*motion,
-        side*(climbing?.17:.085+grab*.23),side*(climbing?.14:.13-grab*.23+hit*.14),weight);
-      rotation(arm.userData.lower,climbing?.56+reach*.19*motion:-.14-step*.10-grab*.54-hit*.28,0,0,weight);
+      rotation(arm,climbing?1.29+reach*.41*motion:(-walk*step*.38+sway*.058+grab*1.95+hit*.65)*motion,
+        side*(climbing?.17:.085-grab*.18),side*(climbing?.14:.13-grab*.18+hit*.14),weight);
+      rotation(arm.userData.lower,climbing?.56+reach*.19*motion:.14+step*.10+grab*.45+hit*.20,0,0,weight);
     }
     rotation(rig.head,(climbing?-.27+Math.sin(t*5.65)*.026:-grab*.20+hit*.20+sway*.04)*motion,
       climbing?0:sway*.105*(1-grab)*motion,sway*.024*motion,weight);
@@ -186,8 +186,8 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     const weight=1-Math.exp(-dt*19),slam=clamp(release);
     rotation(rig.body,-charge*.13+slam*.35,0,Math.sin(gait)*stride*.045,weight);
     for(const arm of rig.arms){
-      arm.rotation.x+=(-charge*.45+slam*.44)*weight;
-      arm.userData.lower.rotation.x-=charge*.24*weight;
+      arm.rotation.x+=(charge*.35-slam*.28)*weight;
+      arm.userData.lower.rotation.x+=charge*.22*weight;
     }
   }
   function previewStrike(t,windup=.56,impact=.32){
@@ -199,9 +199,9 @@ globalThis.QuimiCraftCreaturePoses=(()=>{
     gaze:["Olhar petrificante",3.4],reflection:["Reflexo no Escudo de Espelho",3.4],
     flap:["Bater asas",2.6],flight:["Voo batido",3.1],glide:["Planar e virar",3.65],land:["Pouso",2.8],
     float:["Flutuar",3.8],hop:["Salto",2.25],swim:["Nado",3.2],dart:["Nado rápido",2.9],pulse:["Pulsação",3.0],whirl:["Redemoinho",3.05],
-    spout:["Esguicho",2.7],breach:["Salto fora d’água",3.4],
+    spout:["Esguicho",2.7],dive:["Mergulho",4.1],tentacles:["Defesa com os tentáculos",2.7],breach:["Salto fora d’água",3.4],
     drive:["Andar",3.3],turn:["Fazer curva",3.7],nitro:["Nitro",2.9],drill:["Perfurar",3.2],dig:["Escavar",3.6],
-    takeoff:["Decolar",3.6],soar:["Planar",3.6],pedal:["Pedalar e girar hélice",3.4],marinePedal:["Acionar pedais",3.4],
+    takeoff:["Decolar",3.6],soar:["Planar",3.6],pedal:["Pedalar e girar hélice",3.4],marinePedal:["Acionar pedais",3.4],tractorWheels:["Girar rodas de trator",3.1],
     closed:["Fechada",1],open:["Aberta",1],opening:["Abrir",2.55],closing:["Fechar",2.55],
     sail:["Içar vela",4],cargo:["Abrir baú de bordo",1],
     flow:["Fluxo",6],glow:["Brilho",4.7],orbit:["Órbita",4.7],draw:["Puxar corda",2.55],

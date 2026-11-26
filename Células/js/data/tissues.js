@@ -1,4 +1,4 @@
-import { insectTissues } from './insectSpecimens.js?v=1';
+import { insectTissues } from './insectSpecimens.js?v=2';
 
 export const tissues = {
   bee: {

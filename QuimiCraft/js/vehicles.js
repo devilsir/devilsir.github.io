@@ -11,11 +11,33 @@ globalThis.QuimiCraftVehicles = (() => {
     ship:{item:"kit_ship",name:"Barco grande",color:"#e2c57f",halfX:2.08,halfZ:4.25,height:2.82,seat:.87,place:6.4,top:7.1,reverse:2.2,accel:1.75,brake:3.4,coast:1.12,turn:.69,draft:1.16},
     speedboat:{item:"kit_speedboat",name:"Lancha",color:"#e56d61",halfX:1.1,halfZ:2.67,height:1.58,seat:.35,place:4.9,top:16.5,reverse:3.2,accel:5.5,brake:7,coast:2.45,turn:1.3,draft:.48}
   };
+  const hullKind=kind=>types[kind]?.hull??kind;
+  for(const [hull,radius] of Object.entries({dinghy:.78,boat:1.02,ship:1.28,speedboat:1.02})){
+    const base=types[hull],width=radius*.72;
+    const wheels={radius,width,x:base.halfX+width*.52,z:base.halfZ*.56,lift:base.draft+.42};
+    types[hull+"_tractor"]={...base,hull,wheels,item:base.item+"_tractor",name:base.name+" com rodas de trator",
+      place:base.place+1,dirtTop:hull==="ship"?2.05:2.65,step:3};
+  }
   const motor="pedal_drive";
   const itemData={...Object.fromEntries(Object.values(types).map(v=>[v.item,[v.name,v.color]])),
     [motor]:["Módulo de Pedal e Correia","#cfad67"]};
   const kindOf=id=>Object.keys(types).find(key=>types[key].item===id);
   const isBoat=kind=>!!types[kind]?.draft;
+  const sails={
+    dinghy:{name:"Vela latina ocre",angle:.14,bottom:.26,top:.94,foot:[0,1],head:[.04,.045],curve:.13,
+      colors:[0xe5bc76,0xad5428,0xf2d698],stripes:[1,2]},
+    boat:{name:"Vela de gafo verde",angle:2.05,bottom:.29,top:.93,foot:[0,1],head:[0,.63],curve:.17,
+      colors:[0xe3ecd7,0x336b5e,0x85a88d],stripes:[1,2,6]},
+    ship:{name:"Vela quadrada azul",angle:.30,bottom:.49,top:.97,foot:[-.58,1.16],head:[-.48,.96],curve:.24,
+      colors:[0xe0d6ad,0x344f70,0xc29248],stripes:[2,3,4,9]},
+    speedboat:{name:"Vela de asa rubra",angle:2.39,bottom:.31,top:.96,foot:[0,.52],head:[.22,.04],roach:.68,curve:.11,
+      colors:[0x9f292c,0xe9e7dc,0x3a4148],stripes:[4,5,9]}
+  };
+  function sailSpan(sail,v){
+    const left=sail.foot[0]+(sail.head[0]-sail.foot[0])*v;
+    const width=sail.foot[1]+(sail.head[1]-sail.foot[1])*v+(sail.roach??0)*Math.sin(v*Math.PI);
+    return [left,left+width];
+  }
   const decks={
     dinghy:{floor:.15,size:.49,rows:[[-.86,1],[-.35,0],[.60,1],[1.10,1]],cargo:9},
     boat:{floor:.245,size:.60,rows:[[-1.49,1],[-.84,2],[-.19,2],[.46,2],[1.11,2],[1.76,2]],cargo:15},
@@ -23,6 +45,7 @@ globalThis.QuimiCraftVehicles = (() => {
     speedboat:{floor:.245,size:.57,rows:[[-1.61,1],[-.98,2],[-.35,2],[.28,2],[.91,2],[1.54,2]],cargo:12}
   };
   function deckLayout(kind){
+    kind=hullKind(kind);
     const plan=decks[kind];
     if(!plan)return null;
     const {floor,size,rows,cargo}=plan,p=types[kind];
@@ -53,6 +76,7 @@ globalThis.QuimiCraftVehicles = (() => {
       ["kit_boat",[[B.PLANK,12],["bronze_ingot",2],["stick",3],["hide",3]]],
       ["kit_ship",[[B.PLANK,28],["iron_ingot",8],["bronze_ingot",4],["wool",7]]],
       ["kit_speedboat",[[B.PLANK,14],["steel_ingot",4],["voltaic_cell",2],["copper_ingot",3]]],
+      ...Object.values(types).filter(p=>p.wheels).map(p=>[p.item,[[types[p.hull].item,1],["iron_ingot",4],["hide",6]]]),
       [motor,[[B.IRON,3],["bronze_ingot",2],["hide",3],["stick",2]]]
     ].map(([id,need])=>({name:itemData[id][0],need,out:[id,1]}));
   }
@@ -124,7 +148,7 @@ globalThis.QuimiCraftVehicles = (() => {
       const rig=models.build(kind);
       const v={kind,id,...pose,motor:motorized,speed:0,dy:0,steer:0,tilt:0,bank:0,work:0,
         cooldown:0,flying:false,pedaling:false,park:copyPose(pose),rig,
-        airborne:false,climb:null,climbRetry:0,nitro:100,nitroActive:false,nitroDelay:0,nitroLock:false,
+        onLand:!!types[kind].wheels&&saved?.onLand===true,airborne:false,climb:null,climbRetry:0,nitro:100,nitroActive:false,nitroDelay:0,nitroLock:false,
         jumpHeld:false,meterSpeed:0,waterClock:0};
       syncPose(v);
       const layout=deckLayout(kind);
@@ -153,7 +177,7 @@ globalThis.QuimiCraftVehicles = (() => {
     function snapshot(){
       return {version:1,roster:roster.map(v=>({kind:v.kind,id:v.id,motor:v.motor,
         ...(v.kind==="glider"||isBoat(v.kind)?{}:{nitro:v.nitro}),...(lifted(v)?v.park:copyPose(v)),
-        ...(v.deck?{deck:{sail:v.deck.sail,blocks:[...v.deck.blocks].map(([key,block])=>({key,id:block.id})),
+        ...(v.deck?{deck:{onLand:!!(v.climb?v.park.onLand:v.onLand),sail:v.deck.sail,blocks:[...v.deck.blocks].map(([key,block])=>({key,id:block.id})),
           cargoSlots:v.deck.cargoSlots.map(item=>item&&{...item})}}:{})}))};
     }
     function restore(data){
@@ -173,7 +197,23 @@ globalThis.QuimiCraftVehicles = (() => {
     function hitbox(kind,x,y,z,yaw){
       const type=types[kind],halfX=type.halfX,halfZ=type.halfZ,glider=kind==="glider";
       if(active&&overlaps(x,y,z,kind,active,yaw))return true;
-      const boat=isBoat(kind);
+      const boat=isBoat(kind),wheels=type.wheels;
+      if(wheels){
+        for(const side of [-1,1])for(const end of [-1,1]){
+          for(const u of [wheels.x-wheels.width*.43,wheels.x+wheels.width*.43]){
+            for(const offset of [-.76,0,.76]){
+              const [px,pz]=point(x,z,yaw,u*side,end*wheels.z+offset*wheels.radius);
+              const bottom=y-wheels.lift+wheels.radius*(offset?.34:.06);
+              const top=y-wheels.lift+wheels.radius*(offset?1.66:1.94);
+              if(protectedPosition(px,bottom,pz))return true;
+              for(let py=bottom;py<=top;py=Math.min(top,Math.floor(py)+1.005)){
+                if(solid(px,py,pz))return true;
+                if(py===top)break;
+              }
+            }
+          }
+        }
+      }
       for(let i=0;i<=Math.ceil(halfX*4);i++){
         const u=-halfX+Math.min(halfX*2,i*.5);
         for(let j=0;j<=Math.ceil(halfZ*4);j++){
@@ -204,7 +244,7 @@ globalThis.QuimiCraftVehicles = (() => {
     function nearest(range=4.25,kind){
       let best=null,dist=range;
       for(const v of roster){
-        if(kind&&v.kind!==kind||Math.abs(v.y-player.pos.y)>2.65)continue;
+        if(kind&&v.kind!==kind||Math.abs(v.y-player.pos.y)>(types[v.kind].wheels?3.8:2.65))continue;
         const d=Math.hypot(v.x-player.pos.x,v.z-player.pos.z)-(isBoat(v.kind)?types[v.kind].halfZ*.35:0);
         if(d<dist){best=v;dist=d;}
       }
@@ -219,7 +259,11 @@ globalThis.QuimiCraftVehicles = (() => {
         }
         const a=types[kind],b=types[v.kind],dx=v.x-x,dz=v.z-z;
         for(const angle of [yaw,yaw+Math.PI/2,v.yaw,v.yaw+Math.PI/2]){
-          const reach=(p,dir)=>p.halfX*Math.abs(Math.cos(angle-dir))+p.halfZ*Math.abs(Math.sin(angle-dir));
+          const reach=(p,dir)=>{
+            const w=p.wheels,halfX=w?Math.max(p.halfX,w.x+w.width*.5):p.halfX;
+            const halfZ=w?Math.max(p.halfZ,w.z+w.radius):p.halfZ;
+            return halfX*Math.abs(Math.cos(angle-dir))+halfZ*Math.abs(Math.sin(angle-dir));
+          };
           if(Math.abs(dx*Math.cos(angle)-dz*Math.sin(angle))>=reach(a,yaw)+reach(b,v.yaw)+.08)return false;
         }
         return true;
@@ -233,6 +277,42 @@ globalThis.QuimiCraftVehicles = (() => {
         if(!sample||sample.depth<type.draft+.06||Math.abs(sample.y-center.y)>.36)return null;
       }
       return center.y;
+    }
+    function tractorGround(kind,x,z,reference,yaw,rise=.42,drop=1.10){
+      const {wheels}=types[kind],feet=reference-wheels.lift;
+      const probe=(px,pz)=>{
+        const y=ground(px,pz,feet+rise+.025,feet-drop);
+        return y===null||liquid(px,y+.09,pz)?null:y;
+      };
+      const heights=[];
+      for(const side of [-1,1])for(const end of [-1,1]){
+        const [px,pz]=point(x,z,yaw,side*wheels.x,end*wheels.z);
+        const y=probe(px,pz);
+        if(y!==null)heights.push(y);
+      }
+      const center=probe(x,z);
+      if(heights.length<2&&(center===null||heights.length<1))return null;
+      if(center!==null)heights.push(center);
+      return Math.max(...heights)+wheels.lift;
+    }
+    function boatSupport(kind,x,z,reference,yaw,preferLand=false){
+      const p=types[kind],afloat=waterSupport(kind,x,z,reference,yaw);
+      const rolling=p.wheels?tractorGround(kind,x,z,reference,yaw):null;
+      return preferLand&&rolling!==null?{y:rolling,land:true}:afloat!==null?{y:afloat,land:false}:
+        rolling!==null?{y:rolling,land:true}:null;
+    }
+    function boatRoute(v,x,z,yaw){
+      const route=boatSupport(v.kind,x,z,v.y,yaw,v.onLand);
+      const clear=y=>!hitbox(v.kind,x,y,z,yaw)&&deckClear(v,x,y,z,yaw);
+      if(route&&clear(route.y))return route;
+      if(!v.onLand||!water(x,z,v.y))return null;
+      // The back of the hull can still touch the bank after the tire centers reach water.
+      const p=types[v.kind],w=p.wheels,reach=Math.max(p.halfZ,w.z+w.radius)+.08,feet=v.y-w.lift;
+      for(const end of [-1,1])for(const side of [-1,0,1]){
+        const [px,pz]=point(x,z,yaw,side*w.x,end*reach),bed=ground(px,pz,feet+.15,feet-.55);
+        if(bed!==null&&!liquid(px,bed+.08,pz)&&clear(v.y))return {y:v.y,land:true};
+      }
+      return null;
     }
     function safeParking(x,y,z,yaw){
       for(const radius of [0,5,10,18,30]){
@@ -252,13 +332,17 @@ globalThis.QuimiCraftVehicles = (() => {
       if(roster.length>=48){notice("Recolha um veículo antes de montar outro.");return false;}
       const yaw=player.yaw;
       const boat=isBoat(kind);
-      const x=inAir?player.pos.x:target?target.x+(boat?0:.5):player.pos.x-Math.sin(yaw)*type.place;
-      const z=inAir?player.pos.z:target?target.z+(boat?0:.5):player.pos.z-Math.cos(yaw)*type.place;
+      const offset=target?.n?.[1]===1?.5:boat?0:.5;
+      const x=inAir?player.pos.x:target?target.x+offset:player.pos.x-Math.sin(yaw)*type.place;
+      const z=inAir?player.pos.z:target?target.z+offset:player.pos.z-Math.cos(yaw)*type.place;
       const center=boat?null:inAir?player.pos.y:ground(x,z,player.pos.y+2,player.pos.y-4);
-      const y=boat?waterSupport(kind,x,z,target?.y??player.pos.y,yaw):
+      const reference=type.wheels&&(!target||target.n?.[1]===1)?
+        (target?target.y+1:player.pos.y)+type.wheels.lift:target?.y??player.pos.y;
+      const float=boat?boatSupport(kind,x,z,reference,yaw):null;
+      const y=boat?float?.y??null:
         inAir||center===null?center:support({kind,yaw},x,z,center)?.height??null;
       if(y===null||hitbox(kind,x,y,z,yaw)||(!boat&&!inAir&&liquid(x,y+.08,z))||overlaps(x,y,z,kind,null,yaw)){
-        notice(boat?"Procure água livre e fundo suficiente para o casco.":"Procure espaço livre para montar o veículo.");return false;
+        notice(type.wheels?"Procure água com calado ou terreno livre para as rodas.":boat?"Procure água livre e fundo suficiente para o casco.":"Procure espaço livre para montar o veículo.");return false;
       }
       if(!inAir&&Math.hypot(x-player.pos.x,z-player.pos.z)<(boat?type.halfZ+.5:kind==="glider"?2.4:1.95)){
         notice("Afaste-se um pouco para abrir o kit.");return false;
@@ -267,7 +351,7 @@ globalThis.QuimiCraftVehicles = (() => {
       if(inAir&&!recovery){notice("Abra o planador perto de terra firme para poder recuperá-lo.");return false;}
       const result=exchange([[id,1]],[]);
       if(!result.ok){notice(result.message);return false;}
-      const v=add(kind,{x,y,z,yaw});
+      const v=add(kind,{x,y,z,yaw},undefined,false,{onLand:float?.land});
       if(inAir){
         const descent=player.vel.y;
         const entrySpeed=Math.hypot(player.vel.x,player.vel.z);
@@ -280,6 +364,22 @@ globalThis.QuimiCraftVehicles = (() => {
       }
       persist();notice(type.name+" montado.");
       return true;
+    }
+    function spawn(kind,coords=null){
+      const type=types[kind];
+      if(!type)return {ok:false,msg:"Veículo desconhecido."};
+      if(roster.length>=48)return {ok:false,msg:"Limite de 48 veículos atingido."};
+      const yaw=player.yaw,boat=isBoat(kind);
+      const x=coords?coords[0]:player.pos.x-Math.sin(yaw)*(type.place+.5);
+      const z=coords?coords[2]:player.pos.z-Math.cos(yaw)*(type.place+.5);
+      const refY=coords?coords[1]:player.pos.y;
+      const float=boat?boatSupport(kind,x,z,refY+(type.wheels?type.wheels.lift:0),yaw):null;
+      const center=boat?null:ground(x,z,refY+6,refY-6);
+      const y=boat?float?.y??null:(center===null?null:support({kind,yaw},x,z,center)?.height??center);
+      const finalY=y??refY;
+      add(kind,{x,y:finalY,z,yaw},undefined,false,{onLand:boat?(float?.land??!water(x,z,finalY)):true});
+      persist();
+      return {ok:true,msg:`Veículo invocado: ${type.name}`};
     }
     function mount(v=nearest()){
       if(!v||active||!roster.includes(v)||Math.hypot(player.pos.x-v.x,player.pos.z-v.z)>4.5+(isBoat(v.kind)?types[v.kind].halfZ*.35:0)||Math.abs(player.pos.y-v.y)>2.65)return false;
@@ -300,8 +400,9 @@ globalThis.QuimiCraftVehicles = (() => {
       let swimming=false;
       if(!cancel){
         for(const side of [-1,1]){
-          const [x,z]=point(v.x,v.z,v.yaw,side*(types[v.kind].halfX+.65),.16);
-          const y=ground(x,z,v.y+1.1,v.y-1.3);
+          const p=types[v.kind],width=p.wheels?p.wheels.x+p.wheels.width*.5:p.halfX;
+          const [x,z]=point(v.x,v.z,v.yaw,side*(width+.65),.16);
+          const y=ground(x,z,v.y+1.1,v.y-(p.wheels?.lift??0)-1.3);
           if(y!==null&&!solid(x,y+.05,z)&&!solid(x,y+1.3,z)&&!liquid(x,y+.14,z)&&!protectedPosition(x,y,z)){
             exit=[x,y,z];break;
           }
@@ -363,7 +464,7 @@ globalThis.QuimiCraftVehicles = (() => {
           best={kind,vehicle:v,cell,distance,point:hit.clone().applyMatrix4(v.rig.root.matrixWorld)};
         };
         const {chest,mast,cells,blocks}=v.deck;
-        if(v.kind==="ship"){
+        if(hullKind(v.kind)==="ship"){
           const {halfX,halfZ}=types.ship;
           sample("cabinRoof",0,v.deck.floor+1.455,halfZ*.04,halfX*1.29,.11,halfZ*.91);
         }
@@ -406,8 +507,12 @@ globalThis.QuimiCraftVehicles = (() => {
     }
     function toggleSail(v){
       if(!v?.deck||!roster.includes(v))return false;
-      v.deck.sail=!v.deck.sail;models.animate(v.rig,v,0);persist();
-      notice(v.deck.sail?"Vela içada · aproveita o vento a favor":"Vela recolhida.");return true;
+      v.deck.sail=!v.deck.sail;
+      if(v.deck.sail&&!deckClear(v,v.x,v.y,v.z,v.yaw)){
+        v.deck.sail=false;notice("Abra espaço acima do convés para içar a vela.");return false;
+      }
+      models.animate(v.rig,v,0);persist();
+      notice(v.deck.sail?sails[v.kind].name+" içada · aproveite o vento a favor":"Vela recolhida.");return true;
     }
     function moveCargo(v,backpack,into,index){
       if(!v?.deck||!roster.includes(v))return false;
@@ -736,35 +841,78 @@ globalThis.QuimiCraftVehicles = (() => {
       }
       return true;
     }
+    function climbShore(v,input){
+      const p=types[v.kind],{wheels}=p,sign=Math.sign(input.throttle);
+      const front=Math.max(p.halfZ,wheels.z+wheels.radius);
+      for(const reach of [front+.18,front+.68,front+1.18]){
+        const [x,z]=point(v.x,v.z,v.yaw,0,-reach*sign);
+        const y=tractorGround(v.kind,x,z,v.y,v.yaw,p.step,.1);
+        const rise=y-v.y;
+        if(y===null||rise<.5||rise>p.step+.01||hitbox(v.kind,v.x,y,v.z,v.yaw)||
+          !deckClear(v,v.x,y,v.z,v.yaw)||!acrossClear(v,x,y,z))continue;
+        v.climb={x,y,z,up:true,sign};
+        v.park={...copyPose(v),onLand:v.onLand};
+        v.onLand=true;
+        v.speed=Math.min(Math.abs(v.speed),p.dirtTop)*sign;
+        v.report="Rodas subindo "+Math.ceil(rise-.01)+" blocos";
+        return true;
+      }
+      return false;
+    }
+    function tractorClimb(v,dt){
+      const {x,z,y,up,sign}=v.climb,p=types[v.kind];
+      const distance=Math.hypot(x-v.x,z-v.z);
+      const stride=up?0:Math.min(1,p.dirtTop*dt/Math.max(.001,distance));
+      const next={x:v.x+(x-v.x)*stride,y:up?approach(v.y,y,2.5*dt):y,z:v.z+(z-v.z)*stride};
+      if(hitbox(v.kind,next.x,next.y,next.z,v.yaw)||!deckClear(v,next.x,next.y,next.z,v.yaw)){
+        Object.assign(v,v.park);v.renderY=v.y;v.speed=0;v.climb=null;v.report="Subida interrompida";return;
+      }
+      Object.assign(v,next);
+      v.speed=(up?p.dirtTop*.55:p.dirtTop)*sign;
+      v.tilt=ease(v.tilt,up?.22:0,7,dt);
+      if(v.y===y)v.climb.up=false;
+      if(stride===1){v.climb=null;v.park=copyPose(v)}
+      v.renderY=v.y;
+    }
     function navigate(v,dt,input){
       const p=types[v.kind],throttle=input.brake?0:clamp(input.throttle||0,-1,1);
+      if(v.climb){
+        if(input.brake)v.speed=0;
+        else tractorClimb(v,dt);
+        return;
+      }
       const turn=clamp(input.turn||0,-1,1);
       v.steer=ease(v.steer,turn,8,dt);
       v.pedaling=!!throttle||Math.abs(v.steer)>.06;
       const yaw=v.yaw+v.steer*p.turn*(.26+Math.min(1,Math.abs(v.speed)*.23))*(v.speed<-.25?-1:1)*dt;
-      const heading=waterSupport(v.kind,v.x,v.z,v.y,yaw);
-      if(heading!==null&&!hitbox(v.kind,v.x,heading,v.z,yaw)&&deckClear(v,v.x,heading,v.z,yaw))v.yaw=yaw;
-      const breeze=v.deck?.sail?wind(v):null;
+      const heading=boatRoute(v,v.x,v.z,yaw);
+      if(heading)v.yaw=yaw;
+      const breeze=!v.onLand&&v.deck?.sail?wind(v):null;
       const thrust=breeze?clamp((-Math.sin(v.yaw)*breeze.x-Math.cos(v.yaw)*breeze.z)*.30,0,.38):0;
-      const goal=input.brake?0:throttle*(throttle>=0?p.top:p.reverse)+(throttle>=0?thrust*p.top:0);
+      const top=v.onLand?p.dirtTop:p.top,reverse=v.onLand?Math.min(1.35,p.reverse):p.reverse;
+      const goal=input.brake?0:throttle*(throttle>=0?top:reverse)+(throttle>=0?thrust*top:0);
       const braking=input.brake||v.speed*throttle<-.04;
       v.speed=approach(v.speed,goal,(braking?p.brake:throttle||thrust?p.accel:p.coast)*dt);
       const x=v.x-Math.sin(v.yaw)*v.speed*dt,z=v.z-Math.cos(v.yaw)*v.speed*dt;
-      const y=waterSupport(v.kind,x,z,v.y,v.yaw);
-      if(y!==null&&!hitbox(v.kind,x,y,z,v.yaw)&&deckClear(v,x,y,z,v.yaw)){
-        Object.assign(v,{x,y,z});
-        v.report=v.pedaling?"Pedais e leme em movimento":thrust>.05?"Navegando a vela":"À deriva";
+      const route=boatRoute(v,x,z,v.yaw);
+      if(route){
+        Object.assign(v,{x,y:route.y,z,onLand:route.land});
+        if(route.land)v.speed=clamp(v.speed,-1.35,p.dirtTop);
+        v.report=route.land?"Tração de trator":v.pedaling?"Pedais e leme em movimento":thrust>.05?"Navegando a vela":"À deriva";
+        v.park=copyPose(v);
+      }else if(p.wheels&&throttle&&Math.sign(v.speed)===Math.sign(throttle)&&climbShore(v,input)){
+        return;
       }else{
         v.speed=0;
-        v.report="Casco bloqueado · verifique o fundo e a margem";
+        v.report=p.wheels?"Passagem bloqueada · subida máxima de 3 blocos":"Casco bloqueado · verifique o fundo e a margem";
         const bottom=ground(v.x,v.z,v.y-p.draft+.12,v.y-4);
-        if(heading===null&&bottom!==null)v.y=approach(v.y,bottom+p.draft,dt*1.65);
+        if(!p.wheels&&!heading&&bottom!==null)v.y=approach(v.y,bottom+p.draft,dt*1.65);
       }
       v.waterClock+=dt;
       const pace=Math.abs(v.speed)/p.top;
       v.bank=ease(v.bank,-v.steer*pace*.17,5,dt);
-      v.tilt=ease(v.tilt,-pace*.065+Math.sin(v.waterClock*2.7)*.021,5,dt);
-      v.renderY=v.y+Math.sin(v.waterClock*3.2)*(.028+pace*.026);
+      v.tilt=ease(v.tilt,v.onLand?0:-pace*.065+Math.sin(v.waterClock*2.7)*.021,5,dt);
+      v.renderY=v.onLand?ease(v.renderY,v.y,12,dt):v.y+Math.sin(v.waterClock*3.2)*(.028+pace*.026);
     }
     function deckClear(v,x,y,z,yaw){
       const {blocks,mast,sail}=v.deck;
@@ -776,10 +924,17 @@ globalThis.QuimiCraftVehicles = (() => {
         }
       }
       if(sail){
-        for(const u of [0,mast.width*.70]){
-          const [px,pz]=point(x,z,yaw,mast.x+u,mast.z);
-          if(solid(px,y+mast.y+mast.height*(u?.55:1),pz))return false;
+        const plan=sails[hullKind(v.kind)],angle=plan.angle+v.steer*.19;
+        for(const level of [0,.5,1]){
+          const [left,right]=sailSpan(plan,level),height=mast.height*(plan.bottom+(plan.top-plan.bottom)*level);
+          for(const span of [left,(left+right)*.5,right]){
+            const u=span*mast.width;
+            const [px,pz]=point(x,z,yaw,mast.x+u*Math.cos(angle),mast.z-u*Math.sin(angle));
+            if(solid(px,y+mast.y+.03+height,pz))return false;
+          }
         }
+        const [px,pz]=point(x,z,yaw,mast.x,mast.z);
+        if(solid(px,y+mast.y+mast.height,pz))return false;
       }
       return true;
     }
@@ -862,9 +1017,9 @@ globalThis.QuimiCraftVehicles = (() => {
     function updateVisibility(x,z,radius){
       for(const v of roster)v.rig.root.visible=v===active||Math.hypot(x-v.x,z-v.z)<radius;
     }
-    return {current,nearest,deploy,mount,dismount,stash,install,operate,update,snapshot,restore,blocksPlayer,supportsPlayer,
+    return {current,nearest,deploy,spawn,mount,dismount,stash,install,operate,update,snapshot,restore,blocksPlayer,supportsPlayer,
       updateVisibility,deckTarget,buildOnDeck,breakOnDeck,toggleSail,moveCargo};
   }
-  return {types,motor,itemData,kindOf,isBoat,recipes,excavation,deckLayout,create};
+  return {types,motor,itemData,kindOf,isBoat,hullKind,recipes,excavation,deckLayout,sails,sailSpan,create};
 })();
 

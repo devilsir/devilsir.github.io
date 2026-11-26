@@ -279,16 +279,31 @@
     baseLevel: 1 + Math.floor(i / 2),
     description: `${e[0]} é um ${enemyTypeLabels[e[1]] || e[1]} de estilo ${enemyBehaviorLabels[e[2]] || e[2]}, moldado pelo Eclipse Oco.`,
     weaknesses: [
-      U.pick(["Bleeding", "Burning", "Poisoned", "Marked"]),
-      U.pick(["Heavy attacks", "Control", "Critical hits"]),
+      ["Bleeding", "Burning", "Poisoned", "Marked"][i % 4],
+      ["Heavy attacks", "Control", "Critical hits"][i % 3],
     ],
-    resistances: [U.pick(["Bleeding", "Poisoned", "Frightened", "Burning"])],
+    resistances: [
+      ["Poisoned", "Frightened", "Bleeding", "Burning"][i % 4],
+    ],
     abilities: [
-      U.pick(["Rending Blow", "Guarded Step", "Hex Pulse", "Venom Cut"]),
-      U.pick(["Night Rush", "Iron Prayer", "Soul Cry"]),
+      ["Rending Blow", "Guarded Step", "Hex Pulse", "Venom Cut"][i % 4],
+      ["Night Rush", "Iron Prayer", "Soul Cry"][i % 3],
     ],
     drops: [],
   }));
+
+  const bossWeaknessTable = [
+    [["Bleeding", "Heavy attacks"], ["Burning"]],
+    [["Burning", "Critical hits"], ["Poisoned"]],
+    [["Heavy attacks", "Burning"], ["Bleeding"]],
+    [["Marked", "Control"], ["Frightened"]],
+    [["Bleeding", "Critical hits"], ["Poisoned"]],
+    [["Heavy attacks", "Poisoned"], ["Marked"]],
+    [["Burning", "Bleeding"], ["Control"]],
+    [["Critical hits", "Marked"], ["Frightened"]],
+    [["Control", "Burning"], ["Bleeding"]],
+    [["Heavy attacks", "Critical hits"], ["Control"]],
+  ];
 
   const bossData = [
     ["O Inquisidor de Prata", "hunter", "✝", "Judgment of Argent"],
@@ -310,8 +325,10 @@
     signature: b[3],
     region: i,
     phases: 3,
-    description: `Regional sovereign of ${D.regions[i].name}. Its presence bends the rules of night.`,
-    exclusive: `${b[0].replace(/^The /, "")} Relic`,
+    weaknesses: bossWeaknessTable[i][0],
+    resistances: bossWeaknessTable[i][1],
+    description: `Soberano regional de ${D.regions[i].name}. Sua presença distorce as regras da noite.`,
+    exclusive: `Relíquia de ${b[0]}`,
   }));
 
   const rarityMult = {
@@ -781,40 +798,124 @@
 
   const sharedStructures = [
     [
-      "Training Pit",
-      "Reduces attribute training costs.",
+      "Fosso de Treino",
+      "Reduz o custo de ouro ao treinar atributos.",
       "⚔",
       "trainingDiscount",
+      "sanctum",
     ],
-    ["Trophy Hall", "Improves gold from victories.", "♛", "goldBonus"],
-    ["Hidden Stores", "Increases inventory capacity.", "▦", "storage"],
-    ["Night Gate", "Improves Arena rewards.", "♜", "arenaBonus"],
-    ["Apothecary", "Improves potion crafting.", "⚗", "craftBonus"],
-    ["Watcher Post", "Increases accuracy while hunting.", "⌖", "accuracyBonus"],
-    ["Relic Vault", "Improves rare loot chance.", "◆", "lootBonus"],
-    ["War Table", "Adds mission capacity.", "◇", "missionSlots"],
-    ["Deep Quarters", "Adds passive health regeneration.", "♥", "healthRegen"],
     [
-      "Eclipse Shrine",
-      "Improves faction resource generation.",
+      "Salão de Troféus",
+      "Aumenta o ouro recebido em vitórias.",
+      "♛",
+      "goldBonus",
+      "gate",
+    ],
+    [
+      "Armazéns Ocultos",
+      "Aumenta a capacidade máxima da mochila.",
+      "▦",
+      "storage",
+      "landscape",
+    ],
+    [
+      "Portão Noturno",
+      "Reforça o portão de ferro: +XP/Ouro na Arena e +Evasão.",
+      "♜",
+      "arenaBonus",
+      "gate",
+    ],
+    [
+      "Boticário",
+      "Reduz o custo da Forja e preserva materiais em receitas.",
+      "⚗",
+      "craftBonus",
+      "landscape",
+    ],
+    [
+      "Posto de Vigia",
+      "Torres ao longo do muro que aumentam precisão e crítico.",
+      "⌖",
+      "accuracyBonus",
+      "wall",
+    ],
+    [
+      "Cofre de Relíquias",
+      "Aumenta a chance de saque raro e materiais avançados.",
+      "◆",
+      "lootBonus",
+      "landscape",
+    ],
+    [
+      "Mesa de Guerra",
+      "Adiciona vagas extras de missões simultâneas.",
+      "◇",
+      "missionSlots",
+      "path",
+    ],
+    [
+      "Aposentos Profundos",
+      "Aumenta a regeneração passiva de vida em combate.",
+      "♥",
+      "healthRegen",
+      "landscape",
+    ],
+    [
+      "Santuário do Eclipse",
+      "Amplifica a geração do recurso da linhagem e rituais lunares.",
       "◉",
       "resourceBonus",
+      "sanctum",
+    ],
+    [
+      "Muralha de Pedra",
+      "Muro fortificado separado do portão: +Armadura total e +Bloqueio.",
+      "⬟",
+      "wallDefense",
+      "wall",
+    ],
+    [
+      "Caminho das Sombras",
+      "Trilha de pedra iluminada: acelera regeneração de Energia e +Iniciativa.",
+      "⌁",
+      "pathSpeed",
+      "path",
     ],
   ];
   D.hideout = {
     moonborn: sharedStructures.map((s, i) => ({
       id: `moon_structure_${i}`,
-      name: i === 0 ? "Totem Circle" : i === 4 ? "Herbal Shelter" : s[0],
+      name:
+        i === 0
+          ? "Círculo Totêmico"
+          : i === 4
+            ? "Abrigo Herbal"
+            : i === 10
+              ? "Muralha de Ossos e Pedra"
+              : i === 11
+                ? "Trilha da Matilha"
+                : s[0],
       description: s[1],
       icon: s[2],
       bonus: s[3],
+      zone: s[4],
     })),
     bloodbound: sharedStructures.map((s, i) => ({
       id: `blood_structure_${i}`,
-      name: i === 0 ? "Ritual Chamber" : i === 4 ? "Blood Cellar" : s[0],
+      name:
+        i === 0
+          ? "Câmara Ritual"
+          : i === 4
+            ? "Adega de Sangue"
+            : i === 10
+              ? "Muralha Obsidiana"
+              : i === 11
+                ? "Alameda Carmesim"
+                : s[0],
       description: s[1],
       icon: s[2],
       bonus: s[3],
+      zone: s[4],
     })),
   };
 

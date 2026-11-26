@@ -3,9 +3,9 @@ import {
   group, mesh, box, sphere, cylinder, lathe, torus, rod, tube, v, glow, material, platform,
   enamelMaterial, metalMaterial, anodizedMaterial, glassMaterial, frostedGlassMaterial, gelMaterial
 } from '../core/geometry.js';
-import { tissues, stains, readySlides } from '../data/tissues.js?v=23';
-import { lenses, fovFor, apertureFor, depthOfField, fmt, Ocular } from '../core/microscopeOptics.js?v=24';
-import { onBeePhotoLoad, isBeePhotoReady } from '../core/histofield.js?v=23';
+import { tissues, stains, readySlides } from '../data/tissues.js?v=24';
+import { lenses, fovFor, apertureFor, depthOfField, fmt, Ocular } from '../core/microscopeOptics.js?v=25';
+import { onBeePhotoLoad, isBeePhotoReady } from '../core/histofield.js?v=24';
 import { insectReference } from '../core/insectReference.js?v=1';
 import { deviceProfile } from '../core/deviceProfile.js?v=23';
 import { node, button, select, toggle, range, row, card, heading, note, metric, showTooltip, hideTooltip } from '../core/ui.js?v=9';

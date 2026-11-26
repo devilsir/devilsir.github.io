@@ -825,6 +825,78 @@ globalThis.QuimiCraftModels = (() => {
         bevel(root,tint("dragonhide",0x593b48),[0,0,0],[.53,.51,.093],[0,0,-.14]);
         dragonLeatherScales(root,0,.163,-.057,5,5,.083,.078);
       }
+      else if(id==="fracture_hammer"){
+        bevel(root,wood,[0,-.19,0],[.105,.72,.095]);
+        bevel(root,dark,[0,-.39,0],[.135,.24,.13]);
+        bevel(root,metal,[0,.17,0],[.48,.24,.22]);
+        bevel(root,edge,[-.23,.17,0],[.13,.26,.23]);
+        bevel(root,brass,[.02,.032,0],[.14,.08,.14]);
+      }
+      else if(id==="osmotic_salt"||id==="brine_cold_pack"){
+        const cold=id==="brine_cold_pack",shell=tint(id,itemColor(id));
+        bevel(root,cold?shell:lightWood,[0,-.025,0],[.31,.36,.155],[0,0,-.09]);
+        bevel(root,cold?metal:wood,[.014,.14,0],[.32,.053,.17],[0,0,-.09]);
+        for(const x of [-.06,0,.06])mesh(root,globe,cold?edge:shell,[x,-.019+Math.abs(x)*.45,-.084],[.026,.027,.012]);
+      }
+      else if(id==="copper_ampoule"){
+        const solution=tint(id,itemColor(id));
+        mesh(root,cyl,edge,[0,-.085,0],[.22,.27,.22]);
+        mesh(root,cyl,solution,[0,-.109,-.006],[.215,.18,.215]);
+        mesh(root,cyl,metal,[0,.095,0],[.118,.123,.118]);
+        bevel(root,brass,[0,.171,0],[.146,.079,.133]);
+        bevel(root,tint("ampoule-reflection",0xc8ece4),[-.066,-.068,-.091],[.022,.178,.022]);
+      }
+      else if(id==="echo_fork"){
+        const alloy=tint(id,itemColor(id));
+        bevel(root,wood,[0,-.24,0],[.09,.39,.083]);
+        bevel(root,brass,[0,-.044,0],[.135,.092,.116]);
+        bevel(root,alloy,[0,.052,0],[.21,.109,.09]);
+        for(const side of [-1,1]){
+          bevel(root,alloy,[side*.107,.208,0],[.072,.33,.077],[0,0,-side*.085]);
+          bevel(root,edge,[side*.12,.363,0],[.083,.058,.09]);
+        }
+      }
+      else if(id==="sealing_cartridge"){
+        mesh(root,cyl,tint(id,itemColor(id)),[0,-.02,0],[.19,.33,.19]);
+        mesh(root,cyl,brass,[0,.16,0],[.20,.068,.20]);
+        mesh(root,cyl,metal,[0,-.19,0],[.209,.065,.209]);
+        bevel(root,tint("seal-mark",0x73474b),[0,-.02,-.096],[.103,.125,.024]);
+      }
+      else if(id==="hunt_badge"){
+        bevel(root,brass,[0,0,0],[.32,.32,.092],[0,0,Math.PI/4]);
+        bevel(root,dark,[0,0,-.045],[.255,.255,.032],[0,0,Math.PI/4]);
+        mesh(root,globe,tint(id,itemColor(id)),[0,0,-.073],[.111,.147,.024]);
+        for(const side of [-1,1])bevel(root,brass,[side*.103,0,-.067],[.029,.13,.032],[0,0,-side*.43]);
+      }
+      else if(id==="quartz_whetstone"){
+        const abrasive=tint(id,itemColor(id));
+        bevel(root,abrasive,[0,-.014,0],[.235,.43,.15],[.16,0,-.34]);
+        bevel(root,metal,[.017,-.01,.064],[.251,.436,.048],[.16,0,-.34]);
+        for(const y of [-.10,.015,.11])bevel(root,edge,[0,y,-.082],[.12,.013,.013],[.16,0,-.34]);
+      }
+      else if(id==="soot_filter"){
+        mesh(root,cyl,tint(id,itemColor(id)),[0,-.035,0],[.30,.25,.30]);
+        mesh(root,cyl,metal,[0,.10,0],[.326,.055,.326]);
+        mesh(root,cyl,brass,[0,-.169,0],[.32,.055,.32]);
+        for(const x of [-.082,0,.082])bevel(root,dark,[x,-.016,-.143],[.036,.14,.024]);
+      }
+      else if(id==="vein_probe"){
+        bevel(root,dark,[0,-.16,0],[.15,.34,.16]);
+        bevel(root,metal,[0,.055,0],[.20,.163,.166]);
+        for(const side of [-1,1])bevel(root,brass,[side*.111,.14,0],[.063,.24,.077],[0,0,-side*.24]);
+        mesh(root,globe,tint(id,itemColor(id)),[0,.22,.004],[.116,.176,.101],[0,.3,.22]);
+        bevel(root,tint("probe-indicator",0xc9b7f2),[0,.049,-.089],[.126,.045,.031]);
+      }
+      else if(id==="refractory_boots"){
+        const ceramic=tint(id,itemColor(id));
+        for(const side of [-1,1]){
+          const x=side*.127;
+          bevel(root,metal,[x,.033,.04],[.214,.25,.23]);
+          bevel(root,ceramic,[x,-.036,-.048],[.218,.155,.35]);
+          bevel(root,dark,[x,-.128,-.054],[.228,.061,.36]);
+          bevel(root,edge,[x,.102,-.042],[.193,.044,.04]);
+        }
+      }
       else if (id === "iron_sword") sword(root);
       else if (weapon?.family==="gauntlet") {
         gauntlet(root,weapon);
@@ -969,11 +1041,13 @@ globalThis.QuimiCraftModels = (() => {
       if (icons.has(id)) return icons.get(id);
       const alchemyItem=globalThis.QuimiCraftAlchemy?.itemData[id];
       const vehicleItem=globalThis.QuimiCraftVehicles?.itemData[id];
+      const finisher=globalThis.QuimiCraftBiomeFauna?.exterminationTools[id];
+      const labUtility=globalThis.QuimiCraftFieldLab?.huntUtilities[id];
       const weapon=globalThis.QuimiCraftArsenal?.weapons[id];
       const guard=globalThis.QuimiCraftArsenal?.shields[id];
       const artifact=globalThis.QuimiCraftArsenal?.focuses[id];
       const gear=globalThis.QuimiCraftArsenal?.apparel[id];
-      if (!weapon&&!guard&&!artifact&&!gear&&!vehicleItem&&!alchemyItem&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","bolt","carbon_badge","dragon_hide"].includes(id)) return "";
+      if (!weapon&&!guard&&!artifact&&!gear&&!vehicleItem&&!alchemyItem&&!finisher&&!labUtility&&!["wind_staff","bow","iron_sword","stone_pickaxe","iron_pickaxe","copper_pickaxe","hoe","fishing_rod","reinforced_rod","pan","mallet","arrow","bolt","carbon_badge","dragon_hide","hunt_badge"].includes(id)) return "";
       const canvas = document.createElement("canvas");
       canvas.width=canvas.height=64;
       const ctx = canvas.getContext("2d");
@@ -990,6 +1064,63 @@ globalThis.QuimiCraftModels = (() => {
         ctx.closePath();ctx.fillStyle=color;ctx.fill();
       }
       const handle=[[13,54],[37,27]];
+      if(labUtility){
+        if(id==="quartz_whetstone"){
+          tile([[16,44],[37,11],[51,21],[28,55]],"#9d8ba9");
+          line([[18,44],[43,16]],"#e6deea",5);
+          line([[26,47],[47,21]],"#60566d",3);
+        }else if(id==="soot_filter"){
+          tile([[18,17],[46,17],[47,48],[41,53],[23,53],[17,47]],"#64717e");
+          line([[19,18],[45,18]],"#a6bac0",5);
+          for(const x of [25,32,39])line([[x,27],[x,43]],"#313741",4);
+          line([[21,51],[43,51]],"#b99865",4);
+        }else if(id==="vein_probe"){
+          line([[31,54],[32,30]],"#50606e",12);
+          line([[23,19],[23,32],[40,32],[40,19]],"#a98b60",4);
+          tile([[32,7],[40,19],[32,30],[24,19]],"#bb91ea");
+          line([[28,36],[35,36]],"#d5c5ff",3);
+        }else{
+          for(const shift of [14,-8]){
+            tile([[26+shift,17],[39+shift,17],[39+shift,47],[21+shift,47],[20+shift,38],[26+shift,35]],"#a96548");
+            line([[20+shift,45],[39+shift,45]],"#435359",4);
+            line([[29+shift,22],[36+shift,22]],"#e4bb8b",3);
+          }
+        }
+        const source=canvas.toDataURL("image/png");
+        icons.set(id,source);
+        return source;
+      }
+      if(finisher||id==="hunt_badge"){
+        if(id==="fracture_hammer"){
+          line([[18,53],[41,23]],"#75523d",10);
+          line([[18,53],[28,40]],"#37424a",10);
+          tile([[23,13],[32,5],[55,22],[48,35],[21,18]],finisher.color);
+          line([[24,12],[48,31]],"#d3e0e5",4);
+        }else if(id==="copper_ampoule"||id==="sealing_cartridge"){
+          const copper=id==="copper_ampoule";
+          if(copper)tile([[26,15],[38,15],[38,24],[44,30],[44,54],[20,54],[20,30],[26,24]],finisher.color);
+          else tile([[21,18],[43,18],[44,52],[20,52]],finisher.color);
+          line([[copper?26:20,copper?14:19],[copper?38:44,copper?14:19]],"#b2a485",5);
+          line([[24,51],[40,51]],"#425057",4);
+          if(copper)line([[25,32],[25,43]],"#c9f5e4",3);
+          else tile([[28,30],[37,30],[37,41],[28,41]],"#754750");
+        }else if(id==="echo_fork"){
+          line([[32,53],[32,33]],"#96694e",8);
+          line([[22,13],[22,29],[26,36],[38,36],[42,29],[42,13]],finisher.color,7);
+          line([[24,12],[24,26]],"#e8d9ff",3);
+        }else if(id==="hunt_badge"){
+          tile([[32,6],[57,31],[32,57],[7,31]],"#dbab60");
+          tile([[32,12],[51,31],[32,51],[13,31]],"#374b52");
+          tile([[32,17],[39,31],[32,45],[25,31]],"#f3cb77");
+        }else{
+          tile([[16,11],[46,14],[51,49],[41,56],[17,54],[12,45]],finisher.color);
+          line([[15,14],[46,16]],id==="brine_cold_pack"?"#33678c":"#92734b",5);
+          for(const [x,y] of [[23,36],[34,29],[41,40]])tile([[x,y-4],[x+4,y],[x,y+4],[x-4,y]],"#f5fbeb");
+        }
+        const source=canvas.toDataURL("image/png");
+        icons.set(id,source);
+        return source;
+      }
       if(id==="carbon_badge"){
         const glow=ctx.createRadialGradient(32,32,8,32,32,32);
         glow.addColorStop(0,"#78fffbe0");glow.addColorStop(.48,"#41d0d071");glow.addColorStop(1,"#41d0d000");
@@ -1729,7 +1860,7 @@ globalThis.QuimiCraftModels = (() => {
         headEquipment=headId;faceEquipment=faceId;footEquipment=footId;chestEquipment=chestId;
         syncWear();
         const handColors={chemical_gloves:0x728c4c,heat_gloves:0xa26143,insulated_gloves:0xcbd5dd};
-        const footColors={iron_boots:0x92abb3,rubber_boots:0x9a7938,insulated_boots:0x465b70,fins:0x3c978f};
+        const footColors={iron_boots:0x92abb3,rubber_boots:0x9a7938,insulated_boots:0x465b70,refractory_boots:0xb47655,fins:0x3c978f};
         gloveMat.color.set(handColors[handId]||0xbad2d4);
         shoeMat.color.set(footColors[footId]||0x425057);
         for (const node of gloves) node.visible=!!handId;

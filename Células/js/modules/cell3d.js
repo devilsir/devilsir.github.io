@@ -6,7 +6,7 @@ import {
   organicDisplace, tintGeometry, textures
 } from '../core/geometry.js';
 import { node, select, range, button, toggle, heading, card, row, showTooltip, hideTooltip } from '../core/ui.js?v=9';
-import { release } from '../core/sceneManager.js?v=25';
+import { release } from '../core/sceneManager.js?v=26';
 import {
   attachMembraneMicro, attachCytoplasmMicro, attachNucleusMicro,
   attachMitoMicro, attachVacuoleMicro, attachChloroplastMicro, attachBacteriaMicro
@@ -876,6 +876,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   const model = group(scene);
   const labels = new Map();
   const structures = new Map();
+  const materialGroups = [];
   const anchors = new Map();
   const focusGroups = new Map();
   const focusScratch = [];
@@ -884,6 +885,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   const scratch = v();
   const ray = new T.Raycaster();
   const pointer = new T.Vector2();
+  const pickables = [], intersections = [];
   const canvas = engine.renderer.domElement;
   const details = node('div');
   const shortcuts = node('div', { className: 'structure-list' });
@@ -900,6 +902,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   let pendingHover = null;
   let rerObj = null, golgiObj = null, flagellumCtrl = null, mainMito = null;
   let secVesicles = null, erVesicles = null, fusionRings = null, cytoFlowMesh = null;
+  let putSec = null, putEr = null, putRing = null;
   let guideLines = null, guidePositions = null;
   let secondMito = null, secondChlor = null;
   let updateCytoskeleton = null;
@@ -1107,53 +1110,40 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     }
   }
 
-  const tmpHighlightCol = new T.Color();
+  const highlightColor = new T.Color();
   const tmpDimCol = new T.Color();
 
-  function updateMaterials(dt) {
-    const copies = [...structures];
-    if (secondMito) copies.push(['mitochondria', secondMito]);
-    if (secondChlor) copies.push(['chloroplast', secondChlor]);
+  function updateMaterials(dt, activeAnim) {
     const decay = -dt * 9.5;
     const baseBlend = 1 - Math.exp(decay);
-    const activeAnim = tourActive ? activeStepData()?.anim : null;
     const emphasizeInterior = (focusMode && !OUTER_KEYS.has(selected)) || activeAnim === 'skel_overview';
 
-    for (const [key, object] of copies) {
+    for (const { key, materials, isOuter } of materialGroups) {
       const isHovered = key === hovered;
-      const isSelected = key === selected;
-      const isOuter = OUTER_KEYS.has(key);
-      const dimmed = emphasizeInterior && !isSelected && !isHovered && !isOuter;
+      const highlight = isHovered || (key === selected && !isOuter);
+      const minEmissive = isHovered ? 0.34 : highlight ? 0.14 : 0;
+      const dimmed = emphasizeInterior && !highlight && !isOuter;
       // Extra transparency on lysosome/peroxisome outer shell during interior zoom steps!
       const peekInside = tourActive && (
         (key === 'lysosome' && ['lyso_enzymes', 'lyso_fusion', 'lyso_digest'].includes(activeAnim)) ||
         (key === 'peroxisome' && ['perox_betaox', 'perox_crystal', 'perox_bubbles'].includes(activeAnim))
       );
+      if (highlight) highlightColor.set(organelles[key]?.color || '#6ce8f3');
 
-      object.traverse(item => {
-        const mat = item.material;
-        if (!mat || !mat.isMeshStandardMaterial) return;
+      for (const { mat, uses } of materials) {
         // Preserve the per-mesh interpolation rate when a shared material is batched.
-        const uses = item.userData.materialUses;
         const blend = uses === undefined ? baseBlend : 1 - Math.exp(decay * uses);
         if (mat.userData.baseEmissiveIntensity === undefined) {
           mat.userData.baseEmissiveIntensity = mat.emissiveIntensity;
           mat.userData.baseEmissive = mat.emissive.clone();
           mat.userData.baseOpacity = mat.opacity;
           mat.userData.baseTransparent = mat.transparent;
-          mat.userData.baseDepthWrite = mat.depthWrite;
           mat.userData.baseColor = mat.color.clone();
         }
-        const targetEmissive = isHovered ? Math.max(mat.userData.baseEmissiveIntensity, 0.34)
-          : (isSelected && !isOuter ? Math.max(mat.userData.baseEmissiveIntensity, 0.14) : mat.userData.baseEmissiveIntensity);
+        const targetEmissive = highlight ? Math.max(mat.userData.baseEmissiveIntensity, minEmissive) : mat.userData.baseEmissiveIntensity;
         mat.emissiveIntensity += (targetEmissive - mat.emissiveIntensity) * blend;
-        if (isHovered || (isSelected && !isOuter)) {
-          if (mat.vertexColors) tmpHighlightCol.set(organelles[key]?.color || '#6ce8f3');
-          else tmpHighlightCol.copy(mat.userData.baseColor);
-          mat.emissive.lerp(tmpHighlightCol, blend);
-        } else {
-          mat.emissive.lerp(mat.userData.baseEmissive, blend);
-        }
+        const targetColor = !highlight ? mat.userData.baseEmissive : mat.vertexColors ? highlightColor : mat.userData.baseColor;
+        mat.emissive.lerp(targetColor, blend);
 
         if (mat.userData.shell) {
           const targetOp = xray ? 0.055 : (emphasizeInterior ? mat.userData.shell * 0.52 : mat.userData.shell);
@@ -1170,14 +1160,16 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
           mat.opacity += (targetOp - mat.opacity) * blend;
           if (!dimmed && !mat.userData.baseTransparent && mat.opacity > 0.985) {
             mat.opacity = 1;
-            mat.transparent = false;
-            mat.needsUpdate = true;
+            if (mat.transparent) {
+              mat.transparent = false;
+              mat.needsUpdate = true;
+            }
           }
           tmpDimCol.copy(mat.userData.baseColor);
           if (dimmed) tmpDimCol.multiplyScalar(0.56);
           mat.color.lerp(tmpDimCol, blend);
         }
-      });
+      }
     }
   }
 
@@ -1190,6 +1182,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     engine.clearFocusFilter(true);
     release(model);
     structures.clear();
+    materialGroups.length = 0;
     anchors.clear();
     focusGroups.clear();
     microUpdaters.length = 0;
@@ -1198,6 +1191,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     motions.length = 0;
     pendingHover = null;
     hovered = flagellumCtrl = secVesicles = erVesicles = fusionRings = cytoFlowMesh = mainMito = null;
+    putSec = putEr = putRing = null;
     secondMito = secondChlor = rerObj = golgiObj = guideLines = guidePositions = null;
     updateCytoskeleton = null;
     tourActive = false;
@@ -1382,6 +1376,9 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         organelleMaterial('#f2b666', { emissive: '#c47b33', emissiveIntensity: 0.28, clearcoat: 0.75 }), 7, true);
       fusionRings = instances(model, new T.TorusGeometry(.16, .016, 6, 20),
         glow('#86f0e6', 0.55, { transparent: true, opacity: 0.75, depthWrite: false }), 7, true);
+      putEr = instanceUpdater(erVesicles);
+      putSec = instanceUpdater(secVesicles);
+      putRing = instanceUpdater(fusionRings);
 
       const mitoObj = build('mitochondria', positions.mitochondria, item => {
         const sc = type === 'plant' ? 0.74 : 0.86;
@@ -1462,6 +1459,23 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     }
     }
 
+    // Cache the animated materials in traversal order, including repeated uses of shared materials.
+    const dimmableMaterials = new Set();
+    for (const object of [...structures.values(), secondMito, secondChlor]) {
+      if (!object) continue;
+      const key = object.userData.key;
+      const isOuter = OUTER_KEYS.has(key);
+      const materials = [];
+      object.traverse(item => {
+        const mat = item.material;
+        if (!mat?.isMeshStandardMaterial) return;
+        materials.push({ mat, uses: item.userData.materialUses });
+        if (!isOuter && !mat.transparent && !mat.userData.shell && !mat.userData.peekShell) dimmableMaterials.add(mat);
+      });
+      materialGroups.push({ key, isOuter, materials });
+    }
+    if (structures.size > 1 || focusGroups.size) engine.prepareFocusFilter(scene, dimmableMaterials);
+
     // Exploded view guide lines
     guidePositions = new Float32Array(motions.length * 6);
     const guideGeo = new T.BufferGeometry();
@@ -1489,22 +1503,51 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
     resetCamera(true);
   }
 
+  function intersectStructures(interior) {
+    const collect = object => {
+      if (object !== cytoFlowMesh && object.raycast !== T.Object3D.prototype.raycast) pickables.push(object);
+    };
+    for (const root of model.children) {
+      const key = root.userData.key;
+      if (!key) continue;
+      const isInterior = key === 'cytoskeleton' || !OUTER_KEYS.has(key);
+      if (isInterior === interior) root.traverseVisible(collect);
+    }
+    intersections.length = 0;
+    ray.intersectObjects(pickables, false, intersections);
+    pickables.length = 0;
+  }
+
   function hit(event) {
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, 1 - (event.clientY - bounds.top) / bounds.height * 2);
     ray.setFromCamera(pointer, engine.camera);
-    let outerSurface = null;
-    for (const item of ray.intersectObject(model, true)) {
-      if (item.object === secVesicles || item.object === erVesicles || item.object === fusionRings ||
-        item.object === cytoFlowMesh || item.object === guideLines) continue;
-      let object = item.object;
-      while (object?.visible && !object.userData.key) object = object.parent;
-      const key = object?.userData.key;
-      if (!key || !object.visible) continue;
-      if (key === 'cytoskeleton' || !OUTER_KEYS.has(key)) return key;
-      if (key === 'membrane' || !outerSurface) outerSurface = key;
+
+    // Interior structures take priority, so only test the outer surfaces as a fallback.
+    intersectStructures(true);
+    if (intersections.length) {
+      const key = hitKey(intersections[0].object);
+      intersections.length = 0;
+      return key;
     }
+
+    let outerSurface = null;
+    intersectStructures(false);
+    for (const { object } of intersections) {
+      const key = hitKey(object);
+      if (key === 'membrane') {
+        outerSurface = key;
+        break;
+      }
+      outerSurface ??= key;
+    }
+    intersections.length = 0;
     return outerSurface;
+  }
+
+  function hitKey(object) {
+    while (!object.userData.key) object = object.parent;
+    return object.userData.key;
   }
 
   function updateHover(event) {
@@ -1606,8 +1649,6 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
   guide.append(summary, details, node('h3', {}, 'Seleção rápida'), shortcuts);
   loadModel();
 
-  let activeSec, activeEr;
-  let putSec, putEr, putRing;
   const endpoint = v(), pt = v(), ringDummy = new T.Object3D(), upAxis = v(0, 0, 1);
   const erPts = [v(), v(), v()];
   const erRoute = curve(erPts);
@@ -1623,23 +1664,25 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         pendingHover = null;
       }
       if (!paused) time += dt;
+      const step = tourActive ? activeStepData() : null;
       const contractionOverview = !tourActive && type === 'muscle' && animateMuscle;
-      const activeAnim = tourActive ? activeStepData()?.anim : contractionOverview ? 'muscle_overview' : null;
+      const activeAnim = tourActive ? step?.anim : contractionOverview ? 'muscle_overview' : null;
 
       // Subtle organic breathing + exploded displacement + guide lines
       let gIdx = 0;
+      const showGuideLines = exploded > 0.015;
+      const expFactor = 1 + exploded * 0.48;
+      const amp = tourActive ? 0.025 : 0.068;
       for (const item of motions) {
         const { object, origin, phase, baseScale } = item;
-        const expFactor = 1 + exploded * 0.48;
         object.position.copy(origin).multiplyScalar(expFactor);
         // Calm motion slightly when deeply zoomed into a nanoscopic step so details stay crisp!
-        const amp = tourActive ? 0.025 : 0.068;
         object.position.y += Math.sin(time * 1.12 + phase) * amp;
         object.position.z += Math.cos(time * .84 + phase) * (amp * 0.75);
         const breathe = baseScale * (1 + Math.sin(time * 1.55 + phase) * (tourActive ? 0.008 : 0.018));
         object.scale.setScalar(breathe);
 
-        if (guidePositions) {
+        if (showGuideLines) {
           guidePositions[gIdx++] = origin.x;
           guidePositions[gIdx++] = origin.y;
           guidePositions[gIdx++] = origin.z;
@@ -1650,8 +1693,8 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       }
 
       if (guideLines) {
-        guideLines.visible = exploded > 0.015;
-        if (guideLines.visible) {
+        guideLines.visible = showGuideLines;
+        if (showGuideLines) {
           guideLines.material.opacity = Math.min(0.42, exploded * 0.48);
           guideLines.geometry.attributes.position.needsUpdate = true;
         }
@@ -1663,7 +1706,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         mainMito.mtDna.material.emissiveIntensity = activeAnim === 'mito_matrix' ? 0.95 : 0.38;
       }
 
-      updateMaterials(dt);
+      updateMaterials(dt, activeAnim);
       updateCytoskeleton?.(time, activeAnim);
 
       // Update all bespoke micro-structure & step-triggered animations
@@ -1672,7 +1715,7 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       }
 
       // Update 3D Pulsing Beacon & Active Step Callout Pin
-      const st = tourActive && selected !== 'cytoskeleton' ? activeStepData() : null;
+      const st = selected !== 'cytoskeleton' ? step : null;
       if (st) {
         const anchorObj = anchors.get(st.anchor) || structures.get(selected);
         if (anchorObj) {
@@ -1729,7 +1772,6 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
       const exBoost = activeAnim === 'membrane_exocytosis' || activeAnim === 'golgi_exocytosis' ? 1.55 : 1.0;
 
       if (erVesicles && rerObj && golgiObj) {
-        if (activeEr !== erVesicles) { activeEr = erVesicles; putEr = instanceUpdater(erVesicles); }
         erPts[0].copy(rerObj.position).add(erOffA);
         erPts[2].copy(golgiObj.position).add(erOffB);
         erPts[1].copy(rerObj.position).lerp(golgiObj.position, 0.5);
@@ -1749,11 +1791,6 @@ export function cell3d({ scene, lights, engine, label, overlay, signal, toolbar,
         secVesicles.visible = fusionRings.visible = !hideSecForSkel;
       }
       if (secVesicles?.visible && fusionRings && golgiObj) {
-        if (activeSec !== secVesicles) {
-          activeSec = secVesicles;
-          putSec = instanceUpdater(secVesicles);
-          putRing = instanceUpdater(fusionRings);
-        }
         exPts[0].set(golgiObj.position.x + 0.25, golgiObj.position.y - 0.1, golgiObj.position.z + 0.25);
         for (let i = 0; i < secVesicles.count; i++) {
           const progress = (time * .3 * exBoost + i / secVesicles.count) % 1;

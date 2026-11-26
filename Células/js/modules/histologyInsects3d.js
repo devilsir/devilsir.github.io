@@ -20,7 +20,7 @@ function chamber(parent, mat, radius, top = true) {
   return mesh(parent, organicDisplace(geo, 0.035, 10, 6), mat);
 }
 
-function makeOrgans(parent, species, radius, zOffset = 0) {
+function makeOrgans(parent, species, radius) {
   const [rx, , rz] = radius;
   const digestive = proteinMaterial(species === 'tenebrio' ? '#b3a85f' : '#d09762', {
     roughness: 0.43, clearcoat: 0.47
@@ -29,7 +29,7 @@ function makeOrgans(parent, species, radius, zOffset = 0) {
     roughness: 0.41, clearcoat: 0.3
   });
   const organs = {};
-  organs.gut = group(parent, 0, 0, zOffset);
+  organs.gut = group(parent);
   const bends = species === 'copris' ? 3 : 2;
   const centerline = Array.from({ length: 23 }, (_, i) => {
     const u = i / 22;
@@ -41,7 +41,7 @@ function makeOrgans(parent, species, radius, zOffset = 0) {
   sphere(organs.gut, digestive, rz * 0.25, rz * 0.18, rz * 0.26, crop.x, crop.y, crop.z, 12);
   if (species === 'tenebrio') return organs;
   const name = species === 'copris' ? 'tubules' : 'trachea';
-  organs[name] = group(parent, 0, 0, zOffset);
+  organs[name] = group(parent);
   for (const side of [-1, 1]) {
     if (name === 'tubules') {
       for (const bend of [0.53, 0.81]) {
@@ -143,17 +143,46 @@ export function buildInsect(parent, species) {
   return body;
 }
 
-export function buildInsectExtracts(parent) {
-  const tray = group(parent);
-  // Detached regions share a preparation dish and are shown individually.
-  const tissues = makeOrgans(tray, 'copris', [0.16, 0.06, 0.105]);
-  const flyOrgans = makeOrgans(tray, 'drosophila', [0.17, 0.06, 0.115]);
-  flyOrgans.gut.visible = false;
-  tissues.trachea = flyOrgans.trachea;
-  tray.showRegion = region => {
-    for (const [key, tissue] of Object.entries(tissues)) tissue.visible = key === region;
-    tray.visible = Boolean(region);
-  };
-  tray.showRegion(null);
-  return tray;
+export function buildBeeOrgans(parent) {
+  const gut = group(parent);
+  const digestive = proteinMaterial('#cf7836', { roughness: 0.42, clearcoat: 0.44 });
+  const rings = proteinMaterial('#eab168', { roughness: 0.48 });
+  const centerline = new T.CatmullRomCurve3([
+    v(-0.137, -0.005, 0.014), v(-0.091, 0, 0.004), v(-0.049, 0.013, -0.016),
+    v(-0.006, 0.01, -0.018), v(0.041, 0.001, 0.006), v(0.094, 0, 0.018), v(0.132, -0.006, 0.007)
+  ]);
+  // Taper the curved tube at both ends and place the rings across its centerline.
+  const segments = 40, sides = 12;
+  const tubeGeo = new T.TubeGeometry(centerline, segments, 1, sides);
+  const positions = tubeGeo.attributes.position;
+  const vertex = v();
+  const radiusAt = t => 0.008 + 0.016 * Math.sin(Math.PI * t) ** 0.8;
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const center = centerline.getPointAt(t);
+    const radius = radiusAt(t);
+    for (let side = 0; side <= sides; side++) {
+      const index = i * (sides + 1) + side;
+      vertex.fromBufferAttribute(positions, index).sub(center).multiplyScalar(radius).add(center);
+      positions.setXYZ(index, vertex.x, vertex.y, vertex.z);
+    }
+  }
+  tubeGeo.computeVertexNormals();
+  mesh(gut, tubeGeo, digestive);
+  const ringAxis = v(0, 0, 1);
+  for (let i = 0; i < 8; i++) {
+    const t = 0.18 + i * 0.091;
+    const { x, y, z } = centerline.getPointAt(t);
+    const ring = mesh(gut, new T.TorusGeometry(radiusAt(t), 0.0035, 6, 22), rings, x, y, z);
+    ring.quaternion.setFromUnitVectors(ringAxis, centerline.getTangentAt(t));
+  }
+
+  const tubules = group(parent);
+  const paleTubule = proteinMaterial('#e6e4ac', { roughness: 0.46, emissive: '#747741', emissiveIntensity: 0.32 });
+  for (const [i, length] of [0.14, 0.18, 0.21].entries()) {
+    const z = (i - 1) * 0.026;
+    tube(tubules, paleTubule, [v(-0.105, 0, -0.006), v(-0.07, 0.008, z), v(-0.027, -0.002, z - 0.008),
+      v(length - 0.15, 0.011, z + 0.008), v(length - 0.11, 0, z)], 0.008, false, 21, 8);
+  }
+  return { gut, tubules };
 }

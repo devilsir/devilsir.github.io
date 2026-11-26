@@ -23,13 +23,46 @@ globalThis.QuimiCraftFieldLab=(()=>{
     silicate_gel:["Gel de silicato de cálcio","#b2b4ab"],
     soil_exchange:["Concentrado mineral para solo","#bdab87"],
     draconic_graphite:["Grafite dracônica","#64616b"],
-    instant_resin:["Resina de cura rápida","#c9bdac"]
+    instant_resin:["Resina de cura rápida","#c9bdac"],
+    sentinel_crust:["Placa carbonática da sentinela","#d4bb91"],
+    tide_mucus:["Muco do Limo de Maré","#9eb769"],
+    ember_scale:["Escama de Brasa","#9d6e53"],
+    shell_carbonate:["Carbonato de cálcio (CaCO₃)","#e6d8b5"],
+    sodium_alginate:["Alginato de sódio","#c4d092"],
+    alginate_beads:["Grânulos de alginato de cálcio","#8cb379"],
+    glass_myc_field_sample:["Tecido vítreo do fungo","#85dbc0"],
+    fungal_lumen:["Extrato luminescente do fungo","#84f3d3"],
+    geode_carapace:["Carapaça do Escavador de Geodo","#8a799f"],
+    quartz_abrasive:["Grãos abrasivos de quartzo","#ded6e5"],
+    soot_silk:["Seda impregnada de fuligem","#555265"],
+    soot_adsorbent:["Carbono poroso da fuligem","#494b60"],
+    resonance_nodule:["Nódulo ressonante","#db8ee3"],
+    resonant_quartz:["Cristal piezoelétrico","#d29dec"],
+    furnace_carapace:["Fragmento de carapaça da Fornalha","#9f6a50"],
+    refractory_plate:["Placa cerâmica refratária","#d49d77"],
+    quartz_whetstone:["Pedra de Afiar de Quartzo","#bfb1cb"],
+    soot_filter:["Filtro de Fuligem","#67717d"],
+    vein_probe:["Sonda de Veios","#be88dd"],
+    refractory_boots:["Botas Refratárias","#b47655"]
+  };
+  const huntUtilities={
+    quartz_whetstone:"Use na barra rápida para recuperar até 25% da condição máxima da picareta mais gasta na barra. Serve para pedra, cobre e ferro.",
+    soot_filter:"Use na barra rápida para renovar o filtro da máscara equipada em campo.",
+    vein_probe:"Use na barra rápida para localizar o veio metálico ou gema mais próximo num raio de 12 m. Mostra as coordenadas e pode ser reutilizada.",
+    refractory_boots:"Equipe nos pés para reduzir o dano de fogo e lava e proteger do calor ambiental."
+  };
+  const huntChemistry={
+    glass_mycelium:["separate_glass_mycelium","encapsulate_fungal_light"],
+    echo_burrower:["extract_geode_abrasive","bind_quartz_whetstone"],
+    soot_weaver:["extract_soot_adsorbent","pack_soot_filter"],
+    resonant_burrower:["isolate_resonant_quartz","build_vein_probe"],
+    furnace_weaver:["sinter_furnace_shell","assemble_refractory_boots"]
   };
   const equipment=[
     {key:"FIELD_ANALYZER",id:"field_analyzer",name:"Analisador de Amostras",length:2,depth:1,color:"#62aeb2",icon:"⌕",
       purpose:"Mede composição, pH, pureza, densidade e ponto de ebulição das amostras.",need:[["iron_ingot",2],["spectrometer_lens",1],["GLASS",2]]},
     {key:"FIELD_EXTRACTOR",id:"field_extractor",name:"Extrator Químico",length:3,depth:1,color:"#75a881",icon:"⌁",
-      purpose:"Separa os componentes das lágrimas e salivas. A extração libera vapores no ar.",need:[["iron_ingot",3],["lab_glassware",1],["carbon_filter",1]]},
+      purpose:"Separa componentes de lágrimas, salivas, tecidos e carapaças. Algumas extrações liberam vapores.",need:[["iron_ingot",3],["lab_glassware",1],["carbon_filter",1]]},
     {key:"FIELD_BOILER",id:"field_boiler",name:"Estação de Ebulição",length:3,depth:1,color:"#c19561",icon:"♨",
       purpose:"Ferve e condensa líquidos. A saída de vapor precisa de ventilação.",need:[["copper_ingot",3],["distillation_flask",1],["FURNACE",1]]},
     {key:"FIELD_REFINER",id:"field_refiner",name:"Refinador de Amostras",length:4,depth:1,color:"#9b86bc",icon:"◇",
@@ -71,7 +104,13 @@ globalThis.QuimiCraftFieldLab=(()=>{
   })).concat([
     {name:"Flechas envenenadas",need:[["arrow",6],["venom",1]],out:["venom_arrow",6]},
     {name:"Fertilizante dracônico",need:[["growth_medium",1],["soil_exchange",1]],out:["fertilizer",4]},
-    {name:"Filtro de grafite dracônica",need:[["draconic_graphite",1],[B.GLASS,1]],out:["carbon_filter",2]}
+    {name:"Filtro de grafite dracônica",need:[["draconic_graphite",1],[B.GLASS,1]],out:["carbon_filter",2]},
+    {name:"Martelo de Fratura",need:[["iron_ingot",3],["stick",2]],out:["fracture_hammer",1]},
+    {name:"Sachê Osmótico",need:[[B.SALT,1],["hide",1]],out:["osmotic_salt",3]},
+    {name:"Bolsa de Gelo Salino",need:[[B.ICE,1],[B.SALT,1],["hide",1]],out:["brine_cold_pack",3]},
+    {name:"Ampola Cúprica",need:[["copper_sulfate",1],[B.GLASS,1]],out:["copper_ampoule",4]},
+    {name:"Diapasão de Ruptura",need:[["iron_ingot",2],[B.COPPER,1]],out:["echo_fork",1]},
+    {name:"Cartucho de Vedação",need:[[B.CLAY,1],["plant_oil",1],[B.PLANK,1]],out:["sealing_cartridge",4]}
   ]);
   const analyses={field_analyzer:["composition","pH","purity","density","boilingPoint"]};
   const stations=Object.fromEntries(equipment.map(({id,name,icon,purpose})=>[id,{id,name,icon,purpose,maxTemperature:400,maxPressure:1.4}]));
@@ -86,6 +125,50 @@ globalThis.QuimiCraftFieldLab=(()=>{
       [["magnesium_oxide",1],["phosphoric_acid",1]],[["MAGNESIUM_CEMENT",4]],24),
     reaction("petrifying_vial","Envasar petrificante","Lágrima de Medusa + frasco → carga petrificante","field_refiner",
       [["medusa_tear",1],["lab_glassware",1]],[["petrifying_vial",2]],62),
+    reaction("shell_carbonate","Separar a placa da sentinela","Placa carbonática → CaCO₃","field_extractor",
+      [["sentinel_crust",1]],[["shell_carbonate",2]]),
+    {...reaction("sentinel_calcium","Dissolver carbonato da sentinela","CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O","field_refiner",
+      [["shell_carbonate",1],["hydrochloric_acid",1]],[["calcium_chloride",2],["carbon_dioxide",1],["water",1]],22),feedback:"bubbles"},
+    reaction("tide_alginate","Extrair alginato do muco","Muco de maré → alginato de sódio","field_extractor",
+      [["tide_mucus",1]],[["sodium_alginate",2]]),
+    {...reaction("alginate_gel","Gelificar alginato","Alginato de sódio + Ca²⁺ → gel de alginato de cálcio","field_refiner",
+      [["sodium_alginate",1],["calcium_chloride",1]],[["alginate_beads",3]]),
+      description:"Os íons de cálcio unem as cadeias do alginato e formam grânulos de gel."},
+    {...reaction("alginate_filter","Filtrar água com alginato e carvão","Água contaminada → água purificada","field_refiner",
+      [["contaminated_water",3],["alginate_beads",1],["activated_carbon",1]],[["purified_water",3]]),
+      description:"Os grânulos retêm partículas em suspensão e o carvão adsorve parte dos compostos dissolvidos."},
+    {...reaction("ember_copper","Calcinar Escama de Brasa","Cu₂CO₃(OH)₂ → 2 CuO + CO₂ + H₂O","laboratory_furnace",
+      [["ember_scale",1],["coal",1]],[["copper_oxide",2],["carbon_dioxide",1],["water",1]],22),temperature:325,feedback:"heat"},
+    {...reaction("separate_glass_mycelium","Separar o tecido vítreo do fungo","Tecido vítreo → extrato luminescente + sílica","field_extractor",
+      [["glass_myc_field_sample",1]],[["fungal_lumen",2],["SILICA_SAND",1]]),
+      description:"A fase líquida concentra o sistema luminescente do fungo. A sílica permanece na fração sólida."},
+    {...reaction("encapsulate_fungal_light","Encapsular luz fúngica","Extrato luminescente + vidro → luminária selada","field_refiner",
+      [["fungal_lumen",1],["glass",1]],[["MYCELIUM_LAMP",2]]),feedback:"color",
+      description:"A luminária mantém a bioluminescência do extrato e ilumina sem chama."},
+    {...reaction("extract_geode_abrasive","Separar o quartzo da carapaça","Carapaça de geodo → grãos de SiO₂","field_extractor",
+      [["geode_carapace",1]],[["quartz_abrasive",2]]),
+      description:"Da carapaça mineral, separam-se grãos duros de quartzo que servem como abrasivo."},
+    {...reaction("bind_quartz_whetstone","Consolidar pedra de afiar","Grãos de quartzo + ligante cerâmico → compósito abrasivo","field_refiner",
+      [["quartz_abrasive",1],["clay",1]],[["quartz_whetstone",2]]),
+      description:"A matriz fixa os grãos. Na picareta, eles removem irregularidades da aresta."},
+    {...reaction("extract_soot_adsorbent","Separar carbono poroso da seda","Seda com fuligem → fração carbonácea porosa","field_extractor",
+      [["soot_silk",1]],[["soot_adsorbent",2]]),
+      description:"A rede de poros do carbono concentra uma grande área superficial para adsorção."},
+    {...reaction("pack_soot_filter","Montar filtro de fuligem","Carbono poroso + lã → cartucho adsorvente","field_refiner",
+      [["soot_adsorbent",1],["wool",1]],[["soot_filter",2]]),
+      description:"O tecido retém partículas e mantém os grãos no cartucho. Compostos do ar aderem à superfície do carbono."},
+    {...reaction("isolate_resonant_quartz","Isolar cristais do nódulo ressonante","Nódulo → quartzo piezoelétrico + granada","field_extractor",
+      [["resonance_nodule",1]],[["resonant_quartz",1],["GARNET_ORE",1]]),
+      description:"O quartzo gera um sinal elétrico ao ser deformado. A granada é recuperada como fração separada."},
+    {...reaction("build_vein_probe","Montar sonda piezoelétrica","Cristal + eletrodos de cobre + célula → sonda de veios","field_refiner",
+      [["resonant_quartz",1],["copper_ingot",1],["voltaic_cell",1]],[["vein_probe",1]]),
+      description:"No jogo, a sonda usa o cristal para emitir e ler pulsos nas rochas e indicar um veio próximo."},
+    {...reaction("sinter_furnace_shell","Sinterizar a carapaça da Fornalha","Carapaça aluminosa + argila → placa refratária","laboratory_furnace",
+      [["furnace_carapace",1],["clay",1]],[["refractory_plate",2]]),temperature:1250,fuel:["coal",1],feedback:"heat",
+      description:"O tratamento térmico consolida os grãos em uma cerâmica que mantém a forma sob calor intenso."},
+    {...reaction("assemble_refractory_boots","Revestir botas com cerâmica refratária","Botas de ferro + placas refratárias → botas isolantes","field_refiner",
+      [["iron_boots",1],["refractory_plate",2]],[["refractory_boots",1]]),
+      description:"A camada cerâmica reduz a transferência de calor para os pés. Equipe as botas no inventário."},
     reaction("field_water","Destilar água em campo","Água → água purificada","field_boiler",[["water",2]],[["purified_water",2]]),
     ...[
       ["fire","fogo","draconic_ember","Óxido de ferro(III) dracônico","tempered_alloy","Liga temperada","Liga inspirada na liberação de calor",86],
@@ -109,6 +192,11 @@ globalThis.QuimiCraftFieldLab=(()=>{
   function registerCement(B,defs){
     B.MAGNESIUM_CEMENT=516;
     defs[516]={name:"Cimento de fosfato de magnésio",solid:true,hard:1.65,tex:39,icon:"#d0cbb8"};
+  }
+  function registerLamp(B,defs){
+    B.MYCELIUM_LAMP=517;
+    defs[517]={name:"Luminária de Micélio",solid:false,partial:true,hard:.32,tex:208,icon:"#7ce9bf",
+      description:"Luminária selada que ilumina cavernas e reduz o surgimento de criaturas hostis nas proximidades."};
   }
   // Rays stop at every impermeable voxel, including clear glass.
   function airLink(from,to,open){
@@ -148,5 +236,5 @@ globalThis.QuimiCraftFieldLab=(()=>{
     }
     return strength*best*(access.size>1?1:.72);
   }
-  return {items,equipment,byBlock,register,registerCement,footprint,locate,recipes,stations,analyses,reactions,airLink,ventilation};
+  return {items,huntUtilities,huntChemistry,equipment,byBlock,register,registerCement,registerLamp,footprint,locate,recipes,stations,analyses,reactions,airLink,ventilation};
 })();

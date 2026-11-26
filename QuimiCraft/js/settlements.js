@@ -294,6 +294,11 @@ globalThis.QuimiCraftSettlements=(()=>{
           variant:Math.floor(roll(x+i,z,697)*4),title:"Criança da comunidade"});
       }
       const civic=civicDistrict({B,site,culture,theme,floor,road,structure,doors,buildings,people,roll,cell,paving,region,choose,add});
+      if(site.main){
+        const master=QuimiCraftExtermination.master,px=x+1,pz=z+spine(0)+2;
+        people.push({...master,id:site.id+":"+master.role,site:site.id,region,culture,x:px+.5,z:pz+.5,scale:1,
+          y:floor.get(cell(px,pz)).y+1});
+      }
       const district={...site,region,culture,buildings,people,doors,floor,road,structure,civic};
       districts.set(site.id,district);
       return district;

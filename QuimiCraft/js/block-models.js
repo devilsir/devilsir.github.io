@@ -254,6 +254,14 @@ globalThis.QuimiCraftBlockModels=(()=>{
     shell([[.5,.591,.50,.085,.085],[.471,.672,.526,.078,.072],[.524,.767,.504,.047,.054],[.521,.856,.489,.008,.012]],flame,flame,6,.35);
     shell([[.51,.605,.451,.041,.038],[.53,.692,.45,.038,.037],[.503,.756,.453,.007,.008]],light,light,6,.15);
   }
+  function myceliumLamp(p){
+    const {box,shell}=p;
+    shell([[.5,.045,.5,.21,.21],[.5,.097,.5,.24,.24],[.5,.15,.5,.198,.198]],iron,brass,8,Math.PI/8);
+    shell([[.5,.155,.5,.143,.143],[.5,.25,.5,.189,.189],[.5,.56,.5,.186,.186],[.5,.65,.5,.112,.112]],spectral,glaze,8,Math.PI/8);
+    for(const x of [.335,.665])for(const z of [.335,.665])box(glaze,x-.012,.17,z-.012,x+.012,.61,z+.012);
+    shell([[.5,.626,.5,.14,.14],[.5,.693,.5,.16,.16],[.5,.733,.5,.10,.10]],brass,iron,8,Math.PI/8);
+    box(brass,.456,.719,.462,.544,.772,.538);
+  }
   function spiritLight(p){
     const {box,shell,rod}=p;
     shell([[.5,.023,.5,.16,.16],[.5,.07,.5,.186,.186],[.5,.151,.5,.125,.125]],glaze,iron,8,.39);
@@ -500,7 +508,7 @@ globalThis.QuimiCraftBlockModels=(()=>{
   function create(block,faces,definitions={}){
     const styles={
       FURNACE:furnace,FIRE:campfire,KITCHEN_STOVE:stove,GLASS_KILN:kiln,METAL_FORGE:forge,
-      VILLAGE_LANTERN:lantern,ALCHEMY_BENCH:potionBench,ALCHEMY_STILL:still,ALCHEMY_BALANCE:balance,TORCH:torch,SPECTRAL:spiritLight,PALM_LEAVES:palm,
+      VILLAGE_LANTERN:lantern,MYCELIUM_LAMP:myceliumLamp,ALCHEMY_BENCH:potionBench,ALCHEMY_STILL:still,ALCHEMY_BALANCE:balance,TORCH:torch,SPECTRAL:spiritLight,PALM_LEAVES:palm,
       EXPEDITION_CHEST:expeditionChest,EXPEDITION_CHEST_OPEN:data=>expeditionChest(data,true),...QuimiCraftPlantModels.styles
     };
     const models=new Map();

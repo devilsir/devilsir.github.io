@@ -95,7 +95,18 @@ window.WB_CONFIG = {
     upgradeGold(level) {
       return Math.floor(90 * Math.pow(1.45, level));
     },
-    rerollGold: 250,
+    rerollGold: 200,
+    rerollShards: 1,
+    lunarRitualShards: 1,
+    energyRefillShards: 1,
+    energyRefillAmount: 30,
+    merchantRefreshShards: 1,
+  },
+  clan: {
+    dailyBattleLimit: 3,
+    extraBattleShards: 1,
+    recruitGold: 120,
+    maxFortress: 10,
   },
   dailyRewards: [
     { type: "gold", amount: 150, icon: "◈" },

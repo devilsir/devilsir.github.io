@@ -2,7 +2,7 @@
 
 globalThis.QuimiCraftFolklore = (() => {
   const strike = (damage, range, windup, cooldown, effect = "physical") =>
-    ({kind: "lunge", damage, range, windup, cooldown, effect});
+    ({kind: "lunge", damage, range, windup: Math.max(.2, Number((windup * .62).toFixed(2))), cooldown: Math.max(1.0, Number((cooldown * .7).toFixed(2))), effect});
   const profile = (temperament, hp, walk, run, sense, roam, attack = null, loot = []) =>
     ({temperament, hp, walk, run, sense, roam, strike: attack, loot});
 

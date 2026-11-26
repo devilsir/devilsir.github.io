@@ -526,6 +526,104 @@
   line-height: 1.45;
 }
 
+.hunt-guide > header h3 {
+  margin: 0 0 6px;
+  color: #effff9;
+  font-size: 20px;
+}
+
+.hunt-guide p {
+  margin: 0;
+  color: #bbd5d0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.hunt-guide-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.hunt-guide-chain {
+  border: 1px solid rgba(124, 204, 189, .17);
+  border-radius: 12px;
+  background: rgba(15, 43, 49, .42);
+}
+
+.hunt-guide-chain summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) 12px;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 12px 14px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.hunt-guide-chain summary::-webkit-details-marker { display: none; }
+.hunt-guide-chain summary:focus-visible { outline: 2px solid #9ee8d7; outline-offset: -3px; border-radius: 11px; }
+
+.hunt-guide-chain summary::after {
+  grid-area: 1 / 3 / span 2;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #8bd8c4;
+  border-bottom: 2px solid #8bd8c4;
+  transform: rotate(45deg);
+  content: "";
+}
+
+.hunt-guide-chain[open] summary::after { transform: rotate(225deg); }
+.hunt-guide-creature { grid-area: 1 / 1; color: #effff9; font-size: 14px; font-weight: 750; }
+.hunt-guide-material { grid-area: 2 / 1; color: #bdcfce; font-size: 11px; }
+.hunt-guide-material strong { color: #ddece8; }
+.hunt-guide-product { grid-area: 1 / 2 / span 2; max-width: 190px; color: #91e2ce; font-size: 12px; font-weight: 750; }
+
+.hunt-guide-body {
+  display: grid;
+  gap: 12px;
+  padding: 12px 14px 14px;
+  border-top: 1px solid rgba(124, 204, 189, .14);
+}
+
+.hunt-guide-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+  color: #c8ece3;
+  font-size: 12px;
+}
+
+.hunt-guide-steps li {
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(2, 15, 22, .42);
+}
+
+.hunt-guide-steps h4 { margin: 0; color: #effff9; font-size: 13px; }
+.hunt-guide-steps .hunt-guide-station { margin: 3px 0 7px; color: #91e2ce; font-weight: 700; }
+.hunt-guide-steps dl { display: grid; gap: 4px; margin: 0; }
+.hunt-guide-steps dl > div { display: grid; grid-template-columns: 81px minmax(0, 1fr); gap: 6px; }
+.hunt-guide-steps dt { color: #a0bdba; }
+.hunt-guide-steps dd { margin: 0; }
+
+.hunt-guide .hunt-guide-use {
+  padding: 10px;
+  border-left: 2px solid #67ba9e;
+  background: rgba(68, 152, 125, .1);
+}
+
+.hunt-guide-use strong { display: block; margin-bottom: 2px; color: #ddfff4; }
+
+@media (max-width: 560px) {
+  .hunt-guide-chain summary { grid-template-columns: minmax(0, 1fr) 12px; }
+  .hunt-guide-chain summary::after { grid-area: 1 / 2 / span 3; }
+  .hunt-guide-product { grid-area: 3 / 1; max-width: none; }
+  .hunt-guide-steps dl > div { grid-template-columns: 1fr; gap: 1px; }
+}
+
 .notebook-entry-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
